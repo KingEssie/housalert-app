@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { sendMatchAlert } from "./email";
-import { ingestWgGesucht } from "./ingest-wg-gesucht";
+import { runAllIngesters } from "./ingesters";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -19,16 +19,16 @@ export async function registerRoutes(
     return res.json({ sent });
   });
 
-  app.post("/api/ingest/wg-gesucht", async (req, res) => {
+  app.post("/api/ingest/run", async (req, res) => {
     const authHeader = req.headers.authorization;
-    const expectedKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (!authHeader || authHeader !== `Bearer ${expectedKey}`) {
+    const expectedToken = process.env.INGEST_BEARER_TOKEN;
+    if (!expectedToken || !authHeader || authHeader !== `Bearer ${expectedToken}`) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
     try {
-      const result = await ingestWgGesucht();
-      return res.json(result);
+      const report = await runAllIngesters();
+      return res.json(report);
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
     }

@@ -93,15 +93,19 @@ When a new match is created, the app sends an email alert via Resend (Replit int
 - `server/routes.ts` — `POST /api/match-alert` endpoint called by the client after a match
 - One email per listing match (not per profile match — deduped via `alertSent` flag)
 
-## WG-Gesucht Ingestion
+## Ingestion System
 
-- `server/ingest-wg-gesucht.ts` — Scraper module for Berlin rental listings
-- `POST /api/ingest/wg-gesucht` — Triggers one ingestion cycle
-- Fetches the public WG-Gesucht Berlin apartments search results page (1 request per run, polite User-Agent)
-- Parses: title, URL, price, bedrooms (Zimmer), size (m²), source_id from data-id attribute
-- Dedup: checks by `source` + `source_id` (if column exists) AND by `url`
-- After inserting new listings, runs server-side matching logic against all users' search profiles
-- Sends email alerts via Resend for new matches
+Modular ingestion runner at `server/ingesters/`:
+- `types.ts` — Common `Ingester` interface: `{ name, run() → {found, inserted, duplicates, matches, errors} }`
+- `matching.ts` — Shared Supabase client, matching logic, and `insertAndMatchListings()` used by all ingesters
+- `wg-gesucht.ts` — WG-Gesucht Berlin scraper (polite: 1 request per run, descriptive User-Agent)
+- `index.ts` — Registry + `runAllIngesters()` that runs all enabled sources sequentially
+
+Endpoints:
+- `POST /api/ingest/run` — Runs all ingesters; requires `Authorization: Bearer <INGEST_BEARER_TOKEN>`
+- Returns `{ sources: [{name, found, inserted, duplicates, matches, errors}], total: {...} }`
+
+Env var: `INGEST_BEARER_TOKEN` — bearer token for the ingestion endpoint
 
 ## Matching Logic (client-side in `listings.ts`)
 
