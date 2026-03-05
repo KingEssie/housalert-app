@@ -100,6 +100,7 @@ Modular ingestion runner at `server/ingesters/`:
 - `matching.ts` — Shared Supabase client, matching logic, and `insertAndMatchListings()` used by all ingesters
 - `wg-gesucht.ts` — WG-Gesucht Berlin scraper (polite: 1 request per run, descriptive User-Agent)
 - `kleinanzeigen.ts` — Kleinanzeigen Berlin rentals scraper (polite: 1 request per run)
+- `immowelt.ts` — Immowelt Berlin rentals scraper (polite: single page, follows redirects)
 - `index.ts` — Registry + `runAllIngesters()` with shared overlap lock, status tracking, and `OverlapError`
 
 Endpoints:

@@ -2,8 +2,9 @@ import { log } from "../index";
 import type { Ingester, IngestionResult } from "./types";
 import { wgGesuchtIngester } from "./wg-gesucht";
 import { kleinanzeigenIngester } from "./kleinanzeigen";
+import { immoweltIngester } from "./immowelt";
 
-const ingesters: Ingester[] = [wgGesuchtIngester, kleinanzeigenIngester];
+const ingesters: Ingester[] = [wgGesuchtIngester, kleinanzeigenIngester, immoweltIngester];
 
 export interface SourceReport {
   name: string;
