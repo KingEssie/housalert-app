@@ -3,10 +3,17 @@ import type { Ingester, IngestionResult } from "./types";
 import { wgGesuchtIngester } from "./wg-gesucht";
 import { kleinanzeigenIngester } from "./kleinanzeigen";
 import { immoweltIngester } from "./immowelt";
-import { immoscoutIngester } from "./immoscout";
-import { wohnungsboerseIngester } from "./wohnungsboerse";
+import { createConfigIngester } from "./html-config";
+import configSources from "./config/sources";
 
-const ingesters: Ingester[] = [wgGesuchtIngester, kleinanzeigenIngester, immoweltIngester, wohnungsboerseIngester, immoscoutIngester];
+const hardcodedIngesters: Ingester[] = [wgGesuchtIngester, kleinanzeigenIngester, immoweltIngester];
+
+const hardcodedNames = new Set(hardcodedIngesters.map((i) => i.name));
+const configIngesters: Ingester[] = configSources
+  .filter((cfg) => !hardcodedNames.has(cfg.name))
+  .map((cfg) => createConfigIngester(cfg));
+
+const ingesters: Ingester[] = [...hardcodedIngesters, ...configIngesters];
 
 export interface SourceReport {
   name: string;

@@ -101,9 +101,11 @@ Modular ingestion runner at `server/ingesters/`:
 - `wg-gesucht.ts` — WG-Gesucht Berlin scraper (polite: 1 request per run, descriptive User-Agent)
 - `kleinanzeigen.ts` — Kleinanzeigen Berlin rentals scraper (polite: 1 request per run)
 - `immowelt.ts` — Immowelt Berlin rentals scraper (polite: single page, follows redirects)
-- `wohnungsboerse.ts` — Wohnungsboerse Berlin rentals scraper (polite: single page, parses dl/dd stats)
-- `immoscout.ts` — ImmoScout24 Berlin rentals scraper (gracefully handles bot protection; returns 0 found when blocked)
-- `index.ts` — Registry + `runAllIngesters()` with shared overlap lock, status tracking, and `OverlapError`
+- `html-config.ts` — Generic config-driven ingester engine: fetches a page, parses cards via CSS selectors, extracts fields via regex
+- `config/sources.ts` — Array of `SourceConfig` entries; add new sources here without writing code
+  - Current configs: `wohnungsboerse`, `immoscout` (bot-blocked, graceful)
+  - Config fields: name, baseUrl, searchUrl, city, source, cardSelector, fields (title/url/price/size_m2/bedrooms), sourceIdRegex, botBlockPatterns, rateLimitMs
+- `index.ts` — Registry combining hardcoded + config-driven ingesters; shared overlap lock, status tracking, `OverlapError`
 
 Endpoints:
 - `GET /api/ingest/health` — Returns `{ ok: true, sourcesEnabled: [...], time: <iso> }` (no auth)
