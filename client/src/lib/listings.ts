@@ -85,12 +85,25 @@ function doesListingMatchProfile(listing: Listing, profile: SearchProfile): bool
   return true;
 }
 
+async function sendMatchAlertToServer(userEmail: string, listing: Listing) {
+  try {
+    await fetch("/api/match-alert", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userEmail, listing }),
+    });
+  } catch {
+  }
+}
+
 export async function matchListingForUser(
   listing: Listing,
   userId: string,
-  profiles: SearchProfile[]
+  profiles: SearchProfile[],
+  userEmail?: string
 ): Promise<number> {
   let matchCount = 0;
+  let alertSent = false;
 
   for (const profile of profiles) {
     if (!doesListingMatchProfile(listing, profile)) continue;
@@ -111,7 +124,13 @@ export async function matchListingForUser(
       listing_id: listing.id,
     });
 
-    if (!error) matchCount++;
+    if (!error) {
+      matchCount++;
+      if (userEmail && !alertSent) {
+        sendMatchAlertToServer(userEmail, listing);
+        alertSent = true;
+      }
+    }
   }
 
   return matchCount;

@@ -157,11 +157,13 @@ function TestListingModal({
   open,
   onOpenChange,
   userId,
+  userEmail,
   profiles,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   userId: string;
+  userEmail: string;
   profiles: SearchProfile[];
 }) {
   const { toast } = useToast();
@@ -203,7 +205,7 @@ function TestListingModal({
         source: "manual",
       });
 
-      const matchCount = await matchListingForUser(listing, userId, profiles);
+      const matchCount = await matchListingForUser(listing, userId, profiles, userEmail);
 
       queryClient.invalidateQueries({ queryKey: ["/matches", userId] });
 
@@ -636,6 +638,7 @@ export default function DashboardPage() {
         open={testModalOpen}
         onOpenChange={setTestModalOpen}
         userId={user.id}
+        userEmail={user.email ?? ""}
         profiles={profiles}
       />
     </div>

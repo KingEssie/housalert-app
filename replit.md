@@ -79,6 +79,13 @@ CREATE POLICY "Users can view own matches" ON matches FOR SELECT USING (auth.uid
 CREATE POLICY "Users can insert own matches" ON matches FOR INSERT WITH CHECK (auth.uid() = user_id);
 ```
 
+## Email Alerts
+
+When a new match is created, the app sends an email alert via Resend (Replit integration):
+- `server/email.ts` — `sendMatchAlert(userEmail, listing)` using the Resend connector
+- `server/routes.ts` — `POST /api/match-alert` endpoint called by the client after a match
+- One email per listing match (not per profile match — deduped via `alertSent` flag)
+
 ## Matching Logic (client-side in `listings.ts`)
 
 When a listing is created via the test modal:
