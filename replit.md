@@ -100,11 +100,15 @@ Modular ingestion runner at `server/ingesters/`:
 - `matching.ts` — Shared Supabase client, matching logic, and `insertAndMatchListings()` used by all ingesters
 - `wg-gesucht.ts` — WG-Gesucht Berlin scraper (polite: 1 request per run, descriptive User-Agent)
 - `kleinanzeigen.ts` — Kleinanzeigen Berlin rentals scraper (polite: 1 request per run)
-- `index.ts` — Registry + `runAllIngesters()` that runs all enabled sources sequentially
+- `index.ts` — Registry + `runAllIngesters()` with shared overlap lock, status tracking, and `OverlapError`
 
 Endpoints:
+- `GET /api/ingest/health` — Returns `{ ok: true, sourcesEnabled: [...], time: <iso> }` (no auth)
+- `GET /api/ingest/status` — Returns `{ lastRunAt, lastResult, lastError, running }` (no auth)
 - `POST /api/ingest/run` — Runs all ingesters; requires `Authorization: Bearer <INGEST_BEARER_TOKEN>`
-- Returns `{ sources: [{name, found, inserted, duplicates, matches, errors}], total: {...} }`
+  - Returns `{ sources: [{name, found, inserted, duplicates, matches, errors}], total: {...} }`
+  - Returns 401 if token missing/wrong
+  - Returns 409 if another run is already in progress
 
 Env vars:
 - `INGEST_BEARER_TOKEN` — bearer token for the `/api/ingest/run` endpoint
@@ -113,8 +117,8 @@ Env vars:
 Scheduler (`server/scheduler.ts`):
 - Runs `runAllIngesters()` every 10 minutes when `ENABLE_INGEST_SCHEDULER=true`
 - First run 5 seconds after server start, then every 10 minutes
-- Overlap protection: skips if a previous run is still in progress
-- Logs start/end time, per-source results, and totals to console
+- Uses shared overlap lock from `ingesters/index.ts` (no separate running flag)
+- Logs delegated to `runAllIngesters()` — start/end/per-source counts
 - Started automatically via dynamic import in `server/index.ts` after the server begins listening
 
 ## Matching Logic (client-side in `listings.ts`)

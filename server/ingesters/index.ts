@@ -5,7 +5,7 @@ import { kleinanzeigenIngester } from "./kleinanzeigen";
 
 const ingesters: Ingester[] = [wgGesuchtIngester, kleinanzeigenIngester];
 
-interface SourceReport {
+export interface SourceReport {
   name: string;
   found: number;
   inserted: number;
@@ -14,7 +14,7 @@ interface SourceReport {
   errors: number;
 }
 
-interface IngestionReport {
+export interface IngestionReport {
   sources: SourceReport[];
   total: {
     found: number;
@@ -25,45 +25,107 @@ interface IngestionReport {
   };
 }
 
+let _running = false;
+let _lastRunAt: string | null = null;
+let _lastResult: IngestionReport | null = null;
+let _lastError: string | null = null;
+
+export function isRunning(): boolean {
+  return _running;
+}
+
+export function getEnabledSources(): string[] {
+  return ingesters.map((i) => i.name);
+}
+
+export function getLastRunStatus(): {
+  lastRunAt: string | null;
+  lastResult: IngestionReport | null;
+  lastError: string | null;
+  running: boolean;
+} {
+  return {
+    lastRunAt: _lastRunAt,
+    lastResult: _lastResult,
+    lastError: _lastError,
+    running: _running,
+  };
+}
+
 export async function runAllIngesters(): Promise<IngestionReport> {
+  if (_running) {
+    throw new OverlapError("Ingest already running");
+  }
+
+  _running = true;
+  _lastError = null;
+  const startTime = Date.now();
+  log("[INGEST START]", "ingest");
+
   const sources: SourceReport[] = [];
   const total = { found: 0, inserted: 0, duplicates: 0, matches: 0, errors: 0 };
 
-  for (const ingester of ingesters) {
-    try {
-      log(`Starting ingestion: ${ingester.name}`);
-      const result = await ingester.run();
+  try {
+    for (const ingester of ingesters) {
+      try {
+        log(`Running ${ingester.name}...`, "ingest");
+        const result = await ingester.run();
 
-      const report: SourceReport = {
-        name: ingester.name,
-        found: result.found,
-        inserted: result.inserted,
-        duplicates: result.duplicates,
-        matches: result.matches,
-        errors: result.errors,
-      };
+        const report: SourceReport = {
+          name: ingester.name,
+          found: result.found,
+          inserted: result.inserted,
+          duplicates: result.duplicates,
+          matches: result.matches,
+          errors: result.errors,
+        };
 
-      sources.push(report);
+        sources.push(report);
+        log(
+          `  ${ingester.name}: found=${result.found} inserted=${result.inserted} duplicates=${result.duplicates} matches=${result.matches} errors=${result.errors}`,
+          "ingest"
+        );
 
-      total.found += result.found;
-      total.inserted += result.inserted;
-      total.duplicates += result.duplicates;
-      total.matches += result.matches;
-      total.errors += result.errors;
-    } catch (err: any) {
-      log(`Ingester ${ingester.name} failed: ${err.message}`);
-      sources.push({
-        name: ingester.name,
-        found: 0,
-        inserted: 0,
-        duplicates: 0,
-        matches: 0,
-        errors: 1,
-      });
-      total.errors += 1;
+        total.found += result.found;
+        total.inserted += result.inserted;
+        total.duplicates += result.duplicates;
+        total.matches += result.matches;
+        total.errors += result.errors;
+      } catch (err: any) {
+        log(`  ${ingester.name} failed: ${err.message}`, "ingest");
+        sources.push({
+          name: ingester.name,
+          found: 0,
+          inserted: 0,
+          duplicates: 0,
+          matches: 0,
+          errors: 1,
+        });
+        total.errors += 1;
+      }
     }
-  }
 
-  log(`All ingestion complete: ${JSON.stringify(total)}`);
-  return { sources, total };
+    const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+    log(
+      `[INGEST COMPLETE] in ${duration}s — inserted=${total.inserted} matches=${total.matches} errors=${total.errors}`,
+      "ingest"
+    );
+
+    const report: IngestionReport = { sources, total };
+    _lastResult = report;
+    _lastRunAt = new Date().toISOString();
+    return report;
+  } catch (err: any) {
+    _lastError = err.message;
+    throw err;
+  } finally {
+    _running = false;
+  }
+}
+
+export class OverlapError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "OverlapError";
+  }
 }
