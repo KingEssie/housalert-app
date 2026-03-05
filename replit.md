@@ -129,19 +129,19 @@ Env vars:
 
 ## Freshness Tracking
 
-Columns (requires migration — see `server/migrations/001_freshness_columns.sql`):
-- `listings.first_seen_at` — set on insert (equivalent to `created_at`)
-- `listings.last_seen_at` — updated on each ingestion run (new AND duplicate)
-- `matches.matched_at` — set when match is created
+Uses Replit's local PostgreSQL database (not Supabase) for tracking:
+- `listing_freshness` table: `listing_id (PK)`, `source`, `source_id`, `first_seen_at`, `last_seen_at`
+- `match_timestamps` table: `match_id (PK)`, `matched_at`
+- `server/freshness.ts` — Functions: `trackListingSeen()`, `getListingFreshness()`, `trackMatchCreated()`, `getMatchTimestamps()`
 
-Graceful fallback:
-- Server startup checks if columns exist; if not, logs migration instructions
-- Ingestion code skips freshness updates when columns are absent
-- UI uses `created_at` as fallback when `first_seen_at`/`matched_at` not available
-- Client-side match insert tries `matched_at` first, falls back if column missing
+Behavior:
+- New listing inserted → `first_seen_at = now()`, `last_seen_at = now()`
+- Duplicate listing found → only `last_seen_at = now()` updated (via `ON CONFLICT ... DO UPDATE`)
+- Match created → `matched_at = now()` tracked in local DB
+- `POST /api/freshness` endpoint accepts `{ listingIds, matchIds }` and returns freshness data
 
 UI features:
-- "Nieuw" green badge on match cards if `first_seen_at` (or `created_at`) within last 60 minutes
+- "Nieuw" green badge on match cards if `first_seen_at` (or fallback `created_at`) within last 60 minutes
 - Relative time label in Dutch ("zojuist", "3 min geleden", "2 uur geleden", "1 dag geleden")
 
 ## Matching Logic (client-side in `listings.ts`)

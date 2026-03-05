@@ -11,8 +11,6 @@ export interface Listing {
   bedrooms: number;
   size_m2: number;
   created_at: string;
-  first_seen_at?: string | null;
-  last_seen_at?: string | null;
 }
 
 export interface InsertListing {
@@ -31,7 +29,24 @@ export interface Match {
   search_profile_id: string;
   listing_id: string;
   created_at: string;
-  matched_at?: string | null;
+}
+
+export interface FreshnessData {
+  listings: Record<string, { first_seen_at: string; last_seen_at: string }>;
+  matches: Record<string, string>;
+}
+
+export async function fetchFreshness(
+  listingIds: string[],
+  matchIds: string[]
+): Promise<FreshnessData> {
+  const resp = await fetch("/api/freshness", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ listingIds, matchIds }),
+  });
+  if (!resp.ok) return { listings: {}, matches: {} };
+  return resp.json();
 }
 
 export interface MatchWithListing extends Match {
@@ -121,20 +136,11 @@ export async function matchListingForUser(
 
     if (existing) continue;
 
-    const matchData: Record<string, any> = {
+    const { error } = await supabase.from("matches").insert({
       user_id: userId,
       search_profile_id: profile.id,
       listing_id: listing.id,
-    };
-
-    let { error } = await supabase.from("matches").insert({
-      ...matchData,
-      matched_at: new Date().toISOString(),
     });
-
-    if (error && error.message?.includes("matched_at")) {
-      ({ error } = await supabase.from("matches").insert(matchData));
-    }
 
     if (!error) {
       matchCount++;

@@ -9,6 +9,7 @@ import {
   OverlapError,
 } from "./ingesters";
 import { getNextRun } from "./scheduler";
+import { getListingFreshness, getMatchTimestamps } from "./freshness";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -39,6 +40,15 @@ export async function registerRoutes(
 
   app.get("/api/ingest/next-run", (_req, res) => {
     return res.json(getNextRun());
+  });
+
+  app.post("/api/freshness", async (req, res) => {
+    const { listingIds, matchIds } = req.body;
+    const [listings, matches] = await Promise.all([
+      getListingFreshness(listingIds || []),
+      getMatchTimestamps(matchIds || []),
+    ]);
+    return res.json({ listings, matches });
   });
 
   app.post("/api/ingest/run", async (req, res) => {

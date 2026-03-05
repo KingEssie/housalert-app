@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getSearchProfiles, deleteSearchProfile, type SearchProfile } from "@/lib/search-profiles";
-import { createListing, matchListingForUser, getMatchesForUser, type MatchWithListing } from "@/lib/listings";
+import { createListing, matchListingForUser, getMatchesForUser, fetchFreshness, type MatchWithListing, type FreshnessData } from "@/lib/listings";
 import { queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -122,10 +122,11 @@ function ProfileCard({
   );
 }
 
-function MatchCard({ match }: { match: MatchWithListing }) {
+function MatchCard({ match, freshness }: { match: MatchWithListing; freshness?: FreshnessData }) {
   const listing = match.listing;
-  const firstSeen = listing.first_seen_at || listing.created_at;
-  const matchedAt = match.matched_at || match.created_at;
+  const listingFresh = freshness?.listings?.[listing.id];
+  const firstSeen = listingFresh?.first_seen_at || listing.created_at;
+  const matchedAt = freshness?.matches?.[match.id] || match.created_at;
   const listingIsNew = isNew(firstSeen);
 
   return (
@@ -396,6 +397,18 @@ export default function DashboardPage() {
     enabled: !!user,
   });
 
+  const matches = matchesQuery.data ?? [];
+
+  const freshnessQuery = useQuery<FreshnessData>({
+    queryKey: ["/freshness", matches.map((m) => m.id).join(",")],
+    queryFn: () =>
+      fetchFreshness(
+        matches.map((m) => m.listing.id),
+        matches.map((m) => m.id)
+      ),
+    enabled: matches.length > 0,
+  });
+
   const deleteMutation = useMutation({
     mutationFn: deleteSearchProfile,
     onSuccess: () => {
@@ -439,8 +452,8 @@ export default function DashboardPage() {
   const profiles = profilesQuery.data ?? [];
   const profileCount = profiles.length;
   const atLimit = profileCount >= MAX_PROFILES;
-  const matches = matchesQuery.data ?? [];
   const matchCount = matches.length;
+  const freshness = freshnessQuery.data;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -658,7 +671,7 @@ export default function DashboardPage() {
               ) : (
                 <div className="flex flex-col gap-3">
                   {matches.map((m) => (
-                    <MatchCard key={m.id} match={m} />
+                    <MatchCard key={m.id} match={m} freshness={freshness} />
                   ))}
                 </div>
               )}
