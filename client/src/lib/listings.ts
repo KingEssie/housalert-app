@@ -114,6 +114,37 @@ async function sendMatchAlertToServer(userEmail: string, listing: Listing) {
   }
 }
 
+export interface FreshListing {
+  title: string;
+  price: number;
+  size_m2: number;
+  bedrooms: number;
+  city: string;
+  source: string;
+  url: string | null;
+  first_seen_at: string;
+  fresh_label: "net_binnen" | "nieuw" | "vandaag" | "ouder";
+}
+
+export interface ApiMatch extends FreshListing {
+  listing_id: string;
+  matched_at: string;
+}
+
+export async function fetchFreshListings(): Promise<FreshListing[]> {
+  const resp = await fetch("/api/listings/fresh");
+  if (!resp.ok) throw new Error("Verse woningen laden mislukt");
+  return resp.json();
+}
+
+export async function fetchApiMatches(token: string): Promise<ApiMatch[]> {
+  const resp = await fetch("/api/matches", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!resp.ok) throw new Error("Matches laden mislukt");
+  return resp.json();
+}
+
 export async function matchListingForUser(
   listing: Listing,
   userId: string,

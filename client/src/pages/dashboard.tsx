@@ -3,13 +3,14 @@ import { useLocation } from "wouter";
 import { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getSearchProfiles, deleteSearchProfile, type SearchProfile } from "@/lib/search-profiles";
-import { createListing, matchListingForUser, getMatchesForUser, fetchFreshness, type MatchWithListing, type FreshnessData } from "@/lib/listings";
+import { createListing, matchListingForUser, fetchFreshListings, fetchApiMatches, type FreshListing, type ApiMatch } from "@/lib/listings";
 import { queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -31,10 +32,11 @@ import {
   Ruler,
   ExternalLink,
   FlaskConical,
+  Sparkles,
+  Clock,
 } from "lucide-react";
 
 const MAX_PROFILES = 4;
-const NEW_THRESHOLD_MS = 60 * 60 * 1000;
 
 function bedroomLabel(min: number) {
   if (min === 0) return "Studio+";
@@ -54,9 +56,29 @@ function relativeTime(dateStr: string | null | undefined): string {
   return `${days} ${days === 1 ? "dag" : "dagen"} geleden`;
 }
 
-function isNew(dateStr: string | null | undefined): boolean {
-  if (!dateStr) return false;
-  return Date.now() - new Date(dateStr).getTime() < NEW_THRESHOLD_MS;
+const FRESH_LABEL_STYLES: Record<string, string> = {
+  net_binnen: "bg-green-100 text-green-700 border-green-200",
+  nieuw: "bg-blue-100 text-blue-700 border-blue-200",
+  vandaag: "bg-yellow-100 text-yellow-700 border-yellow-200",
+  ouder: "bg-muted text-muted-foreground border-border",
+};
+
+const FRESH_LABEL_TEXT: Record<string, string> = {
+  net_binnen: "Net binnen",
+  nieuw: "Nieuw",
+  vandaag: "Vandaag",
+  ouder: "Ouder",
+};
+
+function FreshBadge({ label }: { label: string }) {
+  return (
+    <Badge
+      className={`text-[10px] px-1.5 py-0 ${FRESH_LABEL_STYLES[label] ?? FRESH_LABEL_STYLES.ouder}`}
+      data-testid={`badge-fresh-${label}`}
+    >
+      {FRESH_LABEL_TEXT[label] ?? label}
+    </Badge>
+  );
 }
 
 function ProfileCard({
@@ -122,39 +144,62 @@ function ProfileCard({
   );
 }
 
-function MatchCard({ match, freshness }: { match: MatchWithListing; freshness?: FreshnessData }) {
-  const listing = match.listing;
-  const listingFresh = freshness?.listings?.[listing.id];
-  const firstSeen = listingFresh?.first_seen_at || listing.created_at;
-  const matchedAt = freshness?.matches?.[match.id] || match.created_at;
-  const listingIsNew = isNew(firstSeen);
-
+function ListingCard({
+  title,
+  city,
+  price,
+  size_m2,
+  bedrooms,
+  source,
+  url,
+  fresh_label,
+  first_seen_at,
+  matched_at,
+  testId,
+}: {
+  title: string;
+  city: string;
+  price: number;
+  size_m2: number;
+  bedrooms: number;
+  source: string;
+  url: string | null;
+  fresh_label: string;
+  first_seen_at: string;
+  matched_at?: string;
+  testId: string;
+}) {
   return (
     <div
-      className="border border-border rounded-md p-4 flex flex-col gap-3"
-      data-testid={`card-match-${match.id}`}
+      className="border border-border rounded-xl p-4 flex flex-col gap-3 hover:shadow-sm transition-shadow"
+      data-testid={testId}
     >
       <div className="flex items-start justify-between gap-2">
-        <div className="flex flex-col gap-0.5">
-          <div className="flex items-center gap-2">
-            <p className="font-semibold text-foreground">{listing.title}</p>
-            {listingIsNew && (
-              <Badge className="bg-green-100 text-green-700 border-green-200 text-[10px] px-1.5 py-0" data-testid={`badge-new-${match.id}`}>
-                Nieuw
-              </Badge>
-            )}
+        <div className="flex flex-col gap-1 min-w-0 flex-1">
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className="font-semibold text-foreground truncate">{title}</p>
+            <FreshBadge label={fresh_label} />
           </div>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <span>{listing.city}</span>
-            <span data-testid={`text-time-${match.id}`}>{relativeTime(matchedAt)}</span>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
+            <span className="flex items-center gap-1">
+              <MapPin className="w-3 h-3" />
+              {city}
+            </span>
+            <span className="text-border">|</span>
+            <span>{source}</span>
+            <span className="text-border">|</span>
+            <span className="flex items-center gap-1">
+              <Clock className="w-3 h-3" />
+              {relativeTime(matched_at || first_seen_at)}
+            </span>
           </div>
         </div>
-        {listing.url && (
+        {url && (
           <a
-            href={listing.url}
+            href={url}
             target="_blank"
             rel="noopener noreferrer"
-            data-testid={`link-listing-${match.id}`}
+            data-testid={`${testId}-link`}
           >
             <Button variant="outline" size="sm">
               <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
@@ -164,22 +209,22 @@ function MatchCard({ match, freshness }: { match: MatchWithListing; freshness?: 
         )}
       </div>
       <div className="flex flex-wrap gap-2">
-        {listing.price > 0 && (
+        {price > 0 && (
           <Badge variant="secondary">
             <Euro className="w-3 h-3 mr-1" />
-            {listing.price}
+            {price}
           </Badge>
         )}
-        {listing.bedrooms > 0 && (
+        {bedrooms > 0 && (
           <Badge variant="secondary">
             <BedDouble className="w-3 h-3 mr-1" />
-            {listing.bedrooms}
+            {bedrooms}
           </Badge>
         )}
-        {listing.size_m2 > 0 && (
+        {size_m2 > 0 && (
           <Badge variant="secondary">
             <Ruler className="w-3 h-3 mr-1" />
-            {listing.size_m2} m&sup2;
+            {size_m2} m&sup2;
           </Badge>
         )}
       </div>
@@ -241,7 +286,8 @@ function TestListingModal({
 
       const matchCount = await matchListingForUser(listing, userId, profiles, userEmail);
 
-      queryClient.invalidateQueries({ queryKey: ["/matches", userId] });
+      queryClient.invalidateQueries({ queryKey: ["/api/matches", userId] });
+      queryClient.invalidateQueries({ queryKey: ["/api/listings/fresh"] });
 
       toast({
         title: "Test listing aangemaakt",
@@ -373,7 +419,7 @@ function TestListingModal({
 }
 
 export default function DashboardPage() {
-  const { user, loading, signOut } = useAuth();
+  const { user, session, loading, signOut } = useAuth();
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -391,22 +437,17 @@ export default function DashboardPage() {
     enabled: !!user,
   });
 
-  const matchesQuery = useQuery<MatchWithListing[]>({
-    queryKey: ["/matches", user?.id],
-    queryFn: () => getMatchesForUser(user!.id),
+  const freshListingsQuery = useQuery<FreshListing[]>({
+    queryKey: ["/api/listings/fresh"],
+    queryFn: fetchFreshListings,
     enabled: !!user,
   });
 
-  const matches = matchesQuery.data ?? [];
-
-  const freshnessQuery = useQuery<FreshnessData>({
-    queryKey: ["/freshness", matches.map((m) => m.id).join(",")],
-    queryFn: () =>
-      fetchFreshness(
-        matches.map((m) => m.listing.id),
-        matches.map((m) => m.id)
-      ),
-    enabled: matches.length > 0,
+  const accessToken = session?.access_token;
+  const apiMatchesQuery = useQuery<ApiMatch[]>({
+    queryKey: ["/api/matches", user?.id],
+    queryFn: () => fetchApiMatches(accessToken!),
+    enabled: !!user && !!accessToken,
   });
 
   const deleteMutation = useMutation({
@@ -452,8 +493,8 @@ export default function DashboardPage() {
   const profiles = profilesQuery.data ?? [];
   const profileCount = profiles.length;
   const atLimit = profileCount >= MAX_PROFILES;
-  const matchCount = matches.length;
-  const freshness = freshnessQuery.data;
+  const freshListings = freshListingsQuery.data ?? [];
+  const apiMatches = apiMatchesQuery.data ?? [];
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -604,77 +645,172 @@ export default function DashboardPage() {
           </Card>
         </section>
 
-        <section data-testid="section-matches">
+        <section data-testid="section-listings">
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between gap-4 pb-4">
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <CardTitle className="text-base font-semibold">Matches</CardTitle>
-                  <Badge variant="secondary" data-testid="badge-matches-count">
-                    {matchCount} {matchCount === 1 ? "match" : "matches"}
-                  </Badge>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Woningen die overeenkomen met jouw zoekcriteria.
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Bell className="w-4 h-4 text-muted-foreground" />
-              </div>
+            <CardHeader className="pb-4">
+              <CardTitle className="text-base font-semibold">Woningen</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Verse woningen en jouw matches op \u00e9\u00e9n plek.
+              </p>
             </CardHeader>
             <CardContent>
-              {matchesQuery.isLoading ? (
-                <div className="flex flex-col gap-3">
-                  {[1, 2].map((i) => (
-                    <div key={i} className="border border-border rounded-md p-4 animate-pulse">
-                      <div className="h-4 bg-muted rounded w-1/2 mb-3" />
-                      <div className="flex gap-2">
-                        <div className="h-5 bg-muted rounded w-16" />
-                        <div className="h-5 bg-muted rounded w-12" />
-                        <div className="h-5 bg-muted rounded w-16" />
+              <Tabs defaultValue="fresh" className="w-full">
+                <TabsList className="w-full mb-4" data-testid="tabs-listings">
+                  <TabsTrigger value="fresh" className="flex-1 gap-1.5" data-testid="tab-fresh">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    Verse woningen
+                    {freshListings.length > 0 && (
+                      <Badge variant="secondary" className="ml-1 text-[10px] px-1.5 py-0">
+                        {freshListings.length}
+                      </Badge>
+                    )}
+                  </TabsTrigger>
+                  <TabsTrigger value="matches" className="flex-1 gap-1.5" data-testid="tab-matches">
+                    <Bell className="w-3.5 h-3.5" />
+                    Matches
+                    {apiMatches.length > 0 && (
+                      <Badge variant="secondary" className="ml-1 text-[10px] px-1.5 py-0">
+                        {apiMatches.length}
+                      </Badge>
+                    )}
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="fresh">
+                  {freshListingsQuery.isLoading ? (
+                    <div className="flex flex-col gap-3">
+                      {[1, 2, 3].map((i) => (
+                        <div key={i} className="border border-border rounded-xl p-4 animate-pulse">
+                          <div className="h-4 bg-muted rounded w-1/2 mb-3" />
+                          <div className="flex gap-2">
+                            <div className="h-5 bg-muted rounded w-16" />
+                            <div className="h-5 bg-muted rounded w-12" />
+                            <div className="h-5 bg-muted rounded w-16" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : freshListingsQuery.isError ? (
+                    <div className="flex flex-col items-center justify-center py-10 gap-4 text-center">
+                      <div className="w-14 h-14 rounded-full bg-destructive/10 flex items-center justify-center">
+                        <Sparkles className="w-6 h-6 text-destructive" />
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <p className="text-sm font-medium text-foreground">Kon verse woningen niet laden</p>
+                        <p className="text-sm text-muted-foreground max-w-xs">
+                          Er is iets misgegaan. Controleer je verbinding en probeer het opnieuw.
+                        </p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => freshListingsQuery.refetch()}
+                        data-testid="button-retry-fresh"
+                      >
+                        Opnieuw proberen
+                      </Button>
+                    </div>
+                  ) : freshListings.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-10 gap-4 text-center">
+                      <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center">
+                        <Sparkles className="w-6 h-6 text-muted-foreground" />
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <p className="text-sm font-medium text-foreground">Nog geen woningen</p>
+                        <p className="text-sm text-muted-foreground max-w-xs">
+                          Er zijn nog geen verse woningen gevonden. Check later opnieuw.
+                        </p>
                       </div>
                     </div>
-                  ))}
-                </div>
-              ) : matchesQuery.isError ? (
-                <div className="flex flex-col items-center justify-center py-10 gap-4 text-center">
-                  <div className="w-14 h-14 rounded-full bg-destructive/10 flex items-center justify-center">
-                    <MapPin className="w-6 h-6 text-destructive" />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <p className="text-sm font-medium text-foreground">Kon matches niet laden</p>
-                    <p className="text-sm text-muted-foreground max-w-xs">
-                      Er is iets misgegaan. Controleer je verbinding en probeer het opnieuw.
-                    </p>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => matchesQuery.refetch()}
-                    data-testid="button-retry-matches"
-                  >
-                    Opnieuw proberen
-                  </Button>
-                </div>
-              ) : matches.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-10 gap-4 text-center">
-                  <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center">
-                    <MapPin className="w-6 h-6 text-muted-foreground" />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <p className="text-sm font-medium text-foreground">Nog geen matches</p>
-                    <p className="text-sm text-muted-foreground max-w-xs">
-                      Zodra we iets vinden dat bij jouw zoekopdracht past, krijg je direct een melding.
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-3">
-                  {matches.map((m) => (
-                    <MatchCard key={m.id} match={m} freshness={freshness} />
-                  ))}
-                </div>
-              )}
+                  ) : (
+                    <div className="flex flex-col gap-3">
+                      {freshListings.map((l, i) => (
+                        <ListingCard
+                          key={`fresh-${i}`}
+                          title={l.title}
+                          city={l.city}
+                          price={l.price}
+                          size_m2={l.size_m2}
+                          bedrooms={l.bedrooms}
+                          source={l.source}
+                          url={l.url}
+                          fresh_label={l.fresh_label}
+                          first_seen_at={l.first_seen_at}
+                          testId={`card-fresh-${i}`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </TabsContent>
+
+                <TabsContent value="matches">
+                  {apiMatchesQuery.isLoading ? (
+                    <div className="flex flex-col gap-3">
+                      {[1, 2, 3].map((i) => (
+                        <div key={i} className="border border-border rounded-xl p-4 animate-pulse">
+                          <div className="h-4 bg-muted rounded w-1/2 mb-3" />
+                          <div className="flex gap-2">
+                            <div className="h-5 bg-muted rounded w-16" />
+                            <div className="h-5 bg-muted rounded w-12" />
+                            <div className="h-5 bg-muted rounded w-16" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : apiMatchesQuery.isError ? (
+                    <div className="flex flex-col items-center justify-center py-10 gap-4 text-center">
+                      <div className="w-14 h-14 rounded-full bg-destructive/10 flex items-center justify-center">
+                        <Bell className="w-6 h-6 text-destructive" />
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <p className="text-sm font-medium text-foreground">Kon matches niet laden</p>
+                        <p className="text-sm text-muted-foreground max-w-xs">
+                          Er is iets misgegaan. Controleer je verbinding en probeer het opnieuw.
+                        </p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => apiMatchesQuery.refetch()}
+                        data-testid="button-retry-matches"
+                      >
+                        Opnieuw proberen
+                      </Button>
+                    </div>
+                  ) : apiMatches.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-10 gap-4 text-center">
+                      <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center">
+                        <Bell className="w-6 h-6 text-muted-foreground" />
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <p className="text-sm font-medium text-foreground">Nog geen matches</p>
+                        <p className="text-sm text-muted-foreground max-w-xs">
+                          Zodra we iets vinden dat bij jouw zoekopdracht past, krijg je direct een melding.
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-3">
+                      {apiMatches.map((m, i) => (
+                        <ListingCard
+                          key={`match-${m.listing_id}-${i}`}
+                          title={m.title}
+                          city={m.city}
+                          price={m.price}
+                          size_m2={m.size_m2}
+                          bedrooms={m.bedrooms}
+                          source={m.source}
+                          url={m.url}
+                          fresh_label={m.fresh_label}
+                          first_seen_at={m.first_seen_at}
+                          matched_at={m.matched_at}
+                          testId={`card-match-${i}`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
         </section>
