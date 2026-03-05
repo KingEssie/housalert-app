@@ -51,6 +51,7 @@ CREATE POLICY "Users can delete own profiles" ON search_profiles FOR DELETE USIN
 CREATE TABLE listings (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   source text DEFAULT 'manual',
+  source_id text DEFAULT '',
   url text,
   title text NOT NULL,
   city text NOT NULL,
@@ -62,6 +63,12 @@ CREATE TABLE listings (
 ALTER TABLE listings ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Authenticated can select listings" ON listings FOR SELECT TO authenticated USING (true);
 CREATE POLICY "Authenticated can insert listings" ON listings FOR INSERT TO authenticated WITH CHECK (true);
+```
+
+**Optional migration** (if `source_id` column was not created with the table):
+```sql
+ALTER TABLE listings ADD COLUMN IF NOT EXISTS source_id text DEFAULT '';
+CREATE UNIQUE INDEX IF NOT EXISTS listings_source_source_id_idx ON listings (source, source_id) WHERE source_id != '';
 ```
 
 ### matches
@@ -85,6 +92,16 @@ When a new match is created, the app sends an email alert via Resend (Replit int
 - `server/email.ts` — `sendMatchAlert(userEmail, listing)` using the Resend connector
 - `server/routes.ts` — `POST /api/match-alert` endpoint called by the client after a match
 - One email per listing match (not per profile match — deduped via `alertSent` flag)
+
+## WG-Gesucht Ingestion
+
+- `server/ingest-wg-gesucht.ts` — Scraper module for Berlin rental listings
+- `POST /api/ingest/wg-gesucht` — Triggers one ingestion cycle
+- Fetches the public WG-Gesucht Berlin apartments search results page (1 request per run, polite User-Agent)
+- Parses: title, URL, price, bedrooms (Zimmer), size (m²), source_id from data-id attribute
+- Dedup: checks by `source` + `source_id` (if column exists) AND by `url`
+- After inserting new listings, runs server-side matching logic against all users' search profiles
+- Sends email alerts via Resend for new matches
 
 ## Matching Logic (client-side in `listings.ts`)
 
