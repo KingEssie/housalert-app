@@ -106,7 +106,16 @@ Endpoints:
 - `POST /api/ingest/run` — Runs all ingesters; requires `Authorization: Bearer <INGEST_BEARER_TOKEN>`
 - Returns `{ sources: [{name, found, inserted, duplicates, matches, errors}], total: {...} }`
 
-Env var: `INGEST_BEARER_TOKEN` — bearer token for the ingestion endpoint
+Env vars:
+- `INGEST_BEARER_TOKEN` — bearer token for the `/api/ingest/run` endpoint
+- `ENABLE_INGEST_SCHEDULER` — set to `true` to auto-run ingestion every 10 minutes on server start
+
+Scheduler (`server/scheduler.ts`):
+- Runs `runAllIngesters()` every 10 minutes when `ENABLE_INGEST_SCHEDULER=true`
+- First run 5 seconds after server start, then every 10 minutes
+- Overlap protection: skips if a previous run is still in progress
+- Logs start/end time, per-source results, and totals to console
+- Started automatically via dynamic import in `server/index.ts` after the server begins listening
 
 ## Matching Logic (client-side in `listings.ts`)
 

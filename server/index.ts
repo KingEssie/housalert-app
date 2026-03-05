@@ -98,6 +98,8 @@ app.use((req, res, next) => {
     },
     () => {
       log(`serving on port ${port}`);
+
+      import("./scheduler").then(({ startScheduler }) => startScheduler());
     },
   );
 })();
