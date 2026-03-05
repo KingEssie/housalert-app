@@ -106,11 +106,16 @@ export async function sendMatchAlerts(
   listing: ListingInfo,
   supabase: any
 ): Promise<void> {
-  const { data: settings } = await supabase
+  const { data: settings, error: settingsErr } = await supabase
     .from("user_notification_settings")
     .select("*")
     .eq("user_id", userId)
     .maybeSingle();
+
+  if (settingsErr) {
+    log(`Failed to read notification settings for user ${userId}: ${settingsErr.message} — skipping all notifications`);
+    return;
+  }
 
   const emailEnabled = settings?.email_enabled ?? true;
   const smsEnabled = settings?.sms_enabled ?? false;

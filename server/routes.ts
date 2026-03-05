@@ -29,6 +29,11 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
   app.post("/api/match-alert", async (req, res) => {
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    if (!token) return res.status(401).json({ error: "Unauthorized" });
+    const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+    if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
     const { userEmail, listing } = req.body;
 
     if (!userEmail || !listing || !listing.title || !listing.city) {

@@ -86,12 +86,25 @@ CREATE POLICY "Users can view own matches" ON matches FOR SELECT USING (auth.uid
 CREATE POLICY "Users can insert own matches" ON matches FOR INSERT WITH CHECK (auth.uid() = user_id);
 ```
 
-## Email Alerts
+## Notifications
 
-When a new match is created, the app sends an email alert via Resend (Replit integration):
-- `server/email.ts` — `sendMatchAlert(userEmail, listing)` using the Resend connector
-- `server/routes.ts` — `POST /api/match-alert` endpoint called by the client after a match
-- One email per listing match (not per profile match — deduped via `alertSent` flag)
+Multi-channel notification system in `server/notifications/index.ts`:
+- **Email** — via Resend integration (`sendEmailMatchAlert`)
+- **SMS** — via Twilio (`sendSmsMatchAlert`); requires `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_SMS_FROM`
+- **WhatsApp** — via Twilio (`sendWhatsappMatchAlert`); requires `TWILIO_WHATSAPP_FROM`
+- `sendMatchAlerts(userId, email, listing, supabase)` — reads `user_notification_settings` from Supabase, dispatches to enabled channels; skips all notifications on settings read failure
+
+### Supabase table: `user_notification_settings`
+```sql
+-- Created via server/migrations/002_notification_settings.sql
+user_id uuid PK, phone_e164 text, whatsapp_enabled bool, sms_enabled bool, email_enabled bool, created_at, updated_at
+-- RLS: users can select/update/insert own row; service_role has full access
+```
+
+### API Endpoints
+- `GET /api/notifications/settings` — returns user's notification prefs (auth required)
+- `PUT /api/notifications/settings` — upserts notification prefs with E.164 phone validation (auth required)
+- `POST /api/match-alert` — send test email alert (auth required)
 
 ## Ingestion System
 
