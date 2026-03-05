@@ -99,6 +99,9 @@ app.use((req, res, next) => {
     () => {
       log(`serving on port ${port}`);
 
+      import("./migrations/apply").then(({ runStartupMigration }) =>
+        runStartupMigration().catch(() => {})
+      );
       import("./scheduler").then(({ startScheduler }) => startScheduler());
     },
   );

@@ -127,6 +127,23 @@ Env vars:
 - `INGEST_INTERVAL_MINUTES` — scheduler interval in minutes (default: 10)
 - `ENABLE_INGEST_SCHEDULER` — set to `true` to enable the automatic scheduler
 
+## Freshness Tracking
+
+Columns (requires migration — see `server/migrations/001_freshness_columns.sql`):
+- `listings.first_seen_at` — set on insert (equivalent to `created_at`)
+- `listings.last_seen_at` — updated on each ingestion run (new AND duplicate)
+- `matches.matched_at` — set when match is created
+
+Graceful fallback:
+- Server startup checks if columns exist; if not, logs migration instructions
+- Ingestion code skips freshness updates when columns are absent
+- UI uses `created_at` as fallback when `first_seen_at`/`matched_at` not available
+- Client-side match insert tries `matched_at` first, falls back if column missing
+
+UI features:
+- "Nieuw" green badge on match cards if `first_seen_at` (or `created_at`) within last 60 minutes
+- Relative time label in Dutch ("zojuist", "3 min geleden", "2 uur geleden", "1 dag geleden")
+
 ## Matching Logic (client-side in `listings.ts`)
 
 When a listing is created via the test modal:

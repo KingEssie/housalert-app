@@ -11,6 +11,8 @@ export interface Listing {
   bedrooms: number;
   size_m2: number;
   created_at: string;
+  first_seen_at?: string | null;
+  last_seen_at?: string | null;
 }
 
 export interface InsertListing {
@@ -29,6 +31,7 @@ export interface Match {
   search_profile_id: string;
   listing_id: string;
   created_at: string;
+  matched_at?: string | null;
 }
 
 export interface MatchWithListing extends Match {
@@ -118,11 +121,20 @@ export async function matchListingForUser(
 
     if (existing) continue;
 
-    const { error } = await supabase.from("matches").insert({
+    const matchData: Record<string, any> = {
       user_id: userId,
       search_profile_id: profile.id,
       listing_id: listing.id,
+    };
+
+    let { error } = await supabase.from("matches").insert({
+      ...matchData,
+      matched_at: new Date().toISOString(),
     });
+
+    if (error && error.message?.includes("matched_at")) {
+      ({ error } = await supabase.from("matches").insert(matchData));
+    }
 
     if (!error) {
       matchCount++;

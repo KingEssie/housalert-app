@@ -81,11 +81,17 @@ export async function runMatchingForListing(listing: DbListing): Promise<number>
 
     if (existing) continue;
 
-    const { error: mErr } = await supabase.from("matches").insert({
+    const matchInsert: Record<string, any> = {
       user_id: profile.user_id,
       search_profile_id: profile.id,
       listing_id: listing.id,
-    });
+    };
+    const useMatchedAt = await checkMatchedAtColumn();
+    if (useMatchedAt) {
+      matchInsert.matched_at = new Date().toISOString();
+    }
+
+    const { error: mErr } = await supabase.from("matches").insert(matchInsert);
 
     if (!mErr) {
       totalMatches++;
@@ -106,6 +112,8 @@ export async function runMatchingForListing(listing: DbListing): Promise<number>
 }
 
 let hasSourceIdColumn: boolean | null = null;
+let hasFreshnessColumns: boolean | null = null;
+let hasMatchedAtColumn: boolean | null = null;
 
 async function checkSourceIdColumn(): Promise<boolean> {
   if (hasSourceIdColumn !== null) return hasSourceIdColumn;
@@ -117,10 +125,25 @@ async function checkSourceIdColumn(): Promise<boolean> {
   return hasSourceIdColumn;
 }
 
+async function checkFreshnessColumns(): Promise<boolean> {
+  if (hasFreshnessColumns !== null) return hasFreshnessColumns;
+  const { error } = await supabase.from("listings").select("first_seen_at, last_seen_at").limit(1);
+  hasFreshnessColumns = !error;
+  return hasFreshnessColumns;
+}
+
+async function checkMatchedAtColumn(): Promise<boolean> {
+  if (hasMatchedAtColumn !== null) return hasMatchedAtColumn;
+  const { error } = await supabase.from("matches").select("matched_at").limit(1);
+  hasMatchedAtColumn = !error;
+  return hasMatchedAtColumn;
+}
+
 export async function insertAndMatchListings(
   parsed: ParsedListing[]
 ): Promise<{ inserted: number; duplicates: number; matches: number; errors: number }> {
   const useSourceId = await checkSourceIdColumn();
+  const useFreshness = await checkFreshnessColumns();
 
   let inserted = 0;
   let duplicates = 0;
@@ -129,6 +152,7 @@ export async function insertAndMatchListings(
 
   for (const listing of parsed) {
     let isDuplicate = false;
+    let duplicateId: string | null = null;
 
     if (useSourceId) {
       const { data: existingRows } = await supabase
@@ -137,7 +161,10 @@ export async function insertAndMatchListings(
         .eq("source", listing.source)
         .eq("source_id", listing.source_id)
         .limit(1);
-      isDuplicate = !!(existingRows && existingRows.length > 0);
+      if (existingRows && existingRows.length > 0) {
+        isDuplicate = true;
+        duplicateId = existingRows[0].id;
+      }
     }
 
     if (!isDuplicate) {
@@ -146,14 +173,24 @@ export async function insertAndMatchListings(
         .select("id")
         .eq("url", listing.url)
         .limit(1);
-      isDuplicate = !!(existingByUrl && existingByUrl.length > 0);
+      if (existingByUrl && existingByUrl.length > 0) {
+        isDuplicate = true;
+        duplicateId = existingByUrl[0].id;
+      }
     }
 
     if (isDuplicate) {
+      if (useFreshness && duplicateId) {
+        await supabase
+          .from("listings")
+          .update({ last_seen_at: new Date().toISOString() })
+          .eq("id", duplicateId);
+      }
       duplicates++;
       continue;
     }
 
+    const now = new Date().toISOString();
     const insertData: Record<string, any> = {
       source: listing.source,
       url: listing.url,
@@ -168,6 +205,11 @@ export async function insertAndMatchListings(
       insertData.source_id = listing.source_id;
     }
 
+    if (useFreshness) {
+      insertData.first_seen_at = now;
+      insertData.last_seen_at = now;
+    }
+
     const { data: row, error: insertErr } = await supabase
       .from("listings")
       .insert(insertData)
@@ -177,6 +219,21 @@ export async function insertAndMatchListings(
     if (insertErr) {
       if (insertErr.code === "23505") {
         duplicates++;
+        if (useFreshness) {
+          const { data: dupRow } = await supabase
+            .from("listings")
+            .select("id")
+            .eq("source", listing.source)
+            .eq("source_id", listing.source_id)
+            .limit(1)
+            .maybeSingle();
+          if (dupRow) {
+            await supabase
+              .from("listings")
+              .update({ last_seen_at: new Date().toISOString() })
+              .eq("id", dupRow.id);
+          }
+        }
       } else {
         log(`Insert error for ${listing.source_id}: ${insertErr.message}`);
         errors++;

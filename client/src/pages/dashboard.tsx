@@ -34,10 +34,29 @@ import {
 } from "lucide-react";
 
 const MAX_PROFILES = 4;
+const NEW_THRESHOLD_MS = 60 * 60 * 1000;
 
 function bedroomLabel(min: number) {
   if (min === 0) return "Studio+";
   return `${min}+`;
+}
+
+function relativeTime(dateStr: string | null | undefined): string {
+  if (!dateStr) return "";
+  const diff = Date.now() - new Date(dateStr).getTime();
+  if (diff < 0) return "zojuist";
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "zojuist";
+  if (mins < 60) return `${mins} min geleden`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours} uur geleden`;
+  const days = Math.floor(hours / 24);
+  return `${days} ${days === 1 ? "dag" : "dagen"} geleden`;
+}
+
+function isNew(dateStr: string | null | undefined): boolean {
+  if (!dateStr) return false;
+  return Date.now() - new Date(dateStr).getTime() < NEW_THRESHOLD_MS;
 }
 
 function ProfileCard({
@@ -105,6 +124,10 @@ function ProfileCard({
 
 function MatchCard({ match }: { match: MatchWithListing }) {
   const listing = match.listing;
+  const firstSeen = listing.first_seen_at || listing.created_at;
+  const matchedAt = match.matched_at || match.created_at;
+  const listingIsNew = isNew(firstSeen);
+
   return (
     <div
       className="border border-border rounded-md p-4 flex flex-col gap-3"
@@ -112,8 +135,18 @@ function MatchCard({ match }: { match: MatchWithListing }) {
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex flex-col gap-0.5">
-          <p className="font-semibold text-foreground">{listing.title}</p>
-          <p className="text-xs text-muted-foreground">{listing.city}</p>
+          <div className="flex items-center gap-2">
+            <p className="font-semibold text-foreground">{listing.title}</p>
+            {listingIsNew && (
+              <Badge className="bg-green-100 text-green-700 border-green-200 text-[10px] px-1.5 py-0" data-testid={`badge-new-${match.id}`}>
+                Nieuw
+              </Badge>
+            )}
+          </div>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <span>{listing.city}</span>
+            <span data-testid={`text-time-${match.id}`}>{relativeTime(matchedAt)}</span>
+          </div>
         </div>
         {listing.url && (
           <a
