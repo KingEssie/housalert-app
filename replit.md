@@ -107,9 +107,16 @@ Modular ingestion runner at `server/ingesters/`:
   - Config fields: name, baseUrl, searchUrl, city, source, cardSelector, fields (title/url/price/size_m2/bedrooms), sourceIdRegex, botBlockPatterns, rateLimitMs
 - `index.ts` — Registry combining hardcoded + config-driven ingesters; shared overlap lock, status tracking, `OverlapError`
 
+Scheduler (`server/scheduler.ts`):
+- `setInterval`-based, runs `runAllIngesters()` every `INGEST_INTERVAL_MINUTES` (default 10)
+- Gated by `ENABLE_INGEST_SCHEDULER=true`; first run 5s after startup
+- Overlap-safe: if a run is already in progress, the scheduled tick is skipped (via `OverlapError`)
+- Exports `getNextRun()` → `{ nextRunAt, intervalMinutes }`
+
 Endpoints:
 - `GET /api/ingest/health` — Returns `{ ok: true, sourcesEnabled: [...], time: <iso> }` (no auth)
 - `GET /api/ingest/status` — Returns `{ lastRunAt, lastResult, lastError, running }` (no auth)
+- `GET /api/ingest/next-run` — Returns `{ nextRunAt, intervalMinutes }` (no auth)
 - `POST /api/ingest/run` — Runs all ingesters; requires `Authorization: Bearer <INGEST_BEARER_TOKEN>`
   - Returns `{ sources: [{name, found, inserted, duplicates, matches, errors}], total: {...} }`
   - Returns 401 if token missing/wrong
@@ -117,14 +124,8 @@ Endpoints:
 
 Env vars:
 - `INGEST_BEARER_TOKEN` — bearer token for the `/api/ingest/run` endpoint
-- `ENABLE_INGEST_SCHEDULER` — set to `true` to auto-run ingestion every 10 minutes on server start
-
-Scheduler (`server/scheduler.ts`):
-- Runs `runAllIngesters()` every 10 minutes when `ENABLE_INGEST_SCHEDULER=true`
-- First run 5 seconds after server start, then every 10 minutes
-- Uses shared overlap lock from `ingesters/index.ts` (no separate running flag)
-- Logs delegated to `runAllIngesters()` — start/end/per-source counts
-- Started automatically via dynamic import in `server/index.ts` after the server begins listening
+- `INGEST_INTERVAL_MINUTES` — scheduler interval in minutes (default: 10)
+- `ENABLE_INGEST_SCHEDULER` — set to `true` to enable the automatic scheduler
 
 ## Matching Logic (client-side in `listings.ts`)
 

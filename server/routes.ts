@@ -8,6 +8,7 @@ import {
   getLastRunStatus,
   OverlapError,
 } from "./ingesters";
+import { getNextRun } from "./scheduler";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -34,6 +35,10 @@ export async function registerRoutes(
 
   app.get("/api/ingest/status", (_req, res) => {
     return res.json(getLastRunStatus());
+  });
+
+  app.get("/api/ingest/next-run", (_req, res) => {
+    return res.json(getNextRun());
   });
 
   app.post("/api/ingest/run", async (req, res) => {

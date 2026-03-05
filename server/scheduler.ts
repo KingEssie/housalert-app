@@ -1,7 +1,10 @@
 import { log } from "./index";
 import { runAllIngesters, OverlapError } from "./ingesters";
 
-const INTERVAL_MS = 10 * 60 * 1000;
+const intervalMinutes = parseInt(process.env.INGEST_INTERVAL_MINUTES || "10", 10);
+const INTERVAL_MS = intervalMinutes * 60 * 1000;
+
+let nextRunAt: Date | null = null;
 
 async function tick() {
   try {
@@ -13,6 +16,14 @@ async function tick() {
       log(`[INGEST ERROR] ${err.message}`, "scheduler");
     }
   }
+  nextRunAt = new Date(Date.now() + INTERVAL_MS);
+}
+
+export function getNextRun() {
+  return {
+    nextRunAt: nextRunAt ? nextRunAt.toISOString() : null,
+    intervalMinutes,
+  };
 }
 
 export function startScheduler() {
@@ -21,8 +32,9 @@ export function startScheduler() {
     return;
   }
 
-  log(`Ingestion scheduler started — running every ${INTERVAL_MS / 60000} minutes`, "scheduler");
+  log(`Ingestion scheduler started — running every ${intervalMinutes} minutes`, "scheduler");
 
+  nextRunAt = new Date(Date.now() + 5000);
   setTimeout(() => tick(), 5000);
   setInterval(() => tick(), INTERVAL_MS);
 }
