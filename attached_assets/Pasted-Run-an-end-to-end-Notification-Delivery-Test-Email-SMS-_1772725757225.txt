@@ -1,0 +1,61 @@
+Run an end-to-end Notification Delivery Test (Email + SMS + WhatsApp).
+
+Goal:
+Force a guaranteed match for the currently configured TEST user and verify all enabled channels actually send.
+
+Pre-check:
+1) Run: npx tsx scripts/test-all.ts
+2) If any section fails, STOP and fix that first.
+
+Then do this:
+
+A) Ensure test user + settings
+1) Sign in the test user using env vars:
+   TEST_USER_EMAIL
+   TEST_USER_PASSWORD
+2) Ensure notification settings are:
+   email_enabled=true
+   sms_enabled=true
+   whatsapp_enabled=true
+   phone_e164=TEST_PHONE_E164
+   Save via the existing API endpoint (PUT /api/notifications/settings)
+3) Re-read settings and print them (no secrets).
+
+B) Ensure a guaranteed match
+1) Create (or upsert) a search profile for the test user that will DEFINITELY match:
+   city="Berlin"
+   price_max=99999
+   bedrooms_min=0
+   size_min=0
+2) Insert ONE synthetic listing that should match with obvious values:
+   title="E2E NOTIF TEST - Berlin"
+   city="Berlin"
+   price=1200
+   bedrooms=2
+   size_m2=60
+   url="https://example.com/e2e-notif-test"
+   source="e2e-test"
+   source_id="e2e-notif-test-1"
+
+C) Trigger the production alert pipeline
+1) Run the exact same matching + alert code path used in production (the one called after ingestion).
+2) Ensure a match row is created for the test user + that listing.
+3) Ensure the alert function is called exactly once for that match/listing.
+
+D) Verify delivery attempts
+1) EMAIL: print Resend response (id/status) or explain why skipped.
+2) SMS: print Twilio SMS Message SID and status (queued/sent) or explain why skipped.
+3) WHATSAPP: print Twilio WhatsApp Message SID and status or explain why skipped.
+Important: Do not print auth tokens or secrets.
+
+E) Cleanup
+Delete the synthetic listing + match + any temporary search profile rows created by this test.
+
+Output format:
+- Print a PASS/FAIL checklist with 5 lines:
+  PRECHECK, SETTINGS, MATCH, ALERT_CALL, DELIVERY
+- Under DELIVERY show per-channel: EMAIL/SMS/WHATSAPP = PASS/FAIL with any IDs/SIDs.
+
+If WhatsApp fails due to sandbox or number format:
+- Explain exactly what to change in TWILIO_WHATSAPP_FROM and the WhatsApp sandbox “join” requirement.
+- Do NOT change core logic unless necessary.
