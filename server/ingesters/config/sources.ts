@@ -8,9 +8,9 @@ export interface SourceConfig {
   fields: {
     title: { selector: string; attr?: string } | null;
     url: { selector: string; attr: string };
-    price: { selector: string; regex?: string };
-    size_m2: { selector: string; regex?: string };
-    bedrooms: { selector: string; regex?: string } | null;
+    price: { selector: string; attr?: string; regex?: string };
+    size_m2: { selector: string; attr?: string; regex?: string };
+    bedrooms: { selector: string; attr?: string; regex?: string } | null;
   };
   sourceIdRegex?: string;
   botBlockPatterns?: string[];
@@ -52,6 +52,58 @@ const sources: SourceConfig[] = [
     sourceIdRegex: "/expose/(\\d+)",
     botBlockPatterns: ["Ich bin kein Roboter", "challenge.js", "Gleich geht"],
     rateLimitMs: 2000,
+  },
+  {
+    name: "rentola",
+    baseUrl: "https://rentola.de",
+    searchUrl: "https://rentola.de/mieten/berlin",
+    city: "Berlin",
+    source: "rentola",
+    cardSelector: "[data-testid='propertyTile']",
+    fields: {
+      title: { selector: "p.font-medium" },
+      url: { selector: "a[href*='/listings/']", attr: "href" },
+      price: { selector: "p.font-bold", regex: "([\\d.]+)\\s*€" },
+      size_m2: { selector: "p.font-medium", regex: "([\\d.,]+)\\s*m" },
+      bedrooms: { selector: "p.font-medium", regex: "(\\d+)\\s*Zimmer" },
+    },
+    sourceIdRegex: "/listings/[^-]+-p([a-z0-9]+)$",
+    rateLimitMs: 1200,
+  },
+  {
+    name: "nestpick",
+    baseUrl: "https://www.nestpick.com",
+    searchUrl: "https://www.nestpick.com/berlin/",
+    city: "Berlin",
+    source: "nestpick",
+    cardSelector: ".card[data-id]",
+    fields: {
+      title: { selector: ".card-body-title" },
+      url: { selector: ".card", attr: "data-url" },
+      price: { selector: ".card", attr: "data-price" },
+      size_m2: { selector: ".card", attr: "data-sqm" },
+      bedrooms: { selector: ".card", attr: "data-rooms" },
+    },
+    sourceIdRegex: "/pick/(\\d+)/",
+    rateLimitMs: 1200,
+  },
+  {
+    name: "immonet",
+    baseUrl: "https://www.immonet.de",
+    searchUrl: "https://www.immonet.de/immobiliensuche/berlin/wohnung-mieten",
+    city: "Berlin",
+    source: "immonet",
+    cardSelector: "article.result-list-entry, .result-list-entry, [data-testid*='result']",
+    fields: {
+      title: { selector: "h2, .result-list-entry__brand-title" },
+      url: { selector: "a[href*='/expose/'], a[href*='/angebot/']", attr: "href" },
+      price: { selector: "[data-is24-qa='listing_price'], .price", regex: "([\\d.]+)\\s*€" },
+      size_m2: { selector: "[data-is24-qa='listing_area'], .area", regex: "([\\d.,]+)\\s*m" },
+      bedrooms: { selector: "[data-is24-qa='listing_rooms'], .rooms", regex: "([\\d,]+)" },
+    },
+    sourceIdRegex: "/expose/(\\d+)|/angebot/(\\d+)",
+    botBlockPatterns: ["Ich bin kein Roboter", "challenge.js"],
+    rateLimitMs: 1200,
   },
 ];
 

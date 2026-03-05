@@ -103,7 +103,7 @@ Modular ingestion runner at `server/ingesters/`:
 - `immowelt.ts` — Immowelt Berlin rentals scraper (polite: single page, follows redirects)
 - `html-config.ts` — Generic config-driven ingester engine: fetches a page, parses cards via CSS selectors, extracts fields via regex
 - `config/sources.ts` — Array of `SourceConfig` entries; add new sources here without writing code
-  - Current configs: `wohnungsboerse`, `immoscout` (bot-blocked, graceful)
+  - Current configs: `wohnungsboerse`, `immoscout` (bot-blocked), `rentola`, `nestpick`, `immonet` (410 gone, graceful)
   - Config fields: name, baseUrl, searchUrl, city, source, cardSelector, fields (title/url/price/size_m2/bedrooms), sourceIdRegex, botBlockPatterns, rateLimitMs
 - `index.ts` — Registry combining hardcoded + config-driven ingesters; shared overlap lock, status tracking, `OverlapError`
 

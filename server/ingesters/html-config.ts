@@ -69,7 +69,7 @@ async function fetchAndParse(
     redirect: "follow",
   });
 
-  if (response.status === 401 || response.status === 403 || response.status === 429) {
+  if (response.status === 401 || response.status === 403 || response.status === 410 || response.status === 429) {
     log(`${config.name} blocked (HTTP ${response.status}) — skipping`);
     return [];
   }
