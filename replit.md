@@ -140,6 +140,7 @@ Behavior:
 - Match created → `matched_at = now()` tracked in local DB
 - `POST /api/freshness` endpoint accepts `{ listingIds, matchIds }` and returns freshness data
 - `GET /api/listings/fresh` — returns newest 50 listings ordered by `first_seen_at DESC` with computed `fresh_label` (net_binnen / nieuw / vandaag / ouder)
+- `GET /api/matches` — returns logged-in user's 50 newest matches (auth via Supabase JWT), ordered by `matched_at DESC`, with listing details and `fresh_label`
 
 UI features:
 - "Nieuw" green badge on match cards if `first_seen_at` (or fallback `created_at`) within last 60 minutes

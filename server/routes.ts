@@ -12,6 +12,18 @@ import { getNextRun } from "./scheduler";
 import { getListingFreshness, getMatchTimestamps, getNewestListingIds } from "./freshness";
 import { supabase } from "./ingesters/matching";
 
+const TEN_MIN = 10 * 60 * 1000;
+const ONE_HOUR = 60 * 60 * 1000;
+const ONE_DAY = 24 * 60 * 60 * 1000;
+
+function computeFreshLabel(firstSeenAt: string): string {
+  const ageMs = Date.now() - new Date(firstSeenAt).getTime();
+  if (ageMs < TEN_MIN) return "net_binnen";
+  if (ageMs < ONE_HOUR) return "nieuw";
+  if (ageMs < ONE_DAY) return "vandaag";
+  return "ouder";
+}
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
@@ -68,21 +80,10 @@ export async function registerRoutes(
       const listingMap: Record<string, any> = {};
       for (const l of listings ?? []) listingMap[l.id] = l;
 
-      const now = Date.now();
       const result = freshRows
         .filter((r) => listingMap[r.listing_id])
         .map((r) => {
           const l = listingMap[r.listing_id];
-          const ageMs = now - new Date(r.first_seen_at).getTime();
-          const TEN_MIN = 10 * 60 * 1000;
-          const ONE_HOUR = 60 * 60 * 1000;
-          const ONE_DAY = 24 * 60 * 60 * 1000;
-          let fresh_label: string;
-          if (ageMs < TEN_MIN) fresh_label = "net_binnen";
-          else if (ageMs < ONE_HOUR) fresh_label = "nieuw";
-          else if (ageMs < ONE_DAY) fresh_label = "vandaag";
-          else fresh_label = "ouder";
-
           return {
             title: l.title,
             price: l.price,
@@ -92,9 +93,77 @@ export async function registerRoutes(
             source: l.source,
             url: l.url,
             first_seen_at: r.first_seen_at,
-            fresh_label,
+            fresh_label: computeFreshLabel(r.first_seen_at),
           };
         });
+
+      return res.json(result);
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/matches", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: matchRows, error: mErr } = await supabase
+        .from("matches")
+        .select("id, listing_id, created_at")
+        .eq("user_id", user.id);
+
+      if (mErr) return res.status(500).json({ error: mErr.message });
+      if (!matchRows || matchRows.length === 0) return res.json([]);
+
+      const matchIds = matchRows.map((m: any) => m.id);
+      const matchTimestamps = await getMatchTimestamps(matchIds);
+
+      const enriched = matchRows.map((m: any) => ({
+        ...m,
+        matched_at: matchTimestamps[m.id] || m.created_at,
+      }));
+      enriched.sort((a: any, b: any) =>
+        new Date(b.matched_at).getTime() - new Date(a.matched_at).getTime()
+      );
+      const top50 = enriched.slice(0, 50);
+
+      const listingIds = top50.map((m: any) => m.listing_id);
+
+      const [listingsRes, freshnessMap] = await Promise.all([
+        supabase
+          .from("listings")
+          .select("id, title, price, size_m2, bedrooms, city, source, url")
+          .in("id", listingIds),
+        getListingFreshness(listingIds),
+      ]);
+
+      if (listingsRes.error) return res.status(500).json({ error: listingsRes.error.message });
+
+      const listingMap: Record<string, any> = {};
+      for (const l of listingsRes.data ?? []) listingMap[l.id] = l;
+
+      const result = top50.map((m: any) => {
+        const l = listingMap[m.listing_id];
+        const firstSeenAt = freshnessMap[m.listing_id]?.first_seen_at || m.created_at;
+
+        return {
+          listing_id: m.listing_id,
+          title: l?.title ?? null,
+          price: l?.price ?? null,
+          size_m2: l?.size_m2 ?? null,
+          bedrooms: l?.bedrooms ?? null,
+          city: l?.city ?? null,
+          source: l?.source ?? null,
+          url: l?.url ?? null,
+          matched_at: m.matched_at,
+          first_seen_at: firstSeenAt,
+          fresh_label: computeFreshLabel(firstSeenAt),
+        };
+      });
 
       return res.json(result);
     } catch (err: any) {
