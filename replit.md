@@ -11,7 +11,7 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 
 ## Architecture
 
-- `client/src/lib/supabase.ts` — Supabase client (note: env vars are swapped in Secrets, handled in code)
+- `client/src/lib/supabase.ts` — Supabase client with session persistence enabled
 - `client/src/lib/auth.tsx` — `AuthProvider` context + `useAuth()` hook
 - `client/src/lib/search-profiles.ts` — CRUD functions for `search_profiles` table
 - `client/src/pages/login.tsx` — Auth page with "Inloggen" / "Account aanmaken" tabs
@@ -20,8 +20,8 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 
 ## Required Secrets
 
-- `VITE_SUPABASE_URL` — Currently stores: Supabase anon/public key (swapped)
-- `VITE_SUPABASE_ANON_KEY` — Currently stores: Supabase project URL (swapped)
+- `VITE_SUPABASE_URL` — Supabase project URL (e.g. https://xxx.supabase.co)
+- `VITE_SUPABASE_ANON_KEY` — Supabase anon/public key
 
 ## Supabase Table: search_profiles
 
