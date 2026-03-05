@@ -9,7 +9,8 @@ import {
   OverlapError,
 } from "./ingesters";
 import { getNextRun } from "./scheduler";
-import { getListingFreshness, getMatchTimestamps } from "./freshness";
+import { getListingFreshness, getMatchTimestamps, getNewestListingIds } from "./freshness";
+import { supabase } from "./ingesters/matching";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -49,6 +50,56 @@ export async function registerRoutes(
       getMatchTimestamps(matchIds || []),
     ]);
     return res.json({ listings, matches });
+  });
+
+  app.get("/api/listings/fresh", async (_req, res) => {
+    try {
+      const freshRows = await getNewestListingIds(50);
+      if (freshRows.length === 0) return res.json([]);
+
+      const ids = freshRows.map((r) => r.listing_id);
+      const { data: listings, error } = await supabase
+        .from("listings")
+        .select("id, title, price, size_m2, bedrooms, city, source, url")
+        .in("id", ids);
+
+      if (error) return res.status(500).json({ error: error.message });
+
+      const listingMap: Record<string, any> = {};
+      for (const l of listings ?? []) listingMap[l.id] = l;
+
+      const now = Date.now();
+      const result = freshRows
+        .filter((r) => listingMap[r.listing_id])
+        .map((r) => {
+          const l = listingMap[r.listing_id];
+          const ageMs = now - new Date(r.first_seen_at).getTime();
+          const TEN_MIN = 10 * 60 * 1000;
+          const ONE_HOUR = 60 * 60 * 1000;
+          const ONE_DAY = 24 * 60 * 60 * 1000;
+          let fresh_label: string;
+          if (ageMs < TEN_MIN) fresh_label = "net_binnen";
+          else if (ageMs < ONE_HOUR) fresh_label = "nieuw";
+          else if (ageMs < ONE_DAY) fresh_label = "vandaag";
+          else fresh_label = "ouder";
+
+          return {
+            title: l.title,
+            price: l.price,
+            size_m2: l.size_m2,
+            bedrooms: l.bedrooms,
+            city: l.city,
+            source: l.source,
+            url: l.url,
+            first_seen_at: r.first_seen_at,
+            fresh_label,
+          };
+        });
+
+      return res.json(result);
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
   });
 
   app.post("/api/ingest/run", async (req, res) => {

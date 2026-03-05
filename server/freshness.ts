@@ -41,6 +41,29 @@ export async function getListingFreshness(
   return result;
 }
 
+export interface FreshListingRow {
+  listing_id: string;
+  source: string;
+  first_seen_at: string;
+}
+
+export async function getNewestListingIds(
+  limit: number
+): Promise<FreshListingRow[]> {
+  const { rows } = await pool.query(
+    `SELECT listing_id, source, first_seen_at
+     FROM listing_freshness
+     ORDER BY first_seen_at DESC
+     LIMIT $1`,
+    [limit]
+  );
+  return rows.map((r: any) => ({
+    listing_id: r.listing_id,
+    source: r.source,
+    first_seen_at: r.first_seen_at.toISOString(),
+  }));
+}
+
 export async function trackMatchCreated(matchId: string): Promise<void> {
   await pool.query(
     `INSERT INTO match_timestamps (match_id, matched_at)
