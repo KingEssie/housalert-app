@@ -1,14 +1,98 @@
 import { useAuth } from "@/lib/auth";
 import { useLocation } from "wouter";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { getSearchProfiles, deleteSearchProfile, type SearchProfile } from "@/lib/search-profiles";
+import { queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Home, Bell, Plus, Search, LogOut, MapPin } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Home, Bell, Plus, Search, LogOut, MapPin, Trash2, Euro, BedDouble, Ruler } from "lucide-react";
+
+const MAX_PROFILES = 4;
+
+function bedroomLabel(min: number) {
+  if (min === 0) return "Studio+";
+  return `${min}+`;
+}
+
+function ProfileCard({
+  profile,
+  onDelete,
+  deleting,
+}: {
+  profile: SearchProfile;
+  onDelete: () => void;
+  deleting: boolean;
+}) {
+  const filters: string[] = [];
+  if (profile.price_min || profile.price_max) {
+    const parts = [];
+    if (profile.price_min) parts.push(`\u20AC${profile.price_min}`);
+    if (profile.price_max) parts.push(`\u20AC${profile.price_max}`);
+    filters.push(parts.join(" \u2013 "));
+  }
+
+  return (
+    <div
+      className="border border-border rounded-md p-4 flex flex-col gap-3"
+      data-testid={`card-profile-${profile.id}`}
+    >
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex flex-col gap-0.5">
+          <p className="font-semibold text-foreground">{profile.city}</p>
+          <p className="text-xs text-muted-foreground">
+            Aangemaakt op{" "}
+            {new Date(profile.created_at).toLocaleDateString("nl-NL", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
+          </p>
+        </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onDelete}
+          disabled={deleting}
+          data-testid={`button-delete-${profile.id}`}
+        >
+          <Trash2 className="w-4 h-4 text-muted-foreground" />
+        </Button>
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        {(profile.price_min > 0 || profile.price_max > 0) && (
+          <Badge variant="secondary">
+            <Euro className="w-3 h-3 mr-1" />
+            {profile.price_min > 0 && profile.price_max > 0
+              ? `${profile.price_min} \u2013 ${profile.price_max}`
+              : profile.price_min > 0
+              ? `Vanaf ${profile.price_min}`
+              : `Tot ${profile.price_max}`}
+          </Badge>
+        )}
+        <Badge variant="secondary">
+          <BedDouble className="w-3 h-3 mr-1" />
+          {bedroomLabel(profile.bedrooms_min)}
+        </Badge>
+        {profile.size_min > 0 && (
+          <Badge variant="secondary">
+            <Ruler className="w-3 h-3 mr-1" />
+            {profile.size_min}+ m&sup2;
+          </Badge>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export default function DashboardPage() {
   const { user, loading, signOut } = useAuth();
   const [, navigate] = useLocation();
+  const { toast } = useToast();
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -16,9 +100,36 @@ export default function DashboardPage() {
     }
   }, [user, loading, navigate]);
 
+  const profilesQuery = useQuery<SearchProfile[]>({
+    queryKey: ["/search-profiles"],
+    queryFn: getSearchProfiles,
+    enabled: !!user,
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteSearchProfile,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/search-profiles"] });
+      toast({ title: "Zoekopdracht verwijderd" });
+    },
+    onError: (err: any) => {
+      toast({
+        title: "Verwijderen mislukt",
+        description: err?.message ?? "Probeer het opnieuw.",
+        variant: "destructive",
+      });
+    },
+    onSettled: () => setDeletingId(null),
+  });
+
   async function handleSignOut() {
     await signOut();
     navigate("/login");
+  }
+
+  function handleDelete(id: string) {
+    setDeletingId(id);
+    deleteMutation.mutate(id);
   }
 
   if (loading) {
@@ -35,6 +146,9 @@ export default function DashboardPage() {
   if (!user) return null;
 
   const userInitial = user.email?.[0]?.toUpperCase() ?? "?";
+  const profiles = profilesQuery.data ?? [];
+  const profileCount = profiles.length;
+  const atLimit = profileCount >= MAX_PROFILES;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -71,7 +185,9 @@ export default function DashboardPage() {
 
       <main className="flex-1 max-w-4xl mx-auto w-full px-6 py-10 flex flex-col gap-8">
         <div>
-          <h1 className="text-2xl font-bold text-foreground mb-1">Goedendag!</h1>
+          <h1 className="text-2xl font-bold text-foreground mb-1" data-testid="text-greeting">
+            Goedendag!
+          </h1>
           <p className="text-muted-foreground">
             Hier vind je al je zoekopdrachten en nieuwe matches.
           </p>
@@ -83,19 +199,18 @@ export default function DashboardPage() {
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2 flex-wrap">
                   <CardTitle className="text-base font-semibold">Zoekopdrachten</CardTitle>
-                  <Badge
-                    variant="secondary"
-                    data-testid="badge-searches-count"
-                  >
-                    0 van 4 actief
+                  <Badge variant="secondary" data-testid="badge-searches-count">
+                    {profileCount} van {MAX_PROFILES} actief
                   </Badge>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Je kunt maximaal 4 zoekopdrachten tegelijk actief hebben.
+                  Je kunt maximaal {MAX_PROFILES} zoekopdrachten tegelijk actief hebben.
                 </p>
               </div>
               <Button
                 size="sm"
+                disabled={atLimit}
+                onClick={() => navigate("/dashboard/searches/new")}
                 data-testid="button-add-search"
               >
                 <Plus className="w-4 h-4 mr-1.5" />
@@ -103,25 +218,72 @@ export default function DashboardPage() {
               </Button>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-col items-center justify-center py-10 gap-4 text-center">
-                <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center">
-                  <Search className="w-6 h-6 text-muted-foreground" />
+              {profilesQuery.isLoading ? (
+                <div className="flex flex-col gap-3">
+                  {[1, 2].map((i) => (
+                    <div key={i} className="border border-border rounded-md p-4 animate-pulse">
+                      <div className="h-4 bg-muted rounded w-1/3 mb-3" />
+                      <div className="flex gap-2">
+                        <div className="h-5 bg-muted rounded w-20" />
+                        <div className="h-5 bg-muted rounded w-16" />
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm font-medium text-foreground">Geen zoekopdrachten</p>
-                  <p className="text-sm text-muted-foreground max-w-xs">
-                    Voeg een zoekopdracht toe om automatisch op de hoogte te worden gebracht van nieuwe huurwoningen.
-                  </p>
+              ) : profilesQuery.isError ? (
+                <div className="flex flex-col items-center justify-center py-10 gap-4 text-center">
+                  <div className="w-14 h-14 rounded-full bg-destructive/10 flex items-center justify-center">
+                    <Search className="w-6 h-6 text-destructive" />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <p className="text-sm font-medium text-foreground">Kon zoekopdrachten niet laden</p>
+                    <p className="text-sm text-muted-foreground max-w-xs">
+                      Er is iets misgegaan. Controleer je verbinding en probeer het opnieuw.
+                    </p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => profilesQuery.refetch()}
+                    data-testid="button-retry-profiles"
+                  >
+                    Opnieuw proberen
+                  </Button>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  data-testid="button-add-search-empty"
-                >
-                  <Plus className="w-4 h-4 mr-1.5" />
-                  Eerste zoekopdracht aanmaken
-                </Button>
-              </div>
+              ) : profiles.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-10 gap-4 text-center">
+                  <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center">
+                    <Search className="w-6 h-6 text-muted-foreground" />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <p className="text-sm font-medium text-foreground">Geen zoekopdrachten</p>
+                    <p className="text-sm text-muted-foreground max-w-xs">
+                      Voeg een zoekopdracht toe om automatisch op de hoogte te worden gebracht van
+                      nieuwe huurwoningen.
+                    </p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => navigate("/dashboard/searches/new")}
+                    data-testid="button-add-search-empty"
+                  >
+                    <Plus className="w-4 h-4 mr-1.5" />
+                    Eerste zoekopdracht aanmaken
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  {profiles.map((p) => (
+                    <ProfileCard
+                      key={p.id}
+                      profile={p}
+                      onDelete={() => handleDelete(p.id)}
+                      deleting={deletingId === p.id}
+                    />
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </section>
@@ -132,10 +294,7 @@ export default function DashboardPage() {
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2 flex-wrap">
                   <CardTitle className="text-base font-semibold">Nieuwe matches</CardTitle>
-                  <Badge
-                    variant="secondary"
-                    data-testid="badge-matches-count"
-                  >
+                  <Badge variant="secondary" data-testid="badge-matches-count">
                     0 nieuw
                   </Badge>
                 </div>

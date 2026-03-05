@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import LoginPage from "@/pages/login";
 import DashboardPage from "@/pages/dashboard";
+import NewSearchPage from "@/pages/new-search";
 import NotFound from "@/pages/not-found";
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
@@ -21,6 +22,7 @@ function Router() {
       <Route path="/" component={() => <Redirect to="/dashboard" />} />
       <Route path="/login" component={LoginPage} />
       <Route path="/dashboard" component={() => <ProtectedRoute component={DashboardPage} />} />
+      <Route path="/dashboard/searches/new" component={() => <ProtectedRoute component={NewSearchPage} />} />
       <Route component={NotFound} />
     </Switch>
   );
