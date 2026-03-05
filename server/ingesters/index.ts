@@ -4,8 +4,9 @@ import { wgGesuchtIngester } from "./wg-gesucht";
 import { kleinanzeigenIngester } from "./kleinanzeigen";
 import { immoweltIngester } from "./immowelt";
 import { immoscoutIngester } from "./immoscout";
+import { wohnungsboerseIngester } from "./wohnungsboerse";
 
-const ingesters: Ingester[] = [wgGesuchtIngester, kleinanzeigenIngester, immoweltIngester, immoscoutIngester];
+const ingesters: Ingester[] = [wgGesuchtIngester, kleinanzeigenIngester, immoweltIngester, wohnungsboerseIngester, immoscoutIngester];
 
 export interface SourceReport {
   name: string;
