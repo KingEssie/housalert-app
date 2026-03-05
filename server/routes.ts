@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { sendMatchAlert } from "./email";
+import { sendEmailMatchAlert } from "./notifications";
 import {
   runAllIngesters,
   getEnabledSources,
@@ -35,8 +35,98 @@ export async function registerRoutes(
       return res.status(400).json({ error: "Missing userEmail or listing data" });
     }
 
-    const sent = await sendMatchAlert(userEmail, listing);
+    const sent = await sendEmailMatchAlert(userEmail, listing);
     return res.json({ sent });
+  });
+
+  app.get("/api/notifications/settings", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: settings, error } = await supabase
+        .from("user_notification_settings")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (error) return res.status(500).json({ error: error.message });
+
+      return res.json(
+        settings ?? {
+          user_id: user.id,
+          phone_e164: null,
+          whatsapp_enabled: false,
+          sms_enabled: false,
+          email_enabled: true,
+        }
+      );
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.put("/api/notifications/settings", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { phone_e164, whatsapp_enabled, sms_enabled, email_enabled } = req.body;
+
+      if (phone_e164 !== undefined && phone_e164 !== null) {
+        const e164Regex = /^\+[1-9]\d{1,14}$/;
+        if (typeof phone_e164 !== "string" || !e164Regex.test(phone_e164)) {
+          return res.status(400).json({ error: "Invalid phone number. Use E.164 format (e.g. +31612345678)" });
+        }
+      }
+
+      const payload: Record<string, any> = {
+        user_id: user.id,
+        updated_at: new Date().toISOString(),
+      };
+      if (phone_e164 !== undefined) payload.phone_e164 = phone_e164;
+      if (typeof whatsapp_enabled === "boolean") payload.whatsapp_enabled = whatsapp_enabled;
+      if (typeof sms_enabled === "boolean") payload.sms_enabled = sms_enabled;
+      if (typeof email_enabled === "boolean") payload.email_enabled = email_enabled;
+
+      const { data: existing } = await supabase
+        .from("user_notification_settings")
+        .select("user_id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      let result;
+      if (existing) {
+        const { user_id: _uid, ...updatePayload } = payload;
+        result = await supabase
+          .from("user_notification_settings")
+          .update(updatePayload)
+          .eq("user_id", user.id)
+          .select()
+          .single();
+      } else {
+        if (!payload.phone_e164) payload.phone_e164 = null;
+        if (payload.whatsapp_enabled === undefined) payload.whatsapp_enabled = false;
+        if (payload.sms_enabled === undefined) payload.sms_enabled = false;
+        if (payload.email_enabled === undefined) payload.email_enabled = true;
+        result = await supabase
+          .from("user_notification_settings")
+          .insert(payload)
+          .select()
+          .single();
+      }
+
+      if (result.error) return res.status(500).json({ error: result.error.message });
+      return res.json(result.data);
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
   });
 
   app.get("/api/ingest/health", (_req, res) => {

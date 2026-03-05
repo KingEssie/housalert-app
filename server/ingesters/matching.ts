@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { log } from "../index";
-import { sendMatchAlert } from "../email";
+import { sendMatchAlerts } from "../notifications";
 import { trackListingSeen, trackMatchCreated } from "../freshness";
 
 const SUPABASE_URL = (process.env.VITE_SUPABASE_URL ?? "").replace(/\/$/, "");
@@ -101,9 +101,7 @@ export async function runMatchingForListing(listing: DbListing): Promise<number>
 
         const { data: userData } = await supabase.auth.admin.getUserById(profile.user_id);
         const email = userData?.user?.email;
-        if (email) {
-          sendMatchAlert(email, listing).catch(() => {});
-        }
+        sendMatchAlerts(profile.user_id, email ?? undefined, listing, supabase).catch(() => {});
       }
     }
   }
