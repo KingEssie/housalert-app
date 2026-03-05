@@ -101,6 +101,7 @@ Modular ingestion runner at `server/ingesters/`:
 - `wg-gesucht.ts` — WG-Gesucht Berlin scraper (polite: 1 request per run, descriptive User-Agent)
 - `kleinanzeigen.ts` — Kleinanzeigen Berlin rentals scraper (polite: 1 request per run)
 - `immowelt.ts` — Immowelt Berlin rentals scraper (polite: single page, follows redirects)
+- `immoscout.ts` — ImmoScout24 Berlin rentals scraper (gracefully handles bot protection; returns 0 found when blocked)
 - `index.ts` — Registry + `runAllIngesters()` with shared overlap lock, status tracking, and `OverlapError`
 
 Endpoints:
