@@ -1,0 +1,71 @@
+Create a single “test everything” command for this project.
+
+Goal:
+I want to be able to paste ONE prompt in Replit Agent and have it run a full end-to-end verification of the app.
+
+Requirements:
+
+1) Add a script: scripts/test-all.ts (TypeScript)
+   It must run the following tests in order and print a clear PASS/FAIL table:
+
+   A. ENV CHECK
+   - Verify required env vars exist (do not print secrets):
+     SUPABASE_URL / SUPABASE_ANON_KEY (or the existing ones used in this repo)
+     RESEND_* (if email is enabled)
+     TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN / TWILIO_SMS_FROM (if SMS is enabled)
+     TWILIO_WHATSAPP_FROM (if WhatsApp is enabled)
+     INGEST_INTERVAL_MINUTES
+   - Print missing keys.
+
+   B. API HEALTH CHECKS (HTTP)
+   - GET /api/ingest/health must return ok:true
+   - GET /api/ingest/status must return JSON with lastRunAt or running flag
+   - GET /api/ingest/next-run must return nextRunAt and intervalMinutes
+   - GET /api/listings/fresh must return an array (or object containing array) of listings
+   - GET /api/notifications/settings must return current settings for the authenticated user (see auth step)
+
+   C. AUTH + SETTINGS FLOW (Supabase)
+   - Programmatically sign up or sign in a dedicated test user (email+password) using env vars:
+     TEST_USER_EMAIL
+     TEST_USER_PASSWORD
+   - Ensure notification settings exist for that user.
+   - Update notification settings via PUT /api/notifications/settings:
+     email_enabled=true
+     sms_enabled=true
+     whatsapp_enabled=false
+     phone_e164=TEST_PHONE_E164
+   - Re-read settings and assert values match.
+
+   D. MATCH + ALERT FLOW (END-TO-END)
+   - Create a search profile for the test user (Berlin, max price 1500, bedrooms >= 1, size >= 30)
+     using the same DB/API path the app uses (prefer API if exists).
+   - Insert ONE synthetic listing that should match and ONE that should not.
+   - Run the matching pipeline function used in production.
+   - Assert:
+     - exactly 1 match was created for the good listing
+     - 0 matches for the bad listing
+   - Trigger alert sending and assert:
+     - email send attempted (Resend) OR gracefully skipped if not configured
+     - SMS send attempted (Twilio) OR gracefully skipped if not configured
+   - Print message SIDs if available (but do not leak secrets).
+
+   E. CLEANUP
+   - Delete all created test rows (search profile, listings, matches, notification settings if test-only)
+   - Leave the database clean.
+
+2) The script must exit with:
+   - code 0 if ALL tests pass
+   - code 1 if ANY test fails
+
+3) Add a package.json script alias:
+   "test:all": "tsx scripts/test-all.ts"
+
+4) After implementation, execute:
+   npm run test:all
+   and print the full console output with a final summary.
+
+Notes:
+- Keep it minimal and cost-efficient (no heavy test frameworks).
+- Use existing helper modules in the repo where possible.
+- Do not modify core business logic except to expose a clean test entrypoint if necessary.
+- Make the report easy to read on mobile: short lines, clear labels, emojis are ok.

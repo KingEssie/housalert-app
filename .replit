@@ -47,3 +47,6 @@ integrations = ["resend:1.0.0"]
 INGEST_BEARER_TOKEN = "2a6ea21b7c435047661bddb5bb5fe227782c8d8d790154e1470e2896f8ff6eda"
 ENABLE_INGEST_SCHEDULER = "true"
 APP_PUBLIC_BASE_URL = "https://stekkies.replit.app"
+TEST_USER_EMAIL = "martin.essie87@gmail.com"
+TEST_USER_PASSWORD = "wachtwoord123"
+TEST_PHONE_E164 = "+31600000000"

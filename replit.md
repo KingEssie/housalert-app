@@ -179,6 +179,21 @@ When a listing is created via the test modal:
 - `/dashboard` — Protected; shows search profiles + matches + test listing modal
 - `/dashboard/searches/new` — Protected; create new search profile
 
+## Test Suite
+
+`scripts/test-all.ts` — single-command full end-to-end verification.
+
+Run: `npx tsx scripts/test-all.ts`
+
+Sections:
+- **A. ENV CHECK** — verifies required/optional env vars
+- **B. API HEALTH** — hits `/api/ingest/health`, `/status`, `/next-run`, `/listings/fresh`, `/notifications/settings`
+- **C. AUTH + SETTINGS** — signs in test user, writes/reads notification settings via PUT/GET
+- **D. MATCH + ALERT** — creates profile + listings, runs matching logic, verifies match/no-match, reports alert channel status
+- **E. CLEANUP** — deletes all test rows
+
+Env vars: `TEST_USER_EMAIL`, `TEST_USER_PASSWORD`, `TEST_PHONE_E164`, `TEST_BASE_URL` (defaults to `http://localhost:5000`)
+
 ## Design
 
 - Light background, centered max-w-4xl container
