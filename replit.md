@@ -129,6 +129,12 @@ Env vars:
 
 ## Freshness Tracking
 
+> **TODO (Low priority — acceptable for MVP): Move freshness tracking to Supabase**
+> Currently `first_seen_at` and `last_seen_at` are stored in Replit's local PostgreSQL,
+> while listings themselves live in Supabase. Risk: local DB resets could lose freshness
+> history. Future improvement: add `first_seen_at` and `last_seen_at` columns directly
+> to the Supabase `listings` table and remove the local freshness database entirely.
+
 Uses Replit's local PostgreSQL database (not Supabase) for tracking:
 - `listing_freshness` table: `listing_id (PK)`, `source`, `source_id`, `first_seen_at`, `last_seen_at`
 - `match_timestamps` table: `match_id (PK)`, `matched_at`
