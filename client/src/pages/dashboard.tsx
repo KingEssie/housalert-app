@@ -518,6 +518,14 @@ export default function DashboardPage() {
             </div>
             <Button
               variant="ghost"
+              size="icon"
+              onClick={() => navigate("/settings/notifications")}
+              data-testid="button-notification-settings"
+            >
+              <Bell className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="ghost"
               size="sm"
               onClick={handleSignOut}
               data-testid="button-logout"
