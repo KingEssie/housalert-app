@@ -20,6 +20,17 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - `client/src/pages/signup.tsx` — Account creation at `/signup` (creates search profile)
 - `client/src/pages/paywall.tsx` — Subscription plans at `/paywall` (Stripe placeholder)
 
+### Matching Engine
+- `server/matching/engine.ts` — Central matching module with two main exports:
+  - `matchListingAgainstProfiles(listingId)` — called after each new listing is inserted during ingestion
+  - `backfillMatchesForSearchProfile(searchProfileId)` — called after a new search profile is created
+- `server/ingesters/matching.ts` — Ingestion pipeline (dedup, insert, delegates to engine for matching)
+- `server/log.ts` — Shared `log()` utility (extracted from index.ts to avoid circular deps)
+- City matching uses case-insensitive substring inclusion (e.g. "Berlin" matches "Berlin-Mitte")
+- Duplicate prevention: checks `unique(user_id, search_profile_id, listing_id)` before insert
+- Backfill triggered via `POST /api/search-profiles/backfill` (auth required)
+- Test script: `scripts/test-matching-engine.ts` — run with `npx tsx scripts/test-matching-engine.ts`
+
 ### Core Libraries
 - `client/src/lib/supabase.ts` — Supabase client with session persistence enabled
 - `client/src/lib/auth.tsx` — `AuthProvider` context + `useAuth()` hook

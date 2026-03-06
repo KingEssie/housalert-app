@@ -1,5 +1,5 @@
 import { Resend } from "resend";
-import { log } from "./index";
+import { log } from "./log";
 
 interface ListingInfo {
   title: string;

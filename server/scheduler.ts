@@ -1,4 +1,4 @@
-import { log } from "./index";
+import { log } from "./log";
 import { runAllIngesters, OverlapError } from "./ingesters";
 
 const intervalMinutes = parseInt(process.env.INGEST_INTERVAL_MINUTES || "10", 10);

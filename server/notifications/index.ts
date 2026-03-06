@@ -1,6 +1,6 @@
 import twilio from "twilio";
 import { sendMatchAlert as sendEmailViaResend } from "../email";
-import { log } from "../index";
+import { log } from "../log";
 
 interface ListingInfo {
   title: string;

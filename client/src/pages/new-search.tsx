@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
 import { createSearchProfile, getSearchProfiles } from "@/lib/search-profiles";
+import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -94,7 +95,7 @@ export default function NewSearchPage() {
     setSubmitting(true);
 
     try {
-      await createSearchProfile({
+      const profile = await createSearchProfile({
         user_id: user!.id,
         city: city.trim(),
         price_min: parsedPriceMin,
@@ -102,6 +103,18 @@ export default function NewSearchPage() {
         bedrooms_min: parseInt(bedroomsMin),
         size_min: parsedSizeMin,
       });
+
+      if (profile?.id) {
+        const { data: sessionData } = await supabase.auth.getSession();
+        const token = sessionData?.session?.access_token;
+        if (token) {
+          fetch("/api/search-profiles/backfill", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ searchProfileId: profile.id }),
+          }).catch(() => {});
+        }
+      }
 
       queryClient.invalidateQueries({ queryKey: ["/search-profiles"] });
 

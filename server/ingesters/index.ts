@@ -1,4 +1,4 @@
-import { log } from "../index";
+import { log } from "../log";
 import type { Ingester, IngestionResult } from "./types";
 import { wgGesuchtIngester } from "./wg-gesucht";
 import { kleinanzeigenIngester } from "./kleinanzeigen";

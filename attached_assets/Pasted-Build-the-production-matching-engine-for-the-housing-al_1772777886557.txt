@@ -1,0 +1,73 @@
+Build the production matching engine for the housing alert app.
+
+Goal:
+Make the app create real user matches from search profiles and listings.
+
+Requirements:
+
+1. Use the existing Supabase tables:
+- search_profiles
+- listings
+- matches
+
+2. Matching rules for now:
+A listing matches a search profile if:
+- listing.city equals search_profile.city
+- listing.price is >= min_price (if set)
+- listing.price is <= max_price (if set)
+- listing.bedrooms is >= min_rooms (if set)
+- listing.size_m2 is >= min_size (if set)
+- search_profile.enabled = true
+
+3. Create a central matching module:
+server/matching/engine.ts
+
+Export functions:
+- matchListingAgainstProfiles(listingId)
+- backfillMatchesForSearchProfile(searchProfileId)
+
+4. matchListingAgainstProfiles(listingId)
+- fetch the listing
+- fetch all active search_profiles
+- compare listing against each profile
+- create rows in matches for valid matches
+- prevent duplicates using:
+  unique(user_id, search_profile_id, listing_id)
+
+5. backfillMatchesForSearchProfile(searchProfileId)
+- fetch the search profile
+- fetch recent listings from the last 7 days
+- compare each listing
+- create missing matches
+
+6. Hook the engine into real product flow:
+- after a new listing is inserted during ingestion, call matchListingAgainstProfiles(listing.id)
+- after a new search profile is created, call backfillMatchesForSearchProfile(searchProfile.id)
+
+7. Do not send duplicate alerts.
+Only send alerts when a new match row is created.
+
+8. Add logs:
+[MATCH ENGINE START]
+[MATCH CREATED]
+[MATCH SKIPPED DUPLICATE]
+[MATCH ENGINE COMPLETE]
+
+9. Add a minimal test script:
+scripts/test-matching-engine.ts
+
+The script should:
+- create one test search profile
+- create one matching listing
+- create one non-matching listing
+- run the matching engine
+- verify:
+  - 1 match created for the good listing
+  - 0 matches for the bad listing
+- clean up test data
+- exit 0 on success, 1 on failure
+
+10. After implementation:
+- run the test script
+- print the full PASS/FAIL output
+- explain what was built

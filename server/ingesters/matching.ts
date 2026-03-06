@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
-import { log } from "../index";
-import { sendMatchAlerts } from "../notifications";
-import { trackListingSeen, trackMatchCreated } from "../freshness";
+import { log } from "../log";
+import { trackListingSeen } from "../freshness";
+import { matchListingAgainstProfiles } from "../matching/engine";
 
 const SUPABASE_URL = (process.env.VITE_SUPABASE_URL ?? "").replace(/\/$/, "");
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
@@ -25,16 +25,6 @@ export interface ParsedListing {
   source_id: string;
 }
 
-interface SearchProfile {
-  id: string;
-  user_id: string;
-  city: string;
-  price_min: number;
-  price_max: number;
-  bedrooms_min: number;
-  size_min: number;
-}
-
 interface DbListing {
   id: string;
   source: string;
@@ -46,67 +36,8 @@ interface DbListing {
   size_m2: number;
 }
 
-function doesListingMatchProfile(listing: DbListing, profile: SearchProfile): boolean {
-  const listingCity = listing.city.toLowerCase().trim();
-  const profileCity = profile.city.toLowerCase().trim();
-  if (!listingCity.includes(profileCity) && !profileCity.includes(listingCity)) {
-    return false;
-  }
-  if (profile.price_min > 0 && listing.price < profile.price_min) return false;
-  if (profile.price_max > 0 && listing.price > profile.price_max) return false;
-  if (profile.bedrooms_min > 0 && listing.bedrooms < profile.bedrooms_min) return false;
-  if (profile.size_min > 0 && listing.size_m2 < profile.size_min) return false;
-  return true;
-}
-
 export async function runMatchingForListing(listing: DbListing): Promise<number> {
-  const { data: profiles, error: pErr } = await supabase
-    .from("search_profiles")
-    .select("*");
-
-  if (pErr || !profiles || profiles.length === 0) return 0;
-
-  let totalMatches = 0;
-  const alertedUsers = new Set<string>();
-
-  for (const profile of profiles as SearchProfile[]) {
-    if (!doesListingMatchProfile(listing, profile)) continue;
-
-    const { data: existing } = await supabase
-      .from("matches")
-      .select("id")
-      .eq("user_id", profile.user_id)
-      .eq("search_profile_id", profile.id)
-      .eq("listing_id", listing.id)
-      .maybeSingle();
-
-    if (existing) continue;
-
-    const { data: matchRow, error: mErr } = await supabase
-      .from("matches")
-      .insert({
-        user_id: profile.user_id,
-        search_profile_id: profile.id,
-        listing_id: listing.id,
-      })
-      .select("id")
-      .single();
-
-    if (!mErr && matchRow) {
-      totalMatches++;
-      trackMatchCreated(matchRow.id).catch(() => {});
-
-      if (!alertedUsers.has(profile.user_id)) {
-        alertedUsers.add(profile.user_id);
-
-        const { data: userData } = await supabase.auth.admin.getUserById(profile.user_id);
-        const email = userData?.user?.email;
-        sendMatchAlerts(profile.user_id, email ?? undefined, listing, supabase).catch(() => {});
-      }
-    }
-  }
-
-  return totalMatches;
+  return matchListingAgainstProfiles(listing.id);
 }
 
 let hasSourceIdColumn: boolean | null = null;

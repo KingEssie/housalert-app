@@ -46,14 +46,26 @@ export default function SignupPage() {
 
       if (data.user && city) {
         try {
-          await supabase.from("search_profiles").insert({
+          const { data: profile } = await supabase.from("search_profiles").insert({
             user_id: data.user.id,
             city,
             price_min: minPrice ? parseInt(minPrice) : 0,
             price_max: maxPrice ? parseInt(maxPrice) : 0,
             bedrooms_min: minRooms && minRooms !== "any" ? parseInt(minRooms) : 0,
             size_min: minSize ? parseInt(minSize) : 0,
-          });
+          }).select("id").single();
+
+          if (profile?.id) {
+            const { data: session } = await supabase.auth.getSession();
+            const token = session?.session?.access_token;
+            if (token) {
+              fetch("/api/search-profiles/backfill", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                body: JSON.stringify({ searchProfileId: profile.id }),
+              }).catch(() => {});
+            }
+          }
         } catch {
         }
       }

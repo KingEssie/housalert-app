@@ -11,6 +11,7 @@ import {
 import { getNextRun } from "./scheduler";
 import { getListingFreshness, getMatchTimestamps, getNewestListingIds } from "./freshness";
 import { supabase } from "./ingesters/matching";
+import { backfillMatchesForSearchProfile } from "./matching/engine";
 
 const TEN_MIN = 10 * 60 * 1000;
 const ONE_HOUR = 60 * 60 * 1000;
@@ -378,6 +379,34 @@ export async function registerRoutes(
       return res.json({ url: session.url });
     } catch (err: any) {
       console.error("Checkout error:", err);
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/search-profiles/backfill", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { searchProfileId } = req.body;
+      if (!searchProfileId) return res.status(400).json({ error: "searchProfileId is required" });
+
+      const { data: profile } = await supabase
+        .from("search_profiles")
+        .select("user_id")
+        .eq("id", searchProfileId)
+        .single();
+
+      if (!profile || profile.user_id !== user.id) {
+        return res.status(403).json({ error: "Forbidden" });
+      }
+
+      const matchCount = await backfillMatchesForSearchProfile(searchProfileId);
+      return res.json({ matches: matchCount });
+    } catch (err: any) {
       return res.status(500).json({ error: err.message });
     }
   });

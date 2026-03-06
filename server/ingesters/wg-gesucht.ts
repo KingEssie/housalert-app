@@ -1,6 +1,6 @@
 import * as cheerio from "cheerio";
 import { createHash } from "crypto";
-import { log } from "../index";
+import { log } from "../log";
 import type { Ingester, IngestionResult } from "./types";
 import type { ParsedListing } from "./matching";
 import { insertAndMatchListings } from "./matching";
