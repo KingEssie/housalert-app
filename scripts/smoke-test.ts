@@ -68,11 +68,11 @@ async function run() {
     .from("search_profiles")
     .insert({
       user_id: TEST_USER_ID,
-      city: `${TEST_PREFIX}Amsterdam`,
+      city: `${TEST_PREFIX}Berlin`,
       price_min: 500,
-      price_max: 1500,
-      bedrooms_min: 2,
-      size_min: 40,
+      price_max: 2000,
+      bedrooms_min: 1,
+      size_min: 30,
     })
     .select()
     .single();
@@ -89,10 +89,10 @@ async function run() {
     .insert({
       source: "smoke_test",
       title: `${TEST_PREFIX}Matching Apartment`,
-      city: `${TEST_PREFIX}Amsterdam`,
+      city: `${TEST_PREFIX}Berlin`,
       price: 1200,
-      bedrooms: 3,
-      size_m2: 65,
+      bedrooms: 2,
+      size_m2: 50,
     })
     .select()
     .single();
@@ -109,7 +109,7 @@ async function run() {
     .insert({
       source: "smoke_test",
       title: `${TEST_PREFIX}Non-Matching Apartment`,
-      city: `${TEST_PREFIX}Rotterdam`,
+      city: `${TEST_PREFIX}Hamburg`,
       price: 2500,
       bedrooms: 1,
       size_m2: 20,

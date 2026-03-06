@@ -20,6 +20,12 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - `client/src/pages/signup.tsx` — Account creation at `/signup` (creates search profile)
 - `client/src/pages/paywall.tsx` — Subscription plans at `/paywall` (Stripe placeholder)
 
+### Market Config
+- `config/market.ts` — Centralized market configuration for Germany (DE)
+  - `defaultCountry = "DE"`, `defaultCities` (30 German cities with lat/lng), `cityDistricts` (8 major cities)
+  - `defaultSearchProfile` (Berlin, max €2000, 1 room, 30m²), `dateLocale = "de-DE"`
+  - Used by onboarding-location, dashboard, and smoke tests
+
 ### Matching Engine
 - `server/matching/engine.ts` — Central matching module with two main exports:
   - `matchListingAgainstProfiles(listingId)` — called after each new listing is inserted during ingestion

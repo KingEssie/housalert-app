@@ -2,57 +2,9 @@ import { useState, useMemo, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Home, MapPin, ChevronLeft, Search, ChevronRight, Navigation, Clock, Car, Train, Bike, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { defaultCities, cityDistricts } from "../../../config/market";
 
-const DUTCH_CITIES = [
-  { name: "Amsterdam", lat: 52.3676, lng: 4.9041 },
-  { name: "Rotterdam", lat: 51.9225, lng: 4.4792 },
-  { name: "Den Haag", lat: 52.0705, lng: 4.3007 },
-  { name: "Utrecht", lat: 52.0907, lng: 5.1214 },
-  { name: "Eindhoven", lat: 51.4416, lng: 5.4697 },
-  { name: "Groningen", lat: 53.2194, lng: 6.5665 },
-  { name: "Tilburg", lat: 51.5555, lng: 5.0913 },
-  { name: "Almere", lat: 52.3508, lng: 5.2647 },
-  { name: "Breda", lat: 51.5719, lng: 4.7683 },
-  { name: "Nijmegen", lat: 51.8426, lng: 5.8527 },
-  { name: "Arnhem", lat: 51.9851, lng: 5.8987 },
-  { name: "Haarlem", lat: 52.3874, lng: 4.6462 },
-  { name: "Enschede", lat: 52.2215, lng: 6.8937 },
-  { name: "Amersfoort", lat: 52.1561, lng: 5.3878 },
-  { name: "Apeldoorn", lat: 52.2112, lng: 5.9699 },
-  { name: "Zaanstad", lat: 52.4575, lng: 4.8127 },
-  { name: "Haarlemmermeer", lat: 52.3025, lng: 4.6903 },
-  { name: "Den Bosch", lat: 51.6998, lng: 5.3049 },
-  { name: "Leiden", lat: 52.1601, lng: 4.4970 },
-  { name: "Maastricht", lat: 50.8514, lng: 5.6910 },
-  { name: "Dordrecht", lat: 51.8133, lng: 4.6901 },
-  { name: "Zoetermeer", lat: 52.0575, lng: 4.4931 },
-  { name: "Zwolle", lat: 52.5168, lng: 6.0830 },
-  { name: "Deventer", lat: 52.2554, lng: 6.1638 },
-  { name: "Delft", lat: 52.0116, lng: 4.3571 },
-  { name: "Leeuwarden", lat: 53.2012, lng: 5.7999 },
-  { name: "Alkmaar", lat: 52.6324, lng: 4.7534 },
-  { name: "Emmen", lat: 52.7792, lng: 6.8958 },
-  { name: "Venlo", lat: 51.3704, lng: 6.1724 },
-  { name: "Hilversum", lat: 52.2292, lng: 5.1769 },
-  { name: "Heerlen", lat: 50.8883, lng: 5.9814 },
-  { name: "Oss", lat: 51.7652, lng: 5.5183 },
-  { name: "Sittard", lat: 51.0005, lng: 5.8684 },
-  { name: "Roosendaal", lat: 51.5307, lng: 4.4571 },
-  { name: "Helmond", lat: 51.4792, lng: 5.6614 },
-  { name: "Purmerend", lat: 52.5054, lng: 4.9598 },
-  { name: "Schiedam", lat: 51.9197, lng: 4.3889 },
-  { name: "Vlaardingen", lat: 51.9127, lng: 4.3419 },
-  { name: "Gouda", lat: 52.0115, lng: 4.7106 },
-  { name: "Lelystad", lat: 52.5185, lng: 5.4714 },
-];
-
-const DISTRICTS: Record<string, string[]> = {
-  Amsterdam: ["Centrum", "West", "Oost", "Zuid", "Noord", "Nieuw-West", "Zuidoost", "De Pijp", "Jordaan", "Oud-West"],
-  Rotterdam: ["Centrum", "Kralingen", "Delfshaven", "Noord", "Feijenoord", "Charlois", "Hillegersberg", "Overschie"],
-  "Den Haag": ["Centrum", "Scheveningen", "Loosduinen", "Laak", "Escamp", "Segbroek", "Haagse Hout"],
-  Utrecht: ["Centrum", "Oost", "West", "Zuid", "Noord", "Leidsche Rijn", "Vleuten-De Meern"],
-  Eindhoven: ["Centrum", "Woensel", "Stratum", "Tongelre", "Gestel", "Strijp"],
-};
+type CityEntry = typeof defaultCities[0];
 
 type TabType = "wijken" | "radius" | "reistijd";
 
@@ -60,7 +12,7 @@ export default function OnboardingLocationPage() {
   const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState<TabType>("wijken");
   const [search, setSearch] = useState("");
-  const [selectedCity, setSelectedCity] = useState<typeof DUTCH_CITIES[0] | null>(null);
+  const [selectedCity, setSelectedCity] = useState<CityEntry | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedDistricts, setSelectedDistricts] = useState<string[]>([]);
   const [radius, setRadius] = useState("5");
@@ -72,18 +24,18 @@ export default function OnboardingLocationPage() {
   const [estimateLoading, setEstimateLoading] = useState(false);
 
   const filteredCities = useMemo(() => {
-    if (!search.trim()) return DUTCH_CITIES.slice(0, 8);
-    return DUTCH_CITIES.filter((c) =>
+    if (!search.trim()) return defaultCities.slice(0, 8);
+    return defaultCities.filter((c) =>
       c.name.toLowerCase().includes(search.toLowerCase())
     ).slice(0, 8);
   }, [search]);
 
-  const cityDistricts = useMemo(() => {
+  const activeCityDistricts = useMemo(() => {
     if (!selectedCity) return [];
-    return DISTRICTS[selectedCity.name] || [];
+    return cityDistricts[selectedCity.name] || [];
   }, [selectedCity]);
 
-  function handleCitySelect(city: typeof DUTCH_CITIES[0]) {
+  function handleCitySelect(city: CityEntry) {
     setSelectedCity(city);
     setSearch(city.name);
     setShowDropdown(false);
@@ -253,11 +205,11 @@ export default function OnboardingLocationPage() {
                   )}
                 </div>
 
-                {selectedCity && cityDistricts.length > 0 && (
+                {selectedCity && activeCityDistricts.length > 0 && (
                   <div className="py-5 border-b border-[#E8EDF2]">
                     <p className="text-sm font-semibold text-[#0B1F44] mb-3">Wijken (optioneel)</p>
                     <div className="flex flex-wrap gap-2">
-                      {cityDistricts.map((district) => (
+                      {activeCityDistricts.map((district) => (
                         <button
                           key={district}
                           onClick={() => toggleDistrict(district)}
@@ -295,7 +247,7 @@ export default function OnboardingLocationPage() {
                   <div className="py-5">
                     <p className="text-sm font-semibold text-[#6B7280] mb-3">Populaire steden</p>
                     <div className="flex flex-wrap gap-2">
-                      {DUTCH_CITIES.slice(0, 6).map((city) => (
+                      {defaultCities.slice(0, 6).map((city) => (
                         <button
                           key={city.name}
                           onClick={() => handleCitySelect(city)}
@@ -409,7 +361,7 @@ export default function OnboardingLocationPage() {
                   <MapPin className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
                   <input
                     type="text"
-                    placeholder="bijv. Centraal Station Amsterdam"
+                    placeholder="bijv. Berlin Hauptbahnhof"
                     value={travelAddress}
                     onChange={(e) => setTravelAddress(e.target.value)}
                     className="flex-1 text-[15px] text-[#0B1F44] placeholder:text-[#6B7280] bg-transparent border-none outline-none"
@@ -500,9 +452,9 @@ export default function OnboardingLocationPage() {
             className="w-full h-[52px] rounded-xl text-[16px] font-semibold bg-[#2D6CDF] hover:bg-[#2560C8] shadow-none mt-2"
             disabled={!canProceed}
             onClick={handleNext}
-            data-testid="button-next-location"
+            data-testid="button-next-step"
           >
-            Volgende
+            Volgende stap
           </Button>
         </div>
       </main>

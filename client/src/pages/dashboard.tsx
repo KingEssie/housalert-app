@@ -6,6 +6,7 @@ import { getSearchProfiles, deleteSearchProfile, type SearchProfile } from "@/li
 import { fetchApiMatches, type ApiMatch } from "@/lib/listings";
 import { queryClient } from "@/lib/queryClient";
 import { supabase } from "@/lib/supabase";
+import { dateLocale } from "../../../config/market";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
@@ -172,7 +173,7 @@ function ProfileCard({
               </span>
             </div>
             <p className="text-[12px] text-[#9CA3AF]">
-              Aangemaakt {new Date(profile.created_at).toLocaleDateString("nl-NL", { day: "numeric", month: "short" })}
+              Aangemaakt {new Date(profile.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "short" })}
             </p>
           </div>
         </div>

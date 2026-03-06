@@ -193,7 +193,7 @@ export default function NewSearchPage() {
                   <Label htmlFor="city">Stad</Label>
                   <Input
                     id="city"
-                    placeholder="Bijv. Amsterdam, Utrecht, Rotterdam"
+                    placeholder="Bijv. Berlin, Hamburg, München"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     required
