@@ -80,6 +80,12 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - Task actions: alerts_active/phone_number_added/profile_info_completed → /settings/notifications, housing_preferences_completed → /dashboard/searches/new, reaction_letter_ready → /application-letter, income_documents_uploaded/id_document_uploaded → inline document checklist modals, search_buddy_added → inline email modal, profile_photo_added → placeholder (TODO: implement upload)
 - Migration: `server/migrations/006_profile_photo.sql` adds `profile_photo_url` column to `user_profile_data`
 
+### Recommendation System ("Aanbevolen voor jou")
+- `shared/boost-recommendations.ts` — Per-task metadata: subtitle (supportive microcopy), ctaLabel, route, modal flag
+- Backend logic: `server/boost.ts` `calculateBoostScore()` selects top 3 incomplete tasks sorted by weight desc
+- Frontend: `RecommendedSection` in `boost.tsx` renders cards with icon, title, points badge, supportive subtitle, and explicit CTA button
+- Navigation: tasks with `modal: false` + route navigate directly (alerts, phone, letter, preferences, profile info); tasks with `modal: true` open inline TaskModal (documents, search buddy, profile photo)
+
 ### Reactieklaar Card
 - `client/src/components/reactieklaar-card.tsx` — Reusable readiness status card showing 5 checklist items
 - Items: Alerts actief, Zoekbuddy toegevoegd, Documenten klaar, Telefoonnummer toegevoegd, Reactiebrief klaar

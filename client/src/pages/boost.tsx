@@ -18,8 +18,10 @@ import {
   X,
   Camera,
   UserCircle,
+  Rocket,
 } from "lucide-react";
 import { ReactieklaarCard } from "@/components/reactieklaar-card";
+import { RECOMMENDATION_META } from "@shared/boost-recommendations";
 
 interface BoostTask {
   id: string;
@@ -186,9 +188,11 @@ function BoostScoreCard({ score }: { score: number }) {
 function RecommendedSection({
   recommendations,
   onTaskClick,
+  navigate,
 }: {
   recommendations: BoostTask[];
   onTaskClick: (taskId: string) => void;
+  navigate: (path: string) => void;
 }) {
   if (recommendations.length === 0) return null;
 
@@ -200,25 +204,48 @@ function RecommendedSection({
       <div className="flex flex-col gap-3">
         {recommendations.map((task) => {
           const Icon = TASK_ICONS[task.id] || Shield;
+          const meta = RECOMMENDATION_META[task.id];
+          const subtitle = meta?.subtitle ?? task.description;
+          const ctaLabel = meta?.ctaLabel ?? "Bekijken";
+
+          const handleAction = () => {
+            if (meta && !meta.modal && meta.route) {
+              navigate(meta.route);
+            } else {
+              onTaskClick(task.id);
+            }
+          };
+
           return (
-            <button
+            <div
               key={task.id}
-              onClick={() => onTaskClick(task.id)}
-              className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 flex items-start gap-4 text-left hover:shadow-[0_4px_20px_rgba(0,0,0,0.06)] transition-all active:scale-[0.985]"
+              className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5"
               data-testid={`card-recommend-${task.id}`}
             >
-              <div className="w-10 h-10 rounded-xl bg-[#EDF2FF] flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Icon className="w-5 h-5 text-[#0066FF]" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-[15px] font-semibold text-[#1B2A4A] mb-1">{task.label}</p>
-                <p className="text-[13px] text-[#72839A] leading-relaxed">{task.description}</p>
-                <div className="flex items-center gap-1 mt-2.5">
-                  <span className="text-[12px] font-semibold text-[#0066FF]">+{task.weight} punten</span>
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-xl bg-[#EDF2FF] flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Icon className="w-5 h-5 text-[#0066FF]" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="text-[15px] font-semibold text-[#1B2A4A] leading-snug">{task.label}</p>
+                    <span className="text-[12px] font-semibold text-[#0066FF] bg-[#EDF2FF] px-2 py-0.5 rounded-full flex-shrink-0 whitespace-nowrap" data-testid={`badge-points-${task.id}`}>
+                      +{task.weight}
+                    </span>
+                  </div>
+                  <p className="text-[13px] text-[#72839A] leading-relaxed mt-1">{subtitle}</p>
                 </div>
               </div>
-              <ArrowRight className="w-4 h-4 text-[#9BA5B7] flex-shrink-0 mt-1" />
-            </button>
+              <Button
+                onClick={handleAction}
+                variant="secondary"
+                className="w-full mt-4 rounded-xl text-[14px] font-semibold"
+                data-testid={`button-recommend-${task.id}`}
+              >
+                {ctaLabel}
+                <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+              </Button>
+            </div>
           );
         })}
       </div>
@@ -635,7 +662,7 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
       {isHighProgress && <HighProgressState />}
 
       {recommendations.length > 0 && !isLowProgress && (
-        <RecommendedSection recommendations={recommendations} onTaskClick={setActiveTaskId} />
+        <RecommendedSection recommendations={recommendations} onTaskClick={setActiveTaskId} navigate={navigate} />
       )}
 
       <ReactieklaarCard
