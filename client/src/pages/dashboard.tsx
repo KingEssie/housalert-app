@@ -43,7 +43,9 @@ import {
   Eye,
   Send,
   ImageIcon,
+  Zap,
 } from "lucide-react";
+import BoostPage from "@/pages/boost";
 
 const MAX_PROFILES = 4;
 
@@ -79,7 +81,7 @@ const FRESH_LABEL_TEXT: Record<string, string> = {
   ouder: "Ouder",
 };
 
-type TabKey = "home" | "matches" | "filters" | "profiel";
+type TabKey = "home" | "matches" | "filters" | "boost" | "profiel";
 type MatchSubTab = "nieuw" | "bekeken" | "opgeslagen" | "gereageerd";
 
 const CITY_GRADIENTS: Record<string, string> = {
@@ -961,6 +963,7 @@ function ProfielTab({ user, signOut, navigate, subscription }: { user: any; sign
 const TAB_CONFIG: { key: TabKey; label: string; Icon: any }[] = [
   { key: "home", label: "Home", Icon: Home },
   { key: "matches", label: "Matches", Icon: Heart },
+  { key: "boost", label: "Boost", Icon: Zap },
   { key: "filters", label: "Filters", Icon: SlidersHorizontal },
   { key: "profiel", label: "Profiel", Icon: User },
 ];
@@ -1046,6 +1049,7 @@ export default function DashboardPage() {
             <MatchesTab accessToken={accessToken} setActiveTab={setActiveTab} />
           </SubscriptionGate>
         )}
+        {activeTab === "boost" && <BoostPage navigate={navigate} />}
         {activeTab === "filters" && <FiltersTab navigate={navigate} />}
         {activeTab === "profiel" && (
           <ProfielTab

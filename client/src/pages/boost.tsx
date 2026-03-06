@@ -1,0 +1,689 @@
+import { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { queryClient } from "@/lib/queryClient";
+import { useAuth } from "@/lib/auth";
+import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import {
+  Zap,
+  CheckCircle2,
+  ArrowRight,
+  Bell,
+  Users,
+  Search,
+  FileText,
+  FolderOpen,
+  Phone,
+  Shield,
+  X,
+  Eye,
+  Copy,
+  Plus,
+  Rocket,
+} from "lucide-react";
+
+interface BoostTask {
+  id: string;
+  label: string;
+  description: string;
+  completed: boolean;
+  score: number;
+  category: "account" | "prep";
+}
+
+interface SpeedStep {
+  id: string;
+  label: string;
+  done: boolean;
+}
+
+interface BoostData {
+  boostScore: number;
+  tasks: BoostTask[];
+  completedCount: number;
+  totalCount: number;
+  recommendations: BoostTask[];
+  speedSteps: SpeedStep[];
+  speedDone: number;
+  speedTotal: number;
+}
+
+interface ProfileData {
+  search_buddy_email: string | null;
+  application_template: string | null;
+  document_checklist: Record<string, boolean>;
+  network_task_done: boolean;
+  viewing_tips_done: boolean;
+}
+
+const TASK_ICONS: Record<string, typeof Bell> = {
+  alerts: Bell,
+  search_buddy: Users,
+  search_optimize: Search,
+  application_template: FileText,
+  documents: FolderOpen,
+  phone: Phone,
+  prep_letter: FileText,
+  prep_extra_profile: Search,
+  prep_network: Users,
+  prep_viewing_tips: Eye,
+};
+
+const DOCUMENT_CHECKLIST = [
+  {
+    group: "Voor iedereen",
+    items: [
+      { id: "id_copy", label: "Kopie identiteitsbewijs" },
+      { id: "schufa", label: "SCHUFA-rapport" },
+      { id: "income_proof", label: "Inkomensbewijs (laatste 3 maanden)" },
+      { id: "rental_history", label: "Huurgeschiedenis / Mietschuldenfreiheit" },
+      { id: "photo", label: "Pasfoto" },
+    ],
+  },
+  {
+    group: "In loondienst",
+    items: [
+      { id: "employment_contract", label: "Arbeidsovereenkomst" },
+      { id: "payslips", label: "Loonstroken (laatste 3 maanden)" },
+    ],
+  },
+  {
+    group: "Voor ondernemers",
+    items: [
+      { id: "business_reg", label: "Gewerbeanmeldung / KvK-uittreksel" },
+      { id: "tax_returns", label: "Belastingaangifte (laatste 2 jaar)" },
+      { id: "bank_statements", label: "Bankafschriften (laatste 3 maanden)" },
+    ],
+  },
+];
+
+function useBoostData() {
+  const { session } = useAuth();
+  return useQuery<BoostData>({
+    queryKey: ["/api/boost"],
+    queryFn: async () => {
+      const res = await fetch("/api/boost", {
+        headers: { Authorization: `Bearer ${session?.access_token}` },
+      });
+      if (!res.ok) throw new Error("Failed to fetch boost data");
+      return res.json();
+    },
+    enabled: !!session?.access_token,
+  });
+}
+
+function useProfileData() {
+  const { session } = useAuth();
+  return useQuery<ProfileData>({
+    queryKey: ["/api/profile-data"],
+    queryFn: async () => {
+      const res = await fetch("/api/profile-data", {
+        headers: { Authorization: `Bearer ${session?.access_token}` },
+      });
+      if (!res.ok) throw new Error("Failed to fetch profile data");
+      return res.json();
+    },
+    enabled: !!session?.access_token,
+  });
+}
+
+function useUpdateProfileData() {
+  const { session } = useAuth();
+  const { toast } = useToast();
+  return useMutation({
+    mutationFn: async (data: Partial<ProfileData>) => {
+      const res = await fetch("/api/profile-data", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error("Failed to update");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/profile-data"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/boost"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
+    },
+    onError: () => {
+      toast({ title: "Fout", description: "Kon gegevens niet opslaan.", variant: "destructive" });
+    },
+  });
+}
+
+function getScoreMicrocopy(score: number): string {
+  if (score >= 90) return "Top! Je bent klaar om razendsnel te reageren.";
+  if (score >= 70) return "Je profiel is al goed op weg.";
+  if (score >= 40) return "Nog een paar stappen om sneller te reageren.";
+  if (score >= 10) return "Begin met een paar taken om je kansen te vergroten.";
+  return "Start met je profiel en vergroot direct je kansen.";
+}
+
+function getScoreColor(score: number): string {
+  if (score >= 80) return "#22c55e";
+  if (score >= 60) return "#0066FF";
+  if (score >= 30) return "#f59e0b";
+  return "#9BA5B7";
+}
+
+function BoostScoreCard({ score }: { score: number }) {
+  const color = getScoreColor(score);
+  const microcopy = getScoreMicrocopy(score);
+
+  return (
+    <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6" data-testid="card-boost-score">
+      <div className="flex items-center gap-3 mb-5">
+        <div className="w-10 h-10 rounded-full bg-[#EDF2FF] flex items-center justify-center">
+          <Zap className="w-5 h-5 text-[#0066FF]" />
+        </div>
+        <div>
+          <h3 className="text-[15px] font-semibold text-[#1B2A4A]">Boost score</h3>
+          <p className="text-[13px] text-[#9BA5B7]">Hoe klaar ben je?</p>
+        </div>
+      </div>
+
+      <div className="flex items-end gap-2 mb-4">
+        <span className="text-[44px] font-[800] text-[#1B2A4A] leading-none tracking-[-0.03em]" data-testid="text-boost-score">
+          {score}
+        </span>
+        <span className="text-[18px] text-[#9BA5B7] mb-1.5 font-medium">/ 100</span>
+      </div>
+
+      <div className="w-full h-2.5 bg-[#F2F5F8] rounded-full overflow-hidden mb-4">
+        <div
+          className="h-full rounded-full transition-all duration-700 ease-out"
+          style={{ width: `${score}%`, background: color }}
+          data-testid="progress-boost-score"
+        />
+      </div>
+
+      <p className="text-[14px] text-[#72839A] leading-relaxed" data-testid="text-boost-microcopy">
+        {microcopy}
+      </p>
+    </div>
+  );
+}
+
+function RecommendedSection({
+  recommendations,
+  onTaskClick,
+}: {
+  recommendations: BoostTask[];
+  onTaskClick: (taskId: string) => void;
+}) {
+  if (recommendations.length === 0) return null;
+
+  return (
+    <div data-testid="section-recommended">
+      <h3 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">
+        Aanbevolen voor jou
+      </h3>
+      <div className="flex flex-col gap-3">
+        {recommendations.map((task) => {
+          const Icon = TASK_ICONS[task.id] || Shield;
+          return (
+            <button
+              key={task.id}
+              onClick={() => onTaskClick(task.id)}
+              className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 flex items-start gap-4 text-left hover:shadow-[0_4px_20px_rgba(0,0,0,0.06)] transition-all active:scale-[0.985]"
+              data-testid={`card-recommend-${task.id}`}
+            >
+              <div className="w-10 h-10 rounded-xl bg-[#EDF2FF] flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Icon className="w-5 h-5 text-[#0066FF]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[15px] font-semibold text-[#1B2A4A] mb-1">{task.label}</p>
+                <p className="text-[13px] text-[#72839A] leading-relaxed">{task.description}</p>
+                <div className="flex items-center gap-1 mt-2.5">
+                  <span className="text-[12px] font-semibold text-[#0066FF]">+{task.score} punten</span>
+                </div>
+              </div>
+              <ArrowRight className="w-4 h-4 text-[#9BA5B7] flex-shrink-0 mt-1" />
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function ReadinessSection({ speedSteps, speedDone, speedTotal }: { speedSteps: SpeedStep[]; speedDone: number; speedTotal: number }) {
+  return (
+    <div data-testid="section-readiness">
+      <h3 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">
+        Klaar om snel te reageren
+      </h3>
+      <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <Rocket className="w-4 h-4 text-[#0066FF]" />
+          <span className="text-[14px] font-semibold text-[#1B2A4A]">
+            {speedDone}/{speedTotal} klaar
+          </span>
+          {speedDone === speedTotal && (
+            <span className="text-[12px] font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full ml-auto">
+              Alles klaar
+            </span>
+          )}
+        </div>
+        <div className="flex flex-col gap-2.5">
+          {speedSteps.map((step) => (
+            <div key={step.id} className="flex items-center gap-3" data-testid={`readiness-${step.id}`}>
+              {step.done ? (
+                <CheckCircle2 className="w-[18px] h-[18px] text-green-500 flex-shrink-0" />
+              ) : (
+                <div className="w-[18px] h-[18px] rounded-full border-2 border-[#EAEFF5] flex-shrink-0" />
+              )}
+              <span className={`text-[14px] ${step.done ? "text-[#9BA5B7]" : "text-[#1B2A4A] font-medium"}`}>
+                {step.label}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AllTasksSection({
+  tasks,
+  onTaskClick,
+}: {
+  tasks: BoostTask[];
+  onTaskClick: (taskId: string) => void;
+}) {
+  const completedTasks = tasks.filter((t) => t.completed);
+  const incompleteTasks = tasks.filter((t) => !t.completed);
+
+  return (
+    <div data-testid="section-all-tasks">
+      <h3 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">
+        Alle taken
+      </h3>
+      <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] overflow-hidden">
+        {incompleteTasks.map((task, i) => {
+          const Icon = TASK_ICONS[task.id] || Shield;
+          return (
+            <button
+              key={task.id}
+              onClick={() => onTaskClick(task.id)}
+              className={`w-full flex items-center gap-3 p-4 text-left hover:bg-[#F8F9FC] transition-colors ${
+                i < incompleteTasks.length - 1 || completedTasks.length > 0 ? "border-b border-[#F2F5F8]" : ""
+              }`}
+              data-testid={`task-${task.id}`}
+            >
+              <div className="w-5 h-5 rounded-full border-2 border-[#EAEFF5] flex-shrink-0" />
+              <Icon className="w-4 h-4 text-[#0066FF] flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-[14px] font-medium text-[#1B2A4A]">{task.label}</p>
+                <p className="text-[12px] text-[#9BA5B7]">+{task.score} punten</p>
+              </div>
+              <ArrowRight className="w-4 h-4 text-[#9BA5B7] flex-shrink-0" />
+            </button>
+          );
+        })}
+        {completedTasks.map((task, i) => {
+          const Icon = TASK_ICONS[task.id] || Shield;
+          return (
+            <div
+              key={task.id}
+              className={`flex items-center gap-3 p-4 opacity-60 ${
+                i < completedTasks.length - 1 ? "border-b border-[#F2F5F8]" : ""
+              }`}
+              data-testid={`task-done-${task.id}`}
+            >
+              <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+              <Icon className="w-4 h-4 text-[#9BA5B7] flex-shrink-0" />
+              <p className="text-[14px] text-[#9BA5B7] line-through">{task.label}</p>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function EmptyState({ onStart }: { onStart: () => void }) {
+  return (
+    <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-8 text-center" data-testid="boost-empty-state">
+      <div className="w-14 h-14 rounded-2xl bg-[#EDF2FF] flex items-center justify-center mx-auto mb-5">
+        <Zap className="w-7 h-7 text-[#0066FF]" />
+      </div>
+      <h3 className="text-[20px] font-[700] text-[#1B2A4A] tracking-[-0.02em] mb-2">
+        Vergroot je kansen
+      </h3>
+      <p className="text-[15px] text-[#72839A] leading-relaxed mb-6 max-w-[280px] mx-auto">
+        Begin met 1 of 2 stappen en vergroot direct je kansen op een woning.
+      </p>
+      <Button
+        onClick={onStart}
+        className="h-[52px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold px-8"
+        data-testid="button-start-boost"
+      >
+        Start met je profiel
+      </Button>
+    </div>
+  );
+}
+
+function HighProgressState() {
+  return (
+    <div className="bg-gradient-to-br from-[#0066FF] to-[#0052CC] rounded-2xl p-6 text-white" data-testid="boost-high-progress">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center">
+          <Rocket className="w-5 h-5 text-white" />
+        </div>
+        <div>
+          <h3 className="text-[16px] font-semibold">Bijna klaar!</h3>
+        </div>
+      </div>
+      <p className="text-[14px] text-white/80 leading-relaxed">
+        Je bent bijna klaar om razendsnel te reageren op nieuwe woningen. Rond de laatste taken af voor een compleet profiel.
+      </p>
+    </div>
+  );
+}
+
+function TaskModal({
+  taskId,
+  onClose,
+  navigate,
+}: {
+  taskId: string;
+  onClose: () => void;
+  navigate: (path: string) => void;
+}) {
+  const { data: profileData } = useProfileData();
+  const updateProfileData = useUpdateProfileData();
+  const { toast } = useToast();
+
+  const [buddyEmail, setBuddyEmail] = useState("");
+  const [checklist, setChecklist] = useState<Record<string, boolean>>({});
+  const [initialized, setInitialized] = useState(false);
+
+  if (profileData && !initialized) {
+    setBuddyEmail(profileData.search_buddy_email || "");
+    setChecklist(profileData.document_checklist || {});
+    setInitialized(true);
+  }
+
+  const handleSave = async (data: Partial<ProfileData>, msg: string) => {
+    await updateProfileData.mutateAsync(data);
+    toast({ title: "Opgeslagen!", description: msg });
+    onClose();
+  };
+
+  const TITLES: Record<string, string> = {
+    alerts: "Alerts activeren",
+    search_buddy: "Zoekbuddy toevoegen",
+    search_optimize: "Zoekopdracht optimaliseren",
+    application_template: "Aanmeldingsbrief voorbereiden",
+    documents: "Documenten verzamelen",
+    phone: "Telefoonnummer toevoegen",
+    prep_letter: "Aanmeldingsbrief voorbereiden",
+    prep_extra_profile: "Extra zoekopdracht toevoegen",
+    prep_network: "Gebruik je netwerk",
+    prep_viewing_tips: "Bezichtigingtips bekijken",
+  };
+
+  const DESCRIPTIONS: Record<string, string> = {
+    alerts: "Activeer minstens een meldingskanaal zodat je geen woningen mist.",
+    search_buddy: "Voeg een zoekbuddy toe die ook meldingen ontvangt.",
+    search_optimize: "Maak meer zoekprofielen of optimaliseer je filters.",
+    application_template: "Bereid een standaard aanmeldingsbrief voor.",
+    documents: "Verzamel alle benodigde documenten.",
+    phone: "Voeg je telefoonnummer toe voor snellere meldingen.",
+    prep_letter: "Bereid een standaard aanmeldingsbrief voor.",
+    prep_extra_profile: "Voeg een extra zoekopdracht toe voor meer matches.",
+    prep_network: "Deel je zoektocht met je netwerk.",
+    prep_viewing_tips: "Lees tips voor een succesvolle bezichtiging.",
+  };
+
+  const title = TITLES[taskId] || "";
+  const description = DESCRIPTIONS[taskId] || "";
+
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center" onClick={onClose}>
+      <div
+        className="bg-white w-full max-w-md rounded-t-[24px] sm:rounded-[24px] max-h-[85vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="sticky top-0 bg-white border-b border-[#EAEFF5] p-6 flex items-center justify-between rounded-t-[24px]">
+          <h2 className="text-[20px] font-[700] text-[#1B2A4A] tracking-[-0.02em]">{title}</h2>
+          <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F2F5F8] flex items-center justify-center" data-testid="button-close-modal">
+            <X className="w-4 h-4 text-[#72839A]" />
+          </button>
+        </div>
+
+        <div className="p-5">
+          <p className="text-[14px] text-[#72839A] mb-5">{description}</p>
+
+          {(taskId === "alerts" || taskId === "phone") && (
+            <Button
+              onClick={() => { onClose(); navigate("/settings/notifications"); }}
+              className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold"
+              data-testid="button-goto-notifications"
+            >
+              <Bell className="w-4 h-4 mr-2" />
+              Naar meldingsinstellingen
+            </Button>
+          )}
+
+          {taskId === "search_buddy" && (
+            <div className="flex flex-col gap-3">
+              <label className="text-[13px] font-medium text-[#1B2A4A]">E-mailadres zoekbuddy</label>
+              <input
+                type="email"
+                value={buddyEmail}
+                onChange={(e) => setBuddyEmail(e.target.value)}
+                placeholder="buddy@voorbeeld.nl"
+                className="w-full h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
+                data-testid="input-buddy-email"
+              />
+              <p className="text-[12px] text-[#9BA5B7]">Je buddy ontvangt dezelfde meldingen als jij.</p>
+              <Button
+                onClick={() => handleSave({ search_buddy_email: buddyEmail }, "Zoekbuddy opgeslagen!")}
+                disabled={!buddyEmail.includes("@") || updateProfileData.isPending}
+                className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold disabled:opacity-50"
+                data-testid="button-save-buddy"
+              >
+                {updateProfileData.isPending ? "Opslaan..." : "Opslaan"}
+              </Button>
+            </div>
+          )}
+
+          {(taskId === "search_optimize" || taskId === "prep_extra_profile") && (
+            <Button
+              onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
+              className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold"
+              data-testid="button-goto-filters"
+            >
+              <Search className="w-4 h-4 mr-2" />
+              Nieuwe zoekopdracht
+            </Button>
+          )}
+
+          {(taskId === "application_template" || taskId === "prep_letter") && (
+            <Button
+              onClick={() => { onClose(); navigate("/application-letter"); }}
+              className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold"
+              data-testid="button-goto-letter"
+            >
+              <FileText className="w-4 h-4 mr-2" />
+              Naar aanmeldingsbrief
+            </Button>
+          )}
+
+          {taskId === "documents" && (
+            <div className="flex flex-col gap-4">
+              {DOCUMENT_CHECKLIST.map((group) => (
+                <div key={group.group}>
+                  <h4 className="text-[13px] font-semibold text-[#1B2A4A] mb-2">{group.group}</h4>
+                  <div className="flex flex-col gap-1">
+                    {group.items.map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() => setChecklist((prev) => ({ ...prev, [item.id]: !prev[item.id] }))}
+                        className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-[#F2F5F8] transition-colors text-left"
+                        data-testid={`check-${item.id}`}
+                      >
+                        {checklist[item.id] ? (
+                          <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+                        ) : (
+                          <div className="w-5 h-5 rounded-full border-2 border-[#EAEFF5] flex-shrink-0" />
+                        )}
+                        <span className={`text-[14px] ${checklist[item.id] ? "text-[#9BA5B7] line-through" : "text-[#1B2A4A]"}`}>
+                          {item.label}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+              <Button
+                onClick={() => handleSave({ document_checklist: checklist }, "Documentenlijst opgeslagen!")}
+                disabled={updateProfileData.isPending}
+                className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold disabled:opacity-50"
+                data-testid="button-save-documents"
+              >
+                {updateProfileData.isPending ? "Opslaan..." : "Opslaan"}
+              </Button>
+            </div>
+          )}
+
+          {taskId === "prep_network" && (
+            <div className="flex flex-col gap-3">
+              <p className="text-[13px] text-[#1B2A4A] font-medium">
+                Deel je zoektocht met vrienden en familie. Hoe meer ogen, hoe sneller je iets vindt.
+              </p>
+              <Button
+                onClick={async () => {
+                  const text = "Hey! Ik zoek een huurwoning in Duitsland en gebruik Stekkies. Als jij ook iets ziet, stuur het door! Kijk op stekkies.replit.app";
+                  if (navigator.share) {
+                    try { await navigator.share({ text }); } catch {}
+                  } else {
+                    await navigator.clipboard.writeText(text);
+                    toast({ title: "Gekopieerd!", description: "Tekst is naar je klembord gekopieerd." });
+                  }
+                  await handleSave({ network_task_done: true } as any, "Netwerktaak voltooid!");
+                }}
+                className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold"
+                data-testid="button-share-network"
+              >
+                <Copy className="w-4 h-4 mr-2" />
+                Deel met je netwerk
+              </Button>
+            </div>
+          )}
+
+          {taskId === "prep_viewing_tips" && (
+            <Button
+              onClick={() => { onClose(); navigate("/tips/bezichtiging"); }}
+              className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold"
+              data-testid="button-goto-tips"
+            >
+              <Eye className="w-4 h-4 mr-2" />
+              Naar bezichtigingtips
+            </Button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function BoostPage({ navigate }: { navigate: (path: string) => void }) {
+  const { data, isLoading, isError, refetch } = useBoostData();
+  const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
+
+  if (isError) {
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="mb-1">
+          <h1 className="text-[26px] font-[700] text-[#1B2A4A] tracking-[-0.02em] leading-[1.15]">Boost</h1>
+        </div>
+        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-8 text-center" data-testid="boost-error">
+          <p className="text-[15px] text-[#72839A] mb-4">Kon je gegevens niet laden.</p>
+          <Button
+            onClick={() => refetch()}
+            className="h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold px-6"
+            data-testid="button-retry-boost"
+          >
+            Opnieuw proberen
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading || !data) {
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="mb-2">
+          <div className="h-8 bg-[#F2F5F8] rounded w-24 mb-2 animate-pulse" />
+          <div className="h-4 bg-[#F2F5F8] rounded w-56 animate-pulse" />
+        </div>
+        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
+          <div className="h-4 bg-[#F2F5F8] rounded w-32 mb-3" />
+          <div className="h-10 bg-[#F2F5F8] rounded w-20 mb-2" />
+          <div className="h-2.5 bg-[#F2F5F8] rounded w-full" />
+        </div>
+        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
+          <div className="h-4 bg-[#F2F5F8] rounded w-48 mb-3" />
+          <div className="h-12 bg-[#F2F5F8] rounded w-full mb-2" />
+          <div className="h-12 bg-[#F2F5F8] rounded w-full" />
+        </div>
+      </div>
+    );
+  }
+
+  const { boostScore, tasks, completedCount, totalCount, recommendations, speedSteps, speedDone, speedTotal } = data;
+  const isLowProgress = boostScore < 10;
+  const isHighProgress = boostScore >= 80 && completedCount < totalCount;
+
+  function handleTaskClick(taskId: string) {
+    setActiveTaskId(taskId);
+  }
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="mb-1">
+        <h1 className="text-[26px] font-[700] text-[#1B2A4A] tracking-[-0.02em] leading-[1.15]" data-testid="heading-boost">
+          Boost
+        </h1>
+        <p className="text-[15px] text-[#72839A] mt-1">
+          Vergroot je kansen op een woning
+        </p>
+      </div>
+
+      <BoostScoreCard score={boostScore} />
+
+      {isLowProgress && (
+        <EmptyState onStart={() => {
+          const first = recommendations[0] || tasks.find(t => !t.completed);
+          if (first) handleTaskClick(first.id);
+        }} />
+      )}
+
+      {isHighProgress && <HighProgressState />}
+
+      {recommendations.length > 0 && !isLowProgress && (
+        <RecommendedSection recommendations={recommendations} onTaskClick={handleTaskClick} />
+      )}
+
+      <ReadinessSection speedSteps={speedSteps} speedDone={speedDone} speedTotal={speedTotal} />
+
+      <AllTasksSection tasks={tasks} onTaskClick={handleTaskClick} />
+
+      {activeTaskId && (
+        <TaskModal
+          taskId={activeTaskId}
+          onClose={() => setActiveTaskId(null)}
+          navigate={navigate}
+        />
+      )}
+    </div>
+  );
+}

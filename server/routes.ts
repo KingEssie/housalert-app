@@ -777,6 +777,98 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/boost", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const profileDataPromise = supabase.from("user_profile_data").select("*").eq("user_id", user.id).maybeSingle()
+        .then(r => r.error ? { data: null } : r);
+
+      const [notifResult, profileDataResult, searchProfilesResult] = await Promise.all([
+        supabase.from("user_notification_settings").select("*").eq("user_id", user.id).maybeSingle(),
+        profileDataPromise,
+        supabase.from("search_profiles").select("id, city, price_min, price_max, bedrooms_min, size_min").eq("user_id", user.id),
+      ]);
+
+      const rawNotif = notifResult.data;
+      const notif = rawNotif ?? { email_enabled: true, sms_enabled: false, whatsapp_enabled: false, phone_e164: null };
+      const profileData = profileDataResult.data;
+      const searchProfiles = searchProfilesResult.data ?? [];
+
+      const hasAlertChannel = !!(notif.email_enabled || notif.sms_enabled || notif.whatsapp_enabled);
+      const hasSearchBuddy = !!(profileData?.search_buddy_email && profileData.search_buddy_email.trim().length > 0);
+
+      const hasStrongProfile = searchProfiles.some(p => {
+        let filters = 0;
+        if (p.price_min > 0 || p.price_max > 0) filters++;
+        if (p.bedrooms_min > 0) filters++;
+        if (p.size_min > 0) filters++;
+        return filters >= 2;
+      });
+      const hasOptimizedSearch = searchProfiles.length >= 2 || hasStrongProfile;
+
+      const hasApplicationTemplate = !!(profileData?.application_template && profileData.application_template.trim().length > 20);
+
+      const checklist = (profileData?.document_checklist ?? {}) as Record<string, boolean>;
+      const checklistDone = Object.values(checklist).filter(Boolean).length;
+      const hasDocuments = checklistDone >= 4;
+
+      const hasPhone = !!(notif.phone_e164 && notif.phone_e164.length > 5);
+      const hasNetworkDone = !!(profileData?.network_task_done);
+      const hasViewingTipsDone = !!(profileData?.viewing_tips_done);
+      const hasMultipleProfiles = searchProfiles.length >= 2;
+
+      const boostTasks = [
+        { id: "alerts", label: "Alerts activeren", description: "Activeer meldingen zodat je geen nieuwe woningen mist.", completed: hasAlertChannel, score: 15, category: "account" as const },
+        { id: "documents", label: "Documenten verzamelen", description: "Verzamel alle benodigde documenten zodat je klaar bent om te reageren.", completed: hasDocuments, score: 15, category: "account" as const },
+        { id: "application_template", label: "Standaard reactie maken", description: "Bereid een aanmeldingsbrief voor zodat je direct kunt reageren.", completed: hasApplicationTemplate, score: 15, category: "account" as const },
+        { id: "search_optimize", label: "Woonwensen aanvullen", description: "Maak meer zoekprofielen of verfijn je filters voor betere matches.", completed: hasOptimizedSearch, score: 12, category: "account" as const },
+        { id: "phone", label: "Contactgegevens controleren", description: "Voeg je telefoonnummer toe voor snellere meldingen.", completed: hasPhone, score: 10, category: "account" as const },
+        { id: "search_buddy", label: "Zoekbuddy toevoegen", description: "Laat iemand anders ook meldingen ontvangen van jouw matches.", completed: hasSearchBuddy, score: 8, category: "account" as const },
+        { id: "prep_extra_profile", label: "Extra zoekopdracht toevoegen", description: "Meer zoekprofielen betekent meer kansen op een match.", completed: hasMultipleProfiles, score: 8, category: "prep" as const },
+        { id: "prep_network", label: "Gebruik je netwerk", description: "Deel je zoektocht met vrienden en familie.", completed: hasNetworkDone, score: 5, category: "prep" as const },
+        { id: "prep_viewing_tips", label: "Bezichtigingtips lezen", description: "Lees tips om goed voorbereid naar een bezichtiging te gaan.", completed: hasViewingTipsDone, score: 5, category: "prep" as const },
+        { id: "prep_letter", label: "Introductiebrief schrijven", description: "Maak een persoonlijke brief om je kansen te vergroten.", completed: hasApplicationTemplate, score: 7, category: "prep" as const },
+      ];
+
+      const maxScore = boostTasks.reduce((s, t) => s + t.score, 0);
+      const earned = boostTasks.filter(t => t.completed).reduce((s, t) => s + t.score, 0);
+      const boostScore = maxScore > 0 ? Math.round((earned / maxScore) * 100) : 0;
+
+      const completedCount = boostTasks.filter(t => t.completed).length;
+
+      const recommendations = boostTasks
+        .filter(t => !t.completed)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 3);
+
+      const speedSteps = [
+        { id: "alerts_active", label: "Alerts actief", done: hasAlertChannel },
+        { id: "letter_ready", label: "Aanmeldingsbrief klaar", done: hasApplicationTemplate },
+        { id: "documents_ready", label: "Documenten klaar", done: hasDocuments },
+        { id: "phone_added", label: "Telefoonnummer toegevoegd", done: hasPhone },
+      ];
+
+      const speedDone = speedSteps.filter(s => s.done).length;
+
+      return res.json({
+        boostScore,
+        tasks: boostTasks,
+        completedCount,
+        totalCount: boostTasks.length,
+        recommendations,
+        speedSteps,
+        speedDone,
+        speedTotal: speedSteps.length,
+      });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   app.get("/api/profile-strength", async (req, res) => {
     try {
       const token = req.headers.authorization?.replace("Bearer ", "");

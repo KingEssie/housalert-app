@@ -1,0 +1,200 @@
+Build a complete “Boost” feature for my housing app MVP.
+
+Context:
+- This app helps users improve their chances of getting a rental home.
+- The app already has a mobile-first UX direction inspired by BlaBlaCar: calm, clean, friendly, modern, soft UI, lots of whitespace, rounded cards, clear hierarchy, not crowded, not overly gamified.
+- Preserve the existing UX style. Do NOT introduce a flashy dashboard style, aggressive gamification, heavy gradients, or cluttered admin-like layouts.
+- The feature must feel native to the current app and visually consistent with the rest of the product.
+
+Main goal:
+Create a new bottom-tab page called “Boost” that helps users complete important actions that increase their readiness and speed when applying for homes.
+
+Core concept:
+The Boost page should show:
+1. A profile strength / completion score
+2. A list of recommended actions
+3. Progress feedback
+4. Lightweight motivation
+5. Actionable next steps
+
+Important UX rules:
+- Keep the interface minimal and elegant
+- Use a calm, friendly, trustworthy mobile UI
+- Prioritize readability and simplicity
+- One clear primary action per card
+- Use subtle microcopy
+- No noisy gamification
+- No excessive colors or visual overload
+- Smooth, modern card-based layout
+- Keep copy concise and helpful
+
+Feature requirements:
+
+1) Bottom tab integration
+- Add a new tab/page called “Boost”
+- Keep navigation styling consistent with the rest of the app
+- Do not break existing tabs or navigation
+
+2) Boost header section
+- Add a simple page header:
+  - Title: “Boost”
+  - Subtitle: “Vergroot je kansen op een woning”
+- Add a clean progress summary card at the top
+
+3) Profile strength score
+- Add a “Boost score” or “Profielscore” from 0 to 100
+- Display it in a simple, elegant way:
+  - score number
+  - progress bar
+  - short supporting text
+- Example microcopy:
+  - “Je profiel is al goed op weg”
+  - “Nog een paar stappen om sneller te reageren”
+- The score must be calculated dynamically based on completed tasks
+- Make the scoring logic easy to maintain and configurable
+
+4) Completion tasks
+Create a task list with check/progress states. Each task should have:
+- title
+- short description
+- status
+- action button
+- optional point value or contribution to score
+
+Initial tasks:
+- Upload inkomensdocument
+- Upload identiteitsbewijs
+- Voeg zoekbuddy toe
+- Zet woningalerts aan
+- Vul woonwensen volledig in
+- Maak een standaard reactie / motivatiebericht
+- Controleer contactgegevens
+- Voeg profielfoto toe (optional, low weight)
+
+Task behavior:
+- If incomplete: show CTA button
+- If complete: show completed state
+- If partially complete: show in-progress state if relevant
+- Clicking a task should either:
+  - open the relevant flow/screen
+  - or navigate to the correct existing page
+- Reuse existing flows where possible instead of rebuilding everything
+
+5) Smart recommendations
+- Show a section called “Aanbevolen voor jou”
+- This should prioritize the top 2–3 incomplete tasks with the highest impact
+- Recommendations should be based on missing profile elements
+- Add lightweight logic to sort tasks by importance
+
+6) Speed / readiness concept
+Add a subtle readiness section, not too technical:
+- Example title: “Klaar om snel te reageren”
+- Show simple readiness indicators like:
+  - Alerts actief / niet actief
+  - Documenten klaar / ontbreken nog
+  - Reactiebericht klaar / nog instellen
+- Avoid overwhelming metrics
+- Keep it visual and easy to scan
+
+7) Empty / low-progress state
+If the user has almost nothing completed:
+- show an encouraging first-step experience
+- example text:
+  - “Begin met 1 of 2 stappen en vergroot direct je kansen”
+- show one primary CTA:
+  - “Start met je profiel”
+- Keep this state friendly, never judgmental
+
+8) High-progress state
+If the user is far along:
+- show a positive reinforcement state
+- example:
+  - “Je bent bijna klaar om razendsnel te reageren”
+- suggest only the remaining highest-value actions
+
+9) Data model and persistence
+Use Supabase, not Replit local Postgres.
+Create or extend the database structure to support:
+- user boost score
+- task completion states
+- task timestamps
+- profile readiness flags
+- optional task metadata
+
+Prefer a clean and scalable schema.
+Avoid overengineering.
+
+10) Backend logic
+Implement the score calculation in a maintainable way.
+Suggested approach:
+- task definitions in a structured config
+- each task has a weight
+- score is derived from completion state
+- keep business logic separate from UI
+
+11) Frontend architecture
+- Build reusable components for:
+  - Boost score card
+  - Task card
+  - Recommendation card
+  - Readiness status card
+- Keep components small and clean
+- Match existing app styling and spacing
+- Make sure it works well on mobile screens
+
+12) Copy style
+Use Dutch copy.
+Tone:
+- warm
+- concise
+- practical
+- trustworthy
+- non-pushy
+
+13) Technical expectations
+- Inspect the existing codebase first
+- Reuse current design system, spacing, buttons, cards, icons, and typography
+- Do not redesign the whole app
+- Do not create duplicate flows if existing profile/documents/settings pages already exist
+- Wire the new Boost page into the real app structure
+- Use real Supabase-backed persistence where feasible
+- If some dependent flows do not yet exist, create clear placeholders with TODO comments and route structure
+
+14) Deliverables
+I want:
+- the full Boost page implemented
+- Supabase schema/migration for this feature
+- score calculation logic
+- reusable UI components
+- task state handling
+- navigation integration
+- seed/config for default task definitions
+- concise comments only where useful
+
+15) Output format
+At the end, provide:
+- a short summary of what was built
+- which files were created/changed
+- which Supabase tables were added/changed
+- any TODO items still needed
+
+16) Important constraints
+- Keep it lightweight and MVP-friendly
+- Avoid unnecessary testing to reduce cost
+- Only do minimal smoke-checks
+- Do not spend time on heavy test suites
+- No fake mock enterprise complexity
+- Focus on a polished, usable implementation
+
+Design reference:
+Think BlaBlaCar-inspired simplicity:
+- friendly and soft
+- airy layouts
+- rounded surfaces
+- subtle hierarchy
+- clear CTA buttons
+- calm visual tone
+- not flashy
+
+Build this feature directly into the existing app codebase.
+Start by auditing the current code structure and then implement the cleanest version that fits what already exists.

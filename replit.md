@@ -46,7 +46,7 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 
 ### Existing Pages
 - `client/src/pages/login.tsx` — Auth page with "Inloggen" / "Account aanmaken" tabs
-- `client/src/pages/dashboard.tsx` — Phase 2 dashboard with bottom-nav bar (4 tabs: Home, Matches, Filters, Profiel). Mobile-first BlaBlaCar design. Match cards with image placeholders (city-based gradients), save/bookmark toggle, "Reageer" opens ApplySheet (bottom sheet with letter preview, copy, view listing, mark applied). Matches page has sub-tabs: Nieuw, Bekeken, Opgeslagen, Gereageerd — status tracked in localStorage (keys: `stekkies_match_viewed`, `stekkies_match_saved`, `stekkies_match_applied`). HomeTab includes SpeedBanner (readiness indicator). ProfielTab includes NotificationSummaryCard (channel status + recommended fastest channel) and SpeedReadinessCard (4-step checklist). Subscription CTA for expired users.
+- `client/src/pages/dashboard.tsx` — Phase 2 dashboard with bottom-nav bar (5 tabs: Home, Matches, Boost, Filters, Profiel). Mobile-first BlaBlaCar design. Match cards with image placeholders (city-based gradients), save/bookmark toggle, "Reageer" opens ApplySheet (bottom sheet with letter preview, copy, view listing, mark applied). Matches page has sub-tabs: Nieuw, Bekeken, Opgeslagen, Gereageerd — status tracked in localStorage (keys: `stekkies_match_viewed`, `stekkies_match_saved`, `stekkies_match_applied`). HomeTab includes SpeedBanner (readiness indicator). ProfielTab includes NotificationSummaryCard (channel status + recommended fastest channel) and SpeedReadinessCard (4-step checklist). Subscription CTA for expired users.
 - `client/src/components/apply-sheet.tsx` — Reusable bottom sheet for instant apply flow: shows pre-filled application letter, copy, view listing, mark as applied. Used by MatchCard and ListingDetailPage.
 - `client/src/pages/listing-detail.tsx` — Full listing detail page at `/listing/:id`. Shows title, city/district, price, bedrooms, size, source, freshness badge, "Kopieer aanmeldingsbrief" button, and "Bekijk originele advertentie" CTA.
 - `client/src/pages/new-search.tsx` — 6-step wizard to create a search profile at `/dashboard/searches/new`. Steps: property type, location (city+districts), budget, basic requirements (bedrooms/size), extra preferences, additional filters. Dynamic estimate badge. Max 4 profiles.
@@ -67,6 +67,15 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - Prep tasks: Introductiebrief (+10), Extra zoekopdracht (+15), Gebruik je netwerk (+5), Bezichtigingtips (+5)
 - Max score: 135 total (both groups combined)
 - Migration: `server/migrations/004_search_prep_flags.sql` adds `network_task_done` and `viewing_tips_done` columns
+
+### Boost Tab
+- `client/src/pages/boost.tsx` — Dedicated Boost page with score card, recommended tasks, readiness indicators, and all-tasks list
+- `GET /api/boost` — Returns `boostScore` (0-100 normalized), `tasks` array (id, label, description, completed, score, category), `recommendations` (top 3 incomplete sorted by weight), `speedSteps`, `speedDone`, `speedTotal`
+- Bottom nav tab: 5th tab (between Matches and Filters) with Zap icon, label "Boost"
+- TabKey type: `"home" | "matches" | "filters" | "boost" | "profiel"`
+- Components: BoostScoreCard, RecommendedSection, ReadinessSection, AllTasksSection, EmptyState, HighProgressState, TaskModal (self-contained with flows for all task types)
+- Task actions: alerts/phone → /settings/notifications, search_optimize/prep_extra_profile → /dashboard/searches/new, application_template/prep_letter → /application-letter, documents → inline checklist modal, search_buddy → inline email modal, prep_network → share/copy, prep_viewing_tips → /tips/bezichtiging
+- Score weights (normalized to 100): alerts 15, documents 15, application_template 15, search_optimize 12, phone 10, search_buddy 8, prep_extra_profile 8, prep_letter 7, prep_network 5, prep_viewing_tips 5
 
 ### Application Letter System
 - `client/src/lib/application-letter.ts` — Default Dutch template, placeholder definitions, `fillTemplate()` function
