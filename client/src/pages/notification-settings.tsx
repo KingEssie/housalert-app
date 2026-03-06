@@ -124,7 +124,7 @@ export default function NotificationSettingsPage() {
   const userInitial = user?.email?.charAt(0).toUpperCase() ?? "?";
 
   return (
-    <div className="min-h-screen bg-[#F7F8FA] flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
         <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center gap-3">
           <button
@@ -251,7 +251,7 @@ export default function NotificationSettingsPage() {
                         if (phoneError) validatePhone(e.target.value);
                       }}
                       onBlur={() => validatePhone(phoneInput)}
-                      className="h-[52px] px-4 rounded-xl border border-[#EAEFF5] bg-[#F7F8FA] text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] focus:bg-white transition-all"
+                      className="h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:bg-white transition-all"
                       data-testid="input-phone"
                     />
                     {phoneError && (

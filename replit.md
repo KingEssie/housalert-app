@@ -293,9 +293,11 @@ Env vars: `TEST_USER_EMAIL`, `TEST_USER_PASSWORD`, `TEST_PHONE_E164`, `TEST_BASE
 - Heading navy: `#1B2A4A`
 - Secondary text: `#72839A`
 - Muted/helper text: `#9BA5B7`
-- Page background: `#F7F8FA`
+- Page background: `#FFFFFF` (true white)
 - Card surface: `#FFFFFF`
+- Input/field background: `#F3F4F8` (soft cool gray, no border)
 - Border: `#EAEFF5`
+- Row separator: `#F0F2F5`
 - Hover surface: `#F2F5F8`
 - Success: `#22c55e`
 
@@ -312,7 +314,7 @@ Env vars: `TEST_USER_EMAIL`, `TEST_USER_PASSWORD`, `TEST_PHONE_E164`, `TEST_BASE
 - Elevated shadow: `shadow-[0_4px_20px_rgba(0,0,0,0.06)]`
 - Cards: `rounded-2xl`
 - Buttons: `rounded-xl`
-- Inputs: `rounded-xl`
+- Inputs: `rounded-xl`, `h-[52px]`, borderless `bg-[#F3F4F8]`, focus ring `ring-[#0066FF]/20`
 - Modals: `rounded-t-[24px] sm:rounded-[24px]`
 
 ### Buttons

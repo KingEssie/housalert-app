@@ -213,7 +213,7 @@ function ProfileCard({
 
       <button
         onClick={onEdit}
-        className="w-full h-10 rounded-xl border border-[#EAEFF5] text-[13px] font-semibold text-[#1B2A4A] hover:bg-[#F7F8FA] transition-colors flex items-center justify-center gap-1.5"
+        className="w-full h-10 rounded-xl border border-[#EAEFF5] text-[13px] font-semibold text-[#1B2A4A] hover:bg-[#F3F4F8] transition-colors flex items-center justify-center gap-1.5"
         data-testid={`button-edit-${profile.id}`}
       >
         Bewerken
@@ -540,7 +540,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
           {!atLimit && (
             <button
               onClick={() => navigate("/dashboard/searches/new")}
-              className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-4 flex items-center justify-center gap-2 text-[14px] font-semibold text-[#0066FF] hover:bg-[#F7F8FA] transition-colors border-2 border-dashed border-[#EAEFF5]"
+              className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-4 flex items-center justify-center gap-2 text-[14px] font-semibold text-[#0066FF] hover:bg-[#F3F4F8] transition-colors border-2 border-dashed border-[#EAEFF5]"
               data-testid="button-add-search-card"
             >
               <Plus className="w-4 h-4" />
@@ -583,7 +583,7 @@ function ProfielTab({ user, signOut, navigate, subscription }: { user: any; sign
       <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] divide-y divide-[#F2F5F8]">
         <button
           onClick={() => navigate("/settings/notifications")}
-          className="w-full flex items-center gap-3 p-4 hover:bg-[#F7F8FA] transition-colors rounded-t-2xl"
+          className="w-full flex items-center gap-3 p-4 hover:bg-[#F3F4F8] transition-colors rounded-t-2xl"
           data-testid="button-notification-settings"
         >
           <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center">
@@ -700,7 +700,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F7F8FA] flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-[#0066FF] animate-pulse" />
           <p className="text-[#72839A] text-sm">Laden...</p>
@@ -715,7 +715,7 @@ export default function DashboardPage() {
   const matchCount = apiMatchesQuery.data?.length ?? 0;
 
   return (
-    <div className="min-h-screen bg-[#F7F8FA] flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
         <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center justify-between">
           <div className="flex items-center gap-2.5">

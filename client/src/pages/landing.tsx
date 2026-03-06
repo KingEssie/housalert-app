@@ -6,7 +6,7 @@ export default function LandingPage() {
   const [, navigate] = useLocation();
 
   return (
-    <div className="min-h-screen bg-[#F7F8FA]">
+    <div className="min-h-screen bg-white">
       <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
         <div className="max-w-5xl mx-auto px-6 h-[60px] flex items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">

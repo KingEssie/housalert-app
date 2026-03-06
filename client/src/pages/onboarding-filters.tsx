@@ -30,7 +30,7 @@ export default function OnboardingFiltersPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
+      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#F0F2F5]">
         <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center gap-3">
           <button
             onClick={handleBack}
@@ -73,7 +73,7 @@ export default function OnboardingFiltersPage() {
         </p>
 
         <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
-          <div className="flex items-center gap-3 py-4 border-b border-[#EAEFF5]">
+          <div className="flex items-center gap-3 py-4 border-b border-[#F0F2F5]">
             <DollarSign className="w-5 h-5 text-[#72839A] flex-shrink-0" />
             <span className="text-[15px] text-[#1B2A4A] min-w-[90px]">Min. prijs</span>
             <div className="flex-1 flex items-center justify-end gap-1">
@@ -89,7 +89,7 @@ export default function OnboardingFiltersPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 py-4 border-b border-[#EAEFF5]">
+          <div className="flex items-center gap-3 py-4 border-b border-[#F0F2F5]">
             <DollarSign className="w-5 h-5 text-[#72839A] flex-shrink-0" />
             <span className="text-[15px] text-[#1B2A4A] min-w-[90px]">Max. prijs</span>
             <div className="flex-1 flex items-center justify-end gap-1">
@@ -105,7 +105,7 @@ export default function OnboardingFiltersPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 py-4 border-b border-[#EAEFF5]">
+          <div className="flex items-center gap-3 py-4 border-b border-[#F0F2F5]">
             <BedDouble className="w-5 h-5 text-[#72839A] flex-shrink-0" />
             <span className="text-[15px] text-[#1B2A4A] flex-1">Slaapkamers</span>
             <select

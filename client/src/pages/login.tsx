@@ -53,7 +53,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F7F8FA] flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
         <div className="max-w-5xl mx-auto px-6 h-[60px] flex items-center gap-4">
           <div className="flex items-center gap-2.5">
@@ -98,7 +98,7 @@ export default function LoginPage() {
                       value={loginEmail}
                       onChange={(e) => setLoginEmail(e.target.value)}
                       required
-                      className="h-[52px] px-4 rounded-xl border border-[#EAEFF5] bg-[#F7F8FA] text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] focus:bg-white transition-all"
+                      className="h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:bg-white transition-all"
                       data-testid="input-login-email"
                     />
                   </div>
@@ -111,7 +111,7 @@ export default function LoginPage() {
                       value={loginPassword}
                       onChange={(e) => setLoginPassword(e.target.value)}
                       required
-                      className="h-[52px] px-4 rounded-xl border border-[#EAEFF5] bg-[#F7F8FA] text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] focus:bg-white transition-all"
+                      className="h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:bg-white transition-all"
                       data-testid="input-login-password"
                     />
                   </div>
@@ -137,7 +137,7 @@ export default function LoginPage() {
                       value={signupEmail}
                       onChange={(e) => setSignupEmail(e.target.value)}
                       required
-                      className="h-[52px] px-4 rounded-xl border border-[#EAEFF5] bg-[#F7F8FA] text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] focus:bg-white transition-all"
+                      className="h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:bg-white transition-all"
                       data-testid="input-signup-email"
                     />
                   </div>
@@ -150,7 +150,7 @@ export default function LoginPage() {
                       value={signupPassword}
                       onChange={(e) => setSignupPassword(e.target.value)}
                       required
-                      className="h-[52px] px-4 rounded-xl border border-[#EAEFF5] bg-[#F7F8FA] text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] focus:bg-white transition-all"
+                      className="h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:bg-white transition-all"
                       data-testid="input-signup-password"
                     />
                   </div>

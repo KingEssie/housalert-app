@@ -403,7 +403,7 @@ function TaskModal({
                 value={buddyEmail}
                 onChange={(e) => setBuddyEmail(e.target.value)}
                 placeholder="buddy@voorbeeld.nl"
-                className="w-full h-[48px] px-4 rounded-xl border border-[#EAEFF5] bg-white text-[14px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30 focus:border-[#0066FF]"
+                className="w-full h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:bg-white transition-all"
                 data-testid="input-buddy-email"
               />
               <p className="text-[12px] text-[#9BA5B7]">Je buddy ontvangt dezelfde meldingen als jij.</p>
@@ -495,7 +495,7 @@ function TaskModal({
                 value={phoneInput}
                 onChange={(e) => setPhoneInput(e.target.value)}
                 placeholder="+49 170 1234567"
-                className="w-full h-[48px] px-4 rounded-xl border border-[#EAEFF5] bg-white text-[14px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30 focus:border-[#0066FF]"
+                className="w-full h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:bg-white transition-all"
                 data-testid="input-phone"
               />
               <p className="text-[12px] text-[#9BA5B7]">Gebruik internationaal formaat, bijv. +49 170 1234567</p>
@@ -693,7 +693,7 @@ function PrepTaskModal({
               <p className="text-[14px] text-[#72839A]">
                 Met meerdere zoekprofielen vergroot je je kansen aanzienlijk. Zoek je in meerdere steden of met verschillende budgetten? Voeg een extra profiel toe.
               </p>
-              <div className="bg-[#F7F8FA] rounded-xl p-4">
+              <div className="bg-[#F3F4F8] rounded-xl p-4">
                 <p className="text-[13px] font-semibold text-[#1B2A4A] mb-2">Waarom meerdere profielen?</p>
                 <ul className="text-[13px] text-[#72839A] space-y-1.5">
                   <li className="flex items-start gap-2"><span className="text-[#0066FF] mt-0.5">+</span>Meer woningen die matchen</li>
@@ -717,7 +717,7 @@ function PrepTaskModal({
               <p className="text-[14px] text-[#72839A]">
                 Deel je zoektocht met vrienden, familie en collega's. Hoe meer ogen, hoe sneller je iets vindt.
               </p>
-              <div className="bg-[#F7F8FA] rounded-xl p-4">
+              <div className="bg-[#F3F4F8] rounded-xl p-4">
                 <p className="text-[13px] font-semibold text-[#1B2A4A] mb-2">Deeltekst</p>
                 <p className="text-[13px] text-[#72839A] leading-relaxed">{SHARE_TEXT}</p>
               </div>

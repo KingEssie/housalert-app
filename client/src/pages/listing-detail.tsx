@@ -124,7 +124,7 @@ export default function ListingDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#F7F8FA] flex flex-col">
+      <div className="min-h-screen bg-white flex flex-col">
         <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
           <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center">
             <button onClick={() => navigate("/dashboard")} className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center hover:bg-[#EAEFF5] transition-colors" data-testid="button-back">
@@ -155,7 +155,7 @@ export default function ListingDetailPage() {
 
   if (isError || !listing) {
     return (
-      <div className="min-h-screen bg-[#F7F8FA] flex flex-col">
+      <div className="min-h-screen bg-white flex flex-col">
         <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
           <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center">
             <button onClick={() => navigate("/dashboard")} className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center hover:bg-[#EAEFF5] transition-colors" data-testid="button-back">
@@ -179,7 +179,7 @@ export default function ListingDetailPage() {
   const style = FRESH_BADGE_STYLES[listing.fresh_label] ?? FRESH_BADGE_STYLES.ouder;
 
   return (
-    <div className="min-h-screen bg-[#F7F8FA] flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
         <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center">
           <button onClick={() => navigate("/dashboard")} className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center hover:bg-[#EAEFF5] transition-colors" data-testid="button-back">

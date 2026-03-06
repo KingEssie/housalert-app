@@ -104,7 +104,7 @@ export default function ViewingTipsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#F7F8FA] flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       <header className="sticky top-0 z-10 bg-white border-b border-[#EAEFF5]">
         <div className="max-w-xl mx-auto flex items-center h-[60px] px-6">
           <button

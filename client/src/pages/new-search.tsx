@@ -222,7 +222,7 @@ export default function NewSearchPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F7F8FA] flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="w-8 h-8 rounded-full border-2 border-[#0066FF] border-t-transparent animate-spin" />
       </div>
     );
@@ -232,7 +232,7 @@ export default function NewSearchPage() {
 
   if (atLimit) {
     return (
-      <div className="min-h-screen bg-[#F7F8FA] flex flex-col">
+      <div className="min-h-screen bg-white flex flex-col">
         <WizardHeader step={0} total={0} onBack={() => navigate("/dashboard")} />
         <div className="flex-1 flex items-center justify-center px-6">
           <div className="bg-white rounded-[16px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-8 text-center max-w-sm">
@@ -257,7 +257,7 @@ export default function NewSearchPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F7F8FA] flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       <WizardHeader step={step} total={TOTAL_STEPS} onBack={goBack} />
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6 pb-32">
@@ -326,14 +326,14 @@ export default function NewSearchPage() {
                 </button>
 
                 {showCityDropdown && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl border border-[#EAEFF5] shadow-lg z-20 max-h-[280px] overflow-hidden flex flex-col">
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] z-20 max-h-[280px] overflow-hidden flex flex-col">
                     <div className="p-3 border-b border-[#F2F5F8]">
                       <input
                         type="text"
                         value={citySearch}
                         onChange={(e) => setCitySearch(e.target.value)}
                         placeholder="Zoek stad..."
-                        className="w-full h-[40px] px-3 rounded-lg border border-[#EAEFF5] text-[14px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30"
+                        className="w-full h-[40px] px-3 rounded-lg border-0 bg-[#F3F4F8] text-[14px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:bg-white transition-all"
                         autoFocus
                         data-testid="input-city-search"
                       />
@@ -350,7 +350,7 @@ export default function NewSearchPage() {
                           className={`w-full text-left px-4 py-3 text-[14px] transition-colors ${
                             data.city === c
                               ? "bg-[#EDF2FF] text-[#0066FF] font-medium"
-                              : "text-[#1B2A4A] hover:bg-[#F7F8FA]"
+                              : "text-[#1B2A4A] hover:bg-[#F3F4F8]"
                           }`}
                           data-testid={`option-city-${c}`}
                         >

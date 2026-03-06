@@ -1,0 +1,83 @@
+Do a focused input-field redesign pass across the app so all form fields match the BlaBlaCar style more closely.
+
+Goal:
+Make the app background truly white and redesign all inputs so they look like BlaBlaCar’s soft modern fields:
+- no visible border
+- soft light gray background
+- large rounded shape
+- generous internal spacing
+- softer icon and text colors
+- premium mobile feel
+
+Important:
+- keep all existing functionality
+- do not refactor business logic
+- this is a shared input/style system pass
+- apply everywhere consistently
+
+REQUIRED CHANGES
+
+1. Page background
+- change main page background across the app to true white
+- remove grayish overall screen backgrounds where not needed
+- use white as the base canvas
+
+2. Input field visual style
+For all text inputs, search fields, numeric inputs, selects, textareas:
+- remove visible borders
+- remove harsh outlines
+- remove heavy shadows
+- use a soft surface background similar to BlaBlaCar
+- make fields more rounded
+- increase internal left/right padding
+- improve icon/text spacing
+
+Target direction:
+- field background: very light cool gray
+- no border
+- large radius
+- premium calm appearance
+
+3. Input sizing
+- make inputs feel larger and more premium
+- use generous height, especially for main mobile fields
+- ensure icon alignment is vertically centered
+- placeholder text should not feel cramped
+
+4. Colors
+Use something close to:
+- page background: #FFFFFF
+- field background: #F3F4F8
+- heading text: dark navy
+- input text / placeholder: soft slate/navy
+- icons: subtle muted slate
+
+5. Shared components
+Update shared input components or shared class names so the style is applied consistently across:
+- search creation flow
+- onboarding flow
+- profile forms
+- dashboard forms
+- filter forms
+- search bars
+- modal input fields
+
+6. Specific requirement
+The input fields should visually resemble the BlaBlaCar screenshot:
+- no border line around the field
+- soft filled capsule look
+- roomy padding
+- calm premium tone
+
+7. After implementation
+Show screenshots of:
+- one search input
+- one numeric input
+- one select field
+- one profile form field
+- one search wizard screen
+
+Also explain:
+- which shared input styles/components were changed
+- which old border styles were removed
+- files changed

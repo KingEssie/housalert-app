@@ -86,7 +86,7 @@ export default function OnboardingLocationPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
+      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#F0F2F5]">
         <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center gap-3">
           <button
             onClick={() => navigate("/")}
@@ -126,7 +126,7 @@ export default function OnboardingLocationPage() {
         </h1>
 
         <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
-          <div className="flex border-b border-[#EAEFF5]">
+          <div className="flex border-b border-[#F0F2F5]">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
@@ -151,7 +151,7 @@ export default function OnboardingLocationPage() {
               <div className="space-y-0">
                 <div className="relative">
                   <div
-                    className="flex items-center gap-3 py-4 border-b border-[#EAEFF5] cursor-text"
+                    className="flex items-center gap-3 py-4 border-b border-[#F0F2F5] cursor-text"
                     onClick={() => {
                       const input = document.getElementById("city-search-input");
                       input?.focus();
@@ -188,12 +188,12 @@ export default function OnboardingLocationPage() {
                   </div>
 
                   {showDropdown && filteredCities.length > 0 && !selectedCity && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#EAEFF5] rounded-2xl shadow-[0_10px_25px_rgba(0,0,0,0.08)] overflow-hidden z-10 max-h-64 overflow-y-auto">
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-10 max-h-64 overflow-y-auto">
                       {filteredCities.map((city) => (
                         <button
                           key={city.name}
                           onClick={() => handleCitySelect(city)}
-                          className="w-full flex items-center gap-3 py-4 px-4 hover:bg-[#F2F5F8] transition-colors border-b border-[#EAEFF5] last:border-b-0"
+                          className="w-full flex items-center gap-3 py-4 px-4 hover:bg-[#F2F5F8] transition-colors border-b border-[#F0F2F5] last:border-b-0"
                           data-testid={`option-city-${city.name.toLowerCase().replace(/\s/g, "-")}`}
                         >
                           <MapPin className="w-4.5 h-4.5 text-[#72839A] flex-shrink-0" />
@@ -206,7 +206,7 @@ export default function OnboardingLocationPage() {
                 </div>
 
                 {selectedCity && activeCityDistricts.length > 0 && (
-                  <div className="py-5 border-b border-[#EAEFF5]">
+                  <div className="py-5 border-b border-[#F0F2F5]">
                     <p className="text-sm font-semibold text-[#1B2A4A] mb-3">Wijken (optioneel)</p>
                     <div className="flex flex-wrap gap-2">
                       {activeCityDistricts.map((district) => (
@@ -228,7 +228,7 @@ export default function OnboardingLocationPage() {
                 )}
 
                 {selectedCity && (
-                  <div className="py-5 border-b border-[#EAEFF5]">
+                  <div className="py-5 border-b border-[#F0F2F5]">
                     <div className="rounded-2xl overflow-hidden bg-[#F2F5F8]" data-testid="card-map-preview">
                       <div className="h-36 flex items-center justify-center">
                         <div className="text-center">
@@ -267,7 +267,7 @@ export default function OnboardingLocationPage() {
               <div className="space-y-0">
                 <div className="relative">
                   <div
-                    className="flex items-center gap-3 py-4 border-b border-[#EAEFF5] cursor-text"
+                    className="flex items-center gap-3 py-4 border-b border-[#F0F2F5] cursor-text"
                     onClick={() => {
                       const input = document.getElementById("radius-city-input");
                       input?.focus();
@@ -303,12 +303,12 @@ export default function OnboardingLocationPage() {
                   </div>
 
                   {showDropdown && filteredCities.length > 0 && !selectedCity && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#EAEFF5] rounded-2xl shadow-[0_10px_25px_rgba(0,0,0,0.08)] overflow-hidden z-10 max-h-64 overflow-y-auto">
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-10 max-h-64 overflow-y-auto">
                       {filteredCities.map((city) => (
                         <button
                           key={city.name}
                           onClick={() => handleCitySelect(city)}
-                          className="w-full flex items-center gap-3 py-4 px-4 hover:bg-[#F2F5F8] transition-colors border-b border-[#EAEFF5] last:border-b-0"
+                          className="w-full flex items-center gap-3 py-4 px-4 hover:bg-[#F2F5F8] transition-colors border-b border-[#F0F2F5] last:border-b-0"
                           data-testid={`option-city-${city.name.toLowerCase().replace(/\s/g, "-")}`}
                         >
                           <MapPin className="w-4.5 h-4.5 text-[#72839A] flex-shrink-0" />
@@ -320,7 +320,7 @@ export default function OnboardingLocationPage() {
                   )}
                 </div>
 
-                <div className="flex items-center gap-3 py-4 border-b border-[#EAEFF5]">
+                <div className="flex items-center gap-3 py-4 border-b border-[#F0F2F5]">
                   <Navigation className="w-5 h-5 text-[#72839A] flex-shrink-0" />
                   <span className="text-[15px] text-[#1B2A4A] flex-1">Straal</span>
                   <select
@@ -357,7 +357,7 @@ export default function OnboardingLocationPage() {
 
             {activeTab === "reistijd" && (
               <div className="space-y-0">
-                <div className="flex items-center gap-3 py-4 border-b border-[#EAEFF5]">
+                <div className="flex items-center gap-3 py-4 border-b border-[#F0F2F5]">
                   <MapPin className="w-5 h-5 text-[#72839A] flex-shrink-0" />
                   <input
                     type="text"
@@ -369,7 +369,7 @@ export default function OnboardingLocationPage() {
                   />
                 </div>
 
-                <div className="flex items-center gap-3 py-4 border-b border-[#EAEFF5]">
+                <div className="flex items-center gap-3 py-4 border-b border-[#F0F2F5]">
                   <Clock className="w-5 h-5 text-[#72839A] flex-shrink-0" />
                   <span className="text-[15px] text-[#1B2A4A] flex-1">Maximale reistijd</span>
                   <select
@@ -386,7 +386,7 @@ export default function OnboardingLocationPage() {
                   </select>
                 </div>
 
-                <div className="py-5 border-b border-[#EAEFF5]">
+                <div className="py-5 border-b border-[#F0F2F5]">
                   <p className="text-sm font-semibold text-[#1B2A4A] mb-3">Vervoersmiddel</p>
                   <div className="flex gap-2">
                     {[
