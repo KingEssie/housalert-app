@@ -132,12 +132,13 @@ function useUpdateProfileData() {
   });
 }
 
-function getScoreMicrocopy(score: number): string {
-  if (score >= 90) return "Top! Je bent klaar om razendsnel te reageren.";
-  if (score >= 70) return "Je profiel is goed op weg.";
-  if (score >= 40) return "Nog een paar stappen om sneller te reageren.";
-  if (score >= 10) return "Begin met een paar taken om je kansen te vergroten.";
-  return "Start met je profiel en vergroot direct je kansen.";
+function getScoreMicrocopy(score: number, remaining: number): string {
+  if (remaining <= 0) return "Je bent helemaal klaar om razendsnel te reageren.";
+  if (score >= 90) return "Je bent helemaal klaar om razendsnel te reageren.";
+  if (score >= 70) return `Nog ${remaining} ${remaining === 1 ? "stap" : "stappen"} en je profiel is compleet.`;
+  if (score >= 40) return `Rond nog ${remaining} ${remaining === 1 ? "stap" : "stappen"} af om sneller te reageren op woningen.`;
+  if (score >= 10) return `Begin met de eerste stap en vergroot direct je kansen.`;
+  return "Rond je profiel af en reageer sneller op nieuwe woningen.";
 }
 
 function getScoreColor(score: number): string {
@@ -147,30 +148,37 @@ function getScoreColor(score: number): string {
   return "#6B7280";
 }
 
-function BoostScoreCard({ score }: { score: number }) {
+function getScoreHeadline(score: number): string {
+  if (score >= 90) return "Klaar om te reageren";
+  if (score >= 70) return "Bijna klaar";
+  if (score >= 40) return "Goed op weg";
+  if (score >= 10) return "Net begonnen";
+  return "Klaar om te starten";
+}
+
+function BoostScoreCard({ score, remaining, completed, total }: { score: number; remaining: number; completed: number; total: number }) {
   const color = getScoreColor(score);
-  const microcopy = getScoreMicrocopy(score);
+  const microcopy = getScoreMicrocopy(score, remaining);
+  const headline = getScoreHeadline(score);
 
   return (
     <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6" data-testid="card-boost-score">
-      <div className="flex items-center gap-3 mb-5">
-        <div className="w-10 h-10 rounded-full bg-[#EDF2FF] flex items-center justify-center">
-          <Zap className="w-5 h-5 text-[#0066FF]" />
+      <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-[#EDF2FF] flex items-center justify-center">
+            <Zap className="w-5 h-5 text-[#0066FF]" />
+          </div>
+          <div>
+            <h3 className="text-[15px] font-semibold text-[#0F172A]">{headline}</h3>
+            <p className="text-[13px] text-[#6B7280]">{completed} van {total} afgerond</p>
+          </div>
         </div>
-        <div>
-          <h3 className="text-[15px] font-semibold text-[#0F172A]">Boost score</h3>
-          <p className="text-[13px] text-[#6B7280]">Hoe klaar ben je?</p>
-        </div>
-      </div>
-
-      <div className="flex items-end gap-2 mb-4">
-        <span className="text-[44px] font-[800] text-[#0F172A] leading-none tracking-[-0.03em]" data-testid="text-boost-score">
+        <span className="text-[36px] font-[800] leading-none tracking-[-0.03em]" style={{ color }} data-testid="text-boost-score">
           {score}
         </span>
-        <span className="text-[18px] text-[#6B7280] mb-1.5 font-medium">/ 100</span>
       </div>
 
-      <div className="w-full h-2.5 bg-[#F2F5F8] rounded-full overflow-hidden mb-4">
+      <div className="w-full h-2 bg-[#F2F5F8] rounded-full overflow-hidden mb-4">
         <div
           className="h-full rounded-full transition-all duration-700 ease-out"
           style={{ width: `${score}%`, background: color }}
@@ -199,7 +207,7 @@ function RecommendedSection({
   return (
     <div data-testid="section-recommended">
       <h3 className="text-section-title mb-3">
-        Aanbevolen voor jou
+        Volgende stappen
       </h3>
       <div className="flex flex-col gap-3">
         {recommendations.map((task) => {
@@ -267,7 +275,7 @@ function AllTasksSection({
   return (
     <div data-testid="section-all-tasks">
       <h3 className="text-section-title mb-3">
-        Alle taken
+        Alle stappen
       </h3>
       <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] overflow-hidden">
         {incompleteTasks.map((task, i) => {
@@ -314,40 +322,39 @@ function AllTasksSection({
 
 function EmptyState({ onStart }: { onStart: () => void }) {
   return (
-    <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-8 text-center" data-testid="boost-empty-state">
-      <div className="w-14 h-14 rounded-2xl bg-[#EDF2FF] flex items-center justify-center mx-auto mb-5">
-        <Zap className="w-7 h-7 text-[#0066FF]" />
+    <div className="bg-[#F9FAFB] rounded-2xl p-6 text-center" data-testid="boost-empty-state">
+      <div className="w-12 h-12 rounded-full bg-[#EDF2FF] flex items-center justify-center mx-auto mb-4">
+        <Zap className="w-5 h-5 text-[#0066FF]" />
       </div>
-      <h3 className="text-[20px] font-[700] text-[#0F172A] tracking-[-0.02em] mb-2">
-        Vergroot je kansen
+      <h3 className="text-[18px] font-semibold text-[#0F172A] mb-1.5">
+        Begin met je eerste stap
       </h3>
-      <p className="text-[15px] text-[#6B7280] leading-relaxed mb-6 max-w-[280px] mx-auto">
-        Begin met 1 of 2 stappen en vergroot direct je kansen op een woning.
+      <p className="text-[14px] font-[500] text-[#6B7280] leading-relaxed mb-5 max-w-[260px] mx-auto">
+        Hoe completer je profiel, hoe sneller je kunt reageren op nieuwe woningen.
       </p>
       <Button
         onClick={onStart}
-        className="h-[52px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold px-8"
+        className="h-[48px] px-8 rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold"
         data-testid="button-start-boost"
       >
-        Start met je profiel
+        <Zap className="w-4 h-4 mr-1.5" />
+        Eerste stap bekijken
       </Button>
     </div>
   );
 }
 
-function HighProgressState() {
+function HighProgressState({ remaining }: { remaining: number }) {
   return (
     <div className="bg-gradient-to-br from-[#0066FF] to-[#0052CC] rounded-2xl p-6 text-white" data-testid="boost-high-progress">
-      <div className="flex items-center gap-3 mb-3">
+      <div className="flex items-center gap-3 mb-2">
         <div className="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center">
           <Rocket className="w-5 h-5 text-white" />
         </div>
-        <div>
-          <h3 className="text-[16px] font-semibold">Bijna klaar!</h3>
-        </div>
+        <h3 className="text-[16px] font-semibold">Je bent er bijna</h3>
       </div>
       <p className="text-[14px] text-white/80 leading-relaxed">
-        Je bent bijna klaar om razendsnel te reageren op nieuwe woningen. Rond de laatste taken af voor een compleet profiel.
+        Nog {remaining} {remaining === 1 ? "stap" : "stappen"} en je kunt razendsnel reageren op nieuwe woningen.
       </p>
     </div>
   );
@@ -636,8 +643,15 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
   }
 
   const { boostScore, tasks, completedCount, totalCount, recommendations, speedSteps, speedDone, speedTotal } = data;
+  const remaining = totalCount - completedCount;
   const isLowProgress = boostScore < 10;
   const isHighProgress = boostScore >= 80 && completedCount < totalCount;
+
+  const pageSubtitle = completedCount === totalCount
+    ? "Je profiel is compleet"
+    : remaining <= 3
+    ? `Nog ${remaining} ${remaining === 1 ? "stap" : "stappen"} om sneller te reageren`
+    : "Rond je profiel af en vergroot je kansen";
 
   return (
     <div className="flex flex-col gap-6">
@@ -646,11 +660,11 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
           Boost
         </h1>
         <p className="text-subtitle mt-1">
-          Vergroot je kansen op een woning
+          {pageSubtitle}
         </p>
       </div>
 
-      <BoostScoreCard score={boostScore} />
+      <BoostScoreCard score={boostScore} remaining={remaining} completed={completedCount} total={totalCount} />
 
       {isLowProgress && (
         <EmptyState onStart={() => {
@@ -659,7 +673,7 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
         }} />
       )}
 
-      {isHighProgress && <HighProgressState />}
+      {isHighProgress && <HighProgressState remaining={remaining} />}
 
       {recommendations.length > 0 && !isLowProgress && (
         <RecommendedSection recommendations={recommendations} onTaskClick={setActiveTaskId} navigate={navigate} />
