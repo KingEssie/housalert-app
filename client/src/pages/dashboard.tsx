@@ -12,7 +12,7 @@ import { SubscriptionGate } from "@/components/subscription-gate";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { ProfileStrengthSection } from "@/components/profile-strength";
+import { ProfileStrengthSection, SpeedBanner, NotificationSummaryCard, SpeedReadinessCard } from "@/components/profile-strength";
 import { ApplySheet } from "@/components/apply-sheet";
 import {
   Home,
@@ -520,6 +520,8 @@ function HomeTab({
         </div>
       </div>
 
+      <SpeedBanner navigate={navigate} />
+
       <ProfileStrengthSection navigate={navigate} />
 
       <div className="flex flex-col gap-3 mt-1">
@@ -925,6 +927,9 @@ function ProfielTab({ user, signOut, navigate, subscription }: { user: any; sign
           </span>
         </div>
       </div>
+
+      <NotificationSummaryCard navigate={navigate} />
+      <SpeedReadinessCard navigate={navigate} />
 
       {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
         <button

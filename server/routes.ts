@@ -791,11 +791,12 @@ export async function registerRoutes(
         supabase.from("search_profiles").select("id, city, price_min, price_max, bedrooms_min, size_min").eq("user_id", user.id),
       ]);
 
-      const notif = notifResult.data;
+      const rawNotif = notifResult.data;
+      const notif = rawNotif ?? { email_enabled: true, sms_enabled: false, whatsapp_enabled: false, phone_e164: null };
       const profileData = profileDataResult.data;
       const searchProfiles = searchProfilesResult.data ?? [];
 
-      const hasAlertChannel = !!(notif?.email_enabled || notif?.sms_enabled || notif?.whatsapp_enabled);
+      const hasAlertChannel = !!(notif.email_enabled || notif.sms_enabled || notif.whatsapp_enabled);
       const hasSearchBuddy = !!(profileData?.search_buddy_email && profileData.search_buddy_email.trim().length > 0);
 
       const hasStrongProfile = searchProfiles.some(p => {
@@ -814,7 +815,7 @@ export async function registerRoutes(
       const checklistDone = checklistValues.filter(Boolean).length;
       const hasDocuments = checklistDone >= 4;
 
-      const hasPhone = !!(notif?.phone_e164 && notif.phone_e164.length > 5);
+      const hasPhone = !!(notif.phone_e164 && notif.phone_e164.length > 5);
 
       const hasNetworkDone = !!(profileData?.network_task_done);
       const hasViewingTipsDone = !!(profileData?.viewing_tips_done);
@@ -841,6 +842,26 @@ export async function registerRoutes(
       const completedCount = accountTasks.filter(t => t.completed).length;
       const prepCompletedCount = prepTasks.filter(t => t.completed).length;
 
+      const channels = {
+        email: !!(notif.email_enabled),
+        sms: !!(notif.sms_enabled),
+        whatsapp: !!(notif.whatsapp_enabled),
+        phone: hasPhone,
+      };
+
+      const speedSteps = [
+        { id: "alerts_active", label: "Alerts actief", done: hasAlertChannel },
+        { id: "letter_ready", label: "Aanmeldingsbrief klaar", done: hasApplicationTemplate },
+        { id: "documents_ready", label: "Documenten klaar", done: hasDocuments },
+        { id: "phone_added", label: "Telefoonnummer toegevoegd", done: hasPhone },
+      ];
+
+      const speedDone = speedSteps.filter(s => s.done).length;
+
+      const recommendedChannel = notif.whatsapp_enabled ? "WhatsApp" :
+        notif.sms_enabled ? "SMS" :
+        notif.email_enabled ? "E-mail" : null;
+
       return res.json({
         score,
         tasks: accountTasks,
@@ -850,6 +871,11 @@ export async function registerRoutes(
         prepCompletedCount,
         prepTotalCount: prepTasks.length,
         maxScore: allTasks.reduce((s, t) => s + t.score, 0),
+        channels,
+        speedSteps,
+        speedDone,
+        speedTotal: speedSteps.length,
+        recommendedChannel,
       });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });

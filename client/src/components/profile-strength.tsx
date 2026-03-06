@@ -23,6 +23,10 @@ import {
   Eye,
   Copy,
   Plus,
+  Mail,
+  MessageSquare,
+  Smartphone,
+  Zap,
 } from "lucide-react";
 
 interface Task {
@@ -30,6 +34,19 @@ interface Task {
   label: string;
   completed: boolean;
   score: number;
+}
+
+interface SpeedStep {
+  id: string;
+  label: string;
+  done: boolean;
+}
+
+interface Channels {
+  email: boolean;
+  sms: boolean;
+  whatsapp: boolean;
+  phone: boolean;
 }
 
 interface ProfileStrengthData {
@@ -41,6 +58,11 @@ interface ProfileStrengthData {
   prepCompletedCount: number;
   prepTotalCount: number;
   maxScore: number;
+  channels: Channels;
+  speedSteps: SpeedStep[];
+  speedDone: number;
+  speedTotal: number;
+  recommendedChannel: string | null;
 }
 
 interface ProfileData {
@@ -758,6 +780,207 @@ function PrepTaskModal({
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+export function NotificationSummaryCard({ navigate }: { navigate: (path: string) => void }) {
+  const { data, isLoading } = useProfileStrength();
+
+  if (isLoading || !data) {
+    return (
+      <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 animate-pulse">
+        <div className="h-4 bg-[#F2F5F8] rounded w-40 mb-3" />
+        <div className="h-3 bg-[#F2F5F8] rounded w-32" />
+      </div>
+    );
+  }
+
+  const { channels, recommendedChannel } = data;
+
+  const channelList = [
+    { key: "email", label: "E-mail", enabled: channels.email, Icon: Mail },
+    { key: "sms", label: "SMS", enabled: channels.sms, Icon: MessageSquare },
+    { key: "whatsapp", label: "WhatsApp", enabled: channels.whatsapp, Icon: Phone },
+  ];
+
+  const activeCount = channelList.filter(c => c.enabled).length;
+
+  return (
+    <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5" data-testid="card-notification-summary">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-[#EDF2FF] flex items-center justify-center">
+            <Bell className="w-4 h-4 text-[#0066FF]" />
+          </div>
+          <h3 className="text-[15px] font-semibold text-[#1B2A4A]">Meldingskanalen</h3>
+        </div>
+        <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${activeCount > 0 ? "bg-green-50 text-green-700" : "bg-red-50 text-red-500"}`}>
+          {activeCount > 0 ? `${activeCount} actief` : "Geen actief"}
+        </span>
+      </div>
+
+      <div className="flex flex-col gap-2.5 mb-4">
+        {channelList.map(({ key, label, enabled, Icon }) => (
+          <div key={key} className="flex items-center gap-3" data-testid={`channel-status-${key}`}>
+            <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${enabled ? "bg-green-50" : "bg-[#F3F4F8]"}`}>
+              <Icon className={`w-3.5 h-3.5 ${enabled ? "text-green-600" : "text-[#9BA5B7]"}`} />
+            </div>
+            <span className={`text-[14px] flex-1 ${enabled ? "text-[#1B2A4A] font-medium" : "text-[#9BA5B7]"}`}>
+              {label}
+            </span>
+            {enabled ? (
+              <CheckCircle2 className="w-4 h-4 text-green-500" />
+            ) : (
+              <div className="w-4 h-4 rounded-full border-2 border-[#E2E6ED]" />
+            )}
+          </div>
+        ))}
+      </div>
+
+      {recommendedChannel && (
+        <div className="bg-[#EDF2FF] rounded-xl px-3.5 py-2.5 mb-3">
+          <p className="text-[12px] text-[#0066FF] font-medium flex items-center gap-1.5">
+            <Zap className="w-3.5 h-3.5" />
+            Snelste kanaal: {recommendedChannel}
+          </p>
+        </div>
+      )}
+
+      <button
+        onClick={() => navigate("/settings/notifications")}
+        className="w-full h-[40px] rounded-xl border border-[#EAEFF5] bg-white text-[13px] font-semibold text-[#1B2A4A] hover:bg-[#F3F4F8] transition-colors flex items-center justify-center gap-1.5"
+        data-testid="button-manage-channels"
+      >
+        <Bell className="w-3.5 h-3.5" />
+        Kanalen beheren
+      </button>
+    </div>
+  );
+}
+
+export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => void }) {
+  const { data, isLoading } = useProfileStrength();
+
+  if (isLoading || !data) {
+    return (
+      <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 animate-pulse">
+        <div className="h-4 bg-[#F2F5F8] rounded w-40 mb-3" />
+        <div className="h-3 bg-[#F2F5F8] rounded w-24" />
+      </div>
+    );
+  }
+
+  const { speedSteps, speedDone, speedTotal } = data;
+  const allDone = speedDone === speedTotal;
+  const remaining = speedTotal - speedDone;
+
+  const stepActions: Record<string, string> = {
+    alerts_active: "/settings/notifications",
+    letter_ready: "/application-letter",
+    documents_ready: "",
+    phone_added: "/settings/notifications",
+  };
+
+  return (
+    <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5" data-testid="card-speed-readiness">
+      <div className="flex items-center gap-2 mb-4">
+        <div className="w-8 h-8 rounded-full bg-[#EDF2FF] flex items-center justify-center">
+          <Zap className="w-4 h-4 text-[#0066FF]" />
+        </div>
+        <div className="flex-1">
+          <h3 className="text-[15px] font-semibold text-[#1B2A4A]">Reactiesnelheid</h3>
+        </div>
+        <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${allDone ? "bg-green-50 text-green-700" : "bg-amber-50 text-amber-700"}`}>
+          {speedDone}/{speedTotal}
+        </span>
+      </div>
+
+      <div className="flex flex-col gap-2.5">
+        {speedSteps.map((step) => {
+          const route = stepActions[step.id];
+          return (
+            <div
+              key={step.id}
+              className={`flex items-center gap-3 ${!step.done && route ? "cursor-pointer hover:bg-[#F3F4F8] -mx-2 px-2 py-1 rounded-lg transition-colors" : "py-0.5"}`}
+              onClick={() => {
+                if (!step.done && route) navigate(route);
+              }}
+              data-testid={`speed-step-${step.id}`}
+            >
+              {step.done ? (
+                <CheckCircle2 className="w-4.5 h-4.5 text-green-500 flex-shrink-0" />
+              ) : (
+                <div className="w-4.5 h-4.5 rounded-full border-2 border-[#E2E6ED] flex-shrink-0" />
+              )}
+              <span className={`text-[14px] flex-1 ${step.done ? "text-[#9BA5B7]" : "text-[#1B2A4A] font-medium"}`}>
+                {step.label}
+              </span>
+              {!step.done && route && (
+                <ArrowRight className="w-3.5 h-3.5 text-[#9BA5B7]" />
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {allDone && (
+        <div className="mt-4 bg-green-50 rounded-xl px-3.5 py-2.5">
+          <p className="text-[12px] text-green-700 font-medium flex items-center gap-1.5">
+            <Zap className="w-3.5 h-3.5" />
+            Je bent klaar om snel te reageren
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function SpeedBanner({ navigate }: { navigate: (path: string) => void }) {
+  const { data, isLoading } = useProfileStrength();
+
+  if (isLoading || !data) return null;
+
+  const { speedDone, speedTotal, score, maxScore } = data;
+  const allDone = speedDone === speedTotal;
+  const remaining = speedTotal - speedDone;
+  const pct = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
+
+  if (allDone) {
+    return (
+      <div
+        className="bg-green-50 rounded-2xl p-4 flex items-center gap-3 cursor-pointer hover:bg-green-100/60 transition-colors"
+        onClick={() => navigate("/dashboard")}
+        data-testid="banner-speed-ready"
+      >
+        <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+          <Zap className="w-4 h-4 text-green-600" />
+        </div>
+        <div className="flex-1">
+          <p className="text-[14px] font-semibold text-green-800">Je bent klaar om snel te reageren</p>
+          <p className="text-[12px] text-green-600">Alle stappen voltooid</p>
+        </div>
+        <span className="text-[13px] font-bold text-green-700">{pct}%</span>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="bg-amber-50 rounded-2xl p-4 flex items-center gap-3 cursor-pointer hover:bg-amber-100/60 transition-colors"
+      onClick={() => navigate("/dashboard")}
+      data-testid="banner-speed-incomplete"
+    >
+      <div className="w-9 h-9 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+        <Zap className="w-4 h-4 text-amber-600" />
+      </div>
+      <div className="flex-1">
+        <p className="text-[14px] font-semibold text-amber-800">
+          Nog {remaining} {remaining === 1 ? "stap" : "stappen"} om sneller te reageren
+        </p>
+        <p className="text-[12px] text-amber-600">Maak je profiel compleet</p>
+      </div>
+      <ArrowRight className="w-4 h-4 text-amber-500 flex-shrink-0" />
     </div>
   );
 }
