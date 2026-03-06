@@ -153,8 +153,15 @@ export default function LandingPage() {
       </main>
 
       <footer className="border-t border-[#E8EDF2] py-8 px-5">
-        <div className="max-w-5xl mx-auto text-center text-sm text-[#6B7280]">
-          &copy; {new Date().getFullYear()} Stekkies. Alle rechten voorbehouden.
+        <div className="max-w-5xl mx-auto flex flex-col items-center gap-3">
+          <div className="flex items-center gap-4 flex-wrap justify-center text-sm text-[#6B7280]">
+            <a href="/impressum" className="hover:text-[#0B1F44] transition-colors" data-testid="link-impressum">Impressum</a>
+            <a href="/datenschutz" className="hover:text-[#0B1F44] transition-colors" data-testid="link-datenschutz">Datenschutz</a>
+            <a href="/terms" className="hover:text-[#0B1F44] transition-colors" data-testid="link-terms">AGB</a>
+          </div>
+          <p className="text-sm text-[#6B7280]">
+            &copy; {new Date().getFullYear()} Stekkies. Alle rechten voorbehouden.
+          </p>
         </div>
       </footer>
     </div>

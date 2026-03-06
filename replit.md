@@ -45,9 +45,12 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 
 ### Existing Pages
 - `client/src/pages/login.tsx` — Auth page with "Inloggen" / "Account aanmaken" tabs
-- `client/src/pages/dashboard.tsx` — Phase 2 dashboard with bottom-nav bar (4 tabs: Home, Matches, Filters, Profiel). Mobile-first BlaBlaCar design. Gradient CTA cards, match cards with freshness badges, search profile management, user settings.
+- `client/src/pages/dashboard.tsx` — Phase 2 dashboard with bottom-nav bar (4 tabs: Home, Matches, Filters, Profiel). Mobile-first BlaBlaCar design. Match cards link to `/listing/:id`. Subscription CTA for expired users in ProfielTab.
+- `client/src/pages/listing-detail.tsx` — Full listing detail page at `/listing/:id`. Shows title, city/district, price, bedrooms, size, source, freshness badge, and "Bekijk originele advertentie" CTA.
 - `client/src/pages/new-search.tsx` — Form to create a new search profile (max 4 per user)
 - `client/src/pages/notification-settings.tsx` — Notification preferences (email/SMS/WhatsApp toggles)
+- `client/src/pages/legal.tsx` — Legal pages: `/impressum`, `/datenschutz`, `/terms` (German placeholder content)
+- `client/src/pages/paywall.tsx` — Subscription paywall with Stripe checkout; shows friendly message if Stripe not configured
 
 ### Subscriptions
 - `server/subscriptions.ts` — Subscription helpers: `ensureTrialSubscription`, `getSubscriptionStatus`, `updateSubscriptionFromCheckout`, `updateSubscriptionStatus`, `findUserByStripeCustomerId`
@@ -60,6 +63,7 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - Soft paywall: matches tab blurred when expired; trial/expired banners on home tab; real status in profiel tab
 
 ### API Endpoints
+- `GET /api/listings/:id` — Returns full listing detail with freshness data (public endpoint)
 - `GET /api/estimate?city=&minPrice=&maxPrice=&minRooms=&minSize=` — Returns `{ perWeekEstimate, last7dCount }` based on Supabase listings
 - `POST /api/checkout/session` — Creates Stripe checkout session (requires auth, `{ plan: "monthly"|"two_month"|"three_month" }`)
 - `POST /api/checkout` — Legacy checkout endpoint (maps old plan IDs to new ones)

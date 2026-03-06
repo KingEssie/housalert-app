@@ -23,7 +23,7 @@ import {
   Euro,
   BedDouble,
   Ruler,
-  ExternalLink,
+
   Clock,
   Search,
   Bell,
@@ -75,10 +75,12 @@ const FRESH_LABEL_TEXT: Record<string, string> = {
 type TabKey = "home" | "matches" | "filters" | "profiel";
 
 function MatchCard({ match }: { match: ApiMatch }) {
+  const [, navigate] = useLocation();
   const style = FRESH_BADGE_STYLES[match.fresh_label] ?? FRESH_BADGE_STYLES.ouder;
   return (
     <div
-      className="bg-white rounded-[16px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-4 flex flex-col gap-3"
+      className="bg-white rounded-[16px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-4 flex flex-col gap-3 cursor-pointer hover:shadow-[0_6px_24px_rgba(0,0,0,0.1)] transition-shadow active:scale-[0.99]"
+      onClick={() => navigate(`/listing/${match.listing_id}`)}
       data-testid={`card-match-${match.listing_id}`}
     >
       <div className="flex items-start justify-between gap-2">
@@ -128,19 +130,13 @@ function MatchCard({ match }: { match: ApiMatch }) {
             {relativeTime(match.matched_at || match.first_seen_at)}
           </span>
         </div>
-        {match.url && (
-          <a
-            href={match.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-testid={`link-match-${match.listing_id}`}
-          >
-            <button className="flex items-center gap-1.5 text-[13px] font-semibold text-[#2D6CDF] hover:text-[#2560C8] transition-colors">
-              Bekijk advertentie
-              <ExternalLink className="w-3.5 h-3.5" />
-            </button>
-          </a>
-        )}
+        <span
+          className="flex items-center gap-1.5 text-[13px] font-semibold text-[#2D6CDF]"
+          data-testid={`link-match-${match.listing_id}`}
+        >
+          Bekijk match
+          <ChevronRight className="w-3.5 h-3.5" />
+        </span>
       </div>
     </div>
   );
@@ -597,10 +593,7 @@ function ProfielTab({ user, signOut, navigate, subscription }: { user: any; sign
           <ChevronRight className="w-4 h-4 text-[#9CA3AF]" />
         </button>
 
-        <button
-          onClick={() => { if (subscription.isExpired) navigate("/paywall"); }}
-          className="flex items-center gap-3 p-4 w-full text-left"
-        >
+        <div className="flex items-center gap-3 p-4 w-full">
           <div className={`w-9 h-9 rounded-full flex items-center justify-center ${subscription.isActive ? "bg-green-50" : subscription.isTrial ? "bg-blue-50" : "bg-red-50"}`}>
             {subscription.isActive ? (
               <CheckCircle2 className="w-4 h-4 text-green-600" />
@@ -632,8 +625,19 @@ function ProfielTab({ user, signOut, navigate, subscription }: { user: any; sign
           >
             {subscription.isActive && !subscription.isTrial ? "Actief" : subscription.isTrial ? "Proef" : "Verlopen"}
           </span>
-        </button>
+        </div>
       </div>
+
+      {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
+        <button
+          onClick={() => navigate("/paywall")}
+          className="w-full h-[48px] rounded-xl bg-[#2D6CDF] hover:bg-[#2560C8] text-white text-[15px] font-semibold transition-colors flex items-center justify-center gap-2"
+          data-testid="button-upgrade-subscription"
+        >
+          <Crown className="w-4 h-4" />
+          Kies een abonnement
+        </button>
+      )}
 
       <button
         onClick={handleSignOut}

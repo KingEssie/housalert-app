@@ -1,0 +1,158 @@
+Build Phase 4: launch readiness for the housing alert app.
+
+Goal:
+Make the product feel complete and usable before launch.
+
+Important:
+- Keep current onboarding, dashboard, matches, filters, profile, and paywall
+- Improve usability and launch readiness
+- Germany-first
+- Stekkies-like product structure
+- BlaBlaCar-inspired visual style
+
+--------------------------------
+1. LISTING DETAIL PAGE
+--------------------------------
+
+Create:
+ /listing/[id]
+
+This page must show:
+- title
+- city
+- district if available
+- price
+- bedrooms
+- size_m2
+- source
+- first_seen_at / freshness label
+- original listing URL CTA:
+  "Bekijk originele advertentie"
+
+Design:
+- premium mobile-first card layout
+- clear hierarchy
+- rounded cards
+- dark navy headings
+- blue CTA button
+
+--------------------------------
+2. MATCHES TAB IMPROVEMENTS
+--------------------------------
+
+Refine the Matches screen:
+
+Each match card must show:
+- freshness badge
+- title
+- city
+- price
+- bedrooms
+- size_m2
+- source
+- CTA button:
+  "Bekijk match"
+
+Clicking a card opens /listing/[id]
+
+If subscription is inactive:
+- blur or soften card details
+- overlay lock state
+- CTA:
+  "Activeer je abonnement"
+
+If there are no matches:
+- show empty state with CTA to Filters
+
+--------------------------------
+3. FILTERS TAB IMPROVEMENTS
+--------------------------------
+
+Refine Filters tab:
+
+- show all active search profiles
+- allow edit
+- allow delete
+- allow add new
+- max 4 profiles
+- show useful summary per profile:
+  city
+  price range
+  min rooms
+  min size
+  active/inactive
+
+Use clean card UI.
+
+--------------------------------
+4. PROFILE IMPROVEMENTS
+--------------------------------
+
+Refine Profile tab:
+
+Show:
+- email
+- notification settings CTA
+- subscription status
+- trial end date if in trial
+- current plan if active
+- logout button
+
+If no active subscription:
+- CTA to paywall
+
+--------------------------------
+5. STRIPE CONFIG CHECK
+--------------------------------
+
+Add a clear Stripe configuration check:
+- if any required Stripe env vars are missing, show a friendly message in paywall
+- explain exactly which env vars are missing in server logs
+- do not crash the app
+
+Required:
+- STRIPE_SECRET_KEY
+- STRIPE_WEBHOOK_SECRET
+- NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+- STRIPE_PRICE_MONTHLY
+- STRIPE_PRICE_TWO_MONTH
+- STRIPE_PRICE_THREE_MONTH
+- APP_PUBLIC_BASE_URL
+
+--------------------------------
+6. LEGAL PAGES
+--------------------------------
+
+Create basic pages:
+- /impressum
+- /datenschutz
+- /terms
+
+Use placeholder structure for now, clearly editable later.
+
+--------------------------------
+7. SUBSCRIPTION UX
+--------------------------------
+
+Improve subscription states in dashboard and paywall:
+- trial banner
+- expired banner
+- active plan banner
+- clear CTA buttons
+
+--------------------------------
+AFTER BUILDING
+--------------------------------
+
+Show screenshots of:
+1. matches tab
+2. listing detail page
+3. filters tab
+4. profile tab
+5. legal pages
+6. paywall with Stripe config handling
+
+Also explain:
+- what changed
+- which routes were added
+- which Stripe env vars are still required

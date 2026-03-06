@@ -37,6 +37,25 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  const missingStripeVars: string[] = [];
+  if (!process.env.STRIPE_PRICE_MONTHLY && !process.env.STRIPE_PRICE_1_MONTH) missingStripeVars.push("STRIPE_PRICE_MONTHLY");
+  if (!process.env.STRIPE_PRICE_TWO_MONTH && !process.env.STRIPE_PRICE_2_MONTHS) missingStripeVars.push("STRIPE_PRICE_TWO_MONTH");
+  if (!process.env.STRIPE_PRICE_THREE_MONTH && !process.env.STRIPE_PRICE_3_MONTHS) missingStripeVars.push("STRIPE_PRICE_THREE_MONTH");
+  if (!process.env.STRIPE_WEBHOOK_SECRET) missingStripeVars.push("STRIPE_WEBHOOK_SECRET");
+
+  if (missingStripeVars.length > 0) {
+    log(`[stripe-config] Missing Stripe env vars: ${missingStripeVars.join(", ")}. Payment features will be limited.`);
+  }
+
+  let stripeConnectorAvailable = true;
+  try {
+    const { getUncachableStripeClient } = await import("./stripe/stripeClient");
+    await getUncachableStripeClient();
+  } catch {
+    stripeConnectorAvailable = false;
+    log("[stripe-config] Stripe connector not available. Payment features disabled.");
+  }
+
   app.post("/api/match-alert", async (req, res) => {
     const token = req.headers.authorization?.replace("Bearer ", "");
     if (!token) return res.status(401).json({ error: "Unauthorized" });
@@ -281,6 +300,34 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/listings/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      if (!id) return res.status(400).json({ error: "Listing ID is required" });
+
+      const { data, error } = await supabase
+        .from("listings")
+        .select("id, title, price, size_m2, bedrooms, city, district, source, url, created_at")
+        .eq("id", id)
+        .single();
+
+      if (error || !data) {
+        return res.status(404).json({ error: "Listing not found" });
+      }
+
+      const freshnessMap = await getListingFreshness([id]);
+      const firstSeenAt = freshnessMap[id]?.first_seen_at || data.created_at;
+
+      return res.json({
+        ...data,
+        first_seen_at: firstSeenAt,
+        fresh_label: computeFreshLabel(firstSeenAt),
+      });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   app.get("/api/estimate", async (req, res) => {
     try {
       const { city, minPrice, maxPrice, minRooms, minSize } = req.query;
@@ -391,7 +438,11 @@ export async function registerRoutes(
 
       const stripePriceId = PLAN_PRICE_MAP[plan];
       if (!stripePriceId) {
-        return res.status(400).json({ error: "Stripe prices are not yet configured. Set STRIPE_PRICE_* environment variables." });
+        return res.status(503).json({ error: "stripe_not_configured", message: "Stripe prices are not yet configured." });
+      }
+
+      if (!stripeConnectorAvailable) {
+        return res.status(503).json({ error: "stripe_not_configured", message: "Stripe is not available." });
       }
 
       const { getUncachableStripeClient } = await import("./stripe/stripeClient");

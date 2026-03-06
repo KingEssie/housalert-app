@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { Home, Check, Crown, Loader2 } from "lucide-react";
+import { Home, Check, Crown, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/lib/auth";
@@ -58,6 +58,7 @@ export default function PaywallPage() {
   const { user } = useAuth();
   const [selectedPlan, setSelectedPlan] = useState("two_month");
   const [loading, setLoading] = useState(false);
+  const [stripeUnavailable, setStripeUnavailable] = useState(false);
 
   async function handleCheckout() {
     if (!user) {
@@ -87,12 +88,17 @@ export default function PaywallPage() {
 
       const data = await res.json();
 
+      if (data.error === "stripe_not_configured") {
+        setStripeUnavailable(true);
+        return;
+      }
+
       if (data.url) {
         window.location.href = data.url;
       } else {
         toast({
           title: "Betaling niet beschikbaar",
-          description: "Stripe is nog niet volledig geconfigureerd. Probeer het later opnieuw.",
+          description: "Probeer het later opnieuw.",
           variant: "destructive",
         });
       }
@@ -197,25 +203,37 @@ export default function PaywallPage() {
 
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E8EDF2] p-4 z-10">
         <div className="max-w-xl mx-auto">
-          <Button
-            size="lg"
-            className="w-full h-[52px] rounded-xl text-[16px] font-semibold shadow-none bg-[#2D6CDF] hover:bg-[#2560C8]"
-            onClick={handleCheckout}
-            disabled={loading}
-            data-testid="button-select-payment"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                Even geduld...
-              </>
-            ) : (
-              "Selecteer betaalmethode"
-            )}
-          </Button>
-          <p className="text-center text-xs text-[#6B7280] mt-3 opacity-60">
-            Veilig betalen via Stripe. Opzeggen kan altijd.
-          </p>
+          {stripeUnavailable ? (
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3" data-testid="stripe-unavailable-notice">
+              <AlertCircle className="w-5 h-5 text-amber-500 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="text-[14px] font-semibold text-[#0B1F44]">Betaling wordt binnenkort beschikbaar</p>
+                <p className="text-[12px] text-[#6B7280] mt-1">We werken aan de betalingsintegratie. Probeer het later opnieuw.</p>
+              </div>
+            </div>
+          ) : (
+            <>
+              <Button
+                size="lg"
+                className="w-full h-[52px] rounded-xl text-[16px] font-semibold shadow-none bg-[#2D6CDF] hover:bg-[#2560C8]"
+                onClick={handleCheckout}
+                disabled={loading}
+                data-testid="button-select-payment"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    Even geduld...
+                  </>
+                ) : (
+                  "Selecteer betaalmethode"
+                )}
+              </Button>
+              <p className="text-center text-xs text-[#6B7280] mt-3 opacity-60">
+                Veilig betalen via Stripe. Opzeggen kan altijd.
+              </p>
+            </>
+          )}
         </div>
       </div>
     </div>
