@@ -11,6 +11,7 @@ export interface SourceConfig {
     price: { selector: string; attr?: string; regex?: string };
     size_m2: { selector: string; attr?: string; regex?: string };
     bedrooms: { selector: string; attr?: string; regex?: string } | null;
+    image: { selector: string; attr: string } | null;
   };
   sourceIdRegex?: string;
   botBlockPatterns?: string[];
@@ -31,6 +32,7 @@ const sources: SourceConfig[] = [
       price: { selector: "dl:has(dt:contains('Kaltmiete')) dd, dl:first-of-type dd", regex: "([\\d.]+)\\s*€" },
       size_m2: { selector: "dl:has(dt:contains('Fläche')) dd, dl:last-of-type dd", regex: "([\\d.,]+)\\s*m" },
       bedrooms: { selector: "dl:has(dt:contains('Zimmer')) dd, dl:nth-of-type(2) dd", regex: "([\\d,]+)" },
+      image: { selector: "img[src*='wohnungsboerse.net/assets']", attr: "src" },
     },
     sourceIdRegex: "/immodetail/(\\d+)",
     rateLimitMs: 1000,
@@ -48,6 +50,7 @@ const sources: SourceConfig[] = [
       price: { selector: "[data-is24-qa='listing_price'], .result-list-entry__criteria dd:first-of-type", regex: "([\\d.]+)\\s*€" },
       size_m2: { selector: "[data-is24-qa='listing_area']", regex: "([\\d.,]+)\\s*m" },
       bedrooms: { selector: "[data-is24-qa='listing_rooms']", regex: "([\\d,]+)" },
+      image: null,
     },
     sourceIdRegex: "/expose/(\\d+)",
     botBlockPatterns: ["Ich bin kein Roboter", "challenge.js", "Gleich geht"],
@@ -66,6 +69,7 @@ const sources: SourceConfig[] = [
       price: { selector: "p.font-bold", regex: "([\\d.]+)\\s*€" },
       size_m2: { selector: "p.font-medium", regex: "([\\d.,]+)\\s*m" },
       bedrooms: { selector: "p.font-medium", regex: "(\\d+)\\s*Zimmer" },
+      image: null,
     },
     sourceIdRegex: "/listings/[^-]+-p([a-z0-9]+)$",
     rateLimitMs: 1200,
@@ -83,6 +87,7 @@ const sources: SourceConfig[] = [
       price: { selector: ".card", attr: "data-price" },
       size_m2: { selector: ".card", attr: "data-sqm" },
       bedrooms: { selector: ".card", attr: "data-rooms" },
+      image: null,
     },
     sourceIdRegex: "/pick/(\\d+)/",
     rateLimitMs: 1200,
@@ -100,6 +105,7 @@ const sources: SourceConfig[] = [
       price: { selector: "[data-is24-qa='listing_price'], .price", regex: "([\\d.]+)\\s*€" },
       size_m2: { selector: "[data-is24-qa='listing_area'], .area", regex: "([\\d.,]+)\\s*m" },
       bedrooms: { selector: "[data-is24-qa='listing_rooms'], .rooms", regex: "([\\d,]+)" },
+      image: null,
     },
     sourceIdRegex: "/expose/(\\d+)|/angebot/(\\d+)",
     botBlockPatterns: ["Ich bin kein Roboter", "challenge.js"],

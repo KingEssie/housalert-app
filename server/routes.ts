@@ -937,6 +937,79 @@ export async function registerRoutes(
     }
   });
 
+  app.post("/api/backfill-images", async (req, res) => {
+    try {
+      const cheerio = await import("cheerio");
+      const UA = "Stekkies/1.0 (rental alert app; polite single-page fetch; contact: stekkies@example.com)";
+
+      const { data: listings, error } = await supabase
+        .from("listings")
+        .select("id, source, url")
+        .is("image_url", null)
+        .limit(50);
+
+      if (error) return res.status(500).json({ error: error.message });
+      if (!listings || listings.length === 0) return res.json({ updated: 0, message: "No listings need backfill" });
+
+      let updated = 0;
+      let failed = 0;
+
+      for (const listing of listings) {
+        try {
+          await new Promise(r => setTimeout(r, 800));
+          const resp = await fetch(listing.url, {
+            headers: { "User-Agent": UA, Accept: "text/html", "Accept-Language": "de-DE,de;q=0.9,en;q=0.5" },
+            redirect: "follow",
+          });
+          if (!resp.ok) { failed++; continue; }
+          const html = await resp.text();
+          const $ = cheerio.load(html);
+
+          let imageUrl: string | null = null;
+          if (listing.source === "kleinanzeigen") {
+            const img = $("#viewad-image img, .galleryimage-element img, img[src*='img.kleinanzeigen.de']").first();
+            imageUrl = img.attr("src") || null;
+            if (!imageUrl) {
+              const meta = $("meta[property='og:image']").attr("content") || null;
+              if (meta && meta.startsWith("http")) imageUrl = meta;
+            }
+          } else if (listing.source === "wohnungsboerse") {
+            const img = $("img[src*='wohnungsboerse.net/assets']").first();
+            imageUrl = img.attr("src") || null;
+            if (!imageUrl) {
+              const meta = $("meta[property='og:image']").attr("content") || null;
+              if (meta && meta.startsWith("http")) imageUrl = meta;
+            }
+          } else if (listing.source === "wg-gesucht") {
+            const img = $("img.sp-gallery__image, img[src*='img.wg-gesucht.de']").first();
+            imageUrl = img.attr("src") || null;
+            if (!imageUrl) {
+              const meta = $("meta[property='og:image']").attr("content") || null;
+              if (meta && meta.startsWith("http")) imageUrl = meta;
+            }
+          } else {
+            const meta = $("meta[property='og:image']").attr("content") || null;
+            if (meta && meta.startsWith("http")) imageUrl = meta;
+          }
+
+          if (imageUrl) {
+            await supabase.from("listings").update({ image_url: imageUrl }).eq("id", listing.id);
+            updated++;
+            log(`Backfilled image for ${listing.source} listing ${listing.id}`);
+          } else {
+            failed++;
+          }
+        } catch {
+          failed++;
+        }
+      }
+
+      return res.json({ updated, failed, total: listings.length });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   app.post("/api/ingest/run", async (req, res) => {
     const authHeader = req.headers.authorization;
     const expectedToken = process.env.INGEST_BEARER_TOKEN;

@@ -132,6 +132,20 @@ async function fetchAndParse(
       bedrooms = parseNumber(roomsText, config.fields.bedrooms.regex);
     }
 
+    let imageUrl: string | null = null;
+    if (config.fields.image) {
+      const imgField = config.fields.image;
+      const imgEl = $card.find(imgField.selector).first();
+      if (imgEl.length) {
+        const raw = imgEl.attr(imgField.attr) || "";
+        if (raw && raw.startsWith("http")) {
+          imageUrl = raw;
+        } else if (raw && !raw.includes("blank")) {
+          imageUrl = config.baseUrl + (raw.startsWith("/") ? "" : "/") + raw;
+        }
+      }
+    }
+
     listings.push({
       title,
       url: fullUrl,
@@ -141,6 +155,7 @@ async function fetchAndParse(
       size_m2: size,
       source: config.source,
       source_id: sourceId,
+      image_url: imageUrl,
     });
   });
 

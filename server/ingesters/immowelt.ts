@@ -79,6 +79,13 @@ async function fetchAndParseListings(): Promise<ParsedListing[]> {
     const bedrooms = parseZimmer(keyFacts);
     const size = parseSize(keyFacts);
 
+    const imgEl = card.find("img[src*='immowelt'], img[src*='cdn.'], picture source[srcset]").first();
+    let imageUrl: string | null = null;
+    if (imgEl.length) {
+      const raw = imgEl.attr("src") || imgEl.attr("srcset")?.split(",")[0]?.trim()?.split(" ")[0] || "";
+      if (raw && raw.startsWith("http")) imageUrl = raw;
+    }
+
     listings.push({
       title,
       url: fullUrl,
@@ -88,6 +95,7 @@ async function fetchAndParseListings(): Promise<ParsedListing[]> {
       size_m2: size,
       source: "immowelt",
       source_id: sourceId,
+      image_url: imageUrl,
     });
   });
 

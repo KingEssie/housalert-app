@@ -81,6 +81,12 @@ async function fetchAndParseListings(): Promise<ParsedListing[]> {
       .text();
     const price = parsePrice(priceText);
 
+    const imgEl = card.find("img[src*='kleinanzeigen.de']").first();
+    let imageUrl: string | null = imgEl.attr("src") || null;
+    if (imageUrl) {
+      imageUrl = imageUrl.replace(/\?rule=\$_\d+\.AUTO/, "?rule=$_35.AUTO");
+    }
+
     listings.push({
       title,
       url: fullUrl,
@@ -90,6 +96,7 @@ async function fetchAndParseListings(): Promise<ParsedListing[]> {
       size_m2: size,
       source: "kleinanzeigen",
       source_id: sourceId,
+      image_url: imageUrl,
     });
   });
 

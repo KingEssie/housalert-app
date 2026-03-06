@@ -160,6 +160,7 @@ function MatchCard({
   onStatusChange: () => void;
 }) {
   const [, navigate] = useLocation();
+  const [imgError, setImgError] = useState(false);
   const style = FRESH_BADGE_STYLES[match.fresh_label] ?? FRESH_BADGE_STYLES.ouder;
   const gradient = getCityGradient(match.city);
   const hasImage = !!match.image_url;
@@ -191,12 +192,14 @@ function MatchCard({
       data-testid={`card-match-${match.listing_id}`}
     >
       <div className="relative">
-        {hasImage ? (
+        {hasImage && !imgError ? (
           <img
             src={match.image_url!}
             alt={match.title}
             className="w-full h-[180px] object-cover"
             loading="lazy"
+            onError={() => setImgError(true)}
+            referrerPolicy="no-referrer"
           />
         ) : (
           <div className={`w-full h-[180px] bg-gradient-to-br ${gradient} flex items-center justify-center relative`}>
