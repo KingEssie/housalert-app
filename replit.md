@@ -95,11 +95,18 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - Replaces: old `SpeedReadinessCard` from profile-strength.tsx (still exported but unused)
 - Clickable incomplete items navigate to relevant settings pages
 
-### Application Letter System
+### Application Letter System & Quick-Apply ("Reageer nu")
 - `client/src/lib/application-letter.ts` — Default Dutch template, placeholder definitions, `fillTemplate()` function
 - Placeholders: [[ADRES]], [[STAD]], [[NAAM]], [[EMAIL]], [[TELEFOON]], [[BEROEP]], [[INKOMEN]], [[PRIJS]]
 - Fallback chain: listing.address → listing.title → "deze woning in [[STAD]]"
-- Copy from listing detail: loads user template (or default), fills placeholders with listing data, copies to clipboard
+- `client/src/components/apply-sheet.tsx` — Quick-apply bottom sheet with:
+  - Prefilled letter preview using listing data + user profile
+  - Readiness indicators (reactiebrief, telefoonnummer, documenten) from profile-data + notification-settings
+  - Primary CTA: "Kopieer en reageer" (copies letter + opens listing URL in one tap)
+  - Secondary: "Alleen kopiëren" and "Markeer gereageerd"
+  - "Klaar om te versturen" badge when all readiness items are done
+- `client/src/pages/listing-detail.tsx` — "Reageer nu" is the primary blue CTA; "Bekijk" is secondary outline button
+- Listing detail page delegates all apply logic to ApplySheet (no local letter generation)
 
 ### Subscriptions
 - `server/subscriptions.ts` — Subscription helpers: `ensureTrialSubscription`, `getSubscriptionStatus`, `updateSubscriptionFromCheckout`, `updateSubscriptionStatus`, `findUserByStripeCustomerId`

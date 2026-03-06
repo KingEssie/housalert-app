@@ -2,9 +2,7 @@ import { useState } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
-import { useToast } from "@/hooks/use-toast";
-import { DEFAULT_TEMPLATE, fillTemplate } from "@/lib/application-letter";
-import { ArrowLeft, MapPin, Euro, BedDouble, Ruler, ExternalLink, Clock, Globe, Copy, Send } from "lucide-react";
+import { ArrowLeft, MapPin, Euro, BedDouble, Ruler, ExternalLink, Clock, Globe, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ApplySheet } from "@/components/apply-sheet";
 
@@ -51,21 +49,11 @@ interface Listing {
   match_label?: string | null;
 }
 
-interface ProfileData {
-  application_template: string | null;
-  search_buddy_email?: string | null;
-}
-
-interface NotifSettings {
-  phone_e164: string | null;
-}
-
 export default function ListingDetailPage() {
   const [, navigate] = useLocation();
   const [match, params] = useRoute("/listing/:id");
   const id = params?.id;
-  const { user, session } = useAuth();
-  const { toast } = useToast();
+  const { session } = useAuth();
   const [applyOpen, setApplyOpen] = useState(false);
 
   const { data: listing, isLoading, isError } = useQuery<Listing>({
@@ -81,55 +69,6 @@ export default function ListingDetailPage() {
     },
     enabled: !!id,
   });
-
-  const { data: profileData } = useQuery<ProfileData>({
-    queryKey: ["/api/profile-data"],
-    queryFn: async () => {
-      const res = await fetch("/api/profile-data", {
-        headers: { Authorization: `Bearer ${session?.access_token}` },
-      });
-      if (!res.ok) return { application_template: null };
-      return res.json();
-    },
-    enabled: !!session?.access_token,
-  });
-
-  const { data: notifSettings } = useQuery<NotifSettings>({
-    queryKey: ["/api/notifications/settings"],
-    queryFn: async () => {
-      const res = await fetch("/api/notifications/settings", {
-        headers: { Authorization: `Bearer ${session?.access_token}` },
-      });
-      if (!res.ok) return { phone_e164: null };
-      return res.json();
-    },
-    enabled: !!session?.access_token,
-  });
-
-  const handleCopyLetter = async () => {
-    if (!listing) return;
-    const tmpl = profileData?.application_template || DEFAULT_TEMPLATE;
-    const filled = fillTemplate(
-      tmpl,
-      {
-        title: listing.title,
-        city: listing.city,
-        price: listing.price,
-        address: (listing as any).address || undefined,
-      },
-      {
-        email: user?.email || undefined,
-        name: user?.email?.split("@")[0] || undefined,
-        phone: notifSettings?.phone_e164 || undefined,
-      }
-    );
-    try {
-      await navigator.clipboard.writeText(filled);
-      toast({ title: "Gekopieerd!", description: "Je aanmeldingsbrief is naar het klembord gekopieerd." });
-    } catch {
-      toast({ title: "Fout", description: "Kon niet kopiëren. Probeer het opnieuw.", variant: "destructive" });
-    }
-  };
 
   if (isLoading) {
     return (
@@ -291,28 +230,28 @@ export default function ListingDetailPage() {
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#EAEFF5] p-5 z-10">
         <div className="max-w-xl mx-auto flex flex-col gap-2">
           <div className="flex gap-2">
+            <Button
+              onClick={() => setApplyOpen(true)}
+              size="lg"
+              className="flex-1 h-[56px] rounded-xl text-[16px] font-semibold shadow-none bg-[#0066FF] hover:bg-[#0052CC] flex items-center justify-center gap-2"
+              data-testid="button-reageer-detail"
+            >
+              <Send className="w-4.5 h-4.5" />
+              Reageer nu
+            </Button>
             {listing.url && (
-              <a href={listing.url} target="_blank" rel="noopener noreferrer" className="flex-1">
+              <a href={listing.url} target="_blank" rel="noopener noreferrer">
                 <Button
+                  variant="outline"
                   size="lg"
-                  className="w-full h-[56px] rounded-xl text-[16px] font-semibold shadow-none bg-[#0066FF] hover:bg-[#0052CC] flex items-center justify-center gap-2"
+                  className="h-[56px] px-5 rounded-xl text-[15px] font-semibold border-[#EAEFF5] text-[#1B2A4A] flex items-center gap-2"
                   data-testid="button-view-original"
                 >
-                  <ExternalLink className="w-4.5 h-4.5" />
-                  Bekijk woning
+                  <ExternalLink className="w-4 h-4" />
+                  Bekijk
                 </Button>
               </a>
             )}
-            <Button
-              onClick={() => setApplyOpen(true)}
-              variant="outline"
-              size="lg"
-              className="h-[56px] px-5 rounded-xl text-[15px] font-semibold border-[#EAEFF5] text-[#1B2A4A] flex items-center gap-2"
-              data-testid="button-reageer-detail"
-            >
-              <Send className="w-4 h-4" />
-              Reageer
-            </Button>
           </div>
         </div>
       </div>
