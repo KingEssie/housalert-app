@@ -78,72 +78,72 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f6f8] flex flex-col">
-      <header className="w-full bg-white sticky top-0 z-20 shadow-sm">
+    <div className="min-h-screen bg-white flex flex-col">
+      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
         <div className="max-w-xl mx-auto px-5 h-14 flex items-center gap-3">
           <button
             onClick={handleBack}
-            className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-[#f5f6f8] transition-colors"
+            className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-[#F2F4F7] transition-colors"
             data-testid="button-back-estimate"
           >
-            <ChevronLeft className="w-5 h-5 text-[#4a5568]" />
+            <ChevronLeft className="w-5 h-5 text-[#6B7280]" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-[#1D6FE8] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-bold text-[#1a2744] text-base">Stekkies</span>
+            <span className="font-bold text-[#0B1F44] text-base">Stekkies</span>
           </div>
         </div>
       </header>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-10 pb-12">
         <div className="text-center mb-8">
-          <h1 className="text-[26px] font-extrabold text-[#1a2744] mb-2" data-testid="text-signup-title">
+          <h1 className="text-[26px] font-extrabold text-[#0B1F44] mb-2" data-testid="text-signup-title">
             Maak je account aan
           </h1>
-          <p className="text-[15px] text-[#6b7280]">
-            Ontvang direct meldingen voor nieuwe woningen{city ? <> in <span className="font-semibold text-[#1a2744]">{city}</span></> : ""}.
+          <p className="text-[15px] text-[#6B7280]">
+            Ontvang direct meldingen voor nieuwe woningen{city ? <> in <span className="font-semibold text-[#0B1F44]">{city}</span></> : ""}.
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-[#eceef1] p-6">
+        <div className="bg-white rounded-2xl shadow-[0_6px_20px_rgba(0,0,0,0.06)] p-6">
           <form onSubmit={handleSignup} className="space-y-5">
             <div className="space-y-2">
-              <Label className="text-sm font-semibold text-[#1a2744]">Naam</Label>
+              <Label className="text-sm font-semibold text-[#0B1F44]">Naam</Label>
               <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#9ca3af]" />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#6B7280]" />
                 <Input
                   type="text"
                   placeholder="Je volledige naam"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="h-13 pl-11 rounded-xl text-[15px] bg-[#f7f8fa] border-[#e5e7eb] focus:border-primary focus:bg-white transition-colors"
+                  className="h-13 pl-11 rounded-xl text-[15px] bg-[#F2F4F7] border-transparent focus:border-[#1D6FE8] focus:bg-white transition-colors"
                   data-testid="input-signup-name"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label className="text-sm font-semibold text-[#1a2744]">E-mailadres</Label>
+              <Label className="text-sm font-semibold text-[#0B1F44]">E-mailadres</Label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#9ca3af]" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#6B7280]" />
                 <Input
                   type="email"
                   placeholder="jouw@email.nl"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-13 pl-11 rounded-xl text-[15px] bg-[#f7f8fa] border-[#e5e7eb] focus:border-primary focus:bg-white transition-colors"
+                  className="h-13 pl-11 rounded-xl text-[15px] bg-[#F2F4F7] border-transparent focus:border-[#1D6FE8] focus:bg-white transition-colors"
                   data-testid="input-signup-email"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label className="text-sm font-semibold text-[#1a2744]">Wachtwoord</Label>
+              <Label className="text-sm font-semibold text-[#0B1F44]">Wachtwoord</Label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#9ca3af]" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#6B7280]" />
                 <Input
                   type="password"
                   placeholder="Minimaal 6 tekens"
@@ -151,7 +151,7 @@ export default function SignupPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   minLength={6}
-                  className="h-13 pl-11 rounded-xl text-[15px] bg-[#f7f8fa] border-[#e5e7eb] focus:border-primary focus:bg-white transition-colors"
+                  className="h-13 pl-11 rounded-xl text-[15px] bg-[#F2F4F7] border-transparent focus:border-[#1D6FE8] focus:bg-white transition-colors"
                   data-testid="input-signup-password"
                 />
               </div>
@@ -160,7 +160,7 @@ export default function SignupPage() {
             <Button
               type="submit"
               size="lg"
-              className="w-full h-[52px] rounded-xl text-[16px] font-semibold shadow-none bg-primary hover:bg-primary/90 mt-1"
+              className="w-full h-[52px] rounded-xl text-[16px] font-semibold shadow-none bg-[#1D6FE8] hover:bg-[#165DD0] mt-1"
               disabled={loading || !email || !password}
               data-testid="button-signup-submit"
             >
@@ -169,18 +169,18 @@ export default function SignupPage() {
           </form>
         </div>
 
-        <p className="text-center text-sm text-[#9ca3af] mt-6">
+        <p className="text-center text-sm text-[#6B7280] mt-6">
           Heb je al een account?{" "}
           <button
             onClick={() => navigate("/login")}
-            className="text-primary font-semibold hover:underline"
+            className="text-[#1D6FE8] font-semibold hover:underline"
             data-testid="link-login"
           >
             Inloggen
           </button>
         </p>
 
-        <p className="text-center text-xs text-[#c5c9d2] mt-4">
+        <p className="text-center text-xs text-[#6B7280] mt-4 opacity-60">
           Door je aan te melden ga je akkoord met onze voorwaarden.
         </p>
       </main>

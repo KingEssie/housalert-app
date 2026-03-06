@@ -215,11 +215,17 @@ Sections:
 
 Env vars: `TEST_USER_EMAIL`, `TEST_USER_PASSWORD`, `TEST_PHONE_E164`, `TEST_BASE_URL` (defaults to `http://localhost:5000`)
 
-## Design
+## Design System (BlaBlaCar-style)
 
-- Light background, centered max-w-4xl container
-- Cards with subtle border and rounded corners
-- Generous whitespace, clean typography (Open Sans)
-- BlaBlaCar-style layout: sticky header + sectioned main content
-- Primary color: blue (210 100% 48%)
+- Primary blue: `#1D6FE8`, hover: `#165DD0`
+- Heading navy: `#0B1F44`
+- Page background: `#FFFFFF` (pure white)
+- Input background: `#F2F4F7` (no borders, 12px radius)
+- Secondary text: `#6B7280`
+- Card shadow: `0 6px 20px rgba(0,0,0,0.06)` (no borders on cards)
+- Font: Inter
+- Buttons: blue `#1D6FE8`, rounded-xl, h-[52px]
+- Active tab underline: blue
+- Progress bars: blue fill on `#E5E7EB` track
+- Header: white with thin bottom border `#E5E7EB`
 - Max 4 search profiles per user

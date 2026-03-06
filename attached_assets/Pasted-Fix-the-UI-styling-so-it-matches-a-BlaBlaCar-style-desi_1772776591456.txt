@@ -1,0 +1,127 @@
+Fix the UI styling so it matches a BlaBlaCar-style design system.
+
+The current version is close but the colors and input styling are wrong.
+
+Apply a strict design system.
+
+--------------------------------
+GLOBAL DESIGN TOKENS
+--------------------------------
+
+Primary blue:
+#1D6FE8
+
+Button hover:
+#165DD0
+
+Heading navy:
+#0B1F44
+
+Page background:
+#FFFFFF
+
+Input background:
+#F2F4F7
+
+Secondary text:
+#6B7280
+
+--------------------------------
+PAGE BACKGROUND
+--------------------------------
+
+The page background must be pure white.
+
+body {
+background:#FFFFFF;
+}
+
+Remove grey page backgrounds.
+
+--------------------------------
+INPUT FIELDS
+--------------------------------
+
+Inputs must NOT have borders.
+
+Instead use a light grey background.
+
+input, select, textarea {
+background:#F2F4F7;
+border:none;
+border-radius:12px;
+padding:16px;
+font-size:16px;
+}
+
+--------------------------------
+BUTTON STYLE
+--------------------------------
+
+Primary buttons must use the same blue as BlaBlaCar.
+
+button.primary {
+background:#1D6FE8;
+color:white;
+border:none;
+border-radius:12px;
+font-weight:600;
+}
+
+button.primary:hover {
+background:#165DD0;
+}
+
+Do NOT use dark navy buttons.
+
+--------------------------------
+HEADINGS
+--------------------------------
+
+Headings must use a dark navy color instead of black.
+
+h1, h2, h3 {
+color:#0B1F44;
+}
+
+--------------------------------
+CARD DESIGN
+--------------------------------
+
+Cards should be white with soft shadows.
+
+.card {
+background:white;
+border-radius:16px;
+box-shadow:0 6px 20px rgba(0,0,0,0.06);
+}
+
+--------------------------------
+ONBOARDING STEP 1
+--------------------------------
+
+Keep the current structure but improve spacing and styling.
+
+Tabs (Wijken / Radius / Reistijd):
+- clean underline style
+- active tab in primary blue
+
+City input:
+- grey background
+- no border
+
+Popular cities:
+- rounded chips
+
+--------------------------------
+IMPORTANT
+--------------------------------
+
+Do not change functionality.
+Do not change routes.
+Only fix colors, inputs, buttons, and spacing.
+
+After updating show screenshots of:
+1) onboarding step 1
+2) onboarding step 2
+3) estimate screen

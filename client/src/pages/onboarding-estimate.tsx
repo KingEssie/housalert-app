@@ -72,21 +72,21 @@ export default function OnboardingEstimatePage() {
   ].filter((c) => c.show);
 
   return (
-    <div className="min-h-screen bg-[#f5f6f8] flex flex-col">
-      <header className="w-full bg-white sticky top-0 z-20 shadow-sm">
+    <div className="min-h-screen bg-white flex flex-col">
+      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
         <div className="max-w-xl mx-auto px-5 h-14 flex items-center gap-3">
           <button
             onClick={handleBack}
-            className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-[#f5f6f8] transition-colors"
+            className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-[#F2F4F7] transition-colors"
             data-testid="button-back-filters"
           >
-            <ChevronLeft className="w-5 h-5 text-[#4a5568]" />
+            <ChevronLeft className="w-5 h-5 text-[#6B7280]" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-[#1D6FE8] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-bold text-[#1a2744] text-base">Stekkies</span>
+            <span className="font-bold text-[#0B1F44] text-base">Stekkies</span>
           </div>
         </div>
       </header>
@@ -94,42 +94,42 @@ export default function OnboardingEstimatePage() {
       <div className="max-w-xl mx-auto w-full px-5 pt-6 pb-2">
         <div className="flex items-center gap-2">
           {[1, 2, 3].map((step) => (
-            <div key={step} className="flex-1 h-2 rounded-full overflow-hidden bg-[#e2e5ea]">
+            <div key={step} className="flex-1 h-2 rounded-full overflow-hidden bg-[#E5E7EB]">
               <div
-                className="h-full rounded-full w-full bg-primary"
+                className="h-full rounded-full w-full bg-[#1D6FE8]"
                 data-testid={`progress-step-${step}`}
               />
             </div>
           ))}
         </div>
-        <p className="text-xs font-medium text-[#9ca3af] mt-2" data-testid="text-step-indicator">Stap 3 van 3</p>
+        <p className="text-xs font-medium text-[#6B7280] mt-2" data-testid="text-step-indicator">Stap 3 van 3</p>
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-5 pb-32 pt-4 flex flex-col">
-        <h1 className="text-[26px] font-extrabold text-[#1a2744] leading-tight mb-2 text-center" data-testid="text-estimate-title">
+        <h1 className="text-[26px] font-extrabold text-[#0B1F44] leading-tight mb-2 text-center" data-testid="text-estimate-title">
           Jouw schatting
         </h1>
-        <p className="text-[15px] text-[#6b7280] text-center mb-6">
-          Op basis van jouw zoekcriteria in <span className="font-semibold text-[#1a2744]">{city}</span>
+        <p className="text-[15px] text-[#6B7280] text-center mb-6">
+          Op basis van jouw zoekcriteria in <span className="font-semibold text-[#0B1F44]">{city}</span>
         </p>
 
-        <div className="bg-white rounded-2xl shadow-md border border-[#eceef1] p-8 mb-5 text-center" data-testid="card-estimate">
-          <div className="w-16 h-16 rounded-2xl bg-[#eef2ff] flex items-center justify-center mx-auto mb-5">
-            <TrendingUp className="w-8 h-8 text-primary" />
+        <div className="bg-white rounded-2xl shadow-[0_6px_20px_rgba(0,0,0,0.06)] p-8 mb-5 text-center" data-testid="card-estimate">
+          <div className="w-16 h-16 rounded-2xl bg-[#EBF2FE] flex items-center justify-center mx-auto mb-5">
+            <TrendingUp className="w-8 h-8 text-[#1D6FE8]" />
           </div>
 
           {loading ? (
             <div className="flex items-center justify-center py-6">
-              <Loader2 className="w-8 h-8 text-primary animate-spin" />
+              <Loader2 className="w-8 h-8 text-[#1D6FE8] animate-spin" />
             </div>
           ) : (
             <>
-              <p className="text-6xl font-extrabold text-[#1a2744] mb-4 tabular-nums" data-testid="text-estimate-number">
+              <p className="text-6xl font-extrabold text-[#0B1F44] mb-4 tabular-nums" data-testid="text-estimate-number">
                 {estimate}
               </p>
-              <p className="text-base text-[#4a5568] leading-relaxed max-w-sm mx-auto" data-testid="text-estimate-description">
+              <p className="text-base text-[#6B7280] leading-relaxed max-w-sm mx-auto" data-testid="text-estimate-description">
                 Met jouw zoekcriteria verwachten we ongeveer{" "}
-                <span className="font-bold text-[#1a2744]">{estimate} nieuwe woningen</span>{" "}
+                <span className="font-bold text-[#0B1F44]">{estimate} nieuwe woningen</span>{" "}
                 per week.
               </p>
             </>
@@ -137,13 +137,13 @@ export default function OnboardingEstimatePage() {
         </div>
 
         {filterChips.length > 0 && (
-          <div className="bg-white rounded-2xl shadow-sm border border-[#eceef1] p-5 mb-5">
-            <p className="text-sm font-semibold text-[#1a2744] mb-3">Jouw filters</p>
+          <div className="bg-white rounded-2xl shadow-[0_6px_20px_rgba(0,0,0,0.06)] p-5 mb-5">
+            <p className="text-sm font-semibold text-[#0B1F44] mb-3">Jouw filters</p>
             <div className="flex flex-wrap gap-2">
               {filterChips.map((chip) => (
                 <span
                   key={chip.testId}
-                  className="px-3.5 py-1.5 bg-[#f7f8fa] rounded-lg text-sm font-medium text-[#4a5568] border border-[#e5e7eb]"
+                  className="px-3.5 py-1.5 bg-[#F2F4F7] rounded-lg text-sm font-medium text-[#0B1F44]"
                   data-testid={chip.testId}
                 >
                   {chip.label}
@@ -153,20 +153,20 @@ export default function OnboardingEstimatePage() {
           </div>
         )}
 
-        <div className="bg-[#f0f4ff] rounded-2xl p-5 border border-[#dce3f5] flex items-start gap-3">
-          <Sparkles className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-[#4a5568] leading-relaxed">
+        <div className="bg-[#EBF2FE] rounded-2xl p-5 flex items-start gap-3">
+          <Sparkles className="w-5 h-5 text-[#1D6FE8] flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-[#6B7280] leading-relaxed">
             Maak een account aan en we sturen je direct een melding als er een woning beschikbaar komt die aan je criteria voldoet.
           </p>
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#eceef1] p-4 z-10 shadow-[0_-2px_10px_rgba(0,0,0,0.04)]">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] p-4 z-10">
         <div className="max-w-xl mx-auto flex gap-3">
           <Button
             variant="outline"
             size="lg"
-            className="h-[52px] px-6 rounded-xl text-[15px] font-semibold border-[#d1d5db] text-[#4a5568] hover:bg-[#f5f6f8]"
+            className="h-[52px] px-6 rounded-xl text-[15px] font-semibold border-[#E5E7EB] text-[#6B7280] hover:bg-[#F2F4F7]"
             onClick={handleBack}
             data-testid="button-back-estimate"
           >
@@ -174,7 +174,7 @@ export default function OnboardingEstimatePage() {
           </Button>
           <Button
             size="lg"
-            className="flex-1 h-[52px] rounded-xl text-[15px] font-semibold shadow-none bg-primary hover:bg-primary/90"
+            className="flex-1 h-[52px] rounded-xl text-[15px] font-semibold shadow-none bg-[#1D6FE8] hover:bg-[#165DD0]"
             onClick={handleCreateAccount}
             disabled={loading}
             data-testid="button-create-account"
