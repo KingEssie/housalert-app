@@ -12,6 +12,14 @@ import { getNextRun } from "./scheduler";
 import { getListingFreshness, getMatchTimestamps, getNewestListingIds } from "./freshness";
 import { supabase } from "./ingesters/matching";
 import { backfillMatchesForSearchProfile } from "./matching/engine";
+import {
+  ensureTrialSubscription,
+  getSubscriptionStatus,
+  updateSubscriptionFromCheckout,
+  updateSubscriptionStatus,
+  findUserByStripeCustomerId,
+} from "./subscriptions";
+import { log } from "./log";
 
 const TEN_MIN = 10 * 60 * 1000;
 const ONE_HOUR = 60 * 60 * 1000;
@@ -327,7 +335,7 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/checkout", async (req, res) => {
+  app.post("/api/subscription/ensure-trial", async (req, res) => {
     try {
       const token = req.headers.authorization?.replace("Bearer ", "");
       if (!token) return res.status(401).json({ error: "Unauthorized" });
@@ -335,16 +343,53 @@ export async function registerRoutes(
       const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
-      const { priceId } = req.body;
-      if (!priceId) return res.status(400).json({ error: "priceId is required" });
+      const sub = await ensureTrialSubscription(user.id);
+      return res.json({ ok: true, subscription: sub });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
 
-      const PLAN_PRICE_MAP: Record<string, string> = {
-        "1-month": process.env.STRIPE_PRICE_1_MONTH || "",
-        "2-months": process.env.STRIPE_PRICE_2_MONTHS || "",
-        "3-months": process.env.STRIPE_PRICE_3_MONTHS || "",
-      };
+  app.get("/api/subscription/status", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
 
-      const stripePriceId = PLAN_PRICE_MAP[priceId] || priceId;
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const status = await getSubscriptionStatus(user.id);
+      return res.json(status);
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  const PLAN_PRICE_MAP: Record<string, string> = {
+    monthly: process.env.STRIPE_PRICE_MONTHLY || process.env.STRIPE_PRICE_1_MONTH || "",
+    two_month: process.env.STRIPE_PRICE_TWO_MONTH || process.env.STRIPE_PRICE_2_MONTHS || "",
+    three_month: process.env.STRIPE_PRICE_THREE_MONTH || process.env.STRIPE_PRICE_3_MONTHS || "",
+  };
+
+  const PRICE_TO_PLAN: Record<string, string> = {};
+  for (const [plan, priceId] of Object.entries(PLAN_PRICE_MAP)) {
+    if (priceId) PRICE_TO_PLAN[priceId] = plan;
+  }
+
+  app.post("/api/checkout/session", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { plan } = req.body;
+      if (!plan || !PLAN_PRICE_MAP[plan]) {
+        return res.status(400).json({ error: "Invalid plan. Use: monthly, two_month, or three_month" });
+      }
+
+      const stripePriceId = PLAN_PRICE_MAP[plan];
       if (!stripePriceId) {
         return res.status(400).json({ error: "Stripe prices are not yet configured. Set STRIPE_PRICE_* environment variables." });
       }
@@ -364,21 +409,170 @@ export async function registerRoutes(
         customerId = customer.id;
       }
 
+      await supabase
+        .from("subscriptions")
+        .update({ stripe_customer_id: customerId, updated_at: new Date().toISOString() })
+        .eq("user_id", user.id);
+
       const host = req.headers.host || "localhost:5000";
       const protocol = req.headers["x-forwarded-proto"] || req.protocol;
+      const baseUrl = process.env.APP_PUBLIC_BASE_URL || `${protocol}://${host}`;
 
       const session = await stripe.checkout.sessions.create({
         customer: customerId,
         payment_method_types: ["card"],
         line_items: [{ price: stripePriceId, quantity: 1 }],
         mode: "subscription",
-        success_url: `${protocol}://${host}/dashboard?checkout=success`,
-        cancel_url: `${protocol}://${host}/paywall?checkout=cancelled`,
+        success_url: `${baseUrl}/dashboard?checkout=success`,
+        cancel_url: `${baseUrl}/paywall?checkout=cancelled`,
+        metadata: { supabase_user_id: user.id, plan },
       });
 
       return res.json({ url: session.url });
     } catch (err: any) {
       console.error("Checkout error:", err);
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/checkout", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { priceId } = req.body;
+      if (!priceId) return res.status(400).json({ error: "priceId is required" });
+
+      const legacyMap: Record<string, string> = {
+        "1-month": "monthly",
+        "2-months": "two_month",
+        "3-months": "three_month",
+      };
+      const plan = legacyMap[priceId] || priceId;
+
+      req.body = { plan };
+      req.headers["authorization"] = `Bearer ${token}`;
+
+      const stripePriceId = PLAN_PRICE_MAP[plan];
+      if (!stripePriceId) {
+        return res.status(400).json({ error: "Stripe prices are not yet configured." });
+      }
+
+      const { getUncachableStripeClient } = await import("./stripe/stripeClient");
+      const stripe = await getUncachableStripeClient();
+
+      const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+      let customerId: string;
+      if (customers.data.length > 0) {
+        customerId = customers.data[0].id;
+      } else {
+        const customer = await stripe.customers.create({
+          email: user.email!,
+          metadata: { supabase_user_id: user.id },
+        });
+        customerId = customer.id;
+      }
+
+      const host = req.headers.host || "localhost:5000";
+      const protocol = req.headers["x-forwarded-proto"] || req.protocol;
+      const baseUrl = process.env.APP_PUBLIC_BASE_URL || `${protocol}://${host}`;
+
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId,
+        payment_method_types: ["card"],
+        line_items: [{ price: stripePriceId, quantity: 1 }],
+        mode: "subscription",
+        success_url: `${baseUrl}/dashboard?checkout=success`,
+        cancel_url: `${baseUrl}/paywall?checkout=cancelled`,
+        metadata: { supabase_user_id: user.id, plan },
+      });
+
+      return res.json({ url: session.url });
+    } catch (err: any) {
+      console.error("Checkout error:", err);
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/stripe/webhook", async (req, res) => {
+    try {
+      const { getUncachableStripeClient, getStripeSecretKey } = await import("./stripe/stripeClient");
+      const stripe = await getUncachableStripeClient();
+
+      const sig = req.headers["stripe-signature"] as string;
+      const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+      if (!webhookSecret) {
+        log("[stripe-webhook] STRIPE_WEBHOOK_SECRET not configured");
+        return res.status(500).json({ error: "Webhook secret not configured" });
+      }
+
+      let event;
+      try {
+        event = stripe.webhooks.constructEvent(req.rawBody as Buffer, sig, webhookSecret);
+      } catch (err: any) {
+        log(`[stripe-webhook] Signature verification failed: ${err.message}`);
+        return res.status(400).json({ error: `Webhook Error: ${err.message}` });
+      }
+
+      log(`[stripe-webhook] Received event: ${event.type}`);
+
+      switch (event.type) {
+        case "checkout.session.completed": {
+          const session = event.data.object as any;
+          const userId = session.metadata?.supabase_user_id;
+          const plan = session.metadata?.plan || "monthly";
+          const stripeCustomerId = session.customer as string;
+          const stripeSubscriptionId = session.subscription as string;
+
+          if (userId && stripeSubscriptionId) {
+            const sub = await stripe.subscriptions.retrieve(stripeSubscriptionId);
+            const periodEnd = new Date((sub as any).current_period_end * 1000);
+            await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubscriptionId, plan, periodEnd);
+          }
+          break;
+        }
+
+        case "customer.subscription.created":
+        case "customer.subscription.updated": {
+          const sub = event.data.object as any;
+          const stripeCustomerId = sub.customer as string;
+          const stripeSubId = sub.id;
+          const subStatus = sub.status;
+          const periodEnd = new Date(sub.current_period_end * 1000);
+
+          let status: "active" | "canceled" | "expired" = "active";
+          if (subStatus === "canceled" || subStatus === "unpaid") {
+            status = "canceled";
+          } else if (subStatus === "past_due" || subStatus === "incomplete_expired") {
+            status = "expired";
+          }
+
+          const userId = await findUserByStripeCustomerId(stripeCustomerId);
+          if (userId) {
+            const priceId = sub.items?.data?.[0]?.price?.id;
+            const plan = (priceId && PRICE_TO_PLAN[priceId]) || "monthly";
+            await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubId, plan, periodEnd);
+            if (status !== "active") {
+              await updateSubscriptionStatus(stripeSubId, status, periodEnd);
+            }
+          }
+          break;
+        }
+
+        case "customer.subscription.deleted": {
+          const sub = event.data.object as any;
+          await updateSubscriptionStatus(sub.id, "canceled");
+          break;
+        }
+      }
+
+      return res.json({ received: true });
+    } catch (err: any) {
+      log(`[stripe-webhook] Error: ${err.message}`);
       return res.status(500).json({ error: err.message });
     }
   });

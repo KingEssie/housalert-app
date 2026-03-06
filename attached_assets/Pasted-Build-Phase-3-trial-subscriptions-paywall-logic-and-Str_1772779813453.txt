@@ -1,0 +1,176 @@
+Build Phase 3: trial, subscriptions, paywall logic, and Stripe integration.
+
+Important:
+- Keep the existing onboarding and dashboard intact
+- Add subscription logic in a clean way
+- Use Supabase for subscription state
+- Use Stripe Checkout for payments
+- Germany-first product
+- Stekkies-like business model
+
+--------------------------------
+DATABASE
+--------------------------------
+
+Create or update a subscriptions table in Supabase with:
+
+- id uuid primary key default gen_random_uuid()
+- user_id uuid not null references auth.users(id) on delete cascade
+- status text not null default 'trial'
+  allowed values:
+  - trial
+  - active
+  - canceled
+  - expired
+- plan text
+  allowed values:
+  - monthly
+  - two_month
+  - three_month
+- trial_ends_at timestamptz
+- current_period_ends_at timestamptz
+- stripe_customer_id text
+- stripe_subscription_id text
+- created_at timestamptz default now()
+- updated_at timestamptz default now()
+
+Add a unique constraint on user_id.
+
+--------------------------------
+SIGNUP LOGIC
+--------------------------------
+
+After a new user signs up:
+- automatically create a subscriptions row
+- status = 'trial'
+- trial_ends_at = now() + interval '7 days'
+
+Do not create duplicates if it already exists.
+
+--------------------------------
+STRIPE
+--------------------------------
+
+Add Stripe integration using env vars:
+- STRIPE_SECRET_KEY
+- STRIPE_WEBHOOK_SECRET
+- NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+- APP_PUBLIC_BASE_URL
+
+Create 3 plans:
+- monthly
+- two_month
+- three_month
+
+For now use placeholder Stripe price IDs via env vars:
+- STRIPE_PRICE_MONTHLY
+- STRIPE_PRICE_TWO_MONTH
+- STRIPE_PRICE_THREE_MONTH
+
+--------------------------------
+API ENDPOINTS
+--------------------------------
+
+Create:
+
+1) POST /api/checkout/session
+Input:
+- plan
+
+Behavior:
+- ensure the current user exists
+- create Stripe customer if needed
+- create Stripe checkout session
+- return checkout url
+
+2) GET /api/subscription/status
+Return:
+- status
+- plan
+- trial_ends_at
+- current_period_ends_at
+- isActive boolean
+- isTrial boolean
+- isExpired boolean
+
+3) POST /api/stripe/webhook
+Handle events:
+- checkout.session.completed
+- customer.subscription.created
+- customer.subscription.updated
+- customer.subscription.deleted
+
+Update Supabase subscriptions table accordingly.
+
+--------------------------------
+PAYWALL PAGE
+--------------------------------
+
+Refine /paywall so it is fully functional.
+
+Display 3 plan cards:
+- 1 maand
+- 2 maanden (mark as meest gekozen)
+- 3 maanden
+
+Each card shows:
+- plan title
+- short value text
+- CTA button
+
+When clicked:
+- call POST /api/checkout/session
+- redirect to Stripe Checkout
+
+Keep the UI premium and consistent with the current BlaBlaCar-inspired design.
+
+--------------------------------
+APP ACCESS RULES
+--------------------------------
+
+Build a reusable subscription gate.
+
+Rules:
+- if status = active → full access
+- if status = trial and trial_ends_at is in the future → full access
+- if status = trial and trial expired → restricted access
+- if status = expired or canceled → restricted access
+
+Restricted access behavior:
+- user can still open the app
+- but show a clear paywall banner or overlay on dashboard/matches
+- blur or lock match content
+- CTA: "Activeer je abonnement"
+
+Do NOT fully block navigation.
+Use a soft paywall.
+
+--------------------------------
+DASHBOARD INTEGRATION
+--------------------------------
+
+On dashboard:
+- show trial banner if in trial:
+  "Je proefperiode loopt tot {date}"
+- show expired banner if expired:
+  "Je proefperiode is afgelopen"
+  CTA: "Kies een abonnement"
+
+--------------------------------
+TESTING
+--------------------------------
+
+Add a script:
+scripts/test-subscriptions.ts
+
+It should:
+- create or use a test user
+- verify trial row exists
+- verify status endpoint works
+- verify checkout session endpoint returns a Stripe URL when plan is valid
+- clean up test rows if needed
+
+After implementation:
+- run the test script
+- explain what was built
+- list all files changed

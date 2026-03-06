@@ -1,0 +1,52 @@
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "./supabase";
+
+export interface SubscriptionState {
+  status: string;
+  plan: string | null;
+  trial_ends_at: string | null;
+  current_period_ends_at: string | null;
+  isActive: boolean;
+  isTrial: boolean;
+  isExpired: boolean;
+}
+
+async function fetchSubscriptionStatus(): Promise<SubscriptionState> {
+  const { data: session } = await supabase.auth.getSession();
+  const token = session?.session?.access_token;
+  if (!token) {
+    return { status: "none", plan: null, trial_ends_at: null, current_period_ends_at: null, isActive: false, isTrial: false, isExpired: true };
+  }
+
+  const res = await fetch("/api/subscription/status", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!res.ok) {
+    return { status: "none", plan: null, trial_ends_at: null, current_period_ends_at: null, isActive: false, isTrial: false, isExpired: true };
+  }
+
+  return res.json();
+}
+
+export function useSubscription() {
+  const query = useQuery<SubscriptionState>({
+    queryKey: ["/api/subscription/status"],
+    queryFn: fetchSubscriptionStatus,
+    staleTime: 60_000,
+    refetchOnWindowFocus: true,
+  });
+
+  return {
+    ...query.data,
+    loading: query.isLoading,
+    refetch: query.refetch,
+    status: query.data?.status ?? "none",
+    plan: query.data?.plan ?? null,
+    isActive: query.data?.isActive ?? false,
+    isTrial: query.data?.isTrial ?? false,
+    isExpired: query.data?.isExpired ?? true,
+    trialEndsAt: query.data?.trial_ends_at ?? null,
+    currentPeriodEndsAt: query.data?.current_period_ends_at ?? null,
+  };
+}

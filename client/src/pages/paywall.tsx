@@ -18,7 +18,7 @@ interface Plan {
 
 const PLANS: Plan[] = [
   {
-    id: "1-month",
+    id: "monthly",
     name: "1 maand",
     duration: "1 maand",
     price: "€14,99",
@@ -26,7 +26,7 @@ const PLANS: Plan[] = [
     popular: false,
   },
   {
-    id: "2-months",
+    id: "two_month",
     name: "2 maanden",
     duration: "2 maanden",
     price: "€24,99",
@@ -35,7 +35,7 @@ const PLANS: Plan[] = [
     savings: "Bespaar 17%",
   },
   {
-    id: "3-months",
+    id: "three_month",
     name: "3 maanden",
     duration: "3 maanden",
     price: "€29,99",
@@ -56,7 +56,7 @@ export default function PaywallPage() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const { user } = useAuth();
-  const [selectedPlan, setSelectedPlan] = useState("2-months");
+  const [selectedPlan, setSelectedPlan] = useState("two_month");
   const [loading, setLoading] = useState(false);
 
   async function handleCheckout() {
@@ -76,13 +76,13 @@ export default function PaywallPage() {
         return;
       }
 
-      const res = await fetch("/api/checkout", {
+      const res = await fetch("/api/checkout/session", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ priceId: selectedPlan }),
+        body: JSON.stringify({ plan: selectedPlan }),
       });
 
       const data = await res.json();

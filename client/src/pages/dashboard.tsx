@@ -7,6 +7,8 @@ import { fetchApiMatches, type ApiMatch } from "@/lib/listings";
 import { queryClient } from "@/lib/queryClient";
 import { supabase } from "@/lib/supabase";
 import { dateLocale } from "../../../config/market";
+import { useSubscription } from "@/lib/subscription";
+import { SubscriptionGate } from "@/components/subscription-gate";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
@@ -32,6 +34,8 @@ import {
   Sparkles,
   Settings,
   Mail,
+  Crown,
+  AlertTriangle,
 } from "lucide-react";
 
 const MAX_PROFILES = 4;
@@ -228,12 +232,14 @@ function HomeTab({
   matchCount,
   navigate,
   setActiveTab,
+  subscription,
 }: {
   user: any;
   profiles: SearchProfile[];
   matchCount: number;
   navigate: (path: string) => void;
   setActiveTab: (tab: TabKey) => void;
+  subscription: { isTrial: boolean; isExpired: boolean; isActive: boolean; trialEndsAt: string | null };
 }) {
   const firstName = user.email?.split("@")[0] ?? "daar";
   const profileCount = profiles.length;
@@ -247,6 +253,49 @@ function HomeTab({
         </h1>
         <p className="text-[14px] text-[#6B7280] mt-0.5">Welkom terug bij Stekkies</p>
       </div>
+
+      {subscription.isTrial && subscription.trialEndsAt && (
+        <div className="bg-[#EBF2FD] rounded-[16px] p-4 flex items-center gap-3" data-testid="banner-trial">
+          <div className="w-9 h-9 rounded-full bg-[#2D6CDF]/10 flex items-center justify-center flex-shrink-0">
+            <Crown className="w-4 h-4 text-[#2D6CDF]" />
+          </div>
+          <div className="flex-1">
+            <p className="text-[14px] font-semibold text-[#0B1F44]">Proefperiode</p>
+            <p className="text-[12px] text-[#6B7280]">
+              Je proefperiode loopt tot{" "}
+              <span className="font-semibold text-[#0B1F44]">
+                {new Date(subscription.trialEndsAt).toLocaleDateString("de-DE", { day: "numeric", month: "long" })}
+              </span>
+            </p>
+          </div>
+          <button
+            onClick={() => navigate("/paywall")}
+            className="text-[12px] font-semibold text-[#2D6CDF] hover:underline flex-shrink-0"
+            data-testid="button-trial-upgrade"
+          >
+            Upgrade
+          </button>
+        </div>
+      )}
+
+      {subscription.isExpired && (
+        <div className="bg-red-50 rounded-[16px] p-4 flex items-center gap-3" data-testid="banner-expired">
+          <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+            <AlertTriangle className="w-4 h-4 text-red-500" />
+          </div>
+          <div className="flex-1">
+            <p className="text-[14px] font-semibold text-[#0B1F44]">Je proefperiode is afgelopen</p>
+            <p className="text-[12px] text-[#6B7280]">Activeer een abonnement om matches te blijven ontvangen.</p>
+          </div>
+          <button
+            onClick={() => navigate("/paywall")}
+            className="text-[12px] font-semibold text-[#2D6CDF] bg-white px-3 py-1.5 rounded-lg hover:bg-[#F2F4F7] transition-colors flex-shrink-0"
+            data-testid="button-expired-upgrade"
+          >
+            Kies abonnement
+          </button>
+        </div>
+      )}
 
       <div className="bg-gradient-to-br from-[#2D6CDF] to-[#1E54B7] rounded-[16px] p-5 text-white">
         <div className="flex items-center gap-2 mb-2">
@@ -505,7 +554,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
   );
 }
 
-function ProfielTab({ user, signOut, navigate }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void }) {
+function ProfielTab({ user, signOut, navigate, subscription }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null } }) {
   const [signingOut, setSigningOut] = useState(false);
 
   async function handleSignOut() {
@@ -548,18 +597,42 @@ function ProfielTab({ user, signOut, navigate }: { user: any; signOut: () => Pro
           <ChevronRight className="w-4 h-4 text-[#9CA3AF]" />
         </button>
 
-        <div className="flex items-center gap-3 p-4">
-          <div className="w-9 h-9 rounded-full bg-green-50 flex items-center justify-center">
-            <CheckCircle2 className="w-4 h-4 text-green-600" />
+        <button
+          onClick={() => { if (subscription.isExpired) navigate("/paywall"); }}
+          className="flex items-center gap-3 p-4 w-full text-left"
+        >
+          <div className={`w-9 h-9 rounded-full flex items-center justify-center ${subscription.isActive ? "bg-green-50" : subscription.isTrial ? "bg-blue-50" : "bg-red-50"}`}>
+            {subscription.isActive ? (
+              <CheckCircle2 className="w-4 h-4 text-green-600" />
+            ) : subscription.isTrial ? (
+              <Crown className="w-4 h-4 text-[#2D6CDF]" />
+            ) : (
+              <AlertTriangle className="w-4 h-4 text-red-500" />
+            )}
           </div>
-          <div className="flex-1 text-left">
+          <div className="flex-1">
             <p className="text-[14px] font-medium text-[#0B1F44]">Abonnement</p>
-            <p className="text-[12px] text-[#9CA3AF]">Actief</p>
+            <p className="text-[12px] text-[#9CA3AF]">
+              {subscription.isActive && !subscription.isTrial
+                ? `${subscription.plan === "monthly" ? "Maandelijks" : subscription.plan === "two_month" ? "2 maanden" : subscription.plan === "three_month" ? "3 maanden" : "Actief"}`
+                : subscription.isTrial
+                ? `Proefperiode tot ${subscription.trialEndsAt ? new Date(subscription.trialEndsAt).toLocaleDateString("de-DE", { day: "numeric", month: "short" }) : ""}`
+                : "Verlopen"}
+            </p>
           </div>
-          <span className="text-[12px] font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full" data-testid="text-subscription-status">
-            Actief
+          <span
+            className={`text-[12px] font-medium px-2 py-0.5 rounded-full ${
+              subscription.isActive && !subscription.isTrial
+                ? "text-green-600 bg-green-50"
+                : subscription.isTrial
+                ? "text-[#2D6CDF] bg-blue-50"
+                : "text-red-500 bg-red-50"
+            }`}
+            data-testid="text-subscription-status"
+          >
+            {subscription.isActive && !subscription.isTrial ? "Actief" : subscription.isTrial ? "Proef" : "Verlopen"}
           </span>
-        </div>
+        </button>
       </div>
 
       <button
@@ -586,6 +659,7 @@ export default function DashboardPage() {
   const { user, session, loading, signOut } = useAuth();
   const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState<TabKey>("home");
+  const sub = useSubscription();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -643,11 +717,23 @@ export default function DashboardPage() {
             matchCount={matchCount}
             navigate={navigate}
             setActiveTab={setActiveTab}
+            subscription={{ isTrial: sub.isTrial, isExpired: sub.isExpired, isActive: sub.isActive, trialEndsAt: sub.trialEndsAt }}
           />
         )}
-        {activeTab === "matches" && <MatchesTab accessToken={accessToken} setActiveTab={setActiveTab} />}
+        {activeTab === "matches" && (
+          <SubscriptionGate isActive={sub.isActive}>
+            <MatchesTab accessToken={accessToken} setActiveTab={setActiveTab} />
+          </SubscriptionGate>
+        )}
         {activeTab === "filters" && <FiltersTab navigate={navigate} />}
-        {activeTab === "profiel" && <ProfielTab user={user} signOut={signOut} navigate={navigate} />}
+        {activeTab === "profiel" && (
+          <ProfielTab
+            user={user}
+            signOut={signOut}
+            navigate={navigate}
+            subscription={{ status: sub.status, isTrial: sub.isTrial, isActive: sub.isActive, isExpired: sub.isExpired, plan: sub.plan, trialEndsAt: sub.trialEndsAt }}
+          />
+        )}
       </main>
 
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E8EDF2] z-20 safe-area-bottom">
