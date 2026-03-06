@@ -404,6 +404,80 @@ function ProfileCard({
   );
 }
 
+function BoostTeaserCard({ setActiveTab }: { setActiveTab: (tab: TabKey) => void }) {
+  const { session } = useAuth();
+  const { data, isLoading } = useQuery<{ boostScore: number; completedCount: number; totalCount: number }>({
+    queryKey: ["/api/boost"],
+    queryFn: async () => {
+      const res = await fetch("/api/boost", {
+        headers: { Authorization: `Bearer ${session?.access_token}` },
+      });
+      if (!res.ok) throw new Error("Failed to fetch boost data");
+      return res.json();
+    },
+    enabled: !!session?.access_token,
+    select: (d) => ({
+      boostScore: d.boostScore,
+      completedCount: d.completedCount,
+      totalCount: d.totalCount,
+    }),
+  });
+
+  if (isLoading) {
+    return (
+      <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 animate-pulse" data-testid="card-boost-teaser-loading">
+        <div className="h-4 bg-[#F2F5F8] rounded w-36 mb-3" />
+        <div className="h-3 bg-[#F2F5F8] rounded w-52 mb-4" />
+        <div className="h-9 bg-[#F2F5F8] rounded w-32" />
+      </div>
+    );
+  }
+
+  if (!data) return null;
+
+  const { boostScore: rawScore, completedCount, totalCount } = data;
+  const boostScore = Math.max(0, Math.min(100, rawScore));
+  const remaining = totalCount - completedCount;
+
+  const statusText =
+    completedCount === totalCount
+      ? "Je profiel is volledig"
+      : remaining <= 3
+        ? `Nog ${remaining} ${remaining === 1 ? "stap" : "stappen"} om sneller te reageren`
+        : `Je profiel is ${boostScore}% compleet`;
+
+  return (
+    <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5" data-testid="card-boost-teaser">
+      <div className="flex items-start gap-4">
+        <div className="w-10 h-10 rounded-xl bg-[#EDF2FF] flex items-center justify-center flex-shrink-0">
+          <Zap className="w-5 h-5 text-[#0066FF]" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-[15px] font-semibold text-[#1B2A4A]">Boost je kansen</p>
+          <p className="text-[13px] text-[#72839A] mt-0.5">{statusText}</p>
+
+          <div className="mt-3 h-1.5 bg-[#F2F5F8] rounded-full overflow-hidden">
+            <div
+              className="h-full bg-[#0066FF] rounded-full transition-all duration-500"
+              style={{ width: `${boostScore}%` }}
+            />
+          </div>
+
+          <Button
+            variant="link"
+            onClick={() => setActiveTab("boost")}
+            className="mt-2 p-0 h-auto text-[13px] font-semibold text-[#0066FF]"
+            data-testid="button-boost-teaser"
+          >
+            Bekijk Boost
+            <ChevronRight className="w-3.5 h-3.5 ml-0.5" />
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function HomeTab({
   user,
   profiles,
@@ -525,6 +599,8 @@ function HomeTab({
           </div>
         </div>
       </div>
+
+      <BoostTeaserCard setActiveTab={setActiveTab} />
 
       <SpeedBanner navigate={navigate} />
 
