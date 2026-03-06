@@ -47,7 +47,7 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - `client/src/pages/login.tsx` — Auth page with "Inloggen" / "Account aanmaken" tabs
 - `client/src/pages/dashboard.tsx` — Phase 2 dashboard with bottom-nav bar (4 tabs: Home, Matches, Filters, Profiel). Mobile-first BlaBlaCar design. Match cards link to `/listing/:id`. Subscription CTA for expired users in ProfielTab.
 - `client/src/pages/listing-detail.tsx` — Full listing detail page at `/listing/:id`. Shows title, city/district, price, bedrooms, size, source, freshness badge, "Kopieer aanmeldingsbrief" button, and "Bekijk originele advertentie" CTA.
-- `client/src/pages/new-search.tsx` — Form to create a new search profile (max 4 per user)
+- `client/src/pages/new-search.tsx` — 6-step wizard to create a search profile at `/dashboard/searches/new`. Steps: property type, location (city+districts), budget, basic requirements (bedrooms/size), extra preferences, additional filters. Dynamic estimate badge. Max 4 profiles.
 - `client/src/pages/notification-settings.tsx` — Notification preferences (email/SMS/WhatsApp toggles)
 - `client/src/pages/application-letter.tsx` — Application letter template editor at `/application-letter`. Edit/save/reset template with Dutch placeholders ([[ADRES]], [[STAD]], [[NAAM]], etc.)
 - `client/src/pages/viewing-tips.tsx` — Dedicated viewing tips page at `/tips/bezichtiging`. Five sections: Voor/Tijdens/Wat meenemen/Na de bezichtiging/Rode vlaggen. CTA to mark as completed.
