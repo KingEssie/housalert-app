@@ -30,88 +30,88 @@ export default function OnboardingFiltersPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E8EDF2]">
-        <div className="max-w-xl mx-auto px-5 h-14 flex items-center gap-3">
+      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
+        <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center gap-3">
           <button
             onClick={handleBack}
-            className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-[#F2F4F7] transition-colors"
+            className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center hover:bg-[#EAEFF5] transition-colors"
             data-testid="button-back-location"
           >
-            <ChevronLeft className="w-5 h-5 text-[#6B7280]" />
+            <ChevronLeft className="w-5 h-5 text-[#72839A]" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-[#2D6CDF] flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-[#0066FF] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-bold text-[#0B1F44] text-base">Stekkies</span>
+            <span className="font-bold text-[#1B2A4A] text-base">Stekkies</span>
           </div>
         </div>
       </header>
 
-      <div className="max-w-xl mx-auto w-full px-5 pt-6 pb-2">
+      <div className="max-w-xl mx-auto w-full px-6 pt-6 pb-2">
         <div className="flex items-center gap-2">
           {[1, 2, 3].map((step) => (
-            <div key={step} className="flex-1 h-2 rounded-full overflow-hidden bg-[#E8EDF2]">
+            <div key={step} className="flex-1 h-2 rounded-full overflow-hidden bg-[#EAEFF5]">
               <div
                 className={`h-full rounded-full transition-all duration-500 ${
-                  step <= 2 ? "w-full bg-[#2D6CDF]" : "w-0"
+                  step <= 2 ? "w-full bg-[#0066FF]" : "w-0"
                 }`}
                 data-testid={`progress-step-${step}`}
               />
             </div>
           ))}
         </div>
-        <p className="text-xs font-medium text-[#6B7280] mt-2" data-testid="text-step-indicator">Stap 2 van 3</p>
+        <p className="text-xs font-medium text-[#72839A] mt-2" data-testid="text-step-indicator">Stap 2 van 3</p>
       </div>
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-5 pb-8 pt-4">
-        <h1 className="text-[26px] font-extrabold text-[#0B1F44] leading-tight mb-2" data-testid="text-filters-title">
+      <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-8 pt-4">
+        <h1 className="text-[28px] font-extrabold text-[#1B2A4A] leading-tight tracking-[-0.02em] mb-2" data-testid="text-filters-title">
           Wat zoek je precies?
         </h1>
-        <p className="text-[15px] text-[#6B7280] mb-6">
-          Verfijn je zoekopdracht voor <span className="font-semibold text-[#0B1F44]">{city}</span>. Alle velden zijn optioneel.
+        <p className="text-[15px] text-[#72839A] mb-6">
+          Verfijn je zoekopdracht voor <span className="font-semibold text-[#1B2A4A]">{city}</span>. Alle velden zijn optioneel.
         </p>
 
-        <div className="bg-white rounded-[20px] shadow-[0_10px_25px_rgba(0,0,0,0.06)] p-5">
-          <div className="flex items-center gap-3 py-4 border-b border-[#E8EDF2]">
-            <DollarSign className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
-            <span className="text-[15px] text-[#0B1F44] min-w-[90px]">Min. prijs</span>
+        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
+          <div className="flex items-center gap-3 py-4 border-b border-[#EAEFF5]">
+            <DollarSign className="w-5 h-5 text-[#72839A] flex-shrink-0" />
+            <span className="text-[15px] text-[#1B2A4A] min-w-[90px]">Min. prijs</span>
             <div className="flex-1 flex items-center justify-end gap-1">
-              <span className="text-[#6B7280] text-sm">€</span>
+              <span className="text-[#72839A] text-sm">€</span>
               <input
                 type="number"
                 placeholder="0"
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
-                className="w-20 text-right text-[15px] text-[#0B1F44] font-medium bg-transparent border-none outline-none placeholder:text-[#6B7280]"
+                className="w-20 text-right text-[15px] text-[#1B2A4A] font-medium bg-transparent border-none outline-none placeholder:text-[#72839A]"
                 data-testid="input-min-price"
               />
             </div>
           </div>
 
-          <div className="flex items-center gap-3 py-4 border-b border-[#E8EDF2]">
-            <DollarSign className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
-            <span className="text-[15px] text-[#0B1F44] min-w-[90px]">Max. prijs</span>
+          <div className="flex items-center gap-3 py-4 border-b border-[#EAEFF5]">
+            <DollarSign className="w-5 h-5 text-[#72839A] flex-shrink-0" />
+            <span className="text-[15px] text-[#1B2A4A] min-w-[90px]">Max. prijs</span>
             <div className="flex-1 flex items-center justify-end gap-1">
-              <span className="text-[#6B7280] text-sm">€</span>
+              <span className="text-[#72839A] text-sm">€</span>
               <input
                 type="number"
                 placeholder="2000"
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
-                className="w-20 text-right text-[15px] text-[#0B1F44] font-medium bg-transparent border-none outline-none placeholder:text-[#6B7280]"
+                className="w-20 text-right text-[15px] text-[#1B2A4A] font-medium bg-transparent border-none outline-none placeholder:text-[#72839A]"
                 data-testid="input-max-price"
               />
             </div>
           </div>
 
-          <div className="flex items-center gap-3 py-4 border-b border-[#E8EDF2]">
-            <BedDouble className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
-            <span className="text-[15px] text-[#0B1F44] flex-1">Slaapkamers</span>
+          <div className="flex items-center gap-3 py-4 border-b border-[#EAEFF5]">
+            <BedDouble className="w-5 h-5 text-[#72839A] flex-shrink-0" />
+            <span className="text-[15px] text-[#1B2A4A] flex-1">Slaapkamers</span>
             <select
               value={bedrooms}
               onChange={(e) => setBedrooms(e.target.value)}
-              className="text-[15px] text-[#0B1F44] font-medium bg-transparent border-none outline-none cursor-pointer text-right"
+              className="text-[15px] text-[#1B2A4A] font-medium bg-transparent border-none outline-none cursor-pointer text-right"
               data-testid="select-bedrooms"
             >
               <option value="">Maakt niet uit</option>
@@ -125,18 +125,18 @@ export default function OnboardingFiltersPage() {
           </div>
 
           <div className="flex items-center gap-3 py-4">
-            <Maximize2 className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
-            <span className="text-[15px] text-[#0B1F44] min-w-[110px]">Min. oppervlakte</span>
+            <Maximize2 className="w-5 h-5 text-[#72839A] flex-shrink-0" />
+            <span className="text-[15px] text-[#1B2A4A] min-w-[110px]">Min. oppervlakte</span>
             <div className="flex-1 flex items-center justify-end gap-1">
               <input
                 type="number"
                 placeholder="0"
                 value={minSize}
                 onChange={(e) => setMinSize(e.target.value)}
-                className="w-16 text-right text-[15px] text-[#0B1F44] font-medium bg-transparent border-none outline-none placeholder:text-[#6B7280]"
+                className="w-16 text-right text-[15px] text-[#1B2A4A] font-medium bg-transparent border-none outline-none placeholder:text-[#72839A]"
                 data-testid="input-min-size"
               />
-              <span className="text-[#6B7280] text-sm">m²</span>
+              <span className="text-[#72839A] text-sm">m²</span>
             </div>
           </div>
 
@@ -144,7 +144,7 @@ export default function OnboardingFiltersPage() {
             <Button
               variant="outline"
               size="lg"
-              className="h-[52px] px-6 rounded-xl text-[15px] font-semibold border-[#E8EDF2] text-[#6B7280] hover:bg-[#F2F4F7]"
+              className="h-[48px] px-6 rounded-xl text-[15px] font-semibold border-[#EAEFF5] text-[#1B2A4A] hover:bg-[#F2F5F8]"
               onClick={handleBack}
               data-testid="button-back-filters"
             >
@@ -152,7 +152,7 @@ export default function OnboardingFiltersPage() {
             </Button>
             <Button
               size="lg"
-              className="flex-1 h-[52px] rounded-xl text-[16px] font-semibold shadow-none bg-[#2D6CDF] hover:bg-[#2560C8]"
+              className="flex-1 h-[56px] rounded-xl text-[16px] font-semibold shadow-none bg-[#0066FF] hover:bg-[#0052CC]"
               onClick={handleNext}
               data-testid="button-next-filters"
             >

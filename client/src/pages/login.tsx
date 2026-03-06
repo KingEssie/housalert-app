@@ -2,9 +2,7 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Home } from "lucide-react";
@@ -55,119 +53,121 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <header className="w-full border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-6 h-16 flex items-center gap-2">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center">
-              <Home className="w-4 h-4 text-primary-foreground" />
+    <div className="min-h-screen bg-[#F7F8FA] flex flex-col">
+      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
+        <div className="max-w-5xl mx-auto px-6 h-[60px] flex items-center gap-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-[#0066FF] flex items-center justify-center">
+              <Home className="w-4 h-4 text-white" />
             </div>
-            <span className="font-semibold text-foreground text-lg tracking-tight">Stekkies</span>
+            <span className="font-extrabold text-[#1B2A4A] text-lg tracking-tight">Stekkies</span>
           </div>
         </div>
       </header>
 
-      <main className="flex-1 flex items-center justify-center px-4 py-16">
+      <main className="flex-1 flex items-center justify-center px-6 py-20">
         <div className="w-full max-w-md">
           <div className="text-center mb-10">
-            <h1 className="text-3xl font-bold text-foreground mb-3">
+            <h1 className="text-[28px] font-extrabold text-[#1B2A4A] tracking-[-0.02em] mb-3">
               Vind jouw perfecte huurwoning
             </h1>
-            <p className="text-muted-foreground text-base">
+            <p className="text-[15px] text-[#72839A]">
               Stel zoekopdrachten in en ontvang direct een melding als er iets beschikbaar komt.
             </p>
           </div>
 
-          <Card>
-            <CardContent className="pt-6">
-              <Tabs defaultValue="login">
-                <TabsList className="w-full mb-6" data-testid="tabs-auth">
-                  <TabsTrigger value="login" className="flex-1" data-testid="tab-login">
-                    Inloggen
-                  </TabsTrigger>
-                  <TabsTrigger value="signup" className="flex-1" data-testid="tab-signup">
-                    Account aanmaken
-                  </TabsTrigger>
-                </TabsList>
+          <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
+            <Tabs defaultValue="login">
+              <TabsList className="w-full mb-6" data-testid="tabs-auth">
+                <TabsTrigger value="login" className="flex-1" data-testid="tab-login">
+                  Inloggen
+                </TabsTrigger>
+                <TabsTrigger value="signup" className="flex-1" data-testid="tab-signup">
+                  Account aanmaken
+                </TabsTrigger>
+              </TabsList>
 
-                <TabsContent value="login">
-                  <form onSubmit={handleLogin} className="flex flex-col gap-5">
-                    <div className="flex flex-col gap-2">
-                      <Label htmlFor="login-email">E-mailadres</Label>
-                      <Input
-                        id="login-email"
-                        type="email"
-                        placeholder="jouw@email.nl"
-                        value={loginEmail}
-                        onChange={(e) => setLoginEmail(e.target.value)}
-                        required
-                        data-testid="input-login-email"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <Label htmlFor="login-password">Wachtwoord</Label>
-                      <Input
-                        id="login-password"
-                        type="password"
-                        placeholder="••••••••"
-                        value={loginPassword}
-                        onChange={(e) => setLoginPassword(e.target.value)}
-                        required
-                        data-testid="input-login-password"
-                      />
-                    </div>
-                    <Button
-                      type="submit"
-                      className="w-full"
-                      disabled={loginLoading}
-                      data-testid="button-login-submit"
-                    >
-                      {loginLoading ? "Inloggen..." : "Inloggen"}
-                    </Button>
-                  </form>
-                </TabsContent>
+              <TabsContent value="login">
+                <form onSubmit={handleLogin} className="flex flex-col gap-5">
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="login-email" className="text-[14px] font-semibold text-[#1B2A4A]">E-mailadres</Label>
+                    <input
+                      id="login-email"
+                      type="email"
+                      placeholder="jouw@email.nl"
+                      value={loginEmail}
+                      onChange={(e) => setLoginEmail(e.target.value)}
+                      required
+                      className="h-[52px] px-4 rounded-xl border border-[#EAEFF5] bg-[#F7F8FA] text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] focus:bg-white transition-all"
+                      data-testid="input-login-email"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="login-password" className="text-[14px] font-semibold text-[#1B2A4A]">Wachtwoord</Label>
+                    <input
+                      id="login-password"
+                      type="password"
+                      placeholder="••••••••"
+                      value={loginPassword}
+                      onChange={(e) => setLoginPassword(e.target.value)}
+                      required
+                      className="h-[52px] px-4 rounded-xl border border-[#EAEFF5] bg-[#F7F8FA] text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] focus:bg-white transition-all"
+                      data-testid="input-login-password"
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    className="w-full h-[56px] rounded-xl text-[16px] font-semibold bg-[#0066FF] hover:bg-[#0052CC]"
+                    disabled={loginLoading}
+                    data-testid="button-login-submit"
+                  >
+                    {loginLoading ? "Inloggen..." : "Inloggen"}
+                  </Button>
+                </form>
+              </TabsContent>
 
-                <TabsContent value="signup">
-                  <form onSubmit={handleSignup} className="flex flex-col gap-5">
-                    <div className="flex flex-col gap-2">
-                      <Label htmlFor="signup-email">E-mailadres</Label>
-                      <Input
-                        id="signup-email"
-                        type="email"
-                        placeholder="jouw@email.nl"
-                        value={signupEmail}
-                        onChange={(e) => setSignupEmail(e.target.value)}
-                        required
-                        data-testid="input-signup-email"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <Label htmlFor="signup-password">Wachtwoord</Label>
-                      <Input
-                        id="signup-password"
-                        type="password"
-                        placeholder="Minimaal 6 tekens"
-                        value={signupPassword}
-                        onChange={(e) => setSignupPassword(e.target.value)}
-                        required
-                        data-testid="input-signup-password"
-                      />
-                    </div>
-                    <Button
-                      type="submit"
-                      className="w-full"
-                      disabled={signupLoading}
-                      data-testid="button-signup-submit"
-                    >
-                      {signupLoading ? "Account aanmaken..." : "Account aanmaken"}
-                    </Button>
-                  </form>
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
+              <TabsContent value="signup">
+                <form onSubmit={handleSignup} className="flex flex-col gap-5">
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="signup-email" className="text-[14px] font-semibold text-[#1B2A4A]">E-mailadres</Label>
+                    <input
+                      id="signup-email"
+                      type="email"
+                      placeholder="jouw@email.nl"
+                      value={signupEmail}
+                      onChange={(e) => setSignupEmail(e.target.value)}
+                      required
+                      className="h-[52px] px-4 rounded-xl border border-[#EAEFF5] bg-[#F7F8FA] text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] focus:bg-white transition-all"
+                      data-testid="input-signup-email"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="signup-password" className="text-[14px] font-semibold text-[#1B2A4A]">Wachtwoord</Label>
+                    <input
+                      id="signup-password"
+                      type="password"
+                      placeholder="Minimaal 6 tekens"
+                      value={signupPassword}
+                      onChange={(e) => setSignupPassword(e.target.value)}
+                      required
+                      className="h-[52px] px-4 rounded-xl border border-[#EAEFF5] bg-[#F7F8FA] text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] focus:bg-white transition-all"
+                      data-testid="input-signup-password"
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    className="w-full h-[56px] rounded-xl text-[16px] font-semibold bg-[#0066FF] hover:bg-[#0052CC]"
+                    disabled={signupLoading}
+                    data-testid="button-signup-submit"
+                  >
+                    {signupLoading ? "Account aanmaken..." : "Account aanmaken"}
+                  </Button>
+                </form>
+              </TabsContent>
+            </Tabs>
+          </div>
 
-          <p className="text-center text-muted-foreground text-sm mt-6">
+          <p className="text-center text-[13px] text-[#9BA5B7] mt-6">
             Door je aan te melden ga je akkoord met onze voorwaarden.
           </p>
         </div>

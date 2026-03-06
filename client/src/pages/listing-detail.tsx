@@ -124,23 +124,22 @@ export default function ListingDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#F6F8FA] flex flex-col">
-        <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E8EDF2]">
-          <div className="max-w-xl mx-auto px-5 h-14 flex items-center">
-            <button onClick={() => navigate("/dashboard")} className="flex items-center gap-2 text-[#6B7280] hover:text-[#0B1F44] transition-colors" data-testid="button-back">
-              <ArrowLeft className="w-5 h-5" />
-              <span className="text-[14px] font-medium">Terug</span>
+      <div className="min-h-screen bg-[#F7F8FA] flex flex-col">
+        <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
+          <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center">
+            <button onClick={() => navigate("/dashboard")} className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center hover:bg-[#EAEFF5] transition-colors" data-testid="button-back">
+              <ArrowLeft className="w-5 h-5 text-[#72839A]" />
             </button>
           </div>
         </header>
-        <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-6">
+        <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6">
           <div className="space-y-4">
-            <div className="bg-white rounded-[16px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-6 animate-pulse">
+            <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
               <div className="h-5 bg-gray-200 rounded w-24 mb-3" />
               <div className="h-7 bg-gray-200 rounded w-3/4 mb-2" />
               <div className="h-4 bg-gray-200 rounded w-1/2" />
             </div>
-            <div className="bg-white rounded-[16px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-6 animate-pulse">
+            <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
               <div className="h-5 bg-gray-200 rounded w-32 mb-4" />
               <div className="space-y-3">
                 <div className="h-4 bg-gray-200 rounded w-1/3" />
@@ -156,20 +155,19 @@ export default function ListingDetailPage() {
 
   if (isError || !listing) {
     return (
-      <div className="min-h-screen bg-[#F6F8FA] flex flex-col">
-        <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E8EDF2]">
-          <div className="max-w-xl mx-auto px-5 h-14 flex items-center">
-            <button onClick={() => navigate("/dashboard")} className="flex items-center gap-2 text-[#6B7280] hover:text-[#0B1F44] transition-colors" data-testid="button-back">
-              <ArrowLeft className="w-5 h-5" />
-              <span className="text-[14px] font-medium">Terug</span>
+      <div className="min-h-screen bg-[#F7F8FA] flex flex-col">
+        <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
+          <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center">
+            <button onClick={() => navigate("/dashboard")} className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center hover:bg-[#EAEFF5] transition-colors" data-testid="button-back">
+              <ArrowLeft className="w-5 h-5 text-[#72839A]" />
             </button>
           </div>
         </header>
-        <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-6">
-          <div className="bg-white rounded-[16px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-8 text-center">
-            <p className="text-[#0B1F44] font-semibold text-lg mb-2">Advertentie niet gevonden</p>
-            <p className="text-[13px] text-[#6B7280] mb-4">Deze advertentie bestaat niet meer of is verwijderd.</p>
-            <Button onClick={() => navigate("/dashboard")} className="bg-[#2D6CDF] hover:bg-[#2560C8] text-white rounded-xl" data-testid="button-back-dashboard">
+        <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6">
+          <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-8 text-center">
+            <p className="text-[18px] font-bold text-[#1B2A4A] mb-2">Advertentie niet gevonden</p>
+            <p className="text-[13px] text-[#72839A] mb-4">Deze advertentie bestaat niet meer of is verwijderd.</p>
+            <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[16px] font-semibold" data-testid="button-back-dashboard">
               Terug naar dashboard
             </Button>
           </div>
@@ -181,34 +179,33 @@ export default function ListingDetailPage() {
   const style = FRESH_BADGE_STYLES[listing.fresh_label] ?? FRESH_BADGE_STYLES.ouder;
 
   return (
-    <div className="min-h-screen bg-[#F6F8FA] flex flex-col">
-      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E8EDF2]">
-        <div className="max-w-xl mx-auto px-5 h-14 flex items-center">
-          <button onClick={() => navigate("/dashboard")} className="flex items-center gap-2 text-[#6B7280] hover:text-[#0B1F44] transition-colors" data-testid="button-back">
-            <ArrowLeft className="w-5 h-5" />
-            <span className="text-[14px] font-medium">Terug</span>
+    <div className="min-h-screen bg-[#F7F8FA] flex flex-col">
+      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
+        <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center">
+          <button onClick={() => navigate("/dashboard")} className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center hover:bg-[#EAEFF5] transition-colors" data-testid="button-back">
+            <ArrowLeft className="w-5 h-5 text-[#72839A]" />
           </button>
         </div>
       </header>
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-6 pb-32">
+      <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6 pb-32">
         <div className="space-y-4">
-          <div className="bg-white rounded-[16px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-6">
+          <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
             <div className="flex items-center gap-2 mb-3">
               <span className={`text-[11px] font-medium px-2.5 py-0.5 rounded-full ${style.bg} ${style.text}`} data-testid="badge-freshness">
                 {FRESH_LABEL_TEXT[listing.fresh_label] ?? listing.fresh_label}
               </span>
-              <span className="text-[12px] text-[#9CA3AF] flex items-center gap-1">
+              <span className="text-[12px] text-[#9BA5B7] flex items-center gap-1">
                 <Clock className="w-3 h-3" />
                 {relativeTime(listing.first_seen_at)}
               </span>
             </div>
 
-            <h1 className="text-[22px] font-bold text-[#0B1F44] leading-tight mb-2" data-testid="text-listing-title">
+            <h1 className="text-[28px] font-extrabold text-[#1B2A4A] leading-tight tracking-[-0.02em] mb-2" data-testid="text-listing-title">
               {listing.title}
             </h1>
 
-            <div className="flex items-center gap-1.5 text-[14px] text-[#6B7280]">
+            <div className="flex items-center gap-1.5 text-[15px] text-[#72839A]">
               <MapPin className="w-4 h-4" />
               <span data-testid="text-listing-location">
                 {listing.city}{listing.district ? `, ${listing.district}` : ""}
@@ -216,52 +213,52 @@ export default function ListingDetailPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-[16px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-6">
-            <h2 className="text-[15px] font-semibold text-[#0B1F44] mb-4">Details</h2>
+          <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
+            <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-4">Details</h2>
             <div className="grid grid-cols-2 gap-4">
               {listing.price > 0 && (
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                    <Euro className="w-5 h-5 text-[#2D6CDF]" />
+                  <div className="w-10 h-10 rounded-xl bg-[#EDF2FF] flex items-center justify-center">
+                    <Euro className="w-5 h-5 text-[#0066FF]" />
                   </div>
                   <div>
-                    <p className="text-[12px] text-[#9CA3AF]">Huur</p>
-                    <p className="text-[15px] font-semibold text-[#0B1F44]" data-testid="text-listing-price">€{listing.price}/mnd</p>
+                    <p className="text-[13px] text-[#9BA5B7]">Huur</p>
+                    <p className="text-[15px] font-semibold text-[#1B2A4A]" data-testid="text-listing-price">€{listing.price}/mnd</p>
                   </div>
                 </div>
               )}
 
               {listing.bedrooms > 0 && (
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                    <BedDouble className="w-5 h-5 text-[#2D6CDF]" />
+                  <div className="w-10 h-10 rounded-xl bg-[#EDF2FF] flex items-center justify-center">
+                    <BedDouble className="w-5 h-5 text-[#0066FF]" />
                   </div>
                   <div>
-                    <p className="text-[12px] text-[#9CA3AF]">Slaapkamers</p>
-                    <p className="text-[15px] font-semibold text-[#0B1F44]" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
+                    <p className="text-[13px] text-[#9BA5B7]">Slaapkamers</p>
+                    <p className="text-[15px] font-semibold text-[#1B2A4A]" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
                   </div>
                 </div>
               )}
 
               {listing.size_m2 > 0 && (
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                    <Ruler className="w-5 h-5 text-[#2D6CDF]" />
+                  <div className="w-10 h-10 rounded-xl bg-[#EDF2FF] flex items-center justify-center">
+                    <Ruler className="w-5 h-5 text-[#0066FF]" />
                   </div>
                   <div>
-                    <p className="text-[12px] text-[#9CA3AF]">Oppervlakte</p>
-                    <p className="text-[15px] font-semibold text-[#0B1F44]" data-testid="text-listing-size">{listing.size_m2} m²</p>
+                    <p className="text-[13px] text-[#9BA5B7]">Oppervlakte</p>
+                    <p className="text-[15px] font-semibold text-[#1B2A4A]" data-testid="text-listing-size">{listing.size_m2} m²</p>
                   </div>
                 </div>
               )}
 
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                  <Globe className="w-5 h-5 text-[#2D6CDF]" />
+                <div className="w-10 h-10 rounded-xl bg-[#EDF2FF] flex items-center justify-center">
+                  <Globe className="w-5 h-5 text-[#0066FF]" />
                 </div>
                 <div>
-                  <p className="text-[12px] text-[#9CA3AF]">Bron</p>
-                  <p className="text-[15px] font-semibold text-[#0B1F44] capitalize" data-testid="text-listing-source">{listing.source}</p>
+                  <p className="text-[13px] text-[#9BA5B7]">Bron</p>
+                  <p className="text-[15px] font-semibold text-[#1B2A4A] capitalize" data-testid="text-listing-source">{listing.source}</p>
                 </div>
               </div>
             </div>
@@ -269,13 +266,13 @@ export default function ListingDetailPage() {
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E8EDF2] p-4 z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#EAEFF5] p-5 z-10">
         <div className="max-w-xl mx-auto flex flex-col gap-2">
           <Button
             onClick={handleCopyLetter}
             variant="outline"
             size="lg"
-            className="w-full h-[48px] rounded-xl text-[15px] font-semibold border-[#E8EDF2] text-[#0B1F44] hover:bg-[#F8F9FB] flex items-center gap-2"
+            className="w-full h-[48px] rounded-xl text-[15px] font-semibold border-[#EAEFF5] text-[#1B2A4A] flex items-center gap-2"
             data-testid="button-copy-letter"
           >
             <Copy className="w-4 h-4" />
@@ -285,7 +282,7 @@ export default function ListingDetailPage() {
             <a href={listing.url} target="_blank" rel="noopener noreferrer">
               <Button
                 size="lg"
-                className="w-full h-[52px] rounded-xl text-[16px] font-semibold shadow-none bg-[#2D6CDF] hover:bg-[#2560C8] flex items-center gap-2"
+                className="w-full h-[56px] rounded-xl text-[16px] font-semibold shadow-none bg-[#0066FF] hover:bg-[#0052CC] flex items-center gap-2"
                 data-testid="button-view-original"
               >
                 Bekijk originele advertentie

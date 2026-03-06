@@ -104,26 +104,26 @@ export default function ViewingTipsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#F6F8FA] flex flex-col">
-      <header className="sticky top-0 z-10 bg-white border-b border-[#E8EDF2]">
-        <div className="max-w-xl mx-auto flex items-center h-[56px] px-5">
+    <div className="min-h-screen bg-[#F7F8FA] flex flex-col">
+      <header className="sticky top-0 z-10 bg-white border-b border-[#EAEFF5]">
+        <div className="max-w-xl mx-auto flex items-center h-[60px] px-6">
           <button
             onClick={() => navigate("/dashboard")}
-            className="w-9 h-9 rounded-full bg-[#F2F4F7] flex items-center justify-center mr-3"
+            className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center hover:bg-[#EAEFF5] mr-3"
             data-testid="button-back-tips"
           >
-            <ArrowLeft className="w-4 h-4 text-[#6B7280]" />
+            <ArrowLeft className="w-4 h-4 text-[#72839A]" />
           </button>
-          <h1 className="text-[17px] font-bold text-[#0B1F44]">Bezichtigingtips</h1>
+          <h1 className="text-[18px] font-bold text-[#1B2A4A]">Bezichtigingtips</h1>
         </div>
       </header>
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-5 pb-32">
+      <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6 pb-32">
         <div className="mb-6">
-          <h2 className="text-[20px] font-bold text-[#0B1F44] mb-2" data-testid="text-tips-heading">
+          <h2 className="text-[28px] font-extrabold text-[#1B2A4A] tracking-[-0.02em] mb-2" data-testid="text-tips-heading">
             Goed voorbereid naar een bezichtiging
           </h2>
-          <p className="text-[14px] text-[#6B7280] leading-relaxed">
+          <p className="text-[15px] text-[#72839A] leading-relaxed">
             In de Duitse huurmarkt is voorbereiding alles. Met deze tips vergroot je je kans op de woning.
           </p>
         </div>
@@ -134,21 +134,21 @@ export default function ViewingTipsPage() {
             return (
               <div
                 key={idx}
-                className="bg-white rounded-[16px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] overflow-hidden"
+                className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] overflow-hidden"
                 data-testid={`card-tips-section-${idx}`}
               >
-                <div className="flex items-center gap-3 p-5 pb-3">
-                  <div className="w-9 h-9 rounded-full bg-[#EBF2FD] flex items-center justify-center flex-shrink-0">
-                    <Icon className="w-4.5 h-4.5 text-[#2D6CDF]" />
+                <div className="flex items-center gap-3 p-6 pb-3">
+                  <div className="w-9 h-9 rounded-full bg-[#EDF2FF] flex items-center justify-center flex-shrink-0">
+                    <Icon className="w-4.5 h-4.5 text-[#0066FF]" />
                   </div>
-                  <h3 className="text-[15px] font-semibold text-[#0B1F44]">{section.title}</h3>
+                  <h3 className="text-[16px] font-semibold text-[#1B2A4A]">{section.title}</h3>
                 </div>
-                <div className="px-5 pb-5">
+                <div className="px-6 pb-6">
                   <ul className="flex flex-col gap-2.5">
                     {section.items.map((item, i) => (
                       <li key={i} className="flex items-start gap-2.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#2D6CDF] mt-2 flex-shrink-0" />
-                        <span className="text-[13px] text-[#6B7280] leading-relaxed">{item}</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#0066FF] mt-2 flex-shrink-0" />
+                        <span className="text-[13px] text-[#72839A] leading-relaxed">{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -159,18 +159,18 @@ export default function ViewingTipsPage() {
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E8EDF2] p-4 z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#EAEFF5] p-5 z-10">
         <div className="max-w-xl mx-auto">
           {markedDone ? (
-            <div className="flex items-center justify-center gap-2 h-[52px] text-green-600">
+            <div className="flex items-center justify-center gap-2 h-[56px] text-[#22c55e]">
               <CheckCircle2 className="w-5 h-5" />
-              <span className="text-[15px] font-semibold">Voltooid!</span>
+              <span className="text-[16px] font-semibold">Voltooid!</span>
             </div>
           ) : (
             <Button
               onClick={() => markDoneMutation.mutate()}
               disabled={markDoneMutation.isPending}
-              className="w-full h-[52px] rounded-xl text-[16px] font-semibold bg-[#2D6CDF] hover:bg-[#2560C8] disabled:opacity-50"
+              className="w-full h-[56px] rounded-xl text-[16px] font-semibold bg-[#0066FF] hover:bg-[#0052CC] disabled:opacity-50"
               data-testid="button-mark-tips-done"
             >
               {markDoneMutation.isPending ? "Opslaan..." : "Markeer als voltooid"}

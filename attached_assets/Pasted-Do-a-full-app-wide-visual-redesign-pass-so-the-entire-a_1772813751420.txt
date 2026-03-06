@@ -1,0 +1,133 @@
+Do a full app-wide visual redesign pass so the entire app feels like BlaBlaCar’s modern mobile interface.
+
+Goal:
+Keep all current functionality, routes, logic, and features, but redesign the UI system so the app has a premium BlaBlaCar-style visual language across all screens.
+
+Important:
+- Do NOT refactor business logic
+- Do NOT remove features
+- This is a design-system and UI pass
+- Mobile-first only
+- Apply consistently across the entire app, not only one screen
+
+DESIGN DIRECTION
+
+I want the whole app to look and feel like BlaBlaCar:
+- large confident headings
+- lots of whitespace
+- very clean layout
+- soft rounded cards and fields
+- subtle borders
+- dark navy typography
+- modern primary blue buttons
+- calm premium hierarchy
+- minimal visual clutter
+
+VISUAL SYSTEM TO APPLY
+
+1. Typography
+- Large bold headings in dark navy
+- Clear hierarchy between title, subtitle, labels, helper text
+- Reduce noisy medium-weight text
+- Improve readability and spacing everywhere
+
+2. Colors
+Use a BlaBlaCar-like palette:
+- primary text: dark navy
+- primary action blue: strong modern blue
+- page background: near-white / very light cool white
+- input and surface backgrounds: very light soft gray
+- borders: subtle and light
+- keep coral/orange only where truly needed, not everywhere
+
+3. Spacing
+- Increase whitespace globally
+- More vertical breathing room between sections
+- More generous padding inside cards, fields, and screens
+- Use a consistent spacing scale
+
+4. Corners / surfaces
+- rounded buttons
+- rounded inputs
+- rounded cards
+- soft surfaces instead of heavy boxes
+
+5. Buttons
+Primary CTA:
+- large
+- full-width when appropriate
+- rounded
+- strong blue
+- premium feel
+
+Secondary CTA:
+- outlined or soft neutral style
+- consistent sizing and spacing
+
+6. Forms
+- modernize all inputs/selects/textareas
+- remove harsh dark borders
+- use soft backgrounds and subtle borders
+- improve internal padding and text alignment
+- make fields feel more premium
+
+7. Wizard / step flow screens
+Apply the BlaBlaCar feel especially to:
+- new search flow
+- onboarding
+- activation task detail screens
+- profile completion flows
+
+Requirements:
+- one main question per screen should feel visually dominant
+- large title
+- supportive subtitle
+- clean layout
+- strong bottom CTA area
+- clear back navigation
+
+8. Cards / dashboard
+Update dashboard cards so they feel calmer and more premium:
+- lighter visual weight
+- improved spacing
+- cleaner icon/title alignment
+- less “form-like”
+- stronger hierarchy
+
+9. Bottom navigation
+Refine bottom nav to feel more polished and aligned with the new system.
+
+10. Consistency pass
+After redesigning key screens, do a consistency pass across:
+- dashboard
+- matches
+- filters/search creation flow
+- profile
+- activation/task screens
+- paywall
+- subscription screens
+- detail screens
+- modals/bottom sheets
+
+SPECIFIC GOAL
+When comparing the app to BlaBlaCar:
+- similar typography scale
+- similar whitespace strategy
+- similar field treatment
+- similar CTA treatment
+- similar premium minimalism
+
+OUTPUT
+After implementation:
+1. show screenshots of:
+- dashboard
+- new search flow
+- one activation detail screen
+- one form screen
+- paywall
+2. explain the design system choices you applied
+3. list which shared components/styles were updated
+4. list files changed
+
+Do not just tweak one page.
+Do a real shared-system UI modernization pass.

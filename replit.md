@@ -285,18 +285,44 @@ Sections:
 
 Env vars: `TEST_USER_EMAIL`, `TEST_USER_PASSWORD`, `TEST_PHONE_E164`, `TEST_BASE_URL` (defaults to `http://localhost:5000`)
 
-## Design System (BlaBlaCar-style)
+## Design System (BlaBlaCar-style, v2)
 
-- Primary blue: `#2D6CDF`, hover: `#2560C8`
-- Heading navy: `#0B1F44`
-- Page background: `#FFFFFF` (pure white)
-- Input style: row-based with bottom borders `#E8EDF2` (no box inputs in onboarding)
-- Secondary text / icons: `#6B7280`
-- Card: `bg-white rounded-[20px] shadow-[0_10px_25px_rgba(0,0,0,0.06)] p-5`
-- Row separator: `border-bottom: 1px solid #E8EDF2`
+### Colors
+- Primary blue: `#0066FF`, hover: `#0052CC`
+- Primary light bg: `#EDF2FF`
+- Heading navy: `#1B2A4A`
+- Secondary text: `#72839A`
+- Muted/helper text: `#9BA5B7`
+- Page background: `#F7F8FA`
+- Card surface: `#FFFFFF`
+- Border: `#EAEFF5`
+- Hover surface: `#F2F5F8`
+- Success: `#22c55e`
+
+### Typography
+- Page title: `text-[28px] font-extrabold text-[#1B2A4A] tracking-[-0.02em]`
+- Section heading: `text-[18px] font-bold text-[#1B2A4A]`
+- Card title: `text-[16px] font-semibold text-[#1B2A4A]`
+- Body: `text-[15px] text-[#72839A]`
+- Small/helper: `text-[13px] text-[#9BA5B7]`
+- Labels: `text-[14px] font-semibold text-[#1B2A4A]`
+
+### Surfaces
+- Card shadow: `shadow-[0_2px_12px_rgba(0,0,0,0.04)]`
+- Elevated shadow: `shadow-[0_4px_20px_rgba(0,0,0,0.06)]`
+- Cards: `rounded-2xl`
+- Buttons: `rounded-xl`
+- Inputs: `rounded-xl`
+- Modals: `rounded-t-[24px] sm:rounded-[24px]`
+
+### Buttons
+- Primary CTA: `h-[56px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-[16px] font-semibold`
+- Secondary: `h-[48px] rounded-xl border-[#EAEFF5] text-[#1B2A4A]`
+
+### Layout
 - Font: Inter
-- Buttons: blue `#2D6CDF`, rounded-xl, h-[52px], inside card (not fixed footer)
-- Active tab underline: blue
-- Progress bars: blue fill on `#E8EDF2` track
-- Header: white with thin bottom border `#E8EDF2`
+- Header: `h-[60px]`, subtle border `#EAEFF5`
+- Page padding: `px-6`
+- Card padding: `p-6`
+- Bottom nav: active `#0066FF`, inactive `#9BA5B7`, icons `w-[22px] h-[22px]`, `py-3`
 - Max 4 search profiles per user

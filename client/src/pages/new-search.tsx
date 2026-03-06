@@ -222,8 +222,8 @@ export default function NewSearchPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F6F8FA] flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-2 border-[#2D6CDF] border-t-transparent animate-spin" />
+      <div className="min-h-screen bg-[#F7F8FA] flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-2 border-[#0066FF] border-t-transparent animate-spin" />
       </div>
     );
   }
@@ -232,20 +232,20 @@ export default function NewSearchPage() {
 
   if (atLimit) {
     return (
-      <div className="min-h-screen bg-[#F6F8FA] flex flex-col">
+      <div className="min-h-screen bg-[#F7F8FA] flex flex-col">
         <WizardHeader step={0} total={0} onBack={() => navigate("/dashboard")} />
-        <div className="flex-1 flex items-center justify-center px-5">
+        <div className="flex-1 flex items-center justify-center px-6">
           <div className="bg-white rounded-[16px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-8 text-center max-w-sm">
             <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
               <AlertCircle className="w-6 h-6 text-red-500" />
             </div>
-            <h2 className="text-[18px] font-bold text-[#0B1F44] mb-2">Limiet bereikt</h2>
-            <p className="text-[14px] text-[#6B7280] mb-5">
+            <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-2">Limiet bereikt</h2>
+            <p className="text-[14px] text-[#72839A] mb-5">
               Je hebt al {MAX_PROFILES} zoekopdrachten. Verwijder eerst een bestaande om een nieuwe aan te maken.
             </p>
             <Button
               onClick={() => navigate("/dashboard")}
-              className="w-full h-[48px] rounded-xl bg-[#2D6CDF] hover:bg-[#2560C8] text-white text-[15px] font-semibold"
+              className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold"
               data-testid="button-back-to-dashboard-limit"
             >
               Terug naar dashboard
@@ -257,17 +257,17 @@ export default function NewSearchPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F6F8FA] flex flex-col">
+    <div className="min-h-screen bg-[#F7F8FA] flex flex-col">
       <WizardHeader step={step} total={TOTAL_STEPS} onBack={goBack} />
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-5 pb-32">
+      <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6 pb-32">
         {step === 1 && (
           <StepContainer
             title="Wat zoek je?"
             subtitle="Kies het type woning dat bij je past."
           >
             <div className="flex flex-col gap-3">
-              <p className="text-[12px] text-[#9CA3AF] -mt-2 mb-1">
+              <p className="text-[12px] text-[#9BA5B7] -mt-2 mb-1">
                 Type-filtering wordt binnenkort actief. Selecteer alvast je voorkeur.
               </p>
               {PROPERTY_TYPES.map((pt) => {
@@ -279,23 +279,23 @@ export default function NewSearchPage() {
                     onClick={() => update({ propertyType: pt.id })}
                     className={`w-full flex items-center gap-4 p-4 rounded-[14px] border-2 transition-all text-left ${
                       selected
-                        ? "border-[#2D6CDF] bg-[#EBF2FD]"
-                        : "border-[#E8EDF2] bg-white hover:border-[#C5D4E8]"
+                        ? "border-[#0066FF] bg-[#EDF2FF]"
+                        : "border-[#EAEFF5] bg-white hover:border-[#EAEFF5]"
                     }`}
                     data-testid={`option-type-${pt.id}`}
                   >
                     <div className={`w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      selected ? "bg-[#2D6CDF]" : "bg-[#F2F4F7]"
+                      selected ? "bg-[#0066FF]" : "bg-[#F2F5F8]"
                     }`}>
-                      <Icon className={`w-5 h-5 ${selected ? "text-white" : "text-[#6B7280]"}`} />
+                      <Icon className={`w-5 h-5 ${selected ? "text-white" : "text-[#72839A]"}`} />
                     </div>
                     <div>
-                      <p className={`text-[15px] font-semibold ${selected ? "text-[#2D6CDF]" : "text-[#0B1F44]"}`}>
+                      <p className={`text-[15px] font-semibold ${selected ? "text-[#0066FF]" : "text-[#1B2A4A]"}`}>
                         {pt.label}
                       </p>
-                      <p className="text-[12px] text-[#9CA3AF]">{pt.desc}</p>
+                      <p className="text-[12px] text-[#9BA5B7]">{pt.desc}</p>
                     </div>
-                    {selected && <CheckCircle2 className="w-5 h-5 text-[#2D6CDF] ml-auto flex-shrink-0" />}
+                    {selected && <CheckCircle2 className="w-5 h-5 text-[#0066FF] ml-auto flex-shrink-0" />}
                   </button>
                 );
               })}
@@ -310,30 +310,30 @@ export default function NewSearchPage() {
           >
             <div className="flex flex-col gap-5">
               <div className="relative">
-                <label className="text-[13px] font-semibold text-[#0B1F44] mb-2 block">Stad</label>
+                <label className="text-[14px] font-semibold text-[#1B2A4A] mb-2 block">Stad</label>
                 <button
                   onClick={() => setShowCityDropdown(!showCityDropdown)}
                   className={`w-full h-[52px] px-4 rounded-xl border-2 bg-white text-left flex items-center justify-between transition-colors ${
-                    data.city ? "border-[#2D6CDF] text-[#0B1F44]" : "border-[#E8EDF2] text-[#9CA3AF]"
+                    data.city ? "border-[#0066FF] text-[#1B2A4A]" : "border-[#EAEFF5] text-[#9BA5B7]"
                   }`}
                   data-testid="button-select-city"
                 >
                   <div className="flex items-center gap-3">
-                    <MapPin className="w-4 h-4 text-[#9CA3AF]" />
+                    <MapPin className="w-4 h-4 text-[#9BA5B7]" />
                     <span className="text-[15px]">{data.city || "Selecteer een stad"}</span>
                   </div>
-                  <ChevronDown className={`w-4 h-4 text-[#9CA3AF] transition-transform ${showCityDropdown ? "rotate-180" : ""}`} />
+                  <ChevronDown className={`w-4 h-4 text-[#9BA5B7] transition-transform ${showCityDropdown ? "rotate-180" : ""}`} />
                 </button>
 
                 {showCityDropdown && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl border border-[#E8EDF2] shadow-lg z-20 max-h-[280px] overflow-hidden flex flex-col">
-                    <div className="p-3 border-b border-[#F2F4F7]">
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl border border-[#EAEFF5] shadow-lg z-20 max-h-[280px] overflow-hidden flex flex-col">
+                    <div className="p-3 border-b border-[#F2F5F8]">
                       <input
                         type="text"
                         value={citySearch}
                         onChange={(e) => setCitySearch(e.target.value)}
                         placeholder="Zoek stad..."
-                        className="w-full h-[40px] px-3 rounded-lg border border-[#E8EDF2] text-[14px] text-[#0B1F44] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#2D6CDF]/30"
+                        className="w-full h-[40px] px-3 rounded-lg border border-[#EAEFF5] text-[14px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/30"
                         autoFocus
                         data-testid="input-city-search"
                       />
@@ -349,8 +349,8 @@ export default function NewSearchPage() {
                           }}
                           className={`w-full text-left px-4 py-3 text-[14px] transition-colors ${
                             data.city === c
-                              ? "bg-[#EBF2FD] text-[#2D6CDF] font-medium"
-                              : "text-[#0B1F44] hover:bg-[#F8F9FB]"
+                              ? "bg-[#EDF2FF] text-[#0066FF] font-medium"
+                              : "text-[#1B2A4A] hover:bg-[#F7F8FA]"
                           }`}
                           data-testid={`option-city-${c}`}
                         >
@@ -364,10 +364,10 @@ export default function NewSearchPage() {
 
               {availableDistricts.length > 0 && (
                 <div>
-                  <label className="text-[13px] font-semibold text-[#0B1F44] mb-1 block">
-                    Wijken <span className="font-normal text-[#9CA3AF]">(optioneel, binnenkort actief)</span>
+                  <label className="text-[14px] font-semibold text-[#1B2A4A] mb-1 block">
+                    Wijken <span className="font-normal text-[#9BA5B7]">(optioneel, binnenkort actief)</span>
                   </label>
-                  <p className="text-[12px] text-[#9CA3AF] mb-2">Wijkfiltering wordt binnenkort toegepast.</p>
+                  <p className="text-[12px] text-[#9BA5B7] mb-2">Wijkfiltering wordt binnenkort toegepast.</p>
                   <div className="flex flex-wrap gap-2">
                     {availableDistricts.map((d) => {
                       const selected = data.districts.includes(d);
@@ -383,8 +383,8 @@ export default function NewSearchPage() {
                           }}
                           className={`px-3.5 py-2 rounded-full text-[13px] font-medium border transition-all ${
                             selected
-                              ? "border-[#2D6CDF] bg-[#EBF2FD] text-[#2D6CDF]"
-                              : "border-[#E8EDF2] bg-white text-[#6B7280] hover:border-[#C5D4E8]"
+                              ? "border-[#0066FF] bg-[#EDF2FF] text-[#0066FF]"
+                              : "border-[#EAEFF5] bg-white text-[#72839A] hover:border-[#EAEFF5]"
                           }`}
                           data-testid={`chip-district-${d}`}
                         >
@@ -406,31 +406,31 @@ export default function NewSearchPage() {
           >
             <div className="flex flex-col gap-5">
               <div>
-                <label className="text-[13px] font-semibold text-[#0B1F44] mb-2 block">Minimale huur</label>
+                <label className="text-[14px] font-semibold text-[#1B2A4A] mb-2 block">Minimale huur</label>
                 <div className="relative">
-                  <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+                  <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9BA5B7]" />
                   <input
                     type="number"
                     value={data.priceMin}
                     onChange={(e) => update({ priceMin: e.target.value })}
                     placeholder="0"
                     min="0"
-                    className="w-full h-[52px] pl-10 pr-4 rounded-xl border-2 border-[#E8EDF2] bg-white text-[15px] text-[#0B1F44] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#2D6CDF] transition-colors"
+                    className="w-full h-[52px] pl-10 pr-4 rounded-xl border-2 border-[#EAEFF5] bg-white text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:border-[#0066FF] transition-colors"
                     data-testid="input-price-min"
                   />
                 </div>
               </div>
               <div>
-                <label className="text-[13px] font-semibold text-[#0B1F44] mb-2 block">Maximale huur</label>
+                <label className="text-[14px] font-semibold text-[#1B2A4A] mb-2 block">Maximale huur</label>
                 <div className="relative">
-                  <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+                  <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9BA5B7]" />
                   <input
                     type="number"
                     value={data.priceMax}
                     onChange={(e) => update({ priceMax: e.target.value })}
                     placeholder="2000"
                     min="0"
-                    className="w-full h-[52px] pl-10 pr-4 rounded-xl border-2 border-[#E8EDF2] bg-white text-[15px] text-[#0B1F44] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#2D6CDF] transition-colors"
+                    className="w-full h-[52px] pl-10 pr-4 rounded-xl border-2 border-[#EAEFF5] bg-white text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:border-[#0066FF] transition-colors"
                     data-testid="input-price-max"
                   />
                 </div>
@@ -448,8 +448,8 @@ export default function NewSearchPage() {
           >
             <div className="flex flex-col gap-6">
               <div>
-                <label className="text-[13px] font-semibold text-[#0B1F44] mb-3 block">
-                  <BedDouble className="w-4 h-4 inline mr-1.5 text-[#2D6CDF]" />
+                <label className="text-[14px] font-semibold text-[#1B2A4A] mb-3 block">
+                  <BedDouble className="w-4 h-4 inline mr-1.5 text-[#0066FF]" />
                   Slaapkamers
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -461,8 +461,8 @@ export default function NewSearchPage() {
                         onClick={() => update({ bedroomsMin: opt.value })}
                         className={`px-4 py-2.5 rounded-xl text-[14px] font-medium border-2 transition-all ${
                           selected
-                            ? "border-[#2D6CDF] bg-[#EBF2FD] text-[#2D6CDF]"
-                            : "border-[#E8EDF2] bg-white text-[#6B7280] hover:border-[#C5D4E8]"
+                            ? "border-[#0066FF] bg-[#EDF2FF] text-[#0066FF]"
+                            : "border-[#EAEFF5] bg-white text-[#72839A] hover:border-[#EAEFF5]"
                         }`}
                         data-testid={`option-bedrooms-${opt.value}`}
                       >
@@ -474,8 +474,8 @@ export default function NewSearchPage() {
               </div>
 
               <div>
-                <label className="text-[13px] font-semibold text-[#0B1F44] mb-3 block">
-                  <Ruler className="w-4 h-4 inline mr-1.5 text-[#2D6CDF]" />
+                <label className="text-[14px] font-semibold text-[#1B2A4A] mb-3 block">
+                  <Ruler className="w-4 h-4 inline mr-1.5 text-[#0066FF]" />
                   Minimum oppervlakte
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -487,8 +487,8 @@ export default function NewSearchPage() {
                         onClick={() => update({ sizeMin: opt.value })}
                         className={`px-4 py-2.5 rounded-xl text-[14px] font-medium border-2 transition-all ${
                           selected
-                            ? "border-[#2D6CDF] bg-[#EBF2FD] text-[#2D6CDF]"
-                            : "border-[#E8EDF2] bg-white text-[#6B7280] hover:border-[#C5D4E8]"
+                            ? "border-[#0066FF] bg-[#EDF2FF] text-[#0066FF]"
+                            : "border-[#EAEFF5] bg-white text-[#72839A] hover:border-[#EAEFF5]"
                         }`}
                         data-testid={`option-size-${opt.value}`}
                       >
@@ -525,24 +525,24 @@ export default function NewSearchPage() {
                     }}
                     className={`w-full flex items-center gap-4 p-4 rounded-[14px] border-2 transition-all text-left ${
                       selected
-                        ? "border-[#2D6CDF] bg-[#EBF2FD]"
-                        : "border-[#E8EDF2] bg-white hover:border-[#C5D4E8]"
+                        ? "border-[#0066FF] bg-[#EDF2FF]"
+                        : "border-[#EAEFF5] bg-white hover:border-[#EAEFF5]"
                     }`}
                     data-testid={`option-extra-${pref.id}`}
                   >
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      selected ? "bg-[#2D6CDF]" : "bg-[#F2F4F7]"
+                      selected ? "bg-[#0066FF]" : "bg-[#F2F5F8]"
                     }`}>
-                      <Icon className={`w-4.5 h-4.5 ${selected ? "text-white" : "text-[#6B7280]"}`} />
+                      <Icon className={`w-4.5 h-4.5 ${selected ? "text-white" : "text-[#72839A]"}`} />
                     </div>
-                    <span className={`text-[15px] font-medium flex-1 ${selected ? "text-[#2D6CDF]" : "text-[#0B1F44]"}`}>
+                    <span className={`text-[15px] font-medium flex-1 ${selected ? "text-[#0066FF]" : "text-[#1B2A4A]"}`}>
                       {pref.label}
                     </span>
-                    {selected && <CheckCircle2 className="w-5 h-5 text-[#2D6CDF] flex-shrink-0" />}
+                    {selected && <CheckCircle2 className="w-5 h-5 text-[#0066FF] flex-shrink-0" />}
                   </button>
                 );
               })}
-              <p className="text-[12px] text-[#9CA3AF] mt-2">
+              <p className="text-[12px] text-[#9BA5B7] mt-2">
                 Deze voorkeuren helpen ons betere matches te vinden. Ze worden binnenkort actief als filter.
               </p>
             </div>
@@ -569,23 +569,23 @@ export default function NewSearchPage() {
                     }}
                     className={`w-full flex items-center gap-4 p-4 rounded-[14px] border-2 transition-all text-left ${
                       selected
-                        ? "border-[#2D6CDF] bg-[#EBF2FD]"
-                        : "border-[#E8EDF2] bg-white hover:border-[#C5D4E8]"
+                        ? "border-[#0066FF] bg-[#EDF2FF]"
+                        : "border-[#EAEFF5] bg-white hover:border-[#EAEFF5]"
                     }`}
                     data-testid={`option-filter-${filter.id}`}
                   >
                     <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 ${
-                      selected ? "border-[#2D6CDF] bg-[#2D6CDF]" : "border-[#D1D5DB]"
+                      selected ? "border-[#0066FF] bg-[#0066FF]" : "border-[#EAEFF5]"
                     }`}>
                       {selected && <CheckCircle2 className="w-4 h-4 text-white" />}
                     </div>
-                    <span className={`text-[15px] font-medium ${selected ? "text-[#2D6CDF]" : "text-[#0B1F44]"}`}>
+                    <span className={`text-[15px] font-medium ${selected ? "text-[#0066FF]" : "text-[#1B2A4A]"}`}>
                       {filter.label}
                     </span>
                   </button>
                 );
               })}
-              <p className="text-[12px] text-[#9CA3AF] mt-2">
+              <p className="text-[12px] text-[#9BA5B7] mt-2">
                 Deze filters worden binnenkort toegepast op je zoekresultaten.
               </p>
 
@@ -595,13 +595,13 @@ export default function NewSearchPage() {
         )}
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E8EDF2] z-10">
-        <div className="max-w-xl mx-auto px-5 py-4 flex gap-3">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#EAEFF5] z-10">
+        <div className="max-w-xl mx-auto px-6 py-4 flex gap-3">
           {step > 1 && (
             <Button
               variant="outline"
               onClick={goBack}
-              className="h-[52px] px-5 rounded-xl border-[#E8EDF2] text-[#6B7280] text-[15px] font-medium"
+              className="h-[48px] px-5 rounded-xl border-[#EAEFF5] text-[#1B2A4A] text-[15px] font-medium"
               data-testid="button-wizard-back"
             >
               <ArrowLeft className="w-4 h-4 mr-1.5" />
@@ -612,7 +612,7 @@ export default function NewSearchPage() {
             <Button
               onClick={goNext}
               disabled={!canProceed()}
-              className="flex-1 h-[52px] rounded-xl bg-[#2D6CDF] hover:bg-[#2560C8] text-white text-[15px] font-semibold disabled:opacity-50"
+              className="flex-1 h-[56px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[16px] font-semibold disabled:opacity-50"
               data-testid="button-wizard-next"
             >
               Volgende
@@ -622,7 +622,7 @@ export default function NewSearchPage() {
             <Button
               onClick={handleSubmit}
               disabled={submitting || !data.city}
-              className="flex-1 h-[52px] rounded-xl bg-[#2D6CDF] hover:bg-[#2560C8] text-white text-[15px] font-semibold disabled:opacity-50"
+              className="flex-1 h-[56px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[16px] font-semibold disabled:opacity-50"
               data-testid="button-wizard-submit"
             >
               {submitting ? (
@@ -645,26 +645,26 @@ function WizardHeader({ step, total, onBack }: { step: number; total: number; on
   const progress = total > 0 ? (step / total) * 100 : 0;
 
   return (
-    <header className="sticky top-0 z-10 bg-white border-b border-[#E8EDF2]">
-      <div className="max-w-xl mx-auto flex items-center h-[56px] px-5">
+    <header className="sticky top-0 z-10 bg-white border-b border-[#EAEFF5]">
+      <div className="max-w-xl mx-auto flex items-center h-[60px] px-6">
         <button
           onClick={onBack}
-          className="w-9 h-9 rounded-full bg-[#F2F4F7] flex items-center justify-center mr-3"
+          className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center mr-3"
           data-testid="button-wizard-header-back"
         >
-          <ArrowLeft className="w-4 h-4 text-[#6B7280]" />
+          <ArrowLeft className="w-4 h-4 text-[#72839A]" />
         </button>
-        <h1 className="text-[17px] font-bold text-[#0B1F44] flex-1">Nieuwe zoekopdracht</h1>
+        <h1 className="text-[18px] font-bold text-[#1B2A4A] flex-1">Nieuwe zoekopdracht</h1>
         {total > 0 && (
-          <span className="text-[13px] font-medium text-[#9CA3AF]">
+          <span className="text-[13px] font-medium text-[#9BA5B7]">
             {step}/{total}
           </span>
         )}
       </div>
       {total > 0 && (
-        <div className="h-[3px] bg-[#F2F4F7]">
+        <div className="h-[3px] bg-[#F2F5F8]">
           <div
-            className="h-full bg-[#2D6CDF] transition-all duration-300"
+            className="h-full bg-[#0066FF] transition-all duration-300"
             style={{ width: `${progress}%` }}
             data-testid="progress-wizard"
           />
@@ -676,10 +676,10 @@ function WizardHeader({ step, total, onBack }: { step: number; total: number; on
 
 function StepContainer({ title, subtitle, children }: { title: string; subtitle: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-[22px] font-bold text-[#0B1F44] mb-1" data-testid="text-step-title">{title}</h2>
-        <p className="text-[14px] text-[#6B7280]">{subtitle}</p>
+        <h2 className="text-[24px] font-bold text-[#1B2A4A] mb-1" data-testid="text-step-title">{title}</h2>
+        <p className="text-[15px] text-[#72839A]">{subtitle}</p>
       </div>
       {children}
     </div>
@@ -689,11 +689,11 @@ function StepContainer({ title, subtitle, children }: { title: string; subtitle:
 function EstimateBadge({ estimate, loading }: { estimate: any; loading: boolean }) {
   if (loading) {
     return (
-      <div className="bg-[#EBF2FD] rounded-xl p-4 flex items-center gap-3 animate-pulse">
-        <div className="w-9 h-9 rounded-full bg-[#2D6CDF]/10" />
+      <div className="bg-[#EDF2FF] rounded-xl p-4 flex items-center gap-3 animate-pulse">
+        <div className="w-9 h-9 rounded-full bg-[#0066FF]/10" />
         <div className="flex-1">
-          <div className="h-3 bg-[#2D6CDF]/10 rounded w-32 mb-1" />
-          <div className="h-3 bg-[#2D6CDF]/10 rounded w-24" />
+          <div className="h-3 bg-[#0066FF]/10 rounded w-32 mb-1" />
+          <div className="h-3 bg-[#0066FF]/10 rounded w-24" />
         </div>
       </div>
     );
@@ -705,15 +705,15 @@ function EstimateBadge({ estimate, loading }: { estimate: any; loading: boolean 
   const perWeek = estimate.perWeekEstimate ?? count;
 
   return (
-    <div className="bg-[#EBF2FD] rounded-xl p-4 flex items-center gap-3" data-testid="badge-estimate">
-      <div className="w-9 h-9 rounded-full bg-[#2D6CDF]/10 flex items-center justify-center flex-shrink-0">
-        <Sparkles className="w-4 h-4 text-[#2D6CDF]" />
+    <div className="bg-[#EDF2FF] rounded-xl p-4 flex items-center gap-3" data-testid="badge-estimate">
+      <div className="w-9 h-9 rounded-full bg-[#0066FF]/10 flex items-center justify-center flex-shrink-0">
+        <Sparkles className="w-4 h-4 text-[#0066FF]" />
       </div>
       <div>
-        <p className="text-[14px] font-semibold text-[#0B1F44]">
+        <p className="text-[14px] font-semibold text-[#1B2A4A]">
           ~{perWeek} {perWeek === 1 ? "match" : "matches"} per week
         </p>
-        <p className="text-[12px] text-[#6B7280]">
+        <p className="text-[12px] text-[#72839A]">
           {count} {count === 1 ? "woning" : "woningen"} in de afgelopen 7 dagen
         </p>
       </div>

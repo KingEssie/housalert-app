@@ -23,15 +23,15 @@ export function SubscriptionGate({ isActive, children }: SubscriptionGateProps) 
           <div className="w-14 h-14 rounded-2xl bg-[#fef9ec] flex items-center justify-center mx-auto mb-4">
             <Crown className="w-7 h-7 text-amber-500" />
           </div>
-          <h3 className="text-lg font-bold text-[#0B1F44] mb-2" data-testid="text-gate-title">
+          <h3 className="text-lg font-bold text-[#1B2A4A] mb-2" data-testid="text-gate-title">
             Activeer je abonnement
           </h3>
-          <p className="text-sm text-[#6B7280] mb-5">
+          <p className="text-sm text-[#72839A] mb-5">
             Upgrade om al je matches te zien en direct meldingen te ontvangen.
           </p>
           <button
             onClick={() => navigate("/paywall")}
-            className="w-full h-[48px] rounded-xl bg-[#2D6CDF] hover:bg-[#2560C8] text-white font-semibold text-[15px] transition-colors flex items-center justify-center gap-2"
+            className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold text-[15px] transition-colors flex items-center justify-center gap-2"
             data-testid="button-gate-upgrade"
           >
             <Lock className="w-4 h-4" />

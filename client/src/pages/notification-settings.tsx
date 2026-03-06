@@ -124,60 +124,60 @@ export default function NotificationSettingsPage() {
   const userInitial = user?.email?.charAt(0).toUpperCase() ?? "?";
 
   return (
-    <div className="min-h-screen bg-[#F6F8FA] flex flex-col">
-      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E8EDF2]">
-        <div className="max-w-xl mx-auto px-5 h-14 flex items-center gap-3">
+    <div className="min-h-screen bg-[#F7F8FA] flex flex-col">
+      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
+        <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center gap-3">
           <button
             onClick={() => navigate("/dashboard")}
-            className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-[#F2F4F7] transition-colors"
+            className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center hover:bg-[#EAEFF5] transition-colors"
             data-testid="button-back"
           >
-            <ArrowLeft className="w-5 h-5 text-[#6B7280]" />
+            <ArrowLeft className="w-5 h-5 text-[#72839A]" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-[#2D6CDF] flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-[#0066FF] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-bold text-[#0B1F44] text-base">Stekkies</span>
+            <span className="font-bold text-[#1B2A4A] text-base">Stekkies</span>
           </div>
         </div>
       </header>
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-5 py-6 flex flex-col gap-5">
+      <main className="flex-1 max-w-xl mx-auto w-full px-6 py-6 flex flex-col gap-6">
         <div>
-          <h1 className="text-[20px] font-bold text-[#0B1F44]" data-testid="text-page-title">
+          <h1 className="text-[28px] font-extrabold text-[#1B2A4A] tracking-[-0.02em]" data-testid="text-page-title">
             Meldingsinstellingen
           </h1>
-          <p className="text-[13px] text-[#6B7280] mt-0.5">
+          <p className="text-[15px] text-[#72839A] mt-1">
             Kies hoe je op de hoogte gehouden wilt worden van nieuwe matches.
           </p>
         </div>
 
         {loadingSettings ? (
           <div className="flex items-center justify-center py-20" data-testid="loading-settings">
-            <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+            <Loader2 className="w-6 h-6 animate-spin text-[#9BA5B7]" />
           </div>
         ) : (
           <div className="flex flex-col gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg">
+            <Card className="rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] border-[#EAEFF5]">
+              <CardHeader className="p-6 pb-4">
+                <CardTitle className="flex items-center gap-2 text-[18px] font-bold text-[#1B2A4A]">
                   <Bell className="w-5 h-5" />
                   Kanalen
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-[15px] text-[#72839A]">
                   Schakel meldingen in of uit per kanaal.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="flex flex-col gap-6">
+              <CardContent className="flex flex-col gap-6 p-6 pt-0">
                 <div className="flex items-center justify-between gap-4" data-testid="setting-email">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
-                      <Mail className="w-5 h-5 text-blue-600" />
+                    <div className="w-10 h-10 rounded-xl bg-[#EDF2FF] flex items-center justify-center">
+                      <Mail className="w-5 h-5 text-[#0066FF]" />
                     </div>
                     <div>
-                      <Label className="text-sm font-medium">E-mail</Label>
-                      <p className="text-xs text-muted-foreground">Ontvang matches via e-mail</p>
+                      <Label className="text-[14px] font-semibold text-[#1B2A4A]">E-mail</Label>
+                      <p className="text-[13px] text-[#9BA5B7]">Ontvang matches via e-mail</p>
                     </div>
                   </div>
                   <Switch
@@ -187,16 +187,16 @@ export default function NotificationSettingsPage() {
                   />
                 </div>
 
-                <div className="border-t border-border" />
+                <div className="border-t border-[#EAEFF5]" />
 
                 <div className="flex items-center justify-between gap-4" data-testid="setting-sms">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
                       <Phone className="w-5 h-5 text-green-600" />
                     </div>
                     <div>
-                      <Label className="text-sm font-medium">SMS</Label>
-                      <p className="text-xs text-muted-foreground">Ontvang matches via SMS</p>
+                      <Label className="text-[14px] font-semibold text-[#1B2A4A]">SMS</Label>
+                      <p className="text-[13px] text-[#9BA5B7]">Ontvang matches via SMS</p>
                     </div>
                   </div>
                   <Switch
@@ -206,16 +206,16 @@ export default function NotificationSettingsPage() {
                   />
                 </div>
 
-                <div className="border-t border-border" />
+                <div className="border-t border-[#EAEFF5]" />
 
                 <div className="flex items-center justify-between gap-4" data-testid="setting-whatsapp">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">
                       <MessageSquare className="w-5 h-5 text-emerald-600" />
                     </div>
                     <div>
-                      <Label className="text-sm font-medium">WhatsApp</Label>
-                      <p className="text-xs text-muted-foreground">Ontvang matches via WhatsApp</p>
+                      <Label className="text-[14px] font-semibold text-[#1B2A4A]">WhatsApp</Label>
+                      <p className="text-[13px] text-[#9BA5B7]">Ontvang matches via WhatsApp</p>
                     </div>
                   </div>
                   <Switch
@@ -228,19 +228,19 @@ export default function NotificationSettingsPage() {
             </Card>
 
             {(smsEnabled || whatsappEnabled) && (
-              <Card data-testid="card-phone">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-lg">
+              <Card className="rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] border-[#EAEFF5]" data-testid="card-phone">
+                <CardHeader className="p-6 pb-4">
+                  <CardTitle className="flex items-center gap-2 text-[18px] font-bold text-[#1B2A4A]">
                     <Phone className="w-5 h-5" />
                     Telefoonnummer
                   </CardTitle>
-                  <CardDescription>
+                  <CardDescription className="text-[15px] text-[#72839A]">
                     Nodig voor SMS en WhatsApp meldingen. Gebruik internationaal formaat.
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-6 pt-0">
                   <div className="flex flex-col gap-2 max-w-sm">
-                    <Label htmlFor="phone">Telefoonnummer (E.164)</Label>
+                    <Label htmlFor="phone" className="text-[14px] font-semibold text-[#1B2A4A]">Telefoonnummer (E.164)</Label>
                     <Input
                       id="phone"
                       type="tel"
@@ -251,6 +251,7 @@ export default function NotificationSettingsPage() {
                         if (phoneError) validatePhone(e.target.value);
                       }}
                       onBlur={() => validatePhone(phoneInput)}
+                      className="h-[52px] px-4 rounded-xl border border-[#EAEFF5] bg-[#F7F8FA] text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] focus:bg-white transition-all"
                       data-testid="input-phone"
                     />
                     {phoneError && (
@@ -267,6 +268,7 @@ export default function NotificationSettingsPage() {
               <Button
                 onClick={handleSave}
                 disabled={saving}
+                className="h-[56px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[16px] font-semibold px-8"
                 data-testid="button-save"
               >
                 {saving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
@@ -275,6 +277,7 @@ export default function NotificationSettingsPage() {
               <Button
                 variant="outline"
                 onClick={() => navigate("/dashboard")}
+                className="h-[48px] rounded-xl border-[#EAEFF5] text-[#1B2A4A] text-[15px] font-semibold"
                 data-testid="button-cancel"
               >
                 Annuleren
