@@ -12,7 +12,7 @@ import { SubscriptionGate } from "@/components/subscription-gate";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { ProfileStrengthSection, SpeedBanner, NotificationSummaryCard } from "@/components/profile-strength";
+import { ProfileStrengthSection, SpeedBanner } from "@/components/profile-strength";
 import { ReactieklaarCard } from "@/components/reactieklaar-card";
 import { ReactiesnelheidCard } from "@/components/reactiesnelheid-card";
 import { ApplySheet } from "@/components/apply-sheet";
@@ -936,6 +936,48 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
   );
 }
 
+function ProfileListItem({
+  title,
+  subtitle,
+  onClick,
+  trailing,
+  testId,
+}: {
+  title: string;
+  subtitle?: string;
+  onClick?: () => void;
+  trailing?: React.ReactNode;
+  testId?: string;
+}) {
+  const Component = onClick ? "button" : "div";
+  return (
+    <Component
+      {...(onClick ? { type: "button" as const } : {})}
+      onClick={onClick}
+      className={`w-full flex items-center justify-between px-1 py-3.5 text-left ${onClick ? "cursor-pointer active:bg-[#F9FAFB] transition-colors" : ""}`}
+      data-testid={testId}
+    >
+      <div className="flex-1 min-w-0">
+        <p className="text-[16px] font-[500] text-[#111] leading-snug">{title}</p>
+        {subtitle && (
+          <p className="text-[14px] font-[500] text-[#6B7280] leading-snug mt-0.5">{subtitle}</p>
+        )}
+      </div>
+      {trailing ?? (onClick ? <ChevronRight className="w-[18px] h-[18px] text-[#6B7280] flex-shrink-0 ml-3" /> : null)}
+    </Component>
+  );
+}
+
+function ProfileDivider() {
+  return <div className="h-px bg-[#F1F1F1]" />;
+}
+
+function ProfileSectionTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 className="text-[20px] font-[600] text-[#111] leading-tight">{children}</h2>
+  );
+}
+
 function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null }; setActiveTab: (tab: TabKey) => void }) {
   const [signingOut, setSigningOut] = useState(false);
 
@@ -945,84 +987,68 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
     navigate("/login");
   }
 
+  const subscriptionSubtitle = subscription.isActive && !subscription.isTrial
+    ? `${subscription.plan === "monthly" ? "Maandelijks" : subscription.plan === "two_month" ? "2 maanden" : subscription.plan === "three_month" ? "3 maanden" : "Actief"}`
+    : subscription.isTrial
+    ? `Proefperiode tot ${subscription.trialEndsAt ? new Date(subscription.trialEndsAt).toLocaleDateString("de-DE", { day: "numeric", month: "short" }) : ""}`
+    : "Verlopen";
+
+  const subscriptionBadge = (
+    <span
+      className={`text-[12px] font-[500] px-2.5 py-1 rounded-full flex-shrink-0 ml-3 ${
+        subscription.isActive && !subscription.isTrial
+          ? "text-green-600 bg-green-50"
+          : subscription.isTrial
+          ? "text-[#0066FF] bg-blue-50"
+          : "text-red-500 bg-red-50"
+      }`}
+      data-testid="text-subscription-status"
+    >
+      {subscription.isActive && !subscription.isTrial ? "Actief" : subscription.isTrial ? "Proef" : "Verlopen"}
+    </span>
+  );
+
   return (
-    <div className="flex flex-col gap-5 pb-6">
-      <h1 className="text-[26px] font-[700] text-[#1B2A4A] tracking-[-0.02em] leading-[1.15]">Profiel</h1>
-
-      <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-[#EDF2FF] flex items-center justify-center">
-            <span className="text-[18px] font-bold text-[#0066FF]">
-              {user.email?.[0]?.toUpperCase() ?? "?"}
-            </span>
-          </div>
-          <div>
-            <p className="text-[15px] font-semibold text-[#1B2A4A]" data-testid="text-user-email">{user.email}</p>
-            <p className="text-[12px] text-[#9BA5B7]">Persoonlijk account</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] divide-y divide-[#F2F5F8]">
-        <button
-          onClick={() => navigate("/settings/notifications")}
-          className="w-full flex items-center gap-3 p-4 hover:bg-[#F3F4F8] transition-colors rounded-t-2xl"
-          data-testid="button-notification-settings"
-        >
-          <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center">
-            <Bell className="w-4 h-4 text-[#0066FF]" />
-          </div>
-          <div className="flex-1 text-left">
-            <p className="text-[14px] font-medium text-[#1B2A4A]">Meldingsinstellingen</p>
-            <p className="text-[12px] text-[#9BA5B7]">E-mail, SMS, WhatsApp</p>
-          </div>
-          <ChevronRight className="w-4 h-4 text-[#9BA5B7]" />
-        </button>
-
-        <div className="flex items-center gap-3 p-4 w-full">
-          <div className={`w-9 h-9 rounded-full flex items-center justify-center ${subscription.isActive ? "bg-green-50" : subscription.isTrial ? "bg-blue-50" : "bg-red-50"}`}>
-            {subscription.isActive ? (
-              <CheckCircle2 className="w-4 h-4 text-green-600" />
-            ) : subscription.isTrial ? (
-              <Crown className="w-4 h-4 text-[#0066FF]" />
-            ) : (
-              <AlertTriangle className="w-4 h-4 text-red-500" />
-            )}
-          </div>
-          <div className="flex-1">
-            <p className="text-[14px] font-medium text-[#1B2A4A]">Abonnement</p>
-            <p className="text-[12px] text-[#9BA5B7]">
-              {subscription.isActive && !subscription.isTrial
-                ? `${subscription.plan === "monthly" ? "Maandelijks" : subscription.plan === "two_month" ? "2 maanden" : subscription.plan === "three_month" ? "3 maanden" : "Actief"}`
-                : subscription.isTrial
-                ? `Proefperiode tot ${subscription.trialEndsAt ? new Date(subscription.trialEndsAt).toLocaleDateString("de-DE", { day: "numeric", month: "short" }) : ""}`
-                : "Verlopen"}
-            </p>
-          </div>
-          <span
-            className={`text-[12px] font-medium px-2 py-0.5 rounded-full ${
-              subscription.isActive && !subscription.isTrial
-                ? "text-green-600 bg-green-50"
-                : subscription.isTrial
-                ? "text-[#0066FF] bg-blue-50"
-                : "text-red-500 bg-red-50"
-            }`}
-            data-testid="text-subscription-status"
-          >
-            {subscription.isActive && !subscription.isTrial ? "Actief" : subscription.isTrial ? "Proef" : "Verlopen"}
+    <div className="flex flex-col gap-7 pb-6">
+      <div className="flex items-center gap-3.5 pt-1">
+        <div className="w-14 h-14 rounded-full bg-[#EDF2FF] flex items-center justify-center flex-shrink-0">
+          <span className="text-[20px] font-bold text-[#0066FF]">
+            {user.email?.[0]?.toUpperCase() ?? "?"}
           </span>
+        </div>
+        <div className="min-w-0">
+          <p className="text-[18px] font-[600] text-[#111] truncate" data-testid="text-user-email">{user.email}</p>
+          <p className="text-[14px] font-[500] text-[#6B7280]">Persoonlijk account</p>
         </div>
       </div>
 
       <ReactiesnelheidCard onTap={() => setActiveTab("boost")} />
 
-      <NotificationSummaryCard navigate={navigate} />
       <ReactieklaarCard navigate={navigate} onStepClick={() => setActiveTab("boost")} />
+
+      <div className="flex flex-col">
+        <ProfileSectionTitle>Instellingen</ProfileSectionTitle>
+        <div className="mt-2">
+          <ProfileListItem
+            title="Meldingsinstellingen"
+            subtitle="E-mail, SMS, WhatsApp"
+            onClick={() => navigate("/settings/notifications")}
+            testId="button-notification-settings"
+          />
+          <ProfileDivider />
+          <ProfileListItem
+            title="Abonnement"
+            subtitle={subscriptionSubtitle}
+            trailing={subscriptionBadge}
+            testId="item-subscription"
+          />
+        </div>
+      </div>
 
       {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
         <button
           onClick={() => navigate("/paywall")}
-          className="w-full h-[56px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[16px] font-semibold transition-colors flex items-center justify-center gap-2"
+          className="w-full h-[52px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-[600] transition-colors flex items-center justify-center gap-2"
           data-testid="button-upgrade-subscription"
         >
           <Crown className="w-4 h-4" />
@@ -1030,15 +1056,24 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
         </button>
       )}
 
-      <button
-        onClick={handleSignOut}
-        disabled={signingOut}
-        className="w-full h-[48px] rounded-xl border border-[#EAEFF5] bg-white text-[16px] font-semibold text-red-500 hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
-        data-testid="button-logout"
-      >
-        <LogOut className="w-4 h-4" />
-        {signingOut ? "Uitloggen..." : "Uitloggen"}
-      </button>
+      <div className="flex flex-col">
+        <ProfileSectionTitle>Account</ProfileSectionTitle>
+        <div className="mt-2">
+          <button
+            onClick={handleSignOut}
+            disabled={signingOut}
+            className="w-full flex items-center px-1 py-3.5 text-left cursor-pointer active:bg-[#F9FAFB] transition-colors"
+            data-testid="button-logout"
+          >
+            <div className="flex-1">
+              <p className="text-[16px] font-[500] text-red-500 leading-snug">
+                {signingOut ? "Uitloggen..." : "Uitloggen"}
+              </p>
+            </div>
+            <LogOut className="w-[18px] h-[18px] text-red-400 flex-shrink-0 ml-3" />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

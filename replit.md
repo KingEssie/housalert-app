@@ -56,6 +56,13 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - `client/src/pages/legal.tsx` — Legal pages: `/impressum`, `/datenschutz`, `/terms` (German placeholder content)
 - `client/src/pages/paywall.tsx` — Subscription paywall with Stripe checkout; shows friendly message if Stripe not configured
 
+### Profile Page (ProfielTab)
+- Layout: BlaBlaCar-style list-based settings layout (not card-wrapped)
+- Helper components (in dashboard.tsx): `ProfileListItem` (title + optional subtitle + chevron/trailing), `ProfileDivider` (#F1F1F1 1px), `ProfileSectionTitle` (20px/600)
+- Typography: titles 16px/500 #111, subtitles 14px/500 #6B7280, section titles 20px/600 #111
+- Sections: user avatar header, ReactiesnelheidCard (card), ReactieklaarCard (card), "Instellingen" list (notifications + subscription), "Account" list (logout)
+- NotificationSummaryCard removed from ProfielTab (was redundant with notification settings row)
+
 ### Profile Strength & Account Completion
 - `client/src/components/profile-strength.tsx` — ProfileStrengthCard (score/100 with status label), AccountCompletionCard (expandable task list), TaskModal (flows for each task)
 - `GET /api/profile-strength` — Returns score, tasks array with completion status, completedCount, totalCount
