@@ -678,7 +678,7 @@ function StepContainer({ title, subtitle, children }: { title: string; subtitle:
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-[24px] font-bold text-[#1B2A4A] mb-1" data-testid="text-step-title">{title}</h2>
+        <h2 className="text-[28px] font-[800] text-[#1B2A4A] tracking-[-0.03em] leading-[1.1] mb-2" data-testid="text-step-title">{title}</h2>
         <p className="text-[15px] text-[#72839A]">{subtitle}</p>
       </div>
       {children}

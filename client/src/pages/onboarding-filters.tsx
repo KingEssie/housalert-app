@@ -65,7 +65,7 @@ export default function OnboardingFiltersPage() {
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-8 pt-4">
-        <h1 className="text-[28px] font-extrabold text-[#1B2A4A] leading-tight tracking-[-0.02em] mb-2" data-testid="text-filters-title">
+        <h1 className="text-[32px] font-[800] text-[#1B2A4A] leading-[1.1] tracking-[-0.03em] mb-3" data-testid="text-filters-title">
           Wat zoek je precies?
         </h1>
         <p className="text-[15px] text-[#72839A] mb-6">

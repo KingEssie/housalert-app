@@ -118,7 +118,7 @@ export default function SignupPage() {
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-12 pb-16">
         <div className="text-center mb-10">
-          <h1 className="text-[28px] font-extrabold text-[#1B2A4A] tracking-[-0.02em] mb-3" data-testid="text-signup-title">
+          <h1 className="text-[32px] font-[800] text-[#1B2A4A] tracking-[-0.03em] leading-[1.1] mb-4" data-testid="text-signup-title">
             Maak je account aan
           </h1>
           <p className="text-[15px] text-[#72839A]">

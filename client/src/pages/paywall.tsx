@@ -131,7 +131,7 @@ export default function PaywallPage() {
           <div className="w-14 h-14 rounded-2xl bg-[#fef9ec] flex items-center justify-center mx-auto mb-4">
             <Crown className="w-7 h-7 text-amber-500" />
           </div>
-          <h1 className="text-[28px] font-extrabold text-[#1B2A4A] tracking-[-0.02em] mb-2" data-testid="text-paywall-title">
+          <h1 className="text-[32px] font-[800] text-[#1B2A4A] tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-paywall-title">
             Kies je abonnement
           </h1>
           <p className="text-[15px] text-[#72839A]">

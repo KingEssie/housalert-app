@@ -30,7 +30,7 @@ export default function LandingPage() {
         <section className="bg-white">
           <div className="max-w-2xl mx-auto px-6 pt-20 pb-24 md:pt-28 md:pb-32 text-center">
             <h1
-              className="text-[36px] md:text-[52px] font-extrabold text-[#1B2A4A] leading-[1.1] tracking-[-0.02em] mb-6"
+              className="text-[40px] md:text-[56px] font-[800] text-[#1B2A4A] leading-[1.05] tracking-[-0.03em] mb-6"
               data-testid="text-headline"
             >
               Vind nieuwe huurwoningen voordat anderen ze zien
@@ -66,7 +66,7 @@ export default function LandingPage() {
 
         <section className="px-6 py-20 md:py-28">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-[28px] md:text-[32px] font-extrabold text-[#1B2A4A] text-center tracking-[-0.02em] mb-14" data-testid="text-features-heading">
+            <h2 className="text-[30px] md:text-[36px] font-[800] text-[#1B2A4A] text-center tracking-[-0.03em] leading-[1.1] mb-14" data-testid="text-features-heading">
               Alles om sneller je droomwoning te vinden
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -105,7 +105,7 @@ export default function LandingPage() {
 
         <section className="px-6 pb-20 md:pb-28">
           <div className="max-w-2xl mx-auto">
-            <h2 className="text-[28px] md:text-[32px] font-extrabold text-[#1B2A4A] text-center tracking-[-0.02em] mb-14" data-testid="text-how-it-works">
+            <h2 className="text-[30px] md:text-[36px] font-[800] text-[#1B2A4A] text-center tracking-[-0.03em] leading-[1.1] mb-14" data-testid="text-how-it-works">
               Hoe werkt het?
             </h2>
             <div className="space-y-0">
@@ -133,7 +133,7 @@ export default function LandingPage() {
 
         <section className="px-6 pb-24 md:pb-32">
           <div className="max-w-xl mx-auto bg-white rounded-2xl p-8 md:p-12 text-center shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
-            <h2 className="text-[28px] font-extrabold text-[#1B2A4A] tracking-[-0.02em] mb-3" data-testid="text-cta-bottom">
+            <h2 className="text-[32px] font-[800] text-[#1B2A4A] tracking-[-0.03em] leading-[1.1] mb-4" data-testid="text-cta-bottom">
               Klaar om te beginnen?
             </h2>
             <p className="text-[15px] text-[#72839A] mb-8">

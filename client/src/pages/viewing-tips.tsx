@@ -120,7 +120,7 @@ export default function ViewingTipsPage() {
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6 pb-32">
         <div className="mb-6">
-          <h2 className="text-[28px] font-extrabold text-[#1B2A4A] tracking-[-0.02em] mb-2" data-testid="text-tips-heading">
+          <h2 className="text-[32px] font-[800] text-[#1B2A4A] tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-tips-heading">
             Goed voorbereid naar een bezichtiging
           </h2>
           <p className="text-[15px] text-[#72839A] leading-relaxed">

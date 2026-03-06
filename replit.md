@@ -301,9 +301,14 @@ Env vars: `TEST_USER_EMAIL`, `TEST_USER_PASSWORD`, `TEST_PHONE_E164`, `TEST_BASE
 - Hover surface: `#F2F5F8`
 - Success: `#22c55e`
 
-### Typography
-- Page title: `text-[28px] font-extrabold text-[#1B2A4A] tracking-[-0.02em]`
-- Section heading: `text-[18px] font-bold text-[#1B2A4A]`
+### Typography (Poppins)
+- Font: Poppins (weights 400–800)
+- Page title: `text-[32px] font-[800] text-[#1B2A4A] tracking-[-0.03em] leading-[1.1]`
+- Hero title (landing): `text-[40px] md:text-[56px] font-[800] tracking-[-0.03em] leading-[1.05]`
+- Tab heading: `text-[26px] font-[700] tracking-[-0.02em] leading-[1.15]`
+- Wizard step title: `text-[28px] font-[800] tracking-[-0.03em] leading-[1.1]`
+- Modal title: `text-[20px] font-[700] tracking-[-0.02em]`
+- Section heading: `text-[18px] font-[700] tracking-[-0.01em]`
 - Card title: `text-[16px] font-semibold text-[#1B2A4A]`
 - Body: `text-[15px] text-[#72839A]`
 - Small/helper: `text-[13px] text-[#9BA5B7]`

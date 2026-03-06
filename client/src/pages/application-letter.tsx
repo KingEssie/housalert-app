@@ -80,7 +80,7 @@ export default function ApplicationLetterPage() {
           >
             <ArrowLeft className="w-5 h-5 text-[#72839A]" />
           </button>
-          <h1 className="text-[16px] font-semibold text-[#1B2A4A]">Aanmeldingsbrief</h1>
+          <h1 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em]">Aanmeldingsbrief</h1>
           <div className="w-10" />
         </div>
       </header>

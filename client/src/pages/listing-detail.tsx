@@ -201,7 +201,7 @@ export default function ListingDetailPage() {
               </span>
             </div>
 
-            <h1 className="text-[28px] font-extrabold text-[#1B2A4A] leading-tight tracking-[-0.02em] mb-2" data-testid="text-listing-title">
+            <h1 className="text-[32px] font-[800] text-[#1B2A4A] leading-[1.1] tracking-[-0.03em] mb-3" data-testid="text-listing-title">
               {listing.title}
             </h1>
 

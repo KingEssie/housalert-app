@@ -145,7 +145,7 @@ export default function NotificationSettingsPage() {
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 py-6 flex flex-col gap-6">
         <div>
-          <h1 className="text-[28px] font-extrabold text-[#1B2A4A] tracking-[-0.02em]" data-testid="text-page-title">
+          <h1 className="text-[32px] font-[800] text-[#1B2A4A] tracking-[-0.03em] leading-[1.1]" data-testid="text-page-title">
             Meldingsinstellingen
           </h1>
           <p className="text-[15px] text-[#72839A] mt-1">
@@ -161,7 +161,7 @@ export default function NotificationSettingsPage() {
           <div className="flex flex-col gap-6">
             <Card className="rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] border-[#EAEFF5]">
               <CardHeader className="p-6 pb-4">
-                <CardTitle className="flex items-center gap-2 text-[18px] font-bold text-[#1B2A4A]">
+                <CardTitle className="flex items-center gap-2 text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em]">
                   <Bell className="w-5 h-5" />
                   Kanalen
                 </CardTitle>
@@ -230,7 +230,7 @@ export default function NotificationSettingsPage() {
             {(smsEnabled || whatsappEnabled) && (
               <Card className="rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] border-[#EAEFF5]" data-testid="card-phone">
                 <CardHeader className="p-6 pb-4">
-                  <CardTitle className="flex items-center gap-2 text-[18px] font-bold text-[#1B2A4A]">
+                  <CardTitle className="flex items-center gap-2 text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em]">
                     <Phone className="w-5 h-5" />
                     Telefoonnummer
                   </CardTitle>

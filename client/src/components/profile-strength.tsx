@@ -372,7 +372,7 @@ function TaskModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sticky top-0 bg-white border-b border-[#EAEFF5] p-6 flex items-center justify-between rounded-t-[24px]">
-          <h2 className="text-[18px] font-bold text-[#1B2A4A]">{title}</h2>
+          <h2 className="text-[20px] font-[700] text-[#1B2A4A] tracking-[-0.02em]">{title}</h2>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F2F5F8] flex items-center justify-center" data-testid="button-close-modal">
             <X className="w-4 h-4 text-[#72839A]" />
           </button>
@@ -665,7 +665,7 @@ function PrepTaskModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sticky top-0 bg-white border-b border-[#EAEFF5] p-6 flex items-center justify-between rounded-t-[24px]">
-          <h2 className="text-[18px] font-bold text-[#1B2A4A]">{titles[taskId] || ""}</h2>
+          <h2 className="text-[20px] font-[700] text-[#1B2A4A] tracking-[-0.02em]">{titles[taskId] || ""}</h2>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F2F5F8] flex items-center justify-center" data-testid="button-close-prep-modal">
             <X className="w-4 h-4 text-[#72839A]" />
           </button>

@@ -245,7 +245,7 @@ function HomeTab({
   return (
     <div className="flex flex-col gap-6 pb-6">
       <div className="pt-1">
-        <h1 className="text-[28px] font-extrabold text-[#1B2A4A] tracking-[-0.02em]" data-testid="text-greeting">
+        <h1 className="text-[32px] font-[800] text-[#1B2A4A] tracking-[-0.03em] leading-[1.1]" data-testid="text-greeting">
           Hallo, {firstName}
         </h1>
         <p className="text-[15px] text-[#72839A] mt-1">Welkom terug bij Stekkies</p>
@@ -381,7 +381,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
   return (
     <div className="flex flex-col gap-5 pb-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-[24px] font-bold text-[#1B2A4A]">Matches</h1>
+        <h1 className="text-[26px] font-[700] text-[#1B2A4A] tracking-[-0.02em] leading-[1.15]">Matches</h1>
         {matches.length > 0 && (
           <span className="text-[13px] font-medium text-[#0066FF] bg-[#EDF2FF] px-2.5 py-1 rounded-full" data-testid="badge-match-count">
             {matches.length} {matches.length === 1 ? "match" : "matches"}
@@ -479,7 +479,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
     <div className="flex flex-col gap-5 pb-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[24px] font-bold text-[#1B2A4A]">Zoekprofielen</h1>
+          <h1 className="text-[26px] font-[700] text-[#1B2A4A] tracking-[-0.02em] leading-[1.15]">Zoekprofielen</h1>
           <p className="text-[13px] text-[#72839A] mt-0.5">{profileCount} van {MAX_PROFILES} actief</p>
         </div>
         {!atLimit && (
@@ -564,7 +564,7 @@ function ProfielTab({ user, signOut, navigate, subscription }: { user: any; sign
 
   return (
     <div className="flex flex-col gap-5 pb-6">
-      <h1 className="text-[24px] font-bold text-[#1B2A4A]">Profiel</h1>
+      <h1 className="text-[26px] font-[700] text-[#1B2A4A] tracking-[-0.02em] leading-[1.15]">Profiel</h1>
 
       <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5">
         <div className="flex items-center gap-3">

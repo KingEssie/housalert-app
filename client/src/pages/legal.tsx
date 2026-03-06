@@ -28,7 +28,7 @@ function LegalLayout({ title, children }: { title: string; children: React.React
           Terug naar startpagina
         </button>
 
-        <h1 className="text-[28px] font-extrabold text-[#1B2A4A] tracking-[-0.02em] mb-8" data-testid="text-legal-title">
+        <h1 className="text-[32px] font-[800] text-[#1B2A4A] tracking-[-0.03em] leading-[1.1] mb-10" data-testid="text-legal-title">
           {title}
         </h1>
 
@@ -50,7 +50,7 @@ export function ImpressumPage() {
   return (
     <LegalLayout title="Impressum">
       <section>
-        <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-2">Angaben gemäß § 5 TMG</h2>
+        <h2 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">Angaben gemäß § 5 TMG</h2>
         <p className="text-[15px] leading-relaxed" data-testid="text-impressum-company">
           [Firmenname einfügen]<br />
           [Straße und Hausnummer]<br />
@@ -60,14 +60,14 @@ export function ImpressumPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-2">Vertreten durch</h2>
+        <h2 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">Vertreten durch</h2>
         <p className="text-[15px] leading-relaxed">
           [Name des Geschäftsführers / Inhabers einfügen]
         </p>
       </section>
 
       <section>
-        <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-2">Kontakt</h2>
+        <h2 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">Kontakt</h2>
         <p className="text-[15px] leading-relaxed" data-testid="text-impressum-contact">
           E-Mail: [E-Mail-Adresse einfügen]<br />
           Telefon: [Telefonnummer einfügen]
@@ -75,7 +75,7 @@ export function ImpressumPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-2">Registereintrag</h2>
+        <h2 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">Registereintrag</h2>
         <p className="text-[15px] leading-relaxed">
           Eintragung im Handelsregister.<br />
           Registergericht: [Registergericht einfügen]<br />
@@ -84,7 +84,7 @@ export function ImpressumPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-2">Umsatzsteuer-ID</h2>
+        <h2 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">Umsatzsteuer-ID</h2>
         <p className="text-[15px] leading-relaxed">
           Umsatzsteuer-Identifikationsnummer gemäß §27a Umsatzsteuergesetz:<br />
           [USt-IdNr. einfügen]
@@ -92,7 +92,7 @@ export function ImpressumPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-2">Streitschlichtung</h2>
+        <h2 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">Streitschlichtung</h2>
         <p className="text-[15px] leading-relaxed">
           Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit.
           Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer
@@ -107,7 +107,7 @@ export function DatenschutzPage() {
   return (
     <LegalLayout title="Datenschutzerklärung">
       <section>
-        <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-2">1. Datenschutz auf einen Blick</h2>
+        <h2 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">1. Datenschutz auf einen Blick</h2>
         <h3 className="text-[15px] font-semibold text-[#1B2A4A] mb-1">Allgemeine Hinweise</h3>
         <p className="text-[15px] leading-relaxed" data-testid="text-datenschutz-intro">
           Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren
@@ -117,7 +117,7 @@ export function DatenschutzPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-2">2. Verantwortliche Stelle</h2>
+        <h2 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">2. Verantwortliche Stelle</h2>
         <p className="text-[15px] leading-relaxed">
           [Firmenname einfügen]<br />
           [Straße und Hausnummer]<br />
@@ -127,7 +127,7 @@ export function DatenschutzPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-2">3. Datenerfassung auf dieser Website</h2>
+        <h2 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">3. Datenerfassung auf dieser Website</h2>
         <h3 className="text-[15px] font-semibold text-[#1B2A4A] mb-1">Cookies</h3>
         <p className="text-[15px] leading-relaxed">
           Unsere Website verwendet Cookies. Dabei handelt es sich um kleine Textdateien, die Ihr
@@ -143,14 +143,14 @@ export function DatenschutzPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-2">4. Analyse-Tools und Werbung</h2>
+        <h2 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">4. Analyse-Tools und Werbung</h2>
         <p className="text-[15px] leading-relaxed">
           [Beschreibung der eingesetzten Analyse-Tools einfügen, z.B. Google Analytics, Plausible, etc.]
         </p>
       </section>
 
       <section>
-        <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-2">5. Ihre Rechte</h2>
+        <h2 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">5. Ihre Rechte</h2>
         <p className="text-[15px] leading-relaxed">
           Sie haben jederzeit das Recht auf unentgeltliche Auskunft über Ihre gespeicherten
           personenbezogenen Daten, deren Herkunft und Empfänger und den Zweck der Datenverarbeitung
@@ -160,7 +160,7 @@ export function DatenschutzPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-2">6. Zahlungsdienstleister</h2>
+        <h2 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">6. Zahlungsdienstleister</h2>
         <p className="text-[15px] leading-relaxed">
           Wir nutzen Stripe als Zahlungsdienstleister. Ihre Zahlungsdaten werden direkt von Stripe
           verarbeitet. Weitere Informationen finden Sie in der Datenschutzerklärung von Stripe.
@@ -174,7 +174,7 @@ export function TermsPage() {
   return (
     <LegalLayout title="Allgemeine Geschäftsbedingungen">
       <section>
-        <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-2">§ 1 Geltungsbereich</h2>
+        <h2 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">§ 1 Geltungsbereich</h2>
         <p className="text-[15px] leading-relaxed" data-testid="text-terms-scope">
           Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle Verträge, die zwischen
           [Firmenname einfügen] (nachfolgend "Anbieter") und dem Nutzer über die Plattform Stekkies
@@ -183,7 +183,7 @@ export function TermsPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-2">§ 2 Leistungsbeschreibung</h2>
+        <h2 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">§ 2 Leistungsbeschreibung</h2>
         <p className="text-[15px] leading-relaxed">
           Stekkies ist ein Dienst, der Mietwohnungsangebote von verschiedenen Websites aggregiert
           und Nutzer über neue, relevante Angebote benachrichtigt. Der Anbieter übernimmt keine
@@ -192,7 +192,7 @@ export function TermsPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-2">§ 3 Registrierung und Nutzerkonto</h2>
+        <h2 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">§ 3 Registrierung und Nutzerkonto</h2>
         <p className="text-[15px] leading-relaxed">
           Für die Nutzung des Dienstes ist eine Registrierung erforderlich. Der Nutzer ist
           verpflichtet, wahrheitsgemäße Angaben zu machen und seine Zugangsdaten vertraulich
@@ -201,7 +201,7 @@ export function TermsPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-2">§ 4 Preise und Zahlungsbedingungen</h2>
+        <h2 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">§ 4 Preise und Zahlungsbedingungen</h2>
         <p className="text-[15px] leading-relaxed">
           Die aktuellen Preise sind auf der Website einsehbar. Alle Preise verstehen sich inklusive
           der gesetzlichen Mehrwertsteuer. Die Zahlung erfolgt über den Zahlungsdienstleister Stripe.
@@ -209,7 +209,7 @@ export function TermsPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-2">§ 5 Probezeit und Kündigung</h2>
+        <h2 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">§ 5 Probezeit und Kündigung</h2>
         <p className="text-[15px] leading-relaxed">
           Neue Nutzer erhalten eine kostenlose Probezeit. Nach Ablauf der Probezeit wird das
           Abonnement automatisch verlängert, sofern es nicht vor Ablauf gekündigt wird. Die
@@ -218,7 +218,7 @@ export function TermsPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-2">§ 6 Haftungsbeschränkung</h2>
+        <h2 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">§ 6 Haftungsbeschränkung</h2>
         <p className="text-[15px] leading-relaxed">
           Der Anbieter haftet nicht für die Verfügbarkeit oder Richtigkeit der aggregierten
           Wohnungsangebote. Die Nutzung der Plattform erfolgt auf eigenes Risiko des Nutzers.
@@ -226,7 +226,7 @@ export function TermsPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-2">§ 7 Schlussbestimmungen</h2>
+        <h2 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">§ 7 Schlussbestimmungen</h2>
         <p className="text-[15px] leading-relaxed">
           Es gilt das Recht der Bundesrepublik Deutschland. Sollten einzelne Bestimmungen dieser AGB
           unwirksam sein, bleibt die Wirksamkeit der übrigen Bestimmungen unberührt.

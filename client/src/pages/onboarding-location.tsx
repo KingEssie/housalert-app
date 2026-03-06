@@ -121,7 +121,7 @@ export default function OnboardingLocationPage() {
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-8 pt-4">
-        <h1 className="text-[28px] font-extrabold text-[#1B2A4A] leading-tight tracking-[-0.02em] mb-6" data-testid="text-location-title">
+        <h1 className="text-[32px] font-[800] text-[#1B2A4A] leading-[1.1] tracking-[-0.03em] mb-8" data-testid="text-location-title">
           Waar zoek je een woning?
         </h1>
 
