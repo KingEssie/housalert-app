@@ -47,6 +47,7 @@ import {
   ImageIcon,
   Zap,
 } from "lucide-react";
+import { PopulairVandaagSection } from "@/components/populair-vandaag";
 import BoostPage from "@/pages/boost";
 
 const MAX_PROFILES = 4;
@@ -602,6 +603,8 @@ function HomeTab({
       </div>
 
       <BoostTeaserCard setActiveTab={setActiveTab} />
+
+      <PopulairVandaagSection />
 
       <SpeedBanner navigate={navigate} />
 

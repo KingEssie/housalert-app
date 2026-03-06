@@ -86,6 +86,15 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - Frontend: `RecommendedSection` in `boost.tsx` renders cards with icon, title, points badge, supportive subtitle, and explicit CTA button
 - Navigation: tasks with `modal: false` + route navigate directly (alerts, phone, letter, preferences, profile info); tasks with `modal: true` open inline TaskModal (documents, search buddy, profile photo)
 
+### Populair Vandaag
+- `client/src/components/populair-vandaag.tsx` — Horizontal scrolling section showing trending listings
+- Backend: `GET /api/listings/popular` in `server/routes.ts` — ranks listings by match count (cross-user) within last 7 days, fallback to newest 6 if no match data
+- Response shape: `PopularListing` (listing_id, title, price, size_m2, bedrooms, city, source, url, image_url, first_seen_at, fresh_label, match_count)
+- Frontend: `PopulairVandaagSection` renders horizontally scrollable card carousel (220px wide cards, snap-x)
+- Placement: HomeTab, between BoostTeaserCard and SpeedBanner
+- Returns null if no listings available; skeleton loading state with 3 placeholder cards
+- TODO: Improve ranking with real engagement data (clicks, views, apply actions) instead of match count
+
 ### Reactiesnelheid Card
 - `client/src/components/reactiesnelheid-card.tsx` — Motivational speed indicator card
 - Logic: `calculateReactiesnelheid(done, total)` returns SpeedLevel (`fast`/`almost`/`building`), label, subtitle, fraction

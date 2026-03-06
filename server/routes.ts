@@ -196,6 +196,102 @@ export async function registerRoutes(
     return res.json({ listings, matches });
   });
 
+  // TODO: Improve popularity ranking with real engagement data (clicks, views, apply actions)
+  // Currently ranks by match count across all users within the last 7 days
+  app.get("/api/listings/popular", async (_req, res) => {
+    try {
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+      const { data: recentMatches, error: mErr } = await supabase
+        .from("matches")
+        .select("listing_id")
+        .gte("created_at", sevenDaysAgo);
+
+      let rankedIds: { listing_id: string; match_count: number }[] = [];
+
+      if (!mErr && recentMatches && recentMatches.length > 0) {
+        const countMap: Record<string, number> = {};
+        for (const m of recentMatches) {
+          countMap[m.listing_id] = (countMap[m.listing_id] || 0) + 1;
+        }
+        rankedIds = Object.entries(countMap)
+          .map(([listing_id, match_count]) => ({ listing_id, match_count }))
+          .sort((a, b) => b.match_count - a.match_count)
+          .slice(0, 6);
+      }
+
+      if (rankedIds.length === 0) {
+        const { data: fallbackRows, error: fbErr } = await supabase
+          .from("listings")
+          .select("id, title, price, size_m2, bedrooms, city, source, url, image_url, created_at")
+          .order("created_at", { ascending: false })
+          .limit(6);
+
+        if (fbErr) return res.status(500).json({ error: fbErr.message });
+
+        const ids = (fallbackRows ?? []).map((l: any) => l.id);
+        const freshnessMap = ids.length > 0 ? await getListingFreshness(ids) : {};
+
+        return res.json((fallbackRows ?? []).map((l: any) => ({
+          listing_id: l.id,
+          title: l.title,
+          price: l.price,
+          size_m2: l.size_m2,
+          bedrooms: l.bedrooms,
+          city: l.city,
+          source: l.source,
+          url: l.url,
+          image_url: l.image_url ?? null,
+          first_seen_at: freshnessMap[l.id]?.first_seen_at ?? l.created_at,
+          fresh_label: computeFreshLabel(freshnessMap[l.id]?.first_seen_at ?? l.created_at),
+          match_count: 0,
+        })));
+      }
+
+      const listingIds = rankedIds.map((r) => r.listing_id);
+      const [listingsRes, freshnessMap] = await Promise.all([
+        supabase
+          .from("listings")
+          .select("id, title, price, size_m2, bedrooms, city, source, url, image_url, created_at")
+          .in("id", listingIds),
+        getListingFreshness(listingIds),
+      ]);
+
+      if (listingsRes.error) return res.status(500).json({ error: listingsRes.error.message });
+
+      const listingMap: Record<string, any> = {};
+      for (const l of listingsRes.data ?? []) listingMap[l.id] = l;
+
+      const matchCountMap: Record<string, number> = {};
+      for (const r of rankedIds) matchCountMap[r.listing_id] = r.match_count;
+
+      const result = listingIds
+        .filter((id) => listingMap[id])
+        .map((id) => {
+          const l = listingMap[id];
+          const firstSeenAt = freshnessMap[id]?.first_seen_at ?? l.created_at;
+          return {
+            listing_id: id,
+            title: l.title,
+            price: l.price,
+            size_m2: l.size_m2,
+            bedrooms: l.bedrooms,
+            city: l.city,
+            source: l.source,
+            url: l.url,
+            image_url: l.image_url ?? null,
+            first_seen_at: firstSeenAt,
+            fresh_label: computeFreshLabel(firstSeenAt),
+            match_count: matchCountMap[id] ?? 0,
+          };
+        });
+
+      return res.json(result);
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   app.get("/api/listings/fresh", async (_req, res) => {
     try {
       const freshRows = await getNewestListingIds(50);
