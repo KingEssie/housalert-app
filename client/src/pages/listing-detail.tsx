@@ -1,10 +1,12 @@
+import { useState } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { DEFAULT_TEMPLATE, fillTemplate } from "@/lib/application-letter";
-import { ArrowLeft, MapPin, Euro, BedDouble, Ruler, ExternalLink, Clock, Globe, Copy } from "lucide-react";
+import { ArrowLeft, MapPin, Euro, BedDouble, Ruler, ExternalLink, Clock, Globe, Copy, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ApplySheet } from "@/components/apply-sheet";
 
 const FRESH_BADGE_STYLES: Record<string, { bg: string; text: string }> = {
   net_binnen: { bg: "bg-green-100", text: "text-green-700" },
@@ -64,6 +66,7 @@ export default function ListingDetailPage() {
   const id = params?.id;
   const { user, session } = useAuth();
   const { toast } = useToast();
+  const [applyOpen, setApplyOpen] = useState(false);
 
   const { data: listing, isLoading, isError } = useQuery<Listing>({
     queryKey: ["/api/listings", id],
@@ -287,30 +290,60 @@ export default function ListingDetailPage() {
 
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#EAEFF5] p-5 z-10">
         <div className="max-w-xl mx-auto flex flex-col gap-2">
-          <Button
-            onClick={handleCopyLetter}
-            variant="outline"
-            size="lg"
-            className="w-full h-[48px] rounded-xl text-[15px] font-semibold border-[#EAEFF5] text-[#1B2A4A] flex items-center gap-2"
-            data-testid="button-copy-letter"
-          >
-            <Copy className="w-4 h-4" />
-            Kopieer aanmeldingsbrief
-          </Button>
-          {listing.url && (
-            <a href={listing.url} target="_blank" rel="noopener noreferrer">
-              <Button
-                size="lg"
-                className="w-full h-[56px] rounded-xl text-[16px] font-semibold shadow-none bg-[#0066FF] hover:bg-[#0052CC] flex items-center gap-2"
-                data-testid="button-view-original"
-              >
-                Bekijk originele advertentie
-                <ExternalLink className="w-4.5 h-4.5" />
-              </Button>
-            </a>
-          )}
+          <div className="flex gap-2">
+            {listing.url && (
+              <a href={listing.url} target="_blank" rel="noopener noreferrer" className="flex-1">
+                <Button
+                  size="lg"
+                  className="w-full h-[56px] rounded-xl text-[16px] font-semibold shadow-none bg-[#0066FF] hover:bg-[#0052CC] flex items-center justify-center gap-2"
+                  data-testid="button-view-original"
+                >
+                  <ExternalLink className="w-4.5 h-4.5" />
+                  Bekijk woning
+                </Button>
+              </a>
+            )}
+            <Button
+              onClick={() => setApplyOpen(true)}
+              variant="outline"
+              size="lg"
+              className="h-[56px] px-5 rounded-xl text-[15px] font-semibold border-[#EAEFF5] text-[#1B2A4A] flex items-center gap-2"
+              data-testid="button-reageer-detail"
+            >
+              <Send className="w-4 h-4" />
+              Reageer
+            </Button>
+          </div>
         </div>
       </div>
+
+      <ApplySheet
+        listing={{
+          id: listing.id,
+          title: listing.title,
+          city: listing.city,
+          district: listing.district,
+          price: listing.price,
+          url: listing.url,
+        }}
+        open={applyOpen}
+        onClose={() => setApplyOpen(false)}
+        onMarkedApplied={() => {
+          const MATCH_APPLIED_KEY = "stekkies_match_applied";
+          const MATCH_VIEWED_KEY = "stekkies_match_viewed";
+          try {
+            const appliedStored = localStorage.getItem(MATCH_APPLIED_KEY);
+            const appliedSet = new Set<string>(appliedStored ? JSON.parse(appliedStored) : []);
+            appliedSet.add(listing.id);
+            localStorage.setItem(MATCH_APPLIED_KEY, JSON.stringify([...appliedSet]));
+            const viewedStored = localStorage.getItem(MATCH_VIEWED_KEY);
+            const viewedSet = new Set<string>(viewedStored ? JSON.parse(viewedStored) : []);
+            viewedSet.add(listing.id);
+            localStorage.setItem(MATCH_VIEWED_KEY, JSON.stringify([...viewedSet]));
+          } catch {}
+          setApplyOpen(false);
+        }}
+      />
     </div>
   );
 }

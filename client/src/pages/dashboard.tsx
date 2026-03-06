@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { ProfileStrengthSection } from "@/components/profile-strength";
+import { ApplySheet } from "@/components/apply-sheet";
 import {
   Home,
   Heart,
@@ -148,13 +149,13 @@ function getMatchTab(listingId: string): MatchSubTab {
 function MatchCard({
   match,
   onSaveToggle,
-  onMarkApplied,
+  onApplyClick,
   isSaved,
   onStatusChange,
 }: {
   match: ApiMatch;
   onSaveToggle: (listingId: string) => void;
-  onMarkApplied: (listingId: string) => void;
+  onApplyClick: (match: ApiMatch) => void;
   isSaved: boolean;
   onStatusChange: () => void;
 }) {
@@ -180,12 +181,7 @@ function MatchCard({
 
   function handleApply(e: React.MouseEvent) {
     e.stopPropagation();
-    if (match.url) {
-      markApplied(match.listing_id);
-      onMarkApplied(match.listing_id);
-      onStatusChange();
-      window.open(match.url, "_blank", "noopener");
-    }
+    onApplyClick(match);
   }
 
   return (
@@ -308,16 +304,14 @@ function MatchCard({
             <ExternalLink className="w-4 h-4" />
             Bekijk woning
           </button>
-          {match.url && (
-            <button
-              onClick={handleApply}
-              className="h-[44px] px-4 rounded-xl border border-[#EAEFF5] bg-white text-[#1B2A4A] text-[14px] font-semibold hover:bg-[#F3F4F8] transition-colors flex items-center justify-center gap-1.5"
-              data-testid={`button-apply-${match.listing_id}`}
-            >
-              <Send className="w-3.5 h-3.5" />
-              Reageer
-            </button>
-          )}
+          <button
+            onClick={handleApply}
+            className="h-[44px] px-4 rounded-xl border border-[#EAEFF5] bg-white text-[#1B2A4A] text-[14px] font-semibold hover:bg-[#F3F4F8] transition-colors flex items-center justify-center gap-1.5"
+            data-testid={`button-apply-${match.listing_id}`}
+          >
+            <Send className="w-3.5 h-3.5" />
+            Reageer
+          </button>
         </div>
       </div>
     </div>
@@ -560,6 +554,7 @@ const MATCH_SUB_TABS: { key: MatchSubTab; label: string; Icon: any }[] = [
 function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undefined; setActiveTab: (tab: TabKey) => void }) {
   const [subTab, setSubTab] = useState<MatchSubTab>("nieuw");
   const [refreshKey, setRefreshKey] = useState(0);
+  const [applyMatch, setApplyMatch] = useState<ApiMatch | null>(null);
 
   const apiMatchesQuery = useQuery<ApiMatch[]>({
     queryKey: ["/api/matches"],
@@ -578,10 +573,17 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
     refreshStatuses();
   }, [refreshStatuses]);
 
-  const handleMarkApplied = useCallback((listingId: string) => {
-    markApplied(listingId);
-    refreshStatuses();
-  }, [refreshStatuses]);
+  const handleApplyClick = useCallback((match: ApiMatch) => {
+    setApplyMatch(match);
+  }, []);
+
+  const handleSheetApplied = useCallback(() => {
+    if (applyMatch) {
+      markApplied(applyMatch.listing_id);
+      refreshStatuses();
+      setApplyMatch(null);
+    }
+  }, [applyMatch, refreshStatuses]);
 
   const matchTabs = matches.map((m) => ({ ...m, _tab: getMatchTab(m.listing_id) }));
   const filteredMatches = matchTabs.filter((m) => m._tab === subTab);
@@ -713,12 +715,27 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
               key={m.listing_id}
               match={m}
               onSaveToggle={handleSaveToggle}
-              onMarkApplied={handleMarkApplied}
+              onApplyClick={handleApplyClick}
               isSaved={safeGetSet(MATCH_SAVED_KEY).has(m.listing_id)}
               onStatusChange={refreshStatuses}
             />
           ))}
         </div>
+      )}
+
+      {applyMatch && (
+        <ApplySheet
+          listing={{
+            id: applyMatch.listing_id,
+            title: applyMatch.title,
+            city: applyMatch.city,
+            price: applyMatch.price,
+            url: applyMatch.url,
+          }}
+          open={!!applyMatch}
+          onClose={() => setApplyMatch(null)}
+          onMarkedApplied={handleSheetApplied}
+        />
       )}
     </div>
   );
