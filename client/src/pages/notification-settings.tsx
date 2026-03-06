@@ -124,44 +124,33 @@ export default function NotificationSettingsPage() {
   const userInitial = user?.email?.charAt(0).toUpperCase() ?? "?";
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <header className="w-full border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
+    <div className="min-h-screen bg-[#F6F8FA] flex flex-col">
+      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E8EDF2]">
+        <div className="max-w-xl mx-auto px-5 h-14 flex items-center gap-3">
+          <button
+            onClick={() => navigate("/dashboard")}
+            className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-[#F2F4F7] transition-colors"
+            data-testid="button-back"
+          >
+            <ArrowLeft className="w-5 h-5 text-[#6B7280]" />
+          </button>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center">
-              <Home className="w-4 h-4 text-primary-foreground" />
+            <div className="w-7 h-7 rounded-lg bg-[#2D6CDF] flex items-center justify-center">
+              <Home className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-semibold text-foreground text-lg tracking-tight">Stekkies</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground" data-testid="text-user-email">
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm">
-                {userInitial}
-              </div>
-              <span className="hidden sm:inline">{user?.email}</span>
-            </div>
+            <span className="font-bold text-[#0B1F44] text-base">Stekkies</span>
           </div>
         </div>
       </header>
 
-      <main className="flex-1 max-w-4xl mx-auto w-full px-6 py-10 flex flex-col gap-8">
-        <div className="flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/dashboard")}
-            data-testid="button-back"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground" data-testid="text-page-title">
-              Meldingsinstellingen
-            </h1>
-            <p className="text-muted-foreground text-sm">
-              Kies hoe je op de hoogte gehouden wilt worden van nieuwe matches.
-            </p>
-          </div>
+      <main className="flex-1 max-w-xl mx-auto w-full px-5 py-6 flex flex-col gap-5">
+        <div>
+          <h1 className="text-[20px] font-bold text-[#0B1F44]" data-testid="text-page-title">
+            Meldingsinstellingen
+          </h1>
+          <p className="text-[13px] text-[#6B7280] mt-0.5">
+            Kies hoe je op de hoogte gehouden wilt worden van nieuwe matches.
+          </p>
         </div>
 
         {loadingSettings ? (

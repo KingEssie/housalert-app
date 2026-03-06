@@ -1,0 +1,138 @@
+Build Phase 2 of the product: dashboard and matches experience.
+
+Important:
+- Mobile-first
+- Stekkies-like product structure
+- BlaBlaCar-inspired visual style
+- Do not change backend business logic unless needed for integration
+- Use existing auth, search_profiles, listings, matches, and notification settings
+
+--------------------------------
+PAGES TO BUILD
+--------------------------------
+
+1. /dashboard
+This should be the main logged-in shell.
+
+Use bottom navigation with 4 tabs:
+- Home
+- Matches
+- Filters
+- Profiel
+
+--------------------------------
+HOME TAB
+--------------------------------
+
+Build a clean home overview with:
+- greeting: "Hallo, {name}"
+- summary card:
+  "Met jouw filters verwachten we ongeveer X matches per week"
+- progress cards:
+  - account status
+  - search profile status
+- CTA buttons:
+  - "Bekijk matches"
+  - "Beheer filters"
+
+Use card-based UI, rounded corners, white cards, navy headings, light grey backgrounds where needed.
+
+--------------------------------
+MATCHES TAB
+--------------------------------
+
+Build a Matches screen using real data from GET /api/matches.
+
+Each match card must show:
+- freshness badge (net binnen / nieuw / vandaag / ouder)
+- title
+- city
+- price
+- bedrooms
+- size_m2
+- source
+- matched_at or first_seen_at
+- CTA button:
+  "Bekijk advertentie"
+
+Clicking the CTA opens the original listing URL in a new tab/window.
+
+Empty state:
+If there are no matches, show a friendly empty state with CTA:
+"Pas je filters aan"
+
+--------------------------------
+FILTERS TAB
+--------------------------------
+
+Build a search profiles screen using real search_profiles data.
+
+Each search profile card must show:
+- city
+- min/max price
+- min rooms
+- min size
+- enabled/disabled state
+
+Actions:
+- edit
+- delete
+- add new search profile
+
+Show a max of 4 search profiles.
+If fewer than 4 exist, show an add card/button.
+
+--------------------------------
+PROFIEL TAB
+--------------------------------
+
+Build a clean profile screen with:
+- user email
+- notification settings CTA
+- subscription status placeholder
+- logout button
+
+Link notification settings to:
+/settings/notifications
+
+--------------------------------
+API INTEGRATION
+--------------------------------
+
+Use or create these endpoints if needed:
+- GET /api/matches
+- GET /api/search-profiles
+- DELETE /api/search-profiles/:id
+
+If GET /api/search-profiles does not exist, add it.
+If DELETE /api/search-profiles/:id does not exist, add it.
+
+Do not change matching logic itself.
+
+--------------------------------
+MATCH CARD DESIGN
+--------------------------------
+
+Style must feel premium and mobile-app-like:
+- white cards
+- dark navy headings (#0B1F44)
+- BlaBlaCar-style blue CTA (#1D6FE8)
+- light grey metadata text
+- rounded corners
+- soft shadows
+- lots of spacing
+
+--------------------------------
+AFTER BUILDING
+--------------------------------
+
+Show screenshots of:
+1. dashboard home
+2. matches tab
+3. filters tab
+4. profile tab
+
+Also explain:
+- which APIs were used
+- which new APIs were added
+- how empty states work

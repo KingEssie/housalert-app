@@ -383,6 +383,59 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/search-profiles", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: profiles, error } = await supabase
+        .from("search_profiles")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (error) return res.status(500).json({ error: error.message });
+      return res.json(profiles ?? []);
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.delete("/api/search-profiles/:id", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { id } = req.params;
+
+      const { data: profile } = await supabase
+        .from("search_profiles")
+        .select("user_id")
+        .eq("id", id)
+        .single();
+
+      if (!profile || profile.user_id !== user.id) {
+        return res.status(403).json({ error: "Forbidden" });
+      }
+
+      const { error } = await supabase
+        .from("search_profiles")
+        .delete()
+        .eq("id", id);
+
+      if (error) return res.status(500).json({ error: error.message });
+      return res.json({ success: true });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   app.post("/api/search-profiles/backfill", async (req, res) => {
     try {
       const token = req.headers.authorization?.replace("Bearer ", "");

@@ -39,13 +39,18 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 
 ### Existing Pages
 - `client/src/pages/login.tsx` — Auth page with "Inloggen" / "Account aanmaken" tabs
-- `client/src/pages/dashboard.tsx` — Protected dashboard with search profiles, matches, and test listing modal
-- `client/src/pages/new-search.tsx` — Form to create a new search profile
+- `client/src/pages/dashboard.tsx` — Phase 2 dashboard with bottom-nav bar (4 tabs: Home, Matches, Filters, Profiel). Mobile-first BlaBlaCar design. Gradient CTA cards, match cards with freshness badges, search profile management, user settings.
+- `client/src/pages/new-search.tsx` — Form to create a new search profile (max 4 per user)
+- `client/src/pages/notification-settings.tsx` — Notification preferences (email/SMS/WhatsApp toggles)
 
 ### API Endpoints
 - `GET /api/estimate?city=&minPrice=&maxPrice=&minRooms=&minSize=` — Returns `{ perWeekEstimate, last7dCount }` based on Supabase listings
 - `POST /api/checkout` — Creates Stripe checkout session (requires auth, `{ priceId }`)
 - `GET /api/stripe/publishable-key` — Returns Stripe publishable key
+- `GET /api/matches` — Returns user's matches with listing details (auth required)
+- `GET /api/search-profiles` — Returns user's search profiles (auth required)
+- `DELETE /api/search-profiles/:id` — Deletes a search profile (auth required, ownership check)
+- `POST /api/search-profiles/backfill` — Triggers backfill matching for a search profile
 
 ### Stripe Config
 - `server/stripe/stripeClient.ts` — Stripe client via Replit connector
