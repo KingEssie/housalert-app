@@ -385,7 +385,7 @@ function TaskModal({
             <div className="flex flex-col gap-3">
               <p className="text-[13px] text-[#0B1F44] font-medium">Ga naar meldingsinstellingen om je kanalen te activeren.</p>
               <Button
-                onClick={() => { onClose(); navigate("/notifications"); }}
+                onClick={() => { onClose(); navigate("/settings/notifications"); }}
                 className="w-full h-[48px] rounded-xl bg-[#2D6CDF] hover:bg-[#2560C8] text-white text-[15px] font-semibold"
                 data-testid="button-goto-notifications"
               >
@@ -500,7 +500,7 @@ function TaskModal({
               />
               <p className="text-[12px] text-[#9CA3AF]">Gebruik internationaal formaat, bijv. +49 170 1234567</p>
               <Button
-                onClick={() => { onClose(); navigate("/notifications"); }}
+                onClick={() => { onClose(); navigate("/settings/notifications"); }}
                 className="w-full h-[48px] rounded-xl bg-[#2D6CDF] hover:bg-[#2560C8] text-white text-[15px] font-semibold"
                 data-testid="button-goto-phone-settings"
               >
@@ -523,15 +523,6 @@ const PREP_TASK_ICONS: Record<string, typeof Bell> = {
 };
 
 const SHARE_TEXT = `Hey! Ik ben op zoek naar een huurwoning in Duitsland en gebruik Stekkies — een slimme zoektool die automatisch nieuwe woningen vindt. Als jij ook iets ziet, stuur het door! Samen vinden we sneller iets. Kijk op stekkies.replit.app`;
-
-const VIEWING_TIPS = [
-  { title: "Wees op tijd", body: "Kom 5 minuten voor de bezichtiging. Eerste indruk telt." },
-  { title: "Neem documenten mee", body: "SCHUFA, inkomensbewijzen en een kopie van je ID — direct aanbieden maakt indruk." },
-  { title: "Stel vragen", body: "Vraag naar bijkomende kosten (Nebenkosten), huisregels en opzegtermijn." },
-  { title: "Check de buurt", body: "Loop even rond: supermarkten, OV, parkeren en geluidsoverlast." },
-  { title: "Reageer snel", body: "Stuur dezelfde dag nog een bevestiging of bedankmail naar de verhuurder." },
-  { title: "Wees eerlijk", body: "Geef eerlijke antwoorden over huisdieren, roken en inkomen. Verhuurders waarderen transparantie." },
-];
 
 function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: string) => void }) {
   const { data, isLoading } = useProfileStrength();
@@ -711,7 +702,7 @@ function PrepTaskModal({
                 </ul>
               </div>
               <Button
-                onClick={() => { onClose(); navigate("/new-search"); }}
+                onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
                 className="w-full h-[48px] rounded-xl bg-[#2D6CDF] hover:bg-[#2560C8] text-white text-[15px] font-semibold"
                 data-testid="button-prep-add-profile"
               >
@@ -751,25 +742,17 @@ function PrepTaskModal({
           )}
 
           {taskId === "prep_viewing_tips" && (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
               <p className="text-[14px] text-[#6B7280]">
-                Goed voorbereid naar een bezichtiging gaan vergroot je kans op de woning.
+                Goed voorbereid naar een bezichtiging gaan vergroot je kans op de woning. Lees onze uitgebreide tips.
               </p>
-              <div className="flex flex-col gap-3">
-                {VIEWING_TIPS.map((tip, i) => (
-                  <div key={i} className="bg-[#F8F9FB] rounded-xl p-4">
-                    <p className="text-[13px] font-semibold text-[#0B1F44] mb-1">{tip.title}</p>
-                    <p className="text-[13px] text-[#6B7280] leading-relaxed">{tip.body}</p>
-                  </div>
-                ))}
-              </div>
               <Button
-                onClick={() => handleMarkDone("viewing_tips_done")}
-                disabled={updateProfileData.isPending}
-                className="w-full h-[48px] rounded-xl bg-[#2D6CDF] hover:bg-[#2560C8] text-white text-[15px] font-semibold disabled:opacity-50"
-                data-testid="button-mark-tips-done"
+                onClick={() => { onClose(); navigate("/tips/bezichtiging"); }}
+                className="w-full h-[48px] rounded-xl bg-[#2D6CDF] hover:bg-[#2560C8] text-white text-[15px] font-semibold"
+                data-testid="button-goto-viewing-tips"
               >
-                {updateProfileData.isPending ? "Opslaan..." : "Gelezen — markeer als voltooid"}
+                <Eye className="w-4 h-4 mr-2" />
+                Naar bezichtigingtips
               </Button>
             </div>
           )}

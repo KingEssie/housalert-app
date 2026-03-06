@@ -1,0 +1,102 @@
+Fix two UX issues in the activation flow.
+
+Goal:
+1. Fix the broken "Voeg extra zoekopdracht toe" action
+2. Replace the short viewing tips modal with a full dedicated page containing more useful guidance
+
+Requirements:
+
+--------------------------------
+1. FIX "VOEG EXTRA ZOEKOPDRACHT TOE" 404
+--------------------------------
+
+Current issue:
+The CTA for "Voeg extra zoekopdracht toe" leads to a 404 page.
+
+Please:
+- find the current route target used by that CTA
+- replace it with the correct existing route for creating a new search profile
+- if no proper route exists yet, create a real route for creating a new search profile
+- do not leave it pointing to a non-existent page
+
+Preferred outcome:
+- user can tap "Nieuw zoekprofiel toevoegen"
+- user lands on a working page/flow to create a new search profile
+- no 404
+
+--------------------------------
+2. CREATE FULL PAGE FOR "LEES BEZICHTIGINGTIPS"
+--------------------------------
+
+Replace the short modal-like content with a dedicated page route, for example:
+- /tips/bezichtiging
+or another clean route
+
+This page should feel premium, helpful, and practical.
+
+Content structure:
+1. Voor de bezichtiging
+- read the listing carefully
+- prepare questions
+- check neighborhood/travel time
+- bring your documents and introduction letter
+- arrive 10 minutes early
+
+2. Tijdens de bezichtiging
+- be friendly and serious
+- ask smart questions
+- show interest without overdoing it
+- ask about rental procedure and next steps
+- make a reliable impression
+
+3. Wat neem je mee
+- ID
+- introduction letter
+- income documents if relevant
+- phone and contact details
+
+4. Na de bezichtiging
+- follow up quickly
+- send documents fast
+- use your introduction letter
+- stay polite and concise
+
+5. Rode vlaggen
+- unclear pricing
+- pressure to pay quickly
+- strange communication
+- incomplete or suspicious listing details
+
+UX requirements:
+- mobile-first
+- same visual style as the app
+- clear heading
+- short intro
+- card-based or section-based layout
+- CTA at bottom:
+  "Markeer als voltooid"
+
+Behavior:
+- when user marks viewing tips as completed, update the activation task progress immediately
+
+--------------------------------
+3. IMPROVE ACTIVATION TASK EXPERIENCE
+--------------------------------
+
+For both actions:
+- show proper navigation
+- avoid dead-end modals where a real page is better
+- keep the completion logic working
+
+--------------------------------
+4. OUTPUT
+--------------------------------
+
+After implementation:
+- show screenshots of the fixed search-profile CTA flow
+- show screenshots of the new viewing tips page
+- explain which route was fixed
+- list files changed
+
+Do not refactor unrelated features.
+Keep changes focused and production-usable.

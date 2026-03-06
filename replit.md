@@ -50,6 +50,7 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - `client/src/pages/new-search.tsx` — Form to create a new search profile (max 4 per user)
 - `client/src/pages/notification-settings.tsx` — Notification preferences (email/SMS/WhatsApp toggles)
 - `client/src/pages/application-letter.tsx` — Application letter template editor at `/application-letter`. Edit/save/reset template with Dutch placeholders ([[ADRES]], [[STAD]], [[NAAM]], etc.)
+- `client/src/pages/viewing-tips.tsx` — Dedicated viewing tips page at `/tips/bezichtiging`. Five sections: Voor/Tijdens/Wat meenemen/Na de bezichtiging/Rode vlaggen. CTA to mark as completed.
 - `client/src/pages/legal.tsx` — Legal pages: `/impressum`, `/datenschutz`, `/terms` (German placeholder content)
 - `client/src/pages/paywall.tsx` — Subscription paywall with Stripe checkout; shows friendly message if Stripe not configured
 
