@@ -217,15 +217,16 @@ Env vars: `TEST_USER_EMAIL`, `TEST_USER_PASSWORD`, `TEST_PHONE_E164`, `TEST_BASE
 
 ## Design System (BlaBlaCar-style)
 
-- Primary blue: `#1D6FE8`, hover: `#165DD0`
+- Primary blue: `#2D6CDF`, hover: `#2560C8`
 - Heading navy: `#0B1F44`
 - Page background: `#FFFFFF` (pure white)
-- Input background: `#F2F4F7` (no borders, 12px radius)
-- Secondary text: `#6B7280`
-- Card shadow: `0 6px 20px rgba(0,0,0,0.06)` (no borders on cards)
+- Input style: row-based with bottom borders `#E8EDF2` (no box inputs in onboarding)
+- Secondary text / icons: `#6B7280`
+- Card: `bg-white rounded-[20px] shadow-[0_10px_25px_rgba(0,0,0,0.06)] p-5`
+- Row separator: `border-bottom: 1px solid #E8EDF2`
 - Font: Inter
-- Buttons: blue `#1D6FE8`, rounded-xl, h-[52px]
+- Buttons: blue `#2D6CDF`, rounded-xl, h-[52px], inside card (not fixed footer)
 - Active tab underline: blue
-- Progress bars: blue fill on `#E5E7EB` track
-- Header: white with thin bottom border `#E5E7EB`
+- Progress bars: blue fill on `#E8EDF2` track
+- Header: white with thin bottom border `#E8EDF2`
 - Max 4 search profiles per user

@@ -7,10 +7,10 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
+      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E8EDF2]">
         <div className="max-w-5xl mx-auto px-5 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-[#1D6FE8] flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-[#2D6CDF] flex items-center justify-center">
               <Home className="w-4.5 h-4.5 text-white" />
             </div>
             <span className="font-extrabold text-[#0B1F44] text-xl tracking-tight" data-testid="text-logo">Stekkies</span>
@@ -43,7 +43,7 @@ export default function LandingPage() {
             </p>
             <Button
               size="lg"
-              className="h-14 px-10 rounded-xl text-[17px] font-semibold shadow-[0_6px_20px_rgba(29,111,232,0.25)] bg-[#1D6FE8] hover:bg-[#165DD0]"
+              className="h-14 px-10 rounded-xl text-[17px] font-semibold shadow-[0_6px_20px_rgba(29,111,232,0.25)] bg-[#2D6CDF] hover:bg-[#2560C8]"
               onClick={() => navigate("/onboarding/location")}
               data-testid="button-start-search"
             >
@@ -72,7 +72,7 @@ export default function LandingPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               <div className="bg-white rounded-2xl p-7 shadow-[0_6px_20px_rgba(0,0,0,0.06)]" data-testid="card-feature-search">
                 <div className="w-12 h-12 rounded-xl bg-[#EBF2FE] flex items-center justify-center mb-5">
-                  <Search className="w-6 h-6 text-[#1D6FE8]" />
+                  <Search className="w-6 h-6 text-[#2D6CDF]" />
                 </div>
                 <h3 className="text-lg font-bold text-[#0B1F44] mb-2">Slim zoeken</h3>
                 <p className="text-[15px] text-[#6B7280] leading-relaxed">
@@ -116,10 +116,10 @@ export default function LandingPage() {
               ].map((item, i) => (
                 <div key={item.step} className="flex items-start gap-5" data-testid={`step-${item.step}`}>
                   <div className="flex flex-col items-center">
-                    <div className="w-11 h-11 rounded-full bg-[#1D6FE8] flex items-center justify-center flex-shrink-0">
+                    <div className="w-11 h-11 rounded-full bg-[#2D6CDF] flex items-center justify-center flex-shrink-0">
                       <span className="text-white font-bold text-sm">{item.step}</span>
                     </div>
-                    {i < 2 && <div className="w-0.5 h-10 bg-[#E5E7EB] mt-2" />}
+                    {i < 2 && <div className="w-0.5 h-10 bg-[#E8EDF2] mt-2" />}
                   </div>
                   <div className="pt-2 pb-6">
                     <h3 className="text-lg font-bold text-[#0B1F44] mb-1">{item.title}</h3>
@@ -141,7 +141,7 @@ export default function LandingPage() {
             </p>
             <Button
               size="lg"
-              className="h-14 px-10 rounded-xl text-[17px] font-semibold shadow-[0_6px_20px_rgba(29,111,232,0.25)] bg-[#1D6FE8] hover:bg-[#165DD0]"
+              className="h-14 px-10 rounded-xl text-[17px] font-semibold shadow-[0_6px_20px_rgba(29,111,232,0.25)] bg-[#2D6CDF] hover:bg-[#2560C8]"
               onClick={() => navigate("/onboarding/location")}
               data-testid="button-start-search-bottom"
             >
@@ -152,7 +152,7 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <footer className="border-t border-[#E5E7EB] py-8 px-5">
+      <footer className="border-t border-[#E8EDF2] py-8 px-5">
         <div className="max-w-5xl mx-auto text-center text-sm text-[#6B7280]">
           &copy; {new Date().getFullYear()} Stekkies. Alle rechten voorbehouden.
         </div>

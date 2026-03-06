@@ -73,7 +73,7 @@ export default function OnboardingEstimatePage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
+      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E8EDF2]">
         <div className="max-w-xl mx-auto px-5 h-14 flex items-center gap-3">
           <button
             onClick={handleBack}
@@ -83,7 +83,7 @@ export default function OnboardingEstimatePage() {
             <ChevronLeft className="w-5 h-5 text-[#6B7280]" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-[#1D6FE8] flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-[#2D6CDF] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
             <span className="font-bold text-[#0B1F44] text-base">Stekkies</span>
@@ -94,9 +94,9 @@ export default function OnboardingEstimatePage() {
       <div className="max-w-xl mx-auto w-full px-5 pt-6 pb-2">
         <div className="flex items-center gap-2">
           {[1, 2, 3].map((step) => (
-            <div key={step} className="flex-1 h-2 rounded-full overflow-hidden bg-[#E5E7EB]">
+            <div key={step} className="flex-1 h-2 rounded-full overflow-hidden bg-[#E8EDF2]">
               <div
-                className="h-full rounded-full w-full bg-[#1D6FE8]"
+                className="h-full rounded-full w-full bg-[#2D6CDF]"
                 data-testid={`progress-step-${step}`}
               />
             </div>
@@ -105,7 +105,7 @@ export default function OnboardingEstimatePage() {
         <p className="text-xs font-medium text-[#6B7280] mt-2" data-testid="text-step-indicator">Stap 3 van 3</p>
       </div>
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-5 pb-32 pt-4 flex flex-col">
+      <main className="flex-1 max-w-xl mx-auto w-full px-5 pb-8 pt-4 flex flex-col">
         <h1 className="text-[26px] font-extrabold text-[#0B1F44] leading-tight mb-2 text-center" data-testid="text-estimate-title">
           Jouw schatting
         </h1>
@@ -113,76 +113,76 @@ export default function OnboardingEstimatePage() {
           Op basis van jouw zoekcriteria in <span className="font-semibold text-[#0B1F44]">{city}</span>
         </p>
 
-        <div className="bg-white rounded-2xl shadow-[0_6px_20px_rgba(0,0,0,0.06)] p-8 mb-5 text-center" data-testid="card-estimate">
-          <div className="w-16 h-16 rounded-2xl bg-[#EBF2FE] flex items-center justify-center mx-auto mb-5">
-            <TrendingUp className="w-8 h-8 text-[#1D6FE8]" />
+        <div className="bg-white rounded-[20px] shadow-[0_10px_25px_rgba(0,0,0,0.06)] p-5" data-testid="card-estimate">
+          <div className="text-center py-4 border-b border-[#E8EDF2]">
+            <div className="w-14 h-14 rounded-2xl bg-[#EBF2FE] flex items-center justify-center mx-auto mb-4">
+              <TrendingUp className="w-7 h-7 text-[#2D6CDF]" />
+            </div>
+
+            {loading ? (
+              <div className="flex items-center justify-center py-4">
+                <Loader2 className="w-8 h-8 text-[#2D6CDF] animate-spin" />
+              </div>
+            ) : (
+              <>
+                <p className="text-6xl font-extrabold text-[#0B1F44] mb-3 tabular-nums" data-testid="text-estimate-number">
+                  {estimate}
+                </p>
+                <p className="text-base text-[#6B7280] leading-relaxed max-w-sm mx-auto" data-testid="text-estimate-description">
+                  Met jouw zoekcriteria verwachten we ongeveer{" "}
+                  <span className="font-bold text-[#0B1F44]">{estimate} nieuwe woningen</span>{" "}
+                  per week.
+                </p>
+              </>
+            )}
           </div>
 
-          {loading ? (
-            <div className="flex items-center justify-center py-6">
-              <Loader2 className="w-8 h-8 text-[#1D6FE8] animate-spin" />
+          {filterChips.length > 0 && (
+            <div className="py-5 border-b border-[#E8EDF2]">
+              <p className="text-sm font-semibold text-[#0B1F44] mb-3">Jouw filters</p>
+              <div className="flex flex-wrap gap-2">
+                {filterChips.map((chip) => (
+                  <span
+                    key={chip.testId}
+                    className="px-3.5 py-1.5 bg-[#F2F4F7] rounded-full text-sm font-medium text-[#0B1F44]"
+                    data-testid={chip.testId}
+                  >
+                    {chip.label}
+                  </span>
+                ))}
+              </div>
             </div>
-          ) : (
-            <>
-              <p className="text-6xl font-extrabold text-[#0B1F44] mb-4 tabular-nums" data-testid="text-estimate-number">
-                {estimate}
-              </p>
-              <p className="text-base text-[#6B7280] leading-relaxed max-w-sm mx-auto" data-testid="text-estimate-description">
-                Met jouw zoekcriteria verwachten we ongeveer{" "}
-                <span className="font-bold text-[#0B1F44]">{estimate} nieuwe woningen</span>{" "}
-                per week.
-              </p>
-            </>
           )}
-        </div>
 
-        {filterChips.length > 0 && (
-          <div className="bg-white rounded-2xl shadow-[0_6px_20px_rgba(0,0,0,0.06)] p-5 mb-5">
-            <p className="text-sm font-semibold text-[#0B1F44] mb-3">Jouw filters</p>
-            <div className="flex flex-wrap gap-2">
-              {filterChips.map((chip) => (
-                <span
-                  key={chip.testId}
-                  className="px-3.5 py-1.5 bg-[#F2F4F7] rounded-lg text-sm font-medium text-[#0B1F44]"
-                  data-testid={chip.testId}
-                >
-                  {chip.label}
-                </span>
-              ))}
-            </div>
+          <div className="flex items-start gap-3 py-5 border-b border-[#E8EDF2]">
+            <Sparkles className="w-5 h-5 text-[#2D6CDF] flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-[#6B7280] leading-relaxed">
+              Maak een account aan en we sturen je direct een melding als er een woning beschikbaar komt die aan je criteria voldoet.
+            </p>
           </div>
-        )}
 
-        <div className="bg-[#EBF2FE] rounded-2xl p-5 flex items-start gap-3">
-          <Sparkles className="w-5 h-5 text-[#1D6FE8] flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-[#6B7280] leading-relaxed">
-            Maak een account aan en we sturen je direct een melding als er een woning beschikbaar komt die aan je criteria voldoet.
-          </p>
+          <div className="pt-6 flex gap-3">
+            <Button
+              variant="outline"
+              size="lg"
+              className="h-[52px] px-6 rounded-xl text-[15px] font-semibold border-[#E8EDF2] text-[#6B7280] hover:bg-[#F2F4F7]"
+              onClick={handleBack}
+              data-testid="button-back-estimate"
+            >
+              Terug
+            </Button>
+            <Button
+              size="lg"
+              className="flex-1 h-[52px] rounded-xl text-[15px] font-semibold shadow-none bg-[#2D6CDF] hover:bg-[#2560C8]"
+              onClick={handleCreateAccount}
+              disabled={loading}
+              data-testid="button-create-account"
+            >
+              Maak account en ontvang deze woningen
+            </Button>
+          </div>
         </div>
       </main>
-
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] p-4 z-10">
-        <div className="max-w-xl mx-auto flex gap-3">
-          <Button
-            variant="outline"
-            size="lg"
-            className="h-[52px] px-6 rounded-xl text-[15px] font-semibold border-[#E5E7EB] text-[#6B7280] hover:bg-[#F2F4F7]"
-            onClick={handleBack}
-            data-testid="button-back-estimate"
-          >
-            Terug
-          </Button>
-          <Button
-            size="lg"
-            className="flex-1 h-[52px] rounded-xl text-[15px] font-semibold shadow-none bg-[#1D6FE8] hover:bg-[#165DD0]"
-            onClick={handleCreateAccount}
-            disabled={loading}
-            data-testid="button-create-account"
-          >
-            Maak account en ontvang deze woningen
-          </Button>
-        </div>
-      </div>
     </div>
   );
 }

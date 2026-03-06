@@ -109,10 +109,10 @@ export default function PaywallPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
+      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E8EDF2]">
         <div className="max-w-xl mx-auto px-5 h-14 flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-[#1D6FE8] flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-[#2D6CDF] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
             <span className="font-bold text-[#0B1F44] text-base">Stekkies</span>
@@ -140,14 +140,14 @@ export default function PaywallPage() {
               onClick={() => setSelectedPlan(plan.id)}
               className={`w-full p-5 rounded-2xl border-2 transition-all text-left relative bg-white shadow-[0_6px_20px_rgba(0,0,0,0.06)] ${
                 selectedPlan === plan.id
-                  ? "border-[#1D6FE8]"
-                  : "border-transparent hover:border-[#E5E7EB]"
+                  ? "border-[#2D6CDF]"
+                  : "border-transparent hover:border-[#E8EDF2]"
               }`}
               data-testid={`card-plan-${plan.id}`}
             >
               {plan.popular && (
                 <span
-                  className="absolute -top-3 left-5 px-3 py-0.5 bg-[#1D6FE8] text-white text-xs font-bold rounded-full"
+                  className="absolute -top-3 left-5 px-3 py-0.5 bg-[#2D6CDF] text-white text-xs font-bold rounded-full"
                   data-testid="badge-popular"
                 >
                   Meest gekozen
@@ -170,8 +170,8 @@ export default function PaywallPage() {
               <div
                 className={`absolute top-5 right-5 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
                   selectedPlan === plan.id
-                    ? "bg-[#1D6FE8] border-[#1D6FE8]"
-                    : "border-[#E5E7EB]"
+                    ? "bg-[#2D6CDF] border-[#2D6CDF]"
+                    : "border-[#E8EDF2]"
                 }`}
               >
                 {selectedPlan === plan.id && <Check className="w-3.5 h-3.5 text-white" />}
@@ -195,11 +195,11 @@ export default function PaywallPage() {
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] p-4 z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E8EDF2] p-4 z-10">
         <div className="max-w-xl mx-auto">
           <Button
             size="lg"
-            className="w-full h-[52px] rounded-xl text-[16px] font-semibold shadow-none bg-[#1D6FE8] hover:bg-[#165DD0]"
+            className="w-full h-[52px] rounded-xl text-[16px] font-semibold shadow-none bg-[#2D6CDF] hover:bg-[#2560C8]"
             onClick={handleCheckout}
             disabled={loading}
             data-testid="button-select-payment"

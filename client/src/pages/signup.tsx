@@ -79,7 +79,7 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
+      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E8EDF2]">
         <div className="max-w-xl mx-auto px-5 h-14 flex items-center gap-3">
           <button
             onClick={handleBack}
@@ -89,7 +89,7 @@ export default function SignupPage() {
             <ChevronLeft className="w-5 h-5 text-[#6B7280]" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-[#1D6FE8] flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-[#2D6CDF] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
             <span className="font-bold text-[#0B1F44] text-base">Stekkies</span>
@@ -118,7 +118,7 @@ export default function SignupPage() {
                   placeholder="Je volledige naam"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="h-13 pl-11 rounded-xl text-[15px] bg-[#F2F4F7] border-transparent focus:border-[#1D6FE8] focus:bg-white transition-colors"
+                  className="h-13 pl-11 rounded-xl text-[15px] bg-[#F2F4F7] border-transparent focus:border-[#2D6CDF] focus:bg-white transition-colors"
                   data-testid="input-signup-name"
                 />
               </div>
@@ -134,7 +134,7 @@ export default function SignupPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-13 pl-11 rounded-xl text-[15px] bg-[#F2F4F7] border-transparent focus:border-[#1D6FE8] focus:bg-white transition-colors"
+                  className="h-13 pl-11 rounded-xl text-[15px] bg-[#F2F4F7] border-transparent focus:border-[#2D6CDF] focus:bg-white transition-colors"
                   data-testid="input-signup-email"
                 />
               </div>
@@ -151,7 +151,7 @@ export default function SignupPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   minLength={6}
-                  className="h-13 pl-11 rounded-xl text-[15px] bg-[#F2F4F7] border-transparent focus:border-[#1D6FE8] focus:bg-white transition-colors"
+                  className="h-13 pl-11 rounded-xl text-[15px] bg-[#F2F4F7] border-transparent focus:border-[#2D6CDF] focus:bg-white transition-colors"
                   data-testid="input-signup-password"
                 />
               </div>
@@ -160,7 +160,7 @@ export default function SignupPage() {
             <Button
               type="submit"
               size="lg"
-              className="w-full h-[52px] rounded-xl text-[16px] font-semibold shadow-none bg-[#1D6FE8] hover:bg-[#165DD0] mt-1"
+              className="w-full h-[52px] rounded-xl text-[16px] font-semibold shadow-none bg-[#2D6CDF] hover:bg-[#2560C8] mt-1"
               disabled={loading || !email || !password}
               data-testid="button-signup-submit"
             >
@@ -173,7 +173,7 @@ export default function SignupPage() {
           Heb je al een account?{" "}
           <button
             onClick={() => navigate("/login")}
-            className="text-[#1D6FE8] font-semibold hover:underline"
+            className="text-[#2D6CDF] font-semibold hover:underline"
             data-testid="link-login"
           >
             Inloggen
