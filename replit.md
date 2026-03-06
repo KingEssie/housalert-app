@@ -8,16 +8,37 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - **Auth:** Supabase Auth (email + password)
 - **Data:** Supabase (PostgreSQL) — `search_profiles`, `listings`, `matches` tables
 - **Backend:** Express (minimal — auth + data handled by Supabase)
+- **Payments:** Stripe (sandbox, via Replit connector)
 
 ## Architecture
 
+### Onboarding Funnel (Phase 1)
+- `client/src/pages/landing.tsx` — Landing page at `/` with hero, features, how-it-works
+- `client/src/pages/onboarding-location.tsx` — Step 1: City selection at `/onboarding/location`
+- `client/src/pages/onboarding-filters.tsx` — Step 2: Filters at `/onboarding/filters`
+- `client/src/pages/onboarding-estimate.tsx` — Step 3: Estimate display at `/onboarding/estimate`
+- `client/src/pages/signup.tsx` — Account creation at `/signup` (creates search profile)
+- `client/src/pages/paywall.tsx` — Subscription plans at `/paywall` (Stripe placeholder)
+
+### Core Libraries
 - `client/src/lib/supabase.ts` — Supabase client with session persistence enabled
 - `client/src/lib/auth.tsx` — `AuthProvider` context + `useAuth()` hook
 - `client/src/lib/search-profiles.ts` — CRUD functions for `search_profiles` table
 - `client/src/lib/listings.ts` — Listings CRUD, matches CRUD, and client-side matching logic
+
+### Existing Pages
 - `client/src/pages/login.tsx` — Auth page with "Inloggen" / "Account aanmaken" tabs
 - `client/src/pages/dashboard.tsx` — Protected dashboard with search profiles, matches, and test listing modal
 - `client/src/pages/new-search.tsx` — Form to create a new search profile
+
+### API Endpoints
+- `GET /api/estimate?city=&minPrice=&maxPrice=&minRooms=&minSize=` — Returns `{ perWeekEstimate, last7dCount }` based on Supabase listings
+- `POST /api/checkout` — Creates Stripe checkout session (requires auth, `{ priceId }`)
+- `GET /api/stripe/publishable-key` — Returns Stripe publishable key
+
+### Stripe Config
+- `server/stripe/stripeClient.ts` — Stripe client via Replit connector
+- Plan IDs map to env vars: `STRIPE_PRICE_1_MONTH`, `STRIPE_PRICE_2_MONTHS`, `STRIPE_PRICE_3_MONTHS`
 
 ## Required Secrets
 

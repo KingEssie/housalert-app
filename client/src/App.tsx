@@ -4,7 +4,13 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/lib/auth";
+import LandingPage from "@/pages/landing";
 import LoginPage from "@/pages/login";
+import SignupPage from "@/pages/signup";
+import OnboardingLocationPage from "@/pages/onboarding-location";
+import OnboardingFiltersPage from "@/pages/onboarding-filters";
+import OnboardingEstimatePage from "@/pages/onboarding-estimate";
+import PaywallPage from "@/pages/paywall";
 import DashboardPage from "@/pages/dashboard";
 import NewSearchPage from "@/pages/new-search";
 import NotificationSettingsPage from "@/pages/notification-settings";
@@ -20,8 +26,13 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={() => <Redirect to="/dashboard" />} />
+      <Route path="/" component={LandingPage} />
       <Route path="/login" component={LoginPage} />
+      <Route path="/signup" component={SignupPage} />
+      <Route path="/onboarding/location" component={OnboardingLocationPage} />
+      <Route path="/onboarding/filters" component={OnboardingFiltersPage} />
+      <Route path="/onboarding/estimate" component={OnboardingEstimatePage} />
+      <Route path="/paywall" component={PaywallPage} />
       <Route path="/dashboard" component={() => <ProtectedRoute component={DashboardPage} />} />
       <Route path="/dashboard/searches/new" component={() => <ProtectedRoute component={NewSearchPage} />} />
       <Route path="/settings/notifications" component={() => <ProtectedRoute component={NotificationSettingsPage} />} />

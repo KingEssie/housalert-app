@@ -266,6 +266,116 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/estimate", async (req, res) => {
+    try {
+      const { city, minPrice, maxPrice, minRooms, minSize } = req.query;
+
+      if (!city || typeof city !== "string") {
+        return res.status(400).json({ error: "city is required" });
+      }
+
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+      let query = supabase
+        .from("listings")
+        .select("id", { count: "exact", head: true })
+        .ilike("city", `%${city}%`)
+        .gte("created_at", sevenDaysAgo);
+
+      if (minPrice && Number(minPrice) > 0) {
+        query = query.gte("price", Number(minPrice));
+      }
+      if (maxPrice && Number(maxPrice) > 0) {
+        query = query.lte("price", Number(maxPrice));
+      }
+      if (minRooms && Number(minRooms) > 0) {
+        query = query.gte("bedrooms", Number(minRooms));
+      }
+      if (minSize && Number(minSize) > 0) {
+        query = query.gte("size_m2", Number(minSize));
+      }
+
+      const { count, error } = await query;
+
+      if (error) {
+        return res.status(500).json({ error: error.message });
+      }
+
+      const last7dCount = count ?? 0;
+      const perWeekEstimate = last7dCount;
+
+      return res.json({ perWeekEstimate, last7dCount });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/stripe/publishable-key", async (_req, res) => {
+    try {
+      const { getStripePublishableKey } = await import("./stripe/stripeClient");
+      const key = await getStripePublishableKey();
+      return res.json({ publishableKey: key });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/checkout", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { priceId } = req.body;
+      if (!priceId) return res.status(400).json({ error: "priceId is required" });
+
+      const PLAN_PRICE_MAP: Record<string, string> = {
+        "1-month": process.env.STRIPE_PRICE_1_MONTH || "",
+        "2-months": process.env.STRIPE_PRICE_2_MONTHS || "",
+        "3-months": process.env.STRIPE_PRICE_3_MONTHS || "",
+      };
+
+      const stripePriceId = PLAN_PRICE_MAP[priceId] || priceId;
+      if (!stripePriceId) {
+        return res.status(400).json({ error: "Stripe prices are not yet configured. Set STRIPE_PRICE_* environment variables." });
+      }
+
+      const { getUncachableStripeClient } = await import("./stripe/stripeClient");
+      const stripe = await getUncachableStripeClient();
+
+      const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+      let customerId: string;
+      if (customers.data.length > 0) {
+        customerId = customers.data[0].id;
+      } else {
+        const customer = await stripe.customers.create({
+          email: user.email!,
+          metadata: { supabase_user_id: user.id },
+        });
+        customerId = customer.id;
+      }
+
+      const host = req.headers.host || "localhost:5000";
+      const protocol = req.headers["x-forwarded-proto"] || req.protocol;
+
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId,
+        payment_method_types: ["card"],
+        line_items: [{ price: stripePriceId, quantity: 1 }],
+        mode: "subscription",
+        success_url: `${protocol}://${host}/dashboard?checkout=success`,
+        cancel_url: `${protocol}://${host}/paywall?checkout=cancelled`,
+      });
+
+      return res.json({ url: session.url });
+    } catch (err: any) {
+      console.error("Checkout error:", err);
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   app.post("/api/ingest/run", async (req, res) => {
     const authHeader = req.headers.authorization;
     const expectedToken = process.env.INGEST_BEARER_TOKEN;
