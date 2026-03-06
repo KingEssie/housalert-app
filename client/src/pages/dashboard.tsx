@@ -166,7 +166,11 @@ function MatchCard({
   function handleCardClick() {
     markViewed(match.listing_id);
     onStatusChange();
-    navigate(`/listing/${match.listing_id}`);
+    if (match.url) {
+      window.open(match.url, "_blank", "noopener");
+    } else {
+      navigate(`/listing/${match.listing_id}`);
+    }
   }
 
   function handleSave(e: React.MouseEvent) {
@@ -231,7 +235,7 @@ function MatchCard({
         <div>
           <div className="flex items-start justify-between gap-2">
             <h3
-              className="font-semibold text-[#1B2A4A] text-[16px] leading-snug line-clamp-2 flex-1"
+              className="font-[700] text-[#1B2A4A] text-[20px] leading-[1.3] line-clamp-2 flex-1"
               data-testid={`text-match-title-${match.listing_id}`}
             >
               {match.title}
@@ -280,7 +284,11 @@ function MatchCard({
               e.stopPropagation();
               markViewed(match.listing_id);
               onStatusChange();
-              navigate(`/listing/${match.listing_id}`);
+              if (match.url) {
+                window.open(match.url, "_blank", "noopener");
+              } else {
+                navigate(`/listing/${match.listing_id}`);
+              }
             }}
             className="flex-1 h-[44px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[14px] font-semibold transition-colors flex items-center justify-center gap-2"
             data-testid={`button-view-listing-${match.listing_id}`}
@@ -582,7 +590,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
         )}
       </div>
 
-      <div className="flex gap-1.5 bg-[#F3F4F8] p-1 rounded-xl" data-testid="match-sub-tabs">
+      <div className="flex gap-2 bg-[#F3F4F8] p-1.5 rounded-full" data-testid="match-sub-tabs">
         {MATCH_SUB_TABS.map(({ key, label, Icon }) => {
           const count = tabCounts[key] || 0;
           const isActive = subTab === key;
@@ -590,17 +598,16 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
             <button
               key={key}
               onClick={() => setSubTab(key)}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-[13px] font-medium transition-all duration-150 ${
+              className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-1 rounded-full text-[13px] font-semibold transition-all duration-200 ${
                 isActive
-                  ? "bg-white text-[#1B2A4A] shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
-                  : "text-[#72839A] hover:text-[#1B2A4A]"
+                  ? "bg-white text-[#1B2A4A] shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
+                  : "text-[#72839A] hover:text-[#1B2A4A] hover:bg-white/50"
               }`}
               data-testid={`tab-matches-${key}`}
             >
-              <Icon className="w-3.5 h-3.5" />
               <span>{label}</span>
               {count > 0 && (
-                <span className={`text-[10px] font-semibold min-w-[18px] h-[18px] flex items-center justify-center rounded-full ${
+                <span className={`text-[10px] font-bold min-w-[20px] h-[20px] flex items-center justify-center rounded-full ${
                   isActive ? "bg-[#0066FF] text-white" : "bg-[#E2E6ED] text-[#72839A]"
                 }`}>
                   {count}
@@ -633,7 +640,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
             <AlertCircle className="w-5 h-5 text-red-500" />
           </div>
-          <p className="text-[14px] font-medium text-[#1B2A4A]">Kon matches niet laden</p>
+          <p className="text-[18px] font-[700] text-[#1B2A4A]">Kon matches niet laden</p>
           <p className="text-[13px] text-[#72839A]">Controleer je verbinding en probeer het opnieuw.</p>
           <button
             onClick={() => apiMatchesQuery.refetch()}
@@ -648,7 +655,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           <div className="w-14 h-14 rounded-full bg-[#EDF2FF] flex items-center justify-center">
             <Heart className="w-6 h-6 text-[#0066FF]" />
           </div>
-          <p className="text-[16px] font-semibold text-[#1B2A4A]">Nog geen matches</p>
+          <p className="text-[20px] font-[700] text-[#1B2A4A]">Nog geen matches</p>
           <p className="text-[13px] text-[#72839A] max-w-[250px]">
             Zodra we woningen vinden die passen bij jouw filters, verschijnen ze hier.
           </p>
@@ -674,7 +681,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
               <Heart className="w-6 h-6 text-[#72839A]" />
             )}
           </div>
-          <p className="text-[15px] font-semibold text-[#1B2A4A]">
+          <p className="text-[20px] font-[700] text-[#1B2A4A]">
             {subTab === "opgeslagen" && "Geen opgeslagen matches"}
             {subTab === "bekeken" && "Geen bekeken matches"}
             {subTab === "gereageerd" && "Geen gereageerde matches"}
