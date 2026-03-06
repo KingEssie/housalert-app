@@ -100,12 +100,21 @@ export interface NotificationSettings {
   email_enabled: boolean;
 }
 
+export function areAlertsEnabled(): boolean {
+  return process.env.ALERTS_ENABLED === "true";
+}
+
 export async function sendMatchAlerts(
   userId: string,
   userEmail: string | undefined,
   listing: ListingInfo,
   supabase: any
 ): Promise<void> {
+  if (!areAlertsEnabled()) {
+    log("[ALERTS DISABLED] Skipping email/SMS/WhatsApp send");
+    return;
+  }
+
   const { data: settings, error: settingsErr } = await supabase
     .from("user_notification_settings")
     .select("*")

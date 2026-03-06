@@ -134,6 +134,12 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/alerts/status", (_req, res) => {
+    return res.json({
+      alertsEnabled: process.env.ALERTS_ENABLED === "true",
+    });
+  });
+
   app.get("/api/ingest/health", (_req, res) => {
     return res.json({
       ok: true,
