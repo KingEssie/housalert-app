@@ -20,6 +20,7 @@ import {
   findUserByStripeCustomerId,
 } from "./subscriptions";
 import { log } from "./log";
+import { computeMatchScore } from "../shared/match-score";
 
 const TEN_MIN = 10 * 60 * 1000;
 const ONE_HOUR = 60 * 60 * 1000;
@@ -244,7 +245,7 @@ export async function registerRoutes(
 
       const { data: matchRows, error: mErr } = await supabase
         .from("matches")
-        .select("id, listing_id, created_at")
+        .select("id, listing_id, search_profile_id, created_at")
         .eq("user_id", user.id);
 
       if (mErr) return res.status(500).json({ error: mErr.message });
@@ -263,13 +264,20 @@ export async function registerRoutes(
       const top50 = enriched.slice(0, 50);
 
       const listingIds = top50.map((m: any) => m.listing_id);
+      const profileIds = [...new Set(top50.map((m: any) => m.search_profile_id).filter(Boolean))];
 
-      const [listingsRes, freshnessMap] = await Promise.all([
+      const [listingsRes, freshnessMap, profilesRes] = await Promise.all([
         supabase
           .from("listings")
           .select("id, title, price, size_m2, bedrooms, city, source, url")
           .in("id", listingIds),
         getListingFreshness(listingIds),
+        profileIds.length > 0
+          ? supabase
+              .from("search_profiles")
+              .select("id, city, price_min, price_max, bedrooms_min, size_min")
+              .in("id", profileIds)
+          : Promise.resolve({ data: [], error: null }),
       ]);
 
       if (listingsRes.error) return res.status(500).json({ error: listingsRes.error.message });
@@ -277,9 +285,24 @@ export async function registerRoutes(
       const listingMap: Record<string, any> = {};
       for (const l of listingsRes.data ?? []) listingMap[l.id] = l;
 
+      const profileMap: Record<string, any> = {};
+      for (const p of profilesRes.data ?? []) profileMap[p.id] = p;
+
       const result = top50.map((m: any) => {
         const l = listingMap[m.listing_id];
         const firstSeenAt = freshnessMap[m.listing_id]?.first_seen_at || m.created_at;
+        const profile = profileMap[m.search_profile_id];
+
+        let match_score = null;
+        let match_label = null;
+        if (l && profile) {
+          const scoreResult = computeMatchScore({
+            listing: { price: l.price ?? 0, bedrooms: l.bedrooms ?? 0, size_m2: l.size_m2 ?? 0, city: l.city ?? "" },
+            profile: { city: profile.city, price_min: profile.price_min ?? 0, price_max: profile.price_max ?? 0, bedrooms_min: profile.bedrooms_min ?? 0, size_min: profile.size_min ?? 0 },
+          });
+          match_score = scoreResult.score;
+          match_label = scoreResult.label;
+        }
 
         return {
           listing_id: m.listing_id,
@@ -293,8 +316,12 @@ export async function registerRoutes(
           matched_at: m.matched_at,
           first_seen_at: firstSeenAt,
           fresh_label: computeFreshLabel(firstSeenAt),
+          match_score,
+          match_label,
         };
       });
+
+      result.sort((a: any, b: any) => (b.match_score ?? 0) - (a.match_score ?? 0));
 
       return res.json(result);
     } catch (err: any) {
@@ -320,10 +347,47 @@ export async function registerRoutes(
       const freshnessMap = await getListingFreshness([id]);
       const firstSeenAt = freshnessMap[id]?.first_seen_at || data.created_at;
 
+      let match_score = null;
+      let match_label = null;
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (token) {
+        try {
+          const { data: { user } } = await supabase.auth.getUser(token);
+          if (user) {
+            const { data: matchRow } = await supabase
+              .from("matches")
+              .select("search_profile_id")
+              .eq("user_id", user.id)
+              .eq("listing_id", id)
+              .limit(1)
+              .maybeSingle();
+
+            if (matchRow?.search_profile_id) {
+              const { data: profile } = await supabase
+                .from("search_profiles")
+                .select("city, price_min, price_max, bedrooms_min, size_min")
+                .eq("id", matchRow.search_profile_id)
+                .single();
+
+              if (profile) {
+                const scoreResult = computeMatchScore({
+                  listing: { price: data.price ?? 0, bedrooms: data.bedrooms ?? 0, size_m2: data.size_m2 ?? 0, city: data.city ?? "" },
+                  profile: { city: profile.city, price_min: profile.price_min ?? 0, price_max: profile.price_max ?? 0, bedrooms_min: profile.bedrooms_min ?? 0, size_min: profile.size_min ?? 0 },
+                });
+                match_score = scoreResult.score;
+                match_label = scoreResult.label;
+              }
+            }
+          }
+        } catch {}
+      }
+
       return res.json({
         ...data,
         first_seen_at: firstSeenAt,
         fresh_label: computeFreshLabel(firstSeenAt),
+        match_score,
+        match_label,
       });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });

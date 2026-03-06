@@ -45,6 +45,8 @@ interface Listing {
   url: string;
   first_seen_at: string;
   fresh_label: string;
+  match_score?: number | null;
+  match_label?: string | null;
 }
 
 interface ProfileData {
@@ -66,7 +68,11 @@ export default function ListingDetailPage() {
   const { data: listing, isLoading, isError } = useQuery<Listing>({
     queryKey: ["/api/listings", id],
     queryFn: async () => {
-      const res = await fetch(`/api/listings/${id}`);
+      const headers: Record<string, string> = {};
+      if (session?.access_token) {
+        headers["Authorization"] = `Bearer ${session.access_token}`;
+      }
+      const res = await fetch(`/api/listings/${id}`, { headers });
       if (!res.ok) throw new Error("Listing not found");
       return res.json();
     },
@@ -200,6 +206,19 @@ export default function ListingDetailPage() {
                 {relativeTime(listing.first_seen_at)}
               </span>
             </div>
+
+            {listing.match_score != null && listing.match_label && (
+              <div className="flex items-center gap-2 mb-3" data-testid="listing-score-badge">
+                <span className={`text-[14px] font-bold px-3.5 py-1.5 rounded-full ${
+                  listing.match_score >= 90 ? "bg-orange-100 text-orange-700" :
+                  listing.match_score >= 75 ? "bg-green-100 text-green-700" :
+                  listing.match_score >= 60 ? "bg-blue-100 text-blue-700" :
+                  "bg-gray-100 text-gray-600"
+                }`}>
+                  {listing.match_label} · {listing.match_score}%
+                </span>
+              </div>
+            )}
 
             <h1 className="text-[32px] font-[800] text-[#1B2A4A] leading-[1.1] tracking-[-0.03em] mb-3" data-testid="text-listing-title">
               {listing.title}

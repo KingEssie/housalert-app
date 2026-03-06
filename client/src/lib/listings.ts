@@ -130,6 +130,8 @@ export interface ApiMatch extends FreshListing {
   listing_id: string;
   matched_at: string;
   image_url?: string | null;
+  match_score?: number | null;
+  match_label?: string | null;
 }
 
 export async function fetchFreshListings(): Promise<FreshListing[]> {

@@ -232,6 +232,18 @@ function MatchCard({
       </div>
 
       <div className="p-4 flex flex-col gap-3">
+        {match.match_score != null && match.match_label && (
+          <div className="flex items-center gap-2" data-testid={`score-badge-${match.listing_id}`}>
+            <span className={`text-[13px] font-bold px-3 py-1 rounded-full ${
+              match.match_score >= 90 ? "bg-orange-100 text-orange-700" :
+              match.match_score >= 75 ? "bg-green-100 text-green-700" :
+              match.match_score >= 60 ? "bg-blue-100 text-blue-700" :
+              "bg-gray-100 text-gray-600"
+            }`}>
+              {match.match_label} · {match.match_score}%
+            </span>
+          </div>
+        )}
         <div>
           <div className="flex items-start justify-between gap-2">
             <h3

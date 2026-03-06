@@ -32,6 +32,7 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
   - `backfillMatchesForSearchProfile(searchProfileId)` — called after a new search profile is created
 - `server/ingesters/matching.ts` — Ingestion pipeline (dedup, insert, delegates to engine for matching)
 - `server/log.ts` — Shared `log()` utility (extracted from index.ts to avoid circular deps)
+- `shared/match-score.ts` — Deterministic match scoring (0–100) based on city fit (30pts), price fit (30pts), bedrooms fit (20pts), size fit (20pts). Labels: Perfecte match (90+), Sterke match (75–89), Goede match (60–74), Mogelijke match (40–59). Used by `/api/matches` and `/api/listings/:id`.
 - City matching uses case-insensitive substring inclusion (e.g. "Berlin" matches "Berlin-Mitte")
 - Duplicate prevention: checks `unique(user_id, search_profile_id, listing_id)` before insert
 - Backfill triggered via `POST /api/search-profiles/backfill` (auth required)
