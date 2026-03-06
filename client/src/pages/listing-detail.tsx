@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
-import { ArrowLeft, MapPin, Euro, BedDouble, Ruler, ExternalLink, Clock, Globe, Send } from "lucide-react";
+import { ArrowLeft, MapPin, Euro, BedDouble, Ruler, ExternalLink, Clock, Globe, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ApplySheet } from "@/components/apply-sheet";
 
@@ -235,32 +235,32 @@ export default function ListingDetailPage() {
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#EAEFF5] p-5 z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] p-4 pb-5 z-10">
         <div className="max-w-xl mx-auto flex flex-col gap-2">
           <div className="flex gap-2">
-            <Button
+            <button
               onClick={() => setApplyOpen(true)}
-              size="lg"
-              className="flex-1 h-[56px] rounded-xl text-[16px] font-semibold shadow-none bg-[#0066FF] hover:bg-[#0052CC] flex items-center justify-center gap-2"
+              className="flex-1 h-[52px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold transition-colors flex items-center justify-center gap-2"
               data-testid="button-reageer-detail"
             >
-              <Send className="w-4.5 h-4.5" />
-              Reageer nu
-            </Button>
+              <Zap className="w-4 h-4" />
+              Reageer direct
+            </button>
             {listing.url && (
               <a href={listing.url} target="_blank" rel="noopener noreferrer">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="h-[56px] px-5 rounded-xl text-[15px] font-semibold border-[#EAEFF5] text-[#1B2A4A] flex items-center gap-2"
+                <button
+                  className="h-[52px] px-5 rounded-xl border border-[#E5E7EB] bg-white text-[#0F172A] text-[15px] font-semibold hover:bg-[#F9FAFB] transition-colors flex items-center gap-2"
                   data-testid="button-view-original"
                 >
                   <ExternalLink className="w-4 h-4" />
                   Bekijk
-                </Button>
+                </button>
               </a>
             )}
           </div>
+          <p className="text-[12px] font-[500] text-[#9CA3AF] text-center">
+            Reageer sneller met je standaardbrief
+          </p>
         </div>
       </div>
 

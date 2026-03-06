@@ -302,6 +302,14 @@ function MatchCard({
 
         <div className="flex gap-2">
           <button
+            onClick={handleApply}
+            className="flex-1 h-[44px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[14px] font-semibold transition-colors flex items-center justify-center gap-2"
+            data-testid={`button-apply-${match.listing_id}`}
+          >
+            <Zap className="w-4 h-4" />
+            Reageer direct
+          </button>
+          <button
             onClick={(e) => {
               e.stopPropagation();
               markViewed(match.listing_id);
@@ -312,19 +320,11 @@ function MatchCard({
                 navigate(`/listing/${match.listing_id}`);
               }
             }}
-            className="flex-1 h-[44px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[14px] font-semibold transition-colors flex items-center justify-center gap-2"
+            className="h-[44px] px-4 rounded-xl border border-[#E5E7EB] bg-white text-[#0F172A] text-[14px] font-semibold hover:bg-[#F9FAFB] transition-colors flex items-center justify-center gap-1.5"
             data-testid={`button-view-listing-${match.listing_id}`}
           >
-            <ExternalLink className="w-4 h-4" />
-            Bekijk woning
-          </button>
-          <button
-            onClick={handleApply}
-            className="h-[44px] px-4 rounded-xl border border-[#EAEFF5] bg-white text-[#0F172A] text-[14px] font-semibold hover:bg-[#F3F4F8] transition-colors flex items-center justify-center gap-1.5"
-            data-testid={`button-apply-${match.listing_id}`}
-          >
-            <Send className="w-3.5 h-3.5" />
-            Reageer
+            <ExternalLink className="w-3.5 h-3.5" />
+            Bekijk
           </button>
         </div>
       </div>
