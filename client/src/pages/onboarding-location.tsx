@@ -207,7 +207,7 @@ export default function OnboardingLocationPage() {
 
                 {selectedCity && activeCityDistricts.length > 0 && (
                   <div className="py-5 border-b border-[#F0F2F5]">
-                    <p className="text-sm font-semibold text-[#1B2A4A] mb-3">Wijken (optioneel)</p>
+                    <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">Wijken <span className="font-normal text-[13px] text-[#9BA5B7]">(optioneel)</span></label>
                     <div className="flex flex-wrap gap-2">
                       {activeCityDistricts.map((district) => (
                         <button
@@ -245,7 +245,7 @@ export default function OnboardingLocationPage() {
 
                 {!selectedCity && (
                   <div className="py-5">
-                    <p className="text-sm font-semibold text-[#72839A] mb-3">Populaire steden</p>
+                    <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">Populaire steden</label>
                     <div className="flex flex-wrap gap-2">
                       {defaultCities.slice(0, 6).map((city) => (
                         <button
@@ -320,8 +320,8 @@ export default function OnboardingLocationPage() {
                   )}
                 </div>
 
-                <div className="mt-4">
-                  <label className="text-[14px] font-semibold text-[#1B2A4A] mb-2 block">Straal</label>
+                <div className="mt-6">
+                  <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">Straal</label>
                   <div className="relative">
                     <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
                     <select
@@ -360,7 +360,7 @@ export default function OnboardingLocationPage() {
             {activeTab === "reistijd" && (
               <div className="space-y-0">
                 <div>
-                  <label className="text-[14px] font-semibold text-[#1B2A4A] mb-2 block">Werkadres / bestemming</label>
+                  <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">Werkadres / bestemming</label>
                   <div className="relative">
                     <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
                     <input
@@ -374,8 +374,8 @@ export default function OnboardingLocationPage() {
                   </div>
                 </div>
 
-                <div className="mt-4">
-                  <label className="text-[14px] font-semibold text-[#1B2A4A] mb-2 block">Maximale reistijd</label>
+                <div className="mt-6">
+                  <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">Maximale reistijd</label>
                   <div className="relative">
                     <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
                     <select
@@ -393,8 +393,8 @@ export default function OnboardingLocationPage() {
                   </div>
                 </div>
 
-                <div className="py-5 border-b border-[#F0F2F5]">
-                  <p className="text-sm font-semibold text-[#1B2A4A] mb-3">Vervoersmiddel</p>
+                <div className="mt-6">
+                  <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">Vervoersmiddel</label>
                   <div className="flex gap-2">
                     {[
                       { id: "auto", icon: Car, label: "Auto" },

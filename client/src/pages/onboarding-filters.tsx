@@ -72,9 +72,9 @@ export default function OnboardingFiltersPage() {
           Verfijn je zoekopdracht voor <span className="font-semibold text-[#1B2A4A]">{city}</span>. Alle velden zijn optioneel.
         </p>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
           <div>
-            <label className="text-[14px] font-semibold text-[#1B2A4A] mb-2 block">Minimale huur</label>
+            <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">Minimale huur</label>
             <div className="relative">
               <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
               <input
@@ -89,7 +89,7 @@ export default function OnboardingFiltersPage() {
           </div>
 
           <div>
-            <label className="text-[14px] font-semibold text-[#1B2A4A] mb-2 block">Maximale huur</label>
+            <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">Maximale huur</label>
             <div className="relative">
               <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
               <input
@@ -104,7 +104,7 @@ export default function OnboardingFiltersPage() {
           </div>
 
           <div>
-            <label className="text-[14px] font-semibold text-[#1B2A4A] mb-2 block">Slaapkamers</label>
+            <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">Slaapkamers</label>
             <div className="relative">
               <BedDouble className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
               <select
@@ -125,7 +125,7 @@ export default function OnboardingFiltersPage() {
           </div>
 
           <div>
-            <label className="text-[14px] font-semibold text-[#1B2A4A] mb-2 block">Minimale oppervlakte</label>
+            <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">Minimale oppervlakte</label>
             <div className="relative">
               <Maximize2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
               <input

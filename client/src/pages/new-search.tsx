@@ -310,7 +310,7 @@ export default function NewSearchPage() {
           >
             <div className="flex flex-col gap-5">
               <div className="relative">
-                <label className="text-[14px] font-semibold text-[#1B2A4A] mb-2 block">Stad</label>
+                <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">Stad</label>
                 <button
                   onClick={() => setShowCityDropdown(!showCityDropdown)}
                   className={`w-full h-[52px] px-4 rounded-xl border-0 text-left flex items-center justify-between transition-all ${
@@ -364,8 +364,8 @@ export default function NewSearchPage() {
 
               {availableDistricts.length > 0 && (
                 <div>
-                  <label className="text-[14px] font-semibold text-[#1B2A4A] mb-1 block">
-                    Wijken <span className="font-normal text-[#9BA5B7]">(optioneel, binnenkort actief)</span>
+                  <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">
+                    Wijken <span className="font-normal text-[13px] text-[#9BA5B7]">(optioneel, binnenkort actief)</span>
                   </label>
                   <p className="text-[12px] text-[#9BA5B7] mb-2">Wijkfiltering wordt binnenkort toegepast.</p>
                   <div className="flex flex-wrap gap-2">
@@ -404,9 +404,9 @@ export default function NewSearchPage() {
             title="Wat is je budget?"
             subtitle="Stel je prijsrange in."
           >
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-6">
               <div>
-                <label className="text-[14px] font-semibold text-[#1B2A4A] mb-2 block">Minimale huur</label>
+                <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">Minimale huur</label>
                 <div className="relative">
                   <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
                   <input
@@ -421,7 +421,7 @@ export default function NewSearchPage() {
                 </div>
               </div>
               <div>
-                <label className="text-[14px] font-semibold text-[#1B2A4A] mb-2 block">Maximale huur</label>
+                <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">Maximale huur</label>
                 <div className="relative">
                   <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
                   <input
@@ -448,7 +448,7 @@ export default function NewSearchPage() {
           >
             <div className="flex flex-col gap-6">
               <div>
-                <label className="text-[14px] font-semibold text-[#1B2A4A] mb-3 block">
+                <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">
                   <BedDouble className="w-4 h-4 inline mr-1.5 text-[#0066FF]" />
                   Slaapkamers
                 </label>
@@ -474,7 +474,7 @@ export default function NewSearchPage() {
               </div>
 
               <div>
-                <label className="text-[14px] font-semibold text-[#1B2A4A] mb-3 block">
+                <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">
                   <Ruler className="w-4 h-4 inline mr-1.5 text-[#0066FF]" />
                   Minimum oppervlakte
                 </label>

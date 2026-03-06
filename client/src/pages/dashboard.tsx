@@ -312,7 +312,7 @@ function HomeTab({
       </div>
 
       <div className="flex flex-col gap-3">
-        <h2 className="text-[14px] font-semibold text-[#1B2A4A]">Status</h2>
+        <h2 className="text-[16px] font-[700] text-[#1B2A4A]">Status</h2>
 
         <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] divide-y divide-[#F2F5F8]">
           <div className="flex items-center gap-3 p-4" data-testid="status-account">

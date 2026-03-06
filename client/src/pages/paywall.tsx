@@ -187,7 +187,7 @@ export default function PaywallPage() {
         </div>
 
         <div className="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-6">
-          <p className="text-[14px] font-semibold text-[#1B2A4A] mb-3">Dit zit er allemaal in:</p>
+          <p className="text-[16px] font-[700] text-[#1B2A4A] mb-3">Dit zit er allemaal in:</p>
           <div className="space-y-2.5">
             {FEATURES.map((feature, i) => (
               <div key={i} className="flex items-center gap-3">

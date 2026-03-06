@@ -98,7 +98,7 @@ export default function ApplicationLetterPage() {
           </div>
 
           <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
-            <h3 className="text-[14px] font-semibold text-[#1B2A4A] mb-3">Beschikbare plaatsaanduidingen</h3>
+            <h3 className="text-[16px] font-[700] text-[#1B2A4A] mb-3">Beschikbare plaatsaanduidingen</h3>
             <div className="flex flex-wrap gap-1.5">
               {PLACEHOLDERS.map((p) => (
                 <button

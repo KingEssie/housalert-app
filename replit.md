@@ -309,10 +309,11 @@ Env vars: `TEST_USER_EMAIL`, `TEST_USER_PASSWORD`, `TEST_PHONE_E164`, `TEST_BASE
 - Wizard step title: `text-[28px] font-[800] tracking-[-0.03em] leading-[1.1]`
 - Modal title: `text-[20px] font-[700] tracking-[-0.02em]`
 - Section heading: `text-[18px] font-[700] tracking-[-0.01em]`
+- Section label (form): `text-[16px] font-[700] text-[#1B2A4A] mb-3` — used for field groups like "Stad", "Minimale huur", "Slaapkamers"
 - Card title: `text-[16px] font-semibold text-[#1B2A4A]`
 - Body: `text-[15px] text-[#72839A]`
 - Small/helper: `text-[13px] text-[#9BA5B7]`
-- Labels: `text-[14px] font-semibold text-[#1B2A4A]`
+- Form field label (login/signup): `text-[14px] font-semibold text-[#1B2A4A]` — used for traditional form labels
 
 ### Surfaces
 - Card shadow: `shadow-[0_2px_12px_rgba(0,0,0,0.04)]`
