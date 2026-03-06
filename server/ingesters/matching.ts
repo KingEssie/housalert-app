@@ -23,6 +23,7 @@ export interface ParsedListing {
   size_m2: number;
   source: string;
   source_id: string;
+  image_url?: string | null;
 }
 
 interface DbListing {
@@ -41,6 +42,7 @@ export async function runMatchingForListing(listing: DbListing): Promise<number>
 }
 
 let hasSourceIdColumn: boolean | null = null;
+let hasImageUrlColumn: boolean | null = null;
 
 async function checkSourceIdColumn(): Promise<boolean> {
   if (hasSourceIdColumn !== null) return hasSourceIdColumn;
@@ -52,10 +54,21 @@ async function checkSourceIdColumn(): Promise<boolean> {
   return hasSourceIdColumn;
 }
 
+async function checkImageUrlColumn(): Promise<boolean> {
+  if (hasImageUrlColumn !== null) return hasImageUrlColumn;
+  const { error } = await supabase.from("listings").select("image_url").limit(1);
+  hasImageUrlColumn = !error;
+  if (!hasImageUrlColumn) {
+    log("image_url column not found on listings table — run migration 005_image_url.sql in Supabase SQL Editor");
+  }
+  return hasImageUrlColumn;
+}
+
 export async function insertAndMatchListings(
   parsed: ParsedListing[]
 ): Promise<{ inserted: number; duplicates: number; matches: number; errors: number }> {
   const useSourceId = await checkSourceIdColumn();
+  const useImageUrl = await checkImageUrlColumn();
 
   let inserted = 0;
   let duplicates = 0;
@@ -94,6 +107,9 @@ export async function insertAndMatchListings(
     if (isDuplicate) {
       if (duplicateId) {
         trackListingSeen(duplicateId, listing.source, listing.source_id).catch(() => {});
+        if (useImageUrl && listing.image_url) {
+          supabase.from("listings").update({ image_url: listing.image_url }).eq("id", duplicateId).then(() => {}).catch(() => {});
+        }
       }
       duplicates++;
       continue;
@@ -108,6 +124,10 @@ export async function insertAndMatchListings(
       bedrooms: listing.bedrooms,
       size_m2: listing.size_m2,
     };
+
+    if (useImageUrl && listing.image_url) {
+      insertData.image_url = listing.image_url;
+    }
 
     if (useSourceId) {
       insertData.source_id = listing.source_id;

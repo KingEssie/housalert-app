@@ -91,6 +91,12 @@ async function fetchAndParseListings(): Promise<ParsedListing[]> {
       size = parseSize(cols.eq(2).html() || "");
     }
 
+    const imgEl = card.find("img.img-responsive").first();
+    let imageUrl: string | null = imgEl.attr("src") || null;
+    if (imageUrl && !imageUrl.startsWith("http")) {
+      imageUrl = WG_GESUCHT_BASE + imageUrl;
+    }
+
     listings.push({
       title,
       url: fullUrl,
@@ -100,6 +106,7 @@ async function fetchAndParseListings(): Promise<ParsedListing[]> {
       size_m2: size,
       source: "wg-gesucht",
       source_id: sourceId,
+      image_url: imageUrl,
     });
   });
 

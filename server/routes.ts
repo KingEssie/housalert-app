@@ -269,7 +269,7 @@ export async function registerRoutes(
       const [listingsRes, freshnessMap, profilesRes] = await Promise.all([
         supabase
           .from("listings")
-          .select("id, title, price, size_m2, bedrooms, city, source, url")
+          .select("id, title, price, size_m2, bedrooms, city, source, url, image_url")
           .in("id", listingIds),
         getListingFreshness(listingIds),
         profileIds.length > 0
@@ -313,6 +313,7 @@ export async function registerRoutes(
           city: l?.city ?? null,
           source: l?.source ?? null,
           url: l?.url ?? null,
+          image_url: l?.image_url ?? null,
           matched_at: m.matched_at,
           first_seen_at: firstSeenAt,
           fresh_label: computeFreshLabel(firstSeenAt),
@@ -336,7 +337,7 @@ export async function registerRoutes(
 
       const { data, error } = await supabase
         .from("listings")
-        .select("id, title, price, size_m2, bedrooms, city, district, source, url, created_at")
+        .select("id, title, price, size_m2, bedrooms, city, district, source, url, image_url, created_at")
         .eq("id", id)
         .single();
 
