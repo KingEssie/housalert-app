@@ -197,6 +197,35 @@
  */
 @layer utilities {
 
+  .text-page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #111;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .text-section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #111;
+    line-height: 1.25;
+  }
+
+  .text-subtitle {
+    font-size: 15px;
+    font-weight: 500;
+    color: #6B7280;
+    line-height: 1.4;
+  }
+
+  .text-muted-body {
+    font-size: 14px;
+    font-weight: 500;
+    color: #6B7280;
+    line-height: 1.4;
+  }
+
   .scrollbar-none {
     -ms-overflow-style: none;
     scrollbar-width: none;

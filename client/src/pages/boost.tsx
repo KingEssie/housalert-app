@@ -144,7 +144,7 @@ function getScoreColor(score: number): string {
   if (score >= 80) return "#22c55e";
   if (score >= 60) return "#0066FF";
   if (score >= 30) return "#f59e0b";
-  return "#9BA5B7";
+  return "#6B7280";
 }
 
 function BoostScoreCard({ score }: { score: number }) {
@@ -159,7 +159,7 @@ function BoostScoreCard({ score }: { score: number }) {
         </div>
         <div>
           <h3 className="text-[15px] font-semibold text-[#1B2A4A]">Boost score</h3>
-          <p className="text-[13px] text-[#9BA5B7]">Hoe klaar ben je?</p>
+          <p className="text-[13px] text-[#6B7280]">Hoe klaar ben je?</p>
         </div>
       </div>
 
@@ -167,7 +167,7 @@ function BoostScoreCard({ score }: { score: number }) {
         <span className="text-[44px] font-[800] text-[#1B2A4A] leading-none tracking-[-0.03em]" data-testid="text-boost-score">
           {score}
         </span>
-        <span className="text-[18px] text-[#9BA5B7] mb-1.5 font-medium">/ 100</span>
+        <span className="text-[18px] text-[#6B7280] mb-1.5 font-medium">/ 100</span>
       </div>
 
       <div className="w-full h-2.5 bg-[#F2F5F8] rounded-full overflow-hidden mb-4">
@@ -178,7 +178,7 @@ function BoostScoreCard({ score }: { score: number }) {
         />
       </div>
 
-      <p className="text-[14px] text-[#72839A] leading-relaxed" data-testid="text-boost-microcopy">
+      <p className="text-[14px] text-[#6B7280] leading-relaxed" data-testid="text-boost-microcopy">
         {microcopy}
       </p>
     </div>
@@ -198,7 +198,7 @@ function RecommendedSection({
 
   return (
     <div data-testid="section-recommended">
-      <h3 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">
+      <h3 className="text-section-title mb-3">
         Aanbevolen voor jou
       </h3>
       <div className="flex flex-col gap-3">
@@ -233,7 +233,7 @@ function RecommendedSection({
                       +{task.weight}
                     </span>
                   </div>
-                  <p className="text-[13px] text-[#72839A] leading-relaxed mt-1">{subtitle}</p>
+                  <p className="text-[13px] text-[#6B7280] leading-relaxed mt-1">{subtitle}</p>
                 </div>
               </div>
               <Button
@@ -266,7 +266,7 @@ function AllTasksSection({
 
   return (
     <div data-testid="section-all-tasks">
-      <h3 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">
+      <h3 className="text-section-title mb-3">
         Alle taken
       </h3>
       <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] overflow-hidden">
@@ -285,9 +285,9 @@ function AllTasksSection({
               <Icon className="w-4 h-4 text-[#0066FF] flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="text-[14px] font-medium text-[#1B2A4A]">{task.label}</p>
-                <p className="text-[12px] text-[#9BA5B7]">+{task.weight} punten</p>
+                <p className="text-[13px] font-[500] text-[#6B7280]">+{task.weight} punten</p>
               </div>
-              <ArrowRight className="w-4 h-4 text-[#9BA5B7] flex-shrink-0" />
+              <ArrowRight className="w-4 h-4 text-[#6B7280] flex-shrink-0" />
             </button>
           );
         })}
@@ -302,8 +302,8 @@ function AllTasksSection({
               data-testid={`task-done-${task.id}`}
             >
               <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
-              <Icon className="w-4 h-4 text-[#9BA5B7] flex-shrink-0" />
-              <p className="text-[14px] text-[#9BA5B7] line-through">{task.label}</p>
+              <Icon className="w-4 h-4 text-[#6B7280] flex-shrink-0" />
+              <p className="text-[14px] text-[#6B7280] line-through">{task.label}</p>
             </div>
           );
         })}
@@ -321,7 +321,7 @@ function EmptyState({ onStart }: { onStart: () => void }) {
       <h3 className="text-[20px] font-[700] text-[#1B2A4A] tracking-[-0.02em] mb-2">
         Vergroot je kansen
       </h3>
-      <p className="text-[15px] text-[#72839A] leading-relaxed mb-6 max-w-[280px] mx-auto">
+      <p className="text-[15px] text-[#6B7280] leading-relaxed mb-6 max-w-[280px] mx-auto">
         Begin met 1 of 2 stappen en vergroot direct je kansen op een woning.
       </p>
       <Button
@@ -394,12 +394,12 @@ function TaskModal({
         <div className="sticky top-0 bg-white border-b border-[#EAEFF5] p-6 flex items-center justify-between rounded-t-[24px]">
           <h2 className="text-[20px] font-[700] text-[#1B2A4A] tracking-[-0.02em]">{task.title}</h2>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F2F5F8] flex items-center justify-center" data-testid="button-close-modal">
-            <X className="w-4 h-4 text-[#72839A]" />
+            <X className="w-4 h-4 text-[#6B7280]" />
           </button>
         </div>
 
         <div className="p-5">
-          <p className="text-[14px] text-[#72839A] mb-5">{task.description}</p>
+          <p className="text-[14px] text-[#6B7280] mb-5">{task.description}</p>
 
           {(taskId === "alerts_active" || taskId === "phone_number_added") && (
             <Button
@@ -423,7 +423,7 @@ function TaskModal({
                 className="w-full h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
                 data-testid="input-buddy-email"
               />
-              <p className="text-[12px] text-[#9BA5B7]">Je buddy ontvangt dezelfde meldingen als jij.</p>
+              <p className="text-[13px] font-[500] text-[#6B7280]">Je buddy ontvangt dezelfde meldingen als jij.</p>
               <Button
                 onClick={() => handleSave({ search_buddy_email: buddyEmail }, "Zoekbuddy opgeslagen!")}
                 disabled={!buddyEmail.includes("@") || updateProfileData.isPending}
@@ -473,7 +473,7 @@ function TaskModal({
                     ) : (
                       <div className="w-5 h-5 rounded-full border-2 border-[#EAEFF5] flex-shrink-0" />
                     )}
-                    <span className={`text-[14px] ${checklist[item.id] ? "text-[#9BA5B7] line-through" : "text-[#1B2A4A]"}`}>
+                    <span className={`text-[14px] ${checklist[item.id] ? "text-[#6B7280] line-through" : "text-[#1B2A4A]"}`}>
                       {item.label}
                     </span>
                   </button>
@@ -506,7 +506,7 @@ function TaskModal({
                     ) : (
                       <div className="w-5 h-5 rounded-full border-2 border-[#EAEFF5] flex-shrink-0" />
                     )}
-                    <span className={`text-[14px] ${checklist[item.id] ? "text-[#9BA5B7] line-through" : "text-[#1B2A4A]"}`}>
+                    <span className={`text-[14px] ${checklist[item.id] ? "text-[#6B7280] line-through" : "text-[#1B2A4A]"}`}>
                       {item.label}
                     </span>
                   </button>
@@ -537,10 +537,10 @@ function TaskModal({
           {taskId === "profile_photo_added" && (
             <div className="flex flex-col gap-3">
               <div className="bg-[#F3F4F8] rounded-xl p-4 text-center">
-                <Camera className="w-8 h-8 text-[#9BA5B7] mx-auto mb-2" />
-                <p className="text-[13px] text-[#9BA5B7]">Binnenkort beschikbaar</p>
+                <Camera className="w-8 h-8 text-[#6B7280] mx-auto mb-2" />
+                <p className="text-[13px] text-[#6B7280]">Binnenkort beschikbaar</p>
               </div>
-              <p className="text-[12px] text-[#9BA5B7]">
+              <p className="text-[13px] font-[500] text-[#6B7280]">
                 De mogelijkheid om een profielfoto te uploaden wordt binnenkort toegevoegd.
               </p>
             </div>
@@ -601,7 +601,7 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
           <h1 className="text-[26px] font-[700] text-[#1B2A4A] tracking-[-0.02em] leading-[1.15]">Boost</h1>
         </div>
         <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-8 text-center" data-testid="boost-error">
-          <p className="text-[15px] text-[#72839A] mb-4">Kon je gegevens niet laden.</p>
+          <p className="text-[15px] text-[#6B7280] mb-4">Kon je gegevens niet laden.</p>
           <Button
             onClick={() => refetch()}
             className="h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold px-6"
@@ -645,7 +645,7 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
         <h1 className="text-[26px] font-[700] text-[#1B2A4A] tracking-[-0.02em] leading-[1.15]" data-testid="heading-boost">
           Boost
         </h1>
-        <p className="text-[15px] text-[#72839A] mt-1">
+        <p className="text-[15px] text-[#6B7280] mt-1">
           Vergroot je kansen op een woning
         </p>
       </div>

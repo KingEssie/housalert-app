@@ -93,7 +93,7 @@ export default function OnboardingLocationPage() {
             className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center hover:bg-[#EAEFF5] transition-colors"
             data-testid="button-back-landing"
           >
-            <ChevronLeft className="w-5 h-5 text-[#72839A]" />
+            <ChevronLeft className="w-5 h-5 text-[#6B7280]" />
           </button>
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-[#0066FF] flex items-center justify-center">
@@ -117,7 +117,7 @@ export default function OnboardingLocationPage() {
             </div>
           ))}
         </div>
-        <p className="text-xs font-medium text-[#72839A] mt-2" data-testid="text-step-indicator">Stap 1 van 3</p>
+        <p className="text-xs font-medium text-[#6B7280] mt-2" data-testid="text-step-indicator">Stap 1 van 3</p>
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-8 pt-4">
@@ -134,7 +134,7 @@ export default function OnboardingLocationPage() {
                 className={`flex-1 pb-3 text-sm font-semibold text-center transition-colors relative ${
                   activeTab === tab.id
                     ? "text-[#0066FF]"
-                    : "text-[#72839A] hover:text-[#1B2A4A]"
+                    : "text-[#6B7280] hover:text-[#1B2A4A]"
                 }`}
                 data-testid={`tab-${tab.id}`}
               >
@@ -179,7 +179,7 @@ export default function OnboardingLocationPage() {
                           setSearch("");
                           setSelectedDistricts([]);
                         }}
-                        className="text-xs text-[#72839A] hover:text-[#1B2A4A]"
+                        className="text-xs text-[#6B7280] hover:text-[#1B2A4A]"
                         data-testid="button-clear-city"
                       >
                         Wissen
@@ -196,9 +196,9 @@ export default function OnboardingLocationPage() {
                           className="w-full flex items-center gap-3 py-4 px-4 hover:bg-[#F2F5F8] transition-colors border-b border-[#F0F2F5] last:border-b-0"
                           data-testid={`option-city-${city.name.toLowerCase().replace(/\s/g, "-")}`}
                         >
-                          <MapPin className="w-4.5 h-4.5 text-[#72839A] flex-shrink-0" />
+                          <MapPin className="w-4.5 h-4.5 text-[#6B7280] flex-shrink-0" />
                           <span className="text-[15px] font-medium text-[#1B2A4A] flex-1 text-left">{city.name}</span>
-                          <ChevronRight className="w-4 h-4 text-[#72839A]" />
+                          <ChevronRight className="w-4 h-4 text-[#6B7280]" />
                         </button>
                       ))}
                     </div>
@@ -207,7 +207,7 @@ export default function OnboardingLocationPage() {
 
                 {selectedCity && activeCityDistricts.length > 0 && (
                   <div className="py-5 border-b border-[#F0F2F5]">
-                    <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">Wijken <span className="font-normal text-[13px] text-[#9BA5B7]">(optioneel)</span></label>
+                    <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">Wijken <span className="font-normal text-[13px] text-[#6B7280]">(optioneel)</span></label>
                     <div className="flex flex-wrap gap-2">
                       {activeCityDistricts.map((district) => (
                         <button
@@ -235,7 +235,7 @@ export default function OnboardingLocationPage() {
                           <MapPin className="w-7 h-7 text-[#0066FF] mx-auto mb-1.5" />
                           <p className="text-base font-bold text-[#1B2A4A]">{selectedCity.name}</p>
                           {selectedDistricts.length > 0 && (
-                            <p className="text-xs text-[#72839A] mt-0.5">{selectedDistricts.join(", ")}</p>
+                            <p className="text-xs text-[#6B7280] mt-0.5">{selectedDistricts.join(", ")}</p>
                           )}
                         </div>
                       </div>
@@ -294,7 +294,7 @@ export default function OnboardingLocationPage() {
                           setSelectedCity(null);
                           setSearch("");
                         }}
-                        className="text-xs text-[#72839A] hover:text-[#1B2A4A]"
+                        className="text-xs text-[#6B7280] hover:text-[#1B2A4A]"
                         data-testid="button-clear-city"
                       >
                         Wissen
@@ -311,9 +311,9 @@ export default function OnboardingLocationPage() {
                           className="w-full flex items-center gap-3 py-4 px-4 hover:bg-[#F2F5F8] transition-colors border-b border-[#F0F2F5] last:border-b-0"
                           data-testid={`option-city-${city.name.toLowerCase().replace(/\s/g, "-")}`}
                         >
-                          <MapPin className="w-4.5 h-4.5 text-[#72839A] flex-shrink-0" />
+                          <MapPin className="w-4.5 h-4.5 text-[#6B7280] flex-shrink-0" />
                           <span className="text-[15px] font-medium text-[#1B2A4A] flex-1 text-left">{city.name}</span>
-                          <ChevronRight className="w-4 h-4 text-[#72839A]" />
+                          <ChevronRight className="w-4 h-4 text-[#6B7280]" />
                         </button>
                       ))}
                     </div>
@@ -425,7 +425,7 @@ export default function OnboardingLocationPage() {
                         <div className="text-center">
                           <Clock className="w-7 h-7 text-[#0066FF] mx-auto mb-1.5" />
                           <p className="text-sm font-bold text-[#1B2A4A]">{travelTime} min reistijd</p>
-                          <p className="text-xs text-[#72839A] mt-0.5">vanaf {travelAddress}</p>
+                          <p className="text-xs text-[#6B7280] mt-0.5">vanaf {travelAddress}</p>
                         </div>
                       </div>
                     </div>
@@ -441,10 +441,10 @@ export default function OnboardingLocationPage() {
                 {estimateLoading ? (
                   <div className="flex items-center gap-3">
                     <Loader2 className="w-5 h-5 text-[#0066FF] animate-spin" />
-                    <span className="text-sm text-[#72839A]">Schatting laden...</span>
+                    <span className="text-sm text-[#6B7280]">Schatting laden...</span>
                   </div>
                 ) : (
-                  <p className="text-sm text-[#72839A] leading-relaxed">
+                  <p className="text-sm text-[#6B7280] leading-relaxed">
                     Met deze zoekopdracht kun je ongeveer{" "}
                     <span className="font-bold text-[#1B2A4A]">{estimate ?? 0} matches</span>{" "}
                     per week verwachten.

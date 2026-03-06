@@ -78,7 +78,7 @@ export default function ApplicationLetterPage() {
             className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center hover:bg-[#EAEFF5] transition-colors"
             data-testid="button-back"
           >
-            <ArrowLeft className="w-5 h-5 text-[#72839A]" />
+            <ArrowLeft className="w-5 h-5 text-[#6B7280]" />
           </button>
           <h1 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em]">Aanmeldingsbrief</h1>
           <div className="w-10" />
@@ -91,7 +91,7 @@ export default function ApplicationLetterPage() {
             <Info className="w-5 h-5 text-[#0066FF] flex-shrink-0 mt-0.5" />
             <div>
               <p className="text-[14px] text-[#1B2A4A] font-semibold mb-1">Automatische invulling</p>
-              <p className="text-[13px] text-[#72839A]">
+              <p className="text-[13px] text-[#6B7280]">
                 Gebruik onderstaande plaatsaanduidingen in je brief. Ze worden automatisch ingevuld wanneer je de brief kopieert vanuit een woning.
               </p>
             </div>
@@ -140,7 +140,7 @@ export default function ApplicationLetterPage() {
                 <h3 className="text-[16px] font-semibold text-[#1B2A4A]">Je brief</h3>
                 <button
                   onClick={handleReset}
-                  className="flex items-center gap-1 text-[13px] text-[#72839A] hover:text-[#0066FF] transition-colors"
+                  className="flex items-center gap-1 text-[13px] text-[#6B7280] hover:text-[#0066FF] transition-colors"
                   data-testid="button-reset-template"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -177,7 +177,7 @@ export default function ApplicationLetterPage() {
               variant="outline"
               onClick={() => saveMutation.mutate(DEFAULT_TEMPLATE)}
               disabled={saveMutation.isPending}
-              className="w-full h-[48px] rounded-xl text-[15px] font-semibold border-[#EAEFF5] text-[#72839A]"
+              className="w-full h-[48px] rounded-xl text-[15px] font-semibold border-[#EAEFF5] text-[#6B7280]"
               data-testid="button-use-default"
             >
               Standaardbrief bevestigen en gebruiken

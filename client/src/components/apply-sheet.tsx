@@ -167,12 +167,12 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
             className="w-8 h-8 rounded-full bg-[#F3F4F8] flex items-center justify-center hover:bg-[#EAEFF5] transition-colors"
             data-testid="button-close-apply-sheet"
           >
-            <X className="w-4 h-4 text-[#72839A]" />
+            <X className="w-4 h-4 text-[#6B7280]" />
           </button>
         </div>
 
         <div className="px-6 pb-2">
-          <p className="text-[13px] text-[#72839A] line-clamp-1">{listing.title} · {listing.city}</p>
+          <p className="text-[13px] text-[#6B7280] line-clamp-1">{listing.title} · {listing.city}</p>
         </div>
 
         <div className="flex-1 overflow-y-auto px-6 pb-4">
@@ -186,7 +186,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
                   ) : (
                     <AlertCircle className="w-3.5 h-3.5 text-[#C5CBD6]" />
                   )}
-                  <span className={`text-[12px] ${item.done ? "text-[#72839A]" : "text-[#C5CBD6]"}`}>
+                  <span className={`text-[12px] ${item.done ? "text-[#6B7280]" : "text-[#C5CBD6]"}`}>
                     {item.label}
                   </span>
                 </div>
@@ -196,7 +196,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
 
           <div className="bg-[#F3F4F8] rounded-xl p-4">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-[12px] font-semibold text-[#72839A] uppercase tracking-wide">Aanmeldingsbrief</p>
+              <p className="text-[12px] font-semibold text-[#6B7280] uppercase tracking-wide">Aanmeldingsbrief</p>
               {readyCount === readinessItems.length && (
                 <span className="text-[11px] font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full" data-testid="badge-ready">
                   Klaar om te versturen

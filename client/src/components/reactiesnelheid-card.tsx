@@ -67,7 +67,7 @@ export function calculateReactiesnelheid(rawDone: number, rawTotal: number): Rea
 const LEVEL_STYLES: Record<SpeedLevel, { dotColor: string; barColor: string; labelColor: string }> = {
   fast: { dotColor: "bg-green-500", barColor: "bg-green-500", labelColor: "text-green-700 bg-green-50" },
   almost: { dotColor: "bg-[#0066FF]", barColor: "bg-[#0066FF]", labelColor: "text-[#0066FF] bg-[#EDF2FF]" },
-  building: { dotColor: "bg-[#C5CBD6]", barColor: "bg-[#C5CBD6]", labelColor: "text-[#72839A] bg-[#F2F5F8]" },
+  building: { dotColor: "bg-[#C5CBD6]", barColor: "bg-[#C5CBD6]", labelColor: "text-[#6B7280] bg-[#F2F5F8]" },
 };
 
 function useReactiesnelheidData() {
@@ -131,7 +131,7 @@ export function ReactiesnelheidCard({
     >
       <div className="flex items-start gap-4">
         <div className="w-10 h-10 rounded-xl bg-[#F2F5F8] flex items-center justify-center flex-shrink-0">
-          <Gauge className="w-5 h-5 text-[#72839A]" />
+          <Gauge className="w-5 h-5 text-[#6B7280]" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
@@ -140,7 +140,7 @@ export function ReactiesnelheidCard({
               {state.label}
             </span>
           </div>
-          <p className="text-[13px] text-[#72839A] leading-relaxed">{state.subtitle}</p>
+          <p className="text-[13px] text-[#6B7280] leading-relaxed">{state.subtitle}</p>
 
           <div className="mt-3 flex items-center gap-3">
             <div className="flex-1 h-1.5 bg-[#F2F5F8] rounded-full overflow-hidden">
@@ -149,13 +149,13 @@ export function ReactiesnelheidCard({
                 style={{ width: `${pct}%` }}
               />
             </div>
-            <span className="text-[12px] font-medium text-[#9BA5B7] flex-shrink-0" data-testid="text-speed-ratio">
+            <span className="text-[12px] font-medium text-[#6B7280] flex-shrink-0" data-testid="text-speed-ratio">
               {done}/{total}
             </span>
           </div>
         </div>
         {onTap && (
-          <ChevronRight className="w-4 h-4 text-[#9BA5B7] flex-shrink-0 mt-1" />
+          <ChevronRight className="w-4 h-4 text-[#6B7280] flex-shrink-0 mt-1" />
         )}
       </div>
     </Wrapper>

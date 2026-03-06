@@ -71,7 +71,7 @@ export default function LoginPage() {
             <h1 className="text-[32px] font-[800] text-[#1B2A4A] tracking-[-0.03em] leading-[1.1] mb-4">
               Vind jouw perfecte huurwoning
             </h1>
-            <p className="text-[15px] text-[#72839A]">
+            <p className="text-[15px] text-[#6B7280]">
               Stel zoekopdrachten in en ontvang direct een melding als er iets beschikbaar komt.
             </p>
           </div>
@@ -167,7 +167,7 @@ export default function LoginPage() {
             </Tabs>
           </div>
 
-          <p className="text-center text-[13px] text-[#9BA5B7] mt-6">
+          <p className="text-center text-[13px] text-[#6B7280] mt-6">
             Door je aan te melden ga je akkoord met onze voorwaarden.
           </p>
         </div>

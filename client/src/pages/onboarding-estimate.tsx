@@ -80,7 +80,7 @@ export default function OnboardingEstimatePage() {
             className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center hover:bg-[#EAEFF5] transition-colors"
             data-testid="button-back-filters"
           >
-            <ChevronLeft className="w-5 h-5 text-[#72839A]" />
+            <ChevronLeft className="w-5 h-5 text-[#6B7280]" />
           </button>
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-[#0066FF] flex items-center justify-center">
@@ -102,14 +102,14 @@ export default function OnboardingEstimatePage() {
             </div>
           ))}
         </div>
-        <p className="text-xs font-medium text-[#72839A] mt-2" data-testid="text-step-indicator">Stap 3 van 3</p>
+        <p className="text-xs font-medium text-[#6B7280] mt-2" data-testid="text-step-indicator">Stap 3 van 3</p>
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-8 pt-4 flex flex-col">
         <h1 className="text-[32px] font-[800] text-[#1B2A4A] leading-[1.1] tracking-[-0.03em] mb-3 text-center" data-testid="text-estimate-title">
           Jouw schatting
         </h1>
-        <p className="text-[15px] text-[#72839A] text-center mb-6">
+        <p className="text-[15px] text-[#6B7280] text-center mb-6">
           Op basis van jouw zoekcriteria in <span className="font-semibold text-[#1B2A4A]">{city}</span>
         </p>
 
@@ -128,7 +128,7 @@ export default function OnboardingEstimatePage() {
                 <p className="text-6xl font-extrabold text-[#1B2A4A] mb-3 tabular-nums" data-testid="text-estimate-number">
                   {estimate}
                 </p>
-                <p className="text-base text-[#72839A] leading-relaxed max-w-sm mx-auto" data-testid="text-estimate-description">
+                <p className="text-base text-[#6B7280] leading-relaxed max-w-sm mx-auto" data-testid="text-estimate-description">
                   Met jouw zoekcriteria verwachten we ongeveer{" "}
                   <span className="font-bold text-[#1B2A4A]">{estimate} nieuwe woningen</span>{" "}
                   per week.
@@ -156,7 +156,7 @@ export default function OnboardingEstimatePage() {
 
           <div className="flex items-start gap-3 py-5 border-b border-[#EAEFF5]">
             <Sparkles className="w-5 h-5 text-[#0066FF] flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-[#72839A] leading-relaxed">
+            <p className="text-sm text-[#6B7280] leading-relaxed">
               Maak een account aan en we sturen je direct een melding als er een woning beschikbaar komt die aan je criteria voldoet.
             </p>
           </div>

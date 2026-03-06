@@ -230,7 +230,7 @@ function MatchCard({
           {isSaved ? (
             <BookmarkCheck className="w-4 h-4 text-[#0066FF]" />
           ) : (
-            <Bookmark className="w-4 h-4 text-[#72839A]" />
+            <Bookmark className="w-4 h-4 text-[#6B7280]" />
           )}
         </button>
       </div>
@@ -259,17 +259,17 @@ function MatchCard({
             {match.price > 0 && (
               <span className="text-[16px] font-bold text-[#1B2A4A] whitespace-nowrap flex-shrink-0">
                 €{match.price}
-                <span className="text-[12px] font-normal text-[#72839A]">/mnd</span>
+                <span className="text-[12px] font-normal text-[#6B7280]">/mnd</span>
               </span>
             )}
           </div>
-          <div className="flex items-center gap-1 mt-1 text-[13px] text-[#72839A]">
+          <div className="flex items-center gap-1 mt-1 text-[13px] text-[#6B7280]">
             <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
             <span>{match.city}</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 text-[13px] text-[#72839A]">
+        <div className="flex items-center gap-3 text-[13px] text-[#6B7280]">
           {match.bedrooms > 0 && (
             <span className="flex items-center gap-1">
               <BedDouble className="w-3.5 h-3.5" />
@@ -285,10 +285,10 @@ function MatchCard({
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="inline-flex items-center text-[11px] font-medium bg-[#F3F4F8] text-[#72839A] px-2 py-0.5 rounded-full capitalize">
+          <span className="inline-flex items-center text-[11px] font-medium bg-[#F3F4F8] text-[#6B7280] px-2 py-0.5 rounded-full capitalize">
             {match.source}
           </span>
-          <span className="inline-flex items-center gap-1 text-[11px] text-[#9BA5B7]">
+          <span className="inline-flex items-center gap-1 text-[11px] text-[#6B7280]">
             <Clock className="w-3 h-3" />
             {relativeTime(match.matched_at || match.first_seen_at)}
           </span>
@@ -356,7 +356,7 @@ function ProfileCard({
                 Actief
               </span>
             </div>
-            <p className="text-[12px] text-[#9BA5B7]">
+            <p className="text-[13px] font-[500] text-[#6B7280]">
               Aangemaakt {new Date(profile.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "short" })}
             </p>
           </div>
@@ -364,7 +364,7 @@ function ProfileCard({
         <button
           onClick={onDelete}
           disabled={deleting}
-          className="w-8 h-8 rounded-lg flex items-center justify-center text-[#9BA5B7] hover:text-red-500 hover:bg-red-50 transition-colors"
+          className="w-8 h-8 rounded-lg flex items-center justify-center text-[#6B7280] hover:text-red-500 hover:bg-red-50 transition-colors"
           data-testid={`button-delete-${profile.id}`}
         >
           <Trash2 className="w-4 h-4" />
@@ -456,7 +456,7 @@ function BoostTeaserCard({ setActiveTab }: { setActiveTab: (tab: TabKey) => void
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[15px] font-semibold text-[#1B2A4A]">Boost je kansen</p>
-          <p className="text-[13px] text-[#72839A] mt-0.5">{statusText}</p>
+          <p className="text-[13px] text-[#6B7280] mt-0.5">{statusText}</p>
 
           <div className="mt-3 h-1.5 bg-[#F2F5F8] rounded-full overflow-hidden">
             <div
@@ -505,7 +505,7 @@ function HomeTab({
         <h1 className="text-[32px] font-[800] text-[#1B2A4A] tracking-[-0.03em] leading-[1.1]" data-testid="text-greeting">
           Hallo, {firstName}
         </h1>
-        <p className="text-[15px] text-[#72839A] mt-1">Welkom terug bij Stekkies</p>
+        <p className="text-[15px] font-[500] text-[#6B7280] mt-1">Welkom terug bij Stekkies</p>
       </div>
 
       {subscription.isTrial && subscription.trialEndsAt && (
@@ -515,7 +515,7 @@ function HomeTab({
           </div>
           <div className="flex-1">
             <p className="text-[14px] font-semibold text-[#1B2A4A]">Proefperiode</p>
-            <p className="text-[12px] text-[#72839A]">
+            <p className="text-[13px] font-[500] text-[#6B7280]">
               Je proefperiode loopt tot{" "}
               <span className="font-semibold text-[#1B2A4A]">
                 {new Date(subscription.trialEndsAt).toLocaleDateString("de-DE", { day: "numeric", month: "long" })}
@@ -539,7 +539,7 @@ function HomeTab({
           </div>
           <div className="flex-1">
             <p className="text-[14px] font-semibold text-[#1B2A4A]">Je proefperiode is afgelopen</p>
-            <p className="text-[12px] text-[#72839A]">Activeer een abonnement om matches te blijven ontvangen.</p>
+            <p className="text-[13px] font-[500] text-[#6B7280]">Activeer een abonnement om matches te blijven ontvangen.</p>
           </div>
           <button
             onClick={() => navigate("/paywall")}
@@ -569,7 +569,7 @@ function HomeTab({
       </div>
 
       <div className="flex flex-col gap-3">
-        <h2 className="text-[16px] font-[700] text-[#1B2A4A]">Status</h2>
+        <h2 className="text-section-title">Status</h2>
 
         <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] divide-y divide-[#F2F5F8]">
           <div className="flex items-center gap-3 p-4" data-testid="status-account">
@@ -578,7 +578,7 @@ function HomeTab({
             </div>
             <div className="flex-1">
               <p className="text-[14px] font-medium text-[#1B2A4A]">Account actief</p>
-              <p className="text-[12px] text-[#9BA5B7]">{user.email}</p>
+              <p className="text-[13px] font-[500] text-[#6B7280]">{user.email}</p>
             </div>
           </div>
 
@@ -594,7 +594,7 @@ function HomeTab({
               <p className="text-[14px] font-medium text-[#1B2A4A]">
                 {hasProfiles ? `${profileCount} ${profileCount === 1 ? "zoekprofiel" : "zoekprofielen"} actief` : "Geen zoekprofielen"}
               </p>
-              <p className="text-[12px] text-[#9BA5B7]">
+              <p className="text-[13px] font-[500] text-[#6B7280]">
                 {hasProfiles ? "Je ontvangt automatisch matches" : "Stel je eerste zoekopdracht in"}
               </p>
             </div>
@@ -703,14 +703,14 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
               className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-1 rounded-full text-[13px] font-semibold transition-all duration-200 ${
                 isActive
                   ? "bg-white text-[#1B2A4A] shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
-                  : "text-[#72839A] hover:text-[#1B2A4A] hover:bg-white/50"
+                  : "text-[#6B7280] hover:text-[#1B2A4A] hover:bg-white/50"
               }`}
               data-testid={`tab-matches-${key}`}
             >
               <span>{label}</span>
               {count > 0 && (
                 <span className={`text-[10px] font-bold min-w-[20px] h-[20px] flex items-center justify-center rounded-full ${
-                  isActive ? "bg-[#0066FF] text-white" : "bg-[#E2E6ED] text-[#72839A]"
+                  isActive ? "bg-[#0066FF] text-white" : "bg-[#E2E6ED] text-[#6B7280]"
                 }`}>
                   {count}
                 </span>
@@ -743,7 +743,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
             <AlertCircle className="w-5 h-5 text-red-500" />
           </div>
           <p className="text-[18px] font-[700] text-[#1B2A4A]">Kon matches niet laden</p>
-          <p className="text-[13px] text-[#72839A]">Controleer je verbinding en probeer het opnieuw.</p>
+          <p className="text-[13px] text-[#6B7280]">Controleer je verbinding en probeer het opnieuw.</p>
           <button
             onClick={() => apiMatchesQuery.refetch()}
             className="text-[13px] font-semibold text-[#0066FF]"
@@ -758,7 +758,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
             <Heart className="w-6 h-6 text-[#0066FF]" />
           </div>
           <p className="text-[20px] font-[700] text-[#1B2A4A]">Nog geen matches</p>
-          <p className="text-[13px] text-[#72839A] max-w-[250px]">
+          <p className="text-[13px] text-[#6B7280] max-w-[250px]">
             Zodra we woningen vinden die passen bij jouw filters, verschijnen ze hier.
           </p>
           <button
@@ -774,13 +774,13 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
         <div className="bg-white rounded-2xl shadow-[0_1px_8px_rgba(0,0,0,0.06)] p-8 flex flex-col items-center text-center gap-3" data-testid="empty-filtered-matches">
           <div className="w-14 h-14 rounded-full bg-[#F3F4F8] flex items-center justify-center">
             {subTab === "opgeslagen" ? (
-              <Bookmark className="w-6 h-6 text-[#72839A]" />
+              <Bookmark className="w-6 h-6 text-[#6B7280]" />
             ) : subTab === "bekeken" ? (
-              <Eye className="w-6 h-6 text-[#72839A]" />
+              <Eye className="w-6 h-6 text-[#6B7280]" />
             ) : subTab === "gereageerd" ? (
-              <Send className="w-6 h-6 text-[#72839A]" />
+              <Send className="w-6 h-6 text-[#6B7280]" />
             ) : (
-              <Heart className="w-6 h-6 text-[#72839A]" />
+              <Heart className="w-6 h-6 text-[#6B7280]" />
             )}
           </div>
           <p className="text-[20px] font-[700] text-[#1B2A4A]">
@@ -789,7 +789,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
             {subTab === "gereageerd" && "Geen gereageerde matches"}
             {subTab === "nieuw" && "Alle matches zijn bekeken"}
           </p>
-          <p className="text-[13px] text-[#72839A] max-w-[250px]">
+          <p className="text-[13px] text-[#6B7280] max-w-[250px]">
             {subTab === "opgeslagen" && "Tik op het bladwijzer-icoon om een match op te slaan."}
             {subTab === "bekeken" && "Woningen die je hebt geopend verschijnen hier."}
             {subTab === "gereageerd" && "Woningen waar je op hebt gereageerd verschijnen hier."}
@@ -863,7 +863,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-[26px] font-[700] text-[#1B2A4A] tracking-[-0.02em] leading-[1.15]">Zoekprofielen</h1>
-          <p className="text-[13px] text-[#72839A] mt-0.5">{profileCount} van {MAX_PROFILES} actief</p>
+          <p className="text-[13px] text-[#6B7280] mt-0.5">{profileCount} van {MAX_PROFILES} actief</p>
         </div>
         {!atLimit && (
           <button
@@ -894,7 +894,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
             <Search className="w-6 h-6 text-[#0066FF]" />
           </div>
           <p className="text-[16px] font-semibold text-[#1B2A4A]">Geen zoekprofielen</p>
-          <p className="text-[13px] text-[#72839A] max-w-[250px]">
+          <p className="text-[13px] text-[#6B7280] max-w-[250px]">
             Voeg een zoekopdracht toe om automatisch woningen te ontvangen.
           </p>
           <button
@@ -1127,7 +1127,7 @@ export default function DashboardPage() {
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-[#0066FF] animate-pulse" />
-          <p className="text-[#72839A] text-sm">Laden...</p>
+          <p className="text-[#6B7280] text-sm">Laden...</p>
         </div>
       </div>
     );
@@ -1189,7 +1189,7 @@ export default function DashboardPage() {
                 key={key}
                 onClick={() => setActiveTab(key)}
                 className={`flex-1 flex flex-col items-center gap-0.5 py-3 transition-colors ${
-                  isActive ? "text-[#0066FF]" : "text-[#9BA5B7]"
+                  isActive ? "text-[#0066FF]" : "text-[#6B7280]"
                 }`}
                 data-testid={`tab-${key}`}
               >

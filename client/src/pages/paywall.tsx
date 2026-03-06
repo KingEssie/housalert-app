@@ -134,7 +134,7 @@ export default function PaywallPage() {
           <h1 className="text-[32px] font-[800] text-[#1B2A4A] tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-paywall-title">
             Kies je abonnement
           </h1>
-          <p className="text-[15px] text-[#72839A]">
+          <p className="text-[15px] text-[#6B7280]">
             Start vandaag en ontvang direct meldingen voor nieuwe woningen.
           </p>
         </div>
@@ -163,7 +163,7 @@ export default function PaywallPage() {
               <div className="flex items-center justify-between gap-4 pr-8">
                 <div>
                   <p className="text-[18px] font-bold text-[#1B2A4A]">{plan.name}</p>
-                  <p className="text-[15px] text-[#72839A]">{plan.pricePerMonth}</p>
+                  <p className="text-[15px] text-[#6B7280]">{plan.pricePerMonth}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-xl font-extrabold text-[#1B2A4A]">{plan.price}</p>
@@ -194,7 +194,7 @@ export default function PaywallPage() {
                 <div className="w-5 h-5 rounded-full bg-[#ecfdf5] flex items-center justify-center flex-shrink-0">
                   <Check className="w-3 h-3 text-[#22c55e]" />
                 </div>
-                <span className="text-[15px] text-[#72839A]">{feature}</span>
+                <span className="text-[15px] text-[#6B7280]">{feature}</span>
               </div>
             ))}
           </div>
@@ -208,7 +208,7 @@ export default function PaywallPage() {
               <AlertCircle className="w-5 h-5 text-amber-500 mt-0.5 flex-shrink-0" />
               <div>
                 <p className="text-[14px] font-semibold text-[#1B2A4A]">Betaling wordt binnenkort beschikbaar</p>
-                <p className="text-[13px] text-[#72839A] mt-1">We werken aan de betalingsintegratie. Probeer het later opnieuw.</p>
+                <p className="text-[13px] text-[#6B7280] mt-1">We werken aan de betalingsintegratie. Probeer het later opnieuw.</p>
               </div>
             </div>
           ) : (
@@ -229,7 +229,7 @@ export default function PaywallPage() {
                   "Selecteer betaalmethode"
                 )}
               </Button>
-              <p className="text-center text-[13px] text-[#9BA5B7] mt-3 opacity-60">
+              <p className="text-center text-[13px] text-[#6B7280] mt-3 opacity-60">
                 Veilig betalen via Stripe. Opzeggen kan altijd.
               </p>
             </>

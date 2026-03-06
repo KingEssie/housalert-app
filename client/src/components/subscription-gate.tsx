@@ -26,7 +26,7 @@ export function SubscriptionGate({ isActive, children }: SubscriptionGateProps) 
           <h3 className="text-lg font-bold text-[#1B2A4A] mb-2" data-testid="text-gate-title">
             Activeer je abonnement
           </h3>
-          <p className="text-sm text-[#72839A] mb-5">
+          <p className="text-sm text-[#6B7280] mb-5">
             Upgrade om al je matches te zien en direct meldingen te ontvangen.
           </p>
           <button

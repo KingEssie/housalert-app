@@ -17,7 +17,7 @@ export default function LandingPage() {
           </div>
           <Button
             variant="ghost"
-            className="text-[#72839A] font-semibold text-sm"
+            className="text-[#6B7280] font-semibold text-sm"
             onClick={() => navigate("/login")}
             data-testid="button-login-nav"
           >
@@ -36,7 +36,7 @@ export default function LandingPage() {
               Vind nieuwe huurwoningen voordat anderen ze zien
             </h1>
             <p
-              className="text-lg md:text-xl text-[#72839A] leading-relaxed mb-12 max-w-lg mx-auto"
+              className="text-lg md:text-xl text-[#6B7280] leading-relaxed mb-12 max-w-lg mx-auto"
               data-testid="text-subheadline"
             >
               Wij zoeken nieuwe huurwoningen op meerdere websites en sturen ze direct naar jou.
@@ -51,7 +51,7 @@ export default function LandingPage() {
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
 
-            <div className="flex items-center justify-center gap-6 mt-10 text-sm text-[#72839A]">
+            <div className="flex items-center justify-center gap-6 mt-10 text-sm text-[#6B7280]">
               <span className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-[#22c55e]" />
                 Gratis starten
@@ -75,7 +75,7 @@ export default function LandingPage() {
                   <Search className="w-6 h-6 text-[#0066FF]" />
                 </div>
                 <h3 className="text-[18px] font-bold text-[#1B2A4A] mb-2">Slim zoeken</h3>
-                <p className="text-[15px] text-[#72839A] leading-relaxed">
+                <p className="text-[15px] text-[#6B7280] leading-relaxed">
                   Stel je filters in en wij doorzoeken meerdere websites tegelijk voor jou.
                 </p>
               </div>
@@ -85,7 +85,7 @@ export default function LandingPage() {
                   <Bell className="w-6 h-6 text-emerald-600" />
                 </div>
                 <h3 className="text-[18px] font-bold text-[#1B2A4A] mb-2">Direct meldingen</h3>
-                <p className="text-[15px] text-[#72839A] leading-relaxed">
+                <p className="text-[15px] text-[#6B7280] leading-relaxed">
                   Ontvang een melding via e-mail, SMS of WhatsApp zodra er iets nieuws is.
                 </p>
               </div>
@@ -95,7 +95,7 @@ export default function LandingPage() {
                   <Zap className="w-6 h-6 text-rose-500" />
                 </div>
                 <h3 className="text-[18px] font-bold text-[#1B2A4A] mb-2">Sneller dan de rest</h3>
-                <p className="text-[15px] text-[#72839A] leading-relaxed">
+                <p className="text-[15px] text-[#6B7280] leading-relaxed">
                   Reageer als eerste op nieuwe woningen voordat anderen ze zien.
                 </p>
               </div>
@@ -123,7 +123,7 @@ export default function LandingPage() {
                   </div>
                   <div className="pt-2 pb-6">
                     <h3 className="text-[18px] font-bold text-[#1B2A4A] mb-1">{item.title}</h3>
-                    <p className="text-[15px] text-[#72839A]">{item.desc}</p>
+                    <p className="text-[15px] text-[#6B7280]">{item.desc}</p>
                   </div>
                 </div>
               ))}
@@ -136,7 +136,7 @@ export default function LandingPage() {
             <h2 className="text-[32px] font-[800] text-[#1B2A4A] tracking-[-0.03em] leading-[1.1] mb-4" data-testid="text-cta-bottom">
               Klaar om te beginnen?
             </h2>
-            <p className="text-[15px] text-[#72839A] mb-8">
+            <p className="text-[15px] text-[#6B7280] mb-8">
               Maak een account aan en ontvang direct woningmeldingen.
             </p>
             <Button
@@ -154,12 +154,12 @@ export default function LandingPage() {
 
       <footer className="border-t border-[#EAEFF5] py-8 px-6 bg-white">
         <div className="max-w-5xl mx-auto flex flex-col items-center gap-3">
-          <div className="flex items-center gap-4 flex-wrap justify-center text-sm text-[#72839A]">
+          <div className="flex items-center gap-4 flex-wrap justify-center text-sm text-[#6B7280]">
             <a href="/impressum" className="hover:text-[#1B2A4A] transition-colors" data-testid="link-impressum">Impressum</a>
             <a href="/datenschutz" className="hover:text-[#1B2A4A] transition-colors" data-testid="link-datenschutz">Datenschutz</a>
             <a href="/terms" className="hover:text-[#1B2A4A] transition-colors" data-testid="link-terms">AGB</a>
           </div>
-          <p className="text-[13px] text-[#9BA5B7]">
+          <p className="text-[13px] text-[#6B7280]">
             &copy; {new Date().getFullYear()} Stekkies. Alle rechten voorbehouden.
           </p>
         </div>

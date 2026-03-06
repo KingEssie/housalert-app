@@ -105,7 +105,7 @@ export default function SignupPage() {
             className="w-10 h-10 rounded-full flex items-center justify-center bg-[#F2F5F8] hover:bg-[#EAEFF5] transition-colors"
             data-testid="button-back-estimate"
           >
-            <ChevronLeft className="w-5 h-5 text-[#72839A]" />
+            <ChevronLeft className="w-5 h-5 text-[#6B7280]" />
           </button>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-xl bg-[#0066FF] flex items-center justify-center">
@@ -121,7 +121,7 @@ export default function SignupPage() {
           <h1 className="text-[32px] font-[800] text-[#1B2A4A] tracking-[-0.03em] leading-[1.1] mb-4" data-testid="text-signup-title">
             Maak je account aan
           </h1>
-          <p className="text-[15px] text-[#72839A]">
+          <p className="text-[15px] text-[#6B7280]">
             Ontvang direct meldingen voor nieuwe woningen{city ? <> in <span className="font-semibold text-[#1B2A4A]">{city}</span></> : ""}.
           </p>
         </div>
@@ -188,7 +188,7 @@ export default function SignupPage() {
           </form>
         </div>
 
-        <p className="text-center text-[15px] text-[#72839A] mt-6">
+        <p className="text-center text-[15px] text-[#6B7280] mt-6">
           Heb je al een account?{" "}
           <button
             onClick={() => navigate("/login")}
@@ -199,7 +199,7 @@ export default function SignupPage() {
           </button>
         </p>
 
-        <p className="text-center text-[13px] text-[#9BA5B7] mt-4">
+        <p className="text-center text-[13px] text-[#6B7280] mt-4">
           Door je aan te melden ga je akkoord met onze voorwaarden.
         </p>
       </main>

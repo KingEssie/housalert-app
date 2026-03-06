@@ -85,16 +85,16 @@ function PopularCard({ listing }: { listing: PopularListing }) {
         {listing.price > 0 && (
           <span className="text-[15px] font-bold text-[#1B2A4A]">
             {"\u20AC"}{listing.price}
-            <span className="text-[11px] font-normal text-[#72839A]">/mnd</span>
+            <span className="text-[11px] font-normal text-[#6B7280]">/mnd</span>
           </span>
         )}
 
-        <div className="flex items-center gap-1 text-[12px] text-[#72839A]">
+        <div className="flex items-center gap-1 text-[12px] text-[#6B7280]">
           <MapPin className="w-3 h-3 flex-shrink-0" />
           <span className="truncate">{listing.city}</span>
         </div>
 
-        <div className="flex items-center gap-2 text-[11px] text-[#9BA5B7]">
+        <div className="flex items-center gap-2 text-[11px] text-[#6B7280]">
           {listing.bedrooms > 0 && (
             <span className="flex items-center gap-0.5">
               <BedDouble className="w-3 h-3" />
@@ -122,8 +122,8 @@ export function PopulairVandaagSection() {
     return (
       <div className="flex flex-col gap-3">
         <div>
-          <h2 className="text-[16px] font-[700] text-[#1B2A4A]">Populair vandaag</h2>
-          <p className="text-[13px] text-[#9BA5B7] mt-0.5">Woningen die veel aandacht krijgen</p>
+          <h2 className="text-section-title">Populair vandaag</h2>
+          <p className="text-[13px] font-[500] text-[#6B7280] mt-0.5">Woningen die veel aandacht krijgen</p>
         </div>
         <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none">
           {[1, 2, 3].map((i) => (
@@ -140,10 +140,10 @@ export function PopulairVandaagSection() {
     <div className="flex flex-col gap-3" data-testid="section-populair-vandaag">
       <div>
         <div className="flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-[#72839A]" />
-          <h2 className="text-[16px] font-[700] text-[#1B2A4A]">Populair vandaag</h2>
+          <TrendingUp className="w-4 h-4 text-[#6B7280]" />
+          <h2 className="text-section-title">Populair vandaag</h2>
         </div>
-        <p className="text-[13px] text-[#9BA5B7] mt-0.5 ml-6">Woningen die veel aandacht krijgen</p>
+        <p className="text-[13px] text-[#6B7280] mt-0.5 ml-6">Woningen die veel aandacht krijgen</p>
       </div>
       <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 snap-x snap-mandatory scrollbar-none">
         {listings.map((listing) => (

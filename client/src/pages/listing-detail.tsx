@@ -76,7 +76,7 @@ export default function ListingDetailPage() {
         <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
           <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center">
             <button onClick={() => navigate("/dashboard")} className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center hover:bg-[#EAEFF5] transition-colors" data-testid="button-back">
-              <ArrowLeft className="w-5 h-5 text-[#72839A]" />
+              <ArrowLeft className="w-5 h-5 text-[#6B7280]" />
             </button>
           </div>
         </header>
@@ -107,14 +107,14 @@ export default function ListingDetailPage() {
         <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
           <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center">
             <button onClick={() => navigate("/dashboard")} className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center hover:bg-[#EAEFF5] transition-colors" data-testid="button-back">
-              <ArrowLeft className="w-5 h-5 text-[#72839A]" />
+              <ArrowLeft className="w-5 h-5 text-[#6B7280]" />
             </button>
           </div>
         </header>
         <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6">
           <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-8 text-center">
             <p className="text-[18px] font-bold text-[#1B2A4A] mb-2">Advertentie niet gevonden</p>
-            <p className="text-[13px] text-[#72839A] mb-4">Deze advertentie bestaat niet meer of is verwijderd.</p>
+            <p className="text-[13px] text-[#6B7280] mb-4">Deze advertentie bestaat niet meer of is verwijderd.</p>
             <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[16px] font-semibold" data-testid="button-back-dashboard">
               Terug naar dashboard
             </Button>
@@ -131,7 +131,7 @@ export default function ListingDetailPage() {
       <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
         <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center">
           <button onClick={() => navigate("/dashboard")} className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center hover:bg-[#EAEFF5] transition-colors" data-testid="button-back">
-            <ArrowLeft className="w-5 h-5 text-[#72839A]" />
+            <ArrowLeft className="w-5 h-5 text-[#6B7280]" />
           </button>
         </div>
       </header>
@@ -143,7 +143,7 @@ export default function ListingDetailPage() {
               <span className={`text-[11px] font-medium px-2.5 py-0.5 rounded-full ${style.bg} ${style.text}`} data-testid="badge-freshness">
                 {FRESH_LABEL_TEXT[listing.fresh_label] ?? listing.fresh_label}
               </span>
-              <span className="text-[12px] text-[#9BA5B7] flex items-center gap-1">
+              <span className="text-[13px] font-[500] text-[#6B7280] flex items-center gap-1">
                 <Clock className="w-3 h-3" />
                 {relativeTime(listing.first_seen_at)}
               </span>
@@ -166,7 +166,7 @@ export default function ListingDetailPage() {
               {listing.title}
             </h1>
 
-            <div className="flex items-center gap-1.5 text-[15px] text-[#72839A]">
+            <div className="flex items-center gap-1.5 text-[15px] text-[#6B7280]">
               <MapPin className="w-4 h-4" />
               <span data-testid="text-listing-location">
                 {listing.city}{listing.district ? `, ${listing.district}` : ""}
@@ -183,7 +183,7 @@ export default function ListingDetailPage() {
                     <Euro className="w-5 h-5 text-[#0066FF]" />
                   </div>
                   <div>
-                    <p className="text-[13px] text-[#9BA5B7]">Huur</p>
+                    <p className="text-[13px] text-[#6B7280]">Huur</p>
                     <p className="text-[15px] font-semibold text-[#1B2A4A]" data-testid="text-listing-price">€{listing.price}/mnd</p>
                   </div>
                 </div>
@@ -195,7 +195,7 @@ export default function ListingDetailPage() {
                     <BedDouble className="w-5 h-5 text-[#0066FF]" />
                   </div>
                   <div>
-                    <p className="text-[13px] text-[#9BA5B7]">Slaapkamers</p>
+                    <p className="text-[13px] text-[#6B7280]">Slaapkamers</p>
                     <p className="text-[15px] font-semibold text-[#1B2A4A]" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
                   </div>
                 </div>
@@ -207,7 +207,7 @@ export default function ListingDetailPage() {
                     <Ruler className="w-5 h-5 text-[#0066FF]" />
                   </div>
                   <div>
-                    <p className="text-[13px] text-[#9BA5B7]">Oppervlakte</p>
+                    <p className="text-[13px] text-[#6B7280]">Oppervlakte</p>
                     <p className="text-[15px] font-semibold text-[#1B2A4A]" data-testid="text-listing-size">{listing.size_m2} m²</p>
                   </div>
                 </div>
@@ -218,7 +218,7 @@ export default function ListingDetailPage() {
                   <Globe className="w-5 h-5 text-[#0066FF]" />
                 </div>
                 <div>
-                  <p className="text-[13px] text-[#9BA5B7]">Bron</p>
+                  <p className="text-[13px] text-[#6B7280]">Bron</p>
                   <p className="text-[15px] font-semibold text-[#1B2A4A] capitalize" data-testid="text-listing-source">{listing.source}</p>
                 </div>
               </div>

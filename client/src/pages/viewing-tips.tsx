@@ -112,7 +112,7 @@ export default function ViewingTipsPage() {
             className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center hover:bg-[#EAEFF5] mr-3"
             data-testid="button-back-tips"
           >
-            <ArrowLeft className="w-4 h-4 text-[#72839A]" />
+            <ArrowLeft className="w-4 h-4 text-[#6B7280]" />
           </button>
           <h1 className="text-[18px] font-bold text-[#1B2A4A]">Bezichtigingtips</h1>
         </div>
@@ -123,7 +123,7 @@ export default function ViewingTipsPage() {
           <h2 className="text-[32px] font-[800] text-[#1B2A4A] tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-tips-heading">
             Goed voorbereid naar een bezichtiging
           </h2>
-          <p className="text-[15px] text-[#72839A] leading-relaxed">
+          <p className="text-[15px] text-[#6B7280] leading-relaxed">
             In de Duitse huurmarkt is voorbereiding alles. Met deze tips vergroot je je kans op de woning.
           </p>
         </div>
@@ -148,7 +148,7 @@ export default function ViewingTipsPage() {
                     {section.items.map((item, i) => (
                       <li key={i} className="flex items-start gap-2.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#0066FF] mt-2 flex-shrink-0" />
-                        <span className="text-[13px] text-[#72839A] leading-relaxed">{item}</span>
+                        <span className="text-[13px] text-[#6B7280] leading-relaxed">{item}</span>
                       </li>
                     ))}
                   </ul>

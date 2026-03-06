@@ -38,7 +38,7 @@ function LegalLayout({ title, children }: { title: string; children: React.React
       </main>
 
       <footer className="border-t border-[#EAEFF5] py-8 px-6">
-        <div className="max-w-xl mx-auto text-center text-[13px] text-[#72839A]">
+        <div className="max-w-xl mx-auto text-center text-[13px] text-[#6B7280]">
           &copy; {new Date().getFullYear()} Stekkies. Alle rechten voorbehouden.
         </div>
       </footer>

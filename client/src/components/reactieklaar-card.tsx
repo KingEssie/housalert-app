@@ -137,11 +137,11 @@ export function ReactieklaarCard({
                 <div className="w-[18px] h-[18px] rounded-full border-2 border-[#E2E6ED] flex-shrink-0" />
               )}
               <Icon className={`w-4 h-4 flex-shrink-0 ${step.done ? "text-[#C5CBD6]" : "text-[#0066FF]"}`} />
-              <span className={`text-[14px] flex-1 ${step.done ? "text-[#9BA5B7]" : "text-[#1B2A4A] font-medium"}`}>
+              <span className={`text-[14px] flex-1 ${step.done ? "text-[#6B7280]" : "text-[#1B2A4A] font-medium"}`}>
                 {step.label}
               </span>
               {hasAction && (
-                <ArrowRight className="w-3.5 h-3.5 text-[#9BA5B7] flex-shrink-0" />
+                <ArrowRight className="w-3.5 h-3.5 text-[#6B7280] flex-shrink-0" />
               )}
             </div>
           );

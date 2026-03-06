@@ -20,6 +20,16 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - `client/src/pages/signup.tsx` — Account creation at `/signup` (creates search profile)
 - `client/src/pages/paywall.tsx` — Subscription plans at `/paywall` (Stripe placeholder)
 
+### Typography System
+- CSS utility classes defined in `client/src/index.css` under `@layer utilities`:
+  - `.text-page-title` — 28px, weight 700, #111, tracking -0.02em (for page headings)
+  - `.text-section-title` — 20px, weight 600, #111 (for section headings)
+  - `.text-subtitle` — 15px, weight 500, #6B7280 (for subtitles)
+  - `.text-muted-body` — 14px, weight 500, #6B7280 (for secondary/muted text)
+- Color tokens: primary text #111, secondary text #6B7280, divider #F1F1F1
+- Old muted colors #9BA5B7 and #72839A have been globally replaced with #6B7280
+- Subtitle text bumped from 12px to 13px with font-weight 500 across all pages
+
 ### Market Config
 - `config/market.ts` — Centralized market configuration for Germany (DE)
   - `defaultCountry = "DE"`, `defaultCities` (30 German cities with lat/lng), `cityDistricts` (8 major cities)

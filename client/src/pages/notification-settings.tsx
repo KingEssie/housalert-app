@@ -132,7 +132,7 @@ export default function NotificationSettingsPage() {
             className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center hover:bg-[#EAEFF5] transition-colors"
             data-testid="button-back"
           >
-            <ArrowLeft className="w-5 h-5 text-[#72839A]" />
+            <ArrowLeft className="w-5 h-5 text-[#6B7280]" />
           </button>
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-[#0066FF] flex items-center justify-center">
@@ -148,14 +148,14 @@ export default function NotificationSettingsPage() {
           <h1 className="text-[32px] font-[800] text-[#1B2A4A] tracking-[-0.03em] leading-[1.1]" data-testid="text-page-title">
             Meldingsinstellingen
           </h1>
-          <p className="text-[15px] text-[#72839A] mt-1">
+          <p className="text-[15px] text-[#6B7280] mt-1">
             Kies hoe je op de hoogte gehouden wilt worden van nieuwe matches.
           </p>
         </div>
 
         {loadingSettings ? (
           <div className="flex items-center justify-center py-20" data-testid="loading-settings">
-            <Loader2 className="w-6 h-6 animate-spin text-[#9BA5B7]" />
+            <Loader2 className="w-6 h-6 animate-spin text-[#6B7280]" />
           </div>
         ) : (
           <div className="flex flex-col gap-6">
@@ -165,7 +165,7 @@ export default function NotificationSettingsPage() {
                   <Bell className="w-5 h-5" />
                   Kanalen
                 </CardTitle>
-                <CardDescription className="text-[15px] text-[#72839A]">
+                <CardDescription className="text-[15px] text-[#6B7280]">
                   Schakel meldingen in of uit per kanaal.
                 </CardDescription>
               </CardHeader>
@@ -177,7 +177,7 @@ export default function NotificationSettingsPage() {
                     </div>
                     <div>
                       <Label className="text-[14px] font-semibold text-[#1B2A4A]">E-mail</Label>
-                      <p className="text-[13px] text-[#9BA5B7]">Ontvang matches via e-mail</p>
+                      <p className="text-[13px] text-[#6B7280]">Ontvang matches via e-mail</p>
                     </div>
                   </div>
                   <Switch
@@ -196,7 +196,7 @@ export default function NotificationSettingsPage() {
                     </div>
                     <div>
                       <Label className="text-[14px] font-semibold text-[#1B2A4A]">SMS</Label>
-                      <p className="text-[13px] text-[#9BA5B7]">Ontvang matches via SMS</p>
+                      <p className="text-[13px] text-[#6B7280]">Ontvang matches via SMS</p>
                     </div>
                   </div>
                   <Switch
@@ -215,7 +215,7 @@ export default function NotificationSettingsPage() {
                     </div>
                     <div>
                       <Label className="text-[14px] font-semibold text-[#1B2A4A]">WhatsApp</Label>
-                      <p className="text-[13px] text-[#9BA5B7]">Ontvang matches via WhatsApp</p>
+                      <p className="text-[13px] text-[#6B7280]">Ontvang matches via WhatsApp</p>
                     </div>
                   </div>
                   <Switch
@@ -234,7 +234,7 @@ export default function NotificationSettingsPage() {
                     <Phone className="w-5 h-5" />
                     Telefoonnummer
                   </CardTitle>
-                  <CardDescription className="text-[15px] text-[#72839A]">
+                  <CardDescription className="text-[15px] text-[#6B7280]">
                     Nodig voor SMS en WhatsApp meldingen. Gebruik internationaal formaat.
                   </CardDescription>
                 </CardHeader>

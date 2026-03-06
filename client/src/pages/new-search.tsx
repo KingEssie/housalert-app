@@ -240,7 +240,7 @@ export default function NewSearchPage() {
               <AlertCircle className="w-6 h-6 text-red-500" />
             </div>
             <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-2">Limiet bereikt</h2>
-            <p className="text-[14px] text-[#72839A] mb-5">
+            <p className="text-[14px] text-[#6B7280] mb-5">
               Je hebt al {MAX_PROFILES} zoekopdrachten. Verwijder eerst een bestaande om een nieuwe aan te maken.
             </p>
             <Button
@@ -267,7 +267,7 @@ export default function NewSearchPage() {
             subtitle="Kies het type woning dat bij je past."
           >
             <div className="flex flex-col gap-3">
-              <p className="text-[12px] text-[#9BA5B7] -mt-2 mb-1">
+              <p className="text-[13px] font-[500] text-[#6B7280] -mt-2 mb-1">
                 Type-filtering wordt binnenkort actief. Selecteer alvast je voorkeur.
               </p>
               {PROPERTY_TYPES.map((pt) => {
@@ -287,13 +287,13 @@ export default function NewSearchPage() {
                     <div className={`w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 ${
                       selected ? "bg-[#0066FF]" : "bg-[#F2F5F8]"
                     }`}>
-                      <Icon className={`w-5 h-5 ${selected ? "text-white" : "text-[#72839A]"}`} />
+                      <Icon className={`w-5 h-5 ${selected ? "text-white" : "text-[#6B7280]"}`} />
                     </div>
                     <div>
                       <p className={`text-[15px] font-semibold ${selected ? "text-[#0066FF]" : "text-[#1B2A4A]"}`}>
                         {pt.label}
                       </p>
-                      <p className="text-[12px] text-[#9BA5B7]">{pt.desc}</p>
+                      <p className="text-[13px] font-[500] text-[#6B7280]">{pt.desc}</p>
                     </div>
                     {selected && <CheckCircle2 className="w-5 h-5 text-[#0066FF] ml-auto flex-shrink-0" />}
                   </button>
@@ -365,9 +365,9 @@ export default function NewSearchPage() {
               {availableDistricts.length > 0 && (
                 <div>
                   <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">
-                    Wijken <span className="font-normal text-[13px] text-[#9BA5B7]">(optioneel, binnenkort actief)</span>
+                    Wijken <span className="font-normal text-[13px] text-[#6B7280]">(optioneel, binnenkort actief)</span>
                   </label>
-                  <p className="text-[12px] text-[#9BA5B7] mb-2">Wijkfiltering wordt binnenkort toegepast.</p>
+                  <p className="text-[13px] font-[500] text-[#6B7280] mb-2">Wijkfiltering wordt binnenkort toegepast.</p>
                   <div className="flex flex-wrap gap-2">
                     {availableDistricts.map((d) => {
                       const selected = data.districts.includes(d);
@@ -384,7 +384,7 @@ export default function NewSearchPage() {
                           className={`px-3.5 py-2 rounded-full text-[13px] font-medium border transition-all ${
                             selected
                               ? "border-[#0066FF] bg-[#EDF2FF] text-[#0066FF]"
-                              : "border-[#EAEFF5] bg-white text-[#72839A] hover:border-[#EAEFF5]"
+                              : "border-[#EAEFF5] bg-white text-[#6B7280] hover:border-[#EAEFF5]"
                           }`}
                           data-testid={`chip-district-${d}`}
                         >
@@ -533,7 +533,7 @@ export default function NewSearchPage() {
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                       selected ? "bg-[#0066FF]" : "bg-[#F2F5F8]"
                     }`}>
-                      <Icon className={`w-4.5 h-4.5 ${selected ? "text-white" : "text-[#72839A]"}`} />
+                      <Icon className={`w-4.5 h-4.5 ${selected ? "text-white" : "text-[#6B7280]"}`} />
                     </div>
                     <span className={`text-[15px] font-medium flex-1 ${selected ? "text-[#0066FF]" : "text-[#1B2A4A]"}`}>
                       {pref.label}
@@ -542,7 +542,7 @@ export default function NewSearchPage() {
                   </button>
                 );
               })}
-              <p className="text-[12px] text-[#9BA5B7] mt-2">
+              <p className="text-[13px] font-[500] text-[#6B7280] mt-2">
                 Deze voorkeuren helpen ons betere matches te vinden. Ze worden binnenkort actief als filter.
               </p>
             </div>
@@ -585,7 +585,7 @@ export default function NewSearchPage() {
                   </button>
                 );
               })}
-              <p className="text-[12px] text-[#9BA5B7] mt-2">
+              <p className="text-[13px] font-[500] text-[#6B7280] mt-2">
                 Deze filters worden binnenkort toegepast op je zoekresultaten.
               </p>
 
@@ -652,11 +652,11 @@ function WizardHeader({ step, total, onBack }: { step: number; total: number; on
           className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center mr-3"
           data-testid="button-wizard-header-back"
         >
-          <ArrowLeft className="w-4 h-4 text-[#72839A]" />
+          <ArrowLeft className="w-4 h-4 text-[#6B7280]" />
         </button>
         <h1 className="text-[18px] font-bold text-[#1B2A4A] flex-1">Nieuwe zoekopdracht</h1>
         {total > 0 && (
-          <span className="text-[13px] font-medium text-[#9BA5B7]">
+          <span className="text-[13px] font-medium text-[#6B7280]">
             {step}/{total}
           </span>
         )}
@@ -679,7 +679,7 @@ function StepContainer({ title, subtitle, children }: { title: string; subtitle:
     <div className="flex flex-col gap-6">
       <div>
         <h2 className="text-[28px] font-[800] text-[#1B2A4A] tracking-[-0.03em] leading-[1.1] mb-2" data-testid="text-step-title">{title}</h2>
-        <p className="text-[15px] text-[#72839A]">{subtitle}</p>
+        <p className="text-[15px] text-[#6B7280]">{subtitle}</p>
       </div>
       {children}
     </div>
@@ -713,7 +713,7 @@ function EstimateBadge({ estimate, loading }: { estimate: any; loading: boolean 
         <p className="text-[14px] font-semibold text-[#1B2A4A]">
           ~{perWeek} {perWeek === 1 ? "match" : "matches"} per week
         </p>
-        <p className="text-[12px] text-[#72839A]">
+        <p className="text-[13px] font-[500] text-[#6B7280]">
           {count} {count === 1 ? "woning" : "woningen"} in de afgelopen 7 dagen
         </p>
       </div>
