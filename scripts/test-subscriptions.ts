@@ -5,24 +5,32 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-const TEST_USER_ID = "00000000-0000-0000-0000-000000000099";
-const TEST_EMAIL = "test-sub@stekkies.test";
-
 let passed = 0;
 let failed = 0;
+let testUserId: string | null = null;
 
-function assert(label: string, condition: boolean) {
+function assert(label: string, condition: boolean, detail?: string) {
   if (condition) {
     console.log(`  ✅ ${label}`);
     passed++;
   } else {
-    console.log(`  ❌ ${label}`);
+    console.log(`  ❌ ${label}${detail ? ` — ${detail}` : ""}`);
     failed++;
   }
 }
 
+async function findTestUser(): Promise<string | null> {
+  const { data } = await supabase.auth.admin.listUsers({ perPage: 1 });
+  if (data?.users?.length) {
+    return data.users[0].id;
+  }
+  return null;
+}
+
 async function cleanup() {
-  await supabase.from("subscriptions").delete().eq("user_id", TEST_USER_ID);
+  if (testUserId) {
+    await supabase.from("subscriptions").delete().eq("user_id", testUserId);
+  }
 }
 
 async function testTrialCreation() {
@@ -33,14 +41,14 @@ async function testTrialCreation() {
   const { data, error } = await supabase
     .from("subscriptions")
     .insert({
-      user_id: TEST_USER_ID,
+      user_id: testUserId!,
       status: "trial",
       trial_ends_at: trialEndsAt,
     })
     .select()
     .single();
 
-  assert("Trial row inserted without error", !error);
+  assert("Trial row inserted without error", !error, error?.message);
   assert("Status is 'trial'", data?.status === "trial");
   assert("trial_ends_at is set", !!data?.trial_ends_at);
   assert("plan is null", data?.plan === null);
@@ -54,12 +62,12 @@ async function testDuplicatePrevention() {
   const { error } = await supabase
     .from("subscriptions")
     .insert({
-      user_id: TEST_USER_ID,
+      user_id: testUserId!,
       status: "trial",
       trial_ends_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     });
 
-  assert("Duplicate insert rejected (unique user_id)", !!error);
+  assert("Duplicate insert rejected (unique user_id)", !!error, error?.message);
 }
 
 async function testStatusLogic() {
@@ -68,7 +76,7 @@ async function testStatusLogic() {
   const { data } = await supabase
     .from("subscriptions")
     .select("*")
-    .eq("user_id", TEST_USER_ID)
+    .eq("user_id", testUserId!)
     .single();
 
   assert("Row found", !!data);
@@ -100,14 +108,14 @@ async function testStatusUpdate() {
       current_period_ends_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
       updated_at: new Date().toISOString(),
     })
-    .eq("user_id", TEST_USER_ID);
+    .eq("user_id", testUserId!);
 
-  assert("Update to active succeeded", !error);
+  assert("Update to active succeeded", !error, error?.message);
 
   const { data } = await supabase
     .from("subscriptions")
     .select("*")
-    .eq("user_id", TEST_USER_ID)
+    .eq("user_id", testUserId!)
     .single();
 
   assert("Status is 'active'", data?.status === "active");
@@ -124,7 +132,7 @@ async function testStatusEndpoint() {
     const res = await fetch("http://localhost:5000/api/subscription/status");
     assert("Unauthenticated request returns 401", res.status === 401);
   } catch (err: any) {
-    assert("Status endpoint reachable", false);
+    assert("Status endpoint reachable", false, err.message);
   }
 }
 
@@ -139,7 +147,7 @@ async function testCheckoutEndpoint() {
     });
     assert("Unauthenticated request returns 401", res.status === 401);
   } catch (err: any) {
-    assert("Checkout endpoint reachable", false);
+    assert("Checkout endpoint reachable", false, err.message);
   }
 
   try {
@@ -153,12 +161,33 @@ async function testCheckoutEndpoint() {
     });
     assert("Invalid token returns 401", res.status === 401);
   } catch (err: any) {
-    assert("Checkout endpoint reachable with bad token", false);
+    assert("Checkout endpoint reachable with bad token", false, err.message);
+  }
+}
+
+async function testEnsureTrialEndpoint() {
+  console.log("\n7. POST /api/subscription/ensure-trial endpoint");
+
+  try {
+    const res = await fetch("http://localhost:5000/api/subscription/ensure-trial", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
+    assert("Unauthenticated request returns 401", res.status === 401);
+  } catch (err: any) {
+    assert("Ensure-trial endpoint reachable", false, err.message);
   }
 }
 
 async function run() {
   console.log("=== Subscription Tests ===");
+
+  testUserId = await findTestUser();
+  if (!testUserId) {
+    console.error("No users found in Supabase. Cannot run tests.");
+    process.exit(1);
+  }
+  console.log(`Using test user: ${testUserId}`);
 
   await cleanup();
 
@@ -168,6 +197,7 @@ async function run() {
   await testStatusUpdate();
   await testStatusEndpoint();
   await testCheckoutEndpoint();
+  await testEnsureTrialEndpoint();
 
   await cleanup();
 

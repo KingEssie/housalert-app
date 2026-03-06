@@ -49,10 +49,24 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - `client/src/pages/new-search.tsx` — Form to create a new search profile (max 4 per user)
 - `client/src/pages/notification-settings.tsx` — Notification preferences (email/SMS/WhatsApp toggles)
 
+### Subscriptions
+- `server/subscriptions.ts` — Subscription helpers: `ensureTrialSubscription`, `getSubscriptionStatus`, `updateSubscriptionFromCheckout`, `updateSubscriptionStatus`, `findUserByStripeCustomerId`
+- `client/src/lib/subscription.ts` — `useSubscription()` hook (fetches `/api/subscription/status`)
+- `client/src/components/subscription-gate.tsx` — Soft paywall component (blurs content + CTA overlay)
+- Table: `subscriptions` in Supabase (id, user_id, status, plan, trial_ends_at, current_period_ends_at, stripe_customer_id, stripe_subscription_id, created_at, updated_at)
+- Status values: `trial`, `active`, `canceled`, `expired`
+- Plan values: `monthly`, `two_month`, `three_month`
+- Trial: 7-day free trial auto-created on signup via `POST /api/subscription/ensure-trial`
+- Soft paywall: matches tab blurred when expired; trial/expired banners on home tab; real status in profiel tab
+
 ### API Endpoints
 - `GET /api/estimate?city=&minPrice=&maxPrice=&minRooms=&minSize=` — Returns `{ perWeekEstimate, last7dCount }` based on Supabase listings
-- `POST /api/checkout` — Creates Stripe checkout session (requires auth, `{ priceId }`)
+- `POST /api/checkout/session` — Creates Stripe checkout session (requires auth, `{ plan: "monthly"|"two_month"|"three_month" }`)
+- `POST /api/checkout` — Legacy checkout endpoint (maps old plan IDs to new ones)
 - `GET /api/stripe/publishable-key` — Returns Stripe publishable key
+- `POST /api/stripe/webhook` — Stripe webhook (handles checkout.session.completed, subscription created/updated/deleted)
+- `POST /api/subscription/ensure-trial` — Creates trial subscription row if none exists (auth required)
+- `GET /api/subscription/status` — Returns subscription state with isActive/isTrial/isExpired booleans (auth required)
 - `GET /api/matches` — Returns user's matches with listing details (auth required)
 - `GET /api/search-profiles` — Returns user's search profiles (auth required)
 - `DELETE /api/search-profiles/:id` — Deletes a search profile (auth required, ownership check)
@@ -60,7 +74,13 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 
 ### Stripe Config
 - `server/stripe/stripeClient.ts` — Stripe client via Replit connector
-- Plan IDs map to env vars: `STRIPE_PRICE_1_MONTH`, `STRIPE_PRICE_2_MONTHS`, `STRIPE_PRICE_3_MONTHS`
+- Plan IDs map to env vars: `STRIPE_PRICE_MONTHLY` (or `STRIPE_PRICE_1_MONTH`), `STRIPE_PRICE_TWO_MONTH` (or `STRIPE_PRICE_2_MONTHS`), `STRIPE_PRICE_THREE_MONTH` (or `STRIPE_PRICE_3_MONTHS`)
+- Webhook secret: `STRIPE_WEBHOOK_SECRET`
+- Base URL override: `APP_PUBLIC_BASE_URL`
+
+### Test Scripts
+- `scripts/test-subscriptions.ts` — 19 tests covering trial creation, duplicate prevention, status logic, activation, and endpoint auth. Run with `npx tsx scripts/test-subscriptions.ts`
+- `scripts/test-matching-engine.ts` — Matching engine tests. Run with `npx tsx scripts/test-matching-engine.ts`
 
 ## Required Secrets
 
