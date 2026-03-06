@@ -12,7 +12,6 @@ import { SubscriptionGate } from "@/components/subscription-gate";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { ProfileStrengthSection, SpeedBanner } from "@/components/profile-strength";
 import { ReactieklaarCard } from "@/components/reactieklaar-card";
 import { ReactiesnelheidCard } from "@/components/reactiesnelheid-card";
 import { ApplySheet } from "@/components/apply-sheet";
@@ -35,7 +34,6 @@ import {
   CheckCircle2,
   AlertCircle,
   Sparkles,
-  Settings,
   Mail,
   Crown,
   AlertTriangle,
@@ -499,6 +497,7 @@ function HomeTab({
   const firstName = user.email?.split("@")[0] ?? "daar";
   const profileCount = profiles.length;
   const hasProfiles = profileCount > 0;
+  const hasMatches = matchCount > 0;
 
   return (
     <div className="flex flex-col gap-6 pb-6">
@@ -506,32 +505,7 @@ function HomeTab({
         <h1 className="text-page-title" data-testid="text-greeting">
           Hallo, {firstName}
         </h1>
-        <p className="text-subtitle mt-1">Welkom terug bij Stekkies</p>
       </div>
-
-      {subscription.isTrial && subscription.trialEndsAt && (
-        <div className="bg-[#EDF2FF] rounded-2xl p-5 flex items-center gap-3" data-testid="banner-trial">
-          <div className="w-9 h-9 rounded-full bg-[#0066FF]/10 flex items-center justify-center flex-shrink-0">
-            <Crown className="w-4 h-4 text-[#0066FF]" />
-          </div>
-          <div className="flex-1">
-            <p className="text-[14px] font-semibold text-[#0F172A]">Proefperiode</p>
-            <p className="text-[13px] font-[500] text-[#6B7280]">
-              Je proefperiode loopt tot{" "}
-              <span className="font-semibold text-[#0F172A]">
-                {new Date(subscription.trialEndsAt).toLocaleDateString("de-DE", { day: "numeric", month: "long" })}
-              </span>
-            </p>
-          </div>
-          <button
-            onClick={() => navigate("/paywall")}
-            className="text-[12px] font-semibold text-[#0066FF] hover:underline flex-shrink-0"
-            data-testid="button-trial-upgrade"
-          >
-            Upgrade
-          </button>
-        </div>
-      )}
 
       {subscription.isExpired && (
         <div className="bg-red-50 rounded-2xl p-5 flex items-center gap-3" data-testid="banner-expired">
@@ -552,65 +526,98 @@ function HomeTab({
         </div>
       )}
 
-      <div className="bg-gradient-to-br from-[#0066FF] to-[#0052CC] rounded-2xl p-6 text-white">
-        <div className="flex items-center gap-2 mb-2">
-          <Sparkles className="w-4 h-4 text-white/80" />
-          <span className="text-[13px] font-medium text-white/80">Wekelijks overzicht</span>
+      {hasMatches ? (
+        <div className="rounded-2xl bg-[#F0F7FF] p-6" data-testid="hero-matches">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-11 h-11 rounded-full bg-[#0066FF] flex items-center justify-center flex-shrink-0">
+              <Heart className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[22px] font-bold text-[#0F172A] leading-tight" data-testid="text-match-count">
+                {matchCount} {matchCount === 1 ? "match" : "matches"} gevonden
+              </p>
+              <p className="text-[14px] font-[500] text-[#6B7280] mt-0.5">
+                {hasProfiles
+                  ? `Op basis van ${profileCount} ${profileCount === 1 ? "zoekprofiel" : "zoekprofielen"}`
+                  : "Op basis van je zoekopdracht"}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setActiveTab("matches")}
+            className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold transition-colors flex items-center justify-center gap-2"
+            data-testid="button-view-matches"
+          >
+            Bekijk je matches
+            <ChevronRight className="w-4 h-4" />
+          </button>
         </div>
-        <p className="text-[22px] font-bold leading-tight" data-testid="text-weekly-estimate">
-          {matchCount > 0
-            ? `${matchCount} ${matchCount === 1 ? "match" : "matches"} gevonden`
-            : "Nog geen matches"}
-        </p>
-        <p className="text-[13px] text-white/70 mt-1">
-          {hasProfiles
-            ? `Met ${profileCount} ${profileCount === 1 ? "zoekprofiel" : "zoekprofielen"} actief`
-            : "Maak je eerste zoekprofiel aan"}
-        </p>
-      </div>
+      ) : (
+        <div className="rounded-2xl bg-[#F9FAFB] p-6 text-center" data-testid="hero-empty">
+          <div className="w-12 h-12 rounded-full bg-[#EDF2FF] flex items-center justify-center mx-auto mb-4">
+            <Search className="w-5 h-5 text-[#0066FF]" />
+          </div>
+          <p className="text-[18px] font-semibold text-[#0F172A] leading-snug" data-testid="text-empty-title">
+            We zoeken nu woningen voor je
+          </p>
+          <p className="text-[14px] font-[500] text-[#6B7280] mt-1.5 leading-relaxed max-w-[280px] mx-auto">
+            {hasProfiles
+              ? "Nieuwe matches verschijnen hier automatisch zodra er een woning bij je zoekopdracht past."
+              : "Maak een zoekprofiel aan en ontvang automatisch matches."}
+          </p>
+          <button
+            onClick={() => hasProfiles ? setActiveTab("filters") : navigate("/new-search")}
+            className="mt-4 h-[44px] px-6 rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[14px] font-semibold transition-colors inline-flex items-center gap-2"
+            data-testid="button-empty-cta"
+          >
+            {hasProfiles ? (
+              <>
+                <SlidersHorizontal className="w-4 h-4" />
+                Zoekprofielen bekijken
+              </>
+            ) : (
+              <>
+                <Plus className="w-4 h-4" />
+                Zoekprofiel aanmaken
+              </>
+            )}
+          </button>
+        </div>
+      )}
 
-      <ListSection title="Status">
-        <ListRow
-          title="Account actief"
-          subtitle={user.email}
-          icon={<div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center"><CheckCircle2 className="w-4 h-4 text-green-600" /></div>}
-          testId="status-account"
-        />
-        <ListDivider />
-        <ListRow
-          title={hasProfiles ? `${profileCount} ${profileCount === 1 ? "zoekprofiel" : "zoekprofielen"} actief` : "Geen zoekprofielen"}
-          subtitle={hasProfiles ? "Je ontvangt automatisch matches" : "Stel je eerste zoekopdracht in"}
-          icon={<div className={`w-9 h-9 rounded-full flex items-center justify-center ${hasProfiles ? "bg-green-100" : "bg-yellow-100"}`}>{hasProfiles ? <CheckCircle2 className="w-4 h-4 text-green-600" /> : <AlertCircle className="w-4 h-4 text-yellow-600" />}</div>}
-          testId="status-profiles"
-        />
-      </ListSection>
+      {subscription.isTrial && subscription.trialEndsAt && (
+        <div className="bg-[#EDF2FF] rounded-2xl px-5 py-3.5 flex items-center gap-3" data-testid="banner-trial">
+          <Crown className="w-4 h-4 text-[#0066FF] flex-shrink-0" />
+          <p className="text-[13px] font-[500] text-[#6B7280] flex-1">
+            Proefperiode tot{" "}
+            <span className="font-semibold text-[#0F172A]">
+              {new Date(subscription.trialEndsAt).toLocaleDateString("de-DE", { day: "numeric", month: "long" })}
+            </span>
+          </p>
+          <button
+            onClick={() => navigate("/paywall")}
+            className="text-[12px] font-semibold text-[#0066FF] hover:underline flex-shrink-0"
+            data-testid="button-trial-upgrade"
+          >
+            Upgrade
+          </button>
+        </div>
+      )}
 
       <BoostTeaserCard setActiveTab={setActiveTab} />
 
       <PopulairVandaagSection />
 
-      <SpeedBanner navigate={navigate} />
-
-      <ProfileStrengthSection navigate={navigate} />
-
-      <div className="flex flex-col gap-3 mt-1">
-        <button
-          onClick={() => setActiveTab("matches")}
-          className="w-full h-[56px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[16px] font-semibold transition-colors flex items-center justify-center gap-2"
-          data-testid="button-view-matches"
-        >
-          <Heart className="w-4 h-4" />
-          Bekijk matches
-        </button>
+      {hasMatches && (
         <button
           onClick={() => setActiveTab("filters")}
-          className="w-full h-[48px] rounded-xl border border-[#EAEFF5] bg-white text-[#0F172A] text-[16px] font-semibold hover:bg-[#F2F5F8] transition-colors flex items-center justify-center gap-2"
+          className="w-full h-[48px] rounded-xl border border-[#E5E7EB] bg-white text-[#0F172A] text-[15px] font-semibold hover:bg-[#F9FAFB] transition-colors flex items-center justify-center gap-2"
           data-testid="button-manage-filters"
         >
           <SlidersHorizontal className="w-4 h-4" />
           Beheer filters
         </button>
-      </div>
+      )}
     </div>
   );
 }
