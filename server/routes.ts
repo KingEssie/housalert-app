@@ -204,7 +204,7 @@ export async function registerRoutes(
       const ids = freshRows.map((r) => r.listing_id);
       const { data: listings, error } = await supabase
         .from("listings")
-        .select("id, title, price, size_m2, bedrooms, city, source, url")
+        .select("id, title, price, size_m2, bedrooms, city, source, url, image_url")
         .in("id", ids);
 
       if (error) return res.status(500).json({ error: error.message });
@@ -224,6 +224,7 @@ export async function registerRoutes(
             city: l.city,
             source: l.source,
             url: l.url,
+            image_url: l.image_url ?? null,
             first_seen_at: r.first_seen_at,
             fresh_label: computeFreshLabel(r.first_seen_at),
           };
