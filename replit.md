@@ -86,6 +86,15 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - Frontend: `RecommendedSection` in `boost.tsx` renders cards with icon, title, points badge, supportive subtitle, and explicit CTA button
 - Navigation: tasks with `modal: false` + route navigate directly (alerts, phone, letter, preferences, profile info); tasks with `modal: true` open inline TaskModal (documents, search buddy, profile photo)
 
+### Reactiesnelheid Card
+- `client/src/components/reactiesnelheid-card.tsx` — Motivational speed indicator card
+- Logic: `calculateReactiesnelheid(done, total)` returns SpeedLevel (`fast`/`almost`/`building`), label, subtitle, fraction
+- Thresholds: 100% = "Snelle reageerder" (green), >=60% = "Bijna klaar" (blue), <60% = "Goed bezig" (gray)
+- Data: reuses `/api/boost` speedSteps (same query key as ReactieklaarCard — deduplicated by TanStack Query)
+- Props: `onTap` (optional click handler), `done`/`total` (optional overrides; if omitted, fetches from API)
+- Used on: Profile tab (dashboard.tsx ProfielTab)
+- Future upgrade: replace readiness-based fraction with real response-time metrics (e.g., median time from match notification to first apply action)
+
 ### Reactieklaar Card
 - `client/src/components/reactieklaar-card.tsx` — Reusable readiness status card showing 5 checklist items
 - Items: Alerts actief, Zoekbuddy toegevoegd, Documenten klaar, Telefoonnummer toegevoegd, Reactiebrief klaar

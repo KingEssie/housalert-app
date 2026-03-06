@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { ProfileStrengthSection, SpeedBanner, NotificationSummaryCard } from "@/components/profile-strength";
 import { ReactieklaarCard } from "@/components/reactieklaar-card";
+import { ReactiesnelheidCard } from "@/components/reactiesnelheid-card";
 import { ApplySheet } from "@/components/apply-sheet";
 import {
   Home,
@@ -1009,6 +1010,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
           </span>
         </div>
       </div>
+
+      <ReactiesnelheidCard onTap={() => setActiveTab("boost")} />
 
       <NotificationSummaryCard navigate={navigate} />
       <ReactieklaarCard navigate={navigate} onStepClick={() => setActiveTab("boost")} />
