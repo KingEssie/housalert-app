@@ -51,6 +51,7 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - `server/matching/engine.ts` — Central matching module with two main exports:
   - `matchListingAgainstProfiles(listingId)` — called after each new listing is inserted during ingestion
   - `backfillMatchesForSearchProfile(searchProfileId)` — called after a new search profile is created
+- `shared/match-score.ts` — also exports `getMatchReasons(details)` which returns top 2-3 Dutch match reason labels (locatie, prijs, kamers, grootte) for sub-scores >= 70% of their max. Used by both `/api/matches` and `/api/listings/:id` endpoints.
 - `server/ingesters/matching.ts` — Ingestion pipeline (dedup, insert, delegates to engine for matching)
 - `server/log.ts` — Shared `log()` utility (extracted from index.ts to avoid circular deps)
 - `shared/match-score.ts` — Deterministic match scoring (0–100) based on city fit (30pts), price fit (30pts), bedrooms fit (20pts), size fit (20pts). Labels: Perfecte match (90+), Sterke match (75–89), Goede match (60–74), Mogelijke match (40–59). Used by `/api/matches` and `/api/listings/:id`.

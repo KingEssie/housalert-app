@@ -20,7 +20,7 @@ import {
   findUserByStripeCustomerId,
 } from "./subscriptions";
 import { log } from "./log";
-import { computeMatchScore } from "../shared/match-score";
+import { computeMatchScore, getMatchReasons } from "../shared/match-score";
 
 const TEN_MIN = 10 * 60 * 1000;
 const ONE_HOUR = 60 * 60 * 1000;
@@ -392,6 +392,7 @@ export async function registerRoutes(
 
         let match_score = null;
         let match_label = null;
+        let match_reasons: string[] = [];
         if (l && profile) {
           const scoreResult = computeMatchScore({
             listing: { price: l.price ?? 0, bedrooms: l.bedrooms ?? 0, size_m2: l.size_m2 ?? 0, city: l.city ?? "" },
@@ -399,6 +400,7 @@ export async function registerRoutes(
           });
           match_score = scoreResult.score;
           match_label = scoreResult.label;
+          match_reasons = getMatchReasons(scoreResult.details);
         }
 
         return {
@@ -416,6 +418,7 @@ export async function registerRoutes(
           fresh_label: computeFreshLabel(firstSeenAt),
           match_score,
           match_label,
+          match_reasons,
         };
       });
 
@@ -447,6 +450,7 @@ export async function registerRoutes(
 
       let match_score = null;
       let match_label = null;
+      let match_reasons: string[] = [];
       const token = req.headers.authorization?.replace("Bearer ", "");
       if (token) {
         try {
@@ -474,6 +478,7 @@ export async function registerRoutes(
                 });
                 match_score = scoreResult.score;
                 match_label = scoreResult.label;
+                match_reasons = getMatchReasons(scoreResult.details);
               }
             }
           }
@@ -486,6 +491,7 @@ export async function registerRoutes(
         fresh_label: computeFreshLabel(firstSeenAt),
         match_score,
         match_label,
+        match_reasons,
       });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });

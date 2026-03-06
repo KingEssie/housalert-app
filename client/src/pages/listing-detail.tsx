@@ -47,6 +47,7 @@ interface Listing {
   fresh_label: string;
   match_score?: number | null;
   match_label?: string | null;
+  match_reasons?: string[];
 }
 
 export default function ListingDetailPage() {
@@ -150,15 +151,22 @@ export default function ListingDetailPage() {
             </div>
 
             {listing.match_score != null && listing.match_label && (
-              <div className="flex items-center gap-2 mb-3" data-testid="listing-score-badge">
-                <span className={`text-[14px] font-bold px-3.5 py-1.5 rounded-full ${
-                  listing.match_score >= 90 ? "bg-orange-100 text-orange-700" :
-                  listing.match_score >= 75 ? "bg-green-100 text-green-700" :
-                  listing.match_score >= 60 ? "bg-blue-100 text-blue-700" :
-                  "bg-gray-100 text-gray-600"
-                }`}>
-                  {listing.match_label} · {listing.match_score}%
-                </span>
+              <div className="flex flex-col gap-1 mb-3" data-testid="listing-score-badge">
+                <div className="flex items-center gap-2">
+                  <span className={`text-[14px] font-bold px-3.5 py-1.5 rounded-full ${
+                    listing.match_score >= 90 ? "bg-orange-100 text-orange-700" :
+                    listing.match_score >= 75 ? "bg-green-100 text-green-700" :
+                    listing.match_score >= 60 ? "bg-blue-100 text-blue-700" :
+                    "bg-gray-100 text-gray-600"
+                  }`}>
+                    {listing.match_label} · {listing.match_score}%
+                  </span>
+                </div>
+                {listing.match_reasons && listing.match_reasons.length > 0 && (
+                  <p className="text-[13px] font-[500] text-[#6B7280]" data-testid="text-listing-match-reasons">
+                    Match op: {listing.match_reasons.join(", ")}
+                  </p>
+                )}
               </div>
             )}
 

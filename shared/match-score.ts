@@ -117,3 +117,31 @@ export function getScoreLabel(score: number): string {
   if (score >= 40) return "Mogelijke match";
   return "Lage match";
 }
+
+const REASON_LABELS: Record<string, string> = {
+  city: "locatie",
+  price: "prijs",
+  bedrooms: "kamers",
+  size: "grootte",
+};
+
+const REASON_MAX: Record<string, number> = {
+  city: 30,
+  price: 30,
+  bedrooms: 20,
+  size: 20,
+};
+
+export function getMatchReasons(details: MatchScore["details"]): string[] {
+  const entries = Object.entries(details) as [keyof typeof REASON_MAX, number][];
+  const strong = entries
+    .filter(([key, val]) => val >= REASON_MAX[key] * 0.7)
+    .sort((a, b) => {
+      const ratioA = a[1] / REASON_MAX[a[0]];
+      const ratioB = b[1] / REASON_MAX[b[0]];
+      return ratioB - ratioA;
+    })
+    .slice(0, 3)
+    .map(([key]) => REASON_LABELS[key]);
+  return strong;
+}
