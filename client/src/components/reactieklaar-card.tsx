@@ -100,7 +100,7 @@ export function ReactieklaarCard({
         <div className="w-8 h-8 rounded-full bg-[#EDF2FF] flex items-center justify-center">
           <Zap className="w-4 h-4 text-[#0066FF]" />
         </div>
-        <h3 className="text-[15px] font-semibold text-[#1B2A4A] flex-1">Reactieklaar</h3>
+        <h3 className="text-[15px] font-semibold text-[#0F172A] flex-1">Reactieklaar</h3>
         <span
           className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${
             allDone ? "bg-green-50 text-green-700" : "bg-[#EDF2FF] text-[#0066FF]"
@@ -137,7 +137,7 @@ export function ReactieklaarCard({
                 <div className="w-[18px] h-[18px] rounded-full border-2 border-[#E2E6ED] flex-shrink-0" />
               )}
               <Icon className={`w-4 h-4 flex-shrink-0 ${step.done ? "text-[#C5CBD6]" : "text-[#0066FF]"}`} />
-              <span className={`text-[14px] flex-1 ${step.done ? "text-[#6B7280]" : "text-[#1B2A4A] font-medium"}`}>
+              <span className={`text-[14px] flex-1 ${step.done ? "text-[#6B7280]" : "text-[#0F172A] font-medium"}`}>
                 {step.label}
               </span>
               {hasAction && (

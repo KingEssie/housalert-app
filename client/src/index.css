@@ -198,25 +198,45 @@
 @layer utilities {
 
   .text-page-title {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 700;
-    color: #111;
-    letter-spacing: -0.02em;
+    color: #0F172A;
     line-height: 1.15;
   }
 
   .text-section-title {
     font-size: 20px;
+    font-weight: 700;
+    color: #0F172A;
+    line-height: 1.2;
+  }
+
+  .text-row-section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0F172A;
+    line-height: 1.2;
+  }
+
+  .text-row-title {
+    font-size: 16px;
     font-weight: 600;
-    color: #111;
-    line-height: 1.25;
+    color: #0F172A;
+    line-height: 1.3;
+  }
+
+  .text-row-subtitle {
+    font-size: 15px;
+    font-weight: 500;
+    color: #6B7280;
+    line-height: 1.45;
   }
 
   .text-subtitle {
     font-size: 15px;
     font-weight: 500;
     color: #6B7280;
-    line-height: 1.4;
+    line-height: 1.45;
   }
 
   .text-muted-body {

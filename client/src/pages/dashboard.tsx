@@ -48,6 +48,7 @@ import {
   Zap,
 } from "lucide-react";
 import { PopulairVandaagSection } from "@/components/populair-vandaag";
+import { ListSection, ListRow, ListDivider } from "@/components/list-section";
 import BoostPage from "@/pages/boost";
 
 const MAX_PROFILES = 4;
@@ -251,13 +252,13 @@ function MatchCard({
         <div>
           <div className="flex items-start justify-between gap-2">
             <h3
-              className="font-[700] text-[#1B2A4A] text-[20px] leading-[1.3] line-clamp-2 flex-1"
+              className="font-[700] text-[#0F172A] text-[20px] leading-[1.3] line-clamp-2 flex-1"
               data-testid={`text-match-title-${match.listing_id}`}
             >
               {match.title}
             </h3>
             {match.price > 0 && (
-              <span className="text-[16px] font-bold text-[#1B2A4A] whitespace-nowrap flex-shrink-0">
+              <span className="text-[16px] font-bold text-[#0F172A] whitespace-nowrap flex-shrink-0">
                 €{match.price}
                 <span className="text-[12px] font-normal text-[#6B7280]">/mnd</span>
               </span>
@@ -314,7 +315,7 @@ function MatchCard({
           </button>
           <button
             onClick={handleApply}
-            className="h-[44px] px-4 rounded-xl border border-[#EAEFF5] bg-white text-[#1B2A4A] text-[14px] font-semibold hover:bg-[#F3F4F8] transition-colors flex items-center justify-center gap-1.5"
+            className="h-[44px] px-4 rounded-xl border border-[#EAEFF5] bg-white text-[#0F172A] text-[14px] font-semibold hover:bg-[#F3F4F8] transition-colors flex items-center justify-center gap-1.5"
             data-testid={`button-apply-${match.listing_id}`}
           >
             <Send className="w-3.5 h-3.5" />
@@ -349,7 +350,7 @@ function ProfileCard({
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <h3 className="font-semibold text-[#1B2A4A] text-[15px]" data-testid={`text-profile-city-${profile.id}`}>
+              <h3 className="font-semibold text-[#0F172A] text-[15px]" data-testid={`text-profile-city-${profile.id}`}>
                 {profile.city}
               </h3>
               <span className="text-[10px] font-medium text-green-600 bg-green-50 px-1.5 py-0.5 rounded-full" data-testid={`badge-status-${profile.id}`}>
@@ -373,7 +374,7 @@ function ProfileCard({
 
       <div className="flex flex-wrap gap-2">
         {(profile.price_min > 0 || profile.price_max > 0) && (
-          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#F2F5F8] text-[#1B2A4A] px-2.5 py-1 rounded-full">
+          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#F2F5F8] text-[#0F172A] px-2.5 py-1 rounded-full">
             <Euro className="w-3 h-3" />
             {profile.price_min > 0 && profile.price_max > 0
               ? `€${profile.price_min} – €${profile.price_max}`
@@ -382,12 +383,12 @@ function ProfileCard({
               : `Tot €${profile.price_max}`}
           </span>
         )}
-        <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#F2F5F8] text-[#1B2A4A] px-2.5 py-1 rounded-full">
+        <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#F2F5F8] text-[#0F172A] px-2.5 py-1 rounded-full">
           <BedDouble className="w-3 h-3" />
           {bedroomLabel(profile.bedrooms_min)}
         </span>
         {profile.size_min > 0 && (
-          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#F2F5F8] text-[#1B2A4A] px-2.5 py-1 rounded-full">
+          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#F2F5F8] text-[#0F172A] px-2.5 py-1 rounded-full">
             <Ruler className="w-3 h-3" />
             {profile.size_min}+ m²
           </span>
@@ -396,7 +397,7 @@ function ProfileCard({
 
       <button
         onClick={onEdit}
-        className="w-full h-10 rounded-xl border border-[#EAEFF5] text-[13px] font-semibold text-[#1B2A4A] hover:bg-[#F3F4F8] transition-colors flex items-center justify-center gap-1.5"
+        className="w-full h-10 rounded-xl border border-[#EAEFF5] text-[13px] font-semibold text-[#0F172A] hover:bg-[#F3F4F8] transition-colors flex items-center justify-center gap-1.5"
         data-testid={`button-edit-${profile.id}`}
       >
         Bewerken
@@ -455,7 +456,7 @@ function BoostTeaserCard({ setActiveTab }: { setActiveTab: (tab: TabKey) => void
           <Zap className="w-5 h-5 text-[#0066FF]" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-semibold text-[#1B2A4A]">Boost je kansen</p>
+          <p className="text-[15px] font-semibold text-[#0F172A]">Boost je kansen</p>
           <p className="text-[13px] text-[#6B7280] mt-0.5">{statusText}</p>
 
           <div className="mt-3 h-1.5 bg-[#F2F5F8] rounded-full overflow-hidden">
@@ -502,10 +503,10 @@ function HomeTab({
   return (
     <div className="flex flex-col gap-6 pb-6">
       <div className="pt-1">
-        <h1 className="text-[32px] font-[800] text-[#1B2A4A] tracking-[-0.03em] leading-[1.1]" data-testid="text-greeting">
+        <h1 className="text-page-title" data-testid="text-greeting">
           Hallo, {firstName}
         </h1>
-        <p className="text-[15px] font-[500] text-[#6B7280] mt-1">Welkom terug bij Stekkies</p>
+        <p className="text-subtitle mt-1">Welkom terug bij Stekkies</p>
       </div>
 
       {subscription.isTrial && subscription.trialEndsAt && (
@@ -514,10 +515,10 @@ function HomeTab({
             <Crown className="w-4 h-4 text-[#0066FF]" />
           </div>
           <div className="flex-1">
-            <p className="text-[14px] font-semibold text-[#1B2A4A]">Proefperiode</p>
+            <p className="text-[14px] font-semibold text-[#0F172A]">Proefperiode</p>
             <p className="text-[13px] font-[500] text-[#6B7280]">
               Je proefperiode loopt tot{" "}
-              <span className="font-semibold text-[#1B2A4A]">
+              <span className="font-semibold text-[#0F172A]">
                 {new Date(subscription.trialEndsAt).toLocaleDateString("de-DE", { day: "numeric", month: "long" })}
               </span>
             </p>
@@ -538,7 +539,7 @@ function HomeTab({
             <AlertTriangle className="w-4 h-4 text-red-500" />
           </div>
           <div className="flex-1">
-            <p className="text-[14px] font-semibold text-[#1B2A4A]">Je proefperiode is afgelopen</p>
+            <p className="text-[14px] font-semibold text-[#0F172A]">Je proefperiode is afgelopen</p>
             <p className="text-[13px] font-[500] text-[#6B7280]">Activeer een abonnement om matches te blijven ontvangen.</p>
           </div>
           <button
@@ -568,39 +569,21 @@ function HomeTab({
         </p>
       </div>
 
-      <div className="flex flex-col gap-3">
-        <h2 className="text-section-title">Status</h2>
-
-        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] divide-y divide-[#F2F5F8]">
-          <div className="flex items-center gap-3 p-4" data-testid="status-account">
-            <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center">
-              <CheckCircle2 className="w-4 h-4 text-green-600" />
-            </div>
-            <div className="flex-1">
-              <p className="text-[14px] font-medium text-[#1B2A4A]">Account actief</p>
-              <p className="text-[13px] font-[500] text-[#6B7280]">{user.email}</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 p-4" data-testid="status-profiles">
-            <div className={`w-9 h-9 rounded-full flex items-center justify-center ${hasProfiles ? "bg-green-100" : "bg-yellow-100"}`}>
-              {hasProfiles ? (
-                <CheckCircle2 className="w-4 h-4 text-green-600" />
-              ) : (
-                <AlertCircle className="w-4 h-4 text-yellow-600" />
-              )}
-            </div>
-            <div className="flex-1">
-              <p className="text-[14px] font-medium text-[#1B2A4A]">
-                {hasProfiles ? `${profileCount} ${profileCount === 1 ? "zoekprofiel" : "zoekprofielen"} actief` : "Geen zoekprofielen"}
-              </p>
-              <p className="text-[13px] font-[500] text-[#6B7280]">
-                {hasProfiles ? "Je ontvangt automatisch matches" : "Stel je eerste zoekopdracht in"}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <ListSection title="Status">
+        <ListRow
+          title="Account actief"
+          subtitle={user.email}
+          icon={<div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center"><CheckCircle2 className="w-4 h-4 text-green-600" /></div>}
+          testId="status-account"
+        />
+        <ListDivider />
+        <ListRow
+          title={hasProfiles ? `${profileCount} ${profileCount === 1 ? "zoekprofiel" : "zoekprofielen"} actief` : "Geen zoekprofielen"}
+          subtitle={hasProfiles ? "Je ontvangt automatisch matches" : "Stel je eerste zoekopdracht in"}
+          icon={<div className={`w-9 h-9 rounded-full flex items-center justify-center ${hasProfiles ? "bg-green-100" : "bg-yellow-100"}`}>{hasProfiles ? <CheckCircle2 className="w-4 h-4 text-green-600" /> : <AlertCircle className="w-4 h-4 text-yellow-600" />}</div>}
+          testId="status-profiles"
+        />
+      </ListSection>
 
       <BoostTeaserCard setActiveTab={setActiveTab} />
 
@@ -621,7 +604,7 @@ function HomeTab({
         </button>
         <button
           onClick={() => setActiveTab("filters")}
-          className="w-full h-[48px] rounded-xl border border-[#EAEFF5] bg-white text-[#1B2A4A] text-[16px] font-semibold hover:bg-[#F2F5F8] transition-colors flex items-center justify-center gap-2"
+          className="w-full h-[48px] rounded-xl border border-[#EAEFF5] bg-white text-[#0F172A] text-[16px] font-semibold hover:bg-[#F2F5F8] transition-colors flex items-center justify-center gap-2"
           data-testid="button-manage-filters"
         >
           <SlidersHorizontal className="w-4 h-4" />
@@ -684,7 +667,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
   return (
     <div className="flex flex-col gap-5 pb-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-[26px] font-[700] text-[#1B2A4A] tracking-[-0.02em] leading-[1.15]">Matches</h1>
+        <h1 className="text-page-title">Matches</h1>
         {matches.length > 0 && (
           <span className="text-[13px] font-medium text-[#0066FF] bg-[#EDF2FF] px-2.5 py-1 rounded-full" data-testid="badge-match-count">
             {matches.length} totaal
@@ -702,8 +685,8 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
               onClick={() => setSubTab(key)}
               className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-1 rounded-full text-[13px] font-semibold transition-all duration-200 ${
                 isActive
-                  ? "bg-white text-[#1B2A4A] shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
-                  : "text-[#6B7280] hover:text-[#1B2A4A] hover:bg-white/50"
+                  ? "bg-white text-[#0F172A] shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
+                  : "text-[#6B7280] hover:text-[#0F172A] hover:bg-white/50"
               }`}
               data-testid={`tab-matches-${key}`}
             >
@@ -742,7 +725,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
             <AlertCircle className="w-5 h-5 text-red-500" />
           </div>
-          <p className="text-[18px] font-[700] text-[#1B2A4A]">Kon matches niet laden</p>
+          <p className="text-[18px] font-[700] text-[#0F172A]">Kon matches niet laden</p>
           <p className="text-[13px] text-[#6B7280]">Controleer je verbinding en probeer het opnieuw.</p>
           <button
             onClick={() => apiMatchesQuery.refetch()}
@@ -757,7 +740,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           <div className="w-14 h-14 rounded-full bg-[#EDF2FF] flex items-center justify-center">
             <Heart className="w-6 h-6 text-[#0066FF]" />
           </div>
-          <p className="text-[20px] font-[700] text-[#1B2A4A]">Nog geen matches</p>
+          <p className="text-[20px] font-[700] text-[#0F172A]">Nog geen matches</p>
           <p className="text-[13px] text-[#6B7280] max-w-[250px]">
             Zodra we woningen vinden die passen bij jouw filters, verschijnen ze hier.
           </p>
@@ -783,7 +766,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
               <Heart className="w-6 h-6 text-[#6B7280]" />
             )}
           </div>
-          <p className="text-[20px] font-[700] text-[#1B2A4A]">
+          <p className="text-[20px] font-[700] text-[#0F172A]">
             {subTab === "opgeslagen" && "Geen opgeslagen matches"}
             {subTab === "bekeken" && "Geen bekeken matches"}
             {subTab === "gereageerd" && "Geen gereageerde matches"}
@@ -862,7 +845,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
     <div className="flex flex-col gap-5 pb-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[26px] font-[700] text-[#1B2A4A] tracking-[-0.02em] leading-[1.15]">Zoekprofielen</h1>
+          <h1 className="text-page-title">Zoekprofielen</h1>
           <p className="text-[13px] text-[#6B7280] mt-0.5">{profileCount} van {MAX_PROFILES} actief</p>
         </div>
         {!atLimit && (
@@ -893,7 +876,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
           <div className="w-14 h-14 rounded-full bg-[#EDF2FF] flex items-center justify-center">
             <Search className="w-6 h-6 text-[#0066FF]" />
           </div>
-          <p className="text-[16px] font-semibold text-[#1B2A4A]">Geen zoekprofielen</p>
+          <p className="text-[16px] font-semibold text-[#0F172A]">Geen zoekprofielen</p>
           <p className="text-[13px] text-[#6B7280] max-w-[250px]">
             Voeg een zoekopdracht toe om automatisch woningen te ontvangen.
           </p>
@@ -936,48 +919,6 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
   );
 }
 
-function ProfileListItem({
-  title,
-  subtitle,
-  onClick,
-  trailing,
-  testId,
-}: {
-  title: string;
-  subtitle?: string;
-  onClick?: () => void;
-  trailing?: React.ReactNode;
-  testId?: string;
-}) {
-  const Component = onClick ? "button" : "div";
-  return (
-    <Component
-      {...(onClick ? { type: "button" as const } : {})}
-      onClick={onClick}
-      className={`w-full flex items-center justify-between px-1 py-3.5 text-left ${onClick ? "cursor-pointer active:bg-[#F9FAFB] transition-colors" : ""}`}
-      data-testid={testId}
-    >
-      <div className="flex-1 min-w-0">
-        <p className="text-[16px] font-[500] text-[#111] leading-snug">{title}</p>
-        {subtitle && (
-          <p className="text-[14px] font-[500] text-[#6B7280] leading-snug mt-0.5">{subtitle}</p>
-        )}
-      </div>
-      {trailing ?? (onClick ? <ChevronRight className="w-[18px] h-[18px] text-[#6B7280] flex-shrink-0 ml-3" /> : null)}
-    </Component>
-  );
-}
-
-function ProfileDivider() {
-  return <div className="h-px bg-[#F1F1F1]" />;
-}
-
-function ProfileSectionTitle({ children }: { children: React.ReactNode }) {
-  return (
-    <h2 className="text-[20px] font-[600] text-[#111] leading-tight">{children}</h2>
-  );
-}
-
 function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null }; setActiveTab: (tab: TabKey) => void }) {
   const [signingOut, setSigningOut] = useState(false);
 
@@ -995,7 +936,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
 
   const subscriptionBadge = (
     <span
-      className={`text-[12px] font-[500] px-2.5 py-1 rounded-full flex-shrink-0 ml-3 ${
+      className={`text-[12px] font-[500] px-2.5 py-1 rounded-full flex-shrink-0 ${
         subscription.isActive && !subscription.isTrial
           ? "text-green-600 bg-green-50"
           : subscription.isTrial
@@ -1017,8 +958,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
           </span>
         </div>
         <div className="min-w-0">
-          <p className="text-[18px] font-[600] text-[#111] truncate" data-testid="text-user-email">{user.email}</p>
-          <p className="text-[14px] font-[500] text-[#6B7280]">Persoonlijk account</p>
+          <p className="text-[18px] font-[600] text-[#0F172A] truncate" data-testid="text-user-email">{user.email}</p>
+          <p className="text-row-subtitle">Persoonlijk account</p>
         </div>
       </div>
 
@@ -1026,24 +967,23 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
 
       <ReactieklaarCard navigate={navigate} onStepClick={() => setActiveTab("boost")} />
 
-      <div className="flex flex-col">
-        <ProfileSectionTitle>Instellingen</ProfileSectionTitle>
-        <div className="mt-2">
-          <ProfileListItem
-            title="Meldingsinstellingen"
-            subtitle="E-mail, SMS, WhatsApp"
-            onClick={() => navigate("/settings/notifications")}
-            testId="button-notification-settings"
-          />
-          <ProfileDivider />
-          <ProfileListItem
-            title="Abonnement"
-            subtitle={subscriptionSubtitle}
-            trailing={subscriptionBadge}
-            testId="item-subscription"
-          />
-        </div>
-      </div>
+      <ListSection title="Instellingen">
+        <ListRow
+          title="Meldingsinstellingen"
+          subtitle="E-mail, SMS, WhatsApp"
+          icon={<div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center"><Bell className="w-4 h-4 text-[#0066FF]" /></div>}
+          onClick={() => navigate("/settings/notifications")}
+          testId="button-notification-settings"
+        />
+        <ListDivider />
+        <ListRow
+          title="Abonnement"
+          subtitle={subscriptionSubtitle}
+          icon={<div className={`w-9 h-9 rounded-full flex items-center justify-center ${subscription.isActive ? "bg-green-50" : subscription.isTrial ? "bg-blue-50" : "bg-red-50"}`}>{subscription.isActive ? <CheckCircle2 className="w-4 h-4 text-green-600" /> : subscription.isTrial ? <Crown className="w-4 h-4 text-[#0066FF]" /> : <AlertTriangle className="w-4 h-4 text-red-500" />}</div>}
+          trailing={subscriptionBadge}
+          testId="item-subscription"
+        />
+      </ListSection>
 
       {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
         <button
@@ -1056,24 +996,16 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
         </button>
       )}
 
-      <div className="flex flex-col">
-        <ProfileSectionTitle>Account</ProfileSectionTitle>
-        <div className="mt-2">
-          <button
-            onClick={handleSignOut}
-            disabled={signingOut}
-            className="w-full flex items-center px-1 py-3.5 text-left cursor-pointer active:bg-[#F9FAFB] transition-colors"
-            data-testid="button-logout"
-          >
-            <div className="flex-1">
-              <p className="text-[16px] font-[500] text-red-500 leading-snug">
-                {signingOut ? "Uitloggen..." : "Uitloggen"}
-              </p>
-            </div>
-            <LogOut className="w-[18px] h-[18px] text-red-400 flex-shrink-0 ml-3" />
-          </button>
-        </div>
-      </div>
+      <ListSection title="Account">
+        <ListRow
+          title={signingOut ? "Uitloggen..." : "Uitloggen"}
+          onClick={handleSignOut}
+          disabled={signingOut}
+          titleClassName="text-[16px] font-[600] text-red-500 leading-[1.3]"
+          trailing={<LogOut className="w-[18px] h-[18px] text-red-400 flex-shrink-0" />}
+          testId="button-logout"
+        />
+      </ListSection>
     </div>
   );
 }
@@ -1146,7 +1078,7 @@ export default function DashboardPage() {
             <div className="w-8 h-8 rounded-lg bg-[#0066FF] flex items-center justify-center">
               <Home className="w-4 h-4 text-white" />
             </div>
-            <span className="font-bold text-[#1B2A4A] text-[17px]">Stekkies</span>
+            <span className="font-bold text-[#0F172A] text-[17px]">Stekkies</span>
           </div>
         </div>
       </header>

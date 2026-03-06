@@ -158,13 +158,13 @@ function BoostScoreCard({ score }: { score: number }) {
           <Zap className="w-5 h-5 text-[#0066FF]" />
         </div>
         <div>
-          <h3 className="text-[15px] font-semibold text-[#1B2A4A]">Boost score</h3>
+          <h3 className="text-[15px] font-semibold text-[#0F172A]">Boost score</h3>
           <p className="text-[13px] text-[#6B7280]">Hoe klaar ben je?</p>
         </div>
       </div>
 
       <div className="flex items-end gap-2 mb-4">
-        <span className="text-[44px] font-[800] text-[#1B2A4A] leading-none tracking-[-0.03em]" data-testid="text-boost-score">
+        <span className="text-[44px] font-[800] text-[#0F172A] leading-none tracking-[-0.03em]" data-testid="text-boost-score">
           {score}
         </span>
         <span className="text-[18px] text-[#6B7280] mb-1.5 font-medium">/ 100</span>
@@ -228,7 +228,7 @@ function RecommendedSection({
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
-                    <p className="text-[15px] font-semibold text-[#1B2A4A] leading-snug">{task.label}</p>
+                    <p className="text-[15px] font-semibold text-[#0F172A] leading-snug">{task.label}</p>
                     <span className="text-[12px] font-semibold text-[#0066FF] bg-[#EDF2FF] px-2 py-0.5 rounded-full flex-shrink-0 whitespace-nowrap" data-testid={`badge-points-${task.id}`}>
                       +{task.weight}
                     </span>
@@ -284,7 +284,7 @@ function AllTasksSection({
               <div className="w-5 h-5 rounded-full border-2 border-[#EAEFF5] flex-shrink-0" />
               <Icon className="w-4 h-4 text-[#0066FF] flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-[14px] font-medium text-[#1B2A4A]">{task.label}</p>
+                <p className="text-[14px] font-medium text-[#0F172A]">{task.label}</p>
                 <p className="text-[13px] font-[500] text-[#6B7280]">+{task.weight} punten</p>
               </div>
               <ArrowRight className="w-4 h-4 text-[#6B7280] flex-shrink-0" />
@@ -318,7 +318,7 @@ function EmptyState({ onStart }: { onStart: () => void }) {
       <div className="w-14 h-14 rounded-2xl bg-[#EDF2FF] flex items-center justify-center mx-auto mb-5">
         <Zap className="w-7 h-7 text-[#0066FF]" />
       </div>
-      <h3 className="text-[20px] font-[700] text-[#1B2A4A] tracking-[-0.02em] mb-2">
+      <h3 className="text-[20px] font-[700] text-[#0F172A] tracking-[-0.02em] mb-2">
         Vergroot je kansen
       </h3>
       <p className="text-[15px] text-[#6B7280] leading-relaxed mb-6 max-w-[280px] mx-auto">
@@ -392,7 +392,7 @@ function TaskModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sticky top-0 bg-white border-b border-[#EAEFF5] p-6 flex items-center justify-between rounded-t-[24px]">
-          <h2 className="text-[20px] font-[700] text-[#1B2A4A] tracking-[-0.02em]">{task.title}</h2>
+          <h2 className="text-[20px] font-[700] text-[#0F172A] tracking-[-0.02em]">{task.title}</h2>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F2F5F8] flex items-center justify-center" data-testid="button-close-modal">
             <X className="w-4 h-4 text-[#6B7280]" />
           </button>
@@ -414,13 +414,13 @@ function TaskModal({
 
           {taskId === "search_buddy_added" && (
             <div className="flex flex-col gap-3">
-              <label className="text-[13px] font-medium text-[#1B2A4A]">E-mailadres zoekbuddy</label>
+              <label className="text-[13px] font-medium text-[#0F172A]">E-mailadres zoekbuddy</label>
               <input
                 type="email"
                 value={buddyEmail}
                 onChange={(e) => setBuddyEmail(e.target.value)}
                 placeholder="buddy@voorbeeld.nl"
-                className="w-full h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
+                className="w-full h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#0F172A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
                 data-testid="input-buddy-email"
               />
               <p className="text-[13px] font-[500] text-[#6B7280]">Je buddy ontvangt dezelfde meldingen als jij.</p>
@@ -459,7 +459,7 @@ function TaskModal({
 
           {taskId === "income_documents_uploaded" && (
             <div className="flex flex-col gap-4">
-              <h4 className="text-[13px] font-semibold text-[#1B2A4A]">Vink af wat je hebt verzameld</h4>
+              <h4 className="text-[13px] font-semibold text-[#0F172A]">Vink af wat je hebt verzameld</h4>
               <div className="flex flex-col gap-1">
                 {INCOME_CHECKLIST.map((item) => (
                   <button
@@ -473,7 +473,7 @@ function TaskModal({
                     ) : (
                       <div className="w-5 h-5 rounded-full border-2 border-[#EAEFF5] flex-shrink-0" />
                     )}
-                    <span className={`text-[14px] ${checklist[item.id] ? "text-[#6B7280] line-through" : "text-[#1B2A4A]"}`}>
+                    <span className={`text-[14px] ${checklist[item.id] ? "text-[#6B7280] line-through" : "text-[#0F172A]"}`}>
                       {item.label}
                     </span>
                   </button>
@@ -492,7 +492,7 @@ function TaskModal({
 
           {taskId === "id_document_uploaded" && (
             <div className="flex flex-col gap-4">
-              <h4 className="text-[13px] font-semibold text-[#1B2A4A]">Vink af wat je hebt verzameld</h4>
+              <h4 className="text-[13px] font-semibold text-[#0F172A]">Vink af wat je hebt verzameld</h4>
               <div className="flex flex-col gap-1">
                 {ID_CHECKLIST.map((item) => (
                   <button
@@ -506,7 +506,7 @@ function TaskModal({
                     ) : (
                       <div className="w-5 h-5 rounded-full border-2 border-[#EAEFF5] flex-shrink-0" />
                     )}
-                    <span className={`text-[14px] ${checklist[item.id] ? "text-[#6B7280] line-through" : "text-[#1B2A4A]"}`}>
+                    <span className={`text-[14px] ${checklist[item.id] ? "text-[#6B7280] line-through" : "text-[#0F172A]"}`}>
                       {item.label}
                     </span>
                   </button>
@@ -598,7 +598,7 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
     return (
       <div className="flex flex-col gap-4">
         <div className="mb-1">
-          <h1 className="text-[26px] font-[700] text-[#1B2A4A] tracking-[-0.02em] leading-[1.15]">Boost</h1>
+          <h1 className="text-page-title">Boost</h1>
         </div>
         <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-8 text-center" data-testid="boost-error">
           <p className="text-[15px] text-[#6B7280] mb-4">Kon je gegevens niet laden.</p>
@@ -642,10 +642,10 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
   return (
     <div className="flex flex-col gap-6">
       <div className="mb-1">
-        <h1 className="text-[26px] font-[700] text-[#1B2A4A] tracking-[-0.02em] leading-[1.15]" data-testid="heading-boost">
+        <h1 className="text-page-title" data-testid="heading-boost">
           Boost
         </h1>
-        <p className="text-[15px] text-[#6B7280] mt-1">
+        <p className="text-subtitle mt-1">
           Vergroot je kansen op een woning
         </p>
       </div>

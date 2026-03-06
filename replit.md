@@ -22,13 +22,24 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 
 ### Typography System
 - CSS utility classes defined in `client/src/index.css` under `@layer utilities`:
-  - `.text-page-title` — 28px, weight 700, #111, tracking -0.02em (for page headings)
-  - `.text-section-title` — 20px, weight 600, #111 (for section headings)
+  - `.text-page-title` — 26px, weight 700, #0F172A (for page headings)
+  - `.text-section-title` — 20px, weight 700, #0F172A (for section headings)
+  - `.text-row-section-title` — 20px, weight 700, #0F172A (for list section headings)
+  - `.text-row-title` — 16px, weight 600, #0F172A (for list row primary text)
+  - `.text-row-subtitle` — 15px, weight 500, #6B7280 (for list row secondary text)
   - `.text-subtitle` — 15px, weight 500, #6B7280 (for subtitles)
   - `.text-muted-body` — 14px, weight 500, #6B7280 (for secondary/muted text)
-- Color tokens: primary text #111, secondary text #6B7280, divider #F1F1F1
+- Color tokens: primary text #0F172A (navy), secondary text #6B7280, divider #E5E7EB
 - Old muted colors #9BA5B7 and #72839A have been globally replaced with #6B7280
-- Subtitle text bumped from 12px to 13px with font-weight 500 across all pages
+- Old navy #1B2A4A replaced with #0F172A across main tab components (Home, Matches, Boost, Filters, Profile)
+
+### Shared List Components
+- `client/src/components/list-section.tsx` — Reusable menu/settings row components:
+  - `ListSection` — wrapper with optional title (uses `.text-row-section-title`)
+  - `ListRow` — full-width row with icon slot, title/subtitle, trailing/chevron, disabled prop
+  - `ListDivider` — 1px #E5E7EB separator
+  - `ListSectionTitle` — standalone section title
+- Used by: Profile tab (settings, account), Home tab (status), notification-settings page (channels, phone)
 
 ### Market Config
 - `config/market.ts` — Centralized market configuration for Germany (DE)

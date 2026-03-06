@@ -1,0 +1,160 @@
+Refactor the app UI so that menu-style screens use a BlaBlaCar-inspired list layout instead of card-based settings blocks.
+
+This is not a minor styling tweak.
+I want a structural UI refactor for menu and settings sections.
+
+Main goals:
+1. Make all gray secondary text slightly larger, darker, and medium weight
+2. Remove card containers from menu-style areas
+3. Create a consistent global typography system
+4. Make Profile / Settings sections feel like BlaBlaCar: flat list rows with dividers, not rounded cards
+
+Important:
+Do NOT only tweak individual page styles.
+Do NOT just change a few text sizes.
+Do NOT keep the existing card structure for menu items.
+
+You must update the shared design system / reusable components so the changes apply consistently across the app.
+
+-----------------------------------
+PART 1 — GLOBAL TYPOGRAPHY SYSTEM
+-----------------------------------
+
+Create or update shared typography tokens / text styles used across the app.
+
+Use this exact typography direction:
+
+- Page title:
+  font-size: 26px
+  font-weight: 700
+  line-height: 1.15
+  color: #0F172A
+
+- Section title:
+  font-size: 20px
+  font-weight: 700
+  line-height: 1.2
+  color: #0F172A
+
+- Primary row title:
+  font-size: 16px
+  font-weight: 600
+  line-height: 1.3
+  color: #0F172A
+
+- Secondary text / subtitle / muted description:
+  font-size: 15px
+  font-weight: 500
+  line-height: 1.45
+  color: #6B7280
+
+- Small meta text:
+  font-size: 14px
+  font-weight: 500
+  line-height: 1.4
+  color: #6B7280
+
+Requirements:
+- Apply this globally through shared text components, theme tokens, utility classes, or typography config
+- Remove overly light gray thin text
+- Ensure all subtitles and gray descriptions across Home, Matches, Boost, Filters, and Profile follow this system
+
+-----------------------------------
+PART 2 — REMOVE CARDS FROM MENU-STYLE SCREENS
+-----------------------------------
+
+For menu/settings/profile sections, remove card-style wrappers around simple rows.
+
+I want flat grouped list sections like BlaBlaCar:
+- white or transparent background
+- no rounded card around each item
+- subtle dividers between rows
+- full-width tappable rows
+- optional chevron on the right
+- clean spacing
+
+Convert menu-like parts of the app to this structure:
+- Profile settings
+- Notification settings
+- Help / support items
+- Other simple navigation rows
+
+Menu row structure:
+- left icon (optional)
+- title
+- subtitle (optional)
+- right accessory (chevron / status / badge)
+- divider underneath except last item
+
+Style rules for list sections:
+- no shadow
+- no large rounded card shell for each menu item
+- no separate big tiles for simple settings/navigation rows
+- divider color: #E5E7EB
+- row padding: 16px top/bottom, 20px left/right
+- row min-height should feel mobile-native
+
+Keep card-style UI ONLY for:
+- property/match cards
+- boost score cards
+- progress cards
+- content blocks that actually need emphasis
+
+Do NOT keep cards for normal menu/settings rows.
+
+-----------------------------------
+PART 3 — CREATE REUSABLE COMPONENTS
+-----------------------------------
+
+Create or refactor reusable shared components such as:
+- ListSection
+- ListRow
+- Divider
+- Text / Typography primitives
+
+Then migrate the menu/settings areas to these shared components.
+
+-----------------------------------
+PART 4 — PAGES TO UPDATE
+-----------------------------------
+
+Audit and update these screens:
+- Profile
+- Home (only text consistency, not removing important content cards)
+- Boost (text consistency, keep meaningful cards)
+- Filters / Zoekprofielen
+- Any settings/help/account subsections
+
+Important distinction:
+- content cards stay
+- menu/settings cards go away
+
+-----------------------------------
+PART 5 — CONSISTENCY
+-----------------------------------
+
+I want the app to feel visually consistent like a real product.
+That means:
+- same gray text style everywhere
+- same subtitle size everywhere
+- same row title weight everywhere
+- same divider behavior everywhere
+- same menu row spacing everywhere
+
+No one-off styling exceptions unless truly necessary.
+
+-----------------------------------
+PART 6 — VALIDATION
+-----------------------------------
+
+After implementing:
+1. Verify that secondary gray text is visibly darker, larger, and medium-weight
+2. Verify that menu sections no longer appear as card blocks
+3. Verify that Profile feels closer to BlaBlaCar settings layout
+4. Verify that property cards and Boost cards still remain intact
+
+Output at the end:
+- which shared typography styles were changed
+- which shared layout/list components were created or updated
+- which pages were migrated away from card-based menu sections
+- what still remains as TODO
