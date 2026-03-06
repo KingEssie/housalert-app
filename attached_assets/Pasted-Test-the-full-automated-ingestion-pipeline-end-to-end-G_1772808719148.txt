@@ -1,0 +1,74 @@
+Test the full automated ingestion pipeline end-to-end.
+
+Goal:
+Verify that automatic listing ingestion is working correctly from source ingestion to listing storage, matching, and alert triggering behavior.
+
+Requirements:
+
+1. Check scheduler / ingestion status
+- Confirm the ingestion scheduler exists
+- Confirm whether it is enabled or disabled right now
+- Confirm the ingest run endpoint exists
+- Confirm health/status endpoints work
+
+2. Trigger a manual ingestion run
+- Run the same ingestion process that production uses
+- Do not change scraper code unless a real bug is found
+
+3. Verify listing ingestion
+Check and report:
+- total sources attempted
+- total listings found
+- total new listings inserted
+- total duplicates skipped
+- total errors
+
+4. Verify Supabase listing storage
+After the run, confirm that:
+- new rows exist in the listings table
+- important fields are populated where available:
+  - source
+  - title
+  - city
+  - price
+  - bedrooms
+  - size_m2
+  - url
+  - first_seen_at / last_seen_at if used
+- show 5 newest listings as a compact report
+
+5. Verify matching engine integration
+After ingestion, confirm:
+- matching engine ran
+- matches were created if there are active search profiles that fit
+- duplicates were not created
+- report:
+  - matches created
+  - matches skipped as duplicates
+
+6. Verify alert behavior safely
+- If alerts are globally disabled, confirm that no notifications were sent and log that clearly
+- If alerts are enabled, report which channels would be or were triggered
+- Do not spam real notifications unnecessarily
+
+7. Verify no-overlap / scheduler safety
+- confirm ingestion does not overlap if already running
+- confirm status endpoint reflects the latest run
+
+8. Output a PASS/FAIL report with these sections:
+- SCHEDULER
+- INGEST RUN
+- LISTING STORAGE
+- MATCHING
+- ALERTS
+- FINAL RESULT
+
+9. If something fails:
+- explain exactly why
+- fix only the minimal issue
+- rerun the test
+
+Important:
+- Do not do broad refactors
+- Prefer minimal smoke-check style testing
+- Use the real current ingestion pipeline
