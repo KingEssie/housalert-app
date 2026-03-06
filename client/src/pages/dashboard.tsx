@@ -665,11 +665,22 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<TabKey>("home");
   const sub = useSubscription();
 
+  const { toast } = useToast();
+
   useEffect(() => {
     if (!loading && !user) {
       navigate("/login");
     }
   }, [user, loading, navigate]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("payment") === "success") {
+      toast({ title: "Betaling gelukt!", description: "Je abonnement is nu actief." });
+      window.history.replaceState({}, "", "/dashboard");
+      sub.refetch?.();
+    }
+  }, []);
 
   const profilesQuery = useQuery<SearchProfile[]>({
     queryKey: ["/search-profiles"],

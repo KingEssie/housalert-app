@@ -42,18 +42,20 @@ export async function registerRoutes(
   if (!process.env.STRIPE_PRICE_TWO_MONTH && !process.env.STRIPE_PRICE_2_MONTHS) missingStripeVars.push("STRIPE_PRICE_TWO_MONTH");
   if (!process.env.STRIPE_PRICE_THREE_MONTH && !process.env.STRIPE_PRICE_3_MONTHS) missingStripeVars.push("STRIPE_PRICE_THREE_MONTH");
   if (!process.env.STRIPE_WEBHOOK_SECRET) missingStripeVars.push("STRIPE_WEBHOOK_SECRET");
+  if (!process.env.APP_PUBLIC_BASE_URL) missingStripeVars.push("APP_PUBLIC_BASE_URL");
 
   if (missingStripeVars.length > 0) {
-    log(`[stripe-config] Missing Stripe env vars: ${missingStripeVars.join(", ")}. Payment features will be limited.`);
+    log(`[stripe-config] Missing env vars: ${missingStripeVars.join(", ")}. Payment features may be limited.`);
   }
 
-  let stripeConnectorAvailable = true;
+  let stripeAvailable = true;
   try {
     const { getUncachableStripeClient } = await import("./stripe/stripeClient");
     await getUncachableStripeClient();
-  } catch {
-    stripeConnectorAvailable = false;
-    log("[stripe-config] Stripe connector not available. Payment features disabled.");
+    log("[stripe-config] Stripe initialized successfully.");
+  } catch (err: any) {
+    stripeAvailable = false;
+    log(`[stripe-config] Stripe not available: ${err.message}`);
   }
 
   app.post("/api/match-alert", async (req, res) => {
@@ -441,8 +443,8 @@ export async function registerRoutes(
         return res.status(503).json({ error: "stripe_not_configured", message: "Stripe prices are not yet configured." });
       }
 
-      if (!stripeConnectorAvailable) {
-        return res.status(503).json({ error: "stripe_not_configured", message: "Stripe is not available." });
+      if (!stripeAvailable) {
+        return res.status(503).json({ error: "stripe_not_configured", message: "Stripe is not available. Set STRIPE_SECRET_KEY or connect Stripe via Replit integration." });
       }
 
       const { getUncachableStripeClient } = await import("./stripe/stripeClient");
@@ -474,8 +476,8 @@ export async function registerRoutes(
         payment_method_types: ["card"],
         line_items: [{ price: stripePriceId, quantity: 1 }],
         mode: "subscription",
-        success_url: `${baseUrl}/dashboard?checkout=success`,
-        cancel_url: `${baseUrl}/paywall?checkout=cancelled`,
+        success_url: `${baseUrl}/dashboard?payment=success`,
+        cancel_url: `${baseUrl}/paywall`,
         metadata: { supabase_user_id: user.id, plan },
       });
 
@@ -536,8 +538,8 @@ export async function registerRoutes(
         payment_method_types: ["card"],
         line_items: [{ price: stripePriceId, quantity: 1 }],
         mode: "subscription",
-        success_url: `${baseUrl}/dashboard?checkout=success`,
-        cancel_url: `${baseUrl}/paywall?checkout=cancelled`,
+        success_url: `${baseUrl}/dashboard?payment=success`,
+        cancel_url: `${baseUrl}/paywall`,
         metadata: { supabase_user_id: user.id, plan },
       });
 

@@ -77,10 +77,14 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - `POST /api/search-profiles/backfill` — Triggers backfill matching for a search profile
 
 ### Stripe Config
-- `server/stripe/stripeClient.ts` — Stripe client via Replit connector
+- `server/stripe/stripeClient.ts` — Stripe client with dual initialization: tries Replit connector first, falls back to `STRIPE_SECRET_KEY` env var. Throws clear error if neither available.
+- Publishable key: from Replit connector or `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
 - Plan IDs map to env vars: `STRIPE_PRICE_MONTHLY` (or `STRIPE_PRICE_1_MONTH`), `STRIPE_PRICE_TWO_MONTH` (or `STRIPE_PRICE_2_MONTHS`), `STRIPE_PRICE_THREE_MONTH` (or `STRIPE_PRICE_3_MONTHS`)
 - Webhook secret: `STRIPE_WEBHOOK_SECRET`
-- Base URL override: `APP_PUBLIC_BASE_URL`
+- Base URL: `APP_PUBLIC_BASE_URL` (used for checkout success/cancel URLs)
+- Checkout success URL: `APP_PUBLIC_BASE_URL/dashboard?payment=success`
+- Checkout cancel URL: `APP_PUBLIC_BASE_URL/paywall`
+- Startup config check: logs missing env vars, checks Stripe availability. Checkout returns 503 `stripe_not_configured` if Stripe or price IDs are missing.
 
 ### Test Scripts
 - `scripts/test-subscriptions.ts` — 19 tests covering trial creation, duplicate prevention, status logic, activation, and endpoint auth. Run with `npx tsx scripts/test-subscriptions.ts`

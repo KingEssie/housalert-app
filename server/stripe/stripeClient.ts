@@ -1,8 +1,8 @@
 import Stripe from 'stripe';
 
-let connectionSettings: any;
+let cachedCredentials: { publishableKey: string; secretKey: string } | null = null;
 
-async function getCredentials() {
+async function getConnectorCredentials(): Promise<{ publishableKey: string; secretKey: string }> {
   const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
   const xReplitToken = process.env.REPL_IDENTITY
     ? 'repl ' + process.env.REPL_IDENTITY
@@ -10,8 +10,8 @@ async function getCredentials() {
       ? 'depl ' + process.env.WEB_REPL_RENEWAL
       : null;
 
-  if (!xReplitToken) {
-    throw new Error('X-Replit-Token not found for repl/depl');
+  if (!xReplitToken || !hostname) {
+    throw new Error('Replit connector environment not available');
   }
 
   const connectorName = 'stripe';
@@ -31,7 +31,7 @@ async function getCredentials() {
   });
 
   const data = await response.json();
-  connectionSettings = data.items?.[0];
+  const connectionSettings = data.items?.[0];
 
   if (!connectionSettings || (!connectionSettings.settings.publishable || !connectionSettings.settings.secret)) {
     throw new Error(`Stripe ${targetEnvironment} connection not found`);
@@ -41,6 +41,32 @@ async function getCredentials() {
     publishableKey: connectionSettings.settings.publishable,
     secretKey: connectionSettings.settings.secret,
   };
+}
+
+async function getCredentials(): Promise<{ publishableKey: string; secretKey: string }> {
+  if (cachedCredentials) return cachedCredentials;
+
+  try {
+    cachedCredentials = await getConnectorCredentials();
+    return cachedCredentials;
+  } catch {
+    // Fall back to environment variables
+  }
+
+  const secretKey = process.env.STRIPE_SECRET_KEY;
+  const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+
+  if (!secretKey) {
+    throw new Error(
+      "Stripe is not configured. Set STRIPE_SECRET_KEY environment variable or connect Stripe via the Replit integration."
+    );
+  }
+
+  cachedCredentials = {
+    secretKey,
+    publishableKey: publishableKey || "",
+  };
+  return cachedCredentials;
 }
 
 export async function getUncachableStripeClient() {
