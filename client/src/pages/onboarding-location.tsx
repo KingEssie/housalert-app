@@ -151,13 +151,13 @@ export default function OnboardingLocationPage() {
               <div className="space-y-0">
                 <div className="relative">
                   <div
-                    className="flex items-center gap-3 py-4 border-b border-[#F0F2F5] cursor-text"
+                    className="flex items-center gap-3 h-[52px] px-4 rounded-xl bg-[#F3F4F8] cursor-text focus-within:ring-2 focus-within:ring-[#0066FF]/15 focus-within:bg-[#FAFBFC] transition-all"
                     onClick={() => {
                       const input = document.getElementById("city-search-input");
                       input?.focus();
                     }}
                   >
-                    <Search className="w-5 h-5 text-[#72839A] flex-shrink-0" />
+                    <Search className="w-5 h-5 text-[#7A8599] flex-shrink-0" />
                     <input
                       id="city-search-input"
                       type="text"
@@ -168,7 +168,7 @@ export default function OnboardingLocationPage() {
                         setShowDropdown(true);
                       }}
                       onFocus={() => setShowDropdown(true)}
-                      className="flex-1 text-[15px] text-[#1B2A4A] placeholder:text-[#72839A] bg-transparent border-none outline-none"
+                      className="flex-1 text-[15px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal bg-transparent border-none outline-none"
                       data-testid="input-city-search"
                     />
                     {selectedCity && (
@@ -267,13 +267,13 @@ export default function OnboardingLocationPage() {
               <div className="space-y-0">
                 <div className="relative">
                   <div
-                    className="flex items-center gap-3 py-4 border-b border-[#F0F2F5] cursor-text"
+                    className="flex items-center gap-3 h-[52px] px-4 rounded-xl bg-[#F3F4F8] cursor-text focus-within:ring-2 focus-within:ring-[#0066FF]/15 focus-within:bg-[#FAFBFC] transition-all"
                     onClick={() => {
                       const input = document.getElementById("radius-city-input");
                       input?.focus();
                     }}
                   >
-                    <Search className="w-5 h-5 text-[#72839A] flex-shrink-0" />
+                    <Search className="w-5 h-5 text-[#7A8599] flex-shrink-0" />
                     <input
                       id="radius-city-input"
                       type="text"
@@ -284,7 +284,7 @@ export default function OnboardingLocationPage() {
                         setShowDropdown(true);
                       }}
                       onFocus={() => setShowDropdown(true)}
-                      className="flex-1 text-[15px] text-[#1B2A4A] placeholder:text-[#72839A] bg-transparent border-none outline-none"
+                      className="flex-1 text-[15px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal bg-transparent border-none outline-none"
                       data-testid="input-city-search"
                     />
                     {selectedCity && (
@@ -320,22 +320,24 @@ export default function OnboardingLocationPage() {
                   )}
                 </div>
 
-                <div className="flex items-center gap-3 py-4 border-b border-[#F0F2F5]">
-                  <Navigation className="w-5 h-5 text-[#72839A] flex-shrink-0" />
-                  <span className="text-[15px] text-[#1B2A4A] flex-1">Straal</span>
-                  <select
-                    value={radius}
-                    onChange={(e) => setRadius(e.target.value)}
-                    className="text-[15px] text-[#1B2A4A] font-medium bg-transparent border-none outline-none cursor-pointer text-right"
-                    data-testid="select-radius"
-                  >
-                    <option value="2">2 km</option>
-                    <option value="5">5 km</option>
-                    <option value="10">10 km</option>
-                    <option value="15">15 km</option>
-                    <option value="25">25 km</option>
-                    <option value="50">50 km</option>
-                  </select>
+                <div className="mt-4">
+                  <label className="text-[14px] font-semibold text-[#1B2A4A] mb-2 block">Straal</label>
+                  <div className="relative">
+                    <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
+                    <select
+                      value={radius}
+                      onChange={(e) => setRadius(e.target.value)}
+                      className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] cursor-pointer appearance-none transition-all"
+                      data-testid="select-radius"
+                    >
+                      <option value="2">2 km</option>
+                      <option value="5">5 km</option>
+                      <option value="10">10 km</option>
+                      <option value="15">15 km</option>
+                      <option value="25">25 km</option>
+                      <option value="50">50 km</option>
+                    </select>
+                  </div>
                 </div>
 
                 {selectedCity && (
@@ -357,33 +359,38 @@ export default function OnboardingLocationPage() {
 
             {activeTab === "reistijd" && (
               <div className="space-y-0">
-                <div className="flex items-center gap-3 py-4 border-b border-[#F0F2F5]">
-                  <MapPin className="w-5 h-5 text-[#72839A] flex-shrink-0" />
-                  <input
-                    type="text"
-                    placeholder="bijv. Berlin Hauptbahnhof"
-                    value={travelAddress}
-                    onChange={(e) => setTravelAddress(e.target.value)}
-                    className="flex-1 text-[15px] text-[#1B2A4A] placeholder:text-[#72839A] bg-transparent border-none outline-none"
-                    data-testid="input-travel-address"
-                  />
+                <div>
+                  <label className="text-[14px] font-semibold text-[#1B2A4A] mb-2 block">Werkadres / bestemming</label>
+                  <div className="relative">
+                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
+                    <input
+                      type="text"
+                      placeholder="bijv. Berlin Hauptbahnhof"
+                      value={travelAddress}
+                      onChange={(e) => setTravelAddress(e.target.value)}
+                      className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
+                      data-testid="input-travel-address"
+                    />
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-3 py-4 border-b border-[#F0F2F5]">
-                  <Clock className="w-5 h-5 text-[#72839A] flex-shrink-0" />
-                  <span className="text-[15px] text-[#1B2A4A] flex-1">Maximale reistijd</span>
-                  <select
-                    value={travelTime}
-                    onChange={(e) => setTravelTime(e.target.value)}
-                    className="text-[15px] text-[#1B2A4A] font-medium bg-transparent border-none outline-none cursor-pointer text-right"
-                    data-testid="select-travel-time"
-                  >
-                    <option value="15">15 min</option>
-                    <option value="30">30 min</option>
-                    <option value="45">45 min</option>
-                    <option value="60">60 min</option>
-                    <option value="90">90 min</option>
-                  </select>
+                <div className="mt-4">
+                  <label className="text-[14px] font-semibold text-[#1B2A4A] mb-2 block">Maximale reistijd</label>
+                  <div className="relative">
+                    <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
+                    <select
+                      value={travelTime}
+                      onChange={(e) => setTravelTime(e.target.value)}
+                      className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] cursor-pointer appearance-none transition-all"
+                      data-testid="select-travel-time"
+                    >
+                      <option value="15">15 min</option>
+                      <option value="30">30 min</option>
+                      <option value="45">45 min</option>
+                      <option value="60">60 min</option>
+                      <option value="90">90 min</option>
+                    </select>
+                  </div>
                 </div>
 
                 <div className="py-5 border-b border-[#F0F2F5]">

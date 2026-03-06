@@ -313,16 +313,16 @@ export default function NewSearchPage() {
                 <label className="text-[14px] font-semibold text-[#1B2A4A] mb-2 block">Stad</label>
                 <button
                   onClick={() => setShowCityDropdown(!showCityDropdown)}
-                  className={`w-full h-[52px] px-4 rounded-xl border-2 bg-white text-left flex items-center justify-between transition-colors ${
-                    data.city ? "border-[#0066FF] text-[#1B2A4A]" : "border-[#EAEFF5] text-[#9BA5B7]"
+                  className={`w-full h-[52px] px-4 rounded-xl border-0 text-left flex items-center justify-between transition-all ${
+                    data.city ? "bg-[#EDF2FF] text-[#1B2A4A] ring-2 ring-[#0066FF]/15" : "bg-[#F3F4F8] text-[#7A8599]"
                   }`}
                   data-testid="button-select-city"
                 >
                   <div className="flex items-center gap-3">
-                    <MapPin className="w-4 h-4 text-[#9BA5B7]" />
+                    <MapPin className="w-4 h-4 text-[#7A8599]" />
                     <span className="text-[15px]">{data.city || "Selecteer een stad"}</span>
                   </div>
-                  <ChevronDown className={`w-4 h-4 text-[#9BA5B7] transition-transform ${showCityDropdown ? "rotate-180" : ""}`} />
+                  <ChevronDown className={`w-4 h-4 text-[#7A8599] transition-transform ${showCityDropdown ? "rotate-180" : ""}`} />
                 </button>
 
                 {showCityDropdown && (
@@ -333,7 +333,7 @@ export default function NewSearchPage() {
                         value={citySearch}
                         onChange={(e) => setCitySearch(e.target.value)}
                         placeholder="Zoek stad..."
-                        className="w-full h-[40px] px-3 rounded-lg border-0 bg-[#F3F4F8] text-[14px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:bg-white transition-all"
+                        className="w-full h-[44px] px-3 rounded-xl border-0 bg-[#EAEFF5] text-[14px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
                         autoFocus
                         data-testid="input-city-search"
                       />
@@ -408,14 +408,14 @@ export default function NewSearchPage() {
               <div>
                 <label className="text-[14px] font-semibold text-[#1B2A4A] mb-2 block">Minimale huur</label>
                 <div className="relative">
-                  <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9BA5B7]" />
+                  <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
                   <input
                     type="number"
                     value={data.priceMin}
                     onChange={(e) => update({ priceMin: e.target.value })}
                     placeholder="0"
                     min="0"
-                    className="w-full h-[52px] pl-10 pr-4 rounded-xl border-2 border-[#EAEFF5] bg-white text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:border-[#0066FF] transition-colors"
+                    className="w-full h-[52px] pl-10 pr-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
                     data-testid="input-price-min"
                   />
                 </div>
@@ -423,14 +423,14 @@ export default function NewSearchPage() {
               <div>
                 <label className="text-[14px] font-semibold text-[#1B2A4A] mb-2 block">Maximale huur</label>
                 <div className="relative">
-                  <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9BA5B7]" />
+                  <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
                   <input
                     type="number"
                     value={data.priceMax}
                     onChange={(e) => update({ priceMax: e.target.value })}
                     placeholder="2000"
                     min="0"
-                    className="w-full h-[52px] pl-10 pr-4 rounded-xl border-2 border-[#EAEFF5] bg-white text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:border-[#0066FF] transition-colors"
+                    className="w-full h-[52px] pl-10 pr-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
                     data-testid="input-price-max"
                   />
                 </div>
@@ -459,10 +459,10 @@ export default function NewSearchPage() {
                       <button
                         key={opt.value}
                         onClick={() => update({ bedroomsMin: opt.value })}
-                        className={`px-4 py-2.5 rounded-xl text-[14px] font-medium border-2 transition-all ${
+                        className={`px-4 py-2.5 rounded-xl text-[14px] font-medium border-0 transition-all ${
                           selected
-                            ? "border-[#0066FF] bg-[#EDF2FF] text-[#0066FF]"
-                            : "border-[#EAEFF5] bg-white text-[#72839A] hover:border-[#EAEFF5]"
+                            ? "bg-[#EDF2FF] text-[#0066FF] ring-2 ring-[#0066FF]/20"
+                            : "bg-[#F3F4F8] text-[#5A6577] hover:bg-[#EAEFF5]"
                         }`}
                         data-testid={`option-bedrooms-${opt.value}`}
                       >
@@ -485,10 +485,10 @@ export default function NewSearchPage() {
                       <button
                         key={opt.value}
                         onClick={() => update({ sizeMin: opt.value })}
-                        className={`px-4 py-2.5 rounded-xl text-[14px] font-medium border-2 transition-all ${
+                        className={`px-4 py-2.5 rounded-xl text-[14px] font-medium border-0 transition-all ${
                           selected
-                            ? "border-[#0066FF] bg-[#EDF2FF] text-[#0066FF]"
-                            : "border-[#EAEFF5] bg-white text-[#72839A] hover:border-[#EAEFF5]"
+                            ? "bg-[#EDF2FF] text-[#0066FF] ring-2 ring-[#0066FF]/20"
+                            : "bg-[#F3F4F8] text-[#5A6577] hover:bg-[#EAEFF5]"
                         }`}
                         data-testid={`option-size-${opt.value}`}
                       >

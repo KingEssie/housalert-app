@@ -403,7 +403,7 @@ function TaskModal({
                 value={buddyEmail}
                 onChange={(e) => setBuddyEmail(e.target.value)}
                 placeholder="buddy@voorbeeld.nl"
-                className="w-full h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:bg-white transition-all"
+                className="w-full h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
                 data-testid="input-buddy-email"
               />
               <p className="text-[12px] text-[#9BA5B7]">Je buddy ontvangt dezelfde meldingen als jij.</p>
@@ -495,7 +495,7 @@ function TaskModal({
                 value={phoneInput}
                 onChange={(e) => setPhoneInput(e.target.value)}
                 placeholder="+49 170 1234567"
-                className="w-full h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:bg-white transition-all"
+                className="w-full h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
                 data-testid="input-phone"
               />
               <p className="text-[12px] text-[#9BA5B7]">Gebruik internationaal formaat, bijv. +49 170 1234567</p>

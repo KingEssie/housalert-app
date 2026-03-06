@@ -72,71 +72,70 @@ export default function OnboardingFiltersPage() {
           Verfijn je zoekopdracht voor <span className="font-semibold text-[#1B2A4A]">{city}</span>. Alle velden zijn optioneel.
         </p>
 
-        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
-          <div className="flex items-center gap-3 py-4 border-b border-[#F0F2F5]">
-            <DollarSign className="w-5 h-5 text-[#72839A] flex-shrink-0" />
-            <span className="text-[15px] text-[#1B2A4A] min-w-[90px]">Min. prijs</span>
-            <div className="flex-1 flex items-center justify-end gap-1">
-              <span className="text-[#72839A] text-sm">€</span>
+        <div className="flex flex-col gap-4">
+          <div>
+            <label className="text-[14px] font-semibold text-[#1B2A4A] mb-2 block">Minimale huur</label>
+            <div className="relative">
+              <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
               <input
                 type="number"
-                placeholder="0"
+                placeholder="€ 0"
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
-                className="w-20 text-right text-[15px] text-[#1B2A4A] font-medium bg-transparent border-none outline-none placeholder:text-[#72839A]"
+                className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
                 data-testid="input-min-price"
               />
             </div>
           </div>
 
-          <div className="flex items-center gap-3 py-4 border-b border-[#F0F2F5]">
-            <DollarSign className="w-5 h-5 text-[#72839A] flex-shrink-0" />
-            <span className="text-[15px] text-[#1B2A4A] min-w-[90px]">Max. prijs</span>
-            <div className="flex-1 flex items-center justify-end gap-1">
-              <span className="text-[#72839A] text-sm">€</span>
+          <div>
+            <label className="text-[14px] font-semibold text-[#1B2A4A] mb-2 block">Maximale huur</label>
+            <div className="relative">
+              <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
               <input
                 type="number"
-                placeholder="2000"
+                placeholder="€ 2000"
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
-                className="w-20 text-right text-[15px] text-[#1B2A4A] font-medium bg-transparent border-none outline-none placeholder:text-[#72839A]"
+                className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
                 data-testid="input-max-price"
               />
             </div>
           </div>
 
-          <div className="flex items-center gap-3 py-4 border-b border-[#F0F2F5]">
-            <BedDouble className="w-5 h-5 text-[#72839A] flex-shrink-0" />
-            <span className="text-[15px] text-[#1B2A4A] flex-1">Slaapkamers</span>
-            <select
-              value={bedrooms}
-              onChange={(e) => setBedrooms(e.target.value)}
-              className="text-[15px] text-[#1B2A4A] font-medium bg-transparent border-none outline-none cursor-pointer text-right"
-              data-testid="select-bedrooms"
-            >
-              <option value="">Maakt niet uit</option>
-              <option value="any">Maakt niet uit</option>
-              <option value="1">1+</option>
-              <option value="2">2+</option>
-              <option value="3">3+</option>
-              <option value="4">4+</option>
-              <option value="5">5+</option>
-            </select>
+          <div>
+            <label className="text-[14px] font-semibold text-[#1B2A4A] mb-2 block">Slaapkamers</label>
+            <div className="relative">
+              <BedDouble className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
+              <select
+                value={bedrooms}
+                onChange={(e) => setBedrooms(e.target.value)}
+                className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] cursor-pointer appearance-none transition-all"
+                data-testid="select-bedrooms"
+              >
+                <option value="">Maakt niet uit</option>
+                <option value="any">Maakt niet uit</option>
+                <option value="1">1+</option>
+                <option value="2">2+</option>
+                <option value="3">3+</option>
+                <option value="4">4+</option>
+                <option value="5">5+</option>
+              </select>
+            </div>
           </div>
 
-          <div className="flex items-center gap-3 py-4">
-            <Maximize2 className="w-5 h-5 text-[#72839A] flex-shrink-0" />
-            <span className="text-[15px] text-[#1B2A4A] min-w-[110px]">Min. oppervlakte</span>
-            <div className="flex-1 flex items-center justify-end gap-1">
+          <div>
+            <label className="text-[14px] font-semibold text-[#1B2A4A] mb-2 block">Minimale oppervlakte</label>
+            <div className="relative">
+              <Maximize2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
               <input
                 type="number"
-                placeholder="0"
+                placeholder="0 m²"
                 value={minSize}
                 onChange={(e) => setMinSize(e.target.value)}
-                className="w-16 text-right text-[15px] text-[#1B2A4A] font-medium bg-transparent border-none outline-none placeholder:text-[#72839A]"
+                className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
                 data-testid="input-min-size"
               />
-              <span className="text-[#72839A] text-sm">m²</span>
             </div>
           </div>
 

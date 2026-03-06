@@ -150,7 +150,7 @@ export default function ApplicationLetterPage() {
               <textarea
                 value={template}
                 onChange={(e) => setTemplate(e.target.value)}
-                className="w-full min-h-[300px] px-4 py-3 rounded-xl border-0 bg-[#F3F4F8] text-[15px] text-[#1B2A4A] placeholder:text-[#9BA5B7] focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:bg-white resize-y leading-relaxed transition-all"
+                className="w-full min-h-[300px] px-4 py-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] resize-y leading-relaxed transition-all"
                 data-testid="input-template"
               />
               {!isLongEnough && (

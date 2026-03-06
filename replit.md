@@ -319,7 +319,7 @@ Env vars: `TEST_USER_EMAIL`, `TEST_USER_PASSWORD`, `TEST_PHONE_E164`, `TEST_BASE
 - Elevated shadow: `shadow-[0_4px_20px_rgba(0,0,0,0.06)]`
 - Cards: `rounded-2xl`
 - Buttons: `rounded-xl`
-- Inputs: `rounded-xl`, `h-[52px]`, borderless `bg-[#F3F4F8]`, focus ring `ring-[#0066FF]/20`
+- Inputs: `rounded-xl`, `h-[52px]`, borderless `bg-[#F3F4F8]`, `font-medium`, focus ring `ring-[#0066FF]/15` + `bg-[#FAFBFC]`, placeholder `text-[#7A8599] font-normal`, icon color `text-[#7A8599]`
 - Modals: `rounded-t-[24px] sm:rounded-[24px]`
 
 ### Buttons
@@ -327,7 +327,7 @@ Env vars: `TEST_USER_EMAIL`, `TEST_USER_PASSWORD`, `TEST_PHONE_E164`, `TEST_BASE
 - Secondary: `h-[48px] rounded-xl border-[#EAEFF5] text-[#1B2A4A]`
 
 ### Layout
-- Font: Inter
+- Font: Poppins
 - Header: `h-[60px]`, subtle border `#EAEFF5`
 - Page padding: `px-6`
 - Card padding: `p-6`
