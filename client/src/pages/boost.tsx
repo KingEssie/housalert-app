@@ -18,8 +18,8 @@ import {
   X,
   Camera,
   UserCircle,
-  Rocket,
 } from "lucide-react";
+import { ReactieklaarCard } from "@/components/reactieklaar-card";
 
 interface BoostTask {
   id: string;
@@ -29,19 +29,13 @@ interface BoostTask {
   completed: boolean;
 }
 
-interface SpeedStep {
-  id: string;
-  label: string;
-  done: boolean;
-}
-
 interface BoostData {
   boostScore: number;
   tasks: BoostTask[];
   completedCount: number;
   totalCount: number;
   recommendations: BoostTask[];
-  speedSteps: SpeedStep[];
+  speedSteps: { id: string; label: string; done: boolean }[];
   speedDone: number;
   speedTotal: number;
 }
@@ -232,42 +226,6 @@ function RecommendedSection({
   );
 }
 
-function ReadinessSection({ speedSteps, speedDone, speedTotal }: { speedSteps: SpeedStep[]; speedDone: number; speedTotal: number }) {
-  return (
-    <div data-testid="section-readiness">
-      <h3 className="text-[18px] font-[700] text-[#1B2A4A] tracking-[-0.01em] mb-3">
-        Klaar om snel te reageren
-      </h3>
-      <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5">
-        <div className="flex items-center gap-2 mb-4">
-          <Rocket className="w-4 h-4 text-[#0066FF]" />
-          <span className="text-[14px] font-semibold text-[#1B2A4A]">
-            {speedDone}/{speedTotal} klaar
-          </span>
-          {speedDone === speedTotal && (
-            <span className="text-[12px] font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full ml-auto">
-              Alles klaar
-            </span>
-          )}
-        </div>
-        <div className="flex flex-col gap-2.5">
-          {speedSteps.map((step) => (
-            <div key={step.id} className="flex items-center gap-3" data-testid={`readiness-${step.id}`}>
-              {step.done ? (
-                <CheckCircle2 className="w-[18px] h-[18px] text-green-500 flex-shrink-0" />
-              ) : (
-                <div className="w-[18px] h-[18px] rounded-full border-2 border-[#EAEFF5] flex-shrink-0" />
-              )}
-              <span className={`text-[14px] ${step.done ? "text-[#9BA5B7]" : "text-[#1B2A4A] font-medium"}`}>
-                {step.label}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function AllTasksSection({
   tasks,
@@ -680,7 +638,20 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
         <RecommendedSection recommendations={recommendations} onTaskClick={setActiveTaskId} />
       )}
 
-      <ReadinessSection speedSteps={speedSteps} speedDone={speedDone} speedTotal={speedTotal} />
+      <ReactieklaarCard
+        navigate={navigate}
+        steps={speedSteps}
+        done={speedDone}
+        total={speedTotal}
+        onStepClick={(stepId) => {
+          const stepToTask: Record<string, string> = {
+            search_buddy_added: "search_buddy_added",
+            documents_ready: "income_documents_uploaded",
+          };
+          const taskId = stepToTask[stepId];
+          if (taskId) setActiveTaskId(taskId);
+        }}
+      />
 
       <AllTasksSection tasks={tasks} onTaskClick={setActiveTaskId} />
 

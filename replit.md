@@ -80,6 +80,15 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - Task actions: alerts_active/phone_number_added/profile_info_completed → /settings/notifications, housing_preferences_completed → /dashboard/searches/new, reaction_letter_ready → /application-letter, income_documents_uploaded/id_document_uploaded → inline document checklist modals, search_buddy_added → inline email modal, profile_photo_added → placeholder (TODO: implement upload)
 - Migration: `server/migrations/006_profile_photo.sql` adds `profile_photo_url` column to `user_profile_data`
 
+### Reactieklaar Card
+- `client/src/components/reactieklaar-card.tsx` — Reusable readiness status card showing 5 checklist items
+- Items: Alerts actief, Zoekbuddy toegevoegd, Documenten klaar, Telefoonnummer toegevoegd, Reactiebrief klaar
+- Data source: `/api/boost` speedSteps (derived from existing Supabase tables)
+- Props: `navigate` (required), `steps`/`done`/`total` (optional overrides; if omitted, fetches from API)
+- Used on: Profile tab (dashboard.tsx ProfielTab), Boost tab (boost.tsx)
+- Replaces: old `SpeedReadinessCard` from profile-strength.tsx (still exported but unused)
+- Clickable incomplete items navigate to relevant settings pages
+
 ### Application Letter System
 - `client/src/lib/application-letter.ts` — Default Dutch template, placeholder definitions, `fillTemplate()` function
 - Placeholders: [[ADRES]], [[STAD]], [[NAAM]], [[EMAIL]], [[TELEFOON]], [[BEROEP]], [[INKOMEN]], [[PRIJS]]

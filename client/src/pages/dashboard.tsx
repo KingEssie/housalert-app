@@ -12,7 +12,8 @@ import { SubscriptionGate } from "@/components/subscription-gate";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { ProfileStrengthSection, SpeedBanner, NotificationSummaryCard, SpeedReadinessCard } from "@/components/profile-strength";
+import { ProfileStrengthSection, SpeedBanner, NotificationSummaryCard } from "@/components/profile-strength";
+import { ReactieklaarCard } from "@/components/reactieklaar-card";
 import { ApplySheet } from "@/components/apply-sheet";
 import {
   Home,
@@ -855,7 +856,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
   );
 }
 
-function ProfielTab({ user, signOut, navigate, subscription }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null } }) {
+function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null }; setActiveTab: (tab: TabKey) => void }) {
   const [signingOut, setSigningOut] = useState(false);
 
   async function handleSignOut() {
@@ -934,7 +935,7 @@ function ProfielTab({ user, signOut, navigate, subscription }: { user: any; sign
       </div>
 
       <NotificationSummaryCard navigate={navigate} />
-      <SpeedReadinessCard navigate={navigate} />
+      <ReactieklaarCard navigate={navigate} onStepClick={() => setActiveTab("boost")} />
 
       {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
         <button
@@ -1057,6 +1058,7 @@ export default function DashboardPage() {
             signOut={signOut}
             navigate={navigate}
             subscription={{ status: sub.status, isTrial: sub.isTrial, isActive: sub.isActive, isExpired: sub.isExpired, plan: sub.plan, trialEndsAt: sub.trialEndsAt }}
+            setActiveTab={setActiveTab}
           />
         )}
       </main>

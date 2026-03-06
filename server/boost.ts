@@ -56,9 +56,10 @@ export function calculateBoostScore(states: CompletionStates): BoostResult {
 
   const speedSteps = [
     { id: "alerts_active", label: "Alerts actief", done: states.alertsActive },
-    { id: "letter_ready", label: "Aanmeldingsbrief klaar", done: states.reactionLetterReady },
+    { id: "search_buddy_added", label: "Zoekbuddy toegevoegd", done: states.searchBuddyAdded },
     { id: "documents_ready", label: "Documenten klaar", done: states.incomeDocumentsUploaded && states.idDocumentUploaded },
     { id: "phone_added", label: "Telefoonnummer toegevoegd", done: states.phoneNumberAdded },
+    { id: "letter_ready", label: "Reactiebrief klaar", done: states.reactionLetterReady },
   ];
 
   return {
