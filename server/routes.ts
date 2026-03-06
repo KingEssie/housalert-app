@@ -711,6 +711,116 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/profile-strength", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const profileDataPromise = supabase.from("user_profile_data").select("*").eq("user_id", user.id).maybeSingle()
+        .then(r => r.error ? { data: null } : r);
+
+      const [notifResult, profileDataResult, searchProfilesResult] = await Promise.all([
+        supabase.from("user_notification_settings").select("*").eq("user_id", user.id).maybeSingle(),
+        profileDataPromise,
+        supabase.from("search_profiles").select("id, city, price_min, price_max, bedrooms_min, size_min").eq("user_id", user.id),
+      ]);
+
+      const notif = notifResult.data;
+      const profileData = profileDataResult.data;
+      const searchProfiles = searchProfilesResult.data ?? [];
+
+      const hasAlertChannel = !!(notif?.email_enabled || notif?.sms_enabled || notif?.whatsapp_enabled);
+      const hasSearchBuddy = !!(profileData?.search_buddy_email && profileData.search_buddy_email.trim().length > 0);
+
+      const hasStrongProfile = searchProfiles.some(p => {
+        let filters = 0;
+        if (p.price_min > 0 || p.price_max > 0) filters++;
+        if (p.bedrooms_min > 0) filters++;
+        if (p.size_min > 0) filters++;
+        return filters >= 2;
+      });
+      const hasOptimizedSearch = searchProfiles.length >= 2 || hasStrongProfile;
+
+      const hasApplicationTemplate = !!(profileData?.application_template && profileData.application_template.trim().length > 20);
+
+      const checklist = (profileData?.document_checklist ?? {}) as Record<string, boolean>;
+      const checklistValues = Object.values(checklist);
+      const checklistDone = checklistValues.filter(Boolean).length;
+      const hasDocuments = checklistDone >= 4;
+
+      const hasPhone = !!(notif?.phone_e164 && notif.phone_e164.length > 5);
+
+      const tasks = [
+        { id: "alerts", label: "Alerts activeren", completed: hasAlertChannel, score: 20 },
+        { id: "search_buddy", label: "Zoekbuddy toevoegen", completed: hasSearchBuddy, score: 10 },
+        { id: "search_optimize", label: "Zoekopdracht optimaliseren", completed: hasOptimizedSearch, score: 20 },
+        { id: "application_template", label: "Aanmeldingsbrief voorbereiden", completed: hasApplicationTemplate, score: 15 },
+        { id: "documents", label: "Documenten verzamelen", completed: hasDocuments, score: 20 },
+        { id: "phone", label: "Telefoonnummer toevoegen", completed: hasPhone, score: 15 },
+      ];
+
+      const score = tasks.filter(t => t.completed).reduce((sum, t) => sum + t.score, 0);
+      const completedCount = tasks.filter(t => t.completed).length;
+
+      return res.json({ score, tasks, completedCount, totalCount: tasks.length });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/profile-data", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const defaults = { user_id: user.id, search_buddy_email: null, application_template: null, document_checklist: {} };
+      const { data, error } = await supabase
+        .from("user_profile_data")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (error) {
+        if (error.message?.includes("user_profile_data")) return res.json(defaults);
+        return res.status(500).json({ error: error.message });
+      }
+      return res.json(data ?? defaults);
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.put("/api/profile-data", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { search_buddy_email, application_template, document_checklist } = req.body;
+
+      const updates: Record<string, any> = { updated_at: new Date().toISOString() };
+      if (search_buddy_email !== undefined) updates.search_buddy_email = search_buddy_email;
+      if (application_template !== undefined) updates.application_template = application_template;
+      if (document_checklist !== undefined) updates.document_checklist = document_checklist;
+
+      const { data, error } = await supabase
+        .from("user_profile_data")
+        .upsert({ user_id: user.id, ...updates }, { onConflict: "user_id" })
+        .select()
+        .single();
+
+      if (error) return res.status(500).json({ error: error.message });
+      return res.json(data);
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   app.post("/api/ingest/run", async (req, res) => {
     const authHeader = req.headers.authorization;
     const expectedToken = process.env.INGEST_BEARER_TOKEN;

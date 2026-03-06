@@ -1,0 +1,119 @@
+Build a Stekkies-style account completion and profile strength system in the app.
+
+Goal:
+Help users become better prepared and increase activation, retention, and perceived value.
+
+Important:
+- Mobile-first
+- Keep the current app structure
+- Add this primarily to the Home screen/dashboard
+- Use the current visual style of the app
+- Do not do broad refactors
+- Implement real functionality, not only static UI
+
+--------------------------------
+FEATURES TO BUILD
+--------------------------------
+
+1. Add a new dashboard/home section:
+"Rond je account af"
+
+Show:
+- completion percentage
+- completed tasks count
+- expandable task list
+
+2. Add a new dashboard/home card:
+"Profielsterkte"
+
+Show:
+- score out of 100
+- status label:
+  - 0-29 Net begonnen
+  - 30-59 Op weg
+  - 60-79 Goed voorbereid
+  - 80-100 Klaar om snel te reageren
+- short recommendation text
+
+3. Calculate profile strength score from these tasks:
+
+Task A: Alerts activeren
+- completed if at least one alert channel is enabled
+- score +20
+
+Task B: Zoekbuddy toevoegen
+- completed if search buddy email exists
+- score +10
+
+Task C: Zoekopdracht optimaliseren
+- completed if user has at least 2 active search profiles
+  OR one strong search profile with enough filters
+- score +20
+
+Task D: Aanmeldingsbrief voorbereiden
+- completed if application template exists and is non-empty
+- score +15
+
+Task E: Documenten verzamelen
+- completed if document checklist is sufficiently completed
+- score +20
+
+Task F: Telefoonnummer toevoegen
+- completed if valid phone number exists
+- score +15
+
+4. Add the needed data support
+Use existing tables where possible.
+If necessary, add minimal new storage for:
+- search buddy email
+- document checklist completion
+- application template if not already persisted
+
+5. Build task detail flows/screens or modals for:
+- Alerts activeren
+- Zoekbuddy toevoegen
+- Zoekopdracht optimaliseren
+- Aanmeldingsbrief voorbereiden
+- Documenten verzamelen
+- Telefoonnummer toevoegen
+
+6. Documents checklist
+Create a simple checklist UI with grouped sections such as:
+- Voor iedereen
+- In loondienst
+- Voor ondernemers
+
+Persist progress per user.
+
+7. Home UX
+On dashboard/home:
+- show profile strength card
+- show account completion card
+- show task progress visually
+- each task should have status:
+  - completed
+  - recommended
+  - not started
+
+8. Add motivational UX
+When a task is completed:
+- show a toast
+- update score immediately
+- update completion percentage immediately
+
+9. APIs
+Create or extend minimal APIs as needed for:
+- profile strength summary
+- task completion data
+- search buddy save/remove
+- document checklist save
+- application template save
+- phone save if needed
+
+10. Output after implementation:
+- screenshots of dashboard home with the two new cards
+- screenshots of each task flow
+- explanation of the score calculation
+- list of files changed
+
+Do not change unrelated subscription or ingestion logic.

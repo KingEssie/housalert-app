@@ -12,6 +12,7 @@ import { SubscriptionGate } from "@/components/subscription-gate";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { ProfileStrengthSection } from "@/components/profile-strength";
 import {
   Home,
   Heart,
@@ -343,6 +344,8 @@ function HomeTab({
           </div>
         </div>
       </div>
+
+      <ProfileStrengthSection navigate={navigate} />
 
       <div className="flex flex-col gap-2 mt-1">
         <button
