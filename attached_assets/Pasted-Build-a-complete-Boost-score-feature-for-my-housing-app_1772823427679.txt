@@ -1,0 +1,61 @@
+Build a complete “Boost score” feature for my housing app.
+
+Context:
+- The app has a calm, clean, mobile-first UX inspired by BlaBlaCar and Airbnb.
+- Keep the existing visual style: soft cards, rounded corners, lots of whitespace, friendly typography, clear hierarchy.
+- Do NOT introduce flashy dashboard UI, heavy gamification, loud gradients, or dense admin panels.
+- This feature must feel like a natural extension of the current app.
+
+Goal:
+Create a Boost score system from 0 to 100 that reflects how ready a user is to quickly respond to housing matches.
+
+Requirements:
+1. Add a reusable score calculation system.
+2. The score must be based on weighted profile completion tasks.
+3. Use Supabase, not local Replit Postgres.
+4. Keep the scoring logic maintainable and easy to adjust.
+
+Initial scoring weights:
+- alerts_active: 15
+- search_buddy_added: 5
+- income_documents_uploaded: 20
+- id_document_uploaded: 15
+- reaction_letter_ready: 15
+- phone_number_added: 10
+- housing_preferences_completed: 10
+- profile_info_completed: 5
+- profile_photo_added: 5
+
+Total = 100
+
+Implementation details:
+- Create a structured task/score config file
+- Create utility logic to calculate the score dynamically
+- Pull the relevant completion states from existing profile/user data where possible
+- If some fields do not yet exist, create clear placeholders or TODO-backed fallback logic
+- Store score-related readiness data in Supabase in a clean MVP-friendly way
+- Avoid overengineering
+
+UI requirements:
+- Create a reusable “BoostScoreCard” component
+- Show:
+  - title: “Boost score”
+  - score number
+  - progress bar
+  - supportive Dutch microcopy
+- Example copy:
+  - “Je profiel is goed op weg”
+  - “Nog een paar stappen om sneller te reageren”
+
+Technical requirements:
+- Inspect the current codebase first
+- Reuse existing design system and components
+- Keep component logic clean and separated from business logic
+- Add concise comments only where useful
+- Minimal smoke checks only, no heavy testing
+
+At the end provide:
+- short summary of what was built
+- files created/changed
+- Supabase tables or columns added/changed
+- any TODOs

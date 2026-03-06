@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/lib/auth";
@@ -16,19 +16,17 @@ import {
   Phone,
   Shield,
   X,
-  Eye,
-  Copy,
-  Plus,
+  Camera,
+  UserCircle,
   Rocket,
 } from "lucide-react";
 
 interface BoostTask {
   id: string;
+  weight: number;
   label: string;
   description: string;
   completed: boolean;
-  score: number;
-  category: "account" | "prep";
 }
 
 interface SpeedStep {
@@ -57,44 +55,28 @@ interface ProfileData {
 }
 
 const TASK_ICONS: Record<string, typeof Bell> = {
-  alerts: Bell,
-  search_buddy: Users,
-  search_optimize: Search,
-  application_template: FileText,
-  documents: FolderOpen,
-  phone: Phone,
-  prep_letter: FileText,
-  prep_extra_profile: Search,
-  prep_network: Users,
-  prep_viewing_tips: Eye,
+  alerts_active: Bell,
+  search_buddy_added: Users,
+  income_documents_uploaded: FolderOpen,
+  id_document_uploaded: Shield,
+  reaction_letter_ready: FileText,
+  phone_number_added: Phone,
+  housing_preferences_completed: Search,
+  profile_info_completed: UserCircle,
+  profile_photo_added: Camera,
 };
 
-const DOCUMENT_CHECKLIST = [
-  {
-    group: "Voor iedereen",
-    items: [
-      { id: "id_copy", label: "Kopie identiteitsbewijs" },
-      { id: "schufa", label: "SCHUFA-rapport" },
-      { id: "income_proof", label: "Inkomensbewijs (laatste 3 maanden)" },
-      { id: "rental_history", label: "Huurgeschiedenis / Mietschuldenfreiheit" },
-      { id: "photo", label: "Pasfoto" },
-    ],
-  },
-  {
-    group: "In loondienst",
-    items: [
-      { id: "employment_contract", label: "Arbeidsovereenkomst" },
-      { id: "payslips", label: "Loonstroken (laatste 3 maanden)" },
-    ],
-  },
-  {
-    group: "Voor ondernemers",
-    items: [
-      { id: "business_reg", label: "Gewerbeanmeldung / KvK-uittreksel" },
-      { id: "tax_returns", label: "Belastingaangifte (laatste 2 jaar)" },
-      { id: "bank_statements", label: "Bankafschriften (laatste 3 maanden)" },
-    ],
-  },
+const INCOME_CHECKLIST = [
+  { id: "income_proof", label: "Inkomensbewijs (laatste 3 maanden)" },
+  { id: "employment_contract", label: "Arbeidsovereenkomst" },
+  { id: "payslips", label: "Loonstroken (laatste 3 maanden)" },
+  { id: "tax_returns", label: "Belastingaangifte (laatste 2 jaar)" },
+  { id: "bank_statements", label: "Bankafschriften (laatste 3 maanden)" },
+];
+
+const ID_CHECKLIST = [
+  { id: "id_copy", label: "Kopie identiteitsbewijs" },
+  { id: "photo", label: "Pasfoto" },
 ];
 
 function useBoostData() {
@@ -156,7 +138,7 @@ function useUpdateProfileData() {
 
 function getScoreMicrocopy(score: number): string {
   if (score >= 90) return "Top! Je bent klaar om razendsnel te reageren.";
-  if (score >= 70) return "Je profiel is al goed op weg.";
+  if (score >= 70) return "Je profiel is goed op weg.";
   if (score >= 40) return "Nog een paar stappen om sneller te reageren.";
   if (score >= 10) return "Begin met een paar taken om je kansen te vergroten.";
   return "Start met je profiel en vergroot direct je kansen.";
@@ -238,7 +220,7 @@ function RecommendedSection({
                 <p className="text-[15px] font-semibold text-[#1B2A4A] mb-1">{task.label}</p>
                 <p className="text-[13px] text-[#72839A] leading-relaxed">{task.description}</p>
                 <div className="flex items-center gap-1 mt-2.5">
-                  <span className="text-[12px] font-semibold text-[#0066FF]">+{task.score} punten</span>
+                  <span className="text-[12px] font-semibold text-[#0066FF]">+{task.weight} punten</span>
                 </div>
               </div>
               <ArrowRight className="w-4 h-4 text-[#9BA5B7] flex-shrink-0 mt-1" />
@@ -318,7 +300,7 @@ function AllTasksSection({
               <Icon className="w-4 h-4 text-[#0066FF] flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="text-[14px] font-medium text-[#1B2A4A]">{task.label}</p>
-                <p className="text-[12px] text-[#9BA5B7]">+{task.score} punten</p>
+                <p className="text-[12px] text-[#9BA5B7]">+{task.weight} punten</p>
               </div>
               <ArrowRight className="w-4 h-4 text-[#9BA5B7] flex-shrink-0" />
             </button>
@@ -401,13 +383,13 @@ function TaskModal({
 
   const [buddyEmail, setBuddyEmail] = useState("");
   const [checklist, setChecklist] = useState<Record<string, boolean>>({});
-  const [initialized, setInitialized] = useState(false);
 
-  if (profileData && !initialized) {
-    setBuddyEmail(profileData.search_buddy_email || "");
-    setChecklist(profileData.document_checklist || {});
-    setInitialized(true);
-  }
+  useEffect(() => {
+    if (profileData) {
+      setBuddyEmail(profileData.search_buddy_email || "");
+      setChecklist(profileData.document_checklist || {});
+    }
+  }, [profileData]);
 
   const handleSave = async (data: Partial<ProfileData>, msg: string) => {
     await updateProfileData.mutateAsync(data);
@@ -415,34 +397,8 @@ function TaskModal({
     onClose();
   };
 
-  const TITLES: Record<string, string> = {
-    alerts: "Alerts activeren",
-    search_buddy: "Zoekbuddy toevoegen",
-    search_optimize: "Zoekopdracht optimaliseren",
-    application_template: "Aanmeldingsbrief voorbereiden",
-    documents: "Documenten verzamelen",
-    phone: "Telefoonnummer toevoegen",
-    prep_letter: "Aanmeldingsbrief voorbereiden",
-    prep_extra_profile: "Extra zoekopdracht toevoegen",
-    prep_network: "Gebruik je netwerk",
-    prep_viewing_tips: "Bezichtigingtips bekijken",
-  };
-
-  const DESCRIPTIONS: Record<string, string> = {
-    alerts: "Activeer minstens een meldingskanaal zodat je geen woningen mist.",
-    search_buddy: "Voeg een zoekbuddy toe die ook meldingen ontvangt.",
-    search_optimize: "Maak meer zoekprofielen of optimaliseer je filters.",
-    application_template: "Bereid een standaard aanmeldingsbrief voor.",
-    documents: "Verzamel alle benodigde documenten.",
-    phone: "Voeg je telefoonnummer toe voor snellere meldingen.",
-    prep_letter: "Bereid een standaard aanmeldingsbrief voor.",
-    prep_extra_profile: "Voeg een extra zoekopdracht toe voor meer matches.",
-    prep_network: "Deel je zoektocht met je netwerk.",
-    prep_viewing_tips: "Lees tips voor een succesvolle bezichtiging.",
-  };
-
-  const title = TITLES[taskId] || "";
-  const description = DESCRIPTIONS[taskId] || "";
+  const task = BOOST_TASK_MODAL_CONFIG[taskId];
+  if (!task) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center" onClick={onClose}>
@@ -451,16 +407,16 @@ function TaskModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sticky top-0 bg-white border-b border-[#EAEFF5] p-6 flex items-center justify-between rounded-t-[24px]">
-          <h2 className="text-[20px] font-[700] text-[#1B2A4A] tracking-[-0.02em]">{title}</h2>
+          <h2 className="text-[20px] font-[700] text-[#1B2A4A] tracking-[-0.02em]">{task.title}</h2>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F2F5F8] flex items-center justify-center" data-testid="button-close-modal">
             <X className="w-4 h-4 text-[#72839A]" />
           </button>
         </div>
 
         <div className="p-5">
-          <p className="text-[14px] text-[#72839A] mb-5">{description}</p>
+          <p className="text-[14px] text-[#72839A] mb-5">{task.description}</p>
 
-          {(taskId === "alerts" || taskId === "phone") && (
+          {(taskId === "alerts_active" || taskId === "phone_number_added") && (
             <Button
               onClick={() => { onClose(); navigate("/settings/notifications"); }}
               className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold"
@@ -471,7 +427,7 @@ function TaskModal({
             </Button>
           )}
 
-          {taskId === "search_buddy" && (
+          {taskId === "search_buddy_added" && (
             <div className="flex flex-col gap-3">
               <label className="text-[13px] font-medium text-[#1B2A4A]">E-mailadres zoekbuddy</label>
               <input
@@ -494,7 +450,7 @@ function TaskModal({
             </div>
           )}
 
-          {(taskId === "search_optimize" || taskId === "prep_extra_profile") && (
+          {taskId === "housing_preferences_completed" && (
             <Button
               onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
               className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold"
@@ -505,7 +461,7 @@ function TaskModal({
             </Button>
           )}
 
-          {(taskId === "application_template" || taskId === "prep_letter") && (
+          {taskId === "reaction_letter_ready" && (
             <Button
               onClick={() => { onClose(); navigate("/application-letter"); }}
               className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold"
@@ -516,83 +472,138 @@ function TaskModal({
             </Button>
           )}
 
-          {taskId === "documents" && (
+          {taskId === "income_documents_uploaded" && (
             <div className="flex flex-col gap-4">
-              {DOCUMENT_CHECKLIST.map((group) => (
-                <div key={group.group}>
-                  <h4 className="text-[13px] font-semibold text-[#1B2A4A] mb-2">{group.group}</h4>
-                  <div className="flex flex-col gap-1">
-                    {group.items.map((item) => (
-                      <button
-                        key={item.id}
-                        onClick={() => setChecklist((prev) => ({ ...prev, [item.id]: !prev[item.id] }))}
-                        className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-[#F2F5F8] transition-colors text-left"
-                        data-testid={`check-${item.id}`}
-                      >
-                        {checklist[item.id] ? (
-                          <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
-                        ) : (
-                          <div className="w-5 h-5 rounded-full border-2 border-[#EAEFF5] flex-shrink-0" />
-                        )}
-                        <span className={`text-[14px] ${checklist[item.id] ? "text-[#9BA5B7] line-through" : "text-[#1B2A4A]"}`}>
-                          {item.label}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
+              <h4 className="text-[13px] font-semibold text-[#1B2A4A]">Vink af wat je hebt verzameld</h4>
+              <div className="flex flex-col gap-1">
+                {INCOME_CHECKLIST.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => setChecklist((prev) => ({ ...prev, [item.id]: !prev[item.id] }))}
+                    className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-[#F2F5F8] transition-colors text-left"
+                    data-testid={`check-${item.id}`}
+                  >
+                    {checklist[item.id] ? (
+                      <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    ) : (
+                      <div className="w-5 h-5 rounded-full border-2 border-[#EAEFF5] flex-shrink-0" />
+                    )}
+                    <span className={`text-[14px] ${checklist[item.id] ? "text-[#9BA5B7] line-through" : "text-[#1B2A4A]"}`}>
+                      {item.label}
+                    </span>
+                  </button>
+                ))}
+              </div>
               <Button
-                onClick={() => handleSave({ document_checklist: checklist }, "Documentenlijst opgeslagen!")}
+                onClick={() => handleSave({ document_checklist: checklist }, "Documenten opgeslagen!")}
                 disabled={updateProfileData.isPending}
                 className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold disabled:opacity-50"
-                data-testid="button-save-documents"
+                data-testid="button-save-income-docs"
               >
                 {updateProfileData.isPending ? "Opslaan..." : "Opslaan"}
               </Button>
             </div>
           )}
 
-          {taskId === "prep_network" && (
-            <div className="flex flex-col gap-3">
-              <p className="text-[13px] text-[#1B2A4A] font-medium">
-                Deel je zoektocht met vrienden en familie. Hoe meer ogen, hoe sneller je iets vindt.
-              </p>
+          {taskId === "id_document_uploaded" && (
+            <div className="flex flex-col gap-4">
+              <h4 className="text-[13px] font-semibold text-[#1B2A4A]">Vink af wat je hebt verzameld</h4>
+              <div className="flex flex-col gap-1">
+                {ID_CHECKLIST.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => setChecklist((prev) => ({ ...prev, [item.id]: !prev[item.id] }))}
+                    className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-[#F2F5F8] transition-colors text-left"
+                    data-testid={`check-${item.id}`}
+                  >
+                    {checklist[item.id] ? (
+                      <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    ) : (
+                      <div className="w-5 h-5 rounded-full border-2 border-[#EAEFF5] flex-shrink-0" />
+                    )}
+                    <span className={`text-[14px] ${checklist[item.id] ? "text-[#9BA5B7] line-through" : "text-[#1B2A4A]"}`}>
+                      {item.label}
+                    </span>
+                  </button>
+                ))}
+              </div>
               <Button
-                onClick={async () => {
-                  const text = "Hey! Ik zoek een huurwoning in Duitsland en gebruik Stekkies. Als jij ook iets ziet, stuur het door! Kijk op stekkies.replit.app";
-                  if (navigator.share) {
-                    try { await navigator.share({ text }); } catch {}
-                  } else {
-                    await navigator.clipboard.writeText(text);
-                    toast({ title: "Gekopieerd!", description: "Tekst is naar je klembord gekopieerd." });
-                  }
-                  await handleSave({ network_task_done: true } as any, "Netwerktaak voltooid!");
-                }}
-                className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold"
-                data-testid="button-share-network"
+                onClick={() => handleSave({ document_checklist: checklist }, "Documenten opgeslagen!")}
+                disabled={updateProfileData.isPending}
+                className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold disabled:opacity-50"
+                data-testid="button-save-id-docs"
               >
-                <Copy className="w-4 h-4 mr-2" />
-                Deel met je netwerk
+                {updateProfileData.isPending ? "Opslaan..." : "Opslaan"}
               </Button>
             </div>
           )}
 
-          {taskId === "prep_viewing_tips" && (
+          {taskId === "profile_info_completed" && (
             <Button
-              onClick={() => { onClose(); navigate("/tips/bezichtiging"); }}
+              onClick={() => { onClose(); navigate("/settings/notifications"); }}
               className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold"
-              data-testid="button-goto-tips"
+              data-testid="button-goto-profile-info"
             >
-              <Eye className="w-4 h-4 mr-2" />
-              Naar bezichtigingtips
+              <UserCircle className="w-4 h-4 mr-2" />
+              Naar contactgegevens
             </Button>
+          )}
+
+          {taskId === "profile_photo_added" && (
+            <div className="flex flex-col gap-3">
+              <div className="bg-[#F3F4F8] rounded-xl p-4 text-center">
+                <Camera className="w-8 h-8 text-[#9BA5B7] mx-auto mb-2" />
+                <p className="text-[13px] text-[#9BA5B7]">Binnenkort beschikbaar</p>
+              </div>
+              <p className="text-[12px] text-[#9BA5B7]">
+                De mogelijkheid om een profielfoto te uploaden wordt binnenkort toegevoegd.
+              </p>
+            </div>
           )}
         </div>
       </div>
     </div>
   );
 }
+
+const BOOST_TASK_MODAL_CONFIG: Record<string, { title: string; description: string }> = {
+  alerts_active: {
+    title: "Woningalerts activeren",
+    description: "Activeer minstens een meldingskanaal (e-mail, SMS of WhatsApp) zodat je geen nieuwe woningen mist.",
+  },
+  search_buddy_added: {
+    title: "Zoekbuddy toevoegen",
+    description: "Voeg een zoekbuddy toe die ook meldingen ontvangt van jouw matches.",
+  },
+  income_documents_uploaded: {
+    title: "Inkomensdocumenten uploaden",
+    description: "Verzamel inkomensdocumenten zodat je klaar bent om te reageren. Vink aan wat je al hebt.",
+  },
+  id_document_uploaded: {
+    title: "Identiteitsbewijs uploaden",
+    description: "Voeg een kopie van je identiteitsbewijs en pasfoto toe.",
+  },
+  reaction_letter_ready: {
+    title: "Standaard reactie maken",
+    description: "Bereid een aanmeldingsbrief voor zodat je direct kunt reageren op nieuwe woningen.",
+  },
+  phone_number_added: {
+    title: "Telefoonnummer toevoegen",
+    description: "Voeg je telefoonnummer toe voor SMS- en WhatsApp-meldingen.",
+  },
+  housing_preferences_completed: {
+    title: "Woonwensen aanvullen",
+    description: "Verfijn je zoekprofielen of voeg een extra zoekopdracht toe voor betere matches.",
+  },
+  profile_info_completed: {
+    title: "Profielgegevens aanvullen",
+    description: "Zorg dat je contactgegevens compleet zijn zodat verhuurders je kunnen bereiken.",
+  },
+  profile_photo_added: {
+    title: "Profielfoto toevoegen",
+    description: "Een profielfoto maakt je profiel persoonlijker en vergroot je kansen bij verhuurders.",
+  },
+};
 
 export default function BoostPage({ navigate }: { navigate: (path: string) => void }) {
   const { data, isLoading, isError, refetch } = useBoostData();
@@ -643,10 +654,6 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
   const isLowProgress = boostScore < 10;
   const isHighProgress = boostScore >= 80 && completedCount < totalCount;
 
-  function handleTaskClick(taskId: string) {
-    setActiveTaskId(taskId);
-  }
-
   return (
     <div className="flex flex-col gap-6">
       <div className="mb-1">
@@ -663,19 +670,19 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
       {isLowProgress && (
         <EmptyState onStart={() => {
           const first = recommendations[0] || tasks.find(t => !t.completed);
-          if (first) handleTaskClick(first.id);
+          if (first) setActiveTaskId(first.id);
         }} />
       )}
 
       {isHighProgress && <HighProgressState />}
 
       {recommendations.length > 0 && !isLowProgress && (
-        <RecommendedSection recommendations={recommendations} onTaskClick={handleTaskClick} />
+        <RecommendedSection recommendations={recommendations} onTaskClick={setActiveTaskId} />
       )}
 
       <ReadinessSection speedSteps={speedSteps} speedDone={speedDone} speedTotal={speedTotal} />
 
-      <AllTasksSection tasks={tasks} onTaskClick={handleTaskClick} />
+      <AllTasksSection tasks={tasks} onTaskClick={setActiveTaskId} />
 
       {activeTaskId && (
         <TaskModal

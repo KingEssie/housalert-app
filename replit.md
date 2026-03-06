@@ -69,13 +69,16 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - Migration: `server/migrations/004_search_prep_flags.sql` adds `network_task_done` and `viewing_tips_done` columns
 
 ### Boost Tab
-- `client/src/pages/boost.tsx` — Dedicated Boost page with score card, recommended tasks, readiness indicators, and all-tasks list
-- `GET /api/boost` — Returns `boostScore` (0-100 normalized), `tasks` array (id, label, description, completed, score, category), `recommendations` (top 3 incomplete sorted by weight), `speedSteps`, `speedDone`, `speedTotal`
+- `shared/boost-config.ts` — Structured task config: `BOOST_TASKS` array with id, weight, label, description; `BOOST_MAX_SCORE` constant (100)
+- `server/boost.ts` — Score calculation utility: `resolveCompletionStates()` derives task status from Supabase data, `calculateBoostScore()` computes weighted score
+- `client/src/pages/boost.tsx` — Dedicated Boost page: BoostScoreCard, RecommendedSection, ReadinessSection, AllTasksSection, EmptyState, HighProgressState, TaskModal
+- `GET /api/boost` — Returns `boostScore` (0-100), `tasks` array, `recommendations` (top 3 incomplete sorted by weight), `speedSteps`, `speedDone`, `speedTotal`
 - Bottom nav tab: 5th tab (between Matches and Filters) with Zap icon, label "Boost"
 - TabKey type: `"home" | "matches" | "filters" | "boost" | "profiel"`
-- Components: BoostScoreCard, RecommendedSection, ReadinessSection, AllTasksSection, EmptyState, HighProgressState, TaskModal (self-contained with flows for all task types)
-- Task actions: alerts/phone → /settings/notifications, search_optimize/prep_extra_profile → /dashboard/searches/new, application_template/prep_letter → /application-letter, documents → inline checklist modal, search_buddy → inline email modal, prep_network → share/copy, prep_viewing_tips → /tips/bezichtiging
-- Score weights (normalized to 100): alerts 15, documents 15, application_template 15, search_optimize 12, phone 10, search_buddy 8, prep_extra_profile 8, prep_letter 7, prep_network 5, prep_viewing_tips 5
+- Score weights (total = 100): income_documents_uploaded 20, alerts_active 15, id_document_uploaded 15, reaction_letter_ready 15, phone_number_added 10, housing_preferences_completed 10, search_buddy_added 5, profile_info_completed 5, profile_photo_added 5
+- Completion derivation: income docs from document_checklist (income_proof, payslips, employment_contract, etc. >= 2), ID docs from document_checklist (id_copy, photo >= 1), alerts from notification_settings, letter from application_template, phone from phone_e164, preferences from search_profiles, search_buddy from search_buddy_email, profile_info from email+phone, profile_photo from profile_photo_url
+- Task actions: alerts_active/phone_number_added/profile_info_completed → /settings/notifications, housing_preferences_completed → /dashboard/searches/new, reaction_letter_ready → /application-letter, income_documents_uploaded/id_document_uploaded → inline document checklist modals, search_buddy_added → inline email modal, profile_photo_added → placeholder (TODO: implement upload)
+- Migration: `server/migrations/006_profile_photo.sql` adds `profile_photo_url` column to `user_profile_data`
 
 ### Application Letter System
 - `client/src/lib/application-letter.ts` — Default Dutch template, placeholder definitions, `fillTemplate()` function
