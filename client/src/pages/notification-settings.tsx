@@ -161,7 +161,7 @@ export default function NotificationSettingsPage() {
               <ListRow
                 title="E-mail"
                 subtitle="Ontvang matches via e-mail"
-                icon={<div className="w-9 h-9 rounded-full bg-[#EDF2FF] flex items-center justify-center"><Mail className="w-4 h-4 text-[#0066FF]" /></div>}
+                icon={<div className="w-10 h-10 rounded-full bg-[#EDF2FF] flex items-center justify-center"><Mail className="w-[18px] h-[18px] text-[#0066FF]" /></div>}
                 trailing={
                   <Switch
                     checked={emailEnabled}
@@ -175,7 +175,7 @@ export default function NotificationSettingsPage() {
               <ListRow
                 title="SMS"
                 subtitle="Ontvang matches via SMS"
-                icon={<div className="w-9 h-9 rounded-full bg-green-50 flex items-center justify-center"><Phone className="w-4 h-4 text-green-600" /></div>}
+                icon={<div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center"><Phone className="w-[18px] h-[18px] text-green-600" /></div>}
                 trailing={
                   <Switch
                     checked={smsEnabled}
@@ -189,7 +189,7 @@ export default function NotificationSettingsPage() {
               <ListRow
                 title="WhatsApp"
                 subtitle="Ontvang matches via WhatsApp"
-                icon={<div className="w-9 h-9 rounded-full bg-emerald-50 flex items-center justify-center"><MessageSquare className="w-4 h-4 text-emerald-600" /></div>}
+                icon={<div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center"><MessageSquare className="w-[18px] h-[18px] text-emerald-600" /></div>}
                 trailing={
                   <Switch
                     checked={whatsappEnabled}

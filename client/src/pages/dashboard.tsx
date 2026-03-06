@@ -989,7 +989,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
         <ListRow
           title="Meldingsinstellingen"
           subtitle="E-mail, SMS, WhatsApp"
-          icon={<div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center"><Bell className="w-4 h-4 text-[#0066FF]" /></div>}
+          icon={<div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center"><Bell className="w-[18px] h-[18px] text-[#0066FF]" /></div>}
           onClick={() => navigate("/settings/notifications")}
           testId="button-notification-settings"
         />
@@ -997,7 +997,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
         <ListRow
           title="Abonnement"
           subtitle={subscriptionSubtitle}
-          icon={<div className={`w-9 h-9 rounded-full flex items-center justify-center ${subscription.isActive ? "bg-green-50" : subscription.isTrial ? "bg-blue-50" : "bg-red-50"}`}>{subscription.isActive ? <CheckCircle2 className="w-4 h-4 text-green-600" /> : subscription.isTrial ? <Crown className="w-4 h-4 text-[#0066FF]" /> : <AlertTriangle className="w-4 h-4 text-red-500" />}</div>}
+          icon={<div className={`w-10 h-10 rounded-full flex items-center justify-center ${subscription.isActive ? "bg-green-50" : subscription.isTrial ? "bg-blue-50" : "bg-red-50"}`}>{subscription.isActive ? <CheckCircle2 className="w-[18px] h-[18px] text-green-600" /> : subscription.isTrial ? <Crown className="w-[18px] h-[18px] text-[#0066FF]" /> : <AlertTriangle className="w-[18px] h-[18px] text-red-500" />}</div>}
           trailing={subscriptionBadge}
           testId="item-subscription"
         />
@@ -1019,8 +1019,9 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
           title={signingOut ? "Uitloggen..." : "Uitloggen"}
           onClick={handleSignOut}
           disabled={signingOut}
+          icon={<div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center"><LogOut className="w-[18px] h-[18px] text-red-400" /></div>}
           titleClassName="text-[16px] font-[600] text-red-500 leading-[1.3]"
-          trailing={<LogOut className="w-[18px] h-[18px] text-red-400 flex-shrink-0" />}
+          trailing={<ChevronRight className="w-[18px] h-[18px] text-[#9CA3AF] flex-shrink-0" />}
           testId="button-logout"
         />
       </ListSection>
