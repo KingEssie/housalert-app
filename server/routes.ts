@@ -752,7 +752,11 @@ export async function registerRoutes(
 
       const hasPhone = !!(notif?.phone_e164 && notif.phone_e164.length > 5);
 
-      const tasks = [
+      const hasNetworkDone = !!(profileData?.network_task_done);
+      const hasViewingTipsDone = !!(profileData?.viewing_tips_done);
+      const hasMultipleProfiles = searchProfiles.length >= 2;
+
+      const accountTasks = [
         { id: "alerts", label: "Alerts activeren", completed: hasAlertChannel, score: 20 },
         { id: "search_buddy", label: "Zoekbuddy toevoegen", completed: hasSearchBuddy, score: 10 },
         { id: "search_optimize", label: "Zoekopdracht optimaliseren", completed: hasOptimizedSearch, score: 20 },
@@ -761,10 +765,28 @@ export async function registerRoutes(
         { id: "phone", label: "Telefoonnummer toevoegen", completed: hasPhone, score: 15 },
       ];
 
-      const score = tasks.filter(t => t.completed).reduce((sum, t) => sum + t.score, 0);
-      const completedCount = tasks.filter(t => t.completed).length;
+      const prepTasks = [
+        { id: "prep_letter", label: "Schrijf een introductiebrief", completed: hasApplicationTemplate, score: 10 },
+        { id: "prep_extra_profile", label: "Voeg extra zoekopdracht toe", completed: hasMultipleProfiles, score: 15 },
+        { id: "prep_network", label: "Gebruik je netwerk", completed: hasNetworkDone, score: 5 },
+        { id: "prep_viewing_tips", label: "Lees bezichtigingtips", completed: hasViewingTipsDone, score: 5 },
+      ];
 
-      return res.json({ score, tasks, completedCount, totalCount: tasks.length });
+      const allTasks = [...accountTasks, ...prepTasks];
+      const score = allTasks.filter(t => t.completed).reduce((sum, t) => sum + t.score, 0);
+      const completedCount = accountTasks.filter(t => t.completed).length;
+      const prepCompletedCount = prepTasks.filter(t => t.completed).length;
+
+      return res.json({
+        score,
+        tasks: accountTasks,
+        completedCount,
+        totalCount: accountTasks.length,
+        prepTasks,
+        prepCompletedCount,
+        prepTotalCount: prepTasks.length,
+        maxScore: allTasks.reduce((s, t) => s + t.score, 0),
+      });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
     }
@@ -801,12 +823,14 @@ export async function registerRoutes(
       const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
-      const { search_buddy_email, application_template, document_checklist } = req.body;
+      const { search_buddy_email, application_template, document_checklist, network_task_done, viewing_tips_done } = req.body;
 
       const updates: Record<string, any> = { updated_at: new Date().toISOString() };
       if (search_buddy_email !== undefined) updates.search_buddy_email = search_buddy_email;
       if (application_template !== undefined) updates.application_template = application_template;
       if (document_checklist !== undefined) updates.document_checklist = document_checklist;
+      if (network_task_done !== undefined) updates.network_task_done = network_task_done;
+      if (viewing_tips_done !== undefined) updates.viewing_tips_done = viewing_tips_done;
 
       const { data, error } = await supabase
         .from("user_profile_data")

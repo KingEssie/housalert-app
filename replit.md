@@ -60,7 +60,10 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - `PUT /api/profile-data` — Upserts profile data fields
 - Table: `user_profile_data` in Supabase (user_id PK, search_buddy_email, application_template, document_checklist JSONB)
 - Migration: `server/migrations/003_profile_data.sql` (must be applied manually in Supabase SQL editor)
-- Score calculation: Alerts (+20), Search buddy (+10), Search optimization (+20), Application template (+15), Documents (+20), Phone (+15) = 100 total
+- Account tasks: Alerts (+20), Search buddy (+10), Search optimization (+20), Application template (+15), Documents (+20), Phone (+15)
+- Prep tasks: Introductiebrief (+10), Extra zoekopdracht (+15), Gebruik je netwerk (+5), Bezichtigingtips (+5)
+- Max score: 135 total (both groups combined)
+- Migration: `server/migrations/004_search_prep_flags.sql` adds `network_task_done` and `viewing_tips_done` columns
 
 ### Application Letter System
 - `client/src/lib/application-letter.ts` — Default Dutch template, placeholder definitions, `fillTemplate()` function

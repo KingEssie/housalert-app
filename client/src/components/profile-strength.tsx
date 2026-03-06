@@ -19,6 +19,10 @@ import {
   ArrowRight,
   Shield,
   Sparkles,
+  Target,
+  Eye,
+  Copy,
+  Plus,
 } from "lucide-react";
 
 interface Task {
@@ -33,12 +37,18 @@ interface ProfileStrengthData {
   tasks: Task[];
   completedCount: number;
   totalCount: number;
+  prepTasks: Task[];
+  prepCompletedCount: number;
+  prepTotalCount: number;
+  maxScore: number;
 }
 
 interface ProfileData {
   search_buddy_email: string | null;
   application_template: string | null;
   document_checklist: Record<string, boolean>;
+  network_task_done: boolean;
+  viewing_tips_done: boolean;
 }
 
 function useProfileStrength() {
@@ -144,9 +154,11 @@ export function ProfileStrengthCard() {
     );
   }
 
-  const { score, tasks } = data;
-  const status = getStatusLabel(score);
-  const recommendation = getRecommendation(score, tasks);
+  const { score, maxScore } = data;
+  const allTasks = [...data.tasks, ...data.prepTasks];
+  const pct = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
+  const status = getStatusLabel(pct);
+  const recommendation = getRecommendation(pct, allTasks);
 
   return (
     <div className="bg-white rounded-[16px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-5" data-testid="card-profile-strength">
@@ -164,15 +176,15 @@ export function ProfileStrengthCard() {
 
       <div className="flex items-end gap-2 mb-3">
         <span className="text-[32px] font-bold text-[#0B1F44] leading-none" data-testid="text-profile-score">{score}</span>
-        <span className="text-[14px] text-[#9CA3AF] mb-1">/ 100</span>
+        <span className="text-[14px] text-[#9CA3AF] mb-1">/ {maxScore}</span>
       </div>
 
       <div className="w-full h-2 bg-[#F2F4F7] rounded-full overflow-hidden mb-3">
         <div
           className="h-full rounded-full transition-all duration-500"
           style={{
-            width: `${score}%`,
-            background: score >= 80 ? "#22c55e" : score >= 60 ? "#2D6CDF" : score >= 30 ? "#f59e0b" : "#9CA3AF",
+            width: `${pct}%`,
+            background: pct >= 80 ? "#22c55e" : pct >= 60 ? "#2D6CDF" : pct >= 30 ? "#f59e0b" : "#9CA3AF",
           }}
           data-testid="progress-profile-strength"
         />
@@ -503,15 +515,284 @@ function TaskModal({
   );
 }
 
+const PREP_TASK_ICONS: Record<string, typeof Bell> = {
+  prep_letter: FileText,
+  prep_extra_profile: Search,
+  prep_network: Users,
+  prep_viewing_tips: Eye,
+};
+
+const SHARE_TEXT = `Hey! Ik ben op zoek naar een huurwoning in Duitsland en gebruik Stekkies — een slimme zoektool die automatisch nieuwe woningen vindt. Als jij ook iets ziet, stuur het door! Samen vinden we sneller iets. Kijk op stekkies.replit.app`;
+
+const VIEWING_TIPS = [
+  { title: "Wees op tijd", body: "Kom 5 minuten voor de bezichtiging. Eerste indruk telt." },
+  { title: "Neem documenten mee", body: "SCHUFA, inkomensbewijzen en een kopie van je ID — direct aanbieden maakt indruk." },
+  { title: "Stel vragen", body: "Vraag naar bijkomende kosten (Nebenkosten), huisregels en opzegtermijn." },
+  { title: "Check de buurt", body: "Loop even rond: supermarkten, OV, parkeren en geluidsoverlast." },
+  { title: "Reageer snel", body: "Stuur dezelfde dag nog een bevestiging of bedankmail naar de verhuurder." },
+  { title: "Wees eerlijk", body: "Geef eerlijke antwoorden over huisdieren, roken en inkomen. Verhuurders waarderen transparantie." },
+];
+
+function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: string) => void }) {
+  const { data, isLoading } = useProfileStrength();
+  const [expanded, setExpanded] = useState(false);
+
+  if (isLoading || !data) {
+    return (
+      <div className="bg-white rounded-[16px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-5 animate-pulse">
+        <div className="h-4 bg-[#F2F4F7] rounded w-40 mb-3" />
+        <div className="h-3 bg-[#F2F4F7] rounded w-24" />
+      </div>
+    );
+  }
+
+  const { prepTasks, prepCompletedCount, prepTotalCount } = data;
+  const percentage = prepTotalCount > 0 ? Math.round((prepCompletedCount / prepTotalCount) * 100) : 0;
+
+  return (
+    <div className="bg-white rounded-[16px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] overflow-hidden" data-testid="card-search-preparation">
+      <button
+        className="w-full p-5 flex items-center justify-between text-left"
+        onClick={() => setExpanded(!expanded)}
+        data-testid="button-toggle-prep-tasks"
+      >
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-1">
+            <Target className="w-4 h-4 text-[#2D6CDF]" />
+            <h3 className="text-[15px] font-semibold text-[#0B1F44]">Bereid je zoekopdracht voor</h3>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-[13px] text-[#6B7280]">
+              {prepCompletedCount}/{prepTotalCount} taken voltooid
+            </span>
+            <span className="text-[13px] font-medium text-[#2D6CDF]">{percentage}%</span>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 relative">
+            <svg className="w-10 h-10 -rotate-90" viewBox="0 0 36 36">
+              <circle cx="18" cy="18" r="15.5" fill="none" stroke="#F2F4F7" strokeWidth="3" />
+              <circle
+                cx="18"
+                cy="18"
+                r="15.5"
+                fill="none"
+                stroke="#2D6CDF"
+                strokeWidth="3"
+                strokeDasharray={`${(percentage / 100) * 97.4} 97.4`}
+                strokeLinecap="round"
+                className="transition-all duration-500"
+              />
+            </svg>
+            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-[#0B1F44]">
+              {percentage}%
+            </span>
+          </div>
+          {expanded ? (
+            <ChevronUp className="w-4 h-4 text-[#9CA3AF]" />
+          ) : (
+            <ChevronDown className="w-4 h-4 text-[#9CA3AF]" />
+          )}
+        </div>
+      </button>
+
+      {expanded && (
+        <div className="border-t border-[#F2F4F7] px-5 pb-3">
+          {prepTasks.map((task) => {
+            const Icon = PREP_TASK_ICONS[task.id] || Circle;
+            return (
+              <button
+                key={task.id}
+                onClick={() => !task.completed && onTaskClick(task.id)}
+                className={`w-full flex items-center gap-3 py-3.5 border-b border-[#F2F4F7] last:border-0 text-left ${
+                  task.completed ? "opacity-60" : "hover:bg-[#F8F9FB]"
+                } transition-colors -mx-1 px-1 rounded-lg`}
+                data-testid={`task-${task.id}`}
+                disabled={task.completed}
+              >
+                {task.completed ? (
+                  <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+                ) : (
+                  <div className="w-5 h-5 rounded-full border-2 border-[#D1D5DB] flex-shrink-0" />
+                )}
+                <Icon className={`w-4 h-4 flex-shrink-0 ${task.completed ? "text-[#9CA3AF]" : "text-[#2D6CDF]"}`} />
+                <div className="flex-1 min-w-0">
+                  <p className={`text-[14px] font-medium ${task.completed ? "text-[#9CA3AF] line-through" : "text-[#0B1F44]"}`}>
+                    {task.label}
+                  </p>
+                  <p className="text-[11px] text-[#9CA3AF]">+{task.score} punten</p>
+                </div>
+                {!task.completed && <ArrowRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PrepTaskModal({
+  taskId,
+  onClose,
+  navigate,
+}: {
+  taskId: string;
+  onClose: () => void;
+  navigate: (path: string) => void;
+}) {
+  const updateProfileData = useUpdateProfileData();
+  const { toast } = useToast();
+
+  const titles: Record<string, string> = {
+    prep_letter: "Schrijf een introductiebrief",
+    prep_extra_profile: "Voeg extra zoekopdracht toe",
+    prep_network: "Gebruik je netwerk",
+    prep_viewing_tips: "Lees bezichtigingtips",
+  };
+
+  const handleMarkDone = async (field: string) => {
+    await updateProfileData.mutateAsync({ [field]: true } as any);
+    queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
+    toast({ title: "Afgerond!", description: "Taak als voltooid gemarkeerd." });
+    onClose();
+  };
+
+  const handleCopyShare = async () => {
+    try {
+      await navigator.clipboard.writeText(SHARE_TEXT);
+      toast({ title: "Gekopieerd!", description: "Deeltekst naar klembord gekopieerd." });
+    } catch {
+      toast({ title: "Fout", description: "Kon niet kopiëren.", variant: "destructive" });
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center" onClick={onClose}>
+      <div
+        className="bg-white w-full max-w-md rounded-t-[20px] sm:rounded-[20px] max-h-[85vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="sticky top-0 bg-white border-b border-[#F2F4F7] p-5 flex items-center justify-between rounded-t-[20px]">
+          <h2 className="text-[17px] font-bold text-[#0B1F44]">{titles[taskId] || ""}</h2>
+          <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F2F4F7] flex items-center justify-center" data-testid="button-close-prep-modal">
+            <X className="w-4 h-4 text-[#6B7280]" />
+          </button>
+        </div>
+
+        <div className="p-5">
+          {taskId === "prep_letter" && (
+            <div className="flex flex-col gap-3">
+              <p className="text-[14px] text-[#6B7280]">
+                Een goede introductiebrief laat verhuurders zien dat je serieus bent. Bereid er nu een voor zodat je direct kunt reageren.
+              </p>
+              <Button
+                onClick={() => { onClose(); navigate("/application-letter"); }}
+                className="w-full h-[48px] rounded-xl bg-[#2D6CDF] hover:bg-[#2560C8] text-white text-[15px] font-semibold"
+                data-testid="button-prep-goto-letter"
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                Naar aanmeldingsbrief
+              </Button>
+            </div>
+          )}
+
+          {taskId === "prep_extra_profile" && (
+            <div className="flex flex-col gap-4">
+              <p className="text-[14px] text-[#6B7280]">
+                Met meerdere zoekprofielen vergroot je je kansen aanzienlijk. Zoek je in meerdere steden of met verschillende budgetten? Voeg een extra profiel toe.
+              </p>
+              <div className="bg-[#F8F9FB] rounded-xl p-4">
+                <p className="text-[13px] font-semibold text-[#0B1F44] mb-2">Waarom meerdere profielen?</p>
+                <ul className="text-[13px] text-[#6B7280] space-y-1.5">
+                  <li className="flex items-start gap-2"><span className="text-[#2D6CDF] mt-0.5">+</span>Meer woningen die matchen</li>
+                  <li className="flex items-start gap-2"><span className="text-[#2D6CDF] mt-0.5">+</span>Verschillende prijsklassen dekken</li>
+                  <li className="flex items-start gap-2"><span className="text-[#2D6CDF] mt-0.5">+</span>Meerdere steden of wijken volgen</li>
+                </ul>
+              </div>
+              <Button
+                onClick={() => { onClose(); navigate("/new-search"); }}
+                className="w-full h-[48px] rounded-xl bg-[#2D6CDF] hover:bg-[#2560C8] text-white text-[15px] font-semibold"
+                data-testid="button-prep-add-profile"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Nieuw zoekprofiel toevoegen
+              </Button>
+            </div>
+          )}
+
+          {taskId === "prep_network" && (
+            <div className="flex flex-col gap-4">
+              <p className="text-[14px] text-[#6B7280]">
+                Deel je zoektocht met vrienden, familie en collega's. Hoe meer ogen, hoe sneller je iets vindt.
+              </p>
+              <div className="bg-[#F8F9FB] rounded-xl p-4">
+                <p className="text-[13px] font-semibold text-[#0B1F44] mb-2">Deeltekst</p>
+                <p className="text-[13px] text-[#6B7280] leading-relaxed">{SHARE_TEXT}</p>
+              </div>
+              <Button
+                variant="outline"
+                onClick={handleCopyShare}
+                className="w-full h-[44px] rounded-xl text-[14px] font-medium border-[#E8EDF2] text-[#0B1F44]"
+                data-testid="button-copy-share"
+              >
+                <Copy className="w-4 h-4 mr-2" />
+                Kopieer deeltekst
+              </Button>
+              <Button
+                onClick={() => handleMarkDone("network_task_done")}
+                disabled={updateProfileData.isPending}
+                className="w-full h-[48px] rounded-xl bg-[#2D6CDF] hover:bg-[#2560C8] text-white text-[15px] font-semibold disabled:opacity-50"
+                data-testid="button-mark-network-done"
+              >
+                {updateProfileData.isPending ? "Opslaan..." : "Markeer als voltooid"}
+              </Button>
+            </div>
+          )}
+
+          {taskId === "prep_viewing_tips" && (
+            <div className="flex flex-col gap-4">
+              <p className="text-[14px] text-[#6B7280]">
+                Goed voorbereid naar een bezichtiging gaan vergroot je kans op de woning.
+              </p>
+              <div className="flex flex-col gap-3">
+                {VIEWING_TIPS.map((tip, i) => (
+                  <div key={i} className="bg-[#F8F9FB] rounded-xl p-4">
+                    <p className="text-[13px] font-semibold text-[#0B1F44] mb-1">{tip.title}</p>
+                    <p className="text-[13px] text-[#6B7280] leading-relaxed">{tip.body}</p>
+                  </div>
+                ))}
+              </div>
+              <Button
+                onClick={() => handleMarkDone("viewing_tips_done")}
+                disabled={updateProfileData.isPending}
+                className="w-full h-[48px] rounded-xl bg-[#2D6CDF] hover:bg-[#2560C8] text-white text-[15px] font-semibold disabled:opacity-50"
+                data-testid="button-mark-tips-done"
+              >
+                {updateProfileData.isPending ? "Opslaan..." : "Gelezen — markeer als voltooid"}
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ProfileStrengthSection({ navigate }: { navigate: (path: string) => void }) {
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
+  const [activePrepTaskId, setActivePrepTaskId] = useState<string | null>(null);
 
   return (
     <div className="flex flex-col gap-3">
       <ProfileStrengthCard />
       <AccountCompletionCard onTaskClick={setActiveTaskId} />
+      <SearchPreparationCard onTaskClick={setActivePrepTaskId} />
       {activeTaskId && (
         <TaskModal taskId={activeTaskId} onClose={() => setActiveTaskId(null)} navigate={navigate} />
+      )}
+      {activePrepTaskId && (
+        <PrepTaskModal taskId={activePrepTaskId} onClose={() => setActivePrepTaskId(null)} navigate={navigate} />
       )}
     </div>
   );
