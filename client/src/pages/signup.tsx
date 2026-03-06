@@ -78,116 +78,109 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      <header className="w-full bg-white/90 backdrop-blur-sm sticky top-0 z-20 border-b border-gray-100">
+    <div className="min-h-screen bg-[#f5f6f8] flex flex-col">
+      <header className="w-full bg-white sticky top-0 z-20 shadow-sm">
         <div className="max-w-xl mx-auto px-5 h-14 flex items-center gap-3">
           <button
             onClick={handleBack}
-            className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors"
+            className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-[#f5f6f8] transition-colors"
             data-testid="button-back-estimate"
           >
-            <ChevronLeft className="w-5 h-5 text-gray-600" />
+            <ChevronLeft className="w-5 h-5 text-[#4a5568]" />
           </button>
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-bold text-gray-900 text-base">Stekkies</span>
+            <span className="font-bold text-[#1a2744] text-base">Stekkies</span>
           </div>
         </div>
       </header>
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-10 pb-32">
+      <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-10 pb-12">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2" data-testid="text-signup-title">
+          <h1 className="text-[26px] font-extrabold text-[#1a2744] mb-2" data-testid="text-signup-title">
             Maak je account aan
           </h1>
-          <p className="text-gray-500">
-            Ontvang direct meldingen voor nieuwe woningen in <span className="font-medium text-gray-700">{city}</span>.
+          <p className="text-[15px] text-[#6b7280]">
+            Ontvang direct meldingen voor nieuwe woningen{city ? <> in <span className="font-semibold text-[#1a2744]">{city}</span></> : ""}.
           </p>
         </div>
 
-        <form onSubmit={handleSignup} className="space-y-5">
-          <div className="space-y-2">
-            <Label htmlFor="name" className="text-sm font-medium text-gray-700">
-              Naam
-            </Label>
-            <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <Input
-                id="name"
-                type="text"
-                placeholder="Je volledige naam"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="h-14 pl-12 rounded-xl text-base border-gray-200 focus:border-primary"
-                data-testid="input-signup-name"
-              />
+        <div className="bg-white rounded-2xl shadow-sm border border-[#eceef1] p-6">
+          <form onSubmit={handleSignup} className="space-y-5">
+            <div className="space-y-2">
+              <Label className="text-sm font-semibold text-[#1a2744]">Naam</Label>
+              <div className="relative">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#9ca3af]" />
+                <Input
+                  type="text"
+                  placeholder="Je volledige naam"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="h-13 pl-11 rounded-xl text-[15px] bg-[#f7f8fa] border-[#e5e7eb] focus:border-primary focus:bg-white transition-colors"
+                  data-testid="input-signup-name"
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-              E-mailadres
-            </Label>
-            <div className="relative">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <Input
-                id="email"
-                type="email"
-                placeholder="jouw@email.nl"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="h-14 pl-12 rounded-xl text-base border-gray-200 focus:border-primary"
-                data-testid="input-signup-email"
-              />
+            <div className="space-y-2">
+              <Label className="text-sm font-semibold text-[#1a2744]">E-mailadres</Label>
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#9ca3af]" />
+                <Input
+                  type="email"
+                  placeholder="jouw@email.nl"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="h-13 pl-11 rounded-xl text-[15px] bg-[#f7f8fa] border-[#e5e7eb] focus:border-primary focus:bg-white transition-colors"
+                  data-testid="input-signup-email"
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="password" className="text-sm font-medium text-gray-700">
-              Wachtwoord
-            </Label>
-            <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <Input
-                id="password"
-                type="password"
-                placeholder="Minimaal 6 tekens"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-                className="h-14 pl-12 rounded-xl text-base border-gray-200 focus:border-primary"
-                data-testid="input-signup-password"
-              />
+            <div className="space-y-2">
+              <Label className="text-sm font-semibold text-[#1a2744]">Wachtwoord</Label>
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#9ca3af]" />
+                <Input
+                  type="password"
+                  placeholder="Minimaal 6 tekens"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  className="h-13 pl-11 rounded-xl text-[15px] bg-[#f7f8fa] border-[#e5e7eb] focus:border-primary focus:bg-white transition-colors"
+                  data-testid="input-signup-password"
+                />
+              </div>
             </div>
-          </div>
 
-          <Button
-            type="submit"
-            size="lg"
-            className="w-full h-14 rounded-xl text-lg font-semibold shadow-none mt-2"
-            disabled={loading || !email || !password}
-            data-testid="button-signup-submit"
-          >
-            {loading ? "Account aanmaken..." : "Stuur me alle woningen"}
-          </Button>
-        </form>
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full h-[52px] rounded-xl text-[16px] font-semibold shadow-none bg-primary hover:bg-primary/90 mt-1"
+              disabled={loading || !email || !password}
+              data-testid="button-signup-submit"
+            >
+              {loading ? "Account aanmaken..." : "Stuur me alle woningen"}
+            </Button>
+          </form>
+        </div>
 
-        <p className="text-center text-sm text-gray-400 mt-6">
+        <p className="text-center text-sm text-[#9ca3af] mt-6">
           Heb je al een account?{" "}
           <button
             onClick={() => navigate("/login")}
-            className="text-primary font-medium hover:underline"
+            className="text-primary font-semibold hover:underline"
             data-testid="link-login"
           >
             Inloggen
           </button>
         </p>
 
-        <p className="text-center text-xs text-gray-400 mt-4">
+        <p className="text-center text-xs text-[#c5c9d2] mt-4">
           Door je aan te melden ga je akkoord met onze voorwaarden.
         </p>
       </main>

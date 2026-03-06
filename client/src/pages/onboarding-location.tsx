@@ -1,8 +1,10 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useLocation } from "wouter";
-import { Home, MapPin, ChevronLeft, Search } from "lucide-react";
+import { Home, MapPin, ChevronLeft, Search, Navigation, Clock, Car, Train, Bike, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const DUTCH_CITIES = [
   { name: "Amsterdam", lat: 52.3676, lng: 4.9041 },
@@ -47,17 +49,106 @@ const DUTCH_CITIES = [
   { name: "Lelystad", lat: 52.5185, lng: 5.4714 },
 ];
 
-interface OnboardingData {
-  city: string;
-  lat: number;
-  lng: number;
+const DISTRICTS: Record<string, string[]> = {
+  Amsterdam: ["Centrum", "West", "Oost", "Zuid", "Noord", "Nieuw-West", "Zuidoost", "De Pijp", "Jordaan", "Oud-West"],
+  Rotterdam: ["Centrum", "Kralingen", "Delfshaven", "Noord", "Feijenoord", "Charlois", "Hillegersberg", "Overschie"],
+  "Den Haag": ["Centrum", "Scheveningen", "Loosduinen", "Laak", "Escamp", "Segbroek", "Haagse Hout"],
+  Utrecht: ["Centrum", "Oost", "West", "Zuid", "Noord", "Leidsche Rijn", "Vleuten-De Meern"],
+  Eindhoven: ["Centrum", "Woensel", "Stratum", "Tongelre", "Gestel", "Strijp"],
+};
+
+type TabType = "wijken" | "radius" | "reistijd";
+
+function EstimateBox({ city, loading, estimate }: { city: string; loading: boolean; estimate: number | null }) {
+  if (!city) return null;
+  return (
+    <div className="bg-[#f0f4ff] rounded-2xl p-5 border border-[#dce3f5]" data-testid="card-estimate-preview">
+      {loading ? (
+        <div className="flex items-center gap-3">
+          <Loader2 className="w-5 h-5 text-primary animate-spin" />
+          <span className="text-sm text-[#4a5568]">Schatting laden...</span>
+        </div>
+      ) : (
+        <p className="text-sm text-[#4a5568] leading-relaxed">
+          Met deze zoekopdracht kun je ongeveer{" "}
+          <span className="font-bold text-[#1a2744]">{estimate ?? 0} matches</span>{" "}
+          per week verwachten.
+        </p>
+      )}
+    </div>
+  );
+}
+
+function CitySearch({
+  search,
+  setSearch,
+  selectedCity,
+  onCitySelect,
+  showDropdown,
+  setShowDropdown,
+  filteredCities,
+}: {
+  search: string;
+  setSearch: (v: string) => void;
+  selectedCity: { name: string } | null;
+  onCitySelect: (city: typeof DUTCH_CITIES[0]) => void;
+  showDropdown: boolean;
+  setShowDropdown: (v: boolean) => void;
+  filteredCities: typeof DUTCH_CITIES;
+}) {
+  return (
+    <div className="relative">
+      <Label className="text-sm font-semibold text-[#1a2744] mb-2 block">Stad</Label>
+      <div className="relative">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#9ca3af]" />
+        <Input
+          type="text"
+          placeholder="Zoek een stad..."
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setShowDropdown(true);
+            if (selectedCity && e.target.value !== selectedCity.name) {
+            }
+          }}
+          onFocus={() => setShowDropdown(true)}
+          className="h-13 pl-11 rounded-xl text-[15px] bg-[#f7f8fa] border-[#e5e7eb] focus:border-primary focus:bg-white transition-colors"
+          data-testid="input-city-search"
+        />
+      </div>
+      {showDropdown && filteredCities.length > 0 && !selectedCity && (
+        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white border border-[#e5e7eb] rounded-xl shadow-lg overflow-hidden z-10 max-h-64 overflow-y-auto">
+          {filteredCities.map((city) => (
+            <button
+              key={city.name}
+              onClick={() => onCitySelect(city)}
+              className="w-full px-4 py-3 text-left flex items-center gap-3 hover:bg-[#f7f8fa] transition-colors"
+              data-testid={`option-city-${city.name.toLowerCase().replace(/\s/g, "-")}`}
+            >
+              <MapPin className="w-4 h-4 text-[#9ca3af] flex-shrink-0" />
+              <span className="text-[#1a2744] font-medium text-sm">{city.name}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function OnboardingLocationPage() {
   const [, navigate] = useLocation();
+  const [activeTab, setActiveTab] = useState<TabType>("wijken");
   const [search, setSearch] = useState("");
-  const [selectedCity, setSelectedCity] = useState<OnboardingData | null>(null);
+  const [selectedCity, setSelectedCity] = useState<typeof DUTCH_CITIES[0] | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedDistricts, setSelectedDistricts] = useState<string[]>([]);
+  const [radius, setRadius] = useState("5");
+  const [travelAddress, setTravelAddress] = useState("");
+  const [travelTime, setTravelTime] = useState("30");
+  const [transportMode, setTransportMode] = useState("auto");
+
+  const [estimate, setEstimate] = useState<number | null>(null);
+  const [estimateLoading, setEstimateLoading] = useState(false);
 
   const filteredCities = useMemo(() => {
     if (!search.trim()) return DUTCH_CITIES.slice(0, 8);
@@ -66,124 +157,315 @@ export default function OnboardingLocationPage() {
     ).slice(0, 8);
   }, [search]);
 
+  const cityDistricts = useMemo(() => {
+    if (!selectedCity) return [];
+    return DISTRICTS[selectedCity.name] || [];
+  }, [selectedCity]);
+
   function handleCitySelect(city: typeof DUTCH_CITIES[0]) {
-    setSelectedCity({ city: city.name, lat: city.lat, lng: city.lng });
+    setSelectedCity(city);
     setSearch(city.name);
     setShowDropdown(false);
+    setSelectedDistricts([]);
   }
 
+  function toggleDistrict(district: string) {
+    setSelectedDistricts((prev) =>
+      prev.includes(district) ? prev.filter((d) => d !== district) : [...prev, district]
+    );
+  }
+
+  useEffect(() => {
+    const cityName = selectedCity?.name || (activeTab === "reistijd" ? travelAddress : "");
+    if (!cityName) {
+      setEstimate(null);
+      return;
+    }
+    setEstimateLoading(true);
+    const p = new URLSearchParams({ city: cityName });
+    fetch(`/api/estimate?${p.toString()}`)
+      .then((res) => (res.ok ? res.json() : { perWeekEstimate: 0 }))
+      .then((data) => setEstimate(data.perWeekEstimate ?? 0))
+      .catch(() => setEstimate(0))
+      .finally(() => setEstimateLoading(false));
+  }, [selectedCity, activeTab, travelAddress]);
+
   function handleNext() {
+    if (activeTab === "reistijd") {
+      if (!travelAddress) return;
+      const params = new URLSearchParams({ city: travelAddress });
+      navigate(`/onboarding/filters?${params.toString()}`);
+      return;
+    }
     if (!selectedCity) return;
-    const params = new URLSearchParams({ city: selectedCity.city });
+    const params = new URLSearchParams({ city: selectedCity.name });
     navigate(`/onboarding/filters?${params.toString()}`);
   }
 
+  const canProceed =
+    activeTab === "reistijd" ? !!travelAddress : !!selectedCity;
+
+  const tabs: { id: TabType; label: string }[] = [
+    { id: "wijken", label: "Wijken" },
+    { id: "radius", label: "Radius" },
+    { id: "reistijd", label: "Reistijd" },
+  ];
+
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      <header className="w-full bg-white/90 backdrop-blur-sm sticky top-0 z-20 border-b border-gray-100">
+    <div className="min-h-screen bg-[#f5f6f8] flex flex-col">
+      <header className="w-full bg-white sticky top-0 z-20 shadow-sm">
         <div className="max-w-xl mx-auto px-5 h-14 flex items-center gap-3">
           <button
             onClick={() => navigate("/")}
-            className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-gray-100 transition-colors"
+            className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-[#f5f6f8] transition-colors"
             data-testid="button-back-landing"
           >
-            <ChevronLeft className="w-5 h-5 text-gray-600" />
+            <ChevronLeft className="w-5 h-5 text-[#4a5568]" />
           </button>
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-bold text-gray-900 text-base">Stekkies</span>
+            <span className="font-bold text-[#1a2744] text-base">Stekkies</span>
           </div>
         </div>
       </header>
 
-      <div className="max-w-xl mx-auto w-full px-5 pt-6 pb-3">
-        <div className="flex items-center gap-2 mb-1">
+      <div className="max-w-xl mx-auto w-full px-5 pt-6 pb-2">
+        <div className="flex items-center gap-2">
           {[1, 2, 3].map((step) => (
-            <div
-              key={step}
-              className={`h-1.5 flex-1 rounded-full transition-colors ${
-                step === 1 ? "bg-primary" : "bg-gray-200"
-              }`}
-              data-testid={`progress-step-${step}`}
-            />
+            <div key={step} className="flex-1 h-2 rounded-full overflow-hidden bg-[#e2e5ea]">
+              <div
+                className={`h-full rounded-full transition-all duration-500 ${
+                  step === 1 ? "w-full bg-primary" : "w-0"
+                }`}
+                data-testid={`progress-step-${step}`}
+              />
+            </div>
           ))}
         </div>
-        <p className="text-xs text-gray-400 mt-1" data-testid="text-step-indicator">Stap 1 van 3</p>
+        <p className="text-xs font-medium text-[#9ca3af] mt-2" data-testid="text-step-indicator">Stap 1 van 3</p>
       </div>
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-5 pb-32">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2" data-testid="text-location-title">
-            Waar zoek je een woning?
-          </h1>
-          <p className="text-gray-500">
-            Kies de stad waar je wilt wonen.
-          </p>
-        </div>
+      <main className="flex-1 max-w-xl mx-auto w-full px-5 pb-32 pt-4">
+        <h1 className="text-[26px] font-extrabold text-[#1a2744] leading-tight mb-6" data-testid="text-location-title">
+          Waar zoek je een woning?
+        </h1>
 
-        <div className="relative mb-6">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <Input
-              type="text"
-              placeholder="Zoek een stad..."
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setShowDropdown(true);
-                if (selectedCity && e.target.value !== selectedCity.city) {
-                  setSelectedCity(null);
-                }
-              }}
-              onFocus={() => setShowDropdown(true)}
-              className="h-14 pl-12 rounded-xl text-base border-gray-200 focus:border-primary"
-              data-testid="input-city-search"
-            />
+        <div className="bg-white rounded-2xl shadow-sm border border-[#eceef1] overflow-hidden mb-4">
+          <div className="flex border-b border-[#eceef1]">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex-1 py-3.5 text-sm font-semibold text-center transition-colors relative ${
+                  activeTab === tab.id
+                    ? "text-primary"
+                    : "text-[#9ca3af] hover:text-[#4a5568]"
+                }`}
+                data-testid={`tab-${tab.id}`}
+              >
+                {tab.label}
+                {activeTab === tab.id && (
+                  <div className="absolute bottom-0 left-3 right-3 h-[3px] bg-primary rounded-t-full" />
+                )}
+              </button>
+            ))}
           </div>
 
-          {showDropdown && filteredCities.length > 0 && (
-            <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden z-10">
-              {filteredCities.map((city) => (
-                <button
-                  key={city.name}
-                  onClick={() => handleCitySelect(city)}
-                  className={`w-full px-5 py-3.5 text-left flex items-center gap-3 hover:bg-gray-50 transition-colors ${
-                    selectedCity?.city === city.name ? "bg-blue-50" : ""
-                  }`}
-                  data-testid={`option-city-${city.name.toLowerCase()}`}
-                >
-                  <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                  <span className="text-gray-900 font-medium">{city.name}</span>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+          <div className="p-5">
+            {activeTab === "wijken" && (
+              <div className="space-y-5">
+                <CitySearch
+                  search={search}
+                  setSearch={setSearch}
+                  selectedCity={selectedCity}
+                  onCitySelect={handleCitySelect}
+                  showDropdown={showDropdown}
+                  setShowDropdown={setShowDropdown}
+                  filteredCities={filteredCities}
+                />
 
-        {selectedCity && (
-          <div className="rounded-2xl overflow-hidden border border-gray-200 mb-6" data-testid="card-map-preview">
-            <div className="h-48 bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center relative">
-              <div className="text-center">
-                <MapPin className="w-10 h-10 text-primary mx-auto mb-2" />
-                <p className="text-lg font-bold text-gray-900">{selectedCity.city}</p>
-                <p className="text-sm text-gray-500">Nederland</p>
+                {selectedCity && cityDistricts.length > 0 && (
+                  <div>
+                    <Label className="text-sm font-semibold text-[#1a2744] mb-3 block">Wijken (optioneel)</Label>
+                    <div className="flex flex-wrap gap-2">
+                      {cityDistricts.map((district) => (
+                        <button
+                          key={district}
+                          onClick={() => toggleDistrict(district)}
+                          className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-all ${
+                            selectedDistricts.includes(district)
+                              ? "bg-primary text-white"
+                              : "bg-[#f7f8fa] text-[#4a5568] border border-[#e5e7eb] hover:border-[#c5c9d2]"
+                          }`}
+                          data-testid={`chip-district-${district.toLowerCase().replace(/[\s-]/g, "-")}`}
+                        >
+                          {district}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {selectedCity && (
+                  <div className="rounded-2xl overflow-hidden border border-[#e5e7eb]" data-testid="card-map-preview">
+                    <div className="h-40 bg-gradient-to-br from-[#e8edf7] to-[#d4ddf0] flex items-center justify-center relative">
+                      <div className="text-center">
+                        <MapPin className="w-8 h-8 text-primary mx-auto mb-1.5" />
+                        <p className="text-base font-bold text-[#1a2744]">{selectedCity.name}</p>
+                        {selectedDistricts.length > 0 && (
+                          <p className="text-xs text-[#6b7280] mt-0.5">{selectedDistricts.join(", ")}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
+            )}
+
+            {activeTab === "radius" && (
+              <div className="space-y-5">
+                <CitySearch
+                  search={search}
+                  setSearch={setSearch}
+                  selectedCity={selectedCity}
+                  onCitySelect={handleCitySelect}
+                  showDropdown={showDropdown}
+                  setShowDropdown={setShowDropdown}
+                  filteredCities={filteredCities}
+                />
+
+                <div>
+                  <Label className="text-sm font-semibold text-[#1a2744] mb-2 block">Straal</Label>
+                  <Select value={radius} onValueChange={setRadius}>
+                    <SelectTrigger
+                      className="h-13 rounded-xl text-[15px] bg-[#f7f8fa] border-[#e5e7eb] focus:border-primary"
+                      data-testid="select-radius"
+                    >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="2">2 km</SelectItem>
+                      <SelectItem value="5">5 km</SelectItem>
+                      <SelectItem value="10">10 km</SelectItem>
+                      <SelectItem value="15">15 km</SelectItem>
+                      <SelectItem value="25">25 km</SelectItem>
+                      <SelectItem value="50">50 km</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {selectedCity && (
+                  <div className="rounded-2xl overflow-hidden border border-[#e5e7eb]" data-testid="card-map-radius">
+                    <div className="h-40 bg-gradient-to-br from-[#e8edf7] to-[#d4ddf0] flex items-center justify-center relative">
+                      <div className="text-center">
+                        <div className="w-20 h-20 rounded-full border-2 border-dashed border-primary/40 flex items-center justify-center mx-auto mb-1">
+                          <Navigation className="w-6 h-6 text-primary" />
+                        </div>
+                        <p className="text-sm font-bold text-[#1a2744]">{selectedCity.name} +{radius} km</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {activeTab === "reistijd" && (
+              <div className="space-y-5">
+                <div>
+                  <Label className="text-sm font-semibold text-[#1a2744] mb-2 block">Adres</Label>
+                  <div className="relative">
+                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#9ca3af]" />
+                    <Input
+                      type="text"
+                      placeholder="bijv. Centraal Station Amsterdam"
+                      value={travelAddress}
+                      onChange={(e) => setTravelAddress(e.target.value)}
+                      className="h-13 pl-11 rounded-xl text-[15px] bg-[#f7f8fa] border-[#e5e7eb] focus:border-primary focus:bg-white transition-colors"
+                      data-testid="input-travel-address"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-semibold text-[#1a2744] mb-2 block">Maximale reistijd</Label>
+                  <Select value={travelTime} onValueChange={setTravelTime}>
+                    <SelectTrigger
+                      className="h-13 rounded-xl text-[15px] bg-[#f7f8fa] border-[#e5e7eb] focus:border-primary"
+                      data-testid="select-travel-time"
+                    >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="15">15 minuten</SelectItem>
+                      <SelectItem value="30">30 minuten</SelectItem>
+                      <SelectItem value="45">45 minuten</SelectItem>
+                      <SelectItem value="60">60 minuten</SelectItem>
+                      <SelectItem value="90">90 minuten</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-semibold text-[#1a2744] mb-3 block">Vervoersmiddel</Label>
+                  <div className="flex gap-2">
+                    {[
+                      { id: "auto", icon: Car, label: "Auto" },
+                      { id: "ov", icon: Train, label: "OV" },
+                      { id: "fiets", icon: Bike, label: "Fiets" },
+                    ].map((mode) => (
+                      <button
+                        key={mode.id}
+                        onClick={() => setTransportMode(mode.id)}
+                        className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-xl text-xs font-semibold transition-all ${
+                          transportMode === mode.id
+                            ? "bg-primary text-white"
+                            : "bg-[#f7f8fa] text-[#4a5568] border border-[#e5e7eb] hover:border-[#c5c9d2]"
+                        }`}
+                        data-testid={`button-transport-${mode.id}`}
+                      >
+                        <mode.icon className="w-5 h-5" />
+                        {mode.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {travelAddress && (
+                  <div className="rounded-2xl overflow-hidden border border-[#e5e7eb]" data-testid="card-map-travel">
+                    <div className="h-40 bg-gradient-to-br from-[#e8edf7] to-[#d4ddf0] flex items-center justify-center relative">
+                      <div className="text-center">
+                        <Clock className="w-8 h-8 text-primary mx-auto mb-1.5" />
+                        <p className="text-sm font-bold text-[#1a2744]">{travelTime} min reistijd</p>
+                        <p className="text-xs text-[#6b7280] mt-0.5">vanaf {travelAddress}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
+        </div>
+
+        {(selectedCity || (activeTab === "reistijd" && travelAddress)) && (
+          <EstimateBox
+            city={selectedCity?.name || travelAddress}
+            loading={estimateLoading}
+            estimate={estimate}
+          />
         )}
 
-        {!selectedCity && (
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-gray-500 mb-3">Populaire steden</p>
+        {!selectedCity && activeTab !== "reistijd" && (
+          <div className="mt-4">
+            <p className="text-sm font-semibold text-[#6b7280] mb-3">Populaire steden</p>
             <div className="flex flex-wrap gap-2">
               {DUTCH_CITIES.slice(0, 6).map((city) => (
                 <button
                   key={city.name}
                   onClick={() => handleCitySelect(city)}
-                  className="px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-colors"
-                  data-testid={`chip-city-${city.name.toLowerCase()}`}
+                  className="px-4 py-2.5 rounded-xl bg-white border border-[#e5e7eb] text-sm font-medium text-[#4a5568] hover:border-[#c5c9d2] hover:bg-[#f7f8fa] transition-colors shadow-xs"
+                  data-testid={`chip-city-${city.name.toLowerCase().replace(/\s/g, "-")}`}
                 >
                   {city.name}
                 </button>
@@ -193,12 +475,12 @@ export default function OnboardingLocationPage() {
         )}
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-5 z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#eceef1] p-4 z-10 shadow-[0_-2px_10px_rgba(0,0,0,0.04)]">
         <div className="max-w-xl mx-auto">
           <Button
             size="lg"
-            className="w-full h-14 rounded-xl text-lg font-semibold shadow-none"
-            disabled={!selectedCity}
+            className="w-full h-[52px] rounded-xl text-[16px] font-semibold shadow-none bg-primary hover:bg-primary/90"
+            disabled={!canProceed}
             onClick={handleNext}
             data-testid="button-next-location"
           >

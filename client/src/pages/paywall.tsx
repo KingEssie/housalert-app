@@ -108,40 +108,40 @@ export default function PaywallPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      <header className="w-full bg-white/90 backdrop-blur-sm sticky top-0 z-20 border-b border-gray-100">
+    <div className="min-h-screen bg-[#f5f6f8] flex flex-col">
+      <header className="w-full bg-white sticky top-0 z-20 shadow-sm">
         <div className="max-w-xl mx-auto px-5 h-14 flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-bold text-gray-900 text-base">Stekkies</span>
+            <span className="font-bold text-[#1a2744] text-base">Stekkies</span>
           </div>
         </div>
       </header>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-10 pb-32">
         <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-yellow-100 flex items-center justify-center mx-auto mb-4">
-            <Crown className="w-7 h-7 text-yellow-600" />
+          <div className="w-14 h-14 rounded-2xl bg-[#fef9ec] flex items-center justify-center mx-auto mb-4">
+            <Crown className="w-7 h-7 text-amber-500" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2" data-testid="text-paywall-title">
+          <h1 className="text-[26px] font-extrabold text-[#1a2744] mb-2" data-testid="text-paywall-title">
             Kies je abonnement
           </h1>
-          <p className="text-gray-500">
+          <p className="text-[15px] text-[#6b7280]">
             Start vandaag en ontvang direct meldingen voor nieuwe woningen.
           </p>
         </div>
 
-        <div className="space-y-3 mb-8">
+        <div className="space-y-3 mb-6">
           {PLANS.map((plan) => (
             <button
               key={plan.id}
               onClick={() => setSelectedPlan(plan.id)}
-              className={`w-full p-5 rounded-2xl border-2 transition-all text-left relative ${
+              className={`w-full p-5 rounded-2xl border-2 transition-all text-left relative bg-white shadow-sm ${
                 selectedPlan === plan.id
-                  ? "border-primary bg-blue-50/50"
-                  : "border-gray-200 hover:border-gray-300"
+                  ? "border-primary shadow-md"
+                  : "border-[#e5e7eb] hover:border-[#c5c9d2]"
               }`}
               data-testid={`card-plan-${plan.id}`}
             >
@@ -154,15 +154,15 @@ export default function PaywallPage() {
                 </span>
               )}
 
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between pr-8">
                 <div>
-                  <p className="text-lg font-bold text-gray-900">{plan.name}</p>
-                  <p className="text-sm text-gray-500">{plan.pricePerMonth}</p>
+                  <p className="text-lg font-bold text-[#1a2744]">{plan.name}</p>
+                  <p className="text-sm text-[#9ca3af]">{plan.pricePerMonth}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xl font-bold text-gray-900">{plan.price}</p>
+                  <p className="text-xl font-extrabold text-[#1a2744]">{plan.price}</p>
                   {plan.savings && (
-                    <p className="text-xs font-medium text-green-600">{plan.savings}</p>
+                    <p className="text-xs font-semibold text-emerald-600">{plan.savings}</p>
                   )}
                 </div>
               </div>
@@ -171,7 +171,7 @@ export default function PaywallPage() {
                 className={`absolute top-5 right-5 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
                   selectedPlan === plan.id
                     ? "bg-primary border-primary"
-                    : "border-gray-300"
+                    : "border-[#d1d5db]"
                 }`}
               >
                 {selectedPlan === plan.id && <Check className="w-3.5 h-3.5 text-white" />}
@@ -180,26 +180,26 @@ export default function PaywallPage() {
           ))}
         </div>
 
-        <div className="bg-gray-50 rounded-2xl p-5 mb-6">
-          <p className="text-sm font-medium text-gray-700 mb-3">Dit zit er allemaal in:</p>
+        <div className="bg-white rounded-2xl shadow-sm border border-[#eceef1] p-5">
+          <p className="text-sm font-semibold text-[#1a2744] mb-3">Dit zit er allemaal in:</p>
           <div className="space-y-2.5">
             {FEATURES.map((feature, i) => (
               <div key={i} className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                  <Check className="w-3 h-3 text-green-600" />
+                <div className="w-5 h-5 rounded-full bg-[#ecfdf5] flex items-center justify-center flex-shrink-0">
+                  <Check className="w-3 h-3 text-emerald-600" />
                 </div>
-                <span className="text-sm text-gray-600">{feature}</span>
+                <span className="text-sm text-[#4a5568]">{feature}</span>
               </div>
             ))}
           </div>
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-5 z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#eceef1] p-4 z-10 shadow-[0_-2px_10px_rgba(0,0,0,0.04)]">
         <div className="max-w-xl mx-auto">
           <Button
             size="lg"
-            className="w-full h-14 rounded-xl text-lg font-semibold shadow-none"
+            className="w-full h-[52px] rounded-xl text-[16px] font-semibold shadow-none bg-primary hover:bg-primary/90"
             onClick={handleCheckout}
             disabled={loading}
             data-testid="button-select-payment"
@@ -213,7 +213,7 @@ export default function PaywallPage() {
               "Selecteer betaalmethode"
             )}
           </Button>
-          <p className="text-center text-xs text-gray-400 mt-3">
+          <p className="text-center text-xs text-[#c5c9d2] mt-3">
             Veilig betalen via Stripe. Opzeggen kan altijd.
           </p>
         </div>

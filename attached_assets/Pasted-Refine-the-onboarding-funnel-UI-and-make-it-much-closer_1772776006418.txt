@@ -1,0 +1,163 @@
+Refine the onboarding funnel UI and make it much closer to what I want.
+
+Important:
+The current version works functionally, but the design and Step 1 flow are not correct yet.
+
+I want:
+
+1) FLOW = Stekkies-like
+2) UI STYLE = BlaBlaCar-like
+
+Do NOT change the backend logic.
+Only improve the frontend, styling, layout, and step 1 interaction.
+
+-----------------------------------
+DESIGN CHANGES REQUIRED
+-----------------------------------
+
+Use a BlaBlaCar-inspired visual system:
+
+- page background: very light warm grey / off-white
+- cards: white or very soft grey with rounded corners
+- inputs: light grey background, soft border, rounded
+- buttons: dark BlaBlaCar-style blue
+- headings: very dark navy blue
+- text hierarchy: strong, modern, clean
+- large spacing and mobile-first layout
+- soft shadows
+- rounded step progress indicators
+
+Typography:
+Use a clean rounded geometric sans-serif feel similar to BlaBlaCar.
+Do not use a generic default look.
+
+Visual style:
+- more premium
+- calmer
+- more polished
+- more app-like
+- less plain SaaS landing page
+
+-----------------------------------
+STEP 1 MUST CHANGE
+-----------------------------------
+
+Step 1 should follow Stekkies much more closely.
+
+It must contain:
+
+- top progress indicator
+- big title
+- location mode tabs:
+  - Wijken
+  - Radius
+  - Reistijd
+
+Each tab must have its own content:
+
+A) WIJKEN
+- city selector
+- district selector
+- map preview
+- estimate box directly below:
+  "Met deze zoekopdracht kun je ongeveer X matches per week verwachten"
+- primary CTA button
+
+B) RADIUS
+- city selector
+- radius selector
+- map with radius overlay
+- estimate box directly below
+- primary CTA button
+
+C) REISTIJD
+- address input
+- max travel time
+- transport mode
+- map preview
+- estimate box directly below
+- primary CTA button
+
+Important:
+The estimate should already be visible in Step 1, not only later.
+
+-----------------------------------
+STEP 2 MUST LOOK BETTER
+-----------------------------------
+
+The filters page should keep the same structure but look better:
+
+- min prijs and max prijs in 2 columns
+- slaapkamerveld
+- min oppervlakte
+- all fields on soft light-grey backgrounds
+- darker navy heading
+- BlaBlaCar-like rounded design
+- back and next buttons visually improved
+
+-----------------------------------
+STEP 3 MUST LOOK BETTER
+-----------------------------------
+
+The estimate screen should feel more premium:
+
+- large centered estimate card
+- dark navy headline
+- clearer explanation text
+- stronger CTA
+- show selected filters in clean chips/cards
+- less empty feeling
+
+-----------------------------------
+LANDING PAGE MUST IMPROVE
+-----------------------------------
+
+The homepage should feel more premium and app-like.
+
+Keep:
+- headline
+- subheadline
+- CTA
+
+But improve:
+- typography
+- spacing
+- colors
+- card layout
+- visual style
+
+It should feel closer to BlaBlaCar’s app and less like a generic landing page.
+
+-----------------------------------
+COLOR DIRECTION
+-----------------------------------
+
+Use colors closer to BlaBlaCar:
+
+- primary button blue: dark strong blue
+- heading/navy: very dark blue
+- input background: light grey
+- text secondary: medium grey
+- no bright generic blue
+
+Do not use Stekkies branding colors.
+Do not use coral/orange as primary.
+We will decide final branding later.
+
+-----------------------------------
+IMPORTANT
+-----------------------------------
+
+Do not change routes or core logic.
+Do not remove existing functionality.
+Only refine UI/UX and improve Step 1 structure to match:
+- Stekkies onboarding flow
+- BlaBlaCar visual style
+
+After changes:
+1. show updated screenshots of:
+   - landing
+   - onboarding step 1 (all 3 tabs)
+   - onboarding step 2
+   - onboarding step 3
+2. explain what changed
