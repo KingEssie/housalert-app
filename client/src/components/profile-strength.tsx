@@ -424,22 +424,16 @@ function TaskModal({
 
           {taskId === "application_template" && (
             <div className="flex flex-col gap-3">
-              <label className="text-[13px] font-medium text-[#0B1F44]">Je aanmeldingsbrief</label>
-              <textarea
-                value={template}
-                onChange={(e) => setTemplate(e.target.value)}
-                placeholder={"Geachte verhuurder,\n\nIk ben op zoek naar een woning in...\n\nMet vriendelijke groet,\n[Je naam]"}
-                className="w-full min-h-[200px] px-4 py-3 rounded-xl border border-[#E8EDF2] bg-white text-[14px] text-[#0B1F44] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#2D6CDF]/30 focus:border-[#2D6CDF] resize-none"
-                data-testid="input-application-template"
-              />
-              <p className="text-[12px] text-[#9CA3AF]">Minimaal 20 tekens voor een goede brief.</p>
+              <p className="text-[13px] text-[#0B1F44] font-medium">
+                Bereid een standaard aanmeldingsbrief voor met automatische invulling van woninggegevens.
+              </p>
               <Button
-                onClick={() => handleSave({ application_template: template }, "Aanmeldingsbrief opgeslagen!")}
-                disabled={template.trim().length < 20 || updateProfileData.isPending}
-                className="w-full h-[48px] rounded-xl bg-[#2D6CDF] hover:bg-[#2560C8] text-white text-[15px] font-semibold disabled:opacity-50"
-                data-testid="button-save-template"
+                onClick={() => { onClose(); navigate("/application-letter"); }}
+                className="w-full h-[48px] rounded-xl bg-[#2D6CDF] hover:bg-[#2560C8] text-white text-[15px] font-semibold"
+                data-testid="button-goto-letter"
               >
-                {updateProfileData.isPending ? "Opslaan..." : "Opslaan"}
+                <FileText className="w-4 h-4 mr-2" />
+                Naar aanmeldingsbrief
               </Button>
             </div>
           )}

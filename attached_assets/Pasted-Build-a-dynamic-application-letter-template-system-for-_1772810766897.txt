@@ -1,0 +1,78 @@
+Build a dynamic application letter template system for the housing app.
+
+Goal:
+Users should be able to prepare a default or personalized application letter, and the app should automatically inject listing/user details when copying the letter from a match.
+
+Requirements:
+
+1. Add persistent storage for one application template per user.
+Use a minimal table if needed, for example:
+- id
+- user_id
+- template_text
+- updated_at
+
+2. Add a default application template that is used automatically when the user has not created a personalized one yet.
+
+Default template should be in Dutch and include placeholders like:
+[[ADRES]]
+[[STAD]]
+[[NAAM]]
+[[EMAIL]]
+[[TELEFOON]]
+[[BEROEP]]
+[[INKOMEN]]
+[[PRIJS]]
+
+3. Add an application letter screen / flow where the user can:
+- view the current template
+- edit the template
+- save the template
+- reset back to the default template
+
+4. Add placeholder helper text in the UI explaining that placeholders are automatically replaced when using the letter from a match.
+
+5. Create placeholder replacement logic.
+When generating the final letter, replace placeholders using:
+User data:
+- name
+- email
+- phone
+- occupation
+- income
+
+Listing data:
+- address if available
+- otherwise listing title as fallback for [[ADRES]]
+- city
+- price
+
+6. Add a safe fallback system:
+- if listing.address does not exist, use listing.title
+- if that is also unavailable, use a generic fallback like "deze woning in [[STAD]]"
+
+7. Add a "Kopieer aanmeldingsbrief" action to the match detail or listing detail screen.
+Behavior:
+- load the user template if it exists, otherwise use the default template
+- inject placeholders
+- copy final text to clipboard
+- show toast feedback
+
+8. Mark the account-completion task "Aanmeldingsbrief voorbereiden" as complete when:
+- the user has either saved a personalized template
+- or explicitly confirmed use of the default template
+
+9. Add minimal APIs if needed for:
+- get application template
+- save application template
+- reset application template
+- generate final filled application letter for a given listing
+
+10. Output after implementation:
+- which files changed
+- screenshots of the application letter screen
+- example of generated final text for one listing
+- explanation of placeholder replacement logic
+
+Do not refactor unrelated code.
+Keep implementation minimal and production-usable.

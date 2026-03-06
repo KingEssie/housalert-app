@@ -46,11 +46,27 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 ### Existing Pages
 - `client/src/pages/login.tsx` — Auth page with "Inloggen" / "Account aanmaken" tabs
 - `client/src/pages/dashboard.tsx` — Phase 2 dashboard with bottom-nav bar (4 tabs: Home, Matches, Filters, Profiel). Mobile-first BlaBlaCar design. Match cards link to `/listing/:id`. Subscription CTA for expired users in ProfielTab.
-- `client/src/pages/listing-detail.tsx` — Full listing detail page at `/listing/:id`. Shows title, city/district, price, bedrooms, size, source, freshness badge, and "Bekijk originele advertentie" CTA.
+- `client/src/pages/listing-detail.tsx` — Full listing detail page at `/listing/:id`. Shows title, city/district, price, bedrooms, size, source, freshness badge, "Kopieer aanmeldingsbrief" button, and "Bekijk originele advertentie" CTA.
 - `client/src/pages/new-search.tsx` — Form to create a new search profile (max 4 per user)
 - `client/src/pages/notification-settings.tsx` — Notification preferences (email/SMS/WhatsApp toggles)
+- `client/src/pages/application-letter.tsx` — Application letter template editor at `/application-letter`. Edit/save/reset template with Dutch placeholders ([[ADRES]], [[STAD]], [[NAAM]], etc.)
 - `client/src/pages/legal.tsx` — Legal pages: `/impressum`, `/datenschutz`, `/terms` (German placeholder content)
 - `client/src/pages/paywall.tsx` — Subscription paywall with Stripe checkout; shows friendly message if Stripe not configured
+
+### Profile Strength & Account Completion
+- `client/src/components/profile-strength.tsx` — ProfileStrengthCard (score/100 with status label), AccountCompletionCard (expandable task list), TaskModal (flows for each task)
+- `GET /api/profile-strength` — Returns score, tasks array with completion status, completedCount, totalCount
+- `GET /api/profile-data` — Returns user's profile data (search_buddy_email, application_template, document_checklist)
+- `PUT /api/profile-data` — Upserts profile data fields
+- Table: `user_profile_data` in Supabase (user_id PK, search_buddy_email, application_template, document_checklist JSONB)
+- Migration: `server/migrations/003_profile_data.sql` (must be applied manually in Supabase SQL editor)
+- Score calculation: Alerts (+20), Search buddy (+10), Search optimization (+20), Application template (+15), Documents (+20), Phone (+15) = 100 total
+
+### Application Letter System
+- `client/src/lib/application-letter.ts` — Default Dutch template, placeholder definitions, `fillTemplate()` function
+- Placeholders: [[ADRES]], [[STAD]], [[NAAM]], [[EMAIL]], [[TELEFOON]], [[BEROEP]], [[INKOMEN]], [[PRIJS]]
+- Fallback chain: listing.address → listing.title → "deze woning in [[STAD]]"
+- Copy from listing detail: loads user template (or default), fills placeholders with listing data, copies to clipboard
 
 ### Subscriptions
 - `server/subscriptions.ts` — Subscription helpers: `ensureTrialSubscription`, `getSubscriptionStatus`, `updateSubscriptionFromCheckout`, `updateSubscriptionStatus`, `findUserByStripeCustomerId`

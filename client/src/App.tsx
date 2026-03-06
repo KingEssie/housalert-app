@@ -16,6 +16,7 @@ import NewSearchPage from "@/pages/new-search";
 import NotificationSettingsPage from "@/pages/notification-settings";
 import NotFound from "@/pages/not-found";
 import ListingDetailPage from "@/pages/listing-detail";
+import ApplicationLetterPage from "@/pages/application-letter";
 import { ImpressumPage, DatenschutzPage, TermsPage } from "@/pages/legal";
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
@@ -39,6 +40,7 @@ function Router() {
       <Route path="/dashboard/searches/new" component={() => <ProtectedRoute component={NewSearchPage} />} />
       <Route path="/settings/notifications" component={() => <ProtectedRoute component={NotificationSettingsPage} />} />
       <Route path="/listing/:id" component={() => <ProtectedRoute component={ListingDetailPage} />} />
+      <Route path="/application-letter" component={() => <ProtectedRoute component={ApplicationLetterPage} />} />
       <Route path="/impressum" component={ImpressumPage} />
       <Route path="/datenschutz" component={DatenschutzPage} />
       <Route path="/terms" component={TermsPage} />
