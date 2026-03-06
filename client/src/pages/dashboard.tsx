@@ -860,7 +860,11 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-page-title">Zoekprofielen</h1>
-          <p className="text-[13px] text-[#6B7280] mt-0.5">{profileCount} van {MAX_PROFILES} actief</p>
+          <p className="text-subtitle mt-1">
+            {profileCount > 0
+              ? `${profileCount} van ${MAX_PROFILES} actief \u00B7 nieuwe matches verschijnen automatisch`
+              : "Maak een zoekprofiel aan en ontvang automatisch matches"}
+          </p>
         </div>
         {!atLimit && (
           <button
