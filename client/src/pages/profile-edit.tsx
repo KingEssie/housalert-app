@@ -65,8 +65,8 @@ export default function ProfileEditPage() {
           body: JSON.stringify({ phone_e164: value.trim() || null }),
         });
         if (!res.ok) {
-          const err = await res.json();
-          throw new Error(err.error || "Fout bij opslaan");
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error || "Opslaan mislukt. Probeer opnieuw.");
         }
         queryClient.invalidateQueries({ queryKey: ["/api/notifications/settings"] });
       } else {
@@ -78,14 +78,17 @@ export default function ProfileEditPage() {
           headers,
           body: JSON.stringify({ [field]: fieldValue }),
         });
-        if (!res.ok) throw new Error("Fout bij opslaan");
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error || "Opslaan mislukt. Probeer opnieuw.");
+        }
         queryClient.invalidateQueries({ queryKey: ["/api/profile-data"] });
       }
 
       toast({ title: "Opgeslagen" });
       navigate("/profile/details");
     } catch (err: any) {
-      toast({ title: "Fout", description: err.message, variant: "destructive" });
+      toast({ title: "Fout", description: err.message || "Opslaan mislukt. Probeer opnieuw.", variant: "destructive" });
     } finally {
       setSaving(false);
     }

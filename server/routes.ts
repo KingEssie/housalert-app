@@ -1068,10 +1068,15 @@ export async function registerRoutes(
         .select()
         .single();
 
-      if (error) return res.status(500).json({ error: error.message });
+      if (error) {
+        if (error.message?.includes("Could not find the table")) {
+          return res.status(503).json({ error: "Profielgegevens zijn tijdelijk niet beschikbaar. Neem contact op met support." });
+        }
+        return res.status(500).json({ error: "Opslaan mislukt. Probeer opnieuw." });
+      }
       return res.json(data);
     } catch (err: any) {
-      return res.status(500).json({ error: err.message });
+      return res.status(500).json({ error: "Opslaan mislukt. Probeer opnieuw." });
     }
   });
 
