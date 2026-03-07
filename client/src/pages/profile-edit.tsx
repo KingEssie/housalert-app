@@ -10,7 +10,6 @@ const FIELD_CONFIG: Record<string, { question: string; label: string; type: stri
   first_name: { question: "Wat is je voornaam?", label: "Voornaam", type: "text", placeholder: "Bijv. Max", source: "profile" },
   last_name: { question: "Wat is je achternaam?", label: "Achternaam", type: "text", placeholder: "Bijv. Mustermann", source: "profile" },
   date_of_birth: { question: "Wat is je geboortedatum?", label: "Geboortedatum", type: "date", placeholder: "DD-MM-JJJJ", source: "profile" },
-  bio: { question: "Vertel iets over jezelf", label: "Biografie", type: "textarea", placeholder: "Schrijf een korte biografie...", source: "profile" },
   phone: { question: "Wat is je telefoonnummer?", label: "Mobiele nummer", type: "tel", placeholder: "+49 170 1234567", source: "phone" },
 };
 
@@ -111,25 +110,14 @@ export default function ProfileEditPage() {
               {config.question}
             </h1>
 
-            {config.type === "textarea" ? (
-              <textarea
-                value={value}
-                onChange={e => setValue(e.target.value)}
-                placeholder={config.placeholder}
-                rows={5}
-                className="w-full bg-[#F3F4F8] rounded-xl px-4 py-3.5 text-[16px] text-[#0F172A] placeholder:text-[#9CA3AF] border-0 outline-none focus:ring-2 focus:ring-[#0066FF] resize-none"
-                data-testid="input-edit-field"
-              />
-            ) : (
-              <input
-                type={config.type}
-                value={value}
-                onChange={e => setValue(e.target.value)}
-                placeholder={config.placeholder}
-                className="w-full bg-[#F3F4F8] rounded-xl px-4 py-3.5 text-[16px] text-[#0F172A] placeholder:text-[#9CA3AF] border-0 outline-none focus:ring-2 focus:ring-[#0066FF] h-[52px]"
-                data-testid="input-edit-field"
-              />
-            )}
+            <input
+              type={config.type}
+              value={value}
+              onChange={e => setValue(e.target.value)}
+              placeholder={config.placeholder}
+              className="w-full bg-[#F3F4F8] rounded-xl px-4 py-3.5 text-[16px] text-[#0F172A] placeholder:text-[#9CA3AF] border-0 outline-none focus:ring-2 focus:ring-[#0066FF] h-[52px]"
+              data-testid="input-edit-field"
+            />
 
             <Button
               onClick={handleSave}

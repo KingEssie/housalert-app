@@ -42,6 +42,7 @@ import {
   Send,
   ImageIcon,
   Zap,
+  Camera,
 } from "lucide-react";
 import { PopulairVandaagSection } from "@/components/populair-vandaag";
 import BoostPage from "@/pages/boost";
@@ -936,9 +937,87 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
 
 type ProfileSubTab = "over" | "account";
 
+function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl: string | null; onClose: () => void; onUpload: (file: File) => void; onRemove: () => void }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/40" />
+      <div
+        className="relative w-full max-w-[480px] bg-white rounded-t-2xl pb-8 pt-2 animate-in slide-in-from-bottom duration-300"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="w-10 h-1 bg-[#D1D5DB] rounded-full mx-auto mb-6" />
+        <div className="px-5">
+          <h3 className="text-[18px] font-bold text-[#0F172A] mb-5">Profielfoto</h3>
+
+          {photoUrl && (
+            <div className="flex justify-center mb-5">
+              <img src={photoUrl} alt="" className="w-24 h-24 rounded-full object-cover" data-testid="img-current-photo" />
+            </div>
+          )}
+
+          <div className="flex flex-col">
+            <label className="w-full h-[52px] flex items-center justify-center gap-2 rounded-xl bg-[#0066FF] text-white text-[15px] font-semibold cursor-pointer active:bg-[#0052CC] transition-colors">
+              <Camera className="w-[18px] h-[18px]" />
+              {photoUrl ? "Nieuwe foto kiezen" : "Foto uploaden"}
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="hidden"
+                onChange={e => {
+                  const file = e.target.files?.[0];
+                  if (file) onUpload(file);
+                }}
+                data-testid="input-photo-file"
+              />
+            </label>
+
+            {photoUrl && (
+              <button
+                onClick={onRemove}
+                className="mt-3 w-full h-[52px] flex items-center justify-center gap-2 rounded-xl border border-red-200 text-red-500 text-[15px] font-semibold active:bg-red-50 transition-colors"
+                data-testid="button-remove-photo"
+              >
+                <Trash2 className="w-[18px] h-[18px]" />
+                Foto verwijderen
+              </button>
+            )}
+
+            <button
+              onClick={onClose}
+              className="mt-3 w-full h-[52px] flex items-center justify-center rounded-xl text-[#6B7280] text-[15px] font-semibold active:bg-[#F7F7F7] transition-colors"
+              data-testid="button-cancel-photo"
+            >
+              Annuleren
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AccountSettingsRow({ label, subtext, onClick, trailing }: { label: string; subtext?: string; onClick: () => void; trailing?: JSX.Element }) {
+  return (
+    <button
+      onClick={onClick}
+      className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F9F9F9] transition-colors"
+      data-testid={`row-${label.toLowerCase().replace(/\s+/g, "-")}`}
+    >
+      <div className="flex-1 min-w-0">
+        <p className="text-[15px] font-[500] text-[#0F172A]">{label}</p>
+        {subtext && <p className="text-[13px] text-[#6B7280] mt-0.5">{subtext}</p>}
+      </div>
+      {trailing || <ChevronRight className="w-[18px] h-[18px] text-[#9CA3AF] flex-shrink-0" />}
+    </button>
+  );
+}
+
 function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null }; setActiveTab: (tab: TabKey) => void }) {
   const [signingOut, setSigningOut] = useState(false);
   const [profileSubTab, setProfileSubTab] = useState<ProfileSubTab>("over");
+  const [showPhotoSheet, setShowPhotoSheet] = useState(false);
+  const [photoUploading, setPhotoUploading] = useState(false);
+  const { toast } = useToast();
 
   const profileDataQuery = useQuery({
     queryKey: ["/api/profile-data"],
@@ -973,16 +1052,70 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
   const pd = profileDataQuery.data;
   const phone = notifQuery.data?.phone_e164;
   const stats = statsQuery.data ?? { matches_received: 0, reactions_sent: 0 };
+  const photoUrl = pd?.profile_photo_url || null;
 
   const displayName = [pd?.first_name, pd?.last_name].filter(Boolean).join(" ") || user.user_metadata?.full_name || user.email?.split("@")[0] || "";
   const initials = displayName ? displayName.split(" ").map((w: string) => w[0]).join("").toUpperCase().slice(0, 2) : user.email?.[0]?.toUpperCase() ?? "?";
   const letterPreview = pd?.application_template?.slice(0, 120) || null;
-  const bio = pd?.bio || null;
 
   async function handleSignOut() {
     setSigningOut(true);
     await signOut();
     navigate("/login");
+  }
+
+  async function handlePhotoUpload(file: File) {
+    setPhotoUploading(true);
+    try {
+      const reader = new FileReader();
+      const base64 = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) throw new Error("Niet ingelogd");
+
+      const res = await fetch("/api/profile-photo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
+        body: JSON.stringify({ image: base64 }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Upload mislukt");
+      }
+
+      queryClient.invalidateQueries({ queryKey: ["/api/profile-data"] });
+      toast({ title: "Foto opgeslagen" });
+      setShowPhotoSheet(false);
+    } catch (err: any) {
+      toast({ title: "Fout", description: err.message, variant: "destructive" });
+    } finally {
+      setPhotoUploading(false);
+    }
+  }
+
+  async function handlePhotoRemove() {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return;
+
+      const res = await fetch("/api/profile-photo", {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+
+      if (!res.ok) throw new Error("Verwijderen mislukt");
+
+      queryClient.invalidateQueries({ queryKey: ["/api/profile-data"] });
+      toast({ title: "Foto verwijderd" });
+      setShowPhotoSheet(false);
+    } catch (err: any) {
+      toast({ title: "Fout", description: err.message, variant: "destructive" });
+    }
   }
 
   const subscriptionSubtitle = subscription.isActive && !subscription.isTrial
@@ -1031,9 +1164,13 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                 className="flex items-center gap-4 active:opacity-80 transition-opacity text-left w-full"
                 data-testid="button-profile-header"
               >
-                <div className="w-16 h-16 rounded-full bg-[#EDF2FF] flex items-center justify-center flex-shrink-0">
-                  <span className="text-[22px] font-bold text-[#0066FF]">{initials}</span>
-                </div>
+                {photoUrl ? (
+                  <img src={photoUrl} alt="" className="w-16 h-16 rounded-full object-cover flex-shrink-0" data-testid="img-profile-avatar" />
+                ) : (
+                  <div className="w-16 h-16 rounded-full bg-[#EDF2FF] flex items-center justify-center flex-shrink-0">
+                    <span className="text-[22px] font-bold text-[#0066FF]">{initials}</span>
+                  </div>
+                )}
                 <div className="flex-1 min-w-0">
                   <p className="text-[22px] font-[700] text-[#0F172A] truncate leading-tight" data-testid="text-user-name">{displayName}</p>
                   <p className="text-[14px] text-[#6B7280] mt-0.5">Woningzoeker</p>
@@ -1077,7 +1214,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
               </button>
               <div className="h-px bg-[#EAEAEA] mx-5" />
               <button
-                onClick={() => navigate("/profile/edit/bio")}
+                onClick={() => setShowPhotoSheet(true)}
                 className="w-full h-[56px] flex items-center justify-between px-5 text-left active:bg-[#F9F9F9] transition-colors"
                 data-testid="button-edit-photo"
               >
@@ -1133,57 +1270,70 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                 </div>
               )}
             </div>
-
-            {bio && (
-              <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5">
-                <h2 className="text-[20px] font-bold text-[#0F172A] mb-3">Over jou</h2>
-                <p className="text-[15px] text-[#0F172A] leading-relaxed">{bio}</p>
-              </div>
-            )}
           </div>
         ) : (
           <div className="flex flex-col gap-6">
             <div>
               <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Instellingen</p>
               <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
-                <button
+                <AccountSettingsRow
+                  label="Meldingsinstellingen"
+                  subtext="E-mail, push, WhatsApp"
                   onClick={() => navigate("/settings/notifications")}
-                  className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F9F9F9] transition-colors"
-                  data-testid="button-notification-settings"
-                >
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[15px] font-[600] text-[#0F172A]">Meldingsinstellingen</p>
-                    <p className="text-[13px] text-[#6B7280] mt-0.5">E-mail, SMS, WhatsApp</p>
-                  </div>
-                  <ChevronRight className="w-[18px] h-[18px] text-[#9CA3AF] flex-shrink-0" />
-                </button>
+                />
                 <div className="h-px bg-[#EAEAEA] mx-5" />
-                <button
+                <AccountSettingsRow
+                  label="Zoekvoorkeuren"
+                  subtext="Budget, stad, reistijd, woningtype"
+                  onClick={() => { setActiveTab("filters"); }}
+                />
+                <div className="h-px bg-[#EAEAEA] mx-5" />
+                <AccountSettingsRow
+                  label="Adresinstellingen"
+                  subtext="Voorkeurslocatie en regio"
+                  onClick={() => { setActiveTab("filters"); }}
+                />
+                <div className="h-px bg-[#EAEAEA] mx-5" />
+                <AccountSettingsRow
+                  label="Opgeslagen woningen"
+                  subtext="Beheer je favorieten"
+                  onClick={() => { setActiveTab("matches"); }}
+                />
+              </div>
+            </div>
+
+            <div>
+              <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Abonnement</p>
+              <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+                <AccountSettingsRow
+                  label="Abonnement"
+                  subtext={subscriptionSubtitle}
                   onClick={() => {
                     if (subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) {
                       navigate("/paywall");
                     }
                   }}
-                  className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F9F9F9] transition-colors"
-                  data-testid="item-subscription"
-                >
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[15px] font-[600] text-[#0F172A]">Abonnement</p>
-                    <p className="text-[13px] text-[#6B7280] mt-0.5">{subscriptionSubtitle}</p>
-                  </div>
-                  <span
-                    className={`text-[12px] font-[600] px-2.5 py-1 rounded-full flex-shrink-0 ${
-                      subscription.isActive && !subscription.isTrial
-                        ? "text-green-600 bg-green-50"
-                        : subscription.isTrial
-                        ? "text-[#0066FF] bg-blue-50"
-                        : "text-red-500 bg-red-50"
-                    }`}
-                    data-testid="text-subscription-status"
-                  >
-                    {subscription.isActive && !subscription.isTrial ? "Actief" : subscription.isTrial ? "Proef" : "Verlopen"}
-                  </span>
-                </button>
+                  trailing={
+                    <span
+                      className={`text-[12px] font-[600] px-2.5 py-1 rounded-full flex-shrink-0 ${
+                        subscription.isActive && !subscription.isTrial
+                          ? "text-green-600 bg-green-50"
+                          : subscription.isTrial
+                          ? "text-[#0066FF] bg-blue-50"
+                          : "text-red-500 bg-red-50"
+                      }`}
+                      data-testid="text-subscription-status"
+                    >
+                      {subscription.isActive && !subscription.isTrial ? "Actief" : subscription.isTrial ? "Proef" : "Verlopen"}
+                    </span>
+                  }
+                />
+                <div className="h-px bg-[#EAEAEA] mx-5" />
+                <AccountSettingsRow
+                  label="Abonnement beheren"
+                  subtext="Wijzigen of opzeggen"
+                  onClick={() => navigate("/paywall")}
+                />
               </div>
             </div>
 
@@ -1201,20 +1351,81 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             <div>
               <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Account</p>
               <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+                <AccountSettingsRow
+                  label="Accountgegevens"
+                  subtext="E-mail en telefoonnummer"
+                  onClick={() => navigate("/profile/details")}
+                />
+                <div className="h-px bg-[#EAEAEA] mx-5" />
+                <AccountSettingsRow
+                  label="Wachtwoord en beveiliging"
+                  subtext="Wachtwoord wijzigen"
+                  onClick={async () => {
+                    try {
+                      const { error } = await supabase.auth.resetPasswordForEmail(user.email, { redirectTo: window.location.origin + "/dashboard" });
+                      if (error) throw error;
+                      toast({ title: "E-mail verzonden", description: "Controleer je inbox om je wachtwoord te wijzigen." });
+                    } catch {
+                      toast({ title: "Fout", description: "Kon geen reset-e-mail sturen.", variant: "destructive" });
+                    }
+                  }}
+                />
+                <div className="h-px bg-[#EAEAEA] mx-5" />
                 <button
                   onClick={handleSignOut}
                   disabled={signingOut}
                   className={`w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F9F9F9] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
                   data-testid="button-logout"
                 >
-                  <LogOut className="w-[18px] h-[18px] text-red-500 flex-shrink-0" />
-                  <p className="text-[15px] font-[600] text-red-500 flex-1">{signingOut ? "Uitloggen..." : "Uitloggen"}</p>
+                  <p className="text-[15px] font-[500] text-red-500 flex-1">{signingOut ? "Uitloggen..." : "Uitloggen"}</p>
                 </button>
+                <div className="h-px bg-[#EAEAEA] mx-5" />
+                <button
+                  onClick={async () => {
+                    if (!confirm("Weet je zeker dat je je account wilt verwijderen? Dit kan niet ongedaan worden gemaakt.")) return;
+                    toast({ title: "Neem contact op", description: "Stuur een e-mail naar support@stekkies.nl om je account te verwijderen." });
+                  }}
+                  className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F9F9F9] transition-colors"
+                  data-testid="button-delete-account"
+                >
+                  <p className="text-[15px] font-[500] text-red-500 flex-1">Account verwijderen</p>
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Ondersteuning</p>
+              <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+                <AccountSettingsRow
+                  label="Privacy"
+                  onClick={() => navigate("/datenschutz")}
+                />
+                <div className="h-px bg-[#EAEAEA] mx-5" />
+                <AccountSettingsRow
+                  label="Hulp & support"
+                  onClick={() => {
+                    window.location.href = "mailto:support@stekkies.nl";
+                  }}
+                />
+                <div className="h-px bg-[#EAEAEA] mx-5" />
+                <AccountSettingsRow
+                  label="Algemene voorwaarden"
+                  onClick={() => navigate("/terms")}
+                />
               </div>
             </div>
           </div>
         )}
       </div>
+
+      {showPhotoSheet && (
+        <ProfilePhotoSheet
+          photoUrl={photoUrl}
+          onClose={() => setShowPhotoSheet(false)}
+          onUpload={handlePhotoUpload}
+          onRemove={handlePhotoRemove}
+        />
+      )}
     </div>
   );
 }

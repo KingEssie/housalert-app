@@ -1047,7 +1047,7 @@ export async function registerRoutes(
       const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
-      const { search_buddy_email, application_template, document_checklist, network_task_done, viewing_tips_done, first_name, last_name, date_of_birth, bio } = req.body;
+      const { search_buddy_email, application_template, document_checklist, network_task_done, viewing_tips_done, first_name, last_name, date_of_birth, bio, profile_photo_url } = req.body;
 
       const updates: Record<string, any> = { updated_at: new Date().toISOString() };
       if (search_buddy_email !== undefined) updates.search_buddy_email = search_buddy_email;
@@ -1059,6 +1059,7 @@ export async function registerRoutes(
       if (last_name !== undefined) updates.last_name = last_name;
       if (date_of_birth !== undefined) updates.date_of_birth = date_of_birth;
       if (bio !== undefined) updates.bio = bio;
+      if (profile_photo_url !== undefined) updates.profile_photo_url = profile_photo_url;
 
       const { data, error } = await supabase
         .from("user_profile_data")
@@ -1068,6 +1069,79 @@ export async function registerRoutes(
 
       if (error) return res.status(500).json({ error: error.message });
       return res.json(data);
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/profile-photo", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { image } = req.body;
+      if (!image) return res.status(400).json({ error: "No image provided" });
+
+      const matches = image.match(/^data:(image\/\w+);base64,(.+)$/);
+      if (!matches) return res.status(400).json({ error: "Invalid image format" });
+
+      const contentType = matches[1];
+      const ext = contentType.split("/")[1] === "jpeg" ? "jpg" : contentType.split("/")[1];
+      const buffer = Buffer.from(matches[2], "base64");
+
+      if (buffer.length > 5 * 1024 * 1024) {
+        return res.status(400).json({ error: "Image too large (max 5MB)" });
+      }
+
+      const filePath = `profile-photos/${user.id}.${ext}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(filePath, buffer, {
+          contentType,
+          upsert: true,
+        });
+
+      if (uploadError) {
+        console.error("[profile-photo] Upload error:", uploadError.message);
+        return res.status(500).json({ error: uploadError.message });
+      }
+
+      const { data: urlData } = supabase.storage
+        .from("avatars")
+        .getPublicUrl(filePath);
+
+      const photoUrl = urlData.publicUrl + `?t=${Date.now()}`;
+
+      await supabase
+        .from("user_profile_data")
+        .upsert({ user_id: user.id, profile_photo_url: photoUrl, updated_at: new Date().toISOString() }, { onConflict: "user_id" });
+
+      return res.json({ profile_photo_url: photoUrl });
+    } catch (err: any) {
+      console.error("[profile-photo] Error:", err.message);
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.delete("/api/profile-photo", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const extensions = ["jpg", "png", "webp", "gif"];
+      const filePaths = extensions.map(ext => `profile-photos/${user.id}.${ext}`);
+      await supabase.storage.from("avatars").remove(filePaths);
+
+      await supabase
+        .from("user_profile_data")
+        .upsert({ user_id: user.id, profile_photo_url: null, updated_at: new Date().toISOString() }, { onConflict: "user_id" });
+
+      return res.json({ success: true });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
     }

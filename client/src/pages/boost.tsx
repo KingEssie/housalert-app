@@ -543,13 +543,16 @@ function TaskModal({
 
           {taskId === "profile_photo_added" && (
             <div className="flex flex-col gap-3">
-              <div className="bg-[#F3F4F8] rounded-xl p-4 text-center">
-                <Camera className="w-8 h-8 text-[#6B7280] mx-auto mb-2" />
-                <p className="text-[13px] text-[#6B7280]">Binnenkort beschikbaar</p>
-              </div>
               <p className="text-[13px] font-[500] text-[#6B7280]">
-                De mogelijkheid om een profielfoto te uploaden wordt binnenkort toegevoegd.
+                Voeg een profielfoto toe om een persoonlijke indruk te maken bij verhuurders.
               </p>
+              <Button
+                onClick={() => navigate("/dashboard")}
+                className="w-full h-[44px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[14px] font-[600]"
+                data-testid="button-goto-profile-photo"
+              >
+                Naar profielfoto
+              </Button>
             </div>
           )}
         </div>

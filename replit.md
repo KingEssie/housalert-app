@@ -79,16 +79,25 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - `client/src/pages/paywall.tsx` — Subscription paywall with Stripe checkout; shows friendly message if Stripe not configured
 
 ### Profile Page (ProfielTab)
-- Layout: BlaBlaCar-style two-tab profile layout ("Over jou" / "Account")
-- "Over jou" tab: profile header (avatar + display name + chevron → /profile/details), KPI row (ontvangen matches + verstuurde reacties from /api/profile-stats), verified section (email + phone with check icons), reactiebrief section (letter preview or empty state → /application-letter)
-- "Account" tab: notification settings, subscription with badge, upgrade CTA (if expired), logout
-- No boxed card containers — uses open, left-aligned list-based layout
+- Layout: BlaBlaCar-style two-tab profile layout ("Over jou" / "Account") on #F7F7F7 background
+- Sticky tab bar at top with animated sliding blue indicator (3px height, translateX transition)
+- "Over jou" tab: profile header card (avatar/photo + display name + "Woningzoeker" role + chevron → /profile/details), stats card (matches + reactions with blue icon circles), action links card (Persoonlijke gegevens bewerken, Profielfoto bewerken), verified profile card (email + phone with blue checks), reactiebrief card
+- "Account" tab sections: Instellingen (Meldingsinstellingen, Zoekvoorkeuren, Adresinstellingen, Opgeslagen woningen), Abonnement (status + beheren), Account (Accountgegevens, Wachtwoord en beveiliging, Uitloggen, Account verwijderen), Ondersteuning (Privacy, Hulp & support, Algemene voorwaarden)
+- All sections in white rounded-2xl cards with subtle shadow on gray bg
 - Profile name: first_name + last_name from user_profile_data, fallback to auth metadata full_name, fallback to email prefix
+- Biography removed entirely from the app
+
+### Profile Photo Upload
+- `POST /api/profile-photo`: Accepts base64 image, uploads to Supabase Storage (avatars bucket), saves URL in user_profile_data.profile_photo_url
+- `DELETE /api/profile-photo`: Removes photo from storage and clears profile_photo_url
+- Frontend: ProfilePhotoSheet bottom sheet in dashboard.tsx — upload, replace, remove actions
+- Max file size: 5MB; accepted formats: JPEG, PNG, WebP
+- JSON body limit increased to 10mb in server/index.ts
 
 ### Personal Details Pages
-- `/profile/details` (client/src/pages/profile-details.tsx): Clean list of personal fields (Voornaam, Achternaam, Geboortedatum, E-mailadres, Mobiele nummer, Biografie). Each editable field tappable → opens edit screen. Email is read-only.
-- `/profile/edit/:field` (client/src/pages/profile-edit.tsx): Single-field edit screen with large question title, input field, blue save button, close icon. Saves to /api/profile-data (profile fields) or /api/notifications/settings (phone).
-- New profile columns: first_name, last_name, date_of_birth, bio in user_profile_data table (migration: server/migrations/007_profile_fields.sql)
+- `/profile/details` (client/src/pages/profile-details.tsx): Clean list of personal fields (Voornaam, Achternaam, Geboortedatum, E-mailadres, Mobiele nummer). Each editable field tappable → opens edit screen. Email is read-only. Biography removed.
+- `/profile/edit/:field` (client/src/pages/profile-edit.tsx): Single-field edit screen with large question title, input field, blue save button, close icon. Saves to /api/profile-data (profile fields) or /api/notifications/settings (phone). Bio field removed.
+- New profile columns: first_name, last_name, date_of_birth in user_profile_data table (migration: server/migrations/007_profile_fields.sql)
 - `GET /api/profile-stats`: Returns { matches_received, reactions_sent } counts from matches table
 
 ### Profile Strength & Account Completion
@@ -112,7 +121,7 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - TabKey type: `"home" | "matches" | "filters" | "boost" | "profiel"`
 - Score weights (total = 100): income_documents_uploaded 20, alerts_active 15, id_document_uploaded 15, reaction_letter_ready 15, phone_number_added 10, housing_preferences_completed 10, search_buddy_added 5, profile_info_completed 5, profile_photo_added 5
 - Completion derivation: income docs from document_checklist (income_proof, payslips, employment_contract, etc. >= 2), ID docs from document_checklist (id_copy, photo >= 1), alerts from notification_settings, letter from application_template, phone from phone_e164, preferences from search_profiles, search_buddy from search_buddy_email, profile_info from email+phone, profile_photo from profile_photo_url
-- Task actions: alerts_active/phone_number_added/profile_info_completed → /settings/notifications, housing_preferences_completed → /dashboard/searches/new, reaction_letter_ready → /application-letter, income_documents_uploaded/id_document_uploaded → inline document checklist modals, search_buddy_added → inline email modal, profile_photo_added → placeholder (TODO: implement upload)
+- Task actions: alerts_active/phone_number_added/profile_info_completed → /settings/notifications, housing_preferences_completed → /dashboard/searches/new, reaction_letter_ready → /application-letter, income_documents_uploaded/id_document_uploaded → inline document checklist modals, search_buddy_added → inline email modal, profile_photo_added → navigates to profile tab (photo upload via bottom sheet)
 - Migration: `server/migrations/006_profile_photo.sql` adds `profile_photo_url` column to `user_profile_data`
 
 ### Recommendation System ("Aanbevolen voor jou")

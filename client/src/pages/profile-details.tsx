@@ -8,7 +8,6 @@ interface ProfileData {
   first_name?: string | null;
   last_name?: string | null;
   date_of_birth?: string | null;
-  bio?: string | null;
 }
 
 interface NotificationSettings {
@@ -21,7 +20,6 @@ const FIELDS = [
   { key: "date_of_birth", label: "Geboortedatum" },
   { key: "email", label: "E-mailadres" },
   { key: "phone", label: "Mobiele nummer" },
-  { key: "bio", label: "Biografie" },
 ] as const;
 
 export default function ProfileDetailsPage() {
@@ -56,7 +54,6 @@ export default function ProfileDetailsPage() {
     if (key === "first_name") return profileData?.first_name ?? "";
     if (key === "last_name") return profileData?.last_name ?? "";
     if (key === "date_of_birth") return profileData?.date_of_birth ?? "";
-    if (key === "bio") return profileData?.bio ?? "";
     return "";
   }
 

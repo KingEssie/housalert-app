@@ -1,0 +1,125 @@
+Update the Profile page and Account tab with the following final changes.
+
+IMPORTANT:
+Do not loosely approximate the BlaBlaCar reference.
+Use it as a structural and visual pattern for spacing, tab placement, sticky behaviour, hierarchy and row layout.
+The result should feel polished, calm, spacious and consistent.
+
+==================================================
+1. TOP TABS MUST MATCH THE DESIRED PATTERN
+==================================================
+
+The "Over jou" and "Account" tabs must appear at the very top of the profile page content area, just like the BlaBlaCar reference.
+
+Requirements:
+- Place the two tabs at the top of the profile banner/content area
+- Do NOT add a separate extra header above them
+- Keep them visible at the top while scrolling (sticky/fixed)
+- The active tab must have a clean underline indicator
+- The inactive tab should be muted
+- The spacing, thickness, height and alignment should feel close to the BlaBlaCar example
+- The tabs should remain elegant and minimal
+- Keep the switching behaviour smooth
+
+This is important:
+The tabs must stay pinned to the top and remain the main navigation within the profile page.
+
+==================================================
+2. REMOVE BIOGRAPHY COMPLETELY
+==================================================
+
+Biography is not needed anywhere in this app.
+
+Remove all biography-related functionality:
+- remove biography fields
+- remove biography section from profile
+- remove biography edit page
+- remove any route or link to biography editing
+- remove any UI copy referring to biography or “tell something about yourself”
+
+Do not leave hidden or unused biography logic behind if it can be removed cleanly.
+
+==================================================
+3. FIX PROFILE PHOTO EDITING
+==================================================
+
+The current "Profielfoto bewerken" action is incorrect.
+
+It must no longer open a biography page.
+
+Instead:
+- clicking "Profielfoto bewerken" must open a real photo editing flow
+- user must be able to upload a new profile image
+- user must be able to replace the current profile image
+- user must be able to remove the current profile image
+- saving should immediately update the profile UI
+- use a clean modal, bottom sheet or dedicated edit screen, whichever fits the current app structure best
+
+If cropping/positioning is already supported cleanly, keep it.
+If not, keep the flow simple but functional.
+
+==================================================
+4. ACCOUNT TAB CONTENT MUST BE REWORKED
+==================================================
+
+Redesign the Account tab so it fits a housing-search app, inspired by the structure and clarity of the BlaBlaCar account/settings page.
+
+Do NOT include Zoekbuddy in this tab.
+Do NOT include Documenten in this tab.
+
+Use this content structure:
+
+SECTION: INSTELLINGEN
+- Meldingsinstellingen
+  subtext: E-mail, push, WhatsApp
+- Zoekvoorkeuren
+  subtext: budget, stad, reistijd, woningtype
+- Adresinstellingen
+  subtext: voorkeurslocatie en regio
+- Opgeslagen woningen
+  subtext: beheer je favorieten
+
+SECTION: ABONNEMENT
+- Abonnement
+  subtext: Maandelijks
+  right badge: Actief
+- Abonnement beheren
+  subtext: wijzigen of opzeggen
+
+SECTION: ACCOUNT
+- Accountgegevens
+  subtext: e-mail en telefoonnummer
+- Wachtwoord en beveiliging
+  subtext: wachtwoord wijzigen
+- Uitloggen
+- Account verwijderen
+
+SECTION: ONDERSTEUNING
+- Privacy
+- Hulp & support
+- Algemene voorwaarden
+
+==================================================
+5. INTERACTION RULES
+==================================================
+
+Every row must have a real purpose.
+
+That means:
+- rows should either navigate to a useful page
+- or open a modal / bottom sheet
+- or trigger a real action
+
+Do not leave dead-end rows.
+Do not create placeholder clicks that do nothing.
+Do not reuse unrelated old routes.
+
+Examples:
+- Meldingsinstellingen opens notification preferences
+- Zoekvoorkeuren opens search preference settings
+- Adresinstellingen opens location/address preferences
+- Opgeslagen woningen opens saved homes/favorites
+- Abonnement beheren opens subscription management
+- Accountgegevens opens account details
+- Wachtwoord en beveiliging opens password/security settings
+-
