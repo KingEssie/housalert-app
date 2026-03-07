@@ -24,9 +24,19 @@ app.use(
 app.use(express.urlencoded({ extended: false }));
 
 app.use((req, res, next) => {
-  if (req.path === "/onboarding-embed" || req.path.startsWith("/api/onboarding-drafts")) {
+  const isEmbedRoute =
+    req.path === "/onboarding-embed" ||
+    req.path.startsWith("/api/onboarding-drafts");
+
+  if (isEmbedRoute) {
     res.removeHeader("X-Frame-Options");
-    res.setHeader("Content-Security-Policy", "frame-ancestors *");
+    res.setHeader(
+      "Content-Security-Policy",
+      "frame-ancestors 'self' https://*.stekkies.de https://stekkies.de https://*.duda.co https://*.dudaone.com"
+    );
+  } else {
+    res.setHeader("X-Frame-Options", "SAMEORIGIN");
+    res.setHeader("Content-Security-Policy", "frame-ancestors 'self'");
   }
   next();
 });
