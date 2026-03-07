@@ -6,7 +6,7 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 
 - **Frontend:** React + Vite + TypeScript + Tailwind CSS + shadcn/ui + Wouter
 - **Auth:** Supabase Auth (email + password)
-- **Data:** Supabase (PostgreSQL) — `search_profiles`, `listings`, `matches` tables
+- **Data:** Supabase (PostgreSQL) — all tables: `search_profiles`, `listings`, `matches`, `subscriptions`, `user_notification_settings`, `user_profile_data`, `listing_freshness`, `match_timestamps`
 - **Backend:** Express (minimal — auth + data handled by Supabase)
 - **Payments:** Stripe (sandbox, via Replit connector)
 
@@ -331,21 +331,16 @@ Env vars:
 
 ## Freshness Tracking
 
-> **TODO (Low priority — acceptable for MVP): Move freshness tracking to Supabase**
-> Currently `first_seen_at` and `last_seen_at` are stored in Replit's local PostgreSQL,
-> while listings themselves live in Supabase. Risk: local DB resets could lose freshness
-> history. Future improvement: add `first_seen_at` and `last_seen_at` columns directly
-> to the Supabase `listings` table and remove the local freshness database entirely.
-
-Uses Replit's local PostgreSQL database (not Supabase) for tracking:
+All freshness data is stored in Supabase (migrated from local PostgreSQL):
 - `listing_freshness` table: `listing_id (PK)`, `source`, `source_id`, `first_seen_at`, `last_seen_at`
 - `match_timestamps` table: `match_id (PK)`, `matched_at`
-- `server/freshness.ts` — Functions: `trackListingSeen()`, `getListingFreshness()`, `trackMatchCreated()`, `getMatchTimestamps()`
+- `server/freshness.ts` — Functions: `trackListingSeen()`, `getListingFreshness()`, `trackMatchCreated()`, `getMatchTimestamps()` — all use Supabase client
+- Migration: `server/migrations/008_freshness_tables.sql` (must be applied in Supabase SQL editor)
 
 Behavior:
 - New listing inserted → `first_seen_at = now()`, `last_seen_at = now()`
-- Duplicate listing found → only `last_seen_at = now()` updated (via `ON CONFLICT ... DO UPDATE`)
-- Match created → `matched_at = now()` tracked in local DB
+- Duplicate listing found → only `last_seen_at = now()` updated (via insert + conflict update)
+- Match created → `matched_at = now()` tracked in Supabase
 - `POST /api/freshness` endpoint accepts `{ listingIds, matchIds }` and returns freshness data
 - `GET /api/listings/fresh` — returns newest 50 listings ordered by `first_seen_at DESC` with computed `fresh_label` (net_binnen / nieuw / vandaag / ouder)
 - `GET /api/matches` — returns logged-in user's 50 newest matches (auth via Supabase JWT), ordered by `matched_at DESC`, with listing details and `fresh_label`

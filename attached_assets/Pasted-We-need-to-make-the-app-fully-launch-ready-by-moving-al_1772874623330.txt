@@ -1,0 +1,137 @@
+We need to make the app fully launch-ready by moving all remaining backend functionality to Supabase.
+
+IMPORTANT:
+Do not make partial changes.
+First audit the project and identify every place where the app still depends on Replit local Postgres, local storage, temporary mocks, or any non-Supabase backend logic.
+Then migrate all remaining backend flows cleanly to Supabase.
+
+GOAL:
+The entire app must run fully on Supabase for database, auth, and storage where relevant.
+No remaining production-critical dependency may rely on Replit local Postgres or local-only persistence.
+
+==================================================
+STEP 1 — FULL BACKEND AUDIT
+==================================================
+
+Inspect the codebase and produce a clear migration summary of:
+
+1. All current database access points
+2. Any Replit local Postgres usage
+3. Any hardcoded/mock/local data persistence
+4. Any auth flows not using Supabase Auth
+5. Any image/file upload flows not using Supabase Storage
+6. Any server actions, API routes, or services still tied to old infrastructure
+
+For each item found, identify:
+- file path
+- what it currently does
+- whether it already uses Supabase
+- what must be changed
+
+==================================================
+STEP 2 — MIGRATE EVERYTHING REMAINING TO SUPABASE
+==================================================
+
+After the audit, migrate all remaining backend dependencies to Supabase.
+
+This includes:
+
+- database tables and queries
+- create/read/update/delete operations
+- auth flows
+- profile photo storage if applicable
+- any old “freshness tracking” or local postgres logic still remaining
+- any environment configuration required for Supabase
+
+Requirements:
+- remove or replace Replit local Postgres dependencies
+- use Supabase as the single source of truth
+- do not leave duplicate database logic behind
+- do not keep fallback writes to old/local systems
+- keep existing UI behavior intact
+
+==================================================
+STEP 3 — DATABASE STRUCTURE
+==================================================
+
+Make sure the database structure is clean and production-ready.
+
+Check:
+- tables needed by the app
+- primary keys and foreign keys where relevant
+- timestamps
+- user-linked records
+- indexes for important lookups if needed
+- constraints to avoid bad data
+
+If schema changes are needed, implement them cleanly.
+
+==================================================
+STEP 4 — AUTH AND USER DATA
+==================================================
+
+Ensure all user/account flows rely on Supabase Auth and Supabase-backed user records.
+
+Check:
+- signup
+- login
+- session handling
+- profile retrieval
+- profile updates
+- logout
+- protected routes or protected data access
+
+If there is separate profile data, make sure it is correctly linked to the authenticated user.
+
+==================================================
+STEP 5 — STORAGE
+==================================================
+
+If profile photo upload exists or will exist now, make sure it uses Supabase Storage.
+
+Requirements:
+- upload works
+- replace works
+- delete works
+- saved URL/path is stored correctly in Supabase
+- old local file handling is removed if present
+
+==================================================
+STEP 6 — ENVIRONMENT AND CONFIG
+==================================================
+
+Verify the project uses the correct Supabase environment variables and no outdated/local DB variables remain for production-critical flows.
+
+Clean up:
+- obsolete local postgres env vars
+- duplicate config files
+- dead code from previous backend setup
+
+==================================================
+STEP 7 — SAFE VALIDATION
+==================================================
+
+After migration, do minimal but meaningful smoke checks for:
+- auth works
+- profile reads/writes work
+- saved homes/favorites work
+- matches/reactions flow still works
+- search/filter data still loads
+- profile photo flow works if implemented
+
+Keep testing efficient and lightweight.
+
+==================================================
+STEP 8 — OUTPUT
+==================================================
+
+At the end, provide:
+1. A concise migration summary
+2. A list of files changed
+3. Any manual Supabase dashboard steps still required
+4. Any remaining launch blockers
+
+IMPORTANT:
+Refactor cleanly.
+Do not patch old local database logic on top of Supabase.
+Supabase must become the only production backend.
