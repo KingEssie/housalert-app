@@ -505,12 +505,13 @@ function HomeTab({
   const hasMatches = matchCount > 0;
 
   return (
-    <div className="flex flex-col gap-6 pb-6">
-      <div className="pt-1">
-        <h1 className="text-page-title" data-testid="text-greeting">
+    <div className="flex flex-col pb-6">
+      <div className="sticky top-0 z-10 bg-white pt-5 pb-4 px-6">
+        <h1 className="text-[24px] font-bold text-[#0F172A] leading-tight" data-testid="text-greeting">
           Hallo, {firstName}
         </h1>
       </div>
+      <div className="flex flex-col gap-6 px-6">
 
       {subscription.isExpired && (
         <div className="bg-red-50 rounded-2xl p-5 flex items-center gap-3" data-testid="banner-expired">
@@ -623,6 +624,7 @@ function HomeTab({
           Beheer filters
         </button>
       )}
+      </div>
     </div>
   );
 }
@@ -677,7 +679,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
   }, {} as Record<string, number>);
 
   return (
-    <div className="flex flex-col gap-5 pb-6">
+    <div className="flex flex-col gap-5 px-6 pt-6 pb-6">
       <div className="flex items-center justify-between">
         <h1 className="text-page-title">Matches</h1>
         {matches.length > 0 && (
@@ -854,7 +856,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
   const atLimit = profileCount >= MAX_PROFILES;
 
   return (
-    <div className="flex flex-col gap-5 pb-6">
+    <div className="flex flex-col gap-5 px-6 pt-6 pb-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-page-title">Zoekprofielen</h1>
@@ -1130,7 +1132,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
   ];
 
   return (
-    <div className="-mx-6 -mt-6 min-h-[calc(100vh-80px)] bg-[#F7F7F7]">
+    <div className="min-h-[calc(100vh-80px)] bg-[#F7F7F7]">
       <div className="sticky top-0 z-10 bg-white border-b border-[#EAEAEA]">
         <div className="max-w-[480px] mx-auto flex relative">
           {PROFILE_SUBTABS.map(t => (
@@ -1270,6 +1272,28 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                 </div>
               )}
             </div>
+
+            <div>
+              <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Ondersteuning</p>
+              <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+                <AccountSettingsRow
+                  label="Privacy"
+                  onClick={() => navigate("/datenschutz")}
+                />
+                <div className="h-px bg-[#EAEAEA] mx-5" />
+                <AccountSettingsRow
+                  label="Hulp & support"
+                  onClick={() => {
+                    window.location.href = "mailto:support@stekkies.nl";
+                  }}
+                />
+                <div className="h-px bg-[#EAEAEA] mx-5" />
+                <AccountSettingsRow
+                  label="Algemene voorwaarden"
+                  onClick={() => navigate("/terms")}
+                />
+              </div>
+            </div>
           </div>
         ) : (
           <div className="flex flex-col gap-6">
@@ -1393,27 +1417,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
               </div>
             </div>
 
-            <div>
-              <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Ondersteuning</p>
-              <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
-                <AccountSettingsRow
-                  label="Privacy"
-                  onClick={() => navigate("/datenschutz")}
-                />
-                <div className="h-px bg-[#EAEAEA] mx-5" />
-                <AccountSettingsRow
-                  label="Hulp & support"
-                  onClick={() => {
-                    window.location.href = "mailto:support@stekkies.nl";
-                  }}
-                />
-                <div className="h-px bg-[#EAEAEA] mx-5" />
-                <AccountSettingsRow
-                  label="Algemene voorwaarden"
-                  onClick={() => navigate("/terms")}
-                />
-              </div>
-            </div>
           </div>
         )}
       </div>
@@ -1492,18 +1495,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
-        <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#0066FF] flex items-center justify-center">
-              <Home className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-bold text-[#0F172A] text-[17px]">Stekkies</span>
-          </div>
-        </div>
-      </header>
-
-      <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6 pb-24">
+      <main className="flex-1 max-w-xl mx-auto w-full pb-24">
         {activeTab === "home" && (
           <HomeTab
             user={user}

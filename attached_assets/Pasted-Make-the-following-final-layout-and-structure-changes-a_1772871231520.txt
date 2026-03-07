@@ -1,0 +1,197 @@
+Make the following final layout and structure changes across the app.
+
+IMPORTANT:
+This is a cleanup and refinement pass.
+Do not patch the old layout on top of the existing header system.
+Refactor the page header structure if needed so the app feels clean, modern and intentional.
+
+==================================================
+1. REMOVE THE GLOBAL TOP BANNER EVERYWHERE
+==================================================
+
+The floating top banner/header with the Stekkies logo and app name must be removed from the app.
+
+This means:
+- remove the top banner with logo + “Stekkies”
+- do not show it on the Home page
+- do not show it on the Profile page
+- do not show it on any other page
+- do not keep empty spacing reserved for it
+
+The app should no longer use that shared branded top header.
+
+==================================================
+2. HOME PAGE TOP AREA
+==================================================
+
+On the homepage, replace the old header/banner with a simple sticky top area.
+
+Show only:
+- “Hallo”
+- the user’s first name
+
+Example:
+Hallo Martin
+
+Requirements:
+- this should be the only top header content on the homepage
+- keep it clean, spacious and mobile-first
+- it may stay sticky at the top while scrolling
+- no logo
+- no app name
+- no extra header chrome
+- no floating branded banner
+
+The visual style should feel calm and premium.
+
+==================================================
+3. PROFILE PAGE TOP AREA
+==================================================
+
+On the profile page, the ONLY top sticky element should be the two tabs:
+
+- Over jou
+- Account
+
+Requirements:
+- these tabs must sit at the top of the page
+- they must stay sticky/fixed while scrolling
+- they must visually follow the BlaBlaCar-like tab pattern we are using
+- do not place any extra header above them
+- do not show the Stekkies logo or app name
+- do not show another floating page banner
+- remove unnecessary top spacing caused by old header logic
+
+The tabs should be the main and only top navigation element on the profile page.
+
+==================================================
+4. REMOVE GLOBAL PAGE BANNERS FROM OTHER PAGES
+==================================================
+
+For the rest of the app:
+- do not use the old floating top banner pattern anymore
+- remove the shared header with logo/app name from all pages
+- each page should have its own minimal top structure only if functionally needed
+
+Avoid generic repeated top bars.
+Keep each screen clean and focused.
+
+==================================================
+5. PROFILE PAGE CONTENT STRUCTURE
+==================================================
+
+Keep the current improved profile structure, but adjust the section placement.
+
+Profile page should contain:
+- sticky tabs at the top: Over jou / Account
+- profile information and profile actions under “Over jou”
+- support-related items moved out of Account and placed at the bottom of the Profile side
+
+This means the following support items should NOT be inside the Account tab:
+- Privacy
+- Hulp & support
+- Algemene voorwaarden
+
+Instead, place these under the “Over jou” / profile side, as the final section at the bottom of the profile page.
+
+Use section title:
+ONDERSTEUNING
+
+Items:
+- Privacy
+- Hulp & support
+- Algemene voorwaarden
+
+These should appear as clean rows at the bottom of the profile content.
+
+==================================================
+6. ACCOUNT TAB CONTENT
+==================================================
+
+The Account tab should now remain focused only on actual account/settings/subscription actions.
+
+Use this structure:
+
+SECTION: INSTELLINGEN
+- Meldingsinstellingen
+  subtext: E-mail, push, WhatsApp
+- Zoekvoorkeuren
+  subtext: budget, stad, reistijd, woningtype
+- Adresinstellingen
+  subtext: voorkeurslocatie en regio
+- Opgeslagen woningen
+  subtext: beheer je favorieten
+
+SECTION: ABONNEMENT
+- Abonnement
+  subtext: Maandelijks
+  right badge: Actief
+- Abonnement beheren
+  subtext: wijzigen of opzeggen
+
+SECTION: ACCOUNT
+- Accountgegevens
+  subtext: e-mail en telefoonnummer
+- Wachtwoord en beveiliging
+  subtext: wachtwoord wijzigen
+- Uitloggen
+- Account verwijderen
+
+Do NOT include the support items here anymore.
+
+==================================================
+7. BIOGRAPHY MUST STILL BE REMOVED
+==================================================
+
+Biography is not needed anywhere in the app.
+
+Remove all biography-related functionality:
+- no biography field
+- no biography section
+- no biography edit page
+- no biography route
+- no biography references
+
+==================================================
+8. PROFILE PHOTO EDIT MUST STILL WORK CORRECTLY
+==================================================
+
+“Profielfoto bewerken” must open a real profile photo editing flow.
+
+It must allow the user to:
+- upload a photo
+- replace the photo
+- remove the photo
+- save changes and update the profile immediately
+
+It must NOT open any biography-related screen.
+
+==================================================
+9. VISUAL RULES
+==================================================
+
+Across all updated screens:
+- remove unnecessary header layers
+- reduce visual clutter
+- keep spacing generous and consistent
+- maintain a premium mobile-first layout
+- use clean cards, dividers and chevrons where needed
+- preserve the bottom navigation exactly as it is
+- avoid duplicated sticky elements
+- avoid stacked top bars
+
+The final result should feel much cleaner and lighter than before.
+
+==================================================
+10. IMPLEMENTATION PRIORITY
+==================================================
+
+Priority order:
+1. Remove the global Stekkies header/banner everywhere
+2. Make Home show only “Hallo + name” at the top
+3. Make Profile show only the sticky tabs at the top
+4. Move support items from Account to the bottom of the Profile side
+5. Keep account settings focused and useful
+6. Preserve the improved styling and spacing
+
+If the current shared layout causes conflicts, refactor the shared page shell instead of patching individual screens.

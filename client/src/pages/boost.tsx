@@ -606,7 +606,7 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
 
   if (isError) {
     return (
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 px-6 pt-6">
         <div className="mb-1">
           <h1 className="text-page-title">Boost</h1>
         </div>
@@ -626,7 +626,7 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
 
   if (isLoading || !data) {
     return (
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 px-6 pt-6">
         <div className="mb-2">
           <div className="h-8 bg-[#F2F5F8] rounded w-24 mb-2 animate-pulse" />
           <div className="h-4 bg-[#F2F5F8] rounded w-56 animate-pulse" />
@@ -657,7 +657,7 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
     : "Rond je profiel af en vergroot je kansen";
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 px-6 pt-6">
       <div className="mb-1">
         <h1 className="text-page-title" data-testid="heading-boost">
           Boost
