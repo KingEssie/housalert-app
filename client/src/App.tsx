@@ -28,6 +28,8 @@ import PaymentMethodPage from "@/pages/payment-method";
 import { SubscriptionCancelConfirmPage, SubscriptionCancelledPage } from "@/pages/subscription-cancel";
 import ChangePasswordPage from "@/pages/change-password";
 import OnboardingPage from "@/pages/onboarding";
+import OnboardingEmbedPage from "@/pages/onboarding-embed";
+import ContinueDraftPage from "@/pages/continue-draft";
 
 function ProtectedRoute({ component: Component, skipOnboardingCheck }: { component: React.ComponentType; skipOnboardingCheck?: boolean }) {
   const { user, loading } = useAuth();
@@ -63,6 +65,8 @@ function Router() {
       <Route path="/" component={LandingPage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/signup" component={SignupPage} />
+      <Route path="/onboarding-embed" component={OnboardingEmbedPage} />
+      <Route path="/continue" component={ContinueDraftPage} />
       <Route path="/onboarding/location" component={OnboardingLocationPage} />
       <Route path="/onboarding/filters" component={OnboardingFiltersPage} />
       <Route path="/onboarding/estimate" component={OnboardingEstimatePage} />

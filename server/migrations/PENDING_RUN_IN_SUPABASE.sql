@@ -95,3 +95,29 @@ ALTER TABLE search_profiles
   ADD COLUMN IF NOT EXISTS commute_lng DOUBLE PRECISION,
   ADD COLUMN IF NOT EXISTS commute_mode TEXT,
   ADD COLUMN IF NOT EXISTS commute_minutes INTEGER;
+
+-- -----------------------------------------------
+-- Migration 013: onboarding_drafts table
+-- -----------------------------------------------
+CREATE TABLE IF NOT EXISTS onboarding_drafts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  country_code TEXT NOT NULL DEFAULT 'DE',
+  city_name TEXT NOT NULL,
+  latitude DOUBLE PRECISION,
+  longitude DOUBLE PRECISION,
+  place_id TEXT,
+  location_mode TEXT DEFAULT 'city',
+  districts TEXT[],
+  radius_km INTEGER,
+  commute_destination TEXT,
+  commute_lat DOUBLE PRECISION,
+  commute_lng DOUBLE PRECISION,
+  commute_mode TEXT,
+  commute_minutes INTEGER,
+  price_min INTEGER DEFAULT 0,
+  price_max INTEGER DEFAULT 0,
+  property_type TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  claimed_by UUID,
+  claimed_at TIMESTAMPTZ
+);

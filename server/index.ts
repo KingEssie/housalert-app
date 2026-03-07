@@ -23,6 +23,14 @@ app.use(
 
 app.use(express.urlencoded({ extended: false }));
 
+app.use((req, res, next) => {
+  if (req.path === "/onboarding-embed" || req.path.startsWith("/api/onboarding-drafts")) {
+    res.removeHeader("X-Frame-Options");
+    res.setHeader("Content-Security-Policy", "frame-ancestors *");
+  }
+  next();
+});
+
 import { log } from "./log";
 export { log };
 

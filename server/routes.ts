@@ -1268,5 +1268,114 @@ export async function registerRoutes(
     }
   });
 
+  const { Pool } = await import("pg");
+  const draftsPool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+  app.post("/api/onboarding-drafts", async (req, res) => {
+    try {
+      const {
+        country_code, city_name, latitude, longitude, place_id,
+        location_mode, districts, radius_km,
+        commute_destination, commute_lat, commute_lng, commute_mode, commute_minutes,
+        price_min, price_max, property_type,
+      } = req.body;
+
+      if (!city_name || typeof city_name !== "string" || city_name.trim() === "") {
+        return res.status(400).json({ error: "city_name is required" });
+      }
+
+      const result = await draftsPool.query(
+        `INSERT INTO onboarding_drafts (
+          country_code, city_name, latitude, longitude, place_id,
+          location_mode, districts, radius_km,
+          commute_destination, commute_lat, commute_lng, commute_mode, commute_minutes,
+          price_min, price_max, property_type
+        ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
+        RETURNING id`,
+        [
+          country_code || "DE",
+          city_name.trim(),
+          latitude ?? null,
+          longitude ?? null,
+          place_id ?? null,
+          location_mode || "city",
+          districts && Array.isArray(districts) && districts.length > 0 ? districts : null,
+          radius_km != null ? parseInt(radius_km) : null,
+          commute_destination ?? null,
+          commute_lat != null ? parseFloat(commute_lat) : null,
+          commute_lng != null ? parseFloat(commute_lng) : null,
+          commute_mode ?? null,
+          commute_minutes != null ? parseInt(commute_minutes) : null,
+          parseInt(price_min) || 0,
+          parseInt(price_max) || 0,
+          property_type || null,
+        ]
+      );
+
+      return res.json({ id: result.rows[0].id });
+    } catch (err: any) {
+      log(`[onboarding-draft] Error: ${err.message}`);
+      return res.status(500).json({ error: "Internal error" });
+    }
+  });
+
+  app.post("/api/onboarding-drafts/:id/claim", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { user_id } = req.body;
+
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (!uuidRegex.test(id) || !user_id || !uuidRegex.test(user_id)) {
+        return res.status(400).json({ error: "Invalid parameters" });
+      }
+
+      const check = await draftsPool.query(
+        "SELECT claimed_by FROM onboarding_drafts WHERE id = $1",
+        [id]
+      );
+
+      if (check.rows.length === 0) {
+        return res.status(404).json({ error: "Draft not found" });
+      }
+
+      if (check.rows[0].claimed_by && check.rows[0].claimed_by !== user_id) {
+        return res.status(409).json({ error: "Deze zoekopdracht is al door iemand anders gebruikt." });
+      }
+
+      await draftsPool.query(
+        "UPDATE onboarding_drafts SET claimed_by = $1, claimed_at = NOW() WHERE id = $2",
+        [user_id, id]
+      );
+
+      return res.json({ ok: true });
+    } catch (err: any) {
+      return res.status(500).json({ error: "Internal error" });
+    }
+  });
+
+  app.get("/api/onboarding-drafts/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (!uuidRegex.test(id)) {
+        return res.status(400).json({ error: "Invalid draft ID" });
+      }
+
+      const result = await draftsPool.query(
+        "SELECT * FROM onboarding_drafts WHERE id = $1",
+        [id]
+      );
+
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: "Draft not found" });
+      }
+
+      return res.json(result.rows[0]);
+    } catch (err: any) {
+      return res.status(500).json({ error: "Internal error" });
+    }
+  });
+
   return httpServer;
 }

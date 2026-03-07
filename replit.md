@@ -30,7 +30,22 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
   - Used in: `onboarding.tsx` (LocationStep), `new-search.tsx` (step 2)
   - Dependencies: `leaflet`, `react-leaflet@4`, `@types/leaflet`
 - **Location mode columns (migration 012)**: `location_mode`, `districts`, `radius_km`, `commute_destination`, `commute_lat`, `commute_lng`, `commute_mode`, `commute_minutes`
-- **PENDING MIGRATION**: `server/migrations/PENDING_RUN_IN_SUPABASE.sql` must be run in Supabase SQL Editor (includes migrations 008, 010, 011, 012)
+
+### Embeddable Onboarding Widget
+- `client/src/pages/onboarding-embed.tsx` — Lightweight 4-step widget at `/onboarding-embed`
+  - Step 1: Country selection (DE/AT/NL)
+  - Step 2: Location (reuses LocationModeSelector)
+  - Step 3: Budget (min/max price)
+  - Step 4: Property type
+  - On submit: saves draft to `onboarding_drafts` table (Replit DB via pg), returns `draft_id`
+  - Completion screen with "Ga verder in browser" and "Download de app"
+- `client/src/pages/continue-draft.tsx` — Draft handoff at `/continue?draft=<id>`
+  - Loads draft from backend, redirects to signup if not authed, creates search profile if authed
+- **Backend**: `POST /api/onboarding-drafts` (create), `GET /api/onboarding-drafts/:id` (read)
+- **Iframe**: `Content-Security-Policy: frame-ancestors *` set for `/onboarding-embed` route
+- **Embed HTML**: `<iframe src="https://YOUR_DOMAIN/onboarding-embed" width="100%" height="700" frameborder="0"></iframe>`
+- **Table**: `onboarding_drafts` in Replit DB (not Supabase) — draft data stored locally
+- **PENDING MIGRATION**: `server/migrations/PENDING_RUN_IN_SUPABASE.sql` must be run in Supabase SQL Editor (includes migrations 008, 010, 011, 012, 013)
 
 ### Design System (Hostinger-inspired)
 - **Primary**: #673DE5 (purple), hover #5B30D6 — used for CTA buttons, active nav, brand accents only
