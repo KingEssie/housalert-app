@@ -8,7 +8,7 @@ import { ApplySheet } from "@/components/apply-sheet";
 
 const FRESH_BADGE_STYLES: Record<string, { bg: string; text: string }> = {
   net_binnen: { bg: "bg-green-100", text: "text-green-700" },
-  nieuw: { bg: "bg-blue-100", text: "text-blue-700" },
+  nieuw: { bg: "bg-purple-100", text: "text-purple-700" },
   vandaag: { bg: "bg-yellow-100", text: "text-yellow-700" },
   ouder: { bg: "bg-gray-100", text: "text-gray-500" },
 };
@@ -74,9 +74,9 @@ export default function ListingDetailPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white flex flex-col">
-        <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
+        <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
           <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center">
-            <button onClick={() => navigate("/dashboard")} className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center hover:bg-[#EAEFF5] transition-colors" data-testid="button-back">
+            <button onClick={() => navigate("/dashboard")} className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center hover:bg-[#E5E7EB] transition-colors" data-testid="button-back">
               <ArrowLeft className="w-5 h-5 text-[#6B7280]" />
             </button>
           </div>
@@ -105,18 +105,18 @@ export default function ListingDetailPage() {
   if (isError || !listing) {
     return (
       <div className="min-h-screen bg-white flex flex-col">
-        <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
+        <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
           <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center">
-            <button onClick={() => navigate("/dashboard")} className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center hover:bg-[#EAEFF5] transition-colors" data-testid="button-back">
+            <button onClick={() => navigate("/dashboard")} className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center hover:bg-[#E5E7EB] transition-colors" data-testid="button-back">
               <ArrowLeft className="w-5 h-5 text-[#6B7280]" />
             </button>
           </div>
         </header>
         <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6">
           <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-8 text-center">
-            <p className="text-[18px] font-bold text-[#1B2A4A] mb-2">Advertentie niet gevonden</p>
+            <p className="text-[18px] font-bold text-[#1F2937] mb-2">Advertentie niet gevonden</p>
             <p className="text-[13px] text-[#6B7280] mb-4">Deze advertentie bestaat niet meer of is verwijderd.</p>
-            <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[16px] font-semibold" data-testid="button-back-dashboard">
+            <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-xl bg-[#673DE6] hover:bg-[#5B30D6] text-white text-[16px] font-semibold" data-testid="button-back-dashboard">
               Terug naar dashboard
             </Button>
           </div>
@@ -129,9 +129,9 @@ export default function ListingDetailPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
+      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
         <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center">
-          <button onClick={() => navigate("/dashboard")} className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center hover:bg-[#EAEFF5] transition-colors" data-testid="button-back">
+          <button onClick={() => navigate("/dashboard")} className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center hover:bg-[#E5E7EB] transition-colors" data-testid="button-back">
             <ArrowLeft className="w-5 h-5 text-[#6B7280]" />
           </button>
         </div>
@@ -156,7 +156,7 @@ export default function ListingDetailPage() {
                   <span className={`text-[14px] font-bold px-3.5 py-1.5 rounded-full ${
                     listing.match_score >= 90 ? "bg-orange-100 text-orange-700" :
                     listing.match_score >= 75 ? "bg-green-100 text-green-700" :
-                    listing.match_score >= 60 ? "bg-blue-100 text-blue-700" :
+                    listing.match_score >= 60 ? "bg-purple-100 text-purple-700" :
                     "bg-gray-100 text-gray-600"
                   }`}>
                     {listing.match_label} · {listing.match_score}%
@@ -170,7 +170,7 @@ export default function ListingDetailPage() {
               </div>
             )}
 
-            <h1 className="text-[32px] font-[800] text-[#1B2A4A] leading-[1.1] tracking-[-0.03em] mb-3" data-testid="text-listing-title">
+            <h1 className="text-[32px] font-[800] text-[#1F2937] leading-[1.1] tracking-[-0.03em] mb-3" data-testid="text-listing-title">
               {listing.title}
             </h1>
 
@@ -183,51 +183,51 @@ export default function ListingDetailPage() {
           </div>
 
           <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
-            <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-4">Details</h2>
+            <h2 className="text-[18px] font-bold text-[#1F2937] mb-4">Details</h2>
             <div className="grid grid-cols-2 gap-4">
               {listing.price > 0 && (
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#EDF2FF] flex items-center justify-center">
-                    <Euro className="w-5 h-5 text-[#0066FF]" />
+                  <div className="w-10 h-10 rounded-xl bg-[#EDE9FE] flex items-center justify-center">
+                    <Euro className="w-5 h-5 text-[#673DE6]" />
                   </div>
                   <div>
                     <p className="text-[13px] text-[#6B7280]">Huur</p>
-                    <p className="text-[15px] font-semibold text-[#1B2A4A]" data-testid="text-listing-price">€{listing.price}/mnd</p>
+                    <p className="text-[15px] font-semibold text-[#1F2937]" data-testid="text-listing-price">€{listing.price}/mnd</p>
                   </div>
                 </div>
               )}
 
               {listing.bedrooms > 0 && (
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#EDF2FF] flex items-center justify-center">
-                    <BedDouble className="w-5 h-5 text-[#0066FF]" />
+                  <div className="w-10 h-10 rounded-xl bg-[#EDE9FE] flex items-center justify-center">
+                    <BedDouble className="w-5 h-5 text-[#673DE6]" />
                   </div>
                   <div>
                     <p className="text-[13px] text-[#6B7280]">Slaapkamers</p>
-                    <p className="text-[15px] font-semibold text-[#1B2A4A]" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
+                    <p className="text-[15px] font-semibold text-[#1F2937]" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
                   </div>
                 </div>
               )}
 
               {listing.size_m2 > 0 && (
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#EDF2FF] flex items-center justify-center">
-                    <Ruler className="w-5 h-5 text-[#0066FF]" />
+                  <div className="w-10 h-10 rounded-xl bg-[#EDE9FE] flex items-center justify-center">
+                    <Ruler className="w-5 h-5 text-[#673DE6]" />
                   </div>
                   <div>
                     <p className="text-[13px] text-[#6B7280]">Oppervlakte</p>
-                    <p className="text-[15px] font-semibold text-[#1B2A4A]" data-testid="text-listing-size">{listing.size_m2} m²</p>
+                    <p className="text-[15px] font-semibold text-[#1F2937]" data-testid="text-listing-size">{listing.size_m2} m²</p>
                   </div>
                 </div>
               )}
 
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#EDF2FF] flex items-center justify-center">
-                  <Globe className="w-5 h-5 text-[#0066FF]" />
+                <div className="w-10 h-10 rounded-xl bg-[#EDE9FE] flex items-center justify-center">
+                  <Globe className="w-5 h-5 text-[#673DE6]" />
                 </div>
                 <div>
                   <p className="text-[13px] text-[#6B7280]">Bron</p>
-                  <p className="text-[15px] font-semibold text-[#1B2A4A] capitalize" data-testid="text-listing-source">{listing.source}</p>
+                  <p className="text-[15px] font-semibold text-[#1F2937] capitalize" data-testid="text-listing-source">{listing.source}</p>
                 </div>
               </div>
             </div>
@@ -240,7 +240,7 @@ export default function ListingDetailPage() {
           <div className="flex gap-2">
             <button
               onClick={() => setApplyOpen(true)}
-              className="flex-1 h-[52px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold transition-colors flex items-center justify-center gap-2"
+              className="flex-1 h-[52px] rounded-md bg-[#673DE6] hover:bg-[#5B30D6] text-white text-[15px] font-semibold transition-colors flex items-center justify-center gap-2"
               data-testid="button-reageer-detail"
             >
               <Zap className="w-4 h-4" />
@@ -249,7 +249,7 @@ export default function ListingDetailPage() {
             {listing.url && (
               <a href={listing.url} target="_blank" rel="noopener noreferrer">
                 <button
-                  className="h-[52px] px-5 rounded-xl border border-[#E5E7EB] bg-white text-[#0F172A] text-[15px] font-semibold hover:bg-[#F9FAFB] transition-colors flex items-center gap-2"
+                  className="h-[52px] px-5 rounded-xl border border-[#E5E7EB] bg-white text-[#1F2937] text-[15px] font-semibold hover:bg-[#F9FAFB] transition-colors flex items-center gap-2"
                   data-testid="button-view-original"
                 >
                   <ExternalLink className="w-4 h-4" />

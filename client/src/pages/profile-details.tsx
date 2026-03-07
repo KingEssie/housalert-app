@@ -63,16 +63,16 @@ export default function ProfileDetailsPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="sticky top-0 z-10 bg-white border-b border-[#F2F5F8]">
+      <div className="sticky top-0 z-10 bg-white border-b border-[#F3F4F6]">
         <div className="max-w-lg mx-auto flex items-center h-14 px-5">
           <button
             onClick={() => navigate("/dashboard?tab=profiel")}
             className="w-9 h-9 rounded-full flex items-center justify-center -ml-1"
             data-testid="button-back-details"
           >
-            <ArrowLeft className="w-5 h-5 text-[#0F172A]" />
+            <ArrowLeft className="w-5 h-5 text-[#1F2937]" />
           </button>
-          <h1 className="flex-1 text-center text-[17px] font-semibold text-[#0F172A]">Persoonlijke gegevens</h1>
+          <h1 className="flex-1 text-center text-[17px] font-semibold text-[#1F2937]">Persoonlijke gegevens</h1>
           <div className="w-9" />
         </div>
       </div>
@@ -97,7 +97,7 @@ export default function ProfileDetailsPage() {
                     >
                       <div className="min-w-0 flex-1">
                         <p className="text-[13px] text-[#6B7280] mb-0.5">{field.label}</p>
-                        <p className="text-[16px] font-[500] text-[#0F172A] truncate">
+                        <p className="text-[16px] font-[500] text-[#1F2937] truncate">
                           {value || <span className="text-[#9CA3AF]">Toevoegen</span>}
                         </p>
                       </div>
@@ -106,11 +106,11 @@ export default function ProfileDetailsPage() {
                   ) : (
                     <div className="px-5 py-4" data-testid={`field-${field.key}`}>
                       <p className="text-[13px] text-[#6B7280] mb-0.5">{field.label}</p>
-                      <p className="text-[16px] font-[500] text-[#0F172A] truncate">{value || "-"}</p>
+                      <p className="text-[16px] font-[500] text-[#1F2937] truncate">{value || "-"}</p>
                     </div>
                   )}
                   {i < FIELDS.length - 1 && (
-                    <div className="h-px bg-[#F2F5F8] mx-5" />
+                    <div className="h-px bg-[#F3F4F6] mx-5" />
                   )}
                 </div>
               );

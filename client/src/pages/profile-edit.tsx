@@ -94,7 +94,7 @@ export default function ProfileEditPage() {
             className="w-9 h-9 rounded-full flex items-center justify-center -ml-1"
             data-testid="button-close-edit"
           >
-            <X className="w-5 h-5 text-[#0F172A]" />
+            <X className="w-5 h-5 text-[#1F2937]" />
           </button>
         </div>
       </div>
@@ -106,7 +106,7 @@ export default function ProfileEditPage() {
           </div>
         ) : (
           <div className="flex flex-col gap-6">
-            <h1 className="text-[24px] font-bold text-[#0F172A] leading-tight" data-testid="heading-edit-field">
+            <h1 className="text-[24px] font-bold text-[#1F2937] leading-tight" data-testid="heading-edit-field">
               {config.question}
             </h1>
 
@@ -115,14 +115,14 @@ export default function ProfileEditPage() {
               value={value}
               onChange={e => setValue(e.target.value)}
               placeholder={config.placeholder}
-              className="w-full bg-[#F3F4F8] rounded-xl px-4 py-3.5 text-[16px] text-[#0F172A] placeholder:text-[#9CA3AF] border-0 outline-none focus:ring-2 focus:ring-[#0066FF] h-[52px]"
+              className="w-full bg-[#F3F4F6] rounded-xl px-4 py-3.5 text-[16px] text-[#1F2937] placeholder:text-[#9CA3AF] border-0 outline-none focus:ring-2 focus:ring-[#673DE6] h-[52px]"
               data-testid="input-edit-field"
             />
 
             <Button
               onClick={handleSave}
               disabled={saving}
-              className="w-full h-[52px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold"
+              className="w-full h-[52px] rounded-xl bg-[#673DE6] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
               data-testid="button-save-field"
             >
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : "Opslaan"}

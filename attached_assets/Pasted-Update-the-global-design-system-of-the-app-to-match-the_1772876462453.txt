@@ -1,0 +1,160 @@
+Update the global design system of the app to match the visual style used on Hostinger.com.
+
+Goal:
+Adopt a cleaner, modern SaaS design system with purple primary colors, soft backgrounds, neon accent highlights, and consistent spacing.
+
+1. Color system
+
+Primary color:
+#673DE6
+
+Primary hover:
+#5B30D6
+
+Accent highlight:
+#C4FF00
+
+Primary text:
+#1F2937
+
+Secondary text:
+#6B7280
+
+App background:
+#FFFFFF
+
+Soft background sections:
+#F8FAFC
+
+Border color:
+#E5E7EB
+
+Apply these consistently across the entire app.
+
+---
+
+2. Buttons
+
+All primary buttons (e.g. "Bekijk woning", "Bewaren", "Volgende", "Reageer") should use:
+
+background-color: #673DE6
+color: white
+border-radius: 14px
+padding: 14px 20px
+font-weight: 600
+
+Hover state:
+#5B30D6
+
+---
+
+3. Input fields
+
+Inputs should match Hostinger style:
+
+background: #F3F4F6
+border: none
+border-radius: 14px
+padding: 16px
+font-size: 16px
+
+Remove visible borders where possible.
+
+---
+
+4. Cards
+
+Update all cards (match cards, settings sections, profile blocks) to:
+
+background: white
+border: 1px solid #E5E7EB
+border-radius: 18px
+box-shadow: none
+
+Cards should feel light and minimal.
+
+---
+
+5. Badges and tags
+
+Badges such as "Nieuw", "Net binnen", "Matches" should use a soft neon highlight.
+
+background: #E6FF7A
+color: #1F2937
+border-radius: 999px
+padding: 6px 12px
+font-weight: 500
+
+---
+
+6. Tabs
+
+For tabs like:
+
+Nieuw | Bekeken | Opgeslagen | Gereageerd
+
+Active tab:
+
+color: #673DE6
+border-bottom: 2px solid #673DE6
+font-weight: 600
+
+Inactive tabs:
+
+color: #6B7280
+
+---
+
+7. Typography
+
+Page titles:
+font-size: 32px
+font-weight: 800
+color: #1F2937
+
+Section titles:
+font-size: 20px
+font-weight: 700
+
+Body text:
+font-size: 16px
+color: #6B7280
+
+---
+
+8. Spacing
+
+Increase whitespace between sections.
+
+Section spacing:
+
+margin-top: 32px
+margin-bottom: 32px
+
+Cards padding:
+
+padding: 20px
+
+---
+
+9. Apply globally
+
+Ensure these styles are applied across:
+
+Dashboard
+Matches
+Profile
+Search flow
+Listing detail
+Settings
+
+---
+
+10. Do not change functionality
+
+Only update styling and UI components.
+
+After implementation:
+- show updated screenshots of key screens
+- list modified components
+- confirm global design system variables.

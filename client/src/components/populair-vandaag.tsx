@@ -76,14 +76,14 @@ function PopularCard({ listing }: { listing: PopularListing }) {
 
       <div className="p-3 flex flex-col gap-1.5">
         <h3
-          className="font-[700] text-[#0F172A] text-[14px] leading-[1.3] line-clamp-2"
+          className="font-[700] text-[#1F2937] text-[14px] leading-[1.3] line-clamp-2"
           data-testid={`text-popular-title-${listing.listing_id}`}
         >
           {listing.title}
         </h3>
 
         {listing.price > 0 && (
-          <span className="text-[15px] font-bold text-[#0F172A]">
+          <span className="text-[15px] font-bold text-[#1F2937]">
             {"\u20AC"}{listing.price}
             <span className="text-[11px] font-normal text-[#6B7280]">/mnd</span>
           </span>
@@ -127,7 +127,7 @@ export function PopulairVandaagSection() {
         </div>
         <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="flex-shrink-0 w-[220px] h-[220px] bg-[#F3F4F8] rounded-2xl animate-pulse" />
+            <div key={i} className="flex-shrink-0 w-[220px] h-[220px] bg-[#F3F4F6] rounded-2xl animate-pulse" />
           ))}
         </div>
       </div>

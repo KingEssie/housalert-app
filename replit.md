@@ -20,18 +20,27 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - `client/src/pages/signup.tsx` — Account creation at `/signup` (creates search profile)
 - `client/src/pages/paywall.tsx` — Subscription plans at `/paywall` (Stripe placeholder)
 
+### Design System (Hostinger-inspired)
+- **Primary**: #673DE6 (purple), hover #5B30D6
+- **Accent/neon**: #C4FF00 highlight, #E6FF7A badge bg
+- **Text**: primary #1F2937, secondary #6B7280
+- **Backgrounds**: white (#FFFFFF), soft sections #F8FAFC, inputs #F3F4F6
+- **Borders**: #E5E7EB
+- **Buttons**: bg #673DE6, white text, rounded-[14px], padding 14px 20px, font-weight 600
+- **Inputs**: bg #F3F4F6, no border, rounded-[14px], padding 16px
+- **Cards**: white bg, 1px #E5E7EB border, rounded-[18px], no shadow
+- **Badges**: neon variant (bg #E6FF7A, text #1F2937, rounded-full)
+
 ### Typography System
 - CSS utility classes defined in `client/src/index.css` under `@layer utilities`:
-  - `.text-page-title` — 26px, weight 700, #0F172A (for page headings)
-  - `.text-section-title` — 20px, weight 700, #0F172A (for section headings)
-  - `.text-row-section-title` — 20px, weight 700, #0F172A (for list section headings)
-  - `.text-row-title` — 16px, weight 600, #0F172A (for list row primary text)
+  - `.text-page-title` — 32px, weight 800, #1F2937 (for page headings)
+  - `.text-section-title` — 20px, weight 700, #1F2937 (for section headings)
+  - `.text-row-section-title` — 20px, weight 700, #1F2937 (for list section headings)
+  - `.text-row-title` — 16px, weight 600, #1F2937 (for list row primary text)
   - `.text-row-subtitle` — 15px, weight 500, #6B7280 (for list row secondary text)
   - `.text-subtitle` — 15px, weight 500, #6B7280 (for subtitles)
   - `.text-muted-body` — 14px, weight 500, #6B7280 (for secondary/muted text)
-- Color tokens: primary text #0F172A (navy), secondary text #6B7280, divider #E5E7EB
-- Old muted colors #9BA5B7 and #72839A have been globally replaced with #6B7280
-- Old navy #1B2A4A replaced with #0F172A across main tab components (Home, Matches, Boost, Filters, Profile)
+- Color tokens: primary text #1F2937, secondary text #6B7280, divider #E5E7EB
 
 ### Shared List Components
 - `client/src/components/list-section.tsx` — Reusable menu/settings row components:

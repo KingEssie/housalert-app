@@ -159,12 +159,12 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
       <div className="relative w-full max-w-xl bg-white rounded-t-3xl shadow-[0_-8px_40px_rgba(0,0,0,0.12)] max-h-[85vh] flex flex-col animate-in slide-in-from-bottom duration-300">
         <div className="flex items-center justify-between px-6 pt-5 pb-3">
           <div className="flex items-center gap-2">
-            <Send className="w-5 h-5 text-[#0066FF]" />
-            <h2 className="text-[18px] font-[700] text-[#1B2A4A]">Reageer nu</h2>
+            <Send className="w-5 h-5 text-[#673DE6]" />
+            <h2 className="text-[18px] font-[700] text-[#1F2937]">Reageer nu</h2>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-[#F3F4F8] flex items-center justify-center hover:bg-[#EAEFF5] transition-colors"
+            className="w-8 h-8 rounded-full bg-[#F3F4F6] flex items-center justify-center hover:bg-[#E5E7EB] transition-colors"
             data-testid="button-close-apply-sheet"
           >
             <X className="w-4 h-4 text-[#6B7280]" />
@@ -194,7 +194,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
             })}
           </div>
 
-          <div className="bg-[#F3F4F8] rounded-xl p-4">
+          <div className="bg-[#F3F4F6] rounded-xl p-4">
             <div className="flex items-center justify-between mb-2">
               <p className="text-[12px] font-semibold text-[#6B7280] uppercase tracking-wide">Aanmeldingsbrief</p>
               {readyCount === readinessItems.length && (
@@ -203,17 +203,17 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
                 </span>
               )}
             </div>
-            <pre className="text-[14px] text-[#1B2A4A] leading-relaxed whitespace-pre-wrap font-[inherit]" data-testid="apply-letter-preview">
+            <pre className="text-[14px] text-[#1F2937] leading-relaxed whitespace-pre-wrap font-[inherit]" data-testid="apply-letter-preview">
               {filledLetter}
             </pre>
           </div>
         </div>
 
-        <div className="px-6 pb-6 pt-3 border-t border-[#F2F5F8] flex flex-col gap-2.5">
+        <div className="px-6 pb-6 pt-3 border-t border-[#F3F4F6] flex flex-col gap-2.5">
           {listing.url ? (
             <Button
               onClick={handleCopyAndOpen}
-              className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[14px] font-semibold"
+              className="w-full h-[48px] rounded-xl bg-[#673DE6] hover:bg-[#5B30D6] text-white text-[14px] font-semibold"
               data-testid="button-copy-and-open"
             >
               <Copy className="w-4 h-4 mr-2" />
@@ -222,7 +222,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
           ) : (
             <Button
               onClick={handleCopy}
-              className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[14px] font-semibold"
+              className="w-full h-[48px] rounded-xl bg-[#673DE6] hover:bg-[#5B30D6] text-white text-[14px] font-semibold"
               data-testid="button-copy-letter-sheet"
             >
               <Copy className="w-4 h-4 mr-2" />
@@ -235,7 +235,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
               <Button
                 variant="outline"
                 onClick={handleCopy}
-                className="flex-1 h-[44px] rounded-xl border-[#EAEFF5] text-[#1B2A4A] text-[13px] font-semibold"
+                className="flex-1 h-[44px] rounded-xl border-[#E5E7EB] text-[#1F2937] text-[13px] font-semibold"
                 data-testid="button-copy-only"
               >
                 <Copy className="w-3.5 h-3.5 mr-1.5" />
@@ -249,7 +249,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
               className={`flex-1 h-[44px] rounded-xl text-[13px] font-semibold ${
                 marked
                   ? "bg-green-50 text-green-700 border-green-200"
-                  : "border-[#EAEFF5] text-[#1B2A4A]"
+                  : "border-[#E5E7EB] text-[#1F2937]"
               }`}
               data-testid="button-mark-applied"
             >

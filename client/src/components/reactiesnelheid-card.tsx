@@ -66,7 +66,7 @@ export function calculateReactiesnelheid(rawDone: number, rawTotal: number): Rea
 
 const LEVEL_STYLES: Record<SpeedLevel, { dotColor: string; barColor: string; labelColor: string }> = {
   fast: { dotColor: "bg-green-500", barColor: "bg-green-500", labelColor: "text-green-700 bg-green-50" },
-  almost: { dotColor: "bg-[#0066FF]", barColor: "bg-[#0066FF]", labelColor: "text-[#0066FF] bg-[#EDF2FF]" },
+  almost: { dotColor: "bg-[#673DE6]", barColor: "bg-[#673DE6]", labelColor: "text-[#673DE6] bg-[#F0EBFF]" },
   building: { dotColor: "bg-[#C5CBD6]", barColor: "bg-[#C5CBD6]", labelColor: "text-[#6B7280] bg-[#F2F5F8]" },
 };
 
@@ -135,7 +135,7 @@ export function ReactiesnelheidCard({
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
-            <p className="text-[15px] font-semibold text-[#0F172A]">Reactiesnelheid</p>
+            <p className="text-[15px] font-semibold text-[#1F2937]">Reactiesnelheid</p>
             <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${styles.labelColor}`} data-testid="badge-speed-level">
               {state.label}
             </span>

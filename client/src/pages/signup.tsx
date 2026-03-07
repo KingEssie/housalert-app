@@ -98,38 +98,38 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
+      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
         <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center gap-3">
           <button
             onClick={handleBack}
-            className="w-10 h-10 rounded-full flex items-center justify-center bg-[#F2F5F8] hover:bg-[#EAEFF5] transition-colors"
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-[#F3F4F6] hover:bg-[#E5E7EB] transition-colors"
             data-testid="button-back-estimate"
           >
             <ChevronLeft className="w-5 h-5 text-[#6B7280]" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-[#0066FF] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-[#673DE6] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-extrabold text-[#1B2A4A] text-base">Stekkies</span>
+            <span className="font-extrabold text-[#1F2937] text-base">Stekkies</span>
           </div>
         </div>
       </header>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-12 pb-16">
         <div className="text-center mb-10">
-          <h1 className="text-[32px] font-[800] text-[#1B2A4A] tracking-[-0.03em] leading-[1.1] mb-4" data-testid="text-signup-title">
+          <h1 className="text-[32px] font-[800] text-[#1F2937] tracking-[-0.03em] leading-[1.1] mb-4" data-testid="text-signup-title">
             Maak je account aan
           </h1>
           <p className="text-[15px] text-[#6B7280]">
-            Ontvang direct meldingen voor nieuwe woningen{city ? <> in <span className="font-semibold text-[#1B2A4A]">{city}</span></> : ""}.
+            Ontvang direct meldingen voor nieuwe woningen{city ? <> in <span className="font-semibold text-[#1F2937]">{city}</span></> : ""}.
           </p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
           <form onSubmit={handleSignup} className="space-y-5">
             <div className="space-y-2">
-              <Label className="text-[14px] font-semibold text-[#1B2A4A]">Naam</Label>
+              <Label className="text-[14px] font-semibold text-[#1F2937]">Naam</Label>
               <div className="relative">
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#7A8599]" />
                 <input
@@ -137,14 +137,14 @@ export default function SignupPage() {
                   placeholder="Je volledige naam"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
+                  className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE6]/15 focus:bg-[#F9FAFB] transition-all"
                   data-testid="input-signup-name"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label className="text-[14px] font-semibold text-[#1B2A4A]">E-mailadres</Label>
+              <Label className="text-[14px] font-semibold text-[#1F2937]">E-mailadres</Label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#7A8599]" />
                 <input
@@ -153,14 +153,14 @@ export default function SignupPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
+                  className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE6]/15 focus:bg-[#F9FAFB] transition-all"
                   data-testid="input-signup-email"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label className="text-[14px] font-semibold text-[#1B2A4A]">Wachtwoord</Label>
+              <Label className="text-[14px] font-semibold text-[#1F2937]">Wachtwoord</Label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#7A8599]" />
                 <input
@@ -170,7 +170,7 @@ export default function SignupPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   minLength={6}
-                  className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
+                  className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE6]/15 focus:bg-[#F9FAFB] transition-all"
                   data-testid="input-signup-password"
                 />
               </div>
@@ -179,7 +179,7 @@ export default function SignupPage() {
             <Button
               type="submit"
               size="lg"
-              className="w-full h-[56px] rounded-xl text-[16px] font-semibold shadow-none bg-[#0066FF] hover:bg-[#0052CC] mt-1"
+              className="w-full h-[56px] rounded-xl text-[16px] font-semibold shadow-none bg-[#673DE6] hover:bg-[#5B30D6] mt-1"
               disabled={loading || !email || !password}
               data-testid="button-signup-submit"
             >
@@ -192,7 +192,7 @@ export default function SignupPage() {
           Heb je al een account?{" "}
           <button
             onClick={() => navigate("/login")}
-            className="text-[#0066FF] font-semibold hover:underline"
+            className="text-[#673DE6] font-semibold hover:underline"
             data-testid="link-login"
           >
             Inloggen

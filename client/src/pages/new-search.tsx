@@ -223,7 +223,7 @@ export default function NewSearchPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-2 border-[#0066FF] border-t-transparent animate-spin" />
+        <div className="w-8 h-8 rounded-full border-2 border-[#673DE6] border-t-transparent animate-spin" />
       </div>
     );
   }
@@ -239,13 +239,13 @@ export default function NewSearchPage() {
             <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
               <AlertCircle className="w-6 h-6 text-red-500" />
             </div>
-            <h2 className="text-[18px] font-bold text-[#1B2A4A] mb-2">Limiet bereikt</h2>
+            <h2 className="text-[18px] font-bold text-[#1F2937] mb-2">Limiet bereikt</h2>
             <p className="text-[14px] text-[#6B7280] mb-5">
               Je hebt al {MAX_PROFILES} zoekopdrachten. Verwijder eerst een bestaande om een nieuwe aan te maken.
             </p>
             <Button
               onClick={() => navigate("/dashboard")}
-              className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold"
+              className="w-full h-[48px] rounded-xl bg-[#673DE6] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
               data-testid="button-back-to-dashboard-limit"
             >
               Terug naar dashboard
@@ -279,23 +279,23 @@ export default function NewSearchPage() {
                     onClick={() => update({ propertyType: pt.id })}
                     className={`w-full flex items-center gap-4 p-4 rounded-[14px] border-2 transition-all text-left ${
                       selected
-                        ? "border-[#0066FF] bg-[#EDF2FF]"
-                        : "border-[#EAEFF5] bg-white hover:border-[#EAEFF5]"
+                        ? "border-[#673DE6] bg-[#F0EBFF]"
+                        : "border-[#E5E7EB] bg-white hover:border-[#E5E7EB]"
                     }`}
                     data-testid={`option-type-${pt.id}`}
                   >
                     <div className={`w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      selected ? "bg-[#0066FF]" : "bg-[#F2F5F8]"
+                      selected ? "bg-[#673DE6]" : "bg-[#F3F4F6]"
                     }`}>
                       <Icon className={`w-5 h-5 ${selected ? "text-white" : "text-[#6B7280]"}`} />
                     </div>
                     <div>
-                      <p className={`text-[15px] font-semibold ${selected ? "text-[#0066FF]" : "text-[#1B2A4A]"}`}>
+                      <p className={`text-[15px] font-semibold ${selected ? "text-[#673DE6]" : "text-[#1F2937]"}`}>
                         {pt.label}
                       </p>
                       <p className="text-[13px] font-[500] text-[#6B7280]">{pt.desc}</p>
                     </div>
-                    {selected && <CheckCircle2 className="w-5 h-5 text-[#0066FF] ml-auto flex-shrink-0" />}
+                    {selected && <CheckCircle2 className="w-5 h-5 text-[#673DE6] ml-auto flex-shrink-0" />}
                   </button>
                 );
               })}
@@ -310,11 +310,11 @@ export default function NewSearchPage() {
           >
             <div className="flex flex-col gap-5">
               <div className="relative">
-                <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">Stad</label>
+                <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">Stad</label>
                 <button
                   onClick={() => setShowCityDropdown(!showCityDropdown)}
                   className={`w-full h-[52px] px-4 rounded-xl border-0 text-left flex items-center justify-between transition-all ${
-                    data.city ? "bg-[#EDF2FF] text-[#1B2A4A] ring-2 ring-[#0066FF]/15" : "bg-[#F3F4F8] text-[#7A8599]"
+                    data.city ? "bg-[#F0EBFF] text-[#1F2937] ring-2 ring-[#673DE6]/15" : "bg-[#F3F4F6] text-[#7A8599]"
                   }`}
                   data-testid="button-select-city"
                 >
@@ -327,13 +327,13 @@ export default function NewSearchPage() {
 
                 {showCityDropdown && (
                   <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] z-20 max-h-[280px] overflow-hidden flex flex-col">
-                    <div className="p-3 border-b border-[#F2F5F8]">
+                    <div className="p-3 border-b border-[#F3F4F6]">
                       <input
                         type="text"
                         value={citySearch}
                         onChange={(e) => setCitySearch(e.target.value)}
                         placeholder="Zoek stad..."
-                        className="w-full h-[44px] px-3 rounded-xl border-0 bg-[#EAEFF5] text-[14px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
+                        className="w-full h-[44px] px-3 rounded-xl border-0 bg-[#E5E7EB] text-[14px] font-medium text-[#1F2937] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE6]/15 focus:bg-[#FAFBFC] transition-all"
                         autoFocus
                         data-testid="input-city-search"
                       />
@@ -349,8 +349,8 @@ export default function NewSearchPage() {
                           }}
                           className={`w-full text-left px-4 py-3 text-[14px] transition-colors ${
                             data.city === c
-                              ? "bg-[#EDF2FF] text-[#0066FF] font-medium"
-                              : "text-[#1B2A4A] hover:bg-[#F3F4F8]"
+                              ? "bg-[#F0EBFF] text-[#673DE6] font-medium"
+                              : "text-[#1F2937] hover:bg-[#F3F4F6]"
                           }`}
                           data-testid={`option-city-${c}`}
                         >
@@ -364,7 +364,7 @@ export default function NewSearchPage() {
 
               {availableDistricts.length > 0 && (
                 <div>
-                  <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">
+                  <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">
                     Wijken <span className="font-normal text-[13px] text-[#6B7280]">(optioneel, binnenkort actief)</span>
                   </label>
                   <p className="text-[13px] font-[500] text-[#6B7280] mb-2">Wijkfiltering wordt binnenkort toegepast.</p>
@@ -383,8 +383,8 @@ export default function NewSearchPage() {
                           }}
                           className={`px-3.5 py-2 rounded-full text-[13px] font-medium border transition-all ${
                             selected
-                              ? "border-[#0066FF] bg-[#EDF2FF] text-[#0066FF]"
-                              : "border-[#EAEFF5] bg-white text-[#6B7280] hover:border-[#EAEFF5]"
+                              ? "border-[#673DE6] bg-[#F0EBFF] text-[#673DE6]"
+                              : "border-[#E5E7EB] bg-white text-[#6B7280] hover:border-[#E5E7EB]"
                           }`}
                           data-testid={`chip-district-${d}`}
                         >
@@ -406,7 +406,7 @@ export default function NewSearchPage() {
           >
             <div className="flex flex-col gap-6">
               <div>
-                <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">Minimale huur</label>
+                <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">Minimale huur</label>
                 <div className="relative">
                   <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
                   <input
@@ -415,13 +415,13 @@ export default function NewSearchPage() {
                     onChange={(e) => update({ priceMin: e.target.value })}
                     placeholder="0"
                     min="0"
-                    className="w-full h-[52px] pl-10 pr-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
+                    className="w-full h-[52px] pl-10 pr-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE6]/15 focus:bg-[#FAFBFC] transition-all"
                     data-testid="input-price-min"
                   />
                 </div>
               </div>
               <div>
-                <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">Maximale huur</label>
+                <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">Maximale huur</label>
                 <div className="relative">
                   <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
                   <input
@@ -430,7 +430,7 @@ export default function NewSearchPage() {
                     onChange={(e) => update({ priceMax: e.target.value })}
                     placeholder="2000"
                     min="0"
-                    className="w-full h-[52px] pl-10 pr-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
+                    className="w-full h-[52px] pl-10 pr-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE6]/15 focus:bg-[#FAFBFC] transition-all"
                     data-testid="input-price-max"
                   />
                 </div>
@@ -448,8 +448,8 @@ export default function NewSearchPage() {
           >
             <div className="flex flex-col gap-6">
               <div>
-                <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">
-                  <BedDouble className="w-4 h-4 inline mr-1.5 text-[#0066FF]" />
+                <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">
+                  <BedDouble className="w-4 h-4 inline mr-1.5 text-[#673DE6]" />
                   Slaapkamers
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -461,8 +461,8 @@ export default function NewSearchPage() {
                         onClick={() => update({ bedroomsMin: opt.value })}
                         className={`px-4 py-2.5 rounded-xl text-[14px] font-medium border-0 transition-all ${
                           selected
-                            ? "bg-[#EDF2FF] text-[#0066FF] ring-2 ring-[#0066FF]/20"
-                            : "bg-[#F3F4F8] text-[#5A6577] hover:bg-[#EAEFF5]"
+                            ? "bg-[#F0EBFF] text-[#673DE6] ring-2 ring-[#673DE6]/20"
+                            : "bg-[#F3F4F6] text-[#5A6577] hover:bg-[#E5E7EB]"
                         }`}
                         data-testid={`option-bedrooms-${opt.value}`}
                       >
@@ -474,8 +474,8 @@ export default function NewSearchPage() {
               </div>
 
               <div>
-                <label className="text-[16px] font-[700] text-[#1B2A4A] mb-3 block">
-                  <Ruler className="w-4 h-4 inline mr-1.5 text-[#0066FF]" />
+                <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">
+                  <Ruler className="w-4 h-4 inline mr-1.5 text-[#673DE6]" />
                   Minimum oppervlakte
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -487,8 +487,8 @@ export default function NewSearchPage() {
                         onClick={() => update({ sizeMin: opt.value })}
                         className={`px-4 py-2.5 rounded-xl text-[14px] font-medium border-0 transition-all ${
                           selected
-                            ? "bg-[#EDF2FF] text-[#0066FF] ring-2 ring-[#0066FF]/20"
-                            : "bg-[#F3F4F8] text-[#5A6577] hover:bg-[#EAEFF5]"
+                            ? "bg-[#F0EBFF] text-[#673DE6] ring-2 ring-[#673DE6]/20"
+                            : "bg-[#F3F4F6] text-[#5A6577] hover:bg-[#E5E7EB]"
                         }`}
                         data-testid={`option-size-${opt.value}`}
                       >
@@ -525,20 +525,20 @@ export default function NewSearchPage() {
                     }}
                     className={`w-full flex items-center gap-4 p-4 rounded-[14px] border-2 transition-all text-left ${
                       selected
-                        ? "border-[#0066FF] bg-[#EDF2FF]"
-                        : "border-[#EAEFF5] bg-white hover:border-[#EAEFF5]"
+                        ? "border-[#673DE6] bg-[#F0EBFF]"
+                        : "border-[#E5E7EB] bg-white hover:border-[#E5E7EB]"
                     }`}
                     data-testid={`option-extra-${pref.id}`}
                   >
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      selected ? "bg-[#0066FF]" : "bg-[#F2F5F8]"
+                      selected ? "bg-[#673DE6]" : "bg-[#F3F4F6]"
                     }`}>
                       <Icon className={`w-4.5 h-4.5 ${selected ? "text-white" : "text-[#6B7280]"}`} />
                     </div>
-                    <span className={`text-[15px] font-medium flex-1 ${selected ? "text-[#0066FF]" : "text-[#1B2A4A]"}`}>
+                    <span className={`text-[15px] font-medium flex-1 ${selected ? "text-[#673DE6]" : "text-[#1F2937]"}`}>
                       {pref.label}
                     </span>
-                    {selected && <CheckCircle2 className="w-5 h-5 text-[#0066FF] flex-shrink-0" />}
+                    {selected && <CheckCircle2 className="w-5 h-5 text-[#673DE6] flex-shrink-0" />}
                   </button>
                 );
               })}
@@ -569,17 +569,17 @@ export default function NewSearchPage() {
                     }}
                     className={`w-full flex items-center gap-4 p-4 rounded-[14px] border-2 transition-all text-left ${
                       selected
-                        ? "border-[#0066FF] bg-[#EDF2FF]"
-                        : "border-[#EAEFF5] bg-white hover:border-[#EAEFF5]"
+                        ? "border-[#673DE6] bg-[#F0EBFF]"
+                        : "border-[#E5E7EB] bg-white hover:border-[#E5E7EB]"
                     }`}
                     data-testid={`option-filter-${filter.id}`}
                   >
                     <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 ${
-                      selected ? "border-[#0066FF] bg-[#0066FF]" : "border-[#EAEFF5]"
+                      selected ? "border-[#673DE6] bg-[#673DE6]" : "border-[#E5E7EB]"
                     }`}>
                       {selected && <CheckCircle2 className="w-4 h-4 text-white" />}
                     </div>
-                    <span className={`text-[15px] font-medium ${selected ? "text-[#0066FF]" : "text-[#1B2A4A]"}`}>
+                    <span className={`text-[15px] font-medium ${selected ? "text-[#673DE6]" : "text-[#1F2937]"}`}>
                       {filter.label}
                     </span>
                   </button>
@@ -595,13 +595,13 @@ export default function NewSearchPage() {
         )}
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#EAEFF5] z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] z-10">
         <div className="max-w-xl mx-auto px-6 py-4 flex gap-3">
           {step > 1 && (
             <Button
               variant="outline"
               onClick={goBack}
-              className="h-[48px] px-5 rounded-xl border-[#EAEFF5] text-[#1B2A4A] text-[15px] font-medium"
+              className="h-[48px] px-5 rounded-xl border-[#E5E7EB] text-[#1F2937] text-[15px] font-medium"
               data-testid="button-wizard-back"
             >
               <ArrowLeft className="w-4 h-4 mr-1.5" />
@@ -612,7 +612,7 @@ export default function NewSearchPage() {
             <Button
               onClick={goNext}
               disabled={!canProceed()}
-              className="flex-1 h-[56px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[16px] font-semibold disabled:opacity-50"
+              className="flex-1 h-[56px] rounded-xl bg-[#673DE6] hover:bg-[#5B30D6] text-white text-[16px] font-semibold disabled:opacity-50"
               data-testid="button-wizard-next"
             >
               Volgende
@@ -622,7 +622,7 @@ export default function NewSearchPage() {
             <Button
               onClick={handleSubmit}
               disabled={submitting || !data.city}
-              className="flex-1 h-[56px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[16px] font-semibold disabled:opacity-50"
+              className="flex-1 h-[56px] rounded-xl bg-[#673DE6] hover:bg-[#5B30D6] text-white text-[16px] font-semibold disabled:opacity-50"
               data-testid="button-wizard-submit"
             >
               {submitting ? (
@@ -645,16 +645,16 @@ function WizardHeader({ step, total, onBack }: { step: number; total: number; on
   const progress = total > 0 ? (step / total) * 100 : 0;
 
   return (
-    <header className="sticky top-0 z-10 bg-white border-b border-[#EAEFF5]">
+    <header className="sticky top-0 z-10 bg-white border-b border-[#E5E7EB]">
       <div className="max-w-xl mx-auto flex items-center h-[60px] px-6">
         <button
           onClick={onBack}
-          className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center mr-3"
+          className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center mr-3"
           data-testid="button-wizard-header-back"
         >
           <ArrowLeft className="w-4 h-4 text-[#6B7280]" />
         </button>
-        <h1 className="text-[18px] font-bold text-[#1B2A4A] flex-1">Nieuwe zoekopdracht</h1>
+        <h1 className="text-[18px] font-bold text-[#1F2937] flex-1">Nieuwe zoekopdracht</h1>
         {total > 0 && (
           <span className="text-[13px] font-medium text-[#6B7280]">
             {step}/{total}
@@ -662,9 +662,9 @@ function WizardHeader({ step, total, onBack }: { step: number; total: number; on
         )}
       </div>
       {total > 0 && (
-        <div className="h-[3px] bg-[#F2F5F8]">
+        <div className="h-[3px] bg-[#F3F4F6]">
           <div
-            className="h-full bg-[#0066FF] transition-all duration-300"
+            className="h-full bg-[#673DE6] transition-all duration-300"
             style={{ width: `${progress}%` }}
             data-testid="progress-wizard"
           />
@@ -678,7 +678,7 @@ function StepContainer({ title, subtitle, children }: { title: string; subtitle:
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-[28px] font-[800] text-[#1B2A4A] tracking-[-0.03em] leading-[1.1] mb-2" data-testid="text-step-title">{title}</h2>
+        <h2 className="text-[28px] font-[800] text-[#1F2937] tracking-[-0.03em] leading-[1.1] mb-2" data-testid="text-step-title">{title}</h2>
         <p className="text-[15px] text-[#6B7280]">{subtitle}</p>
       </div>
       {children}
@@ -689,11 +689,11 @@ function StepContainer({ title, subtitle, children }: { title: string; subtitle:
 function EstimateBadge({ estimate, loading }: { estimate: any; loading: boolean }) {
   if (loading) {
     return (
-      <div className="bg-[#EDF2FF] rounded-xl p-4 flex items-center gap-3 animate-pulse">
-        <div className="w-9 h-9 rounded-full bg-[#0066FF]/10" />
+      <div className="bg-[#F0EBFF] rounded-xl p-4 flex items-center gap-3 animate-pulse">
+        <div className="w-9 h-9 rounded-full bg-[#673DE6]/10" />
         <div className="flex-1">
-          <div className="h-3 bg-[#0066FF]/10 rounded w-32 mb-1" />
-          <div className="h-3 bg-[#0066FF]/10 rounded w-24" />
+          <div className="h-3 bg-[#673DE6]/10 rounded w-32 mb-1" />
+          <div className="h-3 bg-[#673DE6]/10 rounded w-24" />
         </div>
       </div>
     );
@@ -705,12 +705,12 @@ function EstimateBadge({ estimate, loading }: { estimate: any; loading: boolean 
   const perWeek = estimate.perWeekEstimate ?? count;
 
   return (
-    <div className="bg-[#EDF2FF] rounded-xl p-4 flex items-center gap-3" data-testid="badge-estimate">
-      <div className="w-9 h-9 rounded-full bg-[#0066FF]/10 flex items-center justify-center flex-shrink-0">
-        <Sparkles className="w-4 h-4 text-[#0066FF]" />
+    <div className="bg-[#F0EBFF] rounded-xl p-4 flex items-center gap-3" data-testid="badge-estimate">
+      <div className="w-9 h-9 rounded-full bg-[#673DE6]/10 flex items-center justify-center flex-shrink-0">
+        <Sparkles className="w-4 h-4 text-[#673DE6]" />
       </div>
       <div>
-        <p className="text-[14px] font-semibold text-[#1B2A4A]">
+        <p className="text-[14px] font-semibold text-[#1F2937]">
           ~{perWeek} {perWeek === 1 ? "match" : "matches"} per week
         </p>
         <p className="text-[13px] font-[500] text-[#6B7280]">

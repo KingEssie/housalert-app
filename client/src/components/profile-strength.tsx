@@ -186,10 +186,10 @@ export function ProfileStrengthCard() {
     <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6" data-testid="card-profile-strength">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-[#EDF2FF] flex items-center justify-center">
-            <Shield className="w-4 h-4 text-[#0066FF]" />
+          <div className="w-8 h-8 rounded-full bg-[#F0EBFF] flex items-center justify-center">
+            <Shield className="w-4 h-4 text-[#673DE6]" />
           </div>
-          <h3 className="text-[15px] font-semibold text-[#0F172A]">Profielsterkte</h3>
+          <h3 className="text-[15px] font-semibold text-[#1F2937]">Profielsterkte</h3>
         </div>
         <span className={`text-[13px] font-medium px-2.5 py-1 rounded-full ${status.bg} ${status.color}`} data-testid="text-status-label">
           {status.label}
@@ -197,7 +197,7 @@ export function ProfileStrengthCard() {
       </div>
 
       <div className="flex items-end gap-2 mb-3">
-        <span className="text-[32px] font-bold text-[#0F172A] leading-none" data-testid="text-profile-score">{score}</span>
+        <span className="text-[32px] font-bold text-[#1F2937] leading-none" data-testid="text-profile-score">{score}</span>
         <span className="text-[14px] text-[#6B7280] mb-1">/ {maxScore}</span>
       </div>
 
@@ -206,7 +206,7 @@ export function ProfileStrengthCard() {
           className="h-full rounded-full transition-all duration-500"
           style={{
             width: `${pct}%`,
-            background: pct >= 80 ? "#22c55e" : pct >= 60 ? "#0066FF" : pct >= 30 ? "#f59e0b" : "#6B7280",
+            background: pct >= 80 ? "#22c55e" : pct >= 60 ? "#673DE6" : pct >= 30 ? "#f59e0b" : "#6B7280",
           }}
           data-testid="progress-profile-strength"
         />
@@ -242,14 +242,14 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
       >
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <Sparkles className="w-4 h-4 text-[#0066FF]" />
-            <h3 className="text-[15px] font-semibold text-[#0F172A]">Rond je account af</h3>
+            <Sparkles className="w-4 h-4 text-[#673DE6]" />
+            <h3 className="text-[15px] font-semibold text-[#1F2937]">Rond je account af</h3>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-[13px] text-[#6B7280]">
               {completedCount}/{totalCount} taken voltooid
             </span>
-            <span className="text-[13px] font-medium text-[#0066FF]">{percentage}%</span>
+            <span className="text-[13px] font-medium text-[#673DE6]">{percentage}%</span>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -261,14 +261,14 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
                 cy="18"
                 r="15.5"
                 fill="none"
-                stroke="#0066FF"
+                stroke="#673DE6"
                 strokeWidth="3"
                 strokeDasharray={`${(percentage / 100) * 97.4} 97.4`}
                 strokeLinecap="round"
                 className="transition-all duration-500"
               />
             </svg>
-            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-[#0F172A]">
+            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-[#1F2937]">
               {percentage}%
             </span>
           </div>
@@ -281,7 +281,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
       </button>
 
       {expanded && (
-        <div className="border-t border-[#EAEFF5] px-6 pb-3">
+        <div className="border-t border-[#E5E7EB] px-6 pb-3">
           {tasks.map((task) => {
             const Icon = TASK_ICONS[task.id] || Circle;
             return (
@@ -297,11 +297,11 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
                 {task.completed ? (
                   <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
                 ) : (
-                  <div className="w-5 h-5 rounded-full border-2 border-[#EAEFF5] flex-shrink-0" />
+                  <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
                 )}
-                <Icon className={`w-4 h-4 flex-shrink-0 ${task.completed ? "text-[#6B7280]" : "text-[#0066FF]"}`} />
+                <Icon className={`w-4 h-4 flex-shrink-0 ${task.completed ? "text-[#6B7280]" : "text-[#673DE6]"}`} />
                 <div className="flex-1 min-w-0">
-                  <p className={`text-[14px] font-medium ${task.completed ? "text-[#6B7280] line-through" : "text-[#0F172A]"}`}>
+                  <p className={`text-[14px] font-medium ${task.completed ? "text-[#6B7280] line-through" : "text-[#1F2937]"}`}>
                     {task.label}
                   </p>
                   <p className="text-[11px] text-[#6B7280]">+{task.score} punten</p>
@@ -393,8 +393,8 @@ function TaskModal({
         className="bg-white w-full max-w-md rounded-t-[24px] sm:rounded-[24px] max-h-[85vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 bg-white border-b border-[#EAEFF5] p-6 flex items-center justify-between rounded-t-[24px]">
-          <h2 className="text-[20px] font-[700] text-[#0F172A] tracking-[-0.02em]">{title}</h2>
+        <div className="sticky top-0 bg-white border-b border-[#E5E7EB] p-6 flex items-center justify-between rounded-t-[24px]">
+          <h2 className="text-[20px] font-[700] text-[#1F2937] tracking-[-0.02em]">{title}</h2>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F2F5F8] flex items-center justify-center" data-testid="button-close-modal">
             <X className="w-4 h-4 text-[#6B7280]" />
           </button>
@@ -405,10 +405,10 @@ function TaskModal({
 
           {taskId === "alerts" && (
             <div className="flex flex-col gap-3">
-              <p className="text-[13px] text-[#0F172A] font-medium">Ga naar meldingsinstellingen om je kanalen te activeren.</p>
+              <p className="text-[13px] text-[#1F2937] font-medium">Ga naar meldingsinstellingen om je kanalen te activeren.</p>
               <Button
                 onClick={() => { onClose(); navigate("/settings/notifications"); }}
-                className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold"
+                className="w-full h-[48px] rounded-xl bg-[#673DE6] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
                 data-testid="button-goto-notifications"
               >
                 <Bell className="w-4 h-4 mr-2" />
@@ -419,20 +419,20 @@ function TaskModal({
 
           {taskId === "search_buddy" && (
             <div className="flex flex-col gap-3">
-              <label className="text-[13px] font-medium text-[#0F172A]">E-mailadres zoekbuddy</label>
+              <label className="text-[13px] font-medium text-[#1F2937]">E-mailadres zoekbuddy</label>
               <input
                 type="email"
                 value={buddyEmail}
                 onChange={(e) => setBuddyEmail(e.target.value)}
                 placeholder="buddy@voorbeeld.nl"
-                className="w-full h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#0F172A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
+                className="w-full h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE6]/15 focus:bg-[#FAFBFC] transition-all"
                 data-testid="input-buddy-email"
               />
               <p className="text-[13px] font-[500] text-[#6B7280]">Je buddy ontvangt dezelfde meldingen als jij.</p>
               <Button
                 onClick={() => handleSave({ search_buddy_email: buddyEmail }, "Zoekbuddy opgeslagen!")}
                 disabled={!buddyEmail.includes("@") || updateProfileData.isPending}
-                className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold disabled:opacity-50"
+                className="w-full h-[48px] rounded-xl bg-[#673DE6] hover:bg-[#5B30D6] text-white text-[15px] font-semibold disabled:opacity-50"
                 data-testid="button-save-buddy"
               >
                 {updateProfileData.isPending ? "Opslaan..." : "Opslaan"}
@@ -442,12 +442,12 @@ function TaskModal({
 
           {taskId === "search_optimize" && (
             <div className="flex flex-col gap-3">
-              <p className="text-[13px] text-[#0F172A] font-medium">
+              <p className="text-[13px] text-[#1F2937] font-medium">
                 Voeg meer zoekprofielen toe of verfijn je huidige filters voor betere matches.
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard"); }}
-                className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold"
+                className="w-full h-[48px] rounded-xl bg-[#673DE6] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
                 data-testid="button-goto-filters"
               >
                 <Search className="w-4 h-4 mr-2" />
@@ -458,12 +458,12 @@ function TaskModal({
 
           {taskId === "application_template" && (
             <div className="flex flex-col gap-3">
-              <p className="text-[13px] text-[#0F172A] font-medium">
+              <p className="text-[13px] text-[#1F2937] font-medium">
                 Bereid een standaard aanmeldingsbrief voor met automatische invulling van woninggegevens.
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/application-letter"); }}
-                className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold"
+                className="w-full h-[48px] rounded-xl bg-[#673DE6] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
                 data-testid="button-goto-letter"
               >
                 <FileText className="w-4 h-4 mr-2" />
@@ -476,7 +476,7 @@ function TaskModal({
             <div className="flex flex-col gap-4">
               {DOCUMENT_CHECKLIST.map((group) => (
                 <div key={group.group}>
-                  <h4 className="text-[13px] font-semibold text-[#0F172A] mb-2">{group.group}</h4>
+                  <h4 className="text-[13px] font-semibold text-[#1F2937] mb-2">{group.group}</h4>
                   <div className="flex flex-col gap-1">
                     {group.items.map((item) => (
                       <button
@@ -488,9 +488,9 @@ function TaskModal({
                         {checklist[item.id] ? (
                           <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
                         ) : (
-                          <div className="w-5 h-5 rounded-full border-2 border-[#EAEFF5] flex-shrink-0" />
+                          <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
                         )}
-                        <span className={`text-[14px] ${checklist[item.id] ? "text-[#6B7280] line-through" : "text-[#0F172A]"}`}>
+                        <span className={`text-[14px] ${checklist[item.id] ? "text-[#6B7280] line-through" : "text-[#1F2937]"}`}>
                           {item.label}
                         </span>
                       </button>
@@ -501,7 +501,7 @@ function TaskModal({
               <Button
                 onClick={() => handleSave({ document_checklist: checklist }, "Documentenlijst opgeslagen!")}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold disabled:opacity-50"
+                className="w-full h-[48px] rounded-xl bg-[#673DE6] hover:bg-[#5B30D6] text-white text-[15px] font-semibold disabled:opacity-50"
                 data-testid="button-save-documents"
               >
                 {updateProfileData.isPending ? "Opslaan..." : "Opslaan"}
@@ -511,19 +511,19 @@ function TaskModal({
 
           {taskId === "phone" && (
             <div className="flex flex-col gap-3">
-              <label className="text-[13px] font-medium text-[#0F172A]">Telefoonnummer (internationaal)</label>
+              <label className="text-[13px] font-medium text-[#1F2937]">Telefoonnummer (internationaal)</label>
               <input
                 type="tel"
                 value={phoneInput}
                 onChange={(e) => setPhoneInput(e.target.value)}
                 placeholder="+49 170 1234567"
-                className="w-full h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#0F172A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
+                className="w-full h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE6]/15 focus:bg-[#FAFBFC] transition-all"
                 data-testid="input-phone"
               />
               <p className="text-[13px] font-[500] text-[#6B7280]">Gebruik internationaal formaat, bijv. +49 170 1234567</p>
               <Button
                 onClick={() => { onClose(); navigate("/settings/notifications"); }}
-                className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold"
+                className="w-full h-[48px] rounded-xl bg-[#673DE6] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
                 data-testid="button-goto-phone-settings"
               >
                 <Phone className="w-4 h-4 mr-2" />
@@ -571,14 +571,14 @@ function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: string) 
       >
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <Target className="w-4 h-4 text-[#0066FF]" />
-            <h3 className="text-[15px] font-semibold text-[#0F172A]">Bereid je zoekopdracht voor</h3>
+            <Target className="w-4 h-4 text-[#673DE6]" />
+            <h3 className="text-[15px] font-semibold text-[#1F2937]">Bereid je zoekopdracht voor</h3>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-[13px] text-[#6B7280]">
               {prepCompletedCount}/{prepTotalCount} taken voltooid
             </span>
-            <span className="text-[13px] font-medium text-[#0066FF]">{percentage}%</span>
+            <span className="text-[13px] font-medium text-[#673DE6]">{percentage}%</span>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -590,14 +590,14 @@ function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: string) 
                 cy="18"
                 r="15.5"
                 fill="none"
-                stroke="#0066FF"
+                stroke="#673DE6"
                 strokeWidth="3"
                 strokeDasharray={`${(percentage / 100) * 97.4} 97.4`}
                 strokeLinecap="round"
                 className="transition-all duration-500"
               />
             </svg>
-            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-[#0F172A]">
+            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-[#1F2937]">
               {percentage}%
             </span>
           </div>
@@ -610,7 +610,7 @@ function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: string) 
       </button>
 
       {expanded && (
-        <div className="border-t border-[#EAEFF5] px-6 pb-3">
+        <div className="border-t border-[#E5E7EB] px-6 pb-3">
           {prepTasks.map((task) => {
             const Icon = PREP_TASK_ICONS[task.id] || Circle;
             return (
@@ -626,11 +626,11 @@ function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: string) 
                 {task.completed ? (
                   <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
                 ) : (
-                  <div className="w-5 h-5 rounded-full border-2 border-[#EAEFF5] flex-shrink-0" />
+                  <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
                 )}
-                <Icon className={`w-4 h-4 flex-shrink-0 ${task.completed ? "text-[#6B7280]" : "text-[#0066FF]"}`} />
+                <Icon className={`w-4 h-4 flex-shrink-0 ${task.completed ? "text-[#6B7280]" : "text-[#673DE6]"}`} />
                 <div className="flex-1 min-w-0">
-                  <p className={`text-[14px] font-medium ${task.completed ? "text-[#6B7280] line-through" : "text-[#0F172A]"}`}>
+                  <p className={`text-[14px] font-medium ${task.completed ? "text-[#6B7280] line-through" : "text-[#1F2937]"}`}>
                     {task.label}
                   </p>
                   <p className="text-[11px] text-[#6B7280]">+{task.score} punten</p>
@@ -686,8 +686,8 @@ function PrepTaskModal({
         className="bg-white w-full max-w-md rounded-t-[24px] sm:rounded-[24px] max-h-[85vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 bg-white border-b border-[#EAEFF5] p-6 flex items-center justify-between rounded-t-[24px]">
-          <h2 className="text-[20px] font-[700] text-[#0F172A] tracking-[-0.02em]">{titles[taskId] || ""}</h2>
+        <div className="sticky top-0 bg-white border-b border-[#E5E7EB] p-6 flex items-center justify-between rounded-t-[24px]">
+          <h2 className="text-[20px] font-[700] text-[#1F2937] tracking-[-0.02em]">{titles[taskId] || ""}</h2>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F2F5F8] flex items-center justify-center" data-testid="button-close-prep-modal">
             <X className="w-4 h-4 text-[#6B7280]" />
           </button>
@@ -701,7 +701,7 @@ function PrepTaskModal({
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/application-letter"); }}
-                className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold"
+                className="w-full h-[48px] rounded-xl bg-[#673DE6] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
                 data-testid="button-prep-goto-letter"
               >
                 <FileText className="w-4 h-4 mr-2" />
@@ -715,17 +715,17 @@ function PrepTaskModal({
               <p className="text-[14px] text-[#6B7280]">
                 Met meerdere zoekprofielen vergroot je je kansen aanzienlijk. Zoek je in meerdere steden of met verschillende budgetten? Voeg een extra profiel toe.
               </p>
-              <div className="bg-[#F3F4F8] rounded-xl p-4">
-                <p className="text-[13px] font-semibold text-[#0F172A] mb-2">Waarom meerdere profielen?</p>
+              <div className="bg-[#F3F4F6] rounded-xl p-4">
+                <p className="text-[13px] font-semibold text-[#1F2937] mb-2">Waarom meerdere profielen?</p>
                 <ul className="text-[13px] text-[#6B7280] space-y-1.5">
-                  <li className="flex items-start gap-2"><span className="text-[#0066FF] mt-0.5">+</span>Meer woningen die matchen</li>
-                  <li className="flex items-start gap-2"><span className="text-[#0066FF] mt-0.5">+</span>Verschillende prijsklassen dekken</li>
-                  <li className="flex items-start gap-2"><span className="text-[#0066FF] mt-0.5">+</span>Meerdere steden of wijken volgen</li>
+                  <li className="flex items-start gap-2"><span className="text-[#673DE6] mt-0.5">+</span>Meer woningen die matchen</li>
+                  <li className="flex items-start gap-2"><span className="text-[#673DE6] mt-0.5">+</span>Verschillende prijsklassen dekken</li>
+                  <li className="flex items-start gap-2"><span className="text-[#673DE6] mt-0.5">+</span>Meerdere steden of wijken volgen</li>
                 </ul>
               </div>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
-                className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold"
+                className="w-full h-[48px] rounded-xl bg-[#673DE6] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
                 data-testid="button-prep-add-profile"
               >
                 <Plus className="w-4 h-4 mr-2" />
@@ -739,14 +739,14 @@ function PrepTaskModal({
               <p className="text-[14px] text-[#6B7280]">
                 Deel je zoektocht met vrienden, familie en collega's. Hoe meer ogen, hoe sneller je iets vindt.
               </p>
-              <div className="bg-[#F3F4F8] rounded-xl p-4">
-                <p className="text-[13px] font-semibold text-[#0F172A] mb-2">Deeltekst</p>
+              <div className="bg-[#F3F4F6] rounded-xl p-4">
+                <p className="text-[13px] font-semibold text-[#1F2937] mb-2">Deeltekst</p>
                 <p className="text-[13px] text-[#6B7280] leading-relaxed">{SHARE_TEXT}</p>
               </div>
               <Button
                 variant="outline"
                 onClick={handleCopyShare}
-                className="w-full h-[44px] rounded-xl text-[14px] font-medium border-[#EAEFF5] text-[#0F172A]"
+                className="w-full h-[44px] rounded-xl text-[14px] font-medium border-[#E5E7EB] text-[#1F2937]"
                 data-testid="button-copy-share"
               >
                 <Copy className="w-4 h-4 mr-2" />
@@ -755,7 +755,7 @@ function PrepTaskModal({
               <Button
                 onClick={() => handleMarkDone("network_task_done")}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold disabled:opacity-50"
+                className="w-full h-[48px] rounded-xl bg-[#673DE6] hover:bg-[#5B30D6] text-white text-[15px] font-semibold disabled:opacity-50"
                 data-testid="button-mark-network-done"
               >
                 {updateProfileData.isPending ? "Opslaan..." : "Markeer als voltooid"}
@@ -770,7 +770,7 @@ function PrepTaskModal({
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/tips/bezichtiging"); }}
-                className="w-full h-[48px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-semibold"
+                className="w-full h-[48px] rounded-xl bg-[#673DE6] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
                 data-testid="button-goto-viewing-tips"
               >
                 <Eye className="w-4 h-4 mr-2" />
@@ -810,10 +810,10 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
     <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5" data-testid="card-notification-summary">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-[#EDF2FF] flex items-center justify-center">
-            <Bell className="w-4 h-4 text-[#0066FF]" />
+          <div className="w-8 h-8 rounded-full bg-[#F0EBFF] flex items-center justify-center">
+            <Bell className="w-4 h-4 text-[#673DE6]" />
           </div>
-          <h3 className="text-[15px] font-semibold text-[#0F172A]">Meldingskanalen</h3>
+          <h3 className="text-[15px] font-semibold text-[#1F2937]">Meldingskanalen</h3>
         </div>
         <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${activeCount > 0 ? "bg-green-50 text-green-700" : "bg-red-50 text-red-500"}`}>
           {activeCount > 0 ? `${activeCount} actief` : "Geen actief"}
@@ -823,10 +823,10 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
       <div className="flex flex-col gap-2.5 mb-4">
         {channelList.map(({ key, label, enabled, Icon }) => (
           <div key={key} className="flex items-center gap-3" data-testid={`channel-status-${key}`}>
-            <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${enabled ? "bg-green-50" : "bg-[#F3F4F8]"}`}>
+            <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${enabled ? "bg-green-50" : "bg-[#F3F4F6]"}`}>
               <Icon className={`w-3.5 h-3.5 ${enabled ? "text-green-600" : "text-[#6B7280]"}`} />
             </div>
-            <span className={`text-[14px] flex-1 ${enabled ? "text-[#0F172A] font-medium" : "text-[#6B7280]"}`}>
+            <span className={`text-[14px] flex-1 ${enabled ? "text-[#1F2937] font-medium" : "text-[#6B7280]"}`}>
               {label}
             </span>
             {enabled ? (
@@ -839,8 +839,8 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
       </div>
 
       {recommendedChannel && (
-        <div className="bg-[#EDF2FF] rounded-xl px-3.5 py-2.5 mb-3">
-          <p className="text-[12px] text-[#0066FF] font-medium flex items-center gap-1.5">
+        <div className="bg-[#F0EBFF] rounded-xl px-3.5 py-2.5 mb-3">
+          <p className="text-[12px] text-[#673DE6] font-medium flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5" />
             Snelste kanaal: {recommendedChannel}
           </p>
@@ -849,7 +849,7 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
 
       <button
         onClick={() => navigate("/settings/notifications")}
-        className="w-full h-[40px] rounded-xl border border-[#EAEFF5] bg-white text-[13px] font-semibold text-[#0F172A] hover:bg-[#F3F4F8] transition-colors flex items-center justify-center gap-1.5"
+        className="w-full h-[40px] rounded-xl border border-[#E5E7EB] bg-white text-[13px] font-semibold text-[#1F2937] hover:bg-[#F3F4F6] transition-colors flex items-center justify-center gap-1.5"
         data-testid="button-manage-channels"
       >
         <Bell className="w-3.5 h-3.5" />
@@ -885,11 +885,11 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
   return (
     <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5" data-testid="card-speed-readiness">
       <div className="flex items-center gap-2 mb-4">
-        <div className="w-8 h-8 rounded-full bg-[#EDF2FF] flex items-center justify-center">
-          <Zap className="w-4 h-4 text-[#0066FF]" />
+        <div className="w-8 h-8 rounded-full bg-[#F0EBFF] flex items-center justify-center">
+          <Zap className="w-4 h-4 text-[#673DE6]" />
         </div>
         <div className="flex-1">
-          <h3 className="text-[15px] font-semibold text-[#0F172A]">Reactiesnelheid</h3>
+          <h3 className="text-[15px] font-semibold text-[#1F2937]">Reactiesnelheid</h3>
         </div>
         <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${allDone ? "bg-green-50 text-green-700" : "bg-amber-50 text-amber-700"}`}>
           {speedDone}/{speedTotal}
@@ -902,7 +902,7 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
           return (
             <div
               key={step.id}
-              className={`flex items-center gap-3 ${!step.done && route ? "cursor-pointer hover:bg-[#F3F4F8] -mx-2 px-2 py-1 rounded-lg transition-colors" : "py-0.5"}`}
+              className={`flex items-center gap-3 ${!step.done && route ? "cursor-pointer hover:bg-[#F3F4F6] -mx-2 px-2 py-1 rounded-lg transition-colors" : "py-0.5"}`}
               onClick={() => {
                 if (!step.done && route) navigate(route);
               }}
@@ -913,7 +913,7 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
               ) : (
                 <div className="w-4.5 h-4.5 rounded-full border-2 border-[#E2E6ED] flex-shrink-0" />
               )}
-              <span className={`text-[14px] flex-1 ${step.done ? "text-[#6B7280]" : "text-[#0F172A] font-medium"}`}>
+              <span className={`text-[14px] flex-1 ${step.done ? "text-[#6B7280]" : "text-[#1F2937] font-medium"}`}>
                 {step.label}
               </span>
               {!step.done && route && (

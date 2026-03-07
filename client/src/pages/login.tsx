@@ -54,13 +54,13 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#EAEFF5]">
+      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
         <div className="max-w-5xl mx-auto px-6 h-[60px] flex items-center gap-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-[#0066FF] flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-[#673DE6] flex items-center justify-center">
               <Home className="w-4 h-4 text-white" />
             </div>
-            <span className="font-extrabold text-[#1B2A4A] text-lg tracking-tight">Stekkies</span>
+            <span className="font-extrabold text-[#1F2937] text-lg tracking-tight">Stekkies</span>
           </div>
         </div>
       </header>
@@ -68,7 +68,7 @@ export default function LoginPage() {
       <main className="flex-1 flex items-center justify-center px-6 py-20">
         <div className="w-full max-w-md">
           <div className="text-center mb-10">
-            <h1 className="text-[32px] font-[800] text-[#1B2A4A] tracking-[-0.03em] leading-[1.1] mb-4">
+            <h1 className="text-[32px] font-[800] text-[#1F2937] tracking-[-0.03em] leading-[1.1] mb-4">
               Vind jouw perfecte huurwoning
             </h1>
             <p className="text-[15px] text-[#6B7280]">
@@ -90,7 +90,7 @@ export default function LoginPage() {
               <TabsContent value="login">
                 <form onSubmit={handleLogin} className="flex flex-col gap-5">
                   <div className="flex flex-col gap-2">
-                    <Label htmlFor="login-email" className="text-[14px] font-semibold text-[#1B2A4A]">E-mailadres</Label>
+                    <Label htmlFor="login-email" className="text-[14px] font-semibold text-[#1F2937]">E-mailadres</Label>
                     <input
                       id="login-email"
                       type="email"
@@ -98,12 +98,12 @@ export default function LoginPage() {
                       value={loginEmail}
                       onChange={(e) => setLoginEmail(e.target.value)}
                       required
-                      className="h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
+                      className="h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE6]/15 focus:bg-[#F9FAFB] transition-all"
                       data-testid="input-login-email"
                     />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <Label htmlFor="login-password" className="text-[14px] font-semibold text-[#1B2A4A]">Wachtwoord</Label>
+                    <Label htmlFor="login-password" className="text-[14px] font-semibold text-[#1F2937]">Wachtwoord</Label>
                     <input
                       id="login-password"
                       type="password"
@@ -111,13 +111,13 @@ export default function LoginPage() {
                       value={loginPassword}
                       onChange={(e) => setLoginPassword(e.target.value)}
                       required
-                      className="h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
+                      className="h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE6]/15 focus:bg-[#F9FAFB] transition-all"
                       data-testid="input-login-password"
                     />
                   </div>
                   <Button
                     type="submit"
-                    className="w-full h-[56px] rounded-xl text-[16px] font-semibold bg-[#0066FF] hover:bg-[#0052CC]"
+                    className="w-full h-[56px] rounded-xl text-[16px] font-semibold bg-[#673DE6] hover:bg-[#5B30D6]"
                     disabled={loginLoading}
                     data-testid="button-login-submit"
                   >
@@ -129,7 +129,7 @@ export default function LoginPage() {
               <TabsContent value="signup">
                 <form onSubmit={handleSignup} className="flex flex-col gap-5">
                   <div className="flex flex-col gap-2">
-                    <Label htmlFor="signup-email" className="text-[14px] font-semibold text-[#1B2A4A]">E-mailadres</Label>
+                    <Label htmlFor="signup-email" className="text-[14px] font-semibold text-[#1F2937]">E-mailadres</Label>
                     <input
                       id="signup-email"
                       type="email"
@@ -137,12 +137,12 @@ export default function LoginPage() {
                       value={signupEmail}
                       onChange={(e) => setSignupEmail(e.target.value)}
                       required
-                      className="h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
+                      className="h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE6]/15 focus:bg-[#F9FAFB] transition-all"
                       data-testid="input-signup-email"
                     />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <Label htmlFor="signup-password" className="text-[14px] font-semibold text-[#1B2A4A]">Wachtwoord</Label>
+                    <Label htmlFor="signup-password" className="text-[14px] font-semibold text-[#1F2937]">Wachtwoord</Label>
                     <input
                       id="signup-password"
                       type="password"
@@ -150,13 +150,13 @@ export default function LoginPage() {
                       value={signupPassword}
                       onChange={(e) => setSignupPassword(e.target.value)}
                       required
-                      className="h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F8] text-[15px] font-medium text-[#1B2A4A] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0066FF]/15 focus:bg-[#FAFBFC] transition-all"
+                      className="h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE6]/15 focus:bg-[#F9FAFB] transition-all"
                       data-testid="input-signup-password"
                     />
                   </div>
                   <Button
                     type="submit"
-                    className="w-full h-[56px] rounded-xl text-[16px] font-semibold bg-[#0066FF] hover:bg-[#0052CC]"
+                    className="w-full h-[56px] rounded-xl text-[16px] font-semibold bg-[#673DE6] hover:bg-[#5B30D6]"
                     disabled={signupLoading}
                     data-testid="button-signup-submit"
                   >
