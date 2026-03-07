@@ -96,10 +96,10 @@ export default function OnboardingLocationPage() {
             <ChevronLeft className="w-5 h-5 text-[#6B7280]" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-[#673DE6] flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-[#673DE5] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-bold text-[#1F2937] text-base">Stekkies</span>
+            <span className="font-bold text-[#111827] text-base">Stekkies</span>
           </div>
         </div>
       </header>
@@ -110,7 +110,7 @@ export default function OnboardingLocationPage() {
             <div key={step} className="flex-1 h-2 rounded-full overflow-hidden bg-[#E5E7EB]">
               <div
                 className={`h-full rounded-full transition-all duration-500 ${
-                  step === 1 ? "w-full bg-[#673DE6]" : "w-0"
+                  step === 1 ? "w-full bg-[#673DE5]" : "w-0"
                 }`}
                 data-testid={`progress-step-${step}`}
               />
@@ -121,7 +121,7 @@ export default function OnboardingLocationPage() {
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-8 pt-4">
-        <h1 className="text-[32px] font-[800] text-[#1F2937] leading-[1.1] tracking-[-0.03em] mb-8" data-testid="text-location-title">
+        <h1 className="text-[32px] font-[800] text-[#111827] leading-[1.1] tracking-[-0.03em] mb-8" data-testid="text-location-title">
           Waar zoek je een woning?
         </h1>
 
@@ -133,14 +133,14 @@ export default function OnboardingLocationPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 pb-3 text-sm font-semibold text-center transition-colors relative ${
                   activeTab === tab.id
-                    ? "text-[#673DE6]"
-                    : "text-[#6B7280] hover:text-[#1F2937]"
+                    ? "text-[#673DE5]"
+                    : "text-[#6B7280] hover:text-[#111827]"
                 }`}
                 data-testid={`tab-${tab.id}`}
               >
                 {tab.label}
                 {activeTab === tab.id && (
-                  <div className="absolute bottom-0 left-3 right-3 h-[3px] bg-[#673DE6] rounded-t-full" />
+                  <div className="absolute bottom-0 left-3 right-3 h-[3px] bg-[#673DE5] rounded-t-full" />
                 )}
               </button>
             ))}
@@ -151,13 +151,13 @@ export default function OnboardingLocationPage() {
               <div className="space-y-0">
                 <div className="relative">
                   <div
-                    className="flex items-center gap-3 h-[52px] px-4 rounded-xl bg-[#F3F4F6] cursor-text focus-within:ring-2 focus-within:ring-[#673DE6]/15 focus-within:bg-[#F9FAFB] transition-all"
+                    className="flex items-center gap-3 h-[52px] px-4 rounded-xl bg-[#F3F4F6] cursor-text focus-within:ring-2 focus-within:ring-[#673DE5]/15 focus-within:bg-[#F8FAFC] transition-all"
                     onClick={() => {
                       const input = document.getElementById("city-search-input");
                       input?.focus();
                     }}
                   >
-                    <Search className="w-5 h-5 text-[#7A8599] flex-shrink-0" />
+                    <Search className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
                     <input
                       id="city-search-input"
                       type="text"
@@ -168,7 +168,7 @@ export default function OnboardingLocationPage() {
                         setShowDropdown(true);
                       }}
                       onFocus={() => setShowDropdown(true)}
-                      className="flex-1 text-[15px] font-medium text-[#1F2937] placeholder:text-[#7A8599] placeholder:font-normal bg-transparent border-none outline-none"
+                      className="flex-1 text-[15px] font-medium text-[#111827] placeholder:text-[#6B7280] placeholder:font-normal bg-transparent border-none outline-none"
                       data-testid="input-city-search"
                     />
                     {selectedCity && (
@@ -179,7 +179,7 @@ export default function OnboardingLocationPage() {
                           setSearch("");
                           setSelectedDistricts([]);
                         }}
-                        className="text-xs text-[#6B7280] hover:text-[#1F2937]"
+                        className="text-xs text-[#6B7280] hover:text-[#111827]"
                         data-testid="button-clear-city"
                       >
                         Wissen
@@ -197,7 +197,7 @@ export default function OnboardingLocationPage() {
                           data-testid={`option-city-${city.name.toLowerCase().replace(/\s/g, "-")}`}
                         >
                           <MapPin className="w-4.5 h-4.5 text-[#6B7280] flex-shrink-0" />
-                          <span className="text-[15px] font-medium text-[#1F2937] flex-1 text-left">{city.name}</span>
+                          <span className="text-[15px] font-medium text-[#111827] flex-1 text-left">{city.name}</span>
                           <ChevronRight className="w-4 h-4 text-[#6B7280]" />
                         </button>
                       ))}
@@ -207,7 +207,7 @@ export default function OnboardingLocationPage() {
 
                 {selectedCity && activeCityDistricts.length > 0 && (
                   <div className="py-5 border-b border-[#E5E7EB]">
-                    <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">Wijken <span className="font-normal text-[13px] text-[#6B7280]">(optioneel)</span></label>
+                    <label className="text-[16px] font-[700] text-[#111827] mb-3 block">Wijken <span className="font-normal text-[13px] text-[#6B7280]">(optioneel)</span></label>
                     <div className="flex flex-wrap gap-2">
                       {activeCityDistricts.map((district) => (
                         <button
@@ -215,8 +215,8 @@ export default function OnboardingLocationPage() {
                           onClick={() => toggleDistrict(district)}
                           className={`px-3.5 py-2 rounded-full text-sm font-medium transition-all ${
                             selectedDistricts.includes(district)
-                              ? "bg-[#673DE6] text-white"
-                              : "bg-[#F3F4F6] text-[#1F2937] hover:bg-[#E5E7EB]"
+                              ? "bg-[#673DE5] text-white"
+                              : "bg-[#F3F4F6] text-[#111827] hover:bg-[#E5E7EB]"
                           }`}
                           data-testid={`chip-district-${district.toLowerCase().replace(/[\s-]/g, "-")}`}
                         >
@@ -232,8 +232,8 @@ export default function OnboardingLocationPage() {
                     <div className="rounded-2xl overflow-hidden bg-[#F3F4F6]" data-testid="card-map-preview">
                       <div className="h-36 flex items-center justify-center">
                         <div className="text-center">
-                          <MapPin className="w-7 h-7 text-[#673DE6] mx-auto mb-1.5" />
-                          <p className="text-base font-bold text-[#1F2937]">{selectedCity.name}</p>
+                          <MapPin className="w-7 h-7 text-[#673DE5] mx-auto mb-1.5" />
+                          <p className="text-base font-bold text-[#111827]">{selectedCity.name}</p>
                           {selectedDistricts.length > 0 && (
                             <p className="text-xs text-[#6B7280] mt-0.5">{selectedDistricts.join(", ")}</p>
                           )}
@@ -245,13 +245,13 @@ export default function OnboardingLocationPage() {
 
                 {!selectedCity && (
                   <div className="py-5">
-                    <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">Populaire steden</label>
+                    <label className="text-[16px] font-[700] text-[#111827] mb-3 block">Populaire steden</label>
                     <div className="flex flex-wrap gap-2">
                       {defaultCities.slice(0, 6).map((city) => (
                         <button
                           key={city.name}
                           onClick={() => handleCitySelect(city)}
-                          className="px-4 py-2.5 rounded-full bg-[#F3F4F6] text-sm font-medium text-[#1F2937] hover:bg-[#E5E7EB] transition-colors"
+                          className="px-4 py-2.5 rounded-full bg-[#F3F4F6] text-sm font-medium text-[#111827] hover:bg-[#E5E7EB] transition-colors"
                           data-testid={`chip-city-${city.name.toLowerCase().replace(/\s/g, "-")}`}
                         >
                           {city.name}
@@ -267,13 +267,13 @@ export default function OnboardingLocationPage() {
               <div className="space-y-0">
                 <div className="relative">
                   <div
-                    className="flex items-center gap-3 h-[52px] px-4 rounded-xl bg-[#F3F4F6] cursor-text focus-within:ring-2 focus-within:ring-[#673DE6]/15 focus-within:bg-[#F9FAFB] transition-all"
+                    className="flex items-center gap-3 h-[52px] px-4 rounded-xl bg-[#F3F4F6] cursor-text focus-within:ring-2 focus-within:ring-[#673DE5]/15 focus-within:bg-[#F8FAFC] transition-all"
                     onClick={() => {
                       const input = document.getElementById("radius-city-input");
                       input?.focus();
                     }}
                   >
-                    <Search className="w-5 h-5 text-[#7A8599] flex-shrink-0" />
+                    <Search className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
                     <input
                       id="radius-city-input"
                       type="text"
@@ -284,7 +284,7 @@ export default function OnboardingLocationPage() {
                         setShowDropdown(true);
                       }}
                       onFocus={() => setShowDropdown(true)}
-                      className="flex-1 text-[15px] font-medium text-[#1F2937] placeholder:text-[#7A8599] placeholder:font-normal bg-transparent border-none outline-none"
+                      className="flex-1 text-[15px] font-medium text-[#111827] placeholder:text-[#6B7280] placeholder:font-normal bg-transparent border-none outline-none"
                       data-testid="input-city-search"
                     />
                     {selectedCity && (
@@ -294,7 +294,7 @@ export default function OnboardingLocationPage() {
                           setSelectedCity(null);
                           setSearch("");
                         }}
-                        className="text-xs text-[#6B7280] hover:text-[#1F2937]"
+                        className="text-xs text-[#6B7280] hover:text-[#111827]"
                         data-testid="button-clear-city"
                       >
                         Wissen
@@ -312,7 +312,7 @@ export default function OnboardingLocationPage() {
                           data-testid={`option-city-${city.name.toLowerCase().replace(/\s/g, "-")}`}
                         >
                           <MapPin className="w-4.5 h-4.5 text-[#6B7280] flex-shrink-0" />
-                          <span className="text-[15px] font-medium text-[#1F2937] flex-1 text-left">{city.name}</span>
+                          <span className="text-[15px] font-medium text-[#111827] flex-1 text-left">{city.name}</span>
                           <ChevronRight className="w-4 h-4 text-[#6B7280]" />
                         </button>
                       ))}
@@ -321,13 +321,13 @@ export default function OnboardingLocationPage() {
                 </div>
 
                 <div className="mt-6">
-                  <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">Straal</label>
+                  <label className="text-[16px] font-[700] text-[#111827] mb-3 block">Straal</label>
                   <div className="relative">
-                    <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
+                    <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
                     <select
                       value={radius}
                       onChange={(e) => setRadius(e.target.value)}
-                      className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#673DE6]/15 focus:bg-[#F9FAFB] cursor-pointer appearance-none transition-all"
+                      className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#111827] focus:outline-none focus:ring-2 focus:ring-[#673DE5]/15 focus:bg-[#F8FAFC] cursor-pointer appearance-none transition-all"
                       data-testid="select-radius"
                     >
                       <option value="2">2 km</option>
@@ -345,10 +345,10 @@ export default function OnboardingLocationPage() {
                     <div className="rounded-2xl overflow-hidden bg-[#F3F4F6]" data-testid="card-map-radius">
                       <div className="h-36 flex items-center justify-center">
                         <div className="text-center">
-                          <div className="w-20 h-20 rounded-full border-2 border-dashed border-[#673DE6]/40 flex items-center justify-center mx-auto mb-1">
-                            <Navigation className="w-6 h-6 text-[#673DE6]" />
+                          <div className="w-20 h-20 rounded-full border-2 border-dashed border-[#673DE5]/40 flex items-center justify-center mx-auto mb-1">
+                            <Navigation className="w-6 h-6 text-[#673DE5]" />
                           </div>
-                          <p className="text-sm font-bold text-[#1F2937]">{selectedCity.name} +{radius} km</p>
+                          <p className="text-sm font-bold text-[#111827]">{selectedCity.name} +{radius} km</p>
                         </div>
                       </div>
                     </div>
@@ -360,28 +360,28 @@ export default function OnboardingLocationPage() {
             {activeTab === "reistijd" && (
               <div className="space-y-0">
                 <div>
-                  <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">Werkadres / bestemming</label>
+                  <label className="text-[16px] font-[700] text-[#111827] mb-3 block">Werkadres / bestemming</label>
                   <div className="relative">
-                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
+                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
                     <input
                       type="text"
                       placeholder="bijv. Berlin Hauptbahnhof"
                       value={travelAddress}
                       onChange={(e) => setTravelAddress(e.target.value)}
-                      className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE6]/15 focus:bg-[#F9FAFB] transition-all"
+                      className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#111827] placeholder:text-[#6B7280] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE5]/15 focus:bg-[#F8FAFC] transition-all"
                       data-testid="input-travel-address"
                     />
                   </div>
                 </div>
 
                 <div className="mt-6">
-                  <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">Maximale reistijd</label>
+                  <label className="text-[16px] font-[700] text-[#111827] mb-3 block">Maximale reistijd</label>
                   <div className="relative">
-                    <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
+                    <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
                     <select
                       value={travelTime}
                       onChange={(e) => setTravelTime(e.target.value)}
-                      className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#673DE6]/15 focus:bg-[#F9FAFB] cursor-pointer appearance-none transition-all"
+                      className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#111827] focus:outline-none focus:ring-2 focus:ring-[#673DE5]/15 focus:bg-[#F8FAFC] cursor-pointer appearance-none transition-all"
                       data-testid="select-travel-time"
                     >
                       <option value="15">15 min</option>
@@ -394,7 +394,7 @@ export default function OnboardingLocationPage() {
                 </div>
 
                 <div className="mt-6">
-                  <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">Vervoersmiddel</label>
+                  <label className="text-[16px] font-[700] text-[#111827] mb-3 block">Vervoersmiddel</label>
                   <div className="flex gap-2">
                     {[
                       { id: "auto", icon: Car, label: "Auto" },
@@ -406,8 +406,8 @@ export default function OnboardingLocationPage() {
                         onClick={() => setTransportMode(mode.id)}
                         className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-xl text-xs font-semibold transition-all ${
                           transportMode === mode.id
-                            ? "bg-[#673DE6] text-white"
-                            : "bg-[#F3F4F6] text-[#1F2937] hover:bg-[#E5E7EB]"
+                            ? "bg-[#673DE5] text-white"
+                            : "bg-[#F3F4F6] text-[#111827] hover:bg-[#E5E7EB]"
                         }`}
                         data-testid={`button-transport-${mode.id}`}
                       >
@@ -423,8 +423,8 @@ export default function OnboardingLocationPage() {
                     <div className="rounded-2xl overflow-hidden bg-[#F3F4F6]" data-testid="card-map-travel">
                       <div className="h-36 flex items-center justify-center">
                         <div className="text-center">
-                          <Clock className="w-7 h-7 text-[#673DE6] mx-auto mb-1.5" />
-                          <p className="text-sm font-bold text-[#1F2937]">{travelTime} min reistijd</p>
+                          <Clock className="w-7 h-7 text-[#673DE5] mx-auto mb-1.5" />
+                          <p className="text-sm font-bold text-[#111827]">{travelTime} min reistijd</p>
                           <p className="text-xs text-[#6B7280] mt-0.5">vanaf {travelAddress}</p>
                         </div>
                       </div>
@@ -437,16 +437,16 @@ export default function OnboardingLocationPage() {
 
           {(selectedCity || (activeTab === "reistijd" && travelAddress)) && (
             <div className="pt-5 mt-1">
-              <div className="bg-[#EDE9FB] rounded-2xl p-4 mb-6" data-testid="card-estimate-preview">
+              <div className="bg-[#DCDBFA] rounded-2xl p-4 mb-6" data-testid="card-estimate-preview">
                 {estimateLoading ? (
                   <div className="flex items-center gap-3">
-                    <Loader2 className="w-5 h-5 text-[#673DE6] animate-spin" />
+                    <Loader2 className="w-5 h-5 text-[#673DE5] animate-spin" />
                     <span className="text-sm text-[#6B7280]">Schatting laden...</span>
                   </div>
                 ) : (
                   <p className="text-sm text-[#6B7280] leading-relaxed">
                     Met deze zoekopdracht kun je ongeveer{" "}
-                    <span className="font-bold text-[#1F2937]">{estimate ?? 0} matches</span>{" "}
+                    <span className="font-bold text-[#111827]">{estimate ?? 0} matches</span>{" "}
                     per week verwachten.
                   </p>
                 )}
@@ -456,7 +456,7 @@ export default function OnboardingLocationPage() {
 
           <Button
             size="lg"
-            className="w-full h-[56px] rounded-xl text-[16px] font-semibold bg-[#673DE6] hover:bg-[#5B30D6] shadow-none mt-2"
+            className="w-full h-[56px] rounded-xl text-[16px] font-semibold bg-[#673DE5] hover:bg-[#5B30D6] shadow-none mt-2"
             disabled={!canProceed}
             onClick={handleNext}
             data-testid="button-next-step"

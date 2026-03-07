@@ -118,20 +118,20 @@ export default function PaywallPage() {
       <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
         <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-[#673DE6] flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-[#673DE5] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-bold text-[#1F2937] text-base">Stekkies</span>
+            <span className="font-bold text-[#111827] text-base">Stekkies</span>
           </div>
         </div>
       </header>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-10 pb-32">
         <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-[#fef9ec] flex items-center justify-center mx-auto mb-4">
-            <Crown className="w-7 h-7 text-amber-500" />
+          <div className="w-14 h-14 rounded-2xl bg-[#DCDBFA] flex items-center justify-center mx-auto mb-4">
+            <Crown className="w-7 h-7 text-[#673DE5]" />
           </div>
-          <h1 className="text-[32px] font-[800] text-[#1F2937] tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-paywall-title">
+          <h1 className="text-[32px] font-[800] text-[#111827] tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-paywall-title">
             Kies je abonnement
           </h1>
           <p className="text-[15px] text-[#6B7280]">
@@ -146,14 +146,14 @@ export default function PaywallPage() {
               onClick={() => setSelectedPlan(plan.id)}
               className={`w-full p-6 rounded-2xl border-2 transition-all text-left relative bg-white shadow-[0_4px_20px_rgba(0,0,0,0.06)] ${
                 selectedPlan === plan.id
-                  ? "border-[#673DE6]"
+                  ? "border-[#673DE5]"
                   : "border-transparent hover:border-[#E5E7EB]"
               }`}
               data-testid={`card-plan-${plan.id}`}
             >
               {plan.popular && (
                 <span
-                  className="absolute -top-3 left-5 px-3 py-0.5 bg-[#673DE6] text-white text-xs font-bold rounded-full"
+                  className="absolute -top-3 left-5 px-3 py-0.5 bg-[#673DE5] text-white text-xs font-bold rounded-full"
                   data-testid="badge-popular"
                 >
                   Meest gekozen
@@ -162,13 +162,13 @@ export default function PaywallPage() {
 
               <div className="flex items-center justify-between gap-4 pr-8">
                 <div>
-                  <p className="text-[18px] font-bold text-[#1F2937]">{plan.name}</p>
+                  <p className="text-[18px] font-bold text-[#111827]">{plan.name}</p>
                   <p className="text-[15px] text-[#6B7280]">{plan.pricePerMonth}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xl font-extrabold text-[#1F2937]">{plan.price}</p>
+                  <p className="text-xl font-extrabold text-[#111827]">{plan.price}</p>
                   {plan.savings && (
-                    <p className="text-xs font-semibold text-[#22c55e]">{plan.savings}</p>
+                    <p className="text-xs font-semibold text-[#673DE5]">{plan.savings}</p>
                   )}
                 </div>
               </div>
@@ -176,7 +176,7 @@ export default function PaywallPage() {
               <div
                 className={`absolute top-6 right-6 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
                   selectedPlan === plan.id
-                    ? "bg-[#673DE6] border-[#673DE6]"
+                    ? "bg-[#673DE5] border-[#673DE5]"
                     : "border-[#E5E7EB]"
                 }`}
               >
@@ -187,12 +187,12 @@ export default function PaywallPage() {
         </div>
 
         <div className="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-6">
-          <p className="text-[16px] font-[700] text-[#1F2937] mb-3">Dit zit er allemaal in:</p>
+          <p className="text-[16px] font-[700] text-[#111827] mb-3">Dit zit er allemaal in:</p>
           <div className="space-y-2.5">
             {FEATURES.map((feature, i) => (
               <div key={i} className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded-full bg-[#ecfdf5] flex items-center justify-center flex-shrink-0">
-                  <Check className="w-3 h-3 text-[#22c55e]" />
+                <div className="w-5 h-5 rounded-full bg-[#DCDBFA] flex items-center justify-center flex-shrink-0">
+                  <Check className="w-3 h-3 text-[#673DE5]" />
                 </div>
                 <span className="text-[15px] text-[#6B7280]">{feature}</span>
               </div>
@@ -205,9 +205,9 @@ export default function PaywallPage() {
         <div className="max-w-xl mx-auto">
           {stripeUnavailable ? (
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3" data-testid="stripe-unavailable-notice">
-              <AlertCircle className="w-5 h-5 text-amber-500 mt-0.5 flex-shrink-0" />
+              <AlertCircle className="w-5 h-5 text-[#673DE5] mt-0.5 flex-shrink-0" />
               <div>
-                <p className="text-[14px] font-semibold text-[#1F2937]">Betaling wordt binnenkort beschikbaar</p>
+                <p className="text-[14px] font-semibold text-[#111827]">Betaling wordt binnenkort beschikbaar</p>
                 <p className="text-[13px] text-[#6B7280] mt-1">We werken aan de betalingsintegratie. Probeer het later opnieuw.</p>
               </div>
             </div>
@@ -215,7 +215,7 @@ export default function PaywallPage() {
             <>
               <Button
                 size="lg"
-                className="w-full h-[56px] rounded-xl text-[16px] font-semibold shadow-none bg-[#673DE6] hover:bg-[#5B30D6]"
+                className="w-full h-[56px] rounded-xl text-[16px] font-semibold shadow-none bg-[#673DE5] hover:bg-[#5B30D6]"
                 onClick={handleCheckout}
                 disabled={loading}
                 data-testid="button-select-payment"

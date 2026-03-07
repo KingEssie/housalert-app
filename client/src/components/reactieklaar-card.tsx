@@ -82,11 +82,11 @@ export function ReactieklaarCard({
   if (loading) {
     return (
       <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 animate-pulse" data-testid="card-reactieklaar-loading">
-        <div className="h-4 bg-[#F2F5F8] rounded w-36 mb-4" />
+        <div className="h-4 bg-[#F8FAFC] rounded w-36 mb-4" />
         <div className="flex flex-col gap-3">
-          <div className="h-3 bg-[#F2F5F8] rounded w-32" />
-          <div className="h-3 bg-[#F2F5F8] rounded w-40" />
-          <div className="h-3 bg-[#F2F5F8] rounded w-28" />
+          <div className="h-3 bg-[#F8FAFC] rounded w-32" />
+          <div className="h-3 bg-[#F8FAFC] rounded w-40" />
+          <div className="h-3 bg-[#F8FAFC] rounded w-28" />
         </div>
       </div>
     );
@@ -97,13 +97,13 @@ export function ReactieklaarCard({
   return (
     <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5" data-testid="card-reactieklaar">
       <div className="flex items-center gap-2.5 mb-4">
-        <div className="w-8 h-8 rounded-full bg-[#F0EBFF] flex items-center justify-center">
-          <Zap className="w-4 h-4 text-[#673DE6]" />
+        <div className="w-8 h-8 rounded-full bg-[#DCDBFA] flex items-center justify-center">
+          <Zap className="w-4 h-4 text-[#673DE5]" />
         </div>
-        <h3 className="text-[15px] font-semibold text-[#1F2937] flex-1">Reactieklaar</h3>
+        <h3 className="text-[15px] font-semibold text-[#111827] flex-1">Reactieklaar</h3>
         <span
           className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${
-            allDone ? "bg-green-50 text-green-700" : "bg-[#F0EBFF] text-[#673DE6]"
+            allDone ? "bg-green-50 text-green-700" : "bg-[#DCDBFA] text-[#673DE5]"
           }`}
           data-testid="text-reactieklaar-progress"
         >
@@ -121,7 +121,7 @@ export function ReactieklaarCard({
             <div
               key={step.id}
               className={`flex items-center gap-3 py-2 ${
-                hasAction ? "cursor-pointer hover:bg-[#F8F9FC] -mx-2 px-2 rounded-lg transition-colors" : ""
+                hasAction ? "cursor-pointer hover:bg-[#F8FAFC] -mx-2 px-2 rounded-lg transition-colors" : ""
               }`}
               onClick={() => {
                 if (!step.done) {
@@ -134,10 +134,10 @@ export function ReactieklaarCard({
               {step.done ? (
                 <CheckCircle2 className="w-[18px] h-[18px] text-green-500 flex-shrink-0" />
               ) : (
-                <div className="w-[18px] h-[18px] rounded-full border-2 border-[#E2E6ED] flex-shrink-0" />
+                <div className="w-[18px] h-[18px] rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
               )}
-              <Icon className={`w-4 h-4 flex-shrink-0 ${step.done ? "text-[#C5CBD6]" : "text-[#673DE6]"}`} />
-              <span className={`text-[14px] flex-1 ${step.done ? "text-[#6B7280]" : "text-[#1F2937] font-medium"}`}>
+              <Icon className={`w-4 h-4 flex-shrink-0 ${step.done ? "text-[#E5E7EB]" : "text-[#673DE5]"}`} />
+              <span className={`text-[14px] flex-1 ${step.done ? "text-[#6B7280]" : "text-[#111827] font-medium"}`}>
                 {step.label}
               </span>
               {hasAction && (

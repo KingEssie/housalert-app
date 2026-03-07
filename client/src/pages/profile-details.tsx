@@ -70,9 +70,9 @@ export default function ProfileDetailsPage() {
             className="w-9 h-9 rounded-full flex items-center justify-center -ml-1"
             data-testid="button-back-details"
           >
-            <ArrowLeft className="w-5 h-5 text-[#1F2937]" />
+            <ArrowLeft className="w-5 h-5 text-[#111827]" />
           </button>
-          <h1 className="flex-1 text-center text-[17px] font-semibold text-[#1F2937]">Persoonlijke gegevens</h1>
+          <h1 className="flex-1 text-center text-[17px] font-semibold text-[#111827]">Persoonlijke gegevens</h1>
           <div className="w-9" />
         </div>
       </div>
@@ -92,12 +92,12 @@ export default function ProfileDetailsPage() {
                   {editable ? (
                     <button
                       onClick={() => navigate(`/profile/edit/${field.key}`)}
-                      className="w-full flex items-center justify-between px-5 py-4 text-left active:bg-[#F9FAFB] transition-colors"
+                      className="w-full flex items-center justify-between px-5 py-4 text-left active:bg-[#F8FAFC] transition-colors"
                       data-testid={`field-${field.key}`}
                     >
                       <div className="min-w-0 flex-1">
                         <p className="text-[13px] text-[#6B7280] mb-0.5">{field.label}</p>
-                        <p className="text-[16px] font-[500] text-[#1F2937] truncate">
+                        <p className="text-[16px] font-[500] text-[#111827] truncate">
                           {value || <span className="text-[#9CA3AF]">Toevoegen</span>}
                         </p>
                       </div>
@@ -106,7 +106,7 @@ export default function ProfileDetailsPage() {
                   ) : (
                     <div className="px-5 py-4" data-testid={`field-${field.key}`}>
                       <p className="text-[13px] text-[#6B7280] mb-0.5">{field.label}</p>
-                      <p className="text-[16px] font-[500] text-[#1F2937] truncate">{value || "-"}</p>
+                      <p className="text-[16px] font-[500] text-[#111827] truncate">{value || "-"}</p>
                     </div>
                   )}
                   {i < FIELDS.length - 1 && (

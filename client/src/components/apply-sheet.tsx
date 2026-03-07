@@ -159,8 +159,8 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
       <div className="relative w-full max-w-xl bg-white rounded-t-3xl shadow-[0_-8px_40px_rgba(0,0,0,0.12)] max-h-[85vh] flex flex-col animate-in slide-in-from-bottom duration-300">
         <div className="flex items-center justify-between px-6 pt-5 pb-3">
           <div className="flex items-center gap-2">
-            <Send className="w-5 h-5 text-[#673DE6]" />
-            <h2 className="text-[18px] font-[700] text-[#1F2937]">Reageer nu</h2>
+            <Send className="w-5 h-5 text-[#673DE5]" />
+            <h2 className="text-[18px] font-[700] text-[#111827]">Reageer nu</h2>
           </div>
           <button
             onClick={onClose}
@@ -184,9 +184,9 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
                   {item.done ? (
                     <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
                   ) : (
-                    <AlertCircle className="w-3.5 h-3.5 text-[#C5CBD6]" />
+                    <AlertCircle className="w-3.5 h-3.5 text-[#E5E7EB]" />
                   )}
-                  <span className={`text-[12px] ${item.done ? "text-[#6B7280]" : "text-[#C5CBD6]"}`}>
+                  <span className={`text-[12px] ${item.done ? "text-[#6B7280]" : "text-[#E5E7EB]"}`}>
                     {item.label}
                   </span>
                 </div>
@@ -198,12 +198,12 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
             <div className="flex items-center justify-between mb-2">
               <p className="text-[12px] font-semibold text-[#6B7280] uppercase tracking-wide">Aanmeldingsbrief</p>
               {readyCount === readinessItems.length && (
-                <span className="text-[11px] font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full" data-testid="badge-ready">
+                <span className="text-[11px] font-medium text-[#000000] bg-[#CBFF02] px-2 py-0.5 rounded-full" data-testid="badge-ready">
                   Klaar om te versturen
                 </span>
               )}
             </div>
-            <pre className="text-[14px] text-[#1F2937] leading-relaxed whitespace-pre-wrap font-[inherit]" data-testid="apply-letter-preview">
+            <pre className="text-[14px] text-[#111827] leading-relaxed whitespace-pre-wrap font-[inherit]" data-testid="apply-letter-preview">
               {filledLetter}
             </pre>
           </div>
@@ -213,7 +213,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
           {listing.url ? (
             <Button
               onClick={handleCopyAndOpen}
-              className="w-full h-[48px] rounded-xl bg-[#673DE6] hover:bg-[#5B30D6] text-white text-[14px] font-semibold"
+              className="w-full h-[48px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[14px] font-semibold"
               data-testid="button-copy-and-open"
             >
               <Copy className="w-4 h-4 mr-2" />
@@ -222,7 +222,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
           ) : (
             <Button
               onClick={handleCopy}
-              className="w-full h-[48px] rounded-xl bg-[#673DE6] hover:bg-[#5B30D6] text-white text-[14px] font-semibold"
+              className="w-full h-[48px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[14px] font-semibold"
               data-testid="button-copy-letter-sheet"
             >
               <Copy className="w-4 h-4 mr-2" />
@@ -235,7 +235,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
               <Button
                 variant="outline"
                 onClick={handleCopy}
-                className="flex-1 h-[44px] rounded-xl border-[#E5E7EB] text-[#1F2937] text-[13px] font-semibold"
+                className="flex-1 h-[44px] rounded-xl border-[#E5E7EB] text-[#111827] text-[13px] font-semibold"
                 data-testid="button-copy-only"
               >
                 <Copy className="w-3.5 h-3.5 mr-1.5" />
@@ -249,7 +249,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
               className={`flex-1 h-[44px] rounded-xl text-[13px] font-semibold ${
                 marked
                   ? "bg-green-50 text-green-700 border-green-200"
-                  : "border-[#E5E7EB] text-[#1F2937]"
+                  : "border-[#E5E7EB] text-[#111827]"
               }`}
               data-testid="button-mark-applied"
             >

@@ -114,13 +114,13 @@ export default function ViewingTipsPage() {
           >
             <ArrowLeft className="w-4 h-4 text-[#6B7280]" />
           </button>
-          <h1 className="text-[18px] font-bold text-[#1F2937]">Bezichtigingtips</h1>
+          <h1 className="text-[18px] font-bold text-[#111827]">Bezichtigingtips</h1>
         </div>
       </header>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6 pb-32">
         <div className="mb-6">
-          <h2 className="text-[32px] font-[800] text-[#1F2937] tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-tips-heading">
+          <h2 className="text-[32px] font-[800] text-[#111827] tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-tips-heading">
             Goed voorbereid naar een bezichtiging
           </h2>
           <p className="text-[15px] text-[#6B7280] leading-relaxed">
@@ -138,16 +138,16 @@ export default function ViewingTipsPage() {
                 data-testid={`card-tips-section-${idx}`}
               >
                 <div className="flex items-center gap-3 p-6 pb-3">
-                  <div className="w-9 h-9 rounded-full bg-[#F0EBFF] flex items-center justify-center flex-shrink-0">
-                    <Icon className="w-4.5 h-4.5 text-[#673DE6]" />
+                  <div className="w-9 h-9 rounded-full bg-[#DCDBFA] flex items-center justify-center flex-shrink-0">
+                    <Icon className="w-4.5 h-4.5 text-[#673DE5]" />
                   </div>
-                  <h3 className="text-[16px] font-semibold text-[#1F2937]">{section.title}</h3>
+                  <h3 className="text-[16px] font-semibold text-[#111827]">{section.title}</h3>
                 </div>
                 <div className="px-6 pb-6">
                   <ul className="flex flex-col gap-2.5">
                     {section.items.map((item, i) => (
                       <li key={i} className="flex items-start gap-2.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#673DE6] mt-2 flex-shrink-0" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#673DE5] mt-2 flex-shrink-0" />
                         <span className="text-[13px] text-[#6B7280] leading-relaxed">{item}</span>
                       </li>
                     ))}
@@ -170,7 +170,7 @@ export default function ViewingTipsPage() {
             <Button
               onClick={() => markDoneMutation.mutate()}
               disabled={markDoneMutation.isPending}
-              className="w-full h-[56px] rounded-xl text-[16px] font-semibold bg-[#673DE6] hover:bg-[#5B30D6] disabled:opacity-50"
+              className="w-full h-[56px] rounded-xl text-[16px] font-semibold bg-[#673DE5] hover:bg-[#5B30D6] disabled:opacity-50"
               data-testid="button-mark-tips-done"
             >
               {markDoneMutation.isPending ? "Opslaan..." : "Markeer als voltooid"}

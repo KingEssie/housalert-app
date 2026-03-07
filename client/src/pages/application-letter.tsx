@@ -80,17 +80,17 @@ export default function ApplicationLetterPage() {
           >
             <ArrowLeft className="w-5 h-5 text-[#6B7280]" />
           </button>
-          <h1 className="text-[18px] font-[700] text-[#1F2937] tracking-[-0.01em]">Aanmeldingsbrief</h1>
+          <h1 className="text-[18px] font-[700] text-[#111827] tracking-[-0.01em]">Aanmeldingsbrief</h1>
           <div className="w-10" />
         </div>
       </header>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6 pb-32">
         <div className="flex flex-col gap-4">
-          <div className="bg-[#F0EBFF] rounded-2xl p-6 flex gap-3">
-            <Info className="w-5 h-5 text-[#673DE6] flex-shrink-0 mt-0.5" />
+          <div className="bg-[#DCDBFA] rounded-2xl p-6 flex gap-3">
+            <Info className="w-5 h-5 text-[#673DE5] flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-[14px] text-[#1F2937] font-semibold mb-1">Automatische invulling</p>
+              <p className="text-[14px] text-[#111827] font-semibold mb-1">Automatische invulling</p>
               <p className="text-[13px] text-[#6B7280]">
                 Gebruik onderstaande plaatsaanduidingen in je brief. Ze worden automatisch ingevuld wanneer je de brief kopieert vanuit een woning.
               </p>
@@ -98,7 +98,7 @@ export default function ApplicationLetterPage() {
           </div>
 
           <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
-            <h3 className="text-[16px] font-[700] text-[#1F2937] mb-3">Beschikbare plaatsaanduidingen</h3>
+            <h3 className="text-[16px] font-[700] text-[#111827] mb-3">Beschikbare plaatsaanduidingen</h3>
             <div className="flex flex-wrap gap-1.5">
               {PLACEHOLDERS.map((p) => (
                 <button
@@ -119,7 +119,7 @@ export default function ApplicationLetterPage() {
                       setTemplate(template + p.key);
                     }
                   }}
-                  className="text-[11px] font-mono bg-[#F3F4F6] text-[#673DE6] px-2 py-1 rounded-md hover:bg-[#F0EBFF] transition-colors"
+                  className="text-[11px] font-mono bg-[#F3F4F6] text-[#673DE5] px-2 py-1 rounded-md hover:bg-[#DCDBFA] transition-colors"
                   title={p.label}
                   data-testid={`placeholder-${p.key.replace(/\[|\]/g, "")}`}
                 >
@@ -137,10 +137,10 @@ export default function ApplicationLetterPage() {
           ) : (
             <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
               <div className="flex items-center justify-between gap-4 mb-3">
-                <h3 className="text-[16px] font-semibold text-[#1F2937]">Je brief</h3>
+                <h3 className="text-[16px] font-semibold text-[#111827]">Je brief</h3>
                 <button
                   onClick={handleReset}
-                  className="flex items-center gap-1 text-[13px] text-[#6B7280] hover:text-[#673DE6] transition-colors"
+                  className="flex items-center gap-1 text-[13px] text-[#6B7280] hover:text-[#673DE5] transition-colors"
                   data-testid="button-reset-template"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -150,7 +150,7 @@ export default function ApplicationLetterPage() {
               <textarea
                 value={template}
                 onChange={(e) => setTemplate(e.target.value)}
-                className="w-full min-h-[300px] px-4 py-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE6]/15 focus:bg-[#FAFBFC] resize-y leading-relaxed transition-all"
+                className="w-full min-h-[300px] px-4 py-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#111827] placeholder:text-[#6B7280] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE5]/15 focus:bg-[#F8FAFC] resize-y leading-relaxed transition-all"
                 data-testid="input-template"
               />
               {!isLongEnough && (
@@ -166,7 +166,7 @@ export default function ApplicationLetterPage() {
           <Button
             onClick={() => saveMutation.mutate(template)}
             disabled={!isLongEnough || saveMutation.isPending}
-            className="w-full h-[56px] rounded-xl text-[16px] font-semibold bg-[#673DE6] hover:bg-[#5B30D6] disabled:opacity-50 flex items-center gap-2"
+            className="w-full h-[56px] rounded-xl text-[16px] font-semibold bg-[#673DE5] hover:bg-[#5B30D6] disabled:opacity-50 flex items-center gap-2"
             data-testid="button-save-template"
           >
             <Save className="w-4.5 h-4.5" />

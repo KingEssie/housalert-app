@@ -20,10 +20,10 @@ export function SubscriptionGate({ isActive, children }: SubscriptionGateProps) 
       </div>
       <div className="absolute inset-0 flex items-center justify-center z-10">
         <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] p-6 mx-4 max-w-sm w-full text-center">
-          <div className="w-14 h-14 rounded-2xl bg-[#fef9ec] flex items-center justify-center mx-auto mb-4">
+          <div className="w-14 h-14 rounded-2xl bg-[#F8FAFC] flex items-center justify-center mx-auto mb-4">
             <Crown className="w-7 h-7 text-amber-500" />
           </div>
-          <h3 className="text-lg font-bold text-[#1F2937] mb-2" data-testid="text-gate-title">
+          <h3 className="text-lg font-bold text-[#111827] mb-2" data-testid="text-gate-title">
             Activeer je abonnement
           </h3>
           <p className="text-sm text-[#6B7280] mb-5">
@@ -31,7 +31,7 @@ export function SubscriptionGate({ isActive, children }: SubscriptionGateProps) 
           </p>
           <button
             onClick={() => navigate("/paywall")}
-            className="w-full h-[48px] rounded-xl bg-[#673DE6] hover:bg-[#5B30D6] text-white font-semibold text-[15px] transition-colors flex items-center justify-center gap-2"
+            className="w-full h-[48px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white font-semibold text-[15px] transition-colors flex items-center justify-center gap-2"
             data-testid="button-gate-upgrade"
           >
             <Lock className="w-4 h-4" />

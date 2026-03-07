@@ -35,7 +35,7 @@ export function ListRow({
     <Component
       {...(onClick ? { type: "button" as const, disabled } : {})}
       onClick={onClick}
-      className={`w-full flex items-center px-5 py-4 text-left ${onClick ? "cursor-pointer active:bg-[#F9FAFB] transition-colors" : ""} ${disabled ? "opacity-60 pointer-events-none" : ""}`}
+      className={`w-full flex items-center px-5 py-4 text-left ${onClick ? "cursor-pointer active:bg-[#F8FAFC] transition-colors" : ""} ${disabled ? "opacity-60 pointer-events-none" : ""}`}
       data-testid={testId}
     >
       <div className="w-10 flex-shrink-0 flex items-center justify-center mr-3">

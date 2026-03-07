@@ -223,7 +223,7 @@ export default function NewSearchPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-2 border-[#673DE6] border-t-transparent animate-spin" />
+        <div className="w-8 h-8 rounded-full border-2 border-[#673DE5] border-t-transparent animate-spin" />
       </div>
     );
   }
@@ -239,13 +239,13 @@ export default function NewSearchPage() {
             <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
               <AlertCircle className="w-6 h-6 text-red-500" />
             </div>
-            <h2 className="text-[18px] font-bold text-[#1F2937] mb-2">Limiet bereikt</h2>
+            <h2 className="text-[18px] font-bold text-[#111827] mb-2">Limiet bereikt</h2>
             <p className="text-[14px] text-[#6B7280] mb-5">
               Je hebt al {MAX_PROFILES} zoekopdrachten. Verwijder eerst een bestaande om een nieuwe aan te maken.
             </p>
             <Button
               onClick={() => navigate("/dashboard")}
-              className="w-full h-[48px] rounded-xl bg-[#673DE6] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
+              className="w-full h-[48px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
               data-testid="button-back-to-dashboard-limit"
             >
               Terug naar dashboard
@@ -279,23 +279,23 @@ export default function NewSearchPage() {
                     onClick={() => update({ propertyType: pt.id })}
                     className={`w-full flex items-center gap-4 p-4 rounded-[14px] border-2 transition-all text-left ${
                       selected
-                        ? "border-[#673DE6] bg-[#F0EBFF]"
+                        ? "border-[#673DE5] bg-[#DCDBFA]"
                         : "border-[#E5E7EB] bg-white hover:border-[#E5E7EB]"
                     }`}
                     data-testid={`option-type-${pt.id}`}
                   >
                     <div className={`w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      selected ? "bg-[#673DE6]" : "bg-[#F3F4F6]"
+                      selected ? "bg-[#673DE5]" : "bg-[#F3F4F6]"
                     }`}>
                       <Icon className={`w-5 h-5 ${selected ? "text-white" : "text-[#6B7280]"}`} />
                     </div>
                     <div>
-                      <p className={`text-[15px] font-semibold ${selected ? "text-[#673DE6]" : "text-[#1F2937]"}`}>
+                      <p className={`text-[15px] font-semibold ${selected ? "text-[#673DE5]" : "text-[#111827]"}`}>
                         {pt.label}
                       </p>
                       <p className="text-[13px] font-[500] text-[#6B7280]">{pt.desc}</p>
                     </div>
-                    {selected && <CheckCircle2 className="w-5 h-5 text-[#673DE6] ml-auto flex-shrink-0" />}
+                    {selected && <CheckCircle2 className="w-5 h-5 text-[#673DE5] ml-auto flex-shrink-0" />}
                   </button>
                 );
               })}
@@ -310,19 +310,19 @@ export default function NewSearchPage() {
           >
             <div className="flex flex-col gap-5">
               <div className="relative">
-                <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">Stad</label>
+                <label className="text-[16px] font-[700] text-[#111827] mb-3 block">Stad</label>
                 <button
                   onClick={() => setShowCityDropdown(!showCityDropdown)}
                   className={`w-full h-[52px] px-4 rounded-xl border-0 text-left flex items-center justify-between transition-all ${
-                    data.city ? "bg-[#F0EBFF] text-[#1F2937] ring-2 ring-[#673DE6]/15" : "bg-[#F3F4F6] text-[#7A8599]"
+                    data.city ? "bg-[#DCDBFA] text-[#111827] ring-2 ring-[#673DE5]/15" : "bg-[#F3F4F6] text-[#6B7280]"
                   }`}
                   data-testid="button-select-city"
                 >
                   <div className="flex items-center gap-3">
-                    <MapPin className="w-4 h-4 text-[#7A8599]" />
+                    <MapPin className="w-4 h-4 text-[#6B7280]" />
                     <span className="text-[15px]">{data.city || "Selecteer een stad"}</span>
                   </div>
-                  <ChevronDown className={`w-4 h-4 text-[#7A8599] transition-transform ${showCityDropdown ? "rotate-180" : ""}`} />
+                  <ChevronDown className={`w-4 h-4 text-[#6B7280] transition-transform ${showCityDropdown ? "rotate-180" : ""}`} />
                 </button>
 
                 {showCityDropdown && (
@@ -333,7 +333,7 @@ export default function NewSearchPage() {
                         value={citySearch}
                         onChange={(e) => setCitySearch(e.target.value)}
                         placeholder="Zoek stad..."
-                        className="w-full h-[44px] px-3 rounded-xl border-0 bg-[#E5E7EB] text-[14px] font-medium text-[#1F2937] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE6]/15 focus:bg-[#FAFBFC] transition-all"
+                        className="w-full h-[44px] px-3 rounded-xl border-0 bg-[#E5E7EB] text-[14px] font-medium text-[#111827] placeholder:text-[#6B7280] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE5]/15 focus:bg-[#F8FAFC] transition-all"
                         autoFocus
                         data-testid="input-city-search"
                       />
@@ -349,8 +349,8 @@ export default function NewSearchPage() {
                           }}
                           className={`w-full text-left px-4 py-3 text-[14px] transition-colors ${
                             data.city === c
-                              ? "bg-[#F0EBFF] text-[#673DE6] font-medium"
-                              : "text-[#1F2937] hover:bg-[#F3F4F6]"
+                              ? "bg-[#DCDBFA] text-[#673DE5] font-medium"
+                              : "text-[#111827] hover:bg-[#F3F4F6]"
                           }`}
                           data-testid={`option-city-${c}`}
                         >
@@ -364,7 +364,7 @@ export default function NewSearchPage() {
 
               {availableDistricts.length > 0 && (
                 <div>
-                  <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">
+                  <label className="text-[16px] font-[700] text-[#111827] mb-3 block">
                     Wijken <span className="font-normal text-[13px] text-[#6B7280]">(optioneel, binnenkort actief)</span>
                   </label>
                   <p className="text-[13px] font-[500] text-[#6B7280] mb-2">Wijkfiltering wordt binnenkort toegepast.</p>
@@ -383,7 +383,7 @@ export default function NewSearchPage() {
                           }}
                           className={`px-3.5 py-2 rounded-full text-[13px] font-medium border transition-all ${
                             selected
-                              ? "border-[#673DE6] bg-[#F0EBFF] text-[#673DE6]"
+                              ? "border-[#673DE5] bg-[#DCDBFA] text-[#673DE5]"
                               : "border-[#E5E7EB] bg-white text-[#6B7280] hover:border-[#E5E7EB]"
                           }`}
                           data-testid={`chip-district-${d}`}
@@ -406,31 +406,31 @@ export default function NewSearchPage() {
           >
             <div className="flex flex-col gap-6">
               <div>
-                <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">Minimale huur</label>
+                <label className="text-[16px] font-[700] text-[#111827] mb-3 block">Minimale huur</label>
                 <div className="relative">
-                  <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
+                  <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
                   <input
                     type="number"
                     value={data.priceMin}
                     onChange={(e) => update({ priceMin: e.target.value })}
                     placeholder="0"
                     min="0"
-                    className="w-full h-[52px] pl-10 pr-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE6]/15 focus:bg-[#FAFBFC] transition-all"
+                    className="w-full h-[52px] pl-10 pr-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#111827] placeholder:text-[#6B7280] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE5]/15 focus:bg-[#F8FAFC] transition-all"
                     data-testid="input-price-min"
                   />
                 </div>
               </div>
               <div>
-                <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">Maximale huur</label>
+                <label className="text-[16px] font-[700] text-[#111827] mb-3 block">Maximale huur</label>
                 <div className="relative">
-                  <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#7A8599]" />
+                  <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
                   <input
                     type="number"
                     value={data.priceMax}
                     onChange={(e) => update({ priceMax: e.target.value })}
                     placeholder="2000"
                     min="0"
-                    className="w-full h-[52px] pl-10 pr-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#7A8599] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE6]/15 focus:bg-[#FAFBFC] transition-all"
+                    className="w-full h-[52px] pl-10 pr-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#111827] placeholder:text-[#6B7280] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE5]/15 focus:bg-[#F8FAFC] transition-all"
                     data-testid="input-price-max"
                   />
                 </div>
@@ -448,8 +448,8 @@ export default function NewSearchPage() {
           >
             <div className="flex flex-col gap-6">
               <div>
-                <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">
-                  <BedDouble className="w-4 h-4 inline mr-1.5 text-[#673DE6]" />
+                <label className="text-[16px] font-[700] text-[#111827] mb-3 block">
+                  <BedDouble className="w-4 h-4 inline mr-1.5 text-[#673DE5]" />
                   Slaapkamers
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -461,8 +461,8 @@ export default function NewSearchPage() {
                         onClick={() => update({ bedroomsMin: opt.value })}
                         className={`px-4 py-2.5 rounded-xl text-[14px] font-medium border-0 transition-all ${
                           selected
-                            ? "bg-[#F0EBFF] text-[#673DE6] ring-2 ring-[#673DE6]/20"
-                            : "bg-[#F3F4F6] text-[#5A6577] hover:bg-[#E5E7EB]"
+                            ? "bg-[#DCDBFA] text-[#673DE5] ring-2 ring-[#673DE5]/20"
+                            : "bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB]"
                         }`}
                         data-testid={`option-bedrooms-${opt.value}`}
                       >
@@ -474,8 +474,8 @@ export default function NewSearchPage() {
               </div>
 
               <div>
-                <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">
-                  <Ruler className="w-4 h-4 inline mr-1.5 text-[#673DE6]" />
+                <label className="text-[16px] font-[700] text-[#111827] mb-3 block">
+                  <Ruler className="w-4 h-4 inline mr-1.5 text-[#673DE5]" />
                   Minimum oppervlakte
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -487,8 +487,8 @@ export default function NewSearchPage() {
                         onClick={() => update({ sizeMin: opt.value })}
                         className={`px-4 py-2.5 rounded-xl text-[14px] font-medium border-0 transition-all ${
                           selected
-                            ? "bg-[#F0EBFF] text-[#673DE6] ring-2 ring-[#673DE6]/20"
-                            : "bg-[#F3F4F6] text-[#5A6577] hover:bg-[#E5E7EB]"
+                            ? "bg-[#DCDBFA] text-[#673DE5] ring-2 ring-[#673DE5]/20"
+                            : "bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB]"
                         }`}
                         data-testid={`option-size-${opt.value}`}
                       >
@@ -525,20 +525,20 @@ export default function NewSearchPage() {
                     }}
                     className={`w-full flex items-center gap-4 p-4 rounded-[14px] border-2 transition-all text-left ${
                       selected
-                        ? "border-[#673DE6] bg-[#F0EBFF]"
+                        ? "border-[#673DE5] bg-[#DCDBFA]"
                         : "border-[#E5E7EB] bg-white hover:border-[#E5E7EB]"
                     }`}
                     data-testid={`option-extra-${pref.id}`}
                   >
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      selected ? "bg-[#673DE6]" : "bg-[#F3F4F6]"
+                      selected ? "bg-[#673DE5]" : "bg-[#F3F4F6]"
                     }`}>
                       <Icon className={`w-4.5 h-4.5 ${selected ? "text-white" : "text-[#6B7280]"}`} />
                     </div>
-                    <span className={`text-[15px] font-medium flex-1 ${selected ? "text-[#673DE6]" : "text-[#1F2937]"}`}>
+                    <span className={`text-[15px] font-medium flex-1 ${selected ? "text-[#673DE5]" : "text-[#111827]"}`}>
                       {pref.label}
                     </span>
-                    {selected && <CheckCircle2 className="w-5 h-5 text-[#673DE6] flex-shrink-0" />}
+                    {selected && <CheckCircle2 className="w-5 h-5 text-[#673DE5] flex-shrink-0" />}
                   </button>
                 );
               })}
@@ -569,17 +569,17 @@ export default function NewSearchPage() {
                     }}
                     className={`w-full flex items-center gap-4 p-4 rounded-[14px] border-2 transition-all text-left ${
                       selected
-                        ? "border-[#673DE6] bg-[#F0EBFF]"
+                        ? "border-[#673DE5] bg-[#DCDBFA]"
                         : "border-[#E5E7EB] bg-white hover:border-[#E5E7EB]"
                     }`}
                     data-testid={`option-filter-${filter.id}`}
                   >
                     <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 ${
-                      selected ? "border-[#673DE6] bg-[#673DE6]" : "border-[#E5E7EB]"
+                      selected ? "border-[#673DE5] bg-[#673DE5]" : "border-[#E5E7EB]"
                     }`}>
                       {selected && <CheckCircle2 className="w-4 h-4 text-white" />}
                     </div>
-                    <span className={`text-[15px] font-medium ${selected ? "text-[#673DE6]" : "text-[#1F2937]"}`}>
+                    <span className={`text-[15px] font-medium ${selected ? "text-[#673DE5]" : "text-[#111827]"}`}>
                       {filter.label}
                     </span>
                   </button>
@@ -601,7 +601,7 @@ export default function NewSearchPage() {
             <Button
               variant="outline"
               onClick={goBack}
-              className="h-[48px] px-5 rounded-xl border-[#E5E7EB] text-[#1F2937] text-[15px] font-medium"
+              className="h-[48px] px-5 rounded-xl border-[#E5E7EB] text-[#111827] text-[15px] font-medium"
               data-testid="button-wizard-back"
             >
               <ArrowLeft className="w-4 h-4 mr-1.5" />
@@ -612,7 +612,7 @@ export default function NewSearchPage() {
             <Button
               onClick={goNext}
               disabled={!canProceed()}
-              className="flex-1 h-[56px] rounded-xl bg-[#673DE6] hover:bg-[#5B30D6] text-white text-[16px] font-semibold disabled:opacity-50"
+              className="flex-1 h-[56px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[16px] font-semibold disabled:opacity-50"
               data-testid="button-wizard-next"
             >
               Volgende
@@ -622,7 +622,7 @@ export default function NewSearchPage() {
             <Button
               onClick={handleSubmit}
               disabled={submitting || !data.city}
-              className="flex-1 h-[56px] rounded-xl bg-[#673DE6] hover:bg-[#5B30D6] text-white text-[16px] font-semibold disabled:opacity-50"
+              className="flex-1 h-[56px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[16px] font-semibold disabled:opacity-50"
               data-testid="button-wizard-submit"
             >
               {submitting ? (
@@ -654,7 +654,7 @@ function WizardHeader({ step, total, onBack }: { step: number; total: number; on
         >
           <ArrowLeft className="w-4 h-4 text-[#6B7280]" />
         </button>
-        <h1 className="text-[18px] font-bold text-[#1F2937] flex-1">Nieuwe zoekopdracht</h1>
+        <h1 className="text-[18px] font-bold text-[#111827] flex-1">Nieuwe zoekopdracht</h1>
         {total > 0 && (
           <span className="text-[13px] font-medium text-[#6B7280]">
             {step}/{total}
@@ -664,7 +664,7 @@ function WizardHeader({ step, total, onBack }: { step: number; total: number; on
       {total > 0 && (
         <div className="h-[3px] bg-[#F3F4F6]">
           <div
-            className="h-full bg-[#673DE6] transition-all duration-300"
+            className="h-full bg-[#673DE5] transition-all duration-300"
             style={{ width: `${progress}%` }}
             data-testid="progress-wizard"
           />
@@ -678,7 +678,7 @@ function StepContainer({ title, subtitle, children }: { title: string; subtitle:
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-[28px] font-[800] text-[#1F2937] tracking-[-0.03em] leading-[1.1] mb-2" data-testid="text-step-title">{title}</h2>
+        <h2 className="text-[28px] font-[800] text-[#111827] tracking-[-0.03em] leading-[1.1] mb-2" data-testid="text-step-title">{title}</h2>
         <p className="text-[15px] text-[#6B7280]">{subtitle}</p>
       </div>
       {children}
@@ -689,11 +689,11 @@ function StepContainer({ title, subtitle, children }: { title: string; subtitle:
 function EstimateBadge({ estimate, loading }: { estimate: any; loading: boolean }) {
   if (loading) {
     return (
-      <div className="bg-[#F0EBFF] rounded-xl p-4 flex items-center gap-3 animate-pulse">
-        <div className="w-9 h-9 rounded-full bg-[#673DE6]/10" />
+      <div className="bg-[#DCDBFA] rounded-xl p-4 flex items-center gap-3 animate-pulse">
+        <div className="w-9 h-9 rounded-full bg-[#673DE5]/10" />
         <div className="flex-1">
-          <div className="h-3 bg-[#673DE6]/10 rounded w-32 mb-1" />
-          <div className="h-3 bg-[#673DE6]/10 rounded w-24" />
+          <div className="h-3 bg-[#673DE5]/10 rounded w-32 mb-1" />
+          <div className="h-3 bg-[#673DE5]/10 rounded w-24" />
         </div>
       </div>
     );
@@ -705,12 +705,12 @@ function EstimateBadge({ estimate, loading }: { estimate: any; loading: boolean 
   const perWeek = estimate.perWeekEstimate ?? count;
 
   return (
-    <div className="bg-[#F0EBFF] rounded-xl p-4 flex items-center gap-3" data-testid="badge-estimate">
-      <div className="w-9 h-9 rounded-full bg-[#673DE6]/10 flex items-center justify-center flex-shrink-0">
-        <Sparkles className="w-4 h-4 text-[#673DE6]" />
+    <div className="bg-[#DCDBFA] rounded-xl p-4 flex items-center gap-3" data-testid="badge-estimate">
+      <div className="w-9 h-9 rounded-full bg-[#673DE5]/10 flex items-center justify-center flex-shrink-0">
+        <Sparkles className="w-4 h-4 text-[#673DE5]" />
       </div>
       <div>
-        <p className="text-[14px] font-semibold text-[#1F2937]">
+        <p className="text-[14px] font-semibold text-[#111827]">
           ~{perWeek} {perWeek === 1 ? "match" : "matches"} per week
         </p>
         <p className="text-[13px] font-[500] text-[#6B7280]">
