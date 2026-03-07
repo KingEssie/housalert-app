@@ -379,7 +379,7 @@ function ProfileCard({
           <div>
             <div className="flex items-center gap-1.5">
               <h3 className="font-semibold text-[#111827] text-[15px]" data-testid={`text-profile-city-${profile.id}`}>
-                {profile.city}
+                {profile.city_name || profile.city}
               </h3>
               <span className="text-[10px] font-medium text-[#111827] bg-[#8BEA63] px-1.5 py-0.5 rounded-full" data-testid={`badge-status-${profile.id}`}>
                 Actief
@@ -401,6 +401,24 @@ function ProfileCard({
       </div>
 
       <div className="flex flex-wrap gap-2">
+        {profile.location_mode === "districts" && profile.districts && profile.districts.length > 0 && (
+          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#DCDBFA] text-[#673DE5] px-2.5 py-1 rounded-full" data-testid={`badge-districts-${profile.id}`}>
+            <MapPin className="w-3 h-3" />
+            {profile.districts.length === 1 ? profile.districts[0] : `${profile.districts.length} wijken`}
+          </span>
+        )}
+        {profile.location_mode === "radius" && profile.radius_km && (
+          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#DCDBFA] text-[#673DE5] px-2.5 py-1 rounded-full" data-testid={`badge-radius-${profile.id}`}>
+            <MapPin className="w-3 h-3" />
+            {profile.radius_km} km radius
+          </span>
+        )}
+        {profile.location_mode === "commute" && profile.commute_destination && (
+          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#DCDBFA] text-[#673DE5] px-2.5 py-1 rounded-full" data-testid={`badge-commute-${profile.id}`}>
+            <Clock className="w-3 h-3" />
+            {profile.commute_minutes ? `${profile.commute_minutes} min` : ""} {profile.commute_mode === "ov" ? "OV" : profile.commute_mode === "fiets" ? "fiets" : "auto"}
+          </span>
+        )}
         {(profile.price_min > 0 || profile.price_max > 0) && (
           <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#F3F4F6] text-[#111827] px-2.5 py-1 rounded-full">
             <Euro className="w-3 h-3" />

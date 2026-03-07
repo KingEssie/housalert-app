@@ -1,0 +1,112 @@
+Do a full end-to-end verification of the new location mode system.
+
+Goal:
+Verify that the new location search modes (Wijken / Radius / Reistijd) work correctly across frontend, backend, database, and saved search profile retrieval.
+
+Check all layers:
+- frontend UI
+- form state
+- API / save handlers
+- Supabase database writes
+- Supabase database reads
+- profile hydration / edit flows
+- onboarding flow
+- new search flow
+
+Test the following modes:
+
+1. Wijken mode
+- create a search profile using:
+  - city_name
+  - selected districts
+- confirm the UI saves successfully
+- confirm the database row contains the correct values
+- confirm the saved search can be reopened and the same districts are shown again in the UI
+- confirm map preview renders correctly
+
+2. Radius mode
+- create a search profile using:
+  - city_name
+  - center_lat
+  - center_lng
+  - radius_km
+- confirm the UI saves successfully
+- confirm the database row contains the correct values
+- confirm reopening the saved search restores the radius state correctly
+- confirm the map circle renders correctly
+
+3. Reistijd mode
+- create a search profile using:
+  - commute destination
+  - commute mode
+  - commute minutes
+  - city_name or extracted city if required
+- confirm the UI saves successfully
+- confirm the database row contains the correct values
+- confirm reopening the saved search restores all commute settings correctly
+- confirm map preview / destination pin works
+
+4. Database verification
+Inspect the search_profiles table and verify that the following fields are correctly used and populated where expected:
+
+- location_mode
+- city_name
+- country_code
+- latitude
+- longitude
+- place_id
+- districts
+- radius_km
+- commute_destination
+- commute_mode
+- commute_minutes
+
+Also verify no outdated fields are still being incorrectly used for location logic such as:
+- city
+- location
+- district
+unless intentionally kept as fallback.
+
+5. Frontend state verification
+Check that:
+- switching between Wijken / Radius / Reistijd updates the UI correctly
+- no stale values from another mode are incorrectly submitted
+- validation blocks incomplete submissions
+- the correct fields are submitted per mode
+
+6. Backend / persistence verification
+Check the save handler and load handler:
+- confirm the correct row is inserted or updated
+- confirm the saved values are read back correctly
+- confirm onboarding and new-search both use the same schema consistently
+
+7. Matching compatibility
+Verify that existing matching logic still works with the new schema.
+Specifically check:
+- city_name is still available for matching
+- no Berlin-only fallback remains
+- no save/read mismatch exists between city and city_name
+
+8. Error handling
+If any test fails:
+- identify exact layer where it fails:
+  - UI
+  - form submit
+  - API
+  - database schema
+  - read hydration
+- print the exact error
+- fix it
+
+9. Final report
+After testing, give me a concise report with:
+- what was tested
+- what passed
+- what failed
+- what was fixed
+- which files changed
+- whether the feature is truly production-ready
+
+10. Important
+Do not just say "it compiles".
+Actually test the create → save → read back → render again flow for all three location modes.
