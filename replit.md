@@ -21,15 +21,21 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - `client/src/pages/paywall.tsx` — Subscription plans at `/paywall` (Stripe placeholder)
 
 ### Design System (Hostinger-inspired)
-- **Primary**: #673DE5 (purple), hover #5B30D6
+- **Primary**: #673DE5 (purple), hover #5B30D6 — used for CTA buttons, active nav, brand accents only
 - **Icon backgrounds**: #DCDBFA with icon color #673DE5, border-radius 12px, padding 12px
+- **Success palette** (for progress/status/verification/completion):
+  - Main: #8BEA63 (progress fills, status badges, point badges)
+  - Dark: #78D953 (checkmark icons)
+  - Light: #EAF9DF (checkmark circle backgrounds, success banners)
+  - Text on green: #111827
 - **Text**: primary #111827, secondary #6B7280, placeholder #9CA3AF
 - **Backgrounds**: white (#FFFFFF), soft sections #F8FAFC, inputs #F3F4F6
 - **Borders**: #E5E7EB
 - **Buttons**: bg #673DE5, white text, rounded-[14px], min-h-[48px], font-weight 600
 - **Inputs**: bg #F3F4F6, no border, rounded-[14px], padding 16px
 - **Cards**: white bg, 1px #E5E7EB border, rounded-[18px], no shadow
-- **Labels (3 styles only)**:
+- **Labels/badges**:
+  - Success: bg #8BEA63, text #111827 (Actief, point badges)
   - Neon: bg #CBFF02, text #000000
   - Dark: bg #110C29, text white
   - Purple: bg #471EA7, text white
@@ -90,6 +96,7 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - `client/src/pages/viewing-tips.tsx` — Dedicated viewing tips page at `/tips/bezichtiging`. Five sections: Voor/Tijdens/Wat meenemen/Na de bezichtiging/Rode vlaggen. CTA to mark as completed.
 - `client/src/pages/legal.tsx` — Legal pages: `/impressum`, `/datenschutz`, `/terms` (German placeholder content)
 - `client/src/pages/paywall.tsx` — Subscription paywall with Stripe checkout; shows friendly message if Stripe not configured
+- `client/src/pages/subscription-detail.tsx` — Subscription detail page at `/account/subscription`. Shows plan type, status (green badge), price, start/renewal dates, billing frequency, auto-renew, payment method (mock). Actions: wijzigen, betaalmethode, opzeggen. Navigated from "Abonnement" in profile Account tab.
 
 ### Profile Page (ProfielTab)
 - Layout: BlaBlaCar-style two-tab profile layout ("Over jou" / "Account") on #F7F7F7 background

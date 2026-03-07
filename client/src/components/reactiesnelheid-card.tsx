@@ -65,8 +65,8 @@ export function calculateReactiesnelheid(rawDone: number, rawTotal: number): Rea
 }
 
 const LEVEL_STYLES: Record<SpeedLevel, { dotColor: string; barColor: string; labelColor: string }> = {
-  fast: { dotColor: "bg-[#673DE5]", barColor: "bg-[#673DE5]", labelColor: "text-[#673DE5] bg-[#DCDBFA]" },
-  almost: { dotColor: "bg-[#673DE5]", barColor: "bg-[#673DE5]", labelColor: "text-[#673DE5] bg-[#DCDBFA]" },
+  fast: { dotColor: "bg-[#8BEA63]", barColor: "bg-[#8BEA63]", labelColor: "text-[#111827] bg-[#EAF9DF]" },
+  almost: { dotColor: "bg-[#8BEA63]", barColor: "bg-[#8BEA63]", labelColor: "text-[#111827] bg-[#EAF9DF]" },
   building: { dotColor: "bg-[#E5E7EB]", barColor: "bg-[#E5E7EB]", labelColor: "text-[#6B7280] bg-[#F8FAFC]" },
 };
 

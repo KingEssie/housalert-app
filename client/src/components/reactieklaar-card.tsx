@@ -103,7 +103,7 @@ export function ReactieklaarCard({
         <h3 className="text-[15px] font-semibold text-[#111827] flex-1">Reactieklaar</h3>
         <span
           className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${
-            allDone ? "bg-[#DCDBFA] text-[#673DE5]" : "bg-[#DCDBFA] text-[#673DE5]"
+            allDone ? "bg-[#EAF9DF] text-[#111827]" : "bg-[#F3F4F6] text-[#6B7280]"
           }`}
           data-testid="text-reactieklaar-progress"
         >
@@ -132,7 +132,9 @@ export function ReactieklaarCard({
               data-testid={`reactieklaar-${step.id}`}
             >
               {step.done ? (
-                <CheckCircle2 className="w-[18px] h-[18px] text-[#673DE5] flex-shrink-0" />
+                <div className="w-[18px] h-[18px] rounded-full bg-[#EAF9DF] flex items-center justify-center flex-shrink-0">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#78D953]" />
+                </div>
               ) : (
                 <div className="w-[18px] h-[18px] rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
               )}
@@ -149,8 +151,8 @@ export function ReactieklaarCard({
       </div>
 
       {allDone && (
-        <div className="mt-4 bg-[#DCDBFA] rounded-xl px-3.5 py-2.5">
-          <p className="text-[12px] text-[#673DE5] font-medium flex items-center gap-1.5">
+        <div className="mt-4 bg-[#EAF9DF] rounded-xl px-3.5 py-2.5">
+          <p className="text-[12px] text-[#78D953] font-medium flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5" />
             Je bent klaar om snel te reageren
           </p>

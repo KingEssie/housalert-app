@@ -182,7 +182,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
               return (
                 <div key={item.id} className="flex items-center gap-1.5" data-testid={`readiness-${item.id}`}>
                   {item.done ? (
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#673DE5]" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#78D953]" />
                   ) : (
                     <AlertCircle className="w-3.5 h-3.5 text-[#E5E7EB]" />
                   )}
@@ -248,7 +248,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
               disabled={marked}
               className={`flex-1 h-[44px] rounded-xl text-[13px] font-semibold ${
                 marked
-                  ? "bg-[#DCDBFA] text-[#673DE5] border-[#DCDBFA]"
+                  ? "bg-[#EAF9DF] text-[#111827] border-[#EAF9DF]"
                   : "border-[#E5E7EB] text-[#111827]"
               }`}
               data-testid="button-mark-applied"

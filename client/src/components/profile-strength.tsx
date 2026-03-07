@@ -148,9 +148,9 @@ const TASK_DESCRIPTIONS: Record<string, string> = {
 };
 
 function getStatusLabel(score: number): { label: string; color: string; bg: string } {
-  if (score >= 80) return { label: "Klaar om snel te reageren", color: "text-[#673DE5]", bg: "bg-[#DCDBFA]" };
-  if (score >= 60) return { label: "Goed voorbereid", color: "text-[#673DE5]", bg: "bg-[#DCDBFA]" };
-  if (score >= 30) return { label: "Op weg", color: "text-[#673DE5]", bg: "bg-[#DCDBFA]" };
+  if (score >= 80) return { label: "Klaar om snel te reageren", color: "text-[#111827]", bg: "bg-[#EAF9DF]" };
+  if (score >= 60) return { label: "Goed voorbereid", color: "text-[#111827]", bg: "bg-[#EAF9DF]" };
+  if (score >= 30) return { label: "Op weg", color: "text-[#111827]", bg: "bg-[#EAF9DF]" };
   return { label: "Net begonnen", color: "text-[#6B7280]", bg: "bg-[#F8FAFC]" };
 }
 
@@ -206,7 +206,7 @@ export function ProfileStrengthCard() {
           className="h-full rounded-full transition-all duration-500"
           style={{
             width: `${pct}%`,
-            background: pct >= 30 ? "#673DE5" : "#6B7280",
+            background: pct >= 30 ? "#8BEA63" : "#6B7280",
           }}
           data-testid="progress-profile-strength"
         />
@@ -249,7 +249,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
             <span className="text-[13px] text-[#6B7280]">
               {completedCount}/{totalCount} taken voltooid
             </span>
-            <span className="text-[13px] font-medium text-[#673DE5]">{percentage}%</span>
+            <span className="text-[13px] font-medium text-[#78D953]">{percentage}%</span>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -261,7 +261,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
                 cy="18"
                 r="15.5"
                 fill="none"
-                stroke="#673DE5"
+                stroke="#8BEA63"
                 strokeWidth="3"
                 strokeDasharray={`${(percentage / 100) * 97.4} 97.4`}
                 strokeLinecap="round"
@@ -295,7 +295,9 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
                 disabled={task.completed}
               >
                 {task.completed ? (
-                  <CheckCircle2 className="w-5 h-5 text-[#673DE5] flex-shrink-0" />
+                  <div className="w-5 h-5 rounded-full bg-[#EAF9DF] flex items-center justify-center flex-shrink-0">
+                    <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
+                  </div>
                 ) : (
                   <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
                 )}
@@ -486,7 +488,9 @@ function TaskModal({
                         data-testid={`check-${item.id}`}
                       >
                         {checklist[item.id] ? (
-                          <CheckCircle2 className="w-5 h-5 text-[#673DE5] flex-shrink-0" />
+                          <div className="w-5 h-5 rounded-full bg-[#EAF9DF] flex items-center justify-center flex-shrink-0">
+                            <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
+                          </div>
                         ) : (
                           <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
                         )}
@@ -578,7 +582,7 @@ function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: string) 
             <span className="text-[13px] text-[#6B7280]">
               {prepCompletedCount}/{prepTotalCount} taken voltooid
             </span>
-            <span className="text-[13px] font-medium text-[#673DE5]">{percentage}%</span>
+            <span className="text-[13px] font-medium text-[#78D953]">{percentage}%</span>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -590,7 +594,7 @@ function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: string) 
                 cy="18"
                 r="15.5"
                 fill="none"
-                stroke="#673DE5"
+                stroke="#8BEA63"
                 strokeWidth="3"
                 strokeDasharray={`${(percentage / 100) * 97.4} 97.4`}
                 strokeLinecap="round"
@@ -624,7 +628,9 @@ function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: string) 
                 disabled={task.completed}
               >
                 {task.completed ? (
-                  <CheckCircle2 className="w-5 h-5 text-[#673DE5] flex-shrink-0" />
+                  <div className="w-5 h-5 rounded-full bg-[#EAF9DF] flex items-center justify-center flex-shrink-0">
+                    <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
+                  </div>
                 ) : (
                   <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
                 )}
@@ -830,7 +836,9 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
               {label}
             </span>
             {enabled ? (
-              <CheckCircle2 className="w-4 h-4 text-[#673DE5]" />
+              <div className="w-4 h-4 rounded-full bg-[#EAF9DF] flex items-center justify-center">
+                <CheckCircle2 className="w-3 h-3 text-[#78D953]" />
+              </div>
             ) : (
               <div className="w-4 h-4 rounded-full border-2 border-[#E5E7EB]" />
             )}
@@ -891,7 +899,7 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
         <div className="flex-1">
           <h3 className="text-[15px] font-semibold text-[#111827]">Reactiesnelheid</h3>
         </div>
-        <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${allDone ? "bg-[#DCDBFA] text-[#673DE5]" : "bg-[#DCDBFA] text-[#673DE5]"}`}>
+        <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${allDone ? "bg-[#EAF9DF] text-[#111827]" : "bg-[#DCDBFA] text-[#673DE5]"}`}>
           {speedDone}/{speedTotal}
         </span>
       </div>
@@ -909,7 +917,9 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
               data-testid={`speed-step-${step.id}`}
             >
               {step.done ? (
-                <CheckCircle2 className="w-4.5 h-4.5 text-[#673DE5] flex-shrink-0" />
+                <div className="w-5 h-5 rounded-full bg-[#EAF9DF] flex items-center justify-center flex-shrink-0">
+                  <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
+                </div>
               ) : (
                 <div className="w-4.5 h-4.5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
               )}
@@ -925,8 +935,8 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
       </div>
 
       {allDone && (
-        <div className="mt-4 bg-[#DCDBFA] rounded-xl px-3.5 py-2.5">
-          <p className="text-[12px] text-[#673DE5] font-medium flex items-center gap-1.5">
+        <div className="mt-4 bg-[#EAF9DF] rounded-xl px-3.5 py-2.5">
+          <p className="text-[12px] text-[#78D953] font-medium flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5" />
             Je bent klaar om snel te reageren
           </p>

@@ -1,0 +1,71 @@
+Update the mobile app UI with the following visual and functional changes.
+
+GOAL:
+Reduce the amount of purple in the interface. Keep purple only for brand accents, primary CTA buttons, and active navigation states. Use green for progress, status, verification, and completion-related UI.
+
+DESIGN CHANGES:
+1. Replace purple with green for all progress/success/status elements:
+   - Boost progress bar fill should be green
+   - Point badges like “+15” and “+20” should be green with black text
+   - Status pills like “Actief” should be green with black text
+   - Verified check indicators should be green circles with black check icons
+   - Subscription status badge “Actief” should be green with black text
+
+2. Keep purple only for:
+   - Primary buttons
+   - Active bottom navigation item
+   - Brand accents
+   - Important CTA links when appropriate
+
+3. Use a cleaner success palette:
+   - success green main: #8BEA63
+   - success green dark: #78D953
+   - success green light: #EAF9DF
+   - black text/icons on green badges: #111827
+
+4. Make sure the UI still feels premium, soft, and minimal. Do not overuse green outside of status/progress contexts.
+
+FUNCTIONAL CHANGE:
+Make the “Abonnement” section clickable from the Account tab.
+
+ROUTING:
+Create a new page:
+- /account/subscription
+or equivalent route in the current router structure
+
+WHEN USER TAPS:
+- “Abonnement”
+- or “Abonnement beheren”
+they should navigate to the subscription details page.
+
+SUBSCRIPTION PAGE CONTENT:
+Create a clean mobile-first subscription detail page showing:
+1. Current subscription type
+   - Example: Premium Maandelijks
+2. Status
+   - Example: Actief
+3. Price
+   - Example: €6,99 / maand
+4. Start date
+5. Next renewal date
+6. Billing frequency
+7. Auto-renew status
+8. Payment method (mock data allowed for now)
+9. Actions:
+   - Abonnement wijzigen
+   - Betaalmethode beheren
+   - Abonnement opzeggen
+
+UI REQUIREMENTS:
+- Use existing design system/components where possible
+- Reuse card styling from profile/account screens
+- Status badge on subscription page must also be green with black text
+- Maintain current rounded mobile card style
+- Keep spacing and typography consistent with the rest of the app
+
+MOCK DATA:
+If backend subscription data is not ready yet, create realistic mock subscription data and wire the page so it can later be connected to Supabase.
+
+IMPORTANT:
+Do not break the existing profile/account layout.
+Make only focused visual replacements where purple is currently used for progress/status/verified states.

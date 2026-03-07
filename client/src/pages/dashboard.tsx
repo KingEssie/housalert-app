@@ -357,7 +357,7 @@ function ProfileCard({
               <h3 className="font-semibold text-[#111827] text-[15px]" data-testid={`text-profile-city-${profile.id}`}>
                 {profile.city}
               </h3>
-              <span className="text-[10px] font-medium text-white bg-[#471EA7] px-1.5 py-0.5 rounded-full" data-testid={`badge-status-${profile.id}`}>
+              <span className="text-[10px] font-medium text-[#111827] bg-[#8BEA63] px-1.5 py-0.5 rounded-full" data-testid={`badge-status-${profile.id}`}>
                 Actief
               </span>
             </div>
@@ -465,7 +465,7 @@ function BoostTeaserCard({ setActiveTab }: { setActiveTab: (tab: TabKey) => void
 
           <div className="mt-3 h-1.5 bg-[#E5E7EB] rounded-full overflow-hidden">
             <div
-              className="h-full bg-[#673DE5] rounded-full transition-all duration-500"
+              className="h-full bg-[#8BEA63] rounded-full transition-all duration-500"
               style={{ width: `${boostScore}%` }}
             />
           </div>
@@ -1196,13 +1196,17 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
               <h2 className="text-[20px] font-bold text-[#111827] mb-4" data-testid="section-verified">Je hebt een Geverifieerd Profiel</h2>
               <div className="flex flex-col">
                 <div className="flex items-center gap-3 py-3">
-                  <CheckCircle2 className="w-5 h-5 text-[#673DE5] flex-shrink-0" />
+                  <div className="w-6 h-6 rounded-full bg-[#EAF9DF] flex items-center justify-center flex-shrink-0">
+                    <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
+                  </div>
                   <p className="text-[15px] text-[#111827]">{user.email}</p>
                 </div>
                 <div className="h-px bg-[#E5E7EB]" />
                 <div className="flex items-center gap-3 py-3">
                   {phone ? (
-                    <CheckCircle2 className="w-5 h-5 text-[#673DE5] flex-shrink-0" />
+                    <div className="w-6 h-6 rounded-full bg-[#EAF9DF] flex items-center justify-center flex-shrink-0">
+                      <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
+                    </div>
                   ) : (
                     <AlertCircle className="w-5 h-5 text-[#9CA3AF] flex-shrink-0" />
                   )}
@@ -1299,16 +1303,12 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                 <AccountSettingsRow
                   label="Abonnement"
                   subtext={subscriptionSubtitle}
-                  onClick={() => {
-                    if (subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) {
-                      navigate("/paywall");
-                    }
-                  }}
+                  onClick={() => navigate("/account/subscription")}
                   trailing={
                     <span
                       className={`text-[12px] font-[600] px-2.5 py-1 rounded-full flex-shrink-0 ${
                         subscription.isActive && !subscription.isTrial
-                          ? "text-white bg-[#471EA7]"
+                          ? "text-[#111827] bg-[#8BEA63]"
                           : subscription.isTrial
                           ? "text-[#000000] bg-[#CBFF02]"
                           : "text-white bg-[#110C29]"
@@ -1323,7 +1323,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                 <AccountSettingsRow
                   label="Abonnement beheren"
                   subtext="Wijzigen of opzeggen"
-                  onClick={() => navigate("/paywall")}
+                  onClick={() => navigate("/account/subscription")}
                 />
               </div>
             </div>

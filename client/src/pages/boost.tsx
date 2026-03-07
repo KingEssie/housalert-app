@@ -142,9 +142,9 @@ function getScoreMicrocopy(score: number, remaining: number): string {
 }
 
 function getScoreColor(score: number): string {
-  if (score >= 80) return "#673DE5";
-  if (score >= 60) return "#673DE5";
-  if (score >= 30) return "#673DE5";
+  if (score >= 80) return "#8BEA63";
+  if (score >= 60) return "#8BEA63";
+  if (score >= 30) return "#8BEA63";
   return "#6B7280";
 }
 
@@ -237,7 +237,7 @@ function RecommendedSection({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
                     <p className="text-[15px] font-semibold text-[#111827] leading-snug">{task.label}</p>
-                    <span className="text-[12px] font-semibold text-[#673DE5] bg-[#DCDBFA] px-2 py-0.5 rounded-full flex-shrink-0 whitespace-nowrap" data-testid={`badge-points-${task.id}`}>
+                    <span className="text-[12px] font-semibold text-[#111827] bg-[#8BEA63] px-2 py-0.5 rounded-full flex-shrink-0 whitespace-nowrap" data-testid={`badge-points-${task.id}`}>
                       +{task.weight}
                     </span>
                   </div>
@@ -309,7 +309,9 @@ function AllTasksSection({
               }`}
               data-testid={`task-done-${task.id}`}
             >
-              <CheckCircle2 className="w-5 h-5 text-[#673DE5] flex-shrink-0" />
+              <div className="w-5 h-5 rounded-full bg-[#EAF9DF] flex items-center justify-center flex-shrink-0">
+                <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
+              </div>
               <Icon className="w-4 h-4 text-[#6B7280] flex-shrink-0" />
               <p className="text-[14px] text-[#6B7280] line-through">{task.label}</p>
             </div>
@@ -476,7 +478,9 @@ function TaskModal({
                     data-testid={`check-${item.id}`}
                   >
                     {checklist[item.id] ? (
-                      <CheckCircle2 className="w-5 h-5 text-[#673DE5] flex-shrink-0" />
+                      <div className="w-5 h-5 rounded-full bg-[#EAF9DF] flex items-center justify-center flex-shrink-0">
+                        <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
+                      </div>
                     ) : (
                       <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
                     )}
@@ -509,7 +513,9 @@ function TaskModal({
                     data-testid={`check-${item.id}`}
                   >
                     {checklist[item.id] ? (
-                      <CheckCircle2 className="w-5 h-5 text-[#673DE5] flex-shrink-0" />
+                      <div className="w-5 h-5 rounded-full bg-[#EAF9DF] flex items-center justify-center flex-shrink-0">
+                        <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
+                      </div>
                     ) : (
                       <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
                     )}

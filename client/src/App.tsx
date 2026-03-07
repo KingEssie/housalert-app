@@ -21,6 +21,7 @@ import ViewingTipsPage from "@/pages/viewing-tips";
 import ProfileDetailsPage from "@/pages/profile-details";
 import ProfileEditPage from "@/pages/profile-edit";
 import { ImpressumPage, DatenschutzPage, TermsPage } from "@/pages/legal";
+import SubscriptionDetailPage from "@/pages/subscription-detail";
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
   const { user, loading } = useAuth();
@@ -47,6 +48,7 @@ function Router() {
       <Route path="/profile/details" component={() => <ProtectedRoute component={ProfileDetailsPage} />} />
       <Route path="/profile/edit/:field" component={() => <ProtectedRoute component={ProfileEditPage} />} />
       <Route path="/tips/bezichtiging" component={() => <ProtectedRoute component={ViewingTipsPage} />} />
+      <Route path="/account/subscription" component={() => <ProtectedRoute component={SubscriptionDetailPage} />} />
       <Route path="/impressum" component={ImpressumPage} />
       <Route path="/datenschutz" component={DatenschutzPage} />
       <Route path="/terms" component={TermsPage} />
