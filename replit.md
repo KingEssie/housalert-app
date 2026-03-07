@@ -20,6 +20,14 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - `client/src/pages/signup.tsx` — Account creation at `/signup` (creates search profile)
 - `client/src/pages/paywall.tsx` — Subscription plans at `/paywall` (Stripe placeholder)
 
+### City Picker
+- `client/src/components/city-picker.tsx` — Reusable city autocomplete with Nominatim geocoding + Leaflet map preview
+  - Uses OpenStreetMap Nominatim API (free, no key) restricted to Germany (`countrycodes=de`)
+  - Returns `SelectedPlace` object with `city_name`, `country_code`, `latitude`, `longitude`, `place_id`
+  - Used in: `onboarding.tsx` (CityStep), `new-search.tsx` (step 2)
+  - Dependencies: `leaflet`, `react-leaflet@4`, `@types/leaflet`
+- **PENDING MIGRATION**: `server/migrations/011_search_profiles_geo_columns.sql` must be run in Supabase SQL Editor
+
 ### Design System (Hostinger-inspired)
 - **Primary**: #673DE5 (purple), hover #5B30D6 — used for CTA buttons, active nav, brand accents only
 - **Icon backgrounds**: #DCDBFA with icon color #673DE5, border-radius 12px, padding 12px
@@ -269,6 +277,11 @@ CREATE TABLE search_profiles (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id uuid NOT NULL,
   city text NOT NULL,
+  city_name text,
+  country_code text DEFAULT 'DE',
+  latitude double precision,
+  longitude double precision,
+  place_id text,
   price_min integer DEFAULT 0,
   price_max integer DEFAULT 0,
   bedrooms_min integer DEFAULT 0,

@@ -7,7 +7,8 @@ import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
-import { defaultCityNames, cityDistricts } from "../../../config/market";
+import { cityDistricts } from "../../../config/market";
+import CityPicker, { type SelectedPlace } from "@/components/city-picker";
 import {
   ArrowLeft,
   ArrowRight,
@@ -90,8 +91,7 @@ export default function NewSearchPage() {
   const { toast } = useToast();
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
-  const [citySearch, setCitySearch] = useState("");
-  const [showCityDropdown, setShowCityDropdown] = useState(false);
+  const [selectedPlace, setSelectedPlace] = useState<SelectedPlace | null>(null);
 
   const [data, setData] = useState<WizardData>({
     propertyType: "",
@@ -115,10 +115,12 @@ export default function NewSearchPage() {
   const profileCount = profilesQuery.data?.length ?? 0;
   const atLimit = profileCount >= MAX_PROFILES;
 
+  const cityName = selectedPlace?.city_name ?? data.city;
+
   const estimateQuery = useQuery({
-    queryKey: ["/api/estimate", data.city, data.priceMin, data.priceMax, data.bedroomsMin, data.sizeMin],
+    queryKey: ["/api/estimate", cityName, data.priceMin, data.priceMax, data.bedroomsMin, data.sizeMin],
     queryFn: async () => {
-      const params = new URLSearchParams({ city: data.city });
+      const params = new URLSearchParams({ city: cityName });
       if (data.priceMin) params.set("minPrice", data.priceMin);
       if (data.priceMax) params.set("maxPrice", data.priceMax);
       if (data.bedroomsMin > 0) params.set("minRooms", String(data.bedroomsMin));
@@ -127,15 +129,11 @@ export default function NewSearchPage() {
       if (!res.ok) return null;
       return res.json();
     },
-    enabled: !!data.city && step >= 3,
+    enabled: !!cityName && step >= 3,
     staleTime: 30000,
   });
 
-  const filteredCities = citySearch.length > 0
-    ? defaultCityNames.filter((c) => c.toLowerCase().includes(citySearch.toLowerCase()))
-    : defaultCityNames;
-
-  const availableDistricts = cityDistricts[data.city] ?? [];
+  const availableDistricts = cityDistricts[cityName] ?? [];
 
   const update = useCallback((partial: Partial<WizardData>) => {
     setData((prev) => ({ ...prev, ...partial }));
@@ -144,7 +142,7 @@ export default function NewSearchPage() {
   const canProceed = (): boolean => {
     switch (step) {
       case 1: return !!data.propertyType;
-      case 2: return !!data.city;
+      case 2: return !!selectedPlace;
       case 3: return true;
       case 4: return true;
       case 5: return true;
@@ -155,13 +153,11 @@ export default function NewSearchPage() {
 
   const goNext = () => {
     if (step < TOTAL_STEPS) {
-      setShowCityDropdown(false);
       setStep(step + 1);
     }
   };
 
   const goBack = () => {
-    setShowCityDropdown(false);
     if (step > 1) setStep(step - 1);
     else navigate("/dashboard");
   };
@@ -171,7 +167,7 @@ export default function NewSearchPage() {
       toast({ title: "Limiet bereikt", description: `Max ${MAX_PROFILES} zoekopdrachten.`, variant: "destructive" });
       return;
     }
-    if (!data.city.trim()) {
+    if (!selectedPlace) {
       toast({ title: "Stad is verplicht", variant: "destructive" });
       setStep(2);
       return;
@@ -190,7 +186,12 @@ export default function NewSearchPage() {
     try {
       const profile = await createSearchProfile({
         user_id: user!.id,
-        city: data.city.trim(),
+        city: selectedPlace.city_name,
+        city_name: selectedPlace.city_name,
+        country_code: selectedPlace.country_code,
+        latitude: selectedPlace.latitude,
+        longitude: selectedPlace.longitude,
+        place_id: selectedPlace.place_id,
         price_min: parsedPriceMin,
         price_max: parsedPriceMax,
         bedrooms_min: data.bedroomsMin,
@@ -309,57 +310,15 @@ export default function NewSearchPage() {
             subtitle="Kies een stad en optioneel wijken."
           >
             <div className="flex flex-col gap-5">
-              <div className="relative">
+              <div>
                 <label className="text-[16px] font-[700] text-[#111827] mb-3 block">Stad</label>
-                <button
-                  onClick={() => setShowCityDropdown(!showCityDropdown)}
-                  className={`w-full h-[52px] px-4 rounded-xl border-0 text-left flex items-center justify-between transition-all ${
-                    data.city ? "bg-[#DCDBFA] text-[#111827] ring-2 ring-[#673DE5]/15" : "bg-[#F3F4F6] text-[#6B7280]"
-                  }`}
-                  data-testid="button-select-city"
-                >
-                  <div className="flex items-center gap-3">
-                    <MapPin className="w-4 h-4 text-[#6B7280]" />
-                    <span className="text-[15px]">{data.city || "Selecteer een stad"}</span>
-                  </div>
-                  <ChevronDown className={`w-4 h-4 text-[#6B7280] transition-transform ${showCityDropdown ? "rotate-180" : ""}`} />
-                </button>
-
-                {showCityDropdown && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] z-20 max-h-[280px] overflow-hidden flex flex-col">
-                    <div className="p-3 border-b border-[#F3F4F6]">
-                      <input
-                        type="text"
-                        value={citySearch}
-                        onChange={(e) => setCitySearch(e.target.value)}
-                        placeholder="Zoek stad..."
-                        className="w-full h-[44px] px-3 rounded-xl border-0 bg-[#E5E7EB] text-[14px] font-medium text-[#111827] placeholder:text-[#6B7280] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE5]/15 focus:bg-[#F8FAFC] transition-all"
-                        autoFocus
-                        data-testid="input-city-search"
-                      />
-                    </div>
-                    <div className="overflow-y-auto max-h-[220px]">
-                      {filteredCities.map((c) => (
-                        <button
-                          key={c}
-                          onClick={() => {
-                            update({ city: c, districts: [] });
-                            setShowCityDropdown(false);
-                            setCitySearch("");
-                          }}
-                          className={`w-full text-left px-4 py-3 text-[14px] transition-colors ${
-                            data.city === c
-                              ? "bg-[#DCDBFA] text-[#673DE5] font-medium"
-                              : "text-[#111827] hover:bg-[#F3F4F6]"
-                          }`}
-                          data-testid={`option-city-${c}`}
-                        >
-                          {c}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                <CityPicker
+                  value={selectedPlace}
+                  onChange={(place) => {
+                    setSelectedPlace(place);
+                    update({ city: place?.city_name ?? "", districts: [] });
+                  }}
+                />
               </div>
 
               {availableDistricts.length > 0 && (

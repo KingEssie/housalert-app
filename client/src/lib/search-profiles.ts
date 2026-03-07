@@ -4,6 +4,11 @@ export interface SearchProfile {
   id: string;
   user_id: string;
   city: string;
+  city_name?: string;
+  country_code?: string;
+  latitude?: number;
+  longitude?: number;
+  place_id?: string;
   price_min: number;
   price_max: number;
   bedrooms_min: number;

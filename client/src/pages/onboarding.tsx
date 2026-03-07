@@ -1,10 +1,10 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { createSearchProfile } from "@/lib/search-profiles";
-import { defaultCityNames } from "../../../config/market";
 import { Bell, MapPin, Search, ChevronRight, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import CityPicker, { type SelectedPlace } from "@/components/city-picker";
 
 const PROPERTY_TYPES = [
   { value: "studio", label: "Studio" },
@@ -72,23 +72,14 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
 }
 
 function CityStep({
-  city,
-  setCity,
+  place,
+  setPlace,
   onNext,
 }: {
-  city: string;
-  setCity: (v: string) => void;
+  place: SelectedPlace | null;
+  setPlace: (v: SelectedPlace | null) => void;
   onNext: () => void;
 }) {
-  const [query, setQuery] = useState("");
-  const [open, setOpen] = useState(false);
-
-  const filtered = useMemo(() => {
-    if (!query.trim()) return defaultCityNames;
-    const q = query.toLowerCase();
-    return defaultCityNames.filter((c) => c.toLowerCase().includes(q));
-  }, [query]);
-
   return (
     <div className="flex flex-col min-h-screen px-6 pt-4">
       <div className="flex-1">
@@ -100,59 +91,16 @@ function CityStep({
           Waar wil je wonen?
         </h2>
         <p className="text-[15px] text-[#6B7280] mb-6">
-          Kies de stad waar je een woning zoekt.
+          Zoek een stad in Duitsland.
         </p>
 
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Zoek een stad..."
-            value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              setOpen(true);
-            }}
-            onFocus={() => setOpen(true)}
-            className="w-full min-h-[52px] rounded-[14px] bg-[#F3F4F6] border border-[#E5E7EB] px-4 text-[16px] text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#673DE5] focus:border-transparent"
-            data-testid="input-city-search"
-          />
-
-          {open && filtered.length > 0 && (
-            <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-[#E5E7EB] rounded-[14px] shadow-lg max-h-[240px] overflow-y-auto z-10">
-              {filtered.map((c) => (
-                <button
-                  key={c}
-                  onClick={() => {
-                    setCity(c);
-                    setQuery(c);
-                    setOpen(false);
-                  }}
-                  className={`w-full text-left px-4 py-3 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] ${
-                    city === c
-                      ? "bg-[#DCDBFA] text-[#673DE5] font-semibold"
-                      : "text-[#111827] hover:bg-[#F8FAFC]"
-                  }`}
-                  data-testid={`option-city-${c}`}
-                >
-                  {c}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {city && (
-          <div className="mt-4 inline-flex items-center gap-2 bg-[#DCDBFA] text-[#673DE5] font-semibold text-[14px] px-4 py-2 rounded-full">
-            <MapPin className="w-4 h-4" />
-            {city}
-          </div>
-        )}
+        <CityPicker value={place} onChange={setPlace} />
       </div>
 
       <div className="pb-8 pt-4">
         <button
           onClick={onNext}
-          disabled={!city}
+          disabled={!place}
           className="w-full min-h-[52px] rounded-[14px] bg-[#673DE5] hover:bg-[#5B30D6] text-white font-semibold text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           data-testid="button-city-next"
         >
@@ -350,7 +298,7 @@ export default function OnboardingPage() {
   const { toast } = useToast();
 
   const [step, setStep] = useState(0);
-  const [city, setCity] = useState("");
+  const [place, setPlace] = useState<SelectedPlace | null>(null);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [propertyType, setPropertyType] = useState("");
@@ -362,7 +310,12 @@ export default function OnboardingPage() {
     try {
       await createSearchProfile({
         user_id: user.id,
-        city,
+        city: place?.city_name ?? "",
+        city_name: place?.city_name,
+        country_code: place?.country_code,
+        latitude: place?.latitude,
+        longitude: place?.longitude,
+        place_id: place?.place_id,
         price_min: minPrice ? Number(minPrice) : 0,
         price_max: Number(maxPrice),
         bedrooms_min: 1,
@@ -400,7 +353,7 @@ export default function OnboardingPage() {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ city }),
+            body: JSON.stringify({ city: place?.city_name ?? "" }),
           });
         }
       } catch {
@@ -426,7 +379,7 @@ export default function OnboardingPage() {
       <ProgressBar step={step} total={4} />
 
       {step === 1 && (
-        <CityStep city={city} setCity={setCity} onNext={() => setStep(2)} />
+        <CityStep place={place} setPlace={setPlace} onNext={() => setStep(2)} />
       )}
       {step === 2 && (
         <BudgetStep
