@@ -18,6 +18,8 @@ import NotFound from "@/pages/not-found";
 import ListingDetailPage from "@/pages/listing-detail";
 import ApplicationLetterPage from "@/pages/application-letter";
 import ViewingTipsPage from "@/pages/viewing-tips";
+import ProfileDetailsPage from "@/pages/profile-details";
+import ProfileEditPage from "@/pages/profile-edit";
 import { ImpressumPage, DatenschutzPage, TermsPage } from "@/pages/legal";
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
@@ -42,6 +44,8 @@ function Router() {
       <Route path="/settings/notifications" component={() => <ProtectedRoute component={NotificationSettingsPage} />} />
       <Route path="/listing/:id" component={() => <ProtectedRoute component={ListingDetailPage} />} />
       <Route path="/application-letter" component={() => <ProtectedRoute component={ApplicationLetterPage} />} />
+      <Route path="/profile/details" component={() => <ProtectedRoute component={ProfileDetailsPage} />} />
+      <Route path="/profile/edit/:field" component={() => <ProtectedRoute component={ProfileEditPage} />} />
       <Route path="/tips/bezichtiging" component={() => <ProtectedRoute component={ViewingTipsPage} />} />
       <Route path="/impressum" component={ImpressumPage} />
       <Route path="/datenschutz" component={DatenschutzPage} />

@@ -79,11 +79,17 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - `client/src/pages/paywall.tsx` — Subscription paywall with Stripe checkout; shows friendly message if Stripe not configured
 
 ### Profile Page (ProfielTab)
-- Layout: BlaBlaCar-style list-based settings layout (not card-wrapped)
-- Helper components (in dashboard.tsx): `ProfileListItem` (title + optional subtitle + chevron/trailing), `ProfileDivider` (#F1F1F1 1px), `ProfileSectionTitle` (20px/600)
-- Typography: titles 16px/500 #111, subtitles 14px/500 #6B7280, section titles 20px/600 #111
-- Sections: user avatar header, ReactiesnelheidCard (card), ReactieklaarCard (card), "Instellingen" list (notifications + subscription), "Account" list (logout)
-- NotificationSummaryCard removed from ProfielTab (was redundant with notification settings row)
+- Layout: BlaBlaCar-style two-tab profile layout ("Over jou" / "Account")
+- "Over jou" tab: profile header (avatar + display name + chevron → /profile/details), KPI row (ontvangen matches + verstuurde reacties from /api/profile-stats), verified section (email + phone with check icons), reactiebrief section (letter preview or empty state → /application-letter)
+- "Account" tab: notification settings, subscription with badge, upgrade CTA (if expired), logout
+- No boxed card containers — uses open, left-aligned list-based layout
+- Profile name: first_name + last_name from user_profile_data, fallback to auth metadata full_name, fallback to email prefix
+
+### Personal Details Pages
+- `/profile/details` (client/src/pages/profile-details.tsx): Clean list of personal fields (Voornaam, Achternaam, Geboortedatum, E-mailadres, Mobiele nummer, Biografie). Each editable field tappable → opens edit screen. Email is read-only.
+- `/profile/edit/:field` (client/src/pages/profile-edit.tsx): Single-field edit screen with large question title, input field, blue save button, close icon. Saves to /api/profile-data (profile fields) or /api/notifications/settings (phone).
+- New profile columns: first_name, last_name, date_of_birth, bio in user_profile_data table (migration: server/migrations/007_profile_fields.sql)
+- `GET /api/profile-stats`: Returns { matches_received, reactions_sent } counts from matches table
 
 ### Profile Strength & Account Completion
 - `client/src/components/profile-strength.tsx` — ProfileStrengthCard (score/100 with status label), AccountCompletionCard (expandable task list), TaskModal (flows for each task)

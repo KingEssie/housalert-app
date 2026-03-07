@@ -1,0 +1,85 @@
+Redesign the Profile section to match the BlaBlaCar-style layout much more closely.
+
+Goal:
+Remove dashboard-like boxed menu groups and create a clean, left-aligned, profile-first layout.
+
+Main requirements:
+
+1. Profile main screen redesign
+Use a layout similar to the BlaBlaCar profile screen.
+
+Structure:
+- top tabs: "Over jou" and "Account"
+- profile photo
+- user full name: use first name + last name
+- remove the "Ambassadeur" subtitle
+- add a subtle chevron on the right of the profile header row
+
+2. KPI row
+Below the profile header, show 2 KPI blocks in one horizontal row:
+- left: number of ontvangen matches
+- right: number of verstuurde reacties
+
+Use a clean BlaBlaCar-style info row, not a heavy dashboard card.
+
+3. Remove boxed menu item groups
+Do not place menu items inside large card containers anymore.
+Everything should feel more open, left-aligned, and list-based.
+
+4. Verified section
+Replace the current blocks with a clean section:
+Title:
+"Je hebt een geverifieerd profiel"
+Rows:
+- e-mailadres
+- telefoonnummer
+with check icons
+
+5. Replace "Over jou" section with "Reactiebrief"
+Show:
+- section title: "Reactiebrief"
+- preview of the current application letter
+- actions for edit/copy if appropriate
+
+6. Personal details editing flow
+When user taps "Persoonlijke gegevens bewerken", open a details overview screen like the provided reference.
+
+Fields:
+- Voornaam
+- Achternaam
+- Geboortedatum
+- E-mailadres
+- Mobiele nummer
+- Biografie
+
+Each item should be presented in the same clean layout style as the reference:
+label + value + divider, no heavy card blocks.
+
+7. Single field edit screens
+When user taps a field (for example Voornaam), open a dedicated edit screen in the same style as the reference:
+- large question title (e.g. "Wat is je voornaam?")
+- one large soft-gray input field
+- blue save button
+- close icon top-left
+
+Apply this same pattern for all editable personal fields.
+
+8. Typography and spacing
+Match the BlaBlaCar visual rhythm:
+- large bold navy page titles
+- section titles like "Over jou" style
+- consistent left alignment
+- more whitespace between sections
+- no unnecessary containers
+- same text colors, sizes, spacing, and hierarchy as closely as possible
+
+9. Keep functionality intact
+Do not remove existing data logic.
+This is a profile UX/layout redesign.
+
+After implementation:
+- show screenshots of:
+  1. new profile main screen
+  2. personal details overview screen
+  3. single field edit screen
+- list files changed

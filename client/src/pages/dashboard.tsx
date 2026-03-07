@@ -12,8 +12,6 @@ import { SubscriptionGate } from "@/components/subscription-gate";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { ReactieklaarCard } from "@/components/reactieklaar-card";
-import { ReactiesnelheidCard } from "@/components/reactiesnelheid-card";
 import { ApplySheet } from "@/components/apply-sheet";
 import {
   Home,
@@ -46,7 +44,6 @@ import {
   Zap,
 } from "lucide-react";
 import { PopulairVandaagSection } from "@/components/populair-vandaag";
-import { ListSection, ListRow, ListDivider } from "@/components/list-section";
 import BoostPage from "@/pages/boost";
 
 const MAX_PROFILES = 4;
@@ -937,8 +934,49 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
   );
 }
 
+type ProfileSubTab = "over" | "account";
+
 function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null }; setActiveTab: (tab: TabKey) => void }) {
   const [signingOut, setSigningOut] = useState(false);
+  const [profileSubTab, setProfileSubTab] = useState<ProfileSubTab>("over");
+
+  const profileDataQuery = useQuery({
+    queryKey: ["/api/profile-data"],
+    queryFn: async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return null;
+      const res = await fetch("/api/profile-data", { headers: { Authorization: `Bearer ${session.access_token}` } });
+      return res.json();
+    },
+  });
+
+  const notifQuery = useQuery({
+    queryKey: ["/api/notifications/settings"],
+    queryFn: async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return null;
+      const res = await fetch("/api/notifications/settings", { headers: { Authorization: `Bearer ${session.access_token}` } });
+      return res.json();
+    },
+  });
+
+  const statsQuery = useQuery({
+    queryKey: ["/api/profile-stats"],
+    queryFn: async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return { matches_received: 0, reactions_sent: 0 };
+      const res = await fetch("/api/profile-stats", { headers: { Authorization: `Bearer ${session.access_token}` } });
+      return res.json();
+    },
+  });
+
+  const pd = profileDataQuery.data;
+  const phone = notifQuery.data?.phone_e164;
+  const stats = statsQuery.data ?? { matches_received: 0, reactions_sent: 0 };
+
+  const displayName = [pd?.first_name, pd?.last_name].filter(Boolean).join(" ") || user.user_metadata?.full_name || user.email?.split("@")[0] || "";
+  const initials = displayName ? displayName.split(" ").map((w: string) => w[0]).join("").toUpperCase().slice(0, 2) : user.email?.[0]?.toUpperCase() ?? "?";
+  const letterPreview = pd?.application_template?.slice(0, 120) || null;
 
   async function handleSignOut() {
     setSigningOut(true);
@@ -952,79 +990,180 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
     ? `Proefperiode tot ${subscription.trialEndsAt ? new Date(subscription.trialEndsAt).toLocaleDateString("de-DE", { day: "numeric", month: "short" }) : ""}`
     : "Verlopen";
 
-  const subscriptionBadge = (
-    <span
-      className={`text-[12px] font-[500] px-2.5 py-1 rounded-full flex-shrink-0 ${
-        subscription.isActive && !subscription.isTrial
-          ? "text-green-600 bg-green-50"
-          : subscription.isTrial
-          ? "text-[#0066FF] bg-blue-50"
-          : "text-red-500 bg-red-50"
-      }`}
-      data-testid="text-subscription-status"
-    >
-      {subscription.isActive && !subscription.isTrial ? "Actief" : subscription.isTrial ? "Proef" : "Verlopen"}
-    </span>
-  );
+  const PROFILE_SUBTABS: { key: ProfileSubTab; label: string }[] = [
+    { key: "over", label: "Over jou" },
+    { key: "account", label: "Account" },
+  ];
 
   return (
-    <div className="flex flex-col gap-7 pb-6">
-      <div className="flex items-center gap-3.5 pt-1">
-        <div className="w-14 h-14 rounded-full bg-[#EDF2FF] flex items-center justify-center flex-shrink-0">
-          <span className="text-[20px] font-bold text-[#0066FF]">
-            {user.email?.[0]?.toUpperCase() ?? "?"}
-          </span>
-        </div>
-        <div className="min-w-0">
-          <p className="text-[18px] font-[600] text-[#0F172A] truncate" data-testid="text-user-email">{user.email}</p>
-          <p className="text-row-subtitle">Persoonlijk account</p>
-        </div>
+    <div className="flex flex-col pb-6">
+      <div className="flex gap-0 mb-6 border-b border-[#E5E7EB]">
+        {PROFILE_SUBTABS.map(t => (
+          <button
+            key={t.key}
+            onClick={() => setProfileSubTab(t.key)}
+            className={`flex-1 text-center py-3 text-[15px] font-semibold transition-colors ${
+              profileSubTab === t.key
+                ? "text-[#0066FF] border-b-2 border-[#0066FF]"
+                : "text-[#6B7280]"
+            }`}
+            data-testid={`tab-profile-${t.key}`}
+          >
+            {t.label}
+          </button>
+        ))}
       </div>
 
-      <ReactiesnelheidCard onTap={() => setActiveTab("boost")} />
+      {profileSubTab === "over" ? (
+        <div className="flex flex-col gap-8">
+          <button
+            onClick={() => navigate("/profile/details")}
+            className="flex items-center gap-4 px-1 text-left active:opacity-80 transition-opacity"
+            data-testid="button-profile-header"
+          >
+            <div className="w-16 h-16 rounded-full bg-[#EDF2FF] flex items-center justify-center flex-shrink-0">
+              <span className="text-[22px] font-bold text-[#0066FF]">{initials}</span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[20px] font-[700] text-[#0F172A] truncate" data-testid="text-user-name">{displayName}</p>
+            </div>
+            <ChevronRight className="w-5 h-5 text-[#9CA3AF] flex-shrink-0" />
+          </button>
 
-      <ReactieklaarCard navigate={navigate} onStepClick={() => setActiveTab("boost")} />
+          <div className="flex gap-0 border-y border-[#E5E7EB]">
+            <div className="flex-1 py-4 text-center" data-testid="kpi-matches">
+              <p className="text-[22px] font-bold text-[#0F172A]">{stats.matches_received}</p>
+              <p className="text-[13px] text-[#6B7280] mt-0.5">Ontvangen matches</p>
+            </div>
+            <div className="w-px bg-[#E5E7EB]" />
+            <div className="flex-1 py-4 text-center" data-testid="kpi-reactions">
+              <p className="text-[22px] font-bold text-[#0F172A]">{stats.reactions_sent}</p>
+              <p className="text-[13px] text-[#6B7280] mt-0.5">Verstuurde reacties</p>
+            </div>
+          </div>
 
-      <ListSection title="Instellingen">
-        <ListRow
-          title="Meldingsinstellingen"
-          subtitle="E-mail, SMS, WhatsApp"
-          icon={<div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center"><Bell className="w-[18px] h-[18px] text-[#0066FF]" /></div>}
-          onClick={() => navigate("/settings/notifications")}
-          testId="button-notification-settings"
-        />
-        <ListDivider />
-        <ListRow
-          title="Abonnement"
-          subtitle={subscriptionSubtitle}
-          icon={<div className={`w-10 h-10 rounded-full flex items-center justify-center ${subscription.isActive ? "bg-green-50" : subscription.isTrial ? "bg-blue-50" : "bg-red-50"}`}>{subscription.isActive ? <CheckCircle2 className="w-[18px] h-[18px] text-green-600" /> : subscription.isTrial ? <Crown className="w-[18px] h-[18px] text-[#0066FF]" /> : <AlertTriangle className="w-[18px] h-[18px] text-red-500" />}</div>}
-          trailing={subscriptionBadge}
-          testId="item-subscription"
-        />
-      </ListSection>
+          <div>
+            <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide px-1 mb-3" data-testid="section-verified">Geverifieerd profiel</p>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-3 py-3 px-1">
+                <CheckCircle2 className="w-[18px] h-[18px] text-green-500 flex-shrink-0" />
+                <p className="text-[15px] text-[#0F172A]">E-mailadres</p>
+              </div>
+              <div className="h-px bg-[#F2F5F8] ml-8" />
+              <div className="flex items-center gap-3 py-3 px-1">
+                {phone ? (
+                  <CheckCircle2 className="w-[18px] h-[18px] text-green-500 flex-shrink-0" />
+                ) : (
+                  <AlertCircle className="w-[18px] h-[18px] text-[#9CA3AF] flex-shrink-0" />
+                )}
+                <p className={`text-[15px] ${phone ? "text-[#0F172A]" : "text-[#9CA3AF]"}`}>Telefoonnummer</p>
+              </div>
+            </div>
+          </div>
 
-      {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
-        <button
-          onClick={() => navigate("/paywall")}
-          className="w-full h-[52px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-[600] transition-colors flex items-center justify-center gap-2"
-          data-testid="button-upgrade-subscription"
-        >
-          <Crown className="w-4 h-4" />
-          Kies een abonnement
-        </button>
+          <div>
+            <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide px-1 mb-3">Reactiebrief</p>
+            {letterPreview ? (
+              <button
+                onClick={() => navigate("/application-letter")}
+                className="w-full text-left bg-[#F9FAFB] rounded-xl p-4 active:bg-[#F2F5F8] transition-colors"
+                data-testid="button-letter-preview"
+              >
+                <p className="text-[14px] text-[#0F172A] leading-relaxed line-clamp-3">{letterPreview}...</p>
+                <p className="text-[13px] font-semibold text-[#0066FF] mt-3">Bewerken</p>
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate("/application-letter")}
+                className="w-full text-left bg-[#F9FAFB] rounded-xl p-4 active:bg-[#F2F5F8] transition-colors"
+                data-testid="button-letter-empty"
+              >
+                <p className="text-[14px] text-[#6B7280] leading-relaxed">Je hebt nog geen reactiebrief geschreven.</p>
+                <p className="text-[13px] font-semibold text-[#0066FF] mt-3">Schrijf je brief</p>
+              </button>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-8">
+          <div>
+            <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide px-1 mb-3">Instellingen</p>
+            <div className="flex flex-col">
+              <button
+                onClick={() => navigate("/settings/notifications")}
+                className="flex items-center gap-3 py-3.5 px-1 text-left active:opacity-70 transition-opacity"
+                data-testid="button-notification-settings"
+              >
+                <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
+                  <Bell className="w-[18px] h-[18px] text-[#0066FF]" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[15px] font-[600] text-[#0F172A]">Meldingsinstellingen</p>
+                  <p className="text-[13px] text-[#6B7280]">E-mail, SMS, WhatsApp</p>
+                </div>
+                <ChevronRight className="w-[18px] h-[18px] text-[#9CA3AF] flex-shrink-0" />
+              </button>
+              <div className="h-px bg-[#F2F5F8] ml-[52px]" />
+              <button
+                onClick={() => {
+                  if (subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) {
+                    navigate("/paywall");
+                  }
+                }}
+                className="flex items-center gap-3 py-3.5 px-1 text-left active:opacity-70 transition-opacity"
+                data-testid="item-subscription"
+              >
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${subscription.isActive ? "bg-green-50" : subscription.isTrial ? "bg-blue-50" : "bg-red-50"}`}>
+                  {subscription.isActive ? <CheckCircle2 className="w-[18px] h-[18px] text-green-600" /> : subscription.isTrial ? <Crown className="w-[18px] h-[18px] text-[#0066FF]" /> : <AlertTriangle className="w-[18px] h-[18px] text-red-500" />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[15px] font-[600] text-[#0F172A]">Abonnement</p>
+                  <p className="text-[13px] text-[#6B7280]">{subscriptionSubtitle}</p>
+                </div>
+                <span
+                  className={`text-[12px] font-[500] px-2.5 py-1 rounded-full flex-shrink-0 ${
+                    subscription.isActive && !subscription.isTrial
+                      ? "text-green-600 bg-green-50"
+                      : subscription.isTrial
+                      ? "text-[#0066FF] bg-blue-50"
+                      : "text-red-500 bg-red-50"
+                  }`}
+                  data-testid="text-subscription-status"
+                >
+                  {subscription.isActive && !subscription.isTrial ? "Actief" : subscription.isTrial ? "Proef" : "Verlopen"}
+                </span>
+              </button>
+            </div>
+          </div>
+
+          {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
+            <button
+              onClick={() => navigate("/paywall")}
+              className="w-full h-[52px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-[600] transition-colors flex items-center justify-center gap-2"
+              data-testid="button-upgrade-subscription"
+            >
+              <Crown className="w-4 h-4" />
+              Kies een abonnement
+            </button>
+          )}
+
+          <div>
+            <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide px-1 mb-3">Account</p>
+            <button
+              onClick={handleSignOut}
+              disabled={signingOut}
+              className={`flex items-center gap-3 py-3.5 px-1 text-left active:opacity-70 transition-opacity w-full ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
+              data-testid="button-logout"
+            >
+              <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0">
+                <LogOut className="w-[18px] h-[18px] text-red-400" />
+              </div>
+              <p className="text-[15px] font-[600] text-red-500 flex-1">{signingOut ? "Uitloggen..." : "Uitloggen"}</p>
+              <ChevronRight className="w-[18px] h-[18px] text-[#9CA3AF] flex-shrink-0" />
+            </button>
+          </div>
+        </div>
       )}
-
-      <ListSection title="Account">
-        <ListRow
-          title={signingOut ? "Uitloggen..." : "Uitloggen"}
-          onClick={handleSignOut}
-          disabled={signingOut}
-          icon={<div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center"><LogOut className="w-[18px] h-[18px] text-red-400" /></div>}
-          titleClassName="text-[16px] font-[600] text-red-500 leading-[1.3]"
-          trailing={<ChevronRight className="w-[18px] h-[18px] text-[#9CA3AF] flex-shrink-0" />}
-          testId="button-logout"
-        />
-      </ListSection>
     </div>
   );
 }

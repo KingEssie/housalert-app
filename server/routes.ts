@@ -1047,7 +1047,7 @@ export async function registerRoutes(
       const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
-      const { search_buddy_email, application_template, document_checklist, network_task_done, viewing_tips_done } = req.body;
+      const { search_buddy_email, application_template, document_checklist, network_task_done, viewing_tips_done, first_name, last_name, date_of_birth, bio } = req.body;
 
       const updates: Record<string, any> = { updated_at: new Date().toISOString() };
       if (search_buddy_email !== undefined) updates.search_buddy_email = search_buddy_email;
@@ -1055,6 +1055,10 @@ export async function registerRoutes(
       if (document_checklist !== undefined) updates.document_checklist = document_checklist;
       if (network_task_done !== undefined) updates.network_task_done = network_task_done;
       if (viewing_tips_done !== undefined) updates.viewing_tips_done = viewing_tips_done;
+      if (first_name !== undefined) updates.first_name = first_name;
+      if (last_name !== undefined) updates.last_name = last_name;
+      if (date_of_birth !== undefined) updates.date_of_birth = date_of_birth;
+      if (bio !== undefined) updates.bio = bio;
 
       const { data, error } = await supabase
         .from("user_profile_data")
@@ -1066,6 +1070,30 @@ export async function registerRoutes(
       return res.json(data);
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/profile-stats", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const matchResult = await supabase.from("matches").select("id", { count: "exact", head: true }).eq("user_id", user.id);
+
+      let reactionCount = 0;
+      try {
+        const reactionResult = await supabase.from("matches").select("id", { count: "exact", head: true }).eq("user_id", user.id).eq("applied", true);
+        reactionCount = reactionResult.count ?? 0;
+      } catch {}
+
+      return res.json({
+        matches_received: matchResult.count ?? 0,
+        reactions_sent: reactionCount,
+      });
+    } catch (err: any) {
+      return res.json({ matches_received: 0, reactions_sent: 0 });
     }
   });
 
