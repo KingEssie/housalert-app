@@ -35,6 +35,10 @@ interface ApplySheetProps {
 interface ProfileData {
   application_template: string | null;
   document_checklist?: Record<string, boolean> | null;
+  first_name?: string | null;
+  last_name?: string | null;
+  occupation?: string | null;
+  monthly_income?: number | null;
 }
 
 interface NotifSettings {
@@ -107,8 +111,10 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
     },
     {
       email: user?.email || undefined,
-      name: user?.email?.split("@")[0] || undefined,
+      name: [profileData?.first_name, profileData?.last_name].filter(Boolean).join(" ") || user?.email?.split("@")[0] || undefined,
       phone: notifSettings?.phone_e164 || undefined,
+      occupation: profileData?.occupation || undefined,
+      income: profileData?.monthly_income != null ? String(profileData.monthly_income) : undefined,
     }
   );
 

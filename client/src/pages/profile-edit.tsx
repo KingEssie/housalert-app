@@ -12,6 +12,8 @@ const FIELD_CONFIG: Record<string, { question: string; label: string; type: stri
   last_name: { question: "Wat is je achternaam?", label: "Achternaam", type: "text", placeholder: "Bijv. Mustermann", source: "profile" },
   date_of_birth: { question: "Wat is je geboortedatum?", label: "Geboortedatum", type: "date", placeholder: "DD-MM-JJJJ", source: "profile" },
   phone: { question: "Wat is je telefoonnummer?", label: "Mobiele nummer", type: "tel", placeholder: "+49 170 1234567", source: "phone" },
+  occupation: { question: "Wat is je beroep?", label: "Beroep", type: "text", placeholder: "Bijv. Software-ingenieur", source: "profile" },
+  monthly_income: { question: "Wat is je maandelijks inkomen?", label: "Maandelijks inkomen", type: "number", placeholder: "Bijv. 3500", source: "profile" },
 };
 
 export default function ProfileEditPage() {
@@ -68,10 +70,13 @@ export default function ProfileEditPage() {
         }
         queryClient.invalidateQueries({ queryKey: ["/api/notifications/settings"] });
       } else {
+        const fieldValue = field === "monthly_income"
+          ? (value.trim() ? parseInt(value.trim(), 10) || null : null)
+          : (value.trim() || null);
         const res = await fetch("/api/profile-data", {
           method: "PUT",
           headers,
-          body: JSON.stringify({ [field]: value.trim() || null }),
+          body: JSON.stringify({ [field]: fieldValue }),
         });
         if (!res.ok) throw new Error("Fout bij opslaan");
         queryClient.invalidateQueries({ queryKey: ["/api/profile-data"] });

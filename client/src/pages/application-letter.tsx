@@ -6,11 +6,13 @@ import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { DEFAULT_TEMPLATE, PLACEHOLDERS } from "@/lib/application-letter";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, Save, Info } from "lucide-react";
+import { RotateCcw, Save, Info, AlertTriangle } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 
 interface ProfileData {
   application_template: string | null;
+  occupation?: string | null;
+  monthly_income?: number | null;
 }
 
 export default function ApplicationLetterPage() {
@@ -69,6 +71,7 @@ export default function ApplicationLetterPage() {
 
   const isModified = template !== (profileData?.application_template || DEFAULT_TEMPLATE);
   const isLongEnough = template.trim().length >= 20;
+  const missingFields = !profileData?.occupation || profileData?.monthly_income == null;
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
@@ -76,6 +79,22 @@ export default function ApplicationLetterPage() {
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6 pb-32">
         <div className="flex flex-col gap-4">
+          {missingFields && !isLoading && (
+            <button
+              onClick={() => navigate("/profile/details")}
+              className="w-full bg-[#FFF8E1] rounded-2xl p-5 flex gap-3 text-left"
+              data-testid="banner-missing-fields"
+            >
+              <AlertTriangle className="w-5 h-5 text-[#F59E0B] flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-[14px] text-[#111827] font-semibold mb-0.5">Gegevens ontbreken</p>
+                <p className="text-[13px] text-[#6B7280]">
+                  Vul eerst je beroep en inkomen in zodat je brief automatisch kan worden ingevuld.
+                </p>
+              </div>
+            </button>
+          )}
+
           <div className="bg-[#DCDBFA] rounded-2xl p-6 flex gap-3">
             <Info className="w-5 h-5 text-[#673DE5] flex-shrink-0 mt-0.5" />
             <div>

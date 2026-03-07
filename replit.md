@@ -366,6 +366,7 @@ All freshness data is stored in Supabase (migrated from local PostgreSQL):
 - `match_timestamps` table: `match_id (PK)`, `matched_at`
 - `server/freshness.ts` — Functions: `trackListingSeen()`, `getListingFreshness()`, `trackMatchCreated()`, `getMatchTimestamps()` — all use Supabase client
 - Migration: `server/migrations/008_freshness_tables.sql` (must be applied in Supabase SQL editor)
+- Migration: `server/migrations/009_occupation_income.sql` adds `occupation TEXT`, `monthly_income INTEGER` to `user_profile_data` (must be applied in Supabase SQL editor)
 
 Behavior:
 - New listing inserted → `first_seen_at = now()`, `last_seen_at = now()`

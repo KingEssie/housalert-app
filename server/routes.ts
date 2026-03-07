@@ -1046,7 +1046,7 @@ export async function registerRoutes(
       const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
-      const { search_buddy_email, application_template, document_checklist, network_task_done, viewing_tips_done, first_name, last_name, date_of_birth, bio, profile_photo_url } = req.body;
+      const { search_buddy_email, application_template, document_checklist, network_task_done, viewing_tips_done, first_name, last_name, date_of_birth, bio, profile_photo_url, occupation, monthly_income } = req.body;
 
       const updates: Record<string, any> = { updated_at: new Date().toISOString() };
       if (search_buddy_email !== undefined) updates.search_buddy_email = search_buddy_email;
@@ -1059,6 +1059,8 @@ export async function registerRoutes(
       if (date_of_birth !== undefined) updates.date_of_birth = date_of_birth;
       if (bio !== undefined) updates.bio = bio;
       if (profile_photo_url !== undefined) updates.profile_photo_url = profile_photo_url;
+      if (occupation !== undefined) updates.occupation = occupation;
+      if (monthly_income !== undefined) updates.monthly_income = monthly_income;
 
       const { data, error } = await supabase
         .from("user_profile_data")
