@@ -1,9 +1,11 @@
+import { useState, useEffect } from "react";
 import { Switch, Route, Redirect } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/lib/auth";
+import { getSearchProfiles } from "@/lib/search-profiles";
 import LandingPage from "@/pages/landing";
 import LoginPage from "@/pages/login";
 import SignupPage from "@/pages/signup";
@@ -25,11 +27,33 @@ import SubscriptionDetailPage from "@/pages/subscription-detail";
 import PaymentMethodPage from "@/pages/payment-method";
 import { SubscriptionCancelConfirmPage, SubscriptionCancelledPage } from "@/pages/subscription-cancel";
 import ChangePasswordPage from "@/pages/change-password";
+import OnboardingPage from "@/pages/onboarding";
 
-function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
+function ProtectedRoute({ component: Component, skipOnboardingCheck }: { component: React.ComponentType; skipOnboardingCheck?: boolean }) {
   const { user, loading } = useAuth();
+  const [checking, setChecking] = useState(!skipOnboardingCheck);
+  const [needsOnboarding, setNeedsOnboarding] = useState(false);
+
+  useEffect(() => {
+    if (loading || !user || skipOnboardingCheck) return;
+    let cancelled = false;
+    getSearchProfiles()
+      .then((profiles) => {
+        if (!cancelled) {
+          setNeedsOnboarding(profiles.length === 0);
+          setChecking(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setChecking(false);
+      });
+    return () => { cancelled = true; };
+  }, [user, loading, skipOnboardingCheck]);
+
   if (loading) return null;
   if (!user) return <Redirect to="/login" />;
+  if (!skipOnboardingCheck && checking) return null;
+  if (!skipOnboardingCheck && needsOnboarding) return <Redirect to="/onboarding" />;
   return <Component />;
 }
 
@@ -43,6 +67,7 @@ function Router() {
       <Route path="/onboarding/filters" component={OnboardingFiltersPage} />
       <Route path="/onboarding/estimate" component={OnboardingEstimatePage} />
       <Route path="/paywall" component={PaywallPage} />
+      <Route path="/onboarding" component={() => <ProtectedRoute component={OnboardingPage} skipOnboardingCheck />} />
       <Route path="/dashboard" component={() => <ProtectedRoute component={DashboardPage} />} />
       <Route path="/dashboard/searches/new" component={() => <ProtectedRoute component={NewSearchPage} />} />
       <Route path="/settings/notifications" component={() => <ProtectedRoute component={NotificationSettingsPage} />} />
