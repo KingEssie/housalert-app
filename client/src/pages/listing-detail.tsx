@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
-import { MapPin, Euro, BedDouble, Ruler, ExternalLink, Clock, Globe, Zap } from "lucide-react";
+import { MapPin, Euro, BedDouble, Ruler, ExternalLink, Clock, Globe, Zap, CheckCircle2, ImageIcon } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
 import { ApplySheet } from "@/components/apply-sheet";
@@ -21,6 +21,23 @@ const FRESH_LABEL_TEXT: Record<string, string> = {
   ouder: "Ouder",
 };
 
+const CITY_GRADIENTS: Record<string, string> = {
+  berlin: "from-[#673DE5] to-[#471EA7]",
+  münchen: "from-[#673DE5] to-[#5B30D6]",
+  hamburg: "from-[#471EA7] to-[#673DE5]",
+  frankfurt: "from-[#5B30D6] to-[#471EA7]",
+  köln: "from-[#673DE5] to-[#471EA7]",
+  default: "from-[#673DE5] to-[#471EA7]",
+};
+
+function getCityGradient(city: string): string {
+  const key = city.toLowerCase().trim();
+  for (const [name, gradient] of Object.entries(CITY_GRADIENTS)) {
+    if (key.includes(name)) return gradient;
+  }
+  return CITY_GRADIENTS.default;
+}
+
 function relativeTime(dateStr: string | null | undefined): string {
   if (!dateStr) return "";
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -34,6 +51,20 @@ function relativeTime(dateStr: string | null | undefined): string {
   return `${days} ${days === 1 ? "dag" : "dagen"} geleden`;
 }
 
+function displayMatchLabel(score: number, serverLabel: string): string {
+  if (score >= 95) return "Perfecte match";
+  if (score >= 80) return "Goede match";
+  if (score >= 65) return "Interessant";
+  return serverLabel;
+}
+
+const MATCH_REASON_DETAIL: Record<string, { label: string; description: string }> = {
+  locatie: { label: "In jouw gekozen stad", description: "Deze woning ligt in de stad die je hebt opgegeven." },
+  prijs: { label: "Past binnen jouw budget", description: "De huurprijs valt binnen je opgegeven prijsklasse." },
+  kamers: { label: "Past bij jouw woningtype", description: "Het aantal kamers komt overeen met je wensen." },
+  grootte: { label: "Goede grootte", description: "De oppervlakte past bij je minimale vereisten." },
+};
+
 interface Listing {
   id: string;
   title: string;
@@ -44,6 +75,7 @@ interface Listing {
   size_m2: number;
   source: string;
   url: string;
+  image_url?: string | null;
   first_seen_at: string;
   fresh_label: string;
   match_score?: number | null;
@@ -57,6 +89,7 @@ export default function ListingDetailPage() {
   const id = params?.id;
   const { session } = useAuth();
   const [applyOpen, setApplyOpen] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   const { data: listing, isLoading, isError } = useQuery<Listing>({
     queryKey: ["/api/listings", id],
@@ -74,38 +107,31 @@ export default function ListingDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white flex flex-col">
+      <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
         <PageHeader title="" />
-        <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6">
-          <div className="space-y-4">
-            <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
-              <div className="h-5 bg-[#E5E7EB] rounded w-24 mb-3" />
-              <div className="h-7 bg-[#E5E7EB] rounded w-3/4 mb-2" />
-              <div className="h-4 bg-[#E5E7EB] rounded w-1/2" />
-            </div>
-            <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
-              <div className="h-5 bg-[#E5E7EB] rounded w-32 mb-4" />
-              <div className="space-y-3">
-                <div className="h-4 bg-[#E5E7EB] rounded w-1/3" />
-                <div className="h-4 bg-[#E5E7EB] rounded w-1/4" />
-                <div className="h-4 bg-[#E5E7EB] rounded w-1/3" />
-              </div>
+        <div className="animate-pulse">
+          <div className="h-[260px] bg-[#E5E7EB]" />
+          <div className="max-w-xl mx-auto w-full px-5 pt-5 space-y-4">
+            <div className="bg-white rounded-[22px] border border-[#E5E7EB] p-5 space-y-3">
+              <div className="h-5 bg-[#F3F4F6] rounded w-28" />
+              <div className="h-7 bg-[#F3F4F6] rounded w-3/4" />
+              <div className="h-4 bg-[#F3F4F6] rounded w-1/2" />
             </div>
           </div>
-        </main>
+        </div>
       </div>
     );
   }
 
   if (isError || !listing) {
     return (
-      <div className="min-h-screen bg-white flex flex-col">
+      <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
         <PageHeader title="" />
-        <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6">
-          <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-8 text-center">
+        <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-10">
+          <div className="bg-white rounded-[22px] border border-[#E5E7EB] p-8 text-center">
             <p className="text-[18px] font-bold text-[#111827] mb-2">Advertentie niet gevonden</p>
             <p className="text-[13px] text-[#6B7280] mb-4">Deze advertentie bestaat niet meer of is verwijderd.</p>
-            <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[16px] font-semibold" data-testid="button-back-dashboard">
+            <Button onClick={() => navigate("/dashboard")} className="h-[48px] rounded-[14px] bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold" data-testid="button-back-dashboard">
               Terug naar dashboard
             </Button>
           </div>
@@ -115,78 +141,91 @@ export default function ListingDetailPage() {
   }
 
   const style = FRESH_BADGE_STYLES[listing.fresh_label] ?? FRESH_BADGE_STYLES.ouder;
+  const hasImage = !!listing.image_url;
+  const gradient = getCityGradient(listing.city);
+
+  const scoreColor = listing.match_score != null
+    ? listing.match_score >= 95 ? "bg-[#CBFF02] text-[#000000]"
+    : listing.match_score >= 80 ? "bg-[#471EA7] text-white"
+    : listing.match_score >= 65 ? "bg-[#110C29] text-white"
+    : "bg-[#F3F4F6] text-[#6B7280]"
+    : "";
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
       <PageHeader title="" />
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6 pb-32">
-        <div className="space-y-4">
-          <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
-            <div className="flex items-center gap-2 mb-3">
-              <span className={`text-[11px] font-medium px-2.5 py-0.5 rounded-full ${style.bg} ${style.text}`} data-testid="badge-freshness">
-                {FRESH_LABEL_TEXT[listing.fresh_label] ?? listing.fresh_label}
-              </span>
-              <span className="text-[13px] font-[500] text-[#6B7280] flex items-center gap-1">
-                <Clock className="w-3 h-3" />
-                {relativeTime(listing.first_seen_at)}
-              </span>
+      <div className="relative">
+        {hasImage && !imgError ? (
+          <img
+            src={listing.image_url!}
+            alt={listing.title}
+            className="w-full h-[260px] object-cover"
+            onError={() => setImgError(true)}
+            referrerPolicy="no-referrer"
+            data-testid="img-listing-hero"
+          />
+        ) : (
+          <div className={`w-full h-[260px] bg-gradient-to-br ${gradient} flex items-center justify-center relative`}>
+            <div className="absolute inset-0 bg-black/5" />
+            <div className="flex flex-col items-center gap-2 text-white/60">
+              <ImageIcon className="w-10 h-10" />
+              <span className="text-[13px] font-medium capitalize">{listing.source}</span>
             </div>
+          </div>
+        )}
 
+        <div className="absolute top-3 left-3 flex items-center gap-2">
+          <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm ${style.bg} ${style.text}`} data-testid="badge-freshness">
+            {FRESH_LABEL_TEXT[listing.fresh_label] ?? listing.fresh_label}
+          </span>
+          <span className="text-[11px] font-medium text-white/90 bg-black/30 backdrop-blur-sm px-2.5 py-1 rounded-full flex items-center gap-1">
+            <Clock className="w-3 h-3" />
+            {relativeTime(listing.first_seen_at)}
+          </span>
+        </div>
+      </div>
+
+      <main className="flex-1 max-w-xl mx-auto w-full px-5 -mt-6 relative z-10 pb-36">
+        <div className="space-y-4">
+          <div className="bg-white rounded-[22px] border border-[#E5E7EB] p-5">
             {listing.match_score != null && listing.match_label && (
-              <div className="flex flex-col gap-1 mb-3" data-testid="listing-score-badge">
-                <div className="flex items-center gap-2">
-                  <span className={`text-[14px] font-bold px-3.5 py-1.5 rounded-full ${
-                    listing.match_score >= 90 ? "bg-[#CBFF02] text-[#000000]" :
-                    listing.match_score >= 75 ? "bg-[#471EA7] text-white" :
-                    listing.match_score >= 60 ? "bg-[#110C29] text-white" :
-                    "bg-[#F3F4F6] text-[#6B7280]"
-                  }`}>
-                    {listing.match_label} · {listing.match_score}%
-                  </span>
-                </div>
-                {listing.match_reasons && listing.match_reasons.length > 0 && (
-                  <p className="text-[13px] font-[500] text-[#6B7280]" data-testid="text-listing-match-reasons">
-                    Match op: {listing.match_reasons.join(", ")}
-                  </p>
-                )}
+              <div className="mb-3" data-testid="listing-score-badge">
+                <span className={`inline-flex text-[13px] font-bold px-3.5 py-1.5 rounded-full ${scoreColor}`}>
+                  {displayMatchLabel(listing.match_score, listing.match_label)} · {listing.match_score}%
+                </span>
               </div>
             )}
 
-            <h1 className="text-[32px] font-[800] text-[#111827] leading-[1.1] tracking-[-0.03em] mb-3" data-testid="text-listing-title">
+            <h1 className="text-[24px] font-[800] text-[#111827] leading-[1.2] tracking-[-0.02em] mb-2" data-testid="text-listing-title">
               {listing.title}
             </h1>
 
-            <div className="flex items-center gap-1.5 text-[15px] text-[#6B7280]">
-              <MapPin className="w-4 h-4" />
+            <div className="flex items-center gap-1.5 text-[14px] text-[#6B7280] mb-4">
+              <MapPin className="w-4 h-4 flex-shrink-0" />
               <span data-testid="text-listing-location">
                 {listing.city}{listing.district ? `, ${listing.district}` : ""}
               </span>
             </div>
+
+            {listing.price > 0 && (
+              <div className="flex items-baseline gap-1 mb-1">
+                <span className="text-[28px] font-[800] text-[#111827]" data-testid="text-listing-price">€{listing.price}</span>
+                <span className="text-[15px] font-medium text-[#6B7280]">/ mnd</span>
+              </div>
+            )}
           </div>
 
-          <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
-            <h2 className="text-[18px] font-bold text-[#111827] mb-4">Details</h2>
+          <div className="bg-white rounded-[22px] border border-[#E5E7EB] p-5">
+            <h2 className="text-[16px] font-bold text-[#111827] mb-4">Details</h2>
             <div className="grid grid-cols-2 gap-4">
-              {listing.price > 0 && (
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#DCDBFA] flex items-center justify-center">
-                    <Euro className="w-5 h-5 text-[#673DE5]" />
-                  </div>
-                  <div>
-                    <p className="text-[13px] text-[#6B7280]">Huur</p>
-                    <p className="text-[15px] font-semibold text-[#111827]" data-testid="text-listing-price">€{listing.price}/mnd</p>
-                  </div>
-                </div>
-              )}
-
               {listing.bedrooms > 0 && (
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-[#DCDBFA] flex items-center justify-center">
                     <BedDouble className="w-5 h-5 text-[#673DE5]" />
                   </div>
                   <div>
-                    <p className="text-[13px] text-[#6B7280]">Slaapkamers</p>
+                    <p className="text-[12px] text-[#9CA3AF]">Slaapkamers</p>
                     <p className="text-[15px] font-semibold text-[#111827]" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
                   </div>
                 </div>
@@ -198,7 +237,7 @@ export default function ListingDetailPage() {
                     <Ruler className="w-5 h-5 text-[#673DE5]" />
                   </div>
                   <div>
-                    <p className="text-[13px] text-[#6B7280]">Oppervlakte</p>
+                    <p className="text-[12px] text-[#9CA3AF]">Oppervlakte</p>
                     <p className="text-[15px] font-semibold text-[#111827]" data-testid="text-listing-size">{listing.size_m2} m²</p>
                   </div>
                 </div>
@@ -209,12 +248,46 @@ export default function ListingDetailPage() {
                   <Globe className="w-5 h-5 text-[#673DE5]" />
                 </div>
                 <div>
-                  <p className="text-[13px] text-[#6B7280]">Bron</p>
+                  <p className="text-[12px] text-[#9CA3AF]">Bron</p>
                   <p className="text-[15px] font-semibold text-[#111827] capitalize" data-testid="text-listing-source">{listing.source}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#DCDBFA] flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-[#673DE5]" />
+                </div>
+                <div>
+                  <p className="text-[12px] text-[#9CA3AF]">Geplaatst</p>
+                  <p className="text-[15px] font-semibold text-[#111827]" data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</p>
                 </div>
               </div>
             </div>
           </div>
+
+          {listing.match_reasons && listing.match_reasons.length > 0 && (
+            <div className="bg-white rounded-[22px] border border-[#E5E7EB] p-5" data-testid="section-why-match">
+              <h2 className="text-[16px] font-bold text-[#111827] mb-4">Waarom deze match?</h2>
+              <div className="flex flex-col gap-3">
+                {listing.match_reasons.map((reason) => {
+                  const detail = MATCH_REASON_DETAIL[reason];
+                  return (
+                    <div key={reason} className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-[#EAF9DF] flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
+                      </div>
+                      <div>
+                        <p className="text-[14px] font-semibold text-[#111827]">{detail?.label ?? reason}</p>
+                        {detail?.description && (
+                          <p className="text-[13px] text-[#6B7280] mt-0.5">{detail.description}</p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       </main>
 
@@ -223,7 +296,7 @@ export default function ListingDetailPage() {
           <div className="flex gap-2">
             <button
               onClick={() => setApplyOpen(true)}
-              className="flex-1 h-[52px] rounded-md bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold transition-colors flex items-center justify-center gap-2"
+              className="flex-1 h-[52px] rounded-[14px] bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold transition-colors flex items-center justify-center gap-2"
               data-testid="button-reageer-detail"
             >
               <Zap className="w-4 h-4" />
@@ -232,18 +305,15 @@ export default function ListingDetailPage() {
             {listing.url && (
               <a href={listing.url} target="_blank" rel="noopener noreferrer">
                 <button
-                  className="h-[52px] px-5 rounded-xl border border-[#E5E7EB] bg-white text-[#111827] text-[15px] font-semibold hover:bg-[#F8FAFC] transition-colors flex items-center gap-2"
+                  className="h-[52px] px-5 rounded-[14px] border border-[#E5E7EB] bg-white text-[#111827] text-[15px] font-semibold hover:bg-[#F8FAFC] transition-colors flex items-center gap-2"
                   data-testid="button-view-original"
                 >
                   <ExternalLink className="w-4 h-4" />
-                  Bekijk
+                  Open originele advertentie
                 </button>
               </a>
             )}
           </div>
-          <p className="text-[12px] font-[500] text-[#9CA3AF] text-center">
-            Reageer sneller met je standaardbrief
-          </p>
         </div>
       </div>
 

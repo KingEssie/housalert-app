@@ -1,0 +1,168 @@
+Redesign the match cards to make them feel premium, image-first, and action-focused.
+
+Goal:
+Improve the match cards so users immediately see the property, understand why it matches their search, and can react quickly.
+
+IMPORTANT:
+Do not add tabs like "Nieuw / Bekeken / Opgeslagen / Gereageerd". Keep the existing screen structure.
+
+1. Card layout
+
+Each match card should contain:
+
+Top section:
+- large image banner using listing.image_url
+- rounded corners (border-radius: 22px)
+- image should cover full card width
+
+Overlay elements on the image:
+
+Top-left badge:
+- "Net binnen" if the listing was added recently
+- otherwise "Nieuw"
+
+Top-right:
+- bookmark/save icon button
+
+2. Information block under the image
+
+Display the following elements in this order:
+
+Match score badge:
+Example:
+"Perfecte match · 96%"
+"Goede match · 84%"
+
+Listing title:
+- bold
+- max 2 lines
+
+Price:
+aligned right
+Example:
+€830 / mnd
+
+Location row:
+📍 City
+🛏 Bedrooms
+📐 Size m²
+
+Example:
+Berlin · 1 slaapkamer · 37 m²
+
+3. Match reason chips
+
+Show up to 3 chips explaining why the property matches the user's search.
+
+Possible chips:
+
+- Binnen budget
+- Gewenste wijk
+- Nieuw geplaatst
+- Past bij jouw voorkeuren
+- Goede prijs
+
+Style chips using the brand label system.
+
+4. Source and time
+
+Show small metadata line:
+
+Example:
+Wohnungsboerse · 2 uur geleden
+
+5. Action buttons
+
+Bottom section must contain two buttons:
+
+Primary button:
+"Reageer direct"
+
+Secondary button:
+"Bekijk"
+
+Rules:
+
+- "Bekijk" must open the internal listing detail page
+- do NOT send the user directly to the external site
+
+6. Listing detail page
+
+Improve the listing detail page to include:
+
+- large hero image
+- title
+- price
+- location
+- bedrooms
+- square meters
+- source label
+- publish time
+
+Add section:
+"Waarom deze match?"
+
+Example reasons:
+- Past binnen jouw budget
+- In jouw gekozen stad
+- Past bij jouw woningtype
+
+Add buttons:
+
+Primary:
+"Reageer direct"
+
+Secondary:
+"Open originele advertentie"
+
+The external website should only open from this detail page.
+
+7. Match score logic
+
+Create a visible match score using:
+
+- budget match
+- city match
+- district match if available
+- bedrooms match
+- size match
+- property type match
+
+Score labels:
+
+95-100 = Perfecte match
+80-94 = Goede match
+65-79 = Interessant
+
+8. Styling
+
+Use the existing brand design system:
+
+Primary color:
+#673DE5
+
+Labels:
+#CBFF02 (neon)
+#110C29 (dark)
+#471EA7 (purple)
+
+Card style:
+
+background: white
+border: 1px solid #E5E7EB
+border-radius: 22px
+
+Buttons must follow the brand styles.
+
+9. Do not change functionality
+
+Do not modify the existing matching logic.
+Do not remove any existing data.
+
+Only improve the card layout, scoring display, and the detail page.
+
+After implementing:
+
+Show screenshots of the updated match cards.
+Explain how the match score is calculated.
+List the components that were updated.

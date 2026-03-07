@@ -149,6 +149,22 @@ function getMatchTab(listingId: string): MatchSubTab {
   return "nieuw";
 }
 
+const MATCH_REASON_CHIPS: Record<string, string> = {
+  locatie: "Gewenste wijk",
+  prijs: "Binnen budget",
+  kamers: "Past bij jouw voorkeuren",
+  grootte: "Goede grootte",
+  nieuw: "Nieuw geplaatst",
+  goede_prijs: "Goede prijs",
+};
+
+function displayMatchLabel(score: number, serverLabel: string): string {
+  if (score >= 95) return "Perfecte match";
+  if (score >= 80) return "Goede match";
+  if (score >= 65) return "Interessant";
+  return serverLabel;
+}
+
 function MatchCard({
   match,
   onSaveToggle,
@@ -171,11 +187,7 @@ function MatchCard({
   function handleCardClick() {
     markViewed(match.listing_id);
     onStatusChange();
-    if (match.url) {
-      window.open(match.url, "_blank", "noopener");
-    } else {
-      navigate(`/listing/${match.listing_id}`);
-    }
+    navigate(`/listing/${match.listing_id}`);
   }
 
   function handleSave(e: React.MouseEvent) {
@@ -190,7 +202,7 @@ function MatchCard({
 
   return (
     <div
-      className="bg-white rounded-2xl shadow-[0_1px_8px_rgba(0,0,0,0.06)] overflow-hidden cursor-pointer hover:shadow-[0_4px_24px_rgba(0,0,0,0.10)] transition-all duration-200 active:scale-[0.985]"
+      className="bg-white rounded-[22px] border border-[#E5E7EB] overflow-hidden cursor-pointer hover:shadow-[0_4px_24px_rgba(0,0,0,0.10)] transition-all duration-200 active:scale-[0.985]"
       onClick={handleCardClick}
       data-testid={`card-match-${match.listing_id}`}
     >
@@ -199,13 +211,13 @@ function MatchCard({
           <img
             src={match.image_url!}
             alt={match.title}
-            className="w-full h-[180px] object-cover"
+            className="w-full h-[200px] object-cover"
             loading="lazy"
             onError={() => setImgError(true)}
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className={`w-full h-[180px] bg-gradient-to-br ${gradient} flex items-center justify-center relative`}>
+          <div className={`w-full h-[200px] bg-gradient-to-br ${gradient} flex items-center justify-center relative`}>
             <div className="absolute inset-0 bg-black/5" />
             <div className="flex flex-col items-center gap-2 text-white/60">
               <ImageIcon className="w-8 h-8" />
@@ -214,7 +226,7 @@ function MatchCard({
           </div>
         )}
 
-        <div className="absolute top-3 left-3 flex items-center gap-2">
+        <div className="absolute top-3 left-3">
           <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm ${style.bg} ${style.text}`}>
             {FRESH_LABEL_TEXT[match.fresh_label] ?? match.fresh_label}
           </span>
@@ -222,64 +234,62 @@ function MatchCard({
 
         <button
           onClick={handleSave}
-          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors shadow-sm"
+          className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors shadow-sm"
           data-testid={`button-save-match-${match.listing_id}`}
         >
           {isSaved ? (
-            <BookmarkCheck className="w-4 h-4 text-[#673DE5]" />
+            <BookmarkCheck className="w-[18px] h-[18px] text-[#673DE5]" />
           ) : (
-            <Bookmark className="w-4 h-4 text-[#6B7280]" />
+            <Bookmark className="w-[18px] h-[18px] text-[#6B7280]" />
           )}
         </button>
       </div>
 
-      <div className="p-4 flex flex-col gap-3">
+      <div className="p-4 flex flex-col gap-2.5">
         {match.match_score != null && match.match_label && (
-          <div className="flex flex-col gap-1" data-testid={`score-badge-${match.listing_id}`}>
-            <div className="flex items-center gap-2">
-              <span className={`text-[13px] font-bold px-3 py-1 rounded-full ${
-                match.match_score >= 90 ? "bg-[#CBFF02] text-[#000000]" :
-                match.match_score >= 75 ? "bg-[#471EA7] text-white" :
-                match.match_score >= 60 ? "bg-[#110C29] text-white" :
-                "bg-[#F3F4F6] text-[#6B7280]"
-              }`}>
-                {match.match_label} · {match.match_score}%
-              </span>
-            </div>
-            {match.match_reasons && match.match_reasons.length > 0 && (
-              <p className="text-[12px] font-[500] text-[#6B7280]" data-testid={`text-match-reasons-${match.listing_id}`}>
-                Match op: {match.match_reasons.join(", ")}
-              </p>
-            )}
+          <div data-testid={`score-badge-${match.listing_id}`}>
+            <span className={`inline-flex text-[12px] font-bold px-3 py-1 rounded-full ${
+              match.match_score >= 95 ? "bg-[#CBFF02] text-[#000000]" :
+              match.match_score >= 80 ? "bg-[#471EA7] text-white" :
+              match.match_score >= 65 ? "bg-[#110C29] text-white" :
+              "bg-[#F3F4F6] text-[#6B7280]"
+            }`}>
+              {displayMatchLabel(match.match_score, match.match_label)} · {match.match_score}%
+            </span>
           </div>
         )}
+
         <div>
-          <div className="flex items-start justify-between gap-2">
+          <div className="flex items-start justify-between gap-3">
             <h3
-              className="font-[700] text-[#111827] text-[20px] leading-[1.3] line-clamp-2 flex-1"
+              className="font-[700] text-[#111827] text-[18px] leading-[1.3] line-clamp-2 flex-1"
               data-testid={`text-match-title-${match.listing_id}`}
             >
               {match.title}
             </h3>
             {match.price > 0 && (
-              <span className="text-[16px] font-bold text-[#111827] whitespace-nowrap flex-shrink-0">
+              <span className="text-[17px] font-bold text-[#111827] whitespace-nowrap flex-shrink-0 mt-0.5">
                 €{match.price}
-                <span className="text-[12px] font-normal text-[#6B7280]">/mnd</span>
+                <span className="text-[12px] font-normal text-[#6B7280]"> /mnd</span>
               </span>
             )}
           </div>
-          <div className="flex items-center gap-1 mt-1 text-[13px] text-[#6B7280]">
-            <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-            <span>{match.city}</span>
-          </div>
         </div>
 
-        <div className="flex items-center gap-3 text-[13px] text-[#6B7280]">
+        <div className="flex items-center gap-2 text-[13px] text-[#6B7280]">
+          <span className="flex items-center gap-1">
+            <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+            {match.city}
+          </span>
+          <span className="text-[#E5E7EB]">·</span>
           {match.bedrooms > 0 && (
-            <span className="flex items-center gap-1">
-              <BedDouble className="w-3.5 h-3.5" />
-              {match.bedrooms} {match.bedrooms === 1 ? "slaapkamer" : "slaapkamers"}
-            </span>
+            <>
+              <span className="flex items-center gap-1">
+                <BedDouble className="w-3.5 h-3.5" />
+                {match.bedrooms} {match.bedrooms === 1 ? "slaapkamer" : "slaapkamers"}
+              </span>
+              <span className="text-[#E5E7EB]">·</span>
+            </>
           )}
           {match.size_m2 > 0 && (
             <span className="flex items-center gap-1">
@@ -289,20 +299,38 @@ function MatchCard({
           )}
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="inline-flex items-center text-[11px] font-medium bg-[#F3F4F6] text-[#6B7280] px-2 py-0.5 rounded-full capitalize">
-            {match.source}
-          </span>
-          <span className="inline-flex items-center gap-1 text-[11px] text-[#6B7280]">
+        {(() => {
+          const chips = (match.match_reasons ?? []).slice(0, 3).map((r) => MATCH_REASON_CHIPS[r] ?? r);
+          if ((match.fresh_label === "net_binnen" || match.fresh_label === "nieuw") && chips.length < 3 && !chips.includes("Nieuw geplaatst")) {
+            chips.push("Nieuw geplaatst");
+          }
+          return chips.length > 0 ? (
+            <div className="flex flex-wrap gap-1.5" data-testid={`chips-match-reasons-${match.listing_id}`}>
+              {chips.map((chip) => (
+                <span
+                  key={chip}
+                  className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-[#DCDBFA] text-[#471EA7]"
+                >
+                  {chip}
+                </span>
+              ))}
+            </div>
+          ) : null;
+        })()}
+
+        <div className="flex items-center gap-2 text-[11px] text-[#9CA3AF]">
+          <span className="capitalize">{match.source}</span>
+          <span>·</span>
+          <span className="flex items-center gap-1">
             <Clock className="w-3 h-3" />
             {relativeTime(match.matched_at || match.first_seen_at)}
           </span>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 mt-1">
           <button
             onClick={handleApply}
-            className="flex-1 h-[44px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[14px] font-semibold transition-colors flex items-center justify-center gap-2"
+            className="flex-1 h-[44px] rounded-[14px] bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[14px] font-semibold transition-colors flex items-center justify-center gap-2"
             data-testid={`button-apply-${match.listing_id}`}
           >
             <Zap className="w-4 h-4" />
@@ -313,16 +341,12 @@ function MatchCard({
               e.stopPropagation();
               markViewed(match.listing_id);
               onStatusChange();
-              if (match.url) {
-                window.open(match.url, "_blank", "noopener");
-              } else {
-                navigate(`/listing/${match.listing_id}`);
-              }
+              navigate(`/listing/${match.listing_id}`);
             }}
-            className="h-[44px] px-4 rounded-xl border border-[#E5E7EB] bg-white text-[#111827] text-[14px] font-semibold hover:bg-[#F8FAFC] transition-colors flex items-center justify-center gap-1.5"
+            className="h-[44px] px-5 rounded-[14px] border border-[#E5E7EB] bg-white text-[#111827] text-[14px] font-semibold hover:bg-[#F8FAFC] transition-colors flex items-center justify-center gap-1.5"
             data-testid={`button-view-listing-${match.listing_id}`}
           >
-            <ExternalLink className="w-3.5 h-3.5" />
+            <Eye className="w-3.5 h-3.5" />
             Bekijk
           </button>
         </div>
@@ -701,16 +725,20 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
       {apiMatchesQuery.isLoading ? (
         <div className="flex flex-col gap-4">
           {[1, 2].map((i) => (
-            <div key={i} className="bg-white rounded-2xl shadow-[0_1px_8px_rgba(0,0,0,0.06)] overflow-hidden animate-pulse">
-              <div className="h-[180px] bg-[#F3F4F6]" />
-              <div className="p-4 flex flex-col gap-3">
+            <div key={i} className="bg-white rounded-[22px] border border-[#E5E7EB] overflow-hidden animate-pulse">
+              <div className="h-[200px] bg-[#F3F4F6]" />
+              <div className="p-4 flex flex-col gap-2.5">
+                <div className="h-6 bg-[#F3F4F6] rounded-full w-28" />
                 <div className="h-5 bg-[#F3F4F6] rounded w-3/4" />
                 <div className="h-4 bg-[#F3F4F6] rounded w-1/2" />
-                <div className="flex gap-3">
-                  <div className="h-4 bg-[#F3F4F6] rounded w-24" />
-                  <div className="h-4 bg-[#F3F4F6] rounded w-16" />
+                <div className="flex gap-1.5">
+                  <div className="h-6 bg-[#F3F4F6] rounded-full w-24" />
+                  <div className="h-6 bg-[#F3F4F6] rounded-full w-28" />
                 </div>
-                <div className="h-[44px] bg-[#F3F4F6] rounded-xl" />
+                <div className="flex gap-2 mt-1">
+                  <div className="h-[44px] bg-[#F3F4F6] rounded-[14px] flex-1" />
+                  <div className="h-[44px] bg-[#F3F4F6] rounded-[14px] w-24" />
+                </div>
               </div>
             </div>
           ))}
