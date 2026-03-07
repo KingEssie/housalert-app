@@ -6,7 +6,7 @@ import LocationModeSelector, {
   isLocationValid,
 } from "@/components/location-mode-selector";
 
-const APP_DOMAIN = "https://app.stekkies.de";
+const APP_DOMAIN = import.meta.env.VITE_APP_DOMAIN || "https://stekkies.replit.app";
 
 const COUNTRIES = [
   { code: "DE", label: "Deutschland", flag: "DE" },

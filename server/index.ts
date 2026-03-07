@@ -32,7 +32,7 @@ app.use((req, res, next) => {
     res.removeHeader("X-Frame-Options");
     res.setHeader(
       "Content-Security-Policy",
-      "frame-ancestors 'self' https://*.stekkies.de https://stekkies.de https://*.duda.co https://*.dudaone.com"
+      "frame-ancestors 'self' https://*.stekkies.de https://stekkies.de https://*.replit.app https://*.duda.co https://*.dudaone.com"
     );
   } else {
     res.setHeader("X-Frame-Options", "SAMEORIGIN");
