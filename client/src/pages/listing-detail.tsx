@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
-import { ArrowLeft, MapPin, Euro, BedDouble, Ruler, ExternalLink, Clock, Globe, Zap } from "lucide-react";
+import { MapPin, Euro, BedDouble, Ruler, ExternalLink, Clock, Globe, Zap } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
 import { ApplySheet } from "@/components/apply-sheet";
 
@@ -74,13 +75,7 @@ export default function ListingDetailPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white flex flex-col">
-        <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
-          <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center">
-            <button onClick={() => navigate("/dashboard")} className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center hover:bg-[#E5E7EB] transition-colors" data-testid="button-back">
-              <ArrowLeft className="w-5 h-5 text-[#6B7280]" />
-            </button>
-          </div>
-        </header>
+        <PageHeader title="" />
         <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6">
           <div className="space-y-4">
             <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
@@ -105,13 +100,7 @@ export default function ListingDetailPage() {
   if (isError || !listing) {
     return (
       <div className="min-h-screen bg-white flex flex-col">
-        <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
-          <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center">
-            <button onClick={() => navigate("/dashboard")} className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center hover:bg-[#E5E7EB] transition-colors" data-testid="button-back">
-              <ArrowLeft className="w-5 h-5 text-[#6B7280]" />
-            </button>
-          </div>
-        </header>
+        <PageHeader title="" />
         <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6">
           <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-8 text-center">
             <p className="text-[18px] font-bold text-[#111827] mb-2">Advertentie niet gevonden</p>
@@ -129,13 +118,7 @@ export default function ListingDetailPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
-        <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center">
-          <button onClick={() => navigate("/dashboard")} className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center hover:bg-[#E5E7EB] transition-colors" data-testid="button-back">
-            <ArrowLeft className="w-5 h-5 text-[#6B7280]" />
-          </button>
-        </div>
-      </header>
+      <PageHeader title="" />
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6 pb-32">
         <div className="space-y-4">

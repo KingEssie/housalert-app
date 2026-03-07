@@ -1,7 +1,8 @@
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Crown, CreditCard, Calendar, RefreshCw, ChevronRight, AlertCircle } from "lucide-react";
+import { Crown, CreditCard, Calendar, RefreshCw, ChevronRight, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { PageHeader } from "@/components/ui/page-header";
 
 function formatDate(dateStr: string | null | undefined): string {
   if (!dateStr) return "—";
@@ -71,17 +72,8 @@ export default function SubscriptionDetailPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#F8FAFC]">
-        <div className="bg-white border-b border-[#E5E7EB] px-4 py-4 flex items-center gap-3">
-          <button
-            onClick={() => navigate("/dashboard?tab=profiel")}
-            className="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-[#F8FAFC] transition-colors"
-            data-testid="button-back"
-          >
-            <ArrowLeft className="w-5 h-5 text-[#111827]" />
-          </button>
-          <h1 className="text-[18px] font-bold text-[#111827]">Abonnement</h1>
-        </div>
-        <div className="p-4 space-y-4">
+        <PageHeader title="Abonnement" onBack={() => navigate("/dashboard?tab=profiel")} />
+        <div className="max-w-xl mx-auto p-4 space-y-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="bg-white rounded-[18px] border border-[#E5E7EB] p-5 animate-pulse">
               <div className="h-4 bg-[#E5E7EB] rounded w-1/3 mb-3" />
@@ -95,18 +87,9 @@ export default function SubscriptionDetailPage() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]" data-testid="page-subscription-detail">
-      <div className="bg-white border-b border-[#E5E7EB] px-4 py-4 flex items-center gap-3">
-        <button
-          onClick={() => navigate("/dashboard?tab=profiel")}
-          className="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-[#F8FAFC] transition-colors"
-          data-testid="button-back"
-        >
-          <ArrowLeft className="w-5 h-5 text-[#111827]" />
-        </button>
-        <h1 className="text-[18px] font-bold text-[#111827]">Abonnement</h1>
-      </div>
+      <PageHeader title="Abonnement" onBack={() => navigate("/dashboard?tab=profiel")} />
 
-      <div className="p-4 space-y-4 pb-8">
+      <div className="max-w-xl mx-auto p-4 space-y-4 pb-8">
         <div className="bg-white rounded-[18px] border border-[#E5E7EB] p-5" data-testid="card-subscription-plan">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-[48px] h-[48px] rounded-[12px] bg-[#DCDBFA] flex items-center justify-center">
@@ -190,14 +173,14 @@ export default function SubscriptionDetailPage() {
 
           <ActionRow
             label="Betaalmethode beheren"
-            onClick={() => {}}
+            onClick={() => navigate("/account/payment-method")}
             testId="button-manage-payment"
           />
           <div className="mx-5 border-b border-[#E5E7EB]" />
 
           <ActionRow
             label="Abonnement opzeggen"
-            onClick={() => {}}
+            onClick={() => navigate("/account/subscription/cancel")}
             danger
             testId="button-cancel-subscription"
           />

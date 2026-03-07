@@ -22,6 +22,8 @@ import ProfileDetailsPage from "@/pages/profile-details";
 import ProfileEditPage from "@/pages/profile-edit";
 import { ImpressumPage, DatenschutzPage, TermsPage } from "@/pages/legal";
 import SubscriptionDetailPage from "@/pages/subscription-detail";
+import PaymentMethodPage from "@/pages/payment-method";
+import { SubscriptionCancelConfirmPage, SubscriptionCancelledPage } from "@/pages/subscription-cancel";
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
   const { user, loading } = useAuth();
@@ -49,6 +51,9 @@ function Router() {
       <Route path="/profile/edit/:field" component={() => <ProtectedRoute component={ProfileEditPage} />} />
       <Route path="/tips/bezichtiging" component={() => <ProtectedRoute component={ViewingTipsPage} />} />
       <Route path="/account/subscription" component={() => <ProtectedRoute component={SubscriptionDetailPage} />} />
+      <Route path="/account/subscription/cancel" component={() => <ProtectedRoute component={SubscriptionCancelConfirmPage} />} />
+      <Route path="/account/subscription/cancelled" component={() => <ProtectedRoute component={SubscriptionCancelledPage} />} />
+      <Route path="/account/payment-method" component={() => <ProtectedRoute component={PaymentMethodPage} />} />
       <Route path="/impressum" component={ImpressumPage} />
       <Route path="/datenschutz" component={DatenschutzPage} />
       <Route path="/terms" component={TermsPage} />

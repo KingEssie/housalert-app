@@ -52,6 +52,13 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
   - `.text-muted-body` — 14px, weight 500, #6B7280 (for secondary/muted text)
 - Color tokens: primary text #111827, secondary text #6B7280, divider #E5E7EB
 
+### Reusable PageHeader
+- `client/src/components/ui/page-header.tsx` — Sticky top header with back button + title
+- Props: `title` (string), `onBack?` (callback, defaults to history.back()), `trailing?` (ReactNode)
+- Style: sticky top-0, white bg, border-bottom, h-[56px], max-w-xl centered
+- Used on ALL subpages: subscription-detail, payment-method, cancel flow, notification-settings, application-letter, viewing-tips, profile-details, profile-edit, listing-detail
+- NOT used on main navigation screens: dashboard (Home/Matches/Boost/Filters/Profile), or wizard flows (new-search)
+
 ### Shared List Components
 - `client/src/components/list-section.tsx` — Reusable menu/settings row components:
   - `ListSection` — wrapper with optional title (uses `.text-row-section-title`)
@@ -96,7 +103,9 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - `client/src/pages/viewing-tips.tsx` — Dedicated viewing tips page at `/tips/bezichtiging`. Five sections: Voor/Tijdens/Wat meenemen/Na de bezichtiging/Rode vlaggen. CTA to mark as completed.
 - `client/src/pages/legal.tsx` — Legal pages: `/impressum`, `/datenschutz`, `/terms` (German placeholder content)
 - `client/src/pages/paywall.tsx` — Subscription paywall with Stripe checkout; shows friendly message if Stripe not configured
-- `client/src/pages/subscription-detail.tsx` — Subscription detail page at `/account/subscription`. Shows plan type, status (green badge), price, start/renewal dates, billing frequency, auto-renew, payment method (mock). Actions: wijzigen, betaalmethode, opzeggen. Navigated from "Abonnement" in profile Account tab.
+- `client/src/pages/subscription-detail.tsx` — Subscription detail page at `/account/subscription`. Shows plan type, status (green badge), price, start/renewal dates, billing frequency, auto-renew, payment method (mock). Actions: wijzigen → /paywall, betaalmethode → /account/payment-method, opzeggen → /account/subscription/cancel.
+- `client/src/pages/payment-method.tsx` — Payment method management at `/account/payment-method`. Shows current card (mock Visa ****4242), add/remove actions.
+- `client/src/pages/subscription-cancel.tsx` — Two-step cancel flow: `/account/subscription/cancel` (confirm with renewal date) and `/account/subscription/cancelled` (confirmation). Exports `SubscriptionCancelConfirmPage` and `SubscriptionCancelledPage`.
 
 ### Profile Page (ProfielTab)
 - Layout: BlaBlaCar-style two-tab profile layout ("Over jou" / "Account") on #F7F7F7 background

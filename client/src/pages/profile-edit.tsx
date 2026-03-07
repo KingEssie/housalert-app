@@ -3,7 +3,8 @@ import { useLocation, useRoute } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
-import { X, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
 
 const FIELD_CONFIG: Record<string, { question: string; label: string; type: string; placeholder: string; source: string }> = {
@@ -87,17 +88,7 @@ export default function ProfileEditPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="sticky top-0 z-10 bg-white">
-        <div className="max-w-lg mx-auto flex items-center h-14 px-5">
-          <button
-            onClick={() => navigate("/profile/details")}
-            className="w-9 h-9 rounded-full flex items-center justify-center -ml-1"
-            data-testid="button-close-edit"
-          >
-            <X className="w-5 h-5 text-[#111827]" />
-          </button>
-        </div>
-      </div>
+      <PageHeader title={config.label} onBack={() => navigate("/profile/details")} />
 
       <div className="max-w-lg mx-auto px-5 pt-4">
         {loading ? (

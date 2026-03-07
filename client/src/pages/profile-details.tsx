@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ChevronRight, Loader2 } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
 
 interface ProfileData {
   first_name?: string | null;
@@ -63,19 +64,7 @@ export default function ProfileDetailsPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="sticky top-0 z-10 bg-white border-b border-[#F3F4F6]">
-        <div className="max-w-lg mx-auto flex items-center h-14 px-5">
-          <button
-            onClick={() => navigate("/dashboard?tab=profiel")}
-            className="w-9 h-9 rounded-full flex items-center justify-center -ml-1"
-            data-testid="button-back-details"
-          >
-            <ArrowLeft className="w-5 h-5 text-[#111827]" />
-          </button>
-          <h1 className="flex-1 text-center text-[17px] font-semibold text-[#111827]">Persoonlijke gegevens</h1>
-          <div className="w-9" />
-        </div>
-      </div>
+      <PageHeader title="Persoonlijke gegevens" onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <div className="max-w-lg mx-auto">
         {loading ? (

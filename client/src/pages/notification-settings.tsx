@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Home, Mail, Phone, MessageSquare, Loader2 } from "lucide-react";
+import { Mail, Phone, MessageSquare, Loader2 } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
 import { ListSection, ListRow, ListDivider } from "@/components/list-section";
 
 interface NotificationSettings {
@@ -123,23 +124,7 @@ export default function NotificationSettingsPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
-        <div className="max-w-xl mx-auto px-5 h-[56px] flex items-center gap-3">
-          <button
-            onClick={() => navigate("/dashboard?tab=profiel")}
-            className="w-9 h-9 rounded-full bg-[#F3F4F6] flex items-center justify-center active:bg-[#E5E7EB] transition-colors"
-            data-testid="button-back"
-          >
-            <ArrowLeft className="w-5 h-5 text-[#6B7280]" />
-          </button>
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-[#673DE5] flex items-center justify-center">
-              <Home className="w-3.5 h-3.5 text-white" />
-            </div>
-            <span className="font-bold text-[#111827] text-base">Stekkies</span>
-          </div>
-        </div>
-      </header>
+      <PageHeader title="Meldingen" onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <main className="flex-1 max-w-xl mx-auto w-full px-5 py-6 flex flex-col gap-6">
         <div>

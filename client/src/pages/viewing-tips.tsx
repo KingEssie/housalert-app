@@ -6,7 +6,6 @@ import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import {
-  ArrowLeft,
   ClipboardCheck,
   MessageSquare,
   FileCheck,
@@ -14,6 +13,7 @@ import {
   AlertTriangle,
   CheckCircle2,
 } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
 
 const SECTIONS = [
   {
@@ -105,18 +105,7 @@ export default function ViewingTipsPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <header className="sticky top-0 z-10 bg-white border-b border-[#E5E7EB]">
-        <div className="max-w-xl mx-auto flex items-center h-[60px] px-6">
-          <button
-            onClick={() => navigate("/dashboard?tab=boost")}
-            className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center hover:bg-[#E5E7EB] mr-3"
-            data-testid="button-back-tips"
-          >
-            <ArrowLeft className="w-4 h-4 text-[#6B7280]" />
-          </button>
-          <h1 className="text-[18px] font-bold text-[#111827]">Bezichtigingtips</h1>
-        </div>
-      </header>
+      <PageHeader title="Bezichtigingtips" onBack={() => navigate("/dashboard?tab=boost")} />
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6 pb-32">
         <div className="mb-6">

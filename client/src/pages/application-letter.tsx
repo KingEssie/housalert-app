@@ -6,7 +6,8 @@ import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { DEFAULT_TEMPLATE, PLACEHOLDERS } from "@/lib/application-letter";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, RotateCcw, Save, Info } from "lucide-react";
+import { RotateCcw, Save, Info } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
 
 interface ProfileData {
   application_template: string | null;
@@ -71,19 +72,7 @@ export default function ApplicationLetterPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
-        <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center justify-between">
-          <button
-            onClick={() => navigate("/dashboard?tab=profiel")}
-            className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center hover:bg-[#E5E7EB] transition-colors"
-            data-testid="button-back"
-          >
-            <ArrowLeft className="w-5 h-5 text-[#6B7280]" />
-          </button>
-          <h1 className="text-[18px] font-[700] text-[#111827] tracking-[-0.01em]">Aanmeldingsbrief</h1>
-          <div className="w-10" />
-        </div>
-      </header>
+      <PageHeader title="Aanmeldingsbrief" onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6 pb-32">
         <div className="flex flex-col gap-4">
