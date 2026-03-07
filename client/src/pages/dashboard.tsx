@@ -1278,15 +1278,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
               <AccountSettingsRow
                 label="Wachtwoord en beveiliging"
                 subtext="Wachtwoord wijzigen"
-                onClick={async () => {
-                  try {
-                    const { error } = await supabase.auth.resetPasswordForEmail(user.email, { redirectTo: window.location.origin + "/dashboard" });
-                    if (error) throw error;
-                    toast({ title: "E-mail verzonden", description: "Controleer je inbox om je wachtwoord te wijzigen." });
-                  } catch {
-                    toast({ title: "Fout", description: "Kon geen reset-e-mail sturen.", variant: "destructive" });
-                  }
-                }}
+                onClick={() => navigate("/account/change-password")}
               />
               <div className="h-px bg-[#E5E7EB] mx-5" />
               <AccountSettingsRow

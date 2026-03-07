@@ -106,6 +106,7 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - `client/src/pages/subscription-detail.tsx` — Subscription detail page at `/account/subscription`. Shows plan type, status (green badge), price, start/renewal dates, billing frequency, auto-renew, payment method (mock). Actions: wijzigen → /paywall, betaalmethode → /account/payment-method, opzeggen → /account/subscription/cancel.
 - `client/src/pages/payment-method.tsx` — Payment method management at `/account/payment-method`. Shows current card (mock Visa ****4242), add/remove actions.
 - `client/src/pages/subscription-cancel.tsx` — Two-step cancel flow: `/account/subscription/cancel` (confirm with renewal date) and `/account/subscription/cancelled` (confirmation). Exports `SubscriptionCancelConfirmPage` and `SubscriptionCancelledPage`.
+- `client/src/pages/change-password.tsx` — In-app password change at `/account/change-password`. Three fields: current password, new password (min 8 chars), confirm. Verifies current via `signInWithPassword`, updates via `updateUser`. No email sent. Success screen with green checkmark.
 
 ### Profile Page (ProfielTab)
 - Layout: BlaBlaCar-style two-tab profile layout ("Over jou" / "Account") on #F7F7F7 background
