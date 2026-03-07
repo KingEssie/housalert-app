@@ -148,10 +148,10 @@ const TASK_DESCRIPTIONS: Record<string, string> = {
 };
 
 function getStatusLabel(score: number): { label: string; color: string; bg: string } {
-  if (score >= 80) return { label: "Klaar om snel te reageren", color: "text-green-700", bg: "bg-green-50" };
-  if (score >= 60) return { label: "Goed voorbereid", color: "text-blue-700", bg: "bg-blue-50" };
-  if (score >= 30) return { label: "Op weg", color: "text-amber-700", bg: "bg-amber-50" };
-  return { label: "Net begonnen", color: "text-gray-600", bg: "bg-gray-50" };
+  if (score >= 80) return { label: "Klaar om snel te reageren", color: "text-[#673DE5]", bg: "bg-[#DCDBFA]" };
+  if (score >= 60) return { label: "Goed voorbereid", color: "text-[#673DE5]", bg: "bg-[#DCDBFA]" };
+  if (score >= 30) return { label: "Op weg", color: "text-[#673DE5]", bg: "bg-[#DCDBFA]" };
+  return { label: "Net begonnen", color: "text-[#6B7280]", bg: "bg-[#F8FAFC]" };
 }
 
 function getRecommendation(score: number, tasks: Task[]): string {
@@ -206,7 +206,7 @@ export function ProfileStrengthCard() {
           className="h-full rounded-full transition-all duration-500"
           style={{
             width: `${pct}%`,
-            background: pct >= 80 ? "#22c55e" : pct >= 60 ? "#673DE5" : pct >= 30 ? "#f59e0b" : "#6B7280",
+            background: pct >= 30 ? "#673DE5" : "#6B7280",
           }}
           data-testid="progress-profile-strength"
         />
@@ -295,7 +295,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
                 disabled={task.completed}
               >
                 {task.completed ? (
-                  <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-[#673DE5] flex-shrink-0" />
                 ) : (
                   <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
                 )}
@@ -486,7 +486,7 @@ function TaskModal({
                         data-testid={`check-${item.id}`}
                       >
                         {checklist[item.id] ? (
-                          <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+                          <CheckCircle2 className="w-5 h-5 text-[#673DE5] flex-shrink-0" />
                         ) : (
                           <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
                         )}
@@ -624,7 +624,7 @@ function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: string) 
                 disabled={task.completed}
               >
                 {task.completed ? (
-                  <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-[#673DE5] flex-shrink-0" />
                 ) : (
                   <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
                 )}
@@ -815,7 +815,7 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
           </div>
           <h3 className="text-[15px] font-semibold text-[#111827]">Meldingskanalen</h3>
         </div>
-        <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${activeCount > 0 ? "bg-green-50 text-green-700" : "bg-red-50 text-red-500"}`}>
+        <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${activeCount > 0 ? "bg-[#DCDBFA] text-[#673DE5]" : "bg-[#F8FAFC] text-[#6B7280]"}`}>
           {activeCount > 0 ? `${activeCount} actief` : "Geen actief"}
         </span>
       </div>
@@ -823,14 +823,14 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
       <div className="flex flex-col gap-2.5 mb-4">
         {channelList.map(({ key, label, enabled, Icon }) => (
           <div key={key} className="flex items-center gap-3" data-testid={`channel-status-${key}`}>
-            <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${enabled ? "bg-green-50" : "bg-[#F3F4F6]"}`}>
-              <Icon className={`w-3.5 h-3.5 ${enabled ? "text-green-600" : "text-[#6B7280]"}`} />
+            <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${enabled ? "bg-[#DCDBFA]" : "bg-[#F3F4F6]"}`}>
+              <Icon className={`w-3.5 h-3.5 ${enabled ? "text-[#673DE5]" : "text-[#6B7280]"}`} />
             </div>
             <span className={`text-[14px] flex-1 ${enabled ? "text-[#111827] font-medium" : "text-[#6B7280]"}`}>
               {label}
             </span>
             {enabled ? (
-              <CheckCircle2 className="w-4 h-4 text-green-500" />
+              <CheckCircle2 className="w-4 h-4 text-[#673DE5]" />
             ) : (
               <div className="w-4 h-4 rounded-full border-2 border-[#E5E7EB]" />
             )}
@@ -891,7 +891,7 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
         <div className="flex-1">
           <h3 className="text-[15px] font-semibold text-[#111827]">Reactiesnelheid</h3>
         </div>
-        <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${allDone ? "bg-green-50 text-green-700" : "bg-amber-50 text-amber-700"}`}>
+        <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${allDone ? "bg-[#DCDBFA] text-[#673DE5]" : "bg-[#DCDBFA] text-[#673DE5]"}`}>
           {speedDone}/{speedTotal}
         </span>
       </div>
@@ -909,7 +909,7 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
               data-testid={`speed-step-${step.id}`}
             >
               {step.done ? (
-                <CheckCircle2 className="w-4.5 h-4.5 text-green-500 flex-shrink-0" />
+                <CheckCircle2 className="w-4.5 h-4.5 text-[#673DE5] flex-shrink-0" />
               ) : (
                 <div className="w-4.5 h-4.5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
               )}
@@ -925,8 +925,8 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
       </div>
 
       {allDone && (
-        <div className="mt-4 bg-green-50 rounded-xl px-3.5 py-2.5">
-          <p className="text-[12px] text-green-700 font-medium flex items-center gap-1.5">
+        <div className="mt-4 bg-[#DCDBFA] rounded-xl px-3.5 py-2.5">
+          <p className="text-[12px] text-[#673DE5] font-medium flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5" />
             Je bent klaar om snel te reageren
           </p>
@@ -949,38 +949,38 @@ export function SpeedBanner({ navigate }: { navigate: (path: string) => void }) 
   if (allDone) {
     return (
       <div
-        className="bg-green-50 rounded-2xl p-4 flex items-center gap-3 cursor-pointer hover:bg-green-100/60 transition-colors"
+        className="bg-[#DCDBFA] rounded-2xl p-4 flex items-center gap-3 cursor-pointer hover:bg-[#DCDBFA]/80 transition-colors"
         onClick={() => navigate("/dashboard")}
         data-testid="banner-speed-ready"
       >
-        <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-          <Zap className="w-4 h-4 text-green-600" />
+        <div className="w-9 h-9 rounded-full bg-[#DCDBFA] flex items-center justify-center flex-shrink-0">
+          <Zap className="w-4 h-4 text-[#673DE5]" />
         </div>
         <div className="flex-1">
-          <p className="text-[14px] font-semibold text-green-800">Je bent klaar om snel te reageren</p>
-          <p className="text-[12px] text-green-600">Alle stappen voltooid</p>
+          <p className="text-[14px] font-semibold text-[#471EA7]">Je bent klaar om snel te reageren</p>
+          <p className="text-[12px] text-[#673DE5]">Alle stappen voltooid</p>
         </div>
-        <span className="text-[13px] font-bold text-green-700">{pct}%</span>
+        <span className="text-[13px] font-bold text-[#673DE5]">{pct}%</span>
       </div>
     );
   }
 
   return (
     <div
-      className="bg-amber-50 rounded-2xl p-4 flex items-center gap-3 cursor-pointer hover:bg-amber-100/60 transition-colors"
+      className="bg-[#DCDBFA] rounded-2xl p-4 flex items-center gap-3 cursor-pointer hover:bg-[#DCDBFA]/80 transition-colors"
       onClick={() => navigate("/dashboard")}
       data-testid="banner-speed-incomplete"
     >
-      <div className="w-9 h-9 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
-        <Zap className="w-4 h-4 text-amber-600" />
+      <div className="w-9 h-9 rounded-full bg-[#DCDBFA] flex items-center justify-center flex-shrink-0">
+        <Zap className="w-4 h-4 text-[#673DE5]" />
       </div>
       <div className="flex-1">
-        <p className="text-[14px] font-semibold text-amber-800">
+        <p className="text-[14px] font-semibold text-[#471EA7]">
           Nog {remaining} {remaining === 1 ? "stap" : "stappen"} om sneller te reageren
         </p>
-        <p className="text-[12px] text-amber-600">Maak je profiel compleet</p>
+        <p className="text-[12px] text-[#673DE5]">Maak je profiel compleet</p>
       </div>
-      <ArrowRight className="w-4 h-4 text-amber-500 flex-shrink-0" />
+      <ArrowRight className="w-4 h-4 text-[#673DE5] flex-shrink-0" />
     </div>
   );
 }

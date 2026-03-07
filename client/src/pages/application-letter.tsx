@@ -154,7 +154,7 @@ export default function ApplicationLetterPage() {
                 data-testid="input-template"
               />
               {!isLongEnough && (
-                <p className="text-[12px] text-amber-600 mt-2">Minimaal 20 tekens nodig.</p>
+                <p className="text-[12px] text-[#673DE5] mt-2">Minimaal 20 tekens nodig.</p>
               )}
             </div>
           )}

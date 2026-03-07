@@ -103,7 +103,7 @@ export function ReactieklaarCard({
         <h3 className="text-[15px] font-semibold text-[#111827] flex-1">Reactieklaar</h3>
         <span
           className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${
-            allDone ? "bg-green-50 text-green-700" : "bg-[#DCDBFA] text-[#673DE5]"
+            allDone ? "bg-[#DCDBFA] text-[#673DE5]" : "bg-[#DCDBFA] text-[#673DE5]"
           }`}
           data-testid="text-reactieklaar-progress"
         >
@@ -132,7 +132,7 @@ export function ReactieklaarCard({
               data-testid={`reactieklaar-${step.id}`}
             >
               {step.done ? (
-                <CheckCircle2 className="w-[18px] h-[18px] text-green-500 flex-shrink-0" />
+                <CheckCircle2 className="w-[18px] h-[18px] text-[#673DE5] flex-shrink-0" />
               ) : (
                 <div className="w-[18px] h-[18px] rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
               )}
@@ -149,8 +149,8 @@ export function ReactieklaarCard({
       </div>
 
       {allDone && (
-        <div className="mt-4 bg-green-50 rounded-xl px-3.5 py-2.5">
-          <p className="text-[12px] text-green-700 font-medium flex items-center gap-1.5">
+        <div className="mt-4 bg-[#DCDBFA] rounded-xl px-3.5 py-2.5">
+          <p className="text-[12px] text-[#673DE5] font-medium flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5" />
             Je bent klaar om snel te reageren
           </p>

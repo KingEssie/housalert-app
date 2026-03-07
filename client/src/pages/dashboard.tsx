@@ -72,7 +72,7 @@ const FRESH_BADGE_STYLES: Record<string, { bg: string; text: string }> = {
   net_binnen: { bg: "bg-[#CBFF02]", text: "text-[#000000]" },
   nieuw: { bg: "bg-[#471EA7]", text: "text-white" },
   vandaag: { bg: "bg-[#110C29]", text: "text-white" },
-  ouder: { bg: "bg-gray-100", text: "text-gray-500" },
+  ouder: { bg: "bg-[#F3F4F6]", text: "text-[#6B7280]" },
 };
 
 const FRESH_LABEL_TEXT: Record<string, string> = {
@@ -86,14 +86,14 @@ type TabKey = "home" | "matches" | "filters" | "boost" | "profiel";
 type MatchSubTab = "nieuw" | "bekeken" | "opgeslagen" | "gereageerd";
 
 const CITY_GRADIENTS: Record<string, string> = {
-  berlin: "from-[#667eea] to-[#764ba2]",
-  münchen: "from-[#f093fb] to-[#f5576c]",
-  hamburg: "from-[#4facfe] to-[#00f2fe]",
-  frankfurt: "from-[#43e97b] to-[#38f9d7]",
-  köln: "from-[#fa709a] to-[#fee140]",
-  düsseldorf: "from-[#a18cd1] to-[#fbc2eb]",
-  stuttgart: "from-[#ffecd2] to-[#fcb69f]",
-  default: "from-[#667eea] to-[#764ba2]",
+  berlin: "from-[#673DE5] to-[#471EA7]",
+  münchen: "from-[#673DE5] to-[#5B30D6]",
+  hamburg: "from-[#471EA7] to-[#673DE5]",
+  frankfurt: "from-[#5B30D6] to-[#471EA7]",
+  köln: "from-[#673DE5] to-[#471EA7]",
+  düsseldorf: "from-[#471EA7] to-[#5B30D6]",
+  stuttgart: "from-[#5B30D6] to-[#673DE5]",
+  default: "from-[#673DE5] to-[#471EA7]",
 };
 
 function getCityGradient(city: string): string {
@@ -241,7 +241,7 @@ function MatchCard({
                 match.match_score >= 90 ? "bg-[#CBFF02] text-[#000000]" :
                 match.match_score >= 75 ? "bg-[#471EA7] text-white" :
                 match.match_score >= 60 ? "bg-[#110C29] text-white" :
-                "bg-gray-100 text-gray-600"
+                "bg-[#F3F4F6] text-[#6B7280]"
               }`}>
                 {match.match_label} · {match.match_score}%
               </span>
@@ -369,7 +369,7 @@ function ProfileCard({
         <button
           onClick={onDelete}
           disabled={deleting}
-          className="w-8 h-8 rounded-lg flex items-center justify-center text-[#6B7280] hover:text-red-500 hover:bg-red-50 transition-colors"
+          className="w-8 h-8 rounded-lg flex items-center justify-center text-[#6B7280] hover:text-[#673DE5] hover:bg-[#DCDBFA] transition-colors"
           data-testid={`button-delete-${profile.id}`}
         >
           <Trash2 className="w-4 h-4" />
@@ -463,7 +463,7 @@ function BoostTeaserCard({ setActiveTab }: { setActiveTab: (tab: TabKey) => void
           <p className="text-[15px] font-semibold text-[#111827]">Boost je kansen</p>
           <p className="text-[13px] text-[#6B7280] mt-0.5">{statusText}</p>
 
-          <div className="mt-3 h-1.5 bg-[#F3F4F6] rounded-full overflow-hidden">
+          <div className="mt-3 h-1.5 bg-[#E5E7EB] rounded-full overflow-hidden">
             <div
               className="h-full bg-[#673DE5] rounded-full transition-all duration-500"
               style={{ width: `${boostScore}%` }}
@@ -515,9 +515,9 @@ function HomeTab({
       <div className="flex flex-col gap-6 px-6">
 
       {subscription.isExpired && (
-        <div className="bg-red-50 rounded-2xl p-5 flex items-center gap-3" data-testid="banner-expired">
-          <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-            <AlertTriangle className="w-4 h-4 text-red-500" />
+        <div className="bg-[#DCDBFA] rounded-2xl p-5 flex items-center gap-3" data-testid="banner-expired">
+          <div className="w-9 h-9 rounded-full bg-[#DCDBFA] flex items-center justify-center flex-shrink-0">
+            <AlertTriangle className="w-4 h-4 text-[#673DE5]" />
           </div>
           <div className="flex-1">
             <p className="text-[14px] font-semibold text-[#111827]">Je proefperiode is afgelopen</p>
@@ -717,8 +717,8 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
         </div>
       ) : apiMatchesQuery.isError ? (
         <div className="bg-white rounded-2xl shadow-[0_1px_8px_rgba(0,0,0,0.06)] p-8 flex flex-col items-center text-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
-            <AlertCircle className="w-5 h-5 text-red-500" />
+          <div className="w-12 h-12 rounded-full bg-[#DCDBFA] flex items-center justify-center">
+            <AlertCircle className="w-5 h-5 text-[#673DE5]" />
           </div>
           <p className="text-[18px] font-[700] text-[#111827]">Kon matches niet laden</p>
           <p className="text-[13px] text-[#6B7280]">Controleer je verbinding en probeer het opnieuw.</p>
@@ -943,7 +943,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
             {photoUrl && (
               <button
                 onClick={onRemove}
-                className="mt-3 w-full h-[52px] flex items-center justify-center gap-2 rounded-xl border border-red-200 text-red-500 text-[15px] font-semibold active:bg-red-50 transition-colors"
+                className="mt-3 w-full h-[52px] flex items-center justify-center gap-2 rounded-xl border border-[#E5E7EB] text-[#673DE5] text-[15px] font-semibold active:bg-[#DCDBFA] transition-colors"
                 data-testid="button-remove-photo"
               >
                 <Trash2 className="w-[18px] h-[18px]" />
@@ -1368,7 +1368,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                   className={`w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F8FAFC] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
                   data-testid="button-logout"
                 >
-                  <p className="text-[15px] font-[500] text-red-500 flex-1">{signingOut ? "Uitloggen..." : "Uitloggen"}</p>
+                  <p className="text-[15px] font-[500] text-[#673DE5] flex-1">{signingOut ? "Uitloggen..." : "Uitloggen"}</p>
                 </button>
                 <div className="h-px bg-[#E5E7EB] mx-5" />
                 <button
@@ -1379,7 +1379,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                   className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F8FAFC] transition-colors"
                   data-testid="button-delete-account"
                 >
-                  <p className="text-[15px] font-[500] text-red-500 flex-1">Account verwijderen</p>
+                  <p className="text-[15px] font-[500] text-[#673DE5] flex-1">Account verwijderen</p>
                 </button>
               </div>
             </div>

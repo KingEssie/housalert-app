@@ -142,9 +142,9 @@ function getScoreMicrocopy(score: number, remaining: number): string {
 }
 
 function getScoreColor(score: number): string {
-  if (score >= 80) return "#22c55e";
+  if (score >= 80) return "#673DE5";
   if (score >= 60) return "#673DE5";
-  if (score >= 30) return "#f59e0b";
+  if (score >= 30) return "#673DE5";
   return "#6B7280";
 }
 
@@ -309,7 +309,7 @@ function AllTasksSection({
               }`}
               data-testid={`task-done-${task.id}`}
             >
-              <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+              <CheckCircle2 className="w-5 h-5 text-[#673DE5] flex-shrink-0" />
               <Icon className="w-4 h-4 text-[#6B7280] flex-shrink-0" />
               <p className="text-[14px] text-[#6B7280] line-through">{task.label}</p>
             </div>
@@ -476,7 +476,7 @@ function TaskModal({
                     data-testid={`check-${item.id}`}
                   >
                     {checklist[item.id] ? (
-                      <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      <CheckCircle2 className="w-5 h-5 text-[#673DE5] flex-shrink-0" />
                     ) : (
                       <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
                     )}
@@ -509,7 +509,7 @@ function TaskModal({
                     data-testid={`check-${item.id}`}
                   >
                     {checklist[item.id] ? (
-                      <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+                      <CheckCircle2 className="w-5 h-5 text-[#673DE5] flex-shrink-0" />
                     ) : (
                       <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
                     )}

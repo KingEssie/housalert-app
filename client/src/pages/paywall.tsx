@@ -204,7 +204,7 @@ export default function PaywallPage() {
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] p-5 z-10">
         <div className="max-w-xl mx-auto">
           {stripeUnavailable ? (
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3" data-testid="stripe-unavailable-notice">
+            <div className="bg-[#DCDBFA] border border-[#673DE5]/20 rounded-xl p-4 flex items-start gap-3" data-testid="stripe-unavailable-notice">
               <AlertCircle className="w-5 h-5 text-[#673DE5] mt-0.5 flex-shrink-0" />
               <div>
                 <p className="text-[14px] font-semibold text-[#111827]">Betaling wordt binnenkort beschikbaar</p>

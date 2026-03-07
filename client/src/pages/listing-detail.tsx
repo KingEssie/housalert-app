@@ -10,7 +10,7 @@ const FRESH_BADGE_STYLES: Record<string, { bg: string; text: string }> = {
   net_binnen: { bg: "bg-[#CBFF02]", text: "text-[#000000]" },
   nieuw: { bg: "bg-[#471EA7]", text: "text-white" },
   vandaag: { bg: "bg-[#110C29]", text: "text-white" },
-  ouder: { bg: "bg-gray-100", text: "text-gray-500" },
+  ouder: { bg: "bg-[#F3F4F6]", text: "text-[#6B7280]" },
 };
 
 const FRESH_LABEL_TEXT: Record<string, string> = {
@@ -84,16 +84,16 @@ export default function ListingDetailPage() {
         <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6">
           <div className="space-y-4">
             <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
-              <div className="h-5 bg-gray-200 rounded w-24 mb-3" />
-              <div className="h-7 bg-gray-200 rounded w-3/4 mb-2" />
-              <div className="h-4 bg-gray-200 rounded w-1/2" />
+              <div className="h-5 bg-[#E5E7EB] rounded w-24 mb-3" />
+              <div className="h-7 bg-[#E5E7EB] rounded w-3/4 mb-2" />
+              <div className="h-4 bg-[#E5E7EB] rounded w-1/2" />
             </div>
             <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
-              <div className="h-5 bg-gray-200 rounded w-32 mb-4" />
+              <div className="h-5 bg-[#E5E7EB] rounded w-32 mb-4" />
               <div className="space-y-3">
-                <div className="h-4 bg-gray-200 rounded w-1/3" />
-                <div className="h-4 bg-gray-200 rounded w-1/4" />
-                <div className="h-4 bg-gray-200 rounded w-1/3" />
+                <div className="h-4 bg-[#E5E7EB] rounded w-1/3" />
+                <div className="h-4 bg-[#E5E7EB] rounded w-1/4" />
+                <div className="h-4 bg-[#E5E7EB] rounded w-1/3" />
               </div>
             </div>
           </div>
@@ -157,7 +157,7 @@ export default function ListingDetailPage() {
                     listing.match_score >= 90 ? "bg-[#CBFF02] text-[#000000]" :
                     listing.match_score >= 75 ? "bg-[#471EA7] text-white" :
                     listing.match_score >= 60 ? "bg-[#110C29] text-white" :
-                    "bg-gray-100 text-gray-600"
+                    "bg-[#F3F4F6] text-[#6B7280]"
                   }`}>
                     {listing.match_label} · {listing.match_score}%
                   </span>

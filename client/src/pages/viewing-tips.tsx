@@ -162,7 +162,7 @@ export default function ViewingTipsPage() {
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] p-5 z-10">
         <div className="max-w-xl mx-auto">
           {markedDone ? (
-            <div className="flex items-center justify-center gap-2 h-[56px] text-[#22c55e]">
+            <div className="flex items-center justify-center gap-2 h-[56px] text-[#673DE5]">
               <CheckCircle2 className="w-5 h-5" />
               <span className="text-[16px] font-semibold">Voltooid!</span>
             </div>

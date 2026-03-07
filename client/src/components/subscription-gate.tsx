@@ -21,7 +21,7 @@ export function SubscriptionGate({ isActive, children }: SubscriptionGateProps) 
       <div className="absolute inset-0 flex items-center justify-center z-10">
         <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] p-6 mx-4 max-w-sm w-full text-center">
           <div className="w-14 h-14 rounded-2xl bg-[#F8FAFC] flex items-center justify-center mx-auto mb-4">
-            <Crown className="w-7 h-7 text-amber-500" />
+            <Crown className="w-7 h-7 text-[#673DE5]" />
           </div>
           <h3 className="text-lg font-bold text-[#111827] mb-2" data-testid="text-gate-title">
             Activeer je abonnement

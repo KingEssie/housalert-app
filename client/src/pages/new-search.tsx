@@ -236,8 +236,8 @@ export default function NewSearchPage() {
         <WizardHeader step={0} total={0} onBack={() => navigate("/dashboard")} />
         <div className="flex-1 flex items-center justify-center px-6">
           <div className="bg-white rounded-[16px] shadow-[0_4px_16px_rgba(0,0,0,0.06)] p-8 text-center max-w-sm">
-            <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
-              <AlertCircle className="w-6 h-6 text-red-500" />
+            <div className="w-14 h-14 rounded-full bg-[#DCDBFA] flex items-center justify-center mx-auto mb-4">
+              <AlertCircle className="w-6 h-6 text-[#673DE5]" />
             </div>
             <h2 className="text-[18px] font-bold text-[#111827] mb-2">Limiet bereikt</h2>
             <p className="text-[14px] text-[#6B7280] mb-5">
