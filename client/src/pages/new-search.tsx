@@ -186,7 +186,6 @@ export default function NewSearchPage() {
     try {
       const profile = await createSearchProfile({
         user_id: user!.id,
-        city: selectedPlace.city_name,
         city_name: selectedPlace.city_name,
         country_code: selectedPlace.country_code,
         latitude: selectedPlace.latitude,
@@ -215,7 +214,12 @@ export default function NewSearchPage() {
       toast({ title: "Zoekopdracht aangemaakt!", description: "Je ontvangt nu matches." });
       navigate("/dashboard");
     } catch (err: any) {
-      toast({ title: "Opslaan mislukt", description: err?.message ?? "Probeer het opnieuw.", variant: "destructive" });
+      console.error("[new-search] Save failed:", err);
+      toast({
+        title: "Opslaan mislukt",
+        description: "Zoekopdracht opslaan mislukt. Controleer je locatie en probeer opnieuw.",
+        variant: "destructive",
+      });
     } finally {
       setSubmitting(false);
     }

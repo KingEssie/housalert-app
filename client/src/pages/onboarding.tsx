@@ -284,7 +284,8 @@ function AlertsStep({ onActivate, saving }: { onActivate: () => void; saving: bo
           <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
         ) : (
           <>
-            🔔 Zet meldingen aan
+            <Bell className="w-5 h-5" />
+            Zet meldingen aan
           </>
         )}
       </button>
@@ -310,8 +311,7 @@ export default function OnboardingPage() {
     try {
       await createSearchProfile({
         user_id: user.id,
-        city: place?.city_name ?? "",
-        city_name: place?.city_name,
+        city_name: place?.city_name ?? "",
         country_code: place?.country_code,
         latitude: place?.latitude,
         longitude: place?.longitude,
@@ -361,9 +361,10 @@ export default function OnboardingPage() {
 
       navigate("/dashboard?tab=matches");
     } catch (err: any) {
+      console.error("[onboarding] Save failed:", err);
       toast({
         title: "Er ging iets mis",
-        description: err?.message ?? "Probeer het opnieuw.",
+        description: "Zoekopdracht opslaan mislukt. Controleer je locatie en probeer opnieuw.",
         variant: "destructive",
       });
       setSaving(false);
