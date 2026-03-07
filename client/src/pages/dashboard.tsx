@@ -977,6 +977,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
   const displayName = [pd?.first_name, pd?.last_name].filter(Boolean).join(" ") || user.user_metadata?.full_name || user.email?.split("@")[0] || "";
   const initials = displayName ? displayName.split(" ").map((w: string) => w[0]).join("").toUpperCase().slice(0, 2) : user.email?.[0]?.toUpperCase() ?? "?";
   const letterPreview = pd?.application_template?.slice(0, 120) || null;
+  const bio = pd?.bio || null;
 
   async function handleSignOut() {
     setSigningOut(true);
@@ -996,174 +997,224 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
   ];
 
   return (
-    <div className="flex flex-col pb-6">
-      <div className="flex gap-0 mb-6 border-b border-[#E5E7EB]">
-        {PROFILE_SUBTABS.map(t => (
-          <button
-            key={t.key}
-            onClick={() => setProfileSubTab(t.key)}
-            className={`flex-1 text-center py-3 text-[15px] font-semibold transition-colors ${
-              profileSubTab === t.key
-                ? "text-[#0066FF] border-b-2 border-[#0066FF]"
-                : "text-[#6B7280]"
-            }`}
-            data-testid={`tab-profile-${t.key}`}
-          >
-            {t.label}
-          </button>
-        ))}
+    <div className="-mx-6 -mt-6 min-h-[calc(100vh-80px)] bg-[#F7F7F7]">
+      <div className="sticky top-0 z-10 bg-white border-b border-[#EAEAEA]">
+        <div className="max-w-[480px] mx-auto flex relative">
+          {PROFILE_SUBTABS.map(t => (
+            <button
+              key={t.key}
+              onClick={() => setProfileSubTab(t.key)}
+              className={`flex-1 text-center py-3.5 text-[15px] font-semibold transition-colors ${
+                profileSubTab === t.key ? "text-[#0066FF]" : "text-[#6B7280]"
+              }`}
+              data-testid={`tab-profile-${t.key}`}
+            >
+              {t.label}
+            </button>
+          ))}
+          <div
+            className="absolute bottom-0 h-[3px] bg-[#0066FF] rounded-full transition-transform duration-300 ease-in-out"
+            style={{
+              width: "50%",
+              transform: profileSubTab === "over" ? "translateX(0%)" : "translateX(100%)",
+            }}
+          />
+        </div>
       </div>
 
-      {profileSubTab === "over" ? (
-        <div className="flex flex-col gap-8">
-          <button
-            onClick={() => navigate("/profile/details")}
-            className="flex items-center gap-4 px-1 text-left active:opacity-80 transition-opacity"
-            data-testid="button-profile-header"
-          >
-            <div className="w-16 h-16 rounded-full bg-[#EDF2FF] flex items-center justify-center flex-shrink-0">
-              <span className="text-[22px] font-bold text-[#0066FF]">{initials}</span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[20px] font-[700] text-[#0F172A] truncate" data-testid="text-user-name">{displayName}</p>
-            </div>
-            <ChevronRight className="w-5 h-5 text-[#9CA3AF] flex-shrink-0" />
-          </button>
-
-          <div className="flex gap-0 border-y border-[#E5E7EB]">
-            <div className="flex-1 py-4 text-center" data-testid="kpi-matches">
-              <p className="text-[22px] font-bold text-[#0F172A]">{stats.matches_received}</p>
-              <p className="text-[13px] text-[#6B7280] mt-0.5">Ontvangen matches</p>
-            </div>
-            <div className="w-px bg-[#E5E7EB]" />
-            <div className="flex-1 py-4 text-center" data-testid="kpi-reactions">
-              <p className="text-[22px] font-bold text-[#0F172A]">{stats.reactions_sent}</p>
-              <p className="text-[13px] text-[#6B7280] mt-0.5">Verstuurde reacties</p>
-            </div>
-          </div>
-
-          <div>
-            <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide px-1 mb-3" data-testid="section-verified">Geverifieerd profiel</p>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-3 py-3 px-1">
-                <CheckCircle2 className="w-[18px] h-[18px] text-green-500 flex-shrink-0" />
-                <p className="text-[15px] text-[#0F172A]">E-mailadres</p>
-              </div>
-              <div className="h-px bg-[#F2F5F8] ml-8" />
-              <div className="flex items-center gap-3 py-3 px-1">
-                {phone ? (
-                  <CheckCircle2 className="w-[18px] h-[18px] text-green-500 flex-shrink-0" />
-                ) : (
-                  <AlertCircle className="w-[18px] h-[18px] text-[#9CA3AF] flex-shrink-0" />
-                )}
-                <p className={`text-[15px] ${phone ? "text-[#0F172A]" : "text-[#9CA3AF]"}`}>Telefoonnummer</p>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide px-1 mb-3">Reactiebrief</p>
-            {letterPreview ? (
+      <div className="max-w-[480px] mx-auto px-5 py-6">
+        {profileSubTab === "over" ? (
+          <div className="flex flex-col gap-6">
+            <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5">
               <button
-                onClick={() => navigate("/application-letter")}
-                className="w-full text-left bg-[#F9FAFB] rounded-xl p-4 active:bg-[#F2F5F8] transition-colors"
-                data-testid="button-letter-preview"
+                onClick={() => navigate("/profile/details")}
+                className="flex items-center gap-4 active:opacity-80 transition-opacity text-left w-full"
+                data-testid="button-profile-header"
               >
-                <p className="text-[14px] text-[#0F172A] leading-relaxed line-clamp-3">{letterPreview}...</p>
-                <p className="text-[13px] font-semibold text-[#0066FF] mt-3">Bewerken</p>
-              </button>
-            ) : (
-              <button
-                onClick={() => navigate("/application-letter")}
-                className="w-full text-left bg-[#F9FAFB] rounded-xl p-4 active:bg-[#F2F5F8] transition-colors"
-                data-testid="button-letter-empty"
-              >
-                <p className="text-[14px] text-[#6B7280] leading-relaxed">Je hebt nog geen reactiebrief geschreven.</p>
-                <p className="text-[13px] font-semibold text-[#0066FF] mt-3">Schrijf je brief</p>
-              </button>
-            )}
-          </div>
-        </div>
-      ) : (
-        <div className="flex flex-col gap-8">
-          <div>
-            <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide px-1 mb-3">Instellingen</p>
-            <div className="flex flex-col">
-              <button
-                onClick={() => navigate("/settings/notifications")}
-                className="flex items-center gap-3 py-3.5 px-1 text-left active:opacity-70 transition-opacity"
-                data-testid="button-notification-settings"
-              >
-                <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
-                  <Bell className="w-[18px] h-[18px] text-[#0066FF]" />
+                <div className="w-16 h-16 rounded-full bg-[#EDF2FF] flex items-center justify-center flex-shrink-0">
+                  <span className="text-[22px] font-bold text-[#0066FF]">{initials}</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[15px] font-[600] text-[#0F172A]">Meldingsinstellingen</p>
-                  <p className="text-[13px] text-[#6B7280]">E-mail, SMS, WhatsApp</p>
+                  <p className="text-[22px] font-[700] text-[#0F172A] truncate leading-tight" data-testid="text-user-name">{displayName}</p>
+                  <p className="text-[14px] text-[#6B7280] mt-0.5">Woningzoeker</p>
                 </div>
+                <ChevronRight className="w-5 h-5 text-[#9CA3AF] flex-shrink-0" />
+              </button>
+            </div>
+
+            <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+              <div className="flex">
+                <div className="flex-1 flex items-center gap-3 p-4" data-testid="kpi-matches">
+                  <div className="w-10 h-10 rounded-full bg-[#EDF2FF] flex items-center justify-center flex-shrink-0">
+                    <Heart className="w-[18px] h-[18px] text-[#0066FF]" />
+                  </div>
+                  <div>
+                    <p className="text-[20px] font-bold text-[#0F172A] leading-none">{stats.matches_received}</p>
+                    <p className="text-[12px] text-[#6B7280] mt-1 leading-tight">Ontvangen matches</p>
+                  </div>
+                </div>
+                <div className="w-px bg-[#EAEAEA] my-3" />
+                <div className="flex-1 flex items-center gap-3 p-4" data-testid="kpi-reactions">
+                  <div className="w-10 h-10 rounded-full bg-[#EDF2FF] flex items-center justify-center flex-shrink-0">
+                    <Send className="w-[18px] h-[18px] text-[#0066FF]" />
+                  </div>
+                  <div>
+                    <p className="text-[20px] font-bold text-[#0F172A] leading-none">{stats.reactions_sent}</p>
+                    <p className="text-[12px] text-[#6B7280] mt-1 leading-tight">Verstuurde reacties</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+              <button
+                onClick={() => navigate("/profile/details")}
+                className="w-full h-[56px] flex items-center justify-between px-5 text-left active:bg-[#F9F9F9] transition-colors"
+                data-testid="button-edit-details"
+              >
+                <p className="text-[15px] font-semibold text-[#0066FF]">Persoonlijke gegevens bewerken</p>
                 <ChevronRight className="w-[18px] h-[18px] text-[#9CA3AF] flex-shrink-0" />
               </button>
-              <div className="h-px bg-[#F2F5F8] ml-[52px]" />
+              <div className="h-px bg-[#EAEAEA] mx-5" />
               <button
-                onClick={() => {
-                  if (subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) {
-                    navigate("/paywall");
-                  }
-                }}
-                className="flex items-center gap-3 py-3.5 px-1 text-left active:opacity-70 transition-opacity"
-                data-testid="item-subscription"
+                onClick={() => navigate("/profile/edit/bio")}
+                className="w-full h-[56px] flex items-center justify-between px-5 text-left active:bg-[#F9F9F9] transition-colors"
+                data-testid="button-edit-photo"
               >
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${subscription.isActive ? "bg-green-50" : subscription.isTrial ? "bg-blue-50" : "bg-red-50"}`}>
-                  {subscription.isActive ? <CheckCircle2 className="w-[18px] h-[18px] text-green-600" /> : subscription.isTrial ? <Crown className="w-[18px] h-[18px] text-[#0066FF]" /> : <AlertTriangle className="w-[18px] h-[18px] text-red-500" />}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[15px] font-[600] text-[#0F172A]">Abonnement</p>
-                  <p className="text-[13px] text-[#6B7280]">{subscriptionSubtitle}</p>
-                </div>
-                <span
-                  className={`text-[12px] font-[500] px-2.5 py-1 rounded-full flex-shrink-0 ${
-                    subscription.isActive && !subscription.isTrial
-                      ? "text-green-600 bg-green-50"
-                      : subscription.isTrial
-                      ? "text-[#0066FF] bg-blue-50"
-                      : "text-red-500 bg-red-50"
-                  }`}
-                  data-testid="text-subscription-status"
-                >
-                  {subscription.isActive && !subscription.isTrial ? "Actief" : subscription.isTrial ? "Proef" : "Verlopen"}
-                </span>
+                <p className="text-[15px] font-semibold text-[#0066FF]">Profielfoto bewerken</p>
+                <ChevronRight className="w-[18px] h-[18px] text-[#9CA3AF] flex-shrink-0" />
               </button>
             </div>
-          </div>
 
-          {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
-            <button
-              onClick={() => navigate("/paywall")}
-              className="w-full h-[52px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-[600] transition-colors flex items-center justify-center gap-2"
-              data-testid="button-upgrade-subscription"
-            >
-              <Crown className="w-4 h-4" />
-              Kies een abonnement
-            </button>
-          )}
-
-          <div>
-            <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide px-1 mb-3">Account</p>
-            <button
-              onClick={handleSignOut}
-              disabled={signingOut}
-              className={`flex items-center gap-3 py-3.5 px-1 text-left active:opacity-70 transition-opacity w-full ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
-              data-testid="button-logout"
-            >
-              <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0">
-                <LogOut className="w-[18px] h-[18px] text-red-400" />
+            <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5">
+              <h2 className="text-[20px] font-bold text-[#0F172A] mb-4" data-testid="section-verified">Je hebt een Geverifieerd Profiel</h2>
+              <div className="flex flex-col">
+                <div className="flex items-center gap-3 py-3">
+                  <CheckCircle2 className="w-5 h-5 text-[#0066FF] flex-shrink-0" />
+                  <p className="text-[15px] text-[#0F172A]">{user.email}</p>
+                </div>
+                <div className="h-px bg-[#EAEAEA]" />
+                <div className="flex items-center gap-3 py-3">
+                  {phone ? (
+                    <CheckCircle2 className="w-5 h-5 text-[#0066FF] flex-shrink-0" />
+                  ) : (
+                    <AlertCircle className="w-5 h-5 text-[#9CA3AF] flex-shrink-0" />
+                  )}
+                  <p className={`text-[15px] ${phone ? "text-[#0F172A]" : "text-[#9CA3AF]"}`}>
+                    {phone || "Telefoonnummer toevoegen"}
+                  </p>
+                </div>
               </div>
-              <p className="text-[15px] font-[600] text-red-500 flex-1">{signingOut ? "Uitloggen..." : "Uitloggen"}</p>
-              <ChevronRight className="w-[18px] h-[18px] text-[#9CA3AF] flex-shrink-0" />
-            </button>
+            </div>
+
+            <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5">
+              <h2 className="text-[20px] font-bold text-[#0F172A] mb-3">Reactiebrief</h2>
+              {letterPreview ? (
+                <div>
+                  <p className="text-[15px] text-[#0F172A] leading-relaxed line-clamp-4">{letterPreview}...</p>
+                  <button
+                    onClick={() => navigate("/application-letter")}
+                    className="mt-3 text-[15px] font-semibold text-[#0066FF] active:opacity-70 transition-opacity"
+                    data-testid="button-letter-preview"
+                  >
+                    Bewerken
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <p className="text-[15px] text-[#6B7280] leading-relaxed">Je hebt nog geen reactiebrief geschreven.</p>
+                  <button
+                    onClick={() => navigate("/application-letter")}
+                    className="mt-3 text-[15px] font-semibold text-[#0066FF] active:opacity-70 transition-opacity"
+                    data-testid="button-letter-empty"
+                  >
+                    Schrijf je brief
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {bio && (
+              <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5">
+                <h2 className="text-[20px] font-bold text-[#0F172A] mb-3">Over jou</h2>
+                <p className="text-[15px] text-[#0F172A] leading-relaxed">{bio}</p>
+              </div>
+            )}
           </div>
-        </div>
-      )}
+        ) : (
+          <div className="flex flex-col gap-6">
+            <div>
+              <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Instellingen</p>
+              <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+                <button
+                  onClick={() => navigate("/settings/notifications")}
+                  className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F9F9F9] transition-colors"
+                  data-testid="button-notification-settings"
+                >
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[15px] font-[600] text-[#0F172A]">Meldingsinstellingen</p>
+                    <p className="text-[13px] text-[#6B7280] mt-0.5">E-mail, SMS, WhatsApp</p>
+                  </div>
+                  <ChevronRight className="w-[18px] h-[18px] text-[#9CA3AF] flex-shrink-0" />
+                </button>
+                <div className="h-px bg-[#EAEAEA] mx-5" />
+                <button
+                  onClick={() => {
+                    if (subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) {
+                      navigate("/paywall");
+                    }
+                  }}
+                  className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F9F9F9] transition-colors"
+                  data-testid="item-subscription"
+                >
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[15px] font-[600] text-[#0F172A]">Abonnement</p>
+                    <p className="text-[13px] text-[#6B7280] mt-0.5">{subscriptionSubtitle}</p>
+                  </div>
+                  <span
+                    className={`text-[12px] font-[600] px-2.5 py-1 rounded-full flex-shrink-0 ${
+                      subscription.isActive && !subscription.isTrial
+                        ? "text-green-600 bg-green-50"
+                        : subscription.isTrial
+                        ? "text-[#0066FF] bg-blue-50"
+                        : "text-red-500 bg-red-50"
+                    }`}
+                    data-testid="text-subscription-status"
+                  >
+                    {subscription.isActive && !subscription.isTrial ? "Actief" : subscription.isTrial ? "Proef" : "Verlopen"}
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
+              <button
+                onClick={() => navigate("/paywall")}
+                className="w-full h-[52px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[15px] font-[600] transition-colors flex items-center justify-center gap-2"
+                data-testid="button-upgrade-subscription"
+              >
+                <Crown className="w-4 h-4" />
+                Kies een abonnement
+              </button>
+            )}
+
+            <div>
+              <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Account</p>
+              <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+                <button
+                  onClick={handleSignOut}
+                  disabled={signingOut}
+                  className={`w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F9F9F9] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
+                  data-testid="button-logout"
+                >
+                  <LogOut className="w-[18px] h-[18px] text-red-500 flex-shrink-0" />
+                  <p className="text-[15px] font-[600] text-red-500 flex-1">{signingOut ? "Uitloggen..." : "Uitloggen"}</p>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

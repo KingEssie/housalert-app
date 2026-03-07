@@ -1,0 +1,224 @@
+We are redesigning the Profile page.
+
+The current implementation does not match the design pattern we want.
+
+You must rebuild the profile page so it visually follows the same layout pattern as the BlaBlaCar profile screen.
+
+IMPORTANT:
+Do NOT approximate the layout.
+Rebuild the UI structure so spacing, grouping and hierarchy match the BlaBlaCar example.
+
+The screenshots provided show:
+1. Current Stekkies profile page
+2. Current account tab
+3. The BlaBlaCar profile page we want to replicate
+
+Use the BlaBlaCar layout as the primary reference.
+
+--------------------------------
+
+GENERAL DESIGN RULES
+
+Mobile first layout.
+
+Max content width:
+480px centered
+
+Background:
+#F7F7F7
+
+Cards:
+background white
+border radius 16px
+padding 20px
+shadow very subtle
+
+Dividers:
+1px #EAEAEA
+
+Section spacing:
+24px
+
+--------------------------------
+
+TOP TAB NAVIGATION
+
+At the top there must be a sticky tab bar with two tabs:
+
+Over jou
+Account
+
+Behaviour:
+
+Active tab:
+blue text
+bottom indicator line
+
+Inactive tab:
+gray text
+
+Indicator line:
+height 3px
+blue
+animated slide when switching tabs
+
+Tabs must remain fixed at the top when scrolling.
+
+Spacing should match BlaBlaCar style.
+
+--------------------------------
+
+PROFILE HEADER
+
+First section:
+
+Horizontal layout:
+
+[ Profile picture ]   Martin
+                      Ambassadeur
+
+Profile image:
+64px
+rounded full circle
+
+Name:
+font size 22
+font weight 700
+
+Role:
+font size 14
+gray text
+
+Right side arrow icon for editing profile.
+
+--------------------------------
+
+STATS CARD
+
+Below header create one horizontal card.
+
+Two equal columns.
+
+Left column:
+icon
+€ 294
+bespaard tot nu toe
+
+Right column:
+icon
+14
+Totaalaantal ritten
+
+Card styling:
+white background
+rounded 16px
+padding 16px
+icons in soft blue circles
+
+Numbers bold and large.
+
+--------------------------------
+
+PROFILE ACTION LINKS
+
+Below the stats card:
+
+Two clickable rows:
+
+Persoonlijke gegevens bewerken
+Profielfoto bewerken
+
+Row style:
+
+height 56px
+white background
+divider between rows
+chevron arrow on right
+
+--------------------------------
+
+VERIFIED PROFILE SECTION
+
+Title:
+Je hebt een Geverifieerd Profiel
+
+Below that:
+
+two rows
+
+✓ email
+✓ phone number
+
+Use blue check icons like BlaBlaCar.
+
+Each item has a divider line.
+
+--------------------------------
+
+ABOUT YOU SECTION
+
+Title:
+Over jou
+
+Body text paragraph.
+
+Below that the preference rows with icons:
+
+Chat icon + text
+Music icon + text
+Smoking icon + text
+
+Each row:
+icon left
+text right
+16px spacing
+
+--------------------------------
+
+ACCOUNT TAB
+
+When switching to Account tab show:
+
+SECTION: INSTELLINGEN
+
+Row:
+Meldingsinstellingen
+subtext: Email, SMS, WhatsApp
+chevron arrow
+
+Row:
+Abonnement
+subtext: Maandelijks
+badge on right: Actief
+
+SECTION: ACCOUNT
+
+Row:
+Uitloggen
+text color red
+logout icon
+
+--------------------------------
+
+BOTTOM NAVIGATION
+
+Bottom nav must stay exactly like the current Stekkies navigation.
+
+Do not modify.
+
+--------------------------------
+
+CRITICAL
+
+Focus on:
+
+correct spacing
+correct card layout
+correct divider usage
+correct typography hierarchy
+clean BlaBlaCar-style grouping
+
+Do not introduce new UI components.
+Do not change navigation structure.
+
+The goal is to visually match the BlaBlaCar profile page layout as closely as possible.
