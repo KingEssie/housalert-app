@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS user_profile_data (
   document_checklist JSONB DEFAULT '{}',
   first_name TEXT,
   last_name TEXT,
-  date_of_birth TEXT,
+  birth_date TEXT,
+  phone TEXT,
   bio TEXT,
   profile_photo_url TEXT,
   occupation TEXT,
@@ -36,4 +37,8 @@ DO $$ BEGIN
   END IF;
 END $$;
 
-CREATE POLICY "Service role bypass" ON user_profile_data FOR ALL TO service_role USING (true) WITH CHECK (true);
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'user_profile_data' AND policyname = 'Service role bypass') THEN
+    CREATE POLICY "Service role bypass" ON user_profile_data FOR ALL TO service_role USING (true) WITH CHECK (true);
+  END IF;
+END $$;

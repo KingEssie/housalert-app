@@ -8,19 +8,17 @@ import { PageHeader } from "@/components/ui/page-header";
 interface ProfileData {
   first_name?: string | null;
   last_name?: string | null;
-  date_of_birth?: string | null;
+  birth_date?: string | null;
+  phone?: string | null;
+  bio?: string | null;
   occupation?: string | null;
   monthly_income?: number | null;
-}
-
-interface NotificationSettings {
-  phone_e164?: string | null;
 }
 
 const FIELDS = [
   { key: "first_name", label: "Voornaam" },
   { key: "last_name", label: "Achternaam" },
-  { key: "date_of_birth", label: "Geboortedatum" },
+  { key: "birth_date", label: "Geboortedatum" },
   { key: "email", label: "E-mailadres" },
   { key: "phone", label: "Mobiele nummer" },
   { key: "occupation", label: "Beroep" },
@@ -33,32 +31,30 @@ export default function ProfileDetailsPage() {
   const { toast } = useToast();
 
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
-  const [phone, setPhone] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!session?.access_token) return;
     const headers = { Authorization: `Bearer ${session.access_token}` };
 
-    Promise.all([
-      fetch("/api/profile-data", { headers }).then(r => r.json()),
-      fetch("/api/notifications/settings", { headers }).then(r => r.json()),
-    ]).then(([pd, ns]) => {
-      setProfileData(pd);
-      setPhone(ns?.phone_e164 ?? null);
-      setLoading(false);
-    }).catch(() => {
-      setLoading(false);
-      toast({ title: "Fout", description: "Kon gegevens niet laden.", variant: "destructive" });
-    });
+    fetch("/api/profile-data", { headers })
+      .then(r => r.json())
+      .then(pd => {
+        setProfileData(pd);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+        toast({ title: "Fout", description: "Kon gegevens niet laden.", variant: "destructive" });
+      });
   }, [session?.access_token]);
 
   function getFieldValue(key: string): string {
     if (key === "email") return user?.email ?? "";
-    if (key === "phone") return phone ?? "";
+    if (key === "phone") return profileData?.phone ?? "";
     if (key === "first_name") return profileData?.first_name ?? "";
     if (key === "last_name") return profileData?.last_name ?? "";
-    if (key === "date_of_birth") return profileData?.date_of_birth ?? "";
+    if (key === "birth_date") return profileData?.birth_date ?? "";
     if (key === "occupation") return profileData?.occupation ?? "";
     if (key === "monthly_income") return profileData?.monthly_income != null ? `€${profileData.monthly_income}` : "";
     return "";

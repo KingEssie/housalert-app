@@ -126,17 +126,33 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - JSON body limit increased to 10mb in server/index.ts
 
 ### Personal Details Pages
-- `/profile/details` (client/src/pages/profile-details.tsx): Clean list of personal fields (Voornaam, Achternaam, Geboortedatum, E-mailadres, Mobiele nummer). Each editable field tappable → opens edit screen. Email is read-only. Biography removed.
-- `/profile/edit/:field` (client/src/pages/profile-edit.tsx): Single-field edit screen with large question title, input field, blue save button, close icon. Saves to /api/profile-data (profile fields) or /api/notifications/settings (phone). Bio field removed.
-- New profile columns: first_name, last_name, date_of_birth in user_profile_data table (migration: server/migrations/007_profile_fields.sql)
+- `/profile/details` (client/src/pages/profile-details.tsx): Clean list of personal fields (Voornaam, Achternaam, Geboortedatum, E-mailadres, Mobiele nummer, Beroep, Maandelijks inkomen). Each editable field tappable → opens edit screen. Email is read-only.
+- `/profile/edit/:field` (client/src/pages/profile-edit.tsx): Single-field edit screen. All profile fields save to `PUT /api/profile-data` with exact DB column name as key.
 - `GET /api/profile-stats`: Returns { matches_received, reactions_sent } counts from matches table
 
-### Profile Strength & Account Completion
-- `client/src/components/profile-strength.tsx` — ProfileStrengthCard (score/100 with status label), AccountCompletionCard (expandable task list), TaskModal (flows for each task)
-- `GET /api/profile-strength` — Returns score, tasks array with completion status, completedCount, totalCount
-- `GET /api/profile-data` — Returns user's profile data (search_buddy_email, application_template, document_checklist)
-- `PUT /api/profile-data` — Upserts profile data fields
-- Table: `user_profile_data` in Supabase (user_id PK, search_buddy_email, application_template, document_checklist JSONB)
+### Profile Schema — `user_profile_data` Table
+- **Table**: `user_profile_data` in Supabase
+- **Primary key**: `user_id` (UUID, references auth.users.id)
+- **RLS**: `auth.uid() = user_id` for select/insert/update; service_role bypass for server
+- **Migration**: `server/migrations/010_user_profile_data_full.sql` (consolidated, creates full table)
+- **Columns & which screens write to them**:
+  - `first_name` TEXT — profile-edit (`/profile/edit/first_name`)
+  - `last_name` TEXT — profile-edit (`/profile/edit/last_name`)
+  - `birth_date` TEXT — profile-edit (`/profile/edit/birth_date`)
+  - `phone` TEXT — profile-edit (`/profile/edit/phone`)
+  - `bio` TEXT — profile-edit (`/profile/edit/bio`)
+  - `occupation` TEXT — profile-edit (`/profile/edit/occupation`)
+  - `monthly_income` INTEGER — profile-edit (`/profile/edit/monthly_income`)
+  - `profile_photo_url` TEXT — profile-photo upload
+  - `search_buddy_email` TEXT — dashboard speed task
+  - `application_template` TEXT — application-letter page
+  - `document_checklist` JSONB — dashboard speed task
+  - `network_task_done` BOOLEAN — dashboard speed task
+  - `viewing_tips_done` BOOLEAN — viewing-tips page
+- **API endpoints**:
+  - `GET /api/profile-data` — returns row for auth user (defaults if missing)
+  - `PUT /api/profile-data` — upsert with `onConflict: "user_id"`, logs Supabase errors to console
+- **IMPORTANT**: Frontend field key in FIELD_CONFIG matches `dbField` which matches the exact Supabase column name. No field name translation needed.
 - Migration: `server/migrations/003_profile_data.sql` (must be applied manually in Supabase SQL editor)
 - Account tasks: Alerts (+20), Search buddy (+10), Search optimization (+20), Application template (+15), Documents (+20), Phone (+15)
 - Prep tasks: Introductiebrief (+10), Extra zoekopdracht (+15), Gebruik je netwerk (+5), Bezichtigingtips (+5)

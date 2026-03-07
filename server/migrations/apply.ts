@@ -10,10 +10,10 @@ export async function runStartupMigration() {
         "migration"
       );
     } else if (!error) {
-      const { error: colErr } = await supabase.from("user_profile_data").select("occupation, monthly_income").limit(1);
+      const { error: colErr } = await supabase.from("user_profile_data").select("first_name, last_name, birth_date, phone, bio, occupation, monthly_income").limit(1);
       if (colErr) {
         log(
-          "[MIGRATION NEEDED] Table 'user_profile_data' is missing columns (occupation, monthly_income). Run 010_user_profile_data_full.sql in the Supabase SQL Editor.",
+          "[MIGRATION NEEDED] Table 'user_profile_data' is missing columns. Run 010_user_profile_data_full.sql in the Supabase SQL Editor.",
           "migration"
         );
       }
