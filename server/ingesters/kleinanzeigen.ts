@@ -4,10 +4,9 @@ import { log } from "../log";
 import type { Ingester, IngestionResult } from "./types";
 import type { ParsedListing } from "./matching";
 import { insertAndMatchListings } from "./matching";
+import { getKleinanzeigenUrl } from "./city-slugs";
 
 const KLEINANZEIGEN_BASE = "https://www.kleinanzeigen.de";
-const BERLIN_SEARCH_URL =
-  KLEINANZEIGEN_BASE + "/s-wohnung-mieten/berlin/c203l3331";
 const USER_AGENT =
   "Stekkies/1.0 (rental alert app; polite single-page fetch; contact: stekkies@example.com)";
 
@@ -39,10 +38,16 @@ function parseRooms(text: string): number {
   return 0;
 }
 
-async function fetchAndParseListings(): Promise<ParsedListing[]> {
-  log("Fetching Kleinanzeigen Berlin listings...");
+async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
+  const searchUrl = getKleinanzeigenUrl(city);
+  if (!searchUrl) {
+    log(`Kleinanzeigen: no URL mapping for city "${city}" — skipping`);
+    return [];
+  }
 
-  const response = await fetch(BERLIN_SEARCH_URL, {
+  log(`Fetching Kleinanzeigen ${city} listings...`);
+
+  const response = await fetch(searchUrl, {
     headers: {
       "User-Agent": USER_AGENT,
       Accept: "text/html",
@@ -90,7 +95,7 @@ async function fetchAndParseListings(): Promise<ParsedListing[]> {
     listings.push({
       title,
       url: fullUrl,
-      city: "Berlin",
+      city,
       price,
       bedrooms,
       size_m2: size,
@@ -100,23 +105,26 @@ async function fetchAndParseListings(): Promise<ParsedListing[]> {
     });
   });
 
-  log(`Parsed ${listings.length} listings from Kleinanzeigen`);
+  log(`Parsed ${listings.length} listings from Kleinanzeigen (${city})`);
   return listings;
 }
 
-export const kleinanzeigenIngester: Ingester = {
-  name: "kleinanzeigen",
-  async run(): Promise<IngestionResult> {
-    const parsed = await fetchAndParseListings();
-    const result = await insertAndMatchListings(parsed);
+export function createKleinanzeigenIngester(city: string): Ingester {
+  return {
+    name: `kleinanzeigen:${city}`,
+    async run(): Promise<IngestionResult> {
+      const parsed = await fetchAndParseListings(city);
+      const result = await insertAndMatchListings(parsed);
 
-    log(
-      `Kleinanzeigen ingestion complete: found=${parsed.length}, inserted=${result.inserted}, duplicates=${result.duplicates}, matches=${result.matches}`
-    );
+      log(
+        `Kleinanzeigen ${city} ingestion complete: found=${parsed.length}, inserted=${result.inserted}, duplicates=${result.duplicates}, matches=${result.matches}`
+      );
 
-    return {
-      found: parsed.length,
-      ...result,
-    };
-  },
-};
+      return {
+        found: parsed.length,
+        ...result,
+      };
+    },
+  };
+}
+

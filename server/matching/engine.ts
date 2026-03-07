@@ -13,6 +13,7 @@ interface SearchProfile {
   id: string;
   user_id: string;
   city: string;
+  city_name?: string;
   price_min: number;
   price_max: number;
   bedrooms_min: number;
@@ -33,7 +34,8 @@ interface DbListing {
 
 function doesListingMatchProfile(listing: DbListing, profile: SearchProfile): boolean {
   const listingCity = listing.city.toLowerCase().trim();
-  const profileCity = profile.city.toLowerCase().trim();
+  const profileCity = (profile.city_name || profile.city || "").toLowerCase().trim();
+  if (!profileCity) return false;
   if (!listingCity.includes(profileCity) && !profileCity.includes(listingCity)) {
     return false;
   }

@@ -1,19 +1,19 @@
+import { createClient } from "@supabase/supabase-js";
 import { log } from "../log";
 import type { Ingester, IngestionResult } from "./types";
-import { wgGesuchtIngester } from "./wg-gesucht";
-import { kleinanzeigenIngester } from "./kleinanzeigen";
-import { immoweltIngester } from "./immowelt";
+import { createWgGesuchtIngester } from "./wg-gesucht";
+import { createKleinanzeigenIngester } from "./kleinanzeigen";
+import { createImmoweltIngester } from "./immowelt";
 import { createConfigIngester } from "./html-config";
-import configSources from "./config/sources";
+import { buildSourcesForCity } from "./config/sources";
+import { getCitySlugs, makeFallbackSlug } from "./city-slugs";
 
-const hardcodedIngesters: Ingester[] = [wgGesuchtIngester, kleinanzeigenIngester, immoweltIngester];
+const SUPABASE_URL = (process.env.VITE_SUPABASE_URL ?? "").replace(/\/$/, "");
+const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
 
-const hardcodedNames = new Set(hardcodedIngesters.map((i) => i.name));
-const configIngesters: Ingester[] = configSources
-  .filter((cfg) => !hardcodedNames.has(cfg.name))
-  .map((cfg) => createConfigIngester(cfg));
-
-const ingesters: Ingester[] = [...hardcodedIngesters, ...configIngesters];
+const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
+  auth: { autoRefreshToken: false, persistSession: false },
+});
 
 export interface SourceReport {
   name: string;
@@ -45,7 +45,7 @@ export function isRunning(): boolean {
 }
 
 export function getEnabledSources(): string[] {
-  return ingesters.map((i) => i.name);
+  return ["wg-gesucht", "kleinanzeigen", "immowelt", "wohnungsboerse", "immoscout", "rentola", "nestpick", "immonet"];
 }
 
 export function getLastRunStatus(): {
@@ -62,6 +62,51 @@ export function getLastRunStatus(): {
   };
 }
 
+async function getActiveCities(): Promise<string[]> {
+  try {
+    const { data, error } = await supabase
+      .from("search_profiles")
+      .select("city, city_name");
+
+    if (error || !data) {
+      log("[ingest] Could not fetch active cities — no ingestion this run", "ingest");
+      return [];
+    }
+
+    const cities = new Set<string>();
+    for (const row of data as Array<{ city?: string; city_name?: string }>) {
+      const c = (row.city_name || row.city || "").trim();
+      if (c) cities.add(c);
+    }
+
+    if (cities.size === 0) {
+      log("[ingest] No active search profiles — no ingestion this run", "ingest");
+      return [];
+    }
+
+    return Array.from(cities);
+  } catch {
+    return [];
+  }
+}
+
+function buildIngestersForCity(city: string): Ingester[] {
+  const ingesters: Ingester[] = [];
+
+  ingesters.push(createWgGesuchtIngester(city));
+  ingesters.push(createKleinanzeigenIngester(city));
+  ingesters.push(createImmoweltIngester(city));
+
+  const slugs = getCitySlugs(city);
+  const slug = slugs?.slug ?? makeFallbackSlug(city);
+  const configSources = buildSourcesForCity(city, slug);
+  for (const cfg of configSources) {
+    ingesters.push(createConfigIngester(cfg));
+  }
+
+  return ingesters;
+}
+
 export async function runAllIngesters(): Promise<IngestionReport> {
   if (_running) {
     throw new OverlapError("Ingest already running");
@@ -76,48 +121,56 @@ export async function runAllIngesters(): Promise<IngestionReport> {
   const total = { found: 0, inserted: 0, duplicates: 0, matches: 0, errors: 0 };
 
   try {
-    for (const ingester of ingesters) {
-      try {
-        log(`Running ${ingester.name}...`, "ingest");
-        const result = await ingester.run();
+    const cities = await getActiveCities();
+    log(`[ingest] Active cities: ${cities.join(", ")}`, "ingest");
 
-        const report: SourceReport = {
-          name: ingester.name,
-          found: result.found,
-          inserted: result.inserted,
-          duplicates: result.duplicates,
-          matches: result.matches,
-          errors: result.errors,
-        };
+    for (const city of cities) {
+      log(`[ingest] --- Ingesting for city: ${city} ---`, "ingest");
+      const cityIngesters = buildIngestersForCity(city);
 
-        sources.push(report);
-        log(
-          `  ${ingester.name}: found=${result.found} inserted=${result.inserted} duplicates=${result.duplicates} matches=${result.matches} errors=${result.errors}`,
-          "ingest"
-        );
+      for (const ingester of cityIngesters) {
+        try {
+          log(`Running ${ingester.name}...`, "ingest");
+          const result = await ingester.run();
 
-        total.found += result.found;
-        total.inserted += result.inserted;
-        total.duplicates += result.duplicates;
-        total.matches += result.matches;
-        total.errors += result.errors;
-      } catch (err: any) {
-        log(`  ${ingester.name} failed: ${err.message}`, "ingest");
-        sources.push({
-          name: ingester.name,
-          found: 0,
-          inserted: 0,
-          duplicates: 0,
-          matches: 0,
-          errors: 1,
-        });
-        total.errors += 1;
+          const report: SourceReport = {
+            name: ingester.name,
+            found: result.found,
+            inserted: result.inserted,
+            duplicates: result.duplicates,
+            matches: result.matches,
+            errors: result.errors,
+          };
+
+          sources.push(report);
+          log(
+            `  ${ingester.name}: found=${result.found} inserted=${result.inserted} duplicates=${result.duplicates} matches=${result.matches} errors=${result.errors}`,
+            "ingest"
+          );
+
+          total.found += result.found;
+          total.inserted += result.inserted;
+          total.duplicates += result.duplicates;
+          total.matches += result.matches;
+          total.errors += result.errors;
+        } catch (err: any) {
+          log(`  ${ingester.name} failed: ${err.message}`, "ingest");
+          sources.push({
+            name: ingester.name,
+            found: 0,
+            inserted: 0,
+            duplicates: 0,
+            matches: 0,
+            errors: 1,
+          });
+          total.errors += 1;
+        }
       }
     }
 
     const duration = ((Date.now() - startTime) / 1000).toFixed(1);
     log(
-      `[INGEST COMPLETE] in ${duration}s — inserted=${total.inserted} matches=${total.matches} errors=${total.errors}`,
+      `[INGEST COMPLETE] in ${duration}s — cities=${cities.length} inserted=${total.inserted} matches=${total.matches} errors=${total.errors}`,
       "ingest"
     );
 

@@ -18,12 +18,22 @@ export interface SourceConfig {
   rateLimitMs?: number;
 }
 
-const sources: SourceConfig[] = [
+interface SourceTemplate {
+  name: string;
+  baseUrl: string;
+  source: string;
+  cardSelector: string;
+  fields: SourceConfig["fields"];
+  sourceIdRegex?: string;
+  botBlockPatterns?: string[];
+  rateLimitMs?: number;
+  buildSearchUrl: (slug: string) => string;
+}
+
+const templates: SourceTemplate[] = [
   {
     name: "wohnungsboerse",
     baseUrl: "https://www.wohnungsboerse.net",
-    searchUrl: "https://www.wohnungsboerse.net/Berlin/mieten/wohnungen",
-    city: "Berlin",
     source: "wohnungsboerse",
     cardSelector: "a[href*='/immodetail/']",
     fields: {
@@ -36,12 +46,11 @@ const sources: SourceConfig[] = [
     },
     sourceIdRegex: "/immodetail/(\\d+)",
     rateLimitMs: 1000,
+    buildSearchUrl: (cityName) => `https://www.wohnungsboerse.net/${cityName}/mieten/wohnungen`,
   },
   {
     name: "immoscout",
     baseUrl: "https://www.immobilienscout24.de",
-    searchUrl: "https://www.immobilienscout24.de/Suche/de/berlin/wohnung-mieten",
-    city: "Berlin",
     source: "immoscout",
     cardSelector: "article.result-list-entry, li.result-list-entry, article[data-item]",
     fields: {
@@ -55,12 +64,11 @@ const sources: SourceConfig[] = [
     sourceIdRegex: "/expose/(\\d+)",
     botBlockPatterns: ["Ich bin kein Roboter", "challenge.js", "Gleich geht"],
     rateLimitMs: 2000,
+    buildSearchUrl: (slug) => `https://www.immobilienscout24.de/Suche/de/${slug}/wohnung-mieten`,
   },
   {
     name: "rentola",
     baseUrl: "https://rentola.de",
-    searchUrl: "https://rentola.de/mieten/berlin",
-    city: "Berlin",
     source: "rentola",
     cardSelector: "[data-testid='propertyTile']",
     fields: {
@@ -73,12 +81,11 @@ const sources: SourceConfig[] = [
     },
     sourceIdRegex: "/listings/[^-]+-p([a-z0-9]+)$",
     rateLimitMs: 1200,
+    buildSearchUrl: (slug) => `https://rentola.de/mieten/${slug}`,
   },
   {
     name: "nestpick",
     baseUrl: "https://www.nestpick.com",
-    searchUrl: "https://www.nestpick.com/berlin/",
-    city: "Berlin",
     source: "nestpick",
     cardSelector: ".card[data-id]",
     fields: {
@@ -91,12 +98,11 @@ const sources: SourceConfig[] = [
     },
     sourceIdRegex: "/pick/(\\d+)/",
     rateLimitMs: 1200,
+    buildSearchUrl: (slug) => `https://www.nestpick.com/${slug}/`,
   },
   {
     name: "immonet",
     baseUrl: "https://www.immonet.de",
-    searchUrl: "https://www.immonet.de/immobiliensuche/berlin/wohnung-mieten",
-    city: "Berlin",
     source: "immonet",
     cardSelector: "article.result-list-entry, .result-list-entry, [data-testid*='result']",
     fields: {
@@ -110,7 +116,22 @@ const sources: SourceConfig[] = [
     sourceIdRegex: "/expose/(\\d+)|/angebot/(\\d+)",
     botBlockPatterns: ["Ich bin kein Roboter", "challenge.js"],
     rateLimitMs: 1200,
+    buildSearchUrl: (slug) => `https://www.immonet.de/immobiliensuche/${slug}/wohnung-mieten`,
   },
 ];
 
-export default sources;
+export function buildSourcesForCity(city: string, slug: string): SourceConfig[] {
+  return templates.map((t) => ({
+    name: t.name,
+    baseUrl: t.baseUrl,
+    searchUrl: t.buildSearchUrl(t.name === "wohnungsboerse" ? city : slug),
+    city,
+    source: t.source,
+    cardSelector: t.cardSelector,
+    fields: t.fields,
+    sourceIdRegex: t.sourceIdRegex,
+    botBlockPatterns: t.botBlockPatterns,
+    rateLimitMs: t.rateLimitMs,
+  }));
+}
+

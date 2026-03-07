@@ -3,8 +3,8 @@ import { log } from "../log";
 import type { Ingester, IngestionResult } from "./types";
 import type { ParsedListing } from "./matching";
 import { insertAndMatchListings } from "./matching";
+import { getImmoweltUrl } from "./city-slugs";
 
-const SEARCH_URL = "https://www.immowelt.de/suche/berlin/wohnungen/mieten";
 const USER_AGENT =
   "Stekkies/1.0 (rental alert app; polite single-page fetch; contact: stekkies@example.com)";
 
@@ -30,10 +30,11 @@ function extractSourceId(exposeUrl: string): string {
   return match ? match[1] : "";
 }
 
-async function fetchAndParseListings(): Promise<ParsedListing[]> {
-  log("Fetching Immowelt Berlin listings...");
+async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
+  const searchUrl = getImmoweltUrl(city);
+  log(`Fetching Immowelt ${city} listings...`);
 
-  const response = await fetch(SEARCH_URL, {
+  const response = await fetch(searchUrl, {
     headers: {
       "User-Agent": USER_AGENT,
       Accept: "text/html",
@@ -89,7 +90,7 @@ async function fetchAndParseListings(): Promise<ParsedListing[]> {
     listings.push({
       title,
       url: fullUrl,
-      city: "Berlin",
+      city,
       price,
       bedrooms,
       size_m2: size,
@@ -99,23 +100,26 @@ async function fetchAndParseListings(): Promise<ParsedListing[]> {
     });
   });
 
-  log(`Parsed ${listings.length} listings from Immowelt`);
+  log(`Parsed ${listings.length} listings from Immowelt (${city})`);
   return listings;
 }
 
-export const immoweltIngester: Ingester = {
-  name: "immowelt",
-  async run(): Promise<IngestionResult> {
-    const parsed = await fetchAndParseListings();
-    const result = await insertAndMatchListings(parsed);
+export function createImmoweltIngester(city: string): Ingester {
+  return {
+    name: `immowelt:${city}`,
+    async run(): Promise<IngestionResult> {
+      const parsed = await fetchAndParseListings(city);
+      const result = await insertAndMatchListings(parsed);
 
-    log(
-      `Immowelt ingestion complete: found=${parsed.length}, inserted=${result.inserted}, duplicates=${result.duplicates}, matches=${result.matches}`
-    );
+      log(
+        `Immowelt ${city} ingestion complete: found=${parsed.length}, inserted=${result.inserted}, duplicates=${result.duplicates}, matches=${result.matches}`
+      );
 
-    return {
-      found: parsed.length,
-      ...result,
-    };
-  },
-};
+      return {
+        found: parsed.length,
+        ...result,
+      };
+    },
+  };
+}
+

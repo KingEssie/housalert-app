@@ -4,10 +4,9 @@ import { log } from "../log";
 import type { Ingester, IngestionResult } from "./types";
 import type { ParsedListing } from "./matching";
 import { insertAndMatchListings } from "./matching";
+import { getWgGesuchtUrl } from "./city-slugs";
 
 const WG_GESUCHT_BASE = "https://www.wg-gesucht.de";
-const BERLIN_SEARCH_URL =
-  WG_GESUCHT_BASE + "/wohnungen-in-Berlin.8.2.1.0.html";
 const USER_AGENT =
   "Stekkies/1.0 (rental alert app; polite single-page fetch; contact: stekkies@example.com)";
 
@@ -40,10 +39,16 @@ function parseSize(html: string): number {
   return 0;
 }
 
-async function fetchAndParseListings(): Promise<ParsedListing[]> {
-  log("Fetching WG-Gesucht Berlin listings...");
+async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
+  const searchUrl = getWgGesuchtUrl(city);
+  if (!searchUrl) {
+    log(`WG-Gesucht: no URL mapping for city "${city}" — skipping`);
+    return [];
+  }
 
-  const response = await fetch(BERLIN_SEARCH_URL, {
+  log(`Fetching WG-Gesucht ${city} listings...`);
+
+  const response = await fetch(searchUrl, {
     headers: {
       "User-Agent": USER_AGENT,
       Accept: "text/html",
@@ -100,7 +105,7 @@ async function fetchAndParseListings(): Promise<ParsedListing[]> {
     listings.push({
       title,
       url: fullUrl,
-      city: "Berlin",
+      city,
       price,
       bedrooms,
       size_m2: size,
@@ -110,23 +115,26 @@ async function fetchAndParseListings(): Promise<ParsedListing[]> {
     });
   });
 
-  log(`Parsed ${listings.length} listings from WG-Gesucht`);
+  log(`Parsed ${listings.length} listings from WG-Gesucht (${city})`);
   return listings;
 }
 
-export const wgGesuchtIngester: Ingester = {
-  name: "wg-gesucht",
-  async run(): Promise<IngestionResult> {
-    const parsed = await fetchAndParseListings();
-    const result = await insertAndMatchListings(parsed);
+export function createWgGesuchtIngester(city: string): Ingester {
+  return {
+    name: `wg-gesucht:${city}`,
+    async run(): Promise<IngestionResult> {
+      const parsed = await fetchAndParseListings(city);
+      const result = await insertAndMatchListings(parsed);
 
-    log(
-      `WG-Gesucht ingestion complete: found=${parsed.length}, inserted=${result.inserted}, duplicates=${result.duplicates}, matches=${result.matches}`
-    );
+      log(
+        `WG-Gesucht ${city} ingestion complete: found=${parsed.length}, inserted=${result.inserted}, duplicates=${result.duplicates}, matches=${result.matches}`
+      );
 
-    return {
-      found: parsed.length,
-      ...result,
-    };
-  },
-};
+      return {
+        found: parsed.length,
+        ...result,
+      };
+    },
+  };
+}
+

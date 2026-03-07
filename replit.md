@@ -360,14 +360,15 @@ user_id uuid PK, phone_e164 text, whatsapp_enabled bool, sms_enabled bool, email
 Modular ingestion runner at `server/ingesters/`:
 - `types.ts` — Common `Ingester` interface: `{ name, run() → {found, inserted, duplicates, matches, errors} }`
 - `matching.ts` — Shared Supabase client, matching logic, and `insertAndMatchListings()` used by all ingesters
-- `wg-gesucht.ts` — WG-Gesucht Berlin scraper (polite: 1 request per run, descriptive User-Agent)
-- `kleinanzeigen.ts` — Kleinanzeigen Berlin rentals scraper (polite: 1 request per run)
-- `immowelt.ts` — Immowelt Berlin rentals scraper (polite: single page, follows redirects)
+- `wg-gesucht.ts` — WG-Gesucht scraper factory, city-parameterized via `createWgGesuchtIngester(city)`
+- `kleinanzeigen.ts` — Kleinanzeigen scraper factory, city-parameterized via `createKleinanzeigenIngester(city)`
+- `immowelt.ts` — Immowelt scraper factory, city-parameterized via `createImmoweltIngester(city)`
+- `city-slugs.ts` — City→URL slug mappings for all scrapers (34 German cities); WG-Gesucht city codes, Kleinanzeigen location codes, Immowelt/generic slugs
 - `html-config.ts` — Generic config-driven ingester engine: fetches a page, parses cards via CSS selectors, extracts fields via regex
-- `config/sources.ts` — Array of `SourceConfig` entries; add new sources here without writing code
+- `config/sources.ts` — Source templates with `buildSourcesForCity(city, slug)` factory; each run generates city-specific configs
   - Current configs: `wohnungsboerse`, `immoscout` (bot-blocked), `rentola`, `nestpick`, `immonet` (410 gone, graceful)
   - Config fields: name, baseUrl, searchUrl, city, source, cardSelector, fields (title/url/price/size_m2/bedrooms), sourceIdRegex, botBlockPatterns, rateLimitMs
-- `index.ts` — Registry combining hardcoded + config-driven ingesters; shared overlap lock, status tracking, `OverlapError`
+- `index.ts` — Multi-city ingestion orchestrator: queries active cities from `search_profiles`, builds per-city ingesters, runs them sequentially with overlap lock
 
 Scheduler (`server/scheduler.ts`):
 - `setInterval`-based, runs `runAllIngesters()` every `INGEST_INTERVAL_MINUTES` (default 10)
