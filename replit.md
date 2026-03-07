@@ -20,13 +20,17 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - `client/src/pages/signup.tsx` — Account creation at `/signup` (creates search profile)
 - `client/src/pages/paywall.tsx` — Subscription plans at `/paywall` (Stripe placeholder)
 
-### City Picker
-- `client/src/components/city-picker.tsx` — Reusable city autocomplete with Nominatim geocoding + Leaflet map preview
-  - Uses OpenStreetMap Nominatim API (free, no key) restricted to Germany (`countrycodes=de`)
-  - Returns `SelectedPlace` object with `city_name`, `country_code`, `latitude`, `longitude`, `place_id`
-  - Used in: `onboarding.tsx` (CityStep), `new-search.tsx` (step 2)
+### City Picker & Location Mode Selector
+- `client/src/components/city-picker.tsx` — Reusable city autocomplete with Nominatim geocoding + Leaflet map preview (standalone)
+- `client/src/components/location-mode-selector.tsx` — 3-tab location selection (Wijken/Radius/Reistijd)
+  - **Wijken tab**: city search + multi-select districts from `config/market.ts` (8 cities have districts); shows "binnenkort beschikbaar" for cities without district data
+  - **Radius tab**: city search + radius km selector (2/5/10/15/25/50 km) + Leaflet Circle overlay on map
+  - **Reistijd tab**: Nominatim destination search + transport mode (auto/OV/fiets) + max travel time (15/30/45/60/90 min) + destination pin on map
+  - Returns `LocationData` object; validated via `isLocationValid()`
+  - Used in: `onboarding.tsx` (LocationStep), `new-search.tsx` (step 2)
   - Dependencies: `leaflet`, `react-leaflet@4`, `@types/leaflet`
-- **PENDING MIGRATION**: `server/migrations/011_search_profiles_geo_columns.sql` must be run in Supabase SQL Editor
+- **Location mode columns (migration 012)**: `location_mode`, `districts`, `radius_km`, `commute_destination`, `commute_lat`, `commute_lng`, `commute_mode`, `commute_minutes`
+- **PENDING MIGRATION**: `server/migrations/PENDING_RUN_IN_SUPABASE.sql` must be run in Supabase SQL Editor (includes migrations 008, 010, 011, 012)
 
 ### Design System (Hostinger-inspired)
 - **Primary**: #673DE5 (purple), hover #5B30D6 — used for CTA buttons, active nav, brand accents only

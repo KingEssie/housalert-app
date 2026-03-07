@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/auth";
 import { createSearchProfile } from "@/lib/search-profiles";
 import { Bell, MapPin, Search, ChevronRight, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import CityPicker, { type SelectedPlace } from "@/components/city-picker";
+import LocationModeSelector, { type LocationData, type SelectedPlace, DEFAULT_LOCATION_DATA, isLocationValid } from "@/components/location-mode-selector";
 
 const PROPERTY_TYPES = [
   { value: "studio", label: "Studio" },
@@ -71,13 +71,13 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
   );
 }
 
-function CityStep({
-  place,
-  setPlace,
+function LocationStep({
+  locationData,
+  setLocationData,
   onNext,
 }: {
-  place: SelectedPlace | null;
-  setPlace: (v: SelectedPlace | null) => void;
+  locationData: LocationData;
+  setLocationData: (v: LocationData) => void;
   onNext: () => void;
 }) {
   return (
@@ -91,16 +91,16 @@ function CityStep({
           Waar wil je wonen?
         </h2>
         <p className="text-[15px] text-[#6B7280] mb-6">
-          Zoek een stad in Duitsland.
+          Kies een locatie, wijken, straal of reistijd.
         </p>
 
-        <CityPicker value={place} onChange={setPlace} />
+        <LocationModeSelector value={locationData} onChange={setLocationData} />
       </div>
 
       <div className="pb-8 pt-4">
         <button
           onClick={onNext}
-          disabled={!place}
+          disabled={!isLocationValid(locationData)}
           className="w-full min-h-[52px] rounded-[14px] bg-[#673DE5] hover:bg-[#5B30D6] text-white font-semibold text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           data-testid="button-city-next"
         >
@@ -299,19 +299,32 @@ export default function OnboardingPage() {
   const { toast } = useToast();
 
   const [step, setStep] = useState(0);
-  const [place, setPlace] = useState<SelectedPlace | null>(null);
+  const [locationData, setLocationData] = useState<LocationData>({ ...DEFAULT_LOCATION_DATA });
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [propertyType, setPropertyType] = useState("");
   const [saving, setSaving] = useState(false);
 
+  const place = locationData.place;
+
   async function handleActivate() {
     if (!user) return;
     setSaving(true);
+
+    const cityForProfile = locationData.tab === "reistijd"
+      ? locationData.commuteCity || locationData.commuteDestination.split(",")[0].trim()
+      : place?.city_name ?? "";
+
+    const locationMode = locationData.tab === "wijken"
+      ? (locationData.districts.length > 0 ? "districts" as const : "city" as const)
+      : locationData.tab === "radius"
+        ? "radius" as const
+        : "commute" as const;
+
     try {
       await createSearchProfile({
         user_id: user.id,
-        city_name: place?.city_name ?? "",
+        city_name: cityForProfile,
         country_code: place?.country_code,
         latitude: place?.latitude,
         longitude: place?.longitude,
@@ -320,6 +333,14 @@ export default function OnboardingPage() {
         price_max: Number(maxPrice),
         bedrooms_min: 1,
         size_min: 0,
+        location_mode: locationMode,
+        districts: locationData.districts.length > 0 ? locationData.districts : undefined,
+        radius_km: locationData.tab === "radius" ? locationData.radiusKm : undefined,
+        commute_destination: locationData.tab === "reistijd" ? locationData.commuteDestination : undefined,
+        commute_lat: locationData.tab === "reistijd" ? locationData.commuteLat ?? undefined : undefined,
+        commute_lng: locationData.tab === "reistijd" ? locationData.commuteLng ?? undefined : undefined,
+        commute_mode: locationData.tab === "reistijd" ? locationData.commuteMode : undefined,
+        commute_minutes: locationData.tab === "reistijd" ? locationData.commuteMinutes : undefined,
       });
 
       try {
@@ -380,7 +401,7 @@ export default function OnboardingPage() {
       <ProgressBar step={step} total={4} />
 
       {step === 1 && (
-        <CityStep place={place} setPlace={setPlace} onNext={() => setStep(2)} />
+        <LocationStep locationData={locationData} setLocationData={setLocationData} onNext={() => setStep(2)} />
       )}
       {step === 2 && (
         <BudgetStep

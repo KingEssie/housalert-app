@@ -7,8 +7,7 @@ import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
-import { cityDistricts } from "../../../config/market";
-import CityPicker, { type SelectedPlace } from "@/components/city-picker";
+import LocationModeSelector, { type LocationData, type SelectedPlace, DEFAULT_LOCATION_DATA, isLocationValid } from "@/components/location-mode-selector";
 import {
   ArrowLeft,
   ArrowRight,
@@ -91,7 +90,7 @@ export default function NewSearchPage() {
   const { toast } = useToast();
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
-  const [selectedPlace, setSelectedPlace] = useState<SelectedPlace | null>(null);
+  const [locationData, setLocationData] = useState<LocationData>({ ...DEFAULT_LOCATION_DATA });
 
   const [data, setData] = useState<WizardData>({
     propertyType: "",
@@ -115,6 +114,7 @@ export default function NewSearchPage() {
   const profileCount = profilesQuery.data?.length ?? 0;
   const atLimit = profileCount >= MAX_PROFILES;
 
+  const selectedPlace = locationData.place;
   const cityName = selectedPlace?.city_name ?? data.city;
 
   const estimateQuery = useQuery({
@@ -133,8 +133,6 @@ export default function NewSearchPage() {
     staleTime: 30000,
   });
 
-  const availableDistricts = cityDistricts[cityName] ?? [];
-
   const update = useCallback((partial: Partial<WizardData>) => {
     setData((prev) => ({ ...prev, ...partial }));
   }, []);
@@ -142,7 +140,7 @@ export default function NewSearchPage() {
   const canProceed = (): boolean => {
     switch (step) {
       case 1: return !!data.propertyType;
-      case 2: return !!selectedPlace;
+      case 2: return isLocationValid(locationData);
       case 3: return true;
       case 4: return true;
       case 5: return true;
@@ -167,8 +165,8 @@ export default function NewSearchPage() {
       toast({ title: "Limiet bereikt", description: `Max ${MAX_PROFILES} zoekopdrachten.`, variant: "destructive" });
       return;
     }
-    if (!selectedPlace) {
-      toast({ title: "Stad is verplicht", variant: "destructive" });
+    if (!isLocationValid(locationData)) {
+      toast({ title: "Locatie is verplicht", variant: "destructive" });
       setStep(2);
       return;
     }
@@ -182,19 +180,37 @@ export default function NewSearchPage() {
       return;
     }
 
+    const cityForProfile = locationData.tab === "reistijd"
+      ? locationData.commuteCity || locationData.commuteDestination.split(",")[0].trim()
+      : selectedPlace?.city_name ?? "";
+
+    const locationMode = locationData.tab === "wijken"
+      ? (locationData.districts.length > 0 ? "districts" as const : "city" as const)
+      : locationData.tab === "radius"
+        ? "radius" as const
+        : "commute" as const;
+
     setSubmitting(true);
     try {
       const profile = await createSearchProfile({
         user_id: user!.id,
-        city_name: selectedPlace.city_name,
-        country_code: selectedPlace.country_code,
-        latitude: selectedPlace.latitude,
-        longitude: selectedPlace.longitude,
-        place_id: selectedPlace.place_id,
+        city_name: cityForProfile,
+        country_code: selectedPlace?.country_code,
+        latitude: selectedPlace?.latitude,
+        longitude: selectedPlace?.longitude,
+        place_id: selectedPlace?.place_id,
         price_min: parsedPriceMin,
         price_max: parsedPriceMax,
         bedrooms_min: data.bedroomsMin,
         size_min: data.sizeMin,
+        location_mode: locationMode,
+        districts: locationData.districts.length > 0 ? locationData.districts : undefined,
+        radius_km: locationData.tab === "radius" ? locationData.radiusKm : undefined,
+        commute_destination: locationData.tab === "reistijd" ? locationData.commuteDestination : undefined,
+        commute_lat: locationData.tab === "reistijd" ? locationData.commuteLat ?? undefined : undefined,
+        commute_lng: locationData.tab === "reistijd" ? locationData.commuteLng ?? undefined : undefined,
+        commute_mode: locationData.tab === "reistijd" ? locationData.commuteMode : undefined,
+        commute_minutes: locationData.tab === "reistijd" ? locationData.commuteMinutes : undefined,
       });
 
       if (profile?.id) {
@@ -311,54 +327,15 @@ export default function NewSearchPage() {
         {step === 2 && (
           <StepContainer
             title="Waar zoek je?"
-            subtitle="Kies een stad en optioneel wijken."
+            subtitle="Kies een locatie en optioneel wijken, straal of reistijd."
           >
-            <div className="flex flex-col gap-5">
-              <div>
-                <label className="text-[16px] font-[700] text-[#111827] mb-3 block">Stad</label>
-                <CityPicker
-                  value={selectedPlace}
-                  onChange={(place) => {
-                    setSelectedPlace(place);
-                    update({ city: place?.city_name ?? "", districts: [] });
-                  }}
-                />
-              </div>
-
-              {availableDistricts.length > 0 && (
-                <div>
-                  <label className="text-[16px] font-[700] text-[#111827] mb-3 block">
-                    Wijken <span className="font-normal text-[13px] text-[#6B7280]">(optioneel, binnenkort actief)</span>
-                  </label>
-                  <p className="text-[13px] font-[500] text-[#6B7280] mb-2">Wijkfiltering wordt binnenkort toegepast.</p>
-                  <div className="flex flex-wrap gap-2">
-                    {availableDistricts.map((d) => {
-                      const selected = data.districts.includes(d);
-                      return (
-                        <button
-                          key={d}
-                          onClick={() => {
-                            update({
-                              districts: selected
-                                ? data.districts.filter((x) => x !== d)
-                                : [...data.districts, d],
-                            });
-                          }}
-                          className={`px-3.5 py-2 rounded-full text-[13px] font-medium border transition-all ${
-                            selected
-                              ? "border-[#673DE5] bg-[#DCDBFA] text-[#673DE5]"
-                              : "border-[#E5E7EB] bg-white text-[#6B7280] hover:border-[#E5E7EB]"
-                          }`}
-                          data-testid={`chip-district-${d}`}
-                        >
-                          {d}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
+            <LocationModeSelector
+              value={locationData}
+              onChange={(ld) => {
+                setLocationData(ld);
+                update({ city: ld.place?.city_name ?? "", districts: ld.districts });
+              }}
+            />
           </StepContainer>
         )}
 
@@ -584,7 +561,7 @@ export default function NewSearchPage() {
           ) : (
             <Button
               onClick={handleSubmit}
-              disabled={submitting || !data.city}
+              disabled={submitting || !isLocationValid(locationData)}
               className="flex-1 h-[56px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[16px] font-semibold disabled:opacity-50"
               data-testid="button-wizard-submit"
             >

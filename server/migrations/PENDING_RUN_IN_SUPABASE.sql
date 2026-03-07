@@ -82,3 +82,16 @@ ALTER TABLE search_profiles
 UPDATE search_profiles
   SET city_name = city
   WHERE city_name IS NULL AND city IS NOT NULL;
+
+-- -----------------------------------------------
+-- Migration 012: location mode columns
+-- -----------------------------------------------
+ALTER TABLE search_profiles
+  ADD COLUMN IF NOT EXISTS location_mode TEXT DEFAULT 'city',
+  ADD COLUMN IF NOT EXISTS districts TEXT[],
+  ADD COLUMN IF NOT EXISTS radius_km INTEGER,
+  ADD COLUMN IF NOT EXISTS commute_destination TEXT,
+  ADD COLUMN IF NOT EXISTS commute_lat DOUBLE PRECISION,
+  ADD COLUMN IF NOT EXISTS commute_lng DOUBLE PRECISION,
+  ADD COLUMN IF NOT EXISTS commute_mode TEXT,
+  ADD COLUMN IF NOT EXISTS commute_minutes INTEGER;

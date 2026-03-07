@@ -1,5 +1,7 @@
 import { supabase } from "./supabase";
 
+export type LocationMode = "city" | "districts" | "radius" | "commute";
+
 export interface SearchProfile {
   id: string;
   user_id: string;
@@ -13,6 +15,14 @@ export interface SearchProfile {
   price_max: number;
   bedrooms_min: number;
   size_min: number;
+  location_mode?: LocationMode;
+  districts?: string[];
+  radius_km?: number;
+  commute_destination?: string;
+  commute_lat?: number;
+  commute_lng?: number;
+  commute_mode?: string;
+  commute_minutes?: number;
   created_at: string;
 }
 
@@ -27,9 +37,21 @@ export interface InsertSearchProfileInput {
   price_max: number;
   bedrooms_min: number;
   size_min: number;
+  location_mode?: LocationMode;
+  districts?: string[];
+  radius_km?: number;
+  commute_destination?: string;
+  commute_lat?: number;
+  commute_lng?: number;
+  commute_mode?: string;
+  commute_minutes?: number;
 }
 
-const GEO_COLUMNS = ["city_name", "country_code", "latitude", "longitude", "place_id"] as const;
+const OPTIONAL_COLUMNS = [
+  "city_name", "country_code", "latitude", "longitude", "place_id",
+  "location_mode", "districts", "radius_km",
+  "commute_destination", "commute_lat", "commute_lng", "commute_mode", "commute_minutes",
+] as const;
 
 export async function getSearchProfiles(): Promise<SearchProfile[]> {
   const { data, error } = await supabase
@@ -58,6 +80,15 @@ export async function createSearchProfile(
     size_min: input.size_min,
   };
 
+  if (input.location_mode) fullRow.location_mode = input.location_mode;
+  if (input.districts && input.districts.length > 0) fullRow.districts = input.districts;
+  if (input.radius_km != null) fullRow.radius_km = input.radius_km;
+  if (input.commute_destination) fullRow.commute_destination = input.commute_destination;
+  if (input.commute_lat != null) fullRow.commute_lat = input.commute_lat;
+  if (input.commute_lng != null) fullRow.commute_lng = input.commute_lng;
+  if (input.commute_mode) fullRow.commute_mode = input.commute_mode;
+  if (input.commute_minutes != null) fullRow.commute_minutes = input.commute_minutes;
+
   const { data, error } = await supabase
     .from("search_profiles")
     .insert(fullRow)
@@ -70,10 +101,10 @@ export async function createSearchProfile(
   const code = (error as any).code ?? "";
   const isSchemaError =
     (code === "PGRST204" || msg.includes("schema cache") || msg.includes("column")) &&
-    GEO_COLUMNS.some((col) => msg.includes(col));
+    OPTIONAL_COLUMNS.some((col) => msg.includes(col));
 
   if (isSchemaError) {
-    console.error("[search-profiles] Geo columns not yet in Supabase — saving without them:", error.message);
+    console.error("[search-profiles] Some columns not yet in Supabase — saving core only:", error.message);
     const coreRow: Record<string, unknown> = {
       user_id: input.user_id,
       city: input.city_name,
