@@ -1,0 +1,59 @@
+Apply the following two UI/UX fixes.
+
+IMPORTANT:
+Keep the current improved design direction, but make these changes precisely.
+
+==================================================
+1. BOTTOM NAVIGATION MUST LOOK LIKE A FLOATING ROUNDED BAR
+==================================================
+
+Redesign the bottom navigation so it feels closer to the BlaBlaCar pattern.
+
+Requirements:
+- the bottom navigation should appear as a floating rounded container
+- it should not feel attached flat to the screen edges
+- give it generous horizontal margins from the left and right sides
+- give it a soft rounded pill-like or large-radius shape
+- it should sit slightly above the bottom edge, like a floating bar
+- keep the current navigation items and structure unchanged
+- preserve the current icons and labels unless already improved
+- keep the active state clean and polished
+- maintain strong mobile-first spacing
+- the result should feel elegant, soft and premium
+
+Visual intent:
+A floating bottom menu with rounded corners, similar in feel to the BlaBlaCar navigation style.
+
+Do not redesign the whole app shell.
+Only restyle and position the existing bottom navigation so it looks like a floating rounded bar.
+
+==================================================
+2. BACK NAVIGATION FROM PERSOONSGEGEVENS MUST RETURN TO PROFILE
+==================================================
+
+Fix the back navigation behaviour on the "Persoonsgegevens" page.
+
+Current issue:
+When the user opens "Persoonsgegevens" from the Profile section and then goes back, the app returns to the Home screen.
+
+Correct behaviour:
+When the user came from the Profile screen, pressing back should return them to the Profile screen, not Home.
+
+Requirements:
+- preserve natural back navigation history
+- do not hardcode an incorrect redirect to Home
+- make sure the previous screen in this flow is Profile
+- if needed, fix the routing stack or navigation push/replace logic
+- this should also feel consistent with similar profile/account subpages
+
+Expected flow:
+Profile -> Persoonsgegevens -> Back -> Profile
+
+Not:
+Profile -> Persoonsgegevens -> Back -> Home
+
+==================================================
+IMPLEMENTATION NOTE
+==================================================
+
+If the current navigation or shared layout causes this bug, refactor the route transition logic instead of patching it with a forced redirect.

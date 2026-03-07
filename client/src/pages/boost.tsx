@@ -547,7 +547,7 @@ function TaskModal({
                 Voeg een profielfoto toe om een persoonlijke indruk te maken bij verhuurders.
               </p>
               <Button
-                onClick={() => navigate("/dashboard")}
+                onClick={() => navigate("/dashboard?tab=profiel")}
                 className="w-full h-[44px] rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[14px] font-[600]"
                 data-testid="button-goto-profile-photo"
               >

@@ -126,7 +126,7 @@ export default function NotificationSettingsPage() {
       <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
         <div className="max-w-xl mx-auto px-5 h-[56px] flex items-center gap-3">
           <button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/dashboard?tab=profiel")}
             className="w-9 h-9 rounded-full bg-[#F3F4F6] flex items-center justify-center active:bg-[#E5E7EB] transition-colors"
             data-testid="button-back"
           >
@@ -244,7 +244,7 @@ export default function NotificationSettingsPage() {
               </Button>
               <Button
                 variant="outline"
-                onClick={() => navigate("/dashboard")}
+                onClick={() => navigate("/dashboard?tab=profiel")}
                 className="h-[48px] rounded-xl border-[#E5E7EB] text-[#0F172A] text-[15px] font-semibold"
                 data-testid="button-cancel"
               >

@@ -1444,10 +1444,24 @@ const TAB_CONFIG: { key: TabKey; label: string; Icon: any }[] = [
 export default function DashboardPage() {
   const { user, session, loading, signOut } = useAuth();
   const [, navigate] = useLocation();
-  const [activeTab, setActiveTab] = useState<TabKey>("home");
+  const [activeTab, setActiveTab] = useState<TabKey>(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get("tab");
+    if (tab && ["home", "matches", "boost", "filters", "profiel"].includes(tab)) {
+      return tab as TabKey;
+    }
+    return "home";
+  });
   const sub = useSubscription();
 
   const { toast } = useToast();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("tab")) {
+      window.history.replaceState({}, "", "/dashboard");
+    }
+  }, []);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -1524,28 +1538,30 @@ export default function DashboardPage() {
         )}
       </main>
 
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#EAEFF5] z-20 safe-area-bottom">
-        <div className="max-w-xl mx-auto flex">
-          {TAB_CONFIG.map(({ key, label, Icon }) => {
-            const isActive = activeTab === key;
-            return (
-              <button
-                key={key}
-                onClick={() => setActiveTab(key)}
-                className={`flex-1 flex flex-col items-center gap-0.5 py-3 transition-colors ${
-                  isActive ? "text-[#0066FF]" : "text-[#6B7280]"
-                }`}
-                data-testid={`tab-${key}`}
-              >
-                <Icon className="w-[22px] h-[22px]" />
-                <span className={`text-[11px] mt-0.5 ${isActive ? "font-semibold" : "font-medium"}`}>
-                  {label}
-                </span>
-              </button>
-            );
-          })}
+      <div className="fixed bottom-0 left-0 right-0 z-20 pointer-events-none pb-[env(safe-area-inset-bottom,8px)]">
+        <div className="max-w-xl mx-auto px-4 pb-2">
+          <nav className="pointer-events-auto bg-white rounded-[22px] shadow-[0_2px_20px_rgba(0,0,0,0.10)] flex">
+            {TAB_CONFIG.map(({ key, label, Icon }) => {
+              const isActive = activeTab === key;
+              return (
+                <button
+                  key={key}
+                  onClick={() => setActiveTab(key)}
+                  className={`flex-1 flex flex-col items-center gap-0.5 py-3 transition-colors ${
+                    isActive ? "text-[#0066FF]" : "text-[#6B7280]"
+                  }`}
+                  data-testid={`tab-${key}`}
+                >
+                  <Icon className="w-[22px] h-[22px]" />
+                  <span className={`text-[11px] mt-0.5 ${isActive ? "font-semibold" : "font-medium"}`}>
+                    {label}
+                  </span>
+                </button>
+              );
+            })}
+          </nav>
         </div>
-      </nav>
+      </div>
     </div>
   );
 }

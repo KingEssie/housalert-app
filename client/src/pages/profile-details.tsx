@@ -66,7 +66,7 @@ export default function ProfileDetailsPage() {
       <div className="sticky top-0 z-10 bg-white border-b border-[#F2F5F8]">
         <div className="max-w-lg mx-auto flex items-center h-14 px-5">
           <button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/dashboard?tab=profiel")}
             className="w-9 h-9 rounded-full flex items-center justify-center -ml-1"
             data-testid="button-back-details"
           >

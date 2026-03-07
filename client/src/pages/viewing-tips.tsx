@@ -108,7 +108,7 @@ export default function ViewingTipsPage() {
       <header className="sticky top-0 z-10 bg-white border-b border-[#EAEFF5]">
         <div className="max-w-xl mx-auto flex items-center h-[60px] px-6">
           <button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/dashboard?tab=boost")}
             className="w-10 h-10 rounded-full bg-[#F2F5F8] flex items-center justify-center hover:bg-[#EAEFF5] mr-3"
             data-testid="button-back-tips"
           >
