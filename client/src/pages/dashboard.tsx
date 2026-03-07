@@ -1087,12 +1087,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
     }
   }
 
-  const subscriptionSubtitle = subscription.isActive && !subscription.isTrial
-    ? `${subscription.plan === "monthly" ? "Maandelijks" : subscription.plan === "two_month" ? "2 maanden" : subscription.plan === "three_month" ? "3 maanden" : "Actief"}`
-    : subscription.isTrial
-    ? `Proefperiode tot ${subscription.trialEndsAt ? new Date(subscription.trialEndsAt).toLocaleDateString("de-DE", { day: "numeric", month: "short" }) : ""}`
-    : "Verlopen";
-
   const PROFILE_SUBTABS: { key: ProfileSubTab; label: string }[] = [
     { key: "over", label: "Over jou" },
     { key: "account", label: "Account" },
@@ -1268,64 +1262,68 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
           </div>
         ) : (
           <div className="flex flex-col gap-6">
-            <div>
-              <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Instellingen</p>
-              <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
-                <AccountSettingsRow
-                  label="Meldingsinstellingen"
-                  subtext="E-mail, push, WhatsApp"
-                  onClick={() => navigate("/settings/notifications")}
-                />
-                <div className="h-px bg-[#E5E7EB] mx-5" />
-                <AccountSettingsRow
-                  label="Zoekvoorkeuren"
-                  subtext="Budget, stad, reistijd, woningtype"
-                  onClick={() => { setActiveTab("filters"); }}
-                />
-                <div className="h-px bg-[#E5E7EB] mx-5" />
-                <AccountSettingsRow
-                  label="Adresinstellingen"
-                  subtext="Voorkeurslocatie en regio"
-                  onClick={() => { setActiveTab("filters"); }}
-                />
-                <div className="h-px bg-[#E5E7EB] mx-5" />
-                <AccountSettingsRow
-                  label="Opgeslagen woningen"
-                  subtext="Beheer je favorieten"
-                  onClick={() => { setActiveTab("matches"); }}
-                />
-              </div>
-            </div>
-
-            <div>
-              <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Abonnement</p>
-              <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
-                <AccountSettingsRow
-                  label="Abonnement"
-                  subtext={subscriptionSubtitle}
-                  onClick={() => navigate("/account/subscription")}
-                  trailing={
+            <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+              <AccountSettingsRow
+                label="Meldingsinstellingen"
+                subtext="E-mail, push, WhatsApp"
+                onClick={() => navigate("/settings/notifications")}
+              />
+              <div className="h-px bg-[#E5E7EB] mx-5" />
+              <AccountSettingsRow
+                label="Accountgegevens"
+                subtext="E-mail en telefoonnummer"
+                onClick={() => navigate("/profile/details")}
+              />
+              <div className="h-px bg-[#E5E7EB] mx-5" />
+              <AccountSettingsRow
+                label="Wachtwoord en beveiliging"
+                subtext="Wachtwoord wijzigen"
+                onClick={async () => {
+                  try {
+                    const { error } = await supabase.auth.resetPasswordForEmail(user.email, { redirectTo: window.location.origin + "/dashboard" });
+                    if (error) throw error;
+                    toast({ title: "E-mail verzonden", description: "Controleer je inbox om je wachtwoord te wijzigen." });
+                  } catch {
+                    toast({ title: "Fout", description: "Kon geen reset-e-mail sturen.", variant: "destructive" });
+                  }
+                }}
+              />
+              <div className="h-px bg-[#E5E7EB] mx-5" />
+              <AccountSettingsRow
+                label="Abonnement"
+                subtext={subscription.isActive && !subscription.isTrial
+                  ? "Maandelijks • Actief"
+                  : subscription.isTrial
+                  ? "Proefperiode"
+                  : "Verlopen"}
+                onClick={() => navigate("/account/subscription")}
+                trailing={
+                  subscription.isActive && !subscription.isTrial ? (
                     <span
-                      className={`text-[12px] font-[600] px-2.5 py-1 rounded-full flex-shrink-0 ${
-                        subscription.isActive && !subscription.isTrial
-                          ? "text-[#111827] bg-[#8BEA63]"
-                          : subscription.isTrial
-                          ? "text-[#000000] bg-[#CBFF02]"
-                          : "text-white bg-[#110C29]"
-                      }`}
+                      className="text-[12px] font-[600] px-2.5 py-1 rounded-full flex-shrink-0 text-[#111827] bg-[#8BEA63]"
                       data-testid="text-subscription-status"
                     >
-                      {subscription.isActive && !subscription.isTrial ? "Actief" : subscription.isTrial ? "Proef" : "Verlopen"}
+                      Actief
                     </span>
-                  }
-                />
-                <div className="h-px bg-[#E5E7EB] mx-5" />
-                <AccountSettingsRow
-                  label="Abonnement beheren"
-                  subtext="Wijzigen of opzeggen"
-                  onClick={() => navigate("/account/subscription")}
-                />
-              </div>
+                  ) : subscription.isTrial ? (
+                    <span
+                      className="text-[12px] font-[600] px-2.5 py-1 rounded-full flex-shrink-0 text-[#000000] bg-[#CBFF02]"
+                      data-testid="text-subscription-status"
+                    >
+                      Proef
+                    </span>
+                  ) : null
+                }
+              />
+              <div className="h-px bg-[#E5E7EB] mx-5" />
+              <button
+                onClick={handleSignOut}
+                disabled={signingOut}
+                className={`w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F8FAFC] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
+                data-testid="button-logout"
+              >
+                <p className="text-[15px] font-[500] text-[#673DE5] flex-1">{signingOut ? "Uitloggen..." : "Uitloggen"}</p>
+              </button>
             </div>
 
             {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
@@ -1338,52 +1336,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                 Kies een abonnement
               </button>
             )}
-
-            <div>
-              <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Account</p>
-              <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
-                <AccountSettingsRow
-                  label="Accountgegevens"
-                  subtext="E-mail en telefoonnummer"
-                  onClick={() => navigate("/profile/details")}
-                />
-                <div className="h-px bg-[#E5E7EB] mx-5" />
-                <AccountSettingsRow
-                  label="Wachtwoord en beveiliging"
-                  subtext="Wachtwoord wijzigen"
-                  onClick={async () => {
-                    try {
-                      const { error } = await supabase.auth.resetPasswordForEmail(user.email, { redirectTo: window.location.origin + "/dashboard" });
-                      if (error) throw error;
-                      toast({ title: "E-mail verzonden", description: "Controleer je inbox om je wachtwoord te wijzigen." });
-                    } catch {
-                      toast({ title: "Fout", description: "Kon geen reset-e-mail sturen.", variant: "destructive" });
-                    }
-                  }}
-                />
-                <div className="h-px bg-[#E5E7EB] mx-5" />
-                <button
-                  onClick={handleSignOut}
-                  disabled={signingOut}
-                  className={`w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F8FAFC] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
-                  data-testid="button-logout"
-                >
-                  <p className="text-[15px] font-[500] text-[#673DE5] flex-1">{signingOut ? "Uitloggen..." : "Uitloggen"}</p>
-                </button>
-                <div className="h-px bg-[#E5E7EB] mx-5" />
-                <button
-                  onClick={async () => {
-                    if (!confirm("Weet je zeker dat je je account wilt verwijderen? Dit kan niet ongedaan worden gemaakt.")) return;
-                    toast({ title: "Neem contact op", description: "Stuur een e-mail naar support@stekkies.nl om je account te verwijderen." });
-                  }}
-                  className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F8FAFC] transition-colors"
-                  data-testid="button-delete-account"
-                >
-                  <p className="text-[15px] font-[500] text-[#673DE5] flex-1">Account verwijderen</p>
-                </button>
-              </div>
-            </div>
-
           </div>
         )}
       </div>
