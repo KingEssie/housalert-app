@@ -45,6 +45,7 @@ import {
   Camera,
 } from "lucide-react";
 import { PopulairVandaagSection } from "@/components/populair-vandaag";
+import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
 import BoostPage from "@/pages/boost";
 
 const MAX_PROFILES = 4;
@@ -559,36 +560,16 @@ function HomeTab({
           </button>
         </div>
       ) : (
-        <div className="rounded-2xl bg-[#F9FAFB] p-6 text-center" data-testid="hero-empty">
-          <div className="w-12 h-12 rounded-full bg-[#EDF2FF] flex items-center justify-center mx-auto mb-4">
-            <Search className="w-5 h-5 text-[#0066FF]" />
-          </div>
-          <p className="text-[18px] font-semibold text-[#0F172A] leading-snug" data-testid="text-empty-title">
-            We zoeken nu woningen voor je
-          </p>
-          <p className="text-[14px] font-[500] text-[#6B7280] mt-1.5 leading-relaxed max-w-[280px] mx-auto">
-            {hasProfiles
-              ? "Nieuwe matches verschijnen hier automatisch zodra er een woning bij je zoekopdracht past."
-              : "Maak een zoekprofiel aan en ontvang automatisch matches."}
-          </p>
-          <button
-            onClick={() => hasProfiles ? setActiveTab("filters") : navigate("/new-search")}
-            className="mt-4 h-[44px] px-6 rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[14px] font-semibold transition-colors inline-flex items-center gap-2"
-            data-testid="button-empty-cta"
-          >
-            {hasProfiles ? (
-              <>
-                <SlidersHorizontal className="w-4 h-4" />
-                Zoekprofielen bekijken
-              </>
-            ) : (
-              <>
-                <Plus className="w-4 h-4" />
-                Zoekprofiel aanmaken
-              </>
-            )}
-          </button>
-        </div>
+        <EmptyState
+          illustration={EMPTY_STATE_IMAGES.noMatches}
+          title="Nog geen matches gevonden"
+          description={hasProfiles
+            ? "We hebben nog geen woningen gevonden die goed aansluiten op jouw voorkeuren. Pas je filters aan of kijk later opnieuw."
+            : "Maak een zoekprofiel aan en ontvang automatisch matches."}
+          ctaLabel={hasProfiles ? "Filters aanpassen" : "Zoekprofiel aanmaken"}
+          onCtaClick={() => hasProfiles ? setActiveTab("filters") : navigate("/new-search")}
+          testId="hero-empty"
+        />
       )}
 
       {subscription.isTrial && subscription.trialEndsAt && (
@@ -750,49 +731,44 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           </button>
         </div>
       ) : matches.length === 0 ? (
-        <div className="bg-white rounded-2xl shadow-[0_1px_8px_rgba(0,0,0,0.06)] p-8 flex flex-col items-center text-center gap-3" data-testid="empty-matches">
-          <div className="w-14 h-14 rounded-full bg-[#EDF2FF] flex items-center justify-center">
-            <Heart className="w-6 h-6 text-[#0066FF]" />
-          </div>
-          <p className="text-[20px] font-[700] text-[#0F172A]">Nog geen matches</p>
-          <p className="text-[13px] text-[#6B7280] max-w-[250px]">
-            Zodra we woningen vinden die passen bij jouw filters, verschijnen ze hier.
-          </p>
-          <button
-            onClick={() => setActiveTab("filters")}
-            className="mt-2 h-[44px] px-6 rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[14px] font-semibold transition-colors flex items-center gap-2"
-            data-testid="button-adjust-filters"
-          >
-            <SlidersHorizontal className="w-4 h-4" />
-            Pas je filters aan
-          </button>
-        </div>
+        <EmptyState
+          illustration={EMPTY_STATE_IMAGES.noMatches}
+          title="Nog geen matches gevonden"
+          description="We hebben nog geen woningen gevonden die goed aansluiten op jouw voorkeuren. Pas je filters aan of kijk later opnieuw."
+          ctaLabel="Filters aanpassen"
+          onCtaClick={() => setActiveTab("filters")}
+          testId="empty-matches"
+        />
+      
       ) : filteredMatches.length === 0 ? (
-        <div className="bg-white rounded-2xl shadow-[0_1px_8px_rgba(0,0,0,0.06)] p-8 flex flex-col items-center text-center gap-3" data-testid="empty-filtered-matches">
-          <div className="w-14 h-14 rounded-full bg-[#F3F4F8] flex items-center justify-center">
-            {subTab === "opgeslagen" ? (
-              <Bookmark className="w-6 h-6 text-[#6B7280]" />
-            ) : subTab === "bekeken" ? (
-              <Eye className="w-6 h-6 text-[#6B7280]" />
-            ) : subTab === "gereageerd" ? (
-              <Send className="w-6 h-6 text-[#6B7280]" />
-            ) : (
-              <Heart className="w-6 h-6 text-[#6B7280]" />
-            )}
-          </div>
-          <p className="text-[20px] font-[700] text-[#0F172A]">
-            {subTab === "opgeslagen" && "Geen opgeslagen matches"}
-            {subTab === "bekeken" && "Geen bekeken matches"}
-            {subTab === "gereageerd" && "Geen gereageerde matches"}
-            {subTab === "nieuw" && "Alle matches zijn bekeken"}
-          </p>
-          <p className="text-[13px] text-[#6B7280] max-w-[250px]">
-            {subTab === "opgeslagen" && "Tik op het bladwijzer-icoon om een match op te slaan."}
-            {subTab === "bekeken" && "Woningen die je hebt geopend verschijnen hier."}
-            {subTab === "gereageerd" && "Woningen waar je op hebt gereageerd verschijnen hier."}
-            {subTab === "nieuw" && "Bekijk je andere tabs of pas je filters aan."}
-          </p>
-        </div>
+        subTab === "opgeslagen" ? (
+          <EmptyState
+            illustration={EMPTY_STATE_IMAGES.noSaved}
+            title="Je hebt nog geen woningen opgeslagen"
+            description="Sla woningen op die je interessant vindt zodat je ze later makkelijk kunt terugvinden."
+            ctaLabel="Woningen ontdekken"
+            onCtaClick={() => setSubTab("nieuw")}
+            testId="empty-saved"
+          />
+        ) : subTab === "gereageerd" ? (
+          <EmptyState
+            illustration={EMPTY_STATE_IMAGES.noApplications}
+            title="Je hebt nog niet gereageerd"
+            description="Reageer op woningen die je interessant vindt om je kansen te vergroten."
+            ctaLabel="Woningen ontdekken"
+            onCtaClick={() => setSubTab("nieuw")}
+            testId="empty-applications"
+          />
+        ) : (
+          <EmptyState
+            illustration={EMPTY_STATE_IMAGES.noFilters}
+            title="Geen woningen gevonden"
+            description="We konden geen woningen vinden die bij je huidige filters passen. Pas je filters aan en probeer opnieuw."
+            ctaLabel="Filters aanpassen"
+            onCtaClick={() => setActiveTab("filters")}
+            testId="empty-filtered-matches"
+          />
+        )
       ) : (
         <div className="flex flex-col gap-4">
           {filteredMatches.map((m) => (
@@ -890,23 +866,14 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
           ))}
         </div>
       ) : profiles.length === 0 ? (
-        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-8 flex flex-col items-center text-center gap-3" data-testid="empty-profiles">
-          <div className="w-14 h-14 rounded-full bg-[#EDF2FF] flex items-center justify-center">
-            <Search className="w-6 h-6 text-[#0066FF]" />
-          </div>
-          <p className="text-[16px] font-semibold text-[#0F172A]">Geen zoekprofielen</p>
-          <p className="text-[13px] text-[#6B7280] max-w-[250px]">
-            Voeg een zoekopdracht toe om automatisch woningen te ontvangen.
-          </p>
-          <button
-            onClick={() => navigate("/dashboard/searches/new")}
-            className="mt-2 h-[44px] px-6 rounded-xl bg-[#0066FF] hover:bg-[#0052CC] text-white text-[14px] font-semibold transition-colors flex items-center gap-2"
-            data-testid="button-add-search-empty"
-          >
-            <Plus className="w-4 h-4" />
-            Eerste zoekopdracht aanmaken
-          </button>
-        </div>
+        <EmptyState
+          illustration={EMPTY_STATE_IMAGES.noMatches}
+          title="Nog geen matches gevonden"
+          description="Voeg een zoekopdracht toe om automatisch woningen te ontvangen die bij jouw voorkeuren passen."
+          ctaLabel="Zoekprofiel aanmaken"
+          onCtaClick={() => navigate("/new-search")}
+          testId="empty-profiles"
+        />
       ) : (
         <div className="flex flex-col gap-3">
           {profiles.map((p) => (

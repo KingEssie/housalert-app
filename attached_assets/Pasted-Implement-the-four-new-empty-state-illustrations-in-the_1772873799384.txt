@@ -1,0 +1,167 @@
+Implement the four new empty state illustrations in the correct places across the app.
+
+IMPORTANT:
+Use the uploaded image assets that I provide in Replit for each empty state.
+Do not guess or generate replacements.
+Apply each illustration to the correct screen/state and standardize the layout across all empty states.
+
+==================================================
+1. EMPTY STATES TO IMPLEMENT
+==================================================
+
+Use these four empty states:
+
+1. NO MATCHES
+Title:
+"Nog geen matches gevonden"
+
+Description:
+"We hebben nog geen woningen gevonden die goed aansluiten op jouw voorkeuren. Pas je filters aan of kijk later opnieuw."
+
+Primary CTA:
+"Filters aanpassen"
+
+Use this on:
+- the matches page / state where there are currently no matches for the user
+
+--------------------------------------------------
+
+2. NO SAVED HOMES / FAVORITES
+Title:
+"Je hebt nog geen woningen opgeslagen"
+
+Description:
+"Sla woningen op die je interessant vindt zodat je ze later makkelijk kunt terugvinden."
+
+Primary CTA:
+"Woningen ontdekken"
+
+Use this on:
+- the opgeslagen woningen / favorieten page or state
+- anywhere the saved homes list is empty
+
+--------------------------------------------------
+
+3. NO APPLICATIONS / NO RESPONSES SENT
+Title:
+"Je hebt nog niet gereageerd"
+
+Description:
+"Reageer op woningen die je interessant vindt om je kansen te vergroten."
+
+Primary CTA:
+"Woningen ontdekken"
+
+Use this on:
+- the page or section where the user sees their sent reactions/applications
+- anywhere the reactions/applications list is empty
+
+--------------------------------------------------
+
+4. NO HOMES FOUND FOR CURRENT FILTERS
+Title:
+"Geen woningen gevonden"
+
+Description:
+"We konden geen woningen vinden die bij je huidige filters passen. Pas je filters aan en probeer opnieuw."
+
+Primary CTA:
+"Filters aanpassen"
+
+Use this on:
+- search/listing results pages when current filters return zero homes
+- any filtered housing results state with no results
+
+==================================================
+2. LAYOUT RULES FOR ALL EMPTY STATES
+==================================================
+
+All four empty states must follow exactly the same visual structure.
+
+Structure:
+
+[ Illustration ]
+
+Title
+
+Short description
+
+Primary CTA button
+
+Design requirements:
+- centered layout
+- large illustration above the text
+- illustration should be the main focal point
+- consistent illustration size across all empty states
+- target illustration width around 220–260px on mobile
+- generous top spacing
+- around 24px spacing between illustration and title
+- comfortable spacing between title, description and CTA
+- title bold and visually prominent
+- description should stay compact, ideally max 2 lines on mobile where possible
+- CTA button clearly separated below the description
+- use the same spacing system on every empty state
+- keep everything minimal, premium, calm and mobile-first
+
+==================================================
+3. CONSISTENCY REQUIREMENTS
+==================================================
+
+Do not make each empty state look different.
+
+All empty states must feel like one system:
+- same layout
+- same spacing
+- same text hierarchy
+- same button treatment
+- same illustration positioning
+- same container behavior
+
+Only these things should change per screen:
+- illustration
+- title
+- description
+- CTA label
+- CTA action
+
+==================================================
+4. CTA BEHAVIOR
+==================================================
+
+CTA buttons must do something useful.
+
+Use these actions:
+
+- "Filters aanpassen"
+  opens the filters screen, filter modal, or relevant filter controls
+
+- "Woningen ontdekken"
+  takes the user to the main housing discovery/search experience
+
+Do not leave CTA buttons inactive.
+Do not create dead-end buttons.
+
+==================================================
+5. IMPLEMENTATION DETAILS
+==================================================
+
+Use the uploaded assets for the four illustrations and map them correctly to the four states listed above.
+
+If there is already an old empty state with text only:
+- replace it with the new illustrated empty state
+- remove outdated placeholder layout
+- do not stack the new illustration on top of old inconsistent spacing
+
+If the app already has a shared empty state component:
+- refactor it so all four states can reuse one consistent empty state pattern
+- pass illustration, title, description and CTA as props/config
+
+This is preferred over duplicating layout code.
+
+==================================================
+6. FINAL GOAL
+==================================================
+
+The final result should feel like a polished housing app with premium empty states.
+
+Each relevant page should show the correct illustration and text, and all empty states should feel visually unified across the app.
