@@ -110,9 +110,11 @@ function radiusToZoom(km: number): number {
 interface Props {
   value: LocationData;
   onChange: (data: LocationData) => void;
+  segmentedTabs?: boolean;
+  alwaysShowMap?: boolean;
 }
 
-export default function LocationModeSelector({ value, onChange }: Props) {
+export default function LocationModeSelector({ value, onChange, segmentedTabs, alwaysShowMap }: Props) {
   const [cityQuery, setCityQuery] = useState(value.place?.city_name ?? "");
   const [cityResults, setCityResults] = useState<NominatimResult[]>([]);
   const [cityOpen, setCityOpen] = useState(false);
@@ -258,29 +260,52 @@ export default function LocationModeSelector({ value, onChange }: Props) {
 
   const mapLat = value.place?.latitude ?? (value.tab === "reistijd" ? value.commuteLat : null);
   const mapLng = value.place?.longitude ?? (value.tab === "reistijd" ? value.commuteLng : null);
-  const showMap = mapLat != null && mapLng != null;
+  const hasLocation = mapLat != null && mapLng != null;
+  const showMap = hasLocation || !!alwaysShowMap;
+  const defaultLat = 51.1657;
+  const defaultLng = 10.4515;
+  const defaultZoom = 5;
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex border-b border-[#E5E7EB]">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setTab(tab.id)}
-            className={`flex-1 pb-3 text-sm font-semibold text-center transition-colors relative ${
-              value.tab === tab.id
-                ? "text-[#673DE5]"
-                : "text-[#6B7280] hover:text-[#111827]"
-            }`}
-            data-testid={`tab-location-${tab.id}`}
-          >
-            {tab.label}
-            {value.tab === tab.id && (
-              <div className="absolute bottom-0 left-3 right-3 h-[3px] bg-[#673DE5] rounded-t-full" />
-            )}
-          </button>
-        ))}
-      </div>
+      {segmentedTabs ? (
+        <div className="flex bg-[#F3F4F6] rounded-[12px] p-1 gap-0.5">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setTab(tab.id)}
+              className={`flex-1 py-2.5 text-[13px] font-semibold text-center rounded-[10px] transition-all ${
+                value.tab === tab.id
+                  ? "bg-white text-[#673DE5] shadow-sm"
+                  : "text-[#6B7280] hover:text-[#111827]"
+              }`}
+              data-testid={`tab-location-${tab.id}`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className="flex border-b border-[#E5E7EB]">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setTab(tab.id)}
+              className={`flex-1 pb-3 text-sm font-semibold text-center transition-colors relative ${
+                value.tab === tab.id
+                  ? "text-[#673DE5]"
+                  : "text-[#6B7280] hover:text-[#111827]"
+              }`}
+              data-testid={`tab-location-${tab.id}`}
+            >
+              {tab.label}
+              {value.tab === tab.id && (
+                <div className="absolute bottom-0 left-3 right-3 h-[3px] bg-[#673DE5] rounded-t-full" />
+              )}
+            </button>
+          ))}
+        </div>
+      )}
 
       {(value.tab === "wijken" || value.tab === "radius") && (
         <div ref={cityContainerRef} className="relative">
@@ -510,30 +535,34 @@ export default function LocationModeSelector({ value, onChange }: Props) {
       {showMap && (
         <div className="rounded-[14px] overflow-hidden border border-[#E5E7EB] h-[200px]" data-testid="map-preview">
           <MapContainer
-            center={[mapLat!, mapLng!]}
-            zoom={value.tab === "radius" ? radiusToZoom(value.radiusKm) : 11}
+            center={hasLocation ? [mapLat!, mapLng!] : [defaultLat, defaultLng]}
+            zoom={hasLocation ? (value.tab === "radius" ? radiusToZoom(value.radiusKm) : 11) : defaultZoom}
             style={{ height: "100%", width: "100%" }}
             zoomControl={false}
             attributionControl={false}
           >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            <Marker position={[mapLat!, mapLng!]} icon={value.tab === "reistijd" ? DEST_ICON : MARKER_ICON} />
-            {value.tab === "radius" && value.place && (
-              <Circle
-                center={[value.place.latitude, value.place.longitude]}
-                radius={value.radiusKm * 1000}
-                pathOptions={{
-                  color: "#673DE5",
-                  fillColor: "#673DE5",
-                  fillOpacity: 0.1,
-                  weight: 2,
-                }}
-              />
+            {hasLocation && (
+              <>
+                <Marker position={[mapLat!, mapLng!]} icon={value.tab === "reistijd" ? DEST_ICON : MARKER_ICON} />
+                {value.tab === "radius" && value.place && (
+                  <Circle
+                    center={[value.place.latitude, value.place.longitude]}
+                    radius={value.radiusKm * 1000}
+                    pathOptions={{
+                      color: "#673DE5",
+                      fillColor: "#673DE5",
+                      fillOpacity: 0.1,
+                      weight: 2,
+                    }}
+                  />
+                )}
+              </>
             )}
             <MapUpdater
-              lat={mapLat!}
-              lng={mapLng!}
-              zoom={value.tab === "radius" ? radiusToZoom(value.radiusKm) : 11}
+              lat={hasLocation ? mapLat! : defaultLat}
+              lng={hasLocation ? mapLng! : defaultLng}
+              zoom={hasLocation ? (value.tab === "radius" ? radiusToZoom(value.radiusKm) : 11) : defaultZoom}
             />
           </MapContainer>
         </div>

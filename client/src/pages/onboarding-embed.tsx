@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { MapPin, Check, ChevronRight, ExternalLink, Download, Sparkles } from "lucide-react";
+import { MapPin, Check, ChevronRight, ExternalLink, Download, Sparkles, Search } from "lucide-react";
 import LocationModeSelector, {
   type LocationData,
   DEFAULT_LOCATION_DATA,
@@ -39,7 +39,7 @@ function EstimateBlock({ city, maxPrice }: { city: string; maxPrice: string }) {
 
   return (
     <div
-      className="flex items-center gap-3 bg-[#F0EDFC] rounded-[14px] px-4 py-3"
+      className="flex items-center gap-3 bg-gradient-to-r from-[#F0EDFC] to-[#E8E4FA] rounded-[14px] px-4 py-3.5"
       data-testid="embed-estimate-block"
     >
       <div className="w-9 h-9 rounded-[10px] bg-[#673DE5] flex items-center justify-center flex-shrink-0">
@@ -49,8 +49,8 @@ function EstimateBlock({ city, maxPrice }: { city: string; maxPrice: string }) {
         {loading ? (
           <div className="h-4 w-48 bg-[#DCDBFA] rounded animate-pulse" />
         ) : estimate !== null ? (
-          <p className="text-[14px] font-semibold text-[#111827] leading-snug">
-            Met deze zoekopdracht kun je ~<span className="text-[#673DE5]">{estimate}</span> matches per week verwachten.
+          <p className="text-[13px] sm:text-[14px] font-semibold text-[#111827] leading-snug">
+            ~<span className="text-[#673DE5] text-[15px] font-bold">{estimate}</span> matches per week verwacht
           </p>
         ) : null}
       </div>
@@ -62,23 +62,23 @@ function CompletionScreen({ draftId }: { draftId: string }) {
   const continueUrl = `${APP_DOMAIN}/continue?draft=${draftId}`;
 
   return (
-    <div className="flex flex-col items-center justify-center px-5 py-10 text-center">
-      <div className="w-[56px] h-[56px] rounded-[14px] bg-[#DCDBFA] flex items-center justify-center mb-6">
+    <div className="flex flex-col items-center justify-center px-6 py-10 text-center">
+      <div className="w-[56px] h-[56px] rounded-[14px] bg-[#DCDBFA] flex items-center justify-center mb-5">
         <Check className="w-7 h-7 text-[#673DE5]" />
       </div>
 
-      <h2 className="text-[22px] font-bold text-[#111827] mb-2" data-testid="embed-text-done-title">
+      <h2 className="text-[20px] font-bold text-[#111827] mb-1.5" data-testid="embed-text-done-title">
         Je zoekopdracht is opgeslagen!
       </h2>
-      <p className="text-[14px] text-[#6B7280] mb-8 max-w-[300px] leading-relaxed">
+      <p className="text-[14px] text-[#6B7280] mb-7 max-w-[300px] leading-relaxed">
         Maak een account aan om direct meldingen te ontvangen zodra er een match verschijnt.
       </p>
 
-      <div className="w-full max-w-[320px] space-y-3">
+      <div className="w-full max-w-[320px] space-y-2.5">
         <a
           href={continueUrl}
           target="_top"
-          className="w-full min-h-[48px] rounded-[14px] bg-[#673DE5] hover:bg-[#5B30D6] text-white font-semibold text-[15px] transition-colors flex items-center justify-center gap-2"
+          className="w-full min-h-[52px] rounded-[14px] bg-[#673DE5] hover:bg-[#5B30D6] text-white font-bold text-[15px] transition-all flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(103,61,229,0.3)]"
           data-testid="embed-link-continue-browser"
         >
           <ExternalLink className="w-4 h-4" />
@@ -86,18 +86,16 @@ function CompletionScreen({ draftId }: { draftId: string }) {
         </a>
 
         <button
-          className="w-full min-h-[48px] rounded-[14px] border-2 border-[#E5E7EB] bg-white text-[#111827] font-semibold text-[15px] hover:bg-[#F3F4F6] transition-colors flex items-center justify-center gap-2"
+          className="w-full min-h-[48px] rounded-[14px] border border-[#E5E7EB] bg-white text-[#111827] font-semibold text-[14px] hover:bg-[#F8FAFC] transition-colors flex items-center justify-center gap-2"
           data-testid="embed-button-download-app"
-          onClick={() => {
-            window.open(continueUrl, "_top");
-          }}
+          onClick={() => window.open(continueUrl, "_top")}
         >
           <Download className="w-4 h-4" />
           Download de app
         </button>
       </div>
 
-      <p className="text-[12px] text-[#9CA3AF] mt-6">
+      <p className="text-[11px] text-[#C4C4C4] mt-6">
         Powered by Stekkies
       </p>
     </div>
@@ -118,8 +116,7 @@ export default function OnboardingEmbedPage() {
       ? locationData.commuteCity || locationData.commuteDestination.split(",")[0].trim()
       : locationData.place?.city_name ?? "";
 
-  const countryCode =
-    locationData.place?.country_code || "DE";
+  const countryCode = locationData.place?.country_code || "DE";
 
   const locationReady = isLocationValid(locationData);
   const budgetReady = maxPrice.trim() !== "" && Number(maxPrice) > 0;
@@ -186,8 +183,8 @@ export default function OnboardingEmbedPage() {
 
   if (draftId) {
     return (
-      <div className="min-h-screen bg-[#F8FAFC] flex items-start justify-center p-4">
-        <div className="w-full max-w-[480px] bg-white rounded-[20px] shadow-sm border border-[#E5E7EB] overflow-hidden">
+      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-4">
+        <div className="w-full max-w-[440px] bg-white rounded-[22px] border border-[#E5E7EB] shadow-[0_4px_24px_rgba(0,0,0,0.06)] overflow-hidden">
           <CompletionScreen draftId={draftId} />
         </div>
       </div>
@@ -195,33 +192,35 @@ export default function OnboardingEmbedPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex items-start justify-center px-4 py-5">
-      <div className="w-full max-w-[480px]">
+    <div className="min-h-screen bg-[#F8FAFC] flex items-start justify-center px-4 py-6 sm:py-8">
+      <div className="w-full max-w-[440px]">
+
         <div className="text-center mb-5">
           <h1
-            className="text-[22px] sm:text-[26px] font-extrabold text-[#111827] leading-tight"
+            className="text-[21px] sm:text-[24px] font-extrabold text-[#111827] leading-[1.25] tracking-tight"
             data-testid="embed-text-hero-title"
           >
             Ontdek hoeveel matches we voor jou gaan vinden.
           </h1>
-          <p className="text-[14px] text-[#6B7280] mt-2">
-            Stel je zoekopdracht in en ontvang direct matches.
-          </p>
         </div>
 
-        <div className="bg-white rounded-[20px] shadow-sm border border-[#E5E7EB] overflow-visible">
-          <div className="px-5 pt-5 pb-2">
-            <LocationModeSelector value={locationData} onChange={setLocationData} />
+        <div className="bg-white rounded-[22px] border border-[#E5E7EB] shadow-[0_4px_24px_rgba(0,0,0,0.06)] overflow-visible">
+
+          <div className="px-5 pt-5 pb-1">
+            <LocationModeSelector
+              value={locationData}
+              onChange={setLocationData}
+              segmentedTabs
+              alwaysShowMap
+            />
           </div>
 
-          <div className="px-5 pt-3 pb-2 space-y-4">
-            <div className="flex items-center gap-2 text-[13px] text-[#6B7280] bg-[#F8FAFC] rounded-[10px] px-3 py-2.5">
-              <MapPin className="w-4 h-4 text-[#673DE5] flex-shrink-0" />
-              <span>Voeg tot 4 zoekopdrachten toe.</span>
-            </div>
+          <div className="h-px bg-[#F0F0F0] mx-5 my-1" />
+
+          <div className="px-5 py-3 space-y-3.5">
 
             <div>
-              <label className="text-[14px] font-semibold text-[#111827] mb-2 block">
+              <label className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2 block">
                 Woningtype
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -229,10 +228,10 @@ export default function OnboardingEmbedPage() {
                   <button
                     key={pt.value}
                     onClick={() => setPropertyType(pt.value)}
-                    className={`px-3.5 py-2 rounded-full text-[13px] font-medium border transition-all ${
+                    className={`px-3.5 py-[7px] rounded-full text-[13px] font-medium transition-all ${
                       propertyType === pt.value
-                        ? "border-[#673DE5] bg-[#DCDBFA] text-[#673DE5]"
-                        : "border-[#E5E7EB] bg-white text-[#6B7280] hover:border-[#D1D5DB]"
+                        ? "bg-[#673DE5] text-white shadow-sm"
+                        : "bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB]"
                     }`}
                     data-testid={`embed-chip-property-${pt.value}`}
                   >
@@ -243,36 +242,32 @@ export default function OnboardingEmbedPage() {
             </div>
 
             <div>
-              <label className="text-[14px] font-semibold text-[#111827] mb-2 block">
+              <label className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2 block">
                 Maandbudget
               </label>
               <div className="flex items-center gap-2">
                 <div className="relative flex-1">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] text-[13px]">
-                    €
-                  </span>
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF] text-[13px] font-medium">EUR</span>
                   <input
                     type="number"
                     inputMode="numeric"
                     placeholder="min"
                     value={minPrice}
                     onChange={(e) => setMinPrice(e.target.value)}
-                    className="w-full h-[44px] rounded-[12px] bg-[#F3F4F6] border border-[#E5E7EB] pl-7 pr-3 text-[14px] text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#673DE5] focus:border-transparent"
+                    className="w-full h-[42px] rounded-[10px] bg-[#F3F4F6] border-0 pl-[52px] pr-3 text-[14px] text-[#111827] placeholder:text-[#C4C4C4] focus:outline-none focus:ring-2 focus:ring-[#673DE5]/40 transition-shadow"
                     data-testid="embed-input-min-price"
                   />
                 </div>
-                <span className="text-[#9CA3AF] text-[13px] font-medium">-</span>
+                <div className="w-3 h-px bg-[#D1D5DB]" />
                 <div className="relative flex-1">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] text-[13px]">
-                    €
-                  </span>
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9CA3AF] text-[13px] font-medium">EUR</span>
                   <input
                     type="number"
                     inputMode="numeric"
                     placeholder="max"
                     value={maxPrice}
                     onChange={(e) => setMaxPrice(e.target.value)}
-                    className="w-full h-[44px] rounded-[12px] bg-[#F3F4F6] border border-[#E5E7EB] pl-7 pr-3 text-[14px] text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#673DE5] focus:border-transparent"
+                    className="w-full h-[42px] rounded-[10px] bg-[#F3F4F6] border-0 pl-[52px] pr-3 text-[14px] text-[#111827] placeholder:text-[#C4C4C4] focus:outline-none focus:ring-2 focus:ring-[#673DE5]/40 transition-shadow"
                     data-testid="embed-input-max-price"
                   />
                 </div>
@@ -280,34 +275,39 @@ export default function OnboardingEmbedPage() {
             </div>
 
             <EstimateBlock city={cityName} maxPrice={maxPrice} />
+
+            <div className="flex items-center gap-2 text-[12px] text-[#9CA3AF]">
+              <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+              <span>Voeg tot 4 zoekopdrachten toe.</span>
+            </div>
           </div>
 
           {error && (
-            <div className="mx-5 mt-2 p-3 rounded-[10px] bg-red-50 border border-red-200 text-red-700 text-[13px]" data-testid="embed-error">
+            <div className="mx-5 mb-2 p-3 rounded-[10px] bg-red-50 border border-red-200 text-red-700 text-[13px]" data-testid="embed-error">
               {error}
             </div>
           )}
 
-          <div className="px-5 pt-3 pb-5">
+          <div className="px-5 pb-5 pt-1">
             <button
               onClick={handleSubmit}
               disabled={!canSubmit || submitting}
-              className="w-full min-h-[52px] rounded-[14px] bg-[#673DE5] hover:bg-[#5B30D6] text-white font-bold text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm"
+              className="w-full h-[56px] rounded-[14px] bg-[#673DE5] hover:bg-[#5B30D6] active:scale-[0.98] text-white font-bold text-[16px] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 shadow-[0_2px_12px_rgba(103,61,229,0.35)]"
               data-testid="embed-button-submit"
             >
               {submitting ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
+                  <Search className="w-[18px] h-[18px]" />
                   Plaats zoekopdracht
-                  <ChevronRight className="w-5 h-5" />
                 </>
               )}
             </button>
           </div>
         </div>
 
-        <p className="text-center text-[11px] text-[#9CA3AF] mt-4">
+        <p className="text-center text-[11px] text-[#C4C4C4] mt-4">
           Powered by Stekkies
         </p>
       </div>
