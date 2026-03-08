@@ -108,6 +108,7 @@ app.use((req, res, next) => {
       reusePort: true,
     },
     () => {
+      console.log(`[stekkies] Server listening on 0.0.0.0:${port} (NODE_ENV=${process.env.NODE_ENV || "development"})`);
       log(`serving on port ${port}`);
 
       import("./migrations/apply").then(({ runStartupMigration }) =>
