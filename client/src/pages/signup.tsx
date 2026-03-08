@@ -17,6 +17,7 @@ export default function SignupPage() {
   const maxPrice = params.get("maxPrice") || "";
   const minRooms = params.get("minRooms") || "";
   const minSize = params.get("minSize") || "";
+  const plan = params.get("plan") || "";
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -85,8 +86,12 @@ export default function SignupPage() {
         }
       }
 
-      const p = new URLSearchParams(searchString);
-      navigate(`/paywall?${p.toString()}`);
+      if (plan) {
+        navigate(`/paywall?plan=${plan}&autoCheckout=true`);
+      } else {
+        const p = new URLSearchParams(searchString);
+        navigate(`/paywall?${p.toString()}`);
+      }
     } catch (err: any) {
       toast({ title: "Er ging iets mis", description: err.message, variant: "destructive" });
     } finally {
@@ -199,7 +204,7 @@ export default function SignupPage() {
         <p className="text-center text-[15px] text-[var(--yo-dark)] mt-6">
           Heb je al een account?{" "}
           <button
-            onClick={() => navigate("/login")}
+            onClick={() => navigate(plan ? `/login?plan=${plan}` : "/login")}
             className="text-[var(--yo-pink)] font-semibold hover:underline"
             data-testid="link-login"
           >

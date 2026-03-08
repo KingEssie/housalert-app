@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useLocation } from "wouter";
+import { useState, useEffect, useRef } from "react";
+import { useLocation, useSearch } from "wouter";
 import { Home, Check, Crown, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -55,14 +55,29 @@ const FEATURES = [
 export default function PaywallPage() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
-  const { user } = useAuth();
-  const [selectedPlan, setSelectedPlan] = useState("two_month");
+  const { user, loading: authLoading } = useAuth();
+  const searchString = useSearch();
+  const queryParams = new URLSearchParams(searchString);
+  const planFromUrl = queryParams.get("plan");
+  const autoCheckout = queryParams.get("autoCheckout") === "true";
+
+  const [selectedPlan, setSelectedPlan] = useState(
+    planFromUrl && PLANS.some((p) => p.id === planFromUrl) ? planFromUrl : "two_month"
+  );
   const [loading, setLoading] = useState(false);
   const [stripeUnavailable, setStripeUnavailable] = useState(false);
+  const autoCheckoutTriggered = useRef(false);
+
+  useEffect(() => {
+    if (autoCheckout && user && !authLoading && !autoCheckoutTriggered.current) {
+      autoCheckoutTriggered.current = true;
+      handleCheckout();
+    }
+  }, [autoCheckout, user, authLoading]);
 
   async function handleCheckout() {
     if (!user) {
-      navigate("/signup");
+      navigate(`/signup?plan=${selectedPlan}`);
       return;
     }
 
