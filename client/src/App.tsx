@@ -31,6 +31,7 @@ import OnboardingPage from "@/pages/onboarding";
 import OnboardingEmbedPage from "@/pages/onboarding-embed";
 import ContinueDraftPage from "@/pages/continue-draft";
 import AuthCallbackPage from "@/pages/auth-callback";
+import { DocumentenGuidePage, SchufaGuidePage, ZoekstrategieGuidePage, NetwerkGuidePage } from "@/pages/guide";
 
 function ProtectedRoute({ component: Component, skipOnboardingCheck }: { component: React.ComponentType; skipOnboardingCheck?: boolean }) {
   const { user, loading } = useAuth();
@@ -82,6 +83,10 @@ function Router() {
       <Route path="/profile/details" component={() => <ProtectedRoute component={ProfileDetailsPage} />} />
       <Route path="/profile/edit/:field" component={() => <ProtectedRoute component={ProfileEditPage} />} />
       <Route path="/tips/bezichtiging" component={() => <ProtectedRoute component={ViewingTipsPage} />} />
+      <Route path="/tips/documenten" component={() => <ProtectedRoute component={DocumentenGuidePage} />} />
+      <Route path="/tips/schufa" component={() => <ProtectedRoute component={SchufaGuidePage} />} />
+      <Route path="/tips/zoekstrategie" component={() => <ProtectedRoute component={ZoekstrategieGuidePage} />} />
+      <Route path="/tips/netwerk" component={() => <ProtectedRoute component={NetwerkGuidePage} />} />
       <Route path="/account/subscription" component={() => <ProtectedRoute component={SubscriptionDetailPage} />} />
       <Route path="/account/subscription/cancel" component={() => <ProtectedRoute component={SubscriptionCancelConfirmPage} />} />
       <Route path="/account/subscription/cancelled" component={() => <ProtectedRoute component={SubscriptionCancelledPage} />} />

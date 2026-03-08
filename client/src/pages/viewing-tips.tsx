@@ -105,7 +105,7 @@ export default function ViewingTipsPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <PageHeader title="Bezichtigingtips" onBack={() => navigate("/dashboard?tab=boost")} />
+      <PageHeader title="Bezichtigingtips" onBack={() => navigate("/dashboard?tab=tips")} />
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6 pb-32">
         <div className="mb-6">

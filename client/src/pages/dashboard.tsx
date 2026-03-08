@@ -44,9 +44,9 @@ import {
   Zap,
   Camera,
 } from "lucide-react";
-import { PopulairVandaagSection } from "@/components/populair-vandaag";
+import { AccountCompletionCard, SearchPreparationCard } from "@/components/profile-strength";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
-import BoostPage from "@/pages/boost";
+import TipsPage from "@/pages/tips";
 
 const MAX_PROFILES = 4;
 
@@ -82,7 +82,7 @@ const FRESH_LABEL_TEXT: Record<string, string> = {
   ouder: "Ouder",
 };
 
-type TabKey = "home" | "matches" | "filters" | "boost" | "profiel";
+type TabKey = "home" | "matches" | "filters" | "tips" | "profiel";
 type MatchSubTab = "nieuw" | "bekeken" | "opgeslagen" | "gereageerd";
 
 const CITY_GRADIENTS: Record<string, string> = {
@@ -452,76 +452,111 @@ function ProfileCard({
   );
 }
 
-function BoostTeaserCard({ setActiveTab }: { setActiveTab: (tab: TabKey) => void }) {
-  const { session } = useAuth();
-  const { data, isLoading } = useQuery<{ boostScore: number; completedCount: number; totalCount: number }>({
-    queryKey: ["/api/boost"],
+function RecenteMatchesSection({ accessToken, setActiveTab }: { accessToken: string | undefined; setActiveTab: (tab: TabKey) => void }) {
+  const { data: matches, isLoading } = useQuery<ApiMatch[]>({
+    queryKey: ["/api/matches", "recent-5"],
     queryFn: async () => {
-      const res = await fetch("/api/boost", {
-        headers: { Authorization: `Bearer ${session?.access_token}` },
+      const res = await fetch("/api/matches", {
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
-      if (!res.ok) throw new Error("Failed to fetch boost data");
-      return res.json();
+      if (!res.ok) throw new Error("Failed to fetch matches");
+      const all: ApiMatch[] = await res.json();
+      return all.slice(0, 5);
     },
-    enabled: !!session?.access_token,
-    select: (d) => ({
-      boostScore: d.boostScore,
-      completedCount: d.completedCount,
-      totalCount: d.totalCount,
-    }),
+    enabled: !!accessToken,
   });
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 animate-pulse" data-testid="card-boost-teaser-loading">
-        <div className="h-4 bg-[var(--yo-surface)] rounded w-36 mb-3" />
-        <div className="h-3 bg-[var(--yo-surface)] rounded w-52 mb-4" />
-        <div className="h-9 bg-[var(--yo-surface)] rounded w-32" />
+      <div className="flex flex-col gap-3">
+        <h2 className="text-section-title">Recente matches</h2>
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-20 bg-[var(--yo-surface)] rounded-lg animate-pulse" />
+        ))}
       </div>
     );
   }
 
-  if (!data) return null;
-
-  const { boostScore: rawScore, completedCount, totalCount } = data;
-  const boostScore = Math.max(0, Math.min(100, rawScore));
-  const remaining = totalCount - completedCount;
-
-  const statusText =
-    completedCount === totalCount
-      ? "Je profiel is volledig"
-      : remaining <= 3
-        ? `Nog ${remaining} ${remaining === 1 ? "stap" : "stappen"} om sneller te reageren`
-        : `Je profiel is ${boostScore}% compleet`;
+  if (!matches || matches.length === 0) return null;
 
   return (
-    <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5" data-testid="card-boost-teaser">
-      <div className="flex items-start gap-4">
-        <div className="w-10 h-10 rounded-lg bg-[var(--yo-chip-bg)] flex items-center justify-center flex-shrink-0">
-          <Zap className="w-5 h-5 text-[var(--yo-dark)]" />
+    <div className="flex flex-col gap-3" data-testid="section-recente-matches">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Heart className="w-4 h-4 text-[var(--yo-dark)]" />
+          <h2 className="text-section-title">Recente matches</h2>
         </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-semibold text-[var(--yo-dark)]">Boost je kansen</p>
-          <p className="text-[13px] text-[var(--yo-dark)] mt-0.5">{statusText}</p>
+        <button
+          onClick={() => setActiveTab("matches")}
+          className="text-[13px] font-semibold text-[var(--yo-pink)]"
+          data-testid="button-view-all-matches"
+        >
+          Bekijk alles
+        </button>
+      </div>
+      <div className="flex flex-col gap-2">
+        {matches.map((match) => (
+          <RecentMatchMiniCard key={match.listing_id} match={match} />
+        ))}
+      </div>
+    </div>
+  );
+}
 
-          <div className="mt-3 h-1.5 bg-[var(--yo-divider)] rounded-full overflow-hidden">
-            <div
-              className="h-full bg-[var(--yo-pink)] rounded-full transition-all duration-500"
-              style={{ width: `${boostScore}%` }}
-            />
-          </div>
+function RecentMatchMiniCard({ match }: { match: ApiMatch }) {
+  const [, navigate] = useLocation();
+  const [imgError, setImgError] = useState(false);
+  const hasImage = !!match.image_url && !imgError;
+  const gradient = getCityGradient(match.city);
 
-          <Button
-            variant="link"
-            onClick={() => setActiveTab("boost")}
-            className="mt-2 p-0 h-auto text-[13px] font-semibold text-[var(--yo-pink)]"
-            data-testid="button-boost-teaser"
-          >
-            Bekijk Boost
-            <ChevronRight className="w-3.5 h-3.5 ml-0.5" />
-          </Button>
+  return (
+    <div
+      className="bg-white rounded-lg border border-[var(--yo-divider)] overflow-hidden cursor-pointer hover:shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-all duration-200 active:scale-[0.985] flex"
+      onClick={() => navigate(`/listing/${match.listing_id}`)}
+      data-testid={`card-recent-match-${match.listing_id}`}
+    >
+      {hasImage ? (
+        <img
+          src={match.image_url!}
+          alt={match.title}
+          className="w-20 h-20 object-cover flex-shrink-0"
+          loading="lazy"
+          onError={() => setImgError(true)}
+          referrerPolicy="no-referrer"
+        />
+      ) : (
+        <div className={`w-20 h-20 bg-gradient-to-br ${gradient} flex items-center justify-center flex-shrink-0`}>
+          <ImageIcon className="w-5 h-5 text-white/60" />
+        </div>
+      )}
+      <div className="flex-1 min-w-0 p-3 flex flex-col justify-center gap-0.5">
+        <h3 className="text-[14px] font-[700] text-[var(--yo-dark)] leading-snug line-clamp-1" data-testid={`text-recent-title-${match.listing_id}`}>
+          {match.title}
+        </h3>
+        <div className="flex items-center gap-2 text-[12px] text-[var(--yo-dark)]">
+          <span className="flex items-center gap-0.5">
+            <MapPin className="w-3 h-3" />
+            {match.city}
+          </span>
+          {match.bedrooms > 0 && (
+            <span className="flex items-center gap-0.5">
+              <BedDouble className="w-3 h-3" />
+              {match.bedrooms}
+            </span>
+          )}
+          {match.size_m2 > 0 && (
+            <span className="flex items-center gap-0.5">
+              <Ruler className="w-3 h-3" />
+              {match.size_m2}m²
+            </span>
+          )}
         </div>
       </div>
+      {match.price > 0 && (
+        <div className="flex items-center pr-3 flex-shrink-0">
+          <span className="text-[15px] font-bold text-[var(--yo-dark)]">€{match.price}</span>
+        </div>
+      )}
     </div>
   );
 }
@@ -533,6 +568,7 @@ function HomeTab({
   navigate,
   setActiveTab,
   subscription,
+  accessToken,
 }: {
   user: any;
   profiles: SearchProfile[];
@@ -540,6 +576,7 @@ function HomeTab({
   navigate: (path: string) => void;
   setActiveTab: (tab: TabKey) => void;
   subscription: { isTrial: boolean; isExpired: boolean; isActive: boolean; trialEndsAt: string | null };
+  accessToken: string | undefined;
 }) {
   const firstName = user.email?.split("@")[0] ?? "daar";
   const profileCount = profiles.length;
@@ -674,9 +711,10 @@ function HomeTab({
         </div>
       )}
 
-      <BoostTeaserCard setActiveTab={setActiveTab} />
+      <AccountCompletionCard onTaskClick={() => setActiveTab("tips")} />
+      <SearchPreparationCard onTaskClick={() => setActiveTab("tips")} />
 
-      <PopulairVandaagSection />
+      <RecenteMatchesSection accessToken={accessToken} setActiveTab={setActiveTab} />
 
       {hasMatches && (
         <button
@@ -1469,7 +1507,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
 const TAB_CONFIG: { key: TabKey; label: string; Icon: any }[] = [
   { key: "home", label: "Home", Icon: Home },
   { key: "matches", label: "Matches", Icon: Heart },
-  { key: "boost", label: "Boost", Icon: Zap },
+  { key: "tips", label: "Tips", Icon: Zap },
   { key: "filters", label: "Filters", Icon: SlidersHorizontal },
   { key: "profiel", label: "Profiel", Icon: User },
 ];
@@ -1480,7 +1518,7 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<TabKey>(() => {
     const params = new URLSearchParams(window.location.search);
     const tab = params.get("tab");
-    if (tab && ["home", "matches", "boost", "filters", "profiel"].includes(tab)) {
+    if (tab && ["home", "matches", "tips", "filters", "profiel"].includes(tab)) {
       return tab as TabKey;
     }
     return "home";
@@ -1551,6 +1589,7 @@ export default function DashboardPage() {
             navigate={navigate}
             setActiveTab={setActiveTab}
             subscription={{ isTrial: sub.isTrial, isExpired: sub.isExpired, isActive: sub.isActive, trialEndsAt: sub.trialEndsAt }}
+            accessToken={accessToken}
           />
         )}
         {activeTab === "matches" && (
@@ -1558,7 +1597,7 @@ export default function DashboardPage() {
             <MatchesTab accessToken={accessToken} setActiveTab={setActiveTab} />
           </SubscriptionGate>
         )}
-        {activeTab === "boost" && <BoostPage navigate={navigate} />}
+        {activeTab === "tips" && <TipsPage navigate={navigate} />}
         {activeTab === "filters" && <FiltersTab navigate={navigate} />}
         {activeTab === "profiel" && (
           <ProfielTab

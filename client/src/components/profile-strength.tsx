@@ -550,7 +550,7 @@ const PREP_TASK_ICONS: Record<string, typeof Bell> = {
 
 const SHARE_TEXT = `Hey! Ik ben op zoek naar een huurwoning in Duitsland en gebruik Stekkies — een slimme zoektool die automatisch nieuwe woningen vindt. Als jij ook iets ziet, stuur het door! Samen vinden we sneller iets. Kijk op stekkies.replit.app`;
 
-function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: string) => void }) {
+export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: string) => void }) {
   const { data, isLoading } = useProfileStrength();
   const [expanded, setExpanded] = useState(false);
 
