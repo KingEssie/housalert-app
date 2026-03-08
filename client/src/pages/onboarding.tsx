@@ -299,7 +299,16 @@ export default function OnboardingPage() {
   const { toast } = useToast();
 
   const [step, setStep] = useState(0);
-  const [locationData, setLocationData] = useState<LocationData>({ ...DEFAULT_LOCATION_DATA });
+  const [locationData, setLocationData] = useState<LocationData>({
+    ...DEFAULT_LOCATION_DATA,
+    place: {
+      city_name: "Berlin",
+      country_code: "DE",
+      latitude: 52.52,
+      longitude: 13.405,
+      place_id: "berlin-default",
+    },
+  });
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [propertyType, setPropertyType] = useState("");
