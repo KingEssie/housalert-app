@@ -9,8 +9,8 @@ export const BOOST_TASKS: BoostTaskConfig[] = [
   {
     id: "income_documents_uploaded",
     weight: 20,
-    label: "Inkomensdocumenten uploaden",
-    description: "Voeg loonstroken, arbeidsovereenkomst of belastingaangiften toe.",
+    label: "Bereid je inkomensdocumenten voor",
+    description: "Zorg dat je loonstroken, arbeidsovereenkomst of belastingaangiften klaar hebt.",
   },
   {
     id: "alerts_active",
@@ -21,8 +21,8 @@ export const BOOST_TASKS: BoostTaskConfig[] = [
   {
     id: "id_document_uploaded",
     weight: 15,
-    label: "Identiteitsbewijs uploaden",
-    description: "Voeg een kopie van je identiteitsbewijs en pasfoto toe.",
+    label: "Bereid je identiteitsbewijs voor",
+    description: "Zorg dat je een kopie van je identiteitsbewijs en pasfoto klaar hebt.",
   },
   {
     id: "reaction_letter_ready",

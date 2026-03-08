@@ -575,12 +575,12 @@ const BOOST_TASK_MODAL_CONFIG: Record<string, { title: string; description: stri
     description: "Voeg een zoekbuddy toe die ook meldingen ontvangt van jouw matches.",
   },
   income_documents_uploaded: {
-    title: "Inkomensdocumenten uploaden",
-    description: "Verzamel inkomensdocumenten zodat je klaar bent om te reageren. Vink aan wat je al hebt.",
+    title: "Bereid je inkomensdocumenten voor",
+    description: "Verzamel je inkomensdocumenten zodat je klaar bent om te reageren. Vink aan wat je al hebt.",
   },
   id_document_uploaded: {
-    title: "Identiteitsbewijs uploaden",
-    description: "Voeg een kopie van je identiteitsbewijs en pasfoto toe.",
+    title: "Bereid je identiteitsbewijs voor",
+    description: "Zorg dat je een kopie van je identiteitsbewijs en pasfoto klaar hebt.",
   },
   reaction_letter_ready: {
     title: "Standaard reactie maken",
