@@ -322,7 +322,7 @@ export default function OnboardingPage() {
         : "commute" as const;
 
     try {
-      await createSearchProfile({
+      const newProfile = await createSearchProfile({
         user_id: user.id,
         city_name: cityForProfile,
         country_code: place?.country_code,
@@ -367,14 +367,14 @@ export default function OnboardingPage() {
       try {
         const session = await (await import("@/lib/supabase")).supabase.auth.getSession();
         const token = session.data.session?.access_token;
-        if (token) {
+        if (token && newProfile?.id) {
           await fetch("/api/search-profiles/backfill", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ city: place?.city_name ?? "" }),
+            body: JSON.stringify({ searchProfileId: newProfile.id }),
           });
         }
       } catch {

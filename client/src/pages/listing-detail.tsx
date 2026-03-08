@@ -341,6 +341,16 @@ export default function ListingDetailPage() {
             viewedSet.add(listing.id);
             localStorage.setItem(MATCH_VIEWED_KEY, JSON.stringify([...viewedSet]));
           } catch {}
+          if (session?.access_token) {
+            fetch(`/api/matches/${listing.id}/applied`, {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session.access_token}`,
+              },
+              body: JSON.stringify({ applied: true }),
+            }).catch(() => {});
+          }
           setApplyOpen(false);
         }}
       />

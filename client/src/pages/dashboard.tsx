@@ -669,6 +669,31 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
     enabled: !!accessToken,
   });
 
+  useEffect(() => {
+    if (!accessToken) return;
+    fetch("/api/matches/applied", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.applied && Array.isArray(data.applied)) {
+          const existing = safeGetSet(MATCH_APPLIED_KEY);
+          let changed = false;
+          for (const id of data.applied) {
+            if (!existing.has(id)) {
+              existing.add(id);
+              changed = true;
+            }
+          }
+          if (changed) {
+            safeSetSet(MATCH_APPLIED_KEY, existing);
+            setRefreshKey((k) => k + 1);
+          }
+        }
+      })
+      .catch(() => {});
+  }, [accessToken]);
+
   const matches = apiMatchesQuery.data ?? [];
 
   const refreshStatuses = useCallback(() => {
@@ -687,10 +712,20 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
   const handleSheetApplied = useCallback(() => {
     if (applyMatch) {
       markApplied(applyMatch.listing_id);
+      if (accessToken) {
+        fetch(`/api/matches/${applyMatch.listing_id}/applied`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({ applied: true }),
+        }).catch(() => {});
+      }
       refreshStatuses();
       setApplyMatch(null);
     }
-  }, [applyMatch, refreshStatuses]);
+  }, [applyMatch, refreshStatuses, accessToken]);
 
   const matchTabs = matches.map((m) => ({ ...m, _tab: getMatchTab(m.listing_id) }));
   const filteredMatches = matchTabs.filter((m) => m._tab === subTab);

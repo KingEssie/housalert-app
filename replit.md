@@ -271,9 +271,12 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - `POST /api/subscription/ensure-trial` — Creates trial subscription row if none exists (auth required)
 - `GET /api/subscription/status` — Returns subscription state with isActive/isTrial/isExpired booleans (auth required)
 - `GET /api/matches` — Returns user's matches with listing details (auth required)
+- `PATCH /api/matches/:listingId/applied` — Sets applied status on a match (auth required, `{ applied: boolean }`)
+- `GET /api/matches/applied` — Returns listing IDs the user has marked as applied (auth required)
 - `GET /api/search-profiles` — Returns user's search profiles (auth required)
 - `DELETE /api/search-profiles/:id` — Deletes a search profile (auth required, ownership check)
-- `POST /api/search-profiles/backfill` — Triggers backfill matching for a search profile
+- `POST /api/search-profiles/backfill` — Triggers backfill matching for a search profile (requires `{ searchProfileId }`)
+- **Migration 014**: Unique index on `matches(user_id, search_profile_id, listing_id)` — prevents duplicate matches
 
 ### Stripe Config
 - `server/stripe/stripeClient.ts` — Stripe client with dual initialization: tries Replit connector first, falls back to `STRIPE_SECRET_KEY` env var. Throws clear error if neither available.

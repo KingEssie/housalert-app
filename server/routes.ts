@@ -430,6 +430,61 @@ export async function registerRoutes(
     }
   });
 
+  app.patch("/api/matches/:matchListingId/applied", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { matchListingId } = req.params;
+      const { applied } = req.body;
+      if (typeof applied !== "boolean") return res.status(400).json({ error: "applied must be a boolean" });
+
+      const { data, error } = await supabase
+        .from("matches")
+        .update({ applied })
+        .eq("listing_id", matchListingId)
+        .eq("user_id", user.id)
+        .select("id, listing_id, applied");
+
+      if (error) {
+        console.error("[matches] PATCH applied error:", error.message);
+        return res.status(500).json({ error: error.message });
+      }
+      if (!data || data.length === 0) return res.status(404).json({ error: "Match not found" });
+
+      return res.json(data[0]);
+    } catch (err: any) {
+      console.error("[matches] PATCH applied error:", err.message);
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/matches/applied", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data, error } = await supabase
+        .from("matches")
+        .select("listing_id")
+        .eq("user_id", user.id)
+        .eq("applied", true);
+
+      if (error) return res.status(500).json({ error: error.message });
+
+      const listingIds = (data ?? []).map((m: any) => m.listing_id);
+      return res.json({ applied: listingIds });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   app.get("/api/listings/:id", async (req, res) => {
     try {
       const { id } = req.params;
