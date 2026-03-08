@@ -10,7 +10,7 @@ export default function LandingPage() {
       <header className="w-full bg-background sticky top-0 z-20 border-b" style={{ borderColor: "var(--yo-divider)" }}>
         <div className="max-w-5xl mx-auto px-6 h-[60px] flex items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
               <Home className="w-4.5 h-4.5 text-primary-foreground" />
             </div>
             <span className="font-extrabold text-xl tracking-tight" style={{ color: "var(--yo-dark)" }} data-testid="text-logo">Stekkies</span>
@@ -44,7 +44,7 @@ export default function LandingPage() {
             </p>
             <Button
               size="lg"
-              className="h-[56px] px-10 rounded-xl text-[16px] font-semibold bg-primary text-primary-foreground"
+              className="h-[56px] px-10 rounded-lg text-[16px] font-semibold bg-primary text-primary-foreground"
               onClick={() => navigate("/onboarding/location")}
               data-testid="button-start-search"
             >
@@ -71,8 +71,8 @@ export default function LandingPage() {
               Alles om sneller je droomwoning te vinden
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-card rounded-2xl p-6 shadow-sm" data-testid="card-feature-search">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ backgroundColor: "var(--yo-teal-light)" }}>
+              <div className="bg-card rounded-lg p-6 shadow-sm" data-testid="card-feature-search">
+                <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "var(--yo-teal-light)" }}>
                   <Search className="w-6 h-6" style={{ color: "var(--yo-teal)" }} />
                 </div>
                 <h3 className="text-[18px] font-bold mb-2" style={{ color: "var(--yo-dark)" }}>Slim zoeken</h3>
@@ -81,8 +81,8 @@ export default function LandingPage() {
                 </p>
               </div>
 
-              <div className="bg-card rounded-2xl p-6 shadow-sm" data-testid="card-feature-alerts">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ backgroundColor: "var(--yo-teal-light)" }}>
+              <div className="bg-card rounded-lg p-6 shadow-sm" data-testid="card-feature-alerts">
+                <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "var(--yo-teal-light)" }}>
                   <Bell className="w-6 h-6" style={{ color: "var(--yo-teal)" }} />
                 </div>
                 <h3 className="text-[18px] font-bold mb-2" style={{ color: "var(--yo-dark)" }}>Direct meldingen</h3>
@@ -91,8 +91,8 @@ export default function LandingPage() {
                 </p>
               </div>
 
-              <div className="bg-card rounded-2xl p-6 shadow-sm" data-testid="card-feature-fast">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ backgroundColor: "var(--yo-teal-light)" }}>
+              <div className="bg-card rounded-lg p-6 shadow-sm" data-testid="card-feature-fast">
+                <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "var(--yo-teal-light)" }}>
                   <Zap className="w-6 h-6" style={{ color: "var(--yo-teal)" }} />
                 </div>
                 <h3 className="text-[18px] font-bold mb-2" style={{ color: "var(--yo-dark)" }}>Sneller dan de rest</h3>
@@ -133,7 +133,7 @@ export default function LandingPage() {
         </section>
 
         <section className="px-6 pb-24 md:pb-32">
-          <div className="max-w-xl mx-auto bg-card rounded-2xl p-8 md:p-12 text-center shadow-sm">
+          <div className="max-w-xl mx-auto bg-card rounded-lg p-8 md:p-12 text-center shadow-sm">
             <h2 className="text-[32px] font-[800] tracking-[-0.03em] leading-[1.1] mb-4" style={{ color: "var(--yo-dark)" }} data-testid="text-cta-bottom">
               Klaar om te beginnen?
             </h2>
@@ -142,7 +142,7 @@ export default function LandingPage() {
             </p>
             <Button
               size="lg"
-              className="h-[56px] px-10 rounded-xl text-[16px] font-semibold bg-primary text-primary-foreground"
+              className="h-[56px] px-10 rounded-lg text-[16px] font-semibold bg-primary text-primary-foreground"
               onClick={() => navigate("/onboarding/location")}
               data-testid="button-start-search-bottom"
             >

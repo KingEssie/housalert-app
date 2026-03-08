@@ -7,11 +7,11 @@ export default function NotFound() {
       <Card className="w-full max-w-md mx-4">
         <CardContent className="pt-6">
           <div className="flex mb-4 gap-2">
-            <AlertCircle className="h-8 w-8 text-[#2DD4BF]" />
+            <AlertCircle className="h-8 w-8 text-[var(--yo-teal)]" />
             <h1 className="text-2xl font-bold text-[var(--yo-dark)]">404 Page Not Found</h1>
           </div>
 
-          <p className="mt-4 text-sm text-[var(--yo-muted)]">
+          <p className="mt-4 text-sm text-[var(--yo-dark)]">
             Did you forget to add the page to the router?
           </p>
         </CardContent>

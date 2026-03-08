@@ -31,12 +31,12 @@ export function EmptyState({ illustration, title, description, ctaLabel, onCtaCl
       <h2 className="text-[20px] font-bold text-[var(--yo-dark)] leading-snug mb-2" data-testid="text-empty-title">
         {title}
       </h2>
-      <p className="text-[14px] text-[var(--yo-muted)] leading-relaxed max-w-[280px] mb-6" data-testid="text-empty-description">
+      <p className="text-[14px] text-[var(--yo-dark)] leading-relaxed max-w-[280px] mb-6" data-testid="text-empty-description">
         {description}
       </p>
       <button
         onClick={onCtaClick}
-        className="h-[48px] px-8 rounded-xl bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[15px] font-semibold transition-colors"
+        className="h-[48px] px-8 rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[15px] font-semibold transition-colors"
         data-testid="button-empty-cta"
       >
         {ctaLabel}

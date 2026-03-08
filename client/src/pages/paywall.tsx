@@ -118,7 +118,7 @@ export default function PaywallPage() {
       <header className="w-full bg-white sticky top-0 z-20 border-b border-[var(--yo-divider)]">
         <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-[var(--yo-teal)] flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-[var(--yo-dark)] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
             <span className="font-bold text-[var(--yo-dark)] text-base">Stekkies</span>
@@ -128,13 +128,13 @@ export default function PaywallPage() {
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-10 pb-32">
         <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-[var(--yo-teal-light)] flex items-center justify-center mx-auto mb-4">
-            <Crown className="w-7 h-7 text-[var(--yo-teal)]" />
+          <div className="w-14 h-14 rounded-lg bg-[var(--yo-chip-bg)] flex items-center justify-center mx-auto mb-4">
+            <Crown className="w-7 h-7 text-[var(--yo-dark)]" />
           </div>
           <h1 className="text-[32px] font-[800] text-[var(--yo-dark)] tracking-[-0.03em] leading-[1.1] uppercase mb-3" data-testid="text-paywall-title">
             Kies je abonnement
           </h1>
-          <p className="text-[15px] text-[var(--yo-muted)]">
+          <p className="text-[15px] text-[var(--yo-dark)]">
             Start vandaag en ontvang direct meldingen voor nieuwe woningen.
           </p>
         </div>
@@ -144,7 +144,7 @@ export default function PaywallPage() {
             <button
               key={plan.id}
               onClick={() => setSelectedPlan(plan.id)}
-              className={`w-full p-6 rounded-2xl border-2 transition-all text-left relative bg-white shadow-[0_4px_20px_rgba(0,0,0,0.06)] ${
+              className={`w-full p-6 rounded-lg border-2 transition-all text-left relative bg-white shadow-[0_4px_20px_rgba(0,0,0,0.06)] ${
                 selectedPlan === plan.id
                   ? "border-[var(--yo-teal)]"
                   : "border-transparent hover:border-[var(--yo-divider)]"
@@ -153,7 +153,7 @@ export default function PaywallPage() {
             >
               {plan.popular && (
                 <span
-                  className="absolute -top-3 left-5 px-3 py-0.5 bg-[var(--yo-teal)] text-white text-xs font-bold rounded-full"
+                  className="absolute -top-3 left-5 px-3 py-0.5 bg-[var(--yo-dark)] text-white text-xs font-bold rounded-full"
                   data-testid="badge-popular"
                 >
                   Meest gekozen
@@ -163,12 +163,12 @@ export default function PaywallPage() {
               <div className="flex items-center justify-between gap-4 pr-8">
                 <div>
                   <p className="text-[18px] font-bold text-[var(--yo-dark)]">{plan.name}</p>
-                  <p className="text-[15px] text-[var(--yo-muted)]">{plan.pricePerMonth}</p>
+                  <p className="text-[15px] text-[var(--yo-dark)]">{plan.pricePerMonth}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-xl font-extrabold text-[var(--yo-dark)]">{plan.price}</p>
                   {plan.savings && (
-                    <p className="text-xs font-semibold text-[var(--yo-teal)]">{plan.savings}</p>
+                    <p className="text-xs font-semibold text-[var(--yo-dark)]">{plan.savings}</p>
                   )}
                 </div>
               </div>
@@ -186,15 +186,15 @@ export default function PaywallPage() {
           ))}
         </div>
 
-        <div className="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-6">
+        <div className="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-6">
           <p className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3">Dit zit er allemaal in:</p>
           <div className="space-y-2.5">
             {FEATURES.map((feature, i) => (
               <div key={i} className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded-full bg-[var(--yo-teal-light)] flex items-center justify-center flex-shrink-0">
-                  <Check className="w-3 h-3 text-[var(--yo-teal)]" />
+                <div className="w-5 h-5 rounded-full bg-[var(--yo-chip-bg)] flex items-center justify-center flex-shrink-0">
+                  <Check className="w-3 h-3 text-[var(--yo-dark)]" />
                 </div>
-                <span className="text-[15px] text-[var(--yo-muted)]">{feature}</span>
+                <span className="text-[15px] text-[var(--yo-dark)]">{feature}</span>
               </div>
             ))}
           </div>
@@ -204,18 +204,18 @@ export default function PaywallPage() {
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[var(--yo-divider)] p-5 z-10">
         <div className="max-w-xl mx-auto">
           {stripeUnavailable ? (
-            <div className="bg-[var(--yo-teal-light)] border border-[var(--yo-teal)]/20 rounded-xl p-4 flex items-start gap-3" data-testid="stripe-unavailable-notice">
-              <AlertCircle className="w-5 h-5 text-[var(--yo-teal)] mt-0.5 flex-shrink-0" />
+            <div className="bg-[var(--yo-chip-bg)] border border-[var(--yo-teal)]/20 rounded-lg p-4 flex items-start gap-3" data-testid="stripe-unavailable-notice">
+              <AlertCircle className="w-5 h-5 text-[var(--yo-dark)] mt-0.5 flex-shrink-0" />
               <div>
                 <p className="text-[14px] font-semibold text-[var(--yo-dark)]">Betaling wordt binnenkort beschikbaar</p>
-                <p className="text-[13px] text-[var(--yo-muted)] mt-1">We werken aan de betalingsintegratie. Probeer het later opnieuw.</p>
+                <p className="text-[13px] text-[var(--yo-dark)] mt-1">We werken aan de betalingsintegratie. Probeer het later opnieuw.</p>
               </div>
             </div>
           ) : (
             <>
               <Button
                 size="lg"
-                className="w-full h-[56px] rounded-[14px] text-[16px] font-bold shadow-none bg-[var(--yo-teal)]"
+                className="w-full h-[56px] rounded-lg text-[16px] font-bold shadow-none bg-[var(--yo-teal)]"
                 onClick={handleCheckout}
                 disabled={loading}
                 data-testid="button-select-payment"
@@ -229,7 +229,7 @@ export default function PaywallPage() {
                   "Selecteer betaalmethode"
                 )}
               </Button>
-              <p className="text-center text-[13px] text-[var(--yo-muted)] mt-3 opacity-60">
+              <p className="text-center text-[13px] text-[var(--yo-dark)] mt-3 opacity-60">
                 Veilig betalen via Stripe. Opzeggen kan altijd.
               </p>
             </>

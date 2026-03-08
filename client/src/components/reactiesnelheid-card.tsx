@@ -65,9 +65,9 @@ export function calculateReactiesnelheid(rawDone: number, rawTotal: number): Rea
 }
 
 const LEVEL_STYLES: Record<SpeedLevel, { dotColor: string; barColor: string; labelColor: string }> = {
-  fast: { dotColor: "bg-[var(--yo-success)]", barColor: "bg-[var(--yo-success)]", labelColor: "text-[var(--yo-dark)] bg-[var(--yo-success)]/10" },
-  almost: { dotColor: "bg-[var(--yo-success)]", barColor: "bg-[var(--yo-success)]", labelColor: "text-[var(--yo-dark)] bg-[var(--yo-success)]/10" },
-  building: { dotColor: "bg-[var(--yo-divider)]", barColor: "bg-[var(--yo-divider)]", labelColor: "text-[var(--yo-muted)] bg-[var(--yo-surface)]" },
+  fast: { dotColor: "bg-[var(--yo-pink)]", barColor: "bg-[var(--yo-pink)]", labelColor: "text-[var(--yo-dark)] bg-[var(--yo-pink)]/10" },
+  almost: { dotColor: "bg-[var(--yo-pink)]", barColor: "bg-[var(--yo-pink)]", labelColor: "text-[var(--yo-dark)] bg-[var(--yo-pink)]/10" },
+  building: { dotColor: "bg-[var(--yo-divider)]", barColor: "bg-[var(--yo-divider)]", labelColor: "text-[var(--yo-dark)] bg-[var(--yo-surface)]" },
 };
 
 function useReactiesnelheidData() {
@@ -107,7 +107,7 @@ export function ReactiesnelheidCard({
 
   if (loading) {
     return (
-      <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 animate-pulse" data-testid="card-reactiesnelheid-loading">
+      <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 animate-pulse" data-testid="card-reactiesnelheid-loading">
         <div className="h-4 bg-[var(--yo-surface)] rounded w-32 mb-3" />
         <div className="h-3 bg-[var(--yo-surface)] rounded w-48 mb-3" />
         <div className="h-1.5 bg-[var(--yo-surface)] rounded-full w-full" />
@@ -126,12 +126,12 @@ export function ReactiesnelheidCard({
   return (
     <Wrapper
       onClick={onTap}
-      className={`bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 w-full text-left ${onTap ? "cursor-pointer" : ""}`}
+      className={`bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 w-full text-left ${onTap ? "cursor-pointer" : ""}`}
       data-testid="card-reactiesnelheid"
     >
       <div className="flex items-start gap-4">
-        <div className="w-10 h-10 rounded-xl bg-[var(--yo-teal-light)] flex items-center justify-center flex-shrink-0">
-          <Gauge className="w-5 h-5 text-[var(--yo-teal)]" />
+        <div className="w-10 h-10 rounded-lg bg-[var(--yo-chip-bg)] flex items-center justify-center flex-shrink-0">
+          <Gauge className="w-5 h-5 text-[var(--yo-dark)]" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
@@ -140,7 +140,7 @@ export function ReactiesnelheidCard({
               {state.label}
             </span>
           </div>
-          <p className="text-[13px] text-[var(--yo-muted)] leading-relaxed">{state.subtitle}</p>
+          <p className="text-[13px] text-[var(--yo-dark)] leading-relaxed">{state.subtitle}</p>
 
           <div className="mt-3 flex items-center gap-3">
             <div className="flex-1 h-1.5 bg-[var(--yo-surface)] rounded-full overflow-hidden">
@@ -149,13 +149,13 @@ export function ReactiesnelheidCard({
                 style={{ width: `${pct}%` }}
               />
             </div>
-            <span className="text-[12px] font-medium text-[var(--yo-muted)] flex-shrink-0" data-testid="text-speed-ratio">
+            <span className="text-[12px] font-medium text-[var(--yo-dark)] flex-shrink-0" data-testid="text-speed-ratio">
               {done}/{total}
             </span>
           </div>
         </div>
         {onTap && (
-          <ChevronRight className="w-4 h-4 text-[var(--yo-muted)] flex-shrink-0 mt-1" />
+          <ChevronRight className="w-4 h-4 text-[var(--yo-dark)] flex-shrink-0 mt-1" />
         )}
       </div>
     </Wrapper>

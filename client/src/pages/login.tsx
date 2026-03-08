@@ -57,7 +57,7 @@ export default function LoginPage() {
       <header className="w-full bg-white sticky top-0 z-20 border-b border-[var(--yo-divider)]">
         <div className="max-w-5xl mx-auto px-6 h-[60px] flex items-center gap-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-[var(--yo-teal)] flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-[var(--yo-dark)] flex items-center justify-center">
               <Home className="w-4 h-4 text-white" />
             </div>
             <span className="font-extrabold text-[var(--yo-dark)] text-lg tracking-tight">Stekkies</span>
@@ -71,12 +71,12 @@ export default function LoginPage() {
             <h1 className="text-[32px] font-[800] text-[var(--yo-dark)] tracking-[-0.03em] leading-[1.1] uppercase mb-4">
               Vind jouw perfecte huurwoning
             </h1>
-            <p className="text-[15px] text-[var(--yo-muted)]">
+            <p className="text-[15px] text-[var(--yo-dark)]">
               Stel zoekopdrachten in en ontvang direct een melding als er iets beschikbaar komt.
             </p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
+          <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
             <Tabs defaultValue="login">
               <TabsList className="w-full mb-6" data-testid="tabs-auth">
                 <TabsTrigger value="login" className="flex-1" data-testid="tab-login">
@@ -98,7 +98,7 @@ export default function LoginPage() {
                       value={loginEmail}
                       onChange={(e) => setLoginEmail(e.target.value)}
                       required
-                      className="h-[52px] px-4 rounded-xl border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
+                      className="h-[52px] px-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
                       data-testid="input-login-email"
                     />
                   </div>
@@ -111,13 +111,13 @@ export default function LoginPage() {
                       value={loginPassword}
                       onChange={(e) => setLoginPassword(e.target.value)}
                       required
-                      className="h-[52px] px-4 rounded-xl border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
+                      className="h-[52px] px-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
                       data-testid="input-login-password"
                     />
                   </div>
                   <Button
                     type="submit"
-                    className="w-full h-[56px] rounded-[14px] text-[16px] font-bold bg-[var(--yo-teal)]"
+                    className="w-full h-[56px] rounded-lg text-[16px] font-bold bg-[var(--yo-teal)]"
                     disabled={loginLoading}
                     data-testid="button-login-submit"
                   >
@@ -137,7 +137,7 @@ export default function LoginPage() {
                       value={signupEmail}
                       onChange={(e) => setSignupEmail(e.target.value)}
                       required
-                      className="h-[52px] px-4 rounded-xl border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
+                      className="h-[52px] px-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
                       data-testid="input-signup-email"
                     />
                   </div>
@@ -150,13 +150,13 @@ export default function LoginPage() {
                       value={signupPassword}
                       onChange={(e) => setSignupPassword(e.target.value)}
                       required
-                      className="h-[52px] px-4 rounded-xl border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
+                      className="h-[52px] px-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
                       data-testid="input-signup-password"
                     />
                   </div>
                   <Button
                     type="submit"
-                    className="w-full h-[56px] rounded-[14px] text-[16px] font-bold bg-[var(--yo-teal)]"
+                    className="w-full h-[56px] rounded-lg text-[16px] font-bold bg-[var(--yo-teal)]"
                     disabled={signupLoading}
                     data-testid="button-signup-submit"
                   >
@@ -167,7 +167,7 @@ export default function LoginPage() {
             </Tabs>
           </div>
 
-          <p className="text-center text-[13px] text-[var(--yo-muted)] mt-6">
+          <p className="text-center text-[13px] text-[var(--yo-dark)] mt-6">
             Door je aan te melden ga je akkoord met onze voorwaarden.
           </p>
         </div>

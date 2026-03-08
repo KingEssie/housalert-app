@@ -146,7 +146,7 @@ export default function NotificationSettingsPage() {
               <ListRow
                 title="E-mail"
                 subtitle="Ontvang matches via e-mail"
-                icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--yo-teal-light)" }}><Mail className="w-[18px] h-[18px]" style={{ color: "var(--yo-teal)" }} /></div>}
+                icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--yo-chip-bg)" }}><Mail className="w-[18px] h-[18px]" style={{ color: "var(--yo-dark)" }} /></div>}
                 trailing={
                   <Switch
                     checked={emailEnabled}
@@ -160,7 +160,7 @@ export default function NotificationSettingsPage() {
               <ListRow
                 title="SMS"
                 subtitle="Ontvang matches via SMS"
-                icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--yo-teal-light)" }}><Phone className="w-[18px] h-[18px]" style={{ color: "var(--yo-teal)" }} /></div>}
+                icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--yo-chip-bg)" }}><Phone className="w-[18px] h-[18px]" style={{ color: "var(--yo-dark)" }} /></div>}
                 trailing={
                   <Switch
                     checked={smsEnabled}
@@ -174,7 +174,7 @@ export default function NotificationSettingsPage() {
               <ListRow
                 title="WhatsApp"
                 subtitle="Ontvang matches via WhatsApp"
-                icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--yo-teal-light)" }}><MessageSquare className="w-[18px] h-[18px]" style={{ color: "var(--yo-teal)" }} /></div>}
+                icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--yo-chip-bg)" }}><MessageSquare className="w-[18px] h-[18px]" style={{ color: "var(--yo-dark)" }} /></div>}
                 trailing={
                   <Switch
                     checked={whatsappEnabled}
@@ -204,7 +204,7 @@ export default function NotificationSettingsPage() {
                         if (phoneError) validatePhone(e.target.value);
                       }}
                       onBlur={() => validatePhone(phoneInput)}
-                      className="h-[52px] px-4 rounded-xl border-0 bg-muted text-[15px] font-medium text-foreground placeholder:text-muted-foreground placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
+                      className="h-[52px] px-4 rounded-lg border-0 bg-muted text-[15px] font-medium text-foreground placeholder:text-muted-foreground placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
                       data-testid="input-phone"
                     />
                     {phoneError && (
@@ -221,7 +221,7 @@ export default function NotificationSettingsPage() {
               <Button
                 onClick={handleSave}
                 disabled={saving}
-                className="h-[52px] rounded-xl bg-primary text-primary-foreground text-[15px] font-semibold px-8"
+                className="h-[52px] rounded-lg bg-primary text-primary-foreground text-[15px] font-semibold px-8"
                 data-testid="button-save"
               >
                 {saving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
@@ -230,7 +230,7 @@ export default function NotificationSettingsPage() {
               <Button
                 variant="outline"
                 onClick={() => navigate("/dashboard?tab=profiel")}
-                className="h-[48px] rounded-xl text-[15px] font-semibold"
+                className="h-[48px] rounded-lg text-[15px] font-semibold"
                 data-testid="button-cancel"
               >
                 Annuleren

@@ -93,10 +93,10 @@ export default function OnboardingLocationPage() {
             className="w-10 h-10 rounded-full bg-[var(--yo-surface)] flex items-center justify-center hover:bg-[var(--yo-divider)] transition-colors"
             data-testid="button-back-landing"
           >
-            <ChevronLeft className="w-5 h-5 text-[var(--yo-muted)]" />
+            <ChevronLeft className="w-5 h-5 text-[var(--yo-dark)]" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-[#2DD4BF] flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-[var(--yo-teal)] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
             <span className="font-bold text-[var(--yo-dark)] text-base">Stekkies</span>
@@ -110,14 +110,14 @@ export default function OnboardingLocationPage() {
             <div key={step} className="flex-1 h-2 rounded-full overflow-hidden bg-[var(--yo-divider)]">
               <div
                 className={`h-full rounded-full transition-all duration-500 ${
-                  step === 1 ? "w-full bg-[#2DD4BF]" : "w-0"
+                  step === 1 ? "w-full bg-[var(--yo-teal)]" : "w-0"
                 }`}
                 data-testid={`progress-step-${step}`}
               />
             </div>
           ))}
         </div>
-        <p className="text-xs font-medium text-[var(--yo-muted)] mt-2" data-testid="text-step-indicator">Stap 1 van 3</p>
+        <p className="text-xs font-medium text-[var(--yo-dark)] mt-2" data-testid="text-step-indicator">Stap 1 van 3</p>
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-8 pt-4">
@@ -125,7 +125,7 @@ export default function OnboardingLocationPage() {
           Waar zoek je een woning?
         </h1>
 
-        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
+        <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
           <div className="flex border-b border-[var(--yo-divider)]">
             {tabs.map((tab) => (
               <button
@@ -133,14 +133,14 @@ export default function OnboardingLocationPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 pb-3 text-sm font-semibold text-center transition-colors relative ${
                   activeTab === tab.id
-                    ? "text-[#2DD4BF]"
-                    : "text-[var(--yo-muted)] hover:text-[var(--yo-dark)]"
+                    ? "text-[var(--yo-teal)]"
+                    : "text-[var(--yo-dark)] hover:text-[var(--yo-dark)]"
                 }`}
                 data-testid={`tab-${tab.id}`}
               >
                 {tab.label}
                 {activeTab === tab.id && (
-                  <div className="absolute bottom-0 left-3 right-3 h-[3px] bg-[#2DD4BF] rounded-t-full" />
+                  <div className="absolute bottom-0 left-3 right-3 h-[3px] bg-[var(--yo-teal)] rounded-t-full" />
                 )}
               </button>
             ))}
@@ -151,13 +151,13 @@ export default function OnboardingLocationPage() {
               <div className="space-y-0">
                 <div className="relative">
                   <div
-                    className="flex items-center gap-3 h-[52px] px-4 rounded-xl bg-[var(--yo-surface)] cursor-text focus-within:ring-2 focus-within:ring-[#2DD4BF]/15 focus-within:bg-[var(--yo-surface)] transition-all"
+                    className="flex items-center gap-3 h-[52px] px-4 rounded-lg bg-[var(--yo-surface)] cursor-text focus-within:ring-2 focus-within:ring-[var(--yo-teal)]/15 focus-within:bg-[var(--yo-surface)] transition-all"
                     onClick={() => {
                       const input = document.getElementById("city-search-input");
                       input?.focus();
                     }}
                   >
-                    <Search className="w-5 h-5 text-[var(--yo-muted)] flex-shrink-0" />
+                    <Search className="w-5 h-5 text-[var(--yo-dark)] flex-shrink-0" />
                     <input
                       id="city-search-input"
                       type="text"
@@ -168,7 +168,7 @@ export default function OnboardingLocationPage() {
                         setShowDropdown(true);
                       }}
                       onFocus={() => setShowDropdown(true)}
-                      className="flex-1 text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] placeholder:font-normal bg-transparent border-none outline-none"
+                      className="flex-1 text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal bg-transparent border-none outline-none"
                       data-testid="input-city-search"
                     />
                     {selectedCity && (
@@ -179,7 +179,7 @@ export default function OnboardingLocationPage() {
                           setSearch("");
                           setSelectedDistricts([]);
                         }}
-                        className="text-xs text-[var(--yo-muted)] hover:text-[var(--yo-dark)]"
+                        className="text-xs text-[var(--yo-dark)] hover:text-[var(--yo-dark)]"
                         data-testid="button-clear-city"
                       >
                         Wissen
@@ -188,7 +188,7 @@ export default function OnboardingLocationPage() {
                   </div>
 
                   {showDropdown && filteredCities.length > 0 && !selectedCity && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-10 max-h-64 overflow-y-auto">
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-10 max-h-64 overflow-y-auto">
                       {filteredCities.map((city) => (
                         <button
                           key={city.name}
@@ -196,9 +196,9 @@ export default function OnboardingLocationPage() {
                           className="w-full flex items-center gap-3 py-4 px-4 hover:bg-[var(--yo-surface)] transition-colors border-b border-[var(--yo-divider)] last:border-b-0"
                           data-testid={`option-city-${city.name.toLowerCase().replace(/\s/g, "-")}`}
                         >
-                          <MapPin className="w-4.5 h-4.5 text-[var(--yo-muted)] flex-shrink-0" />
+                          <MapPin className="w-4.5 h-4.5 text-[var(--yo-dark)] flex-shrink-0" />
                           <span className="text-[15px] font-medium text-[var(--yo-dark)] flex-1 text-left">{city.name}</span>
-                          <ChevronRight className="w-4 h-4 text-[var(--yo-muted)]" />
+                          <ChevronRight className="w-4 h-4 text-[var(--yo-dark)]" />
                         </button>
                       ))}
                     </div>
@@ -207,7 +207,7 @@ export default function OnboardingLocationPage() {
 
                 {selectedCity && activeCityDistricts.length > 0 && (
                   <div className="py-5 border-b border-[var(--yo-divider)]">
-                    <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Wijken <span className="font-normal text-[13px] text-[var(--yo-muted)]">(optioneel)</span></label>
+                    <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Wijken <span className="font-normal text-[13px] text-[var(--yo-dark)]">(optioneel)</span></label>
                     <div className="flex flex-wrap gap-2">
                       {activeCityDistricts.map((district) => (
                         <button
@@ -215,7 +215,7 @@ export default function OnboardingLocationPage() {
                           onClick={() => toggleDistrict(district)}
                           className={`px-3.5 py-2 rounded-full text-sm font-medium transition-all ${
                             selectedDistricts.includes(district)
-                              ? "bg-[#2DD4BF] text-white"
+                              ? "bg-[var(--yo-teal)] text-white"
                               : "bg-[var(--yo-surface)] text-[var(--yo-dark)] hover:bg-[var(--yo-divider)]"
                           }`}
                           data-testid={`chip-district-${district.toLowerCase().replace(/[\s-]/g, "-")}`}
@@ -229,13 +229,13 @@ export default function OnboardingLocationPage() {
 
                 {selectedCity && (
                   <div className="py-5 border-b border-[var(--yo-divider)]">
-                    <div className="rounded-2xl overflow-hidden bg-[var(--yo-surface)]" data-testid="card-map-preview">
+                    <div className="rounded-lg overflow-hidden bg-[var(--yo-surface)]" data-testid="card-map-preview">
                       <div className="h-36 flex items-center justify-center">
                         <div className="text-center">
-                          <MapPin className="w-7 h-7 text-[#2DD4BF] mx-auto mb-1.5" />
+                          <MapPin className="w-7 h-7 text-[var(--yo-teal)] mx-auto mb-1.5" />
                           <p className="text-base font-bold text-[var(--yo-dark)]">{selectedCity.name}</p>
                           {selectedDistricts.length > 0 && (
-                            <p className="text-xs text-[var(--yo-muted)] mt-0.5">{selectedDistricts.join(", ")}</p>
+                            <p className="text-xs text-[var(--yo-dark)] mt-0.5">{selectedDistricts.join(", ")}</p>
                           )}
                         </div>
                       </div>
@@ -267,13 +267,13 @@ export default function OnboardingLocationPage() {
               <div className="space-y-0">
                 <div className="relative">
                   <div
-                    className="flex items-center gap-3 h-[52px] px-4 rounded-xl bg-[var(--yo-surface)] cursor-text focus-within:ring-2 focus-within:ring-[#2DD4BF]/15 focus-within:bg-[var(--yo-surface)] transition-all"
+                    className="flex items-center gap-3 h-[52px] px-4 rounded-lg bg-[var(--yo-surface)] cursor-text focus-within:ring-2 focus-within:ring-[var(--yo-teal)]/15 focus-within:bg-[var(--yo-surface)] transition-all"
                     onClick={() => {
                       const input = document.getElementById("radius-city-input");
                       input?.focus();
                     }}
                   >
-                    <Search className="w-5 h-5 text-[var(--yo-muted)] flex-shrink-0" />
+                    <Search className="w-5 h-5 text-[var(--yo-dark)] flex-shrink-0" />
                     <input
                       id="radius-city-input"
                       type="text"
@@ -284,7 +284,7 @@ export default function OnboardingLocationPage() {
                         setShowDropdown(true);
                       }}
                       onFocus={() => setShowDropdown(true)}
-                      className="flex-1 text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] placeholder:font-normal bg-transparent border-none outline-none"
+                      className="flex-1 text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal bg-transparent border-none outline-none"
                       data-testid="input-city-search"
                     />
                     {selectedCity && (
@@ -294,7 +294,7 @@ export default function OnboardingLocationPage() {
                           setSelectedCity(null);
                           setSearch("");
                         }}
-                        className="text-xs text-[var(--yo-muted)] hover:text-[var(--yo-dark)]"
+                        className="text-xs text-[var(--yo-dark)] hover:text-[var(--yo-dark)]"
                         data-testid="button-clear-city"
                       >
                         Wissen
@@ -303,7 +303,7 @@ export default function OnboardingLocationPage() {
                   </div>
 
                   {showDropdown && filteredCities.length > 0 && !selectedCity && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-10 max-h-64 overflow-y-auto">
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-10 max-h-64 overflow-y-auto">
                       {filteredCities.map((city) => (
                         <button
                           key={city.name}
@@ -311,9 +311,9 @@ export default function OnboardingLocationPage() {
                           className="w-full flex items-center gap-3 py-4 px-4 hover:bg-[var(--yo-surface)] transition-colors border-b border-[var(--yo-divider)] last:border-b-0"
                           data-testid={`option-city-${city.name.toLowerCase().replace(/\s/g, "-")}`}
                         >
-                          <MapPin className="w-4.5 h-4.5 text-[var(--yo-muted)] flex-shrink-0" />
+                          <MapPin className="w-4.5 h-4.5 text-[var(--yo-dark)] flex-shrink-0" />
                           <span className="text-[15px] font-medium text-[var(--yo-dark)] flex-1 text-left">{city.name}</span>
-                          <ChevronRight className="w-4 h-4 text-[var(--yo-muted)]" />
+                          <ChevronRight className="w-4 h-4 text-[var(--yo-dark)]" />
                         </button>
                       ))}
                     </div>
@@ -323,11 +323,11 @@ export default function OnboardingLocationPage() {
                 <div className="mt-6">
                   <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Straal</label>
                   <div className="relative">
-                    <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-muted)]" />
+                    <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)]" />
                     <select
                       value={radius}
                       onChange={(e) => setRadius(e.target.value)}
-                      className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/15 focus:bg-[var(--yo-surface)] cursor-pointer appearance-none transition-all"
+                      className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-[var(--yo-surface)] cursor-pointer appearance-none transition-all"
                       data-testid="select-radius"
                     >
                       <option value="2">2 km</option>
@@ -342,11 +342,11 @@ export default function OnboardingLocationPage() {
 
                 {selectedCity && (
                   <div className="py-5">
-                    <div className="rounded-2xl overflow-hidden bg-[var(--yo-surface)]" data-testid="card-map-radius">
+                    <div className="rounded-lg overflow-hidden bg-[var(--yo-surface)]" data-testid="card-map-radius">
                       <div className="h-36 flex items-center justify-center">
                         <div className="text-center">
-                          <div className="w-20 h-20 rounded-full border-2 border-dashed border-[#2DD4BF]/40 flex items-center justify-center mx-auto mb-1">
-                            <Navigation className="w-6 h-6 text-[#2DD4BF]" />
+                          <div className="w-20 h-20 rounded-full border-2 border-dashed border-[var(--yo-teal)]/40 flex items-center justify-center mx-auto mb-1">
+                            <Navigation className="w-6 h-6 text-[var(--yo-teal)]" />
                           </div>
                           <p className="text-sm font-bold text-[var(--yo-dark)]">{selectedCity.name} +{radius} km</p>
                         </div>
@@ -362,13 +362,13 @@ export default function OnboardingLocationPage() {
                 <div>
                   <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Werkadres / bestemming</label>
                   <div className="relative">
-                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-muted)]" />
+                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)]" />
                     <input
                       type="text"
                       placeholder="bijv. Berlin Hauptbahnhof"
                       value={travelAddress}
                       onChange={(e) => setTravelAddress(e.target.value)}
-                      className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/15 focus:bg-[var(--yo-surface)] transition-all"
+                      className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-[var(--yo-surface)] transition-all"
                       data-testid="input-travel-address"
                     />
                   </div>
@@ -377,11 +377,11 @@ export default function OnboardingLocationPage() {
                 <div className="mt-6">
                   <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Maximale reistijd</label>
                   <div className="relative">
-                    <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-muted)]" />
+                    <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)]" />
                     <select
                       value={travelTime}
                       onChange={(e) => setTravelTime(e.target.value)}
-                      className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/15 focus:bg-[var(--yo-surface)] cursor-pointer appearance-none transition-all"
+                      className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-[var(--yo-surface)] cursor-pointer appearance-none transition-all"
                       data-testid="select-travel-time"
                     >
                       <option value="15">15 min</option>
@@ -404,9 +404,9 @@ export default function OnboardingLocationPage() {
                       <button
                         key={mode.id}
                         onClick={() => setTransportMode(mode.id)}
-                        className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-xl text-xs font-semibold transition-all ${
+                        className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-lg text-xs font-semibold transition-all ${
                           transportMode === mode.id
-                            ? "bg-[#2DD4BF] text-white"
+                            ? "bg-[var(--yo-teal)] text-white"
                             : "bg-[var(--yo-surface)] text-[var(--yo-dark)] hover:bg-[var(--yo-divider)]"
                         }`}
                         data-testid={`button-transport-${mode.id}`}
@@ -420,12 +420,12 @@ export default function OnboardingLocationPage() {
 
                 {travelAddress && (
                   <div className="py-5">
-                    <div className="rounded-2xl overflow-hidden bg-[var(--yo-surface)]" data-testid="card-map-travel">
+                    <div className="rounded-lg overflow-hidden bg-[var(--yo-surface)]" data-testid="card-map-travel">
                       <div className="h-36 flex items-center justify-center">
                         <div className="text-center">
-                          <Clock className="w-7 h-7 text-[#2DD4BF] mx-auto mb-1.5" />
+                          <Clock className="w-7 h-7 text-[var(--yo-teal)] mx-auto mb-1.5" />
                           <p className="text-sm font-bold text-[var(--yo-dark)]">{travelTime} min reistijd</p>
-                          <p className="text-xs text-[var(--yo-muted)] mt-0.5">vanaf {travelAddress}</p>
+                          <p className="text-xs text-[var(--yo-dark)] mt-0.5">vanaf {travelAddress}</p>
                         </div>
                       </div>
                     </div>
@@ -437,14 +437,14 @@ export default function OnboardingLocationPage() {
 
           {(selectedCity || (activeTab === "reistijd" && travelAddress)) && (
             <div className="pt-5 mt-1">
-              <div className="bg-[#E6FAF5] rounded-2xl p-4 mb-6" data-testid="card-estimate-preview">
+              <div className="bg-[#E6FAF5] rounded-lg p-4 mb-6" data-testid="card-estimate-preview">
                 {estimateLoading ? (
                   <div className="flex items-center gap-3">
-                    <Loader2 className="w-5 h-5 text-[#2DD4BF] animate-spin" />
-                    <span className="text-sm text-[var(--yo-muted)]">Schatting laden...</span>
+                    <Loader2 className="w-5 h-5 text-[var(--yo-teal)] animate-spin" />
+                    <span className="text-sm text-[var(--yo-dark)]">Schatting laden...</span>
                   </div>
                 ) : (
-                  <p className="text-sm text-[var(--yo-muted)] leading-relaxed">
+                  <p className="text-sm text-[var(--yo-dark)] leading-relaxed">
                     Met deze zoekopdracht kun je ongeveer{" "}
                     <span className="font-bold text-[var(--yo-dark)]">{estimate ?? 0} matches</span>{" "}
                     per week verwachten.
@@ -456,7 +456,7 @@ export default function OnboardingLocationPage() {
 
           <Button
             size="lg"
-            className="w-full h-[56px] rounded-xl text-[16px] font-semibold bg-[#2DD4BF] hover:bg-[#25BBA8] shadow-none mt-2"
+            className="w-full h-[56px] rounded-lg text-[16px] font-semibold bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] shadow-none mt-2"
             disabled={!canProceed}
             onClick={handleNext}
             data-testid="button-next-step"

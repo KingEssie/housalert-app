@@ -37,10 +37,10 @@ export default function OnboardingFiltersPage() {
             className="w-10 h-10 rounded-full bg-[var(--yo-surface)] flex items-center justify-center hover:bg-[var(--yo-divider)] transition-colors"
             data-testid="button-back-location"
           >
-            <ChevronLeft className="w-5 h-5 text-[var(--yo-muted)]" />
+            <ChevronLeft className="w-5 h-5 text-[var(--yo-dark)]" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-[#2DD4BF] flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-[var(--yo-teal)] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
             <span className="font-bold text-[var(--yo-dark)] text-base">Stekkies</span>
@@ -54,21 +54,21 @@ export default function OnboardingFiltersPage() {
             <div key={step} className="flex-1 h-2 rounded-full overflow-hidden bg-[var(--yo-divider)]">
               <div
                 className={`h-full rounded-full transition-all duration-500 ${
-                  step <= 2 ? "w-full bg-[#2DD4BF]" : "w-0"
+                  step <= 2 ? "w-full bg-[var(--yo-teal)]" : "w-0"
                 }`}
                 data-testid={`progress-step-${step}`}
               />
             </div>
           ))}
         </div>
-        <p className="text-xs font-medium text-[var(--yo-muted)] mt-2" data-testid="text-step-indicator">Stap 2 van 3</p>
+        <p className="text-xs font-medium text-[var(--yo-dark)] mt-2" data-testid="text-step-indicator">Stap 2 van 3</p>
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-8 pt-4">
         <h1 className="text-[32px] font-[800] text-[var(--yo-dark)] leading-[1.1] tracking-[-0.03em] mb-3" data-testid="text-filters-title">
           Wat zoek je precies?
         </h1>
-        <p className="text-[15px] text-[var(--yo-muted)] mb-6">
+        <p className="text-[15px] text-[var(--yo-dark)] mb-6">
           Verfijn je zoekopdracht voor <span className="font-semibold text-[var(--yo-dark)]">{city}</span>. Alle velden zijn optioneel.
         </p>
 
@@ -76,13 +76,13 @@ export default function OnboardingFiltersPage() {
           <div>
             <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Minimale huur</label>
             <div className="relative">
-              <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-muted)]" />
+              <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)]" />
               <input
                 type="number"
                 placeholder="€ 0"
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
-                className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/15 focus:bg-[var(--yo-surface)] transition-all"
+                className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-[var(--yo-surface)] transition-all"
                 data-testid="input-min-price"
               />
             </div>
@@ -91,13 +91,13 @@ export default function OnboardingFiltersPage() {
           <div>
             <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Maximale huur</label>
             <div className="relative">
-              <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-muted)]" />
+              <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)]" />
               <input
                 type="number"
                 placeholder="€ 2000"
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
-                className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/15 focus:bg-[var(--yo-surface)] transition-all"
+                className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-[var(--yo-surface)] transition-all"
                 data-testid="input-max-price"
               />
             </div>
@@ -106,11 +106,11 @@ export default function OnboardingFiltersPage() {
           <div>
             <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Slaapkamers</label>
             <div className="relative">
-              <BedDouble className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-muted)]" />
+              <BedDouble className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)]" />
               <select
                 value={bedrooms}
                 onChange={(e) => setBedrooms(e.target.value)}
-                className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/15 focus:bg-[var(--yo-surface)] cursor-pointer appearance-none transition-all"
+                className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-[var(--yo-surface)] cursor-pointer appearance-none transition-all"
                 data-testid="select-bedrooms"
               >
                 <option value="">Maakt niet uit</option>
@@ -127,13 +127,13 @@ export default function OnboardingFiltersPage() {
           <div>
             <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Minimale oppervlakte</label>
             <div className="relative">
-              <Maximize2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-muted)]" />
+              <Maximize2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)]" />
               <input
                 type="number"
                 placeholder="0 m²"
                 value={minSize}
                 onChange={(e) => setMinSize(e.target.value)}
-                className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/15 focus:bg-[var(--yo-surface)] transition-all"
+                className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-[var(--yo-surface)] transition-all"
                 data-testid="input-min-size"
               />
             </div>
@@ -143,7 +143,7 @@ export default function OnboardingFiltersPage() {
             <Button
               variant="outline"
               size="lg"
-              className="h-[48px] px-6 rounded-xl text-[15px] font-semibold border-[var(--yo-divider)] text-[var(--yo-dark)] hover:bg-[var(--yo-surface)]"
+              className="h-[48px] px-6 rounded-lg text-[15px] font-semibold border-[var(--yo-divider)] text-[var(--yo-dark)] hover:bg-[var(--yo-surface)]"
               onClick={handleBack}
               data-testid="button-back-filters"
             >
@@ -151,7 +151,7 @@ export default function OnboardingFiltersPage() {
             </Button>
             <Button
               size="lg"
-              className="flex-1 h-[56px] rounded-xl text-[16px] font-semibold shadow-none bg-[#2DD4BF] hover:bg-[#25BBA8]"
+              className="flex-1 h-[56px] rounded-lg text-[16px] font-semibold shadow-none bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)]"
               onClick={handleNext}
               data-testid="button-next-filters"
             >

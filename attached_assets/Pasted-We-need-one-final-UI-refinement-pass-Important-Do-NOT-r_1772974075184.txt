@@ -1,0 +1,97 @@
+We need one final UI refinement pass.
+
+Important:
+Do NOT redesign layouts again.
+Keep the current YoungOnes-inspired structure and component system.
+This is only a final visual correction pass.
+
+Goal:
+Clean up the color hierarchy so the UI feels sharper, more premium, and less washed out.
+
+Rules:
+
+1. Text color
+Make all normal text use a near-black / black color instead of gray.
+
+This applies to:
+- body text
+- metadata text
+- card text
+- listing details
+- section descriptions
+- labels above fields
+- secondary text that is currently too gray
+
+Use a strong readable dark text color throughout the app.
+
+Only keep softer gray for truly low-priority UI elements like:
+- disabled states
+- subtle placeholders
+- inactive icons
+- very secondary dividers/help text if necessary
+
+2. Badges / chips
+Badges like:
+- Gewenste wijk
+- Past bij jouw voorkeuren
+- Binnen budget
+
+should NOT use turquoise or pink.
+
+They should use:
+- very light gray background
+- dark text
+- subtle neutral styling
+
+Make these chips feel calm and neutral, not brightly highlighted.
+
+3. Accent color usage
+Use turquoise ONLY for:
+- primary CTA buttons
+- the strongest primary actions
+- key active emphasis
+
+Use the YoungOnes pink accent (#FF2E8A) ONLY for:
+- text links
+- highlighted source / website labels
+- progress bars
+- secondary accent text where needed
+
+4. Progress bars
+All progress bars should use:
+#FF2E8A
+
+5. Source / website labels
+The property source / website label (for example Kleinanzeigen, Immowelt, etc.) must be:
+- bold
+- pink accent color (#FF2E8A)
+
+6. Border radius
+Keep the standardized radius:
+8px
+
+Apply consistently to:
+- cards
+- buttons
+- inputs
+- dropdowns
+- chips
+- modals
+- surfaces
+
+7. Remove washed-out look
+The app should no longer feel overly pastel or low-contrast.
+Increase contrast by making text darker and chips more neutral.
+
+8. Token-based update
+Do this through theme/design tokens and shared component styling.
+Do NOT patch random individual screens.
+
+9. Final confirmation
+After implementation, tell me:
+- the final text color token
+- the final chip/background token
+- the final CTA turquoise token
+- the final pink accent token
+- confirmation that badges are now neutral light gray
+- confirmation that normal text is now dark / near-black

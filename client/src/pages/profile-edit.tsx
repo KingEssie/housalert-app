@@ -105,14 +105,14 @@ export default function ProfileEditPage() {
               value={value}
               onChange={e => setValue(e.target.value)}
               placeholder={config.placeholder}
-              className="w-full bg-muted rounded-xl px-4 py-3.5 text-[16px] text-foreground placeholder:text-muted-foreground border-0 outline-none focus:ring-2 focus:ring-primary h-[52px]"
+              className="w-full bg-muted rounded-lg px-4 py-3.5 text-[16px] text-foreground placeholder:text-muted-foreground border-0 outline-none focus:ring-2 focus:ring-primary h-[52px]"
               data-testid="input-edit-field"
             />
 
             <Button
               onClick={handleSave}
               disabled={saving}
-              className="w-full h-[52px] rounded-xl bg-primary text-primary-foreground text-[15px] font-semibold"
+              className="w-full h-[52px] rounded-lg bg-primary text-primary-foreground text-[15px] font-semibold"
               data-testid="button-save-field"
             >
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : "Opslaan"}

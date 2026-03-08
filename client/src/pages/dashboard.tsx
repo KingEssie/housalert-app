@@ -69,10 +69,10 @@ function relativeTime(dateStr: string | null | undefined): string {
 }
 
 const FRESH_BADGE_STYLES: Record<string, { bg: string; text: string }> = {
-  net_binnen: { bg: "bg-[var(--yo-teal)]", text: "text-white" },
-  nieuw: { bg: "bg-[var(--yo-teal-dark)]", text: "text-white" },
+  net_binnen: { bg: "bg-[var(--yo-chip-bg)]", text: "text-[var(--yo-dark)]" },
+  nieuw: { bg: "bg-[var(--yo-dark)]", text: "text-white" },
   vandaag: { bg: "bg-[var(--yo-dark)]", text: "text-white" },
-  ouder: { bg: "bg-[var(--yo-surface)]", text: "text-[var(--yo-muted)]" },
+  ouder: { bg: "bg-[var(--yo-surface)]", text: "text-[var(--yo-dark)]" },
 };
 
 const FRESH_LABEL_TEXT: Record<string, string> = {
@@ -86,14 +86,14 @@ type TabKey = "home" | "matches" | "filters" | "boost" | "profiel";
 type MatchSubTab = "nieuw" | "bekeken" | "opgeslagen" | "gereageerd";
 
 const CITY_GRADIENTS: Record<string, string> = {
-  berlin: "from-[#2DD4BF] to-[#1A8A7D]",
-  münchen: "from-[#2DD4BF] to-[#25BBA8]",
-  hamburg: "from-[#1A8A7D] to-[#2DD4BF]",
-  frankfurt: "from-[#25BBA8] to-[#1A8A7D]",
-  köln: "from-[#2DD4BF] to-[#1A8A7D]",
-  düsseldorf: "from-[#1A8A7D] to-[#25BBA8]",
-  stuttgart: "from-[#25BBA8] to-[#2DD4BF]",
-  default: "from-[#2DD4BF] to-[#1A8A7D]",
+  berlin: "from-[#1A1A1A] to-[#333333]",
+  münchen: "from-[#1A1A1A] to-[#333333]",
+  hamburg: "from-[#333333] to-[#1A1A1A]",
+  frankfurt: "from-[#1A1A1A] to-[#333333]",
+  köln: "from-[#333333] to-[#1A1A1A]",
+  düsseldorf: "from-[#1A1A1A] to-[#333333]",
+  stuttgart: "from-[#333333] to-[#1A1A1A]",
+  default: "from-[#1A1A1A] to-[#333333]",
 };
 
 function getCityGradient(city: string): string {
@@ -202,7 +202,7 @@ function MatchCard({
 
   return (
     <div
-      className="bg-white rounded-[16px] border border-[var(--yo-divider)] overflow-hidden cursor-pointer hover:shadow-[0_4px_24px_rgba(0,0,0,0.10)] transition-all duration-200 active:scale-[0.985]"
+      className="bg-white rounded-lg border border-[var(--yo-divider)] overflow-hidden cursor-pointer hover:shadow-[0_4px_24px_rgba(0,0,0,0.10)] transition-all duration-200 active:scale-[0.985]"
       onClick={handleCardClick}
       data-testid={`card-match-${match.listing_id}`}
     >
@@ -238,9 +238,9 @@ function MatchCard({
           data-testid={`button-save-match-${match.listing_id}`}
         >
           {isSaved ? (
-            <BookmarkCheck className="w-[18px] h-[18px] text-[var(--yo-teal)]" />
+            <BookmarkCheck className="w-[18px] h-[18px] text-[var(--yo-dark)]" />
           ) : (
-            <Bookmark className="w-[18px] h-[18px] text-[var(--yo-muted)]" />
+            <Bookmark className="w-[18px] h-[18px] text-[var(--yo-dark)]" />
           )}
         </button>
       </div>
@@ -249,10 +249,10 @@ function MatchCard({
         {match.match_score != null && match.match_label && (
           <div data-testid={`score-badge-${match.listing_id}`}>
             <span className={`inline-flex text-[12px] font-bold px-3 py-1 rounded-full ${
-              match.match_score >= 95 ? "bg-[var(--yo-teal)] text-white" :
-              match.match_score >= 80 ? "bg-[var(--yo-teal-dark)] text-white" :
-              match.match_score >= 65 ? "bg-[var(--yo-dark)] text-white" :
-              "bg-[var(--yo-surface)] text-[var(--yo-muted)]"
+              match.match_score >= 95 ? "bg-[var(--yo-dark)] text-white" :
+              match.match_score >= 80 ? "bg-[var(--yo-dark)] text-white" :
+              match.match_score >= 65 ? "bg-[var(--yo-chip-bg)] text-[var(--yo-dark)]" :
+              "bg-[var(--yo-chip-bg)] text-[var(--yo-dark)]"
             }`}>
               {displayMatchLabel(match.match_score, match.match_label)} · {match.match_score}%
             </span>
@@ -270,13 +270,13 @@ function MatchCard({
             {match.price > 0 && (
               <span className="text-[17px] font-bold text-[var(--yo-dark)] whitespace-nowrap flex-shrink-0 mt-0.5">
                 €{match.price}
-                <span className="text-[12px] font-normal text-[var(--yo-muted)]"> /mnd</span>
+                <span className="text-[12px] font-normal text-[var(--yo-dark)]"> /mnd</span>
               </span>
             )}
           </div>
         </div>
 
-        <div className="flex items-center gap-2 text-[13px] text-[var(--yo-muted)]">
+        <div className="flex items-center gap-2 text-[13px] text-[var(--yo-dark)]">
           <span className="flex items-center gap-1">
             <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
             {match.city}
@@ -309,7 +309,7 @@ function MatchCard({
               {chips.map((chip) => (
                 <span
                   key={chip}
-                  className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-[var(--yo-teal-light)] text-[var(--yo-teal-dark)]"
+                  className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-[var(--yo-chip-bg)] text-[var(--yo-dark)]"
                 >
                   {chip}
                 </span>
@@ -318,8 +318,8 @@ function MatchCard({
           ) : null;
         })()}
 
-        <div className="flex items-center gap-2 text-[11px] text-[var(--yo-muted)]">
-          <span className="capitalize">{match.source}</span>
+        <div className="flex items-center gap-2 text-[11px] text-[var(--yo-dark)]">
+          <span className="capitalize font-bold" style={{ color: "var(--yo-pink)" }}>{match.source}</span>
           <span>·</span>
           <span className="flex items-center gap-1">
             <Clock className="w-3 h-3" />
@@ -330,7 +330,7 @@ function MatchCard({
         <div className="flex gap-2 mt-1">
           <button
             onClick={handleApply}
-            className="flex-1 h-[56px] rounded-[14px] bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[14px] font-bold transition-colors flex items-center justify-center gap-2"
+            className="flex-1 h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[14px] font-bold transition-colors flex items-center justify-center gap-2"
             data-testid={`button-apply-${match.listing_id}`}
           >
             <Zap className="w-4 h-4" />
@@ -343,7 +343,7 @@ function MatchCard({
               onStatusChange();
               navigate(`/listing/${match.listing_id}`);
             }}
-            className="h-[56px] px-5 rounded-[14px] border border-[var(--yo-divider)] bg-white text-[var(--yo-dark)] text-[14px] font-bold hover:bg-[var(--yo-surface)] transition-colors flex items-center justify-center gap-1.5"
+            className="h-[56px] px-5 rounded-lg border border-[var(--yo-divider)] bg-white text-[var(--yo-dark)] text-[14px] font-bold hover:bg-[var(--yo-surface)] transition-colors flex items-center justify-center gap-1.5"
             data-testid={`button-view-listing-${match.listing_id}`}
           >
             <Eye className="w-3.5 h-3.5" />
@@ -368,24 +368,24 @@ function ProfileCard({
 }) {
   return (
     <div
-      className="bg-white rounded-[16px] shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 flex flex-col gap-3.5"
+      className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 flex flex-col gap-3.5"
       data-testid={`card-profile-${profile.id}`}
     >
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-full bg-[var(--yo-teal-light)] flex items-center justify-center">
-            <MapPin className="w-4 h-4 text-[var(--yo-teal)]" />
+          <div className="w-9 h-9 rounded-full bg-[var(--yo-chip-bg)] flex items-center justify-center">
+            <MapPin className="w-4 h-4 text-[var(--yo-dark)]" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
               <h3 className="font-semibold text-[var(--yo-dark)] text-[15px]" data-testid={`text-profile-city-${profile.id}`}>
                 {profile.city_name || profile.city}
               </h3>
-              <span className="text-[10px] font-medium text-[var(--yo-dark)] bg-[var(--yo-teal)] text-white px-1.5 py-0.5 rounded-full" data-testid={`badge-status-${profile.id}`}>
+              <span className="text-[10px] font-medium text-[var(--yo-dark)] bg-[var(--yo-chip-bg)] px-1.5 py-0.5 rounded-full" data-testid={`badge-status-${profile.id}`}>
                 Actief
               </span>
             </div>
-            <p className="text-[13px] font-[500] text-[var(--yo-muted)]">
+            <p className="text-[13px] font-[500] text-[var(--yo-dark)]">
               Aangemaakt {new Date(profile.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "short" })}
             </p>
           </div>
@@ -393,7 +393,7 @@ function ProfileCard({
         <button
           onClick={onDelete}
           disabled={deleting}
-          className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--yo-muted)] hover:text-[var(--yo-teal)] hover:bg-[var(--yo-teal-light)] transition-colors"
+          className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--yo-dark)] hover:text-[var(--yo-dark)] hover:bg-[var(--yo-chip-bg)] transition-colors"
           data-testid={`button-delete-${profile.id}`}
         >
           <Trash2 className="w-4 h-4" />
@@ -402,19 +402,19 @@ function ProfileCard({
 
       <div className="flex flex-wrap gap-2">
         {profile.location_mode === "districts" && profile.districts && profile.districts.length > 0 && (
-          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-teal-light)] text-[var(--yo-teal)] px-2.5 py-1 rounded-full" data-testid={`badge-districts-${profile.id}`}>
+          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full" data-testid={`badge-districts-${profile.id}`}>
             <MapPin className="w-3 h-3" />
             {profile.districts.length === 1 ? profile.districts[0] : `${profile.districts.length} wijken`}
           </span>
         )}
         {profile.location_mode === "radius" && profile.radius_km && (
-          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-teal-light)] text-[var(--yo-teal)] px-2.5 py-1 rounded-full" data-testid={`badge-radius-${profile.id}`}>
+          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full" data-testid={`badge-radius-${profile.id}`}>
             <MapPin className="w-3 h-3" />
             {profile.radius_km} km radius
           </span>
         )}
         {profile.location_mode === "commute" && profile.commute_destination && (
-          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-teal-light)] text-[var(--yo-teal)] px-2.5 py-1 rounded-full" data-testid={`badge-commute-${profile.id}`}>
+          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full" data-testid={`badge-commute-${profile.id}`}>
             <Clock className="w-3 h-3" />
             {profile.commute_minutes ? `${profile.commute_minutes} min` : ""} {profile.commute_mode === "ov" ? "OV" : profile.commute_mode === "fiets" ? "fiets" : "auto"}
           </span>
@@ -443,7 +443,7 @@ function ProfileCard({
 
       <button
         onClick={onEdit}
-        className="w-full h-10 rounded-[14px] border border-[var(--yo-divider)] text-[13px] font-semibold text-[var(--yo-dark)] hover:bg-[var(--yo-surface)] transition-colors flex items-center justify-center gap-1.5"
+        className="w-full h-10 rounded-lg border border-[var(--yo-divider)] text-[13px] font-semibold text-[var(--yo-dark)] hover:bg-[var(--yo-surface)] transition-colors flex items-center justify-center gap-1.5"
         data-testid={`button-edit-${profile.id}`}
       >
         Bewerken
@@ -474,7 +474,7 @@ function BoostTeaserCard({ setActiveTab }: { setActiveTab: (tab: TabKey) => void
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-[16px] shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 animate-pulse" data-testid="card-boost-teaser-loading">
+      <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 animate-pulse" data-testid="card-boost-teaser-loading">
         <div className="h-4 bg-[var(--yo-surface)] rounded w-36 mb-3" />
         <div className="h-3 bg-[var(--yo-surface)] rounded w-52 mb-4" />
         <div className="h-9 bg-[var(--yo-surface)] rounded w-32" />
@@ -496,18 +496,18 @@ function BoostTeaserCard({ setActiveTab }: { setActiveTab: (tab: TabKey) => void
         : `Je profiel is ${boostScore}% compleet`;
 
   return (
-    <div className="bg-white rounded-[16px] shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5" data-testid="card-boost-teaser">
+    <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5" data-testid="card-boost-teaser">
       <div className="flex items-start gap-4">
-        <div className="w-10 h-10 rounded-xl bg-[var(--yo-teal-light)] flex items-center justify-center flex-shrink-0">
-          <Zap className="w-5 h-5 text-[var(--yo-teal)]" />
+        <div className="w-10 h-10 rounded-lg bg-[var(--yo-chip-bg)] flex items-center justify-center flex-shrink-0">
+          <Zap className="w-5 h-5 text-[var(--yo-dark)]" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[15px] font-semibold text-[var(--yo-dark)]">Boost je kansen</p>
-          <p className="text-[13px] text-[var(--yo-muted)] mt-0.5">{statusText}</p>
+          <p className="text-[13px] text-[var(--yo-dark)] mt-0.5">{statusText}</p>
 
           <div className="mt-3 h-1.5 bg-[var(--yo-divider)] rounded-full overflow-hidden">
             <div
-              className="h-full bg-[var(--yo-teal)] rounded-full transition-all duration-500"
+              className="h-full bg-[var(--yo-pink)] rounded-full transition-all duration-500"
               style={{ width: `${boostScore}%` }}
             />
           </div>
@@ -515,7 +515,7 @@ function BoostTeaserCard({ setActiveTab }: { setActiveTab: (tab: TabKey) => void
           <Button
             variant="link"
             onClick={() => setActiveTab("boost")}
-            className="mt-2 p-0 h-auto text-[13px] font-semibold text-[var(--yo-teal)]"
+            className="mt-2 p-0 h-auto text-[13px] font-semibold text-[var(--yo-pink)]"
             data-testid="button-boost-teaser"
           >
             Bekijk Boost
@@ -557,17 +557,17 @@ function HomeTab({
       <div className="flex flex-col gap-6 px-6">
 
       {subscription.isExpired && (
-        <div className="bg-[var(--yo-teal-light)] rounded-[16px] p-5 flex items-center gap-3" data-testid="banner-expired">
-          <div className="w-9 h-9 rounded-full bg-[var(--yo-teal-light)] flex items-center justify-center flex-shrink-0">
-            <AlertTriangle className="w-4 h-4 text-[var(--yo-teal)]" />
+        <div className="bg-[var(--yo-chip-bg)] rounded-lg p-5 flex items-center gap-3" data-testid="banner-expired">
+          <div className="w-9 h-9 rounded-full bg-[var(--yo-chip-bg)] flex items-center justify-center flex-shrink-0">
+            <AlertTriangle className="w-4 h-4 text-[var(--yo-dark)]" />
           </div>
           <div className="flex-1">
             <p className="text-[14px] font-semibold text-[var(--yo-dark)]">Je proefperiode is afgelopen</p>
-            <p className="text-[13px] font-[500] text-[var(--yo-muted)]">Activeer een abonnement om matches te blijven ontvangen.</p>
+            <p className="text-[13px] font-[500] text-[var(--yo-dark)]">Activeer een abonnement om matches te blijven ontvangen.</p>
           </div>
           <button
             onClick={() => navigate("/paywall")}
-            className="text-[12px] font-semibold text-[var(--yo-teal)] bg-white px-3 py-1.5 rounded-lg hover:bg-[var(--yo-surface)] transition-colors flex-shrink-0"
+            className="text-[12px] font-semibold text-[var(--yo-dark)] bg-white px-3 py-1.5 rounded-lg hover:bg-[var(--yo-surface)] transition-colors flex-shrink-0"
             data-testid="button-expired-upgrade"
           >
             Kies abonnement
@@ -576,16 +576,16 @@ function HomeTab({
       )}
 
       {hasMatches ? (
-        <div className="rounded-[16px] bg-[var(--yo-teal-light)] p-6" data-testid="hero-matches">
+        <div className="rounded-lg bg-[var(--yo-chip-bg)] p-6" data-testid="hero-matches">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-11 h-11 rounded-full bg-[var(--yo-teal)] flex items-center justify-center flex-shrink-0">
+            <div className="w-11 h-11 rounded-full bg-[var(--yo-dark)] flex items-center justify-center flex-shrink-0">
               <Heart className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[22px] font-bold text-[var(--yo-dark)] leading-tight" data-testid="text-match-count">
                 {matchCount} {matchCount === 1 ? "match" : "matches"} gevonden
               </p>
-              <p className="text-[14px] font-[500] text-[var(--yo-muted)] mt-0.5">
+              <p className="text-[14px] font-[500] text-[var(--yo-dark)] mt-0.5">
                 {hasProfiles
                   ? `Op basis van ${profileCount} ${profileCount === 1 ? "zoekprofiel" : "zoekprofielen"}`
                   : "Op basis van je zoekopdracht"}
@@ -594,7 +594,7 @@ function HomeTab({
           </div>
           <button
             onClick={() => setActiveTab("matches")}
-            className="w-full h-[56px] rounded-[14px] bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
+            className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
             data-testid="button-view-matches"
           >
             Bekijk je matches
@@ -615,9 +615,9 @@ function HomeTab({
       )}
 
       {subscription.isTrial && subscription.trialEndsAt && (
-        <div className="bg-[var(--yo-teal-light)] rounded-[16px] px-5 py-3.5 flex items-center gap-3" data-testid="banner-trial">
-          <Crown className="w-4 h-4 text-[var(--yo-teal)] flex-shrink-0" />
-          <p className="text-[13px] font-[500] text-[var(--yo-muted)] flex-1">
+        <div className="bg-[var(--yo-chip-bg)] rounded-lg px-5 py-3.5 flex items-center gap-3" data-testid="banner-trial">
+          <Crown className="w-4 h-4 text-[var(--yo-dark)] flex-shrink-0" />
+          <p className="text-[13px] font-[500] text-[var(--yo-dark)] flex-1">
             Proefperiode tot{" "}
             <span className="font-semibold text-[var(--yo-dark)]">
               {new Date(subscription.trialEndsAt).toLocaleDateString("de-DE", { day: "numeric", month: "long" })}
@@ -625,7 +625,7 @@ function HomeTab({
           </p>
           <button
             onClick={() => navigate("/paywall")}
-            className="text-[12px] font-semibold text-[var(--yo-teal)] hover:underline flex-shrink-0"
+            className="text-[12px] font-semibold text-[var(--yo-pink)] hover:underline flex-shrink-0"
             data-testid="button-trial-upgrade"
           >
             Upgrade
@@ -640,7 +640,7 @@ function HomeTab({
       {hasMatches && (
         <button
           onClick={() => setActiveTab("filters")}
-          className="w-full h-[56px] rounded-[14px] border border-[var(--yo-divider)] bg-white text-[var(--yo-dark)] text-[15px] font-bold hover:bg-[var(--yo-surface)] transition-colors flex items-center justify-center gap-2"
+          className="w-full h-[56px] rounded-lg border border-[var(--yo-divider)] bg-white text-[var(--yo-dark)] text-[15px] font-bold hover:bg-[var(--yo-surface)] transition-colors flex items-center justify-center gap-2"
           data-testid="button-manage-filters"
         >
           <SlidersHorizontal className="w-4 h-4" />
@@ -706,7 +706,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
       <div className="flex items-center justify-between">
         <h1 className="text-page-title">Matches</h1>
         {matches.length > 0 && (
-          <span className="text-[13px] font-medium text-[var(--yo-teal)] bg-[var(--yo-teal-light)] px-2.5 py-1 rounded-full" data-testid="badge-match-count">
+          <span className="text-[13px] font-medium text-[var(--yo-dark)] bg-[var(--yo-chip-bg)] px-2.5 py-1 rounded-full" data-testid="badge-match-count">
             {matches.length} totaal
           </span>
         )}
@@ -723,14 +723,14 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
               className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-1 rounded-full text-[13px] font-semibold transition-all duration-200 ${
                 isActive
                   ? "bg-white text-[var(--yo-dark)] shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
-                  : "text-[var(--yo-muted)] hover:text-[var(--yo-dark)] hover:bg-white/50"
+                  : "text-[var(--yo-dark)] hover:text-[var(--yo-dark)] hover:bg-white/50"
               }`}
               data-testid={`tab-matches-${key}`}
             >
               <span>{label}</span>
               {count > 0 && (
                 <span className={`text-[10px] font-bold min-w-[20px] h-[20px] flex items-center justify-center rounded-full ${
-                  isActive ? "bg-[var(--yo-teal)] text-white" : "bg-[var(--yo-divider)] text-[var(--yo-muted)]"
+                  isActive ? "bg-[var(--yo-dark)] text-white" : "bg-[var(--yo-divider)] text-[var(--yo-dark)]"
                 }`}>
                   {count}
                 </span>
@@ -743,7 +743,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
       {apiMatchesQuery.isLoading ? (
         <div className="flex flex-col gap-4">
           {[1, 2].map((i) => (
-            <div key={i} className="bg-white rounded-[16px] border border-[var(--yo-divider)] overflow-hidden animate-pulse">
+            <div key={i} className="bg-white rounded-lg border border-[var(--yo-divider)] overflow-hidden animate-pulse">
               <div className="h-[200px] bg-[var(--yo-surface)]" />
               <div className="p-4 flex flex-col gap-2.5">
                 <div className="h-6 bg-[var(--yo-surface)] rounded-full w-28" />
@@ -754,23 +754,23 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
                   <div className="h-6 bg-[var(--yo-surface)] rounded-full w-28" />
                 </div>
                 <div className="flex gap-2 mt-1">
-                  <div className="h-[44px] bg-[var(--yo-surface)] rounded-[14px] flex-1" />
-                  <div className="h-[44px] bg-[var(--yo-surface)] rounded-[14px] w-24" />
+                  <div className="h-[44px] bg-[var(--yo-surface)] rounded-lg flex-1" />
+                  <div className="h-[44px] bg-[var(--yo-surface)] rounded-lg w-24" />
                 </div>
               </div>
             </div>
           ))}
         </div>
       ) : apiMatchesQuery.isError ? (
-        <div className="bg-white rounded-[16px] shadow-[0_1px_8px_rgba(0,0,0,0.06)] p-8 flex flex-col items-center text-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-[var(--yo-teal-light)] flex items-center justify-center">
-            <AlertCircle className="w-5 h-5 text-[var(--yo-teal)]" />
+        <div className="bg-white rounded-lg shadow-[0_1px_8px_rgba(0,0,0,0.06)] p-8 flex flex-col items-center text-center gap-3">
+          <div className="w-12 h-12 rounded-full bg-[var(--yo-chip-bg)] flex items-center justify-center">
+            <AlertCircle className="w-5 h-5 text-[var(--yo-dark)]" />
           </div>
           <p className="text-[18px] font-[700] text-[var(--yo-dark)]">Kon matches niet laden</p>
-          <p className="text-[13px] text-[var(--yo-muted)]">Controleer je verbinding en probeer het opnieuw.</p>
+          <p className="text-[13px] text-[var(--yo-dark)]">Controleer je verbinding en probeer het opnieuw.</p>
           <button
             onClick={() => apiMatchesQuery.refetch()}
-            className="text-[13px] font-semibold text-[var(--yo-teal)]"
+            className="text-[13px] font-semibold text-[var(--yo-pink)]"
             data-testid="button-retry-matches"
           >
             Opnieuw proberen
@@ -902,7 +902,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
       {profilesQuery.isLoading ? (
         <div className="flex flex-col gap-3">
           {[1, 2].map((i) => (
-            <div key={i} className="bg-white rounded-[16px] shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-4 animate-pulse">
+            <div key={i} className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-4 animate-pulse">
               <div className="h-4 bg-[var(--yo-surface)] rounded w-1/3 mb-3" />
               <div className="flex gap-2">
                 <div className="h-6 bg-[var(--yo-surface)] rounded-full w-24" />
@@ -937,7 +937,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
           {!atLimit && (
             <button
               onClick={() => navigate("/dashboard/searches/new")}
-              className="bg-white rounded-[16px] shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-4 flex items-center justify-center gap-2 text-[14px] font-semibold text-[var(--yo-teal)] hover:bg-[var(--yo-surface)] transition-colors border-2 border-dashed border-[var(--yo-divider)]"
+              className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-4 flex items-center justify-center gap-2 text-[14px] font-semibold text-[var(--yo-dark)] hover:bg-[var(--yo-surface)] transition-colors border-2 border-dashed border-[var(--yo-divider)]"
               data-testid="button-add-search-card"
             >
               <Plus className="w-4 h-4" />
@@ -957,7 +957,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
     <div className="fixed inset-0 z-50 flex items-end justify-center" onClick={onClose}>
       <div className="absolute inset-0 bg-black/40" />
       <div
-        className="relative w-full max-w-[480px] bg-white rounded-t-[24px] pb-8 pt-2 animate-in slide-in-from-bottom duration-300"
+        className="relative w-full max-w-[480px] bg-white rounded-t-lg pb-8 pt-2 animate-in slide-in-from-bottom duration-300"
         onClick={e => e.stopPropagation()}
       >
         <div className="w-10 h-1 bg-[var(--yo-divider)] rounded-full mx-auto mb-6" />
@@ -971,7 +971,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
           )}
 
           <div className="flex flex-col">
-            <label className="w-full h-[56px] flex items-center justify-center gap-2 rounded-[14px] bg-[var(--yo-teal)] text-white text-[15px] font-bold cursor-pointer active:bg-[var(--yo-teal-hover)] transition-colors">
+            <label className="w-full h-[56px] flex items-center justify-center gap-2 rounded-lg bg-[var(--yo-teal)] text-white text-[15px] font-bold cursor-pointer active:bg-[var(--yo-teal-hover)] transition-colors">
               <Camera className="w-[18px] h-[18px]" />
               {photoUrl ? "Nieuwe foto kiezen" : "Foto uploaden"}
               <input
@@ -989,7 +989,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
             {photoUrl && (
               <button
                 onClick={onRemove}
-                className="mt-3 w-full h-[56px] flex items-center justify-center gap-2 rounded-[14px] border border-[var(--yo-divider)] text-[var(--yo-teal)] text-[15px] font-bold active:bg-[var(--yo-teal-light)] transition-colors"
+                className="mt-3 w-full h-[56px] flex items-center justify-center gap-2 rounded-lg border border-[var(--yo-divider)] text-[var(--yo-dark)] text-[15px] font-bold active:bg-[var(--yo-chip-bg)] transition-colors"
                 data-testid="button-remove-photo"
               >
                 <Trash2 className="w-[18px] h-[18px]" />
@@ -999,7 +999,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
 
             <button
               onClick={onClose}
-              className="mt-3 w-full h-[56px] flex items-center justify-center rounded-[14px] text-[var(--yo-muted)] text-[15px] font-bold active:bg-[var(--yo-surface)] transition-colors"
+              className="mt-3 w-full h-[56px] flex items-center justify-center rounded-lg text-[var(--yo-dark)] text-[15px] font-bold active:bg-[var(--yo-surface)] transition-colors"
               data-testid="button-cancel-photo"
             >
               Annuleren
@@ -1020,9 +1020,9 @@ function AccountSettingsRow({ label, subtext, onClick, trailing }: { label: stri
     >
       <div className="flex-1 min-w-0">
         <p className="text-[15px] font-[500] text-[var(--yo-dark)]">{label}</p>
-        {subtext && <p className="text-[13px] text-[var(--yo-muted)] mt-0.5">{subtext}</p>}
+        {subtext && <p className="text-[13px] text-[var(--yo-dark)] mt-0.5">{subtext}</p>}
       </div>
-      {trailing || <ChevronRight className="w-[18px] h-[18px] text-[var(--yo-muted)] flex-shrink-0" />}
+      {trailing || <ChevronRight className="w-[18px] h-[18px] text-[var(--yo-dark)] flex-shrink-0" />}
     </button>
   );
 }
@@ -1147,7 +1147,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
               key={t.key}
               onClick={() => setProfileSubTab(t.key)}
               className={`flex-1 text-center py-3.5 text-[15px] font-semibold transition-colors ${
-                profileSubTab === t.key ? "text-[var(--yo-teal)]" : "text-[var(--yo-muted)]"
+                profileSubTab === t.key ? "text-[var(--yo-dark)]" : "text-[var(--yo-muted)]"
               }`}
               data-testid={`tab-profile-${t.key}`}
             >
@@ -1167,7 +1167,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
       <div className="max-w-[480px] mx-auto px-5 py-6">
         {profileSubTab === "over" ? (
           <div className="flex flex-col gap-6">
-            <div className="bg-white rounded-[16px] shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5">
+            <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5">
               <button
                 onClick={() => navigate("/profile/details")}
                 className="flex items-center gap-4 active:opacity-80 transition-opacity text-left w-full"
@@ -1176,50 +1176,50 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                 {photoUrl ? (
                   <img src={photoUrl} alt="" className="w-16 h-16 rounded-full object-cover flex-shrink-0" data-testid="img-profile-avatar" />
                 ) : (
-                  <div className="w-16 h-16 rounded-full bg-[var(--yo-teal-light)] flex items-center justify-center flex-shrink-0">
-                    <span className="text-[22px] font-bold text-[var(--yo-teal)]">{initials}</span>
+                  <div className="w-16 h-16 rounded-full bg-[var(--yo-chip-bg)] flex items-center justify-center flex-shrink-0">
+                    <span className="text-[22px] font-bold text-[var(--yo-dark)]">{initials}</span>
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
                   <p className="text-[22px] font-[700] text-[var(--yo-dark)] truncate leading-tight" data-testid="text-user-name">{displayName}</p>
-                  <p className="text-[14px] text-[var(--yo-muted)] mt-0.5">Woningzoeker</p>
+                  <p className="text-[14px] text-[var(--yo-dark)] mt-0.5">Woningzoeker</p>
                 </div>
-                <ChevronRight className="w-5 h-5 text-[var(--yo-muted)] flex-shrink-0" />
+                <ChevronRight className="w-5 h-5 text-[var(--yo-dark)] flex-shrink-0" />
               </button>
             </div>
 
-            <div className="bg-white rounded-[16px] shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+            <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
               <div className="flex">
                 <div className="flex-1 flex items-center gap-3 p-4" data-testid="kpi-matches">
-                  <div className="w-10 h-10 rounded-full bg-[var(--yo-teal-light)] flex items-center justify-center flex-shrink-0">
-                    <Heart className="w-[18px] h-[18px] text-[var(--yo-teal)]" />
+                  <div className="w-10 h-10 rounded-full bg-[var(--yo-chip-bg)] flex items-center justify-center flex-shrink-0">
+                    <Heart className="w-[18px] h-[18px] text-[var(--yo-dark)]" />
                   </div>
                   <div>
                     <p className="text-[20px] font-bold text-[var(--yo-dark)] leading-none">{stats.matches_received}</p>
-                    <p className="text-[12px] text-[var(--yo-muted)] mt-1 leading-tight">Ontvangen matches</p>
+                    <p className="text-[12px] text-[var(--yo-dark)] mt-1 leading-tight">Ontvangen matches</p>
                   </div>
                 </div>
                 <div className="w-px bg-[var(--yo-divider)] my-3" />
                 <div className="flex-1 flex items-center gap-3 p-4" data-testid="kpi-reactions">
-                  <div className="w-10 h-10 rounded-full bg-[var(--yo-teal-light)] flex items-center justify-center flex-shrink-0">
-                    <Send className="w-[18px] h-[18px] text-[var(--yo-teal)]" />
+                  <div className="w-10 h-10 rounded-full bg-[var(--yo-chip-bg)] flex items-center justify-center flex-shrink-0">
+                    <Send className="w-[18px] h-[18px] text-[var(--yo-dark)]" />
                   </div>
                   <div>
                     <p className="text-[20px] font-bold text-[var(--yo-dark)] leading-none">{stats.reactions_sent}</p>
-                    <p className="text-[12px] text-[var(--yo-muted)] mt-1 leading-tight">Verstuurde reacties</p>
+                    <p className="text-[12px] text-[var(--yo-dark)] mt-1 leading-tight">Verstuurde reacties</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-[16px] shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+            <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
               <button
                 onClick={() => navigate("/profile/details")}
                 className="w-full h-[56px] flex items-center justify-between px-5 text-left active:bg-[var(--yo-surface)] transition-colors"
                 data-testid="button-edit-details"
               >
-                <p className="text-[15px] font-semibold text-[var(--yo-teal)]">Persoonlijke gegevens bewerken</p>
-                <ChevronRight className="w-[18px] h-[18px] text-[var(--yo-muted)] flex-shrink-0" />
+                <p className="text-[15px] font-semibold text-[var(--yo-pink)]">Persoonlijke gegevens bewerken</p>
+                <ChevronRight className="w-[18px] h-[18px] text-[var(--yo-dark)] flex-shrink-0" />
               </button>
               <div className="h-px bg-[var(--yo-divider)] mx-5" />
               <button
@@ -1227,12 +1227,12 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                 className="w-full h-[56px] flex items-center justify-between px-5 text-left active:bg-[var(--yo-surface)] transition-colors"
                 data-testid="button-edit-photo"
               >
-                <p className="text-[15px] font-semibold text-[var(--yo-teal)]">Profielfoto bewerken</p>
-                <ChevronRight className="w-[18px] h-[18px] text-[var(--yo-muted)] flex-shrink-0" />
+                <p className="text-[15px] font-semibold text-[var(--yo-pink)]">Profielfoto bewerken</p>
+                <ChevronRight className="w-[18px] h-[18px] text-[var(--yo-dark)] flex-shrink-0" />
               </button>
             </div>
 
-            <div className="bg-white rounded-[16px] shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5">
+            <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5">
               <h2 className="text-[20px] font-bold text-[var(--yo-dark)] mb-4" data-testid="section-verified">Je hebt een Geverifieerd Profiel</h2>
               <div className="flex flex-col">
                 <div className="flex items-center gap-3 py-3">
@@ -1248,7 +1248,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                       <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
                     </div>
                   ) : (
-                    <AlertCircle className="w-5 h-5 text-[var(--yo-muted)] flex-shrink-0" />
+                    <AlertCircle className="w-5 h-5 text-[var(--yo-dark)] flex-shrink-0" />
                   )}
                   <p className={`text-[15px] ${phone ? "text-[var(--yo-dark)]" : "text-[var(--yo-muted)]"}`}>
                     {phone || "Telefoonnummer toevoegen"}
@@ -1257,14 +1257,14 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
               </div>
             </div>
 
-            <div className="bg-white rounded-[16px] shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5">
+            <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5">
               <h2 className="text-[20px] font-bold text-[var(--yo-dark)] mb-3">Reactiebrief</h2>
               {letterPreview ? (
                 <div>
                   <p className="text-[15px] text-[var(--yo-dark)] leading-relaxed line-clamp-4">{letterPreview}...</p>
                   <button
                     onClick={() => navigate("/application-letter")}
-                    className="mt-3 text-[15px] font-semibold text-[var(--yo-teal)] active:opacity-70 transition-opacity"
+                    className="mt-3 text-[15px] font-semibold text-[var(--yo-pink)] active:opacity-70 transition-opacity"
                     data-testid="button-letter-preview"
                   >
                     Bewerken
@@ -1272,10 +1272,10 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                 </div>
               ) : (
                 <div>
-                  <p className="text-[15px] text-[var(--yo-muted)] leading-relaxed">Je hebt nog geen reactiebrief geschreven.</p>
+                  <p className="text-[15px] text-[var(--yo-dark)] leading-relaxed">Je hebt nog geen reactiebrief geschreven.</p>
                   <button
                     onClick={() => navigate("/application-letter")}
-                    className="mt-3 text-[15px] font-semibold text-[var(--yo-teal)] active:opacity-70 transition-opacity"
+                    className="mt-3 text-[15px] font-semibold text-[var(--yo-pink)] active:opacity-70 transition-opacity"
                     data-testid="button-letter-empty"
                   >
                     Schrijf je brief
@@ -1285,8 +1285,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             </div>
 
             <div>
-              <p className="text-[13px] font-semibold text-[var(--yo-muted)] uppercase tracking-wide mb-3">Ondersteuning</p>
-              <div className="bg-white rounded-[16px] shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+              <p className="text-[13px] font-semibold text-[var(--yo-dark)] uppercase tracking-wide mb-3">Ondersteuning</p>
+              <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
                 <AccountSettingsRow
                   label="Privacy"
                   onClick={() => navigate("/datenschutz")}
@@ -1308,7 +1308,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
           </div>
         ) : (
           <div className="flex flex-col gap-6">
-            <div className="bg-white rounded-[16px] shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+            <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
               <AccountSettingsRow
                 label="Meldingsinstellingen"
                 subtext="E-mail, push, WhatsApp"
@@ -1338,14 +1338,14 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                 trailing={
                   subscription.isActive && !subscription.isTrial ? (
                     <span
-                      className="text-[12px] font-[600] px-2.5 py-1 rounded-full flex-shrink-0 text-white bg-[var(--yo-success)]"
+                      className="text-[12px] font-[600] px-2.5 py-1 rounded-full flex-shrink-0 text-[var(--yo-dark)] bg-[var(--yo-chip-bg)]"
                       data-testid="text-subscription-status"
                     >
                       Actief
                     </span>
                   ) : subscription.isTrial ? (
                     <span
-                      className="text-[12px] font-[600] px-2.5 py-1 rounded-full flex-shrink-0 text-white bg-[var(--yo-teal)]"
+                      className="text-[12px] font-[600] px-2.5 py-1 rounded-full flex-shrink-0 text-[var(--yo-dark)] bg-[var(--yo-chip-bg)]"
                       data-testid="text-subscription-status"
                     >
                       Proef
@@ -1360,14 +1360,14 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                 className={`w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[var(--yo-surface)] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
                 data-testid="button-logout"
               >
-                <p className="text-[15px] font-[500] text-[var(--yo-teal)] flex-1">{signingOut ? "Uitloggen..." : "Uitloggen"}</p>
+                <p className="text-[15px] font-[500] text-[var(--yo-pink)] flex-1">{signingOut ? "Uitloggen..." : "Uitloggen"}</p>
               </button>
             </div>
 
             {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
               <button
                 onClick={() => navigate("/paywall")}
-                className="w-full h-[56px] rounded-[14px] bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
+                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
                 data-testid="button-upgrade-subscription"
               >
                 <Crown className="w-4 h-4" />
@@ -1452,8 +1452,8 @@ export default function DashboardPage() {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[var(--yo-teal)] animate-pulse" />
-          <p className="text-[var(--yo-muted)] text-sm">Laden...</p>
+          <div className="w-8 h-8 rounded-lg bg-[var(--yo-chip-bg)] animate-pulse" />
+          <p className="text-[var(--yo-dark)] text-sm">Laden...</p>
         </div>
       </div>
     );
@@ -1504,7 +1504,7 @@ export default function DashboardPage() {
                 key={key}
                 onClick={() => setActiveTab(key)}
                 className={`flex-1 flex flex-col items-center gap-0.5 pt-2 pb-2 relative transition-colors ${
-                  isActive ? "text-[var(--yo-teal)]" : "text-[var(--yo-muted)]"
+                  isActive ? "text-[var(--yo-dark)]" : "text-[var(--yo-dark)]"
                 }`}
                 data-testid={`tab-${key}`}
               >

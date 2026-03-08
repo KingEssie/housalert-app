@@ -105,10 +105,10 @@ export default function SignupPage() {
             className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--yo-surface)] transition-colors"
             data-testid="button-back-estimate"
           >
-            <ChevronLeft className="w-5 h-5 text-[var(--yo-muted)]" />
+            <ChevronLeft className="w-5 h-5 text-[var(--yo-dark)]" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-[var(--yo-teal)] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-[var(--yo-dark)] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
             <span className="font-extrabold text-[var(--yo-dark)] text-base">Stekkies</span>
@@ -121,23 +121,23 @@ export default function SignupPage() {
           <h1 className="text-[32px] font-[800] text-[var(--yo-dark)] tracking-[-0.03em] leading-[1.1] uppercase mb-4" data-testid="text-signup-title">
             Maak je account aan
           </h1>
-          <p className="text-[15px] text-[var(--yo-muted)]">
+          <p className="text-[15px] text-[var(--yo-dark)]">
             Ontvang direct meldingen voor nieuwe woningen{city ? <> in <span className="font-semibold text-[var(--yo-dark)]">{city}</span></> : ""}.
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
+        <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
           <form onSubmit={handleSignup} className="space-y-5">
             <div className="space-y-2">
               <Label className="text-[14px] font-semibold text-[var(--yo-dark)]">Naam</Label>
               <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[var(--yo-muted)]" />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[var(--yo-dark)]" />
                 <input
                   type="text"
                   placeholder="Je volledige naam"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
+                  className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
                   data-testid="input-signup-name"
                 />
               </div>
@@ -146,14 +146,14 @@ export default function SignupPage() {
             <div className="space-y-2">
               <Label className="text-[14px] font-semibold text-[var(--yo-dark)]">E-mailadres</Label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[var(--yo-muted)]" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[var(--yo-dark)]" />
                 <input
                   type="email"
                   placeholder="jouw@email.nl"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
+                  className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
                   data-testid="input-signup-email"
                 />
               </div>
@@ -162,7 +162,7 @@ export default function SignupPage() {
             <div className="space-y-2">
               <Label className="text-[14px] font-semibold text-[var(--yo-dark)]">Wachtwoord</Label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[var(--yo-muted)]" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[var(--yo-dark)]" />
                 <input
                   type="password"
                   placeholder="Minimaal 6 tekens"
@@ -170,7 +170,7 @@ export default function SignupPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   minLength={6}
-                  className="w-full h-[52px] pl-11 pr-4 rounded-xl border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
+                  className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
                   data-testid="input-signup-password"
                 />
               </div>
@@ -179,7 +179,7 @@ export default function SignupPage() {
             <Button
               type="submit"
               size="lg"
-              className="w-full h-[56px] rounded-[14px] text-[16px] font-bold shadow-none bg-[var(--yo-teal)] mt-1"
+              className="w-full h-[56px] rounded-lg text-[16px] font-bold shadow-none bg-[var(--yo-teal)] mt-1"
               disabled={loading || !email || !password}
               data-testid="button-signup-submit"
             >
@@ -188,18 +188,18 @@ export default function SignupPage() {
           </form>
         </div>
 
-        <p className="text-center text-[15px] text-[var(--yo-muted)] mt-6">
+        <p className="text-center text-[15px] text-[var(--yo-dark)] mt-6">
           Heb je al een account?{" "}
           <button
             onClick={() => navigate("/login")}
-            className="text-[var(--yo-teal)] font-semibold hover:underline"
+            className="text-[var(--yo-pink)] font-semibold hover:underline"
             data-testid="link-login"
           >
             Inloggen
           </button>
         </p>
 
-        <p className="text-center text-[13px] text-[var(--yo-muted)] mt-4">
+        <p className="text-center text-[13px] text-[var(--yo-dark)] mt-4">
           Door je aan te melden ga je akkoord met onze voorwaarden.
         </p>
       </main>

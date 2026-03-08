@@ -28,7 +28,7 @@ export function PageHeader({ title, onBack, trailing }: PageHeaderProps) {
       <div className="max-w-xl mx-auto flex items-center h-[56px] px-4">
         <button
           onClick={handleBack}
-          className="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-[var(--yo-surface)] transition-colors flex-shrink-0"
+          className="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-[var(--yo-surface)] transition-colors flex-shrink-0"
           data-testid="button-back"
         >
           <ArrowLeft className="w-5 h-5 text-[var(--yo-dark)]" />

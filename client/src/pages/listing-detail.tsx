@@ -8,10 +8,10 @@ import { Button } from "@/components/ui/button";
 import { ApplySheet } from "@/components/apply-sheet";
 
 const FRESH_BADGE_STYLES: Record<string, { bg: string; text: string }> = {
-  net_binnen: { bg: "bg-[#2DD4BF]", text: "text-[#000000]" },
-  nieuw: { bg: "bg-[#1A8A7D]", text: "text-white" },
-  vandaag: { bg: "bg-[#1A1A1A]", text: "text-white" },
-  ouder: { bg: "bg-[var(--yo-surface)]", text: "text-[var(--yo-muted)]" },
+  net_binnen: { bg: "bg-[var(--yo-chip-bg)]", text: "text-[var(--yo-dark)]" },
+  nieuw: { bg: "bg-[var(--yo-dark)]", text: "text-white" },
+  vandaag: { bg: "bg-[var(--yo-dark)]", text: "text-white" },
+  ouder: { bg: "bg-[var(--yo-surface)]", text: "text-[var(--yo-dark)]" },
 };
 
 const FRESH_LABEL_TEXT: Record<string, string> = {
@@ -22,12 +22,12 @@ const FRESH_LABEL_TEXT: Record<string, string> = {
 };
 
 const CITY_GRADIENTS: Record<string, string> = {
-  berlin: "from-[#2DD4BF] to-[#1A8A7D]",
-  münchen: "from-[#2DD4BF] to-[#25BBA8]",
-  hamburg: "from-[#1A8A7D] to-[#2DD4BF]",
-  frankfurt: "from-[#25BBA8] to-[#1A8A7D]",
-  köln: "from-[#2DD4BF] to-[#1A8A7D]",
-  default: "from-[#2DD4BF] to-[#1A8A7D]",
+  berlin: "from-[#1A1A1A] to-[#333333]",
+  münchen: "from-[#1A1A1A] to-[#333333]",
+  hamburg: "from-[#333333] to-[#1A1A1A]",
+  frankfurt: "from-[#1A1A1A] to-[#333333]",
+  köln: "from-[#333333] to-[#1A1A1A]",
+  default: "from-[#1A1A1A] to-[#333333]",
 };
 
 function getCityGradient(city: string): string {
@@ -112,7 +112,7 @@ export default function ListingDetailPage() {
         <div className="animate-pulse">
           <div className="h-[260px] bg-[var(--yo-divider)]" />
           <div className="max-w-xl mx-auto w-full px-5 pt-5 space-y-4">
-            <div className="bg-white rounded-2xl border border-[var(--yo-divider)] p-5 space-y-3">
+            <div className="bg-white rounded-lg border border-[var(--yo-divider)] p-5 space-y-3">
               <div className="h-5 bg-[var(--yo-surface)] rounded w-28" />
               <div className="h-7 bg-[var(--yo-surface)] rounded w-3/4" />
               <div className="h-4 bg-[var(--yo-surface)] rounded w-1/2" />
@@ -128,10 +128,10 @@ export default function ListingDetailPage() {
       <div className="min-h-screen bg-[var(--yo-surface)] flex flex-col">
         <PageHeader title="" />
         <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-10">
-          <div className="bg-white rounded-2xl border border-[var(--yo-divider)] p-8 text-center">
+          <div className="bg-white rounded-lg border border-[var(--yo-divider)] p-8 text-center">
             <p className="text-[18px] font-bold text-[var(--yo-dark)] mb-2">Advertentie niet gevonden</p>
-            <p className="text-[13px] text-[var(--yo-muted)] mb-4">Deze advertentie bestaat niet meer of is verwijderd.</p>
-            <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-[14px] bg-[var(--yo-teal)] text-white text-[15px] font-bold" data-testid="button-back-dashboard">
+            <p className="text-[13px] text-[var(--yo-dark)] mb-4">Deze advertentie bestaat niet meer of is verwijderd.</p>
+            <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-lg bg-[var(--yo-teal)] text-white text-[15px] font-bold" data-testid="button-back-dashboard">
               Terug naar dashboard
             </Button>
           </div>
@@ -145,10 +145,10 @@ export default function ListingDetailPage() {
   const gradient = getCityGradient(listing.city);
 
   const scoreColor = listing.match_score != null
-    ? listing.match_score >= 95 ? "bg-[#2DD4BF] text-[#000000]"
-    : listing.match_score >= 80 ? "bg-[#1A8A7D] text-white"
-    : listing.match_score >= 65 ? "bg-[#1A1A1A] text-white"
-    : "bg-[var(--yo-surface)] text-[var(--yo-muted)]"
+    ? listing.match_score >= 95 ? "bg-[var(--yo-dark)] text-white"
+    : listing.match_score >= 80 ? "bg-[var(--yo-dark)] text-white"
+    : listing.match_score >= 65 ? "bg-[var(--yo-chip-bg)] text-[var(--yo-dark)]"
+    : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
     : "";
 
   return (
@@ -188,7 +188,7 @@ export default function ListingDetailPage() {
 
       <main className="flex-1 max-w-xl mx-auto w-full px-5 -mt-6 relative z-10 pb-36">
         <div className="space-y-4">
-          <div className="bg-white rounded-2xl border border-[var(--yo-divider)] p-5">
+          <div className="bg-white rounded-lg border border-[var(--yo-divider)] p-5">
             {listing.match_score != null && listing.match_label && (
               <div className="mb-3" data-testid="listing-score-badge">
                 <span className={`inline-flex text-[13px] font-bold px-3.5 py-1.5 rounded-full ${scoreColor}`}>
@@ -201,7 +201,7 @@ export default function ListingDetailPage() {
               {listing.title}
             </h1>
 
-            <div className="flex items-center gap-1.5 text-[14px] text-[var(--yo-muted)] mb-4">
+            <div className="flex items-center gap-1.5 text-[14px] text-[var(--yo-dark)] mb-4">
               <MapPin className="w-4 h-4 flex-shrink-0" />
               <span data-testid="text-listing-location">
                 {listing.city}{listing.district ? `, ${listing.district}` : ""}
@@ -211,21 +211,21 @@ export default function ListingDetailPage() {
             {listing.price > 0 && (
               <div className="flex items-baseline gap-1 mb-1">
                 <span className="text-[28px] font-[800] text-[var(--yo-dark)]" data-testid="text-listing-price">€{listing.price}</span>
-                <span className="text-[15px] font-medium text-[var(--yo-muted)]">/ mnd</span>
+                <span className="text-[15px] font-medium text-[var(--yo-dark)]">/ mnd</span>
               </div>
             )}
           </div>
 
-          <div className="bg-white rounded-2xl border border-[var(--yo-divider)] p-5">
+          <div className="bg-white rounded-lg border border-[var(--yo-divider)] p-5">
             <h2 className="text-section-title mb-4">Details</h2>
             <div className="grid grid-cols-2 gap-4">
               {listing.bedrooms > 0 && (
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[var(--yo-teal-light)] flex items-center justify-center">
-                    <BedDouble className="w-5 h-5 text-[var(--yo-teal)]" />
+                  <div className="w-10 h-10 rounded-lg bg-[var(--yo-chip-bg)] flex items-center justify-center">
+                    <BedDouble className="w-5 h-5 text-[var(--yo-dark)]" />
                   </div>
                   <div>
-                    <p className="text-[12px] text-[var(--yo-muted)]">Slaapkamers</p>
+                    <p className="text-[12px] text-[var(--yo-dark)]">Slaapkamers</p>
                     <p className="text-[15px] font-semibold text-[var(--yo-dark)]" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
                   </div>
                 </div>
@@ -233,32 +233,32 @@ export default function ListingDetailPage() {
 
               {listing.size_m2 > 0 && (
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[var(--yo-teal-light)] flex items-center justify-center">
-                    <Ruler className="w-5 h-5 text-[var(--yo-teal)]" />
+                  <div className="w-10 h-10 rounded-lg bg-[var(--yo-chip-bg)] flex items-center justify-center">
+                    <Ruler className="w-5 h-5 text-[var(--yo-dark)]" />
                   </div>
                   <div>
-                    <p className="text-[12px] text-[var(--yo-muted)]">Oppervlakte</p>
+                    <p className="text-[12px] text-[var(--yo-dark)]">Oppervlakte</p>
                     <p className="text-[15px] font-semibold text-[var(--yo-dark)]" data-testid="text-listing-size">{listing.size_m2} m²</p>
                   </div>
                 </div>
               )}
 
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[var(--yo-teal-light)] flex items-center justify-center">
-                  <Globe className="w-5 h-5 text-[var(--yo-teal)]" />
+                <div className="w-10 h-10 rounded-lg bg-[var(--yo-chip-bg)] flex items-center justify-center">
+                  <Globe className="w-5 h-5 text-[var(--yo-dark)]" />
                 </div>
                 <div>
-                  <p className="text-[12px] text-[var(--yo-muted)]">Bron</p>
-                  <p className="text-[15px] font-semibold text-[var(--yo-dark)] capitalize" data-testid="text-listing-source">{listing.source}</p>
+                  <p className="text-[12px] text-[var(--yo-dark)]">Bron</p>
+                  <p className="text-[15px] font-bold capitalize" style={{ color: "var(--yo-pink)" }} data-testid="text-listing-source">{listing.source}</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[var(--yo-teal-light)] flex items-center justify-center">
-                  <Clock className="w-5 h-5 text-[var(--yo-teal)]" />
+                <div className="w-10 h-10 rounded-lg bg-[var(--yo-chip-bg)] flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-[var(--yo-dark)]" />
                 </div>
                 <div>
-                  <p className="text-[12px] text-[var(--yo-muted)]">Geplaatst</p>
+                  <p className="text-[12px] text-[var(--yo-dark)]">Geplaatst</p>
                   <p className="text-[15px] font-semibold text-[var(--yo-dark)]" data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</p>
                 </div>
               </div>
@@ -266,7 +266,7 @@ export default function ListingDetailPage() {
           </div>
 
           {listing.match_reasons && listing.match_reasons.length > 0 && (
-            <div className="bg-white rounded-2xl border border-[var(--yo-divider)] p-5" data-testid="section-why-match">
+            <div className="bg-white rounded-lg border border-[var(--yo-divider)] p-5" data-testid="section-why-match">
               <h2 className="text-section-title mb-4">Waarom deze match?</h2>
               <div className="flex flex-col gap-3">
                 {listing.match_reasons.map((reason) => {
@@ -279,7 +279,7 @@ export default function ListingDetailPage() {
                       <div>
                         <p className="text-[14px] font-semibold text-[var(--yo-dark)]">{detail?.label ?? reason}</p>
                         {detail?.description && (
-                          <p className="text-[13px] text-[var(--yo-muted)] mt-0.5">{detail.description}</p>
+                          <p className="text-[13px] text-[var(--yo-dark)] mt-0.5">{detail.description}</p>
                         )}
                       </div>
                     </div>
@@ -296,7 +296,7 @@ export default function ListingDetailPage() {
           <div className="flex gap-2">
             <Button
               onClick={() => setApplyOpen(true)}
-              className="flex-1 h-[56px] rounded-[14px] bg-[var(--yo-teal)] text-white text-[15px] font-bold flex items-center justify-center gap-2"
+              className="flex-1 h-[56px] rounded-lg bg-[var(--yo-teal)] text-white text-[15px] font-bold flex items-center justify-center gap-2"
               data-testid="button-reageer-detail"
             >
               <Zap className="w-4 h-4" />
@@ -306,7 +306,7 @@ export default function ListingDetailPage() {
               <a href={listing.url} target="_blank" rel="noopener noreferrer">
                 <Button
                   variant="outline"
-                  className="h-[56px] px-5 rounded-[14px] border border-[var(--yo-divider)] bg-white text-[var(--yo-dark)] text-[15px] font-bold flex items-center gap-2"
+                  className="h-[56px] px-5 rounded-lg border border-[var(--yo-divider)] bg-white text-[var(--yo-dark)] text-[15px] font-bold flex items-center gap-2"
                   data-testid="button-view-original"
                 >
                   <ExternalLink className="w-4 h-4" />

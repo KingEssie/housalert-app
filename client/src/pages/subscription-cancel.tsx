@@ -34,9 +34,9 @@ export function SubscriptionCancelConfirmPage() {
       <PageHeader title="Opzeggen" onBack={() => navigate("/account/subscription")} />
 
       <div className="max-w-xl mx-auto p-4 pb-8">
-        <div className="bg-card rounded-[18px] border p-6" style={{ borderColor: "var(--yo-divider)" }}>
+        <div className="bg-card rounded-lg border p-6" style={{ borderColor: "var(--yo-divider)" }}>
           <div className="flex items-center justify-center mb-5">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ backgroundColor: "var(--yo-teal-light)" }}>
+            <div className="w-14 h-14 rounded-lg flex items-center justify-center" style={{ backgroundColor: "var(--yo-chip-bg)" }}>
               <AlertCircle className="w-7 h-7" style={{ color: "var(--yo-teal)" }} />
             </div>
           </div>
@@ -45,7 +45,7 @@ export function SubscriptionCancelConfirmPage() {
             Weet je zeker dat je wilt opzeggen?
           </h2>
 
-          <div className="bg-muted rounded-xl p-4 mb-6">
+          <div className="bg-muted rounded-lg p-4 mb-6">
             <p className="text-[15px] text-muted-foreground leading-relaxed" data-testid="text-cancel-info">
               Je abonnement blijft actief tot <span className="font-semibold" style={{ color: "var(--yo-dark)" }}>{renewalDate}</span>.
               {" "}Tot die datum kun je alle functies blijven gebruiken.
@@ -56,14 +56,14 @@ export function SubscriptionCancelConfirmPage() {
           <div className="space-y-3">
             <button
               onClick={() => navigate("/account/subscription")}
-              className="w-full h-[48px] bg-primary text-primary-foreground rounded-[14px] font-semibold text-[15px] transition-colors"
+              className="w-full h-[48px] bg-primary text-primary-foreground rounded-lg font-semibold text-[15px] transition-colors"
               data-testid="button-keep-subscription"
             >
               Abonnement behouden
             </button>
             <button
               onClick={() => navigate("/account/subscription/cancelled")}
-              className="w-full h-[48px] bg-card border text-muted-foreground rounded-[14px] font-semibold text-[15px] hover-elevate transition-colors"
+              className="w-full h-[48px] bg-card border text-muted-foreground rounded-lg font-semibold text-[15px] hover-elevate transition-colors"
               style={{ borderColor: "var(--yo-divider)" }}
               data-testid="button-confirm-cancel"
             >
@@ -98,9 +98,9 @@ export function SubscriptionCancelledPage() {
       <PageHeader title="Opgezegd" onBack={() => navigate("/account/subscription")} />
 
       <div className="max-w-xl mx-auto p-4 pb-8">
-        <div className="bg-card rounded-[18px] border p-6" style={{ borderColor: "var(--yo-divider)" }}>
+        <div className="bg-card rounded-lg border p-6" style={{ borderColor: "var(--yo-divider)" }}>
           <div className="flex items-center justify-center mb-5">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ backgroundColor: "var(--yo-teal-light)" }}>
+            <div className="w-14 h-14 rounded-lg flex items-center justify-center" style={{ backgroundColor: "var(--yo-chip-bg)" }}>
               <CheckCircle2 className="w-7 h-7" style={{ color: "var(--yo-success)" }} />
             </div>
           </div>
@@ -109,7 +109,7 @@ export function SubscriptionCancelledPage() {
             Je abonnement is opgezegd
           </h2>
 
-          <div className="bg-muted rounded-xl p-4 mb-6">
+          <div className="bg-muted rounded-lg p-4 mb-6">
             <p className="text-[15px] text-muted-foreground leading-relaxed" data-testid="text-cancelled-info">
               Je abonnement blijft actief tot <span className="font-semibold" style={{ color: "var(--yo-dark)" }}>{renewalDate}</span>.
               {" "}Daarna wordt het abonnement beëindigd.
@@ -118,7 +118,7 @@ export function SubscriptionCancelledPage() {
 
           <button
             onClick={() => navigate("/dashboard?tab=profiel")}
-            className="w-full h-[48px] bg-primary text-primary-foreground rounded-[14px] font-semibold text-[15px] transition-colors"
+            className="w-full h-[48px] bg-primary text-primary-foreground rounded-lg font-semibold text-[15px] transition-colors"
             data-testid="button-back-to-account"
           >
             Terug naar account

@@ -123,7 +123,7 @@ export default function ViewingTipsPage() {
             return (
               <div
                 key={idx}
-                className="bg-card rounded-2xl shadow-sm overflow-hidden"
+                className="bg-card rounded-lg shadow-sm overflow-hidden"
                 data-testid={`card-tips-section-${idx}`}
               >
                 <div className="flex items-center gap-3 p-6 pb-3">
@@ -159,7 +159,7 @@ export default function ViewingTipsPage() {
             <Button
               onClick={() => markDoneMutation.mutate()}
               disabled={markDoneMutation.isPending}
-              className="w-full h-[56px] rounded-xl text-[16px] font-semibold bg-primary text-primary-foreground disabled:opacity-50"
+              className="w-full h-[56px] rounded-lg text-[16px] font-semibold bg-primary text-primary-foreground disabled:opacity-50"
               data-testid="button-mark-tips-done"
             >
               {markDoneMutation.isPending ? "Opslaan..." : "Markeer als voltooid"}

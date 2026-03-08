@@ -79,9 +79,9 @@ export default function ChangePasswordPage() {
       <div className="min-h-screen bg-background" data-testid="page-password-success">
         <PageHeader title="Wachtwoord wijzigen" onBack={() => navigate("/dashboard?tab=profiel")} />
         <div className="max-w-xl mx-auto p-4 pb-8">
-          <div className="bg-card rounded-[18px] border p-6 text-center" style={{ borderColor: "var(--yo-divider)" }}>
+          <div className="bg-card rounded-lg border p-6 text-center" style={{ borderColor: "var(--yo-divider)" }}>
             <div className="flex items-center justify-center mb-5">
-              <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ backgroundColor: "var(--yo-teal-light)" }}>
+              <div className="w-14 h-14 rounded-lg flex items-center justify-center" style={{ backgroundColor: "var(--yo-chip-bg)" }}>
                 <CheckCircle2 className="w-7 h-7" style={{ color: "var(--yo-success)" }} />
               </div>
             </div>
@@ -93,7 +93,7 @@ export default function ChangePasswordPage() {
             </p>
             <button
               onClick={() => navigate("/dashboard?tab=profiel")}
-              className="w-full h-[48px] bg-primary text-primary-foreground rounded-[14px] font-semibold text-[15px] transition-colors"
+              className="w-full h-[48px] bg-primary text-primary-foreground rounded-lg font-semibold text-[15px] transition-colors"
               data-testid="button-back-to-account"
             >
               Terug naar account
@@ -109,7 +109,7 @@ export default function ChangePasswordPage() {
       <PageHeader title="Wachtwoord wijzigen" onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <div className="max-w-xl mx-auto p-4 pb-8">
-        <div className="bg-card rounded-[18px] border p-5 space-y-5" style={{ borderColor: "var(--yo-divider)" }}>
+        <div className="bg-card rounded-lg border p-5 space-y-5" style={{ borderColor: "var(--yo-divider)" }}>
           <div>
             <label className="block text-[14px] font-medium mb-2" style={{ color: "var(--yo-dark)" }}>Huidig wachtwoord</label>
             <div className="relative">
@@ -121,7 +121,7 @@ export default function ChangePasswordPage() {
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 placeholder="Voer je huidige wachtwoord in"
-                className="w-full h-[52px] pl-11 pr-12 rounded-[14px] border-0 bg-muted text-[16px] font-medium text-foreground placeholder:text-muted-foreground placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
+                className="w-full h-[52px] pl-11 pr-12 rounded-lg border-0 bg-muted text-[16px] font-medium text-foreground placeholder:text-muted-foreground placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
                 data-testid="input-current-password"
               />
               <button
@@ -148,7 +148,7 @@ export default function ChangePasswordPage() {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="Minimaal 8 tekens"
-                className="w-full h-[52px] pl-11 pr-12 rounded-[14px] border-0 bg-muted text-[16px] font-medium text-foreground placeholder:text-muted-foreground placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
+                className="w-full h-[52px] pl-11 pr-12 rounded-lg border-0 bg-muted text-[16px] font-medium text-foreground placeholder:text-muted-foreground placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
                 data-testid="input-new-password"
               />
               <button
@@ -178,7 +178,7 @@ export default function ChangePasswordPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Herhaal nieuw wachtwoord"
-                className="w-full h-[52px] pl-11 pr-12 rounded-[14px] border-0 bg-muted text-[16px] font-medium text-foreground placeholder:text-muted-foreground placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
+                className="w-full h-[52px] pl-11 pr-12 rounded-lg border-0 bg-muted text-[16px] font-medium text-foreground placeholder:text-muted-foreground placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
                 data-testid="input-confirm-password"
               />
               <button
@@ -201,7 +201,7 @@ export default function ChangePasswordPage() {
         <button
           onClick={handleSubmit}
           disabled={!canSubmit}
-          className={`w-full h-[48px] rounded-[14px] font-semibold text-[15px] mt-5 transition-colors ${
+          className={`w-full h-[48px] rounded-lg font-semibold text-[15px] mt-5 transition-colors ${
             canSubmit
               ? "bg-primary text-primary-foreground"
               : "bg-muted text-muted-foreground cursor-not-allowed"

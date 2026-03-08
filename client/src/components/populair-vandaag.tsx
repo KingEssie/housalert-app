@@ -18,14 +18,14 @@ interface PopularListing {
 }
 
 const CITY_GRADIENTS: Record<string, string> = {
-  berlin: "from-[var(--yo-teal)] to-[var(--yo-teal-hover)]",
-  münchen: "from-[var(--yo-teal)] to-[var(--yo-teal-light)]",
-  hamburg: "from-[var(--yo-teal-hover)] to-[var(--yo-teal)]",
-  frankfurt: "from-[var(--yo-teal)] to-[var(--yo-teal-hover)]",
-  köln: "from-[var(--yo-teal-hover)] to-[var(--yo-teal-light)]",
-  düsseldorf: "from-[var(--yo-teal)] to-[var(--yo-teal-light)]",
-  stuttgart: "from-[var(--yo-teal-hover)] to-[var(--yo-teal)]",
-  default: "from-[var(--yo-teal)] to-[var(--yo-teal-hover)]",
+  berlin: "from-[#1A1A1A] to-[#333333]",
+  münchen: "from-[#1A1A1A] to-[#333333]",
+  hamburg: "from-[#333333] to-[#1A1A1A]",
+  frankfurt: "from-[#1A1A1A] to-[#333333]",
+  köln: "from-[#333333] to-[#1A1A1A]",
+  düsseldorf: "from-[#1A1A1A] to-[#333333]",
+  stuttgart: "from-[#333333] to-[#1A1A1A]",
+  default: "from-[#1A1A1A] to-[#333333]",
 };
 
 function getCityGradient(city: string): string {
@@ -49,7 +49,7 @@ function PopularCard({ listing }: { listing: PopularListing }) {
 
   return (
     <div
-      className="flex-shrink-0 w-[220px] bg-white rounded-2xl shadow-[0_1px_8px_rgba(0,0,0,0.06)] overflow-hidden cursor-pointer hover:shadow-[0_4px_16px_rgba(0,0,0,0.10)] transition-all duration-200 active:scale-[0.985]"
+      className="flex-shrink-0 w-[220px] bg-white rounded-lg shadow-[0_1px_8px_rgba(0,0,0,0.06)] overflow-hidden cursor-pointer hover:shadow-[0_4px_16px_rgba(0,0,0,0.10)] transition-all duration-200 active:scale-[0.985]"
       onClick={handleClick}
       data-testid={`card-popular-${listing.listing_id}`}
     >
@@ -85,16 +85,16 @@ function PopularCard({ listing }: { listing: PopularListing }) {
         {listing.price > 0 && (
           <span className="text-[15px] font-bold text-[var(--yo-dark)]">
             {"\u20AC"}{listing.price}
-            <span className="text-[11px] font-normal text-[var(--yo-muted)]">/mnd</span>
+            <span className="text-[11px] font-normal text-[var(--yo-dark)]">/mnd</span>
           </span>
         )}
 
-        <div className="flex items-center gap-1 text-[12px] text-[var(--yo-muted)]">
+        <div className="flex items-center gap-1 text-[12px] text-[var(--yo-dark)]">
           <MapPin className="w-3 h-3 flex-shrink-0" />
           <span className="truncate">{listing.city}</span>
         </div>
 
-        <div className="flex items-center gap-2 text-[11px] text-[var(--yo-muted)]">
+        <div className="flex items-center gap-2 text-[11px] text-[var(--yo-dark)]">
           {listing.bedrooms > 0 && (
             <span className="flex items-center gap-0.5">
               <BedDouble className="w-3 h-3" />
@@ -123,11 +123,11 @@ export function PopulairVandaagSection() {
       <div className="flex flex-col gap-3">
         <div>
           <h2 className="text-section-title">Populair vandaag</h2>
-          <p className="text-[13px] font-[500] text-[var(--yo-muted)] mt-0.5">Woningen die veel aandacht krijgen</p>
+          <p className="text-[13px] font-[500] text-[var(--yo-dark)] mt-0.5">Woningen die veel aandacht krijgen</p>
         </div>
         <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="flex-shrink-0 w-[220px] h-[220px] bg-[var(--yo-surface)] rounded-2xl animate-pulse" />
+            <div key={i} className="flex-shrink-0 w-[220px] h-[220px] bg-[var(--yo-surface)] rounded-lg animate-pulse" />
           ))}
         </div>
       </div>
@@ -140,10 +140,10 @@ export function PopulairVandaagSection() {
     <div className="flex flex-col gap-3" data-testid="section-populair-vandaag">
       <div>
         <div className="flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-[var(--yo-muted)]" />
+          <TrendingUp className="w-4 h-4 text-[var(--yo-dark)]" />
           <h2 className="text-section-title">Populair vandaag</h2>
         </div>
-        <p className="text-[13px] text-[var(--yo-muted)] mt-0.5 ml-6">Woningen die veel aandacht krijgen</p>
+        <p className="text-[13px] text-[var(--yo-dark)] mt-0.5 ml-6">Woningen die veel aandacht krijgen</p>
       </div>
       <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 snap-x snap-mandatory scrollbar-none">
         {listings.map((listing) => (

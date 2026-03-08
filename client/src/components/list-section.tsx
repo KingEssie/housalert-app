@@ -47,7 +47,7 @@ export function ListRow({
           <p className="text-row-subtitle mt-0.5">{subtitle}</p>
         )}
       </div>
-      {trailing ?? (onClick ? <ChevronRight className="w-[18px] h-[18px] text-[var(--yo-muted)] flex-shrink-0 ml-3" /> : null)}
+      {trailing ?? (onClick ? <ChevronRight className="w-[18px] h-[18px] text-[var(--yo-dark)] flex-shrink-0 ml-3" /> : null)}
     </Component>
   );
 }

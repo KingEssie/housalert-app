@@ -81,7 +81,7 @@ export function ReactieklaarCard({
 
   if (loading) {
     return (
-      <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 animate-pulse" data-testid="card-reactieklaar-loading">
+      <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 animate-pulse" data-testid="card-reactieklaar-loading">
         <div className="h-4 bg-[var(--yo-surface)] rounded w-36 mb-4" />
         <div className="flex flex-col gap-3">
           <div className="h-3 bg-[var(--yo-surface)] rounded w-32" />
@@ -95,15 +95,15 @@ export function ReactieklaarCard({
   const allDone = speedDone === speedTotal && speedTotal > 0;
 
   return (
-    <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5" data-testid="card-reactieklaar">
+    <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5" data-testid="card-reactieklaar">
       <div className="flex items-center gap-2.5 mb-4">
-        <div className="w-8 h-8 rounded-full bg-[var(--yo-teal-light)] flex items-center justify-center">
-          <Zap className="w-4 h-4 text-[var(--yo-teal)]" />
+        <div className="w-8 h-8 rounded-full bg-[var(--yo-chip-bg)] flex items-center justify-center">
+          <Zap className="w-4 h-4 text-[var(--yo-dark)]" />
         </div>
         <h3 className="text-[15px] font-semibold text-[var(--yo-dark)] flex-1">Reactieklaar</h3>
         <span
           className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${
-            allDone ? "bg-[var(--yo-success)]/10 text-[var(--yo-dark)]" : "bg-[var(--yo-surface)] text-[var(--yo-muted)]"
+            allDone ? "bg-[var(--yo-success)]/10 text-[var(--yo-dark)]" : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
           }`}
           data-testid="text-reactieklaar-progress"
         >
@@ -138,12 +138,12 @@ export function ReactieklaarCard({
               ) : (
                 <div className="w-[18px] h-[18px] rounded-full border-2 border-[var(--yo-divider)] flex-shrink-0" />
               )}
-              <Icon className={`w-4 h-4 flex-shrink-0 ${step.done ? "text-[var(--yo-divider)]" : "text-[var(--yo-teal)]"}`} />
-              <span className={`text-[14px] flex-1 ${step.done ? "text-[var(--yo-muted)]" : "text-[var(--yo-dark)] font-medium"}`}>
+              <Icon className={`w-4 h-4 flex-shrink-0 ${step.done ? "text-[var(--yo-divider)]" : "text-[var(--yo-dark)]"}`} />
+              <span className={`text-[14px] flex-1 ${step.done ? "text-[var(--yo-dark)]" : "text-[var(--yo-dark)] font-medium"}`}>
                 {step.label}
               </span>
               {hasAction && (
-                <ArrowRight className="w-3.5 h-3.5 text-[var(--yo-muted)] flex-shrink-0" />
+                <ArrowRight className="w-3.5 h-3.5 text-[var(--yo-dark)] flex-shrink-0" />
               )}
             </div>
           );
@@ -151,7 +151,7 @@ export function ReactieklaarCard({
       </div>
 
       {allDone && (
-        <div className="mt-4 bg-[var(--yo-success)]/10 rounded-xl px-3.5 py-2.5">
+        <div className="mt-4 bg-[var(--yo-success)]/10 rounded-lg px-3.5 py-2.5">
           <p className="text-[12px] text-[var(--yo-success)] font-medium flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5" />
             Je bent klaar om snel te reageren

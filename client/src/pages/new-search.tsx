@@ -208,7 +208,7 @@ export default function NewSearchPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-2 border-[#2DD4BF] border-t-transparent animate-spin" />
+        <div className="w-8 h-8 rounded-full border-2 border-[var(--yo-teal)] border-t-transparent animate-spin" />
       </div>
     );
   }
@@ -220,17 +220,17 @@ export default function NewSearchPage() {
       <div className="min-h-screen bg-white flex flex-col">
         <WizardHeader step={0} total={0} onBack={() => navigate("/dashboard")} />
         <div className="flex-1 flex items-center justify-center px-5">
-          <div className="bg-white rounded-[16px] shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-8 text-center max-w-sm w-full border border-[var(--yo-divider)]">
-            <div className="w-14 h-14 rounded-[14px] bg-[#E6FAF5] flex items-center justify-center mx-auto mb-4">
-              <AlertCircle className="w-6 h-6 text-[#2DD4BF]" />
+          <div className="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-8 text-center max-w-sm w-full border border-[var(--yo-divider)]">
+            <div className="w-14 h-14 rounded-lg bg-[var(--yo-chip-bg)] flex items-center justify-center mx-auto mb-4">
+              <AlertCircle className="w-6 h-6 text-[var(--yo-teal)]" />
             </div>
             <h2 className="text-[18px] font-bold text-[var(--yo-dark)] mb-2 uppercase">Limiet bereikt</h2>
-            <p className="text-[14px] text-[var(--yo-muted)] mb-5">
+            <p className="text-[14px] text-[var(--yo-dark)] mb-5">
               Je hebt al {MAX_PROFILES} zoekopdrachten. Verwijder eerst een bestaande om een nieuwe aan te maken.
             </p>
             <Button
               onClick={() => navigate("/dashboard")}
-              className="w-full h-[56px] rounded-[14px] bg-[#2DD4BF] hover:bg-[#25BBA8] text-white text-[15px] font-bold"
+              className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[15px] font-bold"
               data-testid="button-back-to-dashboard-limit"
             >
               Terug naar dashboard
@@ -263,7 +263,7 @@ export default function NewSearchPage() {
             <Button
               variant="outline"
               onClick={goBack}
-              className="h-[56px] px-5 rounded-[14px] border-[var(--yo-divider)] text-[var(--yo-dark)] text-[15px] font-semibold"
+              className="h-[56px] px-5 rounded-lg border-[var(--yo-divider)] text-[var(--yo-dark)] text-[15px] font-semibold"
               data-testid="button-wizard-back"
             >
               <ArrowLeft className="w-4 h-4 mr-1.5" />
@@ -274,7 +274,7 @@ export default function NewSearchPage() {
             <Button
               onClick={goNext}
               disabled={!canProceed()}
-              className="flex-1 h-[56px] rounded-[14px] bg-[#2DD4BF] hover:bg-[#25BBA8] text-white text-[16px] font-bold disabled:opacity-40 shadow-[0_2px_12px_rgba(45,212,191,0.25)]"
+              className="flex-1 h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[16px] font-bold disabled:opacity-40 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
               data-testid="button-wizard-next"
             >
               Volgende
@@ -284,7 +284,7 @@ export default function NewSearchPage() {
             <Button
               onClick={handleSubmit}
               disabled={submitting || !isLocationValid(locationData)}
-              className="flex-1 h-[56px] rounded-[14px] bg-[#2DD4BF] hover:bg-[#25BBA8] text-white text-[16px] font-bold disabled:opacity-40 shadow-[0_2px_12px_rgba(45,212,191,0.25)]"
+              className="flex-1 h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[16px] font-bold disabled:opacity-40 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
               data-testid="button-wizard-submit"
             >
               {submitting ? (
@@ -324,7 +324,7 @@ function Step1Location({
         </p>
       </div>
 
-      <div className="bg-white rounded-[16px] shadow-[0_2px_16px_rgba(0,0,0,0.05)] overflow-visible border border-[var(--yo-divider)]">
+      <div className="bg-white rounded-lg shadow-[0_2px_16px_rgba(0,0,0,0.05)] overflow-visible border border-[var(--yo-divider)]">
         <div className="p-5">
           <LocationModeSelector
             value={locationData}
@@ -356,14 +356,14 @@ function Step2Filters({
         </p>
       </div>
 
-      <div className="bg-white rounded-[16px] shadow-[0_2px_16px_rgba(0,0,0,0.05)] p-5 space-y-6 border border-[var(--yo-divider)]">
+      <div className="bg-white rounded-lg shadow-[0_2px_16px_rgba(0,0,0,0.05)] p-5 space-y-6 border border-[var(--yo-divider)]">
         <div>
           <label className="text-[15px] font-bold text-[var(--yo-dark)] mb-2.5 flex items-center gap-2">
-            <Euro className="w-4 h-4 text-[#2DD4BF]" />
+            <Euro className="w-4 h-4 text-[var(--yo-teal)]" />
             Min prijs
           </label>
           <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--yo-muted)] text-[14px] font-medium">EUR</span>
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--yo-dark)] text-[14px] font-medium">EUR</span>
             <input
               type="number"
               inputMode="numeric"
@@ -371,7 +371,7 @@ function Step2Filters({
               onChange={(e) => updateFilters({ priceMin: e.target.value })}
               placeholder="0"
               min="0"
-              className="w-full h-[56px] pl-[56px] pr-4 rounded-[14px] border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/20 transition-all"
+              className="w-full h-[56px] pl-[56px] pr-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/20 transition-all"
               data-testid="input-price-min"
             />
           </div>
@@ -379,11 +379,11 @@ function Step2Filters({
 
         <div>
           <label className="text-[15px] font-bold text-[var(--yo-dark)] mb-2.5 flex items-center gap-2">
-            <Euro className="w-4 h-4 text-[#2DD4BF]" />
+            <Euro className="w-4 h-4 text-[var(--yo-teal)]" />
             Max prijs
           </label>
           <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--yo-muted)] text-[14px] font-medium">EUR</span>
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--yo-dark)] text-[14px] font-medium">EUR</span>
             <input
               type="number"
               inputMode="numeric"
@@ -391,7 +391,7 @@ function Step2Filters({
               onChange={(e) => updateFilters({ priceMax: e.target.value })}
               placeholder="2000"
               min="0"
-              className="w-full h-[56px] pl-[56px] pr-4 rounded-[14px] border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] focus:outline-none focus:ring-2 focus:ring-[#2DD4BF]/20 transition-all"
+              className="w-full h-[56px] pl-[56px] pr-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/20 transition-all"
               data-testid="input-price-max"
             />
           </div>
@@ -401,7 +401,7 @@ function Step2Filters({
 
         <div>
           <label className="text-[15px] font-bold text-[var(--yo-dark)] mb-2.5 flex items-center gap-2">
-            <BedDouble className="w-4 h-4 text-[#2DD4BF]" />
+            <BedDouble className="w-4 h-4 text-[var(--yo-teal)]" />
             Slaapkamers
           </label>
           <div className="flex flex-wrap gap-2">
@@ -411,10 +411,10 @@ function Step2Filters({
                 <button
                   key={opt.value}
                   onClick={() => updateFilters({ bedroomsMin: opt.value })}
-                  className={`px-4 py-2.5 rounded-[14px] text-[14px] font-medium transition-all ${
+                  className={`px-4 py-2.5 rounded-lg text-[14px] font-medium transition-all ${
                     selected
-                      ? "bg-[#2DD4BF] text-white shadow-sm"
-                      : "bg-[var(--yo-surface)] text-[var(--yo-muted)]"
+                      ? "bg-[var(--yo-teal)] text-white shadow-sm"
+                      : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
                   }`}
                   data-testid={`option-bedrooms-${opt.value}`}
                 >
@@ -427,7 +427,7 @@ function Step2Filters({
 
         <div>
           <label className="text-[15px] font-bold text-[var(--yo-dark)] mb-2.5 flex items-center gap-2">
-            <Ruler className="w-4 h-4 text-[#2DD4BF]" />
+            <Ruler className="w-4 h-4 text-[var(--yo-teal)]" />
             Oppervlakte
           </label>
           <div className="flex flex-wrap gap-2">
@@ -437,10 +437,10 @@ function Step2Filters({
                 <button
                   key={opt.value}
                   onClick={() => updateFilters({ sizeMin: opt.value })}
-                  className={`px-4 py-2.5 rounded-[14px] text-[14px] font-medium transition-all ${
+                  className={`px-4 py-2.5 rounded-lg text-[14px] font-medium transition-all ${
                     selected
-                      ? "bg-[#2DD4BF] text-white shadow-sm"
-                      : "bg-[var(--yo-surface)] text-[var(--yo-muted)]"
+                      ? "bg-[var(--yo-teal)] text-white shadow-sm"
+                      : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
                   }`}
                   data-testid={`option-size-${opt.value}`}
                 >
@@ -478,9 +478,9 @@ function Step3Subscription({
         </p>
       </div>
 
-      <div className="bg-gradient-to-br from-[#2DD4BF] to-[#1B9E8F] rounded-[16px] p-6 text-white shadow-[0_4px_24px_rgba(45,212,191,0.3)]" data-testid="card-estimate-hero">
+      <div className="bg-gradient-to-br from-[var(--yo-teal)] to-[var(--yo-teal-dark)] rounded-lg p-6 text-white shadow-[0_4px_24px_rgba(0,0,0,0.3)]" data-testid="card-estimate-hero">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-11 h-11 rounded-[12px] bg-white/20 flex items-center justify-center">
+          <div className="w-11 h-11 rounded-lg bg-white/20 flex items-center justify-center">
             <Sparkles className="w-5 h-5 text-white" />
           </div>
           <p className="text-[13px] font-semibold text-white/80 uppercase tracking-wide">Verwachte resultaten</p>
@@ -503,7 +503,7 @@ function Step3Subscription({
         )}
       </div>
 
-      <div className="bg-white rounded-[16px] shadow-[0_2px_16px_rgba(0,0,0,0.05)] p-5 space-y-4 border border-[var(--yo-divider)]" data-testid="card-benefits">
+      <div className="bg-white rounded-lg shadow-[0_2px_16px_rgba(0,0,0,0.05)] p-5 space-y-4 border border-[var(--yo-divider)]" data-testid="card-benefits">
         <h3 className="text-[16px] font-bold text-[var(--yo-dark)] uppercase tracking-wide">Wat je krijgt</h3>
         <BenefitRow icon={Zap} title="Razendsnelle meldingen" desc="Ontvang nieuwe woningen binnen minuten na publicatie." />
         <BenefitRow icon={Bell} title="Meerdere kanalen" desc="Meldingen via e-mail, WhatsApp of SMS — jij kiest." />
@@ -511,37 +511,37 @@ function Step3Subscription({
         <BenefitRow icon={Crown} title="Tot 4 zoekopdrachten" desc="Zoek in meerdere steden of met verschillende criteria." />
       </div>
 
-      <div className="bg-white rounded-[16px] shadow-[0_2px_16px_rgba(0,0,0,0.05)] p-5 border border-[var(--yo-divider)]" data-testid="card-social-proof">
+      <div className="bg-white rounded-lg shadow-[0_2px_16px_rgba(0,0,0,0.05)] p-5 border border-[var(--yo-divider)]" data-testid="card-social-proof">
         <div className="flex items-center gap-3 mb-3">
           <div className="flex -space-x-2">
             {[0, 1, 2].map((i) => (
               <div
                 key={i}
-                className="w-8 h-8 rounded-full bg-[#E6FAF5] border-2 border-white flex items-center justify-center"
+                className="w-8 h-8 rounded-full bg-[var(--yo-chip-bg)] border-2 border-white flex items-center justify-center"
               >
-                <span className="text-[11px] font-bold text-[#2DD4BF]">
+                <span className="text-[11px] font-bold text-[var(--yo-teal)]">
                   {["MK", "JR", "TS"][i]}
                 </span>
               </div>
             ))}
           </div>
-          <p className="text-[13px] text-[var(--yo-muted)]">
+          <p className="text-[13px] text-[var(--yo-dark)]">
             <span className="font-semibold text-[var(--yo-dark)]">2.400+</span> actieve zoekers
           </p>
         </div>
-        <p className="text-[14px] text-[var(--yo-muted)] leading-relaxed">
+        <p className="text-[14px] text-[var(--yo-dark)] leading-relaxed">
           Sluit je aan bij duizenden gebruikers die al sneller een woning vinden met Stekkies.
         </p>
       </div>
 
-      <div className="bg-[#E6FAF5] rounded-[16px] p-5 border border-[#E6FAF5]" data-testid="card-guarantee">
+      <div className="bg-[var(--yo-chip-bg)] rounded-lg p-5 border border-[var(--yo-chip-bg)]" data-testid="card-guarantee">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-[10px] bg-[#2DD4BF] flex items-center justify-center flex-shrink-0 mt-0.5">
+          <div className="w-10 h-10 rounded-lg bg-[var(--yo-teal)] flex items-center justify-center flex-shrink-0 mt-0.5">
             <CheckCircle2 className="w-5 h-5 text-white" />
           </div>
           <div>
             <p className="text-[15px] font-bold text-[var(--yo-dark)] mb-1">Gratis starten</p>
-            <p className="text-[14px] text-[var(--yo-muted)] leading-relaxed">
+            <p className="text-[14px] text-[var(--yo-dark)] leading-relaxed">
               Je eerste zoekopdracht is gratis. Geen creditcard nodig. Upgrade later als je meer wilt.
             </p>
           </div>
@@ -554,12 +554,12 @@ function Step3Subscription({
 function BenefitRow({ icon: Icon, title, desc }: { icon: typeof Zap; title: string; desc: string }) {
   return (
     <div className="flex items-start gap-3.5">
-      <div className="w-9 h-9 rounded-[10px] bg-[#E6FAF5] flex items-center justify-center flex-shrink-0 mt-0.5">
-        <Icon className="w-4 h-4 text-[#2DD4BF]" />
+      <div className="w-9 h-9 rounded-lg bg-[var(--yo-chip-bg)] flex items-center justify-center flex-shrink-0 mt-0.5">
+        <Icon className="w-4 h-4 text-[var(--yo-teal)]" />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-[14px] font-semibold text-[var(--yo-dark)]">{title}</p>
-        <p className="text-[13px] text-[var(--yo-muted)] leading-relaxed">{desc}</p>
+        <p className="text-[13px] text-[var(--yo-dark)] leading-relaxed">{desc}</p>
       </div>
     </div>
   );
@@ -576,11 +576,11 @@ function WizardHeader({ step, total, onBack }: { step: number; total: number; on
           className="w-9 h-9 rounded-full bg-[var(--yo-surface)] flex items-center justify-center mr-3 active:scale-95 transition-transform"
           data-testid="button-wizard-header-back"
         >
-          <ArrowLeft className="w-4 h-4 text-[var(--yo-muted)]" />
+          <ArrowLeft className="w-4 h-4 text-[var(--yo-dark)]" />
         </button>
         <h1 className="text-[17px] font-bold text-[var(--yo-dark)] flex-1 uppercase tracking-wide">Nieuwe zoekopdracht</h1>
         {total > 0 && (
-          <span className="text-[13px] font-semibold text-[#2DD4BF] bg-[#E6FAF5] px-2.5 py-1 rounded-full">
+          <span className="text-[13px] font-semibold text-[var(--yo-teal)] bg-[var(--yo-chip-bg)] px-2.5 py-1 rounded-full">
             {step}/{total}
           </span>
         )}
@@ -588,7 +588,7 @@ function WizardHeader({ step, total, onBack }: { step: number; total: number; on
       {total > 0 && (
         <div className="h-[3px] bg-[var(--yo-divider)]">
           <div
-            className="h-full bg-[#2DD4BF] transition-all duration-500 ease-out"
+            className="h-full bg-[var(--yo-teal)] transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
             data-testid="progress-wizard"
           />

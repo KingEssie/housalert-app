@@ -9,15 +9,15 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default:
-          "border-transparent bg-[#2DD4BF] text-white",
+          "border-transparent bg-[var(--yo-chip-bg)] text-[var(--yo-dark)]",
         secondary: "border-transparent bg-[var(--yo-surface)] text-[var(--yo-dark)]",
         destructive:
           "border-transparent bg-destructive text-destructive-foreground",
         outline: "border border-[var(--yo-divider)] text-[var(--yo-dark)]",
-        neon: "border-transparent bg-[#2DD4BF] text-[#000000] font-medium",
+        neon: "border-transparent bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] font-medium",
         dark: "border-transparent bg-[#1A1A1A] text-white font-medium",
-        purple: "border-transparent bg-[#1A8A7D] text-white font-medium",
-        success: "border-transparent bg-[#8BEA63] text-[var(--yo-dark)] font-medium",
+        purple: "border-transparent bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] font-medium",
+        success: "border-transparent bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] font-medium",
       },
     },
     defaultVariants: {

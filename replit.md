@@ -51,25 +51,30 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - **PENDING MIGRATION**: `server/migrations/PENDING_RUN_IN_SUPABASE.sql` must be run in Supabase SQL Editor (includes migrations 008, 010, 011, 012, 013)
 
 ### Design System (YoungOnes-inspired)
-- **Primary CTA**: Teal #2DD4BF, hover #25BBA8 — used for CTA buttons, active nav indicator, brand accents
-- **Accent**: Hot pink #E6007E — for brand highlights, company names (sparingly)
-- **Icon backgrounds**: #E6FAF5 (light teal) with icon color #2DD4BF
-- **Text**: primary #1A1A1A (--yo-dark), secondary #9CA3AF (--yo-muted)
+- **Primary CTA**: Teal `var(--yo-teal)` #2DD4BF, hover `var(--yo-teal-hover)` #25BBA8 — CTA buttons ONLY, active nav indicator, selection controls (radio/transport mode)
+- **Accent/Links**: Pink `var(--yo-pink)` #FF2E8A — all text links, action text, source labels, progress bars
+- **Badges/Chips**: Neutral `var(--yo-chip-bg)` #F3F4F6 with `var(--yo-dark)` text — all badges, status pills, count indicators
+- **Icon backgrounds**: `var(--yo-chip-bg)` #F3F4F6 with `var(--yo-dark)` icons (NOT teal)
+- **Logo icon**: `var(--yo-dark)` #1A1A1A background with white icon
+- **City gradients**: Dark `from-[#1A1A1A] to-[#333333]` — no teal gradients
+- **Text**: primary #1A1A1A (--yo-dark), body #333333 (--yo-text), muted #9CA3AF (--yo-muted, disabled only)
 - **Backgrounds**: white #FFFFFF (--yo-bg), surface #F8F9FA (--yo-surface)
 - **Borders/dividers**: #EEEEEE (--yo-divider)
-- **Buttons**: bg #2DD4BF, white text, rounded-[14px], h-[56px], font-bold
-- **Inputs**: bg var(--yo-surface), border var(--yo-divider), rounded-[14px]
-- **Cards**: white bg, very subtle shadow, 16px radius
+- **Buttons**: bg var(--yo-teal), white text, rounded-lg (8px), h-[56px], font-bold
+- **Inputs**: bg var(--yo-surface), border var(--yo-divider), rounded-lg (8px)
+- **Cards**: white bg, very subtle shadow, rounded-lg (8px)
+- **Border radius**: Standardized to `rounded-lg` (8px) everywhere
 - **Page titles**: UPPERCASE, font-weight 800, letter-spacing 0.02em
 - **Bottom nav**: Flat white bar (not floating pill), teal top-line active indicator
 - **Bottom sheets**: Rounded top 24px, dimmed backdrop, uppercase bold title
 - **CSS variables**: All colors defined as `--yo-*` in `client/src/index.css` (:root)
   - `--yo-teal`, `--yo-teal-hover`, `--yo-teal-light`, `--yo-teal-dark`
-  - `--yo-pink`, `--yo-pink-light`
+  - `--yo-pink` (#FF2E8A), `--yo-pink-light`
   - `--yo-dark`, `--yo-text`, `--yo-muted`
   - `--yo-bg`, `--yo-surface`, `--yo-divider`, `--yo-border`
+  - `--yo-chip-bg` (#F3F4F6), `--yo-chip-text` (#1A1A1A)
   - `--yo-input-border`, `--yo-tag-dark`, `--yo-success`
-- **NEVER use old purple colors** (#673DE5, #5B30D6, #DCDBFA, #471EA7, #CBFF02)
+- **NEVER use**: old purple (#673DE5, #5B30D6, #DCDBFA), old lime (#CBFF02, #8BEA63), hardcoded teal hex (use CSS vars), teal for text links (use pink)
 
 ### Typography System
 - CSS utility classes defined in `client/src/index.css` under `@layer utilities`:

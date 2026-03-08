@@ -47,7 +47,7 @@
   --yo-teal-hover: #25BBA8;
   --yo-teal-light: #E6FAF5;
   --yo-teal-dark: #1B9E8F;
-  --yo-pink: #E6007E;
+  --yo-pink: #FF2E8A;
   --yo-pink-light: #FFF0F7;
   --yo-dark: #1A1A1A;
   --yo-text: #333333;
@@ -59,11 +59,13 @@
   --yo-input-border: #E0E0E0;
   --yo-tag-dark: #1A1A1A;
   --yo-success: #4CAF50;
+  --yo-chip-bg: #F3F4F6;
+  --yo-chip-text: #1A1A1A;
 
   --font-sans: 'Poppins', 'Inter', system-ui, -apple-system, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Menlo, monospace;
-  --radius: .625rem;
+  --radius: .5rem;
   --shadow-2xs: 0px 1px 2px 0px rgba(0,0,0,0.03);
   --shadow-xs: 0px 1px 3px 0px rgba(0,0,0,0.04);
   --shadow-sm: 0px 1px 2px 0px rgba(0,0,0,0.04), 0px 1px 3px -1px rgba(0,0,0,0.03);
@@ -201,21 +203,21 @@
   .text-row-subtitle {
     font-size: 15px;
     font-weight: 500;
-    color: var(--yo-muted);
+    color: var(--yo-text);
     line-height: 1.45;
   }
 
   .text-subtitle {
     font-size: 15px;
     font-weight: 500;
-    color: var(--yo-muted);
+    color: var(--yo-text);
     line-height: 1.45;
   }
 
   .text-muted-body {
     font-size: 14px;
     font-weight: 500;
-    color: var(--yo-muted);
+    color: var(--yo-text);
     line-height: 1.4;
   }
 
