@@ -1268,9 +1268,6 @@ export async function registerRoutes(
     }
   });
 
-  const { Pool } = await import("pg");
-  const draftsPool = new Pool({ connectionString: process.env.DATABASE_URL });
-
   app.post("/api/onboarding-drafts", async (req, res) => {
     try {
       const {
@@ -1284,35 +1281,38 @@ export async function registerRoutes(
         return res.status(400).json({ error: "city_name is required" });
       }
 
-      const result = await draftsPool.query(
-        `INSERT INTO onboarding_drafts (
-          country_code, city_name, latitude, longitude, place_id,
-          location_mode, districts, radius_km,
-          commute_destination, commute_lat, commute_lng, commute_mode, commute_minutes,
-          price_min, price_max, property_type
-        ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
-        RETURNING id`,
-        [
-          country_code || "DE",
-          city_name.trim(),
-          latitude ?? null,
-          longitude ?? null,
-          place_id ?? null,
-          location_mode || "city",
-          districts && Array.isArray(districts) && districts.length > 0 ? districts : null,
-          radius_km != null ? parseInt(radius_km) : null,
-          commute_destination ?? null,
-          commute_lat != null ? parseFloat(commute_lat) : null,
-          commute_lng != null ? parseFloat(commute_lng) : null,
-          commute_mode ?? null,
-          commute_minutes != null ? parseInt(commute_minutes) : null,
-          parseInt(price_min) || 0,
-          parseInt(price_max) || 0,
-          property_type || null,
-        ]
-      );
+      const row: Record<string, unknown> = {
+        country_code: country_code || "DE",
+        city_name: city_name.trim(),
+        latitude: latitude ?? null,
+        longitude: longitude ?? null,
+        place_id: place_id ?? null,
+        location_mode: location_mode || "city",
+        price_min: parseInt(price_min) || 0,
+        price_max: parseInt(price_max) || 0,
+        property_type: property_type || null,
+      };
 
-      return res.json({ id: result.rows[0].id });
+      if (districts && Array.isArray(districts) && districts.length > 0) row.districts = districts;
+      if (radius_km != null) row.radius_km = parseInt(radius_km);
+      if (commute_destination) row.commute_destination = commute_destination;
+      if (commute_lat != null) row.commute_lat = parseFloat(commute_lat);
+      if (commute_lng != null) row.commute_lng = parseFloat(commute_lng);
+      if (commute_mode) row.commute_mode = commute_mode;
+      if (commute_minutes != null) row.commute_minutes = parseInt(commute_minutes);
+
+      const { data, error } = await supabase
+        .from("onboarding_drafts")
+        .insert(row)
+        .select("id")
+        .single();
+
+      if (error) {
+        log(`[onboarding-draft] Insert error: ${error.message}`);
+        return res.status(500).json({ error: "Failed to save draft" });
+      }
+
+      return res.json({ id: data.id });
     } catch (err: any) {
       log(`[onboarding-draft] Error: ${err.message}`);
       return res.status(500).json({ error: "Internal error" });
@@ -1329,23 +1329,28 @@ export async function registerRoutes(
         return res.status(400).json({ error: "Invalid parameters" });
       }
 
-      const check = await draftsPool.query(
-        "SELECT claimed_by FROM onboarding_drafts WHERE id = $1",
-        [id]
-      );
+      const { data: check, error: checkErr } = await supabase
+        .from("onboarding_drafts")
+        .select("claimed_by")
+        .eq("id", id)
+        .single();
 
-      if (check.rows.length === 0) {
+      if (checkErr || !check) {
         return res.status(404).json({ error: "Draft not found" });
       }
 
-      if (check.rows[0].claimed_by && check.rows[0].claimed_by !== user_id) {
+      if (check.claimed_by && check.claimed_by !== user_id) {
         return res.status(409).json({ error: "Deze zoekopdracht is al door iemand anders gebruikt." });
       }
 
-      await draftsPool.query(
-        "UPDATE onboarding_drafts SET claimed_by = $1, claimed_at = NOW() WHERE id = $2",
-        [user_id, id]
-      );
+      const { error: updateErr } = await supabase
+        .from("onboarding_drafts")
+        .update({ claimed_by: user_id, claimed_at: new Date().toISOString() })
+        .eq("id", id);
+
+      if (updateErr) {
+        return res.status(500).json({ error: "Claim failed" });
+      }
 
       return res.json({ ok: true });
     } catch (err: any) {
@@ -1362,16 +1367,17 @@ export async function registerRoutes(
         return res.status(400).json({ error: "Invalid draft ID" });
       }
 
-      const result = await draftsPool.query(
-        "SELECT * FROM onboarding_drafts WHERE id = $1",
-        [id]
-      );
+      const { data, error } = await supabase
+        .from("onboarding_drafts")
+        .select("*")
+        .eq("id", id)
+        .single();
 
-      if (result.rows.length === 0) {
+      if (error || !data) {
         return res.status(404).json({ error: "Draft not found" });
       }
 
-      return res.json(result.rows[0]);
+      return res.json(data);
     } catch (err: any) {
       return res.status(500).json({ error: "Internal error" });
     }
