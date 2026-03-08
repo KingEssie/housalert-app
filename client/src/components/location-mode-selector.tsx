@@ -262,9 +262,9 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
   const mapLng = value.place?.longitude ?? (value.tab === "reistijd" ? value.commuteLng : null);
   const hasLocation = mapLat != null && mapLng != null;
   const showMap = hasLocation || !!alwaysShowMap;
-  const defaultLat = 51.1657;
-  const defaultLng = 10.4515;
-  const defaultZoom = 5;
+  const defaultLat = 52.52;
+  const defaultLng = 13.405;
+  const defaultZoom = 11;
 
   return (
     <div className="flex flex-col gap-5">
