@@ -20,20 +20,20 @@ const SECTIONS = [
     icon: ClipboardCheck,
     title: "Voor de bezichtiging",
     items: [
-      "Lees de advertentie aandachtig door — noteer bijzonderheden en openstaande vragen.",
-      "Bereid 3–5 vragen voor over de woning, de buurt en het huurcontract.",
+      "Lees de advertentie aandachtig door \u2014 noteer bijzonderheden en openstaande vragen.",
+      "Bereid 3\u20135 vragen voor over de woning, de buurt en het huurcontract.",
       "Check de buurt vooraf: reistijd, supermarkten, OV-verbindingen en geluidsoverlast.",
       "Verzamel je documenten en introductiebrief zodat je ze direct kunt overhandigen.",
-      "Kom minimaal 10 minuten eerder — eerste indruk telt.",
+      "Kom minimaal 10 minuten eerder \u2014 eerste indruk telt.",
     ],
   },
   {
     icon: MessageSquare,
     title: "Tijdens de bezichtiging",
     items: [
-      "Wees vriendelijk, beleefd en professioneel — stel jezelf kort voor.",
+      "Wees vriendelijk, beleefd en professioneel \u2014 stel jezelf kort voor.",
       "Stel slimme vragen: bijkomende kosten (Nebenkosten), huisregels, opzegtermijn.",
-      "Toon oprechte interesse zonder te overdrijven — verhuurders merken dat.",
+      "Toon oprechte interesse zonder te overdrijven \u2014 verhuurders merken dat.",
       "Vraag naar de verdere procedure: wanneer wordt de beslissing genomen?",
       "Maak een betrouwbare indruk: rustig, voorbereid en serieus.",
     ],
@@ -43,7 +43,7 @@ const SECTIONS = [
     title: "Wat neem je mee",
     items: [
       "Kopie van je identiteitsbewijs (paspoort of ID-kaart).",
-      "Je voorbereide introductiebrief — print of digitaal.",
+      "Je voorbereide introductiebrief \u2014 print of digitaal.",
       "Inkomensbewijzen: loonstroken, arbeidsovereenkomst of belastingaangifte.",
       "SCHUFA-rapport of vergelijkbare kredietwaardigheidsverklaring.",
       "Je telefoon met contactgegevens van de verhuurder bij de hand.",
@@ -54,9 +54,9 @@ const SECTIONS = [
     title: "Na de bezichtiging",
     items: [
       "Stuur dezelfde dag nog een korte bedankmail naar de verhuurder.",
-      "Lever gevraagde documenten zo snel mogelijk aan — snelheid maakt verschil.",
+      "Lever gevraagde documenten zo snel mogelijk aan \u2014 snelheid maakt verschil.",
       "Gebruik je introductiebrief als basis voor je opvolgbericht.",
-      "Blijf beleefd en bondig — vermijd lange berichten of herhaald contact.",
+      "Blijf beleefd en bondig \u2014 vermijd lange berichten of herhaald contact.",
       "Houd een lijst bij van bezichtigingen en contactgegevens.",
     ],
   },
@@ -65,9 +65,9 @@ const SECTIONS = [
     title: "Rode vlaggen",
     items: [
       "Onduidelijke of wisselende huurprijs of bijkomende kosten.",
-      "Druk om snel te betalen of een aanbetaling te doen vóór het contract.",
+      "Druk om snel te betalen of een aanbetaling te doen v\u00F3\u00F3r het contract.",
       "Vreemde communicatie: alleen WhatsApp, geen vast adres, geen echte naam.",
-      "Onvolledige of verdachte advertentiegegevens — controleer altijd de bron.",
+      "Onvolledige of verdachte advertentiegegevens \u2014 controleer altijd de bron.",
       "De verhuurder weigert een bezichtiging of wil geen contract tonen.",
     ],
   },
@@ -104,15 +104,15 @@ export default function ViewingTipsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       <PageHeader title="Bezichtigingtips" onBack={() => navigate("/dashboard?tab=boost")} />
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6 pb-32">
         <div className="mb-6">
-          <h2 className="text-[32px] font-[800] text-[#111827] tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-tips-heading">
+          <h2 className="text-[32px] font-[800] tracking-[-0.03em] leading-[1.1] mb-3" style={{ color: "var(--yo-dark)" }} data-testid="text-tips-heading">
             Goed voorbereid naar een bezichtiging
           </h2>
-          <p className="text-[15px] text-[#6B7280] leading-relaxed">
+          <p className="text-[15px] text-muted-foreground leading-relaxed">
             In de Duitse huurmarkt is voorbereiding alles. Met deze tips vergroot je je kans op de woning.
           </p>
         </div>
@@ -123,21 +123,21 @@ export default function ViewingTipsPage() {
             return (
               <div
                 key={idx}
-                className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] overflow-hidden"
+                className="bg-card rounded-2xl shadow-sm overflow-hidden"
                 data-testid={`card-tips-section-${idx}`}
               >
                 <div className="flex items-center gap-3 p-6 pb-3">
-                  <div className="w-9 h-9 rounded-full bg-[#DCDBFA] flex items-center justify-center flex-shrink-0">
-                    <Icon className="w-4.5 h-4.5 text-[#673DE5]" />
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "var(--yo-teal-light)" }}>
+                    <Icon className="w-4.5 h-4.5" style={{ color: "var(--yo-teal)" }} />
                   </div>
-                  <h3 className="text-[16px] font-semibold text-[#111827]">{section.title}</h3>
+                  <h3 className="text-[16px] font-semibold" style={{ color: "var(--yo-dark)" }}>{section.title}</h3>
                 </div>
                 <div className="px-6 pb-6">
                   <ul className="flex flex-col gap-2.5">
                     {section.items.map((item, i) => (
                       <li key={i} className="flex items-start gap-2.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#673DE5] mt-2 flex-shrink-0" />
-                        <span className="text-[13px] text-[#6B7280] leading-relaxed">{item}</span>
+                        <span className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0" style={{ backgroundColor: "var(--yo-teal)" }} />
+                        <span className="text-[13px] text-muted-foreground leading-relaxed">{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -148,10 +148,10 @@ export default function ViewingTipsPage() {
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] p-5 z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-5 z-10" style={{ borderColor: "var(--yo-divider)" }}>
         <div className="max-w-xl mx-auto">
           {markedDone ? (
-            <div className="flex items-center justify-center gap-2 h-[56px] text-[#673DE5]">
+            <div className="flex items-center justify-center gap-2 h-[56px]" style={{ color: "var(--yo-teal)" }}>
               <CheckCircle2 className="w-5 h-5" />
               <span className="text-[16px] font-semibold">Voltooid!</span>
             </div>
@@ -159,7 +159,7 @@ export default function ViewingTipsPage() {
             <Button
               onClick={() => markDoneMutation.mutate()}
               disabled={markDoneMutation.isPending}
-              className="w-full h-[56px] rounded-xl text-[16px] font-semibold bg-[#673DE5] hover:bg-[#5B30D6] disabled:opacity-50"
+              className="w-full h-[56px] rounded-xl text-[16px] font-semibold bg-primary text-primary-foreground disabled:opacity-50"
               data-testid="button-mark-tips-done"
             >
               {markDoneMutation.isPending ? "Opslaan..." : "Markeer als voltooid"}

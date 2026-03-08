@@ -65,13 +65,13 @@ export default function ProfileDetailsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <PageHeader title="Persoonlijke gegevens" onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <div className="max-w-lg mx-auto">
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-6 h-6 animate-spin text-[#6B7280]" />
+            <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
           </div>
         ) : (
           <div>
@@ -83,25 +83,25 @@ export default function ProfileDetailsPage() {
                   {editable ? (
                     <button
                       onClick={() => navigate(`/profile/edit/${field.key}`)}
-                      className="w-full flex items-center justify-between px-5 py-4 text-left active:bg-[#F8FAFC] transition-colors"
+                      className="w-full flex items-center justify-between px-5 py-4 text-left hover-elevate transition-colors"
                       data-testid={`field-${field.key}`}
                     >
                       <div className="min-w-0 flex-1">
-                        <p className="text-[13px] text-[#6B7280] mb-0.5">{field.label}</p>
-                        <p className="text-[16px] font-[500] text-[#111827] truncate">
-                          {value || <span className="text-[#9CA3AF]">Toevoegen</span>}
+                        <p className="text-[13px] text-muted-foreground mb-0.5">{field.label}</p>
+                        <p className="text-[16px] font-[500] truncate" style={{ color: "var(--yo-dark)" }}>
+                          {value || <span className="text-muted-foreground">Toevoegen</span>}
                         </p>
                       </div>
-                      <ChevronRight className="w-[18px] h-[18px] text-[#9CA3AF] flex-shrink-0 ml-3" />
+                      <ChevronRight className="w-[18px] h-[18px] text-muted-foreground flex-shrink-0 ml-3" />
                     </button>
                   ) : (
                     <div className="px-5 py-4" data-testid={`field-${field.key}`}>
-                      <p className="text-[13px] text-[#6B7280] mb-0.5">{field.label}</p>
-                      <p className="text-[16px] font-[500] text-[#111827] truncate">{value || "-"}</p>
+                      <p className="text-[13px] text-muted-foreground mb-0.5">{field.label}</p>
+                      <p className="text-[16px] font-[500] truncate" style={{ color: "var(--yo-dark)" }}>{value || "-"}</p>
                     </div>
                   )}
                   {i < FIELDS.length - 1 && (
-                    <div className="h-px bg-[#F3F4F6] mx-5" />
+                    <div className="h-px mx-5" style={{ backgroundColor: "var(--yo-divider)" }} />
                   )}
                 </div>
               );

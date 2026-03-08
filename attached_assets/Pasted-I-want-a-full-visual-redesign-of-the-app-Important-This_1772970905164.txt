@@ -1,0 +1,176 @@
+I want a full visual redesign of the app.
+
+Important:
+This is the FINAL design direction.
+Do not partially restyle a few components.
+Do a full app-wide design system refactor so every screen follows the same style.
+
+Design target:
+Rebuild the UI to match the exact visual style of the YoungOnes app shown in the uploaded screenshots.
+
+Meaning:
+I want the app to feel visually like YoungOnes:
+- same colors
+- same typography hierarchy
+- same font weights
+- same spacing system
+- same button styling
+- same input field styling
+- same card styling
+- same page structure
+- same modal / bottom sheet styling
+- same detail screen layout
+- same account/profile screen structure
+- same navigation feel
+- same icon treatment
+- same visual density
+
+But:
+Keep all existing Stekkies functionality, logic, flows, and fields.
+Only redesign the UI layer so it looks like the YoungOnes app.
+
+Uploaded screenshots are the source of truth.
+Use them as the design reference for:
+- listing cards
+- detail pages
+- account/profile page
+- form modal / edit sheet
+- buttons
+- filters
+- typography
+- spacing
+- color usage
+
+Goal:
+When someone opens my Stekkies app, it should feel like:
+“This looks like the YoungOnes app design system”
+while still being my rental product.
+
+Requirements:
+
+1. Create one consistent design system and apply it app-wide.
+Refactor all hardcoded colors, spacing, border radii, shadows, font sizes, and font weights into reusable theme tokens.
+
+2. Replace all current styles with YoungOnes-style design tokens:
+- background colors
+- surface colors
+- text colors
+- border colors
+- CTA colors
+- muted text colors
+- card backgrounds
+- modal backgrounds
+- input backgrounds
+- divider colors
+
+3. Typography:
+Match the screenshot hierarchy as closely as possible:
+- large bold page titles
+- medium bold section titles
+- strong card titles
+- muted secondary text
+- bold CTA labels
+- modal titles with strong uppercase/bold look where appropriate
+
+4. Inputs and fields:
+Restyle all input fields and selectors to match the screenshots:
+- same height
+- same border treatment
+- same padding
+- same corner radius
+- same label placement
+- same dropdown appearance
+- same modal field spacing
+
+5. Buttons:
+Restyle all primary and secondary buttons to match the screenshots:
+- same height
+- same color treatment
+- same weight
+- same radius
+- same spacing
+- same CTA prominence
+
+6. Cards:
+Restyle all cards to match YoungOnes-style cards:
+- listing cards
+- match cards
+- onboarding/search cards
+- boost/profile completion cards
+- account info cards
+- settings rows
+- any stats cards
+
+7. Detail page structure:
+Use the screenshot as reference for listing/job detail pages:
+- large image/header area
+- back button treatment
+- content block structure
+- metadata row layout
+- map block
+- information rows
+- fixed CTA at bottom if appropriate
+
+8. Account/profile page:
+Use the screenshots as reference for profile/account screens:
+- top visual hierarchy
+- profile image placement
+- stats layout
+- settings row style
+- section separation
+- form/edit modal presentation
+
+9. Bottom sheet / modal style:
+Use the form screenshot as reference:
+- rounded top corners
+- dimmed backdrop
+- strong title
+- spaced fields
+- full-width CTA button
+- clean cancel action
+
+10. Navigation:
+Restyle bottom navigation and top bars to match the reference style:
+- icon sizing
+- label styling
+- active/inactive treatment
+- spacing and height
+
+11. Important:
+Keep all current app features working.
+Do NOT remove functionality.
+Do NOT simplify away fields.
+Do NOT break forms, onboarding, matching, profile editing, or embedded onboarding.
+
+12. Scope:
+Apply this redesign to the full product, including at least:
+- onboarding embed
+- onboarding flow
+- dashboard/home
+- matches list
+- match detail
+- filters/search profile flow
+- boost/profile strength screens
+- profile/account
+- edit forms
+- settings
+- application letter screens
+- modals/bottom sheets
+
+13. Refactor requirement:
+Do not patch styles screen by screen with random CSS.
+Create reusable shared design tokens/components first, then apply them systematically.
+
+14. Deliverables:
+After implementation, give me:
+- the new theme token file(s)
+- the shared components changed
+- the screens updated
+- a list of removed hardcoded colors/styles
+- confirmation that the app now uses one consistent YoungOnes-style design system
+
+15. Very important:
+Use the uploaded screenshots as the visual reference.
+Aim for exact visual parity in spacing, proportions, and hierarchy as much as possible.
+This is not a “rough inspiration”.
+It should feel like the same design language across the whole app.

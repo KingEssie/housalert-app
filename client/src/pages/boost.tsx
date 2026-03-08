@@ -145,7 +145,7 @@ function getScoreColor(score: number): string {
   if (score >= 80) return "#8BEA63";
   if (score >= 60) return "#8BEA63";
   if (score >= 30) return "#8BEA63";
-  return "#6B7280";
+  return "var(--yo-muted)";
 }
 
 function getScoreHeadline(score: number): string {
@@ -165,12 +165,12 @@ function BoostScoreCard({ score, remaining, completed, total }: { score: number;
     <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6" data-testid="card-boost-score">
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-[#DCDBFA] flex items-center justify-center">
-            <Zap className="w-5 h-5 text-[#673DE5]" />
+          <div className="w-10 h-10 rounded-full bg-[var(--yo-teal-light)] flex items-center justify-center">
+            <Zap className="w-5 h-5 text-[var(--yo-teal)]" />
           </div>
           <div>
-            <h3 className="text-[15px] font-semibold text-[#111827]">{headline}</h3>
-            <p className="text-[13px] text-[#6B7280]">{completed} van {total} afgerond</p>
+            <h3 className="text-[15px] font-semibold text-[var(--yo-dark)]">{headline}</h3>
+            <p className="text-[13px] text-[var(--yo-muted)]">{completed} van {total} afgerond</p>
           </div>
         </div>
         <span className="text-[36px] font-[800] leading-none tracking-[-0.03em]" style={{ color }} data-testid="text-boost-score">
@@ -178,7 +178,7 @@ function BoostScoreCard({ score, remaining, completed, total }: { score: number;
         </span>
       </div>
 
-      <div className="w-full h-2 bg-[#F8FAFC] rounded-full overflow-hidden mb-4">
+      <div className="w-full h-2 bg-[var(--yo-surface)] rounded-full overflow-hidden mb-4">
         <div
           className="h-full rounded-full transition-all duration-700 ease-out"
           style={{ width: `${score}%`, background: color }}
@@ -186,7 +186,7 @@ function BoostScoreCard({ score, remaining, completed, total }: { score: number;
         />
       </div>
 
-      <p className="text-[14px] text-[#6B7280] leading-relaxed" data-testid="text-boost-microcopy">
+      <p className="text-[14px] text-[var(--yo-muted)] leading-relaxed" data-testid="text-boost-microcopy">
         {microcopy}
       </p>
     </div>
@@ -231,17 +231,17 @@ function RecommendedSection({
               data-testid={`card-recommend-${task.id}`}
             >
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-[#DCDBFA] flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Icon className="w-5 h-5 text-[#673DE5]" />
+                <div className="w-10 h-10 rounded-xl bg-[var(--yo-teal-light)] flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Icon className="w-5 h-5 text-[var(--yo-teal)]" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
-                    <p className="text-[15px] font-semibold text-[#111827] leading-snug">{task.label}</p>
-                    <span className="text-[12px] font-semibold text-[#111827] bg-[#8BEA63] px-2 py-0.5 rounded-full flex-shrink-0 whitespace-nowrap" data-testid={`badge-points-${task.id}`}>
+                    <p className="text-[15px] font-semibold text-[var(--yo-dark)] leading-snug">{task.label}</p>
+                    <span className="text-[12px] font-semibold text-[var(--yo-dark)] bg-[#8BEA63] px-2 py-0.5 rounded-full flex-shrink-0 whitespace-nowrap" data-testid={`badge-points-${task.id}`}>
                       +{task.weight}
                     </span>
                   </div>
-                  <p className="text-[13px] text-[#6B7280] leading-relaxed mt-1">{subtitle}</p>
+                  <p className="text-[13px] text-[var(--yo-muted)] leading-relaxed mt-1">{subtitle}</p>
                 </div>
               </div>
               <Button
@@ -284,18 +284,18 @@ function AllTasksSection({
             <button
               key={task.id}
               onClick={() => onTaskClick(task.id)}
-              className={`w-full flex items-center gap-3 p-4 text-left hover:bg-[#F8FAFC] transition-colors ${
-                i < incompleteTasks.length - 1 || completedTasks.length > 0 ? "border-b border-[#F8FAFC]" : ""
+              className={`w-full flex items-center gap-3 p-4 text-left hover:bg-[var(--yo-surface)] transition-colors ${
+                i < incompleteTasks.length - 1 || completedTasks.length > 0 ? "border-b border-[var(--yo-divider)]" : ""
               }`}
               data-testid={`task-${task.id}`}
             >
-              <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
-              <Icon className="w-4 h-4 text-[#673DE5] flex-shrink-0" />
+              <div className="w-5 h-5 rounded-full border-2 border-[var(--yo-divider)] flex-shrink-0" />
+              <Icon className="w-4 h-4 text-[var(--yo-teal)] flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-[14px] font-medium text-[#111827]">{task.label}</p>
-                <p className="text-[13px] font-[500] text-[#6B7280]">+{task.weight} punten</p>
+                <p className="text-[14px] font-medium text-[var(--yo-dark)]">{task.label}</p>
+                <p className="text-[13px] font-[500] text-[var(--yo-muted)]">+{task.weight} punten</p>
               </div>
-              <ArrowRight className="w-4 h-4 text-[#6B7280] flex-shrink-0" />
+              <ArrowRight className="w-4 h-4 text-[var(--yo-muted)] flex-shrink-0" />
             </button>
           );
         })}
@@ -305,15 +305,15 @@ function AllTasksSection({
             <div
               key={task.id}
               className={`flex items-center gap-3 p-4 opacity-60 ${
-                i < completedTasks.length - 1 ? "border-b border-[#F8FAFC]" : ""
+                i < completedTasks.length - 1 ? "border-b border-[var(--yo-divider)]" : ""
               }`}
               data-testid={`task-done-${task.id}`}
             >
               <div className="w-5 h-5 rounded-full bg-[#EAF9DF] flex items-center justify-center flex-shrink-0">
                 <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
               </div>
-              <Icon className="w-4 h-4 text-[#6B7280] flex-shrink-0" />
-              <p className="text-[14px] text-[#6B7280] line-through">{task.label}</p>
+              <Icon className="w-4 h-4 text-[var(--yo-muted)] flex-shrink-0" />
+              <p className="text-[14px] text-[var(--yo-muted)] line-through">{task.label}</p>
             </div>
           );
         })}
@@ -324,19 +324,19 @@ function AllTasksSection({
 
 function EmptyState({ onStart }: { onStart: () => void }) {
   return (
-    <div className="bg-[#F8FAFC] rounded-2xl p-6 text-center" data-testid="boost-empty-state">
-      <div className="w-12 h-12 rounded-full bg-[#DCDBFA] flex items-center justify-center mx-auto mb-4">
-        <Zap className="w-5 h-5 text-[#673DE5]" />
+    <div className="bg-[var(--yo-surface)] rounded-2xl p-6 text-center" data-testid="boost-empty-state">
+      <div className="w-12 h-12 rounded-full bg-[var(--yo-teal-light)] flex items-center justify-center mx-auto mb-4">
+        <Zap className="w-5 h-5 text-[var(--yo-teal)]" />
       </div>
-      <h3 className="text-[18px] font-semibold text-[#111827] mb-1.5">
+      <h3 className="text-[18px] font-semibold text-[var(--yo-dark)] mb-1.5">
         Begin met je eerste stap
       </h3>
-      <p className="text-[14px] font-[500] text-[#6B7280] leading-relaxed mb-5 max-w-[260px] mx-auto">
+      <p className="text-[14px] font-[500] text-[var(--yo-muted)] leading-relaxed mb-5 max-w-[260px] mx-auto">
         Hoe completer je profiel, hoe sneller je kunt reageren op nieuwe woningen.
       </p>
       <Button
         onClick={onStart}
-        className="h-[48px] px-8 rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
+        className="h-[56px] px-8 rounded-[14px] bg-[var(--yo-teal)] text-white text-[15px] font-bold"
         data-testid="button-start-boost"
       >
         <Zap className="w-4 h-4 mr-1.5" />
@@ -348,7 +348,7 @@ function EmptyState({ onStart }: { onStart: () => void }) {
 
 function HighProgressState({ remaining }: { remaining: number }) {
   return (
-    <div className="bg-gradient-to-br from-[#673DE5] to-[#5B30D6] rounded-2xl p-6 text-white" data-testid="boost-high-progress">
+    <div className="bg-gradient-to-br from-[var(--yo-teal)] to-[var(--yo-teal-hover)] rounded-2xl p-6 text-white" data-testid="boost-high-progress">
       <div className="flex items-center gap-3 mb-2">
         <div className="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center">
           <Rocket className="w-5 h-5 text-white" />
@@ -400,20 +400,20 @@ function TaskModal({
         className="bg-white w-full max-w-md rounded-t-[24px] sm:rounded-[24px] max-h-[85vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 bg-white border-b border-[#E5E7EB] p-6 flex items-center justify-between rounded-t-[24px]">
-          <h2 className="text-[20px] font-[700] text-[#111827] tracking-[-0.02em]">{task.title}</h2>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F8FAFC] flex items-center justify-center" data-testid="button-close-modal">
-            <X className="w-4 h-4 text-[#6B7280]" />
+        <div className="sticky top-0 bg-white border-b border-[var(--yo-divider)] p-6 flex items-center justify-between rounded-t-[24px]">
+          <h2 className="text-[20px] font-[700] text-[var(--yo-dark)] tracking-[-0.02em] uppercase">{task.title}</h2>
+          <button onClick={onClose} className="w-8 h-8 rounded-full bg-[var(--yo-surface)] flex items-center justify-center" data-testid="button-close-modal">
+            <X className="w-4 h-4 text-[var(--yo-muted)]" />
           </button>
         </div>
 
         <div className="p-5">
-          <p className="text-[14px] text-[#6B7280] mb-5">{task.description}</p>
+          <p className="text-[14px] text-[var(--yo-muted)] mb-5">{task.description}</p>
 
           {(taskId === "alerts_active" || taskId === "phone_number_added") && (
             <Button
               onClick={() => { onClose(); navigate("/settings/notifications"); }}
-              className="w-full h-[48px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
+              className="w-full h-[56px] rounded-[14px] bg-[var(--yo-teal)] text-white text-[15px] font-bold"
               data-testid="button-goto-notifications"
             >
               <Bell className="w-4 h-4 mr-2" />
@@ -423,20 +423,20 @@ function TaskModal({
 
           {taskId === "search_buddy_added" && (
             <div className="flex flex-col gap-3">
-              <label className="text-[13px] font-medium text-[#111827]">E-mailadres zoekbuddy</label>
+              <label className="text-[13px] font-medium text-[var(--yo-dark)]">E-mailadres zoekbuddy</label>
               <input
                 type="email"
                 value={buddyEmail}
                 onChange={(e) => setBuddyEmail(e.target.value)}
                 placeholder="buddy@voorbeeld.nl"
-                className="w-full h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#111827] placeholder:text-[#6B7280] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE5]/15 focus:bg-[#F8FAFC] transition-all"
+                className="w-full h-[52px] px-4 rounded-xl border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
                 data-testid="input-buddy-email"
               />
-              <p className="text-[13px] font-[500] text-[#6B7280]">Je buddy ontvangt dezelfde meldingen als jij.</p>
+              <p className="text-[13px] font-[500] text-[var(--yo-muted)]">Je buddy ontvangt dezelfde meldingen als jij.</p>
               <Button
                 onClick={() => handleSave({ search_buddy_email: buddyEmail }, "Zoekbuddy opgeslagen!")}
                 disabled={!buddyEmail.includes("@") || updateProfileData.isPending}
-                className="w-full h-[48px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold disabled:opacity-50"
+                className="w-full h-[56px] rounded-[14px] bg-[var(--yo-teal)] text-white text-[15px] font-bold disabled:opacity-50"
                 data-testid="button-save-buddy"
               >
                 {updateProfileData.isPending ? "Opslaan..." : "Opslaan"}
@@ -447,7 +447,7 @@ function TaskModal({
           {taskId === "housing_preferences_completed" && (
             <Button
               onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
-              className="w-full h-[48px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
+              className="w-full h-[56px] rounded-[14px] bg-[var(--yo-teal)] text-white text-[15px] font-bold"
               data-testid="button-goto-filters"
             >
               <Search className="w-4 h-4 mr-2" />
@@ -458,7 +458,7 @@ function TaskModal({
           {taskId === "reaction_letter_ready" && (
             <Button
               onClick={() => { onClose(); navigate("/application-letter"); }}
-              className="w-full h-[48px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
+              className="w-full h-[56px] rounded-[14px] bg-[var(--yo-teal)] text-white text-[15px] font-bold"
               data-testid="button-goto-letter"
             >
               <FileText className="w-4 h-4 mr-2" />
@@ -468,13 +468,13 @@ function TaskModal({
 
           {taskId === "income_documents_uploaded" && (
             <div className="flex flex-col gap-4">
-              <h4 className="text-[13px] font-semibold text-[#111827]">Vink af wat je hebt verzameld</h4>
+              <h4 className="text-[13px] font-semibold text-[var(--yo-dark)]">Vink af wat je hebt verzameld</h4>
               <div className="flex flex-col gap-1">
                 {INCOME_CHECKLIST.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => setChecklist((prev) => ({ ...prev, [item.id]: !prev[item.id] }))}
-                    className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-[#F8FAFC] transition-colors text-left"
+                    className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-[var(--yo-surface)] transition-colors text-left"
                     data-testid={`check-${item.id}`}
                   >
                     {checklist[item.id] ? (
@@ -482,9 +482,9 @@ function TaskModal({
                         <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
                       </div>
                     ) : (
-                      <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
+                      <div className="w-5 h-5 rounded-full border-2 border-[var(--yo-divider)] flex-shrink-0" />
                     )}
-                    <span className={`text-[14px] ${checklist[item.id] ? "text-[#6B7280] line-through" : "text-[#111827]"}`}>
+                    <span className={`text-[14px] ${checklist[item.id] ? "text-[var(--yo-muted)] line-through" : "text-[var(--yo-dark)]"}`}>
                       {item.label}
                     </span>
                   </button>
@@ -493,7 +493,7 @@ function TaskModal({
               <Button
                 onClick={() => handleSave({ document_checklist: checklist }, "Documenten opgeslagen!")}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[48px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold disabled:opacity-50"
+                className="w-full h-[56px] rounded-[14px] bg-[var(--yo-teal)] text-white text-[15px] font-bold disabled:opacity-50"
                 data-testid="button-save-income-docs"
               >
                 {updateProfileData.isPending ? "Opslaan..." : "Opslaan"}
@@ -503,13 +503,13 @@ function TaskModal({
 
           {taskId === "id_document_uploaded" && (
             <div className="flex flex-col gap-4">
-              <h4 className="text-[13px] font-semibold text-[#111827]">Vink af wat je hebt verzameld</h4>
+              <h4 className="text-[13px] font-semibold text-[var(--yo-dark)]">Vink af wat je hebt verzameld</h4>
               <div className="flex flex-col gap-1">
                 {ID_CHECKLIST.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => setChecklist((prev) => ({ ...prev, [item.id]: !prev[item.id] }))}
-                    className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-[#F8FAFC] transition-colors text-left"
+                    className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-[var(--yo-surface)] transition-colors text-left"
                     data-testid={`check-${item.id}`}
                   >
                     {checklist[item.id] ? (
@@ -517,9 +517,9 @@ function TaskModal({
                         <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
                       </div>
                     ) : (
-                      <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
+                      <div className="w-5 h-5 rounded-full border-2 border-[var(--yo-divider)] flex-shrink-0" />
                     )}
-                    <span className={`text-[14px] ${checklist[item.id] ? "text-[#6B7280] line-through" : "text-[#111827]"}`}>
+                    <span className={`text-[14px] ${checklist[item.id] ? "text-[var(--yo-muted)] line-through" : "text-[var(--yo-dark)]"}`}>
                       {item.label}
                     </span>
                   </button>
@@ -528,7 +528,7 @@ function TaskModal({
               <Button
                 onClick={() => handleSave({ document_checklist: checklist }, "Documenten opgeslagen!")}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[48px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold disabled:opacity-50"
+                className="w-full h-[56px] rounded-[14px] bg-[var(--yo-teal)] text-white text-[15px] font-bold disabled:opacity-50"
                 data-testid="button-save-id-docs"
               >
                 {updateProfileData.isPending ? "Opslaan..." : "Opslaan"}
@@ -539,7 +539,7 @@ function TaskModal({
           {taskId === "profile_info_completed" && (
             <Button
               onClick={() => { onClose(); navigate("/settings/notifications"); }}
-              className="w-full h-[48px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
+              className="w-full h-[56px] rounded-[14px] bg-[var(--yo-teal)] text-white text-[15px] font-bold"
               data-testid="button-goto-profile-info"
             >
               <UserCircle className="w-4 h-4 mr-2" />
@@ -549,12 +549,12 @@ function TaskModal({
 
           {taskId === "profile_photo_added" && (
             <div className="flex flex-col gap-3">
-              <p className="text-[13px] font-[500] text-[#6B7280]">
+              <p className="text-[13px] font-[500] text-[var(--yo-muted)]">
                 Voeg een profielfoto toe om een persoonlijke indruk te maken bij verhuurders.
               </p>
               <Button
                 onClick={() => navigate("/dashboard?tab=profiel")}
-                className="w-full h-[44px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[14px] font-[600]"
+                className="w-full h-[56px] rounded-[14px] bg-[var(--yo-teal)] text-white text-[14px] font-bold"
                 data-testid="button-goto-profile-photo"
               >
                 Naar profielfoto
@@ -617,10 +617,10 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
           <h1 className="text-page-title">Boost</h1>
         </div>
         <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-8 text-center" data-testid="boost-error">
-          <p className="text-[15px] text-[#6B7280] mb-4">Kon je gegevens niet laden.</p>
+          <p className="text-[15px] text-[var(--yo-muted)] mb-4">Kon je gegevens niet laden.</p>
           <Button
             onClick={() => refetch()}
-            className="h-[48px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold px-6"
+            className="h-[56px] rounded-[14px] bg-[var(--yo-teal)] text-white text-[15px] font-bold px-6"
             data-testid="button-retry-boost"
           >
             Opnieuw proberen
@@ -634,18 +634,18 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
     return (
       <div className="flex flex-col gap-4 px-6 pt-6">
         <div className="mb-2">
-          <div className="h-8 bg-[#F8FAFC] rounded w-24 mb-2 animate-pulse" />
-          <div className="h-4 bg-[#F8FAFC] rounded w-56 animate-pulse" />
+          <div className="h-8 bg-[var(--yo-surface)] rounded w-24 mb-2 animate-pulse" />
+          <div className="h-4 bg-[var(--yo-surface)] rounded w-56 animate-pulse" />
         </div>
         <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
-          <div className="h-4 bg-[#F8FAFC] rounded w-32 mb-3" />
-          <div className="h-10 bg-[#F8FAFC] rounded w-20 mb-2" />
-          <div className="h-2.5 bg-[#F8FAFC] rounded w-full" />
+          <div className="h-4 bg-[var(--yo-surface)] rounded w-32 mb-3" />
+          <div className="h-10 bg-[var(--yo-surface)] rounded w-20 mb-2" />
+          <div className="h-2.5 bg-[var(--yo-surface)] rounded w-full" />
         </div>
         <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
-          <div className="h-4 bg-[#F8FAFC] rounded w-48 mb-3" />
-          <div className="h-12 bg-[#F8FAFC] rounded w-full mb-2" />
-          <div className="h-12 bg-[#F8FAFC] rounded w-full" />
+          <div className="h-4 bg-[var(--yo-surface)] rounded w-48 mb-3" />
+          <div className="h-12 bg-[var(--yo-surface)] rounded w-full mb-2" />
+          <div className="h-12 bg-[var(--yo-surface)] rounded w-full" />
         </div>
       </div>
     );

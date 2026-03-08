@@ -2,6 +2,7 @@ import { useState } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { CreditCard, Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
 
 interface PaymentMethod {
   id: string;
@@ -51,13 +52,13 @@ export default function PaymentMethodPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]" data-testid="page-payment-method">
+    <div className="min-h-screen bg-background" data-testid="page-payment-method">
       <PageHeader title="Betaalmethode" />
 
       <div className="max-w-xl mx-auto p-4 space-y-4 pb-8">
-        <div className="bg-white rounded-[18px] border border-[#E5E7EB] overflow-hidden">
+        <div className="bg-card rounded-[18px] border overflow-hidden" style={{ borderColor: "var(--yo-divider)" }}>
           <div className="px-5 pt-5 pb-2">
-            <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wider" data-testid="text-section-title-payment">
+            <p className="text-[13px] font-semibold uppercase tracking-wider" style={{ color: "var(--yo-muted)" }} data-testid="text-section-title-payment">
               Huidige betaalmethode
             </p>
           </div>
@@ -65,51 +66,48 @@ export default function PaymentMethodPage() {
           {methods.map((method) => (
             <div key={method.id} className="px-5 py-4" data-testid={`card-payment-${method.id}`}>
               <div className="flex items-center gap-3">
-                <div className="w-[48px] h-[48px] rounded-[12px] bg-[#DCDBFA] flex items-center justify-center flex-shrink-0">
-                  <CreditCard className="w-5 h-5 text-[#673DE5]" />
+                <div className="w-[48px] h-[48px] rounded-[12px] flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "var(--yo-teal-light)" }}>
+                  <CreditCard className="w-5 h-5" style={{ color: "var(--yo-teal)" }} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[16px] font-semibold text-[#111827]" data-testid="text-card-brand">
-                    {method.brand} •••• {method.last4}
+                  <p className="text-[16px] font-semibold" style={{ color: "var(--yo-dark)" }} data-testid="text-card-brand">
+                    {method.brand} {method.last4}
                   </p>
-                  <p className="text-[14px] text-[#6B7280]" data-testid="text-card-expiry">
+                  <p className="text-[14px]" style={{ color: "var(--yo-muted)" }} data-testid="text-card-expiry">
                     Vervalt {String(method.expMonth).padStart(2, "0")}/{method.expYear}
                   </p>
                 </div>
                 {method.isDefault && (
-                  <span
-                    className="text-[12px] font-[600] px-2.5 py-1 rounded-full bg-[#8BEA63] text-[#111827] flex-shrink-0"
-                    data-testid="badge-default"
-                  >
+                  <Badge variant="secondary" className="flex-shrink-0" data-testid="badge-default">
                     Standaard
-                  </span>
+                  </Badge>
                 )}
               </div>
             </div>
           ))}
         </div>
 
-        <div className="bg-white rounded-[18px] border border-[#E5E7EB] overflow-hidden">
+        <div className="bg-card rounded-[18px] border overflow-hidden" style={{ borderColor: "var(--yo-divider)" }}>
           <button
             onClick={handleAdd}
-            className="w-full flex items-center gap-3 px-5 py-4 hover:bg-[#F8FAFC] transition-colors"
+            className="w-full flex items-center gap-3 px-5 py-4 hover-elevate transition-colors"
             data-testid="button-add-payment"
           >
-            <div className="w-10 h-10 rounded-xl bg-[#DCDBFA] flex items-center justify-center flex-shrink-0">
-              <Plus className="w-5 h-5 text-[#673DE5]" />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "var(--yo-teal-light)" }}>
+              <Plus className="w-5 h-5" style={{ color: "var(--yo-teal)" }} />
             </div>
-            <span className="text-[15px] font-medium text-[#111827]">Betaalmethode toevoegen</span>
+            <span className="text-[15px] font-medium" style={{ color: "var(--yo-dark)" }}>Betaalmethode toevoegen</span>
           </button>
-          <div className="mx-5 border-b border-[#E5E7EB]" />
+          <div className="mx-5" style={{ borderBottom: "1px solid var(--yo-divider)" }} />
           <button
             onClick={() => methods.length > 0 && handleRemove(methods[0].id)}
-            className="w-full flex items-center gap-3 px-5 py-4 hover:bg-[#F8FAFC] transition-colors"
+            className="w-full flex items-center gap-3 px-5 py-4 hover-elevate transition-colors"
             data-testid="button-remove-payment"
           >
-            <div className="w-10 h-10 rounded-xl bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
-              <Trash2 className="w-5 h-5 text-[#6B7280]" />
+            <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
+              <Trash2 className="w-5 h-5 text-muted-foreground" />
             </div>
-            <span className="text-[15px] font-medium text-[#673DE5]">Betaalmethode verwijderen</span>
+            <span className="text-[15px] font-medium text-destructive">Betaalmethode verwijderen</span>
           </button>
         </div>
       </div>

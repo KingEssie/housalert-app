@@ -74,7 +74,7 @@ export default function ApplicationLetterPage() {
   const missingFields = !profileData?.occupation || profileData?.monthly_income == null;
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       <PageHeader title="Aanmeldingsbrief" onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6 pb-32">
@@ -82,31 +82,31 @@ export default function ApplicationLetterPage() {
           {missingFields && !isLoading && (
             <button
               onClick={() => navigate("/profile/details")}
-              className="w-full bg-[#FFF8E1] rounded-2xl p-5 flex gap-3 text-left"
+              className="w-full bg-[#FFF8E1] dark:bg-[#3D3520] rounded-2xl p-5 flex gap-3 text-left"
               data-testid="banner-missing-fields"
             >
               <AlertTriangle className="w-5 h-5 text-[#F59E0B] flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-[14px] text-[#111827] font-semibold mb-0.5">Gegevens ontbreken</p>
-                <p className="text-[13px] text-[#6B7280]">
+                <p className="text-[14px] font-semibold mb-0.5" style={{ color: "var(--yo-dark)" }}>Gegevens ontbreken</p>
+                <p className="text-[13px]" style={{ color: "var(--yo-muted)" }}>
                   Vul eerst je beroep en inkomen in zodat je brief automatisch kan worden ingevuld.
                 </p>
               </div>
             </button>
           )}
 
-          <div className="bg-[#DCDBFA] rounded-2xl p-6 flex gap-3">
-            <Info className="w-5 h-5 text-[#673DE5] flex-shrink-0 mt-0.5" />
+          <div className="rounded-2xl p-6 flex gap-3" style={{ backgroundColor: "var(--yo-teal-light)" }}>
+            <Info className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "var(--yo-teal)" }} />
             <div>
-              <p className="text-[14px] text-[#111827] font-semibold mb-1">Automatische invulling</p>
-              <p className="text-[13px] text-[#6B7280]">
+              <p className="text-[14px] font-semibold mb-1" style={{ color: "var(--yo-dark)" }}>Automatische invulling</p>
+              <p className="text-[13px]" style={{ color: "var(--yo-muted)" }}>
                 Gebruik onderstaande plaatsaanduidingen in je brief. Ze worden automatisch ingevuld wanneer je de brief kopieert vanuit een woning.
               </p>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
-            <h3 className="text-[16px] font-[700] text-[#111827] mb-3">Beschikbare plaatsaanduidingen</h3>
+          <div className="bg-card rounded-2xl shadow-sm p-6">
+            <h3 className="text-[16px] font-[700] mb-3" style={{ color: "var(--yo-dark)" }}>Beschikbare plaatsaanduidingen</h3>
             <div className="flex flex-wrap gap-1.5">
               {PLACEHOLDERS.map((p) => (
                 <button
@@ -127,7 +127,8 @@ export default function ApplicationLetterPage() {
                       setTemplate(template + p.key);
                     }
                   }}
-                  className="text-[11px] font-mono bg-[#F3F4F6] text-[#673DE5] px-2 py-1 rounded-md hover:bg-[#DCDBFA] transition-colors"
+                  className="text-[11px] font-mono bg-muted px-2 py-1 rounded-md hover-elevate transition-colors"
+                  style={{ color: "var(--yo-teal)" }}
                   title={p.label}
                   data-testid={`placeholder-${p.key.replace(/\[|\]/g, "")}`}
                 >
@@ -138,17 +139,18 @@ export default function ApplicationLetterPage() {
           </div>
 
           {isLoading ? (
-            <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
-              <div className="h-4 bg-[#F3F4F6] rounded w-32 mb-4" />
-              <div className="h-48 bg-[#F3F4F6] rounded" />
+            <div className="bg-card rounded-2xl shadow-sm p-6 animate-pulse">
+              <div className="h-4 bg-muted rounded w-32 mb-4" />
+              <div className="h-48 bg-muted rounded" />
             </div>
           ) : (
-            <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
+            <div className="bg-card rounded-2xl shadow-sm p-6">
               <div className="flex items-center justify-between gap-4 mb-3">
-                <h3 className="text-[16px] font-semibold text-[#111827]">Je brief</h3>
+                <h3 className="text-[16px] font-semibold" style={{ color: "var(--yo-dark)" }}>Je brief</h3>
                 <button
                   onClick={handleReset}
-                  className="flex items-center gap-1 text-[13px] text-[#6B7280] hover:text-[#673DE5] transition-colors"
+                  className="flex items-center gap-1 text-[13px] transition-colors"
+                  style={{ color: "var(--yo-muted)" }}
                   data-testid="button-reset-template"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -158,23 +160,23 @@ export default function ApplicationLetterPage() {
               <textarea
                 value={template}
                 onChange={(e) => setTemplate(e.target.value)}
-                className="w-full min-h-[300px] px-4 py-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#111827] placeholder:text-[#6B7280] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE5]/15 focus:bg-[#F8FAFC] resize-y leading-relaxed transition-all"
+                className="w-full min-h-[300px] px-4 py-4 rounded-xl border-0 bg-muted text-[15px] font-medium text-foreground placeholder:text-muted-foreground placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-primary/15 focus:bg-background resize-y leading-relaxed transition-all"
                 data-testid="input-template"
               />
               {!isLongEnough && (
-                <p className="text-[12px] text-[#673DE5] mt-2">Minimaal 20 tekens nodig.</p>
+                <p className="text-[12px] mt-2" style={{ color: "var(--yo-teal)" }}>Minimaal 20 tekens nodig.</p>
               )}
             </div>
           )}
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] p-5 z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-5 z-10" style={{ borderColor: "var(--yo-divider)" }}>
         <div className="max-w-xl mx-auto flex flex-col gap-2">
           <Button
             onClick={() => saveMutation.mutate(template)}
             disabled={!isLongEnough || saveMutation.isPending}
-            className="w-full h-[56px] rounded-xl text-[16px] font-semibold bg-[#673DE5] hover:bg-[#5B30D6] disabled:opacity-50 flex items-center gap-2"
+            className="w-full h-[56px] rounded-xl text-[16px] font-semibold bg-primary text-primary-foreground disabled:opacity-50 flex items-center gap-2"
             data-testid="button-save-template"
           >
             <Save className="w-4.5 h-4.5" />
@@ -185,7 +187,7 @@ export default function ApplicationLetterPage() {
               variant="outline"
               onClick={() => saveMutation.mutate(DEFAULT_TEMPLATE)}
               disabled={saveMutation.isPending}
-              className="w-full h-[48px] rounded-xl text-[15px] font-semibold border-[#E5E7EB] text-[#6B7280]"
+              className="w-full h-[48px] rounded-xl text-[15px] font-semibold"
               data-testid="button-use-default"
             >
               Standaardbrief bevestigen en gebruiken

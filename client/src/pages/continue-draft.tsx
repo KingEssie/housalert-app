@@ -102,24 +102,24 @@ export default function ContinueDraftPage() {
   }, [status, draftId, navigate]);
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-6">
+    <div className="min-h-screen bg-background flex items-center justify-center px-6">
       <div className="text-center">
         {(status === "loading" || status === "claiming") && (
           <>
-            <Loader2 className="w-10 h-10 text-[#673DE5] animate-spin mx-auto mb-4" />
-            <p className="text-[16px] text-[#6B7280]">
+            <Loader2 className="w-10 h-10 animate-spin mx-auto mb-4" style={{ color: "var(--yo-teal)" }} />
+            <p className="text-[16px] text-muted-foreground">
               {status === "loading" ? "Zoekopdracht laden..." : "Zoekopdracht overnemen..."}
             </p>
           </>
         )}
         {status === "error" && (
           <>
-            <AlertCircle className="w-10 h-10 text-red-500 mx-auto mb-4" />
-            <p className="text-[16px] text-[#111827] font-semibold mb-2">Zoekopdracht niet gevonden</p>
-            <p className="text-[14px] text-[#6B7280] mb-6">De link is verlopen of ongeldig.</p>
+            <AlertCircle className="w-10 h-10 text-destructive mx-auto mb-4" />
+            <p className="text-[16px] font-semibold mb-2" style={{ color: "var(--yo-dark)" }}>Zoekopdracht niet gevonden</p>
+            <p className="text-[14px] text-muted-foreground mb-6">De link is verlopen of ongeldig.</p>
             <button
               onClick={() => navigate("/")}
-              className="min-h-[48px] px-8 rounded-[14px] bg-[#673DE5] hover:bg-[#5B30D6] text-white font-semibold text-[15px] transition-colors"
+              className="min-h-[48px] px-8 rounded-[14px] bg-primary text-primary-foreground font-semibold text-[15px] transition-colors"
               data-testid="button-continue-home"
             >
               Naar startpagina
@@ -128,8 +128,8 @@ export default function ContinueDraftPage() {
         )}
         {status === "done" && (
           <>
-            <Check className="w-10 h-10 text-green-500 mx-auto mb-4" />
-            <p className="text-[16px] text-[#111827] font-semibold">Zoekopdracht overgenomen!</p>
+            <Check className="w-10 h-10 mx-auto mb-4" style={{ color: "var(--yo-success)" }} />
+            <p className="text-[16px] font-semibold" style={{ color: "var(--yo-dark)" }}>Zoekopdracht overgenomen!</p>
           </>
         )}
       </div>

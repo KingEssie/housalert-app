@@ -8,10 +8,10 @@ import { Button } from "@/components/ui/button";
 import { ApplySheet } from "@/components/apply-sheet";
 
 const FRESH_BADGE_STYLES: Record<string, { bg: string; text: string }> = {
-  net_binnen: { bg: "bg-[#CBFF02]", text: "text-[#000000]" },
-  nieuw: { bg: "bg-[#471EA7]", text: "text-white" },
-  vandaag: { bg: "bg-[#110C29]", text: "text-white" },
-  ouder: { bg: "bg-[#F3F4F6]", text: "text-[#6B7280]" },
+  net_binnen: { bg: "bg-[#2DD4BF]", text: "text-[#000000]" },
+  nieuw: { bg: "bg-[#1A8A7D]", text: "text-white" },
+  vandaag: { bg: "bg-[#1A1A1A]", text: "text-white" },
+  ouder: { bg: "bg-[var(--yo-surface)]", text: "text-[var(--yo-muted)]" },
 };
 
 const FRESH_LABEL_TEXT: Record<string, string> = {
@@ -22,12 +22,12 @@ const FRESH_LABEL_TEXT: Record<string, string> = {
 };
 
 const CITY_GRADIENTS: Record<string, string> = {
-  berlin: "from-[#673DE5] to-[#471EA7]",
-  münchen: "from-[#673DE5] to-[#5B30D6]",
-  hamburg: "from-[#471EA7] to-[#673DE5]",
-  frankfurt: "from-[#5B30D6] to-[#471EA7]",
-  köln: "from-[#673DE5] to-[#471EA7]",
-  default: "from-[#673DE5] to-[#471EA7]",
+  berlin: "from-[#2DD4BF] to-[#1A8A7D]",
+  münchen: "from-[#2DD4BF] to-[#25BBA8]",
+  hamburg: "from-[#1A8A7D] to-[#2DD4BF]",
+  frankfurt: "from-[#25BBA8] to-[#1A8A7D]",
+  köln: "from-[#2DD4BF] to-[#1A8A7D]",
+  default: "from-[#2DD4BF] to-[#1A8A7D]",
 };
 
 function getCityGradient(city: string): string {
@@ -107,15 +107,15 @@ export default function ListingDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
+      <div className="min-h-screen bg-[var(--yo-surface)] flex flex-col">
         <PageHeader title="" />
         <div className="animate-pulse">
-          <div className="h-[260px] bg-[#E5E7EB]" />
+          <div className="h-[260px] bg-[var(--yo-divider)]" />
           <div className="max-w-xl mx-auto w-full px-5 pt-5 space-y-4">
-            <div className="bg-white rounded-[22px] border border-[#E5E7EB] p-5 space-y-3">
-              <div className="h-5 bg-[#F3F4F6] rounded w-28" />
-              <div className="h-7 bg-[#F3F4F6] rounded w-3/4" />
-              <div className="h-4 bg-[#F3F4F6] rounded w-1/2" />
+            <div className="bg-white rounded-2xl border border-[var(--yo-divider)] p-5 space-y-3">
+              <div className="h-5 bg-[var(--yo-surface)] rounded w-28" />
+              <div className="h-7 bg-[var(--yo-surface)] rounded w-3/4" />
+              <div className="h-4 bg-[var(--yo-surface)] rounded w-1/2" />
             </div>
           </div>
         </div>
@@ -125,13 +125,13 @@ export default function ListingDetailPage() {
 
   if (isError || !listing) {
     return (
-      <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
+      <div className="min-h-screen bg-[var(--yo-surface)] flex flex-col">
         <PageHeader title="" />
         <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-10">
-          <div className="bg-white rounded-[22px] border border-[#E5E7EB] p-8 text-center">
-            <p className="text-[18px] font-bold text-[#111827] mb-2">Advertentie niet gevonden</p>
-            <p className="text-[13px] text-[#6B7280] mb-4">Deze advertentie bestaat niet meer of is verwijderd.</p>
-            <Button onClick={() => navigate("/dashboard")} className="h-[48px] rounded-[14px] bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold" data-testid="button-back-dashboard">
+          <div className="bg-white rounded-2xl border border-[var(--yo-divider)] p-8 text-center">
+            <p className="text-[18px] font-bold text-[var(--yo-dark)] mb-2">Advertentie niet gevonden</p>
+            <p className="text-[13px] text-[var(--yo-muted)] mb-4">Deze advertentie bestaat niet meer of is verwijderd.</p>
+            <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-[14px] bg-[var(--yo-teal)] text-white text-[15px] font-bold" data-testid="button-back-dashboard">
               Terug naar dashboard
             </Button>
           </div>
@@ -145,14 +145,14 @@ export default function ListingDetailPage() {
   const gradient = getCityGradient(listing.city);
 
   const scoreColor = listing.match_score != null
-    ? listing.match_score >= 95 ? "bg-[#CBFF02] text-[#000000]"
-    : listing.match_score >= 80 ? "bg-[#471EA7] text-white"
-    : listing.match_score >= 65 ? "bg-[#110C29] text-white"
-    : "bg-[#F3F4F6] text-[#6B7280]"
+    ? listing.match_score >= 95 ? "bg-[#2DD4BF] text-[#000000]"
+    : listing.match_score >= 80 ? "bg-[#1A8A7D] text-white"
+    : listing.match_score >= 65 ? "bg-[#1A1A1A] text-white"
+    : "bg-[var(--yo-surface)] text-[var(--yo-muted)]"
     : "";
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
+    <div className="min-h-screen bg-[var(--yo-surface)] flex flex-col">
       <PageHeader title="" />
 
       <div className="relative">
@@ -188,7 +188,7 @@ export default function ListingDetailPage() {
 
       <main className="flex-1 max-w-xl mx-auto w-full px-5 -mt-6 relative z-10 pb-36">
         <div className="space-y-4">
-          <div className="bg-white rounded-[22px] border border-[#E5E7EB] p-5">
+          <div className="bg-white rounded-2xl border border-[var(--yo-divider)] p-5">
             {listing.match_score != null && listing.match_label && (
               <div className="mb-3" data-testid="listing-score-badge">
                 <span className={`inline-flex text-[13px] font-bold px-3.5 py-1.5 rounded-full ${scoreColor}`}>
@@ -197,11 +197,11 @@ export default function ListingDetailPage() {
               </div>
             )}
 
-            <h1 className="text-[24px] font-[800] text-[#111827] leading-[1.2] tracking-[-0.02em] mb-2" data-testid="text-listing-title">
+            <h1 className="text-[24px] font-[800] text-[var(--yo-dark)] leading-[1.2] tracking-[-0.02em] uppercase mb-2" data-testid="text-listing-title">
               {listing.title}
             </h1>
 
-            <div className="flex items-center gap-1.5 text-[14px] text-[#6B7280] mb-4">
+            <div className="flex items-center gap-1.5 text-[14px] text-[var(--yo-muted)] mb-4">
               <MapPin className="w-4 h-4 flex-shrink-0" />
               <span data-testid="text-listing-location">
                 {listing.city}{listing.district ? `, ${listing.district}` : ""}
@@ -210,64 +210,64 @@ export default function ListingDetailPage() {
 
             {listing.price > 0 && (
               <div className="flex items-baseline gap-1 mb-1">
-                <span className="text-[28px] font-[800] text-[#111827]" data-testid="text-listing-price">€{listing.price}</span>
-                <span className="text-[15px] font-medium text-[#6B7280]">/ mnd</span>
+                <span className="text-[28px] font-[800] text-[var(--yo-dark)]" data-testid="text-listing-price">€{listing.price}</span>
+                <span className="text-[15px] font-medium text-[var(--yo-muted)]">/ mnd</span>
               </div>
             )}
           </div>
 
-          <div className="bg-white rounded-[22px] border border-[#E5E7EB] p-5">
-            <h2 className="text-[16px] font-bold text-[#111827] mb-4">Details</h2>
+          <div className="bg-white rounded-2xl border border-[var(--yo-divider)] p-5">
+            <h2 className="text-section-title mb-4">Details</h2>
             <div className="grid grid-cols-2 gap-4">
               {listing.bedrooms > 0 && (
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#DCDBFA] flex items-center justify-center">
-                    <BedDouble className="w-5 h-5 text-[#673DE5]" />
+                  <div className="w-10 h-10 rounded-xl bg-[var(--yo-teal-light)] flex items-center justify-center">
+                    <BedDouble className="w-5 h-5 text-[var(--yo-teal)]" />
                   </div>
                   <div>
-                    <p className="text-[12px] text-[#9CA3AF]">Slaapkamers</p>
-                    <p className="text-[15px] font-semibold text-[#111827]" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
+                    <p className="text-[12px] text-[var(--yo-muted)]">Slaapkamers</p>
+                    <p className="text-[15px] font-semibold text-[var(--yo-dark)]" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
                   </div>
                 </div>
               )}
 
               {listing.size_m2 > 0 && (
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#DCDBFA] flex items-center justify-center">
-                    <Ruler className="w-5 h-5 text-[#673DE5]" />
+                  <div className="w-10 h-10 rounded-xl bg-[var(--yo-teal-light)] flex items-center justify-center">
+                    <Ruler className="w-5 h-5 text-[var(--yo-teal)]" />
                   </div>
                   <div>
-                    <p className="text-[12px] text-[#9CA3AF]">Oppervlakte</p>
-                    <p className="text-[15px] font-semibold text-[#111827]" data-testid="text-listing-size">{listing.size_m2} m²</p>
+                    <p className="text-[12px] text-[var(--yo-muted)]">Oppervlakte</p>
+                    <p className="text-[15px] font-semibold text-[var(--yo-dark)]" data-testid="text-listing-size">{listing.size_m2} m²</p>
                   </div>
                 </div>
               )}
 
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#DCDBFA] flex items-center justify-center">
-                  <Globe className="w-5 h-5 text-[#673DE5]" />
+                <div className="w-10 h-10 rounded-xl bg-[var(--yo-teal-light)] flex items-center justify-center">
+                  <Globe className="w-5 h-5 text-[var(--yo-teal)]" />
                 </div>
                 <div>
-                  <p className="text-[12px] text-[#9CA3AF]">Bron</p>
-                  <p className="text-[15px] font-semibold text-[#111827] capitalize" data-testid="text-listing-source">{listing.source}</p>
+                  <p className="text-[12px] text-[var(--yo-muted)]">Bron</p>
+                  <p className="text-[15px] font-semibold text-[var(--yo-dark)] capitalize" data-testid="text-listing-source">{listing.source}</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#DCDBFA] flex items-center justify-center">
-                  <Clock className="w-5 h-5 text-[#673DE5]" />
+                <div className="w-10 h-10 rounded-xl bg-[var(--yo-teal-light)] flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-[var(--yo-teal)]" />
                 </div>
                 <div>
-                  <p className="text-[12px] text-[#9CA3AF]">Geplaatst</p>
-                  <p className="text-[15px] font-semibold text-[#111827]" data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</p>
+                  <p className="text-[12px] text-[var(--yo-muted)]">Geplaatst</p>
+                  <p className="text-[15px] font-semibold text-[var(--yo-dark)]" data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</p>
                 </div>
               </div>
             </div>
           </div>
 
           {listing.match_reasons && listing.match_reasons.length > 0 && (
-            <div className="bg-white rounded-[22px] border border-[#E5E7EB] p-5" data-testid="section-why-match">
-              <h2 className="text-[16px] font-bold text-[#111827] mb-4">Waarom deze match?</h2>
+            <div className="bg-white rounded-2xl border border-[var(--yo-divider)] p-5" data-testid="section-why-match">
+              <h2 className="text-section-title mb-4">Waarom deze match?</h2>
               <div className="flex flex-col gap-3">
                 {listing.match_reasons.map((reason) => {
                   const detail = MATCH_REASON_DETAIL[reason];
@@ -277,9 +277,9 @@ export default function ListingDetailPage() {
                         <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
                       </div>
                       <div>
-                        <p className="text-[14px] font-semibold text-[#111827]">{detail?.label ?? reason}</p>
+                        <p className="text-[14px] font-semibold text-[var(--yo-dark)]">{detail?.label ?? reason}</p>
                         {detail?.description && (
-                          <p className="text-[13px] text-[#6B7280] mt-0.5">{detail.description}</p>
+                          <p className="text-[13px] text-[var(--yo-muted)] mt-0.5">{detail.description}</p>
                         )}
                       </div>
                     </div>
@@ -291,26 +291,27 @@ export default function ListingDetailPage() {
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] p-4 pb-5 z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[var(--yo-divider)] p-4 pb-5 z-10">
         <div className="max-w-xl mx-auto flex flex-col gap-2">
           <div className="flex gap-2">
-            <button
+            <Button
               onClick={() => setApplyOpen(true)}
-              className="flex-1 h-[52px] rounded-[14px] bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold transition-colors flex items-center justify-center gap-2"
+              className="flex-1 h-[56px] rounded-[14px] bg-[var(--yo-teal)] text-white text-[15px] font-bold flex items-center justify-center gap-2"
               data-testid="button-reageer-detail"
             >
               <Zap className="w-4 h-4" />
               Reageer direct
-            </button>
+            </Button>
             {listing.url && (
               <a href={listing.url} target="_blank" rel="noopener noreferrer">
-                <button
-                  className="h-[52px] px-5 rounded-[14px] border border-[#E5E7EB] bg-white text-[#111827] text-[15px] font-semibold hover:bg-[#F8FAFC] transition-colors flex items-center gap-2"
+                <Button
+                  variant="outline"
+                  className="h-[56px] px-5 rounded-[14px] border border-[var(--yo-divider)] bg-white text-[var(--yo-dark)] text-[15px] font-bold flex items-center gap-2"
                   data-testid="button-view-original"
                 >
                   <ExternalLink className="w-4 h-4" />
                   Open originele advertentie
-                </button>
+                </Button>
               </a>
             )}
           </div>

@@ -18,14 +18,14 @@ interface PopularListing {
 }
 
 const CITY_GRADIENTS: Record<string, string> = {
-  berlin: "from-[#673DE5] to-[#471EA7]",
-  münchen: "from-[#673DE5] to-[#DCDBFA]",
-  hamburg: "from-[#471EA7] to-[#673DE5]",
-  frankfurt: "from-[#673DE5] to-[#471EA7]",
-  köln: "from-[#471EA7] to-[#DCDBFA]",
-  düsseldorf: "from-[#673DE5] to-[#DCDBFA]",
-  stuttgart: "from-[#471EA7] to-[#673DE5]",
-  default: "from-[#673DE5] to-[#471EA7]",
+  berlin: "from-[var(--yo-teal)] to-[var(--yo-teal-hover)]",
+  münchen: "from-[var(--yo-teal)] to-[var(--yo-teal-light)]",
+  hamburg: "from-[var(--yo-teal-hover)] to-[var(--yo-teal)]",
+  frankfurt: "from-[var(--yo-teal)] to-[var(--yo-teal-hover)]",
+  köln: "from-[var(--yo-teal-hover)] to-[var(--yo-teal-light)]",
+  düsseldorf: "from-[var(--yo-teal)] to-[var(--yo-teal-light)]",
+  stuttgart: "from-[var(--yo-teal-hover)] to-[var(--yo-teal)]",
+  default: "from-[var(--yo-teal)] to-[var(--yo-teal-hover)]",
 };
 
 function getCityGradient(city: string): string {
@@ -76,25 +76,25 @@ function PopularCard({ listing }: { listing: PopularListing }) {
 
       <div className="p-3 flex flex-col gap-1.5">
         <h3
-          className="font-[700] text-[#111827] text-[14px] leading-[1.3] line-clamp-2"
+          className="font-[700] text-[var(--yo-dark)] text-[14px] leading-[1.3] line-clamp-2"
           data-testid={`text-popular-title-${listing.listing_id}`}
         >
           {listing.title}
         </h3>
 
         {listing.price > 0 && (
-          <span className="text-[15px] font-bold text-[#111827]">
+          <span className="text-[15px] font-bold text-[var(--yo-dark)]">
             {"\u20AC"}{listing.price}
-            <span className="text-[11px] font-normal text-[#6B7280]">/mnd</span>
+            <span className="text-[11px] font-normal text-[var(--yo-muted)]">/mnd</span>
           </span>
         )}
 
-        <div className="flex items-center gap-1 text-[12px] text-[#6B7280]">
+        <div className="flex items-center gap-1 text-[12px] text-[var(--yo-muted)]">
           <MapPin className="w-3 h-3 flex-shrink-0" />
           <span className="truncate">{listing.city}</span>
         </div>
 
-        <div className="flex items-center gap-2 text-[11px] text-[#6B7280]">
+        <div className="flex items-center gap-2 text-[11px] text-[var(--yo-muted)]">
           {listing.bedrooms > 0 && (
             <span className="flex items-center gap-0.5">
               <BedDouble className="w-3 h-3" />
@@ -123,11 +123,11 @@ export function PopulairVandaagSection() {
       <div className="flex flex-col gap-3">
         <div>
           <h2 className="text-section-title">Populair vandaag</h2>
-          <p className="text-[13px] font-[500] text-[#6B7280] mt-0.5">Woningen die veel aandacht krijgen</p>
+          <p className="text-[13px] font-[500] text-[var(--yo-muted)] mt-0.5">Woningen die veel aandacht krijgen</p>
         </div>
         <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="flex-shrink-0 w-[220px] h-[220px] bg-[#F3F4F6] rounded-2xl animate-pulse" />
+            <div key={i} className="flex-shrink-0 w-[220px] h-[220px] bg-[var(--yo-surface)] rounded-2xl animate-pulse" />
           ))}
         </div>
       </div>
@@ -140,10 +140,10 @@ export function PopulairVandaagSection() {
     <div className="flex flex-col gap-3" data-testid="section-populair-vandaag">
       <div>
         <div className="flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-[#6B7280]" />
+          <TrendingUp className="w-4 h-4 text-[var(--yo-muted)]" />
           <h2 className="text-section-title">Populair vandaag</h2>
         </div>
-        <p className="text-[13px] text-[#6B7280] mt-0.5 ml-6">Woningen die veel aandacht krijgen</p>
+        <p className="text-[13px] text-[var(--yo-muted)] mt-0.5 ml-6">Woningen die veel aandacht krijgen</p>
       </div>
       <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 snap-x snap-mandatory scrollbar-none">
         {listings.map((listing) => (

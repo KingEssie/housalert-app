@@ -123,7 +123,7 @@ export default function NotificationSettingsPage() {
   if (authLoading) return null;
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       <PageHeader title="Meldingen" onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <main className="flex-1 max-w-xl mx-auto w-full px-5 py-6 flex flex-col gap-6">
@@ -138,7 +138,7 @@ export default function NotificationSettingsPage() {
 
         {loadingSettings ? (
           <div className="flex items-center justify-center py-20" data-testid="loading-settings">
-            <Loader2 className="w-6 h-6 animate-spin text-[#6B7280]" />
+            <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
           </div>
         ) : (
           <div className="flex flex-col gap-6">
@@ -146,7 +146,7 @@ export default function NotificationSettingsPage() {
               <ListRow
                 title="E-mail"
                 subtitle="Ontvang matches via e-mail"
-                icon={<div className="w-10 h-10 rounded-full bg-[#DCDBFA] flex items-center justify-center"><Mail className="w-[18px] h-[18px] text-[#673DE5]" /></div>}
+                icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--yo-teal-light)" }}><Mail className="w-[18px] h-[18px]" style={{ color: "var(--yo-teal)" }} /></div>}
                 trailing={
                   <Switch
                     checked={emailEnabled}
@@ -160,7 +160,7 @@ export default function NotificationSettingsPage() {
               <ListRow
                 title="SMS"
                 subtitle="Ontvang matches via SMS"
-                icon={<div className="w-10 h-10 rounded-full bg-[#DCDBFA] flex items-center justify-center"><Phone className="w-[18px] h-[18px] text-[#673DE5]" /></div>}
+                icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--yo-teal-light)" }}><Phone className="w-[18px] h-[18px]" style={{ color: "var(--yo-teal)" }} /></div>}
                 trailing={
                   <Switch
                     checked={smsEnabled}
@@ -174,7 +174,7 @@ export default function NotificationSettingsPage() {
               <ListRow
                 title="WhatsApp"
                 subtitle="Ontvang matches via WhatsApp"
-                icon={<div className="w-10 h-10 rounded-full bg-[#DCDBFA] flex items-center justify-center"><MessageSquare className="w-[18px] h-[18px] text-[#673DE5]" /></div>}
+                icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--yo-teal-light)" }}><MessageSquare className="w-[18px] h-[18px]" style={{ color: "var(--yo-teal)" }} /></div>}
                 trailing={
                   <Switch
                     checked={whatsappEnabled}
@@ -193,7 +193,7 @@ export default function NotificationSettingsPage() {
                     Nodig voor SMS en WhatsApp meldingen. Gebruik internationaal formaat.
                   </p>
                   <div className="flex flex-col gap-2">
-                    <Label htmlFor="phone" className="text-[14px] font-semibold text-[#111827]">Telefoonnummer (E.164)</Label>
+                    <Label htmlFor="phone" className="text-[14px] font-semibold" style={{ color: "var(--yo-dark)" }}>Telefoonnummer (E.164)</Label>
                     <Input
                       id="phone"
                       type="tel"
@@ -204,7 +204,7 @@ export default function NotificationSettingsPage() {
                         if (phoneError) validatePhone(e.target.value);
                       }}
                       onBlur={() => validatePhone(phoneInput)}
-                      className="h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#111827] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE5]/15 focus:bg-[#F8FAFC] transition-all"
+                      className="h-[52px] px-4 rounded-xl border-0 bg-muted text-[15px] font-medium text-foreground placeholder:text-muted-foreground placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
                       data-testid="input-phone"
                     />
                     {phoneError && (
@@ -221,7 +221,7 @@ export default function NotificationSettingsPage() {
               <Button
                 onClick={handleSave}
                 disabled={saving}
-                className="h-[52px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold px-8"
+                className="h-[52px] rounded-xl bg-primary text-primary-foreground text-[15px] font-semibold px-8"
                 data-testid="button-save"
               >
                 {saving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
@@ -230,7 +230,7 @@ export default function NotificationSettingsPage() {
               <Button
                 variant="outline"
                 onClick={() => navigate("/dashboard?tab=profiel")}
-                className="h-[48px] rounded-xl border-[#E5E7EB] text-[#111827] text-[15px] font-semibold"
+                className="h-[48px] rounded-xl text-[15px] font-semibold"
                 data-testid="button-cancel"
               >
                 Annuleren

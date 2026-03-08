@@ -148,10 +148,10 @@ const TASK_DESCRIPTIONS: Record<string, string> = {
 };
 
 function getStatusLabel(score: number): { label: string; color: string; bg: string } {
-  if (score >= 80) return { label: "Klaar om snel te reageren", color: "text-[#111827]", bg: "bg-[#EAF9DF]" };
-  if (score >= 60) return { label: "Goed voorbereid", color: "text-[#111827]", bg: "bg-[#EAF9DF]" };
-  if (score >= 30) return { label: "Op weg", color: "text-[#111827]", bg: "bg-[#EAF9DF]" };
-  return { label: "Net begonnen", color: "text-[#6B7280]", bg: "bg-[#F8FAFC]" };
+  if (score >= 80) return { label: "Klaar om snel te reageren", color: "text-[var(--yo-dark)]", bg: "bg-[var(--yo-success)]/10" };
+  if (score >= 60) return { label: "Goed voorbereid", color: "text-[var(--yo-dark)]", bg: "bg-[var(--yo-success)]/10" };
+  if (score >= 30) return { label: "Op weg", color: "text-[var(--yo-dark)]", bg: "bg-[var(--yo-success)]/10" };
+  return { label: "Net begonnen", color: "text-[var(--yo-muted)]", bg: "bg-[var(--yo-surface)]" };
 }
 
 function getRecommendation(score: number, tasks: Task[]): string {
@@ -169,9 +169,9 @@ export function ProfileStrengthCard() {
   if (isLoading || !data) {
     return (
       <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
-        <div className="h-4 bg-[#F8FAFC] rounded w-32 mb-3" />
-        <div className="h-6 bg-[#F8FAFC] rounded w-20 mb-2" />
-        <div className="h-2 bg-[#F8FAFC] rounded w-full" />
+        <div className="h-4 bg-[var(--yo-surface)] rounded w-32 mb-3" />
+        <div className="h-6 bg-[var(--yo-surface)] rounded w-20 mb-2" />
+        <div className="h-2 bg-[var(--yo-surface)] rounded w-full" />
       </div>
     );
   }
@@ -186,10 +186,10 @@ export function ProfileStrengthCard() {
     <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6" data-testid="card-profile-strength">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-[#DCDBFA] flex items-center justify-center">
-            <Shield className="w-4 h-4 text-[#673DE5]" />
+          <div className="w-8 h-8 rounded-full bg-[var(--yo-teal-light)] flex items-center justify-center">
+            <Shield className="w-4 h-4 text-[var(--yo-teal)]" />
           </div>
-          <h3 className="text-[15px] font-semibold text-[#111827]">Profielsterkte</h3>
+          <h3 className="text-[15px] font-semibold text-[var(--yo-dark)]">Profielsterkte</h3>
         </div>
         <span className={`text-[13px] font-medium px-2.5 py-1 rounded-full ${status.bg} ${status.color}`} data-testid="text-status-label">
           {status.label}
@@ -197,22 +197,22 @@ export function ProfileStrengthCard() {
       </div>
 
       <div className="flex items-end gap-2 mb-3">
-        <span className="text-[32px] font-bold text-[#111827] leading-none" data-testid="text-profile-score">{score}</span>
-        <span className="text-[14px] text-[#6B7280] mb-1">/ {maxScore}</span>
+        <span className="text-[32px] font-bold text-[var(--yo-dark)] leading-none" data-testid="text-profile-score">{score}</span>
+        <span className="text-[14px] text-[var(--yo-muted)] mb-1">/ {maxScore}</span>
       </div>
 
-      <div className="w-full h-2 bg-[#F8FAFC] rounded-full overflow-hidden mb-3">
+      <div className="w-full h-2 bg-[var(--yo-surface)] rounded-full overflow-hidden mb-3">
         <div
           className="h-full rounded-full transition-all duration-500"
           style={{
             width: `${pct}%`,
-            background: pct >= 30 ? "#8BEA63" : "#6B7280",
+            background: pct >= 30 ? "var(--yo-success)" : "var(--yo-muted)",
           }}
           data-testid="progress-profile-strength"
         />
       </div>
 
-      <p className="text-[13px] text-[#6B7280]" data-testid="text-recommendation">{recommendation}</p>
+      <p className="text-[13px] text-[var(--yo-muted)]" data-testid="text-recommendation">{recommendation}</p>
     </div>
   );
 }
@@ -224,8 +224,8 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
   if (isLoading || !data) {
     return (
       <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
-        <div className="h-4 bg-[#F8FAFC] rounded w-40 mb-3" />
-        <div className="h-3 bg-[#F8FAFC] rounded w-24" />
+        <div className="h-4 bg-[var(--yo-surface)] rounded w-40 mb-3" />
+        <div className="h-3 bg-[var(--yo-surface)] rounded w-24" />
       </div>
     );
   }
@@ -242,73 +242,73 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
       >
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <Sparkles className="w-4 h-4 text-[#673DE5]" />
-            <h3 className="text-[15px] font-semibold text-[#111827]">Rond je account af</h3>
+            <Sparkles className="w-4 h-4 text-[var(--yo-teal)]" />
+            <h3 className="text-[15px] font-semibold text-[var(--yo-dark)]">Rond je account af</h3>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-[13px] text-[#6B7280]">
+            <span className="text-[13px] text-[var(--yo-muted)]">
               {completedCount}/{totalCount} taken voltooid
             </span>
-            <span className="text-[13px] font-medium text-[#78D953]">{percentage}%</span>
+            <span className="text-[13px] font-medium text-[var(--yo-success)]">{percentage}%</span>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 relative">
             <svg className="w-10 h-10 -rotate-90" viewBox="0 0 36 36">
-              <circle cx="18" cy="18" r="15.5" fill="none" stroke="#F8FAFC" strokeWidth="3" />
+              <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--yo-surface)" strokeWidth="3" />
               <circle
                 cx="18"
                 cy="18"
                 r="15.5"
                 fill="none"
-                stroke="#8BEA63"
+                stroke="var(--yo-success)"
                 strokeWidth="3"
                 strokeDasharray={`${(percentage / 100) * 97.4} 97.4`}
                 strokeLinecap="round"
                 className="transition-all duration-500"
               />
             </svg>
-            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-[#111827]">
+            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-[var(--yo-dark)]">
               {percentage}%
             </span>
           </div>
           {expanded ? (
-            <ChevronUp className="w-4 h-4 text-[#6B7280]" />
+            <ChevronUp className="w-4 h-4 text-[var(--yo-muted)]" />
           ) : (
-            <ChevronDown className="w-4 h-4 text-[#6B7280]" />
+            <ChevronDown className="w-4 h-4 text-[var(--yo-muted)]" />
           )}
         </div>
       </button>
 
       {expanded && (
-        <div className="border-t border-[#E5E7EB] px-6 pb-3">
+        <div className="border-t border-[var(--yo-divider)] px-6 pb-3">
           {tasks.map((task) => {
             const Icon = TASK_ICONS[task.id] || Circle;
             return (
               <button
                 key={task.id}
                 onClick={() => !task.completed && onTaskClick(task.id)}
-                className={`w-full flex items-center gap-3 py-3.5 border-b border-[#F8FAFC] last:border-0 text-left ${
-                  task.completed ? "opacity-60" : "hover:bg-[#F8FAFC]"
+                className={`w-full flex items-center gap-3 py-3.5 border-b border-[var(--yo-surface)] last:border-0 text-left ${
+                  task.completed ? "opacity-60" : "hover:bg-[var(--yo-surface)]"
                 } transition-colors -mx-1 px-1 rounded-lg`}
                 data-testid={`task-${task.id}`}
                 disabled={task.completed}
               >
                 {task.completed ? (
-                  <div className="w-5 h-5 rounded-full bg-[#EAF9DF] flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
+                  <div className="w-5 h-5 rounded-full bg-[var(--yo-success)]/10 flex items-center justify-center flex-shrink-0">
+                    <CheckCircle2 className="w-4 h-4 text-[var(--yo-success)]" />
                   </div>
                 ) : (
-                  <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
+                  <div className="w-5 h-5 rounded-full border-2 border-[var(--yo-divider)] flex-shrink-0" />
                 )}
-                <Icon className={`w-4 h-4 flex-shrink-0 ${task.completed ? "text-[#6B7280]" : "text-[#673DE5]"}`} />
+                <Icon className={`w-4 h-4 flex-shrink-0 ${task.completed ? "text-[var(--yo-muted)]" : "text-[var(--yo-teal)]"}`} />
                 <div className="flex-1 min-w-0">
-                  <p className={`text-[14px] font-medium ${task.completed ? "text-[#6B7280] line-through" : "text-[#111827]"}`}>
+                  <p className={`text-[14px] font-medium ${task.completed ? "text-[var(--yo-muted)] line-through" : "text-[var(--yo-dark)]"}`}>
                     {task.label}
                   </p>
-                  <p className="text-[11px] text-[#6B7280]">+{task.score} punten</p>
+                  <p className="text-[11px] text-[var(--yo-muted)]">+{task.score} punten</p>
                 </div>
-                {!task.completed && <ArrowRight className="w-4 h-4 text-[#6B7280] flex-shrink-0" />}
+                {!task.completed && <ArrowRight className="w-4 h-4 text-[var(--yo-muted)] flex-shrink-0" />}
               </button>
             );
           })}
@@ -395,22 +395,22 @@ function TaskModal({
         className="bg-white w-full max-w-md rounded-t-[24px] sm:rounded-[24px] max-h-[85vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 bg-white border-b border-[#E5E7EB] p-6 flex items-center justify-between rounded-t-[24px]">
-          <h2 className="text-[20px] font-[700] text-[#111827] tracking-[-0.02em]">{title}</h2>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F8FAFC] flex items-center justify-center" data-testid="button-close-modal">
-            <X className="w-4 h-4 text-[#6B7280]" />
+        <div className="sticky top-0 bg-white border-b border-[var(--yo-divider)] p-6 flex items-center justify-between rounded-t-[24px]">
+          <h2 className="text-[20px] font-[700] text-[var(--yo-dark)] tracking-[-0.02em]">{title}</h2>
+          <button onClick={onClose} className="w-8 h-8 rounded-full bg-[var(--yo-surface)] flex items-center justify-center" data-testid="button-close-modal">
+            <X className="w-4 h-4 text-[var(--yo-muted)]" />
           </button>
         </div>
 
         <div className="p-5">
-          <p className="text-[14px] text-[#6B7280] mb-5">{description}</p>
+          <p className="text-[14px] text-[var(--yo-muted)] mb-5">{description}</p>
 
           {taskId === "alerts" && (
             <div className="flex flex-col gap-3">
-              <p className="text-[13px] text-[#111827] font-medium">Ga naar meldingsinstellingen om je kanalen te activeren.</p>
+              <p className="text-[13px] text-[var(--yo-dark)] font-medium">Ga naar meldingsinstellingen om je kanalen te activeren.</p>
               <Button
                 onClick={() => { onClose(); navigate("/settings/notifications"); }}
-                className="w-full h-[48px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
+                className="w-full h-[48px] rounded-xl bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[15px] font-semibold"
                 data-testid="button-goto-notifications"
               >
                 <Bell className="w-4 h-4 mr-2" />
@@ -421,20 +421,20 @@ function TaskModal({
 
           {taskId === "search_buddy" && (
             <div className="flex flex-col gap-3">
-              <label className="text-[13px] font-medium text-[#111827]">E-mailadres zoekbuddy</label>
+              <label className="text-[13px] font-medium text-[var(--yo-dark)]">E-mailadres zoekbuddy</label>
               <input
                 type="email"
                 value={buddyEmail}
                 onChange={(e) => setBuddyEmail(e.target.value)}
                 placeholder="buddy@voorbeeld.nl"
-                className="w-full h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#111827] placeholder:text-[#6B7280] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE5]/15 focus:bg-[#F8FAFC] transition-all"
+                className="w-full h-[52px] px-4 rounded-xl border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-[var(--yo-surface)] transition-all"
                 data-testid="input-buddy-email"
               />
-              <p className="text-[13px] font-[500] text-[#6B7280]">Je buddy ontvangt dezelfde meldingen als jij.</p>
+              <p className="text-[13px] font-[500] text-[var(--yo-muted)]">Je buddy ontvangt dezelfde meldingen als jij.</p>
               <Button
                 onClick={() => handleSave({ search_buddy_email: buddyEmail }, "Zoekbuddy opgeslagen!")}
                 disabled={!buddyEmail.includes("@") || updateProfileData.isPending}
-                className="w-full h-[48px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold disabled:opacity-50"
+                className="w-full h-[48px] rounded-xl bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[15px] font-semibold disabled:opacity-50"
                 data-testid="button-save-buddy"
               >
                 {updateProfileData.isPending ? "Opslaan..." : "Opslaan"}
@@ -444,12 +444,12 @@ function TaskModal({
 
           {taskId === "search_optimize" && (
             <div className="flex flex-col gap-3">
-              <p className="text-[13px] text-[#111827] font-medium">
+              <p className="text-[13px] text-[var(--yo-dark)] font-medium">
                 Voeg meer zoekprofielen toe of verfijn je huidige filters voor betere matches.
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard"); }}
-                className="w-full h-[48px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
+                className="w-full h-[48px] rounded-xl bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[15px] font-semibold"
                 data-testid="button-goto-filters"
               >
                 <Search className="w-4 h-4 mr-2" />
@@ -460,12 +460,12 @@ function TaskModal({
 
           {taskId === "application_template" && (
             <div className="flex flex-col gap-3">
-              <p className="text-[13px] text-[#111827] font-medium">
+              <p className="text-[13px] text-[var(--yo-dark)] font-medium">
                 Bereid een standaard aanmeldingsbrief voor met automatische invulling van woninggegevens.
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/application-letter"); }}
-                className="w-full h-[48px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
+                className="w-full h-[48px] rounded-xl bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[15px] font-semibold"
                 data-testid="button-goto-letter"
               >
                 <FileText className="w-4 h-4 mr-2" />
@@ -478,23 +478,23 @@ function TaskModal({
             <div className="flex flex-col gap-4">
               {DOCUMENT_CHECKLIST.map((group) => (
                 <div key={group.group}>
-                  <h4 className="text-[13px] font-semibold text-[#111827] mb-2">{group.group}</h4>
+                  <h4 className="text-[13px] font-semibold text-[var(--yo-dark)] mb-2">{group.group}</h4>
                   <div className="flex flex-col gap-1">
                     {group.items.map((item) => (
                       <button
                         key={item.id}
                         onClick={() => setChecklist((prev) => ({ ...prev, [item.id]: !prev[item.id] }))}
-                        className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-[#F8FAFC] transition-colors text-left"
+                        className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-[var(--yo-surface)] transition-colors text-left"
                         data-testid={`check-${item.id}`}
                       >
                         {checklist[item.id] ? (
-                          <div className="w-5 h-5 rounded-full bg-[#EAF9DF] flex items-center justify-center flex-shrink-0">
-                            <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
+                          <div className="w-5 h-5 rounded-full bg-[var(--yo-success)]/10 flex items-center justify-center flex-shrink-0">
+                            <CheckCircle2 className="w-4 h-4 text-[var(--yo-success)]" />
                           </div>
                         ) : (
-                          <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
+                          <div className="w-5 h-5 rounded-full border-2 border-[var(--yo-divider)] flex-shrink-0" />
                         )}
-                        <span className={`text-[14px] ${checklist[item.id] ? "text-[#6B7280] line-through" : "text-[#111827]"}`}>
+                        <span className={`text-[14px] ${checklist[item.id] ? "text-[var(--yo-muted)] line-through" : "text-[var(--yo-dark)]"}`}>
                           {item.label}
                         </span>
                       </button>
@@ -505,7 +505,7 @@ function TaskModal({
               <Button
                 onClick={() => handleSave({ document_checklist: checklist }, "Documentenlijst opgeslagen!")}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[48px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold disabled:opacity-50"
+                className="w-full h-[48px] rounded-xl bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[15px] font-semibold disabled:opacity-50"
                 data-testid="button-save-documents"
               >
                 {updateProfileData.isPending ? "Opslaan..." : "Opslaan"}
@@ -515,19 +515,19 @@ function TaskModal({
 
           {taskId === "phone" && (
             <div className="flex flex-col gap-3">
-              <label className="text-[13px] font-medium text-[#111827]">Telefoonnummer (internationaal)</label>
+              <label className="text-[13px] font-medium text-[var(--yo-dark)]">Telefoonnummer (internationaal)</label>
               <input
                 type="tel"
                 value={phoneInput}
                 onChange={(e) => setPhoneInput(e.target.value)}
                 placeholder="+49 170 1234567"
-                className="w-full h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#111827] placeholder:text-[#6B7280] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE5]/15 focus:bg-[#F8FAFC] transition-all"
+                className="w-full h-[52px] px-4 rounded-xl border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-[var(--yo-surface)] transition-all"
                 data-testid="input-phone"
               />
-              <p className="text-[13px] font-[500] text-[#6B7280]">Gebruik internationaal formaat, bijv. +49 170 1234567</p>
+              <p className="text-[13px] font-[500] text-[var(--yo-muted)]">Gebruik internationaal formaat, bijv. +49 170 1234567</p>
               <Button
                 onClick={() => { onClose(); navigate("/settings/notifications"); }}
-                className="w-full h-[48px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
+                className="w-full h-[48px] rounded-xl bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[15px] font-semibold"
                 data-testid="button-goto-phone-settings"
               >
                 <Phone className="w-4 h-4 mr-2" />
@@ -557,8 +557,8 @@ function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: string) 
   if (isLoading || !data) {
     return (
       <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
-        <div className="h-4 bg-[#F8FAFC] rounded w-40 mb-3" />
-        <div className="h-3 bg-[#F8FAFC] rounded w-24" />
+        <div className="h-4 bg-[var(--yo-surface)] rounded w-40 mb-3" />
+        <div className="h-3 bg-[var(--yo-surface)] rounded w-24" />
       </div>
     );
   }
@@ -575,73 +575,73 @@ function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: string) 
       >
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <Target className="w-4 h-4 text-[#673DE5]" />
-            <h3 className="text-[15px] font-semibold text-[#111827]">Bereid je zoekopdracht voor</h3>
+            <Target className="w-4 h-4 text-[var(--yo-teal)]" />
+            <h3 className="text-[15px] font-semibold text-[var(--yo-dark)]">Bereid je zoekopdracht voor</h3>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-[13px] text-[#6B7280]">
+            <span className="text-[13px] text-[var(--yo-muted)]">
               {prepCompletedCount}/{prepTotalCount} taken voltooid
             </span>
-            <span className="text-[13px] font-medium text-[#78D953]">{percentage}%</span>
+            <span className="text-[13px] font-medium text-[var(--yo-success)]">{percentage}%</span>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 relative">
             <svg className="w-10 h-10 -rotate-90" viewBox="0 0 36 36">
-              <circle cx="18" cy="18" r="15.5" fill="none" stroke="#F8FAFC" strokeWidth="3" />
+              <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--yo-surface)" strokeWidth="3" />
               <circle
                 cx="18"
                 cy="18"
                 r="15.5"
                 fill="none"
-                stroke="#8BEA63"
+                stroke="var(--yo-success)"
                 strokeWidth="3"
                 strokeDasharray={`${(percentage / 100) * 97.4} 97.4`}
                 strokeLinecap="round"
                 className="transition-all duration-500"
               />
             </svg>
-            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-[#111827]">
+            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-[var(--yo-dark)]">
               {percentage}%
             </span>
           </div>
           {expanded ? (
-            <ChevronUp className="w-4 h-4 text-[#6B7280]" />
+            <ChevronUp className="w-4 h-4 text-[var(--yo-muted)]" />
           ) : (
-            <ChevronDown className="w-4 h-4 text-[#6B7280]" />
+            <ChevronDown className="w-4 h-4 text-[var(--yo-muted)]" />
           )}
         </div>
       </button>
 
       {expanded && (
-        <div className="border-t border-[#E5E7EB] px-6 pb-3">
+        <div className="border-t border-[var(--yo-divider)] px-6 pb-3">
           {prepTasks.map((task) => {
             const Icon = PREP_TASK_ICONS[task.id] || Circle;
             return (
               <button
                 key={task.id}
                 onClick={() => !task.completed && onTaskClick(task.id)}
-                className={`w-full flex items-center gap-3 py-3.5 border-b border-[#F8FAFC] last:border-0 text-left ${
-                  task.completed ? "opacity-60" : "hover:bg-[#F8FAFC]"
+                className={`w-full flex items-center gap-3 py-3.5 border-b border-[var(--yo-surface)] last:border-0 text-left ${
+                  task.completed ? "opacity-60" : "hover:bg-[var(--yo-surface)]"
                 } transition-colors -mx-1 px-1 rounded-lg`}
                 data-testid={`task-${task.id}`}
                 disabled={task.completed}
               >
                 {task.completed ? (
-                  <div className="w-5 h-5 rounded-full bg-[#EAF9DF] flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
+                  <div className="w-5 h-5 rounded-full bg-[var(--yo-success)]/10 flex items-center justify-center flex-shrink-0">
+                    <CheckCircle2 className="w-4 h-4 text-[var(--yo-success)]" />
                   </div>
                 ) : (
-                  <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
+                  <div className="w-5 h-5 rounded-full border-2 border-[var(--yo-divider)] flex-shrink-0" />
                 )}
-                <Icon className={`w-4 h-4 flex-shrink-0 ${task.completed ? "text-[#6B7280]" : "text-[#673DE5]"}`} />
+                <Icon className={`w-4 h-4 flex-shrink-0 ${task.completed ? "text-[var(--yo-muted)]" : "text-[var(--yo-teal)]"}`} />
                 <div className="flex-1 min-w-0">
-                  <p className={`text-[14px] font-medium ${task.completed ? "text-[#6B7280] line-through" : "text-[#111827]"}`}>
+                  <p className={`text-[14px] font-medium ${task.completed ? "text-[var(--yo-muted)] line-through" : "text-[var(--yo-dark)]"}`}>
                     {task.label}
                   </p>
-                  <p className="text-[11px] text-[#6B7280]">+{task.score} punten</p>
+                  <p className="text-[11px] text-[var(--yo-muted)]">+{task.score} punten</p>
                 </div>
-                {!task.completed && <ArrowRight className="w-4 h-4 text-[#6B7280] flex-shrink-0" />}
+                {!task.completed && <ArrowRight className="w-4 h-4 text-[var(--yo-muted)] flex-shrink-0" />}
               </button>
             );
           })}
@@ -692,22 +692,22 @@ function PrepTaskModal({
         className="bg-white w-full max-w-md rounded-t-[24px] sm:rounded-[24px] max-h-[85vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 bg-white border-b border-[#E5E7EB] p-6 flex items-center justify-between rounded-t-[24px]">
-          <h2 className="text-[20px] font-[700] text-[#111827] tracking-[-0.02em]">{titles[taskId] || ""}</h2>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F8FAFC] flex items-center justify-center" data-testid="button-close-prep-modal">
-            <X className="w-4 h-4 text-[#6B7280]" />
+        <div className="sticky top-0 bg-white border-b border-[var(--yo-divider)] p-6 flex items-center justify-between rounded-t-[24px]">
+          <h2 className="text-[20px] font-[700] text-[var(--yo-dark)] tracking-[-0.02em]">{titles[taskId] || ""}</h2>
+          <button onClick={onClose} className="w-8 h-8 rounded-full bg-[var(--yo-surface)] flex items-center justify-center" data-testid="button-close-prep-modal">
+            <X className="w-4 h-4 text-[var(--yo-muted)]" />
           </button>
         </div>
 
         <div className="p-5">
           {taskId === "prep_letter" && (
             <div className="flex flex-col gap-3">
-              <p className="text-[14px] text-[#6B7280]">
+              <p className="text-[14px] text-[var(--yo-muted)]">
                 Een goede introductiebrief laat verhuurders zien dat je serieus bent. Bereid er nu een voor zodat je direct kunt reageren.
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/application-letter"); }}
-                className="w-full h-[48px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
+                className="w-full h-[48px] rounded-xl bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[15px] font-semibold"
                 data-testid="button-prep-goto-letter"
               >
                 <FileText className="w-4 h-4 mr-2" />
@@ -718,20 +718,20 @@ function PrepTaskModal({
 
           {taskId === "prep_extra_profile" && (
             <div className="flex flex-col gap-4">
-              <p className="text-[14px] text-[#6B7280]">
+              <p className="text-[14px] text-[var(--yo-muted)]">
                 Met meerdere zoekprofielen vergroot je je kansen aanzienlijk. Zoek je in meerdere steden of met verschillende budgetten? Voeg een extra profiel toe.
               </p>
-              <div className="bg-[#F3F4F6] rounded-xl p-4">
-                <p className="text-[13px] font-semibold text-[#111827] mb-2">Waarom meerdere profielen?</p>
-                <ul className="text-[13px] text-[#6B7280] space-y-1.5">
-                  <li className="flex items-start gap-2"><span className="text-[#673DE5] mt-0.5">+</span>Meer woningen die matchen</li>
-                  <li className="flex items-start gap-2"><span className="text-[#673DE5] mt-0.5">+</span>Verschillende prijsklassen dekken</li>
-                  <li className="flex items-start gap-2"><span className="text-[#673DE5] mt-0.5">+</span>Meerdere steden of wijken volgen</li>
+              <div className="bg-[var(--yo-surface)] rounded-xl p-4">
+                <p className="text-[13px] font-semibold text-[var(--yo-dark)] mb-2">Waarom meerdere profielen?</p>
+                <ul className="text-[13px] text-[var(--yo-muted)] space-y-1.5">
+                  <li className="flex items-start gap-2"><span className="text-[var(--yo-teal)] mt-0.5">+</span>Meer woningen die matchen</li>
+                  <li className="flex items-start gap-2"><span className="text-[var(--yo-teal)] mt-0.5">+</span>Verschillende prijsklassen dekken</li>
+                  <li className="flex items-start gap-2"><span className="text-[var(--yo-teal)] mt-0.5">+</span>Meerdere steden of wijken volgen</li>
                 </ul>
               </div>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
-                className="w-full h-[48px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
+                className="w-full h-[48px] rounded-xl bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[15px] font-semibold"
                 data-testid="button-prep-add-profile"
               >
                 <Plus className="w-4 h-4 mr-2" />
@@ -742,17 +742,17 @@ function PrepTaskModal({
 
           {taskId === "prep_network" && (
             <div className="flex flex-col gap-4">
-              <p className="text-[14px] text-[#6B7280]">
+              <p className="text-[14px] text-[var(--yo-muted)]">
                 Deel je zoektocht met vrienden, familie en collega's. Hoe meer ogen, hoe sneller je iets vindt.
               </p>
-              <div className="bg-[#F3F4F6] rounded-xl p-4">
-                <p className="text-[13px] font-semibold text-[#111827] mb-2">Deeltekst</p>
-                <p className="text-[13px] text-[#6B7280] leading-relaxed">{SHARE_TEXT}</p>
+              <div className="bg-[var(--yo-surface)] rounded-xl p-4">
+                <p className="text-[13px] font-semibold text-[var(--yo-dark)] mb-2">Deeltekst</p>
+                <p className="text-[13px] text-[var(--yo-muted)] leading-relaxed">{SHARE_TEXT}</p>
               </div>
               <Button
                 variant="outline"
                 onClick={handleCopyShare}
-                className="w-full h-[44px] rounded-xl text-[14px] font-medium border-[#E5E7EB] text-[#111827]"
+                className="w-full h-[44px] rounded-xl text-[14px] font-medium border-[var(--yo-divider)] text-[var(--yo-dark)]"
                 data-testid="button-copy-share"
               >
                 <Copy className="w-4 h-4 mr-2" />
@@ -761,7 +761,7 @@ function PrepTaskModal({
               <Button
                 onClick={() => handleMarkDone("network_task_done")}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[48px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold disabled:opacity-50"
+                className="w-full h-[48px] rounded-xl bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[15px] font-semibold disabled:opacity-50"
                 data-testid="button-mark-network-done"
               >
                 {updateProfileData.isPending ? "Opslaan..." : "Markeer als voltooid"}
@@ -771,12 +771,12 @@ function PrepTaskModal({
 
           {taskId === "prep_viewing_tips" && (
             <div className="flex flex-col gap-3">
-              <p className="text-[14px] text-[#6B7280]">
+              <p className="text-[14px] text-[var(--yo-muted)]">
                 Goed voorbereid naar een bezichtiging gaan vergroot je kans op de woning. Lees onze uitgebreide tips.
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/tips/bezichtiging"); }}
-                className="w-full h-[48px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
+                className="w-full h-[48px] rounded-xl bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[15px] font-semibold"
                 data-testid="button-goto-viewing-tips"
               >
                 <Eye className="w-4 h-4 mr-2" />
@@ -796,8 +796,8 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
   if (isLoading || !data) {
     return (
       <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 animate-pulse">
-        <div className="h-4 bg-[#F8FAFC] rounded w-40 mb-3" />
-        <div className="h-3 bg-[#F8FAFC] rounded w-32" />
+        <div className="h-4 bg-[var(--yo-surface)] rounded w-40 mb-3" />
+        <div className="h-3 bg-[var(--yo-surface)] rounded w-32" />
       </div>
     );
   }
@@ -816,12 +816,12 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
     <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5" data-testid="card-notification-summary">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-[#DCDBFA] flex items-center justify-center">
-            <Bell className="w-4 h-4 text-[#673DE5]" />
+          <div className="w-8 h-8 rounded-full bg-[var(--yo-teal-light)] flex items-center justify-center">
+            <Bell className="w-4 h-4 text-[var(--yo-teal)]" />
           </div>
-          <h3 className="text-[15px] font-semibold text-[#111827]">Meldingskanalen</h3>
+          <h3 className="text-[15px] font-semibold text-[var(--yo-dark)]">Meldingskanalen</h3>
         </div>
-        <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${activeCount > 0 ? "bg-[#DCDBFA] text-[#673DE5]" : "bg-[#F8FAFC] text-[#6B7280]"}`}>
+        <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${activeCount > 0 ? "bg-[var(--yo-teal-light)] text-[var(--yo-teal)]" : "bg-[var(--yo-surface)] text-[var(--yo-muted)]"}`}>
           {activeCount > 0 ? `${activeCount} actief` : "Geen actief"}
         </span>
       </div>
@@ -829,26 +829,26 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
       <div className="flex flex-col gap-2.5 mb-4">
         {channelList.map(({ key, label, enabled, Icon }) => (
           <div key={key} className="flex items-center gap-3" data-testid={`channel-status-${key}`}>
-            <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${enabled ? "bg-[#DCDBFA]" : "bg-[#F3F4F6]"}`}>
-              <Icon className={`w-3.5 h-3.5 ${enabled ? "text-[#673DE5]" : "text-[#6B7280]"}`} />
+            <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${enabled ? "bg-[var(--yo-teal-light)]" : "bg-[var(--yo-surface)]"}`}>
+              <Icon className={`w-3.5 h-3.5 ${enabled ? "text-[var(--yo-teal)]" : "text-[var(--yo-muted)]"}`} />
             </div>
-            <span className={`text-[14px] flex-1 ${enabled ? "text-[#111827] font-medium" : "text-[#6B7280]"}`}>
+            <span className={`text-[14px] flex-1 ${enabled ? "text-[var(--yo-dark)] font-medium" : "text-[var(--yo-muted)]"}`}>
               {label}
             </span>
             {enabled ? (
-              <div className="w-4 h-4 rounded-full bg-[#EAF9DF] flex items-center justify-center">
-                <CheckCircle2 className="w-3 h-3 text-[#78D953]" />
+              <div className="w-4 h-4 rounded-full bg-[var(--yo-success)]/10 flex items-center justify-center">
+                <CheckCircle2 className="w-3 h-3 text-[var(--yo-success)]" />
               </div>
             ) : (
-              <div className="w-4 h-4 rounded-full border-2 border-[#E5E7EB]" />
+              <div className="w-4 h-4 rounded-full border-2 border-[var(--yo-divider)]" />
             )}
           </div>
         ))}
       </div>
 
       {recommendedChannel && (
-        <div className="bg-[#DCDBFA] rounded-xl px-3.5 py-2.5 mb-3">
-          <p className="text-[12px] text-[#673DE5] font-medium flex items-center gap-1.5">
+        <div className="bg-[var(--yo-teal-light)] rounded-xl px-3.5 py-2.5 mb-3">
+          <p className="text-[12px] text-[var(--yo-teal)] font-medium flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5" />
             Snelste kanaal: {recommendedChannel}
           </p>
@@ -857,7 +857,7 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
 
       <button
         onClick={() => navigate("/settings/notifications")}
-        className="w-full h-[40px] rounded-xl border border-[#E5E7EB] bg-white text-[13px] font-semibold text-[#111827] hover:bg-[#F3F4F6] transition-colors flex items-center justify-center gap-1.5"
+        className="w-full h-[40px] rounded-xl border border-[var(--yo-divider)] bg-white text-[13px] font-semibold text-[var(--yo-dark)] hover:bg-[var(--yo-surface)] transition-colors flex items-center justify-center gap-1.5"
         data-testid="button-manage-channels"
       >
         <Bell className="w-3.5 h-3.5" />
@@ -873,8 +873,8 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
   if (isLoading || !data) {
     return (
       <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 animate-pulse">
-        <div className="h-4 bg-[#F8FAFC] rounded w-40 mb-3" />
-        <div className="h-3 bg-[#F8FAFC] rounded w-24" />
+        <div className="h-4 bg-[var(--yo-surface)] rounded w-40 mb-3" />
+        <div className="h-3 bg-[var(--yo-surface)] rounded w-24" />
       </div>
     );
   }
@@ -893,13 +893,13 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
   return (
     <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5" data-testid="card-speed-readiness">
       <div className="flex items-center gap-2 mb-4">
-        <div className="w-8 h-8 rounded-full bg-[#DCDBFA] flex items-center justify-center">
-          <Zap className="w-4 h-4 text-[#673DE5]" />
+        <div className="w-8 h-8 rounded-full bg-[var(--yo-teal-light)] flex items-center justify-center">
+          <Zap className="w-4 h-4 text-[var(--yo-teal)]" />
         </div>
         <div className="flex-1">
-          <h3 className="text-[15px] font-semibold text-[#111827]">Reactiesnelheid</h3>
+          <h3 className="text-[15px] font-semibold text-[var(--yo-dark)]">Reactiesnelheid</h3>
         </div>
-        <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${allDone ? "bg-[#EAF9DF] text-[#111827]" : "bg-[#DCDBFA] text-[#673DE5]"}`}>
+        <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${allDone ? "bg-[var(--yo-success)]/10 text-[var(--yo-dark)]" : "bg-[var(--yo-teal-light)] text-[var(--yo-teal)]"}`}>
           {speedDone}/{speedTotal}
         </span>
       </div>
@@ -910,24 +910,24 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
           return (
             <div
               key={step.id}
-              className={`flex items-center gap-3 ${!step.done && route ? "cursor-pointer hover:bg-[#F3F4F6] -mx-2 px-2 py-1 rounded-lg transition-colors" : "py-0.5"}`}
+              className={`flex items-center gap-3 ${!step.done && route ? "cursor-pointer hover:bg-[var(--yo-surface)] -mx-2 px-2 py-1 rounded-lg transition-colors" : "py-0.5"}`}
               onClick={() => {
                 if (!step.done && route) navigate(route);
               }}
               data-testid={`speed-step-${step.id}`}
             >
               {step.done ? (
-                <div className="w-5 h-5 rounded-full bg-[#EAF9DF] flex items-center justify-center flex-shrink-0">
-                  <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
+                <div className="w-5 h-5 rounded-full bg-[var(--yo-success)]/10 flex items-center justify-center flex-shrink-0">
+                  <CheckCircle2 className="w-4 h-4 text-[var(--yo-success)]" />
                 </div>
               ) : (
-                <div className="w-4.5 h-4.5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
+                <div className="w-4.5 h-4.5 rounded-full border-2 border-[var(--yo-divider)] flex-shrink-0" />
               )}
-              <span className={`text-[14px] flex-1 ${step.done ? "text-[#6B7280]" : "text-[#111827] font-medium"}`}>
+              <span className={`text-[14px] flex-1 ${step.done ? "text-[var(--yo-muted)]" : "text-[var(--yo-dark)] font-medium"}`}>
                 {step.label}
               </span>
               {!step.done && route && (
-                <ArrowRight className="w-3.5 h-3.5 text-[#6B7280]" />
+                <ArrowRight className="w-3.5 h-3.5 text-[var(--yo-muted)]" />
               )}
             </div>
           );
@@ -935,8 +935,8 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
       </div>
 
       {allDone && (
-        <div className="mt-4 bg-[#EAF9DF] rounded-xl px-3.5 py-2.5">
-          <p className="text-[12px] text-[#78D953] font-medium flex items-center gap-1.5">
+        <div className="mt-4 bg-[var(--yo-success)]/10 rounded-xl px-3.5 py-2.5">
+          <p className="text-[12px] text-[var(--yo-success)] font-medium flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5" />
             Je bent klaar om snel te reageren
           </p>
@@ -959,38 +959,38 @@ export function SpeedBanner({ navigate }: { navigate: (path: string) => void }) 
   if (allDone) {
     return (
       <div
-        className="bg-[#DCDBFA] rounded-2xl p-4 flex items-center gap-3 cursor-pointer hover:bg-[#DCDBFA]/80 transition-colors"
+        className="bg-[var(--yo-teal-light)] rounded-2xl p-4 flex items-center gap-3 cursor-pointer hover:bg-[var(--yo-teal-light)]/80 transition-colors"
         onClick={() => navigate("/dashboard")}
         data-testid="banner-speed-ready"
       >
-        <div className="w-9 h-9 rounded-full bg-[#DCDBFA] flex items-center justify-center flex-shrink-0">
-          <Zap className="w-4 h-4 text-[#673DE5]" />
+        <div className="w-9 h-9 rounded-full bg-[var(--yo-teal-light)] flex items-center justify-center flex-shrink-0">
+          <Zap className="w-4 h-4 text-[var(--yo-teal)]" />
         </div>
         <div className="flex-1">
-          <p className="text-[14px] font-semibold text-[#471EA7]">Je bent klaar om snel te reageren</p>
-          <p className="text-[12px] text-[#673DE5]">Alle stappen voltooid</p>
+          <p className="text-[14px] font-semibold text-[var(--yo-teal)]">Je bent klaar om snel te reageren</p>
+          <p className="text-[12px] text-[var(--yo-teal)]">Alle stappen voltooid</p>
         </div>
-        <span className="text-[13px] font-bold text-[#673DE5]">{pct}%</span>
+        <span className="text-[13px] font-bold text-[var(--yo-teal)]">{pct}%</span>
       </div>
     );
   }
 
   return (
     <div
-      className="bg-[#DCDBFA] rounded-2xl p-4 flex items-center gap-3 cursor-pointer hover:bg-[#DCDBFA]/80 transition-colors"
+      className="bg-[var(--yo-teal-light)] rounded-2xl p-4 flex items-center gap-3 cursor-pointer hover:bg-[var(--yo-teal-light)]/80 transition-colors"
       onClick={() => navigate("/dashboard")}
       data-testid="banner-speed-incomplete"
     >
-      <div className="w-9 h-9 rounded-full bg-[#DCDBFA] flex items-center justify-center flex-shrink-0">
-        <Zap className="w-4 h-4 text-[#673DE5]" />
+      <div className="w-9 h-9 rounded-full bg-[var(--yo-teal-light)] flex items-center justify-center flex-shrink-0">
+        <Zap className="w-4 h-4 text-[var(--yo-teal)]" />
       </div>
       <div className="flex-1">
-        <p className="text-[14px] font-semibold text-[#471EA7]">
+        <p className="text-[14px] font-semibold text-[var(--yo-teal)]">
           Nog {remaining} {remaining === 1 ? "stap" : "stappen"} om sneller te reageren
         </p>
-        <p className="text-[12px] text-[#673DE5]">Maak je profiel compleet</p>
+        <p className="text-[12px] text-[var(--yo-teal)]">Maak je profiel compleet</p>
       </div>
-      <ArrowRight className="w-4 h-4 text-[#673DE5] flex-shrink-0" />
+      <ArrowRight className="w-4 h-4 text-[var(--yo-teal)] flex-shrink-0" />
     </div>
   );
 }

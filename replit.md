@@ -50,37 +50,37 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - **Table**: `onboarding_drafts` in Replit DB (not Supabase) — draft data stored locally
 - **PENDING MIGRATION**: `server/migrations/PENDING_RUN_IN_SUPABASE.sql` must be run in Supabase SQL Editor (includes migrations 008, 010, 011, 012, 013)
 
-### Design System (Hostinger-inspired)
-- **Primary**: #673DE5 (purple), hover #5B30D6 — used for CTA buttons, active nav, brand accents only
-- **Icon backgrounds**: #DCDBFA with icon color #673DE5, border-radius 12px, padding 12px
-- **Success palette** (for progress/status/verification/completion):
-  - Main: #8BEA63 (progress fills, status badges, point badges)
-  - Dark: #78D953 (checkmark icons)
-  - Light: #EAF9DF (checkmark circle backgrounds, success banners)
-  - Text on green: #111827
-- **Text**: primary #111827, secondary #6B7280, placeholder #9CA3AF
-- **Backgrounds**: white (#FFFFFF), soft sections #F8FAFC, inputs #F3F4F6
-- **Borders**: #E5E7EB
-- **Buttons**: bg #673DE5, white text, rounded-[14px], min-h-[48px], font-weight 600
-- **Inputs**: bg #F3F4F6, no border, rounded-[14px], padding 16px
-- **Cards**: white bg, 1px #E5E7EB border, rounded-[18px], no shadow
-- **Labels/badges**:
-  - Success: bg #8BEA63, text #111827 (Actief, point badges)
-  - Neon: bg #CBFF02, text #000000
-  - Dark: bg #110C29, text white
-  - Purple: bg #471EA7, text white
-- **Theme file**: `client/src/lib/theme.ts` centralizes all color tokens
+### Design System (YoungOnes-inspired)
+- **Primary CTA**: Teal #2DD4BF, hover #25BBA8 — used for CTA buttons, active nav indicator, brand accents
+- **Accent**: Hot pink #E6007E — for brand highlights, company names (sparingly)
+- **Icon backgrounds**: #E6FAF5 (light teal) with icon color #2DD4BF
+- **Text**: primary #1A1A1A (--yo-dark), secondary #9CA3AF (--yo-muted)
+- **Backgrounds**: white #FFFFFF (--yo-bg), surface #F8F9FA (--yo-surface)
+- **Borders/dividers**: #EEEEEE (--yo-divider)
+- **Buttons**: bg #2DD4BF, white text, rounded-[14px], h-[56px], font-bold
+- **Inputs**: bg var(--yo-surface), border var(--yo-divider), rounded-[14px]
+- **Cards**: white bg, very subtle shadow, 16px radius
+- **Page titles**: UPPERCASE, font-weight 800, letter-spacing 0.02em
+- **Bottom nav**: Flat white bar (not floating pill), teal top-line active indicator
+- **Bottom sheets**: Rounded top 24px, dimmed backdrop, uppercase bold title
+- **CSS variables**: All colors defined as `--yo-*` in `client/src/index.css` (:root)
+  - `--yo-teal`, `--yo-teal-hover`, `--yo-teal-light`, `--yo-teal-dark`
+  - `--yo-pink`, `--yo-pink-light`
+  - `--yo-dark`, `--yo-text`, `--yo-muted`
+  - `--yo-bg`, `--yo-surface`, `--yo-divider`, `--yo-border`
+  - `--yo-input-border`, `--yo-tag-dark`, `--yo-success`
+- **NEVER use old purple colors** (#673DE5, #5B30D6, #DCDBFA, #471EA7, #CBFF02)
 
 ### Typography System
 - CSS utility classes defined in `client/src/index.css` under `@layer utilities`:
-  - `.text-page-title` — 32px, weight 800, #111827 (for page headings)
-  - `.text-section-title` — 20px, weight 700, #111827 (for section headings)
-  - `.text-row-section-title` — 20px, weight 700, #111827 (for list section headings)
-  - `.text-row-title` — 16px, weight 600, #111827 (for list row primary text)
-  - `.text-row-subtitle` — 15px, weight 500, #6B7280 (for list row secondary text)
-  - `.text-subtitle` — 15px, weight 500, #6B7280 (for subtitles)
-  - `.text-muted-body` — 14px, weight 500, #6B7280 (for secondary/muted text)
-- Color tokens: primary text #111827, secondary text #6B7280, divider #E5E7EB
+  - `.text-page-title` — 22px, weight 800, uppercase, letter-spacing 0.02em, color var(--yo-dark) (for page headings)
+  - `.text-section-title` — 18px, weight 700, color var(--yo-dark) (for section headings)
+  - `.text-row-section-title` — 18px, weight 700, color var(--yo-dark)
+  - `.text-row-title` — 16px, weight 600, color var(--yo-dark)
+  - `.text-row-subtitle` — 15px, weight 500, color var(--yo-muted)
+  - `.text-subtitle` — 15px, weight 500, color var(--yo-muted)
+  - `.text-muted-body` — 14px, weight 500, color var(--yo-muted)
+- Color tokens: primary text var(--yo-dark), secondary text var(--yo-muted), divider var(--yo-divider)
 
 ### Reusable PageHeader
 - `client/src/components/ui/page-header.tsx` — Sticky top header with back button + title

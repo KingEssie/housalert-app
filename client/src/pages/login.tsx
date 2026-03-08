@@ -54,13 +54,13 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
+      <header className="w-full bg-white sticky top-0 z-20 border-b border-[var(--yo-divider)]">
         <div className="max-w-5xl mx-auto px-6 h-[60px] flex items-center gap-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-[#673DE5] flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-[var(--yo-teal)] flex items-center justify-center">
               <Home className="w-4 h-4 text-white" />
             </div>
-            <span className="font-extrabold text-[#111827] text-lg tracking-tight">Stekkies</span>
+            <span className="font-extrabold text-[var(--yo-dark)] text-lg tracking-tight">Stekkies</span>
           </div>
         </div>
       </header>
@@ -68,10 +68,10 @@ export default function LoginPage() {
       <main className="flex-1 flex items-center justify-center px-6 py-20">
         <div className="w-full max-w-md">
           <div className="text-center mb-10">
-            <h1 className="text-[32px] font-[800] text-[#111827] tracking-[-0.03em] leading-[1.1] mb-4">
+            <h1 className="text-[32px] font-[800] text-[var(--yo-dark)] tracking-[-0.03em] leading-[1.1] uppercase mb-4">
               Vind jouw perfecte huurwoning
             </h1>
-            <p className="text-[15px] text-[#6B7280]">
+            <p className="text-[15px] text-[var(--yo-muted)]">
               Stel zoekopdrachten in en ontvang direct een melding als er iets beschikbaar komt.
             </p>
           </div>
@@ -90,7 +90,7 @@ export default function LoginPage() {
               <TabsContent value="login">
                 <form onSubmit={handleLogin} className="flex flex-col gap-5">
                   <div className="flex flex-col gap-2">
-                    <Label htmlFor="login-email" className="text-[14px] font-semibold text-[#111827]">E-mailadres</Label>
+                    <Label htmlFor="login-email" className="text-[14px] font-semibold text-[var(--yo-dark)]">E-mailadres</Label>
                     <input
                       id="login-email"
                       type="email"
@@ -98,12 +98,12 @@ export default function LoginPage() {
                       value={loginEmail}
                       onChange={(e) => setLoginEmail(e.target.value)}
                       required
-                      className="h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#111827] placeholder:text-[#6B7280] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE5]/15 focus:bg-[#F8FAFC] transition-all"
+                      className="h-[52px] px-4 rounded-xl border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
                       data-testid="input-login-email"
                     />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <Label htmlFor="login-password" className="text-[14px] font-semibold text-[#111827]">Wachtwoord</Label>
+                    <Label htmlFor="login-password" className="text-[14px] font-semibold text-[var(--yo-dark)]">Wachtwoord</Label>
                     <input
                       id="login-password"
                       type="password"
@@ -111,13 +111,13 @@ export default function LoginPage() {
                       value={loginPassword}
                       onChange={(e) => setLoginPassword(e.target.value)}
                       required
-                      className="h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#111827] placeholder:text-[#6B7280] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE5]/15 focus:bg-[#F8FAFC] transition-all"
+                      className="h-[52px] px-4 rounded-xl border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
                       data-testid="input-login-password"
                     />
                   </div>
                   <Button
                     type="submit"
-                    className="w-full h-[56px] rounded-xl text-[16px] font-semibold bg-[#673DE5] hover:bg-[#5B30D6]"
+                    className="w-full h-[56px] rounded-[14px] text-[16px] font-bold bg-[var(--yo-teal)]"
                     disabled={loginLoading}
                     data-testid="button-login-submit"
                   >
@@ -129,7 +129,7 @@ export default function LoginPage() {
               <TabsContent value="signup">
                 <form onSubmit={handleSignup} className="flex flex-col gap-5">
                   <div className="flex flex-col gap-2">
-                    <Label htmlFor="signup-email" className="text-[14px] font-semibold text-[#111827]">E-mailadres</Label>
+                    <Label htmlFor="signup-email" className="text-[14px] font-semibold text-[var(--yo-dark)]">E-mailadres</Label>
                     <input
                       id="signup-email"
                       type="email"
@@ -137,12 +137,12 @@ export default function LoginPage() {
                       value={signupEmail}
                       onChange={(e) => setSignupEmail(e.target.value)}
                       required
-                      className="h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#111827] placeholder:text-[#6B7280] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE5]/15 focus:bg-[#F8FAFC] transition-all"
+                      className="h-[52px] px-4 rounded-xl border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
                       data-testid="input-signup-email"
                     />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <Label htmlFor="signup-password" className="text-[14px] font-semibold text-[#111827]">Wachtwoord</Label>
+                    <Label htmlFor="signup-password" className="text-[14px] font-semibold text-[var(--yo-dark)]">Wachtwoord</Label>
                     <input
                       id="signup-password"
                       type="password"
@@ -150,13 +150,13 @@ export default function LoginPage() {
                       value={signupPassword}
                       onChange={(e) => setSignupPassword(e.target.value)}
                       required
-                      className="h-[52px] px-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#111827] placeholder:text-[#6B7280] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE5]/15 focus:bg-[#F8FAFC] transition-all"
+                      className="h-[52px] px-4 rounded-xl border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
                       data-testid="input-signup-password"
                     />
                   </div>
                   <Button
                     type="submit"
-                    className="w-full h-[56px] rounded-xl text-[16px] font-semibold bg-[#673DE5] hover:bg-[#5B30D6]"
+                    className="w-full h-[56px] rounded-[14px] text-[16px] font-bold bg-[var(--yo-teal)]"
                     disabled={signupLoading}
                     data-testid="button-signup-submit"
                   >
@@ -167,7 +167,7 @@ export default function LoginPage() {
             </Tabs>
           </div>
 
-          <p className="text-center text-[13px] text-[#6B7280] mt-6">
+          <p className="text-center text-[13px] text-[var(--yo-muted)] mt-6">
             Door je aan te melden ga je akkoord met onze voorwaarden.
           </p>
         </div>

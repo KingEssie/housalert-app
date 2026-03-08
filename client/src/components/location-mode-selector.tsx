@@ -269,15 +269,15 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
   return (
     <div className="flex flex-col gap-5">
       {segmentedTabs ? (
-        <div className="flex bg-[#F3F4F6] rounded-[12px] p-1 gap-0.5">
+        <div className="flex bg-[var(--yo-surface)] rounded-[12px] p-1 gap-0.5">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setTab(tab.id)}
               className={`flex-1 py-2.5 text-[13px] font-semibold text-center rounded-[10px] transition-all ${
                 value.tab === tab.id
-                  ? "bg-white text-[#673DE5] shadow-sm"
-                  : "text-[#6B7280] hover:text-[#111827]"
+                  ? "bg-white text-[var(--yo-teal)] shadow-sm"
+                  : "text-[var(--yo-muted)] hover:text-[var(--yo-dark)]"
               }`}
               data-testid={`tab-location-${tab.id}`}
             >
@@ -286,21 +286,21 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
           ))}
         </div>
       ) : (
-        <div className="flex border-b border-[#E5E7EB]">
+        <div className="flex border-b border-[var(--yo-divider)]">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setTab(tab.id)}
               className={`flex-1 pb-3 text-sm font-semibold text-center transition-colors relative ${
                 value.tab === tab.id
-                  ? "text-[#673DE5]"
-                  : "text-[#6B7280] hover:text-[#111827]"
+                  ? "text-[var(--yo-teal)]"
+                  : "text-[var(--yo-muted)] hover:text-[var(--yo-dark)]"
               }`}
               data-testid={`tab-location-${tab.id}`}
             >
               {tab.label}
               {value.tab === tab.id && (
-                <div className="absolute bottom-0 left-3 right-3 h-[3px] bg-[#673DE5] rounded-t-full" />
+                <div className="absolute bottom-0 left-3 right-3 h-[3px] bg-[var(--yo-teal)] rounded-t-full" />
               )}
             </button>
           ))}
@@ -310,35 +310,35 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       {(value.tab === "wijken" || value.tab === "radius") && (
         <div ref={cityContainerRef} className="relative">
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9CA3AF] pointer-events-none" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[var(--yo-muted)] pointer-events-none" />
             <input
               type="text"
               value={cityQuery}
               onChange={(e) => handleCityInput(e.target.value)}
               onFocus={() => { if (cityResults.length > 0 && !value.place) setCityOpen(true); }}
               placeholder="Zoek een plaats in Duitsland"
-              className={`w-full min-h-[52px] rounded-[14px] bg-[#F3F4F6] border px-11 text-[16px] text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#673DE5] focus:border-transparent transition-colors ${
-                value.place ? "border-[#673DE5] bg-[#DCDBFA]/30" : "border-[#E5E7EB]"
+              className={`w-full min-h-[52px] rounded-[14px] bg-[var(--yo-surface)] border px-11 text-[16px] text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)] focus:border-transparent transition-colors ${
+                value.place ? "border-[var(--yo-teal)] bg-[var(--yo-teal-light)]/30" : "border-[var(--yo-divider)]"
               }`}
               data-testid="input-city-search"
             />
             {cityQuery && (
               <button
                 onClick={handleCityClear}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#E5E7EB] flex items-center justify-center hover:bg-[#D1D5DB] transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[var(--yo-divider)] flex items-center justify-center hover:bg-[var(--yo-muted)]/30 transition-colors"
                 data-testid="button-clear-city"
               >
-                <X className="w-3.5 h-3.5 text-[#6B7280]" />
+                <X className="w-3.5 h-3.5 text-[var(--yo-muted)]" />
               </button>
             )}
           </div>
           {cityLoading && (
             <div className="absolute right-12 top-[26px] -translate-y-1/2">
-              <div className="w-4 h-4 border-2 border-[#673DE5]/30 border-t-[#673DE5] rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-[var(--yo-teal)]/30 border-t-[var(--yo-teal)] rounded-full animate-spin" />
             </div>
           )}
           {cityOpen && cityResults.length > 0 && (
-            <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-[#E5E7EB] rounded-[14px] shadow-lg max-h-[260px] overflow-y-auto z-30">
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-[var(--yo-divider)] rounded-[14px] shadow-lg max-h-[260px] overflow-y-auto z-30">
               {cityResults.map((r) => {
                 const a = r.address;
                 const label = a.city || a.town || a.village || a.municipality || "";
@@ -347,10 +347,10 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                   <button
                     key={r.place_id}
                     onClick={() => handleCitySelect(r)}
-                    className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#111827] hover:bg-[#F8FAFC] flex items-center gap-3"
+                    className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[var(--yo-dark)] hover:bg-[var(--yo-surface)] flex items-center gap-3"
                     data-testid={`option-place-${r.place_id}`}
                   >
-                    <MapPin className="w-4 h-4 text-[#673DE5] flex-shrink-0" />
+                    <MapPin className="w-4 h-4 text-[var(--yo-teal)] flex-shrink-0" />
                     <span>{sub}</span>
                   </button>
                 );
@@ -361,7 +361,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       )}
 
       {value.tab === "wijken" && value.place && (
-        <div className="inline-flex items-center gap-2 bg-[#DCDBFA] text-[#673DE5] font-semibold text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
+        <div className="inline-flex items-center gap-2 bg-[var(--yo-teal-light)] text-[var(--yo-teal)] font-semibold text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
           <MapPin className="w-4 h-4" />
           {value.place.city_name}
         </div>
@@ -369,8 +369,8 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
 
       {value.tab === "wijken" && value.place && availableDistricts.length > 0 && (
         <div>
-          <label className="text-[16px] font-[700] text-[#111827] mb-3 block">
-            Wijken <span className="font-normal text-[13px] text-[#6B7280]">(optioneel)</span>
+          <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">
+            Wijken <span className="font-normal text-[13px] text-[var(--yo-muted)]">(optioneel)</span>
           </label>
           <div className="flex flex-wrap gap-2">
             {availableDistricts.map((d) => {
@@ -381,8 +381,8 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                   onClick={() => toggleDistrict(d)}
                   className={`px-3.5 py-2 rounded-full text-[13px] font-medium border transition-all ${
                     selected
-                      ? "border-[#673DE5] bg-[#DCDBFA] text-[#673DE5]"
-                      : "border-[#E5E7EB] bg-white text-[#6B7280] hover:border-[#D1D5DB]"
+                      ? "border-[var(--yo-teal)] bg-[var(--yo-teal-light)] text-[var(--yo-teal)]"
+                      : "border-[var(--yo-divider)] bg-white text-[var(--yo-muted)] hover:border-[var(--yo-muted)]/30"
                   }`}
                   data-testid={`chip-district-${d.toLowerCase().replace(/[\s.]/g, "-")}`}
                 >
@@ -395,14 +395,14 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       )}
 
       {value.tab === "wijken" && districtsNotAvailable && (
-        <div className="flex items-center gap-2 text-[#6B7280] text-[13px] bg-[#F3F4F6] rounded-xl px-4 py-3" data-testid="text-districts-unavailable">
-          <AlertCircle className="w-4 h-4 flex-shrink-0 text-[#9CA3AF]" />
+        <div className="flex items-center gap-2 text-[var(--yo-muted)] text-[13px] bg-[var(--yo-surface)] rounded-xl px-4 py-3" data-testid="text-districts-unavailable">
+          <AlertCircle className="w-4 h-4 flex-shrink-0 text-[var(--yo-muted)]" />
           <span>Wijken binnenkort beschikbaar voor deze plaats.</span>
         </div>
       )}
 
       {value.tab === "radius" && value.place && (
-        <div className="inline-flex items-center gap-2 bg-[#DCDBFA] text-[#673DE5] font-semibold text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
+        <div className="inline-flex items-center gap-2 bg-[var(--yo-teal-light)] text-[var(--yo-teal)] font-semibold text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
           <MapPin className="w-4 h-4" />
           {value.place.city_name}
         </div>
@@ -410,13 +410,13 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
 
       {value.tab === "radius" && (
         <div>
-          <label className="text-[16px] font-[700] text-[#111827] mb-3 block">Straal</label>
+          <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Straal</label>
           <div className="relative">
-            <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
+            <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-muted)]" />
             <select
               value={value.radiusKm}
               onChange={(e) => onChange({ ...value, radiusKm: parseInt(e.target.value) })}
-              className="w-full h-[52px] pl-11 pr-4 rounded-[14px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#111827] focus:outline-none focus:ring-2 focus:ring-[#673DE5]/15 focus:bg-[#F8FAFC] cursor-pointer appearance-none transition-all"
+              className="w-full h-[52px] pl-11 pr-4 rounded-[14px] border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-[var(--yo-surface)] cursor-pointer appearance-none transition-all"
               data-testid="select-radius"
             >
               <option value="2">2 km</option>
@@ -433,45 +433,45 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       {value.tab === "reistijd" && (
         <>
           <div ref={destContainerRef} className="relative">
-            <label className="text-[16px] font-[700] text-[#111827] mb-3 block">Werkadres / bestemming</label>
+            <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Werkadres / bestemming</label>
             <div className="relative">
-              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9CA3AF] pointer-events-none" />
+              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[var(--yo-muted)] pointer-events-none" />
               <input
                 type="text"
                 value={destQuery}
                 onChange={(e) => handleDestInput(e.target.value)}
                 onFocus={() => { if (destResults.length > 0 && value.commuteLat == null) setDestOpen(true); }}
                 placeholder="bijv. Berlin Hauptbahnhof"
-                className={`w-full min-h-[52px] rounded-[14px] bg-[#F3F4F6] border px-11 text-[16px] text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#673DE5] focus:border-transparent transition-colors ${
-                  value.commuteLat != null ? "border-[#673DE5] bg-[#DCDBFA]/30" : "border-[#E5E7EB]"
+                className={`w-full min-h-[52px] rounded-[14px] bg-[var(--yo-surface)] border px-11 text-[16px] text-[var(--yo-dark)] placeholder:text-[var(--yo-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)] focus:border-transparent transition-colors ${
+                  value.commuteLat != null ? "border-[var(--yo-teal)] bg-[var(--yo-teal-light)]/30" : "border-[var(--yo-divider)]"
                 }`}
                 data-testid="input-commute-destination"
               />
               {destQuery && (
                 <button
                   onClick={handleDestClear}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#E5E7EB] flex items-center justify-center hover:bg-[#D1D5DB] transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[var(--yo-divider)] flex items-center justify-center hover:bg-[var(--yo-muted)]/30 transition-colors"
                   data-testid="button-clear-destination"
                 >
-                  <X className="w-3.5 h-3.5 text-[#6B7280]" />
+                  <X className="w-3.5 h-3.5 text-[var(--yo-muted)]" />
                 </button>
               )}
             </div>
             {destLoading && (
               <div className="absolute right-12 top-[calc(24px+26px)] -translate-y-1/2">
-                <div className="w-4 h-4 border-2 border-[#673DE5]/30 border-t-[#673DE5] rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-[var(--yo-teal)]/30 border-t-[var(--yo-teal)] rounded-full animate-spin" />
               </div>
             )}
             {destOpen && destResults.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-[#E5E7EB] rounded-[14px] shadow-lg max-h-[260px] overflow-y-auto z-30">
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-[var(--yo-divider)] rounded-[14px] shadow-lg max-h-[260px] overflow-y-auto z-30">
                 {destResults.map((r) => (
                   <button
                     key={r.place_id}
                     onClick={() => handleDestSelect(r)}
-                    className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#111827] hover:bg-[#F8FAFC] flex items-center gap-3"
+                    className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[var(--yo-dark)] hover:bg-[var(--yo-surface)] flex items-center gap-3"
                     data-testid={`option-dest-${r.place_id}`}
                   >
-                    <MapPin className="w-4 h-4 text-[#673DE5] flex-shrink-0" />
+                    <MapPin className="w-4 h-4 text-[var(--yo-teal)] flex-shrink-0" />
                     <span>{r.display_name.split(",").slice(0, 3).join(",")}</span>
                   </button>
                 ))}
@@ -480,14 +480,14 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
           </div>
 
           {value.commuteLat != null && (
-            <div className="inline-flex items-center gap-2 bg-[#DCDBFA] text-[#673DE5] font-semibold text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-destination">
+            <div className="inline-flex items-center gap-2 bg-[var(--yo-teal-light)] text-[var(--yo-teal)] font-semibold text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-destination">
               <MapPin className="w-4 h-4" />
               {value.commuteDestination}
             </div>
           )}
 
           <div>
-            <label className="text-[16px] font-[700] text-[#111827] mb-3 block">Vervoersmiddel</label>
+            <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Vervoersmiddel</label>
             <div className="flex gap-2">
               {([
                 { id: "auto" as const, icon: Car, label: "Auto" },
@@ -499,8 +499,8 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                   onClick={() => onChange({ ...value, commuteMode: mode.id })}
                   className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-[14px] text-xs font-semibold transition-all ${
                     value.commuteMode === mode.id
-                      ? "bg-[#673DE5] text-white"
-                      : "bg-[#F3F4F6] text-[#111827] hover:bg-[#E5E7EB]"
+                      ? "bg-[var(--yo-teal)] text-white"
+                      : "bg-[var(--yo-surface)] text-[var(--yo-dark)] hover:bg-[var(--yo-divider)]"
                   }`}
                   data-testid={`button-transport-${mode.id}`}
                 >
@@ -512,13 +512,13 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
           </div>
 
           <div>
-            <label className="text-[16px] font-[700] text-[#111827] mb-3 block">Maximale reistijd</label>
+            <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Maximale reistijd</label>
             <div className="relative">
-              <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
+              <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-muted)]" />
               <select
                 value={value.commuteMinutes}
                 onChange={(e) => onChange({ ...value, commuteMinutes: parseInt(e.target.value) })}
-                className="w-full h-[52px] pl-11 pr-4 rounded-[14px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#111827] focus:outline-none focus:ring-2 focus:ring-[#673DE5]/15 focus:bg-[#F8FAFC] cursor-pointer appearance-none transition-all"
+                className="w-full h-[52px] pl-11 pr-4 rounded-[14px] border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-[var(--yo-surface)] cursor-pointer appearance-none transition-all"
                 data-testid="select-commute-minutes"
               >
                 <option value="15">15 min</option>
@@ -533,7 +533,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       )}
 
       {showMap && (
-        <div className="rounded-[14px] overflow-hidden border border-[#E5E7EB] h-[200px]" data-testid="map-preview">
+        <div className="rounded-[14px] overflow-hidden border border-[var(--yo-divider)] h-[200px]" data-testid="map-preview">
           <MapContainer
             center={hasLocation ? [mapLat!, mapLng!] : [defaultLat, defaultLng]}
             zoom={hasLocation ? (value.tab === "radius" ? radiusToZoom(value.radiusKm) : 11) : defaultZoom}
@@ -550,8 +550,8 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                     center={[value.place.latitude, value.place.longitude]}
                     radius={value.radiusKm * 1000}
                     pathOptions={{
-                      color: "#673DE5",
-                      fillColor: "#673DE5",
+                      color: "var(--yo-teal)",
+                      fillColor: "var(--yo-teal)",
                       fillOpacity: 0.1,
                       weight: 2,
                     }}

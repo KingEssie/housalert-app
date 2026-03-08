@@ -65,9 +65,9 @@ export function calculateReactiesnelheid(rawDone: number, rawTotal: number): Rea
 }
 
 const LEVEL_STYLES: Record<SpeedLevel, { dotColor: string; barColor: string; labelColor: string }> = {
-  fast: { dotColor: "bg-[#8BEA63]", barColor: "bg-[#8BEA63]", labelColor: "text-[#111827] bg-[#EAF9DF]" },
-  almost: { dotColor: "bg-[#8BEA63]", barColor: "bg-[#8BEA63]", labelColor: "text-[#111827] bg-[#EAF9DF]" },
-  building: { dotColor: "bg-[#E5E7EB]", barColor: "bg-[#E5E7EB]", labelColor: "text-[#6B7280] bg-[#F8FAFC]" },
+  fast: { dotColor: "bg-[var(--yo-success)]", barColor: "bg-[var(--yo-success)]", labelColor: "text-[var(--yo-dark)] bg-[var(--yo-success)]/10" },
+  almost: { dotColor: "bg-[var(--yo-success)]", barColor: "bg-[var(--yo-success)]", labelColor: "text-[var(--yo-dark)] bg-[var(--yo-success)]/10" },
+  building: { dotColor: "bg-[var(--yo-divider)]", barColor: "bg-[var(--yo-divider)]", labelColor: "text-[var(--yo-muted)] bg-[var(--yo-surface)]" },
 };
 
 function useReactiesnelheidData() {
@@ -108,9 +108,9 @@ export function ReactiesnelheidCard({
   if (loading) {
     return (
       <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 animate-pulse" data-testid="card-reactiesnelheid-loading">
-        <div className="h-4 bg-[#F8FAFC] rounded w-32 mb-3" />
-        <div className="h-3 bg-[#F8FAFC] rounded w-48 mb-3" />
-        <div className="h-1.5 bg-[#F8FAFC] rounded-full w-full" />
+        <div className="h-4 bg-[var(--yo-surface)] rounded w-32 mb-3" />
+        <div className="h-3 bg-[var(--yo-surface)] rounded w-48 mb-3" />
+        <div className="h-1.5 bg-[var(--yo-surface)] rounded-full w-full" />
       </div>
     );
   }
@@ -130,32 +130,32 @@ export function ReactiesnelheidCard({
       data-testid="card-reactiesnelheid"
     >
       <div className="flex items-start gap-4">
-        <div className="w-10 h-10 rounded-xl bg-[#DCDBFA] flex items-center justify-center flex-shrink-0">
-          <Gauge className="w-5 h-5 text-[#673DE5]" />
+        <div className="w-10 h-10 rounded-xl bg-[var(--yo-teal-light)] flex items-center justify-center flex-shrink-0">
+          <Gauge className="w-5 h-5 text-[var(--yo-teal)]" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
-            <p className="text-[15px] font-semibold text-[#111827]">Reactiesnelheid</p>
+            <p className="text-[15px] font-semibold text-[var(--yo-dark)]">Reactiesnelheid</p>
             <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${styles.labelColor}`} data-testid="badge-speed-level">
               {state.label}
             </span>
           </div>
-          <p className="text-[13px] text-[#6B7280] leading-relaxed">{state.subtitle}</p>
+          <p className="text-[13px] text-[var(--yo-muted)] leading-relaxed">{state.subtitle}</p>
 
           <div className="mt-3 flex items-center gap-3">
-            <div className="flex-1 h-1.5 bg-[#F8FAFC] rounded-full overflow-hidden">
+            <div className="flex-1 h-1.5 bg-[var(--yo-surface)] rounded-full overflow-hidden">
               <div
                 className={`h-full rounded-full transition-all duration-500 ${styles.barColor}`}
                 style={{ width: `${pct}%` }}
               />
             </div>
-            <span className="text-[12px] font-medium text-[#6B7280] flex-shrink-0" data-testid="text-speed-ratio">
+            <span className="text-[12px] font-medium text-[var(--yo-muted)] flex-shrink-0" data-testid="text-speed-ratio">
               {done}/{total}
             </span>
           </div>
         </div>
         {onTap && (
-          <ChevronRight className="w-4 h-4 text-[#6B7280] flex-shrink-0 mt-1" />
+          <ChevronRight className="w-4 h-4 text-[var(--yo-muted)] flex-shrink-0 mt-1" />
         )}
       </div>
     </Wrapper>

@@ -86,17 +86,17 @@ export default function ProfileEditPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <PageHeader title={config.label} onBack={() => navigate("/profile/details")} />
 
       <div className="max-w-lg mx-auto px-5 pt-4">
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-6 h-6 animate-spin text-[#6B7280]" />
+            <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
           </div>
         ) : (
           <div className="flex flex-col gap-6">
-            <h1 className="text-[24px] font-bold text-[#111827] leading-tight" data-testid="heading-edit-field">
+            <h1 className="text-[24px] font-bold leading-tight" style={{ color: "var(--yo-dark)" }} data-testid="heading-edit-field">
               {config.question}
             </h1>
 
@@ -105,14 +105,14 @@ export default function ProfileEditPage() {
               value={value}
               onChange={e => setValue(e.target.value)}
               placeholder={config.placeholder}
-              className="w-full bg-[#F3F4F6] rounded-xl px-4 py-3.5 text-[16px] text-[#111827] placeholder:text-[#9CA3AF] border-0 outline-none focus:ring-2 focus:ring-[#673DE5] h-[52px]"
+              className="w-full bg-muted rounded-xl px-4 py-3.5 text-[16px] text-foreground placeholder:text-muted-foreground border-0 outline-none focus:ring-2 focus:ring-primary h-[52px]"
               data-testid="input-edit-field"
             />
 
             <Button
               onClick={handleSave}
               disabled={saving}
-              className="w-full h-[52px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[15px] font-semibold"
+              className="w-full h-[52px] rounded-xl bg-primary text-primary-foreground text-[15px] font-semibold"
               data-testid="button-save-field"
             >
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : "Opslaan"}
