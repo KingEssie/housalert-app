@@ -546,6 +546,24 @@ function HomeTab({
   const hasProfiles = profileCount > 0;
   const hasMatches = matchCount > 0;
 
+  const firstProfile = profiles[0];
+  const estimateQuery = useQuery<{ perWeekEstimate: number; last7dCount: number }>({
+    queryKey: ["/api/estimate", firstProfile?.city],
+    queryFn: async () => {
+      const params = new URLSearchParams({ city: firstProfile.city });
+      if (firstProfile.price_min) params.set("minPrice", String(firstProfile.price_min));
+      if (firstProfile.price_max) params.set("maxPrice", String(firstProfile.price_max));
+      if (firstProfile.bedrooms_min) params.set("minRooms", String(firstProfile.bedrooms_min));
+      if (firstProfile.size_min) params.set("minSize", String(firstProfile.size_min));
+      const res = await fetch(`/api/estimate?${params}`);
+      if (!res.ok) throw new Error("estimate failed");
+      return res.json();
+    },
+    enabled: hasProfiles && !hasMatches,
+    staleTime: 5 * 60 * 1000,
+  });
+  const potentialCount = estimateQuery.data?.last7dCount ?? 0;
+
   return (
     <div className="flex flex-col pb-6">
       <div className="sticky top-0 z-10 bg-white pt-5 pb-4 px-6">
@@ -597,6 +615,30 @@ function HomeTab({
             data-testid="button-view-matches"
           >
             Bekijk je matches
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      ) : hasProfiles && potentialCount > 0 ? (
+        <div className="rounded-lg bg-[var(--yo-chip-bg)] p-6" data-testid="hero-potential">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-11 h-11 rounded-full bg-[var(--yo-dark)] flex items-center justify-center flex-shrink-0">
+              <Search className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[16px] font-bold text-[var(--yo-dark)] leading-tight" data-testid="text-potential-count">
+                Je zoekprofiel kan ongeveer {potentialCount} woningen opleveren.
+              </p>
+              <p className="text-[14px] font-[500] text-[var(--yo-dark)] mt-0.5">
+                We zoeken actief naar matches voor je.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setActiveTab("filters")}
+            className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
+            data-testid="button-adjust-filters"
+          >
+            Filters aanpassen
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
