@@ -159,8 +159,8 @@ const MATCH_REASON_CHIPS: Record<string, string> = {
 };
 
 function displayMatchLabel(score: number, serverLabel: string): string {
-  if (score >= 95) return "Perfecte match";
-  if (score >= 80) return "Goede match";
+  if (score >= 90) return "Perfecte match";
+  if (score >= 75) return "Goede match";
   if (score >= 65) return "Interessant";
   return serverLabel;
 }
@@ -249,9 +249,8 @@ function MatchCard({
         {match.match_score != null && match.match_label && (
           <div data-testid={`score-badge-${match.listing_id}`}>
             <span className={`inline-flex text-[12px] font-bold px-3 py-1 rounded-full ${
-              match.match_score >= 95 ? "bg-[var(--yo-dark)] text-white" :
-              match.match_score >= 80 ? "bg-[var(--yo-dark)] text-white" :
-              match.match_score >= 65 ? "bg-[var(--yo-chip-bg)] text-[var(--yo-dark)]" :
+              match.match_score >= 90 ? "bg-[var(--yo-pink)] text-[var(--yo-dark)]" :
+              match.match_score >= 75 ? "bg-[var(--yo-chip-bg)] text-[var(--yo-dark)]" :
               "bg-[var(--yo-chip-bg)] text-[var(--yo-dark)]"
             }`}>
               {displayMatchLabel(match.match_score, match.match_label)} · {match.match_score}%
@@ -402,25 +401,25 @@ function ProfileCard({
 
       <div className="flex flex-wrap gap-2">
         {profile.location_mode === "districts" && profile.districts && profile.districts.length > 0 && (
-          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full" data-testid={`badge-districts-${profile.id}`}>
+          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full border border-[var(--yo-divider)]" data-testid={`badge-districts-${profile.id}`}>
             <MapPin className="w-3 h-3" />
             {profile.districts.length === 1 ? profile.districts[0] : `${profile.districts.length} wijken`}
           </span>
         )}
         {profile.location_mode === "radius" && profile.radius_km && (
-          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full" data-testid={`badge-radius-${profile.id}`}>
+          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full border border-[var(--yo-divider)]" data-testid={`badge-radius-${profile.id}`}>
             <MapPin className="w-3 h-3" />
             {profile.radius_km} km radius
           </span>
         )}
         {profile.location_mode === "commute" && profile.commute_destination && (
-          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full" data-testid={`badge-commute-${profile.id}`}>
+          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full border border-[var(--yo-divider)]" data-testid={`badge-commute-${profile.id}`}>
             <Clock className="w-3 h-3" />
             {profile.commute_minutes ? `${profile.commute_minutes} min` : ""} {profile.commute_mode === "ov" ? "OV" : profile.commute_mode === "fiets" ? "fiets" : "auto"}
           </span>
         )}
         {(profile.price_min > 0 || profile.price_max > 0) && (
-          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-surface)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full">
+          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full border border-[var(--yo-divider)]">
             <Euro className="w-3 h-3" />
             {profile.price_min > 0 && profile.price_max > 0
               ? `€${profile.price_min} – €${profile.price_max}`
@@ -429,12 +428,12 @@ function ProfileCard({
               : `Tot €${profile.price_max}`}
           </span>
         )}
-        <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-surface)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full">
+        <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full border border-[var(--yo-divider)]">
           <BedDouble className="w-3 h-3" />
           {bedroomLabel(profile.bedrooms_min)}
         </span>
         {profile.size_min > 0 && (
-          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-surface)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full">
+          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full border border-[var(--yo-divider)]">
             <Ruler className="w-3 h-3" />
             {profile.size_min}+ m²
           </span>

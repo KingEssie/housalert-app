@@ -229,13 +229,13 @@ function RecommendedSection({
               data-testid={`card-recommend-${task.id}`}
             >
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[var(--yo-chip-bg)] flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Icon className="w-5 h-5 text-[var(--yo-dark)]" />
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgba(45,212,191,0.1)" }}>
+                  <Icon className="w-5 h-5 text-[var(--yo-teal)]" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
                     <p className="text-[15px] font-semibold text-[var(--yo-dark)] leading-snug">{task.label}</p>
-                    <span className="text-[12px] font-semibold text-[var(--yo-dark)] bg-[var(--yo-chip-bg)] px-2 py-0.5 rounded-full flex-shrink-0 whitespace-nowrap" data-testid={`badge-points-${task.id}`}>
+                    <span className="text-[12px] font-semibold text-[var(--yo-teal)] px-2 py-0.5 rounded-full flex-shrink-0 whitespace-nowrap" style={{ backgroundColor: "rgba(45,212,191,0.1)" }} data-testid={`badge-points-${task.id}`}>
                       +{task.weight}
                     </span>
                   </div>
@@ -244,8 +244,8 @@ function RecommendedSection({
               </div>
               <Button
                 onClick={handleAction}
-                variant="secondary"
-                className="w-full mt-4 rounded-lg text-[14px] font-semibold"
+                variant="default"
+                className="w-full mt-4 rounded-lg text-[14px] font-semibold h-[48px]"
                 data-testid={`button-recommend-${task.id}`}
               >
                 {ctaLabel}

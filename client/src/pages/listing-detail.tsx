@@ -52,8 +52,8 @@ function relativeTime(dateStr: string | null | undefined): string {
 }
 
 function displayMatchLabel(score: number, serverLabel: string): string {
-  if (score >= 95) return "Perfecte match";
-  if (score >= 80) return "Goede match";
+  if (score >= 90) return "Perfecte match";
+  if (score >= 75) return "Goede match";
   if (score >= 65) return "Interessant";
   return serverLabel;
 }
@@ -145,9 +145,8 @@ export default function ListingDetailPage() {
   const gradient = getCityGradient(listing.city);
 
   const scoreColor = listing.match_score != null
-    ? listing.match_score >= 95 ? "bg-[var(--yo-dark)] text-white"
-    : listing.match_score >= 80 ? "bg-[var(--yo-dark)] text-white"
-    : listing.match_score >= 65 ? "bg-[var(--yo-chip-bg)] text-[var(--yo-dark)]"
+    ? listing.match_score >= 90 ? "bg-[var(--yo-pink)] text-[var(--yo-dark)]"
+    : listing.match_score >= 75 ? "bg-[var(--yo-chip-bg)] text-[var(--yo-dark)]"
     : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
     : "";
 
