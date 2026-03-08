@@ -40,6 +40,9 @@ export default function LoginPage() {
     const { error } = await supabase.auth.signUp({
       email: signupEmail,
       password: signupPassword,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
     });
     setSignupLoading(false);
     if (error) {

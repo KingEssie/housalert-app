@@ -125,6 +125,7 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - Test script: `scripts/test-matching-engine.ts` — run with `npx tsx scripts/test-matching-engine.ts`
 
 ### Core Libraries
+- `client/src/pages/auth-callback.tsx` — Email verification callback at `/auth/callback`: exchanges Supabase PKCE auth code for session, redirects to `/dashboard`
 - `client/src/lib/supabase.ts` — Supabase client with session persistence enabled
 - `client/src/lib/auth.tsx` — `AuthProvider` context + `useAuth()` hook
 - `client/src/lib/search-profiles.ts` — CRUD functions for `search_profiles` table

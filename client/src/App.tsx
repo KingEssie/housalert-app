@@ -30,6 +30,7 @@ import ChangePasswordPage from "@/pages/change-password";
 import OnboardingPage from "@/pages/onboarding";
 import OnboardingEmbedPage from "@/pages/onboarding-embed";
 import ContinueDraftPage from "@/pages/continue-draft";
+import AuthCallbackPage from "@/pages/auth-callback";
 
 function ProtectedRoute({ component: Component, skipOnboardingCheck }: { component: React.ComponentType; skipOnboardingCheck?: boolean }) {
   const { user, loading } = useAuth();
@@ -65,6 +66,7 @@ function Router() {
       <Route path="/" component={LandingPage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/signup" component={SignupPage} />
+      <Route path="/auth/callback" component={AuthCallbackPage} />
       <Route path="/onboarding-embed" component={OnboardingEmbedPage} />
       <Route path="/continue" component={ContinueDraftPage} />
       <Route path="/onboarding/location" component={OnboardingLocationPage} />
