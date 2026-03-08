@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
@@ -7,39 +7,38 @@ import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
-import LocationModeSelector, { type LocationData, type SelectedPlace, DEFAULT_LOCATION_DATA, isLocationValid } from "@/components/location-mode-selector";
+import LocationModeSelector, {
+  type LocationData,
+  type LocationTab,
+  DEFAULT_LOCATION_DATA,
+  isLocationValid,
+} from "@/components/location-mode-selector";
 import {
   ArrowLeft,
   ArrowRight,
-  Home as HomeIcon,
-  Users,
-  Building2,
   MapPin,
   Euro,
   BedDouble,
   Ruler,
-  Armchair,
-  TreePine,
-  Bath,
-  Car,
   Sparkles,
-  CheckCircle2,
   AlertCircle,
   Search,
-  ChevronDown,
+  Navigation,
+  Clock,
+  CheckCircle2,
 } from "lucide-react";
 
 const MAX_PROFILES = 4;
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 4;
 
-const PROPERTY_TYPES = [
-  { id: "apartment", label: "Appartement / studio", icon: Building2, desc: "Zelfstandige woning" },
-  { id: "room", label: "Kamer in gedeeld huis", icon: Users, desc: "Gedeelde woonruimte" },
-  { id: "both", label: "Allebei", icon: HomeIcon, desc: "Alle woningtypes" },
+const LOCATION_METHODS: { id: LocationTab; label: string; desc: string; icon: typeof MapPin }[] = [
+  { id: "wijken", label: "Wijken", desc: "Zoek in specifieke wijken van een stad", icon: MapPin },
+  { id: "radius", label: "Radius", desc: "Zoek binnen een straal rondom een locatie", icon: Navigation },
+  { id: "reistijd", label: "Reistijd", desc: "Zoek op basis van reistijd naar je werk", icon: Clock },
 ];
 
 const BEDROOM_OPTIONS = [
-  { value: 0, label: "Studio" },
+  { value: 0, label: "Geen voorkeur" },
   { value: 1, label: "1 kamer" },
   { value: 2, label: "2 kamers" },
   { value: 3, label: "3 kamers" },
@@ -48,40 +47,19 @@ const BEDROOM_OPTIONS = [
 
 const SIZE_OPTIONS = [
   { value: 0, label: "Geen voorkeur" },
-  { value: 20, label: "20+ m²" },
-  { value: 30, label: "30+ m²" },
-  { value: 40, label: "40+ m²" },
-  { value: 50, label: "50+ m²" },
-  { value: 60, label: "60+ m²" },
-  { value: 80, label: "80+ m²" },
-  { value: 100, label: "100+ m²" },
+  { value: 20, label: "20+ m\u00B2" },
+  { value: 30, label: "30+ m\u00B2" },
+  { value: 40, label: "40+ m\u00B2" },
+  { value: 50, label: "50+ m\u00B2" },
+  { value: 60, label: "60+ m\u00B2" },
+  { value: 80, label: "80+ m\u00B2" },
 ];
 
-const EXTRA_PREFERENCES = [
-  { id: "balcony", label: "Balkon", icon: TreePine },
-  { id: "garden", label: "Tuin", icon: TreePine },
-  { id: "bath", label: "Badkuip", icon: Bath },
-  { id: "parking", label: "Parkeerplaats", icon: Car },
-  { id: "furnished", label: "Gemeubileerd", icon: Armchair },
-];
-
-const ADDITIONAL_FILTERS = [
-  { id: "paid_sites", label: "Toon ook betaalde woningsites" },
-  { id: "temporary", label: "Inclusief tijdelijke huur" },
-  { id: "corporations", label: "Woningcorporaties" },
-];
-
-interface WizardData {
-  propertyType: string;
-  city: string;
-  districts: string[];
+interface FilterData {
   priceMin: string;
   priceMax: string;
   bedroomsMin: number;
   sizeMin: number;
-  furnished: boolean;
-  extras: string[];
-  additionalFilters: string[];
 }
 
 export default function NewSearchPage() {
@@ -92,17 +70,11 @@ export default function NewSearchPage() {
   const [submitting, setSubmitting] = useState(false);
   const [locationData, setLocationData] = useState<LocationData>({ ...DEFAULT_LOCATION_DATA });
 
-  const [data, setData] = useState<WizardData>({
-    propertyType: "",
-    city: "",
-    districts: [],
+  const [filters, setFilters] = useState<FilterData>({
     priceMin: "",
     priceMax: "",
     bedroomsMin: 0,
     sizeMin: 0,
-    furnished: false,
-    extras: [],
-    additionalFilters: [],
   });
 
   const profilesQuery = useQuery({
@@ -114,45 +86,42 @@ export default function NewSearchPage() {
   const profileCount = profilesQuery.data?.length ?? 0;
   const atLimit = profileCount >= MAX_PROFILES;
 
-  const selectedPlace = locationData.place;
-  const cityName = selectedPlace?.city_name ?? data.city;
+  const cityForProfile = locationData.tab === "reistijd"
+    ? locationData.commuteCity || locationData.commuteDestination.split(",")[0].trim()
+    : locationData.place?.city_name ?? "";
 
   const estimateQuery = useQuery({
-    queryKey: ["/api/estimate", cityName, data.priceMin, data.priceMax, data.bedroomsMin, data.sizeMin],
+    queryKey: ["/api/estimate", cityForProfile, filters.priceMin, filters.priceMax, filters.bedroomsMin, filters.sizeMin],
     queryFn: async () => {
-      const params = new URLSearchParams({ city: cityName });
-      if (data.priceMin) params.set("minPrice", data.priceMin);
-      if (data.priceMax) params.set("maxPrice", data.priceMax);
-      if (data.bedroomsMin > 0) params.set("minRooms", String(data.bedroomsMin));
-      if (data.sizeMin > 0) params.set("minSize", String(data.sizeMin));
+      const params = new URLSearchParams({ city: cityForProfile });
+      if (filters.priceMin) params.set("minPrice", filters.priceMin);
+      if (filters.priceMax) params.set("maxPrice", filters.priceMax);
+      if (filters.bedroomsMin > 0) params.set("minRooms", String(filters.bedroomsMin));
+      if (filters.sizeMin > 0) params.set("minSize", String(filters.sizeMin));
       const res = await fetch(`/api/estimate?${params}`);
       if (!res.ok) return null;
       return res.json();
     },
-    enabled: !!cityName && step >= 3,
+    enabled: !!cityForProfile && step >= 3,
     staleTime: 30000,
   });
 
-  const update = useCallback((partial: Partial<WizardData>) => {
-    setData((prev) => ({ ...prev, ...partial }));
+  const updateFilters = useCallback((partial: Partial<FilterData>) => {
+    setFilters((prev) => ({ ...prev, ...partial }));
   }, []);
 
   const canProceed = (): boolean => {
     switch (step) {
-      case 1: return !!data.propertyType;
+      case 1: return true;
       case 2: return isLocationValid(locationData);
       case 3: return true;
       case 4: return true;
-      case 5: return true;
-      case 6: return true;
       default: return false;
     }
   };
 
   const goNext = () => {
-    if (step < TOTAL_STEPS) {
-      setStep(step + 1);
-    }
+    if (step < TOTAL_STEPS) setStep(step + 1);
   };
 
   const goBack = () => {
@@ -171,18 +140,14 @@ export default function NewSearchPage() {
       return;
     }
 
-    const parsedPriceMin = parseInt(data.priceMin) || 0;
-    const parsedPriceMax = parseInt(data.priceMax) || 0;
+    const parsedPriceMin = parseInt(filters.priceMin) || 0;
+    const parsedPriceMax = parseInt(filters.priceMax) || 0;
 
     if (parsedPriceMax > 0 && parsedPriceMin > parsedPriceMax) {
       toast({ title: "Min prijs kan niet hoger zijn dan max prijs", variant: "destructive" });
       setStep(3);
       return;
     }
-
-    const cityForProfile = locationData.tab === "reistijd"
-      ? locationData.commuteCity || locationData.commuteDestination.split(",")[0].trim()
-      : selectedPlace?.city_name ?? "";
 
     const locationMode = locationData.tab === "wijken"
       ? (locationData.districts.length > 0 ? "districts" as const : "city" as const)
@@ -195,14 +160,14 @@ export default function NewSearchPage() {
       const profile = await createSearchProfile({
         user_id: user!.id,
         city_name: cityForProfile,
-        country_code: selectedPlace?.country_code,
-        latitude: selectedPlace?.latitude,
-        longitude: selectedPlace?.longitude,
-        place_id: selectedPlace?.place_id,
+        country_code: locationData.place?.country_code,
+        latitude: locationData.place?.latitude,
+        longitude: locationData.place?.longitude,
+        place_id: locationData.place?.place_id,
         price_min: parsedPriceMin,
         price_max: parsedPriceMax,
-        bedrooms_min: data.bedroomsMin,
-        size_min: data.sizeMin,
+        bedrooms_min: filters.bedroomsMin,
+        size_min: filters.sizeMin,
         location_mode: locationMode,
         districts: locationData.districts.length > 0 ? locationData.districts : undefined,
         radius_km: locationData.tab === "radius" ? locationData.radiusKm : undefined,
@@ -284,39 +249,39 @@ export default function NewSearchPage() {
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6 pb-32">
         {step === 1 && (
           <StepContainer
-            title="Wat zoek je?"
-            subtitle="Kies het type woning dat bij je past."
+            title="Hoe wil je zoeken?"
+            subtitle="Kies een locatiemethode om te starten."
           >
             <div className="flex flex-col gap-3">
-              <p className="text-[13px] font-[500] text-[#6B7280] -mt-2 mb-1">
-                Type-filtering wordt binnenkort actief. Selecteer alvast je voorkeur.
-              </p>
-              {PROPERTY_TYPES.map((pt) => {
-                const Icon = pt.icon;
-                const selected = data.propertyType === pt.id;
+              {LOCATION_METHODS.map((method) => {
+                const Icon = method.icon;
+                const selected = locationData.tab === method.id;
                 return (
                   <button
-                    key={pt.id}
-                    onClick={() => update({ propertyType: pt.id })}
+                    key={method.id}
+                    onClick={() => {
+                      setLocationData({ ...locationData, tab: method.id });
+                      goNext();
+                    }}
                     className={`w-full flex items-center gap-4 p-4 rounded-[14px] border-2 transition-all text-left ${
                       selected
                         ? "border-[#673DE5] bg-[#DCDBFA]"
-                        : "border-[#E5E7EB] bg-white hover:border-[#E5E7EB]"
+                        : "border-[#E5E7EB] bg-white hover:border-[#D1D5DB]"
                     }`}
-                    data-testid={`option-type-${pt.id}`}
+                    data-testid={`option-method-${method.id}`}
                   >
                     <div className={`w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 ${
                       selected ? "bg-[#673DE5]" : "bg-[#F3F4F6]"
                     }`}>
                       <Icon className={`w-5 h-5 ${selected ? "text-white" : "text-[#6B7280]"}`} />
                     </div>
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <p className={`text-[15px] font-semibold ${selected ? "text-[#673DE5]" : "text-[#111827]"}`}>
-                        {pt.label}
+                        {method.label}
                       </p>
-                      <p className="text-[13px] font-[500] text-[#6B7280]">{pt.desc}</p>
+                      <p className="text-[13px] font-[500] text-[#6B7280]">{method.desc}</p>
                     </div>
-                    {selected && <CheckCircle2 className="w-5 h-5 text-[#673DE5] ml-auto flex-shrink-0" />}
+                    <ArrowRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
                   </button>
                 );
               })}
@@ -326,67 +291,74 @@ export default function NewSearchPage() {
 
         {step === 2 && (
           <StepContainer
-            title="Waar zoek je?"
-            subtitle="Kies een locatie en optioneel wijken, straal of reistijd."
+            title={
+              locationData.tab === "wijken"
+                ? "Kies je stad en wijken"
+                : locationData.tab === "radius"
+                  ? "Kies locatie en straal"
+                  : "Stel je reistijd in"
+            }
+            subtitle={
+              locationData.tab === "wijken"
+                ? "Zoek een stad en selecteer optioneel specifieke wijken."
+                : locationData.tab === "radius"
+                  ? "Zoek een stad en stel de zoekstraal in."
+                  : "Vul je werkadres in en stel de maximale reistijd in."
+            }
           >
             <LocationModeSelector
               value={locationData}
-              onChange={(ld) => {
-                setLocationData(ld);
-                update({ city: ld.place?.city_name ?? "", districts: ld.districts });
-              }}
+              onChange={(ld) => setLocationData(ld)}
+              segmentedTabs
+              alwaysShowMap
             />
           </StepContainer>
         )}
 
         {step === 3 && (
           <StepContainer
-            title="Wat is je budget?"
-            subtitle="Stel je prijsrange in."
+            title="Woningfilters"
+            subtitle="Stel je budget en woonwensen in."
           >
             <div className="flex flex-col gap-6">
               <div>
-                <label className="text-[16px] font-[700] text-[#111827] mb-3 block">Minimale huur</label>
+                <label className="text-[16px] font-[700] text-[#111827] mb-3 block">
+                  <Euro className="w-4 h-4 inline mr-1.5 text-[#673DE5]" />
+                  Min prijs
+                </label>
                 <div className="relative">
-                  <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9CA3AF] text-[14px] font-medium">EUR</span>
                   <input
                     type="number"
-                    value={data.priceMin}
-                    onChange={(e) => update({ priceMin: e.target.value })}
+                    value={filters.priceMin}
+                    onChange={(e) => updateFilters({ priceMin: e.target.value })}
                     placeholder="0"
                     min="0"
-                    className="w-full h-[52px] pl-10 pr-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#111827] placeholder:text-[#6B7280] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE5]/15 focus:bg-[#F8FAFC] transition-all"
+                    className="w-full h-[52px] pl-[56px] pr-4 rounded-[14px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#673DE5]/20 focus:bg-[#F8FAFC] transition-all"
                     data-testid="input-price-min"
                   />
                 </div>
               </div>
+
               <div>
-                <label className="text-[16px] font-[700] text-[#111827] mb-3 block">Maximale huur</label>
+                <label className="text-[16px] font-[700] text-[#111827] mb-3 block">
+                  <Euro className="w-4 h-4 inline mr-1.5 text-[#673DE5]" />
+                  Max prijs
+                </label>
                 <div className="relative">
-                  <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9CA3AF] text-[14px] font-medium">EUR</span>
                   <input
                     type="number"
-                    value={data.priceMax}
-                    onChange={(e) => update({ priceMax: e.target.value })}
+                    value={filters.priceMax}
+                    onChange={(e) => updateFilters({ priceMax: e.target.value })}
                     placeholder="2000"
                     min="0"
-                    className="w-full h-[52px] pl-10 pr-4 rounded-xl border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#111827] placeholder:text-[#6B7280] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#673DE5]/15 focus:bg-[#F8FAFC] transition-all"
+                    className="w-full h-[52px] pl-[56px] pr-4 rounded-[14px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#673DE5]/20 focus:bg-[#F8FAFC] transition-all"
                     data-testid="input-price-max"
                   />
                 </div>
               </div>
 
-              <EstimateBadge estimate={estimateQuery.data} loading={estimateQuery.isLoading} />
-            </div>
-          </StepContainer>
-        )}
-
-        {step === 4 && (
-          <StepContainer
-            title="Basisvereisten"
-            subtitle="Hoeveel kamers en ruimte heb je nodig?"
-          >
-            <div className="flex flex-col gap-6">
               <div>
                 <label className="text-[16px] font-[700] text-[#111827] mb-3 block">
                   <BedDouble className="w-4 h-4 inline mr-1.5 text-[#673DE5]" />
@@ -394,14 +366,14 @@ export default function NewSearchPage() {
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {BEDROOM_OPTIONS.map((opt) => {
-                    const selected = data.bedroomsMin === opt.value;
+                    const selected = filters.bedroomsMin === opt.value;
                     return (
                       <button
                         key={opt.value}
-                        onClick={() => update({ bedroomsMin: opt.value })}
-                        className={`px-4 py-2.5 rounded-xl text-[14px] font-medium border-0 transition-all ${
+                        onClick={() => updateFilters({ bedroomsMin: opt.value })}
+                        className={`px-4 py-2.5 rounded-[12px] text-[14px] font-medium transition-all ${
                           selected
-                            ? "bg-[#DCDBFA] text-[#673DE5] ring-2 ring-[#673DE5]/20"
+                            ? "bg-[#673DE5] text-white shadow-sm"
                             : "bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB]"
                         }`}
                         data-testid={`option-bedrooms-${opt.value}`}
@@ -416,18 +388,18 @@ export default function NewSearchPage() {
               <div>
                 <label className="text-[16px] font-[700] text-[#111827] mb-3 block">
                   <Ruler className="w-4 h-4 inline mr-1.5 text-[#673DE5]" />
-                  Minimum oppervlakte
+                  Oppervlakte
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {SIZE_OPTIONS.map((opt) => {
-                    const selected = data.sizeMin === opt.value;
+                    const selected = filters.sizeMin === opt.value;
                     return (
                       <button
                         key={opt.value}
-                        onClick={() => update({ sizeMin: opt.value })}
-                        className={`px-4 py-2.5 rounded-xl text-[14px] font-medium border-0 transition-all ${
+                        onClick={() => updateFilters({ sizeMin: opt.value })}
+                        className={`px-4 py-2.5 rounded-[12px] text-[14px] font-medium transition-all ${
                           selected
-                            ? "bg-[#DCDBFA] text-[#673DE5] ring-2 ring-[#673DE5]/20"
+                            ? "bg-[#673DE5] text-white shadow-sm"
                             : "bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB]"
                         }`}
                         data-testid={`option-size-${opt.value}`}
@@ -438,98 +410,57 @@ export default function NewSearchPage() {
                   })}
                 </div>
               </div>
-
-              <EstimateBadge estimate={estimateQuery.data} loading={estimateQuery.isLoading} />
             </div>
           </StepContainer>
         )}
 
-        {step === 5 && (
+        {step === 4 && (
           <StepContainer
-            title="Extra voorkeuren"
-            subtitle="Optioneel — selecteer wat belangrijk voor je is."
+            title="Verwachte matches"
+            subtitle="Op basis van je zoekopdracht verwachten we dit resultaat."
           >
-            <div className="flex flex-col gap-3">
-              {EXTRA_PREFERENCES.map((pref) => {
-                const Icon = pref.icon;
-                const selected = data.extras.includes(pref.id);
-                return (
-                  <button
-                    key={pref.id}
-                    onClick={() => {
-                      update({
-                        extras: selected
-                          ? data.extras.filter((x) => x !== pref.id)
-                          : [...data.extras, pref.id],
-                      });
-                    }}
-                    className={`w-full flex items-center gap-4 p-4 rounded-[14px] border-2 transition-all text-left ${
-                      selected
-                        ? "border-[#673DE5] bg-[#DCDBFA]"
-                        : "border-[#E5E7EB] bg-white hover:border-[#E5E7EB]"
-                    }`}
-                    data-testid={`option-extra-${pref.id}`}
-                  >
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      selected ? "bg-[#673DE5]" : "bg-[#F3F4F6]"
-                    }`}>
-                      <Icon className={`w-4.5 h-4.5 ${selected ? "text-white" : "text-[#6B7280]"}`} />
-                    </div>
-                    <span className={`text-[15px] font-medium flex-1 ${selected ? "text-[#673DE5]" : "text-[#111827]"}`}>
-                      {pref.label}
-                    </span>
-                    {selected && <CheckCircle2 className="w-5 h-5 text-[#673DE5] flex-shrink-0" />}
-                  </button>
-                );
-              })}
-              <p className="text-[13px] font-[500] text-[#6B7280] mt-2">
-                Deze voorkeuren helpen ons betere matches te vinden. Ze worden binnenkort actief als filter.
-              </p>
-            </div>
-          </StepContainer>
-        )}
+            <div className="flex flex-col gap-5">
+              <div className="bg-gradient-to-br from-[#F0EDFC] to-[#E8E4FA] rounded-[18px] p-6" data-testid="card-result-preview">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-[14px] bg-[#673DE5] flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide">Verwachte resultaten</p>
+                  </div>
+                </div>
 
-        {step === 6 && (
-          <StepContainer
-            title="Aanvullende filters"
-            subtitle="Verfijn je zoekopdracht verder."
-          >
-            <div className="flex flex-col gap-3">
-              {ADDITIONAL_FILTERS.map((filter) => {
-                const selected = data.additionalFilters.includes(filter.id);
-                return (
-                  <button
-                    key={filter.id}
-                    onClick={() => {
-                      update({
-                        additionalFilters: selected
-                          ? data.additionalFilters.filter((x) => x !== filter.id)
-                          : [...data.additionalFilters, filter.id],
-                      });
-                    }}
-                    className={`w-full flex items-center gap-4 p-4 rounded-[14px] border-2 transition-all text-left ${
-                      selected
-                        ? "border-[#673DE5] bg-[#DCDBFA]"
-                        : "border-[#E5E7EB] bg-white hover:border-[#E5E7EB]"
-                    }`}
-                    data-testid={`option-filter-${filter.id}`}
-                  >
-                    <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 ${
-                      selected ? "border-[#673DE5] bg-[#673DE5]" : "border-[#E5E7EB]"
-                    }`}>
-                      {selected && <CheckCircle2 className="w-4 h-4 text-white" />}
-                    </div>
-                    <span className={`text-[15px] font-medium ${selected ? "text-[#673DE5]" : "text-[#111827]"}`}>
-                      {filter.label}
-                    </span>
-                  </button>
-                );
-              })}
-              <p className="text-[13px] font-[500] text-[#6B7280] mt-2">
-                Deze filters worden binnenkort toegepast op je zoekresultaten.
-              </p>
+                {estimateQuery.isLoading ? (
+                  <div className="space-y-3">
+                    <div className="h-8 bg-[#DCDBFA] rounded-lg w-48 animate-pulse" />
+                    <div className="h-4 bg-[#DCDBFA] rounded w-56 animate-pulse" />
+                  </div>
+                ) : estimateQuery.data ? (
+                  <>
+                    <p className="text-[18px] sm:text-[20px] font-bold text-[#111827] leading-snug mb-1" data-testid="text-estimate-sentence">
+                      Met deze zoekopdracht kun je <span className="text-[#673DE5] text-[24px] sm:text-[28px] font-extrabold">{estimateQuery.data.perWeekEstimate ?? 0}</span> matches per week verwachten.
+                    </p>
+                    <p className="text-[14px] text-[#6B7280]">
+                      {estimateQuery.data.last7dCount ?? 0} woningen gevonden in de afgelopen 7 dagen
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-[14px] text-[#6B7280]">
+                    Vul je locatie en filters in om een schatting te zien.
+                  </p>
+                )}
+              </div>
 
-              <EstimateBadge estimate={estimateQuery.data} loading={estimateQuery.isLoading} />
+              <div className="bg-[#F8FAFC] rounded-[14px] p-4 space-y-2.5">
+                <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2">Samenvatting</p>
+                <SummaryRow label="Locatie" value={cityForProfile || "Niet ingesteld"} />
+                <SummaryRow label="Methode" value={
+                  locationData.tab === "wijken" ? "Wijken" : locationData.tab === "radius" ? "Radius" : "Reistijd"
+                } />
+                {filters.priceMax && <SummaryRow label="Budget" value={`${filters.priceMin || "0"} - ${filters.priceMax} EUR`} />}
+                {filters.bedroomsMin > 0 && <SummaryRow label="Slaapkamers" value={`${filters.bedroomsMin}+`} />}
+                {filters.sizeMin > 0 && <SummaryRow label="Oppervlakte" value={`${filters.sizeMin}+ m\u00B2`} />}
+              </div>
             </div>
           </StepContainer>
         )}
@@ -541,42 +472,54 @@ export default function NewSearchPage() {
             <Button
               variant="outline"
               onClick={goBack}
-              className="h-[48px] px-5 rounded-xl border-[#E5E7EB] text-[#111827] text-[15px] font-medium"
+              className="h-[48px] px-5 rounded-[14px] border-[#E5E7EB] text-[#111827] text-[15px] font-medium"
               data-testid="button-wizard-back"
             >
               <ArrowLeft className="w-4 h-4 mr-1.5" />
-              Terug
+              Vorige
             </Button>
           )}
-          {step < TOTAL_STEPS ? (
+          {step === 1 ? null : step < TOTAL_STEPS ? (
             <Button
               onClick={goNext}
               disabled={!canProceed()}
-              className="flex-1 h-[56px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[16px] font-semibold disabled:opacity-50"
+              className="flex-1 h-[56px] rounded-[14px] bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[16px] font-bold disabled:opacity-50 shadow-[0_2px_12px_rgba(103,61,229,0.25)]"
               data-testid="button-wizard-next"
             >
-              Volgende
+              {step === 2 ? "Plaats zoekopdracht" : "Volgende"}
               <ArrowRight className="w-4 h-4 ml-1.5" />
             </Button>
           ) : (
             <Button
               onClick={handleSubmit}
               disabled={submitting || !isLocationValid(locationData)}
-              className="flex-1 h-[56px] rounded-xl bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[16px] font-semibold disabled:opacity-50"
+              className="flex-1 h-[56px] rounded-[14px] bg-[#673DE5] hover:bg-[#5B30D6] text-white text-[16px] font-bold disabled:opacity-50 shadow-[0_2px_12px_rgba(103,61,229,0.25)]"
               data-testid="button-wizard-submit"
             >
               {submitting ? (
-                "Opslaan..."
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Opslaan...
+                </div>
               ) : (
                 <>
                   <Search className="w-4 h-4 mr-1.5" />
-                  Zoekopdracht starten
+                  Maak zoekopdracht aan
                 </>
               )}
             </Button>
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function SummaryRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between">
+      <span className="text-[13px] text-[#6B7280]">{label}</span>
+      <span className="text-[13px] font-semibold text-[#111827]">{value}</span>
     </div>
   );
 }
@@ -622,41 +565,6 @@ function StepContainer({ title, subtitle, children }: { title: string; subtitle:
         <p className="text-[15px] text-[#6B7280]">{subtitle}</p>
       </div>
       {children}
-    </div>
-  );
-}
-
-function EstimateBadge({ estimate, loading }: { estimate: any; loading: boolean }) {
-  if (loading) {
-    return (
-      <div className="bg-[#DCDBFA] rounded-xl p-4 flex items-center gap-3 animate-pulse">
-        <div className="w-9 h-9 rounded-full bg-[#673DE5]/10" />
-        <div className="flex-1">
-          <div className="h-3 bg-[#673DE5]/10 rounded w-32 mb-1" />
-          <div className="h-3 bg-[#673DE5]/10 rounded w-24" />
-        </div>
-      </div>
-    );
-  }
-
-  if (!estimate) return null;
-
-  const count = estimate.last7dCount ?? 0;
-  const perWeek = estimate.perWeekEstimate ?? count;
-
-  return (
-    <div className="bg-[#DCDBFA] rounded-xl p-4 flex items-center gap-3" data-testid="badge-estimate">
-      <div className="w-9 h-9 rounded-full bg-[#673DE5]/10 flex items-center justify-center flex-shrink-0">
-        <Sparkles className="w-4 h-4 text-[#673DE5]" />
-      </div>
-      <div>
-        <p className="text-[14px] font-semibold text-[#111827]">
-          ~{perWeek} {perWeek === 1 ? "match" : "matches"} per week
-        </p>
-        <p className="text-[13px] font-[500] text-[#6B7280]">
-          {count} {count === 1 ? "woning" : "woningen"} in de afgelopen 7 dagen
-        </p>
-      </div>
     </div>
   );
 }

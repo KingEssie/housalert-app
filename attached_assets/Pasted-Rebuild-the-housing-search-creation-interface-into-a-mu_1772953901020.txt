@@ -1,0 +1,116 @@
+Rebuild the housing search creation interface into a multi-step onboarding flow similar to Stekkies.com.
+
+IMPORTANT:
+The current UI incorrectly shows everything on one page with a map. This must be replaced with a step-by-step wizard flow.
+
+The flow must contain 4 steps.
+
+STEP 1 — Location method selection
+Show a card with 3 selectable options:
+
+1. Wijken
+2. Radius
+3. Reistijd
+
+Each option should be displayed as a toggle card/button.
+
+When the user selects an option, proceed to step 2.
+
+---
+
+STEP 2 — Location configuration
+
+If "Wijken" is selected show:
+
+- City dropdown
+- Multi-select neighbourhood selector
+- Map preview highlighting selected neighbourhoods
+- Button: "Plaats zoekopdracht"
+
+If "Radius" is selected show:
+
+- City dropdown
+- Radius selector (dropdown or slider)
+- Interactive map with draggable circle
+- Instruction text:
+  "Klik om de cirkel te verplaatsen"
+- Button: "Plaats zoekopdracht"
+
+If "Reistijd" is selected show:
+
+- Address input field
+- Max travel time selector (minutes)
+- Transport mode dropdown:
+  - lopend
+  - fiets
+  - auto
+  - ov
+- Map preview
+- Button: "Plaats zoekopdracht"
+
+---
+
+STEP 3 — Housing filters
+
+Display a card with filters:
+
+Min prijs
+Max prijs
+Slaapkamers
+Oppervlakte
+
+Buttons:
+Vorige
+Maak zoekopdracht aan
+
+---
+
+STEP 4 — Result expectation
+
+Show a result preview card:
+
+"Met deze zoekopdracht kun je X matches per week verwachten."
+
+X should be dynamically calculated from the listings dataset.
+
+---
+
+UI REQUIREMENTS
+
+Use a step progress indicator at the top.
+
+Design must follow a clean mobile-first card layout.
+
+Maps should only be used as preview/visualization, not the main interface.
+
+Buttons should be large and centered.
+
+Spacing between sections should be generous.
+
+---
+
+TECH STRUCTURE
+
+Use a step state:
+
+step 1 = location method
+step 2 = location configuration
+step 3 = filters
+step 4 = result preview
+
+Render UI conditionally based on the step.
+
+Example:
+
+if(step === 1) showLocationMethod()
+if(step === 2) showLocationConfig()
+if(step === 3) showFilters()
+if(step === 4) showPreview()
+
+---
+
+IMPORTANT
+
+Remove the current single-page filter interface and replace it entirely with this wizard flow.
+
+The experience must feel like the Stekkies onboarding flow where users progressively configure their search.
