@@ -221,7 +221,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
           {listing.url ? (
             <Button
               onClick={handleCopyAndOpen}
-              className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[14px] font-semibold"
+              className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[14px] font-semibold"
               data-testid="button-copy-and-open"
             >
               <Copy className="w-4 h-4 mr-2" />
@@ -230,7 +230,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
           ) : (
             <Button
               onClick={handleCopy}
-              className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[14px] font-semibold"
+              className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[14px] font-semibold"
               data-testid="button-copy-letter-sheet"
             >
               <Copy className="w-4 h-4 mr-2" />

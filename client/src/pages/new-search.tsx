@@ -230,7 +230,7 @@ export default function NewSearchPage() {
             </p>
             <Button
               onClick={() => navigate("/dashboard")}
-              className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[15px] font-bold"
+              className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[15px] font-bold"
               data-testid="button-back-to-dashboard-limit"
             >
               Terug naar dashboard
@@ -274,7 +274,7 @@ export default function NewSearchPage() {
             <Button
               onClick={goNext}
               disabled={!canProceed()}
-              className="flex-1 h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[16px] font-bold disabled:opacity-40 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
+              className="flex-1 h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[16px] font-bold disabled:opacity-40 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
               data-testid="button-wizard-next"
             >
               Volgende
@@ -284,7 +284,7 @@ export default function NewSearchPage() {
             <Button
               onClick={handleSubmit}
               disabled={submitting || !isLocationValid(locationData)}
-              className="flex-1 h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[16px] font-bold disabled:opacity-40 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
+              className="flex-1 h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[16px] font-bold disabled:opacity-40 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
               data-testid="button-wizard-submit"
             >
               {submitting ? (
@@ -413,7 +413,7 @@ function Step2Filters({
                   onClick={() => updateFilters({ bedroomsMin: opt.value })}
                   className={`px-4 py-2.5 rounded-lg text-[14px] font-medium transition-all ${
                     selected
-                      ? "bg-[var(--yo-teal)] text-white shadow-sm"
+                      ? "bg-[var(--yo-teal)] text-black shadow-sm"
                       : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
                   }`}
                   data-testid={`option-bedrooms-${opt.value}`}
@@ -439,7 +439,7 @@ function Step2Filters({
                   onClick={() => updateFilters({ sizeMin: opt.value })}
                   className={`px-4 py-2.5 rounded-lg text-[14px] font-medium transition-all ${
                     selected
-                      ? "bg-[var(--yo-teal)] text-white shadow-sm"
+                      ? "bg-[var(--yo-teal)] text-black shadow-sm"
                       : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
                   }`}
                   data-testid={`option-size-${opt.value}`}

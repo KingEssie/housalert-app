@@ -57,7 +57,7 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
 
       <button
         onClick={onStart}
-        className="w-full max-w-[320px] min-h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white font-bold text-[16px] transition-colors flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
+        className="w-full max-w-[320px] min-h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black font-bold text-[16px] transition-colors flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
         data-testid="button-start-onboarding"
       >
         Start met zoeken
@@ -101,7 +101,7 @@ function LocationStep({
         <button
           onClick={onNext}
           disabled={!isLocationValid(locationData)}
-          className="w-full min-h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white font-bold text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
+          className="w-full min-h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black font-bold text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
           data-testid="button-city-next"
         >
           Volgende
@@ -186,7 +186,7 @@ function BudgetStep({
         <button
           onClick={onNext}
           disabled={!valid}
-          className="w-full min-h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white font-bold text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
+          className="w-full min-h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black font-bold text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
           data-testid="button-budget-next"
         >
           Volgende
@@ -246,7 +246,7 @@ function PropertyTypeStep({
         <button
           onClick={onNext}
           disabled={!propertyType}
-          className="w-full min-h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white font-bold text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
+          className="w-full min-h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black font-bold text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
           data-testid="button-property-next"
         >
           Volgende
@@ -277,7 +277,7 @@ function AlertsStep({ onActivate, saving }: { onActivate: () => void; saving: bo
       <button
         onClick={onActivate}
         disabled={saving}
-        className="w-full max-w-[320px] min-h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white font-bold text-[16px] transition-colors disabled:opacity-60 flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
+        className="w-full max-w-[320px] min-h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black font-bold text-[16px] transition-colors disabled:opacity-60 flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
         data-testid="button-activate-alerts"
       >
         {saving ? (

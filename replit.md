@@ -51,7 +51,7 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - **PENDING MIGRATION**: `server/migrations/PENDING_RUN_IN_SUPABASE.sql` must be run in Supabase SQL Editor (includes migrations 008, 010, 011, 012, 013)
 
 ### Design System (YoungOnes-inspired)
-- **Primary CTA**: Teal `var(--yo-teal)` #2DD4BF, hover `var(--yo-teal-hover)` #25BBA8 — CTA buttons ONLY, active nav indicator, selection controls (radio/transport mode)
+- **Primary CTA**: Teal `var(--yo-teal)` #2DD4BF, hover `var(--yo-teal-hover)` #25BBA8 — CTA buttons ONLY (BLACK text, not white), active nav indicator, selection controls
 - **Accent/Links**: Pink `var(--yo-pink)` #FF2E8A — all text links, action text, source labels, progress bars
 - **Badges/Chips**: Neutral `var(--yo-chip-bg)` #F3F4F6 with `var(--yo-dark)` text — all badges, status pills, count indicators
 - **Icon backgrounds**: `var(--yo-chip-bg)` #F3F4F6 with `var(--yo-dark)` icons (NOT teal)
@@ -60,7 +60,7 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - **Text**: primary #1A1A1A (--yo-dark), body #333333 (--yo-text), muted #9CA3AF (--yo-muted, disabled only)
 - **Backgrounds**: white #FFFFFF (--yo-bg), surface #F8F9FA (--yo-surface)
 - **Borders/dividers**: #EEEEEE (--yo-divider)
-- **Buttons**: bg var(--yo-teal), white text, rounded-lg (8px), h-[56px], font-bold
+- **Buttons**: bg var(--yo-teal), BLACK text, rounded-lg (8px), h-[56px], font-bold
 - **Inputs**: bg var(--yo-surface), border var(--yo-divider), rounded-lg (8px)
 - **Cards**: white bg, very subtle shadow, rounded-lg (8px)
 - **Border radius**: Standardized to `rounded-lg` (8px) everywhere

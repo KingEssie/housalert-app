@@ -215,7 +215,7 @@ export default function OnboardingLocationPage() {
                           onClick={() => toggleDistrict(district)}
                           className={`px-3.5 py-2 rounded-full text-sm font-medium transition-all ${
                             selectedDistricts.includes(district)
-                              ? "bg-[var(--yo-teal)] text-white"
+                              ? "bg-[var(--yo-teal)] text-black"
                               : "bg-[var(--yo-surface)] text-[var(--yo-dark)] hover:bg-[var(--yo-divider)]"
                           }`}
                           data-testid={`chip-district-${district.toLowerCase().replace(/[\s-]/g, "-")}`}
@@ -406,7 +406,7 @@ export default function OnboardingLocationPage() {
                         onClick={() => setTransportMode(mode.id)}
                         className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-lg text-xs font-semibold transition-all ${
                           transportMode === mode.id
-                            ? "bg-[var(--yo-teal)] text-white"
+                            ? "bg-[var(--yo-teal)] text-black"
                             : "bg-[var(--yo-surface)] text-[var(--yo-dark)] hover:bg-[var(--yo-divider)]"
                         }`}
                         data-testid={`button-transport-${mode.id}`}

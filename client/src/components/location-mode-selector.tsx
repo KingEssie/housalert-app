@@ -499,7 +499,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                   onClick={() => onChange({ ...value, commuteMode: mode.id })}
                   className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-lg text-xs font-semibold transition-all ${
                     value.commuteMode === mode.id
-                      ? "bg-[var(--yo-teal)] text-white"
+                      ? "bg-[var(--yo-teal)] text-black"
                       : "bg-[var(--yo-surface)] text-[var(--yo-dark)] hover:bg-[var(--yo-divider)]"
                   }`}
                   data-testid={`button-transport-${mode.id}`}

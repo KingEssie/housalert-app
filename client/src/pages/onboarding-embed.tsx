@@ -78,7 +78,7 @@ function CompletionScreen({ draftId }: { draftId: string }) {
         <a
           href={continueUrl}
           target="_top"
-          className="w-full min-h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white font-bold text-[15px] transition-all flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.3)]"
+          className="w-full min-h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black font-bold text-[15px] transition-all flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.3)]"
           data-testid="embed-link-continue-browser"
         >
           <ExternalLink className="w-4 h-4" />
@@ -230,7 +230,7 @@ export default function OnboardingEmbedPage() {
                     onClick={() => setPropertyType(pt.value)}
                     className={`px-3.5 py-[7px] rounded-full text-[13px] font-medium transition-all ${
                       propertyType === pt.value
-                        ? "bg-[var(--yo-teal)] text-white shadow-sm"
+                        ? "bg-[var(--yo-teal)] text-black shadow-sm"
                         : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
                     }`}
                     data-testid={`embed-chip-property-${pt.value}`}
@@ -292,7 +292,7 @@ export default function OnboardingEmbedPage() {
             <button
               onClick={handleSubmit}
               disabled={!canSubmit || submitting}
-              className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] active:scale-[0.98] text-white font-bold text-[16px] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 shadow-[0_2px_12px_rgba(0,0,0,0.35)]"
+              className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] active:scale-[0.98] text-black font-bold text-[16px] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 shadow-[0_2px_12px_rgba(0,0,0,0.35)]"
               data-testid="embed-button-submit"
             >
               {submitting ? (

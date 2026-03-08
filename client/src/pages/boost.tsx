@@ -334,7 +334,7 @@ function EmptyState({ onStart }: { onStart: () => void }) {
       </p>
       <Button
         onClick={onStart}
-        className="h-[56px] px-8 rounded-lg bg-[var(--yo-teal)] text-white text-[15px] font-bold"
+        className="h-[56px] px-8 rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold"
         data-testid="button-start-boost"
       >
         <Zap className="w-4 h-4 mr-1.5" />
@@ -411,7 +411,7 @@ function TaskModal({
           {(taskId === "alerts_active" || taskId === "phone_number_added") && (
             <Button
               onClick={() => { onClose(); navigate("/settings/notifications"); }}
-              className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-white text-[15px] font-bold"
+              className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold"
               data-testid="button-goto-notifications"
             >
               <Bell className="w-4 h-4 mr-2" />
@@ -434,7 +434,7 @@ function TaskModal({
               <Button
                 onClick={() => handleSave({ search_buddy_email: buddyEmail }, "Zoekbuddy opgeslagen!")}
                 disabled={!buddyEmail.includes("@") || updateProfileData.isPending}
-                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-white text-[15px] font-bold disabled:opacity-50"
+                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold disabled:opacity-50"
                 data-testid="button-save-buddy"
               >
                 {updateProfileData.isPending ? "Opslaan..." : "Opslaan"}
@@ -445,7 +445,7 @@ function TaskModal({
           {taskId === "housing_preferences_completed" && (
             <Button
               onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
-              className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-white text-[15px] font-bold"
+              className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold"
               data-testid="button-goto-filters"
             >
               <Search className="w-4 h-4 mr-2" />
@@ -456,7 +456,7 @@ function TaskModal({
           {taskId === "reaction_letter_ready" && (
             <Button
               onClick={() => { onClose(); navigate("/application-letter"); }}
-              className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-white text-[15px] font-bold"
+              className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold"
               data-testid="button-goto-letter"
             >
               <FileText className="w-4 h-4 mr-2" />
@@ -491,7 +491,7 @@ function TaskModal({
               <Button
                 onClick={() => handleSave({ document_checklist: checklist }, "Documenten opgeslagen!")}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-white text-[15px] font-bold disabled:opacity-50"
+                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold disabled:opacity-50"
                 data-testid="button-save-income-docs"
               >
                 {updateProfileData.isPending ? "Opslaan..." : "Opslaan"}
@@ -526,7 +526,7 @@ function TaskModal({
               <Button
                 onClick={() => handleSave({ document_checklist: checklist }, "Documenten opgeslagen!")}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-white text-[15px] font-bold disabled:opacity-50"
+                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold disabled:opacity-50"
                 data-testid="button-save-id-docs"
               >
                 {updateProfileData.isPending ? "Opslaan..." : "Opslaan"}
@@ -537,7 +537,7 @@ function TaskModal({
           {taskId === "profile_info_completed" && (
             <Button
               onClick={() => { onClose(); navigate("/settings/notifications"); }}
-              className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-white text-[15px] font-bold"
+              className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold"
               data-testid="button-goto-profile-info"
             >
               <UserCircle className="w-4 h-4 mr-2" />
@@ -552,7 +552,7 @@ function TaskModal({
               </p>
               <Button
                 onClick={() => navigate("/dashboard?tab=profiel")}
-                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-white text-[14px] font-bold"
+                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[14px] font-bold"
                 data-testid="button-goto-profile-photo"
               >
                 Naar profielfoto
@@ -618,7 +618,7 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
           <p className="text-[15px] text-[var(--yo-dark)] mb-4">Kon je gegevens niet laden.</p>
           <Button
             onClick={() => refetch()}
-            className="h-[56px] rounded-lg bg-[var(--yo-teal)] text-white text-[15px] font-bold px-6"
+            className="h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold px-6"
             data-testid="button-retry-boost"
           >
             Opnieuw proberen

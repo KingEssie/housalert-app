@@ -131,7 +131,7 @@ export default function ListingDetailPage() {
           <div className="bg-white rounded-lg border border-[var(--yo-divider)] p-8 text-center">
             <p className="text-[18px] font-bold text-[var(--yo-dark)] mb-2">Advertentie niet gevonden</p>
             <p className="text-[13px] text-[var(--yo-dark)] mb-4">Deze advertentie bestaat niet meer of is verwijderd.</p>
-            <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-lg bg-[var(--yo-teal)] text-white text-[15px] font-bold" data-testid="button-back-dashboard">
+            <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold" data-testid="button-back-dashboard">
               Terug naar dashboard
             </Button>
           </div>
@@ -295,7 +295,7 @@ export default function ListingDetailPage() {
           <div className="flex gap-2">
             <Button
               onClick={() => setApplyOpen(true)}
-              className="flex-1 h-[56px] rounded-lg bg-[var(--yo-teal)] text-white text-[15px] font-bold flex items-center justify-center gap-2"
+              className="flex-1 h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold flex items-center justify-center gap-2"
               data-testid="button-reageer-detail"
             >
               <Zap className="w-4 h-4" />

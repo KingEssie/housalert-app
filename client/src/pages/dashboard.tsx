@@ -329,7 +329,7 @@ function MatchCard({
         <div className="flex gap-2 mt-1">
           <button
             onClick={handleApply}
-            className="flex-1 h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[14px] font-bold transition-colors flex items-center justify-center gap-2"
+            className="flex-1 h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[14px] font-bold transition-colors flex items-center justify-center gap-2"
             data-testid={`button-apply-${match.listing_id}`}
           >
             <Zap className="w-4 h-4" />
@@ -380,7 +380,7 @@ function ProfileCard({
               <h3 className="font-semibold text-[var(--yo-dark)] text-[15px]" data-testid={`text-profile-city-${profile.id}`}>
                 {profile.city_name || profile.city}
               </h3>
-              <span className="text-[10px] font-medium text-[var(--yo-dark)] bg-[var(--yo-chip-bg)] px-1.5 py-0.5 rounded-full" data-testid={`badge-status-${profile.id}`}>
+              <span className="text-[10px] font-medium text-white bg-[#ff2f7d] px-1.5 py-0.5 rounded-full" data-testid={`badge-status-${profile.id}`}>
                 Actief
               </span>
             </div>
@@ -593,7 +593,7 @@ function HomeTab({
           </div>
           <button
             onClick={() => setActiveTab("matches")}
-            className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
+            className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
             data-testid="button-view-matches"
           >
             Bekijk je matches
@@ -890,7 +890,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
         {!atLimit && (
           <button
             onClick={() => navigate("/dashboard/searches/new")}
-            className="w-9 h-9 rounded-full bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] flex items-center justify-center text-white transition-colors"
+            className="w-9 h-9 rounded-full bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] flex items-center justify-center text-black transition-colors"
             data-testid="button-add-search"
           >
             <Plus className="w-5 h-5" />
@@ -970,7 +970,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
           )}
 
           <div className="flex flex-col">
-            <label className="w-full h-[56px] flex items-center justify-center gap-2 rounded-lg bg-[var(--yo-teal)] text-white text-[15px] font-bold cursor-pointer active:bg-[var(--yo-teal-hover)] transition-colors">
+            <label className="w-full h-[56px] flex items-center justify-center gap-2 rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold cursor-pointer active:bg-[var(--yo-teal-hover)] transition-colors">
               <Camera className="w-[18px] h-[18px]" />
               {photoUrl ? "Nieuwe foto kiezen" : "Foto uploaden"}
               <input
@@ -1235,16 +1235,16 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
               <h2 className="text-[20px] font-bold text-[var(--yo-dark)] mb-4" data-testid="section-verified">Je hebt een Geverifieerd Profiel</h2>
               <div className="flex flex-col">
                 <div className="flex items-center gap-3 py-3">
-                  <div className="w-6 h-6 rounded-full bg-[#EAF9DF] flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
+                  <div className="w-6 h-6 rounded-full bg-[#3ED6C6] flex items-center justify-center flex-shrink-0">
+                    <CheckCircle2 className="w-4 h-4 text-black" />
                   </div>
                   <p className="text-[15px] text-[var(--yo-dark)]">{user.email}</p>
                 </div>
                 <div className="h-px bg-[var(--yo-divider)]" />
                 <div className="flex items-center gap-3 py-3">
                   {phone ? (
-                    <div className="w-6 h-6 rounded-full bg-[#EAF9DF] flex items-center justify-center flex-shrink-0">
-                      <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
+                    <div className="w-6 h-6 rounded-full bg-[#3ED6C6] flex items-center justify-center flex-shrink-0">
+                      <CheckCircle2 className="w-4 h-4 text-black" />
                     </div>
                   ) : (
                     <AlertCircle className="w-5 h-5 text-[var(--yo-dark)] flex-shrink-0" />
@@ -1366,7 +1366,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
               <button
                 onClick={() => navigate("/paywall")}
-                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-white text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
+                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
                 data-testid="button-upgrade-subscription"
               >
                 <Crown className="w-4 h-4" />
