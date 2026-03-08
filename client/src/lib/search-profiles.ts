@@ -63,9 +63,20 @@ export async function getSearchProfiles(): Promise<SearchProfile[]> {
   return data ?? [];
 }
 
+const MAX_SEARCH_PROFILES = 4;
+
 export async function createSearchProfile(
   input: InsertSearchProfileInput
 ): Promise<SearchProfile> {
+  const { count, error: countErr } = await supabase
+    .from("search_profiles")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", input.user_id);
+
+  if (!countErr && count != null && count >= MAX_SEARCH_PROFILES) {
+    throw new Error(`Je kunt maximaal ${MAX_SEARCH_PROFILES} zoekprofielen aanmaken.`);
+  }
+
   const fullRow: Record<string, unknown> = {
     user_id: input.user_id,
     city: input.city_name,

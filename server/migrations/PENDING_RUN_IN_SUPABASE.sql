@@ -134,3 +134,22 @@ WHERE a.id > b.id
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_matches_unique
 ON matches(user_id, search_profile_id, listing_id);
+
+-- -----------------------------------------------
+-- Migration 015: Enforce max 4 search profiles per user
+-- -----------------------------------------------
+CREATE OR REPLACE FUNCTION check_search_profile_limit()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF (SELECT count(*) FROM search_profiles WHERE user_id = NEW.user_id) >= 4 THEN
+    RAISE EXCEPTION 'Maximum of 4 search profiles per user reached';
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS enforce_search_profile_limit ON search_profiles;
+CREATE TRIGGER enforce_search_profile_limit
+  BEFORE INSERT ON search_profiles
+  FOR EACH ROW
+  EXECUTE FUNCTION check_search_profile_limit();

@@ -46,7 +46,7 @@ const PLANS: Plan[] = [
 ];
 
 const FEATURES = [
-  "Onbeperkt zoekprofielen",
+  "Tot 4 zoekprofielen",
   "Directe meldingen via e-mail",
   "SMS & WhatsApp meldingen",
   "Nieuwe woningen als eerste",
