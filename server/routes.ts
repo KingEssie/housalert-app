@@ -20,6 +20,7 @@ import {
 } from "./subscriptions";
 import { log } from "./log";
 import { computeMatchScore, getMatchReasons } from "../shared/match-score";
+import { pool as pgPool } from "./pg-pool";
 
 const TEN_MIN = 10 * 60 * 1000;
 const ONE_HOUR = 60 * 60 * 1000;
@@ -885,8 +886,9 @@ export async function registerRoutes(
       const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
-      const profileDataPromise = supabase.from("user_profile_data").select("*").eq("user_id", user.id).maybeSingle()
-        .then(r => r.error ? { data: null } : r);
+      const profileDataPromise = pgPool.query("SELECT * FROM user_profile_data WHERE user_id = $1 LIMIT 1", [user.id])
+        .then(r => ({ data: r.rows[0] ?? null }))
+        .catch(() => ({ data: null }));
 
       const [notifResult, profileDataResult, searchProfilesResult] = await Promise.all([
         supabase.from("user_notification_settings").select("*").eq("user_id", user.id).maybeSingle(),
@@ -915,8 +917,9 @@ export async function registerRoutes(
       const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
-      const profileDataPromise = supabase.from("user_profile_data").select("*").eq("user_id", user.id).maybeSingle()
-        .then(r => r.error ? { data: null } : r);
+      const profileDataPromise = pgPool.query("SELECT * FROM user_profile_data WHERE user_id = $1 LIMIT 1", [user.id])
+        .then(r => ({ data: r.rows[0] ?? null }))
+        .catch(() => ({ data: null }));
 
       const [notifResult, profileDataResult, searchProfilesResult] = await Promise.all([
         supabase.from("user_notification_settings").select("*").eq("user_id", user.id).maybeSingle(),
@@ -1023,18 +1026,15 @@ export async function registerRoutes(
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
       const defaults = { user_id: user.id, search_buddy_email: null, application_template: null, document_checklist: {} };
-      const { data, error } = await supabase
-        .from("user_profile_data")
-        .select("*")
-        .eq("user_id", user.id)
-        .maybeSingle();
 
-      if (error) {
-        if (error.message?.includes("user_profile_data")) return res.json(defaults);
-        return res.status(500).json({ error: error.message });
-      }
-      return res.json(data ?? defaults);
+      const { rows } = await pgPool.query(
+        "SELECT * FROM user_profile_data WHERE user_id = $1 LIMIT 1",
+        [user.id]
+      );
+
+      return res.json(rows[0] ?? defaults);
     } catch (err: any) {
+      console.error("[profile-data] GET error:", err.message);
       return res.status(500).json({ error: err.message });
     }
   });
@@ -1046,8 +1046,6 @@ export async function registerRoutes(
       const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
-      const { search_buddy_email, application_template, document_checklist, network_task_done, viewing_tips_done, first_name, last_name, birth_date, phone, bio, profile_photo_url, occupation, monthly_income } = req.body;
-
       const ALLOWED_FIELDS = [
         "search_buddy_email", "application_template", "document_checklist",
         "network_task_done", "viewing_tips_done",
@@ -1055,27 +1053,38 @@ export async function registerRoutes(
         "profile_photo_url", "occupation", "monthly_income",
       ];
 
-      const updates: Record<string, any> = { updated_at: new Date().toISOString() };
+      const updates: Record<string, any> = {};
       for (const f of ALLOWED_FIELDS) {
         if (req.body[f] !== undefined) updates[f] = req.body[f];
       }
 
-      const { data, error } = await supabase
-        .from("user_profile_data")
-        .upsert({ user_id: user.id, ...updates }, { onConflict: "user_id" })
-        .select()
-        .single();
-
-      if (error) {
-        console.error("[profile-data] Supabase upsert error:", error.message, error.details, error.hint);
-        if (error.message?.includes("Could not find the table")) {
-          return res.status(503).json({ error: "Profielgegevens zijn tijdelijk niet beschikbaar. Neem contact op met support." });
-        }
-        return res.status(500).json({ error: "Opslaan mislukt. Probeer opnieuw." });
+      if (Object.keys(updates).length === 0) {
+        const { rows } = await pgPool.query(
+          "SELECT * FROM user_profile_data WHERE user_id = $1 LIMIT 1",
+          [user.id]
+        );
+        return res.json(rows[0] ?? { user_id: user.id });
       }
-      return res.json(data);
+
+      updates.updated_at = new Date().toISOString();
+      const fields = Object.keys(updates);
+      const values = Object.values(updates);
+      const setClauses = fields.map((f, i) => `${f} = $${i + 2}`).join(", ");
+      const insertFields = ["user_id", ...fields];
+      const insertPlaceholders = insertFields.map((_, i) => `$${i + 1}`).join(", ");
+      const insertValues = [user.id, ...values];
+
+      const query = `
+        INSERT INTO user_profile_data (${insertFields.join(", ")})
+        VALUES (${insertPlaceholders})
+        ON CONFLICT (user_id) DO UPDATE SET ${setClauses}
+        RETURNING *
+      `;
+
+      const { rows } = await pgPool.query(query, insertValues);
+      return res.json(rows[0]);
     } catch (err: any) {
-      console.error("[profile-data] Unexpected error:", err.message);
+      console.error("[profile-data] PUT error:", err.message);
       return res.status(500).json({ error: "Opslaan mislukt. Probeer opnieuw." });
     }
   });
@@ -1121,9 +1130,11 @@ export async function registerRoutes(
 
       const photoUrl = urlData.publicUrl + `?t=${Date.now()}`;
 
-      await supabase
-        .from("user_profile_data")
-        .upsert({ user_id: user.id, profile_photo_url: photoUrl, updated_at: new Date().toISOString() }, { onConflict: "user_id" });
+      await pgPool.query(
+        `INSERT INTO user_profile_data (user_id, profile_photo_url, updated_at) VALUES ($1, $2, $3)
+         ON CONFLICT (user_id) DO UPDATE SET profile_photo_url = $2, updated_at = $3`,
+        [user.id, photoUrl, new Date().toISOString()]
+      );
 
       return res.json({ profile_photo_url: photoUrl });
     } catch (err: any) {
@@ -1143,9 +1154,11 @@ export async function registerRoutes(
       const filePaths = extensions.map(ext => `profile-photos/${user.id}.${ext}`);
       await supabase.storage.from("avatars").remove(filePaths);
 
-      await supabase
-        .from("user_profile_data")
-        .upsert({ user_id: user.id, profile_photo_url: null, updated_at: new Date().toISOString() }, { onConflict: "user_id" });
+      await pgPool.query(
+        `INSERT INTO user_profile_data (user_id, profile_photo_url, updated_at) VALUES ($1, NULL, $2)
+         ON CONFLICT (user_id) DO UPDATE SET profile_photo_url = NULL, updated_at = $2`,
+        [user.id, new Date().toISOString()]
+      );
 
       return res.json({ success: true });
     } catch (err: any) {

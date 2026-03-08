@@ -1,25 +1,17 @@
 import { log } from "../log";
-import { supabase } from "../ingesters/matching";
+import { pool } from "../pg-pool";
 
 export async function runStartupMigration() {
   try {
-    const { error } = await supabase.from("user_profile_data").select("user_id").limit(1);
-    if (error && error.message.includes("Could not find the table")) {
-      log(
-        "[MIGRATION NEEDED] Table 'user_profile_data' does not exist. Run 010_user_profile_data_full.sql in the Supabase SQL Editor.",
-        "migration"
-      );
-    } else if (!error) {
-      const { error: colErr } = await supabase.from("user_profile_data").select("first_name, last_name, birth_date, phone, bio, occupation, monthly_income").limit(1);
-      if (colErr) {
-        log(
-          "[MIGRATION NEEDED] Table 'user_profile_data' is missing columns. Run 010_user_profile_data_full.sql in the Supabase SQL Editor.",
-          "migration"
-        );
-      }
+    const result = await pool.query(
+      "SELECT column_name FROM information_schema.columns WHERE table_name = 'user_profile_data' ORDER BY ordinal_position"
+    );
+    if (result.rows.length === 0) {
+      log("[MIGRATION] Table 'user_profile_data' not found — it should exist in the Replit PostgreSQL database.", "migration");
+    } else {
+      log(`[MIGRATION] user_profile_data table OK (${result.rows.length} columns)`, "migration");
     }
-  } catch {
+  } catch (err: any) {
+    log(`[MIGRATION] Error checking user_profile_data: ${err.message}`, "migration");
   }
-
-  log("All data persisted in Supabase (listing_freshness, match_timestamps tables)", "migration");
 }

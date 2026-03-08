@@ -6,7 +6,7 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 
 - **Frontend:** React + Vite + TypeScript + Tailwind CSS + shadcn/ui + Wouter
 - **Auth:** Supabase Auth (email + password)
-- **Data:** Supabase (PostgreSQL) — all tables: `search_profiles`, `listings`, `matches`, `subscriptions`, `user_notification_settings`, `user_profile_data`, `listing_freshness`, `match_timestamps`
+- **Data:** Supabase (PostgreSQL) — most tables: `search_profiles`, `listings`, `matches`, `subscriptions`, `user_notification_settings`. Replit PostgreSQL (via `pg` pool) — `user_profile_data`, `listing_freshness`, `match_timestamps`, `onboarding_drafts`
 - **Backend:** Express (minimal — auth + data handled by Supabase)
 - **Payments:** Stripe (sandbox, via Replit connector)
 
@@ -166,10 +166,9 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - `GET /api/profile-stats`: Returns { matches_received, reactions_sent } counts from matches table
 
 ### Profile Schema — `user_profile_data` Table
-- **Table**: `user_profile_data` in Supabase
-- **Primary key**: `user_id` (UUID, references auth.users.id)
-- **RLS**: `auth.uid() = user_id` for select/insert/update; service_role bypass for server
-- **Migration**: `server/migrations/010_user_profile_data_full.sql` (consolidated, creates full table)
+- **Table**: `user_profile_data` in Replit PostgreSQL (NOT Supabase — moved due to DDL access constraints)
+- **Primary key**: `user_id` (UUID, references Supabase auth.users.id)
+- **Access**: via `pg` pool (`server/pg-pool.ts`) — no RLS, auth verified via Supabase JWT in route handlers
 - **Columns & which screens write to them**:
   - `first_name` TEXT — profile-edit (`/profile/edit/first_name`)
   - `last_name` TEXT — profile-edit (`/profile/edit/last_name`)
