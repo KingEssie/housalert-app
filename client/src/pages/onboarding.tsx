@@ -256,7 +256,7 @@ function PropertyTypeStep({
   );
 }
 
-function AlertsStep({ onActivate, saving }: { onActivate: () => void; saving: boolean }) {
+function AlertsStep({ onActivate, onSkip, saving }: { onActivate: () => void; onSkip: () => void; saving: boolean }) {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6 text-center">
       <div className="w-[72px] h-[72px] rounded-lg bg-[#E6FAF5] flex items-center justify-center mb-8">
@@ -289,6 +289,15 @@ function AlertsStep({ onActivate, saving }: { onActivate: () => void; saving: bo
           </>
         )}
       </button>
+
+      <button
+        onClick={onSkip}
+        disabled={saving}
+        className="mt-4 text-[var(--yo-pink)] font-semibold text-[15px] hover:underline disabled:opacity-40"
+        data-testid="button-skip-alerts"
+      >
+        Sla over
+      </button>
     </div>
   );
 }
@@ -316,9 +325,14 @@ export default function OnboardingPage() {
 
   const place = locationData.place;
 
-  async function handleActivate() {
+  async function saveProfileAndFinish(enableNotifications: boolean) {
     if (!user) return;
     setSaving(true);
+
+    const timeout = setTimeout(() => {
+      console.warn("[onboarding] Timeout reached, redirecting anyway");
+      navigate("/dashboard?tab=matches");
+    }, 5000);
 
     const cityForProfile = locationData.tab === "reistijd"
       ? locationData.commuteCity || locationData.commuteDestination.split(",")[0].trim()
@@ -352,25 +366,28 @@ export default function OnboardingPage() {
         commute_minutes: locationData.tab === "reistijd" ? locationData.commuteMinutes : undefined,
       });
 
-      try {
-        const session = await (await import("@/lib/supabase")).supabase.auth.getSession();
-        const token = session.data.session?.access_token;
-        if (token) {
-          await fetch("/api/notifications/settings", {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              email_enabled: true,
-              sms_enabled: false,
-              whatsapp_enabled: false,
-              phone_e164: null,
-            }),
-          });
+      if (enableNotifications) {
+        try {
+          const session = await (await import("@/lib/supabase")).supabase.auth.getSession();
+          const token = session.data.session?.access_token;
+          if (token) {
+            await fetch("/api/notifications/settings", {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                email_enabled: true,
+                sms_enabled: false,
+                whatsapp_enabled: false,
+                phone_e164: null,
+              }),
+            });
+          }
+        } catch (notifErr) {
+          console.error("[onboarding] Notification activation failed:", notifErr);
         }
-      } catch {
       }
 
       try {
@@ -389,8 +406,10 @@ export default function OnboardingPage() {
       } catch {
       }
 
+      clearTimeout(timeout);
       navigate("/dashboard?tab=matches");
     } catch (err: any) {
+      clearTimeout(timeout);
       console.error("[onboarding] Save failed:", err);
       toast({
         title: "Er ging iets mis",
@@ -399,6 +418,14 @@ export default function OnboardingPage() {
       });
       setSaving(false);
     }
+  }
+
+  function handleActivate() {
+    saveProfileAndFinish(true);
+  }
+
+  function handleSkip() {
+    saveProfileAndFinish(false);
   }
 
   if (step === 0) {
@@ -429,7 +456,7 @@ export default function OnboardingPage() {
         />
       )}
       {step === 4 && (
-        <AlertsStep onActivate={handleActivate} saving={saving} />
+        <AlertsStep onActivate={handleActivate} onSkip={handleSkip} saving={saving} />
       )}
     </div>
   );
