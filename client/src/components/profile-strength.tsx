@@ -249,7 +249,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
             <span className="text-[13px] text-[var(--yo-dark)]">
               {completedCount}/{totalCount} taken voltooid
             </span>
-            <span className="text-[13px] font-medium text-[var(--yo-success)]">{percentage}%</span>
+            <span className="text-[13px] font-medium text-[var(--yo-pink)]">{percentage}%</span>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -261,7 +261,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
                 cy="18"
                 r="15.5"
                 fill="none"
-                stroke="var(--yo-success)"
+                stroke="var(--yo-pink)"
                 strokeWidth="3"
                 strokeDasharray={`${(percentage / 100) * 97.4} 97.4`}
                 strokeLinecap="round"
@@ -295,8 +295,8 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
                 disabled={task.completed}
               >
                 {task.completed ? (
-                  <div className="w-5 h-5 rounded-full bg-[var(--yo-success)]/10 flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="w-4 h-4 text-[var(--yo-success)]" />
+                  <div className="w-5 h-5 rounded-full bg-[var(--yo-pink)]/10 flex items-center justify-center flex-shrink-0">
+                    <CheckCircle2 className="w-4 h-4 text-[var(--yo-pink)]" />
                   </div>
                 ) : (
                   <div className="w-5 h-5 rounded-full border-2 border-[var(--yo-divider)] flex-shrink-0" />
@@ -346,7 +346,7 @@ const DOCUMENT_CHECKLIST = [
   },
 ];
 
-function TaskModal({
+export function TaskModal({
   taskId,
   onClose,
   navigate,
@@ -448,7 +448,7 @@ function TaskModal({
                 Voeg meer zoekprofielen toe of verfijn je huidige filters voor betere matches.
               </p>
               <Button
-                onClick={() => { onClose(); navigate("/dashboard"); }}
+                onClick={() => { onClose(); navigate("/dashboard?tab=filters"); }}
                 className="w-full h-[48px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[15px] font-semibold"
                 data-testid="button-goto-filters"
               >
@@ -542,8 +542,9 @@ function TaskModal({
 }
 
 const PREP_TASK_ICONS: Record<string, typeof Bell> = {
+  prep_search_profile: Search,
   prep_letter: FileText,
-  prep_extra_profile: Search,
+  prep_extra_profile: Plus,
   prep_network: Users,
   prep_viewing_tips: Eye,
 };
@@ -582,7 +583,7 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
             <span className="text-[13px] text-[var(--yo-dark)]">
               {prepCompletedCount}/{prepTotalCount} taken voltooid
             </span>
-            <span className="text-[13px] font-medium text-[var(--yo-success)]">{percentage}%</span>
+            <span className="text-[13px] font-medium text-[var(--yo-pink)]">{percentage}%</span>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -594,7 +595,7 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
                 cy="18"
                 r="15.5"
                 fill="none"
-                stroke="var(--yo-success)"
+                stroke="var(--yo-pink)"
                 strokeWidth="3"
                 strokeDasharray={`${(percentage / 100) * 97.4} 97.4`}
                 strokeLinecap="round"
@@ -628,8 +629,8 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
                 disabled={task.completed}
               >
                 {task.completed ? (
-                  <div className="w-5 h-5 rounded-full bg-[var(--yo-success)]/10 flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="w-4 h-4 text-[var(--yo-success)]" />
+                  <div className="w-5 h-5 rounded-full bg-[var(--yo-pink)]/10 flex items-center justify-center flex-shrink-0">
+                    <CheckCircle2 className="w-4 h-4 text-[var(--yo-pink)]" />
                   </div>
                 ) : (
                   <div className="w-5 h-5 rounded-full border-2 border-[var(--yo-divider)] flex-shrink-0" />
@@ -651,7 +652,7 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
   );
 }
 
-function PrepTaskModal({
+export function PrepTaskModal({
   taskId,
   onClose,
   navigate,
@@ -664,6 +665,7 @@ function PrepTaskModal({
   const { toast } = useToast();
 
   const titles: Record<string, string> = {
+    prep_search_profile: "Zoekopdracht aanmaken",
     prep_letter: "Schrijf een introductiebrief",
     prep_extra_profile: "Voeg extra zoekopdracht toe",
     prep_network: "Gebruik je netwerk",
@@ -700,6 +702,22 @@ function PrepTaskModal({
         </div>
 
         <div className="p-5">
+          {taskId === "prep_search_profile" && (
+            <div className="flex flex-col gap-3">
+              <p className="text-[14px] text-[var(--yo-dark)]">
+                Maak je eerste zoekopdracht aan om automatisch woningen te ontvangen die bij jouw voorkeuren passen.
+              </p>
+              <Button
+                onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
+                className="w-full h-[48px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[15px] font-semibold"
+                data-testid="button-prep-create-profile"
+              >
+                <Search className="w-4 h-4 mr-2" />
+                Zoekopdracht aanmaken
+              </Button>
+            </div>
+          )}
+
           {taskId === "prep_letter" && (
             <div className="flex flex-col gap-3">
               <p className="text-[14px] text-[var(--yo-dark)]">

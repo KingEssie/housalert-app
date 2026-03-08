@@ -26,6 +26,10 @@ import {
   Zap,
   Bell,
   Crown,
+  Sofa,
+  Building,
+  ChevronDown,
+  ListChecks,
 } from "lucide-react";
 
 const MAX_PROFILES = 4;
@@ -61,11 +65,56 @@ const DEFAULT_BERLIN: LocationData = {
   },
 };
 
+const RENT_OPTIONS = [
+  { value: "", label: "Geen voorkeur" },
+  { value: "200", label: "€200" },
+  { value: "300", label: "€300" },
+  { value: "400", label: "€400" },
+  { value: "500", label: "€500" },
+  { value: "600", label: "€600" },
+  { value: "700", label: "€700" },
+  { value: "800", label: "€800" },
+  { value: "900", label: "€900" },
+  { value: "1000", label: "€1.000" },
+  { value: "1200", label: "€1.200" },
+  { value: "1500", label: "€1.500" },
+  { value: "2000", label: "€2.000" },
+  { value: "2500", label: "€2.500" },
+  { value: "3000", label: "€3.000" },
+];
+
+const FURNISHED_OPTIONS = [
+  { value: "", label: "Maakt niet uit" },
+  { value: "furnished", label: "Gemeubileerd" },
+  { value: "unfurnished", label: "Niet gemeubileerd" },
+];
+
+const PROPERTY_TYPE_OPTIONS = [
+  { value: "appartement", label: "Appartement" },
+  { value: "huis", label: "Huis" },
+  { value: "studio", label: "Studio" },
+  { value: "kamer", label: "Kamer" },
+  { value: "woonboot", label: "Woonboot" },
+  { value: "overig", label: "Overig" },
+];
+
+const EXTRA_FEATURE_OPTIONS = [
+  { value: "balkon", label: "Balkon" },
+  { value: "tuin", label: "Tuin" },
+  { value: "huisdieren", label: "Huisdieren toegestaan" },
+  { value: "parkeerplaats", label: "Parkeerplaats" },
+  { value: "lift", label: "Lift" },
+  { value: "kelder", label: "Kelder" },
+];
+
 interface FilterData {
   priceMin: string;
   priceMax: string;
   bedroomsMin: number;
   sizeMin: number;
+  furnished: string;
+  propertyTypes: string[];
+  extraFeatures: string[];
 }
 
 export default function NewSearchPage() {
@@ -81,6 +130,9 @@ export default function NewSearchPage() {
     priceMax: "",
     bedroomsMin: 0,
     sizeMin: 0,
+    furnished: "",
+    propertyTypes: [],
+    extraFeatures: [],
   });
 
   const profilesQuery = useQuery({
@@ -175,6 +227,9 @@ export default function NewSearchPage() {
         commute_lng: locationData.tab === "reistijd" ? locationData.commuteLng ?? undefined : undefined,
         commute_mode: locationData.tab === "reistijd" ? locationData.commuteMode : undefined,
         commute_minutes: locationData.tab === "reistijd" ? locationData.commuteMinutes : undefined,
+        furnished: filters.furnished || undefined,
+        property_types: filters.propertyTypes.length > 0 ? filters.propertyTypes : undefined,
+        extra_features: filters.extraFeatures.length > 0 ? filters.extraFeatures : undefined,
       });
 
       if (profile?.id) {
@@ -257,8 +312,8 @@ export default function NewSearchPage() {
         )}
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-[var(--yo-divider)] z-10">
-        <div className="max-w-lg mx-auto px-5 py-4 flex gap-3">
+      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-[var(--yo-divider)] z-20">
+        <div className="max-w-lg mx-auto px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] flex gap-3">
           {step > 1 && (
             <Button
               variant="outline"
@@ -345,6 +400,9 @@ function Step2Filters({
   filters: FilterData;
   updateFilters: (partial: Partial<FilterData>) => void;
 }) {
+  const toggleArrayItem = (arr: string[], item: string) =>
+    arr.includes(item) ? arr.filter(v => v !== item) : [...arr, item];
+
   return (
     <div className="space-y-5">
       <div>
@@ -363,17 +421,17 @@ function Step2Filters({
             Min prijs
           </label>
           <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--yo-dark)] text-[14px] font-medium">EUR</span>
-            <input
-              type="number"
-              inputMode="numeric"
+            <select
               value={filters.priceMin}
               onChange={(e) => updateFilters({ priceMin: e.target.value })}
-              placeholder="0"
-              min="0"
-              className="w-full h-[56px] pl-[56px] pr-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/20 transition-all"
-              data-testid="input-price-min"
-            />
+              className="w-full h-[56px] px-4 pr-10 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/20 transition-all appearance-none cursor-pointer"
+              data-testid="select-price-min"
+            >
+              {RENT_OPTIONS.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)] pointer-events-none" />
           </div>
         </div>
 
@@ -383,17 +441,17 @@ function Step2Filters({
             Max prijs
           </label>
           <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--yo-dark)] text-[14px] font-medium">EUR</span>
-            <input
-              type="number"
-              inputMode="numeric"
+            <select
               value={filters.priceMax}
               onChange={(e) => updateFilters({ priceMax: e.target.value })}
-              placeholder="2000"
-              min="0"
-              className="w-full h-[56px] pl-[56px] pr-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/20 transition-all"
-              data-testid="input-price-max"
-            />
+              className="w-full h-[56px] px-4 pr-10 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/20 transition-all appearance-none cursor-pointer"
+              data-testid="select-price-max"
+            >
+              {RENT_OPTIONS.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)] pointer-events-none" />
           </div>
         </div>
 
@@ -449,6 +507,96 @@ function Step2Filters({
               );
             })}
           </div>
+        </div>
+
+        <div className="h-px bg-[var(--yo-divider)]" />
+
+        <div>
+          <label className="text-[15px] font-bold text-[var(--yo-dark)] mb-2.5 flex items-center gap-2">
+            <Sofa className="w-4 h-4 text-[var(--yo-teal)]" />
+            Gemeubileerd
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {FURNISHED_OPTIONS.map((opt) => {
+              const selected = filters.furnished === opt.value;
+              return (
+                <button
+                  key={opt.value}
+                  onClick={() => updateFilters({ furnished: opt.value })}
+                  className={`px-4 py-2.5 rounded-lg text-[14px] font-medium transition-all ${
+                    selected
+                      ? "bg-[var(--yo-teal)] text-black shadow-sm"
+                      : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
+                  }`}
+                  data-testid={`option-furnished-${opt.value || "any"}`}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="h-px bg-[var(--yo-divider)]" />
+
+        <div>
+          <label className="text-[15px] font-bold text-[var(--yo-dark)] mb-2.5 flex items-center gap-2">
+            <Building className="w-4 h-4 text-[var(--yo-teal)]" />
+            Woningtype
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {PROPERTY_TYPE_OPTIONS.map((opt) => {
+              const selected = filters.propertyTypes.includes(opt.value);
+              return (
+                <button
+                  key={opt.value}
+                  onClick={() => updateFilters({ propertyTypes: toggleArrayItem(filters.propertyTypes, opt.value) })}
+                  className={`px-4 py-2.5 rounded-lg text-[14px] font-medium transition-all ${
+                    selected
+                      ? "bg-[var(--yo-teal)] text-black shadow-sm"
+                      : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
+                  }`}
+                  data-testid={`option-type-${opt.value}`}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
+          {filters.propertyTypes.length === 0 && (
+            <p className="text-[12px] text-[var(--yo-dark)] mt-1.5 opacity-60">Geen selectie = alle types</p>
+          )}
+        </div>
+
+        <div className="h-px bg-[var(--yo-divider)]" />
+
+        <div>
+          <label className="text-[15px] font-bold text-[var(--yo-dark)] mb-2.5 flex items-center gap-2">
+            <ListChecks className="w-4 h-4 text-[var(--yo-teal)]" />
+            Extra eigenschappen
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {EXTRA_FEATURE_OPTIONS.map((opt) => {
+              const selected = filters.extraFeatures.includes(opt.value);
+              return (
+                <button
+                  key={opt.value}
+                  onClick={() => updateFilters({ extraFeatures: toggleArrayItem(filters.extraFeatures, opt.value) })}
+                  className={`px-4 py-2.5 rounded-lg text-[14px] font-medium transition-all ${
+                    selected
+                      ? "bg-[var(--yo-teal)] text-black shadow-sm"
+                      : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
+                  }`}
+                  data-testid={`option-feature-${opt.value}`}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
+          {filters.extraFeatures.length === 0 && (
+            <p className="text-[12px] text-[var(--yo-dark)] mt-1.5 opacity-60">Geen selectie = alle eigenschappen</p>
+          )}
         </div>
       </div>
     </div>
@@ -580,7 +728,7 @@ function WizardHeader({ step, total, onBack }: { step: number; total: number; on
         </button>
         <h1 className="text-[17px] font-bold text-[var(--yo-dark)] flex-1 uppercase tracking-wide">Nieuwe zoekopdracht</h1>
         {total > 0 && (
-          <span className="text-[13px] font-semibold text-[var(--yo-teal)] bg-[var(--yo-chip-bg)] px-2.5 py-1 rounded-full">
+          <span className="text-[13px] font-semibold text-[var(--yo-pink)] bg-[var(--yo-pink-light)] px-2.5 py-1 rounded-full">
             {step}/{total}
           </span>
         )}
@@ -588,7 +736,7 @@ function WizardHeader({ step, total, onBack }: { step: number; total: number; on
       {total > 0 && (
         <div className="h-[3px] bg-[var(--yo-divider)]">
           <div
-            className="h-full bg-[var(--yo-teal)] transition-all duration-500 ease-out"
+            className="h-full bg-[var(--yo-pink)] transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
             data-testid="progress-wizard"
           />

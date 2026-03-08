@@ -44,7 +44,7 @@ import {
   Zap,
   Camera,
 } from "lucide-react";
-import { AccountCompletionCard, SearchPreparationCard } from "@/components/profile-strength";
+import { AccountCompletionCard, SearchPreparationCard, TaskModal, PrepTaskModal } from "@/components/profile-strength";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
 import TipsPage from "@/pages/tips";
 
@@ -452,7 +452,7 @@ function ProfileCard({
   );
 }
 
-function RecenteMatchesSection({ accessToken, setActiveTab }: { accessToken: string | undefined; setActiveTab: (tab: TabKey) => void }) {
+function RecenteMatchesSection({ accessToken, setActiveTab, subscription }: { accessToken: string | undefined; setActiveTab: (tab: TabKey) => void; subscription: { isTrial: boolean; isExpired: boolean; isActive: boolean; trialEndsAt: string | null } }) {
   const { data: matches, isLoading } = useQuery<ApiMatch[]>({
     queryKey: ["/api/matches", "recent-5"],
     queryFn: async () => {
@@ -461,7 +461,8 @@ function RecenteMatchesSection({ accessToken, setActiveTab }: { accessToken: str
       });
       if (!res.ok) throw new Error("Failed to fetch matches");
       const all: ApiMatch[] = await res.json();
-      return all.slice(0, 5);
+      const valid = all.filter(m => m.title && m.url && m.listing_id);
+      return valid.slice(0, 5);
     },
     enabled: !!accessToken,
   });
@@ -477,7 +478,23 @@ function RecenteMatchesSection({ accessToken, setActiveTab }: { accessToken: str
     );
   }
 
-  if (!matches || matches.length === 0) return null;
+  if (!matches || matches.length === 0) {
+    return (
+      <div className="flex flex-col gap-3" data-testid="section-recente-matches-empty">
+        <div className="flex items-center gap-2">
+          <Heart className="w-4 h-4 text-[var(--yo-dark)]" />
+          <h2 className="text-section-title">Recente matches</h2>
+        </div>
+        <div className="bg-[var(--yo-surface)] rounded-lg p-5 text-center">
+          <p className="text-[14px] text-[var(--yo-dark)]">
+            {subscription.isActive || subscription.isTrial
+              ? "Zodra je eerste matches binnenkomen, zie je ze hier."
+              : "Activeer een abonnement om matches te ontvangen."}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-3" data-testid="section-recente-matches">
@@ -578,6 +595,17 @@ function HomeTab({
   subscription: { isTrial: boolean; isExpired: boolean; isActive: boolean; trialEndsAt: string | null };
   accessToken: string | undefined;
 }) {
+  const [activeTaskModal, setActiveTaskModal] = useState<string | null>(null);
+  const [activePrepModal, setActivePrepModal] = useState<string | null>(null);
+
+  const handleAccountTaskClick = (taskId: string) => {
+    setActiveTaskModal(taskId);
+  };
+
+  const handlePrepTaskClick = (taskId: string) => {
+    setActivePrepModal(taskId);
+  };
+
   const firstName = user.email?.split("@")[0] ?? "daar";
   const profileCount = profiles.length;
   const hasProfiles = profileCount > 0;
@@ -609,25 +637,6 @@ function HomeTab({
         </h1>
       </div>
       <div className="flex flex-col gap-6 px-6">
-
-      {subscription.isExpired && (
-        <div className="bg-[var(--yo-chip-bg)] rounded-lg p-5 flex items-center gap-3" data-testid="banner-expired">
-          <div className="w-9 h-9 rounded-full bg-[var(--yo-chip-bg)] flex items-center justify-center flex-shrink-0">
-            <AlertTriangle className="w-4 h-4 text-[var(--yo-dark)]" />
-          </div>
-          <div className="flex-1">
-            <p className="text-[14px] font-semibold text-[var(--yo-dark)]">Je proefperiode is afgelopen</p>
-            <p className="text-[13px] font-[500] text-[var(--yo-dark)]">Activeer een abonnement om matches te blijven ontvangen.</p>
-          </div>
-          <button
-            onClick={() => navigate("/paywall")}
-            className="text-[12px] font-semibold text-[var(--yo-dark)] bg-white px-3 py-1.5 rounded-lg hover:bg-[var(--yo-surface)] transition-colors flex-shrink-0"
-            data-testid="button-expired-upgrade"
-          >
-            Kies abonnement
-          </button>
-        </div>
-      )}
 
       {hasMatches ? (
         <div className="rounded-lg bg-[var(--yo-chip-bg)] p-6" data-testid="hero-matches">
@@ -687,7 +696,7 @@ function HomeTab({
             ? "We hebben nog geen woningen gevonden die goed aansluiten op jouw voorkeuren. Pas je filters aan of kijk later opnieuw."
             : "Maak een zoekprofiel aan en ontvang automatisch matches."}
           ctaLabel={hasProfiles ? "Filters aanpassen" : "Zoekprofiel aanmaken"}
-          onCtaClick={() => hasProfiles ? setActiveTab("filters") : navigate("/new-search")}
+          onCtaClick={() => hasProfiles ? setActiveTab("filters") : navigate("/dashboard/searches/new")}
           testId="hero-empty"
         />
       )}
@@ -711,10 +720,25 @@ function HomeTab({
         </div>
       )}
 
-      <AccountCompletionCard onTaskClick={() => setActiveTab("tips")} />
-      <SearchPreparationCard onTaskClick={() => setActiveTab("tips")} />
+      <AccountCompletionCard onTaskClick={handleAccountTaskClick} />
+      <SearchPreparationCard onTaskClick={handlePrepTaskClick} />
 
-      <RecenteMatchesSection accessToken={accessToken} setActiveTab={setActiveTab} />
+      <RecenteMatchesSection accessToken={accessToken} setActiveTab={setActiveTab} subscription={subscription} />
+
+      {activeTaskModal && (
+        <TaskModal
+          taskId={activeTaskModal}
+          onClose={() => setActiveTaskModal(null)}
+          navigate={navigate}
+        />
+      )}
+      {activePrepModal && (
+        <PrepTaskModal
+          taskId={activePrepModal}
+          onClose={() => setActivePrepModal(null)}
+          navigate={navigate}
+        />
+      )}
 
       {hasMatches && (
         <button
@@ -962,9 +986,45 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
   );
 }
 
+function DeleteConfirmDialog({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) {
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-5" onClick={onCancel}>
+      <div
+        className="bg-white w-full max-w-sm rounded-lg shadow-[0_4px_24px_rgba(0,0,0,0.15)] overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="p-6">
+          <h2 className="text-[18px] font-bold text-[var(--yo-dark)] mb-2" data-testid="text-delete-title">Verwijder zoekopdracht</h2>
+          <p className="text-[14px] text-[var(--yo-dark)]" data-testid="text-delete-body">
+            Weet je zeker dat je je zoekopdracht wilt verwijderen? Je kunt altijd een nieuwe toevoegen.
+          </p>
+        </div>
+        <div className="flex border-t border-[var(--yo-divider)]">
+          <button
+            onClick={onCancel}
+            className="flex-1 h-[52px] text-[15px] font-semibold text-[var(--yo-dark)] hover:bg-[var(--yo-surface)] transition-colors"
+            data-testid="button-delete-cancel"
+          >
+            Nee
+          </button>
+          <div className="w-px bg-[var(--yo-divider)]" />
+          <button
+            onClick={onConfirm}
+            className="flex-1 h-[52px] text-[15px] font-semibold text-[var(--yo-pink)] hover:bg-[var(--yo-pink-light)] transition-colors"
+            data-testid="button-delete-confirm"
+          >
+            Ja
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
   const { toast } = useToast();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const profilesQuery = useQuery<SearchProfile[]>({
     queryKey: ["/search-profiles"],
@@ -1031,7 +1091,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
           title="Nog geen matches gevonden"
           description="Voeg een zoekopdracht toe om automatisch woningen te ontvangen die bij jouw voorkeuren passen."
           ctaLabel="Zoekprofiel aanmaken"
-          onCtaClick={() => navigate("/new-search")}
+          onCtaClick={() => navigate("/dashboard/searches/new")}
           testId="empty-profiles"
         />
       ) : (
@@ -1040,10 +1100,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
             <ProfileCard
               key={p.id}
               profile={p}
-              onDelete={() => {
-                setDeletingId(p.id);
-                deleteMutation.mutate(p.id);
-              }}
+              onDelete={() => setConfirmDeleteId(p.id)}
               deleting={deletingId === p.id}
               onEdit={() => navigate("/dashboard/searches/new")}
             />
@@ -1059,6 +1116,17 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
             </button>
           )}
         </div>
+      )}
+
+      {confirmDeleteId && (
+        <DeleteConfirmDialog
+          onCancel={() => setConfirmDeleteId(null)}
+          onConfirm={() => {
+            setDeletingId(confirmDeleteId);
+            deleteMutation.mutate(confirmDeleteId);
+            setConfirmDeleteId(null);
+          }}
+        />
       )}
     </div>
   );

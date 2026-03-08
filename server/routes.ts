@@ -1021,7 +1021,10 @@ export async function registerRoutes(
         { id: "phone", label: "Telefoonnummer toevoegen", completed: hasPhone, score: 15 },
       ];
 
+      const hasSearchProfile = searchProfiles.length >= 1;
+
       const prepTasks = [
+        { id: "prep_search_profile", label: "Zoekopdracht aanmaken", completed: hasSearchProfile, score: 15 },
         { id: "prep_letter", label: "Schrijf een introductiebrief", completed: hasApplicationTemplate, score: 10 },
         { id: "prep_extra_profile", label: "Voeg extra zoekopdracht toe", completed: hasMultipleProfiles, score: 15 },
         { id: "prep_network", label: "Gebruik je netwerk", completed: hasNetworkDone, score: 5 },

@@ -48,7 +48,7 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - **Iframe**: `Content-Security-Policy: frame-ancestors *` set for `/onboarding-embed` route
 - **Embed HTML**: `<iframe src="https://YOUR_DOMAIN/onboarding-embed" width="100%" height="700" frameborder="0"></iframe>`
 - **Table**: `onboarding_drafts` in Replit DB (not Supabase) — draft data stored locally
-- **PENDING MIGRATION**: `server/migrations/PENDING_RUN_IN_SUPABASE.sql` must be run in Supabase SQL Editor (includes migrations 008, 010, 011, 012, 013)
+- **PENDING MIGRATION**: `server/migrations/PENDING_RUN_IN_SUPABASE.sql` must be run in Supabase SQL Editor (includes migrations 008, 010, 011, 012, 013, 016)
 
 ### Design System (YoungOnes-inspired)
 - **Primary CTA**: Teal `var(--yo-teal)` #2DD4BF, hover `var(--yo-teal-hover)` #25BBA8 — CTA buttons ONLY (BLACK text, not white), active nav indicator, selection controls
@@ -321,6 +321,9 @@ CREATE TABLE search_profiles (
   price_max integer DEFAULT 0,
   bedrooms_min integer DEFAULT 0,
   size_min integer DEFAULT 0,
+  furnished text,
+  property_types text[],
+  extra_features text[],
   created_at timestamptz DEFAULT now()
 );
 ALTER TABLE search_profiles ENABLE ROW LEVEL SECURITY;

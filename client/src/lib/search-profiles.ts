@@ -23,6 +23,9 @@ export interface SearchProfile {
   commute_lng?: number;
   commute_mode?: string;
   commute_minutes?: number;
+  furnished?: string;
+  property_types?: string[];
+  extra_features?: string[];
   created_at: string;
 }
 
@@ -45,12 +48,16 @@ export interface InsertSearchProfileInput {
   commute_lng?: number;
   commute_mode?: string;
   commute_minutes?: number;
+  furnished?: string;
+  property_types?: string[];
+  extra_features?: string[];
 }
 
 const OPTIONAL_COLUMNS = [
   "city_name", "country_code", "latitude", "longitude", "place_id",
   "location_mode", "districts", "radius_km",
   "commute_destination", "commute_lat", "commute_lng", "commute_mode", "commute_minutes",
+  "furnished", "property_types", "extra_features",
 ] as const;
 
 export async function getSearchProfiles(): Promise<SearchProfile[]> {
@@ -99,6 +106,9 @@ export async function createSearchProfile(
   if (input.commute_lng != null) fullRow.commute_lng = input.commute_lng;
   if (input.commute_mode) fullRow.commute_mode = input.commute_mode;
   if (input.commute_minutes != null) fullRow.commute_minutes = input.commute_minutes;
+  if (input.furnished) fullRow.furnished = input.furnished;
+  if (input.property_types && input.property_types.length > 0) fullRow.property_types = input.property_types;
+  if (input.extra_features && input.extra_features.length > 0) fullRow.extra_features = input.extra_features;
 
   const { data, error } = await supabase
     .from("search_profiles")

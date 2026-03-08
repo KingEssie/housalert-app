@@ -1,0 +1,176 @@
+We need a focused product-fix sprint.
+
+Important:
+Do NOT redesign the app again.
+Do NOT change branding, typography, or spacing unless explicitly requested below.
+This sprint is about fixing product logic, navigation, and search flow behavior.
+
+We need to fix the following issues in priority order.
+
+--------------------------------------------------
+P0 — CORE LOGIC FIXES
+--------------------------------------------------
+
+1. Home progress logic is incorrect
+Problem:
+The homepage shows:
+- "Bereid je zoekopdracht voor" = 0%
+even though a search profile already exists.
+
+Fix:
+- Recalculate progress based on actual stored user/search-profile state.
+- If a search profile exists, the corresponding task(s) must count as completed.
+- Progress percentages and completed counts must reflect reality.
+
+2. Task links go to the wrong page
+Problem:
+When I click an open task on the homepage progress cards, it goes to the Tips page.
+This is incorrect.
+
+Fix:
+Each task must navigate to the actual page where the user can complete that task.
+
+Examples:
+- Zoekbuddy toevoegen → search buddy page
+- Aanmeldingsbrief voorbereiden → application letter page
+- Documenten verzamelen → documents checklist page
+- Telefoonnummer toevoegen → profile phone page
+- Search profile optimization task → search profile edit page
+
+Only informational guides should go to Tips.
+
+3. Recent matches logic is wrong
+Problem:
+The homepage shows recent matches even when the user effectively has no usable matches.
+Cards have no image and clicking them leads to "woning niet gevonden".
+
+Fix:
+- Only show Recent matches if real valid matches exist for the user.
+- A valid recent match must have:
+  - linked listing
+  - working route
+  - usable metadata
+- If there are no valid matches, show an empty state instead.
+
+Empty state should explain:
+"Zodra je eerste matches binnenkomen, zie je ze hier."
+If subscription is inactive, mention:
+"Activeer een abonnement om matches te ontvangen."
+
+4. Recent match click behavior
+If a user has a real match:
+- click recent match → go to the correct match detail / response page
+- from there the user must be able to continue to the official listing website
+
+Do NOT route to broken listing pages.
+
+5. Search profile creation must always remain possible
+Current desired rule:
+- Any user may create search profiles, even without a paid subscription.
+- A subscription is only required to receive matches / alerts.
+- Creating and editing search profiles must never be blocked by paywall.
+
+Update all copy and logic accordingly.
+
+--------------------------------------------------
+P1 — UX / FLOW FIXES
+--------------------------------------------------
+
+6. Replace green progress color with pink accent
+On homepage progress modules:
+- percentages
+- circular progress rings
+- progress bars
+
+must use the pink accent color, not green.
+
+7. Subscription page improvements
+Fix:
+- "Bespaar X%" text should be pink
+- Add a back button so the user can return to the previous screen
+
+8. Search flow button hidden behind map
+Problem:
+In the search flow, when scrolling down, the "Volgende" button gets covered by the map.
+
+Fix:
+- Ensure the bottom CTA remains visible and usable
+- Add safe spacing / sticky footer / map containment
+- This must work properly on mobile Safari
+
+9. Search flow progress indicator color
+The top progress bar / progress step accent in the search flow should use pink, not turquoise/green.
+
+10. Delete search profile confirmation
+Add a confirmation modal before deleting a search profile.
+
+Desired copy style:
+Title: "Verwijder zoekopdracht"
+Body: "Weet je zeker dat je je zoekopdracht wilt verwijderen? Je kunt altijd een nieuwe toevoegen."
+Buttons:
+- Nee
+- Ja
+
+Deletion should only happen after confirmation.
+
+11. Remove expired trial banner from homepage
+Remove the homepage banner about:
+"Je proefperiode is afgelopen"
+I no longer want that banner shown there.
+
+--------------------------------------------------
+P2 — SEARCH FILTER EXPANSION
+--------------------------------------------------
+
+12. Min/max rent dropdowns everywhere in search flow
+I want dropdowns for:
+- minimum rent
+- maximum rent
+
+These should be available consistently across creating and editing a search profile.
+
+13. Furnished filter
+Add a new filter:
+- Gemeubileerd
+- Niet gemeubileerd
+- Maakt niet uit
+
+This must be wired correctly:
+- frontend
+- state
+- API
+- database
+- saved search profiles
+- matching logic (where supported by source data)
+
+14. Extra properties and housing types
+I am still missing:
+- extra eigenschappen
+- woningtypes
+
+Ensure these filters are properly available in the search profile flow and persist correctly.
+
+--------------------------------------------------
+IMPLEMENTATION REQUIREMENTS
+--------------------------------------------------
+
+1. Keep all current functionality intact.
+2. Do not break existing auth, profile, subscription, or match flows.
+3. Fix root logic, not just superficial UI text.
+4. If migrations are needed for new filters, create them properly.
+5. If source scrapers do not support a new filter yet, still store it correctly and mark matching support clearly in code.
+
+--------------------------------------------------
+DELIVERABLES
+--------------------------------------------------
+
+After implementation, report back with:
+
+1. Which files were changed
+2. Whether a migration was added
+3. Which search-profile fields were added/updated
+4. How homepage progress is now calculated
+5. How recent matches are filtered to avoid broken items
+6. Confirmation that search profiles can always be created without subscription
+7. Confirmation that delete confirmation modal is live
+8. Confirmation that pink is now used for homepage/search progress

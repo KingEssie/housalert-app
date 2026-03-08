@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation, useSearch } from "wouter";
-import { Home, Check, Crown, Loader2, AlertCircle } from "lucide-react";
+import { ArrowLeft, Home, Check, Crown, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/lib/auth";
@@ -132,6 +132,13 @@ export default function PaywallPage() {
     <div className="min-h-screen bg-white flex flex-col">
       <header className="w-full bg-white sticky top-0 z-20 border-b border-[var(--yo-divider)]">
         <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center gap-3">
+          <button
+            onClick={() => navigate("/dashboard")}
+            className="w-9 h-9 rounded-full bg-[var(--yo-surface)] flex items-center justify-center active:scale-95 transition-transform"
+            data-testid="button-paywall-back"
+          >
+            <ArrowLeft className="w-4 h-4 text-[var(--yo-dark)]" />
+          </button>
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-[var(--yo-dark)] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
@@ -183,7 +190,7 @@ export default function PaywallPage() {
                 <div className="text-right">
                   <p className="text-xl font-extrabold text-[var(--yo-dark)]">{plan.price}</p>
                   {plan.savings && (
-                    <p className="text-xs font-semibold text-[var(--yo-dark)]">{plan.savings}</p>
+                    <p className="text-xs font-semibold text-[var(--yo-pink)]">{plan.savings}</p>
                   )}
                 </div>
               </div>

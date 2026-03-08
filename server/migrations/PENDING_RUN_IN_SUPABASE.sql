@@ -153,3 +153,11 @@ CREATE TRIGGER enforce_search_profile_limit
   BEFORE INSERT ON search_profiles
   FOR EACH ROW
   EXECUTE FUNCTION check_search_profile_limit();
+
+-- -----------------------------------------------
+-- Migration 016: New search-profile filter columns
+-- furnished, property_types, extra_features
+-- -----------------------------------------------
+ALTER TABLE search_profiles ADD COLUMN IF NOT EXISTS furnished TEXT;
+ALTER TABLE search_profiles ADD COLUMN IF NOT EXISTS property_types TEXT[];
+ALTER TABLE search_profiles ADD COLUMN IF NOT EXISTS extra_features TEXT[];
