@@ -1,0 +1,66 @@
+Remove the current implementation completely and rebuild this flow from scratch as a mobile-first 2-step onboarding wizard followed by a subscription selection page.
+
+IMPORTANT:
+The current implementation must NOT remain as a single-page filter layout.
+Do not keep the old map/filter card structure.
+Rebuild the experience so it behaves like a guided onboarding flow similar to Stekkies.
+
+==================================================
+GOAL
+==================================================
+
+Create a 3-screen flow:
+
+1. Step 1: Location selection method
+2. Step 2: Search criteria setup
+3. Step 3: Subscription selection page with additional persuasive information blocks
+
+The UX must feel like a conversion-focused onboarding funnel, not a traditional filter page.
+
+==================================================
+GENERAL UX RULES
+==================================================
+
+- Mobile-first design
+- Large rounded cards and buttons
+- Spacious layout
+- Clear progress indicator at the top
+- Smooth step transitions
+- Clean onboarding feel
+- Maps are supporting visuals, not the main page structure
+- Keep everything optimized for mobile viewport first
+- Use a polished, conversion-focused subscription page after the search setup
+
+==================================================
+STEP 1 — LOCATION METHOD
+==================================================
+
+Show a card titled:
+
+"Selecteer locatie op basis van"
+
+Display 3 selectable tabs/cards:
+
+- Wijken
+- Radius
+- Reistijd
+
+Behavior:
+- One option is selected at a time
+- Default selected option: "Wijken"
+- When switching tabs, the content area underneath changes accordingly
+- Keep the same screen structure and visual rhythm as a guided wizard
+
+DEFAULT MAP REQUIREMENT:
+The map must be visible immediately, even before the user interacts.
+To ensure this, prefill the city/location with:
+
+- Default city: Berlin / Berlijn
+
+So the map preview is already rendered on first load.
+
+--------------------------------------------------
+If "Wijken" is selected, show:
+--------------------------------------------------
+
+- Stad dropdown
