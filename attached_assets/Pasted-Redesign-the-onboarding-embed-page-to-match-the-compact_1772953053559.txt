@@ -1,0 +1,73 @@
+Redesign the /onboarding-embed page to match the compact search-widget style of Stekkies, instead of the current multi-step onboarding flow.
+
+Goal:
+The Duda website embed must feel like a compact search widget, not like the app onboarding wizard.
+
+Important:
+Keep my own branding, but copy the structure and UX pattern of Stekkies:
+- map visible in the widget
+- location-based search first
+- no country selection step
+- direct “how many matches can we find for you” feeling
+
+Requirements:
+
+1. Remove the current first-step wizard feeling from /onboarding-embed.
+Do NOT show:
+- country selection
+- 1/4 or multi-step onboarding progress
+- app-like onboarding flow
+- extra onboarding steps before location
+
+2. Rebuild /onboarding-embed as a compact landing-page search widget with this structure:
+
+A. Title:
+"Ontdek hoeveel matches we voor jou gaan vinden."
+
+B. Compact search card containing:
+- location mode tabs:
+  - Wijken
+  - Radius
+  - Reistijd
+- city/place selector
+- dynamic location controls depending on selected mode
+- live map preview
+- short helper strip like:
+  "👉 Voeg tot 4 zoekopdrachten toe."
+- estimated matches block:
+  "Met deze zoekopdracht kun je ~X matches per week verwachten."
+- large CTA button:
+  "Plaats zoekopdracht"
+
+3. Remove the “which country are you searching in?” screen completely from the embed widget.
+
+4. Use place/city input as the first interaction.
+Country should be inferred automatically where possible.
+
+5. Keep the map visible inside the widget, like a proof element.
+
+6. Visual style:
+- same clean compact search-widget structure as Stekkies
+- but in my own branding
+- use my brand purple for primary CTA and selected states
+- keep the UI polished, modern, and mobile-first
+
+7. Make the embed widget feel like a landing-page conversion tool:
+- compact
+- confidence-building
+- immediate utility
+- minimal friction
+
+8. Keep this route standalone:
+- no app header
+- no hamburger menu
+- no dashboard layout
+- no bottom navigation
+
+9. Ensure the widget still saves a draft/search intent correctly after submit.
+
+10. After implementation:
+- tell me which components were changed
+- confirm country step is removed from the embed only
+- confirm app onboarding flow remains intact
+- confirm the embed now starts directly with the location-based search widget

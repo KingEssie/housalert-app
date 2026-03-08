@@ -32,12 +32,15 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - **Location mode columns (migration 012)**: `location_mode`, `districts`, `radius_km`, `commute_destination`, `commute_lat`, `commute_lng`, `commute_mode`, `commute_minutes`
 
 ### Embeddable Onboarding Widget
-- `client/src/pages/onboarding-embed.tsx` — Lightweight 4-step widget at `/onboarding-embed`
-  - Step 1: Country selection (DE/AT/NL)
-  - Step 2: Location (reuses LocationModeSelector)
-  - Step 3: Budget (min/max price)
-  - Step 4: Property type
-  - On submit: saves draft to `onboarding_drafts` table (Replit DB via pg), returns `draft_id`
+- `client/src/pages/onboarding-embed.tsx` — Compact single-page search widget at `/onboarding-embed`
+  - No country step — country inferred from selected place (defaults to DE)
+  - Location-first: LocationModeSelector (Wijken/Radius/Reistijd) with live map
+  - Inline property type chips (Alles/Appartement/Studio/Kamer/Gedeeld)
+  - Inline budget fields (min/max side by side)
+  - EstimateBlock: fetches `/api/estimate` and shows "~X matches per week"
+  - Helper strip: "Voeg tot 4 zoekopdrachten toe."
+  - CTA: "Plaats zoekopdracht"
+  - On submit: saves draft to `onboarding_drafts` table (Supabase), returns `draft_id`
   - Completion screen with "Ga verder in browser" and "Download de app"
 - `client/src/pages/continue-draft.tsx` — Draft handoff at `/continue?draft=<id>`
   - Loads draft from backend, redirects to signup if not authed, creates search profile if authed
