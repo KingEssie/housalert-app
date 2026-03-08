@@ -1137,6 +1137,22 @@ export async function registerRoutes(
       `;
 
       const { rows } = await pgPool.query(query, insertValues);
+
+      if (updates.phone !== undefined) {
+        const e164Regex = /^\+[1-9]\d{1,14}$/;
+        const phoneVal = updates.phone && typeof updates.phone === "string" && e164Regex.test(updates.phone)
+          ? updates.phone : null;
+        supabase
+          .from("user_notification_settings")
+          .upsert(
+            { user_id: user.id, phone_e164: phoneVal, updated_at: new Date().toISOString() },
+            { onConflict: "user_id" }
+          )
+          .then(({ error: syncErr }) => {
+            if (syncErr) console.error("[profile-data] Phone sync to notification_settings failed:", syncErr.message);
+          });
+      }
+
       return res.json(rows[0]);
     } catch (err: any) {
       console.error("[profile-data] PUT error:", err.message);

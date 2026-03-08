@@ -48,10 +48,17 @@ export default function SignupPage() {
         const token = session?.session?.access_token;
 
         if (token) {
-          fetch("/api/subscription/ensure-trial", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-          }).catch(() => {});
+          try {
+            const trialRes = await fetch("/api/subscription/ensure-trial", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            });
+            if (!trialRes.ok) {
+              console.error("[signup] Trial creation failed:", await trialRes.text());
+            }
+          } catch (trialErr: any) {
+            console.error("[signup] Trial creation error:", trialErr.message);
+          }
         }
 
         if (city) {

@@ -146,6 +146,18 @@ export async function sendMatchAlerts(
   }
 
   if (promises.length > 0) {
-    await Promise.allSettled(promises);
+    const results = await Promise.allSettled(promises);
+    const channels = [];
+    if (emailEnabled && userEmail) channels.push("email");
+    if (smsEnabled && phone) channels.push("sms");
+    if (whatsappEnabled && phone) channels.push("whatsapp");
+    results.forEach((r, i) => {
+      const ch = channels[i] ?? `channel-${i}`;
+      if (r.status === "rejected") {
+        log(`[ALERT FAILED] ${ch} for user ${userId}: ${r.reason}`);
+      } else if (r.value === false) {
+        log(`[ALERT FAILED] ${ch} for user ${userId}: returned false`);
+      }
+    });
   }
 }

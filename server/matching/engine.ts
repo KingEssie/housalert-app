@@ -18,7 +18,6 @@ interface SearchProfile {
   price_max: number;
   bedrooms_min: number;
   size_min: number;
-  enabled?: boolean;
 }
 
 interface DbListing {
@@ -107,12 +106,32 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
     return 0;
   }
 
-  const { data: profiles, error: pErr } = await supabase
-    .from("search_profiles")
-    .select("*");
+  const listingCity = (listing as DbListing).city.toLowerCase().trim();
+  const safeCity = listingCity.replace(/[%_\\,()]/g, "");
+  let profiles: any[] | null = null;
+  let pErr: any = null;
+
+  if (safeCity.length >= 3) {
+    const result = await supabase
+      .from("search_profiles")
+      .select("*")
+      .or(`city.ilike.%${safeCity}%,city_name.ilike.%${safeCity}%`);
+    profiles = result.data;
+    pErr = result.error;
+    if (pErr) {
+      log(`[MATCH ENGINE] City-filtered query failed, falling back to full scan: ${pErr.message}`);
+      const fallback = await supabase.from("search_profiles").select("*");
+      profiles = fallback.data;
+      pErr = fallback.error;
+    }
+  } else {
+    const result = await supabase.from("search_profiles").select("*");
+    profiles = result.data;
+    pErr = result.error;
+  }
 
   if (pErr || !profiles || profiles.length === 0) {
-    log(`[MATCH ENGINE COMPLETE] no profiles found, 0 matches`);
+    log(`[MATCH ENGINE COMPLETE] no profiles found for city="${listingCity}", 0 matches`);
     return 0;
   }
 
@@ -120,8 +139,6 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
   const alertedUsers = new Set<string>();
 
   for (const profile of profiles as SearchProfile[]) {
-    if (profile.enabled === false) continue;
-
     if (!doesListingMatchProfile(listing as DbListing, profile)) continue;
 
     const created = await insertMatchIfNew(profile.user_id, profile.id, listing.id);
@@ -133,7 +150,9 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
       alertedUsers.add(profile.user_id);
       const { data: userData } = await supabase.auth.admin.getUserById(profile.user_id);
       const email = userData?.user?.email;
-      sendMatchAlerts(profile.user_id, email ?? undefined, listing as DbListing, supabase).catch(() => {});
+      sendMatchAlerts(profile.user_id, email ?? undefined, listing as DbListing, supabase).catch((err) => {
+        log(`[ALERT ERROR] Failed to send alerts for user=${profile.user_id}: ${err?.message ?? err}`);
+      });
     }
   }
 
@@ -157,10 +176,6 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
 
   const sp = profile as SearchProfile;
 
-  if (sp.enabled === false) {
-    log(`[MATCH ENGINE COMPLETE] profile disabled, 0 matches`);
-    return 0;
-  }
 
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
@@ -188,7 +203,9 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
     const email = userData?.user?.email;
     const sampleListing = listings.find(l => doesListingMatchProfile(l as DbListing, sp));
     if (sampleListing) {
-      sendMatchAlerts(sp.user_id, email ?? undefined, sampleListing as DbListing, supabase).catch(() => {});
+      sendMatchAlerts(sp.user_id, email ?? undefined, sampleListing as DbListing, supabase).catch((err) => {
+        log(`[ALERT ERROR] Failed to send backfill alerts for user=${sp.user_id}: ${err?.message ?? err}`);
+      });
     }
   }
 
