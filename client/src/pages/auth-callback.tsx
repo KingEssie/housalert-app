@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { supabase } from "@/lib/supabase";
+import { ensureTrialForCurrentUser } from "@/lib/auth";
 import { Loader2 } from "lucide-react";
 
 export default function AuthCallbackPage() {
@@ -18,12 +19,18 @@ export default function AuthCallbackPage() {
 
     supabase.auth
       .exchangeCodeForSession(code)
-      .then(({ error: exchangeErr }) => {
+      .then(async ({ error: exchangeErr }) => {
         if (exchangeErr) {
           console.error("[auth-callback] Exchange failed:", exchangeErr.message);
           setError("Verificatie mislukt. Probeer opnieuw in te loggen.");
           return;
         }
+
+        const trialOk = await ensureTrialForCurrentUser();
+        if (!trialOk) {
+          console.error("[auth-callback] Trial creation failed after email verification — continuing anyway");
+        }
+
         navigate("/dashboard", { replace: true });
       })
       .catch((err) => {

@@ -151,10 +151,16 @@ A BlaBlaCar-inspired Dutch-language rental alert application for the German mark
 - Backfill triggered via `POST /api/search-profiles/backfill` (auth required)
 - Test script: `scripts/test-matching-engine.ts` — run with `npx tsx scripts/test-matching-engine.ts`
 
+### Auth & Trial Subscription Flow
+- **Trial creation**: `ensureTrialForCurrentUser()` in `client/src/lib/auth.tsx` — shared idempotent helper called from signup, login, and auth-callback. Calls `POST /api/subscription/ensure-trial` which checks for existing subscription before creating a 14-day trial. Returns 500 if creation fails (not silent 200).
+- **Signup** (`signup.tsx`): After `signUp()`, checks for active session. Case A (session exists, email confirmation disabled): calls `ensureTrialForCurrentUser()` → redirects to `/onboarding`. Case B (no session, email confirmation enabled): shows "Bevestig je e-mailadres" confirmation UI with email address and link to login.
+- **Login** (`login.tsx`): After `signInWithPassword()`, calls `ensureTrialForCurrentUser()` (catches users who signed up with email confirmation but never got a trial) → redirects to `/dashboard`.
+- **Auth callback** (`auth-callback.tsx`): After `exchangeCodeForSession()`, calls `ensureTrialForCurrentUser()` (catches email-confirmed users) → redirects to `/dashboard`.
+- **ProtectedRoute** (`App.tsx`): Checks search profiles → redirects to `/onboarding` if 0 profiles. This ensures users always go through the onboarding wizard regardless of entry point.
+
 ### Core Libraries
-- `client/src/pages/auth-callback.tsx` — Email verification callback at `/auth/callback`: exchanges Supabase PKCE auth code for session, redirects to `/dashboard`
 - `client/src/lib/supabase.ts` — Supabase client with session persistence enabled
-- `client/src/lib/auth.tsx` — `AuthProvider` context + `useAuth()` hook
+- `client/src/lib/auth.tsx` — `AuthProvider` context + `useAuth()` hook + `ensureTrialForCurrentUser()` helper
 - `client/src/lib/search-profiles.ts` — CRUD functions for `search_profiles` table
 - `client/src/lib/listings.ts` — Listings CRUD, matches CRUD, and client-side matching logic
 

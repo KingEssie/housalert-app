@@ -746,6 +746,9 @@ export async function registerRoutes(
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
       const sub = await ensureTrialSubscription(user.id);
+      if (!sub) {
+        return res.status(500).json({ error: "Trial creation failed" });
+      }
       return res.json({ ok: true, subscription: sub });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });

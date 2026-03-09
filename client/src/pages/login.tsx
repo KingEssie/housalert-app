@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { supabase } from "@/lib/supabase";
+import { ensureTrialForCurrentUser } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
@@ -9,7 +10,6 @@ import { Home } from "lucide-react";
 export default function LoginPage() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
-  
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,12 +23,15 @@ export default function LoginPage() {
       email,
       password,
     });
-    setLoading(false);
     if (error) {
+      setLoading(false);
       toast({ title: "Inloggen mislukt", description: error.message, variant: "destructive" });
-    } else {
-      navigate("/dashboard");
+      return;
     }
+
+    await ensureTrialForCurrentUser();
+    setLoading(false);
+    navigate("/dashboard");
   }
 
   async function handleForgotPassword() {

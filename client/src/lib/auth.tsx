@@ -48,3 +48,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 export function useAuth() {
   return useContext(AuthContext);
 }
+
+export async function ensureTrialForCurrentUser(): Promise<boolean> {
+  const { data: session } = await supabase.auth.getSession();
+  const token = session?.session?.access_token;
+  if (!token) {
+    console.warn("[auth] ensureTrialForCurrentUser: no session token");
+    return false;
+  }
+
+  try {
+    const res = await fetch("/api/subscription/ensure-trial", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      console.error("[auth] Trial creation failed:", res.status, text);
+      return false;
+    }
+    return true;
+  } catch (err: any) {
+    console.error("[auth] Trial creation error:", err.message);
+    return false;
+  }
+}
