@@ -65,6 +65,7 @@ async function fetchAdmin<T>(path: string): Promise<T> {
   const res = await fetch(path, {
     headers: { Authorization: `Bearer ${token}` },
   });
+  if (res.status === 401) throw new Error("UNAUTHORIZED");
   if (res.status === 403) throw new Error("FORBIDDEN");
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
@@ -145,7 +146,10 @@ export default function AdminIngestionPage() {
       setStatuses(sourcesData.statuses);
       setError(null);
     } catch (err: any) {
-      if (err.message === "FORBIDDEN") {
+      if (err.message === "UNAUTHORIZED") {
+        navigate("/login");
+        return;
+      } else if (err.message === "FORBIDDEN") {
         setError("forbidden");
       } else {
         setError(err.message);

@@ -158,6 +158,18 @@ A BlaBlaCar-inspired Dutch-language rental alert application for the German mark
 - **Auth callback** (`auth-callback.tsx`): After `exchangeCodeForSession()`, calls `ensureTrialForCurrentUser()` (catches email-confirmed users) → redirects to `/dashboard`.
 - **ProtectedRoute** (`App.tsx`): Checks search profiles → redirects to `/onboarding` if 0 profiles. This ensures users always go through the onboarding wizard regardless of entry point.
 
+### Admin Ingestion Dashboard
+- **Route**: `/admin/ingestion` — admin-only monitoring page for the ingestion pipeline
+- **Access control**: `ADMIN_EMAILS` env var (comma-separated, case-insensitive). Server middleware validates Supabase JWT + email against allowlist. Returns 403 for non-admins.
+- **Backend**: `server/admin.ts` — `isAdminEmail()`, `persistIngestionRun()`, `getRecentRuns()`, `getRunDetail()`, `getLatestRunCities()`, `getSourceAggregates()`
+- **API endpoints** (all require admin auth):
+  - `GET /api/admin/ingestion/summary` — running status, last run time, today's stats, recent runs
+  - `GET /api/admin/ingestion/cities` — per-city breakdown from latest run
+  - `GET /api/admin/ingestion/sources` — per-source aggregates + platform statuses
+  - `GET /api/admin/ingestion/run/:id` — detailed single run data
+- **Frontend**: `client/src/pages/admin-ingestion.tsx` — stat cards, latest run summary, per-city table, per-source table, run history, auto-refresh every 30s
+- **Storage**: `ingestion_runs` table in Replit PostgreSQL (id, started_at, finished_at, duration_sec, cities_count, totals, city_reports JSONB, source_reports JSONB, status)
+
 ### Core Libraries
 - `client/src/lib/supabase.ts` — Supabase client with session persistence enabled
 - `client/src/lib/auth.tsx` — `AuthProvider` context + `useAuth()` hook + `ensureTrialForCurrentUser()` helper

@@ -5,7 +5,10 @@ import type { IngestionReport } from "./ingesters";
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "").split(",").map(e => e.trim().toLowerCase()).filter(Boolean);
 
 export function isAdminEmail(email: string): boolean {
-  if (ADMIN_EMAILS.length === 0) return true;
+  if (ADMIN_EMAILS.length === 0) {
+    log("[admin] WARNING: ADMIN_EMAILS not set — all admin access denied by default");
+    return false;
+  }
   return ADMIN_EMAILS.includes(email.toLowerCase().trim());
 }
 
