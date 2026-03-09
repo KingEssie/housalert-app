@@ -24,7 +24,6 @@ import {
   Copy,
   Plus,
   Mail,
-  MessageSquare,
   Smartphone,
   Zap,
 } from "lucide-react";
@@ -44,9 +43,7 @@ interface SpeedStep {
 
 interface Channels {
   email: boolean;
-  sms: boolean;
-  whatsapp: boolean;
-  phone: boolean;
+  push: boolean;
 }
 
 interface ProfileStrengthData {
@@ -139,12 +136,12 @@ const TASK_ICONS: Record<string, typeof Bell> = {
 };
 
 const TASK_DESCRIPTIONS: Record<string, string> = {
-  alerts: "Activeer minstens één meldingskanaal (e-mail, SMS of WhatsApp) zodat je geen nieuwe woningen mist.",
+  alerts: "Activeer minstens één meldingskanaal (e-mail of push) zodat je geen nieuwe woningen mist.",
   search_buddy: "Voeg een zoekbuddy toe die ook meldingen ontvangt van jouw matches.",
   search_optimize: "Maak minstens 2 zoekprofielen of optimaliseer je filters voor betere resultaten.",
   application_template: "Bereid een aanmeldingsbrief voor zodat je direct kunt reageren op nieuwe woningen.",
   documents: "Verzamel alle benodigde documenten zodat je klaar bent om te reageren.",
-  phone: "Voeg je telefoonnummer toe voor SMS- en WhatsApp-meldingen.",
+  phone: "Voeg je telefoonnummer toe aan je profiel.",
 };
 
 function getStatusLabel(score: number): { label: string; color: string; bg: string } {
@@ -830,8 +827,7 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
 
   const channelList = [
     { key: "email", label: "E-mail", enabled: channels.email, Icon: Mail },
-    { key: "sms", label: "SMS", enabled: channels.sms, Icon: MessageSquare },
-    { key: "whatsapp", label: "WhatsApp", enabled: channels.whatsapp, Icon: Phone },
+    { key: "push", label: "Pushmeldingen", enabled: channels.push, Icon: Bell },
   ];
 
   const activeCount = channelList.filter(c => c.enabled).length;

@@ -568,7 +568,7 @@ function TaskModal({
 const BOOST_TASK_MODAL_CONFIG: Record<string, { title: string; description: string }> = {
   alerts_active: {
     title: "Woningalerts activeren",
-    description: "Activeer minstens een meldingskanaal (e-mail, SMS of WhatsApp) zodat je geen nieuwe woningen mist.",
+    description: "Activeer minstens een meldingskanaal (e-mail of push) zodat je geen nieuwe woningen mist.",
   },
   search_buddy_added: {
     title: "Zoekbuddy toevoegen",
@@ -588,7 +588,7 @@ const BOOST_TASK_MODAL_CONFIG: Record<string, { title: string; description: stri
   },
   phone_number_added: {
     title: "Telefoonnummer toevoegen",
-    description: "Voeg je telefoonnummer toe voor SMS- en WhatsApp-meldingen.",
+    description: "Voeg je telefoonnummer toe aan je profiel.",
   },
   housing_preferences_completed: {
     title: "Woonwensen aanvullen",

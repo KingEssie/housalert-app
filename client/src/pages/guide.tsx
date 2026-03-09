@@ -100,7 +100,7 @@ const GUIDE_CONTENT: Record<string, { title: string; icon: typeof Shield; intro:
       {
         title: "Snelheid is alles",
         items: [
-          "Activeer alle meldingskanalen (e-mail, SMS, WhatsApp)",
+          "Activeer alle meldingskanalen (e-mail, push)",
           "Reageer binnen 30 minuten op nieuwe woningen",
           "Heb je documenten en aanmeldingsbrief al klaarliggen",
           "Sla je favoriete woningen direct op",

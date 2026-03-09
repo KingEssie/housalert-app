@@ -87,7 +87,7 @@ export default function LandingPage() {
                 </div>
                 <h3 className="text-[18px] font-bold mb-2" style={{ color: "var(--yo-dark)" }}>Direct meldingen</h3>
                 <p className="text-[15px] text-muted-foreground leading-relaxed">
-                  Ontvang een melding via e-mail, SMS of WhatsApp zodra er iets nieuws is.
+                  Ontvang een melding via e-mail of push zodra er iets nieuws is.
                 </p>
               </div>
 

@@ -48,7 +48,7 @@ const PLANS: Plan[] = [
 const FEATURES = [
   "Tot 4 zoekprofielen",
   "Directe meldingen via e-mail",
-  "SMS & WhatsApp meldingen",
+  "Pushmeldingen (binnenkort)",
   "Nieuwe woningen als eerste",
 ];
 

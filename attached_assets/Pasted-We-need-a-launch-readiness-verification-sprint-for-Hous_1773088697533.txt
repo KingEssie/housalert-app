@@ -1,0 +1,112 @@
+We need a launch-readiness verification sprint for HousAlert.
+
+Important:
+- Do NOT redesign the UI.
+- Do NOT add new features.
+- Focus only on verification, reliability, and removing unsupported notification channels.
+- We are intentionally simplifying notifications to:
+  - email
+  - push
+- We do NOT want SMS or WhatsApp for now.
+
+==================================================
+1. CHECK MATCH QUALITY
+==================================================
+
+Goal:
+Verify that users only receive listings that actually match their active search profiles.
+
+Tasks:
+1. Audit the current active hard filters and confirm they are enforced correctly:
+   - city
+   - min price
+   - max price
+   - bedrooms_min
+   - size_min
+   - furnished
+   - districts
+   - pets_allowed
+
+2. Create a test set using real current listings and real search profiles.
+3. For each profile, verify:
+   - no false positives
+   - no clearly invalid matches
+   - no listings outside price/city/bedroom/size requirements
+4. Produce a clear report:
+   - which profiles were tested
+   - how many matches were returned
+   - whether any false positives were found
+   - any risky filters still causing bad matches
+
+5. Add or verify a match explanation/debug output for each tested match:
+   - which hard filters passed
+   - which values were compared
+   - final pass/fail reasoning
+
+==================================================
+2. CHECK INGESTION SPEED / NEW LISTING FLOW
+==================================================
+
+Goal:
+Verify that new listings are actually being ingested fast enough to support the product promise.
+
+Tasks:
+1. Check how often ingestion currently runs.
+2. Confirm the real listing flow:
+   - source listing appears
+   - ingestion fetches it
+   - DB stores it
+   - match engine creates match
+   - user can receive it
+3. Report the realistic delay between:
+   - listing published on source
+   - listing visible in HousAlert
+4. Verify that only listings newer than premium_access_started_at are matched to premium users.
+5. Confirm that historical listings are not being injected as “new matches” after subscription start.
+
+Deliverable:
+- estimated ingestion frequency
+- estimated delay to user-facing match
+- whether this is good enough for launch
+
+==================================================
+3. SIMPLIFY NOTIFICATIONS TO EMAIL + PUSH ONLY
+==================================================
+
+Goal:
+Reduce costs and keep notifications reliable.
+
+Tasks:
+1. Remove or disable SMS and WhatsApp notification options everywhere in the app and backend flow.
+2. Keep only:
+   - email notifications
+   - push notifications
+3. Verify that notification settings page only shows these two channels.
+4. Verify that sending logic only attempts:
+   - email
+   - push
+5. Remove any references to SMS / WhatsApp from:
+   - UI
+   - settings
+   - backend notification routing
+   - copy / labels if still present
+
+Also verify:
+- email notification flow works
+- push notification flow works
+- if push permission is unavailable, email still works cleanly
+
+==================================================
+4. REPORT BACK
+==================================================
+
+After verification, report back with:
+
+1. Whether hard-filter matching is reliable enough for launch
+2. Any remaining false-positive risks
+3. Current ingestion frequency and realistic listing-to-user delay
+4. Whether only new listings after premium start are matched
+5. Whether SMS and WhatsApp were fully removed/disabled
+6. Whether email notifications work
+7. Whether push notifications work
+8. Which files changed

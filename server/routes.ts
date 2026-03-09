@@ -93,15 +93,14 @@ export async function registerRoutes(
 
       if (error) return res.status(500).json({ error: error.message });
 
-      return res.json(
-        settings ?? {
+      const cleaned = settings ?? {
           user_id: user.id,
           phone_e164: null,
-          whatsapp_enabled: false,
-          sms_enabled: false,
           email_enabled: true,
-        }
-      );
+        };
+      if (cleaned.sms_enabled !== undefined) delete cleaned.sms_enabled;
+      if (cleaned.whatsapp_enabled !== undefined) delete cleaned.whatsapp_enabled;
+      return res.json(cleaned);
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
     }
@@ -115,7 +114,7 @@ export async function registerRoutes(
       const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
-      const { phone_e164, whatsapp_enabled, sms_enabled, email_enabled } = req.body;
+      const { phone_e164, email_enabled } = req.body;
 
       if (phone_e164 !== undefined && phone_e164 !== null) {
         const e164Regex = /^\+[1-9]\d{1,14}$/;
@@ -129,8 +128,8 @@ export async function registerRoutes(
         updated_at: new Date().toISOString(),
       };
       if (phone_e164 !== undefined) payload.phone_e164 = phone_e164;
-      if (typeof whatsapp_enabled === "boolean") payload.whatsapp_enabled = whatsapp_enabled;
-      if (typeof sms_enabled === "boolean") payload.sms_enabled = sms_enabled;
+      payload.whatsapp_enabled = false;
+      payload.sms_enabled = false;
       if (typeof email_enabled === "boolean") payload.email_enabled = email_enabled;
 
       const { data: existing } = await supabase
@@ -150,8 +149,8 @@ export async function registerRoutes(
           .single();
       } else {
         if (!payload.phone_e164) payload.phone_e164 = null;
-        if (payload.whatsapp_enabled === undefined) payload.whatsapp_enabled = false;
-        if (payload.sms_enabled === undefined) payload.sms_enabled = false;
+        payload.whatsapp_enabled = false;
+        payload.sms_enabled = false;
         if (payload.email_enabled === undefined) payload.email_enabled = true;
         result = await supabase
           .from("user_notification_settings")
@@ -1301,7 +1300,7 @@ export async function registerRoutes(
         supabase.from("search_profiles").select("id, city, price_min, price_max, bedrooms_min, size_min").eq("user_id", user.id),
       ]);
 
-      const notif = notifResult.data ?? { email_enabled: true, sms_enabled: false, whatsapp_enabled: false, phone_e164: null };
+      const notif = notifResult.data ?? { email_enabled: true, phone_e164: null };
       const profileData = profileDataResult.data;
       const searchProfiles = searchProfilesResult.data ?? [];
 
@@ -1333,11 +1332,11 @@ export async function registerRoutes(
       ]);
 
       const rawNotif = notifResult.data;
-      const notif = rawNotif ?? { email_enabled: true, sms_enabled: false, whatsapp_enabled: false, phone_e164: null };
+      const notif = rawNotif ?? { email_enabled: true, phone_e164: null };
       const profileData = profileDataResult.data;
       const searchProfiles = searchProfilesResult.data ?? [];
 
-      const hasAlertChannel = !!(notif.email_enabled || notif.sms_enabled || notif.whatsapp_enabled);
+      const hasAlertChannel = !!(notif.email_enabled);
       const hasSearchBuddy = !!(profileData?.search_buddy_email && profileData.search_buddy_email.trim().length > 0);
 
       const hasStrongProfile = searchProfiles.some(p => {
@@ -1388,9 +1387,7 @@ export async function registerRoutes(
 
       const channels = {
         email: !!(notif.email_enabled),
-        sms: !!(notif.sms_enabled),
-        whatsapp: !!(notif.whatsapp_enabled),
-        phone: hasPhone,
+        push: false,
       };
 
       const speedSteps = [
@@ -1402,9 +1399,7 @@ export async function registerRoutes(
 
       const speedDone = speedSteps.filter(s => s.done).length;
 
-      const recommendedChannel = notif.whatsapp_enabled ? "WhatsApp" :
-        notif.sms_enabled ? "SMS" :
-        notif.email_enabled ? "E-mail" : null;
+      const recommendedChannel = notif.email_enabled ? "E-mail" : null;
 
       return res.json({
         score,

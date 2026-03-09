@@ -96,6 +96,13 @@ A BlaBlaCar-inspired Dutch-language rental alert application for the German mark
 - `listing-detail.tsx` uses its own `FloatingBackButton` component (same 44px style, but with backdrop-blur for hero image overlay)
 - NOT used on main navigation screens: dashboard (Home/Matches/Boost/Filters/Profile), or wizard flows (new-search)
 
+### Notifications
+- **Channels**: Email only (via Resend). Push planned but not yet implemented (toggle shown as disabled with "Binnenkort beschikbaar")
+- **Removed channels**: SMS and WhatsApp fully disabled — Twilio sending code removed, UI toggles removed, DB columns still exist but always set to `false`
+- **Sending logic**: `server/notifications/index.ts` — only sends email via `sendEmailMatchAlert`
+- **Settings UI**: `client/src/pages/notification-settings.tsx` — email toggle + disabled push toggle
+- **Settings API**: `GET/PUT /api/notifications/settings` — only accepts `email_enabled`, forces `sms_enabled=false`, `whatsapp_enabled=false`
+
 ### Ingestion Pipeline
 - **Scheduler**: `server/scheduler.ts` — runs every 10 min when `ENABLE_INGEST_SCHEDULER=true`
 - **Orchestrator**: `server/ingesters/index.ts` — gets active cities, runs all source ingesters per city

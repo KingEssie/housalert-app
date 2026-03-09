@@ -2,19 +2,14 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Phone, MessageSquare, Loader2 } from "lucide-react";
+import { Mail, Bell, Loader2 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { ListSection, ListRow, ListDivider } from "@/components/list-section";
 
 interface NotificationSettings {
   user_id: string;
-  phone_e164: string | null;
-  whatsapp_enabled: boolean;
-  sms_enabled: boolean;
   email_enabled: boolean;
 }
 
@@ -23,15 +18,11 @@ export default function NotificationSettingsPage() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
 
-  const [settings, setSettings] = useState<NotificationSettings | null>(null);
   const [loadingSettings, setLoadingSettings] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  const [phoneInput, setPhoneInput] = useState("");
   const [emailEnabled, setEmailEnabled] = useState(true);
-  const [smsEnabled, setSmsEnabled] = useState(false);
-  const [whatsappEnabled, setWhatsappEnabled] = useState(false);
-  const [phoneError, setPhoneError] = useState("");
+  const [pushEnabled, setPushEnabled] = useState(false);
 
   useEffect(() => {
     if (!session?.access_token) return;
@@ -44,11 +35,7 @@ export default function NotificationSettingsPage() {
         return res.json();
       })
       .then((data: NotificationSettings) => {
-        setSettings(data);
-        setPhoneInput(data.phone_e164 ?? "");
         setEmailEnabled(data.email_enabled);
-        setSmsEnabled(data.sms_enabled);
-        setWhatsappEnabled(data.whatsapp_enabled);
       })
       .catch(() => {
         toast({
@@ -60,31 +47,7 @@ export default function NotificationSettingsPage() {
       .finally(() => setLoadingSettings(false));
   }, [session?.access_token]);
 
-  const e164Regex = /^\+[1-9]\d{1,14}$/;
-
-  function validatePhone(value: string): boolean {
-    if (!value.trim()) {
-      setPhoneError("");
-      return true;
-    }
-    if (!e164Regex.test(value.trim())) {
-      setPhoneError("Gebruik E.164 formaat, bijv. +31612345678");
-      return false;
-    }
-    setPhoneError("");
-    return true;
-  }
-
   async function handleSave() {
-    const phone = phoneInput.trim() || null;
-
-    if (phone && !validatePhone(phone)) return;
-
-    if ((smsEnabled || whatsappEnabled) && !phone) {
-      setPhoneError("Telefoonnummer is verplicht voor SMS of WhatsApp");
-      return;
-    }
-
     setSaving(true);
     try {
       const res = await fetch("/api/notifications/settings", {
@@ -94,10 +57,7 @@ export default function NotificationSettingsPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          phone_e164: phone,
           email_enabled: emailEnabled,
-          sms_enabled: smsEnabled,
-          whatsapp_enabled: whatsappEnabled,
         }),
       });
 
@@ -106,8 +66,6 @@ export default function NotificationSettingsPage() {
         throw new Error(err.error || "Opslaan mislukt");
       }
 
-      const updated = await res.json();
-      setSettings(updated);
       toast({
         title: "Opgeslagen",
         description: "Je meldingsinstellingen zijn bijgewerkt.",
@@ -158,64 +116,20 @@ export default function NotificationSettingsPage() {
               />
               <ListDivider />
               <ListRow
-                title="SMS"
-                subtitle="Ontvang matches via SMS"
-                icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--yo-chip-bg)" }}><Phone className="w-[18px] h-[18px]" style={{ color: "var(--yo-dark)" }} /></div>}
+                title="Pushmeldingen"
+                subtitle="Binnenkort beschikbaar"
+                icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--yo-chip-bg)" }}><Bell className="w-[18px] h-[18px]" style={{ color: "var(--yo-dark)" }} /></div>}
                 trailing={
                   <Switch
-                    checked={smsEnabled}
-                    onCheckedChange={setSmsEnabled}
-                    data-testid="toggle-sms"
+                    checked={pushEnabled}
+                    onCheckedChange={setPushEnabled}
+                    disabled={true}
+                    data-testid="toggle-push"
                   />
                 }
-                testId="setting-sms"
-              />
-              <ListDivider />
-              <ListRow
-                title="WhatsApp"
-                subtitle="Ontvang matches via WhatsApp"
-                icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--yo-chip-bg)" }}><MessageSquare className="w-[18px] h-[18px]" style={{ color: "var(--yo-dark)" }} /></div>}
-                trailing={
-                  <Switch
-                    checked={whatsappEnabled}
-                    onCheckedChange={setWhatsappEnabled}
-                    data-testid="toggle-whatsapp"
-                  />
-                }
-                testId="setting-whatsapp"
+                testId="setting-push"
               />
             </ListSection>
-
-            {(smsEnabled || whatsappEnabled) && (
-              <ListSection title="Telefoonnummer">
-                <div className="px-5 py-4" data-testid="card-phone">
-                  <p className="text-row-subtitle mb-3">
-                    Nodig voor SMS en WhatsApp meldingen. Gebruik internationaal formaat.
-                  </p>
-                  <div className="flex flex-col gap-2">
-                    <Label htmlFor="phone" className="text-[14px] font-semibold" style={{ color: "var(--yo-dark)" }}>Telefoonnummer (E.164)</Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      placeholder="+31612345678"
-                      value={phoneInput}
-                      onChange={(e) => {
-                        setPhoneInput(e.target.value);
-                        if (phoneError) validatePhone(e.target.value);
-                      }}
-                      onBlur={() => validatePhone(phoneInput)}
-                      className="h-[52px] px-4 rounded-lg border-0 bg-muted text-[15px] font-medium text-foreground placeholder:text-muted-foreground placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
-                      data-testid="input-phone"
-                    />
-                    {phoneError && (
-                      <p className="text-xs text-destructive" data-testid="text-phone-error">
-                        {phoneError}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </ListSection>
-            )}
 
             <div className="flex items-center gap-3 px-5">
               <Button
