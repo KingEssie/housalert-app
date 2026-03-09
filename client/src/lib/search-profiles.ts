@@ -197,7 +197,7 @@ export async function updateSearchProfile(
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: "Unknown error" }));
-    console.error("[search-profiles] Update failed:", err);
+    console.error("[search-profiles] Update failed:", res.status, err);
     throw new Error("Zoekopdracht bijwerken mislukt. Probeer het opnieuw.");
   }
 

@@ -753,7 +753,7 @@ export async function registerRoutes(
         payment_method_types: ["card"],
         line_items: [{ price: stripePriceId, quantity: 1 }],
         mode: "subscription",
-        success_url: `${baseUrl}/subscription-success`,
+        success_url: `${baseUrl}/subscription-success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${baseUrl}/paywall`,
         metadata: { supabase_user_id: user.id, plan },
       });
@@ -815,7 +815,7 @@ export async function registerRoutes(
         payment_method_types: ["card"],
         line_items: [{ price: stripePriceId, quantity: 1 }],
         mode: "subscription",
-        success_url: `${baseUrl}/subscription-success`,
+        success_url: `${baseUrl}/subscription-success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${baseUrl}/paywall`,
         metadata: { supabase_user_id: user.id, plan },
       });
@@ -823,6 +823,59 @@ export async function registerRoutes(
       return res.json({ url: session.url });
     } catch (err: any) {
       console.error("Checkout error:", err);
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/checkout/verify", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { session_id } = req.body;
+      if (!session_id) return res.status(400).json({ error: "session_id is required" });
+
+      if (!stripeAvailable) {
+        return res.status(503).json({ error: "Stripe not configured" });
+      }
+
+      const { getUncachableStripeClient } = await import("./stripe/stripeClient");
+      const stripe = await getUncachableStripeClient();
+
+      const session = await stripe.checkout.sessions.retrieve(session_id);
+
+      if (session.payment_status !== "paid") {
+        log(`[checkout-verify] Session ${session_id} payment_status=${session.payment_status}, not paid`);
+        return res.status(400).json({ error: "Payment not completed" });
+      }
+
+      const userId = session.metadata?.supabase_user_id;
+      const plan = session.metadata?.plan || "monthly";
+      const stripeCustomerId = session.customer as string;
+      const stripeSubscriptionId = session.subscription as string;
+
+      if (userId !== user.id) {
+        log(`[checkout-verify] User mismatch: session user=${userId}, request user=${user.id}`);
+        return res.status(403).json({ error: "Forbidden" });
+      }
+
+      if (!stripeSubscriptionId) {
+        log(`[checkout-verify] No subscription ID in session ${session_id}, payment may still be processing`);
+        return res.status(202).json({ success: false, message: "Payment processing" });
+      }
+
+      const sub = await stripe.subscriptions.retrieve(stripeSubscriptionId);
+      const periodEnd = new Date((sub as any).current_period_end * 1000);
+      await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubscriptionId, plan, periodEnd);
+      log(`[checkout-verify] Subscription synced for user=${userId} plan=${plan} period_end=${periodEnd.toISOString()}`);
+
+      const status = await getSubscriptionStatus(userId);
+      return res.json({ success: true, subscription: status });
+    } catch (err: any) {
+      log(`[checkout-verify] Error: ${err.message}`);
       return res.status(500).json({ error: err.message });
     }
   });
@@ -960,6 +1013,19 @@ export async function registerRoutes(
     }
   });
 
+  let _searchProfileColumns: Set<string> | null = null;
+  async function getSearchProfileColumns(): Promise<Set<string>> {
+    if (_searchProfileColumns) return _searchProfileColumns;
+    const { data } = await supabase.from("search_profiles").select("*").limit(1);
+    if (data && data.length > 0) {
+      _searchProfileColumns = new Set(Object.keys(data[0]));
+      log(`[search-profiles] Detected columns: ${[..._searchProfileColumns].join(", ")}`);
+    } else {
+      _searchProfileColumns = new Set(["id", "user_id", "city", "price_min", "price_max", "bedrooms_min", "size_min", "created_at"]);
+    }
+    return _searchProfileColumns;
+  }
+
   app.put("/api/search-profiles/:id", async (req, res) => {
     try {
       const token = req.headers.authorization?.replace("Bearer ", "");
@@ -980,17 +1046,22 @@ export async function registerRoutes(
       }
 
       const body = req.body;
-      const updateRow: Record<string, unknown> = {};
-      const fields = [
+      const allFields = [
         "city", "city_name", "country_code", "latitude", "longitude", "place_id",
         "price_min", "price_max", "bedrooms_min", "size_min",
         "location_mode", "districts", "radius_km",
         "commute_destination", "commute_lat", "commute_lng", "commute_mode", "commute_minutes",
         "furnished", "property_types", "extra_features", "target_categories",
       ];
-      for (const f of fields) {
-        if (f in body) updateRow[f] = body[f];
+      const coreFields = ["city", "price_min", "price_max", "bedrooms_min", "size_min"];
+
+      const availableCols = await getSearchProfileColumns();
+      const updateRow: Record<string, unknown> = {};
+      for (const f of allFields) {
+        if ((f in body) && availableCols.has(f)) updateRow[f] = body[f];
       }
+
+      log(`[search-profiles] Updating profile=${profileId} for user=${user.id}, fields=${JSON.stringify(Object.keys(updateRow))}`);
 
       const { error } = await supabase
         .from("search_profiles")
@@ -999,10 +1070,27 @@ export async function registerRoutes(
         .eq("user_id", user.id);
 
       if (error) {
-        log(`[search-profiles] Update failed for profile=${profileId}: ${error.message}`);
-        return res.status(500).json({ error: error.message });
+        log(`[search-profiles] Full update failed: code=${(error as any).code} msg=${error.message}`);
+        const coreRow: Record<string, unknown> = {};
+        for (const f of coreFields) {
+          if (f in body) coreRow[f] = body[f];
+        }
+        const { error: coreErr } = await supabase
+          .from("search_profiles")
+          .update(coreRow)
+          .eq("id", profileId)
+          .eq("user_id", user.id);
+
+        if (coreErr) {
+          log(`[search-profiles] Core update also failed: ${coreErr.message}`);
+          return res.status(500).json({ error: coreErr.message });
+        }
+        log(`[search-profiles] Core-only update succeeded for profile=${profileId}`);
+        _searchProfileColumns = null;
+        return res.json({ success: true, partial: true });
       }
 
+      log(`[search-profiles] Update succeeded for profile=${profileId}`);
       return res.json({ success: true });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });

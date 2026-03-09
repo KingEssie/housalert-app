@@ -49,7 +49,7 @@ A BlaBlaCar-inspired Dutch-language rental alert application for the German mark
 - **Iframe**: `Content-Security-Policy: frame-ancestors *` set for `/onboarding-embed` route
 - **Embed HTML**: `<iframe src="https://YOUR_DOMAIN/onboarding-embed" width="100%" height="700" frameborder="0"></iframe>`
 - **Table**: `onboarding_drafts` in Replit DB (not Supabase) — draft data stored locally
-- **PENDING MIGRATION**: `server/migrations/PENDING_RUN_IN_SUPABASE.sql` must be run in Supabase SQL Editor (includes migrations 008, 010, 011, 012, 013, 016)
+- **CRITICAL PENDING MIGRATION**: `server/migrations/PENDING_RUN_IN_SUPABASE.sql` must be run in Supabase SQL Editor (includes migrations 008, 010, 011, 012, 013, 014, 015, 016, 017). The `search_profiles` table currently only has 8 core columns (id, user_id, city, price_min, price_max, bedrooms_min, size_min, created_at). Without running these migrations, advanced features (location mode, districts, radius, commute, furnished, extra features, target categories) cannot be persisted — the backend will fall back to core-only updates. Run the full migration file in Supabase SQL Editor to enable all features.
 
 ### Design System (YoungOnes-inspired)
 - **Primary CTA**: Teal `var(--yo-teal)` #2DD4BF, hover `var(--yo-teal-hover)` #25BBA8 — CTA buttons ONLY (BLACK text, not white), active nav indicator, selection controls
@@ -145,7 +145,7 @@ A BlaBlaCar-inspired Dutch-language rental alert application for the German mark
 - `client/src/pages/viewing-tips.tsx` — Dedicated viewing tips page at `/tips/bezichtiging`. Five sections: Voor/Tijdens/Wat meenemen/Na de bezichtiging/Rode vlaggen. CTA to mark as completed.
 - `client/src/pages/legal.tsx` — Legal pages: `/impressum`, `/datenschutz`, `/terms` (German placeholder content)
 - `client/src/pages/paywall.tsx` — Subscription paywall with Stripe checkout. Dynamic price validation at startup (validates env var price IDs, falls back to Stripe API lookup by nickname/interval). No static fallback messages — errors shown as toasts.
-- `client/src/pages/subscription-success.tsx` — Stripe payment success page at `/subscription-success`. Shows "Abonnement succesvol geactiveerd" and auto-redirects to dashboard after 2 seconds. Invalidates subscription/stats caches on mount.
+- `client/src/pages/subscription-success.tsx` — Stripe payment success page at `/subscription-success?session_id=...`. Calls `POST /api/checkout/verify` to sync subscription from Stripe checkout session, then polls `/api/subscription/status` for up to ~16s until active. Shows spinner during sync, then success message. Auto-redirects to dashboard after activation. Invalidates subscription/stats/matches caches.
 - `client/src/pages/subscription-detail.tsx` — Subscription detail page at `/account/subscription`. Shows plan type, status (green badge), price, start/renewal dates, billing frequency, auto-renew, payment method (mock). Actions: wijzigen → /paywall, betaalmethode → /account/payment-method, opzeggen → /account/subscription/cancel.
 - `client/src/pages/payment-method.tsx` — Payment method management at `/account/payment-method`. Shows current card (mock Visa ****4242), add/remove actions.
 - `client/src/pages/subscription-cancel.tsx` — Two-step cancel flow: `/account/subscription/cancel` (confirm with renewal date) and `/account/subscription/cancelled` (confirmation). Exports `SubscriptionCancelConfirmPage` and `SubscriptionCancelledPage`.

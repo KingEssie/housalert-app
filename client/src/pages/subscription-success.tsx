@@ -1,41 +1,100 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { queryClient } from "@/lib/queryClient";
-import { CheckCircle } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { CheckCircle, Loader2 } from "lucide-react";
+
+async function verifyCheckout(sessionId: string, token: string): Promise<boolean> {
+  const res = await fetch("/api/checkout/verify", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ session_id: sessionId }),
+  });
+  if (!res.ok) return false;
+  const data = await res.json();
+  return data?.success === true && data?.subscription?.isActive === true;
+}
+
+async function pollSubscriptionActive(token: string, maxAttempts = 10): Promise<boolean> {
+  for (let i = 0; i < maxAttempts; i++) {
+    const res = await fetch("/api/subscription/status", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data?.isActive) return true;
+    }
+    await new Promise((r) => setTimeout(r, 2000));
+  }
+  return false;
+}
 
 export default function SubscriptionSuccessPage() {
   const [, navigate] = useLocation();
-  const [countdown, setCountdown] = useState(2);
+  const [syncing, setSyncing] = useState(true);
+  const [activated, setActivated] = useState(false);
 
   useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ["/api/subscription/status"] });
-    queryClient.invalidateQueries({ queryKey: ["/api/profile-stats"] });
+    async function verifyAndSync() {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
 
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          navigate("/dashboard");
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+      if (!token) {
+        setSyncing(false);
+        setTimeout(() => navigate("/dashboard"), 2000);
+        return;
+      }
 
-    return () => clearInterval(timer);
+      const params = new URLSearchParams(window.location.search);
+      const sessionId = params.get("session_id");
+
+      let active = false;
+
+      if (sessionId) {
+        active = await verifyCheckout(sessionId, token);
+      }
+
+      if (!active) {
+        active = await pollSubscriptionActive(token, 8);
+      }
+
+      setActivated(active);
+      setSyncing(false);
+
+      queryClient.invalidateQueries({ queryKey: ["/api/subscription/status"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/profile-stats"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
+
+      setTimeout(() => navigate("/dashboard"), 2000);
+    }
+
+    verifyAndSync();
   }, [navigate]);
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-5">
       <div className="text-center max-w-sm">
         <div className="w-16 h-16 rounded-full bg-[#E8FFF5] flex items-center justify-center mx-auto mb-5">
-          <CheckCircle className="w-8 h-8 text-[var(--yo-teal)]" />
+          {syncing ? (
+            <Loader2 className="w-8 h-8 text-[var(--yo-teal)] animate-spin" />
+          ) : (
+            <CheckCircle className="w-8 h-8 text-[var(--yo-teal)]" />
+          )}
         </div>
         <h1 className="text-[22px] font-bold text-[var(--yo-dark)] mb-2" data-testid="text-success-title">
-          Abonnement succesvol geactiveerd
+          {syncing
+            ? "Abonnement wordt geactiveerd..."
+            : activated
+              ? "Abonnement succesvol geactiveerd"
+              : "Betaling ontvangen"}
         </h1>
         <p className="text-[15px] text-[var(--yo-dark)] opacity-70" data-testid="text-success-redirect">
-          Je wordt doorgestuurd naar je dashboard...
+          {syncing
+            ? "Even geduld..."
+            : "Je wordt doorgestuurd naar je dashboard..."}
         </p>
       </div>
     </div>

@@ -1,0 +1,141 @@
+We need a focused P0 bug-fix sprint for HousAlert.
+
+Important:
+- Do NOT redesign the app.
+- Do NOT touch already-working UI unless needed for the fixes below.
+- Focus only on the two blocker issues:
+  1. editing search profiles still fails
+  2. Stripe subscription is not being activated/synced correctly after successful checkout
+
+==================================================
+1. P0 — EDIT SEARCH PROFILE STILL FAILS
+==================================================
+
+Current issue:
+Editing an existing search profile still throws:
+"Zoekopdracht bijwerken mislukt"
+
+The edit summary screen loads correctly and shows the existing values, but saving the edited profile still fails.
+
+Required behavior:
+- editing an existing search profile must update the existing record
+- it must NOT create a new record
+- it must NOT fail on save
+- after successful save, the user should return to the filters/search profile overview with the updated values visible
+
+Tasks:
+1. Trace the edit/update flow end-to-end
+2. Confirm the correct searchProfileId is passed through the whole edit flow
+3. Confirm the frontend sends an UPDATE payload, not a CREATE payload
+4. Confirm backend route/controller correctly handles update mode
+5. Confirm DB update query uses the right primary key and user ownership check
+6. Check whether any new fields added recently (wijken multi-select, extra eigenschappen, overige voorkeuren, etc.) are breaking the update payload
+7. Make update robust even when some optional fields are empty
+8. Return a specific useful error internally for debugging, but user-facing error should stay clean
+
+Deliverable:
+- explain exact root cause of failed search profile update
+- list files changed
+- confirm editing now updates the existing search profile successfully
+
+==================================================
+2. P0 — STRIPE CHECKOUT SUCCEEDS BUT SUBSCRIPTION IS NOT ACTIVE IN APP
+==================================================
+
+Current issue:
+Stripe checkout now opens and redirects back into the app correctly.
+However, after checkout, the account subscription page still shows:
+- Premium
+- Verlopen
+- no start date
+- no next renewal
+- no billing frequency
+- no active subscription state in app
+
+So:
+- checkout flow is partially working
+- but the app is NOT correctly activating / syncing the subscription after payment
+
+This must be fixed now.
+
+Required behavior:
+After a successful Stripe test checkout:
+1. The correct subscription/customer/payment data must be written back
+2. The user in the app must become ACTIVE
+3. Subscription page must show correct status and metadata
+4. Matches/paywall gating must recognize the subscription as active immediately or after a safe refresh
+5. No expired state should remain if payment succeeded
+
+Tasks:
+1. Trace the post-checkout flow end-to-end
+2. Verify success redirect route
+3. Verify checkout session lookup
+4. Verify webhook handling
+5. Verify subscription/customer creation in Stripe
+6. Verify DB write-back to Supabase
+7. Verify which fields the app uses to decide:
+   - active
+   - expired
+   - renewing
+   - payment method last4
+8. Confirm whether the app relies on:
+   - Stripe webhook only
+   - success callback only
+   - or both
+9. Make the system robust so successful checkout always results in correct active subscription state in app
+10. If webhook is required, ensure webhook secret/config is correct and events are handled
+11. If success callback is used, ensure it finalizes/syncs subscription state correctly
+
+Important:
+The final result must be:
+- successful Stripe test payment
+- active subscription visible in account
+- correct subscription metadata visible
+- access to matches unlocked
+
+Deliverable:
+- explain exact root cause of why subscription remained "Verlopen"
+- specify whether the problem was:
+  - webhook
+  - success callback
+  - DB sync
+  - wrong status mapping
+  - wrong environment
+- list files changed
+- confirm exactly which subscription fields are now persisted in the database
+
+==================================================
+3. REQUIRED VALIDATION AFTER FIX
+==================================================
+
+After implementation, validate all of this:
+
+A. Edit search profile
+- open existing profile
+- change location / filters
+- save
+- confirm same profile updated
+- confirm no duplicate created
+
+B. Stripe subscription flow
+- choose plan
+- go to Stripe test checkout
+- complete successful test payment
+- return to app
+- account > abonnement shows ACTIVE status
+- correct metadata is shown
+- matches/paywall access reflects active subscription
+
+==================================================
+4. REPORT BACK
+==================================================
+
+After fixing, report back with:
+
+1. Root cause of search profile update failure
+2. Root cause of subscription remaining expired after successful checkout
+3. Which files changed
+4. Which DB fields/tables are involved in subscription state
+5. Whether webhook, success callback, or both are used now
+6. Confirmation that edit search profile works
+7. Confirmation that successful Stripe checkout now creates an active subscription in-app
