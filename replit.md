@@ -273,15 +273,16 @@ A BlaBlaCar-inspired Dutch-language rental alert application for the German mark
 - Table: `subscriptions` in Supabase (id, user_id, status, plan, trial_ends_at, current_period_ends_at, stripe_customer_id, stripe_subscription_id, created_at, updated_at)
 - Status values: `trial`, `active`, `canceled`, `expired`
 - Plan values: `monthly`, `two_month`, `three_month`
-- Trial: 7-day free trial auto-created on signup via `POST /api/subscription/ensure-trial`
+- Trial: 14-day free trial via Stripe `trial_period_days: 14` on checkout. Stripe `trialing` status maps to DB `trial`. Trial also auto-created on signup via `POST /api/subscription/ensure-trial`
 - Soft paywall: matches tab blurred when expired; trial/expired banners on home tab; real status in profiel tab
+- Match filtering: matches only include listings matched after subscription `created_at` (premium access start date)
 
 ### API Endpoints
 - `GET /api/listings/:id` — Returns full listing detail with freshness data (public endpoint)
 - `GET /api/estimate?city=&minPrice=&maxPrice=&minRooms=&minSize=` — Returns `{ perWeekEstimate, last7dCount }` based on Supabase listings
-- `POST /api/checkout/session` — Creates Stripe checkout session (requires auth, `{ plan: "monthly"|"two_month"|"three_month" }`)
+- `POST /api/checkout/session` — Creates Stripe checkout session with 14-day trial (requires auth, `{ plan: "monthly"|"two_month"|"three_month" }`)
 - `POST /api/checkout` — Legacy checkout endpoint (maps old plan IDs to new ones)
-- `POST /api/checkout/verify` — Verifies Stripe checkout session and syncs subscription to DB (requires auth, `{ session_id }`)
+- `POST /api/checkout/verify` — Verifies Stripe checkout session (handles both `trialing` and `paid` status) and syncs subscription to DB (requires auth, `{ session_id }`)
 - `GET /api/stripe/publishable-key` — Returns Stripe publishable key
 - `POST /api/stripe/webhook` — Stripe webhook (handles checkout.session.completed, subscription created/updated/deleted)
 - `POST /api/subscription/ensure-trial` — Creates trial subscription row if none exists (auth required)
@@ -298,6 +299,7 @@ A BlaBlaCar-inspired Dutch-language rental alert application for the German mark
 ### Stripe Config
 - `server/stripe/stripeClient.ts` — Stripe client with dual initialization: tries Replit connector first, falls back to `STRIPE_SECRET_KEY` env var. Throws clear error if neither available.
 - Publishable key: from Replit connector or `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
+- Pricing: monthly €14,99/1mo, two_month €24,99/2mo (€12,50/mo), three_month €29,99/3mo (€10,00/mo)
 - Plan IDs map to env vars: `STRIPE_PRICE_MONTHLY` (or `STRIPE_PRICE_1_MONTH`), `STRIPE_PRICE_TWO_MONTH` (or `STRIPE_PRICE_2_MONTHS`), `STRIPE_PRICE_THREE_MONTH` (or `STRIPE_PRICE_3_MONTHS`)
 - Webhook secret: `STRIPE_WEBHOOK_SECRET`
 - Base URL: `APP_PUBLIC_BASE_URL` (used for checkout success/cancel URLs)

@@ -6,6 +6,7 @@ export interface SubscriptionState {
   plan: string | null;
   trial_ends_at: string | null;
   current_period_ends_at: string | null;
+  created_at: string | null;
   isActive: boolean;
   isTrial: boolean;
   isExpired: boolean;
@@ -15,7 +16,7 @@ async function fetchSubscriptionStatus(): Promise<SubscriptionState> {
   const { data: session } = await supabase.auth.getSession();
   const token = session?.session?.access_token;
   if (!token) {
-    return { status: "none", plan: null, trial_ends_at: null, current_period_ends_at: null, isActive: false, isTrial: false, isExpired: true };
+    return { status: "none", plan: null, trial_ends_at: null, current_period_ends_at: null, created_at: null, isActive: false, isTrial: false, isExpired: true };
   }
 
   const res = await fetch("/api/subscription/status", {
@@ -23,7 +24,7 @@ async function fetchSubscriptionStatus(): Promise<SubscriptionState> {
   });
 
   if (!res.ok) {
-    return { status: "none", plan: null, trial_ends_at: null, current_period_ends_at: null, isActive: false, isTrial: false, isExpired: true };
+    return { status: "none", plan: null, trial_ends_at: null, current_period_ends_at: null, created_at: null, isActive: false, isTrial: false, isExpired: true };
   }
 
   return res.json();
@@ -48,5 +49,6 @@ export function useSubscription() {
     isExpired: query.data?.isExpired ?? true,
     trialEndsAt: query.data?.trial_ends_at ?? null,
     currentPeriodEndsAt: query.data?.current_period_ends_at ?? null,
+    created_at: query.data?.created_at ?? null,
   };
 }

@@ -24,6 +24,7 @@ export interface SubscriptionStatus {
   plan: string | null;
   trial_ends_at: string | null;
   current_period_ends_at: string | null;
+  created_at: string | null;
   isActive: boolean;
   isTrial: boolean;
   isExpired: boolean;
@@ -41,7 +42,7 @@ export async function ensureTrialSubscription(userId: string): Promise<Subscript
     return existing as SubscriptionRow;
   }
 
-  const trialEndsAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+  const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
 
   const { data, error } = await supabase
     .from("subscriptions")
@@ -75,6 +76,7 @@ export async function getSubscriptionStatus(userId: string): Promise<Subscriptio
       plan: null,
       trial_ends_at: null,
       current_period_ends_at: null,
+      created_at: null,
       isActive: false,
       isTrial: false,
       isExpired: true,
@@ -96,6 +98,7 @@ export async function getSubscriptionStatus(userId: string): Promise<Subscriptio
     plan: row.plan,
     trial_ends_at: row.trial_ends_at,
     current_period_ends_at: row.current_period_ends_at,
+    created_at: row.created_at,
     isActive: hasAccess,
     isTrial,
     isExpired,
@@ -107,25 +110,34 @@ export async function updateSubscriptionFromCheckout(
   stripeCustomerId: string,
   stripeSubscriptionId: string,
   plan: string,
-  currentPeriodEnd: Date
+  currentPeriodEnd: Date | null,
+  trialEndsAt: Date | null = null
 ): Promise<void> {
+  const isTrialing = trialEndsAt !== null && currentPeriodEnd === null;
+  const upsertData: Record<string, any> = {
+    user_id: userId,
+    status: isTrialing ? "trial" : "active",
+    plan,
+    stripe_customer_id: stripeCustomerId,
+    stripe_subscription_id: stripeSubscriptionId,
+    updated_at: new Date().toISOString(),
+  };
+
+  if (isTrialing) {
+    upsertData.trial_ends_at = trialEndsAt!.toISOString();
+  } else if (currentPeriodEnd) {
+    upsertData.current_period_ends_at = currentPeriodEnd.toISOString();
+  }
+
   const { error } = await supabase
     .from("subscriptions")
-    .upsert({
-      user_id: userId,
-      status: "active",
-      plan,
-      stripe_customer_id: stripeCustomerId,
-      stripe_subscription_id: stripeSubscriptionId,
-      current_period_ends_at: currentPeriodEnd.toISOString(),
-      updated_at: new Date().toISOString(),
-    }, { onConflict: "user_id" });
+    .upsert(upsertData, { onConflict: "user_id" });
 
   if (error) {
     log(`[subscriptions] Error updating from checkout user=${userId}: ${error.message} code=${error.code} details=${error.details}`);
     throw new Error(`Failed to activate subscription: ${error.message}`);
   } else {
-    log(`[subscriptions] Activated subscription for user=${userId} plan=${plan}`);
+    log(`[subscriptions] ${isTrialing ? "Trial started" : "Activated subscription"} for user=${userId} plan=${plan}`);
   }
 }
 

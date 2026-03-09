@@ -340,6 +340,13 @@ export async function registerRoutes(
       const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
+      const { data: subRow } = await supabase
+        .from("subscriptions")
+        .select("created_at")
+        .eq("user_id", user.id)
+        .single();
+      const premiumStartedAt = subRow?.created_at || null;
+
       const { data: matchRows, error: mErr } = await supabase
         .from("matches")
         .select("id, listing_id, search_profile_id, created_at")
@@ -422,7 +429,15 @@ export async function registerRoutes(
         };
       });
 
-      const validResults = result.filter((r: any) => r.title !== null);
+      let validResults = result.filter((r: any) => r.title !== null);
+
+      if (premiumStartedAt) {
+        const premiumStart = new Date(premiumStartedAt).getTime();
+        validResults = validResults.filter((r: any) => {
+          const matchedAt = new Date(r.matched_at).getTime();
+          return matchedAt >= premiumStart;
+        });
+      }
 
       validResults.sort((a: any, b: any) => (b.match_score ?? 0) - (a.match_score ?? 0));
 
@@ -755,6 +770,10 @@ export async function registerRoutes(
         payment_method_types: ["card"],
         line_items: [{ price: stripePriceId, quantity: 1 }],
         mode: "subscription",
+        subscription_data: {
+          trial_period_days: 14,
+          metadata: { supabase_user_id: user.id, plan },
+        },
         success_url: `${baseUrl}/subscription-success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${baseUrl}/paywall`,
         metadata: { supabase_user_id: user.id, plan },
@@ -817,6 +836,10 @@ export async function registerRoutes(
         payment_method_types: ["card"],
         line_items: [{ price: stripePriceId, quantity: 1 }],
         mode: "subscription",
+        subscription_data: {
+          trial_period_days: 14,
+          metadata: { supabase_user_id: user.id, plan },
+        },
         success_url: `${baseUrl}/subscription-success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${baseUrl}/paywall`,
         metadata: { supabase_user_id: user.id, plan },
@@ -849,34 +872,46 @@ export async function registerRoutes(
 
       const session = await stripe.checkout.sessions.retrieve(session_id);
 
-      if (session.payment_status !== "paid") {
-        log(`[checkout-verify] Session ${session_id} payment_status=${session.payment_status}, not paid`);
+      const stripeSubscriptionId = session.subscription as string;
+      if (!stripeSubscriptionId) {
+        log(`[checkout-verify] No subscription ID in session ${session_id}`);
+        return res.status(202).json({ success: false, message: "Payment processing" });
+      }
+
+      const sub = await stripe.subscriptions.retrieve(stripeSubscriptionId);
+      const isTrialing = sub.status === "trialing";
+      const isPaid = session.payment_status === "paid";
+
+      if (!isPaid && !isTrialing) {
+        log(`[checkout-verify] Session ${session_id} payment_status=${session.payment_status}, sub_status=${sub.status} — not valid`);
         return res.status(400).json({ error: "Payment not completed" });
       }
 
       const userId = session.metadata?.supabase_user_id;
-      const plan = session.metadata?.plan || "monthly";
+      const plan = session.metadata?.plan || sub.metadata?.plan || "monthly";
       const stripeCustomerId = session.customer as string;
-      const stripeSubscriptionId = session.subscription as string;
 
       if (userId !== user.id) {
         log(`[checkout-verify] User mismatch: session user=${userId}, request user=${user.id}`);
         return res.status(403).json({ error: "Forbidden" });
       }
 
-      if (!stripeSubscriptionId) {
-        log(`[checkout-verify] No subscription ID in session ${session_id}, payment may still be processing`);
-        return res.status(202).json({ success: false, message: "Payment processing" });
+      if (isTrialing) {
+        const trialEnd = (sub as any).trial_end;
+        const trialEndsAt = trialEnd && trialEnd > 0
+          ? new Date(trialEnd * 1000)
+          : new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+        log(`[checkout-verify] Stripe sub=${stripeSubscriptionId} is trialing, trial_end=${trialEndsAt.toISOString()}`);
+        await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubscriptionId, plan, null, trialEndsAt);
+      } else {
+        const rawEnd = (sub as any).current_period_end;
+        const periodEnd = rawEnd && rawEnd > 0
+          ? new Date(rawEnd * 1000)
+          : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+        log(`[checkout-verify] Stripe sub=${stripeSubscriptionId} status=${sub.status} period_end=${periodEnd.toISOString()}`);
+        await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubscriptionId, plan, periodEnd, null);
       }
-
-      const sub = await stripe.subscriptions.retrieve(stripeSubscriptionId);
-      const rawEnd = (sub as any).current_period_end;
-      const periodEnd = rawEnd && rawEnd > 0
-        ? new Date(rawEnd * 1000)
-        : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-      log(`[checkout-verify] Stripe sub=${stripeSubscriptionId} status=${sub.status} period_end_raw=${rawEnd} computed=${periodEnd.toISOString()}`);
-      await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubscriptionId, plan, periodEnd);
-      log(`[checkout-verify] Subscription synced for user=${userId} plan=${plan} period_end=${periodEnd.toISOString()}`);
+      log(`[checkout-verify] Subscription synced for user=${userId} plan=${plan}`);
 
       const status = await getSubscriptionStatus(userId);
       return res.json({ success: true, subscription: status });
@@ -919,11 +954,19 @@ export async function registerRoutes(
 
           if (userId && stripeSubscriptionId) {
             const sub = await stripe.subscriptions.retrieve(stripeSubscriptionId);
-            const rawEnd = (sub as any).current_period_end;
-            const periodEnd = rawEnd && rawEnd > 0
-              ? new Date(rawEnd * 1000)
-              : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-            await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubscriptionId, plan, periodEnd);
+            if (sub.status === "trialing") {
+              const trialEnd = (sub as any).trial_end;
+              const trialEndsAt = trialEnd && trialEnd > 0
+                ? new Date(trialEnd * 1000)
+                : new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+              await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubscriptionId, plan, null, trialEndsAt);
+            } else {
+              const rawEnd = (sub as any).current_period_end;
+              const periodEnd = rawEnd && rawEnd > 0
+                ? new Date(rawEnd * 1000)
+                : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+              await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubscriptionId, plan, periodEnd, null);
+            }
           }
           break;
         }
@@ -934,25 +977,28 @@ export async function registerRoutes(
           const stripeCustomerId = sub.customer as string;
           const stripeSubId = sub.id;
           const subStatus = sub.status;
-          const rawEnd = sub.current_period_end;
-          const periodEnd = rawEnd && rawEnd > 0
-            ? new Date(rawEnd * 1000)
-            : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-
-          let status: "active" | "canceled" | "expired" = "active";
-          if (subStatus === "canceled" || subStatus === "unpaid") {
-            status = "canceled";
-          } else if (subStatus === "past_due" || subStatus === "incomplete_expired") {
-            status = "expired";
-          }
 
           const userId = await findUserByStripeCustomerId(stripeCustomerId);
           if (userId) {
             const priceId = sub.items?.data?.[0]?.price?.id;
-            const plan = (priceId && PRICE_TO_PLAN[priceId]) || "monthly";
-            await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubId, plan, periodEnd);
-            if (status !== "active") {
-              await updateSubscriptionStatus(stripeSubId, status, periodEnd);
+            const plan = (priceId && PRICE_TO_PLAN[priceId]) || sub.metadata?.plan || "monthly";
+
+            if (subStatus === "trialing") {
+              const trialEnd = sub.trial_end;
+              const trialEndsAt = trialEnd && trialEnd > 0
+                ? new Date(trialEnd * 1000)
+                : new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+              await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubId, plan, null, trialEndsAt);
+            } else if (subStatus === "active") {
+              const rawEnd = sub.current_period_end;
+              const periodEnd = rawEnd && rawEnd > 0
+                ? new Date(rawEnd * 1000)
+                : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+              await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubId, plan, periodEnd, null);
+            } else if (subStatus === "canceled" || subStatus === "unpaid") {
+              await updateSubscriptionStatus(stripeSubId, "canceled");
+            } else if (subStatus === "past_due" || subStatus === "incomplete_expired") {
+              await updateSubscriptionStatus(stripeSubId, "expired");
             }
           }
           break;

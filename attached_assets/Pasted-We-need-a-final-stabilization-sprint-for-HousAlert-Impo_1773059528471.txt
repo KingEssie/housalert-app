@@ -1,0 +1,220 @@
+We need a final stabilization sprint for HousAlert.
+
+Important:
+- Do NOT redesign the app.
+- Do NOT change the visual style except where explicitly requested.
+- Focus only on the product logic and sync issues below.
+- We need to make the subscription + matches system stable and consistent.
+
+==================================================
+1. USE THE CORRECT REAL PRICING EVERYWHERE
+==================================================
+
+These are the real HousAlert prices and they must be the single source of truth everywhere:
+
+- 1 maand = €14,99
+- 2 maanden = €24,99
+- 3 maanden = €29,99
+
+Please verify and fix this everywhere:
+- paywall UI
+- selected plan mapping
+- Stripe price IDs
+- subscription metadata written to database
+- subscription detail page
+- renewal logic
+- any labels or summaries in app
+
+Important:
+Do not use any old €6,99 or other pricing anywhere anymore.
+
+==================================================
+2. IMPLEMENT THE CORRECT 14-DAY TRIAL LOGIC
+==================================================
+
+Required business logic:
+
+- user first selects one of the 3 plans:
+  - 1 maand (€14,99)
+  - 2 maanden (€24,99)
+  - 3 maanden (€29,99)
+
+- user enters payment method
+- Stripe subscription starts with a 14-day free trial
+- during those 14 days the user has full premium access
+- after 14 days, the chosen plan is charged automatically
+- if the user cancels before the trial ends, they pay nothing
+
+This means:
+- chosen plan must remain attached to the subscription during the trial
+- after trial, Stripe must charge the selected plan amount, not some default fallback plan
+
+Please verify:
+1. correct Stripe price is selected for each plan
+2. trial_period_days = 14 is configured correctly
+3. subscription metadata keeps the selected plan
+4. post-trial billing amount matches the chosen plan exactly
+
+==================================================
+3. SUBSCRIPTION STATUS STILL FALLS BACK / BECOMES INCORRECT
+==================================================
+
+Current issue:
+Sometimes the subscription appears active, but later the app shows expired again.
+This must stop.
+
+Required behavior:
+If a user has:
+- an active paid subscription
+OR
+- an active 14-day trial
+
+then the app must treat that user as premium.
+
+The app must NOT incorrectly show:
+- verlopen
+- no active subscription
+- locked matches
+
+Please trace and fix the full subscription state logic:
+
+Check all of this:
+1. Which DB fields define premium access?
+2. Which Stripe statuses are mapped to “premium access”?
+   - active
+   - trialing
+   - past_due
+   - canceled
+   - incomplete
+   - incomplete_expired
+3. Is the app incorrectly treating “trialing” as expired?
+4. Is some old expired field overriding current Stripe subscription state?
+5. Is webhook sync overwriting good data with stale data?
+6. Is frontend caching stale subscription info?
+7. Is there more than one subscription row per user causing conflicts?
+
+Required premium logic:
+- active = premium access
+- trialing = premium access
+- only truly expired/canceled/unpaid states should lose access
+
+==================================================
+4. START DATE MUST BE STORED AND SHOWN CORRECTLY
+==================================================
+
+Current issue:
+subscription page still misses the start date.
+
+Required:
+- store the correct subscription start date
+- if user is in trial, show the trial start date
+- also show next renewal / first charge date correctly
+- subscription detail page must no longer show empty start date
+
+Please verify which Stripe field is used:
+- subscription.created
+- current_period_start
+- trial_start
+- trial_end
+
+Use the correct field(s) consistently and persist them to Supabase.
+
+==================================================
+5. ONLY FUTURE MATCHES AFTER SUBSCRIPTION/TRIAL START
+==================================================
+
+Current issue:
+The user can see matches/listings that were already posted before they had premium access.
+That should not happen.
+
+Required business logic:
+The user should only receive matches that become available AFTER premium access started.
+
+Premium access start means:
+- trial start date, OR
+- active subscription start date
+
+Do NOT show historical old matches from before the user became premium.
+
+Required filtering logic:
+Only include matches/listings where listing.created_at >= premium_access_started_at
+
+Please verify:
+1. where premium access start is stored
+2. where listing created/published timestamp is stored
+3. how matches are selected for a user
+4. filter out older historical listings from match feeds and “recente matches”
+
+==================================================
+6. FIX MATCH IMAGES
+==================================================
+
+Current issue:
+Matches still show placeholder/black image blocks.
+
+Please trace:
+- scraper extraction
+- DB storage
+- API response field
+- frontend rendering field
+
+Especially verify current sources such as WG-Gesucht.
+
+Required:
+- if an image exists, it must render
+- if source image is unavailable, use a proper fallback
+- explain exactly why current images are missing
+
+==================================================
+7. FIX MATCH DETAIL / LISTING DETAIL RELIABLY
+==================================================
+
+Current issue:
+Some matches previously opened to “advertentie niet gevonden”.
+We need this fully stabilized.
+
+Required:
+- visible matches must open a valid detail page
+- detail page must use the correct identifier
+- if a listing is invalid/unavailable, it should not be shown as a normal active match
+
+Please verify:
+1. click route param
+2. match-to-listing relationship
+3. listing row existence
+4. source url mapping
+5. detail fetch endpoint
+
+==================================================
+8. HIDE “ABONNEMENT WIJZIGEN”
+==================================================
+
+For now:
+- hide/remove “Abonnement wijzigen”
+- keep subscription screen simple and safe
+
+Also keep:
+- betaalmethode beheren
+- auto-renew info
+- subscription details
+
+==================================================
+9. REPORT BACK
+==================================================
+
+After implementation, report back with:
+
+1. confirmation that the correct pricing is used everywhere:
+   - 1 maand €14,99
+   - 2 maanden €24,99
+   - 3 maanden €29,99
+2. exact trial logic now implemented
+3. exact premium access logic:
+   - which statuses count as premium
+4. exact root cause of subscription reverting to expired
+5. exact field used for subscription start date
+6. confirmation that only listings newer than premium_access_started_at are shown
+7. exact root cause of missing images
+8. exact root cause of match/detail issues
+9. files changed
+10. confirmation that a trialing user and an active user both have unlocked matches correctly

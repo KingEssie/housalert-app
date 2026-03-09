@@ -160,7 +160,7 @@ export default function PaywallPage() {
             Kies je abonnement
           </h1>
           <p className="text-[15px] text-[var(--yo-dark)]">
-            Start vandaag en ontvang direct meldingen voor nieuwe woningen.
+            Start met 14 dagen gratis proefperiode. Daarna automatisch verlengd.
           </p>
         </div>
 
@@ -241,11 +241,11 @@ export default function PaywallPage() {
                 Even geduld...
               </>
             ) : (
-              "Selecteer betaalmethode"
+              "Start gratis proefperiode"
             )}
           </Button>
           <p className="text-center text-[13px] text-[var(--yo-dark)] mt-3 opacity-60">
-            Veilig betalen via Stripe. Opzeggen kan altijd.
+            14 dagen gratis. Daarna automatisch verlengd. Opzeggen kan altijd.
           </p>
         </div>
       </div>

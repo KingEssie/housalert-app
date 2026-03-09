@@ -24,9 +24,9 @@ function getPlanLabel(plan: string | null | undefined): string {
 
 function getPriceLabel(plan: string | null | undefined): string {
   switch (plan) {
-    case "monthly": return "\u20AC6,99 / maand";
-    case "two_month": return "\u20AC5,99 / maand";
-    case "three_month": return "\u20AC4,99 / maand";
+    case "monthly": return "\u20AC14,99 / maand";
+    case "two_month": return "\u20AC24,99 / 2 maanden";
+    case "three_month": return "\u20AC29,99 / 3 maanden";
     default: return "\u2014";
   }
 }
@@ -50,6 +50,7 @@ export default function SubscriptionDetailPage() {
     plan: sub.plan,
     trial_ends_at: sub.trialEndsAt,
     current_period_ends_at: sub.currentPeriodEndsAt,
+    created_at: sub.created_at,
     isActive: sub.isActive,
     isTrial: sub.isTrial,
     isExpired: sub.isExpired,
@@ -63,9 +64,7 @@ export default function SubscriptionDetailPage() {
 
   const statusVariant = subscription?.isActive || subscription?.isTrial ? "success" : "secondary";
 
-  const startDate = subscription?.trial_ends_at
-    ? new Date(new Date(subscription.trial_ends_at).getTime() - 7 * 24 * 60 * 60 * 1000).toISOString()
-    : null;
+  const startDate = subscription?.created_at || null;
 
   const renewalDate = subscription?.current_period_ends_at || subscription?.trial_ends_at;
 

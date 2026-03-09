@@ -22,8 +22,8 @@ async function seedStripeProducts() {
 
   const plans = [
     { nickname: "monthly", unit_amount: 1499, interval: "month" as const, interval_count: 1 },
-    { nickname: "two_month", unit_amount: 1249, interval: "month" as const, interval_count: 1 },
-    { nickname: "three_month", unit_amount: 999, interval: "month" as const, interval_count: 1 },
+    { nickname: "two_month", unit_amount: 2499, interval: "month" as const, interval_count: 2 },
+    { nickname: "three_month", unit_amount: 2999, interval: "month" as const, interval_count: 3 },
   ];
 
   const priceIds: Record<string, string> = {};
