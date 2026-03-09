@@ -38,7 +38,10 @@ export default function ProfileDetailsPage() {
     const headers = { Authorization: `Bearer ${session.access_token}` };
 
     fetch("/api/profile-data", { headers })
-      .then(r => r.json())
+      .then(r => {
+        if (!r.ok) throw new Error(`Status ${r.status}`);
+        return r.json();
+      })
       .then(pd => {
         setProfileData(pd);
         setLoading(false);
@@ -66,7 +69,7 @@ export default function ProfileDetailsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <PageHeader title="Persoonlijke gegevens" onBack={() => navigate("/dashboard?tab=profiel")} />
+      <PageHeader title="Persoonlijke gegevens" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
       <div className="max-w-lg mx-auto">
         {loading ? (

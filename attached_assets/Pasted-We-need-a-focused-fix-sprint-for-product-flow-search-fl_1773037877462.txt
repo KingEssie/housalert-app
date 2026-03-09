@@ -1,0 +1,213 @@
+We need a focused fix sprint for product flow, search flow, account subpages, and subscription gating.
+
+Important:
+- Do NOT redesign branding, typography, spacing, or color system again unless explicitly described below.
+- Do NOT use small modal dialogs anymore for task/action flows or confirmation flows.
+- Full-screen pages only.
+- Fix root logic, navigation, and state handling.
+
+==================================================
+P0 — SUBSCRIPTION / MATCH / ACCOUNT LOGIC
+==================================================
+
+1. Home recent matches should NOT be shown for users without an active subscription.
+Current issue:
+A user without subscription still sees recent matches on the homepage.
+
+Required behavior:
+- If the user has NO active subscription:
+  - do NOT show recent matches cards
+  - show a clean empty state instead
+  - explain that matches become available after activating a subscription
+- If the user HAS an active subscription:
+  - only show valid real recent matches
+
+2. Matches page must not show blurred content anymore.
+Current issue:
+The matches page still allows scrolling blurred content behind the paywall.
+
+Required behavior:
+- If no active subscription:
+  - show a clean full-page empty/paywall state like the provided reference
+  - no blurred cards
+  - no scrolling underlying content
+  - CTA button to subscription page
+
+3. Subscription purchase flow is failing.
+Current issue:
+Trying to purchase a subscription shows an error.
+
+Required tasks:
+- trace the subscription purchase flow end-to-end
+- find root cause
+- fix plan selection → payment method → checkout
+- ensure it works for authenticated users
+- if auth/session is missing, handle it clearly instead of generic error
+
+4. Notification settings page is failing.
+Current issue:
+"Kon instellingen niet laden"
+
+Required tasks:
+- fix notification settings load logic
+- ensure settings page loads for the logged-in user
+- if settings row does not exist, create default settings automatically
+- make save work
+
+5. Personal details / account pages still fail in some cases.
+Required tasks:
+- fix the account subpages under the Account tab
+- ensure personal details pages load correctly
+- ensure save works correctly
+- no generic error state unless truly unrecoverable
+
+==================================================
+P1 — FULL-SCREEN FLOW RULES
+==================================================
+
+6. No small modals anymore for task/action flows.
+Current issue:
+"Rond je account af" and "Bereid je zoekopdracht voor" open small modal-style screens.
+
+Required behavior:
+- all these flows must open as proper full-screen pages
+- same for:
+  - delete search profile confirmation
+  - logout confirmation
+  - delete account confirmation
+  - cancel subscription confirmation
+
+7. Delete search profile must use full-screen confirmation page.
+No modal overlay.
+Use a dedicated full-screen confirmation screen.
+
+8. Add full-screen confirmation pages for:
+- logout
+- delete account
+- cancel subscription
+
+==================================================
+P1 — SEARCH FLOW STRUCTURE
+==================================================
+
+9. Search creation flow differs by context.
+
+A. Public onboarding flow (no account yet):
+Keep it as it is now.
+This onboarding flow should continue to have only:
+- Screen 1: Location
+- Screen 2: Requirements
+
+B. Logged-in user search profile flow:
+This must become a 4-screen flow.
+
+Required screens:
+Screen 1 — Locatie
+- Wijken / Radius / Reistijd
+- city input
+- map visible
+- selection state
+
+Screen 2 — Vereisten
+- minimum rent
+- maximum rent
+- number of bedrooms
+- surface area
+- furnished: yes / no / no preference
+
+Screen 3 — Extra eigenschappen
+- Balkon
+- Tuin
+- Bad
+
+Screen 4 — Woning types
+- all housing type options
+- large stacked toggles / segmented controls under each other like the provided reference
+- not cramped dropdown-like controls
+
+10. The logged-in search flow should NOT reuse the onboarding flow as-is.
+It must be its own structured multi-step flow.
+
+11. Search filter fields are currently too large / cramped.
+Refactor the logged-in 4-step flow so each screen only contains the relevant group of inputs.
+
+==================================================
+P1 — MAP / CTA VISIBILITY
+==================================================
+
+12. The "Volgende" button still disappears behind the map.
+This still happens in Chrome mobile.
+
+Required fix:
+- make bottom CTA always visible
+- ensure map never overlays the CTA
+- support mobile Chrome and Safari
+- use safe spacing / sticky footer / constrained map height as needed
+
+==================================================
+P1 — SEARCH PROFILE SAVE / POST-SAVE FLOW
+==================================================
+
+13. After creating a search profile, stay on Filters page.
+Current issue:
+After creating a search profile, the app redirects unexpectedly to Home and sometimes shows a wrong match-related state.
+
+Required behavior:
+- after successfully creating a search profile:
+  - remain in the Filters/search area
+  - show success state there
+  - do NOT redirect to Home automatically
+
+14. Search profiles should always be allowed without subscription.
+Rule:
+- users can create and edit search profiles without paid subscription
+- they just do not receive matches until subscription is active
+
+15. If expected matches per week = 0, still allow saving the search profile.
+No blocking.
+But explain clearly:
+"This search profile is currently expected to receive few or no matches."
+
+==================================================
+P1 — ACCOUNT TAB BACK NAVIGATION
+==================================================
+
+16. Back navigation from account subpages is wrong.
+Current issue:
+When I open a page from the Account tab and go back, it returns to "Over jou" instead of "Account".
+
+Required fix:
+- preserve the correct originating tab/section
+- if user entered from Account, back must return to Account
+- not Over jou
+
+==================================================
+P2 — CONTENT / EMPTY STATES
+==================================================
+
+17. Homepage recent matches empty state
+If no subscription or no valid matches:
+show proper empty state instead of broken cards.
+
+18. Empty state image issue
+There is a broken image / placeholder icon issue on empty state screens.
+Fix missing asset references and use a proper empty state illustration or no image.
+
+==================================================
+DELIVERABLES
+==================================================
+
+After implementation, report back with:
+
+1. Which files changed
+2. Which flows were converted from modal to full-screen
+3. How subscription gating now works on:
+   - homepage recent matches
+   - matches page
+4. How the 4-step logged-in search flow is structured
+5. How the public onboarding flow remains separate
+6. How back navigation now preserves Account context
+7. Root cause of subscription purchase error
+8. Root cause of notification settings load error
+9. Root cause of personal details/account page errors
+10. Confirmation that search profile creation no longer redirects to Home automatically

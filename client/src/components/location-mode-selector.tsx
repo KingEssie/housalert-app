@@ -112,9 +112,10 @@ interface Props {
   onChange: (data: LocationData) => void;
   segmentedTabs?: boolean;
   alwaysShowMap?: boolean;
+  mapMaxHeight?: string;
 }
 
-export default function LocationModeSelector({ value, onChange, segmentedTabs, alwaysShowMap }: Props) {
+export default function LocationModeSelector({ value, onChange, segmentedTabs, alwaysShowMap, mapMaxHeight }: Props) {
   const [cityQuery, setCityQuery] = useState(value.place?.city_name ?? "");
   const [cityResults, setCityResults] = useState<NominatimResult[]>([]);
   const [cityOpen, setCityOpen] = useState(false);
@@ -533,7 +534,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       )}
 
       {showMap && (
-        <div className="rounded-lg overflow-hidden border border-[var(--yo-divider)] h-[200px]" data-testid="map-preview">
+        <div className="rounded-lg overflow-hidden border border-[var(--yo-divider)]" style={{ height: "200px", maxHeight: mapMaxHeight || "none" }} data-testid="map-preview">
           <MapContainer
             center={hasLocation ? [mapLat!, mapLng!] : [defaultLat, defaultLng]}
             zoom={hasLocation ? (value.tab === "radius" ? radiusToZoom(value.radiusKm) : 11) : defaultZoom}

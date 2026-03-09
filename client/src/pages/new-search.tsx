@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
@@ -21,19 +21,15 @@ import {
   Sparkles,
   AlertCircle,
   Search,
-  CheckCircle2,
-  Shield,
-  Zap,
-  Bell,
-  Crown,
   Sofa,
   Building,
   ChevronDown,
   ListChecks,
+  Check,
 } from "lucide-react";
 
 const MAX_PROFILES = 4;
-const TOTAL_STEPS = 3;
+const TOTAL_STEPS = 4;
 
 const BEDROOM_OPTIONS = [
   { value: 0, label: "Geen voorkeur" },
@@ -67,20 +63,20 @@ const DEFAULT_BERLIN: LocationData = {
 
 const RENT_OPTIONS = [
   { value: "", label: "Geen voorkeur" },
-  { value: "200", label: "€200" },
-  { value: "300", label: "€300" },
-  { value: "400", label: "€400" },
-  { value: "500", label: "€500" },
-  { value: "600", label: "€600" },
-  { value: "700", label: "€700" },
-  { value: "800", label: "€800" },
-  { value: "900", label: "€900" },
-  { value: "1000", label: "€1.000" },
-  { value: "1200", label: "€1.200" },
-  { value: "1500", label: "€1.500" },
-  { value: "2000", label: "€2.000" },
-  { value: "2500", label: "€2.500" },
-  { value: "3000", label: "€3.000" },
+  { value: "200", label: "\u20AC200" },
+  { value: "300", label: "\u20AC300" },
+  { value: "400", label: "\u20AC400" },
+  { value: "500", label: "\u20AC500" },
+  { value: "600", label: "\u20AC600" },
+  { value: "700", label: "\u20AC700" },
+  { value: "800", label: "\u20AC800" },
+  { value: "900", label: "\u20AC900" },
+  { value: "1000", label: "\u20AC1.000" },
+  { value: "1200", label: "\u20AC1.200" },
+  { value: "1500", label: "\u20AC1.500" },
+  { value: "2000", label: "\u20AC2.000" },
+  { value: "2500", label: "\u20AC2.500" },
+  { value: "3000", label: "\u20AC3.000" },
 ];
 
 const FURNISHED_OPTIONS = [
@@ -90,12 +86,12 @@ const FURNISHED_OPTIONS = [
 ];
 
 const PROPERTY_TYPE_OPTIONS = [
-  { value: "appartement", label: "Appartement" },
-  { value: "huis", label: "Huis" },
-  { value: "studio", label: "Studio" },
-  { value: "kamer", label: "Kamer" },
-  { value: "woonboot", label: "Woonboot" },
-  { value: "overig", label: "Overig" },
+  { value: "appartement", label: "Appartement", desc: "Flat of bovenwoning" },
+  { value: "huis", label: "Huis", desc: "Eengezinswoning of rijtjeshuis" },
+  { value: "studio", label: "Studio", desc: "Eenkamerwoning" },
+  { value: "kamer", label: "Kamer", desc: "Kamer in gedeelde woning" },
+  { value: "woonboot", label: "Woonboot", desc: "Wonen op het water" },
+  { value: "overig", label: "Overig", desc: "Andere woningtypes" },
 ];
 
 const EXTRA_FEATURE_OPTIONS = [
@@ -171,9 +167,7 @@ export default function NewSearchPage() {
   const canProceed = (): boolean => {
     switch (step) {
       case 1: return isLocationValid(locationData);
-      case 2: return true;
-      case 3: return true;
-      default: return false;
+      default: return true;
     }
   };
 
@@ -247,7 +241,7 @@ export default function NewSearchPage() {
       queryClient.invalidateQueries({ queryKey: ["/search-profiles"] });
       queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
       toast({ title: "Zoekopdracht aangemaakt!", description: "Je ontvangt nu matches." });
-      navigate("/dashboard");
+      navigate("/dashboard?tab=filters");
     } catch (err: any) {
       console.error("[new-search] Save failed:", err);
       toast({
@@ -296,23 +290,20 @@ export default function NewSearchPage() {
     );
   }
 
+  const perWeek = estimateQuery.data?.perWeekEstimate ?? 0;
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <WizardHeader step={step} total={TOTAL_STEPS} onBack={goBack} />
 
       <main className="flex-1 w-full max-w-lg mx-auto px-5 pt-5 pb-32">
         {step === 1 && <Step1Location locationData={locationData} setLocationData={setLocationData} />}
-        {step === 2 && <Step2Filters filters={filters} updateFilters={updateFilters} />}
-        {step === 3 && (
-          <Step3Subscription
-            cityName={cityForProfile}
-            estimate={estimateQuery.data}
-            estimateLoading={estimateQuery.isLoading}
-          />
-        )}
+        {step === 2 && <Step2Requirements filters={filters} updateFilters={updateFilters} />}
+        {step === 3 && <Step3ExtraFeatures filters={filters} updateFilters={updateFilters} />}
+        {step === 4 && <Step4PropertyTypes filters={filters} updateFilters={updateFilters} perWeek={perWeek} estimateLoading={estimateQuery.isLoading} />}
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-[var(--yo-divider)] z-20">
+      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-[var(--yo-divider)] z-50">
         <div className="max-w-lg mx-auto px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] flex gap-3">
           {step > 1 && (
             <Button
@@ -372,7 +363,7 @@ function Step1Location({
     <div className="space-y-5">
       <div>
         <h2 className="text-page-title mb-1.5" data-testid="text-step-title">
-          Selecteer locatie
+          Locatie
         </h2>
         <p className="text-subtitle">
           Kies een methode en configureer je zoekgebied.
@@ -386,6 +377,7 @@ function Step1Location({
             onChange={setLocationData}
             segmentedTabs
             alwaysShowMap
+            mapMaxHeight="40vh"
           />
         </div>
       </div>
@@ -393,24 +385,21 @@ function Step1Location({
   );
 }
 
-function Step2Filters({
+function Step2Requirements({
   filters,
   updateFilters,
 }: {
   filters: FilterData;
   updateFilters: (partial: Partial<FilterData>) => void;
 }) {
-  const toggleArrayItem = (arr: string[], item: string) =>
-    arr.includes(item) ? arr.filter(v => v !== item) : [...arr, item];
-
   return (
     <div className="space-y-5">
       <div>
         <h2 className="text-page-title mb-1.5" data-testid="text-step-title">
-          Zoekcriteria
+          Vereisten
         </h2>
         <p className="text-subtitle">
-          Stel je budget en woningwensen in.
+          Stel je budget en basiswensen in.
         </p>
       </div>
 
@@ -536,179 +525,148 @@ function Step2Filters({
             })}
           </div>
         </div>
-
-        <div className="h-px bg-[var(--yo-divider)]" />
-
-        <div>
-          <label className="text-[15px] font-bold text-[var(--yo-dark)] mb-2.5 flex items-center gap-2">
-            <Building className="w-4 h-4 text-[var(--yo-teal)]" />
-            Woningtype
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {PROPERTY_TYPE_OPTIONS.map((opt) => {
-              const selected = filters.propertyTypes.includes(opt.value);
-              return (
-                <button
-                  key={opt.value}
-                  onClick={() => updateFilters({ propertyTypes: toggleArrayItem(filters.propertyTypes, opt.value) })}
-                  className={`px-4 py-2.5 rounded-lg text-[14px] font-medium transition-all ${
-                    selected
-                      ? "bg-[var(--yo-teal)] text-black shadow-sm"
-                      : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
-                  }`}
-                  data-testid={`option-type-${opt.value}`}
-                >
-                  {opt.label}
-                </button>
-              );
-            })}
-          </div>
-          {filters.propertyTypes.length === 0 && (
-            <p className="text-[12px] text-[var(--yo-dark)] mt-1.5 opacity-60">Geen selectie = alle types</p>
-          )}
-        </div>
-
-        <div className="h-px bg-[var(--yo-divider)]" />
-
-        <div>
-          <label className="text-[15px] font-bold text-[var(--yo-dark)] mb-2.5 flex items-center gap-2">
-            <ListChecks className="w-4 h-4 text-[var(--yo-teal)]" />
-            Extra eigenschappen
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {EXTRA_FEATURE_OPTIONS.map((opt) => {
-              const selected = filters.extraFeatures.includes(opt.value);
-              return (
-                <button
-                  key={opt.value}
-                  onClick={() => updateFilters({ extraFeatures: toggleArrayItem(filters.extraFeatures, opt.value) })}
-                  className={`px-4 py-2.5 rounded-lg text-[14px] font-medium transition-all ${
-                    selected
-                      ? "bg-[var(--yo-teal)] text-black shadow-sm"
-                      : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
-                  }`}
-                  data-testid={`option-feature-${opt.value}`}
-                >
-                  {opt.label}
-                </button>
-              );
-            })}
-          </div>
-          {filters.extraFeatures.length === 0 && (
-            <p className="text-[12px] text-[var(--yo-dark)] mt-1.5 opacity-60">Geen selectie = alle eigenschappen</p>
-          )}
-        </div>
       </div>
     </div>
   );
 }
 
-function Step3Subscription({
-  cityName,
-  estimate,
-  estimateLoading,
+function Step3ExtraFeatures({
+  filters,
+  updateFilters,
 }: {
-  cityName: string;
-  estimate: any;
-  estimateLoading: boolean;
+  filters: FilterData;
+  updateFilters: (partial: Partial<FilterData>) => void;
 }) {
-  const perWeek = estimate?.perWeekEstimate ?? 0;
-  const last7d = estimate?.last7dCount ?? 0;
+  const toggleFeature = (val: string) => {
+    const arr = filters.extraFeatures;
+    updateFilters({ extraFeatures: arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val] });
+  };
 
   return (
     <div className="space-y-5">
       <div>
         <h2 className="text-page-title mb-1.5" data-testid="text-step-title">
-          Klaar om te starten
+          Extra eigenschappen
         </h2>
         <p className="text-subtitle">
-          Bekijk je verwachte resultaten en activeer je zoekopdracht.
+          Selecteer gewenste voorzieningen. Overslaan kan ook.
         </p>
       </div>
 
-      <div className="bg-gradient-to-br from-[var(--yo-teal)] to-[var(--yo-teal-dark)] rounded-lg p-6 text-white shadow-[0_4px_24px_rgba(0,0,0,0.3)]" data-testid="card-estimate-hero">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-11 h-11 rounded-lg bg-white/20 flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-white" />
-          </div>
-          <p className="text-[13px] font-semibold text-white/80 uppercase tracking-wide">Verwachte resultaten</p>
-        </div>
-
-        {estimateLoading ? (
-          <div className="space-y-3">
-            <div className="h-8 bg-white/20 rounded-lg w-48 animate-pulse" />
-            <div className="h-4 bg-white/20 rounded w-56 animate-pulse" />
-          </div>
-        ) : (
-          <>
-            <p className="text-[20px] sm:text-[22px] font-bold leading-snug mb-1" data-testid="text-estimate-sentence">
-              Met deze zoekopdracht kun je <span className="text-white text-[28px] sm:text-[32px] font-extrabold">{perWeek}</span> matches per week verwachten.
-            </p>
-            <p className="text-[14px] text-white/70 mt-2">
-              {last7d} woningen gevonden in de afgelopen 7 dagen in {cityName || "je zoekgebied"}
-            </p>
-          </>
-        )}
-      </div>
-
-      <div className="bg-white rounded-lg shadow-[0_2px_16px_rgba(0,0,0,0.05)] p-5 space-y-4 border border-[var(--yo-divider)]" data-testid="card-benefits">
-        <h3 className="text-[16px] font-bold text-[var(--yo-dark)] uppercase tracking-wide">Wat je krijgt</h3>
-        <BenefitRow icon={Zap} title="Razendsnelle meldingen" desc="Ontvang nieuwe woningen binnen minuten na publicatie." />
-        <BenefitRow icon={Bell} title="Meerdere kanalen" desc="Meldingen via e-mail, WhatsApp of SMS — jij kiest." />
-        <BenefitRow icon={Shield} title="Betrouwbare data" desc="We scannen 50+ woningplatformen automatisch." />
-        <BenefitRow icon={Crown} title="Tot 4 zoekopdrachten" desc="Zoek in meerdere steden of met verschillende criteria." />
-      </div>
-
-      <div className="bg-white rounded-lg shadow-[0_2px_16px_rgba(0,0,0,0.05)] p-5 border border-[var(--yo-divider)]" data-testid="card-social-proof">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="flex -space-x-2">
-            {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                className="w-8 h-8 rounded-full bg-[var(--yo-chip-bg)] border-2 border-white flex items-center justify-center"
-              >
-                <span className="text-[11px] font-bold text-[var(--yo-teal)]">
-                  {["MK", "JR", "TS"][i]}
-                </span>
+      <div className="flex flex-col gap-3">
+        {EXTRA_FEATURE_OPTIONS.map((opt) => {
+          const selected = filters.extraFeatures.includes(opt.value);
+          return (
+            <button
+              key={opt.value}
+              onClick={() => toggleFeature(opt.value)}
+              className={`w-full flex items-center gap-4 px-5 py-4 rounded-lg border-2 transition-all text-left ${
+                selected
+                  ? "border-[var(--yo-teal)] bg-[var(--yo-teal)]/5"
+                  : "border-[var(--yo-divider)] bg-white"
+              }`}
+              data-testid={`option-feature-${opt.value}`}
+            >
+              <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
+                selected
+                  ? "bg-[var(--yo-teal)] border-[var(--yo-teal)]"
+                  : "border-[var(--yo-divider)]"
+              }`}>
+                {selected && <Check className="w-3.5 h-3.5 text-black" />}
               </div>
-            ))}
-          </div>
-          <p className="text-[13px] text-[var(--yo-dark)]">
-            <span className="font-semibold text-[var(--yo-dark)]">2.400+</span> actieve zoekers
-          </p>
-        </div>
-        <p className="text-[14px] text-[var(--yo-dark)] leading-relaxed">
-          Sluit je aan bij duizenden gebruikers die al sneller een woning vinden met Stekkies.
-        </p>
+              <span className="text-[16px] font-medium text-[var(--yo-dark)]">{opt.label}</span>
+            </button>
+          );
+        })}
       </div>
 
-      <div className="bg-[var(--yo-chip-bg)] rounded-lg p-5 border border-[var(--yo-chip-bg)]" data-testid="card-guarantee">
-        <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-lg bg-[var(--yo-teal)] flex items-center justify-center flex-shrink-0 mt-0.5">
-            <CheckCircle2 className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <p className="text-[15px] font-bold text-[var(--yo-dark)] mb-1">Gratis starten</p>
-            <p className="text-[14px] text-[var(--yo-dark)] leading-relaxed">
-              Je eerste zoekopdracht is gratis. Geen creditcard nodig. Upgrade later als je meer wilt.
-            </p>
-          </div>
-        </div>
-      </div>
+      {filters.extraFeatures.length === 0 && (
+        <p className="text-[13px] text-[var(--yo-dark)] opacity-60 text-center">
+          Geen selectie = alle eigenschappen worden meegenomen
+        </p>
+      )}
     </div>
   );
 }
 
-function BenefitRow({ icon: Icon, title, desc }: { icon: typeof Zap; title: string; desc: string }) {
+function Step4PropertyTypes({
+  filters,
+  updateFilters,
+  perWeek,
+  estimateLoading,
+}: {
+  filters: FilterData;
+  updateFilters: (partial: Partial<FilterData>) => void;
+  perWeek: number;
+  estimateLoading: boolean;
+}) {
+  const toggleType = (val: string) => {
+    const arr = filters.propertyTypes;
+    updateFilters({ propertyTypes: arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val] });
+  };
+
   return (
-    <div className="flex items-start gap-3.5">
-      <div className="w-9 h-9 rounded-lg bg-[var(--yo-chip-bg)] flex items-center justify-center flex-shrink-0 mt-0.5">
-        <Icon className="w-4 h-4 text-[var(--yo-teal)]" />
+    <div className="space-y-5">
+      <div>
+        <h2 className="text-page-title mb-1.5" data-testid="text-step-title">
+          Woningtypes
+        </h2>
+        <p className="text-subtitle">
+          Welk type woning zoek je? Selecteer een of meerdere.
+        </p>
       </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-[14px] font-semibold text-[var(--yo-dark)]">{title}</p>
-        <p className="text-[13px] text-[var(--yo-dark)] leading-relaxed">{desc}</p>
+
+      <div className="flex flex-col gap-3">
+        {PROPERTY_TYPE_OPTIONS.map((opt) => {
+          const selected = filters.propertyTypes.includes(opt.value);
+          return (
+            <button
+              key={opt.value}
+              onClick={() => toggleType(opt.value)}
+              className={`w-full flex items-center gap-4 px-5 py-4 rounded-lg border-2 transition-all text-left ${
+                selected
+                  ? "border-[var(--yo-teal)] bg-[var(--yo-teal)]/5"
+                  : "border-[var(--yo-divider)] bg-white"
+              }`}
+              data-testid={`option-type-${opt.value}`}
+            >
+              <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
+                selected
+                  ? "bg-[var(--yo-teal)] border-[var(--yo-teal)]"
+                  : "border-[var(--yo-divider)]"
+              }`}>
+                {selected && <Check className="w-3.5 h-3.5 text-black" />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[16px] font-medium text-[var(--yo-dark)]">{opt.label}</p>
+                <p className="text-[13px] text-[var(--yo-dark)] opacity-60">{opt.desc}</p>
+              </div>
+            </button>
+          );
+        })}
       </div>
+
+      {filters.propertyTypes.length === 0 && (
+        <p className="text-[13px] text-[var(--yo-dark)] opacity-60 text-center">
+          Geen selectie = alle woningtypes worden meegenomen
+        </p>
+      )}
+
+      {!estimateLoading && (
+        <div className="bg-[var(--yo-chip-bg)] rounded-lg p-4 flex items-start gap-3" data-testid="card-estimate-inline">
+          <Sparkles className="w-5 h-5 text-[var(--yo-teal)] flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-[14px] font-semibold text-[var(--yo-dark)]">
+              Verwacht: ~{perWeek} matches per week
+            </p>
+            {perWeek === 0 && (
+              <p className="text-[13px] text-[var(--yo-dark)] opacity-70 mt-1">
+                Dit zoekprofiel ontvangt momenteel naar verwachting weinig of geen matches. Je kunt het altijd later aanpassen.
+              </p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

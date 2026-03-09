@@ -32,6 +32,7 @@ import OnboardingEmbedPage from "@/pages/onboarding-embed";
 import ContinueDraftPage from "@/pages/continue-draft";
 import AuthCallbackPage from "@/pages/auth-callback";
 import { DocumentenGuidePage, SchufaGuidePage, ZoekstrategieGuidePage, NetwerkGuidePage } from "@/pages/guide";
+import DeleteAccountPage from "@/pages/delete-account";
 
 function ProtectedRoute({ component: Component, skipOnboardingCheck }: { component: React.ComponentType; skipOnboardingCheck?: boolean }) {
   const { user, loading } = useAuth();
@@ -92,6 +93,7 @@ function Router() {
       <Route path="/account/subscription/cancelled" component={() => <ProtectedRoute component={SubscriptionCancelledPage} />} />
       <Route path="/account/payment-method" component={() => <ProtectedRoute component={PaymentMethodPage} />} />
       <Route path="/account/change-password" component={() => <ProtectedRoute component={ChangePasswordPage} />} />
+      <Route path="/account/delete" component={() => <ProtectedRoute component={DeleteAccountPage} />} />
       <Route path="/impressum" component={ImpressumPage} />
       <Route path="/datenschutz" component={DatenschutzPage} />
       <Route path="/terms" component={TermsPage} />

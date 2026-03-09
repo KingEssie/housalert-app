@@ -77,7 +77,7 @@ export default function ChangePasswordPage() {
   if (success) {
     return (
       <div className="min-h-screen bg-background" data-testid="page-password-success">
-        <PageHeader title="Wachtwoord wijzigen" onBack={() => navigate("/dashboard?tab=profiel")} />
+        <PageHeader title="Wachtwoord wijzigen" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
         <div className="max-w-xl mx-auto p-4 pb-8">
           <div className="bg-card rounded-lg border p-6 text-center" style={{ borderColor: "var(--yo-divider)" }}>
             <div className="flex items-center justify-center mb-5">
@@ -92,7 +92,7 @@ export default function ChangePasswordPage() {
               Je kunt nu inloggen met je nieuwe wachtwoord.
             </p>
             <button
-              onClick={() => navigate("/dashboard?tab=profiel")}
+              onClick={() => navigate("/dashboard?tab=profiel&sub=account")}
               className="w-full h-[48px] bg-primary text-primary-foreground rounded-lg font-semibold text-[15px] transition-colors"
               data-testid="button-back-to-account"
             >
@@ -106,7 +106,7 @@ export default function ChangePasswordPage() {
 
   return (
     <div className="min-h-screen bg-background" data-testid="page-change-password">
-      <PageHeader title="Wachtwoord wijzigen" onBack={() => navigate("/dashboard?tab=profiel")} />
+      <PageHeader title="Wachtwoord wijzigen" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
       <div className="max-w-xl mx-auto p-4 pb-8">
         <div className="bg-card rounded-lg border p-5 space-y-5" style={{ borderColor: "var(--yo-divider)" }}>

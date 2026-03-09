@@ -39,7 +39,10 @@ export default function NotificationSettingsPage() {
     fetch("/api/notifications/settings", {
       headers: { Authorization: `Bearer ${session.access_token}` },
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        return res.json();
+      })
       .then((data: NotificationSettings) => {
         setSettings(data);
         setPhoneInput(data.phone_e164 ?? "");
@@ -124,7 +127,7 @@ export default function NotificationSettingsPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <PageHeader title="Meldingen" onBack={() => navigate("/dashboard?tab=profiel")} />
+      <PageHeader title="Meldingen" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
       <main className="flex-1 max-w-xl mx-auto w-full px-5 py-6 flex flex-col gap-6">
         <div>
@@ -229,7 +232,7 @@ export default function NotificationSettingsPage() {
               </Button>
               <Button
                 variant="outline"
-                onClick={() => navigate("/dashboard?tab=profiel")}
+                onClick={() => navigate("/dashboard?tab=profiel&sub=account")}
                 className="h-[48px] rounded-lg text-[15px] font-semibold"
                 data-testid="button-cancel"
               >

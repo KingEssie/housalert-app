@@ -43,6 +43,7 @@ import {
   ImageIcon,
   Zap,
   Camera,
+  ArrowLeft,
 } from "lucide-react";
 import { AccountCompletionCard, SearchPreparationCard, TaskModal, PrepTaskModal } from "@/components/profile-strength";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
@@ -452,7 +453,9 @@ function ProfileCard({
   );
 }
 
-function RecenteMatchesSection({ accessToken, setActiveTab, subscription }: { accessToken: string | undefined; setActiveTab: (tab: TabKey) => void; subscription: { isTrial: boolean; isExpired: boolean; isActive: boolean; trialEndsAt: string | null } }) {
+function RecenteMatchesSection({ accessToken, setActiveTab, subscription, navigate }: { accessToken: string | undefined; setActiveTab: (tab: TabKey) => void; subscription: { isTrial: boolean; isExpired: boolean; isActive: boolean; trialEndsAt: string | null }; navigate: (path: string) => void }) {
+  const hasActiveSub = subscription.isActive || subscription.isTrial;
+
   const { data: matches, isLoading } = useQuery<ApiMatch[]>({
     queryKey: ["/api/matches", "recent-5"],
     queryFn: async () => {
@@ -464,8 +467,31 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription }: { ac
       const valid = all.filter(m => m.title && m.url && m.listing_id);
       return valid.slice(0, 5);
     },
-    enabled: !!accessToken,
+    enabled: !!accessToken && hasActiveSub,
   });
+
+  if (!hasActiveSub) {
+    return (
+      <div className="flex flex-col gap-3" data-testid="section-recente-matches-empty">
+        <div className="flex items-center gap-2">
+          <Heart className="w-4 h-4 text-[var(--yo-dark)]" />
+          <h2 className="text-section-title">Recente matches</h2>
+        </div>
+        <div className="bg-[var(--yo-surface)] rounded-lg p-5 text-center">
+          <p className="text-[14px] text-[var(--yo-dark)] mb-3">
+            Matches worden zichtbaar zodra je een abonnement activeert.
+          </p>
+          <button
+            onClick={() => navigate("/paywall")}
+            className="h-[44px] px-6 rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[14px] font-semibold transition-colors"
+            data-testid="button-activate-sub-matches"
+          >
+            Bekijk abonnementen
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -487,9 +513,7 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription }: { ac
         </div>
         <div className="bg-[var(--yo-surface)] rounded-lg p-5 text-center">
           <p className="text-[14px] text-[var(--yo-dark)]">
-            {subscription.isActive || subscription.isTrial
-              ? "Zodra je eerste matches binnenkomen, zie je ze hier."
-              : "Activeer een abonnement om matches te ontvangen."}
+            Zodra je eerste matches binnenkomen, zie je ze hier.
           </p>
         </div>
       </div>
@@ -723,7 +747,7 @@ function HomeTab({
       <AccountCompletionCard onTaskClick={handleAccountTaskClick} />
       <SearchPreparationCard onTaskClick={handlePrepTaskClick} />
 
-      <RecenteMatchesSection accessToken={accessToken} setActiveTab={setActiveTab} subscription={subscription} />
+      <RecenteMatchesSection accessToken={accessToken} setActiveTab={setActiveTab} subscription={subscription} navigate={navigate} />
 
       {activeTaskModal && (
         <TaskModal
@@ -986,37 +1010,49 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
   );
 }
 
-function DeleteConfirmDialog({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) {
+function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) {
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-5" onClick={onCancel}>
-      <div
-        className="bg-white w-full max-w-sm rounded-lg shadow-[0_4px_24px_rgba(0,0,0,0.15)] overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="p-6">
-          <h2 className="text-[18px] font-bold text-[var(--yo-dark)] mb-2" data-testid="text-delete-title">Verwijder zoekopdracht</h2>
-          <p className="text-[14px] text-[var(--yo-dark)]" data-testid="text-delete-body">
-            Weet je zeker dat je je zoekopdracht wilt verwijderen? Je kunt altijd een nieuwe toevoegen.
-          </p>
-        </div>
-        <div className="flex border-t border-[var(--yo-divider)]">
+    <div className="fixed inset-0 z-50 bg-white flex flex-col">
+      <header className="sticky top-0 z-10 bg-white border-b border-[var(--yo-divider)]">
+        <div className="max-w-lg mx-auto flex items-center h-[56px] px-5">
           <button
             onClick={onCancel}
-            className="flex-1 h-[52px] text-[15px] font-semibold text-[var(--yo-dark)] hover:bg-[var(--yo-surface)] transition-colors"
-            data-testid="button-delete-cancel"
+            className="w-9 h-9 rounded-full bg-[var(--yo-surface)] flex items-center justify-center mr-3 active:scale-95 transition-transform"
+            data-testid="button-delete-back"
           >
-            Nee
+            <ArrowLeft className="w-4 h-4 text-[var(--yo-dark)]" />
           </button>
-          <div className="w-px bg-[var(--yo-divider)]" />
+          <h1 className="text-[17px] font-bold text-[var(--yo-dark)] flex-1 uppercase tracking-wide">Verwijder zoekopdracht</h1>
+        </div>
+      </header>
+
+      <main className="flex-1 flex flex-col items-center justify-center px-6">
+        <div className="w-16 h-16 rounded-2xl bg-[var(--yo-pink-light)] flex items-center justify-center mb-6">
+          <Trash2 className="w-8 h-8 text-[var(--yo-pink)]" />
+        </div>
+        <h2 className="text-[22px] font-bold text-[var(--yo-dark)] mb-3 text-center" data-testid="text-delete-title">
+          Zoekopdracht verwijderen?
+        </h2>
+        <p className="text-[15px] text-[var(--yo-dark)] text-center max-w-[320px] mb-10 leading-relaxed" data-testid="text-delete-body">
+          Weet je zeker dat je je zoekopdracht wilt verwijderen? Je kunt altijd een nieuwe toevoegen.
+        </p>
+        <div className="w-full max-w-[320px] flex flex-col gap-3">
           <button
             onClick={onConfirm}
-            className="flex-1 h-[52px] text-[15px] font-semibold text-[var(--yo-pink)] hover:bg-[var(--yo-pink-light)] transition-colors"
+            className="w-full h-[56px] rounded-lg bg-[var(--yo-pink)] text-white text-[16px] font-bold transition-colors hover:opacity-90"
             data-testid="button-delete-confirm"
           >
-            Ja
+            Ja, verwijderen
+          </button>
+          <button
+            onClick={onCancel}
+            className="w-full h-[56px] rounded-lg border border-[var(--yo-divider)] text-[var(--yo-dark)] text-[16px] font-bold hover:bg-[var(--yo-surface)] transition-colors"
+            data-testid="button-delete-cancel"
+          >
+            Nee, behouden
           </button>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
@@ -1119,7 +1155,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
       )}
 
       {confirmDeleteId && (
-        <DeleteConfirmDialog
+        <DeleteConfirmScreen
           onCancel={() => setConfirmDeleteId(null)}
           onConfirm={() => {
             setDeletingId(confirmDeleteId);
@@ -1209,9 +1245,10 @@ function AccountSettingsRow({ label, subtext, onClick, trailing }: { label: stri
   );
 }
 
-function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null }; setActiveTab: (tab: TabKey) => void }) {
+function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initialSubTab }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null }; setActiveTab: (tab: TabKey) => void; initialSubTab?: ProfileSubTab }) {
   const [signingOut, setSigningOut] = useState(false);
-  const [profileSubTab, setProfileSubTab] = useState<ProfileSubTab>("over");
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [profileSubTab, setProfileSubTab] = useState<ProfileSubTab>(initialSubTab || "over");
   const [showPhotoSheet, setShowPhotoSheet] = useState(false);
   const [photoUploading, setPhotoUploading] = useState(false);
   const { toast } = useToast();
@@ -1537,12 +1574,20 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
               />
               <div className="h-px bg-[var(--yo-divider)] mx-5" />
               <button
-                onClick={handleSignOut}
+                onClick={() => setShowLogoutConfirm(true)}
                 disabled={signingOut}
                 className={`w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[var(--yo-surface)] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
                 data-testid="button-logout"
               >
                 <p className="text-[15px] font-[500] text-[var(--yo-pink)] flex-1">{signingOut ? "Uitloggen..." : "Uitloggen"}</p>
+              </button>
+              <div className="h-px bg-[var(--yo-divider)] mx-5" />
+              <button
+                onClick={() => navigate("/account/delete")}
+                className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[var(--yo-surface)] transition-colors"
+                data-testid="button-delete-account"
+              >
+                <p className="text-[15px] font-[500] text-[var(--yo-pink)] flex-1">Account verwijderen</p>
               </button>
             </div>
 
@@ -1568,6 +1613,51 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
           onRemove={handlePhotoRemove}
         />
       )}
+
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-50 bg-white flex flex-col">
+          <header className="sticky top-0 z-10 bg-white border-b border-[var(--yo-divider)]">
+            <div className="max-w-lg mx-auto flex items-center h-[56px] px-5">
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                className="w-9 h-9 rounded-full bg-[var(--yo-surface)] flex items-center justify-center mr-3 active:scale-95 transition-transform"
+                data-testid="button-logout-back"
+              >
+                <ArrowLeft className="w-4 h-4 text-[var(--yo-dark)]" />
+              </button>
+              <h1 className="text-[17px] font-bold text-[var(--yo-dark)] flex-1 uppercase tracking-wide">Uitloggen</h1>
+            </div>
+          </header>
+          <main className="flex-1 flex flex-col items-center justify-center px-6">
+            <div className="w-16 h-16 rounded-2xl bg-[var(--yo-chip-bg)] flex items-center justify-center mb-6">
+              <LogOut className="w-8 h-8 text-[var(--yo-dark)]" />
+            </div>
+            <h2 className="text-[22px] font-bold text-[var(--yo-dark)] mb-3 text-center" data-testid="text-logout-title">
+              Wil je uitloggen?
+            </h2>
+            <p className="text-[15px] text-[var(--yo-dark)] text-center max-w-[320px] mb-10 leading-relaxed">
+              Je kunt op elk moment weer inloggen met je e-mailadres en wachtwoord.
+            </p>
+            <div className="w-full max-w-[320px] flex flex-col gap-3">
+              <button
+                onClick={handleSignOut}
+                disabled={signingOut}
+                className="w-full h-[56px] rounded-lg bg-[var(--yo-pink)] text-white text-[16px] font-bold transition-colors hover:opacity-90 disabled:opacity-50"
+                data-testid="button-logout-confirm"
+              >
+                {signingOut ? "Uitloggen..." : "Ja, uitloggen"}
+              </button>
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                className="w-full h-[56px] rounded-lg border border-[var(--yo-divider)] text-[var(--yo-dark)] text-[16px] font-bold hover:bg-[var(--yo-surface)] transition-colors"
+                data-testid="button-logout-cancel"
+              >
+                Annuleren
+              </button>
+            </div>
+          </main>
+        </div>
+      )}
     </div>
   );
 }
@@ -1583,6 +1673,11 @@ const TAB_CONFIG: { key: TabKey; label: string; Icon: any }[] = [
 export default function DashboardPage() {
   const { user, session, loading, signOut } = useAuth();
   const [, navigate] = useLocation();
+  const [initialSubTab] = useState<ProfileSubTab>(() => {
+    const params = new URLSearchParams(window.location.search);
+    const s = params.get("sub");
+    return s === "account" ? "account" : "over";
+  });
   const [activeTab, setActiveTab] = useState<TabKey>(() => {
     const params = new URLSearchParams(window.location.search);
     const tab = params.get("tab");
@@ -1597,7 +1692,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("tab")) {
+    if (params.get("tab") || params.get("sub")) {
       window.history.replaceState({}, "", "/dashboard");
     }
   }, []);
@@ -1661,7 +1756,7 @@ export default function DashboardPage() {
           />
         )}
         {activeTab === "matches" && (
-          <SubscriptionGate isActive={sub.isActive}>
+          <SubscriptionGate isActive={sub.isActive || sub.isTrial}>
             <MatchesTab accessToken={accessToken} setActiveTab={setActiveTab} />
           </SubscriptionGate>
         )}
@@ -1674,6 +1769,7 @@ export default function DashboardPage() {
             navigate={navigate}
             subscription={{ status: sub.status, isTrial: sub.isTrial, isActive: sub.isActive, isExpired: sub.isExpired, plan: sub.plan, trialEndsAt: sub.trialEndsAt }}
             setActiveTab={setActiveTab}
+            initialSubTab={initialSubTab}
           />
         )}
       </main>

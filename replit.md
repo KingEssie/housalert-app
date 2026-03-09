@@ -27,7 +27,8 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
   - **Radius tab**: city search + radius km selector (2/5/10/15/25/50 km) + Leaflet Circle overlay on map
   - **Reistijd tab**: Nominatim destination search + transport mode (auto/OV/fiets) + max travel time (15/30/45/60/90 min) + destination pin on map
   - Returns `LocationData` object; validated via `isLocationValid()`
-  - Used in: `onboarding.tsx` (LocationStep), `new-search.tsx` (step 2)
+  - Accepts `mapMaxHeight` prop (e.g. `"40vh"`) for mobile viewport constraint
+  - Used in: `onboarding.tsx` (LocationStep), `new-search.tsx` (step 1)
   - Dependencies: `leaflet`, `react-leaflet@4`, `@types/leaflet`
 - **Location mode columns (migration 012)**: `location_mode`, `districts`, `radius_km`, `commute_destination`, `commute_lat`, `commute_lng`, `commute_mode`, `commute_minutes`
 
@@ -137,7 +138,8 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 - `client/src/pages/dashboard.tsx` — Phase 2 dashboard with bottom-nav bar (5 tabs: Home, Matches, Tips, Filters, Profiel). Mobile-first BlaBlaCar design. Match cards with image placeholders (city-based gradients), save/bookmark toggle, "Reageer" opens ApplySheet (bottom sheet with letter preview, copy, view listing, mark applied). Matches page has sub-tabs: Nieuw, Bekeken, Opgeslagen, Gereageerd — status tracked in localStorage (keys: `stekkies_match_viewed`, `stekkies_match_saved`, `stekkies_match_applied`). HomeTab includes AccountCompletionCard + SearchPreparationCard (circular progress indicators) and RecenteMatchesSection (5 newest matches). ProfielTab includes NotificationSummaryCard (channel status + recommended fastest channel) and SpeedReadinessCard (4-step checklist). Subscription CTA for expired users.
 - `client/src/components/apply-sheet.tsx` — Reusable bottom sheet for instant apply flow: shows pre-filled application letter, copy, view listing, mark as applied. Used by MatchCard and ListingDetailPage.
 - `client/src/pages/listing-detail.tsx` — Full listing detail page at `/listing/:id`. Hero image (260px), match score badge, title, price, location, details grid (bedrooms/size/source/time), "Waarom deze match?" section with green checkmark reasons. CTA: "Reageer direct" (opens ApplySheet) + "Open originele advertentie" (external link). External site ONLY opens from this detail page.
-- `client/src/pages/new-search.tsx` — 6-step wizard to create a search profile at `/dashboard/searches/new`. Steps: property type, location (city+districts), budget, basic requirements (bedrooms/size), extra preferences, additional filters. Dynamic estimate badge. Max 4 profiles.
+- `client/src/pages/new-search.tsx` — 4-step wizard to create a search profile at `/dashboard/searches/new`. Steps: 1) Locatie (LocationModeSelector with map), 2) Vereisten (rent min/max, bedrooms, surface, furnished), 3) Extra eigenschappen (large toggle cards), 4) Woningtypes (large toggle cards + inline estimate). Saves to `/dashboard?tab=filters`. Max 4 profiles. Allows saving even with 0 estimated matches.
+- `client/src/pages/delete-account.tsx` — Full-screen account deletion confirmation at `/account/delete`
 - `client/src/pages/notification-settings.tsx` — Notification preferences (email/SMS/WhatsApp toggles)
 - `client/src/pages/application-letter.tsx` — Application letter template editor at `/application-letter`. Edit/save/reset template with Dutch placeholders ([[ADRES]], [[STAD]], [[NAAM]], etc.)
 - `client/src/pages/viewing-tips.tsx` — Dedicated viewing tips page at `/tips/bezichtiging`. Five sections: Voor/Tijdens/Wat meenemen/Na de bezichtiging/Rode vlaggen. CTA to mark as completed.

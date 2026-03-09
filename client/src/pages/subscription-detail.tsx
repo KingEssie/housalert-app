@@ -72,7 +72,7 @@ export default function SubscriptionDetailPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <PageHeader title="Abonnement" onBack={() => navigate("/dashboard?tab=profiel")} />
+        <PageHeader title="Abonnement" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
         <div className="max-w-xl mx-auto p-4 space-y-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="bg-card rounded-lg border p-5 animate-pulse" style={{ borderColor: "var(--yo-divider)" }}>
@@ -87,7 +87,7 @@ export default function SubscriptionDetailPage() {
 
   return (
     <div className="min-h-screen bg-background" data-testid="page-subscription-detail">
-      <PageHeader title="Abonnement" onBack={() => navigate("/dashboard?tab=profiel")} />
+      <PageHeader title="Abonnement" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
       <div className="max-w-xl mx-auto p-4 space-y-4 pb-8">
         <div className="bg-card rounded-lg border p-5" style={{ borderColor: "var(--yo-divider)" }} data-testid="card-subscription-plan">

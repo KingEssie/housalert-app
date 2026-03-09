@@ -15,7 +15,7 @@ import {
   FileText,
   FolderOpen,
   Phone,
-  X,
+  ArrowLeft,
   ArrowRight,
   Shield,
   Sparkles,
@@ -390,27 +390,30 @@ export function TaskModal({
   const description = TASK_DESCRIPTIONS[taskId] || "";
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center" onClick={onClose}>
-      <div
-        className="bg-white w-full max-w-md rounded-t-lg sm:rounded-lg max-h-[85vh] overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="sticky top-0 bg-white border-b border-[var(--yo-divider)] p-6 flex items-center justify-between rounded-t-lg">
-          <h2 className="text-[20px] font-[700] text-[var(--yo-dark)] tracking-[-0.02em]">{title}</h2>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-[var(--yo-surface)] flex items-center justify-center" data-testid="button-close-modal">
-            <X className="w-4 h-4 text-[var(--yo-dark)]" />
+    <div className="fixed inset-0 z-50 bg-white flex flex-col">
+      <header className="sticky top-0 z-10 bg-white border-b border-[var(--yo-divider)]">
+        <div className="max-w-lg mx-auto flex items-center h-[56px] px-5">
+          <button
+            onClick={onClose}
+            className="w-9 h-9 rounded-full bg-[var(--yo-surface)] flex items-center justify-center mr-3 active:scale-95 transition-transform"
+            data-testid="button-close-modal"
+          >
+            <ArrowLeft className="w-4 h-4 text-[var(--yo-dark)]" />
           </button>
+          <h1 className="text-[17px] font-bold text-[var(--yo-dark)] flex-1 uppercase tracking-wide">{title}</h1>
         </div>
+      </header>
 
-        <div className="p-5">
-          <p className="text-[14px] text-[var(--yo-dark)] mb-5">{description}</p>
+      <main className="flex-1 overflow-y-auto">
+        <div className="max-w-lg mx-auto px-5 py-6">
+          <p className="text-[15px] text-[var(--yo-dark)] mb-6 leading-relaxed">{description}</p>
 
           {taskId === "alerts" && (
-            <div className="flex flex-col gap-3">
-              <p className="text-[13px] text-[var(--yo-dark)] font-medium">Ga naar meldingsinstellingen om je kanalen te activeren.</p>
+            <div className="flex flex-col gap-4">
+              <p className="text-[14px] text-[var(--yo-dark)]">Ga naar meldingsinstellingen om je kanalen te activeren.</p>
               <Button
                 onClick={() => { onClose(); navigate("/settings/notifications"); }}
-                className="w-full h-[48px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[15px] font-semibold"
+                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[16px] font-bold"
                 data-testid="button-goto-notifications"
               >
                 <Bell className="w-4 h-4 mr-2" />
@@ -420,21 +423,21 @@ export function TaskModal({
           )}
 
           {taskId === "search_buddy" && (
-            <div className="flex flex-col gap-3">
-              <label className="text-[13px] font-medium text-[var(--yo-dark)]">E-mailadres zoekbuddy</label>
+            <div className="flex flex-col gap-4">
+              <label className="text-[14px] font-medium text-[var(--yo-dark)]">E-mailadres zoekbuddy</label>
               <input
                 type="email"
                 value={buddyEmail}
                 onChange={(e) => setBuddyEmail(e.target.value)}
                 placeholder="buddy@voorbeeld.nl"
-                className="w-full h-[52px] px-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-[var(--yo-surface)] transition-all"
+                className="w-full h-[56px] px-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[16px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 transition-all"
                 data-testid="input-buddy-email"
               />
-              <p className="text-[13px] font-[500] text-[var(--yo-dark)]">Je buddy ontvangt dezelfde meldingen als jij.</p>
+              <p className="text-[14px] text-[var(--yo-dark)]">Je buddy ontvangt dezelfde meldingen als jij.</p>
               <Button
                 onClick={() => handleSave({ search_buddy_email: buddyEmail }, "Zoekbuddy opgeslagen!")}
                 disabled={!buddyEmail.includes("@") || updateProfileData.isPending}
-                className="w-full h-[48px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[15px] font-semibold disabled:opacity-50"
+                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[16px] font-bold disabled:opacity-50"
                 data-testid="button-save-buddy"
               >
                 {updateProfileData.isPending ? "Opslaan..." : "Opslaan"}
@@ -443,13 +446,13 @@ export function TaskModal({
           )}
 
           {taskId === "search_optimize" && (
-            <div className="flex flex-col gap-3">
-              <p className="text-[13px] text-[var(--yo-dark)] font-medium">
+            <div className="flex flex-col gap-4">
+              <p className="text-[14px] text-[var(--yo-dark)]">
                 Voeg meer zoekprofielen toe of verfijn je huidige filters voor betere matches.
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard?tab=filters"); }}
-                className="w-full h-[48px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[15px] font-semibold"
+                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[16px] font-bold"
                 data-testid="button-goto-filters"
               >
                 <Search className="w-4 h-4 mr-2" />
@@ -459,13 +462,13 @@ export function TaskModal({
           )}
 
           {taskId === "application_template" && (
-            <div className="flex flex-col gap-3">
-              <p className="text-[13px] text-[var(--yo-dark)] font-medium">
+            <div className="flex flex-col gap-4">
+              <p className="text-[14px] text-[var(--yo-dark)]">
                 Bereid een standaard aanmeldingsbrief voor met automatische invulling van woninggegevens.
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/application-letter"); }}
-                className="w-full h-[48px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[15px] font-semibold"
+                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[16px] font-bold"
                 data-testid="button-goto-letter"
               >
                 <FileText className="w-4 h-4 mr-2" />
@@ -475,26 +478,26 @@ export function TaskModal({
           )}
 
           {taskId === "documents" && (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-5">
               {DOCUMENT_CHECKLIST.map((group) => (
                 <div key={group.group}>
-                  <h4 className="text-[13px] font-semibold text-[var(--yo-dark)] mb-2">{group.group}</h4>
+                  <h4 className="text-[14px] font-semibold text-[var(--yo-dark)] mb-3">{group.group}</h4>
                   <div className="flex flex-col gap-1">
                     {group.items.map((item) => (
                       <button
                         key={item.id}
                         onClick={() => setChecklist((prev) => ({ ...prev, [item.id]: !prev[item.id] }))}
-                        className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-[var(--yo-surface)] transition-colors text-left"
+                        className="flex items-center gap-3 py-3 px-3 rounded-lg hover:bg-[var(--yo-surface)] transition-colors text-left"
                         data-testid={`check-${item.id}`}
                       >
                         {checklist[item.id] ? (
-                          <div className="w-5 h-5 rounded-full bg-[var(--yo-success)]/10 flex items-center justify-center flex-shrink-0">
-                            <CheckCircle2 className="w-4 h-4 text-[var(--yo-success)]" />
+                          <div className="w-6 h-6 rounded-full bg-[var(--yo-success)]/10 flex items-center justify-center flex-shrink-0">
+                            <CheckCircle2 className="w-5 h-5 text-[var(--yo-success)]" />
                           </div>
                         ) : (
-                          <div className="w-5 h-5 rounded-full border-2 border-[var(--yo-divider)] flex-shrink-0" />
+                          <div className="w-6 h-6 rounded-full border-2 border-[var(--yo-divider)] flex-shrink-0" />
                         )}
-                        <span className={`text-[14px] ${checklist[item.id] ? "text-[var(--yo-dark)] line-through" : "text-[var(--yo-dark)]"}`}>
+                        <span className={`text-[15px] ${checklist[item.id] ? "text-[var(--yo-dark)] line-through" : "text-[var(--yo-dark)]"}`}>
                           {item.label}
                         </span>
                       </button>
@@ -505,7 +508,7 @@ export function TaskModal({
               <Button
                 onClick={() => handleSave({ document_checklist: checklist }, "Documentenlijst opgeslagen!")}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[48px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[15px] font-semibold disabled:opacity-50"
+                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[16px] font-bold disabled:opacity-50"
                 data-testid="button-save-documents"
               >
                 {updateProfileData.isPending ? "Opslaan..." : "Opslaan"}
@@ -514,20 +517,20 @@ export function TaskModal({
           )}
 
           {taskId === "phone" && (
-            <div className="flex flex-col gap-3">
-              <label className="text-[13px] font-medium text-[var(--yo-dark)]">Telefoonnummer (internationaal)</label>
+            <div className="flex flex-col gap-4">
+              <label className="text-[14px] font-medium text-[var(--yo-dark)]">Telefoonnummer (internationaal)</label>
               <input
                 type="tel"
                 value={phoneInput}
                 onChange={(e) => setPhoneInput(e.target.value)}
                 placeholder="+49 170 1234567"
-                className="w-full h-[52px] px-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-[var(--yo-surface)] transition-all"
+                className="w-full h-[56px] px-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[16px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 transition-all"
                 data-testid="input-phone"
               />
-              <p className="text-[13px] font-[500] text-[var(--yo-dark)]">Gebruik internationaal formaat, bijv. +49 170 1234567</p>
+              <p className="text-[14px] text-[var(--yo-dark)]">Gebruik internationaal formaat, bijv. +49 170 1234567</p>
               <Button
                 onClick={() => { onClose(); navigate("/settings/notifications"); }}
-                className="w-full h-[48px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[15px] font-semibold"
+                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[16px] font-bold"
                 data-testid="button-goto-phone-settings"
               >
                 <Phone className="w-4 h-4 mr-2" />
@@ -536,7 +539,7 @@ export function TaskModal({
             </div>
           )}
         </div>
-      </div>
+      </main>
     </div>
   );
 }
@@ -689,27 +692,30 @@ export function PrepTaskModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center" onClick={onClose}>
-      <div
-        className="bg-white w-full max-w-md rounded-t-lg sm:rounded-lg max-h-[85vh] overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="sticky top-0 bg-white border-b border-[var(--yo-divider)] p-6 flex items-center justify-between rounded-t-lg">
-          <h2 className="text-[20px] font-[700] text-[var(--yo-dark)] tracking-[-0.02em]">{titles[taskId] || ""}</h2>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-[var(--yo-surface)] flex items-center justify-center" data-testid="button-close-prep-modal">
-            <X className="w-4 h-4 text-[var(--yo-dark)]" />
+    <div className="fixed inset-0 z-50 bg-white flex flex-col">
+      <header className="sticky top-0 z-10 bg-white border-b border-[var(--yo-divider)]">
+        <div className="max-w-lg mx-auto flex items-center h-[56px] px-5">
+          <button
+            onClick={onClose}
+            className="w-9 h-9 rounded-full bg-[var(--yo-surface)] flex items-center justify-center mr-3 active:scale-95 transition-transform"
+            data-testid="button-close-prep-modal"
+          >
+            <ArrowLeft className="w-4 h-4 text-[var(--yo-dark)]" />
           </button>
+          <h1 className="text-[17px] font-bold text-[var(--yo-dark)] flex-1 uppercase tracking-wide">{titles[taskId] || ""}</h1>
         </div>
+      </header>
 
-        <div className="p-5">
+      <main className="flex-1 overflow-y-auto">
+        <div className="max-w-lg mx-auto px-5 py-6">
           {taskId === "prep_search_profile" && (
-            <div className="flex flex-col gap-3">
-              <p className="text-[14px] text-[var(--yo-dark)]">
+            <div className="flex flex-col gap-4">
+              <p className="text-[15px] text-[var(--yo-dark)] leading-relaxed">
                 Maak je eerste zoekopdracht aan om automatisch woningen te ontvangen die bij jouw voorkeuren passen.
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
-                className="w-full h-[48px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[15px] font-semibold"
+                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[16px] font-bold"
                 data-testid="button-prep-create-profile"
               >
                 <Search className="w-4 h-4 mr-2" />
@@ -719,13 +725,13 @@ export function PrepTaskModal({
           )}
 
           {taskId === "prep_letter" && (
-            <div className="flex flex-col gap-3">
-              <p className="text-[14px] text-[var(--yo-dark)]">
+            <div className="flex flex-col gap-4">
+              <p className="text-[15px] text-[var(--yo-dark)] leading-relaxed">
                 Een goede introductiebrief laat verhuurders zien dat je serieus bent. Bereid er nu een voor zodat je direct kunt reageren.
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/application-letter"); }}
-                className="w-full h-[48px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[15px] font-semibold"
+                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[16px] font-bold"
                 data-testid="button-prep-goto-letter"
               >
                 <FileText className="w-4 h-4 mr-2" />
@@ -735,13 +741,13 @@ export function PrepTaskModal({
           )}
 
           {taskId === "prep_extra_profile" && (
-            <div className="flex flex-col gap-4">
-              <p className="text-[14px] text-[var(--yo-dark)]">
+            <div className="flex flex-col gap-5">
+              <p className="text-[15px] text-[var(--yo-dark)] leading-relaxed">
                 Met meerdere zoekprofielen vergroot je je kansen aanzienlijk. Zoek je in meerdere steden of met verschillende budgetten? Voeg een extra profiel toe.
               </p>
-              <div className="bg-[var(--yo-surface)] rounded-lg p-4">
-                <p className="text-[13px] font-semibold text-[var(--yo-dark)] mb-2">Waarom meerdere profielen?</p>
-                <ul className="text-[13px] text-[var(--yo-dark)] space-y-1.5">
+              <div className="bg-[var(--yo-surface)] rounded-lg p-5">
+                <p className="text-[14px] font-semibold text-[var(--yo-dark)] mb-3">Waarom meerdere profielen?</p>
+                <ul className="text-[14px] text-[var(--yo-dark)] space-y-2">
                   <li className="flex items-start gap-2"><span className="text-[var(--yo-dark)] mt-0.5">+</span>Meer woningen die matchen</li>
                   <li className="flex items-start gap-2"><span className="text-[var(--yo-dark)] mt-0.5">+</span>Verschillende prijsklassen dekken</li>
                   <li className="flex items-start gap-2"><span className="text-[var(--yo-dark)] mt-0.5">+</span>Meerdere steden of wijken volgen</li>
@@ -749,7 +755,7 @@ export function PrepTaskModal({
               </div>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
-                className="w-full h-[48px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[15px] font-semibold"
+                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[16px] font-bold"
                 data-testid="button-prep-add-profile"
               >
                 <Plus className="w-4 h-4 mr-2" />
@@ -759,18 +765,18 @@ export function PrepTaskModal({
           )}
 
           {taskId === "prep_network" && (
-            <div className="flex flex-col gap-4">
-              <p className="text-[14px] text-[var(--yo-dark)]">
+            <div className="flex flex-col gap-5">
+              <p className="text-[15px] text-[var(--yo-dark)] leading-relaxed">
                 Deel je zoektocht met vrienden, familie en collega's. Hoe meer ogen, hoe sneller je iets vindt.
               </p>
-              <div className="bg-[var(--yo-surface)] rounded-lg p-4">
-                <p className="text-[13px] font-semibold text-[var(--yo-dark)] mb-2">Deeltekst</p>
-                <p className="text-[13px] text-[var(--yo-dark)] leading-relaxed">{SHARE_TEXT}</p>
+              <div className="bg-[var(--yo-surface)] rounded-lg p-5">
+                <p className="text-[14px] font-semibold text-[var(--yo-dark)] mb-3">Deeltekst</p>
+                <p className="text-[14px] text-[var(--yo-dark)] leading-relaxed">{SHARE_TEXT}</p>
               </div>
               <Button
                 variant="outline"
                 onClick={handleCopyShare}
-                className="w-full h-[44px] rounded-lg text-[14px] font-medium border-[var(--yo-divider)] text-[var(--yo-dark)]"
+                className="w-full h-[48px] rounded-lg text-[15px] font-medium border-[var(--yo-divider)] text-[var(--yo-dark)]"
                 data-testid="button-copy-share"
               >
                 <Copy className="w-4 h-4 mr-2" />
@@ -779,7 +785,7 @@ export function PrepTaskModal({
               <Button
                 onClick={() => handleMarkDone("network_task_done")}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[48px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[15px] font-semibold disabled:opacity-50"
+                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[16px] font-bold disabled:opacity-50"
                 data-testid="button-mark-network-done"
               >
                 {updateProfileData.isPending ? "Opslaan..." : "Markeer als voltooid"}
@@ -788,13 +794,13 @@ export function PrepTaskModal({
           )}
 
           {taskId === "prep_viewing_tips" && (
-            <div className="flex flex-col gap-3">
-              <p className="text-[14px] text-[var(--yo-dark)]">
+            <div className="flex flex-col gap-4">
+              <p className="text-[15px] text-[var(--yo-dark)] leading-relaxed">
                 Goed voorbereid naar een bezichtiging gaan vergroot je kans op de woning. Lees onze uitgebreide tips.
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/tips/bezichtiging"); }}
-                className="w-full h-[48px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[15px] font-semibold"
+                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[16px] font-bold"
                 data-testid="button-goto-viewing-tips"
               >
                 <Eye className="w-4 h-4 mr-2" />
@@ -803,7 +809,7 @@ export function PrepTaskModal({
             </div>
           )}
         </div>
-      </div>
+      </main>
     </div>
   );
 }

@@ -14,31 +14,24 @@ export function SubscriptionGate({ isActive, children }: SubscriptionGateProps) 
   }
 
   return (
-    <div className="relative min-h-[60vh]">
-      <div className="blur-[8px] pointer-events-none select-none opacity-50">
-        {children}
+    <div className="flex flex-col items-center justify-center text-center px-6 pt-20 pb-10 min-h-[70vh]">
+      <div className="w-20 h-20 rounded-2xl bg-[var(--yo-chip-bg)] flex items-center justify-center mx-auto mb-6">
+        <Crown className="w-10 h-10 text-[var(--yo-dark)]" />
       </div>
-      <div className="absolute inset-0 flex items-start justify-center z-10 pt-32">
-        <div className="bg-white rounded-xl shadow-[0_8px_40px_rgba(0,0,0,0.15)] p-8 mx-6 max-w-sm w-full text-center">
-          <div className="w-16 h-16 rounded-xl bg-[var(--yo-chip-bg)] flex items-center justify-center mx-auto mb-5">
-            <Crown className="w-8 h-8 text-[var(--yo-dark)]" />
-          </div>
-          <h3 className="text-[18px] font-bold text-[var(--yo-dark)] mb-2 leading-snug" data-testid="text-gate-title">
-            Activeer een abonnement om je matches te bekijken
-          </h3>
-          <p className="text-[14px] text-[var(--yo-dark)] mb-6 opacity-70">
-            Ontvang direct meldingen en bekijk al je woningmatches.
-          </p>
-          <button
-            onClick={() => navigate("/paywall")}
-            className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black font-bold text-[16px] transition-colors flex items-center justify-center gap-2"
-            data-testid="button-gate-upgrade"
-          >
-            <Lock className="w-4 h-4" />
-            Kies abonnement
-          </button>
-        </div>
-      </div>
+      <h2 className="text-[22px] font-bold text-[var(--yo-dark)] mb-3 leading-snug" data-testid="text-gate-title">
+        Activeer een abonnement om je matches te bekijken
+      </h2>
+      <p className="text-[15px] text-[var(--yo-dark)] opacity-70 max-w-[320px] mb-8 leading-relaxed">
+        Ontvang direct meldingen en bekijk al je woningmatches zodra je een abonnement hebt geactiveerd.
+      </p>
+      <button
+        onClick={() => navigate("/paywall")}
+        className="w-full max-w-[320px] h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black font-bold text-[16px] transition-colors flex items-center justify-center gap-2"
+        data-testid="button-gate-upgrade"
+      >
+        <Lock className="w-4 h-4" />
+        Kies abonnement
+      </button>
     </div>
   );
 }
