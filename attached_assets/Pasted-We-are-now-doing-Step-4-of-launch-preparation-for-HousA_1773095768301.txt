@@ -1,0 +1,63 @@
+We are now doing Step 4 of launch preparation for HousAlert: fix match UX and KPI logic.
+
+Important:
+- Do NOT redesign the whole app.
+- Do NOT work on push notifications, mobile app, or language support yet.
+- Focus only on correct match-related UI logic and KPI definitions.
+
+Goal:
+Make sure users see truthful, non-misleading match numbers.
+
+We need strict separation between:
+1. expected matches (forecast before or without subscription)
+2. actual matches received (real matches after subscription activation)
+
+Tasks:
+
+1. Audit all places in the frontend where match counts are shown:
+- dashboard / home
+- matches page
+- account / profile stats
+- any summary cards or banners
+
+2. Implement this logic:
+
+CASE A — user has NO active subscription
+- Dashboard/home must NOT show “X matches found” as if they are already received
+- Instead show forecast text like:
+  "Met jouw huidige zoekopdrachten verwachten we ongeveer X matches per week"
+- Matches page should show a clean locked/empty state
+- No real listings should be visible there
+
+CASE B — user HAS an active subscription
+- Dashboard/home may show actual matches received
+- Only count matches created after subscription start
+- Only count matches belonging to that user’s active profiles
+- No historical pre-subscription matches may be displayed as received
+
+3. Define and enforce KPI rules:
+- expected_matches_per_week = forecast only
+- received_matches = real matches created after subscription start
+- new_matches = unread/unseen current matches for the user
+- do not mix these concepts anywhere in UI
+
+4. Audit duplicate/overcounting risks in UI:
+- confirm whether a single listing can appear multiple times visually for the same user
+- if possible, deduplicate listing display on the dashboard summary level
+- report clearly whether the DB uniqueness already prevents duplicate profile_id/listing_id rows
+
+5. Update the copy in Dutch for now so it is explicit and not misleading.
+
+Examples:
+- no subscription:
+  "Met jouw zoekopdrachten verwachten we ongeveer X nieuwe woningen per week."
+- active subscription:
+  "Je hebt X nieuwe matches ontvangen."
+
+6. Output report:
+- files changed
+- where expected vs actual logic now lives
+- exact KPI definitions
+- what a user sees with no subscription
+- what a user sees with active subscription
+- whether duplicate visual matches are still possible

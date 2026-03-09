@@ -673,7 +673,7 @@ function HomeTab({
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[22px] font-bold text-white leading-tight" data-testid="text-match-count">
-                {matchCount > 999 ? "999+" : matchCount} {matchCount === 1 ? "match" : "matches"} ontvangen
+                Je hebt {matchCount > 999 ? "999+" : matchCount} nieuwe {matchCount === 1 ? "match" : "matches"} ontvangen
               </p>
               <p className="text-[14px] font-[500] text-white/70 mt-0.5">
                 {hasProfiles
@@ -724,7 +724,7 @@ function HomeTab({
             <div className="flex-1 min-w-0">
               <p className="text-[16px] font-bold text-white leading-tight" data-testid="text-estimate-count">
                 {perWeekEstimate > 0
-                  ? `We verwachten ±${perWeekEstimate} matches per week`
+                  ? `Met jouw zoekopdrachten verwachten we ongeveer ${perWeekEstimate} nieuwe woningen per week`
                   : "Je zoekprofiel is klaar"}
               </p>
               <p className="text-[14px] font-[500] text-white/70 mt-0.5">
@@ -793,7 +793,7 @@ function HomeTab({
         />
       )}
 
-      {hasMatches && (
+      {hasActiveSub && hasMatches && (
         <button
           onClick={() => setActiveTab("filters")}
           className="w-full h-[56px] rounded-lg border border-[var(--yo-divider)] bg-white text-[var(--yo-dark)] text-[15px] font-bold hover:bg-[var(--yo-surface)] transition-colors flex items-center justify-center gap-2"
@@ -898,7 +898,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
         <h1 className="text-page-title">Matches</h1>
         {matches.length > 0 && (
           <span className="text-[13px] font-medium text-[var(--yo-dark)] bg-[var(--yo-chip-bg)] px-2.5 py-1 rounded-full" data-testid="badge-match-count">
-            {matches.length > 999 ? "999+" : matches.length} totaal
+            {matches.length > 999 ? "999+" : matches.length} {matches.length === 1 ? "woning" : "woningen"}
           </span>
         )}
       </div>
@@ -1437,6 +1437,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
             </div>
 
             <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+              {(subscription.isActive || subscription.isTrial) ? (
               <div className="flex">
                 <div className="flex-1 flex items-center gap-3 p-4" data-testid="kpi-matches">
                   <div className="w-10 h-10 rounded-full bg-[var(--yo-chip-bg)] flex items-center justify-center flex-shrink-0">
@@ -1458,6 +1459,13 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                   </div>
                 </div>
               </div>
+              ) : (
+              <div className="p-4 text-center" data-testid="kpi-no-sub">
+                <p className="text-[14px] text-[var(--yo-dark)]">
+                  Activeer een abonnement om je matchstatistieken te zien.
+                </p>
+              </div>
+              )}
             </div>
 
             <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
@@ -1757,10 +1765,11 @@ export default function DashboardPage() {
   });
 
   const accessToken = session?.access_token;
+  const hasActiveSub = sub.isActive || sub.isTrial;
   const apiMatchesQuery = useQuery<ApiMatchesResponse>({
     queryKey: ["/api/matches"],
     queryFn: () => fetchApiMatches(accessToken!),
-    enabled: !!user && !!accessToken,
+    enabled: !!user && !!accessToken && hasActiveSub,
   });
 
   if (loading) {

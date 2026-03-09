@@ -463,7 +463,14 @@ export async function registerRoutes(
       enriched.sort((a: any, b: any) =>
         new Date(b.matched_at).getTime() - new Date(a.matched_at).getTime()
       );
-      const top50 = enriched.slice(0, 50);
+      const dedupedByListing: Record<string, any> = {};
+      for (const m of enriched) {
+        if (!dedupedByListing[m.listing_id]) {
+          dedupedByListing[m.listing_id] = m;
+        }
+      }
+      const uniqueEnriched = Object.values(dedupedByListing);
+      const top50 = uniqueEnriched.slice(0, 50);
 
       const listingIds = top50.map((m: any) => m.listing_id);
       const profileIds = [...new Set(top50.map((m: any) => m.search_profile_id).filter(Boolean))];
@@ -537,22 +544,33 @@ export async function registerRoutes(
         });
       }
 
+      const deduped: Record<string, any> = {};
+      for (const r of validResults) {
+        const existing = deduped[r.listing_id];
+        if (!existing || (r.match_score ?? 0) > (existing.match_score ?? 0)) {
+          deduped[r.listing_id] = r;
+        }
+      }
+      validResults = Object.values(deduped);
+
       validResults.sort((a: any, b: any) => (b.match_score ?? 0) - (a.match_score ?? 0));
 
       let totalMatchCount = validResults.length;
       if (premiumStartedAt) {
         const countQuery = await supabase
           .from("matches")
-          .select("id", { count: "exact", head: true })
+          .select("listing_id", { count: "exact", head: false })
           .eq("user_id", user.id)
           .gte("created_at", premiumStartedAt);
-        totalMatchCount = countQuery.count ?? validResults.length;
+        const uniqueListings = new Set((countQuery.data ?? []).map((r: any) => r.listing_id));
+        totalMatchCount = uniqueListings.size || validResults.length;
       } else {
         const countQuery = await supabase
           .from("matches")
-          .select("id", { count: "exact", head: true })
+          .select("listing_id", { count: "exact", head: false })
           .eq("user_id", user.id);
-        totalMatchCount = countQuery.count ?? validResults.length;
+        const uniqueListings = new Set((countQuery.data ?? []).map((r: any) => r.listing_id));
+        totalMatchCount = uniqueListings.size || validResults.length;
       }
 
       return res.json({ matches: validResults, totalCount: totalMatchCount });
@@ -1660,20 +1678,22 @@ export async function registerRoutes(
         .single();
       const subStartedAt = subRow?.created_at || null;
 
-      let matchQuery = supabase.from("matches").select("id", { count: "exact", head: true }).eq("user_id", user.id);
+      let matchQuery = supabase.from("matches").select("listing_id").eq("user_id", user.id);
       if (subStartedAt) matchQuery = matchQuery.gte("created_at", subStartedAt);
       const matchResult = await matchQuery;
+      const uniqueMatchListings = new Set((matchResult.data ?? []).map((r: any) => r.listing_id));
 
       let reactionCount = 0;
       try {
-        let reactionQuery = supabase.from("matches").select("id", { count: "exact", head: true }).eq("user_id", user.id).eq("applied", true);
+        let reactionQuery = supabase.from("matches").select("listing_id").eq("user_id", user.id).eq("applied", true);
         if (subStartedAt) reactionQuery = reactionQuery.gte("created_at", subStartedAt);
         const reactionResult = await reactionQuery;
-        reactionCount = reactionResult.count ?? 0;
+        const uniqueReactionListings = new Set((reactionResult.data ?? []).map((r: any) => r.listing_id));
+        reactionCount = uniqueReactionListings.size;
       } catch {}
 
       return res.json({
-        matches_received: matchResult.count ?? 0,
+        matches_received: uniqueMatchListings.size,
         reactions_sent: reactionCount,
       });
     } catch (err: any) {
