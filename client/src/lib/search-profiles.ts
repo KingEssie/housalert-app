@@ -157,8 +157,11 @@ export async function createSearchProfile(
 export async function updateSearchProfile(
   id: string,
   input: InsertSearchProfileInput
-): Promise<SearchProfile> {
-  const fullRow: Record<string, unknown> = {
+): Promise<{ success: boolean }> {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session?.access_token) throw new Error("Niet ingelogd.");
+
+  const body: Record<string, unknown> = {
     city: input.city_name,
     city_name: input.city_name,
     country_code: input.country_code ?? "DE",
@@ -183,22 +186,22 @@ export async function updateSearchProfile(
     target_categories: input.target_categories && input.target_categories.length > 0 ? input.target_categories : null,
   };
 
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error("Niet ingelogd.");
+  const res = await fetch(`/api/search-profiles/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${session.access_token}`,
+    },
+    body: JSON.stringify(body),
+  });
 
-  const { data, error } = await supabase
-    .from("search_profiles")
-    .update(fullRow)
-    .eq("id", id)
-    .eq("user_id", user.id)
-    .select()
-    .single();
-
-  if (error) {
-    console.error("[search-profiles] Update failed:", error);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: "Unknown error" }));
+    console.error("[search-profiles] Update failed:", err);
     throw new Error("Zoekopdracht bijwerken mislukt. Probeer het opnieuw.");
   }
-  return data as SearchProfile;
+
+  return { success: true };
 }
 
 export async function getSearchProfile(id: string): Promise<SearchProfile | null> {

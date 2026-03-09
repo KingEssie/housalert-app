@@ -753,7 +753,7 @@ export async function registerRoutes(
         payment_method_types: ["card"],
         line_items: [{ price: stripePriceId, quantity: 1 }],
         mode: "subscription",
-        success_url: `${baseUrl}/dashboard?payment=success`,
+        success_url: `${baseUrl}/subscription-success`,
         cancel_url: `${baseUrl}/paywall`,
         metadata: { supabase_user_id: user.id, plan },
       });
@@ -815,7 +815,7 @@ export async function registerRoutes(
         payment_method_types: ["card"],
         line_items: [{ price: stripePriceId, quantity: 1 }],
         mode: "subscription",
-        success_url: `${baseUrl}/dashboard?payment=success`,
+        success_url: `${baseUrl}/subscription-success`,
         cancel_url: `${baseUrl}/paywall`,
         metadata: { supabase_user_id: user.id, plan },
       });
@@ -954,6 +954,55 @@ export async function registerRoutes(
         .eq("id", id);
 
       if (error) return res.status(500).json({ error: error.message });
+      return res.json({ success: true });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.put("/api/search-profiles/:id", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const profileId = req.params.id;
+      const { data: existing } = await supabase
+        .from("search_profiles")
+        .select("user_id")
+        .eq("id", profileId)
+        .single();
+
+      if (!existing || existing.user_id !== user.id) {
+        return res.status(403).json({ error: "Forbidden" });
+      }
+
+      const body = req.body;
+      const updateRow: Record<string, unknown> = {};
+      const fields = [
+        "city", "city_name", "country_code", "latitude", "longitude", "place_id",
+        "price_min", "price_max", "bedrooms_min", "size_min",
+        "location_mode", "districts", "radius_km",
+        "commute_destination", "commute_lat", "commute_lng", "commute_mode", "commute_minutes",
+        "furnished", "property_types", "extra_features", "target_categories",
+      ];
+      for (const f of fields) {
+        if (f in body) updateRow[f] = body[f];
+      }
+
+      const { error } = await supabase
+        .from("search_profiles")
+        .update(updateRow)
+        .eq("id", profileId)
+        .eq("user_id", user.id);
+
+      if (error) {
+        log(`[search-profiles] Update failed for profile=${profileId}: ${error.message}`);
+        return res.status(500).json({ error: error.message });
+      }
+
       return res.json({ success: true });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });

@@ -515,7 +515,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       )}
 
       {showMap && (
-        <div className="rounded-lg overflow-hidden border border-[var(--yo-divider)]" style={{ height: "200px", maxHeight: mapMaxHeight || "none" }} data-testid="map-preview">
+        <div className="rounded-lg overflow-hidden border border-[var(--yo-divider)] relative" style={{ height: "200px", maxHeight: mapMaxHeight || "none", zIndex: 0 }} data-testid="map-preview">
           <MapContainer
             center={hasLocation ? [mapLat!, mapLng!] : [defaultLat, defaultLng]}
             zoom={hasLocation ? (value.tab === "radius" ? radiusToZoom(value.radiusKm) : 11) : defaultZoom}
@@ -593,7 +593,7 @@ function DistrictMultiSelect({
       </button>
 
       {open && (
-        <div className="absolute z-40 w-full mt-1 bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.12)] border border-[var(--yo-divider)] max-h-[280px] overflow-y-auto">
+        <div className="absolute z-[60] w-full mt-1 bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.12)] border border-[var(--yo-divider)] max-h-[280px] overflow-y-auto">
           {districts.map((d) => {
             const isSelected = selected.includes(d);
             return (

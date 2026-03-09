@@ -1,0 +1,95 @@
+We need to fix several issues in the housing search app. Implement the following fixes without adding heavy testing or unnecessary complexity.
+
+-----------------------------------
+1. STRIPE SUCCESS REDIRECT
+-----------------------------------
+
+Current issue:
+After a successful Stripe payment the user is redirected to a non-existing route, resulting in a "Not Found" page.
+
+Fix:
+
+1. Create a route:
+/subscription-success
+
+2. This page should:
+- Display a short message: "Abonnement succesvol geactiveerd"
+- Automatically redirect to /dashboard after 2 seconds
+
+3. Update the Stripe checkout success_url to:
+${APP_URL}/subscription-success
+
+4. After redirecting to the dashboard, ensure the user session is refreshed so the dashboard recognizes the active subscription.
+
+-----------------------------------
+2. DISTRICT DROPDOWN BEHIND MAP
+-----------------------------------
+
+Current issue:
+When selecting districts, the dropdown list appears behind the map component, making items unclickable.
+
+Fix:
+
+1. Ensure the district dropdown container has a higher z-index than the map.
+2. Apply a z-index of at least 50 to the dropdown.
+3. Ensure the map container has a lower z-index (e.g. z-index: 0).
+4. If needed, ensure the dropdown container uses position: relative or absolute.
+
+Do not change layout or logic, only fix the layering.
+
+-----------------------------------
+3. EDIT SEARCH FORM SHOULD PREFILL DATA
+-----------------------------------
+
+Current issue:
+When editing a saved search, the form fields are empty instead of showing the existing values.
+
+Fix:
+
+1. When opening the edit page, fetch the search by ID.
+2. Populate the form state with the existing search data.
+
+Ensure the following fields are pre-filled:
+- location
+- selected districts
+- max price
+- bedrooms
+- surface area
+- extra features
+- other preferences
+
+3. Ensure checkboxes, dropdowns and inputs reflect the saved values correctly.
+
+Do not modify the database schema.
+
+-----------------------------------
+4. SEARCH UPDATE FAILING
+-----------------------------------
+
+Current issue:
+When saving an edited search the user receives the error:
+"Zoekopdracht bijwerken mislukt".
+
+Fix:
+
+1. When editing an existing search, use:
+PUT /search/:id
+
+instead of creating a new record.
+
+2. Ensure the backend update endpoint exists and correctly updates the database record.
+
+3. Return a success response:
+{ success: true }
+
+4. On success:
+- Redirect the user to /dashboard
+- Show confirmation message:
+"Zoekopdracht bijgewerkt"
+
+-----------------------------------
+
+Important:
+Keep the implementation lightweight and efficient.
+Avoid adding heavy testing or unnecessary refactors.
+Only fix the issues described above.
