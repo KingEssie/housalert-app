@@ -1,0 +1,186 @@
+We need a final P0 fix sprint for HousAlert focused only on subscription activation sync after successful Stripe checkout.
+
+Important:
+- Do NOT redesign the app.
+- Do NOT change the UI unless needed for this fix.
+- Search profile editing is now working, so do not touch that logic again.
+- The remaining blocker is subscription activation after successful Stripe payment.
+
+==================================================
+P0 — STRIPE PAYMENT SUCCEEDS BUT SUBSCRIPTION STAYS EXPIRED
+==================================================
+
+Current observed behavior:
+
+What works:
+- Stripe checkout opens
+- test payment appears to complete successfully
+- the app redirects back correctly
+- payment method is visible in the account (for example: 4242 Visa)
+
+What does NOT work:
+- account > abonnement still shows:
+  - Premium
+  - Verlopen
+  - no start date
+  - no next renewal
+  - no billing frequency
+- matches page still behaves as if there is no active subscription
+- subscription is therefore not being activated correctly inside the app
+
+This strongly suggests:
+- Stripe customer/payment method sync is partially working
+- but the actual subscription status is NOT being persisted and/or read correctly
+
+==================================================
+REQUIRED BEHAVIOR
+==================================================
+
+After a successful Stripe test checkout:
+1. The user must have an ACTIVE subscription in the app
+2. Account > Abonnement must show correct subscription metadata:
+   - status active
+   - start date
+   - next renewal date if applicable
+   - billing frequency
+   - auto-renew value
+   - payment method last4
+3. Matches/paywall gating must immediately recognize the active subscription
+4. Home/matches/account must all use the same true subscription state
+5. No expired state should remain after successful subscription purchase
+
+==================================================
+WHAT TO TRACE NOW
+==================================================
+
+Please trace the subscription flow end-to-end and identify the exact failing step.
+
+Check all of the following:
+
+1. Stripe checkout session creation
+- is mode=subscription correct?
+- is the correct price id used?
+- is customer correctly attached?
+
+2. Stripe success completion
+- after successful checkout, does Stripe actually create a subscription object?
+- what is the real Stripe subscription status after checkout?
+- active / trialing / incomplete / incomplete_expired / past_due / unpaid / canceled?
+
+3. Success callback route
+- what exactly happens when the app returns from Stripe?
+- does the success route only show a success message, or does it also sync subscription state?
+- is the checkout session id being used to fetch the real subscription?
+
+4. Webhook handling
+- is there a webhook configured and working?
+- which Stripe events are handled?
+- are these events correctly updating the database?
+- specifically inspect:
+  - checkout.session.completed
+  - customer.subscription.created
+  - customer.subscription.updated
+  - invoice.paid
+  - invoice.payment_succeeded
+
+5. Database persistence
+- where is subscription data stored in Supabase?
+- which table and fields store:
+  - stripe_customer_id
+  - stripe_subscription_id
+  - subscription_status
+  - current_period_start
+  - current_period_end
+  - billing_interval
+  - cancel_at_period_end
+  - payment_method_last4
+- verify whether those fields are actually updated after a successful Stripe checkout
+
+6. Frontend subscription gating
+- which exact field(s) does the frontend use to decide whether the user has an active subscription?
+- does the frontend incorrectly rely on an old/expired field?
+- does it expect "active" while DB may contain another valid value like "trialing"?
+
+7. Refresh / sync issue
+- if DB is correct but UI still shows expired, then trace caching/state refresh after checkout return
+- ensure subscription status is re-fetched after successful return from Stripe
+
+==================================================
+MOST LIKELY ROOT CAUSE TO VERIFY
+==================================================
+
+Based on current screenshots, likely one of these is true:
+- payment method is saved but stripe subscription id is not saved
+- webhook updates payment method but not subscription row
+- success callback does not finalize/sync subscription
+- frontend reads wrong subscription field
+- status mapping from Stripe -> app status is wrong
+- DB row is created but remains expired because current_period_end/start are null
+- active subscription exists in Stripe but is not linked to the correct user in Supabase
+
+Please verify which one is actually happening.
+
+==================================================
+REQUIRED FIX
+==================================================
+
+Implement a robust final solution so that:
+
+A. Successful Stripe checkout always results in:
+- subscription row persisted correctly
+- status set correctly
+- correct dates and interval stored
+- correct user linked
+
+B. Frontend always reflects the true subscription state:
+- account page
+- matches page
+- paywall gating
+- homepage state if relevant
+
+C. If webhook is needed:
+- ensure webhook secret/config is correct
+- ensure event handling works
+- ensure duplicate-safe updates
+
+D. If success callback is also needed:
+- make it idempotent
+- let it sync subscription immediately after redirect
+- do not rely only on a visual success page
+
+==================================================
+VALIDATION REQUIRED AFTER FIX
+==================================================
+
+Please fully validate this exact scenario:
+
+1. Log in as a user without subscription
+2. Open paywall
+3. Start Stripe test checkout
+4. Complete successful test payment
+5. Return to app
+6. Confirm:
+   - subscription status is ACTIVE
+   - account page shows filled metadata
+   - matches page is unlocked
+   - no “verlopen” state remains
+   - no “kies abonnement” blocker remains
+
+==================================================
+REPORT BACK
+==================================================
+
+After fixing, report back with:
+
+1. Exact root cause
+2. Whether the issue was in:
+   - webhook
+   - success callback
+   - DB write-back
+   - status mapping
+   - frontend gating
+   - user linking
+3. Which Stripe events are now used
+4. Which DB table/fields now store the subscription state
+5. Which files changed
+6. Confirmation that a successful Stripe test payment now creates a real ACTIVE subscription in-app

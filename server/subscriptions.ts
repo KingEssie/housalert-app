@@ -122,7 +122,8 @@ export async function updateSubscriptionFromCheckout(
     }, { onConflict: "user_id" });
 
   if (error) {
-    log(`[subscriptions] Error updating from checkout user=${userId}: ${error.message}`);
+    log(`[subscriptions] Error updating from checkout user=${userId}: ${error.message} code=${error.code} details=${error.details}`);
+    throw new Error(`Failed to activate subscription: ${error.message}`);
   } else {
     log(`[subscriptions] Activated subscription for user=${userId} plan=${plan}`);
   }

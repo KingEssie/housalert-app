@@ -1,8 +1,8 @@
 import { useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
 import { Crown, CreditCard, Calendar, RefreshCw, ChevronRight, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/ui/page-header";
+import { useSubscription } from "@/lib/subscription";
 
 function formatDate(dateStr: string | null | undefined): string {
   if (!dateStr) return "\u2014";
@@ -43,17 +43,17 @@ function getBillingFrequency(plan: string | null | undefined): string {
 export default function SubscriptionDetailPage() {
   const [, navigate] = useLocation();
 
-  const { data: subscription, isLoading } = useQuery<{
-    status: string;
-    plan: string | null;
-    trial_ends_at: string | null;
-    current_period_ends_at: string | null;
-    isActive: boolean;
-    isTrial: boolean;
-    isExpired: boolean;
-  }>({
-    queryKey: ["/api/subscription/status"],
-  });
+  const sub = useSubscription();
+  const isLoading = sub.loading;
+  const subscription = isLoading ? undefined : {
+    status: sub.status,
+    plan: sub.plan,
+    trial_ends_at: sub.trialEndsAt,
+    current_period_ends_at: sub.currentPeriodEndsAt,
+    isActive: sub.isActive,
+    isTrial: sub.isTrial,
+    isExpired: sub.isExpired,
+  };
 
   const statusLabel = subscription?.isTrial
     ? "Proefperiode"

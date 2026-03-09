@@ -868,7 +868,11 @@ export async function registerRoutes(
       }
 
       const sub = await stripe.subscriptions.retrieve(stripeSubscriptionId);
-      const periodEnd = new Date((sub as any).current_period_end * 1000);
+      const rawEnd = (sub as any).current_period_end;
+      const periodEnd = rawEnd && rawEnd > 0
+        ? new Date(rawEnd * 1000)
+        : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+      log(`[checkout-verify] Stripe sub=${stripeSubscriptionId} status=${sub.status} period_end_raw=${rawEnd} computed=${periodEnd.toISOString()}`);
       await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubscriptionId, plan, periodEnd);
       log(`[checkout-verify] Subscription synced for user=${userId} plan=${plan} period_end=${periodEnd.toISOString()}`);
 
@@ -913,7 +917,10 @@ export async function registerRoutes(
 
           if (userId && stripeSubscriptionId) {
             const sub = await stripe.subscriptions.retrieve(stripeSubscriptionId);
-            const periodEnd = new Date((sub as any).current_period_end * 1000);
+            const rawEnd = (sub as any).current_period_end;
+            const periodEnd = rawEnd && rawEnd > 0
+              ? new Date(rawEnd * 1000)
+              : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
             await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubscriptionId, plan, periodEnd);
           }
           break;
@@ -925,7 +932,10 @@ export async function registerRoutes(
           const stripeCustomerId = sub.customer as string;
           const stripeSubId = sub.id;
           const subStatus = sub.status;
-          const periodEnd = new Date(sub.current_period_end * 1000);
+          const rawEnd = sub.current_period_end;
+          const periodEnd = rawEnd && rawEnd > 0
+            ? new Date(rawEnd * 1000)
+            : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
           let status: "active" | "canceled" | "expired" = "active";
           if (subStatus === "canceled" || subStatus === "unpaid") {

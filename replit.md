@@ -275,10 +275,12 @@ A BlaBlaCar-inspired Dutch-language rental alert application for the German mark
 - `GET /api/estimate?city=&minPrice=&maxPrice=&minRooms=&minSize=` — Returns `{ perWeekEstimate, last7dCount }` based on Supabase listings
 - `POST /api/checkout/session` — Creates Stripe checkout session (requires auth, `{ plan: "monthly"|"two_month"|"three_month" }`)
 - `POST /api/checkout` — Legacy checkout endpoint (maps old plan IDs to new ones)
+- `POST /api/checkout/verify` — Verifies Stripe checkout session and syncs subscription to DB (requires auth, `{ session_id }`)
 - `GET /api/stripe/publishable-key` — Returns Stripe publishable key
 - `POST /api/stripe/webhook` — Stripe webhook (handles checkout.session.completed, subscription created/updated/deleted)
 - `POST /api/subscription/ensure-trial` — Creates trial subscription row if none exists (auth required)
 - `GET /api/subscription/status` — Returns subscription state with isActive/isTrial/isExpired booleans (auth required)
+- **Stripe period_end guard**: All code paths that read `current_period_end` from Stripe handle null/0 by falling back to now + 30 days (test-mode Stripe subscriptions may return null)
 - `GET /api/matches` — Returns user's matches with listing details (auth required)
 - `PATCH /api/matches/:listingId/applied` — Sets applied status on a match (auth required, `{ applied: boolean }`)
 - `GET /api/matches/applied` — Returns listing IDs the user has marked as applied (auth required)
