@@ -204,6 +204,11 @@ ALTER TABLE search_profiles ADD COLUMN IF NOT EXISTS target_categories TEXT[];
 -- -----------------------------------------------
 -- Migration 015: Advanced filter columns on listings
 -- -----------------------------------------------
+-- NOTE: furnished is now decoupled from other advanced columns in the code.
+-- You can run JUST the furnished lines (migration 016) to enable furnished filtering,
+-- OR run the full migration 015 to enable all advanced columns at once.
+-- All statements are idempotent — safe to run both.
+
 ALTER TABLE listings ADD COLUMN IF NOT EXISTS furnished BOOLEAN DEFAULT NULL;
 ALTER TABLE listings ADD COLUMN IF NOT EXISTS pets_allowed BOOLEAN DEFAULT NULL;
 ALTER TABLE listings ADD COLUMN IF NOT EXISTS balcony BOOLEAN DEFAULT NULL;

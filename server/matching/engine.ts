@@ -48,20 +48,29 @@ interface DbListing {
 
 const LISTING_SELECT = "id, source, url, title, city, price, bedrooms, size_m2, furnished, pets_allowed, balcony, elevator, district, latitude, longitude, extra_features, target_categories";
 
+let hasFurnishedColumn: boolean | null = null;
 let hasAdvancedListingColumns: boolean | null = null;
+
+async function checkFurnishedColumn(): Promise<boolean> {
+  if (hasFurnishedColumn !== null) return hasFurnishedColumn;
+  const { error } = await supabase.from("listings").select("furnished").limit(1);
+  hasFurnishedColumn = !error;
+  return hasFurnishedColumn;
+}
 
 async function checkAdvancedListingColumns(): Promise<boolean> {
   if (hasAdvancedListingColumns !== null) return hasAdvancedListingColumns;
-  const { error } = await supabase.from("listings").select("furnished, pets_allowed, balcony, elevator, district").limit(1);
+  const { error } = await supabase.from("listings").select("pets_allowed, balcony, elevator, district").limit(1);
   hasAdvancedListingColumns = !error;
   return hasAdvancedListingColumns;
 }
 
 function getListingSelect(): string {
-  if (hasAdvancedListingColumns === false) {
-    return "id, source, url, title, city, price, bedrooms, size_m2";
-  }
-  return LISTING_SELECT;
+  const base = "id, source, url, title, city, price, bedrooms, size_m2";
+  const parts = [base];
+  if (hasFurnishedColumn !== false) parts.push("furnished");
+  if (hasAdvancedListingColumns !== false) parts.push("pets_allowed, balcony, elevator, district, latitude, longitude, extra_features, target_categories");
+  return parts.join(", ");
 }
 
 export interface FilterCheck {
@@ -161,18 +170,26 @@ export function explainMatchInternal(listing: DbListing, profile: SearchProfile)
 
   if (profile.furnished && profile.furnished !== "any" && profile.furnished !== "no_preference") {
     const listingFurnished = listing.furnished ?? null;
-    const furnishedPassed = listingFurnished === true;
+    let furnishedPassed: boolean;
+    let rule: string;
+    if (profile.furnished === "unfurnished") {
+      furnishedPassed = listingFurnished === false;
+      rule = "strict: profile requires unfurnished → listing.furnished must be false (null = unknown = rejected)";
+    } else {
+      furnishedPassed = listingFurnished === true;
+      rule = "strict: profile requires furnished → listing.furnished must be true (null = unknown = rejected)";
+    }
     checks.push({
       filter: "furnished",
       profileField: "furnished",
       profileValue: profile.furnished,
       listingField: "furnished",
       listingValue: String(listingFurnished),
-      rule: "strict: profile requires furnished → listing.furnished must be true (null = unknown = rejected)",
+      rule,
       passed: furnishedPassed,
     });
     if (!furnishedPassed) {
-      return { matched: false, checks, reason: `Furnished required but listing.furnished=${listingFurnished}` };
+      return { matched: false, checks, reason: `Furnished filter: profile=${profile.furnished} but listing.furnished=${listingFurnished}` };
     }
   }
 
@@ -232,6 +249,7 @@ export async function explainMatch(
   listingId: string,
   profileId: string
 ): Promise<MatchExplanation & { listing?: DbListing; profile?: SearchProfile }> {
+  await checkFurnishedColumn();
   await checkAdvancedListingColumns();
 
   const { data: listing } = await supabase
@@ -265,6 +283,7 @@ export async function explainMatch(
 export async function explainAllProfilesForListing(
   listingId: string
 ): Promise<{ listing: DbListing | null; results: Array<{ profileId: string; city: string; matched: boolean; reason: string; checks: FilterCheck[] }> }> {
+  await checkFurnishedColumn();
   await checkAdvancedListingColumns();
 
   const { data: listing } = await supabase
@@ -343,6 +362,7 @@ async function insertMatchIfNew(
 export async function matchListingAgainstProfiles(listingId: string): Promise<number> {
   log(`[MATCH ENGINE START] matchListingAgainstProfiles listing=${listingId}`);
 
+  await checkFurnishedColumn();
   await checkAdvancedListingColumns();
 
   const { data: listing, error: lErr } = await supabase
@@ -413,6 +433,7 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
 export async function backfillMatchesForSearchProfile(searchProfileId: string): Promise<number> {
   log(`[MATCH ENGINE START] backfillMatchesForSearchProfile profile=${searchProfileId}`);
 
+  await checkFurnishedColumn();
   await checkAdvancedListingColumns();
 
   const { data: profile, error: pErr } = await supabase

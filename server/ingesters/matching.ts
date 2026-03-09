@@ -74,18 +74,30 @@ async function checkImageUrlColumn(): Promise<boolean> {
   return hasImageUrlColumn;
 }
 
+let hasFurnishedColumn: boolean | null = null;
+
+async function checkFurnishedColumn(): Promise<boolean> {
+  if (hasFurnishedColumn !== null) return hasFurnishedColumn;
+  const { error } = await supabase.from("listings").select("furnished").limit(1);
+  hasFurnishedColumn = !error;
+  if (!hasFurnishedColumn) {
+    log("furnished column not found — run migration 016_listings_furnished.sql in Supabase SQL Editor");
+  }
+  return hasFurnishedColumn;
+}
+
 async function checkAdvancedColumns(): Promise<boolean> {
   if (hasAdvancedColumns !== null) return hasAdvancedColumns;
-  const { error } = await supabase.from("listings").select("furnished, pets_allowed, balcony, elevator, district").limit(1);
+  const { error } = await supabase.from("listings").select("pets_allowed, balcony, elevator, district").limit(1);
   hasAdvancedColumns = !error;
   if (!hasAdvancedColumns) {
-    log("Advanced columns (furnished, pets_allowed, etc.) not found — run migration 015_listings_advanced_columns.sql in Supabase SQL Editor");
+    log("Advanced columns (pets_allowed, balcony, etc.) not found — run migration 015 in Supabase SQL Editor");
   }
   return hasAdvancedColumns;
 }
 
 const ADVANCED_FIELDS: (keyof ParsedListing)[] = [
-  "furnished", "pets_allowed", "balcony", "elevator",
+  "pets_allowed", "balcony", "elevator",
   "district", "latitude", "longitude", "extra_features", "target_categories",
 ];
 
@@ -94,6 +106,7 @@ export async function insertAndMatchListings(
 ): Promise<{ inserted: number; duplicates: number; matches: number; errors: number }> {
   const useSourceId = await checkSourceIdColumn();
   const useImageUrl = await checkImageUrlColumn();
+  const useFurnished = await checkFurnishedColumn();
   const useAdvanced = await checkAdvancedColumns();
 
   let inserted = 0;
@@ -137,6 +150,9 @@ export async function insertAndMatchListings(
         if (useImageUrl && listing.image_url) {
           updateData.image_url = listing.image_url;
         }
+        if (useFurnished && listing.furnished != null) {
+          updateData.furnished = listing.furnished;
+        }
         if (useAdvanced) {
           for (const field of ADVANCED_FIELDS) {
             if (listing[field] != null) {
@@ -168,6 +184,10 @@ export async function insertAndMatchListings(
 
     if (useSourceId) {
       insertData.source_id = listing.source_id;
+    }
+
+    if (useFurnished && listing.furnished != null) {
+      insertData.furnished = listing.furnished;
     }
 
     if (useAdvanced) {
