@@ -39,6 +39,38 @@ function parseSize(html: string): number {
   return 0;
 }
 
+const FURNISHED_PATTERNS = /möbliert|furnished|teilmöbliert|voll\s*möbliert/i;
+const PETS_PATTERNS = /haustier|pet|tiere?\s*erlaubt/i;
+const BALCONY_PATTERNS = /balkon|balcony|terrasse|loggia/i;
+const ELEVATOR_PATTERNS = /aufzug|fahrstuhl|elevator|lift/i;
+
+function extractFeatures(cardText: string): {
+  furnished: boolean | null;
+  pets_allowed: boolean | null;
+  balcony: boolean | null;
+  elevator: boolean | null;
+} {
+  return {
+    furnished: FURNISHED_PATTERNS.test(cardText) ? true : null,
+    pets_allowed: PETS_PATTERNS.test(cardText) ? true : null,
+    balcony: BALCONY_PATTERNS.test(cardText) ? true : null,
+    elevator: ELEVATOR_PATTERNS.test(cardText) ? true : null,
+  };
+}
+
+function extractDistrict(title: string, city: string): string | null {
+  const match = title.match(/in\s+[\w-]+-(.+?)(?:\.|$)/i);
+  if (match) return match[1].trim();
+  const parts = title.split(",").map(p => p.trim());
+  if (parts.length >= 2) {
+    const last = parts[parts.length - 1];
+    if (last.toLowerCase() !== city.toLowerCase() && !last.match(/\d/)) {
+      return last;
+    }
+  }
+  return null;
+}
+
 async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
   const searchUrl = getWgGesuchtUrl(city);
   if (!searchUrl) {
@@ -102,6 +134,10 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
       imageUrl = WG_GESUCHT_BASE + imageUrl;
     }
 
+    const cardText = card.text();
+    const features = extractFeatures(cardText);
+    const district = extractDistrict(title, city);
+
     listings.push({
       title,
       url: fullUrl,
@@ -112,6 +148,11 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
       source: "wg-gesucht",
       source_id: sourceId,
       image_url: imageUrl,
+      furnished: features.furnished,
+      pets_allowed: features.pets_allowed,
+      balcony: features.balcony,
+      elevator: features.elevator,
+      district,
     });
   });
 
@@ -137,4 +178,3 @@ export function createWgGesuchtIngester(city: string): Ingester {
     },
   };
 }
-

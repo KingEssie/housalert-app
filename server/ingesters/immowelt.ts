@@ -30,6 +30,41 @@ function extractSourceId(exposeUrl: string): string {
   return match ? match[1] : "";
 }
 
+const FURNISHED_PATTERNS = /möbliert|furnished|teilmöbliert|voll\s*möbliert/i;
+const PETS_PATTERNS = /haustier|pet|tiere?\s*erlaubt/i;
+const BALCONY_PATTERNS = /balkon|balcony|terrasse|loggia/i;
+const ELEVATOR_PATTERNS = /aufzug|fahrstuhl|elevator|lift/i;
+
+function extractFeatures(text: string): {
+  furnished: boolean | null;
+  pets_allowed: boolean | null;
+  balcony: boolean | null;
+  elevator: boolean | null;
+} {
+  return {
+    furnished: FURNISHED_PATTERNS.test(text) ? true : null,
+    pets_allowed: PETS_PATTERNS.test(text) ? true : null,
+    balcony: BALCONY_PATTERNS.test(text) ? true : null,
+    elevator: ELEVATOR_PATTERNS.test(text) ? true : null,
+  };
+}
+
+function extractDistrict(address: string, city: string): string | null {
+  const parts = address.split(",").map(p => p.trim());
+  if (parts.length >= 2) {
+    for (const part of parts) {
+      if (part.toLowerCase() !== city.toLowerCase() && !part.match(/^\d/) && part.length > 1) {
+        return part;
+      }
+    }
+  }
+  const match = address.match(/(\S+),\s*\d/);
+  if (match && match[1].toLowerCase() !== city.toLowerCase()) {
+    return match[1];
+  }
+  return null;
+}
+
 async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
   const searchUrl = getImmoweltUrl(city);
   log(`Fetching Immowelt ${city} listings...`);
@@ -87,6 +122,10 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
       if (raw && raw.startsWith("http")) imageUrl = raw;
     }
 
+    const cardText = card.text();
+    const features = extractFeatures(cardText);
+    const district = extractDistrict(address, city);
+
     listings.push({
       title,
       url: fullUrl,
@@ -97,6 +136,11 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
       source: "immowelt",
       source_id: sourceId,
       image_url: imageUrl,
+      furnished: features.furnished,
+      pets_allowed: features.pets_allowed,
+      balcony: features.balcony,
+      elevator: features.elevator,
+      district,
     });
   });
 
@@ -122,4 +166,3 @@ export function createImmoweltIngester(city: string): Ingester {
     },
   };
 }
-

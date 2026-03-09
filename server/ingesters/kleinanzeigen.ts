@@ -38,6 +38,25 @@ function parseRooms(text: string): number {
   return 0;
 }
 
+const FURNISHED_PATTERNS = /möbliert|furnished|teilmöbliert|voll\s*möbliert/i;
+const PETS_PATTERNS = /haustier|pet|tiere?\s*erlaubt/i;
+const BALCONY_PATTERNS = /balkon|balcony|terrasse|loggia/i;
+const ELEVATOR_PATTERNS = /aufzug|fahrstuhl|elevator|lift/i;
+
+function extractFeatures(text: string): {
+  furnished: boolean | null;
+  pets_allowed: boolean | null;
+  balcony: boolean | null;
+  elevator: boolean | null;
+} {
+  return {
+    furnished: FURNISHED_PATTERNS.test(text) ? true : null,
+    pets_allowed: PETS_PATTERNS.test(text) ? true : null,
+    balcony: BALCONY_PATTERNS.test(text) ? true : null,
+    elevator: ELEVATOR_PATTERNS.test(text) ? true : null,
+  };
+}
+
 async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
   const searchUrl = getKleinanzeigenUrl(city);
   if (!searchUrl) {
@@ -92,6 +111,9 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
       imageUrl = imageUrl.replace(/\?rule=\$_\d+\.AUTO/, "?rule=$_35.AUTO");
     }
 
+    const cardText = card.text() + " " + title;
+    const features = extractFeatures(cardText);
+
     listings.push({
       title,
       url: fullUrl,
@@ -102,6 +124,10 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
       source: "kleinanzeigen",
       source_id: sourceId,
       image_url: imageUrl,
+      furnished: features.furnished,
+      pets_allowed: features.pets_allowed,
+      balcony: features.balcony,
+      elevator: features.elevator,
     });
   });
 
@@ -127,4 +153,3 @@ export function createKleinanzeigenIngester(city: string): Ingester {
     },
   };
 }
-

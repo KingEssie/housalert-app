@@ -24,6 +24,15 @@ export interface ParsedListing {
   source: string;
   source_id: string;
   image_url?: string | null;
+  furnished?: boolean | null;
+  pets_allowed?: boolean | null;
+  balcony?: boolean | null;
+  elevator?: boolean | null;
+  district?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  extra_features?: string[] | null;
+  target_categories?: string[] | null;
 }
 
 interface DbListing {
@@ -43,6 +52,7 @@ export async function runMatchingForListing(listing: DbListing): Promise<number>
 
 let hasSourceIdColumn: boolean | null = null;
 let hasImageUrlColumn: boolean | null = null;
+let hasAdvancedColumns: boolean | null = null;
 
 async function checkSourceIdColumn(): Promise<boolean> {
   if (hasSourceIdColumn !== null) return hasSourceIdColumn;
@@ -64,11 +74,27 @@ async function checkImageUrlColumn(): Promise<boolean> {
   return hasImageUrlColumn;
 }
 
+async function checkAdvancedColumns(): Promise<boolean> {
+  if (hasAdvancedColumns !== null) return hasAdvancedColumns;
+  const { error } = await supabase.from("listings").select("furnished, pets_allowed, balcony, elevator, district").limit(1);
+  hasAdvancedColumns = !error;
+  if (!hasAdvancedColumns) {
+    log("Advanced columns (furnished, pets_allowed, etc.) not found — run migration 015_listings_advanced_columns.sql in Supabase SQL Editor");
+  }
+  return hasAdvancedColumns;
+}
+
+const ADVANCED_FIELDS: (keyof ParsedListing)[] = [
+  "furnished", "pets_allowed", "balcony", "elevator",
+  "district", "latitude", "longitude", "extra_features", "target_categories",
+];
+
 export async function insertAndMatchListings(
   parsed: ParsedListing[]
 ): Promise<{ inserted: number; duplicates: number; matches: number; errors: number }> {
   const useSourceId = await checkSourceIdColumn();
   const useImageUrl = await checkImageUrlColumn();
+  const useAdvanced = await checkAdvancedColumns();
 
   let inserted = 0;
   let duplicates = 0;
@@ -107,8 +133,19 @@ export async function insertAndMatchListings(
     if (isDuplicate) {
       if (duplicateId) {
         trackListingSeen(duplicateId, listing.source, listing.source_id).catch(() => {});
+        const updateData: Record<string, any> = {};
         if (useImageUrl && listing.image_url) {
-          supabase.from("listings").update({ image_url: listing.image_url }).eq("id", duplicateId).then(() => {}).catch(() => {});
+          updateData.image_url = listing.image_url;
+        }
+        if (useAdvanced) {
+          for (const field of ADVANCED_FIELDS) {
+            if (listing[field] != null) {
+              updateData[field] = listing[field];
+            }
+          }
+        }
+        if (Object.keys(updateData).length > 0) {
+          supabase.from("listings").update(updateData).eq("id", duplicateId).then(() => {}).catch(() => {});
         }
       }
       duplicates++;
@@ -131,6 +168,14 @@ export async function insertAndMatchListings(
 
     if (useSourceId) {
       insertData.source_id = listing.source_id;
+    }
+
+    if (useAdvanced) {
+      for (const field of ADVANCED_FIELDS) {
+        if (listing[field] != null) {
+          insertData[field] = listing[field];
+        }
+      }
     }
 
     const { data: row, error: insertErr } = await supabase

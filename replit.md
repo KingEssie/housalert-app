@@ -371,18 +371,26 @@ CREATE TABLE listings (
   price integer DEFAULT 0,
   bedrooms integer DEFAULT 0,
   size_m2 integer DEFAULT 0,
-  created_at timestamptz DEFAULT now()
+  image_url text,
+  furnished boolean,
+  pets_allowed boolean,
+  balcony boolean,
+  elevator boolean,
+  district text,
+  latitude double precision,
+  longitude double precision,
+  extra_features text[],
+  target_categories text[],
+  created_at timestamptz DEFAULT now(),
+  first_seen_at timestamptz DEFAULT now(),
+  last_seen_at timestamptz DEFAULT now()
 );
 ALTER TABLE listings ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Authenticated can select listings" ON listings FOR SELECT TO authenticated USING (true);
 CREATE POLICY "Authenticated can insert listings" ON listings FOR INSERT TO authenticated WITH CHECK (true);
 ```
 
-**Optional migration** (if `source_id` column was not created with the table):
-```sql
-ALTER TABLE listings ADD COLUMN IF NOT EXISTS source_id text DEFAULT '';
-CREATE UNIQUE INDEX IF NOT EXISTS listings_source_source_id_idx ON listings (source, source_id) WHERE source_id != '';
-```
+**Advanced filter columns** (migration 015): furnished, pets_allowed, balcony, elevator, district, latitude, longitude, extra_features, target_categories. These are populated by ingesters (wg-gesucht, immowelt, kleinanzeigen) and checked by the match engine.
 
 ### matches
 

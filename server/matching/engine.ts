@@ -18,6 +18,12 @@ interface SearchProfile {
   price_max: number;
   bedrooms_min: number;
   size_min: number;
+  furnished?: string | null;
+  extra_features?: string[] | null;
+  target_categories?: string[] | null;
+  districts?: string[] | null;
+  property_types?: string[] | null;
+  location_mode?: string | null;
 }
 
 interface DbListing {
@@ -29,6 +35,33 @@ interface DbListing {
   price: number;
   bedrooms: number;
   size_m2: number;
+  furnished?: boolean | null;
+  pets_allowed?: boolean | null;
+  balcony?: boolean | null;
+  elevator?: boolean | null;
+  district?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  extra_features?: string[] | null;
+  target_categories?: string[] | null;
+}
+
+const LISTING_SELECT = "id, source, url, title, city, price, bedrooms, size_m2, furnished, pets_allowed, balcony, elevator, district, latitude, longitude, extra_features, target_categories";
+
+let hasAdvancedListingColumns: boolean | null = null;
+
+async function checkAdvancedListingColumns(): Promise<boolean> {
+  if (hasAdvancedListingColumns !== null) return hasAdvancedListingColumns;
+  const { error } = await supabase.from("listings").select("furnished, pets_allowed, balcony, elevator, district").limit(1);
+  hasAdvancedListingColumns = !error;
+  return hasAdvancedListingColumns;
+}
+
+function getListingSelect(): string {
+  if (hasAdvancedListingColumns === false) {
+    return "id, source, url, title, city, price, bedrooms, size_m2";
+  }
+  return LISTING_SELECT;
 }
 
 export interface FilterCheck {
@@ -47,7 +80,21 @@ export interface MatchExplanation {
   reason: string;
 }
 
-function explainMatchInternal(listing: DbListing, profile: SearchProfile): MatchExplanation {
+function mapExtraFeatureToListingField(feature: string, listing: DbListing): { value: boolean | null; fieldName: string } {
+  switch (feature) {
+    case "pets_allowed": return { value: listing.pets_allowed ?? null, fieldName: "pets_allowed" };
+    case "balcony": return { value: listing.balcony ?? null, fieldName: "balcony" };
+    case "elevator":
+    case "lift": return { value: listing.elevator ?? null, fieldName: "elevator" };
+    case "parking":
+    case "garden":
+    case "basement":
+      return { value: null, fieldName: feature };
+    default: return { value: null, fieldName: feature };
+  }
+}
+
+export function explainMatchInternal(listing: DbListing, profile: SearchProfile): MatchExplanation {
   const checks: FilterCheck[] = [];
   const listingCity = listing.city.toLowerCase().trim();
   const profileCity = (profile.city_name || profile.city || "").toLowerCase().trim();
@@ -112,6 +159,68 @@ function explainMatchInternal(listing: DbListing, profile: SearchProfile): Match
   });
   if (!sizePassed) return { matched: false, checks, reason: `Size ${listing.size_m2}m² < min ${profile.size_min}m²` };
 
+  if (profile.furnished && profile.furnished !== "any" && profile.furnished !== "no_preference") {
+    const listingFurnished = listing.furnished ?? null;
+    const furnishedPassed = listingFurnished === true;
+    checks.push({
+      filter: "furnished",
+      profileField: "furnished",
+      profileValue: profile.furnished,
+      listingField: "furnished",
+      listingValue: String(listingFurnished),
+      rule: "strict: profile requires furnished → listing.furnished must be true (null = unknown = rejected)",
+      passed: furnishedPassed,
+    });
+    if (!furnishedPassed) {
+      return { matched: false, checks, reason: `Furnished required but listing.furnished=${listingFurnished}` };
+    }
+  }
+
+  if (profile.extra_features && profile.extra_features.length > 0) {
+    for (const feature of profile.extra_features) {
+      const { value, fieldName } = mapExtraFeatureToListingField(feature, listing);
+      const featurePassed = value === true;
+      checks.push({
+        filter: `extra_feature:${feature}`,
+        profileField: "extra_features",
+        profileValue: feature,
+        listingField: fieldName,
+        listingValue: String(value),
+        rule: `strict: profile requires ${feature} → listing.${fieldName} must be true (null = unknown = rejected)`,
+        passed: featurePassed,
+      });
+      if (!featurePassed) {
+        return { matched: false, checks, reason: `Feature "${feature}" required but listing.${fieldName}=${value}` };
+      }
+    }
+  }
+
+  if (profile.districts && profile.districts.length > 0) {
+    const listingDistrict = (listing.district ?? "").toLowerCase().trim();
+    let districtPassed = false;
+    if (listingDistrict) {
+      districtPassed = profile.districts.some(d =>
+        listingDistrict.includes(d.toLowerCase().trim()) ||
+        d.toLowerCase().trim().includes(listingDistrict)
+      );
+    }
+    checks.push({
+      filter: "district",
+      profileField: "districts",
+      profileValue: JSON.stringify(profile.districts),
+      listingField: "district",
+      listingValue: listing.district ?? "(null)",
+      rule: "strict: listing.district must be present and match one of profile.districts (null = unknown = rejected)",
+      passed: districtPassed,
+    });
+    if (!districtPassed) {
+      const reason = !listingDistrict
+        ? `District required but listing.district is null/empty`
+        : `District "${listing.district}" not in profile districts ${JSON.stringify(profile.districts)}`;
+      return { matched: false, checks, reason };
+    }
+  }
+
   return { matched: true, checks, reason: "All active filters passed" };
 }
 
@@ -123,9 +232,11 @@ export async function explainMatch(
   listingId: string,
   profileId: string
 ): Promise<MatchExplanation & { listing?: DbListing; profile?: SearchProfile }> {
+  await checkAdvancedListingColumns();
+
   const { data: listing } = await supabase
     .from("listings")
-    .select("id, source, url, title, city, price, bedrooms, size_m2")
+    .select(getListingSelect())
     .eq("id", listingId)
     .single();
 
@@ -154,9 +265,11 @@ export async function explainMatch(
 export async function explainAllProfilesForListing(
   listingId: string
 ): Promise<{ listing: DbListing | null; results: Array<{ profileId: string; city: string; matched: boolean; reason: string; checks: FilterCheck[] }> }> {
+  await checkAdvancedListingColumns();
+
   const { data: listing } = await supabase
     .from("listings")
-    .select("id, source, url, title, city, price, bedrooms, size_m2")
+    .select(getListingSelect())
     .eq("id", listingId)
     .single();
 
@@ -230,9 +343,11 @@ async function insertMatchIfNew(
 export async function matchListingAgainstProfiles(listingId: string): Promise<number> {
   log(`[MATCH ENGINE START] matchListingAgainstProfiles listing=${listingId}`);
 
+  await checkAdvancedListingColumns();
+
   const { data: listing, error: lErr } = await supabase
     .from("listings")
-    .select("id, source, url, title, city, price, bedrooms, size_m2")
+    .select(getListingSelect())
     .eq("id", listingId)
     .single();
 
@@ -298,6 +413,8 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
 export async function backfillMatchesForSearchProfile(searchProfileId: string): Promise<number> {
   log(`[MATCH ENGINE START] backfillMatchesForSearchProfile profile=${searchProfileId}`);
 
+  await checkAdvancedListingColumns();
+
   const { data: profile, error: pErr } = await supabase
     .from("search_profiles")
     .select("*")
@@ -311,12 +428,11 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
 
   const sp = profile as SearchProfile;
 
-
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
   const { data: listings, error: lErr } = await supabase
     .from("listings")
-    .select("id, source, url, title, city, price, bedrooms, size_m2")
+    .select(getListingSelect())
     .gte("created_at", sevenDaysAgo);
 
   if (lErr || !listings || listings.length === 0) {
