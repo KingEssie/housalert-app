@@ -95,13 +95,18 @@ async function main() {
     .select("listing_id")
     .eq("user_id", userId);
 
-  const ids = (matches || []).map((m) => m.listing_id);
+  const ids = [...new Set((matches || []).map((m: any) => m.listing_id))];
 
-  const { data: listings } = await supabase
-    .from("listings")
-    .select("id, source, url, title")
-    .in("id", ids)
-    .is("image_url", null);
+  const listings: any[] = [];
+  for (let i = 0; i < ids.length; i += 50) {
+    const batch = ids.slice(i, i + 50);
+    const { data } = await supabase
+      .from("listings")
+      .select("id, source, url, title")
+      .in("id", batch)
+      .is("image_url", null);
+    if (data) listings.push(...data);
+  }
 
   if (!listings || listings.length === 0) {
     console.log("All listings have images!");

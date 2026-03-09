@@ -422,9 +422,11 @@ export async function registerRoutes(
         };
       });
 
-      result.sort((a: any, b: any) => (b.match_score ?? 0) - (a.match_score ?? 0));
+      const validResults = result.filter((r: any) => r.title !== null);
 
-      return res.json(result);
+      validResults.sort((a: any, b: any) => (b.match_score ?? 0) - (a.match_score ?? 0));
+
+      return res.json(validResults);
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
     }
@@ -492,7 +494,7 @@ export async function registerRoutes(
 
       const { data, error } = await supabase
         .from("listings")
-        .select("id, title, price, size_m2, bedrooms, city, district, source, url, image_url, created_at")
+        .select("id, title, price, size_m2, bedrooms, city, source, url, image_url, created_at")
         .eq("id", id)
         .single();
 

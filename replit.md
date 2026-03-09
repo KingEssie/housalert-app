@@ -247,6 +247,12 @@ A BlaBlaCar-inspired Dutch-language rental alert application for the German mark
 - Replaces: old `SpeedReadinessCard` from profile-strength.tsx (still exported but unused)
 - Clickable incomplete items navigate to relevant settings pages
 
+### Listings Table (Supabase)
+- Columns: `id`, `source`, `source_id`, `url`, `title`, `city`, `price`, `bedrooms`, `size_m2`, `image_url`, `created_at`
+- **No `district` column** — the `district` column does NOT exist on the `listings` table. Do not query or reference it.
+- Image sources: wg-gesucht provides `image_url` most reliably; kleinanzeigen, immowelt, wohnungsboerse have partial coverage
+- Backfill script: `server/scripts/backfill-images.ts` — fetches og:image from listing URLs for listings without images (batches IDs in groups of 50)
+
 ### Application Letter System & Quick-Apply ("Reageer nu")
 - `client/src/lib/application-letter.ts` — Default Dutch template, placeholder definitions, `fillTemplate()` function
 - Placeholders: [[ADRES]], [[STAD]], [[NAAM]], [[EMAIL]], [[TELEFOON]], [[BEROEP]], [[INKOMEN]], [[PRIJS]]

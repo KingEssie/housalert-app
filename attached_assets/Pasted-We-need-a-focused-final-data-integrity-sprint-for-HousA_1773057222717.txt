@@ -1,0 +1,171 @@
+We need a focused final data-integrity sprint for HousAlert.
+
+Important:
+- Do NOT redesign the app.
+- Do NOT touch working subscription activation logic.
+- Keep all current styling unless explicitly mentioned below.
+- Focus only on the remaining issues below.
+
+==================================================
+1. HIDE "ABONNEMENT WIJZIGEN"
+==================================================
+
+Decision:
+For now, hide/remove the "Abonnement wijzigen" action from the subscription screen.
+
+Reason:
+At this MVP stage, plan switching is not needed and may cause confusion or accidental re-billing.
+
+Required:
+- hide or remove "Abonnement wijzigen"
+- keep the rest of the subscription screen intact
+- keep:
+  - betaalmethode beheren
+  - auto-renew display
+  - relevant subscription details
+
+Also:
+- change the small "Actief" badge to the pink accent color used elsewhere in the app
+
+==================================================
+2. MATCH DETAIL STILL OPENS "ADVERTENTIE NIET GEVONDEN"
+==================================================
+
+Current issue:
+Visible matches exist in the matches overview.
+But when a user taps a match, the app opens a detail page that says:
+"Advertentie niet gevonden"
+
+This means the main matches list is showing items whose detail target is not resolving correctly.
+
+This is now a top-priority data integrity issue.
+
+Please trace the full relationship between:
+- match record
+- listing record
+- source identifier
+- source URL
+- app detail route
+- detail fetch query
+
+Check all of this carefully:
+
+A. FRONTEND ROUTING
+- Which ID is passed when tapping a match?
+- Is the app accidentally passing a match ID where it should pass a listing ID?
+- Is the route expecting listing_id, match_id, or source_listing_id?
+- Is the frontend opening the correct detail route?
+
+B. BACKEND LOOKUP
+- Which table is used to fetch the detail page data?
+- Is it looking up by the correct key?
+- Does the detail endpoint expect a different field than the frontend sends?
+
+C. DATABASE INTEGRITY
+- For the visible matches currently shown in the UI, does the referenced listing row actually still exist?
+- Is there a broken foreign key / soft-deleted row / stale pointer?
+- Are matches being generated from listings that later become unavailable without the app handling that properly?
+
+D. SOURCE/LISTING VALIDITY
+- If a source listing disappears from the source website, what happens in our DB?
+- Are we still showing the match even though its detail target is gone?
+- If so, this should be handled gracefully.
+
+==================================================
+3. REQUIRED MATCH DETAIL BEHAVIOR
+==================================================
+
+Correct behavior must be:
+
+CASE A — listing exists and is valid:
+- tapping the match opens the correct detail page
+- show the listing data
+- show CTA to react / view official source
+
+CASE B — listing no longer exists:
+- do NOT silently break
+- do NOT show normal matches card that looks valid if detail is already unavailable
+- either:
+  1. remove such broken matches from visible active matches
+  OR
+  2. intentionally show a graceful unavailable state, but only if that is a conscious product decision
+
+For now, preferred solution:
+- if the listing detail target is invalid, do NOT show it as an active clickable match in the visible match list
+
+==================================================
+4. MATCH IMAGES ARE STILL MISSING
+==================================================
+
+Current issue:
+Matches in the overview still show placeholder/empty image state.
+
+Please investigate per source:
+- is the main image being scraped?
+- is it stored?
+- is it returned?
+- is the frontend rendering the correct field?
+
+Check:
+1. source scraper extraction
+2. DB storage field
+3. API response mapping
+4. frontend image binding
+
+Identify exactly why images are missing for current visible matches.
+
+Required:
+- whenever a valid main image exists, render it in the match card
+- if the source does not provide a stable image, use a deliberate fallback
+- do not leave it as a broken black placeholder if data could be available
+
+==================================================
+5. PREFERRED IMPLEMENTATION STRATEGY
+==================================================
+
+Please do this in this order:
+
+STEP 1
+Hide/remove "Abonnement wijzigen"
+Change "Actief" badge to pink
+
+STEP 2
+Trace one real visible match from the UI all the way through:
+- match card in frontend
+- ID passed on click
+- API/route
+- DB lookup
+- listing existence
+- source URL
+
+STEP 3
+Fix the detail resolution bug so valid matches open correctly
+
+STEP 4
+Fix image pipeline for current visible matches
+
+STEP 5
+Make sure invalid/broken matches are not shown as active matches in the main list
+
+==================================================
+6. REPORT BACK
+==================================================
+
+After implementation, report back with:
+
+1. Whether "Abonnement wijzigen" was removed/hidden
+2. Whether the "Actief" badge was recolored pink
+3. The exact root cause of the "Advertentie niet gevonden" issue
+4. Whether the bug was caused by:
+   - wrong route param
+   - wrong id mapping
+   - missing listing row
+   - broken DB relationship
+   - stale match record
+   - source deletion
+5. Which exact field/key is now used to open match detail correctly
+6. Exact reason images were missing
+7. Which sources now show working images
+8. Which files changed
+9. Confirmation that tapping visible matches now opens a valid detail page
+10. Confirmation that broken/unresolvable matches are no longer shown as active visible matches

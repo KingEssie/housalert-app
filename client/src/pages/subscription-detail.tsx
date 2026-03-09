@@ -99,7 +99,16 @@ export default function SubscriptionDetailPage() {
               <p className="text-[16px] font-semibold" style={{ color: "var(--yo-dark)" }} data-testid="text-plan-name">
                 {subscription?.isTrial ? "Proefperiode" : getPlanLabel(subscription?.plan)}
               </p>
-              <Badge variant={statusVariant as any} className="mt-1" data-testid="badge-subscription-status">
+              <Badge
+                className="mt-1"
+                style={
+                  (subscription?.isActive || subscription?.isTrial)
+                    ? { backgroundColor: "var(--yo-pink)", color: "#fff" }
+                    : undefined
+                }
+                variant={subscription?.isActive || subscription?.isTrial ? "default" : "secondary"}
+                data-testid="badge-subscription-status"
+              >
                 {statusLabel}
               </Badge>
             </div>
@@ -163,13 +172,6 @@ export default function SubscriptionDetailPage() {
           <div className="px-5 pt-5 pb-2">
             <p className="text-[13px] font-semibold uppercase tracking-wider" style={{ color: "var(--yo-muted)" }}>Beheren</p>
           </div>
-
-          <ActionRow
-            label="Abonnement wijzigen"
-            onClick={() => navigate("/paywall")}
-            testId="button-change-plan"
-          />
-          <div className="mx-5" style={{ borderBottom: "1px solid var(--yo-divider)" }} />
 
           <ActionRow
             label="Betaalmethode beheren"
