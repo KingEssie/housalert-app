@@ -12,13 +12,16 @@ A BlaBlaCar-inspired Dutch-language rental alert application for the German mark
 
 ## Architecture
 
-### Onboarding Funnel (Phase 1)
+### Onboarding Flow (Unified)
+- **Single onboarding path**: Search profiles are ONLY created in the post-auth onboarding wizard (`/onboarding`). The pre-auth funnel pages (landing → location → filters → estimate → signup) are a marketing funnel only — they do NOT create search profiles.
 - `client/src/pages/landing.tsx` — Landing page at `/` with hero, features, how-it-works
-- `client/src/pages/onboarding-location.tsx` — Step 1: City selection at `/onboarding/location`
-- `client/src/pages/onboarding-filters.tsx` — Step 2: Filters at `/onboarding/filters`
-- `client/src/pages/onboarding-estimate.tsx` — Step 3: Estimate display at `/onboarding/estimate`
-- `client/src/pages/signup.tsx` — Account creation at `/signup` (creates search profile)
-- `client/src/pages/paywall.tsx` — Subscription plans at `/paywall` (Stripe placeholder)
+- `client/src/pages/onboarding-location.tsx` — Pre-auth funnel Step 1: City selection at `/onboarding/location`
+- `client/src/pages/onboarding-filters.tsx` — Pre-auth funnel Step 2: Filters at `/onboarding/filters`
+- `client/src/pages/onboarding-estimate.tsx` — Pre-auth funnel Step 3: Estimate display at `/onboarding/estimate`
+- `client/src/pages/signup.tsx` — Account creation at `/signup` (creates account + trial only, NO search profile)
+- `client/src/pages/onboarding.tsx` — Post-auth onboarding wizard at `/onboarding`. 4-step wizard: Welcome → City (LocationModeSelector) → Budget → Property type → Alerts. Creates full search profile via `createSearchProfile()` with all location data (city, districts, radius, commute). This is the ONLY place search profiles are created for new users.
+- `client/src/pages/paywall.tsx` — Subscription plans at `/paywall` (Stripe checkout)
+- **Flow**: Signup → `/onboarding` → (wizard creates profile) → `/dashboard`. Login → `/dashboard` → ProtectedRoute checks profiles → redirects to `/onboarding` if 0 profiles.
 
 ### City Picker & Location Mode Selector
 - `client/src/components/city-picker.tsx` — Reusable city autocomplete with Nominatim geocoding + Leaflet map preview (standalone)

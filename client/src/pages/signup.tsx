@@ -13,11 +13,6 @@ export default function SignupPage() {
   const params = new URLSearchParams(searchString);
 
   const city = params.get("city") || "";
-  const minPrice = params.get("minPrice") || "";
-  const maxPrice = params.get("maxPrice") || "";
-  const minRooms = params.get("minRooms") || "";
-  const minSize = params.get("minSize") || "";
-  const plan = params.get("plan") || "";
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -62,37 +57,9 @@ export default function SignupPage() {
             console.error("[signup] Trial creation error:", trialErr.message);
           }
         }
-
-        if (city) {
-          try {
-            const { data: profile } = await supabase.from("search_profiles").insert({
-              user_id: data.user.id,
-              city,
-              city_name: city,
-              price_min: minPrice ? parseInt(minPrice) : 0,
-              price_max: maxPrice ? parseInt(maxPrice) : 0,
-              bedrooms_min: minRooms && minRooms !== "any" ? parseInt(minRooms) : 0,
-              size_min: minSize ? parseInt(minSize) : 0,
-            }).select("id").single();
-
-            if (profile?.id && token) {
-              fetch("/api/search-profiles/backfill", {
-                method: "POST",
-                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-                body: JSON.stringify({ searchProfileId: profile.id }),
-              }).catch(() => {});
-            }
-          } catch {
-          }
-        }
       }
 
-      if (plan) {
-        navigate(`/paywall?plan=${plan}&autoCheckout=true`);
-      } else {
-        const p = new URLSearchParams(searchString);
-        navigate(`/paywall?${p.toString()}`);
-      }
+      navigate("/onboarding");
     } catch (err: any) {
       toast({ title: "Er ging iets mis", description: err.message, variant: "destructive" });
     } finally {
@@ -101,13 +68,7 @@ export default function SignupPage() {
   }
 
   function handleBack() {
-    const p = new URLSearchParams();
-    p.set("city", city);
-    if (minPrice) p.set("minPrice", minPrice);
-    if (maxPrice) p.set("maxPrice", maxPrice);
-    if (minRooms) p.set("minRooms", minRooms);
-    if (minSize) p.set("minSize", minSize);
-    navigate(`/onboarding/estimate?${p.toString()}`);
+    window.history.back();
   }
 
   return (
@@ -205,7 +166,7 @@ export default function SignupPage() {
         <p className="text-center text-[15px] text-[var(--yo-dark)] mt-6">
           Heb je al een account?{" "}
           <button
-            onClick={() => navigate(plan ? `/login?plan=${plan}` : "/login")}
+            onClick={() => navigate("/login")}
             className="text-[var(--yo-pink)] font-semibold hover:underline"
             data-testid="link-login"
           >

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation, useSearch } from "wouter";
+import { useLocation } from "wouter";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -9,8 +9,7 @@ import { Home } from "lucide-react";
 export default function LoginPage() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
-  const searchString = useSearch();
-  const plan = new URLSearchParams(searchString).get("plan") || "";
+  
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,7 +27,7 @@ export default function LoginPage() {
     if (error) {
       toast({ title: "Inloggen mislukt", description: error.message, variant: "destructive" });
     } else {
-      navigate(plan ? `/paywall?plan=${plan}&autoCheckout=true` : "/dashboard");
+      navigate("/dashboard");
     }
   }
 

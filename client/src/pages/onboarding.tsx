@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
-import { createSearchProfile } from "@/lib/search-profiles";
+import { createSearchProfile, getSearchProfiles } from "@/lib/search-profiles";
 import { Bell, MapPin, Search, ChevronRight, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import LocationModeSelector, { type LocationData, type SelectedPlace, DEFAULT_LOCATION_DATA, isLocationValid } from "@/components/location-mode-selector";
@@ -307,6 +307,15 @@ export default function OnboardingPage() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
 
+  useEffect(() => {
+    if (!user) return;
+    getSearchProfiles().then((profiles) => {
+      if (profiles.length > 0) {
+        navigate("/dashboard", { replace: true });
+      }
+    }).catch(() => {});
+  }, [user]);
+
   const [step, setStep] = useState(0);
   const [locationData, setLocationData] = useState<LocationData>({
     ...DEFAULT_LOCATION_DATA,
@@ -364,6 +373,7 @@ export default function OnboardingPage() {
         commute_lng: locationData.tab === "reistijd" ? locationData.commuteLng ?? undefined : undefined,
         commute_mode: locationData.tab === "reistijd" ? locationData.commuteMode : undefined,
         commute_minutes: locationData.tab === "reistijd" ? locationData.commuteMinutes : undefined,
+        property_types: propertyType && propertyType !== "any" ? [propertyType] : undefined,
       });
 
       if (enableNotifications) {
