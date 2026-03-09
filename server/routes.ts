@@ -6,7 +6,6 @@ import {
   getEnabledSources,
   getSourceStatuses,
   getLastRunStatus,
-  isTestModeActive,
   OverlapError,
 } from "./ingesters";
 import { getNextRun } from "./scheduler";
@@ -176,7 +175,6 @@ export async function registerRoutes(
     return res.json({
       ok: true,
       sourcesEnabled: getEnabledSources(),
-      testMode: isTestModeActive(),
       time: new Date().toISOString(),
     });
   });
@@ -228,8 +226,6 @@ export async function registerRoutes(
 
       return res.json({
         time: new Date().toISOString(),
-        testMode: status.testMode,
-        testModeExpires: status.testModeExpires,
         scheduler: {
           nextRunAt: nextRun.nextRunAt,
           intervalMinutes: nextRun.intervalMinutes,

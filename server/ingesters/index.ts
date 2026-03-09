@@ -15,16 +15,30 @@ const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
   auth: { autoRefreshToken: false, persistSession: false },
 });
 
-const TEST_MODE_CITIES = [
-  "Berlin", "München", "Hamburg", "Köln", "Frankfurt",
-  "Stuttgart", "Düsseldorf", "Leipzig", "Dresden", "Nürnberg",
+const GERMAN_CITIES = [
+  "Berlin",
+  "Hamburg",
+  "München",
+  "Köln",
+  "Frankfurt",
+  "Stuttgart",
+  "Düsseldorf",
+  "Leipzig",
+  "Dresden",
+  "Hannover",
+  "Nürnberg",
+  "Bremen",
+  "Bochum",
+  "Bonn",
+  "Mannheim",
+  "Karlsruhe",
+  "Wiesbaden",
+  "Münster",
+  "Augsburg",
+  "Freiburg",
 ];
 
-const TEST_MODE_EXPIRES = new Date("2026-03-12T00:00:00Z");
-
-export function isTestModeActive(): boolean {
-  return new Date() < TEST_MODE_EXPIRES;
-}
+const INTER_CITY_DELAY_MS = 2000;
 
 export interface SourceReport {
   name: string;
@@ -35,8 +49,18 @@ export interface SourceReport {
   errors: number;
 }
 
+export interface CityReport {
+  city: string;
+  found: number;
+  inserted: number;
+  duplicates: number;
+  matches: number;
+  errors: number;
+}
+
 export interface IngestionReport {
   sources: SourceReport[];
+  cityReports: CityReport[];
   total: {
     found: number;
     inserted: number;
@@ -44,7 +68,6 @@ export interface IngestionReport {
     matches: number;
     errors: number;
   };
-  testMode: boolean;
   cities: string[];
   durationSec: number;
 }
@@ -104,8 +127,6 @@ export function getLastRunStatus(): {
   lastResult: IngestionReport | null;
   lastError: string | null;
   running: boolean;
-  testMode: boolean;
-  testModeExpires: string | null;
   todayFetched: number;
   todayInserted: number;
 } {
@@ -116,15 +137,20 @@ export function getLastRunStatus(): {
     lastResult: _lastResult,
     lastError: _lastError,
     running: _running,
-    testMode: isTestModeActive(),
-    testModeExpires: isTestModeActive() ? TEST_MODE_EXPIRES.toISOString() : null,
     todayFetched: _todayStats.date === today ? _todayStats.fetched : 0,
     todayInserted: _todayStats.date === today ? _todayStats.inserted : 0,
   };
 }
 
+function canonicalCity(name: string): string {
+  return name.toLowerCase().trim();
+}
+
 async function getActiveCities(): Promise<string[]> {
-  const testMode = isTestModeActive();
+  const seen = new Map<string, string>();
+  for (const c of GERMAN_CITIES) {
+    seen.set(canonicalCity(c), c);
+  }
 
   try {
     let profileCities: string[] = [];
@@ -134,12 +160,10 @@ async function getActiveCities(): Promise<string[]> {
       .select("city, city_name");
 
     if (!errorFull && dataFull) {
-      const cities = new Set<string>();
       for (const row of dataFull as Array<{ city?: string; city_name?: string }>) {
         const c = (row.city_name || row.city || "").trim();
-        if (c) cities.add(c);
+        if (c) profileCities.push(c);
       }
-      profileCities = Array.from(cities);
     } else {
       log(`[ingest] search_profiles query error (city_name may not exist): ${errorFull?.message ?? "no data"}`, "ingest");
 
@@ -148,39 +172,33 @@ async function getActiveCities(): Promise<string[]> {
         .select("city");
 
       if (!errorBasic && dataBasic) {
-        const cities = new Set<string>();
         for (const row of dataBasic as Array<{ city?: string }>) {
           const c = (row.city || "").trim();
-          if (c) cities.add(c);
+          if (c) profileCities.push(c);
         }
-        profileCities = Array.from(cities);
       } else {
         log(`[ingest] search_profiles fallback query also failed: ${errorBasic?.message ?? "no data"}`, "ingest");
       }
     }
 
-    if (testMode) {
-      const merged = new Set<string>([...TEST_MODE_CITIES, ...profileCities]);
-      log(`[ingest] TEST MODE active — using ${merged.size} cities (${TEST_MODE_CITIES.length} default + ${profileCities.length} from profiles)`, "ingest");
-      return Array.from(merged);
+    for (const c of profileCities) {
+      const key = canonicalCity(c);
+      if (!seen.has(key)) {
+        seen.set(key, c);
+      }
     }
-
-    if (profileCities.length === 0) {
-      log("[ingest] No active search profiles — no ingestion this run", "ingest");
-      return [];
-    }
-
-    return profileCities;
   } catch (err: any) {
-    log(`[ingest] getActiveCities exception: ${err.message}`, "ingest");
-
-    if (testMode) {
-      log(`[ingest] TEST MODE fallback — using ${TEST_MODE_CITIES.length} default cities`, "ingest");
-      return [...TEST_MODE_CITIES];
-    }
-
-    return [];
+    log(`[ingest] getActiveCities exception: ${err.message} — using GERMAN_CITIES only`, "ingest");
   }
+
+  const result = Array.from(seen.values());
+  const profileExtra = result.length - GERMAN_CITIES.length;
+  log(`[ingest] Active cities: ${result.length} (${GERMAN_CITIES.length} base + ${profileExtra} from profiles)`, "ingest");
+  return result;
+}
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function buildIngestersForCity(city: string): Ingester[] {
@@ -208,10 +226,10 @@ export async function runAllIngesters(): Promise<IngestionReport> {
   _running = true;
   _lastError = null;
   const startTime = Date.now();
-  const testMode = isTestModeActive();
-  log(`[INGEST START] testMode=${testMode}`, "ingest");
+  log(`[INGEST START] Germany-wide ingestion`, "ingest");
 
   const sources: SourceReport[] = [];
+  const cityReports: CityReport[] = [];
   const total = { found: 0, inserted: 0, duplicates: 0, matches: 0, errors: 0 };
 
   try {
@@ -221,14 +239,17 @@ export async function runAllIngesters(): Promise<IngestionReport> {
     if (cities.length === 0) {
       const duration = ((Date.now() - startTime) / 1000).toFixed(1);
       log(`[INGEST COMPLETE] in ${duration}s — no cities to process`, "ingest");
-      const report: IngestionReport = { sources, total, testMode, cities, durationSec: parseFloat(duration) };
+      const report: IngestionReport = { sources, cityReports, total, cities, durationSec: parseFloat(duration) };
       _lastResult = report;
       _lastRunAt = new Date().toISOString();
       return report;
     }
 
-    for (const city of cities) {
-      log(`[ingest] --- Ingesting for city: ${city} ---`, "ingest");
+    for (let i = 0; i < cities.length; i++) {
+      const city = cities[i];
+      log(`[ingest] --- [${i + 1}/${cities.length}] Ingesting for city: ${city} ---`, "ingest");
+
+      const cityTotal = { found: 0, inserted: 0, duplicates: 0, matches: 0, errors: 0 };
       const cityIngesters = buildIngestersForCity(city);
 
       for (const ingester of cityIngesters) {
@@ -237,7 +258,7 @@ export async function runAllIngesters(): Promise<IngestionReport> {
           const result = await ingester.run();
 
           const report: SourceReport = {
-            name: ingester.name,
+            name: `${ingester.name} (${city})`,
             found: result.found,
             inserted: result.inserted,
             duplicates: result.duplicates,
@@ -251,23 +272,40 @@ export async function runAllIngesters(): Promise<IngestionReport> {
             "ingest"
           );
 
-          total.found += result.found;
-          total.inserted += result.inserted;
-          total.duplicates += result.duplicates;
-          total.matches += result.matches;
-          total.errors += result.errors;
+          cityTotal.found += result.found;
+          cityTotal.inserted += result.inserted;
+          cityTotal.duplicates += result.duplicates;
+          cityTotal.matches += result.matches;
+          cityTotal.errors += result.errors;
         } catch (err: any) {
           log(`  ${ingester.name} FAILED: ${err.message}`, "ingest");
           sources.push({
-            name: ingester.name,
+            name: `${ingester.name} (${city})`,
             found: 0,
             inserted: 0,
             duplicates: 0,
             matches: 0,
             errors: 1,
           });
-          total.errors += 1;
+          cityTotal.errors += 1;
         }
+      }
+
+      cityReports.push({ city, ...cityTotal });
+      log(
+        `[ingest] City ${city}: found=${cityTotal.found} ins=${cityTotal.inserted} dup=${cityTotal.duplicates} match=${cityTotal.matches} err=${cityTotal.errors}`,
+        "ingest"
+      );
+
+      total.found += cityTotal.found;
+      total.inserted += cityTotal.inserted;
+      total.duplicates += cityTotal.duplicates;
+      total.matches += cityTotal.matches;
+      total.errors += cityTotal.errors;
+
+      if (i < cities.length - 1) {
+        log(`[ingest] Waiting ${INTER_CITY_DELAY_MS}ms before next city...`, "ingest");
+        await delay(INTER_CITY_DELAY_MS);
       }
     }
 
@@ -277,9 +315,14 @@ export async function runAllIngesters(): Promise<IngestionReport> {
       "ingest"
     );
 
+    log(`[ingest] Per-city summary:`, "ingest");
+    for (const cr of cityReports) {
+      log(`  ${cr.city.padEnd(15)} found=${String(cr.found).padStart(4)} ins=${String(cr.inserted).padStart(4)} dup=${String(cr.duplicates).padStart(4)} err=${String(cr.errors).padStart(2)}`, "ingest");
+    }
+
     updateTodayStats(total.found, total.inserted);
 
-    const report: IngestionReport = { sources, total, testMode, cities, durationSec: parseFloat(duration) };
+    const report: IngestionReport = { sources, cityReports, total, cities, durationSec: parseFloat(duration) };
     _lastResult = report;
     _lastRunAt = new Date().toISOString();
     if (total.errors === 0 || total.inserted > 0) {
