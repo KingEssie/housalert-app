@@ -154,6 +154,68 @@ export async function createSearchProfile(
   throw new Error("Zoekopdracht opslaan mislukt. Controleer je locatie en probeer opnieuw.");
 }
 
+export async function updateSearchProfile(
+  id: string,
+  input: InsertSearchProfileInput
+): Promise<SearchProfile> {
+  const fullRow: Record<string, unknown> = {
+    city: input.city_name,
+    city_name: input.city_name,
+    country_code: input.country_code ?? "DE",
+    latitude: input.latitude,
+    longitude: input.longitude,
+    place_id: input.place_id,
+    price_min: input.price_min,
+    price_max: input.price_max,
+    bedrooms_min: input.bedrooms_min,
+    size_min: input.size_min,
+    location_mode: input.location_mode || null,
+    districts: input.districts && input.districts.length > 0 ? input.districts : null,
+    radius_km: input.radius_km ?? null,
+    commute_destination: input.commute_destination || null,
+    commute_lat: input.commute_lat ?? null,
+    commute_lng: input.commute_lng ?? null,
+    commute_mode: input.commute_mode || null,
+    commute_minutes: input.commute_minutes ?? null,
+    furnished: input.furnished || null,
+    property_types: input.property_types && input.property_types.length > 0 ? input.property_types : null,
+    extra_features: input.extra_features && input.extra_features.length > 0 ? input.extra_features : null,
+    target_categories: input.target_categories && input.target_categories.length > 0 ? input.target_categories : null,
+  };
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Niet ingelogd.");
+
+  const { data, error } = await supabase
+    .from("search_profiles")
+    .update(fullRow)
+    .eq("id", id)
+    .eq("user_id", user.id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error("[search-profiles] Update failed:", error);
+    throw new Error("Zoekopdracht bijwerken mislukt. Probeer het opnieuw.");
+  }
+  return data as SearchProfile;
+}
+
+export async function getSearchProfile(id: string): Promise<SearchProfile | null> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data, error } = await supabase
+    .from("search_profiles")
+    .select("*")
+    .eq("id", id)
+    .eq("user_id", user.id)
+    .single();
+
+  if (error) return null;
+  return data as SearchProfile;
+}
+
 export async function deleteSearchProfile(id: string): Promise<void> {
   const { error } = await supabase
     .from("search_profiles")

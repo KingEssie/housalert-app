@@ -1,8 +1,8 @@
-import { useState, useCallback } from "react";
-import { useLocation } from "wouter";
+import { useState, useCallback, useEffect } from "react";
+import { useLocation, useRoute } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
-import { createSearchProfile, getSearchProfiles } from "@/lib/search-profiles";
+import { createSearchProfile, updateSearchProfile, getSearchProfile, getSearchProfiles } from "@/lib/search-profiles";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -24,10 +24,12 @@ import {
   Sofa,
   ChevronDown,
   Check,
+  MapPin,
+  Pencil,
 } from "lucide-react";
 
 const MAX_PROFILES = 4;
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 5;
 
 const BEDROOM_OPTIONS = [
   { value: 0, label: "Geen voorkeur" },
@@ -120,6 +122,12 @@ export default function NewSearchPage() {
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [locationData, setLocationData] = useState<LocationData>({ ...DEFAULT_BERLIN });
+  const [editLoaded, setEditLoaded] = useState(false);
+
+  const [matchEdit] = useRoute("/dashboard/searches/edit/:id");
+  const [, params] = useRoute("/dashboard/searches/edit/:id");
+  const editId = params?.id || null;
+  const isEditMode = !!editId;
 
   const [filters, setFilters] = useState<FilterData>({
     priceMin: "",
@@ -137,8 +145,53 @@ export default function NewSearchPage() {
     enabled: !!user,
   });
 
+  useEffect(() => {
+    if (!editId || editLoaded) return;
+    getSearchProfile(editId).then((profile) => {
+      if (!profile) {
+        toast({ title: "Zoekopdracht niet gevonden", variant: "destructive" });
+        navigate("/dashboard?tab=filters");
+        return;
+      }
+      const tab = profile.location_mode === "commute" ? "reistijd"
+        : profile.location_mode === "radius" ? "radius"
+        : "wijken";
+
+      setLocationData({
+        tab,
+        place: {
+          city_name: profile.city_name || profile.city || "",
+          country_code: profile.country_code || "DE",
+          latitude: profile.latitude || 52.52,
+          longitude: profile.longitude || 13.405,
+          place_id: profile.place_id || "",
+        },
+        districts: profile.districts || [],
+        radiusKm: profile.radius_km || 5,
+        commuteDestination: profile.commute_destination || "",
+        commuteLat: profile.commute_lat || null,
+        commuteLng: profile.commute_lng || null,
+        commuteMode: (profile.commute_mode as any) || "driving",
+        commuteMinutes: profile.commute_minutes || 30,
+        commuteCity: profile.city_name || profile.city || "",
+      });
+
+      setFilters({
+        priceMin: profile.price_min ? String(profile.price_min) : "",
+        priceMax: profile.price_max ? String(profile.price_max) : "",
+        bedroomsMin: profile.bedrooms_min || 0,
+        sizeMin: profile.size_min || 0,
+        furnished: profile.furnished || "",
+        targetCategories: profile.target_categories || [],
+        extraFeatures: profile.extra_features || [],
+      });
+
+      setEditLoaded(true);
+    });
+  }, [editId, editLoaded, navigate, toast]);
+
   const profileCount = profilesQuery.data?.length ?? 0;
-  const atLimit = profileCount >= MAX_PROFILES;
+  const atLimit = !isEditMode && profileCount >= MAX_PROFILES;
 
   const cityForProfile = locationData.tab === "reistijd"
     ? locationData.commuteCity || locationData.commuteDestination.split(",")[0].trim()
@@ -172,10 +225,45 @@ export default function NewSearchPage() {
   };
 
   const goNext = () => { if (step < TOTAL_STEPS) setStep(step + 1); };
-  const goBack = () => { if (step > 1) setStep(step - 1); else navigate("/dashboard"); };
+  const goBack = () => { if (step > 1) setStep(step - 1); else navigate("/dashboard?tab=filters"); };
+
+  function buildPayload() {
+    const parsedPriceMin = parseInt(filters.priceMin) || 0;
+    const parsedPriceMax = parseInt(filters.priceMax) || 0;
+    const locationMode = locationData.tab === "wijken"
+      ? (locationData.districts.length > 0 ? "districts" as const : "city" as const)
+      : locationData.tab === "radius"
+        ? "radius" as const
+        : "commute" as const;
+
+    return {
+      user_id: user!.id,
+      city_name: cityForProfile,
+      country_code: locationData.place?.country_code,
+      latitude: locationData.place?.latitude,
+      longitude: locationData.place?.longitude,
+      place_id: locationData.place?.place_id,
+      price_min: parsedPriceMin,
+      price_max: parsedPriceMax,
+      bedrooms_min: filters.bedroomsMin,
+      size_min: filters.sizeMin,
+      location_mode: locationMode,
+      districts: locationData.districts.length > 0 ? locationData.districts : undefined,
+      radius_km: locationData.tab === "radius" ? locationData.radiusKm : undefined,
+      commute_destination: locationData.tab === "reistijd" ? locationData.commuteDestination : undefined,
+      commute_lat: locationData.tab === "reistijd" ? locationData.commuteLat ?? undefined : undefined,
+      commute_lng: locationData.tab === "reistijd" ? locationData.commuteLng ?? undefined : undefined,
+      commute_mode: locationData.tab === "reistijd" ? locationData.commuteMode : undefined,
+      commute_minutes: locationData.tab === "reistijd" ? locationData.commuteMinutes : undefined,
+      furnished: filters.furnished || undefined,
+      property_types: undefined,
+      extra_features: filters.extraFeatures.length > 0 ? filters.extraFeatures : undefined,
+      target_categories: filters.targetCategories.length > 0 ? filters.targetCategories : undefined,
+    };
+  }
 
   async function handleSubmit() {
-    if (atLimit) {
+    if (!isEditMode && atLimit) {
       toast({ title: "Limiet bereikt", description: `Max ${MAX_PROFILES} zoekopdrachten.`, variant: "destructive" });
       return;
     }
@@ -194,60 +282,48 @@ export default function NewSearchPage() {
       return;
     }
 
-    const locationMode = locationData.tab === "wijken"
-      ? (locationData.districts.length > 0 ? "districts" as const : "city" as const)
-      : locationData.tab === "radius"
-        ? "radius" as const
-        : "commute" as const;
-
     setSubmitting(true);
     try {
-      const profile = await createSearchProfile({
-        user_id: user!.id,
-        city_name: cityForProfile,
-        country_code: locationData.place?.country_code,
-        latitude: locationData.place?.latitude,
-        longitude: locationData.place?.longitude,
-        place_id: locationData.place?.place_id,
-        price_min: parsedPriceMin,
-        price_max: parsedPriceMax,
-        bedrooms_min: filters.bedroomsMin,
-        size_min: filters.sizeMin,
-        location_mode: locationMode,
-        districts: locationData.districts.length > 0 ? locationData.districts : undefined,
-        radius_km: locationData.tab === "radius" ? locationData.radiusKm : undefined,
-        commute_destination: locationData.tab === "reistijd" ? locationData.commuteDestination : undefined,
-        commute_lat: locationData.tab === "reistijd" ? locationData.commuteLat ?? undefined : undefined,
-        commute_lng: locationData.tab === "reistijd" ? locationData.commuteLng ?? undefined : undefined,
-        commute_mode: locationData.tab === "reistijd" ? locationData.commuteMode : undefined,
-        commute_minutes: locationData.tab === "reistijd" ? locationData.commuteMinutes : undefined,
-        furnished: filters.furnished || undefined,
-        property_types: undefined,
-        extra_features: filters.extraFeatures.length > 0 ? filters.extraFeatures : undefined,
-        target_categories: filters.targetCategories.length > 0 ? filters.targetCategories : undefined,
-      });
+      const payload = buildPayload();
 
-      if (profile?.id) {
+      if (isEditMode && editId) {
+        await updateSearchProfile(editId, payload);
         const { data: sessionData } = await supabase.auth.getSession();
         const token = sessionData?.session?.access_token;
         if (token) {
           fetch("/api/search-profiles/backfill", {
             method: "POST",
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-            body: JSON.stringify({ searchProfileId: profile.id }),
+            body: JSON.stringify({ searchProfileId: editId }),
           }).catch(() => {});
         }
+        queryClient.invalidateQueries({ queryKey: ["/search-profiles"] });
+        queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
+        toast({ title: "Zoekopdracht bijgewerkt!", description: "Je wijzigingen zijn opgeslagen." });
+      } else {
+        const profile = await createSearchProfile(payload);
+        if (profile?.id) {
+          const { data: sessionData } = await supabase.auth.getSession();
+          const token = sessionData?.session?.access_token;
+          if (token) {
+            fetch("/api/search-profiles/backfill", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+              body: JSON.stringify({ searchProfileId: profile.id }),
+            }).catch(() => {});
+          }
+        }
+        queryClient.invalidateQueries({ queryKey: ["/search-profiles"] });
+        queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
+        toast({ title: "Zoekopdracht aangemaakt!", description: "Je ontvangt nu matches." });
       }
 
-      queryClient.invalidateQueries({ queryKey: ["/search-profiles"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
-      toast({ title: "Zoekopdracht aangemaakt!", description: "Je ontvangt nu matches." });
       navigate("/dashboard?tab=filters");
     } catch (err: any) {
       console.error("[new-search] Save failed:", err);
       toast({
         title: "Opslaan mislukt",
-        description: "Zoekopdracht opslaan mislukt. Controleer je locatie en probeer opnieuw.",
+        description: err?.message || "Zoekopdracht opslaan mislukt. Probeer opnieuw.",
         variant: "destructive",
       });
     } finally {
@@ -255,7 +331,7 @@ export default function NewSearchPage() {
     }
   }
 
-  if (loading) {
+  if (loading || (isEditMode && !editLoaded)) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="w-8 h-8 rounded-full border-2 border-[var(--yo-teal)] border-t-transparent animate-spin" />
@@ -325,53 +401,31 @@ export default function NewSearchPage() {
         {step === 2 && <Step2Requirements filters={filters} updateFilters={updateFilters} />}
         {step === 3 && <Step3ExtraFeatures filters={filters} updateFilters={updateFilters} />}
         {step === 4 && <Step4TargetCategories filters={filters} updateFilters={updateFilters} perWeek={perWeek} estimateLoading={estimateQuery.isLoading} />}
+        {step === 5 && (
+          <StepReview
+            locationData={locationData}
+            filters={filters}
+            cityForProfile={cityForProfile}
+            onEdit={(s: number) => setStep(s)}
+            isEditMode={isEditMode}
+            submitting={submitting}
+            onSubmit={handleSubmit}
+          />
+        )}
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-[var(--yo-divider)] z-50">
-        <div className="max-w-lg mx-auto px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] flex gap-3">
-          {step > 1 && (
-            <Button
-              variant="outline"
-              onClick={goBack}
-              className="h-[56px] px-5 rounded-lg border-[var(--yo-divider)] text-[var(--yo-dark)] text-[15px] font-semibold"
-              data-testid="button-wizard-back"
-            >
-              <ArrowLeft className="w-4 h-4 mr-1.5" />
-              Vorige
-            </Button>
-          )}
-          {step < TOTAL_STEPS ? (
-            <Button
-              onClick={goNext}
-              disabled={!canProceed()}
-              className="flex-1 h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[16px] font-bold disabled:opacity-40 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
-              data-testid="button-wizard-next"
-            >
-              Volgende
-              <ArrowRight className="w-4 h-4 ml-1.5" />
-            </Button>
-          ) : (
-            <Button
-              onClick={handleSubmit}
-              disabled={submitting || !isLocationValid(locationData)}
-              className="flex-1 h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[16px] font-bold disabled:opacity-40 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
-              data-testid="button-wizard-submit"
-            >
-              {submitting ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Opslaan...
-                </div>
-              ) : (
-                <>
-                  <Search className="w-4 h-4 mr-1.5" />
-                  Maak zoekopdracht aan
-                </>
-              )}
-            </Button>
-          )}
+      {step < 5 && (
+        <div className="fixed bottom-6 right-6 z-50" style={{ maxWidth: "calc(100% - 48px)" }}>
+          <button
+            onClick={step < TOTAL_STEPS - 1 ? goNext : () => setStep(5)}
+            disabled={!canProceed()}
+            className="w-14 h-14 rounded-full bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black flex items-center justify-center shadow-[0_4px_16px_rgba(0,0,0,0.2)] disabled:opacity-40 transition-all active:scale-95"
+            data-testid="button-wizard-next"
+          >
+            <ArrowRight className="w-6 h-6" />
+          </button>
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -620,7 +674,7 @@ function Step4TargetCategories({
     <div className="space-y-5">
       <div>
         <h2 className="text-page-title mb-1.5" data-testid="text-step-title">
-          Doelgroepen & categorieën
+          Doelgroepen & categorie&#235;n
         </h2>
         <p className="text-subtitle">
           Voor welke doelgroep of categorie zoek je? Selecteer een of meerdere.
@@ -641,7 +695,7 @@ function Step4TargetCategories({
 
       {filters.targetCategories.length === 0 && (
         <p className="text-[13px] text-[var(--yo-dark)] opacity-60 text-center">
-          Geen selectie = alle categorieën worden meegenomen
+          Geen selectie = alle categorie&#235;n worden meegenomen
         </p>
       )}
 
@@ -664,3 +718,114 @@ function Step4TargetCategories({
   );
 }
 
+function ReviewRow({ label, value, onEdit }: { label: string; value: string; onEdit: () => void }) {
+  return (
+    <div className="flex items-start justify-between py-3.5 border-b border-[var(--yo-divider)] last:border-b-0">
+      <div className="flex-1 min-w-0 mr-3">
+        <p className="text-[13px] font-medium text-[var(--yo-dark)] opacity-60 mb-0.5">{label}</p>
+        <p className="text-[15px] font-semibold text-[var(--yo-dark)]">{value}</p>
+      </div>
+      <button
+        onClick={onEdit}
+        className="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--yo-surface)] flex items-center justify-center hover:bg-[var(--yo-chip-bg)] transition-colors"
+        data-testid={`button-review-edit-${label.toLowerCase().replace(/\s/g, "-")}`}
+      >
+        <Pencil className="w-3.5 h-3.5 text-[var(--yo-dark)]" />
+      </button>
+    </div>
+  );
+}
+
+function StepReview({
+  locationData,
+  filters,
+  cityForProfile,
+  onEdit,
+  isEditMode,
+  submitting,
+  onSubmit,
+}: {
+  locationData: LocationData;
+  filters: FilterData;
+  cityForProfile: string;
+  onEdit: (step: number) => void;
+  isEditMode: boolean;
+  submitting: boolean;
+  onSubmit: () => void;
+}) {
+  const locationLabel = locationData.tab === "reistijd"
+    ? `Reistijd naar ${locationData.commuteDestination}`
+    : locationData.tab === "radius"
+      ? `${cityForProfile} (${locationData.radiusKm} km)`
+      : cityForProfile;
+
+  const districtsLabel = locationData.districts.length > 0
+    ? locationData.districts.join(", ")
+    : "Alle wijken";
+
+  const priceLabel = (() => {
+    const min = filters.priceMin ? `\u20AC${parseInt(filters.priceMin).toLocaleString("nl-NL")}` : "";
+    const max = filters.priceMax ? `\u20AC${parseInt(filters.priceMax).toLocaleString("nl-NL")}` : "";
+    if (min && max) return `${min} - ${max}`;
+    if (min) return `Vanaf ${min}`;
+    if (max) return `Tot ${max}`;
+    return "Geen voorkeur";
+  })();
+
+  const bedroomsLabel = BEDROOM_OPTIONS.find(o => o.value === filters.bedroomsMin)?.label || "Geen voorkeur";
+  const sizeLabel = SIZE_OPTIONS.find(o => o.value === filters.sizeMin)?.label || "Geen voorkeur";
+
+  const extraFeaturesLabel = filters.extraFeatures.length > 0
+    ? filters.extraFeatures.map(v => EXTRA_FEATURE_OPTIONS.find(o => o.value === v)?.label || v).join(", ")
+    : "Geen selectie";
+
+  const targetLabel = filters.targetCategories.length > 0
+    ? filters.targetCategories.map(v => TARGET_CATEGORY_OPTIONS.find(o => o.value === v)?.label || v).join(", ")
+    : "Geen selectie";
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-page-title mb-1.5" data-testid="text-step-title">
+          Controleer je zoekopdracht
+        </h2>
+        <p className="text-subtitle">
+          Bekijk je instellingen en sla op.
+        </p>
+      </div>
+
+      <div className="bg-white rounded-lg">
+        <ReviewRow label="Locatie" value={locationLabel} onEdit={() => onEdit(1)} />
+        {locationData.tab === "wijken" && (
+          <ReviewRow label="Wijken" value={districtsLabel} onEdit={() => onEdit(1)} />
+        )}
+        <ReviewRow label="Huurprijs" value={priceLabel} onEdit={() => onEdit(2)} />
+        <ReviewRow label="Slaapkamers" value={bedroomsLabel} onEdit={() => onEdit(2)} />
+        <ReviewRow label="Oppervlakte" value={sizeLabel} onEdit={() => onEdit(2)} />
+        <ReviewRow label="Extra eigenschappen" value={extraFeaturesLabel} onEdit={() => onEdit(3)} />
+        <ReviewRow label="Overige voorkeuren" value={targetLabel} onEdit={() => onEdit(4)} />
+      </div>
+
+      <div className="space-y-3 pt-2">
+        <Button
+          onClick={onSubmit}
+          disabled={submitting}
+          className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[16px] font-bold disabled:opacity-40 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
+          data-testid="button-wizard-submit"
+        >
+          {submitting ? (
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              Opslaan...
+            </div>
+          ) : (
+            <>
+              <Search className="w-4 h-4 mr-1.5" />
+              {isEditMode ? "Zoekopdracht bijwerken" : "Zoekopdracht opslaan"}
+            </>
+          )}
+        </Button>
+      </div>
+    </div>
+  );
+}

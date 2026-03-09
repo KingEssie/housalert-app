@@ -78,6 +78,7 @@ function Router() {
       <Route path="/onboarding" component={() => <ProtectedRoute component={OnboardingPage} skipOnboardingCheck />} />
       <Route path="/dashboard" component={() => <ProtectedRoute component={DashboardPage} />} />
       <Route path="/dashboard/searches/new" component={() => <ProtectedRoute component={NewSearchPage} />} />
+      <Route path="/dashboard/searches/edit/:id" component={() => <ProtectedRoute component={NewSearchPage} />} />
       <Route path="/settings/notifications" component={() => <ProtectedRoute component={NotificationSettingsPage} />} />
       <Route path="/listing/:id" component={() => <ProtectedRoute component={ListingDetailPage} />} />
       <Route path="/application-letter" component={() => <ProtectedRoute component={ApplicationLetterPage} />} />

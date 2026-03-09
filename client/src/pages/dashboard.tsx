@@ -1138,7 +1138,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
               profile={p}
               onDelete={() => setConfirmDeleteId(p.id)}
               deleting={deletingId === p.id}
-              onEdit={() => navigate("/dashboard/searches/new")}
+              onEdit={() => navigate(`/dashboard/searches/edit/${p.id}`)}
             />
           ))}
           {!atLimit && (

@@ -1,0 +1,171 @@
+We need a focused follow-up polish sprint for HousAlert.
+
+Important:
+- Do NOT redesign the entire app again.
+- Keep the current UI direction.
+- Focus only on the issues listed below.
+- Do not change parts that are already working correctly.
+
+NOTE:
+The "received matches" counter is now correct and showing 0 when the user has no matches. Do not modify this logic again.
+
+==================================================
+1. SEARCH FLOW NAVIGATION CLEANUP
+==================================================
+
+Current issue:
+In the 4-step search creation flow there are two back buttons:
+
+• one floating back button top-left
+• another "Vorige" button at the bottom
+
+This is redundant.
+
+Required behavior:
+- keep the floating back button top-left
+- remove the bottom "Vorige" button
+- keep only the primary forward action at the bottom
+
+Forward button design:
+- floating round button
+- arrow icon
+- primary color (green)
+- positioned bottom-right
+- similar interaction pattern to BlaBlaCar navigation
+
+==================================================
+2. ADD REVIEW SCREEN BEFORE CREATING SEARCH PROFILE
+==================================================
+
+Current issue:
+After completing the last step of the search flow the search profile is immediately created.
+
+Required behavior:
+Add a final review screen before saving.
+
+This screen should clearly show:
+
+TITLE:
+"Controleer je zoekopdracht"
+
+Sections:
+• Locatie
+• Wijken
+• Huurprijs
+• Slaapkamers
+• Oppervlakte
+• Extra eigenschappen
+• Overige voorkeuren
+
+Design requirements:
+- clean layout
+- large readable text
+- grouped sections
+- easy to scan
+
+Buttons:
+Primary: "Zoekopdracht opslaan"
+Secondary: "Bewerken"
+
+Only after confirmation should the search profile actually be saved.
+
+==================================================
+3. EDIT SEARCH PROFILE MUST NOT CREATE NEW PROFILE
+==================================================
+
+Current issue:
+When editing an existing search profile, the system currently creates a new search profile instead of updating the existing one.
+
+Required behavior:
+
+Editing must:
+- load the existing search profile data
+- allow modifications
+- update the existing record
+
+NOT create a new one.
+
+Tasks:
+- ensure edit mode passes the searchProfileId
+- update existing DB record
+- prevent duplicate profile creation
+
+==================================================
+4. LOCATIE SCREEN — WIJKEN MULTI-SELECT DROPDOWN
+==================================================
+
+Current issue:
+Neighbourhoods are still displayed as pills.
+
+Required behavior:
+Replace with a multi-select dropdown.
+
+Requirements:
+- open dropdown list
+- select multiple neighbourhoods
+- selected neighbourhoods remain visible
+- editing existing profiles reloads the selections correctly
+- saved in search profile data
+
+==================================================
+5. EXTRA EIGENSCHAPPEN SCREEN
+==================================================
+
+Current state:
+The checkbox style is now correct.
+
+Required:
+- keep current checkbox layout
+- ensure spacing and alignment are clean
+- maintain consistency with the rest of the flow
+
+Do not revert to pill-style buttons.
+
+==================================================
+6. FINAL FILTER OPTIONS (STEKKIES STYLE)
+==================================================
+
+The final preference screen must include the Stekkies-style option set.
+
+Options include for example:
+
+• Studenten
+• Woningdelers
+• Huisdiereigenaren
+• Woningen van betaalde websites
+• Kamers in gedeelde woningen
+• Vrije sector woningcorporaties
+• Tijdelijke woningen
+• Seniorenwoningen
+
+Requirements:
+- clean checkbox list UI
+- store selections in search profile
+- pass selections into matching/filtering logic
+- persist in database
+
+If "Woningtypes" is not the correct title, rename the screen to something more accurate.
+
+==================================================
+7. STRIPE SANDBOX PAYMENT VERIFICATION
+==================================================
+
+Stripe checkout now opens correctly.
+
+Tasks:
+Verify the full test payment flow:
+
+1. Plan selection
+2. Checkout session creation
+3. Stripe checkout redirect
+4. Successful test payment
+5. Return to app
+6. Subscription status updated
+
+Important:
+Confirm the system correctly updates the user's subscription after successful checkout.
+
+Deliverables:
+- confirm Stripe test checkout works end-to-end
+- confirm subscription status updates correctly
+- confirm users with active subscription gain access to matches
