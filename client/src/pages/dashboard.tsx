@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { useEffect, useState, useCallback } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getSearchProfiles, deleteSearchProfile, type SearchProfile } from "@/lib/search-profiles";
-import { fetchApiMatches, type ApiMatch } from "@/lib/listings";
+import { fetchApiMatches, type ApiMatch, type ApiMatchesResponse } from "@/lib/listings";
 import { queryClient } from "@/lib/queryClient";
 import { supabase } from "@/lib/supabase";
 import { dateLocale } from "../../../config/market";
@@ -463,7 +463,8 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       if (!res.ok) throw new Error("Failed to fetch matches");
-      const all: ApiMatch[] = await res.json();
+      const body = await res.json();
+      const all: ApiMatch[] = Array.isArray(body) ? body : body.matches ?? [];
       const valid = all.filter(m => m.title && m.url && m.listing_id);
       return valid.slice(0, 5);
     },
@@ -672,7 +673,7 @@ function HomeTab({
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[22px] font-bold text-white leading-tight" data-testid="text-match-count">
-                {matchCount} {matchCount === 1 ? "match" : "matches"} ontvangen
+                {matchCount > 999 ? "999+" : matchCount} {matchCount === 1 ? "match" : "matches"} ontvangen
               </p>
               <p className="text-[14px] font-[500] text-white/70 mt-0.5">
                 {hasProfiles
@@ -819,7 +820,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
   const [refreshKey, setRefreshKey] = useState(0);
   const [applyMatch, setApplyMatch] = useState<ApiMatch | null>(null);
 
-  const apiMatchesQuery = useQuery<ApiMatch[]>({
+  const apiMatchesQuery = useQuery<ApiMatchesResponse>({
     queryKey: ["/api/matches"],
     queryFn: () => fetchApiMatches(accessToken!),
     enabled: !!accessToken,
@@ -850,7 +851,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
       .catch(() => {});
   }, [accessToken]);
 
-  const matches = apiMatchesQuery.data ?? [];
+  const matches = apiMatchesQuery.data?.matches ?? [];
 
   const refreshStatuses = useCallback(() => {
     setRefreshKey((k) => k + 1);
@@ -897,7 +898,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
         <h1 className="text-page-title">Matches</h1>
         {matches.length > 0 && (
           <span className="text-[13px] font-medium text-[var(--yo-dark)] bg-[var(--yo-chip-bg)] px-2.5 py-1 rounded-full" data-testid="badge-match-count">
-            {matches.length} totaal
+            {matches.length > 999 ? "999+" : matches.length} totaal
           </span>
         )}
       </div>
@@ -1442,7 +1443,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                     <Heart className="w-[18px] h-[18px] text-[var(--yo-dark)]" />
                   </div>
                   <div>
-                    <p className="text-[20px] font-bold text-[var(--yo-dark)] leading-none">{stats.matches_received}</p>
+                    <p className="text-[20px] font-bold text-[var(--yo-dark)] leading-none">{stats.matches_received > 999 ? "999+" : stats.matches_received}</p>
                     <p className="text-[12px] text-[var(--yo-dark)] mt-1 leading-tight">Ontvangen matches</p>
                   </div>
                 </div>
@@ -1756,7 +1757,7 @@ export default function DashboardPage() {
   });
 
   const accessToken = session?.access_token;
-  const apiMatchesQuery = useQuery<ApiMatch[]>({
+  const apiMatchesQuery = useQuery<ApiMatchesResponse>({
     queryKey: ["/api/matches"],
     queryFn: () => fetchApiMatches(accessToken!),
     enabled: !!user && !!accessToken,
@@ -1776,7 +1777,7 @@ export default function DashboardPage() {
   if (!user) return null;
 
   const profiles = profilesQuery.data ?? [];
-  const matchCount = apiMatchesQuery.data?.length ?? 0;
+  const matchCount = apiMatchesQuery.data?.totalCount ?? 0;
 
   return (
     <div className="min-h-screen bg-white flex flex-col">

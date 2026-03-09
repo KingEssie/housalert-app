@@ -537,7 +537,23 @@ export async function registerRoutes(
 
       validResults.sort((a: any, b: any) => (b.match_score ?? 0) - (a.match_score ?? 0));
 
-      return res.json(validResults);
+      let totalMatchCount = validResults.length;
+      if (premiumStartedAt) {
+        const countQuery = await supabase
+          .from("matches")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", user.id)
+          .gte("created_at", premiumStartedAt);
+        totalMatchCount = countQuery.count ?? validResults.length;
+      } else {
+        const countQuery = await supabase
+          .from("matches")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", user.id);
+        totalMatchCount = countQuery.count ?? validResults.length;
+      }
+
+      return res.json({ matches: validResults, totalCount: totalMatchCount });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
     }
@@ -1629,11 +1645,22 @@ export async function registerRoutes(
         return res.json({ matches_received: 0, reactions_sent: 0 });
       }
 
-      const matchResult = await supabase.from("matches").select("id", { count: "exact", head: true }).eq("user_id", user.id);
+      const { data: subRow } = await supabase
+        .from("subscriptions")
+        .select("created_at")
+        .eq("user_id", user.id)
+        .single();
+      const subStartedAt = subRow?.created_at || null;
+
+      let matchQuery = supabase.from("matches").select("id", { count: "exact", head: true }).eq("user_id", user.id);
+      if (subStartedAt) matchQuery = matchQuery.gte("created_at", subStartedAt);
+      const matchResult = await matchQuery;
 
       let reactionCount = 0;
       try {
-        const reactionResult = await supabase.from("matches").select("id", { count: "exact", head: true }).eq("user_id", user.id).eq("applied", true);
+        let reactionQuery = supabase.from("matches").select("id", { count: "exact", head: true }).eq("user_id", user.id).eq("applied", true);
+        if (subStartedAt) reactionQuery = reactionQuery.gte("created_at", subStartedAt);
+        const reactionResult = await reactionQuery;
         reactionCount = reactionResult.count ?? 0;
       } catch {}
 

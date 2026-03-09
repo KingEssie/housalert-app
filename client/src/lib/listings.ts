@@ -141,12 +141,21 @@ export async function fetchFreshListings(): Promise<FreshListing[]> {
   return resp.json();
 }
 
-export async function fetchApiMatches(token: string): Promise<ApiMatch[]> {
+export interface ApiMatchesResponse {
+  matches: ApiMatch[];
+  totalCount: number;
+}
+
+export async function fetchApiMatches(token: string): Promise<ApiMatchesResponse> {
   const resp = await fetch("/api/matches", {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!resp.ok) throw new Error("Matches laden mislukt");
-  return resp.json();
+  const data = await resp.json();
+  if (Array.isArray(data)) {
+    return { matches: data, totalCount: data.length };
+  }
+  return data as ApiMatchesResponse;
 }
 
 export async function matchListingForUser(
