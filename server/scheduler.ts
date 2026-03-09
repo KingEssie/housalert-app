@@ -1,5 +1,6 @@
 import { log } from "./log";
 import { runAllIngesters, OverlapError } from "./ingesters";
+import { persistIngestionRun } from "./admin";
 
 const intervalMinutes = parseInt(process.env.INGEST_INTERVAL_MINUTES || "10", 10);
 const INTERVAL_MS = intervalMinutes * 60 * 1000;
@@ -7,8 +8,10 @@ const INTERVAL_MS = intervalMinutes * 60 * 1000;
 let nextRunAt: Date | null = null;
 
 async function tick() {
+  const startedAt = new Date();
   try {
-    await runAllIngesters();
+    const report = await runAllIngesters();
+    await persistIngestionRun(report, startedAt);
   } catch (err: any) {
     if (err instanceof OverlapError) {
       log("[INGEST] Skipping — previous run still in progress", "scheduler");

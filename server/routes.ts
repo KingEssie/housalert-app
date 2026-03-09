@@ -23,6 +23,7 @@ import {
 import { log } from "./log";
 import { computeMatchScore, getMatchReasons } from "../shared/match-score";
 import { pool as pgPool } from "./pg-pool";
+import { isAdminEmail, getRecentRuns, getRunDetail, getLatestRunCities, getSourceAggregates } from "./admin";
 
 const TEN_MIN = 10 * 60 * 1000;
 const ONE_HOUR = 60 * 60 * 1000;
@@ -1883,6 +1884,68 @@ export async function registerRoutes(
       return res.json(data);
     } catch (err: any) {
       return res.status(500).json({ error: "Internal error" });
+    }
+  });
+
+  async function requireAdmin(req: any, res: any, next: any) {
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+    const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+    if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+    if (!isAdminEmail(user.email || "")) return res.status(403).json({ error: "Forbidden" });
+
+    (req as any).adminUser = user;
+    next();
+  }
+
+  app.get("/api/admin/ingestion/summary", requireAdmin, async (_req, res) => {
+    try {
+      const runs = await getRecentRuns(20);
+      const status = getLastRunStatus();
+      const nextRun = getNextRun();
+      res.json({
+        running: status.running,
+        lastRunAt: status.lastRunAt,
+        lastSuccessfulRunAt: status.lastSuccessfulRunAt,
+        lastError: status.lastError,
+        nextRunAt: nextRun.nextRunAt,
+        intervalMinutes: nextRun.intervalMinutes,
+        todayFetched: status.todayFetched,
+        todayInserted: status.todayInserted,
+        runs,
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/ingestion/cities", requireAdmin, async (_req, res) => {
+    try {
+      const cities = await getLatestRunCities();
+      res.json({ cities });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/ingestion/sources", requireAdmin, async (_req, res) => {
+    try {
+      const sources = await getSourceAggregates();
+      const statuses = getSourceStatuses();
+      res.json({ sources, statuses });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/ingestion/run/:id", requireAdmin, async (req, res) => {
+    try {
+      const run = await getRunDetail(parseInt(req.params.id, 10));
+      if (!run) return res.status(404).json({ error: "Run not found" });
+      res.json(run);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
     }
   });
 
