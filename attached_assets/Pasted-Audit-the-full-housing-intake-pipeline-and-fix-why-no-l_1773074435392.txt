@@ -1,0 +1,89 @@
+Audit the full housing intake pipeline and fix why no listings are coming in.
+
+Context:
+This app should ingest housing listings from all active sources, store them in Supabase, and make them available for account creation, search profiles, matching, and notifications.
+Right now, nothing appears to be coming in.
+The likely issue is in one of these areas:
+1. scheduler / cron / polling job disabled
+2. lookback / freshness window too strict
+3. deduplication blocking everything
+4. filters too strict
+5. source fetch/parsing broken
+6. Supabase insert failing silently
+
+Your task:
+Do a full diagnosis of the intake pipeline and implement a temporary "test mode" for 2 days so we can validate end-to-end intake.
+
+Requirements:
+- Do NOT do extensive testing. Only minimal smoke checks.
+- Do NOT add unnecessary complexity.
+- Keep everything compatible with Supabase. Avoid Replit local Postgres.
+- Preserve the existing BlaBlaCar-style UX.
+- Make focused changes only.
+
+What to inspect:
+1. Find the full ingestion flow from scheduler/trigger -> fetch -> parse -> normalize -> dedupe -> filter -> insert -> match/search profile availability.
+2. Identify exactly where listings are getting dropped or blocked.
+3. Check whether scheduled jobs, cron jobs, background workers, or polling loops are disabled, sleeping, misconfigured, or not invoked.
+4. Check all time-based logic:
+   - lookback window
+   - published_after / created_after filters
+   - last_run_at
+   - freshness tracking
+   - timezone issues
+5. Check deduplication logic:
+   - what fields are used
+   - whether everything is incorrectly marked as already seen
+   - whether dedupe should only use source + external_id
+6. Check Supabase writes:
+   - env vars
+   - service role usage
+   - RLS issues
+   - table names / schema mismatches
+   - swallowed errors
+7. Check source adapters/parsers:
+   - whether fetch returns data
+   - whether parsing fails
+   - whether mapping creates empty required fields
+8. Check app-level filters and search-profile filters that may exclude all listings.
+
+Implement:
+A. Fix the root cause(s).
+B. Add a temporary TEST MODE for 48 hours focused on maximum intake:
+   - enable all active intake sources
+   - set lookback window to 72 hours
+   - run polling every 10–15 minutes if applicable
+   - loosen overly strict pre-match filtering
+   - dedupe only on source + external_id where possible
+   - keep notifications optional, but do not let notification settings block ingestion
+C. Add clear logging/observability for each intake run:
+   - run started at
+   - source name
+   - fetched count
+   - parsed count
+   - filtered count
+   - duplicate count
+   - inserted count
+   - failed count
+   - last successful run
+   - top error message
+D. Add a simple admin/debug summary visible in the app or logs:
+   - listings fetched today
+   - listings inserted today
+   - last run time
+   - last successful run time
+   - current test mode status
+E. If the current “freshness tracking” still depends on Replit local Postgres, migrate it to Supabase if feasible with minimal changes. If that is not feasible quickly, bypass/disable that mechanism temporarily so ingestion works.
+
+Output format:
+1. Explain the exact root cause(s) found.
+2. List every file changed.
+3. Show the specific fixes made.
+4. State how to verify the fix in 1–2 smoke checks only.
+5. Flag any remaining risks.
+
+Important:
+- Be decisive and implement the fixes.
+- Do not stop at analysis only.
+- Do not do broad refactors.
+- Prioritize restoring intake now so we can test for 2 days.

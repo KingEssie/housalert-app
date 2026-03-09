@@ -5,6 +5,7 @@ import {
   runAllIngesters,
   getEnabledSources,
   getLastRunStatus,
+  isTestModeActive,
   OverlapError,
 } from "./ingesters";
 import { getNextRun } from "./scheduler";
@@ -175,6 +176,7 @@ export async function registerRoutes(
     return res.json({
       ok: true,
       sourcesEnabled: getEnabledSources(),
+      testMode: isTestModeActive(),
       time: new Date().toISOString(),
     });
   });
@@ -185,6 +187,67 @@ export async function registerRoutes(
 
   app.get("/api/ingest/next-run", (_req, res) => {
     return res.json(getNextRun());
+  });
+
+  app.get("/api/ingest/debug", async (_req, res) => {
+    try {
+      const status = getLastRunStatus();
+      const nextRun = getNextRun();
+
+      const { count: totalListings } = await supabase
+        .from("listings")
+        .select("*", { count: "exact", head: true });
+
+      const todayStart = new Date();
+      todayStart.setUTCHours(0, 0, 0, 0);
+      const { count: todayListings } = await supabase
+        .from("listings")
+        .select("*", { count: "exact", head: true })
+        .gte("created_at", todayStart.toISOString());
+
+      const { count: totalProfiles } = await supabase
+        .from("search_profiles")
+        .select("*", { count: "exact", head: true });
+
+      const { count: totalMatches } = await supabase
+        .from("matches")
+        .select("*", { count: "exact", head: true });
+
+      return res.json({
+        time: new Date().toISOString(),
+        testMode: status.testMode,
+        testModeExpires: status.testModeExpires,
+        scheduler: {
+          nextRunAt: nextRun.nextRunAt,
+          intervalMinutes: nextRun.intervalMinutes,
+        },
+        lastRun: {
+          at: status.lastRunAt,
+          successAt: status.lastSuccessfulRunAt,
+          error: status.lastError,
+          running: status.running,
+        },
+        today: {
+          fetched: status.todayFetched,
+          inserted: status.todayInserted,
+        },
+        database: {
+          totalListings: totalListings ?? 0,
+          todayListings: todayListings ?? 0,
+          totalProfiles: totalProfiles ?? 0,
+          totalMatches: totalMatches ?? 0,
+        },
+        enabledSources: getEnabledSources(),
+        lastReport: status.lastResult ? {
+          cities: status.lastResult.cities,
+          durationSec: status.lastResult.durationSec,
+          total: status.lastResult.total,
+          sources: status.lastResult.sources,
+        } : null,
+      });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
   });
 
   app.post("/api/freshness", async (req, res) => {

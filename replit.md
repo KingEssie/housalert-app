@@ -89,11 +89,22 @@ A BlaBlaCar-inspired Dutch-language rental alert application for the German mark
 - Color tokens: primary text var(--yo-dark), secondary text var(--yo-muted), divider var(--yo-divider)
 
 ### Reusable PageHeader
-- `client/src/components/ui/page-header.tsx` — Sticky top header with back button + title
-- Props: `title` (string), `onBack?` (callback, defaults to history.back()), `trailing?` (ReactNode)
-- Style: sticky top-0, white bg, border-bottom, h-[56px], max-w-xl centered
-- Used on ALL subpages: subscription-detail, payment-method, cancel flow, notification-settings, application-letter, viewing-tips, profile-details, profile-edit, listing-detail
+- `client/src/components/ui/page-header.tsx` — Floating back button (fixed top-left, 44px circle, white + shadow-md) + large uppercase title in content flow
+- Props: `title` (string), `onBack?` (callback, defaults to history.back()), `trailing?` (ReactNode), `closeButton?` (X icon instead of arrow)
+- Style: fixed position back button respects safe-area-inset-top; title rendered in max-w-xl centered content container with top padding to clear the floating button
+- Used on ALL subpages: subscription-detail, payment-method, cancel flow, notification-settings, application-letter, viewing-tips, profile-details, profile-edit, delete-account, guide pages, change-password
+- `listing-detail.tsx` uses its own `FloatingBackButton` component (same 44px style, but with backdrop-blur for hero image overlay)
 - NOT used on main navigation screens: dashboard (Home/Matches/Boost/Filters/Profile), or wizard flows (new-search)
+
+### Ingestion Pipeline
+- **Scheduler**: `server/scheduler.ts` — runs every 10 min when `ENABLE_INGEST_SCHEDULER=true`
+- **Orchestrator**: `server/ingesters/index.ts` — gets active cities, runs all source ingesters per city
+- **Sources** (8): wg-gesucht, kleinanzeigen, immowelt, wohnungsboerse, immoscout, rentola, nestpick, immonet
+- **Matching**: `server/ingesters/matching.ts` — dedup by source+source_id then URL, insert into Supabase `listings`, trigger match engine
+- **Freshness**: `server/freshness.ts` — tracks listing_freshness and match_timestamps in Supabase (gracefully disabled if tables missing)
+- **Test Mode**: hardcoded expiry date in `server/ingesters/index.ts` — uses 10 default German cities regardless of search profiles. After expiry, reverts to profile-based city selection
+- **Debug endpoint**: `GET /api/ingest/debug` — returns test mode status, scheduler info, last run details, today's stats, DB counts
+- **Known issues**: `search_profiles.city_name` column requires pending migration; matching engine falls back to full profile scan when city_name missing
 
 ### Shared List Components
 - `client/src/components/list-section.tsx` — Reusable menu/settings row components:
