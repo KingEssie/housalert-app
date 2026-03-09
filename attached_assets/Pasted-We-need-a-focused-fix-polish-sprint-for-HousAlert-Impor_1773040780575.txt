@@ -1,0 +1,240 @@
+We need a focused fix + polish sprint for HousAlert.
+
+Important:
+- The app name is now HousAlert.
+- Remove all remaining Stekkies references from the UI.
+- Do NOT redesign the branding system again, but do apply the layout and flow changes below.
+- Fix the product logic first, then clean up the UI.
+- Keep all existing working functionality intact.
+
+==================================================
+1. HOME SCREEN FIXES
+==================================================
+
+1.1 More white space between sections on Home
+Current issue:
+Home sections are too close together vertically.
+
+Required:
+- increase vertical spacing between major home sections/cards
+- make the layout feel calmer and cleaner
+
+1.2 Recent matches must show empty state when no subscription and no real matches
+Current issue:
+Recent matches are still shown on Home even though the user has no active subscription and no actual matches.
+
+Required behavior:
+- if user has no active subscription AND no valid matches:
+  - do not show recent match cards
+  - show a clean empty state like the provided reference
+  - CTA: go to subscriptions
+- if user has active subscription but no matches:
+  - show a different empty state explaining no matches yet
+- if user has valid matches:
+  - show only real valid recent matches
+
+1.3 Home hero banner design
+Current issue:
+The "50 matches gevonden" card is not styled as desired.
+
+Required:
+- background: dark navy blue
+- text: white
+- CTA button: pink
+- preserve existing content structure
+
+1.4 Home stats logic
+Current issue:
+The profile area says the user already received 1009 matches, which is impossible without an active subscription.
+
+Required:
+- received matches count must reflect real received matches only
+- if no active subscription and no real matches:
+  - count must be 0
+- do not inflate counts from raw listings or potential matches
+
+1.5 Fix stale/broken home state after creating a search profile
+Current issue:
+After creating a new search profile, Home sometimes shows a broken empty state / wrong state until refresh.
+
+Required:
+- fix state refresh after search profile creation
+- Home should immediately reflect the correct latest state
+- no manual browser refresh should be needed
+
+==================================================
+2. ACCOUNT / AUTH / BRAND FIXES
+==================================================
+
+2.1 Remove Stekkies references
+Replace any remaining "Stekkies" naming in the app with:
+HousAlert
+
+2.2 Account deletion logic
+Current issue:
+The app suggests contacting support to delete the account.
+
+Required:
+- users must be able to delete their account directly in-app
+- no support contact requirement
+
+2.3 Delete account with active subscription
+Required behavior:
+- if user tries to delete account while subscription is still active:
+  - show a clear warning
+  - user must first stop/cancel subscription renewal
+  - do not auto-cancel silently
+  - explain they must stop renewal first
+
+2.4 Login screen cleanup
+I want the login screen to be much cleaner, inspired by BlaBlaCar layout but in HousAlert colors.
+
+Required:
+- clean minimal layout
+- email field
+- password field
+- "Wachtwoord vergeten"
+- clear CTA to create account if user does not have one
+
+2.5 Account creation flow
+Required behavior:
+- if user chooses "account aanmaken":
+  - first go through onboarding flow
+  - first create search profile
+  - then show paywall/subscription step
+- do NOT send new users directly to plain signup without search setup
+
+==================================================
+3. SEARCH FLOW CLEANUP
+==================================================
+
+3.1 Wijken selection as dropdown multi-select
+Current issue:
+Neighbourhood selection is too cluttered.
+
+Required:
+- change wijk selection into a dropdown multi-select
+- user can select multiple neighbourhoods from dropdown
+- selected items should be clearly visible after selection
+
+3.2 Dropdowns for:
+- aantal slaapkamers
+- oppervlakte
+- gemeubileerd
+
+These should be proper clean dropdowns.
+
+3.3 Search flow layout redesign for logged-in users
+Current issue:
+The flow still feels too busy and boxed.
+
+Required style:
+- cleaner, more like BlaBlaCar
+- no progress bar at the top
+- no sticky banner at the top
+- large screen title
+- floating back button top-left
+- floating circular step indicator top-right
+- content sections without heavy bordered boxes
+- check items / options shown cleanly, not boxed
+- this also applies to Woningtypes screen
+
+3.4 Remove checkbox style
+I do not want square checkbox style throughout the app.
+Use cleaner list/toggle/select patterns consistently.
+
+3.5 Search flow structure for logged-in users
+Keep this 4-screen flow:
+1. Locatie
+2. Vereisten
+3. Extra eigenschappen
+4. Woningtypes
+
+Public onboarding may remain shorter as previously designed.
+
+==================================================
+4. WONINGTYPES / FILTER LOGIC
+==================================================
+
+4.1 Woningtypes screen
+I want the same housing type options as the Stekkies reference image.
+
+Required:
+- implement those options in the Woningtypes screen
+- ensure proper persistence in:
+  - frontend state
+  - backend
+  - database
+  - saved search profiles
+  - matching logic
+  - notification relevance
+
+4.2 Extra properties persistence
+Ensure these persist correctly as well:
+- Balkon
+- Tuin
+- Bad
+- Gemeubileerd
+- Slaapkamers
+- Oppervlakte
+- Huurprijs min/max
+- Wijken multi-select
+
+==================================================
+5. MATCHES / SUBSCRIPTION GATING
+==================================================
+
+5.1 Matches page without subscription
+This should remain an empty/paywall state, not blurred content.
+
+Required:
+- clean empty state
+- CTA to subscribe
+- no blurred listings behind it
+
+5.2 Recent matches card click behavior
+If user has no active subscription:
+- recent matches should not be clickable because they should not be shown
+
+If user has active subscription and real matches:
+- clicking a match should open the correct match detail/response page
+
+==================================================
+6. SUBSCRIPTION / STRIPE SANDBOX
+==================================================
+
+6.1 Stripe sandbox should work
+Current issue:
+The app shows:
+"Betaling wordt binnenkort beschikbaar"
+But I have Stripe sandbox configured and want to test it now.
+
+Required tasks:
+- investigate why checkout is disabled
+- verify environment variables / Stripe config
+- verify sandbox/test mode setup
+- make plan selection + payment testing actually work
+- remove fake fallback message if Stripe sandbox is available
+
+Deliver root cause clearly:
+- what was blocking Stripe test checkout
+- what was fixed
+
+==================================================
+7. DELIVERABLES
+==================================================
+
+After implementation, report back with:
+
+1. Which files changed
+2. Which Stekkies references were removed/replaced with HousAlert
+3. How the Home recent matches logic now works
+4. How the received matches count is calculated
+5. How account deletion now works
+6. How active subscription blocks account deletion until renewal is stopped
+7. How the login/create-account flow now works
+8. How the wijk multi-select dropdown works
+9. Which woningtypes were added
+10. Which database fields / migrations were added or updated
+11. Root cause of Stripe sandbox not working
+12. Confirmation that the stale Home state after creating a search profile is fixed
