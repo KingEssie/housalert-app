@@ -41,6 +41,7 @@ function parseSize(html: string): number {
 
 const UNFURNISHED_PATTERNS = /unmöbliert|unfurnished|nicht\s*möbliert/i;
 const FURNISHED_PATTERNS = /möbliert|furnished|teilmöbliert|voll\s*möbliert/i;
+const NO_PETS_PATTERNS = /keine\s*haustiere|keine\s*tiere|no\s*pets|haustiere\s*nicht\s*erlaubt|tiere\s*nicht\s*erlaubt/i;
 const PETS_PATTERNS = /haustier|pet|tiere?\s*erlaubt/i;
 const BALCONY_PATTERNS = /balkon|balcony|terrasse|loggia/i;
 const ELEVATOR_PATTERNS = /aufzug|fahrstuhl|elevator|lift/i;
@@ -59,7 +60,7 @@ function extractFeatures(cardText: string): {
 } {
   return {
     furnished: parseFurnished(cardText),
-    pets_allowed: PETS_PATTERNS.test(cardText) ? true : null,
+    pets_allowed: NO_PETS_PATTERNS.test(cardText) ? false : PETS_PATTERNS.test(cardText) ? true : null,
     balcony: BALCONY_PATTERNS.test(cardText) ? true : null,
     elevator: ELEVATOR_PATTERNS.test(cardText) ? true : null,
   };

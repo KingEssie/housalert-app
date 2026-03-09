@@ -100,13 +100,18 @@ export interface MatchExplanation {
 
 function mapExtraFeatureToListingField(feature: string, listing: DbListing): { value: boolean | null; fieldName: string } {
   switch (feature) {
-    case "pets_allowed": return { value: listing.pets_allowed ?? null, fieldName: "pets_allowed" };
-    case "balcony": return { value: listing.balcony ?? null, fieldName: "balcony" };
+    case "pets_allowed":
+    case "huisdieren": return { value: listing.pets_allowed ?? null, fieldName: "pets_allowed" };
+    case "balcony":
+    case "balkon": return { value: listing.balcony ?? null, fieldName: "balcony" };
     case "elevator":
     case "lift": return { value: listing.elevator ?? null, fieldName: "elevator" };
     case "parking":
+    case "parkeerplaats":
     case "garden":
+    case "tuin":
     case "basement":
+    case "kelder":
       return { value: null, fieldName: feature };
     default: return { value: null, fieldName: feature };
   }

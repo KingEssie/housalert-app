@@ -1,0 +1,72 @@
+We will now make PETS ALLOWED fully reliable end-to-end as a hard filter in HousAlert.
+
+Important:
+- Do NOT redesign the app.
+- Do NOT touch already-working hard filters:
+  - city
+  - min price
+  - max price
+  - bedrooms_min
+  - size_min
+  - furnished
+  - districts
+- Focus only on making "huisdieren toegestaan" / pets_allowed fully launch-ready as a hard filter.
+
+Current status from the earlier audit:
+- frontend currently saves a Dutch value like "huisdieren"
+- engine expects "pets_allowed"
+- scraper logic exists partly for some sources
+- listings column support was not yet fully available
+- current mismatch causes incorrect rejection behavior
+
+Goal:
+Make pets_allowed a trustworthy hard filter.
+
+Requirements:
+
+1. Database
+- ensure the listings table has a usable `pets_allowed` boolean column
+- if a migration is still needed, provide the exact SQL
+- make it safe and idempotent
+
+2. Profile value normalization
+- normalize frontend/profile values so the backend uses one canonical value
+- do not allow Dutch/English mismatches to break matching
+- if the UI still shows Dutch labels, that is fine, but backend mapping must be consistent
+
+3. Scrapers / ingestion
+- ensure active ingesters populate `pets_allowed` where possible
+- verify support for active sources
+- normalize source text patterns such as:
+  - Haustiere erlaubt
+  - pets allowed
+  - Tiere erlaubt
+  - similar variations
+- use true / false / null where appropriate
+
+4. Matching engine
+- if profile requires pets_allowed, only listings with pets_allowed = true may match
+- listings with false or null must be rejected when this filter is active
+- if no pets filter is selected, skip this filter
+
+5. UI / profile flow
+- ensure create/edit search profile saves the pets filter correctly
+- ensure it reloads correctly in edit mode
+- ensure summary screen shows the selected value correctly
+
+6. Golden testing
+- create a reusable pets_allowed golden test set
+- include:
+  - listings that should match
+  - listings that should not match
+  - unknown/null listings
+- report false positives and false negatives
+
+7. Final audit report
+After implementation report:
+- whether pets_allowed is now fully live-ready as a hard filter
+- which sources provide pets_allowed reliably
+- which sources do not
+- which files changed
+- which DB fields are used
+- any limitations that still exist
