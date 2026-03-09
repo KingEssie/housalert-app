@@ -631,7 +631,16 @@ function HomeTab({
     setActivePrepModal(taskId);
   };
 
-  const firstName = user.email?.split("@")[0] ?? "daar";
+  const profileDataQuery = useQuery<{ first_name?: string }>({
+    queryKey: ["/api/profile-data"],
+    queryFn: async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return {};
+      const res = await fetch("/api/profile-data", { headers: { Authorization: `Bearer ${session.access_token}` } });
+      return res.json();
+    },
+  });
+  const firstName = profileDataQuery.data?.first_name || null;
   const profileCount = profiles.length;
   const hasProfiles = profileCount > 0;
   const hasMatches = matchCount > 0;
@@ -660,7 +669,7 @@ function HomeTab({
     <div className="flex flex-col pb-6">
       <div className="sticky top-0 z-10 bg-white pt-5 pb-4 px-6">
         <h1 className="text-page-title" data-testid="text-greeting">
-          Hallo, {firstName}
+          {firstName ? `Hallo, ${firstName}` : "Hallo"}
         </h1>
       </div>
       <div className="flex flex-col gap-8 px-6">
@@ -1317,7 +1326,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
   const stats = statsQuery.data ?? { matches_received: 0, reactions_sent: 0 };
   const photoUrl = pd?.profile_photo_url || null;
 
-  const displayName = [pd?.first_name, pd?.last_name].filter(Boolean).join(" ") || user.user_metadata?.full_name || user.email?.split("@")[0] || "";
+  const displayName = [pd?.first_name, pd?.last_name].filter(Boolean).join(" ") || user.user_metadata?.full_name || "";
   const initials = displayName ? displayName.split(" ").map((w: string) => w[0]).join("").toUpperCase().slice(0, 2) : user.email?.[0]?.toUpperCase() ?? "?";
   const letterPreview = pd?.application_template?.slice(0, 120) || null;
 
@@ -1429,7 +1438,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-[22px] font-[700] text-[var(--yo-dark)] truncate leading-tight" data-testid="text-user-name">{displayName}</p>
+                  <p className="text-[22px] font-[700] text-[var(--yo-dark)] truncate leading-tight" data-testid="text-user-name">{displayName || "Woningzoeker"}</p>
                   <p className="text-[14px] text-[var(--yo-dark)] mt-0.5">Woningzoeker</p>
                 </div>
                 <ChevronRight className="w-5 h-5 text-[var(--yo-dark)] flex-shrink-0" />

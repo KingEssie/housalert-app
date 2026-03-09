@@ -555,25 +555,7 @@ export async function registerRoutes(
 
       validResults.sort((a: any, b: any) => (b.match_score ?? 0) - (a.match_score ?? 0));
 
-      let totalMatchCount = validResults.length;
-      if (premiumStartedAt) {
-        const countQuery = await supabase
-          .from("matches")
-          .select("listing_id", { count: "exact", head: false })
-          .eq("user_id", user.id)
-          .gte("created_at", premiumStartedAt);
-        const uniqueListings = new Set((countQuery.data ?? []).map((r: any) => r.listing_id));
-        totalMatchCount = uniqueListings.size || validResults.length;
-      } else {
-        const countQuery = await supabase
-          .from("matches")
-          .select("listing_id", { count: "exact", head: false })
-          .eq("user_id", user.id);
-        const uniqueListings = new Set((countQuery.data ?? []).map((r: any) => r.listing_id));
-        totalMatchCount = uniqueListings.size || validResults.length;
-      }
-
-      return res.json({ matches: validResults, totalCount: totalMatchCount });
+      return res.json({ matches: validResults, totalCount: validResults.length });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
     }

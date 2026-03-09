@@ -112,7 +112,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
     },
     {
       email: user?.email || undefined,
-      name: [profileData?.first_name, profileData?.last_name].filter(Boolean).join(" ") || user?.email?.split("@")[0] || undefined,
+      name: [profileData?.first_name, profileData?.last_name].filter(Boolean).join(" ") || undefined,
       phone: profileData?.phone || notifSettings?.phone_e164 || undefined,
       occupation: profileData?.occupation || undefined,
       income: profileData?.monthly_income != null ? String(profileData.monthly_income) : undefined,
