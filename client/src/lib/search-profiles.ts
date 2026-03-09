@@ -26,6 +26,7 @@ export interface SearchProfile {
   furnished?: string;
   property_types?: string[];
   extra_features?: string[];
+  target_categories?: string[];
   created_at: string;
 }
 
@@ -51,13 +52,14 @@ export interface InsertSearchProfileInput {
   furnished?: string;
   property_types?: string[];
   extra_features?: string[];
+  target_categories?: string[];
 }
 
 const OPTIONAL_COLUMNS = [
   "city_name", "country_code", "latitude", "longitude", "place_id",
   "location_mode", "districts", "radius_km",
   "commute_destination", "commute_lat", "commute_lng", "commute_mode", "commute_minutes",
-  "furnished", "property_types", "extra_features",
+  "furnished", "property_types", "extra_features", "target_categories",
 ] as const;
 
 export async function getSearchProfiles(): Promise<SearchProfile[]> {
@@ -109,6 +111,7 @@ export async function createSearchProfile(
   if (input.furnished) fullRow.furnished = input.furnished;
   if (input.property_types && input.property_types.length > 0) fullRow.property_types = input.property_types;
   if (input.extra_features && input.extra_features.length > 0) fullRow.extra_features = input.extra_features;
+  if (input.target_categories && input.target_categories.length > 0) fullRow.target_categories = input.target_categories;
 
   const { data, error } = await supabase
     .from("search_profiles")

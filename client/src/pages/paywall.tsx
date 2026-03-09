@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation, useSearch } from "wouter";
-import { ArrowLeft, Home, Check, Crown, Loader2, AlertCircle } from "lucide-react";
+import { ArrowLeft, Home, Check, Crown, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/lib/auth";
@@ -65,7 +65,6 @@ export default function PaywallPage() {
     planFromUrl && PLANS.some((p) => p.id === planFromUrl) ? planFromUrl : "two_month"
   );
   const [loading, setLoading] = useState(false);
-  const [stripeUnavailable, setStripeUnavailable] = useState(false);
   const autoCheckoutTriggered = useRef(false);
 
   useEffect(() => {
@@ -103,8 +102,12 @@ export default function PaywallPage() {
 
       const data = await res.json();
 
-      if (data.error === "stripe_not_configured") {
-        setStripeUnavailable(true);
+      if (data.error) {
+        toast({
+          title: "Betaling mislukt",
+          description: data.message || data.error || "Probeer het later opnieuw.",
+          variant: "destructive",
+        });
         return;
       }
 
@@ -113,7 +116,7 @@ export default function PaywallPage() {
       } else {
         toast({
           title: "Betaling niet beschikbaar",
-          description: "Probeer het later opnieuw.",
+          description: "Geen checkout URL ontvangen. Probeer het later opnieuw.",
           variant: "destructive",
         });
       }
@@ -225,37 +228,25 @@ export default function PaywallPage() {
 
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[var(--yo-divider)] p-5 z-10">
         <div className="max-w-xl mx-auto">
-          {stripeUnavailable ? (
-            <div className="bg-[var(--yo-chip-bg)] border border-[var(--yo-teal)]/20 rounded-lg p-4 flex items-start gap-3" data-testid="stripe-unavailable-notice">
-              <AlertCircle className="w-5 h-5 text-[var(--yo-dark)] mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="text-[14px] font-semibold text-[var(--yo-dark)]">Betaling wordt binnenkort beschikbaar</p>
-                <p className="text-[13px] text-[var(--yo-dark)] mt-1">We werken aan de betalingsintegratie. Probeer het later opnieuw.</p>
-              </div>
-            </div>
-          ) : (
-            <>
-              <Button
-                size="lg"
-                className="w-full h-[56px] rounded-lg text-[16px] font-bold shadow-none bg-[var(--yo-teal)]"
-                onClick={handleCheckout}
-                disabled={loading}
-                data-testid="button-select-payment"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    Even geduld...
-                  </>
-                ) : (
-                  "Selecteer betaalmethode"
-                )}
-              </Button>
-              <p className="text-center text-[13px] text-[var(--yo-dark)] mt-3 opacity-60">
-                Veilig betalen via Stripe. Opzeggen kan altijd.
-              </p>
-            </>
-          )}
+          <Button
+            size="lg"
+            className="w-full h-[56px] rounded-lg text-[16px] font-bold shadow-none bg-[var(--yo-teal)]"
+            onClick={handleCheckout}
+            disabled={loading}
+            data-testid="button-select-payment"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                Even geduld...
+              </>
+            ) : (
+              "Selecteer betaalmethode"
+            )}
+          </Button>
+          <p className="text-center text-[13px] text-[var(--yo-dark)] mt-3 opacity-60">
+            Veilig betalen via Stripe. Opzeggen kan altijd.
+          </p>
         </div>
       </div>
     </div>

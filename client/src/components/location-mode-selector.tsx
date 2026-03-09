@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { MapPin, Search, X, AlertCircle, Navigation, Clock, Car, Train, Bike } from "lucide-react";
+import { MapPin, Search, X, AlertCircle, Navigation, Clock, Car, Train, Bike, ChevronDown, Check } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Circle, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -369,30 +369,11 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       )}
 
       {value.tab === "wijken" && value.place && availableDistricts.length > 0 && (
-        <div>
-          <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">
-            Wijken <span className="font-normal text-[13px] text-[var(--yo-dark)]">(optioneel)</span>
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {availableDistricts.map((d) => {
-              const selected = value.districts.includes(d);
-              return (
-                <button
-                  key={d}
-                  onClick={() => toggleDistrict(d)}
-                  className={`px-4 py-2.5 rounded-full text-[13px] font-medium transition-all ${
-                    selected
-                      ? "bg-[var(--yo-teal)] text-black"
-                      : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
-                  }`}
-                  data-testid={`chip-district-${d.toLowerCase().replace(/[\s.]/g, "-")}`}
-                >
-                  {d}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        <DistrictMultiSelect
+          districts={availableDistricts}
+          selected={value.districts}
+          onToggle={toggleDistrict}
+        />
       )}
 
       {value.tab === "wijken" && districtsNotAvailable && (
@@ -566,6 +547,93 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
               zoom={hasLocation ? (value.tab === "radius" ? radiusToZoom(value.radiusKm) : 11) : defaultZoom}
             />
           </MapContainer>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DistrictMultiSelect({
+  districts,
+  selected,
+  onToggle,
+}: {
+  districts: string[];
+  selected: string[];
+  onToggle: (d: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative">
+      <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-2 block">
+        Wijken <span className="font-normal text-[13px] text-[var(--yo-dark)]">(optioneel)</span>
+      </label>
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="w-full h-[56px] px-4 pr-10 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] text-left relative flex items-center"
+        data-testid="dropdown-districts"
+      >
+        <span className={selected.length === 0 ? "opacity-50" : ""}>
+          {selected.length === 0
+            ? "Selecteer wijken..."
+            : `${selected.length} ${selected.length === 1 ? "wijk" : "wijken"} geselecteerd`}
+        </span>
+        <ChevronDown className={`absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)] transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+
+      {open && (
+        <div className="absolute z-40 w-full mt-1 bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.12)] border border-[var(--yo-divider)] max-h-[280px] overflow-y-auto">
+          {districts.map((d) => {
+            const isSelected = selected.includes(d);
+            return (
+              <button
+                key={d}
+                type="button"
+                onClick={() => onToggle(d)}
+                className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[var(--yo-surface)] transition-colors"
+                data-testid={`option-district-${d.toLowerCase().replace(/[\s.]/g, "-")}`}
+              >
+                <div className={`w-5 h-5 rounded flex items-center justify-center flex-shrink-0 border transition-colors ${
+                  isSelected ? "bg-[var(--yo-teal)] border-[var(--yo-teal)]" : "border-[var(--yo-divider)] bg-white"
+                }`}>
+                  {isSelected && <Check className="w-3.5 h-3.5 text-black" />}
+                </div>
+                <span className="text-[14px] text-[var(--yo-dark)]">{d}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {selected.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mt-2">
+          {selected.map((d) => (
+            <span
+              key={d}
+              className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[var(--yo-teal)]/15 text-[12px] font-medium text-[var(--yo-dark)]"
+            >
+              {d}
+              <button
+                type="button"
+                onClick={() => onToggle(d)}
+                className="w-3.5 h-3.5 rounded-full flex items-center justify-center hover:bg-black/10"
+                data-testid={`remove-district-${d.toLowerCase().replace(/[\s.]/g, "-")}`}
+              >
+                <X className="w-2.5 h-2.5" />
+              </button>
+            </span>
+          ))}
         </div>
       )}
     </div>

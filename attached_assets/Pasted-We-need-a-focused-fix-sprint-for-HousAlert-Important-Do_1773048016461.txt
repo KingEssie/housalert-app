@@ -1,0 +1,173 @@
+We need a focused fix sprint for HousAlert.
+
+Important:
+- Do NOT redesign the full app again.
+- Keep the current branding/colors/layout direction.
+- Fix the core logic first, then the remaining filter UI behavior.
+- The app name is HousAlert.
+- Remove any remaining Stekkies naming if still present.
+
+==================================================
+1. STRIPE / PAYMENTS MUST WORK NOW
+==================================================
+
+Current issue:
+Stripe payments still do not work.
+The paywall still shows:
+"Betaling niet beschikbaar" / "Betaling wordt binnenkort beschikbaar"
+
+I already have Stripe sandbox / test mode configured and I want to test checkout now.
+
+Required tasks:
+1. Trace the subscription purchase flow end-to-end.
+2. Verify all Stripe env variables are correctly loaded in the runtime.
+3. Verify backend checkout session creation works.
+4. Verify frontend plan selection correctly calls the checkout endpoint.
+5. Verify redirect to Stripe Checkout in test mode.
+6. Remove fake fallback messaging if Stripe test mode is available.
+7. If Stripe is still failing, identify the exact root cause, not a generic error.
+
+Deliverable for this section:
+- explain exactly why Stripe was failing
+- explain what was fixed
+- confirm test checkout now works
+
+==================================================
+2. RECEIVED MATCHES COUNT MUST BE REAL
+==================================================
+
+Current issue:
+The profile/overview still says I have received 1009 matches.
+This is impossible because I do NOT have an active subscription.
+
+Correct rule:
+A user may only have "received matches" if:
+- they had an active subscription
+- AND actual matches were generated for that user account
+- AND those matches were actually stored as real matches for that user
+
+Do NOT count:
+- raw listings
+- potential matches
+- global listings count
+- matches from before account logic
+- any placeholder/fake numbers
+
+Required behavior:
+- If no active subscription and no real delivered matches:
+  received matches count must be 0
+- Only show real delivered/stored matches for that user
+- Recalculate this in profile stats and anywhere else it appears
+
+Deliverable:
+- explain exactly how "received matches" is now calculated
+- list the tables/fields used
+
+==================================================
+3. LOCATIE SCREEN — WIJKEN MUST BE MULTI-SELECT DROPDOWN
+==================================================
+
+Current issue:
+Neighbourhoods are still shown as many pills on the location screen.
+I want a clean multi-select dropdown instead.
+
+Required behavior:
+- "Wijken" should become a multi-select dropdown
+- user can open dropdown and select multiple neighbourhoods
+- selected neighbourhoods should remain visible clearly after selection
+- this should work for search profile creation and editing
+- state must persist correctly
+- saved selections must load back correctly when editing
+
+Do NOT leave the current pill-grid UI in place.
+
+==================================================
+4. EIGENSCHAPPEN SCREEN — CHECKBOX STYLE LIKE BLABLACAR
+==================================================
+
+Current issue:
+The extra properties / preferences UI is still not the clean style I want.
+
+Required:
+For the relevant preference/eigenschappen screen, use a cleaner checkbox/list selection style inspired by BlaBlaCar:
+- simpler list structure
+- more vertical spacing
+- cleaner rows
+- checkbox/checkmark style rather than chunky segmented controls where appropriate
+
+This applies to:
+- extra properties
+- relevant inclusion/preference toggles where a checkbox/list style is more appropriate
+
+Keep it mobile-friendly and clean.
+
+==================================================
+5. "WONINGTYPES" / TARGET GROUP OPTIONS MUST MATCH STEKKIES
+==================================================
+
+Current issue:
+The final screen/options are not yet correct.
+
+I may not want the label "Woningtypes" if that is technically inaccurate.
+But I DO want the same option set as Stekkies for this screen.
+
+This includes the exact kinds of options like in the Stekkies reference, such as:
+- Studenten
+- Woningdelers
+- Huisdiereigenaren
+- Woningen van betaalde websites
+- Kamers in gedeelde woningen
+- Vrije sector van woningcorporaties
+- Tijdelijke woningen
+- Seniorenwoningen
+(and the full same set from the Stekkies-style screen)
+
+Required:
+1. Use the same option set as the Stekkies reference.
+2. Implement them with a clean UI.
+3. Persist them properly in:
+   - frontend state
+   - API payload
+   - backend
+   - database
+   - saved search profiles
+4. Ensure they are actually used in matching / notification relevance where supported.
+
+If some sources do not support all these filters directly:
+- still store them correctly
+- wire them into the matching logic as far as source data allows
+- structure code so support can expand later
+
+Also:
+If "Woningtypes" is not the right title for this screen, rename it to something more accurate while preserving the same intent and options.
+
+==================================================
+6. KEEP SEARCH FLOW CLEAN
+==================================================
+
+For logged-in user search flow:
+- keep it as a clean full-screen flow
+- maintain the 4-step structure
+- do not reintroduce cluttered cards/boxes
+- keep:
+  - floating back button
+  - floating step indicator
+  - large title
+- but update the internals according to the changes above
+
+==================================================
+7. DELIVERABLES
+==================================================
+
+After implementation, report back with:
+
+1. Exact root cause of Stripe sandbox checkout failure
+2. Files changed for Stripe fix
+3. Exact logic now used for "received matches" count
+4. Files changed for received matches stat fix
+5. How the wijk multi-select dropdown works
+6. Which component/file now handles wijk selection
+7. Which option set is implemented for the final Stekkies-style screen
+8. What the screen is now called (if renamed from Woningtypes)
+9. Which database fields / migrations were added or updated
+10. Confirmation that search profile create + edit both support the new wijk multi-select and option persistence

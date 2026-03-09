@@ -643,21 +643,57 @@ export async function registerRoutes(
     three_month: process.env.STRIPE_PRICE_THREE_MONTH || process.env.STRIPE_PRICE_3_MONTHS || "",
   };
 
-  if (stripeAvailable && (!PLAN_PRICE_MAP.monthly || !PLAN_PRICE_MAP.two_month || !PLAN_PRICE_MAP.three_month)) {
+  log(`[stripe-config] Env price IDs: monthly=${PLAN_PRICE_MAP.monthly || "(empty)"}, two_month=${PLAN_PRICE_MAP.two_month || "(empty)"}, three_month=${PLAN_PRICE_MAP.three_month || "(empty)"}`);
+
+  if (stripeAvailable) {
     try {
       const { getUncachableStripeClient } = await import("./stripe/stripeClient");
       const stripe = await getUncachableStripeClient();
-      const prices = await stripe.prices.list({ active: true, limit: 20, expand: ["data.product"] });
-      for (const price of prices.data) {
-        const product = price.product as any;
-        if (product && typeof product === "object" && product.name !== "HousAlert Abonnement") continue;
-        if (price.nickname === "monthly" && !PLAN_PRICE_MAP.monthly) PLAN_PRICE_MAP.monthly = price.id;
-        if (price.nickname === "two_month" && !PLAN_PRICE_MAP.two_month) PLAN_PRICE_MAP.two_month = price.id;
-        if (price.nickname === "three_month" && !PLAN_PRICE_MAP.three_month) PLAN_PRICE_MAP.three_month = price.id;
+
+      if (PLAN_PRICE_MAP.monthly) {
+        try {
+          await stripe.prices.retrieve(PLAN_PRICE_MAP.monthly);
+        } catch {
+          log(`[stripe-config] monthly price ID invalid, will look up dynamically`);
+          PLAN_PRICE_MAP.monthly = "";
+        }
       }
-      log(`[stripe-config] Dynamic price lookup: monthly=${PLAN_PRICE_MAP.monthly}, two_month=${PLAN_PRICE_MAP.two_month}, three_month=${PLAN_PRICE_MAP.three_month}`);
+      if (PLAN_PRICE_MAP.two_month) {
+        try {
+          await stripe.prices.retrieve(PLAN_PRICE_MAP.two_month);
+        } catch {
+          log(`[stripe-config] two_month price ID invalid, will look up dynamically`);
+          PLAN_PRICE_MAP.two_month = "";
+        }
+      }
+      if (PLAN_PRICE_MAP.three_month) {
+        try {
+          await stripe.prices.retrieve(PLAN_PRICE_MAP.three_month);
+        } catch {
+          log(`[stripe-config] three_month price ID invalid, will look up dynamically`);
+          PLAN_PRICE_MAP.three_month = "";
+        }
+      }
+
+      if (!PLAN_PRICE_MAP.monthly || !PLAN_PRICE_MAP.two_month || !PLAN_PRICE_MAP.three_month) {
+        const prices = await stripe.prices.list({ active: true, limit: 50, expand: ["data.product"] });
+        for (const price of prices.data) {
+          if (price.nickname === "monthly" && !PLAN_PRICE_MAP.monthly) PLAN_PRICE_MAP.monthly = price.id;
+          if (price.nickname === "two_month" && !PLAN_PRICE_MAP.two_month) PLAN_PRICE_MAP.two_month = price.id;
+          if (price.nickname === "three_month" && !PLAN_PRICE_MAP.three_month) PLAN_PRICE_MAP.three_month = price.id;
+          if (!price.nickname && price.recurring) {
+            const interval = price.recurring.interval;
+            const count = price.recurring.interval_count;
+            if (interval === "month" && count === 1 && !PLAN_PRICE_MAP.monthly) PLAN_PRICE_MAP.monthly = price.id;
+            if (interval === "month" && count === 2 && !PLAN_PRICE_MAP.two_month) PLAN_PRICE_MAP.two_month = price.id;
+            if (interval === "month" && count === 3 && !PLAN_PRICE_MAP.three_month) PLAN_PRICE_MAP.three_month = price.id;
+          }
+        }
+      }
+
+      log(`[stripe-config] Final price IDs: monthly=${PLAN_PRICE_MAP.monthly || "(missing)"}, two_month=${PLAN_PRICE_MAP.two_month || "(missing)"}, three_month=${PLAN_PRICE_MAP.three_month || "(missing)"}`);
     } catch (err: any) {
-      log(`[stripe-config] Dynamic price lookup failed: ${err.message}`);
+      log(`[stripe-config] Price validation/lookup failed: ${err.message}`);
     }
   }
 
@@ -1298,6 +1334,13 @@ export async function registerRoutes(
       if (!token) return res.status(401).json({ error: "Unauthorized" });
       const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const subStatus = await getSubscriptionStatus(user.id);
+      const hasActiveOrTrial = subStatus.status === "active" || subStatus.status === "trial";
+
+      if (!hasActiveOrTrial) {
+        return res.json({ matches_received: 0, reactions_sent: 0 });
+      }
 
       const matchResult = await supabase.from("matches").select("id", { count: "exact", head: true }).eq("user_id", user.id);
 

@@ -23,6 +23,7 @@ import {
   Search,
   Sofa,
   ChevronDown,
+  Check,
 } from "lucide-react";
 
 const MAX_PROFILES = 4;
@@ -82,13 +83,15 @@ const FURNISHED_OPTIONS = [
   { value: "unfurnished", label: "Niet gemeubileerd" },
 ];
 
-const PROPERTY_TYPE_OPTIONS = [
-  { value: "appartement", label: "Appartement", desc: "Flat of bovenwoning" },
-  { value: "huis", label: "Huis", desc: "Eengezinswoning of rijtjeshuis" },
-  { value: "studio", label: "Studio", desc: "Eenkamerwoning" },
-  { value: "kamer", label: "Kamer", desc: "Kamer in gedeelde woning" },
-  { value: "woonboot", label: "Woonboot", desc: "Wonen op het water" },
-  { value: "overig", label: "Overig", desc: "Andere woningtypes" },
+const TARGET_CATEGORY_OPTIONS = [
+  { value: "studenten", label: "Studenten" },
+  { value: "woningdelers", label: "Woningdelers" },
+  { value: "huisdiereigenaren", label: "Huisdiereigenaren" },
+  { value: "betaalde_websites", label: "Woningen van betaalde websites" },
+  { value: "kamers_gedeeld", label: "Kamers in gedeelde woningen" },
+  { value: "vrije_sector", label: "Vrije sector van woningcorporaties" },
+  { value: "tijdelijke_woningen", label: "Tijdelijke woningen" },
+  { value: "seniorenwoningen", label: "Seniorenwoningen" },
 ];
 
 const EXTRA_FEATURE_OPTIONS = [
@@ -106,7 +109,7 @@ interface FilterData {
   bedroomsMin: number;
   sizeMin: number;
   furnished: string;
-  propertyTypes: string[];
+  targetCategories: string[];
   extraFeatures: string[];
 }
 
@@ -124,7 +127,7 @@ export default function NewSearchPage() {
     bedroomsMin: 0,
     sizeMin: 0,
     furnished: "",
-    propertyTypes: [],
+    targetCategories: [],
     extraFeatures: [],
   });
 
@@ -219,8 +222,9 @@ export default function NewSearchPage() {
         commute_mode: locationData.tab === "reistijd" ? locationData.commuteMode : undefined,
         commute_minutes: locationData.tab === "reistijd" ? locationData.commuteMinutes : undefined,
         furnished: filters.furnished || undefined,
-        property_types: filters.propertyTypes.length > 0 ? filters.propertyTypes : undefined,
+        property_types: undefined,
         extra_features: filters.extraFeatures.length > 0 ? filters.extraFeatures : undefined,
+        target_categories: filters.targetCategories.length > 0 ? filters.targetCategories : undefined,
       });
 
       if (profile?.id) {
@@ -320,7 +324,7 @@ export default function NewSearchPage() {
         {step === 1 && <Step1Location locationData={locationData} setLocationData={setLocationData} />}
         {step === 2 && <Step2Requirements filters={filters} updateFilters={updateFilters} />}
         {step === 3 && <Step3ExtraFeatures filters={filters} updateFilters={updateFilters} />}
-        {step === 4 && <Step4PropertyTypes filters={filters} updateFilters={updateFilters} perWeek={perWeek} estimateLoading={estimateQuery.isLoading} />}
+        {step === 4 && <Step4TargetCategories filters={filters} updateFilters={updateFilters} perWeek={perWeek} estimateLoading={estimateQuery.isLoading} />}
       </main>
 
       <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-[var(--yo-divider)] z-50">
@@ -524,6 +528,34 @@ function Step2Requirements({
   );
 }
 
+function CheckboxRow({
+  label,
+  selected,
+  onToggle,
+  testId,
+}: {
+  label: string;
+  selected: boolean;
+  onToggle: () => void;
+  testId: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      className="w-full flex items-center gap-4 py-4 border-b border-[var(--yo-divider)] last:border-b-0 text-left"
+      data-testid={testId}
+    >
+      <div className={`w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 border-2 transition-colors ${
+        selected ? "bg-[var(--yo-teal)] border-[var(--yo-teal)]" : "border-[var(--yo-divider)] bg-white"
+      }`}>
+        {selected && <Check className="w-4 h-4 text-black" />}
+      </div>
+      <span className="text-[15px] font-medium text-[var(--yo-dark)]">{label}</span>
+    </button>
+  );
+}
+
 function Step3ExtraFeatures({
   filters,
   updateFilters,
@@ -547,24 +579,16 @@ function Step3ExtraFeatures({
         </p>
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        {EXTRA_FEATURE_OPTIONS.map((opt) => {
-          const selected = filters.extraFeatures.includes(opt.value);
-          return (
-            <button
-              key={opt.value}
-              onClick={() => toggleFeature(opt.value)}
-              className={`px-4 py-2.5 rounded-full text-[14px] font-medium transition-all ${
-                selected
-                  ? "bg-[var(--yo-teal)] text-black"
-                  : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
-              }`}
-              data-testid={`option-feature-${opt.value}`}
-            >
-              {opt.label}
-            </button>
-          );
-        })}
+      <div className="bg-white rounded-lg">
+        {EXTRA_FEATURE_OPTIONS.map((opt) => (
+          <CheckboxRow
+            key={opt.value}
+            label={opt.label}
+            selected={filters.extraFeatures.includes(opt.value)}
+            onToggle={() => toggleFeature(opt.value)}
+            testId={`option-feature-${opt.value}`}
+          />
+        ))}
       </div>
 
       {filters.extraFeatures.length === 0 && (
@@ -576,7 +600,7 @@ function Step3ExtraFeatures({
   );
 }
 
-function Step4PropertyTypes({
+function Step4TargetCategories({
   filters,
   updateFilters,
   perWeek,
@@ -587,45 +611,37 @@ function Step4PropertyTypes({
   perWeek: number;
   estimateLoading: boolean;
 }) {
-  const toggleType = (val: string) => {
-    const arr = filters.propertyTypes;
-    updateFilters({ propertyTypes: arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val] });
+  const toggleCategory = (val: string) => {
+    const arr = filters.targetCategories;
+    updateFilters({ targetCategories: arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val] });
   };
 
   return (
     <div className="space-y-5">
       <div>
         <h2 className="text-page-title mb-1.5" data-testid="text-step-title">
-          Woningtypes
+          Doelgroepen & categorieën
         </h2>
         <p className="text-subtitle">
-          Welk type woning zoek je? Selecteer een of meerdere.
+          Voor welke doelgroep of categorie zoek je? Selecteer een of meerdere.
         </p>
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        {PROPERTY_TYPE_OPTIONS.map((opt) => {
-          const selected = filters.propertyTypes.includes(opt.value);
-          return (
-            <button
-              key={opt.value}
-              onClick={() => toggleType(opt.value)}
-              className={`px-4 py-2.5 rounded-full text-[14px] font-medium transition-all ${
-                selected
-                  ? "bg-[var(--yo-teal)] text-black"
-                  : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
-              }`}
-              data-testid={`option-type-${opt.value}`}
-            >
-              {opt.label}
-            </button>
-          );
-        })}
+      <div className="bg-white rounded-lg">
+        {TARGET_CATEGORY_OPTIONS.map((opt) => (
+          <CheckboxRow
+            key={opt.value}
+            label={opt.label}
+            selected={filters.targetCategories.includes(opt.value)}
+            onToggle={() => toggleCategory(opt.value)}
+            testId={`option-category-${opt.value}`}
+          />
+        ))}
       </div>
 
-      {filters.propertyTypes.length === 0 && (
+      {filters.targetCategories.length === 0 && (
         <p className="text-[13px] text-[var(--yo-dark)] opacity-60 text-center">
-          Geen selectie = alle woningtypes worden meegenomen
+          Geen selectie = alle categorieën worden meegenomen
         </p>
       )}
 

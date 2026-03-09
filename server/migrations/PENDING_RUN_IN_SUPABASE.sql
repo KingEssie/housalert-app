@@ -161,3 +161,8 @@ CREATE TRIGGER enforce_search_profile_limit
 ALTER TABLE search_profiles ADD COLUMN IF NOT EXISTS furnished TEXT;
 ALTER TABLE search_profiles ADD COLUMN IF NOT EXISTS property_types TEXT[];
 ALTER TABLE search_profiles ADD COLUMN IF NOT EXISTS extra_features TEXT[];
+
+-- -----------------------------------------------
+-- Migration 017: target_categories column
+-- -----------------------------------------------
+ALTER TABLE search_profiles ADD COLUMN IF NOT EXISTS target_categories TEXT[];
