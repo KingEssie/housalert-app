@@ -77,7 +77,7 @@ export default function ApplicationLetterPage() {
     <div className="min-h-screen bg-background flex flex-col">
       <PageHeader title="Aanmeldingsbrief" onBack={() => navigate("/dashboard?tab=profiel")} />
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6 pb-32">
+      <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-32">
         <div className="flex flex-col gap-4">
           {missingFields && !isLoading && (
             <button

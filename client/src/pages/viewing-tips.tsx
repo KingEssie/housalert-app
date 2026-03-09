@@ -107,11 +107,8 @@ export default function ViewingTipsPage() {
     <div className="min-h-screen bg-background flex flex-col">
       <PageHeader title="Bezichtigingtips" onBack={() => navigate("/dashboard?tab=tips")} />
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6 pb-32">
+      <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-32">
         <div className="mb-6">
-          <h2 className="text-[32px] font-[800] tracking-[-0.03em] leading-[1.1] mb-3" style={{ color: "var(--yo-dark)" }} data-testid="text-tips-heading">
-            Goed voorbereid naar een bezichtiging
-          </h2>
           <p className="text-[15px] text-muted-foreground leading-relaxed">
             In de Duitse huurmarkt is voorbereiding alles. Met deze tips vergroot je je kans op de woning.
           </p>

@@ -1,18 +1,6 @@
 import { useLocation } from "wouter";
-import { ArrowLeft, FolderOpen, Shield, Search, Users, CheckCircle2 } from "lucide-react";
-
-function PageHeader({ title, onBack }: { title: string; onBack: () => void }) {
-  return (
-    <header className="sticky top-0 z-10 bg-white border-b border-[var(--yo-divider)]">
-      <div className="max-w-xl mx-auto flex items-center gap-3 px-4 h-14">
-        <button onClick={onBack} className="w-9 h-9 rounded-full bg-[var(--yo-surface)] flex items-center justify-center" data-testid="button-back">
-          <ArrowLeft className="w-4 h-4 text-[var(--yo-dark)]" />
-        </button>
-        <h1 className="text-[17px] font-bold text-[var(--yo-dark)]">{title}</h1>
-      </div>
-    </header>
-  );
-}
+import { FolderOpen, Shield, Search, Users, CheckCircle2 } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
 
 function GuideSection({ title, items }: { title: string; items: string[] }) {
   return (
@@ -172,20 +160,10 @@ export function GuidePage({ guideId }: { guideId: string }) {
     return null;
   }
 
-  const Icon = guide.icon;
-
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <PageHeader title={guide.title} onBack={() => navigate("/dashboard?tab=tips")} />
-      <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-6 pb-32">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: "rgba(45,212,191,0.1)" }}>
-            <Icon className="w-6 h-6 text-[var(--yo-teal)]" />
-          </div>
-          <h2 className="text-[24px] font-[800] tracking-[-0.03em] text-[var(--yo-dark)]" data-testid={`heading-guide-${guideId}`}>
-            {guide.title}
-          </h2>
-        </div>
+      <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-32">
         <p className="text-[15px] text-[var(--yo-dark)] leading-relaxed mb-6" data-testid={`text-guide-intro-${guideId}`}>
           {guide.intro}
         </p>

@@ -1,13 +1,14 @@
 import { useLocation } from "wouter";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 
 interface PageHeaderProps {
   title: string;
   onBack?: () => void;
   trailing?: React.ReactNode;
+  closeButton?: boolean;
 }
 
-export function PageHeader({ title, onBack, trailing }: PageHeaderProps) {
+export function PageHeader({ title, onBack, trailing, closeButton }: PageHeaderProps) {
   const [, navigate] = useLocation();
 
   const handleBack = () => {
@@ -20,22 +21,28 @@ export function PageHeader({ title, onBack, trailing }: PageHeaderProps) {
     }
   };
 
+  const Icon = closeButton ? X : ArrowLeft;
+
   return (
-    <header
-      className="sticky top-0 z-20 bg-white border-b border-[var(--yo-divider)]"
-      data-testid="page-header"
-    >
-      <div className="max-w-xl mx-auto flex items-center h-[56px] px-4">
+    <div className="max-w-xl mx-auto px-5 pt-[max(1rem,env(safe-area-inset-top))]" data-testid="page-header">
+      <div className="flex items-center justify-between mb-6 pt-2">
         <button
           onClick={handleBack}
-          className="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-[var(--yo-surface)] transition-colors flex-shrink-0"
+          className="w-10 h-10 rounded-full bg-[var(--yo-surface)] flex items-center justify-center hover:bg-[var(--yo-chip-bg)] transition-colors flex-shrink-0"
           data-testid="button-back"
         >
-          <ArrowLeft className="w-5 h-5 text-[var(--yo-dark)]" />
+          <Icon className="w-5 h-5 text-[var(--yo-dark)]" />
         </button>
-        <h1 className="text-[18px] font-bold text-[var(--yo-dark)] flex-1 ml-1" data-testid="text-page-title">{title}</h1>
         {trailing && <div className="flex-shrink-0">{trailing}</div>}
       </div>
-    </header>
+      {title && (
+        <h1
+          className="text-[24px] font-[800] text-[var(--yo-dark)] tracking-[-0.02em] leading-[1.2] uppercase mb-6"
+          data-testid="text-page-title"
+        >
+          {title}
+        </h1>
+      )}
+    </div>
   );
 }

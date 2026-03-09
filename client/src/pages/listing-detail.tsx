@@ -2,10 +2,17 @@ import { useState } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
-import { MapPin, Euro, BedDouble, Ruler, ExternalLink, Clock, Globe, Zap, CheckCircle2, ImageIcon } from "lucide-react";
-import { PageHeader } from "@/components/ui/page-header";
+import { MapPin, Euro, BedDouble, Ruler, ExternalLink, Clock, Globe, Zap, CheckCircle2, ImageIcon, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ApplySheet } from "@/components/apply-sheet";
+
+function FloatingBackButton({ navigate }: { navigate: (to: string) => void }) {
+  return (
+    <div className="absolute top-[max(0.75rem,env(safe-area-inset-top))] left-4 z-30">
+      <button onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard")} className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm" data-testid="button-back"><ArrowLeft className="w-5 h-5 text-[var(--yo-dark)]" /></button>
+    </div>
+  );
+}
 
 const FRESH_BADGE_STYLES: Record<string, { bg: string; text: string }> = {
   net_binnen: { bg: "bg-[var(--yo-chip-bg)]", text: "text-[var(--yo-dark)]" },
@@ -107,8 +114,8 @@ export default function ListingDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[var(--yo-surface)] flex flex-col">
-        <PageHeader title="" />
+      <div className="min-h-screen bg-[var(--yo-surface)] flex flex-col relative">
+        <FloatingBackButton navigate={navigate} />
         <div className="animate-pulse">
           <div className="h-[260px] bg-[var(--yo-divider)]" />
           <div className="max-w-xl mx-auto w-full px-5 pt-5 space-y-4">
@@ -125,9 +132,9 @@ export default function ListingDetailPage() {
 
   if (isError || !listing) {
     return (
-      <div className="min-h-screen bg-[var(--yo-surface)] flex flex-col">
-        <PageHeader title="" />
-        <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-10">
+      <div className="min-h-screen bg-[var(--yo-surface)] flex flex-col relative">
+        <FloatingBackButton navigate={navigate} />
+        <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-16">
           <div className="bg-white rounded-lg border border-[var(--yo-divider)] p-8 text-center">
             <p className="text-[18px] font-bold text-[var(--yo-dark)] mb-2">Advertentie niet gevonden</p>
             <p className="text-[13px] text-[var(--yo-dark)] mb-4">Deze advertentie bestaat niet meer of is verwijderd.</p>
@@ -151,8 +158,8 @@ export default function ListingDetailPage() {
     : "";
 
   return (
-    <div className="min-h-screen bg-[var(--yo-surface)] flex flex-col">
-      <PageHeader title="" />
+    <div className="min-h-screen bg-[var(--yo-surface)] flex flex-col relative">
+      <FloatingBackButton navigate={navigate} />
 
       <div className="relative">
         {hasImage && !imgError ? (

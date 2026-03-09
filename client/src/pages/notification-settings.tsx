@@ -127,14 +127,11 @@ export default function NotificationSettingsPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <PageHeader title="Meldingen" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
+      <PageHeader title="Meldingsinstellingen" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-5 py-6 flex flex-col gap-6">
+      <main className="flex-1 max-w-xl mx-auto w-full px-5 pb-6 flex flex-col gap-6">
         <div>
-          <h1 className="text-page-title" data-testid="text-page-title">
-            Meldingsinstellingen
-          </h1>
-          <p className="text-subtitle mt-1">
+          <p className="text-subtitle">
             Kies hoe je op de hoogte gehouden wilt worden van nieuwe matches.
           </p>
         </div>

@@ -46,6 +46,10 @@ const SIZE_OPTIONS = [
   { value: 50, label: "50+ m\u00B2" },
   { value: 60, label: "60+ m\u00B2" },
   { value: 80, label: "80+ m\u00B2" },
+  { value: 100, label: "100+ m\u00B2" },
+  { value: 120, label: "120+ m\u00B2" },
+  { value: 150, label: "150+ m\u00B2" },
+  { value: 200, label: "200+ m\u00B2" },
 ];
 
 const DEFAULT_BERLIN: LocationData = {
@@ -76,6 +80,10 @@ const RENT_OPTIONS = [
   { value: "2000", label: "\u20AC2.000" },
   { value: "2500", label: "\u20AC2.500" },
   { value: "3000", label: "\u20AC3.000" },
+  { value: "3500", label: "\u20AC3.500" },
+  { value: "4000", label: "\u20AC4.000" },
+  { value: "4500", label: "\u20AC4.500" },
+  { value: "5000", label: "\u20AC5.000+" },
 ];
 
 const FURNISHED_OPTIONS = [
@@ -768,67 +776,71 @@ function StepReview({
     : "Geen selectie";
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-page-title mb-1.5" data-testid="text-step-title">
-          Controleer je zoekopdracht
-        </h2>
-        <p className="text-subtitle">
-          Bekijk je instellingen en sla op.
-        </p>
-      </div>
-
-      {!estimateLoading && (
-        <div className="rounded-xl bg-[#0F172A] p-5 flex items-center gap-3" data-testid="card-review-estimate">
-          <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
-            <Sparkles className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <p className="text-[15px] font-bold text-white">
-              {perWeek > 0
-                ? `Verwacht: ~${perWeek} matches per week`
-                : "Nog geen matches verwacht"}
-            </p>
-            <p className="text-[13px] text-white/60 mt-0.5">
-              {perWeek > 0
-                ? "Op basis van je zoekinstellingen"
-                : "Je kunt je filters later altijd aanpassen"}
-            </p>
-          </div>
+    <div className="pb-28">
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-page-title mb-1.5" data-testid="text-step-title">
+            Controleer je zoekopdracht
+          </h2>
+          <p className="text-subtitle">
+            Bekijk je instellingen en sla op.
+          </p>
         </div>
-      )}
 
-      <div className="bg-white rounded-lg">
-        <ReviewRow label="Locatie" value={locationLabel} onEdit={() => onEdit(1)} />
-        {locationData.tab === "wijken" && (
-          <ReviewRow label="Wijken" value={districtsLabel} onEdit={() => onEdit(1)} />
+        {!estimateLoading && (
+          <div className="rounded-xl bg-[#0F172A] p-5 flex items-center gap-3" data-testid="card-review-estimate">
+            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <p className="text-[15px] font-bold text-white">
+                {perWeek > 0
+                  ? `Verwacht: ~${perWeek} matches per week`
+                  : "Nog geen matches verwacht"}
+              </p>
+              <p className="text-[13px] text-white/60 mt-0.5">
+                {perWeek > 0
+                  ? "Op basis van je zoekinstellingen"
+                  : "Je kunt je filters later altijd aanpassen"}
+              </p>
+            </div>
+          </div>
         )}
-        <ReviewRow label="Huurprijs" value={priceLabel} onEdit={() => onEdit(2)} />
-        <ReviewRow label="Slaapkamers" value={bedroomsLabel} onEdit={() => onEdit(2)} />
-        <ReviewRow label="Oppervlakte" value={sizeLabel} onEdit={() => onEdit(2)} />
-        <ReviewRow label="Extra eigenschappen" value={extraFeaturesLabel} onEdit={() => onEdit(3)} />
-        <ReviewRow label="Overige voorkeuren" value={targetLabel} onEdit={() => onEdit(4)} />
+
+        <div className="bg-white rounded-lg">
+          <ReviewRow label="Locatie" value={locationLabel} onEdit={() => onEdit(1)} />
+          {locationData.tab === "wijken" && (
+            <ReviewRow label="Wijken" value={districtsLabel} onEdit={() => onEdit(1)} />
+          )}
+          <ReviewRow label="Huurprijs" value={priceLabel} onEdit={() => onEdit(2)} />
+          <ReviewRow label="Slaapkamers" value={bedroomsLabel} onEdit={() => onEdit(2)} />
+          <ReviewRow label="Oppervlakte" value={sizeLabel} onEdit={() => onEdit(2)} />
+          <ReviewRow label="Extra eigenschappen" value={extraFeaturesLabel} onEdit={() => onEdit(3)} />
+          <ReviewRow label="Overige voorkeuren" value={targetLabel} onEdit={() => onEdit(4)} />
+        </div>
       </div>
 
-      <div className="space-y-3 pt-2">
-        <Button
-          onClick={onSubmit}
-          disabled={submitting}
-          className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[16px] font-bold disabled:opacity-40 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
-          data-testid="button-wizard-submit"
-        >
-          {submitting ? (
-            <div className="flex items-center gap-2">
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              Opslaan...
-            </div>
-          ) : (
-            <>
-              <Search className="w-4 h-4 mr-1.5" />
-              {isEditMode ? "Zoekopdracht bijwerken" : "Zoekopdracht opslaan"}
-            </>
-          )}
-        </Button>
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[var(--yo-divider)] p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        <div className="max-w-lg mx-auto">
+          <Button
+            onClick={onSubmit}
+            disabled={submitting}
+            className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[16px] font-bold disabled:opacity-40 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
+            data-testid="button-wizard-submit"
+          >
+            {submitting ? (
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Opslaan...
+              </div>
+            ) : (
+              <>
+                <Search className="w-4 h-4 mr-1.5" />
+                {isEditMode ? "Zoekopdracht bijwerken" : "Zoekopdracht opslaan"}
+              </>
+            )}
+          </Button>
+        </div>
       </div>
     </div>
   );

@@ -87,18 +87,15 @@ export default function ProfileEditPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <PageHeader title={config.label} onBack={() => navigate("/profile/details")} />
+      <PageHeader title={config.question} onBack={() => navigate("/profile/details")} />
 
-      <div className="max-w-lg mx-auto px-5 pt-4">
+      <div className="max-w-xl mx-auto px-5">
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
           </div>
         ) : (
           <div className="flex flex-col gap-6">
-            <h1 className="text-[24px] font-bold leading-tight" style={{ color: "var(--yo-dark)" }} data-testid="heading-edit-field">
-              {config.question}
-            </h1>
 
             <input
               type={config.type}

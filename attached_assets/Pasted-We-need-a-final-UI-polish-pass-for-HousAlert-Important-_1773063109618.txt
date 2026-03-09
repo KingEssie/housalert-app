@@ -1,0 +1,171 @@
+We need a final UI polish pass for HousAlert.
+
+Important:
+- Do NOT redesign the app broadly.
+- Do NOT change any working business logic.
+- Do NOT touch subscription, matches, Stripe, or scraper logic in this task.
+- Focus ONLY on the 4 UI/UX changes below.
+- Keep current branding/colors.
+- Keep mobile-first behavior.
+
+==================================================
+1. SUMMARY SCREEN CTA MUST BE FLOATING / STICKY
+==================================================
+
+Current issue:
+On the final summary screen of creating/editing a search profile, the green CTA button at the bottom is not floating/sticky enough and disappears out of view while scrolling.
+
+Required:
+- On the final summary/review screen before saving/placing the search profile, make the primary CTA button sticky/floating at the bottom of the viewport.
+- It must always remain visible and tappable.
+- It must respect safe area insets on iPhone/mobile browsers.
+- The content above should still be scrollable.
+- The CTA must not overlap content awkwardly; add enough bottom padding to the page content so the final rows are not hidden behind the sticky button.
+
+Apply this to:
+- create search profile summary screen
+- edit search profile summary screen
+
+Expected behavior:
+- user can always tap the final CTA without needing to scroll all the way down again
+
+==================================================
+2. EXTEND PRICE RANGE TO €5000+
+==================================================
+
+Current issue:
+Max price currently only goes up to €3000.
+
+Required:
+- Extend all relevant max price dropdown/select options up to €5000+
+- Keep the same formatting style already used in the app
+- Include at least these values in ascending order:
+  €300
+  €400
+  €500
+  €600
+  €700
+  €800
+  €900
+  €1000
+  €1200
+  €1500
+  €2000
+  €2500
+  €3000
+  €3500
+  €4000
+  €4500
+  €5000+
+- Make sure this applies consistently everywhere:
+  - create search profile flow
+  - edit search profile flow
+  - summary rendering
+  - storage / saved value mapping
+  - filters overview cards
+
+Also verify:
+- "Geen voorkeur" still works correctly
+- selected values save and reload correctly
+
+==================================================
+3. EXTEND SURFACE AREA RANGE TO 200+ m²
+==================================================
+
+Current issue:
+Surface area currently only goes up to 80+ m².
+
+Required:
+- Extend all relevant surface area options up to 200+ m²
+- Include at least:
+  Geen voorkeur
+  20+ m²
+  30+ m²
+  40+ m²
+  50+ m²
+  60+ m²
+  80+ m²
+  100+ m²
+  120+ m²
+  150+ m²
+  200+ m²
+
+Apply consistently to:
+- create search profile flow
+- edit search profile flow
+- summary screen
+- saved search cards
+- storage mapping / DB payload if needed
+
+Also verify:
+- selected area saves correctly
+- selected area reloads correctly in edit mode
+
+==================================================
+4. CLEAN SUBPAGE HEADER STYLE EVERYWHERE
+==================================================
+
+Goal:
+We want a cleaner, more minimal subpage layout across the app.
+
+Current desired style:
+- NO top banner/header bar across subpages
+- Instead only:
+  - a floating round back button (or close button where appropriate) in the top-left area
+  - the page content below it
+  - a large page title in the content area
+- This should match the style shown in the provided example screenshots:
+  - simple
+  - airy
+  - no bulky top nav bar
+  - large title
+  - minimalist layout
+
+Required:
+For subpages/screens inside the app, replace the old banner-like top header with this cleaner layout:
+
+A. Top-left control
+- circular button
+- either back arrow or close (X), depending on context
+- fixed visual style consistent with existing app
+
+B. Title section
+- large page title
+- content starts below with enough spacing
+- no extra top banner container
+
+C. Keep usability
+- safe top spacing for iPhone notch / dynamic island
+- no overlap with browser UI
+- keep navigation working exactly as before
+
+Apply this clean subpage layout to relevant subpages such as:
+- personal details
+- account detail subpages
+- search profile create/edit steps
+- search profile summary screen
+- subscription subpages where appropriate
+- other internal subpages still using the older banner-style top bar
+
+Do NOT break:
+- routing
+- back behavior
+- sticky bottom CTA behavior
+- form layout
+
+==================================================
+5. QA / VERIFICATION
+==================================================
+
+After implementation, verify and report:
+
+1. Which screens now have the new clean subpage layout
+2. Whether the summary CTA is now sticky/floating
+3. Whether the CTA respects iPhone safe area
+4. Whether max price now goes to €5000+
+5. Whether surface area now goes to 200+ m²
+6. Whether selected values persist correctly after save and reload
+7. Which files were changed
+
+Important:
+Please keep this task narrowly scoped to these UI improvements only.
