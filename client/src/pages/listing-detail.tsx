@@ -8,8 +8,8 @@ import { ApplySheet } from "@/components/apply-sheet";
 
 function FloatingBackButton({ navigate }: { navigate: (to: string) => void }) {
   return (
-    <div className="absolute top-[max(0.75rem,env(safe-area-inset-top))] left-4 z-30">
-      <button onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard")} className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm" data-testid="button-back"><ArrowLeft className="w-5 h-5 text-[var(--yo-dark)]" /></button>
+    <div className="fixed top-[max(0.75rem,env(safe-area-inset-top))] left-4 z-30">
+      <button onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard")} className="w-11 h-11 rounded-full bg-white/90 backdrop-blur-sm shadow-md flex items-center justify-center active:scale-95 transition-transform" data-testid="button-back"><ArrowLeft className="w-5 h-5 text-[var(--yo-dark)]" /></button>
     </div>
   );
 }

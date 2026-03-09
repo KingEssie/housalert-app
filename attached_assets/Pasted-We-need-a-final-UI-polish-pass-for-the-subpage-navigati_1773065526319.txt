@@ -1,0 +1,118 @@
+We need a final UI polish pass for the subpage navigation header in HousAlert.
+
+Important:
+- Do NOT redesign the whole app.
+- Do NOT change business logic.
+- Only improve the back button behavior and header alignment.
+
+==================================================
+1. FLOATING BACK BUTTON ON ALL SUBPAGES
+==================================================
+
+All subpages should use the same navigation pattern:
+
+- A floating circular back button in the top-left corner
+- The button must sit above the page content
+- It should not be part of the text layout
+
+Required behavior:
+
+• position: fixed or absolute
+• top-left placement
+• respect mobile safe area (notch / dynamic island)
+• always remain visible
+
+Spacing guideline:
+
+top: safe-area + ~12–16px  
+left: 16px
+
+==================================================
+2. MAKE THE BACK BUTTON LARGER AND MORE PROMINENT
+==================================================
+
+The current back button is too small and does not stand out enough.
+
+Update the button style:
+
+• circular background
+• size around 44–48px
+• clear arrow icon inside
+• slightly stronger contrast than current version
+
+Example styling target:
+
+- width: ~44px
+- height: ~44px
+- border-radius: 50%
+- subtle shadow or light background
+- icon centered
+
+Goal:
+The back button should be easily tappable on mobile and clearly visible.
+
+==================================================
+3. FIX TITLE ALIGNMENT
+==================================================
+
+On pages like:
+
+- Meldingsinstellingen
+- Persoonlijke gegevens
+- Similar settings pages
+
+The title is currently not aligned nicely with the page content.
+
+Required:
+
+• page titles should align with the left margin of the main content
+• titles must not shift right due to the back button
+• the back button must float above the layout, not push the title
+
+Expected layout:
+
+[ floating back button ]
+
+Title aligned with content column
+
+Content sections below.
+
+==================================================
+4. APPLY THIS CONSISTENTLY
+==================================================
+
+Use the same header pattern across all internal pages:
+
+Examples:
+
+- Meldingsinstellingen
+- Persoonlijke gegevens
+- Edit profile screens
+- Settings screens
+- Search profile edit screens
+- Notification settings
+- Other internal pages with titles
+
+Ensure consistency.
+
+==================================================
+5. MOBILE UX
+==================================================
+
+Verify:
+
+• back button does not overlap iPhone dynamic island
+• tap area is comfortable
+• spacing feels balanced
+• titles remain readable
+
+==================================================
+6. REPORT BACK
+==================================================
+
+After implementation report:
+
+1. Which screens now use the floating back button
+2. Final button size
+3. Whether safe-area spacing was implemented
+4. Which components/files were updated
