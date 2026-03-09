@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { sendMatchAlerts } from "../notifications";
+import { bufferMatchAlert } from "../notifications/buffer";
 import { trackMatchCreated } from "../freshness";
 
 const SUPABASE_URL = (process.env.VITE_SUPABASE_URL ?? "").replace(/\/$/, "");
@@ -426,7 +426,7 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
   }
 
   let totalMatches = 0;
-  const alertedUsers = new Set<string>();
+  const resolvedEmails = new Map<string, string>();
 
   for (const profile of profiles as SearchProfile[]) {
     if (!doesListingMatchProfile(listing as DbListing, profile)) continue;
@@ -436,12 +436,21 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
 
     totalMatches++;
 
-    if (!alertedUsers.has(profile.user_id)) {
-      alertedUsers.add(profile.user_id);
+    if (!resolvedEmails.has(profile.user_id)) {
       const { data: userData } = await supabase.auth.admin.getUserById(profile.user_id);
-      const email = userData?.user?.email;
-      sendMatchAlerts(profile.user_id, email ?? undefined, listing as DbListing, supabase).catch((err) => {
-        log(`[ALERT ERROR] Failed to send alerts for user=${profile.user_id}: ${err?.message ?? err}`);
+      resolvedEmails.set(profile.user_id, userData?.user?.email ?? "");
+    }
+
+    const email = resolvedEmails.get(profile.user_id);
+    if (email) {
+      const l = listing as DbListing;
+      bufferMatchAlert(profile.user_id, email, {
+        title: l.title,
+        city: l.city,
+        price: l.price,
+        bedrooms: l.bedrooms,
+        size_m2: l.size_m2,
+        url: l.url,
       });
     }
   }
@@ -505,22 +514,32 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
   }
 
   let totalMatches = 0;
+  const matchedListings: DbListing[] = [];
 
   for (const listing of listings as DbListing[]) {
     if (!doesListingMatchProfile(listing, sp)) continue;
 
     const created = await insertMatchIfNew(sp.user_id, sp.id, listing.id);
-    if (created) totalMatches++;
+    if (created) {
+      totalMatches++;
+      matchedListings.push(listing);
+    }
   }
 
-  if (totalMatches > 0) {
+  if (matchedListings.length > 0) {
     const { data: userData } = await supabase.auth.admin.getUserById(sp.user_id);
     const email = userData?.user?.email;
-    const sampleListing = listings.find(l => doesListingMatchProfile(l as DbListing, sp));
-    if (sampleListing) {
-      sendMatchAlerts(sp.user_id, email ?? undefined, sampleListing as DbListing, supabase).catch((err) => {
-        log(`[ALERT ERROR] Failed to send backfill alerts for user=${sp.user_id}: ${err?.message ?? err}`);
-      });
+    if (email) {
+      for (const l of matchedListings) {
+        bufferMatchAlert(sp.user_id, email, {
+          title: l.title,
+          city: l.city,
+          price: l.price,
+          bedrooms: l.bedrooms,
+          size_m2: l.size_m2,
+          url: l.url,
+        });
+      }
     }
   }
 

@@ -420,10 +420,11 @@ CREATE POLICY "Users can insert own matches" ON matches FOR INSERT WITH CHECK (a
 ## Notifications
 
 Multi-channel notification system in `server/notifications/index.ts`:
-- **Email** — via Resend integration (`sendEmailMatchAlert`)
+- **Email** — via Resend integration (`sendEmailMatchAlert` for single, `sendBatchMatchAlert` for digest)
 - **SMS** — via Twilio (`sendSmsMatchAlert`); requires `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_SMS_FROM`
 - **WhatsApp** — via Twilio (`sendWhatsappMatchAlert`); requires `TWILIO_WHATSAPP_FROM`
-- `sendMatchAlerts(userId, email, listing, supabase)` — reads `user_notification_settings` from Supabase, dispatches to enabled channels; skips all notifications on settings read failure
+- **Batched alerts**: Matching engine buffers alerts via `server/notifications/buffer.ts` (`bufferMatchAlert`). At end of ingestion cycle, `flushMatchAlertBuffer` sends one digest email per user. Per-user dedup prevents duplicate listings. Backfill uses `flushUserAlerts` for user-scoped flush. Guards: alerts-disabled check at buffer entry + flush, settings-read-error = skip, flush mutex prevents concurrent sends.
+- `sendMatchAlerts(userId, email, listing, supabase)` — legacy single-listing alert function (still available for direct use); reads `user_notification_settings` from Supabase, dispatches to enabled channels; skips all notifications on settings read failure
 
 ### Supabase table: `user_notification_settings`
 ```sql

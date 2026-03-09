@@ -12,6 +12,7 @@ import { getNextRun } from "./scheduler";
 import { getListingFreshness, getMatchTimestamps, getNewestListingIds } from "./freshness";
 import { supabase } from "./ingesters/matching";
 import { backfillMatchesForSearchProfile, explainMatch, explainAllProfilesForListing } from "./matching/engine";
+import { flushUserAlerts } from "./notifications/buffer";
 import {
   ensureTrialSubscription,
   getSubscriptionStatus,
@@ -1289,6 +1290,9 @@ export async function registerRoutes(
       }
 
       const matchCount = await backfillMatchesForSearchProfile(searchProfileId);
+      if (matchCount > 0) {
+        await flushUserAlerts(user.id, supabase);
+      }
       return res.json({ matches: matchCount });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });

@@ -7,6 +7,8 @@ import { createImmoweltIngester } from "./immowelt";
 import { createConfigIngester } from "./html-config";
 import { buildSourcesForCity } from "./config/sources";
 import { getCitySlugs, makeFallbackSlug } from "./city-slugs";
+import { areAlertsEnabled } from "../notifications";
+import { flushMatchAlertBuffer, clearBuffer, getBufferSize } from "../notifications/buffer";
 
 const SUPABASE_URL = (process.env.VITE_SUPABASE_URL ?? "").replace(/\/$/, "");
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
@@ -309,6 +311,21 @@ export async function runAllIngesters(): Promise<IngestionReport> {
       }
     }
 
+    if (areAlertsEnabled()) {
+      const bufSize = getBufferSize();
+      if (bufSize.listings > 0) {
+        log(`[ingest] Flushing match alert buffer: ${bufSize.users} users, ${bufSize.listings} listings`, "ingest");
+        try {
+          const alertResult = await flushMatchAlertBuffer(supabase);
+          log(`[ingest] Alert emails sent: ${alertResult.sent} success, ${alertResult.failed} failed`, "ingest");
+        } catch (alertErr: any) {
+          log(`[ingest] Alert flush error: ${alertErr.message}`, "ingest");
+        }
+      } else {
+        log(`[ingest] No match alerts to send this cycle`, "ingest");
+      }
+    }
+
     const duration = ((Date.now() - startTime) / 1000).toFixed(1);
     log(
       `[INGEST COMPLETE] in ${duration}s — cities=${cities.length} found=${total.found} inserted=${total.inserted} dup=${total.duplicates} matches=${total.matches} errors=${total.errors}`,
@@ -331,6 +348,7 @@ export async function runAllIngesters(): Promise<IngestionReport> {
     return report;
   } catch (err: any) {
     _lastError = err.message;
+    clearBuffer();
     throw err;
   } finally {
     _running = false;

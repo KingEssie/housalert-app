@@ -53,6 +53,74 @@ async function getUncachableResendClient() {
   };
 }
 
+export async function sendBatchMatchAlert(
+  userEmail: string,
+  listings: ListingInfo[]
+): Promise<boolean> {
+  if (listings.length === 0) return false;
+
+  if (listings.length === 1) {
+    return sendMatchAlert(userEmail, listings[0]);
+  }
+
+  try {
+    const { client, fromEmail } = await getUncachableResendClient();
+
+    const listingRows = listings.map((l) => {
+      const details = [
+        l.price > 0 ? `\u20AC${l.price}/mnd` : null,
+        l.bedrooms > 0 ? `${l.bedrooms} kamers` : null,
+        l.size_m2 > 0 ? `${l.size_m2} m\u00B2` : null,
+      ]
+        .filter(Boolean)
+        .join(" \u2022 ");
+      return { ...l, details };
+    });
+
+    const textBody = listingRows
+      .map(
+        (l, i) =>
+          `${i + 1}. ${l.title}\n   ${l.details}\n   ${l.city}${l.url ? `\n   ${l.url}` : ""}`
+      )
+      .join("\n\n");
+
+    const htmlListItems = listingRows
+      .map(
+        (l) => `
+        <div style="background:#f8f8f8;border-radius:8px;padding:16px;margin:12px 0;">
+          <h3 style="margin:0 0 4px 0;color:#222;font-size:15px;">${l.title}</h3>
+          <p style="margin:0;color:#555;font-size:14px;">${l.details} &mdash; ${l.city}</p>
+          ${l.url ? `<a href="${l.url}" style="color:#0066cc;font-size:13px;display:inline-block;margin-top:6px;">Bekijk de woning &rarr;</a>` : ""}
+        </div>`
+      )
+      .join("");
+
+    const { error } = await client.emails.send({
+      from: fromEmail || "HousAlert <onboarding@resend.dev>",
+      to: userEmail,
+      subject: `${listings.length} nieuwe matches gevonden`,
+      text: `Hoi!\n\nEr ${listings.length === 1 ? "is 1 nieuwe woning" : `zijn ${listings.length} nieuwe woningen`} gevonden die ${listings.length === 1 ? "past" : "passen"} bij je zoekopdracht:\n\n${textBody}\n\nGroet,\nHousAlert`,
+      html: `<div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:20px;">
+        <h2 style="color:#333;margin-bottom:4px;">${listings.length} nieuwe matches gevonden!</h2>
+        <p style="color:#666;margin-top:0;">Er ${listings.length === 1 ? "is een woning" : `zijn ${listings.length} woningen`} gevonden die ${listings.length === 1 ? "past" : "passen"} bij je zoekopdracht.</p>
+        ${htmlListItems}
+        <p style="color:#999;font-size:13px;margin-top:20px;">Je ontvangt deze e-mail omdat je een zoekopdracht hebt ingesteld op HousAlert.</p>
+      </div>`,
+    });
+
+    if (error) {
+      log(`Failed to send batch alert to ${userEmail}: ${error.message}`);
+      return false;
+    }
+
+    log(`Batch alert sent to ${userEmail} with ${listings.length} listings`);
+    return true;
+  } catch (err: any) {
+    log(`Error sending batch alert: ${err.message}`);
+    return false;
+  }
+}
+
 export async function sendMatchAlert(
   userEmail: string,
   listing: ListingInfo
