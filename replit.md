@@ -99,12 +99,14 @@ A BlaBlaCar-inspired Dutch-language rental alert application for the German mark
 ### Ingestion Pipeline
 - **Scheduler**: `server/scheduler.ts` — runs every 10 min when `ENABLE_INGEST_SCHEDULER=true`
 - **Orchestrator**: `server/ingesters/index.ts` — gets active cities, runs all source ingesters per city
-- **Sources** (8): wg-gesucht, kleinanzeigen, immowelt, wohnungsboerse, immoscout, rentola, nestpick, immonet
+- **Sources** (8 total, 6 active): wg-gesucht ✅, kleinanzeigen ✅, immowelt ✅, wohnungsboerse ✅, rentola ✅, nestpick ✅, immoscout ❌ (401 bot-blocked), immonet ❌ (410 gone)
+- **Image sources**: wg-gesucht, kleinanzeigen, immowelt, wohnungsboerse extract images; rentola/nestpick/immoscout/immonet do not
 - **Matching**: `server/ingesters/matching.ts` — dedup by source+source_id then URL, insert into Supabase `listings`, trigger match engine
+- **City matching fields**: listings.city matched against search_profiles.city using `.ilike()` query; `doesListingMatchProfile()` uses `profile.city_name || profile.city` for comparison; city normalization is toLowerCase().trim() with substring matching
 - **Freshness**: `server/freshness.ts` — tracks listing_freshness and match_timestamps in Supabase (gracefully disabled if tables missing)
-- **Test Mode**: hardcoded expiry date in `server/ingesters/index.ts` — uses 10 default German cities regardless of search profiles. After expiry, reverts to profile-based city selection
-- **Debug endpoint**: `GET /api/ingest/debug` — returns test mode status, scheduler info, last run details, today's stats, DB counts
-- **Known issues**: `search_profiles.city_name` column requires pending migration; matching engine falls back to full profile scan when city_name missing
+- **Test Mode**: hardcoded expiry `2026-03-12` in `server/ingesters/index.ts` — uses 10 default German cities merged with profile cities. After expiry, uses only profile-based city selection. Real search profiles (6 exist) are sufficient for normal operation
+- **Debug endpoint**: `GET /api/ingest/debug` — returns test mode status, scheduler info, last run details, today's stats, DB counts, source categorization (active/broken/gone with notes), last source errors
+- **Pending migration**: `server/migrations/PENDING_RUN_IN_SUPABASE.sql` — must be run in Supabase SQL Editor. Adds: listing_freshness table, match_timestamps table, search_profiles.city_name + geo columns, onboarding_drafts table, match dedup index, profile limit trigger, filter columns
 
 ### Shared List Components
 - `client/src/components/list-section.tsx` — Reusable menu/settings row components:

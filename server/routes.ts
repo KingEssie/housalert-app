@@ -4,6 +4,7 @@ import { sendEmailMatchAlert } from "./notifications";
 import {
   runAllIngesters,
   getEnabledSources,
+  getSourceStatuses,
   getLastRunStatus,
   isTestModeActive,
   OverlapError,
@@ -213,6 +214,19 @@ export async function registerRoutes(
         .from("matches")
         .select("*", { count: "exact", head: true });
 
+      const sourceStatuses = getSourceStatuses();
+      const activeSources = sourceStatuses.filter(s => s.status === "active");
+      const brokenSources = sourceStatuses.filter(s => s.status !== "active");
+
+      const lastSourceErrors: Record<string, string> = {};
+      if (status.lastResult?.sources) {
+        for (const s of status.lastResult.sources) {
+          if (s.errors > 0 && s.found === 0 && s.inserted === 0) {
+            lastSourceErrors[s.name] = `${s.errors} error(s), 0 results`;
+          }
+        }
+      }
+
       return res.json({
         time: new Date().toISOString(),
         testMode: status.testMode,
@@ -237,7 +251,11 @@ export async function registerRoutes(
           totalProfiles: totalProfiles ?? 0,
           totalMatches: totalMatches ?? 0,
         },
-        enabledSources: getEnabledSources(),
+        sources: {
+          active: activeSources.map(s => s.name),
+          broken: brokenSources.map(s => ({ name: s.name, status: s.status, note: s.note })),
+          lastErrors: lastSourceErrors,
+        },
         lastReport: status.lastResult ? {
           cities: status.lastResult.cities,
           durationSec: status.lastResult.durationSec,

@@ -68,6 +68,7 @@ export default function SignupPage() {
             const { data: profile } = await supabase.from("search_profiles").insert({
               user_id: data.user.id,
               city,
+              city_name: city,
               price_min: minPrice ? parseInt(minPrice) : 0,
               price_max: maxPrice ? parseInt(maxPrice) : 0,
               bedrooms_min: minRooms && minRooms !== "any" ? parseInt(minRooms) : 0,

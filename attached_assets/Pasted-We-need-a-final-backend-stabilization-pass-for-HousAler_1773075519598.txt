@@ -1,0 +1,166 @@
+We need a final backend stabilization pass for HousAlert so ingestion, matching, and city-based search all work correctly.
+
+Important:
+- Do NOT redesign the UI.
+- Do NOT change subscription logic unless required for ingestion/matching correctness.
+- Focus on database migration, ingestion, matching, and source/debug reliability.
+- The goal is to make the data pipeline work cleanly end-to-end.
+
+==================================================
+1. APPLY / PREPARE THE MISSING SUPABASE MIGRATION
+==================================================
+
+Current issue:
+The app reports that `search_profiles.city_name` is still missing and the matching engine is falling back to a full scan.
+
+Required:
+- identify the exact missing migration needed for `search_profiles.city_name`
+- provide the exact SQL needed for Supabase SQL Editor
+- make sure the SQL is safe and idempotent where possible
+- if code changes are needed to support the new column, make them too
+
+Required outcome:
+- `search_profiles.city_name` exists
+- city-specific matching works correctly
+- no more fallback to full scan if not needed
+
+Also verify:
+- existing search profiles continue to work
+- existing rows are backfilled correctly if possible from existing city/location data
+- new search profiles always save `city_name` correctly
+
+==================================================
+2. FIX MATCH ENGINE TO USE CITY-BASED FILTERING CORRECTLY
+==================================================
+
+Current issue:
+Matching engine currently falls back to a full scan.
+
+Required:
+- update matching logic to use `search_profiles.city_name` correctly
+- ensure listings are matched by the intended city
+- make matching efficient and deterministic
+
+Verify:
+- a Berlin search profile only evaluates Berlin listings unless intentionally broader
+- München profile only evaluates München listings
+- city normalization works (Berlin vs berlin vs BERLIN etc.)
+- matching still supports other filters correctly
+
+Please document:
+- what field in listings is used for city matching
+- what field in search_profiles is used for city matching
+- any normalization/slug logic used
+
+==================================================
+3. VERIFY INGEST PIPELINE END-TO-END
+==================================================
+
+We need the ingestion pipeline to be production-safe and easy to debug.
+
+Required:
+- verify `/api/ingest/debug` returns useful live status
+- ensure it clearly shows:
+  - testMode true/false
+  - todayListings count
+  - active source counts
+  - ingestion last run / status
+  - any source errors
+- confirm listings are being fetched, parsed, inserted, and matched
+
+Please check:
+- scheduled workflow / cron still runs
+- no silent failures
+- logs are readable
+- any failing source is reported cleanly
+
+==================================================
+4. HANDLE BROKEN SOURCES CLEANLY
+==================================================
+
+Current known issues:
+- Immoscout returns 401 bot block
+- Immonet returns 410 gone
+
+Required:
+- make sure these failing sources do NOT break the whole ingestion process
+- handle them gracefully
+- mark them as unavailable / skipped / failed in debug output
+- keep working sources running normally
+
+Do NOT waste the whole pipeline because one source fails.
+
+Also:
+- if source config still includes dead/broken endpoints, clean this up clearly
+- document which sources are currently active and reliable
+
+==================================================
+5. ENSURE MATCHES ONLY COME FROM REAL, VALID LISTINGS
+==================================================
+
+Required:
+- only matched listings that actually exist in DB and have valid detail data should be shown
+- avoid stale or broken records entering active matches
+- validate listing references used by match generation
+
+Check:
+- listing id / source listing id consistency
+- listing still exists when match is created
+- source_url is available where needed
+- no invalid match rows are being created
+
+==================================================
+6. VERIFY IMAGE PIPELINE AGAIN
+==================================================
+
+Even if not all sources support images, the pipeline should behave correctly.
+
+Required:
+- verify which current active sources provide image data
+- verify image extraction, DB storage, API mapping, and frontend field names match
+- if image is available, it must be stored and returned
+- if not available, use a clean fallback intentionally
+
+Please report clearly:
+- which source(s) currently provide images
+- why current placeholder images still appear
+- whether issue is scraper-side, database-side, API-side, or frontend-side
+
+==================================================
+7. KEEP TEST MODE CONTROLLED
+==================================================
+
+Current note says test mode expires March 12.
+
+Required:
+- confirm how test mode is controlled
+- confirm what happens after test mode ends
+- make sure after test mode the pipeline works correctly with real search profiles
+- ensure the app does not suddenly appear broken when test mode ends
+
+Please explain:
+- whether test mode can be toggled safely
+- whether real search profiles are already enough for normal operation
+- whether anything else must be configured before test mode ends
+
+==================================================
+8. REQUIRED DELIVERABLES
+==================================================
+
+After implementation, report back with:
+
+1. Exact SQL migration for `search_profiles.city_name`
+2. Whether migration was applied successfully
+3. Whether existing rows were backfilled
+4. Whether full-scan fallback is removed
+5. Exact fields used for city matching
+6. Which sources are active and working
+7. Which sources are skipped/broken
+8. Whether `/api/ingest/debug` now shows complete useful diagnostics
+9. Whether listings are actively being inserted today
+10. Whether match generation is working city-specifically
+11. Whether image handling is fully understood and where the remaining issue is if any
+12. Which files changed
+
+Important:
+Please do not give a broad summary only. I want exact root causes and exact fixes.

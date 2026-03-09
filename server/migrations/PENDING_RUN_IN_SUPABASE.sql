@@ -1,25 +1,60 @@
 -- =============================================================
 -- PENDING MIGRATIONS — Run this entire file in the Supabase SQL Editor
 -- (Dashboard → SQL Editor → New Query → paste → Run)
+-- All statements are idempotent — safe to re-run.
 -- =============================================================
 
 -- -----------------------------------------------
 -- Migration 008: listing_freshness & match_timestamps
 -- -----------------------------------------------
 CREATE TABLE IF NOT EXISTS listing_freshness (
+  listing_id UUID PRIMARY KEY,
   source TEXT NOT NULL,
   source_id TEXT NOT NULL,
-  first_seen_at TIMESTAMPTZ DEFAULT now(),
-  last_seen_at TIMESTAMPTZ DEFAULT now(),
-  PRIMARY KEY (source, source_id)
+  first_seen_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  last_seen_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+CREATE INDEX IF NOT EXISTS idx_listing_freshness_first_seen
+  ON listing_freshness (first_seen_at DESC);
+
 CREATE TABLE IF NOT EXISTS match_timestamps (
-  user_id UUID NOT NULL,
-  listing_id UUID NOT NULL REFERENCES listings(id) ON DELETE CASCADE,
-  matched_at TIMESTAMPTZ DEFAULT now(),
-  PRIMARY KEY (user_id, listing_id)
+  match_id UUID PRIMARY KEY,
+  matched_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+CREATE OR REPLACE FUNCTION upsert_listing_freshness(
+  p_listing_id UUID,
+  p_source TEXT,
+  p_source_id TEXT,
+  p_now TIMESTAMPTZ
+) RETURNS VOID AS $$
+BEGIN
+  INSERT INTO listing_freshness (listing_id, source, source_id, first_seen_at, last_seen_at)
+  VALUES (p_listing_id, p_source, p_source_id, p_now, p_now)
+  ON CONFLICT (listing_id) DO UPDATE SET last_seen_at = p_now;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+ALTER TABLE listing_freshness ENABLE ROW LEVEL SECURITY;
+
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'listing_freshness' AND policyname = 'Service role full access on listing_freshness') THEN
+    CREATE POLICY "Service role full access on listing_freshness"
+      ON listing_freshness FOR ALL TO service_role
+      USING (true) WITH CHECK (true);
+  END IF;
+END $$;
+
+ALTER TABLE match_timestamps ENABLE ROW LEVEL SECURITY;
+
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'match_timestamps' AND policyname = 'Service role full access on match_timestamps') THEN
+    CREATE POLICY "Service role full access on match_timestamps"
+      ON match_timestamps FOR ALL TO service_role
+      USING (true) WITH CHECK (true);
+  END IF;
+END $$;
 
 -- -----------------------------------------------
 -- Migration 010: user_profile_data
@@ -70,7 +105,7 @@ DO $$ BEGIN
 END $$;
 
 -- -----------------------------------------------
--- Migration 011: search_profiles geo columns
+-- Migration 011: search_profiles geo columns + city_name backfill
 -- -----------------------------------------------
 ALTER TABLE search_profiles
   ADD COLUMN IF NOT EXISTS city_name TEXT,
@@ -123,7 +158,7 @@ CREATE TABLE IF NOT EXISTS onboarding_drafts (
 );
 
 -- -----------------------------------------------
--- Migration 014: Unique constraint on matches to prevent duplicates
+-- Migration 014: Unique constraint on matches
 -- First remove any existing duplicates (keeps oldest match per combo)
 -- -----------------------------------------------
 DELETE FROM matches a USING matches b
@@ -156,7 +191,6 @@ CREATE TRIGGER enforce_search_profile_limit
 
 -- -----------------------------------------------
 -- Migration 016: New search-profile filter columns
--- furnished, property_types, extra_features
 -- -----------------------------------------------
 ALTER TABLE search_profiles ADD COLUMN IF NOT EXISTS furnished TEXT;
 ALTER TABLE search_profiles ADD COLUMN IF NOT EXISTS property_types TEXT[];

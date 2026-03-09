@@ -73,8 +73,29 @@ export function isRunning(): boolean {
   return _running;
 }
 
+export interface SourceStatus {
+  name: string;
+  status: "active" | "broken" | "gone";
+  note?: string;
+}
+
+const SOURCE_STATUSES: SourceStatus[] = [
+  { name: "wg-gesucht", status: "active" },
+  { name: "kleinanzeigen", status: "active" },
+  { name: "immowelt", status: "active" },
+  { name: "wohnungsboerse", status: "active" },
+  { name: "immoscout", status: "broken", note: "Returns 401 — bot-blocked" },
+  { name: "rentola", status: "active" },
+  { name: "nestpick", status: "active" },
+  { name: "immonet", status: "gone", note: "Returns 410 — service discontinued" },
+];
+
+export function getSourceStatuses(): SourceStatus[] {
+  return SOURCE_STATUSES;
+}
+
 export function getEnabledSources(): string[] {
-  return ["wg-gesucht", "kleinanzeigen", "immowelt", "wohnungsboerse", "immoscout", "rentola", "nestpick", "immonet"];
+  return SOURCE_STATUSES.map(s => s.name);
 }
 
 export function getLastRunStatus(): {

@@ -115,7 +115,7 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
     const result = await supabase
       .from("search_profiles")
       .select("*")
-      .or(`city.ilike.%${safeCity}%,city_name.ilike.%${safeCity}%`);
+      .ilike("city", `%${safeCity}%`);
     profiles = result.data;
     pErr = result.error;
     if (pErr) {
