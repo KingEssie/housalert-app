@@ -6,7 +6,7 @@ import { insertAndMatchListings } from "./matching";
 import { getImmoweltUrl } from "./city-slugs";
 
 const USER_AGENT =
-  "Stekkies/1.0 (rental alert app; polite single-page fetch; contact: stekkies@example.com)";
+  "HousAlert/1.0 (rental alert app; polite single-page fetch; contact: support@housalert.de)";
 
 function parsePrice(ariaLabel: string): number {
   const match = ariaLabel.replace(/\./g, "").match(/(\d+)/);

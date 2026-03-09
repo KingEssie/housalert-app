@@ -3,7 +3,6 @@ import { useLocation, useSearch } from "wouter";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Home } from "lucide-react";
 
@@ -13,22 +12,19 @@ export default function LoginPage() {
   const searchString = useSearch();
   const plan = new URLSearchParams(searchString).get("plan") || "";
 
-  const [loginEmail, setLoginEmail] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
-  const [loginLoading, setLoginLoading] = useState(false);
-
-  const [signupEmail, setSignupEmail] = useState("");
-  const [signupPassword, setSignupPassword] = useState("");
-  const [signupLoading, setSignupLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
-    setLoginLoading(true);
+    setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({
-      email: loginEmail,
-      password: loginPassword,
+      email,
+      password,
     });
-    setLoginLoading(false);
+    setLoading(false);
     if (error) {
       toast({ title: "Inloggen mislukt", description: error.message, variant: "destructive" });
     } else {
@@ -36,24 +32,20 @@ export default function LoginPage() {
     }
   }
 
-  async function handleSignup(e: React.FormEvent) {
-    e.preventDefault();
-    setSignupLoading(true);
-    const { error } = await supabase.auth.signUp({
-      email: signupEmail,
-      password: signupPassword,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
+  async function handleForgotPassword() {
+    if (!email) {
+      toast({ title: "Vul je e-mailadres in", description: "Voer eerst je e-mailadres in om je wachtwoord te resetten.", variant: "destructive" });
+      return;
+    }
+    setResetLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/account/change-password`,
     });
-    setSignupLoading(false);
+    setResetLoading(false);
     if (error) {
-      toast({ title: "Aanmaken mislukt", description: error.message, variant: "destructive" });
+      toast({ title: "Reset mislukt", description: error.message, variant: "destructive" });
     } else {
-      toast({
-        title: "Account aangemaakt",
-        description: "Controleer je e-mail om je account te bevestigen.",
-      });
+      toast({ title: "E-mail verzonden", description: "Controleer je inbox voor de reset-link." });
     }
   }
 
@@ -65,111 +57,86 @@ export default function LoginPage() {
             <div className="w-9 h-9 rounded-lg bg-[var(--yo-dark)] flex items-center justify-center">
               <Home className="w-4 h-4 text-white" />
             </div>
-            <span className="font-extrabold text-[var(--yo-dark)] text-lg tracking-tight">Stekkies</span>
+            <span className="font-extrabold text-[var(--yo-dark)] text-lg tracking-tight">HousAlert</span>
           </div>
         </div>
       </header>
 
       <main className="flex-1 flex items-center justify-center px-6 py-20">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-10">
-            <h1 className="text-[32px] font-[800] text-[var(--yo-dark)] tracking-[-0.03em] leading-[1.1] uppercase mb-4">
-              Vind jouw perfecte huurwoning
+        <div className="w-full max-w-sm">
+          <div className="text-center mb-8">
+            <h1 className="text-[28px] font-[800] text-[var(--yo-dark)] tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-login-title">
+              Welkom terug
             </h1>
             <p className="text-[15px] text-[var(--yo-dark)]">
-              Stel zoekopdrachten in en ontvang direct een melding als er iets beschikbaar komt.
+              Log in op je HousAlert account.
             </p>
           </div>
 
           <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
-            <Tabs defaultValue="login">
-              <TabsList className="w-full mb-6" data-testid="tabs-auth">
-                <TabsTrigger value="login" className="flex-1" data-testid="tab-login">
-                  Inloggen
-                </TabsTrigger>
-                <TabsTrigger value="signup" className="flex-1" data-testid="tab-signup">
-                  Account aanmaken
-                </TabsTrigger>
-              </TabsList>
+            <form onSubmit={handleLogin} className="flex flex-col gap-5">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="login-email" className="text-[14px] font-semibold text-[var(--yo-dark)]">E-mailadres</Label>
+                <input
+                  id="login-email"
+                  type="email"
+                  placeholder="jouw@email.nl"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="h-[52px] px-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
+                  data-testid="input-login-email"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="login-password" className="text-[14px] font-semibold text-[var(--yo-dark)]">Wachtwoord</Label>
+                <input
+                  id="login-password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="h-[52px] px-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
+                  data-testid="input-login-password"
+                />
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  disabled={resetLoading}
+                  className="self-end text-[13px] font-semibold text-[var(--yo-pink)] hover:underline mt-1"
+                  data-testid="link-forgot-password"
+                >
+                  {resetLoading ? "Verzenden..." : "Wachtwoord vergeten?"}
+                </button>
+              </div>
+              <Button
+                type="submit"
+                className="w-full h-[56px] rounded-lg text-[16px] font-bold bg-[var(--yo-teal)] text-black"
+                disabled={loading}
+                data-testid="button-login-submit"
+              >
+                {loading ? "Inloggen..." : "Inloggen"}
+              </Button>
+            </form>
+          </div>
 
-              <TabsContent value="login">
-                <form onSubmit={handleLogin} className="flex flex-col gap-5">
-                  <div className="flex flex-col gap-2">
-                    <Label htmlFor="login-email" className="text-[14px] font-semibold text-[var(--yo-dark)]">E-mailadres</Label>
-                    <input
-                      id="login-email"
-                      type="email"
-                      placeholder="jouw@email.nl"
-                      value={loginEmail}
-                      onChange={(e) => setLoginEmail(e.target.value)}
-                      required
-                      className="h-[52px] px-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
-                      data-testid="input-login-email"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <Label htmlFor="login-password" className="text-[14px] font-semibold text-[var(--yo-dark)]">Wachtwoord</Label>
-                    <input
-                      id="login-password"
-                      type="password"
-                      placeholder="••••••••"
-                      value={loginPassword}
-                      onChange={(e) => setLoginPassword(e.target.value)}
-                      required
-                      className="h-[52px] px-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
-                      data-testid="input-login-password"
-                    />
-                  </div>
-                  <Button
-                    type="submit"
-                    className="w-full h-[56px] rounded-lg text-[16px] font-bold bg-[var(--yo-teal)]"
-                    disabled={loginLoading}
-                    data-testid="button-login-submit"
-                  >
-                    {loginLoading ? "Inloggen..." : "Inloggen"}
-                  </Button>
-                </form>
-              </TabsContent>
+          <div className="flex items-center gap-3 my-6">
+            <div className="flex-1 h-px bg-[var(--yo-divider)]" />
+            <span className="text-[13px] text-[var(--yo-dark)]">of</span>
+            <div className="flex-1 h-px bg-[var(--yo-divider)]" />
+          </div>
 
-              <TabsContent value="signup">
-                <form onSubmit={handleSignup} className="flex flex-col gap-5">
-                  <div className="flex flex-col gap-2">
-                    <Label htmlFor="signup-email" className="text-[14px] font-semibold text-[var(--yo-dark)]">E-mailadres</Label>
-                    <input
-                      id="signup-email"
-                      type="email"
-                      placeholder="jouw@email.nl"
-                      value={signupEmail}
-                      onChange={(e) => setSignupEmail(e.target.value)}
-                      required
-                      className="h-[52px] px-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
-                      data-testid="input-signup-email"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <Label htmlFor="signup-password" className="text-[14px] font-semibold text-[var(--yo-dark)]">Wachtwoord</Label>
-                    <input
-                      id="signup-password"
-                      type="password"
-                      placeholder="Minimaal 6 tekens"
-                      value={signupPassword}
-                      onChange={(e) => setSignupPassword(e.target.value)}
-                      required
-                      className="h-[52px] px-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
-                      data-testid="input-signup-password"
-                    />
-                  </div>
-                  <Button
-                    type="submit"
-                    className="w-full h-[56px] rounded-lg text-[16px] font-bold bg-[var(--yo-teal)]"
-                    disabled={signupLoading}
-                    data-testid="button-signup-submit"
-                  >
-                    {signupLoading ? "Account aanmaken..." : "Account aanmaken"}
-                  </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
+          <div className="text-center">
+            <p className="text-[15px] text-[var(--yo-dark)] mb-3">Nog geen account?</p>
+            <Button
+              variant="outline"
+              className="w-full h-[48px] rounded-lg text-[15px] font-bold border-[var(--yo-teal)] text-[var(--yo-dark)]"
+              onClick={() => navigate("/signup")}
+              data-testid="link-signup"
+            >
+              Account aanmaken
+            </Button>
           </div>
 
           <p className="text-center text-[13px] text-[var(--yo-dark)] mt-6">

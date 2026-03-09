@@ -1,27 +1,54 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, AlertTriangle } from "lucide-react";
+import { useSubscription } from "@/lib/subscription";
+import { supabase } from "@/lib/supabase";
+import { ArrowLeft, AlertTriangle, Crown } from "lucide-react";
 
 export default function DeleteAccountPage() {
   const { user, signOut } = useAuth();
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const [deleting, setDeleting] = useState(false);
+  const sub = useSubscription();
+
+  const hasActivePaidSub = sub.isActive && !sub.isTrial;
 
   async function handleDelete() {
     setDeleting(true);
     try {
-      toast({
-        title: "Account verwijderen",
-        description: "Neem contact op met support@stekkies.nl om je account definitief te verwijderen.",
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        toast({ title: "Niet ingelogd", variant: "destructive" });
+        setDeleting(false);
+        return;
+      }
+
+      const res = await fetch("/api/account", {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${session.access_token}` },
       });
+
+      if (!res.ok) {
+        const data = await res.json();
+        if (data.error === "active_subscription") {
+          toast({
+            title: "Actief abonnement",
+            description: data.message,
+            variant: "destructive",
+          });
+          setDeleting(false);
+          return;
+        }
+        throw new Error(data.error || "Verwijderen mislukt");
+      }
+
       await signOut();
       navigate("/login");
-    } catch {
+    } catch (err: any) {
       setDeleting(false);
-      toast({ title: "Fout", description: "Er ging iets mis. Probeer het opnieuw.", variant: "destructive" });
+      toast({ title: "Fout", description: err.message || "Er ging iets mis. Probeer het opnieuw.", variant: "destructive" });
     }
   }
 
@@ -52,13 +79,31 @@ export default function DeleteAccountPage() {
         <h2 className="text-[22px] font-bold text-[var(--yo-dark)] mb-3 text-center" data-testid="text-delete-account-title">
           Account definitief verwijderen?
         </h2>
-        <p className="text-[15px] text-[var(--yo-dark)] text-center max-w-[320px] mb-10 leading-relaxed" data-testid="text-delete-account-body">
+        <p className="text-[15px] text-[var(--yo-dark)] text-center max-w-[320px] mb-6 leading-relaxed" data-testid="text-delete-account-body">
           Al je gegevens, zoekprofielen en matches worden permanent verwijderd. Dit kan niet ongedaan worden gemaakt.
         </p>
+
+        {hasActivePaidSub && (
+          <div className="w-full max-w-[320px] bg-[var(--yo-chip-bg)] rounded-lg px-4 py-3 flex items-start gap-3 mb-6" data-testid="warning-active-sub">
+            <Crown className="w-5 h-5 text-[var(--yo-pink)] flex-shrink-0 mt-0.5" />
+            <p className="text-[13px] text-[var(--yo-dark)] leading-relaxed">
+              Je hebt een actief abonnement. Zeg dit eerst op via{" "}
+              <button
+                onClick={() => navigate("/account/subscription")}
+                className="font-semibold text-[var(--yo-pink)] underline"
+                data-testid="link-manage-subscription"
+              >
+                abonnementsinstellingen
+              </button>
+              {" "}voordat je je account kunt verwijderen.
+            </p>
+          </div>
+        )}
+
         <div className="w-full max-w-[320px] flex flex-col gap-3">
           <button
             onClick={handleDelete}
-            disabled={deleting}
+            disabled={deleting || hasActivePaidSub}
             className="w-full h-[56px] rounded-lg bg-[var(--yo-pink)] text-white text-[16px] font-bold transition-colors hover:opacity-90 disabled:opacity-50"
             data-testid="button-delete-account-confirm"
           >

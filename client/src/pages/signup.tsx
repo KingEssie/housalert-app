@@ -124,7 +124,7 @@ export default function SignupPage() {
             <div className="w-8 h-8 rounded-lg bg-[var(--yo-dark)] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-extrabold text-[var(--yo-dark)] text-base">Stekkies</span>
+            <span className="font-extrabold text-[var(--yo-dark)] text-base">HousAlert</span>
           </div>
         </div>
       </header>

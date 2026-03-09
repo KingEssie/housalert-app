@@ -32,7 +32,7 @@ app.use((req, res, next) => {
     res.removeHeader("X-Frame-Options");
     res.setHeader(
       "Content-Security-Policy",
-      "frame-ancestors 'self' https://*.stekkies.de https://stekkies.de https://*.replit.app https://*.duda.co https://*.dudaone.com"
+      "frame-ancestors 'self' https://*.housalert.de https://housalert.de https://*.replit.app https://*.duda.co https://*.dudaone.com"
     );
   } else {
     res.setHeader("X-Frame-Options", "SAMEORIGIN");
@@ -108,7 +108,7 @@ app.use((req, res, next) => {
       reusePort: true,
     },
     () => {
-      console.log(`[stekkies] Server listening on 0.0.0.0:${port} (NODE_ENV=${process.env.NODE_ENV || "development"})`);
+      console.log(`[housalert] Server listening on 0.0.0.0:${port} (NODE_ENV=${process.env.NODE_ENV || "development"})`);
       log(`serving on port ${port}`);
 
       import("./migrations/apply").then(({ runStartupMigration }) =>

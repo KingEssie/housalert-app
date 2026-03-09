@@ -88,7 +88,7 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
         "accept-language": "de",
       });
       const res = await fetch(`https://nominatim.openstreetmap.org/search?${params}`, {
-        headers: { "User-Agent": "Stekkies/1.0" },
+        headers: { "User-Agent": "HousAlert/1.0" },
       });
       const data: NominatimResult[] = await res.json();
       const filtered = data.filter((r) => {

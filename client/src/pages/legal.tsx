@@ -13,7 +13,7 @@ function LegalLayout({ title, children }: { title: string; children: React.React
             <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
               <Home className="w-4.5 h-4.5 text-primary-foreground" />
             </div>
-            <span className="font-extrabold text-xl tracking-tight" style={{ color: "var(--yo-dark)" }}>Stekkies</span>
+            <span className="font-extrabold text-xl tracking-tight" style={{ color: "var(--yo-dark)" }}>HousAlert</span>
           </div>
         </div>
       </header>
@@ -40,7 +40,7 @@ function LegalLayout({ title, children }: { title: string; children: React.React
 
       <footer className="border-t py-8 px-6" style={{ borderColor: "var(--yo-divider)" }}>
         <div className="max-w-xl mx-auto text-center text-[13px] text-muted-foreground">
-          &copy; {new Date().getFullYear()} Stekkies. Alle rechten voorbehouden.
+          &copy; {new Date().getFullYear()} HousAlert. Alle rechten voorbehouden.
         </div>
       </footer>
     </div>
@@ -178,7 +178,7 @@ export function TermsPage() {
         <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "var(--yo-dark)" }}>\u00A7 1 Geltungsbereich</h2>
         <p className="text-[15px] leading-relaxed" data-testid="text-terms-scope">
           Diese Allgemeinen Gesch\u00E4ftsbedingungen (AGB) gelten f\u00FCr alle Vertr\u00E4ge, die zwischen
-          [Firmenname einf\u00FCgen] (nachfolgend "Anbieter") und dem Nutzer \u00FCber die Plattform Stekkies
+          [Firmenname einf\u00FCgen] (nachfolgend "Anbieter") und dem Nutzer \u00FCber die Plattform HousAlert
           geschlossen werden.
         </p>
       </section>
@@ -186,7 +186,7 @@ export function TermsPage() {
       <section>
         <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "var(--yo-dark)" }}>\u00A7 2 Leistungsbeschreibung</h2>
         <p className="text-[15px] leading-relaxed">
-          Stekkies ist ein Dienst, der Mietwohnungsangebote von verschiedenen Websites aggregiert
+          HousAlert ist ein Dienst, der Mietwohnungsangebote von verschiedenen Websites aggregiert
           und Nutzer \u00FCber neue, relevante Angebote benachrichtigt. Der Anbieter \u00FCbernimmt keine
           Gew\u00E4hr f\u00FCr die Vollst\u00E4ndigkeit, Richtigkeit oder Aktualit\u00E4t der angezeigten Angebote.
         </p>

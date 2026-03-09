@@ -660,19 +660,19 @@ function HomeTab({
           Hallo, {firstName}
         </h1>
       </div>
-      <div className="flex flex-col gap-6 px-6">
+      <div className="flex flex-col gap-8 px-6">
 
       {hasMatches ? (
-        <div className="rounded-lg bg-[var(--yo-chip-bg)] p-6" data-testid="hero-matches">
+        <div className="rounded-xl bg-[#0F172A] p-6" data-testid="hero-matches">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-11 h-11 rounded-full bg-[var(--yo-dark)] flex items-center justify-center flex-shrink-0">
+            <div className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
               <Heart className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[22px] font-bold text-[var(--yo-dark)] leading-tight" data-testid="text-match-count">
+              <p className="text-[22px] font-bold text-white leading-tight" data-testid="text-match-count">
                 {matchCount} {matchCount === 1 ? "match" : "matches"} gevonden
               </p>
-              <p className="text-[14px] font-[500] text-[var(--yo-dark)] mt-0.5">
+              <p className="text-[14px] font-[500] text-white/70 mt-0.5">
                 {hasProfiles
                   ? `Op basis van ${profileCount} ${profileCount === 1 ? "zoekprofiel" : "zoekprofielen"}`
                   : "Op basis van je zoekopdracht"}
@@ -681,7 +681,7 @@ function HomeTab({
           </div>
           <button
             onClick={() => setActiveTab("matches")}
-            className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
+            className="w-full h-[56px] rounded-lg bg-[var(--yo-pink)] hover:opacity-90 text-white text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
             data-testid="button-view-matches"
           >
             Bekijk je matches
@@ -689,23 +689,23 @@ function HomeTab({
           </button>
         </div>
       ) : hasProfiles && potentialCount > 0 ? (
-        <div className="rounded-lg bg-[var(--yo-chip-bg)] p-6" data-testid="hero-potential">
+        <div className="rounded-xl bg-[#0F172A] p-6" data-testid="hero-potential">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-11 h-11 rounded-full bg-[var(--yo-dark)] flex items-center justify-center flex-shrink-0">
+            <div className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
               <Search className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[16px] font-bold text-[var(--yo-dark)] leading-tight" data-testid="text-potential-count">
+              <p className="text-[16px] font-bold text-white leading-tight" data-testid="text-potential-count">
                 Je zoekprofiel kan ongeveer {potentialCount} woningen opleveren.
               </p>
-              <p className="text-[14px] font-[500] text-[var(--yo-dark)] mt-0.5">
+              <p className="text-[14px] font-[500] text-white/70 mt-0.5">
                 We zoeken actief naar matches voor je.
               </p>
             </div>
           </div>
           <button
             onClick={() => setActiveTab("filters")}
-            className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
+            className="w-full h-[56px] rounded-lg bg-[var(--yo-pink)] hover:opacity-90 text-white text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
             data-testid="button-adjust-filters"
           >
             Filters aanpassen
@@ -1514,7 +1514,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                 <AccountSettingsRow
                   label="Hulp & support"
                   onClick={() => {
-                    window.location.href = "mailto:support@stekkies.nl";
+                    window.location.href = "mailto:support@housalert.de";
                   }}
                 />
                 <div className="h-px bg-[var(--yo-divider)] mx-5" />
@@ -1704,11 +1704,20 @@ export default function DashboardPage() {
   }, [user, loading, navigate]);
 
   useEffect(() => {
+    if (user) {
+      queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
+      queryClient.invalidateQueries({ queryKey: ["/search-profiles"] });
+    }
+  }, [user]);
+
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("payment") === "success") {
       toast({ title: "Betaling gelukt!", description: "Je abonnement is nu actief." });
       window.history.replaceState({}, "", "/dashboard");
       sub.refetch?.();
+      queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
+      queryClient.invalidateQueries({ queryKey: ["/search-profiles"] });
     }
   }, []);
 

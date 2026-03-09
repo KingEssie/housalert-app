@@ -1,6 +1,6 @@
-# Stekkies — Rental Alert App
+# HousAlert — Rental Alert App
 
-A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, and manage saved rental search profiles. Listings are matched against profiles and shown as matches.
+A BlaBlaCar-inspired Dutch-language rental alert application for the German market. Users can sign up, log in, and manage saved rental search profiles. Listings are matched against profiles and shown as matches. Rebranded from "Stekkies" to "HousAlert".
 
 ## Tech Stack
 
@@ -134,12 +134,12 @@ A BlaBlaCar-inspired Dutch rental alert application. Users can sign up, log in, 
 
 ### Existing Pages
 - `client/src/pages/onboarding.tsx` — New user onboarding flow at `/onboarding`. 4-step wizard: Welcome screen → City selection (autocomplete) → Budget (min/max price) → Property type → Alerts activation. Creates search profile, enables email notifications, triggers backfill, redirects to dashboard. ProtectedRoute automatically redirects users with no search profiles to onboarding. Property type is collected but not yet persisted (matching engine doesn't support it yet — same as new-search.tsx).
-- `client/src/pages/login.tsx` — Auth page with "Inloggen" / "Account aanmaken" tabs
+- `client/src/pages/login.tsx` — Clean login page (login-only, no tabs). "Wachtwoord vergeten?" link triggers Supabase password reset. "Account aanmaken" button navigates to /signup.
 - `client/src/pages/dashboard.tsx` — Phase 2 dashboard with bottom-nav bar (5 tabs: Home, Matches, Tips, Filters, Profiel). Mobile-first BlaBlaCar design. Match cards with image placeholders (city-based gradients), save/bookmark toggle, "Reageer" opens ApplySheet (bottom sheet with letter preview, copy, view listing, mark applied). Matches page has sub-tabs: Nieuw, Bekeken, Opgeslagen, Gereageerd — status tracked in localStorage (keys: `stekkies_match_viewed`, `stekkies_match_saved`, `stekkies_match_applied`). HomeTab includes AccountCompletionCard + SearchPreparationCard (circular progress indicators) and RecenteMatchesSection (5 newest matches). ProfielTab includes NotificationSummaryCard (channel status + recommended fastest channel) and SpeedReadinessCard (4-step checklist). Subscription CTA for expired users.
 - `client/src/components/apply-sheet.tsx` — Reusable bottom sheet for instant apply flow: shows pre-filled application letter, copy, view listing, mark as applied. Used by MatchCard and ListingDetailPage.
 - `client/src/pages/listing-detail.tsx` — Full listing detail page at `/listing/:id`. Hero image (260px), match score badge, title, price, location, details grid (bedrooms/size/source/time), "Waarom deze match?" section with green checkmark reasons. CTA: "Reageer direct" (opens ApplySheet) + "Open originele advertentie" (external link). External site ONLY opens from this detail page.
-- `client/src/pages/new-search.tsx` — 4-step wizard to create a search profile at `/dashboard/searches/new`. Steps: 1) Locatie (LocationModeSelector with map), 2) Vereisten (rent min/max, bedrooms, surface, furnished), 3) Extra eigenschappen (large toggle cards), 4) Woningtypes (large toggle cards + inline estimate). Saves to `/dashboard?tab=filters`. Max 4 profiles. Allows saving even with 0 estimated matches.
-- `client/src/pages/delete-account.tsx` — Full-screen account deletion confirmation at `/account/delete`
+- `client/src/pages/new-search.tsx` — 4-step wizard to create a search profile at `/dashboard/searches/new`. Redesigned with clean layout: floating back button top-left, step indicator top-right, no progress bar. Steps: 1) Locatie (LocationModeSelector), 2) Vereisten (rent dropdowns, bedrooms/size/furnished as dropdowns), 3) Extra eigenschappen (pill toggles), 4) Woningtypes (pill toggles + estimate). Saves to `/dashboard?tab=filters`. Max 4 profiles.
+- `client/src/pages/delete-account.tsx` — Full-screen account deletion at `/account/delete`. Calls `DELETE /api/account` which deletes all user data (matches, search profiles, subscriptions, notification settings, profile data) and Supabase auth user. Blocks deletion if user has active paid subscription (shows warning with link to subscription settings).
 - `client/src/pages/notification-settings.tsx` — Notification preferences (email/SMS/WhatsApp toggles)
 - `client/src/pages/application-letter.tsx` — Application letter template editor at `/application-letter`. Edit/save/reset template with Dutch placeholders ([[ADRES]], [[STAD]], [[NAAM]], etc.)
 - `client/src/pages/viewing-tips.tsx` — Dedicated viewing tips page at `/tips/bezichtiging`. Five sections: Voor/Tijdens/Wat meenemen/Na de bezichtiging/Rode vlaggen. CTA to mark as completed.

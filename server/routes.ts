@@ -637,11 +637,29 @@ export async function registerRoutes(
     }
   });
 
-  const PLAN_PRICE_MAP: Record<string, string> = {
+  let PLAN_PRICE_MAP: Record<string, string> = {
     monthly: process.env.STRIPE_PRICE_MONTHLY || process.env.STRIPE_PRICE_1_MONTH || "",
     two_month: process.env.STRIPE_PRICE_TWO_MONTH || process.env.STRIPE_PRICE_2_MONTHS || "",
     three_month: process.env.STRIPE_PRICE_THREE_MONTH || process.env.STRIPE_PRICE_3_MONTHS || "",
   };
+
+  if (stripeAvailable && (!PLAN_PRICE_MAP.monthly || !PLAN_PRICE_MAP.two_month || !PLAN_PRICE_MAP.three_month)) {
+    try {
+      const { getUncachableStripeClient } = await import("./stripe/stripeClient");
+      const stripe = await getUncachableStripeClient();
+      const prices = await stripe.prices.list({ active: true, limit: 20, expand: ["data.product"] });
+      for (const price of prices.data) {
+        const product = price.product as any;
+        if (product && typeof product === "object" && product.name !== "HousAlert Abonnement") continue;
+        if (price.nickname === "monthly" && !PLAN_PRICE_MAP.monthly) PLAN_PRICE_MAP.monthly = price.id;
+        if (price.nickname === "two_month" && !PLAN_PRICE_MAP.two_month) PLAN_PRICE_MAP.two_month = price.id;
+        if (price.nickname === "three_month" && !PLAN_PRICE_MAP.three_month) PLAN_PRICE_MAP.three_month = price.id;
+      }
+      log(`[stripe-config] Dynamic price lookup: monthly=${PLAN_PRICE_MAP.monthly}, two_month=${PLAN_PRICE_MAP.two_month}, three_month=${PLAN_PRICE_MAP.three_month}`);
+    } catch (err: any) {
+      log(`[stripe-config] Dynamic price lookup failed: ${err.message}`);
+    }
+  }
 
   const PRICE_TO_PLAN: Record<string, string> = {};
   for (const [plan, priceId] of Object.entries(PLAN_PRICE_MAP)) {
@@ -1240,6 +1258,40 @@ export async function registerRoutes(
     }
   });
 
+  app.delete("/api/account", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const subStatus = await getSubscriptionStatus(user.id);
+      if (subStatus.status === "active" && !subStatus.isTrial) {
+        return res.status(400).json({
+          error: "active_subscription",
+          message: "Je hebt een actief abonnement. Zeg dit eerst op voordat je je account verwijdert.",
+        });
+      }
+
+      await supabase.from("matches").delete().eq("user_id", user.id);
+      await supabase.from("search_profiles").delete().eq("user_id", user.id);
+      await supabase.from("subscriptions").delete().eq("user_id", user.id);
+      await supabase.from("user_notification_settings").delete().eq("user_id", user.id);
+      await pgPool.query("DELETE FROM user_profile_data WHERE user_id = $1", [user.id]);
+
+      const { error: deleteError } = await supabase.auth.admin.deleteUser(user.id);
+      if (deleteError) {
+        log(`[account-delete] Failed to delete auth user ${user.id}: ${deleteError.message}`);
+        return res.status(500).json({ error: "Account data verwijderd, maar authenticatie kon niet worden verwijderd. Neem contact op met support." });
+      }
+
+      return res.json({ success: true });
+    } catch (err: any) {
+      console.error("[account-delete] Error:", err.message);
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   app.get("/api/profile-stats", async (req, res) => {
     try {
       const token = req.headers.authorization?.replace("Bearer ", "");
@@ -1267,7 +1319,7 @@ export async function registerRoutes(
   app.post("/api/backfill-images", async (req, res) => {
     try {
       const cheerio = await import("cheerio");
-      const UA = "Stekkies/1.0 (rental alert app; polite single-page fetch; contact: stekkies@example.com)";
+      const UA = "HousAlert/1.0 (rental alert app; polite single-page fetch; contact: support@housalert.de)";
 
       const { data: listings, error } = await supabase
         .from("listings")

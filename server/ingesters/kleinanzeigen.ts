@@ -8,7 +8,7 @@ import { getKleinanzeigenUrl } from "./city-slugs";
 
 const KLEINANZEIGEN_BASE = "https://www.kleinanzeigen.de";
 const USER_AGENT =
-  "Stekkies/1.0 (rental alert app; polite single-page fetch; contact: stekkies@example.com)";
+  "HousAlert/1.0 (rental alert app; polite single-page fetch; contact: support@housalert.de)";
 
 function extractSourceId(href: string): string {
   const match = href.match(/\/(\d+)-/);

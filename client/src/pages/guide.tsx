@@ -146,7 +146,7 @@ const GUIDE_CONTENT: Record<string, { title: string; icon: typeof Shield; intro:
       {
         title: "Zoekbuddy instellen",
         items: [
-          "Voeg een zoekbuddy toe in Stekkies — zij ontvangen dezelfde meldingen",
+          "Voeg een zoekbuddy toe in HousAlert — zij ontvangen dezelfde meldingen",
           "Ideaal voor een partner, vriend of familielid",
           "Meer ogen op nieuwe woningen = sneller reageren",
         ],
@@ -154,7 +154,7 @@ const GUIDE_CONTENT: Record<string, { title: string; icon: typeof Shield; intro:
       {
         title: "Deeltekst voor je netwerk",
         items: [
-          "Kopieer: 'Ik zoek een huurwoning in Duitsland via Stekkies. Ken je iets? Stuur het door!'",
+          "Kopieer: 'Ik zoek een huurwoning in Duitsland via HousAlert. Ken je iets? Stuur het door!'",
           "Deel via WhatsApp, Telegram of e-mail",
           "Hoe meer mensen weten dat je zoekt, hoe groter je kans",
         ],

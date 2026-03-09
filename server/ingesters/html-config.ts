@@ -7,7 +7,7 @@ import { insertAndMatchListings } from "./matching";
 import type { SourceConfig } from "./config/sources";
 
 const USER_AGENT =
-  "Stekkies/1.0 (rental alert app; polite single-page fetch; contact: stekkies@example.com)";
+  "HousAlert/1.0 (rental alert app; polite single-page fetch; contact: support@housalert.de)";
 
 function extractField(
   $card: cheerio.Cheerio<cheerio.Element>,

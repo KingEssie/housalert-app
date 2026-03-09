@@ -159,7 +159,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
         "accept-language": "de",
       });
       const res = await fetch(`https://nominatim.openstreetmap.org/search?${params}`, {
-        headers: { "User-Agent": "Stekkies/1.0" },
+        headers: { "User-Agent": "HousAlert/1.0" },
       });
       const data: NominatimResult[] = await res.json();
       setResults(data);
@@ -380,10 +380,10 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                 <button
                   key={d}
                   onClick={() => toggleDistrict(d)}
-                  className={`px-3.5 py-2 rounded-full text-[13px] font-medium border transition-all ${
+                  className={`px-4 py-2.5 rounded-full text-[13px] font-medium transition-all ${
                     selected
-                      ? "border-[var(--yo-teal)] bg-[var(--yo-chip-bg)] text-[var(--yo-dark)]"
-                      : "border-[var(--yo-divider)] bg-white text-[var(--yo-dark)] hover:border-[var(--yo-muted)]/30"
+                      ? "bg-[var(--yo-teal)] text-black"
+                      : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
                   }`}
                   data-testid={`chip-district-${d.toLowerCase().replace(/[\s.]/g, "-")}`}
                 >

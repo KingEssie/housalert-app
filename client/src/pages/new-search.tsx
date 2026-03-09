@@ -22,10 +22,7 @@ import {
   AlertCircle,
   Search,
   Sofa,
-  Building,
   ChevronDown,
-  ListChecks,
-  Check,
 } from "lucide-react";
 
 const MAX_PROFILES = 4;
@@ -267,9 +264,19 @@ export default function NewSearchPage() {
   if (atLimit) {
     return (
       <div className="min-h-screen bg-white flex flex-col">
-        <WizardHeader step={0} total={0} onBack={() => navigate("/dashboard")} />
-        <div className="flex-1 flex items-center justify-center px-5">
-          <div className="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-8 text-center max-w-sm w-full border border-[var(--yo-divider)]">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-white">
+          <div className="max-w-lg mx-auto flex items-center justify-between h-[56px] px-5">
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="w-10 h-10 rounded-full bg-[var(--yo-surface)] flex items-center justify-center"
+              data-testid="button-wizard-header-back"
+            >
+              <ArrowLeft className="w-5 h-5 text-[var(--yo-dark)]" />
+            </button>
+          </div>
+        </header>
+        <div className="flex-1 flex items-center justify-center px-5 pt-[56px]">
+          <div className="text-center max-w-sm w-full">
             <div className="w-14 h-14 rounded-lg bg-[var(--yo-chip-bg)] flex items-center justify-center mx-auto mb-4">
               <AlertCircle className="w-6 h-6 text-[var(--yo-teal)]" />
             </div>
@@ -294,9 +301,22 @@ export default function NewSearchPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <WizardHeader step={step} total={TOTAL_STEPS} onBack={goBack} />
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white">
+        <div className="max-w-lg mx-auto flex items-center justify-between h-[56px] px-5">
+          <button
+            onClick={goBack}
+            className="w-10 h-10 rounded-full bg-[var(--yo-surface)] flex items-center justify-center"
+            data-testid="button-wizard-header-back"
+          >
+            <ArrowLeft className="w-5 h-5 text-[var(--yo-dark)]" />
+          </button>
+          <span className="text-[13px] font-medium text-[var(--yo-dark)] opacity-60" data-testid="text-step-indicator">
+            Stap {step} van {TOTAL_STEPS}
+          </span>
+        </div>
+      </header>
 
-      <main className="flex-1 w-full max-w-lg mx-auto px-5 pt-5 pb-32">
+      <main className="flex-1 w-full max-w-lg mx-auto px-5 pt-[72px] pb-32">
         {step === 1 && <Step1Location locationData={locationData} setLocationData={setLocationData} />}
         {step === 2 && <Step2Requirements filters={filters} updateFilters={updateFilters} />}
         {step === 3 && <Step3ExtraFeatures filters={filters} updateFilters={updateFilters} />}
@@ -370,17 +390,13 @@ function Step1Location({
         </p>
       </div>
 
-      <div className="bg-white rounded-lg shadow-[0_2px_16px_rgba(0,0,0,0.05)] overflow-visible border border-[var(--yo-divider)]">
-        <div className="p-5">
-          <LocationModeSelector
-            value={locationData}
-            onChange={setLocationData}
-            segmentedTabs
-            alwaysShowMap
-            mapMaxHeight="40vh"
-          />
-        </div>
-      </div>
+      <LocationModeSelector
+        value={locationData}
+        onChange={setLocationData}
+        segmentedTabs
+        alwaysShowMap
+        mapMaxHeight="40vh"
+      />
     </div>
   );
 }
@@ -403,7 +419,7 @@ function Step2Requirements({
         </p>
       </div>
 
-      <div className="bg-white rounded-lg shadow-[0_2px_16px_rgba(0,0,0,0.05)] p-5 space-y-6 border border-[var(--yo-divider)]">
+      <div className="space-y-6">
         <div>
           <label className="text-[15px] font-bold text-[var(--yo-dark)] mb-2.5 flex items-center gap-2">
             <Euro className="w-4 h-4 text-[var(--yo-teal)]" />
@@ -444,31 +460,23 @@ function Step2Requirements({
           </div>
         </div>
 
-        <div className="h-px bg-[var(--yo-divider)]" />
-
         <div>
           <label className="text-[15px] font-bold text-[var(--yo-dark)] mb-2.5 flex items-center gap-2">
             <BedDouble className="w-4 h-4 text-[var(--yo-teal)]" />
             Slaapkamers
           </label>
-          <div className="flex flex-wrap gap-2">
-            {BEDROOM_OPTIONS.map((opt) => {
-              const selected = filters.bedroomsMin === opt.value;
-              return (
-                <button
-                  key={opt.value}
-                  onClick={() => updateFilters({ bedroomsMin: opt.value })}
-                  className={`px-4 py-2.5 rounded-lg text-[14px] font-medium transition-all ${
-                    selected
-                      ? "bg-[var(--yo-teal)] text-black shadow-sm"
-                      : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
-                  }`}
-                  data-testid={`option-bedrooms-${opt.value}`}
-                >
-                  {opt.label}
-                </button>
-              );
-            })}
+          <div className="relative">
+            <select
+              value={filters.bedroomsMin}
+              onChange={(e) => updateFilters({ bedroomsMin: parseInt(e.target.value) })}
+              className="w-full h-[56px] px-4 pr-10 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/20 transition-all appearance-none cursor-pointer"
+              data-testid="select-bedrooms"
+            >
+              {BEDROOM_OPTIONS.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)] pointer-events-none" />
           </div>
         </div>
 
@@ -477,52 +485,38 @@ function Step2Requirements({
             <Ruler className="w-4 h-4 text-[var(--yo-teal)]" />
             Oppervlakte
           </label>
-          <div className="flex flex-wrap gap-2">
-            {SIZE_OPTIONS.map((opt) => {
-              const selected = filters.sizeMin === opt.value;
-              return (
-                <button
-                  key={opt.value}
-                  onClick={() => updateFilters({ sizeMin: opt.value })}
-                  className={`px-4 py-2.5 rounded-lg text-[14px] font-medium transition-all ${
-                    selected
-                      ? "bg-[var(--yo-teal)] text-black shadow-sm"
-                      : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
-                  }`}
-                  data-testid={`option-size-${opt.value}`}
-                >
-                  {opt.label}
-                </button>
-              );
-            })}
+          <div className="relative">
+            <select
+              value={filters.sizeMin}
+              onChange={(e) => updateFilters({ sizeMin: parseInt(e.target.value) })}
+              className="w-full h-[56px] px-4 pr-10 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/20 transition-all appearance-none cursor-pointer"
+              data-testid="select-size"
+            >
+              {SIZE_OPTIONS.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)] pointer-events-none" />
           </div>
         </div>
-
-        <div className="h-px bg-[var(--yo-divider)]" />
 
         <div>
           <label className="text-[15px] font-bold text-[var(--yo-dark)] mb-2.5 flex items-center gap-2">
             <Sofa className="w-4 h-4 text-[var(--yo-teal)]" />
             Gemeubileerd
           </label>
-          <div className="flex flex-wrap gap-2">
-            {FURNISHED_OPTIONS.map((opt) => {
-              const selected = filters.furnished === opt.value;
-              return (
-                <button
-                  key={opt.value}
-                  onClick={() => updateFilters({ furnished: opt.value })}
-                  className={`px-4 py-2.5 rounded-lg text-[14px] font-medium transition-all ${
-                    selected
-                      ? "bg-[var(--yo-teal)] text-black shadow-sm"
-                      : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
-                  }`}
-                  data-testid={`option-furnished-${opt.value || "any"}`}
-                >
-                  {opt.label}
-                </button>
-              );
-            })}
+          <div className="relative">
+            <select
+              value={filters.furnished}
+              onChange={(e) => updateFilters({ furnished: e.target.value })}
+              className="w-full h-[56px] px-4 pr-10 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/20 transition-all appearance-none cursor-pointer"
+              data-testid="select-furnished"
+            >
+              {FURNISHED_OPTIONS.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)] pointer-events-none" />
           </div>
         </div>
       </div>
@@ -553,28 +547,21 @@ function Step3ExtraFeatures({
         </p>
       </div>
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-wrap gap-2">
         {EXTRA_FEATURE_OPTIONS.map((opt) => {
           const selected = filters.extraFeatures.includes(opt.value);
           return (
             <button
               key={opt.value}
               onClick={() => toggleFeature(opt.value)}
-              className={`w-full flex items-center gap-4 px-5 py-4 rounded-lg border-2 transition-all text-left ${
+              className={`px-4 py-2.5 rounded-full text-[14px] font-medium transition-all ${
                 selected
-                  ? "border-[var(--yo-teal)] bg-[var(--yo-teal)]/5"
-                  : "border-[var(--yo-divider)] bg-white"
+                  ? "bg-[var(--yo-teal)] text-black"
+                  : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
               }`}
               data-testid={`option-feature-${opt.value}`}
             >
-              <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
-                selected
-                  ? "bg-[var(--yo-teal)] border-[var(--yo-teal)]"
-                  : "border-[var(--yo-divider)]"
-              }`}>
-                {selected && <Check className="w-3.5 h-3.5 text-black" />}
-              </div>
-              <span className="text-[16px] font-medium text-[var(--yo-dark)]">{opt.label}</span>
+              {opt.label}
             </button>
           );
         })}
@@ -616,31 +603,21 @@ function Step4PropertyTypes({
         </p>
       </div>
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-wrap gap-2">
         {PROPERTY_TYPE_OPTIONS.map((opt) => {
           const selected = filters.propertyTypes.includes(opt.value);
           return (
             <button
               key={opt.value}
               onClick={() => toggleType(opt.value)}
-              className={`w-full flex items-center gap-4 px-5 py-4 rounded-lg border-2 transition-all text-left ${
+              className={`px-4 py-2.5 rounded-full text-[14px] font-medium transition-all ${
                 selected
-                  ? "border-[var(--yo-teal)] bg-[var(--yo-teal)]/5"
-                  : "border-[var(--yo-divider)] bg-white"
+                  ? "bg-[var(--yo-teal)] text-black"
+                  : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
               }`}
               data-testid={`option-type-${opt.value}`}
             >
-              <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
-                selected
-                  ? "bg-[var(--yo-teal)] border-[var(--yo-teal)]"
-                  : "border-[var(--yo-divider)]"
-              }`}>
-                {selected && <Check className="w-3.5 h-3.5 text-black" />}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-[16px] font-medium text-[var(--yo-dark)]">{opt.label}</p>
-                <p className="text-[13px] text-[var(--yo-dark)] opacity-60">{opt.desc}</p>
-              </div>
+              {opt.label}
             </button>
           );
         })}
@@ -671,35 +648,3 @@ function Step4PropertyTypes({
   );
 }
 
-function WizardHeader({ step, total, onBack }: { step: number; total: number; onBack: () => void }) {
-  const progress = total > 0 ? (step / total) * 100 : 0;
-
-  return (
-    <header className="sticky top-0 z-20 bg-white border-b border-[var(--yo-divider)]">
-      <div className="max-w-lg mx-auto flex items-center h-[56px] px-5">
-        <button
-          onClick={onBack}
-          className="w-9 h-9 rounded-full bg-[var(--yo-surface)] flex items-center justify-center mr-3 active:scale-95 transition-transform"
-          data-testid="button-wizard-header-back"
-        >
-          <ArrowLeft className="w-4 h-4 text-[var(--yo-dark)]" />
-        </button>
-        <h1 className="text-[17px] font-bold text-[var(--yo-dark)] flex-1 uppercase tracking-wide">Nieuwe zoekopdracht</h1>
-        {total > 0 && (
-          <span className="text-[13px] font-semibold text-[var(--yo-pink)] bg-[var(--yo-pink-light)] px-2.5 py-1 rounded-full">
-            {step}/{total}
-          </span>
-        )}
-      </div>
-      {total > 0 && (
-        <div className="h-[3px] bg-[var(--yo-divider)]">
-          <div
-            className="h-full bg-[var(--yo-pink)] transition-all duration-500 ease-out"
-            style={{ width: `${progress}%` }}
-            data-testid="progress-wizard"
-          />
-        </div>
-      )}
-    </header>
-  );
-}

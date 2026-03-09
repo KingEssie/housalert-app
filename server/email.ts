@@ -87,10 +87,10 @@ export async function sendMatchAlert(
       : "";
 
     const { error } = await client.emails.send({
-      from: fromEmail || "Stekkies <onboarding@resend.dev>",
+      from: fromEmail || "HousAlert <onboarding@resend.dev>",
       to: userEmail,
       subject: `Nieuwe match: ${listing.title}`,
-      text: `Hoi!\n\nEr is een nieuwe woning gevonden die past bij je zoekopdracht:\n\n${listing.title}\n${details}${linkLine}\n\nGroet,\nStekkies`,
+      text: `Hoi!\n\nEr is een nieuwe woning gevonden die past bij je zoekopdracht:\n\n${listing.title}\n${details}${linkLine}\n\nGroet,\nHousAlert`,
       html: `<div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:20px;">
         <h2 style="color:#333;margin-bottom:4px;">Nieuwe match gevonden!</h2>
         <p style="color:#666;margin-top:0;">Er is een woning gevonden die past bij je zoekopdracht.</p>
@@ -99,7 +99,7 @@ export async function sendMatchAlert(
           <p style="margin:0;color:#555;line-height:1.6;">${htmlDetails}</p>
           ${linkHtml}
         </div>
-        <p style="color:#999;font-size:13px;">Je ontvangt deze e-mail omdat je een zoekopdracht hebt ingesteld op Stekkies.</p>
+        <p style="color:#999;font-size:13px;">Je ontvangt deze e-mail omdat je een zoekopdracht hebt ingesteld op HousAlert.</p>
       </div>`,
     });
 

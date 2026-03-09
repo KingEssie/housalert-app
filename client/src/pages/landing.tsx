@@ -13,7 +13,7 @@ export default function LandingPage() {
             <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
               <Home className="w-4.5 h-4.5 text-primary-foreground" />
             </div>
-            <span className="font-extrabold text-xl tracking-tight" style={{ color: "var(--yo-dark)" }} data-testid="text-logo">Stekkies</span>
+            <span className="font-extrabold text-xl tracking-tight" style={{ color: "var(--yo-dark)" }} data-testid="text-logo">HousAlert</span>
           </div>
           <Button
             variant="ghost"
@@ -161,7 +161,7 @@ export default function LandingPage() {
             <a href="/terms" className="hover:text-foreground transition-colors" data-testid="link-terms">AGB</a>
           </div>
           <p className="text-[13px] text-muted-foreground">
-            &copy; {new Date().getFullYear()} Stekkies. Alle rechten voorbehouden.
+            &copy; {new Date().getFullYear()} HousAlert. Alle rechten voorbehouden.
           </p>
         </div>
       </footer>

@@ -43,7 +43,7 @@ export default function OnboardingFiltersPage() {
             <div className="w-7 h-7 rounded-lg bg-[var(--yo-teal)] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-bold text-[var(--yo-dark)] text-base">Stekkies</span>
+            <span className="font-bold text-[var(--yo-dark)] text-base">HousAlert</span>
           </div>
         </div>
       </header>

@@ -6,7 +6,7 @@ import LocationModeSelector, {
   isLocationValid,
 } from "@/components/location-mode-selector";
 
-const APP_DOMAIN = import.meta.env.VITE_APP_DOMAIN || "https://stekkies.replit.app";
+const APP_DOMAIN = import.meta.env.VITE_APP_DOMAIN || "https://housalert.de";
 
 const PROPERTY_TYPES = [
   { value: "any", label: "Alles" },
@@ -96,7 +96,7 @@ function CompletionScreen({ draftId }: { draftId: string }) {
       </div>
 
       <p className="text-[11px] text-[var(--yo-dark)] mt-6">
-        Powered by Stekkies
+        Powered by HousAlert
       </p>
     </div>
   );
@@ -308,7 +308,7 @@ export default function OnboardingEmbedPage() {
         </div>
 
         <p className="text-center text-[11px] text-[var(--yo-dark)] mt-4">
-          Powered by Stekkies
+          Powered by HousAlert
         </p>
       </div>
     </div>
