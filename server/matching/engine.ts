@@ -472,13 +472,35 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
 
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
-  const { data: listings, error: lErr } = await supabase
-    .from("listings")
-    .select(getListingSelect())
-    .gte("created_at", sevenDaysAgo);
+  const profileCity = (sp.city_name || sp.city || "").toLowerCase().trim().replace(/[%_\\,()]/g, "");
+
+  let listings: any[] | null = null;
+  let lErr: any = null;
+
+  if (profileCity.length >= 3) {
+    const result = await supabase
+      .from("listings")
+      .select(getListingSelect())
+      .gte("created_at", sevenDaysAgo)
+      .ilike("city", `%${profileCity}%`);
+    listings = result.data;
+    lErr = result.error;
+    if (lErr) {
+      log(`[MATCH ENGINE] City-filtered listing query failed, falling back to full scan: ${lErr.message}`);
+      const fallback = await supabase.from("listings").select(getListingSelect()).gte("created_at", sevenDaysAgo);
+      listings = fallback.data;
+      lErr = fallback.error;
+    } else {
+      log(`[MATCH ENGINE] Backfill pre-filtered to ${listings?.length ?? 0} listings in city="${profileCity}"`);
+    }
+  } else {
+    const result = await supabase.from("listings").select(getListingSelect()).gte("created_at", sevenDaysAgo);
+    listings = result.data;
+    lErr = result.error;
+  }
 
   if (lErr || !listings || listings.length === 0) {
-    log(`[MATCH ENGINE COMPLETE] no recent listings found, 0 matches`);
+    log(`[MATCH ENGINE COMPLETE] no recent listings found for city="${profileCity}", 0 matches`);
     return 0;
   }
 
