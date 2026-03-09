@@ -636,6 +636,8 @@ function HomeTab({
   const hasMatches = matchCount > 0;
 
   const firstProfile = profiles[0];
+  const hasActiveSub = subscription.isActive || subscription.isTrial;
+
   const estimateQuery = useQuery<{ perWeekEstimate: number; last7dCount: number }>({
     queryKey: ["/api/estimate", firstProfile?.city],
     queryFn: async () => {
@@ -648,10 +650,10 @@ function HomeTab({
       if (!res.ok) throw new Error("estimate failed");
       return res.json();
     },
-    enabled: hasProfiles && !hasMatches,
+    enabled: hasProfiles,
     staleTime: 5 * 60 * 1000,
   });
-  const potentialCount = estimateQuery.data?.last7dCount ?? 0;
+  const perWeekEstimate = estimateQuery.data?.perWeekEstimate ?? 0;
 
   return (
     <div className="flex flex-col pb-6">
@@ -662,7 +664,7 @@ function HomeTab({
       </div>
       <div className="flex flex-col gap-8 px-6">
 
-      {hasMatches ? (
+      {hasActiveSub && hasMatches ? (
         <div className="rounded-xl bg-[#0F172A] p-6" data-testid="hero-matches">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
@@ -670,7 +672,7 @@ function HomeTab({
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[22px] font-bold text-white leading-tight" data-testid="text-match-count">
-                {matchCount} {matchCount === 1 ? "match" : "matches"} gevonden
+                {matchCount} {matchCount === 1 ? "match" : "matches"} ontvangen
               </p>
               <p className="text-[14px] font-[500] text-white/70 mt-0.5">
                 {hasProfiles
@@ -688,18 +690,18 @@ function HomeTab({
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
-      ) : hasProfiles && potentialCount > 0 ? (
-        <div className="rounded-xl bg-[#0F172A] p-6" data-testid="hero-potential">
+      ) : hasActiveSub && hasProfiles ? (
+        <div className="rounded-xl bg-[#0F172A] p-6" data-testid="hero-active-no-matches">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
               <Search className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[16px] font-bold text-white leading-tight" data-testid="text-potential-count">
-                Je zoekprofiel kan ongeveer {potentialCount} woningen opleveren.
+              <p className="text-[16px] font-bold text-white leading-tight" data-testid="text-active-searching">
+                We zoeken actief naar woningen voor je
               </p>
               <p className="text-[14px] font-[500] text-white/70 mt-0.5">
-                We zoeken actief naar matches voor je.
+                Je ontvangt matches op basis van {profileCount} {profileCount === 1 ? "zoekprofiel" : "zoekprofielen"}
               </p>
             </div>
           </div>
@@ -712,15 +714,41 @@ function HomeTab({
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
+      ) : hasProfiles ? (
+        <div className="rounded-xl bg-[#0F172A] p-6" data-testid="hero-estimate">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[16px] font-bold text-white leading-tight" data-testid="text-estimate-count">
+                {perWeekEstimate > 0
+                  ? `We verwachten ±${perWeekEstimate} matches per week`
+                  : "Je zoekprofiel is klaar"}
+              </p>
+              <p className="text-[14px] font-[500] text-white/70 mt-0.5">
+                {perWeekEstimate > 0
+                  ? `Op basis van ${profileCount} ${profileCount === 1 ? "zoekprofiel" : "zoekprofielen"}`
+                  : "Activeer je abonnement om matches te ontvangen"}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => navigate("/paywall")}
+            className="w-full h-[56px] rounded-lg bg-[var(--yo-pink)] hover:opacity-90 text-white text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
+            data-testid="button-activate-sub"
+          >
+            Abonnement activeren
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
       ) : (
         <EmptyState
           illustration={EMPTY_STATE_IMAGES.noMatches}
-          title="Nog geen matches gevonden"
-          description={hasProfiles
-            ? "We hebben nog geen woningen gevonden die goed aansluiten op jouw voorkeuren. Pas je filters aan of kijk later opnieuw."
-            : "Maak een zoekprofiel aan en ontvang automatisch matches."}
-          ctaLabel={hasProfiles ? "Filters aanpassen" : "Zoekprofiel aanmaken"}
-          onCtaClick={() => hasProfiles ? setActiveTab("filters") : navigate("/dashboard/searches/new")}
+          title="Nog geen zoekprofiel"
+          description="Maak een zoekprofiel aan en ontvang automatisch matches."
+          ctaLabel="Zoekprofiel aanmaken"
+          onCtaClick={() => navigate("/dashboard/searches/new")}
           testId="hero-empty"
         />
       )}

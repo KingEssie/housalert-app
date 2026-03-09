@@ -1,0 +1,176 @@
+We need a focused bug-fix sprint for HousAlert.
+
+Important:
+- Do NOT redesign the app again.
+- Keep the current styling direction.
+- Fix only the product logic and routing issues below.
+- Do not touch parts that are already working.
+
+==================================================
+1. HOME HERO BANNER LOGIC MUST DIFFER BY SUBSCRIPTION STATE
+==================================================
+
+Current issue:
+The homepage hero banner currently says:
+"50 matches gevonden"
+even though the user does NOT have an active subscription.
+
+That wording is incorrect because without an active subscription the user has not actually received any matches yet.
+
+Required behavior:
+
+A. If user has NO active subscription:
+- do NOT use wording like "matches gevonden" or "matches ontvangen"
+- instead show predictive wording, for example:
+  "Met je huidige zoekopdrachten verwachten we ±X matches per week"
+- this should be based on the user’s current saved search profiles
+- this is an estimate / expected number only
+
+B. If user HAS an active subscription and has real delivered matches:
+- then the banner may use real-result wording
+- for example:
+  "Je hebt X matches ontvangen"
+  or
+  "Je ontvangt matches op basis van Y zoekopdrachten"
+
+C. If user has active subscription but no real matches yet:
+- show a suitable empty/early-state version
+
+Tasks:
+1. Split hero banner messaging by subscription state
+2. Split hero banner messaging by real delivered match count
+3. Preserve current visual design of the banner
+4. Ensure no misleading “found/received” language is shown for non-paying users
+
+Deliverable:
+- explain the exact logic for hero banner copy selection
+- explain which data source is used for the estimated weekly match count
+
+==================================================
+2. REMOVE MATCH COUNT ESTIMATE FROM SEARCH FLOW SCREENS
+==================================================
+
+Current issue:
+During the search creation/edit flow, the UI shows how many expected matches the search profile may get.
+I do NOT want that inside the flow itself anymore.
+
+Required behavior:
+- do NOT show the estimated weekly match count during the flow steps
+- do NOT show it in intermediate flow banners
+- instead show that information only once:
+  on the final review/summary screen before the search profile is saved
+
+Required summary screen behavior:
+- at the top of the summary screen, show a banner similar to the current homepage hero concept
+- this banner should show the expected weekly matches estimate for that search profile
+- below that, show the full summary of:
+  - Locatie
+  - Wijken
+  - Huurprijs
+  - Slaapkamers
+  - Oppervlakte
+  - Extra eigenschappen
+  - Overige voorkeuren
+
+Tasks:
+1. Remove expected-result banners from all search flow steps
+2. Keep the estimate only on the final review screen
+3. Make the final summary screen the only place in the flow where the estimate is shown
+
+==================================================
+3. EDIT SEARCH PROFILE SAVE STILL FAILS
+==================================================
+
+Current issue:
+Editing an existing search profile still throws an error on save:
+"Zoekopdracht bijwerken mislukt"
+
+Required behavior:
+- editing must update the existing search profile
+- it must not create a new search profile
+- save must work successfully
+
+Tasks:
+1. trace why update fails
+2. verify the edit mode loads the correct existing profile id
+3. verify API payload includes the correct record id
+4. verify backend update query succeeds
+5. verify database constraints/field names still match current schema
+6. confirm the UI shows success after update
+
+Deliverable:
+- explain the exact root cause of the failed update
+- list files changed
+- confirm editing now updates existing profiles successfully
+
+==================================================
+4. STRIPE SUCCESS REDIRECT STILL BROKEN
+==================================================
+
+Current issue:
+After activating a subscription through Stripe, the app still redirects to a page-not-found page.
+The redirect is still going to the wrong domain/path, and I can see an old URL like:
+stekkies.replit.app
+with Not Found.
+
+This must be fixed now.
+
+Required behavior:
+After successful Stripe checkout:
+- redirect back into the correct live HousAlert app
+- land on the correct success route/page
+- update subscription state
+- reflect active subscription in the app immediately
+
+Tasks:
+1. inspect Stripe checkout success_url and cancel_url
+2. remove any old Stekkies domain references
+3. replace with the correct current production/dev URL for HousAlert
+4. ensure success route actually exists in the deployed app
+5. ensure cancel route actually exists too
+6. after return from Stripe, refresh/auth-sync subscription state properly
+
+Important:
+There must be no remaining redirect to:
+- stekkies.replit.app
+- dead success pages
+- missing routes
+
+Deliverable:
+- explain exact root cause of the broken redirect
+- confirm which URL(s) were wrong
+- confirm the new success and cancel URLs
+- confirm the route exists and works after deployment
+
+==================================================
+5. REMOVE REMAINING STEKKIES DOMAIN REFERENCES
+==================================================
+
+Current issue:
+Old domain references are still surfacing.
+
+Required:
+- remove or replace all remaining old Stekkies domain references in:
+  - Stripe success/cancel routing
+  - deep links
+  - redirects
+  - frontend constants
+  - backend env fallback logic
+
+==================================================
+6. DELIVERABLES
+==================================================
+
+After implementation, report back with:
+
+1. Exact logic now used for homepage hero banner text
+2. Exact difference between:
+   - no subscription
+   - active subscription with no real matches
+   - active subscription with real matches
+3. Where the expected weekly match estimate is now shown
+4. Confirmation that it no longer appears during intermediate flow steps
+5. Exact root cause of the failed search profile update
+6. Exact root cause of the broken Stripe success redirect
+7. Which Stekkies URLs/references were removed
+8. Which files changed

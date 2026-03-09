@@ -24,7 +24,6 @@ import {
   Sofa,
   ChevronDown,
   Check,
-  MapPin,
   Pencil,
 } from "lucide-react";
 
@@ -124,7 +123,6 @@ export default function NewSearchPage() {
   const [locationData, setLocationData] = useState<LocationData>({ ...DEFAULT_BERLIN });
   const [editLoaded, setEditLoaded] = useState(false);
 
-  const [matchEdit] = useRoute("/dashboard/searches/edit/:id");
   const [, params] = useRoute("/dashboard/searches/edit/:id");
   const editId = params?.id || null;
   const isEditMode = !!editId;
@@ -400,7 +398,7 @@ export default function NewSearchPage() {
         {step === 1 && <Step1Location locationData={locationData} setLocationData={setLocationData} />}
         {step === 2 && <Step2Requirements filters={filters} updateFilters={updateFilters} />}
         {step === 3 && <Step3ExtraFeatures filters={filters} updateFilters={updateFilters} />}
-        {step === 4 && <Step4TargetCategories filters={filters} updateFilters={updateFilters} perWeek={perWeek} estimateLoading={estimateQuery.isLoading} />}
+        {step === 4 && <Step4TargetCategories filters={filters} updateFilters={updateFilters} />}
         {step === 5 && (
           <StepReview
             locationData={locationData}
@@ -410,6 +408,8 @@ export default function NewSearchPage() {
             isEditMode={isEditMode}
             submitting={submitting}
             onSubmit={handleSubmit}
+            perWeek={perWeek}
+            estimateLoading={estimateQuery.isLoading}
           />
         )}
       </main>
@@ -657,13 +657,9 @@ function Step3ExtraFeatures({
 function Step4TargetCategories({
   filters,
   updateFilters,
-  perWeek,
-  estimateLoading,
 }: {
   filters: FilterData;
   updateFilters: (partial: Partial<FilterData>) => void;
-  perWeek: number;
-  estimateLoading: boolean;
 }) {
   const toggleCategory = (val: string) => {
     const arr = filters.targetCategories;
@@ -698,22 +694,6 @@ function Step4TargetCategories({
           Geen selectie = alle categorie&#235;n worden meegenomen
         </p>
       )}
-
-      {!estimateLoading && (
-        <div className="bg-[var(--yo-chip-bg)] rounded-lg p-4 flex items-start gap-3" data-testid="card-estimate-inline">
-          <Sparkles className="w-5 h-5 text-[var(--yo-teal)] flex-shrink-0 mt-0.5" />
-          <div>
-            <p className="text-[14px] font-semibold text-[var(--yo-dark)]">
-              Verwacht: ~{perWeek} matches per week
-            </p>
-            {perWeek === 0 && (
-              <p className="text-[13px] text-[var(--yo-dark)] opacity-70 mt-1">
-                Dit zoekprofiel ontvangt momenteel naar verwachting weinig of geen matches. Je kunt het altijd later aanpassen.
-              </p>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
@@ -744,6 +724,8 @@ function StepReview({
   isEditMode,
   submitting,
   onSubmit,
+  perWeek,
+  estimateLoading,
 }: {
   locationData: LocationData;
   filters: FilterData;
@@ -752,6 +734,8 @@ function StepReview({
   isEditMode: boolean;
   submitting: boolean;
   onSubmit: () => void;
+  perWeek: number;
+  estimateLoading: boolean;
 }) {
   const locationLabel = locationData.tab === "reistijd"
     ? `Reistijd naar ${locationData.commuteDestination}`
@@ -793,6 +777,26 @@ function StepReview({
           Bekijk je instellingen en sla op.
         </p>
       </div>
+
+      {!estimateLoading && (
+        <div className="rounded-xl bg-[#0F172A] p-5 flex items-center gap-3" data-testid="card-review-estimate">
+          <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+            <Sparkles className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <p className="text-[15px] font-bold text-white">
+              {perWeek > 0
+                ? `Verwacht: ~${perWeek} matches per week`
+                : "Nog geen matches verwacht"}
+            </p>
+            <p className="text-[13px] text-white/60 mt-0.5">
+              {perWeek > 0
+                ? "Op basis van je zoekinstellingen"
+                : "Je kunt je filters later altijd aanpassen"}
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="bg-white rounded-lg">
         <ReviewRow label="Locatie" value={locationLabel} onEdit={() => onEdit(1)} />
