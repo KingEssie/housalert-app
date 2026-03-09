@@ -1,0 +1,85 @@
+I need a full filter correctness audit for HousAlert. This is business-critical.
+
+Goal:
+Verify that every search-profile filter is:
+1. saved correctly,
+2. scraped / normalized correctly from listings,
+3. matched correctly by the match engine.
+
+Do NOT redesign UI. Focus on backend, scraper mapping, DB fields, and matching logic.
+
+Tasks:
+
+1. Create a complete filter inventory for all supported search filters.
+For each filter, report:
+- UI filter name
+- request payload field
+- database field in search_profiles
+- database field in listings
+- normalization logic
+- matching rule
+
+2. Audit all currently supported filters, including at least:
+- city / city_name
+- location mode
+- neighborhoods
+- radius
+- travel time
+- min price
+- max price
+- bedrooms
+- surface area
+- furnished
+- balcony
+- garden
+- bath
+- pets allowed / huisdieren
+- house sharers / woningdelers
+- students
+- temporary housing
+- paid websites
+- housing corporations
+- senior housing
+- any extra property filters currently implemented
+
+3. For each filter, determine:
+- is it actually scraped from any active source?
+- is it normalized correctly into listing data?
+- is the match rule strict, loose, or broken?
+- can it create false positives?
+
+4. Build a “filter audit report” with these columns:
+- filter
+- source support
+- scraper status
+- normalized in DB
+- used in matching
+- risk level
+- notes
+
+5. Create a golden test set using real existing listings in the database.
+- Select at least 20 real listings from active sources.
+- For each listing, inspect which filters are truly present.
+- Build at least 10 realistic search profiles.
+- Run expected-match vs actual-match comparison.
+- Report all false positives and false negatives.
+
+6. Add or improve debug tooling so we can inspect why a listing matched a profile.
+For each match, I want a way to see:
+- which profile filters were checked
+- which listing fields were compared
+- which checks passed
+- which checks failed
+- final reason for match
+
+7. Identify all filters that currently should NOT be exposed in UI because scraper support is unreliable or absent.
+If a filter is shown to users but not actually enforced or not reliably scraped, flag it clearly.
+
+8. Output a final recommendation:
+- filters safe to keep live
+- filters that need backend fixes
+- filters that should be hidden until reliable
+- highest-risk false positive scenarios
+
+Important:
+I do not want broad claims. I want exact root-cause analysis with exact fields, exact tables, and exact matching logic.

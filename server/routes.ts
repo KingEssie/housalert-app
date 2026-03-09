@@ -12,7 +12,7 @@ import {
 import { getNextRun } from "./scheduler";
 import { getListingFreshness, getMatchTimestamps, getNewestListingIds } from "./freshness";
 import { supabase } from "./ingesters/matching";
-import { backfillMatchesForSearchProfile } from "./matching/engine";
+import { backfillMatchesForSearchProfile, explainMatch, explainAllProfilesForListing } from "./matching/engine";
 import {
   ensureTrialSubscription,
   getSubscriptionStatus,
@@ -263,6 +263,26 @@ export async function registerRoutes(
           sources: status.lastResult.sources,
         } : null,
       });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/match-debug/explain/:listingId/:profileId", async (req, res) => {
+    try {
+      const { listingId, profileId } = req.params;
+      const result = await explainMatch(listingId, profileId);
+      return res.json(result);
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/match-debug/listing/:listingId", async (req, res) => {
+    try {
+      const { listingId } = req.params;
+      const result = await explainAllProfilesForListing(listingId);
+      return res.json(result);
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
     }

@@ -31,18 +31,153 @@ interface DbListing {
   size_m2: number;
 }
 
-function doesListingMatchProfile(listing: DbListing, profile: SearchProfile): boolean {
+export interface FilterCheck {
+  filter: string;
+  profileField: string;
+  profileValue: string;
+  listingField: string;
+  listingValue: string;
+  rule: string;
+  passed: boolean;
+}
+
+export interface MatchExplanation {
+  matched: boolean;
+  checks: FilterCheck[];
+  reason: string;
+}
+
+function explainMatchInternal(listing: DbListing, profile: SearchProfile): MatchExplanation {
+  const checks: FilterCheck[] = [];
   const listingCity = listing.city.toLowerCase().trim();
   const profileCity = (profile.city_name || profile.city || "").toLowerCase().trim();
-  if (!profileCity) return false;
-  if (!listingCity.includes(profileCity) && !profileCity.includes(listingCity)) {
-    return false;
+
+  const cityPassed = !!profileCity && (listingCity.includes(profileCity) || profileCity.includes(listingCity));
+  checks.push({
+    filter: "city",
+    profileField: "city_name || city",
+    profileValue: profileCity || "(empty)",
+    listingField: "city",
+    listingValue: listingCity,
+    rule: "substring match (case-insensitive)",
+    passed: cityPassed,
+  });
+  if (!cityPassed) return { matched: false, checks, reason: `City mismatch: listing="${listingCity}" vs profile="${profileCity}"` };
+
+  const priceMinPassed = !(profile.price_min > 0 && listing.price < profile.price_min);
+  checks.push({
+    filter: "price_min",
+    profileField: "price_min",
+    profileValue: String(profile.price_min),
+    listingField: "price",
+    listingValue: String(listing.price),
+    rule: "listing.price >= profile.price_min (skipped if price_min=0)",
+    passed: priceMinPassed,
+  });
+  if (!priceMinPassed) return { matched: false, checks, reason: `Price ${listing.price} < min ${profile.price_min}` };
+
+  const priceMaxPassed = !(profile.price_max > 0 && listing.price > profile.price_max);
+  checks.push({
+    filter: "price_max",
+    profileField: "price_max",
+    profileValue: String(profile.price_max),
+    listingField: "price",
+    listingValue: String(listing.price),
+    rule: "listing.price <= profile.price_max (skipped if price_max=0)",
+    passed: priceMaxPassed,
+  });
+  if (!priceMaxPassed) return { matched: false, checks, reason: `Price ${listing.price} > max ${profile.price_max}` };
+
+  const bedroomsPassed = !(profile.bedrooms_min > 0 && listing.bedrooms < profile.bedrooms_min);
+  checks.push({
+    filter: "bedrooms_min",
+    profileField: "bedrooms_min",
+    profileValue: String(profile.bedrooms_min),
+    listingField: "bedrooms",
+    listingValue: String(listing.bedrooms),
+    rule: "listing.bedrooms >= profile.bedrooms_min (skipped if bedrooms_min=0)",
+    passed: bedroomsPassed,
+  });
+  if (!bedroomsPassed) return { matched: false, checks, reason: `Bedrooms ${listing.bedrooms} < min ${profile.bedrooms_min}` };
+
+  const sizePassed = !(profile.size_min > 0 && listing.size_m2 < profile.size_min);
+  checks.push({
+    filter: "size_min",
+    profileField: "size_min",
+    profileValue: String(profile.size_min),
+    listingField: "size_m2",
+    listingValue: String(listing.size_m2),
+    rule: "listing.size_m2 >= profile.size_min (skipped if size_min=0)",
+    passed: sizePassed,
+  });
+  if (!sizePassed) return { matched: false, checks, reason: `Size ${listing.size_m2}m² < min ${profile.size_min}m²` };
+
+  return { matched: true, checks, reason: "All active filters passed" };
+}
+
+function doesListingMatchProfile(listing: DbListing, profile: SearchProfile): boolean {
+  return explainMatchInternal(listing, profile).matched;
+}
+
+export async function explainMatch(
+  listingId: string,
+  profileId: string
+): Promise<MatchExplanation & { listing?: DbListing; profile?: SearchProfile }> {
+  const { data: listing } = await supabase
+    .from("listings")
+    .select("id, source, url, title, city, price, bedrooms, size_m2")
+    .eq("id", listingId)
+    .single();
+
+  const { data: profile } = await supabase
+    .from("search_profiles")
+    .select("*")
+    .eq("id", profileId)
+    .single();
+
+  if (!listing || !profile) {
+    return {
+      matched: false,
+      checks: [],
+      reason: !listing ? "Listing not found" : "Profile not found",
+    };
   }
-  if (profile.price_min > 0 && listing.price < profile.price_min) return false;
-  if (profile.price_max > 0 && listing.price > profile.price_max) return false;
-  if (profile.bedrooms_min > 0 && listing.bedrooms < profile.bedrooms_min) return false;
-  if (profile.size_min > 0 && listing.size_m2 < profile.size_min) return false;
-  return true;
+
+  const explanation = explainMatchInternal(listing as DbListing, profile as SearchProfile);
+  return {
+    ...explanation,
+    listing: listing as DbListing,
+    profile: profile as SearchProfile,
+  };
+}
+
+export async function explainAllProfilesForListing(
+  listingId: string
+): Promise<{ listing: DbListing | null; results: Array<{ profileId: string; city: string; matched: boolean; reason: string; checks: FilterCheck[] }> }> {
+  const { data: listing } = await supabase
+    .from("listings")
+    .select("id, source, url, title, city, price, bedrooms, size_m2")
+    .eq("id", listingId)
+    .single();
+
+  if (!listing) return { listing: null, results: [] };
+
+  const { data: profiles } = await supabase.from("search_profiles").select("*");
+  if (!profiles) return { listing: listing as DbListing, results: [] };
+
+  const results = profiles.map((p: any) => {
+    const sp = p as SearchProfile;
+    const explanation = explainMatchInternal(listing as DbListing, sp);
+    return {
+      profileId: sp.id,
+      city: sp.city_name || sp.city,
+      matched: explanation.matched,
+      reason: explanation.reason,
+      checks: explanation.checks,
+    };
+  });
+
+  return { listing: listing as DbListing, results };
 }
 
 function log(msg: string) {
