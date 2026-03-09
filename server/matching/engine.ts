@@ -49,6 +49,7 @@ interface DbListing {
 const LISTING_SELECT = "id, source, url, title, city, price, bedrooms, size_m2, furnished, pets_allowed, balcony, elevator, district, latitude, longitude, extra_features, target_categories";
 
 let hasFurnishedColumn: boolean | null = null;
+let hasDistrictColumn: boolean | null = null;
 let hasAdvancedListingColumns: boolean | null = null;
 
 async function checkFurnishedColumn(): Promise<boolean> {
@@ -58,9 +59,16 @@ async function checkFurnishedColumn(): Promise<boolean> {
   return hasFurnishedColumn;
 }
 
+async function checkDistrictColumn(): Promise<boolean> {
+  if (hasDistrictColumn !== null) return hasDistrictColumn;
+  const { error } = await supabase.from("listings").select("district").limit(1);
+  hasDistrictColumn = !error;
+  return hasDistrictColumn;
+}
+
 async function checkAdvancedListingColumns(): Promise<boolean> {
   if (hasAdvancedListingColumns !== null) return hasAdvancedListingColumns;
-  const { error } = await supabase.from("listings").select("pets_allowed, balcony, elevator, district").limit(1);
+  const { error } = await supabase.from("listings").select("pets_allowed, balcony, elevator").limit(1);
   hasAdvancedListingColumns = !error;
   return hasAdvancedListingColumns;
 }
@@ -69,7 +77,8 @@ function getListingSelect(): string {
   const base = "id, source, url, title, city, price, bedrooms, size_m2";
   const parts = [base];
   if (hasFurnishedColumn !== false) parts.push("furnished");
-  if (hasAdvancedListingColumns !== false) parts.push("pets_allowed, balcony, elevator, district, latitude, longitude, extra_features, target_categories");
+  if (hasDistrictColumn !== false) parts.push("district");
+  if (hasAdvancedListingColumns !== false) parts.push("pets_allowed, balcony, elevator, latitude, longitude, extra_features, target_categories");
   return parts.join(", ");
 }
 
@@ -212,7 +221,10 @@ export function explainMatchInternal(listing: DbListing, profile: SearchProfile)
     }
   }
 
-  if (profile.districts && profile.districts.length > 0) {
+  const districtFilterActive = profile.districts && profile.districts.length > 0 &&
+    (!profile.location_mode || profile.location_mode === "districts");
+
+  if (districtFilterActive) {
     const listingDistrict = (listing.district ?? "").toLowerCase().trim();
     let districtPassed = false;
     if (listingDistrict) {
@@ -250,6 +262,7 @@ export async function explainMatch(
   profileId: string
 ): Promise<MatchExplanation & { listing?: DbListing; profile?: SearchProfile }> {
   await checkFurnishedColumn();
+  await checkDistrictColumn();
   await checkAdvancedListingColumns();
 
   const { data: listing } = await supabase
@@ -284,6 +297,7 @@ export async function explainAllProfilesForListing(
   listingId: string
 ): Promise<{ listing: DbListing | null; results: Array<{ profileId: string; city: string; matched: boolean; reason: string; checks: FilterCheck[] }> }> {
   await checkFurnishedColumn();
+  await checkDistrictColumn();
   await checkAdvancedListingColumns();
 
   const { data: listing } = await supabase
@@ -363,6 +377,7 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
   log(`[MATCH ENGINE START] matchListingAgainstProfiles listing=${listingId}`);
 
   await checkFurnishedColumn();
+  await checkDistrictColumn();
   await checkAdvancedListingColumns();
 
   const { data: listing, error: lErr } = await supabase
@@ -434,6 +449,7 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
   log(`[MATCH ENGINE START] backfillMatchesForSearchProfile profile=${searchProfileId}`);
 
   await checkFurnishedColumn();
+  await checkDistrictColumn();
   await checkAdvancedListingColumns();
 
   const { data: profile, error: pErr } = await supabase

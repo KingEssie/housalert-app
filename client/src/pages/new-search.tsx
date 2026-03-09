@@ -254,7 +254,7 @@ export default function NewSearchPage() {
       bedrooms_min: filters.bedroomsMin,
       size_min: filters.sizeMin,
       location_mode: locationMode,
-      districts: locationData.districts.length > 0 ? locationData.districts : undefined,
+      districts: locationData.tab === "wijken" && locationData.districts.length > 0 ? locationData.districts : undefined,
       radius_km: locationData.tab === "radius" ? locationData.radiusKm : undefined,
       commute_destination: locationData.tab === "reistijd" ? locationData.commuteDestination : undefined,
       commute_lat: locationData.tab === "reistijd" ? locationData.commuteLat ?? undefined : undefined,

@@ -64,6 +64,50 @@ function extractFeatures(text: string): {
   };
 }
 
+function normalizeDistrict(raw: string): string {
+  return raw.trim().replace(/\s+/g, " ");
+}
+
+function extractDistrict(locationText: string, title: string, city: string): string | null {
+  if (locationText) {
+    const locParts = locationText.split(/\n/).map(p => p.trim()).filter(Boolean);
+    for (const part of locParts) {
+      const cleaned = part.replace(/\s*\(\w+\)\s*$/, "").trim();
+      if (
+        cleaned &&
+        cleaned.toLowerCase() !== city.toLowerCase() &&
+        !cleaned.match(/^\d/) &&
+        cleaned.length > 1
+      ) {
+        if (cleaned.includes(" - ")) {
+          const sub = cleaned.split(" - ");
+          const candidate = sub[sub.length - 1].trim();
+          if (candidate && candidate.toLowerCase() !== city.toLowerCase()) {
+            return normalizeDistrict(candidate);
+          }
+        }
+        if (!cleaned.toLowerCase().startsWith(city.toLowerCase())) {
+          return normalizeDistrict(cleaned);
+        }
+        const afterCity = cleaned.slice(city.length).replace(/^[\s\-–]+/, "").trim();
+        if (afterCity) {
+          return normalizeDistrict(afterCity);
+        }
+      }
+    }
+  }
+
+  const titleMatch = title.match(/,\s*([^,\d]+)$/);
+  if (titleMatch) {
+    const candidate = titleMatch[1].trim();
+    if (candidate.toLowerCase() !== city.toLowerCase() && candidate.length > 1) {
+      return normalizeDistrict(candidate);
+    }
+  }
+
+  return null;
+}
+
 async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
   const searchUrl = getKleinanzeigenUrl(city);
   if (!searchUrl) {
@@ -121,6 +165,9 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
     const cardText = card.text() + " " + title;
     const features = extractFeatures(cardText);
 
+    const locationText = card.find(".aditem-main--top--left").text().trim();
+    const district = extractDistrict(locationText, title, city);
+
     listings.push({
       title,
       url: fullUrl,
@@ -135,6 +182,7 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
       pets_allowed: features.pets_allowed,
       balcony: features.balcony,
       elevator: features.elevator,
+      district,
     });
   });
 

@@ -56,18 +56,22 @@ function extractFeatures(text: string): {
   };
 }
 
+function normalizeDistrict(raw: string): string {
+  return raw.trim().replace(/\s+/g, " ");
+}
+
 function extractDistrict(address: string, city: string): string | null {
   const parts = address.split(",").map(p => p.trim());
   if (parts.length >= 2) {
     for (const part of parts) {
       if (part.toLowerCase() !== city.toLowerCase() && !part.match(/^\d/) && part.length > 1) {
-        return part;
+        return normalizeDistrict(part);
       }
     }
   }
   const match = address.match(/(\S+),\s*\d/);
   if (match && match[1].toLowerCase() !== city.toLowerCase()) {
-    return match[1];
+    return normalizeDistrict(match[1]);
   }
   return null;
 }

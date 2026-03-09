@@ -86,9 +86,21 @@ async function checkFurnishedColumn(): Promise<boolean> {
   return hasFurnishedColumn;
 }
 
+let hasDistrictColumn: boolean | null = null;
+
+async function checkDistrictColumn(): Promise<boolean> {
+  if (hasDistrictColumn !== null) return hasDistrictColumn;
+  const { error } = await supabase.from("listings").select("district").limit(1);
+  hasDistrictColumn = !error;
+  if (!hasDistrictColumn) {
+    log("district column not found — run migration 017_listings_district.sql in Supabase SQL Editor");
+  }
+  return hasDistrictColumn;
+}
+
 async function checkAdvancedColumns(): Promise<boolean> {
   if (hasAdvancedColumns !== null) return hasAdvancedColumns;
-  const { error } = await supabase.from("listings").select("pets_allowed, balcony, elevator, district").limit(1);
+  const { error } = await supabase.from("listings").select("pets_allowed, balcony, elevator").limit(1);
   hasAdvancedColumns = !error;
   if (!hasAdvancedColumns) {
     log("Advanced columns (pets_allowed, balcony, etc.) not found — run migration 015 in Supabase SQL Editor");
@@ -98,7 +110,7 @@ async function checkAdvancedColumns(): Promise<boolean> {
 
 const ADVANCED_FIELDS: (keyof ParsedListing)[] = [
   "pets_allowed", "balcony", "elevator",
-  "district", "latitude", "longitude", "extra_features", "target_categories",
+  "latitude", "longitude", "extra_features", "target_categories",
 ];
 
 export async function insertAndMatchListings(
@@ -107,6 +119,7 @@ export async function insertAndMatchListings(
   const useSourceId = await checkSourceIdColumn();
   const useImageUrl = await checkImageUrlColumn();
   const useFurnished = await checkFurnishedColumn();
+  const useDistrict = await checkDistrictColumn();
   const useAdvanced = await checkAdvancedColumns();
 
   let inserted = 0;
@@ -153,6 +166,9 @@ export async function insertAndMatchListings(
         if (useFurnished && listing.furnished != null) {
           updateData.furnished = listing.furnished;
         }
+        if (useDistrict && listing.district != null) {
+          updateData.district = listing.district;
+        }
         if (useAdvanced) {
           for (const field of ADVANCED_FIELDS) {
             if (listing[field] != null) {
@@ -188,6 +204,10 @@ export async function insertAndMatchListings(
 
     if (useFurnished && listing.furnished != null) {
       insertData.furnished = listing.furnished;
+    }
+
+    if (useDistrict && listing.district != null) {
+      insertData.district = listing.district;
     }
 
     if (useAdvanced) {

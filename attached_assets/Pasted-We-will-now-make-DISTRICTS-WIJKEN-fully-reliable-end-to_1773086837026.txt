@@ -1,0 +1,71 @@
+We will now make DISTRICTS / WIJKEN fully reliable end-to-end as a hard filter in HousAlert.
+
+Important:
+- Do NOT redesign the app.
+- Do NOT touch already-working filters:
+  - city
+  - min price
+  - max price
+  - bedrooms_min
+  - size_min
+  - furnished
+- Focus only on making districts/wijken fully launch-ready as a hard filter.
+
+Current status from audit:
+- search_profiles.districts[] already exists and is saved
+- listings.district column is not yet fully available everywhere
+- district extraction exists partly in wg-gesucht and immowelt
+- kleinanzeigen does not yet extract district
+- engine logic for districts already exists, but currently district support is incomplete and therefore not reliable enough to keep live
+
+Goal:
+Make district/wijken a trustworthy hard filter.
+
+Requirements:
+
+1. Database
+- ensure the listings table has a usable `district` column
+- if a migration is still needed, provide the exact SQL
+- make sure it is safe and idempotent
+
+2. Scrapers / ingestion
+- ensure active ingesters populate `district` where possible
+- verify current support for:
+  - wg-gesucht
+  - immowelt
+  - kleinanzeigen
+  - any other active sources
+- improve extraction where realistically possible
+- normalize district values consistently:
+  - lowercase
+  - trim spaces
+  - remove obvious formatting inconsistencies
+
+3. Matching engine
+- enforce districts as a hard filter when the user selects one or more districts
+- if profile selects districts, only listings from those districts may match
+- listings with null/unknown district must be rejected when district filter is active
+- if no districts are selected, district filtering should be skipped
+
+4. UI / profile flow
+- keep the multi-select dropdown approach
+- ensure selected districts save correctly
+- ensure selected districts reload correctly when editing
+- ensure summary screen shows selected districts correctly
+
+5. Golden testing
+- create a reusable district golden test set
+- include at least:
+  - listings that should match
+  - listings that should not match
+  - unknown district listings
+- report false positives and false negatives
+
+6. Final audit report
+After implementation report:
+- whether district/wijken is now fully live-ready as a hard filter
+- which sources provide district reliably
+- which sources still do not
+- which files changed
+- which DB fields are used
+- any limitations that still exist

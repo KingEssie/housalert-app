@@ -65,14 +65,18 @@ function extractFeatures(cardText: string): {
   };
 }
 
+function normalizeDistrict(raw: string): string {
+  return raw.trim().replace(/\s+/g, " ");
+}
+
 function extractDistrict(title: string, city: string): string | null {
-  const match = title.match(/in\s+[\w-]+-(.+?)(?:\.|$)/i);
-  if (match) return match[1].trim();
+  const match = title.match(/in\s+[\w\u00C0-\u024F-]+-(.+?)(?:\.|$)/i);
+  if (match) return normalizeDistrict(match[1]);
   const parts = title.split(",").map(p => p.trim());
   if (parts.length >= 2) {
     const last = parts[parts.length - 1];
     if (last.toLowerCase() !== city.toLowerCase() && !last.match(/\d/)) {
-      return last;
+      return normalizeDistrict(last);
     }
   }
   return null;
