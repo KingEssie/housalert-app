@@ -12,7 +12,7 @@ import { getNextRun } from "./scheduler";
 import { getListingFreshness, getMatchTimestamps, getNewestListingIds } from "./freshness";
 import { supabase } from "./ingesters/matching";
 import { backfillMatchesForSearchProfile, explainMatch, explainAllProfilesForListing } from "./matching/engine";
-import { flushUserAlerts } from "./notifications/buffer";
+import { flushUserAlerts, getRecentEmailedIds } from "./notifications/buffer";
 import {
   ensureTrialSubscription,
   getSubscriptionStatus,
@@ -2081,6 +2081,154 @@ export async function registerRoutes(
     } catch (err: any) {
       log(`[PUSH TEST] Error: ${err.message}`);
       return res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
+  app.get("/api/admin/debug/match-alignment", requireAdmin, async (req, res) => {
+    try {
+      const adminUser = (req as any).adminUser;
+      const targetUserId = (req.query.user_id as string) || adminUser.id;
+
+      const { data: subRow } = await supabase
+        .from("subscriptions")
+        .select("created_at, status")
+        .eq("user_id", targetUserId)
+        .single();
+      const premiumStartedAt = subRow?.created_at || null;
+
+      const { data: matchRows } = await supabase
+        .from("matches")
+        .select("id, listing_id, search_profile_id, created_at")
+        .eq("user_id", targetUserId);
+
+      if (!matchRows || matchRows.length === 0) {
+        return res.json({
+          user_id: targetUserId,
+          subscription: subRow,
+          total_match_rows: 0,
+          app_visible_ids: [],
+          recent_emailed_ids: [],
+          emailed_but_not_visible: [],
+          visible_but_not_emailed: [],
+          traces: [],
+        });
+      }
+
+      const matchIds = matchRows.map((m: any) => m.id);
+      const matchTimestamps = await getMatchTimestamps(matchIds);
+
+      const enriched = matchRows.map((m: any) => ({
+        ...m,
+        matched_at: matchTimestamps[m.id] || m.created_at,
+      }));
+      enriched.sort((a: any, b: any) =>
+        new Date(b.matched_at).getTime() - new Date(a.matched_at).getTime()
+      );
+
+      const dedupedByListing: Record<string, any> = {};
+      for (const m of enriched) {
+        if (!dedupedByListing[m.listing_id]) {
+          dedupedByListing[m.listing_id] = m;
+        }
+      }
+      let uniqueMatches = Object.values(dedupedByListing);
+
+      const prePremiumCount = uniqueMatches.length;
+      if (premiumStartedAt) {
+        const premiumStart = new Date(premiumStartedAt).getTime();
+        uniqueMatches = uniqueMatches.filter((m: any) => {
+          return new Date(m.matched_at).getTime() >= premiumStart;
+        });
+      }
+      const postPremiumCount = uniqueMatches.length;
+
+      const allListingIds = uniqueMatches.map((m: any) => m.listing_id);
+      const { data: existingListings } = allListingIds.length > 0
+        ? await supabase
+            .from("listings")
+            .select("id, title, url, city, price")
+            .in("id", allListingIds)
+            .not("title", "is", null)
+        : { data: [] };
+
+      const listingMap: Record<string, any> = {};
+      for (const l of existingListings ?? []) listingMap[l.id] = l;
+
+      const appVisibleIds = new Set(Object.keys(listingMap));
+
+      const recentEmailed = getRecentEmailedIds(targetUserId);
+      const emailedIds = new Set(recentEmailed?.listing_ids || []);
+
+      const emailedButNotVisible = [...emailedIds].filter(id => !appVisibleIds.has(id));
+      const visibleButNotEmailed = [...appVisibleIds].filter(id => !emailedIds.has(id));
+
+      const traceIds = [...emailedButNotVisible.slice(0, 5), ...([...emailedIds].filter(id => appVisibleIds.has(id)).slice(0, 3))];
+      if (traceIds.length === 0 && allListingIds.length > 0) {
+        traceIds.push(...allListingIds.slice(0, 5));
+      }
+
+      const traces: any[] = [];
+      for (const lid of traceIds) {
+        const matchRow = enriched.find((m: any) => m.listing_id === lid);
+
+        const { data: listingRow } = await supabase
+          .from("listings")
+          .select("id, title, url, city, price, source")
+          .eq("id", lid)
+          .maybeSingle();
+
+        const wasEmailed = emailedIds.has(lid);
+        const isAppVisible = appVisibleIds.has(lid);
+
+        let exclusionReason: string | null = null;
+        if (!isAppVisible) {
+          if (!listingRow) {
+            exclusionReason = "listing_not_found_in_db";
+          } else if (!listingRow.title) {
+            exclusionReason = "listing_has_null_title";
+          } else if (!matchRow) {
+            exclusionReason = "no_match_row_after_dedup";
+          } else if (premiumStartedAt && new Date(matchRow.matched_at).getTime() < new Date(premiumStartedAt).getTime()) {
+            exclusionReason = `matched_at_before_premium (matched_at=${matchRow.matched_at}, premiumStartedAt=${premiumStartedAt})`;
+          } else {
+            exclusionReason = "filtered_by_dedup_or_other";
+          }
+        }
+
+        traces.push({
+          listing_id: lid,
+          listing_exists: !!listingRow,
+          listing_title: listingRow?.title || null,
+          listing_url: listingRow?.url || null,
+          listing_city: listingRow?.city || null,
+          match_row: matchRow ? {
+            match_id: matchRow.id,
+            search_profile_id: matchRow.search_profile_id,
+            created_at: matchRow.created_at,
+            matched_at: matchRow.matched_at,
+          } : null,
+          was_emailed: wasEmailed,
+          is_app_visible: isAppVisible,
+          exclusion_reason: exclusionReason,
+        });
+      }
+
+      return res.json({
+        user_id: targetUserId,
+        subscription: { status: subRow?.status, created_at: premiumStartedAt },
+        total_match_rows: matchRows.length,
+        unique_after_dedup: prePremiumCount,
+        after_premium_filter: postPremiumCount,
+        after_listing_check: appVisibleIds.size,
+        app_visible_count: appVisibleIds.size,
+        recent_emailed_count: emailedIds.size,
+        emailed_but_not_visible: emailedButNotVisible,
+        visible_but_not_emailed_count: visibleButNotEmailed.length,
+        emailed_at: recentEmailed?.timestamp ? new Date(recentEmailed.timestamp).toISOString() : null,
+        traces,
+      });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
     }
   });
 

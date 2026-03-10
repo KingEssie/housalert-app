@@ -262,6 +262,8 @@ A mobile-first German-language rental alert application for the German market. U
   - `POST /api/admin/test-push` — sends test push to admin user (requires admin auth)
   - `GET/PUT /api/notifications/settings` — now includes `push_enabled`
 - **Push trigger**: Integrated into `flushMatchAlertBuffer()` and `flushUserAlerts()` in `server/notifications/buffer.ts`. After email is sent, push is sent for the same verified listings (independent of email_enabled — uses its own push_enabled check).
+- **Email/app alignment fix**: `buffer.ts` now calls `getAppVisibleListingIds()` before sending emails — applies the same premium filter, dedup, and listing existence check as `/api/matches`. A listing will only be emailed if it will also be visible in the app.
+- **Debug endpoint**: `GET /api/admin/debug/match-alignment?user_id=...` — traces recent emailed vs app-visible listing IDs with per-listing exclusion reasons. Admin-only.
 - **Dedup**: `push_sent_log` table prevents duplicate pushes per user+listing. Stale subscriptions (410/404) auto-removed.
 - **Notification format**: German — Title: "Neue Wohnung gefunden", Body: "Eine neue Wohnung passt zu deinem Suchprofil in {{city}}." (singular) or "{{count}} neue Wohnungen passen zu deinem Suchprofil in {{city}}." (plural)
 - **Settings UI**: Push toggle in `/settings/notifications` — shows browser permission state, handles denied/unsupported cases

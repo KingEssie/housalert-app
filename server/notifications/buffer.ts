@@ -3,6 +3,7 @@ import { sendBatchMatchAlert } from "../email";
 import { areAlertsEnabled } from "./index";
 import { getSubscriptionStatus } from "../subscriptions";
 import { sendMatchPushNotifications, type PushMatchListing } from "./push";
+import { getMatchTimestamps } from "../freshness";
 
 const MAX_LISTINGS_PER_EMAIL = 20;
 
@@ -25,6 +26,8 @@ interface UserBuffer {
 const buffer = new Map<string, UserBuffer>();
 let _flushing = false;
 
+const recentEmailedIds = new Map<string, { listing_ids: string[]; timestamp: number }>();
+
 export function bufferMatchAlert(
   userId: string,
   userEmail: string,
@@ -46,6 +49,59 @@ export function bufferMatchAlert(
     const seenListingIds = new Set<string>([listing.listing_id]);
     buffer.set(userId, { email: userEmail, seenListingIds, listings: [listing] });
   }
+}
+
+async function getAppVisibleListingIds(userId: string, supabase: any): Promise<Set<string>> {
+  const { data: subRow } = await supabase
+    .from("subscriptions")
+    .select("created_at")
+    .eq("user_id", userId)
+    .single();
+  const premiumStartedAt = subRow?.created_at || null;
+
+  const { data: matchRows } = await supabase
+    .from("matches")
+    .select("id, listing_id, created_at")
+    .eq("user_id", userId);
+
+  if (!matchRows || matchRows.length === 0) return new Set();
+
+  const matchIds = matchRows.map((m: any) => m.id);
+  const matchTimestamps = await getMatchTimestamps(matchIds);
+
+  const enriched = matchRows.map((m: any) => ({
+    ...m,
+    matched_at: matchTimestamps[m.id] || m.created_at,
+  }));
+  enriched.sort((a: any, b: any) =>
+    new Date(b.matched_at).getTime() - new Date(a.matched_at).getTime()
+  );
+
+  const dedupedByListing: Record<string, any> = {};
+  for (const m of enriched) {
+    if (!dedupedByListing[m.listing_id]) {
+      dedupedByListing[m.listing_id] = m;
+    }
+  }
+  let uniqueMatches = Object.values(dedupedByListing);
+
+  if (premiumStartedAt) {
+    const premiumStart = new Date(premiumStartedAt).getTime();
+    uniqueMatches = uniqueMatches.filter((m: any) => {
+      return new Date(m.matched_at).getTime() >= premiumStart;
+    });
+  }
+
+  const listingIds = uniqueMatches.map((m: any) => m.listing_id);
+  if (listingIds.length === 0) return new Set();
+
+  const { data: existingListings } = await supabase
+    .from("listings")
+    .select("id")
+    .in("id", listingIds)
+    .not("title", "is", null);
+
+  return new Set((existingListings ?? []).map((l: any) => l.id));
 }
 
 export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: number; failed: number }> {
@@ -116,57 +172,61 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
       deduped.push(l);
     }
 
-    const validListingIds = deduped.map(l => l.listing_id);
-    if (validListingIds.length > 0) {
-      const { data: existingListings } = await supabase
-        .from("listings")
-        .select("id")
-        .in("id", validListingIds)
-        .not("title", "is", null);
+    const appVisibleIds = await getAppVisibleListingIds(userId, supabase);
 
-      const existingIds = new Set((existingListings ?? []).map((l: any) => l.id));
-      const beforeCount = deduped.length;
-      const verified = deduped.filter(l => existingIds.has(l.listing_id));
+    const verified = deduped.filter(l => appVisibleIds.has(l.listing_id));
 
-      if (verified.length < beforeCount) {
-        log(`[ALERTS] User ${userId.substring(0, 8)}...: ${beforeCount - verified.length} listings removed (not found/no title)`);
-      }
+    if (verified.length < deduped.length) {
+      const dropped = deduped.length - verified.length;
+      log(`[ALERTS] User ${userId.substring(0, 8)}...: ${dropped} listings dropped (not visible in app — premium filter, missing listing, or dedup)`);
+    }
 
-      if (verified.length === 0) {
-        log(`[ALERTS] User ${userId.substring(0, 8)}...: 0 eligible listings after verification — skipping alerts`);
-        continue;
-      }
+    if (verified.length === 0) {
+      log(`[ALERTS] User ${userId.substring(0, 8)}...: 0 eligible listings after app-visibility check — skipping alerts`);
+      continue;
+    }
 
-      log(`[ALERTS] User ${userId.substring(0, 8)}...: raw=${listings.length} → deduped=${deduped.length} → verified=${verified.length}`);
+    log(`[ALERTS] User ${userId.substring(0, 8)}...: raw=${listings.length} → deduped=${deduped.length} → app-visible=${verified.length}`);
 
-      if (emailEnabled) {
-        const capped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
-        try {
-          const success = await sendBatchMatchAlert(email, capped);
-          if (success) {
-            sent++;
-            log(`[ALERTS] Sent digest to ${email} with ${capped.length} listings${verified.length > MAX_LISTINGS_PER_EMAIL ? ` (capped from ${verified.length})` : ""}`);
-          } else {
-            failed++;
-            log(`[ALERTS] Failed digest to ${email}`);
-          }
-        } catch (err: any) {
+    const emailedListingIds: string[] = [];
+
+    if (emailEnabled) {
+      const capped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
+      try {
+        const success = await sendBatchMatchAlert(email, capped);
+        if (success) {
+          sent++;
+          emailedListingIds.push(...capped.map(l => l.listing_id));
+          log(`[ALERTS] Sent digest to ${email} with ${capped.length} listings${verified.length > MAX_LISTINGS_PER_EMAIL ? ` (capped from ${verified.length})` : ""}`);
+        } else {
           failed++;
-          log(`[ALERTS] Error sending digest to ${email}: ${err.message}`);
+          log(`[ALERTS] Failed digest to ${email}`);
+        }
+      } catch (err: any) {
+        failed++;
+        log(`[ALERTS] Error sending digest to ${email}: ${err.message}`);
+      }
+    }
+
+    if (emailedListingIds.length > 0) {
+      recentEmailedIds.set(userId, { listing_ids: emailedListingIds, timestamp: Date.now() });
+      const MAX_HISTORY = 100;
+      if (recentEmailedIds.size > MAX_HISTORY) {
+        const oldest = [...recentEmailedIds.entries()].sort((a, b) => a[1].timestamp - b[1].timestamp);
+        for (let i = 0; i < oldest.length - MAX_HISTORY; i++) {
+          recentEmailedIds.delete(oldest[i][0]);
         }
       }
+    }
 
-      try {
-        const pushListings: PushMatchListing[] = verified.map((l) => ({
-          listing_id: l.listing_id,
-          city: l.city,
-        }));
-        await sendMatchPushNotifications(userId, pushListings, supabase);
-      } catch (err: any) {
-        log(`[ALERTS] Push error for user ${userId.substring(0, 8)}...: ${err.message}`);
-      }
-    } else {
-      log(`[ALERTS] User ${userId.substring(0, 8)}...: 0 eligible listings — skipping alerts`);
+    try {
+      const pushListings: PushMatchListing[] = verified.map((l) => ({
+        listing_id: l.listing_id,
+        city: l.city,
+      }));
+      await sendMatchPushNotifications(userId, pushListings, supabase);
+    } catch (err: any) {
+      log(`[ALERTS] Push error for user ${userId.substring(0, 8)}...: ${err.message}`);
     }
   }
 
@@ -213,42 +273,52 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
     deduped.push(l);
   }
 
-  const validListingIds = deduped.map(l => l.listing_id);
-  if (validListingIds.length > 0) {
-    const { data: existingListings } = await supabase
-      .from("listings")
-      .select("id")
-      .in("id", validListingIds)
-      .not("title", "is", null);
+  const appVisibleIds = await getAppVisibleListingIds(userId, supabase);
+  const verified = deduped.filter(l => appVisibleIds.has(l.listing_id));
 
-    const existingIds = new Set((existingListings ?? []).map((l: any) => l.id));
-    const verified = deduped.filter(l => existingIds.has(l.listing_id));
+  if (verified.length < deduped.length) {
+    log(`[ALERTS] Backfill: ${deduped.length - verified.length} listings dropped (not visible in app)`);
+  }
 
-    if (verified.length === 0) {
-      log(`[ALERTS] Backfill: 0 eligible listings after verification — skipping alerts`);
-      return;
-    }
+  if (verified.length === 0) {
+    log(`[ALERTS] Backfill: 0 eligible listings after app-visibility check — skipping alerts`);
+    return;
+  }
 
-    if (emailEnabled) {
-      const capped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
-      try {
-        await sendBatchMatchAlert(userBuf.email, capped);
-        log(`[ALERTS] Sent backfill digest to ${userBuf.email} with ${capped.length} listings (from ${userBuf.listings.length} raw)`);
-      } catch (err: any) {
-        log(`[ALERTS] Error sending backfill digest: ${err.message}`);
-      }
-    }
+  const emailedListingIds: string[] = [];
 
+  if (emailEnabled) {
+    const capped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
     try {
-      const pushListings: PushMatchListing[] = verified.map((l) => ({
-        listing_id: l.listing_id,
-        city: l.city,
-      }));
-      await sendMatchPushNotifications(userId, pushListings, supabase);
+      const success = await sendBatchMatchAlert(userBuf.email, capped);
+      if (success) {
+        emailedListingIds.push(...capped.map(l => l.listing_id));
+      }
+      log(`[ALERTS] Sent backfill digest to ${userBuf.email} with ${capped.length} listings (from ${userBuf.listings.length} raw)`);
     } catch (err: any) {
-      log(`[ALERTS] Backfill push error for user ${userId.substring(0, 8)}...: ${err.message}`);
+      log(`[ALERTS] Error sending backfill digest: ${err.message}`);
     }
   }
+
+  if (emailedListingIds.length > 0) {
+    const prev = recentEmailedIds.get(userId);
+    const combined = prev ? [...prev.listing_ids, ...emailedListingIds] : emailedListingIds;
+    recentEmailedIds.set(userId, { listing_ids: combined, timestamp: Date.now() });
+  }
+
+  try {
+    const pushListings: PushMatchListing[] = verified.map((l) => ({
+      listing_id: l.listing_id,
+      city: l.city,
+    }));
+    await sendMatchPushNotifications(userId, pushListings, supabase);
+  } catch (err: any) {
+    log(`[ALERTS] Backfill push error for user ${userId.substring(0, 8)}...: ${err.message}`);
+  }
+}
+
+export function getRecentEmailedIds(userId: string): { listing_ids: string[]; timestamp: number } | null {
+  return recentEmailedIds.get(userId) || null;
 }
 
 export function getBufferSize(): { users: number; listings: number } {
