@@ -861,6 +861,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
   }, [accessToken]);
 
   const matches = apiMatchesQuery.data?.matches ?? [];
+  const totalCount = apiMatchesQuery.data?.totalCount ?? 0;
 
   const refreshStatuses = useCallback(() => {
     setRefreshKey((k) => k + 1);
@@ -905,9 +906,9 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
     <div className="flex flex-col gap-5 px-6 pt-6 pb-6">
       <div className="flex items-center justify-between">
         <h1 className="text-page-title">Matches</h1>
-        {matches.length > 0 && (
+        {totalCount > 0 && (
           <span className="text-[13px] font-medium text-[var(--yo-dark)] bg-[var(--yo-chip-bg)] px-2.5 py-1 rounded-full" data-testid="badge-match-count">
-            {matches.length > 999 ? "999+" : matches.length} {matches.length === 1 ? "woning" : "woningen"}
+            {totalCount > 999 ? "999+" : totalCount} {totalCount === 1 ? "woning" : "woningen"}
           </span>
         )}
       </div>
@@ -1283,7 +1284,7 @@ function AccountSettingsRow({ label, subtext, onClick, trailing }: { label: stri
   );
 }
 
-function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initialSubTab }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null }; setActiveTab: (tab: TabKey) => void; initialSubTab?: ProfileSubTab }) {
+function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initialSubTab, matchCount }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null }; setActiveTab: (tab: TabKey) => void; initialSubTab?: ProfileSubTab; matchCount: number }) {
   const [signingOut, setSigningOut] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [profileSubTab, setProfileSubTab] = useState<ProfileSubTab>(initialSubTab || "over");
@@ -1453,7 +1454,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                     <Heart className="w-[18px] h-[18px] text-[var(--yo-dark)]" />
                   </div>
                   <div>
-                    <p className="text-[20px] font-bold text-[var(--yo-dark)] leading-none">{stats.matches_received > 999 ? "999+" : stats.matches_received}</p>
+                    <p className="text-[20px] font-bold text-[var(--yo-dark)] leading-none">{matchCount > 999 ? "999+" : matchCount}</p>
                     <p className="text-[12px] text-[var(--yo-dark)] mt-1 leading-tight">Ontvangen matches</p>
                   </div>
                 </div>
@@ -1826,6 +1827,7 @@ export default function DashboardPage() {
             subscription={{ status: sub.status, isTrial: sub.isTrial, isActive: sub.isActive, isExpired: sub.isExpired, plan: sub.plan, trialEndsAt: sub.trialEndsAt }}
             setActiveTab={setActiveTab}
             initialSubTab={initialSubTab}
+            matchCount={matchCount}
           />
         )}
       </main>
