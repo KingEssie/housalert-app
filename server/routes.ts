@@ -9,7 +9,7 @@ import {
   OverlapError,
 } from "./ingesters";
 import { getNextRun } from "./scheduler";
-import { getListingFreshness, getMatchTimestamps, getNewestListingIds } from "./freshness";
+import { getListingFreshness, getMatchTimestamps, getNewestListingIds, batchedIn } from "./freshness";
 import { supabase } from "./ingesters/matching";
 import { backfillMatchesForSearchProfile, explainMatch, explainAllProfilesForListing } from "./matching/engine";
 import { flushUserAlerts, getRecentEmailedIds } from "./notifications/buffer";
@@ -520,10 +520,14 @@ export async function registerRoutes(
         .single();
       const premiumStartedAt = subRow?.created_at || null;
 
-      const { data: matchRows, error: mErr } = await supabase
+      let matchQuery = supabase
         .from("matches")
         .select("id, listing_id, search_profile_id, created_at")
         .eq("user_id", user.id);
+      if (premiumStartedAt) {
+        matchQuery = matchQuery.gte("created_at", premiumStartedAt);
+      }
+      const { data: matchRows, error: mErr } = await matchQuery;
 
       if (mErr) return res.status(500).json({ error: mErr.message });
       if (!matchRows || matchRows.length === 0) return res.json({ matches: [], totalCount: 0 });
@@ -559,31 +563,29 @@ export async function registerRoutes(
 
       const profileIds = [...new Set(uniqueMatches.map((m: any) => m.search_profile_id).filter(Boolean))];
 
-      const [listingsRes, freshnessMap, profilesRes] = await Promise.all([
-        supabase
-          .from("listings")
-          .select("id, title, price, size_m2, bedrooms, city, source, url, image_url")
-          .in("id", allListingIds)
-          .not("title", "is", null),
+      const [listingsData, freshnessMap, profilesData] = await Promise.all([
+        batchedIn<any>(
+          "listings", "id", allListingIds,
+          "id, title, price, size_m2, bedrooms, city, source, url, image_url",
+          (q: any) => q.not("title", "is", null)
+        ),
         getListingFreshness(allListingIds),
         profileIds.length > 0
-          ? supabase
-              .from("search_profiles")
-              .select("id, city, price_min, price_max, bedrooms_min, size_min")
-              .in("id", profileIds)
-          : Promise.resolve({ data: [], error: null }),
+          ? batchedIn<any>(
+              "search_profiles", "id", profileIds,
+              "id, city, price_min, price_max, bedrooms_min, size_min"
+            )
+          : Promise.resolve([]),
       ]);
 
-      if (listingsRes.error) return res.status(500).json({ error: listingsRes.error.message });
-
       const listingMap: Record<string, any> = {};
-      for (const l of listingsRes.data ?? []) listingMap[l.id] = l;
+      for (const l of listingsData) listingMap[l.id] = l;
 
       const validListingIds = new Set(Object.keys(listingMap));
       const validMatches = uniqueMatches.filter((m: any) => validListingIds.has(m.listing_id));
 
       const profileMap: Record<string, any> = {};
-      for (const p of profilesRes.data ?? []) profileMap[p.id] = p;
+      for (const p of profilesData) profileMap[p.id] = p;
 
       const validResults = validMatches.map((m: any) => {
         const l = listingMap[m.listing_id];
@@ -1718,10 +1720,14 @@ export async function registerRoutes(
       .single();
     const premiumStartedAt = subRow?.created_at || null;
 
-    const { data: matchRows } = await supabase
+    let dashMatchQuery = supabase
       .from("matches")
       .select("id, listing_id, created_at")
       .eq("user_id", userId);
+    if (premiumStartedAt) {
+      dashMatchQuery = dashMatchQuery.gte("created_at", premiumStartedAt);
+    }
+    const { data: matchRows } = await dashMatchQuery;
 
     if (!matchRows || matchRows.length === 0) {
       return { validIds: new Set(), premiumStartedAt };
@@ -1758,13 +1764,12 @@ export async function registerRoutes(
       return { validIds: new Set(), premiumStartedAt };
     }
 
-    const { data: existingListings } = await supabase
-      .from("listings")
-      .select("id")
-      .in("id", listingIds)
-      .not("title", "is", null);
+    const existingListings = await batchedIn<any>(
+      "listings", "id", listingIds, "id",
+      (q: any) => q.not("title", "is", null)
+    );
 
-    const validIds = new Set((existingListings ?? []).map((l: any) => l.id));
+    const validIds = new Set(existingListings.map((l: any) => l.id));
     return { validIds, premiumStartedAt };
   }
 
@@ -2096,10 +2101,14 @@ export async function registerRoutes(
         .single();
       const premiumStartedAt = subRow?.created_at || null;
 
-      const { data: matchRows } = await supabase
+      let debugMatchQuery = supabase
         .from("matches")
         .select("id, listing_id, search_profile_id, created_at")
         .eq("user_id", targetUserId);
+      if (premiumStartedAt) {
+        debugMatchQuery = debugMatchQuery.gte("created_at", premiumStartedAt);
+      }
+      const { data: matchRows } = await debugMatchQuery;
 
       if (!matchRows || matchRows.length === 0) {
         return res.json({
@@ -2154,11 +2163,11 @@ export async function registerRoutes(
 
       let fullListingMap: Record<string, any> = {};
       if (allIdsToFetch.length > 0) {
-        const { data: allListings } = await supabase
-          .from("listings")
-          .select("id, title, city, price, source, url")
-          .in("id", allIdsToFetch);
-        for (const l of allListings ?? []) fullListingMap[l.id] = l;
+        const allListings = await batchedIn<any>(
+          "listings", "id", allIdsToFetch,
+          "id, title, city, price, source, url"
+        );
+        for (const l of allListings) fullListingMap[l.id] = l;
       }
 
       const appVisibleIds = new Set(

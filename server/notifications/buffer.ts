@@ -3,7 +3,7 @@ import { sendBatchMatchAlert } from "../email";
 import { areAlertsEnabled } from "./index";
 import { getSubscriptionStatus } from "../subscriptions";
 import { sendMatchPushNotifications, type PushMatchListing } from "./push";
-import { getMatchTimestamps } from "../freshness";
+import { getMatchTimestamps, batchedIn } from "../freshness";
 
 const MAX_LISTINGS_PER_EMAIL = 20;
 
@@ -59,10 +59,14 @@ async function getAppVisibleListingIds(userId: string, supabase: any): Promise<S
     .single();
   const premiumStartedAt = subRow?.created_at || null;
 
-  const { data: matchRows } = await supabase
+  let bufferMatchQuery = supabase
     .from("matches")
     .select("id, listing_id, created_at")
     .eq("user_id", userId);
+  if (premiumStartedAt) {
+    bufferMatchQuery = bufferMatchQuery.gte("created_at", premiumStartedAt);
+  }
+  const { data: matchRows } = await bufferMatchQuery;
 
   if (!matchRows || matchRows.length === 0) return new Set();
 
@@ -95,13 +99,12 @@ async function getAppVisibleListingIds(userId: string, supabase: any): Promise<S
   const listingIds = uniqueMatches.map((m: any) => m.listing_id);
   if (listingIds.length === 0) return new Set();
 
-  const { data: existingListings } = await supabase
-    .from("listings")
-    .select("id")
-    .in("id", listingIds)
-    .not("title", "is", null);
+  const existingListings = await batchedIn<any>(
+    "listings", "id", listingIds, "id",
+    (q: any) => q.not("title", "is", null)
+  );
 
-  return new Set((existingListings ?? []).map((l: any) => l.id));
+  return new Set(existingListings.map((l: any) => l.id));
 }
 
 export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: number; failed: number }> {

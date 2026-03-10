@@ -103,6 +103,31 @@ export async function trackListingSeen(
   await upsertViaFallback(listingId, source, sourceId, now);
 }
 
+const SUPABASE_IN_BATCH_SIZE = 200;
+
+export async function batchedIn<T>(
+  table: string,
+  column: string,
+  ids: string[],
+  selectCols: string,
+  extraFilters?: (q: any) => any
+): Promise<T[]> {
+  if (ids.length === 0) return [];
+  const results: T[] = [];
+  for (let i = 0; i < ids.length; i += SUPABASE_IN_BATCH_SIZE) {
+    const batch = ids.slice(i, i + SUPABASE_IN_BATCH_SIZE);
+    let q = supabase.from(table).select(selectCols).in(column, batch);
+    if (extraFilters) q = extraFilters(q);
+    const { data, error } = await q;
+    if (error || !data) {
+      console.warn(`[batchedIn] ${table}.${column} batch ${i / SUPABASE_IN_BATCH_SIZE + 1} failed:`, error?.message || "no data");
+      continue;
+    }
+    results.push(...(data as T[]));
+  }
+  return results;
+}
+
 export async function getListingFreshness(
   listingIds: string[]
 ): Promise<
@@ -111,12 +136,12 @@ export async function getListingFreshness(
   if (listingIds.length === 0) return {};
   if (freshnessAvailable === false) return {};
 
-  const { data: rows, error } = await supabase
-    .from("listing_freshness")
-    .select("listing_id, first_seen_at, last_seen_at")
-    .in("listing_id", listingIds);
-
-  if (error || !rows) return {};
+  const rows = await batchedIn<any>(
+    "listing_freshness",
+    "listing_id",
+    listingIds,
+    "listing_id, first_seen_at, last_seen_at"
+  );
 
   const result: Record<string, { first_seen_at: string; last_seen_at: string }> = {};
   for (const row of rows) {
@@ -181,12 +206,12 @@ export async function getMatchTimestamps(
   if (matchIds.length === 0) return {};
   if (matchTableAvailable === false) return {};
 
-  const { data: rows, error } = await supabase
-    .from("match_timestamps")
-    .select("match_id, matched_at")
-    .in("match_id", matchIds);
-
-  if (error || !rows) return {};
+  const rows = await batchedIn<any>(
+    "match_timestamps",
+    "match_id",
+    matchIds,
+    "match_id, matched_at"
+  );
 
   const result: Record<string, string> = {};
   for (const row of rows) {
