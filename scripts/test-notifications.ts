@@ -195,7 +195,7 @@ async function main() {
     try {
       const resend = new Resend(resendCreds.apiKey);
       const { data: emailData, error: emailErr } = await resend.emails.send({
-        from: resendCreds.fromEmail || "Stekkies <onboarding@resend.dev>",
+        from: resendCreds.fromEmail || "HousAlert <onboarding@resend.dev>",
         to: TEST_EMAIL,
         subject: `[E2E TEST] Nieuwe match: ${listing.title}`,
         text: `E2E test alert\n\n${formatMessage(listing)}`,

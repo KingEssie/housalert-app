@@ -105,9 +105,9 @@ function getCityGradient(city: string): string {
   return CITY_GRADIENTS.default;
 }
 
-const MATCH_VIEWED_KEY = "stekkies_match_viewed";
-const MATCH_SAVED_KEY = "stekkies_match_saved";
-const MATCH_APPLIED_KEY = "stekkies_match_applied";
+const MATCH_VIEWED_KEY = "housalert_match_viewed";
+const MATCH_SAVED_KEY = "housalert_match_saved";
+const MATCH_APPLIED_KEY = "housalert_match_applied";
 
 function safeGetSet(key: string): Set<string> {
   if (typeof window === "undefined") return new Set();

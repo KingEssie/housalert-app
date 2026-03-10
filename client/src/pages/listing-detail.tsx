@@ -336,8 +336,8 @@ export default function ListingDetailPage() {
         open={applyOpen}
         onClose={() => setApplyOpen(false)}
         onMarkedApplied={() => {
-          const MATCH_APPLIED_KEY = "stekkies_match_applied";
-          const MATCH_VIEWED_KEY = "stekkies_match_viewed";
+          const MATCH_APPLIED_KEY = "housalert_match_applied";
+          const MATCH_VIEWED_KEY = "housalert_match_viewed";
           try {
             const appliedStored = localStorage.getItem(MATCH_APPLIED_KEY);
             const appliedSet = new Set<string>(appliedStored ? JSON.parse(appliedStored) : []);

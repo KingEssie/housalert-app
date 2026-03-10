@@ -309,7 +309,7 @@ async function cleanup() {
 
 function printReport() {
   console.log("\n" + "═".repeat(60));
-  console.log("  STEKKIES — Full Test Report");
+  console.log("  HOUSALERT — Full Test Report");
   console.log("═".repeat(60) + "\n");
 
   let maxName = 0;

@@ -1,0 +1,66 @@
+We are now doing Step 5 of HousAlert launch preparation: email branding and notification copy.
+
+Important:
+- Do NOT redesign the whole app.
+- Do NOT change onboarding, matching logic, or subscriptions in this task.
+- Focus only on outgoing email templates, sender branding, and notification-related user-facing copy.
+
+Goal:
+All user-facing alerts and emails should feel like a real HousAlert product, not a generic system message.
+
+Tasks:
+
+1. Audit all email-related code and user-facing notification text.
+Include:
+- match alert emails
+- email preview text
+- subject lines
+- any alert-related text shown in the app
+- any old brand names or generic sender references
+
+2. Update match alert emails to HousAlert branding:
+- sender display name should be: HousAlert
+- email must visually feel branded and professional
+- use a reusable layout/template
+- include:
+  - listing title
+  - city
+  - price
+  - bedrooms
+  - size
+  - CTA button to open the match/listing
+
+3. Prioritize German copy because Germany is the main launch market.
+Write the match email content in German.
+
+Use direction like:
+Subject:
+- Neue Wohnung gefunden in Berlin
+- Neue passende Wohnung für deine Suche
+Body:
+- Wir haben eine neue Wohnung gefunden, die zu deinem Suchprofil passt.
+
+4. Replace weak/generic alert text in the app where needed.
+This includes:
+- match alert labels
+- preview snippets
+- any obvious generic text tied to alerts
+
+5. Remove any old brand references if they still exist.
+The product name must be HousAlert everywhere in these email/alert flows.
+
+6. Audit sender configuration in code:
+- what sender email is currently used
+- what sender display name is used
+- update what can be updated in code
+- clearly report what still must be configured outside code (for example in Resend/domain settings)
+
+7. Create one strong reusable match alert email template that can be used consistently going forward.
+
+Output report:
+- files changed
+- templates updated
+- final sender name used in code
+- example subject line
+- example email body
+- any remaining external configuration needed outside the codebase
