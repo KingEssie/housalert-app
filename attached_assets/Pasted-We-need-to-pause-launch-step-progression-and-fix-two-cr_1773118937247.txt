@@ -1,0 +1,63 @@
+We need to pause launch step progression and fix two critical consistency issues before moving on.
+
+Important:
+- Do NOT start language support yet.
+- Do NOT redesign the UI.
+- Focus only on:
+  1) email delivery verification
+  2) match stats consistency
+
+ISSUE 1 — Emails are no longer arriving
+Observed behavior:
+- HousAlert used to send emails through Resend
+- currently no emails are arriving
+- we need to verify if sending still works end-to-end
+
+Tasks:
+1. Audit the full email sending flow:
+   - sendMatchAlerts()
+   - sendEmailMatchAlert()
+   - server/email.ts
+   - any Resend config / env usage
+2. Identify:
+   - whether email sending is still being triggered
+   - whether ALERTS_ENABLED is blocking sending
+   - whether missing env vars or sender config are blocking sending
+   - whether template refactor broke the send call
+3. Add explicit server-side logging for:
+   - alert attempt
+   - email send success
+   - email send failure
+4. Provide one manual verification route or script to test sending one sample email safely.
+5. Report clearly:
+   - is Resend still correctly wired?
+   - what is the current sender/from address?
+   - what exactly is preventing delivery, if anything
+
+ISSUE 2 — Profile stats show 71 received matches, but Matches page shows 0
+Observed behavior:
+- profile stats / KPI says received matches = 71
+- matches page is empty
+- these must be based on the same truth
+
+Tasks:
+1. Audit all backend logic used for:
+   - /api/profile-stats
+   - /api/matches
+2. Find the exact reason why profile stats can count matches that are not visible in the matches page.
+3. Enforce one truth source:
+   - received_matches in profile stats must equal the count of visible, valid, deduplicated matches the user can actually access
+4. Make sure both endpoints use the same rules for:
+   - active subscription filtering
+   - listing existence
+   - deduplication by listing_id
+   - user ownership
+   - post-subscription start date
+5. Report the exact root cause and exact fix.
+
+Output report:
+- files changed
+- email delivery status
+- how to manually test email sending now
+- root cause of stats vs matches mismatch
+- confirmation that profile stats now match visible matches exactly

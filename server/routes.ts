@@ -1660,22 +1660,36 @@ export async function registerRoutes(
         .single();
       const subStartedAt = subRow?.created_at || null;
 
-      let matchQuery = supabase.from("matches").select("listing_id").eq("user_id", user.id);
+      let matchQuery = supabase.from("matches").select("listing_id, created_at").eq("user_id", user.id);
       if (subStartedAt) matchQuery = matchQuery.gte("created_at", subStartedAt);
       const matchResult = await matchQuery;
-      const uniqueMatchListings = new Set((matchResult.data ?? []).map((r: any) => r.listing_id));
+      const matchListingIds = [...new Set((matchResult.data ?? []).map((r: any) => r.listing_id))];
+
+      let validListingIds = new Set<string>();
+      if (matchListingIds.length > 0) {
+        const { data: existingListings } = await supabase
+          .from("listings")
+          .select("id")
+          .in("id", matchListingIds)
+          .not("title", "is", null);
+        validListingIds = new Set((existingListings ?? []).map((l: any) => l.id));
+      }
 
       let reactionCount = 0;
       try {
         let reactionQuery = supabase.from("matches").select("listing_id").eq("user_id", user.id).eq("applied", true);
         if (subStartedAt) reactionQuery = reactionQuery.gte("created_at", subStartedAt);
         const reactionResult = await reactionQuery;
-        const uniqueReactionListings = new Set((reactionResult.data ?? []).map((r: any) => r.listing_id));
+        const uniqueReactionListings = new Set(
+          (reactionResult.data ?? [])
+            .map((r: any) => r.listing_id)
+            .filter((id: string) => validListingIds.has(id))
+        );
         reactionCount = uniqueReactionListings.size;
       } catch {}
 
       return res.json({
-        matches_received: uniqueMatchListings.size,
+        matches_received: validListingIds.size,
         reactions_sent: reactionCount,
       });
     } catch (err: any) {
@@ -1900,6 +1914,38 @@ export async function registerRoutes(
     (req as any).adminUser = user;
     next();
   }
+
+  app.post("/api/admin/test-email", requireAdmin, async (req, res) => {
+    try {
+      const adminUser = (req as any).adminUser;
+      const targetEmail = req.body?.email || adminUser.email;
+
+      log(`[EMAIL TEST] Admin ${adminUser.email} triggering test email to ${targetEmail}`);
+
+      const testListing = {
+        title: "Testinserat: 2-Zimmer-Wohnung in Berlin-Mitte",
+        city: "Berlin",
+        price: 850,
+        bedrooms: 2,
+        size_m2: 55,
+        url: "https://www.example.com/listing/test-123",
+      };
+
+      const { sendMatchAlert } = await import("./email");
+      const success = await sendMatchAlert(targetEmail, testListing);
+
+      if (success) {
+        log(`[EMAIL TEST] Test email sent successfully to ${targetEmail}`);
+        return res.json({ success: true, sentTo: targetEmail, message: "Test email sent successfully" });
+      } else {
+        log(`[EMAIL TEST] Test email FAILED to ${targetEmail}`);
+        return res.status(500).json({ success: false, sentTo: targetEmail, message: "Email send returned false — check Resend config" });
+      }
+    } catch (err: any) {
+      log(`[EMAIL TEST] Error: ${err.message}`);
+      return res.status(500).json({ success: false, error: err.message });
+    }
+  });
 
   app.get("/api/admin/ingestion/summary", requireAdmin, async (_req, res) => {
     try {

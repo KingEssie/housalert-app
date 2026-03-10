@@ -33,9 +33,10 @@ export async function sendMatchAlerts(
   supabase: any
 ): Promise<void> {
   if (!areAlertsEnabled()) {
-    log("[ALERTS DISABLED] Skipping notification send");
+    log(`[ALERTS DISABLED] Skipping notification for user ${userId.substring(0, 8)}... (ALERTS_ENABLED=${process.env.ALERTS_ENABLED})`);
     return;
   }
+  log(`[ALERTS] Attempting notification for user ${userId.substring(0, 8)}... listing="${listing.title}"`);
 
   const { data: settings, error: settingsErr } = await supabase
     .from("user_notification_settings")
