@@ -23,11 +23,11 @@ const cleanup: Array<() => Promise<void>> = [];
 
 function formatMessage(listing: any): string {
   const parts = [
-    `Nieuwe match gevonden: ${listing.title}`,
+    `Neues Match gefunden: ${listing.title}`,
     listing.city,
-    listing.price > 0 ? `€${listing.price}/mnd` : null,
+    listing.price > 0 ? `€${listing.price}/Monat` : null,
     listing.size_m2 > 0 ? `${listing.size_m2}m²` : null,
-    listing.bedrooms > 0 ? `${listing.bedrooms} slk.` : null,
+    listing.bedrooms > 0 ? `${listing.bedrooms} Zi.` : null,
   ].filter(Boolean).join(" — ");
   const link = listing.url || "";
   return link ? `${parts}\nLink: ${link}` : parts;
@@ -197,7 +197,7 @@ async function main() {
       const { data: emailData, error: emailErr } = await resend.emails.send({
         from: resendCreds.fromEmail || "HousAlert <onboarding@resend.dev>",
         to: TEST_EMAIL,
-        subject: `[E2E TEST] Nieuwe match: ${listing.title}`,
+        subject: `[E2E TEST] Neues Match: ${listing.title}`,
         text: `E2E test alert\n\n${formatMessage(listing)}`,
       });
       if (emailErr) {

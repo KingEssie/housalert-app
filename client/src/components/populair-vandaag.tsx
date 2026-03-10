@@ -85,7 +85,7 @@ function PopularCard({ listing }: { listing: PopularListing }) {
         {listing.price > 0 && (
           <span className="text-[15px] font-bold text-[var(--yo-dark)]">
             {"\u20AC"}{listing.price}
-            <span className="text-[11px] font-normal text-[var(--yo-dark)]">/mnd</span>
+            <span className="text-[11px] font-normal text-[var(--yo-dark)]">/Monat</span>
           </span>
         )}
 
