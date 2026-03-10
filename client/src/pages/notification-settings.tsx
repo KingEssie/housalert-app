@@ -8,7 +8,7 @@ import { useTranslation } from "@/i18n";
 import { Mail, Bell, Loader2, AlertTriangle } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { ListSection, ListRow, ListDivider } from "@/components/list-section";
-import { isPushSupported, getPushPermissionState, subscribeToPush, unsubscribeFromPush } from "@/lib/push";
+import { isPushSupported, getPushPermissionState, getPushUnsupportedReason, subscribeToPush, unsubscribeFromPush } from "@/lib/push";
 
 interface NotificationSettings {
   user_id: string;
@@ -31,6 +31,25 @@ export default function NotificationSettingsPage() {
 
   const pushSupported = isPushSupported();
   const pushPermission = getPushPermissionState();
+  const pushReason = getPushUnsupportedReason();
+
+  function getPushSubtitle(): string {
+    if (pushSupported) {
+      return pushPermission === "denied"
+        ? t("notifications.pushBrowserDenied")
+        : t("notifications.pushSubtitle");
+    }
+    switch (pushReason) {
+      case "ios-not-standalone":
+        return t("notifications.pushIosHomescreen");
+      case "iframe":
+        return t("notifications.pushIframe");
+      case "insecure-context":
+        return t("notifications.pushInsecure");
+      default:
+        return t("notifications.pushUnsupported");
+    }
+  }
 
   useEffect(() => {
     if (!session?.access_token) return;
@@ -185,13 +204,7 @@ export default function NotificationSettingsPage() {
               <ListDivider />
               <ListRow
                 title={t("notifications.pushTitle")}
-                subtitle={
-                  !pushSupported
-                    ? t("notifications.pushUnsupported")
-                    : pushPermission === "denied"
-                      ? t("notifications.pushBrowserDenied")
-                      : t("notifications.pushSubtitle")
-                }
+                subtitle={getPushSubtitle()}
                 icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--yo-chip-bg)" }}><Bell className="w-[18px] h-[18px]" style={{ color: "var(--yo-dark)" }} /></div>}
                 trailing={
                   pushLoading ? (

@@ -1,7 +1,44 @@
 const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY;
 
+export type PushUnsupportedReason =
+  | "no-service-worker"
+  | "no-push-manager"
+  | "no-notification-api"
+  | "insecure-context"
+  | "ios-not-standalone"
+  | "iframe"
+  | null;
+
+function isIOS(): boolean {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+
+function isStandalone(): boolean {
+  return (window.matchMedia("(display-mode: standalone)").matches) ||
+    ("standalone" in navigator && (navigator as any).standalone === true);
+}
+
+function isInIframe(): boolean {
+  try {
+    return window.self !== window.top;
+  } catch {
+    return true;
+  }
+}
+
+export function getPushUnsupportedReason(): PushUnsupportedReason {
+  if (isInIframe()) return "iframe";
+  if (!window.isSecureContext) return "insecure-context";
+  if (isIOS() && !isStandalone()) return "ios-not-standalone";
+  if (!("serviceWorker" in navigator)) return "no-service-worker";
+  if (!("Notification" in window)) return "no-notification-api";
+  if (!("PushManager" in window)) return "no-push-manager";
+  return null;
+}
+
 export function isPushSupported(): boolean {
-  return "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+  return getPushUnsupportedReason() === null;
 }
 
 export function getPushPermissionState(): NotificationPermission | "unsupported" {

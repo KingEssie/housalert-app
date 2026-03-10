@@ -248,7 +248,8 @@ A mobile-first German-language rental alert application for the German market. U
 - **System**: Web Push API with VAPID keys via `web-push` npm package. No external service (Firebase/OneSignal) needed for web. Future mobile apps can add FCM/APNs tokens to the same `push_subscriptions` table.
 - **Env vars**: `VITE_VAPID_PUBLIC_KEY` (shared), `VAPID_PRIVATE_KEY` (secret), `VAPID_SUBJECT` (shared, mailto: format)
 - **Service worker**: `client/public/sw.js` — handles `push` event (shows notification) and `notificationclick` (opens app/listing URL)
-- **Client utility**: `client/src/lib/push.ts` — `subscribeToPush(token)`, `unsubscribeFromPush(token)`, `isPushSupported()`, `getPushPermissionState()`
+- **Client utility**: `client/src/lib/push.ts` — `subscribeToPush(token)`, `unsubscribeFromPush(token)`, `isPushSupported()`, `getPushPermissionState()`, `getPushUnsupportedReason()` (returns granular reason: `iframe`, `insecure-context`, `ios-not-standalone`, `no-service-worker`, `no-notification-api`, `no-push-manager`)
+- **PWA manifest**: `client/public/manifest.json` — required for iOS Home Screen install. `client/index.html` includes Apple meta tags (`apple-mobile-web-app-capable`, `apple-touch-icon`).
 - **Server module**: `server/notifications/push.ts` — `initWebPush()`, `sendPushToUser()`, `sendMatchPushNotifications()` (with dedup via `push_sent_log` table)
 - **Supabase tables** (migration 018):
   - `push_subscriptions`: id, user_id, endpoint (unique), p256dh, auth, created_at
