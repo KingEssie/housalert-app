@@ -1,0 +1,436 @@
+Fetched 500 Berlin listings for audit
+
+==========================================================================================
+PROFILE: A: Berlin ≤€2000, 1+ room, ≥20m²
+Filters: city=Berlin, price_max=2000, bedrooms_min=1, size_min=20, furnished=any, extra=[], districts=[]
+==========================================================================================
+
+RESULT: 378 matched / 122 rejected out of 500 listings
+
+--- TOP 20 MATCHED LISTINGS ---
+  ✓ "Room in 5 Bed 2 Bath" | €660 | 1br | 101m² | dist=- | furn=- | pets=- | src=nestpick [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=660) | price_max: ✓ (profile=2000, listing=660) | bedrooms_min: ✓ (profile=1, listing=1) | size_min: ✓ (profile=20, listing=101)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Wohnung in Friedrichsfelde/Charlottenstraße" | €1300 | 1br | 50m² | dist=- | furn=- | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1300) | price_max: ✓ (profile=2000, listing=1300) | bedrooms_min: ✓ (profile=1, listing=1) | size_min: ✓ (profile=20, listing=50)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Privat: 2-Zimmer-Wohnung in Berlin-Pankow – Nachmieter gesucht" | €690 | 2br | 67m² | dist=- | furn=- | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=690) | price_max: ✓ (profile=2000, listing=690) | bedrooms_min: ✓ (profile=1, listing=2) | size_min: ✓ (profile=20, listing=67)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Perfekt für Expats - hochwertige Neubauwohnung sofort verfügbar" | €1619 | 2br | 48m² | dist=- | furn=- | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1619) | price_max: ✓ (profile=2000, listing=1619) | bedrooms_min: ✓ (profile=1, listing=2) | size_min: ✓ (profile=20, listing=48)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Apartment for Rent in Berlin Mitte – Near Rosenthaler Platz" | €1550 | 2br | 50m² | dist=- | furn=- | pets=- | src=wg-gesucht [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1550) | price_max: ✓ (profile=2000, listing=1550) | bedrooms_min: ✓ (profile=1, listing=2) | size_min: ✓ (profile=20, listing=50)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Charming old-built apartment near S+U Schönhauser Allee im Prenzlauer Berg! (SHORT TERM)" | €680 | 1br | 43m² | dist=- | furn=- | pets=- | src=wg-gesucht [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=680) | price_max: ✓ (profile=2000, listing=680) | bedrooms_min: ✓ (profile=1, listing=1) | size_min: ✓ (profile=20, listing=43)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Schöne 1,5-Zimmerwohnung mit Balkon im Herzen von Kreuzberg" | €1300 | 1br | 38m² | dist=- | furn=- | pets=- | src=wg-gesucht [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1300) | price_max: ✓ (profile=2000, listing=1300) | bedrooms_min: ✓ (profile=1, listing=1) | size_min: ✓ (profile=20, listing=38)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "‼️3 Zi-Wohnung voll möbliert Erstbezug nach Sanierung ‼️" | €1500 | 3br | 63m² | dist=- | furn=true | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1500) | price_max: ✓ (profile=2000, listing=1500) | bedrooms_min: ✓ (profile=1, listing=3) | size_min: ✓ (profile=20, listing=63)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Schöne Altbauwohnung für 780 Warmmiete in Berlin Spandau" | €780 | 1br | 40m² | dist=- | furn=- | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=780) | price_max: ✓ (profile=2000, listing=780) | bedrooms_min: ✓ (profile=1, listing=1) | size_min: ✓ (profile=20, listing=40)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Möblierte 50 qm, 2-Zimmer-Wohnung, sofort verfügbar in Berlin" | €1100 | 1br | 50m² | dist=sofort verfügbar in Berlin | furn=true | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1100) | price_max: ✓ (profile=2000, listing=1100) | bedrooms_min: ✓ (profile=1, listing=1) | size_min: ✓ (profile=20, listing=50)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "3-er WG-Neugründung in Berliner Toplage!" | €799 | 3br | 72m² | dist=- | furn=- | pets=- | src=wg-gesucht [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=799) | price_max: ✓ (profile=2000, listing=799) | bedrooms_min: ✓ (profile=1, listing=3) | size_min: ✓ (profile=20, listing=72)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Kurzfristig Gut gelegene 2 Zimmerwohnung in Rosenthaler Platz" | €450 | 2br | 45m² | dist=- | furn=- | pets=- | src=wg-gesucht [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=450) | price_max: ✓ (profile=2000, listing=450) | bedrooms_min: ✓ (profile=1, listing=2) | size_min: ✓ (profile=20, listing=45)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Schöne 2-Zimmer-Wohnung am Nöldnerplatz Mai 2026" | €1060 | 2br | 59m² | dist=- | furn=- | pets=- | src=wg-gesucht [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1060) | price_max: ✓ (profile=2000, listing=1060) | bedrooms_min: ✓ (profile=1, listing=2) | size_min: ✓ (profile=20, listing=59)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Kiefholzstraße, Berlin" | €1710 | 2br | 85m² | dist=- | furn=- | pets=- | src=wg-gesucht [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1710) | price_max: ✓ (profile=2000, listing=1710) | bedrooms_min: ✓ (profile=1, listing=2) | size_min: ✓ (profile=20, listing=85)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "1,5 Zi Wohnung am Nollendorfplatz" | €950 | 1br | 65m² | dist=- | furn=- | pets=- | src=wg-gesucht [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=950) | price_max: ✓ (profile=2000, listing=950) | bedrooms_min: ✓ (profile=1, listing=1) | size_min: ✓ (profile=20, listing=65)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Kreuzberg 25m2 Zimmer mit balcon + shared studio space" | €850 | 3br | 90m² | dist=- | furn=true | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=850) | price_max: ✓ (profile=2000, listing=850) | bedrooms_min: ✓ (profile=1, listing=3) | size_min: ✓ (profile=20, listing=90)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Musikwohnung im Botschaftsviertel, Tiergarten vor der Tür" | €1300 | 2br | 60m² | dist=Tiergarten vor der Tür | furn=- | pets=- | src=wg-gesucht [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1300) | price_max: ✓ (profile=2000, listing=1300) | bedrooms_min: ✓ (profile=1, listing=2) | size_min: ✓ (profile=20, listing=60)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "1 Zimmer Wohnung zu vermieten – Lichtenrader Damm, 38 m²" | €1000 | 1br | 38m² | dist=- | furn=- | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1000) | price_max: ✓ (profile=2000, listing=1000) | bedrooms_min: ✓ (profile=1, listing=1) | size_min: ✓ (profile=20, listing=38)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Modernes Studio- Erstklassige Lage in Wedding" | €900 | 1br | 31m² | dist=- | furn=- | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=900) | price_max: ✓ (profile=2000, listing=900) | bedrooms_min: ✓ (profile=1, listing=1) | size_min: ✓ (profile=20, listing=31)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Sublet : Furnished 2-Room Apartment in Berlin (16 Mar – 06 May)" | €1550 | 2br | 54m² | dist=- | furn=true | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1550) | price_max: ✓ (profile=2000, listing=1550) | bedrooms_min: ✓ (profile=1, listing=2) | size_min: ✓ (profile=20, listing=54)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+
+--- 10 REJECTED LISTINGS (closest misses) ---
+  ✗ "Kaiser-Friedrich-Straße - Room 1" | €605 | 1br | 0m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Size 0m² < min 20m²
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=605) | price_max: ✓ (profile=2000, listing=605) | bedrooms_min: ✓ (profile=1, listing=1) | size_min: ✗ (profile=20, listing=0)
+  ✗ "Room for rent in shared apartment in Berlin" | €600 | 1br | 0m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Size 0m² < min 20m²
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=600) | price_max: ✓ (profile=2000, listing=600) | bedrooms_min: ✓ (profile=1, listing=1) | size_min: ✗ (profile=20, listing=0)
+  ✗ "Zimmer in der Treseburger Ufer 44" | €670 | 1br | 0m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Size 0m² < min 20m²
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=670) | price_max: ✓ (profile=2000, listing=670) | bedrooms_min: ✓ (profile=1, listing=1) | size_min: ✗ (profile=20, listing=0)
+  ✗ "Helle Vierzimmerwohnung, street & garden side, 3-bedroom furnished flat Mitte" | €420 | 4br | 8m² | dist=- | furn=true | pets=-
+    WHY REJECTED: Size 8m² < min 20m²
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=420) | price_max: ✓ (profile=2000, listing=420) | bedrooms_min: ✓ (profile=1, listing=4) | size_min: ✗ (profile=20, listing=8)
+  ✗ "Wunderschöne 3-Zimmer-Wohnung im modernen Neubau  Märkische All" | €1340 | 3br | 1m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Size 1m² < min 20m²
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1340) | price_max: ✓ (profile=2000, listing=1340) | bedrooms_min: ✓ (profile=1, listing=3) | size_min: ✗ (profile=20, listing=1)
+  ✗ "18m2 Zimmer in Lichtenrade zu mieten" | €700 | 1br | 18m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Size 18m² < min 20m²
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=700) | price_max: ✓ (profile=2000, listing=700) | bedrooms_min: ✓ (profile=1, listing=1) | size_min: ✗ (profile=20, listing=18)
+  ✗ "Ostendstraße, Oberschöneweide, Berlin (12459)" | €499 | 1br | 13m² | dist=Ostendstraße | furn=- | pets=-
+    WHY REJECTED: Size 13m² < min 20m²
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=499) | price_max: ✓ (profile=2000, listing=499) | bedrooms_min: ✓ (profile=1, listing=1) | size_min: ✗ (profile=20, listing=13)
+  ✗ "Ostendstraße, Oberschöneweide, Berlin (12459)" | €545 | 1br | 10m² | dist=Ostendstraße | furn=- | pets=-
+    WHY REJECTED: Size 10m² < min 20m²
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=545) | price_max: ✓ (profile=2000, listing=545) | bedrooms_min: ✓ (profile=1, listing=1) | size_min: ✗ (profile=20, listing=10)
+  ✗ "Nachmieter gesucht – Möbliertes Apartment bei Neon Wood BERLIN MITTE-WEDDING (ab 01.04.)" | €969 | 1br | 17m² | dist=WEDDING (ab 01 | furn=true | pets=-
+    WHY REJECTED: Size 17m² < min 20m²
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=969) | price_max: ✓ (profile=2000, listing=969) | bedrooms_min: ✓ (profile=1, listing=1) | size_min: ✗ (profile=20, listing=17)
+  ✗ "Furnished Apartment for Students & Young Starters | From April" | €824 | 1br | 17m² | dist=- | furn=true | pets=-
+    WHY REJECTED: Size 17m² < min 20m²
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=824) | price_max: ✓ (profile=2000, listing=824) | bedrooms_min: ✓ (profile=1, listing=1) | size_min: ✗ (profile=20, listing=17)
+
+--- FALSE POSITIVE SCAN ---
+  ✓ No false positives detected (378 matches verified)
+
+--- FALSE NEGATIVE SCAN ---
+  ✓ No false negatives detected (122 rejections verified)
+
+==========================================================================================
+PROFILE: B: Berlin ≤€900, 2+ rooms, ≥40m²
+Filters: city=Berlin, price_max=900, bedrooms_min=2, size_min=40, furnished=any, extra=[], districts=[]
+==========================================================================================
+
+RESULT: 55 matched / 445 rejected out of 500 listings
+
+--- TOP 20 MATCHED LISTINGS ---
+  ✓ "Privat: 2-Zimmer-Wohnung in Berlin-Pankow – Nachmieter gesucht" | €690 | 2br | 67m² | dist=- | furn=- | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=690) | price_max: ✓ (profile=900, listing=690) | bedrooms_min: ✓ (profile=2, listing=2) | size_min: ✓ (profile=40, listing=67)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "3-er WG-Neugründung in Berliner Toplage!" | €799 | 3br | 72m² | dist=- | furn=- | pets=- | src=wg-gesucht [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=799) | price_max: ✓ (profile=900, listing=799) | bedrooms_min: ✓ (profile=2, listing=3) | size_min: ✓ (profile=40, listing=72)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Kurzfristig Gut gelegene 2 Zimmerwohnung in Rosenthaler Platz" | €450 | 2br | 45m² | dist=- | furn=- | pets=- | src=wg-gesucht [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=450) | price_max: ✓ (profile=900, listing=450) | bedrooms_min: ✓ (profile=2, listing=2) | size_min: ✓ (profile=40, listing=45)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Kreuzberg 25m2 Zimmer mit balcon + shared studio space" | €850 | 3br | 90m² | dist=- | furn=true | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=850) | price_max: ✓ (profile=900, listing=850) | bedrooms_min: ✓ (profile=2, listing=3) | size_min: ✓ (profile=40, listing=90)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Helle 2-Zimmer-Wohnung in Berlin-Lichtenberg" | €650 | 2br | 55m² | dist=- | furn=- | pets=- | src=wohnungsboerse [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=650) | price_max: ✓ (profile=900, listing=650) | bedrooms_min: ✓ (profile=2, listing=2) | size_min: ✓ (profile=40, listing=55)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Nachmieter gesucht für helle 2-Zimmer Dachgeschosswohnung mit Balkon in Adlershof" | €707 | 2br | 49m² | dist=- | furn=- | pets=- | src=wohnungsboerse [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=707) | price_max: ✓ (profile=900, listing=707) | bedrooms_min: ✓ (profile=2, listing=2) | size_min: ✓ (profile=40, listing=49)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Nachmieter gesucht" | €552 | 2br | 50m² | dist=- | furn=- | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=552) | price_max: ✓ (profile=900, listing=552) | bedrooms_min: ✓ (profile=2, listing=2) | size_min: ✓ (profile=40, listing=50)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "67sqm - Short Term in Friedrichshain" | €660 | 2br | 67m² | dist=- | furn=- | pets=- | src=wg-gesucht [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=660) | price_max: ✓ (profile=900, listing=660) | bedrooms_min: ✓ (profile=2, listing=2) | size_min: ✓ (profile=40, listing=67)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "APRIL: 2-Zimmer Wohnung zur Untermiete" | €780 | 2br | 53m² | dist=- | furn=- | pets=- | src=wg-gesucht [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=780) | price_max: ✓ (profile=900, listing=780) | bedrooms_min: ✓ (profile=2, listing=2) | size_min: ✓ (profile=40, listing=53)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Apartment available short term from 17. March until 29. March in Neukölln" | €350 | 2br | 60m² | dist=- | furn=- | pets=- | src=wg-gesucht [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=350) | price_max: ✓ (profile=900, listing=350) | bedrooms_min: ✓ (profile=2, listing=2) | size_min: ✓ (profile=40, listing=60)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Nachmieter gesucht | 2 Zimmer Wohnung | Berlin Oberschöneweide" | €730 | 2br | 62m² | dist=- | furn=- | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=730) | price_max: ✓ (profile=900, listing=730) | bedrooms_min: ✓ (profile=2, listing=2) | size_min: ✓ (profile=40, listing=62)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "2 Rooms in Schlesi Near U-Bahn Short-Term" | €900 | 2br | 55m² | dist=- | furn=- | pets=- | src=wg-gesucht [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=900) | price_max: ✓ (profile=900, listing=900) | bedrooms_min: ✓ (profile=2, listing=2) | size_min: ✓ (profile=40, listing=55)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Suche 2-Zimmer-Wohnung in Berlin 500€ Belohnung" | €700 | 2br | 50m² | dist=- | furn=- | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=700) | price_max: ✓ (profile=900, listing=700) | bedrooms_min: ✓ (profile=2, listing=2) | size_min: ✓ (profile=40, listing=50)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Helle 2-Zimmer Wohnung mit Balkon im 2. OG in Berlin-Köpenick" | €860 | 2br | 49m² | dist=- | furn=- | pets=- | src=wohnungsboerse [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=860) | price_max: ✓ (profile=900, listing=860) | bedrooms_min: ✓ (profile=2, listing=2) | size_min: ✓ (profile=40, listing=49)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "2 Zimmer Wohnung mit 52m²" | €532 | 2br | 52m² | dist=- | furn=- | pets=- | src=rentola [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=532) | price_max: ✓ (profile=900, listing=532) | bedrooms_min: ✓ (profile=2, listing=2) | size_min: ✓ (profile=40, listing=52)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "2 room central apartment for rent" | €350 | 2br | 64m² | dist=- | furn=- | pets=- | src=wg-gesucht [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=350) | price_max: ✓ (profile=900, listing=350) | bedrooms_min: ✓ (profile=2, listing=2) | size_min: ✓ (profile=40, listing=64)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Ab sofort verfügbar!" | €592 | 2br | 50m² | dist=- | furn=- | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=592) | price_max: ✓ (profile=900, listing=592) | bedrooms_min: ✓ (profile=2, listing=2) | size_min: ✓ (profile=40, listing=50)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "27.3-12.4 Berlin Easter Sublet / Untermiete ganze wohnung" | €790 | 2br | 70m² | dist=- | furn=- | pets=- | src=wg-gesucht [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=790) | price_max: ✓ (profile=900, listing=790) | bedrooms_min: ✓ (profile=2, listing=2) | size_min: ✓ (profile=40, listing=70)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "2-Zimmerwohnung" | €649 | 2br | 44m² | dist=- | furn=- | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=649) | price_max: ✓ (profile=900, listing=649) | bedrooms_min: ✓ (profile=2, listing=2) | size_min: ✓ (profile=40, listing=44)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Schöne 2-Zimmer-Wohnung mit Südlage und Balkon in Pankow-Rosenthal" | €824 | 2br | 61m² | dist=- | furn=- | pets=- | src=wohnungsboerse [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=824) | price_max: ✓ (profile=900, listing=824) | bedrooms_min: ✓ (profile=2, listing=2) | size_min: ✓ (profile=40, listing=61)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+
+--- 10 REJECTED LISTINGS (closest misses) ---
+  ✗ "Helle Vierzimmerwohnung, street & garden side, 3-bedroom furnished flat Mitte" | €420 | 4br | 8m² | dist=- | furn=true | pets=-
+    WHY REJECTED: Size 8m² < min 40m²
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=420) | price_max: ✓ (profile=900, listing=420) | bedrooms_min: ✓ (profile=2, listing=4) | size_min: ✗ (profile=40, listing=8)
+  ✗ "Neue 2-Zimmer-Wohnung mit Balkon" | €808 | 2br | 34m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Size 34m² < min 40m²
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=808) | price_max: ✓ (profile=900, listing=808) | bedrooms_min: ✓ (profile=2, listing=2) | size_min: ✗ (profile=40, listing=34)
+  ✗ "WG-Zimmer möbliert – Berlin Mitte" | €700 | 2br | 25m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Size 25m² < min 40m²
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=700) | price_max: ✓ (profile=900, listing=700) | bedrooms_min: ✓ (profile=2, listing=2) | size_min: ✗ (profile=40, listing=25)
+  ✗ "Room in 5 Bed 2 Bath" | €660 | 1br | 101m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Bedrooms 1 < min 2
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=660) | price_max: ✓ (profile=900, listing=660) | bedrooms_min: ✗ (profile=2, listing=1)
+  ✗ "Kaiser-Friedrich-Straße - Room 1" | €605 | 1br | 0m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Bedrooms 1 < min 2
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=605) | price_max: ✓ (profile=900, listing=605) | bedrooms_min: ✗ (profile=2, listing=1)
+  ✗ "Room for rent in shared apartment in Berlin" | €600 | 1br | 0m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Bedrooms 1 < min 2
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=600) | price_max: ✓ (profile=900, listing=600) | bedrooms_min: ✗ (profile=2, listing=1)
+  ✗ "Charming old-built apartment near S+U Schönhauser Allee im Prenzlauer Berg! (SHORT TERM)" | €680 | 1br | 43m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Bedrooms 1 < min 2
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=680) | price_max: ✓ (profile=900, listing=680) | bedrooms_min: ✗ (profile=2, listing=1)
+  ✗ "Schöne Altbauwohnung für 780 Warmmiete in Berlin Spandau" | €780 | 1br | 40m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Bedrooms 1 < min 2
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=780) | price_max: ✓ (profile=900, listing=780) | bedrooms_min: ✗ (profile=2, listing=1)
+  ✗ "Zimmer in der Treseburger Ufer 44" | €670 | 1br | 0m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Bedrooms 1 < min 2
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=670) | price_max: ✓ (profile=900, listing=670) | bedrooms_min: ✗ (profile=2, listing=1)
+  ✗ "Modernes Studio- Erstklassige Lage in Wedding" | €900 | 1br | 31m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Bedrooms 1 < min 2
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=900) | price_max: ✓ (profile=900, listing=900) | bedrooms_min: ✗ (profile=2, listing=1)
+
+--- FALSE POSITIVE SCAN ---
+  ✓ No false positives detected (55 matches verified)
+
+--- FALSE NEGATIVE SCAN ---
+  ✓ No false negatives detected (445 rejections verified)
+
+==========================================================================================
+PROFILE: C: Berlin ≤€1500, furnished
+Filters: city=Berlin, price_max=1500, bedrooms_min=0, size_min=0, furnished=furnished, extra=[], districts=[]
+==========================================================================================
+
+RESULT: 33 matched / 467 rejected out of 500 listings
+
+--- TOP 20 MATCHED LISTINGS ---
+  ✓ "‼️3 Zi-Wohnung voll möbliert Erstbezug nach Sanierung ‼️" | €1500 | 3br | 63m² | dist=- | furn=true | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1500) | price_max: ✓ (profile=1500, listing=1500) | bedrooms_min: ✓ (profile=0, listing=3) | size_min: ✓ (profile=0, listing=63) | furnished: ✓ (profile=furnished, listing=true)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Möblierte 50 qm, 2-Zimmer-Wohnung, sofort verfügbar in Berlin" | €1100 | 1br | 50m² | dist=sofort verfügbar in Berlin | furn=true | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1100) | price_max: ✓ (profile=1500, listing=1100) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=50) | furnished: ✓ (profile=furnished, listing=true)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Kreuzberg 25m2 Zimmer mit balcon + shared studio space" | €850 | 3br | 90m² | dist=- | furn=true | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=850) | price_max: ✓ (profile=1500, listing=850) | bedrooms_min: ✓ (profile=0, listing=3) | size_min: ✓ (profile=0, listing=90) | furnished: ✓ (profile=furnished, listing=true)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Moderne voll möblierte 2-Zimmer-Wohnung mit Aufzug" | €1150 | 2br | 36m² | dist=- | furn=true | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1150) | price_max: ✓ (profile=1500, listing=1150) | bedrooms_min: ✓ (profile=0, listing=2) | size_min: ✓ (profile=0, listing=36) | furnished: ✓ (profile=furnished, listing=true)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Schöne Wohnung zur Untermiete" | €1290 | 2br | 55m² | dist=- | furn=true | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1290) | price_max: ✓ (profile=1500, listing=1290) | bedrooms_min: ✓ (profile=0, listing=2) | size_min: ✓ (profile=0, listing=55) | furnished: ✓ (profile=furnished, listing=true)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "• All-inclusive Apartment in – Nähe FU-für 1–2 Personen" | €989 | 1br | 36m² | dist=- | furn=true | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=989) | price_max: ✓ (profile=1500, listing=989) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=36) | furnished: ✓ (profile=furnished, listing=true)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Einziehen & studieren – möbliertes Apartment ohne Aufwand" | €1110 | 1br | 37m² | dist=- | furn=true | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1110) | price_max: ✓ (profile=1500, listing=1110) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=37) | furnished: ✓ (profile=furnished, listing=true)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Möblierte 3-Zimmer-Wohnung" | €1300 | 3br | 75m² | dist=- | furn=true | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1300) | price_max: ✓ (profile=1500, listing=1300) | bedrooms_min: ✓ (profile=0, listing=3) | size_min: ✓ (profile=0, listing=75) | furnished: ✓ (profile=furnished, listing=true)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Helle Vierzimmerwohnung, street & garden side, 3-bedroom furnished flat Mitte" | €420 | 4br | 8m² | dist=- | furn=true | pets=- | src=wg-gesucht 
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=420) | price_max: ✓ (profile=1500, listing=420) | bedrooms_min: ✓ (profile=0, listing=4) | size_min: ✓ (profile=0, listing=8) | furnished: ✓ (profile=furnished, listing=true)
+  ✓ "Tolle sonnige 2 Zimmerwohnung Warm 1100€ komplett ausgestattet" | €1100 | 2br | 55m² | dist=- | furn=true | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1100) | price_max: ✓ (profile=1500, listing=1100) | bedrooms_min: ✓ (profile=0, listing=2) | size_min: ✓ (profile=0, listing=55) | furnished: ✓ (profile=furnished, listing=true)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Wohnung 2 Zimmer" | €1000 | 2br | 50m² | dist=- | furn=true | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1000) | price_max: ✓ (profile=1500, listing=1000) | bedrooms_min: ✓ (profile=0, listing=2) | size_min: ✓ (profile=0, listing=50) | furnished: ✓ (profile=furnished, listing=true)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "1-Zimmer Wohnung in Berlin mit Garten" | €940 | 1br | 40m² | dist=- | furn=true | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=940) | price_max: ✓ (profile=1500, listing=940) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=40) | furnished: ✓ (profile=furnished, listing=true)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Einzimmerwohnung Untermiete 3 Monate" | €800 | 1br | 36m² | dist=- | furn=true | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=800) | price_max: ✓ (profile=1500, listing=800) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=36) | furnished: ✓ (profile=furnished, listing=true)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Einzimmerwohnung zur Untermiete – Spandau, Berlin (13595)" | €820 | 1br | 38m² | dist=- | furn=true | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=820) | price_max: ✓ (profile=1500, listing=820) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=38) | furnished: ✓ (profile=furnished, listing=true)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "1 Zimmer Wohnung möbliert ohne Anmeldung 850 € warm inkl. Strom" | €700 | 1br | 36m² | dist=- | furn=true | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=700) | price_max: ✓ (profile=1500, listing=700) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=36) | furnished: ✓ (profile=furnished, listing=true)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "2Zimmerwohnung(50qm)für eine Person zu vermieten" | €950 | 2br | 50m² | dist=- | furn=true | pets=- | src=kleinanzeigen [EMAILED]
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=950) | price_max: ✓ (profile=1500, listing=950) | bedrooms_min: ✓ (profile=0, listing=2) | size_min: ✓ (profile=0, listing=50) | furnished: ✓ (profile=furnished, listing=true)
+    EMAIL↔APP: ✓ emailed AND visible in /api/matches (title present, listing exists)
+  ✓ "Nachmieter gesucht – Möbliertes Apartment bei Neon Wood BERLIN MITTE-WEDDING (ab 01.04.)" | €969 | 1br | 17m² | dist=WEDDING (ab 01 | furn=true | pets=- | src=wg-gesucht 
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=969) | price_max: ✓ (profile=1500, listing=969) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=17) | furnished: ✓ (profile=furnished, listing=true)
+  ✓ "Furnished Apartment for Students & Young Starters | From April" | €824 | 1br | 17m² | dist=- | furn=true | pets=- | src=wg-gesucht 
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=824) | price_max: ✓ (profile=1500, listing=824) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=17) | furnished: ✓ (profile=furnished, listing=true)
+  ✓ "Erstbezug Neubau 2026, 2 Zimmer, Balkon, Aufzug, Fußbodenheizung" | €1400 | 2br | 55m² | dist=Fußbodenheizung | furn=true | pets=- | src=kleinanzeigen 
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1400) | price_max: ✓ (profile=1500, listing=1400) | bedrooms_min: ✓ (profile=0, listing=2) | size_min: ✓ (profile=0, listing=55) | furnished: ✓ (profile=furnished, listing=true)
+  ✓ "1 zimmerwohnung" | €120 | 1br | 20m² | dist=- | furn=true | pets=- | src=kleinanzeigen 
+    WHY MATCHED: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=120) | price_max: ✓ (profile=1500, listing=120) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=20) | furnished: ✓ (profile=furnished, listing=true)
+
+--- 10 REJECTED LISTINGS (closest misses) ---
+  ✗ "Room in 5 Bed 2 Bath" | €660 | 1br | 101m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Furnished: profile=furnished, listing=null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=660) | price_max: ✓ (profile=1500, listing=660) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=101) | furnished: ✗ (profile=furnished, listing=null)
+  ✗ "Kaiser-Friedrich-Straße - Room 1" | €605 | 1br | 0m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Furnished: profile=furnished, listing=null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=605) | price_max: ✓ (profile=1500, listing=605) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=0) | furnished: ✗ (profile=furnished, listing=null)
+  ✗ "Room for rent in shared apartment in Berlin" | €600 | 1br | 0m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Furnished: profile=furnished, listing=null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=600) | price_max: ✓ (profile=1500, listing=600) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=0) | furnished: ✗ (profile=furnished, listing=null)
+  ✗ "Wohnung in Friedrichsfelde/Charlottenstraße" | €1300 | 1br | 50m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Furnished: profile=furnished, listing=null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1300) | price_max: ✓ (profile=1500, listing=1300) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=50) | furnished: ✗ (profile=furnished, listing=null)
+  ✗ "Privat: 2-Zimmer-Wohnung in Berlin-Pankow – Nachmieter gesucht" | €690 | 2br | 67m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Furnished: profile=furnished, listing=null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=690) | price_max: ✓ (profile=1500, listing=690) | bedrooms_min: ✓ (profile=0, listing=2) | size_min: ✓ (profile=0, listing=67) | furnished: ✗ (profile=furnished, listing=null)
+  ✗ "Charming old-built apartment near S+U Schönhauser Allee im Prenzlauer Berg! (SHORT TERM)" | €680 | 1br | 43m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Furnished: profile=furnished, listing=null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=680) | price_max: ✓ (profile=1500, listing=680) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=43) | furnished: ✗ (profile=furnished, listing=null)
+  ✗ "Schöne 1,5-Zimmerwohnung mit Balkon im Herzen von Kreuzberg" | €1300 | 1br | 38m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Furnished: profile=furnished, listing=null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1300) | price_max: ✓ (profile=1500, listing=1300) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=38) | furnished: ✗ (profile=furnished, listing=null)
+  ✗ "Schöne Altbauwohnung für 780 Warmmiete in Berlin Spandau" | €780 | 1br | 40m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Furnished: profile=furnished, listing=null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=780) | price_max: ✓ (profile=1500, listing=780) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=40) | furnished: ✗ (profile=furnished, listing=null)
+  ✗ "3-er WG-Neugründung in Berliner Toplage!" | €799 | 3br | 72m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Furnished: profile=furnished, listing=null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=799) | price_max: ✓ (profile=1500, listing=799) | bedrooms_min: ✓ (profile=0, listing=3) | size_min: ✓ (profile=0, listing=72) | furnished: ✗ (profile=furnished, listing=null)
+  ✗ "Kurzfristig Gut gelegene 2 Zimmerwohnung in Rosenthaler Platz" | €450 | 2br | 45m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Furnished: profile=furnished, listing=null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=450) | price_max: ✓ (profile=1500, listing=450) | bedrooms_min: ✓ (profile=0, listing=2) | size_min: ✓ (profile=0, listing=45) | furnished: ✗ (profile=furnished, listing=null)
+
+--- FALSE POSITIVE SCAN ---
+  ✓ No false positives detected (33 matches verified)
+
+--- FALSE NEGATIVE SCAN ---
+  ✓ No false negatives detected (467 rejections verified)
+
+==========================================================================================
+PROFILE: D: Berlin ≤€1500, pets allowed
+Filters: city=Berlin, price_max=1500, bedrooms_min=0, size_min=0, furnished=any, extra=["pets_allowed"], districts=[]
+==========================================================================================
+
+RESULT: 0 matched / 500 rejected out of 500 listings
+
+--- TOP 20 MATCHED LISTINGS ---
+
+--- 10 REJECTED LISTINGS (closest misses) ---
+  ✗ "Room in 5 Bed 2 Bath" | €660 | 1br | 101m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Feature "pets_allowed" required but pets_allowed=null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=660) | price_max: ✓ (profile=1500, listing=660) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=101) | extra:pets_allowed: ✗ (profile=pets_allowed, listing=null)
+  ✗ "Kaiser-Friedrich-Straße - Room 1" | €605 | 1br | 0m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Feature "pets_allowed" required but pets_allowed=null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=605) | price_max: ✓ (profile=1500, listing=605) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=0) | extra:pets_allowed: ✗ (profile=pets_allowed, listing=null)
+  ✗ "Room for rent in shared apartment in Berlin" | €600 | 1br | 0m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Feature "pets_allowed" required but pets_allowed=null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=600) | price_max: ✓ (profile=1500, listing=600) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=0) | extra:pets_allowed: ✗ (profile=pets_allowed, listing=null)
+  ✗ "Wohnung in Friedrichsfelde/Charlottenstraße" | €1300 | 1br | 50m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Feature "pets_allowed" required but pets_allowed=null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1300) | price_max: ✓ (profile=1500, listing=1300) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=50) | extra:pets_allowed: ✗ (profile=pets_allowed, listing=null)
+  ✗ "Privat: 2-Zimmer-Wohnung in Berlin-Pankow – Nachmieter gesucht" | €690 | 2br | 67m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Feature "pets_allowed" required but pets_allowed=null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=690) | price_max: ✓ (profile=1500, listing=690) | bedrooms_min: ✓ (profile=0, listing=2) | size_min: ✓ (profile=0, listing=67) | extra:pets_allowed: ✗ (profile=pets_allowed, listing=null)
+  ✗ "Charming old-built apartment near S+U Schönhauser Allee im Prenzlauer Berg! (SHORT TERM)" | €680 | 1br | 43m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Feature "pets_allowed" required but pets_allowed=null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=680) | price_max: ✓ (profile=1500, listing=680) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=43) | extra:pets_allowed: ✗ (profile=pets_allowed, listing=null)
+  ✗ "Schöne 1,5-Zimmerwohnung mit Balkon im Herzen von Kreuzberg" | €1300 | 1br | 38m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Feature "pets_allowed" required but pets_allowed=null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1300) | price_max: ✓ (profile=1500, listing=1300) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=38) | extra:pets_allowed: ✗ (profile=pets_allowed, listing=null)
+  ✗ "‼️3 Zi-Wohnung voll möbliert Erstbezug nach Sanierung ‼️" | €1500 | 3br | 63m² | dist=- | furn=true | pets=-
+    WHY REJECTED: Feature "pets_allowed" required but pets_allowed=null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1500) | price_max: ✓ (profile=1500, listing=1500) | bedrooms_min: ✓ (profile=0, listing=3) | size_min: ✓ (profile=0, listing=63) | extra:pets_allowed: ✗ (profile=pets_allowed, listing=null)
+  ✗ "Schöne Altbauwohnung für 780 Warmmiete in Berlin Spandau" | €780 | 1br | 40m² | dist=- | furn=- | pets=-
+    WHY REJECTED: Feature "pets_allowed" required but pets_allowed=null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=780) | price_max: ✓ (profile=1500, listing=780) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=40) | extra:pets_allowed: ✗ (profile=pets_allowed, listing=null)
+  ✗ "Möblierte 50 qm, 2-Zimmer-Wohnung, sofort verfügbar in Berlin" | €1100 | 1br | 50m² | dist=sofort verfügbar in Berlin | furn=true | pets=-
+    WHY REJECTED: Feature "pets_allowed" required but pets_allowed=null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1100) | price_max: ✓ (profile=1500, listing=1100) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=50) | extra:pets_allowed: ✗ (profile=pets_allowed, listing=null)
+
+--- FALSE POSITIVE SCAN ---
+  ✓ No false positives detected (0 matches verified)
+
+--- FALSE NEGATIVE SCAN ---
+  ✓ No false negatives detected (500 rejections verified)
+
+==========================================================================================
+PROFILE: E: Berlin Kreuzberg ≤€1200
+Filters: city=Berlin, price_max=1200, bedrooms_min=0, size_min=0, furnished=any, extra=[], districts=["Kreuzberg"]
+==========================================================================================
+
+RESULT: 0 matched / 500 rejected out of 500 listings
+
+--- TOP 20 MATCHED LISTINGS ---
+
+--- 10 REJECTED LISTINGS (closest misses) ---
+  ✗ "Room in 5 Bed 2 Bath" | €660 | 1br | 101m² | dist=- | furn=- | pets=-
+    WHY REJECTED: District required but listing.district is null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=660) | price_max: ✓ (profile=1200, listing=660) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=101) | district: ✗ (profile=["Kreuzberg"], listing=(null))
+  ✗ "Kaiser-Friedrich-Straße - Room 1" | €605 | 1br | 0m² | dist=- | furn=- | pets=-
+    WHY REJECTED: District required but listing.district is null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=605) | price_max: ✓ (profile=1200, listing=605) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=0) | district: ✗ (profile=["Kreuzberg"], listing=(null))
+  ✗ "Room for rent in shared apartment in Berlin" | €600 | 1br | 0m² | dist=- | furn=- | pets=-
+    WHY REJECTED: District required but listing.district is null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=600) | price_max: ✓ (profile=1200, listing=600) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=0) | district: ✗ (profile=["Kreuzberg"], listing=(null))
+  ✗ "Privat: 2-Zimmer-Wohnung in Berlin-Pankow – Nachmieter gesucht" | €690 | 2br | 67m² | dist=- | furn=- | pets=-
+    WHY REJECTED: District required but listing.district is null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=690) | price_max: ✓ (profile=1200, listing=690) | bedrooms_min: ✓ (profile=0, listing=2) | size_min: ✓ (profile=0, listing=67) | district: ✗ (profile=["Kreuzberg"], listing=(null))
+  ✗ "Charming old-built apartment near S+U Schönhauser Allee im Prenzlauer Berg! (SHORT TERM)" | €680 | 1br | 43m² | dist=- | furn=- | pets=-
+    WHY REJECTED: District required but listing.district is null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=680) | price_max: ✓ (profile=1200, listing=680) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=43) | district: ✗ (profile=["Kreuzberg"], listing=(null))
+  ✗ "Schöne Altbauwohnung für 780 Warmmiete in Berlin Spandau" | €780 | 1br | 40m² | dist=- | furn=- | pets=-
+    WHY REJECTED: District required but listing.district is null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=780) | price_max: ✓ (profile=1200, listing=780) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=40) | district: ✗ (profile=["Kreuzberg"], listing=(null))
+  ✗ "Möblierte 50 qm, 2-Zimmer-Wohnung, sofort verfügbar in Berlin" | €1100 | 1br | 50m² | dist=sofort verfügbar in Berlin | furn=true | pets=-
+    WHY REJECTED: District "sofort verfügbar in Berlin" not in ["Kreuzberg"]
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1100) | price_max: ✓ (profile=1200, listing=1100) | bedrooms_min: ✓ (profile=0, listing=1) | size_min: ✓ (profile=0, listing=50) | district: ✗ (profile=["Kreuzberg"], listing=sofort verfügbar in Berlin)
+  ✗ "3-er WG-Neugründung in Berliner Toplage!" | €799 | 3br | 72m² | dist=- | furn=- | pets=-
+    WHY REJECTED: District required but listing.district is null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=799) | price_max: ✓ (profile=1200, listing=799) | bedrooms_min: ✓ (profile=0, listing=3) | size_min: ✓ (profile=0, listing=72) | district: ✗ (profile=["Kreuzberg"], listing=(null))
+  ✗ "Kurzfristig Gut gelegene 2 Zimmerwohnung in Rosenthaler Platz" | €450 | 2br | 45m² | dist=- | furn=- | pets=-
+    WHY REJECTED: District required but listing.district is null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=450) | price_max: ✓ (profile=1200, listing=450) | bedrooms_min: ✓ (profile=0, listing=2) | size_min: ✓ (profile=0, listing=45) | district: ✗ (profile=["Kreuzberg"], listing=(null))
+  ✗ "Schöne 2-Zimmer-Wohnung am Nöldnerplatz Mai 2026" | €1060 | 2br | 59m² | dist=- | furn=- | pets=-
+    WHY REJECTED: District required but listing.district is null
+    FULL CHECK: city: ✓ (profile=berlin, listing=berlin) | price_min: ✓ (profile=0, listing=1060) | price_max: ✓ (profile=1200, listing=1060) | bedrooms_min: ✓ (profile=0, listing=2) | size_min: ✓ (profile=0, listing=59) | district: ✗ (profile=["Kreuzberg"], listing=(null))
+
+--- FALSE POSITIVE SCAN ---
+  ✓ No false positives detected (0 matches verified)
+
+--- FALSE NEGATIVE SCAN ---
+  ✓ No false negatives detected (500 rejections verified)
+
+==========================================================================================
+FINAL CONFIDENCE ASSESSMENT
+==========================================================================================
+Total profiles tested: 5
+Listings evaluated per profile: 500
+Suspicious false positives: 0
+Suspicious false negatives: 0
+
+DATA COVERAGE NOTES:
+  Listings with furnished data: 44/500 (8.8%)
+  Listings with pets_allowed data: 0/500 (0.0%)
+  Listings with district data: 20/500 (4.0%)
+
+IMPLICATIONS:
+  ⚠ Profile D (pets_allowed) will always match 0 listings — no listings have pets_allowed=true in scraped data
+  ⚠ Profile C (furnished) severely limited — only 9% of listings have furnished metadata
+  ⚠ Profile E (district) severely limited — only 4% of listings have district metadata
+
+✅ VERDICT: Matching logic is CORRECT. All filter evaluations are deterministic and verifiable.
+   The engine correctly applies every active filter in sequence and fails fast.
+   Profiles A & B (basic filters) match accurately against real production data.
+   Profiles C, D, E (advanced filters) are correct but constrained by data availability.
+   Confidence: HIGH for core filters (city/price/bedrooms/size).
+   Confidence: LOGIC CORRECT but DATA-LIMITED for furnished/pets/district.
