@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { MapPin, Check, ChevronRight, ExternalLink, Download, Sparkles, Search } from "lucide-react";
+import { useTranslation } from "@/i18n";
 import LocationModeSelector, {
   type LocationData,
   DEFAULT_LOCATION_DATA,
@@ -8,15 +9,8 @@ import LocationModeSelector, {
 
 const APP_DOMAIN = import.meta.env.VITE_APP_DOMAIN || "https://housalert.de";
 
-const PROPERTY_TYPES = [
-  { value: "any", label: "Alles" },
-  { value: "appartement", label: "Appartement" },
-  { value: "studio", label: "Studio" },
-  { value: "kamer", label: "Kamer" },
-  { value: "gedeeld", label: "Gedeeld" },
-];
-
 function EstimateBlock({ city, maxPrice }: { city: string; maxPrice: string }) {
+  const { t } = useTranslation();
   const [estimate, setEstimate] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -50,7 +44,7 @@ function EstimateBlock({ city, maxPrice }: { city: string; maxPrice: string }) {
           <div className="h-4 w-48 bg-[#E6FAF5] rounded animate-pulse" />
         ) : estimate !== null ? (
           <p className="text-[13px] sm:text-[14px] font-semibold text-[var(--yo-dark)] leading-snug">
-            ~<span className="text-[var(--yo-teal)] text-[15px] font-bold">{estimate}</span> matches per week verwacht
+            ~<span className="text-[var(--yo-teal)] text-[15px] font-bold">{estimate}</span> {t("onboardingEmbed.matchesPerWeek")}
           </p>
         ) : null}
       </div>
@@ -59,6 +53,7 @@ function EstimateBlock({ city, maxPrice }: { city: string; maxPrice: string }) {
 }
 
 function CompletionScreen({ draftId }: { draftId: string }) {
+  const { t } = useTranslation();
   const continueUrl = `${APP_DOMAIN}/continue?draft=${draftId}`;
 
   return (
@@ -68,10 +63,10 @@ function CompletionScreen({ draftId }: { draftId: string }) {
       </div>
 
       <h2 className="text-[20px] font-bold text-[var(--yo-dark)] mb-1.5 uppercase tracking-wide" data-testid="embed-text-done-title">
-        Je zoekopdracht is opgeslagen!
+        {t("onboardingEmbed.doneTitle")}
       </h2>
       <p className="text-[14px] text-[var(--yo-dark)] mb-7 max-w-[300px] leading-relaxed">
-        Maak een account aan om direct meldingen te ontvangen zodra er een match verschijnt.
+        {t("onboardingEmbed.doneSubtitle")}
       </p>
 
       <div className="w-full max-w-[320px] space-y-2.5">
@@ -82,7 +77,7 @@ function CompletionScreen({ draftId }: { draftId: string }) {
           data-testid="embed-link-continue-browser"
         >
           <ExternalLink className="w-4 h-4" />
-          Ga verder in browser
+          {t("onboardingEmbed.continueInBrowser")}
         </a>
 
         <button
@@ -91,7 +86,7 @@ function CompletionScreen({ draftId }: { draftId: string }) {
           onClick={() => window.open(continueUrl, "_top")}
         >
           <Download className="w-4 h-4" />
-          Download de app
+          {t("onboardingEmbed.downloadApp")}
         </button>
       </div>
 
@@ -103,6 +98,7 @@ function CompletionScreen({ draftId }: { draftId: string }) {
 }
 
 export default function OnboardingEmbedPage() {
+  const { t } = useTranslation();
   const [locationData, setLocationData] = useState<LocationData>({ ...DEFAULT_LOCATION_DATA });
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("1500");
@@ -110,6 +106,14 @@ export default function OnboardingEmbedPage() {
   const [submitting, setSubmitting] = useState(false);
   const [draftId, setDraftId] = useState<string | null>(null);
   const [error, setError] = useState("");
+
+  const PROPERTY_TYPES = [
+    { value: "any", label: t("onboardingEmbed.propertyTypes.any") },
+    { value: "appartement", label: t("onboardingEmbed.propertyTypes.apartment") },
+    { value: "studio", label: t("onboardingEmbed.propertyTypes.studio") },
+    { value: "kamer", label: t("onboardingEmbed.propertyTypes.room") },
+    { value: "gedeeld", label: t("onboardingEmbed.propertyTypes.shared") },
+  ];
 
   const cityName =
     locationData.tab === "reistijd"
@@ -169,13 +173,13 @@ export default function OnboardingEmbedPage() {
 
       if (!res.ok) {
         const errData = await res.json().catch(() => null);
-        throw new Error(errData?.error || "Opslaan mislukt");
+        throw new Error(errData?.error || t("onboardingEmbed.saveFailed"));
       }
 
       const { id } = await res.json();
       setDraftId(id);
     } catch (err: any) {
-      setError(err.message || "Er is iets misgegaan. Probeer het opnieuw.");
+      setError(err.message || t("onboardingEmbed.genericError"));
     } finally {
       setSubmitting(false);
     }
@@ -200,7 +204,7 @@ export default function OnboardingEmbedPage() {
             className="text-[21px] sm:text-[24px] font-extrabold text-[var(--yo-dark)] leading-[1.25] tracking-tight uppercase"
             data-testid="embed-text-hero-title"
           >
-            Ontdek hoeveel matches we voor jou gaan vinden.
+            {t("onboardingEmbed.heroTitle")}
           </h1>
         </div>
 
@@ -221,7 +225,7 @@ export default function OnboardingEmbedPage() {
 
             <div>
               <label className="text-[13px] font-semibold text-[var(--yo-dark)] uppercase tracking-wide mb-2 block">
-                Woningtype
+                {t("onboardingEmbed.propertyType")}
               </label>
               <div className="flex flex-wrap gap-1.5">
                 {PROPERTY_TYPES.map((pt) => (
@@ -243,7 +247,7 @@ export default function OnboardingEmbedPage() {
 
             <div>
               <label className="text-[13px] font-semibold text-[var(--yo-dark)] uppercase tracking-wide mb-2 block">
-                Maandbudget
+                {t("onboardingEmbed.monthlyBudget")}
               </label>
               <div className="flex items-center gap-2">
                 <div className="relative flex-1">
@@ -278,7 +282,7 @@ export default function OnboardingEmbedPage() {
 
             <div className="flex items-center gap-2 text-[12px] text-[var(--yo-dark)]">
               <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-              <span>Voeg tot 4 zoekopdrachten toe.</span>
+              <span>{t("onboardingEmbed.maxSearches")}</span>
             </div>
           </div>
 
@@ -300,7 +304,7 @@ export default function OnboardingEmbedPage() {
               ) : (
                 <>
                   <Search className="w-[18px] h-[18px]" />
-                  Plaats zoekopdracht
+                  {t("onboardingEmbed.submitButton")}
                 </>
               )}
             </button>

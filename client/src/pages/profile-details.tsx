@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "@/i18n";
 import { ChevronRight, Loader2 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 
@@ -15,20 +16,21 @@ interface ProfileData {
   monthly_income?: number | null;
 }
 
-const FIELDS = [
-  { key: "first_name", label: "Voornaam" },
-  { key: "last_name", label: "Achternaam" },
-  { key: "birth_date", label: "Geboortedatum" },
-  { key: "email", label: "E-mailadres" },
-  { key: "phone", label: "Mobiele nummer" },
-  { key: "occupation", label: "Beroep" },
-  { key: "monthly_income", label: "Maandelijks inkomen" },
-] as const;
-
 export default function ProfileDetailsPage() {
   const { user, session } = useAuth();
   const [, navigate] = useLocation();
   const { toast } = useToast();
+  const { t } = useTranslation();
+
+  const FIELDS = [
+    { key: "first_name", label: t("profileEdit.firstName") },
+    { key: "last_name", label: t("profileEdit.lastName") },
+    { key: "birth_date", label: t("profileEdit.birthDate") },
+    { key: "email", label: t("profileDetails.email") },
+    { key: "phone", label: t("profileEdit.phone") },
+    { key: "occupation", label: t("profileEdit.occupation") },
+    { key: "monthly_income", label: t("profileEdit.income") },
+  ] as const;
 
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -48,7 +50,7 @@ export default function ProfileDetailsPage() {
       })
       .catch(() => {
         setLoading(false);
-        toast({ title: "Fout", description: "Kon gegevens niet laden.", variant: "destructive" });
+        toast({ title: t("common.error"), description: t("profileDetails.loadFailed"), variant: "destructive" });
       });
   }, [session?.access_token]);
 
@@ -69,7 +71,7 @@ export default function ProfileDetailsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <PageHeader title="Persoonlijke gegevens" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
+      <PageHeader title={t("profileDetails.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
       <div className="max-w-lg mx-auto">
         {loading ? (
@@ -92,7 +94,7 @@ export default function ProfileDetailsPage() {
                       <div className="min-w-0 flex-1">
                         <p className="text-[13px] text-muted-foreground mb-0.5">{field.label}</p>
                         <p className="text-[16px] font-[500] truncate" style={{ color: "var(--yo-dark)" }}>
-                          {value || <span className="text-muted-foreground">Toevoegen</span>}
+                          {value || <span className="text-muted-foreground">{t("profileDetails.add")}</span>}
                         </p>
                       </div>
                       <ChevronRight className="w-[18px] h-[18px] text-muted-foreground flex-shrink-0 ml-3" />

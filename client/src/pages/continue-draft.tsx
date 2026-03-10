@@ -5,11 +5,13 @@ import { createSearchProfile } from "@/lib/search-profiles";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Check, AlertCircle } from "lucide-react";
+import { useTranslation } from "@/i18n";
 
 export default function ContinueDraftPage() {
   const { user, loading: authLoading } = useAuth();
   const [, navigate] = useLocation();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [status, setStatus] = useState<"loading" | "needs-auth" | "claiming" | "done" | "error">("loading");
   const [draftData, setDraftData] = useState<any>(null);
 
@@ -45,7 +47,7 @@ export default function ContinueDraftPage() {
     if (status !== "claiming" || !user || !draftData) return;
 
     if (draftData.claimed_by && draftData.claimed_by !== user.id) {
-      toast({ title: "Zoekopdracht al in gebruik", description: "Deze link is al door iemand anders gebruikt.", variant: "destructive" });
+      toast({ title: t("continueDraft.alreadyUsed"), description: t("continueDraft.alreadyUsedDesc"), variant: "destructive" });
       setStatus("error");
       return;
     }
@@ -84,10 +86,10 @@ export default function ContinueDraftPage() {
         });
 
         queryClient.invalidateQueries({ queryKey: ["/search-profiles"] });
-        toast({ title: "Zoekopdracht overgenomen!", description: "Je kunt nu matches ontvangen." });
+        toast({ title: t("continueDraft.claimedSuccess"), description: t("continueDraft.claimedSuccessDesc") });
         navigate("/dashboard");
       } catch (err: any) {
-        toast({ title: "Fout bij overname", description: err.message || "Probeer het opnieuw.", variant: "destructive" });
+        toast({ title: t("continueDraft.claimFailed"), description: err.message || t("continueDraft.claimFailedDesc"), variant: "destructive" });
         setStatus("error");
       }
     }
@@ -108,28 +110,28 @@ export default function ContinueDraftPage() {
           <>
             <Loader2 className="w-10 h-10 animate-spin mx-auto mb-4" style={{ color: "var(--yo-teal)" }} />
             <p className="text-[16px] text-muted-foreground">
-              {status === "loading" ? "Zoekopdracht laden..." : "Zoekopdracht overnemen..."}
+              {status === "loading" ? t("continueDraft.loading") : t("continueDraft.claiming")}
             </p>
           </>
         )}
         {status === "error" && (
           <>
             <AlertCircle className="w-10 h-10 text-destructive mx-auto mb-4" />
-            <p className="text-[16px] font-semibold mb-2" style={{ color: "var(--yo-dark)" }}>Zoekopdracht niet gevonden</p>
-            <p className="text-[14px] text-muted-foreground mb-6">De link is verlopen of ongeldig.</p>
+            <p className="text-[16px] font-semibold mb-2" style={{ color: "var(--yo-dark)" }}>{t("continueDraft.notFound")}</p>
+            <p className="text-[14px] text-muted-foreground mb-6">{t("continueDraft.linkExpired")}</p>
             <button
               onClick={() => navigate("/")}
               className="min-h-[48px] px-8 rounded-lg bg-primary text-primary-foreground font-semibold text-[15px] transition-colors"
               data-testid="button-continue-home"
             >
-              Naar startpagina
+              {t("continueDraft.toHome")}
             </button>
           </>
         )}
         {status === "done" && (
           <>
             <Check className="w-10 h-10 mx-auto mb-4" style={{ color: "var(--yo-success)" }} />
-            <p className="text-[16px] font-semibold" style={{ color: "var(--yo-dark)" }}>Zoekopdracht overgenomen!</p>
+            <p className="text-[16px] font-semibold" style={{ color: "var(--yo-dark)" }}>{t("continueDraft.claimed")}</p>
           </>
         )}
       </div>

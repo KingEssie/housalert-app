@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, Marker, Circle, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { cityDistricts } from "../../../config/market";
+import { useTranslation } from "@/i18n";
 
 const MARKER_ICON = new L.Icon({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
@@ -116,6 +117,7 @@ interface Props {
 }
 
 export default function LocationModeSelector({ value, onChange, segmentedTabs, alwaysShowMap, mapMaxHeight }: Props) {
+  const { t } = useTranslation();
   const [cityQuery, setCityQuery] = useState(value.place?.city_name ?? "");
   const [cityResults, setCityResults] = useState<NominatimResult[]>([]);
   const [cityOpen, setCityOpen] = useState(false);
@@ -254,9 +256,9 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
   }
 
   const tabs: { id: LocationTab; label: string }[] = [
-    { id: "wijken", label: "Wijken" },
-    { id: "radius", label: "Radius" },
-    { id: "reistijd", label: "Reistijd" },
+    { id: "wijken", label: t("location.tabs.districts") },
+    { id: "radius", label: t("location.tabs.radius") },
+    { id: "reistijd", label: t("location.tabs.commute") },
   ];
 
   const mapLat = value.place?.latitude ?? (value.tab === "reistijd" ? value.commuteLat : null);
@@ -317,7 +319,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
               value={cityQuery}
               onChange={(e) => handleCityInput(e.target.value)}
               onFocus={() => { if (cityResults.length > 0 && !value.place) setCityOpen(true); }}
-              placeholder="Zoek een plaats in Duitsland"
+              placeholder={t("location.searchCity")}
               className={`w-full min-h-[52px] rounded-lg bg-[var(--yo-surface)] border px-11 text-[16px] text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)] focus:border-transparent transition-colors ${
                 value.place ? "border-[var(--yo-teal)] bg-[var(--yo-chip-bg)]/30" : "border-[var(--yo-divider)]"
               }`}
@@ -379,7 +381,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       {value.tab === "wijken" && districtsNotAvailable && (
         <div className="flex items-center gap-2 text-[var(--yo-dark)] text-[13px] bg-[var(--yo-surface)] rounded-lg px-4 py-3" data-testid="text-districts-unavailable">
           <AlertCircle className="w-4 h-4 flex-shrink-0 text-[var(--yo-dark)]" />
-          <span>Wijken binnenkort beschikbaar voor deze plaats.</span>
+          <span>{t("location.districtsSoon")}</span>
         </div>
       )}
 
@@ -392,7 +394,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
 
       {value.tab === "radius" && (
         <div>
-          <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Straal</label>
+          <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">{t("location.radiusLabel")}</label>
           <div className="relative">
             <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)]" />
             <select
@@ -415,7 +417,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       {value.tab === "reistijd" && (
         <>
           <div ref={destContainerRef} className="relative">
-            <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Werkadres / bestemming</label>
+            <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">{t("location.workAddress")}</label>
             <div className="relative">
               <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[var(--yo-dark)] pointer-events-none" />
               <input
@@ -423,7 +425,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                 value={destQuery}
                 onChange={(e) => handleDestInput(e.target.value)}
                 onFocus={() => { if (destResults.length > 0 && value.commuteLat == null) setDestOpen(true); }}
-                placeholder="bijv. Berlin Hauptbahnhof"
+                placeholder={t("location.searchAddress")}
                 className={`w-full min-h-[52px] rounded-lg bg-[var(--yo-surface)] border px-11 text-[16px] text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)] focus:border-transparent transition-colors ${
                   value.commuteLat != null ? "border-[var(--yo-teal)] bg-[var(--yo-chip-bg)]/30" : "border-[var(--yo-divider)]"
                 }`}
@@ -469,12 +471,12 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
           )}
 
           <div>
-            <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Vervoersmiddel</label>
+            <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">{t("location.transport")}</label>
             <div className="flex gap-2">
               {([
-                { id: "auto" as const, icon: Car, label: "Auto" },
-                { id: "ov" as const, icon: Train, label: "OV" },
-                { id: "fiets" as const, icon: Bike, label: "Fiets" },
+                { id: "auto" as const, icon: Car, label: t("location.transportOptions.car") },
+                { id: "ov" as const, icon: Train, label: t("location.transportOptions.transit") },
+                { id: "fiets" as const, icon: Bike, label: t("location.transportOptions.bike") },
               ]).map((mode) => (
                 <button
                   key={mode.id}
@@ -494,7 +496,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
           </div>
 
           <div>
-            <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Maximale reistijd</label>
+            <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">{t("location.maxCommute")}</label>
             <div className="relative">
               <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)]" />
               <select
@@ -562,6 +564,7 @@ function DistrictMultiSelect({
   selected: string[];
   onToggle: (d: string) => void;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -576,7 +579,7 @@ function DistrictMultiSelect({
   return (
     <div ref={ref} className="relative">
       <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-2 block">
-        Wijken <span className="font-normal text-[13px] text-[var(--yo-dark)]">(optioneel)</span>
+        {t("location.districtLabel")} <span className="font-normal text-[13px] text-[var(--yo-dark)]">{t("location.districtOptional")}</span>
       </label>
       <button
         type="button"
@@ -586,8 +589,8 @@ function DistrictMultiSelect({
       >
         <span className={selected.length === 0 ? "opacity-50" : ""}>
           {selected.length === 0
-            ? "Selecteer wijken..."
-            : `${selected.length} ${selected.length === 1 ? "wijk" : "wijken"} geselecteerd`}
+            ? t("location.selectDistricts")
+            : t("location.districtSelected", { count: selected.length, label: selected.length === 1 ? t("location.districtSingular") : t("location.districtPlural") })}
         </span>
         <ChevronDown className={`absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)] transition-transform ${open ? "rotate-180" : ""}`} />
       </button>

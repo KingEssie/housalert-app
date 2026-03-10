@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { ApplySheet } from "@/components/apply-sheet";
+import { useTranslation } from "@/i18n";
 import {
   Home,
   Heart,
@@ -56,17 +57,17 @@ function bedroomLabel(min: number) {
   return `${min}+`;
 }
 
-function relativeTime(dateStr: string | null | undefined): string {
+function relativeTime(dateStr: string | null | undefined, t: (key: string, params?: Record<string, string | number>) => string): string {
   if (!dateStr) return "";
   const diff = Date.now() - new Date(dateStr).getTime();
-  if (diff < 0) return "zojuist";
+  if (diff < 0) return t("freshness.justNow");
   const mins = Math.floor(diff / 60000);
-  if (mins < 1) return "zojuist";
-  if (mins < 60) return `${mins} min geleden`;
+  if (mins < 1) return t("freshness.justNow");
+  if (mins < 60) return t("freshness.minutesAgo", { n: mins });
   const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours} uur geleden`;
+  if (hours < 24) return t("freshness.hoursAgo", { n: hours });
   const days = Math.floor(hours / 24);
-  return `${days} ${days === 1 ? "dag" : "dagen"} geleden`;
+  return days === 1 ? t("freshness.dayAgo", { n: days }) : t("freshness.daysAgo", { n: days });
 }
 
 const FRESH_BADGE_STYLES: Record<string, { bg: string; text: string }> = {
@@ -76,11 +77,11 @@ const FRESH_BADGE_STYLES: Record<string, { bg: string; text: string }> = {
   ouder: { bg: "bg-[var(--yo-surface)]", text: "text-[var(--yo-dark)]" },
 };
 
-const FRESH_LABEL_TEXT: Record<string, string> = {
-  net_binnen: "Net binnen",
-  nieuw: "Nieuw",
-  vandaag: "Vandaag",
-  ouder: "Ouder",
+const FRESH_LABEL_KEYS: Record<string, string> = {
+  net_binnen: "freshness.justIn",
+  nieuw: "freshness.new",
+  vandaag: "freshness.today",
+  ouder: "freshness.older",
 };
 
 type TabKey = "home" | "matches" | "filters" | "tips" | "profiel";
@@ -150,19 +151,19 @@ function getMatchTab(listingId: string): MatchSubTab {
   return "nieuw";
 }
 
-const MATCH_REASON_CHIPS: Record<string, string> = {
-  locatie: "Gewenste wijk",
-  prijs: "Binnen budget",
-  kamers: "Past bij jouw voorkeuren",
-  grootte: "Goede grootte",
-  nieuw: "Nieuw geplaatst",
-  goede_prijs: "Goede prijs",
+const MATCH_REASON_KEYS: Record<string, string> = {
+  locatie: "matchReason.district",
+  prijs: "matchReason.budget",
+  kamers: "matchReason.preferences",
+  grootte: "matchReason.size",
+  nieuw: "matchReason.fresh",
+  goede_prijs: "matchReason.price",
 };
 
-function displayMatchLabel(score: number, serverLabel: string): string {
-  if (score >= 90) return "Perfecte match";
-  if (score >= 75) return "Goede match";
-  if (score >= 65) return "Interessant";
+function displayMatchLabel(score: number, serverLabel: string, t: (key: string) => string): string {
+  if (score >= 90) return t("matchLabel.perfect");
+  if (score >= 75) return t("matchLabel.good");
+  if (score >= 65) return t("matchLabel.interesting");
   return serverLabel;
 }
 
@@ -181,6 +182,7 @@ function MatchCard({
 }) {
   const [, navigate] = useLocation();
   const [imgError, setImgError] = useState(false);
+  const { t } = useTranslation();
   const style = FRESH_BADGE_STYLES[match.fresh_label] ?? FRESH_BADGE_STYLES.ouder;
   const gradient = getCityGradient(match.city);
   const hasImage = !!match.image_url;
@@ -229,7 +231,7 @@ function MatchCard({
 
         <div className="absolute top-3 left-3">
           <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm ${style.bg} ${style.text}`}>
-            {FRESH_LABEL_TEXT[match.fresh_label] ?? match.fresh_label}
+            {FRESH_LABEL_KEYS[match.fresh_label] ? t(FRESH_LABEL_KEYS[match.fresh_label]) : match.fresh_label}
           </span>
         </div>
 
@@ -254,7 +256,7 @@ function MatchCard({
               match.match_score >= 75 ? "bg-[var(--yo-chip-bg)] text-[var(--yo-dark)]" :
               "bg-[var(--yo-chip-bg)] text-[var(--yo-dark)]"
             }`}>
-              {displayMatchLabel(match.match_score, match.match_label)} · {match.match_score}%
+              {displayMatchLabel(match.match_score, match.match_label, t)} · {match.match_score}%
             </span>
           </div>
         )}
@@ -270,7 +272,7 @@ function MatchCard({
             {match.price > 0 && (
               <span className="text-[17px] font-bold text-[var(--yo-dark)] whitespace-nowrap flex-shrink-0 mt-0.5">
                 €{match.price}
-                <span className="text-[12px] font-normal text-[var(--yo-dark)]"> /mnd</span>
+                <span className="text-[12px] font-normal text-[var(--yo-dark)]"> {t("common.perMonth")}</span>
               </span>
             )}
           </div>
@@ -286,7 +288,7 @@ function MatchCard({
             <>
               <span className="flex items-center gap-1">
                 <BedDouble className="w-3.5 h-3.5" />
-                {match.bedrooms} {match.bedrooms === 1 ? "slaapkamer" : "slaapkamers"}
+                {match.bedrooms} {match.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}
               </span>
               <span className="text-[var(--yo-divider)]">·</span>
             </>
@@ -300,9 +302,9 @@ function MatchCard({
         </div>
 
         {(() => {
-          const chips = (match.match_reasons ?? []).slice(0, 3).map((r) => MATCH_REASON_CHIPS[r] ?? r);
-          if ((match.fresh_label === "net_binnen" || match.fresh_label === "nieuw") && chips.length < 3 && !chips.includes("Nieuw geplaatst")) {
-            chips.push("Nieuw geplaatst");
+          const chips = (match.match_reasons ?? []).slice(0, 3).map((r) => MATCH_REASON_KEYS[r] ? t(MATCH_REASON_KEYS[r]) : r);
+          if ((match.fresh_label === "net_binnen" || match.fresh_label === "nieuw") && chips.length < 3 && !chips.includes(t("matchReason.fresh"))) {
+            chips.push(t("matchReason.fresh"));
           }
           return chips.length > 0 ? (
             <div className="flex flex-wrap gap-1.5" data-testid={`chips-match-reasons-${match.listing_id}`}>
@@ -323,7 +325,7 @@ function MatchCard({
           <span>·</span>
           <span className="flex items-center gap-1">
             <Clock className="w-3 h-3" />
-            {relativeTime(match.matched_at || match.first_seen_at)}
+            {relativeTime(match.matched_at || match.first_seen_at, t)}
           </span>
         </div>
 
@@ -334,7 +336,7 @@ function MatchCard({
             data-testid={`button-apply-${match.listing_id}`}
           >
             <Zap className="w-4 h-4" />
-            Reageer direct
+            {t("matches.applyDirect")}
           </button>
           <button
             onClick={(e) => {
@@ -347,7 +349,7 @@ function MatchCard({
             data-testid={`button-view-listing-${match.listing_id}`}
           >
             <Eye className="w-3.5 h-3.5" />
-            Bekijk
+            {t("matches.view")}
           </button>
         </div>
       </div>
@@ -366,6 +368,8 @@ function ProfileCard({
   deleting: boolean;
   onEdit: () => void;
 }) {
+  const { t } = useTranslation();
+
   return (
     <div
       className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 flex flex-col gap-3.5"
@@ -382,11 +386,11 @@ function ProfileCard({
                 {profile.city_name || profile.city}
               </h3>
               <span className="text-[10px] font-medium text-white bg-[#ff2f7d] px-1.5 py-0.5 rounded-full" data-testid={`badge-status-${profile.id}`}>
-                Actief
+                {t("common.active")}
               </span>
             </div>
             <p className="text-[13px] font-[500] text-[var(--yo-dark)]">
-              Aangemaakt {new Date(profile.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "short" })}
+              {t("filters.createdOn", { date: new Date(profile.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "short" }) })}
             </p>
           </div>
         </div>
@@ -404,19 +408,19 @@ function ProfileCard({
         {profile.location_mode === "districts" && profile.districts && profile.districts.length > 0 && (
           <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full border border-[var(--yo-divider)]" data-testid={`badge-districts-${profile.id}`}>
             <MapPin className="w-3 h-3" />
-            {profile.districts.length === 1 ? profile.districts[0] : `${profile.districts.length} wijken`}
+            {profile.districts.length === 1 ? profile.districts[0] : t("filters.districtsCount", { count: profile.districts.length })}
           </span>
         )}
         {profile.location_mode === "radius" && profile.radius_km && (
           <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full border border-[var(--yo-divider)]" data-testid={`badge-radius-${profile.id}`}>
             <MapPin className="w-3 h-3" />
-            {profile.radius_km} km radius
+            {profile.radius_km} {t("filters.radius")}
           </span>
         )}
         {profile.location_mode === "commute" && profile.commute_destination && (
           <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full border border-[var(--yo-divider)]" data-testid={`badge-commute-${profile.id}`}>
             <Clock className="w-3 h-3" />
-            {profile.commute_minutes ? `${profile.commute_minutes} min` : ""} {profile.commute_mode === "ov" ? "OV" : profile.commute_mode === "fiets" ? "fiets" : "auto"}
+            {profile.commute_minutes ? t("filters.commute", { time: profile.commute_minutes }) : ""} {profile.commute_mode === "ov" ? t("filters.transit") : profile.commute_mode === "fiets" ? t("filters.bike") : t("filters.car")}
           </span>
         )}
         {(profile.price_min > 0 || profile.price_max > 0) && (
@@ -425,8 +429,8 @@ function ProfileCard({
             {profile.price_min > 0 && profile.price_max > 0
               ? `€${profile.price_min} – €${profile.price_max}`
               : profile.price_min > 0
-              ? `Vanaf €${profile.price_min}`
-              : `Tot €${profile.price_max}`}
+              ? t("filters.fromPrice", { price: profile.price_min })
+              : t("filters.toPrice", { price: profile.price_max })}
           </span>
         )}
         <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full border border-[var(--yo-divider)]">
@@ -446,7 +450,7 @@ function ProfileCard({
         className="w-full h-10 rounded-lg border border-[var(--yo-divider)] text-[13px] font-semibold text-[var(--yo-dark)] hover:bg-[var(--yo-surface)] transition-colors flex items-center justify-center gap-1.5"
         data-testid={`button-edit-${profile.id}`}
       >
-        Bewerken
+        {t("common.edit")}
         <ChevronRight className="w-3.5 h-3.5" />
       </button>
     </div>
@@ -455,6 +459,7 @@ function ProfileCard({
 
 function RecenteMatchesSection({ accessToken, setActiveTab, subscription, navigate }: { accessToken: string | undefined; setActiveTab: (tab: TabKey) => void; subscription: { isTrial: boolean; isExpired: boolean; isActive: boolean; trialEndsAt: string | null }; navigate: (path: string) => void }) {
   const hasActiveSub = subscription.isActive || subscription.isTrial;
+  const { t } = useTranslation();
 
   const { data: matches, isLoading } = useQuery<ApiMatch[]>({
     queryKey: ["/api/matches", "recent-5"],
@@ -476,18 +481,18 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
       <div className="flex flex-col gap-3" data-testid="section-recente-matches-empty">
         <div className="flex items-center gap-2">
           <Heart className="w-4 h-4 text-[var(--yo-dark)]" />
-          <h2 className="text-section-title">Recente matches</h2>
+          <h2 className="text-section-title">{t("home.recentMatches")}</h2>
         </div>
         <div className="bg-[var(--yo-surface)] rounded-lg p-5 text-center">
           <p className="text-[14px] text-[var(--yo-dark)] mb-3">
-            Matches worden zichtbaar zodra je een abonnement activeert.
+            {t("home.matchesWillAppear")}
           </p>
           <button
             onClick={() => navigate("/paywall")}
             className="h-[44px] px-6 rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[14px] font-semibold transition-colors"
             data-testid="button-activate-sub-matches"
           >
-            Bekijk abonnementen
+            {t("home.viewSubscriptions")}
           </button>
         </div>
       </div>
@@ -497,7 +502,7 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
   if (isLoading) {
     return (
       <div className="flex flex-col gap-3">
-        <h2 className="text-section-title">Recente matches</h2>
+        <h2 className="text-section-title">{t("home.recentMatches")}</h2>
         {[1, 2, 3].map((i) => (
           <div key={i} className="h-20 bg-[var(--yo-surface)] rounded-lg animate-pulse" />
         ))}
@@ -510,11 +515,11 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
       <div className="flex flex-col gap-3" data-testid="section-recente-matches-empty">
         <div className="flex items-center gap-2">
           <Heart className="w-4 h-4 text-[var(--yo-dark)]" />
-          <h2 className="text-section-title">Recente matches</h2>
+          <h2 className="text-section-title">{t("home.recentMatches")}</h2>
         </div>
         <div className="bg-[var(--yo-surface)] rounded-lg p-5 text-center">
           <p className="text-[14px] text-[var(--yo-dark)]">
-            Zodra je eerste matches binnenkomen, zie je ze hier.
+            {t("home.firstMatchesWillAppear")}
           </p>
         </div>
       </div>
@@ -526,14 +531,14 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Heart className="w-4 h-4 text-[var(--yo-dark)]" />
-          <h2 className="text-section-title">Recente matches</h2>
+          <h2 className="text-section-title">{t("home.recentMatches")}</h2>
         </div>
         <button
           onClick={() => setActiveTab("matches")}
           className="text-[13px] font-semibold text-[var(--yo-pink)]"
           data-testid="button-view-all-matches"
         >
-          Bekijk alles
+          {t("home.viewAll")}
         </button>
       </div>
       <div className="flex flex-col gap-2">
@@ -622,6 +627,7 @@ function HomeTab({
 }) {
   const [activeTaskModal, setActiveTaskModal] = useState<string | null>(null);
   const [activePrepModal, setActivePrepModal] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const handleAccountTaskClick = (taskId: string) => {
     setActiveTaskModal(taskId);
@@ -669,7 +675,7 @@ function HomeTab({
     <div className="flex flex-col pb-6">
       <div className="sticky top-0 z-10 bg-white pt-5 pb-4 px-6">
         <h1 className="text-page-title" data-testid="text-greeting">
-          {firstName ? `Hallo, ${firstName}` : "Hallo"}
+          {firstName ? t("home.greeting", { name: firstName }) : t("home.greetingDefault")}
         </h1>
       </div>
       <div className="flex flex-col gap-8 px-6">
@@ -682,12 +688,12 @@ function HomeTab({
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[22px] font-bold text-white leading-tight" data-testid="text-match-count">
-                Je hebt {matchCount > 999 ? "999+" : matchCount} nieuwe {matchCount === 1 ? "match" : "matches"} ontvangen
+                {t("home.matchesBanner", { count: matchCount > 999 ? "999+" : matchCount, label: matchCount === 1 ? t("home.matchSingular") : t("home.matchPlural") })}
               </p>
               <p className="text-[14px] font-[500] text-white/70 mt-0.5">
                 {hasProfiles
-                  ? `Op basis van ${profileCount} ${profileCount === 1 ? "zoekprofiel" : "zoekprofielen"}`
-                  : "Op basis van je zoekopdracht"}
+                  ? t("home.basedOnProfiles", { count: profileCount, label: profileCount === 1 ? t("home.profileSingular") : t("home.profilePlural") })
+                  : t("home.basedOnSearch")}
               </p>
             </div>
           </div>
@@ -696,7 +702,7 @@ function HomeTab({
             className="w-full h-[56px] rounded-lg bg-[var(--yo-pink)] hover:opacity-90 text-white text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
             data-testid="button-view-matches"
           >
-            Bekijk je matches
+            {t("home.viewMatches")}
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
@@ -708,10 +714,10 @@ function HomeTab({
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[16px] font-bold text-white leading-tight" data-testid="text-active-searching">
-                We zoeken actief naar woningen voor je
+                {t("home.searchingActive")}
               </p>
               <p className="text-[14px] font-[500] text-white/70 mt-0.5">
-                Je ontvangt matches op basis van {profileCount} {profileCount === 1 ? "zoekprofiel" : "zoekprofielen"}
+                {t("home.receivingMatches", { count: profileCount, label: profileCount === 1 ? t("home.profileSingular") : t("home.profilePlural") })}
               </p>
             </div>
           </div>
@@ -720,7 +726,7 @@ function HomeTab({
             className="w-full h-[56px] rounded-lg bg-[var(--yo-pink)] hover:opacity-90 text-white text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
             data-testid="button-adjust-filters"
           >
-            Filters aanpassen
+            {t("home.adjustFilters")}
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
@@ -733,13 +739,13 @@ function HomeTab({
             <div className="flex-1 min-w-0">
               <p className="text-[16px] font-bold text-white leading-tight" data-testid="text-estimate-count">
                 {perWeekEstimate > 0
-                  ? `Met jouw zoekopdrachten verwachten we ongeveer ${perWeekEstimate} nieuwe woningen per week`
-                  : "Je zoekprofiel is klaar"}
+                  ? t("home.weekEstimate", { count: perWeekEstimate })
+                  : t("home.profileReady")}
               </p>
               <p className="text-[14px] font-[500] text-white/70 mt-0.5">
                 {perWeekEstimate > 0
-                  ? `Op basis van ${profileCount} ${profileCount === 1 ? "zoekprofiel" : "zoekprofielen"}`
-                  : "Activeer je abonnement om matches te ontvangen"}
+                  ? t("home.basedOnProfiles", { count: profileCount, label: profileCount === 1 ? t("home.profileSingular") : t("home.profilePlural") })
+                  : t("home.activateSubToReceive")}
               </p>
             </div>
           </div>
@@ -748,16 +754,16 @@ function HomeTab({
             className="w-full h-[56px] rounded-lg bg-[var(--yo-pink)] hover:opacity-90 text-white text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
             data-testid="button-activate-sub"
           >
-            Abonnement activeren
+            {t("home.activateSubscription")}
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
       ) : (
         <EmptyState
           illustration={EMPTY_STATE_IMAGES.noMatches}
-          title="Nog geen zoekprofiel"
-          description="Maak een zoekprofiel aan en ontvang automatisch matches."
-          ctaLabel="Zoekprofiel aanmaken"
+          title={t("home.noProfileTitle")}
+          description={t("home.noProfileDesc")}
+          ctaLabel={t("home.createProfile")}
           onCtaClick={() => navigate("/dashboard/searches/new")}
           testId="hero-empty"
         />
@@ -767,17 +773,14 @@ function HomeTab({
         <div className="bg-[var(--yo-chip-bg)] rounded-lg px-5 py-3.5 flex items-center gap-3" data-testid="banner-trial">
           <Crown className="w-4 h-4 text-[var(--yo-dark)] flex-shrink-0" />
           <p className="text-[13px] font-[500] text-[var(--yo-dark)] flex-1">
-            Proefperiode tot{" "}
-            <span className="font-semibold text-[var(--yo-dark)]">
-              {new Date(subscription.trialEndsAt).toLocaleDateString("de-DE", { day: "numeric", month: "long" })}
-            </span>
+            {t("home.trialUntil", { date: new Date(subscription.trialEndsAt).toLocaleDateString("de-DE", { day: "numeric", month: "long" }) })}
           </p>
           <button
             onClick={() => navigate("/paywall")}
             className="text-[12px] font-semibold text-[var(--yo-pink)] hover:underline flex-shrink-0"
             data-testid="button-trial-upgrade"
           >
-            Upgrade
+            {t("home.upgrade")}
           </button>
         </div>
       )}
@@ -809,7 +812,7 @@ function HomeTab({
           data-testid="button-manage-filters"
         >
           <SlidersHorizontal className="w-4 h-4" />
-          Beheer filters
+          {t("home.manageFilters")}
         </button>
       )}
       </div>
@@ -817,17 +820,18 @@ function HomeTab({
   );
 }
 
-const MATCH_SUB_TABS: { key: MatchSubTab; label: string; Icon: any }[] = [
-  { key: "nieuw", label: "Nieuw", Icon: Sparkles },
-  { key: "bekeken", label: "Bekeken", Icon: Eye },
-  { key: "opgeslagen", label: "Opgeslagen", Icon: Bookmark },
-  { key: "gereageerd", label: "Gereageerd", Icon: Send },
+const MATCH_SUB_TAB_CONFIG: { key: MatchSubTab; labelKey: string; Icon: any }[] = [
+  { key: "nieuw", labelKey: "matches.subtabs.new", Icon: Sparkles },
+  { key: "bekeken", labelKey: "matches.subtabs.viewed", Icon: Eye },
+  { key: "opgeslagen", labelKey: "matches.subtabs.saved", Icon: Bookmark },
+  { key: "gereageerd", labelKey: "matches.subtabs.applied", Icon: Send },
 ];
 
 function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undefined; setActiveTab: (tab: TabKey) => void }) {
   const [subTab, setSubTab] = useState<MatchSubTab>("nieuw");
   const [refreshKey, setRefreshKey] = useState(0);
   const [applyMatch, setApplyMatch] = useState<ApiMatch | null>(null);
+  const { t } = useTranslation();
 
   const apiMatchesQuery = useQuery<ApiMatchesResponse>({
     queryKey: ["/api/matches"],
@@ -905,16 +909,16 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
   return (
     <div className="flex flex-col gap-5 px-6 pt-6 pb-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-page-title">Matches</h1>
+        <h1 className="text-page-title">{t("matches.title")}</h1>
         {totalCount > 0 && (
           <span className="text-[13px] font-medium text-[var(--yo-dark)] bg-[var(--yo-chip-bg)] px-2.5 py-1 rounded-full" data-testid="badge-match-count">
-            {totalCount > 999 ? "999+" : totalCount} {totalCount === 1 ? "woning" : "woningen"}
+            {totalCount > 999 ? "999+" : totalCount} {totalCount === 1 ? t("matches.listingSingular") : t("matches.listingPlural")}
           </span>
         )}
       </div>
 
       <div className="flex gap-2 bg-[var(--yo-surface)] p-1.5 rounded-full" data-testid="match-sub-tabs">
-        {MATCH_SUB_TABS.map(({ key, label, Icon }) => {
+        {MATCH_SUB_TAB_CONFIG.map(({ key, labelKey, Icon }) => {
           const count = tabCounts[key] || 0;
           const isActive = subTab === key;
           return (
@@ -928,7 +932,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
               }`}
               data-testid={`tab-matches-${key}`}
             >
-              <span>{label}</span>
+              <span>{t(labelKey)}</span>
               {count > 0 && (
                 <span className={`text-[10px] font-bold min-w-[20px] h-[20px] flex items-center justify-center rounded-full ${
                   isActive ? "bg-[var(--yo-dark)] text-white" : "bg-[var(--yo-divider)] text-[var(--yo-dark)]"
@@ -967,22 +971,22 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           <div className="w-12 h-12 rounded-full bg-[var(--yo-chip-bg)] flex items-center justify-center">
             <AlertCircle className="w-5 h-5 text-[var(--yo-dark)]" />
           </div>
-          <p className="text-[18px] font-[700] text-[var(--yo-dark)]">Kon matches niet laden</p>
-          <p className="text-[13px] text-[var(--yo-dark)]">Controleer je verbinding en probeer het opnieuw.</p>
+          <p className="text-[18px] font-[700] text-[var(--yo-dark)]">{t("matches.loadError")}</p>
+          <p className="text-[13px] text-[var(--yo-dark)]">{t("matches.loadErrorDesc")}</p>
           <button
             onClick={() => apiMatchesQuery.refetch()}
             className="text-[13px] font-semibold text-[var(--yo-pink)]"
             data-testid="button-retry-matches"
           >
-            Opnieuw proberen
+            {t("common.retry")}
           </button>
         </div>
       ) : matches.length === 0 ? (
         <EmptyState
           illustration={EMPTY_STATE_IMAGES.noMatches}
-          title="Nog geen matches gevonden"
-          description="We hebben nog geen woningen gevonden die goed aansluiten op jouw voorkeuren. Pas je filters aan of kijk later opnieuw."
-          ctaLabel="Filters aanpassen"
+          title={t("matches.emptyNew.title")}
+          description={t("matches.emptyNew.desc")}
+          ctaLabel={t("matches.adjustFilters")}
           onCtaClick={() => setActiveTab("filters")}
           testId="empty-matches"
         />
@@ -991,27 +995,27 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
         subTab === "opgeslagen" ? (
           <EmptyState
             illustration={EMPTY_STATE_IMAGES.noSaved}
-            title="Je hebt nog geen woningen opgeslagen"
-            description="Sla woningen op die je interessant vindt zodat je ze later makkelijk kunt terugvinden."
-            ctaLabel="Woningen ontdekken"
+            title={t("matches.emptySaved.title")}
+            description={t("matches.emptySaved.desc")}
+            ctaLabel={t("matches.discoverListings")}
             onCtaClick={() => setSubTab("nieuw")}
             testId="empty-saved"
           />
         ) : subTab === "gereageerd" ? (
           <EmptyState
             illustration={EMPTY_STATE_IMAGES.noApplications}
-            title="Je hebt nog niet gereageerd"
-            description="Reageer op woningen die je interessant vindt om je kansen te vergroten."
-            ctaLabel="Woningen ontdekken"
+            title={t("matches.emptyApplied.title")}
+            description={t("matches.emptyApplied.desc")}
+            ctaLabel={t("matches.discoverListings")}
             onCtaClick={() => setSubTab("nieuw")}
             testId="empty-applications"
           />
         ) : (
           <EmptyState
             illustration={EMPTY_STATE_IMAGES.noFilters}
-            title="Geen woningen gevonden"
-            description="We konden geen woningen vinden die bij je huidige filters passen. Pas je filters aan en probeer opnieuw."
-            ctaLabel="Filters aanpassen"
+            title={t("matches.emptyViewed.title")}
+            description={t("matches.emptyViewed.desc")}
+            ctaLabel={t("matches.adjustFilters")}
             onCtaClick={() => setActiveTab("filters")}
             testId="empty-filtered-matches"
           />
@@ -1050,6 +1054,8 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
 }
 
 function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) {
+  const { t } = useTranslation();
+
   return (
     <div className="fixed inset-0 z-50 bg-white flex flex-col">
       <header className="sticky top-0 z-10 bg-white border-b border-[var(--yo-divider)]">
@@ -1061,7 +1067,7 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
           >
             <ArrowLeft className="w-4 h-4 text-[var(--yo-dark)]" />
           </button>
-          <h1 className="text-[17px] font-bold text-[var(--yo-dark)] flex-1 uppercase tracking-wide">Verwijder zoekopdracht</h1>
+          <h1 className="text-[17px] font-bold text-[var(--yo-dark)] flex-1 uppercase tracking-wide">{t("filters.deleteTitle")}</h1>
         </div>
       </header>
 
@@ -1070,10 +1076,10 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
           <Trash2 className="w-8 h-8 text-[var(--yo-pink)]" />
         </div>
         <h2 className="text-[22px] font-bold text-[var(--yo-dark)] mb-3 text-center" data-testid="text-delete-title">
-          Zoekopdracht verwijderen?
+          {t("filters.deleteQuestion")}
         </h2>
         <p className="text-[15px] text-[var(--yo-dark)] text-center max-w-[320px] mb-10 leading-relaxed" data-testid="text-delete-body">
-          Weet je zeker dat je je zoekopdracht wilt verwijderen? Je kunt altijd een nieuwe toevoegen.
+          {t("filters.deleteConfirm")}
         </p>
         <div className="w-full max-w-[320px] flex flex-col gap-3">
           <button
@@ -1081,14 +1087,14 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
             className="w-full h-[56px] rounded-lg bg-[var(--yo-pink)] text-white text-[16px] font-bold transition-colors hover:opacity-90"
             data-testid="button-delete-confirm"
           >
-            Ja, verwijderen
+            {t("filters.deleteYes")}
           </button>
           <button
             onClick={onCancel}
             className="w-full h-[56px] rounded-lg border border-[var(--yo-divider)] text-[var(--yo-dark)] text-[16px] font-bold hover:bg-[var(--yo-surface)] transition-colors"
             data-testid="button-delete-cancel"
           >
-            Nee, behouden
+            {t("filters.deleteNo")}
           </button>
         </div>
       </main>
@@ -1100,6 +1106,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
   const { toast } = useToast();
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const profilesQuery = useQuery<SearchProfile[]>({
     queryKey: ["/search-profiles"],
@@ -1110,12 +1117,12 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
     mutationFn: deleteSearchProfile,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/search-profiles"] });
-      toast({ title: "Zoekopdracht verwijderd" });
+      toast({ title: t("filters.deleted") });
     },
     onError: (err: any) => {
       toast({
-        title: "Verwijderen mislukt",
-        description: err?.message ?? "Probeer het opnieuw.",
+        title: t("filters.deleteFailed"),
+        description: err?.message ?? t("filters.retryDesc"),
         variant: "destructive",
       });
     },
@@ -1130,11 +1137,11 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
     <div className="flex flex-col gap-5 px-6 pt-6 pb-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-page-title">Zoekprofielen</h1>
+          <h1 className="text-page-title">{t("filters.title")}</h1>
           <p className="text-subtitle mt-1">
             {profileCount > 0
-              ? `${profileCount} van ${MAX_PROFILES} actief \u00B7 nieuwe matches verschijnen automatisch`
-              : "Maak een zoekprofiel aan en ontvang automatisch matches"}
+              ? t("filters.activeCountFull", { count: profileCount, max: MAX_PROFILES })
+              : t("filters.createDesc")}
           </p>
         </div>
         {!atLimit && (
@@ -1163,9 +1170,9 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
       ) : profiles.length === 0 ? (
         <EmptyState
           illustration={EMPTY_STATE_IMAGES.noMatches}
-          title="Nog geen matches gevonden"
-          description="Voeg een zoekopdracht toe om automatisch woningen te ontvangen die bij jouw voorkeuren passen."
-          ctaLabel="Zoekprofiel aanmaken"
+          title={t("matches.emptyNew.title")}
+          description={t("filters.noProfilesDesc")}
+          ctaLabel={t("filters.createProfile")}
           onCtaClick={() => navigate("/dashboard/searches/new")}
           testId="empty-profiles"
         />
@@ -1187,7 +1194,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
               data-testid="button-add-search-card"
             >
               <Plus className="w-4 h-4" />
-              Zoekopdracht toevoegen
+              {t("filters.addSearch")}
             </button>
           )}
         </div>
@@ -1210,6 +1217,8 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
 type ProfileSubTab = "over" | "account";
 
 function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl: string | null; onClose: () => void; onUpload: (file: File) => void; onRemove: () => void }) {
+  const { t } = useTranslation();
+
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center" onClick={onClose}>
       <div className="absolute inset-0 bg-black/40" />
@@ -1219,7 +1228,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
       >
         <div className="w-10 h-1 bg-[var(--yo-divider)] rounded-full mx-auto mb-6" />
         <div className="px-5">
-          <h3 className="text-[18px] font-bold text-[var(--yo-dark)] uppercase tracking-wide mb-5">Profielfoto</h3>
+          <h3 className="text-[18px] font-bold text-[var(--yo-dark)] uppercase tracking-wide mb-5">{t("profile.photo.title")}</h3>
 
           {photoUrl && (
             <div className="flex justify-center mb-5">
@@ -1230,7 +1239,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
           <div className="flex flex-col">
             <label className="w-full h-[56px] flex items-center justify-center gap-2 rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold cursor-pointer active:bg-[var(--yo-teal-hover)] transition-colors">
               <Camera className="w-[18px] h-[18px]" />
-              {photoUrl ? "Nieuwe foto kiezen" : "Foto uploaden"}
+              {photoUrl ? t("profile.photo.choose") : t("profile.photo.upload")}
               <input
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
@@ -1250,7 +1259,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
                 data-testid="button-remove-photo"
               >
                 <Trash2 className="w-[18px] h-[18px]" />
-                Foto verwijderen
+                {t("profile.photo.remove")}
               </button>
             )}
 
@@ -1259,7 +1268,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
               className="mt-3 w-full h-[56px] flex items-center justify-center rounded-lg text-[var(--yo-dark)] text-[15px] font-bold active:bg-[var(--yo-surface)] transition-colors"
               data-testid="button-cancel-photo"
             >
-              Annuleren
+              {t("common.cancel")}
             </button>
           </div>
         </div>
@@ -1291,6 +1300,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
   const [showPhotoSheet, setShowPhotoSheet] = useState(false);
   const [photoUploading, setPhotoUploading] = useState(false);
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const profileDataQuery = useQuery({
     queryKey: ["/api/profile-data"],
@@ -1348,7 +1358,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
       });
 
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) throw new Error("Niet ingelogd");
+      if (!session?.access_token) throw new Error(t("profile.notLoggedIn"));
 
       const res = await fetch("/api/profile-photo", {
         method: "POST",
@@ -1358,14 +1368,14 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
 
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.error || "Upload mislukt");
+        throw new Error(err.error || t("profile.uploadFailed"));
       }
 
       queryClient.invalidateQueries({ queryKey: ["/api/profile-data"] });
-      toast({ title: "Foto opgeslagen" });
+      toast({ title: t("profile.photo.saved") });
       setShowPhotoSheet(false);
     } catch (err: any) {
-      toast({ title: "Fout", description: err.message, variant: "destructive" });
+      toast({ title: t("common.error"), description: err.message, variant: "destructive" });
     } finally {
       setPhotoUploading(false);
     }
@@ -1381,35 +1391,35 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
         headers: { Authorization: `Bearer ${session.access_token}` },
       });
 
-      if (!res.ok) throw new Error("Verwijderen mislukt");
+      if (!res.ok) throw new Error(t("profile.deleteFailed"));
 
       queryClient.invalidateQueries({ queryKey: ["/api/profile-data"] });
-      toast({ title: "Foto verwijderd" });
+      toast({ title: t("profile.photo.removed") });
       setShowPhotoSheet(false);
     } catch (err: any) {
-      toast({ title: "Fout", description: err.message, variant: "destructive" });
+      toast({ title: t("common.error"), description: err.message, variant: "destructive" });
     }
   }
 
   const PROFILE_SUBTABS: { key: ProfileSubTab; label: string }[] = [
-    { key: "over", label: "Over jou" },
-    { key: "account", label: "Account" },
+    { key: "over", label: t("profile.subtabs.about") },
+    { key: "account", label: t("profile.subtabs.account") },
   ];
 
   return (
     <div className="min-h-[calc(100vh-80px)] bg-[var(--yo-surface)]">
       <div className="sticky top-0 z-10 bg-white border-b border-[var(--yo-divider)]">
         <div className="max-w-[480px] mx-auto flex relative">
-          {PROFILE_SUBTABS.map(t => (
+          {PROFILE_SUBTABS.map(t2 => (
             <button
-              key={t.key}
-              onClick={() => setProfileSubTab(t.key)}
+              key={t2.key}
+              onClick={() => setProfileSubTab(t2.key)}
               className={`flex-1 text-center py-3.5 text-[15px] font-semibold transition-colors ${
-                profileSubTab === t.key ? "text-[var(--yo-dark)]" : "text-[var(--yo-muted)]"
+                profileSubTab === t2.key ? "text-[var(--yo-dark)]" : "text-[var(--yo-muted)]"
               }`}
-              data-testid={`tab-profile-${t.key}`}
+              data-testid={`tab-profile-${t2.key}`}
             >
-              {t.label}
+              {t2.label}
             </button>
           ))}
           <div
@@ -1439,8 +1449,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-[22px] font-[700] text-[var(--yo-dark)] truncate leading-tight" data-testid="text-user-name">{displayName || "Woningzoeker"}</p>
-                  <p className="text-[14px] text-[var(--yo-dark)] mt-0.5">Woningzoeker</p>
+                  <p className="text-[22px] font-[700] text-[var(--yo-dark)] truncate leading-tight" data-testid="text-user-name">{displayName || t("profile.seeker")}</p>
+                  <p className="text-[14px] text-[var(--yo-dark)] mt-0.5">{t("profile.seeker")}</p>
                 </div>
                 <ChevronRight className="w-5 h-5 text-[var(--yo-dark)] flex-shrink-0" />
               </button>
@@ -1455,7 +1465,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                   </div>
                   <div>
                     <p className="text-[20px] font-bold text-[var(--yo-dark)] leading-none">{matchCount > 999 ? "999+" : matchCount}</p>
-                    <p className="text-[12px] text-[var(--yo-dark)] mt-1 leading-tight">Ontvangen matches</p>
+                    <p className="text-[12px] text-[var(--yo-dark)] mt-1 leading-tight">{t("profile.stats.matchesReceived")}</p>
                   </div>
                 </div>
                 <div className="w-px bg-[var(--yo-divider)] my-3" />
@@ -1465,14 +1475,14 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                   </div>
                   <div>
                     <p className="text-[20px] font-bold text-[var(--yo-dark)] leading-none">{stats.reactions_sent}</p>
-                    <p className="text-[12px] text-[var(--yo-dark)] mt-1 leading-tight">Verstuurde reacties</p>
+                    <p className="text-[12px] text-[var(--yo-dark)] mt-1 leading-tight">{t("profile.stats.reactionsSent")}</p>
                   </div>
                 </div>
               </div>
               ) : (
               <div className="p-4 text-center" data-testid="kpi-no-sub">
                 <p className="text-[14px] text-[var(--yo-dark)]">
-                  Activeer een abonnement om je matchstatistieken te zien.
+                  {t("profile.activateSubStats")}
                 </p>
               </div>
               )}
@@ -1484,7 +1494,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                 className="w-full h-[56px] flex items-center justify-between px-5 text-left active:bg-[var(--yo-surface)] transition-colors"
                 data-testid="button-edit-details"
               >
-                <p className="text-[15px] font-semibold text-[var(--yo-pink)]">Persoonlijke gegevens bewerken</p>
+                <p className="text-[15px] font-semibold text-[var(--yo-pink)]">{t("profile.editDetails")}</p>
                 <ChevronRight className="w-[18px] h-[18px] text-[var(--yo-dark)] flex-shrink-0" />
               </button>
               <div className="h-px bg-[var(--yo-divider)] mx-5" />
@@ -1493,13 +1503,13 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                 className="w-full h-[56px] flex items-center justify-between px-5 text-left active:bg-[var(--yo-surface)] transition-colors"
                 data-testid="button-edit-photo"
               >
-                <p className="text-[15px] font-semibold text-[var(--yo-pink)]">Profielfoto bewerken</p>
+                <p className="text-[15px] font-semibold text-[var(--yo-pink)]">{t("profile.editPhoto")}</p>
                 <ChevronRight className="w-[18px] h-[18px] text-[var(--yo-dark)] flex-shrink-0" />
               </button>
             </div>
 
             <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5">
-              <h2 className="text-[20px] font-bold text-[var(--yo-dark)] mb-4" data-testid="section-verified">Je hebt een Geverifieerd Profiel</h2>
+              <h2 className="text-[20px] font-bold text-[var(--yo-dark)] mb-4" data-testid="section-verified">{t("profile.verified")}</h2>
               <div className="flex flex-col">
                 <div className="flex items-center gap-3 py-3">
                   <div className="w-6 h-6 rounded-full bg-[#3ED6C6] flex items-center justify-center flex-shrink-0">
@@ -1517,14 +1527,14 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                     <AlertCircle className="w-5 h-5 text-[var(--yo-dark)] flex-shrink-0" />
                   )}
                   <p className={`text-[15px] ${phone ? "text-[var(--yo-dark)]" : "text-[var(--yo-muted)]"}`}>
-                    {phone || "Telefoonnummer toevoegen"}
+                    {phone || t("profile.addPhone")}
                   </p>
                 </div>
               </div>
             </div>
 
             <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5">
-              <h2 className="text-[20px] font-bold text-[var(--yo-dark)] mb-3">Reactiebrief</h2>
+              <h2 className="text-[20px] font-bold text-[var(--yo-dark)] mb-3">{t("profile.applicationLetter")}</h2>
               {letterPreview ? (
                 <div>
                   <p className="text-[15px] text-[var(--yo-dark)] leading-relaxed line-clamp-4">{letterPreview}...</p>
@@ -1533,40 +1543,40 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                     className="mt-3 text-[15px] font-semibold text-[var(--yo-pink)] active:opacity-70 transition-opacity"
                     data-testid="button-letter-preview"
                   >
-                    Bewerken
+                    {t("common.edit")}
                   </button>
                 </div>
               ) : (
                 <div>
-                  <p className="text-[15px] text-[var(--yo-dark)] leading-relaxed">Je hebt nog geen reactiebrief geschreven.</p>
+                  <p className="text-[15px] text-[var(--yo-dark)] leading-relaxed">{t("profile.noLetterYet")}</p>
                   <button
                     onClick={() => navigate("/application-letter")}
                     className="mt-3 text-[15px] font-semibold text-[var(--yo-pink)] active:opacity-70 transition-opacity"
                     data-testid="button-letter-empty"
                   >
-                    Schrijf je brief
+                    {t("profile.writeLetter")}
                   </button>
                 </div>
               )}
             </div>
 
             <div>
-              <p className="text-[13px] font-semibold text-[var(--yo-dark)] uppercase tracking-wide mb-3">Ondersteuning</p>
+              <p className="text-[13px] font-semibold text-[var(--yo-dark)] uppercase tracking-wide mb-3">{t("profile.support")}</p>
               <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
                 <AccountSettingsRow
-                  label="Privacy"
+                  label={t("profile.privacy")}
                   onClick={() => navigate("/datenschutz")}
                 />
                 <div className="h-px bg-[var(--yo-divider)] mx-5" />
                 <AccountSettingsRow
-                  label="Hulp & support"
+                  label={t("profile.helpSupport")}
                   onClick={() => {
                     window.location.href = "mailto:support@housalert.de";
                   }}
                 />
                 <div className="h-px bg-[var(--yo-divider)] mx-5" />
                 <AccountSettingsRow
-                  label="Algemene voorwaarden"
+                  label={t("profile.terms")}
                   onClick={() => navigate("/terms")}
                 />
               </div>
@@ -1576,30 +1586,30 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
           <div className="flex flex-col gap-6">
             <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
               <AccountSettingsRow
-                label="Meldingsinstellingen"
-                subtext="E-mail, pushmeldingen"
+                label={t("profile.notifications")}
+                subtext={t("profile.notificationsDesc")}
                 onClick={() => navigate("/settings/notifications")}
               />
               <div className="h-px bg-[var(--yo-divider)] mx-5" />
               <AccountSettingsRow
-                label="Accountgegevens"
-                subtext="E-mail en telefoonnummer"
+                label={t("profile.accountDetails")}
+                subtext={t("profile.accountDetailsDesc")}
                 onClick={() => navigate("/profile/details")}
               />
               <div className="h-px bg-[var(--yo-divider)] mx-5" />
               <AccountSettingsRow
-                label="Wachtwoord en beveiliging"
-                subtext="Wachtwoord wijzigen"
+                label={t("profile.passwordSecurity")}
+                subtext={t("profile.passwordChange")}
                 onClick={() => navigate("/account/change-password")}
               />
               <div className="h-px bg-[var(--yo-divider)] mx-5" />
               <AccountSettingsRow
-                label="Abonnement"
+                label={t("profile.subscription")}
                 subtext={subscription.isActive && !subscription.isTrial
-                  ? "Maandelijks • Actief"
+                  ? t("profile.subscriptionMonthly")
                   : subscription.isTrial
-                  ? "Proefperiode"
-                  : "Verlopen"}
+                  ? t("profile.subscriptionTrial")
+                  : t("profile.subscriptionExpired")}
                 onClick={() => navigate("/account/subscription")}
                 trailing={
                   subscription.isActive && !subscription.isTrial ? (
@@ -1607,16 +1617,16 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                       className="text-[12px] font-[600] px-2.5 py-1 rounded-full flex-shrink-0 text-[var(--yo-dark)] bg-[var(--yo-chip-bg)]"
                       data-testid="text-subscription-status"
                     >
-                      Actief
+                      {t("common.active")}
                     </span>
                   ) : subscription.isTrial ? (
                     <span
                       className="text-[12px] font-[600] px-2.5 py-1 rounded-full flex-shrink-0 text-[var(--yo-dark)] bg-[var(--yo-chip-bg)]"
                       data-testid="text-subscription-status"
                     >
-                      Proef
+                      {t("profile.trial")}
                     </span>
-                  ) : null
+                  ) : undefined
                 }
               />
               <div className="h-px bg-[var(--yo-divider)] mx-5" />
@@ -1626,7 +1636,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                 className={`w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[var(--yo-surface)] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
                 data-testid="button-logout"
               >
-                <p className="text-[15px] font-[500] text-[var(--yo-pink)] flex-1">{signingOut ? "Uitloggen..." : "Uitloggen"}</p>
+                <p className="text-[15px] font-[500] text-[var(--yo-pink)] flex-1">{signingOut ? t("profile.signingOut") : t("profile.logout")}</p>
               </button>
               <div className="h-px bg-[var(--yo-divider)] mx-5" />
               <button
@@ -1634,7 +1644,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                 className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[var(--yo-surface)] transition-colors"
                 data-testid="button-delete-account"
               >
-                <p className="text-[15px] font-[500] text-[var(--yo-pink)] flex-1">Account verwijderen</p>
+                <p className="text-[15px] font-[500] text-[var(--yo-pink)] flex-1">{t("profile.deleteAccount")}</p>
               </button>
             </div>
 
@@ -1645,7 +1655,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                 data-testid="button-upgrade-subscription"
               >
                 <Crown className="w-4 h-4" />
-                Kies een abonnement
+                {t("profile.chooseSubscription")}
               </button>
             )}
           </div>
@@ -1672,7 +1682,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
               >
                 <ArrowLeft className="w-4 h-4 text-[var(--yo-dark)]" />
               </button>
-              <h1 className="text-[17px] font-bold text-[var(--yo-dark)] flex-1 uppercase tracking-wide">Uitloggen</h1>
+              <h1 className="text-[17px] font-bold text-[var(--yo-dark)] flex-1 uppercase tracking-wide">{t("profile.logout")}</h1>
             </div>
           </header>
           <main className="flex-1 flex flex-col items-center justify-center px-6">
@@ -1680,10 +1690,10 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
               <LogOut className="w-8 h-8 text-[var(--yo-dark)]" />
             </div>
             <h2 className="text-[22px] font-bold text-[var(--yo-dark)] mb-3 text-center" data-testid="text-logout-title">
-              Wil je uitloggen?
+              {t("profile.logoutConfirm")}
             </h2>
             <p className="text-[15px] text-[var(--yo-dark)] text-center max-w-[320px] mb-10 leading-relaxed">
-              Je kunt op elk moment weer inloggen met je e-mailadres en wachtwoord.
+              {t("profile.logoutDesc")}
             </p>
             <div className="w-full max-w-[320px] flex flex-col gap-3">
               <button
@@ -1692,14 +1702,14 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                 className="w-full h-[56px] rounded-lg bg-[var(--yo-pink)] text-white text-[16px] font-bold transition-colors hover:opacity-90 disabled:opacity-50"
                 data-testid="button-logout-confirm"
               >
-                {signingOut ? "Uitloggen..." : "Ja, uitloggen"}
+                {signingOut ? t("profile.signingOut") : t("profile.logoutYes")}
               </button>
               <button
                 onClick={() => setShowLogoutConfirm(false)}
                 className="w-full h-[56px] rounded-lg border border-[var(--yo-divider)] text-[var(--yo-dark)] text-[16px] font-bold hover:bg-[var(--yo-surface)] transition-colors"
                 data-testid="button-logout-cancel"
               >
-                Annuleren
+                {t("common.cancel")}
               </button>
             </div>
           </main>
@@ -1709,17 +1719,18 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
   );
 }
 
-const TAB_CONFIG: { key: TabKey; label: string; Icon: any }[] = [
-  { key: "home", label: "Home", Icon: Home },
-  { key: "matches", label: "Matches", Icon: Heart },
-  { key: "tips", label: "Tips", Icon: Zap },
-  { key: "filters", label: "Filters", Icon: SlidersHorizontal },
-  { key: "profiel", label: "Profiel", Icon: User },
+const TAB_CONFIG: { key: TabKey; labelKey: string; Icon: any }[] = [
+  { key: "home", labelKey: "nav.home", Icon: Home },
+  { key: "matches", labelKey: "nav.matches", Icon: Heart },
+  { key: "tips", labelKey: "nav.tips", Icon: Zap },
+  { key: "filters", labelKey: "nav.filters", Icon: SlidersHorizontal },
+  { key: "profiel", labelKey: "nav.profile", Icon: User },
 ];
 
 export default function DashboardPage() {
   const { user, session, loading, signOut } = useAuth();
   const [, navigate] = useLocation();
+  const { t } = useTranslation();
   const [initialSubTab] = useState<ProfileSubTab>(() => {
     const params = new URLSearchParams(window.location.search);
     const s = params.get("sub");
@@ -1760,7 +1771,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("payment") === "success") {
-      toast({ title: "Betaling gelukt!", description: "Je abonnement is nu actief." });
+      toast({ title: t("home.paymentSuccess"), description: t("home.subscriptionNowActive") });
       window.history.replaceState({}, "", "/dashboard");
       sub.refetch?.();
       queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
@@ -1787,7 +1798,7 @@ export default function DashboardPage() {
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-[var(--yo-chip-bg)] animate-pulse" />
-          <p className="text-[var(--yo-dark)] text-sm">Laden...</p>
+          <p className="text-[var(--yo-dark)] text-sm">{t("common.loading")}</p>
         </div>
       </div>
     );
@@ -1834,7 +1845,7 @@ export default function DashboardPage() {
 
       <nav className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[var(--yo-divider)] safe-area-bottom">
         <div className="max-w-xl mx-auto flex">
-          {TAB_CONFIG.map(({ key, label, Icon }) => {
+          {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
             const isActive = activeTab === key;
             return (
               <button
@@ -1850,7 +1861,7 @@ export default function DashboardPage() {
                 )}
                 <Icon className="w-[22px] h-[22px]" />
                 <span className={`text-[11px] mt-0.5 ${isActive ? "font-semibold" : "font-medium"}`}>
-                  {label}
+                  {t(labelKey)}
                 </span>
               </button>
             );

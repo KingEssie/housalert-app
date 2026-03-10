@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import { useLocation, useSearch } from "wouter";
 import { Home, ChevronLeft, TrendingUp, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/i18n";
 
 export default function OnboardingEstimatePage() {
   const [, navigate] = useLocation();
+  const { t } = useTranslation();
   const searchString = useSearch();
   const params = new URLSearchParams(searchString);
 
@@ -65,10 +67,10 @@ export default function OnboardingEstimatePage() {
 
   const filterChips = [
     { label: city, show: !!city, testId: "tag-city" },
-    { label: `Vanaf €${minPrice}`, show: !!minPrice, testId: "tag-min-price" },
-    { label: `Tot €${maxPrice}`, show: !!maxPrice, testId: "tag-max-price" },
-    { label: `${minRooms}+ slaapkamers`, show: !!minRooms && minRooms !== "any", testId: "tag-bedrooms" },
-    { label: `${minSize}+ m²`, show: !!minSize, testId: "tag-size" },
+    { label: t("onboardingEstimate.fromPrice", { price: minPrice }), show: !!minPrice, testId: "tag-min-price" },
+    { label: t("onboardingEstimate.toPrice", { price: maxPrice }), show: !!maxPrice, testId: "tag-max-price" },
+    { label: t("onboardingEstimate.bedroomsPlus", { count: minRooms }), show: !!minRooms && minRooms !== "any", testId: "tag-bedrooms" },
+    { label: t("onboardingEstimate.sizePlus", { size: minSize }), show: !!minSize, testId: "tag-size" },
   ].filter((c) => c.show);
 
   return (
@@ -102,15 +104,15 @@ export default function OnboardingEstimatePage() {
             </div>
           ))}
         </div>
-        <p className="text-xs font-medium text-[var(--yo-dark)] mt-2" data-testid="text-step-indicator">Stap 3 van 3</p>
+        <p className="text-xs font-medium text-[var(--yo-dark)] mt-2" data-testid="text-step-indicator">{t("onboardingEstimate.stepIndicator", { step: 3, total: 3 })}</p>
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-8 pt-4 flex flex-col">
         <h1 className="text-[32px] font-[800] text-[var(--yo-dark)] leading-[1.1] tracking-[-0.03em] mb-3 text-center" data-testid="text-estimate-title">
-          Jouw schatting
+          {t("onboardingEstimate.title")}
         </h1>
         <p className="text-[15px] text-[var(--yo-dark)] text-center mb-6">
-          Op basis van jouw zoekcriteria in <span className="font-semibold text-[var(--yo-dark)]">{city}</span>
+          {t("onboardingEstimate.subtitle", { city })}
         </p>
 
         <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6" data-testid="card-estimate">
@@ -129,9 +131,7 @@ export default function OnboardingEstimatePage() {
                   {estimate}
                 </p>
                 <p className="text-base text-[var(--yo-dark)] leading-relaxed max-w-sm mx-auto" data-testid="text-estimate-description">
-                  Met jouw zoekcriteria verwachten we ongeveer{" "}
-                  <span className="font-bold text-[var(--yo-dark)]">{estimate} nieuwe woningen</span>{" "}
-                  per week.
+                  {t("onboardingEstimate.estimateDesc", { count: estimate ?? 0 })}
                 </p>
               </>
             )}
@@ -139,7 +139,7 @@ export default function OnboardingEstimatePage() {
 
           {filterChips.length > 0 && (
             <div className="py-5 border-b border-[var(--yo-divider)]">
-              <p className="text-sm font-semibold text-[var(--yo-dark)] mb-3">Jouw filters</p>
+              <p className="text-sm font-semibold text-[var(--yo-dark)] mb-3">{t("onboardingEstimate.yourFilters")}</p>
               <div className="flex flex-wrap gap-2">
                 {filterChips.map((chip) => (
                   <span
@@ -157,7 +157,7 @@ export default function OnboardingEstimatePage() {
           <div className="flex items-start gap-3 py-5 border-b border-[var(--yo-divider)]">
             <Sparkles className="w-5 h-5 text-[var(--yo-teal)] flex-shrink-0 mt-0.5" />
             <p className="text-sm text-[var(--yo-dark)] leading-relaxed">
-              Maak een account aan en we sturen je direct een melding als er een woning beschikbaar komt die aan je criteria voldoet.
+              {t("onboardingEstimate.ctaText")}
             </p>
           </div>
 
@@ -169,7 +169,7 @@ export default function OnboardingEstimatePage() {
               onClick={handleBack}
               data-testid="button-back-estimate"
             >
-              Terug
+              {t("onboardingEstimate.back")}
             </Button>
             <Button
               size="lg"
@@ -178,7 +178,7 @@ export default function OnboardingEstimatePage() {
               disabled={loading}
               data-testid="button-create-account"
             >
-              Maak account en ontvang deze woningen
+              {t("onboardingEstimate.createAccount")}
             </Button>
           </div>
         </div>

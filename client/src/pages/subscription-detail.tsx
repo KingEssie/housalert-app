@@ -3,6 +3,7 @@ import { Crown, CreditCard, Calendar, RefreshCw, ChevronRight, AlertCircle } fro
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/ui/page-header";
 import { useSubscription } from "@/lib/subscription";
+import { useTranslation } from "@/i18n";
 
 function formatDate(dateStr: string | null | undefined): string {
   if (!dateStr) return "\u2014";
@@ -13,35 +14,9 @@ function formatDate(dateStr: string | null | undefined): string {
   });
 }
 
-function getPlanLabel(plan: string | null | undefined): string {
-  switch (plan) {
-    case "monthly": return "Premium Maandelijks";
-    case "two_month": return "Premium 2 Maanden";
-    case "three_month": return "Premium 3 Maanden";
-    default: return "Premium";
-  }
-}
-
-function getPriceLabel(plan: string | null | undefined): string {
-  switch (plan) {
-    case "monthly": return "\u20AC14,99 / maand";
-    case "two_month": return "\u20AC24,99 / 2 maanden";
-    case "three_month": return "\u20AC29,99 / 3 maanden";
-    default: return "\u2014";
-  }
-}
-
-function getBillingFrequency(plan: string | null | undefined): string {
-  switch (plan) {
-    case "monthly": return "Maandelijks";
-    case "two_month": return "Elke 2 maanden";
-    case "three_month": return "Elke 3 maanden";
-    default: return "\u2014";
-  }
-}
-
 export default function SubscriptionDetailPage() {
   const [, navigate] = useLocation();
+  const { t } = useTranslation();
 
   const sub = useSubscription();
   const isLoading = sub.loading;
@@ -56,11 +31,38 @@ export default function SubscriptionDetailPage() {
     isExpired: sub.isExpired,
   };
 
+  function getPlanLabel(plan: string | null | undefined): string {
+    switch (plan) {
+      case "monthly": return t("subscription.planLabel.monthly");
+      case "two_month": return t("subscription.planLabel.twoMonth");
+      case "three_month": return t("subscription.planLabel.threeMonth");
+      default: return t("subscription.planLabel.default");
+    }
+  }
+
+  function getPriceLabel(plan: string | null | undefined): string {
+    switch (plan) {
+      case "monthly": return t("subscription.priceLabel.monthly");
+      case "two_month": return t("subscription.priceLabel.twoMonth");
+      case "three_month": return t("subscription.priceLabel.threeMonth");
+      default: return "\u2014";
+    }
+  }
+
+  function getBillingFrequency(plan: string | null | undefined): string {
+    switch (plan) {
+      case "monthly": return t("subscription.billingFrequencyValue.monthly");
+      case "two_month": return t("subscription.billingFrequencyValue.twoMonth");
+      case "three_month": return t("subscription.billingFrequencyValue.threeMonth");
+      default: return "\u2014";
+    }
+  }
+
   const statusLabel = subscription?.isTrial
-    ? "Proefperiode"
+    ? t("subscription.status.trial")
     : subscription?.isActive
-      ? "Actief"
-      : "Verlopen";
+      ? t("subscription.status.active")
+      : t("subscription.status.expired");
 
   const statusVariant = subscription?.isActive || subscription?.isTrial ? "success" : "secondary";
 
@@ -71,7 +73,7 @@ export default function SubscriptionDetailPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <PageHeader title="Abonnement" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
+        <PageHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
         <div className="max-w-xl mx-auto p-4 space-y-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="bg-card rounded-lg border p-5 animate-pulse" style={{ borderColor: "var(--yo-divider)" }}>
@@ -86,7 +88,7 @@ export default function SubscriptionDetailPage() {
 
   return (
     <div className="min-h-screen bg-background" data-testid="page-subscription-detail">
-      <PageHeader title="Abonnement" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
+      <PageHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
       <div className="max-w-xl mx-auto p-4 space-y-4 pb-8">
         <div className="bg-card rounded-lg border p-5" style={{ borderColor: "var(--yo-divider)" }} data-testid="card-subscription-plan">
@@ -96,7 +98,7 @@ export default function SubscriptionDetailPage() {
             </div>
             <div className="flex-1">
               <p className="text-[16px] font-semibold" style={{ color: "var(--yo-dark)" }} data-testid="text-plan-name">
-                {subscription?.isTrial ? "Proefperiode" : getPlanLabel(subscription?.plan)}
+                {subscription?.isTrial ? t("subscription.status.trial") : getPlanLabel(subscription?.plan)}
               </p>
               <Badge
                 className="mt-1"
@@ -124,12 +126,12 @@ export default function SubscriptionDetailPage() {
 
         <div className="bg-card rounded-lg border overflow-hidden" style={{ borderColor: "var(--yo-divider)" }} data-testid="card-subscription-details">
           <div className="px-5 pt-5 pb-2">
-            <p className="text-[13px] font-semibold uppercase tracking-wider" style={{ color: "var(--yo-muted)" }}>Details</p>
+            <p className="text-[13px] font-semibold uppercase tracking-wider" style={{ color: "var(--yo-muted)" }}>{t("subscription.details")}</p>
           </div>
 
           <DetailRow
             icon={<Calendar className="w-[18px] h-[18px]" style={{ color: "var(--yo-teal)" }} />}
-            label="Startdatum"
+            label={t("subscription.startDate")}
             value={formatDate(startDate)}
             testId="text-start-date"
           />
@@ -137,7 +139,7 @@ export default function SubscriptionDetailPage() {
 
           <DetailRow
             icon={<Calendar className="w-[18px] h-[18px]" style={{ color: "var(--yo-teal)" }} />}
-            label={subscription?.isTrial ? "Proefperiode eindigt" : "Volgende verlenging"}
+            label={subscription?.isTrial ? t("subscription.trialEnds") : t("subscription.nextRenewal")}
             value={formatDate(renewalDate)}
             testId="text-renewal-date"
           />
@@ -145,23 +147,23 @@ export default function SubscriptionDetailPage() {
 
           <DetailRow
             icon={<RefreshCw className="w-[18px] h-[18px]" style={{ color: "var(--yo-teal)" }} />}
-            label="Factureringsfrequentie"
-            value={subscription?.isTrial ? "Proefperiode" : getBillingFrequency(subscription?.plan)}
+            label={t("subscription.billingFrequency")}
+            value={subscription?.isTrial ? t("subscription.status.trial") : getBillingFrequency(subscription?.plan)}
             testId="text-billing-frequency"
           />
           <div className="mx-5" style={{ borderBottom: "1px solid var(--yo-divider)" }} />
 
           <DetailRow
             icon={<RefreshCw className="w-[18px] h-[18px]" style={{ color: "var(--yo-teal)" }} />}
-            label="Automatisch verlengen"
-            value={subscription?.isActive && !subscription?.isTrial ? "Aan" : "Uit"}
+            label={t("subscription.autoRenew")}
+            value={subscription?.isActive && !subscription?.isTrial ? t("subscription.on") : t("subscription.off")}
             testId="text-auto-renew"
           />
           <div className="mx-5" style={{ borderBottom: "1px solid var(--yo-divider)" }} />
 
           <DetailRow
             icon={<CreditCard className="w-[18px] h-[18px]" style={{ color: "var(--yo-teal)" }} />}
-            label="Betaalmethode"
+            label={t("subscription.paymentMethod")}
             value="4242 (Visa)"
             testId="text-payment-method"
           />
@@ -169,18 +171,18 @@ export default function SubscriptionDetailPage() {
 
         <div className="bg-card rounded-lg border overflow-hidden" style={{ borderColor: "var(--yo-divider)" }} data-testid="card-subscription-actions">
           <div className="px-5 pt-5 pb-2">
-            <p className="text-[13px] font-semibold uppercase tracking-wider" style={{ color: "var(--yo-muted)" }}>Beheren</p>
+            <p className="text-[13px] font-semibold uppercase tracking-wider" style={{ color: "var(--yo-muted)" }}>{t("subscription.manage")}</p>
           </div>
 
           <ActionRow
-            label="Betaalmethode beheren"
+            label={t("subscription.managePayment")}
             onClick={() => navigate("/account/payment-method")}
             testId="button-manage-payment"
           />
           <div className="mx-5" style={{ borderBottom: "1px solid var(--yo-divider)" }} />
 
           <ActionRow
-            label="Abonnement opzeggen"
+            label={t("subscription.cancelSubscription")}
             onClick={() => navigate("/account/subscription/cancel")}
             danger
             testId="button-cancel-subscription"
@@ -194,8 +196,8 @@ export default function SubscriptionDetailPage() {
                 <AlertCircle className="w-5 h-5" style={{ color: "var(--yo-teal)" }} />
               </div>
               <div>
-                <p className="text-[15px] font-semibold" style={{ color: "var(--yo-dark)" }}>Je abonnement is verlopen</p>
-                <p className="text-[14px] text-muted-foreground mt-0.5">Verleng je abonnement om weer toegang te krijgen tot alle functies.</p>
+                <p className="text-[15px] font-semibold" style={{ color: "var(--yo-dark)" }}>{t("subscription.expiredTitle")}</p>
+                <p className="text-[14px] text-muted-foreground mt-0.5">{t("subscription.expiredDesc")}</p>
               </div>
             </div>
             <button
@@ -203,7 +205,7 @@ export default function SubscriptionDetailPage() {
               className="w-full h-[48px] bg-primary text-primary-foreground rounded-lg font-semibold text-[15px] transition-colors"
               data-testid="button-renew-subscription"
             >
-              Abonnement verlengen
+              {t("subscription.renewSubscription")}
             </button>
           </div>
         )}

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
+import { useTranslation } from "@/i18n";
 import { MapPin, Euro, BedDouble, Ruler, ExternalLink, Clock, Globe, Zap, CheckCircle2, ImageIcon, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ApplySheet } from "@/components/apply-sheet";
@@ -21,11 +22,11 @@ const FRESH_BADGE_STYLES: Record<string, { bg: string; text: string }> = {
   ouder: { bg: "bg-[var(--yo-surface)]", text: "text-[var(--yo-dark)]" },
 };
 
-const FRESH_LABEL_TEXT: Record<string, string> = {
-  net_binnen: "Net binnen",
-  nieuw: "Nieuw",
-  vandaag: "Vandaag",
-  ouder: "Ouder",
+const FRESH_LABEL_KEYS: Record<string, string> = {
+  net_binnen: "freshness.justIn",
+  nieuw: "freshness.new",
+  vandaag: "freshness.today",
+  ouder: "freshness.older",
 };
 
 const CITY_GRADIENTS: Record<string, string> = {
@@ -45,32 +46,21 @@ function getCityGradient(city: string): string {
   return CITY_GRADIENTS.default;
 }
 
-function relativeTime(dateStr: string | null | undefined): string {
-  if (!dateStr) return "";
-  const diff = Date.now() - new Date(dateStr).getTime();
-  if (diff < 0) return "zojuist";
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return "zojuist";
-  if (mins < 60) return `${mins} min geleden`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours} uur geleden`;
-  const days = Math.floor(hours / 24);
-  return `${days} ${days === 1 ? "dag" : "dagen"} geleden`;
+function useRelativeTime() {
+  const { t } = useTranslation();
+  return (dateStr: string | null | undefined): string => {
+    if (!dateStr) return "";
+    const diff = Date.now() - new Date(dateStr).getTime();
+    if (diff < 0) return t("freshness.justNow");
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return t("freshness.justNow");
+    if (mins < 60) return t("freshness.minutesAgo", { n: mins });
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return t("freshness.hoursAgo", { n: hours });
+    const days = Math.floor(hours / 24);
+    return days === 1 ? t("freshness.dayAgo", { n: days }) : t("freshness.daysAgo", { n: days });
+  };
 }
-
-function displayMatchLabel(score: number, serverLabel: string): string {
-  if (score >= 90) return "Perfecte match";
-  if (score >= 75) return "Goede match";
-  if (score >= 65) return "Interessant";
-  return serverLabel;
-}
-
-const MATCH_REASON_DETAIL: Record<string, { label: string; description: string }> = {
-  locatie: { label: "In jouw gekozen stad", description: "Deze woning ligt in de stad die je hebt opgegeven." },
-  prijs: { label: "Past binnen jouw budget", description: "De huurprijs valt binnen je opgegeven prijsklasse." },
-  kamers: { label: "Past bij jouw woningtype", description: "Het aantal kamers komt overeen met je wensen." },
-  grootte: { label: "Goede grootte", description: "De oppervlakte past bij je minimale vereisten." },
-};
 
 interface Listing {
   id: string;
@@ -95,8 +85,10 @@ export default function ListingDetailPage() {
   const [match, params] = useRoute("/listing/:id");
   const id = params?.id;
   const { session } = useAuth();
+  const { t } = useTranslation();
   const [applyOpen, setApplyOpen] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const relativeTime = useRelativeTime();
 
   const { data: listing, isLoading, isError } = useQuery<Listing>({
     queryKey: ["/api/listings", id],
@@ -136,10 +128,10 @@ export default function ListingDetailPage() {
         <FloatingBackButton navigate={navigate} />
         <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-16">
           <div className="bg-white rounded-lg border border-[var(--yo-divider)] p-8 text-center">
-            <p className="text-[18px] font-bold text-[var(--yo-dark)] mb-2">Advertentie niet gevonden</p>
-            <p className="text-[13px] text-[var(--yo-dark)] mb-4">Deze advertentie bestaat niet meer of is verwijderd.</p>
+            <p className="text-[18px] font-bold text-[var(--yo-dark)] mb-2">{t("listing.notFound")}</p>
+            <p className="text-[13px] text-[var(--yo-dark)] mb-4">{t("listing.notFoundDesc")}</p>
             <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold" data-testid="button-back-dashboard">
-              Terug naar dashboard
+              {t("listing.backToDashboard")}
             </Button>
           </div>
         </main>
@@ -156,6 +148,20 @@ export default function ListingDetailPage() {
     : listing.match_score >= 75 ? "bg-[var(--yo-chip-bg)] text-[var(--yo-dark)]"
     : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
     : "";
+
+  const displayMatchLabel = (score: number, serverLabel: string): string => {
+    if (score >= 90) return t("matchLabel.perfect");
+    if (score >= 75) return t("matchLabel.good");
+    if (score >= 65) return t("matchLabel.interesting");
+    return serverLabel;
+  };
+
+  const MATCH_REASON_DETAIL: Record<string, { label: string; description: string }> = {
+    locatie: { label: t("listing.matchReasons.inCity"), description: t("listing.matchReasons.inCityDesc") },
+    prijs: { label: t("listing.matchReasons.inBudget"), description: t("listing.matchReasons.inBudgetDesc") },
+    kamers: { label: t("listing.matchReasons.matchesType"), description: t("listing.matchReasons.matchesTypeDesc") },
+    grootte: { label: t("listing.matchReasons.goodSize"), description: t("listing.matchReasons.goodSizeDesc") },
+  };
 
   return (
     <div className="min-h-screen bg-[var(--yo-surface)] flex flex-col relative">
@@ -183,7 +189,7 @@ export default function ListingDetailPage() {
 
         <div className="absolute top-3 left-3 flex items-center gap-2">
           <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm ${style.bg} ${style.text}`} data-testid="badge-freshness">
-            {FRESH_LABEL_TEXT[listing.fresh_label] ?? listing.fresh_label}
+            {t(FRESH_LABEL_KEYS[listing.fresh_label] ?? "freshness.older")}
           </span>
           <span className="text-[11px] font-medium text-white/90 bg-black/30 backdrop-blur-sm px-2.5 py-1 rounded-full flex items-center gap-1">
             <Clock className="w-3 h-3" />
@@ -217,13 +223,13 @@ export default function ListingDetailPage() {
             {listing.price > 0 && (
               <div className="flex items-baseline gap-1 mb-1">
                 <span className="text-[28px] font-[800] text-[var(--yo-dark)]" data-testid="text-listing-price">€{listing.price}</span>
-                <span className="text-[15px] font-medium text-[var(--yo-dark)]">/ mnd</span>
+                <span className="text-[15px] font-medium text-[var(--yo-dark)]">{t("common.perMonth")}</span>
               </div>
             )}
           </div>
 
           <div className="bg-white rounded-lg border border-[var(--yo-divider)] p-5">
-            <h2 className="text-section-title mb-4">Details</h2>
+            <h2 className="text-section-title mb-4">{t("listing.details")}</h2>
             <div className="grid grid-cols-2 gap-4">
               {listing.bedrooms > 0 && (
                 <div className="flex items-center gap-3">
@@ -231,7 +237,7 @@ export default function ListingDetailPage() {
                     <BedDouble className="w-5 h-5 text-[var(--yo-dark)]" />
                   </div>
                   <div>
-                    <p className="text-[12px] text-[var(--yo-dark)]">Slaapkamers</p>
+                    <p className="text-[12px] text-[var(--yo-dark)]">{t("listing.bedrooms")}</p>
                     <p className="text-[15px] font-semibold text-[var(--yo-dark)]" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
                   </div>
                 </div>
@@ -243,7 +249,7 @@ export default function ListingDetailPage() {
                     <Ruler className="w-5 h-5 text-[var(--yo-dark)]" />
                   </div>
                   <div>
-                    <p className="text-[12px] text-[var(--yo-dark)]">Oppervlakte</p>
+                    <p className="text-[12px] text-[var(--yo-dark)]">{t("listing.area")}</p>
                     <p className="text-[15px] font-semibold text-[var(--yo-dark)]" data-testid="text-listing-size">{listing.size_m2} m²</p>
                   </div>
                 </div>
@@ -254,7 +260,7 @@ export default function ListingDetailPage() {
                   <Globe className="w-5 h-5 text-[var(--yo-dark)]" />
                 </div>
                 <div>
-                  <p className="text-[12px] text-[var(--yo-dark)]">Bron</p>
+                  <p className="text-[12px] text-[var(--yo-dark)]">{t("listing.source")}</p>
                   <p className="text-[15px] font-bold capitalize" style={{ color: "var(--yo-pink)" }} data-testid="text-listing-source">{listing.source}</p>
                 </div>
               </div>
@@ -264,7 +270,7 @@ export default function ListingDetailPage() {
                   <Clock className="w-5 h-5 text-[var(--yo-dark)]" />
                 </div>
                 <div>
-                  <p className="text-[12px] text-[var(--yo-dark)]">Geplaatst</p>
+                  <p className="text-[12px] text-[var(--yo-dark)]">{t("listing.posted")}</p>
                   <p className="text-[15px] font-semibold text-[var(--yo-dark)]" data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</p>
                 </div>
               </div>
@@ -273,7 +279,7 @@ export default function ListingDetailPage() {
 
           {listing.match_reasons && listing.match_reasons.length > 0 && (
             <div className="bg-white rounded-lg border border-[var(--yo-divider)] p-5" data-testid="section-why-match">
-              <h2 className="text-section-title mb-4">Waarom deze match?</h2>
+              <h2 className="text-section-title mb-4">{t("listing.whyMatch")}</h2>
               <div className="flex flex-col gap-3">
                 {listing.match_reasons.map((reason) => {
                   const detail = MATCH_REASON_DETAIL[reason];
@@ -306,7 +312,7 @@ export default function ListingDetailPage() {
               data-testid="button-reageer-detail"
             >
               <Zap className="w-4 h-4" />
-              Reageer direct
+              {t("listing.applyDirect")}
             </Button>
             {listing.url && (
               <a href={listing.url} target="_blank" rel="noopener noreferrer">
@@ -316,7 +322,7 @@ export default function ListingDetailPage() {
                   data-testid="button-view-original"
                 >
                   <ExternalLink className="w-4 h-4" />
-                  Open originele advertentie
+                  {t("listing.openOriginal")}
                 </Button>
               </a>
             )}

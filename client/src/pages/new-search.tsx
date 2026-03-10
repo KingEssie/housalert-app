@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
+import { useTranslation } from "@/i18n";
 import LocationModeSelector, {
   type LocationData,
   DEFAULT_LOCATION_DATA,
@@ -31,15 +32,15 @@ const MAX_PROFILES = 4;
 const TOTAL_STEPS = 5;
 
 const BEDROOM_OPTIONS = [
-  { value: 0, label: "Geen voorkeur" },
-  { value: 1, label: "1 kamer" },
-  { value: 2, label: "2 kamers" },
-  { value: 3, label: "3 kamers" },
-  { value: 4, label: "4+ kamers" },
+  { value: 0, labelKey: "newSearch.step2.noPref" },
+  { value: 1, labelKey: "newSearch.step2.rooms1" },
+  { value: 2, labelKey: "newSearch.step2.rooms2" },
+  { value: 3, labelKey: "newSearch.step2.rooms3" },
+  { value: 4, labelKey: "newSearch.step2.rooms4plus" },
 ];
 
 const SIZE_OPTIONS = [
-  { value: 0, label: "Geen voorkeur" },
+  { value: 0, labelKey: "newSearch.step2.noPref" },
   { value: 20, label: "20+ m\u00B2" },
   { value: 30, label: "30+ m\u00B2" },
   { value: 40, label: "40+ m\u00B2" },
@@ -65,7 +66,7 @@ const DEFAULT_BERLIN: LocationData = {
 };
 
 const RENT_OPTIONS = [
-  { value: "", label: "Geen voorkeur" },
+  { value: "", labelKey: "newSearch.step2.noPref" },
   { value: "200", label: "\u20AC200" },
   { value: "300", label: "\u20AC300" },
   { value: "400", label: "\u20AC400" },
@@ -87,29 +88,29 @@ const RENT_OPTIONS = [
 ];
 
 const FURNISHED_OPTIONS = [
-  { value: "", label: "Maakt niet uit" },
-  { value: "furnished", label: "Gemeubileerd" },
-  { value: "unfurnished", label: "Niet gemeubileerd" },
+  { value: "", labelKey: "newSearch.step2.doesntMatter" },
+  { value: "furnished", labelKey: "newSearch.step2.furnishedOption" },
+  { value: "unfurnished", labelKey: "newSearch.step2.unfurnishedOption" },
 ];
 
 const TARGET_CATEGORY_OPTIONS = [
-  { value: "studenten", label: "Studenten" },
-  { value: "woningdelers", label: "Woningdelers" },
-  { value: "huisdiereigenaren", label: "Huisdiereigenaren" },
-  { value: "betaalde_websites", label: "Woningen van betaalde websites" },
-  { value: "kamers_gedeeld", label: "Kamers in gedeelde woningen" },
-  { value: "vrije_sector", label: "Vrije sector van woningcorporaties" },
-  { value: "tijdelijke_woningen", label: "Tijdelijke woningen" },
-  { value: "seniorenwoningen", label: "Seniorenwoningen" },
+  { value: "studenten", labelKey: "newSearch.step4.students" },
+  { value: "woningdelers", labelKey: "newSearch.step4.sharers" },
+  { value: "huisdiereigenaren", labelKey: "newSearch.step4.petOwners" },
+  { value: "betaalde_websites", labelKey: "newSearch.step4.paidSites" },
+  { value: "kamers_gedeeld", labelKey: "newSearch.step4.sharedRooms" },
+  { value: "vrije_sector", labelKey: "newSearch.step4.freeMarket" },
+  { value: "tijdelijke_woningen", labelKey: "newSearch.step4.tempHousing" },
+  { value: "seniorenwoningen", labelKey: "newSearch.step4.seniorHousing" },
 ];
 
 const EXTRA_FEATURE_OPTIONS = [
-  { value: "balkon", label: "Balkon" },
-  { value: "tuin", label: "Tuin" },
-  { value: "huisdieren", label: "Huisdieren toegestaan" },
-  { value: "parkeerplaats", label: "Parkeerplaats" },
-  { value: "lift", label: "Lift" },
-  { value: "kelder", label: "Kelder" },
+  { value: "balkon", labelKey: "newSearch.step3.balcony" },
+  { value: "tuin", labelKey: "newSearch.step3.garden" },
+  { value: "huisdieren", labelKey: "newSearch.step3.pets" },
+  { value: "parkeerplaats", labelKey: "newSearch.step3.parking" },
+  { value: "lift", labelKey: "newSearch.step3.elevator" },
+  { value: "kelder", labelKey: "newSearch.step3.basement" },
 ];
 
 interface FilterData {
@@ -122,10 +123,16 @@ interface FilterData {
   extraFeatures: string[];
 }
 
+function resolveOptionLabel(opt: { label?: string; labelKey?: string }, t: (key: string, params?: Record<string, string | number>) => string): string {
+  if (opt.labelKey) return t(opt.labelKey);
+  return opt.label || "";
+}
+
 export default function NewSearchPage() {
   const { user, loading } = useAuth();
   const [, navigate] = useLocation();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [locationData, setLocationData] = useState<LocationData>({ ...DEFAULT_BERLIN });
@@ -155,7 +162,7 @@ export default function NewSearchPage() {
     if (!editId || editLoaded) return;
     getSearchProfile(editId).then((profile) => {
       if (!profile) {
-        toast({ title: "Zoekopdracht niet gevonden", variant: "destructive" });
+        toast({ title: t("newSearch.toasts.notFound"), variant: "destructive" });
         navigate("/dashboard?tab=filters");
         return;
       }
@@ -194,7 +201,7 @@ export default function NewSearchPage() {
 
       setEditLoaded(true);
     });
-  }, [editId, editLoaded, navigate, toast]);
+  }, [editId, editLoaded, navigate, toast, t]);
 
   const profileCount = profilesQuery.data?.length ?? 0;
   const atLimit = !isEditMode && profileCount >= MAX_PROFILES;
@@ -270,11 +277,11 @@ export default function NewSearchPage() {
 
   async function handleSubmit() {
     if (!isEditMode && atLimit) {
-      toast({ title: "Limiet bereikt", description: `Max ${MAX_PROFILES} zoekopdrachten.`, variant: "destructive" });
+      toast({ title: t("newSearch.toasts.limitReached"), description: t("newSearch.toasts.limitMaxDesc", { max: MAX_PROFILES }), variant: "destructive" });
       return;
     }
     if (!isLocationValid(locationData)) {
-      toast({ title: "Locatie is verplicht", variant: "destructive" });
+      toast({ title: t("newSearch.toasts.locationRequired"), variant: "destructive" });
       setStep(1);
       return;
     }
@@ -283,7 +290,7 @@ export default function NewSearchPage() {
     const parsedPriceMax = parseInt(filters.priceMax) || 0;
 
     if (parsedPriceMax > 0 && parsedPriceMin > parsedPriceMax) {
-      toast({ title: "Min prijs kan niet hoger zijn dan max prijs", variant: "destructive" });
+      toast({ title: t("newSearch.toasts.priceMinMax"), variant: "destructive" });
       setStep(2);
       return;
     }
@@ -305,7 +312,7 @@ export default function NewSearchPage() {
         }
         queryClient.invalidateQueries({ queryKey: ["/search-profiles"] });
         queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
-        toast({ title: "Zoekopdracht bijgewerkt!", description: "Je wijzigingen zijn opgeslagen." });
+        toast({ title: t("newSearch.toasts.updated"), description: t("newSearch.toasts.updatedDesc") });
       } else {
         const profile = await createSearchProfile(payload);
         if (profile?.id) {
@@ -321,15 +328,15 @@ export default function NewSearchPage() {
         }
         queryClient.invalidateQueries({ queryKey: ["/search-profiles"] });
         queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
-        toast({ title: "Zoekopdracht aangemaakt!", description: "Je ontvangt nu matches." });
+        toast({ title: t("newSearch.toasts.created"), description: t("newSearch.toasts.createdDesc") });
       }
 
       navigate("/dashboard?tab=filters");
     } catch (err: any) {
       console.error("[new-search] Save failed:", err);
       toast({
-        title: "Opslaan mislukt",
-        description: err?.message || "Zoekopdracht opslaan mislukt. Probeer opnieuw.",
+        title: t("newSearch.toasts.saveFailed"),
+        description: err?.message || t("newSearch.toasts.saveFailedDesc"),
         variant: "destructive",
       });
     } finally {
@@ -366,16 +373,16 @@ export default function NewSearchPage() {
             <div className="w-14 h-14 rounded-lg bg-[var(--yo-chip-bg)] flex items-center justify-center mx-auto mb-4">
               <AlertCircle className="w-6 h-6 text-[var(--yo-teal)]" />
             </div>
-            <h2 className="text-[18px] font-bold text-[var(--yo-dark)] mb-2 uppercase">Limiet bereikt</h2>
+            <h2 className="text-[18px] font-bold text-[var(--yo-dark)] mb-2 uppercase">{t("newSearch.limitTitle")}</h2>
             <p className="text-[14px] text-[var(--yo-dark)] mb-5">
-              Je hebt al {MAX_PROFILES} zoekopdrachten. Verwijder eerst een bestaande om een nieuwe aan te maken.
+              {t("newSearch.limitDesc", { max: MAX_PROFILES })}
             </p>
             <Button
               onClick={() => navigate("/dashboard")}
               className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[15px] font-bold"
               data-testid="button-back-to-dashboard-limit"
             >
-              Terug naar dashboard
+              {t("newSearch.backToDashboard")}
             </Button>
           </div>
         </div>
@@ -397,7 +404,7 @@ export default function NewSearchPage() {
             <ArrowLeft className="w-5 h-5 text-[var(--yo-dark)]" />
           </button>
           <span className="text-[13px] font-medium text-[var(--yo-dark)] opacity-60" data-testid="text-step-indicator">
-            Stap {step} van {TOTAL_STEPS}
+            {t("newSearch.stepOf", { step, total: TOTAL_STEPS })}
           </span>
         </div>
       </header>
@@ -445,14 +452,15 @@ function Step1Location({
   locationData: LocationData;
   setLocationData: (ld: LocationData) => void;
 }) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-5">
       <div>
         <h2 className="text-page-title mb-1.5" data-testid="text-step-title">
-          Locatie
+          {t("newSearch.step1.title")}
         </h2>
         <p className="text-subtitle">
-          Kies een methode en configureer je zoekgebied.
+          {t("newSearch.step1.subtitle")}
         </p>
       </div>
 
@@ -474,14 +482,15 @@ function Step2Requirements({
   filters: FilterData;
   updateFilters: (partial: Partial<FilterData>) => void;
 }) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-5">
       <div>
         <h2 className="text-page-title mb-1.5" data-testid="text-step-title">
-          Vereisten
+          {t("newSearch.step2.title")}
         </h2>
         <p className="text-subtitle">
-          Stel je budget en basiswensen in.
+          {t("newSearch.step2.subtitle")}
         </p>
       </div>
 
@@ -489,7 +498,7 @@ function Step2Requirements({
         <div>
           <label className="text-[15px] font-bold text-[var(--yo-dark)] mb-2.5 flex items-center gap-2">
             <Euro className="w-4 h-4 text-[var(--yo-teal)]" />
-            Min prijs
+            {t("newSearch.step2.minPrice")}
           </label>
           <div className="relative">
             <select
@@ -499,7 +508,7 @@ function Step2Requirements({
               data-testid="select-price-min"
             >
               {RENT_OPTIONS.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
               ))}
             </select>
             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)] pointer-events-none" />
@@ -509,7 +518,7 @@ function Step2Requirements({
         <div>
           <label className="text-[15px] font-bold text-[var(--yo-dark)] mb-2.5 flex items-center gap-2">
             <Euro className="w-4 h-4 text-[var(--yo-teal)]" />
-            Max prijs
+            {t("newSearch.step2.maxPrice")}
           </label>
           <div className="relative">
             <select
@@ -519,7 +528,7 @@ function Step2Requirements({
               data-testid="select-price-max"
             >
               {RENT_OPTIONS.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
               ))}
             </select>
             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)] pointer-events-none" />
@@ -529,7 +538,7 @@ function Step2Requirements({
         <div>
           <label className="text-[15px] font-bold text-[var(--yo-dark)] mb-2.5 flex items-center gap-2">
             <BedDouble className="w-4 h-4 text-[var(--yo-teal)]" />
-            Slaapkamers
+            {t("newSearch.step2.bedrooms")}
           </label>
           <div className="relative">
             <select
@@ -539,7 +548,7 @@ function Step2Requirements({
               data-testid="select-bedrooms"
             >
               {BEDROOM_OPTIONS.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
               ))}
             </select>
             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)] pointer-events-none" />
@@ -549,7 +558,7 @@ function Step2Requirements({
         <div>
           <label className="text-[15px] font-bold text-[var(--yo-dark)] mb-2.5 flex items-center gap-2">
             <Ruler className="w-4 h-4 text-[var(--yo-teal)]" />
-            Oppervlakte
+            {t("newSearch.step2.area")}
           </label>
           <div className="relative">
             <select
@@ -559,7 +568,7 @@ function Step2Requirements({
               data-testid="select-size"
             >
               {SIZE_OPTIONS.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
               ))}
             </select>
             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)] pointer-events-none" />
@@ -569,7 +578,7 @@ function Step2Requirements({
         <div>
           <label className="text-[15px] font-bold text-[var(--yo-dark)] mb-2.5 flex items-center gap-2">
             <Sofa className="w-4 h-4 text-[var(--yo-teal)]" />
-            Gemeubileerd
+            {t("newSearch.step2.furnished")}
           </label>
           <div className="relative">
             <select
@@ -579,7 +588,7 @@ function Step2Requirements({
               data-testid="select-furnished"
             >
               {FURNISHED_OPTIONS.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
               ))}
             </select>
             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)] pointer-events-none" />
@@ -625,6 +634,7 @@ function Step3ExtraFeatures({
   filters: FilterData;
   updateFilters: (partial: Partial<FilterData>) => void;
 }) {
+  const { t } = useTranslation();
   const toggleFeature = (val: string) => {
     const arr = filters.extraFeatures;
     updateFilters({ extraFeatures: arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val] });
@@ -634,10 +644,10 @@ function Step3ExtraFeatures({
     <div className="space-y-5">
       <div>
         <h2 className="text-page-title mb-1.5" data-testid="text-step-title">
-          Extra eigenschappen
+          {t("newSearch.step3.title")}
         </h2>
         <p className="text-subtitle">
-          Selecteer gewenste voorzieningen. Overslaan kan ook.
+          {t("newSearch.step3.subtitle")}
         </p>
       </div>
 
@@ -645,7 +655,7 @@ function Step3ExtraFeatures({
         {EXTRA_FEATURE_OPTIONS.map((opt) => (
           <CheckboxRow
             key={opt.value}
-            label={opt.label}
+            label={t(opt.labelKey)}
             selected={filters.extraFeatures.includes(opt.value)}
             onToggle={() => toggleFeature(opt.value)}
             testId={`option-feature-${opt.value}`}
@@ -655,7 +665,7 @@ function Step3ExtraFeatures({
 
       {filters.extraFeatures.length === 0 && (
         <p className="text-[13px] text-[var(--yo-dark)] opacity-60 text-center">
-          Geen selectie = alle eigenschappen worden meegenomen
+          {t("newSearch.step3.noSelectionHint")}
         </p>
       )}
     </div>
@@ -669,6 +679,7 @@ function Step4TargetCategories({
   filters: FilterData;
   updateFilters: (partial: Partial<FilterData>) => void;
 }) {
+  const { t } = useTranslation();
   const toggleCategory = (val: string) => {
     const arr = filters.targetCategories;
     updateFilters({ targetCategories: arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val] });
@@ -678,10 +689,10 @@ function Step4TargetCategories({
     <div className="space-y-5">
       <div>
         <h2 className="text-page-title mb-1.5" data-testid="text-step-title">
-          Doelgroepen & categorie&#235;n
+          {t("newSearch.step4.title")}
         </h2>
         <p className="text-subtitle">
-          Voor welke doelgroep of categorie zoek je? Selecteer een of meerdere.
+          {t("newSearch.step4.subtitle")}
         </p>
       </div>
 
@@ -689,7 +700,7 @@ function Step4TargetCategories({
         {TARGET_CATEGORY_OPTIONS.map((opt) => (
           <CheckboxRow
             key={opt.value}
-            label={opt.label}
+            label={t(opt.labelKey)}
             selected={filters.targetCategories.includes(opt.value)}
             onToggle={() => toggleCategory(opt.value)}
             testId={`option-category-${opt.value}`}
@@ -699,7 +710,7 @@ function Step4TargetCategories({
 
       {filters.targetCategories.length === 0 && (
         <p className="text-[13px] text-[var(--yo-dark)] opacity-60 text-center">
-          Geen selectie = alle categorie&#235;n worden meegenomen
+          {t("newSearch.step4.noSelectionHint")}
         </p>
       )}
     </div>
@@ -745,45 +756,47 @@ function StepReview({
   perWeek: number;
   estimateLoading: boolean;
 }) {
+  const { t } = useTranslation();
+
   const locationLabel = locationData.tab === "reistijd"
-    ? `Reistijd naar ${locationData.commuteDestination}`
+    ? t("newSearch.step5.commuteTo", { dest: locationData.commuteDestination })
     : locationData.tab === "radius"
       ? `${cityForProfile} (${locationData.radiusKm} km)`
       : cityForProfile;
 
   const districtsLabel = locationData.districts.length > 0
     ? locationData.districts.join(", ")
-    : "Alle wijken";
+    : t("newSearch.step5.allDistricts");
 
   const priceLabel = (() => {
-    const min = filters.priceMin ? `\u20AC${parseInt(filters.priceMin).toLocaleString("nl-NL")}` : "";
-    const max = filters.priceMax ? `\u20AC${parseInt(filters.priceMax).toLocaleString("nl-NL")}` : "";
+    const min = filters.priceMin ? `\u20AC${parseInt(filters.priceMin).toLocaleString("de-DE")}` : "";
+    const max = filters.priceMax ? `\u20AC${parseInt(filters.priceMax).toLocaleString("de-DE")}` : "";
     if (min && max) return `${min} - ${max}`;
-    if (min) return `Vanaf ${min}`;
-    if (max) return `Tot ${max}`;
-    return "Geen voorkeur";
+    if (min) return t("newSearch.step5.from", { price: parseInt(filters.priceMin).toLocaleString("de-DE") });
+    if (max) return t("newSearch.step5.upTo", { price: parseInt(filters.priceMax).toLocaleString("de-DE") });
+    return t("newSearch.step2.noPref");
   })();
 
-  const bedroomsLabel = BEDROOM_OPTIONS.find(o => o.value === filters.bedroomsMin)?.label || "Geen voorkeur";
-  const sizeLabel = SIZE_OPTIONS.find(o => o.value === filters.sizeMin)?.label || "Geen voorkeur";
+  const bedroomsLabel = resolveOptionLabel(BEDROOM_OPTIONS.find(o => o.value === filters.bedroomsMin) || BEDROOM_OPTIONS[0], t);
+  const sizeLabel = resolveOptionLabel(SIZE_OPTIONS.find(o => o.value === filters.sizeMin) || SIZE_OPTIONS[0], t);
 
   const extraFeaturesLabel = filters.extraFeatures.length > 0
-    ? filters.extraFeatures.map(v => EXTRA_FEATURE_OPTIONS.find(o => o.value === v)?.label || v).join(", ")
-    : "Geen selectie";
+    ? filters.extraFeatures.map(v => { const o = EXTRA_FEATURE_OPTIONS.find(o => o.value === v); return o ? t(o.labelKey) : v; }).join(", ")
+    : t("newSearch.step5.noSelection");
 
   const targetLabel = filters.targetCategories.length > 0
-    ? filters.targetCategories.map(v => TARGET_CATEGORY_OPTIONS.find(o => o.value === v)?.label || v).join(", ")
-    : "Geen selectie";
+    ? filters.targetCategories.map(v => { const o = TARGET_CATEGORY_OPTIONS.find(o => o.value === v); return o ? t(o.labelKey) : v; }).join(", ")
+    : t("newSearch.step5.noSelection");
 
   return (
     <div className="pb-28">
       <div className="space-y-6">
         <div>
           <h2 className="text-page-title mb-1.5" data-testid="text-step-title">
-            Controleer je zoekopdracht
+            {t("newSearch.step5.title")}
           </h2>
           <p className="text-subtitle">
-            Bekijk je instellingen en sla op.
+            {t("newSearch.step5.subtitle")}
           </p>
         </div>
 
@@ -795,28 +808,28 @@ function StepReview({
             <div>
               <p className="text-[15px] font-bold text-white">
                 {perWeek > 0
-                  ? `Verwacht: ~${perWeek} matches per week`
-                  : "Nog geen matches verwacht"}
+                  ? t("newSearch.step5.estimate", { count: perWeek })
+                  : t("newSearch.step5.noMatchesExpected")}
               </p>
               <p className="text-[13px] text-white/60 mt-0.5">
                 {perWeek > 0
-                  ? "Op basis van je zoekinstellingen"
-                  : "Je kunt je filters later altijd aanpassen"}
+                  ? t("newSearch.step5.estimateDesc")
+                  : t("newSearch.step5.adjustFiltersLater")}
               </p>
             </div>
           </div>
         )}
 
         <div className="bg-white rounded-lg">
-          <ReviewRow label="Locatie" value={locationLabel} onEdit={() => onEdit(1)} />
+          <ReviewRow label={t("newSearch.step5.location")} value={locationLabel} onEdit={() => onEdit(1)} />
           {locationData.tab === "wijken" && (
-            <ReviewRow label="Wijken" value={districtsLabel} onEdit={() => onEdit(1)} />
+            <ReviewRow label={t("newSearch.step5.districts")} value={districtsLabel} onEdit={() => onEdit(1)} />
           )}
-          <ReviewRow label="Huurprijs" value={priceLabel} onEdit={() => onEdit(2)} />
-          <ReviewRow label="Slaapkamers" value={bedroomsLabel} onEdit={() => onEdit(2)} />
-          <ReviewRow label="Oppervlakte" value={sizeLabel} onEdit={() => onEdit(2)} />
-          <ReviewRow label="Extra eigenschappen" value={extraFeaturesLabel} onEdit={() => onEdit(3)} />
-          <ReviewRow label="Overige voorkeuren" value={targetLabel} onEdit={() => onEdit(4)} />
+          <ReviewRow label={t("newSearch.step5.rent")} value={priceLabel} onEdit={() => onEdit(2)} />
+          <ReviewRow label={t("newSearch.step5.bedrooms")} value={bedroomsLabel} onEdit={() => onEdit(2)} />
+          <ReviewRow label={t("newSearch.step5.area")} value={sizeLabel} onEdit={() => onEdit(2)} />
+          <ReviewRow label={t("newSearch.step5.extras")} value={extraFeaturesLabel} onEdit={() => onEdit(3)} />
+          <ReviewRow label={t("newSearch.step5.otherPrefs")} value={targetLabel} onEdit={() => onEdit(4)} />
         </div>
       </div>
 
@@ -831,12 +844,12 @@ function StepReview({
             {submitting ? (
               <div className="flex items-center gap-2">
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Opslaan...
+                {t("newSearch.step5.saving")}
               </div>
             ) : (
               <>
                 <Search className="w-4 h-4 mr-1.5" />
-                {isEditMode ? "Zoekopdracht bijwerken" : "Zoekopdracht opslaan"}
+                {isEditMode ? t("newSearch.step5.update") : t("newSearch.step5.save")}
               </>
             )}
           </Button>

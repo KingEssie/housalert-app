@@ -1,0 +1,75 @@
+import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import { de } from "./locales/de";
+import { en } from "./locales/en";
+import { nl } from "./locales/nl";
+
+export type Locale = "de" | "en" | "nl";
+
+type TranslationMap = Record<string, string | Record<string, any>>;
+
+const locales: Record<Locale, TranslationMap> = { de, en, nl };
+
+const STORAGE_KEY = "housalert_locale";
+
+function getStoredLocale(): Locale {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored === "de" || stored === "en" || stored === "nl") return stored;
+  } catch {}
+  return "de";
+}
+
+function resolve(obj: any, path: string): string | undefined {
+  const parts = path.split(".");
+  let cur = obj;
+  for (const p of parts) {
+    if (cur == null || typeof cur !== "object") return undefined;
+    cur = cur[p];
+  }
+  return typeof cur === "string" ? cur : undefined;
+}
+
+interface I18nContextValue {
+  locale: Locale;
+  setLocale: (l: Locale) => void;
+  t: (key: string, params?: Record<string, string | number>) => string;
+}
+
+const I18nContext = createContext<I18nContextValue>({
+  locale: "de",
+  setLocale: () => {},
+  t: (key) => key,
+});
+
+export function I18nProvider({ children }: { children: ReactNode }) {
+  const [locale, setLocaleState] = useState<Locale>(getStoredLocale);
+
+  const setLocale = useCallback((l: Locale) => {
+    setLocaleState(l);
+    try { localStorage.setItem(STORAGE_KEY, l); } catch {}
+  }, []);
+
+  const t = useCallback((key: string, params?: Record<string, string | number>): string => {
+    let value = resolve(locales[locale], key);
+    if (value === undefined && locale !== "de") {
+      value = resolve(locales.de, key);
+    }
+    if (value === undefined) return key;
+    if (params) {
+      for (const [k, v] of Object.entries(params)) {
+        value = value!.replace(new RegExp(`\\{${k}\\}`, "g"), String(v));
+      }
+    }
+    return value!;
+  }, [locale]);
+
+  return (
+    <I18nContext.Provider value={{ locale, setLocale, t }}>
+      {children}
+    </I18nContext.Provider>
+  );
+}
+
+export function useTranslation() {
+  return useContext(I18nContext);
+}

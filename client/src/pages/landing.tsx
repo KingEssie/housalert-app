@@ -1,9 +1,11 @@
 import { useLocation } from "wouter";
 import { Home, Search, Bell, Zap, ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/i18n";
 
 export default function LandingPage() {
   const [, navigate] = useLocation();
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-background">
@@ -21,7 +23,7 @@ export default function LandingPage() {
             onClick={() => navigate("/login")}
             data-testid="button-login-nav"
           >
-            Inloggen
+            {t("landing.login")}
           </Button>
         </div>
       </header>
@@ -34,13 +36,13 @@ export default function LandingPage() {
               style={{ color: "var(--yo-dark)" }}
               data-testid="text-headline"
             >
-              Vind nieuwe huurwoningen voordat anderen ze zien
+              {t("landing.headline")}
             </h1>
             <p
               className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-12 max-w-lg mx-auto"
               data-testid="text-subheadline"
             >
-              Wij zoeken nieuwe huurwoningen op meerdere websites en sturen ze direct naar jou.
+              {t("landing.subheadline")}
             </p>
             <Button
               size="lg"
@@ -48,18 +50,18 @@ export default function LandingPage() {
               onClick={() => navigate("/onboarding/location")}
               data-testid="button-start-search"
             >
-              Start zoeken
+              {t("landing.startSearch")}
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
 
             <div className="flex items-center justify-center gap-6 mt-10 text-sm text-muted-foreground">
               <span className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4" style={{ color: "var(--yo-teal)" }} />
-                Gratis starten
+                {t("landing.freeStart")}
               </span>
               <span className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4" style={{ color: "var(--yo-teal)" }} />
-                Direct meldingen
+                {t("landing.instantAlerts")}
               </span>
             </div>
           </div>
@@ -68,16 +70,16 @@ export default function LandingPage() {
         <section className="px-6 py-20 md:py-28">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-[30px] md:text-[36px] font-[800] text-center tracking-[-0.03em] leading-[1.1] mb-14" style={{ color: "var(--yo-dark)" }} data-testid="text-features-heading">
-              Alles om sneller je droomwoning te vinden
+              {t("landing.featuresHeading")}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-card rounded-lg p-6 shadow-sm" data-testid="card-feature-search">
                 <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "var(--yo-teal-light)" }}>
                   <Search className="w-6 h-6" style={{ color: "var(--yo-teal)" }} />
                 </div>
-                <h3 className="text-[18px] font-bold mb-2" style={{ color: "var(--yo-dark)" }}>Slim zoeken</h3>
+                <h3 className="text-[18px] font-bold mb-2" style={{ color: "var(--yo-dark)" }}>{t("landing.smartSearch")}</h3>
                 <p className="text-[15px] text-muted-foreground leading-relaxed">
-                  Stel je filters in en wij doorzoeken meerdere websites tegelijk voor jou.
+                  {t("landing.smartSearchDesc")}
                 </p>
               </div>
 
@@ -85,9 +87,9 @@ export default function LandingPage() {
                 <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "var(--yo-teal-light)" }}>
                   <Bell className="w-6 h-6" style={{ color: "var(--yo-teal)" }} />
                 </div>
-                <h3 className="text-[18px] font-bold mb-2" style={{ color: "var(--yo-dark)" }}>Direct meldingen</h3>
+                <h3 className="text-[18px] font-bold mb-2" style={{ color: "var(--yo-dark)" }}>{t("landing.instantAlertsTitle")}</h3>
                 <p className="text-[15px] text-muted-foreground leading-relaxed">
-                  Ontvang een melding via e-mail of push zodra er iets nieuws is.
+                  {t("landing.instantAlertsDesc")}
                 </p>
               </div>
 
@@ -95,9 +97,9 @@ export default function LandingPage() {
                 <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "var(--yo-teal-light)" }}>
                   <Zap className="w-6 h-6" style={{ color: "var(--yo-teal)" }} />
                 </div>
-                <h3 className="text-[18px] font-bold mb-2" style={{ color: "var(--yo-dark)" }}>Sneller dan de rest</h3>
+                <h3 className="text-[18px] font-bold mb-2" style={{ color: "var(--yo-dark)" }}>{t("landing.fasterTitle")}</h3>
                 <p className="text-[15px] text-muted-foreground leading-relaxed">
-                  Reageer als eerste op nieuwe woningen voordat anderen ze zien.
+                  {t("landing.fasterDesc")}
                 </p>
               </div>
             </div>
@@ -107,13 +109,13 @@ export default function LandingPage() {
         <section className="px-6 pb-20 md:pb-28">
           <div className="max-w-2xl mx-auto">
             <h2 className="text-[30px] md:text-[36px] font-[800] text-center tracking-[-0.03em] leading-[1.1] mb-14" style={{ color: "var(--yo-dark)" }} data-testid="text-how-it-works">
-              Hoe werkt het?
+              {t("landing.howItWorks")}
             </h2>
             <div className="space-y-0">
               {[
-                { step: "1", title: "Kies je stad en filters", desc: "Vertel ons waar je zoekt en wat je wilt." },
-                { step: "2", title: "Wij zoeken voor jou", desc: "Onze zoekmachine checkt continu meerdere websites." },
-                { step: "3", title: "Ontvang meldingen", desc: "Krijg direct bericht als er een match is." },
+                { step: "1", title: t("landing.step1Title"), desc: t("landing.step1Desc") },
+                { step: "2", title: t("landing.step2Title"), desc: t("landing.step2Desc") },
+                { step: "3", title: t("landing.step3Title"), desc: t("landing.step3Desc") },
               ].map((item, i) => (
                 <div key={item.step} className="flex items-start gap-5" data-testid={`step-${item.step}`}>
                   <div className="flex flex-col items-center">
@@ -135,10 +137,10 @@ export default function LandingPage() {
         <section className="px-6 pb-24 md:pb-32">
           <div className="max-w-xl mx-auto bg-card rounded-lg p-8 md:p-12 text-center shadow-sm">
             <h2 className="text-[32px] font-[800] tracking-[-0.03em] leading-[1.1] mb-4" style={{ color: "var(--yo-dark)" }} data-testid="text-cta-bottom">
-              Klaar om te beginnen?
+              {t("landing.ctaBottom")}
             </h2>
             <p className="text-[15px] text-muted-foreground mb-8">
-              Maak een account aan en ontvang direct woningmeldingen.
+              {t("landing.ctaDesc")}
             </p>
             <Button
               size="lg"
@@ -146,7 +148,7 @@ export default function LandingPage() {
               onClick={() => navigate("/onboarding/location")}
               data-testid="button-start-search-bottom"
             >
-              Start zoeken
+              {t("landing.startSearch")}
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </div>
@@ -161,7 +163,7 @@ export default function LandingPage() {
             <a href="/terms" className="hover:text-foreground transition-colors" data-testid="link-terms">AGB</a>
           </div>
           <p className="text-[13px] text-muted-foreground">
-            &copy; {new Date().getFullYear()} HousAlert. Alle rechten voorbehouden.
+            {t("landing.copyright", { year: String(new Date().getFullYear()) })}
           </p>
         </div>
       </footer>

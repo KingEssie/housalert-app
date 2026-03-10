@@ -4,12 +4,14 @@ import { PageHeader } from "@/components/ui/page-header";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "@/i18n";
 import { Eye, EyeOff, Lock, CheckCircle2 } from "lucide-react";
 
 export default function ChangePasswordPage() {
   const [, navigate] = useLocation();
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -40,8 +42,8 @@ export default function ChangePasswordPage() {
 
       if (signInError) {
         toast({
-          title: "Onjuist wachtwoord",
-          description: "Het huidige wachtwoord is niet correct.",
+          title: t("changePassword.wrongPassword"),
+          description: t("changePassword.wrongPasswordDesc"),
           variant: "destructive",
         });
         setSubmitting(false);
@@ -54,7 +56,7 @@ export default function ChangePasswordPage() {
 
       if (updateError) {
         toast({
-          title: "Fout",
+          title: t("common.error"),
           description: updateError.message,
           variant: "destructive",
         });
@@ -65,8 +67,8 @@ export default function ChangePasswordPage() {
       setSuccess(true);
     } catch {
       toast({
-        title: "Fout",
-        description: "Er is iets misgegaan. Probeer het opnieuw.",
+        title: t("common.error"),
+        description: t("changePassword.errorGeneric"),
         variant: "destructive",
       });
     } finally {
@@ -77,7 +79,7 @@ export default function ChangePasswordPage() {
   if (success) {
     return (
       <div className="min-h-screen bg-background" data-testid="page-password-success">
-        <PageHeader title="Wachtwoord wijzigen" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
+        <PageHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
         <div className="max-w-xl mx-auto p-4 pb-8">
           <div className="bg-card rounded-lg border p-6 text-center" style={{ borderColor: "var(--yo-divider)" }}>
             <div className="flex items-center justify-center mb-5">
@@ -86,17 +88,17 @@ export default function ChangePasswordPage() {
               </div>
             </div>
             <h2 className="text-[20px] font-bold mb-2" style={{ color: "var(--yo-dark)" }} data-testid="text-success-title">
-              Wachtwoord succesvol gewijzigd
+              {t("changePassword.successTitle")}
             </h2>
             <p className="text-[15px] mb-6" style={{ color: "var(--yo-muted)" }}>
-              Je kunt nu inloggen met je nieuwe wachtwoord.
+              {t("changePassword.successDesc")}
             </p>
             <button
               onClick={() => navigate("/dashboard?tab=profiel&sub=account")}
               className="w-full h-[48px] bg-primary text-primary-foreground rounded-lg font-semibold text-[15px] transition-colors"
               data-testid="button-back-to-account"
             >
-              Terug naar account
+              {t("changePassword.backToAccount")}
             </button>
           </div>
         </div>
@@ -106,12 +108,12 @@ export default function ChangePasswordPage() {
 
   return (
     <div className="min-h-screen bg-background" data-testid="page-change-password">
-      <PageHeader title="Wachtwoord wijzigen" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
+      <PageHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
       <div className="max-w-xl mx-auto p-4 pb-8">
         <div className="bg-card rounded-lg border p-5 space-y-5" style={{ borderColor: "var(--yo-divider)" }}>
           <div>
-            <label className="block text-[14px] font-medium mb-2" style={{ color: "var(--yo-dark)" }}>Huidig wachtwoord</label>
+            <label className="block text-[14px] font-medium mb-2" style={{ color: "var(--yo-dark)" }}>{t("changePassword.current")}</label>
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2">
                 <Lock className="w-[18px] h-[18px] text-muted-foreground" />
@@ -120,7 +122,7 @@ export default function ChangePasswordPage() {
                 type={showCurrent ? "text" : "password"}
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
-                placeholder="Voer je huidige wachtwoord in"
+                placeholder={t("changePassword.currentPlaceholder")}
                 className="w-full h-[52px] pl-11 pr-12 rounded-lg border-0 bg-muted text-[16px] font-medium text-foreground placeholder:text-muted-foreground placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
                 data-testid="input-current-password"
               />
@@ -138,7 +140,7 @@ export default function ChangePasswordPage() {
           <div className="h-px" style={{ backgroundColor: "var(--yo-divider)" }} />
 
           <div>
-            <label className="block text-[14px] font-medium mb-2" style={{ color: "var(--yo-dark)" }}>Nieuw wachtwoord</label>
+            <label className="block text-[14px] font-medium mb-2" style={{ color: "var(--yo-dark)" }}>{t("changePassword.new")}</label>
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2">
                 <Lock className="w-[18px] h-[18px] text-muted-foreground" />
@@ -147,7 +149,7 @@ export default function ChangePasswordPage() {
                 type={showNew ? "text" : "password"}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Minimaal 8 tekens"
+                placeholder={t("changePassword.newPlaceholder")}
                 className="w-full h-[52px] pl-11 pr-12 rounded-lg border-0 bg-muted text-[16px] font-medium text-foreground placeholder:text-muted-foreground placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
                 data-testid="input-new-password"
               />
@@ -162,13 +164,13 @@ export default function ChangePasswordPage() {
             </div>
             {newTooShort && (
               <p className="text-[13px] mt-1.5" style={{ color: "var(--yo-teal)" }} data-testid="text-error-min-length">
-                Wachtwoord moet minimaal 8 tekens bevatten
+                {t("changePassword.minLength")}
               </p>
             )}
           </div>
 
           <div>
-            <label className="block text-[14px] font-medium mb-2" style={{ color: "var(--yo-dark)" }}>Nieuw wachtwoord bevestigen</label>
+            <label className="block text-[14px] font-medium mb-2" style={{ color: "var(--yo-dark)" }}>{t("changePassword.confirmLabel")}</label>
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2">
                 <Lock className="w-[18px] h-[18px] text-muted-foreground" />
@@ -177,7 +179,7 @@ export default function ChangePasswordPage() {
                 type={showConfirm ? "text" : "password"}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Herhaal nieuw wachtwoord"
+                placeholder={t("changePassword.confirmPlaceholder")}
                 className="w-full h-[52px] pl-11 pr-12 rounded-lg border-0 bg-muted text-[16px] font-medium text-foreground placeholder:text-muted-foreground placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
                 data-testid="input-confirm-password"
               />
@@ -192,7 +194,7 @@ export default function ChangePasswordPage() {
             </div>
             {mismatch && (
               <p className="text-[13px] mt-1.5" style={{ color: "var(--yo-teal)" }} data-testid="text-error-mismatch">
-                Wachtwoorden komen niet overeen
+                {t("changePassword.mismatch")}
               </p>
             )}
           </div>
@@ -208,7 +210,7 @@ export default function ChangePasswordPage() {
           }`}
           data-testid="button-submit-password"
         >
-          {submitting ? "Wijzigen..." : "Wachtwoord wijzigen"}
+          {submitting ? t("changePassword.changing") : t("changePassword.submit")}
         </button>
       </div>
     </div>

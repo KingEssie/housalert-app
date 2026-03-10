@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import { Home, MapPin, ChevronLeft, Search, ChevronRight, Navigation, Clock, Car, Train, Bike, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { defaultCities, cityDistricts } from "../../../config/market";
+import { useTranslation } from "@/i18n";
 
 type CityEntry = typeof defaultCities[0];
 
@@ -10,6 +11,7 @@ type TabType = "wijken" | "radius" | "reistijd";
 
 export default function OnboardingLocationPage() {
   const [, navigate] = useLocation();
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabType>("wijken");
   const [search, setSearch] = useState("");
   const [selectedCity, setSelectedCity] = useState<CityEntry | null>(null);
@@ -79,9 +81,9 @@ export default function OnboardingLocationPage() {
     activeTab === "reistijd" ? !!travelAddress : !!selectedCity;
 
   const tabs: { id: TabType; label: string }[] = [
-    { id: "wijken", label: "Wijken" },
-    { id: "radius", label: "Radius" },
-    { id: "reistijd", label: "Reistijd" },
+    { id: "wijken", label: t("location.tabs.districts") },
+    { id: "radius", label: t("location.tabs.radius") },
+    { id: "reistijd", label: t("location.tabs.commute") },
   ];
 
   return (
@@ -117,12 +119,12 @@ export default function OnboardingLocationPage() {
             </div>
           ))}
         </div>
-        <p className="text-xs font-medium text-[var(--yo-dark)] mt-2" data-testid="text-step-indicator">Stap 1 van 3</p>
+        <p className="text-xs font-medium text-[var(--yo-dark)] mt-2" data-testid="text-step-indicator">{t("onboardingLocation.stepIndicator", { step: 1, total: 3 })}</p>
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-8 pt-4">
         <h1 className="text-[32px] font-[800] text-[var(--yo-dark)] leading-[1.1] tracking-[-0.03em] mb-8" data-testid="text-location-title">
-          Waar zoek je een woning?
+          {t("onboardingLocation.title")}
         </h1>
 
         <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
@@ -161,7 +163,7 @@ export default function OnboardingLocationPage() {
                     <input
                       id="city-search-input"
                       type="text"
-                      placeholder="Zoek een stad..."
+                      placeholder={t("location.searchPlaceholder")}
                       value={search}
                       onChange={(e) => {
                         setSearch(e.target.value);
@@ -182,7 +184,7 @@ export default function OnboardingLocationPage() {
                         className="text-xs text-[var(--yo-dark)] hover:text-[var(--yo-dark)]"
                         data-testid="button-clear-city"
                       >
-                        Wissen
+                        {t("onboardingLocation.clear")}
                       </button>
                     )}
                   </div>
@@ -207,7 +209,7 @@ export default function OnboardingLocationPage() {
 
                 {selectedCity && activeCityDistricts.length > 0 && (
                   <div className="py-5 border-b border-[var(--yo-divider)]">
-                    <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Wijken <span className="font-normal text-[13px] text-[var(--yo-dark)]">(optioneel)</span></label>
+                    <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">{t("onboardingLocation.districtsLabel")} <span className="font-normal text-[13px] text-[var(--yo-dark)]">{t("onboardingLocation.optional")}</span></label>
                     <div className="flex flex-wrap gap-2">
                       {activeCityDistricts.map((district) => (
                         <button
@@ -245,7 +247,7 @@ export default function OnboardingLocationPage() {
 
                 {!selectedCity && (
                   <div className="py-5">
-                    <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Populaire steden</label>
+                    <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">{t("onboardingLocation.popularCities")}</label>
                     <div className="flex flex-wrap gap-2">
                       {defaultCities.slice(0, 6).map((city) => (
                         <button
@@ -277,7 +279,7 @@ export default function OnboardingLocationPage() {
                     <input
                       id="radius-city-input"
                       type="text"
-                      placeholder="Zoek een stad..."
+                      placeholder={t("location.searchPlaceholder")}
                       value={search}
                       onChange={(e) => {
                         setSearch(e.target.value);
@@ -297,7 +299,7 @@ export default function OnboardingLocationPage() {
                         className="text-xs text-[var(--yo-dark)] hover:text-[var(--yo-dark)]"
                         data-testid="button-clear-city"
                       >
-                        Wissen
+                        {t("onboardingLocation.clear")}
                       </button>
                     )}
                   </div>
@@ -321,7 +323,7 @@ export default function OnboardingLocationPage() {
                 </div>
 
                 <div className="mt-6">
-                  <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Straal</label>
+                  <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">{t("onboardingLocation.radiusLabel")}</label>
                   <div className="relative">
                     <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)]" />
                     <select
@@ -360,12 +362,12 @@ export default function OnboardingLocationPage() {
             {activeTab === "reistijd" && (
               <div className="space-y-0">
                 <div>
-                  <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Werkadres / bestemming</label>
+                  <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">{t("onboardingLocation.destinationLabel")}</label>
                   <div className="relative">
                     <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)]" />
                     <input
                       type="text"
-                      placeholder="bijv. Berlin Hauptbahnhof"
+                      placeholder={t("onboardingLocation.destinationPlaceholder")}
                       value={travelAddress}
                       onChange={(e) => setTravelAddress(e.target.value)}
                       className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-[var(--yo-surface)] transition-all"
@@ -375,7 +377,7 @@ export default function OnboardingLocationPage() {
                 </div>
 
                 <div className="mt-6">
-                  <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Maximale reistijd</label>
+                  <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">{t("onboardingLocation.maxTravelTime")}</label>
                   <div className="relative">
                     <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)]" />
                     <select
@@ -394,12 +396,12 @@ export default function OnboardingLocationPage() {
                 </div>
 
                 <div className="mt-6">
-                  <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Vervoersmiddel</label>
+                  <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">{t("onboardingLocation.transportLabel")}</label>
                   <div className="flex gap-2">
                     {[
-                      { id: "auto", icon: Car, label: "Auto" },
-                      { id: "ov", icon: Train, label: "OV" },
-                      { id: "fiets", icon: Bike, label: "Fiets" },
+                      { id: "auto", icon: Car, label: t("onboardingLocation.auto") },
+                      { id: "ov", icon: Train, label: t("onboardingLocation.ov") },
+                      { id: "fiets", icon: Bike, label: t("onboardingLocation.fiets") },
                     ].map((mode) => (
                       <button
                         key={mode.id}
@@ -424,8 +426,8 @@ export default function OnboardingLocationPage() {
                       <div className="h-36 flex items-center justify-center">
                         <div className="text-center">
                           <Clock className="w-7 h-7 text-[var(--yo-teal)] mx-auto mb-1.5" />
-                          <p className="text-sm font-bold text-[var(--yo-dark)]">{travelTime} min reistijd</p>
-                          <p className="text-xs text-[var(--yo-dark)] mt-0.5">vanaf {travelAddress}</p>
+                          <p className="text-sm font-bold text-[var(--yo-dark)]">{t("onboardingLocation.travelTimePreview", { time: travelTime })}</p>
+                          <p className="text-xs text-[var(--yo-dark)] mt-0.5">{t("onboardingLocation.fromAddress", { address: travelAddress })}</p>
                         </div>
                       </div>
                     </div>
@@ -441,13 +443,11 @@ export default function OnboardingLocationPage() {
                 {estimateLoading ? (
                   <div className="flex items-center gap-3">
                     <Loader2 className="w-5 h-5 text-[var(--yo-teal)] animate-spin" />
-                    <span className="text-sm text-[var(--yo-dark)]">Schatting laden...</span>
+                    <span className="text-sm text-[var(--yo-dark)]">{t("onboardingLocation.estimateLoading")}</span>
                   </div>
                 ) : (
                   <p className="text-sm text-[var(--yo-dark)] leading-relaxed">
-                    Met deze zoekopdracht kun je ongeveer{" "}
-                    <span className="font-bold text-[var(--yo-dark)]">{estimate ?? 0} matches</span>{" "}
-                    per week verwachten.
+                    {t("onboardingLocation.estimateText", { count: estimate ?? 0 })}
                   </p>
                 )}
               </div>
@@ -461,7 +461,7 @@ export default function OnboardingLocationPage() {
             onClick={handleNext}
             data-testid="button-next-step"
           >
-            Volgende stap
+            {t("onboardingLocation.nextStep")}
           </Button>
         </div>
       </main>

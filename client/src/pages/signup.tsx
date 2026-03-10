@@ -6,10 +6,12 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { ensureTrialForCurrentUser } from "@/lib/auth";
+import { useTranslation } from "@/i18n";
 
 export default function SignupPage() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const searchString = useSearch();
   const params = new URLSearchParams(searchString);
 
@@ -37,13 +39,13 @@ export default function SignupPage() {
       });
 
       if (error) {
-        toast({ title: "Aanmaken mislukt", description: error.message, variant: "destructive" });
+        toast({ title: t("auth.signup.failed"), description: error.message, variant: "destructive" });
         setLoading(false);
         return;
       }
 
       if (!data.user) {
-        toast({ title: "Aanmaken mislukt", description: "Er ging iets mis bij het aanmaken van je account.", variant: "destructive" });
+        toast({ title: t("auth.signup.failed"), description: t("common.error"), variant: "destructive" });
         setLoading(false);
         return;
       }
@@ -61,7 +63,7 @@ export default function SignupPage() {
         setEmailConfirmationPending(true);
       }
     } catch (err: any) {
-      toast({ title: "Er ging iets mis", description: err.message, variant: "destructive" });
+      toast({ title: t("common.error"), description: err.message, variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -80,7 +82,7 @@ export default function SignupPage() {
               <div className="w-8 h-8 rounded-lg bg-[var(--yo-dark)] flex items-center justify-center">
                 <Home className="w-3.5 h-3.5 text-white" />
               </div>
-              <span className="font-extrabold text-[var(--yo-dark)] text-base">HousAlert</span>
+              <span className="font-extrabold text-[var(--yo-dark)] text-base">{t("auth.appName")}</span>
             </div>
           </div>
         </header>
@@ -94,14 +96,14 @@ export default function SignupPage() {
             className="text-[28px] font-[800] text-[var(--yo-dark)] tracking-[-0.03em] leading-[1.1] uppercase mb-4 max-w-[320px]"
             data-testid="text-email-confirm-title"
           >
-            Bevestig je e-mailadres
+            {t("auth.signup.confirmTitle")}
           </h1>
 
           <p
             className="text-[16px] leading-relaxed text-[var(--yo-dark)] mb-3 max-w-[340px]"
             data-testid="text-email-confirm-description"
           >
-            We hebben een bevestigingslink gestuurd naar:
+            {t("auth.signup.confirmText")}
           </p>
 
           <p
@@ -112,7 +114,7 @@ export default function SignupPage() {
           </p>
 
           <p className="text-[15px] text-[var(--yo-dark)] mb-10 max-w-[340px] leading-relaxed">
-            Klik op de link in de e-mail om je account te activeren. Daarna kun je direct inloggen en beginnen met zoeken.
+            {t("auth.signup.confirmInstructions")}
           </p>
 
           <button
@@ -120,11 +122,11 @@ export default function SignupPage() {
             className="w-full max-w-[320px] min-h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black font-bold text-[16px] transition-colors shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
             data-testid="button-go-login-after-confirm"
           >
-            Naar inloggen
+            {t("auth.signup.toLogin")}
           </button>
 
           <p className="text-[13px] text-[var(--yo-dark)] mt-6 max-w-[300px]">
-            Geen e-mail ontvangen? Controleer je spam-map of probeer opnieuw te registreren.
+            {t("auth.signup.noEmail")}
           </p>
         </main>
       </div>
@@ -146,7 +148,7 @@ export default function SignupPage() {
             <div className="w-8 h-8 rounded-lg bg-[var(--yo-dark)] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-extrabold text-[var(--yo-dark)] text-base">HousAlert</span>
+            <span className="font-extrabold text-[var(--yo-dark)] text-base">{t("auth.appName")}</span>
           </div>
         </div>
       </header>
@@ -154,22 +156,22 @@ export default function SignupPage() {
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-12 pb-16">
         <div className="text-center mb-10">
           <h1 className="text-[32px] font-[800] text-[var(--yo-dark)] tracking-[-0.03em] leading-[1.1] uppercase mb-4" data-testid="text-signup-title">
-            Maak je account aan
+            {t("auth.signup.title")}
           </h1>
           <p className="text-[15px] text-[var(--yo-dark)]">
-            Ontvang direct meldingen voor nieuwe woningen{city ? <> in <span className="font-semibold text-[var(--yo-dark)]">{city}</span></> : ""}.
+            {city ? t("auth.signup.subtitleCity", { city }) : t("auth.signup.subtitle")}
           </p>
         </div>
 
         <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
           <form onSubmit={handleSignup} className="space-y-5">
             <div className="space-y-2">
-              <Label className="text-[14px] font-semibold text-[var(--yo-dark)]">Naam</Label>
+              <Label className="text-[14px] font-semibold text-[var(--yo-dark)]">{t("auth.signup.name")}</Label>
               <div className="relative">
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[var(--yo-dark)]" />
                 <input
                   type="text"
-                  placeholder="Je volledige naam"
+                  placeholder={t("auth.signup.namePlaceholder")}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
@@ -179,12 +181,12 @@ export default function SignupPage() {
             </div>
 
             <div className="space-y-2">
-              <Label className="text-[14px] font-semibold text-[var(--yo-dark)]">E-mailadres</Label>
+              <Label className="text-[14px] font-semibold text-[var(--yo-dark)]">{t("auth.signup.email")}</Label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[var(--yo-dark)]" />
                 <input
                   type="email"
-                  placeholder="jouw@email.nl"
+                  placeholder={t("auth.signup.emailPlaceholder")}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -195,12 +197,12 @@ export default function SignupPage() {
             </div>
 
             <div className="space-y-2">
-              <Label className="text-[14px] font-semibold text-[var(--yo-dark)]">Wachtwoord</Label>
+              <Label className="text-[14px] font-semibold text-[var(--yo-dark)]">{t("auth.signup.password")}</Label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[var(--yo-dark)]" />
                 <input
                   type="password"
-                  placeholder="Minimaal 6 tekens"
+                  placeholder={t("auth.signup.passwordPlaceholder")}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -218,24 +220,24 @@ export default function SignupPage() {
               disabled={loading || !email || !password}
               data-testid="button-signup-submit"
             >
-              {loading ? "Account aanmaken..." : "Stuur me alle woningen"}
+              {loading ? t("auth.signup.submitAlt") : t("auth.signup.submit")}
             </Button>
           </form>
         </div>
 
         <p className="text-center text-[15px] text-[var(--yo-dark)] mt-6">
-          Heb je al een account?{" "}
+          {t("auth.signup.hasAccount")}{" "}
           <button
             onClick={() => navigate("/login")}
             className="text-[var(--yo-pink)] font-semibold hover:underline"
             data-testid="link-login"
           >
-            Inloggen
+            {t("auth.signup.loginLink")}
           </button>
         </p>
 
         <p className="text-center text-[13px] text-[var(--yo-dark)] mt-4">
-          Door je aan te melden ga je akkoord met onze voorwaarden.
+          {t("auth.signup.footer")}
         </p>
       </main>
     </div>

@@ -1,5 +1,6 @@
 import { useLocation } from "wouter";
 import { Lock, Crown } from "lucide-react";
+import { useTranslation } from "@/i18n";
 
 interface SubscriptionGateProps {
   isActive: boolean;
@@ -8,6 +9,7 @@ interface SubscriptionGateProps {
 
 export function SubscriptionGate({ isActive, children }: SubscriptionGateProps) {
   const [, navigate] = useLocation();
+  const { t } = useTranslation();
 
   if (isActive) {
     return <>{children}</>;
@@ -19,10 +21,10 @@ export function SubscriptionGate({ isActive, children }: SubscriptionGateProps) 
         <Crown className="w-10 h-10 text-[var(--yo-dark)]" />
       </div>
       <h2 className="text-[22px] font-bold text-[var(--yo-dark)] mb-3 leading-snug" data-testid="text-gate-title">
-        Activeer een abonnement om je matches te bekijken
+        {t("subscription.gate.title")}
       </h2>
       <p className="text-[15px] text-[var(--yo-dark)] opacity-70 max-w-[320px] mb-8 leading-relaxed">
-        Ontvang direct meldingen en bekijk al je woningmatches zodra je een abonnement hebt geactiveerd.
+        {t("subscription.gate.desc")}
       </p>
       <button
         onClick={() => navigate("/paywall")}
@@ -30,7 +32,7 @@ export function SubscriptionGate({ isActive, children }: SubscriptionGateProps) 
         data-testid="button-gate-upgrade"
       >
         <Lock className="w-4 h-4" />
-        Kies abonnement
+        {t("subscription.gate.button")}
       </button>
     </div>
   );

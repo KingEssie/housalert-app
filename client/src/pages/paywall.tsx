@@ -5,57 +5,55 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
+import { useTranslation } from "@/i18n";
 
 interface Plan {
   id: string;
-  name: string;
-  duration: string;
-  price: string;
-  pricePerMonth: string;
+  nameKey: string;
+  priceKey: string;
+  pricePerMonthKey: string;
   popular: boolean;
-  savings?: string;
+  savingsKey?: string;
 }
 
 const PLANS: Plan[] = [
   {
     id: "monthly",
-    name: "1 maand",
-    duration: "1 maand",
-    price: "€14,99",
-    pricePerMonth: "€14,99/maand",
+    nameKey: "paywall.plans.monthly",
+    priceKey: "paywall.prices.monthly",
+    pricePerMonthKey: "paywall.pricePerMonth.monthly",
     popular: false,
   },
   {
     id: "two_month",
-    name: "2 maanden",
-    duration: "2 maanden",
-    price: "€24,99",
-    pricePerMonth: "€12,50/maand",
+    nameKey: "paywall.plans.twoMonth",
+    priceKey: "paywall.prices.twoMonth",
+    pricePerMonthKey: "paywall.pricePerMonth.twoMonth",
     popular: true,
-    savings: "Bespaar 17%",
+    savingsKey: "paywall.save17",
   },
   {
     id: "three_month",
-    name: "3 maanden",
-    duration: "3 maanden",
-    price: "€29,99",
-    pricePerMonth: "€10,00/maand",
+    nameKey: "paywall.plans.threeMonth",
+    priceKey: "paywall.prices.threeMonth",
+    pricePerMonthKey: "paywall.pricePerMonth.threeMonth",
     popular: false,
-    savings: "Bespaar 33%",
+    savingsKey: "paywall.save33",
   },
 ];
 
-const FEATURES = [
-  "Tot 4 zoekprofielen",
-  "Directe meldingen via e-mail",
-  "Pushmeldingen (binnenkort)",
-  "Nieuwe woningen als eerste",
+const FEATURE_KEYS = [
+  "paywall.features.profiles",
+  "paywall.features.emailAlerts",
+  "paywall.features.pushAlerts",
+  "paywall.features.firstAccess",
 ];
 
 export default function PaywallPage() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const { user, loading: authLoading } = useAuth();
+  const { t } = useTranslation();
   const searchString = useSearch();
   const queryParams = new URLSearchParams(searchString);
   const planFromUrl = queryParams.get("plan");
@@ -86,7 +84,7 @@ export default function PaywallPage() {
       const token = session.data.session?.access_token;
 
       if (!token) {
-        toast({ title: "Je bent niet ingelogd", description: "Log opnieuw in.", variant: "destructive" });
+        toast({ title: t("paywall.notLoggedIn"), description: t("paywall.loginAgain"), variant: "destructive" });
         navigate("/login");
         return;
       }
@@ -104,8 +102,8 @@ export default function PaywallPage() {
 
       if (data.error) {
         toast({
-          title: "Betaling mislukt",
-          description: data.message || data.error || "Probeer het later opnieuw.",
+          title: t("paywall.paymentFailed"),
+          description: data.message || data.error || t("paywall.tryAgainLater"),
           variant: "destructive",
         });
         return;
@@ -115,15 +113,15 @@ export default function PaywallPage() {
         window.location.href = data.url;
       } else {
         toast({
-          title: "Betaling niet beschikbaar",
-          description: "Geen checkout URL ontvangen. Probeer het later opnieuw.",
+          title: t("paywall.paymentUnavailable"),
+          description: t("paywall.noCheckoutUrl"),
           variant: "destructive",
         });
       }
     } catch (err: any) {
       toast({
-        title: "Er ging iets mis",
-        description: "Probeer het later opnieuw.",
+        title: t("paywall.somethingWentWrong"),
+        description: t("paywall.tryAgainLater"),
         variant: "destructive",
       });
     } finally {
@@ -157,10 +155,10 @@ export default function PaywallPage() {
             <Crown className="w-7 h-7 text-[var(--yo-dark)]" />
           </div>
           <h1 className="text-[32px] font-[800] text-[var(--yo-dark)] tracking-[-0.03em] leading-[1.1] uppercase mb-3" data-testid="text-paywall-title">
-            Kies je abonnement
+            {t("paywall.title")}
           </h1>
           <p className="text-[15px] text-[var(--yo-dark)]">
-            Start met 14 dagen gratis proefperiode. Daarna automatisch verlengd.
+            {t("paywall.trialInfo")}
           </p>
         </div>
 
@@ -181,19 +179,19 @@ export default function PaywallPage() {
                   className="absolute -top-3 left-5 px-3 py-0.5 bg-[var(--yo-dark)] text-white text-xs font-bold rounded-full"
                   data-testid="badge-popular"
                 >
-                  Meest gekozen
+                  {t("paywall.mostChosen")}
                 </span>
               )}
 
               <div className="flex items-center justify-between gap-4 pr-8">
                 <div>
-                  <p className="text-[18px] font-bold text-[var(--yo-dark)]">{plan.name}</p>
-                  <p className="text-[15px] text-[var(--yo-dark)]">{plan.pricePerMonth}</p>
+                  <p className="text-[18px] font-bold text-[var(--yo-dark)]">{t(plan.nameKey)}</p>
+                  <p className="text-[15px] text-[var(--yo-dark)]">{t(plan.pricePerMonthKey)}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xl font-extrabold text-[var(--yo-dark)]">{plan.price}</p>
-                  {plan.savings && (
-                    <p className="text-xs font-semibold text-[var(--yo-pink)]">{plan.savings}</p>
+                  <p className="text-xl font-extrabold text-[var(--yo-dark)]">{t(plan.priceKey)}</p>
+                  {plan.savingsKey && (
+                    <p className="text-xs font-semibold text-[var(--yo-pink)]">{t(plan.savingsKey)}</p>
                   )}
                 </div>
               </div>
@@ -212,14 +210,14 @@ export default function PaywallPage() {
         </div>
 
         <div className="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-6">
-          <p className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3">Dit zit er allemaal in:</p>
+          <p className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3">{t("paywall.featuresTitle")}</p>
           <div className="space-y-2.5">
-            {FEATURES.map((feature, i) => (
+            {FEATURE_KEYS.map((key, i) => (
               <div key={i} className="flex items-center gap-3">
                 <div className="w-5 h-5 rounded-full bg-[var(--yo-chip-bg)] flex items-center justify-center flex-shrink-0">
                   <Check className="w-3 h-3 text-[var(--yo-dark)]" />
                 </div>
-                <span className="text-[15px] text-[var(--yo-dark)]">{feature}</span>
+                <span className="text-[15px] text-[var(--yo-dark)]">{t(key)}</span>
               </div>
             ))}
           </div>
@@ -238,14 +236,14 @@ export default function PaywallPage() {
             {loading ? (
               <>
                 <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                Even geduld...
+                {t("paywall.pleaseWait")}
               </>
             ) : (
-              "Start gratis proefperiode"
+              t("paywall.startTrial")
             )}
           </Button>
           <p className="text-center text-[13px] text-[var(--yo-dark)] mt-3 opacity-60">
-            14 dagen gratis. Daarna automatisch verlengd. Opzeggen kan altijd.
+            {t("paywall.trialFooter")}
           </p>
         </div>
       </div>

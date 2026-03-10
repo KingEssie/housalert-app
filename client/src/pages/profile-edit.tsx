@@ -3,22 +3,25 @@ import { useLocation, useRoute } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
+import { useTranslation } from "@/i18n";
 import { Loader2 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
 
-const FIELD_CONFIG: Record<string, { question: string; label: string; type: string; placeholder: string; dbField: string }> = {
-  first_name: { question: "Wat is je voornaam?", label: "Voornaam", type: "text", placeholder: "Bijv. Max", dbField: "first_name" },
-  last_name: { question: "Wat is je achternaam?", label: "Achternaam", type: "text", placeholder: "Bijv. Mustermann", dbField: "last_name" },
-  birth_date: { question: "Wat is je geboortedatum?", label: "Geboortedatum", type: "date", placeholder: "DD-MM-JJJJ", dbField: "birth_date" },
-  phone: { question: "Wat is je telefoonnummer?", label: "Mobiele nummer", type: "tel", placeholder: "+49 170 1234567", dbField: "phone" },
-  occupation: { question: "Wat is je beroep?", label: "Beroep", type: "text", placeholder: "Bijv. Software-ingenieur", dbField: "occupation" },
-  monthly_income: { question: "Wat is je maandelijks inkomen?", label: "Maandelijks inkomen", type: "number", placeholder: "Bijv. 3500", dbField: "monthly_income" },
-};
-
 export default function ProfileEditPage() {
   const [, params] = useRoute("/profile/edit/:field");
   const field = params?.field ?? "";
+  const { t } = useTranslation();
+
+  const FIELD_CONFIG: Record<string, { question: string; label: string; type: string; placeholder: string; dbField: string }> = {
+    first_name: { question: t("profileEdit.firstNameQ"), label: t("profileEdit.firstName"), type: "text", placeholder: t("profileEdit.firstNamePlaceholder"), dbField: "first_name" },
+    last_name: { question: t("profileEdit.lastNameQ"), label: t("profileEdit.lastName"), type: "text", placeholder: t("profileEdit.lastNamePlaceholder"), dbField: "last_name" },
+    birth_date: { question: t("profileEdit.birthDateQ"), label: t("profileEdit.birthDate"), type: "date", placeholder: t("profileEdit.birthDatePlaceholder"), dbField: "birth_date" },
+    phone: { question: t("profileEdit.phoneQ"), label: t("profileEdit.phone"), type: "tel", placeholder: t("profileEdit.phonePlaceholder"), dbField: "phone" },
+    occupation: { question: t("profileEdit.occupationQ"), label: t("profileEdit.occupation"), type: "text", placeholder: t("profileEdit.occupationPlaceholder"), dbField: "occupation" },
+    monthly_income: { question: t("profileEdit.incomeQ"), label: t("profileEdit.income"), type: "number", placeholder: t("profileEdit.incomePlaceholder"), dbField: "monthly_income" },
+  };
+
   const config = FIELD_CONFIG[field];
 
   const { session } = useAuth();
@@ -68,7 +71,7 @@ export default function ProfileEditPage() {
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         console.error("[profile-edit] Save failed:", config.dbField, err);
-        throw new Error(err.error || "Opslaan mislukt. Probeer opnieuw.");
+        throw new Error(err.error || t("profileEdit.saveFailed"));
       }
 
       queryClient.invalidateQueries({ queryKey: ["/api/profile-data"] });
@@ -76,10 +79,10 @@ export default function ProfileEditPage() {
         queryClient.invalidateQueries({ queryKey: ["/api/notifications/settings"] });
       }
 
-      toast({ title: "Opgeslagen" });
+      toast({ title: t("profileEdit.saved") });
       navigate("/profile/details");
     } catch (err: any) {
-      toast({ title: "Fout", description: err.message || "Opslaan mislukt. Probeer opnieuw.", variant: "destructive" });
+      toast({ title: t("common.error"), description: err.message || t("profileEdit.saveFailed"), variant: "destructive" });
     } finally {
       setSaving(false);
     }
@@ -112,7 +115,7 @@ export default function ProfileEditPage() {
               className="w-full h-[52px] rounded-lg bg-primary text-primary-foreground text-[15px] font-semibold"
               data-testid="button-save-field"
             >
-              {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : "Opslaan"}
+              {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : t("common.save")}
             </Button>
           </div>
         )}

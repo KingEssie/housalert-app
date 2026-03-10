@@ -3,6 +3,7 @@ import { MapPin, Search, X, AlertCircle } from "lucide-react";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { useTranslation } from "@/i18n";
 
 const MARKER_ICON = new L.Icon({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
@@ -53,6 +54,7 @@ interface CityPickerProps {
 }
 
 export default function CityPicker({ value, onChange, error }: CityPickerProps) {
+  const { t } = useTranslation();
   const [query, setQuery] = useState(value?.city_name ?? "");
   const [results, setResults] = useState<NominatimResult[]>([]);
   const [open, setOpen] = useState(false);
@@ -153,7 +155,7 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
             value={query}
             onChange={(e) => handleInputChange(e.target.value)}
             onFocus={() => { if (results.length > 0 && !value) setOpen(true); }}
-            placeholder="Zoek een plaats in Duitsland"
+            placeholder={t("location.searchCity")}
             className={`w-full min-h-[52px] rounded-lg bg-[var(--yo-surface)] border px-11 text-[16px] text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)] focus:border-transparent transition-colors ${
               showValidation ? "border-red-400" : value ? "border-[var(--yo-teal)] bg-[var(--yo-chip-bg)]/30" : "border-[var(--yo-divider)]"
             }`}
@@ -196,7 +198,7 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
       {showValidation && (
         <div className="flex items-center gap-2 text-red-500 text-[13px]" data-testid="text-city-validation">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
-          <span>Selecteer een plaats uit de lijst.</span>
+          <span>{t("cityPicker.selectFromList")}</span>
         </div>
       )}
 

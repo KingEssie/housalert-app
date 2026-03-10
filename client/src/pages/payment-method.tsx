@@ -3,6 +3,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { CreditCard, Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "@/i18n";
 
 interface PaymentMethod {
   id: string;
@@ -26,40 +27,41 @@ const MOCK_METHODS: PaymentMethod[] = [
 
 export default function PaymentMethodPage() {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [methods, setMethods] = useState<PaymentMethod[]>(MOCK_METHODS);
 
   const handleAdd = () => {
     toast({
-      title: "Binnenkort beschikbaar",
-      description: "Betaalmethode toevoegen wordt binnenkort ondersteund.",
+      title: t("paymentMethodPage.comingSoon"),
+      description: t("paymentMethodPage.comingSoonDesc"),
     });
   };
 
   const handleRemove = (id: string) => {
     if (methods.length <= 1) {
       toast({
-        title: "Niet mogelijk",
-        description: "Je hebt minimaal één betaalmethode nodig.",
+        title: t("paymentMethodPage.notPossible"),
+        description: t("paymentMethodPage.needOneMethod"),
         variant: "destructive",
       });
       return;
     }
     setMethods((prev) => prev.filter((m) => m.id !== id));
     toast({
-      title: "Verwijderd",
-      description: "Betaalmethode is verwijderd.",
+      title: t("paymentMethodPage.removed"),
+      description: t("paymentMethodPage.removedDesc"),
     });
   };
 
   return (
     <div className="min-h-screen bg-background" data-testid="page-payment-method">
-      <PageHeader title="Betaalmethode" />
+      <PageHeader title={t("paymentMethodPage.title")} />
 
       <div className="max-w-xl mx-auto p-4 space-y-4 pb-8">
         <div className="bg-card rounded-lg border overflow-hidden" style={{ borderColor: "var(--yo-divider)" }}>
           <div className="px-5 pt-5 pb-2">
             <p className="text-[13px] font-semibold uppercase tracking-wider" style={{ color: "var(--yo-muted)" }} data-testid="text-section-title-payment">
-              Huidige betaalmethode
+              {t("paymentMethodPage.currentMethod")}
             </p>
           </div>
 
@@ -74,12 +76,12 @@ export default function PaymentMethodPage() {
                     {method.brand} {method.last4}
                   </p>
                   <p className="text-[14px]" style={{ color: "var(--yo-muted)" }} data-testid="text-card-expiry">
-                    Vervalt {String(method.expMonth).padStart(2, "0")}/{method.expYear}
+                    {t("paymentMethodPage.expires", { date: `${String(method.expMonth).padStart(2, "0")}/${method.expYear}` })}
                   </p>
                 </div>
                 {method.isDefault && (
                   <Badge variant="secondary" className="flex-shrink-0" data-testid="badge-default">
-                    Standaard
+                    {t("paymentMethodPage.default")}
                   </Badge>
                 )}
               </div>
@@ -96,7 +98,7 @@ export default function PaymentMethodPage() {
             <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "var(--yo-chip-bg)" }}>
               <Plus className="w-5 h-5" style={{ color: "var(--yo-teal)" }} />
             </div>
-            <span className="text-[15px] font-medium" style={{ color: "var(--yo-dark)" }}>Betaalmethode toevoegen</span>
+            <span className="text-[15px] font-medium" style={{ color: "var(--yo-dark)" }}>{t("paymentMethodPage.addMethod")}</span>
           </button>
           <div className="mx-5" style={{ borderBottom: "1px solid var(--yo-divider)" }} />
           <button
@@ -107,7 +109,7 @@ export default function PaymentMethodPage() {
             <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
               <Trash2 className="w-5 h-5 text-muted-foreground" />
             </div>
-            <span className="text-[15px] font-medium text-destructive">Betaalmethode verwijderen</span>
+            <span className="text-[15px] font-medium text-destructive">{t("paymentMethodPage.removeMethod")}</span>
           </button>
         </div>
       </div>

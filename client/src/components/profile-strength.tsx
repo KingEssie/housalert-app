@@ -4,6 +4,7 @@ import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/i18n";
 import {
   ChevronDown,
   ChevronUp,
@@ -103,6 +104,7 @@ function useProfileData() {
 function useUpdateProfileData() {
   const { session } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation();
   return useMutation({
     mutationFn: async (data: Partial<ProfileData>) => {
       const res = await fetch("/api/profile-data", {
@@ -121,7 +123,7 @@ function useUpdateProfileData() {
       queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
     },
     onError: () => {
-      toast({ title: "Fout", description: "Kon gegevens niet opslaan. Probeer het opnieuw.", variant: "destructive" });
+      toast({ title: t("profileStrength.saveFailed"), description: t("profileStrength.saveFailedDesc"), variant: "destructive" });
     },
   });
 }
@@ -135,33 +137,21 @@ const TASK_ICONS: Record<string, typeof Bell> = {
   phone: Phone,
 };
 
-const TASK_DESCRIPTIONS: Record<string, string> = {
-  alerts: "Activeer minstens één meldingskanaal (e-mail of push) zodat je geen nieuwe woningen mist.",
-  search_buddy: "Voeg een zoekbuddy toe die ook meldingen ontvangt van jouw matches.",
-  search_optimize: "Maak minstens 2 zoekprofielen of optimaliseer je filters voor betere resultaten.",
-  application_template: "Bereid een aanmeldingsbrief voor zodat je direct kunt reageren op nieuwe woningen.",
-  documents: "Verzamel alle benodigde documenten zodat je klaar bent om te reageren.",
-  phone: "Voeg je telefoonnummer toe aan je profiel.",
-};
-
-function getStatusLabel(score: number): { label: string; color: string; bg: string } {
-  if (score >= 80) return { label: "Klaar om snel te reageren", color: "text-[var(--yo-dark)]", bg: "bg-[var(--yo-success)]/10" };
-  if (score >= 60) return { label: "Goed voorbereid", color: "text-[var(--yo-dark)]", bg: "bg-[var(--yo-success)]/10" };
-  if (score >= 30) return { label: "Op weg", color: "text-[var(--yo-dark)]", bg: "bg-[var(--yo-success)]/10" };
-  return { label: "Net begonnen", color: "text-[var(--yo-dark)]", bg: "bg-[var(--yo-surface)]" };
-}
-
-function getRecommendation(score: number, tasks: Task[]): string {
-  const incomplete = tasks.filter(t => !t.completed);
-  if (incomplete.length === 0) return "Top! Je profiel is compleet. Je bent klaar om snel te reageren.";
-  const next = incomplete[0];
-  if (score < 30) return `Begin met "${next.label}" om je kansen te vergroten.`;
-  if (score < 60) return `Goed bezig! Voltooi "${next.label}" om je score te verhogen.`;
-  return `Bijna klaar! Rond "${next.label}" af voor een compleet profiel.`;
+function getTaskDescriptionKey(taskId: string): string {
+  const map: Record<string, string> = {
+    alerts: "profileStrength.alertsDesc",
+    search_buddy: "profileStrength.buddyDesc",
+    search_optimize: "profileStrength.optimizeDesc",
+    application_template: "profileStrength.letterDesc",
+    documents: "profileStrength.docForEveryone",
+    phone: "profileStrength.phoneDesc",
+  };
+  return map[taskId] || "";
 }
 
 export function ProfileStrengthCard() {
   const { data, isLoading } = useProfileStrength();
+  const { t } = useTranslation();
 
   if (isLoading || !data) {
     return (
@@ -176,6 +166,23 @@ export function ProfileStrengthCard() {
   const { score, maxScore } = data;
   const allTasks = [...data.tasks, ...data.prepTasks];
   const pct = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
+
+  const getStatusLabel = (s: number): { label: string; color: string; bg: string } => {
+    if (s >= 80) return { label: t("profileStrength.readyToReact"), color: "text-[var(--yo-dark)]", bg: "bg-[var(--yo-success)]/10" };
+    if (s >= 60) return { label: t("profileStrength.wellPrepared"), color: "text-[var(--yo-dark)]", bg: "bg-[var(--yo-success)]/10" };
+    if (s >= 30) return { label: t("profileStrength.onTheWay"), color: "text-[var(--yo-dark)]", bg: "bg-[var(--yo-success)]/10" };
+    return { label: t("profileStrength.justStarted"), color: "text-[var(--yo-dark)]", bg: "bg-[var(--yo-surface)]" };
+  };
+
+  const getRecommendation = (s: number, tasks: Task[]): string => {
+    const incomplete = tasks.filter(tk => !tk.completed);
+    if (incomplete.length === 0) return t("profileStrength.completeRec");
+    const next = incomplete[0];
+    if (s < 30) return t("profileStrength.startRec", { task: next.label });
+    if (s < 60) return t("profileStrength.goodRec", { task: next.label });
+    return t("profileStrength.almostRec", { task: next.label });
+  };
+
   const status = getStatusLabel(pct);
   const recommendation = getRecommendation(pct, allTasks);
 
@@ -186,7 +193,7 @@ export function ProfileStrengthCard() {
           <div className="w-8 h-8 rounded-full bg-[var(--yo-chip-bg)] flex items-center justify-center">
             <Shield className="w-4 h-4 text-[var(--yo-dark)]" />
           </div>
-          <h3 className="text-[15px] font-semibold text-[var(--yo-dark)]">Profielsterkte</h3>
+          <h3 className="text-[15px] font-semibold text-[var(--yo-dark)]">{t("profileStrength.title")}</h3>
         </div>
         <span className={`text-[13px] font-medium px-2.5 py-1 rounded-full ${status.bg} ${status.color}`} data-testid="text-status-label">
           {status.label}
@@ -216,6 +223,7 @@ export function ProfileStrengthCard() {
 
 export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: string) => void }) {
   const { data, isLoading } = useProfileStrength();
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
 
   if (isLoading || !data) {
@@ -240,11 +248,11 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
             <Sparkles className="w-4 h-4 text-[var(--yo-dark)]" />
-            <h3 className="text-[15px] font-semibold text-[var(--yo-dark)]">Rond je account af</h3>
+            <h3 className="text-[15px] font-semibold text-[var(--yo-dark)]">{t("profileStrength.completeAccount")}</h3>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-[13px] text-[var(--yo-dark)]">
-              {completedCount}/{totalCount} taken voltooid
+              {t("profileStrength.tasksCompleted", { done: String(completedCount), total: String(totalCount) })}
             </span>
             <span className="text-[13px] font-medium text-[var(--yo-pink)]">{percentage}%</span>
           </div>
@@ -303,7 +311,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
                   <p className={`text-[14px] font-medium ${task.completed ? "text-[var(--yo-dark)] line-through" : "text-[var(--yo-dark)]"}`}>
                     {task.label}
                   </p>
-                  <p className="text-[11px] text-[var(--yo-dark)]">+{task.score} punten</p>
+                  <p className="text-[11px] text-[var(--yo-dark)]">{t("profileStrength.points", { score: String(task.score) })}</p>
                 </div>
                 {!task.completed && <ArrowRight className="w-4 h-4 text-[var(--yo-dark)] flex-shrink-0" />}
               </button>
@@ -314,34 +322,6 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
     </div>
   );
 }
-
-const DOCUMENT_CHECKLIST = [
-  {
-    group: "Voor iedereen",
-    items: [
-      { id: "id_copy", label: "Kopie identiteitsbewijs" },
-      { id: "schufa", label: "SCHUFA-rapport" },
-      { id: "income_proof", label: "Inkomensbewijs (laatste 3 maanden)" },
-      { id: "rental_history", label: "Huurgeschiedenis / Mietschuldenfreiheit" },
-      { id: "photo", label: "Pasfoto" },
-    ],
-  },
-  {
-    group: "In loondienst",
-    items: [
-      { id: "employment_contract", label: "Arbeidsovereenkomst" },
-      { id: "payslips", label: "Loonstroken (laatste 3 maanden)" },
-    ],
-  },
-  {
-    group: "Voor ondernemers",
-    items: [
-      { id: "business_reg", label: "Gewerbeanmeldung / KvK-uittreksel" },
-      { id: "tax_returns", label: "Belastingaangifte (laatste 2 jaar)" },
-      { id: "bank_statements", label: "Bankafschriften (laatste 3 maanden)" },
-    ],
-  },
-];
 
 export function TaskModal({
   taskId,
@@ -355,6 +335,7 @@ export function TaskModal({
   const { data: profileData } = useProfileData();
   const updateProfileData = useUpdateProfileData();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const [buddyEmail, setBuddyEmail] = useState("");
   const [template, setTemplate] = useState("");
@@ -371,20 +352,47 @@ export function TaskModal({
 
   const handleSave = async (data: Partial<ProfileData>, msg: string) => {
     await updateProfileData.mutateAsync(data);
-    toast({ title: "Opgeslagen!", description: msg });
+    toast({ title: t("profileStrength.saved"), description: msg });
     onClose();
   };
 
-  const title = ({
-    alerts: "Alerts activeren",
-    search_buddy: "Zoekbuddy toevoegen",
-    search_optimize: "Zoekopdracht optimaliseren",
-    application_template: "Aanmeldingsbrief voorbereiden",
-    documents: "Documenten verzamelen",
-    phone: "Telefoonnummer toevoegen",
-  } as Record<string, string>)[taskId] || "";
+  const titleMap: Record<string, string> = {
+    alerts: t("profileStrength.alertsTitle"),
+    search_buddy: t("profileStrength.buddyTitle"),
+    search_optimize: t("profileStrength.optimizeTitle"),
+    application_template: t("profileStrength.letterTitle"),
+    documents: t("profileStrength.docForEveryone"),
+    phone: t("profileStrength.phoneTitle"),
+  };
+  const title = titleMap[taskId] || "";
 
-  const description = TASK_DESCRIPTIONS[taskId] || "";
+  const DOCUMENT_CHECKLIST = [
+    {
+      group: t("profileStrength.docForEveryone"),
+      items: [
+        { id: "id_copy", label: t("profileStrength.docIdCopy") },
+        { id: "schufa", label: t("profileStrength.docSchufa") },
+        { id: "income_proof", label: t("profileStrength.docIncomeProof") },
+        { id: "rental_history", label: t("profileStrength.docRentalHistory") },
+        { id: "photo", label: t("profileStrength.docPhoto") },
+      ],
+    },
+    {
+      group: t("profileStrength.docEmployed"),
+      items: [
+        { id: "employment_contract", label: t("profileStrength.docEmploymentContract") },
+        { id: "payslips", label: t("profileStrength.docPayslips") },
+      ],
+    },
+    {
+      group: t("profileStrength.docSelfEmployed"),
+      items: [
+        { id: "business_reg", label: t("profileStrength.docBusinessReg") },
+        { id: "tax_returns", label: t("profileStrength.docTaxReturns") },
+        { id: "bank_statements", label: t("profileStrength.docBankStatements") },
+      ],
+    },
+  ];
 
   return (
     <div className="fixed inset-0 z-50 bg-white flex flex-col">
@@ -403,41 +411,39 @@ export function TaskModal({
 
       <main className="flex-1 overflow-y-auto">
         <div className="max-w-lg mx-auto px-5 py-6">
-          <p className="text-[15px] text-[var(--yo-dark)] mb-6 leading-relaxed">{description}</p>
-
           {taskId === "alerts" && (
             <div className="flex flex-col gap-4">
-              <p className="text-[14px] text-[var(--yo-dark)]">Ga naar meldingsinstellingen om je kanalen te activeren.</p>
+              <p className="text-[14px] text-[var(--yo-dark)]">{t("profileStrength.alertsDesc")}</p>
               <Button
                 onClick={() => { onClose(); navigate("/settings/notifications"); }}
                 className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[16px] font-bold"
                 data-testid="button-goto-notifications"
               >
                 <Bell className="w-4 h-4 mr-2" />
-                Naar meldingsinstellingen
+                {t("profileStrength.goToAlerts")}
               </Button>
             </div>
           )}
 
           {taskId === "search_buddy" && (
             <div className="flex flex-col gap-4">
-              <label className="text-[14px] font-medium text-[var(--yo-dark)]">E-mailadres zoekbuddy</label>
+              <label className="text-[14px] font-medium text-[var(--yo-dark)]">{t("profileStrength.buddyEmail")}</label>
               <input
                 type="email"
                 value={buddyEmail}
                 onChange={(e) => setBuddyEmail(e.target.value)}
-                placeholder="buddy@voorbeeld.nl"
+                placeholder={t("profileStrength.buddyPlaceholder")}
                 className="w-full h-[56px] px-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[16px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 transition-all"
                 data-testid="input-buddy-email"
               />
-              <p className="text-[14px] text-[var(--yo-dark)]">Je buddy ontvangt dezelfde meldingen als jij.</p>
+              <p className="text-[14px] text-[var(--yo-dark)]">{t("profileStrength.buddyDesc")}</p>
               <Button
-                onClick={() => handleSave({ search_buddy_email: buddyEmail }, "Zoekbuddy opgeslagen!")}
+                onClick={() => handleSave({ search_buddy_email: buddyEmail }, t("profileStrength.buddySaved"))}
                 disabled={!buddyEmail.includes("@") || updateProfileData.isPending}
                 className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[16px] font-bold disabled:opacity-50"
                 data-testid="button-save-buddy"
               >
-                {updateProfileData.isPending ? "Opslaan..." : "Opslaan"}
+                {updateProfileData.isPending ? t("profileStrength.saving") : t("profileStrength.save")}
               </Button>
             </div>
           )}
@@ -445,7 +451,7 @@ export function TaskModal({
           {taskId === "search_optimize" && (
             <div className="flex flex-col gap-4">
               <p className="text-[14px] text-[var(--yo-dark)]">
-                Voeg meer zoekprofielen toe of verfijn je huidige filters voor betere matches.
+                {t("profileStrength.optimizeDesc")}
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard?tab=filters"); }}
@@ -453,7 +459,7 @@ export function TaskModal({
                 data-testid="button-goto-filters"
               >
                 <Search className="w-4 h-4 mr-2" />
-                Naar zoekprofielen
+                {t("profileStrength.goToFilters")}
               </Button>
             </div>
           )}
@@ -461,7 +467,7 @@ export function TaskModal({
           {taskId === "application_template" && (
             <div className="flex flex-col gap-4">
               <p className="text-[14px] text-[var(--yo-dark)]">
-                Bereid een standaard aanmeldingsbrief voor met automatische invulling van woninggegevens.
+                {t("profileStrength.letterDesc")}
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/application-letter"); }}
@@ -469,7 +475,7 @@ export function TaskModal({
                 data-testid="button-goto-letter"
               >
                 <FileText className="w-4 h-4 mr-2" />
-                Naar aanmeldingsbrief
+                {t("profileStrength.goToLetter")}
               </Button>
             </div>
           )}
@@ -503,19 +509,19 @@ export function TaskModal({
                 </div>
               ))}
               <Button
-                onClick={() => handleSave({ document_checklist: checklist }, "Documentenlijst opgeslagen!")}
+                onClick={() => handleSave({ document_checklist: checklist }, t("profileStrength.docListSaved"))}
                 disabled={updateProfileData.isPending}
                 className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[16px] font-bold disabled:opacity-50"
                 data-testid="button-save-documents"
               >
-                {updateProfileData.isPending ? "Opslaan..." : "Opslaan"}
+                {updateProfileData.isPending ? t("profileStrength.saving") : t("profileStrength.save")}
               </Button>
             </div>
           )}
 
           {taskId === "phone" && (
             <div className="flex flex-col gap-4">
-              <label className="text-[14px] font-medium text-[var(--yo-dark)]">Telefoonnummer (internationaal)</label>
+              <label className="text-[14px] font-medium text-[var(--yo-dark)]">{t("profileStrength.phoneLabel")}</label>
               <input
                 type="tel"
                 value={phoneInput}
@@ -524,14 +530,14 @@ export function TaskModal({
                 className="w-full h-[56px] px-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[16px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 transition-all"
                 data-testid="input-phone"
               />
-              <p className="text-[14px] text-[var(--yo-dark)]">Gebruik internationaal formaat, bijv. +49 170 1234567</p>
+              <p className="text-[14px] text-[var(--yo-dark)]">{t("profileStrength.phoneDesc")}</p>
               <Button
                 onClick={() => { onClose(); navigate("/settings/notifications"); }}
                 className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[16px] font-bold"
                 data-testid="button-goto-phone-settings"
               >
                 <Phone className="w-4 h-4 mr-2" />
-                Naar meldingsinstellingen
+                {t("profileStrength.goToPhoneSettings")}
               </Button>
             </div>
           )}
@@ -549,10 +555,9 @@ const PREP_TASK_ICONS: Record<string, typeof Bell> = {
   prep_viewing_tips: Eye,
 };
 
-const SHARE_TEXT = `Hey! Ik ben op zoek naar een huurwoning in Duitsland en gebruik HousAlert — een slimme zoektool die automatisch nieuwe woningen vindt. Als jij ook iets ziet, stuur het door! Samen vinden we sneller iets. Kijk op housalert.de`;
-
 export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: string) => void }) {
   const { data, isLoading } = useProfileStrength();
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
 
   if (isLoading || !data) {
@@ -577,11 +582,11 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
             <Target className="w-4 h-4 text-[var(--yo-dark)]" />
-            <h3 className="text-[15px] font-semibold text-[var(--yo-dark)]">Bereid je zoekopdracht voor</h3>
+            <h3 className="text-[15px] font-semibold text-[var(--yo-dark)]">{t("profileStrength.prepareSearch")}</h3>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-[13px] text-[var(--yo-dark)]">
-              {prepCompletedCount}/{prepTotalCount} taken voltooid
+              {t("profileStrength.tasksCompleted", { done: String(prepCompletedCount), total: String(prepTotalCount) })}
             </span>
             <span className="text-[13px] font-medium text-[var(--yo-pink)]">{percentage}%</span>
           </div>
@@ -640,7 +645,7 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
                   <p className={`text-[14px] font-medium ${task.completed ? "text-[var(--yo-dark)] line-through" : "text-[var(--yo-dark)]"}`}>
                     {task.label}
                   </p>
-                  <p className="text-[11px] text-[var(--yo-dark)]">+{task.score} punten</p>
+                  <p className="text-[11px] text-[var(--yo-dark)]">{t("profileStrength.points", { score: String(task.score) })}</p>
                 </div>
                 {!task.completed && <ArrowRight className="w-4 h-4 text-[var(--yo-dark)] flex-shrink-0" />}
               </button>
@@ -663,28 +668,29 @@ export function PrepTaskModal({
 }) {
   const updateProfileData = useUpdateProfileData();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const titles: Record<string, string> = {
-    prep_search_profile: "Zoekopdracht aanmaken",
-    prep_letter: "Schrijf een introductiebrief",
-    prep_extra_profile: "Voeg extra zoekopdracht toe",
-    prep_network: "Gebruik je netwerk",
-    prep_viewing_tips: "Lees bezichtigingtips",
+    prep_search_profile: t("profileStrength.prepCreateTitle"),
+    prep_letter: t("profileStrength.prepLetterTitle"),
+    prep_extra_profile: t("profileStrength.prepExtraTitle"),
+    prep_network: t("profileStrength.prepNetworkTitle"),
+    prep_viewing_tips: t("profileStrength.prepViewingTitle"),
   };
 
   const handleMarkDone = async (field: string) => {
     await updateProfileData.mutateAsync({ [field]: true } as any);
     queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
-    toast({ title: "Afgerond!", description: "Taak als voltooid gemarkeerd." });
+    toast({ title: t("profileStrength.completed"), description: t("profileStrength.completedDesc") });
     onClose();
   };
 
   const handleCopyShare = async () => {
     try {
-      await navigator.clipboard.writeText(SHARE_TEXT);
-      toast({ title: "Gekopieerd!", description: "Deeltekst naar klembord gekopieerd." });
+      await navigator.clipboard.writeText(t("profileStrength.shareText"));
+      toast({ title: t("profileStrength.copySuccess"), description: t("profileStrength.copySuccessDesc") });
     } catch {
-      toast({ title: "Fout", description: "Kon niet kopiëren.", variant: "destructive" });
+      toast({ title: t("profileStrength.copyError"), description: t("profileStrength.copyErrorDesc"), variant: "destructive" });
     }
   };
 
@@ -708,7 +714,7 @@ export function PrepTaskModal({
           {taskId === "prep_search_profile" && (
             <div className="flex flex-col gap-4">
               <p className="text-[15px] text-[var(--yo-dark)] leading-relaxed">
-                Maak je eerste zoekopdracht aan om automatisch woningen te ontvangen die bij jouw voorkeuren passen.
+                {t("profileStrength.prepCreateDesc")}
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
@@ -716,7 +722,7 @@ export function PrepTaskModal({
                 data-testid="button-prep-create-profile"
               >
                 <Search className="w-4 h-4 mr-2" />
-                Zoekopdracht aanmaken
+                {t("profileStrength.prepCreateBtn")}
               </Button>
             </div>
           )}
@@ -724,7 +730,7 @@ export function PrepTaskModal({
           {taskId === "prep_letter" && (
             <div className="flex flex-col gap-4">
               <p className="text-[15px] text-[var(--yo-dark)] leading-relaxed">
-                Een goede introductiebrief laat verhuurders zien dat je serieus bent. Bereid er nu een voor zodat je direct kunt reageren.
+                {t("profileStrength.prepLetterDesc")}
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/application-letter"); }}
@@ -732,7 +738,7 @@ export function PrepTaskModal({
                 data-testid="button-prep-goto-letter"
               >
                 <FileText className="w-4 h-4 mr-2" />
-                Naar aanmeldingsbrief
+                {t("profileStrength.prepLetterBtn")}
               </Button>
             </div>
           )}
@@ -740,14 +746,14 @@ export function PrepTaskModal({
           {taskId === "prep_extra_profile" && (
             <div className="flex flex-col gap-5">
               <p className="text-[15px] text-[var(--yo-dark)] leading-relaxed">
-                Met meerdere zoekprofielen vergroot je je kansen aanzienlijk. Zoek je in meerdere steden of met verschillende budgetten? Voeg een extra profiel toe.
+                {t("profileStrength.prepExtraDesc")}
               </p>
               <div className="bg-[var(--yo-surface)] rounded-lg p-5">
-                <p className="text-[14px] font-semibold text-[var(--yo-dark)] mb-3">Waarom meerdere profielen?</p>
+                <p className="text-[14px] font-semibold text-[var(--yo-dark)] mb-3">{t("profileStrength.prepWhyTitle")}</p>
                 <ul className="text-[14px] text-[var(--yo-dark)] space-y-2">
-                  <li className="flex items-start gap-2"><span className="text-[var(--yo-dark)] mt-0.5">+</span>Meer woningen die matchen</li>
-                  <li className="flex items-start gap-2"><span className="text-[var(--yo-dark)] mt-0.5">+</span>Verschillende prijsklassen dekken</li>
-                  <li className="flex items-start gap-2"><span className="text-[var(--yo-dark)] mt-0.5">+</span>Meerdere steden of wijken volgen</li>
+                  <li className="flex items-start gap-2"><span className="text-[var(--yo-dark)] mt-0.5">+</span>{t("profileStrength.prepWhy1")}</li>
+                  <li className="flex items-start gap-2"><span className="text-[var(--yo-dark)] mt-0.5">+</span>{t("profileStrength.prepWhy2")}</li>
+                  <li className="flex items-start gap-2"><span className="text-[var(--yo-dark)] mt-0.5">+</span>{t("profileStrength.prepWhy3")}</li>
                 </ul>
               </div>
               <Button
@@ -756,7 +762,7 @@ export function PrepTaskModal({
                 data-testid="button-prep-add-profile"
               >
                 <Plus className="w-4 h-4 mr-2" />
-                Nieuw zoekprofiel toevoegen
+                {t("profileStrength.prepExtraBtn")}
               </Button>
             </div>
           )}
@@ -764,11 +770,11 @@ export function PrepTaskModal({
           {taskId === "prep_network" && (
             <div className="flex flex-col gap-5">
               <p className="text-[15px] text-[var(--yo-dark)] leading-relaxed">
-                Deel je zoektocht met vrienden, familie en collega's. Hoe meer ogen, hoe sneller je iets vindt.
+                {t("profileStrength.prepNetworkDesc")}
               </p>
               <div className="bg-[var(--yo-surface)] rounded-lg p-5">
-                <p className="text-[14px] font-semibold text-[var(--yo-dark)] mb-3">Deeltekst</p>
-                <p className="text-[14px] text-[var(--yo-dark)] leading-relaxed">{SHARE_TEXT}</p>
+                <p className="text-[14px] font-semibold text-[var(--yo-dark)] mb-3">{t("profileStrength.shareTextLabel")}</p>
+                <p className="text-[14px] text-[var(--yo-dark)] leading-relaxed">{t("profileStrength.shareText")}</p>
               </div>
               <Button
                 variant="outline"
@@ -777,7 +783,7 @@ export function PrepTaskModal({
                 data-testid="button-copy-share"
               >
                 <Copy className="w-4 h-4 mr-2" />
-                Kopieer deeltekst
+                {t("profileStrength.copyShareText")}
               </Button>
               <Button
                 onClick={() => handleMarkDone("network_task_done")}
@@ -785,7 +791,7 @@ export function PrepTaskModal({
                 className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[16px] font-bold disabled:opacity-50"
                 data-testid="button-mark-network-done"
               >
-                {updateProfileData.isPending ? "Opslaan..." : "Markeer als voltooid"}
+                {updateProfileData.isPending ? t("profileStrength.saving") : t("profileStrength.markComplete")}
               </Button>
             </div>
           )}
@@ -793,7 +799,7 @@ export function PrepTaskModal({
           {taskId === "prep_viewing_tips" && (
             <div className="flex flex-col gap-4">
               <p className="text-[15px] text-[var(--yo-dark)] leading-relaxed">
-                Goed voorbereid naar een bezichtiging gaan vergroot je kans op de woning. Lees onze uitgebreide tips.
+                {t("profileStrength.prepViewingDesc")}
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/tips/bezichtiging"); }}
@@ -801,7 +807,7 @@ export function PrepTaskModal({
                 data-testid="button-goto-viewing-tips"
               >
                 <Eye className="w-4 h-4 mr-2" />
-                Naar bezichtigingtips
+                {t("profileStrength.prepViewingBtn")}
               </Button>
             </div>
           )}
@@ -813,6 +819,7 @@ export function PrepTaskModal({
 
 export function NotificationSummaryCard({ navigate }: { navigate: (path: string) => void }) {
   const { data, isLoading } = useProfileStrength();
+  const { t } = useTranslation();
 
   if (isLoading || !data) {
     return (
@@ -826,8 +833,8 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
   const { channels, recommendedChannel } = data;
 
   const channelList = [
-    { key: "email", label: "E-mail", enabled: channels.email, Icon: Mail },
-    { key: "push", label: "Pushmeldingen", enabled: channels.push, Icon: Bell },
+    { key: "email", label: t("profileStrength.notifEmail"), enabled: channels.email, Icon: Mail },
+    { key: "push", label: t("profileStrength.notifPush"), enabled: channels.push, Icon: Bell },
   ];
 
   const activeCount = channelList.filter(c => c.enabled).length;
@@ -839,10 +846,10 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
           <div className="w-8 h-8 rounded-full bg-[var(--yo-chip-bg)] flex items-center justify-center">
             <Bell className="w-4 h-4 text-[var(--yo-dark)]" />
           </div>
-          <h3 className="text-[15px] font-semibold text-[var(--yo-dark)]">Meldingskanalen</h3>
+          <h3 className="text-[15px] font-semibold text-[var(--yo-dark)]">{t("profileStrength.notifChannels")}</h3>
         </div>
         <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${activeCount > 0 ? "bg-[var(--yo-chip-bg)] text-[var(--yo-dark)]" : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"}`}>
-          {activeCount > 0 ? `${activeCount} actief` : "Geen actief"}
+          {activeCount > 0 ? t("profileStrength.notifActive", { count: String(activeCount) }) : t("profileStrength.notifNoneActive")}
         </span>
       </div>
 
@@ -870,7 +877,7 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
         <div className="bg-[var(--yo-chip-bg)] rounded-lg px-3.5 py-2.5 mb-3">
           <p className="text-[12px] text-[var(--yo-dark)] font-medium flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5" />
-            Snelste kanaal: {recommendedChannel}
+            {t("profileStrength.fastestChannel", { channel: recommendedChannel })}
           </p>
         </div>
       )}
@@ -881,7 +888,7 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
         data-testid="button-manage-channels"
       >
         <Bell className="w-3.5 h-3.5" />
-        Kanalen beheren
+        {t("profileStrength.manageChannels")}
       </button>
     </div>
   );
@@ -889,6 +896,7 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
 
 export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => void }) {
   const { data, isLoading } = useProfileStrength();
+  const { t } = useTranslation();
 
   if (isLoading || !data) {
     return (
@@ -901,7 +909,6 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
 
   const { speedSteps, speedDone, speedTotal } = data;
   const allDone = speedDone === speedTotal;
-  const remaining = speedTotal - speedDone;
 
   const stepActions: Record<string, string> = {
     alerts_active: "/settings/notifications",
@@ -917,7 +924,7 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
           <Zap className="w-4 h-4 text-[var(--yo-dark)]" />
         </div>
         <div className="flex-1">
-          <h3 className="text-[15px] font-semibold text-[var(--yo-dark)]">Reactiesnelheid</h3>
+          <h3 className="text-[15px] font-semibold text-[var(--yo-dark)]">{t("profileStrength.reactionSpeed")}</h3>
         </div>
         <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${allDone ? "bg-[var(--yo-success)]/10 text-[var(--yo-dark)]" : "bg-[var(--yo-chip-bg)] text-[var(--yo-dark)]"}`}>
           {speedDone}/{speedTotal}
@@ -958,7 +965,7 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
         <div className="mt-4 bg-[var(--yo-success)]/10 rounded-lg px-3.5 py-2.5">
           <p className="text-[12px] text-[var(--yo-success)] font-medium flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5" />
-            Je bent klaar om snel te reageren
+            {t("profileStrength.readyFast")}
           </p>
         </div>
       )}
@@ -968,6 +975,7 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
 
 export function SpeedBanner({ navigate }: { navigate: (path: string) => void }) {
   const { data, isLoading } = useProfileStrength();
+  const { t } = useTranslation();
 
   if (isLoading || !data) return null;
 
@@ -987,8 +995,8 @@ export function SpeedBanner({ navigate }: { navigate: (path: string) => void }) 
           <Zap className="w-4 h-4 text-[var(--yo-dark)]" />
         </div>
         <div className="flex-1">
-          <p className="text-[14px] font-semibold text-[var(--yo-dark)]">Je bent klaar om snel te reageren</p>
-          <p className="text-[12px] text-[var(--yo-dark)]">Alle stappen voltooid</p>
+          <p className="text-[14px] font-semibold text-[var(--yo-dark)]">{t("profileStrength.readyFast")}</p>
+          <p className="text-[12px] text-[var(--yo-dark)]">{t("profileStrength.allStepsComplete")}</p>
         </div>
         <span className="text-[13px] font-bold text-[var(--yo-dark)]">{pct}%</span>
       </div>
@@ -1006,9 +1014,9 @@ export function SpeedBanner({ navigate }: { navigate: (path: string) => void }) 
       </div>
       <div className="flex-1">
         <p className="text-[14px] font-semibold text-[var(--yo-dark)]">
-          Nog {remaining} {remaining === 1 ? "stap" : "stappen"} om sneller te reageren
+          {t("profileStrength.stepsRemaining", { count: String(remaining), label: remaining === 1 ? t("profileStrength.stepSingular") : t("profileStrength.stepPluralLabel") })}
         </p>
-        <p className="text-[12px] text-[var(--yo-dark)]">Maak je profiel compleet</p>
+        <p className="text-[12px] text-[var(--yo-dark)]">{t("profileStrength.completeYourProfile")}</p>
       </div>
       <ArrowRight className="w-4 h-4 text-[var(--yo-dark)] flex-shrink-0" />
     </div>

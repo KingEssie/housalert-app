@@ -6,10 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Home } from "lucide-react";
+import { useTranslation } from "@/i18n";
 
 export default function LoginPage() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,7 +27,7 @@ export default function LoginPage() {
     });
     if (error) {
       setLoading(false);
-      toast({ title: "Inloggen mislukt", description: error.message, variant: "destructive" });
+      toast({ title: t("auth.login.failed"), description: error.message, variant: "destructive" });
       return;
     }
 
@@ -36,7 +38,7 @@ export default function LoginPage() {
 
   async function handleForgotPassword() {
     if (!email) {
-      toast({ title: "Vul je e-mailadres in", description: "Voer eerst je e-mailadres in om je wachtwoord te resetten.", variant: "destructive" });
+      toast({ title: t("auth.login.emailRequired"), description: t("auth.login.enterEmailFirst"), variant: "destructive" });
       return;
     }
     setResetLoading(true);
@@ -45,9 +47,9 @@ export default function LoginPage() {
     });
     setResetLoading(false);
     if (error) {
-      toast({ title: "Reset mislukt", description: error.message, variant: "destructive" });
+      toast({ title: t("auth.login.failed"), description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "E-mail verzonden", description: "Controleer je inbox voor de reset-link." });
+      toast({ title: t("auth.login.resetSent"), description: t("auth.login.resetSentDesc") });
     }
   }
 
@@ -59,7 +61,7 @@ export default function LoginPage() {
             <div className="w-9 h-9 rounded-lg bg-[var(--yo-dark)] flex items-center justify-center">
               <Home className="w-4 h-4 text-white" />
             </div>
-            <span className="font-extrabold text-[var(--yo-dark)] text-lg tracking-tight">HousAlert</span>
+            <span className="font-extrabold text-[var(--yo-dark)] text-lg tracking-tight">{t("auth.appName")}</span>
           </div>
         </div>
       </header>
@@ -68,21 +70,21 @@ export default function LoginPage() {
         <div className="w-full max-w-sm">
           <div className="text-center mb-8">
             <h1 className="text-[28px] font-[800] text-[var(--yo-dark)] tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-login-title">
-              Welkom terug
+              {t("auth.login.title")}
             </h1>
             <p className="text-[15px] text-[var(--yo-dark)]">
-              Log in op je HousAlert account.
+              {t("auth.login.subtitle")}
             </p>
           </div>
 
           <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
             <form onSubmit={handleLogin} className="flex flex-col gap-5">
               <div className="flex flex-col gap-2">
-                <Label htmlFor="login-email" className="text-[14px] font-semibold text-[var(--yo-dark)]">E-mailadres</Label>
+                <Label htmlFor="login-email" className="text-[14px] font-semibold text-[var(--yo-dark)]">{t("auth.login.email")}</Label>
                 <input
                   id="login-email"
                   type="email"
-                  placeholder="jouw@email.nl"
+                  placeholder={t("auth.login.emailPlaceholder")}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -91,11 +93,11 @@ export default function LoginPage() {
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <Label htmlFor="login-password" className="text-[14px] font-semibold text-[var(--yo-dark)]">Wachtwoord</Label>
+                <Label htmlFor="login-password" className="text-[14px] font-semibold text-[var(--yo-dark)]">{t("auth.login.password")}</Label>
                 <input
                   id="login-password"
                   type="password"
-                  placeholder="••••••••"
+                  placeholder={t("auth.login.passwordPlaceholder")}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -109,7 +111,7 @@ export default function LoginPage() {
                   className="self-end text-[13px] font-semibold text-[var(--yo-pink)] hover:underline mt-1"
                   data-testid="link-forgot-password"
                 >
-                  {resetLoading ? "Verzenden..." : "Wachtwoord vergeten?"}
+                  {resetLoading ? t("common.loading") : t("auth.login.forgotPassword")}
                 </button>
               </div>
               <Button
@@ -118,31 +120,31 @@ export default function LoginPage() {
                 disabled={loading}
                 data-testid="button-login-submit"
               >
-                {loading ? "Inloggen..." : "Inloggen"}
+                {loading ? t("common.loading") : t("auth.login.submit")}
               </Button>
             </form>
           </div>
 
           <div className="flex items-center gap-3 my-6">
             <div className="flex-1 h-px bg-[var(--yo-divider)]" />
-            <span className="text-[13px] text-[var(--yo-dark)]">of</span>
+            <span className="text-[13px] text-[var(--yo-dark)]">{t("auth.login.or")}</span>
             <div className="flex-1 h-px bg-[var(--yo-divider)]" />
           </div>
 
           <div className="text-center">
-            <p className="text-[15px] text-[var(--yo-dark)] mb-3">Nog geen account?</p>
+            <p className="text-[15px] text-[var(--yo-dark)] mb-3">{t("auth.login.noAccount")}</p>
             <Button
               variant="outline"
               className="w-full h-[48px] rounded-lg text-[15px] font-bold border-[var(--yo-teal)] text-[var(--yo-dark)]"
               onClick={() => navigate("/signup")}
               data-testid="link-signup"
             >
-              Account aanmaken
+              {t("auth.login.createAccount")}
             </Button>
           </div>
 
           <p className="text-center text-[13px] text-[var(--yo-dark)] mt-6">
-            Door je aan te melden ga je akkoord met onze voorwaarden.
+            {t("auth.login.footer")}
           </p>
         </div>
       </main>

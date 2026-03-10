@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { DEFAULT_TEMPLATE, fillTemplate } from "@/lib/application-letter";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/i18n";
 import {
   Copy,
   ExternalLink,
@@ -48,7 +49,7 @@ interface NotifSettings {
 
 interface ReadinessItem {
   id: string;
-  label: string;
+  labelKey: string;
   done: boolean;
   icon: typeof FileText;
 }
@@ -56,6 +57,7 @@ interface ReadinessItem {
 export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplySheetProps) {
   const { user, session } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [marked, setMarked] = useState(false);
 
   const { data: profileData } = useQuery<ProfileData>({
@@ -126,19 +128,19 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
   const hasPhone = !!(phoneValue && phoneValue.length > 5);
 
   const readinessItems: ReadinessItem[] = [
-    { id: "letter", label: "Reactiebrief", done: hasTemplate, icon: FileText },
-    { id: "phone", label: "Telefoonnummer", done: hasPhone, icon: Phone },
-    { id: "documents", label: "Documenten", done: hasDocuments, icon: FolderOpen },
+    { id: "letter", labelKey: "applySheet.letter", done: hasTemplate, icon: FileText },
+    { id: "phone", labelKey: "applySheet.phone", done: hasPhone, icon: Phone },
+    { id: "documents", labelKey: "applySheet.documents", done: hasDocuments, icon: FolderOpen },
   ];
   const readyCount = readinessItems.filter((r) => r.done).length;
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(filledLetter);
-      toast({ title: "Gekopieerd!", description: "Je aanmeldingsbrief staat op het klembord." });
+      toast({ title: t("applySheet.copied"), description: t("applySheet.copiedDesc") });
       return true;
     } catch {
-      toast({ title: "Fout", description: "Kon niet kopiëren.", variant: "destructive" });
+      toast({ title: t("applySheet.copyFailed"), description: t("applySheet.copyFailedDesc"), variant: "destructive" });
       return false;
     }
   };
@@ -153,7 +155,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
   const handleMarkApplied = () => {
     setMarked(true);
     onMarkedApplied();
-    toast({ title: "Gemarkeerd als gereageerd", description: "Je kunt deze match terugvinden onder 'Gereageerd'." });
+    toast({ title: t("applySheet.markedApplied"), description: t("applySheet.markedAppliedDesc") });
   };
 
   return (
@@ -168,7 +170,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
         <div className="flex items-center justify-between px-6 pt-5 pb-3">
           <div className="flex items-center gap-2">
             <Send className="w-5 h-5 text-[var(--yo-dark)]" />
-            <h2 className="text-[18px] font-[700] text-[var(--yo-dark)]">Reageer nu</h2>
+            <h2 className="text-[18px] font-[700] text-[var(--yo-dark)]">{t("applySheet.title")}</h2>
           </div>
           <button
             onClick={onClose}
@@ -195,7 +197,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
                     <AlertCircle className="w-3.5 h-3.5 text-[var(--yo-divider)]" />
                   )}
                   <span className={`text-[12px] ${item.done ? "text-[var(--yo-dark)]" : "text-[var(--yo-divider)]"}`}>
-                    {item.label}
+                    {t(item.labelKey)}
                   </span>
                 </div>
               );
@@ -204,10 +206,10 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
 
           <div className="bg-[var(--yo-surface)] rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-[12px] font-semibold text-[var(--yo-dark)] uppercase tracking-wide">Aanmeldingsbrief</p>
+              <p className="text-[12px] font-semibold text-[var(--yo-dark)] uppercase tracking-wide">{t("applySheet.applicationLetter")}</p>
               {readyCount === readinessItems.length && (
                 <span className="text-[11px] font-medium text-[var(--yo-dark)] bg-[var(--yo-chip-bg)] px-2 py-0.5 rounded-full" data-testid="badge-ready">
-                  Klaar om te versturen
+                  {t("applySheet.readyToSend")}
                 </span>
               )}
             </div>
@@ -225,7 +227,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
               data-testid="button-copy-and-open"
             >
               <Copy className="w-4 h-4 mr-2" />
-              Kopieer en reageer
+              {t("applySheet.copyAndApply")}
             </Button>
           ) : (
             <Button
@@ -234,7 +236,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
               data-testid="button-copy-letter-sheet"
             >
               <Copy className="w-4 h-4 mr-2" />
-              Kopieer brief
+              {t("applySheet.copyLetter")}
             </Button>
           )}
 
@@ -247,7 +249,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
                 data-testid="button-copy-only"
               >
                 <Copy className="w-3.5 h-3.5 mr-1.5" />
-                Alleen kopiëren
+                {t("applySheet.copyOnly")}
               </Button>
             )}
             <Button
@@ -262,7 +264,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
               data-testid="button-mark-applied"
             >
               <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
-              {marked ? "Gereageerd" : "Markeer gereageerd"}
+              {marked ? t("applySheet.applied") : t("applySheet.markApplied")}
             </Button>
           </div>
         </div>

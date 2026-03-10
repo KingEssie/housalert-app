@@ -4,6 +4,7 @@ import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "@/i18n";
 import { Mail, Bell, Loader2 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { ListSection, ListRow, ListDivider } from "@/components/list-section";
@@ -17,6 +18,7 @@ export default function NotificationSettingsPage() {
   const { user, session, loading: authLoading } = useAuth();
   const [, navigate] = useLocation();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const [loadingSettings, setLoadingSettings] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -39,8 +41,8 @@ export default function NotificationSettingsPage() {
       })
       .catch(() => {
         toast({
-          title: "Fout bij laden",
-          description: "Kon instellingen niet laden. Probeer het opnieuw.",
+          title: t("notifications.loadFailed"),
+          description: t("notifications.loadFailedDesc"),
           variant: "destructive",
         });
       })
@@ -63,17 +65,17 @@ export default function NotificationSettingsPage() {
 
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.error || "Opslaan mislukt");
+        throw new Error(err.error || t("notifications.saveFailed"));
       }
 
       toast({
-        title: "Opgeslagen",
-        description: "Je meldingsinstellingen zijn bijgewerkt.",
+        title: t("notifications.saved"),
+        description: t("notifications.savedDesc"),
       });
     } catch (err: any) {
       toast({
-        title: "Fout",
-        description: err.message || "Kon instellingen niet opslaan.",
+        title: t("common.error"),
+        description: err.message || t("notifications.saveFailedDesc"),
         variant: "destructive",
       });
     } finally {
@@ -85,12 +87,12 @@ export default function NotificationSettingsPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <PageHeader title="Meldingsinstellingen" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
+      <PageHeader title={t("notifications.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
       <main className="flex-1 max-w-xl mx-auto w-full px-5 pb-6 flex flex-col gap-6">
         <div>
           <p className="text-subtitle">
-            Kies hoe je op de hoogte gehouden wilt worden van nieuwe matches.
+            {t("notifications.subtitle")}
           </p>
         </div>
 
@@ -100,10 +102,10 @@ export default function NotificationSettingsPage() {
           </div>
         ) : (
           <div className="flex flex-col gap-6">
-            <ListSection title="Kanalen">
+            <ListSection title={t("notifications.channels")}>
               <ListRow
-                title="E-mail"
-                subtitle="Ontvang matches via e-mail"
+                title={t("notifications.emailTitle")}
+                subtitle={t("notifications.emailDesc")}
                 icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--yo-chip-bg)" }}><Mail className="w-[18px] h-[18px]" style={{ color: "var(--yo-dark)" }} /></div>}
                 trailing={
                   <Switch
@@ -116,8 +118,8 @@ export default function NotificationSettingsPage() {
               />
               <ListDivider />
               <ListRow
-                title="Pushmeldingen"
-                subtitle="Binnenkort beschikbaar"
+                title={t("notifications.pushTitle")}
+                subtitle={t("notifications.pushSubtitle")}
                 icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--yo-chip-bg)" }}><Bell className="w-[18px] h-[18px]" style={{ color: "var(--yo-dark)" }} /></div>}
                 trailing={
                   <Switch
@@ -139,7 +141,7 @@ export default function NotificationSettingsPage() {
                 data-testid="button-save"
               >
                 {saving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                Opslaan
+                {t("common.save")}
               </Button>
               <Button
                 variant="outline"
@@ -147,7 +149,7 @@ export default function NotificationSettingsPage() {
                 className="h-[48px] rounded-lg text-[15px] font-semibold"
                 data-testid="button-cancel"
               >
-                Annuleren
+                {t("common.cancel")}
               </Button>
             </div>
           </div>

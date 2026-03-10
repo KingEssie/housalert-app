@@ -8,61 +8,64 @@ import {
   ArrowRight,
   Lightbulb,
 } from "lucide-react";
-
-const GUIDES = [
-  {
-    id: "bezichtiging",
-    icon: Eye,
-    title: "Bezichtigingtips",
-    description: "Maak een goede eerste indruk en stel de juiste vragen.",
-    route: "/tips/bezichtiging",
-  },
-  {
-    id: "aanmeldingsbrief",
-    icon: FileText,
-    title: "Aanmeldingsbrief schrijven",
-    description: "Bereid een sterke brief voor waarmee je opvalt bij verhuurders.",
-    route: "/application-letter",
-  },
-  {
-    id: "documenten",
-    icon: FolderOpen,
-    title: "Documenten checklist",
-    description: "Welke documenten heb je nodig om te huren in Duitsland?",
-    route: "/tips/documenten",
-  },
-  {
-    id: "schufa",
-    icon: Shield,
-    title: "SCHUFA-rapport aanvragen",
-    description: "Hoe vraag je een SCHUFA-rapport aan en waarom is het belangrijk?",
-    route: "/tips/schufa",
-  },
-  {
-    id: "zoekstrategie",
-    icon: Search,
-    title: "Zoekstrategie optimaliseren",
-    description: "Tips om je zoekprofielen zo in te stellen dat je meer matches krijgt.",
-    route: "/tips/zoekstrategie",
-  },
-  {
-    id: "netwerk",
-    icon: Users,
-    title: "Gebruik je netwerk",
-    description: "Hoe je vrienden, collega's en sociale media kunt inzetten bij je zoektocht.",
-    route: "/tips/netwerk",
-  },
-];
+import { useTranslation } from "@/i18n";
 
 export default function TipsPage({ navigate }: { navigate: (path: string) => void }) {
+  const { t } = useTranslation();
+
+  const GUIDES = [
+    {
+      id: "bezichtiging",
+      icon: Eye,
+      title: t("tips.viewingTips"),
+      description: t("tips.viewingTipsDesc"),
+      route: "/tips/bezichtiging",
+    },
+    {
+      id: "aanmeldingsbrief",
+      icon: FileText,
+      title: t("tips.applicationLetter"),
+      description: t("tips.applicationLetterDesc"),
+      route: "/application-letter",
+    },
+    {
+      id: "documenten",
+      icon: FolderOpen,
+      title: t("tips.documentsChecklist"),
+      description: t("tips.documentsChecklistDesc"),
+      route: "/tips/documenten",
+    },
+    {
+      id: "schufa",
+      icon: Shield,
+      title: t("tips.schufa"),
+      description: t("tips.schufaDesc"),
+      route: "/tips/schufa",
+    },
+    {
+      id: "zoekstrategie",
+      icon: Search,
+      title: t("tips.searchStrategy"),
+      description: t("tips.searchStrategyDesc"),
+      route: "/tips/zoekstrategie",
+    },
+    {
+      id: "netwerk",
+      icon: Users,
+      title: t("tips.useNetwork"),
+      description: t("tips.useNetworkDesc"),
+      route: "/tips/netwerk",
+    },
+  ];
+
   return (
     <div className="flex flex-col gap-6 px-6 pt-6">
       <div className="mb-1">
         <h1 className="text-page-title" data-testid="heading-tips">
-          Tips
+          {t("tips.title")}
         </h1>
         <p className="text-subtitle mt-1">
-          Handige gidsen om je kansen te vergroten
+          {t("tips.subtitle")}
         </p>
       </div>
 
@@ -71,9 +74,9 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
           <Lightbulb className="w-5 h-5 text-[var(--yo-dark)]" />
         </div>
         <div>
-          <p className="text-[15px] font-semibold text-[var(--yo-dark)]">Wist je dat?</p>
+          <p className="text-[15px] font-semibold text-[var(--yo-dark)]">{t("tips.didYouKnow")}</p>
           <p className="text-[13px] text-[var(--yo-dark)] mt-0.5 leading-relaxed">
-            Huurders die goed voorbereid zijn, reageren gemiddeld 3x sneller en krijgen vaker een woning.
+            {t("tips.intro")}
           </p>
         </div>
       </div>

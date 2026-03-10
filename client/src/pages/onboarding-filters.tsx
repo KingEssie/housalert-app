@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useLocation, useSearch } from "wouter";
 import { Home, ChevronLeft, DollarSign, BedDouble, Maximize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/i18n";
 
 export default function OnboardingFiltersPage() {
   const [, navigate] = useLocation();
+  const { t } = useTranslation();
   const searchString = useSearch();
   const params = new URLSearchParams(searchString);
   const city = params.get("city") || "";
@@ -61,20 +63,20 @@ export default function OnboardingFiltersPage() {
             </div>
           ))}
         </div>
-        <p className="text-xs font-medium text-[var(--yo-dark)] mt-2" data-testid="text-step-indicator">Stap 2 van 3</p>
+        <p className="text-xs font-medium text-[var(--yo-dark)] mt-2" data-testid="text-step-indicator">{t("onboardingFilters.stepIndicator", { step: 2, total: 3 })}</p>
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-8 pt-4">
         <h1 className="text-[32px] font-[800] text-[var(--yo-dark)] leading-[1.1] tracking-[-0.03em] mb-3" data-testid="text-filters-title">
-          Wat zoek je precies?
+          {t("onboardingFilters.title")}
         </h1>
         <p className="text-[15px] text-[var(--yo-dark)] mb-6">
-          Verfijn je zoekopdracht voor <span className="font-semibold text-[var(--yo-dark)]">{city}</span>. Alle velden zijn optioneel.
+          {t("onboardingFilters.subtitle", { city })}
         </p>
 
         <div className="flex flex-col gap-6">
           <div>
-            <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Minimale huur</label>
+            <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">{t("onboardingFilters.minRent")}</label>
             <div className="relative">
               <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)]" />
               <input
@@ -89,7 +91,7 @@ export default function OnboardingFiltersPage() {
           </div>
 
           <div>
-            <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Maximale huur</label>
+            <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">{t("onboardingFilters.maxRent")}</label>
             <div className="relative">
               <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)]" />
               <input
@@ -104,7 +106,7 @@ export default function OnboardingFiltersPage() {
           </div>
 
           <div>
-            <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Slaapkamers</label>
+            <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">{t("onboardingFilters.bedrooms")}</label>
             <div className="relative">
               <BedDouble className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)]" />
               <select
@@ -113,8 +115,8 @@ export default function OnboardingFiltersPage() {
                 className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-[var(--yo-surface)] cursor-pointer appearance-none transition-all"
                 data-testid="select-bedrooms"
               >
-                <option value="">Maakt niet uit</option>
-                <option value="any">Maakt niet uit</option>
+                <option value="">{t("onboardingFilters.doesntMatter")}</option>
+                <option value="any">{t("onboardingFilters.doesntMatter")}</option>
                 <option value="1">1+</option>
                 <option value="2">2+</option>
                 <option value="3">3+</option>
@@ -125,7 +127,7 @@ export default function OnboardingFiltersPage() {
           </div>
 
           <div>
-            <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">Minimale oppervlakte</label>
+            <label className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3 block">{t("onboardingFilters.minArea")}</label>
             <div className="relative">
               <Maximize2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--yo-dark)]" />
               <input
@@ -147,7 +149,7 @@ export default function OnboardingFiltersPage() {
               onClick={handleBack}
               data-testid="button-back-filters"
             >
-              Terug
+              {t("onboardingFilters.back")}
             </Button>
             <Button
               size="lg"
@@ -155,7 +157,7 @@ export default function OnboardingFiltersPage() {
               onClick={handleNext}
               data-testid="button-next-filters"
             >
-              Volgende
+              {t("onboardingFilters.next")}
             </Button>
           </div>
         </div>

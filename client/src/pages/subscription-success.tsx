@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import { queryClient } from "@/lib/queryClient";
 import { supabase } from "@/lib/supabase";
 import { CheckCircle, Loader2 } from "lucide-react";
+import { useTranslation } from "@/i18n";
 
 async function verifyCheckout(sessionId: string, token: string): Promise<boolean> {
   const res = await fetch("/api/checkout/verify", {
@@ -36,6 +37,7 @@ export default function SubscriptionSuccessPage() {
   const [, navigate] = useLocation();
   const [syncing, setSyncing] = useState(true);
   const [activated, setActivated] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     async function verifyAndSync() {
@@ -86,15 +88,15 @@ export default function SubscriptionSuccessPage() {
         </div>
         <h1 className="text-[22px] font-bold text-[var(--yo-dark)] mb-2" data-testid="text-success-title">
           {syncing
-            ? "Abonnement wordt geactiveerd..."
+            ? t("subscription.activating")
             : activated
-              ? "Abonnement succesvol geactiveerd"
-              : "Betaling ontvangen"}
+              ? t("subscription.activated")
+              : t("subscription.paymentReceived")}
         </h1>
         <p className="text-[15px] text-[var(--yo-dark)] opacity-70" data-testid="text-success-redirect">
           {syncing
-            ? "Even geduld..."
-            : "Je wordt doorgestuurd naar je dashboard..."}
+            ? t("paywall.pleaseWait")
+            : t("subscription.redirecting")}
         </p>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import { useLocation } from "wouter";
 import { FolderOpen, Shield, Search, Users, CheckCircle2 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
+import { useTranslation } from "@/i18n";
 
 function GuideSection({ title, items }: { title: string; items: string[] }) {
   return (
@@ -18,142 +19,147 @@ function GuideSection({ title, items }: { title: string; items: string[] }) {
   );
 }
 
-const GUIDE_CONTENT: Record<string, { title: string; icon: typeof Shield; intro: string; sections: { title: string; items: string[] }[] }> = {
-  documenten: {
-    title: "Documenten checklist",
-    icon: FolderOpen,
-    intro: "In Duitsland vragen verhuurders bijna altijd om een set documenten voordat je kunt reageren. Zorg dat je deze klaar hebt.",
-    sections: [
-      {
-        title: "Voor iedereen",
-        items: [
-          "Kopie identiteitsbewijs (paspoort of ID-kaart)",
-          "SCHUFA-rapport (Bonitätsauskunft)",
-          "Inkomensbewijs van de laatste 3 maanden",
-          "Huurgeschiedenis of Mietschuldenfreiheitsbescheinigung",
-          "Pasfoto",
-        ],
-      },
-      {
-        title: "In loondienst",
-        items: [
-          "Arbeidsovereenkomst",
-          "Loonstroken van de laatste 3 maanden",
-        ],
-      },
-      {
-        title: "Voor ondernemers / zzp'ers",
-        items: [
-          "Gewerbeanmeldung of KvK-uittreksel",
-          "Belastingaangifte van de laatste 2 jaar",
-          "Bankafschriften van de laatste 3 maanden",
-        ],
-      },
-    ],
-  },
-  schufa: {
-    title: "SCHUFA-rapport aanvragen",
-    icon: Shield,
-    intro: "De SCHUFA (Schutzgemeinschaft für allgemeine Kreditsicherung) is het Duitse equivalent van een kredietrapport. Verhuurders vragen dit bijna altijd.",
-    sections: [
-      {
-        title: "Wat is de SCHUFA?",
-        items: [
-          "Een overzicht van je kredietwaardigheid in Duitsland",
-          "Wordt gevraagd door 90% van de verhuurders",
-          "Toont je betaalgedrag en eventuele schulden",
-        ],
-      },
-      {
-        title: "Hoe vraag je het aan?",
-        items: [
-          "Ga naar meineschufa.de en maak een account aan",
-          "Kies de gratis 'Datenkopie' (artikel 15 AVG/GDPR)",
-          "Of bestel de betaalde 'SCHUFA-BonitätsAuskunft' (€29,95) voor een officieel document",
-          "De betaalde versie wordt sneller geleverd en is professioneler",
-        ],
-      },
-      {
-        title: "Tips",
-        items: [
-          "Vraag je SCHUFA aan zodra je begint met zoeken — het kan 1-2 weken duren",
-          "Geen Duitse bankrekening? Open eerst een N26 of bunq-rekening",
-          "Nieuwe bewoners zonder kredietgeschiedenis krijgen meestal een neutrale score",
-        ],
-      },
-    ],
-  },
-  zoekstrategie: {
-    title: "Zoekstrategie optimaliseren",
-    icon: Search,
-    intro: "Met de juiste strategie vind je sneller een woning. Hier zijn bewezen tips van succesvolle huurders.",
-    sections: [
-      {
-        title: "Zoekprofielen instellen",
-        items: [
-          "Maak meerdere zoekprofielen voor verschillende steden of budgetten",
-          "Stel realistische prijsgrenzen in — te laag betekent minder matches",
-          "Overweeg ook aangrenzende wijken van je ideale locatie",
-          "Gebruik minimaal 2 zoekprofielen voor de beste resultaten",
-        ],
-      },
-      {
-        title: "Snelheid is alles",
-        items: [
-          "Activeer alle meldingskanalen (e-mail, push)",
-          "Reageer binnen 30 minuten op nieuwe woningen",
-          "Heb je documenten en aanmeldingsbrief al klaarliggen",
-          "Sla je favoriete woningen direct op",
-        ],
-      },
-      {
-        title: "Verhoog je kansen",
-        items: [
-          "Schrijf een persoonlijke aanmeldingsbrief per woning",
-          "Vermeld je beroep, inkomen en verhuisdatum",
-          "Wees flexibel met bezichtigingsmomenten",
-          "Vraag een zoekbuddy om ook te zoeken",
-        ],
-      },
-    ],
-  },
-  netwerk: {
-    title: "Gebruik je netwerk",
-    icon: Users,
-    intro: "Veel woningen worden nooit openbaar geadverteerd. Je netwerk is een van je sterkste wapens bij het zoeken naar een huurwoning.",
-    sections: [
-      {
-        title: "Vertel iedereen dat je zoekt",
-        items: [
-          "Laat vrienden, familie en collega's weten dat je een woning zoekt",
-          "Post op LinkedIn of sociale media over je zoektocht",
-          "Vraag in Facebook-groepen voor expats en woningzoekers",
-          "Informeer bij je werkgever — sommige bedrijven helpen met huisvesting",
-        ],
-      },
-      {
-        title: "Zoekbuddy instellen",
-        items: [
-          "Voeg een zoekbuddy toe in HousAlert — zij ontvangen dezelfde meldingen",
-          "Ideaal voor een partner, vriend of familielid",
-          "Meer ogen op nieuwe woningen = sneller reageren",
-        ],
-      },
-      {
-        title: "Deeltekst voor je netwerk",
-        items: [
-          "Kopieer: 'Ik zoek een huurwoning in Duitsland via HousAlert. Ken je iets? Stuur het door!'",
-          "Deel via WhatsApp, Telegram of e-mail",
-          "Hoe meer mensen weten dat je zoekt, hoe groter je kans",
-        ],
-      },
-    ],
-  },
-};
+function useGuideContent() {
+  const { t } = useTranslation();
+
+  return {
+    documenten: {
+      title: t("guide.documenten.title"),
+      icon: FolderOpen,
+      intro: t("guide.documenten.intro"),
+      sections: [
+        {
+          title: t("guide.documenten.forEveryone"),
+          items: [
+            t("guide.documenten.idCopy"),
+            t("guide.documenten.schufa"),
+            t("guide.documenten.incomeProof"),
+            t("guide.documenten.rentalHistory"),
+            t("guide.documenten.photo"),
+          ],
+        },
+        {
+          title: t("guide.documenten.employed"),
+          items: [
+            t("guide.documenten.employmentContract"),
+            t("guide.documenten.payslips"),
+          ],
+        },
+        {
+          title: t("guide.documenten.selfEmployed"),
+          items: [
+            t("guide.documenten.businessReg"),
+            t("guide.documenten.taxReturns"),
+            t("guide.documenten.bankStatements"),
+          ],
+        },
+      ],
+    },
+    schufa: {
+      title: t("guide.schufa.title"),
+      icon: Shield,
+      intro: t("guide.schufa.intro"),
+      sections: [
+        {
+          title: t("guide.schufa.whatIsTitle"),
+          items: [
+            t("guide.schufa.whatIs1"),
+            t("guide.schufa.whatIs2"),
+            t("guide.schufa.whatIs3"),
+          ],
+        },
+        {
+          title: t("guide.schufa.howToTitle"),
+          items: [
+            t("guide.schufa.howTo1"),
+            t("guide.schufa.howTo2"),
+            t("guide.schufa.howTo3"),
+            t("guide.schufa.howTo4"),
+          ],
+        },
+        {
+          title: t("guide.schufa.tipsTitle"),
+          items: [
+            t("guide.schufa.tips1"),
+            t("guide.schufa.tips2"),
+            t("guide.schufa.tips3"),
+          ],
+        },
+      ],
+    },
+    zoekstrategie: {
+      title: t("guide.zoekstrategie.title"),
+      icon: Search,
+      intro: t("guide.zoekstrategie.intro"),
+      sections: [
+        {
+          title: t("guide.zoekstrategie.profilesTitle"),
+          items: [
+            t("guide.zoekstrategie.profiles1"),
+            t("guide.zoekstrategie.profiles2"),
+            t("guide.zoekstrategie.profiles3"),
+            t("guide.zoekstrategie.profiles4"),
+          ],
+        },
+        {
+          title: t("guide.zoekstrategie.speedTitle"),
+          items: [
+            t("guide.zoekstrategie.speed1"),
+            t("guide.zoekstrategie.speed2"),
+            t("guide.zoekstrategie.speed3"),
+            t("guide.zoekstrategie.speed4"),
+          ],
+        },
+        {
+          title: t("guide.zoekstrategie.chanceTitle"),
+          items: [
+            t("guide.zoekstrategie.chance1"),
+            t("guide.zoekstrategie.chance2"),
+            t("guide.zoekstrategie.chance3"),
+            t("guide.zoekstrategie.chance4"),
+          ],
+        },
+      ],
+    },
+    netwerk: {
+      title: t("guide.netwerk.title"),
+      icon: Users,
+      intro: t("guide.netwerk.intro"),
+      sections: [
+        {
+          title: t("guide.netwerk.tellEveryoneTitle"),
+          items: [
+            t("guide.netwerk.tell1"),
+            t("guide.netwerk.tell2"),
+            t("guide.netwerk.tell3"),
+            t("guide.netwerk.tell4"),
+          ],
+        },
+        {
+          title: t("guide.netwerk.buddyTitle"),
+          items: [
+            t("guide.netwerk.buddy1"),
+            t("guide.netwerk.buddy2"),
+            t("guide.netwerk.buddy3"),
+          ],
+        },
+        {
+          title: t("guide.netwerk.shareTitle"),
+          items: [
+            t("guide.netwerk.share1"),
+            t("guide.netwerk.share2"),
+            t("guide.netwerk.share3"),
+          ],
+        },
+      ],
+    },
+  } as Record<string, { title: string; icon: typeof Shield; intro: string; sections: { title: string; items: string[] }[] }>;
+}
 
 export function GuidePage({ guideId }: { guideId: string }) {
   const [, navigate] = useLocation();
-  const guide = GUIDE_CONTENT[guideId];
+  const guideContent = useGuideContent();
+  const guide = guideContent[guideId];
 
   if (!guide) {
     navigate("/dashboard?tab=tips");

@@ -2,9 +2,10 @@ import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { PageHeader } from "@/components/ui/page-header";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { useTranslation } from "@/i18n";
 
-function formatDate(dateStr: string | null | undefined): string {
-  if (!dateStr) return "een toekomstige datum";
+function formatDate(dateStr: string | null | undefined, fallback: string): string {
+  if (!dateStr) return fallback;
   return new Date(dateStr).toLocaleDateString("de-DE", {
     day: "numeric",
     month: "long",
@@ -14,6 +15,7 @@ function formatDate(dateStr: string | null | undefined): string {
 
 export function SubscriptionCancelConfirmPage() {
   const [, navigate] = useLocation();
+  const { t } = useTranslation();
 
   const { data: subscription } = useQuery<{
     status: string;
@@ -27,11 +29,11 @@ export function SubscriptionCancelConfirmPage() {
     queryKey: ["/api/subscription/status"],
   });
 
-  const renewalDate = formatDate(subscription?.current_period_ends_at || subscription?.trial_ends_at);
+  const renewalDate = formatDate(subscription?.current_period_ends_at || subscription?.trial_ends_at, t("subscription.futureDate"));
 
   return (
     <div className="min-h-screen bg-background" data-testid="page-cancel-confirm">
-      <PageHeader title="Opzeggen" onBack={() => navigate("/account/subscription")} />
+      <PageHeader title={t("subscription.cancelTitle")} onBack={() => navigate("/account/subscription")} />
 
       <div className="max-w-xl mx-auto p-4 pb-8">
         <div className="bg-card rounded-lg border p-6" style={{ borderColor: "var(--yo-divider)" }}>
@@ -42,14 +44,12 @@ export function SubscriptionCancelConfirmPage() {
           </div>
 
           <h2 className="text-[20px] font-bold text-center mb-3" style={{ color: "var(--yo-dark)" }} data-testid="text-cancel-title">
-            Weet je zeker dat je wilt opzeggen?
+            {t("subscription.cancelConfirm")}
           </h2>
 
           <div className="bg-muted rounded-lg p-4 mb-6">
             <p className="text-[15px] text-muted-foreground leading-relaxed" data-testid="text-cancel-info">
-              Je abonnement blijft actief tot <span className="font-semibold" style={{ color: "var(--yo-dark)" }}>{renewalDate}</span>.
-              {" "}Tot die datum kun je alle functies blijven gebruiken.
-              {" "}Daarna stopt de automatische verlenging.
+              {t("subscription.cancelInfo", { date: renewalDate })}
             </p>
           </div>
 
@@ -59,7 +59,7 @@ export function SubscriptionCancelConfirmPage() {
               className="w-full h-[48px] bg-primary text-primary-foreground rounded-lg font-semibold text-[15px] transition-colors"
               data-testid="button-keep-subscription"
             >
-              Abonnement behouden
+              {t("subscription.keepSubscription")}
             </button>
             <button
               onClick={() => navigate("/account/subscription/cancelled")}
@@ -67,7 +67,7 @@ export function SubscriptionCancelConfirmPage() {
               style={{ borderColor: "var(--yo-divider)" }}
               data-testid="button-confirm-cancel"
             >
-              Toch opzeggen
+              {t("subscription.confirmCancel")}
             </button>
           </div>
         </div>
@@ -78,6 +78,7 @@ export function SubscriptionCancelConfirmPage() {
 
 export function SubscriptionCancelledPage() {
   const [, navigate] = useLocation();
+  const { t } = useTranslation();
 
   const { data: subscription } = useQuery<{
     status: string;
@@ -91,11 +92,11 @@ export function SubscriptionCancelledPage() {
     queryKey: ["/api/subscription/status"],
   });
 
-  const renewalDate = formatDate(subscription?.current_period_ends_at || subscription?.trial_ends_at);
+  const renewalDate = formatDate(subscription?.current_period_ends_at || subscription?.trial_ends_at, t("subscription.futureDate"));
 
   return (
     <div className="min-h-screen bg-background" data-testid="page-cancelled">
-      <PageHeader title="Opgezegd" onBack={() => navigate("/account/subscription")} />
+      <PageHeader title={t("subscription.cancelledTitle")} onBack={() => navigate("/account/subscription")} />
 
       <div className="max-w-xl mx-auto p-4 pb-8">
         <div className="bg-card rounded-lg border p-6" style={{ borderColor: "var(--yo-divider)" }}>
@@ -106,13 +107,12 @@ export function SubscriptionCancelledPage() {
           </div>
 
           <h2 className="text-[20px] font-bold text-center mb-3" style={{ color: "var(--yo-dark)" }} data-testid="text-cancelled-title">
-            Je abonnement is opgezegd
+            {t("subscription.cancelled")}
           </h2>
 
           <div className="bg-muted rounded-lg p-4 mb-6">
             <p className="text-[15px] text-muted-foreground leading-relaxed" data-testid="text-cancelled-info">
-              Je abonnement blijft actief tot <span className="font-semibold" style={{ color: "var(--yo-dark)" }}>{renewalDate}</span>.
-              {" "}Daarna wordt het abonnement beëindigd.
+              {t("subscription.cancelledInfo", { date: renewalDate })}
             </p>
           </div>
 
@@ -121,7 +121,7 @@ export function SubscriptionCancelledPage() {
             className="w-full h-[48px] bg-primary text-primary-foreground rounded-lg font-semibold text-[15px] transition-colors"
             data-testid="button-back-to-account"
           >
-            Terug naar account
+            {t("subscription.backToAccount")}
           </button>
         </div>
       </div>
