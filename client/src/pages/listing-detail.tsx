@@ -3,7 +3,7 @@ import { useRoute, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
 import { useTranslation } from "@/i18n";
-import { MapPin, Euro, BedDouble, Ruler, ExternalLink, Clock, Globe, Zap, CheckCircle2, ImageIcon, ArrowLeft } from "lucide-react";
+import { MapPin, Euro, BedDouble, Ruler, ExternalLink, Clock, Globe, Zap, CheckCircle2, ImageIcon, ArrowLeft, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ApplySheet } from "@/components/apply-sheet";
 
@@ -78,6 +78,11 @@ interface Listing {
   match_score?: number | null;
   match_label?: string | null;
   match_reasons?: string[];
+  hybrid_filters?: {
+    furnished: "confirmed" | "unknown" | "not_filtered";
+    district: "confirmed" | "unknown" | "not_filtered";
+    pets: "confirmed" | "unknown" | "not_filtered";
+  } | null;
 }
 
 export default function ListingDetailPage() {
@@ -300,6 +305,37 @@ export default function ListingDetailPage() {
               </div>
             </div>
           )}
+
+          {(() => {
+            const hf = listing.hybrid_filters;
+            if (!hf) return null;
+            const unknowns: { key: string; label: string }[] = [];
+            if (hf.furnished === "unknown") unknowns.push({ key: "furnished", label: t("hybridFilter.furnishedUnknown") });
+            if (hf.district === "unknown") unknowns.push({ key: "district", label: t("hybridFilter.districtUnknown") });
+            if (hf.pets === "unknown") unknowns.push({ key: "pets", label: t("hybridFilter.petsUnknown") });
+            if (unknowns.length === 0) return null;
+            return (
+              <div
+                className="bg-white rounded-lg border border-[var(--yo-divider)] p-4"
+                data-testid="section-hybrid-filters"
+                data-hybrid-furnished={hf.furnished}
+                data-hybrid-district={hf.district}
+                data-hybrid-pets={hf.pets}
+              >
+                <div className="flex items-start gap-2 text-[12px] text-[var(--yo-dark)]/50">
+                  <Info className="w-3.5 h-3.5 flex-shrink-0 mt-[1px]" />
+                  <div>
+                    <p className="font-medium">{t("hybridFilter.unknownHint")}</p>
+                    <ul className="mt-1 space-y-0.5">
+                      {unknowns.map((u) => (
+                        <li key={u.key}>· {u.label}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
         </div>
       </main>
 

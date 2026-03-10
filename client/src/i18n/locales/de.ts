@@ -59,6 +59,13 @@ export const de: Record<string, any> = {
     price: "Guter Preis",
   },
 
+  hybridFilter: {
+    unknownHint: "Einige Details nicht vom Anbieter bestätigt",
+    furnishedUnknown: "Möblierung nicht angegeben",
+    districtUnknown: "Stadtteil nicht angegeben",
+    petsUnknown: "Haustiere nicht angegeben",
+  },
+
   home: {
     greeting: "Hallo, {name}",
     greetingDefault: "Hallo",

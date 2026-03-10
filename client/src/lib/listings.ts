@@ -126,6 +126,14 @@ export interface FreshListing {
   fresh_label: "net_binnen" | "nieuw" | "vandaag" | "ouder";
 }
 
+export type HybridStatus = "confirmed" | "unknown" | "not_filtered";
+
+export interface HybridFilters {
+  furnished: HybridStatus;
+  district: HybridStatus;
+  pets: HybridStatus;
+}
+
 export interface ApiMatch extends FreshListing {
   listing_id: string;
   matched_at: string;
@@ -133,6 +141,7 @@ export interface ApiMatch extends FreshListing {
   match_score?: number | null;
   match_label?: string | null;
   match_reasons?: string[];
+  hybrid_filters?: HybridFilters | null;
 }
 
 export async function fetchFreshListings(): Promise<FreshListing[]> {

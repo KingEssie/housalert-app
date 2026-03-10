@@ -45,6 +45,7 @@ import {
   Zap,
   Camera,
   ArrowLeft,
+  Info,
 } from "lucide-react";
 import { AccountCompletionCard, SearchPreparationCard, TaskModal, PrepTaskModal } from "@/components/profile-strength";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
@@ -318,6 +319,29 @@ function MatchCard({
               ))}
             </div>
           ) : null;
+        })()}
+
+        {(() => {
+          const hf = match.hybrid_filters;
+          if (!hf) return null;
+          const unknowns: string[] = [];
+          if (hf.furnished === "unknown") unknowns.push(t("hybridFilter.furnishedUnknown"));
+          if (hf.district === "unknown") unknowns.push(t("hybridFilter.districtUnknown"));
+          if (hf.pets === "unknown") unknowns.push(t("hybridFilter.petsUnknown"));
+          if (unknowns.length === 0) return null;
+          return (
+            <div
+              className="flex items-start gap-1.5 text-[11px] text-[var(--yo-dark)]/50"
+              data-testid={`hybrid-hint-${match.listing_id}`}
+              data-hybrid-furnished={hf.furnished}
+              data-hybrid-district={hf.district}
+              data-hybrid-pets={hf.pets}
+              title={unknowns.join(" · ")}
+            >
+              <Info className="w-3 h-3 flex-shrink-0 mt-[1px]" />
+              <span>{t("hybridFilter.unknownHint")}</span>
+            </div>
+          );
         })()}
 
         <div className="flex items-center gap-2 text-[11px] text-[var(--yo-dark)]">

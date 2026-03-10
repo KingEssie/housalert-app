@@ -132,6 +132,66 @@ const REASON_MAX: Record<string, number> = {
   size: 20,
 };
 
+export type HybridStatus = "confirmed" | "unknown" | "not_filtered";
+
+export interface HybridFilters {
+  furnished: HybridStatus;
+  district: HybridStatus;
+  pets: HybridStatus;
+}
+
+export interface HybridFilterInput {
+  listing: {
+    furnished?: boolean | null;
+    pets_allowed?: boolean | null;
+    district?: string | null;
+  };
+  profile: {
+    furnished?: string | null;
+    extra_features?: string[] | null;
+    districts?: string[] | null;
+    location_mode?: string | null;
+  };
+}
+
+export function computeHybridFilters(input: HybridFilterInput): HybridFilters {
+  const { listing, profile } = input;
+
+  let furnished: HybridStatus = "not_filtered";
+  if (profile.furnished && profile.furnished !== "any" && profile.furnished !== "no_preference") {
+    if (listing.furnished == null) {
+      furnished = "unknown";
+    } else {
+      furnished = "confirmed";
+    }
+  }
+
+  let district: HybridStatus = "not_filtered";
+  const districtFilterActive = Array.isArray(profile.districts) && profile.districts.length > 0
+    && (!profile.location_mode || profile.location_mode === "districts");
+  if (districtFilterActive) {
+    if (!listing.district || listing.district.trim() === "") {
+      district = "unknown";
+    } else {
+      district = "confirmed";
+    }
+  }
+
+  let pets: HybridStatus = "not_filtered";
+  const wantsPets = (profile.extra_features ?? []).some(
+    (f) => f === "pets_allowed" || f === "huisdieren"
+  );
+  if (wantsPets) {
+    if (listing.pets_allowed == null) {
+      pets = "unknown";
+    } else {
+      pets = "confirmed";
+    }
+  }
+
+  return { furnished, district, pets };
+}
+
 export function getMatchReasons(details: MatchScore["details"]): string[] {
   const entries = Object.entries(details) as [keyof typeof REASON_MAX, number][];
   const strong = entries

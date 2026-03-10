@@ -21,7 +21,7 @@ import {
   findUserByStripeCustomerId,
 } from "./subscriptions";
 import { log } from "./log";
-import { computeMatchScore, getMatchReasons } from "../shared/match-score";
+import { computeMatchScore, getMatchReasons, computeHybridFilters } from "../shared/match-score";
 import { pool as pgPool } from "./pg-pool";
 import { isAdminEmail, getRecentRuns, getRunDetail, getLatestRunCities, getSourceAggregates } from "./admin";
 import { initWebPush, sendPushToUser } from "./notifications/push";
@@ -566,14 +566,14 @@ export async function registerRoutes(
       const [listingsData, freshnessMap, profilesData] = await Promise.all([
         batchedIn<any>(
           "listings", "id", allListingIds,
-          "id, title, price, size_m2, bedrooms, city, source, url, image_url",
+          "id, title, price, size_m2, bedrooms, city, source, url, image_url, furnished, pets_allowed, district",
           (q: any) => q.not("title", "is", null)
         ),
         getListingFreshness(allListingIds),
         profileIds.length > 0
           ? batchedIn<any>(
               "search_profiles", "id", profileIds,
-              "id, city, price_min, price_max, bedrooms_min, size_min"
+              "id, city, price_min, price_max, bedrooms_min, size_min, furnished, extra_features, districts, location_mode"
             )
           : Promise.resolve([]),
       ]);
@@ -595,6 +595,7 @@ export async function registerRoutes(
         let match_score = null;
         let match_label = null;
         let match_reasons: string[] = [];
+        let hybrid_filters = null;
         if (l && profile) {
           const scoreResult = computeMatchScore({
             listing: { price: l.price ?? 0, bedrooms: l.bedrooms ?? 0, size_m2: l.size_m2 ?? 0, city: l.city ?? "" },
@@ -603,6 +604,10 @@ export async function registerRoutes(
           match_score = scoreResult.score;
           match_label = scoreResult.label;
           match_reasons = getMatchReasons(scoreResult.details);
+          hybrid_filters = computeHybridFilters({
+            listing: { furnished: l.furnished, pets_allowed: l.pets_allowed, district: l.district },
+            profile: { furnished: profile.furnished, extra_features: profile.extra_features, districts: profile.districts, location_mode: profile.location_mode },
+          });
         }
 
         return {
@@ -621,6 +626,7 @@ export async function registerRoutes(
           match_score,
           match_label,
           match_reasons,
+          hybrid_filters,
         };
       });
 
@@ -696,7 +702,7 @@ export async function registerRoutes(
 
       const { data, error } = await supabase
         .from("listings")
-        .select("id, title, price, size_m2, bedrooms, city, source, url, image_url, created_at")
+        .select("id, title, price, size_m2, bedrooms, city, source, url, image_url, created_at, furnished, pets_allowed, district")
         .eq("id", id)
         .single();
 
@@ -710,6 +716,7 @@ export async function registerRoutes(
       let match_score = null;
       let match_label = null;
       let match_reasons: string[] = [];
+      let hybrid_filters = null;
       const token = req.headers.authorization?.replace("Bearer ", "");
       if (token) {
         try {
@@ -726,7 +733,7 @@ export async function registerRoutes(
             if (matchRow?.search_profile_id) {
               const { data: profile } = await supabase
                 .from("search_profiles")
-                .select("city, price_min, price_max, bedrooms_min, size_min")
+                .select("city, price_min, price_max, bedrooms_min, size_min, furnished, extra_features, districts, location_mode")
                 .eq("id", matchRow.search_profile_id)
                 .single();
 
@@ -738,6 +745,10 @@ export async function registerRoutes(
                 match_score = scoreResult.score;
                 match_label = scoreResult.label;
                 match_reasons = getMatchReasons(scoreResult.details);
+                hybrid_filters = computeHybridFilters({
+                  listing: { furnished: data.furnished, pets_allowed: data.pets_allowed, district: data.district },
+                  profile: { furnished: profile.furnished, extra_features: profile.extra_features, districts: profile.districts, location_mode: profile.location_mode },
+                });
               }
             }
           }
@@ -751,6 +762,7 @@ export async function registerRoutes(
         match_score,
         match_label,
         match_reasons,
+        hybrid_filters,
       });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
