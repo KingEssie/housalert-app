@@ -91,6 +91,7 @@ export interface FilterCheck {
   listingValue: string;
   rule: string;
   passed: boolean;
+  hybridPass?: boolean;
 }
 
 export interface MatchExplanation {
@@ -186,13 +187,26 @@ export function explainMatchInternal(listing: DbListing, profile: SearchProfile)
   if (profile.furnished && profile.furnished !== "any" && profile.furnished !== "no_preference") {
     const listingFurnished = listing.furnished ?? null;
     let furnishedPassed: boolean;
+    let isHybridPass = false;
     let rule: string;
     if (profile.furnished === "unfurnished") {
-      furnishedPassed = listingFurnished === false;
-      rule = "strict: profile requires unfurnished → listing.furnished must be false (null = unknown = rejected)";
+      if (listingFurnished === null) {
+        furnishedPassed = true;
+        isHybridPass = true;
+        rule = "hybrid: profile requires unfurnished → listing.furnished is null/unknown → allowed (hybrid pass)";
+      } else {
+        furnishedPassed = listingFurnished === false;
+        rule = "hybrid: profile requires unfurnished → listing.furnished is known → must be false";
+      }
     } else {
-      furnishedPassed = listingFurnished === true;
-      rule = "strict: profile requires furnished → listing.furnished must be true (null = unknown = rejected)";
+      if (listingFurnished === null) {
+        furnishedPassed = true;
+        isHybridPass = true;
+        rule = "hybrid: profile requires furnished → listing.furnished is null/unknown → allowed (hybrid pass)";
+      } else {
+        furnishedPassed = listingFurnished === true;
+        rule = "hybrid: profile requires furnished → listing.furnished is known → must be true";
+      }
     }
     checks.push({
       filter: "furnished",
@@ -202,24 +216,44 @@ export function explainMatchInternal(listing: DbListing, profile: SearchProfile)
       listingValue: String(listingFurnished),
       rule,
       passed: furnishedPassed,
+      hybridPass: isHybridPass,
     });
     if (!furnishedPassed) {
       return { matched: false, checks, reason: `Furnished filter: profile=${profile.furnished} but listing.furnished=${listingFurnished}` };
     }
   }
 
+  const HYBRID_FEATURES = new Set(["pets_allowed", "huisdieren"]);
+
   if (profile.extra_features && profile.extra_features.length > 0) {
     for (const feature of profile.extra_features) {
       const { value, fieldName } = mapExtraFeatureToListingField(feature, listing);
-      const featurePassed = value === true;
+      const isHybridFeature = HYBRID_FEATURES.has(feature);
+      let featurePassed: boolean;
+      let isHybridPass = false;
+      let rule: string;
+      if (value === null && isHybridFeature) {
+        featurePassed = true;
+        isHybridPass = true;
+        rule = `hybrid: profile requires ${feature} → listing.${fieldName} is null/unknown → allowed (hybrid pass)`;
+      } else if (value === null) {
+        featurePassed = false;
+        rule = `strict: profile requires ${feature} → listing.${fieldName} is null/unknown → rejected`;
+      } else {
+        featurePassed = value === true;
+        rule = isHybridFeature
+          ? `hybrid: profile requires ${feature} → listing.${fieldName} is known (${value}) → must be true`
+          : `strict: profile requires ${feature} → listing.${fieldName} must be true`;
+      }
       checks.push({
         filter: `extra_feature:${feature}`,
         profileField: "extra_features",
         profileValue: feature,
         listingField: fieldName,
         listingValue: String(value),
-        rule: `strict: profile requires ${feature} → listing.${fieldName} must be true (null = unknown = rejected)`,
+        rule,
         passed: featurePassed,
+        hybridPass: isHybridPass,
       });
       if (!featurePassed) {
         return { matched: false, checks, reason: `Feature "${feature}" required but listing.${fieldName}=${value}` };
@@ -232,12 +266,21 @@ export function explainMatchInternal(listing: DbListing, profile: SearchProfile)
 
   if (districtFilterActive) {
     const listingDistrict = (listing.district ?? "").toLowerCase().trim();
-    let districtPassed = false;
-    if (listingDistrict) {
+    let districtPassed: boolean;
+    let isHybridPass = false;
+    let rule: string;
+    if (!listingDistrict) {
+      districtPassed = true;
+      isHybridPass = true;
+      rule = "hybrid: listing.district is null/unknown → allowed (hybrid pass)";
+    } else {
       districtPassed = profile.districts.some(d =>
         listingDistrict.includes(d.toLowerCase().trim()) ||
         d.toLowerCase().trim().includes(listingDistrict)
       );
+      rule = districtPassed
+        ? "hybrid: listing.district is known and matches profile districts → allowed"
+        : "hybrid: listing.district is known but does NOT match profile districts → rejected";
     }
     checks.push({
       filter: "district",
@@ -245,14 +288,12 @@ export function explainMatchInternal(listing: DbListing, profile: SearchProfile)
       profileValue: JSON.stringify(profile.districts),
       listingField: "district",
       listingValue: listing.district ?? "(null)",
-      rule: "strict: listing.district must be present and match one of profile.districts (null = unknown = rejected)",
+      rule,
       passed: districtPassed,
+      hybridPass: isHybridPass,
     });
     if (!districtPassed) {
-      const reason = !listingDistrict
-        ? `District required but listing.district is null/empty`
-        : `District "${listing.district}" not in profile districts ${JSON.stringify(profile.districts)}`;
-      return { matched: false, checks, reason };
+      return { matched: false, checks, reason: `District "${listing.district}" not in profile districts ${JSON.stringify(profile.districts)}` };
     }
   }
 
