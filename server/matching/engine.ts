@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { bufferMatchAlert } from "../notifications/buffer";
 import { trackMatchCreated } from "../freshness";
+import { getSubscriptionStatus } from "../subscriptions";
 
 const SUPABASE_URL = (process.env.VITE_SUPABASE_URL ?? "").replace(/\/$/, "");
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
@@ -427,6 +428,7 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
 
   let totalMatches = 0;
   const resolvedEmails = new Map<string, string>();
+  const userSubCache = new Map<string, { hasAccess: boolean }>();
 
   for (const profile of profiles as SearchProfile[]) {
     if (!doesListingMatchProfile(listing as DbListing, profile)) continue;
@@ -435,6 +437,16 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
     if (!created) continue;
 
     totalMatches++;
+
+    if (!userSubCache.has(profile.user_id)) {
+      const subStatus = await getSubscriptionStatus(profile.user_id);
+      userSubCache.set(profile.user_id, { hasAccess: subStatus.isActive || subStatus.isTrial });
+    }
+
+    if (!userSubCache.get(profile.user_id)!.hasAccess) {
+      log(`[MATCH ENGINE] Skipping alert buffer for user ${profile.user_id.substring(0, 8)}... — no active subscription`);
+      continue;
+    }
 
     if (!resolvedEmails.has(profile.user_id)) {
       const { data: userData } = await supabase.auth.admin.getUserById(profile.user_id);
@@ -445,6 +457,7 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
     if (email) {
       const l = listing as DbListing;
       bufferMatchAlert(profile.user_id, email, {
+        listing_id: l.id,
         title: l.title,
         city: l.city,
         price: l.price,
@@ -527,19 +540,25 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
   }
 
   if (matchedListings.length > 0) {
-    const { data: userData } = await supabase.auth.admin.getUserById(sp.user_id);
-    const email = userData?.user?.email;
-    if (email) {
-      for (const l of matchedListings) {
-        bufferMatchAlert(sp.user_id, email, {
-          title: l.title,
-          city: l.city,
-          price: l.price,
-          bedrooms: l.bedrooms,
-          size_m2: l.size_m2,
-          url: l.url,
-        });
+    const subStatus = await getSubscriptionStatus(sp.user_id);
+    if (subStatus.isActive || subStatus.isTrial) {
+      const { data: userData } = await supabase.auth.admin.getUserById(sp.user_id);
+      const email = userData?.user?.email;
+      if (email) {
+        for (const l of matchedListings) {
+          bufferMatchAlert(sp.user_id, email, {
+            listing_id: l.id,
+            title: l.title,
+            city: l.city,
+            price: l.price,
+            bedrooms: l.bedrooms,
+            size_m2: l.size_m2,
+            url: l.url,
+          });
+        }
       }
+    } else {
+      log(`[MATCH ENGINE] Skipping alert buffer for backfill user ${sp.user_id.substring(0, 8)}... — no active subscription`);
     }
   }
 

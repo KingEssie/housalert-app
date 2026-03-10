@@ -444,8 +444,9 @@ Multi-channel notification system in `server/notifications/index.ts`:
 - **Email** — via Resend integration (`sendEmailMatchAlert` for single, `sendBatchMatchAlert` for digest)
 - **SMS** — via Twilio (`sendSmsMatchAlert`); requires `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_SMS_FROM`
 - **WhatsApp** — via Twilio (`sendWhatsappMatchAlert`); requires `TWILIO_WHATSAPP_FROM`
-- **Batched alerts**: Matching engine buffers alerts via `server/notifications/buffer.ts` (`bufferMatchAlert`). At end of ingestion cycle, `flushMatchAlertBuffer` sends one digest email per user. Per-user dedup prevents duplicate listings. Backfill uses `flushUserAlerts` for user-scoped flush. Guards: alerts-disabled check at buffer entry + flush, settings-read-error = skip, flush mutex prevents concurrent sends.
+- **Batched alerts**: Matching engine buffers alerts via `server/notifications/buffer.ts` (`bufferMatchAlert`). At end of ingestion cycle, `flushMatchAlertBuffer` sends one digest email per user. Dedup by `listing_id` prevents duplicate listings. Backfill uses `flushUserAlerts` for user-scoped flush. Guards: subscription check (engine + flush), alerts-disabled check at buffer entry + flush, settings-read-error = skip, flush mutex, listing existence verification, max 20 listings per email. Alerts only sent to users with active subscription (trial or paid).
 - `sendMatchAlerts(userId, email, listing, supabase)` — legacy single-listing alert function (still available for direct use); reads `user_notification_settings` from Supabase, dispatches to enabled channels; skips all notifications on settings read failure
+- **Email alert eligibility**: Same truth source as `GET /api/matches` — subscription check, listing existence, dedup by listing_id. Engine checks sub before buffering; flush re-checks sub + verifies listings exist in DB with non-null title.
 
 ### Supabase table: `user_notification_settings`
 ```sql

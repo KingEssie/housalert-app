@@ -68,13 +68,23 @@ export async function registerRoutes(
     const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
     if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
-    const { userEmail, listing } = req.body;
-
-    if (!userEmail || !listing || !listing.title || !listing.city) {
-      return res.status(400).json({ error: "Missing userEmail or listing data" });
+    const subStatus = await getSubscriptionStatus(user.id);
+    if (!subStatus.isActive && !subStatus.isTrial) {
+      return res.json({ sent: false, reason: "no active subscription" });
     }
 
-    const sent = await sendEmailMatchAlert(userEmail, listing);
+    const recipientEmail = user.email;
+    if (!recipientEmail) {
+      return res.status(400).json({ error: "No email on account" });
+    }
+
+    const { listing } = req.body;
+
+    if (!listing || !listing.title || !listing.city) {
+      return res.status(400).json({ error: "Missing listing data" });
+    }
+
+    const sent = await sendEmailMatchAlert(recipientEmail, listing);
     return res.json({ sent });
   });
 
