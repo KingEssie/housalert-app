@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import {
   Activity, RefreshCw, CheckCircle2, AlertTriangle, XCircle,
-  Clock, Database, Zap, TrendingUp, ChevronLeft, Loader2,
+  Clock, Database, Zap, TrendingUp, ChevronLeft, Loader2, Bell,
 } from "lucide-react";
 
 interface RunSummary {
@@ -131,6 +131,8 @@ export default function AdminIngestionPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [pushTesting, setPushTesting] = useState(false);
+  const [pushResult, setPushResult] = useState<{ success: boolean; message: string } | null>(null);
 
   const loadData = useCallback(async (showRefresh = false) => {
     if (showRefresh) setRefreshing(true);
@@ -159,6 +161,36 @@ export default function AdminIngestionPage() {
       setRefreshing(false);
     }
   }, []);
+
+  const handleTestPush = useCallback(async () => {
+    setPushTesting(true);
+    setPushResult(null);
+    try {
+      const { data: session } = await supabase.auth.getSession();
+      const token = session?.session?.access_token;
+      if (!token) { navigate("/login"); return; }
+
+      const res = await fetch("/api/admin/test-push", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.status === 401) { navigate("/login"); return; }
+      if (res.status === 403) { setPushResult({ success: false, message: "Zugriff verweigert" }); return; }
+      if (!res.ok) { setPushResult({ success: false, message: `Server-Fehler (${res.status})` }); return; }
+
+      const data = await res.json();
+      if (data.success) {
+        setPushResult({ success: true, message: `Push gesendet (${data.sent} Abo${data.sent !== 1 ? "s" : ""})` });
+      } else {
+        setPushResult({ success: false, message: data.message || "Keine aktiven Push-Abos gefunden" });
+      }
+    } catch (err: any) {
+      setPushResult({ success: false, message: err.message || "Fehler beim Senden" });
+    } finally {
+      setPushTesting(false);
+    }
+  }, [navigate]);
 
   useEffect(() => {
     if (authLoading) return;
@@ -402,6 +434,37 @@ export default function AdminIngestionPage() {
             </div>
           </div>
         )}
+
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden" data-testid="section-test-push">
+          <div className="px-4 py-3 border-b border-gray-100">
+            <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Push-Benachrichtigungen testen</h2>
+          </div>
+          <div className="p-4 flex flex-col gap-3">
+            <p className="text-sm text-gray-500">
+              Sendet eine Test-Push-Benachrichtigung an alle aktiven Push-Abos deines Admin-Kontos. Stelle sicher, dass Push in den Benachrichtigungseinstellungen aktiviert ist.
+            </p>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleTestPush}
+                disabled={pushTesting}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary/90 disabled:opacity-50 transition-colors"
+                data-testid="button-test-push"
+              >
+                {pushTesting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Bell className="w-4 h-4" />}
+                {pushTesting ? "Wird gesendet…" : "Test Push senden"}
+              </button>
+              {pushResult && (
+                <span
+                  className={`inline-flex items-center gap-1 text-sm font-medium ${pushResult.success ? "text-green-700" : "text-red-600"}`}
+                  data-testid="text-push-result"
+                >
+                  {pushResult.success ? <CheckCircle2 className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
+                  {pushResult.message}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
 
         <div className="text-center text-xs text-gray-400 pb-6">
           Auto-refreshes every 30s &middot; Next ingestion: {formatTime(summary?.nextRunAt || null)}
