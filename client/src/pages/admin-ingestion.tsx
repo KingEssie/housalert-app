@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import {
   Activity, RefreshCw, CheckCircle2, AlertTriangle, XCircle,
-  Clock, Database, Zap, TrendingUp, ChevronLeft, Loader2, Bell,
+  Clock, Database, Zap, TrendingUp, ChevronLeft, Loader2, Bell, Search,
 } from "lucide-react";
 
 interface RunSummary {
@@ -133,6 +133,9 @@ export default function AdminIngestionPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [pushTesting, setPushTesting] = useState(false);
   const [pushResult, setPushResult] = useState<{ success: boolean; message: string } | null>(null);
+  const [debugData, setDebugData] = useState<any>(null);
+  const [debugLoading, setDebugLoading] = useState(false);
+  const [debugError, setDebugError] = useState<string | null>(null);
 
   const loadData = useCallback(async (showRefresh = false) => {
     if (showRefresh) setRefreshing(true);
@@ -189,6 +192,21 @@ export default function AdminIngestionPage() {
       setPushResult({ success: false, message: err.message || "Fehler beim Senden" });
     } finally {
       setPushTesting(false);
+    }
+  }, [navigate]);
+
+  const loadDebugData = useCallback(async () => {
+    setDebugLoading(true);
+    setDebugError(null);
+    try {
+      const data = await fetchAdmin<any>("/api/admin/debug/match-alignment");
+      setDebugData(data);
+    } catch (err: any) {
+      if (err.message === "UNAUTHORIZED") { navigate("/login"); return; }
+      if (err.message === "FORBIDDEN") { setDebugError("Zugriff verweigert — nur für Admins"); return; }
+      setDebugError(err.message || "Fehler beim Laden");
+    } finally {
+      setDebugLoading(false);
     }
   }, [navigate]);
 
@@ -463,6 +481,168 @@ export default function AdminIngestionPage() {
                 </span>
               )}
             </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden" data-testid="section-match-alignment">
+          <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+            <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Match Alignment Debug</h2>
+            <button
+              onClick={loadDebugData}
+              disabled={debugLoading}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold disabled:opacity-50 transition-colors"
+              data-testid="button-refresh-debug"
+            >
+              {debugLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
+              {debugLoading ? "Laden…" : "Analyse starten"}
+            </button>
+          </div>
+          <div className="p-4">
+            {!debugData && !debugLoading && !debugError && (
+              <p className="text-sm text-gray-400">Klicke "Analyse starten" um die E-Mail/App-Sichtbarkeit deines Admin-Kontos zu vergleichen.</p>
+            )}
+            {debugError && (
+              <div className="flex items-center gap-2 text-sm text-red-600" data-testid="text-debug-error">
+                <XCircle className="w-4 h-4 shrink-0" />
+                {debugError}
+              </div>
+            )}
+            {debugData && (
+              <div className="flex flex-col gap-5">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                  <div className="bg-gray-50 rounded-lg p-3">
+                    <div className="text-lg font-bold text-gray-900">{debugData.total_match_rows ?? 0}</div>
+                    <div className="text-[10px] uppercase text-gray-500 font-medium">Match-Zeilen</div>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-3">
+                    <div className="text-lg font-bold text-gray-900">{debugData.app_visible_count ?? 0}</div>
+                    <div className="text-[10px] uppercase text-gray-500 font-medium">App-sichtbar</div>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-3">
+                    <div className="text-lg font-bold text-gray-900">{debugData.recent_emailed_count ?? 0}</div>
+                    <div className="text-[10px] uppercase text-gray-500 font-medium">Zuletzt gemailt</div>
+                  </div>
+                  <div className={`rounded-lg p-3 ${(debugData.mismatch_count ?? 0) > 0 ? "bg-red-50" : "bg-green-50"}`}>
+                    <div className={`text-lg font-bold ${(debugData.mismatch_count ?? 0) > 0 ? "text-red-700" : "text-green-700"}`}>{debugData.mismatch_count ?? 0}</div>
+                    <div className={`text-[10px] uppercase font-medium ${(debugData.mismatch_count ?? 0) > 0 ? "text-red-500" : "text-green-500"}`}>Abweichungen</div>
+                  </div>
+                </div>
+
+                {debugData.subscription && (
+                  <div className="text-xs text-gray-500">
+                    Abo: <span className="font-medium text-gray-700">{debugData.subscription.status || "keins"}</span>
+                    {debugData.subscription.created_at && <> &middot; seit {formatTime(debugData.subscription.created_at)}</>}
+                    {debugData.emailed_at && <> &middot; letzter E-Mail-Versand: {formatTime(debugData.emailed_at)}</>}
+                  </div>
+                )}
+
+                {debugData.emailed_but_not_visible.length > 0 && (
+                  <div>
+                    <h3 className="text-xs font-bold text-red-700 uppercase tracking-wide mb-2 flex items-center gap-1.5">
+                      <AlertTriangle className="w-3.5 h-3.5" />
+                      Gemailt, aber NICHT in App sichtbar ({debugData.emailed_but_not_visible.length})
+                    </h3>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-xs">
+                        <thead>
+                          <tr className="bg-red-50 text-left">
+                            <th className="px-2 py-1.5 font-semibold text-red-800">Titel</th>
+                            <th className="px-2 py-1.5 font-semibold text-red-800">Stadt</th>
+                            <th className="px-2 py-1.5 font-semibold text-red-800">Quelle</th>
+                            <th className="px-2 py-1.5 font-semibold text-red-800">Matched</th>
+                            <th className="px-2 py-1.5 font-semibold text-red-800">Grund</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {debugData.emailed_but_not_visible.map((item: any, i: number) => (
+                            <tr key={i} className="border-t border-red-100">
+                              <td className="px-2 py-1.5 text-gray-800 max-w-[200px] truncate">{item.title || <span className="text-red-400 italic">gelöscht</span>}</td>
+                              <td className="px-2 py-1.5 text-gray-600">{item.city || "—"}</td>
+                              <td className="px-2 py-1.5 text-gray-600">{item.source || "—"}</td>
+                              <td className="px-2 py-1.5 text-gray-600 whitespace-nowrap">{item.matched_at ? formatTime(item.matched_at) : "—"}</td>
+                              <td className="px-2 py-1.5">
+                                <span className="inline-block px-1.5 py-0.5 rounded bg-red-100 text-red-700 text-[10px] font-medium">{item.exclusion_reason}</span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {debugData.recent_emailed.length > 0 && (
+                  <div>
+                    <h3 className="text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">Zuletzt per E-Mail versendet ({debugData.recent_emailed.length})</h3>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-xs">
+                        <thead>
+                          <tr className="bg-gray-50 text-left">
+                            <th className="px-2 py-1.5 font-semibold text-gray-600">Titel</th>
+                            <th className="px-2 py-1.5 font-semibold text-gray-600">Stadt</th>
+                            <th className="px-2 py-1.5 font-semibold text-gray-600">Quelle</th>
+                            <th className="px-2 py-1.5 font-semibold text-gray-600">Matched</th>
+                            <th className="px-2 py-1.5 font-semibold text-gray-600">Preis</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {debugData.recent_emailed.map((item: any, i: number) => (
+                            <tr key={i} className="border-t border-gray-100">
+                              <td className="px-2 py-1.5 text-gray-800 max-w-[200px] truncate">{item.title || <span className="text-gray-400 italic">—</span>}</td>
+                              <td className="px-2 py-1.5 text-gray-600">{item.city || "—"}</td>
+                              <td className="px-2 py-1.5 text-gray-600">{item.source || "—"}</td>
+                              <td className="px-2 py-1.5 text-gray-600 whitespace-nowrap">{item.matched_at ? formatTime(item.matched_at) : "—"}</td>
+                              <td className="px-2 py-1.5 text-gray-600">{item.price ? `${item.price}€` : "—"}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  <h3 className="text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">
+                    App-sichtbare Matches ({debugData.app_visible?.length || 0} von {debugData.app_visible_count})
+                  </h3>
+                  {debugData.app_visible?.length > 0 ? (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-xs">
+                        <thead>
+                          <tr className="bg-gray-50 text-left">
+                            <th className="px-2 py-1.5 font-semibold text-gray-600">Titel</th>
+                            <th className="px-2 py-1.5 font-semibold text-gray-600">Stadt</th>
+                            <th className="px-2 py-1.5 font-semibold text-gray-600">Quelle</th>
+                            <th className="px-2 py-1.5 font-semibold text-gray-600">Matched</th>
+                            <th className="px-2 py-1.5 font-semibold text-gray-600">Preis</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {debugData.app_visible.map((item: any, i: number) => (
+                            <tr key={i} className="border-t border-gray-100">
+                              <td className="px-2 py-1.5 text-gray-800 max-w-[200px] truncate">{item.title || "—"}</td>
+                              <td className="px-2 py-1.5 text-gray-600">{item.city || "—"}</td>
+                              <td className="px-2 py-1.5 text-gray-600">{item.source || "—"}</td>
+                              <td className="px-2 py-1.5 text-gray-600 whitespace-nowrap">{item.matched_at ? formatTime(item.matched_at) : "—"}</td>
+                              <td className="px-2 py-1.5 text-gray-600">{item.price ? `${item.price}€` : "—"}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <p className="text-xs text-gray-400">Keine app-sichtbaren Matches gefunden.</p>
+                  )}
+                </div>
+
+                {debugData.recent_emailed.length === 0 && debugData.emailed_but_not_visible.length === 0 && (
+                  <div className="flex items-center gap-2 text-sm text-gray-500 bg-gray-50 rounded-lg p-3">
+                    <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0" />
+                    Keine E-Mails in diesem Zyklus versendet — es gibt noch keine Vergleichsdaten. Warte bis zum nächsten Ingestion-Zyklus mit aktiven Matches.
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
