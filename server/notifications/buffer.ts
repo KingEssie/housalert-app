@@ -2,6 +2,7 @@ import { log } from "../log";
 import { sendBatchMatchAlert } from "../email";
 import { areAlertsEnabled } from "./index";
 import { getSubscriptionStatus } from "../subscriptions";
+import { sendMatchPushNotifications, type PushMatchListing } from "./push";
 
 const MAX_LISTINGS_PER_EMAIL = 20;
 
@@ -89,7 +90,7 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
 
     const { data: settings, error: settingsErr } = await supabase
       .from("user_notification_settings")
-      .select("email_enabled")
+      .select("email_enabled, push_enabled")
       .eq("user_id", userId)
       .maybeSingle();
 
@@ -99,9 +100,11 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
     }
 
     const emailEnabled = settings?.email_enabled ?? true;
-    if (!emailEnabled) {
+    const pushEnabled = settings?.push_enabled ?? false;
+
+    if (!emailEnabled && !pushEnabled) {
       skippedEmailOff++;
-      log(`[ALERTS] Skipping user ${userId.substring(0, 8)}... (email_enabled=false)`);
+      log(`[ALERTS] Skipping user ${userId.substring(0, 8)}... (email_enabled=false, push_enabled=false)`);
       continue;
     }
 
@@ -130,29 +133,40 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
       }
 
       if (verified.length === 0) {
-        log(`[ALERTS] User ${userId.substring(0, 8)}...: 0 eligible listings after verification — skipping email`);
+        log(`[ALERTS] User ${userId.substring(0, 8)}...: 0 eligible listings after verification — skipping alerts`);
         continue;
       }
 
-      const capped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
+      log(`[ALERTS] User ${userId.substring(0, 8)}...: raw=${listings.length} → deduped=${deduped.length} → verified=${verified.length}`);
 
-      log(`[ALERTS] User ${userId.substring(0, 8)}...: raw=${listings.length} → deduped=${deduped.length} → verified=${verified.length} → emailed=${capped.length}`);
+      if (emailEnabled) {
+        const capped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
+        try {
+          const success = await sendBatchMatchAlert(email, capped);
+          if (success) {
+            sent++;
+            log(`[ALERTS] Sent digest to ${email} with ${capped.length} listings${verified.length > MAX_LISTINGS_PER_EMAIL ? ` (capped from ${verified.length})` : ""}`);
+          } else {
+            failed++;
+            log(`[ALERTS] Failed digest to ${email}`);
+          }
+        } catch (err: any) {
+          failed++;
+          log(`[ALERTS] Error sending digest to ${email}: ${err.message}`);
+        }
+      }
 
       try {
-        const success = await sendBatchMatchAlert(email, capped);
-        if (success) {
-          sent++;
-          log(`[ALERTS] Sent digest to ${email} with ${capped.length} listings${verified.length > MAX_LISTINGS_PER_EMAIL ? ` (capped from ${verified.length})` : ""}`);
-        } else {
-          failed++;
-          log(`[ALERTS] Failed digest to ${email}`);
-        }
+        const pushListings: PushMatchListing[] = verified.map((l) => ({
+          listing_id: l.listing_id,
+          city: l.city,
+        }));
+        await sendMatchPushNotifications(userId, pushListings, supabase);
       } catch (err: any) {
-        failed++;
-        log(`[ALERTS] Error sending digest to ${email}: ${err.message}`);
+        log(`[ALERTS] Push error for user ${userId.substring(0, 8)}...: ${err.message}`);
       }
     } else {
-      log(`[ALERTS] User ${userId.substring(0, 8)}...: 0 eligible listings — skipping email`);
+      log(`[ALERTS] User ${userId.substring(0, 8)}...: 0 eligible listings — skipping alerts`);
     }
   }
 
@@ -182,11 +196,14 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
 
   const { data: settings, error: settingsErr } = await supabase
     .from("user_notification_settings")
-    .select("email_enabled")
+    .select("email_enabled, push_enabled")
     .eq("user_id", userId)
     .maybeSingle();
 
-  if (settingsErr || !(settings?.email_enabled ?? true)) return;
+  const emailEnabled = settingsErr ? true : (settings?.email_enabled ?? true);
+  const pushEnabled = settingsErr ? false : (settings?.push_enabled ?? false);
+
+  if (!emailEnabled && !pushEnabled) return;
 
   const deduped: BufferedMatch[] = [];
   const seenIds = new Set<string>();
@@ -208,17 +225,28 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
     const verified = deduped.filter(l => existingIds.has(l.listing_id));
 
     if (verified.length === 0) {
-      log(`[ALERTS] Backfill: 0 eligible listings after verification — skipping email`);
+      log(`[ALERTS] Backfill: 0 eligible listings after verification — skipping alerts`);
       return;
     }
 
-    const capped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
+    if (emailEnabled) {
+      const capped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
+      try {
+        await sendBatchMatchAlert(userBuf.email, capped);
+        log(`[ALERTS] Sent backfill digest to ${userBuf.email} with ${capped.length} listings (from ${userBuf.listings.length} raw)`);
+      } catch (err: any) {
+        log(`[ALERTS] Error sending backfill digest: ${err.message}`);
+      }
+    }
 
     try {
-      await sendBatchMatchAlert(userBuf.email, capped);
-      log(`[ALERTS] Sent backfill digest to ${userBuf.email} with ${capped.length} listings (from ${userBuf.listings.length} raw)`);
+      const pushListings: PushMatchListing[] = verified.map((l) => ({
+        listing_id: l.listing_id,
+        city: l.city,
+      }));
+      await sendMatchPushNotifications(userId, pushListings, supabase);
     } catch (err: any) {
-      log(`[ALERTS] Error sending backfill digest: ${err.message}`);
+      log(`[ALERTS] Backfill push error for user ${userId.substring(0, 8)}...: ${err.message}`);
     }
   }
 }

@@ -24,6 +24,7 @@ import { log } from "./log";
 import { computeMatchScore, getMatchReasons } from "../shared/match-score";
 import { pool as pgPool } from "./pg-pool";
 import { isAdminEmail, getRecentRuns, getRunDetail, getLatestRunCities, getSourceAggregates } from "./admin";
+import { initWebPush, sendPushToUser } from "./notifications/push";
 
 const TEN_MIN = 10 * 60 * 1000;
 const ONE_HOUR = 60 * 60 * 1000;
@@ -61,6 +62,66 @@ export async function registerRoutes(
     stripeAvailable = false;
     log(`[stripe-config] Stripe not available: ${err.message}`);
   }
+
+  initWebPush();
+
+  app.post("/api/push/subscribe", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { endpoint, p256dh, auth } = req.body;
+      if (!endpoint || !p256dh || !auth) {
+        return res.status(400).json({ error: "Missing subscription fields" });
+      }
+
+      const { error } = await supabase
+        .from("push_subscriptions")
+        .upsert(
+          { user_id: user.id, endpoint, p256dh, auth, created_at: new Date().toISOString() },
+          { onConflict: "endpoint" }
+        );
+
+      if (error) return res.status(500).json({ error: error.message });
+      log(`[PUSH] Subscription stored for user ${user.id.substring(0, 8)}...`);
+      return res.json({ ok: true });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.delete("/api/push/subscribe", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { endpoint } = req.body;
+      if (!endpoint) return res.status(400).json({ error: "Missing endpoint" });
+
+      await supabase
+        .from("push_subscriptions")
+        .delete()
+        .eq("user_id", user.id)
+        .eq("endpoint", endpoint);
+
+      log(`[PUSH] Subscription removed for user ${user.id.substring(0, 8)}...`);
+      return res.json({ ok: true });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/push/vapid-key", (_req, res) => {
+    const key = process.env.VITE_VAPID_PUBLIC_KEY;
+    if (!key) return res.status(503).json({ error: "Push not configured" });
+    return res.json({ publicKey: key });
+  });
 
   app.post("/api/match-alert", async (req, res) => {
     const token = req.headers.authorization?.replace("Bearer ", "");
@@ -108,9 +169,11 @@ export async function registerRoutes(
           user_id: user.id,
           phone_e164: null,
           email_enabled: true,
+          push_enabled: false,
         };
       if (cleaned.sms_enabled !== undefined) delete cleaned.sms_enabled;
       if (cleaned.whatsapp_enabled !== undefined) delete cleaned.whatsapp_enabled;
+      if (cleaned.push_enabled === undefined) cleaned.push_enabled = false;
       return res.json(cleaned);
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
@@ -125,7 +188,7 @@ export async function registerRoutes(
       const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
-      const { phone_e164, email_enabled } = req.body;
+      const { phone_e164, email_enabled, push_enabled } = req.body;
 
       if (phone_e164 !== undefined && phone_e164 !== null) {
         const e164Regex = /^\+[1-9]\d{1,14}$/;
@@ -142,6 +205,7 @@ export async function registerRoutes(
       payload.whatsapp_enabled = false;
       payload.sms_enabled = false;
       if (typeof email_enabled === "boolean") payload.email_enabled = email_enabled;
+      if (typeof push_enabled === "boolean") payload.push_enabled = push_enabled;
 
       const { data: existing } = await supabase
         .from("user_notification_settings")
@@ -163,6 +227,7 @@ export async function registerRoutes(
         payload.whatsapp_enabled = false;
         payload.sms_enabled = false;
         if (payload.email_enabled === undefined) payload.email_enabled = true;
+        if (payload.push_enabled === undefined) payload.push_enabled = false;
         result = await supabase
           .from("user_notification_settings")
           .insert(payload)
@@ -1987,6 +2052,34 @@ export async function registerRoutes(
       }
     } catch (err: any) {
       log(`[EMAIL TEST] Error: ${err.message}`);
+      return res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
+  app.post("/api/admin/test-push", requireAdmin, async (req, res) => {
+    try {
+      const adminUser = (req as any).adminUser;
+      log(`[PUSH TEST] Admin ${adminUser.email} triggering test push`);
+
+      const result = await sendPushToUser(
+        adminUser.id,
+        {
+          title: "Test Push",
+          body: "Dies ist eine Test-Benachrichtigung von HousAlert.",
+          url: "/dashboard",
+        },
+        supabase
+      );
+
+      if (result.sent > 0) {
+        log(`[PUSH TEST] Test push sent successfully`);
+        return res.json({ success: true, ...result });
+      } else {
+        log(`[PUSH TEST] No push sent (sent=${result.sent}, failed=${result.failed}, removed=${result.removed})`);
+        return res.json({ success: false, ...result, message: "No active push subscriptions found" });
+      }
+    } catch (err: any) {
+      log(`[PUSH TEST] Error: ${err.message}`);
       return res.status(500).json({ success: false, error: err.message });
     }
   });

@@ -5,13 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/i18n";
-import { Mail, Bell, Loader2 } from "lucide-react";
+import { Mail, Bell, Loader2, AlertTriangle } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { ListSection, ListRow, ListDivider } from "@/components/list-section";
+import { isPushSupported, getPushPermissionState, subscribeToPush, unsubscribeFromPush } from "@/lib/push";
 
 interface NotificationSettings {
   user_id: string;
   email_enabled: boolean;
+  push_enabled: boolean;
 }
 
 export default function NotificationSettingsPage() {
@@ -22,9 +24,13 @@ export default function NotificationSettingsPage() {
 
   const [loadingSettings, setLoadingSettings] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [pushLoading, setPushLoading] = useState(false);
 
   const [emailEnabled, setEmailEnabled] = useState(true);
   const [pushEnabled, setPushEnabled] = useState(false);
+
+  const pushSupported = isPushSupported();
+  const pushPermission = getPushPermissionState();
 
   useEffect(() => {
     if (!session?.access_token) return;
@@ -38,6 +44,7 @@ export default function NotificationSettingsPage() {
       })
       .then((data: NotificationSettings) => {
         setEmailEnabled(data.email_enabled);
+        setPushEnabled(data.push_enabled ?? false);
       })
       .catch(() => {
         toast({
@@ -48,6 +55,65 @@ export default function NotificationSettingsPage() {
       })
       .finally(() => setLoadingSettings(false));
   }, [session?.access_token]);
+
+  async function handlePushToggle(enabled: boolean) {
+    if (!session?.access_token) return;
+
+    setPushLoading(true);
+    try {
+      if (enabled) {
+        const success = await subscribeToPush(session.access_token);
+        if (!success) {
+          const perm = getPushPermissionState();
+          if (perm === "denied") {
+            toast({
+              title: t("notifications.pushDeniedTitle"),
+              description: t("notifications.pushDeniedDesc"),
+              variant: "destructive",
+            });
+          } else {
+            toast({
+              title: t("notifications.pushFailedTitle"),
+              description: t("notifications.pushFailedDesc"),
+              variant: "destructive",
+            });
+          }
+          return;
+        }
+      } else {
+        await unsubscribeFromPush(session.access_token);
+      }
+
+      const settingsRes = await fetch("/api/notifications/settings", {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ push_enabled: enabled }),
+      });
+
+      if (!settingsRes.ok) {
+        if (enabled) await unsubscribeFromPush(session.access_token);
+        throw new Error(t("notifications.saveFailedDesc"));
+      }
+
+      setPushEnabled(enabled);
+
+      toast({
+        title: enabled ? t("notifications.pushEnabledTitle") : t("notifications.pushDisabledTitle"),
+        description: enabled ? t("notifications.pushEnabledDesc") : t("notifications.pushDisabledDesc"),
+      });
+    } catch (err: any) {
+      toast({
+        title: t("common.error"),
+        description: err.message || t("notifications.pushFailedDesc"),
+        variant: "destructive",
+      });
+    } finally {
+      setPushLoading(false);
+    }
+  }
 
   async function handleSave() {
     setSaving(true);
@@ -119,18 +185,34 @@ export default function NotificationSettingsPage() {
               <ListDivider />
               <ListRow
                 title={t("notifications.pushTitle")}
-                subtitle={t("notifications.pushSubtitle")}
+                subtitle={
+                  !pushSupported
+                    ? t("notifications.pushUnsupported")
+                    : pushPermission === "denied"
+                      ? t("notifications.pushBrowserDenied")
+                      : t("notifications.pushSubtitle")
+                }
                 icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--yo-chip-bg)" }}><Bell className="w-[18px] h-[18px]" style={{ color: "var(--yo-dark)" }} /></div>}
                 trailing={
-                  <Switch
-                    checked={pushEnabled}
-                    onCheckedChange={setPushEnabled}
-                    disabled={true}
-                    data-testid="toggle-push"
-                  />
+                  pushLoading ? (
+                    <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                  ) : (
+                    <Switch
+                      checked={pushEnabled}
+                      onCheckedChange={handlePushToggle}
+                      disabled={!pushSupported || pushPermission === "denied"}
+                      data-testid="toggle-push"
+                    />
+                  )
                 }
                 testId="setting-push"
               />
+              {pushPermission === "denied" && (
+                <div className="flex items-start gap-2 px-4 pb-3 text-xs text-amber-600">
+                  <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+                  <span>{t("notifications.pushDeniedHint")}</span>
+                </div>
+              )}
             </ListSection>
 
             <div className="flex items-center gap-3 px-5">

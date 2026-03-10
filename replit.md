@@ -184,7 +184,7 @@ A mobile-first German-language rental alert application for the German market. U
 - `client/src/pages/listing-detail.tsx` — Full listing detail page at `/listing/:id`. Hero image (260px), match score badge, title, price, location, details grid (bedrooms/size/source/time), "Warum dieses Match?" section with green checkmark reasons. CTA: "Jetzt bewerben" (opens ApplySheet) + "Originalinserat öffnen" (external link). External site ONLY opens from this detail page.
 - `client/src/pages/new-search.tsx` — 5-step wizard for search profiles at `/dashboard/searches/new` (create) or `/dashboard/searches/edit/:id` (edit). Floating back button top-left, step indicator top-right, floating round green FAB bottom-right for navigation. Steps: 1) Standort (LocationModeSelector), 2) Anforderungen (rent/bedrooms/size/furnished dropdowns), 3) Zusätzliche Eigenschaften (checkbox list), 4) Zielgruppen & Kategorien (target groups), 5) Review screen "Suchauftrag prüfen" with edit buttons per section. Edit mode loads existing profile data via `getSearchProfile()` and updates via `updateSearchProfile()`. Max 4 profiles.
 - `client/src/pages/delete-account.tsx` — Full-screen account deletion at `/account/delete`. Calls `DELETE /api/account` which deletes all user data (matches, search profiles, subscriptions, notification settings, profile data) and Supabase auth user. Blocks deletion if user has active paid subscription (shows warning with link to subscription settings).
-- `client/src/pages/notification-settings.tsx` — Notification preferences (email/SMS/WhatsApp toggles)
+- `client/src/pages/notification-settings.tsx` — Notification preferences (email toggle + push toggle with live browser permission check)
 - `client/src/pages/application-letter.tsx` — Application letter template editor at `/application-letter`. Edit/save/reset template with German placeholders ([[ADRESSE]], [[STADT]], [[NAME]], [[BERUF]], [[EINKOMMEN]], [[PREIS]], [[TELEFON]], [[EMAIL]]). Backward-compatible with legacy Dutch placeholder keys.
 - `client/src/pages/viewing-tips.tsx` — Dedicated viewing tips page at `/tips/bezichtiging` (route slug stays Dutch for URL stability). Five German sections via i18n. CTA to mark as completed.
 - `client/src/pages/legal.tsx` — Legal pages: `/impressum`, `/datenschutz`, `/terms` (German placeholder content)
@@ -243,6 +243,28 @@ A mobile-first German-language rental alert application for the German market. U
 - Prep tasks: Introductiebrief (+10), Extra zoekopdracht (+15), Gebruik je netwerk (+5), Bezichtigingtips (+5)
 - Max score: 135 total (both groups combined)
 - Migration: `server/migrations/004_search_prep_flags.sql` adds `network_task_done` and `viewing_tips_done` columns
+
+### Push Notifications (Web Push API / VAPID)
+- **System**: Web Push API with VAPID keys via `web-push` npm package. No external service (Firebase/OneSignal) needed for web. Future mobile apps can add FCM/APNs tokens to the same `push_subscriptions` table.
+- **Env vars**: `VITE_VAPID_PUBLIC_KEY` (shared), `VAPID_PRIVATE_KEY` (secret), `VAPID_SUBJECT` (shared, mailto: format)
+- **Service worker**: `client/public/sw.js` — handles `push` event (shows notification) and `notificationclick` (opens app/listing URL)
+- **Client utility**: `client/src/lib/push.ts` — `subscribeToPush(token)`, `unsubscribeFromPush(token)`, `isPushSupported()`, `getPushPermissionState()`
+- **Server module**: `server/notifications/push.ts` — `initWebPush()`, `sendPushToUser()`, `sendMatchPushNotifications()` (with dedup via `push_sent_log` table)
+- **Supabase tables** (migration 018):
+  - `push_subscriptions`: id, user_id, endpoint (unique), p256dh, auth, created_at
+  - `push_sent_log`: id, user_id, listing_id, sent_at, unique(user_id, listing_id)
+  - `user_notification_settings.push_enabled` column (boolean, default false)
+- **API routes**:
+  - `POST /api/push/subscribe` — stores push subscription for authenticated user
+  - `DELETE /api/push/subscribe` — removes push subscription by endpoint
+  - `GET /api/push/vapid-key` — returns public VAPID key
+  - `POST /api/admin/test-push` — sends test push to admin user (requires admin auth)
+  - `GET/PUT /api/notifications/settings` — now includes `push_enabled`
+- **Push trigger**: Integrated into `flushMatchAlertBuffer()` and `flushUserAlerts()` in `server/notifications/buffer.ts`. After email is sent, push is sent for the same verified listings (independent of email_enabled — uses its own push_enabled check).
+- **Dedup**: `push_sent_log` table prevents duplicate pushes per user+listing. Stale subscriptions (410/404) auto-removed.
+- **Notification format**: German — Title: "Neue Wohnung gefunden", Body: "Eine neue Wohnung passt zu deinem Suchprofil in {{city}}." (singular) or "{{count}} neue Wohnungen passen zu deinem Suchprofil in {{city}}." (plural)
+- **Settings UI**: Push toggle in `/settings/notifications` — shows browser permission state, handles denied/unsupported cases
+- **PENDING**: Migration 018 must be run in Supabase SQL Editor before push features work
 
 ### Tips Tab (formerly Boost)
 - `client/src/pages/tips.tsx` — Tips page with 6 guide card links (Bezichtigingtips, Aanmeldingsbrief, Documenten, SCHUFA, Zoekstrategie, Netwerk)
