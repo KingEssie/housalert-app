@@ -451,7 +451,7 @@ export async function registerRoutes(
         .eq("user_id", user.id);
 
       if (mErr) return res.status(500).json({ error: mErr.message });
-      if (!matchRows || matchRows.length === 0) return res.json([]);
+      if (!matchRows || matchRows.length === 0) return res.json({ matches: [], totalCount: 0 });
 
       const matchIds = matchRows.map((m: any) => m.id);
       const matchTimestamps = await getMatchTimestamps(matchIds);
@@ -463,24 +463,34 @@ export async function registerRoutes(
       enriched.sort((a: any, b: any) =>
         new Date(b.matched_at).getTime() - new Date(a.matched_at).getTime()
       );
+
       const dedupedByListing: Record<string, any> = {};
       for (const m of enriched) {
         if (!dedupedByListing[m.listing_id]) {
           dedupedByListing[m.listing_id] = m;
         }
       }
-      const uniqueEnriched = Object.values(dedupedByListing);
-      const top50 = uniqueEnriched.slice(0, 50);
+      let uniqueMatches = Object.values(dedupedByListing);
 
-      const listingIds = top50.map((m: any) => m.listing_id);
-      const profileIds = [...new Set(top50.map((m: any) => m.search_profile_id).filter(Boolean))];
+      if (premiumStartedAt) {
+        const premiumStart = new Date(premiumStartedAt).getTime();
+        uniqueMatches = uniqueMatches.filter((m: any) => {
+          return new Date(m.matched_at).getTime() >= premiumStart;
+        });
+      }
+
+      const allListingIds = uniqueMatches.map((m: any) => m.listing_id);
+      if (allListingIds.length === 0) return res.json({ matches: [], totalCount: 0 });
+
+      const profileIds = [...new Set(uniqueMatches.map((m: any) => m.search_profile_id).filter(Boolean))];
 
       const [listingsRes, freshnessMap, profilesRes] = await Promise.all([
         supabase
           .from("listings")
           .select("id, title, price, size_m2, bedrooms, city, source, url, image_url")
-          .in("id", listingIds),
-        getListingFreshness(listingIds),
+          .in("id", allListingIds)
+          .not("title", "is", null),
+        getListingFreshness(allListingIds),
         profileIds.length > 0
           ? supabase
               .from("search_profiles")
@@ -494,10 +504,13 @@ export async function registerRoutes(
       const listingMap: Record<string, any> = {};
       for (const l of listingsRes.data ?? []) listingMap[l.id] = l;
 
+      const validListingIds = new Set(Object.keys(listingMap));
+      const validMatches = uniqueMatches.filter((m: any) => validListingIds.has(m.listing_id));
+
       const profileMap: Record<string, any> = {};
       for (const p of profilesRes.data ?? []) profileMap[p.id] = p;
 
-      const result = top50.map((m: any) => {
+      const validResults = validMatches.map((m: any) => {
         const l = listingMap[m.listing_id];
         const firstSeenAt = freshnessMap[m.listing_id]?.first_seen_at || m.created_at;
         const profile = profileMap[m.search_profile_id];
@@ -517,14 +530,14 @@ export async function registerRoutes(
 
         return {
           listing_id: m.listing_id,
-          title: l?.title ?? null,
-          price: l?.price ?? null,
-          size_m2: l?.size_m2 ?? null,
-          bedrooms: l?.bedrooms ?? null,
-          city: l?.city ?? null,
-          source: l?.source ?? null,
-          url: l?.url ?? null,
-          image_url: l?.image_url ?? null,
+          title: l.title,
+          price: l.price ?? null,
+          size_m2: l.size_m2 ?? null,
+          bedrooms: l.bedrooms ?? null,
+          city: l.city ?? null,
+          source: l.source ?? null,
+          url: l.url ?? null,
+          image_url: l.image_url ?? null,
           matched_at: m.matched_at,
           first_seen_at: firstSeenAt,
           fresh_label: computeFreshLabel(firstSeenAt),
@@ -534,28 +547,11 @@ export async function registerRoutes(
         };
       });
 
-      let validResults = result.filter((r: any) => r.title !== null);
-
-      if (premiumStartedAt) {
-        const premiumStart = new Date(premiumStartedAt).getTime();
-        validResults = validResults.filter((r: any) => {
-          const matchedAt = new Date(r.matched_at).getTime();
-          return matchedAt >= premiumStart;
-        });
-      }
-
-      const deduped: Record<string, any> = {};
-      for (const r of validResults) {
-        const existing = deduped[r.listing_id];
-        if (!existing || (r.match_score ?? 0) > (existing.match_score ?? 0)) {
-          deduped[r.listing_id] = r;
-        }
-      }
-      validResults = Object.values(deduped);
-
       validResults.sort((a: any, b: any) => (b.match_score ?? 0) - (a.match_score ?? 0));
 
-      return res.json({ matches: validResults, totalCount: validResults.length });
+      const top50 = validResults.slice(0, 50);
+
+      return res.json({ matches: top50, totalCount: validResults.length });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
     }
@@ -1639,6 +1635,64 @@ export async function registerRoutes(
     }
   });
 
+  async function getVisibleMatchListingIds(userId: string): Promise<{ validIds: Set<string>; premiumStartedAt: string | null }> {
+    const { data: subRow } = await supabase
+      .from("subscriptions")
+      .select("created_at")
+      .eq("user_id", userId)
+      .single();
+    const premiumStartedAt = subRow?.created_at || null;
+
+    const { data: matchRows } = await supabase
+      .from("matches")
+      .select("id, listing_id, created_at")
+      .eq("user_id", userId);
+
+    if (!matchRows || matchRows.length === 0) {
+      return { validIds: new Set(), premiumStartedAt };
+    }
+
+    const matchIds = matchRows.map((m: any) => m.id);
+    const matchTimestamps = await getMatchTimestamps(matchIds);
+
+    const enriched = matchRows.map((m: any) => ({
+      ...m,
+      matched_at: matchTimestamps[m.id] || m.created_at,
+    }));
+    enriched.sort((a: any, b: any) =>
+      new Date(b.matched_at).getTime() - new Date(a.matched_at).getTime()
+    );
+
+    const dedupedByListing: Record<string, any> = {};
+    for (const m of enriched) {
+      if (!dedupedByListing[m.listing_id]) {
+        dedupedByListing[m.listing_id] = m;
+      }
+    }
+    let uniqueMatches = Object.values(dedupedByListing);
+
+    if (premiumStartedAt) {
+      const premiumStart = new Date(premiumStartedAt).getTime();
+      uniqueMatches = uniqueMatches.filter((m: any) => {
+        return new Date(m.matched_at).getTime() >= premiumStart;
+      });
+    }
+
+    const listingIds = uniqueMatches.map((m: any) => m.listing_id);
+    if (listingIds.length === 0) {
+      return { validIds: new Set(), premiumStartedAt };
+    }
+
+    const { data: existingListings } = await supabase
+      .from("listings")
+      .select("id")
+      .in("id", listingIds)
+      .not("title", "is", null);
+
+    const validIds = new Set((existingListings ?? []).map((l: any) => l.id));
+    return { validIds, premiumStartedAt };
+  }
+
   app.get("/api/profile-stats", async (req, res) => {
     try {
       const token = req.headers.authorization?.replace("Bearer ", "");
@@ -1653,43 +1707,23 @@ export async function registerRoutes(
         return res.json({ matches_received: 0, reactions_sent: 0 });
       }
 
-      const { data: subRow } = await supabase
-        .from("subscriptions")
-        .select("created_at")
-        .eq("user_id", user.id)
-        .single();
-      const subStartedAt = subRow?.created_at || null;
-
-      let matchQuery = supabase.from("matches").select("listing_id, created_at").eq("user_id", user.id);
-      if (subStartedAt) matchQuery = matchQuery.gte("created_at", subStartedAt);
-      const matchResult = await matchQuery;
-      const matchListingIds = [...new Set((matchResult.data ?? []).map((r: any) => r.listing_id))];
-
-      let validListingIds = new Set<string>();
-      if (matchListingIds.length > 0) {
-        const { data: existingListings } = await supabase
-          .from("listings")
-          .select("id")
-          .in("id", matchListingIds)
-          .not("title", "is", null);
-        validListingIds = new Set((existingListings ?? []).map((l: any) => l.id));
-      }
+      const { validIds, premiumStartedAt } = await getVisibleMatchListingIds(user.id);
 
       let reactionCount = 0;
       try {
         let reactionQuery = supabase.from("matches").select("listing_id").eq("user_id", user.id).eq("applied", true);
-        if (subStartedAt) reactionQuery = reactionQuery.gte("created_at", subStartedAt);
+        if (premiumStartedAt) reactionQuery = reactionQuery.gte("created_at", premiumStartedAt);
         const reactionResult = await reactionQuery;
         const uniqueReactionListings = new Set(
           (reactionResult.data ?? [])
             .map((r: any) => r.listing_id)
-            .filter((id: string) => validListingIds.has(id))
+            .filter((id: string) => validIds.has(id))
         );
         reactionCount = uniqueReactionListings.size;
       } catch {}
 
       return res.json({
-        matches_received: validListingIds.size,
+        matches_received: validIds.size,
         reactions_sent: reactionCount,
       });
     } catch (err: any) {
