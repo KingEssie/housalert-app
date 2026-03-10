@@ -152,10 +152,10 @@ function getMatchTab(listingId: string): MatchSubTab {
 }
 
 const MATCH_REASON_KEYS: Record<string, string> = {
-  locatie: "matchReason.district",
-  prijs: "matchReason.budget",
-  kamers: "matchReason.preferences",
-  grootte: "matchReason.size",
+  Standort: "matchReason.district",
+  Preis: "matchReason.budget",
+  Zimmer: "matchReason.preferences",
+  Größe: "matchReason.size",
   nieuw: "matchReason.fresh",
   goede_prijs: "matchReason.price",
 };

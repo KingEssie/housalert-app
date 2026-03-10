@@ -695,6 +695,8 @@ export const de: Record<string, any> = {
     privacy: "Datenschutzerklärung",
     terms: "Allgemeine Geschäftsbedingungen",
     imprint: "Impressum",
+    backToHome: "Zurück zur Startseite",
+    copyright: "© {year} HousAlert. Alle Rechte vorbehalten.",
   },
 
   notFound: {
@@ -718,7 +720,7 @@ export const de: Record<string, any> = {
     copied: "Kopiert!",
     copiedDesc: "Dein Bewerbungsschreiben wurde in die Zwischenablage kopiert.",
     copyFailed: "Fehler",
-    copyFailedDesc: "Konnte nicht kopieren.",
+    copyFailedDesc: "Kopieren nicht möglich.",
     markedApplied: "Als beworben markiert",
     markedAppliedDesc: "Du findest dieses Match unter 'Beworben'.",
     copyAndApply: "Kopieren und bewerben",
@@ -897,13 +899,19 @@ export const de: Record<string, any> = {
   continueDraft: {
     alreadyInUse: "Suchauftrag bereits in Verwendung",
     alreadyInUseDesc: "Dieser Link wurde bereits von jemand anderem verwendet.",
+    alreadyUsed: "Suchauftrag bereits in Verwendung",
+    alreadyUsedDesc: "Dieser Link wurde bereits von jemand anderem verwendet.",
     claimed: "Suchauftrag übernommen!",
     claimedDesc: "Du kannst jetzt Matches erhalten.",
+    claimedSuccess: "Suchauftrag übernommen!",
+    claimedSuccessDesc: "Du kannst jetzt Matches erhalten.",
     claimFailed: "Fehler bei der Übernahme",
+    claimFailedDesc: "Bitte versuche es erneut.",
     loading: "Suchauftrag laden...",
     claiming: "Suchauftrag übernehmen...",
     notFound: "Suchauftrag nicht gefunden",
     notFoundDesc: "Der Link ist abgelaufen oder ungültig.",
+    linkExpired: "Der Link ist abgelaufen oder ungültig.",
     toHome: "Zur Startseite",
     done: "Suchauftrag übernommen!",
   },
@@ -931,11 +939,6 @@ export const de: Record<string, any> = {
     step3Desc: "Bekomme sofort Bescheid, wenn es ein Match gibt.",
     ctaBottom: "Bereit loszulegen?",
     ctaDesc: "Erstelle ein Konto und erhalte sofort Wohnungsbenachrichtigungen.",
-    copyright: "© {year} HousAlert. Alle Rechte vorbehalten.",
-  },
-
-  legal: {
-    backToHome: "Zurück zur Startseite",
     copyright: "© {year} HousAlert. Alle Rechte vorbehalten.",
   },
 
@@ -1012,21 +1015,6 @@ export const de: Record<string, any> = {
     },
   },
 
-  continueDraft: {
-    loading: "Suchauftrag laden...",
-    claiming: "Suchauftrag übernehmen...",
-    notFound: "Suchauftrag nicht gefunden",
-    linkExpired: "Der Link ist abgelaufen oder ungültig.",
-    toHome: "Zur Startseite",
-    claimed: "Suchauftrag übernommen!",
-    alreadyUsed: "Suchauftrag bereits in Verwendung",
-    alreadyUsedDesc: "Dieser Link wurde bereits von jemand anderem verwendet.",
-    claimedSuccess: "Suchauftrag übernommen!",
-    claimedSuccessDesc: "Du kannst jetzt Matches erhalten.",
-    claimFailed: "Fehler beim Übernehmen",
-    claimFailedDesc: "Bitte versuche es erneut.",
-  },
-
   paymentMethodPage: {
     title: "Zahlungsmethode",
     currentMethod: "Aktuelle Zahlungsmethode",
@@ -1040,26 +1028,6 @@ export const de: Record<string, any> = {
     needOneMethod: "Du benötigst mindestens eine Zahlungsmethode.",
     removed: "Entfernt",
     removedDesc: "Zahlungsmethode wurde entfernt.",
-  },
-
-  applySheet: {
-    title: "Jetzt bewerben",
-    letter: "Bewerbungsschreiben",
-    phone: "Telefonnummer",
-    documents: "Dokumente",
-    applicationLetter: "Bewerbungsschreiben",
-    readyToSend: "Bereit zum Versenden",
-    copied: "Kopiert!",
-    copiedDesc: "Dein Bewerbungsschreiben wurde in die Zwischenablage kopiert.",
-    copyFailed: "Fehler",
-    copyFailedDesc: "Kopieren nicht möglich.",
-    markedApplied: "Als beworben markiert",
-    markedAppliedDesc: "Du findest dieses Match unter 'Beworben'.",
-    copyAndApply: "Kopieren und bewerben",
-    copyLetter: "Brief kopieren",
-    copyOnly: "Nur kopieren",
-    applied: "Beworben",
-    markApplied: "Als beworben markieren",
   },
 
   profileStrength: {

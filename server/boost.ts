@@ -55,11 +55,11 @@ export function calculateBoostScore(states: CompletionStates): BoostResult {
     .slice(0, 3);
 
   const speedSteps = [
-    { id: "alerts_active", label: "Alerts actief", done: states.alertsActive },
-    { id: "search_buddy_added", label: "Zoekbuddy toegevoegd", done: states.searchBuddyAdded },
-    { id: "documents_ready", label: "Documenten klaar", done: states.incomeDocumentsUploaded && states.idDocumentUploaded },
-    { id: "phone_added", label: "Telefoonnummer toegevoegd", done: states.phoneNumberAdded },
-    { id: "letter_ready", label: "Reactiebrief klaar", done: states.reactionLetterReady },
+    { id: "alerts_active", label: "Alerts aktiv", done: states.alertsActive },
+    { id: "search_buddy_added", label: "Suchpartner hinzugefügt", done: states.searchBuddyAdded },
+    { id: "documents_ready", label: "Dokumente bereit", done: states.incomeDocumentsUploaded && states.idDocumentUploaded },
+    { id: "phone_added", label: "Telefonnummer hinzugefügt", done: states.phoneNumberAdded },
+    { id: "letter_ready", label: "Bewerbungsschreiben fertig", done: states.reactionLetterReady },
   ];
 
   return {

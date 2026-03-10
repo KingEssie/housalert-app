@@ -157,10 +157,10 @@ export default function ListingDetailPage() {
   };
 
   const MATCH_REASON_DETAIL: Record<string, { label: string; description: string }> = {
-    locatie: { label: t("listing.matchReasons.inCity"), description: t("listing.matchReasons.inCityDesc") },
-    prijs: { label: t("listing.matchReasons.inBudget"), description: t("listing.matchReasons.inBudgetDesc") },
-    kamers: { label: t("listing.matchReasons.matchesType"), description: t("listing.matchReasons.matchesTypeDesc") },
-    grootte: { label: t("listing.matchReasons.goodSize"), description: t("listing.matchReasons.goodSizeDesc") },
+    Standort: { label: t("listing.matchReasons.inCity"), description: t("listing.matchReasons.inCityDesc") },
+    Preis: { label: t("listing.matchReasons.inBudget"), description: t("listing.matchReasons.inBudgetDesc") },
+    Zimmer: { label: t("listing.matchReasons.matchesType"), description: t("listing.matchReasons.matchesTypeDesc") },
+    Größe: { label: t("listing.matchReasons.goodSize"), description: t("listing.matchReasons.goodSizeDesc") },
   };
 
   return (

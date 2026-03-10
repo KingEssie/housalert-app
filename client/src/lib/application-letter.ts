@@ -1,29 +1,29 @@
-export const DEFAULT_TEMPLATE = `Geachte verhuurder,
+export const DEFAULT_TEMPLATE = `Sehr geehrte/r Vermieter/in,
 
-Met veel interesse heb ik uw woning aan [[ADRES]] in [[STAD]] gezien. Graag stel ik mij voor als potentiële huurder.
+mit großem Interesse habe ich Ihre Wohnung an [[ADRES]] in [[STAD]] gesehen. Gerne stelle ich mich als potenzieller Mieter vor.
 
-Mijn naam is [[NAAM]] en ik ben werkzaam als [[BEROEP]]. Mijn maandelijks inkomen bedraagt €[[INKOMEN]] netto. De huurprijs van €[[PRIJS]] per maand past goed binnen mijn budget.
+Mein Name ist [[NAAM]] und ich bin als [[BEROEP]] tätig. Mein monatliches Nettoeinkommen beträgt €[[INKOMEN]]. Die Miete von €[[PRIJS]] pro Monat passt gut in mein Budget.
 
-Ik ben op zoek naar een prettige, duurzame woonsituatie en zorg goed voor mijn woning. Alle benodigde documenten zoals SCHUFA, inkomensbewijzen en referenties kan ik op korte termijn aanleveren.
+Ich suche eine angenehme, langfristige Wohnsituation und pflege meine Wohnung sorgfältig. Alle erforderlichen Unterlagen wie SCHUFA-Auskunft, Einkommensnachweise und Referenzen kann ich kurzfristig bereitstellen.
 
-Graag zou ik een bezichtiging plannen. U kunt mij bereiken via:
-- E-mail: [[EMAIL]]
-- Telefoon: [[TELEFOON]]
+Gerne würde ich einen Besichtigungstermin vereinbaren. Sie erreichen mich unter:
+- E-Mail: [[EMAIL]]
+- Telefon: [[TELEFOON]]
 
-Ik kijk ernaar uit om van u te horen.
+Ich freue mich auf Ihre Rückmeldung.
 
-Met vriendelijke groet,
+Mit freundlichen Grüßen,
 [[NAAM]]`;
 
 export const PLACEHOLDERS = [
-  { key: "[[ADRES]]", label: "Adres of titel van de woning" },
-  { key: "[[STAD]]", label: "Stad" },
-  { key: "[[NAAM]]", label: "Je volledige naam" },
-  { key: "[[EMAIL]]", label: "Je e-mailadres" },
-  { key: "[[TELEFOON]]", label: "Je telefoonnummer" },
-  { key: "[[BEROEP]]", label: "Je beroep" },
-  { key: "[[INKOMEN]]", label: "Je maandelijks inkomen" },
-  { key: "[[PRIJS]]", label: "Huurprijs van de woning" },
+  { key: "[[ADRES]]", label: "Adresse oder Titel der Wohnung" },
+  { key: "[[STAD]]", label: "Stadt" },
+  { key: "[[NAAM]]", label: "Dein vollständiger Name" },
+  { key: "[[EMAIL]]", label: "Deine E-Mail-Adresse" },
+  { key: "[[TELEFOON]]", label: "Deine Telefonnummer" },
+  { key: "[[BEROEP]]", label: "Dein Beruf" },
+  { key: "[[INKOMEN]]", label: "Dein monatliches Einkommen" },
+  { key: "[[PRIJS]]", label: "Mietpreis der Wohnung" },
 ];
 
 export interface ListingData {
@@ -44,19 +44,19 @@ export interface UserData {
 export function fillTemplate(template: string, listing: ListingData, user: UserData): string {
   let text = template;
 
-  const address = listing.address || listing.title || `deze woning in ${listing.city || "[stad]"}`;
-  const city = listing.city || "[stad]";
-  const price = listing.price ? String(listing.price) : "[prijs]";
+  const address = listing.address || listing.title || `diese Wohnung in ${listing.city || "[Stadt]"}`;
+  const city = listing.city || "[Stadt]";
+  const price = listing.price ? String(listing.price) : "[Preis]";
 
   text = text.replace(/\[\[ADRES\]\]/g, address);
   text = text.replace(/\[\[STAD\]\]/g, city);
   text = text.replace(/\[\[PRIJS\]\]/g, price);
 
-  text = text.replace(/\[\[NAAM\]\]/g, user.name || "[je naam]");
-  text = text.replace(/\[\[EMAIL\]\]/g, user.email || "[je e-mail]");
-  text = text.replace(/\[\[TELEFOON\]\]/g, user.phone || "[je telefoonnummer]");
-  text = text.replace(/\[\[BEROEP\]\]/g, user.occupation || "[je beroep]");
-  text = text.replace(/\[\[INKOMEN\]\]/g, user.income || "[je inkomen]");
+  text = text.replace(/\[\[NAAM\]\]/g, user.name || "[dein Name]");
+  text = text.replace(/\[\[EMAIL\]\]/g, user.email || "[deine E-Mail]");
+  text = text.replace(/\[\[TELEFOON\]\]/g, user.phone || "[deine Telefonnummer]");
+  text = text.replace(/\[\[BEROEP\]\]/g, user.occupation || "[dein Beruf]");
+  text = text.replace(/\[\[INKOMEN\]\]/g, user.income || "[dein Einkommen]");
 
   return text;
 }

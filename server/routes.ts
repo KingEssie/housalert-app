@@ -1388,22 +1388,22 @@ export async function registerRoutes(
       const hasMultipleProfiles = searchProfiles.length >= 2;
 
       const accountTasks = [
-        { id: "alerts", label: "Alerts activeren", completed: hasAlertChannel, score: 20 },
-        { id: "search_buddy", label: "Zoekbuddy toevoegen", completed: hasSearchBuddy, score: 10 },
-        { id: "search_optimize", label: "Zoekopdracht optimaliseren", completed: hasOptimizedSearch, score: 20 },
-        { id: "application_template", label: "Aanmeldingsbrief voorbereiden", completed: hasApplicationTemplate, score: 15 },
-        { id: "documents", label: "Documenten verzamelen", completed: hasDocuments, score: 20 },
-        { id: "phone", label: "Telefoonnummer toevoegen", completed: hasPhone, score: 15 },
+        { id: "alerts", label: "Alerts aktivieren", completed: hasAlertChannel, score: 20 },
+        { id: "search_buddy", label: "Suchpartner hinzufügen", completed: hasSearchBuddy, score: 10 },
+        { id: "search_optimize", label: "Suchauftrag optimieren", completed: hasOptimizedSearch, score: 20 },
+        { id: "application_template", label: "Bewerbungsschreiben vorbereiten", completed: hasApplicationTemplate, score: 15 },
+        { id: "documents", label: "Dokumente zusammenstellen", completed: hasDocuments, score: 20 },
+        { id: "phone", label: "Telefonnummer hinzufügen", completed: hasPhone, score: 15 },
       ];
 
       const hasSearchProfile = searchProfiles.length >= 1;
 
       const prepTasks = [
-        { id: "prep_search_profile", label: "Zoekopdracht aanmaken", completed: hasSearchProfile, score: 15 },
-        { id: "prep_letter", label: "Schrijf een introductiebrief", completed: hasApplicationTemplate, score: 10 },
-        { id: "prep_extra_profile", label: "Voeg extra zoekopdracht toe", completed: hasMultipleProfiles, score: 15 },
-        { id: "prep_network", label: "Gebruik je netwerk", completed: hasNetworkDone, score: 5 },
-        { id: "prep_viewing_tips", label: "Lees bezichtigingtips", completed: hasViewingTipsDone, score: 5 },
+        { id: "prep_search_profile", label: "Suchauftrag erstellen", completed: hasSearchProfile, score: 15 },
+        { id: "prep_letter", label: "Bewerbungsschreiben verfassen", completed: hasApplicationTemplate, score: 10 },
+        { id: "prep_extra_profile", label: "Weiteren Suchauftrag hinzufügen", completed: hasMultipleProfiles, score: 15 },
+        { id: "prep_network", label: "Nutze dein Netzwerk", completed: hasNetworkDone, score: 5 },
+        { id: "prep_viewing_tips", label: "Besichtigungstipps lesen", completed: hasViewingTipsDone, score: 5 },
       ];
 
       const allTasks = [...accountTasks, ...prepTasks];
@@ -1417,10 +1417,10 @@ export async function registerRoutes(
       };
 
       const speedSteps = [
-        { id: "alerts_active", label: "Alerts actief", done: hasAlertChannel },
-        { id: "letter_ready", label: "Aanmeldingsbrief klaar", done: hasApplicationTemplate },
-        { id: "documents_ready", label: "Documenten klaar", done: hasDocuments },
-        { id: "phone_added", label: "Telefoonnummer toegevoegd", done: hasPhone },
+        { id: "alerts_active", label: "Alerts aktiv", done: hasAlertChannel },
+        { id: "letter_ready", label: "Bewerbungsschreiben fertig", done: hasApplicationTemplate },
+        { id: "documents_ready", label: "Dokumente bereit", done: hasDocuments },
+        { id: "phone_added", label: "Telefonnummer hinzugefügt", done: hasPhone },
       ];
 
       const speedDone = speedSteps.filter(s => s.done).length;
@@ -1530,7 +1530,7 @@ export async function registerRoutes(
       return res.json(rows[0]);
     } catch (err: any) {
       console.error("[profile-data] PUT error:", err.message);
-      return res.status(500).json({ error: "Opslaan mislukt. Probeer opnieuw." });
+      return res.status(500).json({ error: "Speichern fehlgeschlagen. Bitte erneut versuchen." });
     }
   });
 
@@ -1622,7 +1622,7 @@ export async function registerRoutes(
       if (subStatus.status === "active" && !subStatus.isTrial) {
         return res.status(400).json({
           error: "active_subscription",
-          message: "Je hebt een actief abonnement. Zeg dit eerst op voordat je je account verwijdert.",
+          message: "Du hast ein aktives Abonnement. Bitte kündige dieses zuerst, bevor du dein Konto löschst.",
         });
       }
 
@@ -1635,7 +1635,7 @@ export async function registerRoutes(
       const { error: deleteError } = await supabase.auth.admin.deleteUser(user.id);
       if (deleteError) {
         log(`[account-delete] Failed to delete auth user ${user.id}: ${deleteError.message}`);
-        return res.status(500).json({ error: "Account data verwijderd, maar authenticatie kon niet worden verwijderd. Neem contact op met support." });
+        return res.status(500).json({ error: "Kontodaten gelöscht, aber Authentifizierung konnte nicht entfernt werden. Bitte kontaktiere den Support." });
       }
 
       return res.json({ success: true });
@@ -1904,7 +1904,7 @@ export async function registerRoutes(
       }
 
       if (check.claimed_by && check.claimed_by !== user_id) {
-        return res.status(409).json({ error: "Deze zoekopdracht is al door iemand anders gebruikt." });
+        return res.status(409).json({ error: "Dieser Suchauftrag wurde bereits von jemand anderem verwendet." });
       }
 
       const { error: updateErr } = await supabase

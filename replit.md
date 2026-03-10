@@ -1,6 +1,6 @@
 # HousAlert — Rental Alert App
 
-A BlaBlaCar-inspired Dutch-language rental alert application for the German market. Users can sign up, log in, and manage saved rental search profiles. Listings are matched against profiles and shown as matches. Rebranded from "Stekkies" to "HousAlert".
+A mobile-first German-language rental alert application for the German market. Users can sign up, log in, and manage saved rental search profiles. Listings are matched against profiles and shown as matches. Rebranded from "Stekkies" to "HousAlert". Primary language: German (de). i18n architecture: `client/src/i18n/index.tsx` with translation keys in `client/src/i18n/locales/de.ts`.
 
 ## Tech Stack
 
@@ -139,10 +139,10 @@ A BlaBlaCar-inspired Dutch-language rental alert application for the German mark
   - **Furnished filter** (phase 1 advanced filter): decoupled from other advanced columns — works independently once `furnished` column exists on `listings` table. Handles "furnished" (listing.furnished must be true), "unfurnished" (must be false), "any"/"no_preference"/empty/null (skipped). Strict: null/unknown = rejected.
   - **Districts filter** (phase 2 advanced filter): decoupled from other advanced columns — works independently once `district` column exists on `listings` table. Bi-directional case-insensitive substring matching. Strict: null/empty district = rejected when filter is active. Only applied when `location_mode === "districts"` or not set (backward compat). Extracted from wg-gesucht (title), immowelt (address), kleinanzeigen (location element + title). Config-based ingesters (wohnungsboerse, rentola, nestpick) do not extract district.
   - **Pets_allowed filter** (phase 3 advanced filter): Dutch→English mapping in engine (`huisdieren` → `pets_allowed`, `balkon` → `balcony`). All 3 custom ingesters detect `NO_PETS_PATTERNS` first (→ false), then `PETS_PATTERNS` (→ true), else null. Strict: null/unknown = rejected when filter active. Config-based ingesters always return null for pets_allowed.
-- `shared/match-score.ts` — also exports `getMatchReasons(details)` which returns top 2-3 Dutch match reason labels (locatie, prijs, kamers, grootte) for sub-scores >= 70% of their max. Used by both `/api/matches` and `/api/listings/:id` endpoints.
+- `shared/match-score.ts` — also exports `getMatchReasons(details)` which returns top 2-3 German match reason labels (Standort, Preis, Zimmer, Größe) for sub-scores >= 70% of their max. Used by both `/api/matches` and `/api/listings/:id` endpoints.
 - `server/ingesters/matching.ts` — Ingestion pipeline (dedup, insert, delegates to engine for matching). `furnished` and `district` columns checked independently from other advanced columns (`checkFurnishedColumn()`, `checkDistrictColumn()`)
 - `server/log.ts` — Shared `log()` utility (extracted from index.ts to avoid circular deps)
-- `shared/match-score.ts` — Deterministic match scoring (0–100) based on city fit (30pts), price fit (30pts), bedrooms fit (20pts), size fit (20pts). Labels: Perfecte match (90+), Sterke match (75–89), Goede match (60–74), Mogelijke match (40–59). Used by `/api/matches` and `/api/listings/:id`.
+- `shared/match-score.ts` — Deterministic match scoring (0–100) based on city fit (30pts), price fit (30pts), bedrooms fit (20pts), size fit (20pts). Labels: Perfektes Match (90+), Starkes Match (75–89), Gutes Match (60–74), Mögliches Match (40–59). Used by `/api/matches` and `/api/listings/:id`.
 - City matching uses case-insensitive substring inclusion (e.g. "Berlin" matches "Berlin-Mitte")
 - City pre-filter: matching engine pre-filters search profiles by city (ilike) before running full match logic; falls back to full scan if filter fails or city is too short (<3 chars)
 - Duplicate prevention: checks `unique(user_id, search_profile_id, listing_id)` before insert

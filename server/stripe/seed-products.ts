@@ -11,7 +11,7 @@ async function seedStripeProducts() {
   if (!product) {
     product = await stripe.products.create({
       name: "HousAlert Abonnement",
-      description: "Ontvang direct meldingen van nieuwe huurwoningen in Duitsland",
+      description: "Erhalte sofort Benachrichtigungen über neue Mietwohnungen in Deutschland",
     });
     console.log(`[stripe-seed] Created product: ${product.id}`);
   } else {

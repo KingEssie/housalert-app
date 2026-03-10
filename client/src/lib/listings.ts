@@ -137,7 +137,7 @@ export interface ApiMatch extends FreshListing {
 
 export async function fetchFreshListings(): Promise<FreshListing[]> {
   const resp = await fetch("/api/listings/fresh");
-  if (!resp.ok) throw new Error("Verse woningen laden mislukt");
+  if (!resp.ok) throw new Error("Neue Wohnungen konnten nicht geladen werden");
   return resp.json();
 }
 
@@ -150,7 +150,7 @@ export async function fetchApiMatches(token: string): Promise<ApiMatchesResponse
   const resp = await fetch("/api/matches", {
     headers: { Authorization: `Bearer ${token}` },
   });
-  if (!resp.ok) throw new Error("Matches laden mislukt");
+  if (!resp.ok) throw new Error("Matches konnten nicht geladen werden");
   const data = await resp.json();
   if (Array.isArray(data)) {
     return { matches: data, totalCount: data.length };

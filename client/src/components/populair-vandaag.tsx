@@ -122,8 +122,8 @@ export function PopulairVandaagSection() {
     return (
       <div className="flex flex-col gap-3">
         <div>
-          <h2 className="text-section-title">Populair vandaag</h2>
-          <p className="text-[13px] font-[500] text-[var(--yo-dark)] mt-0.5">Woningen die veel aandacht krijgen</p>
+          <h2 className="text-section-title">Beliebt heute</h2>
+          <p className="text-[13px] font-[500] text-[var(--yo-dark)] mt-0.5">Wohnungen, die viel Aufmerksamkeit bekommen</p>
         </div>
         <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none">
           {[1, 2, 3].map((i) => (
@@ -141,9 +141,9 @@ export function PopulairVandaagSection() {
       <div>
         <div className="flex items-center gap-2">
           <TrendingUp className="w-4 h-4 text-[var(--yo-dark)]" />
-          <h2 className="text-section-title">Populair vandaag</h2>
+          <h2 className="text-section-title">Beliebt heute</h2>
         </div>
-        <p className="text-[13px] text-[var(--yo-dark)] mt-0.5 ml-6">Woningen die veel aandacht krijgen</p>
+        <p className="text-[13px] text-[var(--yo-dark)] mt-0.5 ml-6">Wohnungen, die viel Aufmerksamkeit bekommen</p>
       </div>
       <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 snap-x snap-mandatory scrollbar-none">
         {listings.map((listing) => (

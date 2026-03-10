@@ -63,16 +63,16 @@ const TASK_ICONS: Record<string, typeof Bell> = {
 };
 
 const INCOME_CHECKLIST = [
-  { id: "income_proof", label: "Inkomensbewijs (laatste 3 maanden)" },
-  { id: "employment_contract", label: "Arbeidsovereenkomst" },
-  { id: "payslips", label: "Loonstroken (laatste 3 maanden)" },
-  { id: "tax_returns", label: "Belastingaangifte (laatste 2 jaar)" },
-  { id: "bank_statements", label: "Bankafschriften (laatste 3 maanden)" },
+  { id: "income_proof", label: "Einkommensnachweis (letzte 3 Monate)" },
+  { id: "employment_contract", label: "Arbeitsvertrag" },
+  { id: "payslips", label: "Gehaltsabrechnungen (letzte 3 Monate)" },
+  { id: "tax_returns", label: "Steuererklärung (letzte 2 Jahre)" },
+  { id: "bank_statements", label: "Kontoauszüge (letzte 3 Monate)" },
 ];
 
 const ID_CHECKLIST = [
-  { id: "id_copy", label: "Kopie identiteitsbewijs" },
-  { id: "photo", label: "Pasfoto" },
+  { id: "id_copy", label: "Kopie des Personalausweises" },
+  { id: "photo", label: "Passfoto" },
 ];
 
 function useBoostData() {
@@ -127,18 +127,18 @@ function useUpdateProfileData() {
       queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
     },
     onError: () => {
-      toast({ title: "Fout", description: "Kon gegevens niet opslaan.", variant: "destructive" });
+      toast({ title: "Fehler", description: "Daten konnten nicht gespeichert werden.", variant: "destructive" });
     },
   });
 }
 
 function getScoreMicrocopy(score: number, remaining: number): string {
-  if (remaining <= 0) return "Je bent helemaal klaar om razendsnel te reageren.";
-  if (score >= 90) return "Je bent helemaal klaar om razendsnel te reageren.";
-  if (score >= 70) return `Nog ${remaining} ${remaining === 1 ? "stap" : "stappen"} en je profiel is compleet.`;
-  if (score >= 40) return `Rond nog ${remaining} ${remaining === 1 ? "stap" : "stappen"} af om sneller te reageren op woningen.`;
-  if (score >= 10) return `Begin met de eerste stap en vergroot direct je kansen.`;
-  return "Rond je profiel af en reageer sneller op nieuwe woningen.";
+  if (remaining <= 0) return "Du bist komplett bereit, blitzschnell zu reagieren.";
+  if (score >= 90) return "Du bist komplett bereit, blitzschnell zu reagieren.";
+  if (score >= 70) return `Noch ${remaining} ${remaining === 1 ? "Schritt" : "Schritte"} und dein Profil ist vollständig.`;
+  if (score >= 40) return `Schließe noch ${remaining} ${remaining === 1 ? "Schritt" : "Schritte"} ab, um schneller auf Wohnungen zu reagieren.`;
+  if (score >= 10) return `Starte mit dem ersten Schritt und erhöhe direkt deine Chancen.`;
+  return "Vervollständige dein Profil und reagiere schneller auf neue Wohnungen.";
 }
 
 function getScoreColor(score: number): string {
@@ -147,11 +147,11 @@ function getScoreColor(score: number): string {
 }
 
 function getScoreHeadline(score: number): string {
-  if (score >= 90) return "Klaar om te reageren";
-  if (score >= 70) return "Bijna klaar";
-  if (score >= 40) return "Goed op weg";
-  if (score >= 10) return "Net begonnen";
-  return "Klaar om te starten";
+  if (score >= 90) return "Bereit zum Reagieren";
+  if (score >= 70) return "Fast fertig";
+  if (score >= 40) return "Gut unterwegs";
+  if (score >= 10) return "Gerade gestartet";
+  return "Bereit loszulegen";
 }
 
 function BoostScoreCard({ score, remaining, completed, total }: { score: number; remaining: number; completed: number; total: number }) {
@@ -168,7 +168,7 @@ function BoostScoreCard({ score, remaining, completed, total }: { score: number;
           </div>
           <div>
             <h3 className="text-[15px] font-semibold text-[var(--yo-dark)]">{headline}</h3>
-            <p className="text-[13px] text-[var(--yo-dark)]">{completed} van {total} afgerond</p>
+            <p className="text-[13px] text-[var(--yo-dark)]">{completed} von {total} abgeschlossen</p>
           </div>
         </div>
         <span className="text-[36px] font-[800] leading-none tracking-[-0.03em]" style={{ color }} data-testid="text-boost-score">
@@ -205,14 +205,14 @@ function RecommendedSection({
   return (
     <div data-testid="section-recommended">
       <h3 className="text-section-title mb-3">
-        Volgende stappen
+        Nächste Schritte
       </h3>
       <div className="flex flex-col gap-3">
         {recommendations.map((task) => {
           const Icon = TASK_ICONS[task.id] || Shield;
           const meta = RECOMMENDATION_META[task.id];
           const subtitle = meta?.subtitle ?? task.description;
-          const ctaLabel = meta?.ctaLabel ?? "Bekijken";
+          const ctaLabel = meta?.ctaLabel ?? "Ansehen";
 
           const handleAction = () => {
             if (meta && !meta.modal && meta.route) {
@@ -273,7 +273,7 @@ function AllTasksSection({
   return (
     <div data-testid="section-all-tasks">
       <h3 className="text-section-title mb-3">
-        Alle stappen
+        Alle Schritte
       </h3>
       <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] overflow-hidden">
         {incompleteTasks.map((task, i) => {
@@ -291,7 +291,7 @@ function AllTasksSection({
               <Icon className="w-4 h-4 text-[var(--yo-dark)] flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="text-[14px] font-medium text-[var(--yo-dark)]">{task.label}</p>
-                <p className="text-[13px] font-[500] text-[var(--yo-dark)]">+{task.weight} punten</p>
+                <p className="text-[13px] font-[500] text-[var(--yo-dark)]">+{task.weight} Punkte</p>
               </div>
               <ArrowRight className="w-4 h-4 text-[var(--yo-dark)] flex-shrink-0" />
             </button>
@@ -327,10 +327,10 @@ function EmptyState({ onStart }: { onStart: () => void }) {
         <Zap className="w-5 h-5 text-[var(--yo-dark)]" />
       </div>
       <h3 className="text-[18px] font-semibold text-[var(--yo-dark)] mb-1.5">
-        Begin met je eerste stap
+        Starte mit dem ersten Schritt
       </h3>
       <p className="text-[14px] font-[500] text-[var(--yo-dark)] leading-relaxed mb-5 max-w-[260px] mx-auto">
-        Hoe completer je profiel, hoe sneller je kunt reageren op nieuwe woningen.
+        Je vollständiger dein Profil, desto schneller kannst du auf neue Wohnungen reagieren.
       </p>
       <Button
         onClick={onStart}
@@ -338,7 +338,7 @@ function EmptyState({ onStart }: { onStart: () => void }) {
         data-testid="button-start-boost"
       >
         <Zap className="w-4 h-4 mr-1.5" />
-        Eerste stap bekijken
+        Ersten Schritt ansehen
       </Button>
     </div>
   );
@@ -351,10 +351,10 @@ function HighProgressState({ remaining }: { remaining: number }) {
         <div className="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center">
           <Rocket className="w-5 h-5 text-white" />
         </div>
-        <h3 className="text-[16px] font-semibold">Je bent er bijna</h3>
+        <h3 className="text-[16px] font-semibold">Du bist fast fertig</h3>
       </div>
       <p className="text-[14px] text-white/80 leading-relaxed">
-        Nog {remaining} {remaining === 1 ? "stap" : "stappen"} en je kunt razendsnel reageren op nieuwe woningen.
+        Noch {remaining} {remaining === 1 ? "Schritt" : "Schritte"} und du kannst blitzschnell auf neue Wohnungen reagieren.
       </p>
     </div>
   );
@@ -385,7 +385,7 @@ function TaskModal({
 
   const handleSave = async (data: Partial<ProfileData>, msg: string) => {
     await updateProfileData.mutateAsync(data);
-    toast({ title: "Opgeslagen!", description: msg });
+    toast({ title: "Gespeichert!", description: msg });
     onClose();
   };
 
@@ -415,29 +415,29 @@ function TaskModal({
               data-testid="button-goto-notifications"
             >
               <Bell className="w-4 h-4 mr-2" />
-              Naar meldingsinstellingen
+              Zu den Benachrichtigungen
             </Button>
           )}
 
           {taskId === "search_buddy_added" && (
             <div className="flex flex-col gap-3">
-              <label className="text-[13px] font-medium text-[var(--yo-dark)]">E-mailadres zoekbuddy</label>
+              <label className="text-[13px] font-medium text-[var(--yo-dark)]">E-Mail-Adresse des Suchpartners</label>
               <input
                 type="email"
                 value={buddyEmail}
                 onChange={(e) => setBuddyEmail(e.target.value)}
-                placeholder="buddy@voorbeeld.nl"
+                placeholder="partner@beispiel.de"
                 className="w-full h-[52px] px-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
                 data-testid="input-buddy-email"
               />
-              <p className="text-[13px] font-[500] text-[var(--yo-dark)]">Je buddy ontvangt dezelfde meldingen als jij.</p>
+              <p className="text-[13px] font-[500] text-[var(--yo-dark)]">Dein Suchpartner erhält dieselben Benachrichtigungen wie du.</p>
               <Button
-                onClick={() => handleSave({ search_buddy_email: buddyEmail }, "Zoekbuddy opgeslagen!")}
+                onClick={() => handleSave({ search_buddy_email: buddyEmail }, "Suchpartner gespeichert!")}
                 disabled={!buddyEmail.includes("@") || updateProfileData.isPending}
                 className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold disabled:opacity-50"
                 data-testid="button-save-buddy"
               >
-                {updateProfileData.isPending ? "Opslaan..." : "Opslaan"}
+                {updateProfileData.isPending ? "Wird gespeichert..." : "Speichern"}
               </Button>
             </div>
           )}
@@ -449,7 +449,7 @@ function TaskModal({
               data-testid="button-goto-filters"
             >
               <Search className="w-4 h-4 mr-2" />
-              Nieuwe zoekopdracht
+              Neuer Suchauftrag
             </Button>
           )}
 
@@ -460,13 +460,13 @@ function TaskModal({
               data-testid="button-goto-letter"
             >
               <FileText className="w-4 h-4 mr-2" />
-              Naar aanmeldingsbrief
+              Zum Bewerbungsschreiben
             </Button>
           )}
 
           {taskId === "income_documents_uploaded" && (
             <div className="flex flex-col gap-4">
-              <h4 className="text-[13px] font-semibold text-[var(--yo-dark)]">Vink af wat je hebt verzameld</h4>
+              <h4 className="text-[13px] font-semibold text-[var(--yo-dark)]">Hake ab, was du bereits zusammengestellt hast</h4>
               <div className="flex flex-col gap-1">
                 {INCOME_CHECKLIST.map((item) => (
                   <button
@@ -489,19 +489,19 @@ function TaskModal({
                 ))}
               </div>
               <Button
-                onClick={() => handleSave({ document_checklist: checklist }, "Documenten opgeslagen!")}
+                onClick={() => handleSave({ document_checklist: checklist }, "Dokumente gespeichert!")}
                 disabled={updateProfileData.isPending}
                 className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold disabled:opacity-50"
                 data-testid="button-save-income-docs"
               >
-                {updateProfileData.isPending ? "Opslaan..." : "Opslaan"}
+                {updateProfileData.isPending ? "Wird gespeichert..." : "Speichern"}
               </Button>
             </div>
           )}
 
           {taskId === "id_document_uploaded" && (
             <div className="flex flex-col gap-4">
-              <h4 className="text-[13px] font-semibold text-[var(--yo-dark)]">Vink af wat je hebt verzameld</h4>
+              <h4 className="text-[13px] font-semibold text-[var(--yo-dark)]">Hake ab, was du bereits zusammengestellt hast</h4>
               <div className="flex flex-col gap-1">
                 {ID_CHECKLIST.map((item) => (
                   <button
@@ -524,12 +524,12 @@ function TaskModal({
                 ))}
               </div>
               <Button
-                onClick={() => handleSave({ document_checklist: checklist }, "Documenten opgeslagen!")}
+                onClick={() => handleSave({ document_checklist: checklist }, "Dokumente gespeichert!")}
                 disabled={updateProfileData.isPending}
                 className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold disabled:opacity-50"
                 data-testid="button-save-id-docs"
               >
-                {updateProfileData.isPending ? "Opslaan..." : "Opslaan"}
+                {updateProfileData.isPending ? "Wird gespeichert..." : "Speichern"}
               </Button>
             </div>
           )}
@@ -541,21 +541,21 @@ function TaskModal({
               data-testid="button-goto-profile-info"
             >
               <UserCircle className="w-4 h-4 mr-2" />
-              Naar contactgegevens
+              Zu den Kontaktdaten
             </Button>
           )}
 
           {taskId === "profile_photo_added" && (
             <div className="flex flex-col gap-3">
               <p className="text-[13px] font-[500] text-[var(--yo-dark)]">
-                Voeg een profielfoto toe om een persoonlijke indruk te maken bij verhuurders.
+                Füge ein Profilfoto hinzu, um bei Vermietern einen persönlichen Eindruck zu hinterlassen.
               </p>
               <Button
                 onClick={() => navigate("/dashboard?tab=profiel")}
                 className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[14px] font-bold"
                 data-testid="button-goto-profile-photo"
               >
-                Naar profielfoto
+                Zum Profilfoto
               </Button>
             </div>
           )}
@@ -567,40 +567,40 @@ function TaskModal({
 
 const BOOST_TASK_MODAL_CONFIG: Record<string, { title: string; description: string }> = {
   alerts_active: {
-    title: "Woningalerts activeren",
-    description: "Activeer minstens een meldingskanaal (e-mail of push) zodat je geen nieuwe woningen mist.",
+    title: "Wohnungsalerts aktivieren",
+    description: "Aktiviere mindestens einen Benachrichtigungskanal (E-Mail oder Push), damit du keine neuen Wohnungen verpasst.",
   },
   search_buddy_added: {
-    title: "Zoekbuddy toevoegen",
-    description: "Voeg een zoekbuddy toe die ook meldingen ontvangt van jouw matches.",
+    title: "Suchpartner hinzufügen",
+    description: "Füge einen Suchpartner hinzu, der ebenfalls Benachrichtigungen über deine Matches erhält.",
   },
   income_documents_uploaded: {
-    title: "Bereid je inkomensdocumenten voor",
-    description: "Verzamel je inkomensdocumenten zodat je klaar bent om te reageren. Vink aan wat je al hebt.",
+    title: "Einkommensdokumente vorbereiten",
+    description: "Stelle deine Einkommensdokumente zusammen, damit du bereit bist zu reagieren. Hake ab, was du bereits hast.",
   },
   id_document_uploaded: {
-    title: "Bereid je identiteitsbewijs voor",
-    description: "Zorg dat je een kopie van je identiteitsbewijs en pasfoto klaar hebt.",
+    title: "Ausweis vorbereiten",
+    description: "Sorge dafür, dass du eine Kopie deines Personalausweises und ein Passfoto bereit hast.",
   },
   reaction_letter_ready: {
-    title: "Standaard reactie maken",
-    description: "Bereid een aanmeldingsbrief voor zodat je direct kunt reageren op nieuwe woningen.",
+    title: "Standard-Bewerbung erstellen",
+    description: "Bereite ein Bewerbungsschreiben vor, damit du sofort auf neue Wohnungen reagieren kannst.",
   },
   phone_number_added: {
-    title: "Telefoonnummer toevoegen",
-    description: "Voeg je telefoonnummer toe aan je profiel.",
+    title: "Telefonnummer hinzufügen",
+    description: "Füge deine Telefonnummer zu deinem Profil hinzu.",
   },
   housing_preferences_completed: {
-    title: "Woonwensen aanvullen",
-    description: "Verfijn je zoekprofielen of voeg een extra zoekopdracht toe voor betere matches.",
+    title: "Wohnwünsche ergänzen",
+    description: "Verfeinere deine Suchprofile oder füge einen weiteren Suchauftrag für bessere Matches hinzu.",
   },
   profile_info_completed: {
-    title: "Profielgegevens aanvullen",
-    description: "Zorg dat je contactgegevens compleet zijn zodat verhuurders je kunnen bereiken.",
+    title: "Profildaten ergänzen",
+    description: "Stelle sicher, dass deine Kontaktdaten vollständig sind, damit Vermieter dich erreichen können.",
   },
   profile_photo_added: {
-    title: "Profielfoto toevoegen",
-    description: "Een profielfoto maakt je profiel persoonlijker en vergroot je kansen bij verhuurders.",
+    title: "Profilfoto hinzufügen",
+    description: "Ein Profilfoto macht dein Profil persönlicher und erhöht deine Chancen bei Vermietern.",
   },
 };
 
@@ -615,13 +615,13 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
           <h1 className="text-page-title">Boost</h1>
         </div>
         <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-8 text-center" data-testid="boost-error">
-          <p className="text-[15px] text-[var(--yo-dark)] mb-4">Kon je gegevens niet laden.</p>
+          <p className="text-[15px] text-[var(--yo-dark)] mb-4">Deine Daten konnten nicht geladen werden.</p>
           <Button
             onClick={() => refetch()}
             className="h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold px-6"
             data-testid="button-retry-boost"
           >
-            Opnieuw proberen
+            Erneut versuchen
           </Button>
         </div>
       </div>
@@ -655,10 +655,10 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
   const isHighProgress = boostScore >= 80 && completedCount < totalCount;
 
   const pageSubtitle = completedCount === totalCount
-    ? "Je profiel is compleet"
+    ? "Dein Profil ist vollständig"
     : remaining <= 3
-    ? `Nog ${remaining} ${remaining === 1 ? "stap" : "stappen"} om sneller te reageren`
-    : "Rond je profiel af en vergroot je kansen";
+    ? `Noch ${remaining} ${remaining === 1 ? "Schritt" : "Schritte"}, um schneller zu reagieren`
+    : "Vervollständige dein Profil und erhöhe deine Chancen";
 
   return (
     <div className="flex flex-col gap-6 px-6 pt-6">

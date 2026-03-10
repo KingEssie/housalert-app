@@ -100,14 +100,14 @@ export function ReactieklaarCard({
         <div className="w-8 h-8 rounded-full bg-[var(--yo-chip-bg)] flex items-center justify-center">
           <Zap className="w-4 h-4 text-[var(--yo-dark)]" />
         </div>
-        <h3 className="text-[15px] font-semibold text-[var(--yo-dark)] flex-1">Reactieklaar</h3>
+        <h3 className="text-[15px] font-semibold text-[var(--yo-dark)] flex-1">Reaktionsbereit</h3>
         <span
           className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${
             allDone ? "bg-[var(--yo-success)]/10 text-[var(--yo-dark)]" : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
           }`}
           data-testid="text-reactieklaar-progress"
         >
-          {speedDone} / {speedTotal} stappen
+          {speedDone} / {speedTotal} Schritte
         </span>
       </div>
 
@@ -154,7 +154,7 @@ export function ReactieklaarCard({
         <div className="mt-4 bg-[var(--yo-success)]/10 rounded-lg px-3.5 py-2.5">
           <p className="text-[12px] text-[var(--yo-success)] font-medium flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5" />
-            Je bent klaar om snel te reageren
+            Du bist bereit, schnell zu reagieren
           </p>
         </div>
       )}

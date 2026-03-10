@@ -33,8 +33,8 @@ export function calculateReactiesnelheid(rawDone: number, rawTotal: number): Rea
   if (fraction >= 1) {
     return {
       level: "fast",
-      label: "Snelle reageerder",
-      subtitle: "Je bent klaar om direct te reageren op nieuwe woningen.",
+      label: "Schnell reagiert",
+      subtitle: "Du bist bereit, sofort auf neue Wohnungen zu reagieren.",
       done,
       total,
       fraction: 1,
@@ -46,8 +46,8 @@ export function calculateReactiesnelheid(rawDone: number, rawTotal: number): Rea
   if (fraction >= 0.6) {
     return {
       level: "almost",
-      label: "Bijna klaar",
-      subtitle: `Nog ${remaining} ${remaining === 1 ? "stap" : "stappen"} om sneller te reageren.`,
+      label: "Fast fertig",
+      subtitle: `Noch ${remaining} ${remaining === 1 ? "Schritt" : "Schritte"}, um schneller zu reagieren.`,
       done,
       total,
       fraction,
@@ -56,8 +56,8 @@ export function calculateReactiesnelheid(rawDone: number, rawTotal: number): Rea
 
   return {
     level: "building",
-    label: "Goed bezig",
-    subtitle: `Rond nog ${remaining} ${remaining === 1 ? "stap" : "stappen"} af om sneller te kunnen reageren.`,
+    label: "Gut dabei",
+    subtitle: `Schließe noch ${remaining} ${remaining === 1 ? "Schritt" : "Schritte"} ab, um schneller reagieren zu können.`,
     done,
     total,
     fraction,
@@ -135,7 +135,7 @@ export function ReactiesnelheidCard({
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
-            <p className="text-[15px] font-semibold text-[var(--yo-dark)]">Reactiesnelheid</p>
+            <p className="text-[15px] font-semibold text-[var(--yo-dark)]">Reaktionsgeschwindigkeit</p>
             <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${styles.labelColor}`} data-testid="badge-speed-level">
               {state.label}
             </span>

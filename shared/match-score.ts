@@ -111,18 +111,18 @@ export function computeMatchScore(input: ScoreInput): MatchScore {
 }
 
 export function getScoreLabel(score: number): string {
-  if (score >= 90) return "Perfecte match";
-  if (score >= 75) return "Sterke match";
-  if (score >= 60) return "Goede match";
-  if (score >= 40) return "Mogelijke match";
-  return "Lage match";
+  if (score >= 90) return "Perfektes Match";
+  if (score >= 75) return "Starkes Match";
+  if (score >= 60) return "Gutes Match";
+  if (score >= 40) return "Mögliches Match";
+  return "Niedriges Match";
 }
 
 const REASON_LABELS: Record<string, string> = {
-  city: "locatie",
-  price: "prijs",
-  bedrooms: "kamers",
-  size: "grootte",
+  city: "Standort",
+  price: "Preis",
+  bedrooms: "Zimmer",
+  size: "Größe",
 };
 
 const REASON_MAX: Record<string, number> = {

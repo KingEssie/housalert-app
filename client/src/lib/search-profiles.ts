@@ -83,7 +83,7 @@ export async function createSearchProfile(
     .eq("user_id", input.user_id);
 
   if (!countErr && count != null && count >= MAX_SEARCH_PROFILES) {
-    throw new Error(`Je kunt maximaal ${MAX_SEARCH_PROFILES} zoekprofielen aanmaken.`);
+    throw new Error(`Du kannst maximal ${MAX_SEARCH_PROFILES} Suchprofile erstellen.`);
   }
 
   const fullRow: Record<string, unknown> = {
@@ -145,13 +145,13 @@ export async function createSearchProfile(
 
     if (fallbackError) {
       console.error("[search-profiles] Fallback insert also failed:", fallbackError);
-      throw new Error("Zoekopdracht opslaan mislukt. Controleer je locatie en probeer opnieuw.");
+      throw new Error("Suchauftrag konnte nicht gespeichert werden. Überprüfe deinen Standort und versuche es erneut.");
     }
     return fallbackData as SearchProfile;
   }
 
   console.error("[search-profiles] Insert failed:", error);
-  throw new Error("Zoekopdracht opslaan mislukt. Controleer je locatie en probeer opnieuw.");
+  throw new Error("Suchauftrag konnte nicht gespeichert werden. Überprüfe deinen Standort und versuche es erneut.");
 }
 
 export async function updateSearchProfile(
@@ -159,7 +159,7 @@ export async function updateSearchProfile(
   input: InsertSearchProfileInput
 ): Promise<{ success: boolean }> {
   const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.access_token) throw new Error("Niet ingelogd.");
+  if (!session?.access_token) throw new Error("Nicht eingeloggt.");
 
   const body: Record<string, unknown> = {
     city: input.city_name,
@@ -198,7 +198,7 @@ export async function updateSearchProfile(
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: "Unknown error" }));
     console.error("[search-profiles] Update failed:", res.status, err);
-    throw new Error("Zoekopdracht bijwerken mislukt. Probeer het opnieuw.");
+    throw new Error("Suchauftrag konnte nicht aktualisiert werden. Bitte erneut versuchen.");
   }
 
   return { success: true };
