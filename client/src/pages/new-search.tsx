@@ -107,10 +107,13 @@ const TARGET_CATEGORY_OPTIONS = [
 const EXTRA_FEATURE_OPTIONS = [
   { value: "balkon", labelKey: "newSearch.step3.balcony" },
   { value: "tuin", labelKey: "newSearch.step3.garden" },
-  { value: "huisdieren", labelKey: "newSearch.step3.pets" },
   { value: "parkeerplaats", labelKey: "newSearch.step3.parking" },
   { value: "lift", labelKey: "newSearch.step3.elevator" },
   { value: "kelder", labelKey: "newSearch.step3.basement" },
+];
+
+const PREFERENCE_OPTIONS = [
+  { value: "huisdieren", labelKey: "newSearch.step3.pets", hintKey: "newSearch.step3.petsHint" },
 ];
 
 interface FilterData {
@@ -663,6 +666,26 @@ function Step3ExtraFeatures({
         ))}
       </div>
 
+      <div>
+        <h3 className="text-[14px] font-semibold text-[var(--yo-dark)] mb-1">{t("newSearch.step3.preferencesTitle")}</h3>
+        <p className="text-[12px] text-[var(--yo-dark)] opacity-50 mb-2">{t("newSearch.step3.preferencesSubtitle")}</p>
+        <div className="bg-white rounded-lg">
+          {PREFERENCE_OPTIONS.map((opt) => (
+            <div key={opt.value}>
+              <CheckboxRow
+                label={t(opt.labelKey)}
+                selected={filters.extraFeatures.includes(opt.value)}
+                onToggle={() => toggleFeature(opt.value)}
+                testId={`option-pref-${opt.value}`}
+              />
+              {filters.extraFeatures.includes(opt.value) && (
+                <p className="text-[11px] text-[var(--yo-dark)] opacity-40 px-4 pb-3 -mt-1">{t(opt.hintKey)}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
       {filters.extraFeatures.length === 0 && (
         <p className="text-[13px] text-[var(--yo-dark)] opacity-60 text-center">
           {t("newSearch.step3.noSelectionHint")}
@@ -780,8 +803,15 @@ function StepReview({
   const bedroomsLabel = resolveOptionLabel(BEDROOM_OPTIONS.find(o => o.value === filters.bedroomsMin) || BEDROOM_OPTIONS[0], t);
   const sizeLabel = resolveOptionLabel(SIZE_OPTIONS.find(o => o.value === filters.sizeMin) || SIZE_OPTIONS[0], t);
 
-  const extraFeaturesLabel = filters.extraFeatures.length > 0
-    ? filters.extraFeatures.map(v => { const o = EXTRA_FEATURE_OPTIONS.find(o => o.value === v); return o ? t(o.labelKey) : v; }).join(", ")
+  const hardExtras = filters.extraFeatures.filter(v => EXTRA_FEATURE_OPTIONS.some(o => o.value === v));
+  const softPrefs = filters.extraFeatures.filter(v => PREFERENCE_OPTIONS.some(o => o.value === v));
+
+  const extraFeaturesLabel = hardExtras.length > 0
+    ? hardExtras.map(v => { const o = EXTRA_FEATURE_OPTIONS.find(o => o.value === v); return o ? t(o.labelKey) : v; }).join(", ")
+    : t("newSearch.step5.noSelection");
+
+  const preferencesLabel = softPrefs.length > 0
+    ? softPrefs.map(v => { const o = PREFERENCE_OPTIONS.find(o => o.value === v); return o ? t(o.labelKey) : v; }).join(", ")
     : t("newSearch.step5.noSelection");
 
   const targetLabel = filters.targetCategories.length > 0
@@ -829,6 +859,7 @@ function StepReview({
           <ReviewRow label={t("newSearch.step5.bedrooms")} value={bedroomsLabel} onEdit={() => onEdit(2)} />
           <ReviewRow label={t("newSearch.step5.area")} value={sizeLabel} onEdit={() => onEdit(2)} />
           <ReviewRow label={t("newSearch.step5.extras")} value={extraFeaturesLabel} onEdit={() => onEdit(3)} />
+          <ReviewRow label={t("newSearch.step5.preferences")} value={preferencesLabel} onEdit={() => onEdit(3)} />
           <ReviewRow label={t("newSearch.step5.otherPrefs")} value={targetLabel} onEdit={() => onEdit(4)} />
         </div>
       </div>

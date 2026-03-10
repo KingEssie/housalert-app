@@ -1,0 +1,72 @@
+We are entering launch-critical validation mode for HousAlert.
+
+From this point on, do NOT build new features.
+Do NOT work on mobile app, new filters, or UI redesign.
+Focus only on proving that the core business logic is correct.
+
+Goal:
+Prove that the right users receive the right matches, and that the same match set is used consistently across:
+- database
+- app-visible matches
+- email alerts
+- future push eligibility
+
+We need a release-candidate validation audit.
+
+Tasks:
+
+1. Freeze the launch filter policy and document it clearly:
+- strict filters:
+  - city
+  - price
+  - rooms
+  - size
+- hybrid filters:
+  - furnished
+  - district
+- pets_allowed:
+  - soft preference only, not a strong confirmed launch promise
+
+2. Create a controlled validation setup using at least 4 test search profiles:
+- Profile A: Berlin, max €900, 2 rooms, 40m²
+- Profile B: Berlin, max €1500, furnished
+- Profile C: Berlin, district Kreuzberg, max €1200
+- Profile D: Berlin, max €1500, pets preference
+
+3. Run one full ingestion/matching cycle and produce an evidence report per profile.
+
+For each profile, report:
+- visible app listing_ids
+- emailed listing_ids
+- push-eligible listing_ids (based on the same truth source, even if native push is not live yet)
+- rejected listing_ids with exact reasons
+
+4. Add a single unified truth-source report:
+For each user/profile combination show:
+- raw match rows
+- deduplicated listing_ids
+- app-visible listing_ids
+- emailed listing_ids
+- difference between emailed and app-visible
+- difference between app-visible and push-eligible
+
+5. Confirm these invariants:
+- Any listing emailed must also be app-visible for that same user
+- Any future push-eligible listing must also be app-visible for that same user
+- No duplicate listing is sent twice to the same user in email/push
+- No listing with a known strict-filter mismatch is shown
+- Hybrid filters allow unknown, but reject known mismatch
+
+6. Audit database integrity:
+- matches table uniqueness behavior
+- listing existence checks
+- matched_at vs premium start
+- deduplication by listing_id
+- whether any stale/deleted listings can leak into alerts
+
+7. Output a final release-candidate report with:
+- exact files involved
+- exact remaining risks
+- whether HousAlert core matching is reliable enough for launch
+- whether email/app/push truth sources are fully aligned
+- what must still be fixed before mobile app work should begin

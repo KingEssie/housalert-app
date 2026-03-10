@@ -327,19 +327,29 @@ function MatchCard({
           const unknowns: string[] = [];
           if (hf.furnished === "unknown") unknowns.push(t("hybridFilter.furnishedUnknown"));
           if (hf.district === "unknown") unknowns.push(t("hybridFilter.districtUnknown"));
-          if (hf.pets === "unknown") unknowns.push(t("hybridFilter.petsUnknown"));
-          if (unknowns.length === 0) return null;
+          const hasPetsNote = hf.pets === "unknown";
+          if (unknowns.length === 0 && !hasPetsNote) return null;
           return (
             <div
-              className="flex items-start gap-1.5 text-[11px] text-[var(--yo-dark)]/50"
+              className="flex flex-col gap-1 text-[11px] text-[var(--yo-dark)]/50"
               data-testid={`hybrid-hint-${match.listing_id}`}
               data-hybrid-furnished={hf.furnished}
               data-hybrid-district={hf.district}
               data-hybrid-pets={hf.pets}
-              title={unknowns.join(" · ")}
+              title={[...unknowns, ...(hasPetsNote ? [t("hybridFilter.petsNote")] : [])].join(" · ")}
             >
-              <Info className="w-3 h-3 flex-shrink-0 mt-[1px]" />
-              <span>{t("hybridFilter.unknownHint")}</span>
+              {unknowns.length > 0 && (
+                <div className="flex items-start gap-1.5">
+                  <Info className="w-3 h-3 flex-shrink-0 mt-[1px]" />
+                  <span>{t("hybridFilter.unknownHint")}</span>
+                </div>
+              )}
+              {hasPetsNote && (
+                <div className="flex items-start gap-1.5">
+                  <Info className="w-3 h-3 flex-shrink-0 mt-[1px]" />
+                  <span>{t("hybridFilter.petsNote")}</span>
+                </div>
+              )}
             </div>
           );
         })()}

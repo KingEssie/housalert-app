@@ -312,27 +312,35 @@ export default function ListingDetailPage() {
             const unknowns: { key: string; label: string }[] = [];
             if (hf.furnished === "unknown") unknowns.push({ key: "furnished", label: t("hybridFilter.furnishedUnknown") });
             if (hf.district === "unknown") unknowns.push({ key: "district", label: t("hybridFilter.districtUnknown") });
-            if (hf.pets === "unknown") unknowns.push({ key: "pets", label: t("hybridFilter.petsUnknown") });
-            if (unknowns.length === 0) return null;
+            const hasPetsNote = hf.pets === "unknown";
+            if (unknowns.length === 0 && !hasPetsNote) return null;
             return (
               <div
-                className="bg-white rounded-lg border border-[var(--yo-divider)] p-4"
+                className="bg-white rounded-lg border border-[var(--yo-divider)] p-4 space-y-2"
                 data-testid="section-hybrid-filters"
                 data-hybrid-furnished={hf.furnished}
                 data-hybrid-district={hf.district}
                 data-hybrid-pets={hf.pets}
               >
-                <div className="flex items-start gap-2 text-[12px] text-[var(--yo-dark)]/50">
-                  <Info className="w-3.5 h-3.5 flex-shrink-0 mt-[1px]" />
-                  <div>
-                    <p className="font-medium">{t("hybridFilter.unknownHint")}</p>
-                    <ul className="mt-1 space-y-0.5">
-                      {unknowns.map((u) => (
-                        <li key={u.key}>· {u.label}</li>
-                      ))}
-                    </ul>
+                {unknowns.length > 0 && (
+                  <div className="flex items-start gap-2 text-[12px] text-[var(--yo-dark)]/50">
+                    <Info className="w-3.5 h-3.5 flex-shrink-0 mt-[1px]" />
+                    <div>
+                      <p className="font-medium">{t("hybridFilter.unknownHint")}</p>
+                      <ul className="mt-1 space-y-0.5">
+                        {unknowns.map((u) => (
+                          <li key={u.key}>· {u.label}</li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
-                </div>
+                )}
+                {hasPetsNote && (
+                  <div className="flex items-start gap-2 text-[12px] text-[var(--yo-dark)]/50">
+                    <Info className="w-3.5 h-3.5 flex-shrink-0 mt-[1px]" />
+                    <p>{t("hybridFilter.petsNote")}</p>
+                  </div>
+                )}
               </div>
             );
           })()}
