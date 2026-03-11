@@ -623,3 +623,19 @@ Env vars: `TEST_USER_EMAIL`, `TEST_USER_PASSWORD`, `TEST_PHONE_E164`, `TEST_BASE
 - Card padding: `p-6`
 - Bottom nav: active `#0066FF`, inactive `#9BA5B7`, icons `w-[22px] h-[22px]`, `py-3`
 - Max 4 search profiles per user
+
+### Capacitor Mobile Shell
+- **App ID**: `com.housalert.app` | **App Name**: HousAlert
+- **Config**: `capacitor.config.ts` — loads from production URL (`https://housalert.replit.app`)
+- **Platforms**: `ios/` (Xcode project), `android/` (Gradle project)
+- **Version**: All Capacitor packages pinned to v7 (Node 20 compatible; v8 requires Node 22+)
+- **Plugins**: @capacitor/splash-screen, @capacitor/status-bar, @capacitor/push-notifications
+- **Native helpers**: `client/src/lib/capacitor.ts` — `isNativePlatform()`, `initCapacitorPlugins()`, `registerNativePush()`
+- **Init**: `client/src/main.tsx` calls `initCapacitorPlugins()` at startup (no-op on web)
+- **Service worker**: `client/public/sw.js` — web push handler, compatible with both web and native
+- **Build & sync**: `npm run build && npx cap sync` — copies built web assets to native projects
+- **Open IDE**: `npx cap open ios` (Xcode), `npx cap open android` (Android Studio)
+- **Android permissions**: INTERNET, POST_NOTIFICATIONS, VIBRATE (in AndroidManifest.xml)
+- **iOS**: content inset automatic, mobile preferred content mode, scheme "HousAlert"
+- **Splash**: dark background (#1A1A1A), teal spinner (#2DD4BF), 2s duration
+- **Status bar**: dark style, #1A1A1A background
