@@ -630,7 +630,12 @@ export async function registerRoutes(
         };
       });
 
-      validResults.sort((a: any, b: any) => (b.match_score ?? 0) - (a.match_score ?? 0));
+      validResults.sort((a: any, b: any) => {
+        const dateA = new Date(a.matched_at).getTime();
+        const dateB = new Date(b.matched_at).getTime();
+        if (dateB !== dateA) return dateB - dateA;
+        return (b.match_score ?? 0) - (a.match_score ?? 0);
+      });
 
       const top50 = validResults.slice(0, 50);
 
