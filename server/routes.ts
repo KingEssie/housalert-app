@@ -532,12 +532,9 @@ export async function registerRoutes(
       if (mErr) return res.status(500).json({ error: mErr.message });
       if (!matchRows || matchRows.length === 0) return res.json({ matches: [], totalCount: 0 });
 
-      const matchIds = matchRows.map((m: any) => m.id);
-      const matchTimestamps = await getMatchTimestamps(matchIds);
-
       const enriched = matchRows.map((m: any) => ({
         ...m,
-        matched_at: matchTimestamps[m.id] || m.created_at,
+        matched_at: m.created_at,
       }));
       enriched.sort((a: any, b: any) =>
         new Date(b.matched_at).getTime() - new Date(a.matched_at).getTime()
@@ -1750,12 +1747,9 @@ export async function registerRoutes(
       return { validIds: new Set(), premiumStartedAt };
     }
 
-    const matchIds = matchRows.map((m: any) => m.id);
-    const matchTimestamps = await getMatchTimestamps(matchIds);
-
     const enriched = matchRows.map((m: any) => ({
       ...m,
-      matched_at: matchTimestamps[m.id] || m.created_at,
+      matched_at: m.created_at,
     }));
     enriched.sort((a: any, b: any) =>
       new Date(b.matched_at).getTime() - new Date(a.matched_at).getTime()
@@ -2144,12 +2138,9 @@ export async function registerRoutes(
         });
       }
 
-      const matchIds = matchRows.map((m: any) => m.id);
-      const matchTimestamps = await getMatchTimestamps(matchIds);
-
       const enriched = matchRows.map((m: any) => ({
         ...m,
-        matched_at: matchTimestamps[m.id] || m.created_at,
+        matched_at: m.created_at,
       }));
       enriched.sort((a: any, b: any) =>
         new Date(b.matched_at).getTime() - new Date(a.matched_at).getTime()

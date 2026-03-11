@@ -3,7 +3,7 @@ import { sendBatchMatchAlert } from "../email";
 import { areAlertsEnabled } from "./index";
 import { getSubscriptionStatus } from "../subscriptions";
 import { sendMatchPushNotifications, type PushMatchListing } from "./push";
-import { getMatchTimestamps, batchedIn } from "../freshness";
+import { batchedIn } from "../freshness";
 
 const MAX_LISTINGS_PER_EMAIL = 20;
 
@@ -80,12 +80,9 @@ async function getAppVisibleListingIds(userId: string, supabase: any): Promise<S
 
   if (!matchRows || matchRows.length === 0) return new Set();
 
-  const matchIds = matchRows.map((m: any) => m.id);
-  const matchTimestamps = await getMatchTimestamps(matchIds);
-
   const enriched = matchRows.map((m: any) => ({
     ...m,
-    matched_at: matchTimestamps[m.id] || m.created_at,
+    matched_at: m.created_at,
   }));
   enriched.sort((a: any, b: any) =>
     new Date(b.matched_at).getTime() - new Date(a.matched_at).getTime()

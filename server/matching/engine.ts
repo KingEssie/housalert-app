@@ -382,7 +382,7 @@ async function insertMatchIfNew(
   userId: string,
   searchProfileId: string,
   listingId: string
-): Promise<boolean> {
+): Promise<{ created: false } | { created: true; matched_at: string }> {
   const { data: existing } = await supabase
     .from("matches")
     .select("id")
@@ -393,7 +393,7 @@ async function insertMatchIfNew(
 
   if (existing) {
     log(`[MATCH SKIPPED DUPLICATE] user=${userId} profile=${searchProfileId} listing=${listingId}`);
-    return false;
+    return { created: false };
   }
 
   const { data: matchRow, error: mErr } = await supabase
@@ -403,21 +403,21 @@ async function insertMatchIfNew(
       search_profile_id: searchProfileId,
       listing_id: listingId,
     })
-    .select("id")
+    .select("id, created_at")
     .single();
 
   if (mErr) {
     if (mErr.code === "23505") {
       log(`[MATCH SKIPPED DUPLICATE] user=${userId} profile=${searchProfileId} listing=${listingId}`);
-      return false;
+      return { created: false };
     }
     log(`[MATCH ERROR] ${mErr.message}`);
-    return false;
+    return { created: false };
   }
 
   log(`[MATCH CREATED] id=${matchRow.id} user=${userId} profile=${searchProfileId} listing=${listingId}`);
   trackMatchCreated(matchRow.id).catch(() => {});
-  return true;
+  return { created: true, matched_at: matchRow.created_at };
 }
 
 export async function matchListingAgainstProfiles(listingId: string): Promise<number> {
@@ -474,8 +474,8 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
   for (const profile of profiles as SearchProfile[]) {
     if (!doesListingMatchProfile(listing as DbListing, profile)) continue;
 
-    const created = await insertMatchIfNew(profile.user_id, profile.id, listing.id);
-    if (!created) continue;
+    const result = await insertMatchIfNew(profile.user_id, profile.id, listing.id);
+    if (!result.created) continue;
 
     totalMatches++;
 
@@ -505,7 +505,7 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
         bedrooms: l.bedrooms,
         size_m2: l.size_m2,
         url: l.url,
-        matched_at: new Date().toISOString(),
+        matched_at: result.matched_at,
       });
     }
   }
@@ -569,25 +569,25 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
   }
 
   let totalMatches = 0;
-  const matchedListings: DbListing[] = [];
+  const matchedEntries: { listing: DbListing; matched_at: string }[] = [];
 
   for (const listing of listings as DbListing[]) {
     if (!doesListingMatchProfile(listing, sp)) continue;
 
-    const created = await insertMatchIfNew(sp.user_id, sp.id, listing.id);
-    if (created) {
+    const result = await insertMatchIfNew(sp.user_id, sp.id, listing.id);
+    if (result.created) {
       totalMatches++;
-      matchedListings.push(listing);
+      matchedEntries.push({ listing, matched_at: result.matched_at });
     }
   }
 
-  if (matchedListings.length > 0) {
+  if (matchedEntries.length > 0) {
     const subStatus = await getSubscriptionStatus(sp.user_id);
     if (subStatus.isActive || subStatus.isTrial) {
       const { data: userData } = await supabase.auth.admin.getUserById(sp.user_id);
       const email = userData?.user?.email;
       if (email) {
-        for (const l of matchedListings) {
+        for (const { listing: l, matched_at } of matchedEntries) {
           bufferMatchAlert(sp.user_id, email, {
             listing_id: l.id,
             title: l.title,
@@ -596,7 +596,7 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
             bedrooms: l.bedrooms,
             size_m2: l.size_m2,
             url: l.url,
-            matched_at: new Date().toISOString(),
+            matched_at,
           });
         }
       }
