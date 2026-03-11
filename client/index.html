@@ -15,6 +15,39 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // Capacitor native local-bundle startup path fix
+      // Must run BEFORE any module JS loads
+      (function() {
+        var p = window.location.pathname;
+        var h = window.location.href;
+        var n = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+        console.log('[HousAlert-boot] path=' + p + ' href=' + h + ' native=' + n);
+        if (p !== '/' && p !== '') {
+          var known = [
+            '/login','/signup','/auth/callback','/onboarding-embed','/continue',
+            '/onboarding','/paywall','/dashboard','/subscription-success',
+            '/impressum','/datenschutz','/terms','/admin/ingestion','/application-letter'
+          ];
+          var prefixes = [
+            '/onboarding/','/dashboard/','/settings/','/listing/',
+            '/profile/','/tips/','/account/'
+          ];
+          var isKnown = known.indexOf(p) !== -1;
+          if (!isKnown) {
+            for (var i = 0; i < prefixes.length; i++) {
+              if (p.indexOf(prefixes[i]) === 0) { isKnown = true; break; }
+            }
+          }
+          if (!isKnown) {
+            console.log('[HousAlert-boot] REDIRECT: unknown path, forcing /');
+            window.location.replace('/');
+            // Stop execution — page will reload at /
+            throw new Error('redirect');
+          }
+        }
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
