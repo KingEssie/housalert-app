@@ -12,8 +12,17 @@ function renderError(err: unknown) {
   }
 }
 
+function normalizeNativePath() {
+  const path = window.location.pathname;
+  if (path === "/index.html" || path.endsWith("/index.html")) {
+    window.history.replaceState(null, "", "/");
+  }
+}
+
 async function bootstrap() {
   try {
+    normalizeNativePath();
+
     try {
       const { restoreAuthFromNative } = await import("./lib/capacitor-storage");
       await restoreAuthFromNative();
