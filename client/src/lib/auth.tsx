@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { createContext, useContext, useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
@@ -58,7 +59,7 @@ export async function ensureTrialForCurrentUser(): Promise<boolean> {
   }
 
   try {
-    const res = await fetch("/api/subscription/ensure-trial", {
+    const res = await apiFetch("/api/subscription/ensure-trial", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
     });

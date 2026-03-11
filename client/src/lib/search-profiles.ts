@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { supabase } from "./supabase";
 
 export type LocationMode = "city" | "districts" | "radius" | "commute";
@@ -186,7 +187,7 @@ export async function updateSearchProfile(
     target_categories: input.target_categories && input.target_categories.length > 0 ? input.target_categories : null,
   };
 
-  const res = await fetch(`/api/search-profiles/${id}`, {
+  const res = await apiFetch(`/api/search-profiles/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

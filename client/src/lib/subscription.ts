@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "./supabase";
 
@@ -19,7 +20,7 @@ async function fetchSubscriptionStatus(): Promise<SubscriptionState> {
     return { status: "none", plan: null, trial_ends_at: null, current_period_ends_at: null, created_at: null, isActive: false, isTrial: false, isExpired: true };
   }
 
-  const res = await fetch("/api/subscription/status", {
+  const res = await apiFetch("/api/subscription/status", {
     headers: { Authorization: `Bearer ${token}` },
   });
 

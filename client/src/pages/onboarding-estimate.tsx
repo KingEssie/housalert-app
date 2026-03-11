@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { useState, useEffect } from "react";
 import { useLocation, useSearch } from "wouter";
 import { Home, ChevronLeft, TrendingUp, Loader2, Sparkles } from "lucide-react";
@@ -29,7 +30,7 @@ export default function OnboardingEstimatePage() {
         if (minRooms && minRooms !== "any") p.set("minRooms", minRooms);
         if (minSize) p.set("minSize", minSize);
 
-        const res = await fetch(`/api/estimate?${p.toString()}`);
+        const res = await apiFetch(`/api/estimate?${p.toString()}`);
         if (!res.ok) {
           setEstimate(0);
           return;

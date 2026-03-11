@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { useState } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
@@ -102,7 +103,7 @@ export default function ListingDetailPage() {
       if (session?.access_token) {
         headers["Authorization"] = `Bearer ${session.access_token}`;
       }
-      const res = await fetch(`/api/listings/${id}`, { headers });
+      const res = await apiFetch(`/api/listings/${id}`, { headers });
       if (!res.ok) throw new Error("Listing not found");
       return res.json();
     },
@@ -399,7 +400,7 @@ export default function ListingDetailPage() {
             localStorage.setItem(MATCH_VIEWED_KEY, JSON.stringify([...viewedSet]));
           } catch {}
           if (session?.access_token) {
-            fetch(`/api/matches/${listing.id}/applied`, {
+            apiFetch(`/api/matches/${listing.id}/applied`, {
               method: "PATCH",
               headers: {
                 "Content-Type": "application/json",

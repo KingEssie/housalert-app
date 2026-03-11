@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { useState, useEffect } from "react";
 import { useLocation, useRoute } from "wouter";
 import { useAuth } from "@/lib/auth";
@@ -36,7 +37,7 @@ export default function ProfileEditPage() {
     if (!session?.access_token || !config) return;
     const headers = { Authorization: `Bearer ${session.access_token}` };
 
-    fetch("/api/profile-data", { headers })
+    apiFetch("/api/profile-data", { headers })
       .then(r => r.json())
       .then(d => {
         const v = d?.[config.dbField];
@@ -62,7 +63,7 @@ export default function ProfileEditPage() {
         ? (value.trim() ? parseInt(value.trim(), 10) || null : null)
         : (value.trim() || null);
 
-      const res = await fetch("/api/profile-data", {
+      const res = await apiFetch("/api/profile-data", {
         method: "PUT",
         headers,
         body: JSON.stringify({ [config.dbField]: fieldValue }),

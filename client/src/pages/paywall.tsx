@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { useState, useEffect, useRef } from "react";
 import { useLocation, useSearch } from "wouter";
 import { ArrowLeft, Home, Check, Crown, Loader2 } from "lucide-react";
@@ -89,7 +90,7 @@ export default function PaywallPage() {
         return;
       }
 
-      const res = await fetch("/api/checkout/session", {
+      const res = await apiFetch("/api/checkout/session", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

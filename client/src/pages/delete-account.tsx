@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
@@ -28,7 +29,7 @@ export default function DeleteAccountPage() {
         return;
       }
 
-      const res = await fetch("/api/account", {
+      const res = await apiFetch("/api/account", {
         method: "DELETE",
         headers: { Authorization: `Bearer ${session.access_token}` },
       });

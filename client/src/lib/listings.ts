@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { supabase } from "./supabase";
 import type { SearchProfile } from "./search-profiles";
 
@@ -40,7 +41,7 @@ export async function fetchFreshness(
   listingIds: string[],
   matchIds: string[]
 ): Promise<FreshnessData> {
-  const resp = await fetch("/api/freshness", {
+  const resp = await apiFetch("/api/freshness", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ listingIds, matchIds }),
@@ -105,7 +106,7 @@ function doesListingMatchProfile(listing: Listing, profile: SearchProfile): bool
 
 async function sendMatchAlertToServer(userEmail: string, listing: Listing) {
   try {
-    await fetch("/api/match-alert", {
+    await apiFetch("/api/match-alert", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userEmail, listing }),
@@ -145,7 +146,7 @@ export interface ApiMatch extends FreshListing {
 }
 
 export async function fetchFreshListings(): Promise<FreshListing[]> {
-  const resp = await fetch("/api/listings/fresh");
+  const resp = await apiFetch("/api/listings/fresh");
   if (!resp.ok) throw new Error("Neue Wohnungen konnten nicht geladen werden");
   return resp.json();
 }
@@ -156,7 +157,7 @@ export interface ApiMatchesResponse {
 }
 
 export async function fetchApiMatches(token: string): Promise<ApiMatchesResponse> {
-  const resp = await fetch("/api/matches", {
+  const resp = await apiFetch("/api/matches", {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!resp.ok) throw new Error("Matches konnten nicht geladen werden");

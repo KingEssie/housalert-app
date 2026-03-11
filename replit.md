@@ -626,12 +626,16 @@ Env vars: `TEST_USER_EMAIL`, `TEST_USER_PASSWORD`, `TEST_PHONE_E164`, `TEST_BASE
 
 ### Capacitor Mobile Shell
 - **App ID**: `com.housalert.app` | **App Name**: HousAlert
-- **Config**: `capacitor.config.ts` — loads from production URL (`https://housalert.replit.app`)
+- **Config**: `capacitor.config.ts` — loads LOCAL bundled assets from `webDir: 'dist/public'` (NOT a remote URL)
+- **API strategy**: `client/src/lib/api-base.ts` — `getApiBase()` returns `""` on web (relative paths) or `"https://rental-alert-ui.replit.app"` on native (absolute URL to production backend). All API calls go through `apiFetch()` which prepends the base URL for `/api/` paths and defaults `credentials: "include"`.
+- **CORS**: `server/index.ts` allows Capacitor origins (`capacitor://localhost`, `https://localhost`, `http://localhost`, `ionic://localhost`) with full CRUD methods + Authorization header
 - **Platforms**: `ios/` (Xcode project), `android/` (Gradle project)
 - **Version**: All Capacitor packages pinned to v7 (Node 20 compatible; v8 requires Node 22+)
-- **Plugins**: @capacitor/splash-screen, @capacitor/status-bar, @capacitor/push-notifications
-- **Native helpers**: `client/src/lib/capacitor.ts` — `isNativePlatform()`, `initCapacitorPlugins()`, `registerNativePush()`
-- **Init**: `client/src/main.tsx` calls `initCapacitorPlugins()` at startup (no-op on web)
+- **Plugins**: @capacitor/splash-screen, @capacitor/status-bar, @capacitor/push-notifications, @capacitor/preferences
+- **Native helpers**: `client/src/lib/capacitor.ts` — `isNativePlatform()`, `initCapacitorPlugins()`, `registerNativePush()` (all use `window.Capacitor` directly, no static `@capacitor/core` import)
+- **Auth persistence**: `client/src/lib/capacitor-storage.ts` — writes to both localStorage + Capacitor Preferences; `restoreAuthFromNative()` rehydrates on cold start
+- **Init**: `client/src/main.tsx` — async bootstrap: restore auth → init plugins → dynamic import App (with error fallback screen)
+- **Native routing**: `NativeAwareRoot` in `App.tsx` — native logged out → `/login`, native logged in → `/dashboard`, web → landing page
 - **Service worker**: `client/public/sw.js` — web push handler, compatible with both web and native
 - **Build & sync**: `npm run build && npx cap sync` — copies built web assets to native projects
 - **Open IDE**: `npx cap open ios` (Xcode), `npx cap open android` (Android Studio)

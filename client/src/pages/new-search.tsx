@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { useState, useCallback, useEffect } from "react";
 import { useLocation, useRoute } from "wouter";
 import { useQuery } from "@tanstack/react-query";
@@ -221,7 +222,7 @@ export default function NewSearchPage() {
       if (filters.priceMax) params.set("maxPrice", filters.priceMax);
       if (filters.bedroomsMin > 0) params.set("minRooms", String(filters.bedroomsMin));
       if (filters.sizeMin > 0) params.set("minSize", String(filters.sizeMin));
-      const res = await fetch(`/api/estimate?${params}`);
+      const res = await apiFetch(`/api/estimate?${params}`);
       if (!res.ok) return null;
       return res.json();
     },
@@ -307,7 +308,7 @@ export default function NewSearchPage() {
         const { data: sessionData } = await supabase.auth.getSession();
         const token = sessionData?.session?.access_token;
         if (token) {
-          fetch("/api/search-profiles/backfill", {
+          apiFetch("/api/search-profiles/backfill", {
             method: "POST",
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
             body: JSON.stringify({ searchProfileId: editId }),
@@ -322,7 +323,7 @@ export default function NewSearchPage() {
           const { data: sessionData } = await supabase.auth.getSession();
           const token = sessionData?.session?.access_token;
           if (token) {
-            fetch("/api/search-profiles/backfill", {
+            apiFetch("/api/search-profiles/backfill", {
               method: "POST",
               headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
               body: JSON.stringify({ searchProfileId: profile.id }),

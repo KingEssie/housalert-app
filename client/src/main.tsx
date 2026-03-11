@@ -1,27 +1,6 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
 
-function isCapacitorNative(): boolean {
-  return (window as any).Capacitor?.isNativePlatform?.() === true;
-}
-
-function waitForCapacitorBridge(timeout = 3000): Promise<void> {
-  if (!isCapacitorNative()) return Promise.resolve();
-  if (typeof (window as any).Capacitor?.triggerEvent === "function") return Promise.resolve();
-
-  return new Promise((resolve) => {
-    const start = Date.now();
-    const check = () => {
-      if (typeof (window as any).Capacitor?.triggerEvent === "function" || Date.now() - start > timeout) {
-        resolve();
-      } else {
-        setTimeout(check, 50);
-      }
-    };
-    check();
-  });
-}
-
 function renderError(err: unknown) {
   const root = document.getElementById("root");
   if (root) {
@@ -35,8 +14,6 @@ function renderError(err: unknown) {
 
 async function bootstrap() {
   try {
-    await waitForCapacitorBridge();
-
     try {
       const { restoreAuthFromNative } = await import("./lib/capacitor-storage");
       await restoreAuthFromNative();

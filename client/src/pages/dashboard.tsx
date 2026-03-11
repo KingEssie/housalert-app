@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { useAuth } from "@/lib/auth";
 import { useLocation } from "wouter";
 import { useEffect, useState, useCallback } from "react";
@@ -687,7 +688,7 @@ function HomeTab({
   const profileDataQuery = useQuery<{ first_name?: string }>({
     queryKey: ["/api/profile-data"],
     queryFn: async () => {
-      const res = await fetch("/api/profile-data", { headers: { Authorization: `Bearer ${accessToken}` } });
+      const res = await apiFetch("/api/profile-data", { headers: { Authorization: `Bearer ${accessToken}` } });
       if (!res.ok) return {};
       return res.json();
     },
@@ -709,7 +710,7 @@ function HomeTab({
       if (firstProfile.price_max) params.set("maxPrice", String(firstProfile.price_max));
       if (firstProfile.bedrooms_min) params.set("minRooms", String(firstProfile.bedrooms_min));
       if (firstProfile.size_min) params.set("minSize", String(firstProfile.size_min));
-      const res = await fetch(`/api/estimate?${params}`);
+      const res = await apiFetch(`/api/estimate?${params}`);
       if (!res.ok) throw new Error("estimate failed");
       return res.json();
     },
@@ -888,7 +889,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
 
   useEffect(() => {
     if (!accessToken) return;
-    fetch("/api/matches/applied", {
+    apiFetch("/api/matches/applied", {
       headers: { Authorization: `Bearer ${accessToken}` },
     })
       .then((r) => r.json())
@@ -931,7 +932,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
     if (applyMatch) {
       markApplied(applyMatch.listing_id);
       if (accessToken) {
-        fetch(`/api/matches/${applyMatch.listing_id}/applied`, {
+        apiFetch(`/api/matches/${applyMatch.listing_id}/applied`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
@@ -1354,7 +1355,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
     queryFn: async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) return null;
-      const res = await fetch("/api/profile-data", { headers: { Authorization: `Bearer ${session.access_token}` } });
+      const res = await apiFetch("/api/profile-data", { headers: { Authorization: `Bearer ${session.access_token}` } });
       return res.json();
     },
   });
@@ -1364,7 +1365,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
     queryFn: async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) return null;
-      const res = await fetch("/api/notifications/settings", { headers: { Authorization: `Bearer ${session.access_token}` } });
+      const res = await apiFetch("/api/notifications/settings", { headers: { Authorization: `Bearer ${session.access_token}` } });
       return res.json();
     },
   });
@@ -1374,7 +1375,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
     queryFn: async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) return { matches_received: 0, reactions_sent: 0 };
-      const res = await fetch("/api/profile-stats", { headers: { Authorization: `Bearer ${session.access_token}` } });
+      const res = await apiFetch("/api/profile-stats", { headers: { Authorization: `Bearer ${session.access_token}` } });
       return res.json();
     },
   });
@@ -1407,7 +1408,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) throw new Error(t("profile.notLoggedIn"));
 
-      const res = await fetch("/api/profile-photo", {
+      const res = await apiFetch("/api/profile-photo", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
         body: JSON.stringify({ image: base64 }),
@@ -1433,7 +1434,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) return;
 
-      const res = await fetch("/api/profile-photo", {
+      const res = await apiFetch("/api/profile-photo", {
         method: "DELETE",
         headers: { Authorization: `Bearer ${session.access_token}` },
       });

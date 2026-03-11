@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
@@ -76,7 +77,7 @@ function useProfileStrength() {
   return useQuery<ProfileStrengthData>({
     queryKey: ["/api/profile-strength"],
     queryFn: async () => {
-      const res = await fetch("/api/profile-strength", {
+      const res = await apiFetch("/api/profile-strength", {
         headers: { Authorization: `Bearer ${session?.access_token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch profile strength");
@@ -91,7 +92,7 @@ function useProfileData() {
   return useQuery<ProfileData>({
     queryKey: ["/api/profile-data"],
     queryFn: async () => {
-      const res = await fetch("/api/profile-data", {
+      const res = await apiFetch("/api/profile-data", {
         headers: { Authorization: `Bearer ${session?.access_token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch profile data");
@@ -107,7 +108,7 @@ function useUpdateProfileData() {
   const { t } = useTranslation();
   return useMutation({
     mutationFn: async (data: Partial<ProfileData>) => {
-      const res = await fetch("/api/profile-data", {
+      const res = await apiFetch("/api/profile-data", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

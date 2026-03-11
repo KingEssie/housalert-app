@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
@@ -80,7 +81,7 @@ function useBoostData() {
   return useQuery<BoostData>({
     queryKey: ["/api/boost"],
     queryFn: async () => {
-      const res = await fetch("/api/boost", {
+      const res = await apiFetch("/api/boost", {
         headers: { Authorization: `Bearer ${session?.access_token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch boost data");
@@ -95,7 +96,7 @@ function useProfileData() {
   return useQuery<ProfileData>({
     queryKey: ["/api/profile-data"],
     queryFn: async () => {
-      const res = await fetch("/api/profile-data", {
+      const res = await apiFetch("/api/profile-data", {
         headers: { Authorization: `Bearer ${session?.access_token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch profile data");
@@ -110,7 +111,7 @@ function useUpdateProfileData() {
   const { toast } = useToast();
   return useMutation({
     mutationFn: async (data: Partial<ProfileData>) => {
-      const res = await fetch("/api/profile-data", {
+      const res = await apiFetch("/api/profile-data", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

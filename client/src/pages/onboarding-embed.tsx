@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { useState, useEffect } from "react";
 import { MapPin, Check, ChevronRight, ExternalLink, Download, Sparkles, Search } from "lucide-react";
 import { useTranslation } from "@/i18n";
@@ -22,7 +23,7 @@ function EstimateBlock({ city, maxPrice }: { city: string; maxPrice: string }) {
 
     setLoading(true);
     const params = new URLSearchParams({ city, maxPrice });
-    fetch(`/api/estimate?${params}`)
+    apiFetch(`/api/estimate?${params}`)
       .then((r) => r.json())
       .then((d) => setEstimate(d.perWeekEstimate ?? 0))
       .catch(() => setEstimate(null))
@@ -165,7 +166,7 @@ export default function OnboardingEmbedPage() {
     }
 
     try {
-      const res = await fetch("/api/onboarding-drafts", {
+      const res = await apiFetch("/api/onboarding-drafts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),

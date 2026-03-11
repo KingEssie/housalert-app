@@ -5,8 +5,6 @@ const config: CapacitorConfig = {
   appName: 'HousAlert',
   webDir: 'dist/public',
   server: {
-    url: 'https://rental-alert-ui.replit.app',
-    cleartext: false,
     androidScheme: 'https',
     iosScheme: 'https',
   },

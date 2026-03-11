@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { useQuery } from "@tanstack/react-query";
@@ -64,7 +65,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
   const { data: profileData } = useQuery<ProfileData>({
     queryKey: ["/api/profile-data"],
     queryFn: async () => {
-      const res = await fetch("/api/profile-data", {
+      const res = await apiFetch("/api/profile-data", {
         headers: { Authorization: `Bearer ${session?.access_token}` },
       });
       if (!res.ok) return { application_template: null };
@@ -76,7 +77,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
   const { data: notifSettings } = useQuery<NotifSettings>({
     queryKey: ["/api/notifications/settings"],
     queryFn: async () => {
-      const res = await fetch("/api/notifications/settings", {
+      const res = await apiFetch("/api/notifications/settings", {
         headers: { Authorization: `Bearer ${session?.access_token}` },
       });
       if (!res.ok) return { phone_e164: null };

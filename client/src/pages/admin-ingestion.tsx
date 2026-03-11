@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { useState, useEffect, useCallback } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
@@ -62,7 +63,7 @@ async function fetchAdmin<T>(path: string): Promise<T> {
   const token = session?.session?.access_token;
   if (!token) throw new Error("Not authenticated");
 
-  const res = await fetch(path, {
+  const res = await apiFetch(path, {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (res.status === 401) throw new Error("UNAUTHORIZED");
@@ -173,7 +174,7 @@ export default function AdminIngestionPage() {
       const token = session?.session?.access_token;
       if (!token) { navigate("/login"); return; }
 
-      const res = await fetch("/api/admin/test-push", {
+      const res = await apiFetch("/api/admin/test-push", {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });

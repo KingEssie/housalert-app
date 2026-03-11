@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
@@ -390,7 +391,7 @@ export default function OnboardingPage() {
           const session = await (await import("@/lib/supabase")).supabase.auth.getSession();
           const token = session.data.session?.access_token;
           if (token) {
-            await fetch("/api/notifications/settings", {
+            await apiFetch("/api/notifications/settings", {
               method: "PUT",
               headers: {
                 "Content-Type": "application/json",
@@ -413,7 +414,7 @@ export default function OnboardingPage() {
         const session = await (await import("@/lib/supabase")).supabase.auth.getSession();
         const token = session.data.session?.access_token;
         if (token && newProfile?.id) {
-          await fetch("/api/search-profiles/backfill", {
+          await apiFetch("/api/search-profiles/backfill", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

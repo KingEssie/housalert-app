@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
@@ -24,7 +25,7 @@ export default function ContinueDraftPage() {
       return;
     }
 
-    fetch(`/api/onboarding-drafts/${draftId}`)
+    apiFetch(`/api/onboarding-drafts/${draftId}`)
       .then((res) => {
         if (!res.ok) throw new Error("Draft not found");
         return res.json();
@@ -54,7 +55,7 @@ export default function ContinueDraftPage() {
 
     async function claimAndCreate() {
       try {
-        const claimRes = await fetch(`/api/onboarding-drafts/${draftData.id}/claim`, {
+        const claimRes = await apiFetch(`/api/onboarding-drafts/${draftData.id}/claim`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ user_id: user!.id }),

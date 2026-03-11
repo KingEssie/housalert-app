@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { useMutation } from "@tanstack/react-query";
@@ -53,7 +54,7 @@ export default function ViewingTipsPage() {
 
   const markDoneMutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch("/api/profile-data", {
+      const res = await apiFetch("/api/profile-data", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

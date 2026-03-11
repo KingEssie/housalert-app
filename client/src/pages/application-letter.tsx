@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -27,7 +28,7 @@ export default function ApplicationLetterPage() {
   const { data: profileData, isLoading } = useQuery<ProfileData>({
     queryKey: ["/api/profile-data"],
     queryFn: async () => {
-      const res = await fetch("/api/profile-data", {
+      const res = await apiFetch("/api/profile-data", {
         headers: { Authorization: `Bearer ${session?.access_token}` },
       });
       if (!res.ok) throw new Error("Failed");
@@ -45,7 +46,7 @@ export default function ApplicationLetterPage() {
 
   const saveMutation = useMutation({
     mutationFn: async (text: string) => {
-      const res = await fetch("/api/profile-data", {
+      const res = await apiFetch("/api/profile-data", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { queryClient } from "@/lib/queryClient";
@@ -6,7 +7,7 @@ import { CheckCircle, Loader2 } from "lucide-react";
 import { useTranslation } from "@/i18n";
 
 async function verifyCheckout(sessionId: string, token: string): Promise<boolean> {
-  const res = await fetch("/api/checkout/verify", {
+  const res = await apiFetch("/api/checkout/verify", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -21,7 +22,7 @@ async function verifyCheckout(sessionId: string, token: string): Promise<boolean
 
 async function pollSubscriptionActive(token: string, maxAttempts = 10): Promise<boolean> {
   for (let i = 0; i < maxAttempts; i++) {
-    const res = await fetch("/api/subscription/status", {
+    const res = await apiFetch("/api/subscription/status", {
       headers: { Authorization: `Bearer ${token}` },
     });
     if (res.ok) {

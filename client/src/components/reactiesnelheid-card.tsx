@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
 import { Gauge, ChevronRight } from "lucide-react";
@@ -75,7 +76,7 @@ function useReactiesnelheidData() {
   return useQuery<BoostData>({
     queryKey: ["/api/boost"],
     queryFn: async () => {
-      const res = await fetch("/api/boost", {
+      const res = await apiFetch("/api/boost", {
         headers: { Authorization: `Bearer ${session?.access_token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch speed data");

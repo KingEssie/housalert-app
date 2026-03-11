@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
@@ -54,7 +55,7 @@ export default function NotificationSettingsPage() {
   useEffect(() => {
     if (!session?.access_token) return;
     setLoadingSettings(true);
-    fetch("/api/notifications/settings", {
+    apiFetch("/api/notifications/settings", {
       headers: { Authorization: `Bearer ${session.access_token}` },
     })
       .then((res) => {
@@ -103,7 +104,7 @@ export default function NotificationSettingsPage() {
         await unsubscribeFromPush(session.access_token);
       }
 
-      const settingsRes = await fetch("/api/notifications/settings", {
+      const settingsRes = await apiFetch("/api/notifications/settings", {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${session.access_token}`,
@@ -137,7 +138,7 @@ export default function NotificationSettingsPage() {
   async function handleSave() {
     setSaving(true);
     try {
-      const res = await fetch("/api/notifications/settings", {
+      const res = await apiFetch("/api/notifications/settings", {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${session?.access_token}`,

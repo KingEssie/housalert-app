@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { useState, useMemo, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Home, MapPin, ChevronLeft, Search, ChevronRight, Navigation, Clock, Car, Train, Bike, Loader2 } from "lucide-react";
@@ -58,7 +59,7 @@ export default function OnboardingLocationPage() {
     }
     setEstimateLoading(true);
     const p = new URLSearchParams({ city: cityName });
-    fetch(`/api/estimate?${p.toString()}`)
+    apiFetch(`/api/estimate?${p.toString()}`)
       .then((res) => (res.ok ? res.json() : { perWeekEstimate: 0 }))
       .then((data) => setEstimate(data.perWeekEstimate ?? 0))
       .catch(() => setEstimate(0))

@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY;
 
 export type PushUnsupportedReason =
@@ -79,7 +80,7 @@ export async function subscribeToPush(accessToken: string): Promise<boolean> {
 
     const subJson = subscription.toJSON();
 
-    const res = await fetch("/api/push/subscribe", {
+    const res = await apiFetch("/api/push/subscribe", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -110,7 +111,7 @@ export async function unsubscribeFromPush(accessToken: string): Promise<boolean>
         const endpoint = subscription.endpoint;
         await subscription.unsubscribe();
 
-        await fetch("/api/push/subscribe", {
+        await apiFetch("/api/push/subscribe", {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${accessToken}`,

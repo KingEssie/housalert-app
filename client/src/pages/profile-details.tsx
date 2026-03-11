@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-base";
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
@@ -39,7 +40,7 @@ export default function ProfileDetailsPage() {
     if (!session?.access_token) return;
     const headers = { Authorization: `Bearer ${session.access_token}` };
 
-    fetch("/api/profile-data", { headers })
+    apiFetch("/api/profile-data", { headers })
       .then(r => {
         if (!r.ok) throw new Error(`Status ${r.status}`);
         return r.json();
