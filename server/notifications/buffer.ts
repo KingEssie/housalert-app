@@ -7,6 +7,15 @@ import { getMatchTimestamps, batchedIn } from "../freshness";
 
 const MAX_LISTINGS_PER_EMAIL = 20;
 
+function sortBufferedMatches(listings: BufferedMatch[]): BufferedMatch[] {
+  return [...listings].sort((a, b) => {
+    const tA = a.matched_at ? new Date(a.matched_at).getTime() : 0;
+    const tB = b.matched_at ? new Date(b.matched_at).getTime() : 0;
+    if (tB !== tA) return tB - tA;
+    return a.listing_id.localeCompare(b.listing_id);
+  });
+}
+
 export interface BufferedMatch {
   listing_id: string;
   title: string;
@@ -15,6 +24,7 @@ export interface BufferedMatch {
   bedrooms: number;
   size_m2: number;
   url?: string | null;
+  matched_at?: string;
 }
 
 interface UserBuffer {
@@ -177,7 +187,7 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
 
     const appVisibleIds = await getAppVisibleListingIds(userId, supabase);
 
-    const verified = deduped.filter(l => appVisibleIds.has(l.listing_id));
+    const verified = sortBufferedMatches(deduped.filter(l => appVisibleIds.has(l.listing_id)));
 
     if (verified.length < deduped.length) {
       const dropped = deduped.length - verified.length;
@@ -277,7 +287,7 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
   }
 
   const appVisibleIds = await getAppVisibleListingIds(userId, supabase);
-  const verified = deduped.filter(l => appVisibleIds.has(l.listing_id));
+  const verified = sortBufferedMatches(deduped.filter(l => appVisibleIds.has(l.listing_id)));
 
   if (verified.length < deduped.length) {
     log(`[ALERTS] Backfill: ${deduped.length - verified.length} listings dropped (not visible in app)`);

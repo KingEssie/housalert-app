@@ -505,6 +505,7 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
         bedrooms: l.bedrooms,
         size_m2: l.size_m2,
         url: l.url,
+        matched_at: new Date().toISOString(),
       });
     }
   }
@@ -595,6 +596,7 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
             bedrooms: l.bedrooms,
             size_m2: l.size_m2,
             url: l.url,
+            matched_at: new Date().toISOString(),
           });
         }
       }
