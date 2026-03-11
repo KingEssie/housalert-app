@@ -10,33 +10,38 @@ function isNative(): boolean {
   return (window as any).Capacitor?.isNativePlatform?.() === true;
 }
 
-let preferencesModule: typeof import("@capacitor/preferences") | null = null;
+async function preferencesSet(key: string, value: string) {
+  const { Preferences } = await import("@capacitor/preferences");
+  await Preferences.set({ key, value });
+}
 
-async function getPreferences() {
-  if (!preferencesModule) {
-    preferencesModule = await import("@capacitor/preferences");
-  }
-  return preferencesModule.Preferences;
+async function preferencesGet(key: string): Promise<string | null> {
+  const { Preferences } = await import("@capacitor/preferences");
+  const result = await Preferences.get({ key });
+  return result.value;
+}
+
+async function preferencesRemove(key: string) {
+  const { Preferences } = await import("@capacitor/preferences");
+  await Preferences.remove({ key });
 }
 
 function syncToNative(key: string, value: string | null) {
   if (!isNative()) return;
-  getPreferences().then((Preferences) => {
-    if (value === null) {
-      Preferences.remove({ key: CACHE_PREFIX + key });
-    } else {
-      Preferences.set({ key: CACHE_PREFIX + key, value });
-    }
-  }).catch(() => {});
+  const fullKey = CACHE_PREFIX + key;
+  if (value === null) {
+    preferencesRemove(fullKey).catch(() => {});
+  } else {
+    preferencesSet(fullKey, value).catch(() => {});
+  }
 }
 
 export async function restoreAuthFromNative(): Promise<void> {
   if (!isNative()) return;
   try {
-    const Preferences = await getPreferences();
-    const { value } = await Preferences.get({ key: CACHE_PREFIX + "housalert-auth" });
-    if (value && !localStorage.getItem("housalert-auth")) {
-      localStorage.setItem("housalert-auth", value);
+    const stored = await preferencesGet(CACHE_PREFIX + "housalert-auth");
+    if (stored && !localStorage.getItem("housalert-auth")) {
+      localStorage.setItem("housalert-auth", stored);
     }
   } catch {}
 }
