@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Switch, Route, Redirect } from "wouter";
+import { Switch, Route, Redirect, Router as WouterRouter } from "wouter";
+import { useHashLocation } from "wouter/use-hash-location";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -8,6 +9,8 @@ import { AuthProvider, useAuth } from "@/lib/auth";
 import { I18nProvider } from "@/i18n";
 import { getSearchProfiles } from "@/lib/search-profiles";
 import { isNativePlatform } from "@/lib/capacitor";
+
+const IS_NATIVE = isNativePlatform();
 import LandingPage from "@/pages/landing";
 import LoginPage from "@/pages/login";
 import SignupPage from "@/pages/signup";
@@ -118,7 +121,7 @@ function Router() {
   );
 }
 
-function App() {
+function AppShell() {
   return (
     <I18nProvider>
       <QueryClientProvider client={queryClient}>
@@ -131,6 +134,17 @@ function App() {
       </QueryClientProvider>
     </I18nProvider>
   );
+}
+
+function App() {
+  if (IS_NATIVE) {
+    return (
+      <WouterRouter hook={useHashLocation}>
+        <AppShell />
+      </WouterRouter>
+    );
+  }
+  return <AppShell />;
 }
 
 export default App;

@@ -1,6 +1,7 @@
 import { apiFetch } from "@/lib/api-base";
+import { useHashSearch } from "@/lib/hash-search";
 import { useState, useEffect } from "react";
-import { useLocation, useSearch } from "wouter";
+import { useLocation } from "wouter";
 import { Home, ChevronLeft, TrendingUp, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
@@ -8,7 +9,7 @@ import { useTranslation } from "@/i18n";
 export default function OnboardingEstimatePage() {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
-  const searchString = useSearch();
+  const searchString = useHashSearch();
   const params = new URLSearchParams(searchString);
 
   const city = params.get("city") || "";

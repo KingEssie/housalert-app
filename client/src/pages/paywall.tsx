@@ -1,6 +1,7 @@
 import { apiFetch } from "@/lib/api-base";
+import { useHashSearch } from "@/lib/hash-search";
 import { useState, useEffect, useRef } from "react";
-import { useLocation, useSearch } from "wouter";
+import { useLocation } from "wouter";
 import { ArrowLeft, Home, Check, Crown, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -55,7 +56,7 @@ export default function PaywallPage() {
   const { toast } = useToast();
   const { user, loading: authLoading } = useAuth();
   const { t } = useTranslation();
-  const searchString = useSearch();
+  const searchString = useHashSearch();
   const queryParams = new URLSearchParams(searchString);
   const planFromUrl = queryParams.get("plan");
   const autoCheckout = queryParams.get("autoCheckout") === "true";

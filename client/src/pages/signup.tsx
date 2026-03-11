@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useLocation, useSearch } from "wouter";
+import { useHashSearch } from "@/lib/hash-search";
+import { useLocation } from "wouter";
 import { Home, ChevronLeft, User, Mail, Lock, MailCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -12,7 +13,7 @@ export default function SignupPage() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const { t } = useTranslation();
-  const searchString = useSearch();
+  const searchString = useHashSearch();
   const params = new URLSearchParams(searchString);
 
   const city = params.get("city") || "";
