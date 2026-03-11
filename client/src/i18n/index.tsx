@@ -16,7 +16,7 @@ function getStoredLocale(): Locale {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored === "de" || stored === "en" || stored === "nl") return stored;
   } catch {}
-  return "de";
+  return "nl";
 }
 
 function resolve(obj: any, path: string): string | undefined {
@@ -51,7 +51,10 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   const t = useCallback((key: string, params?: Record<string, string | number>): string => {
     let value = resolve(locales[locale], key);
-    if (value === undefined && locale !== "de") {
+    if (value === undefined && locale !== "nl") {
+      value = resolve(locales.nl, key);
+    }
+    if (value === undefined) {
       value = resolve(locales.de, key);
     }
     if (value === undefined) return key;

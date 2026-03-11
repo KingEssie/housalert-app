@@ -1890,24 +1890,22 @@ export default function DashboardPage() {
         )}
       </main>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[var(--yo-divider)] safe-area-bottom">
-        <div className="max-w-xl mx-auto flex">
+      <nav className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[var(--yo-divider)]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+        <div className="max-w-xl mx-auto flex h-[56px]">
           {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
             const isActive = activeTab === key;
             return (
               <button
                 key={key}
                 onClick={() => setActiveTab(key)}
-                className={`flex-1 flex flex-col items-center gap-0.5 pt-2 pb-2 relative transition-colors ${
-                  isActive ? "text-[var(--yo-dark)]" : "text-[var(--yo-dark)]"
-                }`}
+                className="flex-1 flex flex-col items-center justify-center gap-0.5 relative transition-colors text-[var(--yo-dark)]"
                 data-testid={`tab-${key}`}
               >
                 {isActive && (
                   <span className="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-[3px] rounded-b-full bg-[var(--yo-teal)]" />
                 )}
                 <Icon className="w-[22px] h-[22px]" />
-                <span className={`text-[11px] mt-0.5 ${isActive ? "font-semibold" : "font-medium"}`}>
+                <span className={`text-[11px] ${isActive ? "font-semibold" : "font-medium"}`}>
                   {t(labelKey)}
                 </span>
               </button>

@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import { I18nProvider } from "@/i18n";
 import { getSearchProfiles } from "@/lib/search-profiles";
+import { isNativePlatform } from "@/lib/capacitor";
 import LandingPage from "@/pages/landing";
 import LoginPage from "@/pages/login";
 import SignupPage from "@/pages/signup";
@@ -65,10 +66,19 @@ function ProtectedRoute({ component: Component, skipOnboardingCheck }: { compone
   return <Component />;
 }
 
+function NativeAwareRoot() {
+  const { user, loading } = useAuth();
+  if (isNativePlatform()) {
+    if (loading) return null;
+    return <Redirect to={user ? "/dashboard" : "/login"} />;
+  }
+  return <LandingPage />;
+}
+
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={LandingPage} />
+      <Route path="/" component={NativeAwareRoot} />
       <Route path="/login" component={LoginPage} />
       <Route path="/signup" component={SignupPage} />
       <Route path="/auth/callback" component={AuthCallbackPage} />
