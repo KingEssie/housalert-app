@@ -143,6 +143,7 @@ export interface ApiMatch extends FreshListing {
   match_label?: string | null;
   match_reasons?: string[];
   hybrid_filters?: HybridFilters | null;
+  in_latest_email?: boolean;
 }
 
 export async function fetchFreshListings(): Promise<FreshListing[]> {
@@ -154,6 +155,7 @@ export async function fetchFreshListings(): Promise<FreshListing[]> {
 export interface ApiMatchesResponse {
   matches: ApiMatch[];
   totalCount: number;
+  latestEmailAt?: string | null;
 }
 
 export async function fetchApiMatches(token: string): Promise<ApiMatchesResponse> {

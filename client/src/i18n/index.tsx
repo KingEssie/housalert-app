@@ -19,14 +19,15 @@ function getStoredLocale(): Locale {
   return "nl";
 }
 
-function resolve(obj: any, path: string): string | undefined {
+function resolve(obj: any, path: string): any | undefined {
   const parts = path.split(".");
   let cur = obj;
   for (const p of parts) {
     if (cur == null || typeof cur !== "object") return undefined;
     cur = cur[p];
   }
-  return typeof cur === "string" ? cur : undefined;
+  if (typeof cur === "string" || Array.isArray(cur)) return cur;
+  return undefined;
 }
 
 interface I18nContextValue {
@@ -58,12 +59,12 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       value = resolve(locales.de, key);
     }
     if (value === undefined) return key;
-    if (params) {
+    if (params && typeof value === "string") {
       for (const [k, v] of Object.entries(params)) {
-        value = value!.replace(new RegExp(`\\{${k}\\}`, "g"), String(v));
+        value = value.replace(new RegExp(`\\{${k}\\}`, "g"), String(v));
       }
     }
-    return value!;
+    return value;
   }, [locale]);
 
   return (

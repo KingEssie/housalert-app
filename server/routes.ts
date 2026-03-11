@@ -584,6 +584,9 @@ export async function registerRoutes(
       const profileMap: Record<string, any> = {};
       for (const p of profilesData) profileMap[p.id] = p;
 
+      const recentEmailed = getRecentEmailedIds(user.id);
+      const emailedIdSet = new Set(recentEmailed?.listing_ids || []);
+
       const validResults = validMatches.map((m: any) => {
         const l = listingMap[m.listing_id];
         const firstSeenAt = freshnessMap[m.listing_id]?.first_seen_at || m.created_at;
@@ -624,6 +627,7 @@ export async function registerRoutes(
           match_label,
           match_reasons,
           hybrid_filters,
+          in_latest_email: emailedIdSet.has(m.listing_id),
         };
       });
 
@@ -636,7 +640,11 @@ export async function registerRoutes(
 
       const top50 = validResults.slice(0, 50);
 
-      return res.json({ matches: top50, totalCount: validResults.length });
+      return res.json({
+        matches: top50,
+        totalCount: validResults.length,
+        latestEmailAt: recentEmailed?.timestamp ? new Date(recentEmailed.timestamp).toISOString() : null,
+      });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
     }

@@ -231,10 +231,15 @@ function MatchCard({
           </div>
         )}
 
-        <div className="absolute top-3 left-3">
+        <div className="absolute top-3 left-3 flex items-center gap-1.5">
           <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm ${style.bg} ${style.text}`}>
             {FRESH_LABEL_KEYS[match.fresh_label] ? t(FRESH_LABEL_KEYS[match.fresh_label]) : match.fresh_label}
           </span>
+          {match.in_latest_email && (
+            <span className="text-[10px] font-semibold px-2 py-1 rounded-full backdrop-blur-sm bg-blue-500/90 text-white" data-testid={`badge-emailed-${match.listing_id}`}>
+              E-mail
+            </span>
+          )}
         </div>
 
         <button

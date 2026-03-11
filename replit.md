@@ -1,6 +1,6 @@
 # HousAlert — Rental Alert App
 
-A mobile-first German-language rental alert application for the German market. Users can sign up, log in, and manage saved rental search profiles. Listings are matched against profiles and shown as matches. Rebranded from "Stekkies" to "HousAlert". Primary language: German (de). i18n architecture: `client/src/i18n/index.tsx` with translation keys in `client/src/i18n/locales/de.ts`.
+A mobile-first German-language rental alert application for the German market. Users can sign up, log in, and manage saved rental search profiles. Listings are matched against profiles and shown as matches. Rebranded from "Stekkies" to "HousAlert". Primary UI language: Dutch (nl), with German (de) and English (en) also available. i18n architecture: `client/src/i18n/index.tsx` with translation keys in `client/src/i18n/locales/nl.ts` (complete), `de.ts` (complete), `en.ts` (partial). Fallback chain: current locale → nl → de. The `resolve` function supports both string and array values (arrays used for viewing tips lists).
 
 ## Tech Stack
 
