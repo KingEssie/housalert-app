@@ -1,5 +1,3 @@
-import { Capacitor } from "@capacitor/core";
-
 interface SyncStorage {
   getItem(key: string): string | null;
   setItem(key: string, value: string): void;
@@ -7,6 +5,10 @@ interface SyncStorage {
 }
 
 const CACHE_PREFIX = "cap_auth_";
+
+function isNative(): boolean {
+  return (window as any).Capacitor?.isNativePlatform?.() === true;
+}
 
 let preferencesModule: typeof import("@capacitor/preferences") | null = null;
 
@@ -18,7 +20,7 @@ async function getPreferences() {
 }
 
 function syncToNative(key: string, value: string | null) {
-  if (!Capacitor.isNativePlatform()) return;
+  if (!isNative()) return;
   getPreferences().then((Preferences) => {
     if (value === null) {
       Preferences.remove({ key: CACHE_PREFIX + key });
@@ -29,7 +31,7 @@ function syncToNative(key: string, value: string | null) {
 }
 
 export async function restoreAuthFromNative(): Promise<void> {
-  if (!Capacitor.isNativePlatform()) return;
+  if (!isNative()) return;
   try {
     const Preferences = await getPreferences();
     const { value } = await Preferences.get({ key: CACHE_PREFIX + "housalert-auth" });

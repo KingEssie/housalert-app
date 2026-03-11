@@ -1,11 +1,13 @@
-import { Capacitor } from '@capacitor/core';
+function getCap(): any {
+  return (window as any).Capacitor;
+}
 
 export function isNativePlatform(): boolean {
-  return Capacitor.isNativePlatform();
+  return getCap()?.isNativePlatform?.() === true;
 }
 
 export function getPlatform(): string {
-  return Capacitor.getPlatform();
+  return getCap()?.getPlatform?.() ?? "web";
 }
 
 export async function initCapacitorPlugins(): Promise<void> {
