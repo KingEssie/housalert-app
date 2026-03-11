@@ -131,6 +131,7 @@ export const de: Record<string, any> = {
     loadErrorDesc: "Überprüfe deine Verbindung und versuche es erneut.",
     applyDirect: "Direkt bewerben",
     view: "Ansehen",
+    viewOriginal: "Zur Anzeige",
     discoverListings: "Wohnungen entdecken",
     emptyViewed: {
       title: "Keine Wohnungen gefunden",

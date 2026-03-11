@@ -372,19 +372,37 @@ function MatchCard({
             <Zap className="w-4 h-4" />
             {t("matches.applyDirect")}
           </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              markViewed(match.listing_id);
-              onStatusChange();
-              navigate(`/listing/${match.listing_id}`);
-            }}
-            className="h-[56px] px-5 rounded-lg border border-[var(--yo-divider)] bg-white text-[var(--yo-dark)] text-[14px] font-bold hover:bg-[var(--yo-surface)] transition-colors flex items-center justify-center gap-1.5"
-            data-testid={`button-view-listing-${match.listing_id}`}
-          >
-            <Eye className="w-3.5 h-3.5" />
-            {t("matches.view")}
-          </button>
+          {match.url ? (
+            <a
+              href={match.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => {
+                e.stopPropagation();
+                markViewed(match.listing_id);
+                onStatusChange();
+              }}
+              className="h-[56px] px-5 rounded-lg border border-[var(--yo-divider)] bg-white text-[var(--yo-dark)] text-[14px] font-bold hover:bg-[var(--yo-surface)] transition-colors flex items-center justify-center gap-1.5"
+              data-testid={`button-view-listing-${match.listing_id}`}
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+              {t("matches.viewOriginal")}
+            </a>
+          ) : (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                markViewed(match.listing_id);
+                onStatusChange();
+                navigate(`/listing/${match.listing_id}`);
+              }}
+              className="h-[56px] px-5 rounded-lg border border-[var(--yo-divider)] bg-white text-[var(--yo-dark)] text-[14px] font-bold hover:bg-[var(--yo-surface)] transition-colors flex items-center justify-center gap-1.5"
+              data-testid={`button-view-listing-${match.listing_id}`}
+            >
+              <Eye className="w-3.5 h-3.5" />
+              {t("matches.view")}
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -495,20 +513,15 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
   const hasActiveSub = subscription.isActive || subscription.isTrial;
   const { t } = useTranslation();
 
-  const { data: matches, isLoading } = useQuery<ApiMatch[]>({
-    queryKey: ["/api/matches", "recent-5"],
-    queryFn: async () => {
-      const res = await fetch("/api/matches", {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      if (!res.ok) throw new Error("Failed to fetch matches");
-      const body = await res.json();
-      const all: ApiMatch[] = Array.isArray(body) ? body : body.matches ?? [];
-      const valid = all.filter(m => m.title && m.url && m.listing_id);
-      return valid.slice(0, 5);
-    },
+  const apiMatchesQuery = useQuery<ApiMatchesResponse>({
+    queryKey: ["/api/matches"],
+    queryFn: () => fetchApiMatches(accessToken!),
     enabled: !!accessToken && hasActiveSub,
   });
+  const matches = (apiMatchesQuery.data?.matches ?? [])
+    .filter(m => m.title && m.url && m.listing_id)
+    .slice(0, 5);
+  const isLoading = apiMatchesQuery.isLoading;
 
   if (!hasActiveSub) {
     return (
@@ -674,11 +687,11 @@ function HomeTab({
   const profileDataQuery = useQuery<{ first_name?: string }>({
     queryKey: ["/api/profile-data"],
     queryFn: async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) return {};
-      const res = await fetch("/api/profile-data", { headers: { Authorization: `Bearer ${session.access_token}` } });
+      const res = await fetch("/api/profile-data", { headers: { Authorization: `Bearer ${accessToken}` } });
+      if (!res.ok) return {};
       return res.json();
     },
+    enabled: !!accessToken,
   });
   const firstName = profileDataQuery.data?.first_name || null;
   const profileCount = profiles.length;
@@ -1845,7 +1858,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <main className="flex-1 max-w-xl mx-auto w-full pb-20">
+      <main className="flex-1 max-w-xl mx-auto w-full pb-24">
         {activeTab === "home" && (
           <HomeTab
             user={user}

@@ -59,6 +59,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
   const { toast } = useToast();
   const { t } = useTranslation();
   const [marked, setMarked] = useState(false);
+  const [editedLetter, setEditedLetter] = useState<string | null>(null);
 
   const { data: profileData } = useQuery<ProfileData>({
     queryKey: ["/api/profile-data"],
@@ -85,7 +86,10 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
   });
 
   useEffect(() => {
-    if (open) setMarked(false);
+    if (open) {
+      setMarked(false);
+      setEditedLetter(null);
+    }
   }, [open]);
 
   useEffect(() => {
@@ -136,7 +140,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(filledLetter);
+      await navigator.clipboard.writeText(editedLetter ?? filledLetter);
       toast({ title: t("applySheet.copied"), description: t("applySheet.copiedDesc") });
       return true;
     } catch {
@@ -213,9 +217,14 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
                 </span>
               )}
             </div>
-            <pre className="text-[14px] text-[var(--yo-dark)] leading-relaxed whitespace-pre-wrap font-[inherit]" data-testid="apply-letter-preview">
-              {filledLetter}
-            </pre>
+            <textarea
+              className="w-full text-[14px] text-[var(--yo-dark)] leading-relaxed font-[inherit] bg-transparent border-none outline-none resize-none min-h-[200px]"
+              value={editedLetter ?? filledLetter}
+              onChange={(e) => setEditedLetter(e.target.value)}
+              data-testid="apply-letter-preview"
+              autoComplete="off"
+              autoCorrect="on"
+            />
           </div>
         </div>
 
