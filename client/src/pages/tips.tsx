@@ -69,13 +69,13 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
         </p>
       </div>
 
-      <div className="bg-[var(--yo-chip-bg)] rounded-lg p-5 flex items-start gap-4" data-testid="card-tips-intro">
+      <div className="bg-[#F5F7FA] rounded-lg p-5 flex items-start gap-4" data-testid="card-tips-intro">
         <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center flex-shrink-0">
-          <Lightbulb className="w-5 h-5 text-[var(--yo-dark)]" />
+          <Lightbulb className="w-5 h-5 text-[#1F2937]" />
         </div>
         <div>
-          <p className="text-[15px] font-semibold text-[var(--yo-dark)]">{t("tips.didYouKnow")}</p>
-          <p className="text-[13px] text-[var(--yo-dark)] mt-0.5 leading-relaxed">
+          <p className="text-[15px] font-semibold text-[#1F2937]">{t("tips.didYouKnow")}</p>
+          <p className="text-[13px] text-[#1F2937] mt-0.5 leading-relaxed">
             {t("tips.intro")}
           </p>
         </div>
@@ -88,17 +88,17 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
             <button
               key={guide.id}
               onClick={() => navigate(guide.route)}
-              className="bg-white rounded-lg border border-[var(--yo-divider)] p-5 flex items-start gap-4 text-left hover:shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-all duration-200 active:scale-[0.985] w-full"
+              className="bg-white rounded-lg border border-[#E5E7EB] p-5 flex items-start gap-4 text-left hover:shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-all duration-200 active:scale-[0.985] w-full"
               data-testid={`card-guide-${guide.id}`}
             >
               <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(45,212,191,0.1)" }}>
-                <Icon className="w-5 h-5 text-[var(--yo-teal)]" />
+                <Icon className="w-5 h-5 text-[#0D6EFD]" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[15px] font-semibold text-[var(--yo-dark)]">{guide.title}</p>
-                <p className="text-[13px] text-[var(--yo-dark)] mt-0.5 leading-relaxed">{guide.description}</p>
+                <p className="text-[15px] font-semibold text-[#1F2937]">{guide.title}</p>
+                <p className="text-[13px] text-[#1F2937] mt-0.5 leading-relaxed">{guide.description}</p>
               </div>
-              <ArrowRight className="w-4 h-4 text-[var(--yo-dark)] flex-shrink-0 mt-1" />
+              <ArrowRight className="w-4 h-4 text-[#1F2937] flex-shrink-0 mt-1" />
             </button>
           );
         })}

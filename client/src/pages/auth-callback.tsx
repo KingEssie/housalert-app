@@ -41,11 +41,11 @@ export default function AuthCallbackPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--yo-bg)] px-6">
-        <p className="text-[var(--yo-dark)] font-semibold text-lg mb-4" data-testid="text-auth-error">{error}</p>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#FFFFFF] px-6">
+        <p className="text-[#1F2937] font-semibold text-lg mb-4" data-testid="text-auth-error">{error}</p>
         <button
           onClick={() => navigate("/login")}
-          className="min-h-[56px] px-8 rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black font-bold text-[16px] transition-colors"
+          className="min-h-[56px] px-8 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-bold text-[16px] transition-colors"
           data-testid="button-go-login"
         >
           Zum Login
@@ -55,9 +55,9 @@ export default function AuthCallbackPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--yo-bg)]">
-      <Loader2 className="w-8 h-8 animate-spin text-[var(--yo-teal)]" />
-      <p className="mt-4 text-[var(--yo-text)] font-medium" data-testid="text-auth-verifying">E-Mail wird verifiziert...</p>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#FFFFFF]">
+      <Loader2 className="w-8 h-8 animate-spin text-[#0D6EFD]" />
+      <p className="mt-4 text-[#1F2937] font-medium" data-testid="text-auth-verifying">E-Mail wird verifiziert...</p>
     </div>
   );
 }

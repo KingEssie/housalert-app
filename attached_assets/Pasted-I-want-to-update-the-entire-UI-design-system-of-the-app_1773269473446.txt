@@ -1,0 +1,130 @@
+I want to update the entire UI design system of the app to match the visual style shown in my reference screenshots (similar to BlaBlaCar style). This is a global UI consistency update, not a redesign of layouts.
+
+Goals:
+- Calm, clean, trustworthy UI
+- Consistent colors across all components
+- Rounded buttons
+- Clear hierarchy of text colors
+
+Do NOT change layouts or functionality. Only update styling.
+
+--------------------------------
+
+PRIMARY COLORS
+
+Primary button blue:
+#0D6EFD
+
+Dark banner blue:
+#0B2A4A
+
+Primary text color:
+#1F2937
+
+Secondary text color (grey):
+#6B7280
+
+Background grey (subtle cards):
+#F5F7FA
+
+White:
+#FFFFFF
+
+--------------------------------
+
+BUTTON RULES
+
+Primary buttons:
+- Background: #0D6EFD
+- Text: #FFFFFF
+- Border radius: 9999px (fully rounded)
+- Font weight: 600
+
+Secondary buttons:
+- Background: #FFFFFF
+- Text: #0D6EFD
+- Border: 1px solid #0D6EFD
+- Border radius: 9999px
+
+Buttons inside dark banners:
+- Background: #FFFFFF
+- Text: #0B2A4A
+- Border radius: 9999px
+
+--------------------------------
+
+BANNER COMPONENTS
+
+Dark banners (promo / tips sections):
+- Background: #0B2A4A
+- Text color: #FFFFFF
+
+Buttons inside banners:
+- White background
+- Dark blue text (#0B2A4A)
+- Rounded (9999px)
+
+--------------------------------
+
+TEXT COLOR SYSTEM
+
+Page titles:
+- Color: #1F2937
+- Only first letter uppercase
+- No full uppercase titles
+
+Primary text:
+- Color: #1F2937
+
+Secondary text (descriptions, meta info):
+- Color: #6B7280
+
+--------------------------------
+
+CARDS / LISTINGS
+
+Cards:
+- Background: #FFFFFF
+- Border radius: 16px
+- Subtle shadow
+
+Meta info (location, size, time):
+- Use secondary text color (#6B7280)
+
+--------------------------------
+
+GLOBAL STYLE RULES
+
+All buttons:
+border-radius: 9999px
+
+All page titles:
+Remove uppercase styling
+Use normal sentence case
+
+Replace any existing dark grey text with:
+#6B7280
+
+Replace inconsistent blue buttons with:
+#0D6EFD
+
+--------------------------------
+
+FILES TO UPDATE
+
+- global CSS / tailwind config
+- button component
+- banner components
+- typography styles
+- card styles
+- match cards
+- dashboard sections
+
+--------------------------------
+
+Output:
+1. Files changed
+2. Updated color tokens / CSS variables
+3. Updated button component
+4. Updated typography rules
+5. Anything I should visually recheck in the UI

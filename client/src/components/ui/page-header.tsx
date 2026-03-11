@@ -31,7 +31,7 @@ export function PageHeader({ title, onBack, trailing, closeButton }: PageHeaderP
           className="w-11 h-11 rounded-full bg-white shadow-md flex items-center justify-center active:scale-95 transition-transform"
           data-testid="button-back"
         >
-          <Icon className="w-5 h-5 text-[var(--yo-dark)]" />
+          <Icon className="w-5 h-5 text-[#1F2937]" />
         </button>
         {trailing && <div className="flex-shrink-0">{trailing}</div>}
       </div>
@@ -39,7 +39,7 @@ export function PageHeader({ title, onBack, trailing, closeButton }: PageHeaderP
       {title && (
         <div className="max-w-xl mx-auto px-5 pt-[calc(max(0.75rem,env(safe-area-inset-top))+60px)]">
           <h1
-            className="text-[24px] font-[800] text-[var(--yo-dark)] tracking-[-0.02em] leading-[1.2] uppercase mb-5"
+            className="text-[24px] font-[700] text-[#1F2937] tracking-[-0.01em] leading-[1.2] mb-5"
             data-testid="text-page-title"
           >
             {title}

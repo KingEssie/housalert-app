@@ -192,7 +192,7 @@ export default function NotificationSettingsPage() {
               <ListRow
                 title={t("notifications.emailTitle")}
                 subtitle={t("notifications.emailDesc")}
-                icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--yo-chip-bg)" }}><Mail className="w-[18px] h-[18px]" style={{ color: "var(--yo-dark)" }} /></div>}
+                icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "#F5F7FA" }}><Mail className="w-[18px] h-[18px]" style={{ color: "#1F2937" }} /></div>}
                 trailing={
                   <Switch
                     checked={emailEnabled}
@@ -206,7 +206,7 @@ export default function NotificationSettingsPage() {
               <ListRow
                 title={t("notifications.pushTitle")}
                 subtitle={getPushSubtitle()}
-                icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--yo-chip-bg)" }}><Bell className="w-[18px] h-[18px]" style={{ color: "var(--yo-dark)" }} /></div>}
+                icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "#F5F7FA" }}><Bell className="w-[18px] h-[18px]" style={{ color: "#1F2937" }} /></div>}
                 trailing={
                   pushLoading ? (
                     <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />

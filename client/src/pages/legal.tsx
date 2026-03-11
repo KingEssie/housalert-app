@@ -9,13 +9,13 @@ function LegalLayout({ title, children }: { title: string; children: React.React
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="w-full bg-background sticky top-0 z-20 border-b" style={{ borderColor: "var(--yo-divider)" }}>
+      <header className="w-full bg-background sticky top-0 z-20 border-b" style={{ borderColor: "#E5E7EB" }}>
         <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center justify-between">
           <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => navigate("/")}>
             <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
               <Home className="w-4.5 h-4.5 text-primary-foreground" />
             </div>
-            <span className="font-extrabold text-xl tracking-tight" style={{ color: "var(--yo-dark)" }}>HousAlert</span>
+            <span className="font-extrabold text-xl tracking-tight" style={{ color: "#1F2937" }}>HousAlert</span>
           </div>
         </div>
       </header>
@@ -24,23 +24,23 @@ function LegalLayout({ title, children }: { title: string; children: React.React
         <button
           onClick={() => navigate("/")}
           className="flex items-center gap-1.5 text-[13px] font-semibold mb-6"
-          style={{ color: "var(--yo-teal)" }}
+          style={{ color: "#0D6EFD" }}
           data-testid="button-back-home"
         >
           <ArrowLeft className="w-4 h-4" />
           {t("legal.backToHome")}
         </button>
 
-        <h1 className="text-[32px] font-[800] tracking-[-0.03em] leading-[1.1] mb-10" style={{ color: "var(--yo-dark)" }} data-testid="text-legal-title">
+        <h1 className="text-[32px] font-[800] tracking-[-0.03em] leading-[1.1] mb-10" style={{ color: "#1F2937" }} data-testid="text-legal-title">
           {title}
         </h1>
 
-        <div className="prose prose-sm max-w-none space-y-6" style={{ color: "var(--yo-dark)" }}>
+        <div className="prose prose-sm max-w-none space-y-6" style={{ color: "#1F2937" }}>
           {children}
         </div>
       </main>
 
-      <footer className="border-t py-8 px-6" style={{ borderColor: "var(--yo-divider)" }}>
+      <footer className="border-t py-8 px-6" style={{ borderColor: "#E5E7EB" }}>
         <div className="max-w-xl mx-auto text-center text-[13px] text-muted-foreground">
           {t("legal.copyright", { year: String(new Date().getFullYear()) })}
         </div>
@@ -53,7 +53,7 @@ export function ImpressumPage() {
   return (
     <LegalLayout title="Impressum">
       <section>
-        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "var(--yo-dark)" }}>Angaben gemäß § 5 TMG</h2>
+        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "#1F2937" }}>Angaben gemäß § 5 TMG</h2>
         <p className="text-[15px] leading-relaxed" data-testid="text-impressum-company">
           [Firmenname einfügen]<br />
           [Straße und Hausnummer]<br />
@@ -63,14 +63,14 @@ export function ImpressumPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "var(--yo-dark)" }}>Vertreten durch</h2>
+        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "#1F2937" }}>Vertreten durch</h2>
         <p className="text-[15px] leading-relaxed">
           [Name des Geschäftsführers / Inhabers einfügen]
         </p>
       </section>
 
       <section>
-        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "var(--yo-dark)" }}>Kontakt</h2>
+        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "#1F2937" }}>Kontakt</h2>
         <p className="text-[15px] leading-relaxed" data-testid="text-impressum-contact">
           E-Mail: [E-Mail-Adresse einfügen]<br />
           Telefon: [Telefonnummer einfügen]
@@ -78,7 +78,7 @@ export function ImpressumPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "var(--yo-dark)" }}>Registereintrag</h2>
+        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "#1F2937" }}>Registereintrag</h2>
         <p className="text-[15px] leading-relaxed">
           Eintragung im Handelsregister.<br />
           Registergericht: [Registergericht einfügen]<br />
@@ -87,7 +87,7 @@ export function ImpressumPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "var(--yo-dark)" }}>Umsatzsteuer-ID</h2>
+        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "#1F2937" }}>Umsatzsteuer-ID</h2>
         <p className="text-[15px] leading-relaxed">
           Umsatzsteuer-Identifikationsnummer gemäß §27a Umsatzsteuergesetz:<br />
           [USt-IdNr. einfügen]
@@ -95,7 +95,7 @@ export function ImpressumPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "var(--yo-dark)" }}>Streitschlichtung</h2>
+        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "#1F2937" }}>Streitschlichtung</h2>
         <p className="text-[15px] leading-relaxed">
           Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit.
           Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer
@@ -110,8 +110,8 @@ export function DatenschutzPage() {
   return (
     <LegalLayout title="Datenschutzerklärung">
       <section>
-        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "var(--yo-dark)" }}>1. Datenschutz auf einen Blick</h2>
-        <h3 className="text-[15px] font-semibold mb-1" style={{ color: "var(--yo-dark)" }}>Allgemeine Hinweise</h3>
+        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "#1F2937" }}>1. Datenschutz auf einen Blick</h2>
+        <h3 className="text-[15px] font-semibold mb-1" style={{ color: "#1F2937" }}>Allgemeine Hinweise</h3>
         <p className="text-[15px] leading-relaxed" data-testid="text-datenschutz-intro">
           Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren
           personenbezogenen Daten passiert, wenn Sie diese Website besuchen. Personenbezogene Daten
@@ -120,7 +120,7 @@ export function DatenschutzPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "var(--yo-dark)" }}>2. Verantwortliche Stelle</h2>
+        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "#1F2937" }}>2. Verantwortliche Stelle</h2>
         <p className="text-[15px] leading-relaxed">
           [Firmenname einfügen]<br />
           [Straße und Hausnummer]<br />
@@ -130,15 +130,15 @@ export function DatenschutzPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "var(--yo-dark)" }}>3. Datenerfassung auf dieser Website</h2>
-        <h3 className="text-[15px] font-semibold mb-1" style={{ color: "var(--yo-dark)" }}>Cookies</h3>
+        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "#1F2937" }}>3. Datenerfassung auf dieser Website</h2>
+        <h3 className="text-[15px] font-semibold mb-1" style={{ color: "#1F2937" }}>Cookies</h3>
         <p className="text-[15px] leading-relaxed">
           Unsere Website verwendet Cookies. Dabei handelt es sich um kleine Textdateien, die Ihr
           Webbrowser auf Ihrem Endgerät speichert. Cookies helfen uns dabei, unser Angebot
           nutzerfreundlicher und sicherer zu machen.
         </p>
 
-        <h3 className="text-[15px] font-semibold mb-1 mt-4" style={{ color: "var(--yo-dark)" }}>Server-Log-Dateien</h3>
+        <h3 className="text-[15px] font-semibold mb-1 mt-4" style={{ color: "#1F2937" }}>Server-Log-Dateien</h3>
         <p className="text-[15px] leading-relaxed">
           Der Provider der Seiten erhebt und speichert automatisch Informationen in sogenannten
           Server-Log-Dateien, die Ihr Browser automatisch an uns übermittelt.
@@ -146,14 +146,14 @@ export function DatenschutzPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "var(--yo-dark)" }}>4. Analyse-Tools und Werbung</h2>
+        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "#1F2937" }}>4. Analyse-Tools und Werbung</h2>
         <p className="text-[15px] leading-relaxed">
           [Beschreibung der eingesetzten Analyse-Tools einfügen, z.B. Google Analytics, Plausible, etc.]
         </p>
       </section>
 
       <section>
-        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "var(--yo-dark)" }}>5. Ihre Rechte</h2>
+        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "#1F2937" }}>5. Ihre Rechte</h2>
         <p className="text-[15px] leading-relaxed">
           Sie haben jederzeit das Recht auf unentgeltliche Auskunft über Ihre gespeicherten
           personenbezogenen Daten, deren Herkunft und Empfänger und den Zweck der Datenverarbeitung
@@ -163,7 +163,7 @@ export function DatenschutzPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "var(--yo-dark)" }}>6. Zahlungsdienstleister</h2>
+        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "#1F2937" }}>6. Zahlungsdienstleister</h2>
         <p className="text-[15px] leading-relaxed">
           Wir nutzen Stripe als Zahlungsdienstleister. Ihre Zahlungsdaten werden direkt von Stripe
           verarbeitet. Weitere Informationen finden Sie in der Datenschutzerklärung von Stripe.
@@ -177,7 +177,7 @@ export function TermsPage() {
   return (
     <LegalLayout title="Allgemeine Geschäftsbedingungen">
       <section>
-        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "var(--yo-dark)" }}>§ 1 Geltungsbereich</h2>
+        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "#1F2937" }}>§ 1 Geltungsbereich</h2>
         <p className="text-[15px] leading-relaxed" data-testid="text-terms-scope">
           Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle Verträge, die zwischen
           [Firmenname einfügen] (nachfolgend "Anbieter") und dem Nutzer über die Plattform HousAlert
@@ -186,7 +186,7 @@ export function TermsPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "var(--yo-dark)" }}>§ 2 Leistungsbeschreibung</h2>
+        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "#1F2937" }}>§ 2 Leistungsbeschreibung</h2>
         <p className="text-[15px] leading-relaxed">
           HousAlert ist ein Dienst, der Mietwohnungsangebote von verschiedenen Websites aggregiert
           und Nutzer über neue, relevante Angebote benachrichtigt. Der Anbieter übernimmt keine
@@ -195,7 +195,7 @@ export function TermsPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "var(--yo-dark)" }}>§ 3 Registrierung und Nutzerkonto</h2>
+        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "#1F2937" }}>§ 3 Registrierung und Nutzerkonto</h2>
         <p className="text-[15px] leading-relaxed">
           Für die Nutzung des Dienstes ist eine Registrierung erforderlich. Der Nutzer ist
           verpflichtet, wahrheitsgemäße Angaben zu machen und seine Zugangsdaten vertraulich
@@ -204,7 +204,7 @@ export function TermsPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "var(--yo-dark)" }}>§ 4 Preise und Zahlungsbedingungen</h2>
+        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "#1F2937" }}>§ 4 Preise und Zahlungsbedingungen</h2>
         <p className="text-[15px] leading-relaxed">
           Die aktuellen Preise sind auf der Website einsehbar. Alle Preise verstehen sich inklusive
           der gesetzlichen Mehrwertsteuer. Die Zahlung erfolgt über den Zahlungsdienstleister Stripe.
@@ -212,7 +212,7 @@ export function TermsPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "var(--yo-dark)" }}>§ 5 Probezeit und Kündigung</h2>
+        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "#1F2937" }}>§ 5 Probezeit und Kündigung</h2>
         <p className="text-[15px] leading-relaxed">
           Neue Nutzer erhalten eine kostenlose Probezeit. Nach Ablauf der Probezeit wird das
           Abonnement automatisch verlängert, sofern es nicht vor Ablauf gekündigt wird. Die
@@ -221,7 +221,7 @@ export function TermsPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "var(--yo-dark)" }}>§ 6 Haftungsbeschränkung</h2>
+        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "#1F2937" }}>§ 6 Haftungsbeschränkung</h2>
         <p className="text-[15px] leading-relaxed">
           Der Anbieter haftet nicht für die Verfügbarkeit oder Richtigkeit der aggregierten
           Wohnungsangebote. Die Nutzung der Plattform erfolgt auf eigenes Risiko des Nutzers.
@@ -229,7 +229,7 @@ export function TermsPage() {
       </section>
 
       <section>
-        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "var(--yo-dark)" }}>§ 7 Schlussbestimmungen</h2>
+        <h2 className="text-[18px] font-[700] tracking-[-0.01em] mb-3" style={{ color: "#1F2937" }}>§ 7 Schlussbestimmungen</h2>
         <p className="text-[15px] leading-relaxed">
           Es gilt das Recht der Bundesrepublik Deutschland. Sollten einzelne Bestimmungen dieser AGB
           unwirksam sein, bleibt die Wirksamkeit der übrigen Bestimmungen unberührt.

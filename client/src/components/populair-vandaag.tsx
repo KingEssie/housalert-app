@@ -18,14 +18,14 @@ interface PopularListing {
 }
 
 const CITY_GRADIENTS: Record<string, string> = {
-  berlin: "from-[#1A1A1A] to-[#333333]",
-  münchen: "from-[#1A1A1A] to-[#333333]",
-  hamburg: "from-[#333333] to-[#1A1A1A]",
-  frankfurt: "from-[#1A1A1A] to-[#333333]",
-  köln: "from-[#333333] to-[#1A1A1A]",
-  düsseldorf: "from-[#1A1A1A] to-[#333333]",
-  stuttgart: "from-[#333333] to-[#1A1A1A]",
-  default: "from-[#1A1A1A] to-[#333333]",
+  berlin: "from-[#1F2937] to-[#333333]",
+  münchen: "from-[#1F2937] to-[#333333]",
+  hamburg: "from-[#333333] to-[#1F2937]",
+  frankfurt: "from-[#1F2937] to-[#333333]",
+  köln: "from-[#333333] to-[#1F2937]",
+  düsseldorf: "from-[#1F2937] to-[#333333]",
+  stuttgart: "from-[#333333] to-[#1F2937]",
+  default: "from-[#1F2937] to-[#333333]",
 };
 
 function getCityGradient(city: string): string {
@@ -76,25 +76,25 @@ function PopularCard({ listing }: { listing: PopularListing }) {
 
       <div className="p-3 flex flex-col gap-1.5">
         <h3
-          className="font-[700] text-[var(--yo-dark)] text-[14px] leading-[1.3] line-clamp-2"
+          className="font-[700] text-[#1F2937] text-[14px] leading-[1.3] line-clamp-2"
           data-testid={`text-popular-title-${listing.listing_id}`}
         >
           {listing.title}
         </h3>
 
         {listing.price > 0 && (
-          <span className="text-[15px] font-bold text-[var(--yo-dark)]">
+          <span className="text-[15px] font-bold text-[#1F2937]">
             {"\u20AC"}{listing.price}
-            <span className="text-[11px] font-normal text-[var(--yo-dark)]">/Monat</span>
+            <span className="text-[11px] font-normal text-[#1F2937]">/Monat</span>
           </span>
         )}
 
-        <div className="flex items-center gap-1 text-[12px] text-[var(--yo-dark)]">
+        <div className="flex items-center gap-1 text-[12px] text-[#1F2937]">
           <MapPin className="w-3 h-3 flex-shrink-0" />
           <span className="truncate">{listing.city}</span>
         </div>
 
-        <div className="flex items-center gap-2 text-[11px] text-[var(--yo-dark)]">
+        <div className="flex items-center gap-2 text-[11px] text-[#1F2937]">
           {listing.bedrooms > 0 && (
             <span className="flex items-center gap-0.5">
               <BedDouble className="w-3 h-3" />
@@ -123,11 +123,11 @@ export function PopulairVandaagSection() {
       <div className="flex flex-col gap-3">
         <div>
           <h2 className="text-section-title">Beliebt heute</h2>
-          <p className="text-[13px] font-[500] text-[var(--yo-dark)] mt-0.5">Wohnungen, die viel Aufmerksamkeit bekommen</p>
+          <p className="text-[13px] font-[500] text-[#1F2937] mt-0.5">Wohnungen, die viel Aufmerksamkeit bekommen</p>
         </div>
         <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="flex-shrink-0 w-[220px] h-[220px] bg-[var(--yo-surface)] rounded-lg animate-pulse" />
+            <div key={i} className="flex-shrink-0 w-[220px] h-[220px] bg-[#F5F7FA] rounded-lg animate-pulse" />
           ))}
         </div>
       </div>
@@ -140,10 +140,10 @@ export function PopulairVandaagSection() {
     <div className="flex flex-col gap-3" data-testid="section-populair-vandaag">
       <div>
         <div className="flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-[var(--yo-dark)]" />
+          <TrendingUp className="w-4 h-4 text-[#1F2937]" />
           <h2 className="text-section-title">Beliebt heute</h2>
         </div>
-        <p className="text-[13px] text-[var(--yo-dark)] mt-0.5 ml-6">Wohnungen, die viel Aufmerksamkeit bekommen</p>
+        <p className="text-[13px] text-[#1F2937] mt-0.5 ml-6">Wohnungen, die viel Aufmerksamkeit bekommen</p>
       </div>
       <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 snap-x snap-mandatory scrollbar-none">
         {listings.map((listing) => (

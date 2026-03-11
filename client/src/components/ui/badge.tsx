@@ -9,15 +9,15 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default:
-          "border-transparent bg-[var(--yo-chip-bg)] text-[var(--yo-dark)]",
-        secondary: "border-transparent bg-[var(--yo-surface)] text-[var(--yo-dark)]",
+          "border-transparent bg-[#F5F7FA] text-[#1F2937]",
+        secondary: "border-transparent bg-[#F5F7FA] text-[#1F2937]",
         destructive:
           "border-transparent bg-destructive text-destructive-foreground",
-        outline: "border border-[var(--yo-divider)] text-[var(--yo-dark)]",
-        neon: "border-transparent bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] font-medium",
-        dark: "border-transparent bg-[#1A1A1A] text-white font-medium",
-        purple: "border-transparent bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] font-medium",
-        success: "border-transparent bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] font-medium",
+        outline: "border border-[#E5E7EB] text-[#1F2937]",
+        neon: "border-transparent bg-[#EBF2FF] text-[#0D6EFD] font-medium",
+        dark: "border-transparent bg-[#0B2A4A] text-white font-medium",
+        purple: "border-transparent bg-[#EBF2FF] text-[#0D6EFD] font-medium",
+        success: "border-transparent bg-[#F0FDF4] text-[#16A34A] font-medium",
       },
     },
     defaultVariants: {

@@ -174,20 +174,20 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
       <div className="relative w-full max-w-xl bg-white rounded-t-3xl shadow-[0_-8px_40px_rgba(0,0,0,0.12)] max-h-[85vh] flex flex-col animate-in slide-in-from-bottom duration-300">
         <div className="flex items-center justify-between px-6 pt-5 pb-3">
           <div className="flex items-center gap-2">
-            <Send className="w-5 h-5 text-[var(--yo-dark)]" />
-            <h2 className="text-[18px] font-[700] text-[var(--yo-dark)]">{t("applySheet.title")}</h2>
+            <Send className="w-5 h-5 text-[#1F2937]" />
+            <h2 className="text-[18px] font-[700] text-[#1F2937]">{t("applySheet.title")}</h2>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-[var(--yo-surface)] flex items-center justify-center hover:bg-[var(--yo-divider)] transition-colors"
+            className="w-8 h-8 rounded-full bg-[#F5F7FA] flex items-center justify-center hover:bg-[#E5E7EB] transition-colors"
             data-testid="button-close-apply-sheet"
           >
-            <X className="w-4 h-4 text-[var(--yo-dark)]" />
+            <X className="w-4 h-4 text-[#1F2937]" />
           </button>
         </div>
 
         <div className="px-6 pb-2">
-          <p className="text-[13px] text-[var(--yo-dark)] line-clamp-1">{listing.title} · {listing.city}</p>
+          <p className="text-[13px] text-[#1F2937] line-clamp-1">{listing.title} · {listing.city}</p>
         </div>
 
         <div className="flex-1 overflow-y-auto px-6 pb-4">
@@ -197,11 +197,11 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
               return (
                 <div key={item.id} className="flex items-center gap-1.5" data-testid={`readiness-${item.id}`}>
                   {item.done ? (
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[var(--yo-success)]" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A]" />
                   ) : (
-                    <AlertCircle className="w-3.5 h-3.5 text-[var(--yo-divider)]" />
+                    <AlertCircle className="w-3.5 h-3.5 text-[#9CA3AF]" />
                   )}
-                  <span className={`text-[12px] ${item.done ? "text-[var(--yo-dark)]" : "text-[var(--yo-divider)]"}`}>
+                  <span className={`text-[12px] ${item.done ? "text-[#1F2937]" : "text-[#9CA3AF]"}`}>
                     {t(item.labelKey)}
                   </span>
                 </div>
@@ -209,17 +209,17 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
             })}
           </div>
 
-          <div className="bg-[var(--yo-surface)] rounded-lg p-4">
+          <div className="bg-[#F5F7FA] rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-[12px] font-semibold text-[var(--yo-dark)] uppercase tracking-wide">{t("applySheet.applicationLetter")}</p>
+              <p className="text-[12px] font-semibold text-[#1F2937] tracking-wide">{t("applySheet.applicationLetter")}</p>
               {readyCount === readinessItems.length && (
-                <span className="text-[11px] font-medium text-[var(--yo-dark)] bg-[var(--yo-chip-bg)] px-2 py-0.5 rounded-full" data-testid="badge-ready">
+                <span className="text-[11px] font-medium text-[#1F2937] bg-[#F5F7FA] px-2 py-0.5 rounded-full" data-testid="badge-ready">
                   {t("applySheet.readyToSend")}
                 </span>
               )}
             </div>
             <textarea
-              className="w-full text-[14px] text-[var(--yo-dark)] leading-relaxed font-[inherit] bg-transparent border-none outline-none resize-none min-h-[200px]"
+              className="w-full text-[14px] text-[#1F2937] leading-relaxed font-[inherit] bg-transparent border-none outline-none resize-none min-h-[200px]"
               value={editedLetter ?? filledLetter}
               onChange={(e) => setEditedLetter(e.target.value)}
               data-testid="apply-letter-preview"
@@ -229,11 +229,11 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
           </div>
         </div>
 
-        <div className="px-6 pb-6 pt-3 border-t border-[var(--yo-surface)] flex flex-col gap-2.5">
+        <div className="px-6 pb-6 pt-3 border-t border-[#F5F7FA] flex flex-col gap-2.5">
           {listing.url ? (
             <Button
               onClick={handleCopyAndOpen}
-              className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[14px] font-semibold"
+              className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-semibold"
               data-testid="button-copy-and-open"
             >
               <Copy className="w-4 h-4 mr-2" />
@@ -242,7 +242,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
           ) : (
             <Button
               onClick={handleCopy}
-              className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[14px] font-semibold"
+              className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-semibold"
               data-testid="button-copy-letter-sheet"
             >
               <Copy className="w-4 h-4 mr-2" />
@@ -255,7 +255,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
               <Button
                 variant="outline"
                 onClick={handleCopy}
-                className="flex-1 h-[44px] rounded-lg border-[var(--yo-divider)] text-[var(--yo-dark)] text-[13px] font-semibold"
+                className="flex-1 h-[44px] rounded-lg border-[#E5E7EB] text-[#1F2937] text-[13px] font-semibold"
                 data-testid="button-copy-only"
               >
                 <Copy className="w-3.5 h-3.5 mr-1.5" />
@@ -268,8 +268,8 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
               disabled={marked}
               className={`flex-1 h-[44px] rounded-lg text-[13px] font-semibold ${
                 marked
-                  ? "bg-[var(--yo-success)]/10 text-[var(--yo-dark)] border-[var(--yo-success)]/10"
-                  : "border-[var(--yo-divider)] text-[var(--yo-dark)]"
+                  ? "bg-[#16A34A]/10 text-[#1F2937] border-[#16A34A]/10"
+                  : "border-[#E5E7EB] text-[#1F2937]"
               }`}
               data-testid="button-mark-applied"
             >

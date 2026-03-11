@@ -36,14 +36,14 @@ export function SubscriptionCancelConfirmPage() {
       <PageHeader title={t("subscription.cancelTitle")} onBack={() => navigate("/account/subscription")} />
 
       <div className="max-w-xl mx-auto p-4 pb-8">
-        <div className="bg-card rounded-lg border p-6" style={{ borderColor: "var(--yo-divider)" }}>
+        <div className="bg-card rounded-lg border p-6" style={{ borderColor: "#E5E7EB" }}>
           <div className="flex items-center justify-center mb-5">
-            <div className="w-14 h-14 rounded-lg flex items-center justify-center" style={{ backgroundColor: "var(--yo-chip-bg)" }}>
-              <AlertCircle className="w-7 h-7" style={{ color: "var(--yo-teal)" }} />
+            <div className="w-14 h-14 rounded-lg flex items-center justify-center" style={{ backgroundColor: "#F5F7FA" }}>
+              <AlertCircle className="w-7 h-7" style={{ color: "#0D6EFD" }} />
             </div>
           </div>
 
-          <h2 className="text-[20px] font-bold text-center mb-3" style={{ color: "var(--yo-dark)" }} data-testid="text-cancel-title">
+          <h2 className="text-[20px] font-bold text-center mb-3" style={{ color: "#1F2937" }} data-testid="text-cancel-title">
             {t("subscription.cancelConfirm")}
           </h2>
 
@@ -64,7 +64,7 @@ export function SubscriptionCancelConfirmPage() {
             <button
               onClick={() => navigate("/account/subscription/cancelled")}
               className="w-full h-[48px] bg-card border text-muted-foreground rounded-lg font-semibold text-[15px] hover-elevate transition-colors"
-              style={{ borderColor: "var(--yo-divider)" }}
+              style={{ borderColor: "#E5E7EB" }}
               data-testid="button-confirm-cancel"
             >
               {t("subscription.confirmCancel")}
@@ -99,14 +99,14 @@ export function SubscriptionCancelledPage() {
       <PageHeader title={t("subscription.cancelledTitle")} onBack={() => navigate("/account/subscription")} />
 
       <div className="max-w-xl mx-auto p-4 pb-8">
-        <div className="bg-card rounded-lg border p-6" style={{ borderColor: "var(--yo-divider)" }}>
+        <div className="bg-card rounded-lg border p-6" style={{ borderColor: "#E5E7EB" }}>
           <div className="flex items-center justify-center mb-5">
-            <div className="w-14 h-14 rounded-lg flex items-center justify-center" style={{ backgroundColor: "var(--yo-chip-bg)" }}>
-              <CheckCircle2 className="w-7 h-7" style={{ color: "var(--yo-success)" }} />
+            <div className="w-14 h-14 rounded-lg flex items-center justify-center" style={{ backgroundColor: "#F5F7FA" }}>
+              <CheckCircle2 className="w-7 h-7" style={{ color: "#16A34A" }} />
             </div>
           </div>
 
-          <h2 className="text-[20px] font-bold text-center mb-3" style={{ color: "var(--yo-dark)" }} data-testid="text-cancelled-title">
+          <h2 className="text-[20px] font-bold text-center mb-3" style={{ color: "#1F2937" }} data-testid="text-cancelled-title">
             {t("subscription.cancelled")}
           </h2>
 

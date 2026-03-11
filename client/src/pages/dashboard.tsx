@@ -73,10 +73,10 @@ function relativeTime(dateStr: string | null | undefined, t: (key: string, param
 }
 
 const FRESH_BADGE_STYLES: Record<string, { bg: string; text: string }> = {
-  net_binnen: { bg: "bg-[var(--yo-chip-bg)]", text: "text-[var(--yo-dark)]" },
-  nieuw: { bg: "bg-[var(--yo-dark)]", text: "text-white" },
-  vandaag: { bg: "bg-[var(--yo-dark)]", text: "text-white" },
-  ouder: { bg: "bg-[var(--yo-surface)]", text: "text-[var(--yo-dark)]" },
+  net_binnen: { bg: "bg-[#F5F7FA]", text: "text-[#1F2937]" },
+  nieuw: { bg: "bg-[#1F2937]", text: "text-white" },
+  vandaag: { bg: "bg-[#1F2937]", text: "text-white" },
+  ouder: { bg: "bg-[#F5F7FA]", text: "text-[#1F2937]" },
 };
 
 const FRESH_LABEL_KEYS: Record<string, string> = {
@@ -90,14 +90,14 @@ type TabKey = "home" | "matches" | "filters" | "tips" | "profiel";
 type MatchSubTab = "nieuw" | "bekeken" | "opgeslagen" | "gereageerd";
 
 const CITY_GRADIENTS: Record<string, string> = {
-  berlin: "from-[#1A1A1A] to-[#333333]",
-  münchen: "from-[#1A1A1A] to-[#333333]",
-  hamburg: "from-[#333333] to-[#1A1A1A]",
-  frankfurt: "from-[#1A1A1A] to-[#333333]",
-  köln: "from-[#333333] to-[#1A1A1A]",
-  düsseldorf: "from-[#1A1A1A] to-[#333333]",
-  stuttgart: "from-[#333333] to-[#1A1A1A]",
-  default: "from-[#1A1A1A] to-[#333333]",
+  berlin: "from-[#1F2937] to-[#333333]",
+  münchen: "from-[#1F2937] to-[#333333]",
+  hamburg: "from-[#333333] to-[#1F2937]",
+  frankfurt: "from-[#1F2937] to-[#333333]",
+  köln: "from-[#333333] to-[#1F2937]",
+  düsseldorf: "from-[#1F2937] to-[#333333]",
+  stuttgart: "from-[#333333] to-[#1F2937]",
+  default: "from-[#1F2937] to-[#333333]",
 };
 
 function getCityGradient(city: string): string {
@@ -207,7 +207,7 @@ function MatchCard({
 
   return (
     <div
-      className="bg-white rounded-lg border border-[var(--yo-divider)] overflow-hidden cursor-pointer hover:shadow-[0_4px_24px_rgba(0,0,0,0.10)] transition-all duration-200 active:scale-[0.985]"
+      className="bg-white rounded-2xl border border-[#E5E7EB] overflow-hidden cursor-pointer hover:shadow-[0_4px_24px_rgba(0,0,0,0.10)] transition-all duration-200 active:scale-[0.985]"
       onClick={handleCardClick}
       data-testid={`card-match-${match.listing_id}`}
     >
@@ -248,9 +248,9 @@ function MatchCard({
           data-testid={`button-save-match-${match.listing_id}`}
         >
           {isSaved ? (
-            <BookmarkCheck className="w-[18px] h-[18px] text-[var(--yo-dark)]" />
+            <BookmarkCheck className="w-[18px] h-[18px] text-[#1F2937]" />
           ) : (
-            <Bookmark className="w-[18px] h-[18px] text-[var(--yo-dark)]" />
+            <Bookmark className="w-[18px] h-[18px] text-[#1F2937]" />
           )}
         </button>
       </div>
@@ -259,9 +259,9 @@ function MatchCard({
         {match.match_score != null && match.match_label && (
           <div data-testid={`score-badge-${match.listing_id}`}>
             <span className={`inline-flex text-[12px] font-bold px-3 py-1 rounded-full ${
-              match.match_score >= 90 ? "bg-[var(--yo-pink)] text-[var(--yo-dark)]" :
-              match.match_score >= 75 ? "bg-[var(--yo-chip-bg)] text-[var(--yo-dark)]" :
-              "bg-[var(--yo-chip-bg)] text-[var(--yo-dark)]"
+              match.match_score >= 90 ? "bg-[#0D6EFD] text-[#1F2937]" :
+              match.match_score >= 75 ? "bg-[#F5F7FA] text-[#1F2937]" :
+              "bg-[#F5F7FA] text-[#1F2937]"
             }`}>
               {displayMatchLabel(match.match_score, match.match_label, t)} · {match.match_score}%
             </span>
@@ -271,33 +271,33 @@ function MatchCard({
         <div>
           <div className="flex items-start justify-between gap-3">
             <h3
-              className="font-[700] text-[var(--yo-dark)] text-[18px] leading-[1.3] line-clamp-2 flex-1"
+              className="font-[700] text-[#1F2937] text-[18px] leading-[1.3] line-clamp-2 flex-1"
               data-testid={`text-match-title-${match.listing_id}`}
             >
               {match.title}
             </h3>
             {match.price > 0 && (
-              <span className="text-[17px] font-bold text-[var(--yo-dark)] whitespace-nowrap flex-shrink-0 mt-0.5">
+              <span className="text-[17px] font-bold text-[#1F2937] whitespace-nowrap flex-shrink-0 mt-0.5">
                 €{match.price}
-                <span className="text-[12px] font-normal text-[var(--yo-dark)]"> {t("common.perMonth")}</span>
+                <span className="text-[12px] font-normal text-[#1F2937]"> {t("common.perMonth")}</span>
               </span>
             )}
           </div>
         </div>
 
-        <div className="flex items-center gap-2 text-[13px] text-[var(--yo-dark)]">
+        <div className="flex items-center gap-2 text-[13px] text-[#1F2937]">
           <span className="flex items-center gap-1">
             <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
             {match.city}
           </span>
-          <span className="text-[var(--yo-divider)]">·</span>
+          <span className="text-[#E5E7EB]">·</span>
           {match.bedrooms > 0 && (
             <>
               <span className="flex items-center gap-1">
                 <BedDouble className="w-3.5 h-3.5" />
                 {match.bedrooms} {match.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}
               </span>
-              <span className="text-[var(--yo-divider)]">·</span>
+              <span className="text-[#E5E7EB]">·</span>
             </>
           )}
           {match.size_m2 > 0 && (
@@ -318,7 +318,7 @@ function MatchCard({
               {chips.map((chip) => (
                 <span
                   key={chip}
-                  className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-[var(--yo-chip-bg)] text-[var(--yo-dark)]"
+                  className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-[#F5F7FA] text-[#1F2937]"
                 >
                   {chip}
                 </span>
@@ -337,7 +337,7 @@ function MatchCard({
           if (unknowns.length === 0 && !hasPetsNote) return null;
           return (
             <div
-              className="flex flex-col gap-1 text-[11px] text-[var(--yo-dark)]/50"
+              className="flex flex-col gap-1 text-[11px] text-[#1F2937]/50"
               data-testid={`hybrid-hint-${match.listing_id}`}
               data-hybrid-furnished={hf.furnished}
               data-hybrid-district={hf.district}
@@ -360,8 +360,8 @@ function MatchCard({
           );
         })()}
 
-        <div className="flex items-center gap-2 text-[11px] text-[var(--yo-dark)]">
-          <span className="capitalize font-bold" style={{ color: "var(--yo-pink)" }}>{match.source}</span>
+        <div className="flex items-center gap-2 text-[11px] text-[#1F2937]">
+          <span className="capitalize font-bold" style={{ color: "#0D6EFD" }}>{match.source}</span>
           <span>·</span>
           <span className="flex items-center gap-1">
             <Clock className="w-3 h-3" />
@@ -372,7 +372,7 @@ function MatchCard({
         <div className="flex gap-2 mt-1">
           <button
             onClick={handleApply}
-            className="flex-1 h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[14px] font-bold transition-colors flex items-center justify-center gap-2"
+            className="flex-1 h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-bold transition-colors flex items-center justify-center gap-2"
             data-testid={`button-apply-${match.listing_id}`}
           >
             <Zap className="w-4 h-4" />
@@ -388,7 +388,7 @@ function MatchCard({
                 markViewed(match.listing_id);
                 onStatusChange();
               }}
-              className="h-[56px] px-5 rounded-lg border border-[var(--yo-divider)] bg-white text-[var(--yo-dark)] text-[14px] font-bold hover:bg-[var(--yo-surface)] transition-colors flex items-center justify-center gap-1.5"
+              className="h-[56px] px-5 rounded-full border border-[#E5E7EB] bg-white text-[#1F2937] text-[14px] font-bold hover:bg-[#F5F7FA] transition-colors flex items-center justify-center gap-1.5"
               data-testid={`button-view-listing-${match.listing_id}`}
             >
               <ExternalLink className="w-3.5 h-3.5" />
@@ -402,7 +402,7 @@ function MatchCard({
                 onStatusChange();
                 navigate(`/listing/${match.listing_id}`);
               }}
-              className="h-[56px] px-5 rounded-lg border border-[var(--yo-divider)] bg-white text-[var(--yo-dark)] text-[14px] font-bold hover:bg-[var(--yo-surface)] transition-colors flex items-center justify-center gap-1.5"
+              className="h-[56px] px-5 rounded-full border border-[#E5E7EB] bg-white text-[#1F2937] text-[14px] font-bold hover:bg-[#F5F7FA] transition-colors flex items-center justify-center gap-1.5"
               data-testid={`button-view-listing-${match.listing_id}`}
             >
               <Eye className="w-3.5 h-3.5" />
@@ -430,24 +430,24 @@ function ProfileCard({
 
   return (
     <div
-      className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 flex flex-col gap-3.5"
+      className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 flex flex-col gap-3.5"
       data-testid={`card-profile-${profile.id}`}
     >
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-full bg-[var(--yo-chip-bg)] flex items-center justify-center">
-            <MapPin className="w-4 h-4 text-[var(--yo-dark)]" />
+          <div className="w-9 h-9 rounded-full bg-[#F5F7FA] flex items-center justify-center">
+            <MapPin className="w-4 h-4 text-[#1F2937]" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <h3 className="font-semibold text-[var(--yo-dark)] text-[15px]" data-testid={`text-profile-city-${profile.id}`}>
+              <h3 className="font-semibold text-[#1F2937] text-[15px]" data-testid={`text-profile-city-${profile.id}`}>
                 {profile.city_name || profile.city}
               </h3>
               <span className="text-[10px] font-medium text-white bg-[#ff2f7d] px-1.5 py-0.5 rounded-full" data-testid={`badge-status-${profile.id}`}>
                 {t("common.active")}
               </span>
             </div>
-            <p className="text-[13px] font-[500] text-[var(--yo-dark)]">
+            <p className="text-[13px] font-[500] text-[#1F2937]">
               {t("filters.createdOn", { date: new Date(profile.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "short" }) })}
             </p>
           </div>
@@ -455,7 +455,7 @@ function ProfileCard({
         <button
           onClick={onDelete}
           disabled={deleting}
-          className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--yo-dark)] hover:text-[var(--yo-dark)] hover:bg-[var(--yo-chip-bg)] transition-colors"
+          className="w-8 h-8 rounded-lg flex items-center justify-center text-[#1F2937] hover:text-[#1F2937] hover:bg-[#F5F7FA] transition-colors"
           data-testid={`button-delete-${profile.id}`}
         >
           <Trash2 className="w-4 h-4" />
@@ -464,25 +464,25 @@ function ProfileCard({
 
       <div className="flex flex-wrap gap-2">
         {profile.location_mode === "districts" && profile.districts && profile.districts.length > 0 && (
-          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full border border-[var(--yo-divider)]" data-testid={`badge-districts-${profile.id}`}>
+          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#F5F7FA] text-[#1F2937] px-2.5 py-1 rounded-full border border-[#E5E7EB]" data-testid={`badge-districts-${profile.id}`}>
             <MapPin className="w-3 h-3" />
             {profile.districts.length === 1 ? profile.districts[0] : t("filters.districtsCount", { count: profile.districts.length })}
           </span>
         )}
         {profile.location_mode === "radius" && profile.radius_km && (
-          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full border border-[var(--yo-divider)]" data-testid={`badge-radius-${profile.id}`}>
+          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#F5F7FA] text-[#1F2937] px-2.5 py-1 rounded-full border border-[#E5E7EB]" data-testid={`badge-radius-${profile.id}`}>
             <MapPin className="w-3 h-3" />
             {profile.radius_km} {t("filters.radius")}
           </span>
         )}
         {profile.location_mode === "commute" && profile.commute_destination && (
-          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full border border-[var(--yo-divider)]" data-testid={`badge-commute-${profile.id}`}>
+          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#F5F7FA] text-[#1F2937] px-2.5 py-1 rounded-full border border-[#E5E7EB]" data-testid={`badge-commute-${profile.id}`}>
             <Clock className="w-3 h-3" />
             {profile.commute_minutes ? t("filters.commute", { time: profile.commute_minutes }) : ""} {profile.commute_mode === "ov" ? t("filters.transit") : profile.commute_mode === "fiets" ? t("filters.bike") : t("filters.car")}
           </span>
         )}
         {(profile.price_min > 0 || profile.price_max > 0) && (
-          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full border border-[var(--yo-divider)]">
+          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#F5F7FA] text-[#1F2937] px-2.5 py-1 rounded-full border border-[#E5E7EB]">
             <Euro className="w-3 h-3" />
             {profile.price_min > 0 && profile.price_max > 0
               ? `€${profile.price_min} – €${profile.price_max}`
@@ -491,12 +491,12 @@ function ProfileCard({
               : t("filters.toPrice", { price: profile.price_max })}
           </span>
         )}
-        <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full border border-[var(--yo-divider)]">
+        <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#F5F7FA] text-[#1F2937] px-2.5 py-1 rounded-full border border-[#E5E7EB]">
           <BedDouble className="w-3 h-3" />
           {bedroomLabel(profile.bedrooms_min)}
         </span>
         {profile.size_min > 0 && (
-          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] px-2.5 py-1 rounded-full border border-[var(--yo-divider)]">
+          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#F5F7FA] text-[#1F2937] px-2.5 py-1 rounded-full border border-[#E5E7EB]">
             <Ruler className="w-3 h-3" />
             {profile.size_min}+ m²
           </span>
@@ -505,7 +505,7 @@ function ProfileCard({
 
       <button
         onClick={onEdit}
-        className="w-full h-10 rounded-lg border border-[var(--yo-divider)] text-[13px] font-semibold text-[var(--yo-dark)] hover:bg-[var(--yo-surface)] transition-colors flex items-center justify-center gap-1.5"
+        className="w-full h-10 rounded-full border border-[#E5E7EB] text-[13px] font-semibold text-[#1F2937] hover:bg-[#F5F7FA] transition-colors flex items-center justify-center gap-1.5"
         data-testid={`button-edit-${profile.id}`}
       >
         {t("common.edit")}
@@ -533,16 +533,16 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
     return (
       <div className="flex flex-col gap-3" data-testid="section-recente-matches-empty">
         <div className="flex items-center gap-2">
-          <Heart className="w-4 h-4 text-[var(--yo-dark)]" />
+          <Heart className="w-4 h-4 text-[#1F2937]" />
           <h2 className="text-section-title">{t("home.recentMatches")}</h2>
         </div>
-        <div className="bg-[var(--yo-surface)] rounded-lg p-5 text-center">
-          <p className="text-[14px] text-[var(--yo-dark)] mb-3">
+        <div className="bg-[#F5F7FA] rounded-2xl p-5 text-center">
+          <p className="text-[14px] text-[#1F2937] mb-3">
             {t("home.matchesWillAppear")}
           </p>
           <button
             onClick={() => navigate("/paywall")}
-            className="h-[44px] px-6 rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[14px] font-semibold transition-colors"
+            className="h-[44px] px-6 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-semibold transition-colors"
             data-testid="button-activate-sub-matches"
           >
             {t("home.viewSubscriptions")}
@@ -557,7 +557,7 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
       <div className="flex flex-col gap-3">
         <h2 className="text-section-title">{t("home.recentMatches")}</h2>
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-20 bg-[var(--yo-surface)] rounded-lg animate-pulse" />
+          <div key={i} className="h-20 bg-[#F5F7FA] rounded-2xl animate-pulse" />
         ))}
       </div>
     );
@@ -567,11 +567,11 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
     return (
       <div className="flex flex-col gap-3" data-testid="section-recente-matches-empty">
         <div className="flex items-center gap-2">
-          <Heart className="w-4 h-4 text-[var(--yo-dark)]" />
+          <Heart className="w-4 h-4 text-[#1F2937]" />
           <h2 className="text-section-title">{t("home.recentMatches")}</h2>
         </div>
-        <div className="bg-[var(--yo-surface)] rounded-lg p-5 text-center">
-          <p className="text-[14px] text-[var(--yo-dark)]">
+        <div className="bg-[#F5F7FA] rounded-2xl p-5 text-center">
+          <p className="text-[14px] text-[#1F2937]">
             {t("home.firstMatchesWillAppear")}
           </p>
         </div>
@@ -583,12 +583,12 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
     <div className="flex flex-col gap-3" data-testid="section-recente-matches">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Heart className="w-4 h-4 text-[var(--yo-dark)]" />
+          <Heart className="w-4 h-4 text-[#1F2937]" />
           <h2 className="text-section-title">{t("home.recentMatches")}</h2>
         </div>
         <button
           onClick={() => setActiveTab("matches")}
-          className="text-[13px] font-semibold text-[var(--yo-pink)]"
+          className="text-[13px] font-semibold text-[#0D6EFD]"
           data-testid="button-view-all-matches"
         >
           {t("home.viewAll")}
@@ -611,7 +611,7 @@ function RecentMatchMiniCard({ match }: { match: ApiMatch }) {
 
   return (
     <div
-      className="bg-white rounded-lg border border-[var(--yo-divider)] overflow-hidden cursor-pointer hover:shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-all duration-200 active:scale-[0.985] flex"
+      className="bg-white rounded-2xl border border-[#E5E7EB] overflow-hidden cursor-pointer hover:shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-all duration-200 active:scale-[0.985] flex"
       onClick={() => navigate(`/listing/${match.listing_id}`)}
       data-testid={`card-recent-match-${match.listing_id}`}
     >
@@ -630,10 +630,10 @@ function RecentMatchMiniCard({ match }: { match: ApiMatch }) {
         </div>
       )}
       <div className="flex-1 min-w-0 p-3 flex flex-col justify-center gap-0.5">
-        <h3 className="text-[14px] font-[700] text-[var(--yo-dark)] leading-snug line-clamp-1" data-testid={`text-recent-title-${match.listing_id}`}>
+        <h3 className="text-[14px] font-[700] text-[#1F2937] leading-snug line-clamp-1" data-testid={`text-recent-title-${match.listing_id}`}>
           {match.title}
         </h3>
-        <div className="flex items-center gap-2 text-[12px] text-[var(--yo-dark)]">
+        <div className="flex items-center gap-2 text-[12px] text-[#1F2937]">
           <span className="flex items-center gap-0.5">
             <MapPin className="w-3 h-3" />
             {match.city}
@@ -654,7 +654,7 @@ function RecentMatchMiniCard({ match }: { match: ApiMatch }) {
       </div>
       {match.price > 0 && (
         <div className="flex items-center pr-3 flex-shrink-0">
-          <span className="text-[15px] font-bold text-[var(--yo-dark)]">€{match.price}</span>
+          <span className="text-[15px] font-bold text-[#1F2937]">€{match.price}</span>
         </div>
       )}
     </div>
@@ -752,7 +752,7 @@ function HomeTab({
           </div>
           <button
             onClick={() => setActiveTab("matches")}
-            className="w-full h-[56px] rounded-lg bg-[var(--yo-pink)] hover:opacity-90 text-white text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
+            className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
             data-testid="button-view-matches"
           >
             {t("home.viewMatches")}
@@ -776,7 +776,7 @@ function HomeTab({
           </div>
           <button
             onClick={() => setActiveTab("filters")}
-            className="w-full h-[56px] rounded-lg bg-[var(--yo-pink)] hover:opacity-90 text-white text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
+            className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
             data-testid="button-adjust-filters"
           >
             {t("home.adjustFilters")}
@@ -804,7 +804,7 @@ function HomeTab({
           </div>
           <button
             onClick={() => navigate("/paywall")}
-            className="w-full h-[56px] rounded-lg bg-[var(--yo-pink)] hover:opacity-90 text-white text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
+            className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
             data-testid="button-activate-sub"
           >
             {t("home.activateSubscription")}
@@ -823,14 +823,14 @@ function HomeTab({
       )}
 
       {subscription.isTrial && subscription.trialEndsAt && (
-        <div className="bg-[var(--yo-chip-bg)] rounded-lg px-5 py-3.5 flex items-center gap-3" data-testid="banner-trial">
-          <Crown className="w-4 h-4 text-[var(--yo-dark)] flex-shrink-0" />
-          <p className="text-[13px] font-[500] text-[var(--yo-dark)] flex-1">
+        <div className="bg-[#F5F7FA] rounded-2xl px-5 py-3.5 flex items-center gap-3" data-testid="banner-trial">
+          <Crown className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
+          <p className="text-[13px] font-[500] text-[#1F2937] flex-1">
             {t("home.trialUntil", { date: new Date(subscription.trialEndsAt).toLocaleDateString("de-DE", { day: "numeric", month: "long" }) })}
           </p>
           <button
             onClick={() => navigate("/paywall")}
-            className="text-[12px] font-semibold text-[var(--yo-pink)] hover:underline flex-shrink-0"
+            className="text-[12px] font-semibold text-[#0D6EFD] hover:underline flex-shrink-0"
             data-testid="button-trial-upgrade"
           >
             {t("home.upgrade")}
@@ -861,7 +861,7 @@ function HomeTab({
       {hasActiveSub && hasMatches && (
         <button
           onClick={() => setActiveTab("filters")}
-          className="w-full h-[56px] rounded-lg border border-[var(--yo-divider)] bg-white text-[var(--yo-dark)] text-[15px] font-bold hover:bg-[var(--yo-surface)] transition-colors flex items-center justify-center gap-2"
+          className="w-full h-[56px] rounded-full border border-[#E5E7EB] bg-white text-[#1F2937] text-[15px] font-bold hover:bg-[#F5F7FA] transition-colors flex items-center justify-center gap-2"
           data-testid="button-manage-filters"
         >
           <SlidersHorizontal className="w-4 h-4" />
@@ -964,13 +964,13 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
       <div className="flex items-center justify-between">
         <h1 className="text-page-title">{t("matches.title")}</h1>
         {totalCount > 0 && (
-          <span className="text-[13px] font-medium text-[var(--yo-dark)] bg-[var(--yo-chip-bg)] px-2.5 py-1 rounded-full" data-testid="badge-match-count">
+          <span className="text-[13px] font-medium text-[#1F2937] bg-[#F5F7FA] px-2.5 py-1 rounded-full" data-testid="badge-match-count">
             {totalCount > 999 ? "999+" : totalCount} {totalCount === 1 ? t("matches.listingSingular") : t("matches.listingPlural")}
           </span>
         )}
       </div>
 
-      <div className="flex gap-2 bg-[var(--yo-surface)] p-1.5 rounded-full" data-testid="match-sub-tabs">
+      <div className="flex gap-2 bg-[#F5F7FA] p-1.5 rounded-full" data-testid="match-sub-tabs">
         {MATCH_SUB_TAB_CONFIG.map(({ key, labelKey, Icon }) => {
           const count = tabCounts[key] || 0;
           const isActive = subTab === key;
@@ -980,15 +980,15 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
               onClick={() => setSubTab(key)}
               className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-1 rounded-full text-[13px] font-semibold transition-all duration-200 ${
                 isActive
-                  ? "bg-white text-[var(--yo-dark)] shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
-                  : "text-[var(--yo-dark)] hover:text-[var(--yo-dark)] hover:bg-white/50"
+                  ? "bg-white text-[#1F2937] shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
+                  : "text-[#1F2937] hover:text-[#1F2937] hover:bg-white/50"
               }`}
               data-testid={`tab-matches-${key}`}
             >
               <span>{t(labelKey)}</span>
               {count > 0 && (
                 <span className={`text-[10px] font-bold min-w-[20px] h-[20px] flex items-center justify-center rounded-full ${
-                  isActive ? "bg-[var(--yo-dark)] text-white" : "bg-[var(--yo-divider)] text-[var(--yo-dark)]"
+                  isActive ? "bg-[#1F2937] text-white" : "bg-[#E5E7EB] text-[#1F2937]"
                 }`}>
                   {count}
                 </span>
@@ -1001,19 +1001,19 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
       {apiMatchesQuery.isLoading ? (
         <div className="flex flex-col gap-4">
           {[1, 2].map((i) => (
-            <div key={i} className="bg-white rounded-lg border border-[var(--yo-divider)] overflow-hidden animate-pulse">
-              <div className="h-[200px] bg-[var(--yo-surface)]" />
+            <div key={i} className="bg-white rounded-lg border border-[#E5E7EB] overflow-hidden animate-pulse">
+              <div className="h-[200px] bg-[#F5F7FA]" />
               <div className="p-4 flex flex-col gap-2.5">
-                <div className="h-6 bg-[var(--yo-surface)] rounded-full w-28" />
-                <div className="h-5 bg-[var(--yo-surface)] rounded w-3/4" />
-                <div className="h-4 bg-[var(--yo-surface)] rounded w-1/2" />
+                <div className="h-6 bg-[#F5F7FA] rounded-full w-28" />
+                <div className="h-5 bg-[#F5F7FA] rounded w-3/4" />
+                <div className="h-4 bg-[#F5F7FA] rounded w-1/2" />
                 <div className="flex gap-1.5">
-                  <div className="h-6 bg-[var(--yo-surface)] rounded-full w-24" />
-                  <div className="h-6 bg-[var(--yo-surface)] rounded-full w-28" />
+                  <div className="h-6 bg-[#F5F7FA] rounded-full w-24" />
+                  <div className="h-6 bg-[#F5F7FA] rounded-full w-28" />
                 </div>
                 <div className="flex gap-2 mt-1">
-                  <div className="h-[44px] bg-[var(--yo-surface)] rounded-lg flex-1" />
-                  <div className="h-[44px] bg-[var(--yo-surface)] rounded-lg w-24" />
+                  <div className="h-[44px] bg-[#F5F7FA] rounded-lg flex-1" />
+                  <div className="h-[44px] bg-[#F5F7FA] rounded-lg w-24" />
                 </div>
               </div>
             </div>
@@ -1021,14 +1021,14 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
         </div>
       ) : apiMatchesQuery.isError ? (
         <div className="bg-white rounded-lg shadow-[0_1px_8px_rgba(0,0,0,0.06)] p-8 flex flex-col items-center text-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-[var(--yo-chip-bg)] flex items-center justify-center">
-            <AlertCircle className="w-5 h-5 text-[var(--yo-dark)]" />
+          <div className="w-12 h-12 rounded-full bg-[#F5F7FA] flex items-center justify-center">
+            <AlertCircle className="w-5 h-5 text-[#1F2937]" />
           </div>
-          <p className="text-[18px] font-[700] text-[var(--yo-dark)]">{t("matches.loadError")}</p>
-          <p className="text-[13px] text-[var(--yo-dark)]">{t("matches.loadErrorDesc")}</p>
+          <p className="text-[18px] font-[700] text-[#1F2937]">{t("matches.loadError")}</p>
+          <p className="text-[13px] text-[#1F2937]">{t("matches.loadErrorDesc")}</p>
           <button
             onClick={() => apiMatchesQuery.refetch()}
-            className="text-[13px] font-semibold text-[var(--yo-pink)]"
+            className="text-[13px] font-semibold text-[#0D6EFD]"
             data-testid="button-retry-matches"
           >
             {t("common.retry")}
@@ -1111,40 +1111,40 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
 
   return (
     <div className="fixed inset-0 z-50 bg-white flex flex-col">
-      <header className="sticky top-0 z-10 bg-white border-b border-[var(--yo-divider)]">
+      <header className="sticky top-0 z-10 bg-white border-b border-[#E5E7EB]">
         <div className="max-w-lg mx-auto flex items-center h-[56px] px-5">
           <button
             onClick={onCancel}
-            className="w-9 h-9 rounded-full bg-[var(--yo-surface)] flex items-center justify-center mr-3 active:scale-95 transition-transform"
+            className="w-9 h-9 rounded-full bg-[#F5F7FA] flex items-center justify-center mr-3 active:scale-95 transition-transform"
             data-testid="button-delete-back"
           >
-            <ArrowLeft className="w-4 h-4 text-[var(--yo-dark)]" />
+            <ArrowLeft className="w-4 h-4 text-[#1F2937]" />
           </button>
-          <h1 className="text-[17px] font-bold text-[var(--yo-dark)] flex-1 uppercase tracking-wide">{t("filters.deleteTitle")}</h1>
+          <h1 className="text-[17px] font-bold text-[#1F2937] flex-1 tracking-wide">{t("filters.deleteTitle")}</h1>
         </div>
       </header>
 
       <main className="flex-1 flex flex-col items-center justify-center px-6">
-        <div className="w-16 h-16 rounded-2xl bg-[var(--yo-pink-light)] flex items-center justify-center mb-6">
-          <Trash2 className="w-8 h-8 text-[var(--yo-pink)]" />
+        <div className="w-16 h-16 rounded-2xl bg-[#EBF2FF] flex items-center justify-center mb-6">
+          <Trash2 className="w-8 h-8 text-[#0D6EFD]" />
         </div>
-        <h2 className="text-[22px] font-bold text-[var(--yo-dark)] mb-3 text-center" data-testid="text-delete-title">
+        <h2 className="text-[22px] font-bold text-[#1F2937] mb-3 text-center" data-testid="text-delete-title">
           {t("filters.deleteQuestion")}
         </h2>
-        <p className="text-[15px] text-[var(--yo-dark)] text-center max-w-[320px] mb-10 leading-relaxed" data-testid="text-delete-body">
+        <p className="text-[15px] text-[#1F2937] text-center max-w-[320px] mb-10 leading-relaxed" data-testid="text-delete-body">
           {t("filters.deleteConfirm")}
         </p>
         <div className="w-full max-w-[320px] flex flex-col gap-3">
           <button
             onClick={onConfirm}
-            className="w-full h-[56px] rounded-lg bg-[var(--yo-pink)] text-white text-[16px] font-bold transition-colors hover:opacity-90"
+            className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[16px] font-bold transition-colors hover:opacity-90"
             data-testid="button-delete-confirm"
           >
             {t("filters.deleteYes")}
           </button>
           <button
             onClick={onCancel}
-            className="w-full h-[56px] rounded-lg border border-[var(--yo-divider)] text-[var(--yo-dark)] text-[16px] font-bold hover:bg-[var(--yo-surface)] transition-colors"
+            className="w-full h-[56px] rounded-lg border border-[#E5E7EB] text-[#1F2937] text-[16px] font-bold hover:bg-[#F5F7FA] transition-colors"
             data-testid="button-delete-cancel"
           >
             {t("filters.deleteNo")}
@@ -1200,7 +1200,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
         {!atLimit && (
           <button
             onClick={() => navigate("/dashboard/searches/new")}
-            className="w-9 h-9 rounded-full bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] flex items-center justify-center text-black transition-colors"
+            className="w-9 h-9 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] flex items-center justify-center text-white transition-colors"
             data-testid="button-add-search"
           >
             <Plus className="w-5 h-5" />
@@ -1211,11 +1211,11 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
       {profilesQuery.isLoading ? (
         <div className="flex flex-col gap-3">
           {[1, 2].map((i) => (
-            <div key={i} className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-4 animate-pulse">
-              <div className="h-4 bg-[var(--yo-surface)] rounded w-1/3 mb-3" />
+            <div key={i} className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-4 animate-pulse">
+              <div className="h-4 bg-[#F5F7FA] rounded w-1/3 mb-3" />
               <div className="flex gap-2">
-                <div className="h-6 bg-[var(--yo-surface)] rounded-full w-24" />
-                <div className="h-6 bg-[var(--yo-surface)] rounded-full w-16" />
+                <div className="h-6 bg-[#F5F7FA] rounded-full w-24" />
+                <div className="h-6 bg-[#F5F7FA] rounded-full w-16" />
               </div>
             </div>
           ))}
@@ -1243,7 +1243,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
           {!atLimit && (
             <button
               onClick={() => navigate("/dashboard/searches/new")}
-              className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-4 flex items-center justify-center gap-2 text-[14px] font-semibold text-[var(--yo-dark)] hover:bg-[var(--yo-surface)] transition-colors border-2 border-dashed border-[var(--yo-divider)]"
+              className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-4 flex items-center justify-center gap-2 text-[14px] font-semibold text-[#1F2937] hover:bg-[#F5F7FA] transition-colors border-2 border-dashed border-[#E5E7EB]"
               data-testid="button-add-search-card"
             >
               <Plus className="w-4 h-4" />
@@ -1279,9 +1279,9 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
         className="relative w-full max-w-[480px] bg-white rounded-t-lg pb-8 pt-2 animate-in slide-in-from-bottom duration-300"
         onClick={e => e.stopPropagation()}
       >
-        <div className="w-10 h-1 bg-[var(--yo-divider)] rounded-full mx-auto mb-6" />
+        <div className="w-10 h-1 bg-[#E5E7EB] rounded-full mx-auto mb-6" />
         <div className="px-5">
-          <h3 className="text-[18px] font-bold text-[var(--yo-dark)] uppercase tracking-wide mb-5">{t("profile.photo.title")}</h3>
+          <h3 className="text-[18px] font-bold text-[#1F2937] tracking-wide mb-5">{t("profile.photo.title")}</h3>
 
           {photoUrl && (
             <div className="flex justify-center mb-5">
@@ -1290,7 +1290,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
           )}
 
           <div className="flex flex-col">
-            <label className="w-full h-[56px] flex items-center justify-center gap-2 rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold cursor-pointer active:bg-[var(--yo-teal-hover)] transition-colors">
+            <label className="w-full h-[56px] flex items-center justify-center gap-2 rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold cursor-pointer active:bg-[#0B5ED7] transition-colors">
               <Camera className="w-[18px] h-[18px]" />
               {photoUrl ? t("profile.photo.choose") : t("profile.photo.upload")}
               <input
@@ -1308,7 +1308,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
             {photoUrl && (
               <button
                 onClick={onRemove}
-                className="mt-3 w-full h-[56px] flex items-center justify-center gap-2 rounded-lg border border-[var(--yo-divider)] text-[var(--yo-dark)] text-[15px] font-bold active:bg-[var(--yo-chip-bg)] transition-colors"
+                className="mt-3 w-full h-[56px] flex items-center justify-center gap-2 rounded-lg border border-[#E5E7EB] text-[#1F2937] text-[15px] font-bold active:bg-[#F5F7FA] transition-colors"
                 data-testid="button-remove-photo"
               >
                 <Trash2 className="w-[18px] h-[18px]" />
@@ -1318,7 +1318,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
 
             <button
               onClick={onClose}
-              className="mt-3 w-full h-[56px] flex items-center justify-center rounded-lg text-[var(--yo-dark)] text-[15px] font-bold active:bg-[var(--yo-surface)] transition-colors"
+              className="mt-3 w-full h-[56px] flex items-center justify-center rounded-lg text-[#1F2937] text-[15px] font-bold active:bg-[#F5F7FA] transition-colors"
               data-testid="button-cancel-photo"
             >
               {t("common.cancel")}
@@ -1334,14 +1334,14 @@ function AccountSettingsRow({ label, subtext, onClick, trailing }: { label: stri
   return (
     <button
       onClick={onClick}
-      className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[var(--yo-surface)] transition-colors"
+      className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F5F7FA] transition-colors"
       data-testid={`row-${label.toLowerCase().replace(/\s+/g, "-")}`}
     >
       <div className="flex-1 min-w-0">
-        <p className="text-[15px] font-[500] text-[var(--yo-dark)]">{label}</p>
-        {subtext && <p className="text-[13px] text-[var(--yo-dark)] mt-0.5">{subtext}</p>}
+        <p className="text-[15px] font-[500] text-[#1F2937]">{label}</p>
+        {subtext && <p className="text-[13px] text-[#1F2937] mt-0.5">{subtext}</p>}
       </div>
-      {trailing || <ChevronRight className="w-[18px] h-[18px] text-[var(--yo-dark)] flex-shrink-0" />}
+      {trailing || <ChevronRight className="w-[18px] h-[18px] text-[#1F2937] flex-shrink-0" />}
     </button>
   );
 }
@@ -1460,15 +1460,15 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
   ];
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-[var(--yo-surface)]">
-      <div className="sticky top-0 z-10 bg-white border-b border-[var(--yo-divider)]">
+    <div className="min-h-[calc(100vh-80px)] bg-[#F5F7FA]">
+      <div className="sticky top-0 z-10 bg-white border-b border-[#E5E7EB]">
         <div className="max-w-[480px] mx-auto flex relative">
           {PROFILE_SUBTABS.map(t2 => (
             <button
               key={t2.key}
               onClick={() => setProfileSubTab(t2.key)}
               className={`flex-1 text-center py-3.5 text-[15px] font-semibold transition-colors ${
-                profileSubTab === t2.key ? "text-[var(--yo-dark)]" : "text-[var(--yo-muted)]"
+                profileSubTab === t2.key ? "text-[#1F2937]" : "text-[#6B7280]"
               }`}
               data-testid={`tab-profile-${t2.key}`}
             >
@@ -1476,7 +1476,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
             </button>
           ))}
           <div
-            className="absolute bottom-0 h-[3px] bg-[var(--yo-teal)] rounded-full transition-transform duration-300 ease-in-out"
+            className="absolute bottom-0 h-[3px] bg-[#0D6EFD] rounded-full transition-transform duration-300 ease-in-out"
             style={{
               width: "50%",
               transform: profileSubTab === "over" ? "translateX(0%)" : "translateX(100%)",
@@ -1497,15 +1497,15 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                 {photoUrl ? (
                   <img src={photoUrl} alt="" className="w-16 h-16 rounded-full object-cover flex-shrink-0" data-testid="img-profile-avatar" />
                 ) : (
-                  <div className="w-16 h-16 rounded-full bg-[var(--yo-chip-bg)] flex items-center justify-center flex-shrink-0">
-                    <span className="text-[22px] font-bold text-[var(--yo-dark)]">{initials}</span>
+                  <div className="w-16 h-16 rounded-full bg-[#F5F7FA] flex items-center justify-center flex-shrink-0">
+                    <span className="text-[22px] font-bold text-[#1F2937]">{initials}</span>
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-[22px] font-[700] text-[var(--yo-dark)] truncate leading-tight" data-testid="text-user-name">{displayName || t("profile.seeker")}</p>
-                  <p className="text-[14px] text-[var(--yo-dark)] mt-0.5">{t("profile.seeker")}</p>
+                  <p className="text-[22px] font-[700] text-[#1F2937] truncate leading-tight" data-testid="text-user-name">{displayName || t("profile.seeker")}</p>
+                  <p className="text-[14px] text-[#1F2937] mt-0.5">{t("profile.seeker")}</p>
                 </div>
-                <ChevronRight className="w-5 h-5 text-[var(--yo-dark)] flex-shrink-0" />
+                <ChevronRight className="w-5 h-5 text-[#1F2937] flex-shrink-0" />
               </button>
             </div>
 
@@ -1513,28 +1513,28 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
               {(subscription.isActive || subscription.isTrial) ? (
               <div className="flex">
                 <div className="flex-1 flex items-center gap-3 p-4" data-testid="kpi-matches">
-                  <div className="w-10 h-10 rounded-full bg-[var(--yo-chip-bg)] flex items-center justify-center flex-shrink-0">
-                    <Heart className="w-[18px] h-[18px] text-[var(--yo-dark)]" />
+                  <div className="w-10 h-10 rounded-full bg-[#F5F7FA] flex items-center justify-center flex-shrink-0">
+                    <Heart className="w-[18px] h-[18px] text-[#1F2937]" />
                   </div>
                   <div>
-                    <p className="text-[20px] font-bold text-[var(--yo-dark)] leading-none">{matchCount > 999 ? "999+" : matchCount}</p>
-                    <p className="text-[12px] text-[var(--yo-dark)] mt-1 leading-tight">{t("profile.stats.matchesReceived")}</p>
+                    <p className="text-[20px] font-bold text-[#1F2937] leading-none">{matchCount > 999 ? "999+" : matchCount}</p>
+                    <p className="text-[12px] text-[#1F2937] mt-1 leading-tight">{t("profile.stats.matchesReceived")}</p>
                   </div>
                 </div>
-                <div className="w-px bg-[var(--yo-divider)] my-3" />
+                <div className="w-px bg-[#E5E7EB] my-3" />
                 <div className="flex-1 flex items-center gap-3 p-4" data-testid="kpi-reactions">
-                  <div className="w-10 h-10 rounded-full bg-[var(--yo-chip-bg)] flex items-center justify-center flex-shrink-0">
-                    <Send className="w-[18px] h-[18px] text-[var(--yo-dark)]" />
+                  <div className="w-10 h-10 rounded-full bg-[#F5F7FA] flex items-center justify-center flex-shrink-0">
+                    <Send className="w-[18px] h-[18px] text-[#1F2937]" />
                   </div>
                   <div>
-                    <p className="text-[20px] font-bold text-[var(--yo-dark)] leading-none">{stats.reactions_sent}</p>
-                    <p className="text-[12px] text-[var(--yo-dark)] mt-1 leading-tight">{t("profile.stats.reactionsSent")}</p>
+                    <p className="text-[20px] font-bold text-[#1F2937] leading-none">{stats.reactions_sent}</p>
+                    <p className="text-[12px] text-[#1F2937] mt-1 leading-tight">{t("profile.stats.reactionsSent")}</p>
                   </div>
                 </div>
               </div>
               ) : (
               <div className="p-4 text-center" data-testid="kpi-no-sub">
-                <p className="text-[14px] text-[var(--yo-dark)]">
+                <p className="text-[14px] text-[#1F2937]">
                   {t("profile.activateSubStats")}
                 </p>
               </div>
@@ -1544,42 +1544,42 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
             <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
               <button
                 onClick={() => navigate("/profile/details")}
-                className="w-full h-[56px] flex items-center justify-between px-5 text-left active:bg-[var(--yo-surface)] transition-colors"
+                className="w-full h-[56px] flex items-center justify-between px-5 text-left active:bg-[#F5F7FA] transition-colors"
                 data-testid="button-edit-details"
               >
-                <p className="text-[15px] font-semibold text-[var(--yo-pink)]">{t("profile.editDetails")}</p>
-                <ChevronRight className="w-[18px] h-[18px] text-[var(--yo-dark)] flex-shrink-0" />
+                <p className="text-[15px] font-semibold text-[#0D6EFD]">{t("profile.editDetails")}</p>
+                <ChevronRight className="w-[18px] h-[18px] text-[#1F2937] flex-shrink-0" />
               </button>
-              <div className="h-px bg-[var(--yo-divider)] mx-5" />
+              <div className="h-px bg-[#E5E7EB] mx-5" />
               <button
                 onClick={() => setShowPhotoSheet(true)}
-                className="w-full h-[56px] flex items-center justify-between px-5 text-left active:bg-[var(--yo-surface)] transition-colors"
+                className="w-full h-[56px] flex items-center justify-between px-5 text-left active:bg-[#F5F7FA] transition-colors"
                 data-testid="button-edit-photo"
               >
-                <p className="text-[15px] font-semibold text-[var(--yo-pink)]">{t("profile.editPhoto")}</p>
-                <ChevronRight className="w-[18px] h-[18px] text-[var(--yo-dark)] flex-shrink-0" />
+                <p className="text-[15px] font-semibold text-[#0D6EFD]">{t("profile.editPhoto")}</p>
+                <ChevronRight className="w-[18px] h-[18px] text-[#1F2937] flex-shrink-0" />
               </button>
             </div>
 
             <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5">
-              <h2 className="text-[20px] font-bold text-[var(--yo-dark)] mb-4" data-testid="section-verified">{t("profile.verified")}</h2>
+              <h2 className="text-[20px] font-bold text-[#1F2937] mb-4" data-testid="section-verified">{t("profile.verified")}</h2>
               <div className="flex flex-col">
                 <div className="flex items-center gap-3 py-3">
                   <div className="w-6 h-6 rounded-full bg-[#3ED6C6] flex items-center justify-center flex-shrink-0">
                     <CheckCircle2 className="w-4 h-4 text-black" />
                   </div>
-                  <p className="text-[15px] text-[var(--yo-dark)]">{user.email}</p>
+                  <p className="text-[15px] text-[#1F2937]">{user.email}</p>
                 </div>
-                <div className="h-px bg-[var(--yo-divider)]" />
+                <div className="h-px bg-[#E5E7EB]" />
                 <div className="flex items-center gap-3 py-3">
                   {phone ? (
                     <div className="w-6 h-6 rounded-full bg-[#3ED6C6] flex items-center justify-center flex-shrink-0">
                       <CheckCircle2 className="w-4 h-4 text-black" />
                     </div>
                   ) : (
-                    <AlertCircle className="w-5 h-5 text-[var(--yo-dark)] flex-shrink-0" />
+                    <AlertCircle className="w-5 h-5 text-[#1F2937] flex-shrink-0" />
                   )}
-                  <p className={`text-[15px] ${phone ? "text-[var(--yo-dark)]" : "text-[var(--yo-muted)]"}`}>
+                  <p className={`text-[15px] ${phone ? "text-[#1F2937]" : "text-[#6B7280]"}`}>
                     {phone || t("profile.addPhone")}
                   </p>
                 </div>
@@ -1587,13 +1587,13 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
             </div>
 
             <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5">
-              <h2 className="text-[20px] font-bold text-[var(--yo-dark)] mb-3">{t("profile.applicationLetter")}</h2>
+              <h2 className="text-[20px] font-bold text-[#1F2937] mb-3">{t("profile.applicationLetter")}</h2>
               {letterPreview ? (
                 <div>
-                  <p className="text-[15px] text-[var(--yo-dark)] leading-relaxed line-clamp-4">{letterPreview}...</p>
+                  <p className="text-[15px] text-[#1F2937] leading-relaxed line-clamp-4">{letterPreview}...</p>
                   <button
                     onClick={() => navigate("/application-letter")}
-                    className="mt-3 text-[15px] font-semibold text-[var(--yo-pink)] active:opacity-70 transition-opacity"
+                    className="mt-3 text-[15px] font-semibold text-[#0D6EFD] active:opacity-70 transition-opacity"
                     data-testid="button-letter-preview"
                   >
                     {t("common.edit")}
@@ -1601,10 +1601,10 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                 </div>
               ) : (
                 <div>
-                  <p className="text-[15px] text-[var(--yo-dark)] leading-relaxed">{t("profile.noLetterYet")}</p>
+                  <p className="text-[15px] text-[#1F2937] leading-relaxed">{t("profile.noLetterYet")}</p>
                   <button
                     onClick={() => navigate("/application-letter")}
-                    className="mt-3 text-[15px] font-semibold text-[var(--yo-pink)] active:opacity-70 transition-opacity"
+                    className="mt-3 text-[15px] font-semibold text-[#0D6EFD] active:opacity-70 transition-opacity"
                     data-testid="button-letter-empty"
                   >
                     {t("profile.writeLetter")}
@@ -1614,20 +1614,20 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
             </div>
 
             <div>
-              <p className="text-[13px] font-semibold text-[var(--yo-dark)] uppercase tracking-wide mb-3">{t("profile.support")}</p>
+              <p className="text-[13px] font-semibold text-[#1F2937] tracking-wide mb-3">{t("profile.support")}</p>
               <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
                 <AccountSettingsRow
                   label={t("profile.privacy")}
                   onClick={() => navigate("/datenschutz")}
                 />
-                <div className="h-px bg-[var(--yo-divider)] mx-5" />
+                <div className="h-px bg-[#E5E7EB] mx-5" />
                 <AccountSettingsRow
                   label={t("profile.helpSupport")}
                   onClick={() => {
                     window.location.href = "mailto:support@housalert.de";
                   }}
                 />
-                <div className="h-px bg-[var(--yo-divider)] mx-5" />
+                <div className="h-px bg-[#E5E7EB] mx-5" />
                 <AccountSettingsRow
                   label={t("profile.terms")}
                   onClick={() => navigate("/terms")}
@@ -1643,19 +1643,19 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                 subtext={t("profile.notificationsDesc")}
                 onClick={() => navigate("/settings/notifications")}
               />
-              <div className="h-px bg-[var(--yo-divider)] mx-5" />
+              <div className="h-px bg-[#E5E7EB] mx-5" />
               <AccountSettingsRow
                 label={t("profile.accountDetails")}
                 subtext={t("profile.accountDetailsDesc")}
                 onClick={() => navigate("/profile/details")}
               />
-              <div className="h-px bg-[var(--yo-divider)] mx-5" />
+              <div className="h-px bg-[#E5E7EB] mx-5" />
               <AccountSettingsRow
                 label={t("profile.passwordSecurity")}
                 subtext={t("profile.passwordChange")}
                 onClick={() => navigate("/account/change-password")}
               />
-              <div className="h-px bg-[var(--yo-divider)] mx-5" />
+              <div className="h-px bg-[#E5E7EB] mx-5" />
               <AccountSettingsRow
                 label={t("profile.subscription")}
                 subtext={subscription.isActive && !subscription.isTrial
@@ -1667,14 +1667,14 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                 trailing={
                   subscription.isActive && !subscription.isTrial ? (
                     <span
-                      className="text-[12px] font-[600] px-2.5 py-1 rounded-full flex-shrink-0 text-[var(--yo-dark)] bg-[var(--yo-chip-bg)]"
+                      className="text-[12px] font-[600] px-2.5 py-1 rounded-full flex-shrink-0 text-[#1F2937] bg-[#F5F7FA]"
                       data-testid="text-subscription-status"
                     >
                       {t("common.active")}
                     </span>
                   ) : subscription.isTrial ? (
                     <span
-                      className="text-[12px] font-[600] px-2.5 py-1 rounded-full flex-shrink-0 text-[var(--yo-dark)] bg-[var(--yo-chip-bg)]"
+                      className="text-[12px] font-[600] px-2.5 py-1 rounded-full flex-shrink-0 text-[#1F2937] bg-[#F5F7FA]"
                       data-testid="text-subscription-status"
                     >
                       {t("profile.trial")}
@@ -1682,29 +1682,29 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                   ) : undefined
                 }
               />
-              <div className="h-px bg-[var(--yo-divider)] mx-5" />
+              <div className="h-px bg-[#E5E7EB] mx-5" />
               <button
                 onClick={() => setShowLogoutConfirm(true)}
                 disabled={signingOut}
-                className={`w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[var(--yo-surface)] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
+                className={`w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F5F7FA] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
                 data-testid="button-logout"
               >
-                <p className="text-[15px] font-[500] text-[var(--yo-pink)] flex-1">{signingOut ? t("profile.signingOut") : t("profile.logout")}</p>
+                <p className="text-[15px] font-[500] text-[#0D6EFD] flex-1">{signingOut ? t("profile.signingOut") : t("profile.logout")}</p>
               </button>
-              <div className="h-px bg-[var(--yo-divider)] mx-5" />
+              <div className="h-px bg-[#E5E7EB] mx-5" />
               <button
                 onClick={() => navigate("/account/delete")}
-                className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[var(--yo-surface)] transition-colors"
+                className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F5F7FA] transition-colors"
                 data-testid="button-delete-account"
               >
-                <p className="text-[15px] font-[500] text-[var(--yo-pink)] flex-1">{t("profile.deleteAccount")}</p>
+                <p className="text-[15px] font-[500] text-[#0D6EFD] flex-1">{t("profile.deleteAccount")}</p>
               </button>
             </div>
 
             {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
               <button
                 onClick={() => navigate("/paywall")}
-                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
+                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
                 data-testid="button-upgrade-subscription"
               >
                 <Crown className="w-4 h-4" />
@@ -1726,40 +1726,40 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
 
       {showLogoutConfirm && (
         <div className="fixed inset-0 z-50 bg-white flex flex-col">
-          <header className="sticky top-0 z-10 bg-white border-b border-[var(--yo-divider)]">
+          <header className="sticky top-0 z-10 bg-white border-b border-[#E5E7EB]">
             <div className="max-w-lg mx-auto flex items-center h-[56px] px-5">
               <button
                 onClick={() => setShowLogoutConfirm(false)}
-                className="w-9 h-9 rounded-full bg-[var(--yo-surface)] flex items-center justify-center mr-3 active:scale-95 transition-transform"
+                className="w-9 h-9 rounded-full bg-[#F5F7FA] flex items-center justify-center mr-3 active:scale-95 transition-transform"
                 data-testid="button-logout-back"
               >
-                <ArrowLeft className="w-4 h-4 text-[var(--yo-dark)]" />
+                <ArrowLeft className="w-4 h-4 text-[#1F2937]" />
               </button>
-              <h1 className="text-[17px] font-bold text-[var(--yo-dark)] flex-1 uppercase tracking-wide">{t("profile.logout")}</h1>
+              <h1 className="text-[17px] font-bold text-[#1F2937] flex-1 tracking-wide">{t("profile.logout")}</h1>
             </div>
           </header>
           <main className="flex-1 flex flex-col items-center justify-center px-6">
-            <div className="w-16 h-16 rounded-2xl bg-[var(--yo-chip-bg)] flex items-center justify-center mb-6">
-              <LogOut className="w-8 h-8 text-[var(--yo-dark)]" />
+            <div className="w-16 h-16 rounded-2xl bg-[#F5F7FA] flex items-center justify-center mb-6">
+              <LogOut className="w-8 h-8 text-[#1F2937]" />
             </div>
-            <h2 className="text-[22px] font-bold text-[var(--yo-dark)] mb-3 text-center" data-testid="text-logout-title">
+            <h2 className="text-[22px] font-bold text-[#1F2937] mb-3 text-center" data-testid="text-logout-title">
               {t("profile.logoutConfirm")}
             </h2>
-            <p className="text-[15px] text-[var(--yo-dark)] text-center max-w-[320px] mb-10 leading-relaxed">
+            <p className="text-[15px] text-[#1F2937] text-center max-w-[320px] mb-10 leading-relaxed">
               {t("profile.logoutDesc")}
             </p>
             <div className="w-full max-w-[320px] flex flex-col gap-3">
               <button
                 onClick={handleSignOut}
                 disabled={signingOut}
-                className="w-full h-[56px] rounded-lg bg-[var(--yo-pink)] text-white text-[16px] font-bold transition-colors hover:opacity-90 disabled:opacity-50"
+                className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[16px] font-bold transition-colors hover:opacity-90 disabled:opacity-50"
                 data-testid="button-logout-confirm"
               >
                 {signingOut ? t("profile.signingOut") : t("profile.logoutYes")}
               </button>
               <button
                 onClick={() => setShowLogoutConfirm(false)}
-                className="w-full h-[56px] rounded-lg border border-[var(--yo-divider)] text-[var(--yo-dark)] text-[16px] font-bold hover:bg-[var(--yo-surface)] transition-colors"
+                className="w-full h-[56px] rounded-lg border border-[#E5E7EB] text-[#1F2937] text-[16px] font-bold hover:bg-[#F5F7FA] transition-colors"
                 data-testid="button-logout-cancel"
               >
                 {t("common.cancel")}
@@ -1850,8 +1850,8 @@ export default function DashboardPage() {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[var(--yo-chip-bg)] animate-pulse" />
-          <p className="text-[var(--yo-dark)] text-sm">{t("common.loading")}</p>
+          <div className="w-8 h-8 rounded-lg bg-[#F5F7FA] animate-pulse" />
+          <p className="text-[#1F2937] text-sm">{t("common.loading")}</p>
         </div>
       </div>
     );
@@ -1896,7 +1896,7 @@ export default function DashboardPage() {
         )}
       </main>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[var(--yo-divider)]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+      <nav className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#E5E7EB]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
         <div className="max-w-xl mx-auto flex h-[56px]">
           {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
             const isActive = activeTab === key;
@@ -1904,11 +1904,11 @@ export default function DashboardPage() {
               <button
                 key={key}
                 onClick={() => setActiveTab(key)}
-                className="flex-1 flex flex-col items-center justify-center gap-0.5 relative transition-colors text-[var(--yo-dark)]"
+                className="flex-1 flex flex-col items-center justify-center gap-0.5 relative transition-colors text-[#1F2937]"
                 data-testid={`tab-${key}`}
               >
                 {isActive && (
-                  <span className="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-[3px] rounded-b-full bg-[var(--yo-teal)]" />
+                  <span className="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-[3px] rounded-b-full bg-[#0D6EFD]" />
                 )}
                 <Icon className="w-[22px] h-[22px]" />
                 <span className={`text-[11px] ${isActive ? "font-semibold" : "font-medium"}`}>

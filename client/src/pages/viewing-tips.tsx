@@ -98,16 +98,16 @@ export default function ViewingTipsPage() {
                 data-testid={`card-tips-section-${idx}`}
               >
                 <div className="flex items-center gap-3 p-6 pb-3">
-                  <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "var(--yo-teal-light)" }}>
-                    <Icon className="w-4.5 h-4.5" style={{ color: "var(--yo-teal)" }} />
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#EBF2FF" }}>
+                    <Icon className="w-4.5 h-4.5" style={{ color: "#0D6EFD" }} />
                   </div>
-                  <h3 className="text-[16px] font-semibold" style={{ color: "var(--yo-dark)" }}>{section.title}</h3>
+                  <h3 className="text-[16px] font-semibold" style={{ color: "#1F2937" }}>{section.title}</h3>
                 </div>
                 <div className="px-6 pb-6">
                   <ul className="flex flex-col gap-2.5">
                     {items.map((item: string, i: number) => (
                       <li key={i} className="flex items-start gap-2.5">
-                        <span className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0" style={{ backgroundColor: "var(--yo-teal)" }} />
+                        <span className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0" style={{ backgroundColor: "#0D6EFD" }} />
                         <span className="text-[13px] text-muted-foreground leading-relaxed">{item}</span>
                       </li>
                     ))}
@@ -119,10 +119,10 @@ export default function ViewingTipsPage() {
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-5 z-10" style={{ borderColor: "var(--yo-divider)" }}>
+      <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-5 z-10" style={{ borderColor: "#E5E7EB" }}>
         <div className="max-w-xl mx-auto">
           {markedDone ? (
-            <div className="flex items-center justify-center gap-2 h-[56px]" style={{ color: "var(--yo-teal)" }}>
+            <div className="flex items-center justify-center gap-2 h-[56px]" style={{ color: "#0D6EFD" }}>
               <CheckCircle2 className="w-5 h-5" />
               <span className="text-[16px] font-semibold">{t("viewingTips.completed")}</span>
             </div>

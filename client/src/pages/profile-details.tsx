@@ -94,7 +94,7 @@ export default function ProfileDetailsPage() {
                     >
                       <div className="min-w-0 flex-1">
                         <p className="text-[13px] text-muted-foreground mb-0.5">{field.label}</p>
-                        <p className="text-[16px] font-[500] truncate" style={{ color: "var(--yo-dark)" }}>
+                        <p className="text-[16px] font-[500] truncate" style={{ color: "#1F2937" }}>
                           {value || <span className="text-muted-foreground">{t("profileDetails.add")}</span>}
                         </p>
                       </div>
@@ -103,11 +103,11 @@ export default function ProfileDetailsPage() {
                   ) : (
                     <div className="px-5 py-4" data-testid={`field-${field.key}`}>
                       <p className="text-[13px] text-muted-foreground mb-0.5">{field.label}</p>
-                      <p className="text-[16px] font-[500] truncate" style={{ color: "var(--yo-dark)" }}>{value || "-"}</p>
+                      <p className="text-[16px] font-[500] truncate" style={{ color: "#1F2937" }}>{value || "-"}</p>
                     </div>
                   )}
                   {i < FIELDS.length - 1 && (
-                    <div className="h-px mx-5" style={{ backgroundColor: "var(--yo-divider)" }} />
+                    <div className="h-px mx-5" style={{ backgroundColor: "#E5E7EB" }} />
                   )}
                 </div>
               );

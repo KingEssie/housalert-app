@@ -11,16 +11,16 @@ import { ApplySheet } from "@/components/apply-sheet";
 function FloatingBackButton({ navigate }: { navigate: (to: string) => void }) {
   return (
     <div className="fixed top-[max(0.75rem,env(safe-area-inset-top))] left-4 z-30">
-      <button onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard")} className="w-11 h-11 rounded-full bg-white/90 backdrop-blur-sm shadow-md flex items-center justify-center active:scale-95 transition-transform" data-testid="button-back"><ArrowLeft className="w-5 h-5 text-[var(--yo-dark)]" /></button>
+      <button onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard")} className="w-11 h-11 rounded-full bg-white/90 backdrop-blur-sm shadow-md flex items-center justify-center active:scale-95 transition-transform" data-testid="button-back"><ArrowLeft className="w-5 h-5 text-[#1F2937]" /></button>
     </div>
   );
 }
 
 const FRESH_BADGE_STYLES: Record<string, { bg: string; text: string }> = {
-  net_binnen: { bg: "bg-[var(--yo-chip-bg)]", text: "text-[var(--yo-dark)]" },
-  nieuw: { bg: "bg-[var(--yo-dark)]", text: "text-white" },
-  vandaag: { bg: "bg-[var(--yo-dark)]", text: "text-white" },
-  ouder: { bg: "bg-[var(--yo-surface)]", text: "text-[var(--yo-dark)]" },
+  net_binnen: { bg: "bg-[#F5F7FA]", text: "text-[#1F2937]" },
+  nieuw: { bg: "bg-[#1F2937]", text: "text-white" },
+  vandaag: { bg: "bg-[#1F2937]", text: "text-white" },
+  ouder: { bg: "bg-[#F5F7FA]", text: "text-[#1F2937]" },
 };
 
 const FRESH_LABEL_KEYS: Record<string, string> = {
@@ -31,12 +31,12 @@ const FRESH_LABEL_KEYS: Record<string, string> = {
 };
 
 const CITY_GRADIENTS: Record<string, string> = {
-  berlin: "from-[#1A1A1A] to-[#333333]",
-  münchen: "from-[#1A1A1A] to-[#333333]",
-  hamburg: "from-[#333333] to-[#1A1A1A]",
-  frankfurt: "from-[#1A1A1A] to-[#333333]",
-  köln: "from-[#333333] to-[#1A1A1A]",
-  default: "from-[#1A1A1A] to-[#333333]",
+  berlin: "from-[#1F2937] to-[#333333]",
+  münchen: "from-[#1F2937] to-[#333333]",
+  hamburg: "from-[#333333] to-[#1F2937]",
+  frankfurt: "from-[#1F2937] to-[#333333]",
+  köln: "from-[#333333] to-[#1F2937]",
+  default: "from-[#1F2937] to-[#333333]",
 };
 
 function getCityGradient(city: string): string {
@@ -112,15 +112,15 @@ export default function ListingDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[var(--yo-surface)] flex flex-col relative">
+      <div className="min-h-screen bg-[#F5F7FA] flex flex-col relative">
         <FloatingBackButton navigate={navigate} />
         <div className="animate-pulse">
-          <div className="h-[260px] bg-[var(--yo-divider)]" />
+          <div className="h-[260px] bg-[#E5E7EB]" />
           <div className="max-w-xl mx-auto w-full px-5 pt-5 space-y-4">
-            <div className="bg-white rounded-lg border border-[var(--yo-divider)] p-5 space-y-3">
-              <div className="h-5 bg-[var(--yo-surface)] rounded w-28" />
-              <div className="h-7 bg-[var(--yo-surface)] rounded w-3/4" />
-              <div className="h-4 bg-[var(--yo-surface)] rounded w-1/2" />
+            <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 space-y-3">
+              <div className="h-5 bg-[#F5F7FA] rounded w-28" />
+              <div className="h-7 bg-[#F5F7FA] rounded w-3/4" />
+              <div className="h-4 bg-[#F5F7FA] rounded w-1/2" />
             </div>
           </div>
         </div>
@@ -130,13 +130,13 @@ export default function ListingDetailPage() {
 
   if (isError || !listing) {
     return (
-      <div className="min-h-screen bg-[var(--yo-surface)] flex flex-col relative">
+      <div className="min-h-screen bg-[#F5F7FA] flex flex-col relative">
         <FloatingBackButton navigate={navigate} />
         <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-16">
-          <div className="bg-white rounded-lg border border-[var(--yo-divider)] p-8 text-center">
-            <p className="text-[18px] font-bold text-[var(--yo-dark)] mb-2">{t("listing.notFound")}</p>
-            <p className="text-[13px] text-[var(--yo-dark)] mb-4">{t("listing.notFoundDesc")}</p>
-            <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold" data-testid="button-back-dashboard">
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] p-8 text-center">
+            <p className="text-[18px] font-bold text-[#1F2937] mb-2">{t("listing.notFound")}</p>
+            <p className="text-[13px] text-[#1F2937] mb-4">{t("listing.notFoundDesc")}</p>
+            <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold" data-testid="button-back-dashboard">
               {t("listing.backToDashboard")}
             </Button>
           </div>
@@ -150,9 +150,9 @@ export default function ListingDetailPage() {
   const gradient = getCityGradient(listing.city);
 
   const scoreColor = listing.match_score != null
-    ? listing.match_score >= 90 ? "bg-[var(--yo-pink)] text-[var(--yo-dark)]"
-    : listing.match_score >= 75 ? "bg-[var(--yo-chip-bg)] text-[var(--yo-dark)]"
-    : "bg-[var(--yo-surface)] text-[var(--yo-dark)]"
+    ? listing.match_score >= 90 ? "bg-[#0D6EFD] text-[#1F2937]"
+    : listing.match_score >= 75 ? "bg-[#F5F7FA] text-[#1F2937]"
+    : "bg-[#F5F7FA] text-[#1F2937]"
     : "";
 
   const displayMatchLabel = (score: number, serverLabel: string): string => {
@@ -170,7 +170,7 @@ export default function ListingDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--yo-surface)] flex flex-col relative">
+    <div className="min-h-screen bg-[#F5F7FA] flex flex-col relative">
       <FloatingBackButton navigate={navigate} />
 
       <div className="relative">
@@ -206,7 +206,7 @@ export default function ListingDetailPage() {
 
       <main className="flex-1 max-w-xl mx-auto w-full px-5 -mt-6 relative z-10 pb-36">
         <div className="space-y-4">
-          <div className="bg-white rounded-lg border border-[var(--yo-divider)] p-5">
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5">
             {listing.match_score != null && listing.match_label && (
               <div className="mb-3" data-testid="listing-score-badge">
                 <span className={`inline-flex text-[13px] font-bold px-3.5 py-1.5 rounded-full ${scoreColor}`}>
@@ -215,11 +215,11 @@ export default function ListingDetailPage() {
               </div>
             )}
 
-            <h1 className="text-[24px] font-[800] text-[var(--yo-dark)] leading-[1.2] tracking-[-0.02em] uppercase mb-2" data-testid="text-listing-title">
+            <h1 className="text-[24px] font-[800] text-[#1F2937] leading-[1.2] tracking-[-0.02em] mb-2" data-testid="text-listing-title">
               {listing.title}
             </h1>
 
-            <div className="flex items-center gap-1.5 text-[14px] text-[var(--yo-dark)] mb-4">
+            <div className="flex items-center gap-1.5 text-[14px] text-[#1F2937] mb-4">
               <MapPin className="w-4 h-4 flex-shrink-0" />
               <span data-testid="text-listing-location">
                 {listing.city}
@@ -228,63 +228,63 @@ export default function ListingDetailPage() {
 
             {listing.price > 0 && (
               <div className="flex items-baseline gap-1 mb-1">
-                <span className="text-[28px] font-[800] text-[var(--yo-dark)]" data-testid="text-listing-price">€{listing.price}</span>
-                <span className="text-[15px] font-medium text-[var(--yo-dark)]">{t("common.perMonth")}</span>
+                <span className="text-[28px] font-[800] text-[#1F2937]" data-testid="text-listing-price">€{listing.price}</span>
+                <span className="text-[15px] font-medium text-[#1F2937]">{t("common.perMonth")}</span>
               </div>
             )}
           </div>
 
-          <div className="bg-white rounded-lg border border-[var(--yo-divider)] p-5">
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5">
             <h2 className="text-section-title mb-4">{t("listing.details")}</h2>
             <div className="grid grid-cols-2 gap-4">
               {listing.bedrooms > 0 && (
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-[var(--yo-chip-bg)] flex items-center justify-center">
-                    <BedDouble className="w-5 h-5 text-[var(--yo-dark)]" />
+                  <div className="w-10 h-10 rounded-lg bg-[#F5F7FA] flex items-center justify-center">
+                    <BedDouble className="w-5 h-5 text-[#1F2937]" />
                   </div>
                   <div>
-                    <p className="text-[12px] text-[var(--yo-dark)]">{t("listing.bedrooms")}</p>
-                    <p className="text-[15px] font-semibold text-[var(--yo-dark)]" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
+                    <p className="text-[12px] text-[#1F2937]">{t("listing.bedrooms")}</p>
+                    <p className="text-[15px] font-semibold text-[#1F2937]" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
                   </div>
                 </div>
               )}
 
               {listing.size_m2 > 0 && (
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-[var(--yo-chip-bg)] flex items-center justify-center">
-                    <Ruler className="w-5 h-5 text-[var(--yo-dark)]" />
+                  <div className="w-10 h-10 rounded-lg bg-[#F5F7FA] flex items-center justify-center">
+                    <Ruler className="w-5 h-5 text-[#1F2937]" />
                   </div>
                   <div>
-                    <p className="text-[12px] text-[var(--yo-dark)]">{t("listing.area")}</p>
-                    <p className="text-[15px] font-semibold text-[var(--yo-dark)]" data-testid="text-listing-size">{listing.size_m2} m²</p>
+                    <p className="text-[12px] text-[#1F2937]">{t("listing.area")}</p>
+                    <p className="text-[15px] font-semibold text-[#1F2937]" data-testid="text-listing-size">{listing.size_m2} m²</p>
                   </div>
                 </div>
               )}
 
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-[var(--yo-chip-bg)] flex items-center justify-center">
-                  <Globe className="w-5 h-5 text-[var(--yo-dark)]" />
+                <div className="w-10 h-10 rounded-lg bg-[#F5F7FA] flex items-center justify-center">
+                  <Globe className="w-5 h-5 text-[#1F2937]" />
                 </div>
                 <div>
-                  <p className="text-[12px] text-[var(--yo-dark)]">{t("listing.source")}</p>
-                  <p className="text-[15px] font-bold capitalize" style={{ color: "var(--yo-pink)" }} data-testid="text-listing-source">{listing.source}</p>
+                  <p className="text-[12px] text-[#1F2937]">{t("listing.source")}</p>
+                  <p className="text-[15px] font-bold capitalize" style={{ color: "#0D6EFD" }} data-testid="text-listing-source">{listing.source}</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-[var(--yo-chip-bg)] flex items-center justify-center">
-                  <Clock className="w-5 h-5 text-[var(--yo-dark)]" />
+                <div className="w-10 h-10 rounded-lg bg-[#F5F7FA] flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-[#1F2937]" />
                 </div>
                 <div>
-                  <p className="text-[12px] text-[var(--yo-dark)]">{t("listing.posted")}</p>
-                  <p className="text-[15px] font-semibold text-[var(--yo-dark)]" data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</p>
+                  <p className="text-[12px] text-[#1F2937]">{t("listing.posted")}</p>
+                  <p className="text-[15px] font-semibold text-[#1F2937]" data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</p>
                 </div>
               </div>
             </div>
           </div>
 
           {listing.match_reasons && listing.match_reasons.length > 0 && (
-            <div className="bg-white rounded-lg border border-[var(--yo-divider)] p-5" data-testid="section-why-match">
+            <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5" data-testid="section-why-match">
               <h2 className="text-section-title mb-4">{t("listing.whyMatch")}</h2>
               <div className="flex flex-col gap-3">
                 {listing.match_reasons.map((reason) => {
@@ -295,9 +295,9 @@ export default function ListingDetailPage() {
                         <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
                       </div>
                       <div>
-                        <p className="text-[14px] font-semibold text-[var(--yo-dark)]">{detail?.label ?? reason}</p>
+                        <p className="text-[14px] font-semibold text-[#1F2937]">{detail?.label ?? reason}</p>
                         {detail?.description && (
-                          <p className="text-[13px] text-[var(--yo-dark)] mt-0.5">{detail.description}</p>
+                          <p className="text-[13px] text-[#1F2937] mt-0.5">{detail.description}</p>
                         )}
                       </div>
                     </div>
@@ -317,14 +317,14 @@ export default function ListingDetailPage() {
             if (unknowns.length === 0 && !hasPetsNote) return null;
             return (
               <div
-                className="bg-white rounded-lg border border-[var(--yo-divider)] p-4 space-y-2"
+                className="bg-white rounded-2xl border border-[#E5E7EB] p-4 space-y-2"
                 data-testid="section-hybrid-filters"
                 data-hybrid-furnished={hf.furnished}
                 data-hybrid-district={hf.district}
                 data-hybrid-pets={hf.pets}
               >
                 {unknowns.length > 0 && (
-                  <div className="flex items-start gap-2 text-[12px] text-[var(--yo-dark)]/50">
+                  <div className="flex items-start gap-2 text-[12px] text-[#1F2937]/50">
                     <Info className="w-3.5 h-3.5 flex-shrink-0 mt-[1px]" />
                     <div>
                       <p className="font-medium">{t("hybridFilter.unknownHint")}</p>
@@ -337,7 +337,7 @@ export default function ListingDetailPage() {
                   </div>
                 )}
                 {hasPetsNote && (
-                  <div className="flex items-start gap-2 text-[12px] text-[var(--yo-dark)]/50">
+                  <div className="flex items-start gap-2 text-[12px] text-[#1F2937]/50">
                     <Info className="w-3.5 h-3.5 flex-shrink-0 mt-[1px]" />
                     <p>{t("hybridFilter.petsNote")}</p>
                   </div>
@@ -348,12 +348,12 @@ export default function ListingDetailPage() {
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[var(--yo-divider)] p-4 pb-5 z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] p-4 pb-5 z-10">
         <div className="max-w-xl mx-auto flex flex-col gap-2">
           <div className="flex gap-2">
             <Button
               onClick={() => setApplyOpen(true)}
-              className="flex-1 h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold flex items-center justify-center gap-2"
+              className="flex-1 h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold flex items-center justify-center gap-2"
               data-testid="button-reageer-detail"
             >
               <Zap className="w-4 h-4" />
@@ -363,7 +363,7 @@ export default function ListingDetailPage() {
               <a href={listing.url} target="_blank" rel="noopener noreferrer">
                 <Button
                   variant="outline"
-                  className="h-[56px] px-5 rounded-lg border border-[var(--yo-divider)] bg-white text-[var(--yo-dark)] text-[15px] font-bold flex items-center gap-2"
+                  className="h-[56px] px-5 rounded-full border border-[#E5E7EB] bg-white text-[#1F2937] text-[15px] font-bold flex items-center gap-2"
                   data-testid="button-view-original"
                 >
                   <ExternalLink className="w-4 h-4" />

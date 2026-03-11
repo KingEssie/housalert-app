@@ -5,15 +5,15 @@ import { useTranslation } from "@/i18n";
 export default function NotFound() {
   const { t } = useTranslation();
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-[var(--yo-surface)]">
+    <div className="min-h-screen w-full flex items-center justify-center bg-[#F5F7FA]">
       <Card className="w-full max-w-md mx-4">
         <CardContent className="pt-6">
           <div className="flex mb-4 gap-2">
-            <AlertCircle className="h-8 w-8 text-[var(--yo-teal)]" />
-            <h1 className="text-2xl font-bold text-[var(--yo-dark)]">{t("notFound.title")}</h1>
+            <AlertCircle className="h-8 w-8 text-[#0D6EFD]" />
+            <h1 className="text-2xl font-bold text-[#1F2937]">{t("notFound.title")}</h1>
           </div>
 
-          <p className="mt-4 text-sm text-[var(--yo-dark)]">
+          <p className="mt-4 text-sm text-[#1F2937]">
             {t("notFound.desc")}
           </p>
         </CardContent>

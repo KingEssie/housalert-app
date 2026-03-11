@@ -143,8 +143,8 @@ function getScoreMicrocopy(score: number, remaining: number): string {
 }
 
 function getScoreColor(score: number): string {
-  if (score >= 30) return "var(--yo-pink)";
-  return "var(--yo-muted)";
+  if (score >= 30) return "#0D6EFD";
+  return "#6B7280";
 }
 
 function getScoreHeadline(score: number): string {
@@ -161,15 +161,15 @@ function BoostScoreCard({ score, remaining, completed, total }: { score: number;
   const headline = getScoreHeadline(score);
 
   return (
-    <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6" data-testid="card-boost-score">
+    <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6" data-testid="card-boost-score">
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-[var(--yo-chip-bg)] flex items-center justify-center">
-            <Zap className="w-5 h-5 text-[var(--yo-dark)]" />
+          <div className="w-10 h-10 rounded-full bg-[#F5F7FA] flex items-center justify-center">
+            <Zap className="w-5 h-5 text-[#1F2937]" />
           </div>
           <div>
-            <h3 className="text-[15px] font-semibold text-[var(--yo-dark)]">{headline}</h3>
-            <p className="text-[13px] text-[var(--yo-dark)]">{completed} von {total} abgeschlossen</p>
+            <h3 className="text-[15px] font-semibold text-[#1F2937]">{headline}</h3>
+            <p className="text-[13px] text-[#1F2937]">{completed} von {total} abgeschlossen</p>
           </div>
         </div>
         <span className="text-[36px] font-[800] leading-none tracking-[-0.03em]" style={{ color }} data-testid="text-boost-score">
@@ -177,7 +177,7 @@ function BoostScoreCard({ score, remaining, completed, total }: { score: number;
         </span>
       </div>
 
-      <div className="w-full h-2 bg-[var(--yo-surface)] rounded-full overflow-hidden mb-4">
+      <div className="w-full h-2 bg-[#F5F7FA] rounded-full overflow-hidden mb-4">
         <div
           className="h-full rounded-full transition-all duration-700 ease-out"
           style={{ width: `${score}%`, background: color }}
@@ -185,7 +185,7 @@ function BoostScoreCard({ score, remaining, completed, total }: { score: number;
         />
       </div>
 
-      <p className="text-[14px] text-[var(--yo-dark)] leading-relaxed" data-testid="text-boost-microcopy">
+      <p className="text-[14px] text-[#1F2937] leading-relaxed" data-testid="text-boost-microcopy">
         {microcopy}
       </p>
     </div>
@@ -226,21 +226,21 @@ function RecommendedSection({
           return (
             <div
               key={task.id}
-              className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5"
+              className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5"
               data-testid={`card-recommend-${task.id}`}
             >
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgba(45,212,191,0.1)" }}>
-                  <Icon className="w-5 h-5 text-[var(--yo-teal)]" />
+                  <Icon className="w-5 h-5 text-[#0D6EFD]" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
-                    <p className="text-[15px] font-semibold text-[var(--yo-dark)] leading-snug">{task.label}</p>
-                    <span className="text-[12px] font-semibold text-[var(--yo-teal)] px-2 py-0.5 rounded-full flex-shrink-0 whitespace-nowrap" style={{ backgroundColor: "rgba(45,212,191,0.1)" }} data-testid={`badge-points-${task.id}`}>
+                    <p className="text-[15px] font-semibold text-[#1F2937] leading-snug">{task.label}</p>
+                    <span className="text-[12px] font-semibold text-[#0D6EFD] px-2 py-0.5 rounded-full flex-shrink-0 whitespace-nowrap" style={{ backgroundColor: "rgba(45,212,191,0.1)" }} data-testid={`badge-points-${task.id}`}>
                       +{task.weight}
                     </span>
                   </div>
-                  <p className="text-[13px] text-[var(--yo-dark)] leading-relaxed mt-1">{subtitle}</p>
+                  <p className="text-[13px] text-[#1F2937] leading-relaxed mt-1">{subtitle}</p>
                 </div>
               </div>
               <Button
@@ -276,25 +276,25 @@ function AllTasksSection({
       <h3 className="text-section-title mb-3">
         Alle Schritte
       </h3>
-      <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] overflow-hidden">
         {incompleteTasks.map((task, i) => {
           const Icon = TASK_ICONS[task.id] || Shield;
           return (
             <button
               key={task.id}
               onClick={() => onTaskClick(task.id)}
-              className={`w-full flex items-center gap-3 p-4 text-left hover:bg-[var(--yo-surface)] transition-colors ${
-                i < incompleteTasks.length - 1 || completedTasks.length > 0 ? "border-b border-[var(--yo-divider)]" : ""
+              className={`w-full flex items-center gap-3 p-4 text-left hover:bg-[#F5F7FA] transition-colors ${
+                i < incompleteTasks.length - 1 || completedTasks.length > 0 ? "border-b border-[#E5E7EB]" : ""
               }`}
               data-testid={`task-${task.id}`}
             >
-              <div className="w-5 h-5 rounded-full border-2 border-[var(--yo-divider)] flex-shrink-0" />
-              <Icon className="w-4 h-4 text-[var(--yo-dark)] flex-shrink-0" />
+              <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
+              <Icon className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-[14px] font-medium text-[var(--yo-dark)]">{task.label}</p>
-                <p className="text-[13px] font-[500] text-[var(--yo-dark)]">+{task.weight} Punkte</p>
+                <p className="text-[14px] font-medium text-[#1F2937]">{task.label}</p>
+                <p className="text-[13px] font-[500] text-[#1F2937]">+{task.weight} Punkte</p>
               </div>
-              <ArrowRight className="w-4 h-4 text-[var(--yo-dark)] flex-shrink-0" />
+              <ArrowRight className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
             </button>
           );
         })}
@@ -304,15 +304,15 @@ function AllTasksSection({
             <div
               key={task.id}
               className={`flex items-center gap-3 p-4 opacity-60 ${
-                i < completedTasks.length - 1 ? "border-b border-[var(--yo-divider)]" : ""
+                i < completedTasks.length - 1 ? "border-b border-[#E5E7EB]" : ""
               }`}
               data-testid={`task-done-${task.id}`}
             >
               <div className="w-5 h-5 rounded-full bg-[#EAF9DF] flex items-center justify-center flex-shrink-0">
                 <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
               </div>
-              <Icon className="w-4 h-4 text-[var(--yo-dark)] flex-shrink-0" />
-              <p className="text-[14px] text-[var(--yo-dark)] line-through">{task.label}</p>
+              <Icon className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
+              <p className="text-[14px] text-[#1F2937] line-through">{task.label}</p>
             </div>
           );
         })}
@@ -323,19 +323,19 @@ function AllTasksSection({
 
 function EmptyState({ onStart }: { onStart: () => void }) {
   return (
-    <div className="bg-[var(--yo-surface)] rounded-lg p-6 text-center" data-testid="boost-empty-state">
-      <div className="w-12 h-12 rounded-full bg-[var(--yo-chip-bg)] flex items-center justify-center mx-auto mb-4">
-        <Zap className="w-5 h-5 text-[var(--yo-dark)]" />
+    <div className="bg-[#F5F7FA] rounded-2xl p-6 text-center" data-testid="boost-empty-state">
+      <div className="w-12 h-12 rounded-full bg-[#F5F7FA] flex items-center justify-center mx-auto mb-4">
+        <Zap className="w-5 h-5 text-[#1F2937]" />
       </div>
-      <h3 className="text-[18px] font-semibold text-[var(--yo-dark)] mb-1.5">
+      <h3 className="text-[18px] font-semibold text-[#1F2937] mb-1.5">
         Starte mit dem ersten Schritt
       </h3>
-      <p className="text-[14px] font-[500] text-[var(--yo-dark)] leading-relaxed mb-5 max-w-[260px] mx-auto">
+      <p className="text-[14px] font-[500] text-[#1F2937] leading-relaxed mb-5 max-w-[260px] mx-auto">
         Je vollständiger dein Profil, desto schneller kannst du auf neue Wohnungen reagieren.
       </p>
       <Button
         onClick={onStart}
-        className="h-[56px] px-8 rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold"
+        className="h-[56px] px-8 rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold"
         data-testid="button-start-boost"
       >
         <Zap className="w-4 h-4 mr-1.5" />
@@ -347,7 +347,7 @@ function EmptyState({ onStart }: { onStart: () => void }) {
 
 function HighProgressState({ remaining }: { remaining: number }) {
   return (
-    <div className="bg-gradient-to-br from-[var(--yo-teal)] to-[var(--yo-teal-hover)] rounded-lg p-6 text-white" data-testid="boost-high-progress">
+    <div className="bg-gradient-to-br from-[#0D6EFD] to-[#0B5ED7] rounded-lg p-6 text-white" data-testid="boost-high-progress">
       <div className="flex items-center gap-3 mb-2">
         <div className="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center">
           <Rocket className="w-5 h-5 text-white" />
@@ -399,20 +399,20 @@ function TaskModal({
         className="bg-white w-full max-w-md rounded-t-lg sm:rounded-lg max-h-[85vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 bg-white border-b border-[var(--yo-divider)] p-6 flex items-center justify-between rounded-t-lg">
-          <h2 className="text-[20px] font-[700] text-[var(--yo-dark)] tracking-[-0.02em] uppercase">{task.title}</h2>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-[var(--yo-surface)] flex items-center justify-center" data-testid="button-close-modal">
-            <X className="w-4 h-4 text-[var(--yo-dark)]" />
+        <div className="sticky top-0 bg-white border-b border-[#E5E7EB] p-6 flex items-center justify-between rounded-t-lg">
+          <h2 className="text-[20px] font-[700] text-[#1F2937] tracking-[-0.02em]">{task.title}</h2>
+          <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F5F7FA] flex items-center justify-center" data-testid="button-close-modal">
+            <X className="w-4 h-4 text-[#1F2937]" />
           </button>
         </div>
 
         <div className="p-5">
-          <p className="text-[14px] text-[var(--yo-dark)] mb-5">{task.description}</p>
+          <p className="text-[14px] text-[#1F2937] mb-5">{task.description}</p>
 
           {(taskId === "alerts_active" || taskId === "phone_number_added") && (
             <Button
               onClick={() => { onClose(); navigate("/settings/notifications"); }}
-              className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold"
+              className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold"
               data-testid="button-goto-notifications"
             >
               <Bell className="w-4 h-4 mr-2" />
@@ -422,20 +422,20 @@ function TaskModal({
 
           {taskId === "search_buddy_added" && (
             <div className="flex flex-col gap-3">
-              <label className="text-[13px] font-medium text-[var(--yo-dark)]">E-Mail-Adresse des Suchpartners</label>
+              <label className="text-[13px] font-medium text-[#1F2937]">E-Mail-Adresse des Suchpartners</label>
               <input
                 type="email"
                 value={buddyEmail}
                 onChange={(e) => setBuddyEmail(e.target.value)}
                 placeholder="partner@beispiel.de"
-                className="w-full h-[52px] px-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
+                className="w-full h-[52px] px-4 rounded-lg border-0 bg-[#F5F7FA] text-[15px] font-medium text-[#1F2937] placeholder:text-[#1F2937] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 focus:bg-white transition-all"
                 data-testid="input-buddy-email"
               />
-              <p className="text-[13px] font-[500] text-[var(--yo-dark)]">Dein Suchpartner erhält dieselben Benachrichtigungen wie du.</p>
+              <p className="text-[13px] font-[500] text-[#1F2937]">Dein Suchpartner erhält dieselben Benachrichtigungen wie du.</p>
               <Button
                 onClick={() => handleSave({ search_buddy_email: buddyEmail }, "Suchpartner gespeichert!")}
                 disabled={!buddyEmail.includes("@") || updateProfileData.isPending}
-                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold disabled:opacity-50"
+                className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold disabled:opacity-50"
                 data-testid="button-save-buddy"
               >
                 {updateProfileData.isPending ? "Wird gespeichert..." : "Speichern"}
@@ -446,7 +446,7 @@ function TaskModal({
           {taskId === "housing_preferences_completed" && (
             <Button
               onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
-              className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold"
+              className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold"
               data-testid="button-goto-filters"
             >
               <Search className="w-4 h-4 mr-2" />
@@ -457,7 +457,7 @@ function TaskModal({
           {taskId === "reaction_letter_ready" && (
             <Button
               onClick={() => { onClose(); navigate("/application-letter"); }}
-              className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold"
+              className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold"
               data-testid="button-goto-letter"
             >
               <FileText className="w-4 h-4 mr-2" />
@@ -467,13 +467,13 @@ function TaskModal({
 
           {taskId === "income_documents_uploaded" && (
             <div className="flex flex-col gap-4">
-              <h4 className="text-[13px] font-semibold text-[var(--yo-dark)]">Hake ab, was du bereits zusammengestellt hast</h4>
+              <h4 className="text-[13px] font-semibold text-[#1F2937]">Hake ab, was du bereits zusammengestellt hast</h4>
               <div className="flex flex-col gap-1">
                 {INCOME_CHECKLIST.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => setChecklist((prev) => ({ ...prev, [item.id]: !prev[item.id] }))}
-                    className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-[var(--yo-surface)] transition-colors text-left"
+                    className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-[#F5F7FA] transition-colors text-left"
                     data-testid={`check-${item.id}`}
                   >
                     {checklist[item.id] ? (
@@ -481,9 +481,9 @@ function TaskModal({
                         <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
                       </div>
                     ) : (
-                      <div className="w-5 h-5 rounded-full border-2 border-[var(--yo-divider)] flex-shrink-0" />
+                      <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
                     )}
-                    <span className={`text-[14px] ${checklist[item.id] ? "text-[var(--yo-dark)] line-through" : "text-[var(--yo-dark)]"}`}>
+                    <span className={`text-[14px] ${checklist[item.id] ? "text-[#1F2937] line-through" : "text-[#1F2937]"}`}>
                       {item.label}
                     </span>
                   </button>
@@ -492,7 +492,7 @@ function TaskModal({
               <Button
                 onClick={() => handleSave({ document_checklist: checklist }, "Dokumente gespeichert!")}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold disabled:opacity-50"
+                className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold disabled:opacity-50"
                 data-testid="button-save-income-docs"
               >
                 {updateProfileData.isPending ? "Wird gespeichert..." : "Speichern"}
@@ -502,13 +502,13 @@ function TaskModal({
 
           {taskId === "id_document_uploaded" && (
             <div className="flex flex-col gap-4">
-              <h4 className="text-[13px] font-semibold text-[var(--yo-dark)]">Hake ab, was du bereits zusammengestellt hast</h4>
+              <h4 className="text-[13px] font-semibold text-[#1F2937]">Hake ab, was du bereits zusammengestellt hast</h4>
               <div className="flex flex-col gap-1">
                 {ID_CHECKLIST.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => setChecklist((prev) => ({ ...prev, [item.id]: !prev[item.id] }))}
-                    className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-[var(--yo-surface)] transition-colors text-left"
+                    className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-[#F5F7FA] transition-colors text-left"
                     data-testid={`check-${item.id}`}
                   >
                     {checklist[item.id] ? (
@@ -516,9 +516,9 @@ function TaskModal({
                         <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
                       </div>
                     ) : (
-                      <div className="w-5 h-5 rounded-full border-2 border-[var(--yo-divider)] flex-shrink-0" />
+                      <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
                     )}
-                    <span className={`text-[14px] ${checklist[item.id] ? "text-[var(--yo-dark)] line-through" : "text-[var(--yo-dark)]"}`}>
+                    <span className={`text-[14px] ${checklist[item.id] ? "text-[#1F2937] line-through" : "text-[#1F2937]"}`}>
                       {item.label}
                     </span>
                   </button>
@@ -527,7 +527,7 @@ function TaskModal({
               <Button
                 onClick={() => handleSave({ document_checklist: checklist }, "Dokumente gespeichert!")}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold disabled:opacity-50"
+                className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold disabled:opacity-50"
                 data-testid="button-save-id-docs"
               >
                 {updateProfileData.isPending ? "Wird gespeichert..." : "Speichern"}
@@ -538,7 +538,7 @@ function TaskModal({
           {taskId === "profile_info_completed" && (
             <Button
               onClick={() => { onClose(); navigate("/settings/notifications"); }}
-              className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold"
+              className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold"
               data-testid="button-goto-profile-info"
             >
               <UserCircle className="w-4 h-4 mr-2" />
@@ -548,12 +548,12 @@ function TaskModal({
 
           {taskId === "profile_photo_added" && (
             <div className="flex flex-col gap-3">
-              <p className="text-[13px] font-[500] text-[var(--yo-dark)]">
+              <p className="text-[13px] font-[500] text-[#1F2937]">
                 Füge ein Profilfoto hinzu, um bei Vermietern einen persönlichen Eindruck zu hinterlassen.
               </p>
               <Button
                 onClick={() => navigate("/dashboard?tab=profiel")}
-                className="w-full h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[14px] font-bold"
+                className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[14px] font-bold"
                 data-testid="button-goto-profile-photo"
               >
                 Zum Profilfoto
@@ -615,11 +615,11 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
         <div className="mb-1">
           <h1 className="text-page-title">Boost</h1>
         </div>
-        <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-8 text-center" data-testid="boost-error">
-          <p className="text-[15px] text-[var(--yo-dark)] mb-4">Deine Daten konnten nicht geladen werden.</p>
+        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-8 text-center" data-testid="boost-error">
+          <p className="text-[15px] text-[#1F2937] mb-4">Deine Daten konnten nicht geladen werden.</p>
           <Button
             onClick={() => refetch()}
-            className="h-[56px] rounded-lg bg-[var(--yo-teal)] text-black text-[15px] font-bold px-6"
+            className="h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold px-6"
             data-testid="button-retry-boost"
           >
             Erneut versuchen
@@ -633,18 +633,18 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
     return (
       <div className="flex flex-col gap-4 px-6 pt-6">
         <div className="mb-2">
-          <div className="h-8 bg-[var(--yo-surface)] rounded w-24 mb-2 animate-pulse" />
-          <div className="h-4 bg-[var(--yo-surface)] rounded w-56 animate-pulse" />
+          <div className="h-8 bg-[#F5F7FA] rounded w-24 mb-2 animate-pulse" />
+          <div className="h-4 bg-[#F5F7FA] rounded w-56 animate-pulse" />
         </div>
-        <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
-          <div className="h-4 bg-[var(--yo-surface)] rounded w-32 mb-3" />
-          <div className="h-10 bg-[var(--yo-surface)] rounded w-20 mb-2" />
-          <div className="h-2.5 bg-[var(--yo-surface)] rounded w-full" />
+        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
+          <div className="h-4 bg-[#F5F7FA] rounded w-32 mb-3" />
+          <div className="h-10 bg-[#F5F7FA] rounded w-20 mb-2" />
+          <div className="h-2.5 bg-[#F5F7FA] rounded w-full" />
         </div>
-        <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
-          <div className="h-4 bg-[var(--yo-surface)] rounded w-48 mb-3" />
-          <div className="h-12 bg-[var(--yo-surface)] rounded w-full mb-2" />
-          <div className="h-12 bg-[var(--yo-surface)] rounded w-full" />
+        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
+          <div className="h-4 bg-[#F5F7FA] rounded w-48 mb-3" />
+          <div className="h-12 bg-[#F5F7FA] rounded w-full mb-2" />
+          <div className="h-12 bg-[#F5F7FA] rounded w-full" />
         </div>
       </div>
     );

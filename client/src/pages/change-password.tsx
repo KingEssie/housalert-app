@@ -81,16 +81,16 @@ export default function ChangePasswordPage() {
       <div className="min-h-screen bg-background" data-testid="page-password-success">
         <PageHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
         <div className="max-w-xl mx-auto p-4 pb-8">
-          <div className="bg-card rounded-lg border p-6 text-center" style={{ borderColor: "var(--yo-divider)" }}>
+          <div className="bg-card rounded-lg border p-6 text-center" style={{ borderColor: "#E5E7EB" }}>
             <div className="flex items-center justify-center mb-5">
-              <div className="w-14 h-14 rounded-lg flex items-center justify-center" style={{ backgroundColor: "var(--yo-chip-bg)" }}>
-                <CheckCircle2 className="w-7 h-7" style={{ color: "var(--yo-success)" }} />
+              <div className="w-14 h-14 rounded-lg flex items-center justify-center" style={{ backgroundColor: "#F5F7FA" }}>
+                <CheckCircle2 className="w-7 h-7" style={{ color: "#16A34A" }} />
               </div>
             </div>
-            <h2 className="text-[20px] font-bold mb-2" style={{ color: "var(--yo-dark)" }} data-testid="text-success-title">
+            <h2 className="text-[20px] font-bold mb-2" style={{ color: "#1F2937" }} data-testid="text-success-title">
               {t("changePassword.successTitle")}
             </h2>
-            <p className="text-[15px] mb-6" style={{ color: "var(--yo-muted)" }}>
+            <p className="text-[15px] mb-6" style={{ color: "#6B7280" }}>
               {t("changePassword.successDesc")}
             </p>
             <button
@@ -111,9 +111,9 @@ export default function ChangePasswordPage() {
       <PageHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
       <div className="max-w-xl mx-auto p-4 pb-8">
-        <div className="bg-card rounded-lg border p-5 space-y-5" style={{ borderColor: "var(--yo-divider)" }}>
+        <div className="bg-card rounded-lg border p-5 space-y-5" style={{ borderColor: "#E5E7EB" }}>
           <div>
-            <label className="block text-[14px] font-medium mb-2" style={{ color: "var(--yo-dark)" }}>{t("changePassword.current")}</label>
+            <label className="block text-[14px] font-medium mb-2" style={{ color: "#1F2937" }}>{t("changePassword.current")}</label>
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2">
                 <Lock className="w-[18px] h-[18px] text-muted-foreground" />
@@ -137,10 +137,10 @@ export default function ChangePasswordPage() {
             </div>
           </div>
 
-          <div className="h-px" style={{ backgroundColor: "var(--yo-divider)" }} />
+          <div className="h-px" style={{ backgroundColor: "#E5E7EB" }} />
 
           <div>
-            <label className="block text-[14px] font-medium mb-2" style={{ color: "var(--yo-dark)" }}>{t("changePassword.new")}</label>
+            <label className="block text-[14px] font-medium mb-2" style={{ color: "#1F2937" }}>{t("changePassword.new")}</label>
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2">
                 <Lock className="w-[18px] h-[18px] text-muted-foreground" />
@@ -163,14 +163,14 @@ export default function ChangePasswordPage() {
               </button>
             </div>
             {newTooShort && (
-              <p className="text-[13px] mt-1.5" style={{ color: "var(--yo-teal)" }} data-testid="text-error-min-length">
+              <p className="text-[13px] mt-1.5" style={{ color: "#0D6EFD" }} data-testid="text-error-min-length">
                 {t("changePassword.minLength")}
               </p>
             )}
           </div>
 
           <div>
-            <label className="block text-[14px] font-medium mb-2" style={{ color: "var(--yo-dark)" }}>{t("changePassword.confirmLabel")}</label>
+            <label className="block text-[14px] font-medium mb-2" style={{ color: "#1F2937" }}>{t("changePassword.confirmLabel")}</label>
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2">
                 <Lock className="w-[18px] h-[18px] text-muted-foreground" />
@@ -193,7 +193,7 @@ export default function ChangePasswordPage() {
               </button>
             </div>
             {mismatch && (
-              <p className="text-[13px] mt-1.5" style={{ color: "var(--yo-teal)" }} data-testid="text-error-mismatch">
+              <p className="text-[13px] mt-1.5" style={{ color: "#0D6EFD" }} data-testid="text-error-mismatch">
                 {t("changePassword.mismatch")}
               </p>
             )}

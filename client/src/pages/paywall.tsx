@@ -133,33 +133,33 @@ export default function PaywallPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <header className="w-full bg-white sticky top-0 z-20 border-b border-[var(--yo-divider)]">
+      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
         <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center gap-3">
           <button
             onClick={() => navigate("/dashboard")}
-            className="w-9 h-9 rounded-full bg-[var(--yo-surface)] flex items-center justify-center active:scale-95 transition-transform"
+            className="w-9 h-9 rounded-full bg-[#F5F7FA] flex items-center justify-center active:scale-95 transition-transform"
             data-testid="button-paywall-back"
           >
-            <ArrowLeft className="w-4 h-4 text-[var(--yo-dark)]" />
+            <ArrowLeft className="w-4 h-4 text-[#1F2937]" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-[var(--yo-dark)] flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-[#1F2937] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-bold text-[var(--yo-dark)] text-base">HousAlert</span>
+            <span className="font-bold text-[#1F2937] text-base">HousAlert</span>
           </div>
         </div>
       </header>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-10 pb-32">
         <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-lg bg-[var(--yo-chip-bg)] flex items-center justify-center mx-auto mb-4">
-            <Crown className="w-7 h-7 text-[var(--yo-dark)]" />
+          <div className="w-14 h-14 rounded-lg bg-[#F5F7FA] flex items-center justify-center mx-auto mb-4">
+            <Crown className="w-7 h-7 text-[#1F2937]" />
           </div>
-          <h1 className="text-[32px] font-[800] text-[var(--yo-dark)] tracking-[-0.03em] leading-[1.1] uppercase mb-3" data-testid="text-paywall-title">
+          <h1 className="text-[32px] font-[800] text-[#1F2937] tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-paywall-title">
             {t("paywall.title")}
           </h1>
-          <p className="text-[15px] text-[var(--yo-dark)]">
+          <p className="text-[15px] text-[#1F2937]">
             {t("paywall.trialInfo")}
           </p>
         </div>
@@ -171,14 +171,14 @@ export default function PaywallPage() {
               onClick={() => setSelectedPlan(plan.id)}
               className={`w-full p-6 rounded-lg border-2 transition-all text-left relative bg-white shadow-[0_4px_20px_rgba(0,0,0,0.06)] ${
                 selectedPlan === plan.id
-                  ? "border-[var(--yo-teal)]"
-                  : "border-transparent hover:border-[var(--yo-divider)]"
+                  ? "border-[#0D6EFD]"
+                  : "border-transparent hover:border-[#E5E7EB]"
               }`}
               data-testid={`card-plan-${plan.id}`}
             >
               {plan.popular && (
                 <span
-                  className="absolute -top-3 left-5 px-3 py-0.5 bg-[var(--yo-dark)] text-white text-xs font-bold rounded-full"
+                  className="absolute -top-3 left-5 px-3 py-0.5 bg-[#1F2937] text-white text-xs font-bold rounded-full"
                   data-testid="badge-popular"
                 >
                   {t("paywall.mostChosen")}
@@ -187,13 +187,13 @@ export default function PaywallPage() {
 
               <div className="flex items-center justify-between gap-4 pr-8">
                 <div>
-                  <p className="text-[18px] font-bold text-[var(--yo-dark)]">{t(plan.nameKey)}</p>
-                  <p className="text-[15px] text-[var(--yo-dark)]">{t(plan.pricePerMonthKey)}</p>
+                  <p className="text-[18px] font-bold text-[#1F2937]">{t(plan.nameKey)}</p>
+                  <p className="text-[15px] text-[#1F2937]">{t(plan.pricePerMonthKey)}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xl font-extrabold text-[var(--yo-dark)]">{t(plan.priceKey)}</p>
+                  <p className="text-xl font-extrabold text-[#1F2937]">{t(plan.priceKey)}</p>
                   {plan.savingsKey && (
-                    <p className="text-xs font-semibold text-[var(--yo-pink)]">{t(plan.savingsKey)}</p>
+                    <p className="text-xs font-semibold text-[#0D6EFD]">{t(plan.savingsKey)}</p>
                   )}
                 </div>
               </div>
@@ -201,8 +201,8 @@ export default function PaywallPage() {
               <div
                 className={`absolute top-6 right-6 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
                   selectedPlan === plan.id
-                    ? "bg-[var(--yo-teal)] border-[var(--yo-teal)]"
-                    : "border-[var(--yo-divider)]"
+                    ? "bg-[#0D6EFD] border-[#0D6EFD]"
+                    : "border-[#E5E7EB]"
                 }`}
               >
                 {selectedPlan === plan.id && <Check className="w-3.5 h-3.5 text-white" />}
@@ -211,26 +211,26 @@ export default function PaywallPage() {
           ))}
         </div>
 
-        <div className="bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-6">
-          <p className="text-[16px] font-[700] text-[var(--yo-dark)] mb-3">{t("paywall.featuresTitle")}</p>
+        <div className="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-6">
+          <p className="text-[16px] font-[700] text-[#1F2937] mb-3">{t("paywall.featuresTitle")}</p>
           <div className="space-y-2.5">
             {FEATURE_KEYS.map((key, i) => (
               <div key={i} className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded-full bg-[var(--yo-chip-bg)] flex items-center justify-center flex-shrink-0">
-                  <Check className="w-3 h-3 text-[var(--yo-dark)]" />
+                <div className="w-5 h-5 rounded-full bg-[#F5F7FA] flex items-center justify-center flex-shrink-0">
+                  <Check className="w-3 h-3 text-[#1F2937]" />
                 </div>
-                <span className="text-[15px] text-[var(--yo-dark)]">{t(key)}</span>
+                <span className="text-[15px] text-[#1F2937]">{t(key)}</span>
               </div>
             ))}
           </div>
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[var(--yo-divider)] p-5 z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] p-5 z-10">
         <div className="max-w-xl mx-auto">
           <Button
             size="lg"
-            className="w-full h-[56px] rounded-lg text-[16px] font-bold shadow-none bg-[var(--yo-teal)]"
+            className="w-full h-[56px] rounded-lg text-[16px] font-bold shadow-none bg-[#0D6EFD]"
             onClick={handleCheckout}
             disabled={loading}
             data-testid="button-select-payment"
@@ -244,7 +244,7 @@ export default function PaywallPage() {
               t("paywall.startTrial")
             )}
           </Button>
-          <p className="text-center text-[13px] text-[var(--yo-dark)] mt-3 opacity-60">
+          <p className="text-center text-[13px] text-[#1F2937] mt-3 opacity-60">
             {t("paywall.trialFooter")}
           </p>
         </div>

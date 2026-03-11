@@ -77,56 +77,56 @@ export default function SignupPage() {
   if (emailConfirmationPending) {
     return (
       <div className="min-h-screen bg-white flex flex-col">
-        <header className="w-full bg-white sticky top-0 z-20 border-b border-[var(--yo-divider)]">
+        <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
           <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center gap-3">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-[var(--yo-dark)] flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-[#1F2937] flex items-center justify-center">
                 <Home className="w-3.5 h-3.5 text-white" />
               </div>
-              <span className="font-extrabold text-[var(--yo-dark)] text-base">{t("auth.appName")}</span>
+              <span className="font-extrabold text-[#1F2937] text-base">{t("auth.appName")}</span>
             </div>
           </div>
         </header>
 
         <main className="flex-1 flex flex-col items-center justify-center px-6 text-center">
-          <div className="w-[72px] h-[72px] rounded-lg bg-[#E6FAF5] flex items-center justify-center mb-8">
-            <MailCheck className="w-8 h-8 text-[var(--yo-teal)]" />
+          <div className="w-[72px] h-[72px] rounded-lg bg-[#EBF2FF] flex items-center justify-center mb-8">
+            <MailCheck className="w-8 h-8 text-[#0D6EFD]" />
           </div>
 
           <h1
-            className="text-[28px] font-[800] text-[var(--yo-dark)] tracking-[-0.03em] leading-[1.1] uppercase mb-4 max-w-[320px]"
+            className="text-[28px] font-[800] text-[#1F2937] tracking-[-0.03em] leading-[1.1] mb-4 max-w-[320px]"
             data-testid="text-email-confirm-title"
           >
             {t("auth.signup.confirmTitle")}
           </h1>
 
           <p
-            className="text-[16px] leading-relaxed text-[var(--yo-dark)] mb-3 max-w-[340px]"
+            className="text-[16px] leading-relaxed text-[#1F2937] mb-3 max-w-[340px]"
             data-testid="text-email-confirm-description"
           >
             {t("auth.signup.confirmText")}
           </p>
 
           <p
-            className="text-[16px] font-semibold text-[var(--yo-dark)] mb-8"
+            className="text-[16px] font-semibold text-[#1F2937] mb-8"
             data-testid="text-email-confirm-address"
           >
             {email}
           </p>
 
-          <p className="text-[15px] text-[var(--yo-dark)] mb-10 max-w-[340px] leading-relaxed">
+          <p className="text-[15px] text-[#1F2937] mb-10 max-w-[340px] leading-relaxed">
             {t("auth.signup.confirmInstructions")}
           </p>
 
           <button
             onClick={() => navigate("/login")}
-            className="w-full max-w-[320px] min-h-[56px] rounded-lg bg-[var(--yo-teal)] hover:bg-[var(--yo-teal-hover)] text-black font-bold text-[16px] transition-colors shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
+            className="w-full max-w-[320px] min-h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-bold text-[16px] transition-colors shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
             data-testid="button-go-login-after-confirm"
           >
             {t("auth.signup.toLogin")}
           </button>
 
-          <p className="text-[13px] text-[var(--yo-dark)] mt-6 max-w-[300px]">
+          <p className="text-[13px] text-[#1F2937] mt-6 max-w-[300px]">
             {t("auth.signup.noEmail")}
           </p>
         </main>
@@ -136,71 +136,71 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <header className="w-full bg-white sticky top-0 z-20 border-b border-[var(--yo-divider)]">
+      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
         <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center gap-3">
           <button
             onClick={handleBack}
-            className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--yo-surface)] transition-colors"
+            className="w-10 h-10 rounded-full flex items-center justify-center bg-[#F5F7FA] transition-colors"
             data-testid="button-back-estimate"
           >
-            <ChevronLeft className="w-5 h-5 text-[var(--yo-dark)]" />
+            <ChevronLeft className="w-5 h-5 text-[#1F2937]" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[var(--yo-dark)] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-[#1F2937] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-extrabold text-[var(--yo-dark)] text-base">{t("auth.appName")}</span>
+            <span className="font-extrabold text-[#1F2937] text-base">{t("auth.appName")}</span>
           </div>
         </div>
       </header>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-12 pb-16">
         <div className="text-center mb-10">
-          <h1 className="text-[32px] font-[800] text-[var(--yo-dark)] tracking-[-0.03em] leading-[1.1] uppercase mb-4" data-testid="text-signup-title">
+          <h1 className="text-[32px] font-[800] text-[#1F2937] tracking-[-0.03em] leading-[1.1] mb-4" data-testid="text-signup-title">
             {t("auth.signup.title")}
           </h1>
-          <p className="text-[15px] text-[var(--yo-dark)]">
+          <p className="text-[15px] text-[#1F2937]">
             {city ? t("auth.signup.subtitleCity", { city }) : t("auth.signup.subtitle")}
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
+        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
           <form onSubmit={handleSignup} className="space-y-5">
             <div className="space-y-2">
-              <Label className="text-[14px] font-semibold text-[var(--yo-dark)]">{t("auth.signup.name")}</Label>
+              <Label className="text-[14px] font-semibold text-[#1F2937]">{t("auth.signup.name")}</Label>
               <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[var(--yo-dark)]" />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#1F2937]" />
                 <input
                   type="text"
                   placeholder={t("auth.signup.namePlaceholder")}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
+                  className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[#F5F7FA] text-[15px] font-medium text-[#1F2937] placeholder:text-[#1F2937] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 focus:bg-white transition-all"
                   data-testid="input-signup-name"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label className="text-[14px] font-semibold text-[var(--yo-dark)]">{t("auth.signup.email")}</Label>
+              <Label className="text-[14px] font-semibold text-[#1F2937]">{t("auth.signup.email")}</Label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[var(--yo-dark)]" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#1F2937]" />
                 <input
                   type="email"
                   placeholder={t("auth.signup.emailPlaceholder")}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
+                  className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[#F5F7FA] text-[15px] font-medium text-[#1F2937] placeholder:text-[#1F2937] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 focus:bg-white transition-all"
                   data-testid="input-signup-email"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label className="text-[14px] font-semibold text-[var(--yo-dark)]">{t("auth.signup.password")}</Label>
+              <Label className="text-[14px] font-semibold text-[#1F2937]">{t("auth.signup.password")}</Label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[var(--yo-dark)]" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#1F2937]" />
                 <input
                   type="password"
                   placeholder={t("auth.signup.passwordPlaceholder")}
@@ -208,7 +208,7 @@ export default function SignupPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   minLength={6}
-                  className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[var(--yo-surface)] text-[15px] font-medium text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)]/15 focus:bg-white transition-all"
+                  className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[#F5F7FA] text-[15px] font-medium text-[#1F2937] placeholder:text-[#1F2937] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 focus:bg-white transition-all"
                   data-testid="input-signup-password"
                 />
               </div>
@@ -217,7 +217,7 @@ export default function SignupPage() {
             <Button
               type="submit"
               size="lg"
-              className="w-full h-[56px] rounded-lg text-[16px] font-bold shadow-none bg-[var(--yo-teal)] mt-1"
+              className="w-full h-[56px] rounded-lg text-[16px] font-bold shadow-none bg-[#0D6EFD] mt-1"
               disabled={loading || !email || !password}
               data-testid="button-signup-submit"
             >
@@ -226,18 +226,18 @@ export default function SignupPage() {
           </form>
         </div>
 
-        <p className="text-center text-[15px] text-[var(--yo-dark)] mt-6">
+        <p className="text-center text-[15px] text-[#1F2937] mt-6">
           {t("auth.signup.hasAccount")}{" "}
           <button
             onClick={() => navigate("/login")}
-            className="text-[var(--yo-pink)] font-semibold hover:underline"
+            className="text-[#0D6EFD] font-semibold hover:underline"
             data-testid="link-login"
           >
             {t("auth.signup.loginLink")}
           </button>
         </p>
 
-        <p className="text-center text-[13px] text-[var(--yo-dark)] mt-4">
+        <p className="text-center text-[13px] text-[#1F2937] mt-4">
           {t("auth.signup.footer")}
         </p>
       </main>

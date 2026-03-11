@@ -149,45 +149,45 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
     <div className="flex flex-col gap-4" ref={containerRef}>
       <div className="relative">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[var(--yo-dark)] pointer-events-none" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#1F2937] pointer-events-none" />
           <input
             type="text"
             value={query}
             onChange={(e) => handleInputChange(e.target.value)}
             onFocus={() => { if (results.length > 0 && !value) setOpen(true); }}
             placeholder={t("location.searchCity")}
-            className={`w-full min-h-[52px] rounded-lg bg-[var(--yo-surface)] border px-11 text-[16px] text-[var(--yo-dark)] placeholder:text-[var(--yo-dark)] focus:outline-none focus:ring-2 focus:ring-[var(--yo-teal)] focus:border-transparent transition-colors ${
-              showValidation ? "border-red-400" : value ? "border-[var(--yo-teal)] bg-[var(--yo-chip-bg)]/30" : "border-[var(--yo-divider)]"
+            className={`w-full min-h-[52px] rounded-lg bg-[#F5F7FA] border px-11 text-[16px] text-[#1F2937] placeholder:text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-transparent transition-colors ${
+              showValidation ? "border-red-400" : value ? "border-[#0D6EFD] bg-[#F5F7FA]/30" : "border-[#E5E7EB]"
             }`}
             data-testid="input-city-search"
           />
           {query && (
             <button
               onClick={handleClear}
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[var(--yo-divider)] flex items-center justify-center hover:bg-[var(--yo-muted)]/30 transition-colors"
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#E5E7EB] flex items-center justify-center hover:bg-[#6B7280]/30 transition-colors"
               data-testid="button-clear-city"
             >
-              <X className="w-3.5 h-3.5 text-[var(--yo-dark)]" />
+              <X className="w-3.5 h-3.5 text-[#1F2937]" />
             </button>
           )}
         </div>
 
         {loading && (
           <div className="absolute right-12 top-1/2 -translate-y-1/2">
-            <div className="w-4 h-4 border-2 border-[var(--yo-teal)]/30 border-t-[var(--yo-teal)] rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-[#0D6EFD]/30 border-t-[#0D6EFD] rounded-full animate-spin" />
           </div>
         )}
 
         {open && results.length > 0 && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-[var(--yo-divider)] rounded-lg shadow-lg max-h-[260px] overflow-y-auto z-30">
+          <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-[#E5E7EB] rounded-lg shadow-lg max-h-[260px] overflow-y-auto z-30">
             {results.map((r) => (
               <button
                 key={r.place_id}
                 onClick={() => handleSelect(r)}
-                className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[var(--yo-dark)] hover:bg-[var(--yo-surface)] flex items-center gap-3"
+                className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#1F2937] hover:bg-[#F5F7FA] flex items-center gap-3"
                 data-testid={`option-place-${r.place_id}`}
               >
-                <MapPin className="w-4 h-4 text-[var(--yo-dark)] flex-shrink-0" />
+                <MapPin className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
                 <span>{getDisplayName(r)}</span>
               </button>
             ))}
@@ -211,12 +211,12 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
 
       {value && (
         <>
-          <div className="inline-flex items-center gap-2 bg-[var(--yo-chip-bg)] text-[var(--yo-dark)] font-semibold text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
+          <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#1F2937] font-semibold text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
             <MapPin className="w-4 h-4" />
             {value.city_name}
           </div>
 
-          <div className="rounded-lg overflow-hidden border border-[var(--yo-divider)] h-[200px]" data-testid="map-preview">
+          <div className="rounded-lg overflow-hidden border border-[#E5E7EB] h-[200px]" data-testid="map-preview">
             <MapContainer
               center={[value.latitude, value.longitude]}
               zoom={11}

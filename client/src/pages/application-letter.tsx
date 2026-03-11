@@ -90,26 +90,26 @@ export default function ApplicationLetterPage() {
             >
               <AlertTriangle className="w-5 h-5 text-[#F59E0B] flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-[14px] font-semibold mb-0.5" style={{ color: "var(--yo-dark)" }}>{t("applicationLetter.missingFields")}</p>
-                <p className="text-[13px]" style={{ color: "var(--yo-muted)" }}>
+                <p className="text-[14px] font-semibold mb-0.5" style={{ color: "#1F2937" }}>{t("applicationLetter.missingFields")}</p>
+                <p className="text-[13px]" style={{ color: "#6B7280" }}>
                   {t("applicationLetter.missingFieldsDesc")}
                 </p>
               </div>
             </button>
           )}
 
-          <div className="rounded-lg p-6 flex gap-3" style={{ backgroundColor: "var(--yo-chip-bg)" }}>
-            <Info className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "var(--yo-teal)" }} />
+          <div className="rounded-lg p-6 flex gap-3" style={{ backgroundColor: "#F5F7FA" }}>
+            <Info className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "#0D6EFD" }} />
             <div>
-              <p className="text-[14px] font-semibold mb-1" style={{ color: "var(--yo-dark)" }}>{t("applicationLetter.autoFill")}</p>
-              <p className="text-[13px]" style={{ color: "var(--yo-muted)" }}>
+              <p className="text-[14px] font-semibold mb-1" style={{ color: "#1F2937" }}>{t("applicationLetter.autoFill")}</p>
+              <p className="text-[13px]" style={{ color: "#6B7280" }}>
                 {t("applicationLetter.autoFillDesc")}
               </p>
             </div>
           </div>
 
           <div className="bg-card rounded-lg shadow-sm p-6">
-            <h3 className="text-[16px] font-[700] mb-3" style={{ color: "var(--yo-dark)" }}>{t("applicationLetter.placeholders")}</h3>
+            <h3 className="text-[16px] font-[700] mb-3" style={{ color: "#1F2937" }}>{t("applicationLetter.placeholders")}</h3>
             <div className="flex flex-wrap gap-1.5">
               {PLACEHOLDERS.map((p) => (
                 <button
@@ -131,7 +131,7 @@ export default function ApplicationLetterPage() {
                     }
                   }}
                   className="text-[11px] font-mono bg-muted px-2 py-1 rounded-md hover-elevate transition-colors"
-                  style={{ color: "var(--yo-teal)" }}
+                  style={{ color: "#0D6EFD" }}
                   title={p.label}
                   data-testid={`placeholder-${p.key.replace(/\[|\]/g, "")}`}
                 >
@@ -149,11 +149,11 @@ export default function ApplicationLetterPage() {
           ) : (
             <div className="bg-card rounded-lg shadow-sm p-6">
               <div className="flex items-center justify-between gap-4 mb-3">
-                <h3 className="text-[16px] font-semibold" style={{ color: "var(--yo-dark)" }}>{t("applicationLetter.yourLetter")}</h3>
+                <h3 className="text-[16px] font-semibold" style={{ color: "#1F2937" }}>{t("applicationLetter.yourLetter")}</h3>
                 <button
                   onClick={handleReset}
                   className="flex items-center gap-1 text-[13px] transition-colors"
-                  style={{ color: "var(--yo-muted)" }}
+                  style={{ color: "#6B7280" }}
                   data-testid="button-reset-template"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -167,14 +167,14 @@ export default function ApplicationLetterPage() {
                 data-testid="input-template"
               />
               {!isLongEnough && (
-                <p className="text-[12px] mt-2" style={{ color: "var(--yo-teal)" }}>{t("applicationLetter.minChars")}</p>
+                <p className="text-[12px] mt-2" style={{ color: "#0D6EFD" }}>{t("applicationLetter.minChars")}</p>
               )}
             </div>
           )}
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-5 z-10" style={{ borderColor: "var(--yo-divider)" }}>
+      <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-5 z-10" style={{ borderColor: "#E5E7EB" }}>
         <div className="max-w-xl mx-auto flex flex-col gap-2">
           <Button
             onClick={() => saveMutation.mutate(template)}

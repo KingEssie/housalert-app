@@ -76,7 +76,7 @@ export default function SubscriptionDetailPage() {
         <PageHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
         <div className="max-w-xl mx-auto p-4 space-y-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-card rounded-lg border p-5 animate-pulse" style={{ borderColor: "var(--yo-divider)" }}>
+            <div key={i} className="bg-card rounded-lg border p-5 animate-pulse" style={{ borderColor: "#E5E7EB" }}>
               <div className="h-4 bg-muted rounded w-1/3 mb-3" />
               <div className="h-5 bg-muted rounded w-2/3" />
             </div>
@@ -91,20 +91,20 @@ export default function SubscriptionDetailPage() {
       <PageHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
       <div className="max-w-xl mx-auto p-4 space-y-4 pb-8">
-        <div className="bg-card rounded-lg border p-5" style={{ borderColor: "var(--yo-divider)" }} data-testid="card-subscription-plan">
+        <div className="bg-card rounded-lg border p-5" style={{ borderColor: "#E5E7EB" }} data-testid="card-subscription-plan">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-[48px] h-[48px] rounded-lg flex items-center justify-center" style={{ backgroundColor: "var(--yo-chip-bg)" }}>
-              <Crown className="w-5 h-5" style={{ color: "var(--yo-teal)" }} />
+            <div className="w-[48px] h-[48px] rounded-lg flex items-center justify-center" style={{ backgroundColor: "#F5F7FA" }}>
+              <Crown className="w-5 h-5" style={{ color: "#0D6EFD" }} />
             </div>
             <div className="flex-1">
-              <p className="text-[16px] font-semibold" style={{ color: "var(--yo-dark)" }} data-testid="text-plan-name">
+              <p className="text-[16px] font-semibold" style={{ color: "#1F2937" }} data-testid="text-plan-name">
                 {subscription?.isTrial ? t("subscription.status.trial") : getPlanLabel(subscription?.plan)}
               </p>
               <Badge
                 className="mt-1"
                 style={
                   (subscription?.isActive || subscription?.isTrial)
-                    ? { backgroundColor: "var(--yo-pink)", color: "#fff" }
+                    ? { backgroundColor: "#0D6EFD", color: "#fff" }
                     : undefined
                 }
                 variant={subscription?.isActive || subscription?.isTrial ? "default" : "secondary"}
@@ -117,61 +117,61 @@ export default function SubscriptionDetailPage() {
 
           {!subscription?.isTrial && subscription?.plan && (
             <div className="bg-muted rounded-lg p-4">
-              <p className="text-[24px] font-bold" style={{ color: "var(--yo-dark)" }} data-testid="text-price">
+              <p className="text-[24px] font-bold" style={{ color: "#1F2937" }} data-testid="text-price">
                 {getPriceLabel(subscription?.plan)}
               </p>
             </div>
           )}
         </div>
 
-        <div className="bg-card rounded-lg border overflow-hidden" style={{ borderColor: "var(--yo-divider)" }} data-testid="card-subscription-details">
+        <div className="bg-card rounded-lg border overflow-hidden" style={{ borderColor: "#E5E7EB" }} data-testid="card-subscription-details">
           <div className="px-5 pt-5 pb-2">
-            <p className="text-[13px] font-semibold uppercase tracking-wider" style={{ color: "var(--yo-muted)" }}>{t("subscription.details")}</p>
+            <p className="text-[13px] font-semibold tracking-wider" style={{ color: "#6B7280" }}>{t("subscription.details")}</p>
           </div>
 
           <DetailRow
-            icon={<Calendar className="w-[18px] h-[18px]" style={{ color: "var(--yo-teal)" }} />}
+            icon={<Calendar className="w-[18px] h-[18px]" style={{ color: "#0D6EFD" }} />}
             label={t("subscription.startDate")}
             value={formatDate(startDate)}
             testId="text-start-date"
           />
-          <div className="mx-5" style={{ borderBottom: "1px solid var(--yo-divider)" }} />
+          <div className="mx-5" style={{ borderBottom: "1px solid #E5E7EB" }} />
 
           <DetailRow
-            icon={<Calendar className="w-[18px] h-[18px]" style={{ color: "var(--yo-teal)" }} />}
+            icon={<Calendar className="w-[18px] h-[18px]" style={{ color: "#0D6EFD" }} />}
             label={subscription?.isTrial ? t("subscription.trialEnds") : t("subscription.nextRenewal")}
             value={formatDate(renewalDate)}
             testId="text-renewal-date"
           />
-          <div className="mx-5" style={{ borderBottom: "1px solid var(--yo-divider)" }} />
+          <div className="mx-5" style={{ borderBottom: "1px solid #E5E7EB" }} />
 
           <DetailRow
-            icon={<RefreshCw className="w-[18px] h-[18px]" style={{ color: "var(--yo-teal)" }} />}
+            icon={<RefreshCw className="w-[18px] h-[18px]" style={{ color: "#0D6EFD" }} />}
             label={t("subscription.billingFrequency")}
             value={subscription?.isTrial ? t("subscription.status.trial") : getBillingFrequency(subscription?.plan)}
             testId="text-billing-frequency"
           />
-          <div className="mx-5" style={{ borderBottom: "1px solid var(--yo-divider)" }} />
+          <div className="mx-5" style={{ borderBottom: "1px solid #E5E7EB" }} />
 
           <DetailRow
-            icon={<RefreshCw className="w-[18px] h-[18px]" style={{ color: "var(--yo-teal)" }} />}
+            icon={<RefreshCw className="w-[18px] h-[18px]" style={{ color: "#0D6EFD" }} />}
             label={t("subscription.autoRenew")}
             value={subscription?.isActive && !subscription?.isTrial ? t("subscription.on") : t("subscription.off")}
             testId="text-auto-renew"
           />
-          <div className="mx-5" style={{ borderBottom: "1px solid var(--yo-divider)" }} />
+          <div className="mx-5" style={{ borderBottom: "1px solid #E5E7EB" }} />
 
           <DetailRow
-            icon={<CreditCard className="w-[18px] h-[18px]" style={{ color: "var(--yo-teal)" }} />}
+            icon={<CreditCard className="w-[18px] h-[18px]" style={{ color: "#0D6EFD" }} />}
             label={t("subscription.paymentMethod")}
             value="4242 (Visa)"
             testId="text-payment-method"
           />
         </div>
 
-        <div className="bg-card rounded-lg border overflow-hidden" style={{ borderColor: "var(--yo-divider)" }} data-testid="card-subscription-actions">
+        <div className="bg-card rounded-lg border overflow-hidden" style={{ borderColor: "#E5E7EB" }} data-testid="card-subscription-actions">
           <div className="px-5 pt-5 pb-2">
-            <p className="text-[13px] font-semibold uppercase tracking-wider" style={{ color: "var(--yo-muted)" }}>{t("subscription.manage")}</p>
+            <p className="text-[13px] font-semibold tracking-wider" style={{ color: "#6B7280" }}>{t("subscription.manage")}</p>
           </div>
 
           <ActionRow
@@ -179,7 +179,7 @@ export default function SubscriptionDetailPage() {
             onClick={() => navigate("/account/payment-method")}
             testId="button-manage-payment"
           />
-          <div className="mx-5" style={{ borderBottom: "1px solid var(--yo-divider)" }} />
+          <div className="mx-5" style={{ borderBottom: "1px solid #E5E7EB" }} />
 
           <ActionRow
             label={t("subscription.cancelSubscription")}
@@ -190,13 +190,13 @@ export default function SubscriptionDetailPage() {
         </div>
 
         {subscription?.isExpired && (
-          <div className="bg-card rounded-lg border p-5" style={{ borderColor: "var(--yo-divider)" }} data-testid="card-expired-cta">
+          <div className="bg-card rounded-lg border p-5" style={{ borderColor: "#E5E7EB" }} data-testid="card-expired-cta">
             <div className="flex items-start gap-3 mb-4">
-              <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "var(--yo-chip-bg)" }}>
-                <AlertCircle className="w-5 h-5" style={{ color: "var(--yo-teal)" }} />
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#F5F7FA" }}>
+                <AlertCircle className="w-5 h-5" style={{ color: "#0D6EFD" }} />
               </div>
               <div>
-                <p className="text-[15px] font-semibold" style={{ color: "var(--yo-dark)" }}>{t("subscription.expiredTitle")}</p>
+                <p className="text-[15px] font-semibold" style={{ color: "#1F2937" }}>{t("subscription.expiredTitle")}</p>
                 <p className="text-[14px] text-muted-foreground mt-0.5">{t("subscription.expiredDesc")}</p>
               </div>
             </div>
@@ -217,12 +217,12 @@ export default function SubscriptionDetailPage() {
 function DetailRow({ icon, label, value, testId }: { icon: React.ReactNode; label: string; value: string; testId: string }) {
   return (
     <div className="flex items-center gap-3 px-5 py-3.5">
-      <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "var(--yo-chip-bg)" }}>
+      <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#F5F7FA" }}>
         {icon}
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-[13px] text-muted-foreground">{label}</p>
-        <p className="text-[15px] font-medium truncate" style={{ color: "var(--yo-dark)" }} data-testid={testId}>{value}</p>
+        <p className="text-[15px] font-medium truncate" style={{ color: "#1F2937" }} data-testid={testId}>{value}</p>
       </div>
     </div>
   );
@@ -235,7 +235,7 @@ function ActionRow({ label, onClick, danger, testId }: { label: string; onClick:
       className="w-full flex items-center justify-between px-5 py-4 hover-elevate transition-colors"
       data-testid={testId}
     >
-      <span className={`text-[15px] font-medium ${danger ? "text-destructive" : ""}`} style={danger ? {} : { color: "var(--yo-dark)" }}>{label}</span>
+      <span className={`text-[15px] font-medium ${danger ? "text-destructive" : ""}`} style={danger ? {} : { color: "#1F2937" }}>{label}</span>
       <ChevronRight className="w-4 h-4 text-muted-foreground" />
     </button>
   );
