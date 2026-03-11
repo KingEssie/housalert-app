@@ -1,9 +1,16 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
 import { useTranslation } from "@/i18n";
+import { isNativePlatform } from "@/lib/capacitor";
+import { Redirect } from "wouter";
 
 export default function NotFound() {
   const { t } = useTranslation();
+
+  if (isNativePlatform()) {
+    return <Redirect to="/" />;
+  }
+
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-[var(--yo-surface)]">
       <Card className="w-full max-w-md mx-4">
