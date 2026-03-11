@@ -7,6 +7,8 @@ const config: CapacitorConfig = {
   server: {
     url: 'https://housalert.replit.app',
     cleartext: false,
+    androidScheme: 'https',
+    iosScheme: 'https',
   },
   plugins: {
     SplashScreen: {
@@ -36,7 +38,7 @@ const config: CapacitorConfig = {
   android: {
     allowMixedContent: false,
     captureInput: true,
-    webContentsDebuggingEnabled: false,
+    webContentsDebuggingEnabled: true,
   },
 };
 
