@@ -369,6 +369,56 @@ export async function failFetchRun(runId: number, errorMessage: string): Promise
   }
 }
 
+export interface UndeliveredMatch {
+  user_id: string;
+  listing_id: string;
+  listing_title: string;
+  listing_city: string;
+  listing_price: number;
+  listing_url: string | null;
+  matched_at: string;
+}
+
+export async function getUndeliveredMatches(maxAgeHours: number = 24): Promise<UndeliveredMatch[]> {
+  if (!(await ensureTable())) return [];
+  try {
+    const cutoff = new Date(Date.now() - maxAgeHours * 60 * 60 * 1000).toISOString();
+    const result = await pool.query(
+      `SELECT user_id, listing_id, listing_title, listing_city, listing_price, listing_url, matched_at
+       FROM user_matches
+       WHERE email_sent = false
+         AND push_sent = false
+         AND visible_in_app = true
+         AND dismissed = false
+         AND matched_at >= $1
+       ORDER BY matched_at DESC`,
+      [cutoff]
+    );
+    return result.rows;
+  } catch (err: any) {
+    log(`[user-matches] getUndeliveredMatches error: ${err.message}`);
+    return [];
+  }
+}
+
+export async function cleanupStaleFetchRuns(): Promise<number> {
+  try {
+    const result = await pool.query(
+      `UPDATE fetch_runs SET
+        completed_at = NOW(),
+        status = 'interrupted',
+        error_message = 'Server restarted before completion'
+       WHERE status = 'running'
+         AND started_at < NOW() - INTERVAL '5 minutes'
+       RETURNING id`
+    );
+    return result.rowCount || 0;
+  } catch (err: any) {
+    log(`[fetch-runs] cleanup error: ${err.message}`);
+    return 0;
+  }
+}
+
 export async function getRecentFetchRuns(limit: number = 10): Promise<any[]> {
   try {
     const result = await pool.query(

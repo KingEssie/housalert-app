@@ -8,7 +8,7 @@ import { createConfigIngester } from "./html-config";
 import { buildSourcesForCity } from "./config/sources";
 import { getCitySlugs, makeFallbackSlug } from "./city-slugs";
 import { areAlertsEnabled } from "../notifications";
-import { flushMatchAlertBuffer, clearBuffer, getBufferSize } from "../notifications/buffer";
+import { flushMatchAlertBuffer, clearBuffer, getBufferSize, recoverUndeliveredMatches } from "../notifications/buffer";
 import { createFetchRun, completeFetchRun, failFetchRun } from "../user-matches";
 
 const SUPABASE_URL = (process.env.VITE_SUPABASE_URL ?? "").replace(/\/$/, "");
@@ -331,6 +331,16 @@ export async function runAllIngesters(): Promise<IngestionReport> {
         }
       } else {
         log(`[ingest] No match alerts to send this cycle`, "ingest");
+      }
+
+      try {
+        const recovery = await recoverUndeliveredMatches(supabase);
+        if (recovery.recovered > 0) {
+          emailsSent += recovery.sent;
+          log(`[ingest] Recovery: found ${recovery.recovered} undelivered, sent ${recovery.sent}, failed ${recovery.failed}`, "ingest");
+        }
+      } catch (recErr: any) {
+        log(`[ingest] Recovery error: ${recErr.message}`, "ingest");
       }
     }
 

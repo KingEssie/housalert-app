@@ -1,6 +1,7 @@
 import { log } from "./log";
 import { runAllIngesters, OverlapError } from "./ingesters";
 import { persistIngestionRun } from "./admin";
+import { cleanupStaleFetchRuns } from "./user-matches";
 
 const intervalMinutes = parseInt(process.env.INGEST_INTERVAL_MINUTES || "10", 10);
 const INTERVAL_MS = intervalMinutes * 60 * 1000;
@@ -29,10 +30,15 @@ export function getNextRun() {
   };
 }
 
-export function startScheduler() {
+export async function startScheduler() {
   if (process.env.ENABLE_INGEST_SCHEDULER !== "true") {
     log("Ingestion scheduler disabled (ENABLE_INGEST_SCHEDULER != true)", "scheduler");
     return;
+  }
+
+  const cleaned = await cleanupStaleFetchRuns();
+  if (cleaned > 0) {
+    log(`[scheduler] Cleaned up ${cleaned} stale fetch runs from previous server`, "scheduler");
   }
 
   log(`Ingestion scheduler started — running every ${intervalMinutes} minutes`, "scheduler");

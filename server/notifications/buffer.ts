@@ -4,7 +4,7 @@ import { areAlertsEnabled } from "./index";
 import { getSubscriptionStatus } from "../subscriptions";
 import { sendMatchPushNotifications, type PushMatchListing } from "./push";
 import { batchedIn } from "../freshness";
-import { markEmailSent, markPushSent } from "../user-matches";
+import { markEmailSent, markPushSent, getUndeliveredMatches } from "../user-matches";
 
 const MAX_LISTINGS_PER_EMAIL = 20;
 
@@ -352,4 +352,57 @@ export function getBufferSize(): { users: number; listings: number } {
 
 export function clearBuffer(): void {
   buffer.clear();
+}
+
+export async function recoverUndeliveredMatches(supabase: any): Promise<{ recovered: number; sent: number; failed: number }> {
+  if (!areAlertsEnabled()) {
+    return { recovered: 0, sent: 0, failed: 0 };
+  }
+
+  const undelivered = await getUndeliveredMatches(24);
+  if (undelivered.length === 0) {
+    return { recovered: 0, sent: 0, failed: 0 };
+  }
+
+  const byUser = new Map<string, typeof undelivered>();
+  for (const m of undelivered) {
+    const arr = byUser.get(m.user_id) || [];
+    arr.push(m);
+    byUser.set(m.user_id, arr);
+  }
+
+  log(`[RECOVERY] Found ${undelivered.length} undelivered matches across ${byUser.size} users`);
+
+  for (const [userId, matches] of byUser.entries()) {
+    const subStatus = await getSubscriptionStatus(userId);
+    const hasAccess = subStatus.isActive || subStatus.isTrial;
+    if (!hasAccess) continue;
+
+    const { data: userData } = await supabase.auth.admin.getUserById(userId);
+    const email = userData?.user?.email;
+    if (!email) continue;
+
+    for (const m of matches) {
+      bufferMatchAlert(userId, email, {
+        listing_id: m.listing_id,
+        title: m.listing_title || "Nieuwe woning",
+        city: m.listing_city || "",
+        price: Number(m.listing_price) || 0,
+        bedrooms: 0,
+        size_m2: 0,
+        url: m.listing_url,
+        matched_at: m.matched_at,
+      });
+    }
+  }
+
+  const bufSize = getBufferSize();
+  if (bufSize.listings === 0) {
+    log(`[RECOVERY] No listings to flush after filtering`);
+    return { recovered: undelivered.length, sent: 0, failed: 0 };
+  }
+
+  log(`[RECOVERY] Re-buffered ${bufSize.listings} listings for ${bufSize.users} users — flushing`);
+  const result = await flushMatchAlertBuffer(supabase);
+  return { recovered: undelivered.length, sent: result.sent, failed: result.failed };
 }
