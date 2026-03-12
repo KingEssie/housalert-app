@@ -375,7 +375,7 @@ function ProfileCard({
               <h3 className="font-[700] text-[#111C3D] text-[18px]" data-testid={`text-profile-city-${profile.id}`}>
                 {profile.city_name || profile.city}
               </h3>
-              <span className="text-[10px] font-semibold text-white bg-[#16A34A] px-2 py-0.5 rounded-full" data-testid={`badge-status-${profile.id}`}>
+              <span className="text-[10px] font-semibold text-[#0D6EFD] bg-[#EBF2FF] px-2 py-0.5 rounded-full" data-testid={`badge-status-${profile.id}`}>
                 {t("common.active")}
               </span>
             </div>
@@ -1088,25 +1088,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
 
   return (
     <div className="flex flex-col gap-5 px-6 pt-6 pb-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-page-title">{t("filters.title")}</h1>
-          <p className="text-subtitle mt-1">
-            {profileCount > 0
-              ? t("filters.activeCountFull", { count: profileCount, max: MAX_PROFILES })
-              : t("filters.createDesc")}
-          </p>
-        </div>
-        {!atLimit && (
-          <button
-            onClick={() => navigate("/dashboard/searches/new")}
-            className="w-12 h-12 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] flex items-center justify-center text-white transition-colors flex-shrink-0"
-            data-testid="button-add-search"
-          >
-            <Plus className="w-5 h-5" />
-          </button>
-        )}
-      </div>
+      <h1 className="text-page-title">{t("filters.title")}</h1>
 
       {profilesQuery.isLoading ? (
         <div className="flex flex-col gap-3">
@@ -1140,10 +1122,15 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
               onEdit={() => navigate(`/dashboard/searches/edit/${p.id}`)}
             />
           ))}
+
+          <p className="text-[13px] text-[#6B7280] px-1">
+            {t("filters.activeCountFull", { count: profileCount, max: MAX_PROFILES })}
+          </p>
+
           {!atLimit && (
             <button
               onClick={() => navigate("/dashboard/searches/new")}
-              className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-4 flex items-center justify-center gap-2 text-[14px] font-semibold text-[#111C3D] hover:bg-[#F5F7FA] transition-colors border-2 border-dashed border-[#E5E7EB]"
+              className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-4 flex items-center justify-center gap-2 text-[14px] font-semibold text-[#0D6EFD] hover:bg-[#F5F7FA] transition-colors border-2 border-dashed border-[#E5E7EB]"
               data-testid="button-add-search-card"
             >
               <Plus className="w-4 h-4" />
@@ -1487,7 +1474,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
             </div>
 
             <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5">
-              <h2 className="text-[20px] font-bold text-[#111C3D] mb-3">{t("profile.applicationLetter")}</h2>
+              <h2 className="text-[20px] font-bold text-[#111C3D] mb-3">{t("profile.reactionLetter")}</h2>
               {letterPreview ? (
                 <div>
                   <p className="text-[15px] text-[#1F2937] leading-relaxed line-clamp-4">{letterPreview}...</p>
@@ -1501,13 +1488,13 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                 </div>
               ) : (
                 <div>
-                  <p className="text-[15px] text-[#1F2937] leading-relaxed">{t("profile.noLetterYet")}</p>
+                  <p className="text-[15px] text-[#1F2937] leading-relaxed">{t("profile.noReactionLetterYet")}</p>
                   <button
                     onClick={() => navigate("/application-letter")}
                     className="mt-3 text-[15px] font-semibold text-[#0D6EFD] active:opacity-70 transition-opacity"
                     data-testid="button-letter-empty"
                   >
-                    {t("profile.writeLetter")}
+                    {t("profile.writeReactionLetter")}
                   </button>
                 </div>
               )}
