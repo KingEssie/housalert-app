@@ -1,0 +1,220 @@
+We need a UX and product improvement update across the app and email notifications.
+
+Implement the following changes carefully.
+
+--------------------------------
+1. EMAIL UX IMPROVEMENTS
+--------------------------------
+
+Update the email design to match the app branding.
+
+Changes:
+
+Button styling:
+- Background: #0D6EFD
+- Text: white
+- Border radius: 999px
+- Padding: 14px 18px
+- Font weight: 600
+
+Example:
+
+background: #0D6EFD
+color: #FFFFFF
+border-radius: 999px
+
+Remove the turquoise button color entirely.
+
+--------------------------------
+
+Email subject improvement:
+
+Replace:
+
+"20 neue Wohnungen gefunden in Berlin"
+
+with:
+
+"20 nieuwe matches voor jouw zoekprofiel"
+
+or
+
+"{count} nieuwe woningen die bij jouw zoekprofiel passen"
+
+This should be dynamic.
+
+--------------------------------
+
+Email layout improvement:
+
+Current order:
+
+Title
+Listing
+Button
+
+New order:
+
+Image
+Title
+Price
+City
+Button
+
+The listing image must appear above the title.
+
+--------------------------------
+
+2. DIRECT REPLY FROM EMAIL (GROWTH FEATURE)
+--------------------------------
+
+Add a new primary button in email:
+
+Primary button:
+"Reageer direct"
+
+Secondary button:
+"Bekijk woning"
+
+Behavior:
+
+Reageer direct →
+opens the app deep link directly to the response screen.
+
+Example deep link:
+
+housalert://apply/{listingId}
+
+If the app is not installed:
+fallback to web route:
+
+/apply/{listingId}
+
+--------------------------------
+
+3. MATCH CARD UX IMPROVEMENTS
+--------------------------------
+
+Improve the match card layout.
+
+Photo dominance:
+
+Increase image height.
+
+Image ratio:
+
+aspect-ratio: 16/10
+object-fit: cover
+
+--------------------------------
+
+Price visual emphasis:
+
+Price styling:
+
+font-size: 20px
+font-weight: 700
+
+Period smaller:
+
+"/ mnd"
+
+font-size: 14px
+color: #6B7280
+
+--------------------------------
+
+Primary action button stronger:
+
+Primary:
+"Reageer direct"
+
+style:
+
+background: #0D6EFD
+color: white
+border-radius: 999px
+
+Secondary:
+
+"Naar advertentie"
+
+style:
+
+border: 1px solid #E5E7EB
+background: white
+color: #111827
+
+--------------------------------
+
+Badge styling improvement:
+
+"Net binnen" badge:
+
+background: #0D6EFD
+color: white
+border-radius: 999px
+font-size: 12px
+
+--------------------------------
+
+4. NAVIGATION FIX (IMPORTANT)
+--------------------------------
+
+Fix back navigation logic.
+
+Current problem:
+When opening a listing and pressing back,
+the app always returns to the Home page.
+
+Correct behavior:
+
+If the listing was opened from:
+
+Matches page → go back to Matches
+
+Home (Recent matches) → go back to Home
+
+Implementation idea:
+
+When navigating to listing detail,
+store the origin route.
+
+Example:
+
+navigate("/listing/123", { state: { from: "matches" } })
+
+Then on back:
+
+if from === "matches"
+router.push("/matches")
+
+if from === "home"
+router.push("/")
+
+If no state exists:
+fallback to home.
+
+--------------------------------
+
+5. DO NOT BREAK EXISTING FEATURES
+--------------------------------
+
+Make sure the following still work:
+
+- favorites
+- match visibility
+- apply modal / apply screen
+- push notifications
+- email notifications
+- match audit panel
+
+--------------------------------
+
+Output required:
+
+Report:
+- files changed
+- routes updated
+- email template updated
+- deep link implemented

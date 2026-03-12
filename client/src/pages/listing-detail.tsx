@@ -8,9 +8,22 @@ import { MapPin, Euro, BedDouble, Ruler, ExternalLink, Clock, Globe, Zap, CheckC
 import { Button } from "@/components/ui/button";
 
 function FloatingBackButton({ navigate }: { navigate: (to: string) => void }) {
+  function handleBack() {
+    const params = new URLSearchParams(window.location.search);
+    const from = params.get("from");
+    if (from === "matches") {
+      navigate("/dashboard?tab=matches");
+    } else if (from === "home") {
+      navigate("/dashboard?tab=home");
+    } else if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      navigate("/dashboard");
+    }
+  }
   return (
     <div className="fixed top-[max(0.75rem,env(safe-area-inset-top))] left-4 z-30">
-      <button onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=matches")} className="w-12 h-12 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.10)] flex items-center justify-center active:scale-95 transition-transform" aria-label="Back" data-testid="button-back"><ArrowLeft className="w-5 h-5 text-[#111C3D]" /></button>
+      <button onClick={handleBack} className="w-12 h-12 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.10)] flex items-center justify-center active:scale-95 transition-transform" aria-label="Back" data-testid="button-back"><ArrowLeft className="w-5 h-5 text-[#111C3D]" /></button>
     </div>
   );
 }

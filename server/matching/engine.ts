@@ -37,6 +37,7 @@ interface DbListing {
   price: number;
   bedrooms: number;
   size_m2: number;
+  image_url?: string | null;
   furnished?: boolean | null;
   pets_allowed?: boolean | null;
   balcony?: boolean | null;
@@ -48,7 +49,7 @@ interface DbListing {
   target_categories?: string[] | null;
 }
 
-const LISTING_SELECT = "id, source, url, title, city, price, bedrooms, size_m2, furnished, pets_allowed, balcony, elevator, district, latitude, longitude, extra_features, target_categories";
+const LISTING_SELECT = "id, source, url, title, city, price, bedrooms, size_m2, image_url, furnished, pets_allowed, balcony, elevator, district, latitude, longitude, extra_features, target_categories";
 
 let hasFurnishedColumn: boolean | null = null;
 let hasDistrictColumn: boolean | null = null;
@@ -76,7 +77,7 @@ async function checkAdvancedListingColumns(): Promise<boolean> {
 }
 
 function getListingSelect(): string {
-  const base = "id, source, url, title, city, price, bedrooms, size_m2";
+  const base = "id, source, url, title, city, price, bedrooms, size_m2, image_url";
   const parts = [base];
   if (hasFurnishedColumn !== false) parts.push("furnished");
   if (hasDistrictColumn !== false) parts.push("district");
@@ -525,6 +526,7 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
         bedrooms: l.bedrooms,
         size_m2: l.size_m2,
         url: l.url,
+        image_url: l.image_url,
         matched_at: result.matched_at,
       });
     }
@@ -616,6 +618,7 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
             bedrooms: l.bedrooms,
             size_m2: l.size_m2,
             url: l.url,
+            image_url: l.image_url,
             matched_at,
           });
         }

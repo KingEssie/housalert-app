@@ -182,7 +182,7 @@ function MatchCard({
   function handleCardClick() {
     markViewed(match.listing_id);
     onStatusChange();
-    navigate(`/listing/${match.listing_id}`);
+    navigate(`/listing/${match.listing_id}?from=matches`);
   }
 
   function handleSave(e: React.MouseEvent) {
@@ -206,13 +206,14 @@ function MatchCard({
           <img
             src={match.image_url!}
             alt={match.title}
-            className="w-full h-[200px] object-cover"
+            className="w-full object-cover"
+            style={{ aspectRatio: "16/10" }}
             loading="lazy"
             onError={() => setImgError(true)}
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className={`w-full h-[200px] bg-gradient-to-br ${gradient} flex items-center justify-center relative`}>
+          <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "16/10" }}>
             <div className="absolute inset-0 bg-black/5" />
             <div className="flex flex-col items-center gap-2 text-white/60">
               <ImageIcon className="w-8 h-8" />
@@ -261,9 +262,9 @@ function MatchCard({
               {match.title}
             </h3>
             {match.price > 0 && (
-              <span className="text-[17px] font-bold text-[#111C3D] whitespace-nowrap flex-shrink-0 mt-0.5">
+              <span className="text-[20px] font-[700] text-[#111C3D] whitespace-nowrap flex-shrink-0 mt-0.5">
                 €{match.price}
-                <span className="text-[12px] font-normal text-[#1F2937]"> {t("common.perMonth")}</span>
+                <span className="text-[14px] font-normal text-[#6B7280]"> /mnd</span>
               </span>
             )}
           </div>
@@ -320,7 +321,7 @@ function MatchCard({
                 markViewed(match.listing_id);
                 onStatusChange();
               }}
-              className="h-[56px] px-5 rounded-full border border-[#E5E7EB] bg-white text-[#1F2937] text-[14px] font-bold hover:bg-[#F5F7FA] transition-colors flex items-center justify-center gap-1.5"
+              className="h-[56px] px-5 rounded-full border border-[#E5E7EB] bg-white text-[#111827] text-[14px] font-bold hover:bg-[#F5F7FA] transition-colors flex items-center justify-center gap-1.5"
               data-testid={`button-view-listing-${match.listing_id}`}
             >
               <ExternalLink className="w-3.5 h-3.5" />
@@ -332,9 +333,9 @@ function MatchCard({
                 e.stopPropagation();
                 markViewed(match.listing_id);
                 onStatusChange();
-                navigate(`/listing/${match.listing_id}`);
+                navigate(`/listing/${match.listing_id}?from=matches`);
               }}
-              className="h-[56px] px-5 rounded-full border border-[#E5E7EB] bg-white text-[#1F2937] text-[14px] font-bold hover:bg-[#F5F7FA] transition-colors flex items-center justify-center gap-1.5"
+              className="h-[56px] px-5 rounded-full border border-[#E5E7EB] bg-white text-[#111827] text-[14px] font-bold hover:bg-[#F5F7FA] transition-colors flex items-center justify-center gap-1.5"
               data-testid={`button-view-listing-${match.listing_id}`}
             >
               <Eye className="w-3.5 h-3.5" />
@@ -546,7 +547,7 @@ function RecentMatchMiniCard({ match }: { match: ApiMatch }) {
   return (
     <div
       className="bg-white rounded-2xl border border-[#E5E7EB] overflow-hidden cursor-pointer hover:shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-all duration-200 active:scale-[0.985] flex"
-      onClick={() => navigate(`/listing/${match.listing_id}`)}
+      onClick={() => navigate(`/listing/${match.listing_id}?from=home`)}
       data-testid={`card-recent-match-${match.listing_id}`}
     >
       {hasImage ? (

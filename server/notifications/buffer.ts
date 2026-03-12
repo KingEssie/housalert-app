@@ -25,6 +25,7 @@ export interface BufferedMatch {
   bedrooms: number;
   size_m2: number;
   url?: string | null;
+  image_url?: string | null;
   matched_at?: string;
 }
 

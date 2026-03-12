@@ -2,17 +2,19 @@ import { Resend } from "resend";
 import { log } from "./log";
 
 interface ListingInfo {
+  listing_id?: string;
   title: string;
   city: string;
   price: number;
   bedrooms: number;
   size_m2: number;
   url?: string | null;
+  image_url?: string | null;
 }
 
 const BRAND = {
   name: "HousAlert",
-  color: "#2DD4BF",
+  primary: "#0D6EFD",
   dark: "#1A1A1A",
   text: "#333333",
   muted: "#6B7280",
@@ -85,26 +87,11 @@ async function getUncachableResendClient() {
 }
 
 function formatPrice(price: number): string {
-  return price > 0 ? `\u20AC${price.toLocaleString("de-DE")}/Monat` : "";
+  return price > 0 ? `\u20AC${price.toLocaleString("de-DE")}` : "";
 }
 
-function buildDetailPills(listing: ListingInfo): string {
-  const pills: string[] = [];
-  if (listing.price > 0) pills.push(formatPrice(listing.price));
-  if (listing.bedrooms > 0) pills.push(`${listing.bedrooms} ${listing.bedrooms === 1 ? "Zimmer" : "Zimmer"}`);
-  if (listing.size_m2 > 0) pills.push(`${listing.size_m2} m\u00B2`);
-  return pills.join(" \u00A0\u2022\u00A0 ");
-}
-
-function buildDetailRows(listing: ListingInfo): string {
-  const rows: string[] = [];
-  const td1 = `style="color:${BRAND.muted};padding:4px 12px 4px 0;font-size:14px;white-space:nowrap;"`;
-  const td2 = `style="color:${BRAND.dark};padding:4px 0;font-size:14px;font-weight:600;"`;
-  if (listing.city) rows.push(`<tr><td ${td1}>Stadt</td><td ${td2}>${escapeHtml(listing.city)}</td></tr>`);
-  if (listing.price > 0) rows.push(`<tr><td ${td1}>Miete</td><td ${td2}>${formatPrice(listing.price)}</td></tr>`);
-  if (listing.bedrooms > 0) rows.push(`<tr><td ${td1}>Zimmer</td><td ${td2}>${listing.bedrooms}</td></tr>`);
-  if (listing.size_m2 > 0) rows.push(`<tr><td ${td1}>Fl\u00E4che</td><td ${td2}>${listing.size_m2} m\u00B2</td></tr>`);
-  return rows.join("");
+function getAppBaseUrl(): string {
+  return process.env.APP_PUBLIC_BASE_URL || "https://housalert.replit.app";
 }
 
 function emailWrapper(content: string, preheader?: string): string {
@@ -112,7 +99,7 @@ function emailWrapper(content: string, preheader?: string): string {
     ? `<div style="display:none;font-size:1px;color:${BRAND.bg};line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">${escapeHtml(preheader)}</div>`
     : "";
   return `<!DOCTYPE html>
-<html lang="de">
+<html lang="nl">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
 <body style="margin:0;padding:0;background-color:${BRAND.bg};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
 ${preheaderHtml}
@@ -138,7 +125,7 @@ ${content}
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
   <tr><td style="border-top:1px solid ${BRAND.divider};padding-top:20px;">
     <p style="margin:0;font-size:12px;color:${BRAND.muted};line-height:1.5;">
-      Du erh\u00E4ltst diese E-Mail, weil du ein Suchprofil bei HousAlert eingerichtet hast. Du kannst deine Benachrichtigungen jederzeit in deinen Kontoeinstellungen anpassen.
+      Je ontvangt deze e-mail omdat je een zoekprofiel hebt ingesteld bij HousAlert. Je kunt je meldingen op elk moment aanpassen in je accountinstellingen.
     </p>
     <p style="margin:8px 0 0;font-size:12px;color:${BRAND.muted};">
       \u00A9 ${new Date().getFullYear()} HousAlert
@@ -154,30 +141,49 @@ ${content}
 </html>`;
 }
 
-function ctaButton(url: string, label: string): string {
-  const safeUrl = sanitizeUrl(url);
-  if (!safeUrl) return "";
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px;">
-<tr><td align="center">
-  <a href="${escapeHtml(safeUrl)}" target="_blank" style="display:inline-block;background-color:${BRAND.color};color:${BRAND.dark};font-size:15px;font-weight:700;text-decoration:none;padding:14px 32px;border-radius:8px;text-align:center;">${escapeHtml(label)}</a>
-</td></tr>
-</table>`;
-}
-
-function listingCard(listing: ListingInfo, showCtaButton = false): string {
-  const detailRows = buildDetailRows(listing);
+function listingCard(listing: ListingInfo, showButtons = false): string {
   const safeUrl = sanitizeUrl(listing.url);
-  const linkHtml = safeUrl
-    ? `<a href="${escapeHtml(safeUrl)}" target="_blank" style="display:inline-block;margin-top:10px;font-size:13px;font-weight:600;color:${BRAND.color};text-decoration:none;">Inserat ansehen &rarr;</a>`
+  const baseUrl = getAppBaseUrl();
+  const applyUrl = listing.listing_id ? `${baseUrl}/apply/${listing.listing_id}` : null;
+  const safeImageUrl = sanitizeUrl(listing.image_url);
+
+  const imageHtml = safeImageUrl
+    ? `<tr><td style="padding:0;">
+        <img src="${escapeHtml(safeImageUrl)}" alt="${escapeHtml(listing.title)}" width="100%" style="display:block;width:100%;height:auto;max-height:200px;object-fit:cover;border-radius:8px 8px 0 0;" />
+      </td></tr>`
     : "";
-  const ctaHtml = showCtaButton && safeUrl ? ctaButton(safeUrl, "Wohnung ansehen") : "";
+
+  const priceHtml = listing.price > 0
+    ? `<p style="margin:0 0 4px;font-size:20px;font-weight:700;color:${BRAND.dark};">${formatPrice(listing.price)} <span style="font-size:14px;font-weight:400;color:${BRAND.muted};">/mnd</span></p>`
+    : "";
+
+  const cityHtml = listing.city
+    ? `<p style="margin:0 0 12px;font-size:14px;color:${BRAND.muted};">\u{1F4CD} ${escapeHtml(listing.city)}</p>`
+    : "";
+
+  const applyButtonHtml = showButtons && applyUrl
+    ? `<a href="${escapeHtml(applyUrl)}" target="_blank" style="display:inline-block;background-color:${BRAND.primary};color:#FFFFFF;font-size:15px;font-weight:600;text-decoration:none;padding:14px 18px;border-radius:999px;text-align:center;mso-padding-alt:14px 18px;">Reageer direct</a>`
+    : "";
+
+  const viewButtonHtml = showButtons && safeUrl
+    ? `<a href="${escapeHtml(safeUrl)}" target="_blank" style="display:inline-block;border:1px solid ${BRAND.divider};background-color:#FFFFFF;color:#111827;font-size:15px;font-weight:600;text-decoration:none;padding:14px 18px;border-radius:999px;text-align:center;margin-left:8px;">Bekijk woning</a>`
+    : "";
+
+  const buttonsHtml = (applyButtonHtml || viewButtonHtml)
+    ? `<tr><td style="padding:16px 20px 4px;">
+        <table role="presentation" cellpadding="0" cellspacing="0"><tr><td>${applyButtonHtml}</td><td>${viewButtonHtml}</td></tr></table>
+      </td></tr>`
+    : "";
+
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${BRAND.bg};border-radius:8px;overflow:hidden;margin:16px 0;">
-<tr><td style="padding:16px 20px;">
+${imageHtml}
+<tr><td style="padding:16px 20px 4px;">
   <h3 style="margin:0 0 8px;font-size:16px;font-weight:700;color:${BRAND.dark};line-height:1.3;">${escapeHtml(listing.title)}</h3>
-  <table role="presentation" cellpadding="0" cellspacing="0">${detailRows}</table>
-  ${linkHtml}
-  ${ctaHtml}
+  ${priceHtml}
+  ${cityHtml}
 </td></tr>
+${buttonsHtml}
+<tr><td style="padding:0 0 16px;"></td></tr>
 </table>`;
 }
 
@@ -188,22 +194,21 @@ export async function sendMatchAlert(
   try {
     const { client, fromEmail } = await getUncachableResendClient();
 
-    const subject = `Neue Wohnung gefunden in ${listing.city}`;
+    const subject = `Nieuwe match voor jouw zoekprofiel`;
     const preheader = `${listing.title} \u2014 ${listing.city}`;
-    const safeUrl = sanitizeUrl(listing.url);
 
     const detailsText = [
-      `Stadt: ${listing.city}`,
-      listing.price > 0 ? `Miete: ${formatPrice(listing.price)}` : null,
-      listing.bedrooms > 0 ? `Zimmer: ${listing.bedrooms}` : null,
-      listing.size_m2 > 0 ? `Fl\u00E4che: ${listing.size_m2} m\u00B2` : null,
+      `Stad: ${listing.city}`,
+      listing.price > 0 ? `Huur: ${formatPrice(listing.price)}/mnd` : null,
+      listing.bedrooms > 0 ? `Kamers: ${listing.bedrooms}` : null,
+      listing.size_m2 > 0 ? `Oppervlakte: ${listing.size_m2} m\u00B2` : null,
     ].filter(Boolean).join("\n");
 
-    const textBody = `Hallo,\n\nWir haben eine neue Wohnung gefunden, die zu deinem Suchprofil passt:\n\n${listing.title}\n${detailsText}${safeUrl ? `\n\nInserat ansehen: ${safeUrl}` : ""}\n\nViele Gr\u00FC\u00DFe,\nDein HousAlert-Team`;
+    const textBody = `Hallo,\n\nWe hebben een nieuwe woning gevonden die bij jouw zoekprofiel past:\n\n${listing.title}\n${detailsText}${listing.url ? `\n\nBekijk woning: ${listing.url}` : ""}\n\nMet vriendelijke groet,\nHet HousAlert-team`;
 
     const htmlContent = `
-<h2 style="margin:0 0 6px;font-size:20px;font-weight:700;color:${BRAND.dark};">Neue passende Wohnung gefunden</h2>
-<p style="margin:0 0 4px;font-size:15px;color:${BRAND.text};line-height:1.5;">Wir haben eine neue Wohnung gefunden, die zu deinem Suchprofil passt.</p>
+<h2 style="margin:0 0 6px;font-size:20px;font-weight:700;color:${BRAND.dark};">Nieuwe match gevonden</h2>
+<p style="margin:0 0 4px;font-size:15px;color:${BRAND.text};line-height:1.5;">We hebben een nieuwe woning gevonden die bij jouw zoekprofiel past.</p>
 ${listingCard(listing, true)}`;
 
     const { error } = await client.emails.send({
@@ -240,28 +245,21 @@ export async function sendBatchMatchAlert(
   try {
     const { client, fromEmail } = await getUncachableResendClient();
 
-    const firstCity = listings[0]?.city;
-    const allSameCity = listings.every(l => l.city === firstCity);
-    const subject = allSameCity
-      ? `${listings.length} neue Wohnungen gefunden in ${firstCity}`
-      : `${listings.length} neue Wohnungen f\u00FCr deine Suche`;
-    const preheader = allSameCity
-      ? `${listings.length} neue Wohnungen in ${firstCity} passen zu deinem Suchprofil.`
-      : `${listings.length} neue Wohnungen passen zu deinem Suchprofil.`;
+    const subject = `${listings.length} nieuwe woningen die bij jouw zoekprofiel passen`;
+    const preheader = `${listings.length} nieuwe matches voor jouw zoekprofiel.`;
 
     const textListings = listings.map((l, i) => {
-      const pills = buildDetailPills(l);
       const safeUrl = sanitizeUrl(l.url);
-      return `${i + 1}. ${l.title}\n   ${pills} \u2014 ${l.city}${safeUrl ? `\n   ${safeUrl}` : ""}`;
+      return `${i + 1}. ${l.title}\n   ${formatPrice(l.price)}/mnd \u2014 ${l.city}${safeUrl ? `\n   ${safeUrl}` : ""}`;
     }).join("\n\n");
 
-    const textBody = `Hallo,\n\nWir haben ${listings.length} neue Wohnungen gefunden, die zu deinem Suchprofil passen:\n\n${textListings}\n\nViele Gr\u00FC\u00DFe,\nDein HousAlert-Team`;
+    const textBody = `Hallo,\n\nWe hebben ${listings.length} nieuwe woningen gevonden die bij jouw zoekprofiel passen:\n\n${textListings}\n\nMet vriendelijke groet,\nHet HousAlert-team`;
 
     const htmlListings = listings.map(l => listingCard(l, true)).join("");
 
     const htmlContent = `
-<h2 style="margin:0 0 6px;font-size:20px;font-weight:700;color:${BRAND.dark};">${listings.length} neue passende Wohnungen</h2>
-<p style="margin:0 0 4px;font-size:15px;color:${BRAND.text};line-height:1.5;">Wir haben ${listings.length} neue Wohnungen gefunden, die zu deinem Suchprofil passen.</p>
+<h2 style="margin:0 0 6px;font-size:20px;font-weight:700;color:${BRAND.dark};">${listings.length} nieuwe matches</h2>
+<p style="margin:0 0 4px;font-size:15px;color:${BRAND.text};line-height:1.5;">We hebben ${listings.length} nieuwe woningen gevonden die bij jouw zoekprofiel passen.</p>
 ${htmlListings}`;
 
     const { error } = await client.emails.send({
