@@ -37,15 +37,12 @@ import {
   Crown,
   AlertTriangle,
   ExternalLink,
-  Bookmark,
-  BookmarkCheck,
   Eye,
   Send,
   ImageIcon,
   Zap,
   Camera,
   ArrowLeft,
-  Info,
 } from "lucide-react";
 import { AccountCompletionCard, SearchPreparationCard, TaskModal, PrepTaskModal } from "@/components/profile-strength";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
@@ -72,7 +69,7 @@ function relativeTime(dateStr: string | null | undefined, t: (key: string, param
 }
 
 const FRESH_BADGE_STYLES: Record<string, { bg: string; text: string }> = {
-  net_binnen: { bg: "bg-[#F5F7FA]", text: "text-[#1F2937]" },
+  net_binnen: { bg: "bg-[#0D6EFD]", text: "text-white" },
   nieuw: { bg: "bg-[#1F2937]", text: "text-white" },
   vandaag: { bg: "bg-[#1F2937]", text: "text-white" },
   ouder: { bg: "bg-[#F5F7FA]", text: "text-[#1F2937]" },
@@ -228,11 +225,17 @@ function MatchCard({
           <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm ${style.bg} ${style.text}`}>
             {FRESH_LABEL_KEYS[match.fresh_label] ? t(FRESH_LABEL_KEYS[match.fresh_label]) : match.fresh_label}
           </span>
-          {match.in_latest_email && (
-            <span className="text-[10px] font-semibold px-2 py-1 rounded-full backdrop-blur-sm bg-blue-500/90 text-white" data-testid={`badge-emailed-${match.listing_id}`}>
-              E-mail
-            </span>
-          )}
+          {(() => {
+            const reasons = match.match_reasons ?? [];
+            const label = reasons.length > 0 && MATCH_REASON_KEYS[reasons[0]]
+              ? t(MATCH_REASON_KEYS[reasons[0]])
+              : match.in_latest_email ? "E-mail" : null;
+            return label ? (
+              <span className="text-[10px] font-semibold px-2 py-1 rounded-full backdrop-blur-sm bg-white/80 text-[#1F2937]" data-testid={`badge-context-${match.listing_id}`}>
+                {label}
+              </span>
+            ) : null;
+          })()}
         </div>
 
         <button
@@ -241,9 +244,9 @@ function MatchCard({
           data-testid={`button-save-match-${match.listing_id}`}
         >
           {isSaved ? (
-            <BookmarkCheck className="w-[18px] h-[18px] text-[#1F2937]" />
+            <Heart className="w-[18px] h-[18px] text-[#EF4444] fill-[#EF4444]" />
           ) : (
-            <Bookmark className="w-[18px] h-[18px] text-[#1F2937]" />
+            <Heart className="w-[18px] h-[18px] text-[#1F2937]" />
           )}
         </button>
       </div>
@@ -289,60 +292,8 @@ function MatchCard({
           )}
         </div>
 
-        {(() => {
-          const chips = (match.match_reasons ?? []).slice(0, 3).map((r) => MATCH_REASON_KEYS[r] ? t(MATCH_REASON_KEYS[r]) : r);
-          if ((match.fresh_label === "net_binnen" || match.fresh_label === "nieuw") && chips.length < 3 && !chips.includes(t("matchReason.fresh"))) {
-            chips.push(t("matchReason.fresh"));
-          }
-          return chips.length > 0 ? (
-            <div className="flex flex-wrap gap-1.5" data-testid={`chips-match-reasons-${match.listing_id}`}>
-              {chips.map((chip) => (
-                <span
-                  key={chip}
-                  className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-[#F5F7FA] text-[#1F2937]"
-                >
-                  {chip}
-                </span>
-              ))}
-            </div>
-          ) : null;
-        })()}
-
-        {(() => {
-          const hf = match.hybrid_filters;
-          if (!hf) return null;
-          const unknowns: string[] = [];
-          if (hf.furnished === "unknown") unknowns.push(t("hybridFilter.furnishedUnknown"));
-          if (hf.district === "unknown") unknowns.push(t("hybridFilter.districtUnknown"));
-          const hasPetsNote = hf.pets === "unknown";
-          if (unknowns.length === 0 && !hasPetsNote) return null;
-          return (
-            <div
-              className="flex flex-col gap-1 text-[11px] text-[#1F2937]/50"
-              data-testid={`hybrid-hint-${match.listing_id}`}
-              data-hybrid-furnished={hf.furnished}
-              data-hybrid-district={hf.district}
-              data-hybrid-pets={hf.pets}
-              title={[...unknowns, ...(hasPetsNote ? [t("hybridFilter.petsNote")] : [])].join(" · ")}
-            >
-              {unknowns.length > 0 && (
-                <div className="flex items-start gap-1.5">
-                  <Info className="w-3 h-3 flex-shrink-0 mt-[1px]" />
-                  <span>{t("hybridFilter.unknownHint")}</span>
-                </div>
-              )}
-              {hasPetsNote && (
-                <div className="flex items-start gap-1.5">
-                  <Info className="w-3 h-3 flex-shrink-0 mt-[1px]" />
-                  <span>{t("hybridFilter.petsNote")}</span>
-                </div>
-              )}
-            </div>
-          );
-        })()}
-
-        <div className="flex items-center gap-2 text-[11px] text-[#1F2937]">
-          <span className="capitalize font-bold" style={{ color: "#0D6EFD" }}>{match.source}</span>
+        <div className="flex items-center gap-2 text-[12px] text-[#6B7280]">
+          <span className="capitalize font-medium">{match.source}</span>
           <span>·</span>
           <span className="flex items-center gap-1">
             <Clock className="w-3 h-3" />
@@ -411,24 +362,24 @@ function ProfileCard({
 
   return (
     <div
-      className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 flex flex-col gap-3.5"
+      className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 flex flex-col gap-5"
       data-testid={`card-profile-${profile.id}`}
     >
       <div className="flex items-start justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-full bg-[#F5F7FA] flex items-center justify-center">
-            <MapPin className="w-4 h-4 text-[#1F2937]" />
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-[#F5F7FA] flex items-center justify-center flex-shrink-0">
+            <MapPin className="w-[18px] h-[18px] text-[#1F2937]" />
           </div>
           <div>
-            <div className="flex items-center gap-1.5">
-              <h3 className="font-semibold text-[#111C3D] text-[15px]" data-testid={`text-profile-city-${profile.id}`}>
+            <div className="flex items-center gap-2">
+              <h3 className="font-[700] text-[#111C3D] text-[18px]" data-testid={`text-profile-city-${profile.id}`}>
                 {profile.city_name || profile.city}
               </h3>
-              <span className="text-[10px] font-medium text-white bg-[#ff2f7d] px-1.5 py-0.5 rounded-full" data-testid={`badge-status-${profile.id}`}>
+              <span className="text-[10px] font-semibold text-white bg-[#16A34A] px-2 py-0.5 rounded-full" data-testid={`badge-status-${profile.id}`}>
                 {t("common.active")}
               </span>
             </div>
-            <p className="text-[13px] font-[500] text-[#1F2937]">
+            <p className="text-[13px] text-[#6B7280] mt-0.5">
               {t("filters.createdOn", { date: new Date(profile.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "short" }) })}
             </p>
           </div>
@@ -436,7 +387,7 @@ function ProfileCard({
         <button
           onClick={onDelete}
           disabled={deleting}
-          className="w-8 h-8 rounded-lg flex items-center justify-center text-[#1F2937] hover:text-[#1F2937] hover:bg-[#F5F7FA] transition-colors"
+          className="w-9 h-9 rounded-full flex items-center justify-center text-[#6B7280] hover:text-[#1F2937] hover:bg-[#F5F7FA] transition-colors"
           data-testid={`button-delete-${profile.id}`}
         >
           <Trash2 className="w-4 h-4" />
@@ -486,7 +437,7 @@ function ProfileCard({
 
       <button
         onClick={onEdit}
-        className="w-full h-10 rounded-full border border-[#E5E7EB] text-[13px] font-semibold text-[#111C3D] hover:bg-[#F5F7FA] transition-colors flex items-center justify-center gap-1.5"
+        className="w-full h-11 rounded-full border border-[#E5E7EB] text-[14px] font-semibold text-[#111C3D] hover:bg-[#F5F7FA] transition-colors flex items-center justify-center gap-1.5"
         data-testid={`button-edit-${profile.id}`}
       >
         {t("common.edit")}
@@ -733,7 +684,7 @@ function HomeTab({
           </div>
           <button
             onClick={() => setActiveTab("matches")}
-            className="h-[48px] px-6 rounded-full bg-white hover:bg-[#F3F4F6] text-[#0F172A] text-[14px] font-bold transition-colors flex items-center justify-center gap-2"
+            className="ml-14 h-[48px] px-6 rounded-full bg-white hover:bg-[#F3F4F6] text-[#0F172A] text-[14px] font-bold transition-colors inline-flex items-center gap-2"
             data-testid="button-view-matches"
           >
             {t("home.viewMatches")}
@@ -757,7 +708,7 @@ function HomeTab({
           </div>
           <button
             onClick={() => setActiveTab("filters")}
-            className="h-[48px] px-6 rounded-full bg-white hover:bg-[#F3F4F6] text-[#0F172A] text-[14px] font-bold transition-colors flex items-center justify-center gap-2"
+            className="ml-14 h-[48px] px-6 rounded-full bg-white hover:bg-[#F3F4F6] text-[#0F172A] text-[14px] font-bold transition-colors inline-flex items-center gap-2"
             data-testid="button-adjust-filters"
           >
             {t("home.adjustFilters")}
@@ -785,7 +736,7 @@ function HomeTab({
           </div>
           <button
             onClick={() => navigate("/paywall")}
-            className="h-[48px] px-6 rounded-full bg-white hover:bg-[#F3F4F6] text-[#0F172A] text-[14px] font-bold transition-colors flex items-center justify-center gap-2"
+            className="ml-14 h-[48px] px-6 rounded-full bg-white hover:bg-[#F3F4F6] text-[#0F172A] text-[14px] font-bold transition-colors inline-flex items-center gap-2"
             data-testid="button-activate-sub"
           >
             {t("home.activateSubscription")}
@@ -857,7 +808,7 @@ function HomeTab({
 const MATCH_SUB_TAB_CONFIG: { key: MatchSubTab; labelKey: string; Icon: any }[] = [
   { key: "nieuw", labelKey: "matches.subtabs.new", Icon: Sparkles },
   { key: "bekeken", labelKey: "matches.subtabs.viewed", Icon: Eye },
-  { key: "opgeslagen", labelKey: "matches.subtabs.saved", Icon: Bookmark },
+  { key: "opgeslagen", labelKey: "matches.subtabs.saved", Icon: Heart },
   { key: "gereageerd", labelKey: "matches.subtabs.applied", Icon: Send },
 ];
 
@@ -1149,7 +1100,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
         {!atLimit && (
           <button
             onClick={() => navigate("/dashboard/searches/new")}
-            className="w-9 h-9 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] flex items-center justify-center text-white transition-colors"
+            className="w-12 h-12 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] flex items-center justify-center text-white transition-colors flex-shrink-0"
             data-testid="button-add-search"
           >
             <Plus className="w-5 h-5" />
@@ -1514,19 +1465,19 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
               <h2 className="text-[20px] font-bold text-[#111C3D] mb-4" data-testid="section-verified">{t("profile.verified")}</h2>
               <div className="flex flex-col">
                 <div className="flex items-center gap-3 py-3">
-                  <div className="w-6 h-6 rounded-full bg-[#3ED6C6] flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="w-4 h-4 text-black" />
+                  <div className="w-6 h-6 rounded-full bg-[#0D6EFD] flex items-center justify-center flex-shrink-0">
+                    <CheckCircle2 className="w-4 h-4 text-white" />
                   </div>
                   <p className="text-[15px] text-[#1F2937]">{user.email}</p>
                 </div>
                 <div className="h-px bg-[#E5E7EB]" />
                 <div className="flex items-center gap-3 py-3">
                   {phone ? (
-                    <div className="w-6 h-6 rounded-full bg-[#3ED6C6] flex items-center justify-center flex-shrink-0">
-                      <CheckCircle2 className="w-4 h-4 text-black" />
+                    <div className="w-6 h-6 rounded-full bg-[#0D6EFD] flex items-center justify-center flex-shrink-0">
+                      <CheckCircle2 className="w-4 h-4 text-white" />
                     </div>
                   ) : (
-                    <AlertCircle className="w-5 h-5 text-[#1F2937] flex-shrink-0" />
+                    <AlertCircle className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
                   )}
                   <p className={`text-[15px] ${phone ? "text-[#1F2937]" : "text-[#6B7280]"}`}>
                     {phone || t("profile.addPhone")}

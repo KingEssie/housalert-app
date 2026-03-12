@@ -1,0 +1,135 @@
+I need a focused UI polish pass. Do not redesign the app globally. Only apply the exact changes below.
+
+GOAL
+Make the app cleaner, calmer, and more visually consistent.
+
+==================================================
+1. HOME BANNER BUTTON ALIGNMENT
+==================================================
+
+On the home banner, the white button ("Filters aanpassen") is visually too far left.
+Fix:
+- Align the left edge of the white button with the left edge of the banner text block
+- It should feel visually lined up with the title/subtitle text above it
+- Keep the button styling the same otherwise
+
+==================================================
+2. MATCH CARDS — MAKE THEM CALMER / LESS BUSY
+==================================================
+
+Current issue:
+The cards feel too busy.
+
+Apply these changes:
+
+A. "Net binnen" badge
+- Keep it
+- Change its background color to the same primary blue used for buttons
+- Text remains white
+
+Use:
+- background: #0D6EFD
+- text: #FFFFFF
+
+B. Feature labels on cards
+Currently there are too many labels like:
+- Gewenste wijk
+- Past bij jouw voorkeuren
+- Binnen budget
+
+Change this:
+- Remove the row of multiple labels below the title/meta
+- Show only ONE highlighted label per card
+- Pick the most relevant available label dynamically from the applicable ones
+- Place this single label on top of the image, next to the "Net binnen" badge
+- Keep the visual style subtle and clean
+
+So the image top area should contain:
+- left: "Net binnen" badge
+- next to it: one single contextual label
+
+C. Save/favorite icon
+- Replace the current save/bookmark icon with a heart icon
+- Keep the same circular white background button style
+- Only change the icon itself to a heart
+
+==================================================
+3. FILTERS PAGE / SEARCH PROFILE CARD
+==================================================
+
+Current issue:
+The search profile card looks too different from the rest of the app.
+
+Apply these changes:
+
+A. Top-right plus button
+- Make it perfectly circular
+- Same size/visual weight as other circular action buttons/back buttons in the app
+- Keep it blue
+- Make sure it does not look stretched or oval
+
+B. Search profile card title
+- The city title (e.g. Berlin) is too small
+- Increase it so it matches the visual weight/size of titles on other cards in the app (like match cards)
+
+C. More spacing
+- Add more whitespace between:
+  - title
+  - description/date text
+  - filter chips
+  - action button
+- The card currently feels too cramped
+- Make it breathe more
+
+D. General consistency
+- Make the search profile card visually feel closer to the rest of the app cards
+- Without redesigning the structure completely
+
+==================================================
+4. ACCOUNT / PROFILE PAGE ICON COLORS
+==================================================
+
+Current issue:
+Some icons still use turquoise/teal (for example the verified email icon).
+
+Fix:
+- Remove turquoise/teal from these status icons
+- Use the same primary blue background as the app buttons
+- Use white icons inside
+
+Apply this to:
+- verified email icon
+- future verified phone icon
+- any similar status circle icons
+
+Use:
+- background: #0D6EFD
+- icon color: #FFFFFF
+
+I do not want turquoise/teal anywhere in these UI status icons anymore.
+
+==================================================
+5. KEEP EXISTING DESIGN SYSTEM
+==================================================
+
+Continue using the current design system already applied:
+- primary blue: #0D6EFD
+- dark banner blue: #0B2A4A
+- primary text: #1F2937
+- secondary text: #6B7280
+- white buttons in dark banners
+- fully rounded buttons
+
+Do not reintroduce turquoise elements.
+
+==================================================
+6. OUTPUT FORMAT
+==================================================
+
+Output only:
+1. Files changed
+2. Exact UI changes applied
+3. Match card simplification rules applied
+4. Filters page spacing/title changes
+5. Account/status icon color changes
+6. Anything I should visually retest
