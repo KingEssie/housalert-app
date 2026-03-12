@@ -71,44 +71,42 @@ export default function ProfileDetailsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       <PageHeader title={t("profileDetails.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
-      <div className="max-w-lg mx-auto">
+      <div className="max-w-lg mx-auto px-5">
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
           </div>
         ) : (
-          <div>
-            {FIELDS.map((field, i) => {
+          <div className="flex flex-col">
+            {FIELDS.map((field) => {
               const value = getFieldValue(field.key);
               const editable = isEditable(field.key);
-              return (
-                <div key={field.key}>
-                  {editable ? (
-                    <button
-                      onClick={() => navigate(`/profile/edit/${field.key}`)}
-                      className="w-full flex items-center justify-between px-5 py-[18px] text-left active:bg-[#F9FAFB] transition-colors"
-                      data-testid={`field-${field.key}`}
-                    >
-                      <div className="min-w-0 flex-1">
-                        <p className="text-field-label mb-1">{field.label}</p>
-                        <p className="text-field-value truncate">
-                          {value || <span className="text-[#9CA3AF]">{t("profileDetails.add")}</span>}
-                        </p>
-                      </div>
-                      <ChevronRight className="w-[18px] h-[18px] text-[#9CA3AF] flex-shrink-0 ml-3" />
-                    </button>
-                  ) : (
-                    <div className="px-5 py-[18px]" data-testid={`field-${field.key}`}>
-                      <p className="text-field-label mb-1">{field.label}</p>
-                      <p className="text-field-value truncate">{value || "-"}</p>
-                    </div>
-                  )}
-                  {i < FIELDS.length - 1 && (
-                    <div className="h-px bg-[#E5E7EB] mx-5" />
-                  )}
+              const hasValue = !!value;
+
+              return editable ? (
+                <button
+                  key={field.key}
+                  onClick={() => navigate(`/profile/edit/${field.key}`)}
+                  className="w-full flex items-center justify-between py-4 text-left active:opacity-70 transition-opacity"
+                  data-testid={`field-${field.key}`}
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[13px] text-[#9CA3AF] font-normal mb-0.5">{field.label}</p>
+                    <p className={`text-[16px] font-medium truncate ${hasValue ? "text-[#0D6EFD]" : "text-[#9CA3AF]"}`}>
+                      {value || t("profileDetails.add")}
+                    </p>
+                  </div>
+                  <ChevronRight className="w-[18px] h-[18px] text-[#C9CDD4] flex-shrink-0 ml-3" />
+                </button>
+              ) : (
+                <div key={field.key} className="py-4" data-testid={`field-${field.key}`}>
+                  <p className="text-[13px] text-[#9CA3AF] font-normal mb-0.5">{field.label}</p>
+                  <p className={`text-[16px] font-medium truncate ${hasValue ? "text-[#0D6EFD]" : "text-[#9CA3AF]"}`}>
+                    {value || "-"}
+                  </p>
                 </div>
               );
             })}

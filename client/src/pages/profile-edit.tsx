@@ -1,13 +1,12 @@
 import { apiFetch } from "@/lib/api-base";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation, useRoute } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { useTranslation } from "@/i18n";
-import { Loader2 } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
-import { Button } from "@/components/ui/button";
 
 export default function ProfileEditPage() {
   const [, params] = useRoute("/profile/edit/:field");
@@ -28,6 +27,7 @@ export default function ProfileEditPage() {
   const { session } = useAuth();
   const [, navigate] = useLocation();
   const { toast } = useToast();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [value, setValue] = useState("");
   const [loading, setLoading] = useState(true);
@@ -89,41 +89,61 @@ export default function ProfileEditPage() {
     }
   }
 
+  function handleClear() {
+    setValue("");
+    inputRef.current?.focus();
+  }
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white flex flex-col">
       <PageHeader title={config.question} onBack={() => navigate("/profile/details")} />
 
-      <div className="max-w-xl mx-auto px-5">
+      <div className="flex-1 max-w-xl mx-auto px-5 w-full">
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
           </div>
         ) : (
-          <div className="flex flex-col gap-8">
-
+          <div className="relative">
             <input
+              ref={inputRef}
               type={config.type}
               value={value}
               onChange={e => setValue(e.target.value)}
               placeholder={config.placeholder}
-              className="w-full bg-[#F3F4F6] rounded-[20px] px-5 py-4 text-[16px] text-[#111827] placeholder:text-[#9CA3AF] border-0 outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 h-[60px]"
+              aria-label={config.label}
+              className="w-full bg-[#F5F6F8] rounded-[24px] pl-6 pr-12 py-4 text-[16px] text-[#111827] placeholder:text-[#B0B5BD] border-0 outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 h-[56px]"
               data-testid="input-edit-field"
             />
-
-            <div className="flex justify-center">
-              <Button
-                onClick={handleSave}
-                disabled={saving}
-                size="save"
-                className="text-[15px]"
-                data-testid="button-save-field"
+            {value && (
+              <button
+                type="button"
+                onClick={handleClear}
+                aria-label="Clear"
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-[#E0E2E7] flex items-center justify-center active:scale-90 transition-transform"
+                data-testid="button-clear-field"
               >
-                {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : t("common.save")}
-              </Button>
-            </div>
+                <X className="w-3.5 h-3.5 text-[#6B7280]" />
+              </button>
+            )}
           </div>
         )}
       </div>
+
+      {!loading && (
+        <div className="sticky bottom-0 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 px-5 bg-gradient-to-t from-white via-white to-white/0">
+          <div className="max-w-xl mx-auto">
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="w-full h-[52px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-semibold flex items-center justify-center transition-colors disabled:opacity-50"
+              data-testid="button-save-field"
+            >
+              {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : t("common.save")}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

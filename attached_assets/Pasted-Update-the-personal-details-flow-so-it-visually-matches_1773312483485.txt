@@ -1,0 +1,53 @@
+Update the personal details flow so it visually matches the reference more closely.
+
+Apply these changes across both the overview screen and the edit screens:
+
+1. Remove all visible divider lines between profile rows.
+- Do not use horizontal borders between sections anymore.
+- Separate rows only through spacing, padding, and layout rhythm.
+
+2. Style filled-in values in blue.
+- Labels such as “Voornaam”, “Achternaam”, etc. stay neutral/light gray.
+- User-provided values such as “Martin” must be blue.
+- Empty values like “Toevoegen” remain lighter gray.
+
+3. Make top corner buttons float.
+- Back/close buttons must be circular white floating buttons.
+- Add subtle shadow/elevation so they appear to hover above the page.
+- Position them with safe top/side spacing, independent from the main content.
+- Apply the same floating treatment to buttons placed top-left or top-right.
+
+4. Make the primary action button float at the bottom.
+- On edit screens, the blue save button must be anchored visually near the bottom of the screen, not directly under the input field.
+- It should feel like a floating CTA.
+- When the keyboard opens, the button should stay visible above the keyboard.
+- Keep it centered horizontally.
+
+5. Adjust input field styling to match the reference better.
+- Use a slightly softer/lighter background tone.
+- Increase border radius so the field feels more rounded.
+- Add comfortable inner horizontal padding.
+- Match the reference’s softer, more premium look.
+
+6. Add a clear “X” icon inside the input field on the right.
+- Show it only when the field has a value.
+- Tapping it should clear the field instantly.
+- Keep it vertically centered and visually subtle.
+
+7. Refine the profile rows.
+- Each row should feel like a clean tappable list item.
+- Layout: label above, value below, chevron on the right.
+- No borders between rows.
+- Use spacing instead of lines.
+
+8. Keep the whole UI consistent.
+- Reuse shared components for:
+  - FloatingIconButton
+  - ProfileInfoRow
+  - RoundedInputField
+  - FloatingBottomCTA
+
+Important:
+- Match the reference behavior and feel, not just approximate it.
+- Prioritize spacing, floating layout, rounded corners, and subtle shadow.
+- Do not leave any screen with old divider lines or non-floating corner buttons.
