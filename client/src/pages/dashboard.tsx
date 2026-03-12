@@ -4,7 +4,7 @@ import { useLocation } from "wouter";
 import { useEffect, useState, useCallback } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getSearchProfiles, deleteSearchProfile, type SearchProfile } from "@/lib/search-profiles";
-import { fetchApiMatches, type ApiMatch, type ApiMatchesResponse } from "@/lib/listings";
+import { fetchApiMatches, type ApiMatch, type ApiMatchesResponse, type CanonicalStats } from "@/lib/listings";
 import { queryClient } from "@/lib/queryClient";
 import { supabase } from "@/lib/supabase";
 import { dateLocale } from "../../../config/market";
@@ -142,10 +142,10 @@ function markApplied(listingId: string) {
   markViewed(listingId);
 }
 
-function getMatchTab(listingId: string): MatchSubTab {
-  if (safeGetSet(MATCH_APPLIED_KEY).has(listingId)) return "gereageerd";
-  if (safeGetSet(MATCH_SAVED_KEY).has(listingId)) return "opgeslagen";
-  if (safeGetSet(MATCH_VIEWED_KEY).has(listingId)) return "bekeken";
+function getMatchTab(match: ApiMatch): MatchSubTab {
+  if (match.canonical_applied) return "gereageerd";
+  if (match.canonical_saved) return "opgeslagen";
+  if (match.canonical_viewed) return "bekeken";
   return "nieuw";
 }
 
@@ -860,20 +860,38 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
 
   const handleSaveToggle = useCallback((listingId: string) => {
     toggleSaved(listingId);
+    if (accessToken) {
+      const isSaved = safeGetSet(MATCH_SAVED_KEY).has(listingId);
+      apiFetch(`/api/matches/${listingId}/saved`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ saved: isSaved }),
+      }).then(() => {
+        queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
+      }).catch(() => {});
+    }
     refreshStatuses();
-  }, [refreshStatuses]);
+  }, [refreshStatuses, accessToken]);
 
   const handleApplyClick = useCallback((match: ApiMatch) => {
     navigate(`/apply/${match.listing_id}`);
   }, [navigate]);
 
-  const matchTabs = matches.map((m) => ({ ...m, _tab: getMatchTab(m.listing_id) }));
+  const canonicalStats = apiMatchesQuery.data?.canonicalStats;
+  const matchTabs = matches.map((m) => ({ ...m, _tab: getMatchTab(m) }));
   const filteredMatches = matchTabs.filter((m) => m._tab === subTab);
 
-  const tabCounts = matchTabs.reduce((acc, m) => {
-    acc[m._tab] = (acc[m._tab] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  const tabCounts: Record<string, number> = canonicalStats
+    ? {
+        nieuw: canonicalStats.new_count,
+        bekeken: canonicalStats.viewed,
+        opgeslagen: canonicalStats.saved,
+        gereageerd: canonicalStats.applied,
+      }
+    : matchTabs.reduce((acc, m) => {
+        acc[m._tab] = (acc[m._tab] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
 
   return (
     <div className="flex flex-col gap-5 px-6 pt-6 pb-6">
@@ -1002,7 +1020,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
               match={m}
               onSaveToggle={handleSaveToggle}
               onApplyClick={handleApplyClick}
-              isSaved={safeGetSet(MATCH_SAVED_KEY).has(m.listing_id)}
+              isSaved={m.canonical_saved ?? safeGetSet(MATCH_SAVED_KEY).has(m.listing_id)}
               onStatusChange={refreshStatuses}
             />
           ))}
@@ -1596,7 +1614,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
               >
                 <p className="text-[15px] font-[500] text-[#0D6EFD] flex-1">{t("profile.deleteAccount")}</p>
               </button>
-              {(user?.email === "martin.essie87@gmail.com") && (
+              {(user?.email?.toLowerCase() === "martin.essie87@gmail.com") && (
                 <>
                   <div className="h-px bg-[#E5E7EB] mx-5" />
                   <button

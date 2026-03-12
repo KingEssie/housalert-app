@@ -155,7 +155,9 @@ A mobile-first German-language rental alert application for the German market. U
 - **`server/user-matches.ts`** — module with CRUD: `upsertUserMatch()`, `markEmailSent()`, `markPushSent()`, `markViewed()`, `markApplied()`, `getUserMatchStats()`, `getRecentUserMatches()`, `getMatchCountForUser()`, `backfillFromSupabaseMatches()`
 - **Flow**: matching engine creates match in Supabase `matches` table → also upserts into `user_matches` with listing metadata → notification buffer updates `email_sent`/`push_sent` after delivery → `/api/matches` marks as `viewed` when fetched by user
 - **Deduplication**: `dedup_key` = `source:listing_id`, unique constraint on `(user_id, listing_id)` prevents duplicate counting
-- **Counts**: `totalCount` and `newCount` in `/api/matches` response sourced from `user_matches` (fallback to Supabase `matches` if no canonical data yet)
+- **Counts**: `totalCount`, `newCount`, and `canonicalStats` in `/api/matches` response sourced exclusively from `user_matches` with exclusive tab buckets (applied > saved > viewed > new), all filtered by `visible_in_app AND NOT dismissed`
+- **Per-match state**: Each match in API response includes `canonical_viewed`, `canonical_saved`, `canonical_applied`, `canonical_dismissed` from `user_matches`
+- **Save endpoint**: `PATCH /api/matches/:listingId/saved` — toggles saved state in canonical `user_matches`, returns 404 if match row not found
 - **`fetch_runs` table** (Replit PG) — audit trail per ingestion cycle with stats: fetched_count, deduplicated_count, newly_matched_count, emails_sent_count, pushes_sent_count, error_count, cities_processed
 - **Admin debug page**: `/admin/match-audit` — admin-only (email: `martin.essie87@gmail.com`), shows account info, canonical stats, recent match deliveries with per-match email/push/viewed status, fetch run history, backfill action
 - **Migration**: `server/migrations/019_user_matches_supabase.sql` — reference SQL for future migration to Supabase
@@ -223,7 +225,7 @@ A mobile-first German-language rental alert application for the German market. U
 ### Personal Details Pages
 - `/profile/details` (client/src/pages/profile-details.tsx): Clean list of personal fields (Vorname, Nachname, Geburtsdatum, E-Mail-Adresse, Telefonnummer, Beruf, Monatliches Einkommen). Each editable field tappable → opens edit screen. Email is read-only.
 - `/profile/edit/:field` (client/src/pages/profile-edit.tsx): Single-field edit screen. All profile fields save to `PUT /api/profile-data` with exact DB column name as key.
-- `GET /api/profile-stats`: Returns { matches_received, reactions_sent } counts from matches table
+- `GET /api/profile-stats`: Returns { matches_received, reactions_sent } counts from canonical `user_matches` table (via `getUserMatchStats`)
 
 ### Profile Schema — `user_profile_data` Table
 - **Table**: `user_profile_data` in Replit PostgreSQL (NOT Supabase — moved due to DDL access constraints)

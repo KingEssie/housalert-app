@@ -1,0 +1,304 @@
+We still have a real consistency problem in the live app even though the reliability test suite passes.
+
+This means the canonical backend logic may be improved, but the UI is still not fully reading from the same single source of truth.
+
+Current real-world mismatch observed in the app:
+
+- homepage banner shows 4 matches
+- homepage recent matches visually shows 5 items
+- matches page top tabs show 46 new and 4 viewed
+- profile/account stats show 4 received matches
+- admin/debug page is not accessible, so I cannot verify the truth
+
+This is unacceptable. Everything must match.
+
+The system promise is simple:
+The number of matches shown in the app, the number of emails sent, the number of push notifications sent, and the counts shown in all UI surfaces must all be derived from the same canonical per-user match records.
+
+--------------------------------------------------
+CORE TASK
+--------------------------------------------------
+
+Do a targeted end-to-end consistency repair.
+
+I do NOT want more theory or isolated test fixes.
+I want the live app and admin/debug tools to be corrected so every screen reads from the same canonical source and gives the same answer.
+
+--------------------------------------------------
+1. FIND AND REMOVE LEGACY / NON-CANONICAL COUNT SOURCES
+--------------------------------------------------
+
+Audit every place in the app that displays match counts or match lists.
+
+This includes at minimum:
+
+- homepage hero/banner match count
+- homepage “Recente matches” list
+- matches page total count
+- matches page tab counts:
+  - Nieuw
+  - Bekeken
+  - Opgeslagen
+  - Gereageerd
+- profile/account stats such as “Ontvangen matches”
+- any badges, pills, counters, or summary cards
+- any email/push summary displays if present
+
+For each of these, identify the exact query/function/data source being used.
+
+Then refactor so ALL of them read from the same canonical user_matches-based logic.
+
+I want one shared query layer / selector layer, not separate ad hoc count logic per screen.
+
+Examples of what I want:
+
+- getCanonicalMatchStatsForUser(userId)
+- getCanonicalRecentMatchesForUser(userId, limit)
+- getCanonicalMatchCountsByState(userId)
+- getCanonicalVisibleMatchesForUser(userId)
+
+or equivalent clean shared functions.
+
+--------------------------------------------------
+2. DEFINE ONE SINGLE COUNTING RULESET
+--------------------------------------------------
+
+Create and enforce one exact definition for every count.
+
+Use canonical user_matches only.
+
+For example:
+
+- total visible matches = count of canonical user_matches where visible_in_app = true
+- new matches = visible_in_app = true AND viewed = false
+- viewed = viewed = true
+- saved = saved = true
+- responded = applied/responded = true
+- homepage recent matches = newest canonical visible matches, limited to N
+- homepage banner count = same canonical new match definition, not a separate number
+- profile “Ontvangen matches” = same canonical visible total, unless intentionally different and clearly labeled
+
+No screen should count raw listings, raw scraper rows, backfill rows, old arrays, fetch buffers, or temporary results.
+
+--------------------------------------------------
+3. FIX THE SPECIFIC LIVE MISMATCHES
+--------------------------------------------------
+
+Repair the exact inconsistencies now visible in the screenshots.
+
+Expected outcome after the fix:
+
+- if homepage banner says 4 matches, that number must be explainable by canonical new/visible logic
+- homepage recent matches list must use the same canonical visible match source
+- matches page tab counts must be derived from the same canonical source
+- profile “Ontvangen matches” must match the intended canonical visible total
+- no screen should show 46 if only 4 canonical visible/new matches exist for this user
+
+If there are historical inflated records from older logic, identify that clearly.
+
+Then either:
+- exclude them correctly from UI counts, or
+- migrate/reconcile them safely into the canonical model, or
+- mark old corrupted counts as non-visible/non-canonical
+
+Do not leave legacy inflated data leaking into the UI.
+
+--------------------------------------------------
+4. FIX ADMIN / DEBUG PAGE ACCESS
+--------------------------------------------------
+
+The admin/debug verification page is not accessible right now.
+
+Fix this first so I can verify the truth.
+
+Important:
+The admin entry point must appear only for this verified user email:
+
+martin.essie87@gmail.com
+
+Use this exact email string.
+Do not use typo variants.
+
+Add a clearly visible but discreet admin/debug entry in the profile/account area for this email only.
+
+If the admin link is currently hidden behind the wrong tab, wrong route, or wrong email check, fix that.
+
+If needed, add a simple item like:
+- “Debug dashboard”
+- “Admin controle”
+- “Match controle”
+
+This can live inside the Account tab or profile settings for this specific admin email only.
+
+--------------------------------------------------
+5. ADMIN / DEBUG PAGE MUST SHOW THE REAL CANONICAL TRUTH
+--------------------------------------------------
+
+The admin/debug page should show a canonical audit view for the logged-in admin user.
+
+At minimum show:
+
+- current user id
+- current user email
+- admin access = true/false
+- active search profiles count
+- total canonical user_matches
+- total visible_in_app matches
+- new matches count
+- viewed count
+- saved count
+- responded/applied count
+- total email_sent count
+- total push_sent count
+- last fetch run time
+- last successful email send time
+- last successful push send time
+
+Also show a recent records table with at least the last 20 canonical matches:
+
+- matched_at / detected_at
+- listing title
+- source
+- search profile id or label
+- visible_in_app
+- viewed
+- saved
+- applied/responded
+- email_sent
+- push_sent
+- dedupe key if useful
+
+Also show the last few fetch_runs rows:
+
+- started_at
+- completed_at
+- fetched_count
+- deduplicated_count
+- newly_matched_count
+- emails_sent_count
+- pushes_sent_count
+- errors_count
+
+This page is for truth verification, not design polish.
+
+--------------------------------------------------
+6. ADD A LIVE CONSISTENCY CHECK ON THE ADMIN PAGE
+--------------------------------------------------
+
+On the admin/debug page, add a simple consistency status block.
+
+It should compare live canonical values and display:
+
+GREEN:
+- if counts are internally aligned
+
+ORANGE/RED:
+- if there are mismatches
+
+For example compare:
+- visible_in_app count
+- homepage displayed count
+- profile displayed count
+- match tab counts sum / state breakdown
+- email_sent count
+- push_sent count
+
+If these are not expected to be identical, label the difference clearly.
+Do NOT silently show conflicting numbers.
+
+Add human-readable explanations such as:
+- “Homepage banner uses new match count”
+- “Profile stats use visible total”
+- “Emails sent reflects delivered notifications”
+Only if those are truly intentional and based on the same canonical layer.
+
+Otherwise, fix them so they align.
+
+--------------------------------------------------
+7. ADD A RECONCILIATION / REPAIR PASS FOR THIS USER
+--------------------------------------------------
+
+I need a safe reconciliation pass for the current user to repair old inflated UI numbers caused by legacy logic.
+
+Implement a focused repair action for the admin user that:
+
+- recalculates canonical stats from user_matches
+- refreshes UI-facing counters from canonical records
+- removes/excludes duplicate or legacy non-canonical match count sources
+- ensures profile stats, home banner, home recent matches, and match tab counts all reflect the same canonical truth
+
+This can be:
+- a protected admin button
+- a dev-only action
+- or a script if safer
+
+But it must be possible to run it now.
+
+--------------------------------------------------
+8. VERIFY ROUTE / TAB LOGIC FOR PROFILE
+--------------------------------------------------
+
+The screenshots suggest the admin entry may be missing because of tab logic in Profile.
+
+Audit the profile area carefully:
+- Over jou
+- Account
+- settings pages
+- profile cards
+- verified email section
+
+Make sure the admin-only entry is visible in the correct place for the admin user.
+Do not place it in a hidden branch that never renders.
+
+--------------------------------------------------
+9. IMPORTANT IMPLEMENTATION RULES
+--------------------------------------------------
+
+- Use canonical user_matches as the only match truth source
+- Keep Supabase-compatible architecture
+- Avoid reintroducing local / temporary counters
+- Keep implementation simple and robust
+- Prefer shared selectors/services over duplicate queries
+- No big redesign
+- No unnecessary test expansion
+- Do focused live consistency fixes
+
+--------------------------------------------------
+10. AFTER FIXING, RUN A REAL MANUAL VERIFICATION
+--------------------------------------------------
+
+After implementation, verify the logged-in admin account and report:
+
+1. exact logged-in email detected
+2. whether admin access is enabled
+3. homepage banner count
+4. homepage recent matches count
+5. matches page:
+   - total visible matches
+   - new
+   - viewed
+   - saved
+   - responded
+6. profile “Ontvangen matches”
+7. canonical user_matches total
+8. canonical visible_in_app total
+9. canonical email_sent total
+10. canonical push_sent total
+
+Then explicitly explain whether the numbers now match and why.
+
+If any numbers are intentionally different, explain the exact canonical rule for each one.
+
+--------------------------------------------------
+11. OUTPUT I WANT
+--------------------------------------------------
+
+Return a concise but specific summary with:
+
+- what legacy / conflicting data sources were found
+- which screens were still reading old logic
+- what shared canonical query layer was introduced
+- how the admin access issue was fixed
+- how the reconciliation was done
+- the final verified counts for the logged-in admin account
+- any remaining mismatch that still exists and exactly why

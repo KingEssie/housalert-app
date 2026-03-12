@@ -25,7 +25,7 @@ import { computeMatchScore, getMatchReasons, computeHybridFilters } from "../sha
 import { pool as pgPool } from "./pg-pool";
 import { isAdminEmail, getRecentRuns, getRunDetail, getLatestRunCities, getSourceAggregates } from "./admin";
 import { initWebPush, sendPushToUser } from "./notifications/push";
-import { markViewed, markApplied, getUserMatchStats, getRecentUserMatches, getMatchCountForUser, getRecentFetchRuns, backfillFromSupabaseMatches } from "./user-matches";
+import { markViewed, markApplied, markSaved, getUserMatchStats, getRecentUserMatches, getMatchCountForUser, getCanonicalMatchStates, getRecentFetchRuns, backfillFromSupabaseMatches } from "./user-matches";
 
 const TEN_MIN = 10 * 60 * 1000;
 const ONE_HOUR = 60 * 60 * 1000;
@@ -638,15 +638,40 @@ export async function registerRoutes(
 
       const top50 = validResults.slice(0, 50);
 
-      const canonicalCounts = await getMatchCountForUser(user.id);
+      const [canonicalStats, canonicalStates] = await Promise.all([
+        getUserMatchStats(user.id),
+        getCanonicalMatchStates(user.id),
+      ]);
+
+      const matchesWithState = top50.map((m: any) => {
+        const cs = canonicalStates.get(m.listing_id);
+        return {
+          ...m,
+          canonical_viewed: cs?.viewed ?? false,
+          canonical_saved: cs?.saved ?? false,
+          canonical_applied: cs?.applied ?? false,
+          canonical_dismissed: cs?.dismissed ?? false,
+        };
+      });
 
       const viewedListingIds = top50.map((m: any) => m.listing_id);
       markViewed(user.id, viewedListingIds).catch(() => {});
 
+      const stats = canonicalStats || { total: 0, new_count: 0, viewed: 0, saved: 0, applied: 0, email_sent: 0, push_sent: 0 };
+
       return res.json({
-        matches: top50,
-        totalCount: canonicalCounts.total > 0 ? canonicalCounts.total : validResults.length,
-        newCount: canonicalCounts.new_count,
+        matches: matchesWithState,
+        totalCount: stats.total,
+        newCount: stats.new_count,
+        canonicalStats: {
+          total: stats.total,
+          new_count: stats.new_count,
+          viewed: stats.viewed,
+          saved: stats.saved,
+          applied: stats.applied,
+          email_sent: stats.email_sent,
+          push_sent: stats.push_sent,
+        },
         latestEmailAt: recentEmailed?.timestamp ? new Date(recentEmailed.timestamp).toISOString() : null,
       });
     } catch (err: any) {
@@ -1808,27 +1833,33 @@ export async function registerRoutes(
         return res.json({ matches_received: 0, reactions_sent: 0 });
       }
 
-      const { validIds, premiumStartedAt } = await getVisibleMatchListingIds(user.id);
-
-      let reactionCount = 0;
-      try {
-        let reactionQuery = supabase.from("matches").select("listing_id").eq("user_id", user.id).eq("applied", true);
-        if (premiumStartedAt) reactionQuery = reactionQuery.gte("created_at", premiumStartedAt);
-        const reactionResult = await reactionQuery;
-        const uniqueReactionListings = new Set(
-          (reactionResult.data ?? [])
-            .map((r: any) => r.listing_id)
-            .filter((id: string) => validIds.has(id))
-        );
-        reactionCount = uniqueReactionListings.size;
-      } catch {}
-
+      const stats = await getUserMatchStats(user.id);
       return res.json({
-        matches_received: validIds.size,
-        reactions_sent: reactionCount,
+        matches_received: stats?.total ?? 0,
+        reactions_sent: stats?.applied ?? 0,
       });
     } catch (err: any) {
       return res.json({ matches_received: 0, reactions_sent: 0 });
+    }
+  });
+
+  app.patch("/api/matches/:matchListingId/saved", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { matchListingId } = req.params;
+      const { saved } = req.body;
+      if (typeof saved !== "boolean") return res.status(400).json({ error: "saved must be a boolean" });
+
+      const updated = await markSaved(user.id, matchListingId, saved);
+      if (!updated) return res.status(404).json({ error: "Match not found in canonical records" });
+      return res.json({ listing_id: matchListingId, saved });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
     }
   });
 

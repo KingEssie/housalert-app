@@ -134,11 +134,11 @@ export async function getUserMatchStats(userId: string): Promise<UserMatchStats 
   try {
     const result = await pool.query(
       `SELECT
-        COUNT(*)::int as total,
-        COUNT(*) FILTER (WHERE visible_in_app AND NOT viewed AND NOT dismissed)::int as new_count,
-        COUNT(*) FILTER (WHERE viewed)::int as viewed,
-        COUNT(*) FILTER (WHERE saved)::int as saved,
-        COUNT(*) FILTER (WHERE applied)::int as applied,
+        COUNT(*) FILTER (WHERE visible_in_app AND NOT dismissed)::int as total,
+        COUNT(*) FILTER (WHERE visible_in_app AND NOT dismissed AND NOT viewed AND NOT saved AND NOT applied)::int as new_count,
+        COUNT(*) FILTER (WHERE visible_in_app AND NOT dismissed AND viewed AND NOT saved AND NOT applied)::int as viewed,
+        COUNT(*) FILTER (WHERE visible_in_app AND NOT dismissed AND saved AND NOT applied)::int as saved,
+        COUNT(*) FILTER (WHERE visible_in_app AND NOT dismissed AND applied)::int as applied,
         COUNT(*) FILTER (WHERE email_sent)::int as email_sent,
         COUNT(*) FILTER (WHERE push_sent)::int as push_sent
        FROM user_matches WHERE user_id = $1`,
@@ -188,14 +188,56 @@ export async function getRecentUserMatches(userId: string, limit: number = 50): 
   }
 }
 
+export interface CanonicalMatchState {
+  listing_id: string;
+  viewed: boolean;
+  saved: boolean;
+  applied: boolean;
+  dismissed: boolean;
+  email_sent: boolean;
+  push_sent: boolean;
+}
+
+export async function getCanonicalMatchStates(userId: string): Promise<Map<string, CanonicalMatchState>> {
+  const map = new Map<string, CanonicalMatchState>();
+  if (!(await ensureTable())) return map;
+  try {
+    const result = await pool.query(
+      `SELECT listing_id, viewed, saved, applied, dismissed, email_sent, push_sent
+       FROM user_matches WHERE user_id = $1`,
+      [userId]
+    );
+    for (const row of result.rows) {
+      map.set(row.listing_id, row);
+    }
+  } catch (err: any) {
+    log(`[user-matches] getCanonicalMatchStates error: ${err.message}`);
+  }
+  return map;
+}
+
+export async function markSaved(userId: string, listingId: string, saved: boolean = true): Promise<boolean> {
+  if (!(await ensureTable())) return false;
+  try {
+    const result = await pool.query(
+      `UPDATE user_matches SET saved = $3 WHERE user_id = $1 AND listing_id = $2`,
+      [userId, listingId, saved]
+    );
+    return (result.rowCount ?? 0) > 0;
+  } catch (err: any) {
+    log(`[user-matches] markSaved error: ${err.message}`);
+    return false;
+  }
+}
+
 export async function getMatchCountForUser(userId: string): Promise<{ total: number; new_count: number }> {
   if (!(await ensureTable())) return { total: 0, new_count: 0 };
   try {
     const result = await pool.query(
       `SELECT
         COUNT(*)::int as total,
-        COUNT(*) FILTER (WHERE visible_in_app AND NOT viewed AND NOT dismissed)::int as new_count
-       FROM user_matches WHERE user_id = $1 AND visible_in_app = TRUE`,
+        COUNT(*) FILTER (WHERE visible_in_app AND NOT dismissed AND NOT viewed AND NOT saved AND NOT applied)::int as new_count
+       FROM user_matches WHERE user_id = $1 AND visible_in_app = TRUE AND NOT dismissed`,
       [userId]
     );
     return result.rows[0] || { total: 0, new_count: 0 };

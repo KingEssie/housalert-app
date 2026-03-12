@@ -144,6 +144,10 @@ export interface ApiMatch extends FreshListing {
   match_reasons?: string[];
   hybrid_filters?: HybridFilters | null;
   in_latest_email?: boolean;
+  canonical_viewed?: boolean;
+  canonical_saved?: boolean;
+  canonical_applied?: boolean;
+  canonical_dismissed?: boolean;
 }
 
 export async function fetchFreshListings(): Promise<FreshListing[]> {
@@ -152,9 +156,21 @@ export async function fetchFreshListings(): Promise<FreshListing[]> {
   return resp.json();
 }
 
+export interface CanonicalStats {
+  total: number;
+  new_count: number;
+  viewed: number;
+  saved: number;
+  applied: number;
+  email_sent: number;
+  push_sent: number;
+}
+
 export interface ApiMatchesResponse {
   matches: ApiMatch[];
   totalCount: number;
+  newCount?: number;
+  canonicalStats?: CanonicalStats;
   latestEmailAt?: string | null;
 }
 

@@ -158,6 +158,6 @@ describe("TEST 8 — Admin Debug Data Consistency", () => {
     expect(counts.new_count).toBe(1);
 
     const stats = await getUserMatchStats(u);
-    expect(stats!.total).toBe(2);
+    expect(stats!.total).toBe(1);
   });
 });
