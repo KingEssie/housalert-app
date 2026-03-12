@@ -1,0 +1,214 @@
+Perform a final UI polish and consistency pass across the mobile app. 
+Focus ONLY on spacing, visual hierarchy, navigation behavior, and button consistency. 
+Do not redesign the app or introduce new features.
+
+--------------------------------------------------
+
+1. HOMESCREEN SPACING + BANNER BUTTON
+
+Increase vertical spacing between:
+- the title "Hallo, Martin"
+- and the banner card below it.
+
+Make this spacing approximately 2x the current size so the screen feels less cramped.
+
+Inside the homepage banner:
+
+Change the CTA button style:
+- background: blue
+- text: white
+- rounded corners
+
+Keep the banner background dark blue and keep the rest of the banner unchanged.
+
+--------------------------------------------------
+
+2. SUBSCRIPTION BANNER STYLE
+
+On the "Abonnement" screen, update the premium banner so it visually matches the homepage banner style.
+
+Banner:
+- background: dark blue
+- text: white
+
+Badge "Actief":
+- background: light blue
+- text: white
+
+Keep layout and spacing but align color style with the homepage banner.
+
+--------------------------------------------------
+
+3. SEARCH PROFILE CARDS VISIBILITY
+
+On the "Zoekprofielen" screen:
+
+Add a subtle border around the cards to make them stand out from the white background.
+
+Card border:
+1px solid light gray (#E5E7EB or similar)
+
+Do not add strong shadows. Keep the design clean and minimal.
+
+--------------------------------------------------
+
+4. SEARCH PROFILE STATUS / EMPTY STATE BLOCK
+
+Improve the section that currently shows something like:
+
+"1 van 4 actief · Nieuwe matches verschijnen automatisch"
+
+Replace this with a clearer informational block.
+
+Structure:
+
+Title (larger text):
+"1 van de 4 zoekprofielen actief"
+
+Description below it:
+"Voeg extra zoekprofielen toe om in meerdere steden of met verschillende voorkeuren tegelijk te zoeken."
+
+Below the description:
+Place the blue plus button centered.
+
+Spacing order:
+Title
+Description
+Plus button
+
+Ensure comfortable vertical spacing between these elements.
+
+This block should visually resemble the empty-state style used on the Matches screen.
+
+--------------------------------------------------
+
+5. SEARCH PROFILE "BEWERKEN" BUTTON
+
+On each zoekprofiel card:
+
+The "Bewerken" button should NOT be full width.
+
+Change to:
+- compact button
+- width based on content + padding
+- left aligned inside the card
+- rounded corners
+- same color style as before
+
+It should feel like a secondary action instead of a primary CTA.
+
+--------------------------------------------------
+
+6. MATCH DETAIL BACK NAVIGATION FIX
+
+Fix navigation behavior when opening a match.
+
+Current problem:
+User opens a match → presses back → app navigates to Home.
+
+Correct behavior:
+User should return to the Matches screen.
+
+Update navigation so the back button always returns to the previous screen in the navigation stack.
+
+Check other detail pages for the same issue and fix if necessary.
+
+--------------------------------------------------
+
+7. NOTIFICATION SETTINGS SCREEN
+
+On the "Notificatie-instellingen" screen:
+
+Remove the "Annuleren" button.
+
+Users can cancel by pressing the back button.
+
+Redesign the "Opslaan" button:
+
+- centered
+- floating above the bottom safe area
+- rounded pill shape
+- blue background
+- white text
+
+Ensure this matches the primary CTA style used elsewhere in the app.
+
+--------------------------------------------------
+
+8. PASSWORD CHANGE SCREEN CTA
+
+On the "Wachtwoord wijzigen" screen:
+
+Replace the current button with the same floating CTA style.
+
+Button behavior:
+
+Disabled state:
+- grey background
+- disabled interaction
+
+Enabled state (when all fields are valid):
+- blue background
+- white text
+
+Button:
+- rounded pill
+- centered above the bottom safe area
+
+--------------------------------------------------
+
+9. BACK BUTTON SPACING
+
+Across all screens with a floating back button:
+
+Increase the vertical spacing between:
+- the back button
+- and the page title
+
+Make this spacing approximately 2x the current value.
+
+Apply this consistently on screens like:
+- abonnement
+- notificatie instellingen
+- wachtwoord wijzigen
+- match detail
+- other similar pages.
+
+--------------------------------------------------
+
+10. GLOBAL UI CONSISTENCY PASS
+
+Perform a final UI consistency check across the app.
+
+Verify:
+
+Primary buttons
+- blue background
+- white text
+- rounded pill shape
+- floating placement where appropriate
+
+Secondary buttons
+- smaller
+- not full width unless necessary
+
+Cards
+- consistent padding
+- subtle borders where needed
+
+Spacing
+- consistent vertical rhythm between titles, cards, and CTAs
+
+Navigation
+- back button always returns to the previous screen
+
+--------------------------------------------------
+
+Do NOT redesign the layout or introduce new UI systems. 
+Only improve polish, spacing, and consistency.
+
+After implementing the changes, return a short summary of:
+1. screens updated
+2. components adjusted
+3. navigation fixes applied
+4. any remaining minor UI inconsistencies.

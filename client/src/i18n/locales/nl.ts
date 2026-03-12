@@ -171,6 +171,8 @@ export const nl: Record<string, any> = {
     noProfilesDesc: "Voeg een zoekopdracht toe om automatisch woningen te ontvangen die bij je voorkeuren passen.",
     retryDesc: "Probeer het opnieuw.",
     activeCountFull: "{count} van {max} actief · Nieuwe matches verschijnen automatisch",
+    activeCountTitle: "{count} van de {max} zoekprofielen actief",
+    activeCountDesc: "Voeg extra zoekprofielen toe om in meerdere steden of met verschillende voorkeuren tegelijk te zoeken.",
   },
 
   profile: {

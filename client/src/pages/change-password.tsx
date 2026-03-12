@@ -107,10 +107,10 @@ export default function ChangePasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background" data-testid="page-change-password">
+    <div className="min-h-screen bg-background flex flex-col" data-testid="page-change-password">
       <PageHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
-      <div className="max-w-xl mx-auto p-4 pb-8">
+      <div className="flex-1 max-w-xl mx-auto w-full p-4 pb-8">
         <div className="bg-card rounded-2xl border p-5 space-y-5" style={{ borderColor: "#E5E7EB" }}>
           <div>
             <label className="block text-[14px] font-medium mb-2" style={{ color: "#1F2937" }}>{t("changePassword.current")}</label>
@@ -200,18 +200,23 @@ export default function ChangePasswordPage() {
           </div>
         </div>
 
-        <button
-          onClick={handleSubmit}
-          disabled={!canSubmit}
-          className={`w-full h-[48px] rounded-lg font-semibold text-[15px] mt-5 transition-colors ${
-            canSubmit
-              ? "bg-primary text-primary-foreground"
-              : "bg-muted text-muted-foreground cursor-not-allowed"
-          }`}
-          data-testid="button-submit-password"
-        >
-          {submitting ? t("changePassword.changing") : t("changePassword.submit")}
-        </button>
+      </div>
+
+      <div className="sticky bottom-0 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 px-5 bg-gradient-to-t from-white via-white to-white/0">
+        <div className="max-w-xl mx-auto">
+          <button
+            onClick={handleSubmit}
+            disabled={!canSubmit}
+            className={`w-full h-[52px] rounded-full font-semibold text-[16px] transition-colors flex items-center justify-center ${
+              canSubmit
+                ? "bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white"
+                : "bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed"
+            }`}
+            data-testid="button-submit-password"
+          >
+            {submitting ? t("changePassword.changing") : t("changePassword.submit")}
+          </button>
+        </div>
       </div>
     </div>
   );

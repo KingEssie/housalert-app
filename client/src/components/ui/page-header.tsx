@@ -38,7 +38,7 @@ export function PageHeader({ title, onBack, trailing, closeButton }: PageHeaderP
       </div>
 
       {title && (
-        <div className="max-w-xl mx-auto px-5 pt-[calc(max(0.75rem,env(safe-area-inset-top))+64px)]">
+        <div className="max-w-xl mx-auto px-5 pt-[calc(max(0.75rem,env(safe-area-inset-top))+80px)]">
           <h1
             className="text-page-title mb-5"
             data-testid="text-page-title"

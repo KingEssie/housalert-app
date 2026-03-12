@@ -362,7 +362,7 @@ function ProfileCard({
 
   return (
     <div
-      className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 flex flex-col gap-5"
+      className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-[#E5E7EB] p-5 flex flex-col gap-5"
       data-testid={`card-profile-${profile.id}`}
     >
       <div className="flex items-start justify-between">
@@ -435,14 +435,16 @@ function ProfileCard({
         )}
       </div>
 
-      <button
-        onClick={onEdit}
-        className="w-full h-11 rounded-full border-2 border-[#0D6EFD] bg-white text-[14px] font-semibold text-[#0D6EFD] hover:bg-[#EBF2FF] transition-colors flex items-center justify-center gap-1.5"
-        data-testid={`button-edit-${profile.id}`}
-      >
-        {t("common.edit")}
-        <ChevronRight className="w-3.5 h-3.5" />
-      </button>
+      <div>
+        <button
+          onClick={onEdit}
+          className="h-9 px-5 rounded-full border border-[#0D6EFD] bg-white text-[13px] font-semibold text-[#0D6EFD] hover:bg-[#EBF2FF] transition-colors inline-flex items-center gap-1.5"
+          data-testid={`button-edit-${profile.id}`}
+        >
+          {t("common.edit")}
+          <ChevronRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
     </div>
   );
 }
@@ -658,12 +660,12 @@ function HomeTab({
 
   return (
     <div className="flex flex-col pb-6">
-      <div className="sticky top-0 z-10 bg-white pt-5 pb-4 px-6">
+      <div className="sticky top-0 z-10 bg-white pt-5 pb-3 px-6">
         <h1 className="text-page-title" data-testid="text-greeting">
           {firstName ? t("home.greeting", { name: firstName }) : t("home.greetingDefault")}
         </h1>
       </div>
-      <div className="flex flex-col gap-8 px-6">
+      <div className="flex flex-col gap-8 px-6 mt-4">
 
       {hasActiveSub && hasMatches ? (
         <div className="rounded-2xl bg-[#0F172A] p-6" data-testid="hero-matches">
@@ -684,7 +686,7 @@ function HomeTab({
           </div>
           <button
             onClick={() => setActiveTab("matches")}
-            className="ml-14 h-[48px] px-6 rounded-full bg-white hover:bg-[#F3F4F6] text-[#0F172A] text-[14px] font-bold transition-colors inline-flex items-center gap-2"
+            className="ml-14 h-[48px] px-6 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-bold transition-colors inline-flex items-center gap-2"
             data-testid="button-view-matches"
           >
             {t("home.viewMatches")}
@@ -708,7 +710,7 @@ function HomeTab({
           </div>
           <button
             onClick={() => setActiveTab("filters")}
-            className="ml-14 h-[48px] px-6 rounded-full bg-white hover:bg-[#F3F4F6] text-[#0F172A] text-[14px] font-bold transition-colors inline-flex items-center gap-2"
+            className="ml-14 h-[48px] px-6 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-bold transition-colors inline-flex items-center gap-2"
             data-testid="button-adjust-filters"
           >
             {t("home.adjustFilters")}
@@ -736,7 +738,7 @@ function HomeTab({
           </div>
           <button
             onClick={() => navigate("/paywall")}
-            className="ml-14 h-[48px] px-6 rounded-full bg-white hover:bg-[#F3F4F6] text-[#0F172A] text-[14px] font-bold transition-colors inline-flex items-center gap-2"
+            className="ml-14 h-[48px] px-6 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-bold transition-colors inline-flex items-center gap-2"
             data-testid="button-activate-sub"
           >
             {t("home.activateSubscription")}
@@ -1128,21 +1130,23 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
             />
           ))}
 
-          <p className="text-[13px] text-[#6B7280] text-center mt-2">
-            {t("filters.activeCountFull", { count: profileCount, max: MAX_PROFILES })}
-          </p>
-
-          {!atLimit && (
-            <div className="flex justify-center mt-2">
+          <div className="flex flex-col items-center text-center mt-6 mb-2 px-4">
+            <p className="text-[17px] font-bold text-[#111C3D]">
+              {t("filters.activeCountTitle", { count: profileCount, max: MAX_PROFILES })}
+            </p>
+            <p className="text-[14px] text-[#6B7280] mt-2 leading-relaxed">
+              {t("filters.activeCountDesc")}
+            </p>
+            {!atLimit && (
               <button
                 onClick={() => navigate("/dashboard/searches/new")}
-                className="w-14 h-14 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] flex items-center justify-center text-white transition-colors shadow-[0_4px_12px_rgba(13,110,253,0.3)]"
+                className="w-14 h-14 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] flex items-center justify-center text-white transition-colors shadow-[0_4px_12px_rgba(13,110,253,0.3)] mt-5"
                 data-testid="button-add-search-card"
               >
                 <Plus className="w-6 h-6" />
               </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       )}
 

@@ -90,17 +90,17 @@ export default function SubscriptionDetailPage() {
       <PageHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
       <div className="max-w-xl mx-auto p-4 space-y-4 pb-8">
-        <div className="rounded-2xl p-5 bg-[#0D6EFD]" data-testid="card-subscription-plan">
+        <div className="rounded-2xl p-6 bg-[#0F172A]" data-testid="card-subscription-plan">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-[48px] h-[48px] rounded-2xl flex items-center justify-center bg-white/20">
+            <div className="w-[48px] h-[48px] rounded-full bg-white/10 flex items-center justify-center">
               <Crown className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1">
-              <p className="text-[16px] font-semibold text-white" data-testid="text-plan-name">
+              <p className="text-[16px] font-bold text-white" data-testid="text-plan-name">
                 {subscription?.isTrial ? t("subscription.status.trial") : getPlanLabel(subscription?.plan)}
               </p>
               <span
-                className="inline-block mt-1 text-[12px] font-semibold px-2.5 py-0.5 rounded-full bg-white text-[#0D6EFD]"
+                className="inline-block mt-1.5 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-[#0D6EFD]/30 text-white"
                 data-testid="badge-subscription-status"
               >
                 {statusLabel}
@@ -109,7 +109,7 @@ export default function SubscriptionDetailPage() {
           </div>
 
           {!subscription?.isTrial && subscription?.plan && (
-            <p className="text-[24px] font-bold text-white" data-testid="text-price">
+            <p className="text-[24px] font-bold text-white ml-[60px]" data-testid="text-price">
               {getPriceLabel(subscription?.plan)}
             </p>
           )}

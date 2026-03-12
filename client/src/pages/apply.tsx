@@ -207,8 +207,8 @@ export default function ApplyPage() {
   return (
     <div className="min-h-screen bg-[#F5F7FA] flex flex-col relative">
       <button
-        onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard")}
-        className="fixed top-[calc(12px+env(safe-area-inset-top))] left-4 z-20 w-12 h-12 rounded-full bg-[#F3F4F6] shadow-[0_1px_4px_rgba(0,0,0,0.06)] flex items-center justify-center"
+        onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=matches")}
+        className="fixed top-[calc(12px+env(safe-area-inset-top))] left-4 z-20 w-12 h-12 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.10)] flex items-center justify-center active:scale-95 transition-transform"
         data-testid="button-back-apply"
       >
         <ArrowLeft className="w-5 h-5 text-[#1F2937]" />

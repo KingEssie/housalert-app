@@ -2,7 +2,6 @@ import { apiFetch } from "@/lib/api-base";
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
-import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/i18n";
@@ -229,26 +228,17 @@ export default function NotificationSettingsPage() {
               )}
             </ListSection>
 
-            <div className="flex justify-center gap-3 px-5">
-              <Button
-                onClick={handleSave}
-                disabled={saving}
-                size="save"
-                className="text-[15px]"
-                data-testid="button-save"
-              >
-                {saving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                {t("common.save")}
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => navigate("/dashboard?tab=profiel&sub=account")}
-                size="save"
-                className="text-[15px]"
-                data-testid="button-cancel"
-              >
-                {t("common.cancel")}
-              </Button>
+            <div className="sticky bottom-0 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 bg-gradient-to-t from-white via-white to-white/0">
+              <div className="max-w-xl mx-auto px-5">
+                <button
+                  onClick={handleSave}
+                  disabled={saving}
+                  className="w-full h-[52px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-semibold flex items-center justify-center transition-colors disabled:opacity-50"
+                  data-testid="button-save"
+                >
+                  {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : t("common.save")}
+                </button>
+              </div>
             </div>
           </div>
         )}

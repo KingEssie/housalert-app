@@ -171,6 +171,8 @@ export const de: Record<string, any> = {
     noProfilesDesc: "Füge einen Suchauftrag hinzu, um automatisch Wohnungen zu erhalten, die zu deinen Vorlieben passen.",
     retryDesc: "Versuche es erneut.",
     activeCountFull: "{count} von {max} aktiv · Neue Matches erscheinen automatisch",
+    activeCountTitle: "{count} von {max} Suchprofilen aktiv",
+    activeCountDesc: "Füge weitere Suchprofile hinzu, um in mehreren Städten oder mit verschiedenen Vorlieben gleichzeitig zu suchen.",
   },
 
   profile: {
