@@ -1,0 +1,55 @@
+Apply the following final UI refinements for consistency across the app.
+
+1. Search Profiles page
+- Center-align the description text below the search profile card:
+  “1 van 4 actief · Nieuwe matches verschijnen automatisch”
+- Keep it horizontally centered and spaced nicely from the card and from the add action below it.
+
+- Remove the dashed “+ Zoekopdracht toevoegen” button entirely.
+
+- Replace it with a single circular add button with a plus icon.
+- This round button should be the only action to create a new search profile.
+- Position it cleanly below the centered description.
+
+- Update the “Bewerken” button inside the search profile card:
+  - Make it fully rounded / pill-shaped
+  - White background
+  - Blue border
+  - Blue text
+  - No shadow
+- Keep it visually clean and aligned with the rest of the design system.
+
+2. Account page
+- Update the “Actief” status badge in the subscription/account list area to:
+  - Blue background
+  - White text
+
+3. Tabs consistency across the app
+- Standardize all tab components across all screens so they use the same visual style as the tabs on the Account / Over jou screen.
+- Use one shared tab component everywhere.
+- Make sure all tabs match in:
+  - height
+  - spacing
+  - typography
+  - active/inactive colors
+  - underline / active indicator
+  - horizontal padding
+- Replace any alternate tab styling (such as the different tab style currently used on the Matches screen) so all tabs feel identical across the app.
+
+4. Subscription page
+- Update the top subscription summary card (“Premium Maandelijks”, “Actief”, “€14,99 / maand”) to use the primary blue styling.
+- The entire main card should have a blue background.
+- Main texts inside this card should be white.
+
+- Update the “Actief” badge inside this blue card to:
+  - White background
+  - Blue text
+
+- Adjust the pricing area so it no longer looks like a gray input field.
+- It should feel integrated into the premium blue subscription card.
+- Keep the visual hierarchy strong and premium.
+
+Important:
+- Reuse shared components/tokens instead of styling each screen separately.
+- Prioritize consistency across badges, tabs, buttons, and cards.
+- Make the app feel like one unified design system.

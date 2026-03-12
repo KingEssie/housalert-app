@@ -1,6 +1,5 @@
 import { useLocation } from "wouter";
 import { Crown, CreditCard, Calendar, RefreshCw, ChevronRight, AlertCircle } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/ui/page-header";
 import { useSubscription } from "@/lib/subscription";
 import { useTranslation } from "@/i18n";
@@ -91,36 +90,28 @@ export default function SubscriptionDetailPage() {
       <PageHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
       <div className="max-w-xl mx-auto p-4 space-y-4 pb-8">
-        <div className="bg-card rounded-2xl border p-5" style={{ borderColor: "#E5E7EB" }} data-testid="card-subscription-plan">
+        <div className="rounded-2xl p-5 bg-[#0D6EFD]" data-testid="card-subscription-plan">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-[48px] h-[48px] rounded-2xl flex items-center justify-center" style={{ backgroundColor: "#F5F7FA" }}>
-              <Crown className="w-5 h-5" style={{ color: "#0D6EFD" }} />
+            <div className="w-[48px] h-[48px] rounded-2xl flex items-center justify-center bg-white/20">
+              <Crown className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1">
-              <p className="text-[16px] font-semibold" style={{ color: "#1F2937" }} data-testid="text-plan-name">
+              <p className="text-[16px] font-semibold text-white" data-testid="text-plan-name">
                 {subscription?.isTrial ? t("subscription.status.trial") : getPlanLabel(subscription?.plan)}
               </p>
-              <Badge
-                className="mt-1"
-                style={
-                  (subscription?.isActive || subscription?.isTrial)
-                    ? { backgroundColor: "#0D6EFD", color: "#fff" }
-                    : undefined
-                }
-                variant={subscription?.isActive || subscription?.isTrial ? "default" : "secondary"}
+              <span
+                className="inline-block mt-1 text-[12px] font-semibold px-2.5 py-0.5 rounded-full bg-white text-[#0D6EFD]"
                 data-testid="badge-subscription-status"
               >
                 {statusLabel}
-              </Badge>
+              </span>
             </div>
           </div>
 
           {!subscription?.isTrial && subscription?.plan && (
-            <div className="bg-[#F3F4F6] rounded-2xl p-4">
-              <p className="text-[24px] font-bold" style={{ color: "#1F2937" }} data-testid="text-price">
-                {getPriceLabel(subscription?.plan)}
-              </p>
-            </div>
+            <p className="text-[24px] font-bold text-white" data-testid="text-price">
+              {getPriceLabel(subscription?.plan)}
+            </p>
           )}
         </div>
 

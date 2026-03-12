@@ -437,7 +437,7 @@ function ProfileCard({
 
       <button
         onClick={onEdit}
-        className="w-full h-11 rounded-full border border-[#E5E7EB] text-[14px] font-semibold text-[#111C3D] hover:bg-[#F5F7FA] transition-colors flex items-center justify-center gap-1.5"
+        className="w-full h-11 rounded-full border-2 border-[#0D6EFD] bg-white text-[14px] font-semibold text-[#0D6EFD] hover:bg-[#EBF2FF] transition-colors flex items-center justify-center gap-1.5"
         data-testid={`button-edit-${profile.id}`}
       >
         {t("common.edit")}
@@ -884,25 +884,23 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
         )}
       </div>
 
-      <div className="flex gap-2 bg-[#F5F7FA] p-1.5 rounded-full" data-testid="match-sub-tabs">
-        {MATCH_SUB_TAB_CONFIG.map(({ key, labelKey, Icon }) => {
+      <div className="flex relative border-b border-[#E5E7EB]" data-testid="match-sub-tabs">
+        {MATCH_SUB_TAB_CONFIG.map(({ key, labelKey }) => {
           const count = tabCounts[key] || 0;
           const isActive = subTab === key;
           return (
             <button
               key={key}
               onClick={() => setSubTab(key)}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-1 rounded-full text-[13px] font-semibold transition-all duration-200 ${
-                isActive
-                  ? "bg-white text-[#1F2937] shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
-                  : "text-[#1F2937] hover:text-[#1F2937] hover:bg-white/50"
+              className={`flex-1 flex items-center justify-center gap-1.5 py-3.5 text-[15px] font-semibold transition-colors ${
+                isActive ? "text-[#1F2937]" : "text-[#6B7280]"
               }`}
               data-testid={`tab-matches-${key}`}
             >
               <span>{t(labelKey)}</span>
               {count > 0 && (
                 <span className={`text-[10px] font-bold min-w-[20px] h-[20px] flex items-center justify-center rounded-full ${
-                  isActive ? "bg-[#1F2937] text-white" : "bg-[#E5E7EB] text-[#1F2937]"
+                  isActive ? "bg-[#0D6EFD] text-white" : "bg-[#E5E7EB] text-[#1F2937]"
                 }`}>
                   {count}
                 </span>
@@ -910,6 +908,13 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
             </button>
           );
         })}
+        <div
+          className="absolute bottom-0 h-[3px] bg-[#0D6EFD] rounded-full transition-transform duration-300 ease-in-out"
+          style={{
+            width: `${100 / MATCH_SUB_TAB_CONFIG.length}%`,
+            transform: `translateX(${MATCH_SUB_TAB_CONFIG.findIndex(t => t.key === subTab) * 100}%)`,
+          }}
+        />
       </div>
 
       {apiMatchesQuery.isLoading ? (
@@ -1123,19 +1128,20 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
             />
           ))}
 
-          <p className="text-[13px] text-[#6B7280] px-1">
+          <p className="text-[13px] text-[#6B7280] text-center mt-2">
             {t("filters.activeCountFull", { count: profileCount, max: MAX_PROFILES })}
           </p>
 
           {!atLimit && (
-            <button
-              onClick={() => navigate("/dashboard/searches/new")}
-              className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-4 flex items-center justify-center gap-2 text-[14px] font-semibold text-[#0D6EFD] hover:bg-[#F5F7FA] transition-colors border-2 border-dashed border-[#E5E7EB]"
-              data-testid="button-add-search-card"
-            >
-              <Plus className="w-4 h-4" />
-              {t("filters.addSearch")}
-            </button>
+            <div className="flex justify-center mt-2">
+              <button
+                onClick={() => navigate("/dashboard/searches/new")}
+                className="w-14 h-14 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] flex items-center justify-center text-white transition-colors shadow-[0_4px_12px_rgba(13,110,253,0.3)]"
+                data-testid="button-add-search-card"
+              >
+                <Plus className="w-6 h-6" />
+              </button>
+            </div>
           )}
         </div>
       )}
@@ -1554,14 +1560,14 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                 trailing={
                   subscription.isActive && !subscription.isTrial ? (
                     <span
-                      className="text-[12px] font-[600] px-2.5 py-1 rounded-full flex-shrink-0 text-[#1F2937] bg-[#F5F7FA]"
+                      className="text-[12px] font-[600] px-2.5 py-1 rounded-full flex-shrink-0 text-white bg-[#0D6EFD]"
                       data-testid="text-subscription-status"
                     >
                       {t("common.active")}
                     </span>
                   ) : subscription.isTrial ? (
                     <span
-                      className="text-[12px] font-[600] px-2.5 py-1 rounded-full flex-shrink-0 text-[#1F2937] bg-[#F5F7FA]"
+                      className="text-[12px] font-[600] px-2.5 py-1 rounded-full flex-shrink-0 text-white bg-[#0D6EFD]"
                       data-testid="text-subscription-status"
                     >
                       {t("profile.trial")}

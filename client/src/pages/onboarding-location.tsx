@@ -134,16 +134,16 @@ export default function OnboardingLocationPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 pb-3 text-sm font-semibold text-center transition-colors relative ${
+                className={`flex-1 py-3.5 text-[15px] font-semibold text-center transition-colors relative ${
                   activeTab === tab.id
-                    ? "text-[#0D6EFD]"
-                    : "text-[#1F2937] hover:text-[#1F2937]"
+                    ? "text-[#1F2937]"
+                    : "text-[#6B7280]"
                 }`}
                 data-testid={`tab-${tab.id}`}
               >
                 {tab.label}
                 {activeTab === tab.id && (
-                  <div className="absolute bottom-0 left-3 right-3 h-[3px] bg-[#0D6EFD] rounded-t-full" />
+                  <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#0D6EFD] rounded-full" />
                 )}
               </button>
             ))}
