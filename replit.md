@@ -6,7 +6,7 @@ A mobile-first German-language rental alert application for the German market. U
 
 - **Frontend:** React + Vite + TypeScript + Tailwind CSS + shadcn/ui + Wouter
 - **Auth:** Supabase Auth (email + password)
-- **Data:** Supabase (PostgreSQL) — most tables: `search_profiles`, `listings`, `matches`, `subscriptions`, `user_notification_settings`. Replit PostgreSQL (via `pg` pool) — `user_profile_data`, `listing_freshness`, `match_timestamps`, `onboarding_drafts`
+- **Data:** Supabase (PostgreSQL) — most tables: `search_profiles`, `listings`, `matches`, `subscriptions`, `user_notification_settings`, `push_sent_log`, `push_subscriptions`. Replit PostgreSQL (via `pg` pool) — `user_profile_data`, `user_matches` (canonical match tracking), `fetch_runs` (ingestion audit), `listing_freshness`, `match_timestamps`, `onboarding_drafts`, `ingestion_runs`
 - **Backend:** Express (minimal — auth + data handled by Supabase)
 - **Payments:** Stripe (sandbox, via Replit connector)
 
@@ -149,6 +149,16 @@ A mobile-first German-language rental alert application for the German market. U
 - Notification delivery: per-channel failure logging in `sendMatchAlerts` (logs false returns and rejections)
 - Backfill triggered via `POST /api/search-profiles/backfill` (auth required)
 - Test script: `scripts/test-matching-engine.ts` — run with `npx tsx scripts/test-matching-engine.ts`
+
+### Canonical Match Tracking (user_matches)
+- **`user_matches` table** (Replit PG) — single source of truth for per-user delivered matches, unique on `(user_id, listing_id)`
+- **`server/user-matches.ts`** — module with CRUD: `upsertUserMatch()`, `markEmailSent()`, `markPushSent()`, `markViewed()`, `markApplied()`, `getUserMatchStats()`, `getRecentUserMatches()`, `getMatchCountForUser()`, `backfillFromSupabaseMatches()`
+- **Flow**: matching engine creates match in Supabase `matches` table → also upserts into `user_matches` with listing metadata → notification buffer updates `email_sent`/`push_sent` after delivery → `/api/matches` marks as `viewed` when fetched by user
+- **Deduplication**: `dedup_key` = `source:listing_id`, unique constraint on `(user_id, listing_id)` prevents duplicate counting
+- **Counts**: `totalCount` and `newCount` in `/api/matches` response sourced from `user_matches` (fallback to Supabase `matches` if no canonical data yet)
+- **`fetch_runs` table** (Replit PG) — audit trail per ingestion cycle with stats: fetched_count, deduplicated_count, newly_matched_count, emails_sent_count, pushes_sent_count, error_count, cities_processed
+- **Admin debug page**: `/admin/match-audit` — admin-only (email: `martin.essie87@gmail.com`), shows account info, canonical stats, recent match deliveries with per-match email/push/viewed status, fetch run history, backfill action
+- **Migration**: `server/migrations/019_user_matches_supabase.sql` — reference SQL for future migration to Supabase
 
 ### Auth & Trial Subscription Flow
 - **Trial creation**: `ensureTrialForCurrentUser()` in `client/src/lib/auth.tsx` — shared idempotent helper called from signup, login, and auth-callback. Calls `POST /api/subscription/ensure-trial` which checks for existing subscription before creating a 14-day trial. Returns 500 if creation fails (not silent 200).

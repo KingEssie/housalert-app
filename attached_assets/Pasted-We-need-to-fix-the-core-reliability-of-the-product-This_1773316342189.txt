@@ -1,0 +1,303 @@
+We need to fix the core reliability of the product. This is NOT a UI task first. This is a data consistency and trust problem.
+
+The business model is:
+Users must see the newest housing listings that match their active search profiles first.
+Every listing that is fetched and qualifies for a user profile must be handled consistently across:
+1. app matches
+2. email notifications
+3. push notifications
+4. counters on the home screen / matches screens
+
+Right now this is inconsistent and inflated. For example:
+- the app shows 900+ matches
+- email volume does not match that
+- visible matches in the app do not match that
+This is unacceptable.
+
+I need you to refactor this flow so that matches are reliable, traceable, deduplicated, and consistent everywhere.
+
+--------------------------------------------------
+CORE GOAL
+--------------------------------------------------
+
+Create ONE single source of truth for user-match delivery.
+
+For every user and every fetched listing that matches an active search profile, the system must track:
+
+- listing_id
+- user_id
+- search_profile_id
+- first_detected_at
+- matched_at
+- qualifies_for_user (true/false)
+- visible_in_app (true/false)
+- email_sent (true/false)
+- email_sent_at
+- push_sent (true/false)
+- push_sent_at
+- dismissed / archived / saved / viewed status if already supported
+- delivery_status / audit status
+- deduplication key
+
+The same match should not be counted differently in different parts of the app.
+
+--------------------------------------------------
+REQUIRED BEHAVIOR
+--------------------------------------------------
+
+The system currently checks for new listings every 10 minutes.
+That is fine.
+
+But from now on, every fetch cycle must work like this:
+
+1. Fetch latest listings
+2. Normalize incoming data
+3. Deduplicate listings globally
+4. Evaluate which active user search profiles match each listing
+5. Create or update a canonical user_match record
+6. Only then trigger:
+   - app visibility
+   - email delivery
+   - push delivery
+7. All counters in the UI must be based on these canonical user_match records, not on raw fetched items or temporary arrays
+
+Important:
+The app must NOT show inflated totals based on all historical imported records unless they actually exist as user_matches for that user.
+
+--------------------------------------------------
+CONSISTENCY RULES
+--------------------------------------------------
+
+For a given user:
+
+- Home screen counts
+- match tab counts
+- number of email notifications sent
+- number of push notifications sent
+- visible match items in app
+
+must all be explainable from the same underlying user_match table / collection.
+
+This means:
+
+- If 8 new matches were actually delivered in email, there should be 8 corresponding user_match records marked email_sent = true
+- If push was sent for 8, there should be 8 user_match records marked push_sent = true
+- If 8 are visible in the app, those same 8 should exist as visible_in_app = true
+- Counters must be based on actual state, not assumptions
+
+Do NOT count:
+- duplicate fetches of the same listing
+- old listings re-imported again
+- listings that do not qualify for the active profile
+- listings that were never actually delivered or shown
+
+--------------------------------------------------
+DEDUPLICATION
+--------------------------------------------------
+
+Implement strong deduplication.
+
+A listing must not produce duplicate user matches because:
+- the scraper fetched it again
+- the polling cycle ran again
+- the same listing came from slightly different source payloads
+
+Create a reliable deduplication strategy based on a stable listing identity.
+Use a strong canonical key such as source + external listing id.
+If needed, add fallback normalization using URL normalization / address / title fingerprint, but prefer stable source IDs first.
+
+Also prevent duplicate user notifications:
+- no duplicate email for same user_match
+- no duplicate push for same user_match
+unless there is an intentional resend mechanism
+
+--------------------------------------------------
+CORRECT MATCH ORDERING
+--------------------------------------------------
+
+The app value is that users see the newest relevant listings first.
+
+Therefore:
+- matches in the app must be ordered by actual listing freshness / detected time
+- newest valid matches first
+- not random
+- not mixed with stale duplicates
+- not sorted by accidental insert order if that is incorrect
+
+Make sure the home screen preview, match list, and notification logic all use the same ordering logic.
+
+--------------------------------------------------
+HOME SCREEN / COUNTS FIX
+--------------------------------------------------
+
+Audit and fix all counts shown on:
+- home screen
+- matches tabs
+- badges
+- any “total matches” numbers
+
+These counts must come from canonical user_match records for the current user.
+
+Examples:
+- “new” count = visible_in_app AND not viewed
+- “viewed” count = viewed
+- “saved” count = saved
+- “responded” count = responded
+Only if those states already exist in the system.
+
+Do not show totals like 900+ unless there are actually that many valid canonical matches for that user.
+
+--------------------------------------------------
+EMAIL / PUSH RELIABILITY
+--------------------------------------------------
+
+Refactor notification delivery to be traceable.
+
+For each user_match, store:
+- whether email was attempted
+- whether email was successfully sent
+- timestamp
+- provider response / status if available
+- whether push was attempted
+- whether push was successfully sent
+- timestamp
+- provider response / status if available
+
+At minimum I need auditability even if provider integration is simple.
+
+--------------------------------------------------
+ADMIN / DEBUG VIEW FOR ONE ACCOUNT
+--------------------------------------------------
+
+I need a temporary internal admin/debug screen accessible from my own account so I can verify reliability.
+
+Add a small entry point in my account/profile area that only appears for this email:
+
+martin.essy87.gmail.com
+
+Important:
+- this must be admin-only / hidden for normal users
+- simple and functional is fine
+- no need for final production styling yet
+- this is for verification and trust checking
+
+The admin/debug page should show for this account:
+
+1. account info
+2. number of active search profiles
+3. total canonical user_match records
+4. new matches count
+5. viewed count
+6. saved count
+7. responded count
+8. total emails sent
+9. total push notifications sent
+10. last fetch time
+11. last successful email send time
+12. last successful push send time
+
+Also show a recent activity table with the latest match deliveries.
+
+For each row display:
+- detected_at
+- listing title
+- listing source
+- search profile matched
+- visible_in_app (yes/no)
+- email_sent (yes/no)
+- push_sent (yes/no)
+- deduplicated / duplicate skipped status if relevant
+
+This page should let me verify:
+- how many matches were truly created
+- how many were shown in the app
+- how many emails were sent
+- how many pushes were sent
+for this exact account
+
+--------------------------------------------------
+OPTIONAL ADMIN ACTIONS (ONLY IF EASY)
+--------------------------------------------------
+
+If easy to implement safely, add small debug actions:
+- Recalculate counters
+- Rebuild user_match state for this user
+- Re-run notification sync for missed matches
+- Refresh latest fetch audit data
+
+Only add these if they are straightforward and safe.
+Do not overcomplicate.
+
+--------------------------------------------------
+DATA MODEL / ARCHITECTURE
+--------------------------------------------------
+
+Refactor toward a clean architecture with a canonical table/collection such as:
+
+user_matches
+
+This should be the single source of truth for per-user delivered matches.
+
+Possible supporting tables/collections:
+- listings
+- search_profiles
+- notification_logs
+- fetch_runs / sync_runs
+
+Each fetch run should ideally be traceable:
+- started_at
+- completed_at
+- fetched_count
+- normalized_count
+- deduplicated_count
+- newly_matched_count
+- emails_sent_count
+- pushes_sent_count
+- error_count
+
+--------------------------------------------------
+IMPORTANT IMPLEMENTATION RULES
+--------------------------------------------------
+
+- Use Supabase-compatible architecture as much as possible
+- Avoid relying on Replit local Postgres for anything essential
+- Keep implementation simple and robust
+- Do NOT build an overengineered system
+- Do NOT do extensive testing suites that waste credits
+- Prefer minimal smoke checks and focused validation
+- Keep existing UI intact where possible
+- Fix the data logic first, then expose corrected counts in UI
+
+--------------------------------------------------
+VALIDATION / SMOKE CHECKS
+--------------------------------------------------
+
+After implementation, perform lightweight but meaningful checks:
+
+1. Create or inspect one test flow for my admin account
+2. Confirm that the same canonical matches are reflected in:
+   - app list
+   - home counters
+   - email logs
+   - push logs
+3. Confirm duplicates are not counted twice
+4. Confirm match ordering is newest first
+5. Confirm backfilled / old records do not inflate counts incorrectly
+
+Do not add a huge automated test suite.
+Just do focused smoke validation.
+
+--------------------------------------------------
+DELIVERABLE
+--------------------------------------------------
+
+When done, return a clear summary with:
+
+1. what caused the inflated match counts
+2. what was changed in the data model
+3. what now acts as the single source of truth
+4. how deduplication now works
+5. how email / push / app visibility are kept in sync
+6. what was added to the admin/debug screen
+7. any remaining known limitations
+8. whether the email "martin.essy87.gmail.com" was used exactly as provided for admin access

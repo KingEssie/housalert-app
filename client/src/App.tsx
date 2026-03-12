@@ -40,6 +40,7 @@ import { DocumentenGuidePage, SchufaGuidePage, ZoekstrategieGuidePage, NetwerkGu
 import DeleteAccountPage from "@/pages/delete-account";
 import SubscriptionSuccessPage from "@/pages/subscription-success";
 import AdminIngestionPage from "@/pages/admin-ingestion";
+import AdminMatchAuditPage from "@/pages/admin-match-audit";
 import ApplyPage from "@/pages/apply";
 
 function ProtectedRoute({ component: Component, skipOnboardingCheck }: { component: React.ComponentType; skipOnboardingCheck?: boolean }) {
@@ -115,6 +116,7 @@ function Router() {
       <Route path="/account/change-password" component={() => <ProtectedRoute component={ChangePasswordPage} />} />
       <Route path="/account/delete" component={() => <ProtectedRoute component={DeleteAccountPage} />} />
       <Route path="/admin/ingestion" component={AdminIngestionPage} />
+      <Route path="/admin/match-audit" component={() => <ProtectedRoute component={AdminMatchAuditPage} />} />
       <Route path="/impressum" component={ImpressumPage} />
       <Route path="/datenschutz" component={DatenschutzPage} />
       <Route path="/terms" component={TermsPage} />

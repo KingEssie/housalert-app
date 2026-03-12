@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { bufferMatchAlert } from "../notifications/buffer";
 import { trackMatchCreated } from "../freshness";
 import { getSubscriptionStatus } from "../subscriptions";
+import { upsertUserMatch } from "../user-matches";
 
 const SUPABASE_URL = (process.env.VITE_SUPABASE_URL ?? "").replace(/\/$/, "");
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
@@ -381,7 +382,8 @@ function log(msg: string) {
 async function insertMatchIfNew(
   userId: string,
   searchProfileId: string,
-  listingId: string
+  listingId: string,
+  listing?: DbListing | null
 ): Promise<{ created: false } | { created: true; matched_at: string }> {
   const { data: existing } = await supabase
     .from("matches")
@@ -417,6 +419,24 @@ async function insertMatchIfNew(
 
   log(`[MATCH CREATED] id=${matchRow.id} user=${userId} profile=${searchProfileId} listing=${listingId}`);
   trackMatchCreated(matchRow.id).catch(() => {});
+
+  try {
+    await upsertUserMatch({
+      user_id: userId,
+      listing_id: listingId,
+      search_profile_id: searchProfileId,
+      listing_title: listing?.title,
+      listing_city: listing?.city,
+      listing_price: listing?.price,
+      listing_source: listing?.source,
+      listing_url: listing?.url,
+      dedup_key: listing ? `${listing.source}:${listingId}` : undefined,
+      matched_at: matchRow.created_at,
+    });
+  } catch (e: any) {
+    log(`[MATCH ENGINE] user_matches upsert failed (non-blocking): ${e.message}`);
+  }
+
   return { created: true, matched_at: matchRow.created_at };
 }
 
@@ -474,7 +494,7 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
   for (const profile of profiles as SearchProfile[]) {
     if (!doesListingMatchProfile(listing as DbListing, profile)) continue;
 
-    const result = await insertMatchIfNew(profile.user_id, profile.id, listing.id);
+    const result = await insertMatchIfNew(profile.user_id, profile.id, listing.id, listing as DbListing);
     if (!result.created) continue;
 
     totalMatches++;
@@ -574,7 +594,7 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
   for (const listing of listings as DbListing[]) {
     if (!doesListingMatchProfile(listing, sp)) continue;
 
-    const result = await insertMatchIfNew(sp.user_id, sp.id, listing.id);
+    const result = await insertMatchIfNew(sp.user_id, sp.id, listing.id, listing);
     if (result.created) {
       totalMatches++;
       matchedEntries.push({ listing, matched_at: result.matched_at });

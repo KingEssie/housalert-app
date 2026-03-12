@@ -25,6 +25,7 @@ import { computeMatchScore, getMatchReasons, computeHybridFilters } from "../sha
 import { pool as pgPool } from "./pg-pool";
 import { isAdminEmail, getRecentRuns, getRunDetail, getLatestRunCities, getSourceAggregates } from "./admin";
 import { initWebPush, sendPushToUser } from "./notifications/push";
+import { markViewed, markApplied, getUserMatchStats, getRecentUserMatches, getMatchCountForUser, getRecentFetchRuns, backfillFromSupabaseMatches } from "./user-matches";
 
 const TEN_MIN = 10 * 60 * 1000;
 const ONE_HOUR = 60 * 60 * 1000;
@@ -637,9 +638,15 @@ export async function registerRoutes(
 
       const top50 = validResults.slice(0, 50);
 
+      const canonicalCounts = await getMatchCountForUser(user.id);
+
+      const viewedListingIds = top50.map((m: any) => m.listing_id);
+      markViewed(user.id, viewedListingIds).catch(() => {});
+
       return res.json({
         matches: top50,
-        totalCount: validResults.length,
+        totalCount: canonicalCounts.total > 0 ? canonicalCounts.total : validResults.length,
+        newCount: canonicalCounts.new_count,
         latestEmailAt: recentEmailed?.timestamp ? new Date(recentEmailed.timestamp).toISOString() : null,
       });
     } catch (err: any) {
@@ -671,6 +678,8 @@ export async function registerRoutes(
         return res.status(500).json({ error: error.message });
       }
       if (!data || data.length === 0) return res.status(404).json({ error: "Match not found" });
+
+      markApplied(user.id, matchListingId, applied).catch(() => {});
 
       return res.json(data[0]);
     } catch (err: any) {
@@ -2286,6 +2295,132 @@ export async function registerRoutes(
       const run = await getRunDetail(parseInt(req.params.id, 10));
       if (!run) return res.status(404).json({ error: "Run not found" });
       res.json(run);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/match-audit", requireAdmin, async (req, res) => {
+    try {
+      const adminUser = (req as any).adminUser;
+      const userId = (req.query.user_id as string) || adminUser.id;
+
+      const { data: profiles } = await supabase
+        .from("search_profiles")
+        .select("id, city, city_name, price_min, price_max, bedrooms_min, size_min")
+        .eq("user_id", userId);
+
+      const stats = await getUserMatchStats(userId);
+      const recentMatches = await getRecentUserMatches(userId, 100);
+      const fetchRuns = await getRecentFetchRuns(20);
+
+      const { data: subRow } = await supabase
+        .from("subscriptions")
+        .select("status, plan, created_at, current_period_end, trial_end")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+      const { data: userData } = await supabase.auth.admin.getUserById(userId);
+
+      const { data: notifSettings } = await supabase
+        .from("user_notification_settings")
+        .select("email_enabled, push_enabled, whatsapp_enabled, sms_enabled")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+      let lastEmailSentAt: string | null = null;
+      let lastPushSentAt: string | null = null;
+      if (recentMatches.length > 0) {
+        const emailSent = recentMatches.filter(m => m.email_sent && m.email_sent_at);
+        if (emailSent.length > 0) {
+          lastEmailSentAt = emailSent.sort((a, b) =>
+            new Date(b.email_sent_at!).getTime() - new Date(a.email_sent_at!).getTime()
+          )[0].email_sent_at;
+        }
+        const pushSent = recentMatches.filter(m => m.push_sent && m.push_sent_at);
+        if (pushSent.length > 0) {
+          lastPushSentAt = pushSent.sort((a, b) =>
+            new Date(b.push_sent_at!).getTime() - new Date(a.push_sent_at!).getTime()
+          )[0].push_sent_at;
+        }
+      }
+
+      const lastFetchRun = fetchRuns.length > 0 ? fetchRuns[0] : null;
+
+      res.json({
+        account: {
+          user_id: userId,
+          email: userData?.user?.email || "unknown",
+          created_at: userData?.user?.created_at,
+        },
+        subscription: subRow || null,
+        notification_settings: notifSettings || { email_enabled: true, push_enabled: false },
+        search_profiles: {
+          count: profiles?.length || 0,
+          profiles: profiles || [],
+        },
+        stats: stats || { total: 0, new_count: 0, viewed: 0, saved: 0, applied: 0, email_sent: 0, push_sent: 0 },
+        timing: {
+          last_fetch_run_at: lastFetchRun?.started_at || null,
+          last_email_sent_at: lastEmailSentAt,
+          last_push_sent_at: lastPushSentAt,
+        },
+        recent_matches: recentMatches.slice(0, 50),
+        fetch_runs: fetchRuns.slice(0, 10),
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/admin/match-audit/backfill", requireAdmin, async (req, res) => {
+    try {
+      const adminUser = (req as any).adminUser;
+      const userId = (req.query.user_id as string) || adminUser.id;
+
+      const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
+
+      const { data: matchRows } = await supabase
+        .from("matches")
+        .select("user_id, listing_id, search_profile_id, created_at")
+        .eq("user_id", userId)
+        .gte("created_at", ninetyDaysAgo);
+
+      if (!matchRows || matchRows.length === 0) {
+        return res.json({ backfilled: 0, message: "No matches to backfill" });
+      }
+
+      const listingIds = [...new Set(matchRows.map(m => m.listing_id))];
+      const listingsData = await batchedIn<any>(
+        "listings", "id", listingIds,
+        "id, title, city, price, source, url, source_id",
+        (q: any) => q
+      );
+      const listingMap: Record<string, any> = {};
+      for (const l of listingsData) listingMap[l.id] = l;
+
+      const { data: pushLogs } = await supabase
+        .from("push_sent_log")
+        .select("listing_id")
+        .eq("user_id", userId);
+      const pushSentMap: Record<string, Set<string>> = {};
+      pushSentMap[userId] = new Set((pushLogs || []).map((r: any) => r.listing_id));
+
+      const count = await backfillFromSupabaseMatches(matchRows, listingMap, pushSentMap);
+
+      res.json({ backfilled: count, total_supabase_matches: matchRows.length });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/admin/match-audit/recalculate", requireAdmin, async (req, res) => {
+    try {
+      const adminUser = (req as any).adminUser;
+      const userId = (req.query.user_id as string) || adminUser.id;
+
+      const stats = await getUserMatchStats(userId);
+      res.json({ recalculated: true, stats });
     } catch (err: any) {
       res.status(500).json({ error: err.message });
     }

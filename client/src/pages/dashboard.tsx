@@ -1596,6 +1596,18 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
               >
                 <p className="text-[15px] font-[500] text-[#0D6EFD] flex-1">{t("profile.deleteAccount")}</p>
               </button>
+              {(user?.email === "martin.essie87@gmail.com") && (
+                <>
+                  <div className="h-px bg-[#E5E7EB] mx-5" />
+                  <button
+                    onClick={() => navigate("/admin/match-audit")}
+                    className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F5F7FA] transition-colors"
+                    data-testid="button-admin-audit"
+                  >
+                    <p className="text-[15px] font-[500] text-[#6B7280] flex-1">Match Audit (Admin)</p>
+                  </button>
+                </>
+              )}
             </div>
 
             {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (

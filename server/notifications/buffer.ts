@@ -4,6 +4,7 @@ import { areAlertsEnabled } from "./index";
 import { getSubscriptionStatus } from "../subscriptions";
 import { sendMatchPushNotifications, type PushMatchListing } from "./push";
 import { batchedIn } from "../freshness";
+import { markEmailSent, markPushSent } from "../user-matches";
 
 const MAX_LISTINGS_PER_EMAIL = 20;
 
@@ -141,6 +142,7 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
   let failed = 0;
   let skippedNoSub = 0;
   let skippedEmailOff = 0;
+  let totalPushesSent = 0;
 
   for (const [userId, { email, listings }] of snapshot.entries()) {
     if (!email) continue;
@@ -220,6 +222,7 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
 
     if (emailedListingIds.length > 0) {
       recentEmailedIds.set(userId, { listing_ids: emailedListingIds, timestamp: Date.now() });
+      try { await markEmailSent(userId, emailedListingIds); } catch {}
       const MAX_HISTORY = 100;
       if (recentEmailedIds.size > MAX_HISTORY) {
         const oldest = [...recentEmailedIds.entries()].sort((a, b) => a[1].timestamp - b[1].timestamp);
@@ -234,15 +237,20 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
         listing_id: l.listing_id,
         city: l.city,
       }));
-      await sendMatchPushNotifications(userId, pushListings, supabase);
+      const pushResult = await sendMatchPushNotifications(userId, pushListings, supabase);
+      if (pushResult.sent > 0) {
+        const pushedIds = verified.map(l => l.listing_id);
+        try { await markPushSent(userId, pushedIds); } catch {}
+        totalPushesSent += pushResult.sent;
+      }
     } catch (err: any) {
       log(`[ALERTS] Push error for user ${userId.substring(0, 8)}...: ${err.message}`);
     }
   }
 
   _flushing = false;
-  log(`[ALERTS] Flush complete: ${sent} sent, ${failed} failed, ${skippedNoSub} skipped (no sub), ${skippedEmailOff} skipped (email off)`);
-  return { sent, failed };
+  log(`[ALERTS] Flush complete: ${sent} sent, ${failed} failed, ${totalPushesSent} pushes, ${skippedNoSub} skipped (no sub), ${skippedEmailOff} skipped (email off)`);
+  return { sent, failed, pushesSent: totalPushesSent };
 }
 
 export async function flushUserAlerts(userId: string, supabase: any): Promise<void> {
@@ -314,6 +322,7 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
     const prev = recentEmailedIds.get(userId);
     const combined = prev ? [...prev.listing_ids, ...emailedListingIds] : emailedListingIds;
     recentEmailedIds.set(userId, { listing_ids: combined, timestamp: Date.now() });
+    try { await markEmailSent(userId, emailedListingIds); } catch {}
   }
 
   try {
@@ -321,7 +330,11 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
       listing_id: l.listing_id,
       city: l.city,
     }));
-    await sendMatchPushNotifications(userId, pushListings, supabase);
+    const pushResult = await sendMatchPushNotifications(userId, pushListings, supabase);
+    if (pushResult.sent > 0) {
+      const pushedIds = verified.map(l => l.listing_id);
+      try { await markPushSent(userId, pushedIds); } catch {}
+    }
   } catch (err: any) {
     log(`[ALERTS] Backfill push error for user ${userId.substring(0, 8)}...: ${err.message}`);
   }

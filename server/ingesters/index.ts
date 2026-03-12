@@ -9,6 +9,7 @@ import { buildSourcesForCity } from "./config/sources";
 import { getCitySlugs, makeFallbackSlug } from "./city-slugs";
 import { areAlertsEnabled } from "../notifications";
 import { flushMatchAlertBuffer, clearBuffer, getBufferSize } from "../notifications/buffer";
+import { createFetchRun, completeFetchRun, failFetchRun } from "../user-matches";
 
 const SUPABASE_URL = (process.env.VITE_SUPABASE_URL ?? "").replace(/\/$/, "");
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
@@ -230,6 +231,8 @@ export async function runAllIngesters(): Promise<IngestionReport> {
   const startTime = Date.now();
   log(`[INGEST START] Germany-wide ingestion`, "ingest");
 
+  const fetchRunId = await createFetchRun();
+
   const sources: SourceReport[] = [];
   const cityReports: CityReport[] = [];
   const total = { found: 0, inserted: 0, duplicates: 0, matches: 0, errors: 0 };
@@ -311,13 +314,18 @@ export async function runAllIngesters(): Promise<IngestionReport> {
       }
     }
 
+    let emailsSent = 0;
+    let pushesSent = 0;
+
     if (areAlertsEnabled()) {
       const bufSize = getBufferSize();
       if (bufSize.listings > 0) {
         log(`[ingest] Flushing match alert buffer: ${bufSize.users} users, ${bufSize.listings} listings`, "ingest");
         try {
           const alertResult = await flushMatchAlertBuffer(supabase);
-          log(`[ingest] Alert emails sent: ${alertResult.sent} success, ${alertResult.failed} failed`, "ingest");
+          emailsSent = alertResult.sent;
+          pushesSent = alertResult.pushesSent || 0;
+          log(`[ingest] Alert emails sent: ${alertResult.sent} success, ${alertResult.failed} failed, ${pushesSent} pushes`, "ingest");
         } catch (alertErr: any) {
           log(`[ingest] Alert flush error: ${alertErr.message}`, "ingest");
         }
@@ -339,6 +347,18 @@ export async function runAllIngesters(): Promise<IngestionReport> {
 
     updateTodayStats(total.found, total.inserted);
 
+    if (fetchRunId) {
+      completeFetchRun(fetchRunId, {
+        fetched_count: total.found,
+        deduplicated_count: total.duplicates,
+        newly_matched_count: total.matches,
+        emails_sent_count: emailsSent,
+        pushes_sent_count: pushesSent,
+        error_count: total.errors,
+        cities_processed: cities.length,
+      }).catch(() => {});
+    }
+
     const report: IngestionReport = { sources, cityReports, total, cities, durationSec: parseFloat(duration) };
     _lastResult = report;
     _lastRunAt = new Date().toISOString();
@@ -348,6 +368,7 @@ export async function runAllIngesters(): Promise<IngestionReport> {
     return report;
   } catch (err: any) {
     _lastError = err.message;
+    if (fetchRunId) failFetchRun(fetchRunId, err.message).catch(() => {});
     clearBuffer();
     throw err;
   } finally {
