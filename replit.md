@@ -648,3 +648,18 @@ Env vars: `TEST_USER_EMAIL`, `TEST_USER_PASSWORD`, `TEST_PHONE_E164`, `TEST_BASE
 - **iOS**: content inset automatic, mobile preferred content mode, scheme "HousAlert"
 - **Splash**: dark background (#1A1A1A), teal spinner (#2DD4BF), 2s duration
 - **Status bar**: dark style, #1A1A1A background
+
+## Reliability Testing
+
+- **Test framework**: Vitest (config: `vitest.config.reliability.ts`)
+- **Test files**: `tests/reliability/` — 3 test files, 16 smoke tests covering the 8 business-critical scenarios
+  - `match-consistency.test.ts` — Tests 1-3: single match creation, deduplication, multi-profile dedup
+  - `state-and-ordering.test.ts` — Tests 4-5: applied/unapplied state reversal, newest-first ordering
+  - `backfill-and-metrics.test.ts` — Tests 6-8: backfill inflation prevention, fetch_run metrics integrity, admin debug consistency
+- **Test helpers**: `tests/reliability/helpers.ts` — deterministic UUID generators, insert/query/cleanup utilities
+- **Manual verification**: `tests/verify-matches.ts` — CLI script to inspect canonical match state for any user
+- **Commands**:
+  - Run smoke tests: `npx vitest run --config vitest.config.reliability.ts --reporter verbose`
+  - Manual verify (list users): `npx tsx tests/verify-matches.ts`
+  - Manual verify (specific user): `npx tsx tests/verify-matches.ts <user_id>`
+- **Test data isolation**: Uses deterministic UUIDs with prefix `aaaaaaaa-bbbb-cccc-dddd-` for user_ids, cleaned up in beforeEach/afterAll

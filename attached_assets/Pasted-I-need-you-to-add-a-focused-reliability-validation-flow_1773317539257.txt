@@ -1,0 +1,286 @@
+I need you to add a focused reliability validation flow for the housing match system.
+
+This is NOT about broad test coverage.
+This is about verifying the business-critical promise of the product:
+
+For each user, the newest matching listings must be handled consistently across:
+1. canonical user_matches
+2. visible matches in the app
+3. email notifications
+4. push notifications
+5. home screen / match counters
+
+I want lightweight but real validation, without creating a huge expensive test suite.
+
+--------------------------------------------------
+GOAL
+--------------------------------------------------
+
+Create a small validation layer / smoke test setup that checks whether the system is truly reliable and internally consistent.
+
+The tests should verify that:
+
+- duplicate fetches do not create duplicate canonical matches
+- counts are based on canonical user_matches only
+- email / push / app visibility stay in sync
+- ordering is newest first
+- state transitions like applied/unapplied remain correct
+- backfills do not inflate counts
+- fetch_runs metrics reflect actual actions
+
+Keep this lean and practical.
+
+--------------------------------------------------
+IMPORTANT CONSTRAINTS
+--------------------------------------------------
+
+- Do NOT build an oversized test suite
+- Do NOT generate lots of artificial mocks unless needed
+- Prefer a few focused integration-style smoke tests
+- Keep Supabase-compatible architecture in mind
+- Avoid Replit local Postgres for essential logic if possible
+- Use existing services/functions where possible
+- Minimal test runtime
+- Minimal maintenance burden
+
+--------------------------------------------------
+WHAT I WANT IMPLEMENTED
+--------------------------------------------------
+
+Add a small reliability validation setup with a limited set of high-value tests.
+
+Use the existing canonical architecture and test the real flow as much as possible.
+
+Include these tests:
+
+--------------------------------------------------
+TEST 1 — SINGLE MATCH CONSISTENCY
+--------------------------------------------------
+
+Scenario:
+- one active search profile
+- one newly fetched listing that matches
+- run ingestion / matching pipeline
+
+Assert:
+- exactly 1 canonical user_match is created
+- visible_in_app = true
+- email_sent = true if email delivery is part of this flow
+- push_sent = true if push delivery is part of this flow
+- home/match counters reflect 1 canonical match
+- fetch_runs newly_matched_count is correct
+
+Goal:
+Verify that one real match creates one consistent result everywhere.
+
+--------------------------------------------------
+TEST 2 — DUPLICATE FETCH DEDUPLICATION
+--------------------------------------------------
+
+Scenario:
+- ingest the same listing twice across two fetch cycles
+
+Assert:
+- only 1 canonical user_match exists for that user/listing
+- no duplicate email notification
+- no duplicate push notification
+- counters remain correct
+- fetch_runs can show fetched items twice, but matched inserts must not double count
+
+Goal:
+Verify deduplication works and repeated scraping does not inflate counts.
+
+--------------------------------------------------
+TEST 3 — MULTI-PROFILE SAME LISTING
+--------------------------------------------------
+
+Scenario:
+- same user has multiple active search profiles
+- one listing matches more than one profile
+
+Assert the behavior matches the intended product logic.
+If the system is supposed to create only one canonical user_match per user/listing, verify exactly that.
+If profile linkage is stored separately, verify that correctly.
+Do NOT allow accidental double-counting.
+
+Goal:
+Prevent hidden inflation caused by profile overlap.
+
+--------------------------------------------------
+TEST 4 — APPLIED / UNAPPLIED STATE CONSISTENCY
+--------------------------------------------------
+
+Scenario:
+- create one canonical user_match
+- mark applied = true
+- then mark applied = false
+
+Assert:
+- applied flag becomes false again
+- applied_at is cleared or updated consistently based on the intended data model
+- UI-facing counters derived from applied state update correctly
+
+Goal:
+Ensure state reversal works and does not leave stale applied state behind.
+
+--------------------------------------------------
+TEST 5 — NEWEST-FIRST ORDERING
+--------------------------------------------------
+
+Scenario:
+- create or ingest multiple matching listings with different timestamps
+
+Assert:
+- matches returned for app display are ordered newest first
+- home preview and match list use the same ordering basis
+- old listings do not appear ahead of newer listings due to insertion quirks
+
+Goal:
+Protect the core business promise that users see the latest relevant listings first.
+
+--------------------------------------------------
+TEST 6 — BACKFILL / REIMPORT DOES NOT INFLATE COUNTS
+--------------------------------------------------
+
+Scenario:
+- run a backfill or reimport flow containing existing listings and some genuinely new ones
+
+Assert:
+- only genuinely new canonical matches increase counts
+- existing matches remain single records
+- result.rowCount / actual insert count logic is used correctly
+- historical reprocessing does not create inflated totals
+
+Goal:
+Ensure reruns and backfills stay safe.
+
+--------------------------------------------------
+TEST 7 — FETCH RUN METRICS INTEGRITY
+--------------------------------------------------
+
+Scenario:
+- run one ingestion cycle with a known number of fetched listings, deduplicated items, matched items, emails sent, pushes sent
+
+Assert:
+- fetch_runs metrics match the actual canonical outcomes
+- pushesSent in fetch_runs reflects actual pushes sent
+- newly_matched_count reflects real inserted canonical matches
+- metrics are not derived from attempted operations that were skipped
+
+Goal:
+Make admin/debug auditing trustworthy.
+
+--------------------------------------------------
+TEST 8 — ADMIN DEBUG DATA CONSISTENCY
+--------------------------------------------------
+
+Scenario:
+- create a known small set of canonical matches and notification outcomes for the admin user
+
+Assert:
+- admin/debug screen queries return the same numbers as direct canonical counts
+- total canonical matches
+- email_sent count
+- push_sent count
+- visible match count
+all line up correctly
+
+Goal:
+Ensure the admin dashboard is trustworthy for manual verification.
+
+--------------------------------------------------
+ADMIN USER
+--------------------------------------------------
+
+Use this exact admin email if it already exists in the system, otherwise make the admin email configurable from env/settings:
+
+Martin.essie87@gmail.com
+
+Do NOT hardcode the wrong email variant.
+I want the implementation to be careful here because typo-based admin access would be a problem.
+
+--------------------------------------------------
+IMPLEMENTATION PREFERENCE
+--------------------------------------------------
+
+Please implement this in the simplest robust way.
+
+Preferred approach:
+- a small reliability test file or small group of test files
+- helper factory/builders for:
+  - user
+  - search profile
+  - listing
+  - canonical user_match
+  - fetch run
+- minimal seed/setup utilities
+- focused assertions
+- no giant mocking framework unless truly necessary
+
+If there is already a test framework in the project, use it.
+If not, add the lightest reasonable option.
+
+--------------------------------------------------
+ALSO ADD A SIMPLE MANUAL VERIFICATION MODE
+--------------------------------------------------
+
+In addition to automated smoke tests, add a lightweight manual verification utility.
+
+Possible options:
+- a protected dev-only route
+- a small script
+- a debug command
+
+This manual verification tool should print or display for one user:
+- canonical user_matches count
+- visible_in_app count
+- email_sent count
+- push_sent count
+- latest 10 match records
+- latest fetch_runs rows
+
+This is so I can quickly inspect whether the system is aligned for my own account.
+
+Keep it simple.
+
+--------------------------------------------------
+SMOKE CHECK COMMANDS
+--------------------------------------------------
+
+After implementation, provide clear commands for:
+
+1. running the reliability smoke tests
+2. running the manual verification check
+3. seeing which tests passed
+4. inspecting any failures quickly
+
+--------------------------------------------------
+OUTPUT I WANT AFTER IMPLEMENTATION
+--------------------------------------------------
+
+Return a concise summary with:
+
+1. which smoke tests were added
+2. which parts of the real ingestion pipeline they cover
+3. whether they test canonical user_matches directly
+4. how deduplication is verified
+5. how notification sync is verified
+6. how ordering is verified
+7. how admin/debug consistency is verified
+8. exact commands to run the checks in Replit
+
+--------------------------------------------------
+VERY IMPORTANT
+--------------------------------------------------
+
+Do not just add shallow unit tests around helper functions.
+I want validation of the actual business-critical flow.
+
+The purpose is to prove trust:
+same match in canonical records,
+same match in app,
+same match in email,
+same match in push,
+same count in admin/debug.
+
+Keep it lean, but make it real.
