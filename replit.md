@@ -54,50 +54,45 @@ A mobile-first German-language rental alert application for the German market. U
 - **Table**: `onboarding_drafts` in Replit DB (not Supabase) — draft data stored locally
 - **CRITICAL PENDING MIGRATION**: `server/migrations/PENDING_RUN_IN_SUPABASE.sql` must be run in Supabase SQL Editor (includes migrations 008, 010, 011, 012, 013, 014, 015, 016, 017). The `search_profiles` table currently only has 8 core columns (id, user_id, city, price_min, price_max, bedrooms_min, size_min, created_at). Without running these migrations, advanced features (location mode, districts, radius, commute, furnished, extra features, target categories) cannot be persisted — the backend will fall back to core-only updates. Run the full migration file in Supabase SQL Editor to enable all features.
 
-### Design System (YoungOnes-inspired)
-- **Primary CTA**: Teal `var(--yo-teal)` #2DD4BF, hover `var(--yo-teal-hover)` #25BBA8 — CTA buttons ONLY (BLACK text, not white), active nav indicator, selection controls
-- **Accent/Links**: Pink `var(--yo-pink)` #FF2E8A — all text links, action text, source labels, progress bars
-- **Badges/Chips**: Neutral `var(--yo-chip-bg)` #F3F4F6 with `var(--yo-dark)` text — all badges, status pills, count indicators
-- **Icon backgrounds**: `var(--yo-chip-bg)` #F3F4F6 with `var(--yo-dark)` icons (NOT teal)
-- **Logo icon**: `var(--yo-dark)` #1A1A1A background with white icon
-- **City gradients**: Dark `from-[#1A1A1A] to-[#333333]` — no teal gradients
-- **Text**: primary #1A1A1A (--yo-dark), body #333333 (--yo-text), muted #9CA3AF (--yo-muted, disabled only)
-- **Backgrounds**: white #FFFFFF (--yo-bg), surface #F8F9FA (--yo-surface)
-- **Borders/dividers**: #EEEEEE (--yo-divider)
-- **Buttons**: bg var(--yo-teal), BLACK text, rounded-lg (8px), h-[56px], font-bold
-- **Inputs**: bg var(--yo-surface), border var(--yo-divider), rounded-lg (8px)
-- **Cards**: white bg, very subtle shadow, rounded-lg (8px)
-- **Border radius**: Standardized to `rounded-lg` (8px) everywhere
-- **Page titles**: UPPERCASE, font-weight 800, letter-spacing 0.02em
-- **Bottom nav**: Flat white bar (not floating pill), teal top-line active indicator
-- **Bottom sheets**: Rounded top 24px, dimmed backdrop, uppercase bold title
-- **CSS variables**: All colors defined as `--yo-*` in `client/src/index.css` (:root)
-  - `--yo-teal`, `--yo-teal-hover`, `--yo-teal-light`, `--yo-teal-dark`
-  - `--yo-pink` (#FF2E8A), `--yo-pink-light`
-  - `--yo-dark`, `--yo-text`, `--yo-muted`
-  - `--yo-bg`, `--yo-surface`, `--yo-divider`, `--yo-border`
-  - `--yo-chip-bg` (#F3F4F6), `--yo-chip-text` (#1A1A1A)
-  - `--yo-input-border`, `--yo-tag-dark`, `--yo-success`
-- **NEVER use**: old purple (#673DE5, #5B30D6, #DCDBFA), old lime (#CBFF02, #8BEA63), hardcoded teal hex (use CSS vars), teal for text links (use pink)
+### Design System (BlaBlaCar-inspired)
+- **Primary color**: Blue #0D6EFD, hover #0B5ED7, light #EBF2FF
+- **Dark navy**: #111C3D (headings), #0F172A (dark cards/banners)
+- **Body text**: #111827 (primary), #1F2937 (secondary), #6B7280 (muted), #9CA3AF (placeholder/disabled)
+- **Backgrounds**: white #FFFFFF, surface #F3F4F6, border #E5E7EB
+- **Buttons**: Blue bg + white text, rounded-full (pill), min-h-[52px]. Variants: `default` (blue), `outline` (white bg + blue border), `secondary` (white bg + gray border), `banner` (white bg + dark navy text, for dark cards), `ghost`. Sizes: `default`, `sm`, `lg`, `compact` (44px), `save` (centered 180px width), `icon`.
+- **Inputs**: bg #F3F4F6, rounded-[20px], h-[60px], no border, dark text, gray placeholder
+- **Cards**: white bg, rounded-2xl (16px), subtle shadow, #E5E7EB border
+- **Dark banner cards**: bg #0F172A, rounded-2xl, white CTA button (compact h-[48px], not full-width)
+- **Badges**: rounded-full, variants: default (gray), neon (blue bg), success (green), dark
+- **CSS variables**: Legacy `--yo-*` vars still defined in index.css but all page/component code uses direct hex values. Primary HSL: `--primary: 214 97% 52%`.
 
 ### Typography System
-- CSS utility classes defined in `client/src/index.css` under `@layer utilities`:
-  - `.text-page-title` — 22px, weight 800, uppercase, letter-spacing 0.02em, color var(--yo-dark) (for page headings)
-  - `.text-section-title` — 18px, weight 700, color var(--yo-dark) (for section headings)
-  - `.text-row-section-title` — 18px, weight 700, color var(--yo-dark)
-  - `.text-row-title` — 16px, weight 600, color var(--yo-dark)
-  - `.text-row-subtitle` — 15px, weight 500, color var(--yo-muted)
-  - `.text-subtitle` — 15px, weight 500, color var(--yo-muted)
-  - `.text-muted-body` — 14px, weight 500, color var(--yo-muted)
-- Color tokens: primary text var(--yo-dark), secondary text var(--yo-muted), divider var(--yo-divider)
+- CSS utility classes in `client/src/index.css` `@layer utilities`:
+  - `.text-page-title` — 24px, weight 800, #111C3D, tracking -0.02em (page headings)
+  - `.text-section-title` — 18px, weight 700, #111C3D, tracking -0.01em
+  - `.text-row-section-title` — 13px, weight 600, #6B7280, uppercase, tracking 0.02em (list section headers)
+  - `.text-row-title` — 16px, weight 500, #111827 (list row titles)
+  - `.text-row-subtitle` — 14px, weight 400, #6B7280
+  - `.text-subtitle` — 15px, weight 400, #6B7280
+  - `.text-muted-body` — 14px, weight 400, #6B7280
+  - `.text-field-label` — 13px, weight 400, #6B7280 (form field labels above values)
+  - `.text-field-value` — 16px, weight 500, #111827 (field values in detail lists)
+- No uppercase on page titles (removed). Section row titles use uppercase only.
 
 ### Reusable PageHeader
-- `client/src/components/ui/page-header.tsx` — Floating back button (fixed top-left, 44px circle, white + shadow-md) + large uppercase title in content flow
+- `client/src/components/ui/page-header.tsx` — Floating back button (fixed top-left, 48px circle, #F3F4F6 bg + subtle shadow) + page title in content flow
 - Props: `title` (string), `onBack?` (callback, defaults to history.back()), `trailing?` (ReactNode), `closeButton?` (X icon instead of arrow)
-- Style: fixed position back button respects safe-area-inset-top; title rendered in max-w-xl centered content container with top padding to clear the floating button
+- Style: fixed position back button respects safe-area-inset-top; title rendered with `.text-page-title` class in max-w-xl centered content container
 - Used on ALL subpages: subscription-detail, payment-method, cancel flow, notification-settings, application-letter, viewing-tips, profile-details, profile-edit, delete-account, guide pages, change-password
-- `listing-detail.tsx` uses its own `FloatingBackButton` component (same 44px style, but with backdrop-blur for hero image overlay)
+- `listing-detail.tsx` uses its own `FloatingBackButton` component (same 48px style)
 - NOT used on main navigation screens: dashboard (Home/Matches/Boost/Filters/Profile), or wizard flows (new-search)
+
+### Reusable List Components
+- `client/src/components/list-section.tsx` — BlaBlaCar-style list rows
+  - `ListSection` — wrapper with optional title (uses `.text-row-section-title`)
+  - `ListRow` — row with title, subtitle, icon, trailing, chevron. Uses `.text-row-title` + `.text-row-subtitle`.
+  - `ListDivider` — horizontal separator line (mx-5, #E5E7EB)
+- Profile details page uses `text-field-label` + `text-field-value` classes for label/value pairs
 
 ### Notifications
 - **Channels**: Email only (via Resend). Push planned but not yet implemented (toggle shown as disabled with "Binnenkort beschikbaar")

@@ -85,7 +85,7 @@ export default function ApplicationLetterPage() {
           {missingFields && !isLoading && (
             <button
               onClick={() => navigate("/profile/details")}
-              className="w-full bg-[#FFF8E1] dark:bg-[#3D3520] rounded-lg p-5 flex gap-3 text-left"
+              className="w-full bg-[#FFF8E1] dark:bg-[#3D3520] rounded-2xl p-5 flex gap-3 text-left"
               data-testid="banner-missing-fields"
             >
               <AlertTriangle className="w-5 h-5 text-[#F59E0B] flex-shrink-0 mt-0.5" />
@@ -98,7 +98,7 @@ export default function ApplicationLetterPage() {
             </button>
           )}
 
-          <div className="rounded-lg p-6 flex gap-3" style={{ backgroundColor: "#F5F7FA" }}>
+          <div className="rounded-2xl p-6 flex gap-3" style={{ backgroundColor: "#F5F7FA" }}>
             <Info className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "#0D6EFD" }} />
             <div>
               <p className="text-[14px] font-semibold mb-1" style={{ color: "#1F2937" }}>{t("applicationLetter.autoFill")}</p>
@@ -108,7 +108,7 @@ export default function ApplicationLetterPage() {
             </div>
           </div>
 
-          <div className="bg-card rounded-lg shadow-sm p-6">
+          <div className="bg-card rounded-2xl shadow-sm p-6">
             <h3 className="text-[16px] font-[700] mb-3" style={{ color: "#1F2937" }}>{t("applicationLetter.placeholders")}</h3>
             <div className="flex flex-wrap gap-1.5">
               {PLACEHOLDERS.map((p) => (
@@ -142,12 +142,12 @@ export default function ApplicationLetterPage() {
           </div>
 
           {isLoading ? (
-            <div className="bg-card rounded-lg shadow-sm p-6 animate-pulse">
+            <div className="bg-card rounded-2xl shadow-sm p-6 animate-pulse">
               <div className="h-4 bg-muted rounded w-32 mb-4" />
               <div className="h-48 bg-muted rounded" />
             </div>
           ) : (
-            <div className="bg-card rounded-lg shadow-sm p-6">
+            <div className="bg-card rounded-2xl shadow-sm p-6">
               <div className="flex items-center justify-between gap-4 mb-3">
                 <h3 className="text-[16px] font-semibold" style={{ color: "#1F2937" }}>{t("applicationLetter.yourLetter")}</h3>
                 <button
@@ -163,7 +163,7 @@ export default function ApplicationLetterPage() {
               <textarea
                 value={template}
                 onChange={(e) => setTemplate(e.target.value)}
-                className="w-full min-h-[300px] px-4 py-4 rounded-lg border-0 bg-muted text-[15px] font-medium text-foreground placeholder:text-muted-foreground placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-primary/15 focus:bg-background resize-y leading-relaxed transition-all"
+                className="w-full min-h-[300px] px-4 py-4 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-foreground placeholder:text-muted-foreground placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-primary/15 focus:bg-background resize-y leading-relaxed transition-all"
                 data-testid="input-template"
               />
               {!isLongEnough && (
@@ -179,7 +179,7 @@ export default function ApplicationLetterPage() {
           <Button
             onClick={() => saveMutation.mutate(template)}
             disabled={!isLongEnough || saveMutation.isPending}
-            className="w-full h-[56px] rounded-lg text-[16px] font-semibold bg-primary text-primary-foreground disabled:opacity-50 flex items-center gap-2"
+            className="w-full h-[56px] rounded-full text-[16px] font-semibold bg-primary text-primary-foreground disabled:opacity-50 flex items-center gap-2"
             data-testid="button-save-template"
           >
             <Save className="w-4.5 h-4.5" />
@@ -190,7 +190,7 @@ export default function ApplicationLetterPage() {
               variant="outline"
               onClick={() => saveMutation.mutate(DEFAULT_TEMPLATE)}
               disabled={saveMutation.isPending}
-              className="w-full h-[48px] rounded-lg text-[15px] font-semibold"
+              className="w-full h-[48px] rounded-full text-[15px] font-semibold"
               data-testid="button-use-default"
             >
               {t("applicationLetter.useDefault")}

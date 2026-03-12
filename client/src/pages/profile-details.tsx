@@ -89,25 +89,25 @@ export default function ProfileDetailsPage() {
                   {editable ? (
                     <button
                       onClick={() => navigate(`/profile/edit/${field.key}`)}
-                      className="w-full flex items-center justify-between px-5 py-4 text-left hover-elevate transition-colors"
+                      className="w-full flex items-center justify-between px-5 py-[18px] text-left active:bg-[#F9FAFB] transition-colors"
                       data-testid={`field-${field.key}`}
                     >
                       <div className="min-w-0 flex-1">
-                        <p className="text-[13px] text-muted-foreground mb-0.5">{field.label}</p>
-                        <p className="text-[16px] font-[500] truncate" style={{ color: "#1F2937" }}>
-                          {value || <span className="text-muted-foreground">{t("profileDetails.add")}</span>}
+                        <p className="text-field-label mb-1">{field.label}</p>
+                        <p className="text-field-value truncate">
+                          {value || <span className="text-[#9CA3AF]">{t("profileDetails.add")}</span>}
                         </p>
                       </div>
-                      <ChevronRight className="w-[18px] h-[18px] text-muted-foreground flex-shrink-0 ml-3" />
+                      <ChevronRight className="w-[18px] h-[18px] text-[#9CA3AF] flex-shrink-0 ml-3" />
                     </button>
                   ) : (
-                    <div className="px-5 py-4" data-testid={`field-${field.key}`}>
-                      <p className="text-[13px] text-muted-foreground mb-0.5">{field.label}</p>
-                      <p className="text-[16px] font-[500] truncate" style={{ color: "#1F2937" }}>{value || "-"}</p>
+                    <div className="px-5 py-[18px]" data-testid={`field-${field.key}`}>
+                      <p className="text-field-label mb-1">{field.label}</p>
+                      <p className="text-field-value truncate">{value || "-"}</p>
                     </div>
                   )}
                   {i < FIELDS.length - 1 && (
-                    <div className="h-px mx-5" style={{ backgroundColor: "#E5E7EB" }} />
+                    <div className="h-px bg-[#E5E7EB] mx-5" />
                   )}
                 </div>
               );

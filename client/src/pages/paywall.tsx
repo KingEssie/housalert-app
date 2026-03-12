@@ -143,20 +143,20 @@ export default function PaywallPage() {
             <ArrowLeft className="w-4 h-4 text-[#1F2937]" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-[#1F2937] flex items-center justify-center">
+            <div className="w-7 h-7 rounded-2xl bg-[#111C3D] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-bold text-[#1F2937] text-base">HousAlert</span>
+            <span className="font-bold text-[#111C3D] text-base">HousAlert</span>
           </div>
         </div>
       </header>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-10 pb-32">
         <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-lg bg-[#F5F7FA] flex items-center justify-center mx-auto mb-4">
+          <div className="w-14 h-14 rounded-2xl bg-[#F3F4F6] flex items-center justify-center mx-auto mb-4">
             <Crown className="w-7 h-7 text-[#1F2937]" />
           </div>
-          <h1 className="text-[32px] font-[800] text-[#1F2937] tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-paywall-title">
+          <h1 className="text-[32px] font-[800] text-[#111C3D] tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-paywall-title">
             {t("paywall.title")}
           </h1>
           <p className="text-[15px] text-[#1F2937]">
@@ -169,7 +169,7 @@ export default function PaywallPage() {
             <button
               key={plan.id}
               onClick={() => setSelectedPlan(plan.id)}
-              className={`w-full p-6 rounded-lg border-2 transition-all text-left relative bg-white shadow-[0_4px_20px_rgba(0,0,0,0.06)] ${
+              className={`w-full p-6 rounded-2xl border-2 transition-all text-left relative bg-white shadow-[0_4px_20px_rgba(0,0,0,0.06)] ${
                 selectedPlan === plan.id
                   ? "border-[#0D6EFD]"
                   : "border-transparent hover:border-[#E5E7EB]"
@@ -187,11 +187,11 @@ export default function PaywallPage() {
 
               <div className="flex items-center justify-between gap-4 pr-8">
                 <div>
-                  <p className="text-[18px] font-bold text-[#1F2937]">{t(plan.nameKey)}</p>
+                  <p className="text-[18px] font-bold text-[#111C3D]">{t(plan.nameKey)}</p>
                   <p className="text-[15px] text-[#1F2937]">{t(plan.pricePerMonthKey)}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xl font-extrabold text-[#1F2937]">{t(plan.priceKey)}</p>
+                  <p className="text-xl font-extrabold text-[#111C3D]">{t(plan.priceKey)}</p>
                   {plan.savingsKey && (
                     <p className="text-xs font-semibold text-[#0D6EFD]">{t(plan.savingsKey)}</p>
                   )}
@@ -212,7 +212,7 @@ export default function PaywallPage() {
         </div>
 
         <div className="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-6">
-          <p className="text-[16px] font-[700] text-[#1F2937] mb-3">{t("paywall.featuresTitle")}</p>
+          <p className="text-[16px] font-[700] text-[#111C3D] mb-3">{t("paywall.featuresTitle")}</p>
           <div className="space-y-2.5">
             {FEATURE_KEYS.map((key, i) => (
               <div key={i} className="flex items-center gap-3">
@@ -230,7 +230,7 @@ export default function PaywallPage() {
         <div className="max-w-xl mx-auto">
           <Button
             size="lg"
-            className="w-full h-[56px] rounded-lg text-[16px] font-bold shadow-none bg-[#0D6EFD]"
+            className="w-full h-[56px] rounded-full text-[16px] font-bold shadow-none bg-[#0D6EFD]"
             onClick={handleCheckout}
             disabled={loading}
             data-testid="button-select-payment"

@@ -466,7 +466,7 @@ export default function AdminIngestionPage() {
               <button
                 onClick={handleTestPush}
                 disabled={pushTesting}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary/90 disabled:opacity-50 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary/90 disabled:opacity-50 transition-colors"
                 data-testid="button-test-push"
               >
                 {pushTesting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Bell className="w-4 h-4" />}

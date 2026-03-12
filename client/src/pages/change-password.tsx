@@ -81,9 +81,9 @@ export default function ChangePasswordPage() {
       <div className="min-h-screen bg-background" data-testid="page-password-success">
         <PageHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
         <div className="max-w-xl mx-auto p-4 pb-8">
-          <div className="bg-card rounded-lg border p-6 text-center" style={{ borderColor: "#E5E7EB" }}>
+          <div className="bg-card rounded-2xl border p-6 text-center" style={{ borderColor: "#E5E7EB" }}>
             <div className="flex items-center justify-center mb-5">
-              <div className="w-14 h-14 rounded-lg flex items-center justify-center" style={{ backgroundColor: "#F5F7FA" }}>
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ backgroundColor: "#F5F7FA" }}>
                 <CheckCircle2 className="w-7 h-7" style={{ color: "#16A34A" }} />
               </div>
             </div>
@@ -95,7 +95,7 @@ export default function ChangePasswordPage() {
             </p>
             <button
               onClick={() => navigate("/dashboard?tab=profiel&sub=account")}
-              className="w-full h-[48px] bg-primary text-primary-foreground rounded-lg font-semibold text-[15px] transition-colors"
+              className="w-full h-[48px] bg-primary text-primary-foreground rounded-full font-semibold text-[15px] transition-colors"
               data-testid="button-back-to-account"
             >
               {t("changePassword.backToAccount")}
@@ -111,7 +111,7 @@ export default function ChangePasswordPage() {
       <PageHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
       <div className="max-w-xl mx-auto p-4 pb-8">
-        <div className="bg-card rounded-lg border p-5 space-y-5" style={{ borderColor: "#E5E7EB" }}>
+        <div className="bg-card rounded-2xl border p-5 space-y-5" style={{ borderColor: "#E5E7EB" }}>
           <div>
             <label className="block text-[14px] font-medium mb-2" style={{ color: "#1F2937" }}>{t("changePassword.current")}</label>
             <div className="relative">
@@ -123,7 +123,7 @@ export default function ChangePasswordPage() {
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 placeholder={t("changePassword.currentPlaceholder")}
-                className="w-full h-[52px] pl-11 pr-12 rounded-lg border-0 bg-muted text-[16px] font-medium text-foreground placeholder:text-muted-foreground placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
+                className="w-full h-[52px] pl-11 pr-12 rounded-[20px] border-0 bg-[#F3F4F6] text-[16px] font-medium text-[#111827] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 transition-all"
                 data-testid="input-current-password"
               />
               <button
@@ -150,7 +150,7 @@ export default function ChangePasswordPage() {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder={t("changePassword.newPlaceholder")}
-                className="w-full h-[52px] pl-11 pr-12 rounded-lg border-0 bg-muted text-[16px] font-medium text-foreground placeholder:text-muted-foreground placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
+                className="w-full h-[52px] pl-11 pr-12 rounded-[20px] border-0 bg-[#F3F4F6] text-[16px] font-medium text-[#111827] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 transition-all"
                 data-testid="input-new-password"
               />
               <button
@@ -180,7 +180,7 @@ export default function ChangePasswordPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder={t("changePassword.confirmPlaceholder")}
-                className="w-full h-[52px] pl-11 pr-12 rounded-lg border-0 bg-muted text-[16px] font-medium text-foreground placeholder:text-muted-foreground placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-primary/15 focus:bg-background transition-all"
+                className="w-full h-[52px] pl-11 pr-12 rounded-[20px] border-0 bg-[#F3F4F6] text-[16px] font-medium text-[#111827] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 transition-all"
                 data-testid="input-confirm-password"
               />
               <button

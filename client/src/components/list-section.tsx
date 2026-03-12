@@ -8,7 +8,7 @@ export function ListSectionTitle({ children }: { children: ReactNode }) {
 }
 
 export function ListDivider() {
-  return <div className="h-px bg-[#E5E7EB] ml-[72px]" />;
+  return <div className="h-px bg-[#E5E7EB] mx-5" />;
 }
 
 export function ListRow({
@@ -35,19 +35,21 @@ export function ListRow({
     <Component
       {...(onClick ? { type: "button" as const, disabled } : {})}
       onClick={onClick}
-      className={`w-full flex items-center px-5 py-4 text-left ${onClick ? "cursor-pointer active:bg-[#F5F7FA] transition-colors" : ""} ${disabled ? "opacity-60 pointer-events-none" : ""}`}
+      className={`w-full flex items-center px-5 py-[18px] text-left ${onClick ? "cursor-pointer active:bg-[#F9FAFB] transition-colors" : ""} ${disabled ? "opacity-60 pointer-events-none" : ""}`}
       data-testid={testId}
     >
-      <div className="w-10 flex-shrink-0 flex items-center justify-center mr-3">
-        {icon ?? null}
-      </div>
+      {icon && (
+        <div className="w-10 flex-shrink-0 flex items-center justify-center mr-3.5">
+          {icon}
+        </div>
+      )}
       <div className="flex-1 min-w-0">
         <p className={titleClassName ?? "text-row-title"}>{title}</p>
         {subtitle && (
           <p className="text-row-subtitle mt-0.5">{subtitle}</p>
         )}
       </div>
-      {trailing ?? (onClick ? <ChevronRight className="w-[18px] h-[18px] text-[#1F2937] flex-shrink-0 ml-3" /> : null)}
+      {trailing ?? (onClick ? <ChevronRight className="w-[18px] h-[18px] text-[#9CA3AF] flex-shrink-0 ml-3" /> : null)}
     </Component>
   );
 }
@@ -64,7 +66,7 @@ export function ListSection({
       {title && (
         <ListSectionTitle>{title}</ListSectionTitle>
       )}
-      <div className={title ? "mt-2" : ""}>
+      <div className={title ? "mt-3" : ""}>
         {children}
       </div>
     </div>

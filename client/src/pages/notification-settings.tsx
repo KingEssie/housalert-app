@@ -229,11 +229,12 @@ export default function NotificationSettingsPage() {
               )}
             </ListSection>
 
-            <div className="flex items-center gap-3 px-5">
+            <div className="flex justify-center gap-3 px-5">
               <Button
                 onClick={handleSave}
                 disabled={saving}
-                className="h-[52px] rounded-lg bg-primary text-primary-foreground text-[15px] font-semibold px-8"
+                size="save"
+                className="text-[15px]"
                 data-testid="button-save"
               >
                 {saving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
@@ -242,7 +243,8 @@ export default function NotificationSettingsPage() {
               <Button
                 variant="outline"
                 onClick={() => navigate("/dashboard?tab=profiel&sub=account")}
-                className="h-[48px] rounded-lg text-[15px] font-semibold"
+                size="save"
+                className="text-[15px]"
                 data-testid="button-cancel"
               >
                 {t("common.cancel")}

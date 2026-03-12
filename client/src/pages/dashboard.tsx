@@ -271,13 +271,13 @@ function MatchCard({
         <div>
           <div className="flex items-start justify-between gap-3">
             <h3
-              className="font-[700] text-[#1F2937] text-[18px] leading-[1.3] line-clamp-2 flex-1"
+              className="font-[700] text-[#111C3D] text-[18px] leading-[1.3] line-clamp-2 flex-1"
               data-testid={`text-match-title-${match.listing_id}`}
             >
               {match.title}
             </h3>
             {match.price > 0 && (
-              <span className="text-[17px] font-bold text-[#1F2937] whitespace-nowrap flex-shrink-0 mt-0.5">
+              <span className="text-[17px] font-bold text-[#111C3D] whitespace-nowrap flex-shrink-0 mt-0.5">
                 €{match.price}
                 <span className="text-[12px] font-normal text-[#1F2937]"> {t("common.perMonth")}</span>
               </span>
@@ -440,7 +440,7 @@ function ProfileCard({
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <h3 className="font-semibold text-[#1F2937] text-[15px]" data-testid={`text-profile-city-${profile.id}`}>
+              <h3 className="font-semibold text-[#111C3D] text-[15px]" data-testid={`text-profile-city-${profile.id}`}>
                 {profile.city_name || profile.city}
               </h3>
               <span className="text-[10px] font-medium text-white bg-[#ff2f7d] px-1.5 py-0.5 rounded-full" data-testid={`badge-status-${profile.id}`}>
@@ -505,7 +505,7 @@ function ProfileCard({
 
       <button
         onClick={onEdit}
-        className="w-full h-10 rounded-full border border-[#E5E7EB] text-[13px] font-semibold text-[#1F2937] hover:bg-[#F5F7FA] transition-colors flex items-center justify-center gap-1.5"
+        className="w-full h-10 rounded-full border border-[#E5E7EB] text-[13px] font-semibold text-[#111C3D] hover:bg-[#F5F7FA] transition-colors flex items-center justify-center gap-1.5"
         data-testid={`button-edit-${profile.id}`}
       >
         {t("common.edit")}
@@ -630,7 +630,7 @@ function RecentMatchMiniCard({ match }: { match: ApiMatch }) {
         </div>
       )}
       <div className="flex-1 min-w-0 p-3 flex flex-col justify-center gap-0.5">
-        <h3 className="text-[14px] font-[700] text-[#1F2937] leading-snug line-clamp-1" data-testid={`text-recent-title-${match.listing_id}`}>
+        <h3 className="text-[14px] font-[700] text-[#111C3D] leading-snug line-clamp-1" data-testid={`text-recent-title-${match.listing_id}`}>
           {match.title}
         </h3>
         <div className="flex items-center gap-2 text-[12px] text-[#1F2937]">
@@ -654,7 +654,7 @@ function RecentMatchMiniCard({ match }: { match: ApiMatch }) {
       </div>
       {match.price > 0 && (
         <div className="flex items-center pr-3 flex-shrink-0">
-          <span className="text-[15px] font-bold text-[#1F2937]">€{match.price}</span>
+          <span className="text-[15px] font-bold text-[#111C3D]">€{match.price}</span>
         </div>
       )}
     </div>
@@ -734,8 +734,8 @@ function HomeTab({
       <div className="flex flex-col gap-8 px-6">
 
       {hasActiveSub && hasMatches ? (
-        <div className="rounded-xl bg-[#0F172A] p-6" data-testid="hero-matches">
-          <div className="flex items-center gap-3 mb-3">
+        <div className="rounded-2xl bg-[#0F172A] p-6" data-testid="hero-matches">
+          <div className="flex items-center gap-3 mb-4">
             <div className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
               <Heart className="w-5 h-5 text-white" />
             </div>
@@ -752,7 +752,7 @@ function HomeTab({
           </div>
           <button
             onClick={() => setActiveTab("matches")}
-            className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
+            className="h-[48px] px-6 rounded-full bg-white hover:bg-[#F3F4F6] text-[#0F172A] text-[14px] font-bold transition-colors flex items-center justify-center gap-2"
             data-testid="button-view-matches"
           >
             {t("home.viewMatches")}
@@ -760,8 +760,8 @@ function HomeTab({
           </button>
         </div>
       ) : hasActiveSub && hasProfiles ? (
-        <div className="rounded-xl bg-[#0F172A] p-6" data-testid="hero-active-no-matches">
-          <div className="flex items-center gap-3 mb-3">
+        <div className="rounded-2xl bg-[#0F172A] p-6" data-testid="hero-active-no-matches">
+          <div className="flex items-center gap-3 mb-4">
             <div className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
               <Search className="w-5 h-5 text-white" />
             </div>
@@ -776,7 +776,7 @@ function HomeTab({
           </div>
           <button
             onClick={() => setActiveTab("filters")}
-            className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
+            className="h-[48px] px-6 rounded-full bg-white hover:bg-[#F3F4F6] text-[#0F172A] text-[14px] font-bold transition-colors flex items-center justify-center gap-2"
             data-testid="button-adjust-filters"
           >
             {t("home.adjustFilters")}
@@ -784,8 +784,8 @@ function HomeTab({
           </button>
         </div>
       ) : hasProfiles ? (
-        <div className="rounded-xl bg-[#0F172A] p-6" data-testid="hero-estimate">
-          <div className="flex items-center gap-3 mb-3">
+        <div className="rounded-2xl bg-[#0F172A] p-6" data-testid="hero-estimate">
+          <div className="flex items-center gap-3 mb-4">
             <div className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
@@ -804,7 +804,7 @@ function HomeTab({
           </div>
           <button
             onClick={() => navigate("/paywall")}
-            className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
+            className="h-[48px] px-6 rounded-full bg-white hover:bg-[#F3F4F6] text-[#0F172A] text-[14px] font-bold transition-colors flex items-center justify-center gap-2"
             data-testid="button-activate-sub"
           >
             {t("home.activateSubscription")}
@@ -1024,7 +1024,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           <div className="w-12 h-12 rounded-full bg-[#F5F7FA] flex items-center justify-center">
             <AlertCircle className="w-5 h-5 text-[#1F2937]" />
           </div>
-          <p className="text-[18px] font-[700] text-[#1F2937]">{t("matches.loadError")}</p>
+          <p className="text-[18px] font-[700] text-[#111C3D]">{t("matches.loadError")}</p>
           <p className="text-[13px] text-[#1F2937]">{t("matches.loadErrorDesc")}</p>
           <button
             onClick={() => apiMatchesQuery.refetch()}
@@ -1120,7 +1120,7 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
           >
             <ArrowLeft className="w-4 h-4 text-[#1F2937]" />
           </button>
-          <h1 className="text-[17px] font-bold text-[#1F2937] flex-1 tracking-wide">{t("filters.deleteTitle")}</h1>
+          <h1 className="text-[17px] font-bold text-[#111C3D] flex-1 tracking-wide">{t("filters.deleteTitle")}</h1>
         </div>
       </header>
 
@@ -1128,7 +1128,7 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
         <div className="w-16 h-16 rounded-2xl bg-[#EBF2FF] flex items-center justify-center mb-6">
           <Trash2 className="w-8 h-8 text-[#0D6EFD]" />
         </div>
-        <h2 className="text-[22px] font-bold text-[#1F2937] mb-3 text-center" data-testid="text-delete-title">
+        <h2 className="text-[22px] font-bold text-[#111C3D] mb-3 text-center" data-testid="text-delete-title">
           {t("filters.deleteQuestion")}
         </h2>
         <p className="text-[15px] text-[#1F2937] text-center max-w-[320px] mb-10 leading-relaxed" data-testid="text-delete-body">
@@ -1144,7 +1144,7 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
           </button>
           <button
             onClick={onCancel}
-            className="w-full h-[56px] rounded-lg border border-[#E5E7EB] text-[#1F2937] text-[16px] font-bold hover:bg-[#F5F7FA] transition-colors"
+            className="w-full h-[52px] rounded-full border border-[#E5E7EB] text-[#1F2937] text-[16px] font-bold hover:bg-[#F5F7FA] transition-colors"
             data-testid="button-delete-cancel"
           >
             {t("filters.deleteNo")}
@@ -1243,7 +1243,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
           {!atLimit && (
             <button
               onClick={() => navigate("/dashboard/searches/new")}
-              className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-4 flex items-center justify-center gap-2 text-[14px] font-semibold text-[#1F2937] hover:bg-[#F5F7FA] transition-colors border-2 border-dashed border-[#E5E7EB]"
+              className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-4 flex items-center justify-center gap-2 text-[14px] font-semibold text-[#111C3D] hover:bg-[#F5F7FA] transition-colors border-2 border-dashed border-[#E5E7EB]"
               data-testid="button-add-search-card"
             >
               <Plus className="w-4 h-4" />
@@ -1281,7 +1281,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
       >
         <div className="w-10 h-1 bg-[#E5E7EB] rounded-full mx-auto mb-6" />
         <div className="px-5">
-          <h3 className="text-[18px] font-bold text-[#1F2937] tracking-wide mb-5">{t("profile.photo.title")}</h3>
+          <h3 className="text-[18px] font-bold text-[#111C3D] tracking-wide mb-5">{t("profile.photo.title")}</h3>
 
           {photoUrl && (
             <div className="flex justify-center mb-5">
@@ -1290,7 +1290,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
           )}
 
           <div className="flex flex-col">
-            <label className="w-full h-[56px] flex items-center justify-center gap-2 rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold cursor-pointer active:bg-[#0B5ED7] transition-colors">
+            <label className="w-full h-[52px] flex items-center justify-center gap-2 rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold cursor-pointer active:bg-[#0B5ED7] transition-colors">
               <Camera className="w-[18px] h-[18px]" />
               {photoUrl ? t("profile.photo.choose") : t("profile.photo.upload")}
               <input
@@ -1308,7 +1308,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
             {photoUrl && (
               <button
                 onClick={onRemove}
-                className="mt-3 w-full h-[56px] flex items-center justify-center gap-2 rounded-lg border border-[#E5E7EB] text-[#1F2937] text-[15px] font-bold active:bg-[#F5F7FA] transition-colors"
+                className="mt-3 w-full h-[52px] flex items-center justify-center gap-2 rounded-full border border-[#E5E7EB] text-[#1F2937] text-[15px] font-bold active:bg-[#F5F7FA] transition-colors"
                 data-testid="button-remove-photo"
               >
                 <Trash2 className="w-[18px] h-[18px]" />
@@ -1318,7 +1318,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
 
             <button
               onClick={onClose}
-              className="mt-3 w-full h-[56px] flex items-center justify-center rounded-lg text-[#1F2937] text-[15px] font-bold active:bg-[#F5F7FA] transition-colors"
+              className="mt-3 w-full h-[52px] flex items-center justify-center rounded-full text-[#1F2937] text-[15px] font-bold active:bg-[#F5F7FA] transition-colors"
               data-testid="button-cancel-photo"
             >
               {t("common.cancel")}
@@ -1498,11 +1498,11 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                   <img src={photoUrl} alt="" className="w-16 h-16 rounded-full object-cover flex-shrink-0" data-testid="img-profile-avatar" />
                 ) : (
                   <div className="w-16 h-16 rounded-full bg-[#F5F7FA] flex items-center justify-center flex-shrink-0">
-                    <span className="text-[22px] font-bold text-[#1F2937]">{initials}</span>
+                    <span className="text-[22px] font-bold text-[#111C3D]">{initials}</span>
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-[22px] font-[700] text-[#1F2937] truncate leading-tight" data-testid="text-user-name">{displayName || t("profile.seeker")}</p>
+                  <p className="text-[22px] font-[700] text-[#111C3D] truncate leading-tight" data-testid="text-user-name">{displayName || t("profile.seeker")}</p>
                   <p className="text-[14px] text-[#1F2937] mt-0.5">{t("profile.seeker")}</p>
                 </div>
                 <ChevronRight className="w-5 h-5 text-[#1F2937] flex-shrink-0" />
@@ -1517,7 +1517,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                     <Heart className="w-[18px] h-[18px] text-[#1F2937]" />
                   </div>
                   <div>
-                    <p className="text-[20px] font-bold text-[#1F2937] leading-none">{matchCount > 999 ? "999+" : matchCount}</p>
+                    <p className="text-[20px] font-bold text-[#111C3D] leading-none">{matchCount > 999 ? "999+" : matchCount}</p>
                     <p className="text-[12px] text-[#1F2937] mt-1 leading-tight">{t("profile.stats.matchesReceived")}</p>
                   </div>
                 </div>
@@ -1527,7 +1527,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
                     <Send className="w-[18px] h-[18px] text-[#1F2937]" />
                   </div>
                   <div>
-                    <p className="text-[20px] font-bold text-[#1F2937] leading-none">{stats.reactions_sent}</p>
+                    <p className="text-[20px] font-bold text-[#111C3D] leading-none">{stats.reactions_sent}</p>
                     <p className="text-[12px] text-[#1F2937] mt-1 leading-tight">{t("profile.stats.reactionsSent")}</p>
                   </div>
                 </div>
@@ -1562,7 +1562,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
             </div>
 
             <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5">
-              <h2 className="text-[20px] font-bold text-[#1F2937] mb-4" data-testid="section-verified">{t("profile.verified")}</h2>
+              <h2 className="text-[20px] font-bold text-[#111C3D] mb-4" data-testid="section-verified">{t("profile.verified")}</h2>
               <div className="flex flex-col">
                 <div className="flex items-center gap-3 py-3">
                   <div className="w-6 h-6 rounded-full bg-[#3ED6C6] flex items-center justify-center flex-shrink-0">
@@ -1587,7 +1587,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
             </div>
 
             <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5">
-              <h2 className="text-[20px] font-bold text-[#1F2937] mb-3">{t("profile.applicationLetter")}</h2>
+              <h2 className="text-[20px] font-bold text-[#111C3D] mb-3">{t("profile.applicationLetter")}</h2>
               {letterPreview ? (
                 <div>
                   <p className="text-[15px] text-[#1F2937] leading-relaxed line-clamp-4">{letterPreview}...</p>
@@ -1614,7 +1614,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
             </div>
 
             <div>
-              <p className="text-[13px] font-semibold text-[#1F2937] tracking-wide mb-3">{t("profile.support")}</p>
+              <p className="text-[13px] font-semibold text-[#111C3D] tracking-wide mb-3">{t("profile.support")}</p>
               <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
                 <AccountSettingsRow
                   label={t("profile.privacy")}
@@ -1735,14 +1735,14 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
               >
                 <ArrowLeft className="w-4 h-4 text-[#1F2937]" />
               </button>
-              <h1 className="text-[17px] font-bold text-[#1F2937] flex-1 tracking-wide">{t("profile.logout")}</h1>
+              <h1 className="text-[17px] font-bold text-[#111C3D] flex-1 tracking-wide">{t("profile.logout")}</h1>
             </div>
           </header>
           <main className="flex-1 flex flex-col items-center justify-center px-6">
             <div className="w-16 h-16 rounded-2xl bg-[#F5F7FA] flex items-center justify-center mb-6">
               <LogOut className="w-8 h-8 text-[#1F2937]" />
             </div>
-            <h2 className="text-[22px] font-bold text-[#1F2937] mb-3 text-center" data-testid="text-logout-title">
+            <h2 className="text-[22px] font-bold text-[#111C3D] mb-3 text-center" data-testid="text-logout-title">
               {t("profile.logoutConfirm")}
             </h2>
             <p className="text-[15px] text-[#1F2937] text-center max-w-[320px] mb-10 leading-relaxed">
@@ -1759,7 +1759,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, initi
               </button>
               <button
                 onClick={() => setShowLogoutConfirm(false)}
-                className="w-full h-[56px] rounded-lg border border-[#E5E7EB] text-[#1F2937] text-[16px] font-bold hover:bg-[#F5F7FA] transition-colors"
+                className="w-full h-[52px] rounded-full border border-[#E5E7EB] text-[#1F2937] text-[16px] font-bold hover:bg-[#F5F7FA] transition-colors"
                 data-testid="button-logout-cancel"
               >
                 {t("common.cancel")}

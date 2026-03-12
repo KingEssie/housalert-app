@@ -99,25 +99,28 @@ export default function ProfileEditPage() {
             <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
           </div>
         ) : (
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-8">
 
             <input
               type={config.type}
               value={value}
               onChange={e => setValue(e.target.value)}
               placeholder={config.placeholder}
-              className="w-full bg-muted rounded-lg px-4 py-3.5 text-[16px] text-foreground placeholder:text-muted-foreground border-0 outline-none focus:ring-2 focus:ring-primary h-[52px]"
+              className="w-full bg-[#F3F4F6] rounded-[20px] px-5 py-4 text-[16px] text-[#111827] placeholder:text-[#9CA3AF] border-0 outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 h-[60px]"
               data-testid="input-edit-field"
             />
 
-            <Button
-              onClick={handleSave}
-              disabled={saving}
-              className="w-full h-[52px] rounded-lg bg-primary text-primary-foreground text-[15px] font-semibold"
-              data-testid="button-save-field"
-            >
-              {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : t("common.save")}
-            </Button>
+            <div className="flex justify-center">
+              <Button
+                onClick={handleSave}
+                disabled={saving}
+                size="save"
+                className="text-[15px]"
+                data-testid="button-save-field"
+              >
+                {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : t("common.save")}
+              </Button>
+            </div>
           </div>
         )}
       </div>

@@ -58,7 +58,7 @@ export default function PaymentMethodPage() {
       <PageHeader title={t("paymentMethodPage.title")} />
 
       <div className="max-w-xl mx-auto p-4 space-y-4 pb-8">
-        <div className="bg-card rounded-lg border overflow-hidden" style={{ borderColor: "#E5E7EB" }}>
+        <div className="bg-card rounded-2xl border overflow-hidden" style={{ borderColor: "#E5E7EB" }}>
           <div className="px-5 pt-5 pb-2">
             <p className="text-[13px] font-semibold tracking-wider" style={{ color: "#6B7280" }} data-testid="text-section-title-payment">
               {t("paymentMethodPage.currentMethod")}
@@ -68,7 +68,7 @@ export default function PaymentMethodPage() {
           {methods.map((method) => (
             <div key={method.id} className="px-5 py-4" data-testid={`card-payment-${method.id}`}>
               <div className="flex items-center gap-3">
-                <div className="w-[48px] h-[48px] rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#F5F7FA" }}>
+                <div className="w-[48px] h-[48px] rounded-2xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#F5F7FA" }}>
                   <CreditCard className="w-5 h-5" style={{ color: "#0D6EFD" }} />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -89,13 +89,13 @@ export default function PaymentMethodPage() {
           ))}
         </div>
 
-        <div className="bg-card rounded-lg border overflow-hidden" style={{ borderColor: "#E5E7EB" }}>
+        <div className="bg-card rounded-2xl border overflow-hidden" style={{ borderColor: "#E5E7EB" }}>
           <button
             onClick={handleAdd}
             className="w-full flex items-center gap-3 px-5 py-4 hover-elevate transition-colors"
             data-testid="button-add-payment"
           >
-            <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#F5F7FA" }}>
+            <div className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#F5F7FA" }}>
               <Plus className="w-5 h-5" style={{ color: "#0D6EFD" }} />
             </div>
             <span className="text-[15px] font-medium" style={{ color: "#1F2937" }}>{t("paymentMethodPage.addMethod")}</span>

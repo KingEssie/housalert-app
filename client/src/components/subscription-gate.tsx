@@ -20,7 +20,7 @@ export function SubscriptionGate({ isActive, children }: SubscriptionGateProps) 
       <div className="w-20 h-20 rounded-2xl bg-[#F5F7FA] flex items-center justify-center mx-auto mb-6">
         <Crown className="w-10 h-10 text-[#1F2937]" />
       </div>
-      <h2 className="text-[22px] font-bold text-[#1F2937] mb-3 leading-snug" data-testid="text-gate-title">
+      <h2 className="text-[22px] font-bold text-[#111C3D] mb-3 leading-snug" data-testid="text-gate-title">
         {t("subscription.gate.title")}
       </h2>
       <p className="text-[15px] text-[#1F2937] opacity-70 max-w-[320px] mb-8 leading-relaxed">

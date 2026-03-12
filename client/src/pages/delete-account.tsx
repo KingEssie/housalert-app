@@ -69,7 +69,7 @@ export default function DeleteAccountPage() {
         <div className="w-16 h-16 rounded-2xl bg-[#EBF2FF] flex items-center justify-center mb-6">
           <AlertTriangle className="w-8 h-8 text-[#0D6EFD]" />
         </div>
-        <h2 className="text-[22px] font-bold text-[#1F2937] mb-3 text-center" data-testid="text-delete-account-title">
+        <h2 className="text-[22px] font-bold text-[#111C3D] mb-3 text-center" data-testid="text-delete-account-title">
           {t("deleteAccount.confirmTitle")}
         </h2>
         <p className="text-[15px] text-[#1F2937] text-center max-w-[320px] mb-6 leading-relaxed" data-testid="text-delete-account-body">
@@ -77,7 +77,7 @@ export default function DeleteAccountPage() {
         </p>
 
         {hasActivePaidSub && (
-          <div className="w-full max-w-[320px] bg-[#F5F7FA] rounded-lg px-4 py-3 flex items-start gap-3 mb-6" data-testid="warning-active-sub">
+          <div className="w-full max-w-[320px] bg-[#F3F4F6] rounded-2xl px-4 py-3 flex items-start gap-3 mb-6" data-testid="warning-active-sub">
             <Crown className="w-5 h-5 text-[#0D6EFD] flex-shrink-0 mt-0.5" />
             <p className="text-[13px] text-[#1F2937] leading-relaxed">
               {t("deleteAccount.activeSubWarning")}{" "}
@@ -104,7 +104,7 @@ export default function DeleteAccountPage() {
           </button>
           <button
             onClick={() => navigate("/dashboard?tab=profiel&sub=account")}
-            className="w-full h-[56px] rounded-lg border border-[#E5E7EB] text-[#1F2937] text-[16px] font-bold hover:bg-[#F5F7FA] transition-colors"
+            className="w-full h-[52px] rounded-full border border-[#E5E7EB] text-[#1F2937] text-[16px] font-bold hover:bg-[#F5F7FA] transition-colors"
             data-testid="button-delete-account-cancel"
           >
             {t("common.cancel")}

@@ -1,0 +1,82 @@
+Update the app UI to consistently match the BlaBlaCar mobile style shown in the reference screenshots.
+
+GLOBAL UI RULES
+- Use one consistent page title style everywhere:
+  - dark navy color (#111C3D or very close)
+  - font-weight 800
+  - tight letter spacing
+  - consistent top spacing and line-height
+- Standardize all back buttons:
+  - circular light gray background
+  - size 44x44 or 48x48
+  - subtle shadow only
+  - dark icon
+  - same spacing and sizing on all similar pages
+
+PROFILE / SETTINGS LIST PAGES
+Apply this to pages like Personal details, Settings, Notification settings, Review settings, Profile fields, etc.
+- Each row should have:
+  - small gray label
+  - dark value text
+  - chevron on the right
+  - bottom separator line
+- Remove blue text for regular field values
+- Use:
+  - label color #6B7280
+  - value color #111827
+  - separator color #E5E7EB
+- Increase vertical spacing so the layout feels clean and premium
+
+FORM / INPUT PAGES
+Apply this to pages like first name, last name, profession, income, biography, etc.
+- Input fields should use:
+  - light gray background (#F3F4F6)
+  - dark text
+  - large rounded corners (20px to 24px)
+  - height around 60px to 64px
+  - horizontal padding around 20px
+- Save buttons on these pages should:
+  - be centered near the bottom
+  - be smaller, not full width
+  - use pill shape (9999px radius)
+  - height around 52px to 56px
+  - width around 160px to 200px
+
+BUTTON SYSTEM
+Create a consistent button system across the whole app:
+1. Primary button:
+   - blue background
+   - white text
+   - full pill radius
+2. Secondary outline button:
+   - white background
+   - blue border
+   - blue text
+   - full pill radius
+3. Dark banner CTA button:
+   - white background
+   - dark navy text
+   - smaller and more compact than current version
+   - aligned with the banner text block
+
+HOME / DARK CARDS
+For CTA buttons inside dark navy banners/cards:
+- change button background to white
+- change button text/icon to dark navy
+- make button slightly smaller in height and width
+- align it better with the text content
+- keep the surrounding card layout balanced
+
+CONSISTENCY TASK
+Search the whole app for similar pages/components and apply the same styles everywhere:
+- titles
+- back buttons
+- input fields
+- list rows
+- separators
+- CTA buttons
+- dark banner buttons
+
+IMPORTANT
+Do not only patch individual screens.
+Refactor shared UI components or design tokens so all similar pages automatically use the same styling system.

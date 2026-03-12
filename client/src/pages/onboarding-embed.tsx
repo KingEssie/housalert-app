@@ -34,7 +34,7 @@ function EstimateBlock({ city, maxPrice }: { city: string; maxPrice: string }) {
 
   return (
     <div
-      className="flex items-center gap-3 bg-gradient-to-r from-[#EBF2FF] to-[#EBF2FF] rounded-lg px-4 py-3.5"
+      className="flex items-center gap-3 bg-gradient-to-r from-[#EBF2FF] to-[#EBF2FF] rounded-2xl px-4 py-3.5"
       data-testid="embed-estimate-block"
     >
       <div className="w-9 h-9 rounded-full bg-[#0D6EFD] flex items-center justify-center flex-shrink-0">
@@ -44,7 +44,7 @@ function EstimateBlock({ city, maxPrice }: { city: string; maxPrice: string }) {
         {loading ? (
           <div className="h-4 w-48 bg-[#EBF2FF] rounded animate-pulse" />
         ) : estimate !== null ? (
-          <p className="text-[13px] sm:text-[14px] font-semibold text-[#1F2937] leading-snug">
+          <p className="text-[13px] sm:text-[14px] font-semibold text-[#111C3D] leading-snug">
             ~<span className="text-[#0D6EFD] text-[15px] font-bold">{estimate}</span> {t("onboardingEmbed.matchesPerWeek")}
           </p>
         ) : null}
@@ -59,11 +59,11 @@ function CompletionScreen({ draftId }: { draftId: string }) {
 
   return (
     <div className="flex flex-col items-center justify-center px-6 py-10 text-center">
-      <div className="w-[56px] h-[56px] rounded-lg bg-[#EBF2FF] flex items-center justify-center mb-5">
+      <div className="w-[56px] h-[56px] rounded-2xl bg-[#EBF2FF] flex items-center justify-center mb-5">
         <Check className="w-7 h-7 text-[#0D6EFD]" />
       </div>
 
-      <h2 className="text-[20px] font-bold text-[#1F2937] mb-1.5 tracking-wide" data-testid="embed-text-done-title">
+      <h2 className="text-[20px] font-bold text-[#111C3D] mb-1.5 tracking-wide" data-testid="embed-text-done-title">
         {t("onboardingEmbed.doneTitle")}
       </h2>
       <p className="text-[14px] text-[#1F2937] mb-7 max-w-[300px] leading-relaxed">
@@ -202,7 +202,7 @@ export default function OnboardingEmbedPage() {
 
         <div className="text-center mb-5">
           <h1
-            className="text-[21px] sm:text-[24px] font-extrabold text-[#1F2937] leading-[1.25] tracking-tight"
+            className="text-[21px] sm:text-[24px] font-extrabold text-[#111C3D] leading-[1.25] tracking-tight"
             data-testid="embed-text-hero-title"
           >
             {t("onboardingEmbed.heroTitle")}
@@ -225,7 +225,7 @@ export default function OnboardingEmbedPage() {
           <div className="px-5 py-3 space-y-3.5">
 
             <div>
-              <label className="text-[13px] font-semibold text-[#1F2937] tracking-wide mb-2 block">
+              <label className="text-[13px] font-semibold text-[#111C3D] tracking-wide mb-2 block">
                 {t("onboardingEmbed.propertyType")}
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -247,7 +247,7 @@ export default function OnboardingEmbedPage() {
             </div>
 
             <div>
-              <label className="text-[13px] font-semibold text-[#1F2937] tracking-wide mb-2 block">
+              <label className="text-[13px] font-semibold text-[#111C3D] tracking-wide mb-2 block">
                 {t("onboardingEmbed.monthlyBudget")}
               </label>
               <div className="flex items-center gap-2">
@@ -259,7 +259,7 @@ export default function OnboardingEmbedPage() {
                     placeholder="min"
                     value={minPrice}
                     onChange={(e) => setMinPrice(e.target.value)}
-                    className="w-full h-[42px] rounded-lg bg-[#F5F7FA] border-0 pl-[52px] pr-3 text-[14px] text-[#1F2937] placeholder:text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/40 transition-shadow"
+                    className="w-full h-[42px] rounded-[20px] bg-[#F3F4F6] border-0 pl-[52px] pr-3 text-[14px] text-[#1F2937] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/40 transition-shadow"
                     data-testid="embed-input-min-price"
                   />
                 </div>
@@ -272,7 +272,7 @@ export default function OnboardingEmbedPage() {
                     placeholder="max"
                     value={maxPrice}
                     onChange={(e) => setMaxPrice(e.target.value)}
-                    className="w-full h-[42px] rounded-lg bg-[#F5F7FA] border-0 pl-[52px] pr-3 text-[14px] text-[#1F2937] placeholder:text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/40 transition-shadow"
+                    className="w-full h-[42px] rounded-[20px] bg-[#F3F4F6] border-0 pl-[52px] pr-3 text-[14px] text-[#1F2937] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/40 transition-shadow"
                     data-testid="embed-input-max-price"
                   />
                 </div>
@@ -288,7 +288,7 @@ export default function OnboardingEmbedPage() {
           </div>
 
           {error && (
-            <div className="mx-5 mb-2 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-[13px]" data-testid="embed-error">
+            <div className="mx-5 mb-2 p-3 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-[13px]" data-testid="embed-error">
               {error}
             </div>
           )}

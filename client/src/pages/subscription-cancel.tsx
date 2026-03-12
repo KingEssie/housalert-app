@@ -36,9 +36,9 @@ export function SubscriptionCancelConfirmPage() {
       <PageHeader title={t("subscription.cancelTitle")} onBack={() => navigate("/account/subscription")} />
 
       <div className="max-w-xl mx-auto p-4 pb-8">
-        <div className="bg-card rounded-lg border p-6" style={{ borderColor: "#E5E7EB" }}>
+        <div className="bg-card rounded-2xl border p-6" style={{ borderColor: "#E5E7EB" }}>
           <div className="flex items-center justify-center mb-5">
-            <div className="w-14 h-14 rounded-lg flex items-center justify-center" style={{ backgroundColor: "#F5F7FA" }}>
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ backgroundColor: "#F5F7FA" }}>
               <AlertCircle className="w-7 h-7" style={{ color: "#0D6EFD" }} />
             </div>
           </div>
@@ -47,7 +47,7 @@ export function SubscriptionCancelConfirmPage() {
             {t("subscription.cancelConfirm")}
           </h2>
 
-          <div className="bg-muted rounded-lg p-4 mb-6">
+          <div className="bg-[#F3F4F6] rounded-2xl p-4 mb-6">
             <p className="text-[15px] text-muted-foreground leading-relaxed" data-testid="text-cancel-info">
               {t("subscription.cancelInfo", { date: renewalDate })}
             </p>
@@ -56,14 +56,14 @@ export function SubscriptionCancelConfirmPage() {
           <div className="space-y-3">
             <button
               onClick={() => navigate("/account/subscription")}
-              className="w-full h-[48px] bg-primary text-primary-foreground rounded-lg font-semibold text-[15px] transition-colors"
+              className="w-full h-[48px] bg-primary text-primary-foreground rounded-full font-semibold text-[15px] transition-colors"
               data-testid="button-keep-subscription"
             >
               {t("subscription.keepSubscription")}
             </button>
             <button
               onClick={() => navigate("/account/subscription/cancelled")}
-              className="w-full h-[48px] bg-card border text-muted-foreground rounded-lg font-semibold text-[15px] hover-elevate transition-colors"
+              className="w-full h-[48px] bg-card border text-muted-foreground rounded-full font-semibold text-[15px] hover-elevate transition-colors"
               style={{ borderColor: "#E5E7EB" }}
               data-testid="button-confirm-cancel"
             >
@@ -99,9 +99,9 @@ export function SubscriptionCancelledPage() {
       <PageHeader title={t("subscription.cancelledTitle")} onBack={() => navigate("/account/subscription")} />
 
       <div className="max-w-xl mx-auto p-4 pb-8">
-        <div className="bg-card rounded-lg border p-6" style={{ borderColor: "#E5E7EB" }}>
+        <div className="bg-card rounded-2xl border p-6" style={{ borderColor: "#E5E7EB" }}>
           <div className="flex items-center justify-center mb-5">
-            <div className="w-14 h-14 rounded-lg flex items-center justify-center" style={{ backgroundColor: "#F5F7FA" }}>
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ backgroundColor: "#F5F7FA" }}>
               <CheckCircle2 className="w-7 h-7" style={{ color: "#16A34A" }} />
             </div>
           </div>
@@ -110,7 +110,7 @@ export function SubscriptionCancelledPage() {
             {t("subscription.cancelled")}
           </h2>
 
-          <div className="bg-muted rounded-lg p-4 mb-6">
+          <div className="bg-[#F3F4F6] rounded-2xl p-4 mb-6">
             <p className="text-[15px] text-muted-foreground leading-relaxed" data-testid="text-cancelled-info">
               {t("subscription.cancelledInfo", { date: renewalDate })}
             </p>
@@ -118,7 +118,7 @@ export function SubscriptionCancelledPage() {
 
           <button
             onClick={() => navigate("/dashboard?tab=profiel&sub=account")}
-            className="w-full h-[48px] bg-primary text-primary-foreground rounded-lg font-semibold text-[15px] transition-colors"
+            className="w-full h-[48px] bg-primary text-primary-foreground rounded-full font-semibold text-[15px] transition-colors"
             data-testid="button-back-to-account"
           >
             {t("subscription.backToAccount")}

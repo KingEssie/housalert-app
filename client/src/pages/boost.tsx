@@ -168,7 +168,7 @@ function BoostScoreCard({ score, remaining, completed, total }: { score: number;
             <Zap className="w-5 h-5 text-[#1F2937]" />
           </div>
           <div>
-            <h3 className="text-[15px] font-semibold text-[#1F2937]">{headline}</h3>
+            <h3 className="text-[15px] font-semibold text-[#111C3D]">{headline}</h3>
             <p className="text-[13px] text-[#1F2937]">{completed} von {total} abgeschlossen</p>
           </div>
         </div>
@@ -230,13 +230,13 @@ function RecommendedSection({
               data-testid={`card-recommend-${task.id}`}
             >
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgba(45,212,191,0.1)" }}>
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgba(13,110,253,0.1)" }}>
                   <Icon className="w-5 h-5 text-[#0D6EFD]" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
-                    <p className="text-[15px] font-semibold text-[#1F2937] leading-snug">{task.label}</p>
-                    <span className="text-[12px] font-semibold text-[#0D6EFD] px-2 py-0.5 rounded-full flex-shrink-0 whitespace-nowrap" style={{ backgroundColor: "rgba(45,212,191,0.1)" }} data-testid={`badge-points-${task.id}`}>
+                    <p className="text-[15px] font-semibold text-[#111C3D] leading-snug">{task.label}</p>
+                    <span className="text-[12px] font-semibold text-[#0D6EFD] px-2 py-0.5 rounded-full flex-shrink-0 whitespace-nowrap" style={{ backgroundColor: "rgba(13,110,253,0.1)" }} data-testid={`badge-points-${task.id}`}>
                       +{task.weight}
                     </span>
                   </div>
@@ -246,7 +246,7 @@ function RecommendedSection({
               <Button
                 onClick={handleAction}
                 variant="default"
-                className="w-full mt-4 rounded-lg text-[14px] font-semibold h-[48px]"
+                className="w-full mt-4 rounded-full text-[14px] font-semibold h-[48px]"
                 data-testid={`button-recommend-${task.id}`}
               >
                 {ctaLabel}
@@ -327,7 +327,7 @@ function EmptyState({ onStart }: { onStart: () => void }) {
       <div className="w-12 h-12 rounded-full bg-[#F5F7FA] flex items-center justify-center mx-auto mb-4">
         <Zap className="w-5 h-5 text-[#1F2937]" />
       </div>
-      <h3 className="text-[18px] font-semibold text-[#1F2937] mb-1.5">
+      <h3 className="text-[18px] font-semibold text-[#111C3D] mb-1.5">
         Starte mit dem ersten Schritt
       </h3>
       <p className="text-[14px] font-[500] text-[#1F2937] leading-relaxed mb-5 max-w-[260px] mx-auto">
@@ -347,7 +347,7 @@ function EmptyState({ onStart }: { onStart: () => void }) {
 
 function HighProgressState({ remaining }: { remaining: number }) {
   return (
-    <div className="bg-gradient-to-br from-[#0D6EFD] to-[#0B5ED7] rounded-lg p-6 text-white" data-testid="boost-high-progress">
+    <div className="bg-gradient-to-br from-[#0D6EFD] to-[#0B5ED7] rounded-2xl p-6 text-white" data-testid="boost-high-progress">
       <div className="flex items-center gap-3 mb-2">
         <div className="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center">
           <Rocket className="w-5 h-5 text-white" />
@@ -396,11 +396,11 @@ function TaskModal({
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center" onClick={onClose}>
       <div
-        className="bg-white w-full max-w-md rounded-t-lg sm:rounded-lg max-h-[85vh] overflow-y-auto"
+        className="bg-white w-full max-w-md rounded-t-2xl sm:rounded-2xl max-h-[85vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sticky top-0 bg-white border-b border-[#E5E7EB] p-6 flex items-center justify-between rounded-t-lg">
-          <h2 className="text-[20px] font-[700] text-[#1F2937] tracking-[-0.02em]">{task.title}</h2>
+          <h2 className="text-[20px] font-[700] text-[#111C3D] tracking-[-0.02em]">{task.title}</h2>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F5F7FA] flex items-center justify-center" data-testid="button-close-modal">
             <X className="w-4 h-4 text-[#1F2937]" />
           </button>
@@ -428,7 +428,7 @@ function TaskModal({
                 value={buddyEmail}
                 onChange={(e) => setBuddyEmail(e.target.value)}
                 placeholder="partner@beispiel.de"
-                className="w-full h-[52px] px-4 rounded-lg border-0 bg-[#F5F7FA] text-[15px] font-medium text-[#1F2937] placeholder:text-[#1F2937] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 focus:bg-white transition-all"
+                className="w-full h-[60px] px-4 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 focus:bg-white transition-all"
                 data-testid="input-buddy-email"
               />
               <p className="text-[13px] font-[500] text-[#1F2937]">Dein Suchpartner erhält dieselben Benachrichtigungen wie du.</p>
@@ -467,7 +467,7 @@ function TaskModal({
 
           {taskId === "income_documents_uploaded" && (
             <div className="flex flex-col gap-4">
-              <h4 className="text-[13px] font-semibold text-[#1F2937]">Hake ab, was du bereits zusammengestellt hast</h4>
+              <h4 className="text-[13px] font-semibold text-[#111C3D]">Hake ab, was du bereits zusammengestellt hast</h4>
               <div className="flex flex-col gap-1">
                 {INCOME_CHECKLIST.map((item) => (
                   <button
@@ -502,7 +502,7 @@ function TaskModal({
 
           {taskId === "id_document_uploaded" && (
             <div className="flex flex-col gap-4">
-              <h4 className="text-[13px] font-semibold text-[#1F2937]">Hake ab, was du bereits zusammengestellt hast</h4>
+              <h4 className="text-[13px] font-semibold text-[#111C3D]">Hake ab, was du bereits zusammengestellt hast</h4>
               <div className="flex flex-col gap-1">
                 {ID_CHECKLIST.map((item) => (
                   <button

@@ -32,7 +32,7 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6 text-center">
       <div
-        className="w-[72px] h-[72px] rounded-lg bg-[#EBF2FF] flex items-center justify-center mb-8"
+        className="w-[72px] h-[72px] rounded-2xl bg-[#EBF2FF] flex items-center justify-center mb-8"
       >
         <Search className="w-8 h-8 text-[#0D6EFD]" />
       </div>
@@ -80,7 +80,7 @@ function LocationStep({
   return (
     <div className="flex flex-col min-h-screen px-6 pt-4">
       <div className="flex-1">
-        <div className="w-[56px] h-[56px] rounded-lg bg-[#EBF2FF] flex items-center justify-center mb-6">
+        <div className="w-[56px] h-[56px] rounded-2xl bg-[#EBF2FF] flex items-center justify-center mb-6">
           <MapPin className="w-6 h-6 text-[#0D6EFD]" />
         </div>
 
@@ -130,7 +130,7 @@ function BudgetStep({
   return (
     <div className="flex flex-col min-h-screen px-6 pt-4">
       <div className="flex-1">
-        <div className="w-[56px] h-[56px] rounded-lg bg-[#EBF2FF] flex items-center justify-center mb-6">
+        <div className="w-[56px] h-[56px] rounded-2xl bg-[#EBF2FF] flex items-center justify-center mb-6">
           <span className="text-[24px] font-bold text-[#0D6EFD]">&#8364;</span>
         </div>
 
@@ -143,7 +143,7 @@ function BudgetStep({
 
         <div className="space-y-4">
           <div>
-            <label className="block text-[13px] font-semibold text-[#1F2937] tracking-wide mb-1.5">
+            <label className="block text-[13px] font-semibold text-[#111C3D] tracking-wide mb-1.5">
               {t("onboarding.budget.minPrice")}
             </label>
             <div className="relative">
@@ -154,14 +154,14 @@ function BudgetStep({
                 placeholder={t("onboarding.budget.minPlaceholder")}
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
-                className="w-full min-h-[56px] rounded-lg bg-[#F5F7FA] border border-[#E5E7EB] pl-9 pr-4 text-[16px] text-[#1F2937] placeholder:text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-transparent"
+                className="w-full min-h-[56px] rounded-[20px] bg-[#F3F4F6] border-0 pl-9 pr-4 text-[16px] text-[#1F2937] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-transparent"
                 data-testid="input-min-price"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-[13px] font-semibold text-[#1F2937] tracking-wide mb-1.5">
+            <label className="block text-[13px] font-semibold text-[#111C3D] tracking-wide mb-1.5">
               {t("onboarding.budget.maxPrice")}
             </label>
             <div className="relative">
@@ -172,7 +172,7 @@ function BudgetStep({
                 placeholder={t("onboarding.budget.maxPlaceholder")}
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
-                className="w-full min-h-[56px] rounded-lg bg-[#F5F7FA] border border-[#E5E7EB] pl-9 pr-4 text-[16px] text-[#1F2937] placeholder:text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-transparent"
+                className="w-full min-h-[56px] rounded-[20px] bg-[#F3F4F6] border-0 pl-9 pr-4 text-[16px] text-[#1F2937] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-transparent"
                 data-testid="input-max-price"
               />
             </div>
@@ -216,7 +216,7 @@ function PropertyTypeStep({
   return (
     <div className="flex flex-col min-h-screen px-6 pt-4">
       <div className="flex-1">
-        <div className="w-[56px] h-[56px] rounded-lg bg-[#EBF2FF] flex items-center justify-center mb-6">
+        <div className="w-[56px] h-[56px] rounded-2xl bg-[#EBF2FF] flex items-center justify-center mb-6">
           <Search className="w-6 h-6 text-[#0D6EFD]" />
         </div>
 
@@ -232,7 +232,7 @@ function PropertyTypeStep({
             <button
               key={pt.value}
               onClick={() => setPropertyType(pt.value)}
-              className={`w-full min-h-[56px] rounded-lg border-2 px-5 text-left text-[16px] font-medium transition-all flex items-center justify-between ${
+              className={`w-full min-h-[56px] rounded-2xl border-2 px-5 text-left text-[16px] font-medium transition-all flex items-center justify-between ${
                 propertyType === pt.value
                   ? "border-[#0D6EFD] bg-[#EBF2FF] text-[#0D6EFD]"
                   : "border-[#E5E7EB] bg-white text-[#1F2937]"
@@ -268,12 +268,12 @@ function AlertsStep({ onActivate, onSkip, saving }: { onActivate: () => void; on
   const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6 text-center">
-      <div className="w-[72px] h-[72px] rounded-lg bg-[#EBF2FF] flex items-center justify-center mb-8">
+      <div className="w-[72px] h-[72px] rounded-2xl bg-[#EBF2FF] flex items-center justify-center mb-8">
         <Bell className="w-8 h-8 text-[#0D6EFD]" />
       </div>
 
       <h2
-        className="text-[24px] font-bold text-[#1F2937] mb-3 max-w-[300px] tracking-wide"
+        className="text-[24px] font-bold text-[#111C3D] mb-3 max-w-[300px] tracking-wide"
         data-testid="text-alerts-title"
       >
         {t("onboarding.alerts.title")}

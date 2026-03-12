@@ -11,7 +11,7 @@ import { ApplySheet } from "@/components/apply-sheet";
 function FloatingBackButton({ navigate }: { navigate: (to: string) => void }) {
   return (
     <div className="fixed top-[max(0.75rem,env(safe-area-inset-top))] left-4 z-30">
-      <button onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard")} className="w-11 h-11 rounded-full bg-white/90 backdrop-blur-sm shadow-md flex items-center justify-center active:scale-95 transition-transform" data-testid="button-back"><ArrowLeft className="w-5 h-5 text-[#1F2937]" /></button>
+      <button onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard")} className="w-12 h-12 rounded-full bg-[#F3F4F6] shadow-[0_1px_4px_rgba(0,0,0,0.06)] flex items-center justify-center active:scale-95 transition-transform" data-testid="button-back"><ArrowLeft className="w-5 h-5 text-[#111C3D]" /></button>
     </div>
   );
 }
@@ -134,7 +134,7 @@ export default function ListingDetailPage() {
         <FloatingBackButton navigate={navigate} />
         <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-16">
           <div className="bg-white rounded-2xl border border-[#E5E7EB] p-8 text-center">
-            <p className="text-[18px] font-bold text-[#1F2937] mb-2">{t("listing.notFound")}</p>
+            <p className="text-[18px] font-bold text-[#111C3D] mb-2">{t("listing.notFound")}</p>
             <p className="text-[13px] text-[#1F2937] mb-4">{t("listing.notFoundDesc")}</p>
             <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold" data-testid="button-back-dashboard">
               {t("listing.backToDashboard")}
@@ -215,7 +215,7 @@ export default function ListingDetailPage() {
               </div>
             )}
 
-            <h1 className="text-[24px] font-[800] text-[#1F2937] leading-[1.2] tracking-[-0.02em] mb-2" data-testid="text-listing-title">
+            <h1 className="text-[24px] font-[800] text-[#111C3D] leading-[1.2] tracking-[-0.02em] mb-2" data-testid="text-listing-title">
               {listing.title}
             </h1>
 
@@ -228,7 +228,7 @@ export default function ListingDetailPage() {
 
             {listing.price > 0 && (
               <div className="flex items-baseline gap-1 mb-1">
-                <span className="text-[28px] font-[800] text-[#1F2937]" data-testid="text-listing-price">€{listing.price}</span>
+                <span className="text-[28px] font-[800] text-[#111C3D]" data-testid="text-listing-price">€{listing.price}</span>
                 <span className="text-[15px] font-medium text-[#1F2937]">{t("common.perMonth")}</span>
               </div>
             )}
@@ -244,7 +244,7 @@ export default function ListingDetailPage() {
                   </div>
                   <div>
                     <p className="text-[12px] text-[#1F2937]">{t("listing.bedrooms")}</p>
-                    <p className="text-[15px] font-semibold text-[#1F2937]" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
+                    <p className="text-[15px] font-semibold text-[#111C3D]" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
                   </div>
                 </div>
               )}
@@ -256,7 +256,7 @@ export default function ListingDetailPage() {
                   </div>
                   <div>
                     <p className="text-[12px] text-[#1F2937]">{t("listing.area")}</p>
-                    <p className="text-[15px] font-semibold text-[#1F2937]" data-testid="text-listing-size">{listing.size_m2} m²</p>
+                    <p className="text-[15px] font-semibold text-[#111C3D]" data-testid="text-listing-size">{listing.size_m2} m²</p>
                   </div>
                 </div>
               )}
@@ -277,7 +277,7 @@ export default function ListingDetailPage() {
                 </div>
                 <div>
                   <p className="text-[12px] text-[#1F2937]">{t("listing.posted")}</p>
-                  <p className="text-[15px] font-semibold text-[#1F2937]" data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</p>
+                  <p className="text-[15px] font-semibold text-[#111C3D]" data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</p>
                 </div>
               </div>
             </div>
@@ -295,7 +295,7 @@ export default function ListingDetailPage() {
                         <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
                       </div>
                       <div>
-                        <p className="text-[14px] font-semibold text-[#1F2937]">{detail?.label ?? reason}</p>
+                        <p className="text-[14px] font-semibold text-[#111C3D]">{detail?.label ?? reason}</p>
                         {detail?.description && (
                           <p className="text-[13px] text-[#1F2937] mt-0.5">{detail.description}</p>
                         )}

@@ -81,7 +81,7 @@ export default function OnboardingEstimatePage() {
         <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center gap-3">
           <button
             onClick={handleBack}
-            className="w-10 h-10 rounded-full bg-[#F5F7FA] flex items-center justify-center hover:bg-[#E5E7EB] transition-colors"
+            className="w-12 h-12 rounded-full bg-[#F3F4F6] shadow-[0_1px_4px_rgba(0,0,0,0.06)] flex items-center justify-center active:scale-95 transition-colors"
             data-testid="button-back-filters"
           >
             <ChevronLeft className="w-5 h-5 text-[#1F2937]" />
@@ -90,7 +90,7 @@ export default function OnboardingEstimatePage() {
             <div className="w-7 h-7 rounded-full bg-[#0D6EFD] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-bold text-[#1F2937] text-base">HousAlert</span>
+            <span className="font-bold text-[#111C3D] text-base">HousAlert</span>
           </div>
         </div>
       </header>
@@ -110,16 +110,16 @@ export default function OnboardingEstimatePage() {
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-8 pt-4 flex flex-col">
-        <h1 className="text-[32px] font-[800] text-[#1F2937] leading-[1.1] tracking-[-0.03em] mb-3 text-center" data-testid="text-estimate-title">
+        <h1 className="text-[32px] font-[800] text-[#111C3D] leading-[1.1] tracking-[-0.03em] mb-3 text-center" data-testid="text-estimate-title">
           {t("onboardingEstimate.title")}
         </h1>
         <p className="text-[15px] text-[#1F2937] text-center mb-6">
           {t("onboardingEstimate.subtitle", { city })}
         </p>
 
-        <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6" data-testid="card-estimate">
+        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6" data-testid="card-estimate">
           <div className="text-center py-4 border-b border-[#E5E7EB]">
-            <div className="w-14 h-14 rounded-lg bg-[#EBF2FF] flex items-center justify-center mx-auto mb-4">
+            <div className="w-14 h-14 rounded-2xl bg-[#EBF2FF] flex items-center justify-center mx-auto mb-4">
               <TrendingUp className="w-7 h-7 text-[#0D6EFD]" />
             </div>
 
@@ -129,7 +129,7 @@ export default function OnboardingEstimatePage() {
               </div>
             ) : (
               <>
-                <p className="text-6xl font-extrabold text-[#1F2937] mb-3 tabular-nums" data-testid="text-estimate-number">
+                <p className="text-6xl font-extrabold text-[#111C3D] mb-3 tabular-nums" data-testid="text-estimate-number">
                   {estimate}
                 </p>
                 <p className="text-base text-[#1F2937] leading-relaxed max-w-sm mx-auto" data-testid="text-estimate-description">
@@ -141,7 +141,7 @@ export default function OnboardingEstimatePage() {
 
           {filterChips.length > 0 && (
             <div className="py-5 border-b border-[#E5E7EB]">
-              <p className="text-sm font-semibold text-[#1F2937] mb-3">{t("onboardingEstimate.yourFilters")}</p>
+              <p className="text-sm font-semibold text-[#111C3D] mb-3">{t("onboardingEstimate.yourFilters")}</p>
               <div className="flex flex-wrap gap-2">
                 {filterChips.map((chip) => (
                   <span
@@ -167,7 +167,7 @@ export default function OnboardingEstimatePage() {
             <Button
               variant="outline"
               size="lg"
-              className="h-[48px] px-6 rounded-lg text-[15px] font-semibold border-[#E5E7EB] text-[#1F2937] hover:bg-[#F5F7FA]"
+              className="h-[48px] px-6 rounded-full text-[15px] font-semibold border-[#E5E7EB] text-[#1F2937] hover:bg-[#F5F7FA]"
               onClick={handleBack}
               data-testid="button-back-estimate"
             >
@@ -175,7 +175,7 @@ export default function OnboardingEstimatePage() {
             </Button>
             <Button
               size="lg"
-              className="flex-1 h-[56px] rounded-lg text-[16px] font-semibold shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7]"
+              className="flex-1 h-[56px] rounded-full text-[16px] font-semibold shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7]"
               onClick={handleCreateAccount}
               disabled={loading}
               data-testid="button-create-account"

@@ -130,7 +130,7 @@ export default function ViewingTipsPage() {
             <Button
               onClick={() => markDoneMutation.mutate()}
               disabled={markDoneMutation.isPending}
-              className="w-full h-[56px] rounded-lg text-[16px] font-semibold bg-primary text-primary-foreground disabled:opacity-50"
+              className="w-full h-[56px] rounded-full text-[16px] font-semibold bg-primary text-primary-foreground disabled:opacity-50"
               data-testid="button-mark-tips-done"
             >
               {markDoneMutation.isPending ? t("viewingTips.saving") : t("viewingTips.markComplete")}

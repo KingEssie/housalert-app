@@ -122,7 +122,7 @@ export default function ContinueDraftPage() {
             <p className="text-[14px] text-muted-foreground mb-6">{t("continueDraft.linkExpired")}</p>
             <button
               onClick={() => navigate("/")}
-              className="min-h-[48px] px-8 rounded-lg bg-primary text-primary-foreground font-semibold text-[15px] transition-colors"
+              className="min-h-[48px] px-8 rounded-full bg-primary text-primary-foreground font-semibold text-[15px] transition-colors"
               data-testid="button-continue-home"
             >
               {t("continueDraft.toHome")}

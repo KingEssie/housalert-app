@@ -12,7 +12,7 @@ function LegalLayout({ title, children }: { title: string; children: React.React
       <header className="w-full bg-background sticky top-0 z-20 border-b" style={{ borderColor: "#E5E7EB" }}>
         <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center justify-between">
           <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => navigate("/")}>
-            <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
+            <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center">
               <Home className="w-4.5 h-4.5 text-primary-foreground" />
             </div>
             <span className="font-extrabold text-xl tracking-tight" style={{ color: "#1F2937" }}>HousAlert</span>

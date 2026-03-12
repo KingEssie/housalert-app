@@ -365,7 +365,7 @@ export default function NewSearchPage() {
           <div className="max-w-lg mx-auto flex items-center justify-between h-[56px] px-5">
             <button
               onClick={() => navigate("/dashboard")}
-              className="w-10 h-10 rounded-full bg-[#F5F7FA] flex items-center justify-center"
+              className="w-12 h-12 rounded-full bg-[#F3F4F6] shadow-[0_1px_4px_rgba(0,0,0,0.06)] flex items-center justify-center"
               data-testid="button-wizard-header-back"
             >
               <ArrowLeft className="w-5 h-5 text-[#1F2937]" />
@@ -377,7 +377,7 @@ export default function NewSearchPage() {
             <div className="w-14 h-14 rounded-lg bg-[#F5F7FA] flex items-center justify-center mx-auto mb-4">
               <AlertCircle className="w-6 h-6 text-[#0D6EFD]" />
             </div>
-            <h2 className="text-[18px] font-bold text-[#1F2937] mb-2">{t("newSearch.limitTitle")}</h2>
+            <h2 className="text-[18px] font-bold text-[#111C3D] mb-2">{t("newSearch.limitTitle")}</h2>
             <p className="text-[14px] text-[#1F2937] mb-5">
               {t("newSearch.limitDesc", { max: MAX_PROFILES })}
             </p>
@@ -402,7 +402,7 @@ export default function NewSearchPage() {
         <div className="max-w-lg mx-auto flex items-center justify-between h-[56px] px-5">
           <button
             onClick={goBack}
-            className="w-10 h-10 rounded-full bg-[#F5F7FA] flex items-center justify-center"
+            className="w-12 h-12 rounded-full bg-[#F3F4F6] shadow-[0_1px_4px_rgba(0,0,0,0.06)] flex items-center justify-center"
             data-testid="button-wizard-header-back"
           >
             <ArrowLeft className="w-5 h-5 text-[#1F2937]" />
@@ -500,7 +500,7 @@ function Step2Requirements({
 
       <div className="space-y-6">
         <div>
-          <label className="text-[15px] font-bold text-[#1F2937] mb-2.5 flex items-center gap-2">
+          <label className="text-[15px] font-bold text-[#111C3D] mb-2.5 flex items-center gap-2">
             <Euro className="w-4 h-4 text-[#0D6EFD]" />
             {t("newSearch.step2.minPrice")}
           </label>
@@ -508,7 +508,7 @@ function Step2Requirements({
             <select
               value={filters.priceMin}
               onChange={(e) => updateFilters({ priceMin: e.target.value })}
-              className="w-full h-[56px] px-4 pr-10 rounded-lg border-0 bg-[#F5F7FA] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 transition-all appearance-none cursor-pointer"
+              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 transition-all appearance-none cursor-pointer"
               data-testid="select-price-min"
             >
               {RENT_OPTIONS.map(opt => (
@@ -520,7 +520,7 @@ function Step2Requirements({
         </div>
 
         <div>
-          <label className="text-[15px] font-bold text-[#1F2937] mb-2.5 flex items-center gap-2">
+          <label className="text-[15px] font-bold text-[#111C3D] mb-2.5 flex items-center gap-2">
             <Euro className="w-4 h-4 text-[#0D6EFD]" />
             {t("newSearch.step2.maxPrice")}
           </label>
@@ -528,7 +528,7 @@ function Step2Requirements({
             <select
               value={filters.priceMax}
               onChange={(e) => updateFilters({ priceMax: e.target.value })}
-              className="w-full h-[56px] px-4 pr-10 rounded-lg border-0 bg-[#F5F7FA] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 transition-all appearance-none cursor-pointer"
+              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 transition-all appearance-none cursor-pointer"
               data-testid="select-price-max"
             >
               {RENT_OPTIONS.map(opt => (
@@ -540,7 +540,7 @@ function Step2Requirements({
         </div>
 
         <div>
-          <label className="text-[15px] font-bold text-[#1F2937] mb-2.5 flex items-center gap-2">
+          <label className="text-[15px] font-bold text-[#111C3D] mb-2.5 flex items-center gap-2">
             <BedDouble className="w-4 h-4 text-[#0D6EFD]" />
             {t("newSearch.step2.bedrooms")}
           </label>
@@ -548,7 +548,7 @@ function Step2Requirements({
             <select
               value={filters.bedroomsMin}
               onChange={(e) => updateFilters({ bedroomsMin: parseInt(e.target.value) })}
-              className="w-full h-[56px] px-4 pr-10 rounded-lg border-0 bg-[#F5F7FA] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 transition-all appearance-none cursor-pointer"
+              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 transition-all appearance-none cursor-pointer"
               data-testid="select-bedrooms"
             >
               {BEDROOM_OPTIONS.map(opt => (
@@ -560,7 +560,7 @@ function Step2Requirements({
         </div>
 
         <div>
-          <label className="text-[15px] font-bold text-[#1F2937] mb-2.5 flex items-center gap-2">
+          <label className="text-[15px] font-bold text-[#111C3D] mb-2.5 flex items-center gap-2">
             <Ruler className="w-4 h-4 text-[#0D6EFD]" />
             {t("newSearch.step2.area")}
           </label>
@@ -568,7 +568,7 @@ function Step2Requirements({
             <select
               value={filters.sizeMin}
               onChange={(e) => updateFilters({ sizeMin: parseInt(e.target.value) })}
-              className="w-full h-[56px] px-4 pr-10 rounded-lg border-0 bg-[#F5F7FA] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 transition-all appearance-none cursor-pointer"
+              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 transition-all appearance-none cursor-pointer"
               data-testid="select-size"
             >
               {SIZE_OPTIONS.map(opt => (
@@ -580,7 +580,7 @@ function Step2Requirements({
         </div>
 
         <div>
-          <label className="text-[15px] font-bold text-[#1F2937] mb-2.5 flex items-center gap-2">
+          <label className="text-[15px] font-bold text-[#111C3D] mb-2.5 flex items-center gap-2">
             <Sofa className="w-4 h-4 text-[#0D6EFD]" />
             {t("newSearch.step2.furnished")}
           </label>
@@ -588,7 +588,7 @@ function Step2Requirements({
             <select
               value={filters.furnished}
               onChange={(e) => updateFilters({ furnished: e.target.value })}
-              className="w-full h-[56px] px-4 pr-10 rounded-lg border-0 bg-[#F5F7FA] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 transition-all appearance-none cursor-pointer"
+              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 transition-all appearance-none cursor-pointer"
               data-testid="select-furnished"
             >
               {FURNISHED_OPTIONS.map(opt => (
@@ -668,7 +668,7 @@ function Step3ExtraFeatures({
       </div>
 
       <div>
-        <h3 className="text-[14px] font-semibold text-[#1F2937] mb-1">{t("newSearch.step3.preferencesTitle")}</h3>
+        <h3 className="text-[14px] font-semibold text-[#111C3D] mb-1">{t("newSearch.step3.preferencesTitle")}</h3>
         <p className="text-[12px] text-[#1F2937] opacity-50 mb-2">{t("newSearch.step3.preferencesSubtitle")}</p>
         <div className="bg-white rounded-lg">
           {PREFERENCE_OPTIONS.map((opt) => (
@@ -746,7 +746,7 @@ function ReviewRow({ label, value, onEdit }: { label: string; value: string; onE
     <div className="flex items-start justify-between py-3.5 border-b border-[#E5E7EB] last:border-b-0">
       <div className="flex-1 min-w-0 mr-3">
         <p className="text-[13px] font-medium text-[#1F2937] opacity-60 mb-0.5">{label}</p>
-        <p className="text-[15px] font-semibold text-[#1F2937]">{value}</p>
+        <p className="text-[15px] font-semibold text-[#111C3D]">{value}</p>
       </div>
       <button
         onClick={onEdit}

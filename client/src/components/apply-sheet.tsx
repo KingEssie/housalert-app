@@ -175,7 +175,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
         <div className="flex items-center justify-between px-6 pt-5 pb-3">
           <div className="flex items-center gap-2">
             <Send className="w-5 h-5 text-[#1F2937]" />
-            <h2 className="text-[18px] font-[700] text-[#1F2937]">{t("applySheet.title")}</h2>
+            <h2 className="text-[18px] font-[700] text-[#111C3D]">{t("applySheet.title")}</h2>
           </div>
           <button
             onClick={onClose}
@@ -211,7 +211,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
 
           <div className="bg-[#F5F7FA] rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-[12px] font-semibold text-[#1F2937] tracking-wide">{t("applySheet.applicationLetter")}</p>
+              <p className="text-[12px] font-semibold text-[#111C3D] tracking-wide">{t("applySheet.applicationLetter")}</p>
               {readyCount === readinessItems.length && (
                 <span className="text-[11px] font-medium text-[#1F2937] bg-[#F5F7FA] px-2 py-0.5 rounded-full" data-testid="badge-ready">
                   {t("applySheet.readyToSend")}

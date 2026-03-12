@@ -93,7 +93,7 @@ export default function OnboardingLocationPage() {
         <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center gap-3">
           <button
             onClick={() => navigate("/")}
-            className="w-10 h-10 rounded-full bg-[#F5F7FA] flex items-center justify-center hover:bg-[#E5E7EB] transition-colors"
+            className="w-12 h-12 rounded-full bg-[#F3F4F6] shadow-[0_1px_4px_rgba(0,0,0,0.06)] flex items-center justify-center active:scale-95 transition-colors"
             data-testid="button-back-landing"
           >
             <ChevronLeft className="w-5 h-5 text-[#1F2937]" />
@@ -102,7 +102,7 @@ export default function OnboardingLocationPage() {
             <div className="w-7 h-7 rounded-full bg-[#0D6EFD] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-bold text-[#1F2937] text-base">HousAlert</span>
+            <span className="font-bold text-[#111C3D] text-base">HousAlert</span>
           </div>
         </div>
       </header>
@@ -124,11 +124,11 @@ export default function OnboardingLocationPage() {
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-8 pt-4">
-        <h1 className="text-[32px] font-[800] text-[#1F2937] leading-[1.1] tracking-[-0.03em] mb-8" data-testid="text-location-title">
+        <h1 className="text-[32px] font-[800] text-[#111C3D] leading-[1.1] tracking-[-0.03em] mb-8" data-testid="text-location-title">
           {t("onboardingLocation.title")}
         </h1>
 
-        <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
+        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
           <div className="flex border-b border-[#E5E7EB]">
             {tabs.map((tab) => (
               <button
@@ -154,7 +154,7 @@ export default function OnboardingLocationPage() {
               <div className="space-y-0">
                 <div className="relative">
                   <div
-                    className="flex items-center gap-3 h-[52px] px-4 rounded-lg bg-[#F5F7FA] cursor-text focus-within:ring-2 focus-within:ring-[#0D6EFD]/15 focus-within:bg-[#F5F7FA] transition-all"
+                    className="flex items-center gap-3 h-[52px] px-4 rounded-[20px] bg-[#F3F4F6] cursor-text focus-within:ring-2 focus-within:ring-[#0D6EFD]/15 focus-within:bg-[#F5F7FA] transition-all"
                     onClick={() => {
                       const input = document.getElementById("city-search-input");
                       input?.focus();
@@ -171,7 +171,7 @@ export default function OnboardingLocationPage() {
                         setShowDropdown(true);
                       }}
                       onFocus={() => setShowDropdown(true)}
-                      className="flex-1 text-[15px] font-medium text-[#1F2937] placeholder:text-[#1F2937] placeholder:font-normal bg-transparent border-none outline-none"
+                      className="flex-1 text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal bg-transparent border-none outline-none"
                       data-testid="input-city-search"
                     />
                     {selectedCity && (
@@ -191,7 +191,7 @@ export default function OnboardingLocationPage() {
                   </div>
 
                   {showDropdown && filteredCities.length > 0 && !selectedCity && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-10 max-h-64 overflow-y-auto">
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-10 max-h-64 overflow-y-auto">
                       {filteredCities.map((city) => (
                         <button
                           key={city.name}
@@ -210,7 +210,7 @@ export default function OnboardingLocationPage() {
 
                 {selectedCity && activeCityDistricts.length > 0 && (
                   <div className="py-5 border-b border-[#E5E7EB]">
-                    <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">{t("onboardingLocation.districtsLabel")} <span className="font-normal text-[13px] text-[#1F2937]">{t("onboardingLocation.optional")}</span></label>
+                    <label className="text-[16px] font-[700] text-[#111C3D] mb-3 block">{t("onboardingLocation.districtsLabel")} <span className="font-normal text-[13px] text-[#1F2937]">{t("onboardingLocation.optional")}</span></label>
                     <div className="flex flex-wrap gap-2">
                       {activeCityDistricts.map((district) => (
                         <button
@@ -232,11 +232,11 @@ export default function OnboardingLocationPage() {
 
                 {selectedCity && (
                   <div className="py-5 border-b border-[#E5E7EB]">
-                    <div className="rounded-lg overflow-hidden bg-[#F5F7FA]" data-testid="card-map-preview">
+                    <div className="rounded-2xl overflow-hidden bg-[#F3F4F6]" data-testid="card-map-preview">
                       <div className="h-36 flex items-center justify-center">
                         <div className="text-center">
                           <MapPin className="w-7 h-7 text-[#0D6EFD] mx-auto mb-1.5" />
-                          <p className="text-base font-bold text-[#1F2937]">{selectedCity.name}</p>
+                          <p className="text-base font-bold text-[#111C3D]">{selectedCity.name}</p>
                           {selectedDistricts.length > 0 && (
                             <p className="text-xs text-[#1F2937] mt-0.5">{selectedDistricts.join(", ")}</p>
                           )}
@@ -248,7 +248,7 @@ export default function OnboardingLocationPage() {
 
                 {!selectedCity && (
                   <div className="py-5">
-                    <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">{t("onboardingLocation.popularCities")}</label>
+                    <label className="text-[16px] font-[700] text-[#111C3D] mb-3 block">{t("onboardingLocation.popularCities")}</label>
                     <div className="flex flex-wrap gap-2">
                       {defaultCities.slice(0, 6).map((city) => (
                         <button
@@ -270,7 +270,7 @@ export default function OnboardingLocationPage() {
               <div className="space-y-0">
                 <div className="relative">
                   <div
-                    className="flex items-center gap-3 h-[52px] px-4 rounded-lg bg-[#F5F7FA] cursor-text focus-within:ring-2 focus-within:ring-[#0D6EFD]/15 focus-within:bg-[#F5F7FA] transition-all"
+                    className="flex items-center gap-3 h-[52px] px-4 rounded-[20px] bg-[#F3F4F6] cursor-text focus-within:ring-2 focus-within:ring-[#0D6EFD]/15 focus-within:bg-[#F5F7FA] transition-all"
                     onClick={() => {
                       const input = document.getElementById("radius-city-input");
                       input?.focus();
@@ -287,7 +287,7 @@ export default function OnboardingLocationPage() {
                         setShowDropdown(true);
                       }}
                       onFocus={() => setShowDropdown(true)}
-                      className="flex-1 text-[15px] font-medium text-[#1F2937] placeholder:text-[#1F2937] placeholder:font-normal bg-transparent border-none outline-none"
+                      className="flex-1 text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal bg-transparent border-none outline-none"
                       data-testid="input-city-search"
                     />
                     {selectedCity && (
@@ -306,7 +306,7 @@ export default function OnboardingLocationPage() {
                   </div>
 
                   {showDropdown && filteredCities.length > 0 && !selectedCity && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-10 max-h-64 overflow-y-auto">
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-10 max-h-64 overflow-y-auto">
                       {filteredCities.map((city) => (
                         <button
                           key={city.name}
@@ -324,13 +324,13 @@ export default function OnboardingLocationPage() {
                 </div>
 
                 <div className="mt-6">
-                  <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">{t("onboardingLocation.radiusLabel")}</label>
+                  <label className="text-[16px] font-[700] text-[#111C3D] mb-3 block">{t("onboardingLocation.radiusLabel")}</label>
                   <div className="relative">
                     <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1F2937]" />
                     <select
                       value={radius}
                       onChange={(e) => setRadius(e.target.value)}
-                      className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[#F5F7FA] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 focus:bg-[#F5F7FA] cursor-pointer appearance-none transition-all"
+                      className="w-full h-[60px] pl-11 pr-4 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 focus:bg-[#F5F7FA] cursor-pointer appearance-none transition-all"
                       data-testid="select-radius"
                     >
                       <option value="2">2 km</option>
@@ -345,13 +345,13 @@ export default function OnboardingLocationPage() {
 
                 {selectedCity && (
                   <div className="py-5">
-                    <div className="rounded-lg overflow-hidden bg-[#F5F7FA]" data-testid="card-map-radius">
+                    <div className="rounded-2xl overflow-hidden bg-[#F3F4F6]" data-testid="card-map-radius">
                       <div className="h-36 flex items-center justify-center">
                         <div className="text-center">
                           <div className="w-20 h-20 rounded-full border-2 border-dashed border-[#0D6EFD]/40 flex items-center justify-center mx-auto mb-1">
                             <Navigation className="w-6 h-6 text-[#0D6EFD]" />
                           </div>
-                          <p className="text-sm font-bold text-[#1F2937]">{selectedCity.name} +{radius} km</p>
+                          <p className="text-sm font-bold text-[#111C3D]">{selectedCity.name} +{radius} km</p>
                         </div>
                       </div>
                     </div>
@@ -363,7 +363,7 @@ export default function OnboardingLocationPage() {
             {activeTab === "reistijd" && (
               <div className="space-y-0">
                 <div>
-                  <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">{t("onboardingLocation.destinationLabel")}</label>
+                  <label className="text-[16px] font-[700] text-[#111C3D] mb-3 block">{t("onboardingLocation.destinationLabel")}</label>
                   <div className="relative">
                     <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1F2937]" />
                     <input
@@ -371,20 +371,20 @@ export default function OnboardingLocationPage() {
                       placeholder={t("onboardingLocation.destinationPlaceholder")}
                       value={travelAddress}
                       onChange={(e) => setTravelAddress(e.target.value)}
-                      className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[#F5F7FA] text-[15px] font-medium text-[#1F2937] placeholder:text-[#1F2937] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 focus:bg-[#F5F7FA] transition-all"
+                      className="w-full h-[60px] pl-11 pr-4 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 focus:bg-[#F5F7FA] transition-all"
                       data-testid="input-travel-address"
                     />
                   </div>
                 </div>
 
                 <div className="mt-6">
-                  <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">{t("onboardingLocation.maxTravelTime")}</label>
+                  <label className="text-[16px] font-[700] text-[#111C3D] mb-3 block">{t("onboardingLocation.maxTravelTime")}</label>
                   <div className="relative">
                     <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1F2937]" />
                     <select
                       value={travelTime}
                       onChange={(e) => setTravelTime(e.target.value)}
-                      className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[#F5F7FA] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 focus:bg-[#F5F7FA] cursor-pointer appearance-none transition-all"
+                      className="w-full h-[60px] pl-11 pr-4 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 focus:bg-[#F5F7FA] cursor-pointer appearance-none transition-all"
                       data-testid="select-travel-time"
                     >
                       <option value="15">15 min</option>
@@ -397,7 +397,7 @@ export default function OnboardingLocationPage() {
                 </div>
 
                 <div className="mt-6">
-                  <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">{t("onboardingLocation.transportLabel")}</label>
+                  <label className="text-[16px] font-[700] text-[#111C3D] mb-3 block">{t("onboardingLocation.transportLabel")}</label>
                   <div className="flex gap-2">
                     {[
                       { id: "auto", icon: Car, label: t("onboardingLocation.auto") },
@@ -423,11 +423,11 @@ export default function OnboardingLocationPage() {
 
                 {travelAddress && (
                   <div className="py-5">
-                    <div className="rounded-lg overflow-hidden bg-[#F5F7FA]" data-testid="card-map-travel">
+                    <div className="rounded-2xl overflow-hidden bg-[#F3F4F6]" data-testid="card-map-travel">
                       <div className="h-36 flex items-center justify-center">
                         <div className="text-center">
                           <Clock className="w-7 h-7 text-[#0D6EFD] mx-auto mb-1.5" />
-                          <p className="text-sm font-bold text-[#1F2937]">{t("onboardingLocation.travelTimePreview", { time: travelTime })}</p>
+                          <p className="text-sm font-bold text-[#111C3D]">{t("onboardingLocation.travelTimePreview", { time: travelTime })}</p>
                           <p className="text-xs text-[#1F2937] mt-0.5">{t("onboardingLocation.fromAddress", { address: travelAddress })}</p>
                         </div>
                       </div>
@@ -457,7 +457,7 @@ export default function OnboardingLocationPage() {
 
           <Button
             size="lg"
-            className="w-full h-[56px] rounded-lg text-[16px] font-semibold bg-[#0D6EFD] hover:bg-[#0B5ED7] shadow-none mt-2"
+            className="w-full h-[56px] rounded-full text-[16px] font-semibold bg-[#0D6EFD] hover:bg-[#0B5ED7] shadow-none mt-2"
             disabled={!canProceed}
             onClick={handleNext}
             data-testid="button-next-step"

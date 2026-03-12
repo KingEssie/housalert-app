@@ -61,7 +61,7 @@ export default function LoginPage() {
             <div className="w-9 h-9 rounded-lg bg-[#1F2937] flex items-center justify-center">
               <Home className="w-4 h-4 text-white" />
             </div>
-            <span className="font-extrabold text-[#1F2937] text-lg tracking-tight">{t("auth.appName")}</span>
+            <span className="font-extrabold text-[#111C3D] text-lg tracking-tight">{t("auth.appName")}</span>
           </div>
         </div>
       </header>
@@ -69,7 +69,7 @@ export default function LoginPage() {
       <main className="flex-1 flex items-center justify-center px-6 py-20">
         <div className="w-full max-w-sm">
           <div className="text-center mb-8">
-            <h1 className="text-[28px] font-[800] text-[#1F2937] tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-login-title">
+            <h1 className="text-[28px] font-[800] text-[#111C3D] tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-login-title">
               {t("auth.login.title")}
             </h1>
             <p className="text-[15px] text-[#1F2937]">
@@ -80,7 +80,7 @@ export default function LoginPage() {
           <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
             <form onSubmit={handleLogin} className="flex flex-col gap-5">
               <div className="flex flex-col gap-2">
-                <Label htmlFor="login-email" className="text-[14px] font-semibold text-[#1F2937]">{t("auth.login.email")}</Label>
+                <Label htmlFor="login-email" className="text-[14px] font-semibold text-[#111C3D]">{t("auth.login.email")}</Label>
                 <input
                   id="login-email"
                   type="email"
@@ -88,12 +88,12 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-[52px] px-4 rounded-lg border-0 bg-[#F5F7FA] text-[15px] font-medium text-[#1F2937] placeholder:text-[#1F2937] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 focus:bg-white transition-all"
+                  className="h-[60px] px-4 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 focus:bg-white transition-all"
                   data-testid="input-login-email"
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <Label htmlFor="login-password" className="text-[14px] font-semibold text-[#1F2937]">{t("auth.login.password")}</Label>
+                <Label htmlFor="login-password" className="text-[14px] font-semibold text-[#111C3D]">{t("auth.login.password")}</Label>
                 <input
                   id="login-password"
                   type="password"
@@ -101,7 +101,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="h-[52px] px-4 rounded-lg border-0 bg-[#F5F7FA] text-[15px] font-medium text-[#1F2937] placeholder:text-[#1F2937] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 focus:bg-white transition-all"
+                  className="h-[60px] px-4 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 focus:bg-white transition-all"
                   data-testid="input-login-password"
                 />
                 <button

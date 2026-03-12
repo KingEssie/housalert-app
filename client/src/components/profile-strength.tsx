@@ -194,7 +194,7 @@ export function ProfileStrengthCard() {
           <div className="w-8 h-8 rounded-full bg-[#F5F7FA] flex items-center justify-center">
             <Shield className="w-4 h-4 text-[#1F2937]" />
           </div>
-          <h3 className="text-[15px] font-semibold text-[#1F2937]">{t("profileStrength.title")}</h3>
+          <h3 className="text-[15px] font-semibold text-[#111C3D]">{t("profileStrength.title")}</h3>
         </div>
         <span className={`text-[13px] font-medium px-2.5 py-1 rounded-full ${status.bg} ${status.color}`} data-testid="text-status-label">
           {status.label}
@@ -202,7 +202,7 @@ export function ProfileStrengthCard() {
       </div>
 
       <div className="flex items-end gap-2 mb-3">
-        <span className="text-[32px] font-bold text-[#1F2937] leading-none" data-testid="text-profile-score">{score}</span>
+        <span className="text-[32px] font-bold text-[#111C3D] leading-none" data-testid="text-profile-score">{score}</span>
         <span className="text-[14px] text-[#1F2937] mb-1">/ {maxScore}</span>
       </div>
 
@@ -249,7 +249,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
             <Sparkles className="w-4 h-4 text-[#1F2937]" />
-            <h3 className="text-[15px] font-semibold text-[#1F2937]">{t("profileStrength.completeAccount")}</h3>
+            <h3 className="text-[15px] font-semibold text-[#111C3D]">{t("profileStrength.completeAccount")}</h3>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-[13px] text-[#1F2937]">
@@ -274,7 +274,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
                 className="transition-all duration-500"
               />
             </svg>
-            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-[#1F2937]">
+            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-[#111C3D]">
               {percentage}%
             </span>
           </div>
@@ -406,7 +406,7 @@ export function TaskModal({
           >
             <ArrowLeft className="w-4 h-4 text-[#1F2937]" />
           </button>
-          <h1 className="text-[17px] font-bold text-[#1F2937] flex-1 tracking-wide">{title}</h1>
+          <h1 className="text-[17px] font-bold text-[#111C3D] flex-1 tracking-wide">{title}</h1>
         </div>
       </header>
 
@@ -434,7 +434,7 @@ export function TaskModal({
                 value={buddyEmail}
                 onChange={(e) => setBuddyEmail(e.target.value)}
                 placeholder={t("profileStrength.buddyPlaceholder")}
-                className="w-full h-[56px] px-4 rounded-lg border-0 bg-[#F5F7FA] text-[16px] font-medium text-[#1F2937] placeholder:text-[#1F2937] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 transition-all"
+                className="w-full h-[60px] px-4 rounded-[20px] border-0 bg-[#F3F4F6] text-[16px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 transition-all"
                 data-testid="input-buddy-email"
               />
               <p className="text-[14px] text-[#1F2937]">{t("profileStrength.buddyDesc")}</p>
@@ -485,13 +485,13 @@ export function TaskModal({
             <div className="flex flex-col gap-5">
               {DOCUMENT_CHECKLIST.map((group) => (
                 <div key={group.group}>
-                  <h4 className="text-[14px] font-semibold text-[#1F2937] mb-3">{group.group}</h4>
+                  <h4 className="text-[14px] font-semibold text-[#111C3D] mb-3">{group.group}</h4>
                   <div className="flex flex-col gap-1">
                     {group.items.map((item) => (
                       <button
                         key={item.id}
                         onClick={() => setChecklist((prev) => ({ ...prev, [item.id]: !prev[item.id] }))}
-                        className="flex items-center gap-3 py-3 px-3 rounded-lg hover:bg-[#F5F7FA] transition-colors text-left"
+                        className="flex items-center gap-3 py-3 px-3 rounded-lg hover:bg-[#F3F4F6] transition-colors text-left"
                         data-testid={`check-${item.id}`}
                       >
                         {checklist[item.id] ? (
@@ -528,7 +528,7 @@ export function TaskModal({
                 value={phoneInput}
                 onChange={(e) => setPhoneInput(e.target.value)}
                 placeholder="+49 170 1234567"
-                className="w-full h-[56px] px-4 rounded-lg border-0 bg-[#F5F7FA] text-[16px] font-medium text-[#1F2937] placeholder:text-[#1F2937] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 transition-all"
+                className="w-full h-[60px] px-4 rounded-[20px] border-0 bg-[#F3F4F6] text-[16px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 transition-all"
                 data-testid="input-phone"
               />
               <p className="text-[14px] text-[#1F2937]">{t("profileStrength.phoneDesc")}</p>
@@ -583,7 +583,7 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
             <Target className="w-4 h-4 text-[#1F2937]" />
-            <h3 className="text-[15px] font-semibold text-[#1F2937]">{t("profileStrength.prepareSearch")}</h3>
+            <h3 className="text-[15px] font-semibold text-[#111C3D]">{t("profileStrength.prepareSearch")}</h3>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-[13px] text-[#1F2937]">
@@ -608,7 +608,7 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
                 className="transition-all duration-500"
               />
             </svg>
-            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-[#1F2937]">
+            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-[#111C3D]">
               {percentage}%
             </span>
           </div>
@@ -706,7 +706,7 @@ export function PrepTaskModal({
           >
             <ArrowLeft className="w-4 h-4 text-[#1F2937]" />
           </button>
-          <h1 className="text-[17px] font-bold text-[#1F2937] flex-1 tracking-wide">{titles[taskId] || ""}</h1>
+          <h1 className="text-[17px] font-bold text-[#111C3D] flex-1 tracking-wide">{titles[taskId] || ""}</h1>
         </div>
       </header>
 
@@ -749,8 +749,8 @@ export function PrepTaskModal({
               <p className="text-[15px] text-[#1F2937] leading-relaxed">
                 {t("profileStrength.prepExtraDesc")}
               </p>
-              <div className="bg-[#F5F7FA] rounded-lg p-5">
-                <p className="text-[14px] font-semibold text-[#1F2937] mb-3">{t("profileStrength.prepWhyTitle")}</p>
+              <div className="bg-[#F3F4F6] rounded-2xl p-5">
+                <p className="text-[14px] font-semibold text-[#111C3D] mb-3">{t("profileStrength.prepWhyTitle")}</p>
                 <ul className="text-[14px] text-[#1F2937] space-y-2">
                   <li className="flex items-start gap-2"><span className="text-[#1F2937] mt-0.5">+</span>{t("profileStrength.prepWhy1")}</li>
                   <li className="flex items-start gap-2"><span className="text-[#1F2937] mt-0.5">+</span>{t("profileStrength.prepWhy2")}</li>
@@ -773,8 +773,8 @@ export function PrepTaskModal({
               <p className="text-[15px] text-[#1F2937] leading-relaxed">
                 {t("profileStrength.prepNetworkDesc")}
               </p>
-              <div className="bg-[#F5F7FA] rounded-lg p-5">
-                <p className="text-[14px] font-semibold text-[#1F2937] mb-3">{t("profileStrength.shareTextLabel")}</p>
+              <div className="bg-[#F3F4F6] rounded-2xl p-5">
+                <p className="text-[14px] font-semibold text-[#111C3D] mb-3">{t("profileStrength.shareTextLabel")}</p>
                 <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("profileStrength.shareText")}</p>
               </div>
               <Button
@@ -847,7 +847,7 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
           <div className="w-8 h-8 rounded-full bg-[#F5F7FA] flex items-center justify-center">
             <Bell className="w-4 h-4 text-[#1F2937]" />
           </div>
-          <h3 className="text-[15px] font-semibold text-[#1F2937]">{t("profileStrength.notifChannels")}</h3>
+          <h3 className="text-[15px] font-semibold text-[#111C3D]">{t("profileStrength.notifChannels")}</h3>
         </div>
         <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${activeCount > 0 ? "bg-[#F5F7FA] text-[#1F2937]" : "bg-[#F5F7FA] text-[#1F2937]"}`}>
           {activeCount > 0 ? t("profileStrength.notifActive", { count: String(activeCount) }) : t("profileStrength.notifNoneActive")}
@@ -875,7 +875,7 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
       </div>
 
       {recommendedChannel && (
-        <div className="bg-[#F5F7FA] rounded-lg px-3.5 py-2.5 mb-3">
+        <div className="bg-[#F3F4F6] rounded-2xl px-3.5 py-2.5 mb-3">
           <p className="text-[12px] text-[#1F2937] font-medium flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5" />
             {t("profileStrength.fastestChannel", { channel: recommendedChannel })}
@@ -885,7 +885,7 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
 
       <button
         onClick={() => navigate("/settings/notifications")}
-        className="w-full h-[40px] rounded-lg border border-[#E5E7EB] bg-white text-[13px] font-semibold text-[#1F2937] hover:bg-[#F5F7FA] transition-colors flex items-center justify-center gap-1.5"
+        className="w-full h-[40px] rounded-full border border-[#E5E7EB] bg-white text-[13px] font-semibold text-[#111C3D] hover:bg-[#F5F7FA] transition-colors flex items-center justify-center gap-1.5"
         data-testid="button-manage-channels"
       >
         <Bell className="w-3.5 h-3.5" />
@@ -925,7 +925,7 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
           <Zap className="w-4 h-4 text-[#1F2937]" />
         </div>
         <div className="flex-1">
-          <h3 className="text-[15px] font-semibold text-[#1F2937]">{t("profileStrength.reactionSpeed")}</h3>
+          <h3 className="text-[15px] font-semibold text-[#111C3D]">{t("profileStrength.reactionSpeed")}</h3>
         </div>
         <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${allDone ? "bg-[#16A34A]/10 text-[#1F2937]" : "bg-[#F5F7FA] text-[#1F2937]"}`}>
           {speedDone}/{speedTotal}
@@ -996,10 +996,10 @@ export function SpeedBanner({ navigate }: { navigate: (path: string) => void }) 
           <Zap className="w-4 h-4 text-[#1F2937]" />
         </div>
         <div className="flex-1">
-          <p className="text-[14px] font-semibold text-[#1F2937]">{t("profileStrength.readyFast")}</p>
+          <p className="text-[14px] font-semibold text-[#111C3D]">{t("profileStrength.readyFast")}</p>
           <p className="text-[12px] text-[#1F2937]">{t("profileStrength.allStepsComplete")}</p>
         </div>
-        <span className="text-[13px] font-bold text-[#1F2937]">{pct}%</span>
+        <span className="text-[13px] font-bold text-[#111C3D]">{pct}%</span>
       </div>
     );
   }
@@ -1014,7 +1014,7 @@ export function SpeedBanner({ navigate }: { navigate: (path: string) => void }) 
         <Zap className="w-4 h-4 text-[#1F2937]" />
       </div>
       <div className="flex-1">
-        <p className="text-[14px] font-semibold text-[#1F2937]">
+        <p className="text-[14px] font-semibold text-[#111C3D]">
           {t("profileStrength.stepsRemaining", { count: String(remaining), label: remaining === 1 ? t("profileStrength.stepSingular") : t("profileStrength.stepPluralLabel") })}
         </p>
         <p className="text-[12px] text-[#1F2937]">{t("profileStrength.completeYourProfile")}</p>

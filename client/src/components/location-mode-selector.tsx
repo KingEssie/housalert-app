@@ -272,7 +272,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
   return (
     <div className="flex flex-col gap-5">
       {segmentedTabs ? (
-        <div className="flex bg-[#F5F7FA] rounded-lg p-1 gap-0.5">
+        <div className="flex bg-[#F3F4F6] rounded-2xl p-1 gap-0.5">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -320,7 +320,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
               onChange={(e) => handleCityInput(e.target.value)}
               onFocus={() => { if (cityResults.length > 0 && !value.place) setCityOpen(true); }}
               placeholder={t("location.searchCity")}
-              className={`w-full min-h-[52px] rounded-lg bg-[#F5F7FA] border px-11 text-[16px] text-[#1F2937] placeholder:text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-transparent transition-colors ${
+              className={`w-full min-h-[60px] rounded-[20px] bg-[#F3F4F6] border px-11 text-[16px] text-[#1F2937] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-transparent transition-colors ${
                 value.place ? "border-[#0D6EFD] bg-[#F5F7FA]/30" : "border-[#E5E7EB]"
               }`}
               data-testid="input-city-search"
@@ -379,7 +379,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       )}
 
       {value.tab === "wijken" && districtsNotAvailable && (
-        <div className="flex items-center gap-2 text-[#1F2937] text-[13px] bg-[#F5F7FA] rounded-lg px-4 py-3" data-testid="text-districts-unavailable">
+        <div className="flex items-center gap-2 text-[#1F2937] text-[13px] bg-[#F3F4F6] rounded-2xl px-4 py-3" data-testid="text-districts-unavailable">
           <AlertCircle className="w-4 h-4 flex-shrink-0 text-[#1F2937]" />
           <span>{t("location.districtsSoon")}</span>
         </div>
@@ -394,7 +394,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
 
       {value.tab === "radius" && (
         <div>
-          <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">{t("location.radiusLabel")}</label>
+          <label className="text-[16px] font-[700] text-[#111C3D] mb-3 block">{t("location.radiusLabel")}</label>
           <div className="relative">
             <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1F2937]" />
             <select
@@ -417,7 +417,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       {value.tab === "reistijd" && (
         <>
           <div ref={destContainerRef} className="relative">
-            <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">{t("location.workAddress")}</label>
+            <label className="text-[16px] font-[700] text-[#111C3D] mb-3 block">{t("location.workAddress")}</label>
             <div className="relative">
               <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#1F2937] pointer-events-none" />
               <input
@@ -426,7 +426,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                 onChange={(e) => handleDestInput(e.target.value)}
                 onFocus={() => { if (destResults.length > 0 && value.commuteLat == null) setDestOpen(true); }}
                 placeholder={t("location.searchAddress")}
-                className={`w-full min-h-[52px] rounded-lg bg-[#F5F7FA] border px-11 text-[16px] text-[#1F2937] placeholder:text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-transparent transition-colors ${
+                className={`w-full min-h-[60px] rounded-[20px] bg-[#F3F4F6] border px-11 text-[16px] text-[#1F2937] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-transparent transition-colors ${
                   value.commuteLat != null ? "border-[#0D6EFD] bg-[#F5F7FA]/30" : "border-[#E5E7EB]"
                 }`}
                 data-testid="input-commute-destination"
@@ -471,7 +471,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
           )}
 
           <div>
-            <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">{t("location.transport")}</label>
+            <label className="text-[16px] font-[700] text-[#111C3D] mb-3 block">{t("location.transport")}</label>
             <div className="flex gap-2">
               {([
                 { id: "auto" as const, icon: Car, label: t("location.transportOptions.car") },
@@ -496,7 +496,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
           </div>
 
           <div>
-            <label className="text-[16px] font-[700] text-[#1F2937] mb-3 block">{t("location.maxCommute")}</label>
+            <label className="text-[16px] font-[700] text-[#111C3D] mb-3 block">{t("location.maxCommute")}</label>
             <div className="relative">
               <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1F2937]" />
               <select
@@ -578,13 +578,13 @@ function DistrictMultiSelect({
 
   return (
     <div ref={ref} className="relative">
-      <label className="text-[16px] font-[700] text-[#1F2937] mb-2 block">
+      <label className="text-[16px] font-[700] text-[#111C3D] mb-2 block">
         {t("location.districtLabel")} <span className="font-normal text-[13px] text-[#1F2937]">{t("location.districtOptional")}</span>
       </label>
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full h-[56px] px-4 pr-10 rounded-lg border-0 bg-[#F5F7FA] text-[15px] font-medium text-[#1F2937] text-left relative flex items-center"
+        className="w-full h-[60px] px-4 pr-10 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] text-left relative flex items-center"
         data-testid="dropdown-districts"
       >
         <span className={selected.length === 0 ? "opacity-50" : ""}>

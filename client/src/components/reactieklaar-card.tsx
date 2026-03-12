@@ -101,7 +101,7 @@ export function ReactieklaarCard({
         <div className="w-8 h-8 rounded-full bg-[#F5F7FA] flex items-center justify-center">
           <Zap className="w-4 h-4 text-[#1F2937]" />
         </div>
-        <h3 className="text-[15px] font-semibold text-[#1F2937] flex-1">Reaktionsbereit</h3>
+        <h3 className="text-[15px] font-semibold text-[#111C3D] flex-1">Reaktionsbereit</h3>
         <span
           className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${
             allDone ? "bg-[#16A34A]/10 text-[#1F2937]" : "bg-[#F5F7FA] text-[#1F2937]"
