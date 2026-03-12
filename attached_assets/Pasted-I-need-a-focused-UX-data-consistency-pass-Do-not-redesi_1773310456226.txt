@@ -1,0 +1,131 @@
+I need a focused UX + data consistency pass. Do not redesign the entire app. Only apply the exact changes below.
+
+GOALS
+1. Make the UI more visually consistent
+2. Remove misleading match-score visuals
+3. Redesign the apply flow from modal to full-screen
+4. Critically audit why the app shows an extremely high number of matches that does not line up with email or expected account data
+
+================================
+A. DESIGN CONSISTENCY FIXES
+================================
+
+1. Icon circle background color
+There is a turquoise circular icon background in sections like the dashboard/search forecast card.
+Change this:
+- circle background → same primary blue as buttons
+- icon inside the circle → white
+
+Use:
+- primary blue background: #0D6EFD
+- icon color: #FFFFFF
+
+2. Remove “perfect match” / match percentage badges entirely
+Remove these completely from the app UI:
+- “Perfecte match”
+- any percentage like 90%, 96%, etc.
+- any score pill on listing cards
+- any score badge on listing detail/apply views
+
+Do not leave empty spacing where the badge used to be.
+
+================================
+B. APPLY FLOW REDESIGN
+================================
+
+Current issue:
+The “Reactie versturen” / apply flow opens as a modal sheet.
+I do NOT want this as a modal anymore.
+
+Change it to:
+- a full-screen page / full-screen route
+- consistent with the rest of the app
+
+Full-screen layout requirements:
+1. At the very top: listing image
+2. Below that: the page title
+   - use the same font size and font weight as other main page titles in the app
+3. The close/back control:
+   - should use the same circular size/style as the existing back-arrow circle buttons elsewhere in the app
+   - no oversized inconsistent close circle
+4. Then the rest of the apply content:
+   - listing summary
+   - steps/progress row
+   - editable application text
+   - action buttons
+
+Keep functionality intact:
+- copy reaction
+- mark as reacted
+- etc.
+
+================================
+C. MATCH COUNT / DATA CONSISTENCY AUDIT
+================================
+
+Critical issue:
+The app currently shows very high numbers such as 912 received matches.
+This feels wrong and does not line up clearly with:
+- latest emails
+- expected account state
+- visible matches count logic
+
+I need a critical audit and fix.
+
+Tasks:
+1. Trace exactly how the “received matches” count is currently calculated in:
+- profile/account summary
+- matches total label
+- home/dashboard summary
+
+2. Determine whether it is counting:
+- all historical raw match rows
+- duplicates
+- stale rows
+- hidden/non-visible matches
+- pre-premium matches
+- already-emailed + new rows combined
+- multiple rows for the same listing/profile/user
+
+3. Compare the count logic against:
+- what is actually visible in the app
+- what is represented in latest email digests
+- what should be shown to the user as “received matches”
+
+4. I want a user-facing count that is trustworthy.
+Prefer this rule unless there is a strong reason otherwise:
+- count unique, currently app-visible matches for the current user
+- do not count hidden, stale, duplicate, or non-visible rows
+- do not inflate totals with technical match rows
+
+5. If different surfaces need different meanings, make them explicit:
+- total visible matches
+- new matches
+But do NOT show an inflated misleading number.
+
+6. Output clearly:
+- root cause of the inflated number
+- old counting logic
+- new counting logic
+- exact files changed
+
+================================
+D. EMAIL ↔ APP CONSISTENCY CHECK
+================================
+
+Also verify whether the latest email experience aligns with the app:
+- listings from the latest email should be findable in the app for the same user
+- explain whether remaining difference is expected because email is a snapshot and app is live
+- if there is a real mismatch, fix it
+
+================================
+E. OUTPUT FORMAT
+================================
+
+Output only:
+1. Files changed
+2. UX changes applied
+3. Match count audit findings
+4. Exact count logic before vs after
+5. Email/app consistency findings
+6. Anything I should manually retest
