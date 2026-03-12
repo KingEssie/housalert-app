@@ -654,8 +654,6 @@ export async function registerRoutes(
         };
       });
 
-      const viewedListingIds = top50.map((m: any) => m.listing_id);
-      markViewed(user.id, viewedListingIds).catch(() => {});
 
       const stats = canonicalStats || { total: 0, new_count: 0, viewed: 0, saved: 0, applied: 0, email_sent: 0, push_sent: 0 };
 
@@ -1843,6 +1841,22 @@ export async function registerRoutes(
     }
   });
 
+  app.patch("/api/matches/:matchListingId/viewed", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { matchListingId } = req.params;
+      await markViewed(user.id, [matchListingId]);
+      return res.json({ listing_id: matchListingId, viewed: true });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   app.patch("/api/matches/:matchListingId/saved", async (req, res) => {
     try {
       const token = req.headers.authorization?.replace("Bearer ", "");
@@ -2071,11 +2085,20 @@ export async function registerRoutes(
 
   async function requireAdmin(req: any, res: any, next: any) {
     const token = req.headers.authorization?.replace("Bearer ", "");
-    if (!token) return res.status(401).json({ error: "Unauthorized" });
+    if (!token) {
+      log(`[admin] requireAdmin: no token in Authorization header`);
+      return res.status(401).json({ error: "Unauthorized — no token provided" });
+    }
 
     const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
-    if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
-    if (!isAdminEmail(user.email || "")) return res.status(403).json({ error: "Forbidden" });
+    if (authErr || !user) {
+      log(`[admin] requireAdmin: auth failed — ${authErr?.message || "no user"}`);
+      return res.status(401).json({ error: "Unauthorized — invalid session" });
+    }
+    if (!isAdminEmail(user.email || "")) {
+      log(`[admin] requireAdmin: ${user.email} is not an admin`);
+      return res.status(403).json({ error: "Forbidden — not an admin" });
+    }
 
     (req as any).adminUser = user;
     next();

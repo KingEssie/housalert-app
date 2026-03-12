@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api-base";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
@@ -107,6 +107,14 @@ export default function ListingDetailPage() {
     },
     enabled: !!id,
   });
+
+  useEffect(() => {
+    if (!id || !session?.access_token) return;
+    apiFetch(`/api/matches/${id}/viewed`, {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    }).catch(() => {});
+  }, [id, session?.access_token]);
 
   if (isLoading) {
     return (

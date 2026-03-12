@@ -157,6 +157,7 @@ A mobile-first German-language rental alert application for the German market. U
 - **Deduplication**: `dedup_key` = `source:listing_id`, unique constraint on `(user_id, listing_id)` prevents duplicate counting
 - **Counts**: `totalCount`, `newCount`, and `canonicalStats` in `/api/matches` response sourced exclusively from `user_matches` with exclusive tab buckets (applied > saved > viewed > new), all filtered by `visible_in_app AND NOT dismissed`
 - **Per-match state**: Each match in API response includes `canonical_viewed`, `canonical_saved`, `canonical_applied`, `canonical_dismissed` from `user_matches`
+- **Viewed tracking**: listings are marked as viewed only when user opens listing detail page (`/listing/:id`), NOT auto-marked on list fetch. Endpoint: `PATCH /api/matches/:listingId/viewed`
 - **Save endpoint**: `PATCH /api/matches/:listingId/saved` — toggles saved state in canonical `user_matches`, returns 404 if match row not found
 - **`fetch_runs` table** (Replit PG) — audit trail per ingestion cycle with stats: fetched_count, deduplicated_count, newly_matched_count, emails_sent_count, pushes_sent_count, error_count, cities_processed
 - **Admin debug page**: `/admin/match-audit` — admin-only (email: `martin.essie87@gmail.com`), shows account info, canonical stats, recent match deliveries with per-match email/push/viewed status, fetch run history, backfill action

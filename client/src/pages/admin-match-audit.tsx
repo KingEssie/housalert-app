@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { apiFetch } from "@/lib/api-base";
+import { supabase } from "@/lib/supabase";
 import { PageHeader } from "@/components/ui/page-header";
 import { Loader2, RefreshCw, Database, Mail, Bell, Eye, Send, CheckCircle2, Clock, AlertTriangle } from "lucide-react";
 
@@ -56,11 +57,21 @@ export default function AdminMatchAudit() {
   const [backfilling, setBackfilling] = useState(false);
   const [backfillResult, setBackfillResult] = useState<string | null>(null);
 
+  async function getAuthHeaders(): Promise<Record<string, string>> {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) return {};
+    return { Authorization: `Bearer ${session.access_token}` };
+  }
+
   async function loadData() {
     setLoading(true);
     setError(null);
     try {
-      const res = await apiFetch("/api/admin/match-audit");
+      const headers = await getAuthHeaders();
+      if (!headers.Authorization) {
+        throw new Error("Not authenticated — please log in again");
+      }
+      const res = await apiFetch("/api/admin/match-audit", { headers });
       if (!res.ok) {
         const errData = await res.json().catch(() => ({ error: "Failed to load" }));
         throw new Error(errData.error || `HTTP ${res.status}`);
@@ -77,9 +88,19 @@ export default function AdminMatchAudit() {
     setBackfilling(true);
     setBackfillResult(null);
     try {
-      const res = await apiFetch("/api/admin/match-audit/backfill", { method: "POST" });
+      const headers = await getAuthHeaders();
+      if (!headers.Authorization) {
+        setBackfillResult("Error: Not authenticated");
+        return;
+      }
+      const res = await apiFetch("/api/admin/match-audit/backfill", { method: "POST", headers });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+        setBackfillResult(`Error: ${errData.error || `HTTP ${res.status}`}`);
+        return;
+      }
       const result = await res.json();
-      setBackfillResult(`Backfilled ${result.backfilled} matches from ${result.total_supabase_matches} Supabase records`);
+      setBackfillResult(`Backfilled ${result.backfilled ?? 0} matches from ${result.total_supabase_matches ?? 0} Supabase records`);
       loadData();
     } catch (err: any) {
       setBackfillResult(`Error: ${err.message}`);
@@ -88,7 +109,10 @@ export default function AdminMatchAudit() {
     }
   }
 
-  useEffect(() => { loadData(); }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => loadData(), 200);
+    return () => clearTimeout(timer);
+  }, []);
 
   if (loading) {
     return (

@@ -1,0 +1,106 @@
+We need to debug two data issues in the app: admin access still returns Unauthorized, and the viewed listings count is likely incorrect.
+
+Please do a full debug pass and fix both issues properly.
+
+PART 1 — Admin / Match Audit unauthorized
+Problem:
+- The Match Audit / admin screen still shows “Unauthorized”.
+- Pressing “Retry” does not resolve it.
+
+Tasks:
+1. Trace the full auth flow for the admin page.
+- Check how the current user session is loaded.
+- Check whether the auth token/session is actually being sent to the backend/admin endpoint.
+- Check whether the backend is validating the user correctly.
+- Check whether the admin role/email permission logic matches the actual user record in the database.
+
+2. Verify the admin authorization logic.
+- Identify exactly why the current logged-in user is rejected.
+- Check:
+  - user id
+  - email
+  - role
+  - any is_admin flag
+  - any whitelist logic
+  - any Supabase auth metadata
+  - any database profile join used for permission checks
+
+3. Fix the Retry button behavior.
+- Retry must perform a real revalidation:
+  - re-check current session
+  - refresh auth state if needed
+  - re-run the admin fetch
+- It should not just repeat the same failing UI state without refreshing dependencies.
+
+4. Add temporary debug logging.
+- Log:
+  - current authenticated user id
+  - current authenticated email
+  - resolved admin role / flags
+  - backend response status for the admin endpoint
+  - exact reason for unauthorized failure
+- Make this easy to inspect in development.
+
+5. If the issue is caused by RLS / permissions / server route protection, fix it properly.
+- Do not patch around it in the frontend.
+- Ensure the admin screen works only for valid admins, but does work for the intended admin user.
+
+PART 2 — Incorrect viewed listings count
+Problem:
+- The total listing count now seems correct.
+- But the “Bekeken” count appears too high and likely includes stale or incorrect data.
+- The user did not personally view that many listings.
+
+Tasks:
+1. Trace the source of truth for the viewed count.
+- Identify whether it comes from:
+  - database
+  - localStorage
+  - sessionStorage
+  - mock data
+  - seeded dev data
+  - derived frontend state
+  - automatic tracking on render
+
+2. Ensure viewed listings are tracked per actual authenticated user only.
+- Viewed state must never be global or shared across users/dev sessions.
+- It must not include seed data or other users’ viewed records.
+
+3. Check whether listings are being marked as viewed too early.
+- A listing must NOT become viewed simply because it appears in a list or card render.
+- Only mark as viewed when the intended user action occurs (for example opening the listing detail or explicit inspection, depending on app rules).
+
+4. Clear stale dev/test state.
+- Remove or invalidate any old viewed-listing records that came from:
+  - mock data
+  - development scripts
+  - local browser storage
+  - previous unauthenticated sessions
+- Make sure the current user sees only their own valid viewed count.
+
+5. Add temporary debug logging for viewed tracking.
+- Log:
+  - when a listing is marked as viewed
+  - which user id it is tied to
+  - which listing id is stored
+  - whether the source is local or database
+  - how the final viewed count is calculated
+
+6. Make the final counts deterministic.
+- “Nieuw”, “Bekeken”, “Opgeslagen”, and “Gereageerd” must all come from consistent user-specific data.
+- Remove any fallback logic that mixes mock data with real user state.
+
+PART 3 — Verification
+After the fixes:
+1. Confirm why admin was unauthorized.
+2. Confirm what caused the incorrect viewed count.
+3. Explain what was changed.
+4. Verify that the current user now:
+- can access Match Audit if authorized
+- sees correct user-specific viewed counts
+- does not inherit stale/dev/test state
+
+Important:
+- Do a real root-cause fix, not a temporary UI workaround.
+- Prefer Supabase/database as source of truth over local temporary client state.
+- Remove hidden dev assumptions that could pollute counts.
