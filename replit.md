@@ -9,6 +9,7 @@ A mobile-first German-language rental alert application for the German market. U
 - **Data:** Supabase (PostgreSQL) — most tables: `search_profiles`, `listings`, `matches`, `subscriptions`, `user_notification_settings`, `push_sent_log`, `push_subscriptions`. Replit PostgreSQL (via `pg` pool) — `user_profile_data`, `user_matches` (canonical match tracking), `fetch_runs` (ingestion audit), `listing_freshness`, `match_timestamps`, `onboarding_drafts`, `ingestion_runs`
 - **Backend:** Express (minimal — auth + data handled by Supabase)
 - **Payments:** Stripe (sandbox, via Replit connector)
+- **Mobile:** Expo (WebView wrapper) in `mobile/` — wraps production web app URL for iOS/Android distribution via Expo Go or EAS Build
 
 ## Architecture
 
