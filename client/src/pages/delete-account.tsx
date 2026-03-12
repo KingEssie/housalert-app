@@ -66,8 +66,8 @@ export default function DeleteAccountPage() {
       <PageHeader title={t("deleteAccount.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
       <main className="flex-1 flex flex-col items-center justify-center px-6">
-        <div className="w-16 h-16 rounded-2xl bg-[#EBF2FF] flex items-center justify-center mb-6">
-          <AlertTriangle className="w-8 h-8 text-[#0D6EFD]" />
+        <div className="w-16 h-16 rounded-2xl bg-[#0D6EFD] flex items-center justify-center mb-6">
+          <AlertTriangle className="w-8 h-8 text-white" />
         </div>
         <h2 className="text-[22px] font-bold text-[#111C3D] mb-3 text-center" data-testid="text-delete-account-title">
           {t("deleteAccount.confirmTitle")}

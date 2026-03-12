@@ -520,13 +520,16 @@ export async function registerRoutes(
         .single();
       const premiumStartedAt = subRow?.created_at || null;
 
+      const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
+      const cutoff = premiumStartedAt
+        ? (new Date(premiumStartedAt).getTime() > new Date(ninetyDaysAgo).getTime() ? premiumStartedAt : ninetyDaysAgo)
+        : ninetyDaysAgo;
+
       let matchQuery = supabase
         .from("matches")
         .select("id, listing_id, search_profile_id, created_at")
-        .eq("user_id", user.id);
-      if (premiumStartedAt) {
-        matchQuery = matchQuery.gte("created_at", premiumStartedAt);
-      }
+        .eq("user_id", user.id)
+        .gte("created_at", cutoff);
       const { data: matchRows, error: mErr } = await matchQuery;
 
       if (mErr) return res.status(500).json({ error: mErr.message });
@@ -548,12 +551,6 @@ export async function registerRoutes(
       }
       let uniqueMatches = Object.values(dedupedByListing);
 
-      if (premiumStartedAt) {
-        const premiumStart = new Date(premiumStartedAt).getTime();
-        uniqueMatches = uniqueMatches.filter((m: any) => {
-          return new Date(m.matched_at).getTime() >= premiumStart;
-        });
-      }
 
       const allListingIds = uniqueMatches.map((m: any) => m.listing_id);
       if (allListingIds.length === 0) return res.json({ matches: [], totalCount: 0 });
@@ -1742,13 +1739,16 @@ export async function registerRoutes(
       .single();
     const premiumStartedAt = subRow?.created_at || null;
 
+    const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
+    const cutoff = premiumStartedAt
+      ? (new Date(premiumStartedAt).getTime() > new Date(ninetyDaysAgo).getTime() ? premiumStartedAt : ninetyDaysAgo)
+      : ninetyDaysAgo;
+
     let dashMatchQuery = supabase
       .from("matches")
       .select("id, listing_id, created_at")
-      .eq("user_id", userId);
-    if (premiumStartedAt) {
-      dashMatchQuery = dashMatchQuery.gte("created_at", premiumStartedAt);
-    }
+      .eq("user_id", userId)
+      .gte("created_at", cutoff);
     const { data: matchRows } = await dashMatchQuery;
 
     if (!matchRows || matchRows.length === 0) {
@@ -1770,13 +1770,6 @@ export async function registerRoutes(
       }
     }
     let uniqueMatches = Object.values(dedupedByListing);
-
-    if (premiumStartedAt) {
-      const premiumStart = new Date(premiumStartedAt).getTime();
-      uniqueMatches = uniqueMatches.filter((m: any) => {
-        return new Date(m.matched_at).getTime() >= premiumStart;
-      });
-    }
 
     const listingIds = uniqueMatches.map((m: any) => m.listing_id);
     if (listingIds.length === 0) {

@@ -40,6 +40,7 @@ import { DocumentenGuidePage, SchufaGuidePage, ZoekstrategieGuidePage, NetwerkGu
 import DeleteAccountPage from "@/pages/delete-account";
 import SubscriptionSuccessPage from "@/pages/subscription-success";
 import AdminIngestionPage from "@/pages/admin-ingestion";
+import ApplyPage from "@/pages/apply";
 
 function ProtectedRoute({ component: Component, skipOnboardingCheck }: { component: React.ComponentType; skipOnboardingCheck?: boolean }) {
   const { user, loading } = useAuth();
@@ -98,6 +99,7 @@ function Router() {
       <Route path="/dashboard/searches/edit/:id" component={() => <ProtectedRoute component={NewSearchPage} />} />
       <Route path="/settings/notifications" component={() => <ProtectedRoute component={NotificationSettingsPage} />} />
       <Route path="/listing/:id" component={() => <ProtectedRoute component={ListingDetailPage} />} />
+      <Route path="/apply/:id" component={() => <ProtectedRoute component={ApplyPage} />} />
       <Route path="/application-letter" component={() => <ProtectedRoute component={ApplicationLetterPage} />} />
       <Route path="/profile/details" component={() => <ProtectedRoute component={ProfileDetailsPage} />} />
       <Route path="/profile/edit/:field" component={() => <ProtectedRoute component={ProfileEditPage} />} />

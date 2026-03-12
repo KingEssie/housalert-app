@@ -13,7 +13,6 @@ import { SubscriptionGate } from "@/components/subscription-gate";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { ApplySheet } from "@/components/apply-sheet";
 import { useTranslation } from "@/i18n";
 import {
   Home,
@@ -162,12 +161,6 @@ const MATCH_REASON_KEYS: Record<string, string> = {
   goede_prijs: "matchReason.price",
 };
 
-function displayMatchLabel(score: number, serverLabel: string, t: (key: string) => string): string {
-  if (score >= 90) return t("matchLabel.perfect");
-  if (score >= 75) return t("matchLabel.good");
-  if (score >= 65) return t("matchLabel.interesting");
-  return serverLabel;
-}
 
 function MatchCard({
   match,
@@ -256,18 +249,6 @@ function MatchCard({
       </div>
 
       <div className="p-4 flex flex-col gap-2.5">
-        {match.match_score != null && match.match_label && (
-          <div data-testid={`score-badge-${match.listing_id}`}>
-            <span className={`inline-flex text-[12px] font-bold px-3 py-1 rounded-full ${
-              match.match_score >= 90 ? "bg-[#0D6EFD] text-[#1F2937]" :
-              match.match_score >= 75 ? "bg-[#F5F7FA] text-[#1F2937]" :
-              "bg-[#F5F7FA] text-[#1F2937]"
-            }`}>
-              {displayMatchLabel(match.match_score, match.match_label, t)} · {match.match_score}%
-            </span>
-          </div>
-        )}
-
         <div>
           <div className="flex items-start justify-between gap-3">
             <h3
@@ -883,7 +864,7 @@ const MATCH_SUB_TAB_CONFIG: { key: MatchSubTab; labelKey: string; Icon: any }[] 
 function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undefined; setActiveTab: (tab: TabKey) => void }) {
   const [subTab, setSubTab] = useState<MatchSubTab>("nieuw");
   const [refreshKey, setRefreshKey] = useState(0);
-  const [applyMatch, setApplyMatch] = useState<ApiMatch | null>(null);
+  const [, navigate] = useLocation();
   const { t } = useTranslation();
 
   const apiMatchesQuery = useQuery<ApiMatchesResponse>({
@@ -930,26 +911,8 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
   }, [refreshStatuses]);
 
   const handleApplyClick = useCallback((match: ApiMatch) => {
-    setApplyMatch(match);
-  }, []);
-
-  const handleSheetApplied = useCallback(() => {
-    if (applyMatch) {
-      markApplied(applyMatch.listing_id);
-      if (accessToken) {
-        apiFetch(`/api/matches/${applyMatch.listing_id}/applied`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({ applied: true }),
-        }).catch(() => {});
-      }
-      refreshStatuses();
-      setApplyMatch(null);
-    }
-  }, [applyMatch, refreshStatuses, accessToken]);
+    navigate(`/apply/${match.listing_id}`);
+  }, [navigate]);
 
   const matchTabs = matches.map((m) => ({ ...m, _tab: getMatchTab(m.listing_id) }));
   const filteredMatches = matchTabs.filter((m) => m._tab === subTab);
@@ -1088,20 +1051,6 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
         </div>
       )}
 
-      {applyMatch && (
-        <ApplySheet
-          listing={{
-            id: applyMatch.listing_id,
-            title: applyMatch.title,
-            city: applyMatch.city,
-            price: applyMatch.price,
-            url: applyMatch.url,
-          }}
-          open={!!applyMatch}
-          onClose={() => setApplyMatch(null)}
-          onMarkedApplied={handleSheetApplied}
-        />
-      )}
     </div>
   );
 }
@@ -1125,8 +1074,8 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
       </header>
 
       <main className="flex-1 flex flex-col items-center justify-center px-6">
-        <div className="w-16 h-16 rounded-2xl bg-[#EBF2FF] flex items-center justify-center mb-6">
-          <Trash2 className="w-8 h-8 text-[#0D6EFD]" />
+        <div className="w-16 h-16 rounded-2xl bg-[#0D6EFD] flex items-center justify-center mb-6">
+          <Trash2 className="w-8 h-8 text-white" />
         </div>
         <h2 className="text-[22px] font-bold text-[#111C3D] mb-3 text-center" data-testid="text-delete-title">
           {t("filters.deleteQuestion")}

@@ -6,7 +6,6 @@ import { useAuth } from "@/lib/auth";
 import { useTranslation } from "@/i18n";
 import { MapPin, Euro, BedDouble, Ruler, ExternalLink, Clock, Globe, Zap, CheckCircle2, ImageIcon, ArrowLeft, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ApplySheet } from "@/components/apply-sheet";
 
 function FloatingBackButton({ navigate }: { navigate: (to: string) => void }) {
   return (
@@ -92,7 +91,6 @@ export default function ListingDetailPage() {
   const id = params?.id;
   const { session } = useAuth();
   const { t } = useTranslation();
-  const [applyOpen, setApplyOpen] = useState(false);
   const [imgError, setImgError] = useState(false);
   const relativeTime = useRelativeTime();
 
@@ -149,19 +147,6 @@ export default function ListingDetailPage() {
   const hasImage = !!listing.image_url;
   const gradient = getCityGradient(listing.city);
 
-  const scoreColor = listing.match_score != null
-    ? listing.match_score >= 90 ? "bg-[#0D6EFD] text-[#1F2937]"
-    : listing.match_score >= 75 ? "bg-[#F5F7FA] text-[#1F2937]"
-    : "bg-[#F5F7FA] text-[#1F2937]"
-    : "";
-
-  const displayMatchLabel = (score: number, serverLabel: string): string => {
-    if (score >= 90) return t("matchLabel.perfect");
-    if (score >= 75) return t("matchLabel.good");
-    if (score >= 65) return t("matchLabel.interesting");
-    return serverLabel;
-  };
-
   const MATCH_REASON_DETAIL: Record<string, { label: string; description: string }> = {
     Standort: { label: t("listing.matchReasons.inCity"), description: t("listing.matchReasons.inCityDesc") },
     Preis: { label: t("listing.matchReasons.inBudget"), description: t("listing.matchReasons.inBudgetDesc") },
@@ -207,14 +192,6 @@ export default function ListingDetailPage() {
       <main className="flex-1 max-w-xl mx-auto w-full px-5 -mt-6 relative z-10 pb-36">
         <div className="space-y-4">
           <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5">
-            {listing.match_score != null && listing.match_label && (
-              <div className="mb-3" data-testid="listing-score-badge">
-                <span className={`inline-flex text-[13px] font-bold px-3.5 py-1.5 rounded-full ${scoreColor}`}>
-                  {displayMatchLabel(listing.match_score, listing.match_label)} · {listing.match_score}%
-                </span>
-              </div>
-            )}
-
             <h1 className="text-[24px] font-[800] text-[#111C3D] leading-[1.2] tracking-[-0.02em] mb-2" data-testid="text-listing-title">
               {listing.title}
             </h1>
@@ -352,7 +329,7 @@ export default function ListingDetailPage() {
         <div className="max-w-xl mx-auto flex flex-col gap-2">
           <div className="flex gap-2">
             <Button
-              onClick={() => setApplyOpen(true)}
+              onClick={() => navigate(`/apply/${listing.id}`)}
               className="flex-1 h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold flex items-center justify-center gap-2"
               data-testid="button-reageer-detail"
             >
@@ -375,43 +352,6 @@ export default function ListingDetailPage() {
         </div>
       </div>
 
-      <ApplySheet
-        listing={{
-          id: listing.id,
-          title: listing.title,
-          city: listing.city,
-
-          price: listing.price,
-          url: listing.url,
-        }}
-        open={applyOpen}
-        onClose={() => setApplyOpen(false)}
-        onMarkedApplied={() => {
-          const MATCH_APPLIED_KEY = "housalert_match_applied";
-          const MATCH_VIEWED_KEY = "housalert_match_viewed";
-          try {
-            const appliedStored = localStorage.getItem(MATCH_APPLIED_KEY);
-            const appliedSet = new Set<string>(appliedStored ? JSON.parse(appliedStored) : []);
-            appliedSet.add(listing.id);
-            localStorage.setItem(MATCH_APPLIED_KEY, JSON.stringify([...appliedSet]));
-            const viewedStored = localStorage.getItem(MATCH_VIEWED_KEY);
-            const viewedSet = new Set<string>(viewedStored ? JSON.parse(viewedStored) : []);
-            viewedSet.add(listing.id);
-            localStorage.setItem(MATCH_VIEWED_KEY, JSON.stringify([...viewedSet]));
-          } catch {}
-          if (session?.access_token) {
-            apiFetch(`/api/matches/${listing.id}/applied`, {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${session.access_token}`,
-              },
-              body: JSON.stringify({ applied: true }),
-            }).catch(() => {});
-          }
-          setApplyOpen(false);
-        }}
-      />
     </div>
   );
 }
