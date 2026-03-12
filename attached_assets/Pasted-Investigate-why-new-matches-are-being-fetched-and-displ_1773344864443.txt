@@ -1,0 +1,54 @@
+Investigate why new matches are being fetched and displayed in the app/admin dashboard, but no new emails are being sent.
+
+Current observed state:
+- Total matches increased from 20 to 38
+- App and admin dashboard correctly show the new matches
+- Emails Sent remains at 20
+- Last fetch run updates, but last email sent does not keep up
+
+I need you to debug the full post-fetch email pipeline.
+
+Tasks:
+1. Trace the full flow from fetch -> match persistence -> email eligibility -> email send attempt.
+2. Add structured logs for every fetch run showing:
+   - matches found
+   - new matches inserted
+   - duplicates skipped
+   - matches eligible for email
+   - email send attempts
+   - email successes
+   - email failures
+3. Add per-match eligibility logging with a clear reason when email is skipped:
+   - already_emailed
+   - recently_used
+   - rate_limited
+   - missing_email
+   - invalid_state
+   - other
+4. Inspect all recentlyUsed / dedupe / already-emailed logic.
+   - Verify the dedupe key is correct
+   - Verify expiration/reset behavior
+   - Verify it is not blocking valid newly fetched matches
+5. Inspect provider limits and email sending errors.
+   - Surface provider/API response codes in logs
+   - Do not fail silently
+6. Add an admin-visible debug section or server log summary for:
+   - pending email candidates
+   - blocked candidates with reason counts
+   - failed sends with last error
+7. If there is a queue or cron split, confirm the email job is actually running after fetch.
+8. Do not refactor broadly. Keep changes minimal and focused on diagnosis plus safe fixes.
+9. Run only minimal smoke checks, not broad expensive test suites.
+
+Also implement these UI changes:
+1. On the pages Matches, Tips, and Filters:
+   - add the same floating/sticky top banner/header style used on the homepage where “Hallo Martin” appears
+   - keep it visually consistent with the home screen
+2. On the Tips page:
+   - remove the description/subtext under tips where possible for a cleaner UI
+
+Return:
+- root cause found
+- exact fix applied
+- files changed
+- any remaining risks

@@ -895,16 +895,19 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
       }, {} as Record<string, number>);
 
   return (
-    <div className="flex flex-col gap-5 px-6 pt-6 pb-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-page-title">{t("matches.title")}</h1>
-        {totalCount > 0 && (
-          <span className="text-[13px] font-medium text-[#1F2937] bg-[#F5F7FA] px-2.5 py-1 rounded-full" data-testid="badge-match-count">
-            {totalCount > 999 ? "999+" : totalCount} {totalCount === 1 ? t("matches.listingSingular") : t("matches.listingPlural")}
-          </span>
-        )}
+    <div className="flex flex-col pb-6">
+      <div className="sticky top-0 z-10 bg-white pt-5 pb-3 px-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-page-title">{t("matches.title")}</h1>
+          {totalCount > 0 && (
+            <span className="text-[13px] font-medium text-[#1F2937] bg-[#F5F7FA] px-2.5 py-1 rounded-full" data-testid="badge-match-count">
+              {totalCount > 999 ? "999+" : totalCount} {totalCount === 1 ? t("matches.listingSingular") : t("matches.listingPlural")}
+            </span>
+          )}
+        </div>
       </div>
 
+      <div className="px-6 flex flex-col gap-5">
       <div className="flex relative border-b border-[#E5E7EB]" data-testid="match-sub-tabs">
         {MATCH_SUB_TAB_CONFIG.map(({ key, labelKey }) => {
           const count = tabCounts[key] || 0;
@@ -1029,6 +1032,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
       )}
 
     </div>
+    </div>
   );
 }
 
@@ -1113,9 +1117,11 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
   const atLimit = profileCount >= MAX_PROFILES;
 
   return (
-    <div className="flex flex-col gap-5 px-6 pt-6 pb-6">
-      <h1 className="text-page-title">{t("filters.title")}</h1>
-
+    <div className="flex flex-col pb-6">
+      <div className="sticky top-0 z-10 bg-white pt-5 pb-3 px-6">
+        <h1 className="text-page-title">{t("filters.title")}</h1>
+      </div>
+      <div className="px-6 flex flex-col gap-5">
       {profilesQuery.isLoading ? (
         <div className="flex flex-col gap-3">
           {[1, 2].map((i) => (
@@ -1179,6 +1185,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
           }}
         />
       )}
+      </div>
     </div>
   );
 }

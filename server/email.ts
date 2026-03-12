@@ -220,14 +220,14 @@ ${listingCard(listing, true)}`;
     });
 
     if (error) {
-      log(`Failed to send match alert to ${userEmail}: ${error.message}`);
+      log(`[EMAIL FAIL] to=${userEmail} listing="${listing.title}" error=${error.message} name=${(error as any).name || "unknown"} statusCode=${(error as any).statusCode || "N/A"}`);
       return false;
     }
 
-    log(`Match alert sent to ${userEmail} for listing "${listing.title}"`);
+    log(`[EMAIL OK] to=${userEmail} listing="${listing.title}"`);
     return true;
   } catch (err: any) {
-    log(`Error sending match alert: ${err.message}`);
+    log(`[EMAIL ERROR] to=${userEmail} err=${err.message} stack=${err.stack?.split("\n")[1]?.trim() || "N/A"}`);
     return false;
   }
 }
@@ -271,14 +271,14 @@ ${htmlListings}`;
     });
 
     if (error) {
-      log(`Failed to send batch alert to ${userEmail}: ${error.message}`);
+      log(`[EMAIL FAIL] batch to=${userEmail} count=${listings.length} error=${error.message} name=${(error as any).name || "unknown"} statusCode=${(error as any).statusCode || "N/A"}`);
       return false;
     }
 
-    log(`Batch alert sent to ${userEmail} with ${listings.length} listings`);
+    log(`[EMAIL OK] batch to=${userEmail} count=${listings.length}`);
     return true;
   } catch (err: any) {
-    log(`Error sending batch alert: ${err.message}`);
+    log(`[EMAIL ERROR] batch to=${userEmail} err=${err.message} stack=${err.stack?.split("\n")[1]?.trim() || "N/A"}`);
     return false;
   }
 }

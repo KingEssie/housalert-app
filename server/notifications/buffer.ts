@@ -357,6 +357,7 @@ export function clearBuffer(): void {
 
 export async function recoverUndeliveredMatches(supabase: any): Promise<{ recovered: number; sent: number; failed: number }> {
   if (!areAlertsEnabled()) {
+    log(`[RECOVERY] Skipped — ALERTS_ENABLED=${process.env.ALERTS_ENABLED}`);
     return { recovered: 0, sent: 0, failed: 0 };
   }
 
@@ -374,14 +375,28 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
 
   log(`[RECOVERY] Found ${undelivered.length} undelivered matches across ${byUser.size} users`);
 
+  let skippedNoSub = 0;
+  let skippedNoEmail = 0;
+  let buffered = 0;
+
   for (const [userId, matches] of byUser.entries()) {
     const subStatus = await getSubscriptionStatus(userId);
     const hasAccess = subStatus.isActive || subStatus.isTrial;
-    if (!hasAccess) continue;
+    if (!hasAccess) {
+      skippedNoSub += matches.length;
+      log(`[RECOVERY] User ${userId.substring(0, 8)}: skipped ${matches.length} matches (no active subscription, status=${subStatus.status})`);
+      continue;
+    }
 
     const { data: userData } = await supabase.auth.admin.getUserById(userId);
     const email = userData?.user?.email;
-    if (!email) continue;
+    if (!email) {
+      skippedNoEmail += matches.length;
+      log(`[RECOVERY] User ${userId.substring(0, 8)}: skipped ${matches.length} matches (no email found)`);
+      continue;
+    }
+
+    log(`[RECOVERY] User ${userId.substring(0, 8)}: buffering ${matches.length} matches for ${email}`);
 
     for (const m of matches) {
       bufferMatchAlert(userId, email, {
@@ -394,8 +409,11 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
         url: m.listing_url,
         matched_at: m.matched_at,
       });
+      buffered++;
     }
   }
+
+  log(`[RECOVERY] Summary: total=${undelivered.length} buffered=${buffered} skippedNoSub=${skippedNoSub} skippedNoEmail=${skippedNoEmail}`);
 
   const bufSize = getBufferSize();
   if (bufSize.listings === 0) {
@@ -403,7 +421,8 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
     return { recovered: undelivered.length, sent: 0, failed: 0 };
   }
 
-  log(`[RECOVERY] Re-buffered ${bufSize.listings} listings for ${bufSize.users} users — flushing`);
+  log(`[RECOVERY] Flushing ${bufSize.listings} listings for ${bufSize.users} users`);
   const result = await flushMatchAlertBuffer(supabase);
+  log(`[RECOVERY] Flush result: sent=${result.sent} failed=${result.failed}`);
   return { recovered: undelivered.length, sent: result.sent, failed: result.failed };
 }

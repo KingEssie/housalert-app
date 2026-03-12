@@ -2480,5 +2480,57 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/admin/debug/email-pipeline", requireAdmin, async (_req, res) => {
+    try {
+      const { getBufferSize } = await import("./notifications/buffer");
+      const { getUndeliveredMatches } = await import("./user-matches");
+
+      const bufSize = getBufferSize();
+      const undelivered = await getUndeliveredMatches(24);
+
+      const byUser = new Map<string, { count: number; oldest: string | null }>();
+      for (const m of undelivered) {
+        const existing = byUser.get(m.user_id);
+        if (existing) {
+          existing.count++;
+          if (m.matched_at && (!existing.oldest || m.matched_at < existing.oldest)) {
+            existing.oldest = m.matched_at;
+          }
+        } else {
+          byUser.set(m.user_id, { count: 1, oldest: m.matched_at || null });
+        }
+      }
+
+      const perUserStats = await pgPool.query(`
+        SELECT user_id,
+          COUNT(*) as total,
+          COUNT(*) FILTER (WHERE email_sent) as emailed,
+          COUNT(*) FILTER (WHERE push_sent) as pushed,
+          COUNT(*) FILTER (WHERE NOT email_sent AND NOT push_sent AND visible_in_app AND NOT dismissed) as pending
+        FROM user_matches
+        GROUP BY user_id
+      `);
+
+      res.json({
+        alerts_enabled: process.env.ALERTS_ENABLED === "true",
+        buffer: bufSize,
+        undelivered_24h: {
+          total: undelivered.length,
+          users: byUser.size,
+          per_user: Object.fromEntries(byUser),
+        },
+        per_user_delivery: perUserStats.rows.map((r: any) => ({
+          user_id: r.user_id.substring(0, 8),
+          total: Number(r.total),
+          emailed: Number(r.emailed),
+          pushed: Number(r.pushed),
+          pending: Number(r.pending),
+        })),
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   return httpServer;
 }
