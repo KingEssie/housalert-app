@@ -133,6 +133,37 @@ const INJECTED_JS = `
     document.documentElement.style.userSelect = 'none';
     window.__HOUSALERT_NATIVE__ = true;
     window.__HOUSALERT_PLATFORM__ = '${Platform.OS}';
+
+    var _lastPostedUserId = null;
+    function pollAuthState() {
+      try {
+        var raw = null;
+        for (var i = 0; i < localStorage.length; i++) {
+          var key = localStorage.key(i);
+          if (key && key.indexOf('auth-token') !== -1) {
+            raw = localStorage.getItem(key);
+            break;
+          }
+        }
+        if (!raw) return;
+        var parsed = JSON.parse(raw);
+        var session = parsed && (parsed.session || parsed);
+        var userId = session && session.user && session.user.id;
+        var accessToken = session && session.access_token;
+        if (userId && accessToken && userId !== _lastPostedUserId) {
+          _lastPostedUserId = userId;
+          window.ReactNativeWebView.postMessage(JSON.stringify({
+            type: 'AUTH_STATE',
+            user_id: userId,
+            access_token: accessToken
+          }));
+        }
+      } catch(e) {}
+    }
+    setTimeout(pollAuthState, 2000);
+    setTimeout(pollAuthState, 5000);
+    setTimeout(pollAuthState, 10000);
+
     true;
   })();
 `;
@@ -222,6 +253,10 @@ export default function App() {
         }
 
         authRef.current = { user_id: msg.user_id, access_token: msg.access_token };
+        
+        if (pushTokenRef.current) {
+          console.log("[PUSH] Retry register — auth now available, push token exists");
+        }
         await tryRegister();
       } catch (err) {
         console.error("[BRIDGE] Failed to parse message:", err);
