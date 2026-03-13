@@ -1,0 +1,45 @@
+I need you to run a strict end-to-end Expo push readiness check for my current account and tell me whether I can expect real push notifications right now.
+
+Do NOT explain broadly. Perform the checks and report the actual status.
+
+Checks to perform:
+
+1. Verify Expo push token registration for my current user
+- Check whether there is an active Expo push token stored for my current account
+- Show whether the token is active/inactive
+- Confirm which user it belongs to
+- Confirm it is not a placeholder or malformed token
+
+2. Verify app-side push prerequisites
+- Confirm whether push permission was granted on the device side, if inferable from stored token state / registration logs
+- Confirm whether the mobile app registration bridge completed successfully for the current account
+
+3. Verify backend delivery readiness
+- Confirm whether Expo push sending is now wired into the real match buffer/flush pipeline
+- Confirm whether the backend can look up active Expo tokens for my user
+- Confirm whether push_enabled is ON for my current user
+- Confirm whether my account meets the subscription/trial requirement for push delivery
+- Confirm whether there is any condition currently blocking push delivery
+
+4. Verify current account eligibility
+For my current user, answer clearly:
+- Should this account receive Expo push notifications right now: YES or NO
+- If NO, list the exact blocking reasons
+- If YES, state what event would trigger the next push
+
+5. Run a safe test push check
+- If a test endpoint exists, verify whether it is usable for my current account
+- Tell me exactly whether I can trigger a test push right now
+- If possible, provide the exact command I should run with the correct endpoint shape
+- Do not expose secrets; tell me exactly what value I need to supply myself
+
+6. Output format
+Output only:
+- Current user checked
+- Expo token status
+- push_enabled status
+- subscription/trial status
+- real pipeline wired: YES/NO
+- should receive push now: YES/NO
+- blocking reasons (if any)
+- exact test push command to run next
