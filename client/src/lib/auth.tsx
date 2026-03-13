@@ -20,11 +20,6 @@ const AuthContext = createContext<AuthContextType>({
 const _authTimers: ReturnType<typeof setTimeout>[] = [];
 
 function notifyNativeAuth(session: Session | null) {
-  const w = window as any;
-  if (!w.ReactNativeWebView || typeof w.ReactNativeWebView?.postMessage !== "function") {
-    return;
-  }
-
   for (const t of _authTimers) clearTimeout(t);
   _authTimers.length = 0;
 
@@ -43,11 +38,16 @@ function notifyNativeAuth(session: Session | null) {
   for (let i = 0; i < delays.length; i++) {
     const timer = setTimeout(() => {
       try {
+        const w = window as any;
         if (w.ReactNativeWebView && typeof w.ReactNativeWebView.postMessage === "function") {
           w.ReactNativeWebView.postMessage(payload);
           console.log(`[WEBAUTH] Sending session to ReactNative (#${i + 1}, +${delays[i]}ms)`);
+        } else {
+          console.log(`[WEBAUTH] ReactNativeWebView not available yet (#${i + 1}, +${delays[i]}ms)`);
         }
-      } catch {}
+      } catch (e: any) {
+        console.error(`[WEBAUTH] postMessage error (#${i + 1}):`, e?.message);
+      }
     }, delays[i]);
     _authTimers.push(timer);
   }
@@ -58,13 +58,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log("[WEBAUTH] AuthProvider mounted");
+
+    console.log("[WEBAUTH] getSession() starting");
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log(`[WEBAUTH] getSession() result: session ${session ? "yes" : "no"}`);
       setSession(session);
       setLoading(false);
       notifyNativeAuth(session);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log(`[WEBAUTH] onAuthStateChange fired: ${event}`);
       setSession(session);
       setLoading(false);
       notifyNativeAuth(session);
