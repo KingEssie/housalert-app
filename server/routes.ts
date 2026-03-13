@@ -25,6 +25,7 @@ import { computeMatchScore, getMatchReasons, computeHybridFilters } from "../sha
 import { pool as pgPool } from "./pg-pool";
 import { isAdminEmail, getRecentRuns, getRunDetail, getLatestRunCities, getSourceAggregates } from "./admin";
 import { initWebPush, sendPushToUser } from "./notifications/push";
+import { sendExpoTestPush } from "./notifications/expo-push";
 import { markViewed, markApplied, markSaved, getUserMatchStats, getRecentUserMatches, getMatchCountForUser, getCanonicalMatchStates, getRecentFetchRuns, backfillFromSupabaseMatches } from "./user-matches";
 
 const TEN_MIN = 10 * 60 * 1000;
@@ -2210,7 +2211,7 @@ export async function registerRoutes(
       const adminUser = (req as any).adminUser;
       log(`[PUSH TEST] Admin ${adminUser.email} triggering test push`);
 
-      const result = await sendPushToUser(
+      const webResult = await sendPushToUser(
         adminUser.id,
         {
           title: "Test Push",
@@ -2220,12 +2221,26 @@ export async function registerRoutes(
         supabase
       );
 
-      if (result.sent > 0) {
-        log(`[PUSH TEST] Test push sent successfully`);
-        return res.json({ success: true, ...result });
+      const expoResult = await sendExpoTestPush(adminUser.id);
+
+      const totalSent = webResult.sent + expoResult.sent;
+      const totalFailed = webResult.failed + expoResult.failed;
+
+      if (totalSent > 0) {
+        log(`[PUSH TEST] Test push sent: web=${webResult.sent} expo=${expoResult.sent}`);
+        return res.json({
+          success: true,
+          web: webResult,
+          expo: expoResult,
+        });
       } else {
-        log(`[PUSH TEST] No push sent (sent=${result.sent}, failed=${result.failed}, removed=${result.removed})`);
-        return res.json({ success: false, ...result, message: "No active push subscriptions found" });
+        log(`[PUSH TEST] No push sent (web=${webResult.sent}, expo=${expoResult.sent})`);
+        return res.json({
+          success: false,
+          web: webResult,
+          expo: expoResult,
+          message: "No active push subscriptions or Expo tokens found",
+        });
       }
     } catch (err: any) {
       log(`[PUSH TEST] Error: ${err.message}`);

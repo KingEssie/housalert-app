@@ -3,6 +3,7 @@ import { sendBatchMatchAlert } from "../email";
 import { areAlertsEnabled } from "./index";
 import { getSubscriptionStatus } from "../subscriptions";
 import { sendMatchPushNotifications, type PushMatchListing } from "./push";
+import { sendExpoMatchPush, type ExpoMatchListing } from "./expo-push";
 import { batchedIn } from "../freshness";
 import { markEmailSent, markPushSent, getUndeliveredMatches } from "../user-matches";
 
@@ -233,24 +234,44 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
       }
     }
 
-    try {
-      const pushListings: PushMatchListing[] = verified.map((l) => ({
-        listing_id: l.listing_id,
-        city: l.city,
-      }));
-      const pushResult = await sendMatchPushNotifications(userId, pushListings, supabase);
-      if (pushResult.sent > 0) {
-        const pushedIds = verified.map(l => l.listing_id);
-        try { await markPushSent(userId, pushedIds); } catch {}
-        totalPushesSent += pushResult.sent;
+    if (pushEnabled) {
+      try {
+        const pushListings: PushMatchListing[] = verified.map((l) => ({
+          listing_id: l.listing_id,
+          city: l.city,
+        }));
+        const pushResult = await sendMatchPushNotifications(userId, pushListings, supabase);
+        if (pushResult.sent > 0) {
+          const pushedIds = verified.map(l => l.listing_id);
+          try { await markPushSent(userId, pushedIds); } catch {}
+          totalPushesSent += pushResult.sent;
+        }
+      } catch (err: any) {
+        log(`[ALERTS] Web push error for user ${userId.substring(0, 8)}...: ${err.message}`);
       }
-    } catch (err: any) {
-      log(`[ALERTS] Push error for user ${userId.substring(0, 8)}...: ${err.message}`);
+
+      try {
+        const expoListings: ExpoMatchListing[] = verified.map((l) => ({
+          listing_id: l.listing_id,
+          title: l.title,
+          city: l.city,
+          price: l.price,
+          url: l.url,
+        }));
+        const expoResult = await sendExpoMatchPush(userId, expoListings);
+        if (expoResult.sent > 0) {
+          totalPushesSent += expoResult.sent;
+          const expoPushedIds = verified.map(l => l.listing_id);
+          try { await markPushSent(userId, expoPushedIds); } catch {}
+        }
+      } catch (err: any) {
+        log(`[ALERTS] Expo push error for user ${userId.substring(0, 8)}...: ${err.message}`);
+      }
     }
   }
 
   _flushing = false;
-  log(`[ALERTS] Flush complete: ${sent} sent, ${failed} failed, ${totalPushesSent} pushes, ${skippedNoSub} skipped (no sub), ${skippedEmailOff} skipped (email off)`);
+  log(`[ALERTS] Flush complete: ${sent} emails sent, ${failed} failed, ${totalPushesSent} pushes, ${skippedNoSub} skipped (no sub), ${skippedEmailOff} skipped (all off)`);
   return { sent, failed, pushesSent: totalPushesSent };
 }
 
@@ -326,18 +347,37 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
     try { await markEmailSent(userId, emailedListingIds); } catch {}
   }
 
-  try {
-    const pushListings: PushMatchListing[] = verified.map((l) => ({
-      listing_id: l.listing_id,
-      city: l.city,
-    }));
-    const pushResult = await sendMatchPushNotifications(userId, pushListings, supabase);
-    if (pushResult.sent > 0) {
-      const pushedIds = verified.map(l => l.listing_id);
-      try { await markPushSent(userId, pushedIds); } catch {}
+  if (pushEnabled) {
+    try {
+      const pushListings: PushMatchListing[] = verified.map((l) => ({
+        listing_id: l.listing_id,
+        city: l.city,
+      }));
+      const pushResult = await sendMatchPushNotifications(userId, pushListings, supabase);
+      if (pushResult.sent > 0) {
+        const pushedIds = verified.map(l => l.listing_id);
+        try { await markPushSent(userId, pushedIds); } catch {}
+      }
+    } catch (err: any) {
+      log(`[ALERTS] Backfill web push error for user ${userId.substring(0, 8)}...: ${err.message}`);
     }
-  } catch (err: any) {
-    log(`[ALERTS] Backfill push error for user ${userId.substring(0, 8)}...: ${err.message}`);
+
+    try {
+      const expoListings: ExpoMatchListing[] = verified.map((l) => ({
+        listing_id: l.listing_id,
+        title: l.title,
+        city: l.city,
+        price: l.price,
+        url: l.url,
+      }));
+      const expoResult = await sendExpoMatchPush(userId, expoListings);
+      if (expoResult.sent > 0) {
+        const expoPushedIds = verified.map(l => l.listing_id);
+        try { await markPushSent(userId, expoPushedIds); } catch {}
+      }
+    } catch (err: any) {
+      log(`[ALERTS] Backfill expo push error for user ${userId.substring(0, 8)}...: ${err.message}`);
+    }
   }
 }
 

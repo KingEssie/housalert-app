@@ -99,7 +99,7 @@ A mobile-first German-language rental alert application for the German market. U
 ### Notifications
 - **Channels**: Email (via Resend) + Web Push (VAPID, `push_subscriptions` in Supabase) + Expo Push (native mobile, `expo_push_tokens` in Replit PG)
 - **Removed channels**: SMS and WhatsApp fully disabled — Twilio sending code removed, UI toggles removed, DB columns still exist but always set to `false`
-- **Sending logic**: `server/notifications/index.ts` — sends email via `sendEmailMatchAlert`; `server/notifications/push.ts` — sends web push via `sendMatchPushNotifications`. Expo push sending NOT yet implemented (token registration only).
+- **Sending logic**: `server/notifications/index.ts` — sends email via `sendEmailMatchAlert`; `server/notifications/push.ts` — sends web push via `sendMatchPushNotifications`; `server/notifications/expo-push.ts` — sends native mobile push via Expo Push API (`sendExpoMatchPush`). All three channels triggered from `buffer.ts` flush.
 - **Settings UI**: Account page inline toggles (push + email), no separate settings page needed
 - **Settings API**: `GET/PUT /api/notifications/settings` — accepts `email_enabled`, `push_enabled`, forces `sms_enabled=false`, `whatsapp_enabled=false`
 - **Expo Push Token API**: `POST /api/expo-push-token` (register/reactivate), `DELETE /api/expo-push-token` (deactivate). Auth via Supabase JWT. Tokens stored in Replit PG `expo_push_tokens` table.

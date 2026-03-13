@@ -1,0 +1,103 @@
+We need to verify and complete the SECOND HALF of Expo push notifications for HousAlert.
+
+Current status:
+- The Expo mobile app now runs on iPhone
+- Push permission / token registration side has been implemented
+- But we do NOT yet know whether the backend actually sends push notifications for new matches
+
+I need a strict audit and, if needed, implementation of the actual push delivery flow.
+
+GOAL
+Make push notifications truly work end-to-end for new matches.
+
+==================================================
+1. AUDIT CURRENT PUSH DELIVERY FLOW
+==================================================
+
+Check whether the backend currently does ALL of the following:
+
+1. Detects when a match is eligible for push
+2. Verifies the user has push notifications enabled
+3. Looks up active Expo push tokens for that user
+4. Sends a push notification via Expo Push API
+5. Marks the match / delivery as push_sent
+6. Prevents duplicate push sends for the same match
+7. Handles logout / token deactivation correctly
+
+Output clearly whether each of these already exists or not.
+
+==================================================
+2. IMPLEMENT MISSING PUSH DELIVERY PIECES
+==================================================
+
+If any part is missing, implement the smallest safe version.
+
+Rules:
+- Only send push for matches that are:
+  - visible = true
+  - new / unviewed
+  - not already push_sent
+- Only send if the user has push enabled
+- Only use active Expo tokens for that user
+- Avoid duplicate sends
+
+==================================================
+3. PUSH MESSAGE CONTENT
+==================================================
+
+Use a simple but useful payload:
+
+Title:
+Nieuwe match in {city}
+
+Body:
+{listing title or short label} · €{price}
+
+If title is too long, shorten it safely.
+
+Deep link / open behavior:
+- open the app directly to the relevant listing detail screen if possible
+- otherwise open to Matches screen
+
+==================================================
+4. LOGGING / TRACEABILITY
+==================================================
+
+Add clear logging so we can verify push behavior.
+
+For each push attempt, log:
+- user id
+- listing id
+- token used
+- sent / skipped / failed
+- exact reason if skipped
+
+==================================================
+5. USER SETTING INTEGRATION
+==================================================
+
+Verify that the Push notificaties toggle in the app is actually connected to backend logic.
+If it is only UI and not persisted / enforced, fix it.
+
+==================================================
+6. TEST PATH
+==================================================
+
+I want a reliable way to test this with my own account.
+
+Provide:
+- whether an existing visible match can be force-sent as a test push
+- or how to create one real new push-eligible match
+- exact steps I should take to verify on iPhone
+
+==================================================
+7. OUTPUT FORMAT
+==================================================
+
+Output only:
+1. What already existed
+2. What was missing
+3. Files changed
+4. Exact push delivery logic now in place
+5. Whether my current account should now receive push notifications
+6. Exact manual test steps

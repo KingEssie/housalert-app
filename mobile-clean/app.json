@@ -14,7 +14,9 @@
       "supportsTablet": false,
       "bundleIdentifier": "com.housalert.app",
       "infoPlist": {
-        "UIBackgroundModes": ["remote-notification"]
+        "UIBackgroundModes": [
+          "remote-notification"
+        ]
       }
     },
     "android": {
@@ -26,7 +28,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "YOUR_PROJECT_ID"
+        "projectId": "23f0e358-86b0-41c6-8eb5-457ece076a21"
       }
     },
     "plugins": [
@@ -37,6 +39,7 @@
           "color": "#0D6EFD"
         }
       ]
-    ]
+    ],
+    "owner": "kingessie"
   }
 }
