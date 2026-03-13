@@ -13,13 +13,14 @@ export default function ProfileEditPage() {
   const field = params?.field ?? "";
   const { t } = useTranslation();
 
-  const FIELD_CONFIG: Record<string, { question: string; label: string; type: string; placeholder: string; dbField: string }> = {
+  const FIELD_CONFIG: Record<string, { question: string; label: string; type: string; placeholder: string; dbField: string; description?: string }> = {
     first_name: { question: t("profileEdit.firstNameQ"), label: t("profileEdit.firstName"), type: "text", placeholder: t("profileEdit.firstNamePlaceholder"), dbField: "first_name" },
     last_name: { question: t("profileEdit.lastNameQ"), label: t("profileEdit.lastName"), type: "text", placeholder: t("profileEdit.lastNamePlaceholder"), dbField: "last_name" },
     birth_date: { question: t("profileEdit.birthDateQ"), label: t("profileEdit.birthDate"), type: "date", placeholder: t("profileEdit.birthDatePlaceholder"), dbField: "birth_date" },
     phone: { question: t("profileEdit.phoneQ"), label: t("profileEdit.phone"), type: "tel", placeholder: t("profileEdit.phonePlaceholder"), dbField: "phone" },
     occupation: { question: t("profileEdit.occupationQ"), label: t("profileEdit.occupation"), type: "text", placeholder: t("profileEdit.occupationPlaceholder"), dbField: "occupation" },
     monthly_income: { question: t("profileEdit.incomeQ"), label: t("profileEdit.income"), type: "number", placeholder: t("profileEdit.incomePlaceholder"), dbField: "monthly_income" },
+    search_buddy_email: { question: "Zoekbuddy", label: "Zoekbuddy e-mail", type: "email", placeholder: "buddy@email.com", dbField: "search_buddy_email", description: "Je Zoekbuddy ontvangt dezelfde woningmatches per e-mail zodat jullie samen sneller kunnen reageren." },
   };
 
   const config = FIELD_CONFIG[field];
@@ -81,7 +82,7 @@ export default function ProfileEditPage() {
       }
 
       toast({ title: t("profileEdit.saved") });
-      navigate("/profile/details");
+      navigate(field === "search_buddy_email" ? "/dashboard?tab=profiel" : "/profile/details");
     } catch (err: any) {
       toast({ title: t("common.error"), description: err.message || t("profileEdit.saveFailed"), variant: "destructive" });
     } finally {
@@ -96,7 +97,7 @@ export default function ProfileEditPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <PageHeader title={config.question} onBack={() => navigate("/profile/details")} />
+      <PageHeader title={config.question} onBack={() => navigate(field === "search_buddy_email" ? "/dashboard?tab=profiel" : "/profile/details")} />
 
       <div className="flex-1 max-w-xl mx-auto px-5 w-full">
         {loading ? (
@@ -104,7 +105,11 @@ export default function ProfileEditPage() {
             <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
           </div>
         ) : (
-          <div className="relative">
+          <div>
+            {config.description && (
+              <p className="text-[14px] text-[#6B7280] leading-relaxed mb-4">{config.description}</p>
+            )}
+            <div className="relative">
             <input
               ref={inputRef}
               type={config.type}
@@ -126,17 +131,18 @@ export default function ProfileEditPage() {
                 <X className="w-3.5 h-3.5 text-[#6B7280]" />
               </button>
             )}
+            </div>
           </div>
         )}
       </div>
 
       {!loading && (
         <div className="sticky bottom-0 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 px-5 bg-gradient-to-t from-white via-white to-white/0">
-          <div className="max-w-xl mx-auto">
+          <div className="max-w-xl mx-auto flex justify-center">
             <button
               onClick={handleSave}
               disabled={saving}
-              className="w-full h-[52px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-semibold flex items-center justify-center transition-colors disabled:opacity-50"
+              className="h-[48px] px-10 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-semibold flex items-center justify-center transition-colors disabled:opacity-50"
               data-testid="button-save-field"
             >
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : t("common.save")}

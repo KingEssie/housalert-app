@@ -1300,8 +1300,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, match
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [showPhotoSheet, setShowPhotoSheet] = useState(false);
   const [photoUploading, setPhotoUploading] = useState(false);
-  const [buddyEmail, setBuddyEmail] = useState("");
-  const [buddySaving, setBuddySaving] = useState(false);
+  const [notifUpdating, setNotifUpdating] = useState<string | null>(null);
   const { toast } = useToast();
   const { t } = useTranslation();
 
@@ -1344,10 +1343,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, match
   const displayName = [pd?.first_name, pd?.last_name].filter(Boolean).join(" ") || user.user_metadata?.full_name || "";
   const initials = displayName ? displayName.split(" ").map((w: string) => w[0]).join("").toUpperCase().slice(0, 2) : user.email?.[0]?.toUpperCase() ?? "?";
   const letterPreview = pd?.application_template?.slice(0, 120) || null;
-
-  useEffect(() => {
-    if (pd?.search_buddy_email) setBuddyEmail(pd.search_buddy_email);
-  }, [pd?.search_buddy_email]);
 
   async function handleSignOut() {
     setSigningOut(true);
@@ -1409,24 +1404,22 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, match
     }
   }
 
-  async function handleBuddySave() {
-    if (!buddyEmail.trim()) return;
-    setBuddySaving(true);
+  async function handleToggleNotif(key: "email_enabled" | "push_enabled", currentVal: boolean) {
+    setNotifUpdating(key);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) return;
-      const res = await apiFetch("/api/profile-data", {
+      const res = await apiFetch("/api/notifications/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
-        body: JSON.stringify({ search_buddy_email: buddyEmail.trim() }),
+        body: JSON.stringify({ [key]: !currentVal }),
       });
-      if (!res.ok) throw new Error("Save failed");
-      queryClient.invalidateQueries({ queryKey: ["/api/profile-data"] });
-      toast({ title: "Zoekbuddy opgeslagen" });
+      if (!res.ok) throw new Error("Update failed");
+      queryClient.invalidateQueries({ queryKey: ["/api/notifications/settings"] });
     } catch {
       toast({ title: t("common.error"), variant: "destructive" });
     } finally {
-      setBuddySaving(false);
+      setNotifUpdating(null);
     }
   }
 
@@ -1473,25 +1466,20 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, match
 
           <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
             {(subscription.isActive || subscription.isTrial) ? (
-            <div className="flex">
-              <div className="flex-1 flex items-center gap-3 p-4" data-testid="kpi-matches">
-                <div className="w-10 h-10 rounded-full bg-[#F5F7FA] flex items-center justify-center flex-shrink-0">
-                  <Heart className="w-[18px] h-[18px] text-[#1F2937]" />
+            <div className="grid grid-cols-2 gap-0">
+              <div className="flex flex-col items-center py-5 px-3" data-testid="kpi-matches">
+                <div className="w-12 h-12 rounded-full bg-[#EBF2FF] flex items-center justify-center mb-2">
+                  <Heart className="w-5 h-5 text-[#0D6EFD]" />
                 </div>
-                <div>
-                  <p className="text-[20px] font-bold text-[#111C3D] leading-none">{matchCount > 999 ? "999+" : matchCount}</p>
-                  <p className="text-[12px] text-[#1F2937] mt-1 leading-tight">{t("profile.stats.matchesReceived")}</p>
-                </div>
+                <p className="text-[26px] font-[800] text-[#111C3D] leading-none">{matchCount > 999 ? "999+" : matchCount}</p>
+                <p className="text-[12px] text-[#6B7280] mt-1.5 text-center leading-tight">{t("profile.stats.matchesReceived")}</p>
               </div>
-              <div className="w-px bg-[#E5E7EB] my-3" />
-              <div className="flex-1 flex items-center gap-3 p-4" data-testid="kpi-reactions">
-                <div className="w-10 h-10 rounded-full bg-[#F5F7FA] flex items-center justify-center flex-shrink-0">
-                  <Send className="w-[18px] h-[18px] text-[#1F2937]" />
+              <div className="flex flex-col items-center py-5 px-3 border-l border-[#E5E7EB]" data-testid="kpi-reactions">
+                <div className="w-12 h-12 rounded-full bg-[#F0FDF4] flex items-center justify-center mb-2">
+                  <Send className="w-5 h-5 text-[#22C55E]" />
                 </div>
-                <div>
-                  <p className="text-[20px] font-bold text-[#111C3D] leading-none">{stats.reactions_sent}</p>
-                  <p className="text-[12px] text-[#1F2937] mt-1 leading-tight">{t("profile.stats.reactionsSent")}</p>
-                </div>
+                <p className="text-[26px] font-[800] text-[#111C3D] leading-none">{stats.reactions_sent}</p>
+                <p className="text-[12px] text-[#6B7280] mt-1.5 text-center leading-tight">{t("profile.stats.reactionsSent")}</p>
               </div>
             </div>
             ) : (
@@ -1503,41 +1491,68 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, match
             )}
           </div>
 
-          <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <Users className="w-[18px] h-[18px] text-[#1F2937]" />
-              <h2 className="text-[16px] font-bold text-[#111C3D]">Zoekbuddy</h2>
-            </div>
-            <p className="text-[13px] text-[#6B7280] mb-3">Voeg een e-mailadres toe dat dezelfde matches ontvangt.</p>
-            <div className="flex gap-2">
-              <input
-                type="email"
-                value={buddyEmail}
-                onChange={e => setBuddyEmail(e.target.value)}
-                placeholder="buddy@email.com"
-                className="flex-1 bg-[#F5F6F8] rounded-xl px-4 py-3 text-[14px] text-[#111827] placeholder:text-[#B0B5BD] border-0 outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 h-[44px]"
-                data-testid="input-buddy-email"
-              />
+          <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+            {pd?.search_buddy_email ? (
               <button
-                onClick={handleBuddySave}
-                disabled={buddySaving || !buddyEmail.trim()}
-                className="h-[44px] px-5 rounded-xl bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-semibold transition-colors disabled:opacity-50"
-                data-testid="button-save-buddy"
+                onClick={() => navigate("/profile/edit/search_buddy_email")}
+                className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F5F7FA] transition-colors"
+                data-testid="button-zoekbuddy"
               >
-                {buddySaving ? "..." : t("common.save")}
+                <Users className="w-[18px] h-[18px] text-[#1F2937]" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[15px] font-[500] text-[#111827]">Zoekbuddy</p>
+                  <p className="text-[13px] text-[#6B7280] truncate mt-0.5">{pd.search_buddy_email}</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
               </button>
-            </div>
+            ) : (
+              <div className="px-5 py-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <Users className="w-[18px] h-[18px] text-[#1F2937]" />
+                  <p className="text-[15px] font-[500] text-[#111827]">Zoekbuddy</p>
+                </div>
+                <p className="text-[13px] text-[#6B7280] mb-3">Je hebt nog geen Zoekbuddy</p>
+                <button
+                  onClick={() => navigate("/profile/edit/search_buddy_email")}
+                  className="h-[40px] px-5 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-semibold transition-colors"
+                  data-testid="button-add-buddy"
+                >
+                  Zoekbuddy toevoegen
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
-            <AccountSettingsRow
-              label={t("profile.notifications")}
-              subtext={[
-                notifSettings?.email_enabled ? "E-mail" : null,
-                notifSettings?.push_enabled ? "Push" : null,
-              ].filter(Boolean).join(", ") || t("profile.notificationsDesc")}
-              onClick={() => navigate("/settings/notifications")}
-            />
+            <div className="flex items-center justify-between px-5 py-4">
+              <div className="flex items-center gap-3">
+                <Bell className="w-[18px] h-[18px] text-[#1F2937]" />
+                <p className="text-[15px] font-[500] text-[#111827]">Push notificaties</p>
+              </div>
+              <button
+                onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
+                disabled={notifUpdating === "push_enabled"}
+                className={`w-[44px] h-[26px] rounded-full relative transition-colors ${notifSettings?.push_enabled ? "bg-[#0D6EFD]" : "bg-[#D1D5DB]"} ${notifUpdating === "push_enabled" ? "opacity-50" : ""}`}
+                data-testid="toggle-push"
+              >
+                <span className={`absolute top-[3px] w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${notifSettings?.push_enabled ? "left-[21px]" : "left-[3px]"}`} />
+              </button>
+            </div>
+            <div className="h-px bg-[#E5E7EB] mx-5" />
+            <div className="flex items-center justify-between px-5 py-4">
+              <div className="flex items-center gap-3">
+                <Mail className="w-[18px] h-[18px] text-[#1F2937]" />
+                <p className="text-[15px] font-[500] text-[#111827]">E-mail notificaties</p>
+              </div>
+              <button
+                onClick={() => handleToggleNotif("email_enabled", !!notifSettings?.email_enabled)}
+                disabled={notifUpdating === "email_enabled"}
+                className={`w-[44px] h-[26px] rounded-full relative transition-colors ${notifSettings?.email_enabled ? "bg-[#0D6EFD]" : "bg-[#D1D5DB]"} ${notifUpdating === "email_enabled" ? "opacity-50" : ""}`}
+                data-testid="toggle-email"
+              >
+                <span className={`absolute top-[3px] w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${notifSettings?.email_enabled ? "left-[21px]" : "left-[3px]"}`} />
+              </button>
+            </div>
           </div>
 
           <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5">

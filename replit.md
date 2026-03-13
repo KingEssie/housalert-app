@@ -212,10 +212,12 @@ A mobile-first German-language rental alert application for the German market. U
 ### Account Page (ProfielTab — merged single page)
 - Layout: Single scrollable page titled "Account" on #F5F7FA background (previously two sub-tabs "Over jou" / "Account", now merged)
 - Sticky header with "Account" title
-- Section order: 1) Profile card (avatar + name + "woningzoekende" → /profile/details), 2) Stats card (matches + reactions KPIs), 3) Zoekbuddy (email input for buddy who receives same matches), 4) Notificaties (push/email summary → /settings/notifications), 5) Reactiebrief (copy + edit buttons), 6) Abonnement, 7) Ondersteuning (privacy, help, terms), 8) Uitloggen + Account verwijderen
+- Section order: 1) Profile card (avatar + name + "woningzoekende" → /profile/details), 2) Stats card (two visual stat blocks with circular icon backgrounds — blue for matches, green for reactions — large numbers centered), 3) Zoekbuddy (if no buddy: "Zoekbuddy toevoegen" button; if buddy exists: shows email + chevron → /profile/edit/search_buddy_email), 4) Notification toggles (push + email inline toggles, no separate page), 5) Reactiebrief (copy + edit buttons), 6) Abonnement, 7) Ondersteuning (privacy, help, terms), 8) Uitloggen + Account verwijderen
 - All sections in white rounded-lg cards with subtle shadow on gray bg
 - Profile name: first_name + last_name from user_profile_data, fallback to auth metadata full_name, fallback to email prefix
 - Phone number: reads from BOTH `pd?.phone` (Replit PG) and `notifQuery.data?.phone_e164` (Supabase) to fix display bug
+- Button style: Pill buttons (content-width, centered, rounded-full) throughout edit screens and letter page. Full-width only for onboarding/major forms.
+- Listing detail: badges shifted right (left-[68px]) to avoid overlapping the floating back button
 
 ### Profile Photo Upload
 - `POST /api/profile-photo`: Accepts base64 image, uploads to Supabase Storage (avatars bucket), saves URL in user_profile_data.profile_photo_url

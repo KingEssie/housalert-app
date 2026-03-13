@@ -7,7 +7,6 @@ import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { useTranslation } from "@/i18n";
 import { DEFAULT_TEMPLATE, PLACEHOLDERS } from "@/lib/application-letter";
-import { Button } from "@/components/ui/button";
 import { RotateCcw, Save, Info, AlertTriangle } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 
@@ -175,26 +174,25 @@ export default function ApplicationLetterPage() {
       </main>
 
       <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-5 z-10" style={{ borderColor: "#E5E7EB" }}>
-        <div className="max-w-xl mx-auto flex flex-col gap-2">
-          <Button
+        <div className="max-w-xl mx-auto flex flex-col items-center gap-2">
+          <button
             onClick={() => saveMutation.mutate(template)}
             disabled={!isLongEnough || saveMutation.isPending}
-            className="w-full h-[56px] rounded-full text-[16px] font-semibold bg-primary text-primary-foreground disabled:opacity-50 flex items-center gap-2"
+            className="h-[48px] px-10 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-semibold disabled:opacity-50 flex items-center gap-2 transition-colors"
             data-testid="button-save-template"
           >
             <Save className="w-4.5 h-4.5" />
             {saveMutation.isPending ? t("applicationLetter.saving") : t("applicationLetter.saveLetter")}
-          </Button>
+          </button>
           {!profileData?.application_template && (
-            <Button
-              variant="outline"
+            <button
               onClick={() => saveMutation.mutate(DEFAULT_TEMPLATE)}
               disabled={saveMutation.isPending}
-              className="w-full h-[48px] rounded-full text-[15px] font-semibold"
+              className="h-[44px] px-8 rounded-full border border-[#E5E7EB] text-[#1F2937] text-[15px] font-semibold hover:bg-[#F5F7FA] transition-colors"
               data-testid="button-use-default"
             >
               {t("applicationLetter.useDefault")}
-            </Button>
+            </button>
           )}
         </div>
       </div>

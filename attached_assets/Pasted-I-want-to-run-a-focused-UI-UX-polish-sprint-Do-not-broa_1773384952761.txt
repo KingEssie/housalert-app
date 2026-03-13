@@ -1,0 +1,158 @@
+I want to run a focused UI/UX polish sprint. Do not broadly refactor the app. Keep the current design system and improve consistency, spacing and interaction patterns.
+
+There are several specific improvements and fixes.
+
+--------------------------------
+1. Listing detail screen layout
+--------------------------------
+
+On the listing detail screen the back button overlaps the small badges/labels at the top.
+
+Fix:
+- Move the labels/badges slightly to the right or adjust spacing so they never sit underneath the back button.
+- Ensure the layout works on all mobile widths.
+
+--------------------------------
+2. Button sizing (BlaBlaCar style)
+--------------------------------
+
+Currently many buttons stretch across the entire screen width.
+
+New rule:
+
+Buttons should NOT default to full width.
+
+Instead:
+- button width should depend on the text content
+- use consistent horizontal padding
+- center the button when appropriate
+
+Full width buttons should only be used for:
+- onboarding flows
+- large form submissions
+
+Example:
+The save button on profile edit screens should be a smaller centered pill button (similar to BlaBlaCar style), not edge-to-edge.
+
+--------------------------------
+3. Account statistics redesign
+--------------------------------
+
+The statistics card on the Account page currently shows:
+
+- Ontvangen matches
+- Verzonden reacties
+
+The current design feels too plain.
+
+Redesign it to be more visual and modern.
+
+New design style:
+- two stat blocks next to each other
+- each stat contains:
+  - circular icon background
+  - large number
+  - label underneath
+- rounded card container
+- balanced spacing
+
+Use the visual style similar to modern dashboard cards (like the reference example).
+
+--------------------------------
+4. Zoekbuddy flow
+--------------------------------
+
+On the Account page Zoekbuddy should NOT be an inline email input field.
+
+Instead:
+
+If no buddy exists:
+- show text: "Je hebt nog geen Zoekbuddy"
+- show button: "Zoekbuddy toevoegen"
+
+Clicking the button opens a dedicated screen.
+
+That screen should follow the same design pattern as the simple profile edit screens (like the first name edit screen).
+
+Screen content:
+- title: Zoekbuddy
+- short explanation of what a Zoekbuddy is:
+  "Je Zoekbuddy ontvangt dezelfde woningmatches per e-mail zodat jullie samen sneller kunnen reageren."
+- input field for one email address
+- save button
+
+If a buddy already exists:
+- show the email on the Account page
+- allow editing via the same screen.
+
+--------------------------------
+5. Notification toggles directly on Account page
+--------------------------------
+
+Do not navigate to a separate notification settings page.
+
+Instead show directly on the Account page:
+
+Push notificaties — toggle  
+E-mail notificaties — toggle
+
+These should appear one under another in the Account screen.
+
+--------------------------------
+6. Data persistence fixes
+--------------------------------
+
+Some saved data does not appear correctly anymore.
+
+Observed problems:
+- Reactiebrief appears to be missing even though it was previously saved.
+- Some personal profile fields appear empty again.
+- Phone number inconsistencies were seen earlier.
+
+Tasks:
+
+- Verify where these values are stored.
+- Verify which data source the UI reads from.
+- Ensure the correct source of truth is used.
+- Fix any mismatch between save logic and read logic.
+
+Specifically verify persistence for:
+
+- reactiebrief
+- phone number
+- personal profile fields
+- Zoekbuddy email once implemented
+
+Ensure saved data appears correctly after reload.
+
+--------------------------------
+7. Edit screen button style
+--------------------------------
+
+On profile edit screens (like "Wat is je voornaam?"):
+
+Replace the current full width save button with a smaller centered pill button.
+
+Style:
+- rounded pill
+- width based on text
+- centered horizontally
+- consistent with the new button sizing rules.
+
+--------------------------------
+Implementation notes
+--------------------------------
+
+- Keep the UI modern, minimal and consistent.
+- Reuse existing components where possible.
+- Avoid creating duplicate UI components.
+- Keep labels in Dutch.
+- "Zoekbuddy" must remain the name of the feature.
+- Do not redesign the whole app, only improve the listed areas.
+
+Return:
+
+- exact files changed
+- root cause for the persistence/data issues
+- visual components updated
+- any remaining edge cases

@@ -199,7 +199,7 @@ export default function ListingDetailPage() {
           </div>
         )}
 
-        <div className="absolute top-3 left-3 flex items-center gap-2">
+        <div className="absolute top-3 left-[68px] flex items-center gap-2">
           <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm ${style.bg} ${style.text}`} data-testid="badge-freshness">
             {t(FRESH_LABEL_KEYS[listing.fresh_label] ?? "freshness.older")}
           </span>
