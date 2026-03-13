@@ -124,6 +124,70 @@ export async function registerRoutes(
     return res.json({ publicKey: key });
   });
 
+  app.post("/api/expo-push-token", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { expo_push_token, platform } = req.body;
+      if (!expo_push_token || typeof expo_push_token !== "string" || !expo_push_token.startsWith("ExponentPushToken[")) {
+        return res.status(400).json({ error: "Invalid expo_push_token" });
+      }
+
+      const plat = platform === "android" ? "android" : "ios";
+      const now = new Date().toISOString();
+
+      await pgPool.query(
+        `UPDATE expo_push_tokens SET is_active = FALSE, updated_at = $1
+         WHERE expo_push_token = $2 AND user_id != $3`,
+        [now, expo_push_token, user.id]
+      );
+
+      await pgPool.query(
+        `INSERT INTO expo_push_tokens (user_id, expo_push_token, platform, is_active, created_at, updated_at)
+         VALUES ($1, $2, $3, TRUE, $4, $4)
+         ON CONFLICT (user_id, expo_push_token)
+         DO UPDATE SET is_active = TRUE, platform = $3, updated_at = $4`,
+        [user.id, expo_push_token, plat, now]
+      );
+
+      log(`[EXPO-PUSH] Token registered for user ${user.id.substring(0, 8)}... platform=${plat}`);
+      return res.json({ ok: true });
+    } catch (err: any) {
+      log(`[EXPO-PUSH] Error registering token: ${err.message}`);
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.delete("/api/expo-push-token", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { expo_push_token } = req.body;
+      if (!expo_push_token || typeof expo_push_token !== "string" || !expo_push_token.startsWith("ExponentPushToken[")) {
+        return res.status(400).json({ error: "Invalid expo_push_token" });
+      }
+
+      await pgPool.query(
+        `UPDATE expo_push_tokens SET is_active = FALSE, updated_at = $1
+         WHERE user_id = $2 AND expo_push_token = $3`,
+        [new Date().toISOString(), user.id, expo_push_token]
+      );
+
+      log(`[EXPO-PUSH] Token deactivated for user ${user.id.substring(0, 8)}...`);
+      return res.json({ ok: true });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   app.post("/api/match-alert", async (req, res) => {
     const token = req.headers.authorization?.replace("Bearer ", "");
     if (!token) return res.status(401).json({ error: "Unauthorized" });

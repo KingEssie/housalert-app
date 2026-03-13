@@ -6,10 +6,10 @@ A mobile-first German-language rental alert application for the German market. U
 
 - **Frontend:** React + Vite + TypeScript + Tailwind CSS + shadcn/ui + Wouter
 - **Auth:** Supabase Auth (email + password)
-- **Data:** Supabase (PostgreSQL) — most tables: `search_profiles`, `listings`, `matches`, `subscriptions`, `user_notification_settings`, `push_sent_log`, `push_subscriptions`. Replit PostgreSQL (via `pg` pool) — `user_profile_data`, `user_matches` (canonical match tracking), `fetch_runs` (ingestion audit), `listing_freshness`, `match_timestamps`, `onboarding_drafts`, `ingestion_runs`
+- **Data:** Supabase (PostgreSQL) — most tables: `search_profiles`, `listings`, `matches`, `subscriptions`, `user_notification_settings`, `push_sent_log`, `push_subscriptions`. Replit PostgreSQL (via `pg` pool) — `user_profile_data`, `user_matches` (canonical match tracking), `fetch_runs` (ingestion audit), `listing_freshness`, `match_timestamps`, `onboarding_drafts`, `ingestion_runs`, `expo_push_tokens` (native mobile push tokens)
 - **Backend:** Express (minimal — auth + data handled by Supabase)
 - **Payments:** Stripe (sandbox, via Replit connector)
-- **Mobile:** Expo (WebView wrapper) in `mobile/` — wraps production web app URL for iOS/Android distribution via Expo Go or EAS Build
+- **Mobile:** Expo (WebView wrapper) in `mobile-clean/` — wraps production web app URL for iOS/Android distribution via Expo Go or EAS Build. Includes native push notification registration via expo-notifications.
 
 ## Architecture
 
@@ -97,11 +97,14 @@ A mobile-first German-language rental alert application for the German market. U
 - Profile details page uses `text-field-label` + `text-field-value` classes for label/value pairs
 
 ### Notifications
-- **Channels**: Email only (via Resend). Push planned but not yet implemented (toggle shown as disabled with "Binnenkort beschikbaar")
+- **Channels**: Email (via Resend) + Web Push (VAPID, `push_subscriptions` in Supabase) + Expo Push (native mobile, `expo_push_tokens` in Replit PG)
 - **Removed channels**: SMS and WhatsApp fully disabled — Twilio sending code removed, UI toggles removed, DB columns still exist but always set to `false`
-- **Sending logic**: `server/notifications/index.ts` — only sends email via `sendEmailMatchAlert`
-- **Settings UI**: `client/src/pages/notification-settings.tsx` — email toggle + disabled push toggle
-- **Settings API**: `GET/PUT /api/notifications/settings` — only accepts `email_enabled`, forces `sms_enabled=false`, `whatsapp_enabled=false`
+- **Sending logic**: `server/notifications/index.ts` — sends email via `sendEmailMatchAlert`; `server/notifications/push.ts` — sends web push via `sendMatchPushNotifications`. Expo push sending NOT yet implemented (token registration only).
+- **Settings UI**: Account page inline toggles (push + email), no separate settings page needed
+- **Settings API**: `GET/PUT /api/notifications/settings` — accepts `email_enabled`, `push_enabled`, forces `sms_enabled=false`, `whatsapp_enabled=false`
+- **Expo Push Token API**: `POST /api/expo-push-token` (register/reactivate), `DELETE /api/expo-push-token` (deactivate). Auth via Supabase JWT. Tokens stored in Replit PG `expo_push_tokens` table.
+- **WebView↔Native bridge**: `client/src/lib/auth.tsx` sends `AUTH_STATE` messages (user_id + access_token) to `window.ReactNativeWebView.postMessage()` on every auth state change. `mobile-clean/App.tsx` receives via `onMessage`, registers push token with backend when user is authenticated.
+- **expo_push_tokens table** (Replit PG, auto-created at startup): id, user_id, expo_push_token, platform, is_active, created_at, updated_at. UNIQUE(user_id, expo_push_token) prevents duplicates.
 
 ### Ingestion Pipeline
 - **Scheduler**: `server/scheduler.ts` — runs every 10 min when `ENABLE_INGEST_SCHEDULER=true`

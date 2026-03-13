@@ -12,13 +12,26 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.housalert.app"
+      "bundleIdentifier": "com.housalert.app",
+      "infoPlist": {
+        "UIBackgroundModes": ["remote-notification"]
+      }
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
       },
-      "package": "com.housalert.app"
-    }
+      "package": "com.housalert.app",
+      "googleServicesFile": "./google-services.json"
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#0D6EFD"
+        }
+      ]
+    ]
   }
 }

@@ -17,6 +17,19 @@ const AuthContext = createContext<AuthContextType>({
   signOut: async () => {},
 });
 
+function notifyNativeAuth(session: Session | null) {
+  try {
+    const w = window as any;
+    if (w.ReactNativeWebView && typeof w.ReactNativeWebView.postMessage === "function") {
+      w.ReactNativeWebView.postMessage(JSON.stringify({
+        type: "AUTH_STATE",
+        user_id: session?.user?.id ?? null,
+        access_token: session?.access_token ?? null,
+      }));
+    }
+  } catch {}
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
@@ -25,11 +38,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setLoading(false);
+      notifyNativeAuth(session);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setLoading(false);
+      notifyNativeAuth(session);
     });
 
     return () => subscription.unsubscribe();

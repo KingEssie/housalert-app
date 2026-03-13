@@ -17,6 +17,7 @@ export async function runStartupMigration() {
 
   await createUserMatchesTable();
   await createFetchRunsTable();
+  await createExpoPushTokensTable();
 }
 
 async function createUserMatchesTable() {
@@ -61,6 +62,33 @@ async function createUserMatchesTable() {
     log(`[MIGRATION] user_matches table OK (${colCheck.rows.length} columns)`, "migration");
   } catch (err: any) {
     log(`[MIGRATION] Error creating user_matches: ${err.message}`, "migration");
+  }
+}
+
+async function createExpoPushTokensTable() {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS expo_push_tokens (
+        id SERIAL PRIMARY KEY,
+        user_id UUID NOT NULL,
+        expo_push_token TEXT NOT NULL,
+        platform TEXT NOT NULL DEFAULT 'ios',
+        is_active BOOLEAN NOT NULL DEFAULT TRUE,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        UNIQUE(user_id, expo_push_token)
+      )
+    `);
+
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_expo_push_tokens_user_id ON expo_push_tokens(user_id)`);
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_expo_push_tokens_active ON expo_push_tokens(is_active) WHERE is_active = TRUE`);
+
+    const colCheck = await pool.query(
+      "SELECT column_name FROM information_schema.columns WHERE table_name = 'expo_push_tokens' ORDER BY ordinal_position"
+    );
+    log(`[MIGRATION] expo_push_tokens table OK (${colCheck.rows.length} columns)`, "migration");
+  } catch (err: any) {
+    log(`[MIGRATION] Error creating expo_push_tokens: ${err.message}`, "migration");
   }
 }
 
