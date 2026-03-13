@@ -73,8 +73,13 @@ async function sendTokenToBackend(
   accessToken: string,
   expoPushToken: string
 ): Promise<boolean> {
+  const url = `${API_BASE}/api/expo-push-token`;
+  console.log("[PUSH] Sending token to backend:", url);
+  console.log("[PUSH] Token:", expoPushToken.substring(0, 30) + "...");
+  console.log("[PUSH] Auth header present:", !!accessToken);
+
   try {
-    const res = await fetch(`${API_BASE}/api/expo-push-token`, {
+    const res = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -87,15 +92,17 @@ async function sendTokenToBackend(
     });
 
     if (res.ok) {
-      console.log("[PUSH] Token registered on backend");
+      const data = await res.json();
+      console.log("[PUSH] Token registered on backend OK:", JSON.stringify(data));
       return true;
     } else {
       const body = await res.text();
       console.error("[PUSH] Backend rejected token:", res.status, body);
       return false;
     }
-  } catch (err) {
-    console.error("[PUSH] Failed to send token to backend:", err);
+  } catch (err: any) {
+    console.error("[PUSH] Network error sending token to backend:", err?.message || err);
+    console.error("[PUSH] This usually means the backend URL is unreachable from this device.");
     return false;
   }
 }
@@ -149,9 +156,15 @@ export default function App() {
     const auth = authRef.current;
     const token = pushTokenRef.current;
 
-    if (!auth || !token) return;
+    console.log("[PUSH] tryRegister called — token:", token ? "yes" : "no", "auth:", auth ? auth.user_id.substring(0, 8) + "..." : "no");
+
+    if (!auth || !token) {
+      console.log("[PUSH] tryRegister skipped — missing", !auth ? "auth" : "token");
+      return;
+    }
 
     if (registeredForUserRef.current === auth.user_id) {
+      console.log("[PUSH] Already registered for this user — skipping");
       return;
     }
 
@@ -159,6 +172,9 @@ export default function App() {
     if (success) {
       registeredForUserRef.current = auth.user_id;
       console.log("[PUSH] Registration complete for user", auth.user_id.substring(0, 8) + "...");
+    } else {
+      console.log("[PUSH] Registration failed — will retry in 10s");
+      setTimeout(() => tryRegister(), 10000);
     }
   }, []);
 
@@ -173,12 +189,18 @@ export default function App() {
   const handleWebViewMessage = useCallback(
     async (event: { nativeEvent: { data: string } }) => {
       try {
+        console.log("[BRIDGE] Raw message received, length:", event.nativeEvent.data.length);
         const msg: AuthMessage = JSON.parse(event.nativeEvent.data);
-        if (msg.type !== "AUTH_STATE") return;
+        
+        if (msg.type !== "AUTH_STATE") {
+          console.log("[BRIDGE] Ignoring non-AUTH message type:", msg.type);
+          return;
+        }
 
         console.log(
-          "[BRIDGE] Auth state received — user:",
-          msg.user_id ? msg.user_id.substring(0, 8) + "..." : "null"
+          "[BRIDGE] AUTH_STATE received — user:",
+          msg.user_id ? msg.user_id.substring(0, 8) + "..." : "null",
+          "| has_token:", !!msg.access_token
         );
 
         const prevAuth = authRef.current;
