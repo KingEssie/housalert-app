@@ -622,9 +622,9 @@ function CheckboxRow({
       data-testid={testId}
     >
       <div className={`w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 border-2 transition-colors ${
-        selected ? "bg-[#0D6EFD] border-[#0D6EFD]" : "border-[#E5E7EB] bg-white"
+        selected ? "bg-[#0D6EFD] border-[#0D6EFD]" : "border-[#0D6EFD] bg-white"
       }`}>
-        {selected && <Check className="w-4 h-4 text-black" />}
+        {selected && <Check className="w-4 h-4 text-white" />}
       </div>
       <span className="text-[15px] font-medium text-[#1F2937]">{label}</span>
     </button>

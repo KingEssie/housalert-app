@@ -1662,7 +1662,7 @@ export async function registerRoutes(
       const { image } = req.body;
       if (!image) return res.status(400).json({ error: "No image provided" });
 
-      const matches = image.match(/^data:(image\/\w+);base64,(.+)$/);
+      const matches = image.match(/^data:(image\/[\w+-]+);base64,(.+)$/s);
       if (!matches) return res.status(400).json({ error: "Invalid image format" });
 
       const contentType = matches[1];
@@ -1675,11 +1675,16 @@ export async function registerRoutes(
 
       const filePath = `profile-photos/${user.id}.${ext}`;
 
+      const extensions = ["jpg", "png", "webp"];
+      const oldPaths = extensions.filter(e => e !== ext).map(e => `profile-photos/${user.id}.${e}`);
+      await supabase.storage.from("avatars").remove(oldPaths).catch(() => {});
+      await supabase.storage.from("avatars").remove([filePath]).catch(() => {});
+
       const { error: uploadError } = await supabase.storage
         .from("avatars")
         .upload(filePath, buffer, {
           contentType,
-          upsert: true,
+          upsert: false,
         });
 
       if (uploadError) {

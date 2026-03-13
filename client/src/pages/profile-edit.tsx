@@ -112,7 +112,7 @@ export default function ProfileEditPage() {
               onChange={e => setValue(e.target.value)}
               placeholder={config.placeholder}
               aria-label={config.label}
-              className="w-full bg-[#F5F6F8] rounded-[24px] pl-6 pr-12 py-4 text-[16px] text-[#111827] placeholder:text-[#B0B5BD] border-0 outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 h-[56px]"
+              className="w-full bg-[#F3F4F6] rounded-[20px] pl-6 pr-12 py-4 text-[16px] text-[#111827] placeholder:text-[#9CA3AF] border-0 outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 h-[60px]"
               data-testid="input-edit-field"
             />
             {value && (

@@ -60,7 +60,8 @@ A mobile-first German-language rental alert application for the German market. U
 - **Dark navy**: #111C3D (headings), #0F172A (dark cards/banners)
 - **Body text**: #111827 (primary), #1F2937 (secondary), #6B7280 (muted), #9CA3AF (placeholder/disabled)
 - **Backgrounds**: white #FFFFFF, surface #F3F4F6, border #E5E7EB
-- **Buttons**: Blue bg + white text, rounded-full (pill), min-h-[52px]. Variants: `default` (blue), `outline` (white bg + blue border), `secondary` (white bg + gray border), `banner` (white bg + dark navy text, for dark cards), `ghost`. Sizes: `default`, `sm`, `lg`, `compact` (44px), `save` (centered 180px width), `icon`.
+- **Buttons**: Blue bg + white text, rounded-full (pill), min-h-[52px]. Content-width in cards/settings; full-width only for major form/onboarding CTAs. Variants: `default` (blue), `outline` (white bg + blue border), `secondary` (white bg + gray border), `banner` (white bg + dark navy text, for dark cards), `ghost`. Sizes: `default`, `sm`, `lg`, `compact` (44px), `save` (centered 180px width), `icon`.
+- **Checkboxes**: Blue outline (#0D6EFD border) when unchecked with white fill; solid blue fill with white checkmark when checked. Applied consistently across attribute selection, search editing, and onboarding.
 - **Inputs**: bg #F3F4F6, rounded-[20px], h-[60px], no border, dark text, gray placeholder
 - **Cards**: white bg, rounded-2xl (16px), subtle shadow, #E5E7EB border
 - **Dark banner cards**: bg #0F172A, rounded-2xl, white CTA button (compact h-[48px], not full-width)
@@ -208,14 +209,13 @@ A mobile-first German-language rental alert application for the German market. U
 - `client/src/pages/subscription-cancel.tsx` — Two-step cancel flow: `/account/subscription/cancel` (confirm with renewal date) and `/account/subscription/cancelled` (confirmation). Exports `SubscriptionCancelConfirmPage` and `SubscriptionCancelledPage`.
 - `client/src/pages/change-password.tsx` — In-app password change at `/account/change-password`. Three fields: current password, new password (min 8 chars), confirm. Verifies current via `signInWithPassword`, updates via `updateUser`. No email sent. Success screen with green checkmark.
 
-### Profile Page (ProfielTab)
-- Layout: BlaBlaCar-style two-tab profile layout ("Über dich" / "Konto") on #F7F7F7 background
-- Sticky tab bar at top with animated sliding teal indicator (3px height, translateX transition)
-- "Über dich" tab: profile header card (avatar/photo + display name + "Wohnungssuchende/r" role + chevron → /profile/details), stats card (matches + reactions), action links card (Persönliche Daten bearbeiten, Profilfoto bearbeiten), verified profile card (email + phone with teal checks), Bewerbungsschreiben card
-- "Konto" tab sections: Einstellungen (Benachrichtigungen, Kontodetails, Passwort & Sicherheit), Abonnement (Status + verwalten), Konto (Abmelden, Konto löschen), Unterstützung (Datenschutz, Hilfe & Support, AGB)
-- All sections in white rounded-2xl cards with subtle shadow on gray bg
+### Account Page (ProfielTab — merged single page)
+- Layout: Single scrollable page titled "Account" on #F5F7FA background (previously two sub-tabs "Over jou" / "Account", now merged)
+- Sticky header with "Account" title
+- Section order: 1) Profile card (avatar + name + "woningzoekende" → /profile/details), 2) Stats card (matches + reactions KPIs), 3) Zoekbuddy (email input for buddy who receives same matches), 4) Notificaties (push/email summary → /settings/notifications), 5) Reactiebrief (copy + edit buttons), 6) Abonnement, 7) Ondersteuning (privacy, help, terms), 8) Uitloggen + Account verwijderen
+- All sections in white rounded-lg cards with subtle shadow on gray bg
 - Profile name: first_name + last_name from user_profile_data, fallback to auth metadata full_name, fallback to email prefix
-- Biography removed entirely from the app
+- Phone number: reads from BOTH `pd?.phone` (Replit PG) and `notifQuery.data?.phone_e164` (Supabase) to fix display bug
 
 ### Profile Photo Upload
 - `POST /api/profile-photo`: Accepts base64 image, uploads to Supabase Storage (avatars bucket), saves URL in user_profile_data.profile_photo_url

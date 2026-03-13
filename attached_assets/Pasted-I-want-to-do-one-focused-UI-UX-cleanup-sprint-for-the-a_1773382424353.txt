@@ -1,0 +1,92 @@
+I want to do one focused UI/UX cleanup sprint for the app. Do not broadly refactor. Keep the structure clean and consistent with the current design system.
+
+Goals:
+1. Improve the Matches page interaction flow
+2. Merge and simplify the Profile/Account experience
+3. Fix a few functional inconsistencies
+4. Standardize buttons, checkboxes and form fields
+
+Tasks:
+
+1. Matches page
+- Make the page header AND the tabs sticky/floating at the top while scrolling, not just the title.
+- Replace the current action buttons with exactly 2 buttons:
+  - primary blue button: "Kopieer & reageer"
+  - secondary white button: "Bekijk woning"
+- "Bekijk woning" should simply open the external listing website.
+- When the user taps "Kopieer & reageer", immediately register the match as "gereageerd" in the app state/backend and update the UI optimistically if safe.
+- Keep this flow minimal and intuitive.
+
+2. Account page restructure
+- Merge the current "Over jou" and "Account" into one single page called "Account".
+- Start with the current top account card:
+  - profile photo
+  - user name
+  - subtitle "woningzoekende"
+- Tapping that top card should open the profile edit page.
+
+- Remove these separate blocks from the main account page:
+  - "Persoonlijke gegevens bewerken"
+  - "Profielfoto bewerken"
+  - "Je hebt een geverifieerd profiel"
+
+- Rebuild the Account page in this order:
+
+  1. top profile card  
+  2. ontvangen matches  
+  3. Zoekbuddy (one extra email address that receives the same match emails)  
+  4. Notificaties (toggles for Push and Email)  
+  5. Reactiebrief (two buttons: Kopiëren and Bewerken)  
+  6. Abonnement  
+  7. Ondersteuning  
+  8. Uitloggen
+
+3. Functional fixes
+- Fix the issue where the account page still says the user must add a phone number even though the phone number was already entered.
+- Ensure the UI correctly reads the existing stored phone number from the database.
+
+- Fix the profile photo upload flow. It currently throws the error:
+  "The string did not match the expected pattern."
+- Investigate the root cause (file format validation, upload path, storage key, or MIME mismatch) and apply the smallest safe fix.
+
+4. Button system cleanup
+- Buttons should no longer default to full width everywhere.
+- Only use full-width buttons where it makes sense (for major form/onboarding actions).
+- In normal cards and settings rows, buttons should size based on their text content with consistent horizontal padding.
+
+5. Checkbox cleanup
+Standardize all checkboxes across the app:
+
+Unchecked state:
+- blue outline
+- white fill
+
+Checked state:
+- solid blue fill
+- white checkmark icon
+
+Apply this consistently to:
+- attribute selection screens
+- onboarding
+- search profile editing
+
+6. Input field cleanup
+- The input fields in personal details/profile editing are currently more rounded than the rest of the app.
+- Reduce the corner radius so they match the rest of the design system and feel consistent.
+
+7. Login page cleanup
+- On the login page, the "Account aanmaken" CTA currently looks inconsistent.
+- Change it to a blue text-style CTA (not a large button), optionally paired with the blue house brand mark if already used in the design.
+
+Implementation notes:
+- Keep the UI modern and minimal.
+- Reuse existing components where possible.
+- Avoid creating duplicate UI components.
+- Keep labels in Dutch.
+- "Zoekbuddy" must remain the name of the feature (translated in other languages).
+
+Return:
+- exact files changed
+- which bugs were fixed
+- which UI components were modified or reused
+- any edge cases that remain

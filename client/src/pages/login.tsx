@@ -125,22 +125,17 @@ export default function LoginPage() {
             </form>
           </div>
 
-          <div className="flex items-center gap-3 my-6">
-            <div className="flex-1 h-px bg-[#E5E7EB]" />
-            <span className="text-[13px] text-[#1F2937]">{t("auth.login.or")}</span>
-            <div className="flex-1 h-px bg-[#E5E7EB]" />
-          </div>
-
-          <div className="text-center">
-            <p className="text-[15px] text-[#1F2937] mb-3">{t("auth.login.noAccount")}</p>
-            <Button
-              variant="outline"
-              className="w-full h-[48px] rounded-lg text-[15px] font-bold border-[#0D6EFD] text-[#1F2937]"
-              onClick={() => navigate("/signup")}
-              data-testid="link-signup"
-            >
-              {t("auth.login.createAccount")}
-            </Button>
+          <div className="text-center mt-6">
+            <p className="text-[15px] text-[#1F2937]">
+              {t("auth.login.noAccount")}{" "}
+              <button
+                onClick={() => navigate("/signup")}
+                className="text-[#0D6EFD] font-semibold hover:underline"
+                data-testid="link-signup"
+              >
+                {t("auth.login.createAccount")}
+              </button>
+            </p>
           </div>
 
           <p className="text-center text-[13px] text-[#1F2937] mt-6">
