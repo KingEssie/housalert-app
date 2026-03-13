@@ -17,6 +17,8 @@ import Constants from "expo-constants";
 const WEB_APP_URL = "https://rental-alert-ui.replit.app";
 const API_BASE = "https://rental-alert-ui.replit.app";
 
+console.log("[BOOT] New push-auth retry build loaded — v3");
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
