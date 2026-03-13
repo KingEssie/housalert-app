@@ -458,6 +458,8 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
     queryKey: ["/api/matches"],
     queryFn: () => fetchApiMatches(accessToken!),
     enabled: !!accessToken && hasActiveSub,
+    staleTime: 30_000,
+    refetchOnWindowFocus: true,
   });
   const matches = (apiMatchesQuery.data?.matches ?? [])
     .filter(m => m.title && m.url && m.listing_id)
@@ -825,6 +827,8 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
     queryKey: ["/api/matches"],
     queryFn: () => fetchApiMatches(accessToken!),
     enabled: !!accessToken,
+    staleTime: 30_000,
+    refetchOnWindowFocus: true,
   });
 
   useEffect(() => {
@@ -1779,6 +1783,8 @@ export default function DashboardPage() {
     queryKey: ["/api/matches"],
     queryFn: () => fetchApiMatches(accessToken!),
     enabled: !!user && !!accessToken && hasActiveSub,
+    staleTime: 30_000,
+    refetchOnWindowFocus: true,
   });
 
   if (loading) {
