@@ -11,7 +11,7 @@ import {
 import { StatusBar } from "expo-status-bar";
 import { WebView, type WebViewNavigation } from "react-native-webview";
 
-const WEB_APP_URL = "https://housalert.replit.app";
+const WEB_APP_URL = "https://rental-alert-ui.replit.app";
 
 const INJECTED_JS = `
   (function() {
