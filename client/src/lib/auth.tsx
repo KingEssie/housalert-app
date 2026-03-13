@@ -17,17 +17,39 @@ const AuthContext = createContext<AuthContextType>({
   signOut: async () => {},
 });
 
+let _authRetryTimer: ReturnType<typeof setTimeout> | null = null;
+
 function notifyNativeAuth(session: Session | null) {
-  try {
-    const w = window as any;
-    if (w.ReactNativeWebView && typeof w.ReactNativeWebView.postMessage === "function") {
-      w.ReactNativeWebView.postMessage(JSON.stringify({
-        type: "AUTH_STATE",
-        user_id: session?.user?.id ?? null,
-        access_token: session?.access_token ?? null,
-      }));
+  const w = window as any;
+  if (!w.ReactNativeWebView || typeof w.ReactNativeWebView?.postMessage !== "function") {
+    return;
+  }
+
+  if (_authRetryTimer) {
+    clearTimeout(_authRetryTimer);
+    _authRetryTimer = null;
+  }
+
+  const payload = JSON.stringify({
+    type: "AUTH_STATE",
+    user_id: session?.user?.id ?? null,
+    access_token: session?.access_token ?? null,
+  });
+
+  const delays = [0, 1000, 3000, 6000];
+  delays.forEach((delay, i) => {
+    const timer = setTimeout(() => {
+      try {
+        if (w.ReactNativeWebView && typeof w.ReactNativeWebView.postMessage === "function") {
+          w.ReactNativeWebView.postMessage(payload);
+          console.log(`[WEBAUTH] posting AUTH_STATE to native (#${i + 1}, +${delay}ms, user=${session?.user?.id?.substring(0, 8) ?? "null"})`);
+        }
+      } catch {}
+    }, delay);
+    if (i === delays.length - 1) {
+      _authRetryTimer = timer;
     }
-  } catch {}
+  });
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
