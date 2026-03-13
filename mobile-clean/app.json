@@ -24,6 +24,11 @@
       "package": "com.housalert.app",
       "googleServicesFile": "./google-services.json"
     },
+    "extra": {
+      "eas": {
+        "projectId": "YOUR_PROJECT_ID"
+      }
+    },
     "plugins": [
       [
         "expo-notifications",

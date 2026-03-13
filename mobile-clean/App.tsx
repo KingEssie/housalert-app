@@ -45,15 +45,26 @@ async function registerForPushNotifications(): Promise<string | null> {
     return null;
   }
 
+  const projectId =
+    Constants.expoConfig?.extra?.eas?.projectId ??
+    Constants.easConfig?.projectId ??
+    null;
+
+  if (!projectId || projectId === "YOUR_PROJECT_ID") {
+    console.warn(
+      "[PUSH] No valid Expo projectId configured. " +
+      "Run `npx eas init` in mobile-clean/ to generate one, " +
+      "then restart the app. Push notifications are disabled until then."
+    );
+    return null;
+  }
+
   try {
-    const projectId = Constants.expoConfig?.extra?.eas?.projectId;
-    const tokenData = await Notifications.getExpoPushTokenAsync({
-      projectId: projectId || undefined,
-    });
+    const tokenData = await Notifications.getExpoPushTokenAsync({ projectId });
     console.log("[PUSH] Expo push token:", tokenData.data);
     return tokenData.data;
   } catch (err) {
-    console.error("[PUSH] Failed to get push token:", err);
+    console.warn("[PUSH] Could not obtain push token:", err);
     return null;
   }
 }
