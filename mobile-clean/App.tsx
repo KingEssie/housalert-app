@@ -17,7 +17,7 @@ import Constants from "expo-constants";
 const WEB_APP_URL = "https://rental-alert-ui.replit.app";
 const API_BASE = "https://rental-alert-ui.replit.app";
 
-console.log("[BOOT] New push-auth retry build loaded — v3");
+console.log("[BOOT] Push registration build v4 — active auth extraction");
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -55,8 +55,7 @@ async function registerForPushNotifications(): Promise<string | null> {
   if (!projectId || projectId === "YOUR_PROJECT_ID") {
     console.warn(
       "[PUSH] No valid Expo projectId configured. " +
-      "Run `npx eas init` in mobile-clean/ to generate one, " +
-      "then restart the app. Push notifications are disabled until then."
+        "Run `npx eas init` in mobile-clean/ to generate one."
     );
     return null;
   }
@@ -77,8 +76,6 @@ async function sendTokenToBackend(
 ): Promise<boolean> {
   const url = `${API_BASE}/api/expo-push-token`;
   console.log("[PUSH] Sending token to backend:", url);
-  console.log("[PUSH] Token:", expoPushToken.substring(0, 30) + "...");
-  console.log("[PUSH] Auth header present:", !!accessToken);
 
   try {
     const res = await fetch(url, {
@@ -103,8 +100,7 @@ async function sendTokenToBackend(
       return false;
     }
   } catch (err: any) {
-    console.error("[PUSH] Network error sending token to backend:", err?.message || err);
-    console.error("[PUSH] This usually means the backend URL is unreachable from this device.");
+    console.error("[PUSH] Network error:", err?.message || err);
     return false;
   }
 }
@@ -139,10 +135,40 @@ const INJECTED_JS = `
   })();
 `;
 
-interface AuthMessage {
-  type: "AUTH_STATE";
-  user_id: string | null;
-  access_token: string | null;
+const EXTRACT_SESSION_JS = `
+  (function() {
+    try {
+      var keys = Object.keys(localStorage);
+      for (var i = 0; i < keys.length; i++) {
+        if (keys[i].indexOf('-auth-token') !== -1) {
+          var raw = localStorage.getItem(keys[i]);
+          if (raw) {
+            window.ReactNativeWebView.postMessage(JSON.stringify({
+              type: 'SUPABASE_SESSION',
+              raw: raw
+            }));
+            return;
+          }
+        }
+      }
+      window.ReactNativeWebView.postMessage(JSON.stringify({
+        type: 'SUPABASE_SESSION',
+        raw: null
+      }));
+    } catch(e) {
+      window.ReactNativeWebView.postMessage(JSON.stringify({
+        type: 'SUPABASE_SESSION',
+        raw: null,
+        error: e.message
+      }));
+    }
+  })();
+  true;
+`;
+
+interface AuthPayload {
+  user_id: string;
+  access_token: string;
 }
 
 export default function App() {
@@ -151,95 +177,145 @@ export default function App() {
   const [hasError, setHasError] = useState(false);
 
   const pushTokenRef = useRef<string | null>(null);
-  const authRef = useRef<{ user_id: string; access_token: string } | null>(null);
+  const authRef = useRef<AuthPayload | null>(null);
   const registeredForUserRef = useRef<string | null>(null);
+  const extractionAttemptsRef = useRef(0);
 
   const tryRegister = useCallback(async () => {
     const auth = authRef.current;
     const token = pushTokenRef.current;
 
-    console.log("[PUSH] tryRegister called — token:", token ? "yes" : "no", "auth:", auth ? auth.user_id.substring(0, 8) + "..." : "no");
+    console.log(
+      "[PUSH] tryRegister — token:",
+      token ? "yes" : "no",
+      "auth:",
+      auth ? auth.user_id.substring(0, 8) + "..." : "no"
+    );
 
-    if (!auth || !token) {
-      console.log("[PUSH] tryRegister skipped — missing", !auth ? "auth" : "token");
-      return;
-    }
+    if (!auth || !token) return;
 
     if (registeredForUserRef.current === auth.user_id) {
-      console.log("[PUSH] Already registered for this user — skipping");
+      console.log("[PUSH] Already registered — skipping");
       return;
     }
 
     const success = await sendTokenToBackend(auth.access_token, token);
     if (success) {
       registeredForUserRef.current = auth.user_id;
-      console.log("[PUSH] Registration complete for user", auth.user_id.substring(0, 8) + "...");
     } else {
       console.log("[PUSH] Registration failed — will retry in 10s");
       setTimeout(() => tryRegister(), 10000);
     }
   }, []);
 
+  const extractSessionFromWebView = useCallback(() => {
+    if (!webViewRef.current) return;
+    extractionAttemptsRef.current += 1;
+    const attempt = extractionAttemptsRef.current;
+    console.log(`[AUTH] Extracting session from WebView (attempt #${attempt})`);
+    webViewRef.current.injectJavaScript(EXTRACT_SESSION_JS);
+  }, []);
+
   useEffect(() => {
     registerForPushNotifications().then((token) => {
       pushTokenRef.current = token;
       console.log("[PUSH] Token ready:", token ? "yes" : "no");
-      if (token) tryRegister();
     });
-  }, [tryRegister]);
+  }, []);
 
   const handleWebViewMessage = useCallback(
     async (event: { nativeEvent: { data: string } }) => {
       try {
-        console.log("[BRIDGE] Raw message received, length:", event.nativeEvent.data.length);
-        const msg: AuthMessage = JSON.parse(event.nativeEvent.data);
-        
-        if (msg.type !== "AUTH_STATE") {
-          console.log("[BRIDGE] Ignoring non-AUTH message type:", msg.type);
-          return;
-        }
+        const parsed = JSON.parse(event.nativeEvent.data);
 
-        console.log(
-          "[BRIDGE] AUTH_STATE received — user:",
-          msg.user_id ? msg.user_id.substring(0, 8) + "..." : "null",
-          "| has_token:", !!msg.access_token
-        );
-
-        const prevAuth = authRef.current;
-
-        if (!msg.user_id || !msg.access_token) {
-          if (prevAuth && pushTokenRef.current) {
-            await deactivateTokenOnBackend(prevAuth.access_token, pushTokenRef.current);
+        if (parsed.type === "SUPABASE_SESSION") {
+          if (!parsed.raw) {
+            console.log("[AUTH] No session found in WebView storage");
+            if (extractionAttemptsRef.current < 5) {
+              const delay = extractionAttemptsRef.current * 2000;
+              console.log(`[AUTH] Will retry extraction in ${delay}ms`);
+              setTimeout(() => extractSessionFromWebView(), delay);
+            }
+            return;
           }
-          authRef.current = null;
-          registeredForUserRef.current = null;
-          console.log("[PUSH] User logged out — token deactivated");
+
+          try {
+            const sessionData = JSON.parse(parsed.raw);
+            const userId =
+              sessionData?.user?.id ||
+              sessionData?.session?.user?.id;
+            const accessToken =
+              sessionData?.access_token ||
+              sessionData?.session?.access_token;
+
+            if (userId && accessToken) {
+              console.log(`[AUTH] Session extracted — user: ${userId.substring(0, 8)}...`);
+              authRef.current = { user_id: userId, access_token: accessToken };
+              await tryRegister();
+            } else {
+              console.log("[AUTH] Session data incomplete — no user_id or access_token");
+            }
+          } catch (e: any) {
+            console.error("[AUTH] Failed to parse session JSON:", e.message);
+          }
           return;
         }
 
-        if (prevAuth && prevAuth.user_id !== msg.user_id && pushTokenRef.current) {
-          await deactivateTokenOnBackend(prevAuth.access_token, pushTokenRef.current);
-          registeredForUserRef.current = null;
-          console.log("[PUSH] Account switched — old token deactivated");
-        }
+        if (parsed.type === "AUTH_STATE") {
+          console.log(
+            "[BRIDGE] AUTH_STATE received — user:",
+            parsed.user_id ? parsed.user_id.substring(0, 8) + "..." : "null"
+          );
 
-        authRef.current = { user_id: msg.user_id, access_token: msg.access_token };
-        
-        if (pushTokenRef.current) {
-          console.log("[PUSH] Retry register — auth now available, push token exists");
+          const prevAuth = authRef.current;
+
+          if (!parsed.user_id || !parsed.access_token) {
+            if (prevAuth && pushTokenRef.current) {
+              await deactivateTokenOnBackend(
+                prevAuth.access_token,
+                pushTokenRef.current
+              );
+            }
+            authRef.current = null;
+            registeredForUserRef.current = null;
+            console.log("[PUSH] User logged out — token deactivated");
+            return;
+          }
+
+          if (
+            prevAuth &&
+            prevAuth.user_id !== parsed.user_id &&
+            pushTokenRef.current
+          ) {
+            await deactivateTokenOnBackend(
+              prevAuth.access_token,
+              pushTokenRef.current
+            );
+            registeredForUserRef.current = null;
+          }
+
+          authRef.current = {
+            user_id: parsed.user_id,
+            access_token: parsed.access_token,
+          };
+          await tryRegister();
+          return;
         }
-        await tryRegister();
       } catch (err) {
         console.error("[BRIDGE] Failed to parse message:", err);
       }
     },
-    [tryRegister]
+    [tryRegister, extractSessionFromWebView]
   );
 
   const handleLoadEnd = useCallback(() => {
     setLoading(false);
     setHasError(false);
-  }, []);
+    console.log("[WEBVIEW] Page loaded — extracting auth session");
+    setTimeout(() => extractSessionFromWebView(), 1500);
+    setTimeout(() => extractSessionFromWebView(), 4000);
+    setTimeout(() => extractSessionFromWebView(), 8000);
+  }, [extractSessionFromWebView]);
 
   const handleError = useCallback(() => {
     setLoading(false);
@@ -249,6 +325,7 @@ export default function App() {
   const handleRetry = useCallback(() => {
     setHasError(false);
     setLoading(true);
+    extractionAttemptsRef.current = 0;
     webViewRef.current?.reload();
   }, []);
 
