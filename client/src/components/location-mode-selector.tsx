@@ -215,12 +215,16 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       onChange({ ...value, place: null, districts: [] });
     }
 
-    places.search(val);
-
     if (cityNominatimDebounce.current) clearTimeout(cityNominatimDebounce.current);
-    cityNominatimDebounce.current = setTimeout(() => {
-      searchNominatim(val, setNominatimCityResults, setCityOpen, setNominatimCityLoading);
-    }, 350);
+
+    if (places.isAvailable) {
+      places.search(val);
+      setNominatimCityResults([]);
+    } else {
+      cityNominatimDebounce.current = setTimeout(() => {
+        searchNominatim(val, setNominatimCityResults, setCityOpen, setNominatimCityLoading);
+      }, 350);
+    }
 
     if (val.trim().length >= 2) {
       setCityOpen(true);
@@ -276,12 +280,16 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       onChange({ ...value, commuteDestination: val });
     }
 
-    destPlaces.search(val);
-
     if (destNominatimDebounce.current) clearTimeout(destNominatimDebounce.current);
-    destNominatimDebounce.current = setTimeout(() => {
-      searchNominatim(val, setNominatimDestResults, setDestOpen, setNominatimDestLoading);
-    }, 350);
+
+    if (destPlaces.isAvailable) {
+      destPlaces.search(val);
+      setNominatimDestResults([]);
+    } else {
+      destNominatimDebounce.current = setTimeout(() => {
+        searchNominatim(val, setNominatimDestResults, setDestOpen, setNominatimDestLoading);
+      }, 350);
+    }
 
     if (val.trim().length >= 2) {
       setDestOpen(true);

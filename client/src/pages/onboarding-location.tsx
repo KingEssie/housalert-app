@@ -149,10 +149,14 @@ export default function OnboardingLocationPage() {
     setSelectedCity(null);
     setSelectedDistricts([]);
 
-    places.search(val);
-
     if (nominatimDebounce.current) clearTimeout(nominatimDebounce.current);
-    nominatimDebounce.current = setTimeout(() => searchNominatim(val), 350);
+
+    if (places.isAvailable) {
+      places.search(val);
+      setNominatimResults([]);
+    } else {
+      nominatimDebounce.current = setTimeout(() => searchNominatim(val), 350);
+    }
 
     if (val.trim().length >= 2) {
       setShowDropdown(true);

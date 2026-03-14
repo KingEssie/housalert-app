@@ -116,10 +116,14 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
     setTouched(true);
     if (value) onChange(null);
 
-    places.search(val);
-
     if (nominatimDebounce.current) clearTimeout(nominatimDebounce.current);
-    nominatimDebounce.current = setTimeout(() => searchNominatim(val), 350);
+
+    if (places.isAvailable) {
+      places.search(val);
+      setNominatimResults([]);
+    } else {
+      nominatimDebounce.current = setTimeout(() => searchNominatim(val), 350);
+    }
 
     if (val.trim().length >= 2) {
       setOpen(true);
