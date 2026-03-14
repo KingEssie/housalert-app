@@ -2397,6 +2397,95 @@ export async function registerRoutes(
     }
   });
 
+  if (process.env.NODE_ENV !== "production") {
+    const DEV_USER_ID = "acb0a5e8-49bc-404e-bdd9-7ed568fdfaed";
+
+    app.get("/api/dev/test-push", async (_req, res) => {
+      try {
+        const sb = getSupabaseAdmin();
+        const { data: tokens } = await sb
+          .from("expo_push_tokens")
+          .select("expo_push_token, platform")
+          .eq("user_id", DEV_USER_ID)
+          .eq("is_active", true);
+
+        const activeTokens = tokens || [];
+        if (activeTokens.length === 0) {
+          return res.json({ success: false, tokens_found: 0, tokens_targeted: 0, error: "No active tokens registered" });
+        }
+
+        const { sendWithRetry } = await import("./notifications/expo-push");
+        const messages = activeTokens.map((t: any) => ({
+          to: t.expo_push_token,
+          sound: "default",
+          title: "HousAlert Dev Test",
+          body: `Push test @ ${new Date().toLocaleTimeString("nl-NL")}`,
+          data: { url: "/dashboard", type: "dev_test" },
+          priority: "high" as const,
+          channelId: "match-alerts",
+        }));
+
+        const { tickets, error } = await sendWithRetry(messages);
+        const ticketIds = (tickets || []).filter((t: any) => t?.id).map((t: any) => t.id);
+
+        return res.json({
+          success: !error && tickets.every((t: any) => t?.status === "ok"),
+          tokens_found: activeTokens.length,
+          tokens_targeted: messages.length,
+          push_ticket_ids: ticketIds.length > 0 ? ticketIds : null,
+          tickets,
+          error: error || null,
+        });
+      } catch (err: any) {
+        return res.status(500).json({ success: false, error: err.message });
+      }
+    });
+
+    app.get("/api/dev/push-debug", async (_req, res) => {
+      try {
+        const sb = getSupabaseAdmin();
+
+        const { data: tokens } = await sb
+          .from("expo_push_tokens")
+          .select("expo_push_token, platform, is_active, updated_at")
+          .eq("user_id", DEV_USER_ID)
+          .eq("is_active", true);
+
+        const activeTokens = tokens || [];
+        const masked = activeTokens.map((t: any) => ({
+          token: t.expo_push_token.substring(0, 25) + "...]",
+          platform: t.platform,
+          updated_at: t.updated_at,
+        }));
+
+        const { data: logs } = await sb
+          .from("push_delivery_log")
+          .select("id, channel, token_snippet, title, body, status, expo_ticket_id, expo_receipt_status, error_type, error_message, created_at")
+          .eq("user_id", DEV_USER_ID)
+          .order("created_at", { ascending: false })
+          .limit(10);
+
+        const { data: settings } = await sb
+          .from("notification_settings")
+          .select("push_enabled, email_enabled")
+          .eq("user_id", DEV_USER_ID)
+          .maybeSingle();
+
+        return res.json({
+          active_token_count: activeTokens.length,
+          masked_tokens: masked,
+          push_enabled: settings?.push_enabled ?? null,
+          email_enabled: settings?.email_enabled ?? null,
+          recent_delivery_logs: logs || [],
+        });
+      } catch (err: any) {
+        return res.status(500).json({ error: err.message });
+      }
+    });
+
+    log("[DEV] Registered /api/dev/test-push and /api/dev/push-debug (no auth, dev only)");
+  }
+
   app.get("/api/admin/push-delivery-log", requireAdmin, async (req, res) => {
     try {
       const userId = req.query.user_id as string | undefined;
