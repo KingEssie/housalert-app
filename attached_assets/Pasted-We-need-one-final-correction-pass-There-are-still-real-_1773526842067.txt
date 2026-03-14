@@ -1,0 +1,102 @@
+We need one final correction pass. There are still real UX and logic issues.
+
+Please implement the following exactly.
+
+1. CHECKLIST CLEANUP
+Current problems:
+- duplicate actions still appear in the checklist
+- some tasks link to the wrong destination screen
+
+Required fixes:
+- remove duplicate tasks completely
+- each task must appear only once
+- audit every checklist task route and make sure it opens the correct page to complete that task
+
+Examples:
+- "Telefoonnummer toevoegen" must open the correct phone-number/profile page
+- it must NOT open notification settings
+- "Tips lezen" must open the tips flow
+- profile/search tasks must open filters/profile screens
+- reaction task must open the correct reaction-related flow
+
+2. REMOVE ACCOUNT STATS BLOCK
+On the account page, remove the stats section/cards showing:
+- Ontvangen matches
+- Verzonden reacties
+
+Remove this block entirely from the UI.
+
+3. REACTION SCREEN PRICE BADGE FIX
+Current problem:
+The monthly price badge on the photo does not sit cleanly and visually conflicts with the block below.
+
+Required behavior:
+- keep the price badge on the photo
+- make sure it stays clearly visible
+- do not let it visually disappear behind or collide with the content card below
+- adjust spacing/overlay positioning so it looks intentional and premium
+
+4. BACK BUTTON FIX
+Current problem:
+The back button on the reaction screen goes to Home instead of the actual previous page.
+
+Required behavior:
+- back button should return to the actual previous page in the user flow
+- use real navigation history where possible
+- only fall back to a sensible default if there is no history
+
+5. SUBSCRIPTION STATUS / AUTO-RENEW FIX
+Current problem:
+The UI still shows subscription renewal state incorrectly after cancellation.
+
+Required behavior:
+- if the subscription is canceled, do not show it as auto-renewing
+- show the real current renewal state from the true subscription source of truth
+- audit all subscription detail fields to ensure consistency after cancellation
+
+6. PAYMENT METHOD UX CLEANUP
+Current problem:
+"Betaalmethode toevoegen" is not really supported yet, which makes the current payment-method UI confusing.
+Also if adding is unavailable, removing should be reconsidered.
+
+Required behavior:
+- audit the payment-method management UI
+- if adding a payment method is not actually supported yet, do not present it as a normal available flow
+- make the UI honest and consistent
+- if needed, show a clear disabled/coming-soon state instead of a fake active action
+- ensure remove/delete behavior is sensible if multiple payment methods are not fully supported yet
+
+7. FLOATING BOTTOM NAV REDESIGN
+Redesign the bottom navigation to match the BlaBlaCar-style direction from the provided reference.
+
+Required behavior:
+- floating bottom nav
+- rounded container
+- visually separated from page background
+- active menu item should have:
+  - blue icon
+  - blue text
+  - light gray rounded background behind the active item
+- inactive items remain neutral/dark
+- keep the existing app sections, but improve the styling and active-state treatment
+
+8. QA CHECKLIST
+Verify:
+- no duplicate tasks remain
+- each task opens the correct page
+- account stats block is removed
+- price badge on photo is clearly visible and not visually broken
+- back button returns to previous page
+- canceled subscription no longer shows wrong auto-renew state
+- payment method UI is honest and consistent
+- floating bottom nav matches the intended style
+- active nav item has blue icon/text + light gray rounded background
+
+9. REPLY IN EXACTLY THIS STRUCTURE:
+A. Checklist fixes
+B. Account page cleanup
+C. Reaction screen fixes
+D. Subscription / payment method fixes
+E. Bottom navigation redesign
+F. Files changed
+G. QA verification

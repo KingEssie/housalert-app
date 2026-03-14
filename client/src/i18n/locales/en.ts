@@ -445,6 +445,15 @@ export const en: Record<string, any> = {
     profilePhoto: "Add a profile photo for a personal impression.",
   },
 
+  paymentMethodPage: {
+    title: "Payment method",
+    currentMethod: "Current payment method",
+    managedByStripe: "Via Stripe",
+    managedByStripeDesc: "Your payment is securely processed via Stripe.",
+    active: "Active",
+    managedInfo: "Your payment method is managed via Stripe. You entered your payment details when subscribing. Changes are not possible at this time.",
+  },
+
   boost: {
     title: "Boost",
     nextSteps: "Next steps",

@@ -284,14 +284,14 @@ export default function ApplyPage() {
         )}
 
         {listing.price > 0 && (
-          <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm rounded-full px-3.5 py-1.5 shadow-sm" data-testid="badge-price-photo">
+          <div className="absolute bottom-5 right-4 bg-white/95 backdrop-blur-sm rounded-full px-4 py-2 shadow-[0_2px_12px_rgba(0,0,0,0.12)] z-20" data-testid="badge-price-photo">
             <span className="text-[17px] font-[800] text-[#111C3D]">€{listing.price}</span>
             <span className="text-[11px] font-medium text-[#6B7280]"> {t("common.perMonthShort")}</span>
           </div>
         )}
       </div>
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-5 -mt-4 relative z-10 pb-28">
+      <main className="flex-1 max-w-xl mx-auto w-full px-5 -mt-2 relative z-10 pb-28">
         <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 mb-3">
           <h1 className="text-[20px] font-[800] text-[#111C3D] leading-[1.2] tracking-[-0.02em] mb-2" data-testid="text-apply-title">
             {listing.title}

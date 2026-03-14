@@ -530,23 +530,26 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
   const strength = strengthQuery.data;
   if (!status && !strength) return null;
 
+  const DUPLICATE_TASK_IDS = new Set([
+    "alerts",
+    "prep_letter",
+    "prep_network",
+    "prep_search_profile",
+  ]);
+
   const TASK_ACTION_MAP: Record<string, () => void> = {
     profileCreated: () => navigate("/dashboard/searches/new"),
     notificationsEnabled: () => navigate("/settings/notifications"),
     firstMatchViewed: () => setActiveTab("matches"),
-    firstReaction: () => setActiveTab("matches"),
+    firstReaction: () => { setActiveTab("matches"); },
     trialStarted: () => navigate("/paywall"),
     subscriptionStarted: () => navigate("/paywall"),
-    alerts: () => navigate("/settings/notifications"),
     search_buddy: () => navigate("/profile/edit/search_buddy_email"),
-    search_optimize: () => navigate("/dashboard?tab=filters"),
+    search_optimize: () => { setActiveTab("filters"); },
     application_template: () => navigate("/application-letter"),
     documents: () => navigate("/profile/details"),
-    phone: () => navigate("/settings/notifications"),
-    prep_search_profile: () => navigate("/dashboard/searches/new"),
-    prep_letter: () => navigate("/application-letter"),
+    phone: () => navigate("/profile/details"),
     prep_extra_profile: () => navigate("/dashboard/searches/new"),
-    prep_network: () => navigate("/profile/edit/search_buddy_email"),
     prep_viewing_tips: () => setActiveTab("tips"),
   };
 
@@ -567,23 +570,20 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
   }
 
   const STRENGTH_LABEL_MAP: Record<string, string> = {
-    alerts: t("strengthTask.alerts"),
     search_buddy: t("strengthTask.searchBuddy"),
     search_optimize: t("strengthTask.searchOptimize"),
     application_template: t("strengthTask.applicationTemplate"),
     documents: t("strengthTask.documents"),
     phone: t("strengthTask.phone"),
-    prep_search_profile: t("strengthTask.prepSearchProfile"),
-    prep_letter: t("strengthTask.prepLetter"),
     prep_extra_profile: t("strengthTask.prepExtraProfile"),
-    prep_network: t("strengthTask.prepNetwork"),
     prep_viewing_tips: t("strengthTask.prepViewingTips"),
   };
 
   if (strength) {
     const existingKeys = new Set(allTasks.map(t => t.key));
     [...strength.tasks, ...strength.prepTasks].forEach((task) => {
-      if (!existingKeys.has(task.id) && task.id !== "prep_viewing_tips") {
+      if (!existingKeys.has(task.id) && task.id !== "prep_viewing_tips" && !DUPLICATE_TASK_IDS.has(task.id)) {
+        existingKeys.add(task.id);
         allTasks.push({
           key: task.id,
           label: STRENGTH_LABEL_MAP[task.id] || task.id,
@@ -1249,7 +1249,7 @@ function AccountSettingsRow({ label, subtext, onClick, trailing }: { label: stri
   );
 }
 
-function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, matchCount }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null }; setActiveTab: (tab: TabKey) => void; matchCount: number }) {
+function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null }; setActiveTab: (tab: TabKey) => void }) {
   const [signingOut, setSigningOut] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [showPhotoSheet, setShowPhotoSheet] = useState(false);
@@ -1278,19 +1278,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, match
     },
   });
 
-  const statsQuery = useQuery({
-    queryKey: ["/api/profile-stats"],
-    queryFn: async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) return { matches_received: 0, reactions_sent: 0 };
-      const res = await apiFetch("/api/profile-stats", { headers: { Authorization: `Bearer ${session.access_token}` } });
-      return res.json();
-    },
-  });
-
   const pd = profileDataQuery.data;
   const phone = pd?.phone || notifQuery.data?.phone_e164;
-  const stats = statsQuery.data ?? { matches_received: 0, reactions_sent: 0 };
   const photoUrl = pd?.profile_photo_url || null;
   const notifSettings = notifQuery.data;
 
@@ -1428,30 +1417,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, match
             </div>
           )}
 
-          {(subscription.isActive || subscription.isTrial) ? (
-            <div className="grid grid-cols-2 gap-3" data-testid="kpi-stats">
-              <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 flex flex-col items-center" data-testid="kpi-matches">
-                <div className="w-11 h-11 rounded-full bg-[#EBF2FF] flex items-center justify-center mb-3">
-                  <Search className="w-5 h-5 text-[#0D6EFD]" />
-                </div>
-                <p className="text-[28px] font-[800] text-[#111C3D] leading-none">{matchCount > 999 ? "999+" : matchCount}</p>
-                <p className="text-[13px] text-[#6B7280] mt-2 text-center font-medium">{t("profile.stats.matchesReceived")}</p>
-              </div>
-              <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 flex flex-col items-center" data-testid="kpi-reactions">
-                <div className="w-11 h-11 rounded-full bg-[#F0FDF4] flex items-center justify-center mb-3">
-                  <Send className="w-5 h-5 text-[#22C55E]" />
-                </div>
-                <p className="text-[28px] font-[800] text-[#111C3D] leading-none">{stats.reactions_sent}</p>
-                <p className="text-[13px] text-[#6B7280] mt-2 text-center font-medium">{t("profile.stats.reactionsSent")}</p>
-              </div>
-            </div>
-          ) : (
-            <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 text-center" data-testid="kpi-no-sub">
-              <p className="text-[14px] text-[#1F2937]">
-                {t("profile.activateSubStats")}
-              </p>
-            </div>
-          )}
 
           <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
             {pd?.search_buddy_email ? (
@@ -1737,11 +1702,10 @@ export default function DashboardPage() {
   const { toast } = useToast();
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("tab")) {
-      window.history.replaceState({}, "", "/dashboard");
-    }
-  }, []);
+    const url = new URL(window.location.href);
+    url.searchParams.set("tab", activeTab);
+    window.history.replaceState({}, "", url.pathname + url.search);
+  }, [activeTab]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -1802,7 +1766,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <main className="flex-1 max-w-xl mx-auto w-full pb-24">
+      <main className="flex-1 max-w-xl mx-auto w-full pb-28">
         {activeTab === "home" && (
           <HomeTab
             user={user}
@@ -1829,34 +1793,35 @@ export default function DashboardPage() {
             navigate={navigate}
             subscription={{ status: sub.status, isTrial: sub.isTrial, isActive: sub.isActive, isExpired: sub.isExpired, plan: sub.plan, trialEndsAt: sub.trialEndsAt }}
             setActiveTab={setActiveTab}
-            matchCount={matchCount}
           />
         )}
       </main>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#E5E7EB]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
-        <div className="max-w-xl mx-auto flex h-[56px]">
-          {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
-            const isActive = activeTab === key;
-            return (
-              <button
-                key={key}
-                onClick={() => setActiveTab(key)}
-                className="flex-1 flex flex-col items-center justify-center gap-0.5 relative transition-colors text-[#1F2937]"
-                data-testid={`tab-${key}`}
-              >
-                {isActive && (
-                  <span className="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-[3px] rounded-b-full bg-[#0D6EFD]" />
-                )}
-                <Icon className="w-[22px] h-[22px]" />
-                <span className={`text-[11px] ${isActive ? "font-semibold" : "font-medium"}`}>
-                  {t(labelKey)}
-                </span>
-              </button>
-            );
-          })}
+      <div className="fixed bottom-0 left-0 right-0 z-20 pointer-events-none" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+        <div className="max-w-xl mx-auto px-4 pb-3">
+          <nav className="pointer-events-auto bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.10)] flex h-[60px] px-1" data-testid="bottom-nav">
+            {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
+              const isActive = activeTab === key;
+              return (
+                <button
+                  key={key}
+                  onClick={() => setActiveTab(key)}
+                  className="flex-1 flex flex-col items-center justify-center gap-0.5 relative"
+                  data-testid={`tab-${key}`}
+                >
+                  {isActive && (
+                    <span className="absolute inset-x-1.5 inset-y-1.5 rounded-xl bg-[#F0F4FA]" />
+                  )}
+                  <Icon className={`w-[22px] h-[22px] relative z-[1] ${isActive ? "text-[#0D6EFD]" : "text-[#6B7280]"}`} />
+                  <span className={`text-[10px] relative z-[1] ${isActive ? "font-semibold text-[#0D6EFD]" : "font-medium text-[#6B7280]"}`}>
+                    {t(labelKey)}
+                  </span>
+                </button>
+              );
+            })}
+          </nav>
         </div>
-      </nav>
+      </div>
     </div>
   );
 }

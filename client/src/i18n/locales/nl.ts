@@ -1069,16 +1069,10 @@ export const nl: Record<string, any> = {
   paymentMethodPage: {
     title: "Betaalmethode",
     currentMethod: "Huidige betaalmethode",
-    expires: "Verloopt {date}",
-    default: "Standaard",
-    addMethod: "Betaalmethode toevoegen",
-    removeMethod: "Betaalmethode verwijderen",
-    comingSoon: "Binnenkort beschikbaar",
-    comingSoonDesc: "Betaalmethode toevoegen wordt binnenkort ondersteund.",
-    notPossible: "Niet mogelijk",
-    needOneMethod: "Je hebt minimaal één betaalmethode nodig.",
-    removed: "Verwijderd",
-    removedDesc: "Betaalmethode is verwijderd.",
+    managedByStripe: "Via Stripe",
+    managedByStripeDesc: "Je betaling wordt veilig verwerkt via Stripe.",
+    active: "Actief",
+    managedInfo: "Je betaalmethode wordt beheerd via Stripe. Bij het afsluiten van je abonnement heb je je betaalgegevens ingevoerd. Wijzigingen zijn op dit moment niet mogelijk.",
   },
 
   profileStrength: {

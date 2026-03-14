@@ -1069,16 +1069,10 @@ export const de: Record<string, any> = {
   paymentMethodPage: {
     title: "Zahlungsmethode",
     currentMethod: "Aktuelle Zahlungsmethode",
-    expires: "Läuft ab {date}",
-    default: "Standard",
-    addMethod: "Zahlungsmethode hinzufügen",
-    removeMethod: "Zahlungsmethode entfernen",
-    comingSoon: "Demnächst verfügbar",
-    comingSoonDesc: "Zahlungsmethode hinzufügen wird bald unterstützt.",
-    notPossible: "Nicht möglich",
-    needOneMethod: "Du benötigst mindestens eine Zahlungsmethode.",
-    removed: "Entfernt",
-    removedDesc: "Zahlungsmethode wurde entfernt.",
+    managedByStripe: "Über Stripe",
+    managedByStripeDesc: "Deine Zahlung wird sicher über Stripe abgewickelt.",
+    active: "Aktiv",
+    managedInfo: "Deine Zahlungsmethode wird über Stripe verwaltet. Beim Abschluss deines Abonnements hast du deine Zahlungsdaten eingegeben. Änderungen sind derzeit nicht möglich.",
   },
 
   profileStrength: {
