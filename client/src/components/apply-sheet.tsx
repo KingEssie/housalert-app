@@ -150,17 +150,13 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
     }
   };
 
-  const handleCopyAndOpen = async () => {
+  const handleCopyAndRespond = async () => {
     await handleCopy();
+    setMarked(true);
+    onMarkedApplied();
     if (listing.url) {
       window.open(listing.url, "_blank", "noopener");
     }
-  };
-
-  const handleMarkApplied = () => {
-    setMarked(true);
-    onMarkedApplied();
-    toast({ title: t("applySheet.markedApplied"), description: t("applySheet.markedAppliedDesc") });
   };
 
   return (
@@ -230,53 +226,14 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
         </div>
 
         <div className="px-6 pb-6 pt-3 border-t border-[#F5F7FA] flex flex-col gap-2.5">
-          {listing.url ? (
-            <Button
-              onClick={handleCopyAndOpen}
-              className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-semibold"
-              data-testid="button-copy-and-open"
-            >
-              <Copy className="w-4 h-4 mr-2" />
-              {t("applySheet.copyAndApply")}
-            </Button>
-          ) : (
-            <Button
-              onClick={handleCopy}
-              className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-semibold"
-              data-testid="button-copy-letter-sheet"
-            >
-              <Copy className="w-4 h-4 mr-2" />
-              {t("applySheet.copyLetter")}
-            </Button>
-          )}
-
-          <div className="flex gap-2">
-            {listing.url && (
-              <Button
-                variant="outline"
-                onClick={handleCopy}
-                className="flex-1 h-[44px] rounded-lg border-[#E5E7EB] text-[#1F2937] text-[13px] font-semibold"
-                data-testid="button-copy-only"
-              >
-                <Copy className="w-3.5 h-3.5 mr-1.5" />
-                {t("applySheet.copyOnly")}
-              </Button>
-            )}
-            <Button
-              variant="outline"
-              onClick={handleMarkApplied}
-              disabled={marked}
-              className={`flex-1 h-[44px] rounded-lg text-[13px] font-semibold ${
-                marked
-                  ? "bg-[#16A34A]/10 text-[#1F2937] border-[#16A34A]/10"
-                  : "border-[#E5E7EB] text-[#1F2937]"
-              }`}
-              data-testid="button-mark-applied"
-            >
-              <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
-              {marked ? t("applySheet.applied") : t("applySheet.markApplied")}
-            </Button>
-          </div>
+          <Button
+            onClick={handleCopyAndRespond}
+            className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-semibold"
+            data-testid="button-copy-and-respond"
+          >
+            <Copy className="w-4 h-4 mr-2" />
+            {t("applySheet.copyAndApply")}
+          </Button>
         </div>
       </div>
     </div>

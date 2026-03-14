@@ -2,6 +2,7 @@ import { apiFetch } from "@/lib/api-base";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth";
 import { useQuery } from "@tanstack/react-query";
+import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { DEFAULT_TEMPLATE, fillTemplate } from "@/lib/application-letter";
 import { Button } from "@/components/ui/button";
@@ -172,14 +173,9 @@ export default function ApplyPage() {
     }
   };
 
-  const handleCopyAndOpen = async () => {
-    await handleCopy();
-    if (listing.url) {
-      window.open(listing.url, "_blank", "noopener");
-    }
-  };
+  const handleCopyAndRespond = async () => {
+    const copied = await handleCopy();
 
-  const handleMarkApplied = () => {
     setMarked(true);
     const MATCH_APPLIED_KEY = "housalert_match_applied";
     try {
@@ -196,9 +192,14 @@ export default function ApplyPage() {
           Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({ applied: true }),
+      }).then(() => {
+        queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
       }).catch(() => {});
     }
-    toast({ title: t("applySheet.markedApplied"), description: t("applySheet.markedAppliedDesc") });
+
+    if (listing.url) {
+      window.open(listing.url, "_blank", "noopener");
+    }
   };
 
   const hasImage = !!listing.image_url;
@@ -284,54 +285,15 @@ export default function ApplyPage() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3">
-          {listing.url ? (
-            <Button
-              onClick={handleCopyAndOpen}
-              className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-semibold"
-              data-testid="button-copy-and-open"
-            >
-              <Copy className="w-4 h-4 mr-2" />
-              {t("applySheet.copyAndApply")}
-            </Button>
-          ) : (
-            <Button
-              onClick={handleCopy}
-              className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-semibold"
-              data-testid="button-copy-letter"
-            >
-              <Copy className="w-4 h-4 mr-2" />
-              {t("applySheet.copyLetter")}
-            </Button>
-          )}
-
-          <div className="flex gap-2.5">
-            {listing.url && (
-              <Button
-                variant="outline"
-                onClick={handleCopy}
-                className="flex-1 h-[48px] rounded-full border-[#E5E7EB] text-[#1F2937] text-[14px] font-semibold"
-                data-testid="button-copy-only"
-              >
-                <Copy className="w-3.5 h-3.5 mr-1.5" />
-                {t("applySheet.copyOnly")}
-              </Button>
-            )}
-            <Button
-              variant="outline"
-              onClick={handleMarkApplied}
-              disabled={marked}
-              className={`flex-1 h-[48px] rounded-full text-[14px] font-semibold ${
-                marked
-                  ? "bg-[#16A34A]/10 text-[#1F2937] border-[#16A34A]/20"
-                  : "border-[#E5E7EB] text-[#1F2937]"
-              }`}
-              data-testid="button-mark-applied"
-            >
-              <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
-              {marked ? t("applySheet.applied") : t("applySheet.markApplied")}
-            </Button>
-          </div>
+        <div className="flex justify-center">
+          <Button
+            onClick={handleCopyAndRespond}
+            className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-semibold"
+            data-testid="button-copy-and-respond"
+          >
+            <Copy className="w-4 h-4 mr-2" />
+            {t("applySheet.copyAndApply")}
+          </Button>
         </div>
       </main>
     </div>
