@@ -338,7 +338,7 @@ export const nl: Record<string, any> = {
     alerts: {
       title: "Mis nooit een nieuwe woning",
       subtitle: "Je ontvangt direct een melding wanneer er een nieuwe match verschijnt.",
-      trialNote: "Je kunt HousAlert 3 dagen gratis uitproberen. Geen betaling nodig om te starten.",
+      trialNote: "Je kunt HousAlert 14 dagen gratis uitproberen. Daarna vanaf €10,00/maand. Geen betaling nodig om te starten.",
       enable: "Meldingen inschakelen",
       loggingIn: "Inloggen...",
       skip: "Overslaan",
@@ -1179,6 +1179,20 @@ export const nl: Record<string, any> = {
     subscriptionStarted: "Abonnement geactiveerd",
     complete: "Je bent helemaal klaar!",
     stepsLeft: "Nog {count} stappen",
+    noMatchesHint: "Nog geen matches? Je filters staan mogelijk te streng.",
+    adjustFilters: "Filters aanpassen",
+  },
+
+  cancellation: {
+    feedbackTitle: "Feedback",
+    feedbackQuestion: "Heb je een woning gevonden?",
+    feedbackSubtitle: "Dit helpt ons HousAlert te verbeteren.",
+    foundViaHousalert: "Ja, via HousAlert",
+    foundNotViaHousalert: "Ja, maar niet via HousAlert",
+    notFound: "Nee, nog niet gevonden",
+    otherReason: "Andere reden",
+    otherPlaceholder: "Vertel ons kort waarom je opzegt...",
+    submitAndCancel: "Opzeggen",
   },
 
   nudge: {
@@ -1193,8 +1207,9 @@ export const nl: Record<string, any> = {
   },
 
   trial: {
-    explanation: "3 dagen gratis proefperiode",
-    explanationDesc: "Ontvang direct matches via e-mail en push. Na de proefperiode kies je zelf of je doorgaat.",
+    explanation: "14 dagen gratis uitproberen",
+    explanationDesc: "Ontvang direct matches via e-mail en push. Na de proefperiode kies je zelf of je doorgaat — vanaf €10,00/maand.",
     noCardNeeded: "Geen betaalgegevens nodig om te starten",
+    pricingNote: "14 dagen gratis — daarna vanaf €10,00/maand",
   },
 };

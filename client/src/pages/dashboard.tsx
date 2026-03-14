@@ -215,6 +215,7 @@ function MatchCard({
   function handleViewListing(e: React.MouseEvent) {
     e.stopPropagation();
     markViewed(match.listing_id);
+    trackEvent("listing_opened", { listingId: match.listing_id, source: "match_card" });
     onStatusChange();
     if (match.url) {
       window.open(match.url, "_blank", "noopener,noreferrer");
@@ -612,7 +613,7 @@ interface ActivationStatus {
 
 function ActivationChecklist({ accessToken, navigate, setActiveTab }: { accessToken: string | undefined; navigate: (path: string) => void; setActiveTab: (tab: TabKey) => void }) {
   const { t } = useTranslation();
-  const statusQuery = useQuery<ActivationStatus>({
+  const statusQuery = useQuery<ActivationStatus & { profileCreatedAt?: string | null; totalMatches?: number }>({
     queryKey: ["/api/activation-status"],
     queryFn: async () => {
       const res = await apiFetch("/api/activation-status", {
@@ -627,6 +628,10 @@ function ActivationChecklist({ accessToken, navigate, setActiveTab }: { accessTo
 
   const status = statusQuery.data;
   if (!status) return null;
+
+  const noMatchesYet = status.profileCreated && (status.totalMatches ?? 0) === 0;
+  const profileAge = status.profileCreatedAt ? Date.now() - new Date(status.profileCreatedAt).getTime() : 0;
+  const showNoMatchHint = noMatchesYet && profileAge > 24 * 60 * 60 * 1000;
 
   const steps = [
     { key: "profileCreated", label: t("activation.profileCreated"), done: status.profileCreated, action: () => navigate("/dashboard/searches/new") },
@@ -683,6 +688,22 @@ function ActivationChecklist({ accessToken, navigate, setActiveTab }: { accessTo
           </button>
         ))}
       </div>
+
+      {showNoMatchHint && (
+        <div className="mt-3 bg-[#FFFBEB] rounded-xl px-4 py-3 flex items-start gap-3" data-testid="no-match-hint">
+          <AlertCircle className="w-4 h-4 text-[#D97706] flex-shrink-0 mt-0.5" />
+          <div className="flex-1 min-w-0">
+            <p className="text-[13px] font-medium text-[#92400E]">{t("activation.noMatchesHint")}</p>
+            <button
+              onClick={() => navigate("/dashboard/searches/new")}
+              className="text-[13px] font-bold text-[#D97706] mt-1 underline"
+              data-testid="button-adjust-filters"
+            >
+              {t("activation.adjustFilters")}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

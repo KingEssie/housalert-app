@@ -4,6 +4,7 @@ import { useRoute, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
 import { useTranslation } from "@/i18n";
+import { trackEvent } from "@/lib/track-event";
 import { MapPin, Euro, BedDouble, Ruler, ExternalLink, Clock, Globe, Zap, CheckCircle2, ImageIcon, ArrowLeft, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -127,6 +128,7 @@ export default function ListingDetailPage() {
       method: "PATCH",
       headers: { Authorization: `Bearer ${session.access_token}` },
     }).catch(() => {});
+    trackEvent("listing_opened", { listingId: id });
   }, [id, session?.access_token]);
 
   if (isLoading) {

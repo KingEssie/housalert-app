@@ -55,6 +55,9 @@ export default function SignupPage() {
       const hasSession = !!sessionData?.session?.access_token;
 
       if (hasSession) {
+        import("@/lib/track-event").then(({ trackEvent }) => {
+          trackEvent("account_created");
+        }).catch(() => {});
         const trialOk = await ensureTrialForCurrentUser();
         if (!trialOk) {
           console.error("[signup] Trial creation failed after signup — continuing to onboarding anyway");

@@ -338,7 +338,7 @@ export const de: Record<string, any> = {
     alerts: {
       title: "Verpasse nie eine neue Wohnung",
       subtitle: "Du erhältst sofort eine Benachrichtigung, wenn ein neues Match erscheint.",
-      trialNote: "Du kannst HousAlert 3 Tage lang kostenlos testen. Keine Zahlung nötig.",
+      trialNote: "Du kannst HousAlert 14 Tage kostenlos testen. Danach ab €10,00/Monat. Keine Zahlung nötig.",
       enable: "Benachrichtigungen aktivieren",
       loggingIn: "Anmelden...",
       skip: "Überspringen",
@@ -1179,6 +1179,20 @@ export const de: Record<string, any> = {
     subscriptionStarted: "Abonnement aktiviert",
     complete: "Du bist startklar!",
     stepsLeft: "Noch {count} Schritte",
+    noMatchesHint: "Noch keine Matches? Deine Filter sind vielleicht zu streng.",
+    adjustFilters: "Filter anpassen",
+  },
+
+  cancellation: {
+    feedbackTitle: "Feedback",
+    feedbackQuestion: "Hast du eine Wohnung gefunden?",
+    feedbackSubtitle: "Das hilft uns, HousAlert zu verbessern.",
+    foundViaHousalert: "Ja, über HousAlert",
+    foundNotViaHousalert: "Ja, aber nicht über HousAlert",
+    notFound: "Nein, noch nicht gefunden",
+    otherReason: "Anderer Grund",
+    otherPlaceholder: "Sag uns kurz, warum du kündigst...",
+    submitAndCancel: "Kündigen",
   },
 
   nudge: {
@@ -1193,8 +1207,9 @@ export const de: Record<string, any> = {
   },
 
   trial: {
-    explanation: "3 Tage kostenlos testen",
-    explanationDesc: "Erhalte sofort Matches per E-Mail und Push. Nach der Testphase entscheidest du selbst.",
+    explanation: "14 Tage kostenlos testen",
+    explanationDesc: "Erhalte sofort Matches per E-Mail und Push. Nach der Testphase entscheidest du selbst — ab €10,00/Monat.",
     noCardNeeded: "Keine Zahlungsdaten nötig",
+    pricingNote: "14 Tage kostenlos — danach ab €10,00/Monat",
   },
 };

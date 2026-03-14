@@ -709,4 +709,12 @@ Env vars: `TEST_USER_EMAIL`, `TEST_USER_PASSWORD`, `TEST_PHONE_E164`, `TEST_BASE
 - **Match engagement nudges**: `NudgeBanners` component — shows contextual nudge for unviewed matches and viewed-but-not-reacted listings. Auto-dismisses per day.
 - **Trial explanation**: Shown on onboarding AlertsStep and profile tab when user is on trial. i18n keys: `onboarding.alerts.trialNote`, `trial.explanation`, `trial.explanationDesc`.
 - **Admin activation dashboard**: `/admin/activation` page — shows event-based funnel bars, source-of-truth metrics from DB (auth users, profiles, notifications, matches, reactions, trials, active subscriptions), and recent events log.
-- **i18n keys added**: `activation.*`, `nudge.*`, `trial.*` in all three locales (nl, de, en)
+- **i18n keys added**: `activation.*`, `nudge.*`, `trial.*`, `cancellation.*` in all three locales (nl, de, en)
+- **3 additional events**: `account_created` (fired from signup), `match_received` (fired from matching engine on first match creation, dedup-safe), `listing_opened` (fired from listing detail page)
+- **Checklist "no match" state**: When user has a profile but 0 matches for 24+ hours, shows amber hint "filters may be too strict" with link to adjust filters
+- **Explicit pricing in trial copy**: Trial messaging updated across all locales to show "14 dagen gratis — daarna vanaf €10,00/maand" (correct 14-day trial, actual lowest price)
+- **Cancellation feedback flow**: When cancelling, users are asked "Heb je een woning gevonden?" with 4 options (found via HousAlert, found elsewhere, not found, other). Optional text for "other". Stored in `cancellation_feedback` table (Replit PG).
+- **`cancellation_feedback` table**: Replit PG, auto-created on startup. Columns: `id serial`, `user_id text`, `reason_type text`, `reason_text text`, `found_home_via_housalert boolean`, `created_at timestamptz`.
+- **Backend**: `server/cancellation-feedback.ts` — `saveCancellationFeedback()`, `getCancellationStats()`, `createCancellationFeedbackTable()`
+- **API endpoints**: `POST /api/cancellation-feedback` (save feedback), `GET /api/admin/cancellation-stats` (admin-only stats)
+- **Admin cancellation KPIs**: Added to admin activation dashboard — shows total cancellations, found via HousAlert, found elsewhere, not found, other, plus success percentage

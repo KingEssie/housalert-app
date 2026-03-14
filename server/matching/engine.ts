@@ -4,6 +4,7 @@ import { trackMatchCreated } from "../freshness";
 import { getSubscriptionStatus } from "../subscriptions";
 import { upsertUserMatch } from "../user-matches";
 import { getListingStatus, isListingMatchable, type ListingStatus } from "../listing-status";
+import { trackEvent as trackActivationEvent, hasEvent as hasActivationEvent } from "../activation-events";
 
 const SUPABASE_URL = (process.env.VITE_SUPABASE_URL ?? "").replace(/\/$/, "");
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
@@ -534,6 +535,12 @@ async function insertMatchIfNew(
 
   log(`[MATCH CREATED] id=${matchRow.id} user=${userId} profile=${searchProfileId} listing=${listingId}`);
   trackMatchCreated(matchRow.id).catch(() => {});
+
+  hasActivationEvent(userId, "match_received").then(alreadyHas => {
+    if (!alreadyHas) {
+      trackActivationEvent(userId, "match_received", { listingId, matchId: matchRow.id }).catch(() => {});
+    }
+  }).catch(() => {});
 
   try {
     await upsertUserMatch({

@@ -1,0 +1,110 @@
+I want to complete a final launch-readiness improvement pass for HousAlert before moving to growth/launch strategy.
+
+Context:
+HousAlert already has:
+- activation event tracking
+- activation checklist
+- onboarding/trial messaging
+- admin activation dashboard
+
+Now I want to add 4 final improvements before Step 10.
+
+Please implement the following:
+
+1. Add 3 missing activation events
+
+Add these missing events to the activation funnel:
+
+- account_created
+- match_received
+- listing_opened
+
+Requirements:
+- account_created should fire when a new user account is successfully created
+- match_received should fire when a user receives their first actual match
+- listing_opened should fire when a user opens a listing / original listing
+- keep event storage consistent with the existing activation_events structure
+- avoid duplicate spam events where possible, especially for first-match logic
+
+2. Improve checklist behavior when no match is received
+
+Current problem:
+If a user does not receive any matches for a long time, the activation checklist gets stuck on the “receive/view first match” step.
+
+Required behavior:
+- if the user has no matches after a practical time window (for example 24h after profile creation), show a helpful state instead of just leaving the checklist stuck
+- show lightweight copy such as:
+  Dutch: "Nog geen matches? Je filters staan mogelijk te streng."
+  German: "Noch keine Matches? Deine Filter sind vielleicht zu streng."
+  English: "No matches yet? Your filters may be too strict."
+- add a CTA to adjust filters/search profile
+- keep it helpful, not alarming
+
+3. Make subscription pricing explicit
+
+Improve the onboarding / trial messaging so the actual price is shown clearly and early.
+
+Requirements:
+- clearly show the trial duration
+- clearly show the monthly membership price after trial
+- update relevant onboarding/account/profile screens where trial explanation appears
+- keep copy simple and trust-building
+
+Example structure:
+- 14 dagen gratis
+- Daarna €6,99 per maand
+(or whatever the current real price is in the app)
+
+Do not hide the price behind extra taps.
+
+4. Add cancellation outcome flow
+
+This is important.
+
+When a user cancels their membership, I want to know whether they found a home through HousAlert.
+
+Implement a cancellation flow that asks the user something like:
+
+Primary question:
+- "Heb je een woning gevonden?"
+Options:
+- Ja, via HousAlert
+- Ja, maar niet via HousAlert
+- Nee
+- Andere reden
+
+If the user picks "Andere reden", optionally allow a short text input.
+
+Requirements:
+- do not make this flow too heavy
+- capture the result in the database
+- connect it to the user/subscription
+- make it usable both for product learning and KPI tracking
+
+Suggested stored fields:
+- cancellation_reason_type
+- cancellation_reason_text (nullable)
+- found_home_via_housalert (boolean nullable)
+- cancellation_feedback_at
+
+5. Add admin KPI visibility for cancellations
+
+Update the admin dashboard (or add a small section) to show:
+- number of cancellations
+- number who found a home via HousAlert
+- number who found a home but not via HousAlert
+- number who cancelled without finding a home
+- other reasons count
+
+This should be easy to review as a launch KPI.
+
+6. Reply in exactly this structure:
+
+A. Events added
+B. Checklist improvement
+C. Pricing visibility changes
+D. Cancellation flow design
+E. Database / data model changes
+F. Admin KPI additions
+G. Files changed
+H. Final verification

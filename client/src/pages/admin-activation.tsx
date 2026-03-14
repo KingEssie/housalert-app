@@ -4,6 +4,7 @@ import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import {
   Activity, ChevronLeft, Users, Search, Bell, Eye, Send, Crown, CreditCard, Loader2,
+  XCircle, Home, HelpCircle, UserPlus, Inbox, ExternalLink,
 } from "lucide-react";
 
 interface SourceOfTruth {
@@ -23,10 +24,21 @@ interface FunnelData {
   sourceOfTruth?: SourceOfTruth;
 }
 
+interface CancellationStats {
+  total: number;
+  foundViaHousalert: number;
+  foundNotViaHousalert: number;
+  notFound: number;
+  other: number;
+}
+
 const FUNNEL_STEPS = [
+  { key: "account_created", label: "Account Created", Icon: UserPlus, color: "#6B7280" },
   { key: "profile_created", label: "Profile Created", Icon: Search, color: "#0D6EFD" },
   { key: "notifications_enabled", label: "Notifications Enabled", Icon: Bell, color: "#16A34A" },
+  { key: "match_received", label: "Match Received", Icon: Inbox, color: "#8B5CF6" },
   { key: "first_match_viewed", label: "First Match Viewed", Icon: Eye, color: "#7C3AED" },
+  { key: "listing_opened", label: "Listing Opened", Icon: ExternalLink, color: "#6366F1" },
   { key: "first_reaction", label: "First Reaction", Icon: Send, color: "#EA580C" },
   { key: "trial_started", label: "Trial Started", Icon: Crown, color: "#D97706" },
   { key: "subscription_started", label: "Subscription Started", Icon: CreditCard, color: "#0891B2" },
@@ -35,6 +47,7 @@ const FUNNEL_STEPS = [
 export default function AdminActivationPage() {
   const { user, loading: authLoading } = useAuth();
   const [data, setData] = useState<FunnelData | null>(null);
+  const [cancelStats, setCancelStats] = useState<CancellationStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -51,14 +64,22 @@ export default function AdminActivationPage() {
       const token = session.data.session?.access_token;
       if (!token) throw new Error("No session");
 
-      const res = await apiFetch("/api/admin/activation-funnel", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || `HTTP ${res.status}`);
+      const [funnelRes, cancelRes] = await Promise.all([
+        apiFetch("/api/admin/activation-funnel", {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        apiFetch("/api/admin/cancellation-stats", {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
+      if (!funnelRes.ok) {
+        const errData = await funnelRes.json().catch(() => ({}));
+        throw new Error(errData.error || `HTTP ${funnelRes.status}`);
       }
-      setData(await res.json());
+      setData(await funnelRes.json());
+      if (cancelRes.ok) {
+        setCancelStats(await cancelRes.json());
+      }
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -161,6 +182,36 @@ export default function AdminActivationPage() {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {cancelStats && cancelStats.total > 0 && (
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 mb-6" data-testid="card-cancellation-stats">
+            <h2 className="text-[16px] font-bold text-[#1F2937] mb-4">Cancellation KPIs</h2>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { label: "Total Cancellations", value: cancelStats.total, Icon: XCircle, color: "#EF4444" },
+                { label: "Found via HousAlert", value: cancelStats.foundViaHousalert, Icon: Home, color: "#16A34A" },
+                { label: "Found elsewhere", value: cancelStats.foundNotViaHousalert, Icon: Home, color: "#D97706" },
+                { label: "Not found", value: cancelStats.notFound, Icon: Search, color: "#6B7280" },
+                { label: "Other reason", value: cancelStats.other, Icon: HelpCircle, color: "#9CA3AF" },
+              ].map(({ label, value, Icon, color }) => (
+                <div key={label} className="bg-[#F9FAFB] rounded-xl p-3" data-testid={`cancel-${label.toLowerCase().replace(/\s/g, "-")}`}>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Icon className="w-3.5 h-3.5" style={{ color }} />
+                    <p className="text-[11px] font-medium text-[#6B7280]">{label}</p>
+                  </div>
+                  <p className="text-[22px] font-bold" style={{ color }}>{value}</p>
+                </div>
+              ))}
+            </div>
+            {cancelStats.total > 0 && cancelStats.foundViaHousalert > 0 && (
+              <div className="mt-3 bg-[#F0FDF4] rounded-xl px-4 py-2.5">
+                <p className="text-[13px] text-[#15803D] font-medium">
+                  {Math.round((cancelStats.foundViaHousalert / cancelStats.total) * 100)}% found their home via HousAlert
+                </p>
+              </div>
+            )}
           </div>
         )}
 

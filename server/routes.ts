@@ -25,7 +25,8 @@ import { computeMatchScore, getMatchReasons, computeHybridFilters } from "../sha
 import { normalizeCity } from "../shared/city-normalize";
 import { pool as pgPool } from "./pg-pool";
 import { isAdminEmail, getRecentRuns, getRunDetail, getLatestRunCities, getSourceAggregates } from "./admin";
-import { trackEvent as trackActivationEvent, getUserActivationStatus, getActivationFunnel } from "./activation-events";
+import { trackEvent as trackActivationEvent, getUserActivationStatus, getActivationFunnel, hasEvent as hasActivationEvent } from "./activation-events";
+import { saveCancellationFeedback, getCancellationStats } from "./cancellation-feedback";
 import { initWebPush, sendPushToUser } from "./notifications/push";
 import { sendExpoTestPush } from "./notifications/expo-push";
 import { getSupabaseAdmin } from "./supabase-admin";
@@ -1089,6 +1090,9 @@ export async function registerRoutes(
       if (!sub) {
         return res.status(500).json({ error: "Trial creation failed" });
       }
+      hasActivationEvent(user.id, "account_created").then(has => {
+        if (!has) trackActivationEvent(user.id, "account_created", {});
+      }).catch(() => {});
       trackActivationEvent(user.id, "trial_started", { plan: sub.plan || "trial" });
       return res.json({ ok: true, subscription: sub });
     } catch (err: any) {
@@ -3297,30 +3301,35 @@ export async function registerRoutes(
       const { data: { user }, error } = await supabase.auth.getUser(token);
       if (error || !user) return res.status(401).json({ error: "Unauthorized" });
 
-      const [profilesResult, notifResult, matchResult, appliedResult, subResult, eventStatus] = await Promise.all([
-        supabase.from("search_profiles").select("id").eq("user_id", user.id).limit(1),
+      const [profilesResult, notifResult, matchResult, appliedResult, totalMatchResult, subResult, eventStatus] = await Promise.all([
+        supabase.from("search_profiles").select("id, created_at").eq("user_id", user.id).limit(1),
         supabase.from("user_notification_settings").select("email_enabled, push_enabled").eq("user_id", user.id).maybeSingle(),
         pgPool.query("SELECT 1 FROM user_matches WHERE user_id = $1 AND viewed = true LIMIT 1", [user.id]),
         pgPool.query("SELECT 1 FROM user_matches WHERE user_id = $1 AND applied = true LIMIT 1", [user.id]),
+        pgPool.query("SELECT COUNT(*) as c FROM user_matches WHERE user_id = $1", [user.id]),
         supabase.from("subscriptions").select("status, trial_ends_at").eq("user_id", user.id).maybeSingle(),
         getUserActivationStatus(user.id),
       ]);
 
       const profileCreated = (profilesResult.data?.length ?? 0) > 0;
+      const profileCreatedAt = profilesResult.data?.[0]?.created_at || null;
       const notifEnabled = !!(notifResult.data?.email_enabled || notifResult.data?.push_enabled);
       const firstMatchViewed = matchResult.rows.length > 0 || eventStatus.firstMatchViewed;
       const firstReaction = appliedResult.rows.length > 0 || eventStatus.firstReaction;
+      const totalMatches = parseInt(totalMatchResult.rows[0]?.c || "0");
       const subData = subResult.data;
       const trialStarted = !!subData?.trial_ends_at || eventStatus.trialStarted;
       const subscriptionStarted = subData?.status === "active" || eventStatus.subscriptionStarted;
 
       res.json({
         profileCreated,
+        profileCreatedAt,
         notificationsEnabled: notifEnabled,
         firstMatchViewed,
         firstReaction,
         trialStarted,
         subscriptionStarted,
+        totalMatches,
       });
     } catch (err: any) {
       log(`[activation] Error: ${err.message}`);
@@ -3355,6 +3364,42 @@ export async function registerRoutes(
       });
     } catch (err: any) {
       log(`[admin] Activation funnel error: ${err.message}`);
+      res.status(500).json({ error: "Internal error" });
+    }
+  });
+
+  app.post("/api/cancellation-feedback", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error } = await supabase.auth.getUser(token);
+      if (error || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { reasonType, reasonText } = req.body;
+      if (!reasonType || !["found_via_housalert", "found_not_via_housalert", "not_found", "other"].includes(reasonType)) {
+        return res.status(400).json({ error: "Invalid reason type" });
+      }
+
+      const foundHome = reasonType === "found_via_housalert" ? true
+        : reasonType === "found_not_via_housalert" ? true
+        : reasonType === "not_found" ? false
+        : null;
+
+      await saveCancellationFeedback(user.id, reasonType, reasonText || null, foundHome);
+      res.json({ ok: true });
+    } catch (err: any) {
+      log(`[cancellation] Error: ${err.message}`);
+      res.status(500).json({ error: "Internal error" });
+    }
+  });
+
+  app.get("/api/admin/cancellation-stats", requireAdmin, async (_req, res) => {
+    try {
+      const stats = await getCancellationStats();
+      res.json(stats);
+    } catch (err: any) {
+      log(`[admin] Cancellation stats error: ${err.message}`);
       res.status(500).json({ error: "Internal error" });
     }
   });
