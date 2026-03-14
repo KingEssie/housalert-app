@@ -120,51 +120,55 @@ export async function updateStalenessStatuses(): Promise<StalenessUpdateResult> 
 
   const staleThreshold = new Date(now.getTime() - STALE_THRESHOLD_HOURS * 60 * 60 * 1000).toISOString();
   const removedThreshold = new Date(now.getTime() - REMOVED_THRESHOLD_HOURS * 60 * 60 * 1000).toISOString();
+  const tsNow = now.toISOString();
 
-  const { data: staleRows, error: e1 } = await supabase
-    .from("listing_freshness")
-    .update({ status: "stale", status_changed_at: now.toISOString() })
-    .lt("last_seen_at", staleThreshold)
-    .gte("last_seen_at", removedThreshold)
-    .or("status.is.null,status.eq.active")
-    .select("listing_id");
-
-  if (e1) {
-    console.error("[listing-status] Error updating stale:", e1.message);
-    result.errors++;
-  } else {
-    result.staleCount = staleRows?.length ?? 0;
+  async function batchUpdate(
+    targetStatus: string,
+    ltCol: string, ltVal: string,
+    gteCol: string | null, gteVal: string | null,
+    fromStatuses: (string | null)[],
+  ): Promise<{ count: number; err: boolean }> {
+    let total = 0;
+    for (const fromStatus of fromStatuses) {
+      let q = supabase
+        .from("listing_freshness")
+        .update({ status: targetStatus, status_changed_at: tsNow })
+        .lt(ltCol, ltVal);
+      if (gteCol && gteVal) q = q.gte(gteCol, gteVal);
+      if (fromStatus === null) {
+        q = q.is("status", null);
+      } else {
+        q = q.eq("status", fromStatus);
+      }
+      const { data, error } = await q.select("listing_id");
+      if (error) {
+        console.error(`[listing-status] Error updating ${targetStatus} (from=${fromStatus}):`, error.message);
+        return { count: 0, err: true };
+      }
+      total += data?.length ?? 0;
+    }
+    return { count: total, err: false };
   }
 
-  const { data: removedRows, error: e2 } = await supabase
-    .from("listing_freshness")
-    .update({ status: "removed", status_changed_at: now.toISOString() })
-    .lt("last_seen_at", removedThreshold)
-    .or("status.is.null,status.eq.active,status.eq.stale")
-    .select("listing_id");
+  const staleResult = await batchUpdate("stale", "last_seen_at", staleThreshold, "last_seen_at", removedThreshold, [null, "active"]);
+  if (staleResult.err) result.errors++; else result.staleCount = staleResult.count;
 
-  if (e2) {
-    console.error("[listing-status] Error updating removed:", e2.message);
-    result.errors++;
-  } else {
-    result.removedCount = removedRows?.length ?? 0;
-  }
+  const removedResult = await batchUpdate("removed", "last_seen_at", removedThreshold, null, null, [null, "active", "stale"]);
+  if (removedResult.err) result.errors++; else result.removedCount = removedResult.count;
 
-  const { data: reactivatedRows, error: e3 } = await supabase
-    .from("listing_freshness")
-    .update({ status: "active", status_changed_at: now.toISOString() })
-    .gte("last_seen_at", staleThreshold)
-    .or("status.eq.stale,status.eq.removed")
-    .select("listing_id");
+  const { data: reactNull } = await supabase.from("listing_freshness")
+    .update({ status: "active", status_changed_at: tsNow })
+    .gte("last_seen_at", staleThreshold).is("status", null).select("listing_id");
+  const { data: reactStale } = await supabase.from("listing_freshness")
+    .update({ status: "active", status_changed_at: tsNow })
+    .gte("last_seen_at", staleThreshold).eq("status", "stale").select("listing_id");
+  const { data: reactRemoved } = await supabase.from("listing_freshness")
+    .update({ status: "active", status_changed_at: tsNow })
+    .gte("last_seen_at", staleThreshold).eq("status", "removed").select("listing_id");
+  result.reactivatedCount = (reactStale?.length ?? 0) + (reactRemoved?.length ?? 0);
+  const activatedFromNull = reactNull?.length ?? 0;
 
-  if (e3) {
-    console.error("[listing-status] Error reactivating:", e3.message);
-    result.errors++;
-  } else {
-    result.reactivatedCount = reactivatedRows?.length ?? 0;
-  }
-
-  result.checked = result.staleCount + result.removedCount + result.reactivatedCount;
+  result.checked = result.staleCount + result.removedCount + result.reactivatedCount + activatedFromNull;
 
   return result;
 }
