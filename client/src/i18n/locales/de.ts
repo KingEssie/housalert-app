@@ -770,6 +770,10 @@ export const de: Record<string, any> = {
   cityPicker: {
     placeholder: "Suche eine Stadt...",
     selectFromList: "Wähle einen Ort aus der Liste.",
+    cityNotMonitored: "Dieser Ort ist gespeichert, wird aber aktuell noch nicht aktiv überwacht.",
+    cityDynamic: "Dieser Ort wird automatisch basierend auf deinem Suchprofil überwacht.",
+    citySupported: "Dieser Ort wird aktiv überwacht.",
+    poweredByGoogle: "Powered by Google",
   },
 
   validation: {

@@ -25,15 +25,30 @@ A mobile-first German-language rental alert application for the German market. U
 - **Flow**: Signup → `/onboarding` → (wizard creates profile) → `/dashboard`. Login → `/dashboard` → ProtectedRoute checks profiles → redirects to `/onboarding` if 0 profiles.
 
 ### City Picker & Location Mode Selector
-- `client/src/components/city-picker.tsx` — Reusable city autocomplete with Nominatim geocoding + Leaflet map preview (standalone)
+- **Google Places integration**: City search uses Google Places Autocomplete (New API) with Nominatim fallback when API key is absent
+  - Backend proxy: `/api/places/autocomplete` and `/api/places/details` (server-side, key never exposed to frontend)
+  - Session tokens used for cost control (autocomplete + details = 1 session)
+  - Env var: `GOOGLE_PLACES_API_KEY` — app works gracefully without it, falling back to Nominatim
+  - Frontend hook: `client/src/hooks/use-places-autocomplete.ts` — debounced search, session token management, `isAvailable` flag for fallback
+- **City normalization layer**: `shared/city-normalize.ts` + `client/src/lib/city-support.ts`
+  - Converts any city name → internal model with `display_name`, `normalized_city`, `scraper_city_key`, `support_status`, `tier_source`
+  - Handles German umlauts, English aliases (Munich→München, Cologne→Köln)
+  - Backend endpoint: `/api/places/normalize?city=<name>` returns full normalization result
+  - Client-side: `getCitySupport(cityName)` returns `{ status, tier }` for UI badges
+- **City support status badges**: shown after city selection
+  - supported (tier1/tier2): no badge (normal flow)
+  - dynamic (tier3/scraper-supported but not in tier1/2): blue info badge "wordt automatisch gemonitord"
+  - unsupported: amber warning badge "wordt nog niet actief gemonitord" — non-blocking, profile still saved
+- `client/src/components/city-picker.tsx` — Reusable city autocomplete with Google Places + Nominatim fallback + Leaflet map preview (standalone)
 - `client/src/components/location-mode-selector.tsx` — 3-tab location selection (Wijken/Radius/Reistijd)
-  - **Wijken tab**: city search + multi-select dropdown for districts from `config/market.ts` (8 cities have districts); selected districts shown as removable chips below dropdown; shows "binnenkort beschikbaar" for cities without district data
+  - **Wijken tab**: city search (Google Places primary, Nominatim fallback) + multi-select dropdown for districts from `config/market.ts` (8 cities have districts); selected districts shown as removable chips below dropdown; shows "binnenkort beschikbaar" for cities without district data
   - **Radius tab**: city search + radius km selector (2/5/10/15/25/50 km) + Leaflet Circle overlay on map
-  - **Reistijd tab**: Nominatim destination search + transport mode (auto/OV/fiets) + max travel time (15/30/45/60/90 min) + destination pin on map
+  - **Reistijd tab**: destination search (Google Places primary, Nominatim fallback) + transport mode (auto/OV/fiets) + max travel time (15/30/45/60/90 min) + destination pin on map
   - Returns `LocationData` object; validated via `isLocationValid()`
   - Accepts `mapMaxHeight` prop (e.g. `"40vh"`) for mobile viewport constraint
   - Used in: `onboarding.tsx` (LocationStep), `new-search.tsx` (step 1)
   - Dependencies: `leaflet`, `react-leaflet@4`, `@types/leaflet`
+- `client/src/pages/onboarding-location.tsx` — Pre-auth funnel city selection, now with Google Places + Nominatim fallback + popular cities quick-select
 - **Location mode columns (migration 012)**: `location_mode`, `districts`, `radius_km`, `commute_destination`, `commute_lat`, `commute_lng`, `commute_mode`, `commute_minutes`
 
 ### Embeddable Onboarding Widget

@@ -22,6 +22,7 @@ import {
 } from "./subscriptions";
 import { log } from "./log";
 import { computeMatchScore, getMatchReasons, computeHybridFilters } from "../shared/match-score";
+import { normalizeCity } from "../shared/city-normalize";
 import { pool as pgPool } from "./pg-pool";
 import { isAdminEmail, getRecentRuns, getRunDetail, getLatestRunCities, getSourceAggregates } from "./admin";
 import { initWebPush, sendPushToUser } from "./notifications/push";
@@ -3083,6 +3084,173 @@ export async function registerRoutes(
       });
     } catch (err: any) {
       res.status(500).json({ error: err.message });
+    }
+  });
+
+  const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY || "";
+
+  const _placesRateMap = new Map<string, { count: number; resetAt: number }>();
+  const PLACES_RATE_LIMIT = 30;
+  const PLACES_RATE_WINDOW = 60_000;
+
+  function checkPlacesRate(ip: string): boolean {
+    const now = Date.now();
+    const entry = _placesRateMap.get(ip);
+    if (!entry || now > entry.resetAt) {
+      _placesRateMap.set(ip, { count: 1, resetAt: now + PLACES_RATE_WINDOW });
+      return true;
+    }
+    if (entry.count >= PLACES_RATE_LIMIT) return false;
+    entry.count++;
+    return true;
+  }
+
+  app.get("/api/places/autocomplete", async (req, res) => {
+    const input = (req.query.input as string || "").trim();
+    const sessionToken = req.query.session_token as string || "";
+
+    if (!input || input.length < 2) {
+      return res.json({ suggestions: [] });
+    }
+
+    const clientIp = req.ip || req.socket.remoteAddress || "unknown";
+    if (!checkPlacesRate(clientIp)) {
+      return res.status(429).json({ error: "Rate limit exceeded", suggestions: [] });
+    }
+
+    if (!GOOGLE_PLACES_API_KEY) {
+      return res.status(503).json({ error: "Google Places not configured", suggestions: [] });
+    }
+
+    try {
+      const body = {
+        input,
+        includedRegionCodes: ["de"],
+        includedPrimaryTypes: ["locality", "sublocality", "administrative_area_level_3"],
+        languageCode: "de",
+        sessionToken: sessionToken || undefined,
+      };
+
+      const gRes = await fetch("https://places.googleapis.com/v1/places:autocomplete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Goog-Api-Key": GOOGLE_PLACES_API_KEY,
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!gRes.ok) {
+        const errText = await gRes.text().catch(() => "");
+        log(`[google-places] Autocomplete error ${gRes.status}: ${errText}`);
+        return res.status(502).json({ error: "Places API error", suggestions: [] });
+      }
+
+      const data = await gRes.json();
+      const suggestions = (data.suggestions || [])
+        .filter((s: any) => s.placePrediction)
+        .slice(0, 8)
+        .map((s: any) => {
+          const p = s.placePrediction;
+          const mainText = p.structuredFormat?.mainText?.text || "";
+          const secondaryText = p.structuredFormat?.secondaryText?.text || "";
+          return {
+            place_id: p.placeId || "",
+            display_name: p.text?.text || mainText,
+            city_name: mainText,
+            state: secondaryText,
+            country_code: "DE",
+          };
+        });
+
+      res.json({ suggestions });
+    } catch (err: any) {
+      log(`[google-places] Autocomplete fetch error: ${err.message}`);
+      res.status(500).json({ error: "Internal error", suggestions: [] });
+    }
+  });
+
+  app.get("/api/places/details", async (req, res) => {
+    const placeId = (req.query.place_id as string || "").trim();
+    const sessionToken = req.query.session_token as string || "";
+
+    if (!placeId) {
+      return res.status(400).json({ error: "place_id required" });
+    }
+
+    const clientIp = req.ip || req.socket.remoteAddress || "unknown";
+    if (!checkPlacesRate(clientIp)) {
+      return res.status(429).json({ error: "Rate limit exceeded" });
+    }
+
+    if (!GOOGLE_PLACES_API_KEY) {
+      return res.status(503).json({ error: "Google Places not configured" });
+    }
+
+    try {
+      const fields = "id,displayName,formattedAddress,location,addressComponents";
+      const url = `https://places.googleapis.com/v1/places/${placeId}?languageCode=de`;
+
+      const gRes = await fetch(url, {
+        headers: {
+          "Content-Type": "application/json",
+          "X-Goog-Api-Key": GOOGLE_PLACES_API_KEY,
+          "X-Goog-FieldMask": fields,
+          ...(sessionToken ? { "X-Goog-Session-Token": sessionToken } : {}),
+        },
+      });
+
+      if (!gRes.ok) {
+        const errText = await gRes.text().catch(() => "");
+        log(`[google-places] Details error ${gRes.status}: ${errText}`);
+        return res.status(502).json({ error: "Places API error" });
+      }
+
+      const data = await gRes.json();
+      const loc = data.location || {};
+      const components = data.addressComponents || [];
+
+      let cityName = data.displayName?.text || "";
+      let state = "";
+      for (const comp of components) {
+        const types: string[] = comp.types || [];
+        if (types.includes("locality")) {
+          cityName = comp.longText || cityName;
+        }
+        if (types.includes("administrative_area_level_1")) {
+          state = comp.longText || "";
+        }
+      }
+
+      res.json({
+        place: {
+          place_id: placeId,
+          display_name: data.displayName?.text || cityName,
+          city_name: cityName,
+          state,
+          country_code: "DE",
+          latitude: loc.latitude ?? null,
+          longitude: loc.longitude ?? null,
+        },
+      });
+    } catch (err: any) {
+      log(`[google-places] Details fetch error: ${err.message}`);
+      res.status(500).json({ error: "Internal error" });
+    }
+  });
+
+  app.get("/api/places/normalize", (req, res) => {
+    const city = (req.query.city as string || "").trim();
+    if (!city) {
+      return res.status(400).json({ error: "city required" });
+    }
+
+    try {
+      const result = normalizeCity(city);
+      res.json(result);
+    } catch (err: any) {
+      log(`[city-normalize] Error: ${err.message}`);
+      res.status(500).json({ error: "Normalization error" });
     }
   });
 

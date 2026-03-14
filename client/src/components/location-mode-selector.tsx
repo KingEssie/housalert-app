@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { MapPin, Search, X, AlertCircle, Navigation, Clock, Car, Train, Bike, ChevronDown, Check } from "lucide-react";
+import { MapPin, Search, X, AlertCircle, Navigation, Clock, Car, Train, Bike, ChevronDown, Check, Info } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Circle, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { cityDistricts } from "../../../config/market";
 import { useTranslation } from "@/i18n";
+import { usePlacesAutocomplete, type PlaceSuggestion } from "@/hooks/use-places-autocomplete";
+import { getCitySupport, type CitySupport } from "@/lib/city-support";
 
 const MARKER_ICON = new L.Icon({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
@@ -108,6 +110,29 @@ function radiusToZoom(km: number): number {
   return 8;
 }
 
+function CitySupportBadge({ cityName }: { cityName: string }) {
+  const { t } = useTranslation();
+  const support = getCitySupport(cityName);
+
+  if (support.status === "supported") return null;
+
+  if (support.status === "dynamic") {
+    return (
+      <div className="flex items-center gap-2 text-[#0D6EFD] text-[13px] bg-[#EBF2FF] rounded-2xl px-4 py-3" data-testid="text-city-dynamic">
+        <Info className="w-4 h-4 flex-shrink-0" />
+        <span>{t("cityPicker.cityDynamic")}</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2 text-[#92400E] text-[13px] bg-[#FEF3C7] rounded-2xl px-4 py-3" data-testid="text-city-unsupported">
+      <AlertCircle className="w-4 h-4 flex-shrink-0" />
+      <span>{t("cityPicker.cityNotMonitored")}</span>
+    </div>
+  );
+}
+
 interface Props {
   value: LocationData;
   onChange: (data: LocationData) => void;
@@ -119,17 +144,21 @@ interface Props {
 export default function LocationModeSelector({ value, onChange, segmentedTabs, alwaysShowMap, mapMaxHeight }: Props) {
   const { t } = useTranslation();
   const [cityQuery, setCityQuery] = useState(value.place?.city_name ?? "");
-  const [cityResults, setCityResults] = useState<NominatimResult[]>([]);
   const [cityOpen, setCityOpen] = useState(false);
-  const [cityLoading, setCityLoading] = useState(false);
-  const cityDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
   const cityContainerRef = useRef<HTMLDivElement>(null);
 
+  const places = usePlacesAutocomplete();
+  const destPlaces = usePlacesAutocomplete();
+
+  const [nominatimCityResults, setNominatimCityResults] = useState<NominatimResult[]>([]);
+  const [nominatimCityLoading, setNominatimCityLoading] = useState(false);
+  const cityNominatimDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const [destQuery, setDestQuery] = useState(value.commuteDestination);
-  const [destResults, setDestResults] = useState<NominatimResult[]>([]);
   const [destOpen, setDestOpen] = useState(false);
-  const [destLoading, setDestLoading] = useState(false);
-  const destDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [nominatimDestResults, setNominatimDestResults] = useState<NominatimResult[]>([]);
+  const [nominatimDestLoading, setNominatimDestLoading] = useState(false);
+  const destNominatimDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
   const destContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -164,8 +193,12 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
         headers: { "User-Agent": "HousAlert/1.0" },
       });
       const data: NominatimResult[] = await res.json();
-      setResults(data);
-      setOpen(data.length > 0);
+      const filtered = data.filter((r) => {
+        const a = r.address;
+        return !!(a.city || a.town || a.village || a.municipality);
+      });
+      setResults(filtered);
+      setOpen(filtered.length > 0);
     } catch {
       setResults([]);
     } finally {
@@ -173,18 +206,45 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
     }
   }, []);
 
+  const usingGoogleForCity = places.isAvailable;
+  const usingGoogleForDest = destPlaces.isAvailable;
+
   function handleCityInput(val: string) {
     setCityQuery(val);
     if (value.place) {
       onChange({ ...value, place: null, districts: [] });
     }
-    if (cityDebounce.current) clearTimeout(cityDebounce.current);
-    cityDebounce.current = setTimeout(() => {
-      searchNominatim(val, setCityResults, setCityOpen, setCityLoading);
-    }, 300);
+
+    places.search(val);
+
+    if (cityNominatimDebounce.current) clearTimeout(cityNominatimDebounce.current);
+    cityNominatimDebounce.current = setTimeout(() => {
+      searchNominatim(val, setNominatimCityResults, setCityOpen, setNominatimCityLoading);
+    }, 350);
+
+    if (val.trim().length >= 2) {
+      setCityOpen(true);
+    }
   }
 
-  function handleCitySelect(r: NominatimResult) {
+  async function handleGoogleCitySelect(suggestion: PlaceSuggestion) {
+    const details = await places.getDetails(suggestion.place_id);
+    const cityName = details?.city_name || suggestion.city_name;
+    const place: SelectedPlace = {
+      city_name: cityName,
+      country_code: details?.country_code || "DE",
+      latitude: details?.latitude || 0,
+      longitude: details?.longitude || 0,
+      place_id: suggestion.place_id,
+    };
+    setCityQuery(cityName);
+    setCityOpen(false);
+    places.clear();
+    setNominatimCityResults([]);
+    onChange({ ...value, place, districts: [] });
+  }
+
+  function handleNominatimCitySelect(r: NominatimResult) {
     const a = r.address;
     const cityName = a.city || a.town || a.village || a.municipality || "";
     const place: SelectedPlace = {
@@ -196,13 +256,15 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
     };
     setCityQuery(cityName);
     setCityOpen(false);
-    setCityResults([]);
+    setNominatimCityResults([]);
+    places.clear();
     onChange({ ...value, place, districts: [] });
   }
 
   function handleCityClear() {
     setCityQuery("");
-    setCityResults([]);
+    setNominatimCityResults([]);
+    places.clear();
     onChange({ ...value, place: null, districts: [] });
   }
 
@@ -213,19 +275,44 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
     } else {
       onChange({ ...value, commuteDestination: val });
     }
-    if (destDebounce.current) clearTimeout(destDebounce.current);
-    destDebounce.current = setTimeout(() => {
-      searchNominatim(val, setDestResults, setDestOpen, setDestLoading);
-    }, 300);
+
+    destPlaces.search(val);
+
+    if (destNominatimDebounce.current) clearTimeout(destNominatimDebounce.current);
+    destNominatimDebounce.current = setTimeout(() => {
+      searchNominatim(val, setNominatimDestResults, setDestOpen, setNominatimDestLoading);
+    }, 350);
+
+    if (val.trim().length >= 2) {
+      setDestOpen(true);
+    }
   }
 
-  function handleDestSelect(r: NominatimResult) {
+  async function handleGoogleDestSelect(suggestion: PlaceSuggestion) {
+    const details = await destPlaces.getDetails(suggestion.place_id);
+    const displayName = details?.display_name || suggestion.display_name;
+    const cityName = details?.city_name || suggestion.city_name;
+    setDestQuery(displayName);
+    setDestOpen(false);
+    destPlaces.clear();
+    setNominatimDestResults([]);
+    onChange({
+      ...value,
+      commuteDestination: displayName,
+      commuteCity: cityName,
+      commuteLat: details?.latitude || 0,
+      commuteLng: details?.longitude || 0,
+    });
+  }
+
+  function handleNominatimDestSelect(r: NominatimResult) {
     const displayName = r.display_name.split(",").slice(0, 2).join(",").trim();
     const a = r.address;
     const city = a.city || a.town || a.village || a.municipality || displayName.split(",")[0].trim();
     setDestQuery(displayName);
     setDestOpen(false);
-    setDestResults([]);
+    setNominatimDestResults([]);
+    destPlaces.clear();
     onChange({
       ...value,
       commuteDestination: displayName,
@@ -237,7 +324,8 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
 
   function handleDestClear() {
     setDestQuery("");
-    setDestResults([]);
+    setNominatimDestResults([]);
+    destPlaces.clear();
     onChange({ ...value, commuteDestination: "", commuteCity: "", commuteLat: null, commuteLng: null });
   }
 
@@ -268,6 +356,15 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
   const defaultLat = 52.52;
   const defaultLng = 13.405;
   const defaultZoom = 11;
+
+  const googleCitySuggestions = places.suggestions;
+  const cityIsLoading = places.loading || nominatimCityLoading;
+
+  const googleDestSuggestions = destPlaces.suggestions;
+  const destIsLoading = destPlaces.loading || nominatimDestLoading;
+
+  const hasCityResults = (usingGoogleForCity && googleCitySuggestions.length > 0) || nominatimCityResults.length > 0;
+  const hasDestResults = (usingGoogleForDest && googleDestSuggestions.length > 0) || nominatimDestResults.length > 0;
 
   return (
     <div className="flex flex-col gap-5">
@@ -318,7 +415,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
               type="text"
               value={cityQuery}
               onChange={(e) => handleCityInput(e.target.value)}
-              onFocus={() => { if (cityResults.length > 0 && !value.place) setCityOpen(true); }}
+              onFocus={() => { if (hasCityResults && !value.place) setCityOpen(true); }}
               placeholder={t("location.searchCity")}
               className={`w-full min-h-[60px] rounded-[20px] bg-[#F3F4F6] border px-11 text-[16px] text-[#1F2937] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-transparent transition-colors ${
                 value.place ? "border-[#0D6EFD] bg-[#F5F7FA]/30" : "border-[#E5E7EB]"
@@ -335,39 +432,61 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
               </button>
             )}
           </div>
-          {cityLoading && (
+          {cityIsLoading && (
             <div className="absolute right-12 top-[26px] -translate-y-1/2">
               <div className="w-4 h-4 border-2 border-[#0D6EFD]/30 border-t-[#0D6EFD] rounded-full animate-spin" />
             </div>
           )}
-          {cityOpen && cityResults.length > 0 && (
+          {cityOpen && hasCityResults && (
             <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-[#E5E7EB] rounded-lg shadow-lg max-h-[260px] overflow-y-auto z-30">
-              {cityResults.map((r) => {
-                const a = r.address;
-                const label = a.city || a.town || a.village || a.municipality || "";
-                const sub = a.state ? `${label}, ${a.state}` : label;
-                return (
-                  <button
-                    key={r.place_id}
-                    onClick={() => handleCitySelect(r)}
-                    className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#1F2937] hover:bg-[#F5F7FA] flex items-center gap-3"
-                    data-testid={`option-place-${r.place_id}`}
-                  >
-                    <MapPin className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
-                    <span>{sub}</span>
-                  </button>
-                );
-              })}
+              {usingGoogleForCity && googleCitySuggestions.length > 0 ? (
+                <>
+                  {googleCitySuggestions.map((s) => (
+                    <button
+                      key={s.place_id}
+                      onClick={() => handleGoogleCitySelect(s)}
+                      className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#1F2937] hover:bg-[#F5F7FA] flex items-center gap-3"
+                      data-testid={`option-place-${s.place_id}`}
+                    >
+                      <MapPin className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
+                      <span>{s.state ? `${s.city_name}, ${s.state}` : s.city_name}</span>
+                    </button>
+                  ))}
+                  <div className="px-4 py-2 text-[11px] text-[#9CA3AF] text-right border-t border-[#F3F4F6]" data-testid="text-powered-by-google">
+                    {t("cityPicker.poweredByGoogle")}
+                  </div>
+                </>
+              ) : (
+                nominatimCityResults.map((r) => {
+                  const a = r.address;
+                  const label = a.city || a.town || a.village || a.municipality || "";
+                  const sub = a.state ? `${label}, ${a.state}` : label;
+                  return (
+                    <button
+                      key={r.place_id}
+                      onClick={() => handleNominatimCitySelect(r)}
+                      className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#1F2937] hover:bg-[#F5F7FA] flex items-center gap-3"
+                      data-testid={`option-place-${r.place_id}`}
+                    >
+                      <MapPin className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
+                      <span>{sub}</span>
+                    </button>
+                  );
+                })
+              )}
             </div>
           )}
         </div>
       )}
 
       {value.tab === "wijken" && value.place && (
-        <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#1F2937] font-semibold text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
-          <MapPin className="w-4 h-4" />
-          {value.place.city_name}
-        </div>
+        <>
+          <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#1F2937] font-semibold text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
+            <MapPin className="w-4 h-4" />
+            {value.place.city_name}
+          </div>
+          <CitySupportBadge cityName={value.place.city_name} />
+        </>
       )}
 
       {value.tab === "wijken" && value.place && availableDistricts.length > 0 && (
@@ -386,10 +505,13 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       )}
 
       {value.tab === "radius" && value.place && (
-        <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#1F2937] font-semibold text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
-          <MapPin className="w-4 h-4" />
-          {value.place.city_name}
-        </div>
+        <>
+          <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#1F2937] font-semibold text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
+            <MapPin className="w-4 h-4" />
+            {value.place.city_name}
+          </div>
+          <CitySupportBadge cityName={value.place.city_name} />
+        </>
       )}
 
       {value.tab === "radius" && (
@@ -424,7 +546,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                 type="text"
                 value={destQuery}
                 onChange={(e) => handleDestInput(e.target.value)}
-                onFocus={() => { if (destResults.length > 0 && value.commuteLat == null) setDestOpen(true); }}
+                onFocus={() => { if (hasDestResults && value.commuteLat == null) setDestOpen(true); }}
                 placeholder={t("location.searchAddress")}
                 className={`w-full min-h-[60px] rounded-[20px] bg-[#F3F4F6] border px-11 text-[16px] text-[#1F2937] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-transparent transition-colors ${
                   value.commuteLat != null ? "border-[#0D6EFD] bg-[#F5F7FA]/30" : "border-[#E5E7EB]"
@@ -441,24 +563,43 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                 </button>
               )}
             </div>
-            {destLoading && (
+            {destIsLoading && (
               <div className="absolute right-12 top-[calc(24px+26px)] -translate-y-1/2">
                 <div className="w-4 h-4 border-2 border-[#0D6EFD]/30 border-t-[#0D6EFD] rounded-full animate-spin" />
               </div>
             )}
-            {destOpen && destResults.length > 0 && (
+            {destOpen && hasDestResults && (
               <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-[#E5E7EB] rounded-lg shadow-lg max-h-[260px] overflow-y-auto z-30">
-                {destResults.map((r) => (
-                  <button
-                    key={r.place_id}
-                    onClick={() => handleDestSelect(r)}
-                    className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#1F2937] hover:bg-[#F5F7FA] flex items-center gap-3"
-                    data-testid={`option-dest-${r.place_id}`}
-                  >
-                    <MapPin className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
-                    <span>{r.display_name.split(",").slice(0, 3).join(",")}</span>
-                  </button>
-                ))}
+                {usingGoogleForDest && googleDestSuggestions.length > 0 ? (
+                  <>
+                    {googleDestSuggestions.map((s) => (
+                      <button
+                        key={s.place_id}
+                        onClick={() => handleGoogleDestSelect(s)}
+                        className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#1F2937] hover:bg-[#F5F7FA] flex items-center gap-3"
+                        data-testid={`option-dest-${s.place_id}`}
+                      >
+                        <MapPin className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
+                        <span>{s.state ? `${s.city_name}, ${s.state}` : s.display_name}</span>
+                      </button>
+                    ))}
+                    <div className="px-4 py-2 text-[11px] text-[#9CA3AF] text-right border-t border-[#F3F4F6]">
+                      {t("cityPicker.poweredByGoogle")}
+                    </div>
+                  </>
+                ) : (
+                  nominatimDestResults.map((r) => (
+                    <button
+                      key={r.place_id}
+                      onClick={() => handleNominatimDestSelect(r)}
+                      className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#1F2937] hover:bg-[#F5F7FA] flex items-center gap-3"
+                      data-testid={`option-dest-${r.place_id}`}
+                    >
+                      <MapPin className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
+                      <span>{r.display_name.split(",").slice(0, 3).join(",")}</span>
+                    </button>
+                  ))
+                )}
               </div>
             )}
           </div>
@@ -578,64 +719,37 @@ function DistrictMultiSelect({
 
   return (
     <div ref={ref} className="relative">
-      <label className="text-[16px] font-[700] text-[#111C3D] mb-2 block">
-        {t("location.districtLabel")} <span className="font-normal text-[13px] text-[#1F2937]">{t("location.districtOptional")}</span>
-      </label>
       <button
-        type="button"
         onClick={() => setOpen(!open)}
-        className="w-full h-[60px] px-4 pr-10 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] text-left relative flex items-center"
-        data-testid="dropdown-districts"
+        className="w-full flex items-center justify-between min-h-[52px] px-4 rounded-[20px] bg-[#F3F4F6] border border-[#E5E7EB] text-[15px] text-[#1F2937] hover:bg-[#F5F7FA] transition-colors"
+        data-testid="button-district-dropdown"
       >
-        <span className={selected.length === 0 ? "opacity-50" : ""}>
-          {selected.length === 0
-            ? t("location.selectDistricts")
-            : t("location.districtSelected", { count: selected.length, label: selected.length === 1 ? t("location.districtSingular") : t("location.districtPlural") })}
+        <span className={selected.length > 0 ? "font-medium" : "text-[#9CA3AF]"}>
+          {selected.length > 0
+            ? t("location.districtSelected", { count: selected.length, label: selected.length === 1 ? t("location.districtSingular") : t("location.districtPlural") })
+            : t("location.selectDistricts")}
         </span>
-        <ChevronDown className={`absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1F2937] transition-transform ${open ? "rotate-180" : ""}`} />
+        <ChevronDown className={`w-4 h-4 text-[#1F2937] transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
-        <div className="absolute z-[60] w-full mt-1 bg-white rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.12)] border border-[#E5E7EB] max-h-[280px] overflow-y-auto">
-          {districts.map((d) => {
-            const isSelected = selected.includes(d);
-            return (
-              <button
-                key={d}
-                type="button"
-                onClick={() => onToggle(d)}
-                className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#F5F7FA] transition-colors"
-                data-testid={`option-district-${d.toLowerCase().replace(/[\s.]/g, "-")}`}
-              >
-                <div className={`w-5 h-5 rounded flex items-center justify-center flex-shrink-0 border transition-colors ${
-                  isSelected ? "bg-[#0D6EFD] border-[#0D6EFD]" : "border-[#E5E7EB] bg-white"
-                }`}>
-                  {isSelected && <Check className="w-3.5 h-3.5 text-black" />}
-                </div>
-                <span className="text-[14px] text-[#1F2937]">{d}</span>
-              </button>
-            );
-          })}
-        </div>
-      )}
-
-      {selected.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 mt-2">
-          {selected.map((d) => (
-            <span
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-[#E5E7EB] rounded-lg shadow-lg max-h-[260px] overflow-y-auto z-30">
+          {districts.map((d) => (
+            <button
               key={d}
-              className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#0D6EFD]/15 text-[12px] font-medium text-[#1F2937]"
+              onClick={() => onToggle(d)}
+              className="w-full text-left px-4 py-3 text-[15px] text-[#1F2937] hover:bg-[#F5F7FA] flex items-center gap-3 transition-colors"
+              data-testid={`option-district-${d.toLowerCase().replace(/[\s-]/g, "-")}`}
             >
-              {d}
-              <button
-                type="button"
-                onClick={() => onToggle(d)}
-                className="w-3.5 h-3.5 rounded-full flex items-center justify-center hover:bg-black/10"
-                data-testid={`remove-district-${d.toLowerCase().replace(/[\s.]/g, "-")}`}
-              >
-                <X className="w-2.5 h-2.5" />
-              </button>
-            </span>
+              <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
+                selected.includes(d)
+                  ? "bg-[#0D6EFD] border-[#0D6EFD]"
+                  : "border-[#D1D5DB]"
+              }`}>
+                {selected.includes(d) && <Check className="w-3.5 h-3.5 text-white" />}
+              </div>
+              <span>{d}</span>
+            </button>
           ))}
         </div>
       )}

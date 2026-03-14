@@ -350,6 +350,15 @@ export const en: Record<string, any> = {
     loadFailed: "Loading failed",
   },
 
+  cityPicker: {
+    placeholder: "Search a city...",
+    selectFromList: "Select a place from the list.",
+    cityNotMonitored: "This place is saved, but is not actively monitored yet.",
+    cityDynamic: "This place is automatically monitored based on your search profile.",
+    citySupported: "This place is actively monitored.",
+    poweredByGoogle: "Powered by Google",
+  },
+
   notFound: {
     title: "Page not found",
     desc: "The page you're looking for doesn't exist.",

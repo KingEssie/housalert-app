@@ -1,14 +1,31 @@
 import { apiFetch } from "@/lib/api-base";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "wouter";
-import { Home, MapPin, ChevronLeft, Search, ChevronRight, Navigation, Clock, Car, Train, Bike, Loader2 } from "lucide-react";
+import { Home, MapPin, ChevronLeft, Search, ChevronRight, Navigation, Clock, Car, Train, Bike, Loader2, AlertCircle, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { defaultCities, cityDistricts } from "../../../config/market";
 import { useTranslation } from "@/i18n";
+import { usePlacesAutocomplete, type PlaceSuggestion } from "@/hooks/use-places-autocomplete";
+import { getCitySupport } from "@/lib/city-support";
 
 type CityEntry = typeof defaultCities[0];
 
 type TabType = "wijken" | "radius" | "reistijd";
+
+interface NominatimResult {
+  place_id: number;
+  display_name: string;
+  lat: string;
+  lon: string;
+  address: {
+    city?: string;
+    town?: string;
+    village?: string;
+    municipality?: string;
+    state?: string;
+    country_code?: string;
+  };
+}
 
 export default function OnboardingLocationPage() {
   const [, navigate] = useLocation();
@@ -22,9 +39,63 @@ export default function OnboardingLocationPage() {
   const [travelAddress, setTravelAddress] = useState("");
   const [travelTime, setTravelTime] = useState("30");
   const [transportMode, setTransportMode] = useState("auto");
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const [estimate, setEstimate] = useState<number | null>(null);
   const [estimateLoading, setEstimateLoading] = useState(false);
+
+  const places = usePlacesAutocomplete();
+
+  const [nominatimResults, setNominatimResults] = useState<NominatimResult[]>([]);
+  const [nominatimLoading, setNominatimLoading] = useState(false);
+  const nominatimDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const searchNominatim = useCallback(async (q: string) => {
+    if (q.trim().length < 2) {
+      setNominatimResults([]);
+      return;
+    }
+    setNominatimLoading(true);
+    try {
+      const params = new URLSearchParams({
+        q,
+        format: "json",
+        addressdetails: "1",
+        countrycodes: "de",
+        limit: "8",
+        "accept-language": "de",
+      });
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?${params}`, {
+        headers: { "User-Agent": "HousAlert/1.0" },
+      });
+      const data: NominatimResult[] = await res.json();
+      const filtered = data.filter((r) => {
+        const a = r.address;
+        return !!(a.city || a.town || a.village || a.municipality);
+      });
+      setNominatimResults(filtered);
+      if (filtered.length > 0) setShowDropdown(true);
+    } catch {
+      setNominatimResults([]);
+    } finally {
+      setNominatimLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setShowDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const usingGoogle = places.isAvailable;
+  const isLoading = places.loading || nominatimLoading;
+  const googleSuggestions = places.suggestions;
+  const hasSearchResults = (usingGoogle && googleSuggestions.length > 0) || nominatimResults.length > 0;
 
   const filteredCities = useMemo(() => {
     if (!search.trim()) return defaultCities.slice(0, 8);
@@ -43,6 +114,51 @@ export default function OnboardingLocationPage() {
     setSearch(city.name);
     setShowDropdown(false);
     setSelectedDistricts([]);
+    places.clear();
+    setNominatimResults([]);
+  }
+
+  async function handleGoogleSelect(suggestion: PlaceSuggestion) {
+    const details = await places.getDetails(suggestion.place_id);
+    const cityName = details?.city_name || suggestion.city_name;
+    const lat = details?.latitude || 0;
+    const lng = details?.longitude || 0;
+    const city: CityEntry = { name: cityName, lat, lng };
+    setSelectedCity(city);
+    setSearch(cityName);
+    setShowDropdown(false);
+    setSelectedDistricts([]);
+    places.clear();
+    setNominatimResults([]);
+  }
+
+  function handleNominatimSelect(r: NominatimResult) {
+    const a = r.address;
+    const cityName = a.city || a.town || a.village || a.municipality || "";
+    const city: CityEntry = { name: cityName, lat: parseFloat(r.lat), lng: parseFloat(r.lon) };
+    setSelectedCity(city);
+    setSearch(cityName);
+    setShowDropdown(false);
+    setSelectedDistricts([]);
+    places.clear();
+    setNominatimResults([]);
+  }
+
+  function handleSearchInput(val: string) {
+    setSearch(val);
+    setSelectedCity(null);
+    setSelectedDistricts([]);
+
+    places.search(val);
+
+    if (nominatimDebounce.current) clearTimeout(nominatimDebounce.current);
+    nominatimDebounce.current = setTimeout(() => searchNominatim(val), 350);
+
+    if (val.trim().length >= 2) {
+      setShowDropdown(true);
+    } else {
+      setShowDropdown(true);
+    }
   }
 
   function toggleDistrict(district: string) {
@@ -81,11 +197,17 @@ export default function OnboardingLocationPage() {
   const canProceed =
     activeTab === "reistijd" ? !!travelAddress : !!selectedCity;
 
+  const citySupport = selectedCity ? getCitySupport(selectedCity.name) : null;
+
   const tabs: { id: TabType; label: string }[] = [
     { id: "wijken", label: t("location.tabs.districts") },
     { id: "radius", label: t("location.tabs.radius") },
     { id: "reistijd", label: t("location.tabs.commute") },
   ];
+
+  const showGoogleResults = usingGoogle && googleSuggestions.length > 0 && !selectedCity;
+  const showNominatimFallback = !showGoogleResults && nominatimResults.length > 0 && !selectedCity;
+  const showStaticDropdown = !showGoogleResults && !showNominatimFallback && !selectedCity && filteredCities.length > 0;
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
@@ -152,7 +274,7 @@ export default function OnboardingLocationPage() {
           <div className="pt-5">
             {activeTab === "wijken" && (
               <div className="space-y-0">
-                <div className="relative">
+                <div className="relative" ref={containerRef}>
                   <div
                     className="flex items-center gap-3 h-[52px] px-4 rounded-[20px] bg-[#F3F4F6] cursor-text focus-within:ring-2 focus-within:ring-[#0D6EFD]/15 focus-within:bg-[#F5F7FA] transition-all"
                     onClick={() => {
@@ -166,14 +288,14 @@ export default function OnboardingLocationPage() {
                       type="text"
                       placeholder={t("location.searchPlaceholder")}
                       value={search}
-                      onChange={(e) => {
-                        setSearch(e.target.value);
-                        setShowDropdown(true);
-                      }}
+                      onChange={(e) => handleSearchInput(e.target.value)}
                       onFocus={() => setShowDropdown(true)}
                       className="flex-1 text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal bg-transparent border-none outline-none"
                       data-testid="input-city-search"
                     />
+                    {isLoading && (
+                      <div className="w-4 h-4 border-2 border-[#0D6EFD]/30 border-t-[#0D6EFD] rounded-full animate-spin" />
+                    )}
                     {selectedCity && (
                       <button
                         onClick={(e) => {
@@ -181,6 +303,8 @@ export default function OnboardingLocationPage() {
                           setSelectedCity(null);
                           setSearch("");
                           setSelectedDistricts([]);
+                          places.clear();
+                          setNominatimResults([]);
                         }}
                         className="text-xs text-[#1F2937] hover:text-[#1F2937]"
                         data-testid="button-clear-city"
@@ -190,9 +314,46 @@ export default function OnboardingLocationPage() {
                     )}
                   </div>
 
-                  {showDropdown && filteredCities.length > 0 && !selectedCity && (
+                  {showDropdown && (
                     <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-10 max-h-64 overflow-y-auto">
-                      {filteredCities.map((city) => (
+                      {showGoogleResults && googleSuggestions.map((s) => (
+                        <button
+                          key={s.place_id}
+                          onClick={() => handleGoogleSelect(s)}
+                          className="w-full flex items-center gap-3 py-4 px-4 hover:bg-[#F5F7FA] transition-colors border-b border-[#E5E7EB] last:border-b-0"
+                          data-testid={`option-city-${s.city_name.toLowerCase().replace(/\s/g, "-")}`}
+                        >
+                          <MapPin className="w-4.5 h-4.5 text-[#1F2937] flex-shrink-0" />
+                          <span className="text-[15px] font-medium text-[#1F2937] flex-1 text-left">
+                            {s.state ? `${s.city_name}, ${s.state}` : s.city_name}
+                          </span>
+                          <ChevronRight className="w-4 h-4 text-[#1F2937]" />
+                        </button>
+                      ))}
+                      {showGoogleResults && (
+                        <div className="px-4 py-2 text-[11px] text-[#9CA3AF] text-right">
+                          {t("cityPicker.poweredByGoogle")}
+                        </div>
+                      )}
+                      {showNominatimFallback && nominatimResults.map((r) => {
+                        const a = r.address;
+                        const label = a.city || a.town || a.village || a.municipality || "";
+                        return (
+                          <button
+                            key={r.place_id}
+                            onClick={() => handleNominatimSelect(r)}
+                            className="w-full flex items-center gap-3 py-4 px-4 hover:bg-[#F5F7FA] transition-colors border-b border-[#E5E7EB] last:border-b-0"
+                            data-testid={`option-city-${label.toLowerCase().replace(/\s/g, "-")}`}
+                          >
+                            <MapPin className="w-4.5 h-4.5 text-[#1F2937] flex-shrink-0" />
+                            <span className="text-[15px] font-medium text-[#1F2937] flex-1 text-left">
+                              {a.state ? `${label}, ${a.state}` : label}
+                            </span>
+                            <ChevronRight className="w-4 h-4 text-[#1F2937]" />
+                          </button>
+                        );
+                      })}
+                      {showStaticDropdown && filteredCities.map((city) => (
                         <button
                           key={city.name}
                           onClick={() => handleCitySelect(city)}
@@ -227,6 +388,20 @@ export default function OnboardingLocationPage() {
                         </button>
                       ))}
                     </div>
+                  </div>
+                )}
+
+                {selectedCity && citySupport && citySupport.status === "unsupported" && (
+                  <div className="flex items-center gap-2 text-[#92400E] text-[13px] bg-[#FEF3C7] rounded-2xl px-4 py-3 mt-4" data-testid="text-city-unsupported">
+                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                    <span>{t("cityPicker.cityNotMonitored")}</span>
+                  </div>
+                )}
+
+                {selectedCity && citySupport && citySupport.status === "dynamic" && (
+                  <div className="flex items-center gap-2 text-[#0D6EFD] text-[13px] bg-[#EBF2FF] rounded-2xl px-4 py-3 mt-4" data-testid="text-city-dynamic">
+                    <Info className="w-4 h-4 flex-shrink-0" />
+                    <span>{t("cityPicker.cityDynamic")}</span>
                   </div>
                 )}
 
@@ -268,7 +443,7 @@ export default function OnboardingLocationPage() {
 
             {activeTab === "radius" && (
               <div className="space-y-0">
-                <div className="relative">
+                <div className="relative" ref={containerRef}>
                   <div
                     className="flex items-center gap-3 h-[52px] px-4 rounded-[20px] bg-[#F3F4F6] cursor-text focus-within:ring-2 focus-within:ring-[#0D6EFD]/15 focus-within:bg-[#F5F7FA] transition-all"
                     onClick={() => {
@@ -282,20 +457,22 @@ export default function OnboardingLocationPage() {
                       type="text"
                       placeholder={t("location.searchPlaceholder")}
                       value={search}
-                      onChange={(e) => {
-                        setSearch(e.target.value);
-                        setShowDropdown(true);
-                      }}
+                      onChange={(e) => handleSearchInput(e.target.value)}
                       onFocus={() => setShowDropdown(true)}
                       className="flex-1 text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal bg-transparent border-none outline-none"
                       data-testid="input-city-search"
                     />
+                    {isLoading && (
+                      <div className="w-4 h-4 border-2 border-[#0D6EFD]/30 border-t-[#0D6EFD] rounded-full animate-spin" />
+                    )}
                     {selectedCity && (
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedCity(null);
                           setSearch("");
+                          places.clear();
+                          setNominatimResults([]);
                         }}
                         className="text-xs text-[#1F2937] hover:text-[#1F2937]"
                         data-testid="button-clear-city"
@@ -305,9 +482,46 @@ export default function OnboardingLocationPage() {
                     )}
                   </div>
 
-                  {showDropdown && filteredCities.length > 0 && !selectedCity && (
+                  {showDropdown && (
                     <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-10 max-h-64 overflow-y-auto">
-                      {filteredCities.map((city) => (
+                      {showGoogleResults && googleSuggestions.map((s) => (
+                        <button
+                          key={s.place_id}
+                          onClick={() => handleGoogleSelect(s)}
+                          className="w-full flex items-center gap-3 py-4 px-4 hover:bg-[#F5F7FA] transition-colors border-b border-[#E5E7EB] last:border-b-0"
+                          data-testid={`option-city-${s.city_name.toLowerCase().replace(/\s/g, "-")}`}
+                        >
+                          <MapPin className="w-4.5 h-4.5 text-[#1F2937] flex-shrink-0" />
+                          <span className="text-[15px] font-medium text-[#1F2937] flex-1 text-left">
+                            {s.state ? `${s.city_name}, ${s.state}` : s.city_name}
+                          </span>
+                          <ChevronRight className="w-4 h-4 text-[#1F2937]" />
+                        </button>
+                      ))}
+                      {showGoogleResults && (
+                        <div className="px-4 py-2 text-[11px] text-[#9CA3AF] text-right">
+                          {t("cityPicker.poweredByGoogle")}
+                        </div>
+                      )}
+                      {showNominatimFallback && nominatimResults.map((r) => {
+                        const a = r.address;
+                        const label = a.city || a.town || a.village || a.municipality || "";
+                        return (
+                          <button
+                            key={r.place_id}
+                            onClick={() => handleNominatimSelect(r)}
+                            className="w-full flex items-center gap-3 py-4 px-4 hover:bg-[#F5F7FA] transition-colors border-b border-[#E5E7EB] last:border-b-0"
+                            data-testid={`option-city-${label.toLowerCase().replace(/\s/g, "-")}`}
+                          >
+                            <MapPin className="w-4.5 h-4.5 text-[#1F2937] flex-shrink-0" />
+                            <span className="text-[15px] font-medium text-[#1F2937] flex-1 text-left">
+                              {a.state ? `${label}, ${a.state}` : label}
+                            </span>
+                            <ChevronRight className="w-4 h-4 text-[#1F2937]" />
+                          </button>
+                        );
+                      })}
+                      {showStaticDropdown && filteredCities.map((city) => (
                         <button
                           key={city.name}
                           onClick={() => handleCitySelect(city)}
@@ -342,6 +556,20 @@ export default function OnboardingLocationPage() {
                     </select>
                   </div>
                 </div>
+
+                {selectedCity && citySupport && citySupport.status === "unsupported" && (
+                  <div className="flex items-center gap-2 text-[#92400E] text-[13px] bg-[#FEF3C7] rounded-2xl px-4 py-3 mt-4" data-testid="text-city-unsupported">
+                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                    <span>{t("cityPicker.cityNotMonitored")}</span>
+                  </div>
+                )}
+
+                {selectedCity && citySupport && citySupport.status === "dynamic" && (
+                  <div className="flex items-center gap-2 text-[#0D6EFD] text-[13px] bg-[#EBF2FF] rounded-2xl px-4 py-3 mt-4" data-testid="text-city-dynamic">
+                    <Info className="w-4 h-4 flex-shrink-0" />
+                    <span>{t("cityPicker.cityDynamic")}</span>
+                  </div>
+                )}
 
                 {selectedCity && (
                   <div className="py-5">

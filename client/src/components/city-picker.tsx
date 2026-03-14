@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { MapPin, Search, X, AlertCircle } from "lucide-react";
+import { MapPin, Search, X, AlertCircle, Info } from "lucide-react";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useTranslation } from "@/i18n";
+import { usePlacesAutocomplete, type PlaceSuggestion } from "@/hooks/use-places-autocomplete";
+import { getCitySupport } from "@/lib/city-support";
 
 const MARKER_ICON = new L.Icon({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
@@ -56,12 +58,15 @@ interface CityPickerProps {
 export default function CityPicker({ value, onChange, error }: CityPickerProps) {
   const { t } = useTranslation();
   const [query, setQuery] = useState(value?.city_name ?? "");
-  const [results, setResults] = useState<NominatimResult[]>([]);
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [touched, setTouched] = useState(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const places = usePlacesAutocomplete();
+
+  const [nominatimResults, setNominatimResults] = useState<NominatimResult[]>([]);
+  const [nominatimLoading, setNominatimLoading] = useState(false);
+  const nominatimDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -73,12 +78,12 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const searchPlaces = useCallback(async (q: string) => {
+  const searchNominatim = useCallback(async (q: string) => {
     if (q.trim().length < 2) {
-      setResults([]);
+      setNominatimResults([]);
       return;
     }
-    setLoading(true);
+    setNominatimLoading(true);
     try {
       const params = new URLSearchParams({
         q,
@@ -97,12 +102,12 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
         const a = r.address;
         return !!(a.city || a.town || a.village || a.municipality);
       });
-      setResults(filtered);
+      setNominatimResults(filtered);
       setOpen(filtered.length > 0);
     } catch {
-      setResults([]);
+      setNominatimResults([]);
     } finally {
-      setLoading(false);
+      setNominatimLoading(false);
     }
   }, []);
 
@@ -110,11 +115,36 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
     setQuery(val);
     setTouched(true);
     if (value) onChange(null);
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => searchPlaces(val), 300);
+
+    places.search(val);
+
+    if (nominatimDebounce.current) clearTimeout(nominatimDebounce.current);
+    nominatimDebounce.current = setTimeout(() => searchNominatim(val), 350);
+
+    if (val.trim().length >= 2) {
+      setOpen(true);
+    }
   }
 
-  function handleSelect(r: NominatimResult) {
+  async function handleGoogleSelect(suggestion: PlaceSuggestion) {
+    const details = await places.getDetails(suggestion.place_id);
+    const cityName = details?.city_name || suggestion.city_name;
+    const place: SelectedPlace = {
+      city_name: cityName,
+      country_code: details?.country_code || "DE",
+      latitude: details?.latitude || 0,
+      longitude: details?.longitude || 0,
+      place_id: suggestion.place_id,
+    };
+    onChange(place);
+    setQuery(cityName);
+    setOpen(false);
+    setTouched(false);
+    places.clear();
+    setNominatimResults([]);
+  }
+
+  function handleNominatimSelect(r: NominatimResult) {
     const a = r.address;
     const cityName = a.city || a.town || a.village || a.municipality || "";
     const place: SelectedPlace = {
@@ -128,22 +158,24 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
     setQuery(cityName);
     setOpen(false);
     setTouched(false);
+    places.clear();
+    setNominatimResults([]);
   }
 
   function handleClear() {
     setQuery("");
     onChange(null);
-    setResults([]);
+    setNominatimResults([]);
+    places.clear();
     setTouched(false);
   }
 
-  function getDisplayName(r: NominatimResult): string {
-    const a = r.address;
-    const city = a.city || a.town || a.village || a.municipality || "";
-    return a.state ? `${city}, ${a.state}` : city;
-  }
-
+  const usingGoogle = places.isAvailable;
+  const isLoading = places.loading || nominatimLoading;
+  const hasResults = (usingGoogle && places.suggestions.length > 0) || nominatimResults.length > 0;
   const showValidation = touched && !value && query.trim().length > 0;
+
+  const support = value ? getCitySupport(value.city_name) : null;
 
   return (
     <div className="flex flex-col gap-4" ref={containerRef}>
@@ -154,7 +186,7 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
             type="text"
             value={query}
             onChange={(e) => handleInputChange(e.target.value)}
-            onFocus={() => { if (results.length > 0 && !value) setOpen(true); }}
+            onFocus={() => { if (hasResults && !value) setOpen(true); }}
             placeholder={t("location.searchCity")}
             className={`w-full min-h-[52px] rounded-lg bg-[#F5F7FA] border px-11 text-[16px] text-[#1F2937] placeholder:text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-transparent transition-colors ${
               showValidation ? "border-red-400" : value ? "border-[#0D6EFD] bg-[#F5F7FA]/30" : "border-[#E5E7EB]"
@@ -172,25 +204,49 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
           )}
         </div>
 
-        {loading && (
+        {isLoading && (
           <div className="absolute right-12 top-1/2 -translate-y-1/2">
             <div className="w-4 h-4 border-2 border-[#0D6EFD]/30 border-t-[#0D6EFD] rounded-full animate-spin" />
           </div>
         )}
 
-        {open && results.length > 0 && (
+        {open && hasResults && (
           <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-[#E5E7EB] rounded-lg shadow-lg max-h-[260px] overflow-y-auto z-30">
-            {results.map((r) => (
-              <button
-                key={r.place_id}
-                onClick={() => handleSelect(r)}
-                className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#1F2937] hover:bg-[#F5F7FA] flex items-center gap-3"
-                data-testid={`option-place-${r.place_id}`}
-              >
-                <MapPin className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
-                <span>{getDisplayName(r)}</span>
-              </button>
-            ))}
+            {usingGoogle && places.suggestions.length > 0 ? (
+              <>
+                {places.suggestions.map((s) => (
+                  <button
+                    key={s.place_id}
+                    onClick={() => handleGoogleSelect(s)}
+                    className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#1F2937] hover:bg-[#F5F7FA] flex items-center gap-3"
+                    data-testid={`option-place-${s.place_id}`}
+                  >
+                    <MapPin className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
+                    <span>{s.state ? `${s.city_name}, ${s.state}` : s.city_name}</span>
+                  </button>
+                ))}
+                <div className="px-4 py-2 text-[11px] text-[#9CA3AF] text-right border-t border-[#F3F4F6]">
+                  {t("cityPicker.poweredByGoogle")}
+                </div>
+              </>
+            ) : (
+              nominatimResults.map((r) => {
+                const a = r.address;
+                const city = a.city || a.town || a.village || a.municipality || "";
+                const label = a.state ? `${city}, ${a.state}` : city;
+                return (
+                  <button
+                    key={r.place_id}
+                    onClick={() => handleNominatimSelect(r)}
+                    className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#1F2937] hover:bg-[#F5F7FA] flex items-center gap-3"
+                    data-testid={`option-place-${r.place_id}`}
+                  >
+                    <MapPin className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
+                    <span>{label}</span>
+                  </button>
+                );
+              })
+            )}
           </div>
         )}
       </div>
@@ -215,6 +271,20 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
             <MapPin className="w-4 h-4" />
             {value.city_name}
           </div>
+
+          {support && support.status === "unsupported" && (
+            <div className="flex items-center gap-2 text-[#92400E] text-[13px] bg-[#FEF3C7] rounded-2xl px-4 py-3" data-testid="text-city-unsupported">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <span>{t("cityPicker.cityNotMonitored")}</span>
+            </div>
+          )}
+
+          {support && support.status === "dynamic" && (
+            <div className="flex items-center gap-2 text-[#0D6EFD] text-[13px] bg-[#EBF2FF] rounded-2xl px-4 py-3" data-testid="text-city-dynamic">
+              <Info className="w-4 h-4 flex-shrink-0" />
+              <span>{t("cityPicker.cityDynamic")}</span>
+            </div>
+          )}
 
           <div className="rounded-lg overflow-hidden border border-[#E5E7EB] h-[200px]" data-testid="map-preview">
             <MapContainer
