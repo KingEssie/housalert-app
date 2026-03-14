@@ -26,6 +26,7 @@ import { pool as pgPool } from "./pg-pool";
 import { isAdminEmail, getRecentRuns, getRunDetail, getLatestRunCities, getSourceAggregates } from "./admin";
 import { initWebPush, sendPushToUser } from "./notifications/push";
 import { sendExpoTestPush } from "./notifications/expo-push";
+import { getSupabaseAdmin } from "./supabase-admin";
 import { markViewed, markApplied, markSaved, getUserMatchStats, getRecentUserMatches, getMatchCountForUser, getCanonicalMatchStates, getRecentFetchRuns, backfillFromSupabaseMatches } from "./user-matches";
 
 const TEN_MIN = 10 * 60 * 1000;
@@ -140,19 +141,23 @@ export async function registerRoutes(
 
       const plat = platform === "android" ? "android" : "ios";
       const now = new Date().toISOString();
+      const sb = getSupabaseAdmin();
 
-      await pgPool.query(
-        `UPDATE expo_push_tokens SET is_active = FALSE, updated_at = $1
-         WHERE expo_push_token = $2 AND user_id != $3`,
-        [now, expo_push_token, user.id]
-      );
+      await sb
+        .from("expo_push_tokens")
+        .update({ is_active: false, updated_at: now })
+        .eq("expo_push_token", expo_push_token)
+        .neq("user_id", user.id);
 
-      await pgPool.query(
-        `INSERT INTO expo_push_tokens (user_id, expo_push_token, platform, is_active, created_at, updated_at)
-         VALUES ($1, $2, $3, TRUE, $4, $4)
-         ON CONFLICT (user_id, expo_push_token)
-         DO UPDATE SET is_active = TRUE, platform = $3, updated_at = $4`,
-        [user.id, expo_push_token, plat, now]
+      await sb.from("expo_push_tokens").upsert(
+        {
+          user_id: user.id,
+          expo_push_token,
+          platform: plat,
+          is_active: true,
+          updated_at: now,
+        },
+        { onConflict: "user_id,expo_push_token" }
       );
 
       log(`[EXPO-PUSH] Token registered for user ${user.id.substring(0, 8)}... platform=${plat}`);
@@ -176,11 +181,12 @@ export async function registerRoutes(
         return res.status(400).json({ error: "Invalid expo_push_token" });
       }
 
-      await pgPool.query(
-        `UPDATE expo_push_tokens SET is_active = FALSE, updated_at = $1
-         WHERE user_id = $2 AND expo_push_token = $3`,
-        [new Date().toISOString(), user.id, expo_push_token]
-      );
+      const sb = getSupabaseAdmin();
+      await sb
+        .from("expo_push_tokens")
+        .update({ is_active: false, updated_at: new Date().toISOString() })
+        .eq("user_id", user.id)
+        .eq("expo_push_token", expo_push_token);
 
       log(`[EXPO-PUSH] Token deactivated for user ${user.id.substring(0, 8)}...`);
       return res.json({ ok: true });
@@ -2252,22 +2258,41 @@ export async function registerRoutes(
     try {
       const userId = req.query.user_id as string | undefined;
       const limit = Math.min(parseInt(req.query.limit as string || "50", 10), 200);
+      const sb = getSupabaseAdmin();
 
-      let query = `SELECT id, user_id, channel, token_snippet, listing_count, title, body, status,
-                    expo_ticket_id, expo_receipt_status, error_type, error_message, created_at
-                   FROM push_delivery_log`;
-      const params: any[] = [];
+      let q = sb
+        .from("push_delivery_log")
+        .select("id, user_id, channel, token_snippet, listing_count, title, body, status, expo_ticket_id, expo_receipt_status, error_type, error_message, created_at")
+        .order("created_at", { ascending: false })
+        .limit(limit);
 
-      if (userId) {
-        query += ` WHERE user_id = $1`;
-        params.push(userId);
-      }
+      if (userId) q = q.eq("user_id", userId);
 
-      query += ` ORDER BY created_at DESC LIMIT $${params.length + 1}`;
-      params.push(limit);
+      const { data, error: qErr } = await q;
+      if (qErr) throw qErr;
+      return res.json({ count: data?.length || 0, logs: data || [] });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
 
-      const { rows } = await pgPool.query(query, params);
-      return res.json({ count: rows.length, logs: rows });
+  app.get("/api/admin/push-tokens", requireAdmin, async (req, res) => {
+    try {
+      const userId = req.query.user_id as string | undefined;
+      const limit = Math.min(parseInt(req.query.limit as string || "50", 10), 200);
+      const sb = getSupabaseAdmin();
+
+      let q = sb
+        .from("expo_push_tokens")
+        .select("id, user_id, expo_push_token, platform, is_active, created_at, updated_at")
+        .order("updated_at", { ascending: false })
+        .limit(limit);
+
+      if (userId) q = q.eq("user_id", userId);
+
+      const { data, error: qErr } = await q;
+      if (qErr) throw qErr;
+      return res.json({ count: data?.length || 0, tokens: data || [] });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
     }

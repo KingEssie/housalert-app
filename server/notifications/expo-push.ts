@@ -1,4 +1,4 @@
-import { pool } from "../pg-pool";
+import { getSupabaseAdmin } from "../supabase-admin";
 import { log } from "../log";
 
 const EXPO_PUSH_URL = "https://exp.host/--/api/v2/push/send";
@@ -14,17 +14,63 @@ export interface ExpoMatchListing {
   url?: string | null;
 }
 
-interface ExpoPushTicket {
+export interface ExpoPushTicket {
   status: "ok" | "error";
   id?: string;
   message?: string;
   details?: { error?: string };
 }
 
-interface ExpoPushReceipt {
+export interface ExpoPushReceipt {
   status: "ok" | "error";
   message?: string;
   details?: { error?: string };
+}
+
+export interface PushProvider {
+  sendPush(messages: any[]): Promise<{ data: ExpoPushTicket[] }>;
+  getReceipts(ticketIds: string[]): Promise<{ data: Record<string, ExpoPushReceipt> }>;
+}
+
+const realProvider: PushProvider = {
+  async sendPush(messages) {
+    const response = await fetch(EXPO_PUSH_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify(messages),
+    });
+    if (response.status === 429 || (response.status >= 500 && response.status < 600)) {
+      throw Object.assign(new Error(`Expo API ${response.status}`), { retryable: true, status: response.status });
+    }
+    if (!response.ok) {
+      const errText = await response.text();
+      throw Object.assign(new Error(`Expo API ${response.status}: ${errText}`), { retryable: false });
+    }
+    return response.json();
+  },
+  async getReceipts(ticketIds) {
+    const response = await fetch(EXPO_RECEIPTS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({ ids: ticketIds }),
+    });
+    if (!response.ok) throw new Error(`Expo receipts API ${response.status}`);
+    return response.json();
+  },
+};
+
+let _provider: PushProvider = realProvider;
+
+export function setPushProvider(provider: PushProvider) {
+  _provider = provider;
+}
+
+export function resetPushProvider() {
+  _provider = realProvider;
+}
+
+export function getActivePushProvider(): PushProvider {
+  return _provider;
 }
 
 function truncate(str: string, max: number): string {
@@ -34,6 +80,33 @@ function truncate(str: string, max: number): string {
 
 function tokenSnippet(token: string): string {
   return token.length > 30 ? token.substring(0, 30) + "..." : token;
+}
+
+export function buildMatchPayload(listings: ExpoMatchListing[]): {
+  title: string;
+  body: string;
+  deepLink: string;
+  listingIds: string[];
+} {
+  let title: string;
+  let body: string;
+  let deepLink = "/dashboard?tab=matches";
+
+  if (listings.length === 1) {
+    const l = listings[0];
+    const city = l.city || "je stad";
+    title = `Nieuwe match in ${city}`;
+    const label = truncate(l.title || "Nieuwe woning", 60);
+    body = l.price > 0 ? `${label} · €${l.price}` : label;
+    if (l.listing_id) deepLink = `/listing/${l.listing_id}`;
+  } else {
+    const cities = [...new Set(listings.map((l) => l.city).filter(Boolean))];
+    const cityText = cities.length > 0 ? cities.slice(0, 2).join(", ") : "je stad";
+    title = `${listings.length} nieuwe matches in ${cityText}`;
+    body = `Er zijn ${listings.length} nieuwe woningen gevonden die bij je zoekopdracht passen.`;
+  }
+
+  return { title, body, deepLink, listingIds: listings.map((l) => l.listing_id) };
 }
 
 async function logDelivery(params: {
@@ -50,69 +123,41 @@ async function logDelivery(params: {
   errorMessage?: string;
 }): Promise<void> {
   try {
-    await pool.query(
-      `INSERT INTO push_delivery_log
-       (user_id, channel, token_snippet, full_token, listing_ids, listing_count, title, body, status, expo_ticket_id, error_type, error_message)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
-      [
-        params.userId,
-        params.channel,
-        params.tokenSnippet || null,
-        params.fullToken || null,
-        params.listingIds,
-        params.listingIds.length,
-        params.title,
-        params.body,
-        params.status,
-        params.expoTicketId || null,
-        params.errorType || null,
-        params.errorMessage || null,
-      ]
-    );
+    const sb = getSupabaseAdmin();
+    await sb.from("push_delivery_log").insert({
+      user_id: params.userId,
+      channel: params.channel,
+      token_snippet: params.tokenSnippet || null,
+      full_token: params.fullToken || null,
+      listing_ids: params.listingIds,
+      listing_count: params.listingIds.length,
+      title: params.title,
+      body: params.body,
+      status: params.status,
+      expo_ticket_id: params.expoTicketId || null,
+      error_type: params.errorType || null,
+      error_message: params.errorMessage || null,
+    });
   } catch (err: any) {
     log(`[EXPO-PUSH] Failed to write delivery log: ${err.message}`);
   }
 }
 
-async function sendWithRetry(
+export async function sendWithRetry(
   messages: any[],
   attempt = 1
 ): Promise<{ tickets: ExpoPushTicket[]; error?: string }> {
   try {
-    const response = await fetch(EXPO_PUSH_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(messages),
-    });
-
-    if (response.status === 429 || (response.status >= 500 && response.status < 600)) {
-      if (attempt <= MAX_RETRY_ATTEMPTS) {
-        const delay = RETRY_DELAY_MS * attempt;
-        log(`[EXPO-PUSH] Temporary error ${response.status} — retrying in ${delay}ms (attempt ${attempt}/${MAX_RETRY_ATTEMPTS})`);
-        await new Promise((r) => setTimeout(r, delay));
-        return sendWithRetry(messages, attempt + 1);
-      }
-      return { tickets: [], error: `Expo API ${response.status} after ${attempt} attempts` };
-    }
-
-    if (!response.ok) {
-      const errText = await response.text();
-      return { tickets: [], error: `Expo API ${response.status}: ${errText}` };
-    }
-
-    const result = await response.json();
+    const result = await _provider.sendPush(messages);
     return { tickets: result.data || [] };
   } catch (err: any) {
-    if (attempt <= MAX_RETRY_ATTEMPTS) {
+    if (err.retryable !== false && attempt <= MAX_RETRY_ATTEMPTS) {
       const delay = RETRY_DELAY_MS * attempt;
-      log(`[EXPO-PUSH] Network error — retrying in ${delay}ms (attempt ${attempt}/${MAX_RETRY_ATTEMPTS}): ${err.message}`);
+      log(`[EXPO-PUSH] Temporary error — retrying in ${delay}ms (attempt ${attempt}/${MAX_RETRY_ATTEMPTS}): ${err.message}`);
       await new Promise((r) => setTimeout(r, delay));
       return sendWithRetry(messages, attempt + 1);
     }
-    return { tickets: [], error: `Network error after ${attempt} attempts: ${err.message}` };
+    return { tickets: [], error: `${err.message} after ${attempt} attempts` };
   }
 }
 
@@ -126,38 +171,19 @@ export async function sendExpoMatchPush(
     return { sent: 0, skipped: 0, failed: 0 };
   }
 
-  const { rows: tokens } = await pool.query(
-    `SELECT id, expo_push_token FROM expo_push_tokens
-     WHERE user_id = $1 AND is_active = TRUE`,
-    [userId]
-  );
+  const sb = getSupabaseAdmin();
+  const { data: tokens, error: tokenErr } = await sb
+    .from("expo_push_tokens")
+    .select("id, expo_push_token")
+    .eq("user_id", userId)
+    .eq("is_active", true);
 
-  if (!tokens || tokens.length === 0) {
+  if (tokenErr || !tokens || tokens.length === 0) {
     log(`[EXPO-PUSH] User ${uid}...: no active Expo tokens — skipping`);
     return { sent: 0, skipped: listings.length, failed: 0 };
   }
 
-  let title: string;
-  let body: string;
-  let deepLink = "/dashboard?tab=matches";
-
-  if (listings.length === 1) {
-    const l = listings[0];
-    const city = l.city || "je stad";
-    title = `Nieuwe match in ${city}`;
-    const label = truncate(l.title || "Nieuwe woning", 60);
-    body = l.price > 0 ? `${label} · €${l.price}` : label;
-    if (l.listing_id) {
-      deepLink = `/listing/${l.listing_id}`;
-    }
-  } else {
-    const cities = [...new Set(listings.map((l) => l.city).filter(Boolean))];
-    const cityText = cities.length > 0 ? cities.slice(0, 2).join(", ") : "je stad";
-    title = `${listings.length} nieuwe matches in ${cityText}`;
-    body = `Er zijn ${listings.length} nieuwe woningen gevonden die bij je zoekopdracht passen.`;
-  }
-
-  const listingIds = listings.map((l) => l.listing_id);
+  const { title, body, deepLink, listingIds } = buildMatchPayload(listings);
   const pushTokenStrings = tokens.map((t: any) => t.expo_push_token);
 
   const messages = pushTokenStrings.map((token: string) => ({
@@ -231,10 +257,10 @@ export async function sendExpoMatchPush(
       });
 
       if (errType === "DeviceNotRegistered" && tokenId) {
-        await pool.query(
-          `UPDATE expo_push_tokens SET is_active = FALSE, updated_at = $1 WHERE id = $2`,
-          [new Date().toISOString(), tokenId]
-        );
+        await sb
+          .from("expo_push_tokens")
+          .update({ is_active: false, updated_at: new Date().toISOString() })
+          .eq("id", tokenId);
         log(`[EXPO-PUSH] Deactivated stale token id=${tokenId}`);
       }
     }
@@ -248,14 +274,15 @@ export async function sendExpoTestPush(
   userId: string
 ): Promise<{ sent: number; failed: number; tokens: number }> {
   const uid = userId.substring(0, 8);
+  const sb = getSupabaseAdmin();
 
-  const { rows: tokens } = await pool.query(
-    `SELECT expo_push_token FROM expo_push_tokens
-     WHERE user_id = $1 AND is_active = TRUE`,
-    [userId]
-  );
+  const { data: tokens, error: tokenErr } = await sb
+    .from("expo_push_tokens")
+    .select("expo_push_token")
+    .eq("user_id", userId)
+    .eq("is_active", true);
 
-  if (!tokens || tokens.length === 0) {
+  if (tokenErr || !tokens || tokens.length === 0) {
     log(`[EXPO-PUSH-TEST] User ${uid}...: no active Expo tokens`);
     return { sent: 0, failed: 0, tokens: 0 };
   }
@@ -330,17 +357,22 @@ export async function sendExpoTestPush(
 }
 
 export async function checkExpoReceipts(): Promise<{ checked: number; ok: number; errors: number }> {
-  const { rows } = await pool.query(
-    `SELECT id, expo_ticket_id, user_id, full_token FROM push_delivery_log
-     WHERE expo_ticket_id IS NOT NULL
-       AND expo_receipt_status IS NULL
-       AND status = 'sent'
-       AND created_at > NOW() - INTERVAL '24 hours'
-       AND created_at < NOW() - INTERVAL '15 minutes'
-     LIMIT 100`
-  );
+  const sb = getSupabaseAdmin();
 
-  if (rows.length === 0) return { checked: 0, ok: 0, errors: 0 };
+  const fifteenMinAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+  const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
+  const { data: rows, error: qErr } = await sb
+    .from("push_delivery_log")
+    .select("id, expo_ticket_id, user_id, full_token")
+    .not("expo_ticket_id", "is", null)
+    .is("expo_receipt_status", null)
+    .eq("status", "sent")
+    .gt("created_at", oneDayAgo)
+    .lt("created_at", fifteenMinAgo)
+    .limit(100);
+
+  if (qErr || !rows || rows.length === 0) return { checked: 0, ok: 0, errors: 0 };
 
   const ticketIds = rows.map((r: any) => r.expo_ticket_id).filter(Boolean);
   if (ticketIds.length === 0) return { checked: 0, ok: 0, errors: 0 };
@@ -348,18 +380,7 @@ export async function checkExpoReceipts(): Promise<{ checked: number; ok: number
   log(`[EXPO-RECEIPTS] Checking ${ticketIds.length} receipts`);
 
   try {
-    const response = await fetch(EXPO_RECEIPTS_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({ ids: ticketIds }),
-    });
-
-    if (!response.ok) {
-      log(`[EXPO-RECEIPTS] API error: ${response.status}`);
-      return { checked: 0, ok: 0, errors: 0 };
-    }
-
-    const result = await response.json();
+    const result = await _provider.getReceipts(ticketIds);
     const receipts: Record<string, ExpoPushReceipt> = result.data || {};
 
     let ok = 0;
@@ -371,36 +392,41 @@ export async function checkExpoReceipts(): Promise<{ checked: number; ok: number
 
       if (receipt.status === "ok") {
         ok++;
-        await pool.query(
-          `UPDATE push_delivery_log SET expo_receipt_status = 'ok' WHERE id = $1`,
-          [row.id]
-        );
+        await sb
+          .from("push_delivery_log")
+          .update({ expo_receipt_status: "ok" })
+          .eq("id", row.id);
       } else {
         errors++;
         const errType = receipt.details?.error || "unknown";
-        await pool.query(
-          `UPDATE push_delivery_log SET expo_receipt_status = 'error', error_type = $1, error_message = $2 WHERE id = $3`,
-          [errType, receipt.message || null, row.id]
-        );
+        await sb
+          .from("push_delivery_log")
+          .update({
+            expo_receipt_status: "error",
+            error_type: errType,
+            error_message: receipt.message || null,
+          })
+          .eq("id", row.id);
 
         if (errType === "DeviceNotRegistered") {
           if (row.full_token) {
-            const deactivated = await pool.query(
-              `UPDATE expo_push_tokens SET is_active = FALSE, updated_at = NOW()
-               WHERE user_id = $1 AND expo_push_token = $2 AND is_active = TRUE
-               RETURNING id`,
-              [row.user_id, row.full_token]
-            );
-            const count = deactivated.rowCount || 0;
+            const { data: deactivated } = await sb
+              .from("expo_push_tokens")
+              .update({ is_active: false, updated_at: new Date().toISOString() })
+              .eq("user_id", row.user_id)
+              .eq("expo_push_token", row.full_token)
+              .eq("is_active", true)
+              .select("id");
+            const count = deactivated?.length || 0;
             log(`[EXPO-RECEIPTS] DeviceNotRegistered for user ${row.user_id.substring(0, 8)}... — deactivated ${count} token(s) (targeted)`);
           } else {
-            const deactivated = await pool.query(
-              `UPDATE expo_push_tokens SET is_active = FALSE, updated_at = NOW()
-               WHERE user_id = $1 AND is_active = TRUE
-               RETURNING id`,
-              [row.user_id]
-            );
-            const count = deactivated.rowCount || 0;
+            const { data: deactivated } = await sb
+              .from("expo_push_tokens")
+              .update({ is_active: false, updated_at: new Date().toISOString() })
+              .eq("user_id", row.user_id)
+              .eq("is_active", true)
+              .select("id");
+            const count = deactivated?.length || 0;
             log(`[EXPO-RECEIPTS] DeviceNotRegistered for user ${row.user_id.substring(0, 8)}... — deactivated ${count} token(s) (all)`);
           }
         }

@@ -17,8 +17,6 @@ export async function runStartupMigration() {
 
   await createUserMatchesTable();
   await createFetchRunsTable();
-  await createExpoPushTokensTable();
-  await createPushDeliveryLogTable();
 }
 
 async function createUserMatchesTable() {
@@ -63,72 +61,6 @@ async function createUserMatchesTable() {
     log(`[MIGRATION] user_matches table OK (${colCheck.rows.length} columns)`, "migration");
   } catch (err: any) {
     log(`[MIGRATION] Error creating user_matches: ${err.message}`, "migration");
-  }
-}
-
-async function createExpoPushTokensTable() {
-  try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS expo_push_tokens (
-        id SERIAL PRIMARY KEY,
-        user_id UUID NOT NULL,
-        expo_push_token TEXT NOT NULL,
-        platform TEXT NOT NULL DEFAULT 'ios',
-        is_active BOOLEAN NOT NULL DEFAULT TRUE,
-        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-        UNIQUE(user_id, expo_push_token)
-      )
-    `);
-
-    await pool.query(`CREATE INDEX IF NOT EXISTS idx_expo_push_tokens_user_id ON expo_push_tokens(user_id)`);
-    await pool.query(`CREATE INDEX IF NOT EXISTS idx_expo_push_tokens_active ON expo_push_tokens(is_active) WHERE is_active = TRUE`);
-
-    const colCheck = await pool.query(
-      "SELECT column_name FROM information_schema.columns WHERE table_name = 'expo_push_tokens' ORDER BY ordinal_position"
-    );
-    log(`[MIGRATION] expo_push_tokens table OK (${colCheck.rows.length} columns)`, "migration");
-  } catch (err: any) {
-    log(`[MIGRATION] Error creating expo_push_tokens: ${err.message}`, "migration");
-  }
-}
-
-async function createPushDeliveryLogTable() {
-  try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS push_delivery_log (
-        id SERIAL PRIMARY KEY,
-        user_id UUID NOT NULL,
-        channel TEXT NOT NULL DEFAULT 'expo',
-        token_snippet TEXT,
-        full_token TEXT,
-        listing_ids TEXT[],
-        listing_count INT NOT NULL DEFAULT 0,
-        title TEXT,
-        body TEXT,
-        status TEXT NOT NULL DEFAULT 'sent',
-        expo_ticket_id TEXT,
-        expo_receipt_status TEXT,
-        error_type TEXT,
-        error_message TEXT,
-        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-      )
-    `);
-
-    try {
-      await pool.query(`ALTER TABLE push_delivery_log ADD COLUMN IF NOT EXISTS full_token TEXT`);
-    } catch {}
-
-    await pool.query(`CREATE INDEX IF NOT EXISTS idx_push_delivery_log_user ON push_delivery_log(user_id)`);
-    await pool.query(`CREATE INDEX IF NOT EXISTS idx_push_delivery_log_created ON push_delivery_log(created_at DESC)`);
-    await pool.query(`CREATE INDEX IF NOT EXISTS idx_push_delivery_log_ticket ON push_delivery_log(expo_ticket_id) WHERE expo_ticket_id IS NOT NULL`);
-
-    const colCheck = await pool.query(
-      "SELECT column_name FROM information_schema.columns WHERE table_name = 'push_delivery_log' ORDER BY ordinal_position"
-    );
-    log(`[MIGRATION] push_delivery_log table OK (${colCheck.rows.length} columns)`, "migration");
-  } catch (err: any) {
-    log(`[MIGRATION] Error creating push_delivery_log: ${err.message}`, "migration");
   }
 }
 

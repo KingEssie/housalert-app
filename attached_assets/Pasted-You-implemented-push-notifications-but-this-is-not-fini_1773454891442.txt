@@ -1,0 +1,115 @@
+You implemented push notifications, but this is not finished yet.
+
+I do NOT want only code changes and a manual checklist.
+I want you to execute a real self-test and give me concrete proof of what works and what does not.
+
+Important correction:
+My target architecture uses Supabase as the main datastore.
+Your summary says expo_push_tokens are stored in Replit PG.
+That is not acceptable unless there is a very strong technical reason.
+Please move the push notification persistence layer to Supabase, or clearly explain why a specific part cannot be moved yet.
+Avoid using Replit local/Postgres for core product data.
+
+Your tasks now:
+
+1. Audit the current implementation
+Review what you added for:
+- token registration
+- push sending
+- retry logic
+- delivery logs
+- receipt checks
+- deep linking
+- mobile registration flow
+
+Then identify:
+- what is complete
+- what is incomplete
+- what is only assumed but not actually tested
+- what still depends on Replit PG instead of Supabase
+
+2. Move persistence to Supabase
+Use Supabase for push-related storage where practical, including:
+- expo push tokens / device registrations
+- notification delivery logs
+- notification jobs if needed
+
+Provide:
+- SQL migration(s) for Supabase
+- updated backend code using Supabase
+- removal or deprecation of Replit PG tables for this feature where possible
+
+3. Create real automated/self-test coverage
+I want you to add practical self-tests that YOU can run in the Replit environment.
+
+At minimum add tests for:
+- token registration endpoint
+- upsert behavior for same device/user
+- duplicate prevention for same user + same match + same channel
+- payload creation
+- retry logic for temporary Expo API failure
+- permanent token invalidation logic
+- log creation on success/failure
+- deep link payload format
+
+4. Add a mockable push provider
+Do not depend only on the real Expo API for tests.
+Refactor the push sender so tests can run against:
+- a mock Expo provider
+- simulated temporary failures
+- simulated permanent failures
+- simulated successful send responses
+
+5. Add a test script that you actually execute
+Create a test command such as:
+- npm test push
+or
+- npm run test:push
+
+Then run it yourself in Replit.
+
+I want the actual output summarized, including:
+- number of tests run
+- passed
+- failed
+- exact failures if any
+
+6. Add an end-to-end dry run
+In addition to unit/integration tests, create a dry-run script that simulates:
+- one user
+- one device token
+- one new match
+- push dispatch
+- delivery log creation
+- duplicate send blocked on second attempt
+
+Then execute that script and report the result.
+
+7. Add an admin verification endpoint if useful
+If needed, add a practical debug/admin endpoint to inspect:
+- registered push tokens
+- push delivery logs
+- latest notification job status
+Keep it simple and safe.
+
+8. Output requirements
+When you reply, do NOT just say what you changed.
+I want this exact structure:
+
+A. Audit findings
+B. Supabase migration summary
+C. Files changed
+D. Test files added
+E. Commands you executed
+F. Actual test results
+G. Remaining issues
+H. Final verdict: is push notifications now production-ready or not?
+
+9. Important constraints
+- Do not overengineer
+- Do not rewrite unrelated parts of the app
+- Keep changes practical
+- Prefer deterministic tests
+- If a real push to a physical device cannot be fully verified inside Replit, explicitly say that, but still fully test all backend logic using mocks and dry-runs
+
+Do the work now and execute the tests, not just describe what should be tested.
