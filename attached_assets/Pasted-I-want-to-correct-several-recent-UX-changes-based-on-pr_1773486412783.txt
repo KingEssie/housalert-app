@@ -1,0 +1,92 @@
+I want to correct several recent UX changes based on product feedback. Do not redesign. Apply these specific corrections only.
+
+Context:
+HousAlert is a rental alert app. The core user flow must remain:
+1. user opens a match
+2. user sees the response letter
+3. user can edit or review it
+4. user copies it
+5. user opens the original listing website
+6. user pastes and responds quickly
+
+Some recent UX changes were not right. Please correct them exactly as follows.
+
+1. Home screen hero / match count
+The home screen still shows a large count like:
+"851 nieuwe matches"
+
+This is not wanted.
+Replace this with a calmer, non-spammy hero state.
+
+Required behavior:
+- Do NOT show a large cumulative or giant unseen count in the hero.
+- Show a neutral message like:
+  Dutch:
+  - "Nieuwe matches gevonden"
+  - or "Je bent up-to-date"
+- Keep it simple and trust-building.
+- If there are no new matches, show a reassuring empty/up-to-date state.
+- Do not emphasize very large numbers on the home hero.
+
+2. Home screen order
+Move the "Recente matches" section back below:
+- "Maak je account compleet"
+- "Bereid je zoektocht voor"
+
+So the order should be:
+1. hero
+2. account completion card
+3. search preparation card
+4. recent matches
+
+3. Match card location line
+The current district + city formatting makes the compact card too crowded and harms alignment.
+
+Required behavior:
+- On compact match cards and mini cards, revert to city-only display.
+- Do NOT show district on compact cards.
+- Keep bedrooms and square meters aligned cleanly.
+- If district is useful, it can remain on larger/detail surfaces only if it does not break layout.
+
+4. Copy & respond button behavior
+This is critical.
+
+Current wrong behavior:
+Clicking "Kopieer & reageer" sends the user directly to the original external listing website.
+
+Required correct behavior:
+Clicking "Kopieer & reageer" should:
+- open the internal response-letter flow / apply flow first
+- show the response letter
+- allow the user to review or edit it
+- let the user copy it
+- only then continue toward the original listing site
+
+This button must NOT jump directly to the external site.
+
+5. View listing button behavior
+"Bekijk woning" should continue to open the original external listing website directly.
+That behavior is correct.
+
+6. Keep what still works
+- Keep the price-on-image treatment if it still looks good
+- Keep the current architecture
+- Do not change unrelated matching or notification logic
+
+7. QA checklist
+Verify:
+- home hero no longer shows giant match counts
+- recent matches are below the two progress cards
+- compact cards show city only
+- bedrooms and size are aligned cleanly again
+- "Kopieer & reageer" opens the internal response-letter flow
+- "Bekijk woning" opens the external source listing
+- no broken navigation
+
+8. Reply in exactly this structure:
+A. Corrections implemented
+B. Files changed
+C. Button behavior after fix
+D. Layout behavior after fix
+E. QA verification
+F. Confirmation that core user flow is restored

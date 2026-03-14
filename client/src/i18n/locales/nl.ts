@@ -71,7 +71,7 @@ export const nl: Record<string, any> = {
     greeting: "Hallo, {name}",
     greetingDefault: "Hallo",
     matchesBanner: "Je hebt {count} nieuwe {label} ontvangen",
-    newMatchesToday: "{count} nieuwe matches",
+    newMatchesFound: "Nieuwe matches gevonden",
     upToDate: "Je bent up-to-date",
     upToDateDesc: "Je hebt alle recente woningen al bekeken",
     matchSingular: "match",

@@ -64,7 +64,7 @@ export const en: Record<string, any> = {
     greeting: "Hello, {name}",
     greetingDefault: "Hello",
     matchesBanner: "You have {count} new {label}",
-    newMatchesToday: "{count} new matches",
+    newMatchesFound: "New matches found",
     upToDate: "You're up to date",
     upToDateDesc: "You've already seen all recent listings",
     matchSingular: "match",

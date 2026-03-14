@@ -90,11 +90,6 @@ const FRESH_LABEL_KEYS: Record<string, string> = {
 type TabKey = "home" | "matches" | "filters" | "tips" | "profiel";
 type MatchSubTab = "nieuw" | "bekeken" | "opgeslagen" | "gereageerd";
 
-function formatLocation(city: string, district?: string | null): string {
-  if (district && district.trim()) return `${district.trim()} · ${city}`;
-  return city;
-}
-
 const CITY_GRADIENTS: Record<string, string> = {
   berlin: "from-[#1F2937] to-[#333333]",
   münchen: "from-[#1F2937] to-[#333333]",
@@ -291,7 +286,7 @@ function MatchCard({
         <div className="flex items-center gap-2 text-[13px] text-[#1F2937]">
           <span className="flex items-center gap-1">
             <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-            {formatLocation(match.city, match.district)}
+            {match.city}
           </span>
           <span className="text-[#E5E7EB]">·</span>
           {match.bedrooms > 0 && (
@@ -568,7 +563,7 @@ function RecentMatchMiniCard({ match }: { match: ApiMatch }) {
         <div className="flex items-center gap-2 text-[12px] text-[#1F2937]">
           <span className="flex items-center gap-0.5">
             <MapPin className="w-3 h-3" />
-            {formatLocation(match.city, match.district)}
+            {match.city}
           </span>
           {match.bedrooms > 0 && (
             <span className="flex items-center gap-0.5">
@@ -677,7 +672,7 @@ function HomeTab({
             <div className="flex-1 min-w-0">
               <p className="text-[22px] font-bold text-white leading-tight" data-testid="text-match-count">
                 {newCount > 0
-                  ? t("home.newMatchesToday", { count: newCount })
+                  ? t("home.newMatchesFound")
                   : t("home.upToDate")}
               </p>
               <p className="text-[14px] font-[500] text-white/70 mt-0.5">
@@ -777,10 +772,10 @@ function HomeTab({
         </div>
       )}
 
-      <RecenteMatchesSection accessToken={accessToken} setActiveTab={setActiveTab} subscription={subscription} navigate={navigate} />
-
       <AccountCompletionCard onTaskClick={handleAccountTaskClick} />
       <SearchPreparationCard onTaskClick={handlePrepTaskClick} />
+
+      <RecenteMatchesSection accessToken={accessToken} setActiveTab={setActiveTab} subscription={subscription} navigate={navigate} />
 
       {activeTaskModal && (
         <TaskModal
@@ -822,16 +817,6 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
     enabled: !!accessToken,
     staleTime: 30_000,
     refetchOnWindowFocus: true,
-  });
-
-  const profileDataQuery = useQuery({
-    queryKey: ["/api/profile-data"],
-    queryFn: async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) return null;
-      const res = await apiFetch("/api/profile-data", { headers: { Authorization: `Bearer ${session.access_token}` } });
-      return res.json();
-    },
   });
 
   useEffect(() => {
@@ -881,29 +866,9 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
     refreshStatuses();
   }, [refreshStatuses, accessToken]);
 
-  const handleCopyAndApply = useCallback(async (match: ApiMatch) => {
-    const letter = profileDataQuery.data?.application_template;
-    if (letter) {
-      try {
-        await navigator.clipboard.writeText(letter);
-        toast({ title: "Reactiebrief gekopieerd" });
-      } catch {}
-    }
-    markApplied(match.listing_id);
-    refreshStatuses();
-    if (accessToken) {
-      apiFetch(`/api/matches/${match.listing_id}/applied`, {
-        method: "PATCH",
-        headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ applied: true }),
-      }).then(() => {
-        queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
-      }).catch(() => {});
-    }
-    if (match.url) {
-      window.open(match.url, "_blank", "noopener,noreferrer");
-    }
-  }, [accessToken, refreshStatuses, profileDataQuery.data, toast]);
+  const handleCopyAndApply = useCallback((match: ApiMatch) => {
+    navigate(`/apply/${match.listing_id}`);
+  }, [navigate]);
 
   const canonicalStats = apiMatchesQuery.data?.canonicalStats;
   const matchTabs = matches.map((m) => ({ ...m, _tab: getMatchTab(m) }));

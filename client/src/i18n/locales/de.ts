@@ -71,7 +71,7 @@ export const de: Record<string, any> = {
     greeting: "Hallo, {name}",
     greetingDefault: "Hallo",
     matchesBanner: "Du hast {count} neue {label} erhalten",
-    newMatchesToday: "{count} neue Matches",
+    newMatchesFound: "Neue Matches gefunden",
     upToDate: "Du bist auf dem neuesten Stand",
     upToDateDesc: "Du hast alle aktuellen Wohnungen bereits gesehen",
     matchSingular: "Match",
