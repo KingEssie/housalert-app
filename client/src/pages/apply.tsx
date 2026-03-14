@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { DEFAULT_TEMPLATE, fillTemplate } from "@/lib/application-letter";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
+import { trackEvent } from "@/lib/track-event";
 import { useLocation, useRoute } from "wouter";
 import {
   Copy,
@@ -176,6 +177,7 @@ export default function ApplyPage() {
     toast({ title: t("applySheet.copiedOpening") });
 
     setMarked(true);
+    trackEvent("first_reaction", { listingId: listing.id, source: "apply_page" });
     const MATCH_APPLIED_KEY = "housalert_match_applied";
     try {
       const stored = localStorage.getItem(MATCH_APPLIED_KEY);

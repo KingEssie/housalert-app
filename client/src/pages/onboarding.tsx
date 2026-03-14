@@ -3,9 +3,10 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { createSearchProfile, getSearchProfiles } from "@/lib/search-profiles";
-import { Bell, MapPin, Search, ChevronRight, Check } from "lucide-react";
+import { Bell, MapPin, Search, ChevronRight, Check, Gift } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/i18n";
+import { trackEvent } from "@/lib/track-event";
 import LocationModeSelector, { type LocationData, type SelectedPlace, DEFAULT_LOCATION_DATA, isLocationValid } from "@/components/location-mode-selector";
 
 function ProgressBar({ step, total }: { step: number; total: number }) {
@@ -279,9 +280,16 @@ function AlertsStep({ onActivate, onSkip, saving }: { onActivate: () => void; on
         {t("onboarding.alerts.title")}
       </h2>
 
-      <p className="text-[16px] text-[#1F2937] mb-10 max-w-[300px] leading-relaxed">
+      <p className="text-[16px] text-[#1F2937] mb-4 max-w-[300px] leading-relaxed">
         {t("onboarding.alerts.subtitle")}
       </p>
+
+      <div className="flex items-center gap-2.5 bg-[#F0FDF4] rounded-xl px-4 py-3 mb-8 max-w-[320px]" data-testid="trial-note">
+        <Gift className="w-4 h-4 text-[#16A34A] flex-shrink-0" />
+        <p className="text-[13px] font-medium text-[#15803D] text-left leading-snug">
+          {t("onboarding.alerts.trialNote")}
+        </p>
+      </div>
 
       <button
         onClick={onActivate}
@@ -424,6 +432,11 @@ export default function OnboardingPage() {
           });
         }
       } catch {
+      }
+
+      trackEvent("profile_created", { city: cityForProfile });
+      if (enableNotifications) {
+        trackEvent("notifications_enabled", { source: "onboarding" });
       }
 
       clearTimeout(timeout);

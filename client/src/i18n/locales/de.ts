@@ -338,6 +338,7 @@ export const de: Record<string, any> = {
     alerts: {
       title: "Verpasse nie eine neue Wohnung",
       subtitle: "Du erhältst sofort eine Benachrichtigung, wenn ein neues Match erscheint.",
+      trialNote: "Du kannst HousAlert 3 Tage lang kostenlos testen. Keine Zahlung nötig.",
       enable: "Benachrichtigungen aktivieren",
       loggingIn: "Anmelden...",
       skip: "Überspringen",
@@ -1165,5 +1166,35 @@ export const de: Record<string, any> = {
     completeYourProfile: "Vervollständige dein Profil",
     saveFailed: "Fehler",
     saveFailedDesc: "Daten konnten nicht gespeichert werden. Versuche es erneut.",
+  },
+
+  activation: {
+    title: "Los geht's",
+    subtitle: "Schließe diese Schritte ab, um schneller eine Wohnung zu finden",
+    profileCreated: "Suchprofil erstellt",
+    notificationsEnabled: "Benachrichtigungen aktiviert",
+    firstMatchViewed: "Erstes Match angesehen",
+    firstReaction: "Erste Reaktion gesendet",
+    trialStarted: "Testphase gestartet",
+    subscriptionStarted: "Abonnement aktiviert",
+    complete: "Du bist startklar!",
+    stepsLeft: "Noch {count} Schritte",
+  },
+
+  nudge: {
+    unviewedTitle: "Du hast {count} neue {label} bereit",
+    unviewedAction: "Jetzt ansehen",
+    unreactedTitle: "Du hast {count} {label} angesehen, aber noch nicht reagiert",
+    unreactedAction: "Jetzt reagieren",
+    matchSingular: "Match",
+    matchPlural: "Matches",
+    woningSingular: "Wohnung",
+    woningPlural: "Wohnungen",
+  },
+
+  trial: {
+    explanation: "3 Tage kostenlos testen",
+    explanationDesc: "Erhalte sofort Matches per E-Mail und Push. Nach der Testphase entscheidest du selbst.",
+    noCardNeeded: "Keine Zahlungsdaten nötig",
   },
 };

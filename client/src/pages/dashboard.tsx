@@ -1,7 +1,7 @@
 import { apiFetch } from "@/lib/api-base";
 import { useAuth } from "@/lib/auth";
 import { useLocation } from "wouter";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getSearchProfiles, deleteSearchProfile, type SearchProfile } from "@/lib/search-profiles";
 import { fetchApiMatches, type ApiMatch, type ApiMatchesResponse, type CanonicalStats } from "@/lib/listings";
@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/i18n";
+import { trackEvent } from "@/lib/track-event";
 import {
   Home,
   Heart,
@@ -48,6 +49,9 @@ import {
   Users,
   CreditCard,
   HelpCircle,
+  Circle,
+  Rocket,
+  Gift,
 } from "lucide-react";
 import { AccountCompletionCard, SearchPreparationCard, TaskModal, PrepTaskModal } from "@/components/profile-strength";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
@@ -129,8 +133,12 @@ function safeSetSet(key: string, set: Set<string>) {
 
 function markViewed(listingId: string) {
   const s = safeGetSet(MATCH_VIEWED_KEY);
+  const wasNew = !s.has(listingId);
   s.add(listingId);
   safeSetSet(MATCH_VIEWED_KEY, s);
+  if (wasNew) {
+    trackEvent("first_match_viewed", { listingId });
+  }
 }
 
 function toggleSaved(listingId: string): boolean {
@@ -142,9 +150,13 @@ function toggleSaved(listingId: string): boolean {
 
 function markApplied(listingId: string) {
   const s = safeGetSet(MATCH_APPLIED_KEY);
+  const wasNew = !s.has(listingId);
   s.add(listingId);
   safeSetSet(MATCH_APPLIED_KEY, s);
   markViewed(listingId);
+  if (wasNew) {
+    trackEvent("first_reaction", { listingId });
+  }
 }
 
 function getMatchTab(match: ApiMatch): MatchSubTab {
@@ -589,11 +601,161 @@ function RecentMatchMiniCard({ match }: { match: ApiMatch }) {
   );
 }
 
+interface ActivationStatus {
+  profileCreated: boolean;
+  notificationsEnabled: boolean;
+  firstMatchViewed: boolean;
+  firstReaction: boolean;
+  trialStarted: boolean;
+  subscriptionStarted: boolean;
+}
+
+function ActivationChecklist({ accessToken, navigate, setActiveTab }: { accessToken: string | undefined; navigate: (path: string) => void; setActiveTab: (tab: TabKey) => void }) {
+  const { t } = useTranslation();
+  const statusQuery = useQuery<ActivationStatus>({
+    queryKey: ["/api/activation-status"],
+    queryFn: async () => {
+      const res = await apiFetch("/api/activation-status", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      if (!res.ok) throw new Error("Failed to load");
+      return res.json();
+    },
+    enabled: !!accessToken,
+    staleTime: 60_000,
+  });
+
+  const status = statusQuery.data;
+  if (!status) return null;
+
+  const steps = [
+    { key: "profileCreated", label: t("activation.profileCreated"), done: status.profileCreated, action: () => navigate("/dashboard/searches/new") },
+    { key: "notificationsEnabled", label: t("activation.notificationsEnabled"), done: status.notificationsEnabled, action: () => navigate("/settings/notifications") },
+    { key: "firstMatchViewed", label: t("activation.firstMatchViewed"), done: status.firstMatchViewed, action: () => setActiveTab("matches") },
+    { key: "firstReaction", label: t("activation.firstReaction"), done: status.firstReaction, action: () => setActiveTab("matches") },
+  ];
+
+  const doneCount = steps.filter((s) => s.done).length;
+  const allDone = doneCount === steps.length;
+
+  if (allDone) return null;
+
+  const progress = (doneCount / steps.length) * 100;
+
+  return (
+    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5" data-testid="activation-checklist">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-9 h-9 rounded-full bg-[#EBF2FF] flex items-center justify-center flex-shrink-0">
+          <Rocket className="w-4 h-4 text-[#0D6EFD]" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-[15px] font-bold text-[#1F2937]">{t("activation.title")}</p>
+          <p className="text-[12px] text-[#6B7280]">{t("activation.subtitle")}</p>
+        </div>
+      </div>
+      <div className="h-2 bg-[#F3F4F6] rounded-full mb-4 overflow-hidden">
+        <div
+          className="h-full bg-[#0D6EFD] rounded-full transition-all duration-500"
+          style={{ width: `${progress}%` }}
+          data-testid="activation-progress-bar"
+        />
+      </div>
+      <div className="flex flex-col gap-2">
+        {steps.map((step) => (
+          <button
+            key={step.key}
+            onClick={step.done ? undefined : step.action}
+            className={`flex items-center gap-3 py-2 px-1 rounded-lg text-left transition-colors ${
+              step.done ? "opacity-60" : "hover:bg-[#F9FAFB]"
+            }`}
+            disabled={step.done}
+            data-testid={`activation-step-${step.key}`}
+          >
+            {step.done ? (
+              <CheckCircle2 className="w-5 h-5 text-[#16A34A] flex-shrink-0" />
+            ) : (
+              <Circle className="w-5 h-5 text-[#D1D5DB] flex-shrink-0" />
+            )}
+            <span className={`text-[14px] font-medium ${step.done ? "text-[#9CA3AF] line-through" : "text-[#1F2937]"}`}>
+              {step.label}
+            </span>
+            {!step.done && <ChevronRight className="w-4 h-4 text-[#9CA3AF] ml-auto" />}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function NudgeBanners({ newCount, viewedCount, appliedCount, setActiveTab }: { newCount: number; viewedCount: number; appliedCount: number; setActiveTab: (tab: TabKey) => void }) {
+  const { t } = useTranslation();
+  const [dismissed, setDismissed] = useState<Set<string>>(() => {
+    try {
+      const stored = localStorage.getItem("housalert_nudge_dismissed");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed.date === new Date().toDateString()) {
+          return new Set(parsed.keys || []);
+        }
+      }
+    } catch {}
+    return new Set<string>();
+  });
+
+  const dismiss = (key: string) => {
+    const next = new Set(dismissed);
+    next.add(key);
+    setDismissed(next);
+    try {
+      localStorage.setItem("housalert_nudge_dismissed", JSON.stringify({ date: new Date().toDateString(), keys: Array.from(next) }));
+    } catch {}
+  };
+
+  const unreactedCount = viewedCount - appliedCount;
+
+  return (
+    <>
+      {newCount > 0 && !dismissed.has("unviewed") && (
+        <div className="rounded-xl bg-[#EBF2FF] px-4 py-3 flex items-center gap-3" data-testid="nudge-unviewed">
+          <Sparkles className="w-4 h-4 text-[#0D6EFD] flex-shrink-0" />
+          <p className="text-[13px] font-medium text-[#1F2937] flex-1">
+            {t("nudge.unviewedTitle", { count: newCount, label: newCount === 1 ? t("nudge.matchSingular") : t("nudge.matchPlural") })}
+          </p>
+          <button
+            onClick={() => { setActiveTab("matches"); dismiss("unviewed"); }}
+            className="text-[12px] font-semibold text-[#0D6EFD] hover:underline flex-shrink-0"
+            data-testid="button-nudge-view"
+          >
+            {t("nudge.unviewedAction")}
+          </button>
+        </div>
+      )}
+      {unreactedCount > 2 && !dismissed.has("unreacted") && (
+        <div className="rounded-xl bg-[#FFF7ED] px-4 py-3 flex items-center gap-3" data-testid="nudge-unreacted">
+          <Send className="w-4 h-4 text-[#EA580C] flex-shrink-0" />
+          <p className="text-[13px] font-medium text-[#1F2937] flex-1">
+            {t("nudge.unreactedTitle", { count: unreactedCount, label: unreactedCount === 1 ? t("nudge.woningSingular") : t("nudge.woningPlural") })}
+          </p>
+          <button
+            onClick={() => { setActiveTab("matches"); dismiss("unreacted"); }}
+            className="text-[12px] font-semibold text-[#EA580C] hover:underline flex-shrink-0"
+            data-testid="button-nudge-react"
+          >
+            {t("nudge.unreactedAction")}
+          </button>
+        </div>
+      )}
+    </>
+  );
+}
+
 function HomeTab({
   user,
   profiles,
   matchCount,
   newCount,
+  viewedCount,
+  appliedCount,
   navigate,
   setActiveTab,
   subscription,
@@ -603,6 +765,8 @@ function HomeTab({
   profiles: SearchProfile[];
   matchCount: number;
   newCount: number;
+  viewedCount: number;
+  appliedCount: number;
   navigate: (path: string) => void;
   setActiveTab: (tab: TabKey) => void;
   subscription: { isTrial: boolean; isExpired: boolean; isActive: boolean; trialEndsAt: string | null };
@@ -771,6 +935,10 @@ function HomeTab({
           </button>
         </div>
       )}
+
+      <NudgeBanners newCount={newCount} viewedCount={viewedCount} appliedCount={appliedCount} setActiveTab={setActiveTab} />
+
+      <ActivationChecklist accessToken={accessToken} navigate={navigate} setActiveTab={setActiveTab} />
 
       <AccountCompletionCard onTaskClick={handleAccountTaskClick} />
       <SearchPreparationCard onTaskClick={handlePrepTaskClick} />
@@ -1428,6 +1596,16 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, match
             </button>
           </div>
 
+          {subscription.isTrial && (
+            <div className="bg-[#F0FDF4] rounded-xl px-4 py-3 flex items-start gap-3" data-testid="trial-explanation">
+              <Gift className="w-4 h-4 text-[#16A34A] flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-[13px] font-bold text-[#15803D]">{t("trial.explanation")}</p>
+                <p className="text-[12px] text-[#15803D] mt-0.5 leading-snug">{t("trial.explanationDesc")}</p>
+              </div>
+            </div>
+          )}
+
           <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
             {(subscription.isActive || subscription.isTrial) ? (
             <div className="grid grid-cols-2 gap-0">
@@ -1798,6 +1976,8 @@ export default function DashboardPage() {
             profiles={profiles}
             matchCount={matchCount}
             newCount={newCount}
+            viewedCount={apiMatchesQuery.data?.canonicalStats?.viewed ?? 0}
+            appliedCount={apiMatchesQuery.data?.canonicalStats?.applied ?? 0}
             navigate={navigate}
             setActiveTab={setActiveTab}
             subscription={{ isTrial: sub.isTrial, isExpired: sub.isExpired, isActive: sub.isActive, trialEndsAt: sub.trialEndsAt }}

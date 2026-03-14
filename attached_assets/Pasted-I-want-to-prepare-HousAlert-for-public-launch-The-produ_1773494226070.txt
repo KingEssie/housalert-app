@@ -1,0 +1,118 @@
+I want to prepare HousAlert for public launch. The product is already functional, but we now need to optimize onboarding, activation, and conversion.
+
+Context:
+HousAlert is a rental alert platform for Germany that:
+- monitors multiple housing websites
+- matches listings against user search profiles
+- sends push/email alerts
+- provides a reaction flow for responding to listings
+
+The current system is technically stable. Now the focus is user activation and subscription conversion.
+
+Please implement the following improvements.
+
+1. Activation tracking (analytics events)
+
+Add lightweight event tracking for key user actions. The goal is to understand where users drop off in the funnel.
+
+Track events for:
+
+ACCOUNT_CREATED
+SEARCH_PROFILE_CREATED
+NOTIFICATIONS_ENABLED
+FIRST_MATCH_RECEIVED
+MATCH_VIEWED
+REACTION_COPIED
+LISTING_OPENED
+SUBSCRIPTION_STARTED
+TRIAL_STARTED
+
+Create a simple event logging system that stores events in the database with:
+
+user_id
+event_name
+metadata (json)
+created_at
+
+Add helper functions so the frontend can easily log events.
+
+2. Activation progress indicator
+
+Add a simple activation checklist for new users.
+
+Example tasks:
+
+✓ Create search profile  
+✓ Enable notifications  
+✓ Receive first match  
+✓ Prepare reaction message  
+
+Show progress like:
+
+"Je account is 50% klaar — nog 2 stappen."
+
+Hide this widget once all tasks are complete.
+
+3. Improve onboarding clarity
+
+Improve the onboarding copy so users understand the value quickly.
+
+Example messaging:
+
+"Ontvang nieuwe huurwoningen direct zodra ze online komen."
+
+"Reageer sneller dan andere woningzoekers."
+
+Ensure onboarding clearly communicates:
+
+- alerts arrive automatically
+- reacting fast improves chances
+- the system monitors multiple housing sites
+
+4. Trial / subscription explanation
+
+Add a clear explanation for the trial / subscription model.
+
+Example structure:
+
+Free trial:
+- full alerts
+- push notifications
+- unlimited search profiles
+
+After trial:
+- €X/month subscription
+
+Show this explanation during onboarding and in account settings.
+
+5. Match engagement nudges
+
+If a user receives matches but does not open them, show a gentle reminder on the home screen:
+
+"Je hebt nieuwe woningen die mogelijk bij je passen."
+
+If a user opens a listing but does not react, show:
+
+"Snelle reacties vergroten je kans op een bezichtiging."
+
+6. Add a simple admin activation dashboard
+
+Create an admin endpoint showing:
+
+- total users
+- users with search profile
+- users with notifications enabled
+- users who received at least 1 match
+- users who started trial
+- users who converted to subscription
+
+This is for monitoring launch performance.
+
+7. Reply in this structure:
+
+A. Activation funnel design
+B. Events implemented
+C. Files changed
+D. Admin dashboard capabilities
+E. Expected improvements in user activation
+F. Remaining launch risks

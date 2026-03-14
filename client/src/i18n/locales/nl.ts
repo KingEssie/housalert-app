@@ -338,6 +338,7 @@ export const nl: Record<string, any> = {
     alerts: {
       title: "Mis nooit een nieuwe woning",
       subtitle: "Je ontvangt direct een melding wanneer er een nieuwe match verschijnt.",
+      trialNote: "Je kunt HousAlert 3 dagen gratis uitproberen. Geen betaling nodig om te starten.",
       enable: "Meldingen inschakelen",
       loggingIn: "Inloggen...",
       skip: "Overslaan",
@@ -1165,5 +1166,35 @@ export const nl: Record<string, any> = {
     completeYourProfile: "Maak je profiel compleet",
     saveFailed: "Fout",
     saveFailedDesc: "Gegevens konden niet worden opgeslagen. Probeer het opnieuw.",
+  },
+
+  activation: {
+    title: "Aan de slag",
+    subtitle: "Voltooi deze stappen om sneller een woning te vinden",
+    profileCreated: "Zoekprofiel aangemaakt",
+    notificationsEnabled: "Meldingen ingeschakeld",
+    firstMatchViewed: "Eerste match bekeken",
+    firstReaction: "Eerste reactie verstuurd",
+    trialStarted: "Proefperiode gestart",
+    subscriptionStarted: "Abonnement geactiveerd",
+    complete: "Je bent helemaal klaar!",
+    stepsLeft: "Nog {count} stappen",
+  },
+
+  nudge: {
+    unviewedTitle: "Je hebt {count} nieuwe {label} klaarstaan",
+    unviewedAction: "Nu bekijken",
+    unreactedTitle: "Je hebt {count} {label} bekeken maar nog niet gereageerd",
+    unreactedAction: "Reageer nu",
+    matchSingular: "match",
+    matchPlural: "matches",
+    woningSingular: "woning",
+    woningPlural: "woningen",
+  },
+
+  trial: {
+    explanation: "3 dagen gratis proefperiode",
+    explanationDesc: "Ontvang direct matches via e-mail en push. Na de proefperiode kies je zelf of je doorgaat.",
+    noCardNeeded: "Geen betaalgegevens nodig om te starten",
   },
 };

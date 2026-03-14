@@ -697,3 +697,16 @@ Env vars: `TEST_USER_EMAIL`, `TEST_USER_PASSWORD`, `TEST_PHONE_E164`, `TEST_BASE
   - Manual verify (list users): `npx tsx tests/verify-matches.ts`
   - Manual verify (specific user): `npx tsx tests/verify-matches.ts <user_id>`
 - **Test data isolation**: Uses deterministic UUIDs with prefix `aaaaaaaa-bbbb-cccc-dddd-` for user_ids, cleaned up in beforeEach/afterAll
+
+### Activation Tracking & Launch Readiness
+- **`activation_events` table**: Replit PG, auto-created on startup via `server/migrations/apply.ts`. Columns: `id serial`, `user_id text`, `event_name text`, `metadata jsonb`, `created_at timestamptz`.
+- **Event taxonomy**: `profile_created`, `notifications_enabled`, `first_match_viewed`, `first_reaction`, `trial_started`, `subscription_started`
+- **Backend events**: `server/activation-events.ts` — `trackEvent()`, `getUserActivationStatus()`, `getActivationFunnel()`
+- **Frontend events**: `client/src/lib/track-event.ts` — `trackEvent()` fires from onboarding, dashboard, apply page
+- **Backend emit points**: trial creation (`/api/subscription/ensure-trial`), checkout verify, Stripe webhooks, notification settings update
+- **API endpoints**: `POST /api/events` (log event), `GET /api/activation-status` (user checklist state from source-of-truth tables + events), `GET /api/admin/activation-funnel` (admin-only, source-of-truth + event funnel)
+- **Activation checklist widget**: `ActivationChecklist` component in `dashboard.tsx` — shows progress bar + 4 interactive steps, hides when complete. Derives status from real DB tables (search_profiles, user_notification_settings, user_matches, subscriptions) with event fallback.
+- **Match engagement nudges**: `NudgeBanners` component — shows contextual nudge for unviewed matches and viewed-but-not-reacted listings. Auto-dismisses per day.
+- **Trial explanation**: Shown on onboarding AlertsStep and profile tab when user is on trial. i18n keys: `onboarding.alerts.trialNote`, `trial.explanation`, `trial.explanationDesc`.
+- **Admin activation dashboard**: `/admin/activation` page — shows event-based funnel bars, source-of-truth metrics from DB (auth users, profiles, notifications, matches, reactions, trials, active subscriptions), and recent events log.
+- **i18n keys added**: `activation.*`, `nudge.*`, `trial.*` in all three locales (nl, de, en)

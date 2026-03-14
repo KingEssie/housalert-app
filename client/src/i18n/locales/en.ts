@@ -272,6 +272,7 @@ export const en: Record<string, any> = {
     alerts: {
       title: "Never miss a new apartment",
       subtitle: "You'll get a notification as soon as a new match appears.",
+      trialNote: "You can try HousAlert free for 3 days. No payment needed to get started.",
       enable: "Enable notifications",
       loggingIn: "Signing in...",
       skip: "Skip",
@@ -363,5 +364,35 @@ export const en: Record<string, any> = {
     title: "Page not found",
     desc: "The page you're looking for doesn't exist.",
     home: "Go to homepage",
+  },
+
+  activation: {
+    title: "Get started",
+    subtitle: "Complete these steps to find an apartment faster",
+    profileCreated: "Search profile created",
+    notificationsEnabled: "Notifications enabled",
+    firstMatchViewed: "First match viewed",
+    firstReaction: "First reaction sent",
+    trialStarted: "Trial started",
+    subscriptionStarted: "Subscription activated",
+    complete: "You're all set!",
+    stepsLeft: "{count} steps left",
+  },
+
+  nudge: {
+    unviewedTitle: "You have {count} new {label} ready",
+    unviewedAction: "View now",
+    unreactedTitle: "You've viewed {count} {label} but haven't reacted yet",
+    unreactedAction: "React now",
+    matchSingular: "match",
+    matchPlural: "matches",
+    woningSingular: "listing",
+    woningPlural: "listings",
+  },
+
+  trial: {
+    explanation: "3-day free trial",
+    explanationDesc: "Receive matches instantly via email and push. After the trial, you decide if you want to continue.",
+    noCardNeeded: "No payment details needed to get started",
   },
 };

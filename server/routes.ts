@@ -25,6 +25,7 @@ import { computeMatchScore, getMatchReasons, computeHybridFilters } from "../sha
 import { normalizeCity } from "../shared/city-normalize";
 import { pool as pgPool } from "./pg-pool";
 import { isAdminEmail, getRecentRuns, getRunDetail, getLatestRunCities, getSourceAggregates } from "./admin";
+import { trackEvent as trackActivationEvent, getUserActivationStatus, getActivationFunnel } from "./activation-events";
 import { initWebPush, sendPushToUser } from "./notifications/push";
 import { sendExpoTestPush } from "./notifications/expo-push";
 import { getSupabaseAdmin } from "./supabase-admin";
@@ -441,6 +442,15 @@ export async function registerRoutes(
       }
 
       if (result.error) return res.status(500).json({ error: result.error.message });
+
+      if (payload.email_enabled === true || payload.push_enabled === true) {
+        trackActivationEvent(user.id, "notifications_enabled", {
+          email: !!payload.email_enabled,
+          push: !!payload.push_enabled,
+          source: "settings",
+        });
+      }
+
       return res.json(result.data);
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
@@ -1079,6 +1089,7 @@ export async function registerRoutes(
       if (!sub) {
         return res.status(500).json({ error: "Trial creation failed" });
       }
+      trackActivationEvent(user.id, "trial_started", { plan: sub.plan || "trial" });
       return res.json({ ok: true, subscription: sub });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
@@ -1358,6 +1369,7 @@ export async function registerRoutes(
         await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubscriptionId, plan, periodEnd, null);
       }
       log(`[checkout-verify] Subscription synced for user=${userId} plan=${plan}`);
+      trackActivationEvent(userId, "subscription_started", { plan, source: "checkout" });
 
       const status = await getSubscriptionStatus(userId);
       return res.json({ success: true, subscription: status });
@@ -1406,12 +1418,14 @@ export async function registerRoutes(
                 ? new Date(trialEnd * 1000)
                 : new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
               await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubscriptionId, plan, null, trialEndsAt);
+              trackActivationEvent(userId, "trial_started", { plan, source: "webhook" });
             } else {
               const rawEnd = (sub as any).current_period_end;
               const periodEnd = rawEnd && rawEnd > 0
                 ? new Date(rawEnd * 1000)
                 : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
               await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubscriptionId, plan, periodEnd, null);
+              trackActivationEvent(userId, "subscription_started", { plan, source: "webhook" });
             }
           }
           break;
@@ -3251,6 +3265,97 @@ export async function registerRoutes(
     } catch (err: any) {
       log(`[city-normalize] Error: ${err.message}`);
       res.status(500).json({ error: "Normalization error" });
+    }
+  });
+
+  app.post("/api/events", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error } = await supabase.auth.getUser(token);
+      if (error || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { event, metadata } = req.body || {};
+      if (!event || typeof event !== "string") {
+        return res.status(400).json({ error: "event name required" });
+      }
+
+      await trackActivationEvent(user.id, event, metadata || {});
+      res.json({ ok: true });
+    } catch (err: any) {
+      log(`[events] Error: ${err.message}`);
+      res.status(500).json({ error: "Internal error" });
+    }
+  });
+
+  app.get("/api/activation-status", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error } = await supabase.auth.getUser(token);
+      if (error || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const [profilesResult, notifResult, matchResult, appliedResult, subResult, eventStatus] = await Promise.all([
+        supabase.from("search_profiles").select("id").eq("user_id", user.id).limit(1),
+        supabase.from("user_notification_settings").select("email_enabled, push_enabled").eq("user_id", user.id).maybeSingle(),
+        pgPool.query("SELECT 1 FROM user_matches WHERE user_id = $1 AND viewed = true LIMIT 1", [user.id]),
+        pgPool.query("SELECT 1 FROM user_matches WHERE user_id = $1 AND applied = true LIMIT 1", [user.id]),
+        supabase.from("subscriptions").select("status, trial_ends_at").eq("user_id", user.id).maybeSingle(),
+        getUserActivationStatus(user.id),
+      ]);
+
+      const profileCreated = (profilesResult.data?.length ?? 0) > 0;
+      const notifEnabled = !!(notifResult.data?.email_enabled || notifResult.data?.push_enabled);
+      const firstMatchViewed = matchResult.rows.length > 0 || eventStatus.firstMatchViewed;
+      const firstReaction = appliedResult.rows.length > 0 || eventStatus.firstReaction;
+      const subData = subResult.data;
+      const trialStarted = !!subData?.trial_ends_at || eventStatus.trialStarted;
+      const subscriptionStarted = subData?.status === "active" || eventStatus.subscriptionStarted;
+
+      res.json({
+        profileCreated,
+        notificationsEnabled: notifEnabled,
+        firstMatchViewed,
+        firstReaction,
+        trialStarted,
+        subscriptionStarted,
+      });
+    } catch (err: any) {
+      log(`[activation] Error: ${err.message}`);
+      res.status(500).json({ error: "Internal error" });
+    }
+  });
+
+  app.get("/api/admin/activation-funnel", requireAdmin, async (_req, res) => {
+    try {
+      const [eventFunnel, totalUsersResult, withProfileResult, withNotifsResult, withMatchResult, withReactionResult, trialResult, activeSubResult] = await Promise.all([
+        getActivationFunnel(),
+        supabase.rpc("count_auth_users").then(r => r.data ?? null).catch(() => null),
+        supabase.from("search_profiles").select("user_id").then(r => new Set((r.data ?? []).map((d: any) => d.user_id)).size),
+        supabase.from("user_notification_settings").select("user_id").or("email_enabled.eq.true,push_enabled.eq.true").then(r => (r.data ?? []).length),
+        pgPool.query("SELECT COUNT(DISTINCT user_id) as c FROM user_matches WHERE viewed = true").then(r => parseInt(r.rows[0]?.c || "0")),
+        pgPool.query("SELECT COUNT(DISTINCT user_id) as c FROM user_matches WHERE applied = true").then(r => parseInt(r.rows[0]?.c || "0")),
+        supabase.from("subscriptions").select("user_id").not("trial_ends_at", "is", null).then(r => (r.data ?? []).length),
+        supabase.from("subscriptions").select("user_id").eq("status", "active").then(r => (r.data ?? []).length),
+      ]);
+
+      res.json({
+        ...eventFunnel,
+        sourceOfTruth: {
+          totalAuthUsers: totalUsersResult,
+          withSearchProfile: withProfileResult,
+          withNotifications: withNotifsResult,
+          withMatchViewed: withMatchResult,
+          withReaction: withReactionResult,
+          withTrial: trialResult,
+          withActiveSubscription: activeSubResult,
+        },
+      });
+    } catch (err: any) {
+      log(`[admin] Activation funnel error: ${err.message}`);
+      res.status(500).json({ error: "Internal error" });
     }
   });
 
