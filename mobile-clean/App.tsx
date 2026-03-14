@@ -83,6 +83,9 @@ async function sendTokenToBackend(
   expoPushToken: string
 ): Promise<boolean> {
   console.log("[PUSH] Registering token with backend...");
+  console.log("[PUSH] POST", `${API_BASE}/api/expo-push-token`);
+  console.log("[PUSH] Token:", expoPushToken.substring(0, 30) + "...");
+  console.log("[PUSH] Platform:", Platform.OS);
   try {
     const res = await fetch(`${API_BASE}/api/expo-push-token`, {
       method: "POST",
@@ -96,12 +99,26 @@ async function sendTokenToBackend(
       }),
     });
 
-    if (res.ok) {
-      console.log("[PUSH] Token registered on backend OK");
+    const bodyText = await res.text();
+    console.log("[PUSH] Response status:", res.status);
+    console.log("[PUSH] Response body:", bodyText);
+
+    if (!res.ok) {
+      console.error("[PUSH] Backend rejected:", res.status, bodyText);
+      return false;
+    }
+
+    let json: any = {};
+    try { json = JSON.parse(bodyText); } catch {}
+
+    if (json.ok && json.persisted) {
+      console.log("[PUSH] Token registered and PERSISTED on backend. Active tokens:", json.active_token_count);
+      return true;
+    } else if (json.ok) {
+      console.warn("[PUSH] Backend returned ok but persistence not confirmed:", bodyText);
       return true;
     } else {
-      const body = await res.text();
-      console.error("[PUSH] Backend rejected:", res.status, body);
+      console.error("[PUSH] Backend returned failure:", bodyText);
       return false;
     }
   } catch (err: any) {

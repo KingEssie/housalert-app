@@ -225,13 +225,22 @@ export async function registerRoutes(
   app.post("/api/expo-push-token", async (req, res) => {
     try {
       const token = req.headers.authorization?.replace("Bearer ", "");
-      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      if (!token) {
+        log(`[EXPO-PUSH] Rejected: no auth token`);
+        return res.status(401).json({ error: "Unauthorized" });
+      }
 
       const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
-      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+      if (authErr || !user) {
+        log(`[EXPO-PUSH] Rejected: auth failed — ${authErr?.message || "no user"}`);
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      log(`[EXPO-PUSH] Request from user ${user.id.substring(0, 8)}... body=${JSON.stringify(req.body)}`);
 
       const { expo_push_token, platform } = req.body;
       if (!expo_push_token || typeof expo_push_token !== "string" || !expo_push_token.startsWith("ExponentPushToken[")) {
+        log(`[EXPO-PUSH] Rejected: invalid token format — got "${String(expo_push_token).substring(0, 30)}"`);
         return res.status(400).json({ error: "Invalid expo_push_token" });
       }
 
@@ -239,13 +248,17 @@ export async function registerRoutes(
       const now = new Date().toISOString();
       const sb = getSupabaseAdmin();
 
-      await sb
+      const { error: deactivateErr } = await sb
         .from("expo_push_tokens")
         .update({ is_active: false, updated_at: now })
         .eq("expo_push_token", expo_push_token)
         .neq("user_id", user.id);
 
-      await sb.from("expo_push_tokens").upsert(
+      if (deactivateErr) {
+        log(`[EXPO-PUSH] Deactivate other users warning: ${deactivateErr.message}`);
+      }
+
+      const { error: upsertErr } = await sb.from("expo_push_tokens").upsert(
         {
           user_id: user.id,
           expo_push_token,
@@ -256,11 +269,22 @@ export async function registerRoutes(
         { onConflict: "user_id,expo_push_token" }
       );
 
-      log(`[EXPO-PUSH] Token registered for user ${user.id.substring(0, 8)}... platform=${plat}`);
-      return res.json({ ok: true });
+      if (upsertErr) {
+        log(`[EXPO-PUSH] UPSERT FAILED for user ${user.id.substring(0, 8)}...: ${upsertErr.message} (code=${upsertErr.code})`);
+        return res.status(500).json({ ok: false, error: `Token persistence failed: ${upsertErr.message}` });
+      }
+
+      const { count } = await sb
+        .from("expo_push_tokens")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .eq("is_active", true);
+
+      log(`[EXPO-PUSH] Token registered OK for user ${user.id.substring(0, 8)}... platform=${plat} active_count=${count}`);
+      return res.json({ ok: true, persisted: true, active_token_count: count });
     } catch (err: any) {
-      log(`[EXPO-PUSH] Error registering token: ${err.message}`);
-      return res.status(500).json({ error: err.message });
+      log(`[EXPO-PUSH] EXCEPTION registering token: ${err.message}`);
+      return res.status(500).json({ ok: false, error: err.message });
     }
   });
 
@@ -2579,7 +2603,26 @@ export async function registerRoutes(
       }
     });
 
-    log("[DEV] Registered /api/dev/test-push and /api/dev/push-debug (no auth, dev only)");
+    app.get("/api/dev/expo-push-tokens-count", async (_req, res) => {
+      try {
+        const sb = getSupabaseAdmin();
+        const { count: total } = await sb.from("expo_push_tokens").select("*", { count: "exact", head: true });
+        const { count: active } = await sb.from("expo_push_tokens").select("*", { count: "exact", head: true }).eq("is_active", true);
+        const { data: allTokens } = await sb.from("expo_push_tokens").select("user_id, expo_push_token, platform, is_active, updated_at").order("updated_at", { ascending: false }).limit(20);
+        const masked = (allTokens || []).map((t: any) => ({
+          user_id: t.user_id.substring(0, 8) + "...",
+          token: t.expo_push_token.substring(0, 25) + "...]",
+          platform: t.platform,
+          is_active: t.is_active,
+          updated_at: t.updated_at,
+        }));
+        return res.json({ total, active, tokens: masked });
+      } catch (err: any) {
+        return res.status(500).json({ error: err.message });
+      }
+    });
+
+    log("[DEV] Registered /api/dev/test-push, /api/dev/push-debug, /api/dev/expo-push-tokens-count (no auth, dev only)");
   }
 
   app.get("/api/admin/push-delivery-log", requireAdmin, async (req, res) => {
