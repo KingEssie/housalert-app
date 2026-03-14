@@ -178,7 +178,12 @@ export async function sendExpoMatchPush(
     .eq("user_id", userId)
     .eq("is_active", true);
 
-  if (tokenErr || !tokens || tokens.length === 0) {
+  if (tokenErr) {
+    log(`[EXPO-PUSH] User ${uid}...: DB error fetching tokens — ${tokenErr.message}`);
+    return { sent: 0, skipped: 0, failed: listings.length };
+  }
+
+  if (!tokens || tokens.length === 0) {
     log(`[EXPO-PUSH] User ${uid}...: no active Expo tokens — skipping`);
     return { sent: 0, skipped: listings.length, failed: 0 };
   }

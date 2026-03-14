@@ -2292,7 +2292,13 @@ export async function registerRoutes(
 
       const { data, error: qErr } = await q;
       if (qErr) throw qErr;
-      return res.json({ count: data?.length || 0, tokens: data || [] });
+      const masked = (data || []).map((t: any) => ({
+        ...t,
+        expo_push_token: t.expo_push_token
+          ? t.expo_push_token.substring(0, 25) + "...]"
+          : null,
+      }));
+      return res.json({ count: masked.length, tokens: masked });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
     }

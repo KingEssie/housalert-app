@@ -15,7 +15,7 @@ const sb = createClient(
   { auth: { autoRefreshToken: false, persistSession: false } }
 );
 
-const DRY_USER = "00000000-0000-0000-0000-dryrun000001";
+const DRY_USER = "00000000-0000-0000-0000-d00000000001";
 const DRY_TOKEN = "ExponentPushToken[dry-run-device-abc]";
 
 let sentMessages: any[] = [];

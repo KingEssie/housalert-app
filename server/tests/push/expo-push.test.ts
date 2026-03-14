@@ -425,3 +425,130 @@ describe("delivery log creation", () => {
     expect(logs![0].error_type).toBe("InvalidCredentials");
   });
 });
+
+describe("checkExpoReceipts", () => {
+  const RECEIPT_USER = "00000000-0000-0000-0000-000000000002";
+  const RECEIPT_TOKEN = "ExponentPushToken[receipt-test-abc]";
+
+  async function cleanupReceiptData() {
+    await sb.from("expo_push_tokens").delete().eq("user_id", RECEIPT_USER);
+    await sb.from("push_delivery_log").delete().eq("user_id", RECEIPT_USER);
+  }
+
+  beforeEach(async () => {
+    await cleanupReceiptData();
+  });
+
+  afterAll(async () => {
+    await cleanupReceiptData();
+    resetPushProvider();
+  });
+
+  it("returns zeros when no pending receipts", async () => {
+    setPushProvider(makeSuccessProvider());
+    const result = await checkExpoReceipts();
+    expect(result.checked).toBe(0);
+    expect(result.ok).toBe(0);
+    expect(result.errors).toBe(0);
+  });
+
+  it("processes ok receipt and updates log", async () => {
+    const ticketId = "receipt-ok-test-" + Date.now();
+    const twentyMinAgo = new Date(Date.now() - 20 * 60 * 1000).toISOString();
+
+    await sb.from("push_delivery_log").insert({
+      user_id: RECEIPT_USER,
+      channel: "expo",
+      full_token: RECEIPT_TOKEN,
+      listing_ids: ["lst-r-1"],
+      listing_count: 1,
+      title: "Test",
+      body: "Receipt test",
+      status: "sent",
+      expo_ticket_id: ticketId,
+      created_at: twentyMinAgo,
+    });
+
+    setPushProvider({
+      async sendPush() { return { data: [] }; },
+      async getReceipts(ids) {
+        const data: Record<string, ExpoPushReceipt> = {};
+        for (const id of ids) data[id] = { status: "ok" };
+        return { data };
+      },
+    });
+
+    const result = await checkExpoReceipts();
+    expect(result.ok).toBeGreaterThanOrEqual(1);
+
+    const { data: logs } = await sb
+      .from("push_delivery_log")
+      .select("expo_receipt_status")
+      .eq("user_id", RECEIPT_USER)
+      .eq("expo_ticket_id", ticketId)
+      .single();
+    expect(logs!.expo_receipt_status).toBe("ok");
+  });
+
+  it("processes error receipt and deactivates token on DeviceNotRegistered", async () => {
+    const ticketId = "receipt-err-test-" + Date.now();
+    const twentyMinAgo = new Date(Date.now() - 20 * 60 * 1000).toISOString();
+
+    await sb.from("expo_push_tokens").upsert(
+      {
+        user_id: RECEIPT_USER,
+        expo_push_token: RECEIPT_TOKEN,
+        platform: "ios",
+        is_active: true,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "user_id,expo_push_token" }
+    );
+
+    await sb.from("push_delivery_log").insert({
+      user_id: RECEIPT_USER,
+      channel: "expo",
+      full_token: RECEIPT_TOKEN,
+      listing_ids: ["lst-r-2"],
+      listing_count: 1,
+      title: "Test",
+      body: "Receipt error test",
+      status: "sent",
+      expo_ticket_id: ticketId,
+      created_at: twentyMinAgo,
+    });
+
+    setPushProvider({
+      async sendPush() { return { data: [] }; },
+      async getReceipts(ids) {
+        const data: Record<string, ExpoPushReceipt> = {};
+        for (const id of ids) data[id] = {
+          status: "error",
+          message: "The device is not registered",
+          details: { error: "DeviceNotRegistered" },
+        };
+        return { data };
+      },
+    });
+
+    const result = await checkExpoReceipts();
+    expect(result.errors).toBeGreaterThanOrEqual(1);
+
+    const { data: logs } = await sb
+      .from("push_delivery_log")
+      .select("expo_receipt_status, error_type")
+      .eq("user_id", RECEIPT_USER)
+      .eq("expo_ticket_id", ticketId)
+      .single();
+    expect(logs!.expo_receipt_status).toBe("error");
+    expect(logs!.error_type).toBe("DeviceNotRegistered");
+
+    const { data: tokens } = await sb
+      .from("expo_push_tokens")
+      .select("is_active")
+      .eq("user_id", RECEIPT_USER)
+      .eq("expo_push_token", RECEIPT_TOKEN)
+      .single();
+    expect(tokens!.is_active).toBe(false);
+  });
+});

@@ -6,7 +6,7 @@ A mobile-first German-language rental alert application for the German market. U
 
 - **Frontend:** React + Vite + TypeScript + Tailwind CSS + shadcn/ui + Wouter
 - **Auth:** Supabase Auth (email + password)
-- **Data:** Supabase (PostgreSQL) — most tables: `search_profiles`, `listings`, `matches`, `subscriptions`, `user_notification_settings`, `push_sent_log`, `push_subscriptions`. Replit PostgreSQL (via `pg` pool) — `user_profile_data`, `user_matches` (canonical match tracking), `fetch_runs` (ingestion audit), `listing_freshness`, `match_timestamps`, `onboarding_drafts`, `ingestion_runs`, `expo_push_tokens` (native mobile push tokens)
+- **Data:** Supabase (PostgreSQL) — most tables: `search_profiles`, `listings`, `matches`, `subscriptions`, `user_notification_settings`, `push_sent_log`, `push_subscriptions`, `expo_push_tokens` (native push tokens), `push_delivery_log` (delivery audit). Replit PostgreSQL (via `pg` pool) — `user_profile_data`, `user_matches` (canonical match tracking), `fetch_runs` (ingestion audit), `listing_freshness`, `match_timestamps`, `onboarding_drafts`, `ingestion_runs`
 - **Backend:** Express (minimal — auth + data handled by Supabase)
 - **Payments:** Stripe (sandbox, via Replit connector)
 - **Mobile:** Expo (WebView wrapper) in `mobile-clean/` — wraps production web app URL for iOS/Android distribution via Expo Go or EAS Build. Includes native push notification registration via expo-notifications.
@@ -102,10 +102,12 @@ A mobile-first German-language rental alert application for the German market. U
 - **Sending logic**: `server/notifications/index.ts` — sends email via `sendEmailMatchAlert`; `server/notifications/push.ts` — sends web push via `sendMatchPushNotifications`; `server/notifications/expo-push.ts` — sends native mobile push via Expo Push API (`sendExpoMatchPush`). All three channels triggered from `buffer.ts` flush.
 - **Settings UI**: Account page inline toggles (push + email), no separate settings page needed
 - **Settings API**: `GET/PUT /api/notifications/settings` — accepts `email_enabled`, `push_enabled`, forces `sms_enabled=false`, `whatsapp_enabled=false`
-- **Expo Push Token API**: `POST /api/expo-push-token` (register/reactivate), `DELETE /api/expo-push-token` (deactivate). Auth via Supabase JWT. Tokens stored in Replit PG `expo_push_tokens` table.
+- **Expo Push Token API**: `POST /api/expo-push-token` (register/reactivate), `DELETE /api/expo-push-token` (deactivate). Auth via Supabase JWT. Tokens stored in Supabase `expo_push_tokens` table.
 - **WebView↔Native bridge**: `client/src/lib/auth.tsx` sends `AUTH_STATE` messages (user_id + access_token) to `window.ReactNativeWebView.postMessage()` on every auth state change. `mobile-clean/App.tsx` receives via `onMessage`, registers push token with backend when user is authenticated.
-- **expo_push_tokens table** (Replit PG, auto-created at startup): id, user_id, expo_push_token, platform, is_active, created_at, updated_at. UNIQUE(user_id, expo_push_token) prevents duplicates.
-- **push_delivery_log table** (Replit PG, auto-created at startup): id, user_id, channel, token_snippet, full_token, listing_ids[], listing_count, title, body, status, expo_ticket_id, expo_receipt_status, error_type, error_message, created_at. Logs every push delivery attempt with Expo ticket IDs for receipt verification.
+- **expo_push_tokens table** (Supabase): id, user_id, expo_push_token, platform, is_active, created_at, updated_at. UNIQUE(user_id, expo_push_token) prevents duplicates.
+- **push_delivery_log table** (Supabase): id, user_id, channel, token_snippet, full_token, listing_ids[], listing_count, title, body, status, expo_ticket_id, expo_receipt_status, error_type, error_message, created_at. Logs every push delivery attempt with Expo ticket IDs for receipt verification.
+- **Supabase admin client**: `server/supabase-admin.ts` — singleton service-role client for push operations. Used by `expo-push.ts`, token endpoints, and admin endpoints.
+- **Mockable push provider**: `expo-push.ts` exports `setPushProvider()` / `resetPushProvider()` for test injection. Tests use mock providers for success, failure, and temporary-failure scenarios without hitting the real Expo API.
 - **Expo Push Retry Logic**: `sendWithRetry()` in `expo-push.ts` retries 429/5xx/network errors up to 2 times with escalating delay (3s × attempt). Permanent errors are logged immediately.
 - **Expo Receipt Checking**: `checkExpoReceipts()` runs every 20 minutes via scheduler. Checks tickets 15min–24h old, updates `expo_receipt_status` in delivery log, deactivates tokens on `DeviceNotRegistered` (targeted by `full_token` when available).
 - **Admin Delivery Log**: `GET /api/admin/push-delivery-log?user_id=&limit=` — view push delivery history with status, ticket IDs, and receipt results.
