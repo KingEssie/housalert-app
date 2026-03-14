@@ -222,11 +222,23 @@ export async function registerRoutes(
     }
   });
 
+  const PUSH_REG_VERSION = "v2-2026-03-14";
+  const PUSH_REG_BUILD_TIME = new Date().toISOString();
+
+  app.get("/api/version/push-registration", (_req, res) => {
+    return res.json({
+      version: PUSH_REG_VERSION,
+      build_time: PUSH_REG_BUILD_TIME,
+      persisted_support: true,
+      active_token_count_support: true,
+    });
+  });
+
   app.post("/api/expo-push-token", async (req, res) => {
     try {
       const token = req.headers.authorization?.replace("Bearer ", "");
       if (!token) {
-        log(`[EXPO-PUSH] Rejected: no auth token`);
+        log(`[EXPO-PUSH ${PUSH_REG_VERSION}] Rejected: no auth token`);
         return res.status(401).json({ error: "Unauthorized" });
       }
 

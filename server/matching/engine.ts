@@ -712,7 +712,7 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
     return 0;
   }
 
-  const { getListingStatusBatch: batchStatus } = await import("./listing-status");
+  const { getListingStatusBatch: batchStatus } = await import("../listing-status");
   const allIds = (listings as DbListing[]).map(l => l.id);
   const statusMap = await batchStatus(allIds);
 
