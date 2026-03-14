@@ -129,7 +129,7 @@ A mobile-first German-language rental alert application for the German market. U
 - **Mobile Deep Linking**: Push payload includes `data.url` (e.g. `/listing/{id}`) and `data.type` (`match_alert`/`test`). Native app handles notification taps via `addNotificationResponseReceivedListener` and navigates WebView. Badge count reset on app foreground. Android notification channel `match-alerts` created at startup. Token refresh handled via `addPushTokenListener`.
 
 ### Ingestion Pipeline
-- **Scheduler**: `server/scheduler.ts` — runs every 10 min when `ENABLE_INGEST_SCHEDULER=true`
+- **Scheduler**: `server/scheduler.ts` — runs every 5 min when `ENABLE_INGEST_SCHEDULER=true` (configurable via `INGEST_INTERVAL_MINUTES`, default changed from 10 → 5)
 - **Orchestrator**: `server/ingesters/index.ts` — gets active cities, runs all source ingesters per city
 - **Sources** (8 total, 6 active): wg-gesucht ✅, kleinanzeigen ✅, immowelt ✅, wohnungsboerse ✅, rentola ✅, nestpick ✅, immoscout ❌ (401 bot-blocked), immonet ❌ (410 gone)
 - **Image sources**: wg-gesucht, kleinanzeigen, immowelt, wohnungsboerse extract images; rentola/nestpick/immoscout/immonet do not
@@ -509,7 +509,7 @@ Multi-channel notification system in `server/notifications/index.ts`:
 - **Email** — via Resend integration (`sendEmailMatchAlert` for single, `sendBatchMatchAlert` for digest)
 - **SMS** — via Twilio (`sendSmsMatchAlert`); requires `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_SMS_FROM`
 - **WhatsApp** — via Twilio (`sendWhatsappMatchAlert`); requires `TWILIO_WHATSAPP_FROM`
-- **Batched alerts**: Matching engine buffers alerts via `server/notifications/buffer.ts` (`bufferMatchAlert`). At end of ingestion cycle, `flushMatchAlertBuffer` sends one digest email per user. Dedup by `listing_id` prevents duplicate listings. Backfill uses `flushUserAlerts` for user-scoped flush. Guards: subscription check (engine + flush), alerts-disabled check at buffer entry + flush, settings-read-error = skip, flush mutex, listing existence verification, max 20 listings per email. Alerts only sent to users with active subscription (trial or paid).
+- **Per-city flush + final flush**: Matching engine buffers alerts via `server/notifications/buffer.ts` (`bufferMatchAlert`). After each city with new inserts, `flushMatchAlertBuffer` is called (per-city flush), reducing listing-to-alert latency. A final flush catches any remaining buffer at end of cycle. Dedup by `listing_id` prevents duplicate listings. Backfill uses `flushUserAlerts` for user-scoped flush. Guards: subscription check (engine + flush), alerts-disabled check at buffer entry + flush, settings-read-error = skip, flush mutex, listing existence verification, max 20 listings per email. Alerts only sent to users with active subscription (trial or paid).
 - **Delivery recovery**: `recoverUndeliveredMatches()` in `buffer.ts` runs **independently on startup (15s delay) and every 5 minutes** via `scheduler.ts`. Recovery runs even if `ENABLE_INGEST_SCHEDULER` is disabled. Queries `user_matches` for rows with `email_sent=false AND push_sent=false AND visible_in_app=true AND dismissed=false` (last 24h), re-buffers them, and flushes. This handles the case where the in-memory buffer is lost due to server restart mid-ingestion. Structured logging shows per-user skip reasons (no sub, no email).
 - **Stale fetch_run cleanup**: `cleanupStaleFetchRuns()` in `user-matches.ts` marks runs stuck in "running" for >5 minutes as "interrupted" on scheduler startup.
 - **Admin email debug endpoint**: `GET /api/admin/debug/email-pipeline` — returns buffer state, undelivered match counts per user, and per-user delivery stats (total/emailed/pushed/pending).
@@ -541,10 +541,10 @@ Modular ingestion runner at `server/ingesters/`:
 - `config/sources.ts` — Source templates with `buildSourcesForCity(city, slug)` factory; each run generates city-specific configs
   - Current configs: `wohnungsboerse`, `immoscout` (bot-blocked), `rentola`, `nestpick`, `immonet` (410 gone, graceful)
   - Config fields: name, baseUrl, searchUrl, city, source, cardSelector, fields (title/url/price/size_m2/bedrooms), sourceIdRegex, botBlockPatterns, rateLimitMs
-- `index.ts` — Multi-city ingestion orchestrator: queries active cities from `search_profiles`, builds per-city ingesters, runs them sequentially with overlap lock
+- `index.ts` — Multi-city ingestion orchestrator: queries active cities from `search_profiles`, builds per-city ingesters, runs sources in parallel batches of 3 per city, per-city notification flush, overlap lock. Skips broken/gone sources. Tier-based inter-city delays (T1: 800ms, T2/T3: 1200ms).
 
 Scheduler (`server/scheduler.ts`):
-- `setInterval`-based, runs `runAllIngesters()` every `INGEST_INTERVAL_MINUTES` (default 10)
+- `setInterval`-based, runs `runAllIngesters()` every `INGEST_INTERVAL_MINUTES` (default 5)
 - Gated by `ENABLE_INGEST_SCHEDULER=true`; first run 5s after startup
 - Overlap-safe: if a run is already in progress, the scheduled tick is skipped (via `OverlapError`)
 - Exports `getNextRun()` → `{ nextRunAt, intervalMinutes }`
@@ -560,7 +560,7 @@ Endpoints:
 
 Env vars:
 - `INGEST_BEARER_TOKEN` — bearer token for the `/api/ingest/run` endpoint
-- `INGEST_INTERVAL_MINUTES` — scheduler interval in minutes (default: 10)
+- `INGEST_INTERVAL_MINUTES` — scheduler interval in minutes (default: 5)
 - `ENABLE_INGEST_SCHEDULER` — set to `true` to enable the automatic scheduler
 
 ## Freshness Tracking

@@ -556,6 +556,7 @@ async function insertMatchIfNew(
 }
 
 export async function matchListingAgainstProfiles(listingId: string): Promise<number> {
+  const matchStartMs = Date.now();
   log(`[MATCH ENGINE START] matchListingAgainstProfiles listing=${listingId}`);
 
   await checkFurnishedColumn();
@@ -652,7 +653,8 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
     }
   }
 
-  log(`[MATCH ENGINE COMPLETE] listing=${listingId} matches=${totalMatches}`);
+  const matchDurationMs = Date.now() - matchStartMs;
+  log(`[MATCH ENGINE COMPLETE] listing=${listingId} matches=${totalMatches} [${matchDurationMs}ms]`);
   return totalMatches;
 }
 

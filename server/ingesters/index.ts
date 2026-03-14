@@ -21,7 +21,8 @@ const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
 
 let _cycleNumber = -1;
 
-const INTER_CITY_DELAY_MS = 2000;
+const INTER_CITY_DELAY_T1_MS = 800;
+const INTER_CITY_DELAY_OTHER_MS = 1200;
 
 export interface SourceReport {
   name: string;
@@ -30,15 +31,19 @@ export interface SourceReport {
   duplicates: number;
   matches: number;
   errors: number;
+  durationMs?: number;
 }
 
 export interface CityReport {
   city: string;
+  tier?: number;
   found: number;
   inserted: number;
   duplicates: number;
   matches: number;
   errors: number;
+  durationMs?: number;
+  alertsFlushed?: boolean;
 }
 
 export interface IngestionReport {
@@ -53,6 +58,7 @@ export interface IngestionReport {
   };
   cities: string[];
   durationSec: number;
+  flushesPerCity?: number;
 }
 
 let _running = false;
@@ -165,6 +171,27 @@ function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+const SOURCE_PRIORITY: Record<string, number> = {
+  "wg-gesucht": 1,
+  "kleinanzeigen": 2,
+  "immowelt": 3,
+  "wohnungsboerse": 4,
+  "rentola": 5,
+  "nestpick": 6,
+};
+
+function getSourcePriority(name: string): number {
+  for (const [key, prio] of Object.entries(SOURCE_PRIORITY)) {
+    if (name.startsWith(key)) return prio;
+  }
+  return 99;
+}
+
+
+const SKIP_SOURCES = new Set(
+  SOURCE_STATUSES.filter(s => s.status === "broken" || s.status === "gone").map(s => s.name)
+);
+
 function buildIngestersForCity(city: string): Ingester[] {
   const ingesters: Ingester[] = [];
 
@@ -176,10 +203,77 @@ function buildIngestersForCity(city: string): Ingester[] {
   const slug = slugs?.slug ?? makeFallbackSlug(city);
   const configSources = buildSourcesForCity(city, slug);
   for (const cfg of configSources) {
+    if (SKIP_SOURCES.has(cfg.source)) continue;
     ingesters.push(createConfigIngester(cfg));
   }
 
+  ingesters.sort((a, b) => getSourcePriority(a.name) - getSourcePriority(b.name));
+
   return ingesters;
+}
+
+const MAX_PARALLEL_SOURCES = 3;
+
+async function runSourcesForCity(
+  city: string,
+  cityIngesters: Ingester[]
+): Promise<{ sources: SourceReport[]; cityTotal: { found: number; inserted: number; duplicates: number; matches: number; errors: number } }> {
+  const sources: SourceReport[] = [];
+  const cityTotal = { found: 0, inserted: 0, duplicates: 0, matches: 0, errors: 0 };
+
+  const runIngester = async (ingester: Ingester): Promise<SourceReport> => {
+    const srcStart = Date.now();
+    try {
+      log(`  Running ${ingester.name}...`, "ingest");
+      const result = await ingester.run();
+      const srcDuration = Date.now() - srcStart;
+
+      const report: SourceReport = {
+        name: `${ingester.name} (${city})`,
+        found: result.found,
+        inserted: result.inserted,
+        duplicates: result.duplicates,
+        matches: result.matches,
+        errors: result.errors,
+        durationMs: srcDuration,
+      };
+
+      log(
+        `  ${ingester.name}: found=${result.found} ins=${result.inserted} dup=${result.duplicates} match=${result.matches} err=${result.errors} [${srcDuration}ms]`,
+        "ingest"
+      );
+
+      return report;
+    } catch (err: any) {
+      const srcDuration = Date.now() - srcStart;
+      log(`  ${ingester.name} FAILED: ${err.message} [${srcDuration}ms]`, "ingest");
+      return {
+        name: `${ingester.name} (${city})`,
+        found: 0,
+        inserted: 0,
+        duplicates: 0,
+        matches: 0,
+        errors: 1,
+        durationMs: srcDuration,
+      };
+    }
+  };
+
+  for (let i = 0; i < cityIngesters.length; i += MAX_PARALLEL_SOURCES) {
+    const batch = cityIngesters.slice(i, i + MAX_PARALLEL_SOURCES);
+    const results = await Promise.all(batch.map(runIngester));
+
+    for (const report of results) {
+      sources.push(report);
+      cityTotal.found += report.found;
+      cityTotal.inserted += report.inserted;
+      cityTotal.duplicates += report.duplicates;
+      cityTotal.matches += report.matches;
+      cityTotal.errors += report.errors;
+    }
+  }
+
+  return { sources, cityTotal };
 }
 
 export async function runAllIngesters(): Promise<IngestionReport> {
@@ -198,6 +292,7 @@ export async function runAllIngesters(): Promise<IngestionReport> {
   const sources: SourceReport[] = [];
   const cityReports: CityReport[] = [];
   const total = { found: 0, inserted: 0, duplicates: 0, matches: 0, errors: 0 };
+  let flushesPerCity = 0;
 
   try {
     const tieredCities = await getActiveCities();
@@ -215,55 +310,15 @@ export async function runAllIngesters(): Promise<IngestionReport> {
 
     for (let i = 0; i < tieredCities.length; i++) {
       const { name: city, tier } = tieredCities[i];
+      const cityStart = Date.now();
       log(`[ingest] --- [${i + 1}/${tieredCities.length}] Ingesting for city: ${city} (Tier ${tier}) ---`, "ingest");
 
-      const cityTotal = { found: 0, inserted: 0, duplicates: 0, matches: 0, errors: 0 };
       const cityIngesters = buildIngestersForCity(city);
+      const { sources: citySources, cityTotal } = await runSourcesForCity(city, cityIngesters);
 
-      for (const ingester of cityIngesters) {
-        try {
-          log(`  Running ${ingester.name}...`, "ingest");
-          const result = await ingester.run();
+      sources.push(...citySources);
 
-          const report: SourceReport = {
-            name: `${ingester.name} (${city})`,
-            found: result.found,
-            inserted: result.inserted,
-            duplicates: result.duplicates,
-            matches: result.matches,
-            errors: result.errors,
-          };
-
-          sources.push(report);
-          log(
-            `  ${ingester.name}: found=${result.found} ins=${result.inserted} dup=${result.duplicates} match=${result.matches} err=${result.errors}`,
-            "ingest"
-          );
-
-          cityTotal.found += result.found;
-          cityTotal.inserted += result.inserted;
-          cityTotal.duplicates += result.duplicates;
-          cityTotal.matches += result.matches;
-          cityTotal.errors += result.errors;
-        } catch (err: any) {
-          log(`  ${ingester.name} FAILED: ${err.message}`, "ingest");
-          sources.push({
-            name: `${ingester.name} (${city})`,
-            found: 0,
-            inserted: 0,
-            duplicates: 0,
-            matches: 0,
-            errors: 1,
-          });
-          cityTotal.errors += 1;
-        }
-      }
-
-      cityReports.push({ city, ...cityTotal });
-      log(
-        `[ingest] City ${city}: found=${cityTotal.found} ins=${cityTotal.inserted} dup=${cityTotal.duplicates} match=${cityTotal.matches} err=${cityTotal.errors}`,
-        "ingest"
-      );
+      const cityDuration = Date.now() - cityStart;
 
       total.found += cityTotal.found;
       total.inserted += cityTotal.inserted;
@@ -271,9 +326,36 @@ export async function runAllIngesters(): Promise<IngestionReport> {
       total.matches += cityTotal.matches;
       total.errors += cityTotal.errors;
 
+      let alertsFlushed = false;
+      if (areAlertsEnabled() && cityTotal.inserted > 0) {
+        const bufSize = getBufferSize();
+        if (bufSize.listings > 0) {
+          const flushStart = Date.now();
+          log(`[ingest] [PER-CITY FLUSH] ${city}: flushing ${bufSize.listings} matches for ${bufSize.users} users`, "ingest");
+          try {
+            const alertResult = await flushMatchAlertBuffer(supabase);
+            const flushDuration = Date.now() - flushStart;
+            log(
+              `[ingest] [PER-CITY FLUSH] ${city}: sent=${alertResult.sent} failed=${alertResult.failed} pushes=${alertResult.pushesSent || 0} [${flushDuration}ms]`,
+              "ingest"
+            );
+            alertsFlushed = true;
+            flushesPerCity++;
+          } catch (alertErr: any) {
+            log(`[ingest] [PER-CITY FLUSH] ${city}: error — ${alertErr.message}`, "ingest");
+          }
+        }
+      }
+
+      cityReports.push({ city, tier, ...cityTotal, durationMs: cityDuration, alertsFlushed });
+      log(
+        `[ingest] City ${city} (T${tier}): found=${cityTotal.found} ins=${cityTotal.inserted} dup=${cityTotal.duplicates} match=${cityTotal.matches} err=${cityTotal.errors} [${cityDuration}ms]`,
+        "ingest"
+      );
+
       if (i < tieredCities.length - 1) {
-        log(`[ingest] Waiting ${INTER_CITY_DELAY_MS}ms before next city...`, "ingest");
-        await delay(INTER_CITY_DELAY_MS);
+        const interDelay = tier === 1 ? INTER_CITY_DELAY_T1_MS : INTER_CITY_DELAY_OTHER_MS;
+        await delay(interDelay);
       }
     }
 
@@ -283,39 +365,32 @@ export async function runAllIngesters(): Promise<IngestionReport> {
     if (areAlertsEnabled()) {
       const bufSize = getBufferSize();
       if (bufSize.listings > 0) {
-        log(`[ingest] Flushing match alert buffer: ${bufSize.users} users, ${bufSize.listings} listings`, "ingest");
+        log(`[ingest] [FINAL FLUSH] Remaining buffer: ${bufSize.users} users, ${bufSize.listings} listings`, "ingest");
         try {
           const alertResult = await flushMatchAlertBuffer(supabase);
           emailsSent = alertResult.sent;
           pushesSent = alertResult.pushesSent || 0;
-          log(`[ingest] Alert emails sent: ${alertResult.sent} success, ${alertResult.failed} failed, ${pushesSent} pushes`, "ingest");
+          log(`[ingest] [FINAL FLUSH] sent=${alertResult.sent} failed=${alertResult.failed} pushes=${pushesSent}`, "ingest");
         } catch (alertErr: any) {
-          log(`[ingest] Alert flush error: ${alertErr.message}`, "ingest");
+          log(`[ingest] [FINAL FLUSH] error: ${alertErr.message}`, "ingest");
         }
-      } else {
-        log(`[ingest] No match alerts to send this cycle`, "ingest");
       }
 
-      try {
-        const recovery = await recoverUndeliveredMatches(supabase);
-        if (recovery.recovered > 0) {
-          emailsSent += recovery.sent;
-          log(`[ingest] Recovery: found ${recovery.recovered} undelivered, sent ${recovery.sent}, failed ${recovery.failed}`, "ingest");
-        }
-      } catch (recErr: any) {
-        log(`[ingest] Recovery error: ${recErr.message}`, "ingest");
-      }
+      // Recovery runs independently via scheduler every 5 min — skip here to avoid concurrent flush
     }
 
     const duration = ((Date.now() - startTime) / 1000).toFixed(1);
     log(
-      `[INGEST COMPLETE] in ${duration}s — cities=${tieredCities.length} found=${total.found} inserted=${total.inserted} dup=${total.duplicates} matches=${total.matches} errors=${total.errors}`,
+      `[INGEST COMPLETE] in ${duration}s — cities=${tieredCities.length} found=${total.found} inserted=${total.inserted} dup=${total.duplicates} matches=${total.matches} errors=${total.errors} flushes=${flushesPerCity}`,
       "ingest"
     );
 
-    log(`[ingest] Per-city summary:`, "ingest");
+    log(`[ingest] Per-city breakdown:`, "ingest");
     for (const cr of cityReports) {
-      log(`  ${cr.city.padEnd(15)} found=${String(cr.found).padStart(4)} ins=${String(cr.inserted).padStart(4)} dup=${String(cr.duplicates).padStart(4)} err=${String(cr.errors).padStart(2)}`, "ingest");
+      const tierTag = cr.tier ? `T${cr.tier}` : "T?";
+      const durationTag = cr.durationMs ? `${cr.durationMs}ms` : "?ms";
+      const flushTag = cr.alertsFlushed ? " [FLUSHED]" : "";
+      log(`  ${cr.city.padEnd(15)} (${tierTag}) found=${String(cr.found).padStart(4)} ins=${String(cr.inserted).padStart(4)} dup=${String(cr.duplicates).padStart(4)} err=${String(cr.errors).padStart(2)} [${durationTag}]${flushTag}`, "ingest");
     }
 
     updateTodayStats(total.found, total.inserted);
@@ -332,7 +407,7 @@ export async function runAllIngesters(): Promise<IngestionReport> {
       }).catch(() => {});
     }
 
-    const report: IngestionReport = { sources, cityReports, total, cities: cityNames, durationSec: parseFloat(duration) };
+    const report: IngestionReport = { sources, cityReports, total, cities: cityNames, durationSec: parseFloat(duration), flushesPerCity };
     _lastResult = report;
     _lastRunAt = new Date().toISOString();
     if (total.errors === 0 || total.inserted > 0) {

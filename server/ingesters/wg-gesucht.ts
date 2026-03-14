@@ -12,7 +12,7 @@ const BROWSER_UA =
 
 const PAGES_TO_FETCH = 3;
 const PAGE_SIZE = 25;
-const PAGE_DELAY_MS = 1500;
+const PAGE_DELAY_MS = 2000;
 const REQUEST_TIMEOUT_MS = 15_000;
 const MAX_RETRIES = 2;
 const RETRY_BASE_MS = 2000;

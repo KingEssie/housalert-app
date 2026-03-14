@@ -127,32 +127,68 @@ export async function insertAndMatchListings(
   let totalMatches = 0;
   let errors = 0;
 
+  const existingBySourceId = new Map<string, string>();
+  const existingByUrl = new Map<string, string>();
+
+  if (parsed.length > 0 && useSourceId) {
+    const sourceIds = parsed.map(l => l.source_id).filter(Boolean);
+    const sources = [...new Set(parsed.map(l => l.source))];
+    if (sourceIds.length > 0) {
+      for (const src of sources) {
+        const batch = parsed.filter(l => l.source === src).map(l => l.source_id);
+        const BATCH_SIZE = 50;
+        for (let i = 0; i < batch.length; i += BATCH_SIZE) {
+          const chunk = batch.slice(i, i + BATCH_SIZE);
+          const { data } = await supabase
+            .from("listings")
+            .select("id, source_id")
+            .eq("source", src)
+            .in("source_id", chunk);
+          if (data) {
+            for (const row of data) {
+              existingBySourceId.set(`${src}:${row.source_id}`, row.id);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  if (parsed.length > 0) {
+    const urls = parsed.map(l => l.url).filter(Boolean);
+    const BATCH_SIZE = 50;
+    for (let i = 0; i < urls.length; i += BATCH_SIZE) {
+      const chunk = urls.slice(i, i + BATCH_SIZE);
+      const { data } = await supabase
+        .from("listings")
+        .select("id, url")
+        .in("url", chunk);
+      if (data) {
+        for (const row of data) {
+          existingByUrl.set(row.url, row.id);
+        }
+      }
+    }
+  }
+
   for (const listing of parsed) {
     let isDuplicate = false;
     let duplicateId: string | null = null;
 
     if (useSourceId) {
-      const { data: existingRows } = await supabase
-        .from("listings")
-        .select("id")
-        .eq("source", listing.source)
-        .eq("source_id", listing.source_id)
-        .limit(1);
-      if (existingRows && existingRows.length > 0) {
+      const key = `${listing.source}:${listing.source_id}`;
+      const cachedId = existingBySourceId.get(key);
+      if (cachedId) {
         isDuplicate = true;
-        duplicateId = existingRows[0].id;
+        duplicateId = cachedId;
       }
     }
 
     if (!isDuplicate) {
-      const { data: existingByUrl } = await supabase
-        .from("listings")
-        .select("id")
-        .eq("url", listing.url)
-        .limit(1);
-      if (existingByUrl && existingByUrl.length > 0) {
+      const cachedId = existingByUrl.get(listing.url);
+      if (cachedId) {
         isDuplicate = true;
-        duplicateId = existingByUrl[0].id;
+        duplicateId = cachedId;
       }
     }
 
@@ -250,7 +286,12 @@ export async function insertAndMatchListings(
 
     if (row) {
       trackListingSeen(row.id, listing.source, listing.source_id).catch(() => {});
+      const matchStart = Date.now();
       const matchCount = await runMatchingForListing(row as DbListing);
+      if (matchCount > 0) {
+        const matchDuration = Date.now() - matchStart;
+        log(`[LATENCY] insert→match for ${row.id}: ${matchDuration}ms (${matchCount} matches)`);
+      }
       totalMatches += matchCount;
     }
   }

@@ -6,7 +6,7 @@ import { recoverUndeliveredMatches } from "./notifications/buffer";
 import { checkExpoReceipts } from "./notifications/expo-push";
 import { updateStalenessStatuses } from "./listing-status";
 
-const intervalMinutes = parseInt(process.env.INGEST_INTERVAL_MINUTES || "10", 10);
+const intervalMinutes = parseInt(process.env.INGEST_INTERVAL_MINUTES || "5", 10);
 const INTERVAL_MS = intervalMinutes * 60 * 1000;
 const RECOVERY_INTERVAL_MS = 5 * 60 * 1000;
 

@@ -134,6 +134,7 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
 
   _flushing = true;
 
+  try {
   const snapshot = new Map(buffer);
   buffer.clear();
 
@@ -235,6 +236,7 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
     }
 
     if (pushEnabled) {
+      const pushStart = Date.now();
       try {
         const pushListings: PushMatchListing[] = verified.map((l) => ({
           listing_id: l.listing_id,
@@ -267,12 +269,17 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
       } catch (err: any) {
         log(`[ALERTS] Expo push error for user ${userId.substring(0, 8)}...: ${err.message}`);
       }
+
+      const pushDuration = Date.now() - pushStart;
+      log(`[LATENCY] match→push dispatch for user ${userId.substring(0, 8)}...: ${pushDuration}ms (${verified.length} listings)`);
     }
   }
 
-  _flushing = false;
   log(`[ALERTS] Flush complete: ${sent} emails sent, ${failed} failed, ${totalPushesSent} pushes, ${skippedNoSub} skipped (no sub), ${skippedEmailOff} skipped (all off)`);
   return { sent, failed, pushesSent: totalPushesSent };
+  } finally {
+    _flushing = false;
+  }
 }
 
 export async function flushUserAlerts(userId: string, supabase: any): Promise<void> {

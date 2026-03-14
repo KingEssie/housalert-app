@@ -1,0 +1,80 @@
+I want to optimize HousAlert for much faster listing-to-alert speed.
+
+Context:
+HousAlert now has:
+- multiple live sources
+- tiered city coverage
+- city normalization
+- working match engine
+- working push + email alerts
+- listing freshness and dedupe
+
+Goal:
+Move toward a practical target of:
+listing appears → matched → push alert in 30–60 seconds where feasible
+
+Do NOT overengineer.
+First audit the current latency, then optimize the highest-impact bottlenecks.
+
+Please do the following:
+
+1. Audit the current end-to-end latency pipeline
+Review and summarize:
+- how often each source runs
+- how long a full ingestion cycle takes
+- whether all cities/sources are processed sequentially or in parallel
+- where time is lost between:
+  source fetch → parse → insert → match → notification dispatch
+- whether push dispatch waits on batch cycles or delayed recovery logic
+- which sources/cities are highest-value and should be prioritized
+
+2. Identify the main bottlenecks
+Be explicit about:
+- scheduler design
+- source ordering
+- city ordering
+- delays between cities
+- per-source latency
+- matching / insert bottlenecks
+- notification dispatch timing
+
+3. Implement practical speed improvements
+Focus on high-impact changes such as:
+- prioritizing Tier 1 cities
+- prioritizing highest-value sources
+- reducing unnecessary waits
+- processing more efficiently without breaking source stability
+- dispatching matches faster after insert
+- keeping source politeness where needed
+
+4. Add a priority model
+Design a simple priority structure such as:
+- Tier 1 city + high-value source = highest frequency
+- Tier 2 / lower-value source = lower frequency
+- Tier 3 dynamic cities = medium or demand-based frequency
+
+5. Logging / observability
+Add logs or metrics that make latency visible, such as:
+- scrape start/end per source/city
+- ingest duration
+- time from insert to match
+- time from match to push dispatch
+- total listing-to-alert time when measurable
+
+6. Add a practical QA / verification summary
+Show:
+- estimated old latency
+- estimated new latency
+- what remains impossible due to source anti-bot limits
+- what can realistically hit 30–60 seconds vs what cannot
+
+7. Reply in exactly this structure:
+A. Current latency audit
+B. Main bottlenecks
+C. Speed optimizations implemented
+D. Files changed
+E. New priority model
+F. Logging / observability added
+G. Realistic latency expectation after changes
+H. Remaining limitations
+I. Final verdict: how close is HousAlert now to 30–60 second alert speed?
