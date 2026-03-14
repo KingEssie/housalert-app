@@ -185,35 +185,33 @@ export default function AdminActivationPage() {
           </div>
         )}
 
-        {cancelStats && cancelStats.total > 0 && (
-          <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 mb-6" data-testid="card-cancellation-stats">
-            <h2 className="text-[16px] font-bold text-[#1F2937] mb-4">Cancellation KPIs</h2>
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { label: "Total Cancellations", value: cancelStats.total, Icon: XCircle, color: "#EF4444" },
-                { label: "Found via HousAlert", value: cancelStats.foundViaHousalert, Icon: Home, color: "#16A34A" },
-                { label: "Found elsewhere", value: cancelStats.foundNotViaHousalert, Icon: Home, color: "#D97706" },
-                { label: "Not found", value: cancelStats.notFound, Icon: Search, color: "#6B7280" },
-                { label: "Other reason", value: cancelStats.other, Icon: HelpCircle, color: "#9CA3AF" },
-              ].map(({ label, value, Icon, color }) => (
-                <div key={label} className="bg-[#F9FAFB] rounded-xl p-3" data-testid={`cancel-${label.toLowerCase().replace(/\s/g, "-")}`}>
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <Icon className="w-3.5 h-3.5" style={{ color }} />
-                    <p className="text-[11px] font-medium text-[#6B7280]">{label}</p>
-                  </div>
-                  <p className="text-[22px] font-bold" style={{ color }}>{value}</p>
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 mb-6" data-testid="card-cancellation-stats">
+          <h2 className="text-[16px] font-bold text-[#1F2937] mb-4">Cancellation & Outcome KPIs</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { label: "Total Cancellations", value: cancelStats?.total ?? 0, Icon: XCircle, color: "#EF4444" },
+              { label: "Homes Found via HousAlert", value: cancelStats?.foundViaHousalert ?? 0, Icon: Home, color: "#16A34A" },
+              { label: "Found elsewhere", value: cancelStats?.foundNotViaHousalert ?? 0, Icon: Home, color: "#D97706" },
+              { label: "Not found", value: cancelStats?.notFound ?? 0, Icon: Search, color: "#6B7280" },
+              { label: "Other reason", value: cancelStats?.other ?? 0, Icon: HelpCircle, color: "#9CA3AF" },
+            ].map(({ label, value, Icon, color }) => (
+              <div key={label} className="bg-[#F9FAFB] rounded-xl p-3" data-testid={`cancel-${label.toLowerCase().replace(/\s/g, "-")}`}>
+                <div className="flex items-center gap-1.5 mb-1">
+                  <Icon className="w-3.5 h-3.5" style={{ color }} />
+                  <p className="text-[11px] font-medium text-[#6B7280]">{label}</p>
                 </div>
-              ))}
-            </div>
-            {cancelStats.total > 0 && cancelStats.foundViaHousalert > 0 && (
-              <div className="mt-3 bg-[#F0FDF4] rounded-xl px-4 py-2.5">
-                <p className="text-[13px] text-[#15803D] font-medium">
-                  {Math.round((cancelStats.foundViaHousalert / cancelStats.total) * 100)}% found their home via HousAlert
-                </p>
+                <p className="text-[22px] font-bold" style={{ color }}>{value}</p>
               </div>
-            )}
+            ))}
           </div>
-        )}
+          {cancelStats && cancelStats.total > 0 && cancelStats.foundViaHousalert > 0 && (
+            <div className="mt-3 bg-[#F0FDF4] rounded-xl px-4 py-2.5">
+              <p className="text-[13px] text-[#15803D] font-medium">
+                {Math.round((cancelStats.foundViaHousalert / cancelStats.total) * 100)}% found their home via HousAlert
+              </p>
+            </div>
+          )}
+        </div>
 
         <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5" data-testid="card-recent-events">
           <h2 className="text-[16px] font-bold text-[#1F2937] mb-4">Recent Events</h2>

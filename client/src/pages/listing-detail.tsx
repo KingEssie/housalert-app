@@ -202,9 +202,11 @@ export default function ListingDetailPage() {
         )}
 
         <div className="absolute top-3 left-[68px] flex items-center gap-2">
-          <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm ${style.bg} ${style.text}`} data-testid="badge-freshness">
-            {t(FRESH_LABEL_KEYS[listing.fresh_label] ?? "freshness.older")}
-          </span>
+          {listing.fresh_label !== "ouder" && (
+            <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm ${style.bg} ${style.text}`} data-testid="badge-freshness">
+              {t(FRESH_LABEL_KEYS[listing.fresh_label] ?? "freshness.older")}
+            </span>
+          )}
           <span className="text-[11px] font-medium text-white/90 bg-black/30 backdrop-blur-sm px-2.5 py-1 rounded-full flex items-center gap-1">
             <Clock className="w-3 h-3" />
             {relativeTime(listing.first_seen_at)}
@@ -343,44 +345,20 @@ export default function ListingDetailPage() {
 
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] p-4 pb-5 z-10">
         <div className="max-w-xl mx-auto flex flex-col gap-2">
-          {(listing.price > 0 || listing.bedrooms > 0 || listing.size_m2 > 0) && (
+          {listing.price > 0 && (
             <div className="flex items-baseline gap-1 mb-1">
-              {listing.price > 0 && (
-                <>
-                  <span className="text-[20px] font-[800] text-[#111C3D]" data-testid="text-bar-price">€{listing.price}</span>
-                  <span className="text-[13px] font-medium text-[#6B7280]">{t("common.perMonth")}</span>
-                </>
-              )}
-              {listing.bedrooms > 0 && (
-                <span className="text-[13px] text-[#9CA3AF] ml-2">{listing.bedrooms} {t("listing.roomsShort")}</span>
-              )}
-              {listing.size_m2 > 0 && (
-                <span className="text-[13px] text-[#9CA3AF]">· {listing.size_m2} m²</span>
-              )}
+              <span className="text-[20px] font-[800] text-[#111C3D]" data-testid="text-bar-price">€{listing.price}</span>
+              <span className="text-[13px] font-medium text-[#6B7280]">{t("common.perMonth")}</span>
             </div>
           )}
-          <div className="flex gap-2">
-            <Button
-              onClick={() => navigate(`/apply/${listing.id}`)}
-              className="flex-1 h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold flex items-center justify-center gap-2"
-              data-testid="button-reageer-detail"
-            >
-              <Zap className="w-4 h-4" />
-              {t("listing.applyDirect")}
-            </Button>
-            {listing.url && (
-              <a href={listing.url} target="_blank" rel="noopener noreferrer">
-                <Button
-                  variant="outline"
-                  className="h-[56px] px-5 rounded-full border border-[#E5E7EB] bg-white text-[#1F2937] text-[15px] font-bold flex items-center gap-2"
-                  data-testid="button-view-original"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  {t("listing.openOriginal")}
-                </Button>
-              </a>
-            )}
-          </div>
+          <Button
+            onClick={() => navigate(`/apply/${listing.id}`)}
+            className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold flex items-center justify-center gap-2"
+            data-testid="button-reageer-detail"
+          >
+            <Zap className="w-4 h-4" />
+            {t("listing.applyDirect")}
+          </Button>
         </div>
       </div>
 

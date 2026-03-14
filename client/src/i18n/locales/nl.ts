@@ -109,6 +109,7 @@ export const nl: Record<string, any> = {
 
   matches: {
     title: "Matches",
+    viewButton: "Bekijk",
     listingCount: "{count} {label}",
     listingSingular: "woning",
     listingPlural: "woningen",
@@ -1181,6 +1182,9 @@ export const nl: Record<string, any> = {
     stepsLeft: "Nog {count} stappen",
     noMatchesHint: "Nog geen matches? Je filters staan mogelijk te streng.",
     adjustFilters: "Filters aanpassen",
+    completed: "voltooid",
+    showMore: "Toon {count} meer taken",
+    showLess: "Minder tonen",
   },
 
   cancellation: {

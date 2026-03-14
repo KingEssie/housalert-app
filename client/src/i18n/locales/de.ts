@@ -109,6 +109,7 @@ export const de: Record<string, any> = {
 
   matches: {
     title: "Matches",
+    viewButton: "Ansehen",
     listingCount: "{count} {label}",
     listingSingular: "Wohnung",
     listingPlural: "Wohnungen",
@@ -1181,6 +1182,9 @@ export const de: Record<string, any> = {
     stepsLeft: "Noch {count} Schritte",
     noMatchesHint: "Noch keine Matches? Deine Filter sind vielleicht zu streng.",
     adjustFilters: "Filter anpassen",
+    completed: "abgeschlossen",
+    showMore: "{count} weitere Aufgaben anzeigen",
+    showLess: "Weniger anzeigen",
   },
 
   cancellation: {

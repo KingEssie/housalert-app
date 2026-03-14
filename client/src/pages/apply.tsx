@@ -164,12 +164,19 @@ export default function ApplyPage() {
   const readyCount = readinessItems.filter((r) => r.done).length;
 
   const handleCopyAndRespond = async () => {
+    const externalUrl = listing.url;
+    let externalWindow: Window | null = null;
+    if (externalUrl) {
+      externalWindow = window.open("about:blank", "_blank");
+    }
+
     let copied = false;
     try {
       await navigator.clipboard.writeText(editedLetter ?? filledLetter);
       copied = true;
     } catch {
       toast({ title: t("applySheet.copyFailed"), description: t("applySheet.copyFailedDesc"), variant: "destructive" });
+      if (externalWindow) externalWindow.close();
     }
 
     if (!copied) return;
@@ -198,10 +205,10 @@ export default function ApplyPage() {
       }).catch(() => {});
     }
 
-    if (listing.url) {
-      setTimeout(() => {
-        window.open(listing.url!, "_blank", "noopener");
-      }, 750);
+    if (externalWindow && externalUrl) {
+      externalWindow.location.href = externalUrl;
+    } else if (externalUrl) {
+      window.location.href = externalUrl;
     }
   };
 

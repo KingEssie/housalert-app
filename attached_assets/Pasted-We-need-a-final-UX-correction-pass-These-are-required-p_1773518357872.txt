@@ -1,0 +1,159 @@
+We need a final UX correction pass. These are required product fixes, not optional polish.
+
+Please implement the following exactly.
+
+1. Match cards / matches overview
+Current problems:
+- there are too many actions on the card
+- "Ouder" has no value
+- the app still shows huge counts like 800+ new matches, which feels spammy
+
+Required fixes:
+- on match cards, keep only ONE primary blue button: "Bekijk"
+- this button must open the internal listing detail screen, not the external listing directly
+- remove the "Ouder" label completely from cards and detail header if the age is already shown as "X dagen geleden"
+- do not show giant cumulative/unseen counts in the main user-facing hero or card copy in a spammy way
+- match counters shown to the user should reflect only relevant received matches in the intended user logic, not broad lifetime totals that feel inflated
+
+Important:
+Review the current "new matches" counting logic.
+I want the user-facing count to feel trustworthy and not exaggerated.
+Use the intended product logic:
+- only meaningful received matches for that user
+- not noisy/global/lifetime-feeling presentation
+
+2. Home screen cleanup
+Required fixes:
+- completely remove the blue nudge/card that says things like:
+  "Je hebt 875 nieuwe matches klaarstaan"
+- completely remove the orange nudge/card that says things like:
+  "Je hebt 12 woningen bekeken maar nog niet gereageerd"
+- keep the home screen calmer and cleaner
+- reduce the excessive vertical spacing between:
+  - "Maak je account compleet"
+  - "Bereid je zoektocht voor"
+- these sections should feel tighter and more intentional, without huge empty gaps
+
+3. Replace the current activation widgets with a single task list
+The current activation/progress cards are not what we want.
+
+Replace them with one cleaner checklist-style task section.
+
+Requirements:
+- there are 11 total tasks
+- completed tasks:
+  - show a blue checkmark icon
+  - task text is struck through
+- incomplete tasks:
+  - no blue checkmark yet
+  - normal text
+- show only the first 5 open / relevant tasks by default
+- the rest should be collapsed initially
+- user can expand to see more tasks
+- there can be generous spacing between the tasks, similar to the provided visual example
+- the overall feeling should be clean, calm, and list-based rather than "progress card" based
+
+Interaction behavior:
+- when the user taps a task, open the exact screen where that task can be completed
+- examples:
+  - notification task → notification settings
+  - search profile task → filters / profile creation
+  - reaction task → relevant match or reaction flow
+- make this direct and practical
+
+4. Detail screen cleanup
+Required fixes:
+- remove the "Ouder" pill from the detail screen header
+- keep only the primary button: "Reageer direct"
+- remove duplicate facts from the sticky bottom bar if they are already clearly visible higher on the page
+- specifically, if rooms and m² are already visible, do not repeat them again next to the bottom price
+
+5. "Reageer direct" button flow — fix completely
+This is critical.
+
+Required behavior:
+When the user taps "Reageer direct":
+1. copy the response letter to clipboard
+2. show success toast
+3. mark the match as "gereageerd"
+4. open the ORIGINAL external listing website
+
+This currently fails on step 4.
+Fix it so the external source URL reliably opens after the copy + toast flow.
+
+Requirements:
+- use the real original listing URL
+- do not route back into the internal app by mistake
+- no extra taps
+- keep it fast
+
+6. Account stats redesign
+The current stats presentation on the account page is not visually good enough.
+
+Update the "Ontvangen matches" and "Verzonden reacties" presentation to match the cleaner style shown in the provided visual reference:
+- nicer card layout
+- clearer hierarchy
+- stronger visual balance
+- keep current data, improve presentation only
+
+Do not redesign the whole account page.
+Just improve that stats block.
+
+7. Subscription screen badge styling
+On the subscription screen, the "Actief" badge needs to be restyled.
+
+Required behavior:
+- white background
+- text color should match the same blue used in the main action buttons
+- keep the badge compact and clean
+- do not change the rest of the pricing card unnecessarily
+
+8. Admin dashboard completion
+The intended admin dashboard is not visible/complete enough.
+
+I need a clear admin dashboard showing these KPIs:
+- users
+- profiles
+- notifications
+- matches
+- reactions
+- trials
+- subscriptions
+- cancellations
+- homes_found_via_housalert
+
+Tasks:
+- verify where the current admin dashboard exists
+- make sure it is actually reachable in the app/admin flow
+- ensure all above KPI blocks are shown clearly
+- if it exists only partially, complete it
+- if the route exists but is not linked, add safe access for admin use
+
+9. QA checklist
+Verify:
+- match card has only one blue button: Bekijk
+- Bekijk opens internal detail screen
+- "Ouder" is removed where redundant
+- the home screen no longer shows the 875-matches style nudge
+- the home screen no longer shows the 12-viewed-but-not-reacted nudge
+- the task section is now a single checklist-style list
+- completed tasks are struck through and have blue checkmarks
+- incomplete tasks do not have blue checkmarks
+- only the first 5 open/relevant tasks are shown initially
+- tapping a task opens the right destination screen
+- detail screen has only one main CTA: Reageer direct
+- Reageer direct copies text, shows toast, marks responded, and opens original listing
+- account stats block uses the improved layout
+- subscription "Actief" badge has white background and blue text
+- admin dashboard visibly shows all required KPIs
+
+10. Reply in exactly this structure:
+A. Problems corrected
+B. Files changed
+C. Home screen behavior after fix
+D. Task list behavior after fix
+E. Detail / react flow after fix
+F. Account stats redesign
+G. Subscription badge styling
+H. Admin dashboard visibility and KPIs
+I. QA verification

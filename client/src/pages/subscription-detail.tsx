@@ -100,7 +100,7 @@ export default function SubscriptionDetailPage() {
                 {subscription?.isTrial ? t("subscription.status.trial") : getPlanLabel(subscription?.plan)}
               </p>
               <span
-                className="inline-block mt-1.5 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-[#0D6EFD]/30 text-white"
+                className="inline-block mt-1.5 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-white text-[#0D6EFD]"
                 data-testid="badge-subscription-status"
               >
                 {statusLabel}

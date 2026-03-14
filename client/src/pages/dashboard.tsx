@@ -36,8 +36,6 @@ import {
   Sparkles,
   Mail,
   Crown,
-  AlertTriangle,
-  ExternalLink,
   Eye,
   Send,
   ImageIcon,
@@ -47,13 +45,11 @@ import {
   Copy,
   Pencil,
   Users,
-  CreditCard,
-  HelpCircle,
   Circle,
   Rocket,
   Gift,
 } from "lucide-react";
-import { AccountCompletionCard, SearchPreparationCard, TaskModal, PrepTaskModal } from "@/components/profile-strength";
+import { TaskModal, PrepTaskModal } from "@/components/profile-strength";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
 import TipsPage from "@/pages/tips";
 
@@ -179,13 +175,11 @@ const MATCH_REASON_KEYS: Record<string, string> = {
 function MatchCard({
   match,
   onSaveToggle,
-  onCopyAndApply,
   isSaved,
   onStatusChange,
 }: {
   match: ApiMatch;
   onSaveToggle: (listingId: string) => void;
-  onCopyAndApply: (match: ApiMatch) => void;
   isSaved: boolean;
   onStatusChange: () => void;
 }) {
@@ -205,23 +199,6 @@ function MatchCard({
   function handleSave(e: React.MouseEvent) {
     e.stopPropagation();
     onSaveToggle(match.listing_id);
-  }
-
-  function handleCopyApply(e: React.MouseEvent) {
-    e.stopPropagation();
-    onCopyAndApply(match);
-  }
-
-  function handleViewListing(e: React.MouseEvent) {
-    e.stopPropagation();
-    markViewed(match.listing_id);
-    trackEvent("listing_opened", { listingId: match.listing_id, source: "match_card" });
-    onStatusChange();
-    if (match.url) {
-      window.open(match.url, "_blank", "noopener,noreferrer");
-    } else {
-      navigate(`/listing/${match.listing_id}?from=matches`);
-    }
   }
 
   return (
@@ -252,9 +229,11 @@ function MatchCard({
         )}
 
         <div className="absolute top-3 left-3 flex items-center gap-1.5">
-          <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm ${style.bg} ${style.text}`}>
-            {FRESH_LABEL_KEYS[match.fresh_label] ? t(FRESH_LABEL_KEYS[match.fresh_label]) : match.fresh_label}
-          </span>
+          {match.fresh_label !== "ouder" && (
+            <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm ${style.bg} ${style.text}`}>
+              {FRESH_LABEL_KEYS[match.fresh_label] ? t(FRESH_LABEL_KEYS[match.fresh_label]) : match.fresh_label}
+            </span>
+          )}
           {(() => {
             const reasons = match.match_reasons ?? [];
             const label = reasons.length > 0 && MATCH_REASON_KEYS[reasons[0]]
@@ -328,22 +307,13 @@ function MatchCard({
           </span>
         </div>
 
-        <div className="flex gap-2 mt-1">
+        <div className="mt-1">
           <button
-            onClick={handleCopyApply}
-            className="flex-1 h-[44px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-bold transition-colors flex items-center justify-center gap-2"
-            data-testid={`button-apply-${match.listing_id}`}
+            onClick={handleCardClick}
+            className="w-full h-[44px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-bold transition-colors flex items-center justify-center gap-2"
+            data-testid={`button-view-${match.listing_id}`}
           >
-            <Copy className="w-4 h-4" />
-            Kopieer & reageer
-          </button>
-          <button
-            onClick={handleViewListing}
-            className="h-[44px] px-5 rounded-full border border-[#E5E7EB] bg-white text-[#111827] text-[14px] font-bold hover:bg-[#F5F7FA] transition-colors flex items-center justify-center gap-1.5"
-            data-testid={`button-view-listing-${match.listing_id}`}
-          >
-            <ExternalLink className="w-3.5 h-3.5" />
-            Bekijk woning
+            {t("matches.viewButton")}
           </button>
         </div>
       </div>
@@ -611,8 +581,10 @@ interface ActivationStatus {
   subscriptionStarted: boolean;
 }
 
-function ActivationChecklist({ accessToken, navigate, setActiveTab }: { accessToken: string | undefined; navigate: (path: string) => void; setActiveTab: (tab: TabKey) => void }) {
+function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken: string | undefined; navigate: (path: string) => void; setActiveTab: (tab: TabKey) => void }) {
   const { t } = useTranslation();
+  const [expanded, setExpanded] = useState(false);
+
   const statusQuery = useQuery<ActivationStatus & { profileCreatedAt?: string | null; totalMatches?: number }>({
     queryKey: ["/api/activation-status"],
     queryFn: async () => {
@@ -626,147 +598,130 @@ function ActivationChecklist({ accessToken, navigate, setActiveTab }: { accessTo
     staleTime: 60_000,
   });
 
+  const strengthQuery = useQuery<{ tasks: { id: string; label: string; completed: boolean }[]; prepTasks: { id: string; label: string; completed: boolean }[] }>({
+    queryKey: ["/api/profile-strength"],
+    queryFn: async () => {
+      const res = await apiFetch("/api/profile-strength", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      if (!res.ok) throw new Error("Failed to load");
+      return res.json();
+    },
+    enabled: !!accessToken,
+    staleTime: 60_000,
+  });
+
   const status = statusQuery.data;
-  if (!status) return null;
+  const strength = strengthQuery.data;
+  if (!status && !strength) return null;
 
-  const noMatchesYet = status.profileCreated && (status.totalMatches ?? 0) === 0;
-  const profileAge = status.profileCreatedAt ? Date.now() - new Date(status.profileCreatedAt).getTime() : 0;
-  const showNoMatchHint = noMatchesYet && profileAge > 24 * 60 * 60 * 1000;
+  const TASK_ACTION_MAP: Record<string, () => void> = {
+    profileCreated: () => navigate("/dashboard/searches/new"),
+    notificationsEnabled: () => navigate("/settings/notifications"),
+    firstMatchViewed: () => setActiveTab("matches"),
+    firstReaction: () => setActiveTab("matches"),
+    trialStarted: () => navigate("/paywall"),
+    subscriptionStarted: () => navigate("/paywall"),
+    alerts: () => navigate("/settings/notifications"),
+    search_buddy: () => navigate("/profile/edit/search_buddy_email"),
+    search_optimize: () => navigate("/dashboard?tab=filters"),
+    application_template: () => navigate("/application-letter"),
+    documents: () => navigate("/profile/details"),
+    phone: () => navigate("/settings/notifications"),
+    prep_search_profile: () => navigate("/dashboard/searches/new"),
+    prep_letter: () => navigate("/application-letter"),
+    prep_extra_profile: () => navigate("/dashboard/searches/new"),
+    prep_network: () => navigate("/profile/edit/search_buddy_email"),
+    prep_viewing_tips: () => setActiveTab("tips"),
+  };
 
-  const steps = [
-    { key: "profileCreated", label: t("activation.profileCreated"), done: status.profileCreated, action: () => navigate("/dashboard/searches/new") },
-    { key: "notificationsEnabled", label: t("activation.notificationsEnabled"), done: status.notificationsEnabled, action: () => navigate("/settings/notifications") },
-    { key: "firstMatchViewed", label: t("activation.firstMatchViewed"), done: status.firstMatchViewed, action: () => setActiveTab("matches") },
-    { key: "firstReaction", label: t("activation.firstReaction"), done: status.firstReaction, action: () => setActiveTab("matches") },
-  ];
+  const allTasks: { key: string; label: string; done: boolean; action: () => void }[] = [];
 
-  const doneCount = steps.filter((s) => s.done).length;
-  const allDone = doneCount === steps.length;
+  if (status) {
+    const activationTasks = [
+      { key: "profileCreated", label: t("activation.profileCreated"), done: status.profileCreated },
+      { key: "notificationsEnabled", label: t("activation.notificationsEnabled"), done: status.notificationsEnabled },
+      { key: "firstMatchViewed", label: t("activation.firstMatchViewed"), done: status.firstMatchViewed },
+      { key: "firstReaction", label: t("activation.firstReaction"), done: status.firstReaction },
+      { key: "trialStarted", label: t("activation.trialStarted"), done: status.trialStarted },
+      { key: "subscriptionStarted", label: t("activation.subscriptionStarted"), done: status.subscriptionStarted },
+    ];
+    activationTasks.forEach((task) => {
+      allTasks.push({ ...task, action: TASK_ACTION_MAP[task.key] || (() => {}) });
+    });
+  }
 
-  if (allDone) return null;
+  if (strength) {
+    const existingKeys = new Set(allTasks.map(t => t.key));
+    [...strength.tasks, ...strength.prepTasks].forEach((task) => {
+      if (!existingKeys.has(task.id)) {
+        allTasks.push({
+          key: task.id,
+          label: task.label,
+          done: task.completed,
+          action: TASK_ACTION_MAP[task.id] || (() => {}),
+        });
+      }
+    });
+  }
 
-  const progress = (doneCount / steps.length) * 100;
+  const doneCount = allTasks.filter((t) => t.done).length;
+  if (doneCount === allTasks.length) return null;
+
+  const completedTasks = allTasks.filter((t) => t.done);
+  const incompleteTasks = allTasks.filter((t) => !t.done);
+  const sortedTasks = [...incompleteTasks, ...completedTasks];
+
+  const INITIAL_SHOW = 5;
+  const visibleTasks = expanded ? sortedTasks : sortedTasks.slice(0, INITIAL_SHOW);
+  const hasMore = sortedTasks.length > INITIAL_SHOW;
 
   return (
-    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5" data-testid="activation-checklist">
-      <div className="flex items-center gap-3 mb-3">
+    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5" data-testid="unified-task-list">
+      <div className="flex items-center gap-3 mb-5">
         <div className="w-9 h-9 rounded-full bg-[#EBF2FF] flex items-center justify-center flex-shrink-0">
           <Rocket className="w-4 h-4 text-[#0D6EFD]" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[15px] font-bold text-[#1F2937]">{t("activation.title")}</p>
-          <p className="text-[12px] text-[#6B7280]">{t("activation.subtitle")}</p>
+          <p className="text-[12px] text-[#6B7280]">{doneCount}/{allTasks.length} {t("activation.completed")}</p>
         </div>
       </div>
-      <div className="h-2 bg-[#F3F4F6] rounded-full mb-4 overflow-hidden">
-        <div
-          className="h-full bg-[#0D6EFD] rounded-full transition-all duration-500"
-          style={{ width: `${progress}%` }}
-          data-testid="activation-progress-bar"
-        />
-      </div>
-      <div className="flex flex-col gap-2">
-        {steps.map((step) => (
+
+      <div className="flex flex-col gap-1">
+        {visibleTasks.map((task) => (
           <button
-            key={step.key}
-            onClick={step.done ? undefined : step.action}
-            className={`flex items-center gap-3 py-2 px-1 rounded-lg text-left transition-colors ${
-              step.done ? "opacity-60" : "hover:bg-[#F9FAFB]"
+            key={task.key}
+            onClick={task.done ? undefined : task.action}
+            className={`flex items-center gap-3 py-3.5 px-2 rounded-xl text-left transition-colors ${
+              task.done ? "" : "hover:bg-[#F9FAFB] active:bg-[#F3F4F6]"
             }`}
-            disabled={step.done}
-            data-testid={`activation-step-${step.key}`}
+            disabled={task.done}
+            data-testid={`task-${task.key}`}
           >
-            {step.done ? (
-              <CheckCircle2 className="w-5 h-5 text-[#16A34A] flex-shrink-0" />
+            {task.done ? (
+              <CheckCircle2 className="w-5 h-5 text-[#0D6EFD] flex-shrink-0" />
             ) : (
               <Circle className="w-5 h-5 text-[#D1D5DB] flex-shrink-0" />
             )}
-            <span className={`text-[14px] font-medium ${step.done ? "text-[#9CA3AF] line-through" : "text-[#1F2937]"}`}>
-              {step.label}
+            <span className={`text-[14px] font-medium flex-1 ${task.done ? "text-[#9CA3AF] line-through" : "text-[#1F2937]"}`}>
+              {task.label}
             </span>
-            {!step.done && <ChevronRight className="w-4 h-4 text-[#9CA3AF] ml-auto" />}
+            {!task.done && <ChevronRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />}
           </button>
         ))}
       </div>
 
-      {showNoMatchHint && (
-        <div className="mt-3 bg-[#FFFBEB] rounded-xl px-4 py-3 flex items-start gap-3" data-testid="no-match-hint">
-          <AlertCircle className="w-4 h-4 text-[#D97706] flex-shrink-0 mt-0.5" />
-          <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-medium text-[#92400E]">{t("activation.noMatchesHint")}</p>
-            <button
-              onClick={() => navigate("/dashboard/searches/new")}
-              className="text-[13px] font-bold text-[#D97706] mt-1 underline"
-              data-testid="button-adjust-filters"
-            >
-              {t("activation.adjustFilters")}
-            </button>
-          </div>
-        </div>
+      {hasMore && (
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="w-full mt-2 text-[13px] font-semibold text-[#0D6EFD] py-2 hover:underline"
+          data-testid="button-expand-tasks"
+        >
+          {expanded ? t("activation.showLess") : t("activation.showMore", { count: sortedTasks.length - INITIAL_SHOW })}
+        </button>
       )}
     </div>
-  );
-}
-
-function NudgeBanners({ newCount, viewedCount, appliedCount, setActiveTab }: { newCount: number; viewedCount: number; appliedCount: number; setActiveTab: (tab: TabKey) => void }) {
-  const { t } = useTranslation();
-  const [dismissed, setDismissed] = useState<Set<string>>(() => {
-    try {
-      const stored = localStorage.getItem("housalert_nudge_dismissed");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (parsed.date === new Date().toDateString()) {
-          return new Set(parsed.keys || []);
-        }
-      }
-    } catch {}
-    return new Set<string>();
-  });
-
-  const dismiss = (key: string) => {
-    const next = new Set(dismissed);
-    next.add(key);
-    setDismissed(next);
-    try {
-      localStorage.setItem("housalert_nudge_dismissed", JSON.stringify({ date: new Date().toDateString(), keys: Array.from(next) }));
-    } catch {}
-  };
-
-  const unreactedCount = viewedCount - appliedCount;
-
-  return (
-    <>
-      {newCount > 0 && !dismissed.has("unviewed") && (
-        <div className="rounded-xl bg-[#EBF2FF] px-4 py-3 flex items-center gap-3" data-testid="nudge-unviewed">
-          <Sparkles className="w-4 h-4 text-[#0D6EFD] flex-shrink-0" />
-          <p className="text-[13px] font-medium text-[#1F2937] flex-1">
-            {t("nudge.unviewedTitle", { count: newCount, label: newCount === 1 ? t("nudge.matchSingular") : t("nudge.matchPlural") })}
-          </p>
-          <button
-            onClick={() => { setActiveTab("matches"); dismiss("unviewed"); }}
-            className="text-[12px] font-semibold text-[#0D6EFD] hover:underline flex-shrink-0"
-            data-testid="button-nudge-view"
-          >
-            {t("nudge.unviewedAction")}
-          </button>
-        </div>
-      )}
-      {unreactedCount > 2 && !dismissed.has("unreacted") && (
-        <div className="rounded-xl bg-[#FFF7ED] px-4 py-3 flex items-center gap-3" data-testid="nudge-unreacted">
-          <Send className="w-4 h-4 text-[#EA580C] flex-shrink-0" />
-          <p className="text-[13px] font-medium text-[#1F2937] flex-1">
-            {t("nudge.unreactedTitle", { count: unreactedCount, label: unreactedCount === 1 ? t("nudge.woningSingular") : t("nudge.woningPlural") })}
-          </p>
-          <button
-            onClick={() => { setActiveTab("matches"); dismiss("unreacted"); }}
-            className="text-[12px] font-semibold text-[#EA580C] hover:underline flex-shrink-0"
-            data-testid="button-nudge-react"
-          >
-            {t("nudge.unreactedAction")}
-          </button>
-        </div>
-      )}
-    </>
   );
 }
 
@@ -775,8 +730,6 @@ function HomeTab({
   profiles,
   matchCount,
   newCount,
-  viewedCount,
-  appliedCount,
   navigate,
   setActiveTab,
   subscription,
@@ -786,24 +739,12 @@ function HomeTab({
   profiles: SearchProfile[];
   matchCount: number;
   newCount: number;
-  viewedCount: number;
-  appliedCount: number;
   navigate: (path: string) => void;
   setActiveTab: (tab: TabKey) => void;
   subscription: { isTrial: boolean; isExpired: boolean; isActive: boolean; trialEndsAt: string | null };
   accessToken: string | undefined;
 }) {
-  const [activeTaskModal, setActiveTaskModal] = useState<string | null>(null);
-  const [activePrepModal, setActivePrepModal] = useState<string | null>(null);
   const { t } = useTranslation();
-
-  const handleAccountTaskClick = (taskId: string) => {
-    setActiveTaskModal(taskId);
-  };
-
-  const handlePrepTaskClick = (taskId: string) => {
-    setActivePrepModal(taskId);
-  };
 
   const profileDataQuery = useQuery<{ first_name?: string }>({
     queryKey: ["/api/profile-data"],
@@ -846,7 +787,7 @@ function HomeTab({
           {firstName ? t("home.greeting", { name: firstName }) : t("home.greetingDefault")}
         </h1>
       </div>
-      <div className="flex flex-col gap-8 px-6 mt-4">
+      <div className="flex flex-col gap-4 px-6 mt-4">
 
       {hasActiveSub && hasMatches ? (
         <div className="rounded-2xl bg-[#0F172A] p-6" data-testid="hero-matches">
@@ -957,29 +898,10 @@ function HomeTab({
         </div>
       )}
 
-      <NudgeBanners newCount={newCount} viewedCount={viewedCount} appliedCount={appliedCount} setActiveTab={setActiveTab} />
-
-      <ActivationChecklist accessToken={accessToken} navigate={navigate} setActiveTab={setActiveTab} />
-
-      <AccountCompletionCard onTaskClick={handleAccountTaskClick} />
-      <SearchPreparationCard onTaskClick={handlePrepTaskClick} />
+      <UnifiedTaskList accessToken={accessToken} navigate={navigate} setActiveTab={setActiveTab} />
 
       <RecenteMatchesSection accessToken={accessToken} setActiveTab={setActiveTab} subscription={subscription} navigate={navigate} />
 
-      {activeTaskModal && (
-        <TaskModal
-          taskId={activeTaskModal}
-          onClose={() => setActiveTaskModal(null)}
-          navigate={navigate}
-        />
-      )}
-      {activePrepModal && (
-        <PrepTaskModal
-          taskId={activePrepModal}
-          onClose={() => setActivePrepModal(null)}
-          navigate={navigate}
-        />
-      )}
 
       </div>
     </div>
@@ -1055,10 +977,6 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
     refreshStatuses();
   }, [refreshStatuses, accessToken]);
 
-  const handleCopyAndApply = useCallback((match: ApiMatch) => {
-    navigate(`/apply/${match.listing_id}`);
-  }, [navigate]);
-
   const canonicalStats = apiMatchesQuery.data?.canonicalStats;
   const matchTabs = matches.map((m) => ({ ...m, _tab: getMatchTab(m) }));
   const filteredMatches = matchTabs.filter((m) => m._tab === subTab);
@@ -1080,9 +998,9 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
       <div className="sticky top-0 z-10 bg-white pt-5 pb-0 px-6">
         <div className="flex items-center justify-between mb-3">
           <h1 className="text-page-title">{t("matches.title")}</h1>
-          {totalCount > 0 && (
+          {totalCount > 0 && totalCount <= 999 && (
             <span className="text-[13px] font-medium text-[#1F2937] bg-[#F5F7FA] px-2.5 py-1 rounded-full" data-testid="badge-match-count">
-              {totalCount > 999 ? "999+" : totalCount} {totalCount === 1 ? t("matches.listingSingular") : t("matches.listingPlural")}
+              {totalCount} {totalCount === 1 ? t("matches.listingSingular") : t("matches.listingPlural")}
             </span>
           )}
         </div>
@@ -1104,7 +1022,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
                   <span className={`text-[10px] font-bold min-w-[20px] h-[20px] flex items-center justify-center rounded-full ${
                     isActive ? "bg-[#0D6EFD] text-white" : "bg-[#E5E7EB] text-[#1F2937]"
                   }`}>
-                    {count}
+                    {count > 99 ? "99+" : count}
                   </span>
                 )}
               </button>
@@ -1204,7 +1122,6 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
               key={m.listing_id}
               match={m}
               onSaveToggle={handleSaveToggle}
-              onCopyAndApply={handleCopyAndApply}
               isSaved={m.canonical_saved ?? safeGetSet(MATCH_SAVED_KEY).has(m.listing_id)}
               onStatusChange={refreshStatuses}
             />
@@ -1627,32 +1544,30 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, match
             </div>
           )}
 
-          <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
-            {(subscription.isActive || subscription.isTrial) ? (
-            <div className="grid grid-cols-2 gap-0">
-              <div className="flex flex-col items-center py-5 px-3" data-testid="kpi-matches">
-                <div className="w-12 h-12 rounded-full bg-[#EBF2FF] flex items-center justify-center mb-2">
+          {(subscription.isActive || subscription.isTrial) ? (
+            <div className="grid grid-cols-2 gap-3" data-testid="kpi-stats">
+              <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 flex flex-col items-center" data-testid="kpi-matches">
+                <div className="w-11 h-11 rounded-full bg-[#EBF2FF] flex items-center justify-center mb-3">
                   <Heart className="w-5 h-5 text-[#0D6EFD]" />
                 </div>
-                <p className="text-[26px] font-[800] text-[#111C3D] leading-none">{matchCount > 999 ? "999+" : matchCount}</p>
-                <p className="text-[12px] text-[#6B7280] mt-1.5 text-center leading-tight">{t("profile.stats.matchesReceived")}</p>
+                <p className="text-[28px] font-[800] text-[#111C3D] leading-none">{matchCount > 999 ? "999+" : matchCount}</p>
+                <p className="text-[13px] text-[#6B7280] mt-2 text-center font-medium">{t("profile.stats.matchesReceived")}</p>
               </div>
-              <div className="flex flex-col items-center py-5 px-3 border-l border-[#E5E7EB]" data-testid="kpi-reactions">
-                <div className="w-12 h-12 rounded-full bg-[#F0FDF4] flex items-center justify-center mb-2">
+              <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 flex flex-col items-center" data-testid="kpi-reactions">
+                <div className="w-11 h-11 rounded-full bg-[#F0FDF4] flex items-center justify-center mb-3">
                   <Send className="w-5 h-5 text-[#22C55E]" />
                 </div>
-                <p className="text-[26px] font-[800] text-[#111C3D] leading-none">{stats.reactions_sent}</p>
-                <p className="text-[12px] text-[#6B7280] mt-1.5 text-center leading-tight">{t("profile.stats.reactionsSent")}</p>
+                <p className="text-[28px] font-[800] text-[#111C3D] leading-none">{stats.reactions_sent}</p>
+                <p className="text-[13px] text-[#6B7280] mt-2 text-center font-medium">{t("profile.stats.reactionsSent")}</p>
               </div>
             </div>
-            ) : (
-            <div className="p-4 text-center" data-testid="kpi-no-sub">
+          ) : (
+            <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 text-center" data-testid="kpi-no-sub">
               <p className="text-[14px] text-[#1F2937]">
                 {t("profile.activateSubStats")}
               </p>
             </div>
-            )}
-          </div>
+          )}
 
           <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
             {pd?.search_buddy_email ? (
@@ -1833,11 +1748,24 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, match
           </div>
 
           {(user?.email?.toLowerCase() === "martin.essie87@gmail.com") && (
-            <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
-              <AccountSettingsRow
-                label="Match Audit (Admin)"
-                onClick={() => navigate("/admin/match-audit")}
-              />
+            <div>
+              <p className="text-[13px] font-semibold text-[#111C3D] tracking-wide mb-3">Admin</p>
+              <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+                <AccountSettingsRow
+                  label="Activation Dashboard"
+                  onClick={() => navigate("/admin/activation")}
+                />
+                <div className="h-px bg-[#E5E7EB] mx-5" />
+                <AccountSettingsRow
+                  label="Match Audit"
+                  onClick={() => navigate("/admin/match-audit")}
+                />
+                <div className="h-px bg-[#E5E7EB] mx-5" />
+                <AccountSettingsRow
+                  label="Ingestion Monitor"
+                  onClick={() => navigate("/admin/ingestion")}
+                />
+              </div>
             </div>
           )}
         </div>
@@ -1997,8 +1925,6 @@ export default function DashboardPage() {
             profiles={profiles}
             matchCount={matchCount}
             newCount={newCount}
-            viewedCount={apiMatchesQuery.data?.canonicalStats?.viewed ?? 0}
-            appliedCount={apiMatchesQuery.data?.canonicalStats?.applied ?? 0}
             navigate={navigate}
             setActiveTab={setActiveTab}
             subscription={{ isTrial: sub.isTrial, isExpired: sub.isExpired, isActive: sub.isActive, trialEndsAt: sub.trialEndsAt }}
