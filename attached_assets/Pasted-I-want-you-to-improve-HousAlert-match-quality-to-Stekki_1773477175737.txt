@@ -1,0 +1,131 @@
+I want you to improve HousAlert match quality to Stekkies-level core parity.
+
+Context:
+HousAlert is a rental alert app for Germany.
+Users create housing search profiles and receive alerts when new listings match.
+The core user promise is speed + relevance:
+- users should receive new listings fast
+- but the listings must also feel relevant and trustworthy
+
+Current status:
+- listings are collected
+- matches are stored
+- email alerts are parity-ready
+- push backend is nearly production-ready
+- current match engine exists, but match quality still needs improvement
+
+Goal:
+Make the matching logic more reliable, explainable, and practical.
+Do NOT overengineer with AI. Keep it deterministic, testable, and easy to maintain.
+
+Please do the following:
+
+1. Audit the current match engine
+Review:
+- matching rules currently used
+- what profile fields are supported
+- how city matching works
+- how district matching works
+- how price filtering works
+- how rooms filtering works
+- how size filtering works
+- how furnished/pets are handled
+- how duplicates affect matches
+- whether old/inactive listings can still match
+- whether match explanations exist
+
+Then clearly identify:
+- what is already good
+- what is weak
+- what causes false positives
+- what causes false negatives
+- what is missing for parity
+
+2. Improve deterministic matching logic
+Implement or improve robust matching for:
+- city
+- district / neighborhood
+- max price
+- min rooms
+- min size sqm
+- furnished
+- pets allowed
+- active listing status
+- recency / freshness checks if applicable
+
+Important:
+- keep rules explicit and easy to reason about
+- normalize values carefully
+- avoid surprising behavior
+- do not introduce fuzzy nonsense unless it is clearly beneficial and controlled
+
+3. Add match explanations
+For every match decision, provide structured explanation data where practical.
+Example concepts:
+- matched city
+- matched district
+- price within budget
+- rooms requirement met
+- size requirement met
+This can be stored, returned, or logged depending on the architecture.
+The goal is to make debugging and product QA easier.
+
+4. Review duplicate/near-duplicate impact on matching
+If duplicate listings can create duplicate matches or noisy alerts, tighten the behavior.
+Do not rewrite the entire dedupe system unless needed, but make sure match quality is not degraded by duplicates.
+
+5. Improve edge-case handling
+Handle cases like:
+- missing district
+- missing rooms
+- missing size
+- price = 0 or null
+- city name variants
+- district formatting differences
+- furnished/pets unknown vs false
+Be explicit about sensible defaults.
+
+6. Add automated tests
+Create practical tests for:
+- city exact matches
+- city normalization / formatting variants
+- district allow / reject cases
+- max price pass/fail
+- min rooms pass/fail
+- min size pass/fail
+- furnished filter behavior
+- pets filter behavior
+- inactive listing rejection
+- duplicate or near-duplicate effect on matching
+- explanation generation
+- missing field edge cases
+
+7. Add a dry-run simulation
+Create a dry-run that simulates:
+- multiple search profiles
+- multiple listings
+- some valid matches
+- some rejected listings
+- some edge cases
+Then output clearly which profiles matched which listings and why.
+
+8. Execute the tests yourself
+Run the relevant commands in Replit and report the actual results.
+
+9. Reply in exactly this structure:
+A. Audit findings
+B. Matching rule decisions
+C. Files changed
+D. Test files added
+E. Commands executed
+F. Actual test results
+G. Dry-run simulation summary
+H. Remaining issues
+I. Final verdict: is match quality parity-ready or not?
+
+Important constraints:
+- Keep architecture intact as much as possible
+- Use Supabase where persistence is needed
+- Do not rewrite unrelated notification systems
+- Prefer practical improvements over theoretical perfection
+- Execute the tests now, do not only describe them

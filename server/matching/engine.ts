@@ -121,68 +121,181 @@ function mapExtraFeatureToListingField(feature: string, listing: DbListing): { v
   }
 }
 
+const GERMAN_CITY_ALIASES: Record<string, string[]> = {
+  "münchen": ["munich", "muenchen"],
+  "köln": ["cologne", "koeln"],
+  "düsseldorf": ["duesseldorf"],
+  "nürnberg": ["nuremberg", "nuernberg"],
+  "zürich": ["zurich", "zuerich"],
+  "würzburg": ["wuerzburg"],
+  "göttingen": ["goettingen"],
+  "lübeck": ["luebeck"],
+  "saarbrücken": ["saarbruecken"],
+  "braunschweig": ["brunswick"],
+  "hannover": ["hanover"],
+  "frankfurt am main": ["frankfurt"],
+  "freiburg im breisgau": ["freiburg"],
+};
+
+export function normalizeCity(raw: string): string {
+  return raw.toLowerCase().trim().replace(/\s+/g, " ");
+}
+
+function resolveAliases(city: string): string[] {
+  const result = [city];
+  for (const [canonical, aliases] of Object.entries(GERMAN_CITY_ALIASES)) {
+    if (city === canonical) {
+      result.push(...aliases);
+    } else if (aliases.includes(city)) {
+      result.push(canonical);
+      result.push(...aliases.filter(x => x !== city));
+    }
+  }
+  return result;
+}
+
+export function getCitySearchTerms(city: string): string[] {
+  const normalized = normalizeCity(city);
+  if (!normalized) return [];
+  const all = resolveAliases(normalized);
+  return [...new Set(all.map(c => c.replace(/[%_\\,()]/g, "")))].filter(c => c.length >= 3);
+}
+
+export function citiesMatch(listingCity: string, profileCity: string): boolean {
+  const a = normalizeCity(listingCity);
+  const b = normalizeCity(profileCity);
+
+  if (!a || !b) return false;
+
+  if (a === b) return true;
+
+  if (a.startsWith(b + " ") || b.startsWith(a + " ")) return true;
+
+  const aliasesA = resolveAliases(a);
+  const aliasesB = resolveAliases(b);
+
+  for (const ca of aliasesA) {
+    for (const cb of aliasesB) {
+      if (ca === cb) return true;
+    }
+  }
+
+  return false;
+}
+
 export function explainMatchInternal(listing: DbListing, profile: SearchProfile): MatchExplanation {
   const checks: FilterCheck[] = [];
-  const listingCity = listing.city.toLowerCase().trim();
-  const profileCity = (profile.city_name || profile.city || "").toLowerCase().trim();
+  const listingCity = normalizeCity(listing.city);
+  const profileCity = normalizeCity(profile.city_name || profile.city || "");
 
-  const cityPassed = !!profileCity && (listingCity.includes(profileCity) || profileCity.includes(listingCity));
+  const cityPassed = citiesMatch(listingCity, profileCity);
   checks.push({
     filter: "city",
     profileField: "city_name || city",
     profileValue: profileCity || "(empty)",
     listingField: "city",
     listingValue: listingCity,
-    rule: "substring match (case-insensitive)",
+    rule: "exact match or alias match (case-insensitive, German aliases supported)",
     passed: cityPassed,
   });
   if (!cityPassed) return { matched: false, checks, reason: `City mismatch: listing="${listingCity}" vs profile="${profileCity}"` };
 
-  const priceMinPassed = !(profile.price_min > 0 && listing.price < profile.price_min);
+  const listingPriceKnown = listing.price > 0;
+  let priceMinPassed: boolean;
+  let priceMinHybrid = false;
+  if (profile.price_min <= 0) {
+    priceMinPassed = true;
+  } else if (!listingPriceKnown) {
+    priceMinPassed = true;
+    priceMinHybrid = true;
+  } else {
+    priceMinPassed = listing.price >= profile.price_min;
+  }
   checks.push({
     filter: "price_min",
     profileField: "price_min",
     profileValue: String(profile.price_min),
     listingField: "price",
     listingValue: String(listing.price),
-    rule: "listing.price >= profile.price_min (skipped if price_min=0)",
+    rule: listingPriceKnown
+      ? "listing.price >= profile.price_min (skipped if price_min=0)"
+      : "hybrid: listing.price=0 (unknown) → allowed",
     passed: priceMinPassed,
+    hybridPass: priceMinHybrid,
   });
   if (!priceMinPassed) return { matched: false, checks, reason: `Price ${listing.price} < min ${profile.price_min}` };
 
-  const priceMaxPassed = !(profile.price_max > 0 && listing.price > profile.price_max);
+  let priceMaxPassed: boolean;
+  let priceMaxHybrid = false;
+  if (profile.price_max <= 0) {
+    priceMaxPassed = true;
+  } else if (!listingPriceKnown) {
+    priceMaxPassed = true;
+    priceMaxHybrid = true;
+  } else {
+    priceMaxPassed = listing.price <= profile.price_max;
+  }
   checks.push({
     filter: "price_max",
     profileField: "price_max",
     profileValue: String(profile.price_max),
     listingField: "price",
     listingValue: String(listing.price),
-    rule: "listing.price <= profile.price_max (skipped if price_max=0)",
+    rule: listingPriceKnown
+      ? "listing.price <= profile.price_max (skipped if price_max=0)"
+      : "hybrid: listing.price=0 (unknown) → allowed",
     passed: priceMaxPassed,
+    hybridPass: priceMaxHybrid,
   });
   if (!priceMaxPassed) return { matched: false, checks, reason: `Price ${listing.price} > max ${profile.price_max}` };
 
-  const bedroomsPassed = !(profile.bedrooms_min > 0 && listing.bedrooms < profile.bedrooms_min);
+  const listingBedsKnown = listing.bedrooms > 0;
+  let bedroomsPassed: boolean;
+  let bedroomsHybrid = false;
+  if (profile.bedrooms_min <= 0) {
+    bedroomsPassed = true;
+  } else if (!listingBedsKnown) {
+    bedroomsPassed = true;
+    bedroomsHybrid = true;
+  } else {
+    bedroomsPassed = listing.bedrooms >= profile.bedrooms_min;
+  }
   checks.push({
     filter: "bedrooms_min",
     profileField: "bedrooms_min",
     profileValue: String(profile.bedrooms_min),
     listingField: "bedrooms",
     listingValue: String(listing.bedrooms),
-    rule: "listing.bedrooms >= profile.bedrooms_min (skipped if bedrooms_min=0)",
+    rule: listingBedsKnown
+      ? "listing.bedrooms >= profile.bedrooms_min (skipped if bedrooms_min=0)"
+      : "hybrid: listing.bedrooms=0 (unknown) → allowed",
     passed: bedroomsPassed,
+    hybridPass: bedroomsHybrid,
   });
   if (!bedroomsPassed) return { matched: false, checks, reason: `Bedrooms ${listing.bedrooms} < min ${profile.bedrooms_min}` };
 
-  const sizePassed = !(profile.size_min > 0 && listing.size_m2 < profile.size_min);
+  const listingSizeKnown = listing.size_m2 > 0;
+  let sizePassed: boolean;
+  let sizeHybrid = false;
+  if (profile.size_min <= 0) {
+    sizePassed = true;
+  } else if (!listingSizeKnown) {
+    sizePassed = true;
+    sizeHybrid = true;
+  } else {
+    sizePassed = listing.size_m2 >= profile.size_min;
+  }
   checks.push({
     filter: "size_min",
     profileField: "size_min",
     profileValue: String(profile.size_min),
     listingField: "size_m2",
     listingValue: String(listing.size_m2),
-    rule: "listing.size_m2 >= profile.size_min (skipped if size_min=0)",
+    rule: listingSizeKnown
+      ? "listing.size_m2 >= profile.size_min (skipped if size_min=0)"
+      : "hybrid: listing.size_m2=0 (unknown) → allowed",
     passed: sizePassed,
+    hybridPass: sizeHybrid,
   });
   if (!sizePassed) return { matched: false, checks, reason: `Size ${listing.size_m2}m² < min ${profile.size_min}m²` };
 
@@ -459,16 +572,16 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
     return 0;
   }
 
-  const listingCity = (listing as DbListing).city.toLowerCase().trim();
-  const safeCity = listingCity.replace(/[%_\\,()]/g, "");
+  const searchTerms = getCitySearchTerms((listing as DbListing).city);
   let profiles: any[] | null = null;
   let pErr: any = null;
 
-  if (safeCity.length >= 3) {
+  if (searchTerms.length > 0) {
+    const orFilter = searchTerms.map(t => `city.ilike.%${t}%,city_name.ilike.%${t}%`).join(",");
     const result = await supabase
       .from("search_profiles")
       .select("*")
-      .ilike("city", `%${safeCity}%`);
+      .or(orFilter);
     profiles = result.data;
     pErr = result.error;
     if (pErr) {
@@ -484,7 +597,7 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
   }
 
   if (pErr || !profiles || profiles.length === 0) {
-    log(`[MATCH ENGINE COMPLETE] no profiles found for city="${listingCity}", 0 matches`);
+    log(`[MATCH ENGINE COMPLETE] no profiles found for city="${(listing as DbListing).city}", 0 matches`);
     return 0;
   }
 
@@ -558,17 +671,19 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
 
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
-  const profileCity = (sp.city_name || sp.city || "").toLowerCase().trim().replace(/[%_\\,()]/g, "");
+  const profileCityRaw = sp.city_name || sp.city || "";
+  const backfillSearchTerms = getCitySearchTerms(profileCityRaw);
 
   let listings: any[] | null = null;
   let lErr: any = null;
 
-  if (profileCity.length >= 3) {
+  if (backfillSearchTerms.length > 0) {
+    const orFilter = backfillSearchTerms.map(t => `city.ilike.%${t}%`).join(",");
     const result = await supabase
       .from("listings")
       .select(getListingSelect())
       .gte("created_at", sevenDaysAgo)
-      .ilike("city", `%${profileCity}%`);
+      .or(orFilter);
     listings = result.data;
     lErr = result.error;
     if (lErr) {
@@ -577,7 +692,7 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
       listings = fallback.data;
       lErr = fallback.error;
     } else {
-      log(`[MATCH ENGINE] Backfill pre-filtered to ${listings?.length ?? 0} listings in city="${profileCity}"`);
+      log(`[MATCH ENGINE] Backfill pre-filtered to ${listings?.length ?? 0} listings in city="${profileCityRaw}"`);
     }
   } else {
     const result = await supabase.from("listings").select(getListingSelect()).gte("created_at", sevenDaysAgo);
@@ -586,7 +701,7 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
   }
 
   if (lErr || !listings || listings.length === 0) {
-    log(`[MATCH ENGINE COMPLETE] no recent listings found for city="${profileCity}", 0 matches`);
+    log(`[MATCH ENGINE COMPLETE] no recent listings found for city="${profileCityRaw}", 0 matches`);
     return 0;
   }
 
