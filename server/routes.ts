@@ -1180,6 +1180,44 @@ export async function registerRoutes(
     if (priceId) PRICE_TO_PLAN[priceId] = plan;
   }
 
+  app.post("/api/stripe/portal", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      if (!stripeAvailable) {
+        return res.status(503).json({ error: "stripe_not_configured" });
+      }
+
+      const { getUncachableStripeClient } = await import("./stripe/stripeClient");
+      const stripe = await getUncachableStripeClient();
+
+      const { data: subRow } = await supabase
+        .from("subscriptions")
+        .select("stripe_customer_id")
+        .eq("user_id", user.id)
+        .single();
+
+      if (!subRow?.stripe_customer_id) {
+        return res.status(404).json({ error: "no_stripe_customer" });
+      }
+
+      const baseUrl = process.env.APP_PUBLIC_BASE_URL || `https://${req.headers.host}`;
+      const portalSession = await stripe.billingPortal.sessions.create({
+        customer: subRow.stripe_customer_id,
+        return_url: `${baseUrl}/account/subscription`,
+      });
+
+      return res.json({ url: portalSession.url });
+    } catch (err: any) {
+      log(`[stripe-portal] Error: ${err.message}`);
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   app.post("/api/checkout/session", async (req, res) => {
     try {
       const token = req.headers.authorization?.replace("Bearer ", "");
@@ -1454,11 +1492,20 @@ export async function registerRoutes(
                 : new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
               await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubId, plan, null, trialEndsAt);
             } else if (subStatus === "active") {
-              const rawEnd = sub.current_period_end;
-              const periodEnd = rawEnd && rawEnd > 0
-                ? new Date(rawEnd * 1000)
-                : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-              await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubId, plan, periodEnd, null);
+              if (sub.cancel_at_period_end) {
+                const rawEnd = sub.current_period_end;
+                const periodEnd = rawEnd && rawEnd > 0
+                  ? new Date(rawEnd * 1000)
+                  : null;
+                await updateSubscriptionStatus(stripeSubId, "canceled", periodEnd ?? undefined);
+                log(`[stripe-webhook] Subscription ${stripeSubId} marked canceled (cancel_at_period_end=true)`);
+              } else {
+                const rawEnd = sub.current_period_end;
+                const periodEnd = rawEnd && rawEnd > 0
+                  ? new Date(rawEnd * 1000)
+                  : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+                await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubId, plan, periodEnd, null);
+              }
             } else if (subStatus === "canceled" || subStatus === "unpaid") {
               await updateSubscriptionStatus(stripeSubId, "canceled");
             } else if (subStatus === "past_due" || subStatus === "incomplete_expired") {
@@ -1720,7 +1767,8 @@ export async function registerRoutes(
       const checklist = (profileData?.document_checklist ?? {}) as Record<string, boolean>;
       const checklistValues = Object.values(checklist);
       const checklistDone = checklistValues.filter(Boolean).length;
-      const hasDocuments = checklistDone >= 4;
+      const REQUIRED_DOC_COUNT = 6;
+      const hasDocuments = checklistDone >= REQUIRED_DOC_COUNT;
 
       const hasPhone = !!(notif.phone_e164 && notif.phone_e164.length > 5);
 

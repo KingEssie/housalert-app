@@ -19,6 +19,9 @@ export default function SubscriptionDetailPage() {
 
   const sub = useSubscription();
   const isLoading = sub.loading;
+
+  const isCanceled = sub.status === "canceled" || sub.cancelAtPeriodEnd;
+
   const subscription = isLoading ? undefined : {
     status: sub.status,
     plan: sub.plan,
@@ -28,6 +31,7 @@ export default function SubscriptionDetailPage() {
     isActive: sub.isActive,
     isTrial: sub.isTrial,
     isExpired: sub.isExpired,
+    cancelAtPeriodEnd: sub.cancelAtPeriodEnd,
   };
 
   function getPlanLabel(plan: string | null | undefined): string {
@@ -57,16 +61,25 @@ export default function SubscriptionDetailPage() {
     }
   }
 
-  const statusLabel = subscription?.isTrial
-    ? t("subscription.status.trial")
-    : subscription?.isActive
-      ? t("subscription.status.active")
-      : t("subscription.status.expired");
+  function getStatusLabel(): string {
+    if (subscription?.isTrial) return t("subscription.status.trial");
+    if (subscription?.isExpired) return t("subscription.status.expired");
+    if (isCanceled && subscription?.isActive) return t("subscription.status.activeUntilEnd");
+    if (subscription?.isActive) return t("subscription.status.active");
+    return t("subscription.status.expired");
+  }
 
-  const statusVariant = subscription?.isActive || subscription?.isTrial ? "success" : "secondary";
+  function getPlanSummary(): string {
+    if (subscription?.isTrial) return t("subscription.status.trial");
+    const planName = getPlanLabel(subscription?.plan);
+    if (subscription?.isExpired) return planName;
+    if (isCanceled && subscription?.isActive) {
+      return `${planName} \u2022 ${t("subscription.status.activeUntilEnd")}`;
+    }
+    return `${planName} \u2022 ${t("subscription.status.active")}`;
+  }
 
   const startDate = subscription?.created_at || null;
-
   const renewalDate = subscription?.current_period_ends_at || subscription?.trial_ends_at;
 
   if (isLoading) {
@@ -97,13 +110,17 @@ export default function SubscriptionDetailPage() {
             </div>
             <div className="flex-1">
               <p className="text-[16px] font-bold text-white" data-testid="text-plan-name">
-                {subscription?.isTrial ? t("subscription.status.trial") : getPlanLabel(subscription?.plan)}
+                {subscription?.isTrial ? t("subscription.status.trial") : getPlanSummary()}
               </p>
               <span
-                className="inline-block mt-1.5 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-white text-[#0D6EFD]"
+                className={`inline-block mt-1.5 text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${
+                  isCanceled && subscription?.isActive
+                    ? "bg-[#FEF3C7] text-[#92400E]"
+                    : "bg-white text-[#0D6EFD]"
+                }`}
                 data-testid="badge-subscription-status"
               >
-                {statusLabel}
+                {getStatusLabel()}
               </span>
             </div>
           </div>
@@ -130,7 +147,13 @@ export default function SubscriptionDetailPage() {
 
           <DetailRow
             icon={<Calendar className="w-[18px] h-[18px]" style={{ color: "#0D6EFD" }} />}
-            label={subscription?.isTrial ? t("subscription.trialEnds") : subscription?.status === "canceled" ? t("subscription.endsAt") : t("subscription.nextRenewal")}
+            label={
+              subscription?.isTrial
+                ? t("subscription.trialEnds")
+                : isCanceled
+                  ? t("subscription.endsAt")
+                  : t("subscription.nextRenewal")
+            }
             value={formatDate(renewalDate)}
             testId="text-renewal-date"
           />
@@ -138,16 +161,8 @@ export default function SubscriptionDetailPage() {
 
           <DetailRow
             icon={<RefreshCw className="w-[18px] h-[18px]" style={{ color: "#0D6EFD" }} />}
-            label={t("subscription.billingFrequency")}
-            value={subscription?.isTrial ? t("subscription.status.trial") : getBillingFrequency(subscription?.plan)}
-            testId="text-billing-frequency"
-          />
-          <div className="mx-5" style={{ borderBottom: "1px solid #E5E7EB" }} />
-
-          <DetailRow
-            icon={<RefreshCw className="w-[18px] h-[18px]" style={{ color: "#0D6EFD" }} />}
             label={t("subscription.autoRenew")}
-            value={subscription?.isActive && !subscription?.isTrial && subscription?.status !== "canceled" ? t("subscription.on") : t("subscription.off")}
+            value={!isCanceled && subscription?.isActive && !subscription?.isTrial ? t("subscription.on") : t("subscription.off")}
             testId="text-auto-renew"
           />
           <div className="mx-5" style={{ borderBottom: "1px solid #E5E7EB" }} />
@@ -155,7 +170,7 @@ export default function SubscriptionDetailPage() {
           <DetailRow
             icon={<CreditCard className="w-[18px] h-[18px]" style={{ color: "#0D6EFD" }} />}
             label={t("subscription.paymentMethod")}
-            value="4242 (Visa)"
+            value={t("subscription.viaStripe")}
             testId="text-payment-method"
           />
         </div>
@@ -172,12 +187,14 @@ export default function SubscriptionDetailPage() {
           />
           <div className="mx-5" style={{ borderBottom: "1px solid #E5E7EB" }} />
 
-          <ActionRow
-            label={t("subscription.cancelSubscription")}
-            onClick={() => navigate("/account/subscription/cancel")}
-            danger
-            testId="button-cancel-subscription"
-          />
+          {!isCanceled && (
+            <ActionRow
+              label={t("subscription.cancelSubscription")}
+              onClick={() => navigate("/account/subscription/cancel")}
+              danger
+              testId="button-cancel-subscription"
+            />
+          )}
         </div>
 
         {subscription?.isExpired && (

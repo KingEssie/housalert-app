@@ -306,6 +306,7 @@ export const en: Record<string, any> = {
     title: "Subscription",
     status: {
       active: "Active",
+      activeUntilEnd: "Active until end of period",
       trial: "Trial",
       expired: "Expired",
     },
@@ -314,6 +315,10 @@ export const en: Record<string, any> = {
     endsAt: "Ends on",
     billingFrequency: "Billing frequency",
     autoRenew: "Auto-renew",
+    on: "On",
+    off: "Off",
+    paymentMethod: "Payment method",
+    viaStripe: "Via Stripe",
     managePayment: "Manage payment method",
     cancelSubscription: "Cancel subscription",
     cancelConfirm: "Are you sure you want to cancel?",
@@ -451,7 +456,12 @@ export const en: Record<string, any> = {
     managedByStripe: "Via Stripe",
     managedByStripeDesc: "Your payment is securely processed via Stripe.",
     active: "Active",
-    managedInfo: "Your payment method is managed via Stripe. You entered your payment details when subscribing. Changes are not possible at this time.",
+    managedInfo: "Your payment method is securely managed by Stripe. Click above to view or update your details in the Stripe portal.",
+    manageViaStripe: "Manage via Stripe",
+    opening: "Opening...",
+    noCustomer: "No Stripe customer found",
+    noCustomerDesc: "You don't have an active subscription yet. Activate a subscription first.",
+    error: "Error opening Stripe portal",
   },
 
   boost: {
@@ -560,5 +570,22 @@ export const en: Record<string, any> = {
     explanationDesc: "Receive matches instantly via email and push. After the trial, you decide if you want to continue — from €10.00/month.",
     noCardNeeded: "No payment details needed to get started",
     pricingNote: "14 days free — then from €10.00/month",
+  },
+
+  documents: {
+    title: "Documents",
+    heading: "Documents checklist",
+    collected: "collected",
+    allDone: "You've collected all the documents!",
+    items: {
+      id_copy: "Copy of ID (passport or ID card)",
+      income_proof: "Proof of income (last 3 payslips)",
+      schufa: "SCHUFA report",
+      rental_history: "Rental history / reference letter from previous landlord",
+      bank_statements: "Bank statements (last 3 months)",
+      employment_proof: "Proof of employment (employment contract)",
+    },
+    tip: "Tip: Make sure all your documents are available digitally (as PDF) so you can react quickly to new listings.",
+    saveFailed: "Save failed",
   },
 };

@@ -1,0 +1,140 @@
+We need a focused bugfix and logic correction pass. These are not cosmetic tweaks — they are real product logic issues.
+
+Please implement the following exactly.
+
+--------------------------------
+1. CHECKLIST TASK ROUTING + COMPLETION FIXES
+--------------------------------
+
+Current problems:
+- "Telefoonnummer toevoegen" routes to the wrong place
+- this task should open the dedicated phone-number screen (the screen where the phone number is directly edited)
+- the user already has a phone number stored, so this task should already count as completed
+
+Required fixes:
+- route "Telefoonnummer toevoegen" to the dedicated phone-number screen
+- use the real stored user phone number as source of truth
+- if a valid phone number already exists, mark this task as completed automatically
+
+--------------------------------
+2. DOCUMENTS TASK: BUILD A REAL DOCUMENT CHECKLIST
+--------------------------------
+
+Current problem:
+"Documenten verzamelen" routes to the wrong place and has no real completion logic.
+
+Required behavior:
+- tapping "Documenten verzamelen" should open a dedicated documents checklist screen
+- this screen should show a list of required documents the user should collect
+- user can tick/check each document manually
+- when all required documents are checked, the task is completed in the main checklist
+
+Suggested document items:
+- ID / paspoort
+- bewijs van inkomen
+- SCHUFA / kredietcheck
+- huurdersverklaring / landlord reference
+- bankafschriften
+- employment contract / work proof
+
+Requirements:
+- store progress persistently per user
+- checklist task completes only when all required document items are checked
+- this must not just be a static info page
+
+--------------------------------
+3. REMOVE IRRELEVANT TASKS FROM MAIN ACTION LIST
+--------------------------------
+
+Remove these tasks from the main home action checklist entirely:
+- Proefperiode gestart
+- Extra zoekprofiel toegevoegd
+- Zoekopdracht optimaliseren
+- Abonnement geactiveerd
+
+The main action list should only contain useful, practical actions that help the user move toward getting housing faster.
+
+--------------------------------
+4. SUBSCRIPTION CANCELLATION AUDIT + FIX
+--------------------------------
+
+This is critical.
+
+Current problem:
+After cancellation, the app still shows:
+- "Automatisch verlengen: Aan"
+- "Volgende verlenging: [date]"
+- account summary still looks like standard active monthly subscription
+
+We need to determine whether this is:
+A. only a UI bug
+or
+B. a real subscription sync/data bug
+
+Tasks:
+- audit the real subscription source of truth
+- inspect Stripe/customer portal/subscription status
+- inspect local DB/subscription table state
+- inspect webhook sync behavior
+- verify whether the subscription is truly canceled or only partially reflected
+
+Required final behavior:
+If the subscription has been canceled but is still active until the period end:
+- do NOT show "Automatisch verlengen: Aan"
+- do NOT show "Volgende verlenging"
+- show something like:
+  - status: actief tot einddatum
+  - renewal: uit
+  - label/date: loopt af op [date]
+
+Also update the account summary card so it does NOT say simply:
+"Maandelijks • Actief"
+when the subscription has already been canceled.
+Instead it should reflect:
+- active until end date
+- not renewing
+
+--------------------------------
+5. PAYMENT METHOD MANAGEMENT VIA STRIPE
+--------------------------------
+
+Current problem:
+The payment-method page was simplified too much and now the user cannot actually manage payment methods from the app.
+
+Required behavior:
+- from the app, the user must be able to manage payment methods via Stripe
+- use the proper Stripe billing/customer portal flow if available
+- "Betaalmethode beheren" should open the real Stripe management flow
+- do not fake in-app editing if Stripe is the source of truth
+- keep the UI clear that management is handled securely via Stripe
+
+Goal:
+The user must be able to update payment method, and if Stripe supports it, remove/change the default payment method through the Stripe-managed flow.
+
+--------------------------------
+6. QA CHECKLIST
+--------------------------------
+
+Verify:
+- phone task routes to the phone-number edit screen
+- existing phone number marks the task complete
+- documents task opens a real checklist screen
+- checking all documents completes the task
+- removed tasks no longer appear in the main action list
+- subscription cancellation state matches real Stripe/database state
+- canceled subscription shows non-renewing end-date state correctly
+- account summary reflects cancellation correctly
+- "Betaalmethode beheren" opens real Stripe-managed billing/payment method flow
+
+--------------------------------
+7. REPLY IN EXACTLY THIS STRUCTURE
+--------------------------------
+
+A. Phone task fix
+B. Documents checklist implementation
+C. Removed tasks from action list
+D. Subscription cancellation audit result
+E. Subscription UI/state fix
+F. Payment method management fix
+G. Files changed
+H. QA verification

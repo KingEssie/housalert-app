@@ -28,6 +28,7 @@ export interface SubscriptionStatus {
   isActive: boolean;
   isTrial: boolean;
   isExpired: boolean;
+  cancelAtPeriodEnd: boolean;
 }
 
 export async function ensureTrialSubscription(userId: string): Promise<SubscriptionRow | null> {
@@ -80,18 +81,21 @@ export async function getSubscriptionStatus(userId: string): Promise<Subscriptio
       isActive: false,
       isTrial: false,
       isExpired: true,
+      cancelAtPeriodEnd: false,
     };
   }
 
-  const row = data as SubscriptionRow;
+  const row = data as SubscriptionRow & { cancel_at_period_end?: boolean };
   const now = new Date();
 
   const isTrial = row.status === "trial" && row.trial_ends_at !== null && new Date(row.trial_ends_at) > now;
-  const isActive = row.status === "active" && (
+  const isActiveStatus = row.status === "active" && (
     row.current_period_ends_at === null || new Date(row.current_period_ends_at) > now
   );
-  const hasAccess = isTrial || isActive;
+  const canceledButStillActive = row.status === "canceled" && row.current_period_ends_at !== null && new Date(row.current_period_ends_at) > now;
+  const hasAccess = isTrial || isActiveStatus || canceledButStillActive;
   const isExpired = !hasAccess;
+  const cancelAtPeriodEnd = row.status === "canceled" || row.cancel_at_period_end === true;
 
   return {
     status: row.status,
@@ -102,6 +106,7 @@ export async function getSubscriptionStatus(userId: string): Promise<Subscriptio
     isActive: hasAccess,
     isTrial,
     isExpired,
+    cancelAtPeriodEnd,
   };
 }
 

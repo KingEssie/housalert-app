@@ -530,11 +530,15 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
   const strength = strengthQuery.data;
   if (!status && !strength) return null;
 
-  const DUPLICATE_TASK_IDS = new Set([
+  const HIDDEN_TASK_IDS = new Set([
     "alerts",
     "prep_letter",
     "prep_network",
     "prep_search_profile",
+    "trialStarted",
+    "subscriptionStarted",
+    "prep_extra_profile",
+    "search_optimize",
   ]);
 
   const TASK_ACTION_MAP: Record<string, () => void> = {
@@ -542,14 +546,10 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
     notificationsEnabled: () => navigate("/settings/notifications"),
     firstMatchViewed: () => setActiveTab("matches"),
     firstReaction: () => { setActiveTab("matches"); },
-    trialStarted: () => navigate("/paywall"),
-    subscriptionStarted: () => navigate("/paywall"),
     search_buddy: () => navigate("/profile/edit/search_buddy_email"),
-    search_optimize: () => { setActiveTab("filters"); },
     application_template: () => navigate("/application-letter"),
-    documents: () => navigate("/profile/details"),
-    phone: () => navigate("/profile/details"),
-    prep_extra_profile: () => navigate("/dashboard/searches/new"),
+    documents: () => navigate("/documents"),
+    phone: () => navigate("/profile/edit/phone"),
     prep_viewing_tips: () => setActiveTab("tips"),
   };
 
@@ -561,8 +561,6 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
       { key: "notificationsEnabled", label: t("activation.notificationsEnabled"), done: status.notificationsEnabled },
       { key: "firstMatchViewed", label: t("activation.firstMatchViewed"), done: status.firstMatchViewed },
       { key: "firstReaction", label: t("activation.firstReaction"), done: status.firstReaction },
-      { key: "trialStarted", label: t("activation.trialStarted"), done: status.trialStarted },
-      { key: "subscriptionStarted", label: t("activation.subscriptionStarted"), done: status.subscriptionStarted },
     ];
     activationTasks.forEach((task) => {
       allTasks.push({ ...task, action: TASK_ACTION_MAP[task.key] || (() => {}) });
@@ -571,18 +569,16 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
 
   const STRENGTH_LABEL_MAP: Record<string, string> = {
     search_buddy: t("strengthTask.searchBuddy"),
-    search_optimize: t("strengthTask.searchOptimize"),
     application_template: t("strengthTask.applicationTemplate"),
     documents: t("strengthTask.documents"),
     phone: t("strengthTask.phone"),
-    prep_extra_profile: t("strengthTask.prepExtraProfile"),
     prep_viewing_tips: t("strengthTask.prepViewingTips"),
   };
 
   if (strength) {
     const existingKeys = new Set(allTasks.map(t => t.key));
     [...strength.tasks, ...strength.prepTasks].forEach((task) => {
-      if (!existingKeys.has(task.id) && task.id !== "prep_viewing_tips" && !DUPLICATE_TASK_IDS.has(task.id)) {
+      if (!existingKeys.has(task.id) && task.id !== "prep_viewing_tips" && !HIDDEN_TASK_IDS.has(task.id)) {
         existingKeys.add(task.id);
         allTasks.push({
           key: task.id,

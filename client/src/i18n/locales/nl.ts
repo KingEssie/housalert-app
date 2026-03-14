@@ -529,6 +529,7 @@ export const nl: Record<string, any> = {
     title: "Abonnement",
     status: {
       active: "Actief",
+      activeUntilEnd: "Actief tot einde periode",
       trial: "Proefperiode",
       expired: "Verlopen",
     },
@@ -559,6 +560,7 @@ export const nl: Record<string, any> = {
     on: "Aan",
     off: "Uit",
     paymentMethod: "Betaalmethode",
+    viaStripe: "Via Stripe",
     managePayment: "Betaalmethode beheren",
     cancelSubscription: "Abonnement opzeggen",
     cancelTitle: "Opzeggen",
@@ -1072,7 +1074,12 @@ export const nl: Record<string, any> = {
     managedByStripe: "Via Stripe",
     managedByStripeDesc: "Je betaling wordt veilig verwerkt via Stripe.",
     active: "Actief",
-    managedInfo: "Je betaalmethode wordt beheerd via Stripe. Bij het afsluiten van je abonnement heb je je betaalgegevens ingevoerd. Wijzigingen zijn op dit moment niet mogelijk.",
+    managedInfo: "Je betaalmethode wordt veilig beheerd door Stripe. Klik hierboven om je gegevens te bekijken of te wijzigen in het Stripe-portaal.",
+    manageViaStripe: "Beheer via Stripe",
+    opening: "Openen...",
+    noCustomer: "Geen Stripe-klant gevonden",
+    noCustomerDesc: "Je hebt nog geen actief abonnement. Activeer eerst een abonnement.",
+    error: "Fout bij openen Stripe-portaal",
   },
 
   profileStrength: {
@@ -1340,5 +1347,22 @@ export const nl: Record<string, any> = {
     explanationDesc: "Ontvang direct matches via e-mail en push. Na de proefperiode kies je zelf of je doorgaat — vanaf €10,00/maand.",
     noCardNeeded: "Geen betaalgegevens nodig om te starten",
     pricingNote: "14 dagen gratis — daarna vanaf €10,00/maand",
+  },
+
+  documents: {
+    title: "Documenten",
+    heading: "Documenten-checklist",
+    collected: "verzameld",
+    allDone: "Je hebt alle documenten verzameld!",
+    items: {
+      id_copy: "Kopie identiteitsbewijs (paspoort of ID-kaart)",
+      income_proof: "Inkomensbewijs (laatste 3 salarisstroken)",
+      schufa: "SCHUFA-uitreksel",
+      rental_history: "Huurgeschiedenis / referentiebrief vorige verhuurder",
+      bank_statements: "Bankafschriften (laatste 3 maanden)",
+      employment_proof: "Bewijs van dienstverband (arbeidscontract)",
+    },
+    tip: "Tip: Zorg dat je alle documenten digitaal (als PDF) bij de hand hebt, zodat je snel kunt reageren op nieuwe woningen.",
+    saveFailed: "Opslaan mislukt",
   },
 };

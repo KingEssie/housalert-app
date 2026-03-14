@@ -529,9 +529,11 @@ export const de: Record<string, any> = {
     title: "Abonnement",
     status: {
       active: "Aktiv",
+      activeUntilEnd: "Aktiv bis Ende der Laufzeit",
       trial: "Testphase",
       expired: "Abgelaufen",
     },
+    viaStripe: "Über Stripe",
     planLabel: {
       monthly: "Premium Monatlich",
       twoMonth: "Premium 2 Monate",
@@ -1072,7 +1074,12 @@ export const de: Record<string, any> = {
     managedByStripe: "Über Stripe",
     managedByStripeDesc: "Deine Zahlung wird sicher über Stripe abgewickelt.",
     active: "Aktiv",
-    managedInfo: "Deine Zahlungsmethode wird über Stripe verwaltet. Beim Abschluss deines Abonnements hast du deine Zahlungsdaten eingegeben. Änderungen sind derzeit nicht möglich.",
+    managedInfo: "Deine Zahlungsmethode wird sicher von Stripe verwaltet. Klicke oben, um deine Daten im Stripe-Portal anzuzeigen oder zu ändern.",
+    manageViaStripe: "Über Stripe verwalten",
+    opening: "Wird geöffnet...",
+    noCustomer: "Kein Stripe-Kunde gefunden",
+    noCustomerDesc: "Du hast noch kein aktives Abonnement. Aktiviere zuerst ein Abonnement.",
+    error: "Fehler beim Öffnen des Stripe-Portals",
   },
 
   profileStrength: {
@@ -1340,5 +1347,22 @@ export const de: Record<string, any> = {
     explanationDesc: "Erhalte sofort Matches per E-Mail und Push. Nach der Testphase entscheidest du selbst — ab €10,00/Monat.",
     noCardNeeded: "Keine Zahlungsdaten nötig",
     pricingNote: "14 Tage kostenlos — danach ab €10,00/Monat",
+  },
+
+  documents: {
+    title: "Dokumente",
+    heading: "Dokumenten-Checkliste",
+    collected: "gesammelt",
+    allDone: "Du hast alle Dokumente zusammen!",
+    items: {
+      id_copy: "Kopie des Ausweises (Reisepass oder Personalausweis)",
+      income_proof: "Einkommensnachweis (letzte 3 Gehaltsabrechnungen)",
+      schufa: "SCHUFA-Auskunft",
+      rental_history: "Miethistorie / Referenzschreiben des vorherigen Vermieters",
+      bank_statements: "Kontoauszüge (letzte 3 Monate)",
+      employment_proof: "Beschäftigungsnachweis (Arbeitsvertrag)",
+    },
+    tip: "Tipp: Stelle sicher, dass alle Dokumente digital (als PDF) verfügbar sind, damit du schnell auf neue Wohnungen reagieren kannst.",
+    saveFailed: "Speichern fehlgeschlagen",
   },
 };
