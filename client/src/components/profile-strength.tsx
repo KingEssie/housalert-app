@@ -32,14 +32,14 @@ import {
 
 interface Task {
   id: string;
-  label: string;
+  label?: string;
   completed: boolean;
   score: number;
 }
 
 interface SpeedStep {
   id: string;
-  label: string;
+  label?: string;
   done: boolean;
 }
 
@@ -138,6 +138,34 @@ const TASK_ICONS: Record<string, typeof Bell> = {
   phone: Phone,
 };
 
+function getTaskLabel(taskId: string, t: (key: string) => string): string {
+  const map: Record<string, string> = {
+    alerts: t("strengthTask.alerts"),
+    search_buddy: t("strengthTask.searchBuddy"),
+    search_optimize: t("strengthTask.searchOptimize"),
+    application_template: t("strengthTask.applicationTemplate"),
+    documents: t("strengthTask.documents"),
+    phone: t("strengthTask.phone"),
+    prep_search_profile: t("strengthTask.prepSearchProfile"),
+    prep_letter: t("strengthTask.prepLetter"),
+    prep_extra_profile: t("strengthTask.prepExtraProfile"),
+    prep_network: t("strengthTask.prepNetwork"),
+    prep_viewing_tips: t("strengthTask.prepViewingTips"),
+  };
+  return map[taskId] || taskId;
+}
+
+function getSpeedStepLabel(stepId: string, t: (key: string) => string): string {
+  const map: Record<string, string> = {
+    alerts_active: t("strengthTask.alerts"),
+    search_buddy_added: t("strengthTask.searchBuddy"),
+    letter_ready: t("strengthTask.applicationTemplate"),
+    documents_ready: t("strengthTask.documents"),
+    phone_added: t("strengthTask.phone"),
+  };
+  return map[stepId] || stepId;
+}
+
 function getTaskDescriptionKey(taskId: string): string {
   const map: Record<string, string> = {
     alerts: "profileStrength.alertsDesc",
@@ -179,9 +207,9 @@ export function ProfileStrengthCard() {
     const incomplete = tasks.filter(tk => !tk.completed);
     if (incomplete.length === 0) return t("profileStrength.completeRec");
     const next = incomplete[0];
-    if (s < 30) return t("profileStrength.startRec", { task: next.label });
-    if (s < 60) return t("profileStrength.goodRec", { task: next.label });
-    return t("profileStrength.almostRec", { task: next.label });
+    if (s < 30) return t("profileStrength.startRec", { task: getTaskLabel(next.id, t) });
+    if (s < 60) return t("profileStrength.goodRec", { task: getTaskLabel(next.id, t) });
+    return t("profileStrength.almostRec", { task: getTaskLabel(next.id, t) });
   };
 
   const status = getStatusLabel(pct);
@@ -311,7 +339,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
                 <Icon className={`w-4 h-4 flex-shrink-0 ${task.completed ? "text-[#1F2937]" : "text-[#1F2937]"}`} />
                 <div className="flex-1 min-w-0">
                   <p className={`text-[14px] font-medium ${task.completed ? "text-[#1F2937] line-through" : "text-[#1F2937]"}`}>
-                    {task.label}
+                    {getTaskLabel(task.id, t)}
                   </p>
                   <p className="text-[11px] text-[#1F2937]">{t("profileStrength.points", { score: String(task.score) })}</p>
                 </div>
@@ -646,7 +674,7 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
                 <Icon className={`w-4 h-4 flex-shrink-0 ${task.completed ? "text-[#1F2937]" : "text-[#1F2937]"}`} />
                 <div className="flex-1 min-w-0">
                   <p className={`text-[14px] font-medium ${task.completed ? "text-[#1F2937] line-through" : "text-[#1F2937]"}`}>
-                    {task.label}
+                    {getTaskLabel(task.id, t)}
                   </p>
                   <p className="text-[11px] text-[#1F2937]">{t("profileStrength.points", { score: String(task.score) })}</p>
                 </div>
@@ -954,7 +982,7 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
                 <div className="w-4.5 h-4.5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
               )}
               <span className={`text-[14px] flex-1 ${step.done ? "text-[#1F2937]" : "text-[#1F2937] font-medium"}`}>
-                {step.label}
+                {getSpeedStepLabel(step.id, t)}
               </span>
               {!step.done && route && (
                 <ArrowRight className="w-3.5 h-3.5 text-[#1F2937]" />

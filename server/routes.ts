@@ -1729,22 +1729,22 @@ export async function registerRoutes(
       const hasMultipleProfiles = searchProfiles.length >= 2;
 
       const accountTasks = [
-        { id: "alerts", label: "Alerts aktivieren", completed: hasAlertChannel, score: 20 },
-        { id: "search_buddy", label: "Suchpartner hinzufügen", completed: hasSearchBuddy, score: 10 },
-        { id: "search_optimize", label: "Suchauftrag optimieren", completed: hasOptimizedSearch, score: 20 },
-        { id: "application_template", label: "Bewerbungsschreiben vorbereiten", completed: hasApplicationTemplate, score: 15 },
-        { id: "documents", label: "Dokumente zusammenstellen", completed: hasDocuments, score: 20 },
-        { id: "phone", label: "Telefonnummer hinzufügen", completed: hasPhone, score: 15 },
+        { id: "alerts", completed: hasAlertChannel, score: 20 },
+        { id: "search_buddy", completed: hasSearchBuddy, score: 10 },
+        { id: "search_optimize", completed: hasOptimizedSearch, score: 20 },
+        { id: "application_template", completed: hasApplicationTemplate, score: 15 },
+        { id: "documents", completed: hasDocuments, score: 20 },
+        { id: "phone", completed: hasPhone, score: 15 },
       ];
 
       const hasSearchProfile = searchProfiles.length >= 1;
 
       const prepTasks = [
-        { id: "prep_search_profile", label: "Suchauftrag erstellen", completed: hasSearchProfile, score: 15 },
-        { id: "prep_letter", label: "Bewerbungsschreiben verfassen", completed: hasApplicationTemplate, score: 10 },
-        { id: "prep_extra_profile", label: "Weiteren Suchauftrag hinzufügen", completed: hasMultipleProfiles, score: 15 },
-        { id: "prep_network", label: "Nutze dein Netzwerk", completed: hasNetworkDone, score: 5 },
-        { id: "prep_viewing_tips", label: "Besichtigungstipps lesen", completed: hasViewingTipsDone, score: 5 },
+        { id: "prep_search_profile", completed: hasSearchProfile, score: 15 },
+        { id: "prep_letter", completed: hasApplicationTemplate, score: 10 },
+        { id: "prep_extra_profile", completed: hasMultipleProfiles, score: 15 },
+        { id: "prep_network", completed: hasNetworkDone, score: 5 },
+        { id: "prep_viewing_tips", completed: hasViewingTipsDone, score: 5 },
       ];
 
       const allTasks = [...accountTasks, ...prepTasks];
@@ -1758,15 +1758,15 @@ export async function registerRoutes(
       };
 
       const speedSteps = [
-        { id: "alerts_active", label: "Alerts aktiv", done: hasAlertChannel },
-        { id: "letter_ready", label: "Bewerbungsschreiben fertig", done: hasApplicationTemplate },
-        { id: "documents_ready", label: "Dokumente bereit", done: hasDocuments },
-        { id: "phone_added", label: "Telefonnummer hinzugefügt", done: hasPhone },
+        { id: "alerts_active", done: hasAlertChannel },
+        { id: "letter_ready", done: hasApplicationTemplate },
+        { id: "documents_ready", done: hasDocuments },
+        { id: "phone_added", done: hasPhone },
       ];
 
       const speedDone = speedSteps.filter(s => s.done).length;
 
-      const recommendedChannel = notif.email_enabled ? "E-mail" : null;
+      const recommendedChannel = notif.email_enabled ? "email" : null;
 
       return res.json({
         score,

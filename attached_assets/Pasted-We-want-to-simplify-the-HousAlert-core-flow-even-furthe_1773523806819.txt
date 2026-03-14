@@ -1,0 +1,149 @@
+We want to simplify the HousAlert core flow even further. This is a product-speed optimization, not cosmetic redesign.
+
+New desired flow:
+Match card tap → directly open the reaction screen
+
+So we want to remove the extra intermediate detail step in the normal user flow.
+
+Implement the following exactly.
+
+--------------------------------
+1. LANGUAGE CONSISTENCY FIX
+--------------------------------
+
+Current problem:
+Some checklist/task labels are shown in mixed languages (Dutch + German).
+
+Required behavior:
+- If app language is Dutch → all task labels and task UI must be Dutch
+- If app language is German → all task labels and task UI must be German
+- If app language is English → all task labels and task UI must be English
+
+Tasks:
+- audit the current task/checklist labels
+- remove mixed-language fallback issues
+- ensure all visible task labels use the active app locale only
+
+--------------------------------
+2. SUBSCRIPTION STATUS FIX
+--------------------------------
+
+Current problem:
+After cancellation, the subscription screen can still show:
+"Automatisch verlengen: Aan"
+
+That is incorrect.
+
+Required behavior:
+- if the subscription has been cancelled or auto-renew is off, reflect that correctly in the UI
+- show the real renewal status from the true subscription source of truth
+- do not show "Aan" when cancellation is already confirmed
+
+Audit:
+- check whether the UI is reading stale local state
+- check webhook/subscription sync logic if needed
+- fix the display so it matches real subscription state
+
+--------------------------------
+3. MATCH TAP FLOW CHANGE
+--------------------------------
+
+Current desired behavior:
+When the user taps a match card, do NOT open a separate generic detail screen first.
+
+Instead:
+- tapping a match card should open the reaction screen directly
+
+This reaction screen becomes the primary listing screen for the user flow.
+
+Required:
+- card tap → reaction screen
+- keep this consistent from:
+  - matches overview
+  - recent matches on home
+  - any other common match entry point
+
+--------------------------------
+4. REACTION SCREEN REDESIGN
+--------------------------------
+
+The reaction screen should become the main action screen.
+
+Layout requirements:
+
+A. Top area
+- large listing photo at the top
+- back button on the top-left
+- price badge on the photo, bottom-right
+- do NOT repeat the price again lower on the screen if it is already clearly shown on the photo
+
+B. Directly below the photo
+Show:
+- listing title first
+- then a compact facts block
+
+Facts block should include only useful essentials:
+- city
+- bedrooms
+- size m²
+- source
+- posted X days ago
+
+Important:
+- do not duplicate the posted date if it is already shown elsewhere on the same screen
+- do not duplicate the price below if it is already visible on the photo
+- keep this block compact so the reaction field starts as high as possible
+
+C. Reaction section
+Below the compact facts block:
+- show the response letter / reaction content
+- make this section more compact if needed so the user can see as much as possible without unnecessary scrolling
+
+D. Main CTA
+Keep the main CTA:
+- "Kopiëren en reageren" or "Reageer direct" depending on current naming consistency
+
+Behavior must remain:
+1. copy reaction text
+2. show toast
+3. mark match as responded
+4. open original external listing URL
+
+--------------------------------
+5. REMOVE OLD DETAIL-SCREEN REDUNDANCY
+--------------------------------
+
+Because the reaction screen becomes the primary screen:
+- remove unnecessary duplicate detail sections
+- remove redundant facts
+- remove any layout that still assumes there is a separate full detail-reading step first
+
+This product should optimize for:
+new match → fast understanding → fast response
+
+--------------------------------
+6. QA REQUIREMENTS
+--------------------------------
+
+Verify:
+- tapping a match card opens the reaction screen directly
+- reaction screen shows photo + price badge
+- title is directly below the photo
+- facts block is compact and useful
+- no duplicate price
+- no duplicate posted-date
+- response section is visible faster than before
+- main CTA still copies, toasts, marks responded, and opens external listing
+- subscription renewal state is correct after cancellation
+- checklist/task labels follow the active language consistently
+
+--------------------------------
+7. REPLY IN EXACTLY THIS STRUCTURE
+--------------------------------
+
+A. Flow change implemented
+B. Language consistency fixes
+C. Subscription status fix
+D. Reaction screen layout changes
+E. Files changed
+F. QA verification

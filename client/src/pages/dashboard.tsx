@@ -144,7 +144,7 @@ function MatchCard({
   function handleCardClick() {
     markViewed(match.listing_id);
     onStatusChange();
-    navigate(`/listing/${match.listing_id}?from=matches`);
+    navigate(`/apply/${match.listing_id}`);
   }
 
   return (
@@ -437,7 +437,7 @@ function RecentMatchMiniCard({ match }: { match: ApiMatch }) {
   return (
     <div
       className="bg-white rounded-2xl border border-[#E5E7EB] overflow-hidden cursor-pointer hover:shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-all duration-200 active:scale-[0.985] flex"
-      onClick={() => navigate(`/listing/${match.listing_id}?from=home`)}
+      onClick={() => navigate(`/apply/${match.listing_id}`)}
       data-testid={`card-recent-match-${match.listing_id}`}
     >
       {hasImage ? (
@@ -513,7 +513,7 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
     staleTime: 60_000,
   });
 
-  const strengthQuery = useQuery<{ tasks: { id: string; label: string; completed: boolean }[]; prepTasks: { id: string; label: string; completed: boolean }[] }>({
+  const strengthQuery = useQuery<{ tasks: { id: string; completed: boolean }[]; prepTasks: { id: string; completed: boolean }[] }>({
     queryKey: ["/api/profile-strength"],
     queryFn: async () => {
       const res = await apiFetch("/api/profile-strength", {
@@ -566,13 +566,27 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
     });
   }
 
+  const STRENGTH_LABEL_MAP: Record<string, string> = {
+    alerts: t("strengthTask.alerts"),
+    search_buddy: t("strengthTask.searchBuddy"),
+    search_optimize: t("strengthTask.searchOptimize"),
+    application_template: t("strengthTask.applicationTemplate"),
+    documents: t("strengthTask.documents"),
+    phone: t("strengthTask.phone"),
+    prep_search_profile: t("strengthTask.prepSearchProfile"),
+    prep_letter: t("strengthTask.prepLetter"),
+    prep_extra_profile: t("strengthTask.prepExtraProfile"),
+    prep_network: t("strengthTask.prepNetwork"),
+    prep_viewing_tips: t("strengthTask.prepViewingTips"),
+  };
+
   if (strength) {
     const existingKeys = new Set(allTasks.map(t => t.key));
     [...strength.tasks, ...strength.prepTasks].forEach((task) => {
       if (!existingKeys.has(task.id) && task.id !== "prep_viewing_tips") {
         allTasks.push({
           key: task.id,
-          label: task.label,
+          label: STRENGTH_LABEL_MAP[task.id] || task.id,
           done: task.completed,
           action: TASK_ACTION_MAP[task.id] || (() => {}),
         });

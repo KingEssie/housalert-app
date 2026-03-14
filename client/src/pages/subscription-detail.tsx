@@ -130,7 +130,7 @@ export default function SubscriptionDetailPage() {
 
           <DetailRow
             icon={<Calendar className="w-[18px] h-[18px]" style={{ color: "#0D6EFD" }} />}
-            label={subscription?.isTrial ? t("subscription.trialEnds") : t("subscription.nextRenewal")}
+            label={subscription?.isTrial ? t("subscription.trialEnds") : subscription?.status === "canceled" ? t("subscription.endsAt") : t("subscription.nextRenewal")}
             value={formatDate(renewalDate)}
             testId="text-renewal-date"
           />
@@ -147,7 +147,7 @@ export default function SubscriptionDetailPage() {
           <DetailRow
             icon={<RefreshCw className="w-[18px] h-[18px]" style={{ color: "#0D6EFD" }} />}
             label={t("subscription.autoRenew")}
-            value={subscription?.isActive && !subscription?.isTrial ? t("subscription.on") : t("subscription.off")}
+            value={subscription?.isActive && !subscription?.isTrial && subscription?.status !== "canceled" ? t("subscription.on") : t("subscription.off")}
             testId="text-auto-renew"
           />
           <div className="mx-5" style={{ borderBottom: "1px solid #E5E7EB" }} />

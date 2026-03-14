@@ -23,12 +23,13 @@ import {
 } from "lucide-react";
 import { ReactieklaarCard } from "@/components/reactieklaar-card";
 import { RECOMMENDATION_META } from "@shared/boost-recommendations";
+import { useTranslation } from "@/i18n";
 
 interface BoostTask {
   id: string;
   weight: number;
-  label: string;
-  description: string;
+  label?: string;
+  description?: string;
   completed: boolean;
 }
 
@@ -38,9 +39,39 @@ interface BoostData {
   completedCount: number;
   totalCount: number;
   recommendations: BoostTask[];
-  speedSteps: { id: string; label: string; done: boolean }[];
+  speedSteps: { id: string; label?: string; done: boolean }[];
   speedDone: number;
   speedTotal: number;
+}
+
+function getBoostTaskLabel(taskId: string, t: (key: string) => string): string {
+  const map: Record<string, string> = {
+    income_documents_uploaded: t("boostTask.incomeDocuments"),
+    alerts_active: t("boostTask.alerts"),
+    id_document_uploaded: t("boostTask.idDocument"),
+    reaction_letter_ready: t("boostTask.reactionLetter"),
+    phone_number_added: t("boostTask.phone"),
+    housing_preferences_completed: t("boostTask.housingPreferences"),
+    search_buddy_added: t("boostTask.searchBuddy"),
+    profile_info_completed: t("boostTask.profileInfo"),
+    profile_photo_added: t("boostTask.profilePhoto"),
+  };
+  return map[taskId] || taskId;
+}
+
+function getBoostTaskDescription(taskId: string, t: (key: string) => string): string {
+  const map: Record<string, string> = {
+    income_documents_uploaded: t("boostDesc.incomeDocuments"),
+    alerts_active: t("boostDesc.alerts"),
+    id_document_uploaded: t("boostDesc.idDocument"),
+    reaction_letter_ready: t("boostDesc.reactionLetter"),
+    phone_number_added: t("boostDesc.phone"),
+    housing_preferences_completed: t("boostDesc.housingPreferences"),
+    search_buddy_added: t("boostDesc.searchBuddy"),
+    profile_info_completed: t("boostDesc.profileInfo"),
+    profile_photo_added: t("boostDesc.profilePhoto"),
+  };
+  return map[taskId] || "";
 }
 
 interface ProfileData {
@@ -63,18 +94,8 @@ const TASK_ICONS: Record<string, typeof Bell> = {
   profile_photo_added: Camera,
 };
 
-const INCOME_CHECKLIST = [
-  { id: "income_proof", label: "Einkommensnachweis (letzte 3 Monate)" },
-  { id: "employment_contract", label: "Arbeitsvertrag" },
-  { id: "payslips", label: "Gehaltsabrechnungen (letzte 3 Monate)" },
-  { id: "tax_returns", label: "Steuererklärung (letzte 2 Jahre)" },
-  { id: "bank_statements", label: "Kontoauszüge (letzte 3 Monate)" },
-];
-
-const ID_CHECKLIST = [
-  { id: "id_copy", label: "Kopie des Personalausweises" },
-  { id: "photo", label: "Passfoto" },
-];
+const INCOME_CHECKLIST_IDS = ["income_proof", "employment_contract", "payslips", "tax_returns", "bank_statements"];
+const ID_CHECKLIST_IDS = ["id_copy", "photo"];
 
 function useBoostData() {
   const { session } = useAuth();
@@ -109,6 +130,7 @@ function useProfileData() {
 function useUpdateProfileData() {
   const { session } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation();
   return useMutation({
     mutationFn: async (data: Partial<ProfileData>) => {
       const res = await apiFetch("/api/profile-data", {
@@ -128,18 +150,9 @@ function useUpdateProfileData() {
       queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
     },
     onError: () => {
-      toast({ title: "Fehler", description: "Daten konnten nicht gespeichert werden.", variant: "destructive" });
+      toast({ title: t("boost.errorTitle"), description: t("boost.errorMessage"), variant: "destructive" });
     },
   });
-}
-
-function getScoreMicrocopy(score: number, remaining: number): string {
-  if (remaining <= 0) return "Du bist komplett bereit, blitzschnell zu reagieren.";
-  if (score >= 90) return "Du bist komplett bereit, blitzschnell zu reagieren.";
-  if (score >= 70) return `Noch ${remaining} ${remaining === 1 ? "Schritt" : "Schritte"} und dein Profil ist vollständig.`;
-  if (score >= 40) return `Schließe noch ${remaining} ${remaining === 1 ? "Schritt" : "Schritte"} ab, um schneller auf Wohnungen zu reagieren.`;
-  if (score >= 10) return `Starte mit dem ersten Schritt und erhöhe direkt deine Chancen.`;
-  return "Vervollständige dein Profil und reagiere schneller auf neue Wohnungen.";
 }
 
 function getScoreColor(score: number): string {
@@ -147,18 +160,24 @@ function getScoreColor(score: number): string {
   return "#6B7280";
 }
 
-function getScoreHeadline(score: number): string {
-  if (score >= 90) return "Bereit zum Reagieren";
-  if (score >= 70) return "Fast fertig";
-  if (score >= 40) return "Gut unterwegs";
-  if (score >= 10) return "Gerade gestartet";
-  return "Bereit loszulegen";
-}
-
 function BoostScoreCard({ score, remaining, completed, total }: { score: number; remaining: number; completed: number; total: number }) {
+  const { t } = useTranslation();
   const color = getScoreColor(score);
-  const microcopy = getScoreMicrocopy(score, remaining);
-  const headline = getScoreHeadline(score);
+
+  const stepsWord = remaining === 1 ? t("boost.step") : t("boost.steps");
+  let microcopy: string;
+  if (remaining <= 0 || score >= 90) microcopy = t("boostScore.readyMicrocopy");
+  else if (score >= 70) microcopy = t("boostScore.almostMicrocopy", { count: String(remaining), steps: stepsWord });
+  else if (score >= 40) microcopy = t("boostScore.goodMicrocopy", { count: String(remaining), steps: stepsWord });
+  else if (score >= 10) microcopy = t("boostScore.startMicrocopy");
+  else microcopy = t("boostScore.beginMicrocopy");
+
+  let headline: string;
+  if (score >= 90) headline = t("boostScore.readyHeadline");
+  else if (score >= 70) headline = t("boostScore.almostHeadline");
+  else if (score >= 40) headline = t("boostScore.goodHeadline");
+  else if (score >= 10) headline = t("boostScore.startedHeadline");
+  else headline = t("boostScore.readyToStart");
 
   return (
     <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6" data-testid="card-boost-score">
@@ -169,7 +188,7 @@ function BoostScoreCard({ score, remaining, completed, total }: { score: number;
           </div>
           <div>
             <h3 className="text-[15px] font-semibold text-[#111C3D]">{headline}</h3>
-            <p className="text-[13px] text-[#1F2937]">{completed} von {total} abgeschlossen</p>
+            <p className="text-[13px] text-[#1F2937]">{t("boostScore.progress", { completed: String(completed), total: String(total) })}</p>
           </div>
         </div>
         <span className="text-[36px] font-[800] leading-none tracking-[-0.03em]" style={{ color }} data-testid="text-boost-score">
@@ -201,19 +220,20 @@ function RecommendedSection({
   onTaskClick: (taskId: string) => void;
   navigate: (path: string) => void;
 }) {
+  const { t } = useTranslation();
   if (recommendations.length === 0) return null;
 
   return (
     <div data-testid="section-recommended">
       <h3 className="text-section-title mb-3">
-        Nächste Schritte
+        {t("boost.nextSteps")}
       </h3>
       <div className="flex flex-col gap-3">
         {recommendations.map((task) => {
           const Icon = TASK_ICONS[task.id] || Shield;
           const meta = RECOMMENDATION_META[task.id];
-          const subtitle = meta?.subtitle ?? task.description;
-          const ctaLabel = meta?.ctaLabel ?? "Ansehen";
+          const subtitle = getBoostTaskDescription(task.id, t);
+          const ctaLabel = t("boost.view");
 
           const handleAction = () => {
             if (meta && !meta.modal && meta.route) {
@@ -235,7 +255,7 @@ function RecommendedSection({
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
-                    <p className="text-[15px] font-semibold text-[#111C3D] leading-snug">{task.label}</p>
+                    <p className="text-[15px] font-semibold text-[#111C3D] leading-snug">{getBoostTaskLabel(task.id, t)}</p>
                     <span className="text-[12px] font-semibold text-[#0D6EFD] px-2 py-0.5 rounded-full flex-shrink-0 whitespace-nowrap" style={{ backgroundColor: "rgba(13,110,253,0.1)" }} data-testid={`badge-points-${task.id}`}>
                       +{task.weight}
                     </span>
@@ -268,13 +288,14 @@ function AllTasksSection({
   tasks: BoostTask[];
   onTaskClick: (taskId: string) => void;
 }) {
+  const { t } = useTranslation();
   const completedTasks = tasks.filter((t) => t.completed);
   const incompleteTasks = tasks.filter((t) => !t.completed);
 
   return (
     <div data-testid="section-all-tasks">
       <h3 className="text-section-title mb-3">
-        Alle Schritte
+        {t("boost.allSteps")}
       </h3>
       <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] overflow-hidden">
         {incompleteTasks.map((task, i) => {
@@ -291,8 +312,8 @@ function AllTasksSection({
               <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
               <Icon className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-[14px] font-medium text-[#1F2937]">{task.label}</p>
-                <p className="text-[13px] font-[500] text-[#1F2937]">+{task.weight} Punkte</p>
+                <p className="text-[14px] font-medium text-[#1F2937]">{getBoostTaskLabel(task.id, t)}</p>
+                <p className="text-[13px] font-[500] text-[#1F2937]">+{task.weight} {t("boost.points")}</p>
               </div>
               <ArrowRight className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
             </button>
@@ -312,7 +333,7 @@ function AllTasksSection({
                 <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
               </div>
               <Icon className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
-              <p className="text-[14px] text-[#1F2937] line-through">{task.label}</p>
+              <p className="text-[14px] text-[#1F2937] line-through">{getBoostTaskLabel(task.id, t)}</p>
             </div>
           );
         })}
@@ -322,16 +343,17 @@ function AllTasksSection({
 }
 
 function EmptyState({ onStart }: { onStart: () => void }) {
+  const { t } = useTranslation();
   return (
     <div className="bg-[#F5F7FA] rounded-2xl p-6 text-center" data-testid="boost-empty-state">
       <div className="w-12 h-12 rounded-full bg-[#F5F7FA] flex items-center justify-center mx-auto mb-4">
         <Zap className="w-5 h-5 text-[#1F2937]" />
       </div>
       <h3 className="text-[18px] font-semibold text-[#111C3D] mb-1.5">
-        Starte mit dem ersten Schritt
+        {t("boost.startTitle")}
       </h3>
       <p className="text-[14px] font-[500] text-[#1F2937] leading-relaxed mb-5 max-w-[260px] mx-auto">
-        Je vollständiger dein Profil, desto schneller kannst du auf neue Wohnungen reagieren.
+        {t("boost.startDesc")}
       </p>
       <Button
         onClick={onStart}
@@ -339,23 +361,25 @@ function EmptyState({ onStart }: { onStart: () => void }) {
         data-testid="button-start-boost"
       >
         <Zap className="w-4 h-4 mr-1.5" />
-        Ersten Schritt ansehen
+        {t("boost.startButton")}
       </Button>
     </div>
   );
 }
 
 function HighProgressState({ remaining }: { remaining: number }) {
+  const { t } = useTranslation();
+  const stepsWord = remaining === 1 ? t("boost.step") : t("boost.steps");
   return (
     <div className="bg-gradient-to-br from-[#0D6EFD] to-[#0B5ED7] rounded-2xl p-6 text-white" data-testid="boost-high-progress">
       <div className="flex items-center gap-3 mb-2">
         <div className="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center">
           <Rocket className="w-5 h-5 text-white" />
         </div>
-        <h3 className="text-[16px] font-semibold">Du bist fast fertig</h3>
+        <h3 className="text-[16px] font-semibold">{t("boost.almostDone")}</h3>
       </div>
       <p className="text-[14px] text-white/80 leading-relaxed">
-        Noch {remaining} {remaining === 1 ? "Schritt" : "Schritte"} und du kannst blitzschnell auf neue Wohnungen reagieren.
+        {t("boost.remaining", { count: String(remaining), steps: stepsWord })}
       </p>
     </div>
   );
@@ -384,14 +408,28 @@ function TaskModal({
     }
   }, [profileData]);
 
+  const { t } = useTranslation();
+
   const handleSave = async (data: Partial<ProfileData>, msg: string) => {
     await updateProfileData.mutateAsync(data);
-    toast({ title: "Gespeichert!", description: msg });
+    toast({ title: t("boost.saved"), description: msg });
     onClose();
   };
 
-  const task = BOOST_TASK_MODAL_CONFIG[taskId];
-  if (!task) return null;
+  const MODAL_KEY_MAP: Record<string, { titleKey: string; descKey: string }> = {
+    alerts_active: { titleKey: "boost.modalAlerts", descKey: "boost.modalAlertsDesc" },
+    search_buddy_added: { titleKey: "boost.modalBuddy", descKey: "boost.modalBuddyDesc" },
+    income_documents_uploaded: { titleKey: "boost.modalIncome", descKey: "boost.modalIncomeDesc" },
+    id_document_uploaded: { titleKey: "boost.modalId", descKey: "boost.modalIdDesc" },
+    reaction_letter_ready: { titleKey: "boost.modalLetter", descKey: "boost.modalLetterDesc" },
+    phone_number_added: { titleKey: "boost.modalPhone", descKey: "boost.modalPhoneDesc" },
+    housing_preferences_completed: { titleKey: "boost.modalHousing", descKey: "boost.modalHousingDesc" },
+    profile_info_completed: { titleKey: "boost.modalProfile", descKey: "boost.modalProfileDesc" },
+    profile_photo_added: { titleKey: "boost.modalPhoto", descKey: "boost.modalPhotoDesc" },
+  };
+
+  const modalKeys = MODAL_KEY_MAP[taskId];
+  if (!modalKeys) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center" onClick={onClose}>
@@ -400,14 +438,14 @@ function TaskModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sticky top-0 bg-white border-b border-[#E5E7EB] p-6 flex items-center justify-between rounded-t-lg">
-          <h2 className="text-[20px] font-[700] text-[#111C3D] tracking-[-0.02em]">{task.title}</h2>
+          <h2 className="text-[20px] font-[700] text-[#111C3D] tracking-[-0.02em]">{t(modalKeys.titleKey)}</h2>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F5F7FA] flex items-center justify-center" data-testid="button-close-modal">
             <X className="w-4 h-4 text-[#1F2937]" />
           </button>
         </div>
 
         <div className="p-5">
-          <p className="text-[14px] text-[#1F2937] mb-5">{task.description}</p>
+          <p className="text-[14px] text-[#1F2937] mb-5">{t(modalKeys.descKey)}</p>
 
           {(taskId === "alerts_active" || taskId === "phone_number_added") && (
             <Button
@@ -416,29 +454,29 @@ function TaskModal({
               data-testid="button-goto-notifications"
             >
               <Bell className="w-4 h-4 mr-2" />
-              Zu den Benachrichtigungen
+              {t("boost.goToNotifications")}
             </Button>
           )}
 
           {taskId === "search_buddy_added" && (
             <div className="flex flex-col gap-3">
-              <label className="text-[13px] font-medium text-[#1F2937]">E-Mail-Adresse des Suchpartners</label>
+              <label className="text-[13px] font-medium text-[#1F2937]">{t("boost.buddyEmailLabel")}</label>
               <input
                 type="email"
                 value={buddyEmail}
                 onChange={(e) => setBuddyEmail(e.target.value)}
-                placeholder="partner@beispiel.de"
+                placeholder={t("boost.buddyEmailPlaceholder")}
                 className="w-full h-[60px] px-4 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 focus:bg-white transition-all"
                 data-testid="input-buddy-email"
               />
-              <p className="text-[13px] font-[500] text-[#1F2937]">Dein Suchpartner erhält dieselben Benachrichtigungen wie du.</p>
+              <p className="text-[13px] font-[500] text-[#1F2937]">{t("boost.buddyHelp")}</p>
               <Button
-                onClick={() => handleSave({ search_buddy_email: buddyEmail }, "Suchpartner gespeichert!")}
+                onClick={() => handleSave({ search_buddy_email: buddyEmail }, t("boost.buddySaved"))}
                 disabled={!buddyEmail.includes("@") || updateProfileData.isPending}
                 className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold disabled:opacity-50"
                 data-testid="button-save-buddy"
               >
-                {updateProfileData.isPending ? "Wird gespeichert..." : "Speichern"}
+                {updateProfileData.isPending ? t("boost.saving") : t("boost.save")}
               </Button>
             </div>
           )}
@@ -450,7 +488,7 @@ function TaskModal({
               data-testid="button-goto-filters"
             >
               <Search className="w-4 h-4 mr-2" />
-              Neuer Suchauftrag
+              {t("boost.newSearch")}
             </Button>
           )}
 
@@ -461,76 +499,76 @@ function TaskModal({
               data-testid="button-goto-letter"
             >
               <FileText className="w-4 h-4 mr-2" />
-              Zum Bewerbungsschreiben
+              {t("boost.goToLetter")}
             </Button>
           )}
 
           {taskId === "income_documents_uploaded" && (
             <div className="flex flex-col gap-4">
-              <h4 className="text-[13px] font-semibold text-[#111C3D]">Hake ab, was du bereits zusammengestellt hast</h4>
+              <h4 className="text-[13px] font-semibold text-[#111C3D]">{t("boost.checkOffDocs")}</h4>
               <div className="flex flex-col gap-1">
-                {INCOME_CHECKLIST.map((item) => (
+                {INCOME_CHECKLIST_IDS.map((id) => (
                   <button
-                    key={item.id}
-                    onClick={() => setChecklist((prev) => ({ ...prev, [item.id]: !prev[item.id] }))}
+                    key={id}
+                    onClick={() => setChecklist((prev) => ({ ...prev, [id]: !prev[id] }))}
                     className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-[#F5F7FA] transition-colors text-left"
-                    data-testid={`check-${item.id}`}
+                    data-testid={`check-${id}`}
                   >
-                    {checklist[item.id] ? (
+                    {checklist[id] ? (
                       <div className="w-5 h-5 rounded-full bg-[#EAF9DF] flex items-center justify-center flex-shrink-0">
                         <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
                       </div>
                     ) : (
                       <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
                     )}
-                    <span className={`text-[14px] ${checklist[item.id] ? "text-[#1F2937] line-through" : "text-[#1F2937]"}`}>
-                      {item.label}
+                    <span className={`text-[14px] ${checklist[id] ? "text-[#1F2937] line-through" : "text-[#1F2937]"}`}>
+                      {t(`checklist.${id}`)}
                     </span>
                   </button>
                 ))}
               </div>
               <Button
-                onClick={() => handleSave({ document_checklist: checklist }, "Dokumente gespeichert!")}
+                onClick={() => handleSave({ document_checklist: checklist }, t("boost.docsSaved"))}
                 disabled={updateProfileData.isPending}
                 className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold disabled:opacity-50"
                 data-testid="button-save-income-docs"
               >
-                {updateProfileData.isPending ? "Wird gespeichert..." : "Speichern"}
+                {updateProfileData.isPending ? t("boost.saving") : t("boost.save")}
               </Button>
             </div>
           )}
 
           {taskId === "id_document_uploaded" && (
             <div className="flex flex-col gap-4">
-              <h4 className="text-[13px] font-semibold text-[#111C3D]">Hake ab, was du bereits zusammengestellt hast</h4>
+              <h4 className="text-[13px] font-semibold text-[#111C3D]">{t("boost.checkOffDocs")}</h4>
               <div className="flex flex-col gap-1">
-                {ID_CHECKLIST.map((item) => (
+                {ID_CHECKLIST_IDS.map((id) => (
                   <button
-                    key={item.id}
-                    onClick={() => setChecklist((prev) => ({ ...prev, [item.id]: !prev[item.id] }))}
+                    key={id}
+                    onClick={() => setChecklist((prev) => ({ ...prev, [id]: !prev[id] }))}
                     className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-[#F5F7FA] transition-colors text-left"
-                    data-testid={`check-${item.id}`}
+                    data-testid={`check-${id}`}
                   >
-                    {checklist[item.id] ? (
+                    {checklist[id] ? (
                       <div className="w-5 h-5 rounded-full bg-[#EAF9DF] flex items-center justify-center flex-shrink-0">
                         <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
                       </div>
                     ) : (
                       <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
                     )}
-                    <span className={`text-[14px] ${checklist[item.id] ? "text-[#1F2937] line-through" : "text-[#1F2937]"}`}>
-                      {item.label}
+                    <span className={`text-[14px] ${checklist[id] ? "text-[#1F2937] line-through" : "text-[#1F2937]"}`}>
+                      {t(`checklist.${id}`)}
                     </span>
                   </button>
                 ))}
               </div>
               <Button
-                onClick={() => handleSave({ document_checklist: checklist }, "Dokumente gespeichert!")}
+                onClick={() => handleSave({ document_checklist: checklist }, t("boost.docsSaved"))}
                 disabled={updateProfileData.isPending}
                 className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold disabled:opacity-50"
                 data-testid="button-save-id-docs"
               >
-                {updateProfileData.isPending ? "Wird gespeichert..." : "Speichern"}
+                {updateProfileData.isPending ? t("boost.saving") : t("boost.save")}
               </Button>
             </div>
           )}
@@ -542,21 +580,21 @@ function TaskModal({
               data-testid="button-goto-profile-info"
             >
               <UserCircle className="w-4 h-4 mr-2" />
-              Zu den Kontaktdaten
+              {t("boost.goToContactInfo")}
             </Button>
           )}
 
           {taskId === "profile_photo_added" && (
             <div className="flex flex-col gap-3">
               <p className="text-[13px] font-[500] text-[#1F2937]">
-                Füge ein Profilfoto hinzu, um bei Vermietern einen persönlichen Eindruck zu hinterlassen.
+                {t("boost.profilePhotoDesc")}
               </p>
               <Button
                 onClick={() => navigate("/dashboard?tab=profiel")}
                 className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[14px] font-bold"
                 data-testid="button-goto-profile-photo"
               >
-                Zum Profilfoto
+                {t("boost.goToProfilePhoto")}
               </Button>
             </div>
           )}
@@ -566,46 +604,9 @@ function TaskModal({
   );
 }
 
-const BOOST_TASK_MODAL_CONFIG: Record<string, { title: string; description: string }> = {
-  alerts_active: {
-    title: "Wohnungsalerts aktivieren",
-    description: "Aktiviere mindestens einen Benachrichtigungskanal (E-Mail oder Push), damit du keine neuen Wohnungen verpasst.",
-  },
-  search_buddy_added: {
-    title: "Suchpartner hinzufügen",
-    description: "Füge einen Suchpartner hinzu, der ebenfalls Benachrichtigungen über deine Matches erhält.",
-  },
-  income_documents_uploaded: {
-    title: "Einkommensdokumente vorbereiten",
-    description: "Stelle deine Einkommensdokumente zusammen, damit du bereit bist zu reagieren. Hake ab, was du bereits hast.",
-  },
-  id_document_uploaded: {
-    title: "Ausweis vorbereiten",
-    description: "Sorge dafür, dass du eine Kopie deines Personalausweises und ein Passfoto bereit hast.",
-  },
-  reaction_letter_ready: {
-    title: "Standard-Bewerbung erstellen",
-    description: "Bereite ein Bewerbungsschreiben vor, damit du sofort auf neue Wohnungen reagieren kannst.",
-  },
-  phone_number_added: {
-    title: "Telefonnummer hinzufügen",
-    description: "Füge deine Telefonnummer zu deinem Profil hinzu.",
-  },
-  housing_preferences_completed: {
-    title: "Wohnwünsche ergänzen",
-    description: "Verfeinere deine Suchprofile oder füge einen weiteren Suchauftrag für bessere Matches hinzu.",
-  },
-  profile_info_completed: {
-    title: "Profildaten ergänzen",
-    description: "Stelle sicher, dass deine Kontaktdaten vollständig sind, damit Vermieter dich erreichen können.",
-  },
-  profile_photo_added: {
-    title: "Profilfoto hinzufügen",
-    description: "Ein Profilfoto macht dein Profil persönlicher und erhöht deine Chancen bei Vermietern.",
-  },
-};
 
 export default function BoostPage({ navigate }: { navigate: (path: string) => void }) {
+  const { t } = useTranslation();
   const { data, isLoading, isError, refetch } = useBoostData();
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
 
@@ -613,16 +614,16 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
     return (
       <div className="flex flex-col gap-4 px-6 pt-6">
         <div className="mb-1">
-          <h1 className="text-page-title">Boost</h1>
+          <h1 className="text-page-title">{t("boost.title")}</h1>
         </div>
         <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-8 text-center" data-testid="boost-error">
-          <p className="text-[15px] text-[#1F2937] mb-4">Deine Daten konnten nicht geladen werden.</p>
+          <p className="text-[15px] text-[#1F2937] mb-4">{t("boost.errorMessage")}</p>
           <Button
             onClick={() => refetch()}
             className="h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold px-6"
             data-testid="button-retry-boost"
           >
-            Erneut versuchen
+            {t("boost.retry")}
           </Button>
         </div>
       </div>
@@ -655,17 +656,18 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
   const isLowProgress = boostScore < 10;
   const isHighProgress = boostScore >= 80 && completedCount < totalCount;
 
+  const stepsWord = remaining === 1 ? t("boost.step") : t("boost.steps");
   const pageSubtitle = completedCount === totalCount
-    ? "Dein Profil ist vollständig"
+    ? t("boost.profileComplete")
     : remaining <= 3
-    ? `Noch ${remaining} ${remaining === 1 ? "Schritt" : "Schritte"}, um schneller zu reagieren`
-    : "Vervollständige dein Profil und erhöhe deine Chancen";
+    ? t("boost.fewRemaining", { count: String(remaining), steps: stepsWord })
+    : t("boost.improveChances");
 
   return (
     <div className="flex flex-col gap-6 px-6 pt-6">
       <div className="mb-1">
         <h1 className="text-page-title" data-testid="heading-boost">
-          Boost
+          {t("boost.title")}
         </h1>
         <p className="text-subtitle mt-1">
           {pageSubtitle}

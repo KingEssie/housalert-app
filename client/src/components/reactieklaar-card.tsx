@@ -1,6 +1,7 @@
 import { apiFetch } from "@/lib/api-base";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
+import { useTranslation } from "@/i18n";
 import {
   CheckCircle2,
   ArrowRight,
@@ -14,8 +15,19 @@ import {
 
 interface SpeedStep {
   id: string;
-  label: string;
+  label?: string;
   done: boolean;
+}
+
+function getSpeedStepLabel(stepId: string, t: (key: string) => string): string {
+  const map: Record<string, string> = {
+    alerts_active: t("strengthTask.alerts"),
+    search_buddy_added: t("strengthTask.searchBuddy"),
+    letter_ready: t("strengthTask.applicationTemplate"),
+    documents_ready: t("strengthTask.documents"),
+    phone_added: t("strengthTask.phone"),
+  };
+  return map[stepId] || stepId;
 }
 
 interface BoostData {
@@ -73,6 +85,7 @@ export function ReactieklaarCard({
   total?: number;
   onStepClick?: (stepId: string) => void;
 }) {
+  const { t } = useTranslation();
   const { data, isLoading } = useReactieklaarData();
 
   const speedSteps = steps ?? data?.speedSteps ?? [];
@@ -101,14 +114,14 @@ export function ReactieklaarCard({
         <div className="w-8 h-8 rounded-full bg-[#F5F7FA] flex items-center justify-center">
           <Zap className="w-4 h-4 text-[#1F2937]" />
         </div>
-        <h3 className="text-[15px] font-semibold text-[#111C3D] flex-1">Reaktionsbereit</h3>
+        <h3 className="text-[15px] font-semibold text-[#111C3D] flex-1">{t("reactieklaar.title")}</h3>
         <span
           className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${
             allDone ? "bg-[#16A34A]/10 text-[#1F2937]" : "bg-[#F5F7FA] text-[#1F2937]"
           }`}
           data-testid="text-reactieklaar-progress"
         >
-          {speedDone} / {speedTotal} Schritte
+          {speedDone} / {speedTotal} {t("reactieklaar.steps")}
         </span>
       </div>
 
@@ -141,7 +154,7 @@ export function ReactieklaarCard({
               )}
               <Icon className={`w-4 h-4 flex-shrink-0 ${step.done ? "text-[#E5E7EB]" : "text-[#1F2937]"}`} />
               <span className={`text-[14px] flex-1 ${step.done ? "text-[#1F2937]" : "text-[#1F2937] font-medium"}`}>
-                {step.label}
+                {getSpeedStepLabel(step.id, t)}
               </span>
               {hasAction && (
                 <ArrowRight className="w-3.5 h-3.5 text-[#1F2937] flex-shrink-0" />
@@ -155,7 +168,7 @@ export function ReactieklaarCard({
         <div className="mt-4 bg-[#16A34A]/10 rounded-lg px-3.5 py-2.5">
           <p className="text-[12px] text-[#16A34A] font-medium flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5" />
-            Du bist bereit, schnell zu reagieren
+            {t("reactieklaar.readyMessage")}
           </p>
         </div>
       )}

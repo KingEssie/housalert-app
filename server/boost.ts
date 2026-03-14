@@ -10,7 +10,7 @@ export interface BoostResult {
   completedCount: number;
   totalCount: number;
   recommendations: BoostTaskResult[];
-  speedSteps: { id: string; label: string; done: boolean }[];
+  speedSteps: { id: string; done: boolean }[];
   speedDone: number;
   speedTotal: number;
 }
@@ -55,11 +55,11 @@ export function calculateBoostScore(states: CompletionStates): BoostResult {
     .slice(0, 3);
 
   const speedSteps = [
-    { id: "alerts_active", label: "Alerts aktiv", done: states.alertsActive },
-    { id: "search_buddy_added", label: "Suchpartner hinzugefügt", done: states.searchBuddyAdded },
-    { id: "documents_ready", label: "Dokumente bereit", done: states.incomeDocumentsUploaded && states.idDocumentUploaded },
-    { id: "phone_added", label: "Telefonnummer hinzugefügt", done: states.phoneNumberAdded },
-    { id: "letter_ready", label: "Bewerbungsschreiben fertig", done: states.reactionLetterReady },
+    { id: "alerts_active", done: states.alertsActive },
+    { id: "search_buddy_added", done: states.searchBuddyAdded },
+    { id: "documents_ready", done: states.incomeDocumentsUploaded && states.idDocumentUploaded },
+    { id: "phone_added", done: states.phoneNumberAdded },
+    { id: "letter_ready", done: states.reactionLetterReady },
   ];
 
   return {
