@@ -79,7 +79,7 @@ interface Listing {
   id: string;
   title: string;
   city: string;
-
+  district?: string | null;
   price: number;
   bedrooms: number;
   size_m2: number;
@@ -220,7 +220,7 @@ export default function ListingDetailPage() {
             <div className="flex items-center gap-1.5 text-[14px] text-[#1F2937] mb-4">
               <MapPin className="w-4 h-4 flex-shrink-0" />
               <span data-testid="text-listing-location">
-                {listing.city}
+                {listing.district?.trim() ? `${listing.district.trim()} · ${listing.city}` : listing.city}
               </span>
             </div>
 

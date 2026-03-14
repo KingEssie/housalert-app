@@ -90,6 +90,11 @@ const FRESH_LABEL_KEYS: Record<string, string> = {
 type TabKey = "home" | "matches" | "filters" | "tips" | "profiel";
 type MatchSubTab = "nieuw" | "bekeken" | "opgeslagen" | "gereageerd";
 
+function formatLocation(city: string, district?: string | null): string {
+  if (district && district.trim()) return `${district.trim()} · ${city}`;
+  return city;
+}
+
 const CITY_GRADIENTS: Record<string, string> = {
   berlin: "from-[#1F2937] to-[#333333]",
   münchen: "from-[#1F2937] to-[#333333]",
@@ -286,7 +291,7 @@ function MatchCard({
         <div className="flex items-center gap-2 text-[13px] text-[#1F2937]">
           <span className="flex items-center gap-1">
             <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-            {match.city}
+            {formatLocation(match.city, match.district)}
           </span>
           <span className="text-[#E5E7EB]">·</span>
           {match.bedrooms > 0 && (
@@ -563,7 +568,7 @@ function RecentMatchMiniCard({ match }: { match: ApiMatch }) {
         <div className="flex items-center gap-2 text-[12px] text-[#1F2937]">
           <span className="flex items-center gap-0.5">
             <MapPin className="w-3 h-3" />
-            {match.city}
+            {formatLocation(match.city, match.district)}
           </span>
           {match.bedrooms > 0 && (
             <span className="flex items-center gap-0.5">
@@ -593,6 +598,7 @@ function HomeTab({
   user,
   profiles,
   matchCount,
+  newCount,
   navigate,
   setActiveTab,
   subscription,
@@ -601,6 +607,7 @@ function HomeTab({
   user: any;
   profiles: SearchProfile[];
   matchCount: number;
+  newCount: number;
   navigate: (path: string) => void;
   setActiveTab: (tab: TabKey) => void;
   subscription: { isTrial: boolean; isExpired: boolean; isActive: boolean; trialEndsAt: string | null };
@@ -669,12 +676,16 @@ function HomeTab({
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[22px] font-bold text-white leading-tight" data-testid="text-match-count">
-                {t("home.matchesBanner", { count: matchCount > 999 ? "999+" : matchCount, label: matchCount === 1 ? t("home.matchSingular") : t("home.matchPlural") })}
+                {newCount > 0
+                  ? t("home.newMatchesToday", { count: newCount })
+                  : t("home.upToDate")}
               </p>
               <p className="text-[14px] font-[500] text-white/70 mt-0.5">
-                {hasProfiles
-                  ? t("home.basedOnProfiles", { count: profileCount, label: profileCount === 1 ? t("home.profileSingular") : t("home.profilePlural") })
-                  : t("home.basedOnSearch")}
+                {newCount > 0
+                  ? (hasProfiles
+                    ? t("home.basedOnProfiles", { count: profileCount, label: profileCount === 1 ? t("home.profileSingular") : t("home.profilePlural") })
+                    : t("home.basedOnSearch"))
+                  : t("home.upToDateDesc")}
               </p>
             </div>
           </div>
@@ -1811,6 +1822,7 @@ export default function DashboardPage() {
 
   const profiles = profilesQuery.data ?? [];
   const matchCount = apiMatchesQuery.data?.totalCount ?? 0;
+  const newCount = apiMatchesQuery.data?.newCount ?? 0;
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
@@ -1820,6 +1832,7 @@ export default function DashboardPage() {
             user={user}
             profiles={profiles}
             matchCount={matchCount}
+            newCount={newCount}
             navigate={navigate}
             setActiveTab={setActiveTab}
             subscription={{ isTrial: sub.isTrial, isExpired: sub.isExpired, isActive: sub.isActive, trialEndsAt: sub.trialEndsAt }}

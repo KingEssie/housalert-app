@@ -121,6 +121,7 @@ export interface FreshListing {
   size_m2: number;
   bedrooms: number;
   city: string;
+  district?: string | null;
   source: string;
   url: string | null;
   first_seen_at: string;

@@ -1,0 +1,124 @@
+I want to implement two small UX improvements before moving on to source expansion. These should be minimal, safe changes that improve clarity for housing seekers without redesigning the UI.
+
+Context:
+HousAlert is a rental alert app. Users receive matches for apartments. The most important UX goal is fast scanning and fast action.
+
+Currently the home screen hero shows a large cumulative number like:
+"Je hebt 856 nieuwe matches ontvangen".
+
+This creates the wrong perception for new users (looks like spam or a data dump). Instead we should emphasize recent activity.
+
+Additionally, match cards currently show the city (e.g. "Berlin") but not the district, which is often the most important location signal in German housing markets.
+
+Implement the following changes:
+
+--------------------------------------------------
+
+1. Replace the cumulative match counter on the home screen
+
+Instead of showing a lifetime total like:
+"Je hebt 856 nieuwe matches ontvangen"
+
+Change the messaging to something based on recent activity.
+
+Preferred behavior:
+- Show matches from the last 24 hours or since the last session.
+- If there are recent matches, show something like:
+
+Dutch:
+"Nieuwe matches gevonden"
+or
+"3 nieuwe matches vandaag"
+
+German:
+"Neue Matches gefunden"
+or
+"3 neue Matches heute"
+
+English:
+"New matches found"
+or
+"3 new matches today"
+
+If no new matches exist:
+Use a neutral message like:
+"Je bent up-to-date met de nieuwste woningen"
+
+Implementation constraints:
+- Do NOT break existing match queries.
+- Reuse existing match timestamps if available.
+- If calculating today/24h is complex, simply show:
+  "Nieuwe matches gevonden" without a large number.
+
+--------------------------------------------------
+
+2. Add district to match cards
+
+Match cards currently show something like:
+
+Berlin · 2 · 64m²
+
+Update the location display logic so it prefers the district if available.
+
+New format:
+
+If district exists:
+"Kreuzberg · Berlin"
+
+If district is missing:
+fallback to:
+"Berlin"
+
+This should appear in:
+- match cards
+- recent matches section
+- matches overview list
+
+Implementation notes:
+- Use the existing district field from listings if present.
+- Do not add additional API calls.
+- If district is null/empty, keep current behavior.
+
+--------------------------------------------------
+
+3. Keep layout unchanged
+
+Do NOT redesign components.
+
+Only update:
+- displayed strings
+- location formatting logic
+- match counter logic
+
+--------------------------------------------------
+
+4. Internationalization
+
+Ensure the new strings exist in:
+- Dutch
+- German
+- English
+
+Reuse existing i18n structure.
+
+--------------------------------------------------
+
+5. QA checklist
+
+Verify:
+- Home screen no longer shows large cumulative counts
+- Match cards show district when available
+- Cards still render correctly when district is null
+- No layout shift or overflow
+- Existing match data loads normally
+
+--------------------------------------------------
+
+6. Reply in this structure:
+
+A. Changes implemented
+B. Files modified
+C. New location display logic
+D. Home counter logic
+E. QA verification
+F. Confirmation that layout and APIs remain unchanged

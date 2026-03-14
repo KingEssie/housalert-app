@@ -818,6 +818,7 @@ export async function registerRoutes(
           size_m2: l.size_m2 ?? null,
           bedrooms: l.bedrooms ?? null,
           city: l.city ?? null,
+          district: l.district ?? null,
           source: l.source ?? null,
           url: l.url ?? null,
           image_url: l.image_url ?? null,
