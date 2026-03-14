@@ -3,6 +3,7 @@ import { runAllIngesters, OverlapError } from "./ingesters";
 import { persistIngestionRun } from "./admin";
 import { cleanupStaleFetchRuns } from "./user-matches";
 import { recoverUndeliveredMatches } from "./notifications/buffer";
+import { checkExpoReceipts } from "./notifications/expo-push";
 
 const intervalMinutes = parseInt(process.env.INGEST_INTERVAL_MINUTES || "10", 10);
 const INTERVAL_MS = intervalMinutes * 60 * 1000;
@@ -62,6 +63,15 @@ export async function startScheduler() {
   setTimeout(() => runRecoveryCycle(), 15_000);
   setInterval(() => runRecoveryCycle(), RECOVERY_INTERVAL_MS);
   log(`Email recovery timer started — runs every ${RECOVERY_INTERVAL_MS / 1000}s`, "scheduler");
+
+  const RECEIPT_CHECK_MS = 20 * 60 * 1000;
+  setTimeout(async () => {
+    try { await checkExpoReceipts(); } catch (e: any) { log(`[EXPO-RECEIPTS] Error: ${e.message}`, "scheduler"); }
+  }, 60_000);
+  setInterval(async () => {
+    try { await checkExpoReceipts(); } catch (e: any) { log(`[EXPO-RECEIPTS] Error: ${e.message}`, "scheduler"); }
+  }, RECEIPT_CHECK_MS);
+  log(`Expo receipt checker started — runs every ${RECEIPT_CHECK_MS / 1000}s`, "scheduler");
 
   if (process.env.ENABLE_INGEST_SCHEDULER !== "true") {
     log("Ingestion scheduler disabled (ENABLE_INGEST_SCHEDULER != true)", "scheduler");

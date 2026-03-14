@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  AppState,
+  type AppStateStatus,
   Platform,
   SafeAreaView,
   StyleSheet,
@@ -17,7 +19,7 @@ import Constants from "expo-constants";
 const WEB_APP_URL = "https://rental-alert-ui.replit.app";
 const API_BASE = "https://rental-alert-ui.replit.app";
 
-console.log("[BOOT] Push registration build v5 — web-driven session");
+console.log("[BOOT] HousAlert push v6 — production-ready");
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -26,6 +28,16 @@ Notifications.setNotificationHandler({
     shouldSetBadge: true,
   }),
 });
+
+if (Platform.OS === "android") {
+  Notifications.setNotificationChannelAsync("match-alerts", {
+    name: "Woningmeldingen",
+    importance: Notifications.AndroidImportance.HIGH,
+    vibrationPattern: [0, 250, 250, 250],
+    lightColor: "#0D6EFD",
+    sound: "default",
+  }).catch(() => {});
+}
 
 async function registerForPushNotifications(): Promise<string | null> {
   if (!Device.isDevice) {
@@ -70,11 +82,9 @@ async function sendTokenToBackend(
   accessToken: string,
   expoPushToken: string
 ): Promise<boolean> {
-  const url = `${API_BASE}/api/expo-push-token`;
-  console.log("[PUSH] Sending token to backend:", url);
-
+  console.log("[PUSH] Registering token with backend...");
   try {
-    const res = await fetch(url, {
+    const res = await fetch(`${API_BASE}/api/expo-push-token`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -87,8 +97,7 @@ async function sendTokenToBackend(
     });
 
     if (res.ok) {
-      const data = await res.json();
-      console.log("[PUSH] Token registered on backend OK:", JSON.stringify(data));
+      console.log("[PUSH] Token registered on backend OK");
       return true;
     } else {
       const body = await res.text();
@@ -140,10 +149,33 @@ export default function App() {
   const webViewRef = useRef<WebView>(null);
   const [loading, setLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [pendingDeepLink, setPendingDeepLink] = useState<string | null>(null);
 
   const pushTokenRef = useRef<string | null>(null);
   const authRef = useRef<AuthPayload | null>(null);
   const registeredForUserRef = useRef<string | null>(null);
+  const registeredTokenRef = useRef<string | null>(null);
+
+  const navigateWebView = useCallback((path: string) => {
+    if (!webViewRef.current) return;
+    const targetUrl = `${WEB_APP_URL}${path.startsWith("/") ? path : "/" + path}`;
+    const js = `
+      (function() {
+        try {
+          if (window.__HOUSALERT_NATIVE__ && window.location.hash !== undefined) {
+            window.location.hash = '#${path}';
+          } else {
+            window.location.href = '${targetUrl}';
+          }
+        } catch(e) {
+          window.location.href = '${targetUrl}';
+        }
+        true;
+      })();
+    `;
+    webViewRef.current.injectJavaScript(js);
+    console.log("[NAV] Navigated WebView to:", path);
+  }, []);
 
   const tryRegister = useCallback(async () => {
     const auth = authRef.current;
@@ -154,14 +186,14 @@ export default function App() {
       return;
     }
 
-    if (registeredForUserRef.current === auth.user_id) {
+    if (registeredForUserRef.current === auth.user_id && registeredTokenRef.current === token) {
       return;
     }
 
-    console.log("[PUSH] Registering token with backend...");
     const success = await sendTokenToBackend(auth.access_token, token);
     if (success) {
       registeredForUserRef.current = auth.user_id;
+      registeredTokenRef.current = token;
     } else {
       console.log("[PUSH] Will retry in 10s");
       setTimeout(() => tryRegister(), 10000);
@@ -176,6 +208,58 @@ export default function App() {
     });
   }, [tryRegister]);
 
+  useEffect(() => {
+    const tokenRefreshSub = Notifications.addPushTokenListener((event) => {
+      const newToken = event.data;
+      console.log("[PUSH] Token refreshed:", newToken);
+      if (newToken !== pushTokenRef.current) {
+        pushTokenRef.current = newToken;
+        registeredTokenRef.current = null;
+        tryRegister();
+      }
+    });
+
+    return () => tokenRefreshSub.remove();
+  }, [tryRegister]);
+
+  useEffect(() => {
+    const lastResponse = Notifications.getLastNotificationResponseAsync().then((response) => {
+      if (response) {
+        const url = response.notification.request.content.data?.url;
+        if (url && typeof url === "string") {
+          console.log("[NAV] App opened from notification — deep link:", url);
+          setPendingDeepLink(url);
+        }
+      }
+    });
+
+    const responseSub = Notifications.addNotificationResponseReceivedListener((response) => {
+      const url = response.notification.request.content.data?.url;
+      if (url && typeof url === "string") {
+        console.log("[NAV] Notification tapped — deep link:", url);
+        if (!loading) {
+          navigateWebView(url);
+        } else {
+          setPendingDeepLink(url);
+        }
+      }
+    });
+
+    return () => responseSub.remove();
+  }, [loading, navigateWebView]);
+
+  useEffect(() => {
+    const appStateSub = AppState.addEventListener("change", (state: AppStateStatus) => {
+      if (state === "active") {
+        Notifications.setBadgeCountAsync(0).catch(() => {});
+      }
+    });
+
+    Notifications.setBadgeCountAsync(0).catch(() => {});
+
+    return () => appStateSub.remove();
+  }, []);
+
   const handleWebViewMessage = useCallback(
     async (event: { nativeEvent: { data: string } }) => {
       try {
@@ -186,13 +270,14 @@ export default function App() {
           const accessToken = parsed.access_token;
 
           if (!userId || !accessToken) {
-            console.log("[AUTH] Session message received — no active user");
+            console.log("[AUTH] Session message — no active user (logged out)");
             const prevAuth = authRef.current;
             if (prevAuth && pushTokenRef.current) {
               await deactivateTokenOnBackend(prevAuth.access_token, pushTokenRef.current);
             }
             authRef.current = null;
             registeredForUserRef.current = null;
+            registeredTokenRef.current = null;
             return;
           }
 
@@ -202,6 +287,7 @@ export default function App() {
           if (prevAuth && prevAuth.user_id !== userId && pushTokenRef.current) {
             await deactivateTokenOnBackend(prevAuth.access_token, pushTokenRef.current);
             registeredForUserRef.current = null;
+            registeredTokenRef.current = null;
           }
 
           authRef.current = { user_id: userId, access_token: accessToken };
@@ -219,7 +305,14 @@ export default function App() {
     setLoading(false);
     setHasError(false);
     console.log("[WEBVIEW] Page loaded");
-  }, []);
+
+    if (pendingDeepLink) {
+      setTimeout(() => {
+        navigateWebView(pendingDeepLink!);
+        setPendingDeepLink(null);
+      }, 500);
+    }
+  }, [pendingDeepLink, navigateWebView]);
 
   const handleError = useCallback(() => {
     setLoading(false);

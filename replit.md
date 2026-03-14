@@ -105,6 +105,11 @@ A mobile-first German-language rental alert application for the German market. U
 - **Expo Push Token API**: `POST /api/expo-push-token` (register/reactivate), `DELETE /api/expo-push-token` (deactivate). Auth via Supabase JWT. Tokens stored in Replit PG `expo_push_tokens` table.
 - **WebView↔Native bridge**: `client/src/lib/auth.tsx` sends `AUTH_STATE` messages (user_id + access_token) to `window.ReactNativeWebView.postMessage()` on every auth state change. `mobile-clean/App.tsx` receives via `onMessage`, registers push token with backend when user is authenticated.
 - **expo_push_tokens table** (Replit PG, auto-created at startup): id, user_id, expo_push_token, platform, is_active, created_at, updated_at. UNIQUE(user_id, expo_push_token) prevents duplicates.
+- **push_delivery_log table** (Replit PG, auto-created at startup): id, user_id, channel, token_snippet, full_token, listing_ids[], listing_count, title, body, status, expo_ticket_id, expo_receipt_status, error_type, error_message, created_at. Logs every push delivery attempt with Expo ticket IDs for receipt verification.
+- **Expo Push Retry Logic**: `sendWithRetry()` in `expo-push.ts` retries 429/5xx/network errors up to 2 times with escalating delay (3s × attempt). Permanent errors are logged immediately.
+- **Expo Receipt Checking**: `checkExpoReceipts()` runs every 20 minutes via scheduler. Checks tickets 15min–24h old, updates `expo_receipt_status` in delivery log, deactivates tokens on `DeviceNotRegistered` (targeted by `full_token` when available).
+- **Admin Delivery Log**: `GET /api/admin/push-delivery-log?user_id=&limit=` — view push delivery history with status, ticket IDs, and receipt results.
+- **Mobile Deep Linking**: Push payload includes `data.url` (e.g. `/listing/{id}`) and `data.type` (`match_alert`/`test`). Native app handles notification taps via `addNotificationResponseReceivedListener` and navigates WebView. Badge count reset on app foreground. Android notification channel `match-alerts` created at startup. Token refresh handled via `addPushTokenListener`.
 
 ### Ingestion Pipeline
 - **Scheduler**: `server/scheduler.ts` — runs every 10 min when `ENABLE_INGEST_SCHEDULER=true`

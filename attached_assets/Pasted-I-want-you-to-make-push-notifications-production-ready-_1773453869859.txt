@@ -1,0 +1,93 @@
+I want you to make push notifications production-ready for my app HousAlert.
+
+Context:
+HousAlert is a rental alert app for Germany. Users receive alerts when a new housing listing matches their search profile.
+The app stack is:
+- Frontend: React / Vite
+- Mobile: Expo / Expo Go during development
+- Backend: Node.js / Express
+- Database: Supabase
+
+Current situation:
+- Email alerts already exist
+- Push notifications via Expo are being tested but are not stable yet
+- Matches are already stored in the database
+- Users can open listing details, copy a response letter, and open the original ad
+
+Goal:
+Make the push notification system stable, testable, and easy to debug.
+
+I want a practical implementation, not overengineered.
+
+Please implement the following:
+
+1. Database support
+Add or improve Supabase tables/fields for:
+- storing Expo push tokens per user/device
+- notification preferences if needed
+- notification delivery logs
+- notification jobs / queue records if needed
+
+2. Device token registration
+Implement a clean API flow so the mobile app can:
+- request push permission
+- obtain Expo push token
+- send token securely to backend
+- upsert token in Supabase
+- support multiple devices per user
+- mark invalid tokens if delivery fails
+
+3. Notification sending service
+Create a backend service that:
+- receives a match event
+- builds a clean push payload
+- sends via Expo push API
+- includes listing id / match id for deep linking
+- logs success/failure
+- avoids sending duplicates for the same user + match + channel
+
+4. Retry and failure handling
+Implement practical retry handling:
+- retry temporary failures
+- stop retrying permanent failures
+- invalidate bad tokens when appropriate
+- keep logs understandable
+
+5. Deep linking / navigation support
+Make sure notification payload includes the right data so tapping the push can open the correct match or listing detail screen in the mobile app/webview flow.
+
+6. Mobile integration
+Add or improve Expo-side code for:
+- registering push permissions
+- retrieving token
+- sending token to backend
+- listening for incoming notifications
+- handling notification taps
+- navigating user to the correct screen
+
+7. Environment and config
+Clearly structure any required environment variables and config.
+
+8. Code structure
+Prefer practical files like:
+- services/pushNotificationService.ts
+- services/notificationDispatcher.ts
+- routes/push.ts
+- mobile hooks or utilities for Expo registration and notification handling
+
+9. Output format
+Please provide:
+- short architecture explanation
+- Supabase SQL migration(s)
+- backend code
+- mobile Expo code
+- example payload
+- test checklist
+- notes for Expo Go limitations if relevant
+
+Important constraints:
+- Keep current architecture intact as much as possible
+- Do not rewrite the whole app
+- Do not overengineer with external queue systems unless absolutely necessary
+- Keep the implementation easy to extend later
+- Assume Supabase is the main data store

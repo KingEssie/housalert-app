@@ -2248,6 +2248,31 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/admin/push-delivery-log", requireAdmin, async (req, res) => {
+    try {
+      const userId = req.query.user_id as string | undefined;
+      const limit = Math.min(parseInt(req.query.limit as string || "50", 10), 200);
+
+      let query = `SELECT id, user_id, channel, token_snippet, listing_count, title, body, status,
+                    expo_ticket_id, expo_receipt_status, error_type, error_message, created_at
+                   FROM push_delivery_log`;
+      const params: any[] = [];
+
+      if (userId) {
+        query += ` WHERE user_id = $1`;
+        params.push(userId);
+      }
+
+      query += ` ORDER BY created_at DESC LIMIT $${params.length + 1}`;
+      params.push(limit);
+
+      const { rows } = await pgPool.query(query, params);
+      return res.json({ count: rows.length, logs: rows });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   app.get("/api/admin/debug/match-alignment", requireAdmin, async (req, res) => {
     try {
       const adminUser = (req as any).adminUser;
