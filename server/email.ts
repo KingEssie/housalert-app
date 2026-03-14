@@ -255,7 +255,8 @@ export async function sendMatchAlert(
     const { client, fromEmail } = await getUncachableResendClient();
 
     const subject = sanitizeSubject(`\u{1F3E0} Nieuwe match: ${listing.title}`);
-    const preheader = `${listing.title} \u2014 ${formatPrice(listing.price)}/mnd in ${listing.city}`;
+    const pricePart = listing.price > 0 ? `${formatPrice(listing.price)}/mnd \u2014 ` : "";
+    const preheader = `${listing.title} \u2014 ${pricePart}${listing.city}`;
 
     const detailsText = [
       `Stad: ${listing.city}`,

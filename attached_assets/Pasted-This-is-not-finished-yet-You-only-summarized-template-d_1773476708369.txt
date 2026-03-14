@@ -1,0 +1,84 @@
+This is not finished yet.
+
+You only summarized template/design changes, but I explicitly asked for:
+- audit findings
+- test coverage
+- executed commands
+- actual test results
+- dry-run results
+- duplicate prevention verification
+- final parity verdict
+
+I need proof, not only implementation notes.
+
+Please continue and do the following now:
+
+1. Audit the current email alert system end-to-end
+Review and summarize:
+- where email alerts are triggered
+- how single-match and batch emails are selected
+- how duplicate prevention currently works
+- whether duplicate prevention happens in email.ts or elsewhere
+- how links are generated
+- what logging exists
+- how failures are handled
+- what parts were already okay before your redesign
+- what parts were weak before your redesign
+
+2. Verify pipeline compatibility
+You said function signatures and exports were preserved.
+Now verify that the actual notification pipeline still works with the redesigned templates.
+Specifically check integration with:
+- buffer.ts
+- notifications/index.ts
+- matching/engine.ts
+- any email sending provider/config currently used
+
+3. Add automated tests
+Create and run practical tests for:
+- subject line generation
+- sanitizeSubject
+- single-match HTML rendering
+- batch HTML rendering
+- missing image fallback
+- missing district fallback
+- zero/empty price handling
+- CTA link generation
+- plain text fallback generation
+- digest numbering ("Woning 1", etc.)
+- duplicate prevention behavior in the actual pipeline layer
+- no breaking changes to function signatures
+
+4. Add a dry-run test
+Create a dry-run that simulates:
+- one user
+- one single-match email
+- one batch email with multiple listings
+- one duplicate send attempt
+Then verify:
+- rendered output exists
+- links are correct
+- duplicate behavior is correctly enforced by the current architecture
+- logs are created if logging exists in the current flow
+
+5. Execute the tests yourself
+Run the relevant test command(s) in Replit.
+Do not stop at writing tests.
+I want the actual results.
+
+6. Reply in exactly this structure:
+A. Audit findings
+B. Template/content decisions
+C. Pipeline compatibility verification
+D. Files changed
+E. Test files added
+F. Commands executed
+G. Actual test results
+H. Remaining issues
+I. Final verdict: are email alerts parity-ready or not?
+
+Important:
+- Be honest if duplicate prevention lives outside email.ts
+- Be honest if delivery logging is limited by the current provider setup
+- Do not only restate code changes
+- Execute the tests now
