@@ -1,0 +1,247 @@
+We need a structured product cleanup and UX improvement pass. 
+Please implement the following changes exactly as described.
+
+--------------------------------
+1. MATCH CARD CLEANUP
+--------------------------------
+
+The match cards should become simpler and cleaner.
+
+Changes:
+
+• Remove the "Gewenste wijk" label completely.
+• Do not show any labels/badges at the top of the listing card.
+
+• Remove the favorites functionality entirely:
+  - remove the heart icon
+  - remove any saved/favorites logic
+  - remove the saved tab/filter if it exists
+
+• Keep only one main action button on the card:
+  "Bekijk"
+
+Behavior:
+- "Bekijk" opens the internal listing detail screen.
+
+• Do not show large global counters like:
+  - "888 woningen"
+  - "99+ nieuw"
+
+These counters must reflect only meaningful user data and should not feel inflated.
+
+--------------------------------
+2. DETAIL SCREEN CLEANUP
+--------------------------------
+
+The listing detail page must be simplified.
+
+Remove the entire section:
+
+"Waarom deze match?"
+
+Do not show:
+- "In jouw gekozen stad"
+- "Past binnen je budget"
+- "Past bij je woningtype"
+
+The detail page should focus only on:
+
+• photo
+• title
+• city
+• price
+• bedrooms
+• size
+• source
+• date posted
+• primary CTA button
+
+Primary CTA remains:
+
+"Reageer direct"
+
+--------------------------------
+3. REACT FLOW (VERIFY)
+--------------------------------
+
+Ensure the "Reageer direct" button performs exactly these steps:
+
+1. copy the response letter to clipboard
+2. show toast confirmation
+3. mark match as "gereageerd"
+4. open the ORIGINAL external listing URL
+
+Important:
+The last step must open the real external source (e.g. Kleinanzeigen / WG-Gesucht).
+
+--------------------------------
+4. HOME CHECKLIST RESTRUCTURE
+--------------------------------
+
+The current checklist mixes tasks and tips.
+
+This must change.
+
+Tips must NOT appear as individual tasks.
+
+Instead create a single checklist task:
+
+"Tips lezen — X/Y"
+
+Where:
+X = number of tips already read
+Y = total number of tips
+
+Example:
+Tips lezen — 2/7
+
+Behavior:
+
+• when all tips are read → task becomes completed
+• completed tasks show:
+  - blue check icon
+  - strikethrough text
+
+Checklist rules:
+
+• show max 5 open tasks initially
+• remaining tasks collapsed
+• tasks clickable → open the correct screen to complete them
+
+--------------------------------
+5. TIPS SECTION REBUILD
+--------------------------------
+
+The Tips tab must become a structured learning flow.
+
+Each tip should have a number.
+
+Example titles:
+
+1. Bezichtigingstips
+2. Reactiebrief schrijven
+3. Documenten-checklist
+4. SCHUFA-uittreksel aanvragen
+5. Zoekstrategie optimaliseren
+etc.
+
+Tip list behavior:
+
+• each tip starts with its number in the title
+• show tips as list cards
+
+--------------------------------
+6. TIP DETAIL FLOW
+--------------------------------
+
+When a user opens a tip:
+
+Show a tip detail screen with:
+
+• tip content
+• progress indicator
+• two actions at the bottom
+
+Left button:
+"✓ Markeer gelezen"
+
+Right button:
+"Volgende"
+
+Behavior:
+
+If user opened tip 3:
+
+Volgende → tip 4
+
+Progress bar shows current position.
+
+Example:
+
+Tip 3 / 7
+
+--------------------------------
+7. CHECKLIST INTEGRATION
+--------------------------------
+
+When a tip is marked as read:
+
+• update the tips progress
+• update the checklist item:
+
+Tips lezen — 3/7
+
+When 7/7 → checklist task completed.
+
+--------------------------------
+8. INGESTION MONITOR AUDIT
+--------------------------------
+
+The ingestion monitor currently shows empty data.
+
+Investigate:
+
+• is the monitor connected to the real ingestion pipeline?
+• are ingestion runs writing metrics?
+• are those metrics queried by the dashboard?
+
+If the monitor is not connected properly:
+fix it so it reflects real ingestion activity.
+
+The dashboard should show:
+
+• last run
+• number of cities processed
+• listings found
+• listings inserted
+• duplicates
+• matches created
+
+--------------------------------
+9. QA VERIFICATION
+--------------------------------
+
+Verify the following:
+
+Match cards:
+• no labels at the top
+• no favorite icon
+• single button "Bekijk"
+
+Detail page:
+• no "Waarom deze match" section
+
+React flow:
+• copies letter
+• toast appears
+• match marked reacted
+• external listing opens
+
+Checklist:
+• tips appear as ONE task
+• format "Tips lezen — X/Y"
+
+Tips:
+• numbered titles
+• tip detail screen exists
+• progress bar visible
+• "Markeer gelezen" works
+• "Volgende" moves to next tip
+
+Ingestion monitor:
+• shows real ingestion data.
+
+--------------------------------
+10. RESPONSE FORMAT
+--------------------------------
+
+Respond using this structure:
+
+A. Match card cleanup
+B. Detail screen cleanup
+C. React flow verification
+D. Checklist redesign
+E. Tips flow implementation
+F. Ingestion monitor audit
+G. Files changed
+H. QA verification

@@ -43,6 +43,7 @@ import AdminIngestionPage from "@/pages/admin-ingestion";
 import AdminMatchAuditPage from "@/pages/admin-match-audit";
 import AdminActivationPage from "@/pages/admin-activation";
 import ApplyPage from "@/pages/apply";
+import TipDetailPage from "@/pages/tip-detail";
 
 function ProtectedRoute({ component: Component, skipOnboardingCheck }: { component: React.ComponentType; skipOnboardingCheck?: boolean }) {
   const { user, loading } = useAuth();
@@ -105,6 +106,7 @@ function Router() {
       <Route path="/application-letter" component={() => <ProtectedRoute component={ApplicationLetterPage} />} />
       <Route path="/profile/details" component={() => <ProtectedRoute component={ProfileDetailsPage} />} />
       <Route path="/profile/edit/:field" component={() => <ProtectedRoute component={ProfileEditPage} />} />
+      <Route path="/tip/:id" component={() => <ProtectedRoute component={TipDetailPage} />} />
       <Route path="/tips/bezichtiging" component={() => <ProtectedRoute component={ViewingTipsPage} />} />
       <Route path="/tips/documenten" component={() => <ProtectedRoute component={DocumentenGuidePage} />} />
       <Route path="/tips/schufa" component={() => <ProtectedRoute component={SchufaGuidePage} />} />

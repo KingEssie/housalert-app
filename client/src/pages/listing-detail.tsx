@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
 import { useTranslation } from "@/i18n";
 import { trackEvent } from "@/lib/track-event";
-import { MapPin, Euro, BedDouble, Ruler, ExternalLink, Clock, Globe, Zap, CheckCircle2, ImageIcon, ArrowLeft, Info } from "lucide-react";
+import { MapPin, Euro, BedDouble, Ruler, Clock, Globe, Zap, ImageIcon, ArrowLeft, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 function FloatingBackButton({ navigate }: { navigate: (to: string) => void }) {
@@ -170,13 +170,6 @@ export default function ListingDetailPage() {
   const hasImage = !!listing.image_url;
   const gradient = getCityGradient(listing.city);
 
-  const MATCH_REASON_DETAIL: Record<string, { label: string; description: string }> = {
-    Standort: { label: t("listing.matchReasons.inCity"), description: t("listing.matchReasons.inCityDesc") },
-    Preis: { label: t("listing.matchReasons.inBudget"), description: t("listing.matchReasons.inBudgetDesc") },
-    Zimmer: { label: t("listing.matchReasons.matchesType"), description: t("listing.matchReasons.matchesTypeDesc") },
-    Größe: { label: t("listing.matchReasons.goodSize"), description: t("listing.matchReasons.goodSizeDesc") },
-  };
-
   return (
     <div className="min-h-screen bg-[#F5F7FA] flex flex-col relative">
       <FloatingBackButton navigate={navigate} />
@@ -284,23 +277,6 @@ export default function ListingDetailPage() {
               </div>
             </div>
           </div>
-
-          {listing.match_reasons && listing.match_reasons.length > 0 && (
-            <div className="bg-white rounded-2xl border border-[#E5E7EB] px-5 py-4" data-testid="section-why-match">
-              <p className="text-[12px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2.5">{t("listing.whyMatch")}</p>
-              <div className="flex flex-wrap gap-2">
-                {listing.match_reasons.map((reason) => {
-                  const detail = MATCH_REASON_DETAIL[reason];
-                  return (
-                    <span key={reason} className="inline-flex items-center gap-1.5 text-[13px] font-medium bg-[#EAF9DF] text-[#1F6B0A] px-3 py-1.5 rounded-full">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#78D953]" />
-                      {detail?.label ?? reason}
-                    </span>
-                  );
-                })}
-              </div>
-            </div>
-          )}
 
           {(() => {
             const hf = listing.hybrid_filters;

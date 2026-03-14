@@ -17,7 +17,6 @@ import { useTranslation } from "@/i18n";
 import { trackEvent } from "@/lib/track-event";
 import {
   Home,
-  Heart,
   SlidersHorizontal,
   User,
   Plus,
@@ -51,7 +50,7 @@ import {
 } from "lucide-react";
 import { TaskModal, PrepTaskModal } from "@/components/profile-strength";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
-import TipsPage from "@/pages/tips";
+import TipsPage, { getTipsProgress } from "@/pages/tips";
 
 const MAX_PROFILES = 4;
 
@@ -73,22 +72,8 @@ function relativeTime(dateStr: string | null | undefined, t: (key: string, param
   return days === 1 ? t("freshness.dayAgo", { n: days }) : t("freshness.daysAgo", { n: days });
 }
 
-const FRESH_BADGE_STYLES: Record<string, { bg: string; text: string }> = {
-  net_binnen: { bg: "bg-[#0D6EFD]", text: "text-white" },
-  nieuw: { bg: "bg-[#1F2937]", text: "text-white" },
-  vandaag: { bg: "bg-[#1F2937]", text: "text-white" },
-  ouder: { bg: "bg-[#F5F7FA]", text: "text-[#1F2937]" },
-};
-
-const FRESH_LABEL_KEYS: Record<string, string> = {
-  net_binnen: "freshness.justIn",
-  nieuw: "freshness.new",
-  vandaag: "freshness.today",
-  ouder: "freshness.older",
-};
-
 type TabKey = "home" | "matches" | "filters" | "tips" | "profiel";
-type MatchSubTab = "nieuw" | "bekeken" | "opgeslagen" | "gereageerd";
+type MatchSubTab = "nieuw" | "bekeken" | "gereageerd";
 
 const CITY_GRADIENTS: Record<string, string> = {
   berlin: "from-[#1F2937] to-[#333333]",
@@ -110,7 +95,6 @@ function getCityGradient(city: string): string {
 }
 
 const MATCH_VIEWED_KEY = "housalert_match_viewed";
-const MATCH_SAVED_KEY = "housalert_match_saved";
 const MATCH_APPLIED_KEY = "housalert_match_applied";
 
 function safeGetSet(key: string): Set<string> {
@@ -137,56 +121,23 @@ function markViewed(listingId: string) {
   }
 }
 
-function toggleSaved(listingId: string): boolean {
-  const s = safeGetSet(MATCH_SAVED_KEY);
-  if (s.has(listingId)) { s.delete(listingId); } else { s.add(listingId); }
-  safeSetSet(MATCH_SAVED_KEY, s);
-  return s.has(listingId);
-}
-
-function markApplied(listingId: string) {
-  const s = safeGetSet(MATCH_APPLIED_KEY);
-  const wasNew = !s.has(listingId);
-  s.add(listingId);
-  safeSetSet(MATCH_APPLIED_KEY, s);
-  markViewed(listingId);
-  if (wasNew) {
-    trackEvent("first_reaction", { listingId });
-  }
-}
-
 function getMatchTab(match: ApiMatch): MatchSubTab {
   if (match.canonical_applied || safeGetSet(MATCH_APPLIED_KEY).has(match.listing_id)) return "gereageerd";
-  if (match.canonical_saved || safeGetSet(MATCH_SAVED_KEY).has(match.listing_id)) return "opgeslagen";
   if (match.canonical_viewed || safeGetSet(MATCH_VIEWED_KEY).has(match.listing_id)) return "bekeken";
   return "nieuw";
 }
 
-const MATCH_REASON_KEYS: Record<string, string> = {
-  Standort: "matchReason.district",
-  Preis: "matchReason.budget",
-  Zimmer: "matchReason.preferences",
-  Größe: "matchReason.size",
-  nieuw: "matchReason.fresh",
-  goede_prijs: "matchReason.price",
-};
-
 
 function MatchCard({
   match,
-  onSaveToggle,
-  isSaved,
   onStatusChange,
 }: {
   match: ApiMatch;
-  onSaveToggle: (listingId: string) => void;
-  isSaved: boolean;
   onStatusChange: () => void;
 }) {
   const [, navigate] = useLocation();
   const [imgError, setImgError] = useState(false);
   const { t } = useTranslation();
-  const style = FRESH_BADGE_STYLES[match.fresh_label] ?? FRESH_BADGE_STYLES.ouder;
   const gradient = getCityGradient(match.city);
   const hasImage = !!match.image_url;
 
@@ -194,11 +145,6 @@ function MatchCard({
     markViewed(match.listing_id);
     onStatusChange();
     navigate(`/listing/${match.listing_id}?from=matches`);
-  }
-
-  function handleSave(e: React.MouseEvent) {
-    e.stopPropagation();
-    onSaveToggle(match.listing_id);
   }
 
   return (
@@ -228,43 +174,12 @@ function MatchCard({
           </div>
         )}
 
-        <div className="absolute top-3 left-3 flex items-center gap-1.5">
-          {match.fresh_label !== "ouder" && (
-            <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm ${style.bg} ${style.text}`}>
-              {FRESH_LABEL_KEYS[match.fresh_label] ? t(FRESH_LABEL_KEYS[match.fresh_label]) : match.fresh_label}
-            </span>
-          )}
-          {(() => {
-            const reasons = match.match_reasons ?? [];
-            const label = reasons.length > 0 && MATCH_REASON_KEYS[reasons[0]]
-              ? t(MATCH_REASON_KEYS[reasons[0]])
-              : match.in_latest_email ? "E-mail" : null;
-            return label ? (
-              <span className="text-[10px] font-semibold px-2 py-1 rounded-full backdrop-blur-sm bg-white/80 text-[#1F2937]" data-testid={`badge-context-${match.listing_id}`}>
-                {label}
-              </span>
-            ) : null;
-          })()}
-        </div>
-
         {match.price > 0 && (
           <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-sm" data-testid={`badge-price-${match.listing_id}`}>
             <span className="text-[15px] font-[800] text-[#111C3D]">€{match.price}</span>
             <span className="text-[11px] font-medium text-[#6B7280]"> {t("common.perMonthShort")}</span>
           </div>
         )}
-
-        <button
-          onClick={handleSave}
-          className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors shadow-sm"
-          data-testid={`button-save-match-${match.listing_id}`}
-        >
-          {isSaved ? (
-            <Heart className="w-[18px] h-[18px] text-[#EF4444] fill-[#EF4444]" />
-          ) : (
-            <Heart className="w-[18px] h-[18px] text-[#1F2937]" />
-          )}
-        </button>
       </div>
 
       <div className="p-4 flex flex-col gap-2.5">
@@ -443,7 +358,7 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
     return (
       <div className="flex flex-col gap-3" data-testid="section-recente-matches-empty">
         <div className="flex items-center gap-2">
-          <Heart className="w-4 h-4 text-[#1F2937]" />
+          <Search className="w-4 h-4 text-[#1F2937]" />
           <h2 className="text-section-title">{t("home.recentMatches")}</h2>
         </div>
         <div className="bg-[#F5F7FA] rounded-2xl p-5 text-center">
@@ -477,7 +392,7 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
     return (
       <div className="flex flex-col gap-3" data-testid="section-recente-matches-empty">
         <div className="flex items-center gap-2">
-          <Heart className="w-4 h-4 text-[#1F2937]" />
+          <Search className="w-4 h-4 text-[#1F2937]" />
           <h2 className="text-section-title">{t("home.recentMatches")}</h2>
         </div>
         <div className="bg-[#F5F7FA] rounded-2xl p-5 text-center">
@@ -493,7 +408,7 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
     <div className="flex flex-col gap-3" data-testid="section-recente-matches">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Heart className="w-4 h-4 text-[#1F2937]" />
+          <Search className="w-4 h-4 text-[#1F2937]" />
           <h2 className="text-section-title">{t("home.recentMatches")}</h2>
         </div>
         <button
@@ -654,7 +569,7 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
   if (strength) {
     const existingKeys = new Set(allTasks.map(t => t.key));
     [...strength.tasks, ...strength.prepTasks].forEach((task) => {
-      if (!existingKeys.has(task.id)) {
+      if (!existingKeys.has(task.id) && task.id !== "prep_viewing_tips") {
         allTasks.push({
           key: task.id,
           label: task.label,
@@ -664,6 +579,14 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
       }
     });
   }
+
+  const tipsProgress = getTipsProgress();
+  allTasks.push({
+    key: "tips_lezen",
+    label: `${t("activation.tipsRead")} — ${tipsProgress.read}/${tipsProgress.total}`,
+    done: tipsProgress.read >= tipsProgress.total,
+    action: () => setActiveTab("tips"),
+  });
 
   const doneCount = allTasks.filter((t) => t.done).length;
   if (doneCount === allTasks.length) return null;
@@ -793,7 +716,7 @@ function HomeTab({
         <div className="rounded-2xl bg-[#0F172A] p-6" data-testid="hero-matches">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
-              <Heart className="w-5 h-5 text-white" />
+              <Search className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[22px] font-bold text-white leading-tight" data-testid="text-match-count">
@@ -911,7 +834,6 @@ function HomeTab({
 const MATCH_SUB_TAB_CONFIG: { key: MatchSubTab; labelKey: string; Icon: any }[] = [
   { key: "nieuw", labelKey: "matches.subtabs.new", Icon: Sparkles },
   { key: "bekeken", labelKey: "matches.subtabs.viewed", Icon: Eye },
-  { key: "opgeslagen", labelKey: "matches.subtabs.saved", Icon: Heart },
   { key: "gereageerd", labelKey: "matches.subtabs.applied", Icon: Send },
 ];
 
@@ -962,51 +884,17 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
     setRefreshKey((k) => k + 1);
   }, []);
 
-  const handleSaveToggle = useCallback((listingId: string) => {
-    toggleSaved(listingId);
-    if (accessToken) {
-      const isSaved = safeGetSet(MATCH_SAVED_KEY).has(listingId);
-      apiFetch(`/api/matches/${listingId}/saved`, {
-        method: "PATCH",
-        headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ saved: isSaved }),
-      }).then(() => {
-        queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
-      }).catch(() => {});
-    }
-    refreshStatuses();
-  }, [refreshStatuses, accessToken]);
-
-  const canonicalStats = apiMatchesQuery.data?.canonicalStats;
   const matchTabs = matches.map((m) => ({ ...m, _tab: getMatchTab(m) }));
   const filteredMatches = matchTabs.filter((m) => m._tab === subTab);
-
-  const tabCounts: Record<string, number> = canonicalStats
-    ? {
-        nieuw: canonicalStats.new_count,
-        bekeken: canonicalStats.viewed,
-        opgeslagen: canonicalStats.saved,
-        gereageerd: canonicalStats.applied,
-      }
-    : matchTabs.reduce((acc, m) => {
-        acc[m._tab] = (acc[m._tab] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
 
   return (
     <div className="flex flex-col pb-6">
       <div className="sticky top-0 z-10 bg-white pt-5 pb-0 px-6">
         <div className="flex items-center justify-between mb-3">
           <h1 className="text-page-title">{t("matches.title")}</h1>
-          {totalCount > 0 && totalCount <= 999 && (
-            <span className="text-[13px] font-medium text-[#1F2937] bg-[#F5F7FA] px-2.5 py-1 rounded-full" data-testid="badge-match-count">
-              {totalCount} {totalCount === 1 ? t("matches.listingSingular") : t("matches.listingPlural")}
-            </span>
-          )}
         </div>
         <div className="flex relative border-b border-[#E5E7EB]" data-testid="match-sub-tabs">
           {MATCH_SUB_TAB_CONFIG.map(({ key, labelKey }) => {
-            const count = tabCounts[key] || 0;
             const isActive = subTab === key;
             return (
               <button
@@ -1018,13 +906,6 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
                 data-testid={`tab-matches-${key}`}
               >
                 <span>{t(labelKey)}</span>
-                {count > 0 && (
-                  <span className={`text-[10px] font-bold min-w-[20px] h-[20px] flex items-center justify-center rounded-full ${
-                    isActive ? "bg-[#0D6EFD] text-white" : "bg-[#E5E7EB] text-[#1F2937]"
-                  }`}>
-                    {count > 99 ? "99+" : count}
-                  </span>
-                )}
               </button>
             );
           })}
@@ -1087,16 +968,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
         />
       
       ) : filteredMatches.length === 0 ? (
-        subTab === "opgeslagen" ? (
-          <EmptyState
-            illustration={EMPTY_STATE_IMAGES.noSaved}
-            title={t("matches.emptySaved.title")}
-            description={t("matches.emptySaved.desc")}
-            ctaLabel={t("matches.discoverListings")}
-            onCtaClick={() => setSubTab("nieuw")}
-            testId="empty-saved"
-          />
-        ) : subTab === "gereageerd" ? (
+        subTab === "gereageerd" ? (
           <EmptyState
             illustration={EMPTY_STATE_IMAGES.noApplications}
             title={t("matches.emptyApplied.title")}
@@ -1121,8 +993,6 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
             <MatchCard
               key={m.listing_id}
               match={m}
-              onSaveToggle={handleSaveToggle}
-              isSaved={m.canonical_saved ?? safeGetSet(MATCH_SAVED_KEY).has(m.listing_id)}
               onStatusChange={refreshStatuses}
             />
           ))}
@@ -1548,7 +1418,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, match
             <div className="grid grid-cols-2 gap-3" data-testid="kpi-stats">
               <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 flex flex-col items-center" data-testid="kpi-matches">
                 <div className="w-11 h-11 rounded-full bg-[#EBF2FF] flex items-center justify-center mb-3">
-                  <Heart className="w-5 h-5 text-[#0D6EFD]" />
+                  <Search className="w-5 h-5 text-[#0D6EFD]" />
                 </div>
                 <p className="text-[28px] font-[800] text-[#111C3D] leading-none">{matchCount > 999 ? "999+" : matchCount}</p>
                 <p className="text-[13px] text-[#6B7280] mt-2 text-center font-medium">{t("profile.stats.matchesReceived")}</p>
@@ -1830,7 +1700,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, match
 
 const TAB_CONFIG: { key: TabKey; labelKey: string; Icon: any }[] = [
   { key: "home", labelKey: "nav.home", Icon: Home },
-  { key: "matches", labelKey: "nav.matches", Icon: Heart },
+  { key: "matches", labelKey: "nav.matches", Icon: Search },
   { key: "tips", labelKey: "nav.tips", Icon: Zap },
   { key: "filters", labelKey: "nav.filters", Icon: SlidersHorizontal },
   { key: "profiel", labelKey: "nav.profile", Icon: User },
