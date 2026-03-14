@@ -1,0 +1,98 @@
+We want to add a new listing source to HousAlert: Kleinanzeigen (eBay Kleinanzeigen).
+
+Context:
+HousAlert already has a working scraper + ingestion pipeline and a unified listings table used by the matching engine.
+
+The goal is to add Kleinanzeigen as a new source while reusing the existing architecture.
+
+Requirements:
+
+1. Create a new scraper module
+
+server/scrapers/kleinanzeigen.ts
+
+The scraper should collect rental listings for a city (starting with Berlin).
+
+Target category:
+Immobilien → Mietwohnungen
+
+Example search structure:
+https://www.kleinanzeigen.de/s-wohnung-mieten/berlin/c203l3331
+
+2. Extract the following fields
+
+For each listing extract:
+
+- title
+- price
+- size_m2 (if available)
+- bedrooms (if available)
+- city
+- district (if available)
+- listing_url
+- image_url
+- source = "kleinanzeigen"
+- external_id (unique listing id from URL)
+
+3. Duplicate prevention
+
+Before inserting:
+- check if a listing with the same external_id + source already exists
+- skip duplicates
+
+4. Normalize to existing listing schema
+
+Map the scraped data to the existing database listing structure used by the matching engine.
+
+Ensure compatibility with:
+- city matching
+- price filter
+- size filter
+- bedroom filter
+
+5. Scraper safety
+
+Implement basic protections:
+- request delay (1–2 seconds)
+- user-agent header
+- simple pagination
+
+6. Initial scope
+
+Start with:
+
+City: Berlin  
+Pages: first 5 pages per run
+
+7. Scraper runner
+
+Add a job that runs the scraper periodically (example every 10–15 minutes).
+
+Integrate it into the existing scraper scheduler.
+
+8. Logging
+
+Add logs like:
+
+[KLEINANZEIGEN] scraping Berlin page 1  
+[KLEINANZEIGEN] found X listings  
+[KLEINANZEIGEN] inserted Y new listings
+
+9. QA checklist
+
+Verify:
+
+- scraper runs without crashing
+- listings appear in database
+- duplicates are prevented
+- matching engine detects Kleinanzeigen listings
+- alerts can be triggered from these listings
+
+Return response with:
+
+A. Files created  
+B. Scraper logic  
+C. Mapping to listing schema  
+D. Scheduler integration  
+E. Duplicate protection  
+F. QA verification
