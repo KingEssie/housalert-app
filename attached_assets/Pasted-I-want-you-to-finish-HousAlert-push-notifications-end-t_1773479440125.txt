@@ -1,0 +1,88 @@
+I want you to finish HousAlert push notifications end-to-end so this feature is fully product-ready, not only backend-ready.
+
+Context:
+The push notification backend is already in a strong state:
+- Supabase is used for push persistence
+- token registration, retry logic, delivery logging, receipts, and deep link payloads are implemented
+- automated backend tests already pass
+
+But one important gap remains:
+real end-to-end device behavior has not yet been fully verified and hardened.
+
+Goal:
+Make push notifications fully ready for real user usage in the current Expo/WebView setup.
+
+Please do the following:
+
+1. Audit the full push flow end-to-end
+Review and summarize:
+- how auth moves from web app to Expo WebView/native layer
+- how the Expo push token is requested and registered
+- how the backend stores tokens
+- how a push is triggered from a real match
+- how a notification tap navigates the user
+- what parts are already proven
+- what parts are still only assumed
+
+2. Verify deployment/auth bridge requirements
+Check what must be true for the deployed web app + Expo WebView setup to work reliably.
+Be explicit about:
+- required domain / environment variables
+- WebView message bridge behavior
+- session propagation timing
+- any Expo Go limitations
+- whether a deployed web app is required for the auth bridge to behave correctly
+
+3. Add or improve end-to-end debug instrumentation
+Add practical logging or debug endpoints where useful so we can verify:
+- session received from WebView
+- push token registration success
+- active tokens for a user
+- test push dispatch result
+- match push dispatch result
+- deep link payload contents
+
+Keep it simple and safe.
+
+4. Add a real-device validation checklist that Replit can support
+You cannot physically tap an iPhone from Replit, so be honest about that.
+But prepare everything needed so the remaining human validation is minimal and deterministic.
+
+At minimum support:
+- sending a real test push to a selected user/device
+- inspecting delivery logs
+- verifying receipt status
+- verifying the exact deep link URL in payload
+- verifying whether duplicate sends were blocked
+
+5. Add a test/admin trigger if needed
+If useful, add a simple protected/admin route or script to:
+- send a test push to a user
+- send a test push to a specific token
+- inspect the latest push logs for that user
+Do not overengineer.
+
+6. Execute whatever can be executed in Replit now
+Run all backend-side verification that is possible now.
+Examples:
+- automated push tests
+- dry-run push dispatch
+- endpoint verification if applicable
+Then report the actual results.
+
+7. Reply in exactly this structure:
+A. Audit findings
+B. End-to-end flow decisions
+C. Files changed
+D. Commands executed
+E. Actual verification results
+F. Remaining manual validation steps
+G. Remaining issues
+H. Final verdict: are push notifications fully parity-ready or not?
+
+Important constraints:
+- Do not redo the whole push backend
+- Keep architecture intact
+- Be honest about what can and cannot be verified inside Replit
+- Focus on closing the last real product gaps
+- Execute what you can now, do not only describe it

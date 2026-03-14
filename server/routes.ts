@@ -2215,41 +2215,184 @@ export async function registerRoutes(
   app.post("/api/admin/test-push", requireAdmin, async (req, res) => {
     try {
       const adminUser = (req as any).adminUser;
-      log(`[PUSH TEST] Admin ${adminUser.email} triggering test push`);
+      const rawUserId = req.body?.user_id;
+      const targetUserId = (typeof rawUserId === "string" && /^[0-9a-f-]{36}$/i.test(rawUserId)) ? rawUserId : adminUser.id;
+      log(`[PUSH TEST] Admin ${adminUser.email} triggering test push for user ${targetUserId.substring(0, 8)}...`);
 
       const webResult = await sendPushToUser(
-        adminUser.id,
+        targetUserId,
         {
-          title: "Test Push",
-          body: "Dies ist eine Test-Benachrichtigung von HousAlert.",
+          title: "HousAlert Test",
+          body: "Push notificaties werken! 🏠",
           url: "/dashboard",
         },
         supabase
       );
 
-      const expoResult = await sendExpoTestPush(adminUser.id);
+      const expoResult = await sendExpoTestPush(targetUserId);
 
       const totalSent = webResult.sent + expoResult.sent;
-      const totalFailed = webResult.failed + expoResult.failed;
 
       if (totalSent > 0) {
         log(`[PUSH TEST] Test push sent: web=${webResult.sent} expo=${expoResult.sent}`);
-        return res.json({
-          success: true,
-          web: webResult,
-          expo: expoResult,
-        });
+        return res.json({ success: true, targetUserId, web: webResult, expo: expoResult });
       } else {
         log(`[PUSH TEST] No push sent (web=${webResult.sent}, expo=${expoResult.sent})`);
         return res.json({
           success: false,
+          targetUserId,
           web: webResult,
           expo: expoResult,
-          message: "No active push subscriptions or Expo tokens found",
+          message: "No active push subscriptions or Expo tokens found for this user",
         });
       }
     } catch (err: any) {
       log(`[PUSH TEST] Error: ${err.message}`);
+      return res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
+  app.get("/api/admin/push-debug", requireAdmin, async (req, res) => {
+    try {
+      const adminUser = (req as any).adminUser;
+      const rawId = req.query.user_id as string | undefined;
+      const targetUserId = (rawId && /^[0-9a-f-]{36}$/i.test(rawId)) ? rawId : adminUser.id;
+      const sb = getSupabaseAdmin();
+
+      const { data: userData } = await supabase.auth.admin.getUserById(targetUserId);
+      const email = userData?.user?.email || "unknown";
+
+      const { data: tokens } = await sb
+        .from("expo_push_tokens")
+        .select("id, expo_push_token, platform, is_active, created_at, updated_at")
+        .eq("user_id", targetUserId)
+        .order("updated_at", { ascending: false });
+
+      const { data: webSubs } = await supabase
+        .from("push_subscriptions")
+        .select("id, endpoint, created_at")
+        .eq("user_id", targetUserId);
+
+      const { data: notifSettings } = await supabase
+        .from("user_notification_settings")
+        .select("email_enabled, push_enabled")
+        .eq("user_id", targetUserId)
+        .maybeSingle();
+
+      const { data: subRow } = await supabase
+        .from("subscriptions")
+        .select("status, plan, trial_end, current_period_end")
+        .eq("user_id", targetUserId)
+        .maybeSingle();
+
+      const { data: recentLogs } = await sb
+        .from("push_delivery_log")
+        .select("id, channel, token_snippet, listing_count, title, status, expo_ticket_id, expo_receipt_status, error_type, error_message, created_at")
+        .eq("user_id", targetUserId)
+        .order("created_at", { ascending: false })
+        .limit(10);
+
+      const activeExpoTokens = (tokens || []).filter((t: any) => t.is_active);
+      const maskedTokens = (tokens || []).map((t: any) => ({
+        ...t,
+        expo_push_token: t.expo_push_token ? t.expo_push_token.substring(0, 30) + "..." : null,
+      }));
+
+      return res.json({
+        user_id: targetUserId,
+        email,
+        subscription: subRow || null,
+        notification_settings: notifSettings || { email_enabled: true, push_enabled: false },
+        push_ready: activeExpoTokens.length > 0 && (notifSettings?.push_enabled ?? false),
+        expo_tokens: {
+          total: (tokens || []).length,
+          active: activeExpoTokens.length,
+          tokens: maskedTokens,
+        },
+        web_push_subscriptions: {
+          total: (webSubs || []).length,
+          subscriptions: (webSubs || []).map((s: any) => ({
+            id: s.id,
+            endpoint: s.endpoint?.substring(0, 50) + "...",
+            created_at: s.created_at,
+          })),
+        },
+        recent_delivery_logs: recentLogs || [],
+        diagnosis: {
+          has_active_tokens: activeExpoTokens.length > 0,
+          push_enabled_in_settings: notifSettings?.push_enabled ?? false,
+          has_active_subscription: subRow?.status === "active" || (subRow?.trial_end && new Date(subRow.trial_end) > new Date()),
+          can_receive_push: activeExpoTokens.length > 0 && (notifSettings?.push_enabled ?? false),
+        },
+      });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/admin/test-push-to-token", requireAdmin, async (req, res) => {
+    try {
+      const adminUser = (req as any).adminUser;
+      const { expo_push_token, title, body, deep_link } = req.body;
+
+      if (!expo_push_token || typeof expo_push_token !== "string" || !expo_push_token.startsWith("ExponentPushToken[")) {
+        return res.status(400).json({ error: "Invalid expo_push_token — must start with ExponentPushToken[" });
+      }
+
+      const pushTitle = title || "HousAlert Test";
+      const pushBody = body || "Direct token test push";
+      const pushDeepLink = typeof deep_link === "string" && deep_link.startsWith("/") ? deep_link : "/dashboard";
+
+      log(`[PUSH TEST] Admin ${adminUser.email} sending direct push to token ${expo_push_token.substring(0, 30)}...`);
+
+      const { sendWithRetry } = await import("./notifications/expo-push");
+      const message = {
+        to: expo_push_token,
+        sound: "default",
+        title: pushTitle,
+        body: pushBody,
+        data: { url: pushDeepLink, type: "admin_test" },
+        priority: "high" as const,
+        channelId: "match-alerts",
+      };
+
+      const { tickets, error } = await sendWithRetry([message]);
+
+      const ticket = tickets[0];
+      const sb = getSupabaseAdmin();
+      try {
+        await sb.from("push_delivery_log").insert({
+          user_id: adminUser.id,
+          channel: "expo",
+          token_snippet: expo_push_token.substring(0, 30) + "...",
+          full_token: expo_push_token,
+          listing_ids: [],
+          listing_count: 0,
+          title: pushTitle,
+          body: pushBody,
+          status: error ? "api_error" : (ticket?.status === "ok" ? "sent" : "failed"),
+          expo_ticket_id: ticket?.id || null,
+          error_type: error ? "api_error" : (ticket?.details?.error || null),
+          error_message: error || ticket?.message || null,
+        });
+      } catch {}
+
+      if (error) {
+        return res.json({ success: false, error, token: expo_push_token.substring(0, 30) + "..." });
+      }
+
+      return res.json({
+        success: ticket?.status === "ok",
+        ticket,
+        payload_sent: {
+          title: pushTitle,
+          body: pushBody,
+          deep_link: pushDeepLink,
+          channel: "match-alerts",
+        },
+        token: expo_push_token.substring(0, 30) + "...",
+      });
+    } catch (err: any) {
       return res.status(500).json({ success: false, error: err.message });
     }
   });

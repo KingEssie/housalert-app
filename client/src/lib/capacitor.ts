@@ -3,7 +3,7 @@ function getCap(): any {
 }
 
 export function isNativePlatform(): boolean {
-  return getCap()?.isNativePlatform?.() === true;
+  return getCap()?.isNativePlatform?.() === true || (window as any).__HOUSALERT_NATIVE__ === true;
 }
 
 export function getPlatform(): string {
