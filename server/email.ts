@@ -131,6 +131,7 @@ ${preheaderHtml}
         </td>
         <td style="padding-left:12px;">
           <span style="font-size:20px;font-weight:800;color:${BRAND.dark};letter-spacing:-0.02em;">HousAlert</span>
+          <br><span style="font-size:11px;color:${BRAND.muted};letter-spacing:0.02em;">Huurkansen, direct in je inbox</span>
         </td>
       </tr>
       </table>
@@ -178,7 +179,7 @@ function detailChip(icon: string, label: string): string {
   </td>`;
 }
 
-function listingCard(listing: ListingInfo, showButtons = false): string {
+function listingCard(listing: ListingInfo, showButtons = false, cardNumber?: number): string {
   const safeUrl = sanitizeUrl(listing.url);
   const baseUrl = getAppBaseUrl();
   const applyUrl = listing.listing_id ? `${baseUrl}/apply/${listing.listing_id}` : null;
@@ -237,6 +238,7 @@ function listingCard(listing: ListingInfo, showButtons = false): string {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${BRAND.bg};border-radius:12px;overflow:hidden;margin:12px 0;border:1px solid ${BRAND.divider};">
 ${imageHtml}
 <tr><td style="padding:${cardPadding};">
+  ${cardNumber ? `<span style="display:inline-block;font-size:11px;font-weight:700;color:${BRAND.primary};background-color:${BRAND.accent};border-radius:4px;padding:2px 8px;margin-bottom:6px;">Woning ${cardNumber}</span><br>` : ""}
   <h3 style="margin:0 0 6px;font-size:16px;font-weight:700;color:${BRAND.dark};line-height:1.35;">${escapeHtml(listing.title)}</h3>
   ${priceHtml}
   ${chipsHtml ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">${chipsHtml}</table>` : ""}
@@ -318,7 +320,7 @@ export async function sendBatchMatchAlert(
 
     const textBody = `Hallo,\n\nWe hebben ${listings.length} nieuwe woningen gevonden die bij jouw zoekprofiel passen:\n\n${textListings}\n\nMet vriendelijke groet,\nHet HousAlert-team`;
 
-    const htmlListings = listings.map(l => listingCard(l, true)).join("");
+    const htmlListings = listings.map((l, i) => listingCard(l, true, i + 1)).join("");
 
     const htmlContent = `
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
