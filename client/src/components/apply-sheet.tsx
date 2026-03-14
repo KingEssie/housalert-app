@@ -139,23 +139,26 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
   ];
   const readyCount = readinessItems.filter((r) => r.done).length;
 
-  const handleCopy = async () => {
+  const handleCopyAndRespond = async () => {
+    let copied = false;
     try {
       await navigator.clipboard.writeText(editedLetter ?? filledLetter);
-      toast({ title: t("applySheet.copied"), description: t("applySheet.copiedDesc") });
-      return true;
+      copied = true;
     } catch {
       toast({ title: t("applySheet.copyFailed"), description: t("applySheet.copyFailedDesc"), variant: "destructive" });
-      return false;
     }
-  };
 
-  const handleCopyAndRespond = async () => {
-    await handleCopy();
+    if (!copied) return;
+
+    toast({ title: t("applySheet.copiedOpening") });
+
     setMarked(true);
     onMarkedApplied();
+
     if (listing.url) {
-      window.open(listing.url, "_blank", "noopener");
+      setTimeout(() => {
+        window.open(listing.url!, "_blank", "noopener");
+      }, 750);
     }
   };
 

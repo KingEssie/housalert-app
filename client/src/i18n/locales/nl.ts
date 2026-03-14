@@ -755,6 +755,7 @@ export const nl: Record<string, any> = {
     readyToSend: "Klaar om te versturen",
     copied: "Gekopieerd!",
     copiedDesc: "Je reactiebrief is naar het klembord gekopieerd.",
+    copiedOpening: "Tekst gekopieerd — opening woning",
     copyFailed: "Fout",
     copyFailedDesc: "Kopiëren niet mogelijk.",
     markedApplied: "Als gereageerd gemarkeerd",

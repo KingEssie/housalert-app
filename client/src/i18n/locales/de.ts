@@ -755,6 +755,7 @@ export const de: Record<string, any> = {
     readyToSend: "Bereit zum Senden",
     copied: "Kopiert!",
     copiedDesc: "Dein Antwortschreiben wurde in die Zwischenablage kopiert.",
+    copiedOpening: "Text kopiert — Anzeige wird geöffnet",
     copyFailed: "Fehler",
     copyFailedDesc: "Kopieren nicht möglich.",
     markedApplied: "Als beworben markiert",
