@@ -1,0 +1,99 @@
+We need a final UX bugfix pass. Please implement the following changes.
+
+--------------------------------
+1. PHONE NUMBER TASK COMPLETION FIX
+--------------------------------
+
+Current problem:
+The "Telefoonnummer toevoegen" task still appears incomplete even though the user already has a phone number stored.
+
+Required fix:
+- Use the actual stored user.phone_number as the source of truth
+- If user.phone_number exists and has a valid length (>6 characters), the task must automatically be marked as completed
+- Do NOT rely on whether the user opened the screen
+
+Logic example:
+
+if (user.phone_number && user.phone_number.length > 6) {
+  phoneTask.completed = true
+}
+
+Routing fix:
+The task must navigate to the phone number edit screen (the screen shown in the screenshot where the phone number can be edited directly).
+
+--------------------------------
+2. DOCUMENT CHECKLIST SUCCESS UX
+--------------------------------
+
+When the user checks all required documents:
+
+- Show a success banner above the checklist
+- Dark blue background
+- White text
+- Rounded corners
+- Padding
+
+Text example:
+
+✓ Documenten compleet
+
+Je hebt alle documenten verzameld.
+Je bent klaar om sneller op woningen te reageren.
+
+Styling example:
+
+bg-blue-900
+text-white
+rounded-xl
+p-4
+
+Also:
+Mark the checklist task as completed in the main action list.
+
+--------------------------------
+3. TOAST / POPUP DURATION
+--------------------------------
+
+All toast notifications should stay visible for only:
+
+2000 milliseconds (2 seconds)
+
+Update all toast calls accordingly.
+
+Example:
+
+toast({
+  title: "...",
+  duration: 2000
+})
+
+--------------------------------
+4. TOAST DESIGN IMPROVEMENT
+--------------------------------
+
+Update toast styling globally to:
+
+- dark blue background
+- white text
+- no border
+- stronger shadow
+
+Tailwind example:
+
+className="bg-blue-900 text-white border-none shadow-lg"
+
+--------------------------------
+5. QA CHECK
+--------------------------------
+
+Verify:
+
+- phone number task completes automatically when phone number exists
+- phone task opens the correct edit screen
+- documents checklist shows success banner when complete
+- documents task completes in the main checklist
+- toast notifications disappear after ~2 seconds
+- toast design uses dark blue background with white text
+
+--------------------------------
+Return a summary of the implementation.

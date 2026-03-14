@@ -47,8 +47,8 @@ const STEP_ICONS: Record<string, typeof Bell> = {
 const STEP_ROUTES: Record<string, string> = {
   alerts_active: "/settings/notifications",
   search_buddy_added: "",
-  documents_ready: "",
-  phone_added: "/settings/notifications",
+  documents_ready: "/documents",
+  phone_added: "/profile/edit/phone",
   letter_ready: "/application-letter",
 };
 

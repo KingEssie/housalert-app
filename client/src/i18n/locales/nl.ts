@@ -1264,6 +1264,7 @@ export const nl: Record<string, any> = {
     saving: "Wordt opgeslagen...",
     save: "Opslaan",
     goToNotifications: "Naar meldingen",
+    goToPhone: "Telefoonnummer toevoegen",
     buddyEmailLabel: "E-mailadres van je zoekpartner",
     buddyEmailPlaceholder: "partner@voorbeeld.nl",
     buddyHelp: "Je zoekpartner ontvangt dezelfde meldingen als jij.",
@@ -1354,6 +1355,8 @@ export const nl: Record<string, any> = {
     heading: "Documenten-checklist",
     collected: "verzameld",
     allDone: "Je hebt alle documenten verzameld!",
+    completeTitle: "Documenten compleet",
+    completeDesc: "Je hebt alle documenten verzameld. Je bent klaar om sneller op woningen te reageren.",
     items: {
       id_copy: "Kopie identiteitsbewijs (paspoort of ID-kaart)",
       income_proof: "Inkomensbewijs (laatste 3 salarisstroken)",

@@ -1264,6 +1264,7 @@ export const de: Record<string, any> = {
     saving: "Wird gespeichert...",
     save: "Speichern",
     goToNotifications: "Zu den Benachrichtigungen",
+    goToPhone: "Telefonnummer hinzufügen",
     buddyEmailLabel: "E-Mail-Adresse des Suchpartners",
     buddyEmailPlaceholder: "partner@beispiel.de",
     buddyHelp: "Dein Suchpartner erhält dieselben Benachrichtigungen wie du.",
@@ -1354,6 +1355,8 @@ export const de: Record<string, any> = {
     heading: "Dokumenten-Checkliste",
     collected: "gesammelt",
     allDone: "Du hast alle Dokumente zusammen!",
+    completeTitle: "Dokumente komplett",
+    completeDesc: "Du hast alle Dokumente zusammen. Du bist bereit, schneller auf Wohnungen zu reagieren.",
     items: {
       id_copy: "Kopie des Ausweises (Reisepass oder Personalausweis)",
       income_proof: "Einkommensnachweis (letzte 3 Gehaltsabrechnungen)",

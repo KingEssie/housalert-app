@@ -92,8 +92,12 @@ export default function DocumentsPage() {
           </div>
 
           {allDone && (
-            <div className="bg-[#F0FDF4] rounded-xl px-4 py-3 mb-4" data-testid="documents-complete-banner">
-              <p className="text-[13px] font-semibold text-[#15803D]">{t("documents.allDone")}</p>
+            <div className="bg-[#0F172A] rounded-xl p-4 mb-4" data-testid="documents-complete-banner">
+              <p className="text-[14px] font-bold text-white flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4" />
+                {t("documents.completeTitle")}
+              </p>
+              <p className="text-[13px] text-white/80 mt-1">{t("documents.completeDesc")}</p>
             </div>
           )}
 

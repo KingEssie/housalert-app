@@ -1770,7 +1770,11 @@ export async function registerRoutes(
       const REQUIRED_DOC_COUNT = 6;
       const hasDocuments = checklistDone >= REQUIRED_DOC_COUNT;
 
-      const hasPhone = !!(notif.phone_e164 && notif.phone_e164.length > 5);
+      const profilePhone = profileData?.phone;
+      const hasPhone = !!(
+        (notif.phone_e164 && notif.phone_e164.length > 5) ||
+        (profilePhone && typeof profilePhone === "string" && profilePhone.length > 6)
+      );
 
       const hasNetworkDone = !!(profileData?.network_task_done);
       const hasViewingTipsDone = !!(profileData?.viewing_tips_done);

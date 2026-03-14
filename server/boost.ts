@@ -76,7 +76,7 @@ export function calculateBoostScore(states: CompletionStates): BoostResult {
 
 export function resolveCompletionStates(
   notif: { email_enabled?: boolean; phone_e164?: string | null },
-  profileData: { search_buddy_email?: string | null; application_template?: string | null; document_checklist?: Record<string, boolean> | null; profile_photo_url?: string | null } | null,
+  profileData: { search_buddy_email?: string | null; application_template?: string | null; document_checklist?: Record<string, boolean> | null; profile_photo_url?: string | null; phone?: string | null } | null,
   searchProfiles: { price_min: number; price_max: number; bedrooms_min: number; size_min: number }[],
   userEmail: string | null,
 ): CompletionStates {
@@ -102,9 +102,15 @@ export function resolveCompletionStates(
     incomeDocumentsUploaded: incomeChecked >= 2,
     idDocumentUploaded: idChecked >= 1,
     reactionLetterReady: !!(profileData?.application_template && profileData.application_template.trim().length > 20),
-    phoneNumberAdded: !!(notif.phone_e164 && notif.phone_e164.length > 5),
+    phoneNumberAdded: !!(
+      (notif.phone_e164 && notif.phone_e164.length > 5) ||
+      (profileData?.phone && typeof profileData.phone === "string" && profileData.phone.length > 6)
+    ),
     housingPreferencesCompleted: searchProfiles.length >= 2 || hasStrongProfile,
-    profileInfoCompleted: !!(userEmail && notif.phone_e164 && notif.phone_e164.length > 5),
+    profileInfoCompleted: !!(userEmail && (
+      (notif.phone_e164 && notif.phone_e164.length > 5) ||
+      (profileData?.phone && typeof profileData.phone === "string" && profileData.phone.length > 6)
+    )),
     // TODO: implement profile photo upload; for now always false
     profilePhotoAdded: !!(profileData?.profile_photo_url && profileData.profile_photo_url.length > 0),
   };

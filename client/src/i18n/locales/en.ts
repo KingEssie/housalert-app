@@ -487,6 +487,7 @@ export const en: Record<string, any> = {
     saving: "Saving...",
     save: "Save",
     goToNotifications: "Go to notifications",
+    goToPhone: "Add phone number",
     buddyEmailLabel: "Email address of your search buddy",
     buddyEmailPlaceholder: "partner@example.com",
     buddyHelp: "Your search buddy receives the same notifications as you.",
@@ -577,6 +578,8 @@ export const en: Record<string, any> = {
     heading: "Documents checklist",
     collected: "collected",
     allDone: "You've collected all the documents!",
+    completeTitle: "Documents complete",
+    completeDesc: "You've collected all your documents. You're ready to respond faster to listings.",
     items: {
       id_copy: "Copy of ID (passport or ID card)",
       income_proof: "Proof of income (last 3 payslips)",

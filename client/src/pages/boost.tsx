@@ -447,7 +447,7 @@ function TaskModal({
         <div className="p-5">
           <p className="text-[14px] text-[#1F2937] mb-5">{t(modalKeys.descKey)}</p>
 
-          {(taskId === "alerts_active" || taskId === "phone_number_added") && (
+          {taskId === "alerts_active" && (
             <Button
               onClick={() => { onClose(); navigate("/settings/notifications"); }}
               className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold"
@@ -455,6 +455,17 @@ function TaskModal({
             >
               <Bell className="w-4 h-4 mr-2" />
               {t("boost.goToNotifications")}
+            </Button>
+          )}
+
+          {taskId === "phone_number_added" && (
+            <Button
+              onClick={() => { onClose(); navigate("/profile/edit/phone"); }}
+              className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold"
+              data-testid="button-goto-phone"
+            >
+              <Phone className="w-4 h-4 mr-2" />
+              {t("boost.goToPhone")}
             </Button>
           )}
 
