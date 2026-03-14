@@ -1,0 +1,136 @@
+I want you to upgrade HousAlert email alerts to Stekkies-level core quality.
+
+Context:
+HousAlert is a rental alert app for Germany.
+Users receive alerts when new housing listings match their search profile.
+The core use case is:
+1. new listing appears
+2. user gets alert
+3. user opens the match
+4. user copies a response letter
+5. user opens the original listing
+6. user responds fast
+
+Current status:
+- Email alerts already exist
+- Push notifications backend is now nearly production-ready
+- Matches, listing detail pages, copy-letter flow, and open-original-ad flow already exist
+
+Goal:
+Make the email alert system practical, clean, mobile-friendly, and conversion-focused.
+Do not overengineer.
+
+Please do the following:
+
+1. Audit the current email alert implementation
+Review:
+- where emails are triggered
+- how duplicate prevention works
+- what data is included
+- current subject lines
+- current HTML/text templates
+- logging/observability
+- whether single-match and multi-match cases are handled differently
+
+Then clearly identify:
+- what is already good
+- what is weak
+- what is missing for parity
+
+2. Improve email content structure
+Design email alerts that are:
+- easy to scan on mobile
+- useful within 3 seconds
+- focused on taking action quickly
+
+For each listing shown, include where possible:
+- main image
+- title
+- city
+- district if available
+- price
+- size in sqm
+- rooms
+- furnished/pets only if useful and available
+- short source label
+- button to open HousAlert match/detail
+- button to open original listing
+
+3. Subject lines
+Implement stronger subject line logic, for example:
+- single listing: "New match in Berlin – €950 – 48m²"
+- multiple listings: "3 new matches in Berlin"
+Create sensible fallbacks for missing fields.
+
+4. Template system
+Refactor or improve the email template(s) so they are:
+- responsive/mobile-friendly
+- clean and readable
+- resilient to missing data
+- not dependent on unnecessary heavy libraries
+
+Support:
+- single-match email
+- multi-match/batched email
+- plain text fallback
+
+5. Include clear action hierarchy
+The main CTA should help users act fast.
+Make the hierarchy practical:
+- primary CTA: view match in HousAlert
+- secondary CTA: open original listing
+If appropriate, also include a smaller link or note about copying the response letter in the app.
+
+6. Duplicate prevention and send rules
+Review how email deduplication currently works.
+Ensure duplicate email sends are prevented for the same user + match + channel.
+If batching exists or should exist, keep it simple and deterministic.
+
+7. Logging and observability
+Add or improve email delivery logs so it is easy to inspect:
+- who was targeted
+- which match/listing IDs were included
+- subject line
+- success/failure
+- error message if failed
+- timestamp
+If this already exists, improve it only if needed.
+
+8. Add test coverage
+Create practical automated tests for:
+- subject line generation
+- single-match template rendering
+- multi-match template rendering
+- missing image fallback
+- missing district fallback
+- duplicate prevention rules
+- link generation
+- text fallback generation
+
+Use deterministic tests and execute them yourself in Replit.
+
+9. Add a dry-run
+Create a dry-run script or test that simulates:
+- one user
+- one single-match email
+- one multi-match email
+- duplicate send attempt
+Then run it and report what happened.
+
+10. Output format
+Reply in exactly this structure:
+A. Audit findings
+B. Template/content decisions
+C. Files changed
+D. Test files added
+E. Commands executed
+F. Actual test results
+G. Remaining issues
+H. Final verdict: is email alerts parity-ready or not?
+
+Important constraints:
+- Keep current architecture intact as much as possible
+- Use Supabase where persistence is needed
+- Do not rewrite unrelated systems
+- Do not overengineer with marketing automation or external email platforms unless already present
+- Execute the tests yourself, do not only describe them
