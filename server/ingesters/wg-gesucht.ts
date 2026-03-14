@@ -1,175 +1,230 @@
-import * as cheerio from "cheerio";
-import { createHash } from "crypto";
 import { log } from "../log";
 import type { Ingester, IngestionResult } from "./types";
 import type { ParsedListing } from "./matching";
 import { insertAndMatchListings } from "./matching";
-import { getWgGesuchtUrl } from "./city-slugs";
+import { getCitySlugs } from "./city-slugs";
 
 const WG_GESUCHT_BASE = "https://www.wg-gesucht.de";
-const USER_AGENT =
-  "HousAlert/1.0 (rental alert app; polite single-page fetch; contact: support@housalert.de)";
+const API_BASE = `${WG_GESUCHT_BASE}/api/asset/offers/`;
 
-function extractSourceId(href: string): string {
-  const match = href.match(/\.(\d+)\.html/);
-  if (match) return match[1];
-  return createHash("sha256").update(href).digest("hex").slice(0, 16);
-}
+const BROWSER_UA =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36";
 
-function parseZimmer(text: string): number {
-  const match = text.match(/([\d,]+)-Zimmer/);
-  if (match) {
-    const num = parseFloat(match[1].replace(",", "."));
-    return Math.floor(num);
-  }
-  return 0;
-}
-
-function parsePrice(html: string): number {
-  const cleaned = html.replace(/&euro;/g, "€").replace(/&nbsp;/g, " ");
-  const match = cleaned.match(/([\d.]+)\s*€/);
-  if (match) return parseInt(match[1].replace(/\./g, ""), 10);
-  return 0;
-}
-
-function parseSize(html: string): number {
-  const cleaned = html.replace(/&sup2;/g, "²").replace(/&nbsp;/g, " ");
-  const match = cleaned.match(/([\d.]+)\s*m/);
-  if (match) return parseInt(match[1].replace(/\./g, ""), 10);
-  return 0;
-}
+const PAGES_TO_FETCH = 3;
+const PAGE_SIZE = 25;
+const PAGE_DELAY_MS = 1500;
+const REQUEST_TIMEOUT_MS = 15_000;
+const MAX_RETRIES = 2;
+const RETRY_BASE_MS = 2000;
 
 const UNFURNISHED_PATTERNS = /unmöbliert|unfurnished|nicht\s*möbliert/i;
 const FURNISHED_PATTERNS = /möbliert|furnished|teilmöbliert|voll\s*möbliert/i;
-const NO_PETS_PATTERNS = /keine\s*haustiere|keine\s*tiere|no\s*pets|haustiere\s*nicht\s*erlaubt|tiere\s*nicht\s*erlaubt/i;
+const NO_PETS_PATTERNS =
+  /keine\s*haustiere|keine\s*tiere|no\s*pets|haustiere\s*nicht\s*erlaubt|tiere\s*nicht\s*erlaubt/i;
 const PETS_PATTERNS = /haustier|pet|tiere?\s*erlaubt/i;
 const BALCONY_PATTERNS = /balkon|balcony|terrasse|loggia/i;
 const ELEVATOR_PATTERNS = /aufzug|fahrstuhl|elevator|lift/i;
 
-function parseFurnished(text: string): boolean | null {
-  if (UNFURNISHED_PATTERNS.test(text)) return false;
-  if (FURNISHED_PATTERNS.test(text)) return true;
-  return null;
-}
-
-function extractFeatures(cardText: string): {
+function extractFeatures(text: string): {
   furnished: boolean | null;
   pets_allowed: boolean | null;
   balcony: boolean | null;
   elevator: boolean | null;
 } {
   return {
-    furnished: parseFurnished(cardText),
-    pets_allowed: NO_PETS_PATTERNS.test(cardText) ? false : PETS_PATTERNS.test(cardText) ? true : null,
-    balcony: BALCONY_PATTERNS.test(cardText) ? true : null,
-    elevator: ELEVATOR_PATTERNS.test(cardText) ? true : null,
+    furnished: UNFURNISHED_PATTERNS.test(text)
+      ? false
+      : FURNISHED_PATTERNS.test(text)
+        ? true
+        : null,
+    pets_allowed: NO_PETS_PATTERNS.test(text)
+      ? false
+      : PETS_PATTERNS.test(text)
+        ? true
+        : null,
+    balcony: BALCONY_PATTERNS.test(text) ? true : null,
+    elevator: ELEVATOR_PATTERNS.test(text) ? true : null,
   };
 }
 
-function normalizeDistrict(raw: string): string {
-  return raw.trim().replace(/\s+/g, " ");
+interface WgOffer {
+  offer_id: string;
+  category: string;
+  total_costs: string;
+  property_size: string;
+  number_of_rooms: string;
+  offer_title: string;
+  city_id: string;
+  rent_type: string;
+  district_custom: string;
+  postcode: string;
+  town_name: string;
+  deactivated: string;
+  geo_latitude: string;
+  geo_longitude: string;
+  street: string;
+  offer_in_exchange: string;
 }
 
-function extractDistrict(title: string, city: string): string | null {
-  const match = title.match(/in\s+[\w\u00C0-\u024F-]+-(.+?)(?:\.|$)/i);
-  if (match) return normalizeDistrict(match[1]);
-  const parts = title.split(",").map(p => p.trim());
-  if (parts.length >= 2) {
-    const last = parts[parts.length - 1];
-    if (last.toLowerCase() !== city.toLowerCase() && !last.match(/\d/)) {
-      return normalizeDistrict(last);
+interface WgApiResponse {
+  total_items: string;
+  page_number: string;
+  number_of_pages: string;
+  _embedded: { offers: WgOffer[] };
+}
+
+function buildListingUrl(offer: WgOffer): string {
+  return `${WG_GESUCHT_BASE}/${offer.offer_id}.html`;
+}
+
+function offerToListing(offer: WgOffer, city: string): ParsedListing | null {
+  if (offer.deactivated === "1") return null;
+  if (offer.offer_in_exchange === "1") return null;
+
+  const title = (offer.offer_title || "").trim();
+  if (!title) return null;
+
+  const price = parseInt(offer.total_costs, 10) || 0;
+  const size = parseInt(offer.property_size, 10) || 0;
+  const rooms = parseInt(offer.number_of_rooms, 10) || 0;
+
+  const lat = parseFloat(offer.geo_latitude) || null;
+  const lng = parseFloat(offer.geo_longitude) || null;
+
+  const district = (offer.district_custom || "").trim() || null;
+  const features = extractFeatures(title);
+
+  return {
+    title,
+    url: buildListingUrl(offer),
+    city,
+    price,
+    bedrooms: rooms,
+    size_m2: size,
+    source: "wg-gesucht",
+    source_id: offer.offer_id,
+    image_url: null,
+    furnished: features.furnished,
+    pets_allowed: features.pets_allowed,
+    balcony: features.balcony,
+    elevator: features.elevator,
+    district,
+    latitude: lat,
+    longitude: lng,
+  };
+}
+
+function delay(ms: number): Promise<void> {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+async function fetchPage(
+  cityId: number,
+  page: number,
+): Promise<{ offers: WgOffer[]; totalPages: number }> {
+  const url = `${API_BASE}?city_id=${cityId}&category=2&rent_type=0&limit=${PAGE_SIZE}&page=${page}`;
+
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+      const resp = await fetch(url, {
+        headers: {
+          "User-Agent": BROWSER_UA,
+          Accept: "application/json",
+          "Accept-Language": "de-DE,de;q=0.9,en;q=0.5",
+          Referer: `${WG_GESUCHT_BASE}/`,
+        },
+        signal: controller.signal,
+      });
+      clearTimeout(timer);
+
+      if (!resp.ok) {
+        const retryable = resp.status === 429 || resp.status >= 500;
+        if (retryable && attempt < MAX_RETRIES) {
+          const backoff = RETRY_BASE_MS * Math.pow(2, attempt) + Math.random() * 500;
+          log(`[WG-GESUCHT] page ${page} returned ${resp.status}, retrying in ${Math.round(backoff)}ms (attempt ${attempt + 1}/${MAX_RETRIES})`);
+          await delay(backoff);
+          continue;
+        }
+        throw new Error(`API returned ${resp.status}: ${resp.statusText}`);
+      }
+
+      const contentType = resp.headers.get("content-type") || "";
+      if (!contentType.includes("json")) {
+        const snippet = (await resp.text()).slice(0, 200);
+        throw new Error(`Expected JSON but got ${contentType}: ${snippet}`);
+      }
+
+      const data: WgApiResponse = await resp.json();
+
+      if (!data._embedded?.offers) {
+        throw new Error(`Unexpected response shape — missing _embedded.offers`);
+      }
+
+      const totalPages = parseInt(data.number_of_pages, 10) || 0;
+      return { offers: data._embedded.offers, totalPages };
+    } catch (err: any) {
+      if (err?.name === "AbortError") {
+        if (attempt < MAX_RETRIES) {
+          log(`[WG-GESUCHT] page ${page} timed out, retrying (attempt ${attempt + 1}/${MAX_RETRIES})`);
+          await delay(RETRY_BASE_MS * Math.pow(2, attempt));
+          continue;
+        }
+        throw new Error(`Request timed out after ${REQUEST_TIMEOUT_MS}ms`);
+      }
+      if (attempt < MAX_RETRIES && !err.message?.includes("Unexpected response")) {
+        const backoff = RETRY_BASE_MS * Math.pow(2, attempt) + Math.random() * 500;
+        log(`[WG-GESUCHT] page ${page} error: ${err.message}, retrying in ${Math.round(backoff)}ms`);
+        await delay(backoff);
+        continue;
+      }
+      throw err;
     }
   }
-  return null;
+  throw new Error("Unreachable");
 }
 
 async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
-  const searchUrl = getWgGesuchtUrl(city);
-  if (!searchUrl) {
-    log(`WG-Gesucht: no URL mapping for city "${city}" — skipping`);
+  const slugs = getCitySlugs(city);
+  if (!slugs?.wgGesuchtCode) {
+    log(`[WG-GESUCHT] No city code for "${city}" — skipping`);
     return [];
   }
 
-  log(`Fetching WG-Gesucht ${city} listings...`);
+  const cityId = slugs.wgGesuchtCode;
+  const allListings: ParsedListing[] = [];
+  const seenIds = new Set<string>();
 
-  const response = await fetch(searchUrl, {
-    headers: {
-      "User-Agent": USER_AGENT,
-      Accept: "text/html",
-      "Accept-Language": "de-DE,de;q=0.9,en;q=0.5",
-    },
-  });
+  for (let page = 1; page <= PAGES_TO_FETCH; page++) {
+    log(`[WG-GESUCHT] ${city} page ${page}/${PAGES_TO_FETCH}`);
 
-  if (!response.ok) {
-    throw new Error(`WG-Gesucht returned ${response.status}: ${response.statusText}`);
+    let offers: WgOffer[];
+    let totalPages: number;
+    try {
+      const result = await fetchPage(cityId, page);
+      offers = result.offers;
+      totalPages = result.totalPages;
+    } catch (err: any) {
+      log(`[WG-GESUCHT] ${city} page ${page} failed: ${err.message} — continuing with ${allListings.length} listings from prior pages`);
+      break;
+    }
+
+    for (const offer of offers) {
+      if (seenIds.has(offer.offer_id)) continue;
+      seenIds.add(offer.offer_id);
+
+      const listing = offerToListing(offer, city);
+      if (listing) allListings.push(listing);
+    }
+
+    if (page >= totalPages) break;
+    if (page < PAGES_TO_FETCH) await delay(PAGE_DELAY_MS);
   }
 
-  const html = await response.text();
-  const $ = cheerio.load(html);
-  const listings: ParsedListing[] = [];
-
-  $(".wgg_card.offer_list_item").each((_i, el) => {
-    const card = $(el);
-    const dataId = card.attr("data-id");
-
-    if (card.hasClass("housinganywhere_ad") || card.hasClass("airbnb_ad")) {
-      return;
-    }
-
-    const titleLink = card.find("h2.truncate_title a").first();
-    const title = titleLink.text().trim();
-    const href = titleLink.attr("href") || "";
-    if (!title || !href) return;
-
-    const fullUrl = href.startsWith("http") ? href : WG_GESUCHT_BASE + href;
-    const sourceId = dataId || extractSourceId(href);
-
-    const detailSpan = card.find(".col-xs-11 span").first().text();
-    const bedrooms = parseZimmer(detailSpan);
-
-    const middleRow = card.find(".row.middle");
-    const cols = middleRow.find("[class*='col-xs']");
-
-    let price = 0;
-    let size = 0;
-
-    if (cols.length >= 1) {
-      price = parsePrice(cols.eq(0).html() || "");
-    }
-    if (cols.length >= 3) {
-      size = parseSize(cols.eq(2).html() || "");
-    }
-
-    const imgEl = card.find("img.img-responsive").first();
-    let imageUrl: string | null = imgEl.attr("src") || null;
-    if (imageUrl && !imageUrl.startsWith("http")) {
-      imageUrl = WG_GESUCHT_BASE + imageUrl;
-    }
-
-    const cardText = card.text();
-    const features = extractFeatures(cardText);
-    const district = extractDistrict(title, city);
-
-    listings.push({
-      title,
-      url: fullUrl,
-      city,
-      price,
-      bedrooms,
-      size_m2: size,
-      source: "wg-gesucht",
-      source_id: sourceId,
-      image_url: imageUrl,
-      furnished: features.furnished,
-      pets_allowed: features.pets_allowed,
-      balcony: features.balcony,
-      elevator: features.elevator,
-      district,
-    });
-  });
-
-  log(`Parsed ${listings.length} listings from WG-Gesucht (${city})`);
-  return listings;
+  log(`[WG-GESUCHT] ${city}: found ${allListings.length} listings`);
+  return allListings;
 }
 
 export function createWgGesuchtIngester(city: string): Ingester {
@@ -180,7 +235,7 @@ export function createWgGesuchtIngester(city: string): Ingester {
       const result = await insertAndMatchListings(parsed);
 
       log(
-        `WG-Gesucht ${city} ingestion complete: found=${parsed.length}, inserted=${result.inserted}, duplicates=${result.duplicates}, matches=${result.matches}`
+        `[WG-GESUCHT] ${city} ingestion complete: found=${parsed.length}, inserted=${result.inserted}, duplicates=${result.duplicates}, matches=${result.matches}`,
       );
 
       return {
