@@ -126,6 +126,102 @@ export async function registerRoutes(
     return res.json({ publicKey: key });
   });
 
+  app.post("/api/push/test-self", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const sb = getSupabaseAdmin();
+      const { data: tokens } = await sb
+        .from("expo_push_tokens")
+        .select("expo_push_token, platform")
+        .eq("user_id", user.id)
+        .eq("is_active", true);
+
+      const activeTokens = tokens || [];
+      if (activeTokens.length === 0) {
+        return res.json({ success: false, tokens_found: 0, tokens_targeted: 0, error: "No active Expo push tokens registered for your account" });
+      }
+
+      const { sendWithRetry } = await import("./notifications/expo-push");
+      const now = new Date().toLocaleTimeString("nl-NL");
+      const messages = activeTokens.map((t: any) => ({
+        to: t.expo_push_token,
+        sound: "default",
+        title: "HousAlert Test",
+        body: `Push test geslaagd @ ${now}`,
+        data: { url: "/dashboard", type: "self_test" },
+        priority: "high" as const,
+        channelId: "match-alerts",
+      }));
+
+      const { tickets, error } = await sendWithRetry(messages);
+      const ticketIds = (tickets || []).filter((t: any) => t?.id).map((t: any) => t.id);
+
+      log(`[PUSH TEST-SELF] User ${user.id.substring(0, 8)}... sent self-test push to ${activeTokens.length} token(s)`);
+
+      return res.json({
+        success: !error && tickets.every((t: any) => t?.status === "ok"),
+        tokens_found: activeTokens.length,
+        tokens_targeted: messages.length,
+        push_ticket_ids: ticketIds.length > 0 ? ticketIds : null,
+        error: error || null,
+      });
+    } catch (err: any) {
+      return res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
+  app.get("/api/push/debug-self", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const sb = getSupabaseAdmin();
+      const { data: tokens } = await sb
+        .from("expo_push_tokens")
+        .select("expo_push_token, platform, is_active, updated_at")
+        .eq("user_id", user.id)
+        .eq("is_active", true);
+
+      const activeTokens = tokens || [];
+      const masked = activeTokens.map((t: any) => ({
+        token: t.expo_push_token.substring(0, 25) + "...]",
+        platform: t.platform,
+        updated_at: t.updated_at,
+      }));
+
+      const { data: logs } = await sb
+        .from("push_delivery_log")
+        .select("id, channel, token_snippet, title, body, status, expo_ticket_id, expo_receipt_status, error_message, created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(10);
+
+      const { data: settings } = await sb
+        .from("notification_settings")
+        .select("push_enabled, email_enabled")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      return res.json({
+        active_token_count: activeTokens.length,
+        masked_tokens: masked,
+        push_enabled: settings?.push_enabled ?? null,
+        email_enabled: settings?.email_enabled ?? null,
+        recent_delivery_logs: logs || [],
+      });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   app.post("/api/expo-push-token", async (req, res) => {
     try {
       const token = req.headers.authorization?.replace("Bearer ", "");

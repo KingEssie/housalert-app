@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/auth";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/i18n";
-import { Mail, Bell, Loader2, AlertTriangle } from "lucide-react";
+import { Mail, Bell, Loader2, AlertTriangle, Send } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { ListSection, ListRow, ListDivider } from "@/components/list-section";
 import { isPushSupported, getPushPermissionState, getPushUnsupportedReason, subscribeToPush, unsubscribeFromPush } from "@/lib/push";
@@ -25,6 +25,8 @@ export default function NotificationSettingsPage() {
   const [loadingSettings, setLoadingSettings] = useState(true);
   const [saving, setSaving] = useState(false);
   const [pushLoading, setPushLoading] = useState(false);
+  const [testPushLoading, setTestPushLoading] = useState(false);
+  const [testPushResult, setTestPushResult] = useState<{ success: boolean; tokens_found: number; error?: string } | null>(null);
 
   const [emailEnabled, setEmailEnabled] = useState(true);
   const [pushEnabled, setPushEnabled] = useState(false);
@@ -134,6 +136,36 @@ export default function NotificationSettingsPage() {
     }
   }
 
+  async function handleTestPush() {
+    if (!session?.access_token) return;
+    setTestPushLoading(true);
+    setTestPushResult(null);
+    try {
+      const res = await apiFetch("/api/push/test-self", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+      });
+      const data = await res.json();
+      setTestPushResult(data);
+      toast({
+        title: data.success ? "Test push verzonden!" : "Test push mislukt",
+        description: data.success
+          ? `${data.tokens_targeted} token(s) bereikt`
+          : data.error || "Onbekende fout",
+        variant: data.success ? "default" : "destructive",
+      });
+    } catch (err: any) {
+      setTestPushResult({ success: false, tokens_found: 0, error: err.message });
+      toast({ title: "Fout", description: err.message, variant: "destructive" });
+    } finally {
+      setTestPushLoading(false);
+    }
+  }
+
   async function handleSave() {
     setSaving(true);
     try {
@@ -227,6 +259,25 @@ export default function NotificationSettingsPage() {
                 </div>
               )}
             </ListSection>
+
+            <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-4">
+              <p className="text-xs font-medium text-gray-500 mb-3 uppercase tracking-wide">Push Test</p>
+              <button
+                onClick={handleTestPush}
+                disabled={testPushLoading}
+                className="w-full h-[44px] rounded-xl bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+                data-testid="button-test-push"
+              >
+                {testPushLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                Stuur test push
+              </button>
+              {testPushResult && (
+                <div className={`mt-3 text-xs rounded-lg p-3 font-mono ${testPushResult.success ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`} data-testid="test-push-result">
+                  <p>{testPushResult.success ? "Verzonden" : "Mislukt"} — {testPushResult.tokens_found} token(s)</p>
+                  {testPushResult.error && <p className="mt-1 break-all">{testPushResult.error}</p>}
+                </div>
+              )}
+            </div>
 
             <div className="sticky bottom-0 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 bg-gradient-to-t from-white via-white to-white/0">
               <div className="max-w-xl mx-auto px-5">
