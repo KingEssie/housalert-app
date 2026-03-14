@@ -1,0 +1,76 @@
+This is close, but not fully finished yet.
+
+You gave me a strong change summary, but I explicitly asked for a full evaluation structure.
+I still need:
+- audit findings
+- matching rule decisions explained
+- dry-run summary details
+- remaining issues
+- final verdict
+
+Also, I want one important product decision reviewed carefully:
+You implemented hybrid-pass behavior where unknown numeric values (price=0, bedrooms=0, size_m2=0) are allowed through instead of rejected.
+This may reduce false negatives, but it may also create false positives.
+I want you to assess this honestly.
+
+Please continue and reply in exactly this structure:
+
+A. Audit findings
+Explain:
+- what the old engine already did well
+- what was weak
+- what caused false positives
+- what caused false negatives
+- what was missing for parity
+
+B. Matching rule decisions
+Explain the final behavior for:
+- city matching
+- alias matching
+- district matching
+- max price
+- min rooms
+- min size
+- furnished
+- pets
+- inactive listings
+- unknown numeric values
+- missing district / rooms / size / price
+Be explicit about defaults and why they were chosen.
+
+C. Files changed
+List all changed files.
+
+D. Test files added
+List all test files added and what they cover.
+
+E. Commands executed
+List the exact test command(s) you ran.
+
+F. Actual test results
+Show the real results:
+- total tests
+- passed
+- failed
+- duration
+
+G. Dry-run simulation summary
+Summarize the dry-run clearly:
+- how many profiles
+- how many listings
+- how many matches
+- examples of correct matches
+- examples of correct rejections
+- examples of edge-case behavior
+
+H. Remaining issues
+Be honest about what still needs improvement.
+Especially assess whether allowing unknown numeric values through may still allow too many irrelevant matches.
+
+I. Final verdict: is match quality parity-ready or not?
+Give a direct yes/no answer and briefly justify it.
+
+Important:
+- Do not just restate code changes
+- Be honest if unknown numeric values are still a compromise
+- Execute nothing new unless needed, but base your answer on the work already completed
