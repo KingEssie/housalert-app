@@ -255,6 +255,13 @@ function MatchCard({
           })()}
         </div>
 
+        {match.price > 0 && (
+          <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-sm" data-testid={`badge-price-${match.listing_id}`}>
+            <span className="text-[15px] font-[800] text-[#111C3D]">€{match.price}</span>
+            <span className="text-[11px] font-medium text-[#6B7280]"> {t("common.perMonthShort")}</span>
+          </div>
+        )}
+
         <button
           onClick={handleSave}
           className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors shadow-sm"
@@ -269,22 +276,12 @@ function MatchCard({
       </div>
 
       <div className="p-4 flex flex-col gap-2.5">
-        <div>
-          <div className="flex items-start justify-between gap-3">
-            <h3
-              className="font-[700] text-[#111C3D] text-[18px] leading-[1.3] line-clamp-2 flex-1"
-              data-testid={`text-match-title-${match.listing_id}`}
-            >
-              {match.title}
-            </h3>
-            {match.price > 0 && (
-              <span className="text-[20px] font-[700] text-[#111C3D] whitespace-nowrap flex-shrink-0 mt-0.5">
-                €{match.price}
-                <span className="text-[14px] font-normal text-[#6B7280]"> /mnd</span>
-              </span>
-            )}
-          </div>
-        </div>
+        <h3
+          className="font-[700] text-[#111C3D] text-[18px] leading-[1.3] line-clamp-2"
+          data-testid={`text-match-title-${match.listing_id}`}
+        >
+          {match.title}
+        </h3>
 
         <div className="flex items-center gap-2 text-[13px] text-[#1F2937]">
           <span className="flex items-center gap-1">
@@ -582,11 +579,12 @@ function RecentMatchMiniCard({ match }: { match: ApiMatch }) {
           )}
         </div>
       </div>
-      {match.price > 0 && (
-        <div className="flex items-center pr-3 flex-shrink-0">
+      <div className="flex items-center gap-2 pr-3 flex-shrink-0">
+        {match.price > 0 && (
           <span className="text-[15px] font-bold text-[#111C3D]">€{match.price}</span>
-        </div>
-      )}
+        )}
+        <ChevronRight className="w-4 h-4 text-[#9CA3AF]" />
+      </div>
     </div>
   );
 }
@@ -768,10 +766,10 @@ function HomeTab({
         </div>
       )}
 
+      <RecenteMatchesSection accessToken={accessToken} setActiveTab={setActiveTab} subscription={subscription} navigate={navigate} />
+
       <AccountCompletionCard onTaskClick={handleAccountTaskClick} />
       <SearchPreparationCard onTaskClick={handlePrepTaskClick} />
-
-      <RecenteMatchesSection accessToken={accessToken} setActiveTab={setActiveTab} subscription={subscription} navigate={navigate} />
 
       {activeTaskModal && (
         <TaskModal
@@ -788,16 +786,6 @@ function HomeTab({
         />
       )}
 
-      {hasActiveSub && hasMatches && (
-        <button
-          onClick={() => setActiveTab("filters")}
-          className="w-full h-[56px] rounded-full border border-[#E5E7EB] bg-white text-[#1F2937] text-[15px] font-bold hover:bg-[#F5F7FA] transition-colors flex items-center justify-center gap-2"
-          data-testid="button-manage-filters"
-        >
-          <SlidersHorizontal className="w-4 h-4" />
-          {t("home.manageFilters")}
-        </button>
-      )}
       </div>
     </div>
   );

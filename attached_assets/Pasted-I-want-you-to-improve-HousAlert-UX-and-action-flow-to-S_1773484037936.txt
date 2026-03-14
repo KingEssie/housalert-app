@@ -1,0 +1,104 @@
+I want you to improve HousAlert UX and action flow to Stekkies-level core parity.
+
+Context:
+HousAlert is a rental alert app for Germany.
+The core product systems are now in place:
+- email alerts are parity-ready
+- match quality is parity-ready
+- listing/source reliability is parity-ready
+- push notifications are now working end-to-end
+
+Now the biggest remaining gap is UX speed and action clarity.
+
+Core user flow:
+1. user gets alerted about a new match
+2. user opens the app
+3. user immediately understands the listing
+4. user copies the response letter
+5. user opens the original ad
+6. user responds fast
+
+Goal:
+Reduce friction and make the product feel faster, clearer, and more action-oriented.
+Do not overdesign. Focus on speed, clarity, and conversion.
+
+Please do the following:
+
+1. Audit the current user flow
+Review these screens/flows:
+- home screen
+- recent matches section
+- matches overview
+- match card
+- match detail page
+- copy response letter action
+- open original listing action
+- filters/search profiles access
+- account / settings if relevant
+
+Then clearly identify:
+- what already works
+- what feels cluttered or distracting
+- what slows down the user
+- what is missing for parity with a fast rental-alert workflow
+
+2. Improve hierarchy and action clarity
+Optimize the UI so the user can immediately see:
+- price
+- city / district
+- rooms
+- size
+- image
+- strongest action buttons
+
+Prioritize:
+- primary CTA: copy response letter
+- secondary CTA: open original listing
+- tertiary CTA: save/view more details only if needed
+
+3. Improve the home screen
+Make the home screen more useful for a housing seeker.
+Reduce distraction from low-priority modules if necessary.
+The home screen should quickly drive users toward:
+- new matches
+- urgent actions
+- profile completion only if truly useful
+
+4. Improve matches overview and match cards
+Make match cards easier to scan.
+Ensure the most important details are visible without extra taps.
+Reduce unnecessary text and weak secondary information.
+
+5. Improve match detail page
+Make the detail page action-first.
+The user should immediately see:
+- headline facts
+- why it matched
+- copy letter action
+- original listing action
+
+6. Keep architecture intact
+Do not rewrite the whole frontend.
+Work with the current React/Vite + Expo WebView architecture.
+
+7. Add a practical QA checklist
+Create a short, concrete QA checklist for:
+- user can reach a match in minimal taps
+- user can copy letter quickly
+- user can open original ad quickly
+- important info is visible fast
+- no broken navigation after push/open
+
+8. Reply in exactly this structure:
+A. UX audit findings
+B. UX decisions and rationale
+C. Files changed
+D. What was simplified or deprioritized
+E. QA checklist
+F. Final verdict: is UX/action flow parity-ready or not?
+
+Important constraints:
+- Keep it practical
+- Prefer removing friction over adding features
+- Do not redesign for vanity
+- Optimize for speed of response to housing listings

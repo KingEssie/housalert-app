@@ -17,6 +17,7 @@ export const en: Record<string, any> = {
     success: "Success",
     confirm: "Confirm",
     perMonth: "/month",
+    perMonthShort: "/mo",
     bedroom: "bedroom",
     bedrooms: "bedrooms",
     active: "Active",
@@ -321,6 +322,7 @@ export const en: Record<string, any> = {
   listing: {
     notFound: "Listing not found",
     notFoundDesc: "This listing no longer exists or has been removed.",
+    roomsShort: "rooms",
     applyDirect: "Apply directly",
     openOriginal: "Open original listing",
   },

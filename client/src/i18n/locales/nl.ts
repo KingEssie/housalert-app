@@ -17,6 +17,7 @@ export const nl: Record<string, any> = {
     success: "Gelukt",
     confirm: "Bevestigen",
     perMonth: "/mnd",
+    perMonthShort: "/mnd",
     bedroom: "slaapkamer",
     bedrooms: "slaapkamers",
     active: "Actief",
@@ -588,6 +589,7 @@ export const nl: Record<string, any> = {
     source: "Bron",
     posted: "Geplaatst",
     whyMatch: "Waarom deze match?",
+    roomsShort: "Zi.",
     applyDirect: "Reageer direct",
     openOriginal: "Originele advertentie openen",
     matchReasons: {

@@ -17,6 +17,7 @@ export const de: Record<string, any> = {
     success: "Erfolg",
     confirm: "Bestätigen",
     perMonth: "/Monat",
+    perMonthShort: "/Mt.",
     bedroom: "Schlafzimmer",
     bedrooms: "Schlafzimmer",
     active: "Aktiv",
@@ -588,6 +589,7 @@ export const de: Record<string, any> = {
     source: "Quelle",
     posted: "Veröffentlicht",
     whyMatch: "Warum dieses Match?",
+    roomsShort: "Zi.",
     applyDirect: "Direkt bewerben",
     openOriginal: "Originalanzeige öffnen",
     matchReasons: {

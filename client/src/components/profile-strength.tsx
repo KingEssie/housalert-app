@@ -237,6 +237,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
   }
 
   const { tasks, completedCount, totalCount } = data;
+  if (totalCount === 0 || completedCount === totalCount) return null;
   const percentage = Math.round((completedCount / totalCount) * 100);
 
   return (
@@ -571,7 +572,8 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
   }
 
   const { prepTasks, prepCompletedCount, prepTotalCount } = data;
-  const percentage = prepTotalCount > 0 ? Math.round((prepCompletedCount / prepTotalCount) * 100) : 0;
+  if (prepTotalCount === 0 || prepCompletedCount === prepTotalCount) return null;
+  const percentage = Math.round((prepCompletedCount / prepTotalCount) * 100);
 
   return (
     <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] overflow-hidden" data-testid="card-search-preparation">

@@ -282,23 +282,16 @@ export default function ListingDetailPage() {
           </div>
 
           {listing.match_reasons && listing.match_reasons.length > 0 && (
-            <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5" data-testid="section-why-match">
-              <h2 className="text-section-title mb-4">{t("listing.whyMatch")}</h2>
-              <div className="flex flex-col gap-3">
+            <div className="bg-white rounded-2xl border border-[#E5E7EB] px-5 py-4" data-testid="section-why-match">
+              <p className="text-[12px] font-semibold text-[#6B7280] uppercase tracking-wide mb-2.5">{t("listing.whyMatch")}</p>
+              <div className="flex flex-wrap gap-2">
                 {listing.match_reasons.map((reason) => {
                   const detail = MATCH_REASON_DETAIL[reason];
                   return (
-                    <div key={reason} className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-[#EAF9DF] flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <CheckCircle2 className="w-4 h-4 text-[#78D953]" />
-                      </div>
-                      <div>
-                        <p className="text-[14px] font-semibold text-[#111C3D]">{detail?.label ?? reason}</p>
-                        {detail?.description && (
-                          <p className="text-[13px] text-[#1F2937] mt-0.5">{detail.description}</p>
-                        )}
-                      </div>
-                    </div>
+                    <span key={reason} className="inline-flex items-center gap-1.5 text-[13px] font-medium bg-[#EAF9DF] text-[#1F6B0A] px-3 py-1.5 rounded-full">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#78D953]" />
+                      {detail?.label ?? reason}
+                    </span>
                   );
                 })}
               </div>
@@ -348,6 +341,22 @@ export default function ListingDetailPage() {
 
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] p-4 pb-5 z-10">
         <div className="max-w-xl mx-auto flex flex-col gap-2">
+          {(listing.price > 0 || listing.bedrooms > 0 || listing.size_m2 > 0) && (
+            <div className="flex items-baseline gap-1 mb-1">
+              {listing.price > 0 && (
+                <>
+                  <span className="text-[20px] font-[800] text-[#111C3D]" data-testid="text-bar-price">€{listing.price}</span>
+                  <span className="text-[13px] font-medium text-[#6B7280]">{t("common.perMonth")}</span>
+                </>
+              )}
+              {listing.bedrooms > 0 && (
+                <span className="text-[13px] text-[#9CA3AF] ml-2">{listing.bedrooms} {t("listing.roomsShort")}</span>
+              )}
+              {listing.size_m2 > 0 && (
+                <span className="text-[13px] text-[#9CA3AF]">· {listing.size_m2} m²</span>
+              )}
+            </div>
+          )}
           <div className="flex gap-2">
             <Button
               onClick={() => navigate(`/apply/${listing.id}`)}
