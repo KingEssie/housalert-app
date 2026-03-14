@@ -2494,6 +2494,36 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/admin/listing-status", requireAdmin, async (_req, res) => {
+    try {
+      const { getStatusSummary } = await import("./listing-status");
+      const summary = await getStatusSummary();
+      res.json(summary);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/admin/listing-status/refresh", requireAdmin, async (_req, res) => {
+    try {
+      const { updateStalenessStatuses } = await import("./listing-status");
+      const result = await updateStalenessStatuses();
+      res.json(result);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/listing-status/:listingId", requireAdmin, async (req, res) => {
+    try {
+      const { getListingStatus } = await import("./listing-status");
+      const status = await getListingStatus(req.params.listingId);
+      res.json({ listing_id: req.params.listingId, status: status ?? "unknown" });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   app.get("/api/admin/match-audit", requireAdmin, async (req, res) => {
     try {
       const adminUser = (req as any).adminUser;

@@ -3,6 +3,7 @@ import { bufferMatchAlert } from "../notifications/buffer";
 import { trackMatchCreated } from "../freshness";
 import { getSubscriptionStatus } from "../subscriptions";
 import { upsertUserMatch } from "../user-matches";
+import { getListingStatus, isListingMatchable, type ListingStatus } from "../listing-status";
 
 const SUPABASE_URL = (process.env.VITE_SUPABASE_URL ?? "").replace(/\/$/, "");
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
@@ -572,6 +573,12 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
     return 0;
   }
 
+  const listingStatus = await getListingStatus(listingId);
+  if (listingStatus && !isListingMatchable(listingStatus)) {
+    log(`[MATCH ENGINE COMPLETE] listing=${listingId} status="${listingStatus}" — skipping non-active listing`);
+    return 0;
+  }
+
   const searchTerms = getCitySearchTerms((listing as DbListing).city);
   let profiles: any[] | null = null;
   let pErr: any = null;
@@ -705,10 +712,21 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
     return 0;
   }
 
+  const { getListingStatusBatch: batchStatus } = await import("./listing-status");
+  const allIds = (listings as DbListing[]).map(l => l.id);
+  const statusMap = await batchStatus(allIds);
+
   let totalMatches = 0;
+  let skippedStale = 0;
   const matchedEntries: { listing: DbListing; matched_at: string }[] = [];
 
   for (const listing of listings as DbListing[]) {
+    const lStatus = statusMap[listing.id] ?? "active";
+    if (!isListingMatchable(lStatus)) {
+      skippedStale++;
+      continue;
+    }
+
     if (!doesListingMatchProfile(listing, sp)) continue;
 
     const result = await insertMatchIfNew(sp.user_id, sp.id, listing.id, listing);
@@ -716,6 +734,10 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
       totalMatches++;
       matchedEntries.push({ listing, matched_at: result.matched_at });
     }
+  }
+
+  if (skippedStale > 0) {
+    log(`[MATCH ENGINE] Backfill skipped ${skippedStale} stale/removed listings`);
   }
 
   if (matchedEntries.length > 0) {

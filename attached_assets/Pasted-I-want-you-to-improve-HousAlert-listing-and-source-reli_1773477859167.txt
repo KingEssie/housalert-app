@@ -1,0 +1,134 @@
+I want you to improve HousAlert listing and source reliability to Stekkies-level core parity.
+
+Context:
+HousAlert is a rental alert app for Germany.
+The match engine is now parity-ready, but there is still a major product gap:
+listings do not have a robust active/inactive/stale status model.
+This means users can still receive matches for listings that may already be gone.
+
+Current status:
+- listings are collected
+- matches are stored
+- email alerts are parity-ready
+- match engine is parity-ready with one caveat:
+  there is no real listing active/inactive status check
+- source monitoring is not yet strong enough
+
+Goal:
+Make listing freshness and source reliability production-worthy.
+Do not overengineer. Keep it practical, deterministic, and easy to maintain.
+
+Please do the following:
+
+1. Audit the current listing/source pipeline
+Review and summarize:
+- current listings table structure
+- whether first_seen_at / last_seen_at / created_at / updated_at exist
+- whether active/inactive/removed/stale status exists
+- how scraper runs are tracked today
+- how source errors are tracked today
+- whether removed listings can still match
+- whether stale listings can still alert
+- whether a listing can be reactivated if seen again
+
+Then clearly identify:
+- what already works
+- what is weak
+- what causes stale/removed listings to still reach users
+- what is missing for parity
+
+2. Add a practical listing status model
+Implement a simple, robust status system for listings, using Supabase where persistence is needed.
+
+At minimum support:
+- active
+- stale
+- removed
+
+And track fields such as:
+- first_seen_at
+- last_seen_at
+- last_checked_at
+- status_changed_at
+- removed_at (if applicable)
+
+Do not break the existing architecture unnecessarily.
+
+3. Add staleness / removal logic
+Implement practical rules such as:
+- listing becomes stale if not seen for X time
+- listing becomes removed if confirmed unavailable or missing for longer
+- listing can become active again if re-seen later
+
+Be explicit about the rules you choose and why.
+
+4. Prevent stale/removed listings from matching and alerting
+Update the matching / alert flow so:
+- stale listings do not create new matches
+- removed listings do not create new matches
+- fresh active listings still work normally
+
+Keep this practical and deterministic.
+
+5. Add source run monitoring
+Implement or improve source monitoring so each source run can track:
+- source name
+- run start/end time
+- success/failure
+- listings fetched
+- new listings
+- duplicates
+- parse failures
+- error message if failed
+
+6. Add admin/debug visibility
+If useful, add practical admin/debug endpoints or queries to inspect:
+- listing statuses
+- stale/removed counts
+- latest source runs
+- source health summary
+
+Keep it simple and safe.
+
+7. Add automated tests
+Create practical tests for:
+- active listing stays matchable
+- stale listing is excluded
+- removed listing is excluded
+- listing becomes stale after threshold
+- listing becomes removed after longer threshold
+- listing reactivates when seen again
+- source run logging
+- source failure logging
+- status transitions do not create broken behavior in matching
+
+8. Add a dry-run simulation
+Create a dry-run that simulates:
+- fresh listing
+- stale listing
+- removed listing
+- reactivated listing
+- one failed source run
+- one successful source run
+Then clearly show what would and would not match/alert.
+
+9. Execute the tests yourself
+Run the relevant commands in Replit and report the actual results.
+
+10. Reply in exactly this structure:
+A. Audit findings
+B. Status/staleness rule decisions
+C. Files changed
+D. Test files added
+E. Commands executed
+F. Actual test results
+G. Dry-run simulation summary
+H. Remaining issues
+I. Final verdict: is listing/source reliability parity-ready or not?
+
+Important constraints:
+- Use Supabase where persistence is needed
+- Do not rewrite unrelated systems
+- Keep it practical
+- Prefer clear status transitions over clever heuristics
+- Execute the tests now, do not only describe them

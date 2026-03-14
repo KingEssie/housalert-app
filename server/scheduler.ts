@@ -4,6 +4,7 @@ import { persistIngestionRun } from "./admin";
 import { cleanupStaleFetchRuns } from "./user-matches";
 import { recoverUndeliveredMatches } from "./notifications/buffer";
 import { checkExpoReceipts } from "./notifications/expo-push";
+import { updateStalenessStatuses } from "./listing-status";
 
 const intervalMinutes = parseInt(process.env.INGEST_INTERVAL_MINUTES || "10", 10);
 const INTERVAL_MS = intervalMinutes * 60 * 1000;
@@ -11,6 +12,17 @@ const RECOVERY_INTERVAL_MS = 5 * 60 * 1000;
 
 let nextRunAt: Date | null = null;
 let _recoveryRunning = false;
+
+async function runStalenessCheck() {
+  try {
+    const result = await updateStalenessStatuses();
+    if (result.staleCount > 0 || result.removedCount > 0 || result.reactivatedCount > 0) {
+      log(`[STALENESS] Updated: ${result.staleCount} stale, ${result.removedCount} removed, ${result.reactivatedCount} reactivated`, "scheduler");
+    }
+  } catch (err: any) {
+    log(`[STALENESS ERROR] ${err.message}`, "scheduler");
+  }
+}
 
 async function tick() {
   const startedAt = new Date();
@@ -24,6 +36,7 @@ async function tick() {
       log(`[INGEST ERROR] ${err.message}`, "scheduler");
     }
   }
+  await runStalenessCheck();
   nextRunAt = new Date(Date.now() + INTERVAL_MS);
 }
 
