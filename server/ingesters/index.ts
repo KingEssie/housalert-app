@@ -10,6 +10,7 @@ import { getCitySlugs, makeFallbackSlug } from "./city-slugs";
 import { areAlertsEnabled } from "../notifications";
 import { flushMatchAlertBuffer, clearBuffer, getBufferSize, recoverUndeliveredMatches } from "../notifications/buffer";
 import { createFetchRun, completeFetchRun, failFetchRun } from "../user-matches";
+import { buildScrapeQueue, type TieredCity } from "./city-tiers";
 
 const SUPABASE_URL = (process.env.VITE_SUPABASE_URL ?? "").replace(/\/$/, "");
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
@@ -18,28 +19,7 @@ const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
   auth: { autoRefreshToken: false, persistSession: false },
 });
 
-const GERMAN_CITIES = [
-  "Berlin",
-  "Hamburg",
-  "München",
-  "Köln",
-  "Frankfurt",
-  "Stuttgart",
-  "Düsseldorf",
-  "Leipzig",
-  "Dresden",
-  "Hannover",
-  "Nürnberg",
-  "Bremen",
-  "Bochum",
-  "Bonn",
-  "Mannheim",
-  "Karlsruhe",
-  "Wiesbaden",
-  "Münster",
-  "Augsburg",
-  "Freiburg",
-];
+let _cycleNumber = -1;
 
 const INTER_CITY_DELAY_MS = 2000;
 
@@ -145,59 +125,40 @@ export function getLastRunStatus(): {
   };
 }
 
-function canonicalCity(name: string): string {
-  return name.toLowerCase().trim();
-}
-
-async function getActiveCities(): Promise<string[]> {
-  const seen = new Map<string, string>();
-  for (const c of GERMAN_CITIES) {
-    seen.set(canonicalCity(c), c);
-  }
-
+async function getUserProfileCities(): Promise<string[]> {
   try {
-    let profileCities: string[] = [];
-
     const { data: dataFull, error: errorFull } = await supabase
       .from("search_profiles")
       .select("city, city_name");
 
     if (!errorFull && dataFull) {
-      for (const row of dataFull as Array<{ city?: string; city_name?: string }>) {
-        const c = (row.city_name || row.city || "").trim();
-        if (c) profileCities.push(c);
-      }
-    } else {
-      log(`[ingest] search_profiles query error (city_name may not exist): ${errorFull?.message ?? "no data"}`, "ingest");
-
-      const { data: dataBasic, error: errorBasic } = await supabase
-        .from("search_profiles")
-        .select("city");
-
-      if (!errorBasic && dataBasic) {
-        for (const row of dataBasic as Array<{ city?: string }>) {
-          const c = (row.city || "").trim();
-          if (c) profileCities.push(c);
-        }
-      } else {
-        log(`[ingest] search_profiles fallback query also failed: ${errorBasic?.message ?? "no data"}`, "ingest");
-      }
+      return (dataFull as Array<{ city?: string; city_name?: string }>)
+        .map((row) => (row.city_name || row.city || "").trim())
+        .filter(Boolean);
     }
 
-    for (const c of profileCities) {
-      const key = canonicalCity(c);
-      if (!seen.has(key)) {
-        seen.set(key, c);
-      }
+    log(`[ingest] search_profiles query error (city_name may not exist): ${errorFull?.message ?? "no data"}`, "ingest");
+
+    const { data: dataBasic, error: errorBasic } = await supabase
+      .from("search_profiles")
+      .select("city");
+
+    if (!errorBasic && dataBasic) {
+      return (dataBasic as Array<{ city?: string }>)
+        .map((row) => (row.city || "").trim())
+        .filter(Boolean);
     }
+
+    log(`[ingest] search_profiles fallback query also failed: ${errorBasic?.message ?? "no data"}`, "ingest");
   } catch (err: any) {
-    log(`[ingest] getActiveCities exception: ${err.message} — using GERMAN_CITIES only`, "ingest");
+    log(`[ingest] getUserProfileCities exception: ${err.message}`, "ingest");
   }
+  return [];
+}
 
-  const result = Array.from(seen.values());
-  const profileExtra = result.length - GERMAN_CITIES.length;
-  log(`[ingest] Active cities: ${result.length} (${GERMAN_CITIES.length} base + ${profileExtra} from profiles)`, "ingest");
-  return result;
+async function getActiveCities(): Promise<TieredCity[]> {
+  const userCities = await getUserProfileCities();
+  return buildScrapeQueue(userCities, _cycleNumber);
 }
 
 function delay(ms: number): Promise<void> {
@@ -229,7 +190,8 @@ export async function runAllIngesters(): Promise<IngestionReport> {
   _running = true;
   _lastError = null;
   const startTime = Date.now();
-  log(`[INGEST START] Germany-wide ingestion`, "ingest");
+  _cycleNumber++;
+  log(`[INGEST START] Germany-wide ingestion (cycle #${_cycleNumber})`, "ingest");
 
   const fetchRunId = await createFetchRun();
 
@@ -238,21 +200,22 @@ export async function runAllIngesters(): Promise<IngestionReport> {
   const total = { found: 0, inserted: 0, duplicates: 0, matches: 0, errors: 0 };
 
   try {
-    const cities = await getActiveCities();
-    log(`[ingest] Active cities (${cities.length}): ${cities.join(", ")}`, "ingest");
+    const tieredCities = await getActiveCities();
+    const cityNames = tieredCities.map((tc) => tc.name);
+    log(`[ingest] Active cities (${tieredCities.length}): ${tieredCities.map((tc) => `${tc.name}(T${tc.tier})`).join(", ")}`, "ingest");
 
-    if (cities.length === 0) {
+    if (tieredCities.length === 0) {
       const duration = ((Date.now() - startTime) / 1000).toFixed(1);
       log(`[INGEST COMPLETE] in ${duration}s — no cities to process`, "ingest");
-      const report: IngestionReport = { sources, cityReports, total, cities, durationSec: parseFloat(duration) };
+      const report: IngestionReport = { sources, cityReports, total, cities: cityNames, durationSec: parseFloat(duration) };
       _lastResult = report;
       _lastRunAt = new Date().toISOString();
       return report;
     }
 
-    for (let i = 0; i < cities.length; i++) {
-      const city = cities[i];
-      log(`[ingest] --- [${i + 1}/${cities.length}] Ingesting for city: ${city} ---`, "ingest");
+    for (let i = 0; i < tieredCities.length; i++) {
+      const { name: city, tier } = tieredCities[i];
+      log(`[ingest] --- [${i + 1}/${tieredCities.length}] Ingesting for city: ${city} (Tier ${tier}) ---`, "ingest");
 
       const cityTotal = { found: 0, inserted: 0, duplicates: 0, matches: 0, errors: 0 };
       const cityIngesters = buildIngestersForCity(city);
@@ -308,7 +271,7 @@ export async function runAllIngesters(): Promise<IngestionReport> {
       total.matches += cityTotal.matches;
       total.errors += cityTotal.errors;
 
-      if (i < cities.length - 1) {
+      if (i < tieredCities.length - 1) {
         log(`[ingest] Waiting ${INTER_CITY_DELAY_MS}ms before next city...`, "ingest");
         await delay(INTER_CITY_DELAY_MS);
       }
@@ -346,7 +309,7 @@ export async function runAllIngesters(): Promise<IngestionReport> {
 
     const duration = ((Date.now() - startTime) / 1000).toFixed(1);
     log(
-      `[INGEST COMPLETE] in ${duration}s — cities=${cities.length} found=${total.found} inserted=${total.inserted} dup=${total.duplicates} matches=${total.matches} errors=${total.errors}`,
+      `[INGEST COMPLETE] in ${duration}s — cities=${tieredCities.length} found=${total.found} inserted=${total.inserted} dup=${total.duplicates} matches=${total.matches} errors=${total.errors}`,
       "ingest"
     );
 
@@ -365,11 +328,11 @@ export async function runAllIngesters(): Promise<IngestionReport> {
         emails_sent_count: emailsSent,
         pushes_sent_count: pushesSent,
         error_count: total.errors,
-        cities_processed: cities.length,
+        cities_processed: tieredCities.length,
       }).catch(() => {});
     }
 
-    const report: IngestionReport = { sources, cityReports, total, cities, durationSec: parseFloat(duration) };
+    const report: IngestionReport = { sources, cityReports, total, cities: cityNames, durationSec: parseFloat(duration) };
     _lastResult = report;
     _lastRunAt = new Date().toISOString();
     if (total.errors === 0 || total.inserted > 0) {

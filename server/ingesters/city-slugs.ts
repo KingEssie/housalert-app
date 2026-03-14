@@ -39,7 +39,27 @@ const CITY_SLUG_MAP: Record<string, CitySlugs> = {
   "Regensburg": { slug: "regensburg", wgGesuchtCode: 104, kleinanzeigenCode: "l6479" },
   "Braunschweig": { slug: "braunschweig", wgGesuchtCode: 16, kleinanzeigenCode: "l3696" },
   "Bielefeld": { slug: "bielefeld", wgGesuchtCode: 12, kleinanzeigenCode: "l3786" },
+  "Erfurt": { slug: "erfurt", kleinanzeigenCode: "l8440" },
+  "Magdeburg": { slug: "magdeburg", kleinanzeigenCode: "l8573" },
+  "Lübeck": { slug: "luebeck", kleinanzeigenCode: "l3554" },
+  "Offenbach": { slug: "offenbach-am-main", kleinanzeigenCode: "l5294" },
+  "Fürth": { slug: "fuerth", kleinanzeigenCode: "l6455" },
 };
+
+function normalizeForLookup(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/ä/g, "ae")
+    .replace(/ö/g, "oe")
+    .replace(/ü/g, "ue")
+    .replace(/ß/g, "ss");
+}
+
+const _normalizedIndex = new Map<string, string>();
+for (const key of Object.keys(CITY_SLUG_MAP)) {
+  _normalizedIndex.set(normalizeForLookup(key), key);
+}
 
 export function getCitySlugs(cityName: string): CitySlugs | null {
   if (CITY_SLUG_MAP[cityName]) return CITY_SLUG_MAP[cityName];
@@ -48,6 +68,10 @@ export function getCitySlugs(cityName: string): CitySlugs | null {
   for (const [key, val] of Object.entries(CITY_SLUG_MAP)) {
     if (key.toLowerCase() === lower) return val;
   }
+
+  const normalized = normalizeForLookup(cityName);
+  const mapped = _normalizedIndex.get(normalized);
+  if (mapped) return CITY_SLUG_MAP[mapped];
 
   return null;
 }

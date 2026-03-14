@@ -1,0 +1,84 @@
+I want to implement a tiered Germany city coverage model for HousAlert.
+
+Context:
+HousAlert is a rental alert app for Germany.
+We already scrape multiple sources across major German cities.
+Now we want a smarter city coverage strategy instead of treating all cities equally.
+
+Goal:
+Implement a 3-tier city coverage model that is scalable and aligned with real user demand.
+
+Tier model:
+- Tier 1 = always-on major cities
+- Tier 2 = important metro / secondary cities
+- Tier 3 = dynamically activated user-search cities
+
+Please do the following:
+
+1. Audit the current city scheduling model
+Review:
+- where the current base cities are defined
+- how cities are added to the scrape queue today
+- whether user search profile cities are already added dynamically
+- which parts assume all cities are equal
+
+2. Implement a tiered city configuration
+Create a clear structure such as:
+- TIER_1_CITIES
+- TIER_2_CITIES
+- dynamic user cities
+
+Use a practical, maintainable format.
+
+Example intention:
+Tier 1:
+Berlin, Hamburg, München, Köln, Frankfurt am Main, Stuttgart, Düsseldorf, Leipzig, Dresden, Hannover, Nürnberg, Bremen
+
+Tier 2:
+Potsdam, Mannheim, Freiburg, Heidelberg, Bonn, Münster, Karlsruhe, Augsburg, Bielefeld, Erfurt, Magdeburg, Lübeck, Mainz, Wiesbaden, Offenbach, Fürth
+
+Tier 3:
+Cities that appear in active user search profiles but are not already in Tier 1 or Tier 2
+
+3. Scheduler behavior
+Update the ingester scheduler so:
+- Tier 1 cities always run
+- Tier 2 cities run on a lower priority / lower frequency if needed
+- Tier 3 cities are discovered from active search profiles and added dynamically
+- duplicate city names are deduplicated
+- unsupported cities are skipped safely
+
+4. Logging
+Add useful logs such as:
+- [CITY-TIERS] Tier 1 cities loaded: X
+- [CITY-TIERS] Tier 2 cities loaded: Y
+- [CITY-TIERS] Dynamic user cities loaded: Z
+- [CITY-TIERS] Final scrape queue size: N
+
+5. Keep architecture intact
+Do not rewrite the whole ingestion system.
+This should be a practical extension of the current scheduler and city mapping setup.
+
+6. Add safeguards
+Ensure:
+- no city is scraped twice in the same cycle
+- empty/null user cities are ignored
+- user-entered city names are normalized before matching to scraper city keys
+- unsupported or unmapped cities do not break the run
+
+7. Add a simple QA verification
+Verify:
+- Tier 1 cities are always included
+- Tier 2 cities are included correctly
+- user profile cities appear dynamically when valid
+- duplicates are removed
+- final queue is stable and predictable
+
+8. Reply in exactly this structure:
+A. Current scheduling audit
+B. Tier model implementation
+C. Files changed
+D. Scheduler behavior after change
+E. Safeguards added
+F. QA verification
+G. Final note on how this prepares HousAlert for national expansion
