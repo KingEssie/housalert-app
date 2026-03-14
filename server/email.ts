@@ -15,12 +15,16 @@ interface ListingInfo {
 const BRAND = {
   name: "HousAlert",
   primary: "#0D6EFD",
-  dark: "#1A1A1A",
-  text: "#333333",
+  primaryDark: "#0B5ED7",
+  dark: "#111827",
+  text: "#374151",
   muted: "#6B7280",
-  bg: "#F8F9FA",
+  light: "#9CA3AF",
+  bg: "#F3F4F6",
   cardBg: "#FFFFFF",
   divider: "#E5E7EB",
+  accent: "#EFF6FF",
+  success: "#10B981",
 };
 
 function escapeHtml(str: string): string {
@@ -30,6 +34,10 @@ function escapeHtml(str: string): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
+}
+
+function sanitizeSubject(str: string): string {
+  return str.replace(/[\r\n\t\x00-\x1f]/g, " ").trim().substring(0, 200);
 }
 
 function sanitizeUrl(url: string | null | undefined): string | null {
@@ -95,39 +103,61 @@ function getAppBaseUrl(): string {
 }
 
 function emailWrapper(content: string, preheader?: string): string {
+  const baseUrl = getAppBaseUrl();
   const preheaderHtml = preheader
     ? `<div style="display:none;font-size:1px;color:${BRAND.bg};line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">${escapeHtml(preheader)}</div>`
     : "";
   return `<!DOCTYPE html>
 <html lang="nl">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
-<body style="margin:0;padding:0;background-color:${BRAND.bg};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HousAlert</title>
+<!--[if mso]><style>table,td{font-family:Arial,sans-serif!important;}</style><![endif]-->
+</head>
+<body style="margin:0;padding:0;background-color:${BRAND.bg};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
 ${preheaderHtml}
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${BRAND.bg};">
-<tr><td align="center" style="padding:32px 16px;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background-color:${BRAND.cardBg};border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${BRAND.bg};">
+<tr><td align="center" style="padding:24px 16px 32px;">
 
-<tr><td style="background-color:${BRAND.dark};padding:24px 28px;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;">
+
+<tr><td style="padding:0 0 24px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr>
-    <td>
-      <span style="font-size:20px;font-weight:800;color:#FFFFFF;letter-spacing:0.02em;">HousAlert</span>
+    <td style="padding:0;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+      <tr>
+        <td style="background-color:${BRAND.primary};width:36px;height:36px;border-radius:10px;text-align:center;vertical-align:middle;">
+          <span style="font-size:18px;font-weight:800;color:#FFFFFF;line-height:36px;">H</span>
+        </td>
+        <td style="padding-left:12px;">
+          <span style="font-size:20px;font-weight:800;color:${BRAND.dark};letter-spacing:-0.02em;">HousAlert</span>
+        </td>
+      </tr>
+      </table>
+    </td>
+    <td align="right" style="vertical-align:middle;">
+      <a href="${baseUrl}/instellingen" target="_blank" style="font-size:13px;color:${BRAND.muted};text-decoration:none;">Instellingen</a>
     </td>
   </tr>
   </table>
 </td></tr>
 
-<tr><td style="padding:28px;">
-${content}
+<tr><td>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${BRAND.cardBg};border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.06);">
+  <tr><td style="padding:32px 28px 28px;">
+    ${content}
+  </td></tr>
+  </table>
 </td></tr>
 
-<tr><td style="padding:0 28px 24px;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-  <tr><td style="border-top:1px solid ${BRAND.divider};padding-top:20px;">
-    <p style="margin:0;font-size:12px;color:${BRAND.muted};line-height:1.5;">
-      Je ontvangt deze e-mail omdat je een zoekprofiel hebt ingesteld bij HousAlert. Je kunt je meldingen op elk moment aanpassen in je accountinstellingen.
+<tr><td style="padding:28px 4px 0;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr><td align="center">
+    <p style="margin:0 0 6px;font-size:12px;color:${BRAND.light};line-height:1.6;">
+      Je ontvangt deze e-mail omdat je een zoekprofiel hebt ingesteld bij HousAlert.<br>
+      <a href="${baseUrl}/instellingen" target="_blank" style="color:${BRAND.muted};text-decoration:underline;">Meldingen aanpassen</a>
     </p>
-    <p style="margin:8px 0 0;font-size:12px;color:${BRAND.muted};">
+    <p style="margin:0;font-size:11px;color:${BRAND.light};">
       \u00A9 ${new Date().getFullYear()} HousAlert
     </p>
   </td></tr>
@@ -135,10 +165,17 @@ ${content}
 </td></tr>
 
 </table>
+
 </td></tr>
 </table>
 </body>
 </html>`;
+}
+
+function detailChip(icon: string, label: string): string {
+  return `<td style="padding:0 12px 0 0;white-space:nowrap;">
+    <span style="font-size:13px;color:${BRAND.muted};line-height:1;">${icon}&nbsp;${escapeHtml(label)}</span>
+  </td>`;
 }
 
 function listingCard(listing: ListingInfo, showButtons = false): string {
@@ -149,41 +186,62 @@ function listingCard(listing: ListingInfo, showButtons = false): string {
 
   const imageHtml = safeImageUrl
     ? `<tr><td style="padding:0;">
-        <img src="${escapeHtml(safeImageUrl)}" alt="${escapeHtml(listing.title)}" width="100%" style="display:block;width:100%;height:auto;max-height:200px;object-fit:cover;border-radius:8px 8px 0 0;" />
+        <a href="${escapeHtml(safeUrl || applyUrl || '#')}" target="_blank" style="text-decoration:none;">
+          <img src="${escapeHtml(safeImageUrl)}" alt="${escapeHtml(listing.title)}" width="100%" style="display:block;width:100%;height:auto;max-height:220px;object-fit:cover;border-radius:12px 12px 0 0;" />
+        </a>
+      </td></tr>`
+    : "";
+
+  const chips: string[] = [];
+  if (listing.bedrooms > 0) chips.push(detailChip("\u{1F6CF}\uFE0F", `${listing.bedrooms} kamer${listing.bedrooms > 1 ? "s" : ""}`));
+  if (listing.size_m2 > 0) chips.push(detailChip("\u{1F4D0}", `${listing.size_m2} m\u00B2`));
+  if (listing.city) chips.push(detailChip("\u{1F4CD}", listing.city));
+
+  const chipsHtml = chips.length > 0
+    ? `<tr><td style="padding:8px 0 0;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>${chips.join("")}</tr></table>
       </td></tr>`
     : "";
 
   const priceHtml = listing.price > 0
-    ? `<p style="margin:0 0 4px;font-size:20px;font-weight:700;color:${BRAND.dark};">${formatPrice(listing.price)} <span style="font-size:14px;font-weight:400;color:${BRAND.muted};">/mnd</span></p>`
-    : "";
-
-  const cityHtml = listing.city
-    ? `<p style="margin:0 0 12px;font-size:14px;color:${BRAND.muted};">\u{1F4CD} ${escapeHtml(listing.city)}</p>`
+    ? `<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+        <td><span style="font-size:22px;font-weight:800;color:${BRAND.dark};line-height:1;">${formatPrice(listing.price)}</span></td>
+        <td style="padding-left:4px;"><span style="font-size:13px;font-weight:400;color:${BRAND.muted};line-height:1;">/mnd</span></td>
+      </tr></table>`
     : "";
 
   const applyButtonHtml = showButtons && applyUrl
-    ? `<a href="${escapeHtml(applyUrl)}" target="_blank" style="display:inline-block;background-color:${BRAND.primary};color:#FFFFFF;font-size:15px;font-weight:600;text-decoration:none;padding:14px 18px;border-radius:999px;text-align:center;mso-padding-alt:14px 18px;">Reageer direct</a>`
+    ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:8px;">
+        <tr><td align="center">
+          <a href="${escapeHtml(applyUrl)}" target="_blank" style="display:block;background-color:${BRAND.primary};color:#FFFFFF;font-size:15px;font-weight:600;text-decoration:none;padding:14px 24px;border-radius:999px;text-align:center;mso-padding-alt:14px 24px;">Reageer direct \u2192</a>
+        </td></tr>
+      </table>`
     : "";
 
   const viewButtonHtml = showButtons && safeUrl
-    ? `<a href="${escapeHtml(safeUrl)}" target="_blank" style="display:inline-block;border:1px solid ${BRAND.divider};background-color:#FFFFFF;color:#111827;font-size:15px;font-weight:600;text-decoration:none;padding:14px 18px;border-radius:999px;text-align:center;margin-left:8px;">Bekijk woning</a>`
+    ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr><td align="center">
+          <a href="${escapeHtml(safeUrl)}" target="_blank" style="display:block;border:1.5px solid ${BRAND.divider};background-color:${BRAND.cardBg};color:${BRAND.dark};font-size:14px;font-weight:600;text-decoration:none;padding:12px 24px;border-radius:999px;text-align:center;">Bekijk woning</a>
+        </td></tr>
+      </table>`
     : "";
 
   const buttonsHtml = (applyButtonHtml || viewButtonHtml)
-    ? `<tr><td style="padding:16px 20px 4px;">
-        <table role="presentation" cellpadding="0" cellspacing="0"><tr><td>${applyButtonHtml}</td><td>${viewButtonHtml}</td></tr></table>
+    ? `<tr><td style="padding:16px 0 0;">
+        ${applyButtonHtml}${viewButtonHtml}
       </td></tr>`
     : "";
 
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${BRAND.bg};border-radius:8px;overflow:hidden;margin:16px 0;">
+  const cardPadding = safeImageUrl ? "16px 20px 20px" : "20px";
+
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${BRAND.bg};border-radius:12px;overflow:hidden;margin:12px 0;border:1px solid ${BRAND.divider};">
 ${imageHtml}
-<tr><td style="padding:16px 20px 4px;">
-  <h3 style="margin:0 0 8px;font-size:16px;font-weight:700;color:${BRAND.dark};line-height:1.3;">${escapeHtml(listing.title)}</h3>
+<tr><td style="padding:${cardPadding};">
+  <h3 style="margin:0 0 6px;font-size:16px;font-weight:700;color:${BRAND.dark};line-height:1.35;">${escapeHtml(listing.title)}</h3>
   ${priceHtml}
-  ${cityHtml}
+  ${chipsHtml ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">${chipsHtml}</table>` : ""}
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">${buttonsHtml}</table>
 </td></tr>
-${buttonsHtml}
-<tr><td style="padding:0 0 16px;"></td></tr>
 </table>`;
 }
 
@@ -194,8 +252,8 @@ export async function sendMatchAlert(
   try {
     const { client, fromEmail } = await getUncachableResendClient();
 
-    const subject = `Nieuwe match voor jouw zoekprofiel`;
-    const preheader = `${listing.title} \u2014 ${listing.city}`;
+    const subject = sanitizeSubject(`\u{1F3E0} Nieuwe match: ${listing.title}`);
+    const preheader = `${listing.title} \u2014 ${formatPrice(listing.price)}/mnd in ${listing.city}`;
 
     const detailsText = [
       `Stad: ${listing.city}`,
@@ -207,8 +265,13 @@ export async function sendMatchAlert(
     const textBody = `Hallo,\n\nWe hebben een nieuwe woning gevonden die bij jouw zoekprofiel past:\n\n${listing.title}\n${detailsText}${listing.url ? `\n\nBekijk woning: ${listing.url}` : ""}\n\nMet vriendelijke groet,\nHet HousAlert-team`;
 
     const htmlContent = `
-<h2 style="margin:0 0 6px;font-size:20px;font-weight:700;color:${BRAND.dark};">Nieuwe match gevonden</h2>
-<p style="margin:0 0 4px;font-size:15px;color:${BRAND.text};line-height:1.5;">We hebben een nieuwe woning gevonden die bij jouw zoekprofiel past.</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr><td>
+  <p style="margin:0 0 4px;font-size:13px;font-weight:600;color:${BRAND.primary};text-transform:uppercase;letter-spacing:0.05em;">Nieuwe match</p>
+  <h1 style="margin:0 0 8px;font-size:22px;font-weight:800;color:${BRAND.dark};line-height:1.25;">Er is een woning gevonden!</h1>
+  <p style="margin:0 0 20px;font-size:15px;color:${BRAND.text};line-height:1.55;">We hebben een nieuwe woning gevonden die bij jouw zoekprofiel past. Bekijk de details en reageer snel.</p>
+</td></tr>
+</table>
 ${listingCard(listing, true)}`;
 
     const { error } = await client.emails.send({
@@ -245,8 +308,8 @@ export async function sendBatchMatchAlert(
   try {
     const { client, fromEmail } = await getUncachableResendClient();
 
-    const subject = `${listings.length} nieuwe woningen die bij jouw zoekprofiel passen`;
-    const preheader = `${listings.length} nieuwe matches voor jouw zoekprofiel.`;
+    const subject = sanitizeSubject(`\u{1F3E0} ${listings.length} nieuwe woningen gevonden`);
+    const preheader = `${listings.length} nieuwe matches voor jouw zoekprofiel \u2014 bekijk ze nu.`;
 
     const textListings = listings.map((l, i) => {
       const safeUrl = sanitizeUrl(l.url);
@@ -258,8 +321,19 @@ export async function sendBatchMatchAlert(
     const htmlListings = listings.map(l => listingCard(l, true)).join("");
 
     const htmlContent = `
-<h2 style="margin:0 0 6px;font-size:20px;font-weight:700;color:${BRAND.dark};">${listings.length} nieuwe matches</h2>
-<p style="margin:0 0 4px;font-size:15px;color:${BRAND.text};line-height:1.5;">We hebben ${listings.length} nieuwe woningen gevonden die bij jouw zoekprofiel passen.</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr><td>
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:8px;">
+  <tr>
+    <td style="background-color:${BRAND.accent};border-radius:999px;padding:5px 14px;">
+      <span style="font-size:13px;font-weight:700;color:${BRAND.primary};">${listings.length} nieuwe matches</span>
+    </td>
+  </tr>
+  </table>
+  <h1 style="margin:0 0 8px;font-size:22px;font-weight:800;color:${BRAND.dark};line-height:1.25;">We hebben nieuwe woningen voor je!</h1>
+  <p style="margin:0 0 20px;font-size:15px;color:${BRAND.text};line-height:1.55;">Er ${listings.length === 1 ? "is" : "zijn"} ${listings.length} ${listings.length === 1 ? "woning" : "woningen"} gevonden die ${listings.length === 1 ? "past" : "passen"} bij jouw zoekprofiel. Reageer snel voor de beste kans.</p>
+</td></tr>
+</table>
 ${htmlListings}`;
 
     const { error } = await client.emails.send({
