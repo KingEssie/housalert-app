@@ -315,7 +315,8 @@ export async function sendBatchMatchAlert(
 
     const textListings = listings.map((l, i) => {
       const safeUrl = sanitizeUrl(l.url);
-      return `${i + 1}. ${l.title}\n   ${formatPrice(l.price)}/mnd \u2014 ${l.city}${safeUrl ? `\n   ${safeUrl}` : ""}`;
+      const priceStr = l.price > 0 ? `${formatPrice(l.price)}/mnd \u2014 ` : "";
+      return `${i + 1}. ${l.title}\n   ${priceStr}${l.city}${safeUrl ? `\n   ${safeUrl}` : ""}`;
     }).join("\n\n");
 
     const textBody = `Hallo,\n\nWe hebben ${listings.length} nieuwe woningen gevonden die bij jouw zoekprofiel passen:\n\n${textListings}\n\nMet vriendelijke groet,\nHet HousAlert-team`;
