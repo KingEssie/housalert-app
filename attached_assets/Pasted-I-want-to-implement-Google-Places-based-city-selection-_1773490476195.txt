@@ -1,0 +1,121 @@
+I want to implement Google Places-based city selection for HousAlert search profiles.
+
+Context:
+HousAlert is a rental alert app for Germany.
+We are implementing a tiered city coverage model in the backend:
+- Tier 1 = always-on major cities
+- Tier 2 = secondary / metro cities
+- Tier 3 = dynamically activated user-search cities
+
+Now I want to improve the user-facing city selection experience.
+
+Important architecture rule:
+Google Places should be used only for the search/select UX layer.
+It must NOT become the source of truth for scraping logic by itself.
+
+The system must clearly separate:
+1. user-facing place autocomplete
+2. backend city normalization
+3. scraper coverage / tier scheduling
+
+Goal:
+Let users search and select virtually any German city/place smoothly, then normalize it into HousAlert's internal city model so the backend can decide:
+- already supported in Tier 1
+- already supported in Tier 2
+- dynamically add to Tier 3
+- unsupported / unmapped for now
+
+Please implement the following:
+
+1. Add Google Places autocomplete to city selection
+Replace or enhance the current city dropdown/input with a searchable autocomplete powered by Google Places.
+
+Requirements:
+- bias to Germany only
+- city/locality-oriented results only where practical
+- support typing variations like:
+  - Munich / München / Muenchen
+  - Cologne / Köln / Koeln
+  - Frankfurt / Frankfurt am Main
+- mobile-friendly in the current React/Vite app inside Expo WebView
+
+2. Selection output
+When a user selects a place, store structured data, not just a label.
+
+At minimum capture:
+- display_name
+- normalized_city_name
+- country_code
+- google_place_id
+- latitude
+- longitude
+
+If some fields are not available in the initial autocomplete response, fetch only the minimum extra details needed.
+
+3. Add a city normalization layer
+Create a backend or shared normalization step that converts the selected place into HousAlert's internal city model.
+
+Example target structure:
+- display_name: "Frankfurt am Main"
+- normalized_city: "frankfurt-am-main"
+- scraper_city_key: "frankfurt"
+- support_status: supported | dynamic | unsupported
+- tier_source: tier1 | tier2 | tier3 | none
+
+Requirements:
+- reuse existing alias logic where possible
+- handle German umlauts and English aliases
+- keep normalization deterministic and testable
+
+4. Connect selection to tier scheduling
+After a city is selected:
+- if it maps to an existing Tier 1 city → use that
+- if it maps to Tier 2 → use that
+- if it is valid and supported in scraper mappings but not in Tier 1/2 → mark for Tier 3 dynamic activation
+- if it is valid but not yet supported by scraper mappings → show a graceful fallback state
+
+5. Unsupported city UX
+If a place is selected but HousAlert cannot scrape it yet:
+- do not break the profile flow
+- show a clear but lightweight message like:
+  Dutch: "Deze plaats staat klaar voor uitbreiding, maar wordt nog niet actief gemonitord."
+  German: "Dieser Ort ist gespeichert, wird aber aktuell noch nicht aktiv überwacht."
+  English: "This place is saved, but is not actively monitored yet."
+- keep this simple and non-blocking
+
+6. Keep architecture intact
+Do not rewrite the whole profile system.
+Do not rewrite scraper scheduling here.
+Integrate with the existing search profile flow as a practical extension.
+
+7. Costs and API hygiene
+Implement this efficiently:
+- use Google autocomplete session tokens correctly
+- avoid unnecessary details requests
+- only request the fields we actually need
+- keep requests minimal for cost control
+
+8. Environment/config
+Add or document the needed environment variables clearly, for example:
+- Google Maps / Places API key
+- any frontend-exposed key config needed for Vite
+
+9. QA checklist
+Verify:
+- user can search German cities smoothly
+- autocomplete suggestions appear correctly
+- selected place normalizes into internal city model
+- Tier 1 / Tier 2 / Tier 3 mapping works
+- unsupported city fallback works gracefully
+- existing search profile creation still works
+- no broken mobile behavior in Expo WebView
+
+10. Reply in exactly this structure:
+A. UX approach
+B. Google Places integration
+C. Normalization model
+D. Files changed
+E. Tier mapping behavior
+F. Unsupported city behavior
+G. QA verification
+H. Notes on API keys / setup
