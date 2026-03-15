@@ -1078,6 +1078,86 @@ export async function registerRoutes(
     }
   });
 
+  app.post("/api/auth/signup", async (req, res) => {
+    try {
+      const { email, password, fullName } = req.body;
+      if (!email || !password) {
+        return res.status(400).json({ error: "Email and password are required" });
+      }
+
+      const adminSb = getSupabaseAdmin();
+
+      const { data: newUser, error: createErr } = await adminSb.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true,
+        user_metadata: { full_name: fullName || "", email_needs_verification: true },
+      });
+
+      if (createErr || !newUser?.user) {
+        const msg = createErr?.message || "User creation failed";
+        log("auth", `[SIGNUP] Admin createUser failed: ${msg}`);
+        const isDuplicate = msg.toLowerCase().includes("already") || msg.toLowerCase().includes("duplicate") || msg.toLowerCase().includes("exists");
+        return res.status(isDuplicate ? 409 : 400).json({
+          error: isDuplicate ? "user_exists" : msg,
+          message: isDuplicate ? "An account with this email already exists." : msg,
+        });
+      }
+
+      const userId = newUser.user.id;
+      log("auth", `[SIGNUP] User created via admin API: ${userId}`);
+
+      try {
+        const sub = await ensureTrialSubscription(userId);
+        if (sub) {
+          trackActivationEvent(userId, "account_created", {});
+          trackActivationEvent(userId, "trial_started", { plan: sub.plan || "trial" });
+        }
+      } catch (trialErr: any) {
+        log("auth", `[SIGNUP] Trial creation failed for ${userId}: ${trialErr.message}`);
+      }
+
+      return res.json({ ok: true, userId });
+    } catch (err: any) {
+      log("auth", `[SIGNUP] Unexpected error: ${err.message}`);
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/auth/send-verification", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const adminSb = getSupabaseAdmin();
+      const host = req.headers.host || "localhost:5000";
+      const protocol = req.headers["x-forwarded-proto"] || req.protocol;
+      const baseUrl = process.env.APP_PUBLIC_BASE_URL || `${protocol}://${host}`;
+
+      const { data: inviteData, error: inviteErr } = await adminSb.auth.admin.inviteUserByEmail(user.email!, {
+        redirectTo: `${baseUrl}/auth/callback`,
+      });
+
+      if (inviteErr) {
+        log("auth", `[VERIFY] inviteUserByEmail failed: ${inviteErr.message}, trying generateLink+resend`);
+        const { error: resendErr } = await supabase.auth.resend({ type: "signup", email: user.email! });
+        if (resendErr) {
+          log("auth", `[VERIFY] Resend also failed: ${resendErr.message}`);
+          return res.status(500).json({ error: "Could not send verification email" });
+        }
+      }
+
+      log("auth", `[VERIFY] Verification email sent to ${user.email}`);
+      return res.json({ ok: true });
+    } catch (err: any) {
+      log("auth", `[VERIFY] Unexpected error: ${err.message}`);
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   app.post("/api/subscription/ensure-trial", async (req, res) => {
     try {
       const token = req.headers.authorization?.replace("Bearer ", "");

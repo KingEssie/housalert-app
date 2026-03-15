@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useHashSearch } from "@/lib/hash-search";
 import { useLocation } from "wouter";
 import { Home, ChevronLeft, User, Mail, Lock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
-import { ensureTrialForCurrentUser } from "@/lib/auth";
 import { createSearchProfile } from "@/lib/search-profiles";
 import { useTranslation } from "@/i18n";
+import { apiFetch } from "@/lib/api-base";
 
 const INPUT_CLS = "w-full h-[44px] pl-11 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-[#0D6EFD] focus:bg-white transition-all";
 
@@ -24,6 +24,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const submittingRef = useRef(false);
 
   async function saveSearchProfile(userId: string) {
     const minPrice = parseInt(params.get("minPrice") || "0") || 0;
@@ -69,49 +70,51 @@ export default function SignupPage() {
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
     if (!email || !password) return;
+    if (loading || submittingRef.current) return;
+    submittingRef.current = true;
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: { full_name: name },
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        },
+      const res = await apiFetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, fullName: name }),
       });
 
-      if (error) {
-        toast({ title: t("auth.signup.failed"), description: error.message, variant: "destructive" });
+      const result = await res.json();
+
+      if (!res.ok) {
+        const msg = result.error === "user_exists"
+          ? t("auth.signup.emailExists")
+          : (result.message || result.error || t("auth.signup.failed"));
+        toast({ title: t("auth.signup.failed"), description: msg, variant: "destructive" });
         setLoading(false);
         return;
       }
 
-      if (!data.user) {
-        toast({ title: t("auth.signup.failed"), description: t("common.error"), variant: "destructive" });
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (signInError) {
+        toast({ title: t("auth.signup.failed"), description: signInError.message, variant: "destructive" });
         setLoading(false);
         return;
       }
 
       const { data: sessionData } = await supabase.auth.getSession();
-      const hasSession = !!sessionData?.session?.access_token;
+      const userId = sessionData?.session?.user?.id;
 
       import("@/lib/track-event").then(({ trackEvent }) => {
         trackEvent("account_created");
       }).catch(() => {});
 
-      if (hasSession && city) {
+      if (userId && city) {
         try {
-          await saveSearchProfile(data.user.id);
+          await saveSearchProfile(userId);
         } catch (err) {
           console.error("[signup] Failed to create search profile:", err);
-        }
-      }
-
-      if (hasSession) {
-        const trialOk = await ensureTrialForCurrentUser();
-        if (!trialOk) {
-          console.error("[signup] Trial creation failed after signup");
         }
       }
 
@@ -120,6 +123,7 @@ export default function SignupPage() {
       toast({ title: t("common.error"), description: err.message, variant: "destructive" });
     } finally {
       setLoading(false);
+      submittingRef.current = false;
     }
   }
 

@@ -26,6 +26,10 @@ export default function AuthCallbackPage() {
           return;
         }
 
+        await supabase.auth.updateUser({
+          data: { email_needs_verification: false },
+        });
+
         const trialOk = await ensureTrialForCurrentUser();
         if (!trialOk) {
           console.error("[auth-callback] Trial creation failed after email verification — continuing anyway");

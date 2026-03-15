@@ -308,6 +308,7 @@ export const nl: Record<string, any> = {
       loginLink: "Inloggen",
       footer: "Door je aan te melden ga je akkoord met onze voorwaarden.",
       failed: "Aanmaken mislukt",
+      emailExists: "Er bestaat al een account met dit e-mailadres. Probeer in te loggen.",
       confirmTitle: "Bevestig je e-mailadres",
       confirmText: "We hebben je een bevestigingslink gestuurd naar:",
       confirmInstructions: "Klik op de link in de e-mail om je account te activeren. Daarna kun je je direct aanmelden en beginnen met zoeken.",

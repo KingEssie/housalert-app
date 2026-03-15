@@ -1,0 +1,94 @@
+We need a structural fix for the signup flow.
+
+The current flow is still fundamentally wrong because account creation depends on Supabase confirmation email delivery. This causes the funnel to break when auth email rate limits are hit.
+
+We do NOT want a temporary workaround.
+We want a structural launch-ready solution.
+
+================================================
+GOAL
+================================================
+
+The signup and payment funnel must not depend on immediate confirmation email delivery.
+
+Required final flow:
+
+Step 1 → Step 2 → Step 3 → Step 4 account creation
+→ authenticated session created immediately
+→ Step 5 subscription / payment
+→ Stripe checkout
+→ successful payment
+→ dashboard/home
+→ email confirmation handled later as a separate account action
+
+================================================
+REQUIRED STRUCTURAL FIX
+================================================
+
+1. Decouple email confirmation from signup conversion
+- account creation must succeed even if confirmation emails are throttled
+- confirmation email must not block onboarding
+- the user must still be able to proceed to subscription/payment
+
+2. Create an active authenticated session immediately after signup
+- after step 4, the user should be logged in immediately
+- step 5 must have access to a valid session
+- Stripe checkout must use that authenticated account directly
+
+3. Email confirmation becomes a post-signup account task
+- do not show the blocking confirmation screen directly after signup
+- instead, show email confirmation later inside the app as a secondary action/banner
+- example:
+  "Bevestig je e-mailadres om je account volledig te activeren"
+  button:
+  "Verstuur bevestigingsmail opnieuw"
+
+4. Remove funnel dependency on auth email rate limits
+- signup must no longer fail just because confirmation email sending is throttled
+- no blocking red error for mail rate-limit during account creation
+- the funnel must remain usable
+
+5. Audit Supabase auth configuration
+Please determine whether "confirm email" is currently enforced in a way that blocks immediate session creation.
+
+If so, implement the correct structural fix so that:
+- signup creates the user
+- session is available immediately
+- email confirmation is deferred
+
+6. Keep launch safety in mind
+We still want email confirmation capability in the product.
+We just do NOT want it to block conversion or Stripe checkout.
+
+================================================
+UX REQUIREMENTS
+================================================
+
+- no red blocking signup error caused by email throttle
+- no forced email-confirmation screen before payment
+- if email is still unconfirmed, show this later in dashboard/profile as a task/banner
+- user should be able to pay first and confirm email later
+
+================================================
+ALSO VERIFY
+================================================
+
+- step 4 only submits once
+- no double signUp calls
+- no duplicate email sends
+- signup button is protected against double taps
+- Stripe checkout works with the authenticated user from step 4
+- after successful payment, user lands on dashboard/home without extra login step
+
+================================================
+REPLY IN EXACTLY THIS STRUCTURE
+================================================
+
+A. Current root cause
+B. Structural auth flow change
+C. Supabase configuration change
+D. Session handling after signup
+E. Email confirmation as post-signup action
+F. Stripe flow validation
+G. Files changed
+H. QA verification

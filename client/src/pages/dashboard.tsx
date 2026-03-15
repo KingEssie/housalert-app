@@ -1760,20 +1760,35 @@ export default function DashboardPage() {
   const matchCount = apiMatchesQuery.data?.totalCount ?? 0;
   const newCount = apiMatchesQuery.data?.newCount ?? 0;
 
-  const emailConfirmed = user?.email_confirmed_at || user?.confirmed_at;
+  const emailNeedsVerification = user?.user_metadata?.email_needs_verification === true;
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <main className="flex-1 max-w-xl mx-auto w-full pb-28">
-        {!emailConfirmed && (
+        {emailNeedsVerification && (
           <div className="mx-4 mt-3 mb-1 flex items-center gap-3 bg-[#FEF3C7] rounded-xl px-4 py-3" data-testid="banner-email-confirm">
             <Mail className="w-5 h-5 text-[#92400E] flex-shrink-0" />
             <p className="text-[13px] text-[#92400E] flex-1">{t("dashboard.confirmEmailBanner")}</p>
             <button
               onClick={async () => {
                 try {
-                  await supabase.auth.resend({ type: "signup", email: user.email! });
-                  toast({ title: t("dashboard.confirmEmailSent") });
+                  const { data: sess } = await supabase.auth.getSession();
+                  const token = sess?.session?.access_token;
+                  if (token) {
+                    const res = await fetch("/api/auth/send-verification", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                    });
+                    if (res.ok) {
+                      toast({ title: t("dashboard.confirmEmailSent") });
+                    } else {
+                      await supabase.auth.resend({ type: "signup", email: user.email! });
+                      toast({ title: t("dashboard.confirmEmailSent") });
+                    }
+                  } else {
+                    await supabase.auth.resend({ type: "signup", email: user.email! });
+                    toast({ title: t("dashboard.confirmEmailSent") });
+                  }
                 } catch {}
               }}
               className="text-[13px] font-semibold text-[#92400E] underline whitespace-nowrap"
