@@ -1,0 +1,54 @@
+The previous embed adjustments did not actually take effect on the live onboarding funnel.
+
+Current problem:
+- The top header (back button + HousAlert logo/title) is still visible on:
+  https://rental-alert-ui.replit.app/onboarding/location?embed=true
+- The onboarding layout is still narrow/mobile-like and not visibly wider on desktop embed.
+- So the current iframe detection / width logic is not sufficient.
+
+I want a robust structural fix for the web onboarding funnel.
+
+Goal:
+When the onboarding/signup flow is opened in Duda, I want to force an "embed mode" that:
+1. hides the top header completely
+2. makes the main content significantly wider on desktop
+3. keeps mobile behavior intact
+4. leaves normal standalone behavior unchanged
+
+Important:
+- Do NOT touch mobile-clean/
+- Only update the web app in client/src/pages/ and any shared web hooks/helpers if needed
+- Use a reliable explicit signal, not only iframe detection
+
+Required fix:
+1. Add support for an explicit URL param:
+   embed=true
+2. Create a shared helper/hook that returns true when either:
+   - the page is inside an iframe
+   - OR the URL contains ?embed=true
+3. Apply this robust embed mode consistently to:
+   - client/src/pages/onboarding-location.tsx
+   - client/src/pages/onboarding-filters.tsx
+   - client/src/pages/onboarding-preferences.tsx
+   - client/src/pages/signup.tsx
+   - client/src/pages/onboarding-value.tsx
+4. In embed mode:
+   - fully hide the top header
+   - widen the outer/main content container substantially on desktop (not just an inner card)
+   - ensure form fields, cards, tabs, and map area visibly use more horizontal space
+5. Keep standalone normal pages unchanged when embed mode is off
+6. Make sure the effect is visible on:
+   https://rental-alert-ui.replit.app/onboarding/location?embed=true
+
+Also:
+- Inspect all relevant wrappers and max-width classes in those onboarding pages
+- If there is a shared onboarding wrapper, update it there too
+- Make the width change obvious enough that the embed no longer looks like a narrow phone layout on desktop
+- Republish-ready changes only
+- Do minimal safe edits, no unrelated refactors
+
+After making changes, give me:
+A. exact files changed
+B. how embed mode is detected now
+C. what exact container/wrapper widths were changed
+D. what URL I should test afterwards
