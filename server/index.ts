@@ -92,6 +92,8 @@ app.use((req, res, next) => {
   next();
 });
 
+console.log("BOOT: server init");
+
 (async () => {
   await registerRoutes(httpServer, app);
 
@@ -109,6 +111,7 @@ app.use((req, res, next) => {
   });
 
   app.get("/healthz", (_req, res) => {
+    console.log("BOOT: health endpoint ready");
     res.status(200).json({ status: "ok", uptime: process.uptime() });
   });
 
@@ -119,10 +122,6 @@ app.use((req, res, next) => {
     await setupVite(httpServer, app);
   }
 
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
   const port = parseInt(process.env.PORT || "5000", 10);
   httpServer.listen(
     {
@@ -131,16 +130,20 @@ app.use((req, res, next) => {
       reusePort: true,
     },
     () => {
-      console.log(`[housalert] Server listening on 0.0.0.0:${port} (NODE_ENV=${process.env.NODE_ENV || "development"})`);
+      console.log(`BOOT: server listening on 0.0.0.0:${port}`);
       log(`serving on port ${port}`);
 
+      const BACKGROUND_DELAY_MS = 10_000;
       setTimeout(() => {
-        log("Starting background jobs...");
+        console.log("BOOT: background jobs starting");
         import("./migrations/apply").then(({ runStartupMigration }) =>
-          runStartupMigration().catch(() => {})
+          runStartupMigration().catch((e) => console.error("Migration error:", e))
         );
-        import("./scheduler").then(({ startScheduler }) => startScheduler());
-      }, 5000);
+        import("./scheduler").then(({ startScheduler }) => {
+          startScheduler();
+          console.log("BOOT: scheduler started");
+        });
+      }, BACKGROUND_DELAY_MS);
     },
   );
 })();
