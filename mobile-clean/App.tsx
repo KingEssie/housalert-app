@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   AppState,
   type AppStateStatus,
+  Linking,
   Platform,
   SafeAreaView,
   StyleSheet,
@@ -282,6 +283,11 @@ export default function App() {
       try {
         const parsed = JSON.parse(event.nativeEvent.data);
 
+        if (parsed.type === "OPEN_EXTERNAL_URL" && parsed.url) {
+          Linking.openURL(parsed.url).catch(() => {});
+          return;
+        }
+
         if (parsed.type === "SUPABASE_SESSION") {
           const userId = parsed.user_id;
           const accessToken = parsed.access_token;
@@ -349,6 +355,7 @@ export default function App() {
       !nav.url.startsWith("about:")
     ) {
       webViewRef.current?.stopLoading();
+      Linking.openURL(nav.url).catch(() => {});
     }
   }, []);
 

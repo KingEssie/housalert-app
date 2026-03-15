@@ -112,7 +112,11 @@ export default function PaywallPage() {
       }
 
       if (data.url) {
-        window.location.href = data.url;
+        if ((window as any).ReactNativeWebView) {
+          (window as any).ReactNativeWebView.postMessage(JSON.stringify({ type: "OPEN_EXTERNAL_URL", url: data.url }));
+        } else {
+          window.location.href = data.url;
+        }
       } else {
         toast({
           title: t("paywall.paymentUnavailable"),

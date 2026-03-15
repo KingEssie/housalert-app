@@ -1344,6 +1344,8 @@ export async function registerRoutes(
       const protocol = req.headers["x-forwarded-proto"] || req.protocol;
       const baseUrl = process.env.APP_PUBLIC_BASE_URL || `${protocol}://${host}`;
 
+      log(`[checkout] Creating session: plan=${plan}, priceId=${stripePriceId}, baseUrl=${baseUrl}, customer=${customerId}`);
+
       const session = await stripe.checkout.sessions.create({
         customer: customerId,
         payment_method_types: ["card"],
@@ -1358,8 +1360,10 @@ export async function registerRoutes(
         metadata: { supabase_user_id: user.id, plan },
       });
 
+      log(`[checkout] Session created: id=${session.id}, url=${session.url?.substring(0, 60)}...`);
       return res.json({ url: session.url });
     } catch (err: any) {
+      log(`[checkout] Error: ${err.message}`);
       console.error("Checkout error:", err);
       return res.status(500).json({ error: err.message });
     }
