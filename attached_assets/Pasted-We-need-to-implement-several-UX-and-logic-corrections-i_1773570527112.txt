@@ -1,0 +1,202 @@
+We need to implement several UX and logic corrections in the HousAlert signup funnel. The current implementation is already close to the desired design, but there are still important functional and UX issues that must be fixed.
+
+Do NOT redesign the funnel again. Only implement the specific changes described below.
+
+================================================
+1. STEP 1 – CITY SELECTION IMPROVEMENTS
+================================================
+
+Problem:
+The city field currently has no default value, no proper dropdown for tier-1 cities, and shows a misleading message about cities not being monitored.
+
+Required fixes:
+
+1. Default city
+When Step 1 loads, the city field should automatically be set to:
+
+Berlin
+
+Berlin should act as the default Tier-1 city because it has the highest housing supply.
+
+2. Proper city dropdown
+The city field must behave as a dropdown with search.
+
+When the user taps the city field:
+
+Top section: Tier-1 cities
+
+Berlin
+Hamburg
+München
+Köln
+Frankfurt
+Düsseldorf
+Stuttgart
+Leipzig
+
+Below that:
+
+Search input:
+"Zoek een stad..."
+
+The user must be able to type and select ANY city (Google Places / location search).
+
+3. Remove expansion warning
+The following message must be completely removed:
+
+"Deze plaats staat klaar voor uitbreiding, maar wordt nog niet actief gemonitord."
+
+This message is incorrect because the scraper can still run for new locations.
+
+Users should never see this warning.
+
+4. Map behavior
+The map preview must appear for ANY selected city.
+
+Even if the city is not in the Tier-1 list.
+
+Use coordinates from the location search result to render the map.
+
+Do not hide the map based on city support.
+
+5. Match preview
+Instead of the warning message, always show a match estimate card:
+
+Example:
+
+"Met deze zoekopdracht kun je ongeveer 0 matches per week verwachten."
+
+If matches are low (<5), show an additional hint:
+
+"Tip: vergroot je radius of verhoog je budget voor meer resultaten."
+
+================================================
+2. STEP 3 – SIMPLIFY PREFERENCES
+================================================
+
+Current problem:
+The screen still contains UI elements that add no value and slow down the funnel.
+
+Required changes:
+
+1. Woningtype
+Replace the chip selection with a dropdown.
+
+Dropdown options:
+
+Maakt niet uit
+Appartement
+Studio
+Kamer
+Huis
+WG / gedeeld
+
+2. Remove "Aanvullende wensen"
+Delete the entire field:
+
+"Aanvullende wensen"
+
+This field provides no meaningful filtering and slows down the signup flow.
+
+Remove:
+- textarea
+- label
+- placeholder
+- any related state logic
+
+3. Keep only these fields on this screen:
+
+Gemeubileerd (dropdown)
+Woningtype (dropdown)
+Doelgroep (dropdown)
+
+Maintain the same white card layout and spacing.
+
+================================================
+3. SIGNUP FLOW CORRECTION
+================================================
+
+Current problem:
+After filling in name, email, and password, the user is redirected to the email confirmation screen.
+
+This breaks the funnel.
+
+Correct behavior:
+
+After Step 4 signup:
+
+User must go to the subscription / value page (Step 5).
+
+Email confirmation must NOT block the funnel.
+
+Implementation:
+
+1. On signup submit:
+
+Create user with:
+
+supabase.auth.signUp()
+
+Send confirmation email normally.
+
+BUT do NOT redirect to the email confirmation page.
+
+2. Redirect user to:
+
+/subscription
+
+This is the page that shows:
+
+- value explanation
+- subscription options
+- Stripe checkout button
+
+3. Email confirmation becomes a secondary action
+
+Users can confirm later.
+
+================================================
+4. EMAIL CONFIRMATION BEHAVIOR
+================================================
+
+The email confirmation screen should still exist but must not interrupt the funnel.
+
+Instead:
+
+Show a banner inside the dashboard after login if the email is not confirmed.
+
+Example banner:
+
+"Bevestig je e-mailadres om alle functies te gebruiken."
+
+Button:
+
+"Bevestig e-mail"
+
+Users can still proceed in the app without immediate confirmation.
+
+================================================
+5. DO NOT CHANGE
+================================================
+
+Do NOT change:
+
+- overall funnel structure
+- styling
+- white card layout
+- progress dots
+- button design
+
+Only implement the corrections described above.
+
+================================================
+REPLY IN THIS STRUCTURE
+================================================
+
+A. Step 1 city dropdown fix  
+B. Map behavior update  
+C. Step 3 preference simplification  
+D. Signup redirect logic change  
+E. Email confirmation flow update  
+F. Files modified  
+G. QA verification

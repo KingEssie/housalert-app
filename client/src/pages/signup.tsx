@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useHashSearch } from "@/lib/hash-search";
 import { useLocation } from "wouter";
-import { Home, ChevronLeft, User, Mail, Lock, MailCheck, Loader2 } from "lucide-react";
+import { Home, ChevronLeft, User, Mail, Lock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
@@ -24,7 +24,6 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [emailConfirmationPending, setEmailConfirmationPending] = useState(false);
 
   async function saveSearchProfile(userId: string) {
     const minPrice = parseInt(params.get("minPrice") || "0") || 0;
@@ -97,27 +96,26 @@ export default function SignupPage() {
       const { data: sessionData } = await supabase.auth.getSession();
       const hasSession = !!sessionData?.session?.access_token;
 
-      if (hasSession) {
-        import("@/lib/track-event").then(({ trackEvent }) => {
-          trackEvent("account_created");
-        }).catch(() => {});
+      import("@/lib/track-event").then(({ trackEvent }) => {
+        trackEvent("account_created");
+      }).catch(() => {});
 
-        if (city) {
-          try {
-            await saveSearchProfile(data.user.id);
-          } catch (err) {
-            console.error("[signup] Failed to create search profile:", err);
-          }
+      if (hasSession && city) {
+        try {
+          await saveSearchProfile(data.user.id);
+        } catch (err) {
+          console.error("[signup] Failed to create search profile:", err);
         }
+      }
 
+      if (hasSession) {
         const trialOk = await ensureTrialForCurrentUser();
         if (!trialOk) {
           console.error("[signup] Trial creation failed after signup");
         }
-        navigate("/onboarding/value");
-      } else {
-        setEmailConfirmationPending(true);
       }
+
+      navigate("/onboarding/value");
     } catch (err: any) {
       toast({ title: t("common.error"), description: err.message, variant: "destructive" });
     } finally {
@@ -128,66 +126,6 @@ export default function SignupPage() {
   function handleBack() {
     const p = new URLSearchParams(searchString);
     navigate(`/onboarding/preferences?${p.toString()}`);
-  }
-
-  if (emailConfirmationPending) {
-    return (
-      <div className="min-h-screen bg-white flex flex-col">
-        <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
-          <div className="max-w-xl mx-auto px-5 h-[56px] flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-full bg-[#0D6EFD] flex items-center justify-center">
-                <Home className="w-3.5 h-3.5 text-white" />
-              </div>
-              <span className="font-bold text-[#111C3D] text-[15px]">HousAlert</span>
-            </div>
-          </div>
-        </header>
-
-        <main className="flex-1 flex flex-col items-center justify-center px-6 text-center">
-          <div className="w-[72px] h-[72px] rounded-2xl bg-[#EBF2FF] flex items-center justify-center mb-8">
-            <MailCheck className="w-8 h-8 text-[#0D6EFD]" />
-          </div>
-
-          <h1
-            className="text-[24px] font-[800] text-[#111C3D] tracking-[-0.02em] leading-[1.15] mb-4 max-w-[320px]"
-            data-testid="text-email-confirm-title"
-          >
-            {t("auth.signup.confirmTitle")}
-          </h1>
-
-          <p
-            className="text-[15px] leading-relaxed text-[#6B7280] mb-3 max-w-[340px]"
-            data-testid="text-email-confirm-description"
-          >
-            {t("auth.signup.confirmText")}
-          </p>
-
-          <p
-            className="text-[15px] font-semibold text-[#111C3D] mb-8"
-            data-testid="text-email-confirm-address"
-          >
-            {email}
-          </p>
-
-          <p className="text-[14px] text-[#6B7280] mb-10 max-w-[340px] leading-relaxed">
-            {t("auth.signup.confirmInstructions")}
-          </p>
-
-          <button
-            onClick={() => navigate("/login")}
-            className="w-full max-w-[320px] min-h-[48px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-bold text-[15px] transition-colors"
-            data-testid="button-go-login-after-confirm"
-          >
-            {t("auth.signup.toLogin")}
-          </button>
-
-          <p className="text-[12px] text-[#9CA3AF] mt-6 max-w-[300px]">
-            {t("auth.signup.noEmail")}
-          </p>
-        </main>
-      </div>
-    );
   }
 
   return (

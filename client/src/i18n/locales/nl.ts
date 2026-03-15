@@ -67,6 +67,12 @@ export const nl: Record<string, any> = {
     petsNote: "Huisdieren: niet bevestigd door de aanbieder – vraag het zelf na",
   },
 
+  dashboard: {
+    confirmEmailBanner: "Bevestig je e-mailadres om alle functies te gebruiken.",
+    confirmEmailBtn: "Bevestig e-mail",
+    confirmEmailSent: "Bevestigingsmail verstuurd!",
+  },
+
   home: {
     greeting: "Hallo, {name}",
     greetingDefault: "Hallo",
@@ -827,6 +833,7 @@ export const nl: Record<string, any> = {
     estimateText: "Met deze zoekopdracht kun je ongeveer {count} matches per week verwachten.",
     nextStep: "Volgende stap",
     helperText: "Tip: Je kunt later altijd je locatie aanpassen of extra zoekprofielen toevoegen voor andere steden.",
+    lowMatchHint: "Tip: vergroot je radius of verhoog je budget voor meer resultaten.",
   },
 
   onboardingFilters: {

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 
 const FURNISHED_OPTIONS = ["any", "furnished", "unfurnished"] as const;
-const HOUSING_TYPES = ["apartment", "studio", "room", "house", "wg"] as const;
+const HOUSING_TYPES = ["any", "apartment", "studio", "room", "house", "wg"] as const;
 const TARGET_GROUPS = ["any", "students", "couples", "families", "singles", "seniors"] as const;
 
 const SELECT_CLS = "w-full h-[44px] px-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-[#0D6EFD] focus:bg-white cursor-pointer appearance-none transition-all";
@@ -18,28 +18,20 @@ export default function OnboardingPreferencesPage() {
   const params = new URLSearchParams(searchString);
 
   const [furnished, setFurnished] = useState(params.get("furnished") || "any");
-  const [housingTypes, setHousingTypes] = useState<string[]>(
-    params.get("propertyTypes")?.split(",").filter(Boolean) || []
+  const [housingType, setHousingType] = useState(
+    params.get("propertyTypes") || "any"
   );
   const [targetGroup, setTargetGroup] = useState(params.get("targetGroup") || "any");
-  const [extraWishes, setExtraWishes] = useState(params.get("extraWishes") || "");
-
-  function toggleHousingType(type: string) {
-    setHousingTypes((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
-    );
-  }
 
   function buildParams(): URLSearchParams {
     const p = new URLSearchParams(searchString);
     if (furnished && furnished !== "any") p.set("furnished", furnished);
     else p.delete("furnished");
-    if (housingTypes.length > 0) p.set("propertyTypes", housingTypes.join(","));
+    if (housingType && housingType !== "any") p.set("propertyTypes", housingType);
     else p.delete("propertyTypes");
     if (targetGroup && targetGroup !== "any") p.set("targetGroup", targetGroup);
     else p.delete("targetGroup");
-    if (extraWishes.trim()) p.set("extraWishes", extraWishes.trim());
-    else p.delete("extraWishes");
+    p.delete("extraWishes");
     return p;
   }
 
@@ -119,24 +111,25 @@ export default function OnboardingPreferencesPage() {
           </div>
 
           <div>
-            <label className="text-[13px] font-[600] text-[#374151] mb-2 block">
+            <label className="text-[13px] font-[600] text-[#374151] mb-1.5 block">
               {t("onboardingPreferences.housingType")}
             </label>
-            <div className="flex flex-wrap gap-2">
-              {HOUSING_TYPES.map((type) => (
-                <button
-                  key={type}
-                  onClick={() => toggleHousingType(type)}
-                  className={`px-3.5 py-2 rounded-full text-[13px] font-medium transition-all ${
-                    housingTypes.includes(type)
-                      ? "bg-[#0D6EFD] text-white"
-                      : "bg-[#F3F4F6] text-[#374151] hover:bg-[#E5E7EB]"
-                  }`}
-                  data-testid={`chip-type-${type}`}
-                >
-                  {t(`onboardingPreferences.housingTypeOption.${type}`)}
-                </button>
-              ))}
+            <div className="relative">
+              <select
+                value={housingType}
+                onChange={(e) => setHousingType(e.target.value)}
+                className={SELECT_CLS}
+                data-testid="select-housing-type"
+              >
+                {HOUSING_TYPES.map((type) => (
+                  <option key={type} value={type}>
+                    {type === "any"
+                      ? t("onboardingPreferences.furnishedOption.any")
+                      : t(`onboardingPreferences.housingTypeOption.${type}`)}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] pointer-events-none" />
             </div>
           </div>
 
@@ -159,20 +152,6 @@ export default function OnboardingPreferencesPage() {
               </select>
               <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] pointer-events-none" />
             </div>
-          </div>
-
-          <div>
-            <label className="text-[13px] font-[600] text-[#374151] mb-1.5 block">
-              {t("onboardingPreferences.extraWishes")}
-            </label>
-            <textarea
-              value={extraWishes}
-              onChange={(e) => setExtraWishes(e.target.value)}
-              placeholder={t("onboardingPreferences.extraWishesPlaceholder")}
-              rows={3}
-              className="w-full px-4 py-3 rounded-xl border border-transparent bg-[#F3F4F6] text-[14px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-[#0D6EFD] focus:bg-white transition-all resize-none"
-              data-testid="textarea-extra-wishes"
-            />
           </div>
         </div>
 

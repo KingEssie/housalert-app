@@ -111,7 +111,7 @@ function Router() {
       <Route path="/onboarding/filters" component={OnboardingFiltersPage} />
       <Route path="/onboarding/estimate" component={OnboardingEstimatePage} />
       <Route path="/onboarding/preferences" component={OnboardingPreferencesPage} />
-      <Route path="/onboarding/value" component={() => <ProtectedRoute component={OnboardingValuePage} skipOnboardingCheck />} />
+      <Route path="/onboarding/value" component={OnboardingValuePage} />
       <Route path="/paywall" component={PaywallPage} />
       <Route path="/subscription-success" component={() => <ProtectedRoute component={SubscriptionSuccessPage} skipOnboardingCheck />} />
       <Route path="/onboarding" component={() => <ProtectedRoute component={OnboardingPage} skipOnboardingCheck />} />

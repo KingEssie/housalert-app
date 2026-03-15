@@ -1,12 +1,11 @@
 import { apiFetch } from "@/lib/api-base";
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "wouter";
-import { Home, MapPin, ChevronLeft, Search, ChevronRight, Navigation, Clock, Car, Train, Bike, Loader2, AlertCircle, Info } from "lucide-react";
+import { Home, MapPin, ChevronLeft, Search, ChevronRight, Navigation, Clock, Car, Train, Bike, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { defaultCities, cityDistricts } from "../../../config/market";
 import { useTranslation } from "@/i18n";
 import { usePlacesAutocomplete, type PlaceSuggestion } from "@/hooks/use-places-autocomplete";
-import { getCitySupport } from "@/lib/city-support";
 import { useHashSearch } from "@/lib/hash-search";
 
 type CityEntry = typeof defaultCities[0];
@@ -36,10 +35,12 @@ export default function OnboardingLocationPage() {
 
   const initialCity = useMemo(() => {
     const cityName = urlParams.get("city");
-    if (!cityName) return null;
-    const lat = parseFloat(urlParams.get("lat") || "0") || 0;
-    const lng = parseFloat(urlParams.get("lng") || "0") || 0;
-    return { name: cityName, lat, lng } as CityEntry;
+    if (cityName) {
+      const lat = parseFloat(urlParams.get("lat") || "0") || 0;
+      const lng = parseFloat(urlParams.get("lng") || "0") || 0;
+      return { name: cityName, lat, lng } as CityEntry;
+    }
+    return defaultCities[0];
   }, []);
 
   const initialTab = useMemo((): TabType => {
@@ -50,7 +51,7 @@ export default function OnboardingLocationPage() {
   }, []);
 
   const [activeTab, setActiveTab] = useState<TabType>(initialTab);
-  const [search, setSearch] = useState(initialCity?.name || "");
+  const [search, setSearch] = useState(initialCity.name);
   const [selectedCity, setSelectedCity] = useState<CityEntry | null>(initialCity);
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedDistricts, setSelectedDistricts] = useState<string[]>(
@@ -236,8 +237,6 @@ export default function OnboardingLocationPage() {
 
   const canProceed =
     activeTab === "reistijd" ? !!travelAddress : !!selectedCity;
-
-  const citySupport = selectedCity ? getCitySupport(selectedCity.name) : null;
 
   const tabs: { id: TabType; label: string }[] = [
     { id: "wijken", label: t("location.tabs.districts") },
@@ -429,20 +428,6 @@ export default function OnboardingLocationPage() {
                   </div>
                 )}
 
-                {selectedCity && citySupport && citySupport.status === "unsupported" && (
-                  <div className="flex items-center gap-2 text-[#92400E] text-[13px] bg-[#FEF3C7] rounded-2xl px-4 py-3 mt-4" data-testid="text-city-unsupported">
-                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                    <span>{t("cityPicker.cityNotMonitored")}</span>
-                  </div>
-                )}
-
-                {selectedCity && citySupport && citySupport.status === "dynamic" && (
-                  <div className="flex items-center gap-2 text-[#0D6EFD] text-[13px] bg-[#EBF2FF] rounded-2xl px-4 py-3 mt-4" data-testid="text-city-dynamic">
-                    <Info className="w-4 h-4 flex-shrink-0" />
-                    <span>{t("cityPicker.cityDynamic")}</span>
-                  </div>
-                )}
-
                 {selectedCity && (
                   <div className="py-5 border-b border-[#E5E7EB]">
                     <div className="rounded-2xl overflow-hidden bg-[#F3F4F6]" data-testid="card-map-preview">
@@ -595,20 +580,6 @@ export default function OnboardingLocationPage() {
                   </div>
                 </div>
 
-                {selectedCity && citySupport && citySupport.status === "unsupported" && (
-                  <div className="flex items-center gap-2 text-[#92400E] text-[13px] bg-[#FEF3C7] rounded-2xl px-4 py-3 mt-4" data-testid="text-city-unsupported">
-                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                    <span>{t("cityPicker.cityNotMonitored")}</span>
-                  </div>
-                )}
-
-                {selectedCity && citySupport && citySupport.status === "dynamic" && (
-                  <div className="flex items-center gap-2 text-[#0D6EFD] text-[13px] bg-[#EBF2FF] rounded-2xl px-4 py-3 mt-4" data-testid="text-city-dynamic">
-                    <Info className="w-4 h-4 flex-shrink-0" />
-                    <span>{t("cityPicker.cityDynamic")}</span>
-                  </div>
-                )}
-
                 {selectedCity && (
                   <div className="py-5">
                     <div className="rounded-2xl overflow-hidden bg-[#F3F4F6]" data-testid="card-map-radius">
@@ -713,9 +684,16 @@ export default function OnboardingLocationPage() {
                     <span className="text-sm text-[#1F2937]">{t("onboardingLocation.estimateLoading")}</span>
                   </div>
                 ) : (
-                  <p className="text-sm text-[#1F2937] leading-relaxed">
-                    {t("onboardingLocation.estimateText", { count: estimate ?? 0 })}
-                  </p>
+                  <>
+                    <p className="text-sm text-[#1F2937] leading-relaxed">
+                      {t("onboardingLocation.estimateText", { count: estimate ?? 0 })}
+                    </p>
+                    {estimate !== null && estimate < 5 && (
+                      <p className="text-[13px] text-[#6B7280] mt-1.5">
+                        {t("onboardingLocation.lowMatchHint")}
+                      </p>
+                    )}
+                  </>
                 )}
               </div>
             </div>
