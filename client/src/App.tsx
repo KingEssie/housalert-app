@@ -80,7 +80,7 @@ function NativeAwareRoot() {
   const { user, loading } = useAuth();
   if (isNativePlatform()) {
     if (loading) return null;
-    return <Redirect to={user ? "/dashboard" : "/onboarding/location"} />;
+    return <Redirect to={user ? "/dashboard" : "/login"} />;
   }
   return <LandingPage />;
 }
