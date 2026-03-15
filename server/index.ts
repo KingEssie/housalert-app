@@ -108,9 +108,10 @@ app.use((req, res, next) => {
     return res.status(status).json({ message });
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
+  app.get("/healthz", (_req, res) => {
+    res.status(200).json({ status: "ok", uptime: process.uptime() });
+  });
+
   if (process.env.NODE_ENV === "production") {
     serveStatic(app);
   } else {
@@ -133,10 +134,13 @@ app.use((req, res, next) => {
       console.log(`[housalert] Server listening on 0.0.0.0:${port} (NODE_ENV=${process.env.NODE_ENV || "development"})`);
       log(`serving on port ${port}`);
 
-      import("./migrations/apply").then(({ runStartupMigration }) =>
-        runStartupMigration().catch(() => {})
-      );
-      import("./scheduler").then(({ startScheduler }) => startScheduler());
+      setTimeout(() => {
+        log("Starting background jobs...");
+        import("./migrations/apply").then(({ runStartupMigration }) =>
+          runStartupMigration().catch(() => {})
+        );
+        import("./scheduler").then(({ startScheduler }) => startScheduler());
+      }, 5000);
     },
   );
 })();

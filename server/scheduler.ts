@@ -73,7 +73,7 @@ export async function startScheduler() {
     log(`[scheduler] Cleaned up ${cleaned} stale fetch runs from previous server`, "scheduler");
   }
 
-  setTimeout(() => runRecoveryCycle(), 15_000);
+  setTimeout(() => runRecoveryCycle(), 30_000);
   setInterval(() => runRecoveryCycle(), RECOVERY_INTERVAL_MS);
   log(`Email recovery timer started — runs every ${RECOVERY_INTERVAL_MS / 1000}s`, "scheduler");
 
@@ -93,7 +93,8 @@ export async function startScheduler() {
 
   log(`Ingestion scheduler started — running every ${intervalMinutes} minutes`, "scheduler");
 
-  nextRunAt = new Date(Date.now() + 5000);
-  setTimeout(() => tick(), 5000);
+  const INITIAL_DELAY_MS = 30_000;
+  nextRunAt = new Date(Date.now() + INITIAL_DELAY_MS);
+  setTimeout(() => tick(), INITIAL_DELAY_MS);
   setInterval(() => tick(), INTERVAL_MS);
 }
