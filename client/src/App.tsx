@@ -78,10 +78,23 @@ function ProtectedRoute({ component: Component, skipOnboardingCheck }: { compone
 
 function NativeAwareRoot() {
   const { user, loading } = useAuth();
-  if (isNativePlatform()) {
+  const native = isNativePlatform();
+  console.log("[NativeAwareRoot]", {
+    native,
+    loading,
+    hasUser: !!user,
+    pathname: window.location.pathname,
+    search: window.location.search,
+    hash: window.location.hash,
+    __HOUSALERT_NATIVE__: (window as any).__HOUSALERT_NATIVE__,
+  });
+  if (native) {
     if (loading) return null;
-    return <Redirect to={user ? "/dashboard" : "/login"} />;
+    const target = user ? "/dashboard" : "/login";
+    console.log("[NativeAwareRoot] Native redirect →", target);
+    return <Redirect to={target} />;
   }
+  console.log("[NativeAwareRoot] Web → LandingPage");
   return <LandingPage />;
 }
 

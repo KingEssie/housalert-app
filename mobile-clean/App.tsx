@@ -376,8 +376,9 @@ export default function App() {
       <StatusBar style="dark" />
       <WebView
         ref={webViewRef}
-        source={{ uri: WEB_APP_URL }}
+        source={{ uri: `${WEB_APP_URL}?native=1` }}
         style={styles.webview}
+        injectedJavaScriptBeforeContentLoaded={INJECTED_JS}
         injectedJavaScript={INJECTED_JS}
         onLoadEnd={handleLoadEnd}
         onError={handleError}

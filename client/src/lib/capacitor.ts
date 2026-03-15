@@ -3,7 +3,15 @@ function getCap(): any {
 }
 
 export function isNativePlatform(): boolean {
-  return getCap()?.isNativePlatform?.() === true || (window as any).__HOUSALERT_NATIVE__ === true;
+  if (getCap()?.isNativePlatform?.() === true) return true;
+  if ((window as any).__HOUSALERT_NATIVE__ === true) return true;
+  try {
+    if (new URLSearchParams(window.location.search).get("native") === "1") {
+      (window as any).__HOUSALERT_NATIVE__ = true;
+      return true;
+    }
+  } catch {}
+  return false;
 }
 
 export function getPlatform(): string {
