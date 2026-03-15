@@ -318,7 +318,7 @@ export default function OnboardingLocationPage() {
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => { setActiveTab(tab.id); setDistrictDropdownOpen(false); }}
                 className={`flex-1 py-3.5 text-[15px] font-semibold text-center transition-colors relative ${
                   activeTab === tab.id
                     ? "text-[#1F2937]"
@@ -474,7 +474,7 @@ export default function OnboardingLocationPage() {
                       )}
 
                       {districtDropdownOpen && (
-                        <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-20 max-h-56 overflow-y-auto">
+                        <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-[9999] max-h-56 overflow-y-auto">
                           {activeCityDistricts.map((district) => (
                             <button
                               key={district}
@@ -499,7 +499,7 @@ export default function OnboardingLocationPage() {
                   </div>
                 )}
 
-                {selectedCity && selectedCity.lat !== 0 && selectedCity.lng !== 0 && (
+                {selectedCity && selectedCity.lat !== 0 && selectedCity.lng !== 0 && !districtDropdownOpen && (
                   <div className="py-5 border-b border-[#E5E7EB]">
                     <div className="rounded-2xl overflow-hidden" data-testid="card-map-preview" style={{ height: "180px" }}>
                       <MapContainer
@@ -765,7 +765,7 @@ export default function OnboardingLocationPage() {
             )}
           </div>
 
-          {(selectedCity || (activeTab === "reistijd" && travelAddress)) && (
+          {(selectedCity || (activeTab === "reistijd" && travelAddress)) && !districtDropdownOpen && (
             <div className="pt-5 mt-1">
               <div className="bg-[#EBF2FF] rounded-lg p-4 mb-6" data-testid="card-estimate-preview">
                 {estimateLoading ? (
@@ -789,7 +789,7 @@ export default function OnboardingLocationPage() {
             </div>
           )}
 
-          <div className="bg-[#F0F7FF] rounded-xl p-4 mt-4 mb-2" data-testid="info-helper-box">
+          <div className={`bg-[#F0F7FF] rounded-xl p-4 mt-4 mb-2 ${districtDropdownOpen ? "hidden" : ""}`} data-testid="info-helper-box">
             <p className="text-[13px] text-[#374151] leading-[1.5]">
               {t("onboardingLocation.helperText")}
             </p>

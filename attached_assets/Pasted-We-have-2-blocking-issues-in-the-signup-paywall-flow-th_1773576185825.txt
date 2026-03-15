@@ -1,0 +1,85 @@
+We have 2 blocking issues in the signup/paywall flow that must be fixed now.
+
+================================================
+1. DISTRICT DROPDOWN OVERLAP BUG
+================================================
+
+Current issue:
+On Step 1 ("Waar zoek je een woning?"), the Wijken dropdown opens but becomes partially hidden because the map preview is rendered underneath/over it incorrectly.
+
+This makes the district selector hard or impossible to use.
+
+Required fix:
+- when the Wijken dropdown is open, it must render above all lower content
+- the map preview must not visually overlap the dropdown
+- the dropdown list must be fully readable and clickable
+
+Preferred UX fix:
+- while the district dropdown is open, temporarily hide:
+  - the map preview
+  - the match estimate card
+  - the tip/helper box
+- once the dropdown closes, show them again
+
+This is preferable to fighting with visual overlap.
+
+Also verify:
+- correct z-index
+- correct stacking context
+- no parent overflow clipping
+- no map layer bleeding through
+
+================================================
+2. STRIPE NOT AVAILABLE IN PRODUCTION
+================================================
+
+Current issue:
+When selecting a subscription and tapping the payment CTA, the app shows:
+
+"Stripe is not available. Set STRIPE_SECRET_KEY or connect Stripe via Replit integration."
+
+This means Stripe is not properly configured for the deployed environment.
+
+Required fix:
+- verify Stripe initialization in production
+- ensure STRIPE_SECRET_KEY is present in the deployment secrets/environment
+- ensure the publish/deployment environment has access to the key
+- verify the backend can create a checkout session successfully
+- verify the subscription page CTA opens Stripe checkout instead of showing this error
+
+Please also verify:
+- price IDs are correctly configured in production
+- Stripe secret key is not only available locally, but also in the live deployment
+- server logs clearly show whether Stripe initialized successfully
+
+================================================
+3. QA REQUIRED
+================================================
+
+Verify all of the following:
+
+A. District dropdown
+- opens above all content
+- map does not cover it
+- list is fully usable on mobile
+
+B. Step 1 behavior
+- when dropdown is open, map/preview/helper are hidden or otherwise no longer conflict
+- when dropdown closes, map/preview/helper return normally
+
+C. Stripe production
+- Stripe initializes successfully in deployment
+- payment CTA creates checkout session
+- user is redirected to Stripe checkout
+- no "Stripe is not available" error appears
+
+================================================
+REPLY IN EXACTLY THIS STRUCTURE
+================================================
+
+A. District dropdown overlap fix
+B. Step 1 open/close behavior
+C. Stripe production configuration
+D. Payment flow verification
+E. Files changed
+F. QA verification

@@ -2,6 +2,32 @@ import Stripe from 'stripe';
 
 let cachedCredentials: { publishableKey: string; secretKey: string } | null = null;
 
+async function fetchConnectorForEnv(
+  hostname: string,
+  xReplitToken: string,
+  env: string
+): Promise<{ publishableKey: string; secretKey: string } | null> {
+  try {
+    const url = new URL(`https://${hostname}/api/v2/connection`);
+    url.searchParams.set('include_secrets', 'true');
+    url.searchParams.set('connector_names', 'stripe');
+    url.searchParams.set('environment', env);
+
+    const response = await fetch(url.toString(), {
+      headers: { 'Accept': 'application/json', 'X-Replit-Token': xReplitToken }
+    });
+
+    if (!response.ok) return null;
+
+    const data = await response.json();
+    const cs = data.items?.[0];
+    if (!cs || !cs.settings?.secret) return null;
+    return { publishableKey: cs.settings.publishable || '', secretKey: cs.settings.secret };
+  } catch {
+    return null;
+  }
+}
+
 async function getConnectorCredentials(): Promise<{ publishableKey: string; secretKey: string }> {
   const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
   const xReplitToken = process.env.REPL_IDENTITY
@@ -14,33 +40,17 @@ async function getConnectorCredentials(): Promise<{ publishableKey: string; secr
     throw new Error('Replit connector environment not available');
   }
 
-  const connectorName = 'stripe';
   const isProduction = process.env.REPLIT_DEPLOYMENT === '1';
-  const targetEnvironment = isProduction ? 'production' : 'development';
+  const primaryEnv = isProduction ? 'production' : 'development';
+  const fallbackEnv = isProduction ? 'development' : 'production';
 
-  const url = new URL(`https://${hostname}/api/v2/connection`);
-  url.searchParams.set('include_secrets', 'true');
-  url.searchParams.set('connector_names', connectorName);
-  url.searchParams.set('environment', targetEnvironment);
+  const creds = await fetchConnectorForEnv(hostname, xReplitToken, primaryEnv);
+  if (creds) return creds;
 
-  const response = await fetch(url.toString(), {
-    headers: {
-      'Accept': 'application/json',
-      'X-Replit-Token': xReplitToken
-    }
-  });
+  const fallback = await fetchConnectorForEnv(hostname, xReplitToken, fallbackEnv);
+  if (fallback) return fallback;
 
-  const data = await response.json();
-  const connectionSettings = data.items?.[0];
-
-  if (!connectionSettings || (!connectionSettings.settings.publishable || !connectionSettings.settings.secret)) {
-    throw new Error(`Stripe ${targetEnvironment} connection not found`);
-  }
-
-  return {
-    publishableKey: connectionSettings.settings.publishable,
-    secretKey: connectionSettings.settings.secret,
-  };
+  throw new Error(`Stripe connection not found in ${primaryEnv} or ${fallbackEnv}`);
 }
 
 async function getCredentials(): Promise<{ publishableKey: string; secretKey: string }> {
