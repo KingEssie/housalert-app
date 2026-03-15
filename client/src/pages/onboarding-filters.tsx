@@ -17,18 +17,22 @@ export default function OnboardingFiltersPage() {
   const [bedrooms, setBedrooms] = useState(params.get("minRooms") || "");
   const [minSize, setMinSize] = useState(params.get("minSize") || "");
 
+  function buildParams(): URLSearchParams {
+    const p = new URLSearchParams(searchString);
+    if (minPrice) p.set("minPrice", minPrice); else p.delete("minPrice");
+    if (maxPrice) p.set("maxPrice", maxPrice); else p.delete("maxPrice");
+    if (bedrooms && bedrooms !== "any") p.set("minRooms", bedrooms); else p.delete("minRooms");
+    if (minSize) p.set("minSize", minSize); else p.delete("minSize");
+    return p;
+  }
+
   function handleNext() {
-    const p = new URLSearchParams();
-    p.set("city", city);
-    if (minPrice) p.set("minPrice", minPrice);
-    if (maxPrice) p.set("maxPrice", maxPrice);
-    if (bedrooms && bedrooms !== "any") p.set("minRooms", bedrooms);
-    if (minSize) p.set("minSize", minSize);
-    navigate(`/onboarding/estimate?${p.toString()}`);
+    navigate(`/onboarding/preferences?${buildParams().toString()}`);
   }
 
   function handleBack() {
-    navigate("/onboarding/location");
+    const p = new URLSearchParams(searchString);
+    navigate(`/onboarding/location?${p.toString()}`);
   }
 
   return (
@@ -51,20 +55,18 @@ export default function OnboardingFiltersPage() {
         </div>
       </header>
 
-      <div className="max-w-xl mx-auto w-full px-6 pt-6 pb-2">
-        <div className="flex items-center gap-2">
-          {[1, 2, 3].map((step) => (
-            <div key={step} className="flex-1 h-2 rounded-full overflow-hidden bg-[#E5E7EB]">
-              <div
-                className={`h-full rounded-full transition-all duration-500 ${
-                  step <= 2 ? "w-full bg-[#0D6EFD]" : "w-0"
-                }`}
-                data-testid={`progress-step-${step}`}
-              />
-            </div>
+      <div className="max-w-xl mx-auto w-full px-6 pt-4 pb-2">
+        <div className="flex items-center justify-center gap-2 py-2">
+          {[1, 2, 3, 4].map((step) => (
+            <div
+              key={step}
+              className={`w-2.5 h-2.5 rounded-full transition-all ${
+                step <= 2 ? "bg-[#0D6EFD]" : "bg-[#E5E7EB]"
+              }`}
+              data-testid={`dot-step-${step}`}
+            />
           ))}
         </div>
-        <p className="text-xs font-medium text-[#1F2937] mt-2" data-testid="text-step-indicator">{t("onboardingFilters.stepIndicator", { step: 2, total: 3 })}</p>
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-8 pt-4">

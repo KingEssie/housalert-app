@@ -295,6 +295,9 @@ export const nl: Record<string, any> = {
       passwordPlaceholder: "Minimaal 6 tekens",
       submit: "Stuur me alle woningen",
       submitAlt: "Account aanmaken...",
+      funnelTitle: "Maak je account aan",
+      funnelSubtitle: "Nog één stap — dan sturen we je direct alle woningen.",
+      funnelCta: "Stuur me alle huizen",
       hasAccount: "Heb je al een account?",
       loginLink: "Inloggen",
       footer: "Door je aan te melden ga je akkoord met onze voorwaarden.",
@@ -851,6 +854,56 @@ export const nl: Record<string, any> = {
     ctaText: "Maak een account aan en we sturen je direct een melding zodra er een passende woning beschikbaar is.",
     back: "Terug",
     createAccount: "Account aanmaken en deze woningen ontvangen",
+  },
+
+  onboardingPreferences: {
+    title: "Extra voorkeuren",
+    subtitle: "Help ons de perfecte woning voor je te vinden.",
+    furnished: "Gemeubileerd",
+    furnishedOption: {
+      any: "Maakt niet uit",
+      furnished: "Gemeubileerd",
+      unfurnished: "Ongemeubileerd",
+    },
+    housingType: "Woningtype",
+    housingTypeOption: {
+      apartment: "Appartement",
+      studio: "Studio",
+      room: "Kamer",
+      house: "Huis",
+      wg: "WG / Gedeeld",
+    },
+    targetGroup: "Doelgroep",
+    targetGroupOption: {
+      any: "Iedereen",
+      students: "Studenten",
+      couples: "Stellen",
+      families: "Gezinnen",
+      singles: "Alleenstaand",
+      seniors: "Senioren",
+    },
+    extraWishes: "Aanvullende wensen",
+    extraWishesPlaceholder: "bijv. balkon, huisdieren toegestaan, rustige buurt...",
+    back: "Terug",
+    next: "Volgende",
+  },
+
+  onboardingValue: {
+    title: "Waarom HousAlert werkt",
+    subtitle: "We helpen je sneller de juiste woning te vinden.",
+    saveTime: {
+      title: "Bespaar uren zoeken",
+      desc: "Wij doorzoeken alle woningplatformen voor je. Jij hoeft alleen nog te reageren.",
+    },
+    beFirst: {
+      title: "Wees een van de eersten die reageert",
+      desc: "Ontvang direct een melding zodra er een nieuwe woning online komt — sneller dan handmatig zoeken.",
+    },
+    findMore: {
+      title: "Vind meer woningen",
+      desc: "We verzamelen woningen van tientallen bronnen, zodat je niets mist.",
+    },
+    continue: "Bekijk abonnementen",
   },
 
   onboardingEmbed: {

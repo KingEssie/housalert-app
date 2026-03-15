@@ -13,16 +13,18 @@ A mobile-first German-language rental alert application for the German market. U
 
 ## Architecture
 
-### Onboarding Flow (Unified)
-- **Single onboarding path**: Search profiles are ONLY created in the post-auth onboarding wizard (`/onboarding`). The pre-auth funnel pages (landing → location → filters → estimate → signup) are a marketing funnel only — they do NOT create search profiles.
-- `client/src/pages/landing.tsx` — Landing page at `/` with hero, features, how-it-works
-- `client/src/pages/onboarding-location.tsx` — Pre-auth funnel Step 1: City selection at `/onboarding/location`
-- `client/src/pages/onboarding-filters.tsx` — Pre-auth funnel Step 2: Filters at `/onboarding/filters`
-- `client/src/pages/onboarding-estimate.tsx` — Pre-auth funnel Step 3: Estimate display at `/onboarding/estimate`
-- `client/src/pages/signup.tsx` — Account creation at `/signup` (creates account + trial only, NO search profile)
-- `client/src/pages/onboarding.tsx` — Post-auth onboarding wizard at `/onboarding`. 4-step wizard: Welcome → City (LocationModeSelector) → Budget → Property type → Alerts. Creates full search profile via `createSearchProfile()` with all location data (city, districts, radius, commute). This is the ONLY place search profiles are created for new users.
-- `client/src/pages/paywall.tsx` — Subscription plans at `/paywall` (Stripe checkout)
-- **Flow**: Signup → `/onboarding` → (wizard creates profile) → `/dashboard`. Login → `/dashboard` → ProtectedRoute checks profiles → redirects to `/onboarding` if 0 profiles.
+### Onboarding Flow (4-Step Funnel)
+- **Pre-auth funnel (4 steps)**: All anonymous, state persisted via URL query params across steps.
+  - Step 1: `/onboarding/location` — City selection with districts/radius/commute modes (4-dot progress)
+  - Step 2: `/onboarding/filters` — Price range, bedrooms, min size (preserves all upstream params)
+  - Step 3: `/onboarding/preferences` — Furnished, housing type, target group, extra wishes
+  - Step 4: `/signup` — Account creation (name, email, password). On submit: creates account + saves search profile from steps 1-3 via `createSearchProfile()` + ensures trial.
+- **Post-signup pages**:
+  - `/onboarding/value` — Value explanation page ("Waarom HousAlert werkt") with 3 benefit cards
+  - `/paywall` — Subscription plans (Stripe checkout)
+- **Flow**: Landing → Location → Filters → Preferences → Signup (creates profile) → Value → Paywall → Dashboard
+- **Fallback onboarding**: `/onboarding` (post-auth wizard) still exists for users who sign up without the funnel or have 0 profiles. ProtectedRoute redirects to `/onboarding` if 0 profiles.
+- **State persistence**: All funnel data (city, lat, lng, locationMode, districts, radiusKm, commuteAddress, commuteTime, commuteMode, minPrice, maxPrice, minRooms, minSize, furnished, propertyTypes, targetGroup) travels via URL search params. Back navigation preserves all params.
 
 ### City Picker & Location Mode Selector
 - **Google Places integration**: City search uses Google Places Autocomplete (New API) with Nominatim fallback when API key is absent

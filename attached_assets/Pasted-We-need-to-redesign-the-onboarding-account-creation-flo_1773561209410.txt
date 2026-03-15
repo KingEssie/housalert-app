@@ -1,0 +1,139 @@
+We need to redesign the onboarding / account creation flow to match a 4-step search setup funnel before account creation.
+
+The goal is to replicate the structure shown in the reference screenshots (similar to Stekkies), but styled with our own HousAlert branding.
+
+--------------------------------
+STEP 1 — LOCATION SETUP
+--------------------------------
+
+Screen 1 of 4.
+
+Fields:
+- City selector
+- Location mode tabs:
+  - districts
+  - radius
+  - travel time
+- Map preview showing selected area
+- District multi-select
+
+CTA button:
+"Volgende"
+
+Progress indicator:
+● ○ ○ ○
+
+--------------------------------
+STEP 2 — SEARCH CRITERIA
+--------------------------------
+
+Screen 2 of 4.
+
+Fields:
+- Minimum price
+- Maximum price
+- Bedrooms
+- Size (m²)
+
+Buttons:
+Vorige | Volgende
+
+Progress indicator:
+● ● ○ ○
+
+--------------------------------
+STEP 3 — EXTRA PREFERENCES
+--------------------------------
+
+Screen 3 of 4.
+
+Fields:
+- Furnished
+- Additional wishes
+- Housing type
+- Target group
+
+Buttons:
+Vorige | Volgende
+
+Progress indicator:
+● ● ● ○
+
+--------------------------------
+STEP 4 — ACCOUNT CREATION
+--------------------------------
+
+Screen 4 of 4.
+
+Fields:
+- Name
+- Email
+- Password
+
+Button:
+"Stuur me alle huizen"
+
+Progress indicator:
+● ● ● ●
+
+When submitted:
+- create account
+- save search profile from steps 1–3
+
+--------------------------------
+POST-SIGNUP VALUE PAGE
+--------------------------------
+
+After account creation, show a value explanation page.
+
+Sections:
+
+"Waarom HousAlert werkt"
+
+Points:
+- Bespaar uren zoeken
+- Wees een van de eersten die reageert
+- Vind meer woningen
+
+--------------------------------
+PRICING PAGE
+--------------------------------
+
+Then show subscription selection:
+
+Options:
+- 1 maand
+- 2 maanden (highlighted as most chosen)
+- 3 maanden
+
+CTA:
+"Selecteer betaalmethode"
+
+Use Stripe checkout.
+
+--------------------------------
+POST PAYMENT
+--------------------------------
+
+After successful payment:
+
+redirect user to:
+
+/home
+
+--------------------------------
+DESIGN REQUIREMENTS
+--------------------------------
+
+- Use our existing design system
+- Keep progress bar minimal (4 dots)
+- Mobile-first layout
+- Maintain current button styles
+- Ensure state persists between steps
+
+--------------------------------
+Return:
+- new onboarding flow structure
+- new pages created
+- routing changes
+- state management approach

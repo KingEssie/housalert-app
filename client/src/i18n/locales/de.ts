@@ -295,6 +295,9 @@ export const de: Record<string, any> = {
       passwordPlaceholder: "Mindestens 6 Zeichen",
       submit: "Alle Wohnungen zusenden",
       submitAlt: "Konto erstellen...",
+      funnelTitle: "Erstelle dein Konto",
+      funnelSubtitle: "Noch ein Schritt — dann senden wir dir alle Wohnungen.",
+      funnelCta: "Schick mir alle Wohnungen",
       hasAccount: "Hast du schon ein Konto?",
       loginLink: "Anmelden",
       footer: "Mit der Anmeldung stimmst du unseren Nutzungsbedingungen zu.",
@@ -851,6 +854,56 @@ export const de: Record<string, any> = {
     ctaText: "Erstelle ein Account und wir senden dir sofort eine Benachrichtigung, wenn eine passende Wohnung verfügbar wird.",
     back: "Zurück",
     createAccount: "Account erstellen und diese Wohnungen erhalten",
+  },
+
+  onboardingPreferences: {
+    title: "Zusätzliche Präferenzen",
+    subtitle: "Hilf uns, die perfekte Wohnung für dich zu finden.",
+    furnished: "Möbliert",
+    furnishedOption: {
+      any: "Egal",
+      furnished: "Möbliert",
+      unfurnished: "Unmöbliert",
+    },
+    housingType: "Wohnungstyp",
+    housingTypeOption: {
+      apartment: "Wohnung",
+      studio: "Studio",
+      room: "Zimmer",
+      house: "Haus",
+      wg: "WG / Geteilt",
+    },
+    targetGroup: "Zielgruppe",
+    targetGroupOption: {
+      any: "Alle",
+      students: "Studenten",
+      couples: "Paare",
+      families: "Familien",
+      singles: "Singles",
+      seniors: "Senioren",
+    },
+    extraWishes: "Zusätzliche Wünsche",
+    extraWishesPlaceholder: "z.B. Balkon, Haustiere erlaubt, ruhige Nachbarschaft...",
+    back: "Zurück",
+    next: "Weiter",
+  },
+
+  onboardingValue: {
+    title: "Warum HousAlert funktioniert",
+    subtitle: "Wir helfen dir, schneller die richtige Wohnung zu finden.",
+    saveTime: {
+      title: "Spare Stunden beim Suchen",
+      desc: "Wir durchsuchen alle Wohnungsplattformen für dich. Du musst nur noch reagieren.",
+    },
+    beFirst: {
+      title: "Sei einer der Ersten, der reagiert",
+      desc: "Erhalte sofort eine Benachrichtigung, wenn eine neue Wohnung online geht — schneller als manuelles Suchen.",
+    },
+    findMore: {
+      title: "Finde mehr Wohnungen",
+      desc: "Wir sammeln Wohnungen aus Dutzenden von Quellen, damit du nichts verpasst.",
+    },
+    continue: "Abonnements ansehen",
   },
 
   onboardingEmbed: {

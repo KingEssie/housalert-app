@@ -17,6 +17,8 @@ import SignupPage from "@/pages/signup";
 import OnboardingLocationPage from "@/pages/onboarding-location";
 import OnboardingFiltersPage from "@/pages/onboarding-filters";
 import OnboardingEstimatePage from "@/pages/onboarding-estimate";
+import OnboardingPreferencesPage from "@/pages/onboarding-preferences";
+import OnboardingValuePage from "@/pages/onboarding-value";
 import PaywallPage from "@/pages/paywall";
 import DashboardPage from "@/pages/dashboard";
 import NewSearchPage from "@/pages/new-search";
@@ -95,6 +97,8 @@ function Router() {
       <Route path="/onboarding/location" component={OnboardingLocationPage} />
       <Route path="/onboarding/filters" component={OnboardingFiltersPage} />
       <Route path="/onboarding/estimate" component={OnboardingEstimatePage} />
+      <Route path="/onboarding/preferences" component={OnboardingPreferencesPage} />
+      <Route path="/onboarding/value" component={() => <ProtectedRoute component={OnboardingValuePage} skipOnboardingCheck />} />
       <Route path="/paywall" component={PaywallPage} />
       <Route path="/subscription-success" component={() => <ProtectedRoute component={SubscriptionSuccessPage} skipOnboardingCheck />} />
       <Route path="/onboarding" component={() => <ProtectedRoute component={OnboardingPage} skipOnboardingCheck />} />

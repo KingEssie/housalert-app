@@ -7,6 +7,7 @@ import { defaultCities, cityDistricts } from "../../../config/market";
 import { useTranslation } from "@/i18n";
 import { usePlacesAutocomplete, type PlaceSuggestion } from "@/hooks/use-places-autocomplete";
 import { getCitySupport } from "@/lib/city-support";
+import { useHashSearch } from "@/lib/hash-search";
 
 type CityEntry = typeof defaultCities[0];
 
@@ -30,15 +31,35 @@ interface NominatimResult {
 export default function OnboardingLocationPage() {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState<TabType>("wijken");
-  const [search, setSearch] = useState("");
-  const [selectedCity, setSelectedCity] = useState<CityEntry | null>(null);
+  const searchString = useHashSearch();
+  const urlParams = useMemo(() => new URLSearchParams(searchString), [searchString]);
+
+  const initialCity = useMemo(() => {
+    const cityName = urlParams.get("city");
+    if (!cityName) return null;
+    const lat = parseFloat(urlParams.get("lat") || "0") || 0;
+    const lng = parseFloat(urlParams.get("lng") || "0") || 0;
+    return { name: cityName, lat, lng } as CityEntry;
+  }, []);
+
+  const initialTab = useMemo((): TabType => {
+    const mode = urlParams.get("locationMode");
+    if (mode === "radius") return "radius";
+    if (mode === "commute") return "reistijd";
+    return "wijken";
+  }, []);
+
+  const [activeTab, setActiveTab] = useState<TabType>(initialTab);
+  const [search, setSearch] = useState(initialCity?.name || "");
+  const [selectedCity, setSelectedCity] = useState<CityEntry | null>(initialCity);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedDistricts, setSelectedDistricts] = useState<string[]>([]);
-  const [radius, setRadius] = useState("5");
-  const [travelAddress, setTravelAddress] = useState("");
-  const [travelTime, setTravelTime] = useState("30");
-  const [transportMode, setTransportMode] = useState("auto");
+  const [selectedDistricts, setSelectedDistricts] = useState<string[]>(
+    urlParams.get("districts")?.split(",").filter(Boolean) || []
+  );
+  const [radius, setRadius] = useState(urlParams.get("radiusKm") || "5");
+  const [travelAddress, setTravelAddress] = useState(urlParams.get("commuteAddress") || "");
+  const [travelTime, setTravelTime] = useState(urlParams.get("commuteTime") || "30");
+  const [transportMode, setTransportMode] = useState(urlParams.get("commuteMode") || "auto");
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [estimate, setEstimate] = useState<number | null>(null);
@@ -190,11 +211,26 @@ export default function OnboardingLocationPage() {
     if (activeTab === "reistijd") {
       if (!travelAddress) return;
       const params = new URLSearchParams({ city: travelAddress });
+      params.set("locationMode", "commute");
+      params.set("commuteAddress", travelAddress);
+      params.set("commuteTime", travelTime);
+      params.set("commuteMode", transportMode);
       navigate(`/onboarding/filters?${params.toString()}`);
       return;
     }
     if (!selectedCity) return;
     const params = new URLSearchParams({ city: selectedCity.name });
+    if (selectedCity.lat) params.set("lat", String(selectedCity.lat));
+    if (selectedCity.lng) params.set("lng", String(selectedCity.lng));
+    if (activeTab === "wijken" && selectedDistricts.length > 0) {
+      params.set("locationMode", "districts");
+      params.set("districts", selectedDistricts.join(","));
+    } else if (activeTab === "radius") {
+      params.set("locationMode", "radius");
+      params.set("radiusKm", radius);
+    } else {
+      params.set("locationMode", "city");
+    }
     navigate(`/onboarding/filters?${params.toString()}`);
   }
 
@@ -233,20 +269,18 @@ export default function OnboardingLocationPage() {
         </div>
       </header>
 
-      <div className="max-w-xl mx-auto w-full px-6 pt-6 pb-2">
-        <div className="flex items-center gap-2">
-          {[1, 2, 3].map((step) => (
-            <div key={step} className="flex-1 h-2 rounded-full overflow-hidden bg-[#E5E7EB]">
-              <div
-                className={`h-full rounded-full transition-all duration-500 ${
-                  step === 1 ? "w-full bg-[#0D6EFD]" : "w-0"
-                }`}
-                data-testid={`progress-step-${step}`}
-              />
-            </div>
+      <div className="max-w-xl mx-auto w-full px-6 pt-4 pb-2">
+        <div className="flex items-center justify-center gap-2 py-2">
+          {[1, 2, 3, 4].map((step) => (
+            <div
+              key={step}
+              className={`w-2.5 h-2.5 rounded-full transition-all ${
+                step <= 1 ? "bg-[#0D6EFD]" : "bg-[#E5E7EB]"
+              }`}
+              data-testid={`dot-step-${step}`}
+            />
           ))}
         </div>
-        <p className="text-xs font-medium text-[#1F2937] mt-2" data-testid="text-step-indicator">{t("onboardingLocation.stepIndicator", { step: 1, total: 3 })}</p>
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-8 pt-4">

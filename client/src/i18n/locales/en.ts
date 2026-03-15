@@ -229,6 +229,9 @@ export const en: Record<string, any> = {
       passwordPlaceholder: "At least 6 characters",
       submit: "Send me all apartments",
       submitAlt: "Create account...",
+      funnelTitle: "Create your account",
+      funnelSubtitle: "One more step — then we'll send you all apartments.",
+      funnelCta: "Send me all apartments",
       hasAccount: "Already have an account?",
       loginLink: "Sign in",
       footer: "By signing up you agree to our terms.",
@@ -590,5 +593,55 @@ export const en: Record<string, any> = {
     },
     tip: "Tip: Make sure all your documents are available digitally (as PDF) so you can react quickly to new listings.",
     saveFailed: "Save failed",
+  },
+
+  onboardingPreferences: {
+    title: "Extra preferences",
+    subtitle: "Help us find the perfect home for you.",
+    furnished: "Furnished",
+    furnishedOption: {
+      any: "Doesn't matter",
+      furnished: "Furnished",
+      unfurnished: "Unfurnished",
+    },
+    housingType: "Housing type",
+    housingTypeOption: {
+      apartment: "Apartment",
+      studio: "Studio",
+      room: "Room",
+      house: "House",
+      wg: "Shared / WG",
+    },
+    targetGroup: "Target group",
+    targetGroupOption: {
+      any: "Everyone",
+      students: "Students",
+      couples: "Couples",
+      families: "Families",
+      singles: "Singles",
+      seniors: "Seniors",
+    },
+    extraWishes: "Additional wishes",
+    extraWishesPlaceholder: "e.g. balcony, pets allowed, quiet neighborhood...",
+    back: "Back",
+    next: "Next",
+  },
+
+  onboardingValue: {
+    title: "Why HousAlert works",
+    subtitle: "We help you find the right home faster.",
+    saveTime: {
+      title: "Save hours of searching",
+      desc: "We search all apartment platforms for you. You just need to respond.",
+    },
+    beFirst: {
+      title: "Be one of the first to respond",
+      desc: "Get notified instantly when a new apartment goes online — faster than manual searching.",
+    },
+    findMore: {
+      title: "Find more apartments",
+      desc: "We collect apartments from dozens of sources, so you never miss one.",
+    },
+    continue: "View plans",
   },
 };
