@@ -178,7 +178,7 @@ export default function OnboardingPreferencesPage() {
               onChange={(e) => setExtraWishes(e.target.value)}
               placeholder={t("onboardingPreferences.extraWishesPlaceholder")}
               rows={3}
-              className="w-full px-4 py-3 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 focus:bg-[#F5F7FA] transition-all resize-none"
+              className="w-full px-4 py-3 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-[#0D6EFD] focus:bg-white transition-all resize-none"
               data-testid="textarea-extra-wishes"
             />
           </div>

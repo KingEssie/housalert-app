@@ -247,7 +247,7 @@ export default function SignupPage() {
                 placeholder={t("auth.signup.namePlaceholder")}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full h-[60px] pl-11 pr-4 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 focus:bg-[#F5F7FA] transition-all"
+                className="w-full h-[48px] pl-11 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-[#0D6EFD] focus:bg-white transition-all"
                 data-testid="input-signup-name"
               />
             </div>
@@ -263,7 +263,7 @@ export default function SignupPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full h-[60px] pl-11 pr-4 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 focus:bg-[#F5F7FA] transition-all"
+                className="w-full h-[48px] pl-11 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-[#0D6EFD] focus:bg-white transition-all"
                 data-testid="input-signup-email"
               />
             </div>
@@ -280,7 +280,7 @@ export default function SignupPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
-                className="w-full h-[60px] pl-11 pr-4 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 focus:bg-[#F5F7FA] transition-all"
+                className="w-full h-[48px] pl-11 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-[#0D6EFD] focus:bg-white transition-all"
                 data-testid="input-signup-password"
               />
             </div>
