@@ -73,19 +73,14 @@ export default function OnboardingValuePage() {
   const [loading, setLoading] = useState(false);
 
   async function handleCheckout() {
-    if (!user) {
-      navigate("/login");
-      return;
-    }
-
     setLoading(true);
     try {
       const session = await supabase.auth.getSession();
       const token = session.data.session?.access_token;
 
       if (!token) {
-        toast({ title: t("paywall.notLoggedIn"), description: t("paywall.loginAgain"), variant: "destructive" });
-        navigate("/login");
+        setLoading(false);
+        navigate(`/login?returnTo=${encodeURIComponent("/onboarding/value")}`);
         return;
       }
 
@@ -153,17 +148,17 @@ export default function OnboardingValuePage() {
         </div>
 
         <div className="mb-6">
-          <div className="bg-[#FEF2F2] rounded-2xl p-5">
-            <p className="text-[15px] font-[700] text-[#991B1B] mb-3" data-testid="text-without-title">
+          <div className="bg-[#FFF7ED] rounded-2xl p-5">
+            <p className="text-[15px] font-[700] text-[#9A3412] mb-3" data-testid="text-without-title">
               {t("valueStep.withoutTitle")}
             </p>
             <div className="space-y-2.5">
               {WITHOUT_ITEMS.map((key, i) => (
                 <div key={i} className="flex items-start gap-2.5">
-                  <div className="w-5 h-5 rounded-full bg-[#FECACA] flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <X className="w-3 h-3 text-[#DC2626]" />
+                  <div className="w-5 h-5 rounded-full bg-[#FED7AA] flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <X className="w-3 h-3 text-[#C2410C]" />
                   </div>
-                  <span className="text-[14px] text-[#7F1D1D] leading-[1.4]">{t(key)}</span>
+                  <span className="text-[14px] text-[#7C2D12] leading-[1.4]">{t(key)}</span>
                 </div>
               ))}
             </div>

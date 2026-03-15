@@ -1,0 +1,141 @@
+We need to implement 4 specific fixes in the HousAlert signup + subscription flow.
+
+IMPORTANT:
+Do not redesign the whole flow again.
+Only apply the exact fixes below.
+
+================================================
+1. STEP 1 — DISTRICTS MUST BECOME A DROPDOWN
+================================================
+
+Current problem:
+On Step 1 ("Waar zoek je een woning?"), the Wijken tab still shows districts as loose chips.
+
+Required fix:
+- Replace the Wijken chip list with a proper dropdown / multi-select dropdown
+- This should match the more structured form style used elsewhere in the funnel
+- Keep it compact and mobile-friendly
+
+Desired behavior:
+- City remains selected as Berlin by default
+- Below city, show:
+  "Wijken (optioneel)"
+- When tapped, open a dropdown / multiselect list of districts for the selected city
+- User can select 0, 1, or multiple districts
+- Selected districts should be shown cleanly inside the field
+
+Do not use chips as the primary UI anymore for district selection.
+
+================================================
+2. STEP 1 — MAP MUST SHOW FOR CITY / DISTRICT / RADIUS
+================================================
+
+Current problem:
+Berlin is selected by default, but no map preview is shown.
+The same problem exists on the Radius tab.
+
+Required fix:
+- Show a real map preview in Step 1 whenever a city is selected
+- This applies to:
+  - Wijken tab
+  - Radius tab
+  - Reistijd tab (where possible / relevant)
+
+Expected behavior:
+- Berlin selected → map visible
+- Radius selected → map visible with radius overlay
+- Districts selected → map visible with selected area context
+- No fake placeholder card with just city text if coordinates are available
+
+Important:
+If the issue is missing map configuration/API setup, identify it and wire the correct map setup already used in the app.
+Do not leave the current placeholder-only behavior in place.
+
+If needed:
+- use the existing map provider already present in the project
+- make sure coordinates from city/place selection are passed correctly
+- ensure the preview renders inside the signup funnel
+
+================================================
+3. STEP 5 — VALUE SCREEN COLOR ADJUSTMENT
+================================================
+
+Current problem:
+The red "Zoeken zonder HousAlert" block looks like an error state.
+
+Required fix:
+- Keep the section and content
+- But change the styling so it feels like an informational comparison block, not an error state
+
+Use:
+- a softer warm tone
+- light orange / peach background
+- darker warm text
+- still visually distinct from the green "Zoeken met HousAlert" block
+
+Do NOT make it look alarming or broken.
+
+================================================
+4. SUBSCRIPTION FLOW — PAYMENT MUST HAPPEN BEFORE LOGIN/HOME
+================================================
+
+Current problem:
+After choosing a subscription, the user is sent to login instead of Stripe payment.
+
+Required behavior:
+- After the user selects a plan and taps the payment CTA:
+  1. go to Stripe checkout
+  2. complete payment
+  3. on successful payment, redirect to the home/dashboard screen
+
+The user must NOT be redirected to login at this point.
+
+Expected correct flow:
+Step 1 → Step 2 → Step 3 → Step 4 account creation → Step 5 subscription selection → Stripe checkout → successful payment → home/dashboard
+
+Please audit:
+- current CTA handler on the subscription page
+- Stripe checkout session creation
+- success URL
+- cancel URL
+- auth/session dependency that may currently force login
+
+Important:
+- if the user account already exists from step 4, use that account for Stripe checkout
+- after Stripe success, land the user directly in the authenticated app home
+- do not interrupt this with a login screen
+
+================================================
+5. QA REQUIRED
+================================================
+
+Verify all of the following:
+
+A. Wijken tab
+- districts are shown as a dropdown/multiselect
+- no loose chips as primary district selector
+
+B. Map previews
+- Berlin default shows a map
+- Radius tab shows a map
+- district selection preserves map preview
+
+C. Value screen
+- "Zoeken zonder HousAlert" uses a softer orange/peach comparison style
+- no error-like red warning feeling
+
+D. Payment flow
+- selecting a subscription opens Stripe checkout
+- completing payment redirects to home/dashboard
+- user is not sent to login first
+
+================================================
+REPLY IN EXACTLY THIS STRUCTURE
+================================================
+
+A. District dropdown update
+B. Map preview fix
+C. Comparison block color adjustment
+D. Stripe checkout flow fix
+E. Files changed
+F. QA verification

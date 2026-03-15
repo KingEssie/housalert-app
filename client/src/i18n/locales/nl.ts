@@ -819,6 +819,8 @@ export const nl: Record<string, any> = {
     popularCities: "Populaire steden",
     districtsLabel: "Wijken",
     optional: "(optioneel)",
+    selectDistricts: "Wijken selecteren...",
+    districtsSelected: "wijken geselecteerd",
     radiusLabel: "Radius",
     destinationLabel: "Werkadres / Bestemming",
     destinationPlaceholder: "bijv. Berlin Hauptbahnhof",

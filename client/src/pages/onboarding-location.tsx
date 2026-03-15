@@ -1,12 +1,33 @@
 import { apiFetch } from "@/lib/api-base";
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "wouter";
-import { Home, MapPin, ChevronLeft, Search, ChevronRight, Navigation, Clock, Car, Train, Bike, Loader2 } from "lucide-react";
+import { Home, MapPin, ChevronLeft, Search, ChevronRight, Navigation, Clock, Car, Train, Bike, Loader2, ChevronDown, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { defaultCities, cityDistricts } from "../../../config/market";
 import { useTranslation } from "@/i18n";
 import { usePlacesAutocomplete, type PlaceSuggestion } from "@/hooks/use-places-autocomplete";
 import { useHashSearch } from "@/lib/hash-search";
+import { MapContainer, TileLayer, Marker, Circle, useMap } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+
+const MARKER_ICON = new L.Icon({
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
+
+function RecenterMap({ lat, lng, zoom }: { lat: number; lng: number; zoom: number }) {
+  const map = useMap();
+  useEffect(() => {
+    map.setView([lat, lng], zoom, { animate: true });
+  }, [lat, lng, zoom, map]);
+  return null;
+}
 
 type CityEntry = typeof defaultCities[0];
 
@@ -62,6 +83,8 @@ export default function OnboardingLocationPage() {
   const [travelTime, setTravelTime] = useState(urlParams.get("commuteTime") || "30");
   const [transportMode, setTransportMode] = useState(urlParams.get("commuteMode") || "auto");
   const containerRef = useRef<HTMLDivElement>(null);
+  const [districtDropdownOpen, setDistrictDropdownOpen] = useState(false);
+  const districtDropdownRef = useRef<HTMLDivElement>(null);
 
   const [estimate, setEstimate] = useState<number | null>(null);
   const [estimateLoading, setEstimateLoading] = useState(false);
@@ -108,6 +131,9 @@ export default function OnboardingLocationPage() {
     function handleClickOutside(e: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setShowDropdown(false);
+      }
+      if (districtDropdownRef.current && !districtDropdownRef.current.contains(e.target as Node)) {
+        setDistrictDropdownOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -409,37 +435,88 @@ export default function OnboardingLocationPage() {
                 {selectedCity && activeCityDistricts.length > 0 && (
                   <div className="py-5 border-b border-[#E5E7EB]">
                     <label className="text-[16px] font-[700] text-[#111C3D] mb-3 block">{t("onboardingLocation.districtsLabel")} <span className="font-normal text-[13px] text-[#1F2937]">{t("onboardingLocation.optional")}</span></label>
-                    <div className="flex flex-wrap gap-2">
-                      {activeCityDistricts.map((district) => (
-                        <button
-                          key={district}
-                          onClick={() => toggleDistrict(district)}
-                          className={`px-3.5 py-2 rounded-full text-sm font-medium transition-all ${
-                            selectedDistricts.includes(district)
-                              ? "bg-[#0D6EFD] text-white"
-                              : "bg-[#F5F7FA] text-[#1F2937] hover:bg-[#E5E7EB]"
-                          }`}
-                          data-testid={`chip-district-${district.toLowerCase().replace(/[\s-]/g, "-")}`}
-                        >
-                          {district}
-                        </button>
-                      ))}
+                    <div className="relative" ref={districtDropdownRef}>
+                      <button
+                        type="button"
+                        onClick={() => setDistrictDropdownOpen((v) => !v)}
+                        className="w-full flex items-center justify-between h-[44px] px-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-left focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-[#0D6EFD] focus:bg-white transition-all"
+                        data-testid="dropdown-districts-trigger"
+                      >
+                        <span className={selectedDistricts.length > 0 ? "text-[#1F2937]" : "text-[#9CA3AF] font-normal"}>
+                          {selectedDistricts.length > 0
+                            ? selectedDistricts.length === 1
+                              ? selectedDistricts[0]
+                              : `${selectedDistricts.length} ${t("onboardingLocation.districtsSelected")}`
+                            : t("onboardingLocation.selectDistricts")}
+                        </span>
+                        <ChevronDown className={`w-4 h-4 text-[#6B7280] transition-transform ${districtDropdownOpen ? "rotate-180" : ""}`} />
+                      </button>
+
+                      {selectedDistricts.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 mt-2">
+                          {selectedDistricts.map((d) => (
+                            <span
+                              key={d}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#0D6EFD]/10 text-[#0D6EFD] text-[13px] font-medium"
+                            >
+                              {d}
+                              <button
+                                type="button"
+                                onClick={(e) => { e.stopPropagation(); toggleDistrict(d); }}
+                                className="hover:text-[#0B5ED7]"
+                                data-testid={`remove-district-${d.toLowerCase().replace(/[\s-]/g, "-")}`}
+                              >
+                                <X className="w-3 h-3" />
+                              </button>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      {districtDropdownOpen && (
+                        <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-20 max-h-56 overflow-y-auto">
+                          {activeCityDistricts.map((district) => (
+                            <button
+                              key={district}
+                              type="button"
+                              onClick={() => toggleDistrict(district)}
+                              className="w-full flex items-center gap-3 py-3 px-4 hover:bg-[#F5F7FA] transition-colors border-b border-[#E5E7EB] last:border-b-0 text-left"
+                              data-testid={`option-district-${district.toLowerCase().replace(/[\s-]/g, "-")}`}
+                            >
+                              <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
+                                selectedDistricts.includes(district)
+                                  ? "bg-[#0D6EFD] border-[#0D6EFD]"
+                                  : "border-[#D1D5DB]"
+                              }`}>
+                                {selectedDistricts.includes(district) && <Check className="w-3 h-3 text-white" />}
+                              </div>
+                              <span className="text-[15px] font-medium text-[#1F2937]">{district}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
 
-                {selectedCity && (
+                {selectedCity && selectedCity.lat !== 0 && selectedCity.lng !== 0 && (
                   <div className="py-5 border-b border-[#E5E7EB]">
-                    <div className="rounded-2xl overflow-hidden bg-[#F3F4F6]" data-testid="card-map-preview">
-                      <div className="h-36 flex items-center justify-center">
-                        <div className="text-center">
-                          <MapPin className="w-7 h-7 text-[#0D6EFD] mx-auto mb-1.5" />
-                          <p className="text-base font-bold text-[#111C3D]">{selectedCity.name}</p>
-                          {selectedDistricts.length > 0 && (
-                            <p className="text-xs text-[#1F2937] mt-0.5">{selectedDistricts.join(", ")}</p>
-                          )}
-                        </div>
-                      </div>
+                    <div className="rounded-2xl overflow-hidden" data-testid="card-map-preview" style={{ height: "180px" }}>
+                      <MapContainer
+                        center={[selectedCity.lat, selectedCity.lng]}
+                        zoom={12}
+                        style={{ height: "100%", width: "100%" }}
+                        zoomControl={false}
+                        attributionControl={false}
+                        dragging={false}
+                        scrollWheelZoom={false}
+                        doubleClickZoom={false}
+                        touchZoom={false}
+                      >
+                        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                        <Marker position={[selectedCity.lat, selectedCity.lng]} icon={MARKER_ICON} />
+                        <RecenterMap lat={selectedCity.lat} lng={selectedCity.lng} zoom={12} />
+                      </MapContainer>
                     </div>
                   </div>
                 )}
@@ -580,18 +657,31 @@ export default function OnboardingLocationPage() {
                   </div>
                 </div>
 
-                {selectedCity && (
+                {selectedCity && selectedCity.lat !== 0 && selectedCity.lng !== 0 && (
                   <div className="py-5">
-                    <div className="rounded-2xl overflow-hidden bg-[#F3F4F6]" data-testid="card-map-radius">
-                      <div className="h-36 flex items-center justify-center">
-                        <div className="text-center">
-                          <div className="w-20 h-20 rounded-full border-2 border-dashed border-[#0D6EFD]/40 flex items-center justify-center mx-auto mb-1">
-                            <Navigation className="w-6 h-6 text-[#0D6EFD]" />
-                          </div>
-                          <p className="text-sm font-bold text-[#111C3D]">{selectedCity.name} +{radius} km</p>
-                        </div>
-                      </div>
+                    <div className="rounded-2xl overflow-hidden" data-testid="card-map-radius" style={{ height: "180px" }}>
+                      <MapContainer
+                        center={[selectedCity.lat, selectedCity.lng]}
+                        zoom={12}
+                        style={{ height: "100%", width: "100%" }}
+                        zoomControl={false}
+                        attributionControl={false}
+                        dragging={false}
+                        scrollWheelZoom={false}
+                        doubleClickZoom={false}
+                        touchZoom={false}
+                      >
+                        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                        <Marker position={[selectedCity.lat, selectedCity.lng]} icon={MARKER_ICON} />
+                        <Circle
+                          center={[selectedCity.lat, selectedCity.lng]}
+                          radius={parseInt(radius) * 1000}
+                          pathOptions={{ color: "#0D6EFD", fillColor: "#0D6EFD", fillOpacity: 0.1, weight: 2 }}
+                        />
+                        <RecenterMap lat={selectedCity.lat} lng={selectedCity.lng} zoom={parseInt(radius) <= 5 ? 12 : parseInt(radius) <= 15 ? 10 : 9} />
+                      </MapContainer>
                     </div>
+                    <p className="text-sm font-medium text-[#6B7280] text-center mt-2">{selectedCity.name} +{radius} km</p>
                   </div>
                 )}
               </div>

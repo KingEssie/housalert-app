@@ -13,6 +13,8 @@ export default function LoginPage() {
   const { toast } = useToast();
   const { t } = useTranslation();
 
+  const returnTo = new URLSearchParams(window.location.search).get("returnTo");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -33,7 +35,7 @@ export default function LoginPage() {
 
     await ensureTrialForCurrentUser();
     setLoading(false);
-    navigate("/dashboard");
+    navigate(returnTo || "/dashboard");
   }
 
   async function handleForgotPassword() {
