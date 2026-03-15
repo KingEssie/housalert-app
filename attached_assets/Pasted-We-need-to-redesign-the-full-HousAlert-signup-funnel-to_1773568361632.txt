@@ -1,0 +1,494 @@
+We need to redesign the full HousAlert signup funnel to match the conversion structure and UI behavior of the reference flow I shared (similar to Stekkies), but adapted to HousAlert branding, German housing search logic, and our existing app.
+
+IMPORTANT:
+This is not just a functional flow update. It is a UX / conversion redesign.
+The goal is to make steps 1–4 feel almost identical in structure, rhythm, and hierarchy to the reference screenshots, while using HousAlert styling and German-market content.
+
+==================================================
+GOAL
+==================================================
+
+Build a 5-screen signup funnel:
+
+1. Location setup
+2. Search criteria
+3. Extra preferences
+4. Account creation
+5. Value explanation + subscription selection
+
+After successful payment:
+→ redirect to dashboard/home
+
+==================================================
+GLOBAL UX RULES
+==================================================
+
+Apply these rules across the full funnel:
+
+1. Inputs must be compact
+- flatter / less tall than current
+- no oversized rounded bubbles
+- cleaner and more structured like the reference
+
+2. No labels above fields on step 4
+- use placeholder text inside the input fields
+- especially on the account creation screen
+- compact layout is important
+
+3. Focus state
+- when user taps an input field, show a clear blue focus border / outline
+- make the active field obvious
+
+4. Layout rhythm
+- keep the same visual hierarchy as the reference:
+  - intro text
+  - progress dots
+  - white content card
+  - fields
+  - helper/info box if relevant
+  - CTA
+
+5. Mobile-first
+- match spacing and flow of the screenshots
+- do not make it feel like generic internal forms
+- it should feel like a polished consumer conversion funnel
+
+6. HousAlert styling
+- use HousAlert typography, colors, buttons, and logo
+- but preserve the conversion-oriented structure of the reference
+- dark navy HousAlert primary text, blue actions, white cards, light backgrounds
+
+==================================================
+STEP 1 — LOCATION SETUP
+==================================================
+
+Route:
+Start of signup flow.
+This must be the first step when the user taps “Account aanmaken”.
+
+Header:
+- back button
+- HousAlert logo
+- 4-step progress dots
+- step 1 active
+
+Page title:
+“Waar zoek je een woning?”
+
+Main card structure:
+Inside one white card, create 3 segmented tabs:
+
+- Wijken
+- Radius
+- Reistijd
+
+These should visually behave like the reference flow.
+
+--------------------------------
+TAB 1: WIJKEN
+--------------------------------
+
+Fields in order:
+1. Stad (dropdown or city search select)
+2. Wijken (multi-select dropdown)
+
+Below that:
+3. Map preview showing selected city / district selection area
+
+Below the map:
+4. Small helper/info box:
+“👉 Je kunt later tot 4 zoekopdrachten toevoegen.”
+
+Bottom CTA:
+“Volgende stap”
+
+IMPORTANT:
+- do not use the current minimal “zoek een stad + popular cities” layout
+- it should feel like a structured funnel form like the reference
+- use dropdown/form style
+
+--------------------------------
+TAB 2: RADIUS
+--------------------------------
+
+Fields in order:
+1. Stad
+2. Radius
+
+Radius options like:
+- 2 km
+- 5 km
+- 8 km
+- 10 km
+- 20 km
+
+Below:
+3. Map preview with radius circle overlay
+
+Below:
+4. Small helper/info box:
+“👉 Je kunt later tot 4 zoekopdrachten toevoegen.”
+
+Bottom CTA:
+“Volgende stap”
+
+--------------------------------
+TAB 3: REISTIJD
+--------------------------------
+
+Fields in order:
+1. Werkadres / bestemming
+2. Maximale reistijd
+3. Vervoermiddel
+
+Transport options:
+- Auto
+- OV
+- Fiets
+
+Below:
+4. Map / preview state
+
+Below:
+5. Small helper/info box
+
+Bottom CTA:
+“Volgende stap”
+
+==================================================
+STEP 2 — SEARCH CRITERIA
+==================================================
+
+Header:
+- back button
+- HousAlert logo
+- progress dots
+- step 2 active
+
+Title:
+“Wat zoek je precies?”
+
+Subtitle:
+“Verfijn je zoekopdracht. Alle velden zijn optioneel.”
+
+Main white card.
+
+Layout must follow the reference:
+- top row: 2 columns
+- remaining fields stacked below
+
+Fields:
+
+Row 1:
+- Minimale huur
+- Maximale huur
+
+Row 2:
+- Slaapkamers
+
+Options:
+- Maakt niet uit
+- Studio+
+- 1+
+- 2+
+- 3+
+
+Row 3:
+- Minimale oppervlakte
+
+Buttons at bottom:
+- Terug
+- Volgende
+
+IMPORTANT:
+- match the form composition of the reference
+- avoid the current oversized, loose layout
+- the first row must be side-by-side
+
+==================================================
+STEP 3 — EXTRA PREFERENCES
+==================================================
+
+Header:
+- back button
+- HousAlert logo
+- progress dots
+- step 3 active
+
+Title:
+“Extra voorkeuren”
+
+Subtitle:
+“Help ons de perfecte woning voor je te vinden.”
+
+Main card.
+
+This step should be redesigned to feel much closer to the reference screenshots:
+less chip-chaos, more structured form layout.
+
+Fields in order:
+1. Gemeubileerd
+2. Woningtype
+3. Doelgroep
+4. Aanvullende wensen
+
+For Gemeubileerd:
+- Maakt niet uit
+- Gemeubileerd
+- Ongemeubileerd
+
+For Woningtype:
+- Appartement
+- Studio
+- Kamer
+- Huis
+- WG / gedeeld
+
+For Doelgroep:
+- Iedereen
+- Studenten
+- Stellen
+- Gezinnen
+- Alleenstaand
+- Senioren
+
+Aanvullende wensen:
+- free text field
+- placeholder:
+“bijv. balkon, huisdieren toegestaan, rustige buurt”
+
+Bottom buttons:
+- Terug
+- Volgende
+
+IMPORTANT:
+This screen should still feel structured and compact, not like a random filter page.
+
+==================================================
+STEP 4 — ACCOUNT CREATION
+==================================================
+
+Header:
+- back button
+- HousAlert logo
+- progress dots
+- step 4 active
+
+Title:
+“Maak je account aan”
+
+Subtitle:
+“Nog één stap — dan sturen we je direct alle woningen.”
+
+IMPORTANT:
+This screen must be compact.
+The current version is still too spacious and too “form-page”.
+We want it to feel closer to the reference.
+
+Rules:
+- NO labels above the fields
+- use placeholders inside the fields
+- all fields same height
+- compact vertical rhythm
+
+Fields:
+- Je volledige naam
+- jouw@email.com
+- Minimaal 6 tekens
+
+Button:
+“Stuur me alle huizen”
+
+Below:
+“Heb je al een account? Inloggen”
+
+Below small legal line:
+“Door je aan te melden ga je akkoord met onze voorwaarden.”
+
+On submit:
+- create account
+- save steps 1–3 selections as the initial search profile
+- continue to step 5
+
+==================================================
+STEP 5 — VALUE EXPLANATION + SUBSCRIPTION
+==================================================
+
+This is the screen after signup but before payment.
+
+It should be built as 3 sections, like the reference paywall experience.
+
+--------------------------------
+SECTION 1 — WHY SEARCHING IS HARD WITHOUT HOUSALERT
+--------------------------------
+
+Hero title:
+“Zo gaat jouw zoektocht verbeteren”
+
+Then a block:
+“Woningzoeken zonder HousAlert”
+
+Show list with red crosses:
+- Uren zoeken op meerdere websites
+- Te laat reageren op nieuwe woningen
+- Geen reactie van verhuurders
+- Woningen missen van kleinere websites
+
+--------------------------------
+SECTION 2 — WHY HOUSALERT WORKS
+--------------------------------
+
+Title:
+“Woningzoeken met HousAlert”
+
+Show green check list:
+- Ontvang automatische meldingen van meerdere websites
+- Wees een van de eersten die reageert
+- Word vaker uitgenodigd voor bezichtigingen
+- Vind matches op vrijwel alle relevante verhuurwebsites
+
+Then add 3 explanation sections below, inspired by the reference:
+- Bespaar uren zoeken
+- Vind meer huizen
+- Regel meer bezichtigingen
+
+Each with:
+- title
+- short explanation paragraph
+- illustration / icon area if available
+
+--------------------------------
+SECTION 3 — SUBSCRIPTION SELECTION
+--------------------------------
+
+Title:
+“Kies je abonnement”
+
+Subtitle:
+“Probeer het 14 dagen risicovrij.”
+
+Offer cards:
+
+1 maand
+- €29 / maand
+
+2 maanden
+- highlight as “Meest gekozen”
+- €19 / maand
+- Bespaar 33%
+
+3 maanden
+- €16 / maand
+- Bespaar 44%
+
+Below:
+“Totaal €...”
+
+Primary CTA:
+“Selecteer betaalmethode →”
+
+Below:
+Trust element / review badge
+
+Optional:
+kortingscode link
+
+IMPORTANT:
+This section should feel much closer to the reference:
+- clear offer cards
+- one selected option
+- strong CTA
+- trust signal below
+
+==================================================
+POST PAYMENT
+==================================================
+
+After successful Stripe payment:
+- redirect to dashboard/home
+- user should immediately enter the product
+- search profile must already be saved from steps 1–3
+
+==================================================
+ROUTING REQUIREMENTS
+==================================================
+
+- Login screen remains the native app start screen when logged out
+- “Account aanmaken” from login must open STEP 1 of this funnel
+- not step 4
+- step order must always be:
+  1 → 2 → 3 → 4 → 5
+- back navigation must behave naturally
+
+==================================================
+STATE / DATA REQUIREMENTS
+==================================================
+
+Persist state through the funnel:
+- location setup
+- search criteria
+- extra preferences
+- account form
+
+On account creation:
+- create user
+- store initial profile
+- move to value/subscription screen
+
+On payment success:
+- activate subscription
+- redirect to home
+
+==================================================
+WHAT MUST CHANGE FROM CURRENT VERSION
+==================================================
+
+The current version is too custom and does not match the reference closely enough.
+
+Fix these specifically:
+
+1. Step 1
+- current UI is too simplified
+- make it much closer to the reference layout with dropdowns, map preview, and helper block
+
+2. Step 2
+- current layout is too different
+- use the same structural composition as the reference:
+  min/max side by side, rest stacked below
+
+3. Step 3
+- current design feels too much like a loose filter page
+- make it more structured and form-like
+
+4. Step 4
+- remove labels above fields
+- placeholders only
+- more compact like the reference
+
+5. Step 5
+- add the full value explanation + subscription structure
+- not just plain pricing cards
+
+==================================================
+DO NOT DO
+==================================================
+
+- do not keep the current loose layout if it differs from the reference structure
+- do not make steps feel like internal settings pages
+- do not use oversized inputs
+- do not skip the explanation/paywall screen after account creation
+- do not route signup directly into the app before subscription selection
+
+==================================================
+REPLY IN EXACTLY THIS STRUCTURE
+==================================================
+
+A. Funnel structure implemented
+B. Step 1 redesign
+C. Step 2 redesign
+D. Step 3 redesign
+E. Step 4 redesign
+F. Step 5 value/paywall screen
+G. Routing and state flow
+H. Files changed
+I. QA verification

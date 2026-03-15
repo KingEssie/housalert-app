@@ -3,28 +3,13 @@ import { useHashSearch } from "@/lib/hash-search";
 import { useLocation } from "wouter";
 import { Home, ChevronLeft, User, Mail, Lock, MailCheck, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { ensureTrialForCurrentUser } from "@/lib/auth";
 import { createSearchProfile } from "@/lib/search-profiles";
 import { useTranslation } from "@/i18n";
 
-function ProgressDots({ current }: { current: number }) {
-  return (
-    <div className="flex items-center justify-center gap-2 py-4">
-      {[1, 2, 3, 4].map((step) => (
-        <div
-          key={step}
-          className={`w-2.5 h-2.5 rounded-full transition-all ${
-            step <= current ? "bg-[#0D6EFD]" : "bg-[#E5E7EB]"
-          }`}
-          data-testid={`dot-step-${step}`}
-        />
-      ))}
-    </div>
-  );
-}
+const INPUT_CLS = "w-full h-[44px] pl-11 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-[#0D6EFD] focus:bg-white transition-all";
 
 export default function SignupPage() {
   const [, navigate] = useLocation();
@@ -141,19 +126,20 @@ export default function SignupPage() {
   }
 
   function handleBack() {
-    navigate(`/onboarding/preferences?${searchString}`);
+    const p = new URLSearchParams(searchString);
+    navigate(`/onboarding/preferences?${p.toString()}`);
   }
 
   if (emailConfirmationPending) {
     return (
       <div className="min-h-screen bg-white flex flex-col">
         <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
-          <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center gap-3">
+          <div className="max-w-xl mx-auto px-5 h-[56px] flex items-center gap-3">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-full bg-[#0D6EFD] flex items-center justify-center">
                 <Home className="w-3.5 h-3.5 text-white" />
               </div>
-              <span className="font-bold text-[#111C3D] text-base">HousAlert</span>
+              <span className="font-bold text-[#111C3D] text-[15px]">HousAlert</span>
             </div>
           </div>
         </header>
@@ -164,39 +150,39 @@ export default function SignupPage() {
           </div>
 
           <h1
-            className="text-[28px] font-[800] text-[#111C3D] tracking-[-0.03em] leading-[1.1] mb-4 max-w-[320px]"
+            className="text-[24px] font-[800] text-[#111C3D] tracking-[-0.02em] leading-[1.15] mb-4 max-w-[320px]"
             data-testid="text-email-confirm-title"
           >
             {t("auth.signup.confirmTitle")}
           </h1>
 
           <p
-            className="text-[16px] leading-relaxed text-[#1F2937] mb-3 max-w-[340px]"
+            className="text-[15px] leading-relaxed text-[#6B7280] mb-3 max-w-[340px]"
             data-testid="text-email-confirm-description"
           >
             {t("auth.signup.confirmText")}
           </p>
 
           <p
-            className="text-[16px] font-semibold text-[#111C3D] mb-8"
+            className="text-[15px] font-semibold text-[#111C3D] mb-8"
             data-testid="text-email-confirm-address"
           >
             {email}
           </p>
 
-          <p className="text-[15px] text-[#1F2937] mb-10 max-w-[340px] leading-relaxed">
+          <p className="text-[14px] text-[#6B7280] mb-10 max-w-[340px] leading-relaxed">
             {t("auth.signup.confirmInstructions")}
           </p>
 
           <button
             onClick={() => navigate("/login")}
-            className="w-full max-w-[320px] min-h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-bold text-[16px] transition-colors shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
+            className="w-full max-w-[320px] min-h-[48px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-bold text-[15px] transition-colors"
             data-testid="button-go-login-after-confirm"
           >
             {t("auth.signup.toLogin")}
           </button>
 
-          <p className="text-[13px] text-[#1F2937] mt-6 max-w-[300px]">
+          <p className="text-[12px] text-[#9CA3AF] mt-6 max-w-[300px]">
             {t("auth.signup.noEmail")}
           </p>
         </main>
@@ -205,12 +191,12 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-[#F5F7FA] flex flex-col">
       <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
-        <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center gap-3">
+        <div className="max-w-xl mx-auto px-5 h-[56px] flex items-center gap-3">
           <button
             onClick={handleBack}
-            className="w-12 h-12 rounded-full bg-[#F3F4F6] shadow-[0_1px_4px_rgba(0,0,0,0.06)] flex items-center justify-center active:scale-95 transition-colors"
+            className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-95 transition-transform"
             data-testid="button-back-signup"
           >
             <ChevronLeft className="w-5 h-5 text-[#1F2937]" />
@@ -219,60 +205,65 @@ export default function SignupPage() {
             <div className="w-7 h-7 rounded-full bg-[#0D6EFD] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-bold text-[#111C3D] text-base">HousAlert</span>
+            <span className="font-bold text-[#111C3D] text-[15px]">HousAlert</span>
           </div>
         </div>
       </header>
 
-      <ProgressDots current={4} />
+      <div className="max-w-xl mx-auto w-full px-5 pt-4 pb-1">
+        <div className="flex items-center justify-center gap-2 py-2">
+          {[1, 2, 3, 4].map((step) => (
+            <div
+              key={step}
+              className={`w-2 h-2 rounded-full transition-all ${
+                step <= 4 ? "bg-[#0D6EFD]" : "bg-[#D1D5DB]"
+              }`}
+              data-testid={`dot-step-${step}`}
+            />
+          ))}
+        </div>
+      </div>
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-8 pt-2">
+      <main className="flex-1 max-w-xl mx-auto w-full px-5 pb-8 pt-3">
         <h1
-          className="text-[28px] font-[800] text-[#111C3D] leading-[1.1] tracking-[-0.03em] mb-2"
+          className="text-[24px] font-[800] text-[#111C3D] leading-[1.15] tracking-[-0.02em] mb-1"
           data-testid="text-signup-title"
         >
           {t("auth.signup.funnelTitle")}
         </h1>
-        <p className="text-[15px] text-[#6B7280] mb-6">
+        <p className="text-[14px] text-[#6B7280] mb-5">
           {t("auth.signup.funnelSubtitle")}
         </p>
 
-        <form onSubmit={handleSignup} className="space-y-5">
-          <div className="space-y-2">
-            <Label className="text-[14px] font-semibold text-[#111C3D]">{t("auth.signup.name")}</Label>
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5">
+          <form onSubmit={handleSignup} className="space-y-4">
             <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#6B7280]" />
+              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9CA3AF]" />
               <input
                 type="text"
                 placeholder={t("auth.signup.namePlaceholder")}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full h-[48px] pl-11 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-[#0D6EFD] focus:bg-white transition-all"
+                className={INPUT_CLS}
                 data-testid="input-signup-name"
               />
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <Label className="text-[14px] font-semibold text-[#111C3D]">{t("auth.signup.email")}</Label>
             <div className="relative">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#6B7280]" />
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9CA3AF]" />
               <input
                 type="email"
                 placeholder={t("auth.signup.emailPlaceholder")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full h-[48px] pl-11 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-[#0D6EFD] focus:bg-white transition-all"
+                className={INPUT_CLS}
                 data-testid="input-signup-email"
               />
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <Label className="text-[14px] font-semibold text-[#111C3D]">{t("auth.signup.password")}</Label>
             <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#6B7280]" />
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9CA3AF]" />
               <input
                 type="password"
                 placeholder={t("auth.signup.passwordPlaceholder")}
@@ -280,31 +271,30 @@ export default function SignupPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
-                className="w-full h-[48px] pl-11 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-[#0D6EFD] focus:bg-white transition-all"
+                className={INPUT_CLS}
                 data-testid="input-signup-password"
               />
             </div>
-          </div>
 
-          <Button
-            type="submit"
-            size="lg"
-            className="w-full h-[56px] rounded-full text-[16px] font-bold shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7] mt-2"
-            disabled={loading || !email || !password}
-            data-testid="button-signup-submit"
-          >
-            {loading ? (
-              <span className="flex items-center gap-2">
-                <Loader2 className="w-5 h-5 animate-spin" />
-                {t("auth.signup.submitAlt")}
-              </span>
-            ) : (
-              t("auth.signup.funnelCta")
-            )}
-          </Button>
-        </form>
+            <Button
+              type="submit"
+              className="w-full h-[48px] rounded-full text-[15px] font-bold shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7] mt-1"
+              disabled={loading || !email || !password}
+              data-testid="button-signup-submit"
+            >
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  {t("auth.signup.submitAlt")}
+                </span>
+              ) : (
+                t("auth.signup.funnelCta")
+              )}
+            </Button>
+          </form>
+        </div>
 
-        <p className="text-center text-[15px] text-[#6B7280] mt-6">
+        <p className="text-center text-[14px] text-[#6B7280] mt-5">
           {t("auth.signup.hasAccount")}{" "}
           <button
             onClick={() => navigate("/login")}
@@ -315,7 +305,7 @@ export default function SignupPage() {
           </button>
         </p>
 
-        <p className="text-center text-[13px] text-[#9CA3AF] mt-4">
+        <p className="text-center text-[12px] text-[#9CA3AF] mt-3">
           {t("auth.signup.footer")}
         </p>
       </main>

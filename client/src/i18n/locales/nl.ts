@@ -826,6 +826,7 @@ export const nl: Record<string, any> = {
     estimateLoading: "Schatting wordt geladen...",
     estimateText: "Met deze zoekopdracht kun je ongeveer {count} matches per week verwachten.",
     nextStep: "Volgende stap",
+    helperText: "Tip: Je kunt later altijd je locatie aanpassen of extra zoekprofielen toevoegen voor andere steden.",
   },
 
   onboardingFilters: {
@@ -904,6 +905,42 @@ export const nl: Record<string, any> = {
       desc: "We verzamelen woningen van tientallen bronnen, zodat je niets mist.",
     },
     continue: "Bekijk abonnementen",
+  },
+
+  valueStep: {
+    heroTitle: "Klaar om sneller een woning te vinden?",
+    withoutTitle: "Zoeken zonder HousAlert",
+    without: {
+      hours: "Uren per dag handmatig zoeken op tientallen websites",
+      tooLate: "Te laat reageren — de woning is al weg",
+      noResponse: "Geen reactie meer krijgen van verhuurders",
+      missSmall: "Kleine websites en nieuwe aanbiedingen missen",
+    },
+    withTitle: "Zoeken met HousAlert",
+    with: {
+      autoAlerts: "Automatische meldingen zodra er een match verschijnt",
+      beFirst: "Reageer als een van de eersten op nieuwe woningen",
+      moreViewings: "Meer bezichtigingen door snellere reacties",
+      allSites: "Alle woningwebsites worden voor je gescand",
+    },
+    explain: {
+      saveTime: {
+        title: "Bespaar uren zoeken",
+        desc: "Wij doorzoeken continu tientallen woningplatformen. Jij ontvangt alleen relevante matches.",
+      },
+      findMore: {
+        title: "Vind meer woningen",
+        desc: "We verzamelen woningen van alle bronnen, ook de kleinere sites die je zelf over het hoofd ziet.",
+      },
+      moreViewings: {
+        title: "Regel meer bezichtigingen",
+        desc: "Door als eerste te reageren vergroot je je kans op een uitnodiging aanzienlijk.",
+      },
+    },
+    plansTitle: "Kies je abonnement",
+    plansSubtitle: "Start met 14 dagen gratis. Op elk moment opzegbaar.",
+    trustBadge: "Veilig betalen via Stripe. Op elk moment opzegbaar.",
+    cta: "Doorgaan naar betaling",
   },
 
   onboardingEmbed: {

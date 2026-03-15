@@ -252,10 +252,10 @@ export default function OnboardingLocationPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
-        <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center gap-3">
+        <div className="max-w-xl mx-auto px-5 h-[56px] flex items-center gap-3">
           <button
             onClick={() => navigate("/")}
-            className="w-12 h-12 rounded-full bg-[#F3F4F6] shadow-[0_1px_4px_rgba(0,0,0,0.06)] flex items-center justify-center active:scale-95 transition-colors"
+            className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-95 transition-transform"
             data-testid="button-back-landing"
           >
             <ChevronLeft className="w-5 h-5 text-[#1F2937]" />
@@ -264,18 +264,18 @@ export default function OnboardingLocationPage() {
             <div className="w-7 h-7 rounded-full bg-[#0D6EFD] flex items-center justify-center">
               <Home className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-bold text-[#111C3D] text-base">HousAlert</span>
+            <span className="font-bold text-[#111C3D] text-[15px]">HousAlert</span>
           </div>
         </div>
       </header>
 
-      <div className="max-w-xl mx-auto w-full px-6 pt-4 pb-2">
+      <div className="max-w-xl mx-auto w-full px-5 pt-4 pb-1">
         <div className="flex items-center justify-center gap-2 py-2">
           {[1, 2, 3, 4].map((step) => (
             <div
               key={step}
-              className={`w-2.5 h-2.5 rounded-full transition-all ${
-                step <= 1 ? "bg-[#0D6EFD]" : "bg-[#E5E7EB]"
+              className={`w-2 h-2 rounded-full transition-all ${
+                step <= 1 ? "bg-[#0D6EFD]" : "bg-[#D1D5DB]"
               }`}
               data-testid={`dot-step-${step}`}
             />
@@ -283,8 +283,8 @@ export default function OnboardingLocationPage() {
         </div>
       </div>
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-8 pt-4">
-        <h1 className="text-[32px] font-[800] text-[#111C3D] leading-[1.1] tracking-[-0.03em] mb-8" data-testid="text-location-title">
+      <main className="flex-1 max-w-xl mx-auto w-full px-5 pb-8 pt-3">
+        <h1 className="text-[24px] font-[800] text-[#111C3D] leading-[1.15] tracking-[-0.02em] mb-5" data-testid="text-location-title">
           {t("onboardingLocation.title")}
         </h1>
 
@@ -720,6 +720,12 @@ export default function OnboardingLocationPage() {
               </div>
             </div>
           )}
+
+          <div className="bg-[#F0F7FF] rounded-xl p-4 mt-4 mb-2" data-testid="info-helper-box">
+            <p className="text-[13px] text-[#374151] leading-[1.5]">
+              {t("onboardingLocation.helperText")}
+            </p>
+          </div>
 
           <Button
             size="lg"
