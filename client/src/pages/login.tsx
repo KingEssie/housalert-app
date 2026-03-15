@@ -129,7 +129,7 @@ export default function LoginPage() {
             <p className="text-[15px] text-[#1F2937]">
               {t("auth.login.noAccount")}{" "}
               <button
-                onClick={() => navigate("/signup")}
+                onClick={() => navigate("/onboarding/location")}
                 className="text-[#0D6EFD] font-semibold hover:underline"
                 data-testid="link-signup"
               >
