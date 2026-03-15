@@ -1,0 +1,42 @@
+I want to improve the embedded Duda version of my web signup funnel.
+
+Goal:
+When the onboarding/signup funnel is opened inside an iframe on my Duda website, the top header (back button + HousAlert logo/title) must be hidden automatically, and the funnel layout must become wider on desktop so it looks more like a website widget and less like a narrow mobile app.
+
+Important:
+- Do NOT change the native mobile wrapper in mobile-clean/.
+- Only update the web app in client/src/pages/.
+- Keep normal standalone behavior unchanged: when the pages are opened normally in the browser, the header should still be visible.
+- Only hide the header when the page is embedded inside an iframe.
+- Keep mobile behavior good.
+- Keep the funnel functional exactly as it is now.
+
+Files to update:
+- client/src/pages/onboarding-location.tsx
+- client/src/pages/onboarding-filters.tsx
+- client/src/pages/onboarding-preferences.tsx
+- client/src/pages/signup.tsx
+- client/src/pages/onboarding-value.tsx
+
+Tasks:
+1. In each of the files above, detect whether the page is embedded in an iframe using:
+   const isEmbedded = window.self !== window.top;
+2. Wrap the existing top header in a conditional so it only renders when !isEmbedded.
+3. For embedded desktop layout, make the main onboarding/signup content wider:
+   - increase narrow max-width containers to a wider desktop-friendly width (for example max-w-4xl or similar)
+   - keep mobile layout intact
+   - ensure form fields, cards, and map area have more horizontal space on desktop
+4. Do NOT break spacing, sticky elements, or step progress indicators.
+5. Do NOT remove the header for normal standalone use.
+6. Apply the same embedded behavior consistently across all onboarding/signup steps listed above.
+
+Also:
+- Review whether any shared wrapper/container classes can be reused for consistency across these pages.
+- Keep the visual design aligned with the current HousAlert style.
+- After changes, give me a concise summary of:
+  A. what files were changed
+  B. how embedded header hiding works
+  C. how desktop width was increased
+  D. anything I should test in Duda afterwards
+
+Do minimal safe edits only. Do not refactor unrelated code.

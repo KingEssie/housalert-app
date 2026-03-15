@@ -4,6 +4,7 @@ import { useLocation } from "wouter";
 import { Home, ChevronLeft, Euro, BedDouble, Maximize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
+import { useEmbedded } from "@/hooks/use-embedded";
 
 const INPUT_CLS = "w-full h-[44px] pl-10 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-[#0D6EFD] focus:bg-white transition-all";
 const SELECT_CLS = "w-full h-[44px] pl-10 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-[#0D6EFD] focus:bg-white cursor-pointer appearance-none transition-all";
@@ -12,6 +13,7 @@ export default function OnboardingFiltersPage() {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
   const searchString = useHashSearch();
+  const { isEmbedded, containerClass } = useEmbedded();
   const params = new URLSearchParams(searchString);
   const city = params.get("city") || "";
 
@@ -40,25 +42,27 @@ export default function OnboardingFiltersPage() {
 
   return (
     <div className="min-h-screen bg-[#F5F7FA] flex flex-col">
-      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
-        <div className="max-w-xl mx-auto px-5 h-[56px] flex items-center gap-3">
-          <button
-            onClick={handleBack}
-            className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-95 transition-transform"
-            data-testid="button-back-location"
-          >
-            <ChevronLeft className="w-5 h-5 text-[#1F2937]" />
-          </button>
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-full bg-[#0D6EFD] flex items-center justify-center">
-              <Home className="w-3.5 h-3.5 text-white" />
+      {!isEmbedded && (
+        <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
+          <div className={`${containerClass} mx-auto px-5 h-[56px] flex items-center gap-3`}>
+            <button
+              onClick={handleBack}
+              className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-95 transition-transform"
+              data-testid="button-back-location"
+            >
+              <ChevronLeft className="w-5 h-5 text-[#1F2937]" />
+            </button>
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-full bg-[#0D6EFD] flex items-center justify-center">
+                <Home className="w-3.5 h-3.5 text-white" />
+              </div>
+              <span className="font-bold text-[#111C3D] text-[15px]">HousAlert</span>
             </div>
-            <span className="font-bold text-[#111C3D] text-[15px]">HousAlert</span>
           </div>
-        </div>
-      </header>
+        </header>
+      )}
 
-      <div className="max-w-xl mx-auto w-full px-5 pt-4 pb-1">
+      <div className={`${containerClass} mx-auto w-full px-5 pt-4 pb-1`}>
         <div className="flex items-center justify-center gap-2 py-2">
           {[1, 2, 3, 4].map((step) => (
             <div
@@ -72,7 +76,7 @@ export default function OnboardingFiltersPage() {
         </div>
       </div>
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-5 pb-8 pt-3">
+      <main className={`flex-1 ${containerClass} mx-auto w-full px-5 pb-8 pt-3`}>
         <h1 className="text-[24px] font-[800] text-[#111C3D] leading-[1.15] tracking-[-0.02em] mb-1" data-testid="text-filters-title">
           {t("onboardingFilters.title")}
         </h1>

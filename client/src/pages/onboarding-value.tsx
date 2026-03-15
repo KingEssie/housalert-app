@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { useTranslation } from "@/i18n";
+import { useEmbedded } from "@/hooks/use-embedded";
 
 interface Plan {
   id: string;
@@ -68,6 +69,7 @@ export default function OnboardingValuePage() {
   const { toast } = useToast();
   const { user } = useAuth();
   const { t } = useTranslation();
+  const { isEmbedded, containerClass } = useEmbedded();
 
   const [selectedPlan, setSelectedPlan] = useState("two_month");
   const [loading, setLoading] = useState(false);
@@ -130,18 +132,20 @@ export default function OnboardingValuePage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
-        <div className="max-w-xl mx-auto px-5 h-[56px] flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-full bg-[#0D6EFD] flex items-center justify-center">
-              <Home className="w-3.5 h-3.5 text-white" />
+      {!isEmbedded && (
+        <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
+          <div className={`${containerClass} mx-auto px-5 h-[56px] flex items-center gap-3`}>
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-full bg-[#0D6EFD] flex items-center justify-center">
+                <Home className="w-3.5 h-3.5 text-white" />
+              </div>
+              <span className="font-bold text-[#111C3D] text-[15px]">HousAlert</span>
             </div>
-            <span className="font-bold text-[#111C3D] text-[15px]">HousAlert</span>
           </div>
-        </div>
-      </header>
+        </header>
+      )}
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-5 pb-32">
+      <main className={`flex-1 ${containerClass} mx-auto w-full px-5 pb-32`}>
         <div className="pt-8 pb-6 text-center">
           <h1
             className="text-[24px] font-[800] text-[#111C3D] leading-[1.15] tracking-[-0.02em]"
@@ -275,7 +279,7 @@ export default function OnboardingValuePage() {
       </main>
 
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] p-4 z-10">
-        <div className="max-w-xl mx-auto">
+        <div className={`${containerClass} mx-auto`}>
           <Button
             className="w-full h-[48px] rounded-full text-[15px] font-bold shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7]"
             onClick={handleCheckout}
