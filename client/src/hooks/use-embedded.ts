@@ -1,15 +1,6 @@
-import { useMemo } from "react";
+const isEmbedded = new URLSearchParams(window.location.search).get("embed") === "true";
+const containerClass = isEmbedded ? "max-w-4xl" : "max-w-xl";
 
 export function useEmbedded() {
-  const isEmbedded = useMemo(() => {
-    try {
-      return window.self !== window.top;
-    } catch {
-      return true;
-    }
-  }, []);
-
-  const containerClass = isEmbedded ? "max-w-4xl" : "max-w-xl";
-
   return { isEmbedded, containerClass };
 }
