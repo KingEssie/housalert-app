@@ -45,13 +45,13 @@ function KpiCard({ label, value, icon: Icon, color = "blue" }: { label: string; 
     red: "bg-red-50 text-red-600",
   };
   return (
-    <div className="bg-white rounded-xl border border-[#E5E7EB] p-4" data-testid={`kpi-${label.toLowerCase().replace(/\s/g, "-")}`}>
-      <div className="flex items-center gap-3">
-        <div className={`w-10 h-10 rounded-lg ${colors[color]} flex items-center justify-center flex-shrink-0`}>
+    <div className="bg-white rounded-xl border border-[#E5E7EB] p-5" data-testid={`kpi-${label.toLowerCase().replace(/\s/g, "-")}`}>
+      <div className="flex items-center gap-4">
+        <div className={`w-11 h-11 rounded-lg ${colors[color]} flex items-center justify-center flex-shrink-0`}>
           <Icon className="w-5 h-5" />
         </div>
-        <div>
-          <p className="text-[13px] text-[#6B7280] font-medium">{label}</p>
+        <div className="min-w-0">
+          <p className="text-[13px] text-[#6B7280] font-medium truncate">{label}</p>
           <p className="text-[20px] font-bold text-[#111C3D]">{value}</p>
         </div>
       </div>
@@ -106,7 +106,7 @@ function OverviewTab() {
         <KpiCard label="Push Today" value={data.pushesToday} icon={Smartphone} color="amber" />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="bg-white rounded-xl border border-[#E5E7EB] p-5">
           <h3 className="text-[14px] font-semibold text-[#111C3D] mb-3">Last 7 Days</h3>
           <div className="space-y-2 text-[14px]">
@@ -116,7 +116,7 @@ function OverviewTab() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-[#E5E7EB] p-5 md:col-span-2">
+        <div className="bg-white rounded-xl border border-[#E5E7EB] p-5 lg:col-span-2">
           <h3 className="text-[14px] font-semibold text-[#111C3D] mb-3">Source Health</h3>
           {Array.isArray(data.sourceHealth) && data.sourceHealth.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
@@ -187,7 +187,7 @@ function UsersTab() {
           placeholder="Search name or email..."
           value={search}
           onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-          className="h-10 px-4 rounded-lg border border-[#E5E7EB] bg-white text-[14px] w-64 focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]"
+          className="h-10 px-4 rounded-lg border border-[#E5E7EB] bg-white text-[14px] w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]"
           data-testid="input-search-users"
         />
         <select value={filter} onChange={(e) => { setFilter(e.target.value); setPage(1); }} className="h-10 px-3 rounded-lg border border-[#E5E7EB] bg-white text-[14px] cursor-pointer" data-testid="select-filter-users">
@@ -251,7 +251,7 @@ function UserDetailView({ detail }: { detail: any }) {
     <div className="space-y-5">
       <div className="bg-white rounded-xl border border-[#E5E7EB] p-5">
         <h3 className="text-[16px] font-bold text-[#111C3D] mb-4">Profile</h3>
-        <div className="grid grid-cols-2 gap-3 text-[14px]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-[14px]">
           <div><span className="text-[#6B7280]">Name</span><p className="font-medium">{profile?.first_name || ""} {profile?.last_name || ""}</p></div>
           <div><span className="text-[#6B7280]">Phone</span><p className="font-medium">{profile?.phone || "—"}</p></div>
           <div><span className="text-[#6B7280]">Occupation</span><p className="font-medium">{profile?.occupation || "—"}</p></div>
@@ -271,7 +271,7 @@ function UserDetailView({ detail }: { detail: any }) {
       {subscription && (
         <div className="bg-white rounded-xl border border-[#E5E7EB] p-5">
           <h3 className="text-[16px] font-bold text-[#111C3D] mb-4">Subscription</h3>
-          <div className="grid grid-cols-2 gap-3 text-[14px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-[14px]">
             <div><span className="text-[#6B7280]">Status</span><div className="mt-1"><StatusBadge status={subscription.status} /></div></div>
             <div><span className="text-[#6B7280]">Plan</span><p className="font-medium">{subscription.plan || "—"}</p></div>
             <div><span className="text-[#6B7280]">Trial ends</span><p className="font-medium">{subscription.trial_ends_at ? new Date(subscription.trial_ends_at).toLocaleDateString() : "—"}</p></div>
@@ -587,14 +587,14 @@ function ListingsTab() {
               placeholder="Filter by city..."
               value={cityFilter}
               onChange={(e) => { setCityFilter(e.target.value); setPage(1); }}
-              className="h-10 px-4 rounded-lg border border-[#E5E7EB] bg-white text-[14px] w-48 focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]"
+              className="h-10 px-4 rounded-lg border border-[#E5E7EB] bg-white text-[14px] w-full sm:w-48 focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]"
               data-testid="input-city-filter"
             />
             <input
               placeholder="Filter by source..."
               value={sourceFilter}
               onChange={(e) => { setSourceFilter(e.target.value); setPage(1); }}
-              className="h-10 px-4 rounded-lg border border-[#E5E7EB] bg-white text-[14px] w-48 focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]"
+              className="h-10 px-4 rounded-lg border border-[#E5E7EB] bg-white text-[14px] w-full sm:w-48 focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]"
               data-testid="input-source-filter"
             />
             <span className="text-[13px] text-[#6B7280]">{total} listings</span>
@@ -833,7 +833,7 @@ export default function AdminPortalPage() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5">
         <div className="flex gap-6">
           <aside className="hidden md:block w-[200px] flex-shrink-0">
             <nav className="space-y-1 sticky top-[72px]">
@@ -855,18 +855,18 @@ export default function AdminPortalPage() {
             </nav>
           </aside>
 
-          <div className="md:hidden w-full overflow-x-auto pb-2 mb-2">
-            <div className="flex gap-2 min-w-max">
+          <div className="md:hidden w-full overflow-x-auto pb-3 mb-3 -mx-4 px-4" style={{ WebkitOverflowScrolling: "touch" }}>
+            <div className="flex gap-2.5 min-w-max">
               {TABS.map(({ id, label, icon: Icon }) => (
                 <button
                   key={id}
                   onClick={() => setActiveTab(id)}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-[12px] font-medium whitespace-nowrap transition-colors ${
-                    activeTab === id ? "bg-[#0D6EFD] text-white" : "bg-white text-[#374151] border border-[#E5E7EB]"
+                  className={`flex items-center gap-1.5 px-4 py-2.5 rounded-full text-[13px] font-medium whitespace-nowrap transition-colors ${
+                    activeTab === id ? "bg-[#0D6EFD] text-white shadow-sm" : "bg-white text-[#374151] border border-[#E5E7EB]"
                   }`}
                   data-testid={`nav-tab-mobile-${id}`}
                 >
-                  <Icon className="w-3.5 h-3.5" />
+                  <Icon className="w-4 h-4" />
                   {label}
                 </button>
               ))}
