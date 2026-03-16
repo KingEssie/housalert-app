@@ -79,6 +79,50 @@ function StatusBadge({ status }: { status: string }) {
   return <span className={`px-2.5 py-0.5 rounded-full text-[12px] font-medium ${m.cls}`}>{m.label}</span>;
 }
 
+const SOURCE_HEALTH_CITIES = ["All", "Berlin", "Hamburg", "München", "Köln", "Frankfurt", "Stuttgart", "Düsseldorf", "Leipzig"];
+
+function SourceHealthCard({ sourceHealth }: { sourceHealth: any[] }) {
+  const [cityFilter, setCityFilter] = useState("All");
+
+  const filtered = Array.isArray(sourceHealth)
+    ? cityFilter === "All"
+      ? sourceHealth
+      : sourceHealth.filter((s: any) => (s.city || "").toLowerCase() === cityFilter.toLowerCase())
+    : [];
+
+  return (
+    <div className="bg-white rounded-xl border border-[#E5E7EB] p-5 lg:col-span-2">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+        <h3 className="text-[14px] font-semibold text-[#111C3D]">Source Health</h3>
+        <select
+          value={cityFilter}
+          onChange={(e) => setCityFilter(e.target.value)}
+          className="h-9 px-3 rounded-lg border border-[#E5E7EB] bg-white text-[13px] cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] w-full sm:w-auto"
+          data-testid="select-source-health-city"
+        >
+          {SOURCE_HEALTH_CITIES.map((c) => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+      </div>
+      {filtered.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+          {filtered.map((s: any) => (
+            <div key={`${s.name || s.source}-${s.city || ""}`} className="flex items-center gap-2 text-[13px] py-1">
+              <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${(s.status === "active" || s.found > 0) ? "bg-green-400" : s.status === "broken" ? "bg-red-400" : "bg-amber-400"}`} />
+              <span className="text-[#374151] font-medium truncate">{s.name || s.source}</span>
+              {s.city && <span className="text-[#9CA3AF]">— {s.city}</span>}
+              {s.found !== undefined && <span className="text-[#9CA3AF] ml-auto flex-shrink-0">({s.found})</span>}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-[13px] text-[#9CA3AF]">{Array.isArray(sourceHealth) && sourceHealth.length > 0 ? "No sources for this city" : "No recent ingestion data"}</p>
+      )}
+    </div>
+  );
+}
+
 function OverviewTab() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -116,22 +160,7 @@ function OverviewTab() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-[#E5E7EB] p-5 lg:col-span-2">
-          <h3 className="text-[14px] font-semibold text-[#111C3D] mb-3">Source Health</h3>
-          {Array.isArray(data.sourceHealth) && data.sourceHealth.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              {data.sourceHealth.map((s: any) => (
-                <div key={s.name || s.source} className="flex items-center gap-2 text-[13px]">
-                  <div className={`w-2 h-2 rounded-full ${(s.status === "active" || s.found > 0) ? "bg-green-400" : s.status === "broken" ? "bg-red-400" : "bg-amber-400"}`} />
-                  <span className="text-[#374151] font-medium">{s.name || s.source}</span>
-                  {s.found !== undefined && <span className="text-[#9CA3AF]">({s.found})</span>}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-[13px] text-[#9CA3AF]">No recent ingestion data</p>
-          )}
-        </div>
+        <SourceHealthCard sourceHealth={data.sourceHealth} />
       </div>
     </div>
   );
