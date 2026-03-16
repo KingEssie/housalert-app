@@ -819,7 +819,7 @@ export default function AdminPortalPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F7FA]">
+    <div className="min-h-screen bg-[#F5F7FA] overflow-x-hidden">
       <header className="bg-white border-b border-[#E5E7EB] sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-[56px] flex items-center gap-4">
           <div className="flex items-center gap-2">
@@ -833,7 +833,25 @@ export default function AdminPortalPage() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 overflow-x-hidden">
+        <div className="md:hidden w-full overflow-x-auto pb-3 mb-3" style={{ WebkitOverflowScrolling: "touch" }}>
+          <div className="flex gap-2.5 min-w-max">
+            {TABS.map(({ id, label, icon: Icon }) => (
+              <button
+                key={id}
+                onClick={() => setActiveTab(id)}
+                className={`flex items-center gap-1.5 px-4 py-2.5 rounded-full text-[13px] font-medium whitespace-nowrap transition-colors ${
+                  activeTab === id ? "bg-[#0D6EFD] text-white shadow-sm" : "bg-white text-[#374151] border border-[#E5E7EB]"
+                }`}
+                data-testid={`nav-tab-mobile-${id}`}
+              >
+                <Icon className="w-4 h-4" />
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="flex gap-6">
           <aside className="hidden md:block w-[200px] flex-shrink-0">
             <nav className="space-y-1 sticky top-[72px]">
@@ -855,25 +873,7 @@ export default function AdminPortalPage() {
             </nav>
           </aside>
 
-          <div className="md:hidden w-full overflow-x-auto pb-3 mb-3 -mx-4 px-4" style={{ WebkitOverflowScrolling: "touch" }}>
-            <div className="flex gap-2.5 min-w-max">
-              {TABS.map(({ id, label, icon: Icon }) => (
-                <button
-                  key={id}
-                  onClick={() => setActiveTab(id)}
-                  className={`flex items-center gap-1.5 px-4 py-2.5 rounded-full text-[13px] font-medium whitespace-nowrap transition-colors ${
-                    activeTab === id ? "bg-[#0D6EFD] text-white shadow-sm" : "bg-white text-[#374151] border border-[#E5E7EB]"
-                  }`}
-                  data-testid={`nav-tab-mobile-${id}`}
-                >
-                  <Icon className="w-4 h-4" />
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <main className="flex-1 min-w-0">
+          <main className="flex-1 min-w-0 w-full">
             {activeTab === "overview" && <OverviewTab />}
             {activeTab === "users" && <UsersTab />}
             {activeTab === "subscriptions" && <SubscriptionsTab />}
