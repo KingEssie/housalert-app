@@ -93,7 +93,7 @@ function OverviewTab() {
   return (
     <div className="space-y-6">
       <h2 className="text-[18px] font-bold text-[#111C3D]">Dashboard Overview</h2>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard label="Total Users" value={data.totalUsers} icon={Users} color="blue" />
         <KpiCard label="Active Subs" value={data.activeSubscriptions} icon={CreditCard} color="green" />
         <KpiCard label="Trial Users" value={data.trialUsers} icon={Zap} color="purple" />
@@ -663,7 +663,7 @@ function MatchesTab() {
   return (
     <div className="space-y-4">
       {stats && (
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <KpiCard label="Emails Today" value={stats.emailsToday} icon={Mail} color="purple" />
           <KpiCard label="Push Today" value={stats.pushesToday} icon={Smartphone} color="blue" />
           <KpiCard label="Failures (7d)" value={stats.failuresWeek} icon={AlertTriangle} color="red" />
