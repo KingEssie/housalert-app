@@ -4041,11 +4041,18 @@ export async function registerRoutes(
         countMap[row.event_name] = parseInt(row.cnt, 10);
       }
 
-      const funnel = funnelSteps.map((step, i) => {
+      let effectiveStartIndex = 0;
+      if ((countMap["landing_viewed"] || 0) === 0 && (countMap["account_created"] || 0) > 0) {
+        effectiveStartIndex = 1;
+      }
+
+      const activeFunnelSteps = funnelSteps.slice(effectiveStartIndex);
+
+      const funnel = activeFunnelSteps.map((step, i) => {
         const count = countMap[step.key] || 0;
-        const prevCount = i > 0 ? (countMap[funnelSteps[i - 1].key] || 0) : 0;
-        const conversionPct = i === 0 ? 100 : (prevCount > 0 ? Math.round((count / prevCount) * 100) : 0);
-        return { ...step, count, conversionPct, prevLabel: i > 0 ? funnelSteps[i - 1].label : null };
+        const prevCount = i > 0 ? (countMap[activeFunnelSteps[i - 1].key] || 0) : 0;
+        const conversionPct = i === 0 ? 100 : (prevCount > 0 ? Math.min(100, Math.round((count / prevCount) * 100)) : 0);
+        return { ...step, count, conversionPct, prevLabel: i > 0 ? activeFunnelSteps[i - 1].label : null };
       });
 
       const totalUsersResult = await pgPool.query(`SELECT COUNT(*) AS cnt FROM user_profile_data`);
