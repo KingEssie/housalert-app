@@ -118,13 +118,32 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
 
   log(`Fetching Kleinanzeigen ${city} listings...`);
 
-  const response = await fetch(searchUrl, {
-    headers: {
-      "User-Agent": USER_AGENT,
-      Accept: "text/html",
-      "Accept-Language": "de-DE,de;q=0.9,en;q=0.5",
-    },
-  });
+  const controller = new AbortController();
+  const fetchTimer = setTimeout(() => controller.abort(), 30_000);
+  let response: Response;
+  try {
+    response = await fetch(searchUrl, {
+      headers: {
+        "User-Agent": USER_AGENT,
+        Accept: "text/html",
+        "Accept-Language": "de-DE,de;q=0.9,en;q=0.5",
+      },
+      signal: controller.signal,
+    });
+  } catch (err: any) {
+    clearTimeout(fetchTimer);
+    if (err.name === "AbortError") {
+      log(`Kleinanzeigen ${city} fetch timed out after 30s — skipping`);
+      return [];
+    }
+    throw err;
+  }
+  clearTimeout(fetchTimer);
+
+  if (response.status === 403 || response.status === 401 || response.status === 429 || response.status === 502 || response.status === 503 || response.status === 504) {
+    log(`Kleinanzeigen ${city} returned HTTP ${response.status} — skipping`);
+    return [];
+  }
 
   if (!response.ok) {
     throw new Error(`Kleinanzeigen returned ${response.status}: ${response.statusText}`);

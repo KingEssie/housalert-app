@@ -60,17 +60,31 @@ async function fetchAndParse(
     await new Promise((r) => setTimeout(r, config.rateLimitMs));
   }
 
-  const response = await fetch(config.searchUrl, {
-    headers: {
-      "User-Agent": USER_AGENT,
-      Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-      "Accept-Language": "de-DE,de;q=0.9,en;q=0.5",
-    },
-    redirect: "follow",
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 30_000);
+  let response: Response;
+  try {
+    response = await fetch(config.searchUrl, {
+      headers: {
+        "User-Agent": USER_AGENT,
+        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "de-DE,de;q=0.9,en;q=0.5",
+      },
+      redirect: "follow",
+      signal: controller.signal,
+    });
+  } catch (err: any) {
+    clearTimeout(timeout);
+    if (err.name === "AbortError") {
+      log(`${config.name} fetch timed out after 30s — skipping`);
+      return [];
+    }
+    throw err;
+  }
+  clearTimeout(timeout);
 
-  if (response.status === 401 || response.status === 403 || response.status === 410 || response.status === 429) {
-    log(`${config.name} blocked (HTTP ${response.status}) — skipping`);
+  if (response.status === 401 || response.status === 403 || response.status === 410 || response.status === 429 || response.status === 502 || response.status === 503 || response.status === 504) {
+    log(`${config.name} returned HTTP ${response.status} — skipping`);
     return [];
   }
 

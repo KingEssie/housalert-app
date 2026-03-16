@@ -66,6 +66,7 @@ let _lastRunAt: string | null = null;
 let _lastSuccessfulRunAt: string | null = null;
 let _lastResult: IngestionReport | null = null;
 let _lastError: string | null = null;
+let _lastActivityAt: string | null = null;
 let _todayStats = { fetched: 0, inserted: 0, date: "" };
 
 function getTodayKey(): string {
@@ -85,6 +86,10 @@ export function isRunning(): boolean {
   return _running;
 }
 
+export function getLastActivityAt(): string | null {
+  return _lastActivityAt;
+}
+
 export interface SourceStatus {
   name: string;
   status: "active" | "broken" | "gone";
@@ -93,12 +98,12 @@ export interface SourceStatus {
 
 const SOURCE_STATUSES: SourceStatus[] = [
   { name: "wg-gesucht", status: "active" },
-  { name: "kleinanzeigen", status: "active" },
+  { name: "kleinanzeigen", status: "broken", note: "Returns 403 — bot-blocked" },
   { name: "immowelt", status: "active" },
-  { name: "wohnungsboerse", status: "active" },
+  { name: "wohnungsboerse", status: "broken", note: "Returns 504 — gateway timeout" },
   { name: "immoscout", status: "broken", note: "Returns 401 — bot-blocked" },
-  { name: "rentola", status: "active" },
-  { name: "nestpick", status: "active" },
+  { name: "rentola", status: "broken", note: "Fetch timeout — server unresponsive" },
+  { name: "nestpick", status: "broken", note: "Fetch timeout — server unresponsive" },
   { name: "immonet", status: "gone", note: "Returns 410 — service discontinued" },
 ];
 
@@ -107,12 +112,13 @@ export function getSourceStatuses(): SourceStatus[] {
 }
 
 export function getEnabledSources(): string[] {
-  return SOURCE_STATUSES.map(s => s.name);
+  return SOURCE_STATUSES.filter(s => s.status === "active").map(s => s.name);
 }
 
 export function getLastRunStatus(): {
   lastRunAt: string | null;
   lastSuccessfulRunAt: string | null;
+  lastActivityAt: string | null;
   lastResult: IngestionReport | null;
   lastError: string | null;
   running: boolean;
@@ -123,6 +129,7 @@ export function getLastRunStatus(): {
   return {
     lastRunAt: _lastRunAt,
     lastSuccessfulRunAt: _lastSuccessfulRunAt,
+    lastActivityAt: _lastActivityAt,
     lastResult: _lastResult,
     lastError: _lastError,
     running: _running,
@@ -195,9 +202,9 @@ const SKIP_SOURCES = new Set(
 function buildIngestersForCity(city: string): Ingester[] {
   const ingesters: Ingester[] = [];
 
-  ingesters.push(createWgGesuchtIngester(city));
-  ingesters.push(createKleinanzeigenIngester(city));
-  ingesters.push(createImmoweltIngester(city));
+  if (!SKIP_SOURCES.has("wg-gesucht")) ingesters.push(createWgGesuchtIngester(city));
+  if (!SKIP_SOURCES.has("kleinanzeigen")) ingesters.push(createKleinanzeigenIngester(city));
+  if (!SKIP_SOURCES.has("immowelt")) ingesters.push(createImmoweltIngester(city));
 
   const slugs = getCitySlugs(city);
   const slug = slugs?.slug ?? makeFallbackSlug(city);
@@ -283,6 +290,7 @@ export async function runAllIngesters(): Promise<IngestionReport> {
 
   _running = true;
   _lastError = null;
+  _lastActivityAt = new Date().toISOString();
   const startTime = Date.now();
   _cycleNumber++;
   log(`[INGEST START] Germany-wide ingestion (cycle #${_cycleNumber})`, "ingest");
@@ -348,6 +356,7 @@ export async function runAllIngesters(): Promise<IngestionReport> {
       }
 
       cityReports.push({ city, tier, ...cityTotal, durationMs: cityDuration, alertsFlushed });
+      _lastActivityAt = new Date().toISOString();
       log(
         `[ingest] City ${city} (T${tier}): found=${cityTotal.found} ins=${cityTotal.inserted} dup=${cityTotal.duplicates} match=${cityTotal.matches} err=${cityTotal.errors} [${cityDuration}ms]`,
         "ingest"

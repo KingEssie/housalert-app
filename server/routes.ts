@@ -6,6 +6,8 @@ import {
   getEnabledSources,
   getSourceStatuses,
   getLastRunStatus,
+  getLastActivityAt,
+  isRunning,
   OverlapError,
 } from "./ingesters";
 import { getNextRun } from "./scheduler";
@@ -4312,13 +4314,30 @@ export async function registerRoutes(
           `SELECT COUNT(*) AS cnt FROM ingestion_runs WHERE finished_at >= $1 AND total_found > 0`,
           [fourHoursAgo]
         );
-        if (parseInt(scraperRes.rows[0]?.cnt || "0", 10) === 0) {
-          alerts.push({
-            type: "scraper_stale",
-            severity: "critical",
-            message: "No listings scraped in the last 4 hours",
-            timestamp: now.toISOString(),
-          });
+        const hasRecentCompletedRun = parseInt(scraperRes.rows[0]?.cnt || "0", 10) > 0;
+
+        const currentlyRunning = isRunning();
+        const lastActivity = getLastActivityAt();
+        const activityRecent = lastActivity && new Date(lastActivity).getTime() > now.getTime() - 4 * 60 * 60 * 1000;
+
+        if (!hasRecentCompletedRun) {
+          if (currentlyRunning && activityRecent) {
+            alerts.push({
+              type: "scraper_stale",
+              severity: "info",
+              message: `Ingestion cycle in progress (last activity: ${lastActivity}) — no completed run in last 4 hours yet`,
+              timestamp: now.toISOString(),
+            });
+          } else {
+            alerts.push({
+              type: "scraper_stale",
+              severity: "critical",
+              message: currentlyRunning && !activityRecent
+                ? "Ingestion cycle appears stuck — running but no activity in last 4 hours"
+                : "No listings scraped in the last 4 hours",
+              timestamp: now.toISOString(),
+            });
+          }
         }
       } catch {}
 

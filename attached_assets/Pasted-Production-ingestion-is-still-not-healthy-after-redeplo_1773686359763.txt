@@ -1,0 +1,71 @@
+Production ingestion is still not healthy after redeploy.
+
+Evidence from admin dashboard:
+- "No listings scraped in the last 4 hours"
+- "Matches dropped >50%: today 42 vs yesterday 149"
+- "Email delivery failure rate 100% (42/42)"
+
+I need a proof-based production investigation and fix.
+
+Tasks:
+
+1. Verify the production scheduler
+- Confirm whether the production scheduler is currently running continuously
+- Show the timestamps of the last 10 automatic ingestion ticks in production
+- Show whether the scheduler stops/crashes after startup
+
+2. Inspect the latest production ingestion runs
+For the last 10 runs, return:
+- started_at
+- finished_at
+- success/failure
+- listings found
+- listings inserted
+- duplicates
+- errors
+- city count processed
+
+3. Inspect source failures
+For each active source:
+- wg-gesucht
+- kleinanzeigen
+- immowelt
+- wohnungsboerse
+- nestpick
+- rentola
+
+Return for production:
+- last attempted run
+- whether scraper was called
+- whether it returned listings
+- any HTTP 403 / 404 / 429 / timeout / parse errors
+
+4. Verify whether the "No listings scraped in the last 4 hours" alert is correct
+- Show the newest 20 listings in the database with timestamps
+- Confirm whether this alert is based on the correct field/query
+- If the alert logic is wrong, fix it
+
+5. Verify match generation
+- Show newest 20 matches with timestamps
+- Confirm whether matches are still being created in production today
+
+6. Investigate email failures
+- Confirm whether all 42/42 email failures are caused by Resend domain verification
+- Show the exact send error
+- Confirm whether push notifications are still being sent even if email fails
+
+7. Apply fixes
+- Fix scheduler persistence if it stops after boot
+- Fix source-specific errors if sources are failing
+- Fix the dashboard alert query if it is incorrect
+- Keep failing sources degraded instead of silently blocking the whole cycle if needed
+
+8. Return proof
+Return:
+- root cause
+- exact fixes applied
+- last successful production ingestion run timestamp
+- listings inserted in the latest successful run
+- matches generated in the latest successful run
+- whether the red scraper alert should now clear
+- exact cause of 100% email failure
