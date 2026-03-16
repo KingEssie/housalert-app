@@ -1,0 +1,63 @@
+The ingestion/scraper system is still not working correctly in production.
+
+Evidence:
+- Admin dashboard still shows: "No listings scraped in the last 4 hours"
+- Matches dropped >50%
+- No new emails today
+- No new listings appear to be scraped
+
+I need a full root-cause investigation and fix.
+
+Tasks:
+
+1. Verify scheduler execution
+- Confirm whether the ingestion scheduler is actually running continuously every 5 minutes in production
+- Show timestamps of the last 5 ingestion runs
+- Confirm whether runs are automatic or only happened manually
+
+2. Inspect ingestion run results
+- For each recent run, show:
+  - started_at
+  - finished_at
+  - success/failure
+  - listings found
+  - listings inserted
+  - duplicates
+  - errors
+- Identify whether runs are returning 0, failing, or not being triggered
+
+3. Inspect source-level failures
+- For all active sources (wg-gesucht, kleinanzeigen, immowelt, wohnungsboerse, nestpick, rentola), show:
+  - whether the scraper is being called
+  - whether it returns listings
+  - any HTTP status issues (403, 404, 429, 500)
+  - parse errors
+  - timeout errors
+
+4. Verify database writes
+- Confirm whether listings are being inserted into the listings table
+- Show the newest 10 listings with created_at timestamps
+- Confirm whether the freshness / last_seen pipeline is working
+
+5. Verify match generation
+- Confirm whether new matches are being generated after listings are inserted
+- Show newest 10 matches with timestamps
+
+6. Verify alert delivery
+- Confirm whether emails are failing because of no matches, no listings, or Resend/domain configuration
+- Separate “scraper failure” from “email delivery failure”
+
+7. Apply fixes
+- Fix whatever is stopping automatic ingestion from working reliably
+- If the scheduler process is not persistent, fix that
+- If source scrapers are failing, fix the failing sources or mark them degraded
+- If ingestion is running but not saving, fix DB write path
+
+8. Add proof
+Return:
+- root cause
+- exact fixes applied
+- last successful automatic ingestion run timestamp
+- listings scraped in the latest successful automatic run
+- matches generated in the latest successful automatic run
+- whether the dashboard alert should now clear

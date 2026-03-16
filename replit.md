@@ -586,7 +586,14 @@ Endpoints:
 Env vars:
 - `INGEST_BEARER_TOKEN` — bearer token for the `/api/ingest/run` endpoint
 - `INGEST_INTERVAL_MINUTES` — scheduler interval in minutes (default: 5)
-- `ENABLE_INGEST_SCHEDULER` — set to `true` to enable the automatic scheduler
+- `ENABLE_INGEST_SCHEDULER` — set to `true` to enable the automatic scheduler (currently enabled in shared env)
+
+## Deployment
+
+- **Target**: `vm` (always-on reserved VM) — required because the app runs persistent background jobs (ingestion scheduler every 5 min, email recovery, expo receipt checks). Previously was `autoscale` which could kill the scheduler between requests.
+- **Build**: `npm run build`
+- **Run**: `node ./dist/index.cjs`
+- **IMPORTANT**: After changing env vars or code, you MUST redeploy (publish) for production to pick up changes. Shared env vars are not live-synced to running deployments.
 
 ## Freshness Tracking
 
