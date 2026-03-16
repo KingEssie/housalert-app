@@ -2935,7 +2935,30 @@ export async function registerRoutes(
       }
     });
 
-    log("[DEV] Registered /api/dev/test-push, /api/dev/push-debug, /api/dev/expo-push-tokens-count (no auth, dev only)");
+    app.post("/api/dev/test-email-send", async (req, res) => {
+      try {
+        const targetEmail = req.body?.email || "martin.essie87@gmail.com";
+        log(`[DEV EMAIL TEST] Sending test email to ${targetEmail}`);
+
+        const { sendMatchAlert } = await import("./email");
+        const testListing = {
+          title: "DEV TEST: 2-Zimmer-Wohnung in Berlin-Mitte",
+          city: "Berlin",
+          price: 850,
+          bedrooms: 2,
+          size_m2: 55,
+          url: "https://www.example.com/listing/dev-test-123",
+        };
+
+        const success = await sendMatchAlert(targetEmail, testListing);
+        return res.json({ success, sentTo: targetEmail });
+      } catch (err: any) {
+        log(`[DEV EMAIL TEST] Error: ${err.message}`);
+        return res.status(500).json({ success: false, error: err.message });
+      }
+    });
+
+    log("[DEV] Registered /api/dev/test-push, /api/dev/push-debug, /api/dev/expo-push-tokens-count, /api/dev/test-email-send (no auth, dev only)");
   }
 
   app.get("/api/admin/push-delivery-log", requireAdmin, async (req, res) => {

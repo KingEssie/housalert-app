@@ -94,6 +94,12 @@ async function getUncachableResendClient() {
   };
 }
 
+function formatFromAddress(fromEmail: string | undefined | null): string {
+  if (!fromEmail) return "HousAlert <onboarding@resend.dev>";
+  if (fromEmail.includes("<")) return fromEmail;
+  return `HousAlert <${fromEmail}>`;
+}
+
 function formatPrice(price: number): string {
   return price > 0 ? `\u20AC${price.toLocaleString("de-DE")}` : "";
 }
@@ -277,8 +283,11 @@ export async function sendMatchAlert(
 </table>
 ${listingCard(listing, true)}`;
 
-    const { error } = await client.emails.send({
-      from: fromEmail || "HousAlert <onboarding@resend.dev>",
+    const fromAddr = formatFromAddress(fromEmail);
+    log(`[EMAIL SEND] from="${fromAddr}" to="${userEmail}" subject="${subject}"`);
+
+    const { data, error } = await client.emails.send({
+      from: fromAddr,
       to: userEmail,
       subject,
       text: textBody,
@@ -286,11 +295,11 @@ ${listingCard(listing, true)}`;
     });
 
     if (error) {
-      log(`[EMAIL FAIL] to=${userEmail} listing="${listing.title}" error=${error.message} name=${(error as any).name || "unknown"} statusCode=${(error as any).statusCode || "N/A"}`);
+      log(`[EMAIL FAIL] to=${userEmail} listing="${listing.title}" from="${fromAddr}" error=${error.message} name=${(error as any).name || "unknown"} statusCode=${(error as any).statusCode || "N/A"}`);
       return false;
     }
 
-    log(`[EMAIL OK] to=${userEmail} listing="${listing.title}"`);
+    log(`[EMAIL OK] to=${userEmail} listing="${listing.title}" id=${(data as any)?.id || "N/A"}`);
     return true;
   } catch (err: any) {
     log(`[EMAIL ERROR] to=${userEmail} err=${err.message} stack=${err.stack?.split("\n")[1]?.trim() || "N/A"}`);
@@ -340,8 +349,11 @@ export async function sendBatchMatchAlert(
 </table>
 ${htmlListings}`;
 
-    const { error } = await client.emails.send({
-      from: fromEmail || "HousAlert <onboarding@resend.dev>",
+    const fromAddr = formatFromAddress(fromEmail);
+    log(`[EMAIL SEND] batch from="${fromAddr}" to="${userEmail}" count=${listings.length} subject="${subject}"`);
+
+    const { data, error } = await client.emails.send({
+      from: fromAddr,
       to: userEmail,
       subject,
       text: textBody,
@@ -349,11 +361,11 @@ ${htmlListings}`;
     });
 
     if (error) {
-      log(`[EMAIL FAIL] batch to=${userEmail} count=${listings.length} error=${error.message} name=${(error as any).name || "unknown"} statusCode=${(error as any).statusCode || "N/A"}`);
+      log(`[EMAIL FAIL] batch to=${userEmail} count=${listings.length} from="${fromAddr}" error=${error.message} name=${(error as any).name || "unknown"} statusCode=${(error as any).statusCode || "N/A"}`);
       return false;
     }
 
-    log(`[EMAIL OK] batch to=${userEmail} count=${listings.length}`);
+    log(`[EMAIL OK] batch to=${userEmail} count=${listings.length} id=${(data as any)?.id || "N/A"}`);
     return true;
   } catch (err: any) {
     log(`[EMAIL ERROR] batch to=${userEmail} err=${err.message} stack=${err.stack?.split("\n")[1]?.trim() || "N/A"}`);
