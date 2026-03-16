@@ -5,6 +5,7 @@ import { Home, ChevronLeft, Euro, BedDouble, Maximize2, Loader2 } from "lucide-r
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { useEmbedded } from "@/hooks/use-embedded";
+import { getMatchEstimateRange } from "@/lib/match-estimate";
 import { apiFetch } from "@/lib/api-base";
 
 const INPUT_CLS = "w-full h-[44px] pl-10 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-[#0D6EFD] focus:bg-white transition-all";
@@ -197,7 +198,7 @@ export default function OnboardingFiltersPage() {
                     <Loader2 className="w-4 h-4 animate-spin text-[#0D6EFD]" />
                   </span>
                 ) : (
-                  t("embedFilters.estimateText", { count: estimate ?? 0 })
+                  t("embedFilters.estimateText", getMatchEstimateRange(estimate ?? 0))
                 )}
               </p>
             )}

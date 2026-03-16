@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { useTranslation } from "@/i18n";
+import { getMatchEstimateRange } from "@/lib/match-estimate";
 import LocationModeSelector, {
   type LocationData,
   DEFAULT_LOCATION_DATA,
@@ -394,7 +395,7 @@ export default function NewSearchPage() {
     );
   }
 
-  const perWeek = estimateQuery.data?.perWeekEstimate ?? 0;
+  const perWeekRaw = estimateQuery.data?.perWeekEstimate ?? 0;
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
@@ -427,7 +428,7 @@ export default function NewSearchPage() {
             isEditMode={isEditMode}
             submitting={submitting}
             onSubmit={handleSubmit}
-            perWeek={perWeek}
+            perWeek={perWeekRaw}
             estimateLoading={estimateQuery.isLoading}
           />
         )}
@@ -781,6 +782,7 @@ function StepReview({
   estimateLoading: boolean;
 }) {
   const { t } = useTranslation();
+  const perWeekRange = getMatchEstimateRange(perWeek);
 
   const locationLabel = locationData.tab === "reistijd"
     ? t("newSearch.step5.commuteTo", { dest: locationData.commuteDestination })
@@ -839,7 +841,7 @@ function StepReview({
             <div>
               <p className="text-[15px] font-bold text-white">
                 {perWeek > 0
-                  ? t("newSearch.step5.estimate", { count: perWeek })
+                  ? t("newSearch.step5.estimate", perWeekRange)
                   : t("newSearch.step5.noMatchesExpected")}
               </p>
               <p className="text-[13px] text-white/60 mt-0.5">

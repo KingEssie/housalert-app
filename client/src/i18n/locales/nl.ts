@@ -89,7 +89,7 @@ export const nl: Record<string, any> = {
     searchingActive: "We zoeken actief naar woningen voor je",
     receivingMatches: "Je ontvangt matches op basis van {count} {label}",
     adjustFilters: "Filters aanpassen",
-    weekEstimate: "Met jouw zoekopdrachten verwachten we ongeveer {count} nieuwe woningen per week",
+    weekEstimate: "Met jouw zoekopdrachten verwachten we ongeveer {low}–{high} nieuwe woningen per week",
     profileReady: "Je zoekprofiel is klaar",
     basedOnSearch: "Op basis van je zoekopdracht",
     activateSubscription: "Abonnement activeren",
@@ -419,7 +419,7 @@ export const nl: Record<string, any> = {
       extras: "Extra kenmerken",
       preferences: "Wensen",
       otherPrefs: "Overige voorkeuren",
-      estimate: "Verwacht: ~{count} matches per week",
+      estimate: "Verwacht: ~{low}–{high} matches per week",
       estimateDesc: "Op basis van je zoekinstellingen",
       noMatchesExpected: "Nog geen matches verwacht",
       adjustFiltersLater: "Je kunt je filters later altijd aanpassen",
@@ -490,7 +490,7 @@ export const nl: Record<string, any> = {
     districtSelected: "{count} {label} geselecteerd",
     districtSingular: "wijk",
     districtPlural: "wijken",
-    estimatePreview: "Met deze zoekopdracht kun je ongeveer {count} matches per week verwachten.",
+    estimatePreview: "Met deze zoekopdracht kun je ongeveer {low}–{high} matches per week verwachten.",
   },
 
   paywall: {
@@ -833,7 +833,7 @@ export const nl: Record<string, any> = {
     travelTimePreview: "{time} min. reistijd",
     fromAddress: "vanaf {address}",
     estimateLoading: "Schatting wordt geladen...",
-    estimateText: "Met deze zoekopdracht kun je ongeveer {count} matches per week verwachten.",
+    estimateText: "Met deze zoekopdracht kun je ongeveer {low}–{high} matches per week verwachten.",
     nextStep: "Volgende stap",
     helperText: "Tip: Je kunt later altijd je locatie aanpassen of extra zoekprofielen toevoegen voor andere steden.",
     lowMatchHint: "Tip: vergroot je radius of verhoog je budget voor meer resultaten.",
@@ -856,7 +856,7 @@ export const nl: Record<string, any> = {
     stepIndicator: "Stap {step} van {total}",
     title: "Jouw schatting",
     subtitle: "Op basis van je zoekcriteria in {city}",
-    estimateDesc: "Met je zoekcriteria verwachten we ongeveer {count} nieuwe woningen per week.",
+    estimateDesc: "Met je zoekcriteria verwachten we ongeveer {low}–{high} nieuwe woningen per week.",
     yourFilters: "Jouw filters",
     fromPrice: "Vanaf €{price}",
     toPrice: "Tot €{price}",
@@ -1477,6 +1477,6 @@ export const nl: Record<string, any> = {
 
   embedFilters: {
     cta: "Maak zoekopdracht aan",
-    estimateText: "Voor jouw zoekopdracht verwachten we ~{count} woningen per week.",
+    estimateText: "Voor jouw zoekopdracht verwachten we ongeveer {low}–{high} woningen per week.",
   },
 };

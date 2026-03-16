@@ -74,7 +74,7 @@ export const en: Record<string, any> = {
     profilePlural: "profiles",
     viewMatches: "View your matches",
     searchingActive: "We are actively searching for apartments for you",
-    weekEstimate: "Based on your searches, we expect about {count} new listings per week",
+    weekEstimate: "Based on your searches, we expect about {low}–{high} new listings per week",
     profileReady: "Your search profile is ready",
     basedOnSearch: "Based on your search",
     noProfileTitle: "No search profile yet",
@@ -653,6 +653,6 @@ export const en: Record<string, any> = {
 
   embedFilters: {
     cta: "Create search alert",
-    estimateText: "For your search we expect ~{count} listings per week.",
+    estimateText: "For your search we expect about {low}–{high} listings per week.",
   },
 };

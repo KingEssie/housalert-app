@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/i18n";
+import { getMatchEstimateRange } from "@/lib/match-estimate";
 import { trackEvent } from "@/lib/track-event";
 import {
   Home,
@@ -711,7 +712,8 @@ function HomeTab({
     enabled: hasProfiles,
     staleTime: 5 * 60 * 1000,
   });
-  const perWeekEstimate = estimateQuery.data?.perWeekEstimate ?? 0;
+  const perWeekEstimateRaw = estimateQuery.data?.perWeekEstimate ?? 0;
+  const perWeekRange = getMatchEstimateRange(perWeekEstimateRaw);
 
   return (
     <div className="flex flex-col pb-6">
@@ -784,12 +786,12 @@ function HomeTab({
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[16px] font-bold text-white leading-tight" data-testid="text-estimate-count">
-                {perWeekEstimate > 0
-                  ? t("home.weekEstimate", { count: perWeekEstimate })
+                {perWeekEstimateRaw > 0
+                  ? t("home.weekEstimate", perWeekRange)
                   : t("home.profileReady")}
               </p>
               <p className="text-[14px] font-[500] text-white/70 mt-0.5">
-                {perWeekEstimate > 0
+                {perWeekEstimateRaw > 0
                   ? t("home.basedOnProfiles", { count: profileCount, label: profileCount === 1 ? t("home.profileSingular") : t("home.profilePlural") })
                   : t("home.activateSubToReceive")}
               </p>

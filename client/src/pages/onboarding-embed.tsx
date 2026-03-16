@@ -2,6 +2,7 @@ import { apiFetch } from "@/lib/api-base";
 import { useState, useEffect } from "react";
 import { MapPin, Check, ChevronRight, ExternalLink, Download, Sparkles, Search } from "lucide-react";
 import { useTranslation } from "@/i18n";
+import { getMatchEstimateRange } from "@/lib/match-estimate";
 import LocationModeSelector, {
   type LocationData,
   DEFAULT_LOCATION_DATA,
@@ -45,7 +46,7 @@ function EstimateBlock({ city, maxPrice }: { city: string; maxPrice: string }) {
           <div className="h-4 w-48 bg-[#EBF2FF] rounded animate-pulse" />
         ) : estimate !== null ? (
           <p className="text-[13px] sm:text-[14px] font-semibold text-[#111C3D] leading-snug">
-            ~<span className="text-[#0D6EFD] text-[15px] font-bold">{estimate}</span> {t("onboardingEmbed.matchesPerWeek")}
+            <span className="text-[#0D6EFD] text-[15px] font-bold">{getMatchEstimateRange(estimate).low}–{getMatchEstimateRange(estimate).high}</span> {t("onboardingEmbed.matchesPerWeek")}
           </p>
         ) : null}
       </div>

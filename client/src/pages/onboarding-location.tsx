@@ -8,6 +8,7 @@ import { useTranslation } from "@/i18n";
 import { usePlacesAutocomplete, type PlaceSuggestion } from "@/hooks/use-places-autocomplete";
 import { useHashSearch } from "@/lib/hash-search";
 import { useEmbedded } from "@/hooks/use-embedded";
+import { getMatchEstimateRange } from "@/lib/match-estimate";
 import { MapContainer, TileLayer, Marker, Circle, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -794,9 +795,9 @@ export default function OnboardingLocationPage() {
                     ) : (
                       <>
                         <p className="text-sm text-[#1F2937] leading-relaxed">
-                          {t("onboardingLocation.estimateText", { count: estimate ?? 0 })}
+                          {t("onboardingLocation.estimateText", getMatchEstimateRange(estimate ?? 0))}
                         </p>
-                        {estimate !== null && estimate < 5 && (
+                        {estimate !== null && getMatchEstimateRange(estimate).low <= 3 && (
                           <p className="text-[13px] text-[#6B7280] mt-1">
                             {t("onboardingLocation.lowMatchHint")}
                           </p>
@@ -820,9 +821,9 @@ export default function OnboardingLocationPage() {
                     ) : (
                       <>
                         <p className="text-sm text-[#1F2937] leading-relaxed">
-                          {t("onboardingLocation.estimateText", { count: estimate ?? 0 })}
+                          {t("onboardingLocation.estimateText", getMatchEstimateRange(estimate ?? 0))}
                         </p>
-                        {estimate !== null && estimate < 5 && (
+                        {estimate !== null && getMatchEstimateRange(estimate).low <= 3 && (
                           <p className="text-[13px] text-[#6B7280] mt-1.5">
                             {t("onboardingLocation.lowMatchHint")}
                           </p>

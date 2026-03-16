@@ -83,7 +83,7 @@ export const de: Record<string, any> = {
     searchingActive: "Wir suchen aktiv nach Wohnungen für dich",
     receivingMatches: "Du erhältst Matches basierend auf {count} {label}",
     adjustFilters: "Filter anpassen",
-    weekEstimate: "Mit deinen Suchaufträgen erwarten wir etwa {count} neue Wohnungen pro Woche",
+    weekEstimate: "Mit deinen Suchaufträgen erwarten wir etwa {low}–{high} neue Wohnungen pro Woche",
     profileReady: "Dein Suchprofil ist bereit",
     basedOnSearch: "Basierend auf deinem Suchauftrag",
     activateSubscription: "Abonnement aktivieren",
@@ -412,7 +412,7 @@ export const de: Record<string, any> = {
       extras: "Extra Eigenschaften",
       preferences: "Wünsche",
       otherPrefs: "Sonstige Vorlieben",
-      estimate: "Erwartet: ~{count} Matches pro Woche",
+      estimate: "Erwartet: ~{low}–{high} Matches pro Woche",
       estimateDesc: "Basierend auf deinen Sucheinstellungen",
       noMatchesExpected: "Noch keine Matches erwartet",
       adjustFiltersLater: "Du kannst deine Filter später jederzeit anpassen",
@@ -483,7 +483,7 @@ export const de: Record<string, any> = {
     districtSelected: "{count} {label} ausgewählt",
     districtSingular: "Stadtteil",
     districtPlural: "Stadtteile",
-    estimatePreview: "Mit diesem Suchauftrag kannst du etwa {count} Matches pro Woche erwarten.",
+    estimatePreview: "Mit diesem Suchauftrag kannst du etwa {low}–{high} Matches pro Woche erwarten.",
   },
 
   paywall: {
@@ -824,7 +824,7 @@ export const de: Record<string, any> = {
     travelTimePreview: "{time} Min. Pendelzeit",
     fromAddress: "ab {address}",
     estimateLoading: "Schätzung wird geladen...",
-    estimateText: "Mit diesem Suchauftrag kannst du etwa {count} Matches pro Woche erwarten.",
+    estimateText: "Mit diesem Suchauftrag kannst du etwa {low}–{high} Matches pro Woche erwarten.",
     nextStep: "Nächster Schritt",
   },
 
@@ -845,7 +845,7 @@ export const de: Record<string, any> = {
     stepIndicator: "Schritt {step} von {total}",
     title: "Deine Schätzung",
     subtitle: "Basierend auf deinen Suchkriterien in {city}",
-    estimateDesc: "Mit deinen Suchkriterien erwarten wir etwa {count} neue Wohnungen pro Woche.",
+    estimateDesc: "Mit deinen Suchkriterien erwarten wir etwa {low}–{high} neue Wohnungen pro Woche.",
     yourFilters: "Deine Filter",
     fromPrice: "Ab €{price}",
     toPrice: "Bis €{price}",
@@ -1430,6 +1430,6 @@ export const de: Record<string, any> = {
 
   embedFilters: {
     cta: "Suchauftrag erstellen",
-    estimateText: "Für deine Suche erwarten wir ~{count} Wohnungen pro Woche.",
+    estimateText: "Für deine Suche erwarten wir etwa {low}–{high} Wohnungen pro Woche.",
   },
 };

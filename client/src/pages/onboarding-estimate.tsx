@@ -5,6 +5,7 @@ import { useLocation } from "wouter";
 import { Home, ChevronLeft, TrendingUp, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
+import { getMatchEstimateRange } from "@/lib/match-estimate";
 
 export default function OnboardingEstimatePage() {
   const [, navigate] = useLocation();
@@ -129,11 +130,11 @@ export default function OnboardingEstimatePage() {
               </div>
             ) : (
               <>
-                <p className="text-6xl font-extrabold text-[#111C3D] mb-3 tabular-nums" data-testid="text-estimate-number">
-                  {estimate}
+                <p className="text-5xl font-extrabold text-[#111C3D] mb-3 tabular-nums" data-testid="text-estimate-number">
+                  {getMatchEstimateRange(estimate ?? 0).low}–{getMatchEstimateRange(estimate ?? 0).high}
                 </p>
                 <p className="text-base text-[#1F2937] leading-relaxed max-w-sm mx-auto" data-testid="text-estimate-description">
-                  {t("onboardingEstimate.estimateDesc", { count: estimate ?? 0 })}
+                  {t("onboardingEstimate.estimateDesc", getMatchEstimateRange(estimate ?? 0))}
                 </p>
               </>
             )}
