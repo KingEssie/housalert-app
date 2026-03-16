@@ -3683,5 +3683,401 @@ export async function registerRoutes(
     }
   });
 
+  // =============================================
+  // ADMIN PORTAL API
+  // =============================================
+
+  app.get("/api/admin/portal/overview", requireAdmin, async (_req, res) => {
+    try {
+      const todayStart = new Date(new Date().setHours(0,0,0,0)).toISOString();
+      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+      const totalUsersRes = await supabase.rpc("count_auth_users").then(r => r.data ?? 0).catch(() => 0);
+      const activeSubsRes = await supabase.from("subscriptions").select("id", { count: "exact", head: true }).eq("status", "active");
+      const trialSubsRes = await supabase.from("subscriptions").select("id", { count: "exact", head: true }).eq("status", "trial");
+      const allSubsRes = await supabase.from("subscriptions").select("status, plan");
+      const profilesRes = await supabase.from("search_profiles").select("id", { count: "exact", head: true });
+      const listingsTodayRes = await supabase.from("listings").select("id", { count: "exact", head: true }).gte("created_at", todayStart);
+      const matchesTodayRes = await supabase.from("matches").select("id", { count: "exact", head: true }).gte("created_at", todayStart);
+      const listingsWeek = await supabase.from("listings").select("id", { count: "exact", head: true }).gte("created_at", weekAgo);
+      const matchesWeek = await supabase.from("matches").select("id", { count: "exact", head: true }).gte("created_at", weekAgo);
+
+      const signupsTodayRes = await pgPool.query("SELECT COUNT(*) FROM user_profile_data WHERE created_at >= $1", [todayStart]);
+      const signupsWeekRes = await pgPool.query("SELECT COUNT(*) FROM user_profile_data WHERE created_at >= $1", [weekAgo]);
+      let emailsTodayVal = 0;
+      let pushesTodayVal = 0;
+      try {
+        const eRes = await pgPool.query("SELECT COUNT(*) FROM user_matches WHERE email_sent = true AND matched_at >= $1", [todayStart]);
+        emailsTodayVal = parseInt(eRes.rows[0]?.count || "0");
+      } catch {}
+      try {
+        const pRes = await pgPool.query("SELECT COUNT(*) FROM user_matches WHERE push_sent = true AND matched_at >= $1", [todayStart]);
+        pushesTodayVal = parseInt(pRes.rows[0]?.count || "0");
+      } catch {}
+
+      let mrr = 0;
+      const pricingMap: Record<string, number> = { monthly: 14.99, two_month: 12.49, three_month: 9.99 };
+      for (const sub of (allSubsRes.data || [])) {
+        if (sub.status === "active") {
+          mrr += pricingMap[sub.plan] || 14.99;
+        }
+      }
+
+      let sourceHealth: any[] = [];
+      try {
+        const sourceHealthRes = await pgPool.query("SELECT source_reports FROM ingestion_runs ORDER BY started_at DESC LIMIT 1");
+        sourceHealth = sourceHealthRes.rows[0]?.source_reports || [];
+      } catch {}
+
+      res.json({
+        totalUsers: totalUsersRes,
+        activeSubscriptions: activeSubsRes.count ?? 0,
+        trialUsers: trialSubsRes.count ?? 0,
+        signupsToday: parseInt(signupsTodayRes.rows[0]?.count || "0"),
+        mrr: Math.round(mrr * 100) / 100,
+        activeProfiles: profilesRes.count ?? 0,
+        listingsToday: listingsTodayRes.count ?? 0,
+        matchesToday: matchesTodayRes.count ?? 0,
+        emailsToday: emailsTodayVal,
+        pushesToday: pushesTodayVal,
+        signupsWeek: parseInt(signupsWeekRes.rows[0]?.count || "0"),
+        listingsWeek: listingsWeek.count ?? 0,
+        matchesWeek: matchesWeek.count ?? 0,
+        sourceHealth,
+      });
+    } catch (err: any) {
+      log(`[admin-portal] Overview error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/portal/users", requireAdmin, async (req, res) => {
+    try {
+      const search = (req.query.search as string || "").trim().toLowerCase();
+      const filter = req.query.filter as string || "all";
+      const page = parseInt(req.query.page as string || "1");
+      const limit = Math.min(parseInt(req.query.limit as string || "50"), 100);
+      const offset = (page - 1) * limit;
+
+      let profileQuery: string;
+      let countQuery: string;
+      let queryParams: any[];
+      let countParams: any[];
+
+      if (search) {
+        profileQuery = `SELECT * FROM user_profile_data WHERE LOWER(first_name || ' ' || COALESCE(last_name, '')) LIKE $1 OR LOWER(user_id) LIKE $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3`;
+        countQuery = `SELECT COUNT(*) FROM user_profile_data WHERE LOWER(first_name || ' ' || COALESCE(last_name, '')) LIKE $1 OR LOWER(user_id) LIKE $1`;
+        queryParams = [`%${search}%`, limit, offset];
+        countParams = [`%${search}%`];
+      } else {
+        profileQuery = `SELECT * FROM user_profile_data ORDER BY created_at DESC LIMIT $1 OFFSET $2`;
+        countQuery = `SELECT COUNT(*) FROM user_profile_data`;
+        queryParams = [limit, offset];
+        countParams = [];
+      }
+
+      const [usersRes, countRes] = await Promise.all([
+        pgPool.query(profileQuery, queryParams),
+        pgPool.query(countQuery, countParams),
+      ]);
+
+      const userIds = usersRes.rows.map((u: any) => u.user_id);
+      if (userIds.length === 0) {
+        return res.json({ users: [], total: 0, page, limit });
+      }
+
+      const placeholders = userIds.map((_: any, i: number) => `$${i + 1}`).join(",");
+      const [subsRes, profilesCountRes, matchCountRes] = await Promise.all([
+        supabase.from("subscriptions").select("user_id, status, plan, trial_ends_at, current_period_ends_at").in("user_id", userIds),
+        supabase.from("search_profiles").select("user_id").in("user_id", userIds),
+        pgPool.query(`SELECT user_id, COUNT(*) as cnt FROM user_matches WHERE user_id IN (${placeholders}) GROUP BY user_id`, userIds),
+      ]);
+
+      const subsMap: Record<string, any> = {};
+      for (const s of (subsRes.data || [])) subsMap[s.user_id] = s;
+
+      const profileCountMap: Record<string, number> = {};
+      for (const p of (profilesCountRes.data || [])) profileCountMap[p.user_id] = (profileCountMap[p.user_id] || 0) + 1;
+
+      const matchCountMap: Record<string, number> = {};
+      for (const m of matchCountRes.rows) matchCountMap[m.user_id] = parseInt(m.cnt);
+
+      let users = usersRes.rows.map((u: any) => ({
+        ...u,
+        subscription: subsMap[u.user_id] || null,
+        searchProfileCount: profileCountMap[u.user_id] || 0,
+        matchCount: matchCountMap[u.user_id] || 0,
+      }));
+
+      if (filter === "paid") users = users.filter((u: any) => u.subscription?.status === "active");
+      else if (filter === "trial") users = users.filter((u: any) => u.subscription?.status === "trial");
+      else if (filter === "canceled") users = users.filter((u: any) => u.subscription?.status === "canceled");
+      else if (filter === "expired") users = users.filter((u: any) => u.subscription?.status === "expired");
+
+      res.json({
+        users,
+        total: parseInt(countRes.rows[0]?.count || "0"),
+        page,
+        limit,
+      });
+    } catch (err: any) {
+      log(`[admin-portal] Users error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/portal/users/:userId", requireAdmin, async (req, res) => {
+    try {
+      const { userId } = req.params;
+
+      const [profileRes, subRes, searchProfilesRes, recentMatchesRes] = await Promise.all([
+        pgPool.query("SELECT * FROM user_profile_data WHERE user_id = $1", [userId]),
+        supabase.from("subscriptions").select("*").eq("user_id", userId).maybeSingle(),
+        supabase.from("search_profiles").select("*").eq("user_id", userId),
+        pgPool.query("SELECT * FROM user_matches WHERE user_id = $1 ORDER BY matched_at DESC LIMIT 20", [userId]),
+      ]);
+
+      let cancellationFeedback = null;
+      try {
+        const cfRes = await pgPool.query("SELECT * FROM cancellation_feedback WHERE user_id = $1 ORDER BY created_at DESC LIMIT 1", [userId]);
+        cancellationFeedback = cfRes.rows[0] || null;
+      } catch {}
+
+      const notifsRes = await supabase.from("user_notification_settings").select("*").eq("user_id", userId).maybeSingle();
+
+      res.json({
+        profile: profileRes.rows[0] || null,
+        subscription: subRes.data || null,
+        searchProfiles: searchProfilesRes.data || [],
+        recentMatches: recentMatchesRes.rows,
+        cancellationFeedback,
+        notificationSettings: notifsRes.data || null,
+      });
+    } catch (err: any) {
+      log(`[admin-portal] User detail error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/portal/subscriptions", requireAdmin, async (req, res) => {
+    try {
+      const filter = req.query.filter as string || "all";
+      const page = parseInt(req.query.page as string || "1");
+      const limit = Math.min(parseInt(req.query.limit as string || "50"), 100);
+
+      let query = supabase.from("subscriptions").select("*", { count: "exact" })
+        .order("created_at", { ascending: false })
+        .range((page - 1) * limit, page * limit - 1);
+
+      if (filter !== "all") {
+        query = query.eq("status", filter);
+      }
+
+      const { data, count, error } = await query;
+      if (error) throw error;
+
+      const userIds = (data || []).map((s: any) => s.user_id);
+      let userMap: Record<string, any> = {};
+      if (userIds.length > 0) {
+        const usersRes = await pgPool.query(
+          `SELECT user_id, first_name, last_name FROM user_profile_data WHERE user_id = ANY($1::text[])`,
+          [userIds]
+        );
+        for (const u of usersRes.rows) userMap[u.user_id] = u;
+      }
+
+      const enriched = (data || []).map((s: any) => ({
+        ...s,
+        userName: userMap[s.user_id] ? `${userMap[s.user_id].first_name || ""} ${userMap[s.user_id].last_name || ""}`.trim() : "Unknown",
+      }));
+
+      res.json({ subscriptions: enriched, total: count ?? 0, page, limit });
+    } catch (err: any) {
+      log(`[admin-portal] Subscriptions error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/portal/search-profiles", requireAdmin, async (req, res) => {
+    try {
+      const page = parseInt(req.query.page as string || "1");
+      const limit = Math.min(parseInt(req.query.limit as string || "50"), 100);
+
+      const { data, count, error } = await supabase.from("search_profiles")
+        .select("*", { count: "exact" })
+        .order("created_at", { ascending: false })
+        .range((page - 1) * limit, page * limit - 1);
+
+      if (error) throw error;
+
+      const userIds = (data || []).map((p: any) => p.user_id);
+      let userMap: Record<string, any> = {};
+      if (userIds.length > 0) {
+        const usersRes = await pgPool.query(
+          `SELECT user_id, first_name, last_name FROM user_profile_data WHERE user_id = ANY($1::text[])`,
+          [userIds]
+        );
+        for (const u of usersRes.rows) userMap[u.user_id] = u;
+      }
+
+      const enriched = (data || []).map((p: any) => ({
+        ...p,
+        userName: userMap[p.user_id] ? `${userMap[p.user_id].first_name || ""} ${userMap[p.user_id].last_name || ""}`.trim() : "Unknown",
+      }));
+
+      res.json({ profiles: enriched, total: count ?? 0, page, limit });
+    } catch (err: any) {
+      log(`[admin-portal] Search profiles error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/portal/listings", requireAdmin, async (req, res) => {
+    try {
+      const source = req.query.source as string || "";
+      const city = req.query.city as string || "";
+      const page = parseInt(req.query.page as string || "1");
+      const limit = Math.min(parseInt(req.query.limit as string || "50"), 100);
+
+      let query = supabase.from("listings")
+        .select("id, title, source, city, price, size_m2, bedrooms, url, created_at", { count: "exact" })
+        .order("created_at", { ascending: false })
+        .range((page - 1) * limit, page * limit - 1);
+
+      if (source) query = query.eq("source", source);
+      if (city) query = query.ilike("city", `%${city}%`);
+
+      const { data, count, error } = await query;
+      if (error) throw error;
+
+      res.json({ listings: data || [], total: count ?? 0, page, limit });
+    } catch (err: any) {
+      log(`[admin-portal] Listings error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/portal/sources", requireAdmin, async (_req, res) => {
+    try {
+      const runsRes = await pgPool.query(
+        "SELECT source_reports, started_at, finished_at, duration_sec, status FROM ingestion_runs ORDER BY started_at DESC LIMIT 5"
+      );
+
+      const latestRun = runsRes.rows[0] || null;
+      const sources = latestRun?.source_reports || [];
+
+      res.json({ sources, latestRun: latestRun ? { started_at: latestRun.started_at, finished_at: latestRun.finished_at, duration_sec: latestRun.duration_sec, status: latestRun.status } : null });
+    } catch (err: any) {
+      log(`[admin-portal] Sources error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/portal/matches", requireAdmin, async (req, res) => {
+    try {
+      const page = parseInt(req.query.page as string || "1");
+      const limit = Math.min(parseInt(req.query.limit as string || "50"), 100);
+      const offset = (page - 1) * limit;
+      const todayStart = new Date(new Date().setHours(0,0,0,0)).toISOString();
+
+      const matchesRes = await pgPool.query(
+        `SELECT um.*, upd.first_name, upd.last_name
+         FROM user_matches um
+         LEFT JOIN user_profile_data upd ON um.user_id = upd.user_id
+         ORDER BY um.matched_at DESC
+         LIMIT $1 OFFSET $2`,
+        [limit, offset]
+      );
+      const countRes = await pgPool.query("SELECT COUNT(*) FROM user_matches");
+      const emailsTodayRes = await pgPool.query("SELECT COUNT(*) FROM user_matches WHERE email_sent = true AND matched_at >= $1", [todayStart]);
+      const pushesTodayRes = await pgPool.query("SELECT COUNT(*) FROM user_matches WHERE push_sent = true AND matched_at >= $1", [todayStart]);
+
+      let failuresWeek = 0;
+      try {
+        const failRes = await supabase.from("push_delivery_log").select("id", { count: "exact", head: true }).eq("status", "error").gte("created_at", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
+        failuresWeek = failRes.count ?? 0;
+      } catch {}
+
+      res.json({
+        matches: matchesRes.rows,
+        total: parseInt(countRes.rows[0]?.count || "0"),
+        page,
+        limit,
+        stats: {
+          emailsToday: parseInt(emailsTodayRes.rows[0]?.count || "0"),
+          pushesToday: parseInt(pushesTodayRes.rows[0]?.count || "0"),
+          failuresWeek,
+        },
+      });
+    } catch (err: any) {
+      log(`[admin-portal] Matches error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/portal/system-status", requireAdmin, async (_req, res) => {
+    try {
+      const checks: Record<string, any> = {};
+
+      try {
+        const { getUncachableStripeClient } = await import("./stripe/stripeClient");
+        const stripe = await getUncachableStripeClient();
+        await stripe.products.list({ limit: 1 });
+        checks.stripe = { status: "operational", message: "Connected" };
+      } catch (e: any) {
+        checks.stripe = { status: "error", message: e.message?.substring(0, 100) };
+      }
+
+      const placesKey = process.env.GOOGLE_PLACES_API_KEY;
+      checks.placesApi = placesKey
+        ? { status: "operational", message: "API key configured" }
+        : { status: "warning", message: "No API key — using Nominatim fallback" };
+
+      const schedulerEnabled = process.env.ENABLE_INGEST_SCHEDULER === "true";
+      let lastRun: any = null;
+      try {
+        const lastRunRes = await pgPool.query("SELECT started_at, status FROM ingestion_runs ORDER BY started_at DESC LIMIT 1");
+        lastRun = lastRunRes.rows[0] || null;
+      } catch {}
+      checks.ingestionScheduler = {
+        status: schedulerEnabled ? "operational" : "disabled",
+        message: schedulerEnabled
+          ? `Enabled — last run: ${lastRun?.started_at ? new Date(lastRun.started_at).toLocaleString() : "never"} (${lastRun?.status || "unknown"})`
+          : "Disabled (ENABLE_INGEST_SCHEDULER != true)",
+      };
+
+      const resendKey = process.env.RESEND_API_KEY;
+      checks.email = resendKey
+        ? { status: "operational", message: "Resend configured" }
+        : { status: "warning", message: "No Resend API key" };
+
+      const vapidKey = process.env.VAPID_PRIVATE_KEY;
+      checks.pushNotifications = vapidKey
+        ? { status: "operational", message: "VAPID keys configured" }
+        : { status: "warning", message: "No VAPID keys" };
+
+      try {
+        await pgPool.query("SELECT 1");
+        checks.replitDb = { status: "operational", message: "Connected" };
+      } catch (e: any) {
+        checks.replitDb = { status: "error", message: e.message?.substring(0, 100) };
+      }
+
+      try {
+        const { error } = await supabase.from("subscriptions").select("id").limit(1);
+        checks.supabaseDb = error
+          ? { status: "error", message: error.message }
+          : { status: "operational", message: "Connected" };
+      } catch (e: any) {
+        checks.supabaseDb = { status: "error", message: e.message?.substring(0, 100) };
+      }
+
+      res.json(checks);
+    } catch (err: any) {
+      log(`[admin-portal] System status error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   return httpServer;
 }

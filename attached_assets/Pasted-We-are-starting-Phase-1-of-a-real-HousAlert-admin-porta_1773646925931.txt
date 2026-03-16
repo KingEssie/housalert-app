@@ -1,0 +1,225 @@
+We are starting Phase 1 of a real HousAlert admin portal.
+
+Goal:
+Build a must-have operational admin portal that lets us run HousAlert like a real SaaS business.
+
+This is NOT Phase 2 or 3 yet.
+Focus only on Phase 1 essentials.
+
+================================================
+PHASE 1 ADMIN PORTAL REQUIREMENTS
+================================================
+
+Build an admin portal with these sections/tabs:
+
+1. Overview
+2. Users
+3. Subscriptions
+4. Search Profiles
+5. Listings & Sources
+6. Matches & Notifications
+7. System Status
+
+Use the existing app/admin styling where possible.
+Keep it clean, readable, and practical.
+This should feel like a real internal operations dashboard.
+
+================================================
+1. OVERVIEW TAB
+================================================
+
+Create an Overview dashboard page with KPI cards for:
+
+- total users
+- active subscriptions
+- trial users
+- new signups today
+- MRR / revenue summary if available
+- active search profiles
+- listings today
+- matches today
+- emails sent today
+- push notifications sent today
+
+Also include a few summary blocks:
+- signups last 7 days
+- listings / matches last 7 days
+- source health summary
+
+================================================
+2. USERS TAB
+================================================
+
+Create a Users page/table showing:
+
+- name
+- email
+- phone number
+- language
+- account created date
+- email verification status
+- subscription status
+- number of search profiles
+- number of matches
+- cancellation status / found home status if available
+
+Features:
+- search by name/email
+- filters for paid / trial / canceled / unverified
+- click into a user detail view
+
+User detail view should show:
+- basic profile
+- subscription info
+- search profiles
+- recent matches
+- cancellation feedback if available
+- whether they found a home via HousAlert if available
+
+================================================
+3. SUBSCRIPTIONS TAB
+================================================
+
+Create a Subscriptions page/table showing:
+
+- user
+- selected plan
+- subscription status
+- start date
+- end date
+- auto-renew status
+- Stripe customer ID if available
+- Stripe subscription ID if available
+- trial / active / canceled / expired state
+
+Add filters:
+- active
+- canceled
+- trial
+- expired
+
+If possible:
+- add a link/button to open Stripe customer/subscription context if already supported
+
+================================================
+4. SEARCH PROFILES TAB
+================================================
+
+Create a Search Profiles page/table showing:
+
+- user
+- city
+- districts / radius / travel mode if present
+- min/max price
+- bedrooms
+- size
+- housing type
+- created_at
+- updated_at
+- total matches count if available
+
+Purpose:
+This should help us inspect what users are searching for and diagnose low/high match volume.
+
+================================================
+5. LISTINGS & SOURCES TAB
+================================================
+
+This should have two clear sections:
+
+A. Source Monitor
+Per source show:
+- source name
+- status (active / degraded / broken)
+- last run timestamp
+- listings found
+- inserts
+- duplicates
+- matches
+- errors
+- runtime if available
+
+B. Listings Table
+Show:
+- title
+- source
+- city
+- price
+- last_seen_at
+- freshness/status (active/stale/removed)
+
+Add filters:
+- source
+- city
+- listing status
+
+================================================
+6. MATCHES & NOTIFICATIONS TAB
+================================================
+
+Create a page showing match and notification visibility.
+
+Include:
+- user
+- listing
+- search profile
+- matched_at
+- viewed
+- reacted
+- email_sent
+- push_sent
+
+Also include notification summary blocks:
+- recent email sends
+- recent push sends
+- failures
+- undelivered/recovery summary if available
+
+Goal:
+We must be able to see if the core product is actually being delivered to users.
+
+================================================
+7. SYSTEM STATUS TAB
+================================================
+
+Create a simple internal status page showing:
+
+- Stripe status
+- Places API status
+- ingestion scheduler status
+- email provider status
+- push notification status
+
+This does not need to be fancy yet.
+Just useful and honest.
+
+================================================
+ADMIN ACCESS / ROUTING
+================================================
+
+- Make the admin portal accessible through a proper admin route
+- Protect it so regular users cannot access it
+- Reuse any existing admin auth patterns if present
+
+================================================
+IMPORTANT
+================================================
+
+Do NOT build Phase 2 or 3 yet.
+Do NOT add CMS, feature flags, advanced experiments, or deep analytics dashboards yet.
+Focus only on a clean operational Phase 1 admin.
+
+================================================
+REPLY IN EXACTLY THIS STRUCTURE
+================================================
+
+A. Admin portal structure
+B. Overview tab
+C. Users tab
+D. Subscriptions tab
+E. Search Profiles tab
+F. Listings & Sources tab
+G. Matches & Notifications tab
+H. System Status tab
+I. Files changed
+J. QA verification

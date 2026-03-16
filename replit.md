@@ -199,6 +199,29 @@ A mobile-first German-language rental alert application for the German market. U
 - **Auth callback** (`auth-callback.tsx`): After `exchangeCodeForSession()`, calls `ensureTrialForCurrentUser()` (catches email-confirmed users) → redirects to `/dashboard`.
 - **ProtectedRoute** (`App.tsx`): Checks search profiles → redirects to `/onboarding` if 0 profiles. This ensures users always go through the onboarding wizard regardless of entry point.
 
+### Admin Portal (Unified)
+- **Route**: `/admin/portal` — unified admin dashboard with 7 tabs
+- **Access control**: Same `requireAdmin` middleware (Supabase JWT + `ADMIN_EMAILS` allowlist)
+- **Frontend**: `client/src/pages/admin-portal.tsx` — desktop sidebar nav + mobile horizontal scroll tabs
+- **Tabs**:
+  1. **Overview**: KPI cards (total users, active subs, trial users, signups today, MRR, profiles, listings/matches today, emails/push today), 7-day trends, source health indicators
+  2. **Users**: Searchable user list with subscription status, profile count, match count. Click-through to user detail (profile, subscription, search profiles, recent matches, cancellation feedback, notification settings). Filter by subscription status.
+  3. **Subscriptions**: Paginated subscription list with status filters (all/active/trial/canceled/expired), Stripe dashboard links, user name enrichment
+  4. **Search Profiles**: Paginated list showing city, location mode, price range, rooms, size. User name enrichment.
+  5. **Listings & Sources**: Two sub-views — Source Monitor (ingestion run status, per-source found/inserted/duplicates/matches/errors) and Listings browser (filterable by city and source, with external links)
+  6. **Matches & Notifications**: Recent matches with user names, viewed/email/push status indicators. KPI cards for emails today, push today, delivery failures (7d).
+  7. **System Status**: Health checks for Stripe, Google Places API, Ingestion Scheduler, Email (Resend), Push Notifications (VAPID), Replit DB, Supabase DB. Refresh button.
+- **API endpoints** (all `/api/admin/portal/*`, `requireAdmin`):
+  - `GET /api/admin/portal/overview` — aggregated KPIs from both DBs
+  - `GET /api/admin/portal/users?search=&filter=&page=&limit=` — paginated user list
+  - `GET /api/admin/portal/users/:userId` — user detail with subscription, profiles, matches
+  - `GET /api/admin/portal/subscriptions?filter=&page=&limit=` — paginated subscription list
+  - `GET /api/admin/portal/search-profiles?page=&limit=` — paginated search profiles
+  - `GET /api/admin/portal/listings?source=&city=&page=&limit=` — paginated listings
+  - `GET /api/admin/portal/sources` — ingestion source health from latest run
+  - `GET /api/admin/portal/matches?page=&limit=` — paginated matches with notification stats
+  - `GET /api/admin/portal/system-status` — service health checks
+
 ### Admin Ingestion Dashboard
 - **Route**: `/admin/ingestion` — admin-only monitoring page for the ingestion pipeline
 - **Access control**: `ADMIN_EMAILS` env var (comma-separated, case-insensitive). Server middleware validates Supabase JWT + email against allowlist. Returns 403 for non-admins.

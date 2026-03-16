@@ -43,6 +43,7 @@ import DeleteAccountPage from "@/pages/delete-account";
 import SubscriptionSuccessPage from "@/pages/subscription-success";
 import EmbedSuccessPage from "@/pages/embed-success";
 import AdminIngestionPage from "@/pages/admin-ingestion";
+import AdminPortalPage from "@/pages/admin-portal";
 import AdminMatchAuditPage from "@/pages/admin-match-audit";
 import AdminActivationPage from "@/pages/admin-activation";
 import ApplyPage from "@/pages/apply";
@@ -139,6 +140,7 @@ function Router() {
       <Route path="/account/payment-method" component={() => <ProtectedRoute component={PaymentMethodPage} />} />
       <Route path="/account/change-password" component={() => <ProtectedRoute component={ChangePasswordPage} />} />
       <Route path="/account/delete" component={() => <ProtectedRoute component={DeleteAccountPage} />} />
+      <Route path="/admin/portal" component={AdminPortalPage} />
       <Route path="/admin/ingestion" component={AdminIngestionPage} />
       <Route path="/admin/match-audit" component={() => <ProtectedRoute component={AdminMatchAuditPage} />} />
       <Route path="/admin/activation" component={() => <ProtectedRoute component={AdminActivationPage} />} />
