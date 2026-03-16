@@ -4076,10 +4076,10 @@ export async function registerRoutes(
         }
       } catch {}
 
-      const activationRate = totalUsers > 0 ? Math.round((usersWithMatch / totalUsers) * 100) : 0;
-      const listingViewRate = usersWithMatch > 0 ? Math.round((listingViewers / usersWithMatch) * 100) : 0;
-      const reactionRate = listingViewers > 0 ? Math.round((reactors / listingViewers) * 100) : 0;
-      const trialToPaid = trialUsers > 0 ? Math.round((paidUsers / (paidUsers + trialUsers)) * 100) : 0;
+      const activationRate = totalUsers > 0 ? Math.min(100, Math.round((usersWithMatch / totalUsers) * 100)) : 0;
+      const listingViewRate = usersWithMatch > 0 ? Math.min(100, Math.round((listingViewers / usersWithMatch) * 100)) : 0;
+      const reactionRate = listingViewers > 0 ? Math.min(100, Math.round((reactors / listingViewers) * 100)) : 0;
+      const trialToPaid = trialUsers > 0 ? Math.min(100, Math.round((paidUsers / trialUsers) * 100)) : 0;
 
       const metrics = { activationRate, listingViewRate, reactionRate, trialToPaid, totalUsers, usersWithMatch, listingViewers, reactors, paidUsers, trialUsers };
 

@@ -435,6 +435,7 @@ export default function OnboardingPage() {
       }
 
       trackEvent("profile_created", { city: cityForProfile });
+      trackEvent("search_created", { city: cityForProfile });
       if (enableNotifications) {
         trackEvent("notifications_enabled", { source: "onboarding" });
       }

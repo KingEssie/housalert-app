@@ -277,7 +277,7 @@ function GrowthTab() {
                 <p className="text-[24px] font-bold text-[#111C3D]">{metrics.trialToPaid}%</p>
               </div>
             </div>
-            <p className="text-[12px] text-[#9CA3AF]">{metrics.paidUsers} paid of {metrics.paidUsers + metrics.trialUsers} total</p>
+            <p className="text-[12px] text-[#9CA3AF]">{metrics.paidUsers} paid of {metrics.trialUsers} trial users</p>
           </div>
         </div>
       </div>
