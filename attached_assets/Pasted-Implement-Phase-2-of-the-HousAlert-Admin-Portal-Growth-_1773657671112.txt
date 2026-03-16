@@ -1,0 +1,116 @@
+Implement Phase 2 of the HousAlert Admin Portal: Growth & Funnel Analytics.
+
+Goal:
+Add a Growth tab that tracks the user activation funnel and key marketplace metrics.
+
+Do not change any existing admin features.
+
+------------------------------------------------
+
+Add a new tab in the admin portal navigation:
+
+Growth
+
+------------------------------------------------
+
+SECTION 1 — ACTIVATION FUNNEL
+
+Create a vertical funnel showing these steps:
+
+Landing Viewed
+Signup Started
+Search Created
+Pricing Viewed
+Checkout Started
+Subscription Started
+First Match Received
+First Listing Viewed
+First Reaction Sent
+
+Each step must display:
+• total count
+• percentage conversion from previous step
+
+Example:
+
+Signup Started
+80 users
+66% of Landing Viewed
+
+------------------------------------------------
+
+SECTION 2 — ACTIVATION METRICS
+
+Add KPI cards for:
+
+Activation Rate
+(users who received a match / total users)
+
+Listing View Rate
+(users who opened a listing / users with matches)
+
+Reaction Rate
+(users who contacted landlord / listing viewers)
+
+Trial → Paid Conversion
+(paid users / trial users)
+
+------------------------------------------------
+
+SECTION 3 — CITY PERFORMANCE
+
+Create a table showing:
+
+City
+Users
+Search Profiles
+Matches
+Listing Views
+Reactions
+
+Sort by number of users.
+
+------------------------------------------------
+
+EVENT TRACKING
+
+Track these events if not already tracked:
+
+landing_viewed
+signup_started
+search_created
+pricing_viewed
+checkout_started
+subscription_started
+first_match_received
+listing_opened
+first_reaction_sent
+
+Store events with:
+user_id
+event_type
+timestamp
+city (if available)
+
+------------------------------------------------
+
+MOBILE DESIGN
+
+The Growth dashboard must remain mobile-friendly.
+
+Use:
+• stacked cards
+• vertical funnel layout
+• full-width elements
+
+------------------------------------------------
+
+RETURN SUMMARY
+
+A. Growth tab added
+B. Funnel implementation
+C. Activation metrics
+D. City performance table
+E. Event tracking added
+F. Files changed
+G. QA verification

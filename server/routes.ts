@@ -4015,6 +4015,137 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/admin/portal/growth", requireAdmin, async (_req, res) => {
+    try {
+      const funnelSteps = [
+        { key: "landing_viewed", label: "Landing Viewed" },
+        { key: "account_created", label: "Signup Started" },
+        { key: "profile_created", label: "Search Created" },
+        { key: "pricing_viewed", label: "Pricing Viewed" },
+        { key: "checkout_started", label: "Checkout Started" },
+        { key: "subscription_started", label: "Subscription Started" },
+        { key: "first_match_received", label: "First Match Received" },
+        { key: "listing_opened", label: "First Listing Viewed" },
+        { key: "first_reaction", label: "First Reaction Sent" },
+      ];
+
+      const funnelCountsResult = await pgPool.query(
+        `SELECT event_name, COUNT(DISTINCT user_id) AS cnt
+         FROM activation_events
+         WHERE event_name = ANY($1)
+         GROUP BY event_name`,
+        [funnelSteps.map(s => s.key)]
+      );
+      const countMap: Record<string, number> = {};
+      for (const row of funnelCountsResult.rows) {
+        countMap[row.event_name] = parseInt(row.cnt, 10);
+      }
+
+      const funnel = funnelSteps.map((step, i) => {
+        const count = countMap[step.key] || 0;
+        const prevCount = i > 0 ? (countMap[funnelSteps[i - 1].key] || 0) : 0;
+        const conversionPct = i === 0 ? 100 : (prevCount > 0 ? Math.round((count / prevCount) * 100) : 0);
+        return { ...step, count, conversionPct, prevLabel: i > 0 ? funnelSteps[i - 1].label : null };
+      });
+
+      const totalUsersResult = await pgPool.query(`SELECT COUNT(*) AS cnt FROM user_profile_data`);
+      const totalUsers = parseInt(totalUsersResult.rows[0]?.cnt || "0", 10);
+
+      const usersWithMatchResult = await pgPool.query(`SELECT COUNT(DISTINCT user_id) AS cnt FROM user_matches`);
+      const usersWithMatch = parseInt(usersWithMatchResult.rows[0]?.cnt || "0", 10);
+
+      const listingViewersResult = await pgPool.query(
+        `SELECT COUNT(DISTINCT user_id) AS cnt FROM activation_events WHERE event_name = 'listing_opened'`
+      );
+      const listingViewers = parseInt(listingViewersResult.rows[0]?.cnt || "0", 10);
+
+      const reactorsResult = await pgPool.query(
+        `SELECT COUNT(DISTINCT user_id) AS cnt FROM activation_events WHERE event_name = 'first_reaction'`
+      );
+      const reactors = parseInt(reactorsResult.rows[0]?.cnt || "0", 10);
+
+      let trialUsers = 0;
+      let paidUsers = 0;
+      try {
+        const { data: subs } = await supabase.from("subscriptions").select("status");
+        if (subs) {
+          for (const s of subs) {
+            if (s.status === "trialing") trialUsers++;
+            if (s.status === "active") paidUsers++;
+          }
+        }
+      } catch {}
+
+      const activationRate = totalUsers > 0 ? Math.round((usersWithMatch / totalUsers) * 100) : 0;
+      const listingViewRate = usersWithMatch > 0 ? Math.round((listingViewers / usersWithMatch) * 100) : 0;
+      const reactionRate = listingViewers > 0 ? Math.round((reactors / listingViewers) * 100) : 0;
+      const trialToPaid = trialUsers > 0 ? Math.round((paidUsers / (paidUsers + trialUsers)) * 100) : 0;
+
+      const metrics = { activationRate, listingViewRate, reactionRate, trialToPaid, totalUsers, usersWithMatch, listingViewers, reactors, paidUsers, trialUsers };
+
+      let cityPerformance: any[] = [];
+      try {
+        const cityResult = await pgPool.query(
+          `SELECT
+             COALESCE(e.city, 'Unknown') AS city,
+             COUNT(DISTINCT e.user_id) AS users,
+             0 AS search_profiles,
+             0 AS matches,
+             0 AS listing_views,
+             0 AS reactions
+           FROM (
+             SELECT user_id, (metadata->>'city') AS city
+             FROM activation_events
+             WHERE metadata->>'city' IS NOT NULL AND metadata->>'city' != ''
+           ) e
+           GROUP BY e.city
+           ORDER BY users DESC
+           LIMIT 20`
+        );
+        cityPerformance = cityResult.rows;
+
+        for (const row of cityPerformance) {
+          const cityLower = row.city.toLowerCase();
+          try {
+            const { count: spCount } = await supabase
+              .from("search_profiles")
+              .select("*", { count: "exact", head: true })
+              .ilike("city", `%${cityLower}%`);
+            row.search_profiles = spCount || 0;
+          } catch {}
+
+          try {
+            const matchResult = await pgPool.query(
+              `SELECT COUNT(*) AS cnt FROM user_matches WHERE LOWER(city) = $1`, [cityLower]
+            );
+            row.matches = parseInt(matchResult.rows[0]?.cnt || "0", 10);
+          } catch {}
+
+          try {
+            const viewResult = await pgPool.query(
+              `SELECT COUNT(DISTINCT user_id) AS cnt FROM activation_events WHERE event_name = 'listing_opened' AND LOWER(metadata->>'city') = $1`, [cityLower]
+            );
+            row.listing_views = parseInt(viewResult.rows[0]?.cnt || "0", 10);
+          } catch {}
+
+          try {
+            const reactResult = await pgPool.query(
+              `SELECT COUNT(DISTINCT user_id) AS cnt FROM activation_events WHERE event_name = 'first_reaction' AND LOWER(metadata->>'city') = $1`, [cityLower]
+            );
+            row.reactions = parseInt(reactResult.rows[0]?.cnt || "0", 10);
+          } catch {}
+        }
+      } catch (err: any) {
+        log(`[admin-portal] City performance query error: ${err.message}`);
+      }
+
+      res.json({ funnel, metrics, cityPerformance });
+    } catch (err: any) {
+      log(`[admin-portal] Growth data error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   app.get("/api/admin/portal/system-status", requireAdmin, async (_req, res) => {
     try {
       const checks: Record<string, any> = {};

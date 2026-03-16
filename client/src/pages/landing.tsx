@@ -1,11 +1,17 @@
+import { useEffect } from "react";
 import { useLocation } from "wouter";
 import { Home, Search, Bell, Zap, ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
+import { trackEventLazy } from "@/lib/track-event";
 
 export default function LandingPage() {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    trackEventLazy("landing_viewed");
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">

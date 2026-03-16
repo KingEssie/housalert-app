@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { useTranslation } from "@/i18n";
+import { trackEvent, trackEventLazy } from "@/lib/track-event";
 
 interface Plan {
   id: string;
@@ -68,6 +69,10 @@ export default function PaywallPage() {
   const autoCheckoutTriggered = useRef(false);
 
   useEffect(() => {
+    trackEventLazy("pricing_viewed");
+  }, []);
+
+  useEffect(() => {
     if (autoCheckout && user && !authLoading && !autoCheckoutTriggered.current) {
       autoCheckoutTriggered.current = true;
       handleCheckout();
@@ -90,6 +95,8 @@ export default function PaywallPage() {
         navigate("/login");
         return;
       }
+
+      trackEvent("checkout_started", { plan: selectedPlan });
 
       const res = await apiFetch("/api/checkout/session", {
         method: "POST",

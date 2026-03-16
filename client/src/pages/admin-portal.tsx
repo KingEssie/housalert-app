@@ -7,6 +7,7 @@ import {
   Loader2, ChevronRight, ExternalLink, RefreshCw, Filter,
   Mail, Smartphone, AlertTriangle, CheckCircle, XCircle,
   TrendingUp, Activity, Database, Globe, Zap, ArrowLeft,
+  Target, ArrowDown, Percent, Eye, MessageCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +15,7 @@ import { useLocation } from "wouter";
 
 const TABS = [
   { id: "overview", label: "Overview", icon: BarChart3 },
+  { id: "growth", label: "Growth", icon: TrendingUp },
   { id: "users", label: "Users", icon: Users },
   { id: "subscriptions", label: "Subscriptions", icon: CreditCard },
   { id: "profiles", label: "Search Profiles", icon: Search },
@@ -162,6 +164,157 @@ function OverviewTab() {
 
         <SourceHealthCard sourceHealth={data.sourceHealth} />
       </div>
+    </div>
+  );
+}
+
+function GrowthTab() {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    adminFetch("/api/admin/portal/growth").then(setData).catch(console.error).finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <LoadingState />;
+  if (!data) return <p className="text-[#6B7280] p-6">Failed to load growth data.</p>;
+
+  const { funnel, metrics, cityPerformance } = data;
+
+  const funnelColors = [
+    "bg-blue-500", "bg-blue-400", "bg-indigo-500", "bg-violet-500",
+    "bg-purple-500", "bg-fuchsia-500", "bg-pink-500", "bg-rose-500", "bg-red-400",
+  ];
+
+  return (
+    <div className="space-y-8">
+      <h2 className="text-[18px] font-bold text-[#111C3D]">Growth & Funnel Analytics</h2>
+
+      <div className="bg-white rounded-xl border border-[#E5E7EB] p-5">
+        <h3 className="text-[16px] font-bold text-[#111C3D] mb-5">Activation Funnel</h3>
+        <div className="space-y-0">
+          {funnel.map((step: any, i: number) => {
+            const maxCount = funnel[0]?.count || 1;
+            const barWidth = maxCount > 0 ? Math.max(8, (step.count / maxCount) * 100) : 8;
+            return (
+              <div key={step.key} className="group" data-testid={`funnel-step-${step.key}`}>
+                <div className="flex items-center gap-3 py-3">
+                  <div className="w-5 flex-shrink-0 flex justify-center">
+                    <ArrowDown className={`w-4 h-4 text-[#D1D5DB] ${i === 0 ? "invisible" : ""}`} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-1.5">
+                      <span className="text-[14px] font-semibold text-[#111C3D]">{step.label}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[16px] font-bold text-[#111C3D]">{step.count}</span>
+                        <span className="text-[12px] text-[#6B7280]">users</span>
+                        {i > 0 && (
+                          <span className={`text-[12px] font-semibold px-2 py-0.5 rounded-full ${
+                            step.conversionPct >= 50 ? "bg-green-100 text-green-700" :
+                            step.conversionPct >= 20 ? "bg-amber-100 text-amber-700" :
+                            "bg-red-100 text-red-700"
+                          }`}>
+                            {step.conversionPct}%
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="h-3 bg-[#F3F4F6] rounded-full overflow-hidden">
+                      <div className={`h-full rounded-full transition-all duration-500 ${funnelColors[i % funnelColors.length]}`} style={{ width: `${barWidth}%` }} />
+                    </div>
+                    {i > 0 && step.prevLabel && (
+                      <p className="text-[11px] text-[#9CA3AF] mt-1">{step.conversionPct}% of {step.prevLabel}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div>
+        <h3 className="text-[16px] font-bold text-[#111C3D] mb-4">Activation Metrics</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white rounded-xl border border-[#E5E7EB] p-5" data-testid="metric-activation-rate">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-11 h-11 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0"><Target className="w-5 h-5" /></div>
+              <div className="min-w-0">
+                <p className="text-[13px] text-[#6B7280] font-medium">Activation Rate</p>
+                <p className="text-[24px] font-bold text-[#111C3D]">{metrics.activationRate}%</p>
+              </div>
+            </div>
+            <p className="text-[12px] text-[#9CA3AF]">{metrics.usersWithMatch} of {metrics.totalUsers} users received a match</p>
+          </div>
+
+          <div className="bg-white rounded-xl border border-[#E5E7EB] p-5" data-testid="metric-listing-view-rate">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-11 h-11 rounded-lg bg-green-50 text-green-600 flex items-center justify-center flex-shrink-0"><Eye className="w-5 h-5" /></div>
+              <div className="min-w-0">
+                <p className="text-[13px] text-[#6B7280] font-medium">Listing View Rate</p>
+                <p className="text-[24px] font-bold text-[#111C3D]">{metrics.listingViewRate}%</p>
+              </div>
+            </div>
+            <p className="text-[12px] text-[#9CA3AF]">{metrics.listingViewers} of {metrics.usersWithMatch} matched users viewed a listing</p>
+          </div>
+
+          <div className="bg-white rounded-xl border border-[#E5E7EB] p-5" data-testid="metric-reaction-rate">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-11 h-11 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center flex-shrink-0"><MessageCircle className="w-5 h-5" /></div>
+              <div className="min-w-0">
+                <p className="text-[13px] text-[#6B7280] font-medium">Reaction Rate</p>
+                <p className="text-[24px] font-bold text-[#111C3D]">{metrics.reactionRate}%</p>
+              </div>
+            </div>
+            <p className="text-[12px] text-[#9CA3AF]">{metrics.reactors} of {metrics.listingViewers} viewers contacted landlord</p>
+          </div>
+
+          <div className="bg-white rounded-xl border border-[#E5E7EB] p-5" data-testid="metric-trial-to-paid">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-11 h-11 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0"><Percent className="w-5 h-5" /></div>
+              <div className="min-w-0">
+                <p className="text-[13px] text-[#6B7280] font-medium">Trial → Paid</p>
+                <p className="text-[24px] font-bold text-[#111C3D]">{metrics.trialToPaid}%</p>
+              </div>
+            </div>
+            <p className="text-[12px] text-[#9CA3AF]">{metrics.paidUsers} paid of {metrics.paidUsers + metrics.trialUsers} total</p>
+          </div>
+        </div>
+      </div>
+
+      {cityPerformance && cityPerformance.length > 0 && (
+        <div>
+          <h3 className="text-[16px] font-bold text-[#111C3D] mb-4">City Performance</h3>
+          <div className="bg-white rounded-xl border border-[#E5E7EB] overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-[13px]">
+                <thead>
+                  <tr className="bg-[#F9FAFB] border-b border-[#E5E7EB]">
+                    <th className="text-left px-4 py-3 font-semibold text-[#374151]">City</th>
+                    <th className="text-right px-4 py-3 font-semibold text-[#374151]">Users</th>
+                    <th className="text-right px-4 py-3 font-semibold text-[#374151]">Profiles</th>
+                    <th className="text-right px-4 py-3 font-semibold text-[#374151]">Matches</th>
+                    <th className="text-right px-4 py-3 font-semibold text-[#374151]">Views</th>
+                    <th className="text-right px-4 py-3 font-semibold text-[#374151]">Reactions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {cityPerformance.map((row: any) => (
+                    <tr key={row.city} className="border-b border-[#F3F4F6] hover:bg-[#F9FAFB]" data-testid={`city-row-${row.city}`}>
+                      <td className="px-4 py-3 font-medium text-[#111C3D]">{row.city}</td>
+                      <td className="px-4 py-3 text-right text-[#374151]">{row.users}</td>
+                      <td className="px-4 py-3 text-right text-[#374151]">{row.search_profiles}</td>
+                      <td className="px-4 py-3 text-right text-[#374151]">{row.matches}</td>
+                      <td className="px-4 py-3 text-right text-[#374151]">{row.listing_views}</td>
+                      <td className="px-4 py-3 text-right text-[#374151]">{row.reactions}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -904,6 +1057,7 @@ export default function AdminPortalPage() {
 
           <main className="flex-1 min-w-0 w-full">
             {activeTab === "overview" && <OverviewTab />}
+            {activeTab === "growth" && <GrowthTab />}
             {activeTab === "users" && <UsersTab />}
             {activeTab === "subscriptions" && <SubscriptionsTab />}
             {activeTab === "profiles" && <SearchProfilesTab />}

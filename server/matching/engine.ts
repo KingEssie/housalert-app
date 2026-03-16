@@ -542,6 +542,12 @@ async function insertMatchIfNew(
     }
   }).catch(() => {});
 
+  hasActivationEvent(userId, "first_match_received").then(alreadyHas => {
+    if (!alreadyHas) {
+      trackActivationEvent(userId, "first_match_received", { listingId, matchId: matchRow.id, city: listing?.city }).catch(() => {});
+    }
+  }).catch(() => {});
+
   try {
     await upsertUserMatch({
       user_id: userId,

@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api-base";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Home, X, Check, Clock, Search, Eye, Shield, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabase";
 import { useTranslation } from "@/i18n";
 import { useEmbedded } from "@/hooks/use-embedded";
 import { useHashSearch } from "@/lib/hash-search";
+import { trackEvent, trackEventLazy } from "@/lib/track-event";
 
 interface Plan {
   id: string;
@@ -76,8 +77,13 @@ export default function OnboardingValuePage() {
   const [selectedPlan, setSelectedPlan] = useState("two_month");
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    trackEventLazy("pricing_viewed");
+  }, []);
+
   async function handleCheckout() {
     setLoading(true);
+    trackEvent("checkout_started", { plan: selectedPlan });
     try {
       if (isEmbedded) {
         const sp = new URLSearchParams(searchString);
