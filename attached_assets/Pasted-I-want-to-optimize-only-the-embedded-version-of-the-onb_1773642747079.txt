@@ -1,0 +1,57 @@
+I want to optimize only the embedded version of the onboarding location step for Duda. Do NOT change the normal standalone version unless explicitly needed. Only make these changes in embed mode.
+
+Page:
+- client/src/pages/onboarding-location.tsx
+
+Current situation:
+The embed mode works now, but it still has too much spacing and unnecessary information. I want a more compact widget-like layout.
+
+Required changes for EMBED MODE ONLY:
+
+1. Remove the page title block completely
+- Hide/remove the title:
+  "Waar zoek je een woning?"
+- Also remove the extra empty vertical spacing that belongs to that title block
+- Keep the progress dots visible
+
+2. Reduce spacing between district dropdown and map
+- The horizontal divider line between the district dropdown and the map should be removed in embed mode
+- The map should sit much closer to the dropdown
+- Tighten vertical spacing in this section so it feels more compact
+
+3. Replace the "Wissen" text in the city/search field
+- In embed mode only, replace the text button "Wissen" with a simple close/X icon button
+- Keep the existing clear functionality exactly the same
+
+4. Move CTA directly under the map
+- In embed mode only, place the primary CTA button ("Volgende stap") directly below the map
+- The gap between map and button should be small and clean
+
+5. Move match estimate card below the button
+- In embed mode only, the box that says how many matches the user can expect should be placed directly below the CTA button
+- Keep the content, only change the order/layout
+
+6. Remove unnecessary extra spacing overall
+- Tighten vertical spacing throughout embed mode so the widget feels denser and more conversion-focused
+- Do NOT break mobile layout
+- Do NOT break standalone non-embed layout
+- Do NOT change functionality
+
+7. Keep this exact order in EMBED MODE:
+- progress dots
+- tabs
+- city/search field
+- districts dropdown
+- map
+- primary button
+- expected matches card
+
+Notes:
+- This is only for embed mode
+- Standalone HousAlert onboarding can remain as-is
+- Keep style aligned with current HousAlert design
+
+After changes, give me:
+A. exact file changed
+B. what was changed in embed mode
+C. confirmation that standalone layout was preserved

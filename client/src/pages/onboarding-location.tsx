@@ -298,7 +298,7 @@ export default function OnboardingLocationPage() {
         </header>
       )}
 
-      <div className={`${containerClass} mx-auto w-full px-5 pt-4 pb-1`}>
+      <div className={`${containerClass} mx-auto w-full px-5 ${isEmbedded ? "pt-2 pb-0" : "pt-4 pb-1"}`}>
         <div className="flex items-center justify-center gap-2 py-2">
           {[1, 2, 3, 4].map((step) => (
             <div
@@ -312,12 +312,14 @@ export default function OnboardingLocationPage() {
         </div>
       </div>
 
-      <main className={`flex-1 ${containerClass} mx-auto w-full px-5 pb-8 pt-3`}>
-        <h1 className="text-[24px] font-[800] text-[#111C3D] leading-[1.15] tracking-[-0.02em] mb-5" data-testid="text-location-title">
-          {t("onboardingLocation.title")}
-        </h1>
+      <main className={`flex-1 ${containerClass} mx-auto w-full px-5 ${isEmbedded ? "pb-4 pt-1" : "pb-8 pt-3"}`}>
+        {!isEmbedded && (
+          <h1 className="text-[24px] font-[800] text-[#111C3D] leading-[1.15] tracking-[-0.02em] mb-5" data-testid="text-location-title">
+            {t("onboardingLocation.title")}
+          </h1>
+        )}
 
-        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
+        <div className={`bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] ${isEmbedded ? "p-4" : "p-6"}`}>
           <div className="flex border-b border-[#E5E7EB]">
             {tabs.map((tab) => (
               <button
@@ -338,7 +340,7 @@ export default function OnboardingLocationPage() {
             ))}
           </div>
 
-          <div className="pt-5">
+          <div className={isEmbedded ? "pt-3" : "pt-5"}>
             {activeTab === "wijken" && (
               <div className="space-y-0">
                 <div className="relative" ref={containerRef}>
@@ -373,10 +375,10 @@ export default function OnboardingLocationPage() {
                           places.clear();
                           setNominatimResults([]);
                         }}
-                        className="text-xs text-[#1F2937] hover:text-[#1F2937]"
+                        className={isEmbedded ? "w-6 h-6 flex items-center justify-center rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB]" : "text-xs text-[#1F2937] hover:text-[#1F2937]"}
                         data-testid="button-clear-city"
                       >
-                        {t("onboardingLocation.clear")}
+                        {isEmbedded ? <X className="w-3.5 h-3.5 text-[#6B7280]" /> : t("onboardingLocation.clear")}
                       </button>
                     )}
                   </div>
@@ -437,7 +439,7 @@ export default function OnboardingLocationPage() {
                 </div>
 
                 {selectedCity && activeCityDistricts.length > 0 && (
-                  <div className="py-5 border-b border-[#E5E7EB]">
+                  <div className={isEmbedded ? "pt-3 pb-2" : "py-5 border-b border-[#E5E7EB]"}>
                     <label className="text-[16px] font-[700] text-[#111C3D] mb-3 block">{t("onboardingLocation.districtsLabel")} <span className="font-normal text-[13px] text-[#1F2937]">{t("onboardingLocation.optional")}</span></label>
                     <div className="relative" ref={districtDropdownRef}>
                       <button
@@ -504,7 +506,7 @@ export default function OnboardingLocationPage() {
                 )}
 
                 {selectedCity && selectedCity.lat !== 0 && selectedCity.lng !== 0 && !districtDropdownOpen && (
-                  <div className="py-5 border-b border-[#E5E7EB]">
+                  <div className={isEmbedded ? "pt-2 pb-1" : "py-5 border-b border-[#E5E7EB]"}>
                     <div className="rounded-2xl overflow-hidden" data-testid="card-map-preview" style={{ height: "180px" }}>
                       <MapContainer
                         center={[selectedCity.lat, selectedCity.lng]}
@@ -578,10 +580,10 @@ export default function OnboardingLocationPage() {
                           places.clear();
                           setNominatimResults([]);
                         }}
-                        className="text-xs text-[#1F2937] hover:text-[#1F2937]"
+                        className={isEmbedded ? "w-6 h-6 flex items-center justify-center rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB]" : "text-xs text-[#1F2937] hover:text-[#1F2937]"}
                         data-testid="button-clear-city"
                       >
-                        {t("onboardingLocation.clear")}
+                        {isEmbedded ? <X className="w-3.5 h-3.5 text-[#6B7280]" /> : t("onboardingLocation.clear")}
                       </button>
                     )}
                   </div>
@@ -769,45 +771,85 @@ export default function OnboardingLocationPage() {
             )}
           </div>
 
-          {(selectedCity || (activeTab === "reistijd" && travelAddress)) && !districtDropdownOpen && (
-            <div className="pt-5 mt-1">
-              <div className="bg-[#EBF2FF] rounded-lg p-4 mb-6" data-testid="card-estimate-preview">
-                {estimateLoading ? (
-                  <div className="flex items-center gap-3">
-                    <Loader2 className="w-5 h-5 text-[#0D6EFD] animate-spin" />
-                    <span className="text-sm text-[#1F2937]">{t("onboardingLocation.estimateLoading")}</span>
-                  </div>
-                ) : (
-                  <>
-                    <p className="text-sm text-[#1F2937] leading-relaxed">
-                      {t("onboardingLocation.estimateText", { count: estimate ?? 0 })}
-                    </p>
-                    {estimate !== null && estimate < 5 && (
-                      <p className="text-[13px] text-[#6B7280] mt-1.5">
-                        {t("onboardingLocation.lowMatchHint")}
-                      </p>
+          {isEmbedded ? (
+            <>
+              <Button
+                size="lg"
+                className="w-full h-[48px] rounded-full text-[16px] font-semibold bg-[#0D6EFD] hover:bg-[#0B5ED7] shadow-none mt-3"
+                disabled={!canProceed}
+                onClick={handleNext}
+                data-testid="button-next-step"
+              >
+                {t("onboardingLocation.nextStep")}
+              </Button>
+
+              {(selectedCity || (activeTab === "reistijd" && travelAddress)) && !districtDropdownOpen && (
+                <div className="mt-3">
+                  <div className="bg-[#EBF2FF] rounded-lg p-3" data-testid="card-estimate-preview">
+                    {estimateLoading ? (
+                      <div className="flex items-center gap-3">
+                        <Loader2 className="w-5 h-5 text-[#0D6EFD] animate-spin" />
+                        <span className="text-sm text-[#1F2937]">{t("onboardingLocation.estimateLoading")}</span>
+                      </div>
+                    ) : (
+                      <>
+                        <p className="text-sm text-[#1F2937] leading-relaxed">
+                          {t("onboardingLocation.estimateText", { count: estimate ?? 0 })}
+                        </p>
+                        {estimate !== null && estimate < 5 && (
+                          <p className="text-[13px] text-[#6B7280] mt-1">
+                            {t("onboardingLocation.lowMatchHint")}
+                          </p>
+                        )}
+                      </>
                     )}
-                  </>
-                )}
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              {(selectedCity || (activeTab === "reistijd" && travelAddress)) && !districtDropdownOpen && (
+                <div className="pt-5 mt-1">
+                  <div className="bg-[#EBF2FF] rounded-lg p-4 mb-6" data-testid="card-estimate-preview">
+                    {estimateLoading ? (
+                      <div className="flex items-center gap-3">
+                        <Loader2 className="w-5 h-5 text-[#0D6EFD] animate-spin" />
+                        <span className="text-sm text-[#1F2937]">{t("onboardingLocation.estimateLoading")}</span>
+                      </div>
+                    ) : (
+                      <>
+                        <p className="text-sm text-[#1F2937] leading-relaxed">
+                          {t("onboardingLocation.estimateText", { count: estimate ?? 0 })}
+                        </p>
+                        {estimate !== null && estimate < 5 && (
+                          <p className="text-[13px] text-[#6B7280] mt-1.5">
+                            {t("onboardingLocation.lowMatchHint")}
+                          </p>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              <div className={`bg-[#F0F7FF] rounded-xl p-4 mt-4 mb-2 ${districtDropdownOpen ? "hidden" : ""}`} data-testid="info-helper-box">
+                <p className="text-[13px] text-[#374151] leading-[1.5]">
+                  {t("onboardingLocation.helperText")}
+                </p>
               </div>
-            </div>
+
+              <Button
+                size="lg"
+                className="w-full h-[56px] rounded-full text-[16px] font-semibold bg-[#0D6EFD] hover:bg-[#0B5ED7] shadow-none mt-2"
+                disabled={!canProceed}
+                onClick={handleNext}
+                data-testid="button-next-step"
+              >
+                {t("onboardingLocation.nextStep")}
+              </Button>
+            </>
           )}
-
-          <div className={`bg-[#F0F7FF] rounded-xl p-4 mt-4 mb-2 ${districtDropdownOpen ? "hidden" : ""}`} data-testid="info-helper-box">
-            <p className="text-[13px] text-[#374151] leading-[1.5]">
-              {t("onboardingLocation.helperText")}
-            </p>
-          </div>
-
-          <Button
-            size="lg"
-            className="w-full h-[56px] rounded-full text-[16px] font-semibold bg-[#0D6EFD] hover:bg-[#0B5ED7] shadow-none mt-2"
-            disabled={!canProceed}
-            onClick={handleNext}
-            data-testid="button-next-step"
-          >
-            {t("onboardingLocation.nextStep")}
-          </Button>
         </div>
       </main>
     </div>
