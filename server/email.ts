@@ -94,10 +94,23 @@ async function getUncachableResendClient() {
   };
 }
 
+const SANDBOX_REDIRECT_EMAIL = "martin.essie87@gmail.com";
+
+function isSandboxMode(fromEmail: string | undefined | null): boolean {
+  const addr = fromEmail || "onboarding@resend.dev";
+  return addr.includes("@resend.dev");
+}
+
 function formatFromAddress(fromEmail: string | undefined | null): string {
   if (!fromEmail) return "HousAlert <onboarding@resend.dev>";
   if (fromEmail.includes("<")) return fromEmail;
   return `HousAlert <${fromEmail}>`;
+}
+
+function resolveRecipient(originalEmail: string, fromEmail: string | undefined | null): { to: string; redirected: boolean } {
+  if (!isSandboxMode(fromEmail)) return { to: originalEmail, redirected: false };
+  if (originalEmail.toLowerCase() === SANDBOX_REDIRECT_EMAIL.toLowerCase()) return { to: originalEmail, redirected: false };
+  return { to: SANDBOX_REDIRECT_EMAIL, redirected: true };
 }
 
 function formatPrice(price: number): string {
@@ -284,22 +297,38 @@ export async function sendMatchAlert(
 ${listingCard(listing, true)}`;
 
     const fromAddr = formatFromAddress(fromEmail);
-    log(`[EMAIL SEND] from="${fromAddr}" to="${userEmail}" subject="${subject}"`);
+    const { to: actualTo, redirected } = resolveRecipient(userEmail, fromEmail);
+    const actualSubject = redirected
+      ? sanitizeSubject(`[${userEmail}] ${subject}`)
+      : subject;
+    const actualText = redirected
+      ? `[Sandbox redirect — original recipient: ${userEmail}]\n\n${textBody}`
+      : textBody;
+
+    if (redirected) {
+      log(`[EMAIL SANDBOX] Redirecting from ${userEmail} → ${actualTo}`);
+    }
+    log(`[EMAIL SEND] from="${fromAddr}" to="${actualTo}" subject="${actualSubject}"`);
 
     const { data, error } = await client.emails.send({
       from: fromAddr,
-      to: userEmail,
-      subject,
-      text: textBody,
-      html: emailWrapper(htmlContent, preheader),
+      to: actualTo,
+      subject: actualSubject,
+      text: actualText,
+      html: emailWrapper(
+        redirected
+          ? `<div style="background:#FEF3C7;border:1px solid #F59E0B;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#92400E;">📋 Sandbox mode — origineel voor: <strong>${escapeHtml(userEmail)}</strong></div>${htmlContent}`
+          : htmlContent,
+        preheader
+      ),
     });
 
     if (error) {
-      log(`[EMAIL FAIL] to=${userEmail} listing="${listing.title}" from="${fromAddr}" error=${error.message} name=${(error as any).name || "unknown"} statusCode=${(error as any).statusCode || "N/A"}`);
+      log(`[EMAIL FAIL] to=${actualTo} listing="${listing.title}" from="${fromAddr}" error=${error.message} name=${(error as any).name || "unknown"} statusCode=${(error as any).statusCode || "N/A"}`);
       return false;
     }
 
-    log(`[EMAIL OK] to=${userEmail} listing="${listing.title}" id=${(data as any)?.id || "N/A"}`);
+    log(`[EMAIL OK] to=${actualTo}${redirected ? ` (was ${userEmail})` : ""} listing="${listing.title}" id=${(data as any)?.id || "N/A"}`);
     return true;
   } catch (err: any) {
     log(`[EMAIL ERROR] to=${userEmail} err=${err.message} stack=${err.stack?.split("\n")[1]?.trim() || "N/A"}`);
@@ -350,22 +379,38 @@ export async function sendBatchMatchAlert(
 ${htmlListings}`;
 
     const fromAddr = formatFromAddress(fromEmail);
-    log(`[EMAIL SEND] batch from="${fromAddr}" to="${userEmail}" count=${listings.length} subject="${subject}"`);
+    const { to: actualTo, redirected } = resolveRecipient(userEmail, fromEmail);
+    const actualSubject = redirected
+      ? sanitizeSubject(`[${userEmail}] ${subject}`)
+      : subject;
+    const actualText = redirected
+      ? `[Sandbox redirect — original recipient: ${userEmail}]\n\n${textBody}`
+      : textBody;
+
+    if (redirected) {
+      log(`[EMAIL SANDBOX] Batch redirecting from ${userEmail} → ${actualTo}`);
+    }
+    log(`[EMAIL SEND] batch from="${fromAddr}" to="${actualTo}" count=${listings.length} subject="${actualSubject}"`);
 
     const { data, error } = await client.emails.send({
       from: fromAddr,
-      to: userEmail,
-      subject,
-      text: textBody,
-      html: emailWrapper(htmlContent, preheader),
+      to: actualTo,
+      subject: actualSubject,
+      text: actualText,
+      html: emailWrapper(
+        redirected
+          ? `<div style="background:#FEF3C7;border:1px solid #F59E0B;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#92400E;">📋 Sandbox mode — origineel voor: <strong>${escapeHtml(userEmail)}</strong></div>${htmlContent}`
+          : htmlContent,
+        preheader
+      ),
     });
 
     if (error) {
-      log(`[EMAIL FAIL] batch to=${userEmail} count=${listings.length} from="${fromAddr}" error=${error.message} name=${(error as any).name || "unknown"} statusCode=${(error as any).statusCode || "N/A"}`);
+      log(`[EMAIL FAIL] batch to=${actualTo} count=${listings.length} from="${fromAddr}" error=${error.message} name=${(error as any).name || "unknown"} statusCode=${(error as any).statusCode || "N/A"}`);
       return false;
     }
 
-    log(`[EMAIL OK] batch to=${userEmail} count=${listings.length} id=${(data as any)?.id || "N/A"}`);
+    log(`[EMAIL OK] batch to=${actualTo}${redirected ? ` (was ${userEmail})` : ""} count=${listings.length} id=${(data as any)?.id || "N/A"}`);
     return true;
   } catch (err: any) {
     log(`[EMAIL ERROR] batch to=${userEmail} err=${err.message} stack=${err.stack?.split("\n")[1]?.trim() || "N/A"}`);
