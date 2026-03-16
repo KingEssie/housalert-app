@@ -791,10 +791,7 @@ export default function AdminPortalPage() {
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    if (!user) {
-      navigate("/login");
-      return;
-    }
+    if (!user) return;
     adminFetch("/api/admin/portal/system-status")
       .then(() => setChecking(false))
       .catch((err) => {

@@ -72,7 +72,15 @@ function ProtectedRoute({ component: Component, skipOnboardingCheck }: { compone
   }, [user, loading, skipOnboardingCheck]);
 
   if (loading) return null;
-  if (!user) return <Redirect to="/login" />;
+  if (!user) {
+    const currentPath = window.location.hash
+      ? window.location.hash.replace("#", "")
+      : window.location.pathname;
+    const returnTo = currentPath && currentPath !== "/" && currentPath !== "/login"
+      ? `/login?returnTo=${encodeURIComponent(currentPath)}`
+      : "/login";
+    return <Redirect to={returnTo} />;
+  }
   if (!skipOnboardingCheck && checking) return null;
   if (!skipOnboardingCheck && needsOnboarding) return <Redirect to="/onboarding" />;
   return <Component />;
@@ -140,7 +148,7 @@ function Router() {
       <Route path="/account/payment-method" component={() => <ProtectedRoute component={PaymentMethodPage} />} />
       <Route path="/account/change-password" component={() => <ProtectedRoute component={ChangePasswordPage} />} />
       <Route path="/account/delete" component={() => <ProtectedRoute component={DeleteAccountPage} />} />
-      <Route path="/admin/portal" component={AdminPortalPage} />
+      <Route path="/admin/portal" component={() => <ProtectedRoute component={AdminPortalPage} skipOnboardingCheck />} />
       <Route path="/admin/ingestion" component={AdminIngestionPage} />
       <Route path="/admin/match-audit" component={() => <ProtectedRoute component={AdminMatchAuditPage} />} />
       <Route path="/admin/activation" component={() => <ProtectedRoute component={AdminActivationPage} />} />

@@ -13,7 +13,16 @@ export default function LoginPage() {
   const { toast } = useToast();
   const { t } = useTranslation();
 
-  const returnTo = new URLSearchParams(window.location.search).get("returnTo");
+  const returnTo = (() => {
+    const fromSearch = new URLSearchParams(window.location.search).get("returnTo");
+    if (fromSearch) return fromSearch;
+    const hash = window.location.hash;
+    const qIdx = hash.indexOf("?");
+    if (qIdx >= 0) {
+      return new URLSearchParams(hash.substring(qIdx)).get("returnTo");
+    }
+    return null;
+  })();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

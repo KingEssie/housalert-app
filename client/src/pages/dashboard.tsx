@@ -1599,6 +1599,11 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
               <p className="text-[13px] font-semibold text-[#111C3D] tracking-wide mb-3">Admin</p>
               <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
                 <AccountSettingsRow
+                  label="Admin Portal"
+                  onClick={() => navigate("/admin/portal")}
+                />
+                <div className="h-px bg-[#E5E7EB] mx-5" />
+                <AccountSettingsRow
                   label="Activation Dashboard"
                   onClick={() => navigate("/admin/activation")}
                 />
