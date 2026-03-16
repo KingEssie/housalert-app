@@ -1,0 +1,225 @@
+We need to restructure the Duda embed signup funnel into a shorter 2-step conversion funnel.
+
+IMPORTANT:
+This is only for EMBED MODE.
+Do NOT break the normal standalone onboarding flow unless necessary.
+Use the existing embed mode logic already implemented (embed=true and/or embedded detection).
+
+Goal:
+The embedded funnel should have only:
+
+Step 1 = Location
+Step 2 = Filters
+
+Then go directly to:
+Membership / value page
+→ Stripe checkout
+→ Account creation
+→ Home/dashboard
+
+This is a conversion-focused website funnel, not the full app onboarding.
+
+================================================
+EMBED FLOW TARGET
+================================================
+
+Embedded flow must become:
+
+1. Location step
+2. Filters step
+3. Membership/value page
+4. Stripe checkout
+5. Account creation
+6. Home/dashboard
+
+Remove the longer 4-step feeling for embed mode.
+
+================================================
+STEP 1 — EMBED LOCATION PAGE
+================================================
+
+File to update:
+- client/src/pages/onboarding-location.tsx
+
+In EMBED MODE ONLY:
+
+1. Keep this page as step 1
+2. Keep progress dots visible
+3. Remove the title:
+   "Waar zoek je een woning?"
+4. Make the layout more compact
+5. District selection must remain a dropdown / multiselect dropdown
+6. Reduce spacing between:
+   - city field
+   - district dropdown
+   - map
+7. Remove the divider line above the map in embed mode
+8. The map should sit directly below the district dropdown
+9. Under the map:
+   - place the primary CTA button immediately
+10. Under the button:
+   - place the expected matches text/card
+
+Desired visual order in EMBED MODE:
+- progress dots
+- tabs
+- city field
+- district dropdown
+- map
+- primary button
+- expected matches text/card
+
+Keep:
+- city default = Berlin
+- map visible
+- tabs (Wijken / Radius / Reistijd)
+
+================================================
+STEP 2 — EMBED FILTERS PAGE
+================================================
+
+File to update:
+- client/src/pages/onboarding-filters.tsx
+
+In EMBED MODE ONLY:
+
+This page should contain only these fields:
+- Min prijs
+- Max prijs
+- Slaapkamers
+- Min oppervlakte
+
+Remove any extra preferences or additional setup feeling from embed mode.
+
+Layout:
+- first row: Min prijs + Max prijs side by side
+- below that: Slaapkamers
+- below that: Min oppervlakte
+
+Primary CTA text must be changed to:
+
+"Maak zoekopdracht aan"
+
+Below that CTA show:
+
+"Voor jouw zoekopdracht verwachten we
+~73 woningen per week."
+
+Use the existing dynamic estimate logic if available.
+If the number is dynamic, keep it dynamic.
+If it is currently a calculated estimate card, keep the estimate content but adapt the layout to the line above.
+
+Do NOT use:
+- "Bekijk mijn matches"
+
+In embed mode, this page should feel compact and focused.
+
+================================================
+AFTER STEP 2 — GO DIRECTLY TO MEMBERSHIP PAGE
+================================================
+
+Files to review:
+- client/src/pages/onboarding-filters.tsx
+- client/src/pages/onboarding-value.tsx
+- routing if needed
+
+Required behavior in EMBED MODE:
+After user clicks "Maak zoekopdracht aan" on step 2:
+→ go directly to the membership/value page
+
+Do NOT continue to:
+- onboarding-preferences
+- signup step
+- extra funnel steps
+
+================================================
+MEMBERSHIP / VALUE PAGE
+================================================
+
+File:
+- client/src/pages/onboarding-value.tsx
+
+In EMBED MODE:
+Keep this page, but it is now the next step immediately after filters.
+
+Required:
+1. Keep the softer orange comparison block ("Zoeken zonder HousAlert")
+2. Keep the green "met HousAlert" block
+3. Keep plan selection and Stripe CTA
+4. Ensure this page still feels compact enough for embed use
+
+================================================
+PAYMENT FLOW ORDER CHANGE
+================================================
+
+This is important.
+
+Desired flow for EMBED MODE:
+
+Step 1 Location
+→ Step 2 Filters
+→ Membership/value page
+→ Stripe checkout
+→ Account creation
+→ Home/dashboard
+
+This means:
+- account creation should happen AFTER successful payment in embed mode
+- not before payment
+
+Please implement this embed-specific order safely.
+
+If needed:
+- temporarily store step 1 + step 2 funnel data until payment is completed
+- after successful Stripe payment, send user to account creation
+- after account creation, finish setup and redirect to dashboard/home
+
+The key requirement:
+For EMBED MODE, do not require account creation before the membership/payment step.
+
+================================================
+STANDALONE FLOW
+================================================
+
+Keep standalone/non-embed onboarding behavior unchanged unless absolutely necessary.
+
+This shorter 2-step conversion funnel should apply only to embed mode.
+
+================================================
+CTA / COPY REQUIREMENTS
+================================================
+
+Use exactly this CTA on step 2:
+
+"Maak zoekopdracht aan"
+
+Use this expected matches text below the button:
+
+"Voor jouw zoekopdracht verwachten we
+~73 woningen per week."
+
+If the count is dynamic:
+preserve the dynamic count but keep this wording structure.
+
+================================================
+DO NOT DO
+================================================
+
+- do not redesign unrelated pages
+- do not break standalone onboarding
+- do not remove maps
+- do not reintroduce extra preferences into embed mode
+- do not keep old step order in embed mode
+- do not place account creation before payment in embed mode
+
+================================================
+REPLY IN EXACTLY THIS STRUCTURE
+================================================
+
+A. Embed flow restructuring
+B. Step 1 compact embed changes
+C. Step 2 compact filters changes
+D. Membership page transition
+E. Payment and account-creation order
+F. Files changed
+G. QA verification

@@ -1468,4 +1468,15 @@ export const nl: Record<string, any> = {
     tip: "Tip: Zorg dat je alle documenten digitaal (als PDF) bij de hand hebt, zodat je snel kunt reageren op nieuwe woningen.",
     saveFailed: "Opslaan mislukt",
   },
+
+  embedSuccess: {
+    title: "Betaling gelukt!",
+    subtitle: "Maak nu je account aan om je zoekopdracht te activeren.",
+    createAccount: "Account aanmaken",
+  },
+
+  embedFilters: {
+    cta: "Maak zoekopdracht aan",
+    estimateText: "Voor jouw zoekopdracht verwachten we ~{count} woningen per week.",
+  },
 };

@@ -1369,6 +1369,149 @@ export async function registerRoutes(
     }
   });
 
+  app.post("/api/checkout/session-guest", async (req, res) => {
+    try {
+      const { plan } = req.body;
+      if (!plan || !PLAN_PRICE_MAP[plan]) {
+        return res.status(400).json({ error: "Invalid plan. Use: monthly, two_month, or three_month" });
+      }
+
+      const stripePriceId = PLAN_PRICE_MAP[plan];
+      if (!stripePriceId) {
+        return res.status(503).json({ error: "stripe_not_configured", message: "Stripe prices are not yet configured." });
+      }
+
+      if (!stripeAvailable) {
+        return res.status(503).json({ error: "stripe_not_configured", message: "Stripe is not available." });
+      }
+
+      const { getUncachableStripeClient } = await import("./stripe/stripeClient");
+      const stripe = await getUncachableStripeClient();
+
+      const host = req.headers.host || "localhost:5000";
+      const protocol = req.headers["x-forwarded-proto"] || req.protocol;
+      const baseUrl = process.env.APP_PUBLIC_BASE_URL || `${protocol}://${host}`;
+
+      log(`[checkout-guest] Creating guest session: plan=${plan}, priceId=${stripePriceId}`);
+
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        line_items: [{ price: stripePriceId, quantity: 1 }],
+        mode: "subscription",
+        subscription_data: {
+          trial_period_days: 14,
+          metadata: { plan, source: "embed_guest" },
+        },
+        success_url: `${baseUrl}/?embed=true&session_id={CHECKOUT_SESSION_ID}#/embed-success`,
+        cancel_url: `${baseUrl}/?embed=true#/onboarding/value`,
+        metadata: { plan, source: "embed_guest" },
+      });
+
+      log(`[checkout-guest] Session created: id=${session.id}, url=${session.url?.substring(0, 60)}...`);
+      return res.json({ url: session.url });
+    } catch (err: any) {
+      log(`[checkout-guest] Error: ${err.message}`);
+      console.error("Guest checkout error:", err);
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/checkout/link-session", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { session_id } = req.body;
+      if (!session_id) return res.status(400).json({ error: "session_id is required" });
+
+      if (!stripeAvailable) {
+        return res.status(503).json({ error: "Stripe not configured" });
+      }
+
+      const { getUncachableStripeClient } = await import("./stripe/stripeClient");
+      const stripe = await getUncachableStripeClient();
+
+      const session = await stripe.checkout.sessions.retrieve(session_id);
+
+      if (session.metadata?.source !== "embed_guest") {
+        log(`[checkout-link] Rejected: session ${session_id} source=${session.metadata?.source}, expected embed_guest`);
+        return res.status(403).json({ error: "Session not eligible for linking" });
+      }
+
+      const existingCustomerId = session.customer as string | null;
+      if (existingCustomerId) {
+        const customer = await stripe.customers.retrieve(existingCustomerId);
+        if (customer && !("deleted" in customer && customer.deleted)) {
+          const custMeta = (customer as any).metadata;
+          if (custMeta?.supabase_user_id && custMeta.supabase_user_id !== user.id) {
+            log(`[checkout-link] Rejected: session ${session_id} already linked to different user`);
+            return res.status(403).json({ error: "Session already linked to another account" });
+          }
+        }
+      }
+
+      const stripeSubscriptionId = session.subscription as string;
+      if (!stripeSubscriptionId) {
+        log(`[checkout-link] No subscription ID in session ${session_id}`);
+        return res.status(202).json({ success: false, message: "Payment processing" });
+      }
+
+      const sub = await stripe.subscriptions.retrieve(stripeSubscriptionId);
+      const isTrialing = sub.status === "trialing";
+      const isPaid = session.payment_status === "paid";
+
+      if (!isPaid && !isTrialing) {
+        return res.status(400).json({ error: "Payment not completed" });
+      }
+
+      const plan = session.metadata?.plan || sub.metadata?.plan || "monthly";
+      let stripeCustomerId = session.customer as string;
+
+      if (stripeCustomerId) {
+        await stripe.customers.update(stripeCustomerId, {
+          email: user.email!,
+          metadata: { supabase_user_id: user.id },
+        });
+      } else {
+        const customer = await stripe.customers.create({
+          email: user.email!,
+          metadata: { supabase_user_id: user.id },
+        });
+        stripeCustomerId = customer.id;
+      }
+
+      await stripe.subscriptions.update(stripeSubscriptionId, {
+        metadata: { supabase_user_id: user.id, plan },
+      });
+
+      if (isTrialing) {
+        const trialEnd = (sub as any).trial_end;
+        const trialEndsAt = trialEnd && trialEnd > 0
+          ? new Date(trialEnd * 1000)
+          : new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+        await updateSubscriptionFromCheckout(user.id, stripeCustomerId, stripeSubscriptionId, plan, null, trialEndsAt);
+      } else {
+        const rawEnd = (sub as any).current_period_end;
+        const periodEnd = rawEnd && rawEnd > 0
+          ? new Date(rawEnd * 1000)
+          : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+        await updateSubscriptionFromCheckout(user.id, stripeCustomerId, stripeSubscriptionId, plan, periodEnd, null);
+      }
+
+      log(`[checkout-link] Linked session ${session_id} to user ${user.id}, plan=${plan}`);
+      trackActivationEvent(user.id, "subscription_started", { plan, source: "embed_guest_linked" });
+
+      const status = await getSubscriptionStatus(user.id);
+      return res.json({ success: true, subscription: status });
+    } catch (err: any) {
+      log(`[checkout-link] Error: ${err.message}`);
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   app.post("/api/checkout", async (req, res) => {
     try {
       const token = req.headers.authorization?.replace("Bearer ", "");

@@ -1421,4 +1421,15 @@ export const de: Record<string, any> = {
     tip: "Tipp: Stelle sicher, dass alle Dokumente digital (als PDF) verfügbar sind, damit du schnell auf neue Wohnungen reagieren kannst.",
     saveFailed: "Speichern fehlgeschlagen",
   },
+
+  embedSuccess: {
+    title: "Zahlung erfolgreich!",
+    subtitle: "Erstelle jetzt dein Konto, um deine Suchbenachrichtigung zu aktivieren.",
+    createAccount: "Konto erstellen",
+  },
+
+  embedFilters: {
+    cta: "Suchauftrag erstellen",
+    estimateText: "Für deine Suche erwarten wir ~{count} Wohnungen pro Woche.",
+  },
 };

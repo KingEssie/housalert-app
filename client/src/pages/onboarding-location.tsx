@@ -300,7 +300,7 @@ export default function OnboardingLocationPage() {
 
       <div className={`${containerClass} mx-auto w-full px-5 ${isEmbedded ? "pt-2 pb-0" : "pt-4 pb-1"}`}>
         <div className="flex items-center justify-center gap-2 py-2">
-          {[1, 2, 3, 4].map((step) => (
+          {(isEmbedded ? [1, 2] : [1, 2, 3, 4]).map((step) => (
             <div
               key={step}
               className={`w-2 h-2 rounded-full transition-all ${

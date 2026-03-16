@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { useTranslation } from "@/i18n";
 import { useEmbedded } from "@/hooks/use-embedded";
+import { useHashSearch } from "@/lib/hash-search";
 
 interface Plan {
   id: string;
@@ -70,6 +71,7 @@ export default function OnboardingValuePage() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const { isEmbedded, containerClass } = useEmbedded();
+  const searchString = useHashSearch();
 
   const [selectedPlan, setSelectedPlan] = useState("two_month");
   const [loading, setLoading] = useState(false);
@@ -77,6 +79,41 @@ export default function OnboardingValuePage() {
   async function handleCheckout() {
     setLoading(true);
     try {
+      if (isEmbedded) {
+        const sp = new URLSearchParams(searchString);
+        const funnel: Record<string, string> = {};
+        sp.forEach((v, k) => { funnel[k] = v; });
+        localStorage.setItem("housalert_embed_funnel", JSON.stringify(funnel));
+
+        const res = await apiFetch("/api/checkout/session-guest", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ plan: selectedPlan }),
+        });
+
+        const data = await res.json();
+
+        if (data.error) {
+          toast({
+            title: t("paywall.paymentFailed"),
+            description: data.message || data.error || t("paywall.tryAgainLater"),
+            variant: "destructive",
+          });
+          return;
+        }
+
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          toast({
+            title: t("paywall.paymentUnavailable"),
+            description: t("paywall.noCheckoutUrl"),
+            variant: "destructive",
+          });
+        }
+        return;
+      }
+
       const session = await supabase.auth.getSession();
       const token = session.data.session?.access_token;
 

@@ -644,4 +644,15 @@ export const en: Record<string, any> = {
     },
     continue: "View plans",
   },
+
+  embedSuccess: {
+    title: "Payment successful!",
+    subtitle: "Create your account now to activate your search alert.",
+    createAccount: "Create account",
+  },
+
+  embedFilters: {
+    cta: "Create search alert",
+    estimateText: "For your search we expect ~{count} listings per week.",
+  },
 };

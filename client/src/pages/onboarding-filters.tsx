@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useHashSearch } from "@/lib/hash-search";
 import { useLocation } from "wouter";
-import { Home, ChevronLeft, Euro, BedDouble, Maximize2 } from "lucide-react";
+import { Home, ChevronLeft, Euro, BedDouble, Maximize2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { useEmbedded } from "@/hooks/use-embedded";
+import { apiFetch } from "@/lib/api-base";
 
 const INPUT_CLS = "w-full h-[44px] pl-10 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-[#0D6EFD] focus:bg-white transition-all";
 const SELECT_CLS = "w-full h-[44px] pl-10 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-[#0D6EFD] focus:bg-white cursor-pointer appearance-none transition-all";
@@ -22,6 +23,20 @@ export default function OnboardingFiltersPage() {
   const [bedrooms, setBedrooms] = useState(params.get("minRooms") || "");
   const [minSize, setMinSize] = useState(params.get("minSize") || "");
 
+  const [estimate, setEstimate] = useState<number | null>(null);
+  const [estimateLoading, setEstimateLoading] = useState(false);
+
+  useEffect(() => {
+    if (!city) return;
+    setEstimateLoading(true);
+    const p = new URLSearchParams({ city });
+    apiFetch(`/api/estimate?${p.toString()}`)
+      .then((res) => (res.ok ? res.json() : { perWeekEstimate: 0 }))
+      .then((data) => setEstimate(data.perWeekEstimate ?? 0))
+      .catch(() => setEstimate(0))
+      .finally(() => setEstimateLoading(false));
+  }, [city]);
+
   function buildParams(): URLSearchParams {
     const p = new URLSearchParams(searchString);
     if (minPrice) p.set("minPrice", minPrice); else p.delete("minPrice");
@@ -32,7 +47,15 @@ export default function OnboardingFiltersPage() {
   }
 
   function handleNext() {
-    navigate(`/onboarding/preferences?${buildParams().toString()}`);
+    const builtParams = buildParams();
+    if (isEmbedded) {
+      const funnel: Record<string, string> = {};
+      builtParams.forEach((v, k) => { funnel[k] = v; });
+      localStorage.setItem("housalert_embed_funnel", JSON.stringify(funnel));
+      navigate(`/onboarding/value?${builtParams.toString()}`);
+    } else {
+      navigate(`/onboarding/preferences?${builtParams.toString()}`);
+    }
   }
 
   function handleBack() {
@@ -41,7 +64,7 @@ export default function OnboardingFiltersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F7FA] flex flex-col">
+    <div className={`min-h-screen ${isEmbedded ? "bg-white" : "bg-[#F5F7FA]"} flex flex-col`}>
       {!isEmbedded && (
         <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
           <div className={`${containerClass} mx-auto px-5 h-[56px] flex items-center gap-3`}>
@@ -62,9 +85,9 @@ export default function OnboardingFiltersPage() {
         </header>
       )}
 
-      <div className={`${containerClass} mx-auto w-full px-5 pt-4 pb-1`}>
+      <div className={`${containerClass} mx-auto w-full px-5 ${isEmbedded ? "pt-2 pb-0" : "pt-4 pb-1"}`}>
         <div className="flex items-center justify-center gap-2 py-2">
-          {[1, 2, 3, 4].map((step) => (
+          {(isEmbedded ? [1, 2] : [1, 2, 3, 4]).map((step) => (
             <div
               key={step}
               className={`w-2 h-2 rounded-full transition-all ${
@@ -76,15 +99,19 @@ export default function OnboardingFiltersPage() {
         </div>
       </div>
 
-      <main className={`flex-1 ${containerClass} mx-auto w-full px-5 pb-8 pt-3`}>
-        <h1 className="text-[24px] font-[800] text-[#111C3D] leading-[1.15] tracking-[-0.02em] mb-1" data-testid="text-filters-title">
-          {t("onboardingFilters.title")}
-        </h1>
-        <p className="text-[14px] text-[#6B7280] mb-5">
-          {t("onboardingFilters.subtitle", { city })}
-        </p>
+      <main className={`flex-1 ${containerClass} mx-auto w-full px-5 ${isEmbedded ? "pb-4 pt-1" : "pb-8 pt-3"}`}>
+        {!isEmbedded && (
+          <>
+            <h1 className="text-[24px] font-[800] text-[#111C3D] leading-[1.15] tracking-[-0.02em] mb-1" data-testid="text-filters-title">
+              {t("onboardingFilters.title")}
+            </h1>
+            <p className="text-[14px] text-[#6B7280] mb-5">
+              {t("onboardingFilters.subtitle", { city })}
+            </p>
+          </>
+        )}
 
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5">
+        <div className={`bg-white rounded-2xl border border-[#E5E7EB] ${isEmbedded ? "p-4" : "p-5"}`}>
           <div className="grid grid-cols-2 gap-3 mb-5">
             <div>
               <label className="text-[13px] font-[600] text-[#374151] mb-1.5 block">{t("onboardingFilters.minRent")}</label>
@@ -153,23 +180,47 @@ export default function OnboardingFiltersPage() {
           </div>
         </div>
 
-        <div className="pt-5 flex gap-3">
-          <Button
-            variant="outline"
-            className="h-[48px] px-6 rounded-full text-[15px] font-semibold border-[#E5E7EB] text-[#374151] hover:bg-[#F5F7FA]"
-            onClick={handleBack}
-            data-testid="button-back-filters"
-          >
-            {t("onboardingFilters.back")}
-          </Button>
-          <Button
-            className="flex-1 h-[48px] rounded-full text-[15px] font-semibold shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7]"
-            onClick={handleNext}
-            data-testid="button-next-filters"
-          >
-            {t("onboardingFilters.next")}
-          </Button>
-        </div>
+        {isEmbedded ? (
+          <div className="mt-3">
+            <Button
+              className="w-full h-[48px] rounded-full text-[15px] font-semibold shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7]"
+              onClick={handleNext}
+              data-testid="button-next-filters"
+            >
+              {t("embedFilters.cta")}
+            </Button>
+
+            {city && (
+              <p className="text-center text-[14px] text-[#6B7280] mt-3" data-testid="text-embed-estimate">
+                {estimateLoading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <Loader2 className="w-4 h-4 animate-spin text-[#0D6EFD]" />
+                  </span>
+                ) : (
+                  t("embedFilters.estimateText", { count: estimate ?? 0 })
+                )}
+              </p>
+            )}
+          </div>
+        ) : (
+          <div className="pt-5 flex gap-3">
+            <Button
+              variant="outline"
+              className="h-[48px] px-6 rounded-full text-[15px] font-semibold border-[#E5E7EB] text-[#374151] hover:bg-[#F5F7FA]"
+              onClick={handleBack}
+              data-testid="button-back-filters"
+            >
+              {t("onboardingFilters.back")}
+            </Button>
+            <Button
+              className="flex-1 h-[48px] rounded-full text-[15px] font-semibold shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7]"
+              onClick={handleNext}
+              data-testid="button-next-filters"
+            >
+              {t("onboardingFilters.next")}
+            </Button>
+          </div>
+        )}
       </main>
     </div>
   );
