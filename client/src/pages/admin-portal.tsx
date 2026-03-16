@@ -8,6 +8,7 @@ import {
   Mail, Smartphone, AlertTriangle, CheckCircle, XCircle,
   TrendingUp, Activity, Database, Globe, Zap, ArrowLeft,
   Target, ArrowDown, Percent, Eye, MessageCircle,
+  UserMinus, BarChart, ShieldAlert,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +17,8 @@ import { useLocation } from "wouter";
 const TABS = [
   { id: "overview", label: "Overview", icon: BarChart3 },
   { id: "growth", label: "Growth", icon: TrendingUp },
+  { id: "retention", label: "Retention", icon: UserMinus },
+  { id: "sources", label: "Source Perf.", icon: BarChart },
   { id: "users", label: "Users", icon: Users },
   { id: "subscriptions", label: "Subscriptions", icon: CreditCard },
   { id: "profiles", label: "Search Profiles", icon: Search },
@@ -125,6 +128,40 @@ function SourceHealthCard({ sourceHealth }: { sourceHealth: any[] }) {
   );
 }
 
+function AlertsBanner() {
+  const [alerts, setAlerts] = useState<any[]>([]);
+
+  useEffect(() => {
+    adminFetch("/api/admin/portal/alerts").then((d) => setAlerts(d.alerts || [])).catch(() => {});
+  }, []);
+
+  if (alerts.length === 0) return null;
+
+  const severityStyles: Record<string, string> = {
+    critical: "bg-red-50 border-red-200 text-red-800",
+    warning: "bg-amber-50 border-amber-200 text-amber-800",
+  };
+
+  const severityIcons: Record<string, string> = {
+    critical: "text-red-500",
+    warning: "text-amber-500",
+  };
+
+  return (
+    <div className="space-y-2 mb-6" data-testid="alerts-banner">
+      {alerts.map((a, i) => (
+        <div key={i} className={`flex items-start gap-3 p-4 rounded-xl border ${severityStyles[a.severity] || "bg-gray-50 border-gray-200 text-gray-800"}`}>
+          <ShieldAlert className={`w-5 h-5 flex-shrink-0 mt-0.5 ${severityIcons[a.severity] || "text-gray-500"}`} />
+          <div className="min-w-0 flex-1">
+            <p className="text-[13px] font-semibold">{a.message}</p>
+            <p className="text-[11px] opacity-70 mt-0.5">{new Date(a.timestamp).toLocaleString()}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function OverviewTab() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -138,6 +175,7 @@ function OverviewTab() {
 
   return (
     <div className="space-y-6">
+      <AlertsBanner />
       <h2 className="text-[18px] font-bold text-[#111C3D]">Dashboard Overview</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard label="Total Users" value={data.totalUsers} icon={Users} color="blue" />
@@ -314,6 +352,148 @@ function GrowthTab() {
             </div>
           </div>
         </div>
+      )}
+    </div>
+  );
+}
+
+function RetentionTab() {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    adminFetch("/api/admin/portal/retention").then(setData).catch(console.error).finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <LoadingState />;
+  if (!data) return <p className="text-[#6B7280] p-6">Failed to load retention data.</p>;
+
+  const reasonLabels: Record<string, string> = {
+    found_via_housalert: "Found home via HousAlert",
+    found_not_via_housalert: "Found home elsewhere",
+    not_found: "Haven't found a home",
+    other: "Other reason",
+  };
+
+  return (
+    <div className="space-y-6">
+      <h2 className="text-[18px] font-bold text-[#111C3D]">Retention & Cancellation Analytics</h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <KpiCard label="Cancellations (7d)" value={data.cancellations7d} icon={UserMinus} color="red" />
+        <KpiCard label="Cancellations (30d)" value={data.cancellations30d} icon={UserMinus} color="amber" />
+        <KpiCard label="Avg Days Active" value={`${data.avgDaysBeforeCancel}d`} icon={Activity} color="blue" />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl border border-[#E5E7EB] p-5" data-testid="metric-cancel-before-match">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-11 h-11 rounded-lg bg-red-50 text-red-600 flex items-center justify-center flex-shrink-0"><XCircle className="w-5 h-5" /></div>
+            <div className="min-w-0">
+              <p className="text-[13px] text-[#6B7280] font-medium">Cancel Before Match</p>
+              <p className="text-[24px] font-bold text-[#111C3D]">{data.cancelBeforeMatch}</p>
+            </div>
+          </div>
+          <p className="text-[12px] text-[#9CA3AF]">Users who cancelled without receiving any match</p>
+        </div>
+        <div className="bg-white rounded-xl border border-[#E5E7EB] p-5" data-testid="metric-cancel-after-match">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-11 h-11 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0"><CheckCircle className="w-5 h-5" /></div>
+            <div className="min-w-0">
+              <p className="text-[13px] text-[#6B7280] font-medium">Cancel After Match</p>
+              <p className="text-[24px] font-bold text-[#111C3D]">{data.cancelAfterMatch}</p>
+            </div>
+          </div>
+          <p className="text-[12px] text-[#9CA3AF]">Users who cancelled after receiving at least one match</p>
+        </div>
+      </div>
+
+      {data.cancellations && data.cancellations.length > 0 && (
+        <div>
+          <h3 className="text-[16px] font-bold text-[#111C3D] mb-4">Cancellation Details</h3>
+          <div className="bg-white rounded-xl border border-[#E5E7EB] overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-[13px]">
+                <thead>
+                  <tr className="bg-[#F9FAFB] border-b border-[#E5E7EB]">
+                    <th className="text-left px-4 py-3 font-semibold text-[#374151]">User</th>
+                    <th className="text-left px-4 py-3 font-semibold text-[#374151]">City</th>
+                    <th className="text-left px-4 py-3 font-semibold text-[#374151]">Plan</th>
+                    <th className="text-right px-4 py-3 font-semibold text-[#374151]">Days</th>
+                    <th className="text-right px-4 py-3 font-semibold text-[#374151]">Matches</th>
+                    <th className="text-left px-4 py-3 font-semibold text-[#374151]">Reason</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.cancellations.map((c: any, i: number) => (
+                    <tr key={i} className="border-b border-[#F3F4F6] hover:bg-[#F9FAFB]" data-testid={`cancel-row-${i}`}>
+                      <td className="px-4 py-3 font-medium text-[#111C3D] max-w-[150px] truncate">{c.name}</td>
+                      <td className="px-4 py-3 text-[#374151]">{c.city}</td>
+                      <td className="px-4 py-3"><Badge variant="secondary" className="text-[10px]">{c.plan}</Badge></td>
+                      <td className="px-4 py-3 text-right text-[#374151]">{c.daysActive}</td>
+                      <td className="px-4 py-3 text-right text-[#374151]">{c.matchCount}</td>
+                      <td className="px-4 py-3 text-[#374151] max-w-[200px]">
+                        <span className="block truncate">{reasonLabels[c.reason] || c.reason}</span>
+                        {c.reasonText && <span className="block text-[11px] text-[#9CA3AF] truncate">{c.reasonText}</span>}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SourcePerformanceTab() {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    adminFetch("/api/admin/portal/source-performance").then(setData).catch(console.error).finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <LoadingState />;
+  if (!data) return <p className="text-[#6B7280] p-6">Failed to load source performance data.</p>;
+
+  return (
+    <div className="space-y-6">
+      <h2 className="text-[18px] font-bold text-[#111C3D]">Source Performance</h2>
+
+      {data.sources && data.sources.length > 0 ? (
+        <div className="bg-white rounded-xl border border-[#E5E7EB] overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-[13px]">
+              <thead>
+                <tr className="bg-[#F9FAFB] border-b border-[#E5E7EB]">
+                  <th className="text-left px-4 py-3 font-semibold text-[#374151]">Source</th>
+                  <th className="text-left px-4 py-3 font-semibold text-[#374151]">City</th>
+                  <th className="text-right px-4 py-3 font-semibold text-[#374151]">Listings</th>
+                  <th className="text-right px-4 py-3 font-semibold text-[#374151]">Matches</th>
+                  <th className="text-right px-4 py-3 font-semibold text-[#374151]">Views</th>
+                  <th className="text-right px-4 py-3 font-semibold text-[#374151]">Reactions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.sources.map((s: any, i: number) => (
+                  <tr key={i} className="border-b border-[#F3F4F6] hover:bg-[#F9FAFB]" data-testid={`source-row-${i}`}>
+                    <td className="px-4 py-3 font-medium text-[#111C3D]">{s.source}</td>
+                    <td className="px-4 py-3 text-[#374151]">{s.city}</td>
+                    <td className="px-4 py-3 text-right text-[#374151]">{s.listings}</td>
+                    <td className="px-4 py-3 text-right text-[#374151]">{s.matches}</td>
+                    <td className="px-4 py-3 text-right text-[#374151]">{s.listingViews ?? 0}</td>
+                    <td className="px-4 py-3 text-right text-[#374151]">{s.reactions ?? 0}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ) : (
+        <p className="text-[#9CA3AF] text-[14px]">No source performance data available yet.</p>
       )}
     </div>
   );
@@ -1058,6 +1238,8 @@ export default function AdminPortalPage() {
           <main className="flex-1 min-w-0 w-full">
             {activeTab === "overview" && <OverviewTab />}
             {activeTab === "growth" && <GrowthTab />}
+            {activeTab === "retention" && <RetentionTab />}
+            {activeTab === "sources" && <SourcePerformanceTab />}
             {activeTab === "users" && <UsersTab />}
             {activeTab === "subscriptions" && <SubscriptionsTab />}
             {activeTab === "profiles" && <SearchProfilesTab />}

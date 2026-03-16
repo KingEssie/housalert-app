@@ -4153,6 +4153,240 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/admin/portal/retention", requireAdmin, async (_req, res) => {
+    try {
+      const now = new Date();
+      const d7 = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      const d30 = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
+      const cancel7Res = await pgPool.query(
+        `SELECT COUNT(*) AS cnt FROM cancellation_feedback WHERE created_at >= $1`, [d7]
+      );
+      const cancel30Res = await pgPool.query(
+        `SELECT COUNT(*) AS cnt FROM cancellation_feedback WHERE created_at >= $1`, [d30]
+      );
+      const cancellations7d = parseInt(cancel7Res.rows[0]?.cnt || "0", 10);
+      const cancellations30d = parseInt(cancel30Res.rows[0]?.cnt || "0", 10);
+
+      const avgDaysRes = await pgPool.query(
+        `SELECT AVG(EXTRACT(EPOCH FROM (cf.created_at - upd.created_at)) / 86400)::int AS avg_days
+         FROM cancellation_feedback cf
+         JOIN user_profile_data upd ON cf.user_id = upd.user_id
+         WHERE upd.created_at IS NOT NULL`
+      );
+      const avgDaysBeforeCancel = parseInt(avgDaysRes.rows[0]?.avg_days || "0", 10);
+
+      const cancelBeforeMatchRes = await pgPool.query(
+        `SELECT COUNT(DISTINCT cf.user_id) AS cnt
+         FROM cancellation_feedback cf
+         LEFT JOIN user_matches um ON cf.user_id = um.user_id
+         WHERE um.user_id IS NULL`
+      );
+      const cancelBeforeMatch = parseInt(cancelBeforeMatchRes.rows[0]?.cnt || "0", 10);
+
+      const cancelAfterMatchRes = await pgPool.query(
+        `SELECT COUNT(DISTINCT cf.user_id) AS cnt
+         FROM cancellation_feedback cf
+         INNER JOIN user_matches um ON cf.user_id = um.user_id`
+      );
+      const cancelAfterMatch = parseInt(cancelAfterMatchRes.rows[0]?.cnt || "0", 10);
+
+      const detailRes = await pgPool.query(
+        `SELECT cf.user_id, cf.reason_type, cf.reason_text, cf.created_at,
+                upd.first_name, upd.last_name,
+                EXTRACT(EPOCH FROM (cf.created_at - upd.created_at))::int / 86400 AS days_active,
+                (SELECT COUNT(*) FROM user_matches um WHERE um.user_id = cf.user_id) AS match_count
+         FROM cancellation_feedback cf
+         LEFT JOIN user_profile_data upd ON cf.user_id = upd.user_id
+         ORDER BY cf.created_at DESC
+         LIMIT 50`
+      );
+
+      const cancellations = detailRes.rows.map((r: any) => {
+        let city = "—";
+        let plan = "—";
+        return {
+          userId: r.user_id,
+          name: [r.first_name, r.last_name].filter(Boolean).join(" ") || r.user_id?.substring(0, 12),
+          city,
+          plan,
+          daysActive: r.days_active ?? 0,
+          matchCount: parseInt(r.match_count || "0", 10),
+          reason: r.reason_type,
+          reasonText: r.reason_text,
+          cancelledAt: r.created_at,
+        };
+      });
+
+      for (const c of cancellations) {
+        try {
+          const { data: sp } = await supabase.from("search_profiles").select("city").eq("user_id", c.userId).limit(1).maybeSingle();
+          if (sp?.city) c.city = sp.city;
+        } catch {}
+        try {
+          const { data: sub } = await supabase.from("subscriptions").select("plan").eq("user_id", c.userId).maybeSingle();
+          if (sub?.plan) c.plan = sub.plan;
+        } catch {}
+      }
+
+      res.json({
+        cancellations7d,
+        cancellations30d,
+        avgDaysBeforeCancel,
+        cancelBeforeMatch,
+        cancelAfterMatch,
+        cancellations,
+      });
+    } catch (err: any) {
+      log(`[admin-portal] Retention error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/portal/source-performance", requireAdmin, async (_req, res) => {
+    try {
+      const runRes = await pgPool.query(
+        `SELECT source_reports FROM ingestion_runs ORDER BY finished_at DESC LIMIT 10`
+      );
+
+      const sourceMap: Record<string, { source: string; city: string; listings: number; matches: number }> = {};
+      for (const row of runRes.rows) {
+        if (!Array.isArray(row.source_reports)) continue;
+        for (const sr of row.source_reports) {
+          const rawName = sr.name || sr.source || "";
+          const cityMatch = rawName.match(/\(([^)]+)\)/);
+          const city = cityMatch ? cityMatch[1] : "Unknown";
+          const sourceName = rawName.replace(/\s*\([^)]+\)/, "").trim();
+          const key = `${sourceName}|${city}`;
+          if (!sourceMap[key]) {
+            sourceMap[key] = { source: sourceName, city, listings: 0, matches: 0 };
+          }
+          sourceMap[key].listings += (sr.found || 0);
+          sourceMap[key].matches += (sr.matches || 0);
+        }
+      }
+
+      const sources = Object.values(sourceMap);
+
+      for (const s of sources) {
+        try {
+          const vRes = await pgPool.query(
+            `SELECT COUNT(DISTINCT user_id) AS cnt FROM activation_events
+             WHERE event_name = 'listing_opened' AND LOWER(metadata->>'city') = $1`,
+            [s.city.toLowerCase()]
+          );
+          (s as any).listingViews = parseInt(vRes.rows[0]?.cnt || "0", 10);
+        } catch {
+          (s as any).listingViews = 0;
+        }
+
+        try {
+          const rRes = await pgPool.query(
+            `SELECT COUNT(DISTINCT user_id) AS cnt FROM activation_events
+             WHERE event_name = 'first_reaction' AND LOWER(metadata->>'city') = $1`,
+            [s.city.toLowerCase()]
+          );
+          (s as any).reactions = parseInt(rRes.rows[0]?.cnt || "0", 10);
+        } catch {
+          (s as any).reactions = 0;
+        }
+      }
+
+      sources.sort((a: any, b: any) => (b.reactions || 0) - (a.reactions || 0));
+
+      res.json({ sources });
+    } catch (err: any) {
+      log(`[admin-portal] Source performance error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/portal/alerts", requireAdmin, async (_req, res) => {
+    try {
+      const alerts: Array<{ type: string; severity: string; message: string; timestamp: string }> = [];
+      const now = new Date();
+
+      try {
+        const fourHoursAgo = new Date(now.getTime() - 4 * 60 * 60 * 1000).toISOString();
+        const scraperRes = await pgPool.query(
+          `SELECT COUNT(*) AS cnt FROM ingestion_runs WHERE finished_at >= $1 AND total_found > 0`,
+          [fourHoursAgo]
+        );
+        if (parseInt(scraperRes.rows[0]?.cnt || "0", 10) === 0) {
+          alerts.push({
+            type: "scraper_stale",
+            severity: "critical",
+            message: "No listings scraped in the last 4 hours",
+            timestamp: now.toISOString(),
+          });
+        }
+      } catch {}
+
+      try {
+        const todayStart = new Date(now); todayStart.setHours(0, 0, 0, 0);
+        const yesterdayStart = new Date(todayStart.getTime() - 24 * 60 * 60 * 1000);
+        const todayMatchRes = await pgPool.query(
+          `SELECT COUNT(*) AS cnt FROM user_matches WHERE matched_at >= $1`, [todayStart.toISOString()]
+        );
+        const yesterdayMatchRes = await pgPool.query(
+          `SELECT COUNT(*) AS cnt FROM user_matches WHERE matched_at >= $1 AND matched_at < $2`,
+          [yesterdayStart.toISOString(), todayStart.toISOString()]
+        );
+        const todayMatches = parseInt(todayMatchRes.rows[0]?.cnt || "0", 10);
+        const yesterdayMatches = parseInt(yesterdayMatchRes.rows[0]?.cnt || "0", 10);
+        if (yesterdayMatches > 0 && todayMatches < yesterdayMatches * 0.5) {
+          alerts.push({
+            type: "match_drop",
+            severity: "warning",
+            message: `Matches dropped >50%: today ${todayMatches} vs yesterday ${yesterdayMatches}`,
+            timestamp: now.toISOString(),
+          });
+        }
+      } catch {}
+
+      try {
+        const todayStart = new Date(now); todayStart.setHours(0, 0, 0, 0);
+        const totalEmailRes = await pgPool.query(
+          `SELECT COUNT(*) AS total,
+                  COUNT(*) FILTER (WHERE email_sent = false AND matched_at >= $1) AS failed
+           FROM user_matches WHERE matched_at >= $1`,
+          [todayStart.toISOString()]
+        );
+        const total = parseInt(totalEmailRes.rows[0]?.total || "0", 10);
+        const failed = parseInt(totalEmailRes.rows[0]?.failed || "0", 10);
+        if (total > 10 && (failed / total) > 0.05) {
+          alerts.push({
+            type: "email_failure",
+            severity: "warning",
+            message: `Email delivery failure rate ${Math.round((failed / total) * 100)}% (${failed}/${total})`,
+            timestamp: now.toISOString(),
+          });
+        }
+      } catch {}
+
+      try {
+        const recentErrors = await pgPool.query(
+          `SELECT COUNT(*) AS cnt FROM ingestion_runs
+           WHERE finished_at >= $1 AND status = 'failed'`,
+          [new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString()]
+        );
+        if (parseInt(recentErrors.rows[0]?.cnt || "0", 10) > 0) {
+          alerts.push({
+            type: "ingestion_failure",
+            severity: "warning",
+            message: "One or more ingestion runs failed in the last 24 hours",
+            timestamp: now.toISOString(),
+          });
+        }
+      } catch {}
+
+      res.json({ alerts });
+    } catch (err: any) {
+      log(`[admin-portal] Alerts error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   app.get("/api/admin/portal/system-status", requireAdmin, async (_req, res) => {
     try {
       const checks: Record<string, any> = {};
