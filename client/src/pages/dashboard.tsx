@@ -1603,21 +1603,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                   label="Admin Portal"
                   onClick={() => navigate("/admin/portal")}
                 />
-                <div className="h-px bg-[#E5E7EB] mx-5" />
-                <AccountSettingsRow
-                  label="Activation Dashboard"
-                  onClick={() => navigate("/admin/activation")}
-                />
-                <div className="h-px bg-[#E5E7EB] mx-5" />
-                <AccountSettingsRow
-                  label="Match Audit"
-                  onClick={() => navigate("/admin/match-audit")}
-                />
-                <div className="h-px bg-[#E5E7EB] mx-5" />
-                <AccountSettingsRow
-                  label="Ingestion Monitor"
-                  onClick={() => navigate("/admin/ingestion")}
-                />
               </div>
             </div>
           )}
