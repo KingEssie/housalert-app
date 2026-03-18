@@ -58,19 +58,25 @@ async function getCredentials(): Promise<{ publishableKey: string; secretKey: st
 
   try {
     cachedCredentials = await getConnectorCredentials();
+    const keyPrefix = cachedCredentials.secretKey?.substring(0, 7) || "EMPTY";
+    console.log(`[stripe-creds] Connector credentials loaded (key prefix: ${keyPrefix}...)`);
     return cachedCredentials;
-  } catch {
-    // Fall back to environment variables
+  } catch (connErr: any) {
+    console.log(`[stripe-creds] Connector failed: ${connErr.message} — falling back to env vars`);
   }
 
   const secretKey = process.env.STRIPE_SECRET_KEY;
   const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
   if (!secretKey) {
+    console.error("[stripe-creds] STRIPE_SECRET_KEY is NOT set and connector failed. Stripe unavailable.");
     throw new Error(
       "Stripe is not configured. Set STRIPE_SECRET_KEY environment variable or connect Stripe via the Replit integration."
     );
   }
+
+  const keyPrefix = secretKey.substring(0, 7);
+  console.log(`[stripe-creds] Using STRIPE_SECRET_KEY env var (prefix: ${keyPrefix}...)`);
 
   cachedCredentials = {
     secretKey,
