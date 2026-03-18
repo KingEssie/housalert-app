@@ -1,0 +1,94 @@
+I want to simplify and complete the Search Buddy feature in HousAlert, and also expose it in the Admin portal.
+
+Goal:
+Search Buddy should work with a simple rule:
+- valid buddy email saved = Search Buddy automatically ON
+- buddy email removed = Search Buddy automatically OFF
+
+There should be no separate visible Search Buddy toggle in the user-facing app.
+In the Admin portal, I want to see which main users have a Search Buddy and what the buddy email address is.
+
+Desired behavior:
+
+1. User-facing Search Buddy logic
+- A user can enter a Search Buddy email address in the account/profile screen
+- If a valid Search Buddy email is saved:
+  - Search Buddy is automatically enabled
+- If the Search Buddy email is removed/cleared:
+  - Search Buddy is automatically disabled
+- Remove the visible "Buddy e-mails" toggle from the user-facing UI
+- The user should not have to manage a separate toggle
+
+2. Notification rules
+- Search Buddy should receive the same match email alerts as the main user
+- But only if the main user has:
+  - an active trial subscription, OR
+  - an active paid subscription
+- If the main user has no active subscription:
+  - no notifications should be sent to the Search Buddy
+- Search Buddy email notifications must remain independent from the main user’s own email_notifications toggle
+- So:
+  - if the main user has email notifications OFF
+  - but a valid Search Buddy email exists
+  - and the subscription is active
+  - the Search Buddy should still receive match emails
+
+3. Anti-retroactive behavior
+- Preserve all anti-retroactive notification rules already implemented
+- Old matches must still appear in the app
+- But old matches must not later be sent retroactively to the Search Buddy
+- Recovery/restart logic must not send old Search Buddy emails that were not eligible at the original time
+
+4. Duplicate prevention
+- If the Search Buddy email is the same as the main user email:
+  - send only one email, not two
+
+5. Backend/data model
+- If search_buddy_enabled still exists in the database, keep it automatically synchronized:
+  - valid buddy email present = true
+  - buddy email empty/null = false
+- But do NOT expose search_buddy_enabled as a separate toggle in the user-facing app anymore
+
+6. User-facing UI updates
+- Remove the visible "Buddy e-mails" toggle from the profile/account screen
+- Keep the Search Buddy email row/input
+- Optionally add a small helper text like:
+  - "Je zoekbuddy ontvangt automatisch match-mails op dit adres."
+
+7. Admin portal requirements
+I want the Admin portal to clearly show Search Buddy information per main user.
+
+Please update the Admin portal so that:
+- In the Users overview/list, I can see:
+  - whether a user has a Search Buddy
+  - the Search Buddy email address
+- If needed, add one or both of these:
+  - a dedicated "Search Buddy" column showing Yes/No
+  - a "Buddy email" column showing the stored email address
+- If space is limited on mobile, show at least a clear badge/indicator plus email in the user detail view
+- If there is an Admin user detail screen, also include:
+  - Search Buddy active status
+  - Search Buddy email
+
+8. Logging / debugging
+Add or preserve logs for:
+- whether Search Buddy recipient was sent or skipped
+- why it was skipped:
+  - no active subscription
+  - no buddy email
+  - duplicate email with main user
+  - anti-retroactive guard
+
+9. Safety
+- Do NOT refactor unrelated systems
+- Do NOT break existing main-user email logic
+- Do NOT change app visibility of listings
+- Keep the implementation minimal, clean, and production-safe
+
+Deliverable:
+Implement the simplified Search Buddy feature so that:
+- buddy email present = on
+- buddy email absent = off
+- no visible Search Buddy toggle exists in the user-facing app
+- buddy emails are only sent when the main user has an active trial or paid subscription
+- the Admin portal clearly shows which users have a Search Buddy and what the buddy email address is

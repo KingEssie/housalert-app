@@ -621,6 +621,17 @@ function UserDetailView({ detail, onBack }: { detail: any; onBack: () => void })
               {!notificationSettings?.email_enabled && !notificationSettings?.push_enabled && <span className="text-gray-400">None</span>}
             </div>
           </div>
+          <div className="flex justify-between items-center">
+            <span className="text-gray-400">Search Buddy</span>
+            {profile?.search_buddy_email ? (
+              <div className="flex items-center gap-1.5">
+                <Badge className="text-[10px] bg-blue-50 text-blue-600">Active</Badge>
+                <span className="font-medium text-[#1a1f36] text-[12px] max-w-[160px] truncate">{profile.search_buddy_email}</span>
+              </div>
+            ) : (
+              <span className="text-gray-400">—</span>
+            )}
+          </div>
           <div><span className="text-gray-400 text-[11px] break-all">{profile?.user_id || ""}</span></div>
         </div>
       </div>
@@ -957,9 +968,11 @@ function UsersTab() {
                   <div className="flex-1 min-w-0">
                     <p className="text-[13px] font-semibold text-[#1a1f36] truncate">{u.first_name || ""} {u.last_name || ""}</p>
                     <p className="text-[11px] text-gray-400">{u.user_id?.substring(0, 8)}... · {u.searchProfileCount || 0} profiles · {u.matchCount || 0} matches</p>
+                    {u.search_buddy_email && <p className="text-[10px] text-blue-500 truncate">Buddy: {u.search_buddy_email}</p>}
                   </div>
                   <div className="flex flex-col items-end gap-1 flex-shrink-0">
                     {u.subscription ? <StatusBadge status={u.subscription.status} /> : <span className="text-[11px] text-gray-300">No sub</span>}
+                    {u.search_buddy_email && <Badge variant="secondary" className="text-[9px] px-1.5">Buddy</Badge>}
                     <span className="text-[10px] text-gray-300">{u.created_at ? new Date(u.created_at).toLocaleDateString() : ""}</span>
                   </div>
                   <ChevronRight className="w-4 h-4 text-gray-200 flex-shrink-0" />

@@ -4,12 +4,13 @@ A mobile-first German-language rental alert application for the German market. U
 
 ## Search Buddy Feature
 - **What**: Users can add a "Zoekbuddy" (search buddy) email so a partner/friend also receives match alerts
-- **Data**: `user_profile_data` table in Replit PG has `search_buddy_email` (TEXT) and `search_buddy_enabled` (BOOLEAN DEFAULT FALSE)
-- **Auto-enable**: When buddy email is first set via `PUT /api/profile-data`, `search_buddy_enabled` auto-sets to `true`; clearing the email auto-sets it to `false`
-- **Toggle**: Dashboard profile tab shows independent buddy email toggle when buddy email exists
+- **Simple rule**: buddy email present = ON, buddy email removed = OFF. No separate toggle in UI.
+- **Data**: `user_profile_data` table in Replit PG has `search_buddy_email` (TEXT) and `search_buddy_enabled` (BOOLEAN, auto-synced)
+- **UI**: Dashboard shows buddy email + "Ontvangt automatisch match-mails" helper text. Edit page explains automatic behavior.
+- **Admin portal**: User list shows "Buddy" badge + email. User detail view shows Search Buddy status + email.
 - **Notification pipeline**: `server/notifications/buffer.ts` makes independent recipient decisions:
   - Main user: subscription active + `email_enabled` = true
-  - Buddy: subscription active + `search_buddy_enabled` = true + buddy email exists + not same as main email
+  - Buddy: subscription active + buddy email exists + not same as main email
 - **Anti-retroactive**: Buddy follows same anti-retroactive rules (premiumStartedAt filter)
 - **Duplicate prevention**: If buddy email = main user email, only one email is sent
 - **Logging**: All buddy decisions logged with clear skip reasons

@@ -20,7 +20,7 @@ export default function ProfileEditPage() {
     phone: { question: t("profileEdit.phoneQ"), label: t("profileEdit.phone"), type: "tel", placeholder: t("profileEdit.phonePlaceholder"), dbField: "phone" },
     occupation: { question: t("profileEdit.occupationQ"), label: t("profileEdit.occupation"), type: "text", placeholder: t("profileEdit.occupationPlaceholder"), dbField: "occupation" },
     monthly_income: { question: t("profileEdit.incomeQ"), label: t("profileEdit.income"), type: "number", placeholder: t("profileEdit.incomePlaceholder"), dbField: "monthly_income" },
-    search_buddy_email: { question: "Zoekbuddy", label: "Zoekbuddy e-mail", type: "email", placeholder: "buddy@email.com", dbField: "search_buddy_email", description: "Je Zoekbuddy ontvangt dezelfde woningmatches per e-mail zodat jullie samen sneller kunnen reageren." },
+    search_buddy_email: { question: "Zoekbuddy", label: "Zoekbuddy e-mail", type: "email", placeholder: "buddy@email.com", dbField: "search_buddy_email", description: "Je zoekbuddy ontvangt automatisch match-mails op dit adres. Verwijder het e-mailadres om dit uit te schakelen." },
   };
 
   const config = FIELD_CONFIG[field];
