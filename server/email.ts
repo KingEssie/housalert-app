@@ -16,7 +16,7 @@ const VERIFIED_FROM = "HousAlert <new@housalert.com>";
 
 function getLogoUrl(): string {
   const baseUrl = getAppBaseUrl();
-  return `${baseUrl}/email-logo.png`;
+  return `${baseUrl}/housalert-logo.png`;
 }
 
 const BRAND = {
@@ -100,7 +100,7 @@ function formatPrice(price: number): string {
 }
 
 function getAppBaseUrl(): string {
-  const raw = process.env.APP_PUBLIC_BASE_URL || "https://housalert.replit.app";
+  const raw = process.env.APP_PUBLIC_BASE_URL || "https://rental-alert-ui.replit.app";
   try {
     const parsed = new URL(raw);
     if (parsed.protocol === "https:" || parsed.protocol === "http:") {
@@ -136,7 +136,7 @@ ${preheaderHtml}
     <td style="padding:0;vertical-align:middle;">
       <a href="${baseUrl}" target="_blank" style="text-decoration:none;">
         <!--[if !mso]><!-->
-        <img src="${logoUrl}" alt="HousAlert" width="240" height="60" style="display:block;width:240px;height:60px;border:0;outline:none;font-size:22px;font-weight:bold;color:${BRAND.primary};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;" />
+        <img src="${logoUrl}" alt="HousAlert" width="160" height="40" style="display:block;width:160px;height:40px;border:0;outline:none;font-size:20px;font-weight:bold;color:${BRAND.primary};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;" />
         <!--<![endif]-->
         <!--[if mso]>
         <span style="font-size:22px;font-weight:bold;color:${BRAND.primary};font-family:Arial,sans-serif;mso-line-height-rule:exactly;line-height:60px;">HousAlert</span>
