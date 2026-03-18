@@ -3999,20 +3999,27 @@ export async function registerRoutes(
       for (const s of (data || [])) statusCounts[s.status] = (statusCounts[s.status] || 0) + 1;
       log(`[admin-portal] Subscriptions query: total=${count}, returned=${(data || []).length}, filter=${filter}, statuses=${JSON.stringify(statusCounts)}`);
 
-      const userIds = (data || []).map((s: any) => s.user_id);
+      const userIds = (data || []).map((s: any) => s.user_id).filter(Boolean);
       let userMap: Record<string, any> = {};
       if (userIds.length > 0) {
-        const usersRes = await pgPool.query(
-          `SELECT user_id, first_name, last_name FROM user_profile_data WHERE user_id = ANY($1::text[])`,
-          [userIds]
-        );
-        for (const u of usersRes.rows) userMap[u.user_id] = u;
+        try {
+          const usersRes = await pgPool.query(
+            `SELECT user_id, first_name, last_name FROM user_profile_data WHERE user_id = ANY($1::uuid[])`,
+            [userIds]
+          );
+          for (const u of usersRes.rows) userMap[u.user_id] = u;
+        } catch (pgErr: any) {
+          log(`[admin-portal] Subscriptions user enrichment failed (non-fatal): ${pgErr.message}`);
+        }
       }
 
-      const enriched = (data || []).map((s: any) => ({
-        ...s,
-        userName: userMap[s.user_id] ? `${userMap[s.user_id].first_name || ""} ${userMap[s.user_id].last_name || ""}`.trim() : "Unknown",
-      }));
+      const enriched = (data || []).map((s: any) => {
+        const profile = userMap[s.user_id];
+        const userName = profile
+          ? `${profile.first_name || ""} ${profile.last_name || ""}`.trim() || "Unknown"
+          : "Unknown";
+        return { ...s, userName };
+      });
 
       res.json({ subscriptions: enriched, total: count ?? 0, page, limit });
     } catch (err: any) {
@@ -4033,20 +4040,27 @@ export async function registerRoutes(
 
       if (error) throw error;
 
-      const userIds = (data || []).map((p: any) => p.user_id);
+      const userIds = (data || []).map((p: any) => p.user_id).filter(Boolean);
       let userMap: Record<string, any> = {};
       if (userIds.length > 0) {
-        const usersRes = await pgPool.query(
-          `SELECT user_id, first_name, last_name FROM user_profile_data WHERE user_id = ANY($1::text[])`,
-          [userIds]
-        );
-        for (const u of usersRes.rows) userMap[u.user_id] = u;
+        try {
+          const usersRes = await pgPool.query(
+            `SELECT user_id, first_name, last_name FROM user_profile_data WHERE user_id = ANY($1::uuid[])`,
+            [userIds]
+          );
+          for (const u of usersRes.rows) userMap[u.user_id] = u;
+        } catch (pgErr: any) {
+          log(`[admin-portal] Search profiles user enrichment failed (non-fatal): ${pgErr.message}`);
+        }
       }
 
-      const enriched = (data || []).map((p: any) => ({
-        ...p,
-        userName: userMap[p.user_id] ? `${userMap[p.user_id].first_name || ""} ${userMap[p.user_id].last_name || ""}`.trim() : "Unknown",
-      }));
+      const enriched = (data || []).map((p: any) => {
+        const profile = userMap[p.user_id];
+        const userName = profile
+          ? `${profile.first_name || ""} ${profile.last_name || ""}`.trim() || "Unknown"
+          : "Unknown";
+        return { ...p, userName };
+      });
 
       res.json({ profiles: enriched, total: count ?? 0, page, limit });
     } catch (err: any) {
