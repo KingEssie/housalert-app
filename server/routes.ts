@@ -779,19 +779,20 @@ export async function registerRoutes(
         .from("matches")
         .select("id, listing_id, search_profile_id, created_at")
         .eq("user_id", user.id)
-        .gte("created_at", cutoff);
+        .gte("created_at", cutoff)
+        .order("created_at", { ascending: false })
+        .limit(1000);
       const { data: matchRows, error: mErr } = await matchQuery;
 
       if (mErr) return res.status(500).json({ error: mErr.message });
       if (!matchRows || matchRows.length === 0) return res.json({ matches: [], totalCount: 0 });
 
+      console.log(`[MATCHES] userId=${user.id.substring(0, 8)}... returned=${matchRows.length} newest=${matchRows[0]?.created_at} oldest=${matchRows[matchRows.length - 1]?.created_at}`);
+
       const enriched = matchRows.map((m: any) => ({
         ...m,
         matched_at: m.created_at,
       }));
-      enriched.sort((a: any, b: any) =>
-        new Date(b.matched_at).getTime() - new Date(a.matched_at).getTime()
-      );
 
       const dedupedByListing: Record<string, any> = {};
       for (const m of enriched) {
