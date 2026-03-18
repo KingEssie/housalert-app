@@ -241,10 +241,47 @@ export const nl: Record<string, any> = {
       saved: "Foto opgeslagen",
       removed: "Foto verwijderd",
     },
+    searchBuddy: "Zoekbuddy",
+    searchBuddyReceives: "Ontvangt automatisch match-mails",
+    noBuddyYet: "Je hebt nog geen Zoekbuddy",
+    addBuddy: "Zoekbuddy toevoegen",
+    pushNotifications: "Push notificaties",
+    emailNotifications: "E-mail notificaties",
+    adminSection: "Admin",
+    adminPortal: "Admin Portal",
+    copyButton: "Kopiëren",
+    editButton: "Bewerken",
+    letterCopied: "Reactiebrief gekopieerd",
+    studioPlus: "Studio+",
     stats: {
       matchesReceived: "Ontvangen matches",
       reactionsSent: "Verzonden reacties",
     },
+  },
+
+  popularToday: {
+    title: "Populair vandaag",
+    subtitle: "Woningen die veel aandacht krijgen",
+  },
+
+  speedCard: {
+    title: "Reactiesnelheid",
+    fast: "Snel gereageerd",
+    fastDesc: "Je bent klaar om direct te reageren op nieuwe woningen.",
+    almost: "Bijna klaar",
+    almostDesc: "Nog {remaining} {stepWord} om sneller te reageren.",
+    building: "Goed bezig",
+    buildingDesc: "Rond nog {remaining} {stepWord} af om sneller te kunnen reageren.",
+    stepSingular: "stap",
+    stepPlural: "stappen",
+  },
+
+  authCallback: {
+    verifying: "E-mail wordt geverifieerd...",
+    noCode: "Geen verificatiecode gevonden.",
+    failed: "Verificatie mislukt. Log opnieuw in.",
+    error: "Er ging iets mis. Log opnieuw in.",
+    goToLogin: "Naar login",
   },
 
   profileEdit: {
@@ -266,6 +303,10 @@ export const nl: Record<string, any> = {
     income: "Maandelijks inkomen",
     incomeQ: "Wat is je maandelijks inkomen?",
     incomePlaceholder: "bijv. 3500",
+    searchBuddyQ: "Zoekbuddy",
+    searchBuddyLabel: "Zoekbuddy e-mail",
+    searchBuddyPlaceholder: "buddy@email.com",
+    searchBuddyDesc: "Je zoekbuddy ontvangt automatisch match-mails op dit adres. Verwijder het e-mailadres om dit uit te schakelen.",
     saved: "Opgeslagen!",
     saveFailed: "Opslaan mislukt",
   },

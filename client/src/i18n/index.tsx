@@ -77,3 +77,5 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 export function useTranslation() {
   return useContext(I18nContext);
 }
+
+export const useI18n = useTranslation;

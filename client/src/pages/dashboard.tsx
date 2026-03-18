@@ -56,8 +56,8 @@ import TipsPage, { getTipsProgress } from "@/pages/tips";
 
 const MAX_PROFILES = 4;
 
-function bedroomLabel(min: number) {
-  if (min === 0) return "Studio+";
+function bedroomLabel(min: number, t: (key: string) => string) {
+  if (min === 0) return t("profile.studioPlus");
   return `${min}+`;
 }
 
@@ -316,7 +316,7 @@ function ProfileCard({
         )}
         <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#F5F7FA] text-[#1F2937] px-2.5 py-1 rounded-full border border-[#E5E7EB]">
           <BedDouble className="w-3 h-3" />
-          {bedroomLabel(profile.bedrooms_min)}
+          {bedroomLabel(profile.bedrooms_min, t)}
         </span>
         {profile.size_min > 0 && (
           <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#F5F7FA] text-[#1F2937] px-2.5 py-1 rounded-full border border-[#E5E7EB]">
@@ -1402,7 +1402,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
     if (letter) {
       try {
         await navigator.clipboard.writeText(letter);
-        toast({ title: "Reactiebrief gekopieerd" });
+        toast({ title: t("profile.letterCopied") });
       } catch {
         toast({ title: t("common.error"), variant: "destructive" });
       }
@@ -1412,7 +1412,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
   return (
     <div className="min-h-[calc(100vh-80px)] bg-[#F5F7FA]">
       <div className="sticky top-0 z-10 bg-white border-b border-[#E5E7EB] px-5 pt-5 pb-3">
-        <h1 className="text-page-title">Account</h1>
+        <h1 className="text-page-title">{t("profile.subtabs.account")}</h1>
       </div>
 
       <div className="max-w-[480px] mx-auto px-5 py-6">
@@ -1458,9 +1458,9 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
               >
                 <Users className="w-[18px] h-[18px] text-[#1F2937]" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-[15px] font-[500] text-[#111827]">Zoekbuddy</p>
+                  <p className="text-[15px] font-[500] text-[#111827]">{t("profile.searchBuddy")}</p>
                   <p className="text-[13px] text-[#6B7280] truncate mt-0.5">{pd.search_buddy_email}</p>
-                  <p className="text-[11px] text-[#9CA3AF] mt-0.5">Ontvangt automatisch match-mails</p>
+                  <p className="text-[11px] text-[#9CA3AF] mt-0.5">{t("profile.searchBuddyReceives")}</p>
                 </div>
                 <ChevronRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
               </button>
@@ -1468,15 +1468,15 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
               <div className="px-5 py-4">
                 <div className="flex items-center gap-2 mb-1">
                   <Users className="w-[18px] h-[18px] text-[#1F2937]" />
-                  <p className="text-[15px] font-[500] text-[#111827]">Zoekbuddy</p>
+                  <p className="text-[15px] font-[500] text-[#111827]">{t("profile.searchBuddy")}</p>
                 </div>
-                <p className="text-[13px] text-[#6B7280] mb-3">Je hebt nog geen Zoekbuddy</p>
+                <p className="text-[13px] text-[#6B7280] mb-3">{t("profile.noBuddyYet")}</p>
                 <button
                   onClick={() => navigate("/profile/edit/search_buddy_email")}
                   className="h-[40px] px-5 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-semibold transition-colors"
                   data-testid="button-add-buddy"
                 >
-                  Zoekbuddy toevoegen
+                  {t("profile.addBuddy")}
                 </button>
               </div>
             )}
@@ -1486,7 +1486,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             <div className="flex items-center justify-between px-5 py-4">
               <div className="flex items-center gap-3">
                 <Bell className="w-[18px] h-[18px] text-[#1F2937]" />
-                <p className="text-[15px] font-[500] text-[#111827]">Push notificaties</p>
+                <p className="text-[15px] font-[500] text-[#111827]">{t("profile.pushNotifications")}</p>
               </div>
               <button
                 onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
@@ -1501,7 +1501,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             <div className="flex items-center justify-between px-5 py-4">
               <div className="flex items-center gap-3">
                 <Mail className="w-[18px] h-[18px] text-[#1F2937]" />
-                <p className="text-[15px] font-[500] text-[#111827]">E-mail notificaties</p>
+                <p className="text-[15px] font-[500] text-[#111827]">{t("profile.emailNotifications")}</p>
               </div>
               <button
                 onClick={() => handleToggleNotif("email_enabled", !!notifSettings?.email_enabled)}
@@ -1526,7 +1526,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                     data-testid="button-letter-copy"
                   >
                     <Copy className="w-3.5 h-3.5" />
-                    Kopiëren
+                    {t("profile.copyButton")}
                   </button>
                   <button
                     onClick={() => navigate("/application-letter")}
@@ -1534,7 +1534,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                     data-testid="button-letter-edit"
                   >
                     <Pencil className="w-3.5 h-3.5" />
-                    Bewerken
+                    {t("profile.editButton")}
                   </button>
                 </div>
               </div>
@@ -1638,10 +1638,10 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
 
           {(user?.email?.toLowerCase() === "martin.essie87@gmail.com") && (
             <div>
-              <p className="text-[13px] font-semibold text-[#111C3D] tracking-wide mb-3">Admin</p>
+              <p className="text-[13px] font-semibold text-[#111C3D] tracking-wide mb-3">{t("profile.adminSection")}</p>
               <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
                 <AccountSettingsRow
-                  label="Admin Portal"
+                  label={t("profile.adminPortal")}
                   onClick={() => navigate("/admin/portal")}
                 />
               </div>

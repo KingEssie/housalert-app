@@ -235,10 +235,47 @@ export const de: Record<string, any> = {
       saved: "Foto gespeichert",
       removed: "Foto entfernt",
     },
+    searchBuddy: "Suchpartner",
+    searchBuddyReceives: "Erhält automatisch Match-E-Mails",
+    noBuddyYet: "Du hast noch keinen Suchpartner",
+    addBuddy: "Suchpartner hinzufügen",
+    pushNotifications: "Push-Benachrichtigungen",
+    emailNotifications: "E-Mail-Benachrichtigungen",
+    adminSection: "Admin",
+    adminPortal: "Admin Portal",
+    copyButton: "Kopieren",
+    editButton: "Bearbeiten",
+    letterCopied: "Antwortschreiben kopiert",
+    studioPlus: "Studio+",
     stats: {
       matchesReceived: "Erhaltene Matches",
       reactionsSent: "Gesendete Bewerbungen",
     },
+  },
+
+  popularToday: {
+    title: "Beliebt heute",
+    subtitle: "Wohnungen, die viel Aufmerksamkeit bekommen",
+  },
+
+  speedCard: {
+    title: "Reaktionsgeschwindigkeit",
+    fast: "Schnell reagiert",
+    fastDesc: "Du bist bereit, sofort auf neue Wohnungen zu reagieren.",
+    almost: "Fast fertig",
+    almostDesc: "Noch {remaining} {stepWord}, um schneller zu reagieren.",
+    building: "Gut dabei",
+    buildingDesc: "Schließe noch {remaining} {stepWord} ab, um schneller reagieren zu können.",
+    stepSingular: "Schritt",
+    stepPlural: "Schritte",
+  },
+
+  authCallback: {
+    verifying: "E-Mail wird verifiziert...",
+    noCode: "Kein Bestätigungscode gefunden.",
+    failed: "Verifizierung fehlgeschlagen. Bitte erneut anmelden.",
+    error: "Etwas ist schiefgelaufen. Bitte erneut anmelden.",
+    goToLogin: "Zum Login",
   },
 
   profileEdit: {
@@ -260,6 +297,10 @@ export const de: Record<string, any> = {
     income: "Monatliches Einkommen",
     incomeQ: "Wie hoch ist dein monatliches Einkommen?",
     incomePlaceholder: "z.B. 3500",
+    searchBuddyQ: "Suchpartner",
+    searchBuddyLabel: "Suchpartner E-Mail",
+    searchBuddyPlaceholder: "partner@beispiel.de",
+    searchBuddyDesc: "Dein Suchpartner erhält automatisch Match-E-Mails an diese Adresse. Entferne die E-Mail-Adresse, um dies zu deaktivieren.",
     saved: "Gespeichert!",
     saveFailed: "Speichern fehlgeschlagen",
   },

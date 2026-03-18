@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { MapPin, BedDouble, Ruler, ImageIcon, TrendingUp } from "lucide-react";
 import { useState } from "react";
+import { useI18n } from "@/i18n";
 
 interface PopularListing {
   listing_id: string;
@@ -37,6 +38,7 @@ function getCityGradient(city: string): string {
 }
 
 function PopularCard({ listing }: { listing: PopularListing }) {
+  const { t } = useI18n();
   const [imgError, setImgError] = useState(false);
   const gradient = getCityGradient(listing.city);
   const hasImage = !!listing.image_url && !imgError;
@@ -85,7 +87,7 @@ function PopularCard({ listing }: { listing: PopularListing }) {
         {listing.price > 0 && (
           <span className="text-[15px] font-bold text-[#111C3D]">
             {"\u20AC"}{listing.price}
-            <span className="text-[11px] font-normal text-[#1F2937]">/Monat</span>
+            <span className="text-[11px] font-normal text-[#1F2937]">{t("common.perMonth")}</span>
           </span>
         )}
 
@@ -114,6 +116,7 @@ function PopularCard({ listing }: { listing: PopularListing }) {
 }
 
 export function PopulairVandaagSection() {
+  const { t } = useI18n();
   const { data: listings, isLoading } = useQuery<PopularListing[]>({
     queryKey: ["/api/listings/popular"],
   });
@@ -122,8 +125,8 @@ export function PopulairVandaagSection() {
     return (
       <div className="flex flex-col gap-3">
         <div>
-          <h2 className="text-section-title">Beliebt heute</h2>
-          <p className="text-[13px] font-[500] text-[#1F2937] mt-0.5">Wohnungen, die viel Aufmerksamkeit bekommen</p>
+          <h2 className="text-section-title">{t("popularToday.title")}</h2>
+          <p className="text-[13px] font-[500] text-[#1F2937] mt-0.5">{t("popularToday.subtitle")}</p>
         </div>
         <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none">
           {[1, 2, 3].map((i) => (
@@ -141,9 +144,9 @@ export function PopulairVandaagSection() {
       <div>
         <div className="flex items-center gap-2">
           <TrendingUp className="w-4 h-4 text-[#1F2937]" />
-          <h2 className="text-section-title">Beliebt heute</h2>
+          <h2 className="text-section-title">{t("popularToday.title")}</h2>
         </div>
-        <p className="text-[13px] text-[#1F2937] mt-0.5 ml-6">Wohnungen, die viel Aufmerksamkeit bekommen</p>
+        <p className="text-[13px] text-[#1F2937] mt-0.5 ml-6">{t("popularToday.subtitle")}</p>
       </div>
       <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 snap-x snap-mandatory scrollbar-none">
         {listings.map((listing) => (

@@ -2,6 +2,7 @@ import { apiFetch } from "@/lib/api-base";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
 import { Gauge, ChevronRight } from "lucide-react";
+import { useI18n } from "@/i18n";
 
 interface SpeedStep {
   id: string;
@@ -26,16 +27,20 @@ export interface ReactiesnelheidState {
   fraction: number;
 }
 
-export function calculateReactiesnelheid(rawDone: number, rawTotal: number): ReactiesnelheidState {
+type TranslateFn = (key: string, params?: Record<string, string | number>) => string;
+
+export function calculateReactiesnelheid(rawDone: number, rawTotal: number, t?: TranslateFn): ReactiesnelheidState {
   const total = Math.max(0, rawTotal);
   const done = Math.max(0, Math.min(rawDone, total));
   const fraction = total > 0 ? done / total : 0;
 
+  const tr = t || ((key: string) => key);
+
   if (fraction >= 1) {
     return {
       level: "fast",
-      label: "Schnell reagiert",
-      subtitle: "Du bist bereit, sofort auf neue Wohnungen zu reagieren.",
+      label: tr("speedCard.fast"),
+      subtitle: tr("speedCard.fastDesc"),
       done,
       total,
       fraction: 1,
@@ -43,12 +48,13 @@ export function calculateReactiesnelheid(rawDone: number, rawTotal: number): Rea
   }
 
   const remaining = total - done;
+  const stepWord = remaining === 1 ? tr("speedCard.stepSingular") : tr("speedCard.stepPlural");
 
   if (fraction >= 0.6) {
     return {
       level: "almost",
-      label: "Fast fertig",
-      subtitle: `Noch ${remaining} ${remaining === 1 ? "Schritt" : "Schritte"}, um schneller zu reagieren.`,
+      label: tr("speedCard.almost"),
+      subtitle: tr("speedCard.almostDesc", { remaining, stepWord }),
       done,
       total,
       fraction,
@@ -57,8 +63,8 @@ export function calculateReactiesnelheid(rawDone: number, rawTotal: number): Rea
 
   return {
     level: "building",
-    label: "Gut dabei",
-    subtitle: `Schließe noch ${remaining} ${remaining === 1 ? "Schritt" : "Schritte"} ab, um schneller reagieren zu können.`,
+    label: tr("speedCard.building"),
+    subtitle: tr("speedCard.buildingDesc", { remaining, stepWord }),
     done,
     total,
     fraction,
@@ -100,6 +106,7 @@ export function ReactiesnelheidCard({
   done?: number;
   total?: number;
 }) {
+  const { t } = useI18n();
   const { data, isLoading } = useReactiesnelheidData();
 
   const done = propDone ?? data?.speedDone ?? 0;
@@ -118,7 +125,7 @@ export function ReactiesnelheidCard({
 
   if (total === 0) return null;
 
-  const state = calculateReactiesnelheid(done, total);
+  const state = calculateReactiesnelheid(done, total, t);
   const styles = LEVEL_STYLES[state.level];
   const pct = Math.round(state.fraction * 100);
 
@@ -136,7 +143,7 @@ export function ReactiesnelheidCard({
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
-            <p className="text-[15px] font-semibold text-[#111C3D]">Reaktionsgeschwindigkeit</p>
+            <p className="text-[15px] font-semibold text-[#111C3D]">{t("speedCard.title")}</p>
             <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${styles.labelColor}`} data-testid="badge-speed-level">
               {state.label}
             </span>
