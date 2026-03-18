@@ -14,7 +14,10 @@ interface ListingInfo {
 
 const VERIFIED_FROM = "HousAlert <new@housalert.com>";
 
-const LOGO_URL = "https://via.placeholder.com/120x40/0F172A/4F8CFF?text=HousAlert";
+function getLogoUrl(): string {
+  const baseUrl = getAppBaseUrl();
+  return `${baseUrl}/email-logo.png`;
+}
 
 const BRAND = {
   primary: "#4F8CFF",
@@ -97,11 +100,19 @@ function formatPrice(price: number): string {
 }
 
 function getAppBaseUrl(): string {
-  return process.env.APP_PUBLIC_BASE_URL || "https://housalert.replit.app";
+  const raw = process.env.APP_PUBLIC_BASE_URL || "https://housalert.replit.app";
+  try {
+    const parsed = new URL(raw);
+    if (parsed.protocol === "https:" || parsed.protocol === "http:") {
+      return parsed.origin;
+    }
+  } catch {}
+  return "https://housalert.replit.app";
 }
 
 function emailWrapper(content: string, preheader?: string): string {
   const baseUrl = getAppBaseUrl();
+  const logoUrl = getLogoUrl();
   const preheaderHtml = preheader
     ? `<div style="display:none;font-size:1px;color:${BRAND.bg};line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">${escapeHtml(preheader)}</div>`
     : "";
@@ -123,18 +134,14 @@ ${preheaderHtml}
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td style="padding:0;vertical-align:middle;">
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-      <tr>
-        <td style="vertical-align:middle;">
-          <a href="${baseUrl}" target="_blank" style="text-decoration:none;">
-            <img src="${LOGO_URL}" alt="HousAlert" width="120" height="40" style="display:block;width:120px;height:40px;border:0;" />
-          </a>
-        </td>
-        <td style="padding-left:10px;vertical-align:middle;">
-          <span style="font-size:11px;color:${BRAND.muted};letter-spacing:0.03em;">Huuraanbod, direct in je inbox</span>
-        </td>
-      </tr>
-      </table>
+      <a href="${baseUrl}" target="_blank" style="text-decoration:none;">
+        <!--[if !mso]><!-->
+        <img src="${logoUrl}" alt="HousAlert" width="240" height="60" style="display:block;width:240px;height:60px;border:0;outline:none;font-size:22px;font-weight:bold;color:${BRAND.primary};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;" />
+        <!--<![endif]-->
+        <!--[if mso]>
+        <span style="font-size:22px;font-weight:bold;color:${BRAND.primary};font-family:Arial,sans-serif;mso-line-height-rule:exactly;line-height:60px;">HousAlert</span>
+        <![endif]-->
+      </a>
     </td>
     <td align="right" style="vertical-align:middle;">
       <a href="${baseUrl}/instellingen" target="_blank" style="font-size:12px;color:${BRAND.muted};text-decoration:none;">Instellingen</a>
@@ -206,18 +213,17 @@ function listingCard(listing: ListingInfo, showButtons = false, cardNumber?: num
   const viewButtonHtml = showButtons && linkTarget !== "#"
     ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:16px;">
         <tr><td align="center">
-          <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:44px;v-text-anchor:middle;width:220px;" arcsize="50%" fillcolor="${BRAND.primary}"><center style="color:#FFFFFF;font-family:Arial,sans-serif;font-size:15px;font-weight:bold;">Bekijk woning \u2192</center></v:roundrect><![endif]-->
+          <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${escapeHtml(linkTarget)}" style="height:44px;v-text-anchor:middle;width:240px;" arcsize="50%" strokecolor="${BRAND.primary}" fillcolor="${BRAND.primary}"><w:anchorlock/><center style="color:#FFFFFF;font-family:Arial,sans-serif;font-size:15px;font-weight:bold;">Bekijk woning nu \u2192</center></v:roundrect><![endif]-->
           <!--[if !mso]><!-->
-          <a href="${escapeHtml(linkTarget)}" target="_blank" style="display:inline-block;background-color:${BRAND.primary};color:#FFFFFF;font-size:15px;font-weight:700;text-decoration:none;padding:12px 28px;border-radius:999px;text-align:center;mso-hide:all;">Bekijk woning \u2192</a>
+          <a href="${escapeHtml(linkTarget)}" target="_blank" style="display:inline-block;background-color:${BRAND.primary};color:#FFFFFF;font-size:15px;font-weight:700;text-decoration:none;padding:12px 28px;border-radius:999px;text-align:center;mso-hide:all;">Bekijk woning nu \u2192</a>
           <!--<![endif]-->
         </td></tr>
       </table>`
     : "";
 
-  const cardBg = safeImageUrl ? BRAND.bg : BRAND.bg;
   const cardPadding = safeImageUrl ? "16px 20px 20px" : "20px";
 
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${cardBg};border-radius:8px;overflow:hidden;margin:12px 0;border:1px solid ${BRAND.divider};">
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${BRAND.cardBg};border-radius:8px;overflow:hidden;margin:12px 0;border:1px solid ${BRAND.divider};">
 ${imageHtml}
 <tr><td style="padding:${cardPadding};">
   ${cardNumber ? `<span style="display:inline-block;font-size:11px;font-weight:700;color:${BRAND.primary};background-color:${BRAND.tagBg};border-radius:4px;padding:3px 10px;margin-bottom:8px;">Woning ${cardNumber}</span><br>` : ""}
