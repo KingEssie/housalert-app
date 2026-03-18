@@ -9,8 +9,21 @@ import { markEmailSent, markPushSent, getUndeliveredMatches } from "../user-matc
 
 const MAX_LISTINGS_PER_EMAIL = 20;
 const IMAGE_FETCH_TIMEOUT_MS = 5000;
+const ALLOWED_FETCH_HOSTS = ["www.wg-gesucht.de", "wg-gesucht.de", "www.immowelt.de", "immowelt.de", "www.kleinanzeigen.de", "kleinanzeigen.de"];
+const MAX_IMAGE_FETCHES_PER_FLUSH = 5;
+let _flushImageBudget = 0;
+
+function isAllowedListingUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "https:" && ALLOWED_FETCH_HOSTS.some(h => parsed.hostname === h || parsed.hostname.endsWith("." + h));
+  } catch {
+    return false;
+  }
+}
 
 async function fetchListingImage(url: string): Promise<string | null> {
+  if (!isAllowedListingUrl(url)) return null;
   try {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), IMAGE_FETCH_TIMEOUT_MS);
@@ -21,14 +34,16 @@ async function fetchListingImage(url: string): Promise<string | null> {
       },
       signal: controller.signal,
     });
-    clearTimeout(timer);
-    if (!resp.ok) return null;
+    if (!resp.ok) { clearTimeout(timer); return null; }
     const html = await resp.text();
+    clearTimeout(timer);
     const ogMatch = html.match(/<meta\s+property="og:image"\s+content="([^"]+)"/i)
       || html.match(/<meta\s+content="([^"]+)"\s+property="og:image"/i);
-    if (ogMatch?.[1] && ogMatch[1].startsWith("http")) return ogMatch[1];
+    if (ogMatch?.[1] && ogMatch[1].startsWith("https://")) return ogMatch[1];
     const imgMatch = html.match(/https:\/\/img\.wg-gesucht\.de\/media\/up\/[^"'\s]+\.(?:jpg|jpeg|png|webp)/i);
     if (imgMatch?.[0]) return imgMatch[0];
+    const immoMatch = html.match(/https:\/\/mms\.immowelt\.de\/[^"'\s]+\.(?:jpg|jpeg|png|webp)/i);
+    if (immoMatch?.[0]) return immoMatch[0];
     return null;
   } catch {
     return null;
@@ -36,25 +51,27 @@ async function fetchListingImage(url: string): Promise<string | null> {
 }
 
 async function enrichMissingImages(listings: BufferedMatch[], supabase: any): Promise<void> {
-  const needImage = listings.filter(l => !l.image_url && l.url);
+  const needImage = listings.filter(l => !l.image_url && l.url && isAllowedListingUrl(l.url));
   if (needImage.length === 0) return;
+  if (_flushImageBudget <= 0) return;
 
-  const MAX_FETCHES = 5;
-  const toFetch = needImage.slice(0, MAX_FETCHES);
+  const toFetch = needImage.slice(0, _flushImageBudget);
+  _flushImageBudget -= toFetch.length;
 
-  log(`[ALERTS] Enriching images for ${toFetch.length} listings without photos`);
+  log(`[ALERTS] Enriching images for ${toFetch.length} listings without photos (budget remaining: ${_flushImageBudget})`);
 
   const results = await Promise.allSettled(
     toFetch.map(async (l) => {
       const imgUrl = await fetchListingImage(l.url!);
       if (imgUrl) {
         l.image_url = imgUrl;
-        try {
-          await supabase
-            .from("listings")
-            .update({ image_url: imgUrl })
-            .eq("id", l.listing_id);
-        } catch {}
+        const { error: dbErr } = await supabase
+          .from("listings")
+          .update({ image_url: imgUrl })
+          .eq("id", l.listing_id);
+        if (dbErr) {
+          log(`[ALERTS] Image persist failed for ${l.listing_id}: ${dbErr.message}`);
+        }
         log(`[ALERTS] Enriched image for "${l.title.substring(0, 40)}": ${imgUrl.substring(0, 80)}`);
       }
       return imgUrl;
@@ -222,6 +239,7 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
   }
 
   _flushing = true;
+  _flushImageBudget = MAX_IMAGE_FETCHES_PER_FLUSH;
 
   try {
   const snapshot = new Map(buffer);
@@ -308,6 +326,7 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
 
     if (emailEnabled) {
       const capped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
+      await enrichMissingImages(capped, supabase);
       try {
         const success = await sendBatchMatchAlert(email, capped);
         if (success) {
@@ -389,6 +408,8 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
     return;
   }
 
+  _flushImageBudget = MAX_IMAGE_FETCHES_PER_FLUSH;
+
   const userBuf = buffer.get(userId);
   if (!userBuf || userBuf.listings.length === 0) return;
 
@@ -452,6 +473,7 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
 
   if (emailEnabled) {
     const capped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
+    await enrichMissingImages(capped, supabase);
     try {
       const success = await sendBatchMatchAlert(userBuf.email, capped);
       if (success) {
