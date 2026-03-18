@@ -1143,6 +1143,18 @@ export async function registerRoutes(
       log(`[SIGNUP] User created OK: id=${userId}, email=${email}`);
 
       try {
+        await pgPool.query(
+          `INSERT INTO user_profile_data (user_id, first_name, created_at, updated_at)
+           VALUES ($1, $2, NOW(), NOW())
+           ON CONFLICT (user_id) DO NOTHING`,
+          [userId, fullName || email.split("@")[0]]
+        );
+        log(`[SIGNUP] Profile row created in user_profile_data: user=${userId}`);
+      } catch (profileErr: any) {
+        log(`[SIGNUP] WARNING: Failed to create user_profile_data row for user=${userId}: ${profileErr.message}`);
+      }
+
+      try {
         const sub = await ensureTrialSubscription(userId);
         if (sub) {
           log(`[SIGNUP] Trial subscription created: user=${userId}, plan=${sub.plan || "trial"}, status=${sub.status}`);
@@ -1203,6 +1215,17 @@ export async function registerRoutes(
 
       const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      pgPool.query(
+        `INSERT INTO user_profile_data (user_id, first_name, created_at, updated_at)
+         VALUES ($1, $2, NOW(), NOW())
+         ON CONFLICT (user_id) DO NOTHING`,
+        [user.id, user.user_metadata?.full_name || user.email?.split("@")[0] || ""]
+      ).then(() => {
+        log(`[ensure-trial] Profile row ensured in user_profile_data: user=${user.id}`);
+      }).catch((err: any) => {
+        log(`[ensure-trial] WARNING: user_profile_data insert failed for user=${user.id}: ${err.message}`);
+      });
 
       const sub = await ensureTrialSubscription(user.id);
       if (!sub) {
