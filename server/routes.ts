@@ -1115,6 +1115,7 @@ export async function registerRoutes(
   app.post("/api/auth/signup", async (req, res) => {
     try {
       const { email, password, fullName } = req.body;
+      log(`[SIGNUP] Attempt: email=${email}, hasPassword=${!!password}, fullName=${fullName || "(none)"}`);
       if (!email || !password) {
         return res.status(400).json({ error: "Email and password are required" });
       }
@@ -1139,21 +1140,24 @@ export async function registerRoutes(
       }
 
       const userId = newUser.user.id;
-      log("auth", `[SIGNUP] User created via admin API: ${userId}`);
+      log(`[SIGNUP] User created OK: id=${userId}, email=${email}`);
 
       try {
         const sub = await ensureTrialSubscription(userId);
         if (sub) {
+          log(`[SIGNUP] Trial subscription created: user=${userId}, plan=${sub.plan || "trial"}, status=${sub.status}`);
           trackActivationEvent(userId, "account_created", {});
           trackActivationEvent(userId, "trial_started", { plan: sub.plan || "trial" });
+        } else {
+          log(`[SIGNUP] Trial subscription returned null for user=${userId}`);
         }
       } catch (trialErr: any) {
-        log("auth", `[SIGNUP] Trial creation failed for ${userId}: ${trialErr.message}`);
+        log(`[SIGNUP] Trial creation FAILED for user=${userId}: ${trialErr.message}`);
       }
 
       return res.json({ ok: true, userId });
     } catch (err: any) {
-      log("auth", `[SIGNUP] Unexpected error: ${err.message}`);
+      log(`[SIGNUP] Unexpected error: ${err.message}`);
       return res.status(500).json({ error: err.message });
     }
   });
@@ -1341,16 +1345,21 @@ export async function registerRoutes(
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
       const { plan } = req.body;
+      log(`[checkout] Started: user=${user.id}, email=${user.email}, plan=${plan}`);
+
       if (!plan || !PLAN_PRICE_MAP[plan]) {
+        log(`[checkout] Invalid plan "${plan}" — available: ${Object.keys(PLAN_PRICE_MAP).join(", ")}`);
         return res.status(400).json({ error: "Invalid plan. Use: monthly, two_month, or three_month" });
       }
 
       const stripePriceId = PLAN_PRICE_MAP[plan];
       if (!stripePriceId) {
+        log(`[checkout] No price ID for plan "${plan}" — Stripe prices not configured`);
         return res.status(503).json({ error: "stripe_not_configured", message: "Stripe prices are not yet configured." });
       }
 
       if (!stripeAvailable) {
+        log(`[checkout] Stripe not available — cannot create session`);
         return res.status(503).json({ error: "stripe_not_configured", message: "Stripe is not available. Set STRIPE_SECRET_KEY or connect Stripe via Replit integration." });
       }
 
@@ -1361,12 +1370,14 @@ export async function registerRoutes(
       let customerId: string;
       if (customers.data.length > 0) {
         customerId = customers.data[0].id;
+        log(`[checkout] Found existing Stripe customer: ${customerId}`);
       } else {
         const customer = await stripe.customers.create({
           email: user.email!,
           metadata: { supabase_user_id: user.id },
         });
         customerId = customer.id;
+        log(`[checkout] Created new Stripe customer: ${customerId}`);
       }
 
       await supabase
@@ -1378,7 +1389,7 @@ export async function registerRoutes(
       const protocol = req.headers["x-forwarded-proto"] || req.protocol;
       const baseUrl = process.env.APP_PUBLIC_BASE_URL || `${protocol}://${host}`;
 
-      log(`[checkout] Creating session: plan=${plan}, priceId=${stripePriceId}, baseUrl=${baseUrl}, customer=${customerId}`);
+      log(`[checkout] Creating Stripe session: plan=${plan}, priceId=${stripePriceId}, customer=${customerId}, successUrl=${baseUrl}/subscription-success`);
 
       const session = await stripe.checkout.sessions.create({
         customer: customerId,
@@ -1716,23 +1727,32 @@ export async function registerRoutes(
           const stripeCustomerId = session.customer as string;
           const stripeSubscriptionId = session.subscription as string;
 
+          log(`[stripe-webhook] checkout.session.completed — userId=${userId}, customerId=${stripeCustomerId}, subscriptionId=${stripeSubscriptionId}, plan=${plan}`);
+
           if (userId && stripeSubscriptionId) {
             const sub = await stripe.subscriptions.retrieve(stripeSubscriptionId);
+            log(`[stripe-webhook] Stripe subscription status: ${sub.status}`);
             if (sub.status === "trialing") {
               const trialEnd = (sub as any).trial_end;
               const trialEndsAt = trialEnd && trialEnd > 0
                 ? new Date(trialEnd * 1000)
                 : new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+              log(`[stripe-webhook] DB UPDATE: setting user=${userId} to trial, trialEndsAt=${trialEndsAt.toISOString()}`);
               await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubscriptionId, plan, null, trialEndsAt);
               trackActivationEvent(userId, "trial_started", { plan, source: "webhook" });
+              log(`[stripe-webhook] ACTIVATION: user=${userId} is now ACTIVE (trial) ✓`);
             } else {
               const rawEnd = (sub as any).current_period_end;
               const periodEnd = rawEnd && rawEnd > 0
                 ? new Date(rawEnd * 1000)
                 : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+              log(`[stripe-webhook] DB UPDATE: setting user=${userId} to active, periodEnd=${periodEnd.toISOString()}`);
               await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubscriptionId, plan, periodEnd, null);
               trackActivationEvent(userId, "subscription_started", { plan, source: "webhook" });
+              log(`[stripe-webhook] ACTIVATION: user=${userId} is now ACTIVE (paid) ✓`);
             }
+          } else {
+            log(`[stripe-webhook] SKIPPED checkout.session.completed — missing userId=${userId} or subscriptionId=${stripeSubscriptionId}`);
           }
           break;
         }
@@ -1744,8 +1764,11 @@ export async function registerRoutes(
           const stripeSubId = sub.id;
           const subStatus = sub.status;
 
+          log(`[stripe-webhook] ${event.type} — customerId=${stripeCustomerId}, subId=${stripeSubId}, status=${subStatus}`);
+
           const userId = await findUserByStripeCustomerId(stripeCustomerId);
           if (userId) {
+            log(`[stripe-webhook] Matched user=${userId} for customer=${stripeCustomerId}`);
             const priceId = sub.items?.data?.[0]?.price?.id;
             const plan = (priceId && PRICE_TO_PLAN[priceId]) || sub.metadata?.plan || "monthly";
 
@@ -1754,6 +1777,7 @@ export async function registerRoutes(
               const trialEndsAt = trialEnd && trialEnd > 0
                 ? new Date(trialEnd * 1000)
                 : new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+              log(`[stripe-webhook] DB UPDATE: user=${userId} → trial, plan=${plan}`);
               await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubId, plan, null, trialEndsAt);
             } else if (subStatus === "active") {
               if (sub.cancel_at_period_end) {
@@ -1761,31 +1785,41 @@ export async function registerRoutes(
                 const periodEnd = rawEnd && rawEnd > 0
                   ? new Date(rawEnd * 1000)
                   : null;
+                log(`[stripe-webhook] DB UPDATE: user=${userId} → canceled (cancel_at_period_end), periodEnd=${periodEnd?.toISOString()}`);
                 await updateSubscriptionStatus(stripeSubId, "canceled", periodEnd ?? undefined);
-                log(`[stripe-webhook] Subscription ${stripeSubId} marked canceled (cancel_at_period_end=true)`);
               } else {
                 const rawEnd = sub.current_period_end;
                 const periodEnd = rawEnd && rawEnd > 0
                   ? new Date(rawEnd * 1000)
                   : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+                log(`[stripe-webhook] DB UPDATE: user=${userId} → active, plan=${plan}, periodEnd=${periodEnd.toISOString()}`);
                 await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubId, plan, periodEnd, null);
               }
             } else if (subStatus === "canceled" || subStatus === "unpaid") {
+              log(`[stripe-webhook] DB UPDATE: sub=${stripeSubId} → canceled`);
               await updateSubscriptionStatus(stripeSubId, "canceled");
             } else if (subStatus === "past_due" || subStatus === "incomplete_expired") {
+              log(`[stripe-webhook] DB UPDATE: sub=${stripeSubId} → expired`);
               await updateSubscriptionStatus(stripeSubId, "expired");
             }
+          } else {
+            log(`[stripe-webhook] NO USER FOUND for customer=${stripeCustomerId} — cannot process ${event.type}`);
           }
           break;
         }
 
         case "customer.subscription.deleted": {
           const sub = event.data.object as any;
+          log(`[stripe-webhook] subscription.deleted — subId=${sub.id}, customerId=${sub.customer}`);
           await updateSubscriptionStatus(sub.id, "canceled");
           break;
         }
+
+        default:
+          log(`[stripe-webhook] Unhandled event type: ${event.type}`);
       }
 
+      log(`[stripe-webhook] Event ${event.id} processed OK`);
       return res.json({ received: true });
     } catch (err: any) {
       log(`[stripe-webhook] Error: ${err.message}`);
