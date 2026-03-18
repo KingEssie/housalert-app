@@ -24,7 +24,7 @@ export async function sendEmailMatchAlert(
   listing: ListingInfo,
   userId?: string
 ): Promise<boolean> {
-  let lang: ServerLocale = "de";
+  let lang: ServerLocale = "en";
   if (userId) {
     lang = await getUserLanguage(userId);
   }

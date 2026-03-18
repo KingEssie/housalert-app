@@ -123,13 +123,13 @@ export async function getUserLanguage(userId: string): Promise<import("../i18n")
       [userId]
     );
     const raw = rows[0]?.language;
-    const resolved: import("../i18n").ServerLocale = (raw === "de" || raw === "en" || raw === "nl") ? raw : "de";
-    log(`[LANG CHECK] userId=${userId.substring(0, 8)}... dbLanguage=${raw ?? "NULL"} finalLanguage=${resolved}`);
+    const resolved: import("../i18n").ServerLocale = (raw === "de" || raw === "en" || raw === "nl") ? raw : "en";
+    log(`[LANG CHECK] userId=${userId.substring(0, 8)}... dbLanguage=${raw ?? "NULL"} finalLanguage=${resolved}${raw ? "" : " (fallback to en)"}`);
     return resolved;
   } catch (err: any) {
-    log(`[LANG CHECK] userId=${userId.substring(0, 8)}... ERROR=${err.message} finalLanguage=de (fallback)`);
+    log(`[LANG CHECK] userId=${userId.substring(0, 8)}... ERROR=${err.message} finalLanguage=en (fallback)`);
   }
-  return "de";
+  return "en";
 }
 
 async function sendBuddyEmail(
@@ -138,7 +138,7 @@ async function sendBuddyEmail(
   buddyInfo: BuddyInfo,
   capped: BufferedMatch[],
   context: string,
-  lang: import("../i18n").ServerLocale = "de"
+  lang: import("../i18n").ServerLocale = "en"
 ): Promise<boolean> {
   if (!buddyInfo.enabled) {
     log(`[ALERTS] ${context} Buddy skip for ${userId.substring(0, 8)}...: toggle OFF`);

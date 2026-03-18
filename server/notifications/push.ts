@@ -91,7 +91,7 @@ export async function sendMatchPushNotifications(
   userId: string,
   listings: PushMatchListing[],
   supabase: any,
-  lang: ServerLocale = "de"
+  lang: ServerLocale = "en"
 ): Promise<{ sent: number; skipped: number; failed: number }> {
   if (!initialized) {
     return { sent: 0, skipped: 0, failed: 0 };

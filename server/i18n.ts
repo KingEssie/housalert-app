@@ -106,7 +106,7 @@ const translations: Record<ServerLocale, Record<string, string>> = {
 };
 
 export function t(lang: ServerLocale, key: string, params?: Record<string, string | number>): string {
-  let value = translations[lang]?.[key] ?? translations.de[key] ?? key;
+  let value = translations[lang]?.[key] ?? translations.en[key] ?? translations.de[key] ?? key;
   if (params) {
     for (const [k, v] of Object.entries(params)) {
       value = value.replace(new RegExp(`\\{${k}\\}`, "g"), String(v));
@@ -133,10 +133,10 @@ export function detectLanguage(req: { headers?: Record<string, string | string[]
       if (lang === "nl" || lang === "en" || lang === "de") return lang as ServerLocale;
     }
   }
-  return "de";
+  return "en";
 }
 
 export function getUserLanguage(userLang?: string | null): ServerLocale {
   if (userLang && isValidLocale(userLang)) return userLang;
-  return "de";
+  return "en";
 }

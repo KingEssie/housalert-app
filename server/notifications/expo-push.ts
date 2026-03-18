@@ -83,7 +83,7 @@ function tokenSnippet(token: string): string {
   return token.length > 30 ? token.substring(0, 30) + "..." : token;
 }
 
-export function buildMatchPayload(listings: ExpoMatchListing[], lang: ServerLocale = "de"): {
+export function buildMatchPayload(listings: ExpoMatchListing[], lang: ServerLocale = "en"): {
   title: string;
   body: string;
   deepLink: string;
@@ -165,7 +165,7 @@ export async function sendWithRetry(
 export async function sendExpoMatchPush(
   userId: string,
   listings: ExpoMatchListing[],
-  lang: ServerLocale = "de"
+  lang: ServerLocale = "en"
 ): Promise<{ sent: number; skipped: number; failed: number }> {
   const uid = userId.substring(0, 8);
 

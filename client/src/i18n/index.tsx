@@ -11,12 +11,19 @@ const locales: Record<Locale, TranslationMap> = { de, en, nl };
 
 const STORAGE_KEY = "housalert_locale";
 
+function detectBrowserLocale(): Locale {
+  const nav = navigator.language?.toLowerCase() ?? "";
+  if (nav.startsWith("de")) return "de";
+  if (nav.startsWith("nl")) return "nl";
+  return "en";
+}
+
 function getStoredLocale(): Locale {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored === "de" || stored === "en" || stored === "nl") return stored;
   } catch {}
-  return "de";
+  return detectBrowserLocale();
 }
 
 function resolve(obj: any, path: string): any | undefined {
@@ -37,7 +44,7 @@ interface I18nContextValue {
 }
 
 const I18nContext = createContext<I18nContextValue>({
-  locale: "de",
+  locale: "en",
   setLocale: () => {},
   t: (key) => key,
 });
@@ -52,11 +59,11 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   const t = useCallback((key: string, params?: Record<string, string | number>): string => {
     let value = resolve(locales[locale], key);
+    if (value === undefined && locale !== "en") {
+      value = resolve(locales.en, key);
+    }
     if (value === undefined && locale !== "de") {
       value = resolve(locales.de, key);
-    }
-    if (value === undefined && locale !== "nl") {
-      value = resolve(locales.nl, key);
     }
     if (value === undefined) return key;
     if (params && typeof value === "string") {

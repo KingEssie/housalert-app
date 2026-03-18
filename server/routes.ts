@@ -23,6 +23,7 @@ import {
   findUserByStripeCustomerId,
 } from "./subscriptions";
 import { log } from "./log";
+import { detectLanguage } from "./i18n";
 import { computeMatchScore, getMatchReasons, computeHybridFilters } from "../shared/match-score";
 import { normalizeCity } from "../shared/city-normalize";
 import { pool as pgPool } from "./pg-pool";
@@ -37,6 +38,11 @@ import { markViewed, markApplied, markSaved, getUserMatchStats, getRecentUserMat
 const TEN_MIN = 10 * 60 * 1000;
 const ONE_HOUR = 60 * 60 * 1000;
 const ONE_DAY = 24 * 60 * 60 * 1000;
+
+function detectLanguageFromHeader(acceptLang: string | string[] | undefined): import("./i18n").ServerLocale {
+  const raw = Array.isArray(acceptLang) ? acceptLang.join(",") : acceptLang;
+  return detectLanguage({ headers: { "accept-language": raw } });
+}
 
 function computeFreshLabel(firstSeenAt: string): string {
   const ageMs = Date.now() - new Date(firstSeenAt).getTime();
@@ -1146,13 +1152,15 @@ export async function registerRoutes(
       log(`[SIGNUP] User created OK: id=${userId}, email=${email}`);
 
       try {
+        const detectedLang = detectLanguageFromHeader(req.headers["accept-language"]);
+        log(`[LANG AUTO-DETECT] userId=${userId.substring(0, 8)}... detected="${detectedLang}" from accept-language="${(req.headers["accept-language"] || "").substring(0, 60)}"`);
         await pgPool.query(
-          `INSERT INTO user_profile_data (user_id, first_name, created_at, updated_at)
-           VALUES ($1, $2, NOW(), NOW())
+          `INSERT INTO user_profile_data (user_id, first_name, language, created_at, updated_at)
+           VALUES ($1, $2, $3, NOW(), NOW())
            ON CONFLICT (user_id) DO NOTHING`,
-          [userId, fullName || email.split("@")[0]]
+          [userId, fullName || email.split("@")[0], detectedLang]
         );
-        log(`[SIGNUP] Profile row created in user_profile_data: user=${userId}`);
+        log(`[LANG FIRST SAVE] userId=${userId.substring(0, 8)}... language="${detectedLang}" saved to DB on signup`);
       } catch (profileErr: any) {
         log(`[SIGNUP] WARNING: Failed to create user_profile_data row for user=${userId}: ${profileErr.message}`);
       }
@@ -1219,13 +1227,14 @@ export async function registerRoutes(
       const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
+      const etDetectedLang = detectLanguageFromHeader(req.headers["accept-language"]);
       pgPool.query(
-        `INSERT INTO user_profile_data (user_id, first_name, created_at, updated_at)
-         VALUES ($1, $2, NOW(), NOW())
+        `INSERT INTO user_profile_data (user_id, first_name, language, created_at, updated_at)
+         VALUES ($1, $2, $3, NOW(), NOW())
          ON CONFLICT (user_id) DO NOTHING`,
-        [user.id, user.user_metadata?.full_name || user.email?.split("@")[0] || ""]
+        [user.id, user.user_metadata?.full_name || user.email?.split("@")[0] || "", etDetectedLang]
       ).then(() => {
-        log(`[ensure-trial] Profile row ensured in user_profile_data: user=${user.id}`);
+        log(`[ensure-trial] Profile row ensured in user_profile_data: user=${user.id} lang=${etDetectedLang}`);
       }).catch((err: any) => {
         log(`[ensure-trial] WARNING: user_profile_data insert failed for user=${user.id}: ${err.message}`);
       });
@@ -2178,7 +2187,22 @@ export async function registerRoutes(
         [user.id]
       );
 
-      return res.json(rows[0] ?? defaults);
+      const row = rows[0];
+      if (row && !row.language) {
+        const detected = detectLanguageFromHeader(req.headers["accept-language"]);
+        log(`[LANG AUTO-DETECT] userId=${user.id.substring(0, 8)}... language was NULL, detected="${detected}" from accept-language="${(req.headers["accept-language"] || "").substring(0, 60)}"`);
+        pgPool.query(
+          "UPDATE user_profile_data SET language = $1, updated_at = NOW() WHERE user_id = $2 AND (language IS NULL OR language = '')",
+          [detected, user.id]
+        ).then(() => {
+          log(`[LANG FIRST SAVE] userId=${user.id.substring(0, 8)}... backfilled language="${detected}" to DB`);
+        }).catch((e: any) => {
+          log(`[LANG FIRST SAVE] userId=${user.id.substring(0, 8)}... backfill failed: ${e.message}`);
+        });
+        row.language = detected;
+      }
+
+      return res.json(row ?? defaults);
     } catch (err: any) {
       console.error("[profile-data] GET error:", err.message);
       return res.status(500).json({ error: err.message });

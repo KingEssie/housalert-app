@@ -109,7 +109,7 @@ function getLogoUrl(): string {
   return `${getAppBaseUrl()}/housalert-logo.png`;
 }
 
-function emailWrapper(content: string, preheader?: string, lang: ServerLocale = "de"): string {
+function emailWrapper(content: string, preheader?: string, lang: ServerLocale = "en"): string {
   const baseUrl = getAppBaseUrl();
   const logoUrl = getLogoUrl();
   const preheaderHtml = preheader
@@ -197,7 +197,7 @@ function upgradeImageUrl(url: string): string {
   return url;
 }
 
-function listingCard(listing: ListingInfo, showButton = false, cardNumber?: number, lang: ServerLocale = "de"): string {
+function listingCard(listing: ListingInfo, showButton = false, cardNumber?: number, lang: ServerLocale = "en"): string {
   const safeUrl = sanitizeUrl(listing.url);
   const baseUrl = getAppBaseUrl();
   const applyUrl = listing.listing_id ? `${baseUrl}/apply/${listing.listing_id}` : null;
@@ -256,7 +256,7 @@ ${imageHtml}
 export async function sendMatchAlert(
   userEmail: string,
   listing: ListingInfo,
-  lang: ServerLocale = "de"
+  lang: ServerLocale = "en"
 ): Promise<boolean> {
   try {
     const client = await getResendClient();
@@ -305,7 +305,7 @@ ${listingCard(listing, true, undefined, lang)}`;
 export async function sendBatchMatchAlert(
   userEmail: string,
   listings: ListingInfo[],
-  lang: ServerLocale = "de"
+  lang: ServerLocale = "en"
 ): Promise<boolean> {
   if (listings.length === 0) return false;
 
