@@ -3995,6 +3995,10 @@ export async function registerRoutes(
       const { data, count, error } = await query;
       if (error) throw error;
 
+      const statusCounts: Record<string, number> = {};
+      for (const s of (data || [])) statusCounts[s.status] = (statusCounts[s.status] || 0) + 1;
+      log(`[admin-portal] Subscriptions query: total=${count}, returned=${(data || []).length}, filter=${filter}, statuses=${JSON.stringify(statusCounts)}`);
+
       const userIds = (data || []).map((s: any) => s.user_id);
       let userMap: Record<string, any> = {};
       if (userIds.length > 0) {

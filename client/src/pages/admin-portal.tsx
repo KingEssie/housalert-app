@@ -707,11 +707,21 @@ function SubscriptionsTab() {
   const [filter, setFilter] = useState("all");
   const [page, setPage] = useState(1);
 
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     setLoading(true);
+    setError(null);
     adminFetch(`/api/admin/portal/subscriptions?filter=${filter}&page=${page}&limit=50`)
-      .then((d) => { setSubs(d.subscriptions); setTotal(d.total); })
-      .catch(console.error)
+      .then((d) => {
+        console.log("[admin-subs] Response:", JSON.stringify(d));
+        setSubs(d.subscriptions || []);
+        setTotal(d.total ?? 0);
+      })
+      .catch((err) => {
+        console.error("[admin-subs] Fetch error:", err);
+        setError(err.message || "Failed to load subscriptions");
+      })
       .finally(() => setLoading(false));
   }, [filter, page]);
 
@@ -731,7 +741,16 @@ function SubscriptionsTab() {
         <span className="text-[13px] text-[#6B7280] ml-auto">{total} subscriptions</span>
       </div>
 
-      {loading ? <LoadingState /> : (
+      {loading ? <LoadingState /> : error ? (
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 text-[13px]" data-testid="text-subs-error">
+          <p className="font-semibold">Failed to load subscriptions</p>
+          <p>{error}</p>
+        </div>
+      ) : subs.length === 0 ? (
+        <div className="bg-white rounded-xl border border-[#E5E7EB] p-8 text-center text-[#6B7280] text-[13px]" data-testid="text-subs-empty">
+          No subscriptions found for filter "{filter}".
+        </div>
+      ) : (
         <div className="bg-white rounded-xl border border-[#E5E7EB] overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-[13px]">
