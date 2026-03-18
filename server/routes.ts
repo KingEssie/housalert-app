@@ -1683,6 +1683,7 @@ export async function registerRoutes(
   });
 
   app.post("/api/stripe/webhook", async (req, res) => {
+    log(`[stripe-webhook] Incoming request — has signature: ${!!req.headers["stripe-signature"]}, body size: ${req.rawBody ? (req.rawBody as Buffer).length : 0} bytes`);
     try {
       const { getUncachableStripeClient, getStripeSecretKey } = await import("./stripe/stripeClient");
       const stripe = await getUncachableStripeClient();
@@ -1691,19 +1692,21 @@ export async function registerRoutes(
       const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
       if (!webhookSecret) {
-        log("[stripe-webhook] STRIPE_WEBHOOK_SECRET not configured");
+        log("[stripe-webhook] ERROR: STRIPE_WEBHOOK_SECRET not configured — set it in Replit Secrets");
         return res.status(500).json({ error: "Webhook secret not configured" });
       }
+
+      log(`[stripe-webhook] Verifying signature (secret prefix: ${webhookSecret.substring(0, 8)}...)`);
 
       let event;
       try {
         event = stripe.webhooks.constructEvent(req.rawBody as Buffer, sig, webhookSecret);
       } catch (err: any) {
-        log(`[stripe-webhook] Signature verification failed: ${err.message}`);
+        log(`[stripe-webhook] SIGNATURE VERIFICATION FAILED: ${err.message}`);
         return res.status(400).json({ error: `Webhook Error: ${err.message}` });
       }
 
-      log(`[stripe-webhook] Received event: ${event.type}`);
+      log(`[stripe-webhook] Event verified OK — type: ${event.type}, id: ${event.id}`);
 
       switch (event.type) {
         case "checkout.session.completed": {
