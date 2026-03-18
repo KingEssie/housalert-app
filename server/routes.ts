@@ -82,8 +82,22 @@ export async function registerRoutes(
   let stripeAvailable = true;
   try {
     const { getUncachableStripeClient } = await import("./stripe/stripeClient");
-    await getUncachableStripeClient();
+    const stripe = await getUncachableStripeClient();
     log("[stripe-config] Stripe initialized successfully.");
+
+    try {
+      const account = await stripe.accounts.retrieve();
+      console.log("=== STRIPE DEBUG ===");
+      console.log("Stripe account ID:", account.id);
+      console.log("Stripe email:", account.email);
+      console.log("Stripe country:", account.country);
+      console.log("Stripe livemode:", account.charges_enabled ? "charges enabled" : "charges disabled");
+      console.log("====================");
+    } catch (acctErr: any) {
+      console.log("=== STRIPE DEBUG ===");
+      console.log("Could not retrieve account info:", acctErr.message);
+      console.log("====================");
+    }
   } catch (err: any) {
     stripeAvailable = false;
     log(`[stripe-config] Stripe not available: ${err.message}`);
