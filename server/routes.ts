@@ -884,10 +884,12 @@ export async function registerRoutes(
         const dateA = new Date(a.matched_at).getTime();
         const dateB = new Date(b.matched_at).getTime();
         if (dateB !== dateA) return dateB - dateA;
-        return (b.match_score ?? 0) - (a.match_score ?? 0);
+        return a.listing_id.localeCompare(b.listing_id);
       });
 
       const top50 = validResults.slice(0, 50);
+
+      console.log(`[MATCHES ORDER] userId=${user.id.substring(0, 8)}... appOrder=[${top50.slice(0, 10).map((m: any) => m.listing_id.substring(0, 8)).join(",")}] sortField=matched_at timestamps=[${top50.slice(0, 10).map((m: any) => m.matched_at).join(",")}]`);
 
       const [canonicalStats, canonicalStates] = await Promise.all([
         getUserMatchStats(user.id),

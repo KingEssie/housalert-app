@@ -402,6 +402,7 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
     if (emailEnabled) {
       const capped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
       await enrichMissingImages(capped, supabase);
+      log(`[EMAIL ORDER] userId=${userId.substring(0, 8)}... emailOrder=[${capped.slice(0, 10).map(l => l.listing_id.substring(0, 8)).join(",")}] sortField=matched_at timestamps=[${capped.slice(0, 10).map(l => l.matched_at || "N/A").join(",")}]`);
       try {
         log(`[NOTIF] ${source} email to=${email} userId=${userId.substring(0, 8)}... lang=${userLang} count=${capped.length} path=${source}`);
         const success = await sendBatchMatchAlert(email, capped, userLang);
