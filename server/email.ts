@@ -12,6 +12,8 @@ interface ListingInfo {
   image_url?: string | null;
 }
 
+const VERIFIED_FROM = "HousAlert <new@housalert.com>";
+
 const BRAND = {
   name: "HousAlert",
   primary: "#0D6EFD",
@@ -82,35 +84,12 @@ async function getCredentials() {
   }
   return {
     apiKey: connectionSettings.settings.api_key,
-    fromEmail: connectionSettings.settings.from_email,
   };
 }
 
-async function getUncachableResendClient() {
-  const { apiKey, fromEmail } = await getCredentials();
-  return {
-    client: new Resend(apiKey),
-    fromEmail,
-  };
-}
-
-const SANDBOX_REDIRECT_EMAIL = "martin.essie87@gmail.com";
-
-function isSandboxMode(fromEmail: string | undefined | null): boolean {
-  const addr = fromEmail || "onboarding@resend.dev";
-  return addr.includes("@resend.dev");
-}
-
-function formatFromAddress(fromEmail: string | undefined | null): string {
-  if (!fromEmail) return "HousAlert <onboarding@resend.dev>";
-  if (fromEmail.includes("<")) return fromEmail;
-  return `HousAlert <${fromEmail}>`;
-}
-
-function resolveRecipient(originalEmail: string, fromEmail: string | undefined | null): { to: string; redirected: boolean } {
-  if (!isSandboxMode(fromEmail)) return { to: originalEmail, redirected: false };
-  if (originalEmail.toLowerCase() === SANDBOX_REDIRECT_EMAIL.toLowerCase()) return { to: originalEmail, redirected: false };
-  return { to: SANDBOX_REDIRECT_EMAIL, redirected: true };
+async function getResendClient() {
+  const { apiKey } = await getCredentials();
+  return new Resend(apiKey);
 }
 
 function formatPrice(price: number): string {
@@ -192,76 +171,56 @@ ${preheaderHtml}
 </html>`;
 }
 
-function detailChip(icon: string, label: string): string {
-  return `<td style="padding:0 12px 0 0;white-space:nowrap;">
-    <span style="font-size:13px;color:${BRAND.muted};line-height:1;">${icon}&nbsp;${escapeHtml(label)}</span>
-  </td>`;
-}
-
 function listingCard(listing: ListingInfo, showButtons = false, cardNumber?: number): string {
   const safeUrl = sanitizeUrl(listing.url);
   const baseUrl = getAppBaseUrl();
   const applyUrl = listing.listing_id ? `${baseUrl}/apply/${listing.listing_id}` : null;
   const safeImageUrl = sanitizeUrl(listing.image_url);
+  const linkTarget = safeUrl || applyUrl || "#";
 
   const imageHtml = safeImageUrl
-    ? `<tr><td style="padding:0;">
-        <a href="${escapeHtml(safeUrl || applyUrl || '#')}" target="_blank" style="text-decoration:none;">
-          <img src="${escapeHtml(safeImageUrl)}" alt="${escapeHtml(listing.title)}" width="100%" style="display:block;width:100%;height:auto;max-height:220px;object-fit:cover;border-radius:12px 12px 0 0;" />
+    ? `<tr><td style="padding:0;line-height:0;font-size:0;">
+        <a href="${escapeHtml(linkTarget)}" target="_blank" style="text-decoration:none;">
+          <img src="${escapeHtml(safeImageUrl)}" alt="${escapeHtml(listing.title)}" width="100%" style="display:block;width:100%;height:auto;max-height:200px;object-fit:cover;border-radius:8px 8px 0 0;" />
         </a>
       </td></tr>`
-    : "";
+    : `<tr><td style="padding:0;line-height:0;font-size:0;">
+        <div style="background:linear-gradient(135deg,${BRAND.accent},${BRAND.bg});height:80px;border-radius:8px 8px 0 0;text-align:center;line-height:80px;">
+          <span style="font-size:32px;">&#127968;</span>
+        </div>
+      </td></tr>`;
 
-  const chips: string[] = [];
-  if (listing.bedrooms > 0) chips.push(detailChip("\u{1F6CF}\uFE0F", `${listing.bedrooms} kamer${listing.bedrooms > 1 ? "s" : ""}`));
-  if (listing.size_m2 > 0) chips.push(detailChip("\u{1F4D0}", `${listing.size_m2} m\u00B2`));
-  if (listing.city) chips.push(detailChip("\u{1F4CD}", listing.city));
+  const detailParts: string[] = [];
+  if (listing.city) detailParts.push(`<span style="color:${BRAND.muted};font-size:13px;">\u{1F4CD} ${escapeHtml(listing.city)}</span>`);
+  if (listing.size_m2 > 0) detailParts.push(`<span style="color:${BRAND.muted};font-size:13px;">\u{1F4D0} ${listing.size_m2} m\u00B2</span>`);
+  if (listing.bedrooms > 0) detailParts.push(`<span style="color:${BRAND.muted};font-size:13px;">\u{1F6CF}\uFE0F ${listing.bedrooms} kamer${listing.bedrooms > 1 ? "s" : ""}</span>`);
 
-  const chipsHtml = chips.length > 0
-    ? `<tr><td style="padding:8px 0 0;">
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>${chips.join("")}</tr></table>
-      </td></tr>`
+  const detailsHtml = detailParts.length > 0
+    ? `<p style="margin:8px 0 0;line-height:1.8;">${detailParts.join(`<span style="color:${BRAND.divider};margin:0 6px;">&middot;</span>`)}</p>`
     : "";
 
   const priceHtml = listing.price > 0
-    ? `<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
-        <td><span style="font-size:22px;font-weight:800;color:${BRAND.dark};line-height:1;">${formatPrice(listing.price)}</span></td>
-        <td style="padding-left:4px;"><span style="font-size:13px;font-weight:400;color:${BRAND.muted};line-height:1;">/mnd</span></td>
-      </tr></table>`
+    ? `<p style="margin:6px 0 0;font-size:22px;font-weight:800;color:${BRAND.dark};line-height:1.2;">${formatPrice(listing.price)}<span style="font-size:13px;font-weight:400;color:${BRAND.muted};margin-left:3px;">/mnd</span></p>`
     : "";
 
-  const applyButtonHtml = showButtons && applyUrl
-    ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:8px;">
+  const viewButtonHtml = showButtons && linkTarget !== "#"
+    ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:16px;">
         <tr><td align="center">
-          <a href="${escapeHtml(applyUrl)}" target="_blank" style="display:block;background-color:${BRAND.primary};color:#FFFFFF;font-size:15px;font-weight:600;text-decoration:none;padding:14px 24px;border-radius:999px;text-align:center;mso-padding-alt:14px 24px;">Reageer direct \u2192</a>
+          <a href="${escapeHtml(linkTarget)}" target="_blank" style="display:inline-block;background-color:${BRAND.primary};color:#FFFFFF;font-size:15px;font-weight:600;text-decoration:none;padding:12px 32px;border-radius:999px;text-align:center;mso-padding-alt:12px 32px;">Bekijk woning \u2192</a>
         </td></tr>
       </table>`
     : "";
 
-  const viewButtonHtml = showButtons && safeUrl
-    ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr><td align="center">
-          <a href="${escapeHtml(safeUrl)}" target="_blank" style="display:block;border:1.5px solid ${BRAND.divider};background-color:${BRAND.cardBg};color:${BRAND.dark};font-size:14px;font-weight:600;text-decoration:none;padding:12px 24px;border-radius:999px;text-align:center;">Bekijk woning</a>
-        </td></tr>
-      </table>`
-    : "";
+  const cardPadding = safeImageUrl ? "16px 20px 20px" : "12px 20px 20px";
 
-  const buttonsHtml = (applyButtonHtml || viewButtonHtml)
-    ? `<tr><td style="padding:16px 0 0;">
-        ${applyButtonHtml}${viewButtonHtml}
-      </td></tr>`
-    : "";
-
-  const cardPadding = safeImageUrl ? "16px 20px 20px" : "20px";
-
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${BRAND.bg};border-radius:12px;overflow:hidden;margin:12px 0;border:1px solid ${BRAND.divider};">
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${BRAND.bg};border-radius:8px;overflow:hidden;margin:16px 0;border:1px solid ${BRAND.divider};">
 ${imageHtml}
 <tr><td style="padding:${cardPadding};">
-  ${cardNumber ? `<span style="display:inline-block;font-size:11px;font-weight:700;color:${BRAND.primary};background-color:${BRAND.accent};border-radius:4px;padding:2px 8px;margin-bottom:6px;">Woning ${cardNumber}</span><br>` : ""}
-  <h3 style="margin:0 0 6px;font-size:16px;font-weight:700;color:${BRAND.dark};line-height:1.35;">${escapeHtml(listing.title)}</h3>
+  ${cardNumber ? `<span style="display:inline-block;font-size:11px;font-weight:700;color:${BRAND.primary};background-color:${BRAND.accent};border-radius:4px;padding:2px 8px;margin-bottom:8px;">Woning ${cardNumber}</span><br>` : ""}
+  <h3 style="margin:0;font-size:17px;font-weight:700;color:${BRAND.dark};line-height:1.35;">${escapeHtml(listing.title)}</h3>
   ${priceHtml}
-  ${chipsHtml ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">${chipsHtml}</table>` : ""}
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">${buttonsHtml}</table>
+  ${detailsHtml}
+  ${viewButtonHtml}
 </td></tr>
 </table>`;
 }
@@ -271,7 +230,7 @@ export async function sendMatchAlert(
   listing: ListingInfo
 ): Promise<boolean> {
   try {
-    const { client, fromEmail } = await getUncachableResendClient();
+    const client = await getResendClient();
 
     const subject = sanitizeSubject(`\u{1F3E0} Nieuwe match: ${listing.title}`);
     const pricePart = listing.price > 0 ? `${formatPrice(listing.price)}/mnd \u2014 ` : "";
@@ -296,39 +255,22 @@ export async function sendMatchAlert(
 </table>
 ${listingCard(listing, true)}`;
 
-    const fromAddr = formatFromAddress(fromEmail);
-    const { to: actualTo, redirected } = resolveRecipient(userEmail, fromEmail);
-    const actualSubject = redirected
-      ? sanitizeSubject(`[${userEmail}] ${subject}`)
-      : subject;
-    const actualText = redirected
-      ? `[Sandbox redirect — original recipient: ${userEmail}]\n\n${textBody}`
-      : textBody;
-
-    if (redirected) {
-      log(`[EMAIL SANDBOX] Redirecting from ${userEmail} → ${actualTo}`);
-    }
-    log(`[EMAIL SEND] from="${fromAddr}" to="${actualTo}" subject="${actualSubject}"`);
+    log(`[EMAIL SEND] from="${VERIFIED_FROM}" to="${userEmail}" subject="${subject}"`);
 
     const { data, error } = await client.emails.send({
-      from: fromAddr,
-      to: actualTo,
-      subject: actualSubject,
-      text: actualText,
-      html: emailWrapper(
-        redirected
-          ? `<div style="background:#FEF3C7;border:1px solid #F59E0B;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#92400E;">📋 Sandbox mode — origineel voor: <strong>${escapeHtml(userEmail)}</strong></div>${htmlContent}`
-          : htmlContent,
-        preheader
-      ),
+      from: VERIFIED_FROM,
+      to: userEmail,
+      subject,
+      text: textBody,
+      html: emailWrapper(htmlContent, preheader),
     });
 
     if (error) {
-      log(`[EMAIL FAIL] to=${actualTo} listing="${listing.title}" from="${fromAddr}" error=${error.message} name=${(error as any).name || "unknown"} statusCode=${(error as any).statusCode || "N/A"}`);
+      log(`[EMAIL FAIL] to=${userEmail} listing="${listing.title}" error=${error.message} name=${(error as any).name || "unknown"} statusCode=${(error as any).statusCode || "N/A"}`);
       return false;
     }
 
-    log(`[EMAIL OK] to=${actualTo}${redirected ? ` (was ${userEmail})` : ""} listing="${listing.title}" id=${(data as any)?.id || "N/A"}`);
+    log(`[EMAIL OK] to=${userEmail} listing="${listing.title}" id=${(data as any)?.id || "N/A"}`);
     return true;
   } catch (err: any) {
     log(`[EMAIL ERROR] to=${userEmail} err=${err.message} stack=${err.stack?.split("\n")[1]?.trim() || "N/A"}`);
@@ -347,7 +289,7 @@ export async function sendBatchMatchAlert(
   }
 
   try {
-    const { client, fromEmail } = await getUncachableResendClient();
+    const client = await getResendClient();
 
     const subject = sanitizeSubject(`\u{1F3E0} ${listings.length} nieuwe woningen gevonden`);
     const preheader = `${listings.length} nieuwe matches voor jouw zoekprofiel \u2014 bekijk ze nu.`;
@@ -378,39 +320,22 @@ export async function sendBatchMatchAlert(
 </table>
 ${htmlListings}`;
 
-    const fromAddr = formatFromAddress(fromEmail);
-    const { to: actualTo, redirected } = resolveRecipient(userEmail, fromEmail);
-    const actualSubject = redirected
-      ? sanitizeSubject(`[${userEmail}] ${subject}`)
-      : subject;
-    const actualText = redirected
-      ? `[Sandbox redirect — original recipient: ${userEmail}]\n\n${textBody}`
-      : textBody;
-
-    if (redirected) {
-      log(`[EMAIL SANDBOX] Batch redirecting from ${userEmail} → ${actualTo}`);
-    }
-    log(`[EMAIL SEND] batch from="${fromAddr}" to="${actualTo}" count=${listings.length} subject="${actualSubject}"`);
+    log(`[EMAIL SEND] batch from="${VERIFIED_FROM}" to="${userEmail}" count=${listings.length} subject="${subject}"`);
 
     const { data, error } = await client.emails.send({
-      from: fromAddr,
-      to: actualTo,
-      subject: actualSubject,
-      text: actualText,
-      html: emailWrapper(
-        redirected
-          ? `<div style="background:#FEF3C7;border:1px solid #F59E0B;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#92400E;">📋 Sandbox mode — origineel voor: <strong>${escapeHtml(userEmail)}</strong></div>${htmlContent}`
-          : htmlContent,
-        preheader
-      ),
+      from: VERIFIED_FROM,
+      to: userEmail,
+      subject,
+      text: textBody,
+      html: emailWrapper(htmlContent, preheader),
     });
 
     if (error) {
-      log(`[EMAIL FAIL] batch to=${actualTo} count=${listings.length} from="${fromAddr}" error=${error.message} name=${(error as any).name || "unknown"} statusCode=${(error as any).statusCode || "N/A"}`);
+      log(`[EMAIL FAIL] batch to=${userEmail} count=${listings.length} error=${error.message} name=${(error as any).name || "unknown"} statusCode=${(error as any).statusCode || "N/A"}`);
       return false;
     }
 
-    log(`[EMAIL OK] batch to=${actualTo}${redirected ? ` (was ${userEmail})` : ""} count=${listings.length} id=${(data as any)?.id || "N/A"}`);
+    log(`[EMAIL OK] batch to=${userEmail} count=${listings.length} id=${(data as any)?.id || "N/A"}`);
     return true;
   } catch (err: any) {
     log(`[EMAIL ERROR] batch to=${userEmail} err=${err.message} stack=${err.stack?.split("\n")[1]?.trim() || "N/A"}`);

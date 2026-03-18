@@ -2616,17 +2616,18 @@ export async function registerRoutes(
   app.post("/api/admin/test-email", requireAdmin, async (req, res) => {
     try {
       const adminUser = (req as any).adminUser;
-      const targetEmail = req.body?.email || adminUser.email;
+      const targetEmail = req.body?.email || "martin.essie87@gmail.com";
 
       log(`[EMAIL TEST] Admin ${adminUser.email} triggering test email to ${targetEmail}`);
 
       const testListing = {
-        title: "Testinserat: 2-Zimmer-Wohnung in Berlin-Mitte",
+        title: "Modern apartment in Berlin",
         city: "Berlin",
-        price: 850,
+        price: 1200,
         bedrooms: 2,
-        size_m2: 55,
-        url: "https://www.example.com/listing/test-123",
+        size_m2: 65,
+        url: "https://example.com",
+        image_url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=400&fit=crop",
       };
 
       const { sendMatchAlert } = await import("./email");
@@ -2634,10 +2635,10 @@ export async function registerRoutes(
 
       if (success) {
         log(`[EMAIL TEST] Test email sent successfully to ${targetEmail}`);
-        return res.json({ success: true, sentTo: targetEmail, message: "Test email sent successfully" });
+        return res.json({ success: true, sentTo: targetEmail, from: "HousAlert <new@housalert.com>", message: "Test email sent successfully" });
       } else {
         log(`[EMAIL TEST] Test email FAILED to ${targetEmail}`);
-        return res.status(500).json({ success: false, sentTo: targetEmail, message: "Email send returned false — check Resend config" });
+        return res.status(500).json({ success: false, sentTo: targetEmail, message: "Email send returned false — check Resend logs" });
       }
     } catch (err: any) {
       log(`[EMAIL TEST] Error: ${err.message}`);
@@ -2942,16 +2943,17 @@ export async function registerRoutes(
 
         const { sendMatchAlert } = await import("./email");
         const testListing = {
-          title: "DEV TEST: 2-Zimmer-Wohnung in Berlin-Mitte",
+          title: "Modern apartment in Berlin",
           city: "Berlin",
-          price: 850,
+          price: 1200,
           bedrooms: 2,
-          size_m2: 55,
-          url: "https://www.example.com/listing/dev-test-123",
+          size_m2: 65,
+          url: "https://example.com",
+          image_url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=400&fit=crop",
         };
 
         const success = await sendMatchAlert(targetEmail, testListing);
-        return res.json({ success, sentTo: targetEmail });
+        return res.json({ success, sentTo: targetEmail, from: "HousAlert <new@housalert.com>" });
       } catch (err: any) {
         log(`[DEV EMAIL TEST] Error: ${err.message}`);
         return res.status(500).json({ success: false, error: err.message });
