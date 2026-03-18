@@ -17,8 +17,8 @@ import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import Constants from "expo-constants";
 
-const WEB_APP_URL = "https://rental-alert-ui.replit.app";
-const API_BASE = "https://rental-alert-ui.replit.app";
+const WEB_APP_URL = "https://app.housalert.com";
+const API_BASE = "https://app.housalert.com";
 
 console.log("[BOOT] HousAlert push v6 — production-ready");
 

@@ -9,7 +9,7 @@ import LocationModeSelector, {
   isLocationValid,
 } from "@/components/location-mode-selector";
 
-const APP_DOMAIN = import.meta.env.VITE_APP_DOMAIN || "https://housalert.de";
+const APP_DOMAIN = import.meta.env.VITE_APP_DOMAIN || "https://www.housalert.com";
 
 function EstimateBlock({ city, maxPrice }: { city: string; maxPrice: string }) {
   const { t } = useTranslation();

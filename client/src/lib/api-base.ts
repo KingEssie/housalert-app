@@ -1,4 +1,4 @@
-const PROD_API_BASE = "https://rental-alert-ui.replit.app";
+const PROD_API_BASE = "https://app.housalert.com";
 
 function isNative(): boolean {
   return (window as any).Capacitor?.isNativePlatform?.() === true;

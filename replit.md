@@ -698,7 +698,7 @@ Env vars: `TEST_USER_EMAIL`, `TEST_USER_PASSWORD`, `TEST_PHONE_E164`, `TEST_BASE
 ### Capacitor Mobile Shell
 - **App ID**: `com.housalert.app` | **App Name**: HousAlert
 - **Config**: `capacitor.config.ts` — loads LOCAL bundled assets from `webDir: 'dist/public'` (NOT a remote URL)
-- **API strategy**: `client/src/lib/api-base.ts` — `getApiBase()` returns `""` on web (relative paths) or `"https://rental-alert-ui.replit.app"` on native (absolute URL to production backend). All API calls go through `apiFetch()` which prepends the base URL for `/api/` paths and defaults `credentials: "include"`.
+- **API strategy**: `client/src/lib/api-base.ts` — `getApiBase()` returns `""` on web (relative paths) or `"https://app.housalert.com"` on native (absolute URL to production backend). All API calls go through `apiFetch()` which prepends the base URL for `/api/` paths and defaults `credentials: "include"`.
 - **CORS**: `server/index.ts` allows Capacitor origins (`capacitor://localhost`, `https://localhost`, `http://localhost`, `ionic://localhost`) with full CRUD methods + Authorization header
 - **Platforms**: `ios/` (Xcode project), `android/` (Gradle project)
 - **Version**: All Capacitor packages pinned to v7 (Node 20 compatible; v8 requires Node 22+)

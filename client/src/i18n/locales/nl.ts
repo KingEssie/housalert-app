@@ -1247,7 +1247,7 @@ export const nl: Record<string, any> = {
     prepExtraBtn: "Nieuw zoekprofiel toevoegen",
     prepNetworkTitle: "Gebruik je netwerk",
     prepNetworkDesc: "Deel je zoektocht met vrienden, familie en collega's. Hoe meer ogen, hoe sneller je iets vindt.",
-    shareText: "Hey! Ik zoek een huurwoning in Duitsland en gebruik HousAlert — een slim zoektool dat automatisch nieuwe woningen vindt. Als je ook iets ziet, stuur het door! Samen vinden we sneller iets. Kijk op housalert.de",
+    shareText: "Hey! Ik zoek een huurwoning in Duitsland en gebruik HousAlert — een slim zoektool dat automatisch nieuwe woningen vindt. Als je ook iets ziet, stuur het door! Samen vinden we sneller iets. Kijk op housalert.com",
     shareTextLabel: "Bericht om te delen",
     copyShareText: "Bericht kopiëren",
     markComplete: "Als voltooid markeren",

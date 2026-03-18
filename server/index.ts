@@ -28,6 +28,9 @@ const CAPACITOR_ORIGINS = [
   "https://localhost",
   "http://localhost",
   "ionic://localhost",
+  "https://app.housalert.com",
+  "https://www.housalert.com",
+  "https://housalert.com",
 ];
 
 app.use((req, res, next) => {
@@ -54,7 +57,7 @@ app.use((req, res, next) => {
     res.removeHeader("X-Frame-Options");
     res.setHeader(
       "Content-Security-Policy",
-      "frame-ancestors 'self' https://*.housalert.de https://housalert.de https://*.replit.app https://*.duda.co https://*.dudaone.com"
+      "frame-ancestors 'self' https://*.housalert.com https://housalert.com https://*.housalert.de https://housalert.de https://*.duda.co https://*.dudaone.com"
     );
   } else {
     res.setHeader("X-Frame-Options", "SAMEORIGIN");

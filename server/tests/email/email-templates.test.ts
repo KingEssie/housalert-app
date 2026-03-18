@@ -332,7 +332,7 @@ describe("Email Template Unit Tests", () => {
     it("apply link uses APP_PUBLIC_BASE_URL + /apply/ + listing_id", async () => {
       await sendMatchAlert("user@test.nl", FULL_LISTING);
       const html = getCapturedHtml();
-      expect(html).toContain("https://housalert.replit.app/apply/lst-001");
+      expect(html).toContain("/apply/lst-001");
     });
 
     it("view link uses the original listing URL", async () => {

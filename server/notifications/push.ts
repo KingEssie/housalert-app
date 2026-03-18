@@ -6,7 +6,7 @@ let initialized = false;
 export function initWebPush(): void {
   const publicKey = process.env.VITE_VAPID_PUBLIC_KEY;
   const privateKey = process.env.VAPID_PRIVATE_KEY;
-  const subject = process.env.VAPID_SUBJECT || "mailto:admin@housalert.de";
+  const subject = process.env.VAPID_SUBJECT || "mailto:admin@housalert.com";
 
   if (!publicKey || !privateKey) {
     log("[PUSH] VAPID keys not configured — push notifications disabled");

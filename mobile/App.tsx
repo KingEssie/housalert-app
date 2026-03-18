@@ -16,8 +16,7 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { WebView, WebViewNavigation } from "react-native-webview";
 
-// Production URL — change this if your domain changes
-const WEB_APP_URL = "https://housalert.replit.app";
+const WEB_APP_URL = "https://app.housalert.com";
 
 // JavaScript injected into the WebView to disable long-press
 // context menus and make the web app feel more native

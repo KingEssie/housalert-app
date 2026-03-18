@@ -1563,7 +1563,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
               <div className="h-px bg-[#E5E7EB] mx-5" />
               <AccountSettingsRow
                 label={t("profile.helpSupport")}
-                onClick={() => { window.location.href = "mailto:support@housalert.de"; }}
+                onClick={() => { window.location.href = "mailto:support@housalert.com"; }}
               />
               <div className="h-px bg-[#E5E7EB] mx-5" />
               <AccountSettingsRow

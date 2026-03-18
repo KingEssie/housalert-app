@@ -1200,7 +1200,7 @@ export const de: Record<string, any> = {
     prepExtraBtn: "Neues Suchprofil hinzufügen",
     prepNetworkTitle: "Nutze dein Netzwerk",
     prepNetworkDesc: "Teile deine Suche mit Freunden, Familie und Kollegen. Je mehr Augen, desto schneller findest du etwas.",
-    shareText: "Hey! Ich suche eine Mietwohnung in Deutschland und nutze HousAlert — ein intelligentes Suchtool, das automatisch neue Wohnungen findet. Wenn du auch etwas siehst, leite es weiter! Zusammen finden wir schneller etwas. Schau auf housalert.de",
+    shareText: "Hey! Ich suche eine Mietwohnung in Deutschland und nutze HousAlert — ein intelligentes Suchtool, das automatisch neue Wohnungen findet. Wenn du auch etwas siehst, leite es weiter! Zusammen finden wir schneller etwas. Schau auf housalert.com",
     shareTextLabel: "Nachricht zum Teilen",
     copyShareText: "Nachricht kopieren",
     markComplete: "Als erledigt markieren",

@@ -2407,7 +2407,7 @@ export async function registerRoutes(
   app.post("/api/backfill-images", async (req, res) => {
     try {
       const cheerio = await import("cheerio");
-      const UA = "HousAlert/1.0 (rental alert app; polite single-page fetch; contact: support@housalert.de)";
+      const UA = "HousAlert/1.0 (rental alert app; polite single-page fetch; contact: support@housalert.com)";
 
       const { data: listings, error } = await supabase
         .from("listings")

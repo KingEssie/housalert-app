@@ -94,14 +94,14 @@ function formatPrice(price: number): string {
 }
 
 function getAppBaseUrl(): string {
-  const raw = process.env.APP_PUBLIC_BASE_URL || "https://rental-alert-ui.replit.app";
+  const raw = process.env.APP_PUBLIC_BASE_URL || "https://app.housalert.com";
   try {
     const parsed = new URL(raw);
     if (parsed.protocol === "https:" || parsed.protocol === "http:") {
       return parsed.origin;
     }
   } catch {}
-  return "https://rental-alert-ui.replit.app";
+  return "https://app.housalert.com";
 }
 
 function getLogoUrl(): string {
