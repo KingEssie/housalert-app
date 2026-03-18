@@ -8,6 +8,8 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
+      "image": "./assets/icon.png",
+      "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
@@ -21,11 +23,46 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/adaptive-icon-foreground.png",
+        "backgroundColor": "#FFFFFF"
       },
       "package": "com.housalert.app",
       "googleServicesFile": "./google-services.json",
-      "permissions": ["RECEIVE_BOOT_COMPLETED", "VIBRATE"]
+      "permissions": [
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE",
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
+      ],
+      "versionCode": 1,
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "app.housalert.com"
+            }
+          ],
+          "category": [
+            "DEFAULT",
+            "BROWSABLE"
+          ]
+        },
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "housalert"
+            }
+          ],
+          "category": [
+            "DEFAULT",
+            "BROWSABLE"
+          ]
+        }
+      ]
     },
     "extra": {
       "eas": {
