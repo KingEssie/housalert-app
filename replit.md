@@ -2,6 +2,18 @@
 
 A mobile-first German-language rental alert application for the German market. Users can sign up, log in, and manage saved rental search profiles. Listings are matched against profiles and shown as matches. Rebranded from "Stekkies" to "HousAlert". Primary UI language: Dutch (nl), with German (de) and English (en) also available. i18n architecture: `client/src/i18n/index.tsx` with translation keys in `client/src/i18n/locales/nl.ts` (complete), `de.ts` (complete), `en.ts` (partial). Fallback chain: current locale → nl → de. The `resolve` function supports both string and array values (arrays used for viewing tips lists).
 
+## Search Buddy Feature
+- **What**: Users can add a "Zoekbuddy" (search buddy) email so a partner/friend also receives match alerts
+- **Data**: `user_profile_data` table in Replit PG has `search_buddy_email` (TEXT) and `search_buddy_enabled` (BOOLEAN DEFAULT FALSE)
+- **Auto-enable**: When buddy email is first set via `PUT /api/profile-data`, `search_buddy_enabled` auto-sets to `true`; clearing the email auto-sets it to `false`
+- **Toggle**: Dashboard profile tab shows independent buddy email toggle when buddy email exists
+- **Notification pipeline**: `server/notifications/buffer.ts` makes independent recipient decisions:
+  - Main user: subscription active + `email_enabled` = true
+  - Buddy: subscription active + `search_buddy_enabled` = true + buddy email exists + not same as main email
+- **Anti-retroactive**: Buddy follows same anti-retroactive rules (premiumStartedAt filter)
+- **Duplicate prevention**: If buddy email = main user email, only one email is sent
+- **Logging**: All buddy decisions logged with clear skip reasons
+
 ## Brand Assets
 - **Canonical logo**: `attached_assets/5B9D5117-02CB-4353-8AF3-6CCA9249F824_1773839918481.png` (1024x1024 blue house icon with notification dot)
 - **Reusable component**: `client/src/components/housalert-logo.tsx` — `<HousAlertLogo size={28} showText={true} />` renders logo image + "HousAlert" text. All pages use this component.

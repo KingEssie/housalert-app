@@ -6,6 +6,7 @@ import { sendMatchPushNotifications, type PushMatchListing } from "./push";
 import { sendExpoMatchPush, type ExpoMatchListing } from "./expo-push";
 import { batchedIn } from "../freshness";
 import { markEmailSent, markPushSent, getUndeliveredMatches } from "../user-matches";
+import { pool as pgPool } from "../pg-pool";
 
 const MAX_LISTINGS_PER_EMAIL = 20;
 const IMAGE_FETCH_TIMEOUT_MS = 5000;
@@ -89,6 +90,57 @@ function sortBufferedMatches(listings: BufferedMatch[]): BufferedMatch[] {
     if (tB !== tA) return tB - tA;
     return a.listing_id.localeCompare(b.listing_id);
   });
+}
+
+interface BuddyInfo {
+  email: string;
+  enabled: boolean;
+}
+
+async function getSearchBuddyInfo(userId: string): Promise<BuddyInfo | null> {
+  try {
+    const { rows } = await pgPool.query(
+      "SELECT search_buddy_email, search_buddy_enabled FROM user_profile_data WHERE user_id = $1 LIMIT 1",
+      [userId]
+    );
+    if (!rows[0]) return null;
+    const email = rows[0].search_buddy_email?.trim();
+    const enabled = rows[0].search_buddy_enabled === true;
+    if (!email) return null;
+    return { email, enabled };
+  } catch (err: any) {
+    log(`[ALERTS] Failed to fetch buddy info for ${userId.substring(0, 8)}...: ${err.message}`);
+    return null;
+  }
+}
+
+async function sendBuddyEmail(
+  userId: string,
+  mainUserEmail: string,
+  buddyInfo: BuddyInfo,
+  capped: BufferedMatch[],
+  context: string
+): Promise<boolean> {
+  if (!buddyInfo.enabled) {
+    log(`[ALERTS] ${context} Buddy skip for ${userId.substring(0, 8)}...: toggle OFF`);
+    return false;
+  }
+  if (buddyInfo.email.toLowerCase() === mainUserEmail.toLowerCase()) {
+    log(`[ALERTS] ${context} Buddy skip for ${userId.substring(0, 8)}...: same email as main user (duplicate prevention)`);
+    return false;
+  }
+  try {
+    const success = await sendBatchMatchAlert(buddyInfo.email, capped);
+    if (success) {
+      log(`[ALERTS] ${context} Buddy email sent to ${buddyInfo.email} for user ${userId.substring(0, 8)}... (${capped.length} listings)`);
+    } else {
+      log(`[ALERTS] ${context} Buddy email FAILED to ${buddyInfo.email} for user ${userId.substring(0, 8)}...`);
+    }
+    return success;
+  } catch (err: any) {
+    log(`[ALERTS] ${context} Buddy email ERROR for ${userId.substring(0, 8)}...: ${err.message}`);
+    return false;
+  }
 }
 
 export interface BufferedMatch {
@@ -280,12 +332,14 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
     const emailEnabled = settings?.email_enabled ?? true;
     const pushEnabled = settings?.push_enabled ?? false;
 
-    if (!emailEnabled && !pushEnabled) {
+    const buddyInfo = await getSearchBuddyInfo(userId);
+
+    if (!emailEnabled && !pushEnabled && !buddyInfo?.enabled) {
       skippedEmailOff++;
       const skipIds = listings.map(l => l.listing_id);
       try { await markEmailSent(userId, skipIds); } catch {}
       try { await markPushSent(userId, skipIds); } catch {}
-      log(`[ALERTS] Skipping user ${userId.substring(0, 8)}... (email_enabled=false, push_enabled=false) — marked ${skipIds.length} as sent`);
+      log(`[ALERTS] Skipping user ${userId.substring(0, 8)}... (email_enabled=false, push_enabled=false, no active buddy) — marked ${skipIds.length} as sent`);
       continue;
     }
 
@@ -341,6 +395,13 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
         failed++;
         log(`[ALERTS] Error sending digest to ${email}: ${err.message}`);
       }
+    }
+
+    if (buddyInfo) {
+      const buddyCapped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
+      await sendBuddyEmail(userId, email, buddyInfo, buddyCapped, "[FLUSH]");
+    } else {
+      log(`[ALERTS] Buddy skip for ${userId.substring(0, 8)}...: no buddy email configured`);
     }
 
     if (emailedListingIds.length > 0) {
@@ -432,11 +493,13 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
   const emailEnabled = settingsErr ? true : (settings?.email_enabled ?? true);
   const pushEnabled = settingsErr ? false : (settings?.push_enabled ?? false);
 
-  if (!emailEnabled && !pushEnabled) {
+  const backfillBuddyCheck = await getSearchBuddyInfo(userId);
+
+  if (!emailEnabled && !pushEnabled && !backfillBuddyCheck?.enabled) {
     const skipIds = userBuf.listings.map(l => l.listing_id);
     try { await markEmailSent(userId, skipIds); } catch {}
     try { await markPushSent(userId, skipIds); } catch {}
-    log(`[ALERTS] Backfill: both channels off — marked ${skipIds.length} as sent`);
+    log(`[ALERTS] Backfill: both channels off, no active buddy — marked ${skipIds.length} as sent`);
     return;
   }
 
@@ -483,6 +546,11 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
     } catch (err: any) {
       log(`[ALERTS] Error sending backfill digest: ${err.message}`);
     }
+  }
+
+  if (backfillBuddyCheck && userBuf.email) {
+    const buddyCapped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
+    await sendBuddyEmail(userId, userBuf.email, backfillBuddyCheck, buddyCapped, "[BACKFILL]");
   }
 
   if (emailedListingIds.length > 0) {
@@ -580,11 +648,12 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
       .maybeSingle();
     const emailOn = notifSettings?.email_enabled ?? true;
     const pushOn = notifSettings?.push_enabled ?? false;
-    if (!emailOn && !pushOn) {
+    const recoveryBuddy = await getSearchBuddyInfo(userId);
+    if (!emailOn && !pushOn && !recoveryBuddy?.enabled) {
       const skipIds = matches.map(m => m.listing_id);
       try { await markEmailSent(userId, skipIds); } catch {}
       try { await markPushSent(userId, skipIds); } catch {}
-      log(`[RECOVERY] User ${userId.substring(0, 8)}: notifications off — marked ${skipIds.length} as sent, skipping`);
+      log(`[RECOVERY] User ${userId.substring(0, 8)}: notifications off, no active buddy — marked ${skipIds.length} as sent, skipping`);
       continue;
     }
 

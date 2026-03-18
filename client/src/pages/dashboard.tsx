@@ -1253,6 +1253,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
   const [showPhotoSheet, setShowPhotoSheet] = useState(false);
   const [photoUploading, setPhotoUploading] = useState(false);
   const [notifUpdating, setNotifUpdating] = useState<string | null>(null);
+  const [buddyUpdating, setBuddyUpdating] = useState(false);
   const { toast } = useToast();
   const { t } = useTranslation();
 
@@ -1364,6 +1365,25 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
     }
   }
 
+  async function handleToggleBuddy() {
+    setBuddyUpdating(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return;
+      const res = await apiFetch("/api/profile-data", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
+        body: JSON.stringify({ search_buddy_enabled: !pd?.search_buddy_enabled }),
+      });
+      if (!res.ok) throw new Error("Update failed");
+      queryClient.invalidateQueries({ queryKey: ["/api/profile-data"] });
+    } catch {
+      toast({ title: t("common.error"), variant: "destructive" });
+    } finally {
+      setBuddyUpdating(false);
+    }
+  }
+
   async function handleCopyLetter() {
     const letter = pd?.application_template;
     if (letter) {
@@ -1418,18 +1438,34 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
 
           <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
             {pd?.search_buddy_email ? (
-              <button
-                onClick={() => navigate("/profile/edit/search_buddy_email")}
-                className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F5F7FA] transition-colors"
-                data-testid="button-zoekbuddy"
-              >
-                <Users className="w-[18px] h-[18px] text-[#1F2937]" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-[15px] font-[500] text-[#111827]">Zoekbuddy</p>
-                  <p className="text-[13px] text-[#6B7280] truncate mt-0.5">{pd.search_buddy_email}</p>
+              <>
+                <button
+                  onClick={() => navigate("/profile/edit/search_buddy_email")}
+                  className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F5F7FA] transition-colors"
+                  data-testid="button-zoekbuddy"
+                >
+                  <Users className="w-[18px] h-[18px] text-[#1F2937]" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[15px] font-[500] text-[#111827]">Zoekbuddy</p>
+                    <p className="text-[13px] text-[#6B7280] truncate mt-0.5">{pd.search_buddy_email}</p>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
+                </button>
+                <div className="flex items-center justify-between px-5 py-3 border-t border-[#F3F4F6]">
+                  <div className="flex items-center gap-3">
+                    <Mail className="w-[18px] h-[18px] text-[#1F2937]" />
+                    <p className="text-[15px] font-[500] text-[#111827]">Buddy e-mails</p>
+                  </div>
+                  <button
+                    onClick={() => handleToggleBuddy()}
+                    disabled={buddyUpdating}
+                    className={`w-[44px] h-[26px] rounded-full relative transition-colors ${pd.search_buddy_enabled ? "bg-[#0D6EFD]" : "bg-[#D1D5DB]"} ${buddyUpdating ? "opacity-50" : ""}`}
+                    data-testid="toggle-buddy-enabled"
+                  >
+                    <span className={`absolute top-[3px] w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${pd.search_buddy_enabled ? "left-[21px]" : "left-[3px]"}`} />
+                  </button>
                 </div>
-                <ChevronRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
-              </button>
+              </>
             ) : (
               <div className="px-5 py-4">
                 <div className="flex items-center gap-2 mb-1">

@@ -2168,7 +2168,7 @@ export async function registerRoutes(
       const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
-      const defaults = { user_id: user.id, search_buddy_email: null, application_template: null, document_checklist: {} };
+      const defaults = { user_id: user.id, search_buddy_email: null, search_buddy_enabled: false, application_template: null, document_checklist: {} };
 
       const { rows } = await pgPool.query(
         "SELECT * FROM user_profile_data WHERE user_id = $1 LIMIT 1",
@@ -2190,7 +2190,7 @@ export async function registerRoutes(
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
       const ALLOWED_FIELDS = [
-        "search_buddy_email", "application_template", "document_checklist",
+        "search_buddy_email", "search_buddy_enabled", "application_template", "document_checklist",
         "network_task_done", "viewing_tips_done",
         "first_name", "last_name", "birth_date", "phone", "bio",
         "profile_photo_url", "occupation", "monthly_income",
@@ -2199,6 +2199,23 @@ export async function registerRoutes(
       const updates: Record<string, any> = {};
       for (const f of ALLOWED_FIELDS) {
         if (req.body[f] !== undefined) updates[f] = req.body[f];
+      }
+
+      if (updates.search_buddy_email !== undefined) {
+        const buddyEmail = typeof updates.search_buddy_email === "string" ? updates.search_buddy_email.trim() : "";
+        if (buddyEmail) {
+          if (updates.search_buddy_enabled === undefined) {
+            updates.search_buddy_enabled = true;
+            console.log(`[profile-data] Buddy auto-enabled for user ${user.id.substring(0, 8)}... (first email entry: ${buddyEmail})`);
+          }
+        } else {
+          updates.search_buddy_email = null;
+          updates.search_buddy_enabled = false;
+          console.log(`[profile-data] Buddy auto-disabled for user ${user.id.substring(0, 8)}... (email removed)`);
+        }
+      }
+      if (updates.search_buddy_enabled !== undefined && updates.search_buddy_email === undefined) {
+        console.log(`[profile-data] Buddy toggle changed for user ${user.id.substring(0, 8)}...: search_buddy_enabled=${updates.search_buddy_enabled}`);
       }
 
       if (Object.keys(updates).length === 0) {

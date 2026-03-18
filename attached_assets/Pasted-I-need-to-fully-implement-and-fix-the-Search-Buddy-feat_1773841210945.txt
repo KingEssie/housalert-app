@@ -1,0 +1,104 @@
+I need to fully implement and fix the Search Buddy feature in HousAlert.
+
+Goal:
+A Search Buddy should receive the same match email alerts as the main user, but only under the correct subscription and notification rules.
+
+Desired behavior:
+
+1. Subscription is the master gate
+- Notifications should only be sent if the main user has:
+  - an active trial subscription, OR
+  - an active paid subscription
+- If the main user has no active subscription, no notifications should be sent at all:
+  - not to the main user
+  - not to the Search Buddy
+
+2. Main user email behavior
+- The main user should receive match emails only if:
+  - subscription is active
+  - email_notifications = true
+
+3. Search Buddy email behavior
+- A user can enter a Search Buddy email address in the profile/settings
+- The Search Buddy should receive the same match email alerts as the main user
+- The Search Buddy must have its own independent toggle:
+  - search_buddy_enabled
+- The Search Buddy should receive emails only if:
+  - subscription is active
+  - search_buddy_enabled = true
+  - search_buddy_email exists and is valid
+- Search Buddy email sending must be independent from the main user’s email_notifications toggle
+- So if the main user has email notifications OFF, but Search Buddy is enabled, the Search Buddy should still receive match emails
+
+4. First-time email entry behavior
+- When the user enters a Search Buddy email for the first time:
+  - automatically set search_buddy_enabled = true
+- If the Search Buddy email is removed:
+  - automatically set search_buddy_enabled = false
+- If there is no Search Buddy email, the Search Buddy toggle should be disabled or hidden
+
+5. Toggle behavior
+- Add a visible Search Buddy toggle in the account/profile/settings UI
+- The toggle should control whether the Search Buddy receives new match emails
+- If the toggle is OFF:
+  - no new Search Buddy emails should be sent
+- If the toggle is turned back ON:
+  - only new eligible matches going forward should be sent
+  - no retroactive sends
+
+6. Anti-retroactive behavior
+- Preserve all existing anti-retroactive notification rules
+- Search Buddy notifications must also follow those rules
+- Old matches should still appear in the app, but should never be sent later as catch-up emails
+- Recovery/restart logic must not send old Search Buddy emails that were not eligible at the original time
+
+7. Duplicate prevention
+- Prevent duplicate sends
+- If search_buddy_email is the same as the main user email:
+  - send only one email, not two
+
+8. Data/storage
+- Trace where Search Buddy email is currently stored
+- Add a separate boolean field if needed:
+  - search_buddy_enabled
+- Persist both correctly in the profile/account data model
+
+9. Notification pipeline updates
+- Update the email notification pipeline so it makes two independent recipient decisions:
+  - main user recipient decision
+  - Search Buddy recipient decision
+- Each must be checked separately against the correct rules
+
+10. Logging / debugging
+Add clear logs for:
+- subscription status at notification time
+- main user email decision: sent or skipped, and why
+- Search Buddy email decision: sent or skipped, and why
+- whether Search Buddy email was auto-enabled after first entry
+- whether Search Buddy was skipped because:
+  - no active subscription
+  - toggle OFF
+  - no Search Buddy email
+  - duplicate email with main user
+  - anti-retroactive guard
+
+11. UI requirements
+Update the account/profile screen so it clearly supports:
+- Search Buddy email input
+- Search Buddy toggle
+- sensible empty/disabled state when no buddy email exists
+- automatic enable on first valid email entry
+
+12. Safety
+- Do NOT refactor unrelated systems
+- Do NOT change app visibility of listings
+- Do NOT break existing main-user email logic
+- Keep the implementation minimal, clear, and production-safe
+
+Deliverable:
+Implement the full Search Buddy feature so that:
+- the Search Buddy can receive match emails
+- the Search Buddy has an independent toggle
+- notifications only happen when the main user has an active trial or paid subscription
+- anti-retroactive behavior is preserved
+- no duplicate sends happen
