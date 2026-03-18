@@ -1,0 +1,86 @@
+The email still does not match the HousAlert app card design.
+
+Do not redesign it creatively.
+Do not use dark theme.
+Do not use placeholder logos.
+Do not invent a different style.
+
+I want the email to closely match the actual listing card design from the HousAlert app.
+
+REQUIRED CHANGES
+
+1. Background
+- Entire email background must be white (#FFFFFF)
+- Main content area white
+- No dark backgrounds
+- No light blue full-page background
+
+2. Real logo fix
+- The logo is still broken in Gmail
+- Stop using any broken or placeholder image URL
+- Use a real publicly accessible HTTPS logo file
+- Store the logo as a public static asset in the project
+- Use an absolute URL
+- If the image still fails, show plain text "HousAlert" instead of a broken icon
+
+3. Header style
+- Clean white header
+- Real logo on the left
+- Brand name: HousAlert
+- Tagline: Huuraanbod, direct in je inbox
+- "Instellingen" link on the right
+- Minimal and clean, similar to the app styling
+
+4. Listing card must match app card
+Match the visual style of the app card as closely as possible:
+
+- White card background
+- Light gray border
+- Rounded corners
+- Listing image on top
+- Price badge on image if possible
+- Title in dark navy
+- Price in black / dark navy (NOT blue)
+- Meta info in gray
+- CTA button in bright app blue with WHITE text
+
+Use these colors:
+- Page background: #FFFFFF
+- Card background: #FFFFFF
+- Card border: #E5E7EB
+- Primary text: #0B1F5E
+- Secondary text: #6B7280
+- Button background: #1E63E9
+- Button text: #FFFFFF
+- Accent line/tab blue: #1E63E9
+
+5. Button
+- Blue button background
+- White text
+- Text: "Bekijk"
+- Rounded like in the app card
+- No black text on blue button
+
+6. Typography
+- Title and price should visually resemble the app card
+- Price should be dark/navy, not blue
+- Remove oversized generic marketing styling
+- Keep it simple and product-like
+
+7. Use the actual app card as reference
+The email should feel like the HousAlert app card was adapted to email, not like a marketing newsletter.
+
+8. Test email
+After applying changes:
+- send a new admin test email to martin.essie87@gmail.com
+- return the exact logo URL used
+- return the Resend message ID
+- confirm production redeploy if needed
+
+Return summary in exactly this structure:
+A. logo URL used
+B. header updated
+C. email card now matches app style
+D. button updated
+E. files changed
+F. test email sent
