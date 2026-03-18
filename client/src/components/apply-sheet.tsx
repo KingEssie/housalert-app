@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import { DEFAULT_TEMPLATE, fillTemplate } from "@/lib/application-letter";
+import { getDefaultTemplate, fillTemplate } from "@/lib/application-letter";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import {
@@ -58,7 +58,7 @@ interface ReadinessItem {
 export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplySheetProps) {
   const { user, session } = useAuth();
   const { toast } = useToast();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [marked, setMarked] = useState(false);
   const [editedLetter, setEditedLetter] = useState<string | null>(null);
 
@@ -104,8 +104,9 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
 
   if (!open) return null;
 
-  const tmpl = profileData?.application_template || DEFAULT_TEMPLATE;
-  const hasTemplate = !!(profileData?.application_template && profileData.application_template.trim().length > 0) || tmpl === DEFAULT_TEMPLATE;
+  const defaultTemplate = getDefaultTemplate(locale);
+  const tmpl = profileData?.application_template || defaultTemplate;
+  const hasTemplate = !!(profileData?.application_template && profileData.application_template.trim().length > 0) || tmpl === defaultTemplate;
   const address = listing.district
     ? `${listing.title}, ${listing.district}`
     : listing.title;

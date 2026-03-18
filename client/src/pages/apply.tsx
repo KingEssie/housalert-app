@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/auth";
 import { useQuery } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { DEFAULT_TEMPLATE, fillTemplate } from "@/lib/application-letter";
+import { getDefaultTemplate, fillTemplate } from "@/lib/application-letter";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { trackEvent } from "@/lib/track-event";
@@ -89,7 +89,7 @@ export default function ApplyPage() {
   const listingId = params?.id;
   const { user, session } = useAuth();
   const { toast } = useToast();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [marked, setMarked] = useState(false);
   const [editedLetter, setEditedLetter] = useState<string | null>(null);
   const [imgError, setImgError] = useState(false);
@@ -165,7 +165,8 @@ export default function ApplyPage() {
     );
   }
 
-  const tmpl = profileData?.application_template || DEFAULT_TEMPLATE;
+  const defaultTemplate = getDefaultTemplate(locale);
+  const tmpl = profileData?.application_template || defaultTemplate;
   const address = listing.district
     ? `${listing.title}, ${listing.district}`
     : listing.title;

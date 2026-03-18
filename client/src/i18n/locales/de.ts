@@ -783,6 +783,16 @@ export const de: Record<string, any> = {
     saving: "Speichern...",
     saveLetter: "Schreiben speichern",
     useDefault: "Standardschreiben bestätigen und verwenden",
+    ph: {
+      address: "Adresse oder Titel der Wohnung",
+      city: "Stadt",
+      name: "Dein vollständiger Name",
+      email: "Deine E-Mail-Adresse",
+      phone: "Deine Telefonnummer",
+      job: "Dein Beruf",
+      income: "Dein monatliches Einkommen",
+      price: "Mietpreis der Wohnung",
+    },
   },
 
   legal: {

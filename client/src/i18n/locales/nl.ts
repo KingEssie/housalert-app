@@ -790,6 +790,16 @@ export const nl: Record<string, any> = {
     saving: "Opslaan...",
     saveLetter: "Brief opslaan",
     useDefault: "Standaardbrief bevestigen en gebruiken",
+    ph: {
+      address: "Adres of titel van de woning",
+      city: "Stad",
+      name: "Je volledige naam",
+      email: "Je e-mailadres",
+      phone: "Je telefoonnummer",
+      job: "Je beroep",
+      income: "Je maandelijks inkomen",
+      price: "Huurprijs van de woning",
+    },
   },
 
   legal: {

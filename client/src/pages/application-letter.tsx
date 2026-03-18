@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { useTranslation } from "@/i18n";
-import { DEFAULT_TEMPLATE, PLACEHOLDERS } from "@/lib/application-letter";
+import { getDefaultTemplate, PLACEHOLDERS } from "@/lib/application-letter";
 import { RotateCcw, Save, Info, AlertTriangle } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 
@@ -20,9 +20,10 @@ export default function ApplicationLetterPage() {
   const [, navigate] = useLocation();
   const { session } = useAuth();
   const { toast } = useToast();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [template, setTemplate] = useState("");
   const [initialized, setInitialized] = useState(false);
+  const defaultTemplate = getDefaultTemplate(locale);
 
   const { data: profileData, isLoading } = useQuery<ProfileData>({
     queryKey: ["/api/profile-data"],
@@ -38,10 +39,16 @@ export default function ApplicationLetterPage() {
 
   useEffect(() => {
     if (profileData && !initialized) {
-      setTemplate(profileData.application_template || DEFAULT_TEMPLATE);
+      setTemplate(profileData.application_template || defaultTemplate);
       setInitialized(true);
     }
   }, [profileData, initialized]);
+
+  useEffect(() => {
+    if (initialized && profileData && !profileData.application_template) {
+      setTemplate(defaultTemplate);
+    }
+  }, [locale]);
 
   const saveMutation = useMutation({
     mutationFn: async (text: string) => {
@@ -67,11 +74,11 @@ export default function ApplicationLetterPage() {
   });
 
   const handleReset = () => {
-    setTemplate(DEFAULT_TEMPLATE);
+    setTemplate(defaultTemplate);
     toast({ title: t("applicationLetter.resetDone"), description: t("applicationLetter.resetDoneDesc") });
   };
 
-  const isModified = template !== (profileData?.application_template || DEFAULT_TEMPLATE);
+  const isModified = template !== (profileData?.application_template || defaultTemplate);
   const isLongEnough = template.trim().length >= 20;
   const missingFields = !profileData?.occupation || profileData?.monthly_income == null;
 
@@ -131,7 +138,7 @@ export default function ApplicationLetterPage() {
                   }}
                   className="text-[11px] font-mono bg-muted px-2 py-1 rounded-md hover-elevate transition-colors"
                   style={{ color: "#0D6EFD" }}
-                  title={p.label}
+                  title={t(p.labelKey)}
                   data-testid={`placeholder-${p.key.replace(/\[|\]/g, "")}`}
                 >
                   {p.key}
@@ -186,7 +193,7 @@ export default function ApplicationLetterPage() {
           </button>
           {!profileData?.application_template && (
             <button
-              onClick={() => saveMutation.mutate(DEFAULT_TEMPLATE)}
+              onClick={() => saveMutation.mutate(defaultTemplate)}
               disabled={saveMutation.isPending}
               className="h-[44px] px-8 rounded-full border border-[#E5E7EB] text-[#1F2937] text-[15px] font-semibold hover:bg-[#F5F7FA] transition-colors"
               data-testid="button-use-default"
