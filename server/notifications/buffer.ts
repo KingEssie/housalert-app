@@ -64,7 +64,37 @@ export function bufferMatchAlert(
   }
 }
 
-async function getAppVisibleListingIds(userId: string, supabase: any): Promise<Set<string>> {
+async function getAppVisibleListingIds(userId: string, supabase: any, candidateListingIds?: string[]): Promise<Set<string>> {
+  if (candidateListingIds && candidateListingIds.length > 0) {
+    const { data: subRow } = await supabase
+      .from("subscriptions")
+      .select("created_at")
+      .eq("user_id", userId)
+      .single();
+    const premiumStartedAt = subRow?.created_at || null;
+
+    let matchQuery = supabase
+      .from("matches")
+      .select("listing_id, created_at")
+      .eq("user_id", userId)
+      .in("listing_id", candidateListingIds);
+    if (premiumStartedAt) {
+      matchQuery = matchQuery.gte("created_at", premiumStartedAt);
+    }
+    const { data: matchRows } = await matchQuery;
+
+    if (!matchRows || matchRows.length === 0) return new Set();
+
+    const matchedIds = matchRows.map((m: any) => m.listing_id);
+
+    const existingListings = await batchedIn<any>(
+      "listings", "id", matchedIds, "id",
+      (q: any) => q.not("title", "is", null)
+    );
+
+    return new Set(existingListings.map((l: any) => l.id));
+  }
+
   const { data: subRow } = await supabase
     .from("subscriptions")
     .select("created_at")
@@ -72,27 +102,30 @@ async function getAppVisibleListingIds(userId: string, supabase: any): Promise<S
     .single();
   const premiumStartedAt = subRow?.created_at || null;
 
-  let bufferMatchQuery = supabase
-    .from("matches")
-    .select("id, listing_id, created_at")
-    .eq("user_id", userId);
-  if (premiumStartedAt) {
-    bufferMatchQuery = bufferMatchQuery.gte("created_at", premiumStartedAt);
+  let allMatchRows: any[] = [];
+  let page = 0;
+  const PAGE_SIZE = 1000;
+  while (true) {
+    let q = supabase
+      .from("matches")
+      .select("id, listing_id, created_at")
+      .eq("user_id", userId)
+      .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
+    if (premiumStartedAt) {
+      q = q.gte("created_at", premiumStartedAt);
+    }
+    const { data: batch } = await q;
+    if (!batch || batch.length === 0) break;
+    allMatchRows.push(...batch);
+    if (batch.length < PAGE_SIZE) break;
+    page++;
+    if (page > 10) break;
   }
-  const { data: matchRows } = await bufferMatchQuery;
 
-  if (!matchRows || matchRows.length === 0) return new Set();
-
-  const enriched = matchRows.map((m: any) => ({
-    ...m,
-    matched_at: m.created_at,
-  }));
-  enriched.sort((a: any, b: any) =>
-    new Date(b.matched_at).getTime() - new Date(a.matched_at).getTime()
-  );
+  if (allMatchRows.length === 0) return new Set();
 
   const dedupedByListing: Record<string, any> = {};
-  for (const m of enriched) {
+  for (const m of allMatchRows) {
     if (!dedupedByListing[m.listing_id]) {
       dedupedByListing[m.listing_id] = m;
     }
@@ -102,7 +135,7 @@ async function getAppVisibleListingIds(userId: string, supabase: any): Promise<S
   if (premiumStartedAt) {
     const premiumStart = new Date(premiumStartedAt).getTime();
     uniqueMatches = uniqueMatches.filter((m: any) => {
-      return new Date(m.matched_at).getTime() >= premiumStart;
+      return new Date(m.created_at).getTime() >= premiumStart;
     });
   }
 
@@ -187,7 +220,8 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
       deduped.push(l);
     }
 
-    const appVisibleIds = await getAppVisibleListingIds(userId, supabase);
+    const candidateIds = deduped.map(l => l.listing_id);
+    const appVisibleIds = await getAppVisibleListingIds(userId, supabase, candidateIds);
 
     const verified = sortBufferedMatches(deduped.filter(l => appVisibleIds.has(l.listing_id)));
 
@@ -320,7 +354,8 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
     deduped.push(l);
   }
 
-  const appVisibleIds = await getAppVisibleListingIds(userId, supabase);
+  const candidateIds = deduped.map(l => l.listing_id);
+  const appVisibleIds = await getAppVisibleListingIds(userId, supabase, candidateIds);
   const verified = sortBufferedMatches(deduped.filter(l => appVisibleIds.has(l.listing_id)));
 
   if (verified.length < deduped.length) {

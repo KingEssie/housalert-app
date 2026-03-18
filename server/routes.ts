@@ -4572,10 +4572,30 @@ export async function registerRoutes(
           : "Disabled (ENABLE_INGEST_SCHEDULER != true)",
       };
 
-      const resendKey = process.env.RESEND_API_KEY;
-      checks.email = resendKey
-        ? { status: "operational", message: "Resend configured" }
-        : { status: "warning", message: "No Resend API key" };
+      let emailStatus = { status: "warning", message: "No Resend API key" };
+      try {
+        const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
+        if (hostname) {
+          const xReplitToken = process.env.REPL_IDENTITY
+            ? "repl " + process.env.REPL_IDENTITY
+            : process.env.WEB_REPL_RENEWAL
+            ? "depl " + process.env.WEB_REPL_RENEWAL
+            : null;
+          if (xReplitToken) {
+            const connRes = await fetch(
+              "https://" + hostname + "/api/v2/connection?include_secrets=true&connector_names=resend",
+              { headers: { Accept: "application/json", "X-Replit-Token": xReplitToken } }
+            ).then(r => r.json());
+            if (connRes?.items?.[0]?.settings?.api_key) {
+              emailStatus = { status: "operational", message: "Resend configured (via connector)" };
+            }
+          }
+        }
+        if (emailStatus.status === "warning" && process.env.RESEND_API_KEY) {
+          emailStatus = { status: "operational", message: "Resend configured (via env var)" };
+        }
+      } catch {}
+      checks.email = emailStatus;
 
       const vapidKey = process.env.VAPID_PRIVATE_KEY;
       checks.pushNotifications = vapidKey
