@@ -14,19 +14,19 @@ interface ListingInfo {
 
 const VERIFIED_FROM = "HousAlert <new@housalert.com>";
 
+const LOGO_URL = "https://via.placeholder.com/120x40/0F172A/4F8CFF?text=HousAlert";
+
 const BRAND = {
-  name: "HousAlert",
-  primary: "#0D6EFD",
-  primaryDark: "#0B5ED7",
-  dark: "#111827",
-  text: "#374151",
-  muted: "#6B7280",
-  light: "#9CA3AF",
-  bg: "#F3F4F6",
-  cardBg: "#FFFFFF",
-  divider: "#E5E7EB",
-  accent: "#EFF6FF",
-  success: "#10B981",
+  primary: "#4F8CFF",
+  primaryHover: "#3B7BF0",
+  bg: "#0F172A",
+  cardBg: "#1E293B",
+  text: "#FFFFFF",
+  textSecondary: "#CBD5E1",
+  muted: "#94A3B8",
+  divider: "#334155",
+  accent: "#1E3A5F",
+  tagBg: "#162344",
 };
 
 function escapeHtml(str: string): string {
@@ -114,49 +114,53 @@ function emailWrapper(content: string, preheader?: string): string {
 <body style="margin:0;padding:0;background-color:${BRAND.bg};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
 ${preheaderHtml}
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${BRAND.bg};">
-<tr><td align="center" style="padding:24px 16px 32px;">
+<tr><td align="center" style="padding:0;">
 
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;">
 
-<tr><td style="padding:0 0 24px;">
+<!-- HEADER -->
+<tr><td style="padding:28px 24px 20px;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr>
-    <td style="padding:0;">
+    <td style="padding:0;vertical-align:middle;">
       <table role="presentation" cellpadding="0" cellspacing="0" border="0">
       <tr>
-        <td style="background-color:${BRAND.primary};width:36px;height:36px;border-radius:10px;text-align:center;vertical-align:middle;">
-          <span style="font-size:18px;font-weight:800;color:#FFFFFF;line-height:36px;">H</span>
+        <td style="vertical-align:middle;">
+          <a href="${baseUrl}" target="_blank" style="text-decoration:none;">
+            <img src="${LOGO_URL}" alt="HousAlert" width="120" height="40" style="display:block;width:120px;height:40px;border:0;" />
+          </a>
         </td>
-        <td style="padding-left:12px;">
-          <span style="font-size:20px;font-weight:800;color:${BRAND.dark};letter-spacing:-0.02em;">HousAlert</span>
-          <br><span style="font-size:11px;color:${BRAND.muted};letter-spacing:0.02em;">Huurkansen, direct in je inbox</span>
+        <td style="padding-left:10px;vertical-align:middle;">
+          <span style="font-size:11px;color:${BRAND.muted};letter-spacing:0.03em;">Huuraanbod, direct in je inbox</span>
         </td>
       </tr>
       </table>
     </td>
     <td align="right" style="vertical-align:middle;">
-      <a href="${baseUrl}/instellingen" target="_blank" style="font-size:13px;color:${BRAND.muted};text-decoration:none;">Instellingen</a>
+      <a href="${baseUrl}/instellingen" target="_blank" style="font-size:12px;color:${BRAND.muted};text-decoration:none;">Instellingen</a>
     </td>
   </tr>
   </table>
 </td></tr>
 
-<tr><td>
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${BRAND.cardBg};border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.06);">
-  <tr><td style="padding:32px 28px 28px;">
+<!-- CONTENT CARD -->
+<tr><td style="padding:0 16px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${BRAND.cardBg};border-radius:16px;overflow:hidden;">
+  <tr><td style="padding:28px 24px 24px;">
     ${content}
   </td></tr>
   </table>
 </td></tr>
 
-<tr><td style="padding:28px 4px 0;">
+<!-- FOOTER -->
+<tr><td style="padding:24px 24px 32px;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr><td align="center">
-    <p style="margin:0 0 6px;font-size:12px;color:${BRAND.light};line-height:1.6;">
+    <p style="margin:0 0 6px;font-size:12px;color:${BRAND.muted};line-height:1.6;">
       Je ontvangt deze e-mail omdat je een zoekprofiel hebt ingesteld bij HousAlert.<br>
-      <a href="${baseUrl}/instellingen" target="_blank" style="color:${BRAND.muted};text-decoration:underline;">Meldingen aanpassen</a>
+      <a href="${baseUrl}/instellingen" target="_blank" style="color:${BRAND.primary};text-decoration:underline;">Meldingen aanpassen</a>
     </p>
-    <p style="margin:0;font-size:11px;color:${BRAND.light};">
+    <p style="margin:0;font-size:11px;color:${BRAND.divider};">
       \u00A9 ${new Date().getFullYear()} HousAlert
     </p>
   </td></tr>
@@ -184,40 +188,40 @@ function listingCard(listing: ListingInfo, showButtons = false, cardNumber?: num
           <img src="${escapeHtml(safeImageUrl)}" alt="${escapeHtml(listing.title)}" width="100%" style="display:block;width:100%;height:auto;max-height:200px;object-fit:cover;border-radius:8px 8px 0 0;" />
         </a>
       </td></tr>`
-    : `<tr><td style="padding:0;line-height:0;font-size:0;">
-        <div style="background:linear-gradient(135deg,${BRAND.accent},${BRAND.bg});height:80px;border-radius:8px 8px 0 0;text-align:center;line-height:80px;">
-          <span style="font-size:32px;">&#127968;</span>
-        </div>
-      </td></tr>`;
+    : "";
 
   const detailParts: string[] = [];
-  if (listing.city) detailParts.push(`<span style="color:${BRAND.muted};font-size:13px;">\u{1F4CD} ${escapeHtml(listing.city)}</span>`);
-  if (listing.size_m2 > 0) detailParts.push(`<span style="color:${BRAND.muted};font-size:13px;">\u{1F4D0} ${listing.size_m2} m\u00B2</span>`);
-  if (listing.bedrooms > 0) detailParts.push(`<span style="color:${BRAND.muted};font-size:13px;">\u{1F6CF}\uFE0F ${listing.bedrooms} kamer${listing.bedrooms > 1 ? "s" : ""}</span>`);
+  if (listing.city) detailParts.push(`<span style="color:${BRAND.textSecondary};font-size:13px;">\u{1F4CD} ${escapeHtml(listing.city)}</span>`);
+  if (listing.size_m2 > 0) detailParts.push(`<span style="color:${BRAND.textSecondary};font-size:13px;">\u{1F4D0} ${listing.size_m2} m\u00B2</span>`);
+  if (listing.bedrooms > 0) detailParts.push(`<span style="color:${BRAND.textSecondary};font-size:13px;">\u{1F6CF}\uFE0F ${listing.bedrooms} kamer${listing.bedrooms > 1 ? "s" : ""}</span>`);
 
   const detailsHtml = detailParts.length > 0
     ? `<p style="margin:8px 0 0;line-height:1.8;">${detailParts.join(`<span style="color:${BRAND.divider};margin:0 6px;">&middot;</span>`)}</p>`
     : "";
 
   const priceHtml = listing.price > 0
-    ? `<p style="margin:6px 0 0;font-size:22px;font-weight:800;color:${BRAND.dark};line-height:1.2;">${formatPrice(listing.price)}<span style="font-size:13px;font-weight:400;color:${BRAND.muted};margin-left:3px;">/mnd</span></p>`
+    ? `<p style="margin:8px 0 0;font-size:24px;font-weight:800;color:${BRAND.primary};line-height:1.2;">${formatPrice(listing.price)}<span style="font-size:13px;font-weight:400;color:${BRAND.muted};margin-left:3px;">/mnd</span></p>`
     : "";
 
   const viewButtonHtml = showButtons && linkTarget !== "#"
     ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:16px;">
         <tr><td align="center">
-          <a href="${escapeHtml(linkTarget)}" target="_blank" style="display:inline-block;background-color:${BRAND.primary};color:#FFFFFF;font-size:15px;font-weight:600;text-decoration:none;padding:12px 32px;border-radius:999px;text-align:center;mso-padding-alt:12px 32px;">Bekijk woning \u2192</a>
+          <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:44px;v-text-anchor:middle;width:220px;" arcsize="50%" fillcolor="${BRAND.primary}"><center style="color:#FFFFFF;font-family:Arial,sans-serif;font-size:15px;font-weight:bold;">Bekijk woning \u2192</center></v:roundrect><![endif]-->
+          <!--[if !mso]><!-->
+          <a href="${escapeHtml(linkTarget)}" target="_blank" style="display:inline-block;background-color:${BRAND.primary};color:#FFFFFF;font-size:15px;font-weight:700;text-decoration:none;padding:12px 28px;border-radius:999px;text-align:center;mso-hide:all;">Bekijk woning \u2192</a>
+          <!--<![endif]-->
         </td></tr>
       </table>`
     : "";
 
-  const cardPadding = safeImageUrl ? "16px 20px 20px" : "12px 20px 20px";
+  const cardBg = safeImageUrl ? BRAND.bg : BRAND.bg;
+  const cardPadding = safeImageUrl ? "16px 20px 20px" : "20px";
 
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${BRAND.bg};border-radius:8px;overflow:hidden;margin:16px 0;border:1px solid ${BRAND.divider};">
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${cardBg};border-radius:8px;overflow:hidden;margin:12px 0;border:1px solid ${BRAND.divider};">
 ${imageHtml}
 <tr><td style="padding:${cardPadding};">
-  ${cardNumber ? `<span style="display:inline-block;font-size:11px;font-weight:700;color:${BRAND.primary};background-color:${BRAND.accent};border-radius:4px;padding:2px 8px;margin-bottom:8px;">Woning ${cardNumber}</span><br>` : ""}
-  <h3 style="margin:0;font-size:17px;font-weight:700;color:${BRAND.dark};line-height:1.35;">${escapeHtml(listing.title)}</h3>
+  ${cardNumber ? `<span style="display:inline-block;font-size:11px;font-weight:700;color:${BRAND.primary};background-color:${BRAND.tagBg};border-radius:4px;padding:3px 10px;margin-bottom:8px;">Woning ${cardNumber}</span><br>` : ""}
+  <h3 style="margin:0;font-size:17px;font-weight:700;color:${BRAND.text};line-height:1.4;">${escapeHtml(listing.title)}</h3>
   ${priceHtml}
   ${detailsHtml}
   ${viewButtonHtml}
@@ -249,8 +253,8 @@ export async function sendMatchAlert(
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr><td>
   <p style="margin:0 0 4px;font-size:13px;font-weight:600;color:${BRAND.primary};text-transform:uppercase;letter-spacing:0.05em;">Nieuwe match</p>
-  <h1 style="margin:0 0 8px;font-size:22px;font-weight:800;color:${BRAND.dark};line-height:1.25;">Er is een woning gevonden!</h1>
-  <p style="margin:0 0 20px;font-size:15px;color:${BRAND.text};line-height:1.55;">We hebben een nieuwe woning gevonden die bij jouw zoekprofiel past. Bekijk de details en reageer snel.</p>
+  <h1 style="margin:0 0 8px;font-size:22px;font-weight:800;color:${BRAND.text};line-height:1.25;">Er is een woning gevonden!</h1>
+  <p style="margin:0 0 16px;font-size:15px;color:${BRAND.textSecondary};line-height:1.55;">We hebben een nieuwe woning gevonden die bij jouw zoekprofiel past. Bekijk de details en reageer snel.</p>
 </td></tr>
 </table>
 ${listingCard(listing, true)}`;
@@ -309,13 +313,13 @@ export async function sendBatchMatchAlert(
 <tr><td>
   <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:8px;">
   <tr>
-    <td style="background-color:${BRAND.accent};border-radius:999px;padding:5px 14px;">
+    <td style="background-color:${BRAND.tagBg};border-radius:999px;padding:5px 14px;">
       <span style="font-size:13px;font-weight:700;color:${BRAND.primary};">${listings.length} nieuwe matches</span>
     </td>
   </tr>
   </table>
-  <h1 style="margin:0 0 8px;font-size:22px;font-weight:800;color:${BRAND.dark};line-height:1.25;">We hebben nieuwe woningen voor je!</h1>
-  <p style="margin:0 0 20px;font-size:15px;color:${BRAND.text};line-height:1.55;">Er ${listings.length === 1 ? "is" : "zijn"} ${listings.length} ${listings.length === 1 ? "woning" : "woningen"} gevonden die ${listings.length === 1 ? "past" : "passen"} bij jouw zoekprofiel. Reageer snel voor de beste kans.</p>
+  <h1 style="margin:0 0 8px;font-size:22px;font-weight:800;color:${BRAND.text};line-height:1.25;">We hebben nieuwe woningen voor je!</h1>
+  <p style="margin:0 0 16px;font-size:15px;color:${BRAND.textSecondary};line-height:1.55;">Er ${listings.length === 1 ? "is" : "zijn"} ${listings.length} ${listings.length === 1 ? "woning" : "woningen"} gevonden die ${listings.length === 1 ? "past" : "passen"} bij jouw zoekprofiel. Reageer snel voor de beste kans.</p>
 </td></tr>
 </table>
 ${htmlListings}`;
