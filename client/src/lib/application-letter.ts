@@ -57,11 +57,11 @@ const TEMPLATES: Record<Locale, string> = {
   nl: TEMPLATE_NL,
 };
 
-export function getDefaultTemplate(locale: Locale = "de"): string {
-  return TEMPLATES[locale] || TEMPLATES.de;
+export function getDefaultTemplate(locale: Locale = "en"): string {
+  return TEMPLATES[locale] || TEMPLATES.en;
 }
 
-export const DEFAULT_TEMPLATE = TEMPLATE_DE;
+export const DEFAULT_TEMPLATE = TEMPLATE_EN;
 
 export interface PlaceholderDef {
   key: string;
