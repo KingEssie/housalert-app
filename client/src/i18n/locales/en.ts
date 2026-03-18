@@ -164,6 +164,8 @@ export const en: Record<string, any> = {
     applicationLetter: "Application letter",
     letterPreview: "Preview of your application letter",
     writeLetter: "Write application letter",
+    language: "Language",
+    languageDesc: "Language for the app and notifications",
     support: "Support",
     privacy: "Privacy",
     helpSupport: "Help & Support",

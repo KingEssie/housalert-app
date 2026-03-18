@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { log } from "./log";
+import { t, type ServerLocale } from "./i18n";
 
 interface ListingInfo {
   listing_id?: string;
@@ -108,14 +109,14 @@ function getLogoUrl(): string {
   return `${getAppBaseUrl()}/housalert-logo.png`;
 }
 
-function emailWrapper(content: string, preheader?: string): string {
+function emailWrapper(content: string, preheader?: string, lang: ServerLocale = "de"): string {
   const baseUrl = getAppBaseUrl();
   const logoUrl = getLogoUrl();
   const preheaderHtml = preheader
     ? `<div style="display:none;font-size:1px;color:${C.white};line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">${escapeHtml(preheader)}</div>`
     : "";
   return `<!DOCTYPE html>
-<html lang="nl">
+<html lang="${lang}">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>HousAlert</title>
 <!--[if mso]><style>table,td{font-family:Arial,sans-serif!important;}</style><![endif]-->
@@ -146,7 +147,7 @@ ${preheaderHtml}
       </table>
     </td>
     <td align="right" style="vertical-align:middle;">
-      <a href="${baseUrl}/instellingen" target="_blank" style="font-size:13px;color:${C.muted};text-decoration:none;">Instellingen</a>
+      <a href="${baseUrl}/instellingen" target="_blank" style="font-size:13px;color:${C.muted};text-decoration:none;">${escapeHtml(t(lang, "email.settings"))}</a>
     </td>
   </tr>
   </table>
@@ -154,7 +155,7 @@ ${preheaderHtml}
 
 <!-- TAGLINE -->
 <tr><td style="padding:4px 20px 16px;">
-  <p style="margin:0;font-size:12px;color:${C.lightMuted};letter-spacing:0.01em;">Huuraanbod, direct in je inbox</p>
+  <p style="margin:0;font-size:12px;color:${C.lightMuted};letter-spacing:0.01em;">${escapeHtml(t(lang, "email.tagline"))}</p>
 </td></tr>
 
 <!-- DIVIDER -->
@@ -169,9 +170,9 @@ ${preheaderHtml}
 <tr><td style="padding:0 20px;"><div style="border-top:1px solid ${C.border};"></div></td></tr>
 <tr><td style="padding:16px 20px 24px;">
   <p style="margin:0 0 4px;font-size:12px;color:${C.lightMuted};line-height:1.6;">
-    Je ontvangt deze e-mail omdat je een zoekprofiel hebt ingesteld bij HousAlert.
+    ${escapeHtml(t(lang, "email.footer"))}
   </p>
-  <a href="${baseUrl}/instellingen" target="_blank" style="font-size:12px;color:${C.blue};text-decoration:none;">Meldingen aanpassen</a>
+  <a href="${baseUrl}/instellingen" target="_blank" style="font-size:12px;color:${C.blue};text-decoration:none;">${escapeHtml(t(lang, "email.manageNotifs"))}</a>
   <p style="margin:12px 0 0;font-size:11px;color:${C.border};">
     \u00A9 ${new Date().getFullYear()} HousAlert
   </p>
@@ -196,7 +197,7 @@ function upgradeImageUrl(url: string): string {
   return url;
 }
 
-function listingCard(listing: ListingInfo, showButton = false, cardNumber?: number): string {
+function listingCard(listing: ListingInfo, showButton = false, cardNumber?: number, lang: ServerLocale = "de"): string {
   const safeUrl = sanitizeUrl(listing.url);
   const baseUrl = getAppBaseUrl();
   const applyUrl = listing.listing_id ? `${baseUrl}/apply/${listing.listing_id}` : null;
@@ -217,12 +218,12 @@ function listingCard(listing: ListingInfo, showButton = false, cardNumber?: numb
     : "";
 
   const priceLine = listing.price > 0
-    ? `<p style="margin:0 0 6px;font-size:20px;font-weight:800;color:${C.navy};line-height:1.2;">${formatPrice(listing.price)}<span style="font-size:12px;font-weight:500;color:${C.muted};margin-left:2px;">/mnd</span></p>`
+    ? `<p style="margin:0 0 6px;font-size:20px;font-weight:800;color:${C.navy};line-height:1.2;">${formatPrice(listing.price)}<span style="font-size:12px;font-weight:500;color:${C.muted};margin-left:2px;">${escapeHtml(t(lang, "email.perMonth"))}</span></p>`
     : "";
 
   const metaParts: string[] = [];
   if (listing.city) metaParts.push(escapeHtml(listing.city));
-  if (listing.bedrooms > 0) metaParts.push(`${listing.bedrooms} kamer${listing.bedrooms > 1 ? "s" : ""}`);
+  if (listing.bedrooms > 0) metaParts.push(`${listing.bedrooms} ${t(lang, listing.bedrooms > 1 ? "email.rooms_plural" : "email.room")}`);
   if (listing.size_m2 > 0) metaParts.push(`${listing.size_m2} m\u00B2`);
 
   const metaHtml = metaParts.length > 0
@@ -232,9 +233,9 @@ function listingCard(listing: ListingInfo, showButton = false, cardNumber?: numb
   const buttonHtml = showButton && linkTarget !== "#"
     ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:10px;">
         <tr><td>
-          <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${escapeHtml(linkTarget)}" style="height:44px;v-text-anchor:middle;width:100%;" arcsize="50%" strokecolor="${C.blue}" fillcolor="${C.blue}"><w:anchorlock/><center style="color:#FFFFFF;font-family:Arial,sans-serif;font-size:14px;font-weight:bold;">Bekijk</center></v:roundrect><![endif]-->
+          <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${escapeHtml(linkTarget)}" style="height:44px;v-text-anchor:middle;width:100%;" arcsize="50%" strokecolor="${C.blue}" fillcolor="${C.blue}"><w:anchorlock/><center style="color:#FFFFFF;font-family:Arial,sans-serif;font-size:14px;font-weight:bold;">${escapeHtml(t(lang, "email.viewListing"))}</center></v:roundrect><![endif]-->
           <!--[if !mso]><!-->
-          <a href="${escapeHtml(linkTarget)}" target="_blank" style="display:block;background-color:${C.blue};color:${C.white} !important;-webkit-text-fill-color:${C.white};mso-line-height-rule:exactly;font-size:14px;font-weight:700;text-decoration:none;padding:0;height:44px;line-height:44px;border-radius:999px;text-align:center;mso-hide:all;"><span style="color:${C.white} !important;-webkit-text-fill-color:${C.white};">Bekijk</span></a>
+          <a href="${escapeHtml(linkTarget)}" target="_blank" style="display:block;background-color:${C.blue};color:${C.white} !important;-webkit-text-fill-color:${C.white};mso-line-height-rule:exactly;font-size:14px;font-weight:700;text-decoration:none;padding:0;height:44px;line-height:44px;border-radius:999px;text-align:center;mso-hide:all;"><span style="color:${C.white} !important;-webkit-text-fill-color:${C.white};">${escapeHtml(t(lang, "email.viewListing"))}</span></a>
           <!--<![endif]-->
         </td></tr>
       </table>`
@@ -243,7 +244,7 @@ function listingCard(listing: ListingInfo, showButton = false, cardNumber?: numb
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${C.white};border-radius:16px;overflow:hidden;margin:0 0 16px;border:1px solid ${C.border};">
 ${imageHtml}
 <tr><td style="padding:16px;">
-  ${cardNumber ? `<p style="margin:0 0 8px;font-size:11px;font-weight:600;color:${C.muted};text-transform:uppercase;letter-spacing:0.04em;">Woning ${cardNumber}</p>` : ""}
+  ${cardNumber ? `<p style="margin:0 0 8px;font-size:11px;font-weight:600;color:${C.muted};text-transform:uppercase;letter-spacing:0.04em;">${escapeHtml(t(lang, "email.listingLabel"))} ${cardNumber}</p>` : ""}
   <h3 style="margin:0 0 8px;font-size:18px;font-weight:700;color:${C.navy};line-height:1.3;">${escapeHtml(listing.title)}</h3>
   ${priceLine}
   ${metaHtml}
@@ -254,28 +255,29 @@ ${imageHtml}
 
 export async function sendMatchAlert(
   userEmail: string,
-  listing: ListingInfo
+  listing: ListingInfo,
+  lang: ServerLocale = "de"
 ): Promise<boolean> {
   try {
     const client = await getResendClient();
 
-    const subject = sanitizeSubject(`\u{1F3E0} Nieuwe match: ${listing.title}`);
-    const pricePart = listing.price > 0 ? `${formatPrice(listing.price)}/mnd \u2014 ` : "";
+    const subject = sanitizeSubject(t(lang, "email.subject.single", { title: listing.title }));
+    const pricePart = listing.price > 0 ? `${formatPrice(listing.price)}${t(lang, "email.perMonth")} \u2014 ` : "";
     const preheader = `${listing.title} \u2014 ${pricePart}${listing.city}`;
 
     const detailsText = [
-      `Stad: ${listing.city}`,
-      listing.price > 0 ? `Huur: ${formatPrice(listing.price)}/mnd` : null,
-      listing.bedrooms > 0 ? `Kamers: ${listing.bedrooms}` : null,
-      listing.size_m2 > 0 ? `Oppervlakte: ${listing.size_m2} m\u00B2` : null,
+      `${t(lang, "email.city")}: ${listing.city}`,
+      listing.price > 0 ? `${t(lang, "email.rent")}: ${formatPrice(listing.price)}${t(lang, "email.perMonth")}` : null,
+      listing.bedrooms > 0 ? `${t(lang, "email.rooms")}: ${listing.bedrooms}` : null,
+      listing.size_m2 > 0 ? `${t(lang, "email.area")}: ${listing.size_m2} m\u00B2` : null,
     ].filter(Boolean).join("\n");
 
-    const textBody = `Hallo,\n\nWe hebben een nieuwe woning gevonden die bij jouw zoekprofiel past:\n\n${listing.title}\n${detailsText}${listing.url ? `\n\nBekijk woning: ${listing.url}` : ""}\n\nMet vriendelijke groet,\nHet HousAlert-team`;
+    const textBody = `${t(lang, "email.greeting")},\n\n${t(lang, "email.singleIntro")}\n\n${listing.title}\n${detailsText}${listing.url ? `\n\n${t(lang, "email.viewListing")}: ${listing.url}` : ""}\n\n${t(lang, "email.closing")}`;
 
     const htmlContent = `
-<p style="margin:0 0 4px;font-size:12px;font-weight:600;color:${C.blue};text-transform:uppercase;letter-spacing:0.05em;">Nieuwe match</p>
-<p style="margin:0 0 16px;font-size:14px;color:${C.muted};line-height:1.5;">We hebben een woning gevonden die bij jouw zoekprofiel past.</p>
-${listingCard(listing, true)}`;
+<p style="margin:0 0 4px;font-size:12px;font-weight:600;color:${C.blue};text-transform:uppercase;letter-spacing:0.05em;">${escapeHtml(t(lang, "email.newMatch"))}</p>
+<p style="margin:0 0 16px;font-size:14px;color:${C.muted};line-height:1.5;">${escapeHtml(t(lang, "email.matchFound"))}</p>
+${listingCard(listing, true, undefined, lang)}`;
 
     log(`[EMAIL SEND] from="${VERIFIED_FROM}" to="${userEmail}" subject="${subject}" image=${listing.image_url ? listing.image_url.substring(0, 80) : "NO_IMAGE"}`);
 
@@ -284,7 +286,7 @@ ${listingCard(listing, true)}`;
       to: userEmail,
       subject,
       text: textBody,
-      html: emailWrapper(htmlContent, preheader),
+      html: emailWrapper(htmlContent, preheader, lang),
     });
 
     if (error) {
@@ -302,33 +304,42 @@ ${listingCard(listing, true)}`;
 
 export async function sendBatchMatchAlert(
   userEmail: string,
-  listings: ListingInfo[]
+  listings: ListingInfo[],
+  lang: ServerLocale = "de"
 ): Promise<boolean> {
   if (listings.length === 0) return false;
 
   if (listings.length === 1) {
-    return sendMatchAlert(userEmail, listings[0]);
+    return sendMatchAlert(userEmail, listings[0], lang);
   }
 
   try {
     const client = await getResendClient();
 
-    const subject = sanitizeSubject(`\u{1F3E0} ${listings.length} nieuwe woningen gevonden`);
-    const preheader = `${listings.length} nieuwe matches voor jouw zoekprofiel \u2014 bekijk ze nu.`;
+    const subject = sanitizeSubject(t(lang, "email.subject.batch", { count: listings.length }));
+    const preheader = t(lang, "email.preheader.batch", { count: listings.length });
 
     const textListings = listings.map((l, i) => {
       const safeUrl = sanitizeUrl(l.url);
-      const priceStr = l.price > 0 ? `${formatPrice(l.price)}/mnd \u2014 ` : "";
+      const priceStr = l.price > 0 ? `${formatPrice(l.price)}${t(lang, "email.perMonth")} \u2014 ` : "";
       return `${i + 1}. ${l.title}\n   ${priceStr}${l.city}${safeUrl ? `\n   ${safeUrl}` : ""}`;
     }).join("\n\n");
 
-    const textBody = `Hallo,\n\nWe hebben ${listings.length} nieuwe woningen gevonden die bij jouw zoekprofiel passen:\n\n${textListings}\n\nMet vriendelijke groet,\nHet HousAlert-team`;
+    const textBody = `${t(lang, "email.greeting")},\n\n${t(lang, "email.batchIntro", { count: listings.length })}\n\n${textListings}\n\n${t(lang, "email.closing")}`;
 
-    const htmlListings = listings.map((l, i) => listingCard(l, true, i + 1)).join("");
+    const htmlListings = listings.map((l, i) => listingCard(l, true, i + 1, lang)).join("");
+
+    const matchesLabel = t(lang, "email.newMatches", { count: listings.length });
+    const matchesDesc = t(lang, "email.matchesFound", {
+      count: listings.length,
+      verb: lang === "nl" ? (listings.length === 1 ? "is" : "zijn") : (lang === "de" ? (listings.length === 1 ? "wurde" : "wurden") : (listings.length === 1 ? "was" : "were")),
+      noun: lang === "en" ? (listings.length === 1 ? "listing" : "listings") : (lang === "nl" ? (listings.length === 1 ? "woning" : "woningen") : (listings.length === 1 ? "Wohnung" : "Wohnungen")),
+      verbPast: lang === "nl" ? (listings.length === 1 ? "past" : "passen") : "",
+    });
 
     const htmlContent = `
-<p style="margin:0 0 4px;font-size:12px;font-weight:600;color:${C.blue};text-transform:uppercase;letter-spacing:0.05em;">${listings.length} nieuwe matches</p>
-<p style="margin:0 0 16px;font-size:14px;color:${C.muted};line-height:1.5;">Er ${listings.length === 1 ? "is" : "zijn"} ${listings.length} ${listings.length === 1 ? "woning" : "woningen"} gevonden die ${listings.length === 1 ? "past" : "passen"} bij jouw zoekprofiel.</p>
+<p style="margin:0 0 4px;font-size:12px;font-weight:600;color:${C.blue};text-transform:uppercase;letter-spacing:0.05em;">${escapeHtml(matchesLabel)}</p>
+<p style="margin:0 0 16px;font-size:14px;color:${C.muted};line-height:1.5;">${escapeHtml(matchesDesc)}</p>
 ${htmlListings}`;
 
     const imageStats = listings.map((l, i) => `${i + 1}:${l.image_url ? l.image_url.substring(0, 80) : "NO_IMAGE"}`).join(" | ");
@@ -340,7 +351,7 @@ ${htmlListings}`;
       to: userEmail,
       subject,
       text: textBody,
-      html: emailWrapper(htmlContent, preheader),
+      html: emailWrapper(htmlContent, preheader, lang),
     });
 
     if (error) {

@@ -1,6 +1,15 @@
 # HousAlert — Rental Alert App
 
-A mobile-first German-language rental alert application for the German market. Users can sign up, log in, and manage saved rental search profiles. Listings are matched against profiles and shown as matches. Rebranded from "Stekkies" to "HousAlert". Primary UI language: Dutch (nl), with German (de) and English (en) also available. i18n architecture: `client/src/i18n/index.tsx` with translation keys in `client/src/i18n/locales/nl.ts` (complete), `de.ts` (complete), `en.ts` (partial). Fallback chain: current locale → nl → de. The `resolve` function supports both string and array values (arrays used for viewing tips lists).
+A mobile-first rental alert application for the German market. Users can sign up, log in, and manage saved rental search profiles. Listings are matched against profiles and shown as matches. Rebranded from "Stekkies" to "HousAlert". Supports three languages: German (de), English (en), Dutch (nl). Default/fallback: German (de).
+
+### Multi-Language System
+- **Frontend i18n**: `client/src/i18n/index.tsx` with translation keys in `client/src/i18n/locales/{de,en,nl}.ts`. Fallback chain: current locale → de → nl.
+- **Server-side i18n**: `server/i18n.ts` — centralized translation map for email/push strings. `t(lang, key, params?)` function, `detectLanguage(req, userLang?)` helper, `getUserLanguage(userLang?)` helper.
+- **User language column**: `user_profile_data.language` (TEXT, nullable, values: "de"/"en"/"nl"). Stored in Replit PG.
+- **Language priority**: user.language → accept-language header → "de" fallback.
+- **Language selector**: Profile tab bottom sheet with Deutsch/English/Nederlands. Changes update backend + switch UI locale immediately.
+- **Emails**: All email templates in `server/email.ts` use `t()` from `server/i18n.ts`. Language passed through entire notification pipeline (buffer → email/push).
+- **Push notifications**: Both web push (`server/notifications/push.ts`) and Expo push (`server/notifications/expo-push.ts`) accept `lang` parameter and use centralized translations.
 
 ## Search Buddy Feature
 - **What**: Users can add a "Zoekbuddy" (search buddy) email so a partner/friend also receives match alerts

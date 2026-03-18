@@ -203,6 +203,8 @@ export const nl: Record<string, any> = {
     writeLetter: "Reactiebrief schrijven",
     writeReactionLetter: "Reactiebrief schrijven",
     noReactionLetterYet: "Je hebt nog geen reactiebrief geschreven.",
+    language: "Taal",
+    languageDesc: "Taal voor de app en meldingen",
     support: "Ondersteuning",
     privacy: "Privacy",
     helpSupport: "Hulp & Ondersteuning",

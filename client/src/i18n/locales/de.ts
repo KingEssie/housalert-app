@@ -197,6 +197,8 @@ export const de: Record<string, any> = {
     writeLetter: "Antwortschreiben verfassen",
     writeReactionLetter: "Antwortschreiben verfassen",
     noReactionLetterYet: "Du hast noch kein Antwortschreiben verfasst.",
+    language: "Sprache",
+    languageDesc: "Sprache für die App und Benachrichtigungen",
     support: "Unterstützung",
     privacy: "Datenschutz",
     helpSupport: "Hilfe & Support",

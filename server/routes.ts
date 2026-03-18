@@ -2193,12 +2193,19 @@ export async function registerRoutes(
         "search_buddy_email", "search_buddy_enabled", "application_template", "document_checklist",
         "network_task_done", "viewing_tips_done",
         "first_name", "last_name", "birth_date", "phone", "bio",
-        "profile_photo_url", "occupation", "monthly_income",
+        "profile_photo_url", "occupation", "monthly_income", "language",
       ];
 
       const updates: Record<string, any> = {};
       for (const f of ALLOWED_FIELDS) {
         if (req.body[f] !== undefined) updates[f] = req.body[f];
+      }
+
+      if (updates.language !== undefined) {
+        const validLangs = ["de", "en", "nl"];
+        if (!validLangs.includes(updates.language)) {
+          delete updates.language;
+        }
       }
 
       if (updates.search_buddy_email !== undefined) {

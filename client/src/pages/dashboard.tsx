@@ -46,6 +46,7 @@ import {
   Pencil,
   Users,
   Circle,
+  Globe,
   Rocket,
   Gift,
 } from "lucide-react";
@@ -1253,8 +1254,9 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
   const [showPhotoSheet, setShowPhotoSheet] = useState(false);
   const [photoUploading, setPhotoUploading] = useState(false);
   const [notifUpdating, setNotifUpdating] = useState<string | null>(null);
+  const [showLangSheet, setShowLangSheet] = useState(false);
   const { toast } = useToast();
-  const { t } = useTranslation();
+  const { t, locale, setLocale } = useTranslation();
 
   const profileDataQuery = useQuery({
     queryKey: ["/api/profile-data"],
@@ -1280,6 +1282,12 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
   const phone = pd?.phone || notifQuery.data?.phone_e164;
   const photoUrl = pd?.profile_photo_url || null;
   const notifSettings = notifQuery.data;
+
+  useEffect(() => {
+    if (pd?.language && (pd.language === "de" || pd.language === "en" || pd.language === "nl") && pd.language !== locale) {
+      setLocale(pd.language);
+    }
+  }, [pd?.language]);
 
   const displayName = [pd?.first_name, pd?.last_name].filter(Boolean).join(" ") || user.user_metadata?.full_name || "";
   const initials = displayName ? displayName.split(" ").map((w: string) => w[0]).join("").toUpperCase().slice(0, 2) : user.email?.[0]?.toUpperCase() ?? "?";
@@ -1361,6 +1369,31 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
       toast({ title: t("common.error"), variant: "destructive" });
     } finally {
       setNotifUpdating(null);
+    }
+  }
+
+  const LANG_OPTIONS = [
+    { code: "de" as const, label: "Deutsch" },
+    { code: "en" as const, label: "English" },
+    { code: "nl" as const, label: "Nederlands" },
+  ];
+
+  const currentLangLabel = LANG_OPTIONS.find(o => o.code === (pd?.language || locale))?.label || "Deutsch";
+
+  async function handleLanguageChange(code: "de" | "en" | "nl") {
+    setShowLangSheet(false);
+    setLocale(code);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return;
+      await apiFetch("/api/profile-data", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
+        body: JSON.stringify({ language: code }),
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/profile-data"] });
+    } catch {
+      toast({ title: t("common.error"), variant: "destructive" });
     }
   }
 
@@ -1554,6 +1587,14 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             </button>
           )}
 
+          <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+            <AccountSettingsRow
+              label={t("profile.language")}
+              subtext={currentLangLabel}
+              onClick={() => setShowLangSheet(true)}
+            />
+          </div>
+
           <div>
             <p className="text-[13px] font-semibold text-[#111C3D] tracking-wide mb-3">{t("profile.support")}</p>
             <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
@@ -1616,6 +1657,33 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
           onUpload={handlePhotoUpload}
           onRemove={handlePhotoRemove}
         />
+      )}
+
+      {showLangSheet && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center" data-testid="sheet-language">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setShowLangSheet(false)} />
+          <div className="relative w-full max-w-[480px] bg-white rounded-t-2xl px-5 pb-8 pt-3 animate-in slide-in-from-bottom duration-200">
+            <div className="w-10 h-1 rounded-full bg-[#E5E7EB] mx-auto mb-5" />
+            <h3 className="text-[17px] font-bold text-[#111C3D] mb-1">{t("profile.language")}</h3>
+            <p className="text-[13px] text-[#6B7280] mb-5">{t("profile.languageDesc")}</p>
+            <div className="flex flex-col gap-1">
+              {LANG_OPTIONS.map(opt => {
+                const selected = (pd?.language || locale) === opt.code;
+                return (
+                  <button
+                    key={opt.code}
+                    onClick={() => handleLanguageChange(opt.code)}
+                    className={`flex items-center justify-between px-4 py-3.5 rounded-xl transition-colors ${selected ? "bg-[#EFF6FF]" : "hover:bg-[#F5F7FA] active:bg-[#F0F0F0]"}`}
+                    data-testid={`button-lang-${opt.code}`}
+                  >
+                    <span className={`text-[15px] font-medium ${selected ? "text-[#0D6EFD]" : "text-[#1F2937]"}`}>{opt.label}</span>
+                    {selected && <CheckCircle2 className="w-5 h-5 text-[#0D6EFD]" />}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       )}
 
       {showLogoutConfirm && (

@@ -1,5 +1,6 @@
 import webpush from "web-push";
 import { log } from "../log";
+import { t, type ServerLocale } from "../i18n";
 
 let initialized = false;
 
@@ -89,7 +90,8 @@ export interface PushMatchListing {
 export async function sendMatchPushNotifications(
   userId: string,
   listings: PushMatchListing[],
-  supabase: any
+  supabase: any,
+  lang: ServerLocale = "de"
 ): Promise<{ sent: number; skipped: number; failed: number }> {
   if (!initialized) {
     return { sent: 0, skipped: 0, failed: 0 };
@@ -122,14 +124,13 @@ export async function sendMatchPushNotifications(
   }
 
   const cities = [...new Set(newListings.map((l) => l.city).filter(Boolean))];
-  const cityText = cities.length > 0 ? cities.slice(0, 2).join(", ") : "deiner Stadt";
+  const cityText = cities.length > 0 ? cities.slice(0, 2).join(", ") : t(lang, "push.yourCity");
 
   const payload = {
-    title: "Neue Wohnung gefunden",
-    body:
-      newListings.length === 1
-        ? `Eine neue Wohnung passt zu deinem Suchprofil in ${cityText}.`
-        : `${newListings.length} neue Wohnungen passen zu deinem Suchprofil in ${cityText}.`,
+    title: t(lang, "push.webTitle"),
+    body: newListings.length === 1
+      ? t(lang, "push.webBody.single", { city: cityText })
+      : t(lang, "push.webBody.batch", { count: newListings.length, city: cityText }),
     url: "/dashboard?tab=matches",
   };
 

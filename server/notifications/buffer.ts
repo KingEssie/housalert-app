@@ -113,12 +113,27 @@ async function getSearchBuddyInfo(userId: string): Promise<BuddyInfo | null> {
   }
 }
 
+async function getUserLanguage(userId: string): Promise<import("../i18n").ServerLocale> {
+  try {
+    const { rows } = await pgPool.query(
+      "SELECT language FROM user_profile_data WHERE user_id = $1 LIMIT 1",
+      [userId]
+    );
+    const lang = rows[0]?.language;
+    if (lang === "de" || lang === "en" || lang === "nl") return lang;
+  } catch (err: any) {
+    log(`[ALERTS] Failed to fetch language for ${userId.substring(0, 8)}...: ${err.message}`);
+  }
+  return "de";
+}
+
 async function sendBuddyEmail(
   userId: string,
   mainUserEmail: string,
   buddyInfo: BuddyInfo,
   capped: BufferedMatch[],
-  context: string
+  context: string,
+  lang: import("../i18n").ServerLocale = "de"
 ): Promise<boolean> {
   if (!buddyInfo.enabled) {
     log(`[ALERTS] ${context} Buddy skip for ${userId.substring(0, 8)}...: toggle OFF`);
@@ -129,7 +144,7 @@ async function sendBuddyEmail(
     return false;
   }
   try {
-    const success = await sendBatchMatchAlert(buddyInfo.email, capped);
+    const success = await sendBatchMatchAlert(buddyInfo.email, capped, lang);
     if (success) {
       log(`[ALERTS] ${context} Buddy email sent to ${buddyInfo.email} for user ${userId.substring(0, 8)}... (${capped.length} listings)`);
     } else {
@@ -332,6 +347,7 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
     const pushEnabled = settings?.push_enabled ?? false;
 
     const buddyInfo = await getSearchBuddyInfo(userId);
+    const userLang = await getUserLanguage(userId);
 
     if (!emailEnabled && !pushEnabled && !buddyInfo?.enabled) {
       skippedEmailOff++;
@@ -381,7 +397,7 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
       const capped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
       await enrichMissingImages(capped, supabase);
       try {
-        const success = await sendBatchMatchAlert(email, capped);
+        const success = await sendBatchMatchAlert(email, capped, userLang);
         if (success) {
           sent++;
           emailedListingIds.push(...capped.map(l => l.listing_id));
@@ -398,7 +414,7 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
 
     if (buddyInfo) {
       const buddyCapped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
-      await sendBuddyEmail(userId, email, buddyInfo, buddyCapped, "[FLUSH]");
+      await sendBuddyEmail(userId, email, buddyInfo, buddyCapped, "[FLUSH]", userLang);
     } else {
       log(`[ALERTS] Buddy skip for ${userId.substring(0, 8)}...: no buddy email configured`);
     }
@@ -422,7 +438,7 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
           listing_id: l.listing_id,
           city: l.city,
         }));
-        const pushResult = await sendMatchPushNotifications(userId, pushListings, supabase);
+        const pushResult = await sendMatchPushNotifications(userId, pushListings, supabase, userLang);
         if (pushResult.sent > 0) {
           const pushedIds = verified.map(l => l.listing_id);
           try { await markPushSent(userId, pushedIds); } catch {}
@@ -440,7 +456,7 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
           price: l.price,
           url: l.url,
         }));
-        const expoResult = await sendExpoMatchPush(userId, expoListings);
+        const expoResult = await sendExpoMatchPush(userId, expoListings, userLang);
         if (expoResult.sent > 0) {
           totalPushesSent += expoResult.sent;
           const expoPushedIds = verified.map(l => l.listing_id);
@@ -493,6 +509,7 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
   const pushEnabled = settingsErr ? false : (settings?.push_enabled ?? false);
 
   const backfillBuddyCheck = await getSearchBuddyInfo(userId);
+  const backfillLang = await getUserLanguage(userId);
 
   if (!emailEnabled && !pushEnabled && !backfillBuddyCheck?.enabled) {
     const skipIds = userBuf.listings.map(l => l.listing_id);
@@ -537,7 +554,7 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
     const capped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
     await enrichMissingImages(capped, supabase);
     try {
-      const success = await sendBatchMatchAlert(userBuf.email, capped);
+      const success = await sendBatchMatchAlert(userBuf.email, capped, backfillLang);
       if (success) {
         emailedListingIds.push(...capped.map(l => l.listing_id));
       }
@@ -549,7 +566,7 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
 
   if (backfillBuddyCheck && userBuf.email) {
     const buddyCapped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
-    await sendBuddyEmail(userId, userBuf.email, backfillBuddyCheck, buddyCapped, "[BACKFILL]");
+    await sendBuddyEmail(userId, userBuf.email, backfillBuddyCheck, buddyCapped, "[BACKFILL]", backfillLang);
   }
 
   if (emailedListingIds.length > 0) {
@@ -565,7 +582,7 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
         listing_id: l.listing_id,
         city: l.city,
       }));
-      const pushResult = await sendMatchPushNotifications(userId, pushListings, supabase);
+      const pushResult = await sendMatchPushNotifications(userId, pushListings, supabase, backfillLang);
       if (pushResult.sent > 0) {
         const pushedIds = verified.map(l => l.listing_id);
         try { await markPushSent(userId, pushedIds); } catch {}
@@ -582,7 +599,7 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
         price: l.price,
         url: l.url,
       }));
-      const expoResult = await sendExpoMatchPush(userId, expoListings);
+      const expoResult = await sendExpoMatchPush(userId, expoListings, backfillLang);
       if (expoResult.sent > 0) {
         const expoPushedIds = verified.map(l => l.listing_id);
         try { await markPushSent(userId, expoPushedIds); } catch {}

@@ -1,5 +1,6 @@
 import { getSupabaseAdmin } from "../supabase-admin";
 import { log } from "../log";
+import { t, type ServerLocale } from "../i18n";
 
 const EXPO_PUSH_URL = "https://exp.host/--/api/v2/push/send";
 const EXPO_RECEIPTS_URL = "https://exp.host/--/api/v2/push/getReceipts";
@@ -82,7 +83,7 @@ function tokenSnippet(token: string): string {
   return token.length > 30 ? token.substring(0, 30) + "..." : token;
 }
 
-export function buildMatchPayload(listings: ExpoMatchListing[]): {
+export function buildMatchPayload(listings: ExpoMatchListing[], lang: ServerLocale = "de"): {
   title: string;
   body: string;
   deepLink: string;
@@ -94,16 +95,16 @@ export function buildMatchPayload(listings: ExpoMatchListing[]): {
 
   if (listings.length === 1) {
     const l = listings[0];
-    const city = l.city || "je stad";
-    title = `Nieuwe match in ${city}`;
-    const label = truncate(l.title || "Nieuwe woning", 60);
+    const city = l.city || t(lang, "push.yourCity");
+    title = t(lang, "push.newMatch", { city });
+    const label = truncate(l.title || t(lang, "push.webTitle"), 60);
     body = l.price > 0 ? `${label} · €${l.price}` : label;
     if (l.listing_id) deepLink = `/listing/${l.listing_id}`;
   } else {
     const cities = [...new Set(listings.map((l) => l.city).filter(Boolean))];
-    const cityText = cities.length > 0 ? cities.slice(0, 2).join(", ") : "je stad";
-    title = `${listings.length} nieuwe matches in ${cityText}`;
-    body = `Er zijn ${listings.length} nieuwe woningen gevonden die bij je zoekopdracht passen.`;
+    const cityText = cities.length > 0 ? cities.slice(0, 2).join(", ") : t(lang, "push.yourCity");
+    title = t(lang, "push.newMatches", { count: listings.length, city: cityText });
+    body = t(lang, "push.matchBody.batch", { count: listings.length });
   }
 
   return { title, body, deepLink, listingIds: listings.map((l) => l.listing_id) };
@@ -163,7 +164,8 @@ export async function sendWithRetry(
 
 export async function sendExpoMatchPush(
   userId: string,
-  listings: ExpoMatchListing[]
+  listings: ExpoMatchListing[],
+  lang: ServerLocale = "de"
 ): Promise<{ sent: number; skipped: number; failed: number }> {
   const uid = userId.substring(0, 8);
 
@@ -188,7 +190,7 @@ export async function sendExpoMatchPush(
     return { sent: 0, skipped: listings.length, failed: 0 };
   }
 
-  const { title, body, deepLink, listingIds } = buildMatchPayload(listings);
+  const { title, body, deepLink, listingIds } = buildMatchPayload(listings, lang);
   const pushTokenStrings = tokens.map((t: any) => t.expo_push_token);
 
   const messages = pushTokenStrings.map((token: string) => ({
