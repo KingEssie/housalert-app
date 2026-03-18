@@ -149,8 +149,17 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
     const imgEl = card.find("img[src*='immowelt'], img[src*='cdn.'], picture source[srcset]").first();
     let imageUrl: string | null = null;
     if (imgEl.length) {
-      const raw = imgEl.attr("src") || imgEl.attr("srcset")?.split(",")[0]?.trim()?.split(" ")[0] || "";
-      if (raw && raw.startsWith("http")) imageUrl = raw;
+      let raw = imgEl.attr("src") || imgEl.attr("srcset")?.split(",")[0]?.trim()?.split(" ")[0] || "";
+      if (raw && raw.startsWith("http")) {
+        try {
+          const imgUrl = new URL(raw);
+          if (imgUrl.hostname.includes("immowelt") && imgUrl.searchParams.has("h")) {
+            imgUrl.searchParams.set("h", "400");
+            raw = imgUrl.toString();
+          }
+        } catch {}
+        imageUrl = raw;
+      }
     }
 
     const cardText = card.text();

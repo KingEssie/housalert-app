@@ -182,11 +182,23 @@ ${preheaderHtml}
 </html>`;
 }
 
+function upgradeImageUrl(url: string): string {
+  try {
+    const parsed = new URL(url);
+    if (parsed.hostname.includes("immowelt") && parsed.searchParams.has("h")) {
+      parsed.searchParams.set("h", "400");
+      return parsed.toString();
+    }
+  } catch {}
+  return url;
+}
+
 function listingCard(listing: ListingInfo, showButton = false, cardNumber?: number): string {
   const safeUrl = sanitizeUrl(listing.url);
   const baseUrl = getAppBaseUrl();
   const applyUrl = listing.listing_id ? `${baseUrl}/apply/${listing.listing_id}` : null;
-  const safeImageUrl = sanitizeUrl(listing.image_url);
+  const rawImageUrl = sanitizeUrl(listing.image_url);
+  const safeImageUrl = rawImageUrl ? upgradeImageUrl(rawImageUrl) : null;
   const linkTarget = safeUrl || applyUrl || "#";
 
   const imageHtml = safeImageUrl
@@ -262,7 +274,7 @@ export async function sendMatchAlert(
 <p style="margin:0 0 16px;font-size:14px;color:${C.muted};line-height:1.5;">We hebben een woning gevonden die bij jouw zoekprofiel past.</p>
 ${listingCard(listing, true)}`;
 
-    log(`[EMAIL SEND] from="${VERIFIED_FROM}" to="${userEmail}" subject="${subject}"`);
+    log(`[EMAIL SEND] from="${VERIFIED_FROM}" to="${userEmail}" subject="${subject}" image=${listing.image_url ? listing.image_url.substring(0, 80) : "NO_IMAGE"}`);
 
     const { data, error } = await client.emails.send({
       from: VERIFIED_FROM,
@@ -316,7 +328,9 @@ export async function sendBatchMatchAlert(
 <p style="margin:0 0 16px;font-size:14px;color:${C.muted};line-height:1.5;">Er ${listings.length === 1 ? "is" : "zijn"} ${listings.length} ${listings.length === 1 ? "woning" : "woningen"} gevonden die ${listings.length === 1 ? "past" : "passen"} bij jouw zoekprofiel.</p>
 ${htmlListings}`;
 
+    const imageStats = listings.map((l, i) => `${i + 1}:${l.image_url ? l.image_url.substring(0, 80) : "NO_IMAGE"}`).join(" | ");
     log(`[EMAIL SEND] batch from="${VERIFIED_FROM}" to="${userEmail}" count=${listings.length} subject="${subject}"`);
+    log(`[EMAIL IMAGES] ${imageStats}`);
 
     const { data, error } = await client.emails.send({
       from: VERIFIED_FROM,

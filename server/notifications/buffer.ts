@@ -480,15 +480,37 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
 
     log(`[RECOVERY] User ${userId.substring(0, 8)}: buffering ${matches.length} matches for ${email}`);
 
+    const listingIds = matches.map(m => m.listing_id);
+    let enrichMap = new Map<string, { image_url: string | null; bedrooms: number; size_m2: number }>();
+    try {
+      const { data: listingRows } = await supabase
+        .from("listings")
+        .select("id, image_url, bedrooms, size_m2")
+        .in("id", listingIds);
+      if (listingRows) {
+        for (const row of listingRows) {
+          enrichMap.set(row.id, {
+            image_url: row.image_url || null,
+            bedrooms: row.bedrooms || 0,
+            size_m2: row.size_m2 || 0,
+          });
+        }
+      }
+    } catch (err: any) {
+      log(`[RECOVERY] Failed to fetch listing details: ${err.message}`);
+    }
+
     for (const m of matches) {
+      const enriched = enrichMap.get(m.listing_id);
       bufferMatchAlert(userId, email, {
         listing_id: m.listing_id,
         title: m.listing_title || "Nieuwe woning",
         city: m.listing_city || "",
         price: Number(m.listing_price) || 0,
-        bedrooms: 0,
-        size_m2: 0,
+        bedrooms: enriched?.bedrooms || 0,
+        size_m2: enriched?.size_m2 || 0,
         url: m.listing_url,
+        image_url: enriched?.image_url || null,
         matched_at: m.matched_at,
       });
       buffered++;
