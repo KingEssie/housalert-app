@@ -50,6 +50,24 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  app.get("/housalert-logo.png", async (_req, res) => {
+    try {
+      const { LOGO_PNG_BASE64 } = await import("./logo-data");
+      const buf = Buffer.from(LOGO_PNG_BASE64, "base64");
+      res.set({
+        "Content-Type": "image/png",
+        "Content-Length": String(buf.length),
+        "Cache-Control": "public, max-age=31536000, immutable",
+        "Access-Control-Allow-Origin": "*",
+      });
+      res.end(buf);
+    } catch (err: any) {
+      log(`[LOGO] Error serving logo: ${err.message}`);
+      res.status(404).end();
+    }
+  });
+
+
   const missingStripeVars: string[] = [];
   if (!process.env.STRIPE_PRICE_MONTHLY && !process.env.STRIPE_PRICE_1_MONTH) missingStripeVars.push("STRIPE_PRICE_MONTHLY");
   if (!process.env.STRIPE_PRICE_TWO_MONTH && !process.env.STRIPE_PRICE_2_MONTHS) missingStripeVars.push("STRIPE_PRICE_TWO_MONTH");
