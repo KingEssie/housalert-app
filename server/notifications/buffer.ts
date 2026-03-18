@@ -8,6 +8,62 @@ import { batchedIn } from "../freshness";
 import { markEmailSent, markPushSent, getUndeliveredMatches } from "../user-matches";
 
 const MAX_LISTINGS_PER_EMAIL = 20;
+const IMAGE_FETCH_TIMEOUT_MS = 5000;
+
+async function fetchListingImage(url: string): Promise<string | null> {
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), IMAGE_FETCH_TIMEOUT_MS);
+    const resp = await fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+        Accept: "text/html",
+      },
+      signal: controller.signal,
+    });
+    clearTimeout(timer);
+    if (!resp.ok) return null;
+    const html = await resp.text();
+    const ogMatch = html.match(/<meta\s+property="og:image"\s+content="([^"]+)"/i)
+      || html.match(/<meta\s+content="([^"]+)"\s+property="og:image"/i);
+    if (ogMatch?.[1] && ogMatch[1].startsWith("http")) return ogMatch[1];
+    const imgMatch = html.match(/https:\/\/img\.wg-gesucht\.de\/media\/up\/[^"'\s]+\.(?:jpg|jpeg|png|webp)/i);
+    if (imgMatch?.[0]) return imgMatch[0];
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+async function enrichMissingImages(listings: BufferedMatch[], supabase: any): Promise<void> {
+  const needImage = listings.filter(l => !l.image_url && l.url);
+  if (needImage.length === 0) return;
+
+  const MAX_FETCHES = 5;
+  const toFetch = needImage.slice(0, MAX_FETCHES);
+
+  log(`[ALERTS] Enriching images for ${toFetch.length} listings without photos`);
+
+  const results = await Promise.allSettled(
+    toFetch.map(async (l) => {
+      const imgUrl = await fetchListingImage(l.url!);
+      if (imgUrl) {
+        l.image_url = imgUrl;
+        try {
+          await supabase
+            .from("listings")
+            .update({ image_url: imgUrl })
+            .eq("id", l.listing_id);
+        } catch {}
+        log(`[ALERTS] Enriched image for "${l.title.substring(0, 40)}": ${imgUrl.substring(0, 80)}`);
+      }
+      return imgUrl;
+    })
+  );
+
+  const enriched = results.filter(r => r.status === "fulfilled" && r.value).length;
+  log(`[ALERTS] Image enrichment: ${enriched}/${toFetch.length} successful`);
+}
 
 function sortBufferedMatches(listings: BufferedMatch[]): BufferedMatch[] {
   return [...listings].sort((a, b) => {
