@@ -446,7 +446,7 @@ export default function OnboardingLocationPage() {
                       <button
                         type="button"
                         onClick={() => setDistrictDropdownOpen((v) => !v)}
-                        className="w-full flex items-center justify-between h-[44px] px-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-left focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-[#0D6EFD] focus:bg-white transition-all"
+                        className="w-full flex items-center justify-between h-[44px] px-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-left focus:bg-white"
                         data-testid="dropdown-districts-trigger"
                       >
                         <span className={selectedDistricts.length > 0 ? "text-[#1F2937]" : "text-[#9CA3AF] font-normal"}>
@@ -651,7 +651,7 @@ export default function OnboardingLocationPage() {
                     <select
                       value={radius}
                       onChange={(e) => setRadius(e.target.value)}
-                      className="w-full h-[48px] pl-11 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-[#0D6EFD] focus:bg-white cursor-pointer appearance-none transition-all"
+                      className="w-full h-[48px] pl-11 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:bg-white cursor-pointer appearance-none"
                       data-testid="select-radius"
                     >
                       <option value="2">2 km</option>
@@ -705,7 +705,7 @@ export default function OnboardingLocationPage() {
                       placeholder={t("onboardingLocation.destinationPlaceholder")}
                       value={travelAddress}
                       onChange={(e) => setTravelAddress(e.target.value)}
-                      className="w-full h-[48px] pl-11 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-[#0D6EFD] focus:bg-white transition-all"
+                      className="w-full h-[48px] pl-11 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:bg-white"
                       data-testid="input-travel-address"
                     />
                   </div>
@@ -718,7 +718,7 @@ export default function OnboardingLocationPage() {
                     <select
                       value={travelTime}
                       onChange={(e) => setTravelTime(e.target.value)}
-                      className="w-full h-[48px] pl-11 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-[#0D6EFD] focus:bg-white cursor-pointer appearance-none transition-all"
+                      className="w-full h-[48px] pl-11 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:bg-white cursor-pointer appearance-none"
                       data-testid="select-travel-time"
                     >
                       <option value="15">15 min</option>

@@ -123,7 +123,7 @@ export default function ChangePasswordPage() {
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 placeholder={t("changePassword.currentPlaceholder")}
-                className="w-full h-[52px] pl-11 pr-12 rounded-[20px] border-0 bg-[#F3F4F6] text-[16px] font-medium text-[#111827] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 transition-all"
+                className="w-full h-[52px] pl-11 pr-12 rounded-[20px] border border-transparent bg-[#F3F4F6] text-[16px] font-medium text-[#111827] placeholder:text-[#9CA3AF] placeholder:font-normal"
                 data-testid="input-current-password"
               />
               <button
@@ -150,7 +150,7 @@ export default function ChangePasswordPage() {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder={t("changePassword.newPlaceholder")}
-                className="w-full h-[52px] pl-11 pr-12 rounded-[20px] border-0 bg-[#F3F4F6] text-[16px] font-medium text-[#111827] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 transition-all"
+                className="w-full h-[52px] pl-11 pr-12 rounded-[20px] border border-transparent bg-[#F3F4F6] text-[16px] font-medium text-[#111827] placeholder:text-[#9CA3AF] placeholder:font-normal"
                 data-testid="input-new-password"
               />
               <button
@@ -180,7 +180,7 @@ export default function ChangePasswordPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder={t("changePassword.confirmPlaceholder")}
-                className="w-full h-[52px] pl-11 pr-12 rounded-[20px] border-0 bg-[#F3F4F6] text-[16px] font-medium text-[#111827] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 transition-all"
+                className="w-full h-[52px] pl-11 pr-12 rounded-[20px] border border-transparent bg-[#F3F4F6] text-[16px] font-medium text-[#111827] placeholder:text-[#9CA3AF] placeholder:font-normal"
                 data-testid="input-confirm-password"
               />
               <button

@@ -260,7 +260,7 @@ export default function OnboardingEmbedPage() {
                     placeholder="min"
                     value={minPrice}
                     onChange={(e) => setMinPrice(e.target.value)}
-                    className="w-full h-[42px] rounded-[20px] bg-[#F3F4F6] border-0 pl-[52px] pr-3 text-[14px] text-[#1F2937] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/40 transition-shadow"
+                    className="w-full h-[42px] rounded-[20px] bg-[#F3F4F6] border border-transparent pl-[52px] pr-3 text-[14px] text-[#1F2937] placeholder:text-[#9CA3AF]"
                     data-testid="embed-input-min-price"
                   />
                 </div>
@@ -273,7 +273,7 @@ export default function OnboardingEmbedPage() {
                     placeholder="max"
                     value={maxPrice}
                     onChange={(e) => setMaxPrice(e.target.value)}
-                    className="w-full h-[42px] rounded-[20px] bg-[#F3F4F6] border-0 pl-[52px] pr-3 text-[14px] text-[#1F2937] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/40 transition-shadow"
+                    className="w-full h-[42px] rounded-[20px] bg-[#F3F4F6] border border-transparent pl-[52px] pr-3 text-[14px] text-[#1F2937] placeholder:text-[#9CA3AF]"
                     data-testid="embed-input-max-price"
                   />
                 </div>

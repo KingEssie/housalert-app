@@ -111,7 +111,7 @@ export function SubscriptionCancelConfirmPage() {
                 value={reasonText}
                 onChange={(e) => setReasonText(e.target.value)}
                 placeholder={t("cancellation.otherPlaceholder")}
-                className="w-full h-[80px] bg-[#F3F4F6] rounded-xl px-4 py-3 text-[14px] text-[#1F2937] placeholder:text-[#9CA3AF] resize-none mb-5 border-0 focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]"
+                className="w-full h-[80px] bg-[#F3F4F6] rounded-xl px-4 py-3 text-[14px] text-[#1F2937] placeholder:text-[#9CA3AF] resize-none mb-5 border border-transparent"
                 data-testid="input-reason-text"
               />
             )}

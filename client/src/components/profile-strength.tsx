@@ -463,7 +463,7 @@ export function TaskModal({
                 value={buddyEmail}
                 onChange={(e) => setBuddyEmail(e.target.value)}
                 placeholder={t("profileStrength.buddyPlaceholder")}
-                className="w-full h-[60px] px-4 rounded-[20px] border-0 bg-[#F3F4F6] text-[16px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 transition-all"
+                className="w-full h-[60px] px-4 rounded-[20px] border border-transparent bg-[#F3F4F6] text-[16px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal"
                 data-testid="input-buddy-email"
               />
               <p className="text-[14px] text-[#1F2937]">{t("profileStrength.buddyDesc")}</p>
@@ -557,7 +557,7 @@ export function TaskModal({
                 value={phoneInput}
                 onChange={(e) => setPhoneInput(e.target.value)}
                 placeholder="+49 170 1234567"
-                className="w-full h-[60px] px-4 rounded-[20px] border-0 bg-[#F3F4F6] text-[16px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 transition-all"
+                className="w-full h-[60px] px-4 rounded-[20px] border border-transparent bg-[#F3F4F6] text-[16px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal"
                 data-testid="input-phone"
               />
               <p className="text-[14px] text-[#1F2937]">{t("profileStrength.phoneDesc")}</p>

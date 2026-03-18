@@ -425,7 +425,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
               onChange={(e) => handleCityInput(e.target.value)}
               onFocus={() => { if (hasCityResults && !value.place) setCityOpen(true); }}
               placeholder={t("location.searchCity")}
-              className={`w-full min-h-[60px] rounded-[20px] bg-[#F3F4F6] border px-11 text-[16px] text-[#1F2937] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-transparent transition-colors ${
+              className={`w-full min-h-[60px] rounded-[20px] bg-[#F3F4F6] border px-11 text-[16px] text-[#1F2937] placeholder:text-[#9CA3AF] ${
                 value.place ? "border-[#0D6EFD] bg-[#F5F7FA]/30" : "border-[#E5E7EB]"
               }`}
               data-testid="input-city-search"
@@ -530,7 +530,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
             <select
               value={value.radiusKm}
               onChange={(e) => onChange({ ...value, radiusKm: parseInt(e.target.value) })}
-              className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[#F5F7FA] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 focus:bg-[#F5F7FA] cursor-pointer appearance-none transition-all"
+              className="w-full h-[52px] pl-11 pr-4 rounded-lg border border-transparent bg-[#F5F7FA] text-[15px] font-medium text-[#1F2937] cursor-pointer appearance-none"
               data-testid="select-radius"
             >
               <option value="2">2 km</option>
@@ -556,7 +556,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                 onChange={(e) => handleDestInput(e.target.value)}
                 onFocus={() => { if (hasDestResults && value.commuteLat == null) setDestOpen(true); }}
                 placeholder={t("location.searchAddress")}
-                className={`w-full min-h-[60px] rounded-[20px] bg-[#F3F4F6] border px-11 text-[16px] text-[#1F2937] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-transparent transition-colors ${
+                className={`w-full min-h-[60px] rounded-[20px] bg-[#F3F4F6] border px-11 text-[16px] text-[#1F2937] placeholder:text-[#9CA3AF] ${
                   value.commuteLat != null ? "border-[#0D6EFD] bg-[#F5F7FA]/30" : "border-[#E5E7EB]"
                 }`}
                 data-testid="input-commute-destination"
@@ -651,7 +651,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
               <select
                 value={value.commuteMinutes}
                 onChange={(e) => onChange({ ...value, commuteMinutes: parseInt(e.target.value) })}
-                className="w-full h-[52px] pl-11 pr-4 rounded-lg border-0 bg-[#F5F7FA] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/15 focus:bg-[#F5F7FA] cursor-pointer appearance-none transition-all"
+                className="w-full h-[52px] pl-11 pr-4 rounded-lg border border-transparent bg-[#F5F7FA] text-[15px] font-medium text-[#1F2937] cursor-pointer appearance-none"
                 data-testid="select-commute-minutes"
               >
                 <option value="15">15 min</option>

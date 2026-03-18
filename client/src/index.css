@@ -167,6 +167,29 @@
   body {
     @apply font-sans antialiased bg-background text-foreground;
   }
+
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]):not([type="submit"]):not([type="reset"]):not([type="button"]):not([role="switch"]),
+  textarea,
+  select,
+  [role="combobox"],
+  [data-radix-select-trigger] {
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  }
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]):not([type="submit"]):not([type="reset"]):not([type="button"]):not([role="switch"]):focus,
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]):not([type="submit"]):not([type="reset"]):not([type="button"]):not([role="switch"]):focus-visible,
+  textarea:focus,
+  textarea:focus-visible,
+  select:focus,
+  select:focus-visible,
+  [role="combobox"]:focus,
+  [role="combobox"]:focus-visible,
+  [data-radix-select-trigger]:focus,
+  [data-radix-select-trigger]:focus-visible {
+    outline: none;
+    border-color: #0D6EFD !important;
+    box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25) !important;
+  }
 }
 
 @layer utilities {

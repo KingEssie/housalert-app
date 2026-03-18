@@ -155,7 +155,7 @@ function BudgetStep({
                 placeholder={t("onboarding.budget.minPlaceholder")}
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
-                className="w-full min-h-[56px] rounded-[20px] bg-[#F3F4F6] border-0 pl-9 pr-4 text-[16px] text-[#1F2937] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-transparent"
+                className="w-full min-h-[56px] rounded-[20px] bg-[#F3F4F6] border border-transparent pl-9 pr-4 text-[16px] text-[#1F2937] placeholder:text-[#9CA3AF]"
                 data-testid="input-min-price"
               />
             </div>
@@ -173,7 +173,7 @@ function BudgetStep({
                 placeholder={t("onboarding.budget.maxPlaceholder")}
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
-                className="w-full min-h-[56px] rounded-[20px] bg-[#F3F4F6] border-0 pl-9 pr-4 text-[16px] text-[#1F2937] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-transparent"
+                className="w-full min-h-[56px] rounded-[20px] bg-[#F3F4F6] border border-transparent pl-9 pr-4 text-[16px] text-[#1F2937] placeholder:text-[#9CA3AF]"
                 data-testid="input-max-price"
               />
             </div>

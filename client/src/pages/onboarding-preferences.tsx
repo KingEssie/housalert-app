@@ -10,7 +10,7 @@ const FURNISHED_OPTIONS = ["any", "furnished", "unfurnished"] as const;
 const HOUSING_TYPES = ["any", "apartment", "studio", "room", "house", "wg"] as const;
 const TARGET_GROUPS = ["any", "students", "couples", "families", "singles", "seniors"] as const;
 
-const SELECT_CLS = "w-full h-[44px] px-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD] focus:border-[#0D6EFD] focus:bg-white cursor-pointer appearance-none transition-all";
+const SELECT_CLS = "w-full h-[44px] px-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:bg-white cursor-pointer appearance-none";
 
 export default function OnboardingPreferencesPage() {
   const [, navigate] = useLocation();

@@ -509,7 +509,7 @@ function Step2Requirements({
             <select
               value={filters.priceMin}
               onChange={(e) => updateFilters({ priceMin: e.target.value })}
-              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 transition-all appearance-none cursor-pointer"
+              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] appearance-none cursor-pointer"
               data-testid="select-price-min"
             >
               {RENT_OPTIONS.map(opt => (
@@ -529,7 +529,7 @@ function Step2Requirements({
             <select
               value={filters.priceMax}
               onChange={(e) => updateFilters({ priceMax: e.target.value })}
-              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 transition-all appearance-none cursor-pointer"
+              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] appearance-none cursor-pointer"
               data-testid="select-price-max"
             >
               {RENT_OPTIONS.map(opt => (
@@ -549,7 +549,7 @@ function Step2Requirements({
             <select
               value={filters.bedroomsMin}
               onChange={(e) => updateFilters({ bedroomsMin: parseInt(e.target.value) })}
-              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 transition-all appearance-none cursor-pointer"
+              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] appearance-none cursor-pointer"
               data-testid="select-bedrooms"
             >
               {BEDROOM_OPTIONS.map(opt => (
@@ -569,7 +569,7 @@ function Step2Requirements({
             <select
               value={filters.sizeMin}
               onChange={(e) => updateFilters({ sizeMin: parseInt(e.target.value) })}
-              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 transition-all appearance-none cursor-pointer"
+              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] appearance-none cursor-pointer"
               data-testid="select-size"
             >
               {SIZE_OPTIONS.map(opt => (
@@ -589,7 +589,7 @@ function Step2Requirements({
             <select
               value={filters.furnished}
               onChange={(e) => updateFilters({ furnished: e.target.value })}
-              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border-0 bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-[#0D6EFD]/20 transition-all appearance-none cursor-pointer"
+              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] appearance-none cursor-pointer"
               data-testid="select-furnished"
             >
               {FURNISHED_OPTIONS.map(opt => (

@@ -561,8 +561,8 @@ function SourcesTab() {
       ) : (
         <div className="space-y-3">
           <div className="flex gap-2">
-            <input placeholder="City..." value={cityInput} onChange={(e) => { setCityInput(e.target.value); setListingPage(1); }} className="flex-1 h-10 px-4 rounded-xl border border-gray-100 bg-white text-[13px] focus:outline-none focus:ring-2 focus:ring-blue-500" data-testid="input-listing-city" />
-            <input placeholder="Source..." value={sourceInput} onChange={(e) => { setSourceInput(e.target.value); setListingPage(1); }} className="flex-1 h-10 px-4 rounded-xl border border-gray-100 bg-white text-[13px] focus:outline-none focus:ring-2 focus:ring-blue-500" data-testid="input-listing-source" />
+            <input placeholder="City..." value={cityInput} onChange={(e) => { setCityInput(e.target.value); setListingPage(1); }} className="flex-1 h-10 px-4 rounded-xl border border-transparent bg-white text-[13px]" data-testid="input-listing-city" />
+            <input placeholder="Source..." value={sourceInput} onChange={(e) => { setSourceInput(e.target.value); setListingPage(1); }} className="flex-1 h-10 px-4 rounded-xl border border-transparent bg-white text-[13px]" data-testid="input-listing-source" />
           </div>
           <p className="text-[12px] text-gray-400">{listingTotal} listings</p>
           {listingLoading ? <LoadingState /> : (
