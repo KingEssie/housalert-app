@@ -134,10 +134,13 @@ ${preheaderHtml}
     <td style="vertical-align:middle;">
       <table role="presentation" cellpadding="0" cellspacing="0" border="0">
       <tr>
-        <td style="vertical-align:middle;">
+        <td style="vertical-align:middle;padding-right:8px;">
           <a href="${baseUrl}" target="_blank" style="text-decoration:none;">
-            <img src="${logoUrl}" alt="HousAlert" width="160" height="40" style="display:block;width:160px;height:40px;border:0;outline:none;font-size:18px;font-weight:bold;color:${C.navy};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;" />
+            <img src="${logoUrl}" alt="HousAlert" width="36" height="36" style="display:block;width:36px;height:36px;border-radius:8px;border:0;outline:none;" />
           </a>
+        </td>
+        <td style="vertical-align:middle;">
+          <a href="${baseUrl}" target="_blank" style="text-decoration:none;font-size:17px;font-weight:700;color:${C.navy};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;">HousAlert</a>
         </td>
       </tr>
       </table>

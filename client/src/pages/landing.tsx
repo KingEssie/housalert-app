@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "wouter";
-import { Home, Search, Bell, Zap, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Search, Bell, Zap, ArrowRight, CheckCircle2 } from "lucide-react";
+import { HousAlertLogo } from "@/components/housalert-logo";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { trackEventLazy } from "@/lib/track-event";
@@ -17,12 +18,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-background">
       <header className="w-full bg-background sticky top-0 z-20 border-b" style={{ borderColor: "#E5E7EB" }}>
         <div className="max-w-5xl mx-auto px-6 h-[60px] flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center">
-              <Home className="w-4.5 h-4.5 text-primary-foreground" />
-            </div>
-            <span className="font-extrabold text-xl tracking-tight" style={{ color: "#1F2937" }} data-testid="text-logo">HousAlert</span>
-          </div>
+          <HousAlertLogo size={36} textClassName="font-extrabold text-xl tracking-tight text-[#1F2937]" />
           <Button
             variant="ghost"
             className="text-muted-foreground font-semibold text-sm"

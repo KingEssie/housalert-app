@@ -1,7 +1,8 @@
 import { apiFetch } from "@/lib/api-base";
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "wouter";
-import { Home, MapPin, ChevronLeft, Search, ChevronRight, Navigation, Clock, Car, Train, Bike, Loader2, ChevronDown, Check, X } from "lucide-react";
+import { MapPin, ChevronLeft, Search, ChevronRight, Navigation, Clock, Car, Train, Bike, Loader2, ChevronDown, Check, X } from "lucide-react";
+import { HousAlertLogo } from "@/components/housalert-logo";
 import { Button } from "@/components/ui/button";
 import { defaultCities, cityDistricts } from "../../../config/market";
 import { useTranslation } from "@/i18n";
@@ -289,12 +290,7 @@ export default function OnboardingLocationPage() {
             >
               <ChevronLeft className="w-5 h-5 text-[#1F2937]" />
             </button>
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-full bg-[#0D6EFD] flex items-center justify-center">
-                <Home className="w-3.5 h-3.5 text-white" />
-              </div>
-              <span className="font-bold text-[#111C3D] text-[15px]">HousAlert</span>
-            </div>
+            <HousAlertLogo size={28} />
           </div>
         </header>
       )}

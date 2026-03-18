@@ -2,7 +2,8 @@ import { apiFetch } from "@/lib/api-base";
 import { useHashSearch } from "@/lib/hash-search";
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, Home, Check, Crown, Loader2 } from "lucide-react";
+import { ArrowLeft, Check, Crown, Loader2 } from "lucide-react";
+import { HousAlertLogo } from "@/components/housalert-logo";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/lib/auth";
@@ -153,12 +154,7 @@ export default function PaywallPage() {
           >
             <ArrowLeft className="w-4 h-4 text-[#1F2937]" />
           </button>
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-2xl bg-[#111C3D] flex items-center justify-center">
-              <Home className="w-3.5 h-3.5 text-white" />
-            </div>
-            <span className="font-bold text-[#111C3D] text-base">HousAlert</span>
-          </div>
+          <HousAlertLogo size={28} />
         </div>
       </header>
 

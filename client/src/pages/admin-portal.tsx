@@ -3,7 +3,7 @@ import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { apiFetch } from "@/lib/api-base";
 import {
-  Users, CreditCard, Search, Home,
+  Users, CreditCard, Search,
   Loader2, ChevronRight, ExternalLink, RefreshCw,
   Mail, Smartphone, AlertTriangle, CheckCircle, XCircle,
   TrendingUp, Activity, Database, Globe, Zap, ArrowLeft,
@@ -11,6 +11,7 @@ import {
   Radio, Layers, Settings,
   LayoutDashboard, Signal,
 } from "lucide-react";
+import { HousAlertLogo } from "@/components/housalert-logo";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
@@ -1139,10 +1140,7 @@ export default function AdminPortalPage() {
     <div className="min-h-screen bg-[#f8f9fb] flex flex-col">
       <header className="bg-white/80 backdrop-blur-lg border-b border-gray-100 sticky top-0 z-30">
         <div className="max-w-lg mx-auto px-4 h-[52px] flex items-center gap-3">
-          <div className="w-7 h-7 rounded-lg bg-[#0F172A] flex items-center justify-center">
-            <Home className="w-3.5 h-3.5 text-white" />
-          </div>
-          <span className="font-bold text-[#1a1f36] text-[15px]">HousAlert</span>
+          <HousAlertLogo size={28} />
           <div className="flex-1" />
           <button onClick={() => navigate("/dashboard")} className="text-[12px] text-gray-400 hover:text-[#0D6EFD] font-medium" data-testid="link-back-app">Back to app</button>
         </div>

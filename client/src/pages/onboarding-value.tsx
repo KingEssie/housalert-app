@@ -1,7 +1,8 @@
 import { apiFetch } from "@/lib/api-base";
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { Home, X, Check, Clock, Search, Eye, Shield, Loader2 } from "lucide-react";
+import { X, Check, Clock, Search, Eye, Shield, Loader2 } from "lucide-react";
+import { HousAlertLogo } from "@/components/housalert-logo";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/lib/auth";
@@ -178,12 +179,7 @@ export default function OnboardingValuePage() {
       {!isEmbedded && (
         <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
           <div className={`${containerClass} mx-auto px-5 h-[56px] flex items-center gap-3`}>
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-full bg-[#0D6EFD] flex items-center justify-center">
-                <Home className="w-3.5 h-3.5 text-white" />
-              </div>
-              <span className="font-bold text-[#111C3D] text-[15px]">HousAlert</span>
-            </div>
+            <HousAlertLogo size={28} />
           </div>
         </header>
       )}

@@ -2,7 +2,8 @@ import { apiFetch } from "@/lib/api-base";
 import { useHashSearch } from "@/lib/hash-search";
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { Home, ChevronLeft, TrendingUp, Loader2, Sparkles } from "lucide-react";
+import { ChevronLeft, TrendingUp, Loader2, Sparkles } from "lucide-react";
+import { HousAlertLogo } from "@/components/housalert-logo";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { getMatchEstimateRange } from "@/lib/match-estimate";
@@ -87,12 +88,7 @@ export default function OnboardingEstimatePage() {
           >
             <ChevronLeft className="w-5 h-5 text-[#1F2937]" />
           </button>
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-full bg-[#0D6EFD] flex items-center justify-center">
-              <Home className="w-3.5 h-3.5 text-white" />
-            </div>
-            <span className="font-bold text-[#111C3D] text-base">HousAlert</span>
-          </div>
+          <HousAlertLogo size={28} />
         </div>
       </header>
 

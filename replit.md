@@ -2,6 +2,13 @@
 
 A mobile-first German-language rental alert application for the German market. Users can sign up, log in, and manage saved rental search profiles. Listings are matched against profiles and shown as matches. Rebranded from "Stekkies" to "HousAlert". Primary UI language: Dutch (nl), with German (de) and English (en) also available. i18n architecture: `client/src/i18n/index.tsx` with translation keys in `client/src/i18n/locales/nl.ts` (complete), `de.ts` (complete), `en.ts` (partial). Fallback chain: current locale → nl → de. The `resolve` function supports both string and array values (arrays used for viewing tips lists).
 
+## Brand Assets
+- **Canonical logo**: `attached_assets/5B9D5117-02CB-4353-8AF3-6CCA9249F824_1773839918481.png` (1024x1024 blue house icon with notification dot)
+- **Reusable component**: `client/src/components/housalert-logo.tsx` — `<HousAlertLogo size={28} showText={true} />` renders logo image + "HousAlert" text. All pages use this component.
+- **Public assets**: `client/public/favicon.png` (64x64), `icon-192.png` (192x192), `icon-512.png` (512x512), `apple-touch-icon.png` (180x180)
+- **Email logo**: `server/logo-data.ts` — 200x200 base64-encoded PNG served via `/housalert-logo.png` route. Email header shows 36x36 icon + "HousAlert" text.
+- **Colors**: Blue `#0D6EFD`, Navy `#111C3D`
+
 ## Tech Stack
 
 - **Frontend:** React + Vite + TypeScript + Tailwind CSS + shadcn/ui + Wouter
