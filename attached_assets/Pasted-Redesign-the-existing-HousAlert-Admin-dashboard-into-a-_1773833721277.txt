@@ -1,0 +1,406 @@
+Redesign the existing HousAlert Admin dashboard into a premium mobile-first SaaS control center. Keep the current data and existing backend logic intact as much as possible, but completely improve the information architecture, UI hierarchy, and mobile app feel.
+
+IMPORTANT:
+- Mobile-first only
+- The admin must feel like a real mobile app, not a desktop admin squeezed into a phone
+- Add a fixed bottom tab bar for navigation
+- Keep implementation efficient
+- Do minimal smoke checks only, avoid extensive testing
+- Reuse existing data fetching/hooks/services wherever possible
+- Do not rebuild backend logic unless necessary
+- Preserve all existing admin functionality, but present it in a cleaner, friendlier, more premium way
+
+GOAL:
+Transform the admin dashboard from a data-heavy admin panel into a decision-focused mobile command center:
+1. Show what needs attention first
+2. Group metrics into logical sections
+3. Reduce table overload
+4. Improve spacing, hierarchy, and clarity
+5. Make everything feel smooth, modern, and premium
+
+DESIGN DIRECTION:
+Use a clean premium mobile UI inspired by modern fintech/productivity apps:
+- soft background
+- rounded cards
+- subtle shadows
+- strong spacing
+- large readable headings
+- minimal clutter
+- clear priority hierarchy
+- soft status colors
+- swipe-friendly layouts where helpful
+- premium feel similar to a modern banking app / Stripe-style light UI / Linear-inspired clarity
+- keep the HousAlert branding and overall blue accent, but refine it
+
+GENERAL UI RULES:
+- Use consistent 16–20px horizontal padding
+- Use large section titles
+- Use cards for grouped information
+- Replace large dense tables with card/list layouts where possible on mobile
+- Only keep tables where truly necessary
+- Status badges should be visually clear:
+  - green = healthy / active / operational
+  - yellow = warning
+  - red = broken / failed / urgent
+  - blue = neutral info / selected
+- Improve typography hierarchy:
+  - page title
+  - section title
+  - metric label
+  - metric value
+  - helper/meta text
+- Avoid showing too many raw metrics at once
+- Prioritize clarity and decision-making over completeness above the fold
+
+APP STRUCTURE:
+Create a fixed bottom tab bar with 5 main tabs:
+1. Dashboard
+2. Growth
+3. Sources
+4. Users
+5. System
+
+Each tab should feel like its own mobile app page.
+
+BOTTOM TAB BAR:
+- Fixed at bottom
+- Rounded top container or premium native-app style bar
+- Icons + labels
+- Active tab highlighted with brand blue
+- Keep spacing generous and tap targets large
+- Smooth transitions between tabs
+
+TOP HEADER:
+On each main tab:
+- Show a clean compact top header
+- Left: page title or greeting
+- Right: small action icons where relevant (refresh, alerts, search)
+- Keep “Back to app” accessible but less dominant than now
+- Remove the current cluttered segmented-navigation feel
+
+-----------------------------------
+TAB 1: DASHBOARD
+-----------------------------------
+
+This is the main command center.
+
+SECTION 1: Friendly header
+- Greeting like: “Good morning, Martin”
+- Subtitle like: “Here’s what’s happening today”
+- Optional small notification icon and refresh icon
+
+SECTION 2: What needs attention
+This must be the most important block at the top.
+Create a prominent card called:
+“What needs attention”
+
+Show the most urgent issues as stacked actionable rows, for example:
+- Matches down 50%
+- Email delivery failures elevated
+- Ingestion runs failed in last 24h
+
+Each issue row should include:
+- severity color
+- short plain-language explanation
+- optional hint about likely cause
+- chevron or tap affordance for deeper inspection
+
+This section should make the dashboard instantly useful.
+
+SECTION 3: Key metrics carousel or horizontal metric cards
+Add a horizontally scrollable row of compact premium metric cards for:
+- MRR
+- Active subscriptions
+- Trial users
+- Signups today
+- Matches today
+- Emails today
+
+Each card should have:
+- small icon
+- short label
+- strong number
+- optional delta/helper text if available
+
+SECTION 4: Snapshot section
+Create a section called:
+“Today at a glance”
+
+Use 2 or 3 visual summary cards:
+- Revenue snapshot
+- User snapshot
+- Delivery snapshot
+
+Keep these simple and readable, not overloaded.
+
+SECTION 5: Supply health
+Create a section called:
+“Supply health”
+
+Instead of a large raw table, show a compact list of the most important city/source health states.
+Examples:
+- Berlin → healthy
+- Hamburg → issue detected
+- München → healthy
+
+Show listing count and source health summary in a clear compact way.
+Prioritize operational clarity over completeness.
+
+SECTION 6: Delivery status
+Create a small compact card group for:
+- Emails sent
+- Push sent
+- Delivery failures
+
+SECTION 7: Quick actions
+Add a row of action buttons:
+- View users
+- Check sources
+- Open matches
+- Refresh status
+
+These should feel like shortcuts inside an app.
+
+-----------------------------------
+TAB 2: GROWTH
+-----------------------------------
+
+This page should simplify the growth story.
+
+SECTION 1: Growth summary cards
+Top cards for:
+- Signups
+- Search profiles created
+- Checkout started
+- Subscriptions started
+
+SECTION 2: Funnel overview
+Redesign the current long funnel into 3 clear stages:
+
+1. Acquire
+- Landing viewed
+- Signup started
+
+2. Activate
+- Search created
+- First match received
+- First listing viewed
+
+3. Convert
+- Checkout started
+- Subscription started
+- First reaction sent
+
+The funnel should:
+- visually highlight the biggest drop-off
+- make the weakest step obvious
+- avoid an endlessly long stacked layout
+- use progress bars or compact step cards
+- keep it readable on mobile
+
+SECTION 3: Conversion insights
+Create metric cards for:
+- Activation rate
+- Listing view rate
+- Reaction rate
+- Trial to paid
+
+Show poor performing metrics clearly but elegantly.
+
+SECTION 4: City performance
+Keep city performance but redesign it in a cleaner mobile-friendly way.
+Prefer responsive cards or a simplified mobile table.
+Show:
+- city
+- users
+- profiles
+- matches
+- views
+
+-----------------------------------
+TAB 3: SOURCES
+-----------------------------------
+
+This is the operations tab.
+
+SECTION 1: Source health summary
+Top summary cards:
+- Active sources
+- Broken sources
+- Listings found today
+- Last ingestion duration
+
+SECTION 2: Last run card
+A premium summary card showing:
+- last run timestamp
+- duration
+- overall ingestion status
+
+SECTION 3: Source monitor list
+Replace dense tables with mobile-friendly source cards/list rows.
+Each source item should show:
+- source name
+- city
+- health badge
+- found count
+- inserted count if available
+
+Broken sources should stand out immediately.
+
+SECTION 4: Filters
+Allow filtering by:
+- All
+- Healthy
+- Warning
+- Broken
+- By city if easy to implement
+
+SECTION 5: Listings overview
+If a listings subsection exists, keep it but present it more cleanly, with cards or compact grouped rows rather than raw tables where possible.
+
+-----------------------------------
+TAB 4: USERS
+-----------------------------------
+
+This page should feel like a customer admin app, not a raw DB table.
+
+SECTION 1: Search and filters
+Top sticky search/filter area:
+- search input
+- filter chips: All / Active / Trial / Canceled / Expired if relevant
+
+SECTION 2: User list
+Replace the current dense table with user cards or list rows optimized for mobile.
+Each user item should show:
+- name
+- short id or email preview
+- subscription status badge
+- created date
+- profile count
+- match count if available
+
+Tapping a user can still open deeper detail if already supported, but first focus on the list presentation.
+
+SECTION 3: Subscription summary
+If useful, include a compact segment or stat row at top:
+- total users
+- active
+- trial
+- paid
+
+-----------------------------------
+TAB 5: SYSTEM
+-----------------------------------
+
+This should be clean and reassuring.
+
+SECTION 1: System health header
+Title:
+“System status”
+Include a refined refresh button
+
+SECTION 2: Service status list
+Keep the current integrations and services, such as:
+- Stripe
+- Google Places API
+- Ingestion Scheduler
+- Email / Resend
+- Push Notifications
+- Replit PostgreSQL
+- Supabase
+
+Present each as a clean service status card/row:
+- service name
+- short descriptor
+- operational badge
+
+Make this page feel calm and reliable.
+
+-----------------------------------
+EXISTING PROBLEMS TO FIX
+-----------------------------------
+
+Fix the following UX issues from the current admin:
+- Too many top horizontal pills/tabs creating clutter
+- Too many raw tables
+- Metrics currently feel like disconnected blocks
+- Alerts are visible but not actionable enough
+- Growth funnel is too long and cognitively heavy
+- Retention error state is empty and visually dead
+- Source monitoring is informative but too technical visually
+- Users/subscriptions/search profiles feel like database views instead of product views
+- Overall layout lacks enough hierarchy and visual storytelling
+
+-----------------------------------
+RETENTION TAB / EMPTY STATES
+-----------------------------------
+
+Even if retention data is unavailable, do not leave a blank dead screen.
+Create a friendly empty/error state card with:
+- title
+- short explanation
+- retry button
+- subtle icon/illustration feel using existing icon system
+
+Use the same principle for other empty states.
+
+-----------------------------------
+COMPONENT APPROACH
+-----------------------------------
+
+Create reusable mobile admin components where helpful:
+- AppHeader
+- BottomTabBar
+- SectionHeader
+- MetricCard
+- AlertCard / IssueList
+- StatusBadge
+- SourceHealthCard
+- UserListItem
+- ServiceStatusRow
+- EmptyStateCard
+- QuickActionButton
+
+Keep components lightweight and reusable.
+
+-----------------------------------
+TECHNICAL IMPLEMENTATION NOTES
+-----------------------------------
+
+- Keep current routes/data structure where possible
+- If needed, create a mobile admin shell layout with top header + content + bottom tab bar
+- Avoid unnecessary rewrites
+- Prioritize UI restructuring over backend changes
+- Preserve current metrics and admin data sources
+- Ensure good spacing and scrolling behavior on mobile Safari
+- Ensure fixed bottom tab bar does not overlap content
+- Add bottom safe-area padding where needed
+- Make cards and lists responsive and touch-friendly
+
+-----------------------------------
+CONTENT / TONE
+-----------------------------------
+
+The admin should feel:
+- friendly
+- calm
+- premium
+- clear
+- operationally useful
+
+Avoid:
+- harsh enterprise admin styling
+- overly technical presentation
+- clutter
+- giant data dumps above the fold
+
+-----------------------------------
+DELIVERABLE
+-----------------------------------
+
+Implement the redesigned mobile-first HousAlert Admin dashboard UI with the new 5-tab bottom navigation, improved layout hierarchy, card-based mobile presentation, actionable issue prioritization, and premium app-like feel while preserving current functionality and data.
+
+At the end:
+- Give a short summary of what was changed
+- Mention any places where existing data structure limited the UI
+- Only do minimal smoke checks, no extensive testing
