@@ -2204,7 +2204,10 @@ export async function registerRoutes(
       if (updates.language !== undefined) {
         const validLangs = ["de", "en", "nl"];
         if (!validLangs.includes(updates.language)) {
+          console.log(`[LANG SAVE] userId=${user.id.substring(0, 8)}... REJECTED invalid language="${updates.language}"`);
           delete updates.language;
+        } else {
+          console.log(`[LANG SAVE] userId=${user.id.substring(0, 8)}... saving language="${updates.language}"`);
         }
       }
 
@@ -2249,6 +2252,10 @@ export async function registerRoutes(
       `;
 
       const { rows } = await pgPool.query(query, insertValues);
+
+      if (updates.language !== undefined) {
+        console.log(`[LANG SAVE] userId=${user.id.substring(0, 8)}... CONFIRMED saved language="${rows[0]?.language}" in DB`);
+      }
 
       if (updates.phone !== undefined) {
         const e164Regex = /^\+[1-9]\d{1,14}$/;
@@ -2747,13 +2754,8 @@ export async function registerRoutes(
       };
 
       const { sendMatchAlert } = await import("./email");
-      const { getUserLanguage: getAdminLang } = await import("./i18n");
-      const { pool: pgP } = await import("./pg-pool");
-      let adminLang: import("./i18n").ServerLocale = "de";
-      try {
-        const { rows } = await pgP.query("SELECT language FROM user_profile_data WHERE user_id = $1 LIMIT 1", [adminUser.id]);
-        adminLang = getAdminLang(rows[0]?.language);
-      } catch {}
+      const { getUserLanguage } = await import("./notifications/buffer");
+      const adminLang = await getUserLanguage(adminUser.id);
       const success = await sendMatchAlert(targetEmail, testListing, adminLang);
 
       if (success) {

@@ -1,12 +1,15 @@
 import { log } from "../log";
 import { sendBatchMatchAlert } from "../email";
-import { areAlertsEnabled } from "./index";
 import { getSubscriptionStatus } from "../subscriptions";
 import { sendMatchPushNotifications, type PushMatchListing } from "./push";
 import { sendExpoMatchPush, type ExpoMatchListing } from "./expo-push";
 import { batchedIn } from "../freshness";
 import { markEmailSent, markPushSent, getUndeliveredMatches } from "../user-matches";
 import { pool as pgPool } from "../pg-pool";
+
+export function areAlertsEnabled(): boolean {
+  return process.env.ALERTS_ENABLED === "true";
+}
 
 const MAX_LISTINGS_PER_EMAIL = 20;
 const IMAGE_FETCH_TIMEOUT_MS = 5000;
@@ -113,18 +116,18 @@ async function getSearchBuddyInfo(userId: string): Promise<BuddyInfo | null> {
   }
 }
 
-async function getUserLanguage(userId: string): Promise<import("../i18n").ServerLocale> {
+export async function getUserLanguage(userId: string): Promise<import("../i18n").ServerLocale> {
   try {
     const { rows } = await pgPool.query(
       "SELECT language FROM user_profile_data WHERE user_id = $1 LIMIT 1",
       [userId]
     );
     const raw = rows[0]?.language;
-    const lang: import("../i18n").ServerLocale = (raw === "de" || raw === "en" || raw === "nl") ? raw : "de";
-    log(`[LANG] user=${userId.substring(0, 8)}... dbValue=${raw ?? "NULL"} resolved=${lang}`);
-    return lang;
+    const resolved: import("../i18n").ServerLocale = (raw === "de" || raw === "en" || raw === "nl") ? raw : "de";
+    log(`[LANG CHECK] userId=${userId.substring(0, 8)}... dbLanguage=${raw ?? "NULL"} finalLanguage=${resolved}`);
+    return resolved;
   } catch (err: any) {
-    log(`[LANG] user=${userId.substring(0, 8)}... ERROR: ${err.message} → fallback=de`);
+    log(`[LANG CHECK] userId=${userId.substring(0, 8)}... ERROR=${err.message} finalLanguage=de (fallback)`);
   }
   return "de";
 }

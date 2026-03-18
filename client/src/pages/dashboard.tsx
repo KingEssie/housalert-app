@@ -1385,14 +1385,28 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
     setLocale(code);
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) return;
-      await apiFetch("/api/profile-data", {
+      if (!session?.access_token) {
+        console.error("[LANG] No session token — language not saved to server");
+        toast({ title: t("common.error"), description: "Session expired. Language saved locally but not synced.", variant: "destructive" });
+        return;
+      }
+      const resp = await apiFetch("/api/profile-data", {
         method: "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
         body: JSON.stringify({ language: code }),
       });
+      if (!resp.ok) {
+        console.error("[LANG] Server rejected language save:", resp.status);
+        toast({ title: t("common.error"), variant: "destructive" });
+        return;
+      }
+      const saved = await resp.json();
+      if (saved.language !== code) {
+        console.error("[LANG] Language mismatch after save:", saved.language, "expected:", code);
+      }
       queryClient.invalidateQueries({ queryKey: ["/api/profile-data"] });
-    } catch {
+    } catch (err) {
+      console.error("[LANG] Failed to save language:", err);
       toast({ title: t("common.error"), variant: "destructive" });
     }
   }
