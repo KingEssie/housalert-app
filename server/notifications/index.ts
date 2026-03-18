@@ -1,5 +1,7 @@
 import { sendMatchAlert as sendEmailViaResend } from "../email";
 import { log } from "../log";
+import { pool as pgPool } from "../pg-pool";
+import type { ServerLocale } from "../i18n";
 
 interface ListingInfo {
   title: string;
@@ -19,11 +21,31 @@ export function areAlertsEnabled(): boolean {
   return process.env.ALERTS_ENABLED === "true";
 }
 
+async function fetchUserLanguage(userId: string): Promise<ServerLocale> {
+  try {
+    const { rows } = await pgPool.query(
+      "SELECT language FROM user_profile_data WHERE user_id = $1 LIMIT 1",
+      [userId]
+    );
+    const lang = rows[0]?.language;
+    if (lang === "de" || lang === "en" || lang === "nl") return lang;
+  } catch (err: any) {
+    log(`[NOTIF] Failed to fetch language for ${userId.substring(0, 8)}...: ${err.message}`);
+  }
+  return "de";
+}
+
 export async function sendEmailMatchAlert(
   userEmail: string,
-  listing: ListingInfo
+  listing: ListingInfo,
+  userId?: string
 ): Promise<boolean> {
-  return sendEmailViaResend(userEmail, listing);
+  let lang: ServerLocale = "de";
+  if (userId) {
+    lang = await fetchUserLanguage(userId);
+  }
+  log(`[NOTIF] sendEmailMatchAlert to=${userEmail} userId=${userId?.substring(0, 8) || "N/A"} dbLang=${lang} path=match-alert`);
+  return sendEmailViaResend(userEmail, listing, lang);
 }
 
 export async function sendMatchAlerts(
@@ -54,7 +76,7 @@ export async function sendMatchAlerts(
   const promises: Promise<boolean>[] = [];
 
   if (emailEnabled && userEmail) {
-    promises.push(sendEmailMatchAlert(userEmail, listing));
+    promises.push(sendEmailMatchAlert(userEmail, listing, userId));
   }
 
   if (promises.length > 0) {

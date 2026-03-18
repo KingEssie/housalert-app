@@ -386,7 +386,7 @@ export async function registerRoutes(
       return res.status(400).json({ error: "Missing listing data" });
     }
 
-    const sent = await sendEmailMatchAlert(recipientEmail, listing);
+    const sent = await sendEmailMatchAlert(recipientEmail, listing, user.id);
     return res.json({ sent });
   });
 
@@ -2747,10 +2747,17 @@ export async function registerRoutes(
       };
 
       const { sendMatchAlert } = await import("./email");
-      const success = await sendMatchAlert(targetEmail, testListing);
+      const { getUserLanguage: getAdminLang } = await import("./i18n");
+      const { pool: pgP } = await import("./pg-pool");
+      let adminLang: import("./i18n").ServerLocale = "de";
+      try {
+        const { rows } = await pgP.query("SELECT language FROM user_profile_data WHERE user_id = $1 LIMIT 1", [adminUser.id]);
+        adminLang = getAdminLang(rows[0]?.language);
+      } catch {}
+      const success = await sendMatchAlert(targetEmail, testListing, adminLang);
 
       if (success) {
-        log(`[EMAIL TEST] Test email sent successfully to ${targetEmail}`);
+        log(`[EMAIL TEST] Test email sent successfully to ${targetEmail} lang=${adminLang}`);
         return res.json({ success: true, sentTo: targetEmail, from: "HousAlert <new@housalert.com>", message: "Test email sent successfully" });
       } else {
         log(`[EMAIL TEST] Test email FAILED to ${targetEmail}`);
@@ -3068,7 +3075,7 @@ export async function registerRoutes(
           image_url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=400&fit=crop",
         };
 
-        const success = await sendMatchAlert(targetEmail, testListing);
+        const success = await sendMatchAlert(targetEmail, testListing, "de");
         return res.json({ success, sentTo: targetEmail, from: "HousAlert <new@housalert.com>" });
       } catch (err: any) {
         log(`[DEV EMAIL TEST] Error: ${err.message}`);

@@ -279,7 +279,7 @@ export async function sendMatchAlert(
 <p style="margin:0 0 16px;font-size:14px;color:${C.muted};line-height:1.5;">${escapeHtml(t(lang, "email.matchFound"))}</p>
 ${listingCard(listing, true, undefined, lang)}`;
 
-    log(`[EMAIL SEND] from="${VERIFIED_FROM}" to="${userEmail}" subject="${subject}" image=${listing.image_url ? listing.image_url.substring(0, 80) : "NO_IMAGE"}`);
+    log(`[EMAIL SEND] from="${VERIFIED_FROM}" to="${userEmail}" subject="${subject}" lang=${lang} image=${listing.image_url ? listing.image_url.substring(0, 80) : "NO_IMAGE"}`);
 
     const { data, error } = await client.emails.send({
       from: VERIFIED_FROM,
@@ -290,14 +290,14 @@ ${listingCard(listing, true, undefined, lang)}`;
     });
 
     if (error) {
-      log(`[EMAIL FAIL] to=${userEmail} listing="${listing.title}" error=${error.message} name=${(error as any).name || "unknown"} statusCode=${(error as any).statusCode || "N/A"}`);
+      log(`[EMAIL FAIL] to=${userEmail} listing="${listing.title}" lang=${lang} error=${error.message} name=${(error as any).name || "unknown"} statusCode=${(error as any).statusCode || "N/A"}`);
       return false;
     }
 
-    log(`[EMAIL OK] to=${userEmail} listing="${listing.title}" id=${(data as any)?.id || "N/A"}`);
+    log(`[EMAIL OK] to=${userEmail} listing="${listing.title}" lang=${lang} id=${(data as any)?.id || "N/A"}`);
     return true;
   } catch (err: any) {
-    log(`[EMAIL ERROR] to=${userEmail} err=${err.message} stack=${err.stack?.split("\n")[1]?.trim() || "N/A"}`);
+    log(`[EMAIL ERROR] to=${userEmail} lang=${lang} err=${err.message} stack=${err.stack?.split("\n")[1]?.trim() || "N/A"}`);
     return false;
   }
 }
@@ -343,7 +343,7 @@ export async function sendBatchMatchAlert(
 ${htmlListings}`;
 
     const imageStats = listings.map((l, i) => `${i + 1}:${l.image_url ? l.image_url.substring(0, 80) : "NO_IMAGE"}`).join(" | ");
-    log(`[EMAIL SEND] batch from="${VERIFIED_FROM}" to="${userEmail}" count=${listings.length} subject="${subject}"`);
+    log(`[EMAIL SEND] batch from="${VERIFIED_FROM}" to="${userEmail}" count=${listings.length} lang=${lang} subject="${subject}"`);
     log(`[EMAIL IMAGES] ${imageStats}`);
 
     const { data, error } = await client.emails.send({
@@ -355,14 +355,14 @@ ${htmlListings}`;
     });
 
     if (error) {
-      log(`[EMAIL FAIL] batch to=${userEmail} count=${listings.length} error=${error.message} name=${(error as any).name || "unknown"} statusCode=${(error as any).statusCode || "N/A"}`);
+      log(`[EMAIL FAIL] batch to=${userEmail} count=${listings.length} lang=${lang} error=${error.message} name=${(error as any).name || "unknown"} statusCode=${(error as any).statusCode || "N/A"}`);
       return false;
     }
 
-    log(`[EMAIL OK] batch to=${userEmail} count=${listings.length} id=${(data as any)?.id || "N/A"}`);
+    log(`[EMAIL OK] batch to=${userEmail} count=${listings.length} lang=${lang} id=${(data as any)?.id || "N/A"}`);
     return true;
   } catch (err: any) {
-    log(`[EMAIL ERROR] batch to=${userEmail} err=${err.message} stack=${err.stack?.split("\n")[1]?.trim() || "N/A"}`);
+    log(`[EMAIL ERROR] batch to=${userEmail} lang=${lang} err=${err.message} stack=${err.stack?.split("\n")[1]?.trim() || "N/A"}`);
     return false;
   }
 }

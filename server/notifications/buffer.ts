@@ -119,10 +119,12 @@ async function getUserLanguage(userId: string): Promise<import("../i18n").Server
       "SELECT language FROM user_profile_data WHERE user_id = $1 LIMIT 1",
       [userId]
     );
-    const lang = rows[0]?.language;
-    if (lang === "de" || lang === "en" || lang === "nl") return lang;
+    const raw = rows[0]?.language;
+    const lang: import("../i18n").ServerLocale = (raw === "de" || raw === "en" || raw === "nl") ? raw : "de";
+    log(`[LANG] user=${userId.substring(0, 8)}... dbValue=${raw ?? "NULL"} resolved=${lang}`);
+    return lang;
   } catch (err: any) {
-    log(`[ALERTS] Failed to fetch language for ${userId.substring(0, 8)}...: ${err.message}`);
+    log(`[LANG] user=${userId.substring(0, 8)}... ERROR: ${err.message} → fallback=de`);
   }
   return "de";
 }
@@ -144,9 +146,10 @@ async function sendBuddyEmail(
     return false;
   }
   try {
+    log(`[NOTIF] buddy email to=${buddyInfo.email} userId=${userId.substring(0, 8)}... lang=${lang} count=${capped.length} path=${context.replace(/[\[\]]/g, "").toLowerCase()}`);
     const success = await sendBatchMatchAlert(buddyInfo.email, capped, lang);
     if (success) {
-      log(`[ALERTS] ${context} Buddy email sent to ${buddyInfo.email} for user ${userId.substring(0, 8)}... (${capped.length} listings)`);
+      log(`[ALERTS] ${context} Buddy email sent to ${buddyInfo.email} for user ${userId.substring(0, 8)}... (${capped.length} listings, lang=${lang})`);
     } else {
       log(`[ALERTS] ${context} Buddy email FAILED to ${buddyInfo.email} for user ${userId.substring(0, 8)}...`);
     }
@@ -289,7 +292,7 @@ async function getAppVisibleListingIds(userId: string, supabase: any, candidateL
   return new Set(existingListings.map((l: any) => l.id));
 }
 
-export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: number; failed: number }> {
+export async function flushMatchAlertBuffer(supabase: any, source: string = "flush"): Promise<{ sent: number; failed: number }> {
   if (!areAlertsEnabled()) {
     buffer.clear();
     return { sent: 0, failed: 0 };
@@ -397,14 +400,15 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
       const capped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
       await enrichMissingImages(capped, supabase);
       try {
+        log(`[NOTIF] ${source} email to=${email} userId=${userId.substring(0, 8)}... lang=${userLang} count=${capped.length} path=${source}`);
         const success = await sendBatchMatchAlert(email, capped, userLang);
         if (success) {
           sent++;
           emailedListingIds.push(...capped.map(l => l.listing_id));
-          log(`[ALERTS] Sent digest to ${email} with ${capped.length} listings${verified.length > MAX_LISTINGS_PER_EMAIL ? ` (capped from ${verified.length})` : ""}`);
+          log(`[ALERTS] Sent digest to ${email} with ${capped.length} listings lang=${userLang}${verified.length > MAX_LISTINGS_PER_EMAIL ? ` (capped from ${verified.length})` : ""}`);
         } else {
           failed++;
-          log(`[ALERTS] Failed digest to ${email}`);
+          log(`[ALERTS] Failed digest to ${email} lang=${userLang}`);
         }
       } catch (err: any) {
         failed++;
@@ -434,6 +438,7 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
     if (pushEnabled) {
       const pushStart = Date.now();
       try {
+        log(`[NOTIF] ${source} webpush userId=${userId.substring(0, 8)}... lang=${userLang} count=${verified.length} path=${source}`);
         const pushListings: PushMatchListing[] = verified.map((l) => ({
           listing_id: l.listing_id,
           city: l.city,
@@ -449,6 +454,7 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
       }
 
       try {
+        log(`[NOTIF] ${source} expo userId=${userId.substring(0, 8)}... lang=${userLang} count=${verified.length} path=${source}`);
         const expoListings: ExpoMatchListing[] = verified.map((l) => ({
           listing_id: l.listing_id,
           title: l.title,
@@ -554,11 +560,12 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
     const capped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
     await enrichMissingImages(capped, supabase);
     try {
+      log(`[NOTIF] backfill email to=${userBuf.email} userId=${userId.substring(0, 8)}... lang=${backfillLang} count=${capped.length} path=backfill`);
       const success = await sendBatchMatchAlert(userBuf.email, capped, backfillLang);
       if (success) {
         emailedListingIds.push(...capped.map(l => l.listing_id));
       }
-      log(`[ALERTS] Sent backfill digest to ${userBuf.email} with ${capped.length} listings (from ${userBuf.listings.length} raw)`);
+      log(`[ALERTS] Sent backfill digest to ${userBuf.email} with ${capped.length} listings lang=${backfillLang} (from ${userBuf.listings.length} raw)`);
     } catch (err: any) {
       log(`[ALERTS] Error sending backfill digest: ${err.message}`);
     }
@@ -578,6 +585,7 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
 
   if (pushEnabled) {
     try {
+      log(`[NOTIF] backfill webpush userId=${userId.substring(0, 8)}... lang=${backfillLang} count=${verified.length} path=backfill`);
       const pushListings: PushMatchListing[] = verified.map((l) => ({
         listing_id: l.listing_id,
         city: l.city,
@@ -592,6 +600,7 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
     }
 
     try {
+      log(`[NOTIF] backfill expo userId=${userId.substring(0, 8)}... lang=${backfillLang} count=${verified.length} path=backfill`);
       const expoListings: ExpoMatchListing[] = verified.map((l) => ({
         listing_id: l.listing_id,
         title: l.title,
@@ -760,7 +769,7 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
   }
 
   log(`[RECOVERY] Flushing ${bufSize.listings} listings for ${bufSize.users} users`);
-  const result = await flushMatchAlertBuffer(supabase);
+  const result = await flushMatchAlertBuffer(supabase, "recovery");
   log(`[RECOVERY] Flush result: sent=${result.sent} failed=${result.failed}`);
   return { recovered: undelivered.length, sent: result.sent, failed: result.failed };
 }
