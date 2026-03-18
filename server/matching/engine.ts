@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { bufferMatchAlert } from "../notifications/buffer";
 import { trackMatchCreated } from "../freshness";
 import { getSubscriptionStatus } from "../subscriptions";
-import { upsertUserMatch } from "../user-matches";
+import { upsertUserMatch, markEmailSent, markPushSent } from "../user-matches";
 import { getListingStatus, isListingMatchable, type ListingStatus } from "../listing-status";
 import { trackEvent as trackActivationEvent, hasEvent as hasActivationEvent } from "../activation-events";
 
@@ -49,6 +49,7 @@ interface DbListing {
   longitude?: number | null;
   extra_features?: string[] | null;
   target_categories?: string[] | null;
+  created_at?: string | null;
 }
 
 const LISTING_SELECT = "id, source, url, title, city, price, bedrooms, size_m2, image_url, furnished, pets_allowed, balcony, elevator, district, latitude, longitude, extra_features, target_categories";
@@ -79,7 +80,7 @@ async function checkAdvancedListingColumns(): Promise<boolean> {
 }
 
 function getListingSelect(): string {
-  const base = "id, source, url, title, city, price, bedrooms, size_m2, image_url";
+  const base = "id, source, url, title, city, price, bedrooms, size_m2, image_url, created_at";
   const parts = [base];
   if (hasFurnishedColumn !== false) parts.push("furnished");
   if (hasDistrictColumn !== false) parts.push("district");
@@ -758,21 +759,40 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
   if (matchedEntries.length > 0) {
     const subStatus = await getSubscriptionStatus(sp.user_id);
     if (subStatus.isActive || subStatus.isTrial) {
-      const { data: userData } = await supabase.auth.admin.getUserById(sp.user_id);
-      const email = userData?.user?.email;
-      if (email) {
-        for (const { listing: l, matched_at } of matchedEntries) {
-          bufferMatchAlert(sp.user_id, email, {
-            listing_id: l.id,
-            title: l.title,
-            city: l.city,
-            price: l.price,
-            bedrooms: l.bedrooms,
-            size_m2: l.size_m2,
-            url: l.url,
-            image_url: l.image_url,
-            matched_at,
-          });
+      const subStartTime = subStatus.created_at ? new Date(subStatus.created_at).getTime() : Date.now();
+      const eligibleEntries = matchedEntries.filter(({ listing: l }) => {
+        const listingTime = l.created_at ? new Date(l.created_at).getTime() : 0;
+        return listingTime >= subStartTime;
+      });
+      const skippedOld = matchedEntries.length - eligibleEntries.length;
+      if (skippedOld > 0) {
+        const oldIds = matchedEntries
+          .filter(({ listing: l }) => {
+            const t = l.created_at ? new Date(l.created_at).getTime() : 0;
+            return t < subStartTime;
+          })
+          .map(({ listing: l }) => l.id);
+        try { await markEmailSent(sp.user_id, oldIds); } catch {}
+        try { await markPushSent(sp.user_id, oldIds); } catch {}
+        log(`[MATCH ENGINE] Backfill: ${skippedOld} listings older than subscription start — marked sent, visible in app only`);
+      }
+      if (eligibleEntries.length > 0) {
+        const { data: userData } = await supabase.auth.admin.getUserById(sp.user_id);
+        const email = userData?.user?.email;
+        if (email) {
+          for (const { listing: l, matched_at } of eligibleEntries) {
+            bufferMatchAlert(sp.user_id, email, {
+              listing_id: l.id,
+              title: l.title,
+              city: l.city,
+              price: l.price,
+              bedrooms: l.bedrooms,
+              size_m2: l.size_m2,
+              url: l.url,
+              image_url: l.image_url,
+              matched_at,
+            });
+          }
         }
       }
     } else {

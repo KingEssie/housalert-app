@@ -208,7 +208,10 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
 
     if (!emailEnabled && !pushEnabled) {
       skippedEmailOff++;
-      log(`[ALERTS] Skipping user ${userId.substring(0, 8)}... (email_enabled=false, push_enabled=false)`);
+      const skipIds = listings.map(l => l.listing_id);
+      try { await markEmailSent(userId, skipIds); } catch {}
+      try { await markPushSent(userId, skipIds); } catch {}
+      log(`[ALERTS] Skipping user ${userId.substring(0, 8)}... (email_enabled=false, push_enabled=false) — marked ${skipIds.length} as sent`);
       continue;
     }
 
@@ -238,6 +241,14 @@ export async function flushMatchAlertBuffer(supabase: any): Promise<{ sent: numb
     log(`[ALERTS] User ${userId.substring(0, 8)}...: raw=${listings.length} → deduped=${deduped.length} → app-visible=${verified.length}`);
 
     const emailedListingIds: string[] = [];
+    const allVerifiedIds = verified.map(l => l.listing_id);
+
+    if (!emailEnabled) {
+      try { await markEmailSent(userId, allVerifiedIds); } catch {}
+    }
+    if (!pushEnabled) {
+      try { await markPushSent(userId, allVerifiedIds); } catch {}
+    }
 
     if (emailEnabled) {
       const capped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
@@ -344,7 +355,13 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
   const emailEnabled = settingsErr ? true : (settings?.email_enabled ?? true);
   const pushEnabled = settingsErr ? false : (settings?.push_enabled ?? false);
 
-  if (!emailEnabled && !pushEnabled) return;
+  if (!emailEnabled && !pushEnabled) {
+    const skipIds = userBuf.listings.map(l => l.listing_id);
+    try { await markEmailSent(userId, skipIds); } catch {}
+    try { await markPushSent(userId, skipIds); } catch {}
+    log(`[ALERTS] Backfill: both channels off — marked ${skipIds.length} as sent`);
+    return;
+  }
 
   const deduped: BufferedMatch[] = [];
   const seenIds = new Set<string>();
@@ -368,6 +385,14 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
   }
 
   const emailedListingIds: string[] = [];
+  const allVerifiedIds = verified.map(l => l.listing_id);
+
+  if (!emailEnabled) {
+    try { await markEmailSent(userId, allVerifiedIds); } catch {}
+  }
+  if (!pushEnabled) {
+    try { await markPushSent(userId, allVerifiedIds); } catch {}
+  }
 
   if (emailEnabled) {
     const capped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
@@ -470,22 +495,54 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
       continue;
     }
 
-    const { data: userData } = await supabase.auth.admin.getUserById(userId);
-    const email = userData?.user?.email;
-    if (!email) {
-      skippedNoEmail += matches.length;
-      log(`[RECOVERY] User ${userId.substring(0, 8)}: skipped ${matches.length} matches (no email found)`);
+    const { data: notifSettings } = await supabase
+      .from("user_notification_settings")
+      .select("email_enabled, push_enabled")
+      .eq("user_id", userId)
+      .maybeSingle();
+    const emailOn = notifSettings?.email_enabled ?? true;
+    const pushOn = notifSettings?.push_enabled ?? false;
+    if (!emailOn && !pushOn) {
+      const skipIds = matches.map(m => m.listing_id);
+      try { await markEmailSent(userId, skipIds); } catch {}
+      try { await markPushSent(userId, skipIds); } catch {}
+      log(`[RECOVERY] User ${userId.substring(0, 8)}: notifications off — marked ${skipIds.length} as sent, skipping`);
       continue;
     }
 
-    log(`[RECOVERY] User ${userId.substring(0, 8)}: buffering ${matches.length} matches for ${email}`);
+    const subStartTime = subStatus.created_at ? new Date(subStatus.created_at).getTime() : Date.now();
+    const eligibleMatches = matches.filter(m => {
+      const matchTime = new Date(m.matched_at).getTime();
+      return matchTime >= subStartTime;
+    });
+    const skippedOld = matches.length - eligibleMatches.length;
+    if (skippedOld > 0) {
+      const oldIds = matches.filter(m => new Date(m.matched_at).getTime() < subStartTime).map(m => m.listing_id);
+      try { await markEmailSent(userId, oldIds); } catch {}
+      try { await markPushSent(userId, oldIds); } catch {}
+      log(`[RECOVERY] User ${userId.substring(0, 8)}: ${skippedOld} matches older than subscription start — marked as sent`);
+    }
+    if (eligibleMatches.length === 0) {
+      log(`[RECOVERY] User ${userId.substring(0, 8)}: 0 eligible matches after subscription-start filter`);
+      continue;
+    }
 
-    const listingIds = matches.map(m => m.listing_id);
-    let enrichMap = new Map<string, { image_url: string | null; bedrooms: number; size_m2: number }>();
+    const { data: userData } = await supabase.auth.admin.getUserById(userId);
+    const email = userData?.user?.email;
+    if (!email) {
+      skippedNoEmail += eligibleMatches.length;
+      log(`[RECOVERY] User ${userId.substring(0, 8)}: skipped ${eligibleMatches.length} matches (no email found)`);
+      continue;
+    }
+
+    log(`[RECOVERY] User ${userId.substring(0, 8)}: buffering ${eligibleMatches.length} matches for ${email} (${skippedOld} pre-sub filtered out)`);
+
+    const listingIds = eligibleMatches.map(m => m.listing_id);
+    let enrichMap = new Map<string, { image_url: string | null; bedrooms: number; size_m2: number; created_at: string | null }>();
     try {
       const { data: listingRows } = await supabase
         .from("listings")
-        .select("id, image_url, bedrooms, size_m2")
+        .select("id, image_url, bedrooms, size_m2, created_at")
         .in("id", listingIds);
       if (listingRows) {
         for (const row of listingRows) {
@@ -493,6 +550,7 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
             image_url: row.image_url || null,
             bedrooms: row.bedrooms || 0,
             size_m2: row.size_m2 || 0,
+            created_at: row.created_at || null,
           });
         }
       }
@@ -500,8 +558,18 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
       log(`[RECOVERY] Failed to fetch listing details: ${err.message}`);
     }
 
-    for (const m of matches) {
+    let skippedPreSub = 0;
+    for (const m of eligibleMatches) {
       const enriched = enrichMap.get(m.listing_id);
+      if (enriched?.created_at) {
+        const listingTime = new Date(enriched.created_at).getTime();
+        if (listingTime < subStartTime) {
+          skippedPreSub++;
+          try { await markEmailSent(userId, [m.listing_id]); } catch {}
+          try { await markPushSent(userId, [m.listing_id]); } catch {}
+          continue;
+        }
+      }
       bufferMatchAlert(userId, email, {
         listing_id: m.listing_id,
         title: m.listing_title || "Nieuwe woning",
@@ -514,6 +582,9 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
         matched_at: m.matched_at,
       });
       buffered++;
+    }
+    if (skippedPreSub > 0) {
+      log(`[RECOVERY] User ${userId.substring(0, 8)}: ${skippedPreSub} listings created before subscription — marked sent`);
     }
   }
 
