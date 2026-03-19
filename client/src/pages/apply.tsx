@@ -144,7 +144,7 @@ export default function ApplyPage() {
 
   if (listingLoading || !listing) {
     return (
-      <div className="min-h-screen bg-[#F5F7FA] flex flex-col relative">
+      <div className="min-h-screen bg-white flex flex-col relative">
         <button
           onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=matches")}
           className="fixed top-[calc(12px+env(safe-area-inset-top))] left-4 z-20 w-12 h-12 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.10)] flex items-center justify-center"
@@ -153,11 +153,22 @@ export default function ApplyPage() {
           <ArrowLeft className="w-5 h-5 text-[#71717A]" />
         </button>
         <div className="animate-pulse">
-          <div className="h-[240px] bg-[#E5E7EB]" />
-          <div className="max-w-xl mx-auto w-full px-5 pt-5 space-y-4">
-            <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 space-y-3">
-              <div className="h-6 bg-[#F5F7FA] rounded w-3/4" />
-              <div className="h-4 bg-[#F5F7FA] rounded w-1/2" />
+          <div className="w-full bg-[#F0F0F0]" style={{ aspectRatio: "16/10" }} />
+          <div className="max-w-xl mx-auto w-full px-6 pt-6 space-y-5">
+            <div className="flex flex-col items-center gap-2">
+              <div className="h-5 bg-[#F5F5F5] rounded-md w-3/4" />
+              <div className="h-5 bg-[#F5F5F5] rounded-md w-1/2" />
+            </div>
+            <div className="mx-0 rounded-[20px] border border-[#F0F0F0] p-5 space-y-4">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="flex items-center gap-3.5">
+                  <div className="w-[18px] h-[18px] bg-[#F5F5F5] rounded" />
+                  <div className="flex-1 space-y-1.5">
+                    <div className="h-3 bg-[#F5F5F5] rounded w-16" />
+                    <div className="h-4 bg-[#F5F5F5] rounded w-28" />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -239,23 +250,23 @@ export default function ApplyPage() {
   const hasImage = !!listing.image_url;
   const gradient = getCityGradient(listing.city);
 
-  const facts: { icon: typeof MapPin; value: string }[] = [];
-  facts.push({ icon: MapPin, value: listing.city });
-  if (listing.bedrooms && listing.bedrooms > 0) {
-    facts.push({ icon: BedDouble, value: `${listing.bedrooms} ${listing.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}` });
-  }
+  const detailRows: { icon: typeof MapPin; label: string; value: string }[] = [];
+  detailRows.push({ icon: MapPin, label: t("listingDetail.location"), value: listing.city });
   if (listing.size_m2 && listing.size_m2 > 0) {
-    facts.push({ icon: Ruler, value: `${listing.size_m2} m²` });
+    detailRows.push({ icon: Ruler, label: t("listingDetail.size"), value: `${listing.size_m2} m²` });
+  }
+  if (listing.bedrooms && listing.bedrooms > 0) {
+    detailRows.push({ icon: BedDouble, label: t("listingDetail.bedrooms"), value: `${listing.bedrooms} ${listing.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}` });
   }
   if (listing.source) {
-    facts.push({ icon: Globe, value: listing.source });
+    detailRows.push({ icon: Globe, label: t("listingDetail.website"), value: listing.source });
   }
   if (listing.first_seen_at) {
-    facts.push({ icon: Clock, value: relativeTime(listing.first_seen_at) });
+    detailRows.push({ icon: Clock, label: t("listingDetail.posted"), value: relativeTime(listing.first_seen_at) });
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F7FA] flex flex-col relative">
+    <div className="min-h-screen bg-white flex flex-col relative">
       <button
         onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=matches")}
         className="fixed top-[calc(12px+env(safe-area-inset-top))] left-4 z-20 w-12 h-12 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.10)] flex items-center justify-center active:scale-95 transition-transform"
@@ -269,71 +280,90 @@ export default function ApplyPage() {
           <img
             src={listing.image_url!}
             alt={listing.title}
-            className="w-full h-[240px] object-cover"
+            className="w-full object-cover"
+            style={{ aspectRatio: "16/10" }}
             onError={() => setImgError(true)}
             referrerPolicy="no-referrer"
             data-testid="img-apply-hero"
           />
         ) : (
-          <div className={`w-full h-[240px] bg-gradient-to-br ${gradient} flex items-center justify-center relative`}>
+          <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "16/10" }}>
             <div className="absolute inset-0 bg-black/5" />
-            <div className="flex flex-col items-center gap-2 text-white/60">
-              <ImageIcon className="w-8 h-8" />
+            <div className="flex flex-col items-center gap-2 text-white/50">
+              <ImageIcon className="w-10 h-10" />
               <span className="text-[12px] font-medium">{listing.source}</span>
             </div>
           </div>
         )}
 
         {listing.price > 0 && (
-          <div className="absolute bottom-5 right-4 bg-white/95 backdrop-blur-sm rounded-full px-4 py-2 shadow-[0_2px_12px_rgba(0,0,0,0.12)] z-20" data-testid="badge-price-photo">
+          <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-sm rounded-full px-4 py-2 shadow-[0_2px_12px_rgba(0,0,0,0.12)] z-20" data-testid="badge-price-photo">
             <span className="text-[17px] font-medium text-[#111C3D]">€{listing.price}</span>
             <span className="text-[11px] font-medium text-[#6B7280]"> {t("common.perMonthShort")}</span>
           </div>
         )}
       </div>
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-5 -mt-2 relative z-10 pb-28">
-        <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 mb-3">
-          <h1 className="text-[20px] font-medium text-[#111C3D] leading-[1.2] tracking-[-0.02em] mb-2" data-testid="text-apply-title">
+      <main className="flex-1 max-w-xl mx-auto w-full pb-[120px]">
+        <div className="px-6 pt-6 pb-5">
+          <h1
+            className="text-[22px] font-medium text-[#111C3D] leading-[1.25] tracking-[-0.015em] text-center max-w-[340px] mx-auto"
+            data-testid="text-apply-title"
+          >
             {listing.title}
           </h1>
+        </div>
 
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-[#6B7280]" data-testid="facts-block">
-            {facts.map((fact, i) => {
-              const Icon = fact.icon;
+        <div className="mx-5 rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
+          <div className="px-5 py-4" data-testid="facts-block">
+            {detailRows.map((row, i) => {
+              const Icon = row.icon;
               return (
-                <span key={i} className="flex items-center gap-1">
-                  {i > 0 && <span className="text-[#E5E7EB] mr-0.5">·</span>}
-                  <Icon className="w-3.5 h-3.5 flex-shrink-0" />
-                  <span className="capitalize">{fact.value}</span>
-                </span>
+                <div key={i}>
+                  {i > 0 && <div className="border-t border-[#F5F5F5]" />}
+                  <div className="flex items-center gap-3.5 py-[14px]">
+                    <Icon className="w-[18px] h-[18px] text-[#71717A] flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[12px] text-[#9CA3AF] leading-none mb-1">{row.label}</p>
+                      <p className="text-[15px] text-[#111827] leading-none capitalize">{row.value}</p>
+                    </div>
+                  </div>
+                </div>
               );
             })}
           </div>
         </div>
 
-        <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-[13px] font-medium text-[#111C3D]">{t("applySheet.applicationLetter")}</p>
+        <div className="mx-5 mt-5 rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
+          <div className="px-5 pt-5 pb-1.5">
+            <h2 className="text-[15px] font-medium text-[#111C3D]">{t("applySheet.applicationLetter")}</h2>
           </div>
-          <div className="bg-[#F5F7FA] rounded-xl p-4">
-            <textarea
-              className="w-full text-[14px] text-[#1F2937] leading-relaxed font-[inherit] bg-transparent border-none outline-none resize-none min-h-[180px]"
-              value={editedLetter ?? filledLetter}
-              onChange={(e) => setEditedLetter(e.target.value)}
-              data-testid="apply-letter-preview"
-              autoComplete="off"
-              autoCorrect="on"
-            />
+          <div className="px-5 pb-5">
+            <div className="bg-[#FAFAFA] rounded-2xl px-4 py-4">
+              <textarea
+                className="w-full text-[14px] text-[#1F2937] leading-[1.75] font-[inherit] bg-transparent border-none outline-none resize-none min-h-[220px]"
+                value={editedLetter ?? filledLetter}
+                onChange={(e) => setEditedLetter(e.target.value)}
+                data-testid="apply-letter-preview"
+                autoComplete="off"
+                autoCorrect="on"
+              />
+            </div>
           </div>
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] p-4 pb-5 z-10">
-        <div className="max-w-xl mx-auto">
+      <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-[0_-2px_16px_rgba(0,0,0,0.06)] z-10 pb-[env(safe-area-inset-bottom)]">
+        <div className="max-w-xl mx-auto flex items-center justify-between px-5 py-4">
+          {listing.price > 0 && (
+            <div className="flex flex-col" data-testid="text-sticky-price">
+              <span className="text-[18px] font-medium text-[#111C3D]">€{listing.price}</span>
+              <span className="text-[12px] text-[#9CA3AF] leading-none">{t("common.perMonthShort")}</span>
+            </div>
+          )}
           <Button
             onClick={handleCopyAndRespond}
-            className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-medium"
+            className={`h-[50px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-medium px-6 ${listing.price > 0 ? "" : "w-full"}`}
             data-testid="button-copy-and-respond"
           >
             <Copy className="w-4 h-4 mr-2" />

@@ -1,0 +1,129 @@
+Redesign the listing detail page (the screen with the generated response letter) to a cleaner, more premium layout inspired by Airbnb.
+
+IMPORTANT:
+- Do NOT change functionality or backend logic
+- Keep all existing data (price, listing info, letter, etc.)
+- This is purely a UI/layout redesign
+- Keep HousAlert blue as primary color
+- Maintain current typography improvements (lighter font weights)
+
+## GOAL
+
+I want the top section of the detail page to feel more like Airbnb:
+- clear hierarchy
+- centered content
+- calm spacing
+- premium look
+
+## TOP SECTION (MAIN CHANGE)
+
+Redesign the section under the image:
+
+### TITLE
+- Listing title should be centered
+- Large, clean, not overly bold
+- Max width so it wraps nicely over 2–3 lines
+- More spacing above and below
+
+### PROPERTY DETAILS (KEY CHANGE)
+
+Under the title, create a clean vertical stack of property attributes.
+
+Each row should be:
+- icon on the left
+- label + value next to it
+- horizontally aligned
+- consistent spacing between rows
+- very clean and minimal
+
+Include these rows:
+- Locatie (city)
+- Afmeting (m²)
+- Slaapkamers
+- Website (source, e.g. WG-Gesucht)
+- Geplaatst (e.g. “11 min geleden”)
+
+Style:
+- icons in neutral gray or HousAlert blue (consistent system)
+- text not bold-heavy
+- label slightly lighter than value if needed
+- spacing between rows ~12–16px
+- overall section centered visually, but text left-aligned within rows
+
+## CARD STYLE
+
+Wrap this whole info block in a soft rounded container:
+- large border radius (like Airbnb)
+- white background
+- subtle shadow
+- generous padding (20–24px)
+
+## IMAGE SECTION
+
+Keep image at top:
+- full width
+- rounded bottom corners or clean transition into card
+- optional overlay price badge stays allowed
+
+## REACTIEBRIEF SECTION
+
+Keep the “Reactiebrief” section below, but refine:
+
+- clear section title (smaller than page title)
+- letter inside a soft container
+- increase line-height for readability
+- more padding inside the text block
+- calmer spacing above and below
+
+## BOTTOM STICKY BAR (KEEP)
+
+At the bottom, keep a sticky bar:
+
+Left:
+- huurprijs (clear, bold enough to stand out)
+
+Right:
+- primary CTA button:
+  “Kopiëren en reageren”
+
+Style:
+- rounded top corners
+- white background
+- subtle shadow
+- button in HousAlert blue
+- good padding
+
+## SPACING & RHYTHM
+
+- increase vertical spacing between sections
+- avoid cramped layout
+- more breathing room between:
+  - image → title
+  - title → details
+  - details → letter
+  - letter → bottom bar
+
+## REMOVE / AVOID
+
+- no cluttered inline metadata rows
+- no overly dense horizontal info blocks
+- no heavy borders
+- no dark UI
+- no bold overload
+
+## RESULT
+
+The page should feel:
+- calm
+- premium
+- structured like Airbnb
+- easy to scan
+- visually centered at the top
+- clean vertical rhythm
+
+## DELIVERABLE
+
+At the end:
+- list which components/files were updated
+- mention if a reusable “DetailInfoList” component was created
+- confirm layout structure (image → centered title → info list → letter → sticky CTA)

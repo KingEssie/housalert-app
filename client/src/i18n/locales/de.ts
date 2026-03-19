@@ -809,6 +809,14 @@ export const de: Record<string, any> = {
     home: "Zur Startseite",
   },
 
+  listingDetail: {
+    location: "Standort",
+    size: "Größe",
+    bedrooms: "Schlafzimmer",
+    website: "Webseite",
+    posted: "Eingestellt",
+  },
+
   applySheet: {
     title: "Bewerbung senden",
     reactNow: "Jetzt bewerben",

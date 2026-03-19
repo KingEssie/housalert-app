@@ -816,6 +816,14 @@ export const nl: Record<string, any> = {
     home: "Naar startpagina",
   },
 
+  listingDetail: {
+    location: "Locatie",
+    size: "Afmeting",
+    bedrooms: "Slaapkamers",
+    website: "Website",
+    posted: "Geplaatst",
+  },
+
   applySheet: {
     title: "Reactie versturen",
     reactNow: "Nu reageren",
