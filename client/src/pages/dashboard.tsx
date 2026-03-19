@@ -366,9 +366,16 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
     return (
       <div className="flex flex-col gap-3">
         <h2 className="text-section-title">{t("home.recentMatches")}</h2>
-        <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none">
+        <div className="flex gap-[14px] overflow-x-auto pb-1 scrollbar-none">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="flex-shrink-0 w-[220px] h-[230px] bg-[#F5F7FA] rounded-[20px] animate-pulse" />
+            <div key={i} className="flex-shrink-0 w-[72vw] max-w-[280px]">
+              <div className="w-full bg-[#F5F7FA] rounded-[16px] animate-pulse" style={{ aspectRatio: "4/3" }} />
+              <div className="pt-2.5 flex flex-col gap-2">
+                <div className="h-4 bg-[#F5F7FA] rounded-md w-2/3 animate-pulse" />
+                <div className="h-3.5 bg-[#F5F7FA] rounded-md w-full animate-pulse" />
+                <div className="h-3 bg-[#F5F7FA] rounded-md w-1/2 animate-pulse" />
+              </div>
+            </div>
           ))}
         </div>
       </div>
@@ -389,7 +396,7 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
   }
 
   return (
-    <div className="flex flex-col gap-3" data-testid="section-recente-matches">
+    <div className="flex flex-col gap-4" data-testid="section-recente-matches">
       <div className="flex items-center justify-between">
         <h2 className="text-section-title">{t("home.recentMatches")}</h2>
         <button
@@ -401,9 +408,9 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
           <ChevronRight className="w-3.5 h-3.5" />
         </button>
       </div>
-      <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 snap-x snap-mandatory scrollbar-none">
+      <div className="flex gap-[14px] overflow-x-auto pb-1 scrollbar-none" style={{ scrollSnapType: "x proximity" }}>
         {matches.map((match) => (
-          <div key={match.listing_id} className="snap-start">
+          <div key={match.listing_id} className="snap-start first:pl-0 last:pr-1">
             <RecentMatchCard match={match} />
           </div>
         ))}
@@ -423,7 +430,7 @@ function RecentMatchCard({ match }: { match: ApiMatch }) {
     <div
       role="button"
       tabIndex={0}
-      className="flex-shrink-0 w-[220px] bg-white rounded-[20px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden cursor-pointer hover:shadow-[0_4px_16px_rgba(15,23,42,0.08),0_12px_36px_rgba(15,23,42,0.08)] transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-[#0D6EFD]/40"
+      className="flex-shrink-0 w-[72vw] max-w-[280px] cursor-pointer transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-[#0D6EFD]/40 rounded-[16px]"
       onClick={() => {
         markViewed(match.listing_id);
         navigate(`/apply/${match.listing_id}`);
@@ -437,43 +444,41 @@ function RecentMatchCard({ match }: { match: ApiMatch }) {
       }}
       data-testid={`card-recent-match-${match.listing_id}`}
     >
-      <div className="relative">
+      <div className="relative rounded-[16px] overflow-hidden">
         {hasImage ? (
           <img
             src={match.image_url!}
             alt={match.title}
-            className="w-full h-[132px] object-cover"
+            className="w-full object-cover"
+            style={{ aspectRatio: "4/3" }}
             loading="lazy"
             onError={() => setImgError(true)}
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className={`w-full h-[132px] bg-gradient-to-br ${gradient} flex items-center justify-center relative`}>
+          <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "4/3" }}>
             <div className="absolute inset-0 bg-black/5" />
-            <div className="flex flex-col items-center gap-1 text-white/60">
-              <ImageIcon className="w-6 h-6" />
-              <span className="text-[10px] font-medium">{match.source}</span>
+            <div className="flex flex-col items-center gap-1.5 text-white/50">
+              <ImageIcon className="w-7 h-7" />
+              <span className="text-[11px] font-medium">{match.source}</span>
             </div>
           </div>
         )}
         <div className="absolute top-2.5 left-2.5">
-          <span className="text-[10px] font-medium bg-white/95 backdrop-blur-md text-[#1F2937] px-2.5 py-1 rounded-full shadow-[0_1px_4px_rgba(0,0,0,0.06)] capitalize">
+          <span className="text-[10px] font-medium bg-white/95 backdrop-blur-md text-[#1F2937] px-2.5 py-1 rounded-full shadow-[0_1px_3px_rgba(0,0,0,0.08)] capitalize">
             {match.source}
           </span>
         </div>
       </div>
 
-      <div className="p-3 flex flex-col gap-1">
-        <div className="flex items-center gap-1.5">
-          <MapPin className="w-3 h-3 text-[#71717A] flex-shrink-0" />
-          <span className="text-[14px] font-medium text-[#111827] truncate" data-testid={`text-recent-city-${match.listing_id}`}>
-            {match.city}
-          </span>
-        </div>
-        <p className="text-[13px] text-[#6B7280] line-clamp-2 leading-[1.3]" data-testid={`text-recent-title-${match.listing_id}`}>
+      <div className="pt-2.5 flex flex-col gap-0.5">
+        <span className="text-[15px] font-medium text-[#111827] truncate" data-testid={`text-recent-city-${match.listing_id}`}>
+          {match.city}
+        </span>
+        <p className="text-[14px] text-[#6B7280] line-clamp-1 leading-[1.35]" data-testid={`text-recent-title-${match.listing_id}`}>
           {match.title}
         </p>
-        <div className="flex items-center gap-2 text-[11px] text-[#9CA3AF] mt-0.5">
+        <div className="flex items-center gap-1.5 text-[13px] text-[#9CA3AF] mt-0.5">
           {match.bedrooms > 0 && (
             <span>{match.bedrooms} {match.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}</span>
           )}
@@ -483,7 +488,7 @@ function RecentMatchCard({ match }: { match: ApiMatch }) {
         {match.price > 0 && (
           <p className="mt-1" data-testid={`badge-recent-price-${match.listing_id}`}>
             <span className="text-[15px] font-medium text-[#111827]">€{match.price}</span>
-            <span className="text-[11px] text-[#9CA3AF] ml-0.5">{t("common.perMonthShort")}</span>
+            <span className="text-[12px] text-[#9CA3AF] ml-0.5">{t("common.perMonthShort")}</span>
           </p>
         )}
       </div>
