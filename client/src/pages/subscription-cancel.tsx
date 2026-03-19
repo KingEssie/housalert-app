@@ -82,7 +82,7 @@ export function SubscriptionCancelConfirmPage() {
               </div>
             </div>
 
-            <h2 className="text-[20px] font-bold text-center mb-2" style={{ color: "#1F2937" }} data-testid="text-feedback-title">
+            <h2 className="text-[20px] font-medium text-center mb-2" style={{ color: "#1F2937" }} data-testid="text-feedback-title">
               {t("cancellation.feedbackQuestion")}
             </h2>
             <p className="text-[14px] text-center text-muted-foreground mb-5">
@@ -120,14 +120,14 @@ export function SubscriptionCancelConfirmPage() {
               <button
                 onClick={submitFeedback}
                 disabled={!selectedReason || submitting}
-                className="w-full h-[48px] bg-primary text-primary-foreground rounded-full font-semibold text-[15px] transition-colors disabled:opacity-50"
+                className="w-full h-[48px] bg-primary text-primary-foreground rounded-full font-medium text-[15px] transition-colors disabled:opacity-50"
                 data-testid="button-submit-feedback"
               >
                 {submitting ? t("common.loading") : t("cancellation.submitAndCancel")}
               </button>
               <button
                 onClick={() => navigate("/account/subscription")}
-                className="w-full h-[48px] bg-card border text-muted-foreground rounded-full font-semibold text-[15px] hover-elevate transition-colors"
+                className="w-full h-[48px] bg-card border text-muted-foreground rounded-full font-medium text-[15px] hover-elevate transition-colors"
                 style={{ borderColor: "#E5E7EB" }}
                 data-testid="button-keep-instead"
               >
@@ -152,7 +152,7 @@ export function SubscriptionCancelConfirmPage() {
             </div>
           </div>
 
-          <h2 className="text-[20px] font-bold text-center mb-3" style={{ color: "#1F2937" }} data-testid="text-cancel-title">
+          <h2 className="text-[20px] font-medium text-center mb-3" style={{ color: "#1F2937" }} data-testid="text-cancel-title">
             {t("subscription.cancelConfirm")}
           </h2>
 
@@ -165,14 +165,14 @@ export function SubscriptionCancelConfirmPage() {
           <div className="space-y-3">
             <button
               onClick={() => navigate("/account/subscription")}
-              className="w-full h-[48px] bg-primary text-primary-foreground rounded-full font-semibold text-[15px] transition-colors"
+              className="w-full h-[48px] bg-primary text-primary-foreground rounded-full font-medium text-[15px] transition-colors"
               data-testid="button-keep-subscription"
             >
               {t("subscription.keepSubscription")}
             </button>
             <button
               onClick={() => setStep("feedback")}
-              className="w-full h-[48px] bg-card border text-muted-foreground rounded-full font-semibold text-[15px] hover-elevate transition-colors"
+              className="w-full h-[48px] bg-card border text-muted-foreground rounded-full font-medium text-[15px] hover-elevate transition-colors"
               style={{ borderColor: "#E5E7EB" }}
               data-testid="button-confirm-cancel"
             >
@@ -215,7 +215,7 @@ export function SubscriptionCancelledPage() {
             </div>
           </div>
 
-          <h2 className="text-[20px] font-bold text-center mb-3" style={{ color: "#1F2937" }} data-testid="text-cancelled-title">
+          <h2 className="text-[20px] font-medium text-center mb-3" style={{ color: "#1F2937" }} data-testid="text-cancelled-title">
             {t("subscription.cancelled")}
           </h2>
 
@@ -227,7 +227,7 @@ export function SubscriptionCancelledPage() {
 
           <button
             onClick={() => navigate("/dashboard?tab=profiel&sub=account")}
-            className="w-full h-[48px] bg-primary text-primary-foreground rounded-full font-semibold text-[15px] transition-colors"
+            className="w-full h-[48px] bg-primary text-primary-foreground rounded-full font-medium text-[15px] transition-colors"
             data-testid="button-back-to-account"
           >
             {t("subscription.backToAccount")}

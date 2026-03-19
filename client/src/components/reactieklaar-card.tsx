@@ -111,10 +111,10 @@ export function ReactieklaarCard({
   return (
     <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5" data-testid="card-reactieklaar">
       <div className="flex items-center gap-2.5 mb-4">
-        <div className="w-8 h-8 rounded-full bg-[#F5F7FA] flex items-center justify-center">
-          <Zap className="w-4 h-4 text-[#1F2937]" />
+        <div className="flex items-center justify-center">
+          <Zap className="w-[18px] h-[18px] text-[#9CA3AF]" />
         </div>
-        <h3 className="text-[15px] font-semibold text-[#111C3D] flex-1">{t("reactieklaar.title")}</h3>
+        <h3 className="text-[15px] font-medium text-[#111C3D] flex-1">{t("reactieklaar.title")}</h3>
         <span
           className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${
             allDone ? "bg-[#16A34A]/10 text-[#1F2937]" : "bg-[#F5F7FA] text-[#1F2937]"

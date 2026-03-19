@@ -181,7 +181,7 @@ function MatchCard({
         )}
 
         <div className="absolute top-3.5 left-3.5 flex gap-1.5">
-          <span className="text-[11px] font-semibold bg-white/95 backdrop-blur-md text-[#1F2937] px-3 py-1.5 rounded-full shadow-[0_1px_4px_rgba(0,0,0,0.06)] capitalize">
+          <span className="text-[11px] font-medium bg-white/95 backdrop-blur-md text-[#1F2937] px-3 py-1.5 rounded-full shadow-[0_1px_4px_rgba(0,0,0,0.06)] capitalize">
             {match.source}
           </span>
         </div>
@@ -191,7 +191,7 @@ function MatchCard({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-1">
             <MapPin className="w-3.5 h-3.5 text-[#111827] flex-shrink-0" />
-            <span className="text-[15px] font-semibold text-[#111827] truncate" data-testid={`text-match-city-${match.listing_id}`}>
+            <span className="text-[15px] font-medium text-[#111827] truncate" data-testid={`text-match-city-${match.listing_id}`}>
               {match.city}
             </span>
           </div>
@@ -214,7 +214,7 @@ function MatchCard({
 
           {match.price > 0 && (
             <p className="mt-2" data-testid={`badge-price-${match.listing_id}`}>
-              <span className="text-[16px] font-bold text-[#111827]">€{match.price}</span>
+              <span className="text-[16px] font-medium text-[#111827]">€{match.price}</span>
               <span className="text-[13px] text-[#9CA3AF] ml-0.5"> {t("common.perMonthShort")}</span>
             </p>
           )}
@@ -249,10 +249,10 @@ function ProfileCard({
           </div>
           <div>
             <div className="flex items-center gap-2.5">
-              <h3 className="font-bold text-[#111827] text-[16px]" data-testid={`text-profile-city-${profile.id}`}>
+              <h3 className="font-medium text-[#111827] text-[16px]" data-testid={`text-profile-city-${profile.id}`}>
                 {profile.city_name || profile.city}
               </h3>
-              <span className="text-[10px] font-bold text-[#22C55E] bg-[#F0FDF4] px-2.5 py-0.5 rounded-full" data-testid={`badge-status-${profile.id}`}>
+              <span className="text-[10px] font-medium text-[#22C55E] bg-[#F0FDF4] px-2.5 py-0.5 rounded-full" data-testid={`badge-status-${profile.id}`}>
                 {t("common.active")}
               </span>
             </div>
@@ -315,7 +315,7 @@ function ProfileCard({
       <div className="pt-1">
         <button
           onClick={onEdit}
-          className="h-9 px-5 rounded-xl bg-[#111827] text-[13px] font-semibold text-white hover:bg-[#1F2937] transition-colors inline-flex items-center gap-2"
+          className="h-9 px-5 rounded-xl bg-[#111827] text-[13px] font-medium text-white hover:bg-[#1F2937] transition-colors inline-flex items-center gap-2"
           data-testid={`button-edit-${profile.id}`}
         >
           {t("common.edit")}
@@ -345,14 +345,14 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
   if (!hasActiveSub) {
     return (
       <div className="flex flex-col gap-4" data-testid="section-recente-matches-empty">
-        <h2 className="text-[17px] font-bold text-[#111827]">{t("home.recentMatches")}</h2>
+        <h2 className="text-[17px] font-medium text-[#111827]">{t("home.recentMatches")}</h2>
         <div className="rounded-[24px] border border-[#F0F0F0] p-6 text-center shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
           <p className="text-[14px] text-[#6B7280] mb-4 leading-relaxed">
             {t("home.matchesWillAppear")}
           </p>
           <button
             onClick={() => navigate("/paywall")}
-            className="h-[42px] px-6 rounded-xl bg-[#111827] text-white text-[13px] font-semibold transition-colors hover:bg-[#1F2937]"
+            className="h-[42px] px-6 rounded-xl bg-[#111827] text-white text-[13px] font-medium transition-colors hover:bg-[#1F2937]"
             data-testid="button-activate-sub-matches"
           >
             {t("home.viewSubscriptions")}
@@ -365,7 +365,7 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
   if (isLoading) {
     return (
       <div className="flex flex-col gap-4">
-        <h2 className="text-[17px] font-bold text-[#111827]">{t("home.recentMatches")}</h2>
+        <h2 className="text-[17px] font-medium text-[#111827]">{t("home.recentMatches")}</h2>
         {[1, 2, 3].map((i) => (
           <div key={i} className="h-[76px] bg-[#F8F9FA] rounded-xl animate-pulse" />
         ))}
@@ -376,7 +376,7 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
   if (!matches || matches.length === 0) {
     return (
       <div className="flex flex-col gap-4" data-testid="section-recente-matches-empty">
-        <h2 className="text-[17px] font-bold text-[#111827]">{t("home.recentMatches")}</h2>
+        <h2 className="text-[17px] font-medium text-[#111827]">{t("home.recentMatches")}</h2>
         <div className="rounded-[24px] border border-[#F0F0F0] p-6 text-center shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
           <p className="text-[14px] text-[#6B7280] leading-relaxed">
             {t("home.firstMatchesWillAppear")}
@@ -389,10 +389,10 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
   return (
     <div className="flex flex-col gap-4" data-testid="section-recente-matches">
       <div className="flex items-center justify-between">
-        <h2 className="text-[17px] font-bold text-[#111827]">{t("home.recentMatches")}</h2>
+        <h2 className="text-[17px] font-medium text-[#111827]">{t("home.recentMatches")}</h2>
         <button
           onClick={() => setActiveTab("matches")}
-          className="text-[13px] font-bold text-[#0D6EFD]"
+          className="text-[13px] font-medium text-[#0D6EFD]"
           data-testid="button-view-all-matches"
         >
           {t("home.viewAll")}
@@ -435,7 +435,7 @@ function RecentMatchMiniCard({ match }: { match: ApiMatch }) {
         </div>
       )}
       <div className="flex-1 min-w-0 flex flex-col justify-center">
-        <p className="text-[14px] font-semibold text-[#111827] line-clamp-1" data-testid={`text-recent-title-${match.listing_id}`}>
+        <p className="text-[14px] font-medium text-[#111827] line-clamp-1" data-testid={`text-recent-title-${match.listing_id}`}>
           {match.city}
         </p>
         <p className="text-[13px] text-[#6B7280] line-clamp-1 mt-0.5 leading-relaxed">
@@ -443,7 +443,7 @@ function RecentMatchMiniCard({ match }: { match: ApiMatch }) {
         </p>
         <div className="flex items-center gap-2 mt-1.5">
           {match.price > 0 && (
-            <span className="text-[13px] font-bold text-[#111827]">€{match.price}</span>
+            <span className="text-[13px] font-medium text-[#111827]">€{match.price}</span>
           )}
           {match.price > 0 && (match.bedrooms > 0 || match.size_m2 > 0) && <span className="text-[11px] text-[#D1D5DB]">·</span>}
           {match.bedrooms > 0 && (
@@ -597,13 +597,11 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
 
   return (
     <div className="rounded-[24px] border border-[#F0F0F0] p-5 shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]" data-testid="unified-task-list">
-      <div className="flex items-center gap-3.5 mb-5">
-        <div className="w-10 h-10 rounded-xl bg-[#EBF2FF] flex items-center justify-center flex-shrink-0">
-          <Rocket className="w-[18px] h-[18px] text-[#0D6EFD]" />
-        </div>
+      <div className="flex items-center gap-3 mb-5">
+        <Rocket className="w-5 h-5 text-[#9CA3AF] flex-shrink-0" />
         <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-bold text-[#111827]">{t("activation.title")}</p>
-          <p className="text-[12px] text-[#9CA3AF] mt-0.5">{doneCount}/{allTasks.length} {t("activation.completed")}</p>
+          <p className="text-[16px] font-semibold text-[#111827]">{t("activation.title")}</p>
+          <p className="text-[13px] text-[#9CA3AF] mt-0.5">{doneCount}/{allTasks.length} {t("activation.completed")}</p>
         </div>
       </div>
 
@@ -628,12 +626,10 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
                 disabled={task.done}
                 data-testid={`task-${task.key}`}
               >
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                  task.done ? "bg-[#F3F4F6]" : "bg-[#F5F7FA]"
-                }`}>
-                  <IconComponent className={`w-[18px] h-[18px] ${task.done ? "text-[#D1D5DB]" : "text-[#6B7280]"}`} />
+                <div className="w-8 flex items-center justify-center flex-shrink-0">
+                  <IconComponent className={`w-[20px] h-[20px] ${task.done ? "text-[#D1D5DB]" : "text-[#9CA3AF]"}`} />
                 </div>
-                <span className={`text-[16px] font-semibold flex-1 leading-snug ${
+                <span className={`text-[16px] font-medium flex-1 leading-snug ${
                   task.done ? "text-[#D1D5DB] line-through decoration-[#D1D5DB]" : "text-[#1F2937]"
                 }`}>
                   {task.label}
@@ -656,7 +652,7 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
       {hasMore && (
         <button
           onClick={() => setExpanded(!expanded)}
-          className="w-full mt-2 text-[13px] font-bold text-[#0D6EFD] py-2"
+          className="w-full mt-2 text-[13px] font-medium text-[#0D6EFD] py-2"
           data-testid="button-expand-tasks"
         >
           {expanded ? t("activation.showLess") : t("activation.showMore", { count: sortedTasks.length - INITIAL_SHOW })}
@@ -725,7 +721,7 @@ function HomeTab({
   return (
     <div className="flex flex-col pb-8">
       <div className="sticky top-0 z-10 bg-white pt-6 pb-4 px-6">
-        <h1 className="text-[24px] font-bold text-[#111827] tracking-tight" data-testid="text-greeting">
+        <h1 className="text-[24px] font-semibold text-[#111827] tracking-tight" data-testid="text-greeting">
           {firstName ? t("home.greeting", { name: firstName }) : t("home.greetingDefault")}
         </h1>
       </div>
@@ -738,7 +734,7 @@ function HomeTab({
               <Search className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[18px] font-bold text-white leading-tight" data-testid="text-match-count">
+              <p className="text-[18px] font-semibold text-white leading-tight" data-testid="text-match-count">
                 {newCount > 0
                   ? t("home.newMatchesFound")
                   : t("home.upToDate")}
@@ -754,7 +750,7 @@ function HomeTab({
           </div>
           <button
             onClick={() => setActiveTab("matches")}
-            className="ml-[58px] h-[42px] px-6 rounded-xl bg-white text-[#0D6EFD] text-[13px] font-bold transition-all hover:bg-white/90 inline-flex items-center gap-2 shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
+            className="ml-[58px] h-[42px] px-6 rounded-xl bg-white text-[#0D6EFD] text-[13px] font-medium transition-all hover:bg-white/90 inline-flex items-center gap-2 shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
             data-testid="button-view-matches"
           >
             {t("home.viewMatches")}
@@ -768,7 +764,7 @@ function HomeTab({
               <Search className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[17px] font-bold text-white leading-tight" data-testid="text-active-searching">
+              <p className="text-[17px] font-semibold text-white leading-tight" data-testid="text-active-searching">
                 {t("home.searchingActive")}
               </p>
               <p className="text-[13px] text-white/65 mt-1 leading-relaxed">
@@ -778,7 +774,7 @@ function HomeTab({
           </div>
           <button
             onClick={() => setActiveTab("filters")}
-            className="ml-[58px] h-[42px] px-6 rounded-xl bg-white text-[#0D6EFD] text-[13px] font-bold transition-all hover:bg-white/90 inline-flex items-center gap-2 shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
+            className="ml-[58px] h-[42px] px-6 rounded-xl bg-white text-[#0D6EFD] text-[13px] font-medium transition-all hover:bg-white/90 inline-flex items-center gap-2 shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
             data-testid="button-adjust-filters"
           >
             {t("home.adjustFilters")}
@@ -792,7 +788,7 @@ function HomeTab({
               <Sparkles className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[17px] font-bold text-white leading-tight" data-testid="text-estimate-count">
+              <p className="text-[17px] font-semibold text-white leading-tight" data-testid="text-estimate-count">
                 {perWeekEstimateRaw > 0
                   ? t("home.weekEstimate", perWeekRange)
                   : t("home.profileReady")}
@@ -806,7 +802,7 @@ function HomeTab({
           </div>
           <button
             onClick={() => navigate("/paywall")}
-            className="ml-[58px] h-[42px] px-6 rounded-xl bg-white text-[#0D6EFD] text-[13px] font-bold transition-all hover:bg-white/90 inline-flex items-center gap-2 shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
+            className="ml-[58px] h-[42px] px-6 rounded-xl bg-white text-[#0D6EFD] text-[13px] font-medium transition-all hover:bg-white/90 inline-flex items-center gap-2 shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
             data-testid="button-activate-sub"
           >
             {t("home.activateSubscription")}
@@ -834,7 +830,7 @@ function HomeTab({
           </p>
           <button
             onClick={() => navigate("/paywall")}
-            className="text-[13px] font-bold text-[#0D6EFD] hover:underline flex-shrink-0"
+            className="text-[13px] font-medium text-[#0D6EFD] hover:underline flex-shrink-0"
             data-testid="button-trial-upgrade"
           >
             {t("home.upgrade")}
@@ -912,7 +908,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
     <div className="flex flex-col pb-8">
       <div className="sticky top-0 z-10 bg-white pt-6 pb-0 px-6">
         <div className="flex items-center justify-between mb-5">
-          <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">{t("matches.title")}</h1>
+          <h1 className="text-[24px] font-semibold text-[#111827] tracking-tight">{t("matches.title")}</h1>
         </div>
         <div className="flex gap-2.5 pb-4" data-testid="match-sub-tabs">
           {MATCH_SUB_TAB_CONFIG.map(({ key, labelKey }) => {
@@ -955,11 +951,11 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           <div className="w-14 h-14 rounded-2xl bg-[#F8F9FA] flex items-center justify-center">
             <AlertCircle className="w-6 h-6 text-[#6B7280]" />
           </div>
-          <p className="text-[18px] font-bold text-[#111827]">{t("matches.loadError")}</p>
+          <p className="text-[18px] font-semibold text-[#111827]">{t("matches.loadError")}</p>
           <p className="text-[14px] text-[#6B7280] leading-relaxed">{t("matches.loadErrorDesc")}</p>
           <button
             onClick={() => apiMatchesQuery.refetch()}
-            className="text-[13px] font-semibold text-[#0D6EFD]"
+            className="text-[13px] font-medium text-[#0D6EFD]"
             data-testid="button-retry-matches"
           >
             {t("common.retry")}
@@ -1026,7 +1022,7 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
           >
             <ArrowLeft className="w-4 h-4 text-[#1F2937]" />
           </button>
-          <h1 className="text-[17px] font-bold text-[#111C3D] flex-1 tracking-wide">{t("filters.deleteTitle")}</h1>
+          <h1 className="text-[17px] font-semibold text-[#111C3D] flex-1 tracking-wide">{t("filters.deleteTitle")}</h1>
         </div>
       </header>
 
@@ -1034,7 +1030,7 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
         <div className="w-16 h-16 rounded-2xl bg-[#0D6EFD] flex items-center justify-center mb-6">
           <Trash2 className="w-8 h-8 text-white" />
         </div>
-        <h2 className="text-[22px] font-bold text-[#111C3D] mb-3 text-center" data-testid="text-delete-title">
+        <h2 className="text-[22px] font-semibold text-[#111C3D] mb-3 text-center" data-testid="text-delete-title">
           {t("filters.deleteQuestion")}
         </h2>
         <p className="text-[15px] text-[#1F2937] text-center max-w-[320px] mb-10 leading-relaxed" data-testid="text-delete-body">
@@ -1043,14 +1039,14 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
         <div className="w-full max-w-[320px] flex flex-col gap-3">
           <button
             onClick={onConfirm}
-            className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[16px] font-bold transition-colors hover:opacity-90"
+            className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[16px] font-medium transition-colors hover:opacity-90"
             data-testid="button-delete-confirm"
           >
             {t("filters.deleteYes")}
           </button>
           <button
             onClick={onCancel}
-            className="w-full h-[52px] rounded-full border border-[#E5E7EB] text-[#1F2937] text-[16px] font-bold hover:bg-[#F5F7FA] transition-colors"
+            className="w-full h-[52px] rounded-full border border-[#E5E7EB] text-[#1F2937] text-[16px] font-medium hover:bg-[#F5F7FA] transition-colors"
             data-testid="button-delete-cancel"
           >
             {t("filters.deleteNo")}
@@ -1095,7 +1091,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
   return (
     <div className="flex flex-col pb-8">
       <div className="sticky top-0 z-10 bg-white pt-6 pb-4 px-6">
-        <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">{t("filters.title")}</h1>
+        <h1 className="text-[24px] font-semibold text-[#111827] tracking-tight">{t("filters.title")}</h1>
       </div>
       <div className="px-6 flex flex-col gap-5">
       {profilesQuery.isLoading ? (
@@ -1132,7 +1128,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
           ))}
 
           <div className="flex flex-col items-center text-center mt-6 mb-2 px-4">
-            <p className="text-[17px] font-bold text-[#111C3D]">
+            <p className="text-[17px] font-semibold text-[#111C3D]">
               {t("filters.activeCountTitle", { count: profileCount, max: MAX_PROFILES })}
             </p>
             <p className="text-[14px] text-[#6B7280] mt-2 leading-relaxed">
@@ -1178,7 +1174,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
       >
         <div className="w-10 h-1 bg-[#E5E7EB] rounded-full mx-auto mb-6" />
         <div className="px-6">
-          <h3 className="text-[18px] font-bold text-[#111827] mb-6">{t("profile.photo.title")}</h3>
+          <h3 className="text-[18px] font-medium text-[#111827] mb-6">{t("profile.photo.title")}</h3>
 
           {photoUrl && (
             <div className="flex justify-center mb-5">
@@ -1187,7 +1183,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
           )}
 
           <div className="flex flex-col">
-            <label className="w-full h-[52px] flex items-center justify-center gap-2 rounded-full bg-[#0D6EFD] text-white text-[15px] font-bold cursor-pointer active:bg-[#0B5ED7] transition-colors">
+            <label className="w-full h-[52px] flex items-center justify-center gap-2 rounded-full bg-[#0D6EFD] text-white text-[15px] font-medium cursor-pointer active:bg-[#0B5ED7] transition-colors">
               <Camera className="w-[18px] h-[18px]" />
               {photoUrl ? t("profile.photo.choose") : t("profile.photo.upload")}
               <input
@@ -1205,7 +1201,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
             {photoUrl && (
               <button
                 onClick={onRemove}
-                className="mt-3 w-full h-[52px] flex items-center justify-center gap-2 rounded-full border border-[#E5E7EB] text-[#1F2937] text-[15px] font-bold active:bg-[#F5F7FA] transition-colors"
+                className="mt-3 w-full h-[52px] flex items-center justify-center gap-2 rounded-full border border-[#E5E7EB] text-[#1F2937] text-[15px] font-medium active:bg-[#F5F7FA] transition-colors"
                 data-testid="button-remove-photo"
               >
                 <Trash2 className="w-[18px] h-[18px]" />
@@ -1215,7 +1211,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
 
             <button
               onClick={onClose}
-              className="mt-3 w-full h-[52px] flex items-center justify-center rounded-full text-[#1F2937] text-[15px] font-bold active:bg-[#F5F7FA] transition-colors"
+              className="mt-3 w-full h-[52px] flex items-center justify-center rounded-full text-[#1F2937] text-[15px] font-medium active:bg-[#F5F7FA] transition-colors"
               data-testid="button-cancel-photo"
             >
               {t("common.cancel")}
@@ -1421,7 +1417,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
   return (
     <div className="min-h-[calc(100vh-80px)] bg-white">
       <div className="sticky top-0 z-10 bg-white px-6 pt-6 pb-4">
-        <h1 className="text-[24px] font-bold text-[#111827] tracking-tight">{t("profile.subtabs.account")}</h1>
+        <h1 className="text-[24px] font-semibold text-[#111827] tracking-tight">{t("profile.subtabs.account")}</h1>
       </div>
 
       <div className="max-w-[480px] mx-auto px-6 pb-8">
@@ -1435,11 +1431,11 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
               <img src={photoUrl} alt="" className="w-16 h-16 rounded-full object-cover flex-shrink-0 shadow-[0_2px_8px_rgba(0,0,0,0.06)]" data-testid="img-profile-avatar" />
             ) : (
               <div className="w-16 h-16 rounded-full bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
-                <span className="text-[22px] font-bold text-[#374151]">{initials}</span>
+                <span className="text-[22px] font-medium text-[#374151]">{initials}</span>
               </div>
             )}
             <div className="flex-1 min-w-0">
-              <p className="text-[19px] font-bold text-[#111827] truncate leading-tight" data-testid="text-user-name">{displayName || t("profile.seeker")}</p>
+              <p className="text-[19px] font-medium text-[#111827] truncate leading-tight" data-testid="text-user-name">{displayName || t("profile.seeker")}</p>
               <p className="text-[13px] text-[#9CA3AF] mt-1">{t("profile.seeker")}</p>
             </div>
             <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
@@ -1451,7 +1447,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                 <Gift className="w-[18px] h-[18px] text-[#16A34A]" />
               </div>
               <div>
-                <p className="text-[14px] font-bold text-[#15803D]">{t("trial.explanation")}</p>
+                <p className="text-[14px] font-medium text-[#15803D]">{t("trial.explanation")}</p>
                 <p className="text-[13px] text-[#15803D]/80 mt-1 leading-relaxed">{t("trial.explanationDesc")}</p>
               </div>
             </div>
@@ -1468,7 +1464,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                   <Users className="w-[18px] h-[18px] text-[#6B7280]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[14px] font-semibold text-[#111827]">{t("profile.searchBuddy")}</p>
+                  <p className="text-[14px] font-medium text-[#111827]">{t("profile.searchBuddy")}</p>
                   <p className="text-[12px] text-[#9CA3AF] truncate mt-0.5">{pd.search_buddy_email}</p>
                 </div>
                 <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
@@ -1479,12 +1475,12 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                   <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center flex-shrink-0 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
                     <Users className="w-[18px] h-[18px] text-[#6B7280]" />
                   </div>
-                  <p className="text-[14px] font-semibold text-[#111827]">{t("profile.searchBuddy")}</p>
+                  <p className="text-[14px] font-medium text-[#111827]">{t("profile.searchBuddy")}</p>
                 </div>
                 <p className="text-[13px] text-[#9CA3AF] mb-4 ml-[48px] leading-relaxed">{t("profile.noBuddyYet")}</p>
                 <button
                   onClick={() => navigate("/profile/edit/search_buddy_email")}
-                  className="ml-[48px] h-[38px] px-5 rounded-xl bg-[#111827] text-white text-[13px] font-semibold transition-colors hover:bg-[#1F2937]"
+                  className="ml-[48px] h-[38px] px-5 rounded-xl bg-[#111827] text-white text-[13px] font-medium transition-colors hover:bg-[#1F2937]"
                   data-testid="button-add-buddy"
                 >
                   {t("profile.addBuddy")}
@@ -1530,14 +1526,14 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
           </div>
 
           <div className="rounded-[24px] border border-[#F0F0F0] p-5 shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
-            <h2 className="text-[15px] font-bold text-[#111827] mb-4">{t("profile.reactionLetter")}</h2>
+            <h2 className="text-[15px] font-medium text-[#111827] mb-4">{t("profile.reactionLetter")}</h2>
             {letterPreview ? (
               <div>
                 <p className="text-[13px] text-[#6B7280] leading-relaxed line-clamp-3 mb-3">{letterPreview}...</p>
                 <div className="flex gap-2">
                   <button
                     onClick={handleCopyLetter}
-                    className="h-[36px] px-4 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F9FAFB] transition-colors flex items-center gap-1.5"
+                    className="h-[36px] px-4 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-[13px] font-medium hover:bg-[#F9FAFB] transition-colors flex items-center gap-1.5"
                     data-testid="button-letter-copy"
                   >
                     <Copy className="w-3.5 h-3.5" />
@@ -1545,7 +1541,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                   </button>
                   <button
                     onClick={() => navigate("/application-letter")}
-                    className="h-[36px] px-4 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F9FAFB] transition-colors flex items-center gap-1.5"
+                    className="h-[36px] px-4 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-[13px] font-medium hover:bg-[#F9FAFB] transition-colors flex items-center gap-1.5"
                     data-testid="button-letter-edit"
                   >
                     <Pencil className="w-3.5 h-3.5" />
@@ -1558,7 +1554,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                 <p className="text-[13px] text-[#6B7280] leading-relaxed mb-3">{t("profile.noReactionLetterYet")}</p>
                 <button
                   onClick={() => navigate("/application-letter")}
-                  className="h-[36px] px-4 rounded-lg bg-[#111827] text-white text-[13px] font-semibold transition-colors hover:bg-[#1F2937] flex items-center gap-1.5"
+                  className="h-[36px] px-4 rounded-lg bg-[#111827] text-white text-[13px] font-medium transition-colors hover:bg-[#1F2937] flex items-center gap-1.5"
                   data-testid="button-letter-empty"
                 >
                   <Pencil className="w-3.5 h-3.5" />
@@ -1579,11 +1575,11 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
               onClick={() => navigate("/account/subscription")}
               trailing={
                 subscription.isActive && !subscription.isTrial ? (
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full flex-shrink-0 text-[#0D6EFD] bg-[#EBF2FF]" data-testid="text-subscription-status">
+                  <span className="text-[11px] font-medium px-2.5 py-1 rounded-full flex-shrink-0 text-[#0D6EFD] bg-[#EBF2FF]" data-testid="text-subscription-status">
                     {t("common.active")}
                   </span>
                 ) : subscription.isTrial ? (
-                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full flex-shrink-0 text-[#D97706] bg-[#FEF3C7]" data-testid="text-subscription-status">
+                  <span className="text-[11px] font-medium px-2.5 py-1 rounded-full flex-shrink-0 text-[#D97706] bg-[#FEF3C7]" data-testid="text-subscription-status">
                     {t("profile.trial")}
                   </span>
                 ) : undefined
@@ -1594,7 +1590,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
           {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
             <button
               onClick={() => navigate("/paywall")}
-              className="w-full h-[48px] rounded-xl bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-bold transition-colors flex items-center justify-center gap-2"
+              className="w-full h-[48px] rounded-xl bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-medium transition-colors flex items-center justify-center gap-2"
               data-testid="button-upgrade-subscription"
             >
               <Crown className="w-4 h-4" />
@@ -1611,7 +1607,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
           </div>
 
           <div>
-            <p className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wider mb-3 px-1">{t("profile.support")}</p>
+            <p className="text-[11px] font-medium text-[#9CA3AF] uppercase tracking-wider mb-3 px-1">{t("profile.support")}</p>
             <div className="rounded-[24px] border border-[#F0F0F0] overflow-hidden shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
               <AccountSettingsRow
                 label={t("profile.privacy")}
@@ -1653,7 +1649,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
 
           {(user?.email?.toLowerCase() === "martin.essie87@gmail.com") && (
             <div>
-              <p className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wider mb-3 px-1">{t("profile.adminSection")}</p>
+              <p className="text-[11px] font-medium text-[#9CA3AF] uppercase tracking-wider mb-3 px-1">{t("profile.adminSection")}</p>
               <div className="rounded-[24px] border border-[#F0F0F0] overflow-hidden shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
                 <AccountSettingsRow
                   label={t("profile.adminPortal")}
@@ -1679,7 +1675,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
           <div className="absolute inset-0 bg-black/40" onClick={() => setShowLangSheet(false)} />
           <div className="relative w-full max-w-[480px] bg-white rounded-t-2xl px-6 pb-10 pt-3 animate-in slide-in-from-bottom duration-300">
             <div className="w-10 h-1 rounded-full bg-[#E5E7EB] mx-auto mb-6" />
-            <h3 className="text-[18px] font-bold text-[#111827] mb-1.5">{t("profile.language")}</h3>
+            <h3 className="text-[18px] font-medium text-[#111827] mb-1.5">{t("profile.language")}</h3>
             <p className="text-[13px] text-[#9CA3AF] mb-6 leading-relaxed">{t("profile.languageDesc")}</p>
             <div className="flex flex-col gap-1.5">
               {LANG_OPTIONS.map(opt => {
@@ -1712,14 +1708,14 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
               >
                 <ArrowLeft className="w-4 h-4 text-[#1F2937]" />
               </button>
-              <h1 className="text-[17px] font-bold text-[#111C3D] flex-1 tracking-wide">{t("profile.logout")}</h1>
+              <h1 className="text-[17px] font-semibold text-[#111C3D] flex-1 tracking-wide">{t("profile.logout")}</h1>
             </div>
           </header>
           <main className="flex-1 flex flex-col items-center justify-center px-6">
             <div className="w-16 h-16 rounded-2xl bg-[#F5F7FA] flex items-center justify-center mb-6">
               <LogOut className="w-8 h-8 text-[#1F2937]" />
             </div>
-            <h2 className="text-[22px] font-bold text-[#111C3D] mb-3 text-center" data-testid="text-logout-title">
+            <h2 className="text-[22px] font-semibold text-[#111C3D] mb-3 text-center" data-testid="text-logout-title">
               {t("profile.logoutConfirm")}
             </h2>
             <p className="text-[15px] text-[#1F2937] text-center max-w-[320px] mb-10 leading-relaxed">
@@ -1729,14 +1725,14 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
               <button
                 onClick={handleSignOut}
                 disabled={signingOut}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[16px] font-bold transition-colors hover:opacity-90 disabled:opacity-50"
+                className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[16px] font-medium transition-colors hover:opacity-90 disabled:opacity-50"
                 data-testid="button-logout-confirm"
               >
                 {signingOut ? t("profile.signingOut") : t("profile.logoutYes")}
               </button>
               <button
                 onClick={() => setShowLogoutConfirm(false)}
-                className="w-full h-[52px] rounded-full border border-[#E5E7EB] text-[#1F2937] text-[16px] font-bold hover:bg-[#F5F7FA] transition-colors"
+                className="w-full h-[52px] rounded-full border border-[#E5E7EB] text-[#1F2937] text-[16px] font-medium hover:bg-[#F5F7FA] transition-colors"
                 data-testid="button-logout-cancel"
               >
                 {t("common.cancel")}
@@ -1867,7 +1863,7 @@ export default function DashboardPage() {
                   }
                 } catch {}
               }}
-              className="text-[13px] font-semibold text-[#92400E] underline whitespace-nowrap"
+              className="text-[13px] font-medium text-[#92400E] underline whitespace-nowrap"
               data-testid="button-confirm-email"
             >
               {t("dashboard.confirmEmailBtn")}
@@ -1917,7 +1913,7 @@ export default function DashboardPage() {
                   data-testid={`tab-${key}`}
                 >
                   <Icon className={`w-[20px] h-[20px] transition-colors ${isActive ? "text-[#0D6EFD]" : "text-[#B0B5BD]"}`} />
-                  <span className={`text-[10px] transition-colors ${isActive ? "font-bold text-[#0D6EFD]" : "font-medium text-[#B0B5BD]"}`}>
+                  <span className={`text-[10px] transition-colors ${isActive ? "font-medium text-[#0D6EFD]" : "font-normal text-[#B0B5BD]"}`}>
                     {t(labelKey)}
                   </span>
                   {isActive && (

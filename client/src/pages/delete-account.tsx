@@ -69,7 +69,7 @@ export default function DeleteAccountPage() {
         <div className="w-16 h-16 rounded-2xl bg-[#0D6EFD] flex items-center justify-center mb-6">
           <AlertTriangle className="w-8 h-8 text-white" />
         </div>
-        <h2 className="text-[22px] font-bold text-[#111C3D] mb-3 text-center" data-testid="text-delete-account-title">
+        <h2 className="text-[22px] font-medium text-[#111C3D] mb-3 text-center" data-testid="text-delete-account-title">
           {t("deleteAccount.confirmTitle")}
         </h2>
         <p className="text-[15px] text-[#1F2937] text-center max-w-[320px] mb-6 leading-relaxed" data-testid="text-delete-account-body">
@@ -83,7 +83,7 @@ export default function DeleteAccountPage() {
               {t("deleteAccount.activeSubWarning")}{" "}
               <button
                 onClick={() => navigate("/account/subscription")}
-                className="font-semibold text-[#0D6EFD] underline"
+                className="font-medium text-[#0D6EFD] underline"
                 data-testid="link-manage-subscription"
               >
                 {t("deleteAccount.subSettings")}
@@ -97,14 +97,14 @@ export default function DeleteAccountPage() {
           <button
             onClick={handleDelete}
             disabled={deleting || hasActivePaidSub}
-            className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[16px] font-bold transition-colors hover:opacity-90 disabled:opacity-50"
+            className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[16px] font-medium transition-colors hover:opacity-90 disabled:opacity-50"
             data-testid="button-delete-account-confirm"
           >
             {deleting ? t("deleteAccount.deleting") : t("deleteAccount.confirmDelete")}
           </button>
           <button
             onClick={() => navigate("/dashboard?tab=profiel&sub=account")}
-            className="w-full h-[52px] rounded-full border border-[#E5E7EB] text-[#1F2937] text-[16px] font-bold hover:bg-[#F5F7FA] transition-colors"
+            className="w-full h-[52px] rounded-full border border-[#E5E7EB] text-[#1F2937] text-[16px] font-medium hover:bg-[#F5F7FA] transition-colors"
             data-testid="button-delete-account-cancel"
           >
             {t("common.cancel")}

@@ -39,7 +39,7 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
       </div>
 
       <h1
-        className="text-[28px] font-bold leading-tight text-[#1F2937] mb-4 max-w-[320px] tracking-wide"
+        className="text-[28px] font-medium leading-tight text-[#1F2937] mb-4 max-w-[320px] tracking-wide"
         data-testid="text-welcome-title"
       >
         {t("onboarding.welcome.title")}
@@ -54,7 +54,7 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
 
       <button
         onClick={onStart}
-        className="w-full max-w-[320px] min-h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-bold text-[16px] transition-colors flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
+        className="w-full max-w-[320px] min-h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-medium text-[16px] transition-colors flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
         data-testid="button-start-onboarding"
       >
         {t("onboarding.welcome.button")}
@@ -99,7 +99,7 @@ function LocationStep({
         <button
           onClick={onNext}
           disabled={!isLocationValid(locationData)}
-          className="w-full min-h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-bold text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
+          className="w-full min-h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
           data-testid="button-city-next"
         >
           {t("common.next")}
@@ -132,7 +132,7 @@ function BudgetStep({
     <div className="flex flex-col min-h-screen px-6 pt-4">
       <div className="flex-1">
         <div className="w-[56px] h-[56px] rounded-2xl bg-[#EBF2FF] flex items-center justify-center mb-6">
-          <span className="text-[24px] font-bold text-[#0D6EFD]">&#8364;</span>
+          <span className="text-[24px] font-medium text-[#0D6EFD]">&#8364;</span>
         </div>
 
         <h2 className="text-page-title mb-2" data-testid="text-budget-title">
@@ -144,7 +144,7 @@ function BudgetStep({
 
         <div className="space-y-4">
           <div>
-            <label className="block text-[13px] font-semibold text-[#111C3D] tracking-wide mb-1.5">
+            <label className="block text-[13px] font-medium text-[#111C3D] tracking-wide mb-1.5">
               {t("onboarding.budget.minPrice")}
             </label>
             <div className="relative">
@@ -162,7 +162,7 @@ function BudgetStep({
           </div>
 
           <div>
-            <label className="block text-[13px] font-semibold text-[#111C3D] tracking-wide mb-1.5">
+            <label className="block text-[13px] font-medium text-[#111C3D] tracking-wide mb-1.5">
               {t("onboarding.budget.maxPrice")}
             </label>
             <div className="relative">
@@ -185,7 +185,7 @@ function BudgetStep({
         <button
           onClick={onNext}
           disabled={!valid}
-          className="w-full min-h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-bold text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
+          className="w-full min-h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
           data-testid="button-budget-next"
         >
           {t("common.next")}
@@ -255,7 +255,7 @@ function PropertyTypeStep({
         <button
           onClick={onNext}
           disabled={!propertyType}
-          className="w-full min-h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-bold text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
+          className="w-full min-h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
           data-testid="button-property-next"
         >
           {t("common.next")}
@@ -274,7 +274,7 @@ function AlertsStep({ onActivate, onSkip, saving }: { onActivate: () => void; on
       </div>
 
       <h2
-        className="text-[24px] font-bold text-[#111C3D] mb-3 max-w-[300px] tracking-wide"
+        className="text-[24px] font-medium text-[#111C3D] mb-3 max-w-[300px] tracking-wide"
         data-testid="text-alerts-title"
       >
         {t("onboarding.alerts.title")}
@@ -294,7 +294,7 @@ function AlertsStep({ onActivate, onSkip, saving }: { onActivate: () => void; on
       <button
         onClick={onActivate}
         disabled={saving}
-        className="w-full max-w-[320px] min-h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-bold text-[16px] transition-colors disabled:opacity-60 flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
+        className="w-full max-w-[320px] min-h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-medium text-[16px] transition-colors disabled:opacity-60 flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
         data-testid="button-activate-alerts"
       >
         {saving ? (
@@ -310,7 +310,7 @@ function AlertsStep({ onActivate, onSkip, saving }: { onActivate: () => void; on
       <button
         onClick={onSkip}
         disabled={saving}
-        className="mt-4 text-[#0D6EFD] font-semibold text-[15px] hover:underline disabled:opacity-40"
+        className="mt-4 text-[#0D6EFD] font-medium text-[15px] hover:underline disabled:opacity-40"
         data-testid="button-skip-alerts"
       >
         {t("onboarding.alerts.skip")}

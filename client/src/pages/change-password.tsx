@@ -87,7 +87,7 @@ export default function ChangePasswordPage() {
                 <CheckCircle2 className="w-7 h-7" style={{ color: "#16A34A" }} />
               </div>
             </div>
-            <h2 className="text-[20px] font-bold mb-2" style={{ color: "#1F2937" }} data-testid="text-success-title">
+            <h2 className="text-[20px] font-medium mb-2" style={{ color: "#1F2937" }} data-testid="text-success-title">
               {t("changePassword.successTitle")}
             </h2>
             <p className="text-[15px] mb-6" style={{ color: "#6B7280" }}>
@@ -95,7 +95,7 @@ export default function ChangePasswordPage() {
             </p>
             <button
               onClick={() => navigate("/dashboard?tab=profiel&sub=account")}
-              className="w-full h-[48px] bg-primary text-primary-foreground rounded-full font-semibold text-[15px] transition-colors"
+              className="w-full h-[48px] bg-primary text-primary-foreground rounded-full font-medium text-[15px] transition-colors"
               data-testid="button-back-to-account"
             >
               {t("changePassword.backToAccount")}
@@ -207,7 +207,7 @@ export default function ChangePasswordPage() {
           <button
             onClick={handleSubmit}
             disabled={!canSubmit}
-            className={`w-full h-[52px] rounded-full font-semibold text-[16px] transition-colors flex items-center justify-center ${
+            className={`w-full h-[52px] rounded-full font-medium text-[16px] transition-colors flex items-center justify-center ${
               canSubmit
                 ? "bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white"
                 : "bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed"

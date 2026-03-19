@@ -101,7 +101,7 @@ export default function ViewingTipsPage() {
                   <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#EBF2FF" }}>
                     <Icon className="w-4.5 h-4.5" style={{ color: "#0D6EFD" }} />
                   </div>
-                  <h3 className="text-[16px] font-semibold" style={{ color: "#1F2937" }}>{section.title}</h3>
+                  <h3 className="text-[16px] font-medium" style={{ color: "#1F2937" }}>{section.title}</h3>
                 </div>
                 <div className="px-6 pb-6">
                   <ul className="flex flex-col gap-2.5">
@@ -124,13 +124,13 @@ export default function ViewingTipsPage() {
           {markedDone ? (
             <div className="flex items-center justify-center gap-2 h-[56px]" style={{ color: "#0D6EFD" }}>
               <CheckCircle2 className="w-5 h-5" />
-              <span className="text-[16px] font-semibold">{t("viewingTips.completed")}</span>
+              <span className="text-[16px] font-medium">{t("viewingTips.completed")}</span>
             </div>
           ) : (
             <Button
               onClick={() => markDoneMutation.mutate()}
               disabled={markDoneMutation.isPending}
-              className="w-full h-[56px] rounded-full text-[16px] font-semibold bg-primary text-primary-foreground disabled:opacity-50"
+              className="w-full h-[56px] rounded-full text-[16px] font-medium bg-primary text-primary-foreground disabled:opacity-50"
               data-testid="button-mark-tips-done"
             >
               {markDoneMutation.isPending ? t("viewingTips.saving") : t("viewingTips.markComplete")}

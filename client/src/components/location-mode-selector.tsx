@@ -382,7 +382,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
             <button
               key={tab.id}
               onClick={() => setTab(tab.id)}
-              className={`flex-1 py-2.5 text-[13px] font-semibold text-center rounded-lg transition-all ${
+              className={`flex-1 py-2.5 text-[13px] font-medium text-center rounded-lg transition-all ${
                 value.tab === tab.id
                   ? "bg-white text-[#1F2937] shadow-sm"
                   : "text-[#1F2937] hover:text-[#1F2937]"
@@ -399,7 +399,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
             <button
               key={tab.id}
               onClick={() => setTab(tab.id)}
-              className={`flex-1 pb-3 text-sm font-semibold text-center transition-colors relative ${
+              className={`flex-1 pb-3 text-sm font-medium text-center transition-colors relative ${
                 value.tab === tab.id
                   ? "text-[#1F2937]"
                   : "text-[#1F2937] hover:text-[#1F2937]"
@@ -489,7 +489,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
 
       {value.tab === "wijken" && value.place && (
         <>
-          <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#1F2937] font-semibold text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
+          <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#1F2937] font-medium text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
             <MapPin className="w-4 h-4" />
             {value.place.city_name}
           </div>
@@ -514,7 +514,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
 
       {value.tab === "radius" && value.place && (
         <>
-          <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#1F2937] font-semibold text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
+          <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#1F2937] font-medium text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
             <MapPin className="w-4 h-4" />
             {value.place.city_name}
           </div>
@@ -524,7 +524,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
 
       {value.tab === "radius" && (
         <div>
-          <label className="text-[16px] font-[700] text-[#111C3D] mb-3 block">{t("location.radiusLabel")}</label>
+          <label className="text-[16px] font-medium text-[#111C3D] mb-3 block">{t("location.radiusLabel")}</label>
           <div className="relative">
             <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1F2937]" />
             <select
@@ -547,7 +547,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       {value.tab === "reistijd" && (
         <>
           <div ref={destContainerRef} className="relative">
-            <label className="text-[16px] font-[700] text-[#111C3D] mb-3 block">{t("location.workAddress")}</label>
+            <label className="text-[16px] font-medium text-[#111C3D] mb-3 block">{t("location.workAddress")}</label>
             <div className="relative">
               <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#1F2937] pointer-events-none" />
               <input
@@ -613,14 +613,14 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
           </div>
 
           {value.commuteLat != null && (
-            <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#1F2937] font-semibold text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-destination">
+            <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#1F2937] font-medium text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-destination">
               <MapPin className="w-4 h-4" />
               {value.commuteDestination}
             </div>
           )}
 
           <div>
-            <label className="text-[16px] font-[700] text-[#111C3D] mb-3 block">{t("location.transport")}</label>
+            <label className="text-[16px] font-medium text-[#111C3D] mb-3 block">{t("location.transport")}</label>
             <div className="flex gap-2">
               {([
                 { id: "auto" as const, icon: Car, label: t("location.transportOptions.car") },
@@ -630,7 +630,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                 <button
                   key={mode.id}
                   onClick={() => onChange({ ...value, commuteMode: mode.id })}
-                  className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-lg text-xs font-semibold transition-all ${
+                  className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-lg text-xs font-medium transition-all ${
                     value.commuteMode === mode.id
                       ? "bg-[#0D6EFD] text-white"
                       : "bg-[#F5F7FA] text-[#1F2937] hover:bg-[#E5E7EB]"
@@ -645,7 +645,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
           </div>
 
           <div>
-            <label className="text-[16px] font-[700] text-[#111C3D] mb-3 block">{t("location.maxCommute")}</label>
+            <label className="text-[16px] font-medium text-[#111C3D] mb-3 block">{t("location.maxCommute")}</label>
             <div className="relative">
               <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1F2937]" />
               <select

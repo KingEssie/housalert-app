@@ -48,10 +48,10 @@ export default function AuthCallbackPage() {
   if (error) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#FFFFFF] px-6">
-        <p className="text-[#1F2937] font-semibold text-lg mb-4" data-testid="text-auth-error">{error}</p>
+        <p className="text-[#1F2937] font-medium text-lg mb-4" data-testid="text-auth-error">{error}</p>
         <button
           onClick={() => navigate("/login")}
-          className="min-h-[56px] px-8 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-bold text-[16px] transition-colors"
+          className="min-h-[56px] px-8 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-medium text-[16px] transition-colors"
           data-testid="button-go-login"
         >
           {t("authCallback.goToLogin")}

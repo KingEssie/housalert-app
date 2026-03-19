@@ -28,7 +28,7 @@ export function EmptyState({ illustration, title, description, ctaLabel, onCtaCl
         className="w-[240px] h-auto mb-6"
         draggable={false}
       />
-      <h2 className="text-[20px] font-bold text-[#111C3D] leading-snug mb-2" data-testid="text-empty-title">
+      <h2 className="text-[20px] font-medium text-[#111C3D] leading-snug mb-2" data-testid="text-empty-title">
         {title}
       </h2>
       <p className="text-[14px] text-[#1F2937] leading-relaxed max-w-[280px] mb-6" data-testid="text-empty-description">
@@ -36,7 +36,7 @@ export function EmptyState({ illustration, title, description, ctaLabel, onCtaCl
       </p>
       <button
         onClick={onCtaClick}
-        className="h-[48px] px-8 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-semibold transition-colors"
+        className="h-[48px] px-8 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-medium transition-colors"
         data-testid="button-empty-cta"
       >
         {ctaLabel}

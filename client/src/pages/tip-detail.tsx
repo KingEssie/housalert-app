@@ -69,7 +69,7 @@ export default function TipDetailPage() {
           >
             <ArrowLeft className="w-4 h-4 text-[#1F2937]" />
           </button>
-          <h1 className="text-[17px] font-bold text-[#111C3D] flex-1 tracking-wide">
+          <h1 className="text-[17px] font-medium text-[#111C3D] flex-1 tracking-wide">
             {t("tips.tipLabel")} {currentIndex + 1}/{TIP_IDS.length}
           </h1>
         </div>
@@ -90,10 +90,10 @@ export default function TipDetailPage() {
             <Icon className="w-7 h-7 text-[#0D6EFD]" />
           </div>
           <div>
-            <p className="text-[12px] font-semibold text-[#0D6EFD] uppercase tracking-wide">
+            <p className="text-[12px] font-medium text-[#0D6EFD] uppercase tracking-wide">
               {t("tips.tipLabel")} {currentIndex + 1}
             </p>
-            <h2 className="text-[22px] font-[800] text-[#111C3D] leading-tight" data-testid="text-tip-title">
+            <h2 className="text-[22px] font-medium text-[#111C3D] leading-tight" data-testid="text-tip-title">
               {tip.title}
             </h2>
           </div>
@@ -109,7 +109,7 @@ export default function TipDetailPage() {
           data-testid="button-open-content"
         >
           <Icon className="w-5 h-5 text-[#0D6EFD] flex-shrink-0" />
-          <span className="text-[14px] font-semibold text-[#111C3D] flex-1">{t("tips.openContent")}</span>
+          <span className="text-[14px] font-medium text-[#111C3D] flex-1">{t("tips.openContent")}</span>
           <ChevronRight className="w-4 h-4 text-[#9CA3AF]" />
         </button>
       </main>
@@ -119,7 +119,7 @@ export default function TipDetailPage() {
           <Button
             onClick={handleMarkRead}
             disabled={isRead}
-            className={`flex-1 h-[52px] rounded-full text-[15px] font-bold flex items-center justify-center gap-2 ${
+            className={`flex-1 h-[52px] rounded-full text-[15px] font-medium flex items-center justify-center gap-2 ${
               isRead
                 ? "bg-[#F0FDF4] text-[#16A34A] border border-[#BBF7D0] hover:bg-[#F0FDF4]"
                 : "bg-white text-[#1F2937] border border-[#E5E7EB] hover:bg-[#F5F7FA]"
@@ -131,7 +131,7 @@ export default function TipDetailPage() {
           </Button>
           <Button
             onClick={handleNext}
-            className="flex-1 h-[52px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-bold flex items-center justify-center gap-2"
+            className="flex-1 h-[52px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-medium flex items-center justify-center gap-2"
             data-testid="button-next-tip"
           >
             {nextTip ? t("common.next") : t("tips.backToOverview")}

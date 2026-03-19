@@ -1,0 +1,151 @@
+Refine the entire HousAlert app UI to reduce font heaviness and make the typography feel much closer to Airbnb.
+
+IMPORTANT:
+- Apply this across the WHOLE app, not just one screen.
+- Do not change product logic, flows, routes, or data.
+- This is a visual refinement pass only.
+- Keep HousAlert blue as the brand color.
+- Keep the current redesign direction, but make it lighter, calmer, and more elegant.
+
+## MAIN ISSUE TO FIX
+
+Right now the typography feels too bold and heavy across the app.
+Compared to Airbnb, the app should feel:
+- lighter
+- calmer
+- more refined
+- less visually heavy
+- less “blocky”
+
+I want the font weight reduced throughout the full app.
+
+## TYPOGRAPHY CHANGES
+
+Adjust typography globally across the app:
+
+### Page titles
+- reduce weight slightly
+- keep them prominent, but less heavy than now
+- target around 600 or semibold instead of extra bold / 700+ where possible
+
+### Section titles
+- use medium to semibold
+- avoid overly bold styling
+
+### Card titles
+- lighter than they are now
+- use medium or semibold, not bold-heavy
+
+### Body text
+- regular weight
+- keep very readable
+- avoid medium/bold unless functionally necessary
+
+### Metadata / secondary text
+- regular weight
+- slightly softer gray
+- lighter visual presence
+
+### Buttons
+- reduce font weight slightly
+- still clear, but not chunky
+
+### Tab labels
+- lighter weight
+- especially inactive ones should feel subtle
+
+### Menu items
+- slightly less bold
+- cleaner and more premium
+
+Overall typography should feel much closer to Airbnb:
+- refined
+- airy
+- elegant
+- not overly thick
+
+## DESIGN TOKEN UPDATE
+
+Please normalize font weights in the design system so the whole app uses a better hierarchy.
+
+Use a cleaner scale like:
+- page title: 600
+- section title: 600
+- card title: 600
+- button text: 600
+- body text: 400
+- metadata: 400
+- labels: 500
+
+Avoid unnecessary 700/800 weights unless there is a very specific need.
+
+Also review:
+- line heights
+- letter spacing
+- text contrast
+- visual rhythm
+
+## ICON BACKGROUNDS IN TASKS / CHECKLIST
+
+Remove the rounded colored background circles/squares behind the task icons.
+
+For example on the onboarding / progress / task list cards:
+- remove the light blue or tinted icon background container
+- icons should appear cleaner and simpler
+- either show the icon directly with no background
+- or use a very minimal transparent/neutral treatment if spacing needs it
+
+The result should feel closer to Airbnb:
+- cleaner
+- less decorative
+- less bulky
+- more minimal
+
+## APPLY THIS THROUGHOUT THE APP
+
+Review and refine all major UI areas:
+- home/dashboard
+- matches page
+- listing cards
+- profile page
+- personal information page
+- onboarding/progress cards
+- settings/menu screens
+- bottom tab bar
+- buttons
+- chips/tabs
+- section headers
+- empty states if applicable
+
+## KEEP THESE THINGS
+
+Keep:
+- current layout direction
+- current white space improvements
+- current HousAlert blue
+- current Airbnb-inspired structure
+- current shadows and rounded cards unless small refinements help
+
+## DO NOT
+
+- do not increase font sizes unnecessarily
+- do not make everything tiny
+- do not make typography too thin or weak
+- do not bring back visual clutter
+- do not add icon background shapes again
+- do not change business logic
+
+## WHAT I WANT IN THE RESULT
+
+The app should feel:
+- more premium
+- more mature
+- more airy
+- more like Airbnb typography weight
+- less bold everywhere
+- cleaner around icons and tasks
+
+At the end, summarize:
+- which typography tokens were changed
+- where icon background containers were removed
+- which components/screens were updated

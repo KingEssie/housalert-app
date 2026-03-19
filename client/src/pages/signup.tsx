@@ -168,7 +168,7 @@ export default function SignupPage() {
 
       <main className={`flex-1 ${containerClass} mx-auto w-full px-5 pb-8 pt-3`}>
         <h1
-          className="text-[24px] font-[800] text-[#111C3D] leading-[1.15] tracking-[-0.02em] mb-1"
+          className="text-[24px] font-medium text-[#111C3D] leading-[1.15] tracking-[-0.02em] mb-1"
           data-testid="text-signup-title"
         >
           {t("auth.signup.funnelTitle")}
@@ -220,7 +220,7 @@ export default function SignupPage() {
 
             <Button
               type="submit"
-              className="w-full h-[48px] rounded-full text-[15px] font-bold shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7] mt-1"
+              className="w-full h-[48px] rounded-full text-[15px] font-medium shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7] mt-1"
               disabled={loading || !email || !password}
               data-testid="button-signup-submit"
             >
@@ -240,7 +240,7 @@ export default function SignupPage() {
           {t("auth.signup.hasAccount")}{" "}
           <button
             onClick={() => navigate("/login")}
-            className="text-[#0D6EFD] font-semibold hover:underline"
+            className="text-[#0D6EFD] font-medium hover:underline"
             data-testid="link-login"
           >
             {t("auth.signup.loginLink")}

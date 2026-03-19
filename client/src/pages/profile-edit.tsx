@@ -142,7 +142,7 @@ export default function ProfileEditPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="h-[48px] px-10 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-semibold flex items-center justify-center transition-colors disabled:opacity-50"
+              className="h-[48px] px-10 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium flex items-center justify-center transition-colors disabled:opacity-50"
               data-testid="button-save-field"
             >
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : t("common.save")}

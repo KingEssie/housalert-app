@@ -96,7 +96,7 @@ export default function ApplicationLetterPage() {
             >
               <AlertTriangle className="w-5 h-5 text-[#F59E0B] flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-[14px] font-semibold mb-0.5" style={{ color: "#1F2937" }}>{t("applicationLetter.missingFields")}</p>
+                <p className="text-[14px] font-medium mb-0.5" style={{ color: "#1F2937" }}>{t("applicationLetter.missingFields")}</p>
                 <p className="text-[13px]" style={{ color: "#6B7280" }}>
                   {t("applicationLetter.missingFieldsDesc")}
                 </p>
@@ -107,7 +107,7 @@ export default function ApplicationLetterPage() {
           <div className="rounded-2xl p-6 flex gap-3" style={{ backgroundColor: "#F5F7FA" }}>
             <Info className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "#0D6EFD" }} />
             <div>
-              <p className="text-[14px] font-semibold mb-1" style={{ color: "#1F2937" }}>{t("applicationLetter.autoFill")}</p>
+              <p className="text-[14px] font-medium mb-1" style={{ color: "#1F2937" }}>{t("applicationLetter.autoFill")}</p>
               <p className="text-[13px]" style={{ color: "#6B7280" }}>
                 {t("applicationLetter.autoFillDesc")}
               </p>
@@ -115,7 +115,7 @@ export default function ApplicationLetterPage() {
           </div>
 
           <div className="bg-card rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6">
-            <h3 className="text-[16px] font-[700] mb-3" style={{ color: "#1F2937" }}>{t("applicationLetter.placeholders")}</h3>
+            <h3 className="text-[16px] font-medium mb-3" style={{ color: "#1F2937" }}>{t("applicationLetter.placeholders")}</h3>
             <div className="flex flex-wrap gap-1.5">
               {PLACEHOLDERS.map((p) => (
                 <button
@@ -155,7 +155,7 @@ export default function ApplicationLetterPage() {
           ) : (
             <div className="bg-card rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6">
               <div className="flex items-center justify-between gap-4 mb-3">
-                <h3 className="text-[16px] font-semibold" style={{ color: "#1F2937" }}>{t("applicationLetter.yourLetter")}</h3>
+                <h3 className="text-[16px] font-medium" style={{ color: "#1F2937" }}>{t("applicationLetter.yourLetter")}</h3>
                 <button
                   onClick={handleReset}
                   className="flex items-center gap-1 text-[13px] transition-colors"
@@ -185,7 +185,7 @@ export default function ApplicationLetterPage() {
           <button
             onClick={() => saveMutation.mutate(template)}
             disabled={!isLongEnough || saveMutation.isPending}
-            className="h-[48px] px-10 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-semibold disabled:opacity-50 flex items-center gap-2 transition-colors"
+            className="h-[48px] px-10 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium disabled:opacity-50 flex items-center gap-2 transition-colors"
             data-testid="button-save-template"
           >
             <Save className="w-4.5 h-4.5" />
@@ -195,7 +195,7 @@ export default function ApplicationLetterPage() {
             <button
               onClick={() => saveMutation.mutate(defaultTemplate)}
               disabled={saveMutation.isPending}
-              className="h-[44px] px-8 rounded-full border border-[#E5E7EB] text-[#1F2937] text-[15px] font-semibold hover:bg-[#F5F7FA] transition-colors"
+              className="h-[44px] px-8 rounded-full border border-[#E5E7EB] text-[#1F2937] text-[15px] font-medium hover:bg-[#F5F7FA] transition-colors"
               data-testid="button-use-default"
             >
               {t("applicationLetter.useDefault")}

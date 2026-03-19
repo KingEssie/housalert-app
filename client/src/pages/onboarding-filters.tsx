@@ -99,7 +99,7 @@ export default function OnboardingFiltersPage() {
       <main className={`flex-1 ${containerClass} mx-auto w-full px-5 ${isEmbedded ? "pb-4 pt-1" : "pb-8 pt-3"}`}>
         {!isEmbedded && (
           <>
-            <h1 className="text-[24px] font-[800] text-[#111C3D] leading-[1.15] tracking-[-0.02em] mb-1" data-testid="text-filters-title">
+            <h1 className="text-[24px] font-[600] text-[#111C3D] leading-[1.15] tracking-[-0.02em] mb-1" data-testid="text-filters-title">
               {t("onboardingFilters.title")}
             </h1>
             <p className="text-[14px] text-[#6B7280] mb-5">
@@ -180,7 +180,7 @@ export default function OnboardingFiltersPage() {
         {isEmbedded ? (
           <div className="mt-3">
             <Button
-              className="w-full h-[48px] rounded-full text-[15px] font-semibold shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7]"
+              className="w-full h-[48px] rounded-full text-[15px] font-medium shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7]"
               onClick={handleNext}
               data-testid="button-next-filters"
             >
@@ -203,14 +203,14 @@ export default function OnboardingFiltersPage() {
           <div className="pt-5 flex gap-3">
             <Button
               variant="outline"
-              className="h-[48px] px-6 rounded-full text-[15px] font-semibold border-[#E5E7EB] text-[#374151] hover:bg-[#F5F7FA]"
+              className="h-[48px] px-6 rounded-full text-[15px] font-medium border-[#E5E7EB] text-[#374151] hover:bg-[#F5F7FA]"
               onClick={handleBack}
               data-testid="button-back-filters"
             >
               {t("onboardingFilters.back")}
             </Button>
             <Button
-              className="flex-1 h-[48px] rounded-full text-[15px] font-semibold shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7]"
+              className="flex-1 h-[48px] rounded-full text-[15px] font-medium shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7]"
               onClick={handleNext}
               data-testid="button-next-filters"
             >

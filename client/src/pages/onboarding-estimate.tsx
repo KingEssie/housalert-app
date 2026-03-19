@@ -107,7 +107,7 @@ export default function OnboardingEstimatePage() {
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-8 pt-4 flex flex-col">
-        <h1 className="text-[32px] font-[800] text-[#111C3D] leading-[1.1] tracking-[-0.03em] mb-3 text-center" data-testid="text-estimate-title">
+        <h1 className="text-[32px] font-medium text-[#111C3D] leading-[1.1] tracking-[-0.03em] mb-3 text-center" data-testid="text-estimate-title">
           {t("onboardingEstimate.title")}
         </h1>
         <p className="text-[15px] text-[#1F2937] text-center mb-6">
@@ -116,8 +116,8 @@ export default function OnboardingEstimatePage() {
 
         <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6" data-testid="card-estimate">
           <div className="text-center py-4 border-b border-[#E5E7EB]">
-            <div className="w-14 h-14 rounded-2xl bg-[#EBF2FF] flex items-center justify-center mx-auto mb-4">
-              <TrendingUp className="w-7 h-7 text-[#0D6EFD]" />
+            <div className="flex items-center justify-center mx-auto mb-4">
+              <TrendingUp className="w-7 h-7 text-[#9CA3AF]" />
             </div>
 
             {loading ? (
@@ -126,7 +126,7 @@ export default function OnboardingEstimatePage() {
               </div>
             ) : (
               <>
-                <p className="text-5xl font-extrabold text-[#111C3D] mb-3 tabular-nums" data-testid="text-estimate-number">
+                <p className="text-5xl font-medium text-[#111C3D] mb-3 tabular-nums" data-testid="text-estimate-number">
                   {getMatchEstimateRange(estimate ?? 0).low}–{getMatchEstimateRange(estimate ?? 0).high}
                 </p>
                 <p className="text-base text-[#1F2937] leading-relaxed max-w-sm mx-auto" data-testid="text-estimate-description">
@@ -138,7 +138,7 @@ export default function OnboardingEstimatePage() {
 
           {filterChips.length > 0 && (
             <div className="py-5 border-b border-[#E5E7EB]">
-              <p className="text-sm font-semibold text-[#111C3D] mb-3">{t("onboardingEstimate.yourFilters")}</p>
+              <p className="text-sm font-medium text-[#111C3D] mb-3">{t("onboardingEstimate.yourFilters")}</p>
               <div className="flex flex-wrap gap-2">
                 {filterChips.map((chip) => (
                   <span
@@ -164,7 +164,7 @@ export default function OnboardingEstimatePage() {
             <Button
               variant="outline"
               size="lg"
-              className="h-[48px] px-6 rounded-full text-[15px] font-semibold border-[#E5E7EB] text-[#1F2937] hover:bg-[#F5F7FA]"
+              className="h-[48px] px-6 rounded-full text-[15px] font-medium border-[#E5E7EB] text-[#1F2937] hover:bg-[#F5F7FA]"
               onClick={handleBack}
               data-testid="button-back-estimate"
             >
@@ -172,7 +172,7 @@ export default function OnboardingEstimatePage() {
             </Button>
             <Button
               size="lg"
-              className="flex-1 h-[56px] rounded-full text-[16px] font-semibold shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7]"
+              className="flex-1 h-[56px] rounded-full text-[16px] font-medium shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7]"
               onClick={handleCreateAccount}
               disabled={loading}
               data-testid="button-create-account"

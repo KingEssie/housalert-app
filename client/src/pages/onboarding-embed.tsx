@@ -45,8 +45,8 @@ function EstimateBlock({ city, maxPrice }: { city: string; maxPrice: string }) {
         {loading ? (
           <div className="h-4 w-48 bg-[#EBF2FF] rounded animate-pulse" />
         ) : estimate !== null ? (
-          <p className="text-[13px] sm:text-[14px] font-semibold text-[#111C3D] leading-snug">
-            <span className="text-[#0D6EFD] text-[15px] font-bold">{getMatchEstimateRange(estimate).low}–{getMatchEstimateRange(estimate).high}</span> {t("onboardingEmbed.matchesPerWeek")}
+          <p className="text-[13px] sm:text-[14px] font-medium text-[#111C3D] leading-snug">
+            <span className="text-[#0D6EFD] text-[15px] font-medium">{getMatchEstimateRange(estimate).low}–{getMatchEstimateRange(estimate).high}</span> {t("onboardingEmbed.matchesPerWeek")}
           </p>
         ) : null}
       </div>
@@ -64,7 +64,7 @@ function CompletionScreen({ draftId }: { draftId: string }) {
         <Check className="w-7 h-7 text-[#0D6EFD]" />
       </div>
 
-      <h2 className="text-[20px] font-bold text-[#111C3D] mb-1.5 tracking-wide" data-testid="embed-text-done-title">
+      <h2 className="text-[20px] font-medium text-[#111C3D] mb-1.5 tracking-wide" data-testid="embed-text-done-title">
         {t("onboardingEmbed.doneTitle")}
       </h2>
       <p className="text-[14px] text-[#1F2937] mb-7 max-w-[300px] leading-relaxed">
@@ -75,7 +75,7 @@ function CompletionScreen({ draftId }: { draftId: string }) {
         <a
           href={continueUrl}
           target="_top"
-          className="w-full min-h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-bold text-[15px] transition-all flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.3)]"
+          className="w-full min-h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-medium text-[15px] transition-all flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.3)]"
           data-testid="embed-link-continue-browser"
         >
           <ExternalLink className="w-4 h-4" />
@@ -83,7 +83,7 @@ function CompletionScreen({ draftId }: { draftId: string }) {
         </a>
 
         <button
-          className="w-full h-[56px] rounded-full border border-[#E5E7EB] bg-white text-[#1F2937] font-semibold text-[14px] transition-colors flex items-center justify-center gap-2"
+          className="w-full h-[56px] rounded-full border border-[#E5E7EB] bg-white text-[#1F2937] font-medium text-[14px] transition-colors flex items-center justify-center gap-2"
           data-testid="embed-button-download-app"
           onClick={() => window.open(continueUrl, "_top")}
         >
@@ -203,7 +203,7 @@ export default function OnboardingEmbedPage() {
 
         <div className="text-center mb-5">
           <h1
-            className="text-[21px] sm:text-[24px] font-extrabold text-[#111C3D] leading-[1.25] tracking-tight"
+            className="text-[21px] sm:text-[24px] font-medium text-[#111C3D] leading-[1.25] tracking-tight"
             data-testid="embed-text-hero-title"
           >
             {t("onboardingEmbed.heroTitle")}
@@ -226,7 +226,7 @@ export default function OnboardingEmbedPage() {
           <div className="px-5 py-3 space-y-3.5">
 
             <div>
-              <label className="text-[13px] font-semibold text-[#111C3D] tracking-wide mb-2 block">
+              <label className="text-[13px] font-medium text-[#111C3D] tracking-wide mb-2 block">
                 {t("onboardingEmbed.propertyType")}
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -248,7 +248,7 @@ export default function OnboardingEmbedPage() {
             </div>
 
             <div>
-              <label className="text-[13px] font-semibold text-[#111C3D] tracking-wide mb-2 block">
+              <label className="text-[13px] font-medium text-[#111C3D] tracking-wide mb-2 block">
                 {t("onboardingEmbed.monthlyBudget")}
               </label>
               <div className="flex items-center gap-2">
@@ -298,7 +298,7 @@ export default function OnboardingEmbedPage() {
             <button
               onClick={handleSubmit}
               disabled={!canSubmit || submitting}
-              className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] active:scale-[0.98] text-white font-bold text-[16px] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 shadow-[0_2px_12px_rgba(0,0,0,0.35)]"
+              className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] active:scale-[0.98] text-white font-medium text-[16px] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 shadow-[0_2px_12px_rgba(0,0,0,0.35)]"
               data-testid="embed-button-submit"
             >
               {submitting ? (

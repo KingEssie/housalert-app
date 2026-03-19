@@ -109,11 +109,11 @@ export default function SubscriptionDetailPage() {
               <Crown className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1">
-              <p className="text-[16px] font-bold text-white" data-testid="text-plan-name">
+              <p className="text-[16px] font-medium text-white" data-testid="text-plan-name">
                 {subscription?.isTrial ? t("subscription.status.trial") : getPlanSummary()}
               </p>
               <span
-                className={`inline-block mt-1.5 text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${
+                className={`inline-block mt-1.5 text-[11px] font-medium px-2.5 py-0.5 rounded-full ${
                   isCanceled && subscription?.isActive
                     ? "bg-[#FEF3C7] text-[#92400E]"
                     : "bg-white text-[#0D6EFD]"
@@ -126,7 +126,7 @@ export default function SubscriptionDetailPage() {
           </div>
 
           {!subscription?.isTrial && subscription?.plan && (
-            <p className="text-[24px] font-bold text-white ml-[60px]" data-testid="text-price">
+            <p className="text-[24px] font-medium text-white ml-[60px]" data-testid="text-price">
               {getPriceLabel(subscription?.plan)}
             </p>
           )}
@@ -134,7 +134,7 @@ export default function SubscriptionDetailPage() {
 
         <div className="bg-card rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden" data-testid="card-subscription-details">
           <div className="px-5 pt-5 pb-2">
-            <p className="text-[13px] font-semibold tracking-wider" style={{ color: "#6B7280" }}>{t("subscription.details")}</p>
+            <p className="text-[13px] font-medium tracking-wider" style={{ color: "#6B7280" }}>{t("subscription.details")}</p>
           </div>
 
           <DetailRow
@@ -177,7 +177,7 @@ export default function SubscriptionDetailPage() {
 
         <div className="bg-card rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden" data-testid="card-subscription-actions">
           <div className="px-5 pt-5 pb-2">
-            <p className="text-[13px] font-semibold tracking-wider" style={{ color: "#6B7280" }}>{t("subscription.manage")}</p>
+            <p className="text-[13px] font-medium tracking-wider" style={{ color: "#6B7280" }}>{t("subscription.manage")}</p>
           </div>
 
           <ActionRow
@@ -204,13 +204,13 @@ export default function SubscriptionDetailPage() {
                 <AlertCircle className="w-5 h-5" style={{ color: "#0D6EFD" }} />
               </div>
               <div>
-                <p className="text-[15px] font-semibold" style={{ color: "#1F2937" }}>{t("subscription.expiredTitle")}</p>
+                <p className="text-[15px] font-medium" style={{ color: "#1F2937" }}>{t("subscription.expiredTitle")}</p>
                 <p className="text-[14px] text-muted-foreground mt-0.5">{t("subscription.expiredDesc")}</p>
               </div>
             </div>
             <button
               onClick={() => navigate("/paywall")}
-              className="w-full h-[48px] bg-primary text-primary-foreground rounded-full font-semibold text-[15px] transition-colors"
+              className="w-full h-[48px] bg-primary text-primary-foreground rounded-full font-medium text-[15px] transition-colors"
               data-testid="button-renew-subscription"
             >
               {t("subscription.renewSubscription")}

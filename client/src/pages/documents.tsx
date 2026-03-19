@@ -80,11 +80,9 @@ export default function DocumentsPage() {
       <div className="max-w-xl mx-auto p-4 space-y-4 pb-8">
         <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-[#EBF2FF] flex items-center justify-center">
-              <FileText className="w-5 h-5 text-[#0D6EFD]" />
-            </div>
+            <FileText className="w-5 h-5 text-[#9CA3AF]" />
             <div>
-              <p className="text-[15px] font-bold text-[#1F2937]">{t("documents.heading")}</p>
+              <p className="text-[15px] font-medium text-[#1F2937]">{t("documents.heading")}</p>
               <p className="text-[12px] text-[#6B7280]">
                 {checkedCount}/{DOCUMENT_ITEMS.length} {t("documents.collected")}
               </p>
@@ -93,7 +91,7 @@ export default function DocumentsPage() {
 
           {allDone && (
             <div className="bg-[#0F172A] rounded-xl p-4 mb-4" data-testid="documents-complete-banner">
-              <p className="text-[14px] font-bold text-white flex items-center gap-2">
+              <p className="text-[14px] font-medium text-white flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4" />
                 {t("documents.completeTitle")}
               </p>

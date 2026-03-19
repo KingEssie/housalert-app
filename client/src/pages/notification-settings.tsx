@@ -284,7 +284,7 @@ export default function NotificationSettingsPage() {
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="w-full h-[52px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-semibold flex items-center justify-center transition-colors disabled:opacity-50"
+                  className="w-full h-[52px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium flex items-center justify-center transition-colors disabled:opacity-50"
                   data-testid="button-save"
                 >
                   {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : t("common.save")}

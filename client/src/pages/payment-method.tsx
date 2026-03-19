@@ -48,7 +48,7 @@ export default function PaymentMethodPage() {
       <div className="max-w-xl mx-auto p-4 space-y-4 pb-8">
         <div className="bg-card rounded-2xl border overflow-hidden" style={{ borderColor: "#E5E7EB" }}>
           <div className="px-5 pt-5 pb-2">
-            <p className="text-[13px] font-semibold tracking-wider" style={{ color: "#6B7280" }} data-testid="text-section-title-payment">
+            <p className="text-[13px] font-medium tracking-wider" style={{ color: "#6B7280" }} data-testid="text-section-title-payment">
               {t("paymentMethodPage.currentMethod")}
             </p>
           </div>
@@ -59,7 +59,7 @@ export default function PaymentMethodPage() {
                 <CreditCard className="w-5 h-5" style={{ color: "#0D6EFD" }} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[16px] font-semibold" style={{ color: "#1F2937" }} data-testid="text-card-brand">
+                <p className="text-[16px] font-medium" style={{ color: "#1F2937" }} data-testid="text-card-brand">
                   {t("paymentMethodPage.managedByStripe")}
                 </p>
                 <p className="text-[14px]" style={{ color: "#6B7280" }} data-testid="text-card-desc">
@@ -73,7 +73,7 @@ export default function PaymentMethodPage() {
         <Button
           onClick={openStripePortal}
           disabled={loading}
-          className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-semibold"
+          className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-medium"
           data-testid="button-open-stripe-portal"
         >
           <ExternalLink className="w-4 h-4 mr-2" />

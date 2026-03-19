@@ -286,7 +286,7 @@ export default function ApplyPage() {
 
         {listing.price > 0 && (
           <div className="absolute bottom-5 right-4 bg-white/95 backdrop-blur-sm rounded-full px-4 py-2 shadow-[0_2px_12px_rgba(0,0,0,0.12)] z-20" data-testid="badge-price-photo">
-            <span className="text-[17px] font-[800] text-[#111C3D]">€{listing.price}</span>
+            <span className="text-[17px] font-medium text-[#111C3D]">€{listing.price}</span>
             <span className="text-[11px] font-medium text-[#6B7280]"> {t("common.perMonthShort")}</span>
           </div>
         )}
@@ -294,7 +294,7 @@ export default function ApplyPage() {
 
       <main className="flex-1 max-w-xl mx-auto w-full px-5 -mt-2 relative z-10 pb-28">
         <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 mb-3">
-          <h1 className="text-[20px] font-[800] text-[#111C3D] leading-[1.2] tracking-[-0.02em] mb-2" data-testid="text-apply-title">
+          <h1 className="text-[20px] font-medium text-[#111C3D] leading-[1.2] tracking-[-0.02em] mb-2" data-testid="text-apply-title">
             {listing.title}
           </h1>
 
@@ -314,7 +314,7 @@ export default function ApplyPage() {
 
         <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-[13px] font-semibold text-[#111C3D]">{t("applySheet.applicationLetter")}</p>
+            <p className="text-[13px] font-medium text-[#111C3D]">{t("applySheet.applicationLetter")}</p>
           </div>
           <div className="bg-[#F5F7FA] rounded-xl p-4">
             <textarea
@@ -333,7 +333,7 @@ export default function ApplyPage() {
         <div className="max-w-xl mx-auto">
           <Button
             onClick={handleCopyAndRespond}
-            className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-semibold"
+            className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-medium"
             data-testid="button-copy-and-respond"
           >
             <Copy className="w-4 h-4 mr-2" />

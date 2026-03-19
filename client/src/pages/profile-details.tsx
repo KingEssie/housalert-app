@@ -95,7 +95,7 @@ export default function ProfileDetailsPage() {
                   data-testid={`field-${field.key}`}
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="text-[11px] text-[#9CA3AF] font-semibold uppercase tracking-wider mb-1.5">{field.label}</p>
+                    <p className="text-[11px] text-[#9CA3AF] font-medium uppercase tracking-wider mb-1.5">{field.label}</p>
                     <p className={`text-[15px] font-medium truncate leading-snug ${hasValue ? "text-[#111827]" : "text-[#D1D5DB]"}`}>
                       {value || t("profileDetails.add")}
                     </p>
@@ -104,7 +104,7 @@ export default function ProfileDetailsPage() {
                 </button>
               ) : (
                 <div key={field.key} className={`px-5 py-5 ${!isLast ? "border-b border-[#F5F5F5]" : ""}`} data-testid={`field-${field.key}`}>
-                  <p className="text-[11px] text-[#9CA3AF] font-semibold uppercase tracking-wider mb-1.5">{field.label}</p>
+                  <p className="text-[11px] text-[#9CA3AF] font-medium uppercase tracking-wider mb-1.5">{field.label}</p>
                   <p className={`text-[15px] font-medium truncate leading-snug ${hasValue ? "text-[#111827]" : "text-[#D1D5DB]"}`}>
                     {value || "-"}
                   </p>

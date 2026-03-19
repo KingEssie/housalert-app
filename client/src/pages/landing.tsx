@@ -18,10 +18,10 @@ export default function LandingPage() {
     <div className="min-h-screen bg-background">
       <header className="w-full bg-background sticky top-0 z-20 border-b" style={{ borderColor: "#E5E7EB" }}>
         <div className="max-w-5xl mx-auto px-6 h-[60px] flex items-center justify-between gap-4">
-          <HousAlertLogo size={36} textClassName="font-extrabold text-xl tracking-tight text-[#1F2937]" />
+          <HousAlertLogo size={36} textClassName="font-medium text-xl tracking-tight text-[#1F2937]" />
           <Button
             variant="ghost"
-            className="text-muted-foreground font-semibold text-sm"
+            className="text-muted-foreground font-medium text-sm"
             onClick={() => navigate("/login")}
             data-testid="button-login-nav"
           >
@@ -34,7 +34,7 @@ export default function LandingPage() {
         <section className="bg-background">
           <div className="max-w-2xl mx-auto px-6 pt-20 pb-24 md:pt-28 md:pb-32 text-center">
             <h1
-              className="text-[40px] md:text-[56px] font-[800] leading-[1.05] tracking-[-0.03em] mb-6"
+              className="text-[40px] md:text-[56px] font-semibold leading-[1.05] tracking-[-0.03em] mb-6"
               style={{ color: "#1F2937" }}
               data-testid="text-headline"
             >
@@ -48,7 +48,7 @@ export default function LandingPage() {
             </p>
             <Button
               size="lg"
-              className="h-[56px] px-10 rounded-full text-[16px] font-semibold bg-primary text-primary-foreground"
+              className="h-[56px] px-10 rounded-full text-[16px] font-medium bg-primary text-primary-foreground"
               onClick={() => navigate("/onboarding/location")}
               data-testid="button-start-search"
             >
@@ -71,7 +71,7 @@ export default function LandingPage() {
 
         <section className="px-6 py-20 md:py-28">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-[30px] md:text-[36px] font-[800] text-center tracking-[-0.03em] leading-[1.1] mb-14" style={{ color: "#1F2937" }} data-testid="text-features-heading">
+            <h2 className="text-[30px] md:text-[36px] font-semibold text-center tracking-[-0.03em] leading-[1.1] mb-14" style={{ color: "#1F2937" }} data-testid="text-features-heading">
               {t("landing.featuresHeading")}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -79,7 +79,7 @@ export default function LandingPage() {
                 <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "#EBF2FF" }}>
                   <Search className="w-6 h-6" style={{ color: "#0D6EFD" }} />
                 </div>
-                <h3 className="text-[18px] font-bold mb-2" style={{ color: "#1F2937" }}>{t("landing.smartSearch")}</h3>
+                <h3 className="text-[18px] font-medium mb-2" style={{ color: "#1F2937" }}>{t("landing.smartSearch")}</h3>
                 <p className="text-[15px] text-muted-foreground leading-relaxed">
                   {t("landing.smartSearchDesc")}
                 </p>
@@ -89,7 +89,7 @@ export default function LandingPage() {
                 <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "#EBF2FF" }}>
                   <Bell className="w-6 h-6" style={{ color: "#0D6EFD" }} />
                 </div>
-                <h3 className="text-[18px] font-bold mb-2" style={{ color: "#1F2937" }}>{t("landing.instantAlertsTitle")}</h3>
+                <h3 className="text-[18px] font-medium mb-2" style={{ color: "#1F2937" }}>{t("landing.instantAlertsTitle")}</h3>
                 <p className="text-[15px] text-muted-foreground leading-relaxed">
                   {t("landing.instantAlertsDesc")}
                 </p>
@@ -99,7 +99,7 @@ export default function LandingPage() {
                 <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "#EBF2FF" }}>
                   <Zap className="w-6 h-6" style={{ color: "#0D6EFD" }} />
                 </div>
-                <h3 className="text-[18px] font-bold mb-2" style={{ color: "#1F2937" }}>{t("landing.fasterTitle")}</h3>
+                <h3 className="text-[18px] font-medium mb-2" style={{ color: "#1F2937" }}>{t("landing.fasterTitle")}</h3>
                 <p className="text-[15px] text-muted-foreground leading-relaxed">
                   {t("landing.fasterDesc")}
                 </p>
@@ -110,7 +110,7 @@ export default function LandingPage() {
 
         <section className="px-6 pb-20 md:pb-28">
           <div className="max-w-2xl mx-auto">
-            <h2 className="text-[30px] md:text-[36px] font-[800] text-center tracking-[-0.03em] leading-[1.1] mb-14" style={{ color: "#1F2937" }} data-testid="text-how-it-works">
+            <h2 className="text-[30px] md:text-[36px] font-semibold text-center tracking-[-0.03em] leading-[1.1] mb-14" style={{ color: "#1F2937" }} data-testid="text-how-it-works">
               {t("landing.howItWorks")}
             </h2>
             <div className="space-y-0">
@@ -122,12 +122,12 @@ export default function LandingPage() {
                 <div key={item.step} className="flex items-start gap-5" data-testid={`step-${item.step}`}>
                   <div className="flex flex-col items-center">
                     <div className="w-11 h-11 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
-                      <span className="text-primary-foreground font-bold text-sm">{item.step}</span>
+                      <span className="text-primary-foreground font-medium text-sm">{item.step}</span>
                     </div>
                     {i < 2 && <div className="w-0.5 h-10 mt-2" style={{ backgroundColor: "#E5E7EB" }} />}
                   </div>
                   <div className="pt-2 pb-6">
-                    <h3 className="text-[18px] font-bold mb-1" style={{ color: "#1F2937" }}>{item.title}</h3>
+                    <h3 className="text-[18px] font-medium mb-1" style={{ color: "#1F2937" }}>{item.title}</h3>
                     <p className="text-[15px] text-muted-foreground">{item.desc}</p>
                   </div>
                 </div>
@@ -138,7 +138,7 @@ export default function LandingPage() {
 
         <section className="px-6 pb-24 md:pb-32">
           <div className="max-w-xl mx-auto bg-card rounded-lg p-8 md:p-12 text-center shadow-sm">
-            <h2 className="text-[32px] font-[800] tracking-[-0.03em] leading-[1.1] mb-4" style={{ color: "#1F2937" }} data-testid="text-cta-bottom">
+            <h2 className="text-[32px] font-semibold tracking-[-0.03em] leading-[1.1] mb-4" style={{ color: "#1F2937" }} data-testid="text-cta-bottom">
               {t("landing.ctaBottom")}
             </h2>
             <p className="text-[15px] text-muted-foreground mb-8">
@@ -146,7 +146,7 @@ export default function LandingPage() {
             </p>
             <Button
               size="lg"
-              className="h-[56px] px-10 rounded-full text-[16px] font-semibold bg-primary text-primary-foreground"
+              className="h-[56px] px-10 rounded-full text-[16px] font-medium bg-primary text-primary-foreground"
               onClick={() => navigate("/onboarding/location")}
               data-testid="button-start-search-bottom"
             >

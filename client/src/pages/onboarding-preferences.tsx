@@ -79,7 +79,7 @@ export default function OnboardingPreferencesPage() {
 
       <main className={`flex-1 ${containerClass} mx-auto w-full px-5 pb-8 pt-3`}>
         <h1
-          className="text-[24px] font-[800] text-[#111C3D] leading-[1.15] tracking-[-0.02em] mb-1"
+          className="text-[24px] font-[600] text-[#111C3D] leading-[1.15] tracking-[-0.02em] mb-1"
           data-testid="text-preferences-title"
         >
           {t("onboardingPreferences.title")}
@@ -158,14 +158,14 @@ export default function OnboardingPreferencesPage() {
         <div className="pt-5 flex gap-3">
           <Button
             variant="outline"
-            className="h-[48px] px-6 rounded-full text-[15px] font-semibold border-[#E5E7EB] text-[#374151] hover:bg-white"
+            className="h-[48px] px-6 rounded-full text-[15px] font-medium border-[#E5E7EB] text-[#374151] hover:bg-white"
             onClick={handleBack}
             data-testid="button-back-preferences"
           >
             {t("onboardingPreferences.back")}
           </Button>
           <Button
-            className="flex-1 h-[48px] rounded-full text-[15px] font-semibold shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7]"
+            className="flex-1 h-[48px] rounded-full text-[15px] font-medium shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7]"
             onClick={handleNext}
             data-testid="button-next-preferences"
           >

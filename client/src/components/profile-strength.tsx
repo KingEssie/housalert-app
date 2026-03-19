@@ -219,10 +219,8 @@ export function ProfileStrengthCard() {
     <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6" data-testid="card-profile-strength">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-[#F5F7FA] flex items-center justify-center">
-            <Shield className="w-4 h-4 text-[#1F2937]" />
-          </div>
-          <h3 className="text-[15px] font-semibold text-[#111C3D]">{t("profileStrength.title")}</h3>
+          <Shield className="w-[18px] h-[18px] text-[#9CA3AF]" />
+          <h3 className="text-[15px] font-medium text-[#111C3D]">{t("profileStrength.title")}</h3>
         </div>
         <span className={`text-[13px] font-medium px-2.5 py-1 rounded-full ${status.bg} ${status.color}`} data-testid="text-status-label">
           {status.label}
@@ -230,7 +228,7 @@ export function ProfileStrengthCard() {
       </div>
 
       <div className="flex items-end gap-2 mb-3">
-        <span className="text-[32px] font-bold text-[#111C3D] leading-none" data-testid="text-profile-score">{score}</span>
+        <span className="text-[32px] font-medium text-[#111C3D] leading-none" data-testid="text-profile-score">{score}</span>
         <span className="text-[14px] text-[#1F2937] mb-1">/ {maxScore}</span>
       </div>
 
@@ -278,7 +276,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
             <Sparkles className="w-4 h-4 text-[#1F2937]" />
-            <h3 className="text-[15px] font-semibold text-[#111C3D]">{t("profileStrength.completeAccount")}</h3>
+            <h3 className="text-[15px] font-medium text-[#111C3D]">{t("profileStrength.completeAccount")}</h3>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-[13px] text-[#1F2937]">
@@ -303,7 +301,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
                 className="transition-all duration-500"
               />
             </svg>
-            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-[#111C3D]">
+            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-medium text-[#111C3D]">
               {percentage}%
             </span>
           </div>
@@ -435,7 +433,7 @@ export function TaskModal({
           >
             <ArrowLeft className="w-4 h-4 text-[#1F2937]" />
           </button>
-          <h1 className="text-[17px] font-bold text-[#111C3D] flex-1 tracking-wide">{title}</h1>
+          <h1 className="text-[17px] font-medium text-[#111C3D] flex-1 tracking-wide">{title}</h1>
         </div>
       </header>
 
@@ -446,7 +444,7 @@ export function TaskModal({
               <p className="text-[14px] text-[#1F2937]">{t("profileStrength.alertsDesc")}</p>
               <Button
                 onClick={() => { onClose(); navigate("/settings/notifications"); }}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-bold"
+                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium"
                 data-testid="button-goto-notifications"
               >
                 <Bell className="w-4 h-4 mr-2" />
@@ -470,7 +468,7 @@ export function TaskModal({
               <Button
                 onClick={() => handleSave({ search_buddy_email: buddyEmail }, t("profileStrength.buddySaved"))}
                 disabled={!buddyEmail.includes("@") || updateProfileData.isPending}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-bold disabled:opacity-50"
+                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium disabled:opacity-50"
                 data-testid="button-save-buddy"
               >
                 {updateProfileData.isPending ? t("profileStrength.saving") : t("profileStrength.save")}
@@ -485,7 +483,7 @@ export function TaskModal({
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard?tab=filters"); }}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-bold"
+                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium"
                 data-testid="button-goto-filters"
               >
                 <Search className="w-4 h-4 mr-2" />
@@ -501,7 +499,7 @@ export function TaskModal({
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/application-letter"); }}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-bold"
+                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium"
                 data-testid="button-goto-letter"
               >
                 <FileText className="w-4 h-4 mr-2" />
@@ -514,7 +512,7 @@ export function TaskModal({
             <div className="flex flex-col gap-5">
               {DOCUMENT_CHECKLIST.map((group) => (
                 <div key={group.group}>
-                  <h4 className="text-[14px] font-semibold text-[#111C3D] mb-3">{group.group}</h4>
+                  <h4 className="text-[14px] font-medium text-[#111C3D] mb-3">{group.group}</h4>
                   <div className="flex flex-col gap-1">
                     {group.items.map((item) => (
                       <button
@@ -541,7 +539,7 @@ export function TaskModal({
               <Button
                 onClick={() => handleSave({ document_checklist: checklist }, t("profileStrength.docListSaved"))}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-bold disabled:opacity-50"
+                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium disabled:opacity-50"
                 data-testid="button-save-documents"
               >
                 {updateProfileData.isPending ? t("profileStrength.saving") : t("profileStrength.save")}
@@ -563,7 +561,7 @@ export function TaskModal({
               <p className="text-[14px] text-[#1F2937]">{t("profileStrength.phoneDesc")}</p>
               <Button
                 onClick={() => { onClose(); navigate("/settings/notifications"); }}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-bold"
+                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium"
                 data-testid="button-goto-phone-settings"
               >
                 <Phone className="w-4 h-4 mr-2" />
@@ -613,7 +611,7 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
             <Target className="w-4 h-4 text-[#1F2937]" />
-            <h3 className="text-[15px] font-semibold text-[#111C3D]">{t("profileStrength.prepareSearch")}</h3>
+            <h3 className="text-[15px] font-medium text-[#111C3D]">{t("profileStrength.prepareSearch")}</h3>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-[13px] text-[#1F2937]">
@@ -638,7 +636,7 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
                 className="transition-all duration-500"
               />
             </svg>
-            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-[#111C3D]">
+            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-medium text-[#111C3D]">
               {percentage}%
             </span>
           </div>
@@ -736,7 +734,7 @@ export function PrepTaskModal({
           >
             <ArrowLeft className="w-4 h-4 text-[#1F2937]" />
           </button>
-          <h1 className="text-[17px] font-bold text-[#111C3D] flex-1 tracking-wide">{titles[taskId] || ""}</h1>
+          <h1 className="text-[17px] font-medium text-[#111C3D] flex-1 tracking-wide">{titles[taskId] || ""}</h1>
         </div>
       </header>
 
@@ -749,7 +747,7 @@ export function PrepTaskModal({
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-bold"
+                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium"
                 data-testid="button-prep-create-profile"
               >
                 <Search className="w-4 h-4 mr-2" />
@@ -765,7 +763,7 @@ export function PrepTaskModal({
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/application-letter"); }}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-bold"
+                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium"
                 data-testid="button-prep-goto-letter"
               >
                 <FileText className="w-4 h-4 mr-2" />
@@ -780,7 +778,7 @@ export function PrepTaskModal({
                 {t("profileStrength.prepExtraDesc")}
               </p>
               <div className="bg-[#F3F4F6] rounded-2xl p-5">
-                <p className="text-[14px] font-semibold text-[#111C3D] mb-3">{t("profileStrength.prepWhyTitle")}</p>
+                <p className="text-[14px] font-medium text-[#111C3D] mb-3">{t("profileStrength.prepWhyTitle")}</p>
                 <ul className="text-[14px] text-[#1F2937] space-y-2">
                   <li className="flex items-start gap-2"><span className="text-[#1F2937] mt-0.5">+</span>{t("profileStrength.prepWhy1")}</li>
                   <li className="flex items-start gap-2"><span className="text-[#1F2937] mt-0.5">+</span>{t("profileStrength.prepWhy2")}</li>
@@ -789,7 +787,7 @@ export function PrepTaskModal({
               </div>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-bold"
+                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium"
                 data-testid="button-prep-add-profile"
               >
                 <Plus className="w-4 h-4 mr-2" />
@@ -804,7 +802,7 @@ export function PrepTaskModal({
                 {t("profileStrength.prepNetworkDesc")}
               </p>
               <div className="bg-[#F3F4F6] rounded-2xl p-5">
-                <p className="text-[14px] font-semibold text-[#111C3D] mb-3">{t("profileStrength.shareTextLabel")}</p>
+                <p className="text-[14px] font-medium text-[#111C3D] mb-3">{t("profileStrength.shareTextLabel")}</p>
                 <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("profileStrength.shareText")}</p>
               </div>
               <Button
@@ -819,7 +817,7 @@ export function PrepTaskModal({
               <Button
                 onClick={() => handleMarkDone("network_task_done")}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-bold disabled:opacity-50"
+                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium disabled:opacity-50"
                 data-testid="button-mark-network-done"
               >
                 {updateProfileData.isPending ? t("profileStrength.saving") : t("profileStrength.markComplete")}
@@ -834,7 +832,7 @@ export function PrepTaskModal({
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/tips/bezichtiging"); }}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-bold"
+                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium"
                 data-testid="button-goto-viewing-tips"
               >
                 <Eye className="w-4 h-4 mr-2" />
@@ -874,10 +872,8 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
     <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5" data-testid="card-notification-summary">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-[#F5F7FA] flex items-center justify-center">
-            <Bell className="w-4 h-4 text-[#1F2937]" />
-          </div>
-          <h3 className="text-[15px] font-semibold text-[#111C3D]">{t("profileStrength.notifChannels")}</h3>
+          <Bell className="w-[18px] h-[18px] text-[#9CA3AF]" />
+          <h3 className="text-[15px] font-medium text-[#111C3D]">{t("profileStrength.notifChannels")}</h3>
         </div>
         <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${activeCount > 0 ? "bg-[#F5F7FA] text-[#1F2937]" : "bg-[#F5F7FA] text-[#1F2937]"}`}>
           {activeCount > 0 ? t("profileStrength.notifActive", { count: String(activeCount) }) : t("profileStrength.notifNoneActive")}
@@ -915,7 +911,7 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
 
       <button
         onClick={() => navigate("/settings/notifications")}
-        className="w-full h-[40px] rounded-full border border-[#E5E7EB] bg-white text-[13px] font-semibold text-[#111C3D] hover:bg-[#F5F7FA] transition-colors flex items-center justify-center gap-1.5"
+        className="w-full h-[40px] rounded-full border border-[#E5E7EB] bg-white text-[13px] font-medium text-[#111C3D] hover:bg-[#F5F7FA] transition-colors flex items-center justify-center gap-1.5"
         data-testid="button-manage-channels"
       >
         <Bell className="w-3.5 h-3.5" />
@@ -951,11 +947,9 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
   return (
     <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5" data-testid="card-speed-readiness">
       <div className="flex items-center gap-2 mb-4">
-        <div className="w-8 h-8 rounded-full bg-[#F5F7FA] flex items-center justify-center">
-          <Zap className="w-4 h-4 text-[#1F2937]" />
-        </div>
+        <Zap className="w-[18px] h-[18px] text-[#9CA3AF]" />
         <div className="flex-1">
-          <h3 className="text-[15px] font-semibold text-[#111C3D]">{t("profileStrength.reactionSpeed")}</h3>
+          <h3 className="text-[15px] font-medium text-[#111C3D]">{t("profileStrength.reactionSpeed")}</h3>
         </div>
         <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${allDone ? "bg-[#16A34A]/10 text-[#1F2937]" : "bg-[#F5F7FA] text-[#1F2937]"}`}>
           {speedDone}/{speedTotal}
@@ -1022,14 +1016,12 @@ export function SpeedBanner({ navigate }: { navigate: (path: string) => void }) 
         onClick={() => navigate("/dashboard")}
         data-testid="banner-speed-ready"
       >
-        <div className="w-9 h-9 rounded-full bg-[#F5F7FA] flex items-center justify-center flex-shrink-0">
-          <Zap className="w-4 h-4 text-[#1F2937]" />
-        </div>
+        <Zap className="w-[18px] h-[18px] text-[#9CA3AF] flex-shrink-0" />
         <div className="flex-1">
-          <p className="text-[14px] font-semibold text-[#111C3D]">{t("profileStrength.readyFast")}</p>
-          <p className="text-[12px] text-[#1F2937]">{t("profileStrength.allStepsComplete")}</p>
+          <p className="text-[14px] font-medium text-[#111C3D]">{t("profileStrength.readyFast")}</p>
+          <p className="text-[12px] text-[#9CA3AF]">{t("profileStrength.allStepsComplete")}</p>
         </div>
-        <span className="text-[13px] font-bold text-[#111C3D]">{pct}%</span>
+        <span className="text-[13px] font-medium text-[#111C3D]">{pct}%</span>
       </div>
     );
   }
@@ -1040,11 +1032,9 @@ export function SpeedBanner({ navigate }: { navigate: (path: string) => void }) 
       onClick={() => navigate("/dashboard")}
       data-testid="banner-speed-incomplete"
     >
-      <div className="w-9 h-9 rounded-full bg-[#F5F7FA] flex items-center justify-center flex-shrink-0">
-        <Zap className="w-4 h-4 text-[#1F2937]" />
-      </div>
+      <Zap className="w-[18px] h-[18px] text-[#9CA3AF] flex-shrink-0" />
       <div className="flex-1">
-        <p className="text-[14px] font-semibold text-[#111C3D]">
+        <p className="text-[14px] font-medium text-[#111C3D]">
           {t("profileStrength.stepsRemaining", { count: String(remaining), label: remaining === 1 ? t("profileStrength.stepSingular") : t("profileStrength.stepPluralLabel") })}
         </p>
         <p className="text-[12px] text-[#1F2937]">{t("profileStrength.completeYourProfile")}</p>
