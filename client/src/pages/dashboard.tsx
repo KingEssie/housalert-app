@@ -652,7 +652,12 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
 
   const TASK_ACTION_MAP: Record<string, () => void> = {
     profileCreated: () => navigate("/dashboard/searches/new"),
-    notificationsEnabled: () => setActiveTab("profile"),
+    notificationsEnabled: () => {
+      setActiveTab("profile");
+      setTimeout(() => {
+        document.getElementById("notification-settings")?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 150);
+    },
     firstMatchViewed: () => setActiveTab("matches"),
     firstReaction: () => { setActiveTab("matches"); },
     search_buddy: () => navigate("/profile/edit/search_buddy_email"),
@@ -1636,7 +1641,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             )}
           </div>
 
-          <div className="rounded-[24px] border border-[#F0F0F0] overflow-hidden shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
+          <div id="notification-settings" className="rounded-[24px] border border-[#F0F0F0] overflow-hidden shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
             <div className="flex items-center justify-between px-5 py-4">
               <div className="flex items-center gap-3.5">
                 <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
