@@ -513,26 +513,7 @@ function RecentlyViewedSection({ accessToken }: { accessToken: string | undefine
     .filter(m => m.title && m.url && m.listing_id && getMatchTab(m) === "bekeken")
     .slice(0, 10);
 
-  if (apiMatchesQuery.isLoading) {
-    return (
-      <div className="flex flex-col gap-3">
-        <h2 className="text-section-title">{t("home.recentlyViewed")}</h2>
-        <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-none">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="flex-shrink-0 w-[56vw] max-w-[210px]">
-              <div className="w-full bg-[#F5F7FA] rounded-[12px] animate-pulse" style={{ aspectRatio: "3/2" }} />
-              <div className="pt-2 flex flex-col gap-1.5">
-                <div className="h-3.5 bg-[#F5F7FA] rounded-md w-2/3 animate-pulse" />
-                <div className="h-3 bg-[#F5F7FA] rounded-md w-1/2 animate-pulse" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  if (viewedMatches.length === 0) return null;
+  if (apiMatchesQuery.isLoading || viewedMatches.length === 0) return null;
 
   return (
     <div className="flex flex-col gap-3" data-testid="section-recently-viewed">
