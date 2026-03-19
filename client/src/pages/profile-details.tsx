@@ -80,7 +80,7 @@ export default function ProfileDetailsPage() {
             <Loader2 className="w-6 h-6 animate-spin text-[#D1D5DB]" />
           </div>
         ) : (
-          <div className="rounded-2xl border border-[#F0F0F0] overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.02)]">
+          <div className="rounded-[24px] border border-[#F0F0F0] overflow-hidden shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
             {FIELDS.map((field, idx) => {
               const value = getFieldValue(field.key);
               const editable = isEditable(field.key);

@@ -88,7 +88,7 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6">
+          <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6">
             <form onSubmit={handleLogin} className="flex flex-col gap-5">
               <div className="flex flex-col gap-2">
                 <Label htmlFor="login-email" className="text-[14px] font-semibold text-[#111C3D]">{t("auth.login.email")}</Label>

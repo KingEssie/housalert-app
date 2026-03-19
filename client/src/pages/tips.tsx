@@ -132,7 +132,7 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
               <button
                 key={guide.id}
                 onClick={() => navigate(`/tip/${guide.id}`)}
-                className={`bg-white rounded-lg border border-[#E5E7EB] p-5 flex items-center gap-4 text-left hover:shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-all duration-200 active:scale-[0.985] w-full ${isRead ? "opacity-70" : ""}`}
+                className={`bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 flex items-center gap-4 text-left hover:shadow-[0_4px_16px_rgba(15,23,42,0.08),0_12px_36px_rgba(15,23,42,0.08)] transition-all duration-200 active:scale-[0.985] w-full ${isRead ? "opacity-70" : ""}`}
                 data-testid={`card-guide-${guide.id}`}
               >
                 <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(13,110,253,0.1)" }}>

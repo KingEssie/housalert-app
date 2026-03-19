@@ -176,7 +176,7 @@ export default function PaywallPage() {
             <button
               key={plan.id}
               onClick={() => setSelectedPlan(plan.id)}
-              className={`w-full p-6 rounded-2xl border-2 transition-all text-left relative bg-white shadow-[0_4px_20px_rgba(0,0,0,0.06)] ${
+              className={`w-full p-6 rounded-[24px] border-2 transition-all text-left relative bg-white shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] ${
                 selectedPlan === plan.id
                   ? "border-[#0D6EFD]"
                   : "border-transparent hover:border-[#E5E7EB]"
@@ -218,7 +218,7 @@ export default function PaywallPage() {
           ))}
         </div>
 
-        <div className="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] p-6">
+        <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6">
           <p className="text-[16px] font-[700] text-[#111C3D] mb-3">{t("paywall.featuresTitle")}</p>
           <div className="space-y-2.5">
             {FEATURE_KEYS.map((key, i) => (

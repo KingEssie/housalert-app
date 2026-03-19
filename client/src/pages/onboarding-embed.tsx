@@ -190,7 +190,7 @@ export default function OnboardingEmbedPage() {
   if (draftId) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center p-4">
-        <div className="w-full max-w-[440px] bg-white rounded-2xl border border-[#E5E7EB] shadow-[0_4px_24px_rgba(0,0,0,0.06)] overflow-hidden">
+        <div className="w-full max-w-[440px] bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden">
           <CompletionScreen draftId={draftId} />
         </div>
       </div>
@@ -210,7 +210,7 @@ export default function OnboardingEmbedPage() {
           </h1>
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-[0_4px_24px_rgba(0,0,0,0.06)] overflow-visible">
+        <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-visible">
 
           <div className="px-5 pt-5 pb-1">
             <LocationModeSelector

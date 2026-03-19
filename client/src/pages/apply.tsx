@@ -155,7 +155,7 @@ export default function ApplyPage() {
         <div className="animate-pulse">
           <div className="h-[240px] bg-[#E5E7EB]" />
           <div className="max-w-xl mx-auto w-full px-5 pt-5 space-y-4">
-            <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 space-y-3">
+            <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 space-y-3">
               <div className="h-6 bg-[#F5F7FA] rounded w-3/4" />
               <div className="h-4 bg-[#F5F7FA] rounded w-1/2" />
             </div>
@@ -293,7 +293,7 @@ export default function ApplyPage() {
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-5 -mt-2 relative z-10 pb-28">
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 mb-3">
+        <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 mb-3">
           <h1 className="text-[20px] font-[800] text-[#111C3D] leading-[1.2] tracking-[-0.02em] mb-2" data-testid="text-apply-title">
             {listing.title}
           </h1>
@@ -312,7 +312,7 @@ export default function ApplyPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5">
+        <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5">
           <div className="flex items-center justify-between mb-2">
             <p className="text-[13px] font-semibold text-[#111C3D]">{t("applySheet.applicationLetter")}</p>
           </div>

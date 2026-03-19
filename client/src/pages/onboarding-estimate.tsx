@@ -114,7 +114,7 @@ export default function OnboardingEstimatePage() {
           {t("onboardingEstimate.subtitle", { city })}
         </p>
 
-        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6" data-testid="card-estimate">
+        <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6" data-testid="card-estimate">
           <div className="text-center py-4 border-b border-[#E5E7EB]">
             <div className="w-14 h-14 rounded-2xl bg-[#EBF2FF] flex items-center justify-center mx-auto mb-4">
               <TrendingUp className="w-7 h-7 text-[#0D6EFD]" />

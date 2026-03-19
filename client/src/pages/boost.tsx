@@ -180,7 +180,7 @@ function BoostScoreCard({ score, remaining, completed, total }: { score: number;
   else headline = t("boostScore.readyToStart");
 
   return (
-    <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6" data-testid="card-boost-score">
+    <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6" data-testid="card-boost-score">
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-[#F5F7FA] flex items-center justify-center">
@@ -246,7 +246,7 @@ function RecommendedSection({
           return (
             <div
               key={task.id}
-              className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5"
+              className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5"
               data-testid={`card-recommend-${task.id}`}
             >
               <div className="flex items-start gap-4">
@@ -297,7 +297,7 @@ function AllTasksSection({
       <h3 className="text-section-title mb-3">
         {t("boost.allSteps")}
       </h3>
-      <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] overflow-hidden">
+      <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden">
         {incompleteTasks.map((task, i) => {
           const Icon = TASK_ICONS[task.id] || Shield;
           return (
@@ -627,7 +627,7 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
         <div className="mb-1">
           <h1 className="text-page-title">{t("boost.title")}</h1>
         </div>
-        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-8 text-center" data-testid="boost-error">
+        <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-8 text-center" data-testid="boost-error">
           <p className="text-[15px] text-[#1F2937] mb-4">{t("boost.errorMessage")}</p>
           <Button
             onClick={() => refetch()}
@@ -648,12 +648,12 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
           <div className="h-8 bg-[#F5F7FA] rounded w-24 mb-2 animate-pulse" />
           <div className="h-4 bg-[#F5F7FA] rounded w-56 animate-pulse" />
         </div>
-        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
+        <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
           <div className="h-4 bg-[#F5F7FA] rounded w-32 mb-3" />
           <div className="h-10 bg-[#F5F7FA] rounded w-20 mb-2" />
           <div className="h-2.5 bg-[#F5F7FA] rounded w-full" />
         </div>
-        <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
+        <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
           <div className="h-4 bg-[#F5F7FA] rounded w-48 mb-3" />
           <div className="h-12 bg-[#F5F7FA] rounded w-full mb-2" />
           <div className="h-12 bg-[#F5F7FA] rounded w-full" />

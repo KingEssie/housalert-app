@@ -88,7 +88,7 @@ export default function OnboardingPreferencesPage() {
           {t("onboardingPreferences.subtitle")}
         </p>
 
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 space-y-5">
+        <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 space-y-5">
           <div>
             <label className="text-[13px] font-[600] text-[#374151] mb-1.5 block">
               {t("onboardingPreferences.furnished")}

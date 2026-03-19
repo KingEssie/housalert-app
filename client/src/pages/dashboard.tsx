@@ -155,7 +155,7 @@ function MatchCard({
       onClick={handleCardClick}
       data-testid={`card-match-${match.listing_id}`}
     >
-      <div className="relative rounded-2xl overflow-hidden mb-4 shadow-[0_1px_6px_rgba(0,0,0,0.04)]">
+      <div className="relative rounded-[24px] overflow-hidden mb-4 shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
         {hasImage && !imgError ? (
           <img
             src={match.image_url!}
@@ -235,7 +235,7 @@ function ProfileCard({
 
   return (
     <div
-      className="rounded-2xl border border-[#F0F0F0] p-5 flex flex-col gap-5 shadow-[0_1px_4px_rgba(0,0,0,0.03)]"
+      className="rounded-[24px] border border-[#F0F0F0] p-5 flex flex-col gap-5 shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]"
       data-testid={`card-profile-${profile.id}`}
     >
       <div className="flex items-start justify-between">
@@ -342,7 +342,7 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
     return (
       <div className="flex flex-col gap-4" data-testid="section-recente-matches-empty">
         <h2 className="text-[17px] font-bold text-[#111827]">{t("home.recentMatches")}</h2>
-        <div className="rounded-2xl border border-[#F0F0F0] p-6 text-center shadow-[0_1px_4px_rgba(0,0,0,0.03)]">
+        <div className="rounded-[24px] border border-[#F0F0F0] p-6 text-center shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
           <p className="text-[14px] text-[#6B7280] mb-4 leading-relaxed">
             {t("home.matchesWillAppear")}
           </p>
@@ -373,7 +373,7 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
     return (
       <div className="flex flex-col gap-4" data-testid="section-recente-matches-empty">
         <h2 className="text-[17px] font-bold text-[#111827]">{t("home.recentMatches")}</h2>
-        <div className="rounded-2xl border border-[#F0F0F0] p-6 text-center shadow-[0_1px_4px_rgba(0,0,0,0.03)]">
+        <div className="rounded-[24px] border border-[#F0F0F0] p-6 text-center shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
           <p className="text-[14px] text-[#6B7280] leading-relaxed">
             {t("home.firstMatchesWillAppear")}
           </p>
@@ -580,7 +580,7 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
   const hasMore = sortedTasks.length > INITIAL_SHOW;
 
   return (
-    <div className="rounded-2xl border border-[#F0F0F0] p-5 shadow-[0_1px_4px_rgba(0,0,0,0.03)]" data-testid="unified-task-list">
+    <div className="rounded-[24px] border border-[#F0F0F0] p-5 shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]" data-testid="unified-task-list">
       <div className="flex items-center gap-3.5 mb-5">
         <div className="w-10 h-10 rounded-xl bg-[#EBF2FF] flex items-center justify-center flex-shrink-0">
           <Rocket className="w-[18px] h-[18px] text-[#0D6EFD]" />
@@ -701,7 +701,7 @@ function HomeTab({
       <div className="flex flex-col gap-7 px-6 mt-1">
 
       {hasActiveSub && hasMatches ? (
-        <div className="rounded-2xl bg-gradient-to-br from-[#0D6EFD] to-[#0A4FBA] p-6 shadow-[0_4px_20px_rgba(13,110,253,0.15)]" data-testid="hero-matches">
+        <div className="rounded-[24px] bg-gradient-to-br from-[#0D6EFD] to-[#0A4FBA] p-6 shadow-[0_4px_20px_rgba(13,110,253,0.15)]" data-testid="hero-matches">
           <div className="flex items-center gap-3.5 mb-5">
             <div className="w-11 h-11 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
               <Search className="w-5 h-5 text-white" />
@@ -731,7 +731,7 @@ function HomeTab({
           </button>
         </div>
       ) : hasActiveSub && hasProfiles ? (
-        <div className="rounded-2xl bg-gradient-to-br from-[#0D6EFD] to-[#0A4FBA] p-6 shadow-[0_4px_20px_rgba(13,110,253,0.15)]" data-testid="hero-active-no-matches">
+        <div className="rounded-[24px] bg-gradient-to-br from-[#0D6EFD] to-[#0A4FBA] p-6 shadow-[0_4px_20px_rgba(13,110,253,0.15)]" data-testid="hero-active-no-matches">
           <div className="flex items-center gap-3.5 mb-5">
             <div className="w-11 h-11 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
               <Search className="w-5 h-5 text-white" />
@@ -755,7 +755,7 @@ function HomeTab({
           </button>
         </div>
       ) : hasProfiles ? (
-        <div className="rounded-2xl bg-gradient-to-br from-[#0D6EFD] to-[#0A4FBA] p-6 shadow-[0_4px_20px_rgba(13,110,253,0.15)]" data-testid="hero-estimate">
+        <div className="rounded-[24px] bg-gradient-to-br from-[#0D6EFD] to-[#0A4FBA] p-6 shadow-[0_4px_20px_rgba(13,110,253,0.15)]" data-testid="hero-estimate">
           <div className="flex items-center gap-3.5 mb-5">
             <div className="w-11 h-11 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
               <Sparkles className="w-5 h-5 text-white" />
@@ -794,7 +794,7 @@ function HomeTab({
       )}
 
       {subscription.isTrial && subscription.trialEndsAt && (
-        <div className="rounded-2xl border border-[#F0F0F0] px-5 py-4 flex items-center gap-3.5 shadow-[0_1px_4px_rgba(0,0,0,0.03)]" data-testid="banner-trial">
+        <div className="rounded-[24px] border border-[#F0F0F0] px-5 py-4 flex items-center gap-3.5 shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]" data-testid="banner-trial">
           <div className="w-10 h-10 rounded-xl bg-[#FEF3C7] flex items-center justify-center flex-shrink-0">
             <Crown className="w-[18px] h-[18px] text-[#D97706]" />
           </div>
@@ -920,7 +920,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           ))}
         </div>
       ) : apiMatchesQuery.isError ? (
-        <div className="bg-white rounded-2xl border border-[#F0F0F0] shadow-[0_1px_4px_rgba(0,0,0,0.03)] p-10 flex flex-col items-center text-center gap-4">
+        <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-10 flex flex-col items-center text-center gap-4">
           <div className="w-14 h-14 rounded-2xl bg-[#F8F9FA] flex items-center justify-center">
             <AlertCircle className="w-6 h-6 text-[#6B7280]" />
           </div>
@@ -1070,7 +1070,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
       {profilesQuery.isLoading ? (
         <div className="flex flex-col gap-3">
           {[1, 2].map((i) => (
-            <div key={i} className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.03)] border border-[#F0F0F0] p-5 animate-pulse">
+            <div key={i} className="bg-white rounded-[24px] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] border border-[#F0F0F0] p-5 animate-pulse">
               <div className="h-4 bg-[#F5F7FA] rounded w-1/3 mb-3" />
               <div className="flex gap-2">
                 <div className="h-6 bg-[#F5F7FA] rounded-full w-24" />
@@ -1426,7 +1426,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             </div>
           )}
 
-          <div className="rounded-2xl border border-[#F0F0F0] bg-[#FAFAFA] overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.02)]">
+          <div className="rounded-[24px] border border-[#F0F0F0] bg-[#FAFAFA] overflow-hidden shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
             {pd?.search_buddy_email ? (
               <button
                 onClick={() => navigate("/profile/edit/search_buddy_email")}
@@ -1462,7 +1462,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             )}
           </div>
 
-          <div className="rounded-2xl border border-[#F0F0F0] overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.02)]">
+          <div className="rounded-[24px] border border-[#F0F0F0] overflow-hidden shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
             <div className="flex items-center justify-between px-5 py-4">
               <div className="flex items-center gap-3.5">
                 <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
@@ -1498,7 +1498,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             </div>
           </div>
 
-          <div className="rounded-2xl border border-[#F0F0F0] p-5 shadow-[0_1px_4px_rgba(0,0,0,0.02)]">
+          <div className="rounded-[24px] border border-[#F0F0F0] p-5 shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
             <h2 className="text-[15px] font-bold text-[#111827] mb-4">{t("profile.reactionLetter")}</h2>
             {letterPreview ? (
               <div>
@@ -1537,7 +1537,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             )}
           </div>
 
-          <div className="rounded-2xl border border-[#F0F0F0] overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.02)]">
+          <div className="rounded-[24px] border border-[#F0F0F0] overflow-hidden shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
             <AccountSettingsRow
               label={t("profile.subscription")}
               subtext={subscription.isActive && !subscription.isTrial
@@ -1571,7 +1571,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             </button>
           )}
 
-          <div className="rounded-2xl border border-[#F0F0F0] overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.02)]">
+          <div className="rounded-[24px] border border-[#F0F0F0] overflow-hidden shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
             <AccountSettingsRow
               label={t("profile.language")}
               subtext={currentLangLabel}
@@ -1581,7 +1581,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
 
           <div>
             <p className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wider mb-3 px-1">{t("profile.support")}</p>
-            <div className="rounded-2xl border border-[#F0F0F0] overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.02)]">
+            <div className="rounded-[24px] border border-[#F0F0F0] overflow-hidden shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
               <AccountSettingsRow
                 label={t("profile.privacy")}
                 onClick={() => navigate("/datenschutz")}
@@ -1599,7 +1599,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             </div>
           </div>
 
-          <div className="rounded-2xl border border-[#F0F0F0] overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.02)]">
+          <div className="rounded-[24px] border border-[#F0F0F0] overflow-hidden shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
             <button
               onClick={() => setShowLogoutConfirm(true)}
               disabled={signingOut}
@@ -1623,7 +1623,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
           {(user?.email?.toLowerCase() === "martin.essie87@gmail.com") && (
             <div>
               <p className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wider mb-3 px-1">{t("profile.adminSection")}</p>
-              <div className="rounded-2xl border border-[#F0F0F0] overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.02)]">
+              <div className="rounded-[24px] border border-[#F0F0F0] overflow-hidden shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
                 <AccountSettingsRow
                   label={t("profile.adminPortal")}
                   onClick={() => navigate("/admin/portal")}

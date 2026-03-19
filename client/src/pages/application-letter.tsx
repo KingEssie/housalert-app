@@ -114,7 +114,7 @@ export default function ApplicationLetterPage() {
             </div>
           </div>
 
-          <div className="bg-card rounded-2xl shadow-sm p-6">
+          <div className="bg-card rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6">
             <h3 className="text-[16px] font-[700] mb-3" style={{ color: "#1F2937" }}>{t("applicationLetter.placeholders")}</h3>
             <div className="flex flex-wrap gap-1.5">
               {PLACEHOLDERS.map((p) => (
@@ -148,12 +148,12 @@ export default function ApplicationLetterPage() {
           </div>
 
           {isLoading ? (
-            <div className="bg-card rounded-2xl shadow-sm p-6 animate-pulse">
+            <div className="bg-card rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
               <div className="h-4 bg-muted rounded w-32 mb-4" />
               <div className="h-48 bg-muted rounded" />
             </div>
           ) : (
-            <div className="bg-card rounded-2xl shadow-sm p-6">
+            <div className="bg-card rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6">
               <div className="flex items-center justify-between gap-4 mb-3">
                 <h3 className="text-[16px] font-semibold" style={{ color: "#1F2937" }}>{t("applicationLetter.yourLetter")}</h3>
                 <button

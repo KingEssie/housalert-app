@@ -184,7 +184,7 @@ export function ProfileStrengthCard() {
 
   if (isLoading || !data) {
     return (
-      <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
+      <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
         <div className="h-4 bg-[#F5F7FA] rounded w-32 mb-3" />
         <div className="h-6 bg-[#F5F7FA] rounded w-20 mb-2" />
         <div className="h-2 bg-[#F5F7FA] rounded w-full" />
@@ -216,7 +216,7 @@ export function ProfileStrengthCard() {
   const recommendation = getRecommendation(pct, allTasks);
 
   return (
-    <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6" data-testid="card-profile-strength">
+    <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6" data-testid="card-profile-strength">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-[#F5F7FA] flex items-center justify-center">
@@ -257,7 +257,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
 
   if (isLoading || !data) {
     return (
-      <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
+      <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
         <div className="h-4 bg-[#F5F7FA] rounded w-40 mb-3" />
         <div className="h-3 bg-[#F5F7FA] rounded w-24" />
       </div>
@@ -269,7 +269,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
   const percentage = Math.round((completedCount / totalCount) * 100);
 
   return (
-    <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] overflow-hidden" data-testid="card-account-completion">
+    <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden" data-testid="card-account-completion">
       <button
         className="w-full p-6 flex items-center justify-between text-left"
         onClick={() => setExpanded(!expanded)}
@@ -592,7 +592,7 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
 
   if (isLoading || !data) {
     return (
-      <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-6 animate-pulse">
+      <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
         <div className="h-4 bg-[#F5F7FA] rounded w-40 mb-3" />
         <div className="h-3 bg-[#F5F7FA] rounded w-24" />
       </div>
@@ -604,7 +604,7 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
   const percentage = Math.round((prepCompletedCount / prepTotalCount) * 100);
 
   return (
-    <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] overflow-hidden" data-testid="card-search-preparation">
+    <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden" data-testid="card-search-preparation">
       <button
         className="w-full p-6 flex items-center justify-between text-left"
         onClick={() => setExpanded(!expanded)}
@@ -854,7 +854,7 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
 
   if (isLoading || !data) {
     return (
-      <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 animate-pulse">
+      <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 animate-pulse">
         <div className="h-4 bg-[#F5F7FA] rounded w-40 mb-3" />
         <div className="h-3 bg-[#F5F7FA] rounded w-32" />
       </div>
@@ -871,7 +871,7 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
   const activeCount = channelList.filter(c => c.enabled).length;
 
   return (
-    <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5" data-testid="card-notification-summary">
+    <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5" data-testid="card-notification-summary">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-[#F5F7FA] flex items-center justify-center">
@@ -931,7 +931,7 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
 
   if (isLoading || !data) {
     return (
-      <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 animate-pulse">
+      <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 animate-pulse">
         <div className="h-4 bg-[#F5F7FA] rounded w-40 mb-3" />
         <div className="h-3 bg-[#F5F7FA] rounded w-24" />
       </div>
@@ -949,7 +949,7 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5" data-testid="card-speed-readiness">
+    <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5" data-testid="card-speed-readiness">
       <div className="flex items-center gap-2 mb-4">
         <div className="w-8 h-8 rounded-full bg-[#F5F7FA] flex items-center justify-center">
           <Zap className="w-4 h-4 text-[#1F2937]" />

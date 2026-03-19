@@ -167,7 +167,7 @@ export default function EmbedSuccessPage() {
           {t("embedSuccess.subtitle")}
         </p>
 
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5">
+        <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5">
           <form onSubmit={handleSignup} className="space-y-4">
             <div className="relative">
               <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9CA3AF]" />

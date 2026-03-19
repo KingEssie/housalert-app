@@ -115,7 +115,7 @@ export function ReactiesnelheidCard({
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 animate-pulse" data-testid="card-reactiesnelheid-loading">
+      <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 animate-pulse" data-testid="card-reactiesnelheid-loading">
         <div className="h-4 bg-[#F5F7FA] rounded w-32 mb-3" />
         <div className="h-3 bg-[#F5F7FA] rounded w-48 mb-3" />
         <div className="h-1.5 bg-[#F5F7FA] rounded-full w-full" />
@@ -134,7 +134,7 @@ export function ReactiesnelheidCard({
   return (
     <Wrapper
       onClick={onTap}
-      className={`bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.04)] p-5 w-full text-left ${onTap ? "cursor-pointer" : ""}`}
+      className={`bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 w-full text-left ${onTap ? "cursor-pointer" : ""}`}
       data-testid="card-reactiesnelheid"
     >
       <div className="flex items-start gap-4">

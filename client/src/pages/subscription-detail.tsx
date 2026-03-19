@@ -88,7 +88,7 @@ export default function SubscriptionDetailPage() {
         <PageHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
         <div className="max-w-xl mx-auto p-4 space-y-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-card rounded-2xl border p-5 animate-pulse" style={{ borderColor: "#E5E7EB" }}>
+            <div key={i} className="bg-card rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 animate-pulse">
               <div className="h-4 bg-muted rounded w-1/3 mb-3" />
               <div className="h-5 bg-muted rounded w-2/3" />
             </div>
@@ -103,7 +103,7 @@ export default function SubscriptionDetailPage() {
       <PageHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
       <div className="max-w-xl mx-auto p-4 space-y-4 pb-8">
-        <div className="rounded-2xl p-6 bg-[#0F172A]" data-testid="card-subscription-plan">
+        <div className="rounded-[24px] p-6 bg-[#0F172A]" data-testid="card-subscription-plan">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-[48px] h-[48px] rounded-full bg-white/10 flex items-center justify-center">
               <Crown className="w-5 h-5 text-white" />
@@ -132,7 +132,7 @@ export default function SubscriptionDetailPage() {
           )}
         </div>
 
-        <div className="bg-card rounded-2xl border overflow-hidden" style={{ borderColor: "#E5E7EB" }} data-testid="card-subscription-details">
+        <div className="bg-card rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden" data-testid="card-subscription-details">
           <div className="px-5 pt-5 pb-2">
             <p className="text-[13px] font-semibold tracking-wider" style={{ color: "#6B7280" }}>{t("subscription.details")}</p>
           </div>
@@ -175,7 +175,7 @@ export default function SubscriptionDetailPage() {
           />
         </div>
 
-        <div className="bg-card rounded-2xl border overflow-hidden" style={{ borderColor: "#E5E7EB" }} data-testid="card-subscription-actions">
+        <div className="bg-card rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden" data-testid="card-subscription-actions">
           <div className="px-5 pt-5 pb-2">
             <p className="text-[13px] font-semibold tracking-wider" style={{ color: "#6B7280" }}>{t("subscription.manage")}</p>
           </div>
@@ -198,7 +198,7 @@ export default function SubscriptionDetailPage() {
         </div>
 
         {subscription?.isExpired && (
-          <div className="bg-card rounded-2xl border p-5" style={{ borderColor: "#E5E7EB" }} data-testid="card-expired-cta">
+          <div className="bg-card rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5" data-testid="card-expired-cta">
             <div className="flex items-start gap-3 mb-4">
               <div className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#F5F7FA" }}>
                 <AlertCircle className="w-5 h-5" style={{ color: "#0D6EFD" }} />
