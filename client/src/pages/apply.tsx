@@ -153,17 +153,17 @@ export default function ApplyPage() {
         </button>
         <div className="animate-pulse">
           <div className="w-full bg-[#F0F0F0]" style={{ aspectRatio: "16/10" }} />
-          <div className="max-w-xl mx-auto w-full px-6 pt-8">
+          <div className="max-w-xl mx-auto w-full px-6 pt-7">
             <div className="flex flex-col items-center gap-2">
               <div className="h-5 bg-[#F5F5F5] rounded-md w-3/4" />
               <div className="h-5 bg-[#F5F5F5] rounded-md w-1/2" />
               <div className="h-4 bg-[#F5F5F5] rounded-md w-1/3 mt-1" />
             </div>
-            <div className="pt-8 flex flex-wrap gap-x-6 gap-y-5">
+            <div className="pt-7">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <div className="w-[22px] h-[22px] bg-[#F0F0F0] rounded" />
-                  <div className="h-4 bg-[#F5F5F5] rounded w-20" />
+                <div key={i} className="flex items-center gap-4 py-[14px]">
+                  <div className="w-6 h-6 bg-[#F0F0F0] rounded" />
+                  <div className="h-4 bg-[#F5F5F5] rounded w-28" />
                 </div>
               ))}
             </div>
@@ -297,31 +297,31 @@ export default function ApplyPage() {
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full pb-[120px]">
-        <div className="px-6 pt-8 text-center">
+        <div className="px-6 pt-7 text-center">
           <h1
-            className="text-[22px] font-normal text-[#111C3D] leading-[1.3] tracking-[-0.01em] max-w-[340px] mx-auto"
+            className="text-[22px] font-medium text-[#111C3D] leading-[1.25] tracking-[-0.015em] max-w-[340px] mx-auto"
             data-testid="text-apply-title"
           >
             {listing.title}
           </h1>
-          <p className="text-[15px] text-[#6B7280] mt-1.5 capitalize" data-testid="text-apply-subtitle">
+          <p className="text-[15px] text-[#6B7280] mt-2 capitalize" data-testid="text-apply-subtitle">
             {subtitle}
           </p>
         </div>
 
-        <div className="px-6 pt-8 pb-2 flex flex-wrap gap-x-6 gap-y-5" data-testid="facts-block">
+        <div className="px-6 pt-7" data-testid="facts-block">
           {detailRows.map((row, i) => {
             const Icon = row.icon;
             return (
-              <div key={i} className="flex items-center gap-3">
-                <Icon className="w-[22px] h-[22px] text-[#71717A] flex-shrink-0" />
-                <span className="text-[15px] text-[#374151] capitalize">{row.value}</span>
+              <div key={i} className="flex items-center gap-4 py-[14px]">
+                <Icon className="w-6 h-6 text-[#71717A] flex-shrink-0" />
+                <span className="text-[15px] text-[#111827] capitalize">{row.value}</span>
               </div>
             );
           })}
         </div>
 
-        <div className="px-6 pt-7">
+        <div className="px-6 pt-6">
           <h2 className="text-[15px] font-medium text-[#111C3D] mb-3">{t("applySheet.applicationLetter")}</h2>
           <div className="bg-[#FAFAFA] rounded-2xl px-5 py-5">
             <textarea

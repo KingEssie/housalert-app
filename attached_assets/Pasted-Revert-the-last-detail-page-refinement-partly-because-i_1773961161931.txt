@@ -1,0 +1,100 @@
+Revert the last detail page refinement partly, because it moved too far away from the intended Airbnb-inspired layout.
+
+IMPORTANT:
+Do NOT redesign the whole page again.
+Do NOT change logic or functionality.
+This is a corrective refinement only.
+
+## WHAT WENT WRONG
+
+The latest version changed things I did NOT want changed:
+
+1. The title style changed and no longer matches the better previous version
+2. The large detail icons disappeared
+3. The details became a compact inline metadata row
+4. The page now feels less like Airbnb and less premium
+
+## WHAT I ACTUALLY WANT
+
+Keep the better previous detail-page structure, and only apply the intended refinements.
+
+### 1. RESTORE THE TITLE STYLE
+Bring back the previous title styling:
+- same font weight as the better previous version
+- same visual hierarchy
+- same larger centered presentation
+- same premium look
+- do NOT make it thinner/smaller/different again
+
+The title should stay centered and prominent like before.
+
+### 2. RESTORE LARGE DETAIL ICONS WITH TEXT NEXT TO THEM
+Bring back the detail rows as proper Airbnb-inspired feature rows:
+
+- larger icons on the left
+- text content next to the icon
+- one item per row
+- clean vertical stack
+- not a compact inline metadata strip
+
+The rows should be:
+
+- Locatie
+- Afmeting
+- Slaapkamers
+- Geplaatst
+
+Each row should feel like a proper content row:
+- icon with real visual presence
+- detail text next to it
+- enough vertical spacing
+- easy to scan
+
+### 3. KEEP WEBSITE / SOURCE UNDER THE TITLE
+The website/source should remain under the title as subtitle text, because that part was correct.
+
+Style:
+- centered
+- lighter gray
+- similar role to Airbnb subtitle
+- example format:
+  “Wg-Gesucht · München”
+
+### 4. REMOVE THE DIVIDER LINES BETWEEN DETAIL ROWS
+Keep the divider lines removed.
+That part was correct.
+
+### 5. KEEP THE CLEANER OPEN LAYOUT
+Do NOT bring back the boxed detail card.
+Keep the open white layout.
+
+## TARGET LAYOUT
+
+The structure should be:
+
+image
+→ centered title (restore previous good title style)
+→ centered subtitle/source
+→ large icon detail rows stacked vertically
+→ reactiebrief
+→ sticky footer with price + “Kopiëren en reageren”
+
+## IMPORTANT VISUAL RULES
+
+- do not turn the details into a horizontal metadata row
+- do not shrink the icons
+- do not restyle the title again beyond restoring the previous version
+- do not add divider lines back
+- do not add a card wrapper back
+
+## RESULT
+
+I want:
+- the previous stronger title back
+- the previous larger icons back
+- details stacked vertically again
+- website/source under the title
+- no divider lines
+- no detail card container
+
+At the end, summarize exactly what was restored and what was kept from the last version.
