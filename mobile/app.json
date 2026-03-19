@@ -29,6 +29,11 @@
     },
     "plugins": [
       "expo-splash-screen"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "23f0e358-86b0-41c6-8eb5-457ece076a21"
+      }
+    }
   }
 }

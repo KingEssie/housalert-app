@@ -1,6 +1,21 @@
 # HousAlert — Rental Alert App
 
-A mobile-first rental alert application for the German market. Users can sign up, log in, and manage saved rental search profiles. Listings are matched against profiles and shown as matches. Rebranded from "Stekkies" to "HousAlert". Supports three languages: German (de), English (en), Dutch (nl). Default/fallback: German (de).
+A mobile-first rental alert application for the German market. Users can sign up, log in, and manage saved rental search profiles. Listings are matched against profiles and shown as matches. Rebranded from "Stekkies" to "HousAlert". Supports three languages: German (de), English (en), Dutch (nl). Default/fallback: English (en).
+
+## UI Design System (Airbnb-Inspired Redesign)
+- **Design philosophy**: Clean, borderless, Airbnb-inspired mobile-first design
+- **Primary color**: Blue `#0D6EFD` — used for CTAs, active states, links
+- **Typography**: `text-[22px] font-bold text-[#111827] tracking-tight` for page titles (inline Tailwind, not CSS utility classes on dashboard)
+- **Cards**: Borderless or subtle `border-[#F3F4F6]` with `rounded-xl` — no heavy shadows
+- **Match cards**: 4:3 aspect ratio images, source tag overlay, city-first hierarchy (city bold, title as subtitle)
+- **Bottom tab bar**: Frosted glass effect (`bg-white/95 backdrop-blur-lg`), active dot indicator, rounded-2xl floating pill
+- **Match sub-tabs**: Pill-style buttons (`bg-[#111827] text-white` active, `bg-[#F3F4F6]` inactive) instead of underlined tabs
+- **Profile page**: Clean sections with `rounded-xl border border-[#F3F4F6]`, icon containers in `w-8 h-8 rounded-lg` boxes
+- **Buttons**: Primary CTAs use `rounded-lg bg-[#111827]` (dark) or `bg-[#0D6EFD]` (blue). Secondary: `border border-[#E5E7EB] rounded-lg`
+- **Task list**: Progress bar at top, green checkmarks for completed, chevrons for incomplete
+- **Section labels**: `text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wider` for group headers
+- **theme.ts**: Colors aligned with blue system (no legacy purple). Used for JS-driven styling (charts, etc.)
+- **Legacy CSS utilities**: `text-page-title`, `text-section-title` etc. still defined in `index.css` and used by non-dashboard pages (onboarding, tips, boost, etc.)
 
 ### Multi-Language System
 - **Frontend i18n**: `client/src/i18n/index.tsx` with translation keys in `client/src/i18n/locales/{de,en,nl}.ts`. Fallback chain: current locale → de → nl.

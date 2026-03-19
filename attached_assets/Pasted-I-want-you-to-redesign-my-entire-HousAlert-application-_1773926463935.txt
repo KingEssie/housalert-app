@@ -1,0 +1,376 @@
+I want you to redesign my entire HousAlert application UI in a calm, premium, minimal style inspired by the Airbnb mobile app.
+
+IMPORTANT:
+- Do NOT change the product logic or core flows unless needed for UI consistency.
+- Focus first on design system, spacing, typography, shadows, cards, tabs, profile page, and personal information page.
+- Keep my HousAlert brand blue instead of Airbnb red.
+- The result must feel calm, elegant, spacious, modern, and premium.
+- Use much more white space and cleaner spacing throughout the app.
+- The interface should feel like Airbnb in rhythm, hierarchy, simplicity, and polish, but adapted to HousAlert branding and housing-alert use cases.
+
+## DESIGN DIRECTION
+
+Create a new mobile-first design system with these principles:
+- very clean white backgrounds
+- generous vertical spacing
+- rounded corners similar to Airbnb
+- subtle premium shadows
+- soft gray borders
+- strong typography hierarchy
+- minimal clutter
+- clear content grouping
+- balanced padding on all screens
+- tab bar visually inspired by Airbnb
+- smooth, premium card layouts
+- calm visual style
+
+## BRAND RULES
+
+Keep HousAlert blue as the primary accent color.
+Do not use Airbnb red as the main accent.
+Use blue for:
+- active states
+- primary CTA buttons
+- highlighted icons
+- selected tabs/chips where relevant
+- badges or emphasis where a colored accent is needed
+
+Suggested palette:
+- Primary Blue: #155EEF or a very close premium blue if needed
+- Text Primary: #18181B
+- Text Secondary: #71717A
+- Border: #EAEAEA
+- Surface: #FFFFFF
+- Background: #FAFAFA or very close off-white
+- Success: subtle green
+- Error: subtle red only where functionally required
+
+## TYPOGRAPHY
+
+Use a clean sans-serif font stack that visually feels close to Airbnb.
+Preferred:
+- font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+
+Typography style:
+- Page titles: bold, large, airy
+- Section titles: semibold
+- Card titles: semibold
+- Body text: regular
+- Metadata: regular, lighter gray
+- Labels: medium
+
+Use typography hierarchy similar to Airbnb:
+- H1 page title: 40-48px desktop equivalent / 32-36px mobile
+- H2 section: 24-28px
+- Card title: 18-20px
+- Body: 15-17px
+- Caption/meta: 13-15px
+
+Pay attention to font-weight, line-height, and visual rhythm.
+
+## GLOBAL COMPONENT RULES
+
+Implement or restyle these UI primitives:
+- AppShell
+- TopHeader
+- BottomTabBar
+- FloatingModeButton
+- SegmentedTabs / Chips
+- ListingCard
+- ProfileStatsCard
+- FeatureCard
+- MenuList
+- ExpandableInfoItem
+- PrimaryButton
+- SecondaryButton
+- InputField
+- Badge
+- SectionContainer
+
+### Spacing
+Use an 8px spacing system.
+Most common paddings:
+- screen horizontal padding: 24px
+- cards: 20-24px
+- chips: 14px horizontal / 10px vertical
+- list items: 20-24px vertical rhythm
+- large gaps between sections
+
+### Radius
+- card radius: 24-28px
+- chip radius: pill style
+- button radius: 16-18px
+- floating button radius: full pill
+
+### Shadows
+Shadows must be subtle and premium like Airbnb.
+Do NOT use harsh shadows.
+Use soft shadows like:
+- shadow-color: rgba(0,0,0,0.08)
+- shadow blur: 16-30
+- low spread
+- light elevation only
+Cards should feel lifted but soft.
+
+## SCREEN 1: LISTING / MATCH CARD REDESIGN
+
+Redesign the HousAlert listing card to feel similar to the Airbnb listing detail card style.
+
+Requirements:
+- Large rounded image at top
+- Favorite/like button top-right as an icon button overlay
+- Optional badge top-left if needed (e.g. “Nieuw”, “Match”, “Populair”)
+- Strong title below image
+- Metadata below title in lighter color
+- Price / rent / location / room count presented clearly and cleanly
+- Match score or relevance displayed neatly, not cluttered
+- More breathing room between image and text
+- Card must feel premium and easy to scan
+- Preserve HousAlert information architecture but restyle it fully
+
+Use Airbnb-inspired structure:
+- image first
+- simple metadata
+- clear hierarchy
+- minimal noise
+- spacious layout
+
+## SCREEN 2: MATCHES PAGE TOP TABS
+
+On the Matches page, redesign the tabs at the top to look like Airbnb’s rounded filter chips.
+
+Requirements:
+- horizontal rounded pill tabs
+- selected tab filled dark/primary
+- unselected tabs light gray background
+- more spacing between chips
+- modern clean feel
+- smooth transitions
+- chips aligned near the top below page title
+
+Possible tabs:
+- Alle
+- Nieuw
+- Kansrijk
+- Reageerd
+- Favorieten
+
+Use exact same visual style direction as Airbnb chip navigation:
+- rounded
+- clear active state
+- generous padding
+- calm UI
+
+## SCREEN 3: PROFILE PAGE REDESIGN
+
+Redesign the profile page to closely follow Airbnb’s profile screen layout and spacing.
+
+### Top profile card
+Create a large rounded card with:
+- profile photo/avatar
+- verified badge style element
+- user name
+- location
+- right-side stats with separators
+
+Stats must be:
+- Woningen bekeken
+- Woningen gereageerd
+- Lid sinds
+
+The card should have:
+- large white surface
+- subtle premium shadow
+- lots of padding
+- soft rounded corners
+- balanced alignment
+- calm spacious layout
+
+### Below the stats card
+Create 2 side-by-side cards:
+- Left: Push notificaties
+- Right: E-mail notificaties
+
+These should look like Airbnb’s feature cards:
+- same size
+- same rounded corners
+- same soft shadow
+- clear icon/illustration area
+- title centered or neatly aligned
+- premium white card style
+
+### Next card
+Single wide card:
+- Zoekbuddy
+
+### Next card
+Single wide card:
+- Reactiebrief
+
+All cards should visually match one system:
+- same radius
+- same shadow
+- same spacing
+- same typography rhythm
+
+## PROFILE MENU SECTION
+
+Below the cards, create a clean menu list like Airbnb settings.
+
+Menu items in this exact order:
+1. Persoonlijke informatie
+2. Abonnement
+3. Taal
+4. Privacy
+5. Hulp en ondersteuning
+6. Algemene voorwaarden
+
+At the bottom:
+- Uitloggen
+- Account verwijderen
+
+Use list rows inspired by Airbnb:
+- left icon
+- label text
+- chevron on right
+- clear row spacing
+- separators where needed
+- lots of white space
+- minimal visual clutter
+
+## FLOATING MODE BUTTON
+
+For admin users only:
+show a floating pill button at the bottom center similar to Airbnb’s “Naar hostmodus”.
+
+But for HousAlert it should say:
+- Naar adminmodus
+
+Requirements:
+- floating
+- centered near bottom
+- pill-shaped
+- dark background
+- white text
+- small icon allowed
+- subtle shadow
+- must feel identical in behavior and placement to Airbnb’s floating mode switch
+
+Only show this button for users with admin role.
+For non-admin users, hide it entirely.
+
+## SCREEN 4: PERSONAL INFORMATION PAGE
+
+Redesign the “Persoonlijke informatie” page to visually match Airbnb’s style.
+
+Requirements:
+- large page title
+- lots of white space
+- clean list structure
+- each info row has:
+  - label
+  - current value / status underneath
+  - action text on right like “Aanpassen” or “Toevoegen”
+- very soft separators
+- premium airy layout
+- exact same calm style language as Airbnb
+
+Fields to show:
+- Officiële naam
+- Gewenste voornaam
+- Telefoonnummer
+- E-mailadres
+- Woonadres
+- Noodcontact
+
+## EXPANDABLE EDIT STATE
+
+When clicking a row on personal information page:
+- expand inline below the row like Airbnb
+- do NOT open a completely different chaotic form screen unless necessary
+- keep it elegant and simple
+- the row becomes editable with animated expansion
+- show clean input fields
+- keep surrounding layout faded/disabled if useful
+- use large rounded inputs
+- add a primary save button in HousAlert blue
+- add cancel action in subtle text style
+
+This edit pattern should feel exactly like Airbnb:
+- inline expansion
+- spacious form
+- no cramped layout
+- clear hierarchy
+- premium calm interaction
+
+## TAB BAR
+
+Redesign the bottom tab bar to be inspired by Airbnb.
+
+Requirements:
+- same overall visual style and spacing rhythm
+- white background
+- subtle top border
+- outlined icons
+- active tab in HousAlert blue
+- inactive tabs in muted gray
+- label below icon
+- comfortable spacing
+- premium minimal look
+
+Existing HousAlert tabs should remain functionally correct, but visually redesigned.
+
+## IMPLEMENTATION RULES
+
+Please do the following in code:
+1. Audit the current UI structure
+2. Create reusable design tokens
+3. Create reusable components
+4. Refactor the affected screens to use the new system
+5. Preserve existing functionality
+6. Do not break routes, authentication, data fetching, or business logic
+7. Keep accessibility in mind
+8. Ensure responsive mobile-first behavior
+9. Add subtle motion/transitions where appropriate
+10. Keep code organized and production-ready
+
+## DELIVERABLES
+
+I want you to:
+- implement the redesign directly in the app
+- create or update a shared design system / theme file
+- update the listing cards
+- update the matches page chip tabs
+- update the profile page
+- update the personal information page with expandable editing rows
+- update the bottom tab bar
+- add admin-only floating “Naar adminmodus” button
+- keep my blue branding consistent throughout
+
+## IMPORTANT CONSTRAINTS
+
+- Do not make the UI too dark
+- Do not make it flashy
+- Do not overuse gradients
+- Do not overuse borders
+- Do not reduce whitespace
+- Do not create a generic SaaS dashboard look
+- It must feel like a premium consumer mobile app
+- It must feel close to Airbnb in quality, spacing, polish, and calmness
+
+## IF NEEDED
+
+If there are existing inconsistencies in spacing, typography, radius, shadows, or component usage across the app, normalize them into one coherent design system.
+
+Start with these specific pages first:
+1. Listing / match card
+2. Matches page top tabs
+3. Profile page
+4. Personal information page
+5. Bottom tab bar
+
+At the end, give me:
+- a summary of what changed
+- which files were updated
+- which reusable components were introduced
+- any follow-up suggestions for the next screens to redesign

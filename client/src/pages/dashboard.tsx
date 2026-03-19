@@ -110,7 +110,7 @@ function safeGetSet(key: string): Set<string> {
 
 function safeSetSet(key: string, set: Set<string>) {
   if (typeof window === "undefined") return;
-  localStorage.setItem(key, JSON.stringify([...set]));
+  localStorage.setItem(key, JSON.stringify(Array.from(set)));
 }
 
 function markViewed(listingId: string) {
@@ -151,87 +151,69 @@ function MatchCard({
 
   return (
     <div
-      className="bg-white rounded-2xl border border-[#E5E7EB] overflow-hidden cursor-pointer hover:shadow-[0_4px_24px_rgba(0,0,0,0.10)] transition-all duration-200 active:scale-[0.985]"
+      className="cursor-pointer group"
       onClick={handleCardClick}
       data-testid={`card-match-${match.listing_id}`}
     >
-      <div className="relative">
+      <div className="relative rounded-xl overflow-hidden mb-3">
         {hasImage && !imgError ? (
           <img
             src={match.image_url!}
             alt={match.title}
-            className="w-full object-cover"
-            style={{ aspectRatio: "16/10" }}
+            className="w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+            style={{ aspectRatio: "4/3" }}
             loading="lazy"
             onError={() => setImgError(true)}
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "16/10" }}>
+          <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "4/3" }}>
             <div className="absolute inset-0 bg-black/5" />
-            <div className="flex flex-col items-center gap-2 text-white/60">
+            <div className="flex flex-col items-center gap-2 text-white/50">
               <ImageIcon className="w-8 h-8" />
               <span className="text-[12px] font-medium">{match.source}</span>
             </div>
           </div>
         )}
 
-        {match.price > 0 && (
-          <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-sm" data-testid={`badge-price-${match.listing_id}`}>
-            <span className="text-[15px] font-[800] text-[#111C3D]">€{match.price}</span>
-            <span className="text-[11px] font-medium text-[#6B7280]"> {t("common.perMonthShort")}</span>
-          </div>
-        )}
+        <div className="absolute top-3 left-3 flex gap-1.5">
+          <span className="text-[11px] font-semibold bg-white/90 backdrop-blur-sm text-[#1F2937] px-2.5 py-1 rounded-full shadow-sm capitalize">
+            {match.source}
+          </span>
+        </div>
       </div>
 
-      <div className="p-4 flex flex-col gap-2.5">
-        <h3
-          className="font-[700] text-[#111C3D] text-[18px] leading-[1.3] line-clamp-2"
-          data-testid={`text-match-title-${match.listing_id}`}
-        >
-          {match.title}
-        </h3>
-
-        <div className="flex items-center gap-2 text-[13px] text-[#1F2937]">
-          <span className="flex items-center gap-1">
-            <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-            {match.city}
-          </span>
-          <span className="text-[#E5E7EB]">·</span>
-          {match.bedrooms > 0 && (
-            <>
-              <span className="flex items-center gap-1">
-                <BedDouble className="w-3.5 h-3.5" />
-                {match.bedrooms} {match.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}
-              </span>
-              <span className="text-[#E5E7EB]">·</span>
-            </>
-          )}
-          {match.size_m2 > 0 && (
-            <span className="flex items-center gap-1">
-              <Ruler className="w-3.5 h-3.5" />
-              {match.size_m2} m²
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <MapPin className="w-3.5 h-3.5 text-[#111827] flex-shrink-0" />
+            <span className="text-[15px] font-semibold text-[#111827] truncate" data-testid={`text-match-city-${match.listing_id}`}>
+              {match.city}
             </span>
-          )}
-        </div>
-
-        <div className="flex items-center gap-2 text-[12px] text-[#6B7280]">
-          <span className="capitalize font-medium">{match.source}</span>
-          <span>·</span>
-          <span className="flex items-center gap-1">
-            <Clock className="w-3 h-3" />
-            {relativeTime(match.matched_at || match.first_seen_at, t)}
-          </span>
-        </div>
-
-        <div className="mt-1">
-          <button
-            onClick={handleCardClick}
-            className="w-full h-[44px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-bold transition-colors flex items-center justify-center gap-2"
-            data-testid={`button-view-${match.listing_id}`}
+          </div>
+          <h3
+            className="text-[14px] text-[#6B7280] leading-snug line-clamp-1"
+            data-testid={`text-match-title-${match.listing_id}`}
           >
-            {t("matches.viewButton")}
-          </button>
+            {match.title}
+          </h3>
+
+          <div className="flex items-center gap-1.5 mt-1 text-[13px] text-[#9CA3AF]">
+            {match.bedrooms > 0 && (
+              <span>{match.bedrooms} {match.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}</span>
+            )}
+            {match.bedrooms > 0 && match.size_m2 > 0 && <span>·</span>}
+            {match.size_m2 > 0 && <span>{match.size_m2} m²</span>}
+            {(match.bedrooms > 0 || match.size_m2 > 0) && <span>·</span>}
+            <span>{relativeTime(match.matched_at || match.first_seen_at, t)}</span>
+          </div>
+
+          {match.price > 0 && (
+            <p className="mt-1.5" data-testid={`badge-price-${match.listing_id}`}>
+              <span className="text-[15px] font-bold text-[#111827]">€{match.price}</span>
+              <span className="text-[13px] text-[#6B7280]"> {t("common.perMonthShort")}</span>
+            </p>
+          )}
         </div>
       </div>
     </div>
@@ -253,24 +235,24 @@ function ProfileCard({
 
   return (
     <div
-      className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-[#E5E7EB] p-5 flex flex-col gap-5"
+      className="rounded-xl border border-[#F3F4F6] p-4 flex flex-col gap-4"
       data-testid={`card-profile-${profile.id}`}
     >
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-[#F5F7FA] flex items-center justify-center flex-shrink-0">
-            <MapPin className="w-[18px] h-[18px] text-[#1F2937]" />
+          <div className="w-9 h-9 rounded-lg bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
+            <MapPin className="w-4 h-4 text-[#6B7280]" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="font-[700] text-[#111C3D] text-[18px]" data-testid={`text-profile-city-${profile.id}`}>
+              <h3 className="font-bold text-[#111827] text-[16px]" data-testid={`text-profile-city-${profile.id}`}>
                 {profile.city_name || profile.city}
               </h3>
-              <span className="text-[10px] font-semibold text-[#0D6EFD] bg-[#EBF2FF] px-2 py-0.5 rounded-full" data-testid={`badge-status-${profile.id}`}>
+              <span className="text-[10px] font-bold text-[#22C55E] bg-[#F0FDF4] px-2 py-0.5 rounded-full" data-testid={`badge-status-${profile.id}`}>
                 {t("common.active")}
               </span>
             </div>
-            <p className="text-[13px] text-[#6B7280] mt-0.5">
+            <p className="text-[12px] text-[#9CA3AF] mt-0.5">
               {t("filters.createdOn", { date: new Date(profile.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "short" }) })}
             </p>
           </div>
@@ -278,35 +260,35 @@ function ProfileCard({
         <button
           onClick={onDelete}
           disabled={deleting}
-          className="w-9 h-9 rounded-full flex items-center justify-center text-[#6B7280] hover:text-[#1F2937] hover:bg-[#F5F7FA] transition-colors"
+          className="w-8 h-8 rounded-lg flex items-center justify-center text-[#9CA3AF] hover:text-[#EF4444] hover:bg-[#FEF2F2] transition-colors"
           data-testid={`button-delete-${profile.id}`}
         >
-          <Trash2 className="w-4 h-4" />
+          <Trash2 className="w-3.5 h-3.5" />
         </button>
       </div>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-1.5">
         {profile.location_mode === "districts" && profile.districts && profile.districts.length > 0 && (
-          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#F5F7FA] text-[#1F2937] px-2.5 py-1 rounded-full border border-[#E5E7EB]" data-testid={`badge-districts-${profile.id}`}>
-            <MapPin className="w-3 h-3" />
+          <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-[#F9FAFB] text-[#374151] px-2 py-1 rounded-md" data-testid={`badge-districts-${profile.id}`}>
+            <MapPin className="w-3 h-3 text-[#9CA3AF]" />
             {profile.districts.length === 1 ? profile.districts[0] : t("filters.districtsCount", { count: profile.districts.length })}
           </span>
         )}
         {profile.location_mode === "radius" && profile.radius_km && (
-          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#F5F7FA] text-[#1F2937] px-2.5 py-1 rounded-full border border-[#E5E7EB]" data-testid={`badge-radius-${profile.id}`}>
-            <MapPin className="w-3 h-3" />
+          <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-[#F9FAFB] text-[#374151] px-2 py-1 rounded-md" data-testid={`badge-radius-${profile.id}`}>
+            <MapPin className="w-3 h-3 text-[#9CA3AF]" />
             {profile.radius_km} {t("filters.radius")}
           </span>
         )}
         {profile.location_mode === "commute" && profile.commute_destination && (
-          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#F5F7FA] text-[#1F2937] px-2.5 py-1 rounded-full border border-[#E5E7EB]" data-testid={`badge-commute-${profile.id}`}>
-            <Clock className="w-3 h-3" />
+          <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-[#F9FAFB] text-[#374151] px-2 py-1 rounded-md" data-testid={`badge-commute-${profile.id}`}>
+            <Clock className="w-3 h-3 text-[#9CA3AF]" />
             {profile.commute_minutes ? t("filters.commute", { time: profile.commute_minutes }) : ""} {profile.commute_mode === "ov" ? t("filters.transit") : profile.commute_mode === "fiets" ? t("filters.bike") : t("filters.car")}
           </span>
         )}
         {(profile.price_min > 0 || profile.price_max > 0) && (
-          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#F5F7FA] text-[#1F2937] px-2.5 py-1 rounded-full border border-[#E5E7EB]">
-            <Euro className="w-3 h-3" />
+          <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-[#F9FAFB] text-[#374151] px-2 py-1 rounded-md">
+            <Euro className="w-3 h-3 text-[#9CA3AF]" />
             {profile.price_min > 0 && profile.price_max > 0
               ? `€${profile.price_min} – €${profile.price_max}`
               : profile.price_min > 0
@@ -314,13 +296,13 @@ function ProfileCard({
               : t("filters.toPrice", { price: profile.price_max })}
           </span>
         )}
-        <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#F5F7FA] text-[#1F2937] px-2.5 py-1 rounded-full border border-[#E5E7EB]">
-          <BedDouble className="w-3 h-3" />
+        <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-[#F9FAFB] text-[#374151] px-2 py-1 rounded-md">
+          <BedDouble className="w-3 h-3 text-[#9CA3AF]" />
           {bedroomLabel(profile.bedrooms_min, t)}
         </span>
         {profile.size_min > 0 && (
-          <span className="inline-flex items-center gap-1 text-[12px] font-medium bg-[#F5F7FA] text-[#1F2937] px-2.5 py-1 rounded-full border border-[#E5E7EB]">
-            <Ruler className="w-3 h-3" />
+          <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-[#F9FAFB] text-[#374151] px-2 py-1 rounded-md">
+            <Ruler className="w-3 h-3 text-[#9CA3AF]" />
             {profile.size_min}+ m²
           </span>
         )}
@@ -329,11 +311,11 @@ function ProfileCard({
       <div>
         <button
           onClick={onEdit}
-          className="h-9 px-5 rounded-full border border-[#0D6EFD] bg-white text-[13px] font-semibold text-[#0D6EFD] hover:bg-[#EBF2FF] transition-colors inline-flex items-center gap-1.5"
+          className="h-8 px-4 rounded-lg bg-[#111827] text-[12px] font-semibold text-white hover:bg-[#1F2937] transition-colors inline-flex items-center gap-1.5"
           data-testid={`button-edit-${profile.id}`}
         >
           {t("common.edit")}
-          <ChevronRight className="w-3.5 h-3.5" />
+          <ChevronRight className="w-3 h-3" />
         </button>
       </div>
     </div>
@@ -359,17 +341,14 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
   if (!hasActiveSub) {
     return (
       <div className="flex flex-col gap-3" data-testid="section-recente-matches-empty">
-        <div className="flex items-center gap-2">
-          <Search className="w-4 h-4 text-[#1F2937]" />
-          <h2 className="text-section-title">{t("home.recentMatches")}</h2>
-        </div>
-        <div className="bg-[#F5F7FA] rounded-2xl p-5 text-center">
-          <p className="text-[14px] text-[#1F2937] mb-3">
+        <h2 className="text-[16px] font-bold text-[#111827]">{t("home.recentMatches")}</h2>
+        <div className="rounded-xl border border-[#F3F4F6] p-5 text-center">
+          <p className="text-[13px] text-[#6B7280] mb-3">
             {t("home.matchesWillAppear")}
           </p>
           <button
             onClick={() => navigate("/paywall")}
-            className="h-[44px] px-6 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-semibold transition-colors"
+            className="h-[40px] px-5 rounded-lg bg-[#111827] text-white text-[13px] font-semibold transition-colors hover:bg-[#1F2937]"
             data-testid="button-activate-sub-matches"
           >
             {t("home.viewSubscriptions")}
@@ -382,9 +361,9 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
   if (isLoading) {
     return (
       <div className="flex flex-col gap-3">
-        <h2 className="text-section-title">{t("home.recentMatches")}</h2>
+        <h2 className="text-[16px] font-bold text-[#111827]">{t("home.recentMatches")}</h2>
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-20 bg-[#F5F7FA] rounded-2xl animate-pulse" />
+          <div key={i} className="h-[72px] bg-[#F3F4F6] rounded-lg animate-pulse" />
         ))}
       </div>
     );
@@ -393,12 +372,9 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
   if (!matches || matches.length === 0) {
     return (
       <div className="flex flex-col gap-3" data-testid="section-recente-matches-empty">
-        <div className="flex items-center gap-2">
-          <Search className="w-4 h-4 text-[#1F2937]" />
-          <h2 className="text-section-title">{t("home.recentMatches")}</h2>
-        </div>
-        <div className="bg-[#F5F7FA] rounded-2xl p-5 text-center">
-          <p className="text-[14px] text-[#1F2937]">
+        <h2 className="text-[16px] font-bold text-[#111827]">{t("home.recentMatches")}</h2>
+        <div className="rounded-xl border border-[#F3F4F6] p-5 text-center">
+          <p className="text-[13px] text-[#6B7280]">
             {t("home.firstMatchesWillAppear")}
           </p>
         </div>
@@ -409,19 +385,16 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
   return (
     <div className="flex flex-col gap-3" data-testid="section-recente-matches">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Search className="w-4 h-4 text-[#1F2937]" />
-          <h2 className="text-section-title">{t("home.recentMatches")}</h2>
-        </div>
+        <h2 className="text-[16px] font-bold text-[#111827]">{t("home.recentMatches")}</h2>
         <button
           onClick={() => setActiveTab("matches")}
-          className="text-[13px] font-semibold text-[#0D6EFD]"
+          className="text-[12px] font-bold text-[#0D6EFD]"
           data-testid="button-view-all-matches"
         >
           {t("home.viewAll")}
         </button>
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         {matches.map((match) => (
           <RecentMatchMiniCard key={match.listing_id} match={match} />
         ))}
@@ -433,12 +406,13 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
 function RecentMatchMiniCard({ match }: { match: ApiMatch }) {
   const [, navigate] = useLocation();
   const [imgError, setImgError] = useState(false);
+  const { t } = useTranslation();
   const hasImage = !!match.image_url && !imgError;
   const gradient = getCityGradient(match.city);
 
   return (
     <div
-      className="bg-white rounded-2xl border border-[#E5E7EB] overflow-hidden cursor-pointer hover:shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-all duration-200 active:scale-[0.985] flex"
+      className="flex gap-3 cursor-pointer active:opacity-80 transition-opacity"
       onClick={() => navigate(`/apply/${match.listing_id}`)}
       data-testid={`card-recent-match-${match.listing_id}`}
     >
@@ -446,44 +420,38 @@ function RecentMatchMiniCard({ match }: { match: ApiMatch }) {
         <img
           src={match.image_url!}
           alt={match.title}
-          className="w-20 h-20 object-cover flex-shrink-0"
+          className="w-[72px] h-[72px] rounded-lg object-cover flex-shrink-0"
           loading="lazy"
           onError={() => setImgError(true)}
           referrerPolicy="no-referrer"
         />
       ) : (
-        <div className={`w-20 h-20 bg-gradient-to-br ${gradient} flex items-center justify-center flex-shrink-0`}>
-          <ImageIcon className="w-5 h-5 text-white/60" />
+        <div className={`w-[72px] h-[72px] rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center flex-shrink-0`}>
+          <ImageIcon className="w-5 h-5 text-white/50" />
         </div>
       )}
-      <div className="flex-1 min-w-0 p-3 flex flex-col justify-center gap-0.5">
-        <h3 className="text-[14px] font-[700] text-[#111C3D] leading-snug line-clamp-1" data-testid={`text-recent-title-${match.listing_id}`}>
+      <div className="flex-1 min-w-0 flex flex-col justify-center py-0.5">
+        <p className="text-[14px] font-semibold text-[#111827] line-clamp-1" data-testid={`text-recent-title-${match.listing_id}`}>
+          {match.city}
+        </p>
+        <p className="text-[13px] text-[#6B7280] line-clamp-1 mt-0.5">
           {match.title}
-        </h3>
-        <div className="flex items-center gap-2 text-[12px] text-[#1F2937]">
-          <span className="flex items-center gap-0.5">
-            <MapPin className="w-3 h-3" />
-            {match.city}
-          </span>
+        </p>
+        <div className="flex items-center gap-1.5 mt-1">
+          {match.price > 0 && (
+            <span className="text-[13px] font-semibold text-[#111827]">€{match.price}</span>
+          )}
+          {match.price > 0 && (match.bedrooms > 0 || match.size_m2 > 0) && <span className="text-[11px] text-[#D1D5DB]">·</span>}
           {match.bedrooms > 0 && (
-            <span className="flex items-center gap-0.5">
-              <BedDouble className="w-3 h-3" />
-              {match.bedrooms}
-            </span>
+            <span className="text-[12px] text-[#9CA3AF]">{match.bedrooms} {match.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}</span>
           )}
           {match.size_m2 > 0 && (
-            <span className="flex items-center gap-0.5">
-              <Ruler className="w-3 h-3" />
-              {match.size_m2}m²
-            </span>
+            <span className="text-[12px] text-[#9CA3AF]">{match.size_m2}m²</span>
           )}
         </div>
       </div>
-      <div className="flex items-center gap-2 pr-3 flex-shrink-0">
-        {match.price > 0 && (
-          <span className="text-[15px] font-bold text-[#111C3D]">€{match.price}</span>
-        )}
-        <ChevronRight className="w-4 h-4 text-[#9CA3AF]" />
+      <div className="flex items-center flex-shrink-0">
+        <ChevronRight className="w-4 h-4 text-[#D1D5DB]" />
       </div>
     </div>
   );
@@ -612,37 +580,44 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
   const hasMore = sortedTasks.length > INITIAL_SHOW;
 
   return (
-    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5" data-testid="unified-task-list">
-      <div className="flex items-center gap-3 mb-5">
-        <div className="w-9 h-9 rounded-full bg-[#EBF2FF] flex items-center justify-center flex-shrink-0">
+    <div className="rounded-xl border border-[#F3F4F6] p-4" data-testid="unified-task-list">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-8 h-8 rounded-lg bg-[#EBF2FF] flex items-center justify-center flex-shrink-0">
           <Rocket className="w-4 h-4 text-[#0D6EFD]" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-bold text-[#1F2937]">{t("activation.title")}</p>
-          <p className="text-[12px] text-[#6B7280]">{doneCount}/{allTasks.length} {t("activation.completed")}</p>
+          <p className="text-[14px] font-bold text-[#111827]">{t("activation.title")}</p>
+          <p className="text-[11px] text-[#9CA3AF]">{doneCount}/{allTasks.length} {t("activation.completed")}</p>
         </div>
       </div>
 
-      <div className="flex flex-col gap-1">
+      <div className="w-full h-1.5 rounded-full bg-[#F3F4F6] mb-3">
+        <div
+          className="h-full rounded-full bg-[#0D6EFD] transition-all duration-500"
+          style={{ width: `${(doneCount / allTasks.length) * 100}%` }}
+        />
+      </div>
+
+      <div className="flex flex-col">
         {visibleTasks.map((task) => (
           <button
             key={task.key}
             onClick={task.done ? undefined : task.action}
-            className={`flex items-center gap-3 py-3.5 px-2 rounded-xl text-left transition-colors ${
-              task.done ? "" : "hover:bg-[#F9FAFB] active:bg-[#F3F4F6]"
+            className={`flex items-center gap-3 py-3 text-left transition-colors ${
+              task.done ? "" : "active:opacity-70"
             }`}
             disabled={task.done}
             data-testid={`task-${task.key}`}
           >
             {task.done ? (
-              <CheckCircle2 className="w-5 h-5 text-[#0D6EFD] flex-shrink-0" />
+              <CheckCircle2 className="w-[18px] h-[18px] text-[#22C55E] flex-shrink-0" />
             ) : (
-              <Circle className="w-5 h-5 text-[#D1D5DB] flex-shrink-0" />
+              <Circle className="w-[18px] h-[18px] text-[#D1D5DB] flex-shrink-0" />
             )}
-            <span className={`text-[14px] font-medium flex-1 ${task.done ? "text-[#9CA3AF] line-through" : "text-[#1F2937]"}`}>
+            <span className={`text-[13px] font-medium flex-1 ${task.done ? "text-[#D1D5DB] line-through" : "text-[#374151]"}`}>
               {task.label}
             </span>
-            {!task.done && <ChevronRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />}
+            {!task.done && <ChevronRight className="w-3.5 h-3.5 text-[#D1D5DB] flex-shrink-0" />}
           </button>
         ))}
       </div>
@@ -650,7 +625,7 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
       {hasMore && (
         <button
           onClick={() => setExpanded(!expanded)}
-          className="w-full mt-2 text-[13px] font-semibold text-[#0D6EFD] py-2 hover:underline"
+          className="w-full mt-1 text-[12px] font-bold text-[#0D6EFD] py-2"
           data-testid="button-expand-tasks"
         >
           {expanded ? t("activation.showLess") : t("activation.showMore", { count: sortedTasks.length - INITIAL_SHOW })}
@@ -719,25 +694,25 @@ function HomeTab({
   return (
     <div className="flex flex-col pb-6">
       <div className="sticky top-0 z-10 bg-white pt-5 pb-3 px-6">
-        <h1 className="text-page-title" data-testid="text-greeting">
+        <h1 className="text-[22px] font-bold text-[#111827] tracking-tight" data-testid="text-greeting">
           {firstName ? t("home.greeting", { name: firstName }) : t("home.greetingDefault")}
         </h1>
       </div>
-      <div className="flex flex-col gap-4 px-6 mt-4">
+      <div className="flex flex-col gap-5 px-6 mt-2">
 
       {hasActiveSub && hasMatches ? (
-        <div className="rounded-2xl bg-[#0F172A] p-6" data-testid="hero-matches">
+        <div className="rounded-2xl bg-gradient-to-br from-[#0D6EFD] to-[#0A4FBA] p-5" data-testid="hero-matches">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
               <Search className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[22px] font-bold text-white leading-tight" data-testid="text-match-count">
+              <p className="text-[18px] font-bold text-white leading-tight" data-testid="text-match-count">
                 {newCount > 0
                   ? t("home.newMatchesFound")
                   : t("home.upToDate")}
               </p>
-              <p className="text-[14px] font-[500] text-white/70 mt-0.5">
+              <p className="text-[13px] text-white/70 mt-0.5">
                 {newCount > 0
                   ? (hasProfiles
                     ? t("home.basedOnProfiles", { count: profileCount, label: profileCount === 1 ? t("home.profileSingular") : t("home.profilePlural") })
@@ -748,41 +723,41 @@ function HomeTab({
           </div>
           <button
             onClick={() => setActiveTab("matches")}
-            className="ml-14 h-[48px] px-6 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-bold transition-colors inline-flex items-center gap-2"
+            className="ml-[52px] h-[40px] px-5 rounded-lg bg-white text-[#0D6EFD] text-[13px] font-bold transition-all hover:bg-white/90 inline-flex items-center gap-1.5"
             data-testid="button-view-matches"
           >
             {t("home.viewMatches")}
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
       ) : hasActiveSub && hasProfiles ? (
-        <div className="rounded-2xl bg-[#0F172A] p-6" data-testid="hero-active-no-matches">
+        <div className="rounded-2xl bg-gradient-to-br from-[#0D6EFD] to-[#0A4FBA] p-5" data-testid="hero-active-no-matches">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
               <Search className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[16px] font-bold text-white leading-tight" data-testid="text-active-searching">
                 {t("home.searchingActive")}
               </p>
-              <p className="text-[14px] font-[500] text-white/70 mt-0.5">
+              <p className="text-[13px] text-white/70 mt-0.5">
                 {t("home.receivingMatches", { count: profileCount, label: profileCount === 1 ? t("home.profileSingular") : t("home.profilePlural") })}
               </p>
             </div>
           </div>
           <button
             onClick={() => setActiveTab("filters")}
-            className="ml-14 h-[48px] px-6 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-bold transition-colors inline-flex items-center gap-2"
+            className="ml-[52px] h-[40px] px-5 rounded-lg bg-white text-[#0D6EFD] text-[13px] font-bold transition-all hover:bg-white/90 inline-flex items-center gap-1.5"
             data-testid="button-adjust-filters"
           >
             {t("home.adjustFilters")}
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
       ) : hasProfiles ? (
-        <div className="rounded-2xl bg-[#0F172A] p-6" data-testid="hero-estimate">
+        <div className="rounded-2xl bg-gradient-to-br from-[#0D6EFD] to-[#0A4FBA] p-5" data-testid="hero-estimate">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
@@ -791,7 +766,7 @@ function HomeTab({
                   ? t("home.weekEstimate", perWeekRange)
                   : t("home.profileReady")}
               </p>
-              <p className="text-[14px] font-[500] text-white/70 mt-0.5">
+              <p className="text-[13px] text-white/70 mt-0.5">
                 {perWeekEstimateRaw > 0
                   ? t("home.basedOnProfiles", { count: profileCount, label: profileCount === 1 ? t("home.profileSingular") : t("home.profilePlural") })
                   : t("home.activateSubToReceive")}
@@ -800,11 +775,11 @@ function HomeTab({
           </div>
           <button
             onClick={() => navigate("/paywall")}
-            className="ml-14 h-[48px] px-6 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-bold transition-colors inline-flex items-center gap-2"
+            className="ml-[52px] h-[40px] px-5 rounded-lg bg-white text-[#0D6EFD] text-[13px] font-bold transition-all hover:bg-white/90 inline-flex items-center gap-1.5"
             data-testid="button-activate-sub"
           >
             {t("home.activateSubscription")}
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
       ) : (
@@ -819,14 +794,16 @@ function HomeTab({
       )}
 
       {subscription.isTrial && subscription.trialEndsAt && (
-        <div className="bg-[#F5F7FA] rounded-2xl px-5 py-3.5 flex items-center gap-3" data-testid="banner-trial">
-          <Crown className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
-          <p className="text-[13px] font-[500] text-[#1F2937] flex-1">
+        <div className="rounded-xl border border-[#E5E7EB] px-4 py-3 flex items-center gap-3" data-testid="banner-trial">
+          <div className="w-8 h-8 rounded-lg bg-[#FEF3C7] flex items-center justify-center flex-shrink-0">
+            <Crown className="w-4 h-4 text-[#D97706]" />
+          </div>
+          <p className="text-[13px] font-medium text-[#374151] flex-1">
             {t("home.trialUntil", { date: new Date(subscription.trialEndsAt).toLocaleDateString("de-DE", { day: "numeric", month: "long" }) })}
           </p>
           <button
             onClick={() => navigate("/paywall")}
-            className="text-[12px] font-semibold text-[#0D6EFD] hover:underline flex-shrink-0"
+            className="text-[12px] font-bold text-[#0D6EFD] hover:underline flex-shrink-0"
             data-testid="button-trial-upgrade"
           >
             {t("home.upgrade")}
@@ -903,54 +880,41 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
   return (
     <div className="flex flex-col pb-6">
       <div className="sticky top-0 z-10 bg-white pt-5 pb-0 px-6">
-        <div className="flex items-center justify-between mb-3">
-          <h1 className="text-page-title">{t("matches.title")}</h1>
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-[22px] font-bold text-[#111827] tracking-tight">{t("matches.title")}</h1>
         </div>
-        <div className="flex relative border-b border-[#E5E7EB]" data-testid="match-sub-tabs">
+        <div className="flex gap-2 pb-3" data-testid="match-sub-tabs">
           {MATCH_SUB_TAB_CONFIG.map(({ key, labelKey }) => {
             const isActive = subTab === key;
             return (
               <button
                 key={key}
                 onClick={() => setSubTab(key)}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-3.5 text-[15px] font-semibold transition-colors ${
-                  isActive ? "text-[#1F2937]" : "text-[#6B7280]"
+                className={`px-4 py-2 rounded-full text-[13px] font-semibold transition-all ${
+                  isActive
+                    ? "bg-[#111827] text-white"
+                    : "bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB]"
                 }`}
                 data-testid={`tab-matches-${key}`}
               >
-                <span>{t(labelKey)}</span>
+                {t(labelKey)}
               </button>
             );
           })}
-          <div
-            className="absolute bottom-0 h-[3px] bg-[#0D6EFD] rounded-full transition-transform duration-300 ease-in-out"
-            style={{
-              width: `${100 / MATCH_SUB_TAB_CONFIG.length}%`,
-              transform: `translateX(${MATCH_SUB_TAB_CONFIG.findIndex(t => t.key === subTab) * 100}%)`,
-            }}
-          />
         </div>
       </div>
 
-      <div className="px-6 flex flex-col gap-5 mt-5">
+      <div className="px-6 flex flex-col gap-6 mt-4">
 
       {apiMatchesQuery.isLoading ? (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
           {[1, 2].map((i) => (
-            <div key={i} className="bg-white rounded-lg border border-[#E5E7EB] overflow-hidden animate-pulse">
-              <div className="h-[200px] bg-[#F5F7FA]" />
-              <div className="p-4 flex flex-col gap-2.5">
-                <div className="h-6 bg-[#F5F7FA] rounded-full w-28" />
-                <div className="h-5 bg-[#F5F7FA] rounded w-3/4" />
-                <div className="h-4 bg-[#F5F7FA] rounded w-1/2" />
-                <div className="flex gap-1.5">
-                  <div className="h-6 bg-[#F5F7FA] rounded-full w-24" />
-                  <div className="h-6 bg-[#F5F7FA] rounded-full w-28" />
-                </div>
-                <div className="flex gap-2 mt-1">
-                  <div className="h-[44px] bg-[#F5F7FA] rounded-lg flex-1" />
-                  <div className="h-[44px] bg-[#F5F7FA] rounded-lg w-24" />
-                </div>
+            <div key={i} className="animate-pulse">
+              <div className="rounded-xl bg-[#F3F4F6]" style={{ aspectRatio: "4/3" }} />
+              <div className="mt-3 flex flex-col gap-2">
+                <div className="h-4 bg-[#F3F4F6] rounded w-1/3" />
+                <div className="h-4 bg-[#F3F4F6] rounded w-2/3" />
+                <div className="h-3 bg-[#F3F4F6] rounded w-1/4" />
               </div>
             </div>
           ))}
@@ -1001,7 +965,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           />
         )
       ) : (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
           {filteredMatches.map((m) => (
             <MatchCard
               key={m.listing_id}
@@ -1100,7 +1064,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
   return (
     <div className="flex flex-col pb-6">
       <div className="sticky top-0 z-10 bg-white pt-5 pb-3 px-6">
-        <h1 className="text-page-title">{t("filters.title")}</h1>
+        <h1 className="text-[22px] font-bold text-[#111827] tracking-tight">{t("filters.title")}</h1>
       </div>
       <div className="px-6 flex flex-col gap-5">
       {profilesQuery.isLoading ? (
@@ -1236,14 +1200,14 @@ function AccountSettingsRow({ label, subtext, onClick, trailing }: { label: stri
   return (
     <button
       onClick={onClick}
-      className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F5F7FA] transition-colors"
+      className="w-full flex items-center gap-3 px-4 py-3.5 text-left active:bg-[#F9FAFB] transition-colors rounded-lg"
       data-testid={`row-${label.toLowerCase().replace(/\s+/g, "-")}`}
     >
       <div className="flex-1 min-w-0">
-        <p className="text-[15px] font-[500] text-[#1F2937]">{label}</p>
-        {subtext && <p className="text-[13px] text-[#1F2937] mt-0.5">{subtext}</p>}
+        <p className="text-[15px] font-medium text-[#111827]">{label}</p>
+        {subtext && <p className="text-[13px] text-[#9CA3AF] mt-0.5">{subtext}</p>}
       </div>
-      {trailing || <ChevronRight className="w-[18px] h-[18px] text-[#1F2937] flex-shrink-0" />}
+      {trailing || <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />}
     </button>
   );
 }
@@ -1424,36 +1388,34 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
   }
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-[#F5F7FA]">
-      <div className="sticky top-0 z-10 bg-white border-b border-[#E5E7EB] px-5 pt-5 pb-3">
-        <h1 className="text-page-title">{t("profile.subtabs.account")}</h1>
+    <div className="min-h-[calc(100vh-80px)] bg-white">
+      <div className="sticky top-0 z-10 bg-white px-5 pt-5 pb-3">
+        <h1 className="text-[22px] font-bold text-[#111827] tracking-tight">{t("profile.subtabs.account")}</h1>
       </div>
 
-      <div className="max-w-[480px] mx-auto px-5 py-6">
-        <div className="flex flex-col gap-6">
-          <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5">
-            <button
-              onClick={() => navigate("/profile/details")}
-              className="flex items-center gap-4 active:opacity-80 transition-opacity text-left w-full"
-              data-testid="button-profile-header"
-            >
-              {photoUrl ? (
-                <img src={photoUrl} alt="" className="w-16 h-16 rounded-full object-cover flex-shrink-0" data-testid="img-profile-avatar" />
-              ) : (
-                <div className="w-16 h-16 rounded-full bg-[#F5F7FA] flex items-center justify-center flex-shrink-0">
-                  <span className="text-[22px] font-bold text-[#111C3D]">{initials}</span>
-                </div>
-              )}
-              <div className="flex-1 min-w-0">
-                <p className="text-[22px] font-[700] text-[#111C3D] truncate leading-tight" data-testid="text-user-name">{displayName || t("profile.seeker")}</p>
-                <p className="text-[14px] text-[#1F2937] mt-0.5">{t("profile.seeker")}</p>
+      <div className="max-w-[480px] mx-auto px-5 pb-6">
+        <div className="flex flex-col gap-5">
+          <button
+            onClick={() => navigate("/profile/details")}
+            className="flex items-center gap-4 active:opacity-80 transition-opacity text-left w-full py-2"
+            data-testid="button-profile-header"
+          >
+            {photoUrl ? (
+              <img src={photoUrl} alt="" className="w-14 h-14 rounded-full object-cover flex-shrink-0" data-testid="img-profile-avatar" />
+            ) : (
+              <div className="w-14 h-14 rounded-full bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
+                <span className="text-[20px] font-bold text-[#374151]">{initials}</span>
               </div>
-              <ChevronRight className="w-5 h-5 text-[#1F2937] flex-shrink-0" />
-            </button>
-          </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <p className="text-[18px] font-bold text-[#111827] truncate leading-tight" data-testid="text-user-name">{displayName || t("profile.seeker")}</p>
+              <p className="text-[13px] text-[#9CA3AF] mt-0.5">{t("profile.seeker")}</p>
+            </div>
+            <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+          </button>
 
           {subscription.isTrial && (
-            <div className="bg-[#F0FDF4] rounded-xl px-4 py-3 flex items-start gap-3" data-testid="trial-explanation">
+            <div className="rounded-xl border border-[#D1FAE5] bg-[#F0FDF4] px-4 py-3 flex items-start gap-3" data-testid="trial-explanation">
               <Gift className="w-4 h-4 text-[#16A34A] flex-shrink-0 mt-0.5" />
               <div>
                 <p className="text-[13px] font-bold text-[#15803D]">{t("trial.explanation")}</p>
@@ -1462,32 +1424,34 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             </div>
           )}
 
-
-          <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+          <div className="rounded-xl border border-[#F3F4F6] bg-[#FAFAFA] overflow-hidden">
             {pd?.search_buddy_email ? (
               <button
                 onClick={() => navigate("/profile/edit/search_buddy_email")}
-                className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F5F7FA] transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-3.5 text-left active:bg-[#F3F4F6] transition-colors"
                 data-testid="button-zoekbuddy"
               >
-                <Users className="w-[18px] h-[18px] text-[#1F2937]" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-[15px] font-[500] text-[#111827]">{t("profile.searchBuddy")}</p>
-                  <p className="text-[13px] text-[#6B7280] truncate mt-0.5">{pd.search_buddy_email}</p>
-                  <p className="text-[11px] text-[#9CA3AF] mt-0.5">{t("profile.searchBuddyReceives")}</p>
+                <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center flex-shrink-0">
+                  <Users className="w-4 h-4 text-[#6B7280]" />
                 </div>
-                <ChevronRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[14px] font-semibold text-[#111827]">{t("profile.searchBuddy")}</p>
+                  <p className="text-[12px] text-[#9CA3AF] truncate mt-0.5">{pd.search_buddy_email}</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
               </button>
             ) : (
-              <div className="px-5 py-4">
-                <div className="flex items-center gap-2 mb-1">
-                  <Users className="w-[18px] h-[18px] text-[#1F2937]" />
-                  <p className="text-[15px] font-[500] text-[#111827]">{t("profile.searchBuddy")}</p>
+              <div className="px-4 py-3.5">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center flex-shrink-0">
+                    <Users className="w-4 h-4 text-[#6B7280]" />
+                  </div>
+                  <p className="text-[14px] font-semibold text-[#111827]">{t("profile.searchBuddy")}</p>
                 </div>
-                <p className="text-[13px] text-[#6B7280] mb-3">{t("profile.noBuddyYet")}</p>
+                <p className="text-[12px] text-[#9CA3AF] mb-3 ml-10">{t("profile.noBuddyYet")}</p>
                 <button
                   onClick={() => navigate("/profile/edit/search_buddy_email")}
-                  className="h-[40px] px-5 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-semibold transition-colors"
+                  className="ml-10 h-[36px] px-4 rounded-lg bg-[#111827] text-white text-[13px] font-semibold transition-colors hover:bg-[#1F2937]"
                   data-testid="button-add-buddy"
                 >
                   {t("profile.addBuddy")}
@@ -1496,31 +1460,35 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             )}
           </div>
 
-          <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-4">
+          <div className="rounded-xl border border-[#F3F4F6] overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-3.5">
               <div className="flex items-center gap-3">
-                <Bell className="w-[18px] h-[18px] text-[#1F2937]" />
-                <p className="text-[15px] font-[500] text-[#111827]">{t("profile.pushNotifications")}</p>
+                <div className="w-8 h-8 rounded-lg bg-[#FAFAFA] flex items-center justify-center flex-shrink-0">
+                  <Bell className="w-4 h-4 text-[#6B7280]" />
+                </div>
+                <p className="text-[14px] font-medium text-[#111827]">{t("profile.pushNotifications")}</p>
               </div>
               <button
                 onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
                 disabled={notifUpdating === "push_enabled"}
-                className={`w-[44px] h-[26px] rounded-full relative transition-colors ${notifSettings?.push_enabled ? "bg-[#0D6EFD]" : "bg-[#D1D5DB]"} ${notifUpdating === "push_enabled" ? "opacity-50" : ""}`}
+                className={`w-[44px] h-[26px] rounded-full relative transition-colors ${notifSettings?.push_enabled ? "bg-[#0D6EFD]" : "bg-[#E5E7EB]"} ${notifUpdating === "push_enabled" ? "opacity-50" : ""}`}
                 data-testid="toggle-push"
               >
                 <span className={`absolute top-[3px] w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${notifSettings?.push_enabled ? "left-[21px]" : "left-[3px]"}`} />
               </button>
             </div>
-            <div className="h-px bg-[#E5E7EB] mx-5" />
-            <div className="flex items-center justify-between px-5 py-4">
+            <div className="h-px bg-[#F3F4F6] mx-4" />
+            <div className="flex items-center justify-between px-4 py-3.5">
               <div className="flex items-center gap-3">
-                <Mail className="w-[18px] h-[18px] text-[#1F2937]" />
-                <p className="text-[15px] font-[500] text-[#111827]">{t("profile.emailNotifications")}</p>
+                <div className="w-8 h-8 rounded-lg bg-[#FAFAFA] flex items-center justify-center flex-shrink-0">
+                  <Mail className="w-4 h-4 text-[#6B7280]" />
+                </div>
+                <p className="text-[14px] font-medium text-[#111827]">{t("profile.emailNotifications")}</p>
               </div>
               <button
                 onClick={() => handleToggleNotif("email_enabled", !!notifSettings?.email_enabled)}
                 disabled={notifUpdating === "email_enabled"}
-                className={`w-[44px] h-[26px] rounded-full relative transition-colors ${notifSettings?.email_enabled ? "bg-[#0D6EFD]" : "bg-[#D1D5DB]"} ${notifUpdating === "email_enabled" ? "opacity-50" : ""}`}
+                className={`w-[44px] h-[26px] rounded-full relative transition-colors ${notifSettings?.email_enabled ? "bg-[#0D6EFD]" : "bg-[#E5E7EB]"} ${notifUpdating === "email_enabled" ? "opacity-50" : ""}`}
                 data-testid="toggle-email"
               >
                 <span className={`absolute top-[3px] w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${notifSettings?.email_enabled ? "left-[21px]" : "left-[3px]"}`} />
@@ -1528,15 +1496,15 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] p-5">
-            <h2 className="text-[16px] font-bold text-[#111C3D] mb-3">{t("profile.reactionLetter")}</h2>
+          <div className="rounded-xl border border-[#F3F4F6] p-4">
+            <h2 className="text-[15px] font-bold text-[#111827] mb-3">{t("profile.reactionLetter")}</h2>
             {letterPreview ? (
               <div>
-                <p className="text-[14px] text-[#1F2937] leading-relaxed line-clamp-3 mb-3">{letterPreview}...</p>
+                <p className="text-[13px] text-[#6B7280] leading-relaxed line-clamp-3 mb-3">{letterPreview}...</p>
                 <div className="flex gap-2">
                   <button
                     onClick={handleCopyLetter}
-                    className="h-[40px] px-5 rounded-full border border-[#E5E7EB] bg-white text-[#111827] text-[14px] font-semibold hover:bg-[#F5F7FA] transition-colors flex items-center gap-1.5"
+                    className="h-[36px] px-4 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F9FAFB] transition-colors flex items-center gap-1.5"
                     data-testid="button-letter-copy"
                   >
                     <Copy className="w-3.5 h-3.5" />
@@ -1544,7 +1512,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                   </button>
                   <button
                     onClick={() => navigate("/application-letter")}
-                    className="h-[40px] px-5 rounded-full border border-[#E5E7EB] bg-white text-[#111827] text-[14px] font-semibold hover:bg-[#F5F7FA] transition-colors flex items-center gap-1.5"
+                    className="h-[36px] px-4 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F9FAFB] transition-colors flex items-center gap-1.5"
                     data-testid="button-letter-edit"
                   >
                     <Pencil className="w-3.5 h-3.5" />
@@ -1554,10 +1522,10 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
               </div>
             ) : (
               <div>
-                <p className="text-[14px] text-[#1F2937] leading-relaxed mb-3">{t("profile.noReactionLetterYet")}</p>
+                <p className="text-[13px] text-[#6B7280] leading-relaxed mb-3">{t("profile.noReactionLetterYet")}</p>
                 <button
                   onClick={() => navigate("/application-letter")}
-                  className="h-[40px] px-5 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-semibold transition-colors flex items-center gap-1.5"
+                  className="h-[36px] px-4 rounded-lg bg-[#111827] text-white text-[13px] font-semibold transition-colors hover:bg-[#1F2937] flex items-center gap-1.5"
                   data-testid="button-letter-empty"
                 >
                   <Pencil className="w-3.5 h-3.5" />
@@ -1567,7 +1535,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             )}
           </div>
 
-          <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+          <div className="rounded-xl border border-[#F3F4F6] overflow-hidden">
             <AccountSettingsRow
               label={t("profile.subscription")}
               subtext={subscription.isActive && !subscription.isTrial
@@ -1578,11 +1546,11 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
               onClick={() => navigate("/account/subscription")}
               trailing={
                 subscription.isActive && !subscription.isTrial ? (
-                  <span className="text-[12px] font-[600] px-2.5 py-1 rounded-full flex-shrink-0 text-white bg-[#0D6EFD]" data-testid="text-subscription-status">
+                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full flex-shrink-0 text-[#0D6EFD] bg-[#EBF2FF]" data-testid="text-subscription-status">
                     {t("common.active")}
                   </span>
                 ) : subscription.isTrial ? (
-                  <span className="text-[12px] font-[600] px-2.5 py-1 rounded-full flex-shrink-0 text-white bg-[#0D6EFD]" data-testid="text-subscription-status">
+                  <span className="text-[11px] font-bold px-2.5 py-1 rounded-full flex-shrink-0 text-[#D97706] bg-[#FEF3C7]" data-testid="text-subscription-status">
                     {t("profile.trial")}
                   </span>
                 ) : undefined
@@ -1593,7 +1561,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
           {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
             <button
               onClick={() => navigate("/paywall")}
-              className="w-full h-[52px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-bold transition-colors flex items-center justify-center gap-2"
+              className="w-full h-[48px] rounded-xl bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-bold transition-colors flex items-center justify-center gap-2"
               data-testid="button-upgrade-subscription"
             >
               <Crown className="w-4 h-4" />
@@ -1601,7 +1569,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             </button>
           )}
 
-          <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+          <div className="rounded-xl border border-[#F3F4F6] overflow-hidden">
             <AccountSettingsRow
               label={t("profile.language")}
               subtext={currentLangLabel}
@@ -1610,18 +1578,18 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
           </div>
 
           <div>
-            <p className="text-[13px] font-semibold text-[#111C3D] tracking-wide mb-3">{t("profile.support")}</p>
-            <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+            <p className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wider mb-2 px-1">{t("profile.support")}</p>
+            <div className="rounded-xl border border-[#F3F4F6] overflow-hidden">
               <AccountSettingsRow
                 label={t("profile.privacy")}
                 onClick={() => navigate("/datenschutz")}
               />
-              <div className="h-px bg-[#E5E7EB] mx-5" />
+              <div className="h-px bg-[#F3F4F6] mx-4" />
               <AccountSettingsRow
                 label={t("profile.helpSupport")}
                 onClick={() => { window.location.href = "mailto:support@housalert.com"; }}
               />
-              <div className="h-px bg-[#E5E7EB] mx-5" />
+              <div className="h-px bg-[#F3F4F6] mx-4" />
               <AccountSettingsRow
                 label={t("profile.terms")}
                 onClick={() => navigate("/terms")}
@@ -1629,31 +1597,31 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+          <div className="rounded-xl border border-[#F3F4F6] overflow-hidden">
             <button
               onClick={() => setShowLogoutConfirm(true)}
               disabled={signingOut}
-              className={`w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F5F7FA] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
+              className={`w-full flex items-center gap-3 px-4 py-3.5 text-left active:bg-[#F9FAFB] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
               data-testid="button-logout"
             >
-              <LogOut className="w-[18px] h-[18px] text-[#EF4444]" />
-              <p className="text-[15px] font-[500] text-[#EF4444] flex-1">{signingOut ? t("profile.signingOut") : t("profile.logout")}</p>
+              <LogOut className="w-4 h-4 text-[#EF4444]" />
+              <p className="text-[14px] font-medium text-[#EF4444] flex-1">{signingOut ? t("profile.signingOut") : t("profile.logout")}</p>
             </button>
-            <div className="h-px bg-[#E5E7EB] mx-5" />
+            <div className="h-px bg-[#F3F4F6] mx-4" />
             <button
               onClick={() => navigate("/account/delete")}
-              className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[#F5F7FA] transition-colors"
+              className="w-full flex items-center gap-3 px-4 py-3.5 text-left active:bg-[#F9FAFB] transition-colors"
               data-testid="button-delete-account"
             >
-              <Trash2 className="w-[18px] h-[18px] text-[#6B7280]" />
-              <p className="text-[15px] font-[500] text-[#6B7280] flex-1">{t("profile.deleteAccount")}</p>
+              <Trash2 className="w-4 h-4 text-[#9CA3AF]" />
+              <p className="text-[14px] font-medium text-[#9CA3AF] flex-1">{t("profile.deleteAccount")}</p>
             </button>
           </div>
 
           {(user?.email?.toLowerCase() === "martin.essie87@gmail.com") && (
             <div>
-              <p className="text-[13px] font-semibold text-[#111C3D] tracking-wide mb-3">{t("profile.adminSection")}</p>
-              <div className="bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.04)] overflow-hidden">
+              <p className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wider mb-2 px-1">{t("profile.adminSection")}</p>
+              <div className="rounded-xl border border-[#F3F4F6] overflow-hidden">
                 <AccountSettingsRow
                   label={t("profile.adminPortal")}
                   onClick={() => navigate("/admin/portal")}
@@ -1904,8 +1872,8 @@ export default function DashboardPage() {
       </main>
 
       <div className="fixed bottom-0 left-0 right-0 z-20 pointer-events-none" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
-        <div className="max-w-xl mx-auto px-4 pb-3">
-          <nav className="pointer-events-auto bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.10)] flex h-[60px] px-1" data-testid="bottom-nav">
+        <div className="max-w-xl mx-auto px-4 pb-2">
+          <nav className="pointer-events-auto bg-white/95 backdrop-blur-lg rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.08)] border border-white/50 flex h-[56px] px-1" data-testid="bottom-nav">
             {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
               const isActive = activeTab === key;
               return (
@@ -1915,13 +1883,13 @@ export default function DashboardPage() {
                   className="flex-1 flex flex-col items-center justify-center gap-0.5 relative"
                   data-testid={`tab-${key}`}
                 >
-                  {isActive && (
-                    <span className="absolute inset-x-1.5 inset-y-1.5 rounded-xl bg-[#F0F4FA]" />
-                  )}
-                  <Icon className={`w-[22px] h-[22px] relative z-[1] ${isActive ? "text-[#0D6EFD]" : "text-[#6B7280]"}`} />
-                  <span className={`text-[10px] relative z-[1] ${isActive ? "font-semibold text-[#0D6EFD]" : "font-medium text-[#6B7280]"}`}>
+                  <Icon className={`w-5 h-5 transition-colors ${isActive ? "text-[#0D6EFD]" : "text-[#9CA3AF]"}`} />
+                  <span className={`text-[10px] transition-colors ${isActive ? "font-bold text-[#0D6EFD]" : "font-medium text-[#9CA3AF]"}`}>
                     {t(labelKey)}
                   </span>
+                  {isActive && (
+                    <span className="absolute -top-0.5 w-1 h-1 rounded-full bg-[#0D6EFD]" />
+                  )}
                 </button>
               );
             })}
