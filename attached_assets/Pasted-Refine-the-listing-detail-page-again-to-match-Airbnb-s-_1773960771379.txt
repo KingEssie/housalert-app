@@ -1,0 +1,92 @@
+Refine the listing detail page again to match Airbnb’s intro section more closely.
+
+IMPORTANT:
+- Do NOT change functionality or data
+- Keep the current overall detail page structure
+- This is only a visual/layout refinement
+- Keep HousAlert blue for the bottom CTA
+- Keep the sticky bottom footer with price + “Kopiëren en reageren”
+
+## MAIN CHANGES
+
+### 1. REMOVE THE DIVIDER LINES BETWEEN DETAIL ROWS
+The lines between the detail items still make the page feel too structured and too different from Airbnb.
+
+Change this:
+- remove the horizontal divider lines between the property detail rows
+- keep clean spacing between items instead
+- rely on whitespace, alignment, and icon size for separation
+- the details should feel lighter and more open
+
+I want the details section to feel like Airbnb:
+- no unnecessary row dividers
+- more calm
+- more premium
+- more natural flow
+
+### 2. MOVE THE WEBSITE / SOURCE UNDER THE TITLE
+Right now the website/source appears inside the detail list.
+I want it moved up directly under the title.
+
+Place the listing source under the title in the same style as Airbnb’s subtitle line, similar to:
+- “Hotel in Parijs, Frankrijk”
+
+For HousAlert this should become something like:
+- “Wg-Gesucht in Berlin”
+or
+- “Geplaatst op Wg-Gesucht”
+depending on what reads best in the current UI
+
+Style requirements:
+- centered under the title
+- lighter gray text
+- smaller than the title
+- same visual role as Airbnb’s subtitle
+- with clean spacing between title and subtitle
+
+### 3. MATCH AIRBNB-LIKE SPACING
+Adjust the spacing to feel closer to Airbnb’s intro section:
+
+- more balanced spacing between image and title
+- small clean gap between title and subtitle/source
+- more breathing room before the detail items start
+- overall calmer vertical rhythm
+
+The top structure should feel like:
+
+image
+→ centered title
+→ centered subtitle/source
+→ detail items below (without divider lines)
+→ reactiebrief
+→ sticky footer
+
+## DETAIL ITEMS
+Keep these items below the subtitle:
+- Locatie
+- Afmeting
+- Slaapkamers
+- Geplaatst
+
+Website/source should no longer appear here if it has moved under the title.
+
+Style:
+- larger icons remain
+- no divider lines
+- clean vertical spacing
+- elegant Airbnb-like openness
+
+## RESULT
+The page should now feel:
+- less like a form/list
+- more like an Airbnb detail intro
+- lighter
+- more open
+- better spaced
+- more premium
+
+At the end, summarize:
+- that divider lines between detail rows were removed
+- that the website/source was moved under the title
+- which spacing adjustments were made
+- which files/components were updated

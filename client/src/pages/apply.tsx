@@ -16,7 +16,6 @@ import {
   MapPin,
   BedDouble,
   Ruler,
-  Globe,
   Clock,
 } from "lucide-react";
 
@@ -154,23 +153,22 @@ export default function ApplyPage() {
         </button>
         <div className="animate-pulse">
           <div className="w-full bg-[#F0F0F0]" style={{ aspectRatio: "16/10" }} />
-          <div className="max-w-xl mx-auto w-full px-6 pt-6 space-y-5">
-            <div className="flex flex-col items-center gap-2">
+          <div className="max-w-xl mx-auto w-full px-6 pt-7">
+            <div className="flex flex-col items-center gap-2 pb-1">
               <div className="h-5 bg-[#F5F5F5] rounded-md w-3/4" />
               <div className="h-5 bg-[#F5F5F5] rounded-md w-1/2" />
+              <div className="h-3.5 bg-[#F5F5F5] rounded-md w-1/3 mt-1" />
             </div>
-            <div className="border-t border-[#F0F0F0] mt-4" />
-            <div className="py-2">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="flex items-center gap-4 py-[16px]">
-                  <div className="w-6 h-6 bg-[#F0F0F0] rounded" />
-                  <div className="flex-1 space-y-1.5">
-                    <div className="h-3 bg-[#F5F5F5] rounded w-16" />
-                    <div className="h-4 bg-[#F5F5F5] rounded w-28" />
-                  </div>
+            <div className="border-t border-[#F0F0F0] mt-5 mb-2" />
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="flex items-center gap-4 py-[14px]">
+                <div className="w-6 h-6 bg-[#F0F0F0] rounded" />
+                <div className="flex-1 space-y-1.5">
+                  <div className="h-3 bg-[#F5F5F5] rounded w-16" />
+                  <div className="h-4 bg-[#F5F5F5] rounded w-28" />
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -259,12 +257,13 @@ export default function ApplyPage() {
   if (listing.bedrooms && listing.bedrooms > 0) {
     detailRows.push({ icon: BedDouble, label: t("listingDetail.bedrooms"), value: `${listing.bedrooms} ${listing.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}` });
   }
-  if (listing.source) {
-    detailRows.push({ icon: Globe, label: t("listingDetail.website"), value: listing.source });
-  }
   if (listing.first_seen_at) {
     detailRows.push({ icon: Clock, label: t("listingDetail.posted"), value: relativeTime(listing.first_seen_at) });
   }
+
+  const subtitle = listing.source
+    ? `${listing.source} · ${listing.city}`
+    : listing.city;
 
   return (
     <div className="min-h-screen bg-white flex flex-col relative">
@@ -300,36 +299,36 @@ export default function ApplyPage() {
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full pb-[120px]">
-        <div className="px-6 pt-7 pb-2">
+        <div className="px-6 pt-7 pb-1 text-center">
           <h1
-            className="text-[22px] font-medium text-[#111C3D] leading-[1.25] tracking-[-0.015em] text-center max-w-[340px] mx-auto"
+            className="text-[22px] font-medium text-[#111C3D] leading-[1.25] tracking-[-0.015em] max-w-[340px] mx-auto"
             data-testid="text-apply-title"
           >
             {listing.title}
           </h1>
+          <p className="text-[14px] text-[#9CA3AF] mt-2 capitalize" data-testid="text-apply-subtitle">
+            {subtitle}
+          </p>
         </div>
 
-        <div className="border-t border-[#F0F0F0] mx-6 mt-4" />
+        <div className="border-t border-[#F0F0F0] mx-6 mt-5 mb-2" />
 
-        <div className="px-6 py-2" data-testid="facts-block">
+        <div className="px-6" data-testid="facts-block">
           {detailRows.map((row, i) => {
             const Icon = row.icon;
             return (
-              <div key={i}>
-                <div className="flex items-center gap-4 py-[16px]">
-                  <Icon className="w-6 h-6 text-[#71717A] flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[12px] text-[#9CA3AF] leading-none mb-1.5">{row.label}</p>
-                    <p className="text-[15px] text-[#111827] leading-none capitalize">{row.value}</p>
-                  </div>
+              <div key={i} className="flex items-center gap-4 py-[14px]">
+                <Icon className="w-6 h-6 text-[#71717A] flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[12px] text-[#9CA3AF] leading-none mb-1.5">{row.label}</p>
+                  <p className="text-[15px] text-[#111827] leading-none capitalize">{row.value}</p>
                 </div>
-                {i < detailRows.length - 1 && <div className="border-t border-[#F0F0F0] ml-10" />}
               </div>
             );
           })}
         </div>
 
-        <div className="border-t border-[#F0F0F0] mx-6 mt-1 mb-5" />
+        <div className="border-t border-[#F0F0F0] mx-6 mt-3 mb-5" />
 
         <div className="px-6">
           <h2 className="text-[15px] font-medium text-[#111C3D] mb-3">{t("applySheet.applicationLetter")}</h2>
