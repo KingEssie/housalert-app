@@ -1,0 +1,68 @@
+The white screen bug is NOT fully fixed yet.
+
+## CURRENT BUG
+
+When I am on the Home screen and I tap the task “Meldingen inschakelen” inside the “Aan de slag” section, I still get a white screen.
+
+This means the task item inside the Home screen onboarding card is still trying to navigate to the old notifications page or using outdated navigation logic.
+
+## IMPORTANT CONTEXT
+
+In the past there was a separate notification settings screen.
+That screen no longer exists.
+
+Notification settings now live inside:
+- Profile / Account page
+
+So the “Meldingen inschakelen” action must NEVER try to open the old notifications page anymore.
+
+## WHAT TO CHECK
+
+Please inspect the exact click handler used by the Home screen task item inside “Aan de slag”.
+
+Check for:
+- old href values
+- old route strings
+- old navigate() calls
+- old task action mappings
+- old recommendation/action config
+- stale task definitions
+- any handler that still points to the removed notification page
+
+Especially verify the exact task row for:
+- “Meldingen inschakelen”
+
+Do not assume the global cleanup already fixed the task item.
+Trace the actual onClick path from the Home screen UI component all the way to navigation.
+
+## REQUIRED FIX
+
+When the user taps “Meldingen inschakelen” in the Home screen onboarding card:
+- switch to the Profile tab
+- open the Profile / Account screen
+- scroll to or focus the notification toggles section if possible
+
+Fallback:
+- if scrolling is difficult, just open the Profile / Account screen
+- but NEVER navigate to the old notifications screen
+
+## ALSO VERIFY
+
+After fixing:
+- tapping “Meldingen inschakelen” from Home no longer gives a white screen
+- it always opens Profile / Account
+- both collapsed and expanded versions of “Aan de slag” use the same correct navigation
+- there are no stale task action definitions left
+
+## DEBUG STEP
+
+Please print or inspect which route/action is currently triggered when tapping this exact Home screen task.
+I want you to identify the precise outdated reference causing the white screen, then replace it.
+
+## RESULT
+
+At the end, tell me:
+- where the stale navigation was still defined
+- which component or task mapping caused it
+- what it was changed to
+- which files were updated

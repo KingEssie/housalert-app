@@ -656,7 +656,7 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
       setActiveTab("profile");
       setTimeout(() => {
         document.getElementById("notification-settings")?.scrollIntoView({ behavior: "smooth", block: "center" });
-      }, 150);
+      }, 300);
     },
     firstMatchViewed: () => setActiveTab("matches"),
     firstReaction: () => { setActiveTab("matches"); },
