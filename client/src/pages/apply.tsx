@@ -153,17 +153,21 @@ export default function ApplyPage() {
         </button>
         <div className="animate-pulse">
           <div className="w-full bg-[#F0F0F0]" style={{ aspectRatio: "16/10" }} />
-          <div className="max-w-xl mx-auto w-full px-6 pt-7">
+          <div className="max-w-xl mx-auto w-full px-5 pt-7">
             <div className="flex flex-col items-center gap-2">
-              <div className="h-5 bg-[#F5F5F5] rounded-md w-3/4" />
-              <div className="h-5 bg-[#F5F5F5] rounded-md w-1/2" />
-              <div className="h-4 bg-[#F5F5F5] rounded-md w-1/3 mt-1" />
+              <div className="h-5 bg-[#F5F5F5] rounded-md w-4/5" />
+              <div className="h-5 bg-[#F5F5F5] rounded-md w-3/5" />
+              <div className="h-4 bg-[#F5F5F5] rounded-md w-2/5 mt-1" />
             </div>
-            <div className="pt-7">
+            <div className="mt-6 border-t border-[#EBEBEB]" />
+            <div className="pt-5">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="flex items-center gap-4 py-[14px]">
-                  <div className="w-6 h-6 bg-[#F0F0F0] rounded" />
-                  <div className="h-4 bg-[#F5F5F5] rounded w-28" />
+                <div key={i} className="flex items-start gap-4 py-[18px]">
+                  <div className="w-7 h-7 bg-[#F0F0F0] rounded" />
+                  <div className="flex-1 space-y-1.5">
+                    <div className="h-4 bg-[#F5F5F5] rounded w-20" />
+                    <div className="h-3.5 bg-[#F5F5F5] rounded w-32" />
+                  </div>
                 </div>
               ))}
             </div>
@@ -247,16 +251,16 @@ export default function ApplyPage() {
   const hasImage = !!listing.image_url;
   const gradient = getCityGradient(listing.city);
 
-  const detailRows: { icon: typeof MapPin; value: string }[] = [];
-  detailRows.push({ icon: MapPin, value: listing.city });
+  const detailRows: { icon: typeof MapPin; title: string; detail: string }[] = [];
+  detailRows.push({ icon: MapPin, title: t("listingDetail.location"), detail: listing.city });
   if (listing.size_m2 && listing.size_m2 > 0) {
-    detailRows.push({ icon: Ruler, value: `${listing.size_m2} m²` });
+    detailRows.push({ icon: Ruler, title: t("listingDetail.size"), detail: `${listing.size_m2} m²` });
   }
   if (listing.bedrooms && listing.bedrooms > 0) {
-    detailRows.push({ icon: BedDouble, value: `${listing.bedrooms} ${listing.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}` });
+    detailRows.push({ icon: BedDouble, title: t("listingDetail.bedrooms"), detail: `${listing.bedrooms} ${listing.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}` });
   }
   if (listing.first_seen_at) {
-    detailRows.push({ icon: Clock, value: relativeTime(listing.first_seen_at) });
+    detailRows.push({ icon: Clock, title: t("listingDetail.posted"), detail: relativeTime(listing.first_seen_at) });
   }
 
   const subtitle = listing.source
@@ -297,31 +301,36 @@ export default function ApplyPage() {
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full pb-[120px]">
-        <div className="px-6 pt-7 text-center">
+        <div className="px-5 pt-7 text-center">
           <h1
-            className="text-[22px] font-medium text-[#111C3D] leading-[1.25] tracking-[-0.015em] max-w-[340px] mx-auto"
+            className="text-[22px] font-medium text-[#111C3D] leading-[1.3] tracking-[-0.015em] mx-auto"
             data-testid="text-apply-title"
           >
             {listing.title}
           </h1>
-          <p className="text-[15px] text-[#6B7280] mt-2 capitalize" data-testid="text-apply-subtitle">
+          <p className="text-[15px] text-[#6B7280] mt-1.5 capitalize" data-testid="text-apply-subtitle">
             {subtitle}
           </p>
         </div>
 
-        <div className="px-6 pt-7" data-testid="facts-block">
+        <div className="mx-5 mt-6 border-t border-[#EBEBEB]" />
+
+        <div className="px-5 pt-5" data-testid="facts-block">
           {detailRows.map((row, i) => {
             const Icon = row.icon;
             return (
-              <div key={i} className="flex items-center gap-4 py-[14px]">
-                <Icon className="w-6 h-6 text-[#71717A] flex-shrink-0" />
-                <span className="text-[15px] text-[#111827] capitalize">{row.value}</span>
+              <div key={i} className="flex items-start gap-4 py-[18px]">
+                <Icon className="w-7 h-7 text-[#484848] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[15px] font-medium text-[#222222]">{row.title}</p>
+                  <p className="text-[14px] text-[#717171] mt-0.5 capitalize">{row.detail}</p>
+                </div>
               </div>
             );
           })}
         </div>
 
-        <div className="px-6 pt-6">
+        <div className="px-5 pt-5">
           <h2 className="text-[15px] font-medium text-[#111C3D] mb-3">{t("applySheet.applicationLetter")}</h2>
           <div className="bg-[#FAFAFA] rounded-2xl px-5 py-5">
             <textarea

@@ -1,0 +1,152 @@
+Refine the listing detail page again, because it still does not match the intended Airbnb-style layout closely enough.
+
+IMPORTANT:
+- Do NOT change logic, data, or functionality
+- Keep the sticky bottom footer with price + “Kopiëren en reageren”
+- Keep HousAlert blue for the CTA
+- This is a layout refinement only
+- Do NOT redesign the entire page from scratch
+
+## WHAT IS STILL WRONG
+
+1. The title feels too centered and too narrow because there is too much whitespace on the left and right
+2. The detail section still looks too much like a simple metadata list
+3. The detail rows do not yet feel like Airbnb feature rows
+4. There is no subtle divider between the subtitle/source and the first detail item
+
+## WHAT I WANT INSTEAD
+
+I want the detail page intro to feel much closer to Airbnb’s structure:
+
+image
+→ title
+→ subtitle/source
+→ subtle divider
+→ Airbnb-style feature list with large icons
+→ reactiebrief
+→ sticky footer
+
+## 1. TITLE ADJUSTMENT
+
+Refine the title block:
+- keep the title centered
+- but reduce the feeling that it is “floating in too much side whitespace”
+- slightly increase usable text width so the title wraps more naturally
+- keep it elegant and premium
+- do NOT make it tiny
+- do NOT change the typography style drastically
+- keep the previous stronger title style, but improve width and rhythm
+
+Goal:
+- still centered
+- less awkward wrapping
+- closer to Airbnb’s title proportions
+
+## 2. SUBTITLE / SOURCE
+
+Keep the source under the title, for example:
+- “Wg-Gesucht · Berlin”
+
+Style:
+- centered
+- smaller than title
+- lighter gray
+- calm spacing below title
+
+## 3. ADD A SUBTLE DIVIDER UNDER THE SUBTITLE
+
+Between the subtitle/source and the first detail item, add:
+- one subtle horizontal divider
+- light gray
+- thin
+- Airbnb-like
+- with clean spacing above and below
+
+IMPORTANT:
+- only this divider is needed here
+- not lines between every detail row
+
+## 4. REBUILD THE DETAIL SECTION AS AIRBNB-STYLE FEATURE ROWS
+
+This is the main fix.
+
+I do NOT want short metadata rows anymore.
+
+Instead, create a vertical feature list like Airbnb:
+- large icon on the left
+- on the right:
+  - detail title
+  - detail value/description underneath
+- stacked vertically
+- generous spacing between rows
+- no card wrapper
+- no compact inline layout
+
+Each row should feel like an Airbnb feature row.
+
+Structure per item:
+- icon (large, outlined, visually present)
+- heading/title in darker text
+- supporting detail/value below in lighter text
+
+Use this pattern for:
+
+### Locatie
+Title: Locatie
+Detail: Berlin
+
+### Afmeting
+Title: Afmeting
+Detail: 54 m²
+
+### Slaapkamers
+Title: Slaapkamers
+Detail: 2 slaapkamers
+
+### Geplaatst
+Title: Geplaatst
+Detail: 45 min geleden
+
+## 5. ICONS
+
+Icons should be:
+- clearly larger
+- closer to Airbnb feature icon scale
+- outlined
+- neutral dark gray
+- vertically aligned with the text block
+- visually premium, not tiny
+
+## 6. SPACING
+
+Improve spacing so it feels more like Airbnb:
+- better spacing under image
+- cleaner spacing between title and subtitle
+- subtle divider with breathing room
+- larger gaps between feature rows
+- comfortable padding left/right
+- open white layout
+
+## 7. IMPORTANT DO NOTS
+
+- do not turn the details into a compact metadata strip
+- do not keep only single-line label/value rows
+- do not add a boxed card around the details
+- do not remove the large icons
+- do not over-center the title with excessive side whitespace
+- do not add divider lines between every row unless extremely subtle and necessary
+
+## RESULT
+
+The page should feel:
+- closer to Airbnb
+- more premium
+- more structured
+- less like a plain metadata list
+- more like a feature list with strong icons and text hierarchy
+
+At the end, summarize:
+- how the title width/alignment was adjusted
+- that a divider was added below the subtitle
+- that the detail section was rebuilt into Airbnb-style feature rows
+- which files/components were updated
