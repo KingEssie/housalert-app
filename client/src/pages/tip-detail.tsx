@@ -69,7 +69,7 @@ export default function TipDetailPage() {
           >
             <ArrowLeft className="w-4 h-4 text-[#71717A]" />
           </button>
-          <h1 className="text-[17px] font-medium text-[#111C3D] flex-1 tracking-wide">
+          <h1 className="text-[17px] font-medium text-[#18181B] flex-1 tracking-wide">
             {t("tips.tipLabel")} {currentIndex + 1}/{TIP_IDS.length}
           </h1>
         </div>
@@ -93,7 +93,7 @@ export default function TipDetailPage() {
             <p className="text-[12px] font-medium text-[#0D6EFD] uppercase tracking-wide">
               {t("tips.tipLabel")} {currentIndex + 1}
             </p>
-            <h2 className="text-[22px] font-medium text-[#111C3D] leading-tight" data-testid="text-tip-title">
+            <h2 className="text-[22px] font-medium text-[#18181B] leading-tight" data-testid="text-tip-title">
               {tip.title}
             </h2>
           </div>
@@ -109,7 +109,7 @@ export default function TipDetailPage() {
           data-testid="button-open-content"
         >
           <Icon className="w-5 h-5 text-[#0D6EFD] flex-shrink-0" />
-          <span className="text-[14px] font-medium text-[#111C3D] flex-1">{t("tips.openContent")}</span>
+          <span className="text-[14px] font-medium text-[#18181B] flex-1">{t("tips.openContent")}</span>
           <ChevronRight className="w-4 h-4 text-[#71717A]" />
         </button>
       </main>

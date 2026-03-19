@@ -45,7 +45,7 @@ function EstimateBlock({ city, maxPrice }: { city: string; maxPrice: string }) {
         {loading ? (
           <div className="h-4 w-48 bg-[#EBF2FF] rounded animate-pulse" />
         ) : estimate !== null ? (
-          <p className="text-[13px] sm:text-[14px] font-medium text-[#111C3D] leading-snug">
+          <p className="text-[13px] sm:text-[14px] font-medium text-[#18181B] leading-snug">
             <span className="text-[#0D6EFD] text-[15px] font-medium">{getMatchEstimateRange(estimate).low}–{getMatchEstimateRange(estimate).high}</span> {t("onboardingEmbed.matchesPerWeek")}
           </p>
         ) : null}
@@ -64,7 +64,7 @@ function CompletionScreen({ draftId }: { draftId: string }) {
         <Check className="w-7 h-7 text-[#0D6EFD]" />
       </div>
 
-      <h2 className="text-[20px] font-medium text-[#111C3D] mb-1.5 tracking-wide" data-testid="embed-text-done-title">
+      <h2 className="text-[20px] font-medium text-[#18181B] mb-1.5 tracking-wide" data-testid="embed-text-done-title">
         {t("onboardingEmbed.doneTitle")}
       </h2>
       <p className="text-[14px] text-[#1F2937] mb-7 max-w-[300px] leading-relaxed">
@@ -203,7 +203,7 @@ export default function OnboardingEmbedPage() {
 
         <div className="text-center mb-5">
           <h1
-            className="text-[21px] sm:text-[24px] font-medium text-[#111C3D] leading-[1.25] tracking-tight"
+            className="text-[21px] sm:text-[24px] font-medium text-[#18181B] leading-[1.25] tracking-tight"
             data-testid="embed-text-hero-title"
           >
             {t("onboardingEmbed.heroTitle")}
@@ -226,7 +226,7 @@ export default function OnboardingEmbedPage() {
           <div className="px-5 py-3 space-y-3.5">
 
             <div>
-              <label className="text-[13px] font-medium text-[#111C3D] tracking-wide mb-2 block">
+              <label className="text-[13px] font-medium text-[#18181B] tracking-wide mb-2 block">
                 {t("onboardingEmbed.propertyType")}
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -248,7 +248,7 @@ export default function OnboardingEmbedPage() {
             </div>
 
             <div>
-              <label className="text-[13px] font-medium text-[#111C3D] tracking-wide mb-2 block">
+              <label className="text-[13px] font-medium text-[#18181B] tracking-wide mb-2 block">
                 {t("onboardingEmbed.monthlyBudget")}
               </label>
               <div className="flex items-center gap-2">

@@ -78,14 +78,14 @@ function PopularCard({ listing }: { listing: PopularListing }) {
 
       <div className="p-3 flex flex-col gap-1.5">
         <h3
-          className="font-medium text-[#111C3D] text-[14px] leading-[1.3] line-clamp-2"
+          className="font-medium text-[#18181B] text-[14px] leading-[1.3] line-clamp-2"
           data-testid={`text-popular-title-${listing.listing_id}`}
         >
           {listing.title}
         </h3>
 
         {listing.price > 0 && (
-          <span className="text-[15px] font-medium text-[#111C3D]">
+          <span className="text-[15px] font-medium text-[#18181B]">
             {"\u20AC"}{listing.price}
             <span className="text-[11px] font-normal text-[#1F2937]">{t("common.perMonth")}</span>
           </span>

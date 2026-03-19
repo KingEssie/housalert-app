@@ -311,7 +311,7 @@ export default function OnboardingLocationPage() {
 
       <main className={`flex-1 ${containerClass} mx-auto w-full px-5 ${isEmbedded ? "pb-4 pt-1" : "pb-8 pt-3"}`}>
         {!isEmbedded && (
-          <h1 className="text-[24px] font-medium text-[#111C3D] leading-[1.15] tracking-[-0.02em] mb-5" data-testid="text-location-title">
+          <h1 className="text-[24px] font-medium text-[#18181B] leading-[1.15] tracking-[-0.02em] mb-5" data-testid="text-location-title">
             {t("onboardingLocation.title")}
           </h1>
         )}
@@ -437,7 +437,7 @@ export default function OnboardingLocationPage() {
 
                 {selectedCity && activeCityDistricts.length > 0 && (
                   <div className={isEmbedded ? "pt-3 pb-2" : "py-5 border-b border-[#E5E7EB]"}>
-                    <label className="text-[16px] font-medium text-[#111C3D] mb-3 block">{t("onboardingLocation.districtsLabel")} <span className="font-normal text-[13px] text-[#71717A]">{t("onboardingLocation.optional")}</span></label>
+                    <label className="text-[16px] font-medium text-[#18181B] mb-3 block">{t("onboardingLocation.districtsLabel")} <span className="font-normal text-[13px] text-[#71717A]">{t("onboardingLocation.optional")}</span></label>
                     <div className="relative" ref={districtDropdownRef}>
                       <button
                         type="button"
@@ -526,7 +526,7 @@ export default function OnboardingLocationPage() {
 
                 {!selectedCity && (
                   <div className="py-5">
-                    <label className="text-[16px] font-medium text-[#111C3D] mb-3 block">{t("onboardingLocation.popularCities")}</label>
+                    <label className="text-[16px] font-medium text-[#18181B] mb-3 block">{t("onboardingLocation.popularCities")}</label>
                     <div className="flex flex-wrap gap-2">
                       {defaultCities.slice(0, 6).map((city) => (
                         <button
@@ -641,7 +641,7 @@ export default function OnboardingLocationPage() {
                 </div>
 
                 <div className="mt-6">
-                  <label className="text-[16px] font-medium text-[#111C3D] mb-3 block">{t("onboardingLocation.radiusLabel")}</label>
+                  <label className="text-[16px] font-medium text-[#18181B] mb-3 block">{t("onboardingLocation.radiusLabel")}</label>
                   <div className="relative">
                     <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A]" />
                     <select
@@ -693,7 +693,7 @@ export default function OnboardingLocationPage() {
             {activeTab === "reistijd" && (
               <div className="space-y-0">
                 <div>
-                  <label className="text-[16px] font-medium text-[#111C3D] mb-3 block">{t("onboardingLocation.destinationLabel")}</label>
+                  <label className="text-[16px] font-medium text-[#18181B] mb-3 block">{t("onboardingLocation.destinationLabel")}</label>
                   <div className="relative">
                     <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A]" />
                     <input
@@ -708,7 +708,7 @@ export default function OnboardingLocationPage() {
                 </div>
 
                 <div className="mt-6">
-                  <label className="text-[16px] font-medium text-[#111C3D] mb-3 block">{t("onboardingLocation.maxTravelTime")}</label>
+                  <label className="text-[16px] font-medium text-[#18181B] mb-3 block">{t("onboardingLocation.maxTravelTime")}</label>
                   <div className="relative">
                     <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A]" />
                     <select
@@ -727,7 +727,7 @@ export default function OnboardingLocationPage() {
                 </div>
 
                 <div className="mt-6">
-                  <label className="text-[16px] font-medium text-[#111C3D] mb-3 block">{t("onboardingLocation.transportLabel")}</label>
+                  <label className="text-[16px] font-medium text-[#18181B] mb-3 block">{t("onboardingLocation.transportLabel")}</label>
                   <div className="flex gap-2">
                     {[
                       { id: "auto", icon: Car, label: t("onboardingLocation.auto") },
@@ -757,7 +757,7 @@ export default function OnboardingLocationPage() {
                       <div className="h-36 flex items-center justify-center">
                         <div className="text-center">
                           <Clock className="w-7 h-7 text-[#0D6EFD] mx-auto mb-1.5" />
-                          <p className="text-sm font-medium text-[#111C3D]">{t("onboardingLocation.travelTimePreview", { time: travelTime })}</p>
+                          <p className="text-sm font-medium text-[#18181B]">{t("onboardingLocation.travelTimePreview", { time: travelTime })}</p>
                           <p className="text-xs text-[#71717A] mt-0.5">{t("onboardingLocation.fromAddress", { address: travelAddress })}</p>
                         </div>
                       </div>

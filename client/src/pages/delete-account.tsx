@@ -69,7 +69,7 @@ export default function DeleteAccountPage() {
         <div className="w-16 h-16 rounded-2xl bg-[#0D6EFD] flex items-center justify-center mb-6">
           <AlertTriangle className="w-8 h-8 text-white" />
         </div>
-        <h2 className="text-[22px] font-medium text-[#111C3D] mb-3 text-center" data-testid="text-delete-account-title">
+        <h2 className="text-[22px] font-medium text-[#18181B] mb-3 text-center" data-testid="text-delete-account-title">
           {t("deleteAccount.confirmTitle")}
         </h2>
         <p className="text-[15px] text-[#1F2937] text-center max-w-[320px] mb-6 leading-relaxed" data-testid="text-delete-account-body">

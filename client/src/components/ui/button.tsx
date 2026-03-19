@@ -15,9 +15,9 @@ const buttonVariants = cva(
           "bg-destructive text-destructive-foreground border border-destructive-border",
         outline:
           "border-2 border-[#0D6EFD] bg-white text-[#0D6EFD] hover:bg-[#EBF2FF]",
-        secondary: "border border-[#E5E7EB] bg-white text-[#111C3D] hover:bg-[#F5F7FA]",
+        secondary: "border border-[#E5E7EB] bg-white text-[#18181B] hover:bg-[#F5F7FA]",
         ghost: "border border-transparent hover:bg-[#F5F7FA]",
-        banner: "bg-white text-[#111C3D] hover:bg-[#F3F4F6] border-0 font-medium",
+        banner: "bg-white text-[#18181B] hover:bg-[#F3F4F6] border-0 font-medium",
       },
       size: {
         default: "min-h-[52px] px-7 py-3.5",

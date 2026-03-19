@@ -144,7 +144,7 @@ function BudgetStep({
 
         <div className="space-y-4">
           <div>
-            <label className="block text-[13px] font-medium text-[#111C3D] tracking-wide mb-1.5">
+            <label className="block text-[13px] font-medium text-[#18181B] tracking-wide mb-1.5">
               {t("onboarding.budget.minPrice")}
             </label>
             <div className="relative">
@@ -162,7 +162,7 @@ function BudgetStep({
           </div>
 
           <div>
-            <label className="block text-[13px] font-medium text-[#111C3D] tracking-wide mb-1.5">
+            <label className="block text-[13px] font-medium text-[#18181B] tracking-wide mb-1.5">
               {t("onboarding.budget.maxPrice")}
             </label>
             <div className="relative">
@@ -274,7 +274,7 @@ function AlertsStep({ onActivate, onSkip, saving }: { onActivate: () => void; on
       </div>
 
       <h2
-        className="text-[24px] font-medium text-[#111C3D] mb-3 max-w-[300px] tracking-wide"
+        className="text-[24px] font-medium text-[#18181B] mb-3 max-w-[300px] tracking-wide"
         data-testid="text-alerts-title"
       >
         {t("onboarding.alerts.title")}

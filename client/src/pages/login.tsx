@@ -72,7 +72,7 @@ export default function LoginPage() {
             <div className="w-9 h-9 rounded-lg bg-[#1F2937] flex items-center justify-center">
               <Home className="w-4 h-4 text-white" />
             </div>
-            <span className="font-medium text-[#111C3D] text-lg tracking-tight">{t("auth.appName")}</span>
+            <span className="font-medium text-[#18181B] text-lg tracking-tight">{t("auth.appName")}</span>
           </div>
         </div>
       </header>
@@ -80,7 +80,7 @@ export default function LoginPage() {
       <main className="flex-1 flex items-center justify-center px-6 py-20">
         <div className="w-full max-w-sm">
           <div className="text-center mb-8">
-            <h1 className="text-[28px] font-medium text-[#111C3D] tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-login-title">
+            <h1 className="text-[28px] font-medium text-[#18181B] tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-login-title">
               {t("auth.login.title")}
             </h1>
             <p className="text-[15px] text-[#1F2937]">
@@ -91,7 +91,7 @@ export default function LoginPage() {
           <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6">
             <form onSubmit={handleLogin} className="flex flex-col gap-5">
               <div className="flex flex-col gap-2">
-                <Label htmlFor="login-email" className="text-[14px] font-medium text-[#111C3D]">{t("auth.login.email")}</Label>
+                <Label htmlFor="login-email" className="text-[14px] font-medium text-[#18181B]">{t("auth.login.email")}</Label>
                 <input
                   id="login-email"
                   type="email"
@@ -104,7 +104,7 @@ export default function LoginPage() {
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <Label htmlFor="login-password" className="text-[14px] font-medium text-[#111C3D]">{t("auth.login.password")}</Label>
+                <Label htmlFor="login-password" className="text-[14px] font-medium text-[#18181B]">{t("auth.login.password")}</Label>
                 <input
                   id="login-password"
                   type="password"

@@ -155,7 +155,7 @@ export default function ListingDetailPage() {
         <FloatingBackButton navigate={navigate} />
         <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-16">
           <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-8 text-center">
-            <p className="text-[18px] font-medium text-[#111C3D] mb-2">{t("listing.notFound")}</p>
+            <p className="text-[18px] font-medium text-[#18181B] mb-2">{t("listing.notFound")}</p>
             <p className="text-[13px] text-[#1F2937] mb-4">{t("listing.notFoundDesc")}</p>
             <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-medium" data-testid="button-back-dashboard">
               {t("listing.backToDashboard")}
@@ -210,7 +210,7 @@ export default function ListingDetailPage() {
       <main className="flex-1 max-w-xl mx-auto w-full px-5 -mt-6 relative z-10 pb-36">
         <div className="space-y-4">
           <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5">
-            <h1 className="text-[24px] font-medium text-[#111C3D] leading-[1.2] tracking-[-0.02em] mb-2" data-testid="text-listing-title">
+            <h1 className="text-[24px] font-medium text-[#18181B] leading-[1.2] tracking-[-0.02em] mb-2" data-testid="text-listing-title">
               {listing.title}
             </h1>
 
@@ -223,7 +223,7 @@ export default function ListingDetailPage() {
 
             {listing.price > 0 && (
               <div className="flex items-baseline gap-1 mb-1">
-                <span className="text-[28px] font-medium text-[#111C3D]" data-testid="text-listing-price">€{listing.price}</span>
+                <span className="text-[28px] font-medium text-[#18181B]" data-testid="text-listing-price">€{listing.price}</span>
                 <span className="text-[15px] font-medium text-[#1F2937]">{t("common.perMonth")}</span>
               </div>
             )}
@@ -239,7 +239,7 @@ export default function ListingDetailPage() {
                   </div>
                   <div>
                     <p className="text-[12px] text-[#1F2937]">{t("listing.bedrooms")}</p>
-                    <p className="text-[15px] font-medium text-[#111C3D]" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
+                    <p className="text-[15px] font-medium text-[#18181B]" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
                   </div>
                 </div>
               )}
@@ -251,7 +251,7 @@ export default function ListingDetailPage() {
                   </div>
                   <div>
                     <p className="text-[12px] text-[#1F2937]">{t("listing.area")}</p>
-                    <p className="text-[15px] font-medium text-[#111C3D]" data-testid="text-listing-size">{listing.size_m2} m²</p>
+                    <p className="text-[15px] font-medium text-[#18181B]" data-testid="text-listing-size">{listing.size_m2} m²</p>
                   </div>
                 </div>
               )}
@@ -272,7 +272,7 @@ export default function ListingDetailPage() {
                 </div>
                 <div>
                   <p className="text-[12px] text-[#1F2937]">{t("listing.posted")}</p>
-                  <p className="text-[15px] font-medium text-[#111C3D]" data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</p>
+                  <p className="text-[15px] font-medium text-[#18181B]" data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</p>
                 </div>
               </div>
             </div>
@@ -323,7 +323,7 @@ export default function ListingDetailPage() {
         <div className="max-w-xl mx-auto flex flex-col gap-2">
           {listing.price > 0 && (
             <div className="flex items-baseline gap-1 mb-1">
-              <span className="text-[20px] font-medium text-[#111C3D]" data-testid="text-bar-price">€{listing.price}</span>
+              <span className="text-[20px] font-medium text-[#18181B]" data-testid="text-bar-price">€{listing.price}</span>
               <span className="text-[13px] font-medium text-[#6B7280]">{t("common.perMonth")}</span>
             </div>
           )}

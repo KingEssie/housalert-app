@@ -378,7 +378,7 @@ export default function NewSearchPage() {
             <div className="w-14 h-14 rounded-lg bg-[#F5F7FA] flex items-center justify-center mx-auto mb-4">
               <AlertCircle className="w-6 h-6 text-[#0D6EFD]" />
             </div>
-            <h2 className="text-[18px] font-medium text-[#111C3D] mb-2">{t("newSearch.limitTitle")}</h2>
+            <h2 className="text-[18px] font-medium text-[#18181B] mb-2">{t("newSearch.limitTitle")}</h2>
             <p className="text-[14px] text-[#1F2937] mb-5">
               {t("newSearch.limitDesc", { max: MAX_PROFILES })}
             </p>
@@ -501,7 +501,7 @@ function Step2Requirements({
 
       <div className="space-y-6">
         <div>
-          <label className="text-[15px] font-medium text-[#111C3D] mb-2.5 flex items-center gap-2">
+          <label className="text-[15px] font-medium text-[#18181B] mb-2.5 flex items-center gap-2">
             <Euro className="w-4 h-4 text-[#0D6EFD]" />
             {t("newSearch.step2.minPrice")}
           </label>
@@ -521,7 +521,7 @@ function Step2Requirements({
         </div>
 
         <div>
-          <label className="text-[15px] font-medium text-[#111C3D] mb-2.5 flex items-center gap-2">
+          <label className="text-[15px] font-medium text-[#18181B] mb-2.5 flex items-center gap-2">
             <Euro className="w-4 h-4 text-[#0D6EFD]" />
             {t("newSearch.step2.maxPrice")}
           </label>
@@ -541,7 +541,7 @@ function Step2Requirements({
         </div>
 
         <div>
-          <label className="text-[15px] font-medium text-[#111C3D] mb-2.5 flex items-center gap-2">
+          <label className="text-[15px] font-medium text-[#18181B] mb-2.5 flex items-center gap-2">
             <BedDouble className="w-4 h-4 text-[#0D6EFD]" />
             {t("newSearch.step2.bedrooms")}
           </label>
@@ -561,7 +561,7 @@ function Step2Requirements({
         </div>
 
         <div>
-          <label className="text-[15px] font-medium text-[#111C3D] mb-2.5 flex items-center gap-2">
+          <label className="text-[15px] font-medium text-[#18181B] mb-2.5 flex items-center gap-2">
             <Ruler className="w-4 h-4 text-[#0D6EFD]" />
             {t("newSearch.step2.area")}
           </label>
@@ -581,7 +581,7 @@ function Step2Requirements({
         </div>
 
         <div>
-          <label className="text-[15px] font-medium text-[#111C3D] mb-2.5 flex items-center gap-2">
+          <label className="text-[15px] font-medium text-[#18181B] mb-2.5 flex items-center gap-2">
             <Sofa className="w-4 h-4 text-[#0D6EFD]" />
             {t("newSearch.step2.furnished")}
           </label>
@@ -669,7 +669,7 @@ function Step3ExtraFeatures({
       </div>
 
       <div>
-        <h3 className="text-[14px] font-medium text-[#111C3D] mb-1">{t("newSearch.step3.preferencesTitle")}</h3>
+        <h3 className="text-[14px] font-medium text-[#18181B] mb-1">{t("newSearch.step3.preferencesTitle")}</h3>
         <p className="text-[12px] text-[#1F2937] opacity-50 mb-2">{t("newSearch.step3.preferencesSubtitle")}</p>
         <div className="bg-white rounded-lg">
           {PREFERENCE_OPTIONS.map((opt) => (
@@ -747,7 +747,7 @@ function ReviewRow({ label, value, onEdit }: { label: string; value: string; onE
     <div className="flex items-start justify-between py-3.5 border-b border-[#E5E7EB] last:border-b-0">
       <div className="flex-1 min-w-0 mr-3">
         <p className="text-[13px] font-medium text-[#1F2937] opacity-60 mb-0.5">{label}</p>
-        <p className="text-[15px] font-medium text-[#111C3D]">{value}</p>
+        <p className="text-[15px] font-medium text-[#18181B]">{value}</p>
       </div>
       <button
         onClick={onEdit}

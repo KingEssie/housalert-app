@@ -41,7 +41,7 @@ function StatCard({ icon: Icon, label, value, color }: { icon: any; label: strin
         <Icon className="w-5 h-5 text-white" />
       </div>
       <div>
-        <p className="text-[22px] font-bold text-[#111C3D] leading-none">{value}</p>
+        <p className="text-[22px] font-bold text-[#18181B] leading-none">{value}</p>
         <p className="text-[13px] text-[#6B7280] mt-0.5">{label}</p>
       </div>
     </div>
@@ -164,25 +164,25 @@ export default function AdminMatchAudit() {
         </div>
 
         <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 space-y-3" data-testid="card-timing">
-          <p className="text-[15px] font-bold text-[#111C3D]">Timing</p>
+          <p className="text-[15px] font-bold text-[#18181B]">Timing</p>
           <div className="space-y-2 text-[13px]">
             <div className="flex justify-between">
               <span className="text-[#6B7280]">Last fetch run</span>
-              <span className="text-[#111C3D] font-medium">{formatDate(timing.last_fetch_run_at)}</span>
+              <span className="text-[#18181B] font-medium">{formatDate(timing.last_fetch_run_at)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-[#6B7280]">Last email sent</span>
-              <span className="text-[#111C3D] font-medium">{formatDate(timing.last_email_sent_at)}</span>
+              <span className="text-[#18181B] font-medium">{formatDate(timing.last_email_sent_at)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-[#6B7280]">Last push sent</span>
-              <span className="text-[#111C3D] font-medium">{formatDate(timing.last_push_sent_at)}</span>
+              <span className="text-[#18181B] font-medium">{formatDate(timing.last_push_sent_at)}</span>
             </div>
           </div>
         </div>
 
         <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 space-y-3" data-testid="card-actions">
-          <p className="text-[15px] font-bold text-[#111C3D]">Actions</p>
+          <p className="text-[15px] font-bold text-[#18181B]">Actions</p>
           <div className="flex gap-3">
             <button
               onClick={runBackfill}
@@ -195,7 +195,7 @@ export default function AdminMatchAudit() {
             </button>
             <button
               onClick={loadData}
-              className="flex items-center gap-2 px-4 py-2.5 bg-[#F5F6F8] text-[#111C3D] rounded-xl text-[13px] font-semibold"
+              className="flex items-center gap-2 px-4 py-2.5 bg-[#F5F6F8] text-[#18181B] rounded-xl text-[13px] font-semibold"
               data-testid="button-refresh"
             >
               <RefreshCw className="w-4 h-4" />
@@ -209,13 +209,13 @@ export default function AdminMatchAudit() {
 
         {fetch_runs.length > 0 && (
           <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 space-y-3" data-testid="card-fetch-runs">
-            <p className="text-[15px] font-bold text-[#111C3D]">Recent Fetch Runs</p>
+            <p className="text-[15px] font-bold text-[#18181B]">Recent Fetch Runs</p>
             <div className="space-y-2">
               {fetch_runs.map((run: any, i: number) => (
                 <div key={run.id || i} className="flex items-center gap-3 py-2 border-b border-[#F3F4F6] last:border-0 text-[12px]">
                   <div className={`w-2 h-2 rounded-full ${run.status === "completed" ? "bg-green-500" : run.status === "failed" ? "bg-red-500" : "bg-yellow-500"}`} />
                   <div className="flex-1">
-                    <span className="text-[#111C3D] font-medium">{formatDate(run.started_at)}</span>
+                    <span className="text-[#18181B] font-medium">{formatDate(run.started_at)}</span>
                     <span className="text-[#6B7280] ml-2">
                       fetched={run.fetched_count} matched={run.newly_matched_count} emails={run.emails_sent_count} errors={run.error_count}
                     </span>
@@ -227,7 +227,7 @@ export default function AdminMatchAudit() {
         )}
 
         <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 space-y-3" data-testid="card-recent-matches">
-          <p className="text-[15px] font-bold text-[#111C3D]">Recent Match Deliveries ({recent_matches.length})</p>
+          <p className="text-[15px] font-bold text-[#18181B]">Recent Match Deliveries ({recent_matches.length})</p>
           {recent_matches.length === 0 ? (
             <p className="text-[13px] text-[#6B7280] text-center py-4">No canonical matches yet. Run backfill to populate.</p>
           ) : (
@@ -235,7 +235,7 @@ export default function AdminMatchAudit() {
               {recent_matches.map((m: any, i: number) => (
                 <div key={m.id || i} className="py-3 border-b border-[#F3F4F6] last:border-0" data-testid={`match-row-${i}`}>
                   <div className="flex justify-between items-start mb-1">
-                    <p className="text-[13px] font-semibold text-[#111C3D] leading-tight flex-1 pr-2">
+                    <p className="text-[13px] font-semibold text-[#18181B] leading-tight flex-1 pr-2">
                       {m.listing_title || "Untitled"}
                     </p>
                     <span className="text-[11px] text-[#6B7280] whitespace-nowrap">{formatDate(m.matched_at)}</span>
@@ -270,10 +270,10 @@ export default function AdminMatchAudit() {
 
         {data.search_profiles.profiles.length > 0 && (
           <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 space-y-3" data-testid="card-search-profiles">
-            <p className="text-[15px] font-bold text-[#111C3D]">Search Profiles ({data.search_profiles.count})</p>
+            <p className="text-[15px] font-bold text-[#18181B]">Search Profiles ({data.search_profiles.count})</p>
             {data.search_profiles.profiles.map((p: any, i: number) => (
               <div key={p.id || i} className="py-2 border-b border-[#F3F4F6] last:border-0 text-[12px]">
-                <span className="font-medium text-[#111C3D]">{p.city_name || p.city}</span>
+                <span className="font-medium text-[#18181B]">{p.city_name || p.city}</span>
                 <span className="text-[#6B7280] ml-2">
                   €{p.price_min || 0}–€{p.price_max || "∞"} · {p.bedrooms_min || 0}+ rooms · {p.size_min || 0}+ m²
                 </span>

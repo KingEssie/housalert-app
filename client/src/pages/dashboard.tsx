@@ -1057,7 +1057,7 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
           >
             <ArrowLeft className="w-4 h-4 text-[#71717A]" />
           </button>
-          <h1 className="text-[17px] font-medium text-[#111C3D] flex-1 tracking-wide">{t("filters.deleteTitle")}</h1>
+          <h1 className="text-[17px] font-medium text-[#18181B] flex-1 tracking-wide">{t("filters.deleteTitle")}</h1>
         </div>
       </header>
 
@@ -1065,7 +1065,7 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
         <div className="w-16 h-16 rounded-2xl bg-[#0D6EFD] flex items-center justify-center mb-6">
           <Trash2 className="w-8 h-8 text-white" />
         </div>
-        <h2 className="text-[22px] font-medium text-[#111C3D] mb-3 text-center" data-testid="text-delete-title">
+        <h2 className="text-[22px] font-medium text-[#18181B] mb-3 text-center" data-testid="text-delete-title">
           {t("filters.deleteQuestion")}
         </h2>
         <p className="text-[15px] text-[#1F2937] text-center max-w-[320px] mb-10 leading-relaxed" data-testid="text-delete-body">
@@ -1163,7 +1163,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
           ))}
 
           <div className="flex flex-col items-center text-center mt-6 mb-2 px-4">
-            <p className="text-[17px] font-medium text-[#111C3D]">
+            <p className="text-[17px] font-medium text-[#18181B]">
               {t("filters.activeCountTitle", { count: profileCount, max: MAX_PROFILES })}
             </p>
             <p className="text-[14px] text-[#6B7280] mt-2 leading-relaxed">
@@ -1743,14 +1743,14 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
               >
                 <ArrowLeft className="w-4 h-4 text-[#71717A]" />
               </button>
-              <h1 className="text-[17px] font-medium text-[#111C3D] flex-1 tracking-wide">{t("profile.logout")}</h1>
+              <h1 className="text-[17px] font-medium text-[#18181B] flex-1 tracking-wide">{t("profile.logout")}</h1>
             </div>
           </header>
           <main className="flex-1 flex flex-col items-center justify-center px-6">
             <div className="w-16 h-16 rounded-2xl bg-[#F5F7FA] flex items-center justify-center mb-6">
               <LogOut className="w-8 h-8 text-[#1F2937]" />
             </div>
-            <h2 className="text-[22px] font-medium text-[#111C3D] mb-3 text-center" data-testid="text-logout-title">
+            <h2 className="text-[22px] font-medium text-[#18181B] mb-3 text-center" data-testid="text-logout-title">
               {t("profile.logoutConfirm")}
             </h2>
             <p className="text-[15px] text-[#1F2937] text-center max-w-[320px] mb-10 leading-relaxed">

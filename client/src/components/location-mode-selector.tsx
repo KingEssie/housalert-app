@@ -524,7 +524,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
 
       {value.tab === "radius" && (
         <div>
-          <label className="text-[16px] font-medium text-[#111C3D] mb-3 block">{t("location.radiusLabel")}</label>
+          <label className="text-[16px] font-medium text-[#18181B] mb-3 block">{t("location.radiusLabel")}</label>
           <div className="relative">
             <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A]" />
             <select
@@ -547,7 +547,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       {value.tab === "reistijd" && (
         <>
           <div ref={destContainerRef} className="relative">
-            <label className="text-[16px] font-medium text-[#111C3D] mb-3 block">{t("location.workAddress")}</label>
+            <label className="text-[16px] font-medium text-[#18181B] mb-3 block">{t("location.workAddress")}</label>
             <div className="relative">
               <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#71717A] pointer-events-none" />
               <input
@@ -620,7 +620,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
           )}
 
           <div>
-            <label className="text-[16px] font-medium text-[#111C3D] mb-3 block">{t("location.transport")}</label>
+            <label className="text-[16px] font-medium text-[#18181B] mb-3 block">{t("location.transport")}</label>
             <div className="flex gap-2">
               {([
                 { id: "auto" as const, icon: Car, label: t("location.transportOptions.car") },
@@ -645,7 +645,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
           </div>
 
           <div>
-            <label className="text-[16px] font-medium text-[#111C3D] mb-3 block">{t("location.maxCommute")}</label>
+            <label className="text-[16px] font-medium text-[#18181B] mb-3 block">{t("location.maxCommute")}</label>
             <div className="relative">
               <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A]" />
               <select

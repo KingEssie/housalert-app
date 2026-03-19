@@ -303,7 +303,7 @@ export default function ApplyPage() {
       <main className="flex-1 max-w-xl mx-auto w-full pb-[120px]">
         <div className="px-5 pt-7 text-center">
           <h1
-            className="text-[22px] font-medium text-[#111C3D] leading-[1.3] tracking-[-0.015em] mx-auto"
+            className="text-[22px] font-medium text-[#18181B] leading-[1.3] tracking-[-0.015em] mx-auto"
             data-testid="text-apply-title"
           >
             {listing.title}
@@ -320,9 +320,9 @@ export default function ApplyPage() {
             const Icon = row.icon;
             return (
               <div key={i} className="flex items-start gap-4 py-[18px]">
-                <Icon className="w-7 h-7 text-[#484848] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+                <Icon className="w-7 h-7 text-[#18181B] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-[15px] font-medium text-[#222222]">{row.title}</p>
+                  <p className="text-[15px] font-medium text-[#18181B]">{row.title}</p>
                   <p className="text-[14px] text-[#717171] mt-0.5 capitalize">{row.detail}</p>
                 </div>
               </div>
@@ -331,7 +331,7 @@ export default function ApplyPage() {
         </div>
 
         <div className="px-5 pt-5">
-          <h2 className="text-[15px] font-medium text-[#111C3D] mb-3">{t("applySheet.applicationLetter")}</h2>
+          <h2 className="text-[15px] font-medium text-[#18181B] mb-3">{t("applySheet.applicationLetter")}</h2>
           <div className="bg-[#FAFAFA] rounded-2xl px-5 py-5">
             <textarea
               className="w-full text-[14px] text-[#1F2937] leading-[1.75] font-[inherit] bg-transparent border-none outline-none resize-none min-h-[220px]"
@@ -349,7 +349,7 @@ export default function ApplyPage() {
         <div className="max-w-xl mx-auto flex items-center justify-between px-5 py-4">
           {listing.price > 0 && (
             <div className="flex flex-col" data-testid="text-sticky-price">
-              <span className="text-[18px] font-medium text-[#111C3D]">€{listing.price}</span>
+              <span className="text-[20px] font-semibold text-[#18181B]">€{listing.price}</span>
               <span className="text-[12px] text-[#9CA3AF] leading-none">{t("common.perMonthShort")}</span>
             </div>
           )}

@@ -114,7 +114,7 @@ export function ReactieklaarCard({
         <div className="flex items-center justify-center">
           <Zap className="w-[18px] h-[18px] text-[#71717A]" />
         </div>
-        <h3 className="text-[15px] font-medium text-[#111C3D] flex-1">{t("reactieklaar.title")}</h3>
+        <h3 className="text-[15px] font-medium text-[#18181B] flex-1">{t("reactieklaar.title")}</h3>
         <span
           className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${
             allDone ? "bg-[#16A34A]/10 text-[#1F2937]" : "bg-[#F5F7FA] text-[#1F2937]"

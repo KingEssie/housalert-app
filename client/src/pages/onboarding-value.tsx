@@ -187,7 +187,7 @@ export default function OnboardingValuePage() {
       <main className={`flex-1 ${containerClass} mx-auto w-full px-5 pb-32`}>
         <div className="pt-8 pb-6 text-center">
           <h1
-            className="text-[24px] font-medium text-[#111C3D] leading-[1.15] tracking-[-0.02em]"
+            className="text-[24px] font-medium text-[#18181B] leading-[1.15] tracking-[-0.02em]"
             data-testid="text-value-title"
           >
             {t("valueStep.heroTitle")}
@@ -241,7 +241,7 @@ export default function OnboardingValuePage() {
                 <Icon className="w-5 h-5 text-[#0D6EFD]" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[15px] font-medium text-[#111C3D] mb-0.5">
+                <p className="text-[15px] font-medium text-[#18181B] mb-0.5">
                   {t(`valueStep.explain.${key}.title`)}
                 </p>
                 <p className="text-[13px] text-[#6B7280] leading-[1.5]">
@@ -254,7 +254,7 @@ export default function OnboardingValuePage() {
 
         <div className="border-t border-[#E5E7EB] pt-8 mb-6">
           <h2
-            className="text-[22px] font-medium text-[#111C3D] text-center mb-1"
+            className="text-[22px] font-medium text-[#18181B] text-center mb-1"
             data-testid="text-plans-title"
           >
             {t("valueStep.plansTitle")}
@@ -287,11 +287,11 @@ export default function OnboardingValuePage() {
 
               <div className="flex items-center justify-between gap-3 pr-8">
                 <div>
-                  <p className="text-[16px] font-medium text-[#111C3D]">{t(plan.nameKey)}</p>
+                  <p className="text-[16px] font-medium text-[#18181B]">{t(plan.nameKey)}</p>
                   <p className="text-[13px] text-[#6B7280]">{t(plan.pricePerMonthKey)}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-[18px] font-medium text-[#111C3D]">{t(plan.priceKey)}</p>
+                  <p className="text-[18px] font-medium text-[#18181B]">{t(plan.priceKey)}</p>
                   {plan.savingsKey && (
                     <p className="text-[12px] font-medium text-[#0D6EFD]">{t(plan.savingsKey)}</p>
                   )}

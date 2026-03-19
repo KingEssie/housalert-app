@@ -139,7 +139,7 @@ export default function EmbedSuccessPage() {
           <div className="w-16 h-16 rounded-full bg-[#E8FFF5] flex items-center justify-center mx-auto mb-5">
             <CheckCircle className="w-8 h-8 text-[#0D6EFD]" />
           </div>
-          <h1 className="text-[22px] font-medium text-[#111C3D] mb-2" data-testid="text-embed-success-title">
+          <h1 className="text-[22px] font-medium text-[#18181B] mb-2" data-testid="text-embed-success-title">
             {t("subscription.activated")}
           </h1>
           <p className="text-[15px] text-[#1F2937] opacity-70" data-testid="text-embed-success-redirect">
@@ -158,7 +158,7 @@ export default function EmbedSuccessPage() {
         </div>
 
         <h1
-          className="text-[22px] font-medium text-[#111C3D] leading-[1.15] tracking-[-0.02em] mb-1 text-center"
+          className="text-[22px] font-medium text-[#18181B] leading-[1.15] tracking-[-0.02em] mb-1 text-center"
           data-testid="text-embed-signup-title"
         >
           {t("embedSuccess.title")}

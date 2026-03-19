@@ -1,0 +1,96 @@
+Refine the UI again to improve contrast, text clarity, and visual hierarchy.
+
+IMPORTANT:
+- Do NOT change layout or structure
+- Do NOT change functionality
+- This is a visual polish pass only
+- Keep the Airbnb-inspired design direction
+- Keep HousAlert blue as primary accent
+
+## 1. TEXT COLOR IMPROVEMENTS (VERY IMPORTANT)
+
+Right now too many texts are gray, making the UI feel washed out.
+
+Adjust text colors across the entire app:
+
+### Primary text (IMPORTANT)
+Make these fully dark / near black:
+- page titles
+- listing titles
+- section titles
+- feature row titles (e.g. Locatie, Afmeting, etc.)
+- important labels
+
+Use something like:
+- #18181B or very close to black
+
+### Secondary text (KEEP GRAY)
+Keep these slightly gray:
+- metadata
+- subtitles (e.g. “Wg-Gesucht · Berlin”)
+- supporting descriptions
+- timestamps
+
+Use:
+- #71717A or similar
+
+### Result:
+Clear hierarchy:
+- important = dark
+- supporting = gray
+
+## 2. ICON COLOR FIX
+
+Icons are currently too light/gray.
+
+Change:
+- all main icons → same dark color as primary text (#18181B or similar)
+- no random light gray icons for important content
+
+Icons should feel:
+- stronger
+- clearer
+- more premium
+- consistent
+
+Only use lighter gray icons for very secondary UI if necessary.
+
+## 3. FLOATING BAR PRICE (IMPORTANT)
+
+The price in the sticky bottom bar needs more visual weight.
+
+Adjust:
+- increase font-weight of the price (e.g. 600 or 700)
+- keep size readable but slightly more prominent
+- ensure it stands out compared to the rest of the UI
+
+Example:
+€1200
+should feel:
+- bold
+- important
+- instantly visible
+
+The “/mnd” can stay lighter and smaller.
+
+## 4. DO NOT
+
+- do not make everything black
+- do not remove gray hierarchy
+- do not make text too heavy everywhere
+- do not change spacing or layout
+- do not touch the CTA button styling
+
+## RESULT
+
+The UI should feel:
+- sharper
+- higher contrast
+- more premium
+- easier to scan
+- closer to Airbnb clarity
+
+At the end, summarize:
+- which text styles were updated
+- which icon colors were changed
+- how the price styling was adjusted

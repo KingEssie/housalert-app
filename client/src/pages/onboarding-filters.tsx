@@ -99,7 +99,7 @@ export default function OnboardingFiltersPage() {
       <main className={`flex-1 ${containerClass} mx-auto w-full px-5 ${isEmbedded ? "pb-4 pt-1" : "pb-8 pt-3"}`}>
         {!isEmbedded && (
           <>
-            <h1 className="text-[24px] font-medium text-[#111C3D] leading-[1.15] tracking-[-0.02em] mb-1" data-testid="text-filters-title">
+            <h1 className="text-[24px] font-medium text-[#18181B] leading-[1.15] tracking-[-0.02em] mb-1" data-testid="text-filters-title">
               {t("onboardingFilters.title")}
             </h1>
             <p className="text-[14px] text-[#6B7280] mb-5">

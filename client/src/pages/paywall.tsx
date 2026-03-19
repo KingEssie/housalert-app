@@ -163,7 +163,7 @@ export default function PaywallPage() {
           <div className="w-14 h-14 rounded-2xl bg-[#F3F4F6] flex items-center justify-center mx-auto mb-4">
             <Crown className="w-7 h-7 text-[#1F2937]" />
           </div>
-          <h1 className="text-[32px] font-medium text-[#111C3D] tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-paywall-title">
+          <h1 className="text-[32px] font-medium text-[#18181B] tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-paywall-title">
             {t("paywall.title")}
           </h1>
           <p className="text-[15px] text-[#1F2937]">
@@ -194,11 +194,11 @@ export default function PaywallPage() {
 
               <div className="flex items-center justify-between gap-4 pr-8">
                 <div>
-                  <p className="text-[18px] font-medium text-[#111C3D]">{t(plan.nameKey)}</p>
+                  <p className="text-[18px] font-medium text-[#18181B]">{t(plan.nameKey)}</p>
                   <p className="text-[15px] text-[#1F2937]">{t(plan.pricePerMonthKey)}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xl font-medium text-[#111C3D]">{t(plan.priceKey)}</p>
+                  <p className="text-xl font-medium text-[#18181B]">{t(plan.priceKey)}</p>
                   {plan.savingsKey && (
                     <p className="text-xs font-medium text-[#0D6EFD]">{t(plan.savingsKey)}</p>
                   )}
@@ -219,7 +219,7 @@ export default function PaywallPage() {
         </div>
 
         <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6">
-          <p className="text-[16px] font-medium text-[#111C3D] mb-3">{t("paywall.featuresTitle")}</p>
+          <p className="text-[16px] font-medium text-[#18181B] mb-3">{t("paywall.featuresTitle")}</p>
           <div className="space-y-2.5">
             {FEATURE_KEYS.map((key, i) => (
               <div key={i} className="flex items-center gap-3">

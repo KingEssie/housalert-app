@@ -87,7 +87,7 @@ export default function SubscriptionSuccessPage() {
             <CheckCircle className="w-8 h-8 text-[#0D6EFD]" />
           )}
         </div>
-        <h1 className="text-[22px] font-medium text-[#111C3D] mb-2" data-testid="text-success-title">
+        <h1 className="text-[22px] font-medium text-[#18181B] mb-2" data-testid="text-success-title">
           {syncing
             ? t("subscription.activating")
             : activated
