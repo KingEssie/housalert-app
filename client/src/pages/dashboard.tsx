@@ -339,13 +339,13 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
   });
   const matches = (apiMatchesQuery.data?.matches ?? [])
     .filter(m => m.title && m.url && m.listing_id)
-    .slice(0, 5);
+    .slice(0, 8);
   const isLoading = apiMatchesQuery.isLoading;
 
   if (!hasActiveSub) {
     return (
-      <div className="flex flex-col gap-4" data-testid="section-recente-matches-empty">
-        <h2 className="text-[17px] font-medium text-[#111827]">{t("home.recentMatches")}</h2>
+      <div className="flex flex-col gap-3" data-testid="section-recente-matches-empty">
+        <h2 className="text-section-title">{t("home.recentMatches")}</h2>
         <div className="rounded-[24px] border border-[#F0F0F0] p-6 text-center shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
           <p className="text-[14px] text-[#6B7280] mb-4 leading-relaxed">
             {t("home.matchesWillAppear")}
@@ -364,19 +364,21 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
 
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-4">
-        <h2 className="text-[17px] font-medium text-[#111827]">{t("home.recentMatches")}</h2>
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="h-[76px] bg-[#F8F9FA] rounded-xl animate-pulse" />
-        ))}
+      <div className="flex flex-col gap-3">
+        <h2 className="text-section-title">{t("home.recentMatches")}</h2>
+        <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex-shrink-0 w-[220px] h-[230px] bg-[#F5F7FA] rounded-[20px] animate-pulse" />
+          ))}
+        </div>
       </div>
     );
   }
 
   if (!matches || matches.length === 0) {
     return (
-      <div className="flex flex-col gap-4" data-testid="section-recente-matches-empty">
-        <h2 className="text-[17px] font-medium text-[#111827]">{t("home.recentMatches")}</h2>
+      <div className="flex flex-col gap-3" data-testid="section-recente-matches-empty">
+        <h2 className="text-section-title">{t("home.recentMatches")}</h2>
         <div className="rounded-[24px] border border-[#F0F0F0] p-6 text-center shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
           <p className="text-[14px] text-[#6B7280] leading-relaxed">
             {t("home.firstMatchesWillAppear")}
@@ -387,27 +389,30 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
   }
 
   return (
-    <div className="flex flex-col gap-4" data-testid="section-recente-matches">
+    <div className="flex flex-col gap-3" data-testid="section-recente-matches">
       <div className="flex items-center justify-between">
-        <h2 className="text-[17px] font-medium text-[#111827]">{t("home.recentMatches")}</h2>
+        <h2 className="text-section-title">{t("home.recentMatches")}</h2>
         <button
           onClick={() => setActiveTab("matches")}
-          className="text-[13px] font-medium text-[#0D6EFD]"
+          className="text-[13px] font-medium text-[#0D6EFD] flex items-center gap-0.5"
           data-testid="button-view-all-matches"
         >
           {t("home.viewAll")}
+          <ChevronRight className="w-3.5 h-3.5" />
         </button>
       </div>
-      <div className="flex flex-col gap-1">
+      <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 snap-x snap-mandatory scrollbar-none">
         {matches.map((match) => (
-          <RecentMatchMiniCard key={match.listing_id} match={match} />
+          <div key={match.listing_id} className="snap-start">
+            <RecentMatchCard match={match} />
+          </div>
         ))}
       </div>
     </div>
   );
 }
 
-function RecentMatchMiniCard({ match }: { match: ApiMatch }) {
+function RecentMatchCard({ match }: { match: ApiMatch }) {
   const [, navigate] = useLocation();
   const [imgError, setImgError] = useState(false);
   const { t } = useTranslation();
@@ -416,46 +421,71 @@ function RecentMatchMiniCard({ match }: { match: ApiMatch }) {
 
   return (
     <div
-      className="flex gap-3.5 cursor-pointer active:opacity-80 transition-opacity py-1"
-      onClick={() => navigate(`/apply/${match.listing_id}`)}
+      role="button"
+      tabIndex={0}
+      className="flex-shrink-0 w-[220px] bg-white rounded-[20px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden cursor-pointer hover:shadow-[0_4px_16px_rgba(15,23,42,0.08),0_12px_36px_rgba(15,23,42,0.08)] transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-[#0D6EFD]/40"
+      onClick={() => {
+        markViewed(match.listing_id);
+        navigate(`/apply/${match.listing_id}`);
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          markViewed(match.listing_id);
+          navigate(`/apply/${match.listing_id}`);
+        }
+      }}
       data-testid={`card-recent-match-${match.listing_id}`}
     >
-      {hasImage ? (
-        <img
-          src={match.image_url!}
-          alt={match.title}
-          className="w-[76px] h-[76px] rounded-xl object-cover flex-shrink-0 shadow-[0_1px_4px_rgba(0,0,0,0.04)]"
-          loading="lazy"
-          onError={() => setImgError(true)}
-          referrerPolicy="no-referrer"
-        />
-      ) : (
-        <div className={`w-[76px] h-[76px] rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center flex-shrink-0`}>
-          <ImageIcon className="w-5 h-5 text-white/50" />
-        </div>
-      )}
-      <div className="flex-1 min-w-0 flex flex-col justify-center">
-        <p className="text-[14px] font-medium text-[#111827] line-clamp-1" data-testid={`text-recent-title-${match.listing_id}`}>
-          {match.city}
-        </p>
-        <p className="text-[13px] text-[#6B7280] line-clamp-1 mt-0.5 leading-relaxed">
-          {match.title}
-        </p>
-        <div className="flex items-center gap-2 mt-1.5">
-          {match.price > 0 && (
-            <span className="text-[13px] font-medium text-[#111827]">€{match.price}</span>
-          )}
-          {match.price > 0 && (match.bedrooms > 0 || match.size_m2 > 0) && <span className="text-[11px] text-[#D1D5DB]">·</span>}
-          {match.bedrooms > 0 && (
-            <span className="text-[12px] text-[#9CA3AF]">{match.bedrooms} {match.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}</span>
-          )}
-          {match.size_m2 > 0 && (
-            <span className="text-[12px] text-[#9CA3AF]">{match.size_m2}m²</span>
-          )}
+      <div className="relative">
+        {hasImage ? (
+          <img
+            src={match.image_url!}
+            alt={match.title}
+            className="w-full h-[132px] object-cover"
+            loading="lazy"
+            onError={() => setImgError(true)}
+            referrerPolicy="no-referrer"
+          />
+        ) : (
+          <div className={`w-full h-[132px] bg-gradient-to-br ${gradient} flex items-center justify-center relative`}>
+            <div className="absolute inset-0 bg-black/5" />
+            <div className="flex flex-col items-center gap-1 text-white/60">
+              <ImageIcon className="w-6 h-6" />
+              <span className="text-[10px] font-medium">{match.source}</span>
+            </div>
+          </div>
+        )}
+        <div className="absolute top-2.5 left-2.5">
+          <span className="text-[10px] font-medium bg-white/95 backdrop-blur-md text-[#1F2937] px-2.5 py-1 rounded-full shadow-[0_1px_4px_rgba(0,0,0,0.06)] capitalize">
+            {match.source}
+          </span>
         </div>
       </div>
-      <div className="flex items-center flex-shrink-0">
-        <ChevronRight className="w-4 h-4 text-[#D1D5DB]" />
+
+      <div className="p-3 flex flex-col gap-1">
+        <div className="flex items-center gap-1.5">
+          <MapPin className="w-3 h-3 text-[#71717A] flex-shrink-0" />
+          <span className="text-[14px] font-medium text-[#111827] truncate" data-testid={`text-recent-city-${match.listing_id}`}>
+            {match.city}
+          </span>
+        </div>
+        <p className="text-[13px] text-[#6B7280] line-clamp-2 leading-[1.3]" data-testid={`text-recent-title-${match.listing_id}`}>
+          {match.title}
+        </p>
+        <div className="flex items-center gap-2 text-[11px] text-[#9CA3AF] mt-0.5">
+          {match.bedrooms > 0 && (
+            <span>{match.bedrooms} {match.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}</span>
+          )}
+          {match.bedrooms > 0 && match.size_m2 > 0 && <span className="text-[#D1D5DB]">·</span>}
+          {match.size_m2 > 0 && <span>{match.size_m2} m²</span>}
+        </div>
+        {match.price > 0 && (
+          <p className="mt-1" data-testid={`badge-recent-price-${match.listing_id}`}>
+            <span className="text-[15px] font-medium text-[#111827]">€{match.price}</span>
+            <span className="text-[11px] text-[#9CA3AF] ml-0.5">{t("common.perMonthShort")}</span>
+          </p>
+        )}
       </div>
     </div>
   );

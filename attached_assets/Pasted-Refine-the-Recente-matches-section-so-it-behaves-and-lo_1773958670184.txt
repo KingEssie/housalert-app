@@ -1,0 +1,97 @@
+Refine the “Recente matches” section so it behaves and looks like Airbnb’s horizontal property sliders, similar to the “Populaire woningen in Parijs” section.
+
+IMPORTANT:
+- Do not change backend logic or matching logic
+- This is a UI/layout change only
+- Keep HousAlert styling and blue branding
+- Keep the current typography and design refinements already made
+
+## GOAL
+
+I want “Recente matches” to be displayed as a horizontal side-scrolling slider instead of a vertical stacked list.
+
+It should feel like Airbnb’s horizontal content rows:
+- elegant
+- spacious
+- easy to scan
+- premium mobile-first layout
+
+## LAYOUT CHANGES
+
+Convert the “Recente matches” section into a horizontal carousel / slider row.
+
+Requirements:
+- cards displayed side by side horizontally
+- horizontal swipe/scroll on mobile
+- not stacked vertically
+- first cards visible immediately
+- partial next card may peek in from the right for discoverability
+- spacing between cards should feel premium and airy
+- section title stays above the row
+
+This section should visually resemble Airbnb rows like:
+- “Onlangs bekeken”
+- “Populaire woningen in Parijs”
+
+## CARD STYLE
+
+Each match card should follow the Airbnb-inspired listing card style already introduced:
+
+- rounded image
+- image-first layout
+- clean title
+- compact metadata underneath
+- optional favorite/save icon overlay top-right
+- enough bottom spacing for readability
+- clean and calm hierarchy
+- no clutter
+
+Card proportions:
+- slightly narrower than full width
+- optimized for horizontal scrolling
+- consistent width across cards
+- visually balanced on mobile
+
+## SECTION HEADER
+
+For the “Recente matches” row:
+- keep a clean section title
+- optionally add a subtle arrow action on the right if the pattern already exists elsewhere
+- maintain generous spacing above and below
+
+## INTERACTION
+
+- horizontal swipe on touch devices
+- smooth scrolling
+- snapping is allowed if it improves polish
+- hide ugly browser scrollbar if needed
+- maintain accessibility
+
+## RESPONSIVE BEHAVIOR
+
+On mobile:
+- horizontal slider row
+
+On larger screens:
+- keep horizontal row or adapt gracefully, but do not revert to a messy vertical stack unless necessary
+
+## CONSISTENCY
+
+Match the same visual rhythm as Airbnb content rails:
+- title
+- whitespace
+- row of cards
+- calm spacing
+- no overcrowding
+
+Apply this specifically to:
+- Recente matches
+
+If there are similar sections elsewhere that should use the same horizontal rail pattern, extract a reusable component for it.
+
+## DELIVERABLE
+
+At the end, summarize:
+- which component/file was updated
+- whether a reusable horizontal listing rail component was created
+- which sections now use this pattern
