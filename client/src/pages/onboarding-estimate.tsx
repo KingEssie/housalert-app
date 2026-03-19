@@ -86,7 +86,7 @@ export default function OnboardingEstimatePage() {
             className="w-12 h-12 rounded-full bg-[#F3F4F6] shadow-[0_1px_4px_rgba(0,0,0,0.06)] flex items-center justify-center active:scale-95 transition-colors"
             data-testid="button-back-filters"
           >
-            <ChevronLeft className="w-5 h-5 text-[#1F2937]" />
+            <ChevronLeft className="w-5 h-5 text-[#71717A]" />
           </button>
           <HousAlertLogo size={28} />
         </div>

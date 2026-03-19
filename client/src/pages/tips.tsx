@@ -114,7 +114,7 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
       <div className="px-6 flex flex-col gap-5">
         <div className="bg-[#F3F4F6] rounded-2xl p-5 flex items-start gap-4" data-testid="card-tips-intro">
           <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center flex-shrink-0">
-            <Lightbulb className="w-5 h-5 text-[#1F2937]" />
+            <Lightbulb className="w-5 h-5 text-[#71717A]" />
           </div>
           <div>
             <p className="text-[15px] font-medium text-[#111C3D]">{t("tips.didYouKnow")}</p>
@@ -146,7 +146,7 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
                 {isRead ? (
                   <CheckCircle2 className="w-5 h-5 text-[#0D6EFD] flex-shrink-0" />
                 ) : (
-                  <ArrowRight className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
+                  <ArrowRight className="w-4 h-4 text-[#71717A] flex-shrink-0" />
                 )}
               </button>
             );

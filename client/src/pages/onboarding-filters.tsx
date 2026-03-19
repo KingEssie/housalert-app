@@ -75,7 +75,7 @@ export default function OnboardingFiltersPage() {
               className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-95 transition-transform"
               data-testid="button-back-location"
             >
-              <ChevronLeft className="w-5 h-5 text-[#1F2937]" />
+              <ChevronLeft className="w-5 h-5 text-[#71717A]" />
             </button>
             <HousAlertLogo size={28} />
           </div>
@@ -99,7 +99,7 @@ export default function OnboardingFiltersPage() {
       <main className={`flex-1 ${containerClass} mx-auto w-full px-5 ${isEmbedded ? "pb-4 pt-1" : "pb-8 pt-3"}`}>
         {!isEmbedded && (
           <>
-            <h1 className="text-[24px] font-[600] text-[#111C3D] leading-[1.15] tracking-[-0.02em] mb-1" data-testid="text-filters-title">
+            <h1 className="text-[24px] font-medium text-[#111C3D] leading-[1.15] tracking-[-0.02em] mb-1" data-testid="text-filters-title">
               {t("onboardingFilters.title")}
             </h1>
             <p className="text-[14px] text-[#6B7280] mb-5">
@@ -111,9 +111,9 @@ export default function OnboardingFiltersPage() {
         <div className={`bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] ${isEmbedded ? "p-4" : "p-5"}`}>
           <div className="grid grid-cols-2 gap-3 mb-5">
             <div>
-              <label className="text-[13px] font-[600] text-[#374151] mb-1.5 block">{t("onboardingFilters.minRent")}</label>
+              <label className="text-[13px] font-medium text-[#374151] mb-1.5 block">{t("onboardingFilters.minRent")}</label>
               <div className="relative">
-                <Euro className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+                <Euro className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A]" />
                 <input
                   type="number"
                   placeholder="€ 0"
@@ -125,9 +125,9 @@ export default function OnboardingFiltersPage() {
               </div>
             </div>
             <div>
-              <label className="text-[13px] font-[600] text-[#374151] mb-1.5 block">{t("onboardingFilters.maxRent")}</label>
+              <label className="text-[13px] font-medium text-[#374151] mb-1.5 block">{t("onboardingFilters.maxRent")}</label>
               <div className="relative">
-                <Euro className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+                <Euro className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A]" />
                 <input
                   type="number"
                   placeholder="€ 2000"
@@ -141,9 +141,9 @@ export default function OnboardingFiltersPage() {
           </div>
 
           <div className="mb-5">
-            <label className="text-[13px] font-[600] text-[#374151] mb-1.5 block">{t("onboardingFilters.bedrooms")}</label>
+            <label className="text-[13px] font-medium text-[#374151] mb-1.5 block">{t("onboardingFilters.bedrooms")}</label>
             <div className="relative">
-              <BedDouble className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+              <BedDouble className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A]" />
               <select
                 value={bedrooms}
                 onChange={(e) => setBedrooms(e.target.value)}
@@ -162,9 +162,9 @@ export default function OnboardingFiltersPage() {
           </div>
 
           <div>
-            <label className="text-[13px] font-[600] text-[#374151] mb-1.5 block">{t("onboardingFilters.minArea")}</label>
+            <label className="text-[13px] font-medium text-[#374151] mb-1.5 block">{t("onboardingFilters.minArea")}</label>
             <div className="relative">
-              <Maximize2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+              <Maximize2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A]" />
               <input
                 type="number"
                 placeholder="0 m²"

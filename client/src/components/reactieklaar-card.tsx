@@ -112,7 +112,7 @@ export function ReactieklaarCard({
     <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5" data-testid="card-reactieklaar">
       <div className="flex items-center gap-2.5 mb-4">
         <div className="flex items-center justify-center">
-          <Zap className="w-[18px] h-[18px] text-[#9CA3AF]" />
+          <Zap className="w-[18px] h-[18px] text-[#71717A]" />
         </div>
         <h3 className="text-[15px] font-medium text-[#111C3D] flex-1">{t("reactieklaar.title")}</h3>
         <span
@@ -152,7 +152,7 @@ export function ReactieklaarCard({
               ) : (
                 <div className="w-[18px] h-[18px] rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
               )}
-              <Icon className={`w-4 h-4 flex-shrink-0 ${step.done ? "text-[#E5E7EB]" : "text-[#1F2937]"}`} />
+              <Icon className={`w-4 h-4 flex-shrink-0 ${step.done ? "text-[#E5E7EB]" : "text-[#71717A]"}`} />
               <span className={`text-[14px] flex-1 ${step.done ? "text-[#1F2937]" : "text-[#1F2937] font-medium"}`}>
                 {getSpeedStepLabel(step.id, t)}
               </span>

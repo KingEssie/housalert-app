@@ -418,14 +418,14 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       {(value.tab === "wijken" || value.tab === "radius") && (
         <div ref={cityContainerRef} className="relative">
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#1F2937] pointer-events-none" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#71717A] pointer-events-none" />
             <input
               type="text"
               value={cityQuery}
               onChange={(e) => handleCityInput(e.target.value)}
               onFocus={() => { if (hasCityResults && !value.place) setCityOpen(true); }}
               placeholder={t("location.searchCity")}
-              className={`w-full min-h-[60px] rounded-[20px] bg-[#F3F4F6] border px-11 text-[16px] text-[#1F2937] placeholder:text-[#9CA3AF] ${
+              className={`w-full min-h-[60px] rounded-[20px] bg-[#F3F4F6] border px-11 text-[16px] text-[#71717A] placeholder:text-[#9CA3AF] ${
                 value.place ? "border-[#0D6EFD] bg-[#F5F7FA]/30" : "border-[#E5E7EB]"
               }`}
               data-testid="input-city-search"
@@ -436,7 +436,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                 className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#E5E7EB] flex items-center justify-center hover:bg-[#6B7280]/30 transition-colors"
                 data-testid="button-clear-city"
               >
-                <X className="w-3.5 h-3.5 text-[#1F2937]" />
+                <X className="w-3.5 h-3.5 text-[#71717A]" />
               </button>
             )}
           </div>
@@ -453,10 +453,10 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                     <button
                       key={s.place_id}
                       onClick={() => handleGoogleCitySelect(s)}
-                      className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#1F2937] hover:bg-[#F5F7FA] flex items-center gap-3"
+                      className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#71717A] hover:bg-[#F5F7FA] flex items-center gap-3"
                       data-testid={`option-place-${s.place_id}`}
                     >
-                      <MapPin className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
+                      <MapPin className="w-4 h-4 text-[#71717A] flex-shrink-0" />
                       <span>{s.state ? `${s.city_name}, ${s.state}` : s.city_name}</span>
                     </button>
                   ))}
@@ -473,10 +473,10 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                     <button
                       key={r.place_id}
                       onClick={() => handleNominatimCitySelect(r)}
-                      className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#1F2937] hover:bg-[#F5F7FA] flex items-center gap-3"
+                      className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#71717A] hover:bg-[#F5F7FA] flex items-center gap-3"
                       data-testid={`option-place-${r.place_id}`}
                     >
-                      <MapPin className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
+                      <MapPin className="w-4 h-4 text-[#71717A] flex-shrink-0" />
                       <span>{sub}</span>
                     </button>
                   );
@@ -489,7 +489,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
 
       {value.tab === "wijken" && value.place && (
         <>
-          <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#1F2937] font-medium text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
+          <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#71717A] font-medium text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
             <MapPin className="w-4 h-4" />
             {value.place.city_name}
           </div>
@@ -506,15 +506,15 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       )}
 
       {value.tab === "wijken" && districtsNotAvailable && (
-        <div className="flex items-center gap-2 text-[#1F2937] text-[13px] bg-[#F3F4F6] rounded-2xl px-4 py-3" data-testid="text-districts-unavailable">
-          <AlertCircle className="w-4 h-4 flex-shrink-0 text-[#1F2937]" />
+        <div className="flex items-center gap-2 text-[#71717A] text-[13px] bg-[#F3F4F6] rounded-2xl px-4 py-3" data-testid="text-districts-unavailable">
+          <AlertCircle className="w-4 h-4 flex-shrink-0 text-[#71717A]" />
           <span>{t("location.districtsSoon")}</span>
         </div>
       )}
 
       {value.tab === "radius" && value.place && (
         <>
-          <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#1F2937] font-medium text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
+          <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#71717A] font-medium text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
             <MapPin className="w-4 h-4" />
             {value.place.city_name}
           </div>
@@ -526,11 +526,11 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
         <div>
           <label className="text-[16px] font-medium text-[#111C3D] mb-3 block">{t("location.radiusLabel")}</label>
           <div className="relative">
-            <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1F2937]" />
+            <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A]" />
             <select
               value={value.radiusKm}
               onChange={(e) => onChange({ ...value, radiusKm: parseInt(e.target.value) })}
-              className="w-full h-[52px] pl-11 pr-4 rounded-lg border border-transparent bg-[#F5F7FA] text-[15px] font-medium text-[#1F2937] cursor-pointer appearance-none"
+              className="w-full h-[52px] pl-11 pr-4 rounded-lg border border-transparent bg-[#F5F7FA] text-[15px] font-medium text-[#71717A] cursor-pointer appearance-none"
               data-testid="select-radius"
             >
               <option value="2">2 km</option>
@@ -549,14 +549,14 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
           <div ref={destContainerRef} className="relative">
             <label className="text-[16px] font-medium text-[#111C3D] mb-3 block">{t("location.workAddress")}</label>
             <div className="relative">
-              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#1F2937] pointer-events-none" />
+              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#71717A] pointer-events-none" />
               <input
                 type="text"
                 value={destQuery}
                 onChange={(e) => handleDestInput(e.target.value)}
                 onFocus={() => { if (hasDestResults && value.commuteLat == null) setDestOpen(true); }}
                 placeholder={t("location.searchAddress")}
-                className={`w-full min-h-[60px] rounded-[20px] bg-[#F3F4F6] border px-11 text-[16px] text-[#1F2937] placeholder:text-[#9CA3AF] ${
+                className={`w-full min-h-[60px] rounded-[20px] bg-[#F3F4F6] border px-11 text-[16px] text-[#71717A] placeholder:text-[#9CA3AF] ${
                   value.commuteLat != null ? "border-[#0D6EFD] bg-[#F5F7FA]/30" : "border-[#E5E7EB]"
                 }`}
                 data-testid="input-commute-destination"
@@ -567,7 +567,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                   className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#E5E7EB] flex items-center justify-center hover:bg-[#6B7280]/30 transition-colors"
                   data-testid="button-clear-destination"
                 >
-                  <X className="w-3.5 h-3.5 text-[#1F2937]" />
+                  <X className="w-3.5 h-3.5 text-[#71717A]" />
                 </button>
               )}
             </div>
@@ -584,10 +584,10 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                       <button
                         key={s.place_id}
                         onClick={() => handleGoogleDestSelect(s)}
-                        className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#1F2937] hover:bg-[#F5F7FA] flex items-center gap-3"
+                        className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#71717A] hover:bg-[#F5F7FA] flex items-center gap-3"
                         data-testid={`option-dest-${s.place_id}`}
                       >
-                        <MapPin className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
+                        <MapPin className="w-4 h-4 text-[#71717A] flex-shrink-0" />
                         <span>{s.state ? `${s.city_name}, ${s.state}` : s.display_name}</span>
                       </button>
                     ))}
@@ -600,10 +600,10 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                     <button
                       key={r.place_id}
                       onClick={() => handleNominatimDestSelect(r)}
-                      className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#1F2937] hover:bg-[#F5F7FA] flex items-center gap-3"
+                      className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#71717A] hover:bg-[#F5F7FA] flex items-center gap-3"
                       data-testid={`option-dest-${r.place_id}`}
                     >
-                      <MapPin className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
+                      <MapPin className="w-4 h-4 text-[#71717A] flex-shrink-0" />
                       <span>{r.display_name.split(",").slice(0, 3).join(",")}</span>
                     </button>
                   ))
@@ -613,7 +613,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
           </div>
 
           {value.commuteLat != null && (
-            <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#1F2937] font-medium text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-destination">
+            <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#71717A] font-medium text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-destination">
               <MapPin className="w-4 h-4" />
               {value.commuteDestination}
             </div>
@@ -647,11 +647,11 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
           <div>
             <label className="text-[16px] font-medium text-[#111C3D] mb-3 block">{t("location.maxCommute")}</label>
             <div className="relative">
-              <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1F2937]" />
+              <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A]" />
               <select
                 value={value.commuteMinutes}
                 onChange={(e) => onChange({ ...value, commuteMinutes: parseInt(e.target.value) })}
-                className="w-full h-[52px] pl-11 pr-4 rounded-lg border border-transparent bg-[#F5F7FA] text-[15px] font-medium text-[#1F2937] cursor-pointer appearance-none"
+                className="w-full h-[52px] pl-11 pr-4 rounded-lg border border-transparent bg-[#F5F7FA] text-[15px] font-medium text-[#71717A] cursor-pointer appearance-none"
                 data-testid="select-commute-minutes"
               >
                 <option value="15">15 min</option>
@@ -729,7 +729,7 @@ function DistrictMultiSelect({
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between min-h-[52px] px-4 rounded-[20px] bg-[#F3F4F6] border border-[#E5E7EB] text-[15px] text-[#1F2937] hover:bg-[#F5F7FA] transition-colors"
+        className="w-full flex items-center justify-between min-h-[52px] px-4 rounded-[20px] bg-[#F3F4F6] border border-[#E5E7EB] text-[15px] text-[#71717A] hover:bg-[#F5F7FA] transition-colors"
         data-testid="button-district-dropdown"
       >
         <span className={selected.length > 0 ? "font-medium" : "text-[#9CA3AF]"}>
@@ -737,7 +737,7 @@ function DistrictMultiSelect({
             ? t("location.districtSelected", { count: selected.length, label: selected.length === 1 ? t("location.districtSingular") : t("location.districtPlural") })
             : t("location.selectDistricts")}
         </span>
-        <ChevronDown className={`w-4 h-4 text-[#1F2937] transition-transform ${open ? "rotate-180" : ""}`} />
+        <ChevronDown className={`w-4 h-4 text-[#71717A] transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
@@ -746,7 +746,7 @@ function DistrictMultiSelect({
             <button
               key={d}
               onClick={() => onToggle(d)}
-              className="w-full text-left px-4 py-3 text-[15px] text-[#1F2937] hover:bg-[#F5F7FA] flex items-center gap-3 transition-colors"
+              className="w-full text-left px-4 py-3 text-[15px] text-[#71717A] hover:bg-[#F5F7FA] flex items-center gap-3 transition-colors"
               data-testid={`option-district-${d.toLowerCase().replace(/[\s-]/g, "-")}`}
             >
               <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${

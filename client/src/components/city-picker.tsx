@@ -185,14 +185,14 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
     <div className="flex flex-col gap-4" ref={containerRef}>
       <div className="relative">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#1F2937] pointer-events-none" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#71717A] pointer-events-none" />
           <input
             type="text"
             value={query}
             onChange={(e) => handleInputChange(e.target.value)}
             onFocus={() => { if (hasResults && !value) setOpen(true); }}
             placeholder={t("location.searchCity")}
-            className={`w-full min-h-[52px] rounded-lg bg-[#F5F7FA] border border-transparent px-11 text-[16px] text-[#1F2937] placeholder:text-[#1F2937] ${
+            className={`w-full min-h-[52px] rounded-lg bg-[#F5F7FA] border border-transparent px-11 text-[16px] text-[#71717A] placeholder:text-[#71717A] ${
               showValidation ? "border-red-400" : value ? "border-[#0D6EFD] bg-[#F5F7FA]/30" : "border-[#E5E7EB]"
             }`}
             data-testid="input-city-search"
@@ -203,7 +203,7 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
               className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#E5E7EB] flex items-center justify-center hover:bg-[#6B7280]/30 transition-colors"
               data-testid="button-clear-city"
             >
-              <X className="w-3.5 h-3.5 text-[#1F2937]" />
+              <X className="w-3.5 h-3.5 text-[#71717A]" />
             </button>
           )}
         </div>
@@ -222,10 +222,10 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
                   <button
                     key={s.place_id}
                     onClick={() => handleGoogleSelect(s)}
-                    className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#1F2937] hover:bg-[#F5F7FA] flex items-center gap-3"
+                    className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#71717A] hover:bg-[#F5F7FA] flex items-center gap-3"
                     data-testid={`option-place-${s.place_id}`}
                   >
-                    <MapPin className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
+                    <MapPin className="w-4 h-4 text-[#71717A] flex-shrink-0" />
                     <span>{s.state ? `${s.city_name}, ${s.state}` : s.city_name}</span>
                   </button>
                 ))}
@@ -242,10 +242,10 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
                   <button
                     key={r.place_id}
                     onClick={() => handleNominatimSelect(r)}
-                    className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#1F2937] hover:bg-[#F5F7FA] flex items-center gap-3"
+                    className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#71717A] hover:bg-[#F5F7FA] flex items-center gap-3"
                     data-testid={`option-place-${r.place_id}`}
                   >
-                    <MapPin className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
+                    <MapPin className="w-4 h-4 text-[#71717A] flex-shrink-0" />
                     <span>{label}</span>
                   </button>
                 );
@@ -271,7 +271,7 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
 
       {value && (
         <>
-          <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#1F2937] font-semibold text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
+          <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#71717A] font-medium text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
             <MapPin className="w-4 h-4" />
             {value.city_name}
           </div>

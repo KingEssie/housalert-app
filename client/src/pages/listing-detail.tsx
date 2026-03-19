@@ -24,7 +24,7 @@ function FloatingBackButton({ navigate }: { navigate: (to: string) => void }) {
   }
   return (
     <div className="fixed top-[max(0.75rem,env(safe-area-inset-top))] left-4 z-30">
-      <button onClick={handleBack} className="w-12 h-12 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.10)] flex items-center justify-center active:scale-95 transition-transform" aria-label="Back" data-testid="button-back"><ArrowLeft className="w-5 h-5 text-[#111C3D]" /></button>
+      <button onClick={handleBack} className="w-12 h-12 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.10)] flex items-center justify-center active:scale-95 transition-transform" aria-label="Back" data-testid="button-back"><ArrowLeft className="w-5 h-5 text-[#71717A]" /></button>
     </div>
   );
 }
@@ -235,7 +235,7 @@ export default function ListingDetailPage() {
               {listing.bedrooms > 0 && (
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-[#F5F7FA] flex items-center justify-center">
-                    <BedDouble className="w-5 h-5 text-[#1F2937]" />
+                    <BedDouble className="w-5 h-5 text-[#71717A]" />
                   </div>
                   <div>
                     <p className="text-[12px] text-[#1F2937]">{t("listing.bedrooms")}</p>
@@ -247,7 +247,7 @@ export default function ListingDetailPage() {
               {listing.size_m2 > 0 && (
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-[#F5F7FA] flex items-center justify-center">
-                    <Ruler className="w-5 h-5 text-[#1F2937]" />
+                    <Ruler className="w-5 h-5 text-[#71717A]" />
                   </div>
                   <div>
                     <p className="text-[12px] text-[#1F2937]">{t("listing.area")}</p>
@@ -258,7 +258,7 @@ export default function ListingDetailPage() {
 
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-[#F5F7FA] flex items-center justify-center">
-                  <Globe className="w-5 h-5 text-[#1F2937]" />
+                  <Globe className="w-5 h-5 text-[#71717A]" />
                 </div>
                 <div>
                   <p className="text-[12px] text-[#1F2937]">{t("listing.source")}</p>
@@ -268,7 +268,7 @@ export default function ListingDetailPage() {
 
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-[#F5F7FA] flex items-center justify-center">
-                  <Clock className="w-5 h-5 text-[#1F2937]" />
+                  <Clock className="w-5 h-5 text-[#71717A]" />
                 </div>
                 <div>
                   <p className="text-[12px] text-[#1F2937]">{t("listing.posted")}</p>

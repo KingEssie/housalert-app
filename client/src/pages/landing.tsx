@@ -71,7 +71,7 @@ export default function LandingPage() {
 
         <section className="px-6 py-20 md:py-28">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-[30px] md:text-[36px] font-semibold text-center tracking-[-0.03em] leading-[1.1] mb-14" style={{ color: "#1F2937" }} data-testid="text-features-heading">
+            <h2 className="text-[30px] md:text-[36px] font-medium text-center tracking-[-0.03em] leading-[1.1] mb-14" style={{ color: "#1F2937" }} data-testid="text-features-heading">
               {t("landing.featuresHeading")}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -110,7 +110,7 @@ export default function LandingPage() {
 
         <section className="px-6 pb-20 md:pb-28">
           <div className="max-w-2xl mx-auto">
-            <h2 className="text-[30px] md:text-[36px] font-semibold text-center tracking-[-0.03em] leading-[1.1] mb-14" style={{ color: "#1F2937" }} data-testid="text-how-it-works">
+            <h2 className="text-[30px] md:text-[36px] font-medium text-center tracking-[-0.03em] leading-[1.1] mb-14" style={{ color: "#1F2937" }} data-testid="text-how-it-works">
               {t("landing.howItWorks")}
             </h2>
             <div className="space-y-0">
@@ -138,7 +138,7 @@ export default function LandingPage() {
 
         <section className="px-6 pb-24 md:pb-32">
           <div className="max-w-xl mx-auto bg-card rounded-lg p-8 md:p-12 text-center shadow-sm">
-            <h2 className="text-[32px] font-semibold tracking-[-0.03em] leading-[1.1] mb-4" style={{ color: "#1F2937" }} data-testid="text-cta-bottom">
+            <h2 className="text-[32px] font-medium tracking-[-0.03em] leading-[1.1] mb-4" style={{ color: "#1F2937" }} data-testid="text-cta-bottom">
               {t("landing.ctaBottom")}
             </h2>
             <p className="text-[15px] text-muted-foreground mb-8">

@@ -174,7 +174,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
       <div className="relative w-full max-w-xl bg-white rounded-t-3xl shadow-[0_-8px_40px_rgba(0,0,0,0.12)] max-h-[85vh] flex flex-col animate-in slide-in-from-bottom duration-300">
         <div className="flex items-center justify-between px-6 pt-5 pb-3">
           <div className="flex items-center gap-2">
-            <Send className="w-5 h-5 text-[#1F2937]" />
+            <Send className="w-5 h-5 text-[#71717A]" />
             <h2 className="text-[18px] font-medium text-[#111C3D]">{t("applySheet.title")}</h2>
           </div>
           <button
@@ -182,7 +182,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
             className="w-8 h-8 rounded-full bg-[#F5F7FA] flex items-center justify-center hover:bg-[#E5E7EB] transition-colors"
             data-testid="button-close-apply-sheet"
           >
-            <X className="w-4 h-4 text-[#1F2937]" />
+            <X className="w-4 h-4 text-[#71717A]" />
           </button>
         </div>
 

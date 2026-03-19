@@ -369,7 +369,7 @@ export default function NewSearchPage() {
               className="w-12 h-12 rounded-full bg-[#F3F4F6] shadow-[0_1px_4px_rgba(0,0,0,0.06)] flex items-center justify-center"
               data-testid="button-wizard-header-back"
             >
-              <ArrowLeft className="w-5 h-5 text-[#1F2937]" />
+              <ArrowLeft className="w-5 h-5 text-[#71717A]" />
             </button>
           </div>
         </header>
@@ -406,7 +406,7 @@ export default function NewSearchPage() {
             className="w-12 h-12 rounded-full bg-[#F3F4F6] shadow-[0_1px_4px_rgba(0,0,0,0.06)] flex items-center justify-center"
             data-testid="button-wizard-header-back"
           >
-            <ArrowLeft className="w-5 h-5 text-[#1F2937]" />
+            <ArrowLeft className="w-5 h-5 text-[#71717A]" />
           </button>
           <span className="text-[13px] font-medium text-[#1F2937] opacity-60" data-testid="text-step-indicator">
             {t("newSearch.stepOf", { step, total: TOTAL_STEPS })}
@@ -516,7 +516,7 @@ function Step2Requirements({
                 <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1F2937] pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A] pointer-events-none" />
           </div>
         </div>
 
@@ -536,7 +536,7 @@ function Step2Requirements({
                 <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1F2937] pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A] pointer-events-none" />
           </div>
         </div>
 
@@ -556,7 +556,7 @@ function Step2Requirements({
                 <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1F2937] pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A] pointer-events-none" />
           </div>
         </div>
 
@@ -576,7 +576,7 @@ function Step2Requirements({
                 <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1F2937] pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A] pointer-events-none" />
           </div>
         </div>
 
@@ -596,7 +596,7 @@ function Step2Requirements({
                 <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1F2937] pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A] pointer-events-none" />
           </div>
         </div>
       </div>

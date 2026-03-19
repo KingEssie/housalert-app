@@ -80,7 +80,7 @@ export default function DocumentsPage() {
       <div className="max-w-xl mx-auto p-4 space-y-4 pb-8">
         <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5">
           <div className="flex items-center gap-3 mb-4">
-            <FileText className="w-5 h-5 text-[#9CA3AF]" />
+            <FileText className="w-5 h-5 text-[#71717A]" />
             <div>
               <p className="text-[15px] font-medium text-[#1F2937]">{t("documents.heading")}</p>
               <p className="text-[12px] text-[#6B7280]">

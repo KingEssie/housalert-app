@@ -150,7 +150,7 @@ export default function ApplyPage() {
           className="fixed top-[calc(12px+env(safe-area-inset-top))] left-4 z-20 w-12 h-12 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.10)] flex items-center justify-center"
           data-testid="button-back-apply"
         >
-          <ArrowLeft className="w-5 h-5 text-[#1F2937]" />
+          <ArrowLeft className="w-5 h-5 text-[#71717A]" />
         </button>
         <div className="animate-pulse">
           <div className="h-[240px] bg-[#E5E7EB]" />
@@ -261,7 +261,7 @@ export default function ApplyPage() {
         className="fixed top-[calc(12px+env(safe-area-inset-top))] left-4 z-20 w-12 h-12 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.10)] flex items-center justify-center active:scale-95 transition-transform"
         data-testid="button-back-apply"
       >
-        <ArrowLeft className="w-5 h-5 text-[#1F2937]" />
+        <ArrowLeft className="w-5 h-5 text-[#71717A]" />
       </button>
 
       <div className="relative">

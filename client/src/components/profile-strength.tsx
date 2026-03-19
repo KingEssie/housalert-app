@@ -219,7 +219,7 @@ export function ProfileStrengthCard() {
     <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6" data-testid="card-profile-strength">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <Shield className="w-[18px] h-[18px] text-[#9CA3AF]" />
+          <Shield className="w-[18px] h-[18px] text-[#71717A]" />
           <h3 className="text-[15px] font-medium text-[#111C3D]">{t("profileStrength.title")}</h3>
         </div>
         <span className={`text-[13px] font-medium px-2.5 py-1 rounded-full ${status.bg} ${status.color}`} data-testid="text-status-label">
@@ -275,7 +275,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
       >
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <Sparkles className="w-4 h-4 text-[#1F2937]" />
+            <Sparkles className="w-4 h-4 text-[#71717A]" />
             <h3 className="text-[15px] font-medium text-[#111C3D]">{t("profileStrength.completeAccount")}</h3>
           </div>
           <div className="flex items-center gap-3">
@@ -306,9 +306,9 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
             </span>
           </div>
           {expanded ? (
-            <ChevronUp className="w-4 h-4 text-[#1F2937]" />
+            <ChevronUp className="w-4 h-4 text-[#71717A]" />
           ) : (
-            <ChevronDown className="w-4 h-4 text-[#1F2937]" />
+            <ChevronDown className="w-4 h-4 text-[#71717A]" />
           )}
         </div>
       </button>
@@ -334,14 +334,14 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
                 ) : (
                   <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
                 )}
-                <Icon className={`w-4 h-4 flex-shrink-0 ${task.completed ? "text-[#1F2937]" : "text-[#1F2937]"}`} />
+                <Icon className={`w-4 h-4 flex-shrink-0 ${task.completed ? "text-[#71717A]" : "text-[#71717A]"}`} />
                 <div className="flex-1 min-w-0">
                   <p className={`text-[14px] font-medium ${task.completed ? "text-[#1F2937] line-through" : "text-[#1F2937]"}`}>
                     {getTaskLabel(task.id, t)}
                   </p>
                   <p className="text-[11px] text-[#1F2937]">{t("profileStrength.points", { score: String(task.score) })}</p>
                 </div>
-                {!task.completed && <ArrowRight className="w-4 h-4 text-[#1F2937] flex-shrink-0" />}
+                {!task.completed && <ArrowRight className="w-4 h-4 text-[#71717A] flex-shrink-0" />}
               </button>
             );
           })}
@@ -431,7 +431,7 @@ export function TaskModal({
             className="w-9 h-9 rounded-full bg-[#F5F7FA] flex items-center justify-center mr-3 active:scale-95 transition-transform"
             data-testid="button-close-modal"
           >
-            <ArrowLeft className="w-4 h-4 text-[#1F2937]" />
+            <ArrowLeft className="w-4 h-4 text-[#71717A]" />
           </button>
           <h1 className="text-[17px] font-medium text-[#111C3D] flex-1 tracking-wide">{title}</h1>
         </div>
@@ -610,7 +610,7 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
       >
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <Target className="w-4 h-4 text-[#1F2937]" />
+            <Target className="w-4 h-4 text-[#71717A]" />
             <h3 className="text-[15px] font-medium text-[#111C3D]">{t("profileStrength.prepareSearch")}</h3>
           </div>
           <div className="flex items-center gap-3">
@@ -641,9 +641,9 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
             </span>
           </div>
           {expanded ? (
-            <ChevronUp className="w-4 h-4 text-[#1F2937]" />
+            <ChevronUp className="w-4 h-4 text-[#71717A]" />
           ) : (
-            <ChevronDown className="w-4 h-4 text-[#1F2937]" />
+            <ChevronDown className="w-4 h-4 text-[#71717A]" />
           )}
         </div>
       </button>
@@ -669,14 +669,14 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
                 ) : (
                   <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
                 )}
-                <Icon className={`w-4 h-4 flex-shrink-0 ${task.completed ? "text-[#1F2937]" : "text-[#1F2937]"}`} />
+                <Icon className={`w-4 h-4 flex-shrink-0 ${task.completed ? "text-[#71717A]" : "text-[#71717A]"}`} />
                 <div className="flex-1 min-w-0">
                   <p className={`text-[14px] font-medium ${task.completed ? "text-[#1F2937] line-through" : "text-[#1F2937]"}`}>
                     {getTaskLabel(task.id, t)}
                   </p>
                   <p className="text-[11px] text-[#1F2937]">{t("profileStrength.points", { score: String(task.score) })}</p>
                 </div>
-                {!task.completed && <ArrowRight className="w-4 h-4 text-[#1F2937] flex-shrink-0" />}
+                {!task.completed && <ArrowRight className="w-4 h-4 text-[#71717A] flex-shrink-0" />}
               </button>
             );
           })}
@@ -732,7 +732,7 @@ export function PrepTaskModal({
             className="w-9 h-9 rounded-full bg-[#F5F7FA] flex items-center justify-center mr-3 active:scale-95 transition-transform"
             data-testid="button-close-prep-modal"
           >
-            <ArrowLeft className="w-4 h-4 text-[#1F2937]" />
+            <ArrowLeft className="w-4 h-4 text-[#71717A]" />
           </button>
           <h1 className="text-[17px] font-medium text-[#111C3D] flex-1 tracking-wide">{titles[taskId] || ""}</h1>
         </div>
@@ -872,7 +872,7 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
     <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5" data-testid="card-notification-summary">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Bell className="w-[18px] h-[18px] text-[#9CA3AF]" />
+          <Bell className="w-[18px] h-[18px] text-[#71717A]" />
           <h3 className="text-[15px] font-medium text-[#111C3D]">{t("profileStrength.notifChannels")}</h3>
         </div>
         <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${activeCount > 0 ? "bg-[#F5F7FA] text-[#1F2937]" : "bg-[#F5F7FA] text-[#1F2937]"}`}>
@@ -947,7 +947,7 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
   return (
     <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5" data-testid="card-speed-readiness">
       <div className="flex items-center gap-2 mb-4">
-        <Zap className="w-[18px] h-[18px] text-[#9CA3AF]" />
+        <Zap className="w-[18px] h-[18px] text-[#71717A]" />
         <div className="flex-1">
           <h3 className="text-[15px] font-medium text-[#111C3D]">{t("profileStrength.reactionSpeed")}</h3>
         </div>
@@ -1016,7 +1016,7 @@ export function SpeedBanner({ navigate }: { navigate: (path: string) => void }) 
         onClick={() => navigate("/dashboard")}
         data-testid="banner-speed-ready"
       >
-        <Zap className="w-[18px] h-[18px] text-[#9CA3AF] flex-shrink-0" />
+        <Zap className="w-[18px] h-[18px] text-[#71717A] flex-shrink-0" />
         <div className="flex-1">
           <p className="text-[14px] font-medium text-[#111C3D]">{t("profileStrength.readyFast")}</p>
           <p className="text-[12px] text-[#9CA3AF]">{t("profileStrength.allStepsComplete")}</p>
@@ -1032,14 +1032,14 @@ export function SpeedBanner({ navigate }: { navigate: (path: string) => void }) 
       onClick={() => navigate("/dashboard")}
       data-testid="banner-speed-incomplete"
     >
-      <Zap className="w-[18px] h-[18px] text-[#9CA3AF] flex-shrink-0" />
+      <Zap className="w-[18px] h-[18px] text-[#71717A] flex-shrink-0" />
       <div className="flex-1">
         <p className="text-[14px] font-medium text-[#111C3D]">
           {t("profileStrength.stepsRemaining", { count: String(remaining), label: remaining === 1 ? t("profileStrength.stepSingular") : t("profileStrength.stepPluralLabel") })}
         </p>
         <p className="text-[12px] text-[#1F2937]">{t("profileStrength.completeYourProfile")}</p>
       </div>
-      <ArrowRight className="w-4 h-4 text-[#1F2937] flex-shrink-0" />
+      <ArrowRight className="w-4 h-4 text-[#71717A] flex-shrink-0" />
     </div>
   );
 }

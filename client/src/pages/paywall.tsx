@@ -152,7 +152,7 @@ export default function PaywallPage() {
             className="w-9 h-9 rounded-full bg-[#F5F7FA] flex items-center justify-center active:scale-95 transition-transform"
             data-testid="button-paywall-back"
           >
-            <ArrowLeft className="w-4 h-4 text-[#1F2937]" />
+            <ArrowLeft className="w-4 h-4 text-[#71717A]" />
           </button>
           <HousAlertLogo size={28} />
         </div>

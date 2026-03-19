@@ -67,7 +67,7 @@ export default function TipDetailPage() {
             className="w-9 h-9 rounded-full bg-[#F5F7FA] flex items-center justify-center mr-3 active:scale-95 transition-transform"
             data-testid="button-back-tip"
           >
-            <ArrowLeft className="w-4 h-4 text-[#1F2937]" />
+            <ArrowLeft className="w-4 h-4 text-[#71717A]" />
           </button>
           <h1 className="text-[17px] font-medium text-[#111C3D] flex-1 tracking-wide">
             {t("tips.tipLabel")} {currentIndex + 1}/{TIP_IDS.length}
@@ -110,7 +110,7 @@ export default function TipDetailPage() {
         >
           <Icon className="w-5 h-5 text-[#0D6EFD] flex-shrink-0" />
           <span className="text-[14px] font-medium text-[#111C3D] flex-1">{t("tips.openContent")}</span>
-          <ChevronRight className="w-4 h-4 text-[#9CA3AF]" />
+          <ChevronRight className="w-4 h-4 text-[#71717A]" />
         </button>
       </main>
 

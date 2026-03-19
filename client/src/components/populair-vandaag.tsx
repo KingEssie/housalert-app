@@ -143,7 +143,7 @@ export function PopulairVandaagSection() {
     <div className="flex flex-col gap-3" data-testid="section-populair-vandaag">
       <div>
         <div className="flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-[#1F2937]" />
+          <TrendingUp className="w-4 h-4 text-[#71717A]" />
           <h2 className="text-section-title">{t("popularToday.title")}</h2>
         </div>
         <p className="text-[13px] text-[#1F2937] mt-0.5 ml-6">{t("popularToday.subtitle")}</p>

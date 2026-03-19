@@ -139,7 +139,7 @@ export function ReactiesnelheidCard({
     >
       <div className="flex items-start gap-4">
         <div className="w-10 h-10 rounded-lg bg-[#F5F7FA] flex items-center justify-center flex-shrink-0">
-          <Gauge className="w-5 h-5 text-[#1F2937]" />
+          <Gauge className="w-5 h-5 text-[#71717A]" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
@@ -163,7 +163,7 @@ export function ReactiesnelheidCard({
           </div>
         </div>
         {onTap && (
-          <ChevronRight className="w-4 h-4 text-[#1F2937] flex-shrink-0 mt-1" />
+          <ChevronRight className="w-4 h-4 text-[#71717A] flex-shrink-0 mt-1" />
         )}
       </div>
     </Wrapper>

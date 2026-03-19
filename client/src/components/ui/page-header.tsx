@@ -32,7 +32,7 @@ export function PageHeader({ title, onBack, trailing, closeButton }: PageHeaderP
           aria-label={closeButton ? "Close" : "Back"}
           data-testid="button-back"
         >
-          <Icon className="w-5 h-5 text-[#111C3D]" />
+          <Icon className="w-5 h-5 text-[#71717A]" />
         </button>
         {trailing && <div className="flex-shrink-0">{trailing}</div>}
       </div>

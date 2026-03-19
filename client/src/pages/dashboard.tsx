@@ -245,7 +245,7 @@ function ProfileCard({
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3.5">
           <div className="w-10 h-10 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
-            <MapPin className="w-[18px] h-[18px] text-[#6B7280]" />
+            <MapPin className="w-[18px] h-[18px] text-[#71717A]" />
           </div>
           <div>
             <div className="flex items-center gap-2.5">
@@ -598,9 +598,9 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
   return (
     <div className="rounded-[24px] border border-[#F0F0F0] p-5 shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]" data-testid="unified-task-list">
       <div className="flex items-center gap-3 mb-5">
-        <Rocket className="w-5 h-5 text-[#9CA3AF] flex-shrink-0" />
+        <Rocket className="w-5 h-5 text-[#71717A] flex-shrink-0" />
         <div className="flex-1 min-w-0">
-          <p className="text-[16px] font-semibold text-[#111827]">{t("activation.title")}</p>
+          <p className="text-[16px] font-medium text-[#111827]">{t("activation.title")}</p>
           <p className="text-[13px] text-[#9CA3AF] mt-0.5">{doneCount}/{allTasks.length} {t("activation.completed")}</p>
         </div>
       </div>
@@ -627,7 +627,7 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
                 data-testid={`task-${task.key}`}
               >
                 <div className="w-8 flex items-center justify-center flex-shrink-0">
-                  <IconComponent className={`w-[20px] h-[20px] ${task.done ? "text-[#D1D5DB]" : "text-[#9CA3AF]"}`} />
+                  <IconComponent className={`w-[20px] h-[20px] ${task.done ? "text-[#D1D5DB]" : "text-[#71717A]"}`} />
                 </div>
                 <span className={`text-[16px] font-medium flex-1 leading-snug ${
                   task.done ? "text-[#D1D5DB] line-through decoration-[#D1D5DB]" : "text-[#1F2937]"
@@ -721,7 +721,7 @@ function HomeTab({
   return (
     <div className="flex flex-col pb-8">
       <div className="sticky top-0 z-10 bg-white pt-6 pb-4 px-6">
-        <h1 className="text-[24px] font-semibold text-[#111827] tracking-tight" data-testid="text-greeting">
+        <h1 className="text-[24px] font-medium text-[#111827] tracking-tight" data-testid="text-greeting">
           {firstName ? t("home.greeting", { name: firstName }) : t("home.greetingDefault")}
         </h1>
       </div>
@@ -734,7 +734,7 @@ function HomeTab({
               <Search className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[18px] font-semibold text-white leading-tight" data-testid="text-match-count">
+              <p className="text-[18px] font-medium text-white leading-tight" data-testid="text-match-count">
                 {newCount > 0
                   ? t("home.newMatchesFound")
                   : t("home.upToDate")}
@@ -764,7 +764,7 @@ function HomeTab({
               <Search className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[17px] font-semibold text-white leading-tight" data-testid="text-active-searching">
+              <p className="text-[17px] font-medium text-white leading-tight" data-testid="text-active-searching">
                 {t("home.searchingActive")}
               </p>
               <p className="text-[13px] text-white/65 mt-1 leading-relaxed">
@@ -788,7 +788,7 @@ function HomeTab({
               <Sparkles className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[17px] font-semibold text-white leading-tight" data-testid="text-estimate-count">
+              <p className="text-[17px] font-medium text-white leading-tight" data-testid="text-estimate-count">
                 {perWeekEstimateRaw > 0
                   ? t("home.weekEstimate", perWeekRange)
                   : t("home.profileReady")}
@@ -908,7 +908,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
     <div className="flex flex-col pb-8">
       <div className="sticky top-0 z-10 bg-white pt-6 pb-0 px-6">
         <div className="flex items-center justify-between mb-5">
-          <h1 className="text-[24px] font-semibold text-[#111827] tracking-tight">{t("matches.title")}</h1>
+          <h1 className="text-[24px] font-medium text-[#111827] tracking-tight">{t("matches.title")}</h1>
         </div>
         <div className="flex gap-2.5 pb-4" data-testid="match-sub-tabs">
           {MATCH_SUB_TAB_CONFIG.map(({ key, labelKey }) => {
@@ -917,7 +917,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
               <button
                 key={key}
                 onClick={() => setSubTab(key)}
-                className={`px-5 py-2.5 rounded-full text-[13px] font-semibold transition-all ${
+                className={`px-5 py-2.5 rounded-full text-[13px] font-medium transition-all ${
                   isActive
                     ? "bg-[#111827] text-white shadow-[0_2px_8px_rgba(17,24,39,0.12)]"
                     : "bg-[#F8F9FA] text-[#6B7280] hover:bg-[#F0F1F3]"
@@ -949,9 +949,9 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
       ) : apiMatchesQuery.isError ? (
         <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-10 flex flex-col items-center text-center gap-4">
           <div className="w-14 h-14 rounded-2xl bg-[#F8F9FA] flex items-center justify-center">
-            <AlertCircle className="w-6 h-6 text-[#6B7280]" />
+            <AlertCircle className="w-6 h-6 text-[#71717A]" />
           </div>
-          <p className="text-[18px] font-semibold text-[#111827]">{t("matches.loadError")}</p>
+          <p className="text-[18px] font-medium text-[#111827]">{t("matches.loadError")}</p>
           <p className="text-[14px] text-[#6B7280] leading-relaxed">{t("matches.loadErrorDesc")}</p>
           <button
             onClick={() => apiMatchesQuery.refetch()}
@@ -1020,9 +1020,9 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
             className="w-9 h-9 rounded-full bg-[#F5F7FA] flex items-center justify-center mr-3 active:scale-95 transition-transform"
             data-testid="button-delete-back"
           >
-            <ArrowLeft className="w-4 h-4 text-[#1F2937]" />
+            <ArrowLeft className="w-4 h-4 text-[#71717A]" />
           </button>
-          <h1 className="text-[17px] font-semibold text-[#111C3D] flex-1 tracking-wide">{t("filters.deleteTitle")}</h1>
+          <h1 className="text-[17px] font-medium text-[#111C3D] flex-1 tracking-wide">{t("filters.deleteTitle")}</h1>
         </div>
       </header>
 
@@ -1030,7 +1030,7 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
         <div className="w-16 h-16 rounded-2xl bg-[#0D6EFD] flex items-center justify-center mb-6">
           <Trash2 className="w-8 h-8 text-white" />
         </div>
-        <h2 className="text-[22px] font-semibold text-[#111C3D] mb-3 text-center" data-testid="text-delete-title">
+        <h2 className="text-[22px] font-medium text-[#111C3D] mb-3 text-center" data-testid="text-delete-title">
           {t("filters.deleteQuestion")}
         </h2>
         <p className="text-[15px] text-[#1F2937] text-center max-w-[320px] mb-10 leading-relaxed" data-testid="text-delete-body">
@@ -1091,7 +1091,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
   return (
     <div className="flex flex-col pb-8">
       <div className="sticky top-0 z-10 bg-white pt-6 pb-4 px-6">
-        <h1 className="text-[24px] font-semibold text-[#111827] tracking-tight">{t("filters.title")}</h1>
+        <h1 className="text-[24px] font-medium text-[#111827] tracking-tight">{t("filters.title")}</h1>
       </div>
       <div className="px-6 flex flex-col gap-5">
       {profilesQuery.isLoading ? (
@@ -1128,7 +1128,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
           ))}
 
           <div className="flex flex-col items-center text-center mt-6 mb-2 px-4">
-            <p className="text-[17px] font-semibold text-[#111C3D]">
+            <p className="text-[17px] font-medium text-[#111C3D]">
               {t("filters.activeCountTitle", { count: profileCount, max: MAX_PROFILES })}
             </p>
             <p className="text-[14px] text-[#6B7280] mt-2 leading-relaxed">
@@ -1417,7 +1417,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
   return (
     <div className="min-h-[calc(100vh-80px)] bg-white">
       <div className="sticky top-0 z-10 bg-white px-6 pt-6 pb-4">
-        <h1 className="text-[24px] font-semibold text-[#111827] tracking-tight">{t("profile.subtabs.account")}</h1>
+        <h1 className="text-[24px] font-medium text-[#111827] tracking-tight">{t("profile.subtabs.account")}</h1>
       </div>
 
       <div className="max-w-[480px] mx-auto px-6 pb-8">
@@ -1461,7 +1461,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                 data-testid="button-zoekbuddy"
               >
                 <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center flex-shrink-0 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-                  <Users className="w-[18px] h-[18px] text-[#6B7280]" />
+                  <Users className="w-[18px] h-[18px] text-[#71717A]" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[14px] font-medium text-[#111827]">{t("profile.searchBuddy")}</p>
@@ -1473,7 +1473,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
               <div className="px-5 py-4">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center flex-shrink-0 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-                    <Users className="w-[18px] h-[18px] text-[#6B7280]" />
+                    <Users className="w-[18px] h-[18px] text-[#71717A]" />
                   </div>
                   <p className="text-[14px] font-medium text-[#111827]">{t("profile.searchBuddy")}</p>
                 </div>
@@ -1493,7 +1493,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             <div className="flex items-center justify-between px-5 py-4">
               <div className="flex items-center gap-3.5">
                 <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
-                  <Bell className="w-[18px] h-[18px] text-[#6B7280]" />
+                  <Bell className="w-[18px] h-[18px] text-[#71717A]" />
                 </div>
                 <p className="text-[14px] font-medium text-[#111827]">{t("profile.pushNotifications")}</p>
               </div>
@@ -1510,7 +1510,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             <div className="flex items-center justify-between px-5 py-4">
               <div className="flex items-center gap-3.5">
                 <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
-                  <Mail className="w-[18px] h-[18px] text-[#6B7280]" />
+                  <Mail className="w-[18px] h-[18px] text-[#71717A]" />
                 </div>
                 <p className="text-[14px] font-medium text-[#111827]">{t("profile.emailNotifications")}</p>
               </div>
@@ -1642,7 +1642,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
               className="w-full flex items-center gap-3.5 px-5 py-4 text-left active:bg-[#F9FAFB] transition-colors"
               data-testid="button-delete-account"
             >
-              <Trash2 className="w-[18px] h-[18px] text-[#9CA3AF]" />
+              <Trash2 className="w-[18px] h-[18px] text-[#71717A]" />
               <p className="text-[14px] font-medium text-[#9CA3AF] flex-1">{t("profile.deleteAccount")}</p>
             </button>
           </div>
@@ -1706,16 +1706,16 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                 className="w-9 h-9 rounded-full bg-[#F5F7FA] flex items-center justify-center mr-3 active:scale-95 transition-transform"
                 data-testid="button-logout-back"
               >
-                <ArrowLeft className="w-4 h-4 text-[#1F2937]" />
+                <ArrowLeft className="w-4 h-4 text-[#71717A]" />
               </button>
-              <h1 className="text-[17px] font-semibold text-[#111C3D] flex-1 tracking-wide">{t("profile.logout")}</h1>
+              <h1 className="text-[17px] font-medium text-[#111C3D] flex-1 tracking-wide">{t("profile.logout")}</h1>
             </div>
           </header>
           <main className="flex-1 flex flex-col items-center justify-center px-6">
             <div className="w-16 h-16 rounded-2xl bg-[#F5F7FA] flex items-center justify-center mb-6">
               <LogOut className="w-8 h-8 text-[#1F2937]" />
             </div>
-            <h2 className="text-[22px] font-semibold text-[#111C3D] mb-3 text-center" data-testid="text-logout-title">
+            <h2 className="text-[22px] font-medium text-[#111C3D] mb-3 text-center" data-testid="text-logout-title">
               {t("profile.logoutConfirm")}
             </h2>
             <p className="text-[15px] text-[#1F2937] text-center max-w-[320px] mb-10 leading-relaxed">
@@ -1912,8 +1912,8 @@ export default function DashboardPage() {
                   className="flex-1 flex flex-col items-center justify-center gap-1 relative"
                   data-testid={`tab-${key}`}
                 >
-                  <Icon className={`w-[20px] h-[20px] transition-colors ${isActive ? "text-[#0D6EFD]" : "text-[#B0B5BD]"}`} />
-                  <span className={`text-[10px] transition-colors ${isActive ? "font-medium text-[#0D6EFD]" : "font-normal text-[#B0B5BD]"}`}>
+                  <Icon className={`w-[20px] h-[20px] transition-colors ${isActive ? "text-[#0D6EFD]" : "text-[#71717A]"}`} />
+                  <span className={`text-[10px] transition-colors ${isActive ? "font-medium text-[#0D6EFD]" : "font-normal text-[#71717A]"}`}>
                     {t(labelKey)}
                   </span>
                   {isActive && (

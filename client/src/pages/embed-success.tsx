@@ -170,7 +170,7 @@ export default function EmbedSuccessPage() {
         <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5">
           <form onSubmit={handleSignup} className="space-y-4">
             <div className="relative">
-              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9CA3AF]" />
+              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#71717A]" />
               <input
                 type="text"
                 placeholder={t("auth.signup.namePlaceholder")}
@@ -182,7 +182,7 @@ export default function EmbedSuccessPage() {
             </div>
 
             <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9CA3AF]" />
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#71717A]" />
               <input
                 type="email"
                 placeholder={t("auth.signup.emailPlaceholder")}
@@ -195,7 +195,7 @@ export default function EmbedSuccessPage() {
             </div>
 
             <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9CA3AF]" />
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#71717A]" />
               <input
                 type="password"
                 placeholder={t("auth.signup.passwordPlaceholder")}
