@@ -443,7 +443,7 @@ export function TaskModal({
             <div className="flex flex-col gap-4">
               <p className="text-[14px] text-[#1F2937]">{t("profileStrength.alertsDesc")}</p>
               <Button
-                onClick={() => { onClose(); navigate("/settings/notifications"); }}
+                onClick={() => { onClose(); navigate("/dashboard"); }}
                 className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium"
                 data-testid="button-goto-notifications"
               >
@@ -560,7 +560,7 @@ export function TaskModal({
               />
               <p className="text-[14px] text-[#1F2937]">{t("profileStrength.phoneDesc")}</p>
               <Button
-                onClick={() => { onClose(); navigate("/settings/notifications"); }}
+                onClick={() => { onClose(); navigate("/dashboard"); }}
                 className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium"
                 data-testid="button-goto-phone-settings"
               >
@@ -910,7 +910,7 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
       )}
 
       <button
-        onClick={() => navigate("/settings/notifications")}
+        onClick={() => navigate("/dashboard")}
         className="w-full h-[40px] rounded-full border border-[#E5E7EB] bg-white text-[13px] font-medium text-[#18181B] hover:bg-[#F5F7FA] transition-colors flex items-center justify-center gap-1.5"
         data-testid="button-manage-channels"
       >
@@ -938,10 +938,10 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
   const allDone = speedDone === speedTotal;
 
   const stepActions: Record<string, string> = {
-    alerts_active: "/settings/notifications",
+    alerts_active: "/dashboard",
     letter_ready: "/application-letter",
     documents_ready: "",
-    phone_added: "/settings/notifications",
+    phone_added: "/dashboard",
   };
 
   return (

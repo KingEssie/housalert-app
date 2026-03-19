@@ -21,7 +21,6 @@ import OnboardingValuePage from "@/pages/onboarding-value";
 import PaywallPage from "@/pages/paywall";
 import DashboardPage from "@/pages/dashboard";
 import NewSearchPage from "@/pages/new-search";
-import NotificationSettingsPage from "@/pages/notification-settings";
 import NotFound from "@/pages/not-found";
 import ListingDetailPage from "@/pages/listing-detail";
 import ApplicationLetterPage from "@/pages/application-letter";
@@ -112,7 +111,6 @@ function Router() {
       <Route path="/dashboard" component={() => <ProtectedRoute component={DashboardPage} />} />
       <Route path="/dashboard/searches/new" component={() => <ProtectedRoute component={NewSearchPage} />} />
       <Route path="/dashboard/searches/edit/:id" component={() => <ProtectedRoute component={NewSearchPage} />} />
-      <Route path="/settings/notifications" component={() => <ProtectedRoute component={NotificationSettingsPage} />} />
       <Route path="/listing/:id" component={() => <ProtectedRoute component={ListingDetailPage} />} />
       <Route path="/apply/:id" component={() => <ProtectedRoute component={ApplyPage} />} />
       <Route path="/documents" component={() => <ProtectedRoute component={DocumentsPage} />} />

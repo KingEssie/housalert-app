@@ -447,7 +447,7 @@ function TaskModal({
 
           {taskId === "alerts_active" && (
             <Button
-              onClick={() => { onClose(); navigate("/settings/notifications"); }}
+              onClick={() => { onClose(); navigate("/dashboard"); }}
               className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-medium"
               data-testid="button-goto-notifications"
             >
@@ -584,7 +584,7 @@ function TaskModal({
 
           {taskId === "profile_info_completed" && (
             <Button
-              onClick={() => { onClose(); navigate("/settings/notifications"); }}
+              onClick={() => { onClose(); navigate("/dashboard"); }}
               className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-medium"
               data-testid="button-goto-profile-info"
             >

@@ -12,7 +12,7 @@ export const RECOMMENDATION_META: Record<string, RecommendationMeta> = {
   },
   alerts_active: {
     id: "alerts_active",
-    route: "/settings/notifications",
+    route: "/dashboard",
     modal: false,
   },
   id_document_uploaded: {
@@ -27,7 +27,7 @@ export const RECOMMENDATION_META: Record<string, RecommendationMeta> = {
   },
   phone_number_added: {
     id: "phone_number_added",
-    route: "/settings/notifications",
+    route: "/dashboard",
     modal: false,
   },
   housing_preferences_completed: {
@@ -42,7 +42,7 @@ export const RECOMMENDATION_META: Record<string, RecommendationMeta> = {
   },
   profile_info_completed: {
     id: "profile_info_completed",
-    route: "/settings/notifications",
+    route: "/dashboard",
     modal: false,
   },
   profile_photo_added: {
