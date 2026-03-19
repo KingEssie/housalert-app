@@ -1,0 +1,112 @@
+Refine the listing detail page again so it moves much closer to Airbnb’s detail page structure.
+
+IMPORTANT:
+- Do NOT change logic or functionality
+- Keep the current page structure and existing data
+- This is a layout and styling refinement only
+- Keep HousAlert blue for the CTA button
+- Keep the sticky bottom footer with price + “Kopiëren en reageren”
+
+## MAIN CORRECTIONS
+
+### 1. REMOVE THE DETAIL CARD CONTAINER
+The property details are still shown inside a rounded boxed card.
+I do NOT want that.
+
+Change this:
+- remove the separate rounded card/container around the property details
+- place the details directly on the white page background
+- use Airbnb-style clean sections with spacing and subtle dividers only
+- no visible “info card” block around the details
+
+The page should feel more open and natural, like Airbnb:
+- image
+- title
+- metadata/details on plain white background
+- separators
+- more breathing room
+
+### 2. MAKE THE DETAIL ICONS LARGER
+The icons for the listing attributes are too small compared to Airbnb.
+
+Increase icon size so they feel more like Airbnb feature rows:
+- noticeably larger
+- clean outlined style
+- visually stronger
+- still elegant, not bulky
+
+Target feel:
+- premium
+- easy to scan
+- more presence like Airbnb
+
+Use consistent icon sizing across rows such as:
+- location
+- size
+- bedrooms
+- website
+- posted time
+
+### 3. REMOVE THE PRICE BADGE OVER THE IMAGE
+The floating price badge shown on top of the image is redundant.
+
+Remove it completely:
+- no price chip/badge overlay on the image
+- price should appear only in the sticky bottom footer
+
+The image area should become cleaner and more premium.
+
+## TOP DETAIL LAYOUT
+
+Under the image:
+- keep the title centered
+- keep it large and elegant
+- lighter font weight, not too bold
+- improve line breaks if needed for better readability
+
+Below the title:
+- show the property details as clean Airbnb-like rows on the page itself
+- no enclosing box
+- each row has:
+  - larger icon
+  - label/value text
+- use subtle separators between rows if needed
+- more vertical spacing between rows
+
+## AIRBNB-LIKE STRUCTURE TO AIM FOR
+
+I want the layout to feel closer to Airbnb’s detail page pattern:
+- hero image
+- centered title / intro section
+- clean information rows directly on the surface
+- lots of white space
+- subtle divider lines
+- no unnecessary card wrapper
+- sticky action footer at the bottom
+
+## KEEP
+Keep:
+- sticky footer at bottom
+- left side: huurprijs
+- right side: “Kopiëren en reageren” button
+- reactiebrief section below
+- current lighter typography direction
+
+## DO NOT
+- do not re-add the details card
+- do not re-add the image price badge
+- do not make icons tiny again
+- do not clutter the layout
+- do not make it look like a dashboard card
+
+## RESULT
+The page should now feel:
+- closer to Airbnb
+- cleaner
+- more open
+- less boxed-in
+- more premium
+- easier to scan
+
+At the end, summarize:
+- that the detail

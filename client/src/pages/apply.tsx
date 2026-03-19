@@ -159,10 +159,11 @@ export default function ApplyPage() {
               <div className="h-5 bg-[#F5F5F5] rounded-md w-3/4" />
               <div className="h-5 bg-[#F5F5F5] rounded-md w-1/2" />
             </div>
-            <div className="mx-0 rounded-[20px] border border-[#F0F0F0] p-5 space-y-4">
+            <div className="border-t border-[#F0F0F0] mt-4" />
+            <div className="py-2">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="flex items-center gap-3.5">
-                  <div className="w-[18px] h-[18px] bg-[#F5F5F5] rounded" />
+                <div key={i} className="flex items-center gap-4 py-[16px]">
+                  <div className="w-6 h-6 bg-[#F0F0F0] rounded" />
                   <div className="flex-1 space-y-1.5">
                     <div className="h-3 bg-[#F5F5F5] rounded w-16" />
                     <div className="h-4 bg-[#F5F5F5] rounded w-28" />
@@ -296,16 +297,10 @@ export default function ApplyPage() {
           </div>
         )}
 
-        {listing.price > 0 && (
-          <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-sm rounded-full px-4 py-2 shadow-[0_2px_12px_rgba(0,0,0,0.12)] z-20" data-testid="badge-price-photo">
-            <span className="text-[17px] font-medium text-[#111C3D]">€{listing.price}</span>
-            <span className="text-[11px] font-medium text-[#6B7280]"> {t("common.perMonthShort")}</span>
-          </div>
-        )}
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full pb-[120px]">
-        <div className="px-6 pt-6 pb-5">
+        <div className="px-6 pt-7 pb-2">
           <h1
             className="text-[22px] font-medium text-[#111C3D] leading-[1.25] tracking-[-0.015em] text-center max-w-[340px] mx-auto"
             data-testid="text-apply-title"
@@ -314,41 +309,39 @@ export default function ApplyPage() {
           </h1>
         </div>
 
-        <div className="mx-5 rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
-          <div className="px-5 py-4" data-testid="facts-block">
-            {detailRows.map((row, i) => {
-              const Icon = row.icon;
-              return (
-                <div key={i}>
-                  {i > 0 && <div className="border-t border-[#F5F5F5]" />}
-                  <div className="flex items-center gap-3.5 py-[14px]">
-                    <Icon className="w-[18px] h-[18px] text-[#71717A] flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[12px] text-[#9CA3AF] leading-none mb-1">{row.label}</p>
-                      <p className="text-[15px] text-[#111827] leading-none capitalize">{row.value}</p>
-                    </div>
+        <div className="border-t border-[#F0F0F0] mx-6 mt-4" />
+
+        <div className="px-6 py-2" data-testid="facts-block">
+          {detailRows.map((row, i) => {
+            const Icon = row.icon;
+            return (
+              <div key={i}>
+                <div className="flex items-center gap-4 py-[16px]">
+                  <Icon className="w-6 h-6 text-[#71717A] flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[12px] text-[#9CA3AF] leading-none mb-1.5">{row.label}</p>
+                    <p className="text-[15px] text-[#111827] leading-none capitalize">{row.value}</p>
                   </div>
                 </div>
-              );
-            })}
-          </div>
+                {i < detailRows.length - 1 && <div className="border-t border-[#F0F0F0] ml-10" />}
+              </div>
+            );
+          })}
         </div>
 
-        <div className="mx-5 mt-5 rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
-          <div className="px-5 pt-5 pb-1.5">
-            <h2 className="text-[15px] font-medium text-[#111C3D]">{t("applySheet.applicationLetter")}</h2>
-          </div>
-          <div className="px-5 pb-5">
-            <div className="bg-[#FAFAFA] rounded-2xl px-4 py-4">
-              <textarea
-                className="w-full text-[14px] text-[#1F2937] leading-[1.75] font-[inherit] bg-transparent border-none outline-none resize-none min-h-[220px]"
-                value={editedLetter ?? filledLetter}
-                onChange={(e) => setEditedLetter(e.target.value)}
-                data-testid="apply-letter-preview"
-                autoComplete="off"
-                autoCorrect="on"
-              />
-            </div>
+        <div className="border-t border-[#F0F0F0] mx-6 mt-1 mb-5" />
+
+        <div className="px-6">
+          <h2 className="text-[15px] font-medium text-[#111C3D] mb-3">{t("applySheet.applicationLetter")}</h2>
+          <div className="bg-[#FAFAFA] rounded-2xl px-5 py-5">
+            <textarea
+              className="w-full text-[14px] text-[#1F2937] leading-[1.75] font-[inherit] bg-transparent border-none outline-none resize-none min-h-[220px]"
+              value={editedLetter ?? filledLetter}
+              onChange={(e) => setEditedLetter(e.target.value)}
+              data-testid="apply-letter-preview"
+              autoComplete="off"
+              autoCorrect="on"
+            />
           </div>
         </div>
       </main>
