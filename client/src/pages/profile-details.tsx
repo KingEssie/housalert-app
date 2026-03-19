@@ -74,13 +74,13 @@ export default function ProfileDetailsPage() {
     <div className="min-h-screen bg-white">
       <PageHeader title={t("profileDetails.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
-      <div className="max-w-lg mx-auto px-5 pt-2">
+      <div className="max-w-lg mx-auto px-6 pt-4">
         {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+          <div className="flex items-center justify-center py-24">
+            <Loader2 className="w-6 h-6 animate-spin text-[#D1D5DB]" />
           </div>
         ) : (
-          <div className="flex flex-col">
+          <div className="rounded-2xl border border-[#F0F0F0] overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.02)]">
             {FIELDS.map((field, idx) => {
               const value = getFieldValue(field.key);
               const editable = isEditable(field.key);
@@ -91,21 +91,21 @@ export default function ProfileDetailsPage() {
                 <button
                   key={field.key}
                   onClick={() => navigate(`/profile/edit/${field.key}`)}
-                  className={`w-full flex items-center justify-between py-4 text-left active:opacity-70 transition-opacity ${!isLast ? "border-b border-[#F3F4F6]" : ""}`}
+                  className={`w-full flex items-center justify-between px-5 py-5 text-left active:bg-[#FAFAFA] transition-all ${!isLast ? "border-b border-[#F5F5F5]" : ""}`}
                   data-testid={`field-${field.key}`}
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="text-[12px] text-[#9CA3AF] font-medium uppercase tracking-wider mb-1">{field.label}</p>
-                    <p className={`text-[15px] font-medium truncate ${hasValue ? "text-[#111827]" : "text-[#D1D5DB]"}`}>
+                    <p className="text-[11px] text-[#9CA3AF] font-semibold uppercase tracking-wider mb-1.5">{field.label}</p>
+                    <p className={`text-[15px] font-medium truncate leading-snug ${hasValue ? "text-[#111827]" : "text-[#D1D5DB]"}`}>
                       {value || t("profileDetails.add")}
                     </p>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0 ml-3" />
+                  <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0 ml-4" />
                 </button>
               ) : (
-                <div key={field.key} className={`py-4 ${!isLast ? "border-b border-[#F3F4F6]" : ""}`} data-testid={`field-${field.key}`}>
-                  <p className="text-[12px] text-[#9CA3AF] font-medium uppercase tracking-wider mb-1">{field.label}</p>
-                  <p className={`text-[15px] font-medium truncate ${hasValue ? "text-[#111827]" : "text-[#D1D5DB]"}`}>
+                <div key={field.key} className={`px-5 py-5 ${!isLast ? "border-b border-[#F5F5F5]" : ""}`} data-testid={`field-${field.key}`}>
+                  <p className="text-[11px] text-[#9CA3AF] font-semibold uppercase tracking-wider mb-1.5">{field.label}</p>
+                  <p className={`text-[15px] font-medium truncate leading-snug ${hasValue ? "text-[#111827]" : "text-[#D1D5DB]"}`}>
                     {value || "-"}
                   </p>
                 </div>
