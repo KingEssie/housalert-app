@@ -652,7 +652,7 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
 
   const TASK_ACTION_MAP: Record<string, () => void> = {
     profileCreated: () => navigate("/dashboard/searches/new"),
-    notificationsEnabled: () => navigate("/settings/notifications"),
+    notificationsEnabled: () => setActiveTab("profile"),
     firstMatchViewed: () => setActiveTab("matches"),
     firstReaction: () => { setActiveTab("matches"); },
     search_buddy: () => navigate("/profile/edit/search_buddy_email"),
@@ -983,11 +983,11 @@ function HomeTab({
         </div>
       )}
 
-      <RecenteMatchesSection accessToken={accessToken} setActiveTab={setActiveTab} subscription={subscription} navigate={navigate} />
-
       <RecentlyViewedSection accessToken={accessToken} />
 
       <UnifiedTaskList accessToken={accessToken} navigate={navigate} setActiveTab={setActiveTab} />
+
+      <RecenteMatchesSection accessToken={accessToken} setActiveTab={setActiveTab} subscription={subscription} navigate={navigate} />
 
 
       </div>

@@ -1,0 +1,71 @@
+Refine the home screen order and onboarding task flow.
+
+IMPORTANT:
+- Do NOT change backend architecture unnecessarily
+- Keep current design direction
+- This is a flow and layout refinement
+- Preserve existing functionality where possible, but simplify the user journey
+
+## 1. HOME SCREEN ORDER
+
+The order is currently wrong.
+
+Change the home screen order to this exact structure:
+
+1. Greeting / header
+2. “Nieuwe matches gevonden”
+3. “Onlangs bekeken woningen”
+4. “Aan de slag”
+5. “Recente matches”
+
+IMPORTANT:
+- “Recente matches” must be moved to the bottom
+- It should appear after the collapsed “Aan de slag” card
+- Remove any incorrect ordering
+
+## 2. “MELDINGEN INGESCHAKELD” TASK BEHAVIOR
+
+The onboarding task “Meldingen ingeschakeld” should not open a separate page anymore.
+
+Instead:
+- when the user taps this task, navigate directly to the profile page / notification settings area
+- this is where push notifications and email notifications can be enabled
+
+The current separate page/flow for this action can be removed if it is no longer needed.
+
+Goal:
+- fewer steps
+- cleaner UX
+- direct path to the real setting
+
+## 3. TASK COMPLETION LOGIC
+
+Mark the onboarding task “Meldingen ingeschakeld” as completed when:
+
+- push notifications are enabled
+OR
+- email notifications are enabled
+
+It does NOT require both.
+
+As soon as at least one of the two notification types is enabled, this task should count as completed.
+
+## 4. CLEANUP
+
+Please:
+- remove or stop using the outdated page/route that “Meldingen ingeschakeld” currently opens
+- update any related navigation logic
+- update onboarding progress calculation accordingly
+
+## 5. RESULT
+
+The app should now behave like this:
+- home screen has the correct section order
+- notification task goes straight to profile notification settings
+- notification task becomes completed when push OR email notifications are enabled
+
+At the end, summarize:
+- which home sections were reordered
+- which route/page was removed or bypassed
+- how the task completion logic was changed
+- which files were updated
