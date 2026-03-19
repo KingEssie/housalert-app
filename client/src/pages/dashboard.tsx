@@ -31,6 +31,7 @@ import {
   Bell,
   LogOut,
   ChevronRight,
+  ChevronDown,
   CheckCircle2,
   AlertCircle,
   Sparkles,
@@ -496,6 +497,123 @@ function RecentMatchCard({ match }: { match: ApiMatch }) {
   );
 }
 
+function RecentlyViewedSection({ accessToken }: { accessToken: string | undefined }) {
+  const { t } = useTranslation();
+  const [, navigate] = useLocation();
+
+  const apiMatchesQuery = useQuery<ApiMatchesResponse>({
+    queryKey: ["/api/matches"],
+    queryFn: () => fetchApiMatches(accessToken!),
+    enabled: !!accessToken,
+    staleTime: 30_000,
+    refetchOnWindowFocus: true,
+  });
+
+  const viewedMatches = (apiMatchesQuery.data?.matches ?? [])
+    .filter(m => m.title && m.url && m.listing_id && getMatchTab(m) === "bekeken")
+    .slice(0, 10);
+
+  if (apiMatchesQuery.isLoading) {
+    return (
+      <div className="flex flex-col gap-3">
+        <h2 className="text-section-title">{t("home.recentlyViewed")}</h2>
+        <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-none">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex-shrink-0 w-[56vw] max-w-[210px]">
+              <div className="w-full bg-[#F5F7FA] rounded-[12px] animate-pulse" style={{ aspectRatio: "3/2" }} />
+              <div className="pt-2 flex flex-col gap-1.5">
+                <div className="h-3.5 bg-[#F5F7FA] rounded-md w-2/3 animate-pulse" />
+                <div className="h-3 bg-[#F5F7FA] rounded-md w-1/2 animate-pulse" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (viewedMatches.length === 0) return null;
+
+  return (
+    <div className="flex flex-col gap-3" data-testid="section-recently-viewed">
+      <h2 className="text-section-title">{t("home.recentlyViewed")}</h2>
+      <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-none" style={{ scrollSnapType: "x proximity" }}>
+        {viewedMatches.map((match) => (
+          <RecentlyViewedCard key={match.listing_id} match={match} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function RecentlyViewedCard({ match }: { match: ApiMatch }) {
+  const [, navigate] = useLocation();
+  const [imgError, setImgError] = useState(false);
+  const { t } = useTranslation();
+  const hasImage = !!match.image_url && !imgError;
+  const gradient = getCityGradient(match.city);
+
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      className="flex-shrink-0 w-[56vw] max-w-[210px] cursor-pointer snap-start transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-[#0D6EFD]/40 rounded-[12px]"
+      onClick={() => navigate(`/apply/${match.listing_id}`)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          navigate(`/apply/${match.listing_id}`);
+        }
+      }}
+      data-testid={`card-recently-viewed-${match.listing_id}`}
+    >
+      <div className="relative rounded-[12px] overflow-hidden">
+        {hasImage ? (
+          <img
+            src={match.image_url!}
+            alt={match.title}
+            className="w-full object-cover"
+            style={{ aspectRatio: "3/2" }}
+            loading="lazy"
+            onError={() => setImgError(true)}
+            referrerPolicy="no-referrer"
+          />
+        ) : (
+          <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "3/2" }}>
+            <div className="absolute inset-0 bg-black/5" />
+            <ImageIcon className="w-6 h-6 text-white/40" />
+          </div>
+        )}
+      </div>
+      <div className="pt-2 flex flex-col gap-0.5">
+        <p className="text-[13px] font-medium text-[#18181B] line-clamp-1 leading-snug">{match.title}</p>
+        <div className="flex items-center gap-1 text-[12px] text-[#9CA3AF]">
+          {match.price > 0 && <span>€{match.price}</span>}
+          {match.price > 0 && match.size_m2 > 0 && <span>·</span>}
+          {match.size_m2 > 0 && <span>{match.size_m2} m²</span>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProgressRing({ progress, size = 44, strokeWidth = 3.5 }: { progress: number; size?: number; strokeWidth?: number }) {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (progress / 100) * circumference;
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="flex-shrink-0 -rotate-90">
+      <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#F3F4F6" strokeWidth={strokeWidth} />
+      <circle
+        cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#0D6EFD"
+        strokeWidth={strokeWidth} strokeLinecap="round"
+        strokeDasharray={circumference} strokeDashoffset={offset}
+        className="transition-all duration-700 ease-out"
+      />
+    </svg>
+  );
+}
+
 interface ActivationStatus {
   profileCreated: boolean;
   notificationsEnabled: boolean;
@@ -507,6 +625,7 @@ interface ActivationStatus {
 
 function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken: string | undefined; navigate: (path: string) => void; setActiveTab: (tab: TabKey) => void }) {
   const { t } = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
   const statusQuery = useQuery<ActivationStatus & { profileCreatedAt?: string | null; totalMatches?: number }>({
@@ -630,68 +749,78 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
   const visibleTasks = expanded ? sortedTasks : sortedTasks.slice(0, INITIAL_SHOW);
   const hasMore = sortedTasks.length > INITIAL_SHOW;
 
+  const progressPercent = Math.round((doneCount / allTasks.length) * 100);
+
   return (
-    <div className="rounded-[24px] border border-[#F0F0F0] p-5 shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]" data-testid="unified-task-list">
-      <div className="flex items-center gap-3 mb-5">
-        <Rocket className="w-5 h-5 text-[#71717A] flex-shrink-0" />
+    <div className="rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]" data-testid="unified-task-list">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center gap-3.5 p-5 text-left"
+        data-testid="button-toggle-tasks"
+      >
+        <div className="relative flex-shrink-0">
+          <ProgressRing progress={progressPercent} size={44} strokeWidth={3.5} />
+          <span className="absolute inset-0 flex items-center justify-center text-[12px] font-semibold text-[#18181B]">
+            {progressPercent}%
+          </span>
+        </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[16px] font-medium text-[#111827]">{t("activation.title")}</p>
+          <p className="text-[15px] font-medium text-[#18181B]">{t("activation.title")}</p>
           <p className="text-[13px] text-[#9CA3AF] mt-0.5">{doneCount}/{allTasks.length} {t("activation.completed")}</p>
         </div>
-      </div>
+        <ChevronDown className={`w-5 h-5 text-[#9CA3AF] flex-shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+      </button>
 
-      <div className="w-full h-1.5 rounded-full bg-[#F3F4F6] mb-4">
-        <div
-          className="h-full rounded-full bg-[#0D6EFD] transition-all duration-700 ease-out"
-          style={{ width: `${(doneCount / allTasks.length) * 100}%` }}
-        />
-      </div>
-
-      <div className="flex flex-col">
-        {visibleTasks.map((task, idx) => {
-          const IconComponent = TASK_ICON_MAP[task.key] || Circle;
-          return (
-            <div key={task.key}>
-              {idx > 0 && <div className="h-px bg-[#F5F5F5] mx-1" />}
-              <button
-                onClick={task.done ? undefined : task.action}
-                className={`w-full flex items-center gap-4 py-[18px] px-1 text-left transition-all duration-200 rounded-xl ${
-                  task.done ? "opacity-60" : "active:bg-[#F9FAFB]"
-                }`}
-                disabled={task.done}
-                data-testid={`task-${task.key}`}
-              >
-                <div className="w-8 flex items-center justify-center flex-shrink-0">
-                  <IconComponent className={`w-[20px] h-[20px] ${task.done ? "text-[#D1D5DB]" : "text-[#71717A]"}`} />
-                </div>
-                <span className={`text-[16px] font-medium flex-1 leading-snug ${
-                  task.done ? "text-[#D1D5DB] line-through decoration-[#D1D5DB]" : "text-[#1F2937]"
-                }`}>
-                  {task.label}
-                </span>
-                <div className="flex-shrink-0">
-                  {task.done ? (
-                    <div className="w-[26px] h-[26px] rounded-full bg-[#22C55E] flex items-center justify-center">
-                      <Check className="w-[14px] h-[14px] text-white" strokeWidth={3} />
+      {isOpen && (
+        <div className="px-5 pb-5">
+          <div className="h-px bg-[#F0F0F0] mb-2" />
+          <div className="flex flex-col">
+            {visibleTasks.map((task, idx) => {
+              const IconComponent = TASK_ICON_MAP[task.key] || Circle;
+              return (
+                <div key={task.key}>
+                  {idx > 0 && <div className="h-px bg-[#F5F5F5] mx-1" />}
+                  <button
+                    onClick={task.done ? undefined : task.action}
+                    className={`w-full flex items-center gap-4 py-[14px] px-1 text-left transition-all duration-200 rounded-xl ${
+                      task.done ? "opacity-60" : "active:bg-[#F9FAFB]"
+                    }`}
+                    disabled={task.done}
+                    data-testid={`task-${task.key}`}
+                  >
+                    <div className="w-7 flex items-center justify-center flex-shrink-0">
+                      <IconComponent className={`w-[18px] h-[18px] ${task.done ? "text-[#D1D5DB]" : "text-[#71717A]"}`} />
                     </div>
-                  ) : (
-                    <div className="w-[26px] h-[26px] rounded-full border-2 border-[#E5E7EB]" />
-                  )}
+                    <span className={`text-[14px] font-medium flex-1 leading-snug ${
+                      task.done ? "text-[#D1D5DB] line-through decoration-[#D1D5DB]" : "text-[#1F2937]"
+                    }`}>
+                      {task.label}
+                    </span>
+                    <div className="flex-shrink-0">
+                      {task.done ? (
+                        <div className="w-[22px] h-[22px] rounded-full bg-[#22C55E] flex items-center justify-center">
+                          <Check className="w-[12px] h-[12px] text-white" strokeWidth={3} />
+                        </div>
+                      ) : (
+                        <div className="w-[22px] h-[22px] rounded-full border-2 border-[#E5E7EB]" />
+                      )}
+                    </div>
+                  </button>
                 </div>
-              </button>
-            </div>
-          );
-        })}
-      </div>
+              );
+            })}
+          </div>
 
-      {hasMore && (
-        <button
-          onClick={() => setExpanded(!expanded)}
-          className="w-full mt-2 text-[13px] font-medium text-[#0D6EFD] py-2"
-          data-testid="button-expand-tasks"
-        >
-          {expanded ? t("activation.showLess") : t("activation.showMore", { count: sortedTasks.length - INITIAL_SHOW })}
-        </button>
+          {hasMore && (
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className="w-full mt-1 text-[13px] font-medium text-[#0D6EFD] py-2"
+              data-testid="button-expand-tasks"
+            >
+              {expanded ? t("activation.showLess") : t("activation.showMore", { count: sortedTasks.length - INITIAL_SHOW })}
+            </button>
+          )}
+        </div>
       )}
     </div>
   );
@@ -873,9 +1002,11 @@ function HomeTab({
         </div>
       )}
 
-      <UnifiedTaskList accessToken={accessToken} navigate={navigate} setActiveTab={setActiveTab} />
-
       <RecenteMatchesSection accessToken={accessToken} setActiveTab={setActiveTab} subscription={subscription} navigate={navigate} />
+
+      <RecentlyViewedSection accessToken={accessToken} />
+
+      <UnifiedTaskList accessToken={accessToken} navigate={navigate} setActiveTab={setActiveTab} />
 
 
       </div>

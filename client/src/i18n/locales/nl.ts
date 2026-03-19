@@ -98,6 +98,7 @@ export const nl: Record<string, any> = {
     noProfileDesc: "Maak een zoekprofiel aan en ontvang automatisch matches.",
     createProfile: "Zoekprofiel aanmaken",
     recentMatches: "Recente matches",
+    recentlyViewed: "Onlangs bekeken woningen",
     viewAll: "Bekijk alles",
     matchesWillAppear: "Matches worden zichtbaar zodra je een abonnement activeert.",
     viewSubscriptions: "Bekijk abonnementen",

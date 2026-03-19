@@ -1,0 +1,135 @@
+Refine the HousAlert home screen layout with a clearer content hierarchy inspired by Airbnb and Stekkies.
+
+IMPORTANT:
+- Do NOT change backend logic or data flows
+- Do NOT redesign the whole app
+- This is a home screen layout refinement only
+- Keep the existing HousAlert blue
+- Keep the current visual style direction already established
+- Preserve mobile-first behavior
+
+## NEW HOME SCREEN ORDER
+
+I want the home screen to be structured in this order:
+
+1. Greeting / header
+2. “Nieuwe matches gevonden” hero card
+3. “Onlangs bekeken woningen” horizontal slider
+4. “Aan de slag” progress card (collapsed by default)
+
+## 1. ONLANGS BEKEKEN WONINGEN SLIDER
+
+Add a horizontal slider section directly below the “Nieuwe matches gevonden” card.
+
+This should be visually inspired by Airbnb’s “Onlangs bekeken” row.
+
+### Requirements:
+- section title: “Onlangs bekeken woningen”
+- horizontal swipeable slider / content rail
+- cards side by side
+- cards slightly smaller than the current recent matches cards
+- more compact than the “Recente matches” / larger listing rail
+- partial next card can peek in from the right
+- clean spacing between cards
+- image-first card layout
+- rounded corners
+- title + compact metadata below image
+- optional favorite icon overlay top-right
+- calm, premium spacing
+
+### Important:
+This slider should feel lighter and slightly smaller than the larger “Recente matches” cards.
+It is a secondary rail, not the main content block.
+
+## 2. AAN DE SLAG CARD — COLLAPSED BY DEFAULT
+
+Move the “Aan de slag” section below the “Onlangs bekeken woningen” slider.
+
+Redesign it so that it is collapsed by default, inspired by Stekkies.
+
+### Collapsed card requirements:
+- rounded white card
+- subtle shadow or soft border
+- progress ring on the left
+- percentage inside or aligned with the ring
+- title: “Aan de slag”
+- subtitle: “x/y voltooid”
+- chevron on the right to expand/collapse
+- cleaner, calmer layout
+- compact but premium
+
+### Example content:
+- title: Aan de slag
+- subtitle: 2/9 voltooid
+- progress ring showing the percentage based on completed tasks
+
+### Behavior:
+- default state = collapsed
+- tapping expands the card
+- expanded state reveals the checklist/tasks below
+- chevron rotates or changes direction when expanded
+- smooth transition if possible
+
+## 3. EXPANDED STATE FOR AAN DE SLAG
+
+When expanded:
+- show the current onboarding / activation tasks
+- keep them visually clean and spacious
+- preserve the current task logic
+- task rows should feel minimal and premium
+- no cluttered icon backgrounds
+- clear completion state
+
+## 4. VISUAL HIERARCHY
+
+The home screen should now feel like:
+
+- hero card first
+- recently viewed slider second
+- progress / onboarding third
+
+This should make the page feel:
+- more useful
+- more like a modern consumer app
+- less crowded
+- easier to scan
+
+## 5. SPACING
+
+Use generous Airbnb-like spacing between:
+- hero card and recently viewed slider
+- slider and progress card
+- section titles and content
+
+Do not make it cramped.
+
+## 6. REUSABILITY
+
+If needed, create reusable components such as:
+- HorizontalListingRail
+- ProgressSummaryCard
+- ProgressRing
+- ExpandableTaskCard
+
+## 7. DO NOT
+
+- do not remove existing data or functionality
+- do not make the recently viewed cards as large as the main recent matches cards
+- do not leave “Aan de slag” expanded by default
+- do not add visual clutter
+- do not break the current home screen logic
+
+## RESULT
+
+The home screen should feel:
+- more structured
+- more premium
+- calmer
+- closer to Airbnb for content rails
+- closer to Stekkies for the collapsed progress card behavior
+
+At the end, summarize:
+- which home screen sections were reordered
+- whether a reusable slider component was used
+- whether the “Aan de slag” card now defaults to collapsed
+- which files/components were updated

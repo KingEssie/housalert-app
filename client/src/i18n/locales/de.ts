@@ -92,6 +92,7 @@ export const de: Record<string, any> = {
     noProfileDesc: "Erstelle ein Suchprofil und erhalte automatisch Matches.",
     createProfile: "Suchprofil erstellen",
     recentMatches: "Neueste Matches",
+    recentlyViewed: "Kürzlich angesehen",
     viewAll: "Alle anzeigen",
     matchesWillAppear: "Matches werden sichtbar, sobald du ein Abonnement aktivierst.",
     viewSubscriptions: "Abonnements ansehen",
