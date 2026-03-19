@@ -653,7 +653,7 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
   const TASK_ACTION_MAP: Record<string, () => void> = {
     profileCreated: () => navigate("/dashboard/searches/new"),
     notificationsEnabled: () => {
-      setActiveTab("profile");
+      setActiveTab("profiel");
       setTimeout(() => {
         document.getElementById("notification-settings")?.scrollIntoView({ behavior: "smooth", block: "center" });
       }, 300);
