@@ -49,6 +49,10 @@ import {
   Globe,
   Rocket,
   Gift,
+  FileText,
+  Phone,
+  Lightbulb,
+  Check,
 } from "lucide-react";
 import { TaskModal, PrepTaskModal } from "@/components/profile-strength";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
@@ -523,6 +527,18 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
     prep_viewing_tips: () => setActiveTab("tips"),
   };
 
+  const TASK_ICON_MAP: Record<string, typeof Bell> = {
+    profileCreated: Search,
+    notificationsEnabled: Bell,
+    firstMatchViewed: Eye,
+    firstReaction: Send,
+    search_buddy: Users,
+    application_template: Pencil,
+    documents: FileText,
+    phone: Phone,
+    tips_lezen: Lightbulb,
+  };
+
   const allTasks: { key: string; label: string; done: boolean; action: () => void }[] = [];
 
   if (status) {
@@ -599,27 +615,42 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
       </div>
 
       <div className="flex flex-col">
-        {visibleTasks.map((task) => (
-          <button
-            key={task.key}
-            onClick={task.done ? undefined : task.action}
-            className={`flex items-center gap-3 py-3.5 text-left transition-colors ${
-              task.done ? "" : "active:opacity-70"
-            }`}
-            disabled={task.done}
-            data-testid={`task-${task.key}`}
-          >
-            {task.done ? (
-              <CheckCircle2 className="w-[18px] h-[18px] text-[#22C55E] flex-shrink-0" />
-            ) : (
-              <Circle className="w-[18px] h-[18px] text-[#D1D5DB] flex-shrink-0" />
-            )}
-            <span className={`text-[14px] font-medium flex-1 leading-snug ${task.done ? "text-[#D1D5DB] line-through" : "text-[#374151]"}`}>
-              {task.label}
-            </span>
-            {!task.done && <ChevronRight className="w-3.5 h-3.5 text-[#D1D5DB] flex-shrink-0" />}
-          </button>
-        ))}
+        {visibleTasks.map((task, idx) => {
+          const IconComponent = TASK_ICON_MAP[task.key] || Circle;
+          return (
+            <div key={task.key}>
+              {idx > 0 && <div className="h-px bg-[#F5F5F5] mx-1" />}
+              <button
+                onClick={task.done ? undefined : task.action}
+                className={`w-full flex items-center gap-4 py-[18px] px-1 text-left transition-all duration-200 rounded-xl ${
+                  task.done ? "opacity-60" : "active:bg-[#F9FAFB]"
+                }`}
+                disabled={task.done}
+                data-testid={`task-${task.key}`}
+              >
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  task.done ? "bg-[#F3F4F6]" : "bg-[#F5F7FA]"
+                }`}>
+                  <IconComponent className={`w-[18px] h-[18px] ${task.done ? "text-[#D1D5DB]" : "text-[#6B7280]"}`} />
+                </div>
+                <span className={`text-[16px] font-semibold flex-1 leading-snug ${
+                  task.done ? "text-[#D1D5DB] line-through decoration-[#D1D5DB]" : "text-[#1F2937]"
+                }`}>
+                  {task.label}
+                </span>
+                <div className="flex-shrink-0">
+                  {task.done ? (
+                    <div className="w-[26px] h-[26px] rounded-full bg-[#22C55E] flex items-center justify-center">
+                      <Check className="w-[14px] h-[14px] text-white" strokeWidth={3} />
+                    </div>
+                  ) : (
+                    <div className="w-[26px] h-[26px] rounded-full border-2 border-[#E5E7EB]" />
+                  )}
+                </div>
+              </button>
+            </div>
+          );
+        })}
       </div>
 
       {hasMore && (
