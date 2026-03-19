@@ -160,7 +160,7 @@ function MatchCard({
       onClick={handleCardClick}
       data-testid={`card-match-${match.listing_id}`}
     >
-      <div className="relative rounded-[24px] overflow-hidden mb-4 shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
+      <div className="relative rounded-[16px] overflow-hidden shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
         {hasImage && !imgError ? (
           <img
             src={match.image_url!}
@@ -188,37 +188,31 @@ function MatchCard({
         </div>
       </div>
 
-      <div className="flex items-start justify-between gap-2 px-0.5">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5 mb-1">
-            <MapPin className="w-3.5 h-3.5 text-[#111827] flex-shrink-0" />
-            <span className="text-[15px] font-medium text-[#111827] truncate" data-testid={`text-match-city-${match.listing_id}`}>
-              {match.city}
-            </span>
-          </div>
+      <div className="px-0.5 pt-2.5">
+        <div className="flex items-baseline justify-between gap-2">
           <h3
-            className="text-[14px] text-[#6B7280] leading-relaxed line-clamp-1"
+            className="text-[15px] font-semibold text-[#000] leading-snug line-clamp-1 flex-1 min-w-0"
             data-testid={`text-match-title-${match.listing_id}`}
           >
             {match.title}
           </h3>
-
-          <div className="flex items-center gap-2 mt-1.5 text-[13px] text-[#9CA3AF]">
-            {match.bedrooms > 0 && (
-              <span>{match.bedrooms} {match.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}</span>
-            )}
-            {match.bedrooms > 0 && match.size_m2 > 0 && <span className="text-[#D1D5DB]">·</span>}
-            {match.size_m2 > 0 && <span>{match.size_m2} m²</span>}
-            {(match.bedrooms > 0 || match.size_m2 > 0) && <span className="text-[#D1D5DB]">·</span>}
-            <span>{relativeTime(match.matched_at || match.first_seen_at, t)}</span>
-          </div>
-
           {match.price > 0 && (
-            <p className="mt-2" data-testid={`badge-price-${match.listing_id}`}>
-              <span className="text-[16px] font-medium text-[#111827]">€{match.price}</span>
-              <span className="text-[13px] text-[#9CA3AF] ml-0.5"> {t("common.perMonthShort")}</span>
-            </p>
+            <span className="text-[15px] font-semibold text-[#000] flex-shrink-0 whitespace-nowrap" data-testid={`badge-price-${match.listing_id}`}>
+              €{match.price} <span className="text-[13px] font-normal text-[#6B7280]">{t("common.perMonthShort")}</span>
+            </span>
           )}
+        </div>
+        <p className="text-[14px] text-[#6B7280] mt-1 truncate" data-testid={`text-match-city-${match.listing_id}`}>
+          {match.city}
+        </p>
+        <div className="flex items-center gap-1.5 mt-0.5 text-[13px] text-[#6B7280]">
+          {match.bedrooms > 0 && (
+            <span>{match.bedrooms} {match.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}</span>
+          )}
+          {match.bedrooms > 0 && match.size_m2 > 0 && <span>·</span>}
+          {match.size_m2 > 0 && <span>{match.size_m2} m²</span>}
+          {(match.bedrooms > 0 || match.size_m2 > 0) && <span>·</span>}
+          <span>{relativeTime(match.matched_at || match.first_seen_at, t)}</span>
         </div>
       </div>
     </div>
