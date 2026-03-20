@@ -1706,8 +1706,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                 {photoUrl ? (
                   <img src={photoUrl} alt="" className="w-[104px] h-[104px] rounded-full object-cover shadow-[0_2px_12px_rgba(0,0,0,0.08)]" data-testid="img-profile-avatar" />
                 ) : (
-                  <div className="w-[104px] h-[104px] rounded-full overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.08)] flex items-center justify-center">
-                    <img src={avatarPlaceholderImg} alt="" className="w-full h-full object-cover" data-testid="img-avatar-placeholder" />
+                  <div className="w-[104px] h-[104px] rounded-full overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
+                    <img src={avatarPlaceholderImg} alt="" className="w-full h-full object-cover scale-[1.15] object-center" data-testid="img-avatar-placeholder" />
                   </div>
                 )}
                 <p className="text-[24px] font-semibold text-[#222222] mt-2.5 leading-tight text-center" data-testid="text-user-firstname">
