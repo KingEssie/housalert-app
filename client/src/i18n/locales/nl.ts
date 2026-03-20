@@ -261,6 +261,8 @@ export const nl: Record<string, any> = {
     memberSince: "Lid sinds",
     memberYears: "{{count}} jaar lid",
     memberMonths: "{{count}} maanden lid",
+    memberWeeks: "{{count}} weken lid",
+    memberDays: "{{count}} dagen lid",
     memberNew: "Nieuw lid",
     listingsViewed: "Woningen bekeken",
     applicationsSent: "Reacties verstuurd",

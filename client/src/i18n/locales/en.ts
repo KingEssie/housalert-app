@@ -212,6 +212,8 @@ export const en: Record<string, any> = {
     memberSince: "Member since",
     memberYears: "{{count}} years member",
     memberMonths: "{{count}} months member",
+    memberWeeks: "{{count}} weeks member",
+    memberDays: "{{count}} days member",
     memberNew: "New member",
     listingsViewed: "Listings viewed",
     applicationsSent: "Applications sent",

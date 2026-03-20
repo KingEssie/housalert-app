@@ -1596,14 +1596,21 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
   }
 
 
-  const memberMonths = user.created_at
-    ? Math.max(0, Math.floor((Date.now() - new Date(user.created_at).getTime()) / (1000 * 60 * 60 * 24 * 30)))
+  const accountAgeDays = user.created_at
+    ? Math.max(0, Math.floor((Date.now() - new Date(user.created_at).getTime()) / (1000 * 60 * 60 * 24)))
     : 0;
-  const memberDuration = memberMonths >= 24
-    ? t("profile.memberYears", { count: Math.floor(memberMonths / 12) })
-    : memberMonths >= 1
-    ? t("profile.memberMonths", { count: memberMonths })
+  const memberDuration = accountAgeDays >= 730
+    ? t("profile.memberYears", { count: Math.floor(accountAgeDays / 365) })
+    : accountAgeDays >= 60
+    ? t("profile.memberMonths", { count: Math.floor(accountAgeDays / 30) })
+    : accountAgeDays >= 14
+    ? t("profile.memberWeeks", { count: Math.floor(accountAgeDays / 7) })
+    : accountAgeDays >= 1
+    ? t("profile.memberDays", { count: accountAgeDays })
     : t("profile.memberNew");
+
+  const firstName = pd?.first_name || "";
+  const lastName = pd?.last_name || "";
 
   const subStatusLabel = subscription.isActive && !subscription.isTrial
     ? t("profile.activeStatus")
@@ -1624,37 +1631,49 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       <div className="max-w-[480px] mx-auto px-6 pt-8 pb-8">
         <div className="flex flex-col gap-6">
 
-          <div className="flex flex-col items-center text-center pt-2 pb-1">
-            <button
-              onClick={() => navigate("/profile/details")}
-              className="relative mb-3 active:scale-95 transition-transform"
-              data-testid="button-profile-avatar"
-            >
-              {photoUrl ? (
-                <img src={photoUrl} alt="" className="w-[80px] h-[80px] rounded-full object-cover shadow-[0_2px_12px_rgba(0,0,0,0.08)]" data-testid="img-profile-avatar" />
-              ) : (
-                <div className="w-[80px] h-[80px] rounded-full bg-[#F3F4F6] flex items-center justify-center">
-                  <span className="text-[28px] font-medium text-[#374151]">{initials}</span>
-                </div>
-              )}
-              <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-white shadow-[0_1px_4px_rgba(0,0,0,0.1)] flex items-center justify-center">
-                <Camera className="w-3.5 h-3.5 text-[#71717A]" />
-              </div>
-            </button>
-            <p className="text-[20px] font-semibold text-[#18181B] leading-tight" data-testid="text-user-name">
-              {displayName || t("profile.seeker")}
-            </p>
-            <p className="text-[13px] text-[#9CA3AF] mt-1">{memberDuration}</p>
-          </div>
+          <div
+            className="rounded-[24px] bg-white border border-[#F0F0F0] shadow-[0_2px_12px_rgba(15,23,42,0.06),0_8px_32px_rgba(15,23,42,0.08)] p-6"
+            data-testid="card-profile-summary"
+          >
+            <div className="flex items-start gap-5">
+              <button
+                onClick={() => navigate("/profile/details")}
+                className="flex flex-col items-center flex-shrink-0 active:scale-95 transition-transform"
+                data-testid="button-profile-avatar"
+              >
+                {photoUrl ? (
+                  <img src={photoUrl} alt="" className="w-[88px] h-[88px] rounded-full object-cover shadow-[0_2px_12px_rgba(0,0,0,0.08)]" data-testid="img-profile-avatar" />
+                ) : (
+                  <div className="w-[88px] h-[88px] rounded-full bg-gradient-to-br from-[#E5E7EB] to-[#F3F4F6] flex items-center justify-center shadow-[inset_0_1px_2px_rgba(0,0,0,0.06)]">
+                    <span className="text-[30px] font-semibold text-[#6B7280]">{initials}</span>
+                  </div>
+                )}
+                <p className="text-[20px] font-bold text-[#18181B] mt-3 leading-tight text-center" data-testid="text-user-firstname">
+                  {firstName || displayName || t("profile.seeker")}
+                </p>
+                {lastName && (
+                  <p className="text-[13px] font-normal text-[#9CA3AF] mt-0.5 leading-tight text-center" data-testid="text-user-lastname">
+                    {lastName}
+                  </p>
+                )}
+              </button>
 
-          <div className="flex gap-3">
-            <div className="flex-1 rounded-2xl bg-[#F8F9FA] px-4 py-3.5 text-center" data-testid="stat-matches-received">
-              <p className="text-[22px] font-semibold text-[#18181B] leading-tight">{canonicalStats?.total ?? 0}</p>
-              <p className="text-[11px] text-[#9CA3AF] mt-1 leading-tight">{t("profile.stats.matchesReceived")}</p>
-            </div>
-            <div className="flex-1 rounded-2xl bg-[#F8F9FA] px-4 py-3.5 text-center" data-testid="stat-applications-sent">
-              <p className="text-[22px] font-semibold text-[#18181B] leading-tight">{canonicalStats?.applied ?? 0}</p>
-              <p className="text-[11px] text-[#9CA3AF] mt-1 leading-tight">{t("profile.applicationsSent")}</p>
+              <div className="flex-1 flex flex-col min-w-0 pt-1">
+                <div className="flex flex-col items-center py-2.5" data-testid="stat-member-since">
+                  <p className="text-[18px] font-bold text-[#18181B] leading-tight">{memberDuration}</p>
+                  <p className="text-[11px] text-[#9CA3AF] mt-1">{t("profile.memberSince")}</p>
+                </div>
+                <div className="h-px bg-[#F0F0F0] mx-3" />
+                <div className="flex flex-col items-center py-2.5" data-testid="stat-listings-viewed">
+                  <p className="text-[18px] font-bold text-[#18181B] leading-tight">{canonicalStats?.viewed ?? 0}</p>
+                  <p className="text-[11px] text-[#9CA3AF] mt-1">{t("profile.listingsViewed")}</p>
+                </div>
+                <div className="h-px bg-[#F0F0F0] mx-3" />
+                <div className="flex flex-col items-center py-2.5" data-testid="stat-applications-sent">
+                  <p className="text-[18px] font-bold text-[#18181B] leading-tight">{canonicalStats?.applied ?? 0}</p>
+                  <p className="text-[11px] text-[#9CA3AF] mt-1">{t("profile.applicationsSent")}</p>
+                </div>
+              </div>
             </div>
           </div>
 

@@ -255,6 +255,8 @@ export const de: Record<string, any> = {
     memberSince: "Mitglied seit",
     memberYears: "{{count}} Jahre Mitglied",
     memberMonths: "{{count}} Monate Mitglied",
+    memberWeeks: "{{count}} Wochen Mitglied",
+    memberDays: "{{count}} Tage Mitglied",
     memberNew: "Neues Mitglied",
     listingsViewed: "Wohnungen angesehen",
     applicationsSent: "Bewerbungen gesendet",

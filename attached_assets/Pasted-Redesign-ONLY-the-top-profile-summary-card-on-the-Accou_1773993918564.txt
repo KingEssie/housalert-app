@@ -1,0 +1,126 @@
+Redesign ONLY the top profile summary card on the Account / Profiel page so it matches the Airbnb layout structure much more closely.
+
+IMPORTANT:
+- Do NOT redesign the whole profile page yet
+- Only change the top summary card
+- Keep the rest of the page as-is for now
+- This is a focused refinement of a single component/section
+
+==================================================
+GOAL
+==================================================
+
+I want one large top profile card that follows this structure:
+
+- left side: profile photo, first name, last name
+- right side: 3 stacked stats with separators
+
+The card should feel much closer to Airbnb’s profile summary card.
+
+==================================================
+1. CARD LAYOUT
+==================================================
+
+Create one large white card with:
+- rounded corners
+- subtle premium shadow
+- generous padding
+- clean spacing
+- balanced two-column layout
+
+The card should feel calm, premium, and spacious.
+
+==================================================
+2. LEFT SIDE
+==================================================
+
+On the left side of the card, show:
+
+- profile photo / avatar
+- below it: first name in large, strong typography
+- below that: last name in much smaller, lighter typography
+
+Requirements:
+- first name must visually stand out
+- last name must be subtle and smaller
+- align this whole block cleanly
+- do NOT use the current fallback “ME” style if a better profile representation is possible
+- if no real profile image exists, use a cleaner avatar fallback
+
+==================================================
+3. RIGHT SIDE — 3 STATS ONLY
+==================================================
+
+On the right side, show exactly these 3 stats from top to bottom:
+
+1. Lid sinds
+2. Woningen bekeken
+3. Reacties verstuurd
+
+IMPORTANT:
+- do NOT show “matches ontvangen”
+- do NOT use the old Airbnb placeholder stats
+- use the real HousAlert-relevant metrics
+
+==================================================
+4. STAT DETAILS
+==================================================
+
+### Stat 1: Lid sinds
+This should be human-readable and dynamic depending on account age.
+
+Examples:
+- 12 dagen lid
+- 3 weken lid
+- 8 maanden lid
+- 2 jaar lid
+
+Use a sensible formatting rule:
+- days if short
+- weeks if appropriate
+- months if appropriate
+- years if long enough
+
+### Stat 2: Woningen bekeken
+Show the number of viewed listings.
+
+### Stat 3: Reacties verstuurd
+Show how many matches/listings the user has actually responded to.
+
+If any stat is unavailable:
+- safely fallback to 0 or an equivalent safe value
+- do not leave broken/empty UI
+
+==================================================
+5. VISUAL STYLE
+==================================================
+
+Requirements:
+- the three stats are stacked vertically
+- use subtle separators between them
+- each stat block is clean and easy to scan
+- strong number / value
+- smaller supporting label or human-readable phrasing
+- visually balanced with the left side
+
+The whole card should feel much closer to Airbnb’s top profile card in structure and spacing.
+
+==================================================
+6. DO NOT
+==================================================
+
+- do not redesign the cards below this section yet
+- do not change menu items yet
+- do not change referral/subscription cards yet
+- do not keep the current incorrect stat choices
+
+==================================================
+7. RESULT
+==================================================
+
+At the end, summarize:
+1. how the left-side name/photo block was rebuilt
+2. how “Lid sinds” is calculated/formatted
+3. how “Woningen bekeken” is sourced
+4. how “Reacties verstuurd” is sourced
+5. which files/components were updated
