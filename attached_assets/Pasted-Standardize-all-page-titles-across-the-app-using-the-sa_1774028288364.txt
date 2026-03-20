@@ -1,0 +1,80 @@
+Standardize all page titles across the app using the same style as the “Profiel” page.
+
+IMPORTANT:
+- Do NOT visually redesign anything new
+- Use the existing “Profiel” title as the exact reference
+- Apply consistency across ALL screens
+
+==================================================
+1. CREATE A SINGLE SOURCE OF TRUTH
+==================================================
+
+Create a reusable component:
+
+PageTitle
+
+This component must match EXACTLY the styling of the “Profiel” page title:
+- same font family
+- same font size
+- same font weight
+- same letter spacing
+- same color
+- same margin-top and margin-bottom
+
+Do not approximate — match it exactly.
+
+==================================================
+2. REPLACE ALL PAGE TITLES
+==================================================
+
+Find all screens/pages that have a main title, including but not limited to:
+- Matches
+- Tips
+- Filters
+- Profiel (keep as reference)
+- Admin pages (if applicable)
+
+Replace existing title implementations with the new PageTitle component.
+
+Remove:
+- inline styles
+- duplicated font classes
+- inconsistent heading tags
+
+==================================================
+3. ALIGN SPACING
+==================================================
+
+Ensure all titles:
+- have the same spacing from the top
+- have the same spacing to the content below
+- follow the same vertical rhythm
+
+==================================================
+4. TYPOGRAPHY CONSISTENCY
+==================================================
+
+Make sure:
+- no page uses a different font weight for the main title
+- no page uses smaller/larger title sizes
+- no page uses a different gray/black color
+
+Everything must match the “Profiel” title exactly.
+
+==================================================
+5. OPTIONAL (IF STRUCTURE EXISTS)
+==================================================
+
+If there is already a typography system:
+- refactor it so PageTitle becomes the official H1 style
+
+==================================================
+6. RESULT
+==================================================
+
+At the end, summarize:
+1. how PageTitle is defined
+2. which pages were updated
+3. what inconsistencies were removed
+4. how spacing is now standardized
+5. which files/components were changed

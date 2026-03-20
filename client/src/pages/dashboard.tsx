@@ -966,7 +966,7 @@ function HomeTab({
   return (
     <div className="flex flex-col pb-8">
       <div className="sticky top-0 z-10 bg-white pt-6 pb-4 px-6">
-        <h1 className="text-[24px] font-medium text-[#222222] tracking-tight" data-testid="text-greeting">
+        <h1 className="text-page-title" data-testid="text-greeting">
           {firstName ? t("home.greeting", { name: firstName }) : t("home.greetingDefault")}
         </h1>
       </div>
@@ -1121,7 +1121,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
     <div className="flex flex-col pb-8">
       <div className="sticky top-0 z-10 bg-white pt-6 pb-0 px-6">
         <div className="flex items-center justify-between mb-5">
-          <h1 className="text-[24px] font-medium text-[#222222] tracking-tight">{t("matches.title")}</h1>
+          <h1 className="text-page-title">{t("matches.title")}</h1>
         </div>
         <div className="flex gap-2.5 pb-4" data-testid="match-sub-tabs">
           {MATCH_SUB_TAB_CONFIG.map(({ key, labelKey }) => {
@@ -1304,7 +1304,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
   return (
     <div className="flex flex-col pb-8">
       <div className="sticky top-0 z-10 bg-white pt-6 pb-4 px-6">
-        <h1 className="text-[24px] font-medium text-[#222222] tracking-tight">{t("filters.title")}</h1>
+        <h1 className="text-page-title">{t("filters.title")}</h1>
       </div>
       <div className="px-6 flex flex-col gap-5">
       {profilesQuery.isLoading ? (
@@ -1706,7 +1706,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
   return (
     <div className="min-h-[calc(100vh-80px)] bg-white">
       <div className="max-w-[480px] mx-auto px-6 pt-6 pb-8">
-        <h1 className="text-[26px] font-semibold text-[#222222] tracking-tight mb-5" data-testid="text-profile-title">{t("profile.title")}</h1>
+        <h1 className="text-page-title mb-5" data-testid="text-profile-title">{t("profile.title")}</h1>
 
         <div className="flex flex-col gap-5">
 
