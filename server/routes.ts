@@ -2313,12 +2313,40 @@ export async function registerRoutes(
       const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
-      const defaults = { user_id: user.id, search_buddy_email: null, search_buddy_enabled: false, application_template: null, document_checklist: {} };
-
-      const { rows } = await pgPool.query(
+      let { rows } = await pgPool.query(
         "SELECT * FROM user_profile_data WHERE user_id = $1 LIMIT 1",
         [user.id]
       );
+
+      if (rows.length === 0) {
+        const meta = user.user_metadata || {};
+        let firstName = meta.first_name || null;
+        let lastName = meta.last_name || null;
+        if (!firstName && meta.full_name) {
+          const parts = (meta.full_name as string).trim().split(/\s+/);
+          firstName = parts[0] || null;
+          lastName = parts.slice(1).join(" ") || null;
+        }
+        if (!firstName) firstName = user.email?.split("@")[0] || null;
+        const detectedLang = detectLanguageFromHeader(req.headers["accept-language"]);
+        try {
+          const { rows: created } = await pgPool.query(
+            `INSERT INTO user_profile_data (user_id, first_name, last_name, language, created_at, updated_at)
+             VALUES ($1, $2, $3, $4, NOW(), NOW())
+             ON CONFLICT (user_id) DO UPDATE SET
+               first_name = COALESCE(user_profile_data.first_name, EXCLUDED.first_name),
+               last_name = COALESCE(user_profile_data.last_name, EXCLUDED.last_name),
+               language = COALESCE(user_profile_data.language, EXCLUDED.language),
+               updated_at = NOW()
+             RETURNING *`,
+            [user.id, firstName, lastName, detectedLang]
+          );
+          log(`[profile-data] Auto-created profile row for user=${user.id.substring(0, 8)}... name="${firstName} ${lastName}"`);
+          rows = created;
+        } catch (bootstrapErr: any) {
+          log(`[profile-data] Auto-create failed for user=${user.id.substring(0, 8)}...: ${bootstrapErr.message}`);
+        }
+      }
 
       const row = rows[0];
       if (row && !row.language) {
@@ -2335,6 +2363,7 @@ export async function registerRoutes(
         row.language = detected;
       }
 
+      const defaults = { user_id: user.id, search_buddy_email: null, search_buddy_enabled: false, application_template: null, document_checklist: {} };
       return res.json(row ?? defaults);
     } catch (err: any) {
       console.error("[profile-data] GET error:", err.message);
