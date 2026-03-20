@@ -1,0 +1,95 @@
+Fix image scaling and layout so illustrations match Airbnb-style visual hierarchy.
+
+IMPORTANT:
+- Do NOT change functionality
+- Only adjust sizing, spacing, and layout
+- Goal = images become dominant visual elements
+
+==================================================
+1. CARD IMAGES (TOP TILES)
+==================================================
+
+For:
+- Extra zoekprofiel
+- Vrienden uitnodigen
+
+Current issue:
+- images are too small and feel like icons
+
+Fix:
+
+- increase image size significantly
+- image should take ~65–75% of card height
+- center horizontally
+- reduce top padding so image sits higher
+- keep bottom space for title
+
+Layout structure:
+
+[ IMAGE (large, dominant) ]
+[ spacing ]
+[ title ]
+
+Typography:
+- keep title smaller than image visual weight
+
+==================================================
+2. IMAGE CONSTRAINTS
+==================================================
+
+- max-width: ~80–90% of card width
+- height auto (preserve ratio)
+- no distortion
+- no unnecessary margins
+
+==================================================
+3. PROFILE AVATAR (VERY IMPORTANT)
+==================================================
+
+Current issue:
+- placeholder does not fill circle
+
+Fix:
+
+- image must fully fill the circular container
+- use:
+  object-fit: cover
+  width: 100%
+  height: 100%
+
+- remove inner padding
+- keep outer circle clean
+
+Optional:
+- subtle border (1–2px light grey or blue)
+
+==================================================
+4. NOTIFICATIONS IMAGE
+==================================================
+
+- slightly increase size (~10–15%)
+- still smaller than card images
+- align nicely with text vertically
+
+==================================================
+5. VISUAL BALANCE
+==================================================
+
+Goal:
+- images should feel like primary elements
+- text should support, not compete
+
+Match Airbnb feel:
+- big visuals
+- calm spacing
+- clear hierarchy
+
+==================================================
+6. RESULT
+==================================================
+
+At the end, explain:
+1. how image sizes were increased
+2. how card layout was adjusted
+3. how avatar now fills the circle
+4. which components were updated
