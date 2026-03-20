@@ -1599,15 +1599,20 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
   const accountAgeDays = user.created_at
     ? Math.max(0, Math.floor((Date.now() - new Date(user.created_at).getTime()) / (1000 * 60 * 60 * 24)))
     : 0;
-  const memberDuration = accountAgeDays >= 730
-    ? t("profile.memberYears", { count: Math.floor(accountAgeDays / 365) })
+  const memberStatNumber = accountAgeDays >= 730
+    ? Math.floor(accountAgeDays / 365)
     : accountAgeDays >= 60
-    ? t("profile.memberMonths", { count: Math.floor(accountAgeDays / 30) })
+    ? Math.floor(accountAgeDays / 30)
     : accountAgeDays >= 14
-    ? t("profile.memberWeeks", { count: Math.floor(accountAgeDays / 7) })
-    : accountAgeDays >= 1
-    ? t("profile.memberDays", { count: accountAgeDays })
-    : t("profile.memberNew");
+    ? Math.floor(accountAgeDays / 7)
+    : Math.max(1, accountAgeDays);
+  const memberStatLabel = accountAgeDays >= 730
+    ? t("profile.memberYearsLabel")
+    : accountAgeDays >= 60
+    ? t("profile.memberMonthsLabel")
+    : accountAgeDays >= 14
+    ? t("profile.memberWeeksLabel")
+    : t("profile.memberDaysLabel");
 
   const firstName = pd?.first_name || "";
   const lastName = pd?.last_name || "";
@@ -1632,13 +1637,13 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
         <div className="flex flex-col gap-6">
 
           <div
-            className="rounded-[24px] bg-white border border-[#F0F0F0] shadow-[0_2px_12px_rgba(15,23,42,0.06),0_8px_32px_rgba(15,23,42,0.08)] p-6"
+            className="rounded-[24px] bg-white border border-[#F0F0F0] shadow-[0_2px_12px_rgba(15,23,42,0.06),0_8px_32px_rgba(15,23,42,0.08)] px-5 py-7"
             data-testid="card-profile-summary"
           >
-            <div className="flex items-start gap-5">
+            <div className="grid grid-cols-2 gap-0">
               <button
                 onClick={() => navigate("/profile/details")}
-                className="flex flex-col items-center flex-shrink-0 active:scale-95 transition-transform"
+                className="flex flex-col items-center justify-center active:scale-95 transition-transform"
                 data-testid="button-profile-avatar"
               >
                 {photoUrl ? (
@@ -1658,20 +1663,20 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                 )}
               </button>
 
-              <div className="flex-1 flex flex-col min-w-0 pt-1">
-                <div className="flex flex-col items-center py-2.5" data-testid="stat-member-since">
-                  <p className="text-[18px] font-bold text-[#18181B] leading-tight">{memberDuration}</p>
-                  <p className="text-[11px] text-[#9CA3AF] mt-1">{t("profile.memberSince")}</p>
+              <div className="flex flex-col justify-center pl-5">
+                <div className="py-3" data-testid="stat-member-since">
+                  <p className="text-[22px] font-bold text-[#18181B] leading-tight">{memberStatNumber}</p>
+                  <p className="text-[12px] text-[#18181B] mt-0.5 leading-snug">{memberStatLabel}</p>
                 </div>
-                <div className="h-px bg-[#F0F0F0] mx-3" />
-                <div className="flex flex-col items-center py-2.5" data-testid="stat-listings-viewed">
-                  <p className="text-[18px] font-bold text-[#18181B] leading-tight">{canonicalStats?.viewed ?? 0}</p>
-                  <p className="text-[11px] text-[#9CA3AF] mt-1">{t("profile.listingsViewed")}</p>
+                <div className="h-px bg-[#F0F0F0]" />
+                <div className="py-3" data-testid="stat-listings-viewed">
+                  <p className="text-[22px] font-bold text-[#18181B] leading-tight">{canonicalStats?.viewed ?? 0}</p>
+                  <p className="text-[12px] text-[#18181B] mt-0.5 leading-snug">{t("profile.listingsViewed")}</p>
                 </div>
-                <div className="h-px bg-[#F0F0F0] mx-3" />
-                <div className="flex flex-col items-center py-2.5" data-testid="stat-applications-sent">
-                  <p className="text-[18px] font-bold text-[#18181B] leading-tight">{canonicalStats?.applied ?? 0}</p>
-                  <p className="text-[11px] text-[#9CA3AF] mt-1">{t("profile.applicationsSent")}</p>
+                <div className="h-px bg-[#F0F0F0]" />
+                <div className="py-3" data-testid="stat-applications-sent">
+                  <p className="text-[22px] font-bold text-[#18181B] leading-tight">{canonicalStats?.applied ?? 0}</p>
+                  <p className="text-[12px] text-[#18181B] mt-0.5 leading-snug">{t("profile.applicationsSent")}</p>
                 </div>
               </div>
             </div>

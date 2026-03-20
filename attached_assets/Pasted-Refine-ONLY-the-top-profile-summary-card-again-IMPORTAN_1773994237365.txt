@@ -1,0 +1,101 @@
+Refine ONLY the top profile summary card again.
+
+IMPORTANT:
+- Do NOT redesign the whole page
+- Only update the top profile card
+- Keep the rest of the page unchanged for now
+
+==================================================
+1. CARD LAYOUT — MAKE IT TRUE 50/50
+==================================================
+
+The current card still does not match the intended Airbnb-like layout closely enough.
+
+I want the card split into two equal halves:
+- left half = profile block
+- right half = stats block
+
+Requirements:
+- use a true 50/50 layout
+- left and right side should feel visually balanced
+- do not let the right side dominate too much
+- the card should look structured and calm
+
+==================================================
+2. LEFT HALF — PROFILE BLOCK
+==================================================
+
+In the left half, vertically center the whole content block.
+
+Show:
+- profile photo / avatar
+- first name below it
+- last name below that
+
+Requirements:
+- the avatar must be centered nicely within the left half
+- first name: large, strong, black
+- last name: smaller, subtle, gray
+- keep the whole block visually centered in the left side
+
+If no real photo exists, use the cleanest possible avatar fallback.
+
+==================================================
+3. RIGHT HALF — STATS BLOCK
+==================================================
+
+In the right half, show the 3 stats stacked vertically.
+
+IMPORTANT:
+- align the stats block to the left within the right half
+- do NOT center the stats
+- each stat should have:
+  - number on top
+  - label underneath
+
+Examples:
+11
+dagen lid
+
+0
+woningen bekeken
+
+0
+reacties verstuurd
+
+Requirements:
+- numbers strong and black
+- labels directly underneath
+- labels also black
+- use subtle separators between stat rows if needed
+- keep the stats visually clean and easy to scan
+
+IMPORTANT:
+Do NOT show “11 dagen lid” in one line anymore.
+I want:
+- only the number on top
+- the description below it
+
+==================================================
+4. TEXT COLORS
+==================================================
+
+Use black for all text in this top card except:
+- last name should remain gray/subtle
+
+So:
+- first name = black
+- stat numbers = black
+- stat labels = black
+- only last name = gray
+
+==================================================
+5. RESULT
+==================================================
+
+At the end, summarize:
+1. how the card was rebalanced into a 50/50 layout
+2. how the left profile block was centered
+3. how the right stats block was left-aligned
+4. which text colors were updated
+5. which files/components were changed
