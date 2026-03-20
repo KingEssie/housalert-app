@@ -4160,78 +4160,128 @@ export async function registerRoutes(
 
   app.get("/api/admin/portal/overview", requireAdmin, async (_req, res) => {
     try {
+      log(`[admin-portal] Overview request received`);
       const todayStart = new Date(new Date().setHours(0,0,0,0)).toISOString();
       const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
-      const totalUsersRes = await supabase.rpc("count_auth_users").then(r => r.data ?? 0).catch(() => 0);
-      const activeSubsRes = await supabase.from("subscriptions").select("id", { count: "exact", head: true }).eq("status", "active");
-      const trialSubsRes = await supabase.from("subscriptions").select("id", { count: "exact", head: true }).eq("status", "trial");
-      const allSubsRes = await supabase.from("subscriptions").select("status, plan");
-      const profilesRes = await supabase.from("search_profiles").select("id", { count: "exact", head: true });
-      const listingsTodayRes = await supabase.from("listings").select("id", { count: "exact", head: true }).gte("created_at", todayStart);
-      const matchesTodayRes = await supabase.from("matches").select("id", { count: "exact", head: true }).gte("created_at", todayStart);
-      const listingsWeek = await supabase.from("listings").select("id", { count: "exact", head: true }).gte("created_at", weekAgo);
-      const matchesWeek = await supabase.from("matches").select("id", { count: "exact", head: true }).gte("created_at", weekAgo);
-
+      let totalUsers = 0;
+      let activeSubscriptions = 0;
+      let trialUsers = 0;
+      let allSubs: any[] = [];
+      let activeProfiles = 0;
+      let listingsToday = 0;
+      let matchesToday = 0;
+      let listingsWeekVal = 0;
+      let matchesWeekVal = 0;
       let signupsTodayVal = 0;
       let signupsWeekVal = 0;
+      let emailsTodayVal = 0;
+      let pushesTodayVal = 0;
+      let sourceHealth: any[] = [];
+
       try {
         const adminSb = getSupabaseAdmin();
         const { data: allAuthData } = await adminSb.auth.admin.listUsers({ page: 1, perPage: 1000 });
         const allAuthUsers = allAuthData?.users || [];
+        totalUsers = allAuthUsers.length;
         const todayDate = new Date(todayStart);
         const weekDate = new Date(weekAgo);
         signupsTodayVal = allAuthUsers.filter((u: any) => new Date(u.created_at) >= todayDate).length;
         signupsWeekVal = allAuthUsers.filter((u: any) => new Date(u.created_at) >= weekDate).length;
-      } catch {
-        const signupsTodayRes = await pgPool.query("SELECT COUNT(*) FROM user_profile_data WHERE created_at >= $1", [todayStart]);
-        const signupsWeekRes = await pgPool.query("SELECT COUNT(*) FROM user_profile_data WHERE created_at >= $1", [weekAgo]);
-        signupsTodayVal = parseInt(signupsTodayRes.rows[0]?.count || "0");
-        signupsWeekVal = parseInt(signupsWeekRes.rows[0]?.count || "0");
+        log(`[admin-portal] Overview: auth users OK (total=${totalUsers}, today=${signupsTodayVal}, week=${signupsWeekVal})`);
+      } catch (e: any) {
+        log(`[admin-portal] Overview: auth.admin.listUsers failed: ${e.message} — falling back to PG`);
+        try {
+          const pgTotal = await pgPool.query("SELECT COUNT(*) FROM user_profile_data");
+          totalUsers = parseInt(pgTotal.rows[0]?.count || "0");
+          const signupsTodayRes = await pgPool.query("SELECT COUNT(*) FROM user_profile_data WHERE created_at >= $1", [todayStart]);
+          const signupsWeekRes = await pgPool.query("SELECT COUNT(*) FROM user_profile_data WHERE created_at >= $1", [weekAgo]);
+          signupsTodayVal = parseInt(signupsTodayRes.rows[0]?.count || "0");
+          signupsWeekVal = parseInt(signupsWeekRes.rows[0]?.count || "0");
+        } catch (pgErr: any) {
+          log(`[admin-portal] Overview: PG signup fallback also failed: ${pgErr.message}`);
+        }
       }
-      let emailsTodayVal = 0;
-      let pushesTodayVal = 0;
+
+      try {
+        const [activeSubsRes, trialSubsRes, allSubsRes] = await Promise.all([
+          supabase.from("subscriptions").select("id", { count: "exact", head: true }).eq("status", "active"),
+          supabase.from("subscriptions").select("id", { count: "exact", head: true }).eq("status", "trial"),
+          supabase.from("subscriptions").select("status, plan"),
+        ]);
+        activeSubscriptions = activeSubsRes.count ?? 0;
+        trialUsers = trialSubsRes.count ?? 0;
+        allSubs = allSubsRes.data || [];
+        log(`[admin-portal] Overview: subscriptions OK (active=${activeSubscriptions}, trial=${trialUsers}, total=${allSubs.length})`);
+      } catch (e: any) {
+        log(`[admin-portal] Overview: subscriptions query failed: ${e.message}`);
+      }
+
+      try {
+        const [profilesRes, listingsTodayRes, matchesTodayRes, listingsWeekRes, matchesWeekRes] = await Promise.all([
+          supabase.from("search_profiles").select("id", { count: "exact", head: true }),
+          supabase.from("listings").select("id", { count: "exact", head: true }).gte("created_at", todayStart),
+          supabase.from("matches").select("id", { count: "exact", head: true }).gte("created_at", todayStart),
+          supabase.from("listings").select("id", { count: "exact", head: true }).gte("created_at", weekAgo),
+          supabase.from("matches").select("id", { count: "exact", head: true }).gte("created_at", weekAgo),
+        ]);
+        activeProfiles = profilesRes.count ?? 0;
+        listingsToday = listingsTodayRes.count ?? 0;
+        matchesToday = matchesTodayRes.count ?? 0;
+        listingsWeekVal = listingsWeekRes.count ?? 0;
+        matchesWeekVal = matchesWeekRes.count ?? 0;
+        log(`[admin-portal] Overview: listings/matches OK (profiles=${activeProfiles}, listingsToday=${listingsToday}, matchesToday=${matchesToday})`);
+      } catch (e: any) {
+        log(`[admin-portal] Overview: listings/matches query failed: ${e.message}`);
+      }
+
       try {
         const eRes = await pgPool.query("SELECT COUNT(*) FROM user_matches WHERE email_sent = true AND matched_at >= $1", [todayStart]);
         emailsTodayVal = parseInt(eRes.rows[0]?.count || "0");
-      } catch {}
+      } catch (e: any) {
+        log(`[admin-portal] Overview: email count failed: ${e.message}`);
+      }
       try {
         const pRes = await pgPool.query("SELECT COUNT(*) FROM user_matches WHERE push_sent = true AND matched_at >= $1", [todayStart]);
         pushesTodayVal = parseInt(pRes.rows[0]?.count || "0");
-      } catch {}
+      } catch (e: any) {
+        log(`[admin-portal] Overview: push count failed: ${e.message}`);
+      }
 
       let mrr = 0;
       const pricingMap: Record<string, number> = { monthly: 14.99, two_month: 12.49, three_month: 9.99 };
-      for (const sub of (allSubsRes.data || [])) {
+      for (const sub of allSubs) {
         if (sub.status === "active") {
           mrr += pricingMap[sub.plan] || 14.99;
         }
       }
 
-      let sourceHealth: any[] = [];
       try {
         const sourceHealthRes = await pgPool.query("SELECT source_reports FROM ingestion_runs ORDER BY started_at DESC LIMIT 1");
         sourceHealth = sourceHealthRes.rows[0]?.source_reports || [];
-      } catch {}
+      } catch (e: any) {
+        log(`[admin-portal] Overview: source health failed: ${e.message}`);
+      }
 
+      log(`[admin-portal] Overview: responding with data`);
       res.json({
-        totalUsers: totalUsersRes,
-        activeSubscriptions: activeSubsRes.count ?? 0,
-        trialUsers: trialSubsRes.count ?? 0,
+        totalUsers,
+        activeSubscriptions,
+        trialUsers,
         signupsToday: signupsTodayVal,
         mrr: Math.round(mrr * 100) / 100,
-        activeProfiles: profilesRes.count ?? 0,
-        listingsToday: listingsTodayRes.count ?? 0,
-        matchesToday: matchesTodayRes.count ?? 0,
+        activeProfiles,
+        listingsToday,
+        matchesToday,
         emailsToday: emailsTodayVal,
         pushesToday: pushesTodayVal,
         signupsWeek: signupsWeekVal,
-        listingsWeek: listingsWeek.count ?? 0,
-        matchesWeek: matchesWeek.count ?? 0,
+        listingsWeek: listingsWeekVal,
+        matchesWeek: matchesWeekVal,
         sourceHealth,
       });
     } catch (err: any) {
-      log(`[admin-portal] Overview error: ${err.message}`);
+      log(`[admin-portal] Overview FATAL error: ${err.message}\n${err.stack}`);
       res.status(500).json({ error: err.message });
     }
   });
