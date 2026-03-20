@@ -1,0 +1,90 @@
+Refine ONLY the lower Profile menu list again.
+
+IMPORTANT:
+- Do NOT redesign the rest of the page
+- Keep the current plain list structure
+- Only adjust menu order, spacing, font weight, and the Reactiebrief preview
+
+==================================================
+1. INCREASE SPACE BETWEEN MENU ITEMS
+==================================================
+
+The menu list currently feels slightly too tight.
+
+Increase the vertical spacing between the menu rows a bit.
+
+Requirements:
+- add more breathing room between rows
+- keep it clean and premium
+- do NOT add divider lines back
+- do NOT make it too loose
+- just slightly more open than it is now
+
+==================================================
+2. MAKE MENU ITEM TITLES A BIT LESS BOLD
+==================================================
+
+The current menu item text feels a bit too heavy.
+
+Reduce the font weight slightly for the menu item titles.
+
+Requirements:
+- still readable and premium
+- slightly lighter than now
+- not overly bold
+- closer to Airbnb’s calmer settings list feel
+
+==================================================
+3. REORDER THE FIRST MENU ITEM
+==================================================
+
+The first menu item in the main menu list should be:
+
+- Reactiebrief
+
+Move it to the first position in that menu section.
+
+==================================================
+4. ADD A REACTIEBRIEF PREVIEW UNDER THE TITLE
+==================================================
+
+For the first menu item “Reactiebrief”:
+- show a small preview text under the title
+- use the first 2 lines of the user’s reaction letter if available
+- truncate cleanly if needed
+- smaller text than the title
+- lighter visual weight
+- keep it subtle and readable
+
+If no reaction letter exists yet:
+- show a clean fallback such as:
+  “Nog geen reactiebrief opgeslagen”
+or similar existing Dutch copy if already available
+
+Requirements:
+- preview text should be smaller than the main title
+- preview text can be gray or softer than the title
+- maximum 2 lines
+- do not make the row too tall
+- keep the row elegant and compact
+
+==================================================
+5. KEEP THE REST OF THE MENU SIMPLE
+==================================================
+
+For the other menu items:
+- keep icon left
+- title text
+- chevron right
+- no preview text unless explicitly needed later
+
+==================================================
+6. RESULT
+==================================================
+
+At the end, summarize:
+1. how much spacing was added between menu items
+2. how the menu title font weight was reduced
+3. how the menu order was changed
+4. how the Reactiebrief preview is sourced and truncated
+5. which files/components were updated
