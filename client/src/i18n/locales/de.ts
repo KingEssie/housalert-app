@@ -561,7 +561,6 @@ export const de: Record<string, any> = {
       "60": "60 Min.",
       "90": "90 Min.",
     },
-    districtsSoon: "Stadtteile bald verfügbar für diesen Ort.",
     districtLabel: "Stadtteile",
     districtOptional: "(optional)",
     selectDistricts: "Stadtteile auswählen...",
@@ -894,9 +893,6 @@ export const de: Record<string, any> = {
   cityPicker: {
     placeholder: "Suche eine Stadt...",
     selectFromList: "Wähle einen Ort aus der Liste.",
-    cityNotMonitored: "Dieser Ort ist gespeichert, wird aber aktuell noch nicht aktiv überwacht.",
-    cityDynamic: "Dieser Ort wird automatisch basierend auf deinem Suchprofil überwacht.",
-    citySupported: "Dieser Ort wird aktiv überwacht.",
     poweredByGoogle: "Powered by Google",
   },
 

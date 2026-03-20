@@ -1,12 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { MapPin, Search, X, AlertCircle, Navigation, Clock, Car, Train, Bike, ChevronDown, Check, Info } from "lucide-react";
+import { MapPin, Search, X, AlertCircle, Navigation, Clock, Car, Train, Bike, ChevronDown, Check } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Circle, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { cityDistricts } from "../../../config/market";
 import { useTranslation } from "@/i18n";
 import { usePlacesAutocomplete, type PlaceSuggestion } from "@/hooks/use-places-autocomplete";
-import { getCitySupport, type CitySupport } from "@/lib/city-support";
 
 const MARKER_ICON = new L.Icon({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
@@ -110,28 +109,6 @@ function radiusToZoom(km: number): number {
   return 8;
 }
 
-function CitySupportBadge({ cityName }: { cityName: string }) {
-  const { t } = useTranslation();
-  const support = getCitySupport(cityName);
-
-  if (support.status === "supported") return null;
-
-  if (support.status === "dynamic") {
-    return (
-      <div className="flex items-center gap-2 text-[#F97316] text-[13px] bg-[#FFF7ED] rounded-2xl px-4 py-3" data-testid="text-city-dynamic">
-        <Info className="w-4 h-4 flex-shrink-0" />
-        <span>{t("cityPicker.cityDynamic")}</span>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex items-center gap-2 text-[#92400E] text-[13px] bg-[#FEF3C7] rounded-2xl px-4 py-3" data-testid="text-city-unsupported">
-      <AlertCircle className="w-4 h-4 flex-shrink-0" />
-      <span>{t("cityPicker.cityNotMonitored")}</span>
-    </div>
-  );
-}
 
 interface Props {
   value: LocationData;
@@ -342,7 +319,6 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
   }
 
   const availableDistricts = value.place ? (cityDistricts[value.place.city_name] ?? []) : [];
-  const districtsNotAvailable = !!value.place && availableDistricts.length === 0;
 
   function toggleDistrict(d: string) {
     const next = value.districts.includes(d)
@@ -493,7 +469,6 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
             <MapPin className="w-4 h-4" />
             {value.place.city_name}
           </div>
-          <CitySupportBadge cityName={value.place.city_name} />
         </>
       )}
 
@@ -505,20 +480,12 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
         />
       )}
 
-      {value.tab === "wijken" && districtsNotAvailable && (
-        <div className="flex items-center gap-2 text-[#71717A] text-[13px] bg-[#F3F4F6] rounded-2xl px-4 py-3" data-testid="text-districts-unavailable">
-          <AlertCircle className="w-4 h-4 flex-shrink-0 text-[#71717A]" />
-          <span>{t("location.districtsSoon")}</span>
-        </div>
-      )}
-
       {value.tab === "radius" && value.place && (
         <>
           <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#71717A] font-medium text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
             <MapPin className="w-4 h-4" />
             {value.place.city_name}
           </div>
-          <CitySupportBadge cityName={value.place.city_name} />
         </>
       )}
 

@@ -568,7 +568,6 @@ export const nl: Record<string, any> = {
       "60": "60 min.",
       "90": "90 min.",
     },
-    districtsSoon: "Wijken binnenkort beschikbaar voor deze plaats.",
     districtLabel: "Wijken",
     districtOptional: "(optioneel)",
     selectDistricts: "Wijken selecteren...",
@@ -901,9 +900,6 @@ export const nl: Record<string, any> = {
   cityPicker: {
     placeholder: "Zoek een stad...",
     selectFromList: "Kies een plaats uit de lijst.",
-    cityNotMonitored: "Deze plaats staat klaar voor uitbreiding, maar wordt nog niet actief gemonitord.",
-    cityDynamic: "Deze plaats wordt automatisch gemonitord op basis van je zoekprofiel.",
-    citySupported: "Deze plaats wordt actief gemonitord.",
     poweredByGoogle: "Powered by Google",
   },
 

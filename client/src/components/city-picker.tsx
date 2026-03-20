@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { MapPin, Search, X, AlertCircle, Info } from "lucide-react";
+import { MapPin, Search, X, AlertCircle } from "lucide-react";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useTranslation } from "@/i18n";
 import { usePlacesAutocomplete, type PlaceSuggestion } from "@/hooks/use-places-autocomplete";
-import { getCitySupport } from "@/lib/city-support";
 
 const MARKER_ICON = new L.Icon({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
@@ -179,8 +178,6 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
   const hasResults = (usingGoogle && places.suggestions.length > 0) || nominatimResults.length > 0;
   const showValidation = touched && !value && query.trim().length > 0;
 
-  const support = value ? getCitySupport(value.city_name) : null;
-
   return (
     <div className="flex flex-col gap-4" ref={containerRef}>
       <div className="relative">
@@ -275,20 +272,6 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
             <MapPin className="w-4 h-4" />
             {value.city_name}
           </div>
-
-          {support && support.status === "unsupported" && (
-            <div className="flex items-center gap-2 text-[#92400E] text-[13px] bg-[#FEF3C7] rounded-2xl px-4 py-3" data-testid="text-city-unsupported">
-              <AlertCircle className="w-4 h-4 flex-shrink-0" />
-              <span>{t("cityPicker.cityNotMonitored")}</span>
-            </div>
-          )}
-
-          {support && support.status === "dynamic" && (
-            <div className="flex items-center gap-2 text-[#F97316] text-[13px] bg-[#FFF7ED] rounded-2xl px-4 py-3" data-testid="text-city-dynamic">
-              <Info className="w-4 h-4 flex-shrink-0" />
-              <span>{t("cityPicker.cityDynamic")}</span>
-            </div>
-          )}
 
           <div className="rounded-lg overflow-hidden border border-[#E5E7EB] h-[200px]" data-testid="map-preview">
             <MapContainer
