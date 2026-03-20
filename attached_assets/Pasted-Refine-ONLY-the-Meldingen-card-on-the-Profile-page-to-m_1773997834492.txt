@@ -1,0 +1,81 @@
+Refine ONLY the “Meldingen” card on the Profile page to make it more compact.
+
+IMPORTANT:
+- Do NOT redesign the rest of the page
+- Keep the card itself, icon, title, and existing toggle logic
+- This is only a compact layout refinement for the notifications card
+
+==================================================
+GOAL
+==================================================
+
+I want the “Meldingen” card to become a bit more compact vertically.
+
+The best way to do that:
+- shorten the labels
+- place the two toggle rows side by side instead of stacked vertically
+
+==================================================
+1. SHORTER LABELS
+==================================================
+
+Change the notification labels from:
+- Push notificaties
+- E-mail notificaties
+
+to:
+- Push
+- E-mail
+
+Keep them clear and readable.
+
+==================================================
+2. PLACE TOGGLES SIDE BY SIDE
+==================================================
+
+Instead of showing the two notification toggles stacked vertically, place them next to each other in a horizontal two-column layout.
+
+Desired structure inside the card:
+
+- left visual/icon area stays as it is
+- title “Meldingen” stays at the top of the content area
+- below the title:
+  show 2 compact toggle items next to each other
+
+Example:
+[Push   toggle]    [E-mail   toggle]
+
+Requirements:
+- each item includes label + toggle
+- both items align neatly
+- spacing feels balanced
+- card height becomes slightly smaller overall
+
+==================================================
+3. KEEP EXISTING LOGIC
+==================================================
+
+- keep the current push toggle behavior
+- keep the current email toggle behavior
+- do NOT duplicate or rewrite notification setting logic
+- only change layout and labels
+
+==================================================
+4. VISUAL STYLE
+==================================================
+
+- keep the same card style
+- keep same icon area on the left
+- keep rounded corners and current shadow
+- make the card feel cleaner and more compact
+- avoid cramped spacing
+
+==================================================
+5. RESULT
+==================================================
+
+At the end, summarize:
+1. how the labels were shortened
+2. how the toggles were laid out side by side
+3. how the card height/spacing was reduced
+4. which files/components were updated
