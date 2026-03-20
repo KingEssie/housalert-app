@@ -1633,11 +1633,13 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
 
   return (
     <div className="min-h-[calc(100vh-80px)] bg-white">
-      <div className="max-w-[480px] mx-auto px-6 pt-8 pb-8">
-        <div className="flex flex-col gap-6">
+      <div className="max-w-[480px] mx-auto px-6 pt-6 pb-8">
+        <h1 className="text-[26px] font-semibold text-[#18181B] tracking-tight mb-5" data-testid="text-profile-title">{t("profile.title")}</h1>
+
+        <div className="flex flex-col gap-5">
 
           <div
-            className="rounded-[24px] bg-white border border-[#F0F0F0] shadow-[0_2px_12px_rgba(15,23,42,0.06),0_8px_32px_rgba(15,23,42,0.08)] px-5 py-7"
+            className="rounded-[24px] bg-white border border-[#F0F0F0] shadow-[0_2px_12px_rgba(15,23,42,0.06),0_8px_32px_rgba(15,23,42,0.08)] px-6 py-8"
             data-testid="card-profile-summary"
           >
             <div className="grid grid-cols-2 gap-0">
@@ -1647,17 +1649,17 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                 data-testid="button-profile-avatar"
               >
                 {photoUrl ? (
-                  <img src={photoUrl} alt="" className="w-[88px] h-[88px] rounded-full object-cover shadow-[0_2px_12px_rgba(0,0,0,0.08)]" data-testid="img-profile-avatar" />
+                  <img src={photoUrl} alt="" className="w-[96px] h-[96px] rounded-full object-cover shadow-[0_2px_12px_rgba(0,0,0,0.08)]" data-testid="img-profile-avatar" />
                 ) : (
-                  <div className="w-[88px] h-[88px] rounded-full bg-gradient-to-br from-[#E5E7EB] to-[#F3F4F6] flex items-center justify-center shadow-[inset_0_1px_2px_rgba(0,0,0,0.06)]">
-                    <span className="text-[30px] font-semibold text-[#6B7280]">{initials}</span>
+                  <div className="w-[96px] h-[96px] rounded-full bg-gradient-to-br from-[#E5E7EB] to-[#F3F4F6] flex items-center justify-center shadow-[inset_0_1px_2px_rgba(0,0,0,0.06)]">
+                    <span className="text-[32px] font-semibold text-[#6B7280]">{initials}</span>
                   </div>
                 )}
-                <p className="text-[20px] font-bold text-[#18181B] mt-3 leading-tight text-center" data-testid="text-user-firstname">
+                <p className="text-[22px] font-semibold text-[#18181B] mt-3 leading-tight text-center" data-testid="text-user-firstname">
                   {firstName || displayName || t("profile.seeker")}
                 </p>
                 {lastName && (
-                  <p className="text-[13px] font-normal text-[#9CA3AF] mt-0.5 leading-tight text-center" data-testid="text-user-lastname">
+                  <p className="text-[14px] font-normal text-[#9CA3AF] mt-0.5 leading-tight text-center" data-testid="text-user-lastname">
                     {lastName}
                   </p>
                 )}
@@ -1666,20 +1668,59 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               <div className="flex flex-col justify-center pl-5">
                 <div className="py-3" data-testid="stat-member-since">
                   <p className="text-[22px] font-bold text-[#18181B] leading-tight">{memberStatNumber}</p>
-                  <p className="text-[12px] text-[#18181B] mt-0.5 leading-snug">{memberStatLabel}</p>
+                  <p className="text-[13px] text-[#18181B] mt-1 leading-snug">{memberStatLabel}</p>
                 </div>
                 <div className="h-px bg-[#F0F0F0]" />
                 <div className="py-3" data-testid="stat-listings-viewed">
                   <p className="text-[22px] font-bold text-[#18181B] leading-tight">{canonicalStats?.viewed ?? 0}</p>
-                  <p className="text-[12px] text-[#18181B] mt-0.5 leading-snug">{t("profile.listingsViewed")}</p>
+                  <p className="text-[13px] text-[#18181B] mt-1 leading-snug">{t("profile.listingsViewed")}</p>
                 </div>
                 <div className="h-px bg-[#F0F0F0]" />
                 <div className="py-3" data-testid="stat-applications-sent">
                   <p className="text-[22px] font-bold text-[#18181B] leading-tight">{canonicalStats?.applied ?? 0}</p>
-                  <p className="text-[12px] text-[#18181B] mt-0.5 leading-snug">{t("profile.applicationsSent")}</p>
+                  <p className="text-[13px] text-[#18181B] mt-1 leading-snug">{t("profile.applicationsSent")}</p>
                 </div>
               </div>
             </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={() => navigate("/dashboard/searches/new")}
+              className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] p-5 flex flex-col items-start text-left active:scale-[0.98] transition-transform"
+              data-testid="button-extra-profile"
+            >
+              <div className="w-10 h-10 rounded-xl bg-[#F0FDF4] flex items-center justify-center mb-3">
+                <Plus className="w-[20px] h-[20px] text-[#16A34A]" />
+              </div>
+              <p className="text-[14px] font-semibold text-[#18181B] leading-snug">{t("profile.extraProfile")}</p>
+              <p className="text-[12px] text-[#9CA3AF] mt-1 leading-relaxed">{t("profile.extraProfileDesc")}</p>
+            </button>
+
+            <button
+              onClick={async () => {
+                const code = referralQuery.data?.code;
+                if (!code) return;
+                try {
+                  await navigator.clipboard.writeText(code);
+                  setReferralCopied(true);
+                  toast({ title: t("referral.copied") });
+                  setTimeout(() => setReferralCopied(false), 2000);
+                } catch {
+                  toast({ title: t("referral.copyFailed"), variant: "destructive" });
+                }
+              }}
+              className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] p-5 flex flex-col items-start text-left active:scale-[0.98] transition-transform"
+              data-testid="button-invite-friends"
+            >
+              <div className="w-10 h-10 rounded-xl bg-[#EBF2FF] flex items-center justify-center mb-3">
+                <Gift className="w-[20px] h-[20px] text-[#0D6EFD]" />
+              </div>
+              <p className="text-[14px] font-semibold text-[#18181B] leading-snug">{t("profile.inviteFriends")}</p>
+              <p className="text-[12px] text-[#9CA3AF] mt-1 leading-relaxed">
+                {referralCopied ? t("referral.copied") : t("profile.inviteFriendsDesc")}
+              </p>
+            </button>
           </div>
 
           {subscription.isTrial && (
@@ -1704,56 +1745,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               {t("profile.chooseSubscription")}
             </button>
           )}
-
-          <div className="rounded-[20px] border border-[#F0F0F0] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
-            <button
-              onClick={async () => {
-                const code = referralQuery.data?.code;
-                if (!code) return;
-                try {
-                  await navigator.clipboard.writeText(code);
-                  setReferralCopied(true);
-                  toast({ title: t("referral.copied") });
-                  setTimeout(() => setReferralCopied(false), 2000);
-                } catch {
-                  toast({ title: t("referral.copyFailed"), variant: "destructive" });
-                }
-              }}
-              className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
-              data-testid="button-invite-friends"
-            >
-              <div className="w-9 h-9 rounded-xl bg-[#EBF2FF] flex items-center justify-center flex-shrink-0">
-                <Gift className="w-[18px] h-[18px] text-[#0D6EFD]" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-[14px] font-medium text-[#18181B]">{t("profile.inviteFriends")}</p>
-                <p className="text-[12px] text-[#9CA3AF] mt-0.5">
-                  {referralQuery.data?.code
-                    ? (referralCopied ? t("referral.copied") : referralQuery.data.code)
-                    : t("profile.inviteFriendsDesc")}
-                </p>
-              </div>
-              {referralCopied
-                ? <Check className="w-4 h-4 text-[#0D6EFD] flex-shrink-0" />
-                : <Copy className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
-              }
-            </button>
-            <div className="h-px bg-[#F3F4F6] mx-5" />
-            <button
-              onClick={() => navigate("/dashboard/searches/new")}
-              className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
-              data-testid="button-extra-profile"
-            >
-              <div className="w-9 h-9 rounded-xl bg-[#F0FDF4] flex items-center justify-center flex-shrink-0">
-                <Plus className="w-[18px] h-[18px] text-[#16A34A]" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-[14px] font-medium text-[#18181B]">{t("profile.extraProfile")}</p>
-                <p className="text-[12px] text-[#9CA3AF] mt-0.5">{t("profile.extraProfileDesc")}</p>
-              </div>
-              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
-            </button>
-          </div>
 
           <div className="rounded-[20px] border border-[#F0F0F0] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
             <button

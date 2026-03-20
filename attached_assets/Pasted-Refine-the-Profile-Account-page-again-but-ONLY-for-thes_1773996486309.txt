@@ -1,0 +1,118 @@
+Refine the Profile / Account page again, but ONLY for these two sections:
+
+1. the page title + top profile summary card
+2. the two small cards directly below it
+
+IMPORTANT:
+- Do NOT redesign the rest of the page yet
+- Keep all other sections unchanged for now
+- This is a focused layout/styling refinement
+- Keep the current Airbnb-inspired direction
+
+==================================================
+1. PAGE TITLE
+==================================================
+
+The page title is currently missing.
+
+Add the page title back at the top:
+- Profiel
+
+Requirements:
+- large black title
+- positioned above the top profile card
+- visually similar hierarchy to Airbnb
+- enough spacing below the title before the card starts
+
+==================================================
+2. TOP PROFILE SUMMARY CARD
+==================================================
+
+Keep the existing 50/50 card structure, but refine it further.
+
+### LEFT HALF
+- make the profile photo larger
+- keep it centered cleanly
+- below it show:
+  - first name larger than now
+  - last name below it, smaller and gray
+
+Typography:
+- first name should be larger
+- first name should be a bit less heavy / less bold than now
+- last name remains subtle and gray
+
+### RIGHT HALF
+Keep the 3 stats stacked vertically:
+- lid sinds
+- woningen bekeken
+- reacties verstuurd
+
+Requirements:
+- keep the number on top and label underneath
+- labels should be slightly larger than they are now
+- keep them black
+- keep the block left-aligned within the right half
+
+Do NOT change the stat choices.
+Do NOT change the 50/50 split.
+Only refine sizing and typography.
+
+==================================================
+3. TWO SMALL CARDS BELOW THE PROFILE CARD
+==================================================
+
+The two side-by-side cards below the top card should be:
+
+LEFT:
+- Zoekprofiel toevoegen
+
+RIGHT:
+- Referral / vrienden uitnodigen
+
+IMPORTANT:
+- swap the order if needed so left is search profile and right is referral
+- use icons for now
+- make both cards visually equal in size and style
+- keep them side by side
+- same rounded corners
+- same shadow system
+- clean, premium spacing
+
+### Left card
+Title:
+- Zoekprofiel toevoegen
+
+Optional supporting line if needed:
+- Extra zoekprofiel aanmaken
+
+### Right card
+Title:
+- Vrienden uitnodigen
+or similar referral wording already used in the app
+
+Optional supporting line if needed:
+- Verdien een bonus met je code
+
+Reuse the existing referral functionality where possible.
+Do not duplicate referral logic.
+
+==================================================
+4. KEEP
+==================================================
+
+- keep current card shadows unless small refinement is needed
+- keep current profile stats logic
+- keep current referral functionality
+- keep current search profile add action working
+
+==================================================
+5. RESULT
+==================================================
+
+At the end, summarize:
+1. how the page title was restored
+2. how the avatar/name sizing changed
+3. how the stat label sizing changed
+4. how the two small cards were updated and ordered
+5. which files/components were changed
