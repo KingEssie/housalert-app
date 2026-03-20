@@ -56,6 +56,7 @@ import {
   HelpCircle,
   Loader2,
   X,
+  Heart,
 } from "lucide-react";
 import { TaskModal, PrepTaskModal } from "@/components/profile-strength";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
@@ -84,7 +85,7 @@ function relativeTime(dateStr: string | null | undefined, t: (key: string, param
 }
 
 type TabKey = "home" | "matches" | "filters" | "tips" | "profiel";
-type MatchSubTab = "nieuw" | "bekeken" | "gereageerd";
+type MatchSubTab = "nieuw" | "bekeken" | "gereageerd" | "favorieten";
 
 const CITY_GRADIENTS: Record<string, string> = {
   berlin: "from-[#222222] to-[#333333]",
@@ -142,9 +143,13 @@ function getMatchTab(match: ApiMatch): MatchSubTab {
 function MatchCard({
   match,
   onStatusChange,
+  isFavorited,
+  onToggleFavorite,
 }: {
   match: ApiMatch;
   onStatusChange: () => void;
+  isFavorited: boolean;
+  onToggleFavorite: (listingId: string) => void;
 }) {
   const [, navigate] = useLocation();
   const [imgError, setImgError] = useState(false);
@@ -156,6 +161,11 @@ function MatchCard({
     markViewed(match.listing_id);
     onStatusChange();
     navigate(`/apply/${match.listing_id}`);
+  }
+
+  function handleHeartClick(e: React.MouseEvent) {
+    e.stopPropagation();
+    onToggleFavorite(match.listing_id);
   }
 
   return (
@@ -190,6 +200,18 @@ function MatchCard({
             {match.source}
           </span>
         </div>
+
+        <button
+          onClick={handleHeartClick}
+          className="absolute top-3.5 right-3.5 w-9 h-9 rounded-full bg-white/95 backdrop-blur-md flex items-center justify-center shadow-[0_1px_4px_rgba(0,0,0,0.06)] active:scale-90 transition-transform"
+          data-testid={`button-favorite-${match.listing_id}`}
+        >
+          <Heart
+            className={`w-[18px] h-[18px] transition-colors ${
+              isFavorited ? "fill-[#2F6FEA] text-[#2F6FEA]" : "fill-none text-[#717171]"
+            }`}
+          />
+        </button>
       </div>
 
       <div className="px-0.5 pt-[10px]">
@@ -1048,11 +1070,14 @@ const MATCH_SUB_TAB_CONFIG: { key: MatchSubTab; labelKey: string; Icon: any }[] 
   { key: "nieuw", labelKey: "matches.subtabs.new", Icon: Sparkles },
   { key: "bekeken", labelKey: "matches.subtabs.viewed", Icon: Eye },
   { key: "gereageerd", labelKey: "matches.subtabs.applied", Icon: Send },
+  { key: "favorieten", labelKey: "matches.subtabs.favorites", Icon: Heart },
 ];
 
 function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undefined; setActiveTab: (tab: TabKey) => void }) {
   const [subTab, setSubTab] = useState<MatchSubTab>("nieuw");
   const [refreshKey, setRefreshKey] = useState(0);
+  const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
+  const [favoriteListings, setFavoriteListings] = useState<ApiMatch[]>([]);
   const [, navigate] = useLocation();
   const { t } = useTranslation();
   const { toast } = useToast();
@@ -1107,6 +1132,69 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
       .catch(() => {});
   }, [accessToken]);
 
+  useEffect(() => {
+    if (!accessToken) return;
+    apiFetch("/api/favorites", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.favoriteIds && Array.isArray(data.favoriteIds)) {
+          setFavoriteIds(new Set(data.favoriteIds));
+        }
+      })
+      .catch(() => {});
+  }, [accessToken]);
+
+  const fetchFavoriteListings = useCallback(() => {
+    if (!accessToken) return;
+    apiFetch("/api/favorites/listings", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.listings) setFavoriteListings(data.listings);
+      })
+      .catch(() => {});
+  }, [accessToken]);
+
+  useEffect(() => {
+    if (subTab === "favorieten") fetchFavoriteListings();
+  }, [subTab, fetchFavoriteListings]);
+
+  const toggleFavorite = useCallback(
+    async (listingId: string) => {
+      if (!accessToken) return;
+      const wasFavorited = favoriteIds.has(listingId);
+      setFavoriteIds((prev) => {
+        const next = new Set(prev);
+        if (wasFavorited) next.delete(listingId);
+        else next.add(listingId);
+        return next;
+      });
+
+      try {
+        const res = await apiFetch(`/api/favorites/${listingId}`, {
+          method: wasFavorited ? "DELETE" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        if (!res.ok) throw new Error("request failed");
+        if (subTab === "favorieten") fetchFavoriteListings();
+      } catch {
+        setFavoriteIds((prev) => {
+          const rollback = new Set(prev);
+          if (wasFavorited) rollback.add(listingId);
+          else rollback.delete(listingId);
+          return rollback;
+        });
+      }
+    },
+    [accessToken, favoriteIds, subTab, fetchFavoriteListings],
+  );
+
   const matches = apiMatchesQuery.data?.matches ?? [];
   const totalCount = apiMatchesQuery.data?.totalCount ?? 0;
 
@@ -1115,7 +1203,10 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
   }, []);
 
   const matchTabs = matches.map((m) => ({ ...m, _tab: getMatchTab(m) }));
-  const filteredMatches = matchTabs.filter((m) => m._tab === subTab);
+  const filteredMatches =
+    subTab === "favorieten"
+      ? favoriteListings
+      : matchTabs.filter((m) => m._tab === subTab);
 
   return (
     <div className="flex flex-col pb-8">
@@ -1194,6 +1285,15 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
             onCtaClick={() => setSubTab("nieuw")}
             testId="empty-applications"
           />
+        ) : subTab === "favorieten" ? (
+          <EmptyState
+            illustration={EMPTY_STATE_IMAGES.noFilters}
+            title={t("matches.emptyFavorites.title")}
+            description={t("matches.emptyFavorites.desc")}
+            ctaLabel={t("matches.discoverListings")}
+            onCtaClick={() => setSubTab("nieuw")}
+            testId="empty-favorites"
+          />
         ) : (
           <EmptyState
             illustration={EMPTY_STATE_IMAGES.noFilters}
@@ -1211,6 +1311,8 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
               key={m.listing_id}
               match={m}
               onStatusChange={refreshStatuses}
+              isFavorited={favoriteIds.has(m.listing_id)}
+              onToggleFavorite={toggleFavorite}
             />
           ))}
         </div>

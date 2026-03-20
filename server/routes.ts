@@ -1024,6 +1024,108 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/favorites", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { rows } = await pgPool.query(
+        "SELECT listing_id FROM favorites WHERE user_id = $1 ORDER BY created_at DESC",
+        [user.id]
+      );
+      return res.json({ favoriteIds: rows.map((r: any) => r.listing_id) });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/favorites/listings", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { rows: favRows } = await pgPool.query(
+        "SELECT listing_id FROM favorites WHERE user_id = $1 ORDER BY created_at DESC",
+        [user.id]
+      );
+      const favIds = favRows.map((r: any) => r.listing_id);
+      if (favIds.length === 0) return res.json({ listings: [] });
+
+      const { data: listings, error } = await supabase
+        .from("listings")
+        .select("id, title, price, size_m2, bedrooms, city, source, url, image_url, created_at, furnished, pets_allowed, district")
+        .in("id", favIds);
+
+      if (error) return res.status(500).json({ error: error.message });
+
+      const orderedListings = favIds
+        .map((id: string) => listings?.find((l: any) => l.id === id))
+        .filter(Boolean)
+        .map((l: any) => ({
+          listing_id: l.id,
+          title: l.title,
+          price: l.price,
+          size_m2: l.size_m2,
+          bedrooms: l.bedrooms,
+          city: l.city,
+          source: l.source,
+          url: l.url,
+          image_url: l.image_url,
+          created_at: l.created_at,
+          furnished: l.furnished,
+          pets_allowed: l.pets_allowed,
+          district: l.district,
+          match_score: 0,
+          match_reasons: [],
+        }));
+
+      return res.json({ listings: orderedListings });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/favorites/:listingId", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { listingId } = req.params;
+      await pgPool.query(
+        `INSERT INTO favorites (user_id, listing_id) VALUES ($1, $2)
+         ON CONFLICT (user_id, listing_id) DO NOTHING`,
+        [user.id, listingId]
+      );
+      return res.json({ favorited: true, listing_id: listingId });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.delete("/api/favorites/:listingId", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { listingId } = req.params;
+      await pgPool.query(
+        "DELETE FROM favorites WHERE user_id = $1 AND listing_id = $2",
+        [user.id, listingId]
+      );
+      return res.json({ favorited: false, listing_id: listingId });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   app.get("/api/listings/:id", async (req, res) => {
     try {
       const { id } = req.params;

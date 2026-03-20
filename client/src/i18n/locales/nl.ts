@@ -125,6 +125,7 @@ export const nl: Record<string, any> = {
       viewed: "Bekeken",
       saved: "Opgeslagen",
       applied: "Gereageerd",
+      favorites: "Favorieten",
     },
     emptyNew: {
       title: "Nog geen matches gevonden",
@@ -137,6 +138,10 @@ export const nl: Record<string, any> = {
     emptyApplied: {
       title: "Je hebt nog niet gereageerd",
       desc: "Reageer op woningen die je interessant vindt om je kansen te vergroten.",
+    },
+    emptyFavorites: {
+      title: "Nog geen favorieten",
+      desc: "Tik op het hartje bij een woning om deze als favoriet op te slaan.",
     },
     adjustFilters: "Filters aanpassen",
     loadError: "Kon matches niet laden",

@@ -23,6 +23,29 @@ export async function runStartupMigration() {
   await createActivationEventsTable();
   await createCancellationFeedbackTable();
   await ensureReferralSchema(pool);
+  await createFavoritesTable();
+}
+
+async function createFavoritesTable() {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS favorites (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL,
+        listing_id TEXT NOT NULL,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        UNIQUE(user_id, listing_id)
+      )
+    `);
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_favorites_user_id ON favorites(user_id)`);
+
+    const colCheck = await pool.query(
+      "SELECT column_name FROM information_schema.columns WHERE table_name = 'favorites' ORDER BY ordinal_position"
+    );
+    log(`[MIGRATION] favorites table OK (${colCheck.rows.length} columns)`, "migration");
+  } catch (err: any) {
+    log(`[MIGRATION] Error creating favorites: ${err.message}`, "migration");
+  }
 }
 
 async function createUserMatchesTable() {

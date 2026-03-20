@@ -101,6 +101,7 @@ export const en: Record<string, any> = {
       viewed: "Viewed",
       saved: "Saved",
       applied: "Applied",
+      favorites: "Favorites",
     },
     emptyNew: {
       title: "No matches found yet",
@@ -114,7 +115,12 @@ export const en: Record<string, any> = {
       title: "You haven't applied yet",
       desc: "Apply to listings you're interested in to increase your chances.",
     },
+    emptyFavorites: {
+      title: "No favorites yet",
+      desc: "Tap the heart icon on a listing to save it as a favorite.",
+    },
     adjustFilters: "Adjust filters",
+    discoverListings: "Discover listings",
     loadError: "Could not load matches",
     loadErrorDesc: "Check your connection and try again.",
     applyDirect: "Apply directly",

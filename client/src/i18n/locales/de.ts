@@ -119,6 +119,7 @@ export const de: Record<string, any> = {
       viewed: "Angesehen",
       saved: "Gespeichert",
       applied: "Beworben",
+      favorites: "Favoriten",
     },
     emptyNew: {
       title: "Noch keine Matches gefunden",
@@ -131,6 +132,10 @@ export const de: Record<string, any> = {
     emptyApplied: {
       title: "Du hast noch nicht reagiert",
       desc: "Bewirb dich auf Wohnungen, die dich interessieren, um deine Chancen zu erhöhen.",
+    },
+    emptyFavorites: {
+      title: "Noch keine Favoriten",
+      desc: "Tippe auf das Herz-Symbol bei einer Wohnung, um sie als Favorit zu speichern.",
     },
     adjustFilters: "Filter anpassen",
     loadError: "Matches konnten nicht geladen werden",
