@@ -119,7 +119,7 @@ export default function LoginPage() {
                   type="button"
                   onClick={handleForgotPassword}
                   disabled={resetLoading}
-                  className="self-end text-[13px] font-medium text-[#0D6EFD] hover:underline mt-1"
+                  className="self-end text-[13px] font-medium text-[#F97316] hover:underline mt-1"
                   data-testid="link-forgot-password"
                 >
                   {resetLoading ? t("common.loading") : t("auth.login.forgotPassword")}
@@ -127,7 +127,7 @@ export default function LoginPage() {
               </div>
               <Button
                 type="submit"
-                className="w-full h-[56px] rounded-full text-[16px] font-medium bg-[#0D6EFD] text-white"
+                className="w-full h-[56px] rounded-full text-[16px] font-medium bg-[#F97316] text-white"
                 disabled={loading}
                 data-testid="button-login-submit"
               >
@@ -141,7 +141,7 @@ export default function LoginPage() {
               {t("auth.login.noAccount")}{" "}
               <button
                 onClick={() => navigate("/onboarding/location")}
-                className="text-[#0D6EFD] font-medium hover:underline"
+                className="text-[#F97316] font-medium hover:underline"
                 data-testid="link-signup"
               >
                 {t("auth.login.createAccount")}

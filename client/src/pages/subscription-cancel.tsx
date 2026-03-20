@@ -78,7 +78,7 @@ export function SubscriptionCancelConfirmPage() {
           <div className="bg-card rounded-2xl border p-6" style={{ borderColor: "#E5E7EB" }}>
             <div className="flex items-center justify-center mb-5">
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ backgroundColor: "#F5F7FA" }}>
-                <MessageSquare className="w-7 h-7" style={{ color: "#0D6EFD" }} />
+                <MessageSquare className="w-7 h-7" style={{ color: "#F97316" }} />
               </div>
             </div>
 
@@ -96,7 +96,7 @@ export function SubscriptionCancelConfirmPage() {
                   onClick={() => setSelectedReason(key)}
                   className={`w-full text-left px-4 py-3 rounded-xl border text-[15px] font-medium transition-colors ${
                     selectedReason === key
-                      ? "border-[#0D6EFD] bg-[#EBF2FF] text-[#0D6EFD]"
+                      ? "border-[#F97316] bg-[#FFF7ED] text-[#F97316]"
                       : "border-[#E5E7EB] bg-white text-[#222222] hover:bg-[#F9FAFB]"
                   }`}
                   data-testid={`button-reason-${key}`}
@@ -148,7 +148,7 @@ export function SubscriptionCancelConfirmPage() {
         <div className="bg-card rounded-2xl border p-6" style={{ borderColor: "#E5E7EB" }}>
           <div className="flex items-center justify-center mb-5">
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ backgroundColor: "#F5F7FA" }}>
-              <AlertCircle className="w-7 h-7" style={{ color: "#0D6EFD" }} />
+              <AlertCircle className="w-7 h-7" style={{ color: "#F97316" }} />
             </div>
           </div>
 

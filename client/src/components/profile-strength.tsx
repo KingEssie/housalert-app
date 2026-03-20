@@ -237,7 +237,7 @@ export function ProfileStrengthCard() {
           className="h-full rounded-full transition-all duration-500"
           style={{
             width: `${pct}%`,
-            background: pct >= 30 ? "#0D6EFD" : "#717171",
+            background: pct >= 30 ? "#F97316" : "#717171",
           }}
           data-testid="progress-profile-strength"
         />
@@ -282,7 +282,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
             <span className="text-[13px] text-[#222222]">
               {t("profileStrength.tasksCompleted", { done: String(completedCount), total: String(totalCount) })}
             </span>
-            <span className="text-[13px] font-medium text-[#0D6EFD]">{percentage}%</span>
+            <span className="text-[13px] font-medium text-[#F97316]">{percentage}%</span>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -294,7 +294,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
                 cy="18"
                 r="15.5"
                 fill="none"
-                stroke="#0D6EFD"
+                stroke="#F97316"
                 strokeWidth="3"
                 strokeDasharray={`${(percentage / 100) * 97.4} 97.4`}
                 strokeLinecap="round"
@@ -328,8 +328,8 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
                 disabled={task.completed}
               >
                 {task.completed ? (
-                  <div className="w-5 h-5 rounded-full bg-[#0D6EFD]/10 flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="w-4 h-4 text-[#0D6EFD]" />
+                  <div className="w-5 h-5 rounded-full bg-[#F97316]/10 flex items-center justify-center flex-shrink-0">
+                    <CheckCircle2 className="w-4 h-4 text-[#F97316]" />
                   </div>
                 ) : (
                   <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
@@ -444,7 +444,7 @@ export function TaskModal({
               <p className="text-[14px] text-[#222222]">{t("profileStrength.alertsDesc")}</p>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard"); }}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium"
                 data-testid="button-goto-notifications"
               >
                 <Bell className="w-4 h-4 mr-2" />
@@ -468,7 +468,7 @@ export function TaskModal({
               <Button
                 onClick={() => handleSave({ search_buddy_email: buddyEmail }, t("profileStrength.buddySaved"))}
                 disabled={!buddyEmail.includes("@") || updateProfileData.isPending}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium disabled:opacity-50"
+                className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium disabled:opacity-50"
                 data-testid="button-save-buddy"
               >
                 {updateProfileData.isPending ? t("profileStrength.saving") : t("profileStrength.save")}
@@ -483,7 +483,7 @@ export function TaskModal({
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard?tab=filters"); }}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium"
                 data-testid="button-goto-filters"
               >
                 <Search className="w-4 h-4 mr-2" />
@@ -499,7 +499,7 @@ export function TaskModal({
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/application-letter"); }}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium"
                 data-testid="button-goto-letter"
               >
                 <FileText className="w-4 h-4 mr-2" />
@@ -539,7 +539,7 @@ export function TaskModal({
               <Button
                 onClick={() => handleSave({ document_checklist: checklist }, t("profileStrength.docListSaved"))}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium disabled:opacity-50"
+                className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium disabled:opacity-50"
                 data-testid="button-save-documents"
               >
                 {updateProfileData.isPending ? t("profileStrength.saving") : t("profileStrength.save")}
@@ -561,7 +561,7 @@ export function TaskModal({
               <p className="text-[14px] text-[#222222]">{t("profileStrength.phoneDesc")}</p>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard"); }}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium"
                 data-testid="button-goto-phone-settings"
               >
                 <Phone className="w-4 h-4 mr-2" />
@@ -617,7 +617,7 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
             <span className="text-[13px] text-[#222222]">
               {t("profileStrength.tasksCompleted", { done: String(prepCompletedCount), total: String(prepTotalCount) })}
             </span>
-            <span className="text-[13px] font-medium text-[#0D6EFD]">{percentage}%</span>
+            <span className="text-[13px] font-medium text-[#F97316]">{percentage}%</span>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -629,7 +629,7 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
                 cy="18"
                 r="15.5"
                 fill="none"
-                stroke="#0D6EFD"
+                stroke="#F97316"
                 strokeWidth="3"
                 strokeDasharray={`${(percentage / 100) * 97.4} 97.4`}
                 strokeLinecap="round"
@@ -663,8 +663,8 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
                 disabled={task.completed}
               >
                 {task.completed ? (
-                  <div className="w-5 h-5 rounded-full bg-[#0D6EFD]/10 flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="w-4 h-4 text-[#0D6EFD]" />
+                  <div className="w-5 h-5 rounded-full bg-[#F97316]/10 flex items-center justify-center flex-shrink-0">
+                    <CheckCircle2 className="w-4 h-4 text-[#F97316]" />
                   </div>
                 ) : (
                   <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
@@ -747,7 +747,7 @@ export function PrepTaskModal({
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium"
                 data-testid="button-prep-create-profile"
               >
                 <Search className="w-4 h-4 mr-2" />
@@ -763,7 +763,7 @@ export function PrepTaskModal({
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/application-letter"); }}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium"
                 data-testid="button-prep-goto-letter"
               >
                 <FileText className="w-4 h-4 mr-2" />
@@ -787,7 +787,7 @@ export function PrepTaskModal({
               </div>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium"
                 data-testid="button-prep-add-profile"
               >
                 <Plus className="w-4 h-4 mr-2" />
@@ -817,7 +817,7 @@ export function PrepTaskModal({
               <Button
                 onClick={() => handleMarkDone("network_task_done")}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium disabled:opacity-50"
+                className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium disabled:opacity-50"
                 data-testid="button-mark-network-done"
               >
                 {updateProfileData.isPending ? t("profileStrength.saving") : t("profileStrength.markComplete")}
@@ -832,7 +832,7 @@ export function PrepTaskModal({
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/tips/bezichtiging"); }}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium"
                 data-testid="button-goto-viewing-tips"
               >
                 <Eye className="w-4 h-4 mr-2" />

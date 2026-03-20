@@ -79,7 +79,7 @@ export function ReferralCodeModal({ open, onClose, code, loading }: ReferralCode
           <button
             onClick={handleCopy}
             disabled={!code}
-            className="flex-1 h-[48px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-medium flex items-center justify-center gap-2 active:scale-[0.97] transition-transform disabled:opacity-50"
+            className="flex-1 h-[48px] rounded-full bg-[#F97316] text-white text-[15px] font-medium flex items-center justify-center gap-2 active:scale-[0.97] transition-transform disabled:opacity-50"
             data-testid="button-copy-referral"
           >
             {copied ? (

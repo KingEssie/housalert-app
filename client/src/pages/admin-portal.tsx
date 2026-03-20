@@ -62,7 +62,7 @@ function SectionHeader({ title, action }: { title: string; action?: { label: str
   return (
     <div className="flex items-center justify-between mb-3">
       <h3 className="text-[15px] font-bold text-[#1a1f36]">{title}</h3>
-      {action && <button onClick={action.onClick} className="text-[12px] font-medium text-[#0D6EFD]" data-testid={`action-${title.toLowerCase().replace(/\s/g, "-")}`}>{action.label}</button>}
+      {action && <button onClick={action.onClick} className="text-[12px] font-medium text-[#F97316]" data-testid={`action-${title.toLowerCase().replace(/\s/g, "-")}`}>{action.label}</button>}
     </div>
   );
 }
@@ -102,7 +102,7 @@ function EmptyState({ title, message, onRetry }: { title: string; message: strin
 function LoadingState() {
   return (
     <div className="flex items-center justify-center py-16">
-      <Loader2 className="w-7 h-7 text-[#0D6EFD] animate-spin" />
+      <Loader2 className="w-7 h-7 text-[#F97316] animate-spin" />
     </div>
   );
 }
@@ -572,7 +572,7 @@ function SourcesTab() {
                 <div key={l.id} className="px-4 py-3" data-testid={`listing-card-${l.id}`}>
                   <div className="flex items-center justify-between mb-1">
                     <p className="text-[13px] font-semibold text-[#1a1f36] truncate flex-1 mr-2">{l.title || "Untitled"}</p>
-                    {l.url && <a href={l.url} target="_blank" rel="noopener noreferrer" className="text-[#0D6EFD] flex-shrink-0" data-testid={`link-listing-${l.id}`}><ExternalLink className="w-3.5 h-3.5" /></a>}
+                    {l.url && <a href={l.url} target="_blank" rel="noopener noreferrer" className="text-[#F97316] flex-shrink-0" data-testid={`link-listing-${l.id}`}><ExternalLink className="w-3.5 h-3.5" /></a>}
                   </div>
                   <div className="flex items-center gap-2 text-[11px] text-gray-400">
                     <Badge variant="secondary" className="text-[10px] px-1.5 py-0">{l.source}</Badge>
@@ -602,7 +602,7 @@ function UserDetailView({ detail, onBack }: { detail: any; onBack: () => void })
 
   return (
     <div className="space-y-4 pb-4">
-      <button onClick={onBack} className="flex items-center gap-1.5 text-[13px] text-[#0D6EFD] font-medium" data-testid="button-back-users">
+      <button onClick={onBack} className="flex items-center gap-1.5 text-[13px] text-[#F97316] font-medium" data-testid="button-back-users">
         <ArrowLeft className="w-4 h-4" /> Back
       </button>
 
@@ -645,7 +645,7 @@ function UserDetailView({ detail, onBack }: { detail: any; onBack: () => void })
             <div className="flex justify-between"><span className="text-gray-400">Trial ends</span><span className="font-medium">{subscription.trial_ends_at ? new Date(subscription.trial_ends_at).toLocaleDateString() : "—"}</span></div>
             <div className="flex justify-between"><span className="text-gray-400">Period ends</span><span className="font-medium">{subscription.current_period_ends_at ? new Date(subscription.current_period_ends_at).toLocaleDateString() : "—"}</span></div>
             {subscription.stripe_subscription_id && (
-              <a href={`https://dashboard.stripe.com/subscriptions/${subscription.stripe_subscription_id}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-[#0D6EFD] text-[12px] font-medium" data-testid="link-stripe-sub">
+              <a href={`https://dashboard.stripe.com/subscriptions/${subscription.stripe_subscription_id}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-[#F97316] text-[12px] font-medium" data-testid="link-stripe-sub">
                 <ExternalLink className="w-3 h-3" /> View in Stripe
               </a>
             )}
@@ -743,7 +743,7 @@ function SubscriptionsSection() {
                 <span>{s.plan || "—"}</span>
                 <span>{s.created_at ? new Date(s.created_at).toLocaleDateString() : ""}</span>
                 {s.stripe_subscription_id && (
-                  <a href={`https://dashboard.stripe.com/subscriptions/${s.stripe_subscription_id}`} target="_blank" rel="noopener noreferrer" className="text-[#0D6EFD] flex items-center gap-0.5 ml-auto" data-testid={`link-stripe-${s.id}`}>
+                  <a href={`https://dashboard.stripe.com/subscriptions/${s.stripe_subscription_id}`} target="_blank" rel="noopener noreferrer" className="text-[#F97316] flex items-center gap-0.5 ml-auto" data-testid={`link-stripe-${s.id}`}>
                     <ExternalLink className="w-3 h-3" /> Stripe
                   </a>
                 )}
@@ -1121,7 +1121,7 @@ export default function AdminPortalPage() {
       });
   }, [user]);
 
-  if (checking) return <div className="min-h-screen bg-[#f8f9fb] flex items-center justify-center"><Loader2 className="w-7 h-7 text-[#0D6EFD] animate-spin" /></div>;
+  if (checking) return <div className="min-h-screen bg-[#f8f9fb] flex items-center justify-center"><Loader2 className="w-7 h-7 text-[#F97316] animate-spin" /></div>;
 
   if (!user) {
     return (
@@ -1155,7 +1155,7 @@ export default function AdminPortalPage() {
         <div className="max-w-lg mx-auto px-4 h-[52px] flex items-center gap-3">
           <HousAlertLogo size={28} />
           <div className="flex-1" />
-          <button onClick={() => navigate("/dashboard")} className="text-[12px] text-gray-400 hover:text-[#0D6EFD] font-medium" data-testid="link-back-app">Back to app</button>
+          <button onClick={() => navigate("/dashboard")} className="text-[12px] text-gray-400 hover:text-[#F97316] font-medium" data-testid="link-back-app">Back to app</button>
         </div>
       </header>
 
@@ -1175,11 +1175,11 @@ export default function AdminPortalPage() {
               <button
                 key={id}
                 onClick={() => setActiveTab(id)}
-                className={`flex-1 flex flex-col items-center gap-0.5 py-2.5 transition-colors ${active ? "text-[#0D6EFD]" : "text-gray-400"}`}
+                className={`flex-1 flex flex-col items-center gap-0.5 py-2.5 transition-colors ${active ? "text-[#F97316]" : "text-gray-400"}`}
                 data-testid={`tab-${id}`}
               >
-                <Icon className={`w-5 h-5 ${active ? "text-[#0D6EFD]" : "text-gray-300"}`} strokeWidth={active ? 2.5 : 1.5} />
-                <span className={`text-[10px] font-semibold ${active ? "text-[#0D6EFD]" : "text-gray-400"}`}>{label}</span>
+                <Icon className={`w-5 h-5 ${active ? "text-[#F97316]" : "text-gray-300"}`} strokeWidth={active ? 2.5 : 1.5} />
+                <span className={`text-[10px] font-semibold ${active ? "text-[#F97316]" : "text-gray-400"}`}>{label}</span>
               </button>
             );
           })}

@@ -157,7 +157,7 @@ export default function ListingDetailPage() {
           <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-8 text-center">
             <p className="text-[18px] font-medium text-[#222222] mb-2">{t("listing.notFound")}</p>
             <p className="text-[13px] text-[#222222] mb-4">{t("listing.notFoundDesc")}</p>
-            <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-medium" data-testid="button-back-dashboard">
+            <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-full bg-[#F97316] text-white text-[15px] font-medium" data-testid="button-back-dashboard">
               {t("listing.backToDashboard")}
             </Button>
           </div>
@@ -262,7 +262,7 @@ export default function ListingDetailPage() {
                 </div>
                 <div>
                   <p className="text-[12px] text-[#222222]">{t("listing.source")}</p>
-                  <p className="text-[15px] font-medium capitalize" style={{ color: "#0D6EFD" }} data-testid="text-listing-source">{listing.source}</p>
+                  <p className="text-[15px] font-medium capitalize" style={{ color: "#F97316" }} data-testid="text-listing-source">{listing.source}</p>
                 </div>
               </div>
 
@@ -329,7 +329,7 @@ export default function ListingDetailPage() {
           )}
           <Button
             onClick={() => navigate(`/apply/${listing.id}`)}
-            className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-medium flex items-center justify-center gap-2"
+            className="w-full h-[56px] rounded-full bg-[#F97316] text-white text-[15px] font-medium flex items-center justify-center gap-2"
             data-testid="button-reageer-detail"
           >
             <Zap className="w-4 h-4" />

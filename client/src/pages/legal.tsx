@@ -22,7 +22,7 @@ function LegalLayout({ title, children }: { title: string; children: React.React
         <button
           onClick={() => navigate("/")}
           className="flex items-center gap-1.5 text-[13px] font-medium mb-6"
-          style={{ color: "#0D6EFD" }}
+          style={{ color: "#F97316" }}
           data-testid="button-back-home"
         >
           <ArrowLeft className="w-4 h-4" />

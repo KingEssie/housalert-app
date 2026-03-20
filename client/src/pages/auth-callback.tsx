@@ -51,7 +51,7 @@ export default function AuthCallbackPage() {
         <p className="text-[#222222] font-medium text-lg mb-4" data-testid="text-auth-error">{error}</p>
         <button
           onClick={() => navigate("/login")}
-          className="min-h-[56px] px-8 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-medium text-[16px] transition-colors"
+          className="min-h-[56px] px-8 rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white font-medium text-[16px] transition-colors"
           data-testid="button-go-login"
         >
           {t("authCallback.goToLogin")}
@@ -62,7 +62,7 @@ export default function AuthCallbackPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#FFFFFF]">
-      <Loader2 className="w-8 h-8 animate-spin text-[#0D6EFD]" />
+      <Loader2 className="w-8 h-8 animate-spin text-[#F97316]" />
       <p className="mt-4 text-[#222222] font-medium" data-testid="text-auth-verifying">{t("authCallback.verifying")}</p>
     </div>
   );

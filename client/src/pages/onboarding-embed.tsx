@@ -35,18 +35,18 @@ function EstimateBlock({ city, maxPrice }: { city: string; maxPrice: string }) {
 
   return (
     <div
-      className="flex items-center gap-3 bg-gradient-to-r from-[#EBF2FF] to-[#EBF2FF] rounded-2xl px-4 py-3.5"
+      className="flex items-center gap-3 bg-gradient-to-r from-[#FFF7ED] to-[#FFF7ED] rounded-2xl px-4 py-3.5"
       data-testid="embed-estimate-block"
     >
-      <div className="w-9 h-9 rounded-full bg-[#0D6EFD] flex items-center justify-center flex-shrink-0">
+      <div className="w-9 h-9 rounded-full bg-[#F97316] flex items-center justify-center flex-shrink-0">
         <Sparkles className="w-4 h-4 text-white" />
       </div>
       <div className="flex-1 min-w-0">
         {loading ? (
-          <div className="h-4 w-48 bg-[#EBF2FF] rounded animate-pulse" />
+          <div className="h-4 w-48 bg-[#FFF7ED] rounded animate-pulse" />
         ) : estimate !== null ? (
           <p className="text-[13px] sm:text-[14px] font-medium text-[#222222] leading-snug">
-            <span className="text-[#0D6EFD] text-[15px] font-medium">{getMatchEstimateRange(estimate).low}–{getMatchEstimateRange(estimate).high}</span> {t("onboardingEmbed.matchesPerWeek")}
+            <span className="text-[#F97316] text-[15px] font-medium">{getMatchEstimateRange(estimate).low}–{getMatchEstimateRange(estimate).high}</span> {t("onboardingEmbed.matchesPerWeek")}
           </p>
         ) : null}
       </div>
@@ -60,8 +60,8 @@ function CompletionScreen({ draftId }: { draftId: string }) {
 
   return (
     <div className="flex flex-col items-center justify-center px-6 py-10 text-center">
-      <div className="w-[56px] h-[56px] rounded-2xl bg-[#EBF2FF] flex items-center justify-center mb-5">
-        <Check className="w-7 h-7 text-[#0D6EFD]" />
+      <div className="w-[56px] h-[56px] rounded-2xl bg-[#FFF7ED] flex items-center justify-center mb-5">
+        <Check className="w-7 h-7 text-[#F97316]" />
       </div>
 
       <h2 className="text-[20px] font-medium text-[#222222] mb-1.5 tracking-wide" data-testid="embed-text-done-title">
@@ -75,7 +75,7 @@ function CompletionScreen({ draftId }: { draftId: string }) {
         <a
           href={continueUrl}
           target="_top"
-          className="w-full min-h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-medium text-[15px] transition-all flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.3)]"
+          className="w-full min-h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white font-medium text-[15px] transition-all flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.3)]"
           data-testid="embed-link-continue-browser"
         >
           <ExternalLink className="w-4 h-4" />
@@ -236,7 +236,7 @@ export default function OnboardingEmbedPage() {
                     onClick={() => setPropertyType(pt.value)}
                     className={`px-3.5 py-[7px] rounded-full text-[13px] font-medium transition-all ${
                       propertyType === pt.value
-                        ? "bg-[#0D6EFD] text-white shadow-sm"
+                        ? "bg-[#F97316] text-white shadow-sm"
                         : "bg-[#F5F7FA] text-[#222222]"
                     }`}
                     data-testid={`embed-chip-property-${pt.value}`}
@@ -298,7 +298,7 @@ export default function OnboardingEmbedPage() {
             <button
               onClick={handleSubmit}
               disabled={!canSubmit || submitting}
-              className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] active:scale-[0.98] text-white font-medium text-[16px] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 shadow-[0_2px_12px_rgba(0,0,0,0.35)]"
+              className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] active:scale-[0.98] text-white font-medium text-[16px] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 shadow-[0_2px_12px_rgba(0,0,0,0.35)]"
               data-testid="embed-button-submit"
             >
               {submitting ? (

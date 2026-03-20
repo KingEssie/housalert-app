@@ -117,7 +117,7 @@ export default function ProfileEditPage() {
               onChange={e => setValue(e.target.value)}
               placeholder={config.placeholder}
               aria-label={config.label}
-              className="w-full bg-[#F3F4F6] rounded-[20px] pl-6 pr-12 py-4 text-[16px] text-[#222222] placeholder:text-[#717171] border border-transparent focus:border-[#0D6EFD] focus:shadow-[0_0_0_3px_rgba(13,110,253,0.08)] focus:outline-none transition-all h-[60px]"
+              className="w-full bg-[#F3F4F6] rounded-[20px] pl-6 pr-12 py-4 text-[16px] text-[#222222] placeholder:text-[#717171] border border-transparent focus:border-[#F97316] focus:shadow-[0_0_0_3px_rgba(249,115,22,0.08)] focus:outline-none transition-all h-[60px]"
               data-testid="input-edit-field"
             />
             {value && (
@@ -142,7 +142,7 @@ export default function ProfileEditPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="h-[48px] px-10 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium flex items-center justify-center transition-colors disabled:opacity-50"
+              className="h-[48px] px-10 rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium flex items-center justify-center transition-colors disabled:opacity-50"
               data-testid="button-save-field"
             >
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : t("common.save")}

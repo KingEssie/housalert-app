@@ -36,7 +36,7 @@ export function EmptyState({ illustration, title, description, ctaLabel, onCtaCl
       </p>
       <button
         onClick={onCtaClick}
-        className="h-[48px] px-8 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-medium transition-colors"
+        className="h-[48px] px-8 rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[15px] font-medium transition-colors"
         data-testid="button-empty-cta"
       >
         {ctaLabel}

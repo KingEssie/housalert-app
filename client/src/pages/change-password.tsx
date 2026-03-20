@@ -163,7 +163,7 @@ export default function ChangePasswordPage() {
               </button>
             </div>
             {newTooShort && (
-              <p className="text-[13px] mt-1.5" style={{ color: "#0D6EFD" }} data-testid="text-error-min-length">
+              <p className="text-[13px] mt-1.5" style={{ color: "#F97316" }} data-testid="text-error-min-length">
                 {t("changePassword.minLength")}
               </p>
             )}
@@ -193,7 +193,7 @@ export default function ChangePasswordPage() {
               </button>
             </div>
             {mismatch && (
-              <p className="text-[13px] mt-1.5" style={{ color: "#0D6EFD" }} data-testid="text-error-mismatch">
+              <p className="text-[13px] mt-1.5" style={{ color: "#F97316" }} data-testid="text-error-mismatch">
                 {t("changePassword.mismatch")}
               </p>
             )}
@@ -209,7 +209,7 @@ export default function ChangePasswordPage() {
             disabled={!canSubmit}
             className={`w-full h-[52px] rounded-full font-medium text-[16px] transition-colors flex items-center justify-center ${
               canSubmit
-                ? "bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white"
+                ? "bg-[#F97316] hover:bg-[#EA580C] text-white"
                 : "bg-[#E5E7EB] text-[#717171] cursor-not-allowed"
             }`}
             data-testid="button-submit-password"

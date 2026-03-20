@@ -111,7 +111,7 @@ export default function DocumentsPage() {
                   data-testid={`doc-${key}`}
                 >
                   {checked ? (
-                    <CheckCircle2 className="w-5 h-5 text-[#0D6EFD] flex-shrink-0" />
+                    <CheckCircle2 className="w-5 h-5 text-[#F97316] flex-shrink-0" />
                   ) : (
                     <Circle className="w-5 h-5 text-[#D1D5DB] flex-shrink-0" />
                   )}

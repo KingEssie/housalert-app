@@ -82,9 +82,9 @@ export default function SubscriptionSuccessPage() {
       <div className="text-center max-w-sm">
         <div className="w-16 h-16 rounded-full bg-[#E8FFF5] flex items-center justify-center mx-auto mb-5">
           {syncing ? (
-            <Loader2 className="w-8 h-8 text-[#0D6EFD] animate-spin" />
+            <Loader2 className="w-8 h-8 text-[#F97316] animate-spin" />
           ) : (
-            <CheckCircle className="w-8 h-8 text-[#0D6EFD]" />
+            <CheckCircle className="w-8 h-8 text-[#F97316]" />
           )}
         </div>
         <h1 className="text-[22px] font-medium text-[#222222] mb-2" data-testid="text-success-title">

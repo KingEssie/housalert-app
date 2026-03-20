@@ -88,7 +88,7 @@ export default function OnboardingFiltersPage() {
             <div
               key={step}
               className={`w-2 h-2 rounded-full transition-all ${
-                step <= 2 ? "bg-[#0D6EFD]" : "bg-[#D1D5DB]"
+                step <= 2 ? "bg-[#F97316]" : "bg-[#D1D5DB]"
               }`}
               data-testid={`dot-step-${step}`}
             />
@@ -180,7 +180,7 @@ export default function OnboardingFiltersPage() {
         {isEmbedded ? (
           <div className="mt-3">
             <Button
-              className="w-full h-[48px] rounded-full text-[15px] font-medium shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7]"
+              className="w-full h-[48px] rounded-full text-[15px] font-medium shadow-none bg-[#F97316] hover:bg-[#EA580C]"
               onClick={handleNext}
               data-testid="button-next-filters"
             >
@@ -191,7 +191,7 @@ export default function OnboardingFiltersPage() {
               <p className="text-center text-[14px] text-[#717171] mt-3" data-testid="text-embed-estimate">
                 {estimateLoading ? (
                   <span className="flex items-center justify-center gap-2">
-                    <Loader2 className="w-4 h-4 animate-spin text-[#0D6EFD]" />
+                    <Loader2 className="w-4 h-4 animate-spin text-[#F97316]" />
                   </span>
                 ) : (
                   t("embedFilters.estimateText", getMatchEstimateRange(estimate ?? 0))
@@ -210,7 +210,7 @@ export default function OnboardingFiltersPage() {
               {t("onboardingFilters.back")}
             </Button>
             <Button
-              className="flex-1 h-[48px] rounded-full text-[15px] font-medium shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7]"
+              className="flex-1 h-[48px] rounded-full text-[15px] font-medium shadow-none bg-[#F97316] hover:bg-[#EA580C]"
               onClick={handleNext}
               data-testid="button-next-filters"
             >

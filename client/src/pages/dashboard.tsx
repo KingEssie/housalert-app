@@ -362,7 +362,7 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
         <h2 className="text-section-title">{t("home.recentMatches")}</h2>
         <button
           onClick={() => setActiveTab("matches")}
-          className="text-[13px] font-medium text-[#0D6EFD] flex items-center gap-0.5"
+          className="text-[13px] font-medium text-[#F97316] flex items-center gap-0.5"
           data-testid="button-view-all-matches"
         >
           {t("home.viewAll")}
@@ -391,7 +391,7 @@ function RecentMatchCard({ match }: { match: ApiMatch }) {
     <div
       role="button"
       tabIndex={0}
-      className="flex-shrink-0 w-[72vw] max-w-[280px] cursor-pointer transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-[#0D6EFD]/40 rounded-[20px]"
+      className="flex-shrink-0 w-[72vw] max-w-[280px] cursor-pointer transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-[#F97316]/40 rounded-[20px]"
       onClick={() => {
         markViewed(match.listing_id);
         navigate(`/apply/${match.listing_id}`);
@@ -498,7 +498,7 @@ function RecentlyViewedCard({ match }: { match: ApiMatch }) {
     <div
       role="button"
       tabIndex={0}
-      className="flex-shrink-0 w-[28vw] max-w-[130px] cursor-pointer snap-start transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-[#0D6EFD]/40 rounded-[16px]"
+      className="flex-shrink-0 w-[28vw] max-w-[130px] cursor-pointer snap-start transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-[#F97316]/40 rounded-[16px]"
       onClick={() => navigate(`/apply/${match.listing_id}`)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -687,7 +687,7 @@ function ProgressRing({ progress, size = 44, strokeWidth = 3.5 }: { progress: nu
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="flex-shrink-0 -rotate-90">
       <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#F3F4F6" strokeWidth={strokeWidth} />
       <circle
-        cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#0D6EFD"
+        cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#F97316"
         strokeWidth={strokeWidth} strokeLinecap="round"
         strokeDasharray={circumference} strokeDashoffset={offset}
         className="transition-all duration-700 ease-out"
@@ -901,7 +901,7 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
           {hasMore && (
             <button
               onClick={() => setExpanded(!expanded)}
-              className="w-full mt-1 text-[13px] font-medium text-[#0D6EFD] py-2"
+              className="w-full mt-1 text-[13px] font-medium text-[#F97316] py-2"
               data-testid="button-expand-tasks"
             >
               {expanded ? t("activation.showLess") : t("activation.showMore", { count: sortedTasks.length - INITIAL_SHOW })}
@@ -973,7 +973,7 @@ function HomeTab({
       <div className="flex flex-col gap-7 px-6 mt-1">
 
       <div className="rounded-[20px] bg-white border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5" data-testid="card-home-referral">
-        <p className="text-[11px] font-semibold text-[#0D6EFD] tracking-wider uppercase mb-1" data-testid="text-referral-label">
+        <p className="text-[11px] font-semibold text-[#F97316] tracking-wider uppercase mb-1" data-testid="text-referral-label">
           {t("referral.homeLabel")}
         </p>
         <p className="text-[16px] font-medium text-[#222222] leading-snug" data-testid="text-referral-body">
@@ -984,7 +984,7 @@ function HomeTab({
         </p>
         <button
           onClick={() => setReferralModalOpen(true)}
-          className="mt-4 h-[42px] px-6 rounded-xl bg-[#0D6EFD] text-white text-[14px] font-medium transition-all hover:bg-[#0B5ED7] active:scale-[0.97] inline-flex items-center gap-2"
+          className="mt-4 h-[42px] px-6 rounded-xl bg-[#F97316] text-white text-[14px] font-medium transition-all hover:bg-[#EA580C] active:scale-[0.97] inline-flex items-center gap-2"
           data-testid="button-home-referral-cta"
         >
           {t("referral.promoCta")}
@@ -1013,7 +1013,7 @@ function HomeTab({
           </p>
           <button
             onClick={() => navigate("/paywall")}
-            className="text-[13px] font-medium text-[#0D6EFD] hover:underline flex-shrink-0"
+            className="text-[13px] font-medium text-[#F97316] hover:underline flex-shrink-0"
             data-testid="button-trial-upgrade"
           >
             {t("home.upgrade")}
@@ -1151,7 +1151,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           <p className="text-[14px] text-[#717171] leading-relaxed">{t("matches.loadErrorDesc")}</p>
           <button
             onClick={() => apiMatchesQuery.refetch()}
-            className="text-[13px] font-medium text-[#0D6EFD]"
+            className="text-[13px] font-medium text-[#F97316]"
             data-testid="button-retry-matches"
           >
             {t("common.retry")}
@@ -1223,7 +1223,7 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
       </header>
 
       <main className="flex-1 flex flex-col items-center justify-center px-6">
-        <div className="w-16 h-16 rounded-2xl bg-[#0D6EFD] flex items-center justify-center mb-6">
+        <div className="w-16 h-16 rounded-2xl bg-[#F97316] flex items-center justify-center mb-6">
           <Trash2 className="w-8 h-8 text-white" />
         </div>
         <h2 className="text-[22px] font-medium text-[#222222] mb-3 text-center" data-testid="text-delete-title">
@@ -1235,7 +1235,7 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
         <div className="w-full max-w-[320px] flex flex-col gap-3">
           <button
             onClick={onConfirm}
-            className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[16px] font-medium transition-colors hover:opacity-90"
+            className="w-full h-[56px] rounded-full bg-[#F97316] text-white text-[16px] font-medium transition-colors hover:opacity-90"
             data-testid="button-delete-confirm"
           >
             {t("filters.deleteYes")}
@@ -1327,7 +1327,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
             {!atLimit && (
               <button
                 onClick={() => navigate("/dashboard/searches/new")}
-                className="w-14 h-14 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] flex items-center justify-center text-white transition-colors shadow-[0_4px_12px_rgba(13,110,253,0.3)] mb-5"
+                className="w-14 h-14 rounded-full bg-[#F97316] hover:bg-[#EA580C] flex items-center justify-center text-white transition-colors shadow-[0_4px_12px_rgba(249,115,22,0.3)] mb-5"
                 data-testid="button-add-search-card"
               >
                 <Plus className="w-6 h-6" />
@@ -1379,7 +1379,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
           )}
 
           <div className="flex flex-col">
-            <label className="w-full h-[52px] flex items-center justify-center gap-2 rounded-full bg-[#0D6EFD] text-white text-[15px] font-medium cursor-pointer active:bg-[#0B5ED7] transition-colors">
+            <label className="w-full h-[52px] flex items-center justify-center gap-2 rounded-full bg-[#F97316] text-white text-[15px] font-medium cursor-pointer active:bg-[#EA580C] transition-colors">
               <Camera className="w-[18px] h-[18px]" />
               {photoUrl ? t("profile.photo.choose") : t("profile.photo.upload")}
               <input
@@ -1681,7 +1681,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
     : t("profile.freeStatus");
 
   const subStatusColor = subscription.isActive && !subscription.isTrial
-    ? "text-[#0D6EFD] bg-[#EBF2FF]"
+    ? "text-[#F97316] bg-[#FFF7ED]"
     : subscription.isTrial
     ? "text-[#D97706] bg-[#FEF3C7]"
     : "text-[#717171] bg-[#F3F4F6]";
@@ -1785,7 +1785,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
             <button
               onClick={() => navigate("/paywall")}
-              className="w-full h-[48px] rounded-xl bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[14px] font-medium transition-colors flex items-center justify-center gap-2"
+              className="w-full h-[48px] rounded-xl bg-[#F97316] hover:bg-[#EA580C] text-white text-[14px] font-medium transition-colors flex items-center justify-center gap-2"
               data-testid="button-upgrade-subscription"
             >
               <Crown className="w-4 h-4" />
@@ -1808,7 +1808,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                     <button
                       onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
                       disabled={notifUpdating === "push_enabled"}
-                      className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.push_enabled ? "bg-[#0D6EFD]" : "bg-[#E5E7EB]"} ${notifUpdating === "push_enabled" ? "opacity-50" : ""}`}
+                      className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.push_enabled ? "bg-[#F97316]" : "bg-[#E5E7EB]"} ${notifUpdating === "push_enabled" ? "opacity-50" : ""}`}
                       data-testid="toggle-push"
                     >
                       <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.push_enabled ? "left-[23px]" : "left-[3px]"}`} />
@@ -1819,7 +1819,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                     <button
                       onClick={() => handleToggleNotif("email_enabled", !!notifSettings?.email_enabled)}
                       disabled={notifUpdating === "email_enabled"}
-                      className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.email_enabled ? "bg-[#0D6EFD]" : "bg-[#E5E7EB]"} ${notifUpdating === "email_enabled" ? "opacity-50" : ""}`}
+                      className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.email_enabled ? "bg-[#F97316]" : "bg-[#E5E7EB]"} ${notifUpdating === "email_enabled" ? "opacity-50" : ""}`}
                       data-testid="toggle-email"
                     >
                       <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.email_enabled ? "left-[23px]" : "left-[3px]"}`} />
@@ -1879,7 +1879,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                         onKeyDown={e => { if (e.key === "Enter") handleBuddyInvite(); }}
                         placeholder={t("profileEdit.searchBuddyPlaceholder")}
                         autoFocus
-                        className="w-full bg-white rounded-2xl px-5 py-4 text-[16px] text-[#222222] placeholder:text-[#C4C4C4] border border-[#E5E7EB] focus:border-[#0D6EFD] focus:shadow-[0_0_0_3px_rgba(13,110,253,0.08)] focus:outline-none transition-all h-[56px]"
+                        className="w-full bg-white rounded-2xl px-5 py-4 text-[16px] text-[#222222] placeholder:text-[#C4C4C4] border border-[#E5E7EB] focus:border-[#F97316] focus:shadow-[0_0_0_3px_rgba(249,115,22,0.08)] focus:outline-none transition-all h-[56px]"
                         data-testid="input-buddy-email"
                       />
                       {buddyEmail && (
@@ -2046,11 +2046,11 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                   <button
                     key={opt.code}
                     onClick={() => handleLanguageChange(opt.code)}
-                    className={`flex items-center justify-between px-5 py-4 rounded-xl transition-all ${selected ? "bg-[#EFF6FF] shadow-[0_1px_4px_rgba(13,110,253,0.08)]" : "hover:bg-[#F8F9FA] active:bg-[#F3F4F6]"}`}
+                    className={`flex items-center justify-between px-5 py-4 rounded-xl transition-all ${selected ? "bg-[#EFF6FF] shadow-[0_1px_4px_rgba(249,115,22,0.08)]" : "hover:bg-[#F8F9FA] active:bg-[#F3F4F6]"}`}
                     data-testid={`button-lang-${opt.code}`}
                   >
-                    <span className={`text-[15px] font-medium ${selected ? "text-[#0D6EFD]" : "text-[#222222]"}`}>{opt.label}</span>
-                    {selected && <CheckCircle2 className="w-5 h-5 text-[#0D6EFD]" />}
+                    <span className={`text-[15px] font-medium ${selected ? "text-[#F97316]" : "text-[#222222]"}`}>{opt.label}</span>
+                    {selected && <CheckCircle2 className="w-5 h-5 text-[#F97316]" />}
                   </button>
                 );
               })}
@@ -2120,7 +2120,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               <button
                 onClick={handleSignOut}
                 disabled={signingOut}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[16px] font-medium transition-colors hover:opacity-90 disabled:opacity-50"
+                className="w-full h-[56px] rounded-full bg-[#F97316] text-white text-[16px] font-medium transition-colors hover:opacity-90 disabled:opacity-50"
                 data-testid="button-logout-confirm"
               >
                 {signingOut ? t("profile.signingOut") : t("profile.logoutYes")}
@@ -2313,13 +2313,13 @@ export default function DashboardPage() {
                 data-testid={`tab-${key}`}
               >
                 {isProfileWithPhoto ? (
-                  <div className={`w-[28px] h-[28px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-[#0D6EFD] ring-offset-1" : ""}`}>
+                  <div className={`w-[28px] h-[28px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-[#F97316] ring-offset-1" : ""}`}>
                     <img src={tabPhotoUrl} alt="" className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <Icon className={`w-[28px] h-[28px] transition-colors ${isActive ? "text-[#0D6EFD]" : "text-[#717171]"}`} strokeWidth={isActive ? 2 : 1.5} />
+                  <Icon className={`w-[28px] h-[28px] transition-colors ${isActive ? "text-[#F97316]" : "text-[#717171]"}`} strokeWidth={isActive ? 2 : 1.5} />
                 )}
-                <span className={`text-[10px] transition-colors ${isActive ? "font-medium text-[#0D6EFD]" : "font-normal text-[#717171]"}`}>
+                <span className={`text-[10px] transition-colors ${isActive ? "font-medium text-[#F97316]" : "font-normal text-[#717171]"}`}>
                   {t(labelKey)}
                 </span>
               </button>

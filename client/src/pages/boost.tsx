@@ -156,7 +156,7 @@ function useUpdateProfileData() {
 }
 
 function getScoreColor(score: number): string {
-  if (score >= 30) return "#0D6EFD";
+  if (score >= 30) return "#F97316";
   return "#717171";
 }
 
@@ -248,13 +248,13 @@ function RecommendedSection({
               data-testid={`card-recommend-${task.id}`}
             >
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgba(13,110,253,0.1)" }}>
-                  <Icon className="w-5 h-5 text-[#0D6EFD]" />
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgba(249,115,22,0.1)" }}>
+                  <Icon className="w-5 h-5 text-[#F97316]" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
                     <p className="text-[15px] font-medium text-[#222222] leading-snug">{getBoostTaskLabel(task.id, t)}</p>
-                    <span className="text-[12px] font-medium text-[#0D6EFD] px-2 py-0.5 rounded-full flex-shrink-0 whitespace-nowrap" style={{ backgroundColor: "rgba(13,110,253,0.1)" }} data-testid={`badge-points-${task.id}`}>
+                    <span className="text-[12px] font-medium text-[#F97316] px-2 py-0.5 rounded-full flex-shrink-0 whitespace-nowrap" style={{ backgroundColor: "rgba(249,115,22,0.1)" }} data-testid={`badge-points-${task.id}`}>
                       +{task.weight}
                     </span>
                   </div>
@@ -355,7 +355,7 @@ function EmptyState({ onStart }: { onStart: () => void }) {
       </p>
       <Button
         onClick={onStart}
-        className="h-[56px] px-8 rounded-full bg-[#0D6EFD] text-white text-[15px] font-medium"
+        className="h-[56px] px-8 rounded-full bg-[#F97316] text-white text-[15px] font-medium"
         data-testid="button-start-boost"
       >
         <Zap className="w-4 h-4 mr-1.5" />
@@ -369,7 +369,7 @@ function HighProgressState({ remaining }: { remaining: number }) {
   const { t } = useTranslation();
   const stepsWord = remaining === 1 ? t("boost.step") : t("boost.steps");
   return (
-    <div className="bg-gradient-to-br from-[#0D6EFD] to-[#0B5ED7] rounded-2xl p-6 text-white" data-testid="boost-high-progress">
+    <div className="bg-gradient-to-br from-[#F97316] to-[#EA580C] rounded-2xl p-6 text-white" data-testid="boost-high-progress">
       <div className="flex items-center gap-3 mb-2">
         <div className="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center">
           <Rocket className="w-5 h-5 text-white" />
@@ -448,7 +448,7 @@ function TaskModal({
           {taskId === "alerts_active" && (
             <Button
               onClick={() => { onClose(); navigate("/dashboard"); }}
-              className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-medium"
+              className="w-full h-[56px] rounded-full bg-[#F97316] text-white text-[15px] font-medium"
               data-testid="button-goto-notifications"
             >
               <Bell className="w-4 h-4 mr-2" />
@@ -459,7 +459,7 @@ function TaskModal({
           {taskId === "phone_number_added" && (
             <Button
               onClick={() => { onClose(); navigate("/profile/edit/phone"); }}
-              className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-medium"
+              className="w-full h-[56px] rounded-full bg-[#F97316] text-white text-[15px] font-medium"
               data-testid="button-goto-phone"
             >
               <Phone className="w-4 h-4 mr-2" />
@@ -482,7 +482,7 @@ function TaskModal({
               <Button
                 onClick={() => handleSave({ search_buddy_email: buddyEmail }, t("boost.buddySaved"))}
                 disabled={!buddyEmail.includes("@") || updateProfileData.isPending}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-medium disabled:opacity-50"
+                className="w-full h-[56px] rounded-full bg-[#F97316] text-white text-[15px] font-medium disabled:opacity-50"
                 data-testid="button-save-buddy"
               >
                 {updateProfileData.isPending ? t("boost.saving") : t("boost.save")}
@@ -493,7 +493,7 @@ function TaskModal({
           {taskId === "housing_preferences_completed" && (
             <Button
               onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
-              className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-medium"
+              className="w-full h-[56px] rounded-full bg-[#F97316] text-white text-[15px] font-medium"
               data-testid="button-goto-filters"
             >
               <Search className="w-4 h-4 mr-2" />
@@ -504,7 +504,7 @@ function TaskModal({
           {taskId === "reaction_letter_ready" && (
             <Button
               onClick={() => { onClose(); navigate("/application-letter"); }}
-              className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-medium"
+              className="w-full h-[56px] rounded-full bg-[#F97316] text-white text-[15px] font-medium"
               data-testid="button-goto-letter"
             >
               <FileText className="w-4 h-4 mr-2" />
@@ -539,7 +539,7 @@ function TaskModal({
               <Button
                 onClick={() => handleSave({ document_checklist: checklist }, t("boost.docsSaved"))}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-medium disabled:opacity-50"
+                className="w-full h-[56px] rounded-full bg-[#F97316] text-white text-[15px] font-medium disabled:opacity-50"
                 data-testid="button-save-income-docs"
               >
                 {updateProfileData.isPending ? t("boost.saving") : t("boost.save")}
@@ -574,7 +574,7 @@ function TaskModal({
               <Button
                 onClick={() => handleSave({ document_checklist: checklist }, t("boost.docsSaved"))}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-medium disabled:opacity-50"
+                className="w-full h-[56px] rounded-full bg-[#F97316] text-white text-[15px] font-medium disabled:opacity-50"
                 data-testid="button-save-id-docs"
               >
                 {updateProfileData.isPending ? t("boost.saving") : t("boost.save")}
@@ -585,7 +585,7 @@ function TaskModal({
           {taskId === "profile_info_completed" && (
             <Button
               onClick={() => { onClose(); navigate("/dashboard"); }}
-              className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-medium"
+              className="w-full h-[56px] rounded-full bg-[#F97316] text-white text-[15px] font-medium"
               data-testid="button-goto-profile-info"
             >
               <UserCircle className="w-4 h-4 mr-2" />
@@ -600,7 +600,7 @@ function TaskModal({
               </p>
               <Button
                 onClick={() => navigate("/dashboard?tab=profiel")}
-                className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[14px] font-medium"
+                className="w-full h-[56px] rounded-full bg-[#F97316] text-white text-[14px] font-medium"
                 data-testid="button-goto-profile-photo"
               >
                 {t("boost.goToProfilePhoto")}
@@ -629,7 +629,7 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
           <p className="text-[15px] text-[#222222] mb-4">{t("boost.errorMessage")}</p>
           <Button
             onClick={() => refetch()}
-            className="h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-medium px-6"
+            className="h-[56px] rounded-full bg-[#F97316] text-white text-[15px] font-medium px-6"
             data-testid="button-retry-boost"
           >
             {t("boost.retry")}

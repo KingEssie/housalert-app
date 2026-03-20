@@ -28,7 +28,7 @@ export function SubscriptionGate({ isActive, children }: SubscriptionGateProps) 
       </p>
       <button
         onClick={() => navigate("/paywall")}
-        className="w-full max-w-[320px] h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-medium text-[16px] transition-colors flex items-center justify-center gap-2"
+        className="w-full max-w-[320px] h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white font-medium text-[16px] transition-colors flex items-center justify-center gap-2"
         data-testid="button-gate-upgrade"
       >
         <Lock className="w-4 h-4" />

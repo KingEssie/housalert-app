@@ -66,7 +66,7 @@ export default function DeleteAccountPage() {
       <PageHeader title={t("deleteAccount.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
       <main className="flex-1 flex flex-col items-center justify-center px-6">
-        <div className="w-16 h-16 rounded-2xl bg-[#0D6EFD] flex items-center justify-center mb-6">
+        <div className="w-16 h-16 rounded-2xl bg-[#F97316] flex items-center justify-center mb-6">
           <AlertTriangle className="w-8 h-8 text-white" />
         </div>
         <h2 className="text-[22px] font-medium text-[#222222] mb-3 text-center" data-testid="text-delete-account-title">
@@ -78,12 +78,12 @@ export default function DeleteAccountPage() {
 
         {hasActivePaidSub && (
           <div className="w-full max-w-[320px] bg-[#F3F4F6] rounded-2xl px-4 py-3 flex items-start gap-3 mb-6" data-testid="warning-active-sub">
-            <Crown className="w-5 h-5 text-[#0D6EFD] flex-shrink-0 mt-0.5" />
+            <Crown className="w-5 h-5 text-[#F97316] flex-shrink-0 mt-0.5" />
             <p className="text-[13px] text-[#222222] leading-relaxed">
               {t("deleteAccount.activeSubWarning")}{" "}
               <button
                 onClick={() => navigate("/account/subscription")}
-                className="font-medium text-[#0D6EFD] underline"
+                className="font-medium text-[#F97316] underline"
                 data-testid="link-manage-subscription"
               >
                 {t("deleteAccount.subSettings")}
@@ -97,7 +97,7 @@ export default function DeleteAccountPage() {
           <button
             onClick={handleDelete}
             disabled={deleting || hasActivePaidSub}
-            className="w-full h-[56px] rounded-full bg-[#0D6EFD] text-white text-[16px] font-medium transition-colors hover:opacity-90 disabled:opacity-50"
+            className="w-full h-[56px] rounded-full bg-[#F97316] text-white text-[16px] font-medium transition-colors hover:opacity-90 disabled:opacity-50"
             data-testid="button-delete-account-confirm"
           >
             {deleting ? t("deleteAccount.deleting") : t("deleteAccount.confirmDelete")}

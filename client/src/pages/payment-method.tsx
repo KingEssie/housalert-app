@@ -56,7 +56,7 @@ export default function PaymentMethodPage() {
           <div className="px-5 py-4" data-testid="card-payment-active">
             <div className="flex items-center gap-3">
               <div className="w-[48px] h-[48px] rounded-2xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#F5F7FA" }}>
-                <CreditCard className="w-5 h-5" style={{ color: "#0D6EFD" }} />
+                <CreditCard className="w-5 h-5" style={{ color: "#F97316" }} />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[16px] font-medium" style={{ color: "#222222" }} data-testid="text-card-brand">
@@ -73,7 +73,7 @@ export default function PaymentMethodPage() {
         <Button
           onClick={openStripePortal}
           disabled={loading}
-          className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-medium"
+          className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[15px] font-medium"
           data-testid="button-open-stripe-portal"
         >
           <ExternalLink className="w-4 h-4 mr-2" />

@@ -352,7 +352,7 @@ export default function NewSearchPage() {
   if (loading || (isEditMode && !editLoaded)) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-2 border-[#0D6EFD] border-t-transparent animate-spin" />
+        <div className="w-8 h-8 rounded-full border-2 border-[#F97316] border-t-transparent animate-spin" />
       </div>
     );
   }
@@ -376,7 +376,7 @@ export default function NewSearchPage() {
         <div className="flex-1 flex items-center justify-center px-5 pt-[56px]">
           <div className="text-center max-w-sm w-full">
             <div className="w-14 h-14 rounded-lg bg-[#F5F7FA] flex items-center justify-center mx-auto mb-4">
-              <AlertCircle className="w-6 h-6 text-[#0D6EFD]" />
+              <AlertCircle className="w-6 h-6 text-[#F97316]" />
             </div>
             <h2 className="text-[18px] font-medium text-[#222222] mb-2">{t("newSearch.limitTitle")}</h2>
             <p className="text-[14px] text-[#222222] mb-5">
@@ -384,7 +384,7 @@ export default function NewSearchPage() {
             </p>
             <Button
               onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=home")}
-              className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-medium"
+              className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[15px] font-medium"
               data-testid="button-back-to-dashboard-limit"
             >
               {t("newSearch.backToDashboard")}
@@ -439,7 +439,7 @@ export default function NewSearchPage() {
           <button
             onClick={step < TOTAL_STEPS - 1 ? goNext : () => setStep(5)}
             disabled={!canProceed()}
-            className="w-14 h-14 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white flex items-center justify-center shadow-[0_4px_16px_rgba(0,0,0,0.2)] disabled:opacity-40 transition-all active:scale-95"
+            className="w-14 h-14 rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white flex items-center justify-center shadow-[0_4px_16px_rgba(0,0,0,0.2)] disabled:opacity-40 transition-all active:scale-95"
             data-testid="button-wizard-next"
           >
             <ArrowRight className="w-6 h-6" />
@@ -502,7 +502,7 @@ function Step2Requirements({
       <div className="space-y-6">
         <div>
           <label className="text-[15px] font-medium text-[#222222] mb-2.5 flex items-center gap-2">
-            <Euro className="w-4 h-4 text-[#0D6EFD]" />
+            <Euro className="w-4 h-4 text-[#F97316]" />
             {t("newSearch.step2.minPrice")}
           </label>
           <div className="relative">
@@ -522,7 +522,7 @@ function Step2Requirements({
 
         <div>
           <label className="text-[15px] font-medium text-[#222222] mb-2.5 flex items-center gap-2">
-            <Euro className="w-4 h-4 text-[#0D6EFD]" />
+            <Euro className="w-4 h-4 text-[#F97316]" />
             {t("newSearch.step2.maxPrice")}
           </label>
           <div className="relative">
@@ -542,7 +542,7 @@ function Step2Requirements({
 
         <div>
           <label className="text-[15px] font-medium text-[#222222] mb-2.5 flex items-center gap-2">
-            <BedDouble className="w-4 h-4 text-[#0D6EFD]" />
+            <BedDouble className="w-4 h-4 text-[#F97316]" />
             {t("newSearch.step2.bedrooms")}
           </label>
           <div className="relative">
@@ -562,7 +562,7 @@ function Step2Requirements({
 
         <div>
           <label className="text-[15px] font-medium text-[#222222] mb-2.5 flex items-center gap-2">
-            <Ruler className="w-4 h-4 text-[#0D6EFD]" />
+            <Ruler className="w-4 h-4 text-[#F97316]" />
             {t("newSearch.step2.area")}
           </label>
           <div className="relative">
@@ -582,7 +582,7 @@ function Step2Requirements({
 
         <div>
           <label className="text-[15px] font-medium text-[#222222] mb-2.5 flex items-center gap-2">
-            <Sofa className="w-4 h-4 text-[#0D6EFD]" />
+            <Sofa className="w-4 h-4 text-[#F97316]" />
             {t("newSearch.step2.furnished")}
           </label>
           <div className="relative">
@@ -623,7 +623,7 @@ function CheckboxRow({
       data-testid={testId}
     >
       <div className={`w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 border-2 transition-colors ${
-        selected ? "bg-[#0D6EFD] border-[#0D6EFD]" : "border-[#0D6EFD] bg-white"
+        selected ? "bg-[#F97316] border-[#F97316]" : "border-[#F97316] bg-white"
       }`}>
         {selected && <Check className="w-4 h-4 text-white" />}
       </div>
@@ -872,7 +872,7 @@ function StepReview({
           <Button
             onClick={onSubmit}
             disabled={submitting}
-            className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium disabled:opacity-40 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
+            className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium disabled:opacity-40 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
             data-testid="button-wizard-submit"
           >
             {submitting ? (

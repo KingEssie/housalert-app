@@ -109,7 +109,7 @@ export default function ContinueDraftPage() {
       <div className="text-center">
         {(status === "loading" || status === "claiming") && (
           <>
-            <Loader2 className="w-10 h-10 animate-spin mx-auto mb-4" style={{ color: "#0D6EFD" }} />
+            <Loader2 className="w-10 h-10 animate-spin mx-auto mb-4" style={{ color: "#F97316" }} />
             <p className="text-[16px] text-muted-foreground">
               {status === "loading" ? t("continueDraft.loading") : t("continueDraft.claiming")}
             </p>

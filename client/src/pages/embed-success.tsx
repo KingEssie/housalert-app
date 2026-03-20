@@ -137,7 +137,7 @@ export default function EmbedSuccessPage() {
       <div className="min-h-screen bg-white flex items-center justify-center px-5">
         <div className="text-center max-w-sm">
           <div className="w-16 h-16 rounded-full bg-[#E8FFF5] flex items-center justify-center mx-auto mb-5">
-            <CheckCircle className="w-8 h-8 text-[#0D6EFD]" />
+            <CheckCircle className="w-8 h-8 text-[#F97316]" />
           </div>
           <h1 className="text-[22px] font-medium text-[#222222] mb-2" data-testid="text-embed-success-title">
             {t("subscription.activated")}
@@ -210,7 +210,7 @@ export default function EmbedSuccessPage() {
 
             <Button
               type="submit"
-              className="w-full h-[48px] rounded-full text-[15px] font-medium shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7] mt-1"
+              className="w-full h-[48px] rounded-full text-[15px] font-medium shadow-none bg-[#F97316] hover:bg-[#EA580C] mt-1"
               disabled={loading || !email || !password}
               data-testid="button-embed-signup-submit"
             >

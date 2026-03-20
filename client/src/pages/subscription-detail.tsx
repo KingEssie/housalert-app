@@ -63,7 +63,7 @@ export default function SubscriptionDetailPage() {
   function getStatusColor(): string {
     if (subscription?.isExpired) return "bg-[#FEF2F2] text-[#EF4444]";
     if (isCanceled && subscription?.isActive) return "bg-[#FEF3C7] text-[#92400E]";
-    if (subscription?.isTrial) return "bg-[#F0F4FF] text-[#0D6EFD]";
+    if (subscription?.isTrial) return "bg-[#FFF7ED] text-[#F97316]";
     return "bg-[#F0FFF4] text-[#22C55E]";
   }
 
@@ -133,8 +133,8 @@ export default function SubscriptionDetailPage() {
           data-testid="card-subscription-info"
         >
           <div className="flex items-center gap-3 mb-5">
-            <div className="w-12 h-12 rounded-2xl bg-[#F0F4FF] flex items-center justify-center flex-shrink-0">
-              <Crown className="w-[22px] h-[22px] text-[#0D6EFD]" />
+            <div className="w-12 h-12 rounded-2xl bg-[#FFF7ED] flex items-center justify-center flex-shrink-0">
+              <Crown className="w-[22px] h-[22px] text-[#F97316]" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[15px] font-semibold text-[#222222]" data-testid="text-plan-summary">
@@ -189,8 +189,8 @@ export default function SubscriptionDetailPage() {
         {subscription?.isExpired && (
           <div className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] p-5" data-testid="card-expired-cta">
             <div className="flex items-start gap-3 mb-4">
-              <div className="w-10 h-10 rounded-2xl bg-[#F0F4FF] flex items-center justify-center flex-shrink-0">
-                <AlertCircle className="w-5 h-5 text-[#0D6EFD]" />
+              <div className="w-10 h-10 rounded-2xl bg-[#FFF7ED] flex items-center justify-center flex-shrink-0">
+                <AlertCircle className="w-5 h-5 text-[#F97316]" />
               </div>
               <div>
                 <p className="text-[15px] font-medium text-[#222222]">{t("subscription.expiredTitle")}</p>
@@ -199,7 +199,7 @@ export default function SubscriptionDetailPage() {
             </div>
             <button
               onClick={() => navigate("/paywall")}
-              className="w-full h-[48px] bg-[#0D6EFD] text-white rounded-full font-medium text-[15px] transition-colors active:opacity-90"
+              className="w-full h-[48px] bg-[#F97316] text-white rounded-full font-medium text-[15px] transition-colors active:opacity-90"
               data-testid="button-renew-subscription"
             >
               {t("subscription.renewSubscription")}

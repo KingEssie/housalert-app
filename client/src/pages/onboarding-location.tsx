@@ -301,7 +301,7 @@ export default function OnboardingLocationPage() {
             <div
               key={step}
               className={`w-2 h-2 rounded-full transition-all ${
-                step <= 1 ? "bg-[#0D6EFD]" : "bg-[#D1D5DB]"
+                step <= 1 ? "bg-[#F97316]" : "bg-[#D1D5DB]"
               }`}
               data-testid={`dot-step-${step}`}
             />
@@ -331,7 +331,7 @@ export default function OnboardingLocationPage() {
               >
                 {tab.label}
                 {activeTab === tab.id && (
-                  <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#0D6EFD] rounded-full" />
+                  <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#F97316] rounded-full" />
                 )}
               </button>
             ))}
@@ -342,7 +342,7 @@ export default function OnboardingLocationPage() {
               <div className="space-y-0">
                 <div className="relative" ref={containerRef}>
                   <div
-                    className="flex items-center gap-3 h-[44px] px-4 rounded-xl border border-transparent bg-[#F3F4F6] cursor-text focus-within:ring-2 focus-within:ring-[#0D6EFD] focus-within:border-[#0D6EFD] focus-within:bg-white transition-all"
+                    className="flex items-center gap-3 h-[44px] px-4 rounded-xl border border-transparent bg-[#F3F4F6] cursor-text focus-within:ring-2 focus-within:ring-[#F97316] focus-within:border-[#F97316] focus-within:bg-white transition-all"
                     onClick={() => {
                       const input = document.getElementById("city-search-input");
                       input?.focus();
@@ -360,7 +360,7 @@ export default function OnboardingLocationPage() {
                       data-testid="input-city-search"
                     />
                     {isLoading && (
-                      <div className="w-4 h-4 border-2 border-[#0D6EFD]/30 border-t-[#0D6EFD] rounded-full animate-spin" />
+                      <div className="w-4 h-4 border-2 border-[#F97316]/30 border-t-[#F97316] rounded-full animate-spin" />
                     )}
                     {selectedCity && (
                       <button
@@ -460,13 +460,13 @@ export default function OnboardingLocationPage() {
                           {selectedDistricts.map((d) => (
                             <span
                               key={d}
-                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#0D6EFD]/10 text-[#0D6EFD] text-[13px] font-medium"
+                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F97316]/10 text-[#F97316] text-[13px] font-medium"
                             >
                               {d}
                               <button
                                 type="button"
                                 onClick={(e) => { e.stopPropagation(); toggleDistrict(d); }}
-                                className="hover:text-[#0B5ED7]"
+                                className="hover:text-[#EA580C]"
                                 data-testid={`remove-district-${d.toLowerCase().replace(/[\s-]/g, "-")}`}
                               >
                                 <X className="w-3 h-3" />
@@ -488,7 +488,7 @@ export default function OnboardingLocationPage() {
                             >
                               <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
                                 selectedDistricts.includes(district)
-                                  ? "bg-[#0D6EFD] border-[#0D6EFD]"
+                                  ? "bg-[#F97316] border-[#F97316]"
                                   : "border-[#D1D5DB]"
                               }`}>
                                 {selectedDistricts.includes(district) && <Check className="w-3 h-3 text-white" />}
@@ -548,7 +548,7 @@ export default function OnboardingLocationPage() {
               <div className="space-y-0">
                 <div className="relative" ref={containerRef}>
                   <div
-                    className="flex items-center gap-3 h-[44px] px-4 rounded-xl border border-transparent bg-[#F3F4F6] cursor-text focus-within:ring-2 focus-within:ring-[#0D6EFD] focus-within:border-[#0D6EFD] focus-within:bg-white transition-all"
+                    className="flex items-center gap-3 h-[44px] px-4 rounded-xl border border-transparent bg-[#F3F4F6] cursor-text focus-within:ring-2 focus-within:ring-[#F97316] focus-within:border-[#F97316] focus-within:bg-white transition-all"
                     onClick={() => {
                       const input = document.getElementById("radius-city-input");
                       input?.focus();
@@ -566,7 +566,7 @@ export default function OnboardingLocationPage() {
                       data-testid="input-city-search"
                     />
                     {isLoading && (
-                      <div className="w-4 h-4 border-2 border-[#0D6EFD]/30 border-t-[#0D6EFD] rounded-full animate-spin" />
+                      <div className="w-4 h-4 border-2 border-[#F97316]/30 border-t-[#F97316] rounded-full animate-spin" />
                     )}
                     {selectedCity && (
                       <button
@@ -679,7 +679,7 @@ export default function OnboardingLocationPage() {
                         <Circle
                           center={[selectedCity.lat, selectedCity.lng]}
                           radius={parseInt(radius) * 1000}
-                          pathOptions={{ color: "#0D6EFD", fillColor: "#0D6EFD", fillOpacity: 0.1, weight: 2 }}
+                          pathOptions={{ color: "#F97316", fillColor: "#F97316", fillOpacity: 0.1, weight: 2 }}
                         />
                         <RecenterMap lat={selectedCity.lat} lng={selectedCity.lng} zoom={parseInt(radius) <= 5 ? 12 : parseInt(radius) <= 15 ? 10 : 9} />
                       </MapContainer>
@@ -739,7 +739,7 @@ export default function OnboardingLocationPage() {
                         onClick={() => setTransportMode(mode.id)}
                         className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-lg text-xs font-medium transition-all ${
                           transportMode === mode.id
-                            ? "bg-[#0D6EFD] text-white"
+                            ? "bg-[#F97316] text-white"
                             : "bg-[#F5F7FA] text-[#222222] hover:bg-[#E5E7EB]"
                         }`}
                         data-testid={`button-transport-${mode.id}`}
@@ -756,7 +756,7 @@ export default function OnboardingLocationPage() {
                     <div className="rounded-2xl overflow-hidden bg-[#F3F4F6]" data-testid="card-map-travel">
                       <div className="h-36 flex items-center justify-center">
                         <div className="text-center">
-                          <Clock className="w-7 h-7 text-[#0D6EFD] mx-auto mb-1.5" />
+                          <Clock className="w-7 h-7 text-[#F97316] mx-auto mb-1.5" />
                           <p className="text-sm font-medium text-[#222222]">{t("onboardingLocation.travelTimePreview", { time: travelTime })}</p>
                           <p className="text-xs text-[#71717A] mt-0.5">{t("onboardingLocation.fromAddress", { address: travelAddress })}</p>
                         </div>
@@ -772,7 +772,7 @@ export default function OnboardingLocationPage() {
             <>
               <Button
                 size="lg"
-                className="w-full h-[48px] rounded-full text-[16px] font-medium bg-[#0D6EFD] hover:bg-[#0B5ED7] shadow-none mt-3"
+                className="w-full h-[48px] rounded-full text-[16px] font-medium bg-[#F97316] hover:bg-[#EA580C] shadow-none mt-3"
                 disabled={!canProceed}
                 onClick={handleNext}
                 data-testid="button-next-step"
@@ -782,10 +782,10 @@ export default function OnboardingLocationPage() {
 
               {(selectedCity || (activeTab === "reistijd" && travelAddress)) && !districtDropdownOpen && (
                 <div className="mt-3">
-                  <div className="bg-[#EBF2FF] rounded-lg p-3" data-testid="card-estimate-preview">
+                  <div className="bg-[#FFF7ED] rounded-lg p-3" data-testid="card-estimate-preview">
                     {estimateLoading ? (
                       <div className="flex items-center gap-3">
-                        <Loader2 className="w-5 h-5 text-[#0D6EFD] animate-spin" />
+                        <Loader2 className="w-5 h-5 text-[#F97316] animate-spin" />
                         <span className="text-sm text-[#71717A]">{t("onboardingLocation.estimateLoading")}</span>
                       </div>
                     ) : (
@@ -808,10 +808,10 @@ export default function OnboardingLocationPage() {
             <>
               {(selectedCity || (activeTab === "reistijd" && travelAddress)) && !districtDropdownOpen && (
                 <div className="pt-5 mt-1">
-                  <div className="bg-[#EBF2FF] rounded-lg p-4 mb-6" data-testid="card-estimate-preview">
+                  <div className="bg-[#FFF7ED] rounded-lg p-4 mb-6" data-testid="card-estimate-preview">
                     {estimateLoading ? (
                       <div className="flex items-center gap-3">
-                        <Loader2 className="w-5 h-5 text-[#0D6EFD] animate-spin" />
+                        <Loader2 className="w-5 h-5 text-[#F97316] animate-spin" />
                         <span className="text-sm text-[#71717A]">{t("onboardingLocation.estimateLoading")}</span>
                       </div>
                     ) : (
@@ -838,7 +838,7 @@ export default function OnboardingLocationPage() {
 
               <Button
                 size="lg"
-                className="w-full h-[56px] rounded-full text-[16px] font-medium bg-[#0D6EFD] hover:bg-[#0B5ED7] shadow-none mt-2"
+                className="w-full h-[56px] rounded-full text-[16px] font-medium bg-[#F97316] hover:bg-[#EA580C] shadow-none mt-2"
                 disabled={!canProceed}
                 onClick={handleNext}
                 data-testid="button-next-step"

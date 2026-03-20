@@ -193,7 +193,7 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
             onFocus={() => { if (hasResults && !value) setOpen(true); }}
             placeholder={t("location.searchCity")}
             className={`w-full min-h-[52px] rounded-lg bg-[#F5F7FA] border border-transparent px-11 text-[16px] text-[#71717A] placeholder:text-[#71717A] ${
-              showValidation ? "border-red-400" : value ? "border-[#0D6EFD] bg-[#F5F7FA]/30" : "border-[#E5E7EB]"
+              showValidation ? "border-red-400" : value ? "border-[#F97316] bg-[#F5F7FA]/30" : "border-[#E5E7EB]"
             }`}
             data-testid="input-city-search"
           />
@@ -210,7 +210,7 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
 
         {isLoading && (
           <div className="absolute right-12 top-1/2 -translate-y-1/2">
-            <div className="w-4 h-4 border-2 border-[#0D6EFD]/30 border-t-[#0D6EFD] rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-[#F97316]/30 border-t-[#F97316] rounded-full animate-spin" />
           </div>
         )}
 
@@ -284,7 +284,7 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
           )}
 
           {support && support.status === "dynamic" && (
-            <div className="flex items-center gap-2 text-[#0D6EFD] text-[13px] bg-[#EBF2FF] rounded-2xl px-4 py-3" data-testid="text-city-dynamic">
+            <div className="flex items-center gap-2 text-[#F97316] text-[13px] bg-[#FFF7ED] rounded-2xl px-4 py-3" data-testid="text-city-dynamic">
               <Info className="w-4 h-4 flex-shrink-0" />
               <span>{t("cityPicker.cityDynamic")}</span>
             </div>

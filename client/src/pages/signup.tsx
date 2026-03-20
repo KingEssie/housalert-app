@@ -184,7 +184,7 @@ export default function SignupPage() {
             <div
               key={step}
               className={`w-2 h-2 rounded-full transition-all ${
-                step <= 4 ? "bg-[#0D6EFD]" : "bg-[#D1D5DB]"
+                step <= 4 ? "bg-[#F97316]" : "bg-[#D1D5DB]"
               }`}
               data-testid={`dot-step-${step}`}
             />
@@ -248,7 +248,7 @@ export default function SignupPage() {
               <button
                 type="button"
                 onClick={() => setShowReferral(true)}
-                className="flex items-center gap-2 text-[13px] text-[#717171] hover:text-[#0D6EFD] transition-colors py-1"
+                className="flex items-center gap-2 text-[13px] text-[#717171] hover:text-[#F97316] transition-colors py-1"
                 data-testid="button-show-referral"
               >
                 <Gift className="w-4 h-4" />
@@ -274,7 +274,7 @@ export default function SignupPage() {
 
             <Button
               type="submit"
-              className="w-full h-[48px] rounded-full text-[15px] font-medium shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7] mt-1"
+              className="w-full h-[48px] rounded-full text-[15px] font-medium shadow-none bg-[#F97316] hover:bg-[#EA580C] mt-1"
               disabled={loading || !email || !password}
               data-testid="button-signup-submit"
             >
@@ -294,7 +294,7 @@ export default function SignupPage() {
           {t("auth.signup.hasAccount")}{" "}
           <button
             onClick={() => navigate("/login")}
-            className="text-[#0D6EFD] font-medium hover:underline"
+            className="text-[#F97316] font-medium hover:underline"
             data-testid="link-login"
           >
             {t("auth.signup.loginLink")}

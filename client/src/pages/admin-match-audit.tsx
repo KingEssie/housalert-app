@@ -117,7 +117,7 @@ export default function AdminMatchAudit() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F5F7FA] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-[#0D6EFD]" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#F97316]" />
       </div>
     );
   }
@@ -129,7 +129,7 @@ export default function AdminMatchAudit() {
         <div className="p-4 pt-6 text-center">
           <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-3" />
           <p className="text-[15px] text-[#717171]">{error}</p>
-          <button onClick={loadData} className="mt-4 px-6 py-2 bg-[#0D6EFD] text-white rounded-full text-[14px] font-semibold" data-testid="button-retry">Retry</button>
+          <button onClick={loadData} className="mt-4 px-6 py-2 bg-[#F97316] text-white rounded-full text-[14px] font-semibold" data-testid="button-retry">Retry</button>
         </div>
       </div>
     );
@@ -155,7 +155,7 @@ export default function AdminMatchAudit() {
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <StatCard icon={Database} label="Total Matches" value={stats.total} color="bg-[#0D6EFD]" />
+          <StatCard icon={Database} label="Total Matches" value={stats.total} color="bg-[#F97316]" />
           <StatCard icon={Eye} label="New (Unviewed)" value={stats.new_count} color="bg-[#F59E0B]" />
           <StatCard icon={CheckCircle2} label="Viewed" value={stats.viewed} color="bg-[#10B981]" />
           <StatCard icon={Send} label="Applied" value={stats.applied} color="bg-[#8B5CF6]" />
@@ -187,7 +187,7 @@ export default function AdminMatchAudit() {
             <button
               onClick={runBackfill}
               disabled={backfilling}
-              className="flex items-center gap-2 px-4 py-2.5 bg-[#0D6EFD] text-white rounded-xl text-[13px] font-semibold disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2.5 bg-[#F97316] text-white rounded-xl text-[13px] font-semibold disabled:opacity-50"
               data-testid="button-backfill"
             >
               {backfilling ? <Loader2 className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}

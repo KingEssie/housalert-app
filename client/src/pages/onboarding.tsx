@@ -17,7 +17,7 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
         <div
           key={i}
           className="h-[4px] flex-1 rounded-full transition-colors duration-300"
-          style={{ backgroundColor: i < step ? "#0D6EFD" : "#E5E7EB" }}
+          style={{ backgroundColor: i < step ? "#F97316" : "#E5E7EB" }}
           data-testid={`progress-step-${i + 1}`}
         />
       ))}
@@ -33,9 +33,9 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6 text-center">
       <div
-        className="w-[72px] h-[72px] rounded-2xl bg-[#EBF2FF] flex items-center justify-center mb-8"
+        className="w-[72px] h-[72px] rounded-2xl bg-[#FFF7ED] flex items-center justify-center mb-8"
       >
-        <Search className="w-8 h-8 text-[#0D6EFD]" />
+        <Search className="w-8 h-8 text-[#F97316]" />
       </div>
 
       <h1
@@ -54,7 +54,7 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
 
       <button
         onClick={onStart}
-        className="w-full max-w-[320px] min-h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-medium text-[16px] transition-colors flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
+        className="w-full max-w-[320px] min-h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white font-medium text-[16px] transition-colors flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
         data-testid="button-start-onboarding"
       >
         {t("onboarding.welcome.button")}
@@ -81,8 +81,8 @@ function LocationStep({
   return (
     <div className="flex flex-col min-h-screen px-6 pt-4">
       <div className="flex-1">
-        <div className="w-[56px] h-[56px] rounded-2xl bg-[#EBF2FF] flex items-center justify-center mb-6">
-          <MapPin className="w-6 h-6 text-[#0D6EFD]" />
+        <div className="w-[56px] h-[56px] rounded-2xl bg-[#FFF7ED] flex items-center justify-center mb-6">
+          <MapPin className="w-6 h-6 text-[#F97316]" />
         </div>
 
         <h2 className="text-page-title mb-2" data-testid="text-city-title">
@@ -99,7 +99,7 @@ function LocationStep({
         <button
           onClick={onNext}
           disabled={!isLocationValid(locationData)}
-          className="w-full min-h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
+          className="w-full min-h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
           data-testid="button-city-next"
         >
           {t("common.next")}
@@ -131,8 +131,8 @@ function BudgetStep({
   return (
     <div className="flex flex-col min-h-screen px-6 pt-4">
       <div className="flex-1">
-        <div className="w-[56px] h-[56px] rounded-2xl bg-[#EBF2FF] flex items-center justify-center mb-6">
-          <span className="text-[24px] font-medium text-[#0D6EFD]">&#8364;</span>
+        <div className="w-[56px] h-[56px] rounded-2xl bg-[#FFF7ED] flex items-center justify-center mb-6">
+          <span className="text-[24px] font-medium text-[#F97316]">&#8364;</span>
         </div>
 
         <h2 className="text-page-title mb-2" data-testid="text-budget-title">
@@ -185,7 +185,7 @@ function BudgetStep({
         <button
           onClick={onNext}
           disabled={!valid}
-          className="w-full min-h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
+          className="w-full min-h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
           data-testid="button-budget-next"
         >
           {t("common.next")}
@@ -217,8 +217,8 @@ function PropertyTypeStep({
   return (
     <div className="flex flex-col min-h-screen px-6 pt-4">
       <div className="flex-1">
-        <div className="w-[56px] h-[56px] rounded-2xl bg-[#EBF2FF] flex items-center justify-center mb-6">
-          <Search className="w-6 h-6 text-[#0D6EFD]" />
+        <div className="w-[56px] h-[56px] rounded-2xl bg-[#FFF7ED] flex items-center justify-center mb-6">
+          <Search className="w-6 h-6 text-[#F97316]" />
         </div>
 
         <h2 className="text-page-title mb-2" data-testid="text-property-title">
@@ -235,14 +235,14 @@ function PropertyTypeStep({
               onClick={() => setPropertyType(pt.value)}
               className={`w-full min-h-[56px] rounded-2xl border-2 px-5 text-left text-[16px] font-medium transition-all flex items-center justify-between ${
                 propertyType === pt.value
-                  ? "border-[#0D6EFD] bg-[#EBF2FF] text-[#0D6EFD]"
+                  ? "border-[#F97316] bg-[#FFF7ED] text-[#F97316]"
                   : "border-[#E5E7EB] bg-white text-[#222222]"
               }`}
               data-testid={`option-property-${pt.value}`}
             >
               {pt.label}
               {propertyType === pt.value && (
-                <div className="w-6 h-6 rounded-full bg-[#0D6EFD] flex items-center justify-center">
+                <div className="w-6 h-6 rounded-full bg-[#F97316] flex items-center justify-center">
                   <Check className="w-4 h-4 text-white" />
                 </div>
               )}
@@ -255,7 +255,7 @@ function PropertyTypeStep({
         <button
           onClick={onNext}
           disabled={!propertyType}
-          className="w-full min-h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
+          className="w-full min-h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
           data-testid="button-property-next"
         >
           {t("common.next")}
@@ -269,8 +269,8 @@ function AlertsStep({ onActivate, onSkip, saving }: { onActivate: () => void; on
   const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6 text-center">
-      <div className="w-[72px] h-[72px] rounded-2xl bg-[#EBF2FF] flex items-center justify-center mb-8">
-        <Bell className="w-8 h-8 text-[#0D6EFD]" />
+      <div className="w-[72px] h-[72px] rounded-2xl bg-[#FFF7ED] flex items-center justify-center mb-8">
+        <Bell className="w-8 h-8 text-[#F97316]" />
       </div>
 
       <h2
@@ -294,7 +294,7 @@ function AlertsStep({ onActivate, onSkip, saving }: { onActivate: () => void; on
       <button
         onClick={onActivate}
         disabled={saving}
-        className="w-full max-w-[320px] min-h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white font-medium text-[16px] transition-colors disabled:opacity-60 flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
+        className="w-full max-w-[320px] min-h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white font-medium text-[16px] transition-colors disabled:opacity-60 flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
         data-testid="button-activate-alerts"
       >
         {saving ? (
@@ -310,7 +310,7 @@ function AlertsStep({ onActivate, onSkip, saving }: { onActivate: () => void; on
       <button
         onClick={onSkip}
         disabled={saving}
-        className="mt-4 text-[#0D6EFD] font-medium text-[15px] hover:underline disabled:opacity-40"
+        className="mt-4 text-[#F97316] font-medium text-[15px] hover:underline disabled:opacity-40"
         data-testid="button-skip-alerts"
       >
         {t("onboarding.alerts.skip")}

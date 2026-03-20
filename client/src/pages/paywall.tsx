@@ -178,7 +178,7 @@ export default function PaywallPage() {
               onClick={() => setSelectedPlan(plan.id)}
               className={`w-full p-6 rounded-[24px] border-2 transition-all text-left relative bg-white shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] ${
                 selectedPlan === plan.id
-                  ? "border-[#0D6EFD]"
+                  ? "border-[#F97316]"
                   : "border-transparent hover:border-[#E5E7EB]"
               }`}
               data-testid={`card-plan-${plan.id}`}
@@ -200,7 +200,7 @@ export default function PaywallPage() {
                 <div className="text-right">
                   <p className="text-xl font-medium text-[#222222]">{t(plan.priceKey)}</p>
                   {plan.savingsKey && (
-                    <p className="text-xs font-medium text-[#0D6EFD]">{t(plan.savingsKey)}</p>
+                    <p className="text-xs font-medium text-[#F97316]">{t(plan.savingsKey)}</p>
                   )}
                 </div>
               </div>
@@ -208,7 +208,7 @@ export default function PaywallPage() {
               <div
                 className={`absolute top-6 right-6 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
                   selectedPlan === plan.id
-                    ? "bg-[#0D6EFD] border-[#0D6EFD]"
+                    ? "bg-[#F97316] border-[#F97316]"
                     : "border-[#E5E7EB]"
                 }`}
               >
@@ -237,7 +237,7 @@ export default function PaywallPage() {
         <div className="max-w-xl mx-auto">
           <Button
             size="lg"
-            className="w-full h-[56px] rounded-full text-[16px] font-medium shadow-none bg-[#0D6EFD]"
+            className="w-full h-[56px] rounded-full text-[16px] font-medium shadow-none bg-[#F97316]"
             onClick={handleCheckout}
             disabled={loading}
             data-testid="button-select-payment"

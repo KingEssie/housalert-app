@@ -9,7 +9,7 @@ export default function NotFound() {
       <Card className="w-full max-w-md mx-4">
         <CardContent className="pt-6">
           <div className="flex mb-4 gap-2">
-            <AlertCircle className="h-8 w-8 text-[#0D6EFD]" />
+            <AlertCircle className="h-8 w-8 text-[#F97316]" />
             <h1 className="text-2xl font-medium text-[#222222]">{t("notFound.title")}</h1>
           </div>
 

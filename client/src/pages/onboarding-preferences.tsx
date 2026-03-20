@@ -69,7 +69,7 @@ export default function OnboardingPreferencesPage() {
             <div
               key={step}
               className={`w-2 h-2 rounded-full transition-all ${
-                step <= 3 ? "bg-[#0D6EFD]" : "bg-[#D1D5DB]"
+                step <= 3 ? "bg-[#F97316]" : "bg-[#D1D5DB]"
               }`}
               data-testid={`dot-step-${step}`}
             />
@@ -165,7 +165,7 @@ export default function OnboardingPreferencesPage() {
             {t("onboardingPreferences.back")}
           </Button>
           <Button
-            className="flex-1 h-[48px] rounded-full text-[15px] font-medium shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7]"
+            className="flex-1 h-[48px] rounded-full text-[15px] font-medium shadow-none bg-[#F97316] hover:bg-[#EA580C]"
             onClick={handleNext}
             data-testid="button-next-preferences"
           >

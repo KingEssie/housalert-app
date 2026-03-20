@@ -238,7 +238,7 @@ export default function OnboardingValuePage() {
               data-testid={`card-explain-${key}`}
             >
               <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center flex-shrink-0 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
-                <Icon className="w-5 h-5 text-[#0D6EFD]" />
+                <Icon className="w-5 h-5 text-[#F97316]" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[15px] font-medium text-[#222222] mb-0.5">
@@ -271,14 +271,14 @@ export default function OnboardingValuePage() {
               onClick={() => setSelectedPlan(plan.id)}
               className={`w-full p-4 rounded-2xl border-2 transition-all text-left relative bg-white ${
                 selectedPlan === plan.id
-                  ? "border-[#0D6EFD] shadow-[0_0_0_1px_#0D6EFD]"
+                  ? "border-[#F97316] shadow-[0_0_0_1px_#F97316]"
                   : "border-[#E5E7EB] hover:border-[#D1D5DB]"
               }`}
               data-testid={`card-plan-${plan.id}`}
             >
               {plan.popular && (
                 <span
-                  className="absolute -top-2.5 left-4 px-2.5 py-0.5 bg-[#0D6EFD] text-white text-[11px] font-medium rounded-full"
+                  className="absolute -top-2.5 left-4 px-2.5 py-0.5 bg-[#F97316] text-white text-[11px] font-medium rounded-full"
                   data-testid="badge-popular"
                 >
                   {t("paywall.mostChosen")}
@@ -293,7 +293,7 @@ export default function OnboardingValuePage() {
                 <div className="text-right">
                   <p className="text-[18px] font-medium text-[#222222]">{t(plan.priceKey)}</p>
                   {plan.savingsKey && (
-                    <p className="text-[12px] font-medium text-[#0D6EFD]">{t(plan.savingsKey)}</p>
+                    <p className="text-[12px] font-medium text-[#F97316]">{t(plan.savingsKey)}</p>
                   )}
                 </div>
               </div>
@@ -301,7 +301,7 @@ export default function OnboardingValuePage() {
               <div
                 className={`absolute top-4 right-4 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
                   selectedPlan === plan.id
-                    ? "bg-[#0D6EFD] border-[#0D6EFD]"
+                    ? "bg-[#F97316] border-[#F97316]"
                     : "border-[#D1D5DB]"
                 }`}
               >
@@ -320,7 +320,7 @@ export default function OnboardingValuePage() {
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] p-4 z-10">
         <div className={`${containerClass} mx-auto`}>
           <Button
-            className="w-full h-[48px] rounded-full text-[15px] font-medium shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7]"
+            className="w-full h-[48px] rounded-full text-[15px] font-medium shadow-none bg-[#F97316] hover:bg-[#EA580C]"
             onClick={handleCheckout}
             disabled={loading}
             data-testid="button-select-payment"

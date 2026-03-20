@@ -43,12 +43,12 @@
   --chart-4: 30 90% 40%;
   --chart-5: 150 75% 30%;
 
-  --yo-teal: #0D6EFD;
-  --yo-teal-hover: #0B5ED7;
-  --yo-teal-light: #EBF2FF;
+  --yo-teal: #F97316;
+  --yo-teal-hover: #EA580C;
+  --yo-teal-light: #FFF7ED;
   --yo-teal-dark: #0A4FBA;
-  --yo-pink: #0D6EFD;
-  --yo-pink-light: #EBF2FF;
+  --yo-pink: #F97316;
+  --yo-pink-light: #FFF7ED;
   --yo-dark: #222222;
   --yo-text: #222222;
   --yo-muted: #717171;
@@ -187,8 +187,8 @@
   [data-radix-select-trigger]:focus,
   [data-radix-select-trigger]:focus-visible {
     outline: none;
-    border-color: #0D6EFD !important;
-    box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25) !important;
+    border-color: #F97316 !important;
+    box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.25) !important;
   }
 }
 
@@ -346,8 +346,8 @@
 
 input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
 textarea:focus {
-  border-color: #0D6EFD !important;
-  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.08) !important;
+  border-color: #F97316 !important;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.08) !important;
   outline: none !important;
 }
 

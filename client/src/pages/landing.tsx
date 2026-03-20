@@ -58,11 +58,11 @@ export default function LandingPage() {
 
             <div className="flex items-center justify-center gap-6 mt-10 text-sm text-muted-foreground">
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4" style={{ color: "#0D6EFD" }} />
+                <CheckCircle2 className="w-4 h-4" style={{ color: "#F97316" }} />
                 {t("landing.freeStart")}
               </span>
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4" style={{ color: "#0D6EFD" }} />
+                <CheckCircle2 className="w-4 h-4" style={{ color: "#F97316" }} />
                 {t("landing.instantAlerts")}
               </span>
             </div>
@@ -76,8 +76,8 @@ export default function LandingPage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-card rounded-lg p-6 shadow-sm" data-testid="card-feature-search">
-                <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "#EBF2FF" }}>
-                  <Search className="w-6 h-6" style={{ color: "#0D6EFD" }} />
+                <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "#FFF7ED" }}>
+                  <Search className="w-6 h-6" style={{ color: "#F97316" }} />
                 </div>
                 <h3 className="text-[18px] font-medium mb-2" style={{ color: "#222222" }}>{t("landing.smartSearch")}</h3>
                 <p className="text-[15px] text-muted-foreground leading-relaxed">
@@ -86,8 +86,8 @@ export default function LandingPage() {
               </div>
 
               <div className="bg-card rounded-lg p-6 shadow-sm" data-testid="card-feature-alerts">
-                <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "#EBF2FF" }}>
-                  <Bell className="w-6 h-6" style={{ color: "#0D6EFD" }} />
+                <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "#FFF7ED" }}>
+                  <Bell className="w-6 h-6" style={{ color: "#F97316" }} />
                 </div>
                 <h3 className="text-[18px] font-medium mb-2" style={{ color: "#222222" }}>{t("landing.instantAlertsTitle")}</h3>
                 <p className="text-[15px] text-muted-foreground leading-relaxed">
@@ -96,8 +96,8 @@ export default function LandingPage() {
               </div>
 
               <div className="bg-card rounded-lg p-6 shadow-sm" data-testid="card-feature-fast">
-                <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "#EBF2FF" }}>
-                  <Zap className="w-6 h-6" style={{ color: "#0D6EFD" }} />
+                <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "#FFF7ED" }}>
+                  <Zap className="w-6 h-6" style={{ color: "#F97316" }} />
                 </div>
                 <h3 className="text-[18px] font-medium mb-2" style={{ color: "#222222" }}>{t("landing.fasterTitle")}</h3>
                 <p className="text-[15px] text-muted-foreground leading-relaxed">

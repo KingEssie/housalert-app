@@ -97,7 +97,7 @@ export default function OnboardingEstimatePage() {
           {[1, 2, 3].map((step) => (
             <div key={step} className="flex-1 h-2 rounded-full overflow-hidden bg-[#E5E7EB]">
               <div
-                className="h-full rounded-full w-full bg-[#0D6EFD]"
+                className="h-full rounded-full w-full bg-[#F97316]"
                 data-testid={`progress-step-${step}`}
               />
             </div>
@@ -122,7 +122,7 @@ export default function OnboardingEstimatePage() {
 
             {loading ? (
               <div className="flex items-center justify-center py-4">
-                <Loader2 className="w-8 h-8 text-[#0D6EFD] animate-spin" />
+                <Loader2 className="w-8 h-8 text-[#F97316] animate-spin" />
               </div>
             ) : (
               <>
@@ -154,7 +154,7 @@ export default function OnboardingEstimatePage() {
           )}
 
           <div className="flex items-start gap-3 py-5 border-b border-[#E5E7EB]">
-            <Sparkles className="w-5 h-5 text-[#0D6EFD] flex-shrink-0 mt-0.5" />
+            <Sparkles className="w-5 h-5 text-[#F97316] flex-shrink-0 mt-0.5" />
             <p className="text-sm text-[#222222] leading-relaxed">
               {t("onboardingEstimate.ctaText")}
             </p>
@@ -172,7 +172,7 @@ export default function OnboardingEstimatePage() {
             </Button>
             <Button
               size="lg"
-              className="flex-1 h-[56px] rounded-full text-[16px] font-medium shadow-none bg-[#0D6EFD] hover:bg-[#0B5ED7]"
+              className="flex-1 h-[56px] rounded-full text-[16px] font-medium shadow-none bg-[#F97316] hover:bg-[#EA580C]"
               onClick={handleCreateAccount}
               disabled={loading}
               data-testid="button-create-account"

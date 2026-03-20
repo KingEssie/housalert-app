@@ -78,7 +78,7 @@ export default function TipDetailPage() {
       <div className="max-w-xl mx-auto w-full px-5 pt-3">
         <div className="w-full bg-[#E5E7EB] rounded-full h-1.5" data-testid="progress-bar">
           <div
-            className="bg-[#0D6EFD] h-1.5 rounded-full transition-all duration-300"
+            className="bg-[#F97316] h-1.5 rounded-full transition-all duration-300"
             style={{ width: `${((currentIndex + 1) / TIP_IDS.length) * 100}%` }}
           />
         </div>
@@ -86,11 +86,11 @@ export default function TipDetailPage() {
 
       <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-8 pb-32">
         <div className="flex items-center gap-4 mb-6">
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(13,110,253,0.1)" }}>
-            <Icon className="w-7 h-7 text-[#0D6EFD]" />
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(249,115,22,0.1)" }}>
+            <Icon className="w-7 h-7 text-[#F97316]" />
           </div>
           <div>
-            <p className="text-[12px] font-medium text-[#0D6EFD] uppercase tracking-wide">
+            <p className="text-[12px] font-medium text-[#F97316] uppercase tracking-wide">
               {t("tips.tipLabel")} {currentIndex + 1}
             </p>
             <h2 className="text-[22px] font-medium text-[#222222] leading-tight" data-testid="text-tip-title">
@@ -108,7 +108,7 @@ export default function TipDetailPage() {
           className="w-full bg-[#F5F7FA] rounded-2xl p-5 flex items-center gap-3 text-left hover:bg-[#EBEDF0] transition-colors active:scale-[0.985]"
           data-testid="button-open-content"
         >
-          <Icon className="w-5 h-5 text-[#0D6EFD] flex-shrink-0" />
+          <Icon className="w-5 h-5 text-[#F97316] flex-shrink-0" />
           <span className="text-[14px] font-medium text-[#222222] flex-1">{t("tips.openContent")}</span>
           <ChevronRight className="w-4 h-4 text-[#71717A]" />
         </button>
@@ -131,7 +131,7 @@ export default function TipDetailPage() {
           </Button>
           <Button
             onClick={handleNext}
-            className="flex-1 h-[52px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-medium flex items-center justify-center gap-2"
+            className="flex-1 h-[52px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[15px] font-medium flex items-center justify-center gap-2"
             data-testid="button-next-tip"
           >
             {nextTip ? t("common.next") : t("tips.backToOverview")}

@@ -188,7 +188,7 @@ export default function ProfileDetailsPage() {
           onChange={e => onChange(e.target.value)}
           placeholder={placeholder}
           onKeyDown={e => { if (e.key === "Enter" && onEnter) onEnter(); }}
-          className="w-full bg-white rounded-2xl px-5 py-4 text-[16px] text-[#222222] placeholder:text-[#C4C4C4] border border-[#E5E7EB] focus:border-[#0D6EFD] focus:shadow-[0_0_0_3px_rgba(13,110,253,0.08)] focus:outline-none transition-all h-[56px]"
+          className="w-full bg-white rounded-2xl px-5 py-4 text-[16px] text-[#222222] placeholder:text-[#C4C4C4] border border-[#E5E7EB] focus:border-[#F97316] focus:shadow-[0_0_0_3px_rgba(249,115,22,0.08)] focus:outline-none transition-all h-[56px]"
           data-testid="input-edit-field"
         />
         {value && (

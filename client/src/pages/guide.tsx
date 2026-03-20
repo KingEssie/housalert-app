@@ -10,7 +10,7 @@ function GuideSection({ title, items }: { title: string; items: string[] }) {
       <ul className="flex flex-col gap-2.5">
         {items.map((item, i) => (
           <li key={i} className="flex items-start gap-3 text-[14px] text-[#222222] leading-relaxed">
-            <CheckCircle2 className="w-4 h-4 text-[#0D6EFD] flex-shrink-0 mt-0.5" />
+            <CheckCircle2 className="w-4 h-4 text-[#F97316] flex-shrink-0 mt-0.5" />
             <span>{item}</span>
           </li>
         ))}

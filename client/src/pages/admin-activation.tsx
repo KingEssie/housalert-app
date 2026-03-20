@@ -34,7 +34,7 @@ interface CancellationStats {
 
 const FUNNEL_STEPS = [
   { key: "account_created", label: "Account Created", Icon: UserPlus, color: "#717171" },
-  { key: "profile_created", label: "Profile Created", Icon: Search, color: "#0D6EFD" },
+  { key: "profile_created", label: "Profile Created", Icon: Search, color: "#F97316" },
   { key: "notifications_enabled", label: "Notifications Enabled", Icon: Bell, color: "#16A34A" },
   { key: "match_received", label: "Match Received", Icon: Inbox, color: "#8B5CF6" },
   { key: "first_match_viewed", label: "First Match Viewed", Icon: Eye, color: "#7C3AED" },
@@ -126,8 +126,8 @@ export default function AdminActivationPage() {
 
         <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 mb-6" data-testid="card-total-users">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-[#EBF2FF] flex items-center justify-center">
-              <Users className="w-5 h-5 text-[#0D6EFD]" />
+            <div className="w-10 h-10 rounded-full bg-[#FFF7ED] flex items-center justify-center">
+              <Users className="w-5 h-5 text-[#F97316]" />
             </div>
             <div>
               <p className="text-[13px] text-[#717171]">Total Tracked Users</p>
@@ -169,7 +169,7 @@ export default function AdminActivationPage() {
             <div className="grid grid-cols-2 gap-3">
               {[
                 { label: "Auth Users", value: data.sourceOfTruth.totalAuthUsers, color: "#717171" },
-                { label: "With Profile", value: data.sourceOfTruth.withSearchProfile, color: "#0D6EFD" },
+                { label: "With Profile", value: data.sourceOfTruth.withSearchProfile, color: "#F97316" },
                 { label: "Notifs Enabled", value: data.sourceOfTruth.withNotifications, color: "#16A34A" },
                 { label: "Viewed Match", value: data.sourceOfTruth.withMatchViewed, color: "#7C3AED" },
                 { label: "Reacted", value: data.sourceOfTruth.withReaction, color: "#EA580C" },

@@ -119,7 +119,7 @@ export default function ApplicationLetterPage() {
                       setTemplate(template + p.key);
                     }
                   }}
-                  className="text-[11px] font-mono bg-[#F3F4F6] text-[#0D6EFD] px-2.5 py-1.5 rounded-lg active:bg-[#E5E7EB] transition-colors"
+                  className="text-[11px] font-mono bg-[#F3F4F6] text-[#F97316] px-2.5 py-1.5 rounded-lg active:bg-[#E5E7EB] transition-colors"
                   title={t(p.labelKey)}
                   data-testid={`placeholder-${p.key.replace(/\[|\]/g, "")}`}
                 >
@@ -139,7 +139,7 @@ export default function ApplicationLetterPage() {
                 value={template}
                 onChange={(e) => setTemplate(e.target.value)}
                 placeholder={t("applicationLetter.placeholderText")}
-                className="w-full min-h-[340px] px-5 py-5 rounded-[20px] border border-[#F0F0F0] bg-white text-[15px] text-[#222222] placeholder:text-[#C4C4C4] focus:outline-none focus:border-[#0D6EFD]/30 focus:shadow-[0_0_0_3px_rgba(13,110,253,0.08)] resize-y leading-relaxed shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] transition-all"
+                className="w-full min-h-[340px] px-5 py-5 rounded-[20px] border border-[#F0F0F0] bg-white text-[15px] text-[#222222] placeholder:text-[#C4C4C4] focus:outline-none focus:border-[#F97316]/30 focus:shadow-[0_0_0_3px_rgba(249,115,22,0.08)] resize-y leading-relaxed shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] transition-all"
                 data-testid="input-template"
               />
               {!isLongEnough && template.length > 0 && (
