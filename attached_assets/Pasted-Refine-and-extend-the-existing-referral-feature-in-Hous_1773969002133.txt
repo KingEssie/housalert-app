@@ -1,0 +1,211 @@
+Refine and extend the existing referral feature in HousAlert.
+
+IMPORTANT:
+- Do NOT rebuild the referral system from scratch
+- Reuse the existing referral endpoints, services, and database model
+- Do NOT duplicate referral logic
+- Keep the current HousAlert design direction
+- Use HousAlert blue as the primary accent
+- This is both a UI refinement and a testability improvement
+
+==================================================
+GOALS
+==================================================
+
+I want three things:
+
+1. Replace the current “Nieuwe matches gevonden” hero card on the Home page with a referral promo block
+2. Add a referral summary block to the Profile page
+3. Make the referral feature easier to test during development
+
+==================================================
+1. HOME PAGE — REPLACE HERO CARD WITH REFERRAL BLOCK
+==================================================
+
+On the Home page, remove or hide the current top hero card:
+- “Nieuwe matches gevonden”
+
+Replace it with a referral promo card instead.
+
+### Referral promo card requirements
+Use the existing referral feature and modal behavior.
+
+Content:
+- small label:
+  HELP JE VRIENDEN
+- main text:
+  Deel jouw persoonlijke kortingscode
+- CTA:
+  Bekijk code
+
+Optional supporting text if it improves clarity:
+- Als vrienden HousAlert gebruiken, krijg jij ook een beloning.
+
+### Behavior
+- tapping “Bekijk code” opens the existing referral modal
+- do NOT create a separate new referral flow
+- reuse the existing referral modal and referral code fetching
+
+### Design
+- premium consumer-app styling
+- rounded white card
+- subtle border or shadow
+- strong hierarchy
+- clean spacing
+- Airbnb-inspired calm layout
+- same Dutch copy style as the current referral modal
+
+### Placement
+This referral block should now be the top feature card on Home, replacing the old “Nieuwe matches gevonden” card.
+
+Keep the rest of the Home layout intact below it:
+- Onlangs bekeken woningen
+- Aan de slag
+- Recente matches
+
+==================================================
+2. PROFILE PAGE — ADD REFERRAL SUMMARY BLOCK
+==================================================
+
+Add a referral summary block to the Profile page.
+
+### Show:
+- Jouw kortingscode
+- Aantal uitgenodigde vrienden
+- Aantal pending referrals
+- Aantal qualified referrals
+- Aantal rewarded referrals
+
+### Include:
+- a copy button for the referral code
+- clean Airbnb-inspired spacing and card styling
+- same Dutch copy style as the referral modal
+
+### Data source
+Use the existing referral endpoints and data model.
+Do NOT duplicate logic.
+
+If the current GET /api/referrals/me endpoint already returns enough info, reuse it.
+If needed, extend the existing endpoint cleanly rather than creating duplicate overlapping endpoints.
+
+### Suggested card structure
+Card title:
+- Vrienden uitnodigen
+or
+- Jouw kortingscode
+
+Inside card:
+- code display
+- copy button
+- short summary rows or stats list
+
+For example:
+- Kortingscode: MARTIN6907
+- Uitgenodigde vrienden: 3
+- Pending: 1
+- Qualified: 1
+- Rewarded: 1
+
+### Design
+- rounded white card
+- subtle shadow or border
+- premium spacing
+- clean typography
+- aligned with current Profile screen style
+
+==================================================
+3. MAKE THE REFERRAL FEATURE TESTABLE IN DEVELOPMENT
+==================================================
+
+Right now I cannot easily test the referral feature end-to-end.
+
+Please make the referral system easier to test during development.
+
+### What I need
+Provide a practical developer-friendly test path so the feature can actually be validated.
+
+### Requirements
+- verify that a signed-in user always has a referral code
+- verify that the referral modal opens and shows the current user’s code
+- verify that copy works
+- verify that the Home referral card and Profile referral block both load correctly
+- verify that referral counts render safely even when zero
+
+### If needed
+Add a safe development/testing helper ONLY if necessary and keep it clearly separated from production behavior.
+
+Examples of acceptable dev support:
+- a dev-only seeded referral summary state
+- a temporary fallback if no referrals exist yet
+- a dev/test utility to simulate referral summary values
+- a mock mode only in development
+
+IMPORTANT:
+- do NOT break production logic
+- do NOT fake production data for real users
+- any test helper must be dev-only and clearly isolated
+
+### Also verify
+- if user has zero referrals, the summary should still render correctly with zeros
+- no blank states that break layout
+- no crashes if referral stats are empty/null
+
+==================================================
+4. COPY / DUTCH TEXT
+==================================================
+
+Use clean Dutch copy.
+
+### Home referral card
+Label:
+- HELP JE VRIENDEN
+
+Body:
+- Deel jouw persoonlijke kortingscode
+
+CTA:
+- Bekijk code
+
+### Profile referral block
+Possible title:
+- Vrienden uitnodigen
+
+Code label:
+- Jouw kortingscode
+
+Stats labels:
+- Uitgenodigde vrienden
+- Pending referrals
+- Qualified referrals
+- Rewarded referrals
+
+Copy button:
+- Kopieer
+
+Optional helper text:
+- Deel je code met vrienden. Als zij HousAlert gebruiken, krijg jij ook een beloning.
+
+==================================================
+5. TECHNICAL REQUIREMENTS
+==================================================
+
+Please:
+- reuse existing referral components where possible
+- reuse the existing referral modal
+- reuse existing API calls/hooks if already implemented
+- avoid duplicate state management
+- keep loading/error handling clean
+- make sure both Home and Profile can consume the referral data safely
+- keep code organized and production-safe
+
+==================================================
+6. RESULT
+==================================================
+
+At the end, summarize:
+1. what was removed from the Home page
+2. what referral block was added to Home
+3. what referral summary block was added to Profile
+4. whether the existing referral endpoint was reused or extended
+5. what dev/test support was added to make the feature testable
+6. which files/components were updated

@@ -30,7 +30,7 @@ import { pool as pgPool } from "./pg-pool";
 import { isAdminEmail, getRecentRuns, getRunDetail, getLatestRunCities, getSourceAggregates } from "./admin";
 import { trackEvent as trackActivationEvent, getUserActivationStatus, getActivationFunnel, hasEvent as hasActivationEvent } from "./activation-events";
 import { saveCancellationFeedback, getCancellationStats } from "./cancellation-feedback";
-import { getReferralSummary, applyReferralCode, validateReferralCode } from "./referrals";
+import { getReferralSummary, applyReferralCode, validateReferralCode, ensureUserHasReferralCode } from "./referrals";
 import { initWebPush, sendPushToUser } from "./notifications/push";
 import { sendExpoTestPush } from "./notifications/expo-push";
 import { getSupabaseAdmin } from "./supabase-admin";
@@ -3178,7 +3178,49 @@ export async function registerRoutes(
       }
     });
 
-    log("[DEV] Registered /api/dev/test-push, /api/dev/push-debug, /api/dev/expo-push-tokens-count, /api/dev/test-email-send (no auth, dev only)");
+    app.post("/api/dev/referral-seed", async (req, res) => {
+      try {
+        const { userId, pending = 1, qualified = 1, rewarded = 1 } = req.body || {};
+        if (!userId) return res.status(400).json({ error: "userId required" });
+
+        const code = await ensureUserHasReferralCode(pgPool, userId);
+
+        const statuses = [
+          ...Array(Number(pending)).fill("pending"),
+          ...Array(Number(qualified)).fill("qualified"),
+          ...Array(Number(rewarded)).fill("rewarded"),
+        ];
+
+        let seeded = 0;
+        for (const status of statuses) {
+          const fakeId = `00000000-0000-0000-0000-${Date.now().toString(16).padStart(12, "0")}${Math.floor(Math.random() * 1000).toString().padStart(3, "0")}`.slice(0, 36);
+          try {
+            await pgPool.query(
+              `INSERT INTO referrals (referrer_user_id, referred_user_id, referral_code, status, created_at, updated_at, qualified_at, rewarded_at)
+               VALUES ($1, $2, $3, $4, NOW(), NOW(), $5, $6)`,
+              [
+                userId,
+                fakeId,
+                code,
+                status,
+                status === "qualified" || status === "rewarded" ? new Date() : null,
+                status === "rewarded" ? new Date() : null,
+              ]
+            );
+            seeded++;
+          } catch (err: any) {
+            log(`[DEV REFERRAL SEED] Insert skipped: ${err.message}`);
+          }
+        }
+
+        return res.json({ success: true, code, seeded, total: statuses.length });
+      } catch (err: any) {
+        log(`[DEV REFERRAL SEED] Error: ${err.message}`);
+        return res.status(500).json({ error: err.message });
+      }
+    });
+
+    log("[DEV] Registered /api/dev/test-push, /api/dev/push-debug, /api/dev/expo-push-tokens-count, /api/dev/test-email-send, /api/dev/referral-seed (no auth, dev only)");
   }
 
   app.get("/api/admin/push-delivery-log", requireAdmin, async (req, res) => {

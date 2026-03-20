@@ -14,7 +14,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/i18n";
-import { getMatchEstimateRange } from "@/lib/match-estimate";
 import { trackEvent } from "@/lib/track-event";
 import {
   Home,
@@ -58,6 +57,7 @@ import {
 import { TaskModal, PrepTaskModal } from "@/components/profile-strength";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
 import TipsPage, { getTipsProgress } from "@/pages/tips";
+import { ReferralCodeModal } from "@/components/referral-code-modal";
 
 const MAX_PROFILES = 4;
 
@@ -809,8 +809,6 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
 function HomeTab({
   user,
   profiles,
-  matchCount,
-  newCount,
   navigate,
   setActiveTab,
   subscription,
@@ -818,8 +816,6 @@ function HomeTab({
 }: {
   user: any;
   profiles: SearchProfile[];
-  matchCount: number;
-  newCount: number;
   navigate: (path: string) => void;
   setActiveTab: (tab: TabKey) => void;
   subscription: { isTrial: boolean; isExpired: boolean; isActive: boolean; trialEndsAt: string | null };
@@ -837,30 +833,28 @@ function HomeTab({
     enabled: !!accessToken,
   });
   const firstName = profileDataQuery.data?.first_name || null;
-  const profileCount = profiles.length;
-  const hasProfiles = profileCount > 0;
-  const hasMatches = matchCount > 0;
+  const hasProfiles = profiles.length > 0;
 
-  const firstProfile = profiles[0];
-  const hasActiveSub = subscription.isActive || subscription.isTrial;
+  const [referralModalOpen, setReferralModalOpen] = useState(false);
 
-  const estimateQuery = useQuery<{ perWeekEstimate: number; last7dCount: number }>({
-    queryKey: ["/api/estimate", firstProfile?.city],
+  const { data: referralData, isLoading: referralLoading } = useQuery<{
+    code: string;
+    totalInvited: number;
+    pending: number;
+    qualified: number;
+    rewarded: number;
+  }>({
+    queryKey: ["/api/referrals/me"],
     queryFn: async () => {
-      const params = new URLSearchParams({ city: firstProfile.city });
-      if (firstProfile.price_min) params.set("minPrice", String(firstProfile.price_min));
-      if (firstProfile.price_max) params.set("maxPrice", String(firstProfile.price_max));
-      if (firstProfile.bedrooms_min) params.set("minRooms", String(firstProfile.bedrooms_min));
-      if (firstProfile.size_min) params.set("minSize", String(firstProfile.size_min));
-      const res = await apiFetch(`/api/estimate?${params}`);
-      if (!res.ok) throw new Error("estimate failed");
+      if (!accessToken) throw new Error("No token");
+      const res = await apiFetch("/api/referrals/me", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      if (!res.ok) throw new Error("Failed");
       return res.json();
     },
-    enabled: hasProfiles,
-    staleTime: 5 * 60 * 1000,
+    enabled: !!accessToken,
   });
-  const perWeekEstimateRaw = estimateQuery.data?.perWeekEstimate ?? 0;
-  const perWeekRange = getMatchEstimateRange(perWeekEstimateRaw);
 
   return (
     <div className="flex flex-col pb-8">
@@ -871,89 +865,27 @@ function HomeTab({
       </div>
       <div className="flex flex-col gap-7 px-6 mt-1">
 
-      {hasActiveSub && hasMatches ? (
-        <div className="rounded-[24px] bg-gradient-to-br from-[#0D6EFD] to-[#0A4FBA] p-6 shadow-[0_4px_20px_rgba(13,110,253,0.15)]" data-testid="hero-matches">
-          <div className="flex items-center gap-3.5 mb-5">
-            <div className="w-11 h-11 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
-              <Search className="w-5 h-5 text-white" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[18px] font-medium text-white leading-tight" data-testid="text-match-count">
-                {newCount > 0
-                  ? t("home.newMatchesFound")
-                  : t("home.upToDate")}
-              </p>
-              <p className="text-[13px] text-white/65 mt-1 leading-relaxed">
-                {newCount > 0
-                  ? (hasProfiles
-                    ? t("home.basedOnProfiles", { count: profileCount, label: profileCount === 1 ? t("home.profileSingular") : t("home.profilePlural") })
-                    : t("home.basedOnSearch"))
-                  : t("home.upToDateDesc")}
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={() => setActiveTab("matches")}
-            className="ml-[58px] h-[42px] px-6 rounded-xl bg-white text-[#0D6EFD] text-[13px] font-medium transition-all hover:bg-white/90 inline-flex items-center gap-2 shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
-            data-testid="button-view-matches"
-          >
-            {t("home.viewMatches")}
-            <ChevronRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      ) : hasActiveSub && hasProfiles ? (
-        <div className="rounded-[24px] bg-gradient-to-br from-[#0D6EFD] to-[#0A4FBA] p-6 shadow-[0_4px_20px_rgba(13,110,253,0.15)]" data-testid="hero-active-no-matches">
-          <div className="flex items-center gap-3.5 mb-5">
-            <div className="w-11 h-11 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
-              <Search className="w-5 h-5 text-white" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[17px] font-medium text-white leading-tight" data-testid="text-active-searching">
-                {t("home.searchingActive")}
-              </p>
-              <p className="text-[13px] text-white/65 mt-1 leading-relaxed">
-                {t("home.receivingMatches", { count: profileCount, label: profileCount === 1 ? t("home.profileSingular") : t("home.profilePlural") })}
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={() => setActiveTab("filters")}
-            className="ml-[58px] h-[42px] px-6 rounded-xl bg-white text-[#0D6EFD] text-[13px] font-medium transition-all hover:bg-white/90 inline-flex items-center gap-2 shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
-            data-testid="button-adjust-filters"
-          >
-            {t("home.adjustFilters")}
-            <ChevronRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      ) : hasProfiles ? (
-        <div className="rounded-[24px] bg-gradient-to-br from-[#0D6EFD] to-[#0A4FBA] p-6 shadow-[0_4px_20px_rgba(13,110,253,0.15)]" data-testid="hero-estimate">
-          <div className="flex items-center gap-3.5 mb-5">
-            <div className="w-11 h-11 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
-              <Sparkles className="w-5 h-5 text-white" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[17px] font-medium text-white leading-tight" data-testid="text-estimate-count">
-                {perWeekEstimateRaw > 0
-                  ? t("home.weekEstimate", perWeekRange)
-                  : t("home.profileReady")}
-              </p>
-              <p className="text-[13px] text-white/65 mt-1 leading-relaxed">
-                {perWeekEstimateRaw > 0
-                  ? t("home.basedOnProfiles", { count: profileCount, label: profileCount === 1 ? t("home.profileSingular") : t("home.profilePlural") })
-                  : t("home.activateSubToReceive")}
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={() => navigate("/paywall")}
-            className="ml-[58px] h-[42px] px-6 rounded-xl bg-white text-[#0D6EFD] text-[13px] font-medium transition-all hover:bg-white/90 inline-flex items-center gap-2 shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
-            data-testid="button-activate-sub"
-          >
-            {t("home.activateSubscription")}
-            <ChevronRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      ) : (
+      <div className="rounded-[20px] bg-white border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5" data-testid="card-home-referral">
+        <p className="text-[11px] font-semibold text-[#0D6EFD] tracking-wider uppercase mb-1" data-testid="text-referral-label">
+          {t("referral.homeLabel")}
+        </p>
+        <p className="text-[16px] font-medium text-[#18181B] leading-snug" data-testid="text-referral-body">
+          {t("referral.homeBody")}
+        </p>
+        <p className="text-[13px] text-[#6B7280] mt-1 leading-relaxed" data-testid="text-referral-helper">
+          {t("referral.homeHelper")}
+        </p>
+        <button
+          onClick={() => setReferralModalOpen(true)}
+          className="mt-4 h-[42px] px-6 rounded-xl bg-[#0D6EFD] text-white text-[14px] font-medium transition-all hover:bg-[#0B5ED7] active:scale-[0.97] inline-flex items-center gap-2"
+          data-testid="button-home-referral-cta"
+        >
+          {t("referral.promoCta")}
+          <ChevronRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
+
+      {!hasProfiles && (
         <EmptyState
           illustration={EMPTY_STATE_IMAGES.noMatches}
           title={t("home.noProfileTitle")}
@@ -990,6 +922,13 @@ function HomeTab({
 
 
       </div>
+
+      <ReferralCodeModal
+        open={referralModalOpen}
+        onClose={() => setReferralModalOpen(false)}
+        code={referralData?.code || null}
+        loading={referralLoading}
+      />
     </div>
   );
 }
@@ -1415,6 +1354,26 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
     },
   });
 
+  const referralQuery = useQuery<{
+    code: string;
+    totalInvited: number;
+    pending: number;
+    qualified: number;
+    rewarded: number;
+  }>({
+    queryKey: ["/api/referrals/me"],
+    queryFn: async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) throw new Error("No token");
+      const res = await apiFetch("/api/referrals/me", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (!res.ok) throw new Error("Failed");
+      return res.json();
+    },
+  });
+  const [referralCopied, setReferralCopied] = useState(false);
+
   const pd = profileDataQuery.data;
   const phone = pd?.phone || notifQuery.data?.phone_e164;
   const photoUrl = pd?.profile_photo_url || null;
@@ -1707,6 +1666,62 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
                   {t("profile.writeReactionLetter")}
                 </button>
               </div>
+            )}
+          </div>
+
+          <div className="rounded-[24px] border border-[#F0F0F0] p-5 shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]" data-testid="card-profile-referral">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-9 h-9 rounded-xl bg-[#EBF2FF] flex items-center justify-center flex-shrink-0">
+                <Gift className="w-[18px] h-[18px] text-[#0D6EFD]" />
+              </div>
+              <h2 className="text-[15px] font-medium text-[#111827]">{t("referral.profileTitle")}</h2>
+            </div>
+
+            {referralQuery.isLoading ? (
+              <p className="text-[13px] text-[#9CA3AF]">{t("referral.loading")}</p>
+            ) : (
+              <>
+                <div className="bg-[#F3F4F6] rounded-xl px-4 py-3 flex items-center justify-between mb-4" data-testid="text-profile-referral-code">
+                  <div>
+                    <p className="text-[11px] font-medium text-[#9CA3AF] uppercase tracking-wider">{t("referral.profileCodeLabel")}</p>
+                    <p className="text-[18px] font-bold tracking-[0.08em] text-[#18181B] mt-0.5">{referralQuery.data?.code || "—"}</p>
+                  </div>
+                  <button
+                    onClick={async () => {
+                      if (!referralQuery.data?.code) return;
+                      try {
+                        await navigator.clipboard.writeText(referralQuery.data.code);
+                        setReferralCopied(true);
+                        toast({ title: t("referral.copied") });
+                        setTimeout(() => setReferralCopied(false), 2000);
+                      } catch {
+                        toast({ title: t("referral.copyFailed"), variant: "destructive" });
+                      }
+                    }}
+                    className="h-[34px] px-4 rounded-lg border border-[#E5E7EB] bg-white text-[13px] font-medium text-[#374151] hover:bg-[#F9FAFB] transition-colors flex items-center gap-1.5"
+                    data-testid="button-profile-copy-code"
+                  >
+                    {referralCopied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                    {referralCopied ? t("referral.copied") : t("referral.profileCopy")}
+                  </button>
+                </div>
+
+                <div className="space-y-2.5">
+                  {[
+                    { label: t("referral.profileInvited"), value: referralQuery.data?.totalInvited ?? 0, testId: "text-referral-invited" },
+                    { label: t("referral.profilePending"), value: referralQuery.data?.pending ?? 0, testId: "text-referral-pending" },
+                    { label: t("referral.profileQualified"), value: referralQuery.data?.qualified ?? 0, testId: "text-referral-qualified" },
+                    { label: t("referral.profileRewarded"), value: referralQuery.data?.rewarded ?? 0, testId: "text-referral-rewarded" },
+                  ].map((row) => (
+                    <div key={row.testId} className="flex items-center justify-between" data-testid={row.testId}>
+                      <span className="text-[13px] text-[#6B7280]">{row.label}</span>
+                      <span className="text-[14px] font-medium text-[#18181B]">{row.value}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <p className="text-[12px] text-[#9CA3AF] mt-4 leading-relaxed">{t("referral.profileHelperText")}</p>
+              </>
             )}
           </div>
 
@@ -2020,8 +2035,6 @@ export default function DashboardPage() {
           <HomeTab
             user={user}
             profiles={profiles}
-            matchCount={matchCount}
-            newCount={newCount}
             navigate={navigate}
             setActiveTab={setActiveTab}
             subscription={{ isTrial: sub.isTrial, isExpired: sub.isExpired, isActive: sub.isActive, trialEndsAt: sub.trialEndsAt }}
