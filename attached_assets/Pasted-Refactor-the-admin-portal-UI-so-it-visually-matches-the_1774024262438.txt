@@ -1,0 +1,142 @@
+Refactor the admin portal UI so it visually matches the main user app, not just in color but in full component styling.
+
+IMPORTANT:
+- Do NOT change admin functionality
+- Do NOT change routes or data logic
+- Only align the visual design system with the user-facing app
+
+==================================================
+1. MATCH CARD / PANEL STYLING TO USER APP
+==================================================
+
+Current issue:
+- admin cards/panels still feel like a separate dashboard product
+- shadows, radius, borders, and spacing do not match the user app
+
+Fix:
+- use the SAME card styling system as the main user app:
+  - same corner radius
+  - same shadow strength
+  - same border treatment (or no border if the user app uses mostly shadow)
+  - same white card surfaces
+  - same spacing rhythm
+
+Apply to:
+- metric cards
+- funnel cards
+- top summary cards
+- alert cards
+- all admin content panels
+
+==================================================
+2. MATCH BOTTOM TAB BAR TO USER APP
+==================================================
+
+Current issue:
+- admin tab bar icons and labels are too small
+- spacing does not match the user app
+- it feels like a different tab bar system
+
+Fix:
+- use the SAME bottom tab bar proportions as the user app:
+  - same bar height
+  - same icon size
+  - same label font size
+  - same spacing between icon and label
+  - same active/inactive visual behavior
+  - same gray text color system
+  - same dark text/icon treatment
+
+Apply this without changing the admin navigation structure.
+
+Goal:
+The admin tab bar should feel like the admin version of the same app, not a separate dashboard UI.
+
+==================================================
+3. MATCH TYPOGRAPHY TO USER APP
+==================================================
+
+Current issue:
+- admin text hierarchy still feels more dashboard-like
+- labels and tab text are smaller / different than the user app
+
+Fix:
+- use the SAME typography system as the user app:
+  - same primary black text color
+  - same secondary gray text color
+  - same heading styles
+  - same menu/list item weights
+  - same label sizing philosophy
+
+Apply to:
+- section headers
+- card headings
+- stat labels
+- tab labels
+- list labels
+- helper text
+
+==================================================
+4. MATCH ICON TREATMENT TO USER APP
+==================================================
+
+Current issue:
+- admin icons still feel visually different from the user app
+
+Fix:
+- use the SAME icon treatment as the user app:
+  - black / near-black icons
+  - no random colored icon tiles unless truly needed
+  - same icon sizing logic
+  - same visual weight
+
+Apply to:
+- cards
+- top nav/header
+- tabs
+- list rows
+- metrics
+- funnel / analytics sections where icons are used
+
+==================================================
+5. KEEP BRAND ACCENT, BUT MATCH USER APP STRUCTURE
+==================================================
+
+The orange-red accent color is correct.
+Keep that.
+
+But:
+- only use accent color where the user app would use it
+- do NOT over-accent the admin portal
+- keep the same balance of:
+  - white surfaces
+  - dark text
+  - gray supporting text
+  - accent only for active states / emphasis / data highlights
+
+==================================================
+6. FUNNEL / ANALYTICS VISUAL CLEANUP
+==================================================
+
+For analytics cards and funnel blocks:
+- keep the data
+- keep the charts/bars
+- but restyle them to sit inside the same card system as the user app
+- same radius
+- same internal padding
+- same spacing rhythm
+- same label hierarchy
+
+The analytics UI should feel integrated into the same design language.
+
+==================================================
+7. RESULT
+==================================================
+
+At the end, summarize:
+1. which admin components were restyled to match the user app
+2. how card shadows/radius were aligned
+3. how the admin bottom tab bar was aligned to the user app
+4. how typography was unified
+5. how icon treatment was unified
+6. which files/components/pages were updated

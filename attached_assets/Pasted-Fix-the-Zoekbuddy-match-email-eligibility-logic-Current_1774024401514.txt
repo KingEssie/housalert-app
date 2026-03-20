@@ -1,0 +1,115 @@
+Fix the Zoekbuddy match-email eligibility logic.
+
+Current bug:
+- the Zoekbuddy is still receiving match emails when they should not
+
+Expected behavior:
+A Zoekbuddy may ONLY receive match emails if ALL of the following are true:
+
+1. the main user has a Zoekbuddy configured
+2. the Zoekbuddy feature is explicitly activated/enabled
+3. the main user has an active trial account OR an active paid account/subscription
+4. the buddy record is current/valid and not removed
+
+==================================================
+1. FIX RECIPIENT GATING LOGIC
+==================================================
+
+Update the match-notification recipient logic so the buddy email address is included ONLY when all required eligibility checks pass.
+
+Do NOT include the buddy if:
+- buddy feature is disabled
+- user is on free plan without trial
+- trial is expired/inactive
+- paid subscription is inactive/cancelled/unpaid
+- buddy record is removed or stale
+
+==================================================
+2. CREATE A SINGLE SOURCE OF TRUTH
+==================================================
+
+Create or refactor to a single helper/function like:
+
+canBuddyReceiveMatches(user)
+
+This function should return true only if:
+- buddy exists
+- buddy is enabled
+- user has active trial OR active paid entitlement
+- buddy is valid
+
+Then use this helper everywhere buddy match delivery is decided.
+
+Do not duplicate this logic in multiple places.
+
+==================================================
+3. CHECK SUBSCRIPTION / TRIAL STATUS CAREFULLY
+==================================================
+
+Use the actual current entitlement state, not just “has ever had trial” or “has subscription record”.
+
+Correct interpretation:
+- active trial = allowed
+- active paid subscription = allowed
+- expired trial = not allowed
+- cancelled/inactive/unpaid subscription = not allowed
+
+==================================================
+4. AUDIT ALL MATCH EMAIL FLOWS
+==================================================
+
+Check all places where match emails are sent or recipients are built.
+
+Make sure the buddy is excluded unless eligibility passes in every path.
+
+This includes:
+- scheduled match emails
+- manual resend/test flows if applicable
+- any helper that appends recipients
+
+==================================================
+5. ADD LOGGING / DEBUG SAFETY
+==================================================
+
+Add clear logging for why a buddy was included or excluded, for example:
+- buddy excluded: feature disabled
+- buddy excluded: no active entitlement
+- buddy included: active trial
+- buddy included: active paid subscription
+
+This will help verify the fix.
+
+==================================================
+6. ADD TESTS
+==================================================
+
+Add/update tests for at least these cases:
+
+A. buddy exists + feature enabled + active trial
+=> buddy receives matches
+
+B. buddy exists + feature enabled + active paid subscription
+=> buddy receives matches
+
+C. buddy exists + feature enabled + no trial + no paid subscription
+=> buddy does NOT receive matches
+
+D. buddy exists + feature disabled + active paid subscription
+=> buddy does NOT receive matches
+
+E. buddy exists + expired trial
+=> buddy does NOT receive matches
+
+F. buddy removed
+=> buddy does NOT receive matches
+
+==================================================
+7. RESULT
+==================================================
+
+At the end, summarize:
+1. where the recipient logic was wrong
+2. how buddy eligibility is now determined
+3. which function/helper is now the single source of truth
+4. which email sending flows were updated
+5. which tests were added or changed
