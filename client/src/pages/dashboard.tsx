@@ -572,8 +572,33 @@ function RecentlyViewedCard({ match }: { match: ApiMatch }) {
   );
 }
 
-function getProfileTitle(p: SearchProfile, t: (key: string, params?: Record<string, string | number>) => string): string {
-  const city = p.city_name || p.city || "";
+const DUTCH_CITY_NAMES: Record<string, string> = {
+  "Berlin": "Berlijn",
+  "Köln": "Keulen",
+  "Frankfurt": "Frankfurt",
+  "Düsseldorf": "Düsseldorf",
+  "München": "München",
+  "Hamburg": "Hamburg",
+  "Stuttgart": "Stuttgart",
+  "Leipzig": "Leipzig",
+  "Dresden": "Dresden",
+  "Hannover": "Hannover",
+  "Nürnberg": "Neurenberg",
+  "Bremen": "Bremen",
+  "Essen": "Essen",
+  "Braunschweig": "Braunschweig",
+  "Freiburg": "Freiburg",
+  "Aachen": "Aken",
+};
+
+function localizeCityName(raw: string, locale: string): string {
+  if (locale === "nl") return DUTCH_CITY_NAMES[raw] || raw;
+  return raw;
+}
+
+function getProfileTitle(p: SearchProfile, t: (key: string, params?: Record<string, string | number>) => string, locale: string): string {
+  const rawCity = p.city_name || p.city || "";
+  const city = localizeCityName(rawCity, locale);
   if (p.location_mode === "commute" && p.commute_destination) {
     const dest = p.commute_destination.split(",")[0].trim();
     const mins = p.commute_minutes || 30;
@@ -603,7 +628,7 @@ function getProfileSummary(p: SearchProfile, t: (key: string, params?: Record<st
 }
 
 function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile[]; navigate: (path: string) => void }) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   if (profiles.length === 0) return null;
 
   return (
@@ -621,7 +646,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
             >
               <div className="flex-1 min-w-0">
                 <p className="text-[15px] font-medium text-[#18181B] leading-snug line-clamp-1" data-testid={`text-profile-title-${p.id}`}>
-                  {getProfileTitle(p, t)}
+                  {getProfileTitle(p, t, locale)}
                 </p>
                 <p className="text-[13px] text-[#9CA3AF] mt-0.5 line-clamp-1" data-testid={`text-profile-summary-${p.id}`}>
                   {getProfileSummary(p, t)}

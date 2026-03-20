@@ -1598,6 +1598,6 @@ export const nl: Record<string, any> = {
     and: "en",
     max: "max",
     min: "min",
-    bedrooms: "slpk",
+    bedrooms: "slaapkamers",
   },
 };

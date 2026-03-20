@@ -1551,6 +1551,6 @@ export const de: Record<string, any> = {
     and: "und",
     max: "max",
     min: "min",
-    bedrooms: "Zi.",
+    bedrooms: "Zimmer",
   },
 };

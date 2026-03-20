@@ -808,6 +808,6 @@ export const en: Record<string, any> = {
     and: "and",
     max: "max",
     min: "min",
-    bedrooms: "bed",
+    bedrooms: "bedrooms",
   },
 };
