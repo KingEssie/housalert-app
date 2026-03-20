@@ -1833,27 +1833,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           </div>
 
           <div className="flex flex-col gap-1">
-            <button
-              onClick={() => navigate("/application-letter")}
-              className="w-full flex items-center gap-3.5 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
-              data-testid="button-reaction-letter"
-            >
-              <FileText className="w-[22px] h-[22px] text-[#71717A] flex-shrink-0" />
-              <div className="flex-1 min-w-0">
-                <p className="text-[15px] text-[#18181B]">{t("profile.reactionLetter2")}</p>
-                <p className="text-[12px] text-[#9CA3AF] mt-0.5 line-clamp-2">{letterPreview ? `${letterPreview}...` : t("profile.noLetterYet")}</p>
-              </div>
-              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
-            </button>
-            <button
-              onClick={() => navigate("/profile/details")}
-              className="w-full flex items-center gap-3.5 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
-              data-testid="button-personal-info"
-            >
-              <User className="w-[22px] h-[22px] text-[#71717A] flex-shrink-0" />
-              <p className="text-[15px] text-[#18181B] flex-1">{t("profile.personalInfo")}</p>
-              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
-            </button>
             <div id="zoekbuddy-section" data-testid="row-zoekbuddy">
               <button
                 onClick={() => {
@@ -1937,6 +1916,27 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                 </div>
               )}
             </div>
+            <button
+              onClick={() => navigate("/application-letter")}
+              className="w-full flex items-center gap-3.5 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
+              data-testid="button-reaction-letter"
+            >
+              <FileText className="w-[22px] h-[22px] text-[#71717A] flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-[15px] text-[#18181B]">{t("profile.reactionLetter2")}</p>
+                <p className="text-[12px] text-[#9CA3AF] mt-0.5 line-clamp-2">{letterPreview ? `${letterPreview}...` : t("profile.noLetterYet")}</p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+            </button>
+            <button
+              onClick={() => navigate("/profile/details")}
+              className="w-full flex items-center gap-3.5 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
+              data-testid="button-personal-info"
+            >
+              <User className="w-[22px] h-[22px] text-[#71717A] flex-shrink-0" />
+              <p className="text-[15px] text-[#18181B] flex-1">{t("profile.personalInfo")}</p>
+              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+            </button>
             <button
               onClick={() => navigate("/account/subscription")}
               className="w-full flex items-center gap-3.5 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
