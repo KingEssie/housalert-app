@@ -188,7 +188,7 @@ function MatchCard({
         </div>
       </div>
 
-      <div className="px-0.5 pt-2">
+      <div className="px-0.5 pt-[10px]">
         <div className="flex items-baseline justify-between gap-2 leading-[1.25]">
           <h3
             className="text-[16px] font-semibold text-[#000] leading-[1.25] line-clamp-1 flex-1 min-w-0"
@@ -1138,7 +1138,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           />
         )
       ) : (
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-[14px]">
           {filteredMatches.map((m) => (
             <MatchCard
               key={m.listing_id}
