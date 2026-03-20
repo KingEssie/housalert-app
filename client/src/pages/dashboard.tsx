@@ -1138,7 +1138,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           />
         )
       ) : (
-        <div className="flex flex-col gap-[14px]">
+        <div className="flex flex-col gap-[24px]">
           {filteredMatches.map((m) => (
             <MatchCard
               key={m.listing_id}
@@ -2046,30 +2046,25 @@ export default function DashboardPage() {
         )}
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 z-20 pointer-events-none" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
-        <div className="max-w-xl mx-auto px-4 pb-2.5">
-          <nav className="pointer-events-auto bg-white/95 backdrop-blur-xl rounded-2xl shadow-[0_2px_24px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.03)] flex h-[60px] px-1.5" data-testid="bottom-nav">
-            {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
-              const isActive = activeTab === key;
-              return (
-                <button
-                  key={key}
-                  onClick={() => setActiveTab(key)}
-                  className="flex-1 flex flex-col items-center justify-center gap-1 relative"
-                  data-testid={`tab-${key}`}
-                >
-                  <Icon className={`w-[20px] h-[20px] transition-colors ${isActive ? "text-[#0D6EFD]" : "text-[#71717A]"}`} />
-                  <span className={`text-[10px] transition-colors ${isActive ? "font-medium text-[#0D6EFD]" : "font-normal text-[#71717A]"}`}>
-                    {t(labelKey)}
-                  </span>
-                  {isActive && (
-                    <span className="absolute -top-0.5 w-1 h-1 rounded-full bg-[#0D6EFD]" />
-                  )}
-                </button>
-              );
-            })}
-          </nav>
-        </div>
+      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#E5E7EB]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+        <nav className="max-w-xl mx-auto flex h-[56px]" data-testid="bottom-nav">
+          {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
+            const isActive = activeTab === key;
+            return (
+              <button
+                key={key}
+                onClick={() => setActiveTab(key)}
+                className="flex-1 flex flex-col items-center justify-center gap-[3px]"
+                data-testid={`tab-${key}`}
+              >
+                <Icon className={`w-[22px] h-[22px] transition-colors ${isActive ? "text-[#0D6EFD]" : "text-[#9CA3AF]"}`} strokeWidth={isActive ? 2 : 1.5} />
+                <span className={`text-[12px] transition-colors ${isActive ? "font-medium text-[#0D6EFD]" : "font-normal text-[#9CA3AF]"}`}>
+                  {t(labelKey)}
+                </span>
+              </button>
+            );
+          })}
+        </nav>
       </div>
     </div>
   );
