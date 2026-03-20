@@ -150,17 +150,15 @@ export default function ApplicationLetterPage() {
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-[#F0F0F0] p-5 z-10">
-        <div className="max-w-xl mx-auto">
-          <button
-            onClick={() => saveMutation.mutate(template)}
-            disabled={!isLongEnough || saveMutation.isPending}
-            className="w-full h-[52px] rounded-2xl bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium disabled:opacity-50 transition-colors"
-            data-testid="button-save-template"
-          >
-            {saveMutation.isPending ? t("applicationLetter.saving") : t("applicationLetter.saveLetter")}
-          </button>
-        </div>
+      <div className="fixed bottom-7 left-0 right-0 z-10 flex justify-center pointer-events-none">
+        <button
+          onClick={() => saveMutation.mutate(template)}
+          disabled={!isLongEnough || saveMutation.isPending}
+          className="pointer-events-auto h-[48px] px-8 rounded-full bg-[#18181B] text-white text-[15px] font-medium disabled:opacity-40 shadow-[0_4px_16px_rgba(0,0,0,0.16)] active:scale-95 transition-all"
+          data-testid="button-save-template"
+        >
+          {saveMutation.isPending ? t("applicationLetter.saving") : t("applicationLetter.saveLetter")}
+        </button>
       </div>
     </div>
   );
