@@ -160,19 +160,19 @@ function MatchCard({
       onClick={handleCardClick}
       data-testid={`card-match-${match.listing_id}`}
     >
-      <div className="relative rounded-[16px] overflow-hidden shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
+      <div className="relative rounded-[18px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
         {hasImage && !imgError ? (
           <img
             src={match.image_url!}
             alt={match.title}
             className="w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-            style={{ aspectRatio: "4/3" }}
+            style={{ aspectRatio: "4/5" }}
             loading="lazy"
             onError={() => setImgError(true)}
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "4/3" }}>
+          <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "4/5" }}>
             <div className="absolute inset-0 bg-black/5" />
             <div className="flex flex-col items-center gap-2.5 text-white/50">
               <ImageIcon className="w-8 h-8" />
@@ -425,7 +425,7 @@ function RecentMatchCard({ match }: { match: ApiMatch }) {
     <div
       role="button"
       tabIndex={0}
-      className="flex-shrink-0 w-[72vw] max-w-[280px] cursor-pointer transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-[#0D6EFD]/40 rounded-[16px]"
+      className="flex-shrink-0 w-[72vw] max-w-[280px] cursor-pointer transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-[#0D6EFD]/40 rounded-[18px]"
       onClick={() => {
         markViewed(match.listing_id);
         navigate(`/apply/${match.listing_id}`);
@@ -439,19 +439,19 @@ function RecentMatchCard({ match }: { match: ApiMatch }) {
       }}
       data-testid={`card-recent-match-${match.listing_id}`}
     >
-      <div className="relative rounded-[16px] overflow-hidden">
+      <div className="relative rounded-[18px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
         {hasImage ? (
           <img
             src={match.image_url!}
             alt={match.title}
             className="w-full object-cover"
-            style={{ aspectRatio: "4/3" }}
+            style={{ aspectRatio: "4/5" }}
             loading="lazy"
             onError={() => setImgError(true)}
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "4/3" }}>
+          <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "4/5" }}>
             <div className="absolute inset-0 bg-black/5" />
             <div className="flex flex-col items-center gap-1.5 text-white/50">
               <ImageIcon className="w-7 h-7" />
@@ -532,7 +532,7 @@ function RecentlyViewedCard({ match }: { match: ApiMatch }) {
     <div
       role="button"
       tabIndex={0}
-      className="flex-shrink-0 w-[56vw] max-w-[210px] cursor-pointer snap-start transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-[#0D6EFD]/40 rounded-[12px]"
+      className="flex-shrink-0 w-[56vw] max-w-[210px] cursor-pointer snap-start transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-[#0D6EFD]/40 rounded-[16px]"
       onClick={() => navigate(`/apply/${match.listing_id}`)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -542,19 +542,19 @@ function RecentlyViewedCard({ match }: { match: ApiMatch }) {
       }}
       data-testid={`card-recently-viewed-${match.listing_id}`}
     >
-      <div className="relative rounded-[12px] overflow-hidden">
+      <div className="relative rounded-[16px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
         {hasImage ? (
           <img
             src={match.image_url!}
             alt={match.title}
             className="w-full object-cover"
-            style={{ aspectRatio: "3/2" }}
+            style={{ aspectRatio: "1/1" }}
             loading="lazy"
             onError={() => setImgError(true)}
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "3/2" }}>
+          <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "1/1" }}>
             <div className="absolute inset-0 bg-black/5" />
             <ImageIcon className="w-6 h-6 text-white/40" />
           </div>

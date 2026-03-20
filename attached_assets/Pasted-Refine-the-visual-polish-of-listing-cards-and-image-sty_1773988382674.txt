@@ -1,0 +1,82 @@
+Refine the visual polish of listing cards and image styling to better match Airbnb-level UI quality.
+
+IMPORTANT:
+- Do NOT change layout structure or functionality
+- This is purely a visual refinement
+- Keep current spacing and hierarchy intact
+- Focus on shadows and image shape
+
+==================================================
+1. CARD SHADOW — MAKE IT MORE PREMIUM (AIRBNB STYLE)
+==================================================
+
+Current issue:
+Shadows are too flat and not “premium” enough.
+
+Update all listing cards (including “Onlangs bekeken woningen” and similar cards):
+
+Requirements:
+- use a softer, more layered shadow
+- less harsh, more diffused
+- slightly more elevation feeling
+
+Suggested shadow style:
+- multiple shadow layers
+- low opacity
+- more blur
+
+Example direction (adjust to design system):
+- box-shadow:
+  0 4px 12px rgba(0, 0, 0, 0.06),
+  0 1px 3px rgba(0, 0, 0, 0.04)
+
+NOT:
+- no heavy dark shadows
+- no sharp edges
+
+Goal:
+Cards should feel like Airbnb:
+- floating slightly above background
+- soft, subtle, premium
+
+==================================================
+2. IMAGE SHAPE — MORE SQUARE / AIRBNB STYLE
+==================================================
+
+Current issue:
+Images are too rectangular.
+
+Update all listing images (especially in “Onlangs bekeken woningen”):
+
+Requirements:
+- use a more square aspect ratio (close to 1:1 or slightly vertical like Airbnb)
+- increase border radius slightly
+- images should feel more “card-like”
+
+Target:
+- aspect-ratio: 1 / 1 OR 4 / 5 (choose what fits best visually)
+- border-radius: slightly larger (e.g. 16px–20px)
+
+IMPORTANT:
+- images should feel consistent across all cards
+- no stretched or distorted images
+- use object-fit: cover
+
+==================================================
+3. CARD CONTAINER CONSISTENCY
+==================================================
+
+Ensure:
+- image and card container share same border radius feel
+- spacing between image and text remains clean
+- card padding stays consistent
+
+==================================================
+4. RESULT
+==================================================
+
+At the end, summarize:
+- what shadow values were updated
+- which components were affected
+- what aspect ratio was chosen
+- what border radius is now used
