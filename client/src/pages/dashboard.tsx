@@ -195,13 +195,13 @@ function MatchCard({
       <div className="px-0.5 pt-[10px]">
         <div className="flex items-baseline justify-between gap-2 leading-[1.25]">
           <h3
-            className="text-[16px] font-semibold text-[#000] leading-[1.25] line-clamp-1 flex-1 min-w-0"
+            className="text-[16px] font-semibold text-[#222222] leading-[1.25] line-clamp-1 flex-1 min-w-0"
             data-testid={`text-match-title-${match.listing_id}`}
           >
             {match.title}
           </h3>
           {match.price > 0 && (
-            <span className="text-[16px] font-semibold text-[#000] leading-[1.25] flex-shrink-0 whitespace-nowrap" data-testid={`badge-price-${match.listing_id}`}>
+            <span className="text-[16px] font-semibold text-[#222222] leading-[1.25] flex-shrink-0 whitespace-nowrap" data-testid={`badge-price-${match.listing_id}`}>
               €{match.price} <span className="text-[16px] font-normal text-[#717171]">{t("common.perMonthShort")}</span>
             </span>
           )}

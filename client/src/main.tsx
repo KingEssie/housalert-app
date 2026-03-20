@@ -4,9 +4,9 @@ import "./index.css";
 function renderError(err: unknown) {
   const root = document.getElementById("root");
   if (root) {
-    root.innerHTML = `<div style="padding:32px;font-family:system-ui;color:#333;text-align:center;">
+    root.innerHTML = `<div style="padding:32px;font-family:system-ui;color:#222222;text-align:center;">
       <h2>App konnte nicht geladen werden</h2>
-      <p style="color:#888;font-size:14px;margin-top:12px;">${err instanceof Error ? err.message : "Unbekannter Fehler"}</p>
+      <p style="color:#717171;font-size:14px;margin-top:12px;">${err instanceof Error ? err.message : "Unbekannter Fehler"}</p>
       <button onclick="location.reload()" style="margin-top:20px;padding:10px 24px;border-radius:8px;background:#0D6EFD;color:#fff;border:none;font-size:16px;">Erneut versuchen</button>
     </div>`;
   }
