@@ -1,0 +1,214 @@
+Add a new “Zoekprofielen” section to the Home screen, inspired by Airbnb’s “Verder zoeken naar woningen in Parijs” card layout.
+
+IMPORTANT:
+- Do NOT change backend logic unnecessarily
+- Reuse the user’s existing saved search profiles
+- Keep current HousAlert design direction
+- This is a Home screen feature addition and UI implementation
+- Keep HousAlert blue as the primary accent color
+
+==================================================
+GOAL
+==================================================
+
+I want a new Home screen section that shows the user’s saved search profiles in a compact, premium card style inspired by Airbnb’s “Verder zoeken naar woningen in Parijs” section.
+
+This section should appear BELOW:
+- Aan de slag
+
+And ABOVE:
+- Recente matches
+
+==================================================
+SECTION NAME
+==================================================
+
+Use the section title:
+- Zoekprofielen
+
+If better for UX, a subtitle can optionally be added, but keep it minimal.
+
+==================================================
+WHEN TO SHOW
+==================================================
+
+Only show this section if the user has at least 1 saved search profile.
+
+If the user has no saved search profiles:
+- do NOT show the section
+- do NOT show an empty state here unless there is already a clean existing pattern
+
+==================================================
+CARD LAYOUT
+==================================================
+
+Create a compact card style inspired by Airbnb’s “Verder zoeken...” card.
+
+Each search profile card should include:
+
+### Left side
+A title and a small summary
+
+### Right side
+A small preview visual:
+- image
+- illustration
+- map preview
+- or a clean placeholder if no real visual exists
+
+The card should feel:
+- premium
+- compact
+- rounded
+- easy to scan
+- personal
+
+Style:
+- rounded white card
+- subtle shadow
+- good spacing
+- clean typography
+- Airbnb-inspired layout rhythm
+
+==================================================
+TITLE LOGIC
+==================================================
+
+Generate a natural title based on the search profile type.
+
+Examples:
+
+### City search
+- Woning in Berlijn
+- Woning in München
+
+### District/neighborhood search
+- Woning in Kreuzberg en Neukölln
+- Woning in De Pijp en Oud-Zuid
+
+### Radius search
+- Woning in een straal van 8 km van Berlijn
+
+### Commute / travel-time search
+- In de buurt van Alexanderplatz, max 35 min met OV
+- In de buurt van Rotterdam Centraal, max 25 min met fiets
+
+IMPORTANT:
+- generate the title from the saved search profile data
+- keep titles readable and not overly long
+- truncate gracefully if needed
+- prioritize natural phrasing over raw field dumps
+
+==================================================
+SUMMARY LINE
+==================================================
+
+Under the title, show a smaller summary line with the most important filters.
+
+Example format:
+- €900 – €1600 · 1+ slaapkamers · 45+ m²
+- €1200 – €2000 · 2+ slaapkamers · 60+ m²
+
+Requirements:
+- smaller text than title
+- gray text
+- compact line
+- include only values that exist
+- no awkward empty separators
+
+Use a logical order like:
+1. Min/max price
+2. Bedrooms
+3. Surface area
+
+==================================================
+VISUAL / PREVIEW ON THE RIGHT
+==================================================
+
+Add a small image or preview block on the right side of the card.
+
+If there is no true image for a search profile:
+- use a tasteful placeholder
+- or a generic housing preview image
+- or a map/area-style placeholder
+
+Requirements:
+- rounded corners
+- visually similar size to Airbnb-style small preview image
+- aligned nicely within the card
+- not oversized
+
+==================================================
+INTERACTION
+==================================================
+
+Tapping a search profile card should:
+- open the relevant search profile
+- or navigate to the filters / profile detail screen for that saved search
+- reuse existing app logic where possible
+
+Do NOT create duplicate profile-detail flows if one already exists.
+
+==================================================
+MULTIPLE SEARCH PROFILES
+==================================================
+
+If the user has multiple search profiles:
+- show them in a clean vertical list or compact horizontal rail, whichever fits the current Home layout best
+- prefer a layout that feels premium and does not overcrowd the Home page
+
+If needed, limit the number shown and add:
+- “Bekijk alles”
+or a similar CTA
+
+==================================================
+DESIGN DETAILS
+==================================================
+
+Visual direction:
+- calm
+- premium
+- airy
+- Airbnb-inspired
+
+Card requirements:
+- rounded corners
+- soft shadow
+- strong title hierarchy
+- compact summary text
+- balanced padding
+- enough spacing between cards
+
+==================================================
+DATA HANDLING
+==================================================
+
+Build title and summary from the actual saved search profile fields.
+
+Possible fields to use:
+- city
+- neighborhoods/districts
+- radius
+- commute address
+- commute duration
+- transport mode
+- min price
+- max price
+- bedrooms
+- surface area
+
+Only render fields that exist.
+Avoid raw JSON-like output.
+Make the text feel human-readable.
+
+==================================================
+RESULT
+==================================================
+
+At the end, summarize:
+1. where the new “Zoekprofielen” section was added on Home
+2. how the card title is generated
+3. how the summary line is generated
+4. what happens when a card is tapped
+5. how the section behaves when there are zero search profiles
+6. which files/components were updated
