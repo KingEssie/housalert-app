@@ -1845,9 +1845,9 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                 className="w-full flex items-center gap-3 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
                 data-testid="button-buddy-toggle"
               >
-                <Users className="w-[24px] h-[24px] text-[#71717A] flex-shrink-0" />
+                <Users className="w-[24px] h-[24px] text-[#2A2A2A] flex-shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-[16px] font-medium text-[#222222]">{t("profile.zoekbuddyTitle")}</p>
+                  <p className="text-[16px] text-[#222222]">{t("profile.zoekbuddyTitle")}</p>
                   {!buddyExpanded && pd?.search_buddy_email && (
                     <p className="text-[13px] text-[#6B6B6B] mt-0.5 truncate">{pd.search_buddy_email}</p>
                   )}
@@ -1919,9 +1919,9 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               className="w-full flex items-center gap-3 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
               data-testid="button-reaction-letter"
             >
-              <FileText className="w-[24px] h-[24px] text-[#71717A] flex-shrink-0" />
+              <FileText className="w-[24px] h-[24px] text-[#2A2A2A] flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-[16px] font-medium text-[#222222]">{t("profile.reactionLetter2")}</p>
+                <p className="text-[16px] text-[#222222]">{t("profile.reactionLetter2")}</p>
                 <p className="text-[13px] text-[#6B6B6B] mt-0.5 line-clamp-2">{letterPreview ? `${letterPreview}...` : t("profile.noLetterYet")}</p>
               </div>
               <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
@@ -1931,8 +1931,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               className="w-full flex items-center gap-3 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
               data-testid="button-personal-info"
             >
-              <User className="w-[24px] h-[24px] text-[#71717A] flex-shrink-0" />
-              <p className="text-[16px] font-medium text-[#222222] flex-1">{t("profile.personalInfo")}</p>
+              <User className="w-[24px] h-[24px] text-[#2A2A2A] flex-shrink-0" />
+              <p className="text-[16px] text-[#222222] flex-1">{t("profile.personalInfo")}</p>
               <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
             </button>
             <button
@@ -1940,8 +1940,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               className="w-full flex items-center gap-3 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
               data-testid="button-subscription"
             >
-              <Crown className="w-[24px] h-[24px] text-[#71717A] flex-shrink-0" />
-              <p className="text-[16px] font-medium text-[#222222] flex-1">{t("profile.subscriptionPlan")}</p>
+              <Crown className="w-[24px] h-[24px] text-[#2A2A2A] flex-shrink-0" />
+              <p className="text-[16px] text-[#222222] flex-1">{t("profile.subscriptionPlan")}</p>
               <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full flex-shrink-0 ${subStatusColor}`} data-testid="text-subscription-status">
                 {subStatusLabel}
               </span>
@@ -1951,8 +1951,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               className="w-full flex items-center gap-3 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
               data-testid="button-language"
             >
-              <Globe className="w-[24px] h-[24px] text-[#71717A] flex-shrink-0" />
-              <p className="text-[16px] font-medium text-[#222222] flex-1">{t("profile.language")}</p>
+              <Globe className="w-[24px] h-[24px] text-[#2A2A2A] flex-shrink-0" />
+              <p className="text-[16px] text-[#222222] flex-1">{t("profile.language")}</p>
               <span className="text-[13px] text-[#717171] mr-1">{currentLangLabel}</span>
               <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
             </button>
@@ -1965,8 +1965,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               className="w-full flex items-center gap-3 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
               data-testid="button-privacy"
             >
-              <Shield className="w-[24px] h-[24px] text-[#71717A] flex-shrink-0" />
-              <p className="text-[16px] font-medium text-[#222222] flex-1">{t("profile.privacy")}</p>
+              <Shield className="w-[24px] h-[24px] text-[#2A2A2A] flex-shrink-0" />
+              <p className="text-[16px] text-[#222222] flex-1">{t("profile.privacy")}</p>
               <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
             </button>
             <button
@@ -1974,8 +1974,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               className="w-full flex items-center gap-3 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
               data-testid="button-help-support"
             >
-              <HelpCircle className="w-[24px] h-[24px] text-[#71717A] flex-shrink-0" />
-              <p className="text-[16px] font-medium text-[#222222] flex-1">{t("profile.helpSupport")}</p>
+              <HelpCircle className="w-[24px] h-[24px] text-[#2A2A2A] flex-shrink-0" />
+              <p className="text-[16px] text-[#222222] flex-1">{t("profile.helpSupport")}</p>
               <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
             </button>
             <button
@@ -1983,8 +1983,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               className="w-full flex items-center gap-3 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
               data-testid="button-terms"
             >
-              <FileText className="w-[24px] h-[24px] text-[#71717A] flex-shrink-0" />
-              <p className="text-[16px] font-medium text-[#222222] flex-1">{t("profile.terms")}</p>
+              <FileText className="w-[24px] h-[24px] text-[#2A2A2A] flex-shrink-0" />
+              <p className="text-[16px] text-[#222222] flex-1">{t("profile.terms")}</p>
               <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
             </button>
           </div>
@@ -1997,15 +1997,15 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               data-testid="button-logout"
             >
               <LogOut className="w-[24px] h-[24px] text-[#EF4444] flex-shrink-0" />
-              <p className="text-[16px] font-medium text-[#EF4444] flex-1">{signingOut ? t("profile.signingOut") : t("profile.logout")}</p>
+              <p className="text-[16px] text-[#EF4444] flex-1">{signingOut ? t("profile.signingOut") : t("profile.logout")}</p>
             </button>
             <button
               onClick={() => navigate("/account/delete")}
               className="w-full flex items-center gap-3 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
               data-testid="button-delete-account"
             >
-              <Trash2 className="w-[24px] h-[24px] text-[#71717A] flex-shrink-0" />
-              <p className="text-[16px] font-medium text-[#6B6B6B] flex-1">{t("profile.deleteAccount")}</p>
+              <Trash2 className="w-[24px] h-[24px] text-[#2A2A2A] flex-shrink-0" />
+              <p className="text-[16px] text-[#6B6B6B] flex-1">{t("profile.deleteAccount")}</p>
             </button>
           </div>
 
