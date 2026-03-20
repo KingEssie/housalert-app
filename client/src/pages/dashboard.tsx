@@ -198,14 +198,14 @@ function MatchCard({
           </h3>
           {match.price > 0 && (
             <span className="text-[16px] font-semibold text-[#000] flex-shrink-0 whitespace-nowrap" data-testid={`badge-price-${match.listing_id}`}>
-              €{match.price} <span className="text-[14px] font-normal text-[#6B7280]">{t("common.perMonthShort")}</span>
+              €{match.price} <span className="text-[16px] font-normal text-[#6B7280]">{t("common.perMonthShort")}</span>
             </span>
           )}
         </div>
-        <p className="text-[14px] text-[#6B7280] mt-1 truncate" data-testid={`text-match-city-${match.listing_id}`}>
+        <p className="text-[16px] text-[#6B7280] mt-1 truncate" data-testid={`text-match-city-${match.listing_id}`}>
           {match.city}
         </p>
-        <div className="flex items-center gap-1.5 mt-0.5 text-[14px] text-[#6B7280]">
+        <div className="flex items-center gap-1.5 mt-0.5 text-[16px] text-[#6B7280]">
           {match.bedrooms > 0 && (
             <span>{match.bedrooms} {match.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}</span>
           )}
