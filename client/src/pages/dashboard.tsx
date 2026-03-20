@@ -2016,7 +2016,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       {(user?.email?.toLowerCase() === "martin.essie87@gmail.com") && (
         <button
           onClick={() => navigate("/admin/portal")}
-          className="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 bg-[#222222] text-white text-[14px] font-medium px-6 py-3 rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.16)] active:scale-95 transition-transform"
+          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+68px)] left-1/2 -translate-x-1/2 z-40 bg-[#222222] text-white text-[14px] font-medium px-6 py-3 rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.16)] active:scale-95 transition-transform"
           data-testid="button-admin-portal"
         >
           {t("profile.adminMode")}

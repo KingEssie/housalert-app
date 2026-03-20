@@ -42,7 +42,7 @@ function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { cls: string; label: string }> = {
     active: { cls: "bg-emerald-50 text-emerald-700 border-emerald-200", label: "Active" },
     operational: { cls: "bg-emerald-50 text-emerald-700 border-emerald-200", label: "Operational" },
-    trial: { cls: "bg-blue-50 text-blue-700 border-blue-200", label: "Trial" },
+    trial: { cls: "bg-orange-50 text-[#EA580C] border-orange-200", label: "Trial" },
     canceled: { cls: "bg-red-50 text-red-700 border-red-200", label: "Canceled" },
     expired: { cls: "bg-gray-50 text-gray-500 border-gray-200", label: "Expired" },
     error: { cls: "bg-red-50 text-red-700 border-red-200", label: "Error" },
@@ -61,39 +61,28 @@ function StatusBadge({ status }: { status: string }) {
 function SectionHeader({ title, action }: { title: string; action?: { label: string; onClick: () => void } }) {
   return (
     <div className="flex items-center justify-between mb-3">
-      <h3 className="text-[15px] font-bold text-[#1a1f36]">{title}</h3>
+      <h3 className="text-[15px] font-bold text-[#222222]">{title}</h3>
       {action && <button onClick={action.onClick} className="text-[12px] font-medium text-[#F97316]" data-testid={`action-${title.toLowerCase().replace(/\s/g, "-")}`}>{action.label}</button>}
     </div>
   );
 }
 
-function MetricPill({ label, value, icon: Icon, color = "blue" }: { label: string; value: string | number; icon: any; color?: string }) {
-  const colors: Record<string, string> = {
-    blue: "bg-blue-50 text-blue-600",
-    green: "bg-emerald-50 text-emerald-600",
-    purple: "bg-violet-50 text-violet-600",
-    amber: "bg-amber-50 text-amber-600",
-    red: "bg-red-50 text-red-600",
-  };
+function MetricPill({ label, value, icon: Icon }: { label: string; value: string | number; icon: any; color?: string }) {
   return (
-    <div className="flex-shrink-0 w-[140px] bg-white rounded-2xl border border-gray-100 shadow-sm p-3.5" data-testid={`metric-${label.toLowerCase().replace(/\s/g, "-")}`}>
-      <div className={`w-8 h-8 rounded-xl ${colors[color]} flex items-center justify-center mb-2`}>
-        <Icon className="w-4 h-4" />
-      </div>
-      <p className="text-[20px] font-bold text-[#1a1f36] leading-tight">{value}</p>
-      <p className="text-[11px] text-gray-400 font-medium mt-0.5">{label}</p>
+    <div className="flex-shrink-0 w-[140px] bg-white rounded-2xl border border-[#E5E7EB] p-3.5" data-testid={`metric-${label.toLowerCase().replace(/\s/g, "-")}`}>
+      <Icon className="w-5 h-5 text-[#222222] mb-2" />
+      <p className="text-[20px] font-bold text-[#222222] leading-tight">{value}</p>
+      <p className="text-[11px] text-[#717171] font-medium mt-0.5">{label}</p>
     </div>
   );
 }
 
 function EmptyState({ title, message, onRetry }: { title: string; message: string; onRetry?: () => void }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 text-center">
-      <div className="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center mx-auto mb-3">
-        <Database className="w-6 h-6 text-gray-300" />
-      </div>
-      <h4 className="text-[15px] font-bold text-[#1a1f36] mb-1">{title}</h4>
-      <p className="text-[13px] text-gray-400 mb-4">{message}</p>
+    <div className="bg-white rounded-2xl border border-[#E5E7EB] p-8 text-center">
+      <Database className="w-6 h-6 text-[#B0B0B0] mx-auto mb-3" />
+      <h4 className="text-[15px] font-bold text-[#222222] mb-1">{title}</h4>
+      <p className="text-[13px] text-[#717171] mb-4">{message}</p>
       {onRetry && <Button variant="outline" size="sm" onClick={onRetry} className="rounded-full" data-testid="button-retry">Try again</Button>}
     </div>
   );
@@ -140,10 +129,10 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
     <div className="space-y-6 pb-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[22px] font-bold text-[#1a1f36]" data-testid="text-greeting">{getGreeting()}, {userName}</h1>
+          <h1 className="text-[22px] font-bold text-[#222222]" data-testid="text-greeting">{getGreeting()}, {userName}</h1>
           <p className="text-[13px] text-gray-400 mt-0.5">Here's what's happening today</p>
         </div>
-        <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-xl bg-white border border-gray-100 shadow-sm flex items-center justify-center" data-testid="button-refresh-dashboard">
+        <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-xl bg-white border border-[#E5E7EB] flex items-center justify-center" data-testid="button-refresh-dashboard">
           <RefreshCw className={`w-4 h-4 text-gray-400 ${refreshing ? "animate-spin" : ""}`} />
         </button>
       </div>
@@ -151,14 +140,14 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
       {alerts.length > 0 && (
         <div>
           <SectionHeader title="Needs attention" />
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50">
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] divide-y divide-gray-50">
             {alerts.map((a: any, i: number) => {
-              const sColor = a.severity === "critical" ? "bg-red-400" : a.severity === "warning" ? "bg-amber-400" : "bg-blue-400";
+              const sColor = a.severity === "critical" ? "bg-red-400" : a.severity === "warning" ? "bg-amber-400" : "bg-[#F97316]";
               return (
                 <div key={i} className="flex items-start gap-3 px-4 py-3.5" data-testid={`alert-row-${i}`}>
                   <span className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${sColor}`} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-semibold text-[#1a1f36] leading-snug">{a.message}</p>
+                    <p className="text-[13px] font-semibold text-[#222222] leading-snug">{a.message}</p>
                     <p className="text-[11px] text-gray-400 mt-0.5">{new Date(a.timestamp).toLocaleTimeString()}</p>
                   </div>
                   <ChevronRight className="w-4 h-4 text-gray-300 mt-0.5 flex-shrink-0" />
@@ -184,24 +173,24 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
       <div>
         <SectionHeader title="Today at a glance" />
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4">
             <p className="text-[11px] text-gray-400 font-medium mb-1">Revenue</p>
-            <p className="text-[22px] font-bold text-[#1a1f36]">€{data.mrr}</p>
+            <p className="text-[22px] font-bold text-[#222222]">€{data.mrr}</p>
             <p className="text-[11px] text-gray-400 mt-1">{data.activeSubscriptions} active subs</p>
           </div>
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4">
             <p className="text-[11px] text-gray-400 font-medium mb-1">Users</p>
-            <p className="text-[22px] font-bold text-[#1a1f36]">{data.totalUsers}</p>
+            <p className="text-[22px] font-bold text-[#222222]">{data.totalUsers}</p>
             <p className="text-[11px] text-gray-400 mt-1">{data.signupsToday} new today</p>
           </div>
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4">
             <p className="text-[11px] text-gray-400 font-medium mb-1">Listings</p>
-            <p className="text-[22px] font-bold text-[#1a1f36]">{data.listingsToday}</p>
+            <p className="text-[22px] font-bold text-[#222222]">{data.listingsToday}</p>
             <p className="text-[11px] text-gray-400 mt-1">{data.listingsWeek} this week</p>
           </div>
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4">
             <p className="text-[11px] text-gray-400 font-medium mb-1">Delivery</p>
-            <p className="text-[22px] font-bold text-[#1a1f36]">{data.emailsToday}</p>
+            <p className="text-[22px] font-bold text-[#222222]">{data.emailsToday}</p>
             <p className="text-[11px] text-gray-400 mt-1">{data.pushesToday} push sent</p>
           </div>
         </div>
@@ -210,7 +199,7 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
       {data.sourceHealth && data.sourceHealth.length > 0 && (
         <div>
           <SectionHeader title="Supply health" action={{ label: "View all", onClick: () => onNavigate("sources") }} />
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50">
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] divide-y divide-gray-50">
             {(() => {
               const byCity = new Map<string, { healthy: number; issues: number; total: number }>();
               for (const s of data.sourceHealth) {
@@ -223,7 +212,7 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
               return Array.from(byCity.entries()).slice(0, 6).map(([city, info]) => (
                 <div key={city} className="flex items-center gap-3 px-4 py-3">
                   <StatusDot status={info.issues > 0 ? "warning" : "active"} />
-                  <span className="text-[13px] font-medium text-[#1a1f36] flex-1">{city}</span>
+                  <span className="text-[13px] font-medium text-[#222222] flex-1">{city}</span>
                   <span className="text-[12px] text-gray-400">{info.total} listings</span>
                   <StatusBadge status={info.issues > 0 ? "degraded" : "active"} />
                 </div>
@@ -235,7 +224,7 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
 
       <div>
         <SectionHeader title="Last 7 days" />
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-2.5">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 space-y-2.5">
           {[
             { label: "Signups", value: data.signupsWeek },
             { label: "Listings", value: data.listingsWeek },
@@ -243,7 +232,7 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
           ].map(({ label, value }) => (
             <div key={label} className="flex items-center justify-between text-[13px]">
               <span className="text-gray-400">{label}</span>
-              <span className="font-semibold text-[#1a1f36]">{value}</span>
+              <span className="font-semibold text-[#222222]">{value}</span>
             </div>
           ))}
         </div>
@@ -258,11 +247,9 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
             { icon: TrendingUp, label: "Growth", tab: "growth" as TabId },
             { icon: Settings, label: "System", tab: "system" as TabId },
           ].map(({ icon: Icon, label, tab }) => (
-            <button key={tab} onClick={() => onNavigate(tab)} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 flex flex-col items-center gap-1.5" data-testid={`quick-${tab}`}>
-              <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-                <Icon className="w-4 h-4" />
-              </div>
-              <span className="text-[11px] font-medium text-gray-500">{label}</span>
+            <button key={tab} onClick={() => onNavigate(tab)} className="bg-white rounded-2xl border border-[#E5E7EB] p-3 flex flex-col items-center gap-1.5" data-testid={`quick-${tab}`}>
+              <Icon className="w-5 h-5 text-[#222222]" />
+              <span className="text-[11px] font-medium text-[#717171]">{label}</span>
             </button>
           ))}
         </div>
@@ -301,24 +288,24 @@ function GrowthTab() {
 
   return (
     <div className="space-y-6 pb-4">
-      <h1 className="text-[22px] font-bold text-[#1a1f36]">Growth</h1>
+      <h1 className="text-[22px] font-bold text-[#222222]">Growth</h1>
 
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4">
           <p className="text-[11px] text-gray-400 font-medium">Signups</p>
-          <p className="text-[22px] font-bold text-[#1a1f36]">{funnel?.[0]?.count || 0}</p>
+          <p className="text-[22px] font-bold text-[#222222]">{funnel?.[0]?.count || 0}</p>
         </div>
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4">
           <p className="text-[11px] text-gray-400 font-medium">Profiles created</p>
-          <p className="text-[22px] font-bold text-[#1a1f36]">{funnel?.find((f: any) => f.key === "search_created")?.count || 0}</p>
+          <p className="text-[22px] font-bold text-[#222222]">{funnel?.find((f: any) => f.key === "search_created")?.count || 0}</p>
         </div>
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4">
           <p className="text-[11px] text-gray-400 font-medium">Checkout started</p>
-          <p className="text-[22px] font-bold text-[#1a1f36]">{funnel?.find((f: any) => f.key === "checkout_started")?.count || 0}</p>
+          <p className="text-[22px] font-bold text-[#222222]">{funnel?.find((f: any) => f.key === "checkout_started")?.count || 0}</p>
         </div>
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4">
           <p className="text-[11px] text-gray-400 font-medium">Subscriptions</p>
-          <p className="text-[22px] font-bold text-[#1a1f36]">{funnel?.find((f: any) => f.key === "subscription_started")?.count || 0}</p>
+          <p className="text-[22px] font-bold text-[#222222]">{funnel?.find((f: any) => f.key === "subscription_started")?.count || 0}</p>
         </div>
       </div>
 
@@ -326,7 +313,7 @@ function GrowthTab() {
         <SectionHeader title="Funnel" />
         <div className="space-y-4">
           {stages.map((stage) => (
-            <div key={stage.name} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div key={stage.name} className="bg-white rounded-2xl border border-[#E5E7EB] overflow-hidden">
               <div className="px-4 pt-3 pb-2">
                 <p className="text-[12px] font-bold text-gray-400 uppercase tracking-wider">{stage.name}</p>
               </div>
@@ -337,16 +324,16 @@ function GrowthTab() {
                   return (
                     <div key={step.key} className="px-4 py-3" data-testid={`funnel-step-${step.key}`}>
                       <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-[13px] font-semibold text-[#1a1f36]">{step.label}</span>
+                        <span className="text-[13px] font-semibold text-[#222222]">{step.label}</span>
                         <div className="flex items-center gap-2">
-                          <span className="text-[15px] font-bold text-[#1a1f36]">{step.count}</span>
+                          <span className="text-[15px] font-bold text-[#222222]">{step.count}</span>
                           {step.conversionPct !== undefined && step.conversionPct !== null && (
                             <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded-full ${pctColor}`}>{step.conversionPct}%</span>
                           )}
                         </div>
                       </div>
                       <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                        <div className="h-full rounded-full bg-blue-500 transition-all duration-500" style={{ width: `${barWidth}%` }} />
+                        <div className="h-full rounded-full bg-[#F97316] transition-all duration-500" style={{ width: `${barWidth}%` }} />
                       </div>
                     </div>
                   );
@@ -366,15 +353,12 @@ function GrowthTab() {
             { label: "Reaction rate", value: `${metrics.reactionRate}%`, sub: `${metrics.reactors} reacted`, icon: MessageCircle, color: "purple" },
             { label: "Trial → Paid", value: `${metrics.trialToPaid}%`, sub: `${metrics.paidUsers} paid`, icon: Percent, color: "amber" },
           ].map(({ label, value, sub, icon: Icon, color }) => {
-            const colors: Record<string, string> = { blue: "bg-blue-50 text-blue-600", green: "bg-emerald-50 text-emerald-600", purple: "bg-violet-50 text-violet-600", amber: "bg-amber-50 text-amber-600" };
             return (
-              <div key={label} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4" data-testid={`insight-${label.toLowerCase().replace(/\s/g, "-")}`}>
-                <div className={`w-8 h-8 rounded-xl ${colors[color]} flex items-center justify-center mb-2`}>
-                  <Icon className="w-4 h-4" />
-                </div>
-                <p className="text-[20px] font-bold text-[#1a1f36]">{value}</p>
-                <p className="text-[11px] text-gray-400 mt-0.5">{label}</p>
-                <p className="text-[10px] text-gray-300 mt-0.5">{sub}</p>
+              <div key={label} className="bg-white rounded-2xl border border-[#E5E7EB] p-4" data-testid={`insight-${label.toLowerCase().replace(/\s/g, "-")}`}>
+                <Icon className="w-5 h-5 text-[#222222] mb-2" />
+                <p className="text-[20px] font-bold text-[#222222]">{value}</p>
+                <p className="text-[11px] text-[#717171] mt-0.5">{label}</p>
+                <p className="text-[10px] text-[#B0B0B0] mt-0.5">{sub}</p>
               </div>
             );
           })}
@@ -385,16 +369,16 @@ function GrowthTab() {
         <div>
           <SectionHeader title="Retention" />
           <div className="grid grid-cols-3 gap-3 mb-3">
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 text-center">
-              <p className="text-[18px] font-bold text-[#1a1f36]">{retentionData.cancellations7d}</p>
+            <div className="bg-white rounded-2xl border border-[#E5E7EB] p-3 text-center">
+              <p className="text-[18px] font-bold text-[#222222]">{retentionData.cancellations7d}</p>
               <p className="text-[10px] text-gray-400">Cancels 7d</p>
             </div>
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 text-center">
-              <p className="text-[18px] font-bold text-[#1a1f36]">{retentionData.cancellations30d}</p>
+            <div className="bg-white rounded-2xl border border-[#E5E7EB] p-3 text-center">
+              <p className="text-[18px] font-bold text-[#222222]">{retentionData.cancellations30d}</p>
               <p className="text-[10px] text-gray-400">Cancels 30d</p>
             </div>
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 text-center">
-              <p className="text-[18px] font-bold text-[#1a1f36]">{retentionData.avgDaysBeforeCancel}d</p>
+            <div className="bg-white rounded-2xl border border-[#E5E7EB] p-3 text-center">
+              <p className="text-[18px] font-bold text-[#222222]">{retentionData.avgDaysBeforeCancel}d</p>
               <p className="text-[10px] text-gray-400">Avg active</p>
             </div>
           </div>
@@ -404,11 +388,11 @@ function GrowthTab() {
       {cityPerformance && cityPerformance.length > 0 && (
         <div>
           <SectionHeader title="City performance" />
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50">
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] divide-y divide-gray-50">
             {cityPerformance.map((row: any) => (
               <div key={row.city} className="px-4 py-3" data-testid={`city-row-${row.city}`}>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[13px] font-semibold text-[#1a1f36]">{row.city}</span>
+                  <span className="text-[13px] font-semibold text-[#222222]">{row.city}</span>
                   <span className="text-[12px] text-gray-400">{row.users} users</span>
                 </div>
                 <div className="flex gap-3 text-[11px] text-gray-400">
@@ -478,11 +462,11 @@ function SourcesTab() {
 
   return (
     <div className="space-y-6 pb-4">
-      <h1 className="text-[22px] font-bold text-[#1a1f36]">Sources</h1>
+      <h1 className="text-[22px] font-bold text-[#222222]">Sources</h1>
 
       <div className="flex gap-2">
         {(["monitor", "listings"] as const).map(s => (
-          <button key={s} onClick={() => setSection(s)} className={`px-4 py-2 rounded-full text-[13px] font-semibold transition-colors ${section === s ? "bg-[#1a1f36] text-white" : "bg-white text-gray-500 border border-gray-100"}`} data-testid={`tab-${s}`}>
+          <button key={s} onClick={() => setSection(s)} className={`px-4 py-2 rounded-full text-[13px] font-semibold transition-colors ${section === s ? "bg-[#222222] text-white" : "bg-white text-gray-500 border border-gray-100"}`} data-testid={`tab-${s}`}>
             {s === "monitor" ? "Monitor" : "Listings"}
           </button>
         ))}
@@ -491,30 +475,30 @@ function SourcesTab() {
       {section === "monitor" ? (
         <>
           <div className="grid grid-cols-2 gap-3">
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+            <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4">
               <p className="text-[11px] text-gray-400 font-medium">Active sources</p>
               <p className="text-[22px] font-bold text-emerald-600">{healthySources}</p>
             </div>
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+            <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4">
               <p className="text-[11px] text-gray-400 font-medium">Broken</p>
               <p className="text-[22px] font-bold text-red-500">{brokenSources}</p>
             </div>
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+            <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4">
               <p className="text-[11px] text-gray-400 font-medium">Listings found</p>
-              <p className="text-[22px] font-bold text-[#1a1f36]">{totalFound}</p>
+              <p className="text-[22px] font-bold text-[#222222]">{totalFound}</p>
             </div>
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+            <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4">
               <p className="text-[11px] text-gray-400 font-medium">Last run</p>
-              <p className="text-[14px] font-bold text-[#1a1f36]">{latestRun ? `${latestRun.duration_sec}s` : "—"}</p>
+              <p className="text-[14px] font-bold text-[#222222]">{latestRun ? `${latestRun.duration_sec}s` : "—"}</p>
               {latestRun && <p className="text-[10px] text-gray-400">{new Date(latestRun.started_at).toLocaleTimeString()}</p>}
             </div>
           </div>
 
           {latestRun && (
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
+            <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 flex items-center gap-3">
               <StatusBadge status={latestRun.status} />
               <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-semibold text-[#1a1f36]">Last ingestion run</p>
+                <p className="text-[13px] font-semibold text-[#222222]">Last ingestion run</p>
                 <p className="text-[11px] text-gray-400">{new Date(latestRun.started_at).toLocaleString()} · {latestRun.duration_sec}s</p>
               </div>
             </div>
@@ -524,7 +508,7 @@ function SourcesTab() {
             <SectionHeader title="Source monitor" />
             <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 mb-3" style={{ WebkitOverflowScrolling: "touch" }}>
               {["All", "Healthy", "Warning", "Broken"].map(f => (
-                <button key={f} onClick={() => setStatusFilter(f)} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${statusFilter === f ? "bg-[#1a1f36] text-white" : "bg-white text-gray-500 border border-gray-100"}`} data-testid={`filter-status-${f}`}>
+                <button key={f} onClick={() => setStatusFilter(f)} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${statusFilter === f ? "bg-[#222222] text-white" : "bg-white text-gray-500 border border-gray-100"}`} data-testid={`filter-status-${f}`}>
                   {f}
                 </button>
               ))}
@@ -533,7 +517,7 @@ function SourcesTab() {
               </select>
             </div>
 
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50">
+            <div className="bg-white rounded-2xl border border-[#E5E7EB] divide-y divide-gray-50">
               {filteredSources.length > 0 ? filteredSources.map((s: any) => {
                 const st = s.status || (s.errors > 0 ? "broken" : s.found > 0 ? "active" : "broken");
                 return (
@@ -541,7 +525,7 @@ function SourcesTab() {
                     <div className="flex items-center justify-between mb-1">
                       <div className="flex items-center gap-2 min-w-0">
                         <StatusDot status={st} />
-                        <span className="text-[13px] font-semibold text-[#1a1f36] truncate">{s.name || s.source}</span>
+                        <span className="text-[13px] font-semibold text-[#222222] truncate">{s.name || s.source}</span>
                       </div>
                       <StatusBadge status={st} />
                     </div>
@@ -567,11 +551,11 @@ function SourcesTab() {
           </div>
           <p className="text-[12px] text-gray-400">{listingTotal} listings</p>
           {listingLoading ? <LoadingState /> : (
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50">
+            <div className="bg-white rounded-2xl border border-[#E5E7EB] divide-y divide-gray-50">
               {listings.map((l: any) => (
                 <div key={l.id} className="px-4 py-3" data-testid={`listing-card-${l.id}`}>
                   <div className="flex items-center justify-between mb-1">
-                    <p className="text-[13px] font-semibold text-[#1a1f36] truncate flex-1 mr-2">{l.title || "Untitled"}</p>
+                    <p className="text-[13px] font-semibold text-[#222222] truncate flex-1 mr-2">{l.title || "Untitled"}</p>
                     {l.url && <a href={l.url} target="_blank" rel="noopener noreferrer" className="text-[#F97316] flex-shrink-0" data-testid={`link-listing-${l.id}`}><ExternalLink className="w-3.5 h-3.5" /></a>}
                   </div>
                   <div className="flex items-center gap-2 text-[11px] text-gray-400">
@@ -606,13 +590,13 @@ function UserDetailView({ detail, onBack }: { detail: any; onBack: () => void })
         <ArrowLeft className="w-4 h-4" /> Back
       </button>
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
-        <h3 className="text-[15px] font-bold text-[#1a1f36] mb-3">Profile</h3>
+      <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4">
+        <h3 className="text-[15px] font-bold text-[#222222] mb-3">Profile</h3>
         <div className="space-y-2.5 text-[13px]">
-          <div className="flex justify-between"><span className="text-gray-400">Name</span><span className="font-medium text-[#1a1f36]">{profile?.first_name || ""} {profile?.last_name || ""}</span></div>
-          <div className="flex justify-between"><span className="text-gray-400">Phone</span><span className="font-medium text-[#1a1f36]">{profile?.phone || "—"}</span></div>
-          <div className="flex justify-between"><span className="text-gray-400">Occupation</span><span className="font-medium text-[#1a1f36]">{profile?.occupation || "—"}</span></div>
-          <div className="flex justify-between"><span className="text-gray-400">Created</span><span className="font-medium text-[#1a1f36]">{profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : "—"}</span></div>
+          <div className="flex justify-between"><span className="text-gray-400">Name</span><span className="font-medium text-[#222222]">{profile?.first_name || ""} {profile?.last_name || ""}</span></div>
+          <div className="flex justify-between"><span className="text-gray-400">Phone</span><span className="font-medium text-[#222222]">{profile?.phone || "—"}</span></div>
+          <div className="flex justify-between"><span className="text-gray-400">Occupation</span><span className="font-medium text-[#222222]">{profile?.occupation || "—"}</span></div>
+          <div className="flex justify-between"><span className="text-gray-400">Created</span><span className="font-medium text-[#222222]">{profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : "—"}</span></div>
           <div className="flex justify-between items-center">
             <span className="text-gray-400">Notifications</span>
             <div className="flex gap-1.5">
@@ -625,8 +609,8 @@ function UserDetailView({ detail, onBack }: { detail: any; onBack: () => void })
             <span className="text-gray-400">Search Buddy</span>
             {profile?.search_buddy_email ? (
               <div className="flex items-center gap-1.5">
-                <Badge className="text-[10px] bg-blue-50 text-blue-600">Active</Badge>
-                <span className="font-medium text-[#1a1f36] text-[12px] max-w-[160px] truncate">{profile.search_buddy_email}</span>
+                <Badge className="text-[10px] bg-orange-50 text-[#F97316]">Active</Badge>
+                <span className="font-medium text-[#222222] text-[12px] max-w-[160px] truncate">{profile.search_buddy_email}</span>
               </div>
             ) : (
               <span className="text-gray-400">—</span>
@@ -637,8 +621,8 @@ function UserDetailView({ detail, onBack }: { detail: any; onBack: () => void })
       </div>
 
       {subscription && (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
-          <h3 className="text-[15px] font-bold text-[#1a1f36] mb-3">Subscription</h3>
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4">
+          <h3 className="text-[15px] font-bold text-[#222222] mb-3">Subscription</h3>
           <div className="space-y-2.5 text-[13px]">
             <div className="flex justify-between items-center"><span className="text-gray-400">Status</span><StatusBadge status={subscription.status} /></div>
             <div className="flex justify-between"><span className="text-gray-400">Plan</span><span className="font-medium">{subscription.plan || "—"}</span></div>
@@ -654,12 +638,12 @@ function UserDetailView({ detail, onBack }: { detail: any; onBack: () => void })
       )}
 
       {searchProfiles && searchProfiles.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
-          <h3 className="text-[15px] font-bold text-[#1a1f36] mb-3">Search profiles ({searchProfiles.length})</h3>
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4">
+          <h3 className="text-[15px] font-bold text-[#222222] mb-3">Search profiles ({searchProfiles.length})</h3>
           <div className="space-y-2">
             {searchProfiles.map((sp: any) => (
               <div key={sp.id} className="p-3 bg-gray-50 rounded-xl text-[12px]">
-                <p className="font-semibold text-[#1a1f36] mb-0.5">{sp.city_name || sp.city}</p>
+                <p className="font-semibold text-[#222222] mb-0.5">{sp.city_name || sp.city}</p>
                 <p className="text-gray-400">€{sp.price_min || 0}–€{sp.price_max || "∞"} · {sp.bedrooms_min || 0}+ rooms · {sp.size_min || 0}+ m²</p>
               </div>
             ))}
@@ -668,13 +652,13 @@ function UserDetailView({ detail, onBack }: { detail: any; onBack: () => void })
       )}
 
       {recentMatches && recentMatches.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
-          <h3 className="text-[15px] font-bold text-[#1a1f36] mb-3">Recent matches ({recentMatches.length})</h3>
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4">
+          <h3 className="text-[15px] font-bold text-[#222222] mb-3">Recent matches ({recentMatches.length})</h3>
           <div className="space-y-2">
             {recentMatches.slice(0, 10).map((m: any) => (
               <div key={m.id} className="flex items-center gap-2 p-2.5 bg-gray-50 rounded-xl text-[12px]">
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-[#1a1f36] truncate">{m.listing_title || m.listing_id?.substring(0, 12)}</p>
+                  <p className="font-medium text-[#222222] truncate">{m.listing_title || m.listing_id?.substring(0, 12)}</p>
                   <p className="text-gray-400">{m.matched_at ? new Date(m.matched_at).toLocaleString() : "—"}</p>
                 </div>
                 <div className="flex gap-1 flex-shrink-0">
@@ -689,8 +673,8 @@ function UserDetailView({ detail, onBack }: { detail: any; onBack: () => void })
       )}
 
       {cancellationFeedback && (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
-          <h3 className="text-[15px] font-bold text-[#1a1f36] mb-3">Cancellation feedback</h3>
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4">
+          <h3 className="text-[15px] font-bold text-[#222222] mb-3">Cancellation feedback</h3>
           <div className="space-y-2 text-[13px]">
             <div className="flex justify-between"><span className="text-gray-400">Reason</span><span className="font-medium">{cancellationFeedback.reason || "—"}</span></div>
             {cancellationFeedback.feedback && <p className="text-gray-400 text-[12px] bg-gray-50 rounded-xl p-3">{cancellationFeedback.feedback}</p>}
@@ -720,7 +704,7 @@ function SubscriptionsSection() {
     <div className="space-y-4">
       <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4" style={{ WebkitOverflowScrolling: "touch" }}>
         {["all", "active", "trial", "canceled", "expired"].map(f => (
-          <button key={f} onClick={() => { setFilter(f); setPage(1); }} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${filter === f ? "bg-[#1a1f36] text-white" : "bg-white text-gray-500 border border-gray-100"}`} data-testid={`filter-sub-${f}`}>
+          <button key={f} onClick={() => { setFilter(f); setPage(1); }} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${filter === f ? "bg-[#222222] text-white" : "bg-white text-gray-500 border border-gray-100"}`} data-testid={`filter-sub-${f}`}>
             {f.charAt(0).toUpperCase() + f.slice(1)}
           </button>
         ))}
@@ -729,12 +713,12 @@ function SubscriptionsSection() {
       {loading ? <LoadingState /> : subs.length === 0 ? (
         <EmptyState title="No subscriptions" message={`No subscriptions found for "${filter}".`} />
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] divide-y divide-gray-50">
           {subs.map((s: any) => (
             <div key={s.id} className="px-4 py-3" data-testid={`sub-card-${s.id}`}>
               <div className="flex items-center justify-between mb-1">
                 <div className="min-w-0 flex-1">
-                  <p className="text-[13px] font-semibold text-[#1a1f36] truncate">{s.userName || "Unknown"}</p>
+                  <p className="text-[13px] font-semibold text-[#222222] truncate">{s.userName || "Unknown"}</p>
                   <p className="text-[10px] text-gray-400">{s.user_id?.substring(0, 8)}...</p>
                 </div>
                 <StatusBadge status={s.status} />
@@ -783,12 +767,12 @@ function SearchProfilesSection() {
       {loading ? <LoadingState /> : profiles.length === 0 ? (
         <EmptyState title="No profiles" message="No search profiles found." />
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] divide-y divide-gray-50">
           {profiles.map((p: any) => (
             <div key={p.id} className="px-4 py-3" data-testid={`profile-card-${p.id}`}>
               <div className="flex items-center justify-between mb-1">
-                <p className="text-[13px] font-semibold text-[#1a1f36] truncate">{p.userName || "Unknown"}</p>
-                <span className="text-[12px] font-medium text-[#1a1f36]">{p.city_name || p.city}</span>
+                <p className="text-[13px] font-semibold text-[#222222] truncate">{p.userName || "Unknown"}</p>
+                <span className="text-[12px] font-medium text-[#222222]">{p.city_name || p.city}</span>
               </div>
               <div className="flex flex-wrap gap-2 text-[11px] text-gray-400">
                 <span>€{p.price_min || 0}–€{p.price_max || "∞"}</span>
@@ -832,15 +816,15 @@ function MatchesSection() {
     <div className="space-y-4">
       {stats && (
         <div className="grid grid-cols-3 gap-3">
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 text-center">
-            <p className="text-[16px] font-bold text-[#1a1f36]">{stats.emailsToday}</p>
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] p-3 text-center">
+            <p className="text-[16px] font-bold text-[#222222]">{stats.emailsToday}</p>
             <p className="text-[10px] text-gray-400">Emails</p>
           </div>
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 text-center">
-            <p className="text-[16px] font-bold text-[#1a1f36]">{stats.pushesToday}</p>
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] p-3 text-center">
+            <p className="text-[16px] font-bold text-[#222222]">{stats.pushesToday}</p>
             <p className="text-[10px] text-gray-400">Push</p>
           </div>
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 text-center">
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] p-3 text-center">
             <p className="text-[16px] font-bold text-red-500">{stats.failuresWeek}</p>
             <p className="text-[10px] text-gray-400">Failures 7d</p>
           </div>
@@ -848,17 +832,17 @@ function MatchesSection() {
       )}
       <p className="text-[12px] text-gray-400">{total} matches</p>
       {loading ? <LoadingState /> : (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50">
+        <div className="bg-white rounded-2xl border border-[#E5E7EB] divide-y divide-gray-50">
           {matches.map((m: any) => (
             <div key={m.id} className="px-4 py-3" data-testid={`match-card-${m.id}`}>
               <div className="flex items-center justify-between mb-1">
-                <p className="text-[13px] font-semibold text-[#1a1f36] truncate flex-1 mr-2">{m.first_name || ""} {m.last_name || ""}</p>
+                <p className="text-[13px] font-semibold text-[#222222] truncate flex-1 mr-2">{m.first_name || ""} {m.last_name || ""}</p>
                 <span className="text-[10px] text-gray-400">{m.matched_at ? new Date(m.matched_at).toLocaleString() : ""}</span>
               </div>
               <p className="text-[11px] text-gray-400 truncate mb-1">{m.listing_title || m.listing_id?.substring(0, 12)}</p>
               <div className="flex gap-1.5">
                 {m.email_sent && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 font-medium">Email</span>}
-                {m.push_sent && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-600 font-medium">Push</span>}
+                {m.push_sent && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-orange-50 text-[#F97316] font-medium">Push</span>}
                 {m.viewed && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-medium">Viewed</span>}
                 {!m.email_sent && !m.push_sent && <span className="text-[10px] text-gray-300">Not delivered</span>}
               </div>
@@ -919,7 +903,7 @@ function UsersTab() {
 
   return (
     <div className="space-y-4 pb-4">
-      <h1 className="text-[22px] font-bold text-[#1a1f36]">Users</h1>
+      <h1 className="text-[22px] font-bold text-[#222222]">Users</h1>
 
       <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4" style={{ WebkitOverflowScrolling: "touch" }}>
         {([
@@ -928,7 +912,7 @@ function UsersTab() {
           { id: "profiles" as const, label: "Profiles" },
           { id: "matches" as const, label: "Matches" },
         ]).map(s => (
-          <button key={s.id} onClick={() => setSection(s.id)} className={`px-4 py-2 rounded-full text-[13px] font-semibold flex-shrink-0 transition-colors ${section === s.id ? "bg-[#1a1f36] text-white" : "bg-white text-gray-500 border border-gray-100"}`} data-testid={`section-${s.id}`}>
+          <button key={s.id} onClick={() => setSection(s.id)} className={`px-4 py-2 rounded-full text-[13px] font-semibold flex-shrink-0 transition-colors ${section === s.id ? "bg-[#222222] text-white" : "bg-white text-gray-500 border border-gray-100"}`} data-testid={`section-${s.id}`}>
             {s.label}
           </button>
         ))}
@@ -938,7 +922,7 @@ function UsersTab() {
        section === "profiles" ? <SearchProfilesSection /> :
        section === "matches" ? <MatchesSection /> : (
         <>
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 flex items-center gap-2">
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] p-3 flex items-center gap-2">
             <Search className="w-4 h-4 text-gray-300 flex-shrink-0" />
             <input
               placeholder="Search name or email..."
@@ -951,7 +935,7 @@ function UsersTab() {
 
           <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4" style={{ WebkitOverflowScrolling: "touch" }}>
             {["all", "paid", "trial", "canceled", "expired"].map(f => (
-              <button key={f} onClick={() => { setFilter(f); setPage(1); }} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${filter === f ? "bg-[#1a1f36] text-white" : "bg-white text-gray-500 border border-gray-100"}`} data-testid={`filter-user-${f}`}>
+              <button key={f} onClick={() => { setFilter(f); setPage(1); }} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${filter === f ? "bg-[#222222] text-white" : "bg-white text-gray-500 border border-gray-100"}`} data-testid={`filter-user-${f}`}>
                 {f.charAt(0).toUpperCase() + f.slice(1)}
               </button>
             ))}
@@ -959,16 +943,16 @@ function UsersTab() {
           </div>
 
           {loading ? <LoadingState /> : (
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50">
+            <div className="bg-white rounded-2xl border border-[#E5E7EB] divide-y divide-gray-50">
               {users.map((u: any) => (
                 <button key={u.user_id} onClick={() => openUser(u.user_id)} className="w-full px-4 py-3 flex items-center gap-3 text-left" data-testid={`user-card-${u.user_id}`}>
-                  <div className="w-9 h-9 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0 text-[13px] font-bold">
+                  <div className="w-9 h-9 rounded-full bg-[#FFF7ED] text-[#F97316] flex items-center justify-center flex-shrink-0 text-[13px] font-bold">
                     {(u.first_name || "?")[0]}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-semibold text-[#1a1f36] truncate">{u.first_name || ""} {u.last_name || ""}</p>
+                    <p className="text-[13px] font-semibold text-[#222222] truncate">{u.first_name || ""} {u.last_name || ""}</p>
                     <p className="text-[11px] text-gray-400">{u.user_id?.substring(0, 8)}... · {u.searchProfileCount || 0} profiles · {u.matchCount || 0} matches</p>
-                    {u.search_buddy_email && <p className="text-[10px] text-blue-500 truncate">Buddy: {u.search_buddy_email}</p>}
+                    {u.search_buddy_email && <p className="text-[10px] text-[#F97316] truncate">Buddy: {u.search_buddy_email}</p>}
                   </div>
                   <div className="flex flex-col items-end gap-1 flex-shrink-0">
                     {u.subscription ? <StatusBadge status={u.subscription.status} /> : <span className="text-[11px] text-gray-300">No sub</span>}
@@ -1037,8 +1021,8 @@ function SystemTab() {
   return (
     <div className="space-y-6 pb-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-[22px] font-bold text-[#1a1f36]">System</h1>
-        <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-xl bg-white border border-gray-100 shadow-sm flex items-center justify-center" data-testid="button-refresh-system">
+        <h1 className="text-[22px] font-bold text-[#222222]">System</h1>
+        <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-xl bg-white border border-[#E5E7EB] flex items-center justify-center" data-testid="button-refresh-system">
           <RefreshCw className={`w-4 h-4 text-gray-400 ${refreshing ? "animate-spin" : ""}`} />
         </button>
       </div>
@@ -1047,19 +1031,19 @@ function SystemTab() {
         <div>
           <SectionHeader title="Delivery today" />
           <div className="grid grid-cols-3 gap-3">
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 text-center">
-              <Mail className="w-4 h-4 text-violet-500 mx-auto mb-1" />
-              <p className="text-[18px] font-bold text-[#1a1f36]">{matchStats.emailsToday}</p>
+            <div className="bg-white rounded-2xl border border-[#E5E7EB] p-3 text-center">
+              <Mail className="w-4 h-4 text-[#222222] mx-auto mb-1" />
+              <p className="text-[18px] font-bold text-[#222222]">{matchStats.emailsToday}</p>
               <p className="text-[10px] text-gray-400">Emails</p>
             </div>
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 text-center">
-              <Smartphone className="w-4 h-4 text-blue-500 mx-auto mb-1" />
-              <p className="text-[18px] font-bold text-[#1a1f36]">{matchStats.pushesToday}</p>
+            <div className="bg-white rounded-2xl border border-[#E5E7EB] p-3 text-center">
+              <Smartphone className="w-4 h-4 text-[#222222] mx-auto mb-1" />
+              <p className="text-[18px] font-bold text-[#222222]">{matchStats.pushesToday}</p>
               <p className="text-[10px] text-gray-400">Push</p>
             </div>
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 text-center">
-              <AlertTriangle className="w-4 h-4 text-red-400 mx-auto mb-1" />
-              <p className="text-[18px] font-bold text-[#1a1f36]">{matchStats.failuresWeek}</p>
+            <div className="bg-white rounded-2xl border border-[#E5E7EB] p-3 text-center">
+              <AlertTriangle className="w-4 h-4 text-red-500 mx-auto mb-1" />
+              <p className="text-[18px] font-bold text-[#222222]">{matchStats.failuresWeek}</p>
               <p className="text-[10px] text-gray-400">Failures 7d</p>
             </div>
           </div>
@@ -1069,19 +1053,16 @@ function SystemTab() {
       {loading ? <LoadingState /> : checks ? (
         <div>
           <SectionHeader title="Service status" />
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50">
+          <div className="bg-white rounded-2xl border border-[#E5E7EB] divide-y divide-gray-50">
             {Object.entries(checks).map(([key, val]) => {
               const Icon = serviceIcons[key] || Settings;
               const info = labels[key] || { name: key, desc: "" };
-              const iconColor = val.status === "operational" ? "text-emerald-500" : val.status === "warning" || val.status === "disabled" ? "text-amber-500" : "text-red-500";
               return (
                 <div key={key} className="flex items-center gap-3 px-4 py-3.5" data-testid={`status-${key}`}>
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${val.status === "operational" ? "bg-emerald-50" : val.status === "warning" || val.status === "disabled" ? "bg-amber-50" : "bg-red-50"}`}>
-                    <Icon className={`w-4 h-4 ${iconColor}`} />
-                  </div>
+                  <Icon className="w-5 h-5 text-[#222222] flex-shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-semibold text-[#1a1f36]">{info.name}</p>
-                    <p className="text-[11px] text-gray-400 truncate">{val.message}</p>
+                    <p className="text-[13px] font-semibold text-[#222222]">{info.name}</p>
+                    <p className="text-[11px] text-[#717171] truncate">{val.message}</p>
                   </div>
                   <StatusBadge status={val.status} />
                 </div>
@@ -1121,13 +1102,13 @@ export default function AdminPortalPage() {
       });
   }, [user]);
 
-  if (checking) return <div className="min-h-screen bg-[#f8f9fb] flex items-center justify-center"><Loader2 className="w-7 h-7 text-[#F97316] animate-spin" /></div>;
+  if (checking) return <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center"><Loader2 className="w-7 h-7 text-[#F97316] animate-spin" /></div>;
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#f8f9fb] flex items-center justify-center px-5">
+      <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center px-5">
         <div className="text-center max-w-sm">
-          <h1 className="text-[20px] font-bold text-[#1a1f36] mb-2">Not authenticated</h1>
+          <h1 className="text-[20px] font-bold text-[#222222] mb-2">Not authenticated</h1>
           <p className="text-[13px] text-gray-400 mb-4">Please log in to access the admin portal.</p>
           <Button onClick={() => navigate("/")} className="rounded-full" data-testid="button-login">Go to login</Button>
         </div>
@@ -1137,12 +1118,12 @@ export default function AdminPortalPage() {
 
   if (accessDenied) {
     return (
-      <div className="min-h-screen bg-[#f8f9fb] flex items-center justify-center px-5">
+      <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center px-5">
         <div className="text-center max-w-sm">
           <div className="w-14 h-14 rounded-2xl bg-red-50 flex items-center justify-center mx-auto mb-4">
             <AlertTriangle className="w-7 h-7 text-red-500" />
           </div>
-          <h1 className="text-[20px] font-bold text-[#1a1f36] mb-2">Access Denied</h1>
+          <h1 className="text-[20px] font-bold text-[#222222] mb-2">Access Denied</h1>
           <p className="text-[13px] text-gray-400">Your account does not have admin access.</p>
         </div>
       </div>
@@ -1150,7 +1131,7 @@ export default function AdminPortalPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f9fb] flex flex-col">
+    <div className="min-h-screen bg-[#FAFAFA] flex flex-col">
       <header className="bg-white/80 backdrop-blur-lg border-b border-gray-100 sticky top-0 z-30">
         <div className="max-w-lg mx-auto px-4 h-[52px] flex items-center gap-3">
           <HousAlertLogo size={28} />

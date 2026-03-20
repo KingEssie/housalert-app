@@ -445,12 +445,18 @@ export async function sendBuddyInvitationEmail(
 
     log(`[EMAIL SEND] buddy-invite from="${VERIFIED_FROM}" to="${buddyEmail}" inviter="${inviterName}" lang=${lang}`);
 
+    const preheaders: Record<ServerLocale, string> = {
+      nl: `${inviterName} heeft je toegevoegd als Zoekbuddy`,
+      de: `${inviterName} hat dich als Suchbuddy hinzugefügt`,
+      en: `${inviterName} added you as a Search Buddy`,
+    };
+
     const { data, error } = await client.emails.send({
       from: VERIFIED_FROM,
       to: buddyEmail,
       subject,
       text: textBody,
-      html: emailWrapper(htmlContent, `${inviterName} heeft je toegevoegd als Zoekbuddy`, lang),
+      html: emailWrapper(htmlContent, preheaders[lang] || preheaders.nl, lang),
     });
 
     if (error) {
