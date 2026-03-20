@@ -153,16 +153,16 @@ export default function ApplyPage() {
         </button>
         <div className="animate-pulse">
           <div className="w-full bg-[#F0F0F0]" style={{ aspectRatio: "16/10" }} />
-          <div className="max-w-xl mx-auto w-full px-5 pt-7">
+          <div className="max-w-xl mx-auto w-full px-5 pt-6 relative -mt-5 bg-white rounded-t-[24px]">
             <div className="flex flex-col items-center gap-2">
-              <div className="h-5 bg-[#F5F5F5] rounded-md w-4/5" />
-              <div className="h-5 bg-[#F5F5F5] rounded-md w-3/5" />
+              <div className="h-6 bg-[#F5F5F5] rounded-md w-4/5" />
+              <div className="h-6 bg-[#F5F5F5] rounded-md w-3/5" />
               <div className="h-4 bg-[#F5F5F5] rounded-md w-2/5 mt-1" />
             </div>
-            <div className="mt-6 border-t border-[#EBEBEB]" />
-            <div className="pt-5">
+            <div className="mt-5 border-t border-[#EBEBEB]" />
+            <div className="pt-3">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="flex items-start gap-4 py-[18px]">
+                <div key={i} className="flex items-start gap-5 py-[10px]">
                   <div className="w-7 h-7 bg-[#F0F0F0] rounded" />
                   <div className="flex-1 space-y-1.5">
                     <div className="h-4 bg-[#F5F5F5] rounded w-20" />
@@ -297,13 +297,12 @@ export default function ApplyPage() {
             </div>
           </div>
         )}
-
       </div>
 
-      <main className="flex-1 max-w-xl mx-auto w-full pb-[120px]">
-        <div className="px-5 pt-7 text-center">
+      <main className="flex-1 max-w-xl mx-auto w-full pb-[120px] relative -mt-5 bg-white rounded-t-[24px]">
+        <div className="px-5 pt-6 text-center">
           <h1
-            className="text-[22px] font-medium text-[#18181B] leading-[1.3] tracking-[-0.015em] mx-auto"
+            className="text-[24px] font-semibold text-[#18181B] leading-[1.25] tracking-[-0.02em] mx-auto"
             data-testid="text-apply-title"
           >
             {listing.title}
@@ -313,13 +312,13 @@ export default function ApplyPage() {
           </p>
         </div>
 
-        <div className="mx-5 mt-6 border-t border-[#EBEBEB]" />
+        <div className="mx-5 mt-5 border-t border-[#EBEBEB]" />
 
-        <div className="px-5 pt-5" data-testid="facts-block">
+        <div className="px-5 pt-3" data-testid="facts-block">
           {detailRows.map((row, i) => {
             const Icon = row.icon;
             return (
-              <div key={i} className="flex items-start gap-4 py-[18px]">
+              <div key={i} className="flex items-start gap-5 py-[10px]">
                 <Icon className="w-7 h-7 text-[#18181B] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
                 <div className="flex-1 min-w-0">
                   <p className="text-[15px] font-medium text-[#18181B]">{row.title}</p>

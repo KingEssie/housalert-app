@@ -1,0 +1,78 @@
+Refine the listing detail page again to make it feel closer to Airbnb.
+
+IMPORTANT:
+- Do NOT change functionality or data
+- Keep the current detail page structure and sticky bottom bar
+- This is a visual/layout refinement only
+- Keep HousAlert blue for the CTA button
+
+## 1. OVERLAPPING WHITE CONTENT PANEL UNDER THE IMAGE
+
+Right now the image and content feel too separated.
+
+Change the top layout so it behaves more like Airbnb:
+- keep the image at the top
+- the white content section below should overlap the bottom of the image
+- give the white content panel rounded top corners
+- the rounded white panel should visually sit on top of the lower part of the image
+- this should create the same layered effect Airbnb uses
+
+Requirements:
+- large top-left and top-right radius
+- clean overlap
+- no awkward gap between image and content
+- premium transition from image to content
+
+## 2. TITLE STRONGER
+
+Adjust the title:
+- make it slightly larger
+- make it slightly bolder
+- keep it elegant, not too heavy
+- keep it centered
+
+Goal:
+- more visual presence
+- closer to Airbnb hierarchy
+
+## 3. MORE SPACE BETWEEN ICON AND TEXT IN DETAIL ROWS
+
+For the detail rows (Locatie, Afmeting, Slaapkamers, etc.):
+- increase horizontal spacing between the icon and the text block
+- icons should have a little more breathing room from the text
+- keep alignment clean and premium
+
+Target:
+- slightly larger gap than now
+- enough to feel more polished and readable
+
+## 4. REDUCE SPACE BETWEEN THE DIFFERENT DETAIL ROWS
+
+The spacing between separate detail items is currently too large.
+
+Reduce the vertical spacing between the rows by about half.
+
+Requirements:
+- keep each row readable
+- make the section more compact
+- feel closer to Airbnb’s tighter feature list rhythm
+
+IMPORTANT:
+- reduce spacing BETWEEN rows
+- do not crush spacing INSIDE each row’s text block
+
+## RESULT
+
+The detail page should now feel:
+- more layered like Airbnb
+- more premium
+- better balanced
+- tighter in the feature section
+- stronger in title hierarchy
+
+At the end, summarize:
+- how the overlapping white panel was implemented
+- what title size/weight was changed to
+- how much icon/text spacing was increased
+- how much row spacing was reduced
+- which files/components were updated
