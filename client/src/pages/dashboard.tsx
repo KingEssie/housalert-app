@@ -1,10 +1,10 @@
 import { apiFetch } from "@/lib/api-base";
 import { useAuth } from "@/lib/auth";
 import { useLocation } from "wouter";
-import extraSearchProfileImg from "@assets/035C2C6F-E3B7-4603-A7CD-BE58AE8A146E_1774016597513.png";
-import inviteFriendsImg from "@assets/8A1420D2-D9C7-48AD-B977-B3C926737083_1774016597514.png";
-import notificationsImg from "@assets/329DE0A7-F3DD-4F72-8A07-497AD0C8962F_1774016597514.png";
-import avatarPlaceholderImg from "@assets/93C55784-F987-4BEB-9FA7-F1BE78E189BE_1774016597514.png";
+import extraSearchProfileImg from "@assets/91006436-FE1C-41F7-8B66-D1367535585A_1774020314108.png";
+import inviteFriendsImg from "@assets/323F7AC6-4139-4578-9576-64B7686F3112_1774020314108.png";
+import notificationsImg from "@assets/88F5A2A4-4299-4D69-9042-AF08AEBB0CDE_1774020314108.png";
+import avatarPlaceholderImg from "@assets/97E2CABC-21F6-49B6-A7DC-16B866627182_1774020314108.png";
 import { useEffect, useState, useCallback } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getSearchProfiles, deleteSearchProfile, type SearchProfile } from "@/lib/search-profiles";
@@ -1707,7 +1707,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                   <img src={photoUrl} alt="" className="w-[104px] h-[104px] rounded-full object-cover shadow-[0_2px_12px_rgba(0,0,0,0.08)]" data-testid="img-profile-avatar" />
                 ) : (
                   <div className="w-[104px] h-[104px] rounded-full overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.08)] flex items-center justify-center">
-                    <img src={avatarPlaceholderImg} alt="" className="w-full h-full object-cover scale-[1.35]" data-testid="img-avatar-placeholder" />
+                    <img src={avatarPlaceholderImg} alt="" className="w-full h-full object-cover" data-testid="img-avatar-placeholder" />
                   </div>
                 )}
                 <p className="text-[24px] font-semibold text-[#222222] mt-2.5 leading-tight text-center" data-testid="text-user-firstname">

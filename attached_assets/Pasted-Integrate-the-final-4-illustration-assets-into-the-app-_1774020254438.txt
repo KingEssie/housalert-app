@@ -1,0 +1,101 @@
+Integrate the final 4 illustration assets into the app and replace the current placeholders/older versions.
+
+IMPORTANT:
+- Do NOT redesign layouts
+- Do NOT change functionality
+- Only replace the visual assets and fit them correctly
+- Keep the current card structure, spacing system, and interactions intact
+
+==================================================
+1. FINAL IMAGE MAPPING
+==================================================
+
+Use the newly uploaded final images and map them exactly like this:
+
+1. extra-search-profile.png
+→ use for the “Extra zoekprofiel” square card
+
+2. invite-friends.png
+→ use for the “Vrienden uitnodigen” square card
+
+3. notifications.png
+→ use for the “Meldingen” card illustration
+
+4. avatar-placeholder.png
+→ use as the default profile avatar placeholder when the user has no uploaded profile photo
+
+IMPORTANT:
+- Remove/replace the previously used versions of these illustrations
+- Make sure the newest uploaded versions are the ones being rendered
+
+==================================================
+2. IMAGE FIT RULES
+==================================================
+
+A. Extra zoekprofiel / Vrienden uitnodigen cards
+- keep cards square
+- use the illustrations inside the square cards
+- image should stay large and centered
+- title must remain visible below the image
+- do not let the image push the title out
+- use object-fit: contain
+- preserve aspect ratio
+- no distortion
+
+B. Meldingen card
+- keep the current card layout
+- use the new notifications illustration on the left
+- keep it clearly visible and a bit larger than a simple icon
+- do not crop important parts
+- keep text and toggles aligned properly
+
+C. Avatar placeholder
+- only show avatar-placeholder.png when the user has NO uploaded profile image
+- if the user has a real uploaded photo, keep showing that real photo
+- the placeholder image must fill the circular avatar area cleanly
+- use object-fit: cover
+- center perfectly
+- no awkward inner whitespace
+
+==================================================
+3. CLEAN UP OLD ASSETS
+==================================================
+
+- remove old imports for the previous generated illustration versions
+- remove references to outdated assets
+- make sure there are no leftover blue/orange older variants still in use
+- keep the codebase clean
+
+==================================================
+4. FILE ORGANIZATION
+==================================================
+
+- place all 4 final images in a clear app assets folder
+- use clean file names
+- update imports consistently
+
+Recommended names:
+- extra-search-profile.png
+- invite-friends.png
+- notifications.png
+- avatar-placeholder.png
+
+==================================================
+5. DO NOT CHANGE
+==================================================
+
+- do not redesign cards
+- do not change click handlers
+- do not change navigation
+- do not change page logic
+- only replace images and ensure correct fit/alignment
+
+==================================================
+6. RESULT
+==================================================
+
+At the end, summarize:
+1. where each final image was placed
+2. which old assets were replaced/removed
+3. how each image was fitted per component
+4. which files/components were updated
