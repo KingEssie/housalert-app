@@ -1,0 +1,233 @@
+Redesign the Account / Profiel page of HousAlert to follow a layout and hierarchy inspired by Airbnb.
+
+IMPORTANT:
+- Do NOT change backend logic unless needed to display existing user/account data
+- Keep current app routes and functionality working
+- This is mainly a UI/layout redesign of the account page
+- Keep HousAlert blue as the primary accent color
+- Use the current design system where possible, but make the account page feel closer to Airbnb in structure, spacing, and simplicity
+
+==================================================
+GOAL
+==================================================
+
+I want the Account / Profiel page rebuilt from top to bottom with this exact structure:
+
+1. Top profile stats card
+2. Two small cards side by side
+3. One full-width subscription card
+4. Menu items below, not inside cards, just as a clean vertical list like Airbnb
+
+The page should feel:
+- calm
+- premium
+- spacious
+- consumer-app style
+- closer to Airbnb
+
+==================================================
+1. TOP PROFILE CARD
+==================================================
+
+At the top of the page, create one large profile card similar to Airbnb’s profile summary card.
+
+### LEFT SIDE
+Show:
+- profile photo / avatar
+- below the photo: first name in large text
+- below that: last name in much smaller text
+
+Typography:
+- first name should be visually strong and prominent
+- last name should be subtle, smaller, and lighter
+
+Do NOT show the current big “ME” avatar style if a better avatar/profile image treatment is available.
+If no profile image exists, show a cleaner fallback avatar.
+
+### RIGHT SIDE
+Show 3 stacked stats with separators between them.
+
+Stat 1:
+- Lid sinds
+  Example: “2 jaar lid” or similar based on available account age data
+
+Stat 2:
+- Woningen bekeken
+
+Stat 3:
+- Reacties verstuurd
+
+Requirements:
+- each stat should be clearly separated vertically
+- clean typography hierarchy
+- easy to scan
+- match the visual balance of Airbnb’s stats card
+
+### CARD STYLE
+- white background
+- rounded corners
+- subtle premium shadow
+- spacious padding
+- visually balanced layout
+
+==================================================
+2. TWO SMALL CARDS SIDE BY SIDE
+==================================================
+
+Below the top profile card, show 2 smaller cards side by side.
+
+### LEFT CARD
+Referral / bonus card
+
+Purpose:
+- invite friends
+- get a bonus if a friend becomes a member
+
+Content:
+- icon only for now (no image yet)
+- title like:
+  “Vrienden uitnodigen”
+or
+  “Bonus voor vrienden”
+- optional short supporting text if needed
+- clean simple layout
+
+Reuse the existing referral functionality where possible.
+
+### RIGHT CARD
+Extra search profile card
+
+Purpose:
+- create an extra search profile
+
+Content:
+- icon only for now
+- title like:
+  “Extra zoekprofiel”
+or
+  “Zoekprofiel toevoegen”
+
+IMPORTANT:
+- use icons for both cards for now
+- in the future images may replace the icons, so structure the components to support that later
+- both cards should have the same size, spacing, and visual system
+
+### CARD STYLE
+- white background
+- rounded corners
+- subtle shadow
+- same design language
+- compact but premium
+
+==================================================
+3. FULL-WIDTH SUBSCRIPTION CARD
+==================================================
+
+Below the two small cards, add one full-width card for subscription info.
+
+Purpose:
+- show current subscription status and basic subscription details
+
+Possible content:
+- title: “Abonnement”
+- status: actief / trial / gratis / etc.
+- plan name or billing info if available
+
+Keep it simple and clean.
+This should be a single card across the full width.
+
+### STYLE
+- same rounded card system
+- premium shadow
+- balanced spacing
+- not overcrowded
+
+==================================================
+4. MENU ITEMS BELOW (NOT INSIDE CARDS)
+==================================================
+
+Below the cards, show the menu items as a clean vertical list, like Airbnb.
+
+IMPORTANT:
+- these menu items should NOT be placed inside card containers
+- they should appear directly on the page background
+- just clean rows stacked vertically
+- each row has:
+  - icon on the left
+  - label text
+  - chevron on the right
+
+Visual style:
+- no heavy card around each section
+- no unnecessary shadow
+- clean spacing between rows
+- subtle separators where needed
+- premium simple Airbnb-like settings list
+
+### Include current relevant menu items
+Keep the existing menu structure/functionality, but restyle it into this cleaner list format.
+
+Examples may include:
+- Persoonlijke informatie
+- Privacy
+- Taal
+- Hulp & ondersteuning
+- Algemene voorwaarden
+- Uitloggen
+- Account verwijderen
+
+Use the current real app menu items, but present them in the Airbnb-inspired list style.
+
+==================================================
+5. DESIGN / SPACING RULES
+==================================================
+
+Use:
+- generous white space
+- clear visual hierarchy
+- rounded corners for cards
+- subtle premium shadows
+- clean icons
+- no clutter
+
+The account page should feel more like:
+- one strong top summary card
+- 2 utility cards
+- 1 subscription card
+- then a simple settings list
+
+Not like a dashboard with too many separate boxed modules.
+
+==================================================
+6. ICONS
+==================================================
+
+Use clean outline icons for:
+- referral
+- extra search profile
+- settings menu items
+
+For now, icons are enough.
+Please structure the two small cards so they can later support images instead of icons without redesigning the whole component.
+
+==================================================
+7. KEEP FUNCTIONALITY
+==================================================
+
+- keep all current navigation working
+- keep referral feature working
+- keep subscription logic intact
+- keep menu items working
+- do not remove current capabilities unless explicitly replaced by this new layout
+
+==================================================
+8. RESULT
+==================================================
+
+At the end, summarize:
+1. how the top profile card was rebuilt
+2. which 3 stats are shown and how they are sourced
+3. which two small cards were added
+4. how the subscription card was implemented
+5. how the menu items were restyled
+6. which files/components were updated

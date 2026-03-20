@@ -1411,23 +1411,8 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
   );
 }
 
-function AccountSettingsRow({ label, subtext, onClick, trailing }: { label: string; subtext?: string; onClick: () => void; trailing?: JSX.Element }) {
-  return (
-    <button
-      onClick={onClick}
-      className="w-full flex items-center gap-3.5 px-5 py-4 text-left active:bg-[#F9FAFB] transition-colors"
-      data-testid={`row-${label.toLowerCase().replace(/\s+/g, "-")}`}
-    >
-      <div className="flex-1 min-w-0">
-        <p className="text-[15px] font-medium text-[#111827]">{label}</p>
-        {subtext && <p className="text-[13px] text-[#9CA3AF] mt-0.5 leading-relaxed">{subtext}</p>}
-      </div>
-      {trailing || <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />}
-    </button>
-  );
-}
 
-function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null }; setActiveTab: (tab: TabKey) => void }) {
+function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canonicalStats }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null }; setActiveTab: (tab: TabKey) => void; canonicalStats?: CanonicalStats }) {
   const [signingOut, setSigningOut] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [showPhotoSheet, setShowPhotoSheet] = useState(false);
@@ -1610,44 +1595,68 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
     }
   }
 
-  async function handleCopyLetter() {
-    const letter = pd?.application_template;
-    if (letter) {
-      try {
-        await navigator.clipboard.writeText(letter);
-        toast({ title: t("profile.letterCopied") });
-      } catch {
-        toast({ title: t("common.error"), variant: "destructive" });
-      }
-    }
-  }
+
+  const memberMonths = user.created_at
+    ? Math.max(0, Math.floor((Date.now() - new Date(user.created_at).getTime()) / (1000 * 60 * 60 * 24 * 30)))
+    : 0;
+  const memberDuration = memberMonths >= 24
+    ? t("profile.memberYears", { count: Math.floor(memberMonths / 12) })
+    : memberMonths >= 1
+    ? t("profile.memberMonths", { count: memberMonths })
+    : t("profile.memberNew");
+
+  const subStatusLabel = subscription.isActive && !subscription.isTrial
+    ? t("profile.activeStatus")
+    : subscription.isTrial
+    ? t("profile.trialStatus")
+    : subscription.isExpired
+    ? t("profile.expiredStatus")
+    : t("profile.freeStatus");
+
+  const subStatusColor = subscription.isActive && !subscription.isTrial
+    ? "text-[#0D6EFD] bg-[#EBF2FF]"
+    : subscription.isTrial
+    ? "text-[#D97706] bg-[#FEF3C7]"
+    : "text-[#9CA3AF] bg-[#F3F4F6]";
 
   return (
     <div className="min-h-[calc(100vh-80px)] bg-white">
-      <div className="sticky top-0 z-10 bg-white px-6 pt-6 pb-4">
-        <h1 className="text-[24px] font-medium text-[#111827] tracking-tight">{t("profile.subtabs.account")}</h1>
-      </div>
-
-      <div className="max-w-[480px] mx-auto px-6 pb-8">
+      <div className="max-w-[480px] mx-auto px-6 pt-8 pb-8">
         <div className="flex flex-col gap-6">
-          <button
-            onClick={() => navigate("/profile/details")}
-            className="flex items-center gap-4 active:opacity-80 transition-opacity text-left w-full py-2"
-            data-testid="button-profile-header"
-          >
-            {photoUrl ? (
-              <img src={photoUrl} alt="" className="w-16 h-16 rounded-full object-cover flex-shrink-0 shadow-[0_2px_8px_rgba(0,0,0,0.06)]" data-testid="img-profile-avatar" />
-            ) : (
-              <div className="w-16 h-16 rounded-full bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
-                <span className="text-[22px] font-medium text-[#374151]">{initials}</span>
+
+          <div className="flex flex-col items-center text-center pt-2 pb-1">
+            <button
+              onClick={() => navigate("/profile/details")}
+              className="relative mb-3 active:scale-95 transition-transform"
+              data-testid="button-profile-avatar"
+            >
+              {photoUrl ? (
+                <img src={photoUrl} alt="" className="w-[80px] h-[80px] rounded-full object-cover shadow-[0_2px_12px_rgba(0,0,0,0.08)]" data-testid="img-profile-avatar" />
+              ) : (
+                <div className="w-[80px] h-[80px] rounded-full bg-[#F3F4F6] flex items-center justify-center">
+                  <span className="text-[28px] font-medium text-[#374151]">{initials}</span>
+                </div>
+              )}
+              <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-white shadow-[0_1px_4px_rgba(0,0,0,0.1)] flex items-center justify-center">
+                <Camera className="w-3.5 h-3.5 text-[#71717A]" />
               </div>
-            )}
-            <div className="flex-1 min-w-0">
-              <p className="text-[19px] font-medium text-[#111827] truncate leading-tight" data-testid="text-user-name">{displayName || t("profile.seeker")}</p>
-              <p className="text-[13px] text-[#9CA3AF] mt-1">{t("profile.seeker")}</p>
+            </button>
+            <p className="text-[20px] font-semibold text-[#18181B] leading-tight" data-testid="text-user-name">
+              {displayName || t("profile.seeker")}
+            </p>
+            <p className="text-[13px] text-[#9CA3AF] mt-1">{memberDuration}</p>
+          </div>
+
+          <div className="flex gap-3">
+            <div className="flex-1 rounded-2xl bg-[#F8F9FA] px-4 py-3.5 text-center" data-testid="stat-matches-received">
+              <p className="text-[22px] font-semibold text-[#18181B] leading-tight">{canonicalStats?.total ?? 0}</p>
+              <p className="text-[11px] text-[#9CA3AF] mt-1 leading-tight">{t("profile.stats.matchesReceived")}</p>
             </div>
-            <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
-          </button>
+            <div className="flex-1 rounded-2xl bg-[#F8F9FA] px-4 py-3.5 text-center" data-testid="stat-applications-sent">
+              <p className="text-[22px] font-semibold text-[#18181B] leading-tight">{canonicalStats?.applied ?? 0}</p>
+              <p className="text-[11px] text-[#9CA3AF] mt-1 leading-tight">{t("profile.applicationsSent")}</p>
+            </div>
+          </div>
 
           {subscription.isTrial && (
             <div className="rounded-2xl border border-[#D1FAE5] bg-[#F0FDF4] px-5 py-4 flex items-start gap-3.5" data-testid="trial-explanation">
@@ -1661,196 +1670,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             </div>
           )}
 
-          <div className="rounded-[24px] border border-[#F0F0F0] bg-[#FAFAFA] overflow-hidden shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
-            {pd?.search_buddy_email ? (
-              <button
-                onClick={() => navigate("/profile/edit/search_buddy_email")}
-                className="w-full flex items-center gap-3.5 px-5 py-4 text-left active:bg-[#F3F4F6] transition-colors"
-                data-testid="button-zoekbuddy"
-              >
-                <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center flex-shrink-0 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-                  <Users className="w-[18px] h-[18px] text-[#71717A]" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[14px] font-medium text-[#111827]">{t("profile.searchBuddy")}</p>
-                  <p className="text-[12px] text-[#9CA3AF] truncate mt-0.5">{pd.search_buddy_email}</p>
-                </div>
-                <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
-              </button>
-            ) : (
-              <div className="px-5 py-4">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center flex-shrink-0 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-                    <Users className="w-[18px] h-[18px] text-[#71717A]" />
-                  </div>
-                  <p className="text-[14px] font-medium text-[#111827]">{t("profile.searchBuddy")}</p>
-                </div>
-                <p className="text-[13px] text-[#9CA3AF] mb-4 ml-[48px] leading-relaxed">{t("profile.noBuddyYet")}</p>
-                <button
-                  onClick={() => navigate("/profile/edit/search_buddy_email")}
-                  className="ml-[48px] h-[38px] px-5 rounded-xl bg-[#111827] text-white text-[13px] font-medium transition-colors hover:bg-[#1F2937]"
-                  data-testid="button-add-buddy"
-                >
-                  {t("profile.addBuddy")}
-                </button>
-              </div>
-            )}
-          </div>
-
-          <div id="notification-settings" className="rounded-[24px] border border-[#F0F0F0] overflow-hidden shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
-            <div className="flex items-center justify-between px-5 py-4">
-              <div className="flex items-center gap-3.5">
-                <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
-                  <Bell className="w-[18px] h-[18px] text-[#71717A]" />
-                </div>
-                <p className="text-[14px] font-medium text-[#111827]">{t("profile.pushNotifications")}</p>
-              </div>
-              <button
-                onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
-                disabled={notifUpdating === "push_enabled"}
-                className={`w-[46px] h-[28px] rounded-full relative transition-colors ${notifSettings?.push_enabled ? "bg-[#0D6EFD]" : "bg-[#E5E7EB]"} ${notifUpdating === "push_enabled" ? "opacity-50" : ""}`}
-                data-testid="toggle-push"
-              >
-                <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.push_enabled ? "left-[21px]" : "left-[3px]"}`} />
-              </button>
-            </div>
-            <div className="h-px bg-[#F3F4F6] mx-5" />
-            <div className="flex items-center justify-between px-5 py-4">
-              <div className="flex items-center gap-3.5">
-                <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
-                  <Mail className="w-[18px] h-[18px] text-[#71717A]" />
-                </div>
-                <p className="text-[14px] font-medium text-[#111827]">{t("profile.emailNotifications")}</p>
-              </div>
-              <button
-                onClick={() => handleToggleNotif("email_enabled", !!notifSettings?.email_enabled)}
-                disabled={notifUpdating === "email_enabled"}
-                className={`w-[46px] h-[28px] rounded-full relative transition-colors ${notifSettings?.email_enabled ? "bg-[#0D6EFD]" : "bg-[#E5E7EB]"} ${notifUpdating === "email_enabled" ? "opacity-50" : ""}`}
-                data-testid="toggle-email"
-              >
-                <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.email_enabled ? "left-[21px]" : "left-[3px]"}`} />
-              </button>
-            </div>
-          </div>
-
-          <div className="rounded-[24px] border border-[#F0F0F0] p-5 shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
-            <h2 className="text-[15px] font-medium text-[#111827] mb-4">{t("profile.reactionLetter")}</h2>
-            {letterPreview ? (
-              <div>
-                <p className="text-[13px] text-[#6B7280] leading-relaxed line-clamp-3 mb-3">{letterPreview}...</p>
-                <div className="flex gap-2">
-                  <button
-                    onClick={handleCopyLetter}
-                    className="h-[36px] px-4 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-[13px] font-medium hover:bg-[#F9FAFB] transition-colors flex items-center gap-1.5"
-                    data-testid="button-letter-copy"
-                  >
-                    <Copy className="w-3.5 h-3.5" />
-                    {t("profile.copyButton")}
-                  </button>
-                  <button
-                    onClick={() => navigate("/application-letter")}
-                    className="h-[36px] px-4 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-[13px] font-medium hover:bg-[#F9FAFB] transition-colors flex items-center gap-1.5"
-                    data-testid="button-letter-edit"
-                  >
-                    <Pencil className="w-3.5 h-3.5" />
-                    {t("profile.editButton")}
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div>
-                <p className="text-[13px] text-[#6B7280] leading-relaxed mb-3">{t("profile.noReactionLetterYet")}</p>
-                <button
-                  onClick={() => navigate("/application-letter")}
-                  className="h-[36px] px-4 rounded-lg bg-[#111827] text-white text-[13px] font-medium transition-colors hover:bg-[#1F2937] flex items-center gap-1.5"
-                  data-testid="button-letter-empty"
-                >
-                  <Pencil className="w-3.5 h-3.5" />
-                  {t("profile.writeReactionLetter")}
-                </button>
-              </div>
-            )}
-          </div>
-
-          <div className="rounded-[24px] border border-[#F0F0F0] p-5 shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]" data-testid="card-profile-referral">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-9 h-9 rounded-xl bg-[#EBF2FF] flex items-center justify-center flex-shrink-0">
-                <Gift className="w-[18px] h-[18px] text-[#0D6EFD]" />
-              </div>
-              <h2 className="text-[15px] font-medium text-[#111827]">{t("referral.profileTitle")}</h2>
-            </div>
-
-            {referralQuery.isLoading ? (
-              <p className="text-[13px] text-[#9CA3AF]">{t("referral.loading")}</p>
-            ) : (
-              <>
-                <div className="bg-[#F3F4F6] rounded-xl px-4 py-3 flex items-center justify-between mb-4" data-testid="text-profile-referral-code">
-                  <div>
-                    <p className="text-[11px] font-medium text-[#9CA3AF] uppercase tracking-wider">{t("referral.profileCodeLabel")}</p>
-                    <p className="text-[18px] font-bold tracking-[0.08em] text-[#18181B] mt-0.5">{referralQuery.data?.code || "—"}</p>
-                  </div>
-                  <button
-                    onClick={async () => {
-                      if (!referralQuery.data?.code) return;
-                      try {
-                        await navigator.clipboard.writeText(referralQuery.data.code);
-                        setReferralCopied(true);
-                        toast({ title: t("referral.copied") });
-                        setTimeout(() => setReferralCopied(false), 2000);
-                      } catch {
-                        toast({ title: t("referral.copyFailed"), variant: "destructive" });
-                      }
-                    }}
-                    className="h-[34px] px-4 rounded-lg border border-[#E5E7EB] bg-white text-[13px] font-medium text-[#374151] hover:bg-[#F9FAFB] transition-colors flex items-center gap-1.5"
-                    data-testid="button-profile-copy-code"
-                  >
-                    {referralCopied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                    {referralCopied ? t("referral.copied") : t("referral.profileCopy")}
-                  </button>
-                </div>
-
-                <div className="space-y-2.5">
-                  {[
-                    { label: t("referral.profileInvited"), value: referralQuery.data?.totalInvited ?? 0, testId: "text-referral-invited" },
-                    { label: t("referral.profilePending"), value: referralQuery.data?.pending ?? 0, testId: "text-referral-pending" },
-                    { label: t("referral.profileQualified"), value: referralQuery.data?.qualified ?? 0, testId: "text-referral-qualified" },
-                    { label: t("referral.profileRewarded"), value: referralQuery.data?.rewarded ?? 0, testId: "text-referral-rewarded" },
-                  ].map((row) => (
-                    <div key={row.testId} className="flex items-center justify-between" data-testid={row.testId}>
-                      <span className="text-[13px] text-[#6B7280]">{row.label}</span>
-                      <span className="text-[14px] font-medium text-[#18181B]">{row.value}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <p className="text-[12px] text-[#9CA3AF] mt-4 leading-relaxed">{t("referral.profileHelperText")}</p>
-              </>
-            )}
-          </div>
-
-          <div className="rounded-[24px] border border-[#F0F0F0] overflow-hidden shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
-            <AccountSettingsRow
-              label={t("profile.subscription")}
-              subtext={subscription.isActive && !subscription.isTrial
-                ? t("profile.subscriptionMonthly")
-                : subscription.isTrial
-                ? t("profile.subscriptionTrial")
-                : t("profile.subscriptionExpired")}
-              onClick={() => navigate("/account/subscription")}
-              trailing={
-                subscription.isActive && !subscription.isTrial ? (
-                  <span className="text-[11px] font-medium px-2.5 py-1 rounded-full flex-shrink-0 text-[#0D6EFD] bg-[#EBF2FF]" data-testid="text-subscription-status">
-                    {t("common.active")}
-                  </span>
-                ) : subscription.isTrial ? (
-                  <span className="text-[11px] font-medium px-2.5 py-1 rounded-full flex-shrink-0 text-[#D97706] bg-[#FEF3C7]" data-testid="text-subscription-status">
-                    {t("profile.trial")}
-                  </span>
-                ) : undefined
-              }
-            />
-          </div>
-
           {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
             <button
               onClick={() => navigate("/paywall")}
@@ -1862,39 +1681,201 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             </button>
           )}
 
-          <div className="rounded-[24px] border border-[#F0F0F0] overflow-hidden shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
-            <AccountSettingsRow
-              label={t("profile.language")}
-              subtext={currentLangLabel}
+          <div className="rounded-[20px] border border-[#F0F0F0] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
+            <button
+              onClick={async () => {
+                const code = referralQuery.data?.code;
+                if (!code) return;
+                try {
+                  await navigator.clipboard.writeText(code);
+                  setReferralCopied(true);
+                  toast({ title: t("referral.copied") });
+                  setTimeout(() => setReferralCopied(false), 2000);
+                } catch {
+                  toast({ title: t("referral.copyFailed"), variant: "destructive" });
+                }
+              }}
+              className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
+              data-testid="button-invite-friends"
+            >
+              <div className="w-9 h-9 rounded-xl bg-[#EBF2FF] flex items-center justify-center flex-shrink-0">
+                <Gift className="w-[18px] h-[18px] text-[#0D6EFD]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[14px] font-medium text-[#18181B]">{t("profile.inviteFriends")}</p>
+                <p className="text-[12px] text-[#9CA3AF] mt-0.5">
+                  {referralQuery.data?.code
+                    ? (referralCopied ? t("referral.copied") : referralQuery.data.code)
+                    : t("profile.inviteFriendsDesc")}
+                </p>
+              </div>
+              {referralCopied
+                ? <Check className="w-4 h-4 text-[#0D6EFD] flex-shrink-0" />
+                : <Copy className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+              }
+            </button>
+            <div className="h-px bg-[#F3F4F6] mx-5" />
+            <button
+              onClick={() => navigate("/dashboard/searches/new")}
+              className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
+              data-testid="button-extra-profile"
+            >
+              <div className="w-9 h-9 rounded-xl bg-[#F0FDF4] flex items-center justify-center flex-shrink-0">
+                <Plus className="w-[18px] h-[18px] text-[#16A34A]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[14px] font-medium text-[#18181B]">{t("profile.extraProfile")}</p>
+                <p className="text-[12px] text-[#9CA3AF] mt-0.5">{t("profile.extraProfileDesc")}</p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+            </button>
+          </div>
+
+          <div className="rounded-[20px] border border-[#F0F0F0] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
+            <button
+              onClick={() => navigate("/profile/details")}
+              className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
+              data-testid="button-personal-info"
+            >
+              <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
+                <User className="w-[18px] h-[18px] text-[#71717A]" />
+              </div>
+              <p className="text-[14px] font-medium text-[#18181B] flex-1">{t("profile.personalInfo")}</p>
+              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+            </button>
+            <div className="h-px bg-[#F3F4F6] mx-5" />
+            <div id="notification-settings" className="flex items-center justify-between px-5 py-[14px]">
+              <div className="flex items-center gap-3.5">
+                <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
+                  <Bell className="w-[18px] h-[18px] text-[#71717A]" />
+                </div>
+                <div>
+                  <p className="text-[14px] font-medium text-[#18181B]">{t("profile.notificationSettings")}</p>
+                  <div className="flex items-center gap-3 mt-1.5">
+                    <button
+                      onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
+                      disabled={notifUpdating === "push_enabled"}
+                      className="flex items-center gap-1.5"
+                      data-testid="toggle-push"
+                    >
+                      <div className={`w-[36px] h-[20px] rounded-full relative transition-colors ${notifSettings?.push_enabled ? "bg-[#0D6EFD]" : "bg-[#E5E7EB]"} ${notifUpdating === "push_enabled" ? "opacity-50" : ""}`}>
+                        <span className={`absolute top-[2px] w-[16px] h-[16px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.push_enabled ? "left-[18px]" : "left-[2px]"}`} />
+                      </div>
+                      <span className="text-[11px] text-[#9CA3AF]">Push</span>
+                    </button>
+                    <button
+                      onClick={() => handleToggleNotif("email_enabled", !!notifSettings?.email_enabled)}
+                      disabled={notifUpdating === "email_enabled"}
+                      className="flex items-center gap-1.5"
+                      data-testid="toggle-email"
+                    >
+                      <div className={`w-[36px] h-[20px] rounded-full relative transition-colors ${notifSettings?.email_enabled ? "bg-[#0D6EFD]" : "bg-[#E5E7EB]"} ${notifUpdating === "email_enabled" ? "opacity-50" : ""}`}>
+                        <span className={`absolute top-[2px] w-[16px] h-[16px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.email_enabled ? "left-[18px]" : "left-[2px]"}`} />
+                      </div>
+                      <span className="text-[11px] text-[#9CA3AF]">E-mail</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="h-px bg-[#F3F4F6] mx-5" />
+            <button
+              onClick={() => navigate("/application-letter")}
+              className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
+              data-testid="button-reaction-letter"
+            >
+              <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
+                <FileText className="w-[18px] h-[18px] text-[#71717A]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[14px] font-medium text-[#18181B]">{t("profile.reactionLetter2")}</p>
+                {letterPreview && <p className="text-[12px] text-[#9CA3AF] mt-0.5 truncate">{letterPreview}...</p>}
+              </div>
+              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+            </button>
+            <div className="h-px bg-[#F3F4F6] mx-5" />
+            <button
+              onClick={() => navigate("/profile/edit/search_buddy_email")}
+              className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
+              data-testid="button-zoekbuddy"
+            >
+              <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
+                <Users className="w-[18px] h-[18px] text-[#71717A]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[14px] font-medium text-[#18181B]">{t("profile.searchBuddyMenu")}</p>
+                {pd?.search_buddy_email && <p className="text-[12px] text-[#9CA3AF] mt-0.5 truncate">{pd.search_buddy_email}</p>}
+              </div>
+              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+            </button>
+            <div className="h-px bg-[#F3F4F6] mx-5" />
+            <button
+              onClick={() => navigate("/account/subscription")}
+              className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
+              data-testid="button-subscription"
+            >
+              <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
+                <Crown className="w-[18px] h-[18px] text-[#71717A]" />
+              </div>
+              <p className="text-[14px] font-medium text-[#18181B] flex-1">{t("profile.subscriptionPlan")}</p>
+              <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full flex-shrink-0 ${subStatusColor}`} data-testid="text-subscription-status">
+                {subStatusLabel}
+              </span>
+            </button>
+          </div>
+
+          <div className="rounded-[20px] border border-[#F0F0F0] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
+            <button
               onClick={() => setShowLangSheet(true)}
-            />
+              className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
+              data-testid="button-language"
+            >
+              <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
+                <Globe className="w-[18px] h-[18px] text-[#71717A]" />
+              </div>
+              <p className="text-[14px] font-medium text-[#18181B] flex-1">{t("profile.language")}</p>
+              <span className="text-[13px] text-[#9CA3AF] mr-1">{currentLangLabel}</span>
+              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+            </button>
           </div>
 
           <div>
             <p className="text-[11px] font-medium text-[#9CA3AF] uppercase tracking-wider mb-3 px-1">{t("profile.support")}</p>
-            <div className="rounded-[24px] border border-[#F0F0F0] overflow-hidden shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
-              <AccountSettingsRow
-                label={t("profile.privacy")}
+            <div className="rounded-[20px] border border-[#F0F0F0] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
+              <button
                 onClick={() => navigate("/datenschutz")}
-              />
+                className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
+                data-testid="button-privacy"
+              >
+                <p className="text-[14px] text-[#18181B] flex-1">{t("profile.privacy")}</p>
+                <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+              </button>
               <div className="h-px bg-[#F3F4F6] mx-5" />
-              <AccountSettingsRow
-                label={t("profile.helpSupport")}
+              <button
                 onClick={() => { window.location.href = "mailto:support@housalert.com"; }}
-              />
+                className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
+                data-testid="button-help-support"
+              >
+                <p className="text-[14px] text-[#18181B] flex-1">{t("profile.helpSupport")}</p>
+                <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+              </button>
               <div className="h-px bg-[#F3F4F6] mx-5" />
-              <AccountSettingsRow
-                label={t("profile.terms")}
+              <button
                 onClick={() => navigate("/terms")}
-              />
+                className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
+                data-testid="button-terms"
+              >
+                <p className="text-[14px] text-[#18181B] flex-1">{t("profile.terms")}</p>
+                <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+              </button>
             </div>
           </div>
 
-          <div className="rounded-[24px] border border-[#F0F0F0] overflow-hidden shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
+          <div className="rounded-[20px] border border-[#F0F0F0] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
             <button
               onClick={() => setShowLogoutConfirm(true)}
               disabled={signingOut}
-              className={`w-full flex items-center gap-3.5 px-5 py-4 text-left active:bg-[#F9FAFB] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
+              className={`w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
               data-testid="button-logout"
             >
               <LogOut className="w-[18px] h-[18px] text-[#EF4444]" />
@@ -1903,7 +1884,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
             <div className="h-px bg-[#F3F4F6] mx-5" />
             <button
               onClick={() => navigate("/account/delete")}
-              className="w-full flex items-center gap-3.5 px-5 py-4 text-left active:bg-[#F9FAFB] transition-colors"
+              className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
               data-testid="button-delete-account"
             >
               <Trash2 className="w-[18px] h-[18px] text-[#71717A]" />
@@ -1914,11 +1895,15 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
           {(user?.email?.toLowerCase() === "martin.essie87@gmail.com") && (
             <div>
               <p className="text-[11px] font-medium text-[#9CA3AF] uppercase tracking-wider mb-3 px-1">{t("profile.adminSection")}</p>
-              <div className="rounded-[24px] border border-[#F0F0F0] overflow-hidden shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]">
-                <AccountSettingsRow
-                  label={t("profile.adminPortal")}
+              <div className="rounded-[20px] border border-[#F0F0F0] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
+                <button
                   onClick={() => navigate("/admin/portal")}
-                />
+                  className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
+                  data-testid="button-admin-portal"
+                >
+                  <p className="text-[14px] font-medium text-[#18181B] flex-1">{t("profile.adminPortal")}</p>
+                  <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+                </button>
               </div>
             </div>
           )}
@@ -2158,6 +2143,7 @@ export default function DashboardPage() {
             navigate={navigate}
             subscription={{ status: sub.status, isTrial: sub.isTrial, isActive: sub.isActive, isExpired: sub.isExpired, plan: sub.plan, trialEndsAt: sub.trialEndsAt }}
             setActiveTab={setActiveTab}
+            canonicalStats={apiMatchesQuery.data?.canonicalStats}
           />
         )}
       </main>
