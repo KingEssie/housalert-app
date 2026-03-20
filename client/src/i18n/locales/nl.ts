@@ -816,6 +816,7 @@ export const nl: Record<string, any> = {
     minChars: "Minimaal 20 tekens vereist.",
     saving: "Opslaan...",
     saveLetter: "Brief opslaan",
+    placeholderText: "Schrijf hier je reactiebrief...",
     useDefault: "Standaardbrief bevestigen en gebruiken",
     ph: {
       address: "Adres of titel van de woning",

@@ -496,6 +496,7 @@ export const en: Record<string, any> = {
     minChars: "At least 20 characters required.",
     saving: "Saving...",
     saveLetter: "Save letter",
+    placeholderText: "Write your application letter here...",
     useDefault: "Confirm and use default letter",
     ph: {
       address: "Address or title of the apartment",

@@ -1,0 +1,93 @@
+Simplify the "Reactiebrief" screen drastically.
+
+IMPORTANT:
+This screen should become extremely clean and minimal.
+Remove ALL unnecessary UI and keep ONLY what is essential.
+
+==================================================
+1. REMOVE ALL NON-ESSENTIAL BLOCKS
+==================================================
+
+Delete completely:
+- "Ontbrekende gegevens" warning block
+- "Automatisch invullen" info block
+- Any explanatory text paragraphs
+- Any helper cards or info sections
+
+The screen should NOT educate.
+It should ONLY allow writing a reaction letter.
+
+==================================================
+2. KEEP ONLY THIS STRUCTURE
+==================================================
+
+The screen should now contain ONLY:
+
+1. Title: "Reactiebrief"
+
+2. Placeholders section:
+   - Title: "Placeholders"
+   - Show all placeholder chips:
+     [[ADDRESS]] [[CITY]] [[NAME]] [[EMAIL]]
+     [[PHONE]] [[JOB]] [[INCOME]] [[PRICE]]
+
+   Style:
+   - clean chips
+   - subtle background
+   - small spacing
+   - no heavy borders
+
+3. Text editor:
+   - Large rounded textarea/card
+   - This is the main focus of the screen
+   - Placeholder text inside textarea (if empty)
+
+==================================================
+3. TEXTAREA DESIGN (VERY IMPORTANT)
+==================================================
+
+Make the input feel premium (Airbnb style):
+
+- large rounded corners (16–20px)
+- soft shadow
+- white background
+- comfortable padding
+- readable line-height
+
+This is the PRIMARY element of the screen.
+
+==================================================
+4. BUTTONS (SIMPLIFY)
+==================================================
+
+Keep ONLY ONE primary button:
+
+- "Brief opslaan"
+
+Remove:
+- "Standaardbrief bevestigen en gebruiken"
+
+Optional:
+- keep "reset" as a small subtle text button top-right (not required)
+
+==================================================
+5. SPACING & LAYOUT
+==================================================
+
+- generous spacing between sections
+- no clutter
+- no stacked cards feeling heavy
+- everything should breathe
+
+Think:
+minimal, calm, premium
+
+==================================================
+6. RESULT
+==================================================
+
+At the end, summarize:
+1. what was removed
+2. what remains on screen
+3. how the textarea was styled
+4. which components/files were updated

@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { useTranslation } from "@/i18n";
 import { getDefaultTemplate, PLACEHOLDERS } from "@/lib/application-letter";
-import { RotateCcw, Save, Info, AlertTriangle } from "lucide-react";
+import { RotateCcw } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 
 interface ProfileData {
@@ -78,44 +78,27 @@ export default function ApplicationLetterPage() {
     toast({ title: t("applicationLetter.resetDone"), description: t("applicationLetter.resetDoneDesc") });
   };
 
-  const isModified = template !== (profileData?.application_template || defaultTemplate);
   const isLongEnough = template.trim().length >= 20;
-  const missingFields = !profileData?.occupation || profileData?.monthly_income == null;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <PageHeader title={t("applicationLetter.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-32">
-        <div className="flex flex-col gap-4">
-          {missingFields && !isLoading && (
-            <button
-              onClick={() => navigate("/profile/details")}
-              className="w-full bg-[#FFF8E1] dark:bg-[#3D3520] rounded-2xl p-5 flex gap-3 text-left"
-              data-testid="banner-missing-fields"
-            >
-              <AlertTriangle className="w-5 h-5 text-[#F59E0B] flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="text-[14px] font-medium mb-0.5" style={{ color: "#1F2937" }}>{t("applicationLetter.missingFields")}</p>
-                <p className="text-[13px]" style={{ color: "#6B7280" }}>
-                  {t("applicationLetter.missingFieldsDesc")}
-                </p>
-              </div>
-            </button>
-          )}
+        <div className="flex flex-col gap-6">
 
-          <div className="rounded-2xl p-6 flex gap-3" style={{ backgroundColor: "#F5F7FA" }}>
-            <Info className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "#0D6EFD" }} />
-            <div>
-              <p className="text-[14px] font-medium mb-1" style={{ color: "#1F2937" }}>{t("applicationLetter.autoFill")}</p>
-              <p className="text-[13px]" style={{ color: "#6B7280" }}>
-                {t("applicationLetter.autoFillDesc")}
-              </p>
+          <div>
+            <div className="flex items-center justify-between mb-2.5">
+              <h3 className="text-[14px] font-medium text-[#6B7280]">{t("applicationLetter.placeholders")}</h3>
+              <button
+                onClick={handleReset}
+                className="flex items-center gap-1 text-[13px] text-[#9CA3AF] active:text-[#6B7280] transition-colors"
+                data-testid="button-reset-template"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                {t("applicationLetter.resetDefault")}
+              </button>
             </div>
-          </div>
-
-          <div className="bg-card rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6">
-            <h3 className="text-[16px] font-medium mb-3" style={{ color: "#1F2937" }}>{t("applicationLetter.placeholders")}</h3>
             <div className="flex flex-wrap gap-1.5">
               {PLACEHOLDERS.map((p) => (
                 <button
@@ -136,8 +119,7 @@ export default function ApplicationLetterPage() {
                       setTemplate(template + p.key);
                     }
                   }}
-                  className="text-[11px] font-mono bg-muted px-2 py-1 rounded-md hover-elevate transition-colors"
-                  style={{ color: "#0D6EFD" }}
+                  className="text-[11px] font-mono bg-[#F3F4F6] text-[#0D6EFD] px-2.5 py-1.5 rounded-lg active:bg-[#E5E7EB] transition-colors"
                   title={t(p.labelKey)}
                   data-testid={`placeholder-${p.key.replace(/\[|\]/g, "")}`}
                 >
@@ -148,59 +130,36 @@ export default function ApplicationLetterPage() {
           </div>
 
           {isLoading ? (
-            <div className="bg-card rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
-              <div className="h-4 bg-muted rounded w-32 mb-4" />
-              <div className="h-48 bg-muted rounded" />
+            <div className="rounded-[20px] bg-[#F9FAFB] p-6 animate-pulse">
+              <div className="h-[300px] bg-[#F3F4F6] rounded-2xl" />
             </div>
           ) : (
-            <div className="bg-card rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6">
-              <div className="flex items-center justify-between gap-4 mb-3">
-                <h3 className="text-[16px] font-medium" style={{ color: "#1F2937" }}>{t("applicationLetter.yourLetter")}</h3>
-                <button
-                  onClick={handleReset}
-                  className="flex items-center gap-1 text-[13px] transition-colors"
-                  style={{ color: "#6B7280" }}
-                  data-testid="button-reset-template"
-                >
-                  <RotateCcw className="w-3.5 h-3.5" />
-                  {t("applicationLetter.resetDefault")}
-                </button>
-              </div>
+            <div>
               <textarea
                 value={template}
                 onChange={(e) => setTemplate(e.target.value)}
-                className="w-full min-h-[300px] px-4 py-4 rounded-[20px] border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-foreground placeholder:text-muted-foreground placeholder:font-normal focus:bg-background resize-y leading-relaxed"
+                placeholder={t("applicationLetter.placeholderText")}
+                className="w-full min-h-[340px] px-5 py-5 rounded-[20px] border border-[#F0F0F0] bg-white text-[15px] text-[#18181B] placeholder:text-[#C4C4C4] focus:outline-none focus:border-[#0D6EFD]/30 focus:shadow-[0_0_0_3px_rgba(13,110,253,0.08)] resize-y leading-relaxed shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] transition-all"
                 data-testid="input-template"
               />
-              {!isLongEnough && (
-                <p className="text-[12px] mt-2" style={{ color: "#0D6EFD" }}>{t("applicationLetter.minChars")}</p>
+              {!isLongEnough && template.length > 0 && (
+                <p className="text-[12px] text-[#9CA3AF] mt-2 px-1">{t("applicationLetter.minChars")}</p>
               )}
             </div>
           )}
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-5 z-10" style={{ borderColor: "#E5E7EB" }}>
-        <div className="max-w-xl mx-auto flex flex-col items-center gap-2">
+      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-[#F0F0F0] p-5 z-10">
+        <div className="max-w-xl mx-auto">
           <button
             onClick={() => saveMutation.mutate(template)}
             disabled={!isLongEnough || saveMutation.isPending}
-            className="h-[48px] px-10 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium disabled:opacity-50 flex items-center gap-2 transition-colors"
+            className="w-full h-[52px] rounded-2xl bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[16px] font-medium disabled:opacity-50 transition-colors"
             data-testid="button-save-template"
           >
-            <Save className="w-4.5 h-4.5" />
             {saveMutation.isPending ? t("applicationLetter.saving") : t("applicationLetter.saveLetter")}
           </button>
-          {!profileData?.application_template && (
-            <button
-              onClick={() => saveMutation.mutate(defaultTemplate)}
-              disabled={saveMutation.isPending}
-              className="h-[44px] px-8 rounded-full border border-[#E5E7EB] text-[#1F2937] text-[15px] font-medium hover:bg-[#F5F7FA] transition-colors"
-              data-testid="button-use-default"
-            >
-              {t("applicationLetter.useDefault")}
-            </button>
-          )}
         </div>
       </div>
     </div>

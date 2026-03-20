@@ -809,6 +809,7 @@ export const de: Record<string, any> = {
     minChars: "Mindestens 20 Zeichen erforderlich.",
     saving: "Speichern...",
     saveLetter: "Schreiben speichern",
+    placeholderText: "Schreibe hier dein Anschreiben...",
     useDefault: "Standardschreiben bestätigen und verwenden",
     ph: {
       address: "Adresse oder Titel der Wohnung",
