@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Eye,
   FileText,
@@ -10,6 +11,11 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { useTranslation } from "@/i18n";
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/lib/auth";
+import { apiFetch } from "@/lib/api-base";
+import { ReferralPromoCard } from "@/components/referral-promo-card";
+import { ReferralCodeModal } from "@/components/referral-code-modal";
 
 export const TIP_IDS = [
   "bezichtiging",
@@ -94,9 +100,31 @@ export function getTipConfig(t: (key: string) => string) {
 
 export default function TipsPage({ navigate }: { navigate: (path: string) => void }) {
   const { t } = useTranslation();
+  const { session } = useAuth();
   const guides = getTipConfig(t);
   const readSet = getTipsReadSet();
   const { read, total } = getTipsProgress();
+  const [referralModalOpen, setReferralModalOpen] = useState(false);
+
+  const { data: referralData, isLoading: referralLoading } = useQuery<{
+    code: string;
+    totalInvited: number;
+    pending: number;
+    qualified: number;
+    rewarded: number;
+  }>({
+    queryKey: ["/api/referrals/me"],
+    queryFn: async () => {
+      const token = session?.access_token;
+      if (!token) throw new Error("No token");
+      const res = await apiFetch("/api/referrals/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Failed");
+      return res.json();
+    },
+    enabled: !!session?.access_token,
+  });
 
   return (
     <div className="flex flex-col pb-6">
@@ -112,6 +140,8 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
       </div>
 
       <div className="px-6 flex flex-col gap-5">
+        <ReferralPromoCard onOpen={() => setReferralModalOpen(true)} />
+
         <div className="bg-[#F3F4F6] rounded-2xl p-5 flex items-start gap-4" data-testid="card-tips-intro">
           <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center flex-shrink-0">
             <Lightbulb className="w-5 h-5 text-[#71717A]" />
@@ -153,6 +183,13 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
           })}
         </div>
       </div>
+
+      <ReferralCodeModal
+        open={referralModalOpen}
+        onClose={() => setReferralModalOpen(false)}
+        code={referralData?.code || null}
+        loading={referralLoading}
+      />
     </div>
   );
 }

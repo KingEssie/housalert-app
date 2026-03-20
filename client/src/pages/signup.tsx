@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useHashSearch } from "@/lib/hash-search";
 import { useLocation } from "wouter";
-import { ChevronLeft, User, Mail, Lock, Loader2 } from "lucide-react";
+import { ChevronLeft, User, Mail, Lock, Loader2, Gift } from "lucide-react";
 import { HousAlertLogo } from "@/components/housalert-logo";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -26,6 +26,8 @@ export default function SignupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [referralCode, setReferralCode] = useState("");
+  const [showReferral, setShowReferral] = useState(false);
   const [loading, setLoading] = useState(false);
   const submittingRef = useRef(false);
 
@@ -118,6 +120,30 @@ export default function SignupPage() {
           await saveSearchProfile(userId);
         } catch (err) {
           console.error("[signup] Failed to create search profile:", err);
+        }
+      }
+
+      if (referralCode.trim() && sessionData?.session?.access_token) {
+        try {
+          const refRes = await apiFetch("/api/referrals/apply", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${sessionData.session.access_token}`,
+            },
+            body: JSON.stringify({ code: referralCode.trim() }),
+          });
+          if (refRes.ok) {
+            toast({ title: t("referral.inputSuccess") });
+          } else {
+            const refData = await refRes.json().catch(() => ({ error: "unknown" }));
+            const errorKey = refData.error === "own_code" ? "referral.ownCode"
+              : refData.error === "already_used" ? "referral.alreadyUsed"
+              : "referral.inputError";
+            toast({ title: t(errorKey), variant: "destructive" });
+          }
+        } catch (err) {
+          console.error("[signup] Failed to apply referral code:", err);
         }
       }
 
@@ -217,6 +243,34 @@ export default function SignupPage() {
                 data-testid="input-signup-password"
               />
             </div>
+
+            {!showReferral ? (
+              <button
+                type="button"
+                onClick={() => setShowReferral(true)}
+                className="flex items-center gap-2 text-[13px] text-[#6B7280] hover:text-[#0D6EFD] transition-colors py-1"
+                data-testid="button-show-referral"
+              >
+                <Gift className="w-4 h-4" />
+                {t("referral.inputLabel")}
+              </button>
+            ) : (
+              <div>
+                <div className="relative">
+                  <Gift className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#71717A]" />
+                  <input
+                    type="text"
+                    placeholder={t("referral.inputPlaceholder")}
+                    value={referralCode}
+                    onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+                    className={INPUT_CLS}
+                    data-testid="input-referral-code"
+                    autoCapitalize="characters"
+                  />
+                </div>
+                <p className="text-[12px] text-[#9CA3AF] mt-1 ml-1">{t("referral.inputHelper")}</p>
+              </div>
+            )}
 
             <Button
               type="submit"

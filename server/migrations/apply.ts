@@ -2,6 +2,7 @@ import { log } from "../log";
 import { pool } from "../pg-pool";
 import { createActivationEventsTable } from "../activation-events";
 import { createCancellationFeedbackTable } from "../cancellation-feedback";
+import { ensureReferralSchema } from "../referrals";
 
 export async function runStartupMigration() {
   try {
@@ -21,6 +22,7 @@ export async function runStartupMigration() {
   await createFetchRunsTable();
   await createActivationEventsTable();
   await createCancellationFeedbackTable();
+  await ensureReferralSchema(pool);
 }
 
 async function createUserMatchesTable() {

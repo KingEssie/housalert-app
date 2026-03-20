@@ -1,0 +1,382 @@
+Build a complete referral bonus system for HousAlert, including backend logic, database support, API endpoints, and frontend UI.
+
+IMPORTANT:
+- Do NOT break existing auth, billing, onboarding, or profile flows
+- Keep the current HousAlert design direction
+- Use HousAlert blue where appropriate
+- Build this as a production-ready MVP with clean structure
+- Make it easy to expand later with analytics and reward tracking
+
+==================================================
+GOAL
+==================================================
+
+I want users to be able to invite friends to HousAlert using a personal referral code.
+
+The feature should work like this:
+1. Every user has a unique personal referral code
+2. The user can view and copy that code from the app
+3. A referral promo card is shown in the UI (similar to the Stekkies examples)
+4. Tapping the CTA opens a modal with the referral code and explanation
+5. New users can enter a referral code during signup / onboarding / subscription flow
+6. The system validates the code and links the referred user to the referrer
+7. The referral is stored in the database
+8. The reward logic is prepared properly
+
+For now, build the reward system as a solid MVP:
+- store referral relationships
+- mark referral status
+- prepare fields for reward eligibility and payout
+- actual financial reward application can be done in a safe, simple first version
+
+==================================================
+DESIGN / UX REQUIREMENTS
+==================================================
+
+I want a referral promo card and modal similar in spirit to the attached examples.
+
+### Referral promo card
+Create a reusable promo card component for HousAlert.
+
+Content:
+- small label like: "HELP JE VRIENDEN"
+- short body text like:
+  "Deel jouw persoonlijke kortingscode"
+- CTA button:
+  "Bekijk code"
+
+Visual style:
+- rounded white card
+- subtle border or shadow
+- premium consumer app feel
+- HousAlert styling, not Stekkies colors
+- keep typography clean and modern
+
+Place this promo card in at least:
+- Tips page
+- optionally Home or Profile if the structure supports it cleanly
+
+### Referral modal
+When the user taps "Bekijk code", open a modal.
+
+The modal should include:
+- title: "Help je vrienden"
+- short explanation:
+  "Deel jouw persoonlijke kortingscode met vrienden. Als zij HousAlert gebruiken, krijg jij ook een beloning."
+- a code display box with the user’s personal referral code
+- button: "Kopieer"
+- button: "Sluiten"
+
+Optional extra:
+- support native share if already easy to implement
+- otherwise copy-to-clipboard is enough for MVP
+
+Modal style:
+- centered
+- rounded corners
+- clean backdrop
+- premium spacing
+- mobile friendly
+
+==================================================
+BUSINESS LOGIC (MVP)
+==================================================
+
+Implement the referral system with these rules:
+
+### Personal referral code
+Each user should have a unique referral code.
+
+Requirements:
+- generated automatically for each user
+- stable (does not change every session)
+- reasonably readable
+- unique across all users
+
+Suggested format:
+- based on name + random suffix
+- example: MARTIN87 or HOUS-MARTIN-4821
+- sanitize and uppercase if needed
+
+### New user flow
+A new user should be able to enter a referral code during signup or onboarding.
+
+Add a referral code input in the most logical place:
+- preferably onboarding or account creation flow
+- if that is difficult, add it in a post-signup onboarding step before plan activation
+
+Field behavior:
+- optional field
+- user can skip it
+- validate code on submit
+- show clear success or error feedback
+
+### Validation rules
+- referral code must exist
+- user cannot use their own code
+- user cannot apply more than one referral code
+- referral code should only be applied once per referred user
+- already processed referrals should not be duplicated
+
+### Referral relationship
+When a valid code is used:
+- connect referred user to referrer
+- store this relationship in the database
+- set status for this referral
+
+Suggested statuses:
+- pending
+- qualified
+- rewarded
+- cancelled
+
+For MVP:
+- create the status structure properly
+- at minimum, store as pending or qualified depending on your implementation point
+
+==================================================
+REWARD MODEL
+==================================================
+
+Build the system so rewards can be handled safely.
+
+For MVP, implement data model and status handling for:
+- reward for referrer
+- reward for referred user
+
+Use configurable fields so this can be changed later.
+
+Suggested MVP structure:
+- referral_code_used
+- referrer_user_id
+- referred_user_id
+- referral_status
+- referred_reward_status
+- referrer_reward_status
+- reward_notes or reward_type
+
+If the subscription/payment flow is already integrated cleanly:
+- prepare the logic hook so a reward can be applied after a successful paid subscription
+- but do NOT hack together risky Stripe logic if it may break billing
+- safe structure first, payment automation second
+
+If needed, leave the actual reward application as “prepared but not automatically paid out yet” and clearly mark that in code comments.
+
+==================================================
+DATABASE / BACKEND REQUIREMENTS
+==================================================
+
+Add proper backend and database support.
+
+Implement the necessary schema changes.
+
+Suggested data model (adapt as needed to current structure):
+
+### Users table additions
+- referral_code (unique)
+- referred_by_user_id (nullable)
+- referred_by_code (nullable)
+- referral_applied_at (nullable)
+
+### Referrals table (recommended)
+Create a dedicated referrals table for tracking each referral relationship.
+
+Suggested fields:
+- id
+- referrer_user_id
+- referred_user_id
+- referral_code
+- status
+- created_at
+- updated_at
+- qualified_at
+- rewarded_at
+- reward_type
+- reward_value
+- notes
+
+If there is already an existing pattern for relational event tracking, follow it.
+
+### Backend functions / services
+Implement clean services for:
+- generateReferralCode(user)
+- ensureUserHasReferralCode(userId)
+- validateReferralCode(code, currentUserId)
+- applyReferralCode(currentUserId, code)
+- getReferralSummary(userId)
+- getReferralCode(userId)
+
+==================================================
+API ENDPOINTS
+==================================================
+
+Create backend endpoints as needed.
+
+Suggested endpoints:
+- GET /api/referrals/me
+  returns:
+  - referral code
+  - referral summary
+  - counts if available
+
+- POST /api/referrals/apply
+  body:
+  - code
+  applies referral code for the current user
+
+- GET /api/referrals/summary
+  returns summary for logged-in user:
+  - total invited
+  - pending
+  - rewarded
+  - current code
+
+You can combine endpoints if that fits the current API structure better.
+
+==================================================
+FRONTEND REQUIREMENTS
+==================================================
+
+Implement the frontend fully.
+
+### 1. Referral promo card
+Create reusable component:
+- ReferralPromoCard
+
+Props can include:
+- title/label
+- body text
+- CTA text
+- onOpen
+
+### 2. Referral modal
+Create reusable component:
+- ReferralCodeModal
+
+Show:
+- explanation
+- personal code
+- copy button
+- close button
+
+Behavior:
+- copy code to clipboard
+- show lightweight success feedback like:
+  "Code gekopieerd"
+
+### 3. Referral code input for new users
+Add input field in signup/onboarding flow.
+
+Requirements:
+- optional
+- validation state
+- inline error if invalid
+- success confirmation if valid
+- do not block user if they skip
+
+### 4. Optional referral summary block
+If easy, add a small summary section in Profile or Tips:
+- Jouw code: XXXXX
+- Uitnodigingen: X
+- Status: X pending / X beloond
+
+This is optional for MVP, but nice if cleanly doable.
+
+==================================================
+UI COPY (DUTCH)
+==================================================
+
+Use Dutch copy.
+
+### Promo card
+Label:
+- HELP JE VRIENDEN
+
+Body:
+- Deel jouw persoonlijke kortingscode
+
+CTA:
+- Bekijk code
+
+### Modal
+Title:
+- Help je vrienden
+
+Body:
+- Deel jouw persoonlijke kortingscode met vrienden. Als zij HousAlert gebruiken, krijg jij ook een beloning.
+
+Code label:
+- Jouw kortingscode
+
+Buttons:
+- Kopieer
+- Sluiten
+
+### Referral input
+Label:
+- Heb je een kortingscode?
+
+Placeholder:
+- Vul je code in
+
+Helper:
+- Optioneel
+
+Success:
+- Kortingscode toegevoegd
+
+Error:
+- Ongeldige kortingscode
+- Je kunt je eigen code niet gebruiken
+
+==================================================
+EDGE CASES
+==================================================
+
+Handle these properly:
+- user has no referral code yet -> generate one automatically
+- duplicate referral code collision -> regenerate
+- user tries own code -> reject
+- user already used a code -> reject
+- invalid code -> reject with clean message
+- unauthenticated access to referral endpoints -> reject
+- referral code modal should still work if user opens page before code is loaded (show loading state if needed)
+
+==================================================
+TECHNICAL QUALITY
+==================================================
+
+Please:
+- keep code organized
+- avoid hacky duplicated logic
+- reuse existing auth/session patterns
+- use the app’s current API/data conventions
+- add clear comments where reward logic is prepared for future expansion
+- keep styling consistent with current HousAlert UI
+
+==================================================
+DELIVERABLES
+==================================================
+
+At the end, provide:
+1. which database changes were made
+2. which backend routes/services were added
+3. which frontend components were added
+4. where the referral promo card appears
+5. where the referral code can be entered
+6. how referral validation works
+7. any follow-up recommendations for phase 2
+
+==================================================
+IMPORTANT MVP PRIORITY
+==================================================
+
+If needed, prioritize this order:
+1. database + backend referral code generation
+2. referral promo card
+3. referral modal with copy button
+4. referral code input and validation
+5. referral relationship persistence
+6. optional summary UI
+
+Do not skip the backend foundation.

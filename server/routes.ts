@@ -30,6 +30,7 @@ import { pool as pgPool } from "./pg-pool";
 import { isAdminEmail, getRecentRuns, getRunDetail, getLatestRunCities, getSourceAggregates } from "./admin";
 import { trackEvent as trackActivationEvent, getUserActivationStatus, getActivationFunnel, hasEvent as hasActivationEvent } from "./activation-events";
 import { saveCancellationFeedback, getCancellationStats } from "./cancellation-feedback";
+import { getReferralSummary, applyReferralCode, validateReferralCode } from "./referrals";
 import { initWebPush, sendPushToUser } from "./notifications/push";
 import { sendExpoTestPush } from "./notifications/expo-push";
 import { getSupabaseAdmin } from "./supabase-admin";
@@ -2497,6 +2498,71 @@ export async function registerRoutes(
       });
     } catch (err: any) {
       return res.json({ matches_received: 0, reactions_sent: 0 });
+    }
+  });
+
+  app.get("/api/referrals/me", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { rows: profileRows } = await pgPool.query(
+        "SELECT first_name FROM user_profile_data WHERE user_id = $1",
+        [user.id]
+      );
+      const firstName = profileRows[0]?.first_name || null;
+
+      const summary = await getReferralSummary(pgPool, user.id, firstName);
+      return res.json(summary);
+    } catch (err: any) {
+      log(`[referrals] GET /me error: ${err.message}`, "referral");
+      return res.status(500).json({ error: "Internal error" });
+    }
+  });
+
+  app.post("/api/referrals/apply", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { code } = req.body;
+      if (!code || typeof code !== "string") {
+        return res.status(400).json({ error: "missing_code" });
+      }
+
+      const result = await applyReferralCode(pgPool, user.id, code);
+      if (!result.success) {
+        return res.status(400).json({ error: result.error });
+      }
+
+      return res.json({ success: true });
+    } catch (err: any) {
+      log(`[referrals] POST /apply error: ${err.message}`, "referral");
+      return res.status(500).json({ error: "Internal error" });
+    }
+  });
+
+  app.post("/api/referrals/validate", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { code } = req.body;
+      if (!code || typeof code !== "string") {
+        return res.status(400).json({ valid: false, error: "missing_code" });
+      }
+
+      const result = await validateReferralCode(pgPool, code, user.id);
+      return res.json({ valid: result.valid, error: result.error || null });
+    } catch (err: any) {
+      log(`[referrals] POST /validate error: ${err.message}`, "referral");
+      return res.status(500).json({ valid: false, error: "Internal error" });
     }
   });
 

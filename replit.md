@@ -39,6 +39,16 @@ A mobile-first rental alert application for the German market. Users can sign up
 - **Duplicate prevention**: If buddy email = main user email, only one email is sent
 - **Logging**: All buddy decisions logged with clear skip reasons
 
+## Referral System
+- **Database**: `referrals` table in Replit PG + `referral_code`, `referred_by_code`, `referral_applied_at` columns on `user_profile_data`
+- **Backend**: `server/referrals.ts` — generateReferralCode, ensureUserHasReferralCode, validateReferralCode, applyReferralCode, getReferralSummary
+- **API endpoints**: GET `/api/referrals/me`, POST `/api/referrals/apply`, POST `/api/referrals/validate`
+- **Code format**: `{NAME}{4-digit-random}` e.g. MARTIN4821 — auto-generated from user's first_name with collision handling
+- **Referral statuses**: pending → qualified → rewarded (or cancelled). MVP stores as pending on creation.
+- **Frontend**: `ReferralPromoCard` and `ReferralCodeModal` components. Card placed on Tips page. Referral code input on signup page (optional, collapsible).
+- **i18n**: Dutch + German translations in `referral` namespace
+- **Reward logic**: Data model prepared with reward_type/reward_value fields; actual payout not automated yet (MVP)
+
 ## Brand Assets
 - **Canonical logo**: `attached_assets/5B9D5117-02CB-4353-8AF3-6CCA9249F824_1773839918481.png` (1024x1024 blue house icon with notification dot)
 - **Reusable component**: `client/src/components/housalert-logo.tsx` — `<HousAlertLogo size={28} showText={true} />` renders logo image + "HousAlert" text. All pages use this component.
