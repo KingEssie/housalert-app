@@ -432,6 +432,8 @@ export const en: Record<string, any> = {
       trial: "Trial",
       expired: "Expired",
     },
+    planType: "Subscription",
+    price: "Price",
     startDate: "Start date",
     nextRenewal: "Next renewal",
     endsAt: "Ends on",

@@ -641,6 +641,8 @@ export const nl: Record<string, any> = {
     },
     details: "Details",
     manage: "Beheren",
+    planType: "Abonnement",
+    price: "Prijs",
     startDate: "Startdatum",
     trialEnds: "Proefperiode eindigt",
     nextRenewal: "Volgende verlenging",

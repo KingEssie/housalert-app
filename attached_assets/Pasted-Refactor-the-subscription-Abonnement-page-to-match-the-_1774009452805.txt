@@ -1,0 +1,89 @@
+Refactor the subscription (Abonnement) page to match the same design system used in the Profile screen.
+
+IMPORTANT:
+- Do NOT redesign functionality
+- Only adjust layout and visual hierarchy
+- Match the clean Airbnb-style layout already used in the app
+
+==================================================
+1. MERGE ALL SUBSCRIPTION INFO INTO ONE CARD
+==================================================
+
+Current issue:
+- subscription info is split across multiple sections/cards
+
+Fix:
+- combine ALL subscription info into ONE white card
+
+This card must include:
+- subscription type (e.g. Premium Maandelijks)
+- status (Actief)
+- price (€14,99 / maand)
+- start date
+- next billing date
+- auto-renew status
+- payment method
+
+Design:
+- white background
+- same soft shadow used across the app
+- rounded corners
+- consistent padding
+
+Layout inside card:
+- keep it clean and scannable
+- label (small, light)
+- value (bigger, darker)
+- subtle spacing between rows
+
+==================================================
+2. REMOVE SECOND CARD STRUCTURE (BEHEREN)
+==================================================
+
+Current issue:
+- "Beheren" section is inside a card
+
+Fix:
+- remove the card container completely
+
+==================================================
+3. CONVERT ACTIONS INTO MENU-STYLE ROWS
+==================================================
+
+Convert these actions:
+- Betaalmethode beheren
+- Abonnement opzeggen
+
+Into standard menu rows like Profile screen:
+
+Each row should have:
+- left: icon (black, NO background box)
+- center: title
+- right: chevron
+
+Design rules:
+- same spacing as other menu items
+- no background card
+- subtle divider or spacing between rows
+
+Special:
+- “Abonnement opzeggen” text should be red
+
+==================================================
+4. VISUAL CONSISTENCY
+==================================================
+
+- use same icon style as Profile page
+- same spacing system
+- same typography scale
+- same shadows as other cards
+
+==================================================
+5. RESULT
+==================================================
+
+At the end, summarize:
+1. how the subscription info was merged into one card
+2. which elements are inside that card now
+3. how the "Beheren" section was converted into menu rows
+4. which components/files were updated

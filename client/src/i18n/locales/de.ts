@@ -635,6 +635,8 @@ export const de: Record<string, any> = {
     },
     details: "Details",
     manage: "Verwalten",
+    planType: "Abonnement",
+    price: "Preis",
     startDate: "Startdatum",
     trialEnds: "Testphase endet",
     nextRenewal: "Nächste Verlängerung",
