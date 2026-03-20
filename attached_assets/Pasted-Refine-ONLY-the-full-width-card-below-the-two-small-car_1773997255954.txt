@@ -1,0 +1,119 @@
+Refine ONLY the full-width card below the two small cards on the Profile page.
+
+IMPORTANT:
+- Do NOT redesign the rest of the page
+- Keep the top profile card and the two small cards as they are now
+- Only change the next full-width card below them
+- This is a focused UI/layout refinement
+
+==================================================
+GOAL
+==================================================
+
+I want the next full-width card below:
+- Extra zoekprofiel
+- Vrienden uitnodigen
+
+to become a dedicated notifications card.
+
+This card should feel like an Airbnb-inspired utility card:
+- white background
+- rounded corners
+- subtle premium shadow
+- calm spacing
+- image/icon on the left
+- content on the right
+
+==================================================
+1. CARD CONTENT
+==================================================
+
+This full-width card should now represent:
+- Notificaties
+
+Structure inside the card:
+
+### Left side
+- show an icon for now
+- later this may become an image
+- keep the layout flexible enough to support an image in the future
+
+### Right/content side
+Show:
+- title: Notificaties
+- below that: the two toggle controls
+
+The toggles should be:
+- Push-notificaties
+- E-mailnotificaties
+
+==================================================
+2. LAYOUT
+==================================================
+
+The card should use an Airbnb-inspired content layout:
+
+- icon/image area on the left
+- text + toggles on the right
+- balanced spacing
+- visually clean and premium
+
+Requirements:
+- full width card
+- rounded corners
+- subtle shadow
+- enough padding
+- content vertically aligned nicely
+- not overcrowded
+
+Do NOT make it look like a generic settings list row.
+It should feel like a standalone card.
+
+==================================================
+3. TOGGLE AREA
+==================================================
+
+Below the title “Notificaties”, show the two toggles in a neat stacked layout.
+
+Requirements:
+- Push-notificaties toggle
+- E-mailnotificaties toggle
+- aligned cleanly
+- easy to scan
+- enough vertical spacing between them
+- preserve existing logic/behavior of the toggles
+
+If current toggle logic already exists:
+- reuse it
+- do NOT duplicate notification settings logic
+
+==================================================
+4. ICON / IMAGE AREA
+==================================================
+
+For now:
+- use a clean icon as placeholder
+
+But structure the card so that in the future an image can replace the icon without redesigning the component.
+
+So:
+- reserve a clear left-side visual area
+- keep the composition flexible
+
+==================================================
+5. REMOVE OLD VERSION IF NEEDED
+==================================================
+
+If the current notification settings still appear elsewhere in a duplicated or conflicting way within this top account layout:
+- replace that old presentation with this new card presentation
+- do not keep both versions visible in the same section
+
+==================================================
+6. RESULT
+==================================================
+
+At the end, summarize:
+1. how the notifications card was rebuilt
+2. how the left visual area was structured for future image support
+3. how the existing toggle logic was reused
+4. which files/components were updated

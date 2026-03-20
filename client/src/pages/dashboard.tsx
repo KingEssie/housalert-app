@@ -1742,6 +1742,45 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             </button>
           )}
 
+          <div
+            id="notification-settings"
+            className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] p-5"
+            data-testid="card-notifications"
+          >
+            <div className="flex items-start gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-[#F0F4FF] flex items-center justify-center flex-shrink-0">
+                <Bell className="w-[26px] h-[26px] text-[#0D6EFD]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[16px] font-semibold text-[#18181B] mb-3">{t("profile.notificationSettings")}</p>
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[14px] text-[#18181B]">{t("profile.pushNotifications")}</span>
+                    <button
+                      onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
+                      disabled={notifUpdating === "push_enabled"}
+                      className={`w-[44px] h-[26px] rounded-full relative transition-colors ${notifSettings?.push_enabled ? "bg-[#0D6EFD]" : "bg-[#E5E7EB]"} ${notifUpdating === "push_enabled" ? "opacity-50" : ""}`}
+                      data-testid="toggle-push"
+                    >
+                      <span className={`absolute top-[3px] w-[20px] h-[20px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.push_enabled ? "left-[21px]" : "left-[3px]"}`} />
+                    </button>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[14px] text-[#18181B]">{t("profile.emailNotifications")}</span>
+                    <button
+                      onClick={() => handleToggleNotif("email_enabled", !!notifSettings?.email_enabled)}
+                      disabled={notifUpdating === "email_enabled"}
+                      className={`w-[44px] h-[26px] rounded-full relative transition-colors ${notifSettings?.email_enabled ? "bg-[#0D6EFD]" : "bg-[#E5E7EB]"} ${notifUpdating === "email_enabled" ? "opacity-50" : ""}`}
+                      data-testid="toggle-email"
+                    >
+                      <span className={`absolute top-[3px] w-[20px] h-[20px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.email_enabled ? "left-[21px]" : "left-[3px]"}`} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="rounded-[20px] border border-[#F0F0F0] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
             <button
               onClick={() => navigate("/profile/details")}
@@ -1754,41 +1793,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               <p className="text-[14px] font-medium text-[#18181B] flex-1">{t("profile.personalInfo")}</p>
               <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
             </button>
-            <div className="h-px bg-[#F3F4F6] mx-5" />
-            <div id="notification-settings" className="flex items-center justify-between px-5 py-[14px]">
-              <div className="flex items-center gap-3.5">
-                <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
-                  <Bell className="w-[18px] h-[18px] text-[#71717A]" />
-                </div>
-                <div>
-                  <p className="text-[14px] font-medium text-[#18181B]">{t("profile.notificationSettings")}</p>
-                  <div className="flex items-center gap-3 mt-1.5">
-                    <button
-                      onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
-                      disabled={notifUpdating === "push_enabled"}
-                      className="flex items-center gap-1.5"
-                      data-testid="toggle-push"
-                    >
-                      <div className={`w-[36px] h-[20px] rounded-full relative transition-colors ${notifSettings?.push_enabled ? "bg-[#0D6EFD]" : "bg-[#E5E7EB]"} ${notifUpdating === "push_enabled" ? "opacity-50" : ""}`}>
-                        <span className={`absolute top-[2px] w-[16px] h-[16px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.push_enabled ? "left-[18px]" : "left-[2px]"}`} />
-                      </div>
-                      <span className="text-[11px] text-[#9CA3AF]">Push</span>
-                    </button>
-                    <button
-                      onClick={() => handleToggleNotif("email_enabled", !!notifSettings?.email_enabled)}
-                      disabled={notifUpdating === "email_enabled"}
-                      className="flex items-center gap-1.5"
-                      data-testid="toggle-email"
-                    >
-                      <div className={`w-[36px] h-[20px] rounded-full relative transition-colors ${notifSettings?.email_enabled ? "bg-[#0D6EFD]" : "bg-[#E5E7EB]"} ${notifUpdating === "email_enabled" ? "opacity-50" : ""}`}>
-                        <span className={`absolute top-[2px] w-[16px] h-[16px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.email_enabled ? "left-[18px]" : "left-[2px]"}`} />
-                      </div>
-                      <span className="text-[11px] text-[#9CA3AF]">E-mail</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
             <div className="h-px bg-[#F3F4F6] mx-5" />
             <button
               onClick={() => navigate("/application-letter")}
