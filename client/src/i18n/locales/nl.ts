@@ -250,6 +250,7 @@ export const nl: Record<string, any> = {
     emailNotifications: "E-mail notificaties",
     adminSection: "Admin",
     adminPortal: "Admin Portal",
+    adminMode: "Naar adminmodus",
     copyButton: "Kopiëren",
     editButton: "Bewerken",
     letterCopied: "Reactiebrief gekopieerd",

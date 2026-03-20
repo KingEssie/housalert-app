@@ -48,6 +48,8 @@ import {
   Lightbulb,
   Check,
   MoreVertical,
+  Shield,
+  HelpCircle,
 } from "lucide-react";
 import { TaskModal, PrepTaskModal } from "@/components/profile-strength";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
@@ -1781,149 +1783,150 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             </div>
           </div>
 
-          <div className="rounded-[20px] border border-[#F0F0F0] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
+          <div className="flex flex-col">
             <button
               onClick={() => navigate("/profile/details")}
-              className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
+              className="w-full flex items-center gap-3.5 px-1 py-[15px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
               data-testid="button-personal-info"
             >
               <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
                 <User className="w-[18px] h-[18px] text-[#71717A]" />
               </div>
-              <p className="text-[14px] font-medium text-[#18181B] flex-1">{t("profile.personalInfo")}</p>
+              <p className="text-[15px] font-medium text-[#18181B] flex-1">{t("profile.personalInfo")}</p>
               <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
             </button>
-            <div className="h-px bg-[#F3F4F6] mx-5" />
+            <div className="h-px bg-[#F0F0F0] ml-[52px]" />
             <button
               onClick={() => navigate("/application-letter")}
-              className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
+              className="w-full flex items-center gap-3.5 px-1 py-[15px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
               data-testid="button-reaction-letter"
             >
               <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
                 <FileText className="w-[18px] h-[18px] text-[#71717A]" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[14px] font-medium text-[#18181B]">{t("profile.reactionLetter2")}</p>
+                <p className="text-[15px] font-medium text-[#18181B]">{t("profile.reactionLetter2")}</p>
                 {letterPreview && <p className="text-[12px] text-[#9CA3AF] mt-0.5 truncate">{letterPreview}...</p>}
               </div>
               <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
             </button>
-            <div className="h-px bg-[#F3F4F6] mx-5" />
+            <div className="h-px bg-[#F0F0F0] ml-[52px]" />
             <button
               onClick={() => navigate("/profile/edit/search_buddy_email")}
-              className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
+              className="w-full flex items-center gap-3.5 px-1 py-[15px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
               data-testid="button-zoekbuddy"
             >
               <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
                 <Users className="w-[18px] h-[18px] text-[#71717A]" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[14px] font-medium text-[#18181B]">{t("profile.searchBuddyMenu")}</p>
+                <p className="text-[15px] font-medium text-[#18181B]">{t("profile.searchBuddyMenu")}</p>
                 {pd?.search_buddy_email && <p className="text-[12px] text-[#9CA3AF] mt-0.5 truncate">{pd.search_buddy_email}</p>}
               </div>
               <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
             </button>
-            <div className="h-px bg-[#F3F4F6] mx-5" />
+            <div className="h-px bg-[#F0F0F0] ml-[52px]" />
             <button
               onClick={() => navigate("/account/subscription")}
-              className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
+              className="w-full flex items-center gap-3.5 px-1 py-[15px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
               data-testid="button-subscription"
             >
               <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
                 <Crown className="w-[18px] h-[18px] text-[#71717A]" />
               </div>
-              <p className="text-[14px] font-medium text-[#18181B] flex-1">{t("profile.subscriptionPlan")}</p>
+              <p className="text-[15px] font-medium text-[#18181B] flex-1">{t("profile.subscriptionPlan")}</p>
               <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full flex-shrink-0 ${subStatusColor}`} data-testid="text-subscription-status">
                 {subStatusLabel}
               </span>
             </button>
-          </div>
-
-          <div className="rounded-[20px] border border-[#F0F0F0] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
+            <div className="h-px bg-[#F0F0F0] ml-[52px]" />
             <button
               onClick={() => setShowLangSheet(true)}
-              className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
+              className="w-full flex items-center gap-3.5 px-1 py-[15px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
               data-testid="button-language"
             >
               <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
                 <Globe className="w-[18px] h-[18px] text-[#71717A]" />
               </div>
-              <p className="text-[14px] font-medium text-[#18181B] flex-1">{t("profile.language")}</p>
+              <p className="text-[15px] font-medium text-[#18181B] flex-1">{t("profile.language")}</p>
               <span className="text-[13px] text-[#9CA3AF] mr-1">{currentLangLabel}</span>
               <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
             </button>
           </div>
 
-          <div>
-            <p className="text-[11px] font-medium text-[#9CA3AF] uppercase tracking-wider mb-3 px-1">{t("profile.support")}</p>
-            <div className="rounded-[20px] border border-[#F0F0F0] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
-              <button
-                onClick={() => navigate("/datenschutz")}
-                className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
-                data-testid="button-privacy"
-              >
-                <p className="text-[14px] text-[#18181B] flex-1">{t("profile.privacy")}</p>
-                <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
-              </button>
-              <div className="h-px bg-[#F3F4F6] mx-5" />
-              <button
-                onClick={() => { window.location.href = "mailto:support@housalert.com"; }}
-                className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
-                data-testid="button-help-support"
-              >
-                <p className="text-[14px] text-[#18181B] flex-1">{t("profile.helpSupport")}</p>
-                <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
-              </button>
-              <div className="h-px bg-[#F3F4F6] mx-5" />
-              <button
-                onClick={() => navigate("/terms")}
-                className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
-                data-testid="button-terms"
-              >
-                <p className="text-[14px] text-[#18181B] flex-1">{t("profile.terms")}</p>
-                <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
-              </button>
-            </div>
+          <div className="flex flex-col">
+            <p className="text-[11px] font-medium text-[#9CA3AF] uppercase tracking-wider mb-1 px-1">{t("profile.support")}</p>
+            <button
+              onClick={() => navigate("/datenschutz")}
+              className="w-full flex items-center gap-3.5 px-1 py-[15px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
+              data-testid="button-privacy"
+            >
+              <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
+                <Shield className="w-[18px] h-[18px] text-[#71717A]" />
+              </div>
+              <p className="text-[15px] font-medium text-[#18181B] flex-1">{t("profile.privacy")}</p>
+              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+            </button>
+            <div className="h-px bg-[#F0F0F0] ml-[52px]" />
+            <button
+              onClick={() => { window.location.href = "mailto:support@housalert.com"; }}
+              className="w-full flex items-center gap-3.5 px-1 py-[15px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
+              data-testid="button-help-support"
+            >
+              <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
+                <HelpCircle className="w-[18px] h-[18px] text-[#71717A]" />
+              </div>
+              <p className="text-[15px] font-medium text-[#18181B] flex-1">{t("profile.helpSupport")}</p>
+              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+            </button>
+            <div className="h-px bg-[#F0F0F0] ml-[52px]" />
+            <button
+              onClick={() => navigate("/terms")}
+              className="w-full flex items-center gap-3.5 px-1 py-[15px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
+              data-testid="button-terms"
+            >
+              <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
+                <FileText className="w-[18px] h-[18px] text-[#71717A]" />
+              </div>
+              <p className="text-[15px] font-medium text-[#18181B] flex-1">{t("profile.terms")}</p>
+              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+            </button>
           </div>
 
-          <div className="rounded-[20px] border border-[#F0F0F0] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
+          <div className="flex flex-col">
             <button
               onClick={() => setShowLogoutConfirm(true)}
               disabled={signingOut}
-              className={`w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
+              className={`w-full flex items-center gap-3.5 px-1 py-[15px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
               data-testid="button-logout"
             >
-              <LogOut className="w-[18px] h-[18px] text-[#EF4444]" />
-              <p className="text-[14px] font-medium text-[#EF4444] flex-1">{signingOut ? t("profile.signingOut") : t("profile.logout")}</p>
+              <LogOut className="w-[18px] h-[18px] text-[#EF4444] ml-[10px]" />
+              <p className="text-[15px] font-medium text-[#EF4444] flex-1">{signingOut ? t("profile.signingOut") : t("profile.logout")}</p>
             </button>
-            <div className="h-px bg-[#F3F4F6] mx-5" />
+            <div className="h-px bg-[#F0F0F0] ml-[52px]" />
             <button
               onClick={() => navigate("/account/delete")}
-              className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
+              className="w-full flex items-center gap-3.5 px-1 py-[15px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
               data-testid="button-delete-account"
             >
-              <Trash2 className="w-[18px] h-[18px] text-[#71717A]" />
-              <p className="text-[14px] font-medium text-[#9CA3AF] flex-1">{t("profile.deleteAccount")}</p>
+              <Trash2 className="w-[18px] h-[18px] text-[#71717A] ml-[10px]" />
+              <p className="text-[15px] font-medium text-[#9CA3AF] flex-1">{t("profile.deleteAccount")}</p>
             </button>
           </div>
 
-          {(user?.email?.toLowerCase() === "martin.essie87@gmail.com") && (
-            <div>
-              <p className="text-[11px] font-medium text-[#9CA3AF] uppercase tracking-wider mb-3 px-1">{t("profile.adminSection")}</p>
-              <div className="rounded-[20px] border border-[#F0F0F0] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
-                <button
-                  onClick={() => navigate("/admin/portal")}
-                  className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
-                  data-testid="button-admin-portal"
-                >
-                  <p className="text-[14px] font-medium text-[#18181B] flex-1">{t("profile.adminPortal")}</p>
-                  <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
-                </button>
-              </div>
-            </div>
-          )}
+          {(user?.email?.toLowerCase() === "martin.essie87@gmail.com") && <div className="h-16" />}
         </div>
       </div>
+
+      {(user?.email?.toLowerCase() === "martin.essie87@gmail.com") && (
+        <button
+          onClick={() => navigate("/admin/portal")}
+          className="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 bg-[#18181B] text-white text-[14px] font-medium px-6 py-3 rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.16)] active:scale-95 transition-transform"
+          data-testid="button-admin-portal"
+        >
+          {t("profile.adminMode")}
+        </button>
+      )}
 
       {showPhotoSheet && (
         <ProfilePhotoSheet

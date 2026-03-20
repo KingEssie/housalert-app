@@ -1,0 +1,103 @@
+Refine the lower part of the Profile page to match Airbnb’s settings-list style more closely.
+
+IMPORTANT:
+- Do NOT redesign the top profile card or the cards above
+- Only update the lower menu section and admin mode entry
+- Keep existing navigation/actions working
+- This is a focused UI/layout refinement
+- Keep HousAlert blue as the primary accent where needed
+
+==================================================
+1. MENU ITEMS — REMOVE CARD CONTAINERS
+==================================================
+
+The remaining menu items below the cards should no longer appear inside large white card containers with shadows.
+
+I want them to look more like Airbnb’s settings list:
+- directly on the page background
+- no big card wrapper around grouped menu sections
+- clean vertical list
+- icon on the left
+- text next to the icon
+- chevron on the right
+
+Requirements:
+- remove the large rounded/shadowed container look around these menu groups
+- keep the rows clean and well spaced
+- use subtle separators between rows where needed
+- maintain a premium, airy layout
+- avoid clutter
+
+The rows should feel like native settings rows, not like cards.
+
+==================================================
+2. MENU ITEM STYLE
+==================================================
+
+For each menu row:
+- icon on the left
+- menu item text next to it
+- chevron on the far right
+
+Use clean outline icons.
+Keep typography readable and premium.
+Use the Airbnb screenshot as the style reference:
+- simple
+- spacious
+- elegant
+- no boxed card section feel
+
+==================================================
+3. ADMIN BUTTON — FLOATING MODE BUTTON
+==================================================
+
+The admin action should no longer be shown as a normal menu row / section.
+
+Remove the current visible admin menu card/section from the regular list.
+
+Instead:
+- show a floating black pill button at the bottom of the Profile page
+- similar to Airbnb’s floating “Naar hostmodus” button
+- this button should stay floating near the bottom while viewing the page
+- only show it for admin users
+
+Button behavior:
+- opens the admin portal / admin mode as the current admin action does now
+
+Button style:
+- black/dark background
+- white text
+- pill shape
+- subtle shadow
+- centered near the bottom
+- premium and minimal
+
+Suggested label:
+- Naar adminmodus
+or
+- Adminmodus
+
+IMPORTANT:
+- only visible for users with admin role
+- hidden for non-admin users
+
+==================================================
+4. KEEP FUNCTIONALITY
+==================================================
+
+- keep all menu actions working
+- keep admin portal logic working
+- do not remove any real functionality
+- only change presentation/layout
+
+==================================================
+5. RESULT
+==================================================
+
+At the end, summarize:
+1. how the menu list was converted from card containers to Airbnb-style rows
+2. which menu sections were visually simplified
+3. how the admin section was removed from the list
+4. how the floating admin button was implemented
+5. how admin-only visibility is handled
+6. which files/components were updated

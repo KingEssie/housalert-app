@@ -244,6 +244,7 @@ export const de: Record<string, any> = {
     emailNotifications: "E-Mail-Benachrichtigungen",
     adminSection: "Admin",
     adminPortal: "Admin Portal",
+    adminMode: "Zum Adminmodus",
     copyButton: "Kopieren",
     editButton: "Bearbeiten",
     letterCopied: "Antwortschreiben kopiert",

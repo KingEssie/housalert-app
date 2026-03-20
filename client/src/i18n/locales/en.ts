@@ -201,6 +201,7 @@ export const en: Record<string, any> = {
     emailNotifications: "Email notifications",
     adminSection: "Admin",
     adminPortal: "Admin Portal",
+    adminMode: "Admin mode",
     copyButton: "Copy",
     editButton: "Edit",
     letterCopied: "Application letter copied",
