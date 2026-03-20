@@ -1073,17 +1073,34 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
       .then((r) => r.json())
       .then((data) => {
         if (data.applied && Array.isArray(data.applied)) {
-          const existing = safeGetSet(MATCH_APPLIED_KEY);
+          const serverApplied = new Set<string>(data.applied);
+          const localApplied = safeGetSet(MATCH_APPLIED_KEY);
+
           let changed = false;
           for (const id of data.applied) {
-            if (!existing.has(id)) {
-              existing.add(id);
+            if (!localApplied.has(id)) {
+              localApplied.add(id);
               changed = true;
             }
           }
           if (changed) {
-            safeSetSet(MATCH_APPLIED_KEY, existing);
+            safeSetSet(MATCH_APPLIED_KEY, localApplied);
             setRefreshKey((k) => k + 1);
+          }
+
+          for (const localId of localApplied) {
+            if (!serverApplied.has(localId)) {
+              apiFetch(`/api/matches/${localId}/applied`, {
+                method: "PATCH",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify({ applied: true }),
+              }).then(() => {
+                queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
+              }).catch(() => {});
+            }
           }
         }
       })
@@ -1420,7 +1437,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
 }
 
 
-function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canonicalStats }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null }; setActiveTab: (tab: TabKey) => void; canonicalStats?: CanonicalStats }) {
+function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canonicalStats, computedAppliedCount }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null }; setActiveTab: (tab: TabKey) => void; canonicalStats?: CanonicalStats; computedAppliedCount: number }) {
   const [signingOut, setSigningOut] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [showPhotoSheet, setShowPhotoSheet] = useState(false);
@@ -1732,7 +1749,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                 </div>
                 <div className="h-px bg-[#F0F0F0]" />
                 <div className="py-2.5" data-testid="stat-applications-sent">
-                  <p className="text-[22px] font-bold text-[#222222] leading-tight">{canonicalStats?.applied ?? 0}</p>
+                  <p className="text-[22px] font-bold text-[#222222] leading-tight">{computedAppliedCount}</p>
                   <p className="text-[13px] font-medium text-[#222222] mt-0.5 leading-snug">{t("profile.applicationsSent")}</p>
                 </div>
               </div>
@@ -2233,6 +2250,11 @@ export default function DashboardPage() {
   const matchCount = apiMatchesQuery.data?.totalCount ?? 0;
   const newCount = apiMatchesQuery.data?.newCount ?? 0;
 
+  const allMatches = apiMatchesQuery.data?.matches ?? [];
+  const computedAppliedCount = allMatches.length > 0
+    ? allMatches.filter(m => getMatchTab(m) === "gereageerd").length
+    : (apiMatchesQuery.data?.canonicalStats?.applied ?? 0);
+
   const emailNeedsVerification = user?.user_metadata?.email_needs_verification === true;
 
   return (
@@ -2296,6 +2318,7 @@ export default function DashboardPage() {
             subscription={{ status: sub.status, isTrial: sub.isTrial, isActive: sub.isActive, isExpired: sub.isExpired, plan: sub.plan, trialEndsAt: sub.trialEndsAt }}
             setActiveTab={setActiveTab}
             canonicalStats={apiMatchesQuery.data?.canonicalStats}
+            computedAppliedCount={computedAppliedCount}
           />
         )}
       </main>

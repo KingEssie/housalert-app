@@ -1,0 +1,111 @@
+Fix the inconsistency between the Matches “Gereageerd” view and the Profile statistics.
+
+Current bug:
+- Matches screen shows 4 reacted listings
+- Profile statistics still shows 0 “Reacties verstuurd”
+
+This should NEVER diverge.
+
+==================================================
+1. CREATE ONE SOURCE OF TRUTH
+==================================================
+
+There must be a single canonical source of truth for “reacted listings”.
+
+The action “Kopieer en reageer” must write to ONE unique reacted-listings store/table/source using:
+
+- userId
+- stable listing key
+
+Both of these must read from that same source:
+- Matches > Gereageerd tab
+- Profile stat > Reacties verstuurd
+
+Do NOT let one screen use client/local/UI-only state while the other uses backend data.
+
+==================================================
+2. DEFINE STABLE UNIQUE REACTION KEY
+==================================================
+
+Use a robust stable key for reacted listings.
+
+Preferred:
+- source + external listing id
+
+If needed:
+- create a normalized stable listing reaction key from source + listing external id
+- do NOT rely on temporary UI indexes or array positions
+
+Deduplication rule:
+- one user can react to a given listing only once for counting purposes
+- repeated taps on “Kopieer en reageer” for the same listing must NOT increase the count again
+
+==================================================
+3. MAKE BOTH SCREENS READ THE SAME DATA
+==================================================
+
+Matches > Gereageerd:
+- must show listings from the canonical reacted-listings source
+
+Profile stat > Reacties verstuurd:
+- must show the COUNT of unique reacted listings from that exact same source
+
+Result:
+If Matches shows 4 reacted listings, Profile must also show 4.
+
+==================================================
+4. BACKFILL / MIGRATION IF NEEDED
+==================================================
+
+If the Matches screen is currently using an older reaction marker/status source,
+but the Profile stat uses a new reacted-listings source,
+then migrate/backfill existing reacted items so both become consistent.
+
+If older reaction data exists:
+- convert/import it into the canonical reacted source
+- avoid duplicates during migration
+
+==================================================
+5. AUDIT THE “KOPIEER EN REAGEER” FLOW
+==================================================
+
+Check the full flow for the “Kopieer en reageer” action.
+
+Ensure it:
+- writes the reacted record once
+- uses stable listing identity
+- updates caches/queries correctly
+- invalidates/refetches both Matches reacted list and Profile stats
+
+==================================================
+6. TEST CASES
+==================================================
+
+Add/update tests for:
+
+A. user reacts to one new listing
+=> Matches reacted count = 1
+=> Profile reacted stat = 1
+
+B. user reacts again to same listing
+=> Matches reacted count still = 1
+=> Profile reacted stat still = 1
+
+C. user reacts to 4 unique listings
+=> Matches reacted count = 4
+=> Profile reacted stat = 4
+
+D. existing legacy reacted data is present
+=> migration/backfill keeps both screens aligned
+
+==================================================
+7. RESULT
+==================================================
+
+At the end, summarize:
+1. what source Matches was using before
+2. what source Profile stat was using before
+3. what the new single source of truth is
+4. how deduplication now works
+5. whether any migration/backfill was required
+6. which files/components/queries/routes were updated

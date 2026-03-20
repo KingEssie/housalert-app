@@ -958,25 +958,25 @@ export async function registerRoutes(
 
       if (error) {
         console.error("[matches] PATCH applied error:", error.message);
-        return res.status(500).json({ error: error.message });
       }
-      if (!data || data.length === 0) return res.status(404).json({ error: "Match not found" });
+
+      const listingMeta: any = { user_id: user.id, listing_id: matchListingId };
+      try {
+        const { data: listing } = await supabase.from("listings").select("title, city, price, source, url").eq("id", matchListingId).single();
+        if (listing) {
+          listingMeta.listing_title = listing.title || null;
+          listingMeta.listing_city = listing.city || null;
+          listingMeta.listing_price = listing.price || null;
+          listingMeta.listing_source = listing.source || null;
+          listingMeta.listing_url = listing.url || null;
+        }
+      } catch {}
 
       if (applied) {
-        const listingMeta: any = { user_id: user.id, listing_id: matchListingId };
-        try {
-          const { data: listing } = await supabase.from("listings").select("title, city, price, source, url").eq("id", matchListingId).single();
-          if (listing) {
-            listingMeta.listing_title = listing.title || null;
-            listingMeta.listing_city = listing.city || null;
-            listingMeta.listing_price = listing.price || null;
-            listingMeta.listing_source = listing.source || null;
-            listingMeta.listing_url = listing.url || null;
-          }
-        } catch {}
         try {
           await upsertUserMatch(listingMeta);
           await markApplied(user.id, matchListingId, true);
+          console.log(`[matches] canonical applied sync OK for user=${user.id.substring(0, 8)}... listing=${matchListingId.substring(0, 8)}...`);
         } catch (pgErr: any) {
           console.error("[matches] canonical applied sync error:", pgErr.message);
         }
@@ -984,7 +984,10 @@ export async function registerRoutes(
         markApplied(user.id, matchListingId, false).catch(() => {});
       }
 
-      return res.json(data[0]);
+      if (data && data.length > 0) {
+        return res.json(data[0]);
+      }
+      return res.json({ listing_id: matchListingId, applied });
     } catch (err: any) {
       console.error("[matches] PATCH applied error:", err.message);
       return res.status(500).json({ error: err.message });
@@ -999,16 +1002,23 @@ export async function registerRoutes(
       const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
-      const { data, error } = await supabase
-        .from("matches")
-        .select("listing_id")
-        .eq("user_id", user.id)
-        .eq("applied", true);
+      const [supaResult, pgResult] = await Promise.allSettled([
+        supabase
+          .from("matches")
+          .select("listing_id")
+          .eq("user_id", user.id)
+          .eq("applied", true),
+        pgPool.query("SELECT listing_id FROM user_matches WHERE user_id = $1 AND applied = true", [user.id]),
+      ]);
 
-      if (error) return res.status(500).json({ error: error.message });
-
-      const listingIds = (data ?? []).map((m: any) => m.listing_id);
-      return res.json({ applied: listingIds });
+      const appliedSet = new Set<string>();
+      if (supaResult.status === "fulfilled" && supaResult.value.data) {
+        for (const m of supaResult.value.data) appliedSet.add(m.listing_id);
+      }
+      if (pgResult.status === "fulfilled" && pgResult.value.rows) {
+        for (const r of pgResult.value.rows) appliedSet.add(r.listing_id);
+      }
+      return res.json({ applied: Array.from(appliedSet) });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
     }
