@@ -1,0 +1,93 @@
+Refine ONLY the two square cards on the Profile screen:
+
+- Extra zoekprofiel
+- Vrienden uitnodigen
+
+IMPORTANT:
+- Do NOT redesign the rest of the page
+- Keep the current square card shape
+- Keep the current illustrations
+- Restore the card titles so they are clearly visible again
+
+==================================================
+1. CURRENT ISSUE
+==================================================
+
+The illustrations have become too large, and now the titles are effectively gone / pushed out of the visible layout.
+
+This is NOT intended.
+
+The user must clearly see:
+- the illustration
+- the title
+at the same time inside each square card
+
+==================================================
+2. FIX THE CARD LAYOUT
+==================================================
+
+Adjust the internal layout of both square cards so that:
+
+- the illustration becomes slightly smaller than it is now
+- the title is visible again
+- the title is positioned clearly below the illustration
+- the title is NOT stuck at the very bottom edge
+- there is balanced spacing above and below the title
+
+Target composition inside each square card:
+
+[ illustration ]
+[ moderate spacing ]
+[ title clearly visible ]
+[ small bottom spacing ]
+
+==================================================
+3. TITLE REQUIREMENTS
+==================================================
+
+Restore these titles visibly:
+
+- Extra zoekprofiel
+- Vrienden uitnodigen
+
+Requirements:
+- centered horizontally
+- readable
+- not cut off
+- not too low
+- not overlapping with the image
+- enough bottom padding so it does not feel glued to the bottom
+
+==================================================
+4. IMAGE REQUIREMENTS
+==================================================
+
+Keep the illustrations relatively large, but reduce them enough so the title fits properly.
+
+Requirements:
+- slightly smaller than current version
+- still visually dominant
+- still centered
+- preserve aspect ratio
+- no distortion
+
+==================================================
+5. KEEP
+==================================================
+
+- keep square card proportions
+- keep rounded corners
+- keep current shadows
+- keep current illustrations
+- do not change functionality
+- only rebalance image/text layout inside the two cards
+
+==================================================
+6. RESULT
+==================================================
+
+At the end, summarize:
+1. how much the illustrations were reduced
+2. how the titles were restored and repositioned
+3. how the spacing inside the cards was balanced
+4. which files/components were updated

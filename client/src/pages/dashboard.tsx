@@ -1742,13 +1742,11 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={() => navigate("/dashboard/searches/new")}
-              className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] p-3 flex flex-col items-center text-center active:scale-[0.98] transition-transform aspect-square overflow-hidden"
+              className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] p-3 flex flex-col items-center justify-center text-center active:scale-[0.98] transition-transform aspect-square overflow-hidden"
               data-testid="button-extra-profile"
             >
-              <div className="flex-1 flex items-center justify-center">
-                <img src={extraSearchProfileImg} alt="" className="max-w-[90%] max-h-full w-auto h-auto object-contain" loading="lazy" />
-              </div>
-              <p className="text-[13px] font-semibold text-[#18181B] leading-snug mt-1 pb-0.5">{t("profile.extraProfile")}</p>
+              <img src={extraSearchProfileImg} alt="" className="max-w-[85%] max-h-[65%] w-auto h-auto object-contain" loading="lazy" />
+              <p className="text-[13px] font-semibold text-[#18181B] leading-snug mt-2">{t("profile.extraProfile")}</p>
             </button>
 
             <button
@@ -1764,13 +1762,11 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                   toast({ title: t("referral.copyFailed"), variant: "destructive" });
                 }
               }}
-              className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] p-3 flex flex-col items-center text-center active:scale-[0.98] transition-transform aspect-square overflow-hidden"
+              className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] p-3 flex flex-col items-center justify-center text-center active:scale-[0.98] transition-transform aspect-square overflow-hidden"
               data-testid="button-invite-friends"
             >
-              <div className="flex-1 flex items-center justify-center">
-                <img src={inviteFriendsImg} alt="" className="max-w-[90%] max-h-full w-auto h-auto object-contain" loading="lazy" />
-              </div>
-              <p className="text-[13px] font-semibold text-[#18181B] leading-snug mt-1 pb-0.5">{t("profile.inviteFriends")}</p>
+              <img src={inviteFriendsImg} alt="" className="max-w-[85%] max-h-[65%] w-auto h-auto object-contain" loading="lazy" />
+              <p className="text-[13px] font-semibold text-[#18181B] leading-snug mt-2">{t("profile.inviteFriends")}</p>
             </button>
           </div>
 
