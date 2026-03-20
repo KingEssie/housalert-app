@@ -1123,7 +1123,11 @@ export const nl: Record<string, any> = {
     title: "Persoonlijke gegevens",
     loadFailed: "Gegevens konden niet worden geladen.",
     add: "Toevoegen",
+    edit: "Aanpassen",
+    notProvided: "Niet verstrekt",
     email: "E-mailadres",
+    saveAndContinue: "Opslaan en doorgaan",
+    cancel: "Annuleren",
   },
 
   paymentMethod: {

@@ -1,0 +1,164 @@
+Redesign the “Persoonlijke informatie” page to match Airbnb’s structure and inline editing behavior much more closely.
+
+IMPORTANT:
+- Do NOT create separate edit pages for these fields anymore
+- Keep everything on the same “Persoonlijke informatie” page
+- This is a UI and interaction redesign of the personal information screen
+- Reuse existing data, validation, and save logic where possible
+- Do NOT duplicate backend logic
+
+==================================================
+GOAL
+==================================================
+
+I want the “Persoonlijke informatie” page to behave much more like Airbnb:
+
+1. The page should use a clean Airbnb-style personal information layout
+2. When a user clicks “Aanpassen” or “Toevoegen”, the field should expand inline on the SAME page
+3. The input fields should appear directly below that section
+4. A button like “Opslaan en doorgaan” should appear underneath
+5. Do NOT navigate to a separate edit page anymore
+
+==================================================
+1. PAGE LAYOUT — AIRBNB STYLE
+==================================================
+
+Redesign the page structure so it feels like Airbnb’s personal information page.
+
+Requirements:
+- title at the top: “Persoonlijke informatie”
+- clean white page background
+- no heavy card layout around the full page
+- each row is a simple section with:
+  - field title on the left
+  - current value or “Niet verstrekt” underneath
+  - action on the right:
+    - “Aanpassen”
+    - or “Toevoegen”
+- subtle divider lines between sections
+- generous spacing
+- clean typography
+- calm premium feel
+
+Use the Airbnb screenshots as layout inspiration.
+
+==================================================
+2. INLINE EXPAND / COLLAPSE EDITING
+==================================================
+
+When the user clicks on a field action like:
+- Aanpassen
+- Toevoegen
+
+Do NOT navigate away.
+
+Instead:
+- expand that section inline on the same page
+- show the relevant input fields directly below that row
+- show the save button directly below those inputs
+
+Example:
+If the user clicks “Aanpassen” on name,
+the section opens on the same page and reveals:
+- Voornaam input
+- Achternaam input
+- button: “Opslaan en doorgaan”
+
+==================================================
+3. ONLY ONE SECTION OPEN AT A TIME
+==================================================
+
+Behavior:
+- only one personal info section can be expanded at once
+- opening a new one closes the previous one
+- clicking “Annuleren” collapses the open section
+
+This should feel controlled and clean.
+
+==================================================
+4. FIELDS TO SUPPORT
+==================================================
+
+Apply this inline expandable editing pattern to the relevant personal info fields, such as:
+- Officiële naam
+- Gewenste voornaam
+- Schermnaam / profielnaam if applicable
+- Telefoonnummer
+- E-mailadres (if editable in current logic)
+- Woonadres
+- Postadres
+- Noodcontact
+- Beroep
+- Maandelijks inkomen
+- other relevant profile fields already present
+
+IMPORTANT:
+- reuse the existing save/update logic for each field where possible
+- do not break current data model
+- do not invent unsupported fields
+
+==================================================
+5. INLINE FORM STYLE
+==================================================
+
+When a section expands, the inline editor should look premium and clear.
+
+Requirements:
+- inputs directly below the selected row
+- rounded input fields
+- clean labels
+- enough spacing between inputs
+- button below:
+  “Opslaan en doorgaan”
+- optional “Annuleren” action on the right in the row header, like Airbnb
+
+The expanded block should feel like a natural continuation of the selected row, not like a separate page.
+
+==================================================
+6. SAVE BEHAVIOR
+==================================================
+
+When the user saves:
+- persist the data using existing logic
+- collapse the section after successful save
+- show the updated value in the row
+- keep the user on the same page
+- do not navigate away
+
+If validation fails:
+- show inline validation feedback
+- keep the section open
+
+==================================================
+7. REMOVE / BYPASS OLD EDIT PAGE FLOW
+==================================================
+
+The current behavior of navigating to a separate page for editing should be removed or bypassed for this screen.
+
+When interacting from “Persoonlijke informatie”:
+- always use inline expansion on the same page
+
+If old edit pages exist, do not use them from this flow anymore.
+
+==================================================
+8. VISUAL GOAL
+==================================================
+
+The page should now feel:
+- much closer to Airbnb
+- cleaner
+- more modern
+- less fragmented
+- easier to edit quickly
+
+==================================================
+9. RESULT
+==================================================
+
+At the end, summarize:
+1. how the page layout was changed to be more Airbnb-like
+2. how inline expand/collapse editing was implemented
+3. which old navigation/edit flows were removed or bypassed
+4. how saving works inline
+5. which fields support inline editing
+6. which files/components were updated

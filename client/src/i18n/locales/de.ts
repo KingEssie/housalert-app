@@ -1076,7 +1076,11 @@ export const de: Record<string, any> = {
     title: "Persönliche Daten",
     loadFailed: "Daten konnten nicht geladen werden.",
     add: "Hinzufügen",
+    edit: "Bearbeiten",
+    notProvided: "Nicht angegeben",
     email: "E-Mail-Adresse",
+    saveAndContinue: "Speichern und weiter",
+    cancel: "Abbrechen",
   },
 
   paymentMethod: {

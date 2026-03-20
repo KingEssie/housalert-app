@@ -264,6 +264,17 @@ export const en: Record<string, any> = {
     saveFailed: "Save failed",
   },
 
+  profileDetails: {
+    title: "Personal information",
+    loadFailed: "Could not load data.",
+    add: "Add",
+    edit: "Edit",
+    notProvided: "Not provided",
+    email: "Email address",
+    saveAndContinue: "Save and continue",
+    cancel: "Cancel",
+  },
+
   popularToday: {
     title: "Popular today",
     subtitle: "Apartments getting a lot of attention",
