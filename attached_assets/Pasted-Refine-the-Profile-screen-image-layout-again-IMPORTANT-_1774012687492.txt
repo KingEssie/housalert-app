@@ -1,0 +1,101 @@
+Refine the Profile screen image layout again.
+
+IMPORTANT:
+- Do NOT redesign the page
+- Only fix these 3 visual issues:
+  1. avatar placeholder must fully fill the circle
+  2. the two small cards must remain square
+  3. the notifications illustration must be slightly larger
+
+==================================================
+1. PROFILE AVATAR PLACEHOLDER — FULL CIRCLE FILL
+==================================================
+
+Current issue:
+- the placeholder image still does not fully fill the avatar circle
+- it still looks like there is inner padding / an extra inner circle
+
+Fix:
+- make the placeholder image fill the avatar circle completely
+- remove the visual feeling of “image inside another smaller circle”
+- the image itself should occupy the full circular frame
+
+Requirements:
+- use width: 100%
+- use height: 100%
+- use object-fit: cover
+- no inner padding
+- no inner white space
+- no double-circle feel unless the asset itself requires a very subtle edge
+- the visible avatar should feel like one clean full circular image
+
+If needed:
+- simplify the avatar container styling so the uploaded/generated avatar image becomes the full visible circle
+
+==================================================
+2. KEEP THE TWO SMALL CARDS SQUARE
+==================================================
+
+Current issue:
+- the two cards below the profile card have stretched too tall / too rectangular
+- I want them to remain square cards with rounded corners
+
+Cards:
+- Extra zoekprofiel
+- Vrienden uitnodigen
+
+Fix:
+- keep both cards square (equal width and height)
+- preserve rounded corners
+- keep illustrations large
+- do not let the cards become vertically stretched
+
+Requirements:
+- card aspect ratio should be 1:1
+- illustration stays dominant
+- title can move slightly closer to the image if needed
+- reduce extra empty vertical space if needed
+- maintain clean centered composition
+
+Preferred structure:
+[ large image ]
+[ small spacing ]
+[ title ]
+
+==================================================
+3. NOTIFICATIONS ILLUSTRATION — MAKE IT BIGGER
+==================================================
+
+Current issue:
+- the notifications illustration is still a bit too small
+
+Fix:
+- increase the notifications illustration size slightly
+- if needed, move the text block a bit more to the right
+- preserve clean alignment with the toggles
+
+Requirements:
+- illustration should feel more prominent
+- text should still remain readable
+- card should stay balanced
+- do not make it oversized, just one noticeable step larger
+
+==================================================
+4. KEEP
+==================================================
+
+- keep existing functionality
+- keep current text
+- keep current shadows and rounded corners
+- keep current overall layout
+- only fix size / proportions / alignment
+
+==================================================
+5. RESULT
+==================================================
+
+At the end, summarize:
+1. how the avatar was changed to fully fill the circle
+2. how the two small cards were returned to square proportions
+3. how much the notifications image was increased
+4. which files/components were updated
