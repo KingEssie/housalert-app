@@ -1142,7 +1142,7 @@ export const nl: Record<string, any> = {
     emailConfirmationSent: "Bevestigingsmail verzonden",
     emailConfirmationDesc: "Controleer je nieuwe inbox en bevestig het nieuwe e-mailadres.",
     emailPending: "In afwachting van bevestiging",
-    saveAndContinue: "Opslaan en doorgaan",
+    saveAndContinue: "Opslaan",
     cancel: "Annuleren",
   },
 

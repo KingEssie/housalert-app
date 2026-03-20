@@ -1095,7 +1095,7 @@ export const de: Record<string, any> = {
     emailConfirmationSent: "Bestätigungsmail gesendet",
     emailConfirmationDesc: "Überprüfe dein neues Postfach und bestätige die neue E-Mail-Adresse.",
     emailPending: "Bestätigung ausstehend",
-    saveAndContinue: "Speichern und weiter",
+    saveAndContinue: "Speichern",
     cancel: "Abbrechen",
   },
 

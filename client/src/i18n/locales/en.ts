@@ -287,7 +287,7 @@ export const en: Record<string, any> = {
     emailConfirmationSent: "Confirmation email sent",
     emailConfirmationDesc: "Check your new inbox and confirm the new email address.",
     emailPending: "Awaiting confirmation",
-    saveAndContinue: "Save and continue",
+    saveAndContinue: "Save",
     cancel: "Cancel",
   },
 
