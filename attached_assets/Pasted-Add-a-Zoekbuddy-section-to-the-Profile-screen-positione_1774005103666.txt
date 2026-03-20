@@ -1,0 +1,107 @@
+Add a “Zoekbuddy” section to the Profile screen, positioned above “Standaard reactiebrief”.
+
+IMPORTANT:
+- Do NOT redesign the entire page
+- Only add and style the Zoekbuddy section
+- Keep it clean, minimal, and consistent with the current app design
+- Do NOT copy heavy card styles from Stekkies; keep it lighter and more premium
+
+==================================================
+1. POSITION
+==================================================
+
+Place the new section:
+
+- below: Notificaties
+- above: Standaard reactiebrief
+
+==================================================
+2. SECTION HEADER
+==================================================
+
+Add:
+
+Title: “Zoekbuddy”
+
+Optional small subtitle (light gray, smaller text):
+“Werk samen met iemand tijdens je zoektocht”
+
+==================================================
+3. STATE 1 — NO BUDDY YET
+==================================================
+
+If no zoekbuddy exists:
+
+Show:
+- input field (email)
+- button: “Uitnodigen”
+
+Design:
+- clean rounded input
+- button next to or below input
+- no heavy card UI
+- enough spacing
+
+==================================================
+4. STATE 2 — INVITE SENT
+==================================================
+
+If a zoekbuddy invite exists but is not accepted:
+
+Show a single row:
+
+- email (primary text)
+- below it (smaller, subtle):
+  “Uitnodiging verstuurd”
+- right side:
+  remove (X icon)
+
+Design:
+- light rounded container
+- subtle shadow
+- no thick borders
+- clean spacing
+
+==================================================
+5. STATE 3 — ACTIVE BUDDY
+==================================================
+
+If buddy is accepted:
+
+Show:
+- email
+- small status text:
+  “Verbonden”
+
+Keep layout consistent with invite state.
+
+==================================================
+6. INTERACTIONS
+==================================================
+
+- clicking remove (X):
+  cancels the invite or removes buddy
+
+- inviting:
+  uses existing backend logic if present
+
+- do NOT break current data flow
+
+==================================================
+7. STYLE
+==================================================
+
+- match existing spacing system
+- keep typography consistent
+- no heavy UI blocks
+- clean, modern, Airbnb-like simplicity
+
+==================================================
+8. RESULT
+==================================================
+
+At the end, summarize:
+1. where the section was added
+2. how each state (empty, pending, active) works
+3. how interactions are handled
+4. which components/files were updated
