@@ -1639,7 +1639,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
         <div className="flex flex-col gap-5">
 
           <div
-            className="rounded-[24px] bg-white border border-[#F0F0F0] shadow-[0_2px_12px_rgba(15,23,42,0.06),0_8px_32px_rgba(15,23,42,0.08)] px-6 py-8"
+            className="rounded-[24px] bg-white border border-[#F0F0F0] shadow-[0_2px_12px_rgba(15,23,42,0.06),0_8px_32px_rgba(15,23,42,0.08)] px-6 py-5"
             data-testid="card-profile-summary"
           >
             <div className="grid grid-cols-2 gap-0">
@@ -1649,13 +1649,13 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                 data-testid="button-profile-avatar"
               >
                 {photoUrl ? (
-                  <img src={photoUrl} alt="" className="w-[96px] h-[96px] rounded-full object-cover shadow-[0_2px_12px_rgba(0,0,0,0.08)]" data-testid="img-profile-avatar" />
+                  <img src={photoUrl} alt="" className="w-[104px] h-[104px] rounded-full object-cover shadow-[0_2px_12px_rgba(0,0,0,0.08)]" data-testid="img-profile-avatar" />
                 ) : (
-                  <div className="w-[96px] h-[96px] rounded-full bg-gradient-to-br from-[#E5E7EB] to-[#F3F4F6] flex items-center justify-center shadow-[inset_0_1px_2px_rgba(0,0,0,0.06)]">
-                    <span className="text-[32px] font-semibold text-[#6B7280]">{initials}</span>
+                  <div className="w-[104px] h-[104px] rounded-full bg-gradient-to-br from-[#E5E7EB] to-[#F3F4F6] flex items-center justify-center shadow-[inset_0_1px_2px_rgba(0,0,0,0.06)]">
+                    <span className="text-[36px] font-semibold text-[#6B7280]">{initials}</span>
                   </div>
                 )}
-                <p className="text-[22px] font-semibold text-[#18181B] mt-3 leading-tight text-center" data-testid="text-user-firstname">
+                <p className="text-[24px] font-semibold text-[#18181B] mt-2.5 leading-tight text-center" data-testid="text-user-firstname">
                   {firstName || displayName || t("profile.seeker")}
                 </p>
                 {lastName && (
@@ -1666,19 +1666,19 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               </button>
 
               <div className="flex flex-col justify-center pl-5">
-                <div className="py-3" data-testid="stat-member-since">
+                <div className="py-2.5" data-testid="stat-member-since">
                   <p className="text-[22px] font-bold text-[#18181B] leading-tight">{memberStatNumber}</p>
-                  <p className="text-[13px] text-[#18181B] mt-1 leading-snug">{memberStatLabel}</p>
+                  <p className="text-[13px] font-medium text-[#18181B] mt-0.5 leading-snug">{memberStatLabel}</p>
                 </div>
                 <div className="h-px bg-[#F0F0F0]" />
-                <div className="py-3" data-testid="stat-listings-viewed">
+                <div className="py-2.5" data-testid="stat-listings-viewed">
                   <p className="text-[22px] font-bold text-[#18181B] leading-tight">{canonicalStats?.viewed ?? 0}</p>
-                  <p className="text-[13px] text-[#18181B] mt-1 leading-snug">{t("profile.listingsViewed")}</p>
+                  <p className="text-[13px] font-medium text-[#18181B] mt-0.5 leading-snug">{t("profile.listingsViewed")}</p>
                 </div>
                 <div className="h-px bg-[#F0F0F0]" />
-                <div className="py-3" data-testid="stat-applications-sent">
+                <div className="py-2.5" data-testid="stat-applications-sent">
                   <p className="text-[22px] font-bold text-[#18181B] leading-tight">{canonicalStats?.applied ?? 0}</p>
-                  <p className="text-[13px] text-[#18181B] mt-1 leading-snug">{t("profile.applicationsSent")}</p>
+                  <p className="text-[13px] font-medium text-[#18181B] mt-0.5 leading-snug">{t("profile.applicationsSent")}</p>
                 </div>
               </div>
             </div>
@@ -1687,14 +1687,13 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={() => navigate("/dashboard/searches/new")}
-              className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] p-5 flex flex-col items-start text-left active:scale-[0.98] transition-transform"
+              className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] px-5 py-6 flex flex-col items-center justify-center text-center active:scale-[0.98] transition-transform"
               data-testid="button-extra-profile"
             >
-              <div className="w-10 h-10 rounded-xl bg-[#F0FDF4] flex items-center justify-center mb-3">
-                <Plus className="w-[20px] h-[20px] text-[#16A34A]" />
+              <div className="w-12 h-12 rounded-2xl bg-[#F0FDF4] flex items-center justify-center mb-3">
+                <Plus className="w-[22px] h-[22px] text-[#16A34A]" />
               </div>
               <p className="text-[14px] font-semibold text-[#18181B] leading-snug">{t("profile.extraProfile")}</p>
-              <p className="text-[12px] text-[#9CA3AF] mt-1 leading-relaxed">{t("profile.extraProfileDesc")}</p>
             </button>
 
             <button
@@ -1710,16 +1709,13 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                   toast({ title: t("referral.copyFailed"), variant: "destructive" });
                 }
               }}
-              className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] p-5 flex flex-col items-start text-left active:scale-[0.98] transition-transform"
+              className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] px-5 py-6 flex flex-col items-center justify-center text-center active:scale-[0.98] transition-transform"
               data-testid="button-invite-friends"
             >
-              <div className="w-10 h-10 rounded-xl bg-[#EBF2FF] flex items-center justify-center mb-3">
-                <Gift className="w-[20px] h-[20px] text-[#0D6EFD]" />
+              <div className="w-12 h-12 rounded-2xl bg-[#EBF2FF] flex items-center justify-center mb-3">
+                <Gift className="w-[22px] h-[22px] text-[#0D6EFD]" />
               </div>
               <p className="text-[14px] font-semibold text-[#18181B] leading-snug">{t("profile.inviteFriends")}</p>
-              <p className="text-[12px] text-[#9CA3AF] mt-1 leading-relaxed">
-                {referralCopied ? t("referral.copied") : t("profile.inviteFriendsDesc")}
-              </p>
             </button>
           </div>
 

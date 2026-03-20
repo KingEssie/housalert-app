@@ -1,0 +1,107 @@
+Refine ONLY the top profile card and the two small cards below it on the Profile page.
+
+IMPORTANT:
+- Do NOT redesign the rest of the page
+- Keep all other sections unchanged for now
+- This is a focused layout and visual refinement only
+
+==================================================
+1. TOP PROFILE CARD — MAKE IT MORE COMPACT AND STRONGER
+==================================================
+
+The top profile card is close, but still needs refinement.
+
+### Avatar
+- make the profile photo/avatar slightly larger than it is now
+- keep it centered in the left half
+
+### First name
+- make the first name slightly larger
+- keep it black
+- keep it a bit lighter / less heavy than an extra-bold style
+
+### Last name
+- keep last name smaller and gray
+- leave it subtle
+
+### Stats labels
+On the right side, keep the same 3 stats and the same layout:
+- lid sinds
+- woningen bekeken
+- reacties verstuurd
+
+But:
+- make the stat labels slightly bolder / stronger than they are now
+- keep them black
+- keep the numbers as they are
+
+### Card vertical compactness
+Reduce the vertical spacing inside the top profile card so the card becomes a bit more compact.
+
+Specifically:
+- reduce top padding slightly
+- reduce bottom padding slightly
+- keep enough breathing room, but make the card shorter overall
+
+Do NOT change the 50/50 structure.
+Do NOT change the stat choices.
+Do NOT change the overall card style.
+
+==================================================
+2. TWO SMALL CARDS — CENTER CONTENT AND REMOVE SUBTEXT
+==================================================
+
+For the two small cards below the top profile card:
+
+LEFT:
+- Extra zoekprofiel
+
+RIGHT:
+- Vrienden uitnodigen
+
+### Remove descriptions
+Remove the smaller supporting/subtitle text under these titles.
+I only want one title per card.
+
+So:
+- no “Zoekprofiel toevoegen”
+- no “Verdien een bonus”
+- only the main title remains
+
+### Center content
+Inside each small card:
+- center the visual content in the middle
+- center the future image/icon
+- center the title text
+- make the whole card feel balanced and symmetrical
+
+### Future image support
+Right now there is an icon, but later I will provide a large image.
+
+Please structure the card so it supports this layout:
+- larger image area on top
+- title below it
+- both centered
+
+For now:
+- keep the icon as placeholder
+- but size/position the content as if a larger image will be placed there later
+
+### Card style
+- keep both cards visually equal
+- same size
+- same shadow
+- same padding system
+- same rounded corners
+
+==================================================
+3. RESULT
+==================================================
+
+At the end, summarize:
+1. how much the avatar and first name were increased
+2. how the stat labels were strengthened
+3. how the top profile card was compacted vertically
+4. how the two small cards were centered
+5. how the subtitle text was removed
+6. which files/components were updated
