@@ -1,0 +1,94 @@
+I need a full end-to-end audit of the HousAlert Admin dashboard data integrity.
+
+Problem:
+- The Admin portal does not appear to reflect the true production data
+- My girlfriend Elise Bezemer just created a new account to test the app, but she does not appear in the Admin portal
+- I also see duplicate-looking user rows for Martin Esajas in the Users list
+- This suggests that the Admin dashboard may be reading from the wrong source, using incorrect joins, missing users, duplicating users, or applying incorrect filters
+
+Goal:
+Verify that the Admin dashboard is fully accurate and consistent with the real production data.
+
+Tasks:
+
+1. Audit the full Admin data flow
+- Trace exactly which endpoints power each Admin dashboard section:
+  - Users
+  - Subscriptions
+  - Growth
+  - Sources
+  - System
+- For each endpoint, identify:
+  - which tables it reads from
+  - which database it reads from
+  - which joins it performs
+  - which filters it applies
+  - which sort order it uses
+
+2. Verify production data sources
+- Confirm whether Admin is reading from:
+  - Supabase auth.users
+  - Supabase subscriptions
+  - Replit Postgres user_profile_data
+  - any views or derived tables
+- Confirm whether all Admin sections are using the intended production environment and not a stale/dev source
+
+3. Investigate Elise Bezemer specifically
+- Find the exact account record for Elise Bezemer / her email in production
+- Confirm whether she exists in:
+  - auth.users
+  - user_profile_data
+  - subscriptions
+  - any related profile/search tables
+- Explain exactly why she is not showing in the Admin portal if she exists in the database
+
+4. Investigate duplicate Martin Esajas rows
+- Identify both Martin Esajas rows shown in the Admin Users list
+- Explain why two rows appear:
+  - duplicate auth account?
+  - duplicate profile row?
+  - duplicate join result?
+  - old test account?
+  - same email with different user IDs?
+- Determine whether this is correct behavior or a data bug
+
+5. Validate Users page correctness
+- Check that the Users list:
+  - includes all real users
+  - does not omit recently created users
+  - does not duplicate users incorrectly
+  - shows the correct subscription state
+  - shows the correct profile count
+  - shows the correct match count
+
+6. Validate Subscriptions correctness
+- Check that subscription counts and statuses in Admin match the actual subscription records
+- Confirm trial, active, canceled, expired states are correct
+- Confirm users without subscriptions are handled correctly
+
+7. Validate Growth/System metrics correctness
+- Check whether dashboard metrics are computed from the right source tables
+- Identify any inconsistencies between counts shown in cards and actual database values
+- Explain any mismatches
+
+8. Add temporary diagnostics
+- Add logs for each Admin endpoint showing:
+  - total rows fetched
+  - data source used
+  - filters applied
+  - sample result rows
+- If useful, add a hidden admin debug mode or temporary endpoint returning raw counts per source table
+
+9. Fixes
+- If the issue is caused by bad joins, wrong filters, stale sources, duplicate profile rows, or missing sync logic, fix it
+- Do NOT delete valid production data unless absolutely necessary
+- Do NOT refactor unrelated systems
+- Keep the fixes minimal, production-safe, and focused on Admin data accuracy
+
+10. Final deliverable
+I want a clear report answering:
+- Does Elise Bezemer exist in production data?
+- Why is she missing from Admin?
+- Why are there duplicate Martin rows?
+- Which Admin sections were wrong?
+- What was fixed so the Admin portal now reflects real production data accurately?

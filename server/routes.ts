@@ -4144,8 +4144,22 @@ export async function registerRoutes(
       const listingsWeek = await supabase.from("listings").select("id", { count: "exact", head: true }).gte("created_at", weekAgo);
       const matchesWeek = await supabase.from("matches").select("id", { count: "exact", head: true }).gte("created_at", weekAgo);
 
-      const signupsTodayRes = await pgPool.query("SELECT COUNT(*) FROM user_profile_data WHERE created_at >= $1", [todayStart]);
-      const signupsWeekRes = await pgPool.query("SELECT COUNT(*) FROM user_profile_data WHERE created_at >= $1", [weekAgo]);
+      let signupsTodayVal = 0;
+      let signupsWeekVal = 0;
+      try {
+        const adminSb = getSupabaseAdmin();
+        const { data: allAuthData } = await adminSb.auth.admin.listUsers({ page: 1, perPage: 1000 });
+        const allAuthUsers = allAuthData?.users || [];
+        const todayDate = new Date(todayStart);
+        const weekDate = new Date(weekAgo);
+        signupsTodayVal = allAuthUsers.filter((u: any) => new Date(u.created_at) >= todayDate).length;
+        signupsWeekVal = allAuthUsers.filter((u: any) => new Date(u.created_at) >= weekDate).length;
+      } catch {
+        const signupsTodayRes = await pgPool.query("SELECT COUNT(*) FROM user_profile_data WHERE created_at >= $1", [todayStart]);
+        const signupsWeekRes = await pgPool.query("SELECT COUNT(*) FROM user_profile_data WHERE created_at >= $1", [weekAgo]);
+        signupsTodayVal = parseInt(signupsTodayRes.rows[0]?.count || "0");
+        signupsWeekVal = parseInt(signupsWeekRes.rows[0]?.count || "0");
+      }
       let emailsTodayVal = 0;
       let pushesTodayVal = 0;
       try {
@@ -4175,14 +4189,14 @@ export async function registerRoutes(
         totalUsers: totalUsersRes,
         activeSubscriptions: activeSubsRes.count ?? 0,
         trialUsers: trialSubsRes.count ?? 0,
-        signupsToday: parseInt(signupsTodayRes.rows[0]?.count || "0"),
+        signupsToday: signupsTodayVal,
         mrr: Math.round(mrr * 100) / 100,
         activeProfiles: profilesRes.count ?? 0,
         listingsToday: listingsTodayRes.count ?? 0,
         matchesToday: matchesTodayRes.count ?? 0,
         emailsToday: emailsTodayVal,
         pushesToday: pushesTodayVal,
-        signupsWeek: parseInt(signupsWeekRes.rows[0]?.count || "0"),
+        signupsWeek: signupsWeekVal,
         listingsWeek: listingsWeek.count ?? 0,
         matchesWeek: matchesWeek.count ?? 0,
         sourceHealth,
@@ -4199,41 +4213,42 @@ export async function registerRoutes(
       const filter = req.query.filter as string || "all";
       const page = parseInt(req.query.page as string || "1");
       const limit = Math.min(parseInt(req.query.limit as string || "50"), 100);
-      const offset = (page - 1) * limit;
 
-      let profileQuery: string;
-      let countQuery: string;
-      let queryParams: any[];
-      let countParams: any[];
+      const adminSb = getSupabaseAdmin();
+      const { data: authData, error: authListErr } = await adminSb.auth.admin.listUsers({
+        page,
+        perPage: limit,
+      });
+      if (authListErr) throw authListErr;
 
+      const authUsers = authData?.users || [];
+      const totalUsers = (authData as any)?.total ?? authUsers.length;
+
+      let filteredAuth = authUsers;
       if (search) {
-        profileQuery = `SELECT * FROM user_profile_data WHERE LOWER(first_name || ' ' || COALESCE(last_name, '')) LIKE $1 OR LOWER(user_id) LIKE $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3`;
-        countQuery = `SELECT COUNT(*) FROM user_profile_data WHERE LOWER(first_name || ' ' || COALESCE(last_name, '')) LIKE $1 OR LOWER(user_id) LIKE $1`;
-        queryParams = [`%${search}%`, limit, offset];
-        countParams = [`%${search}%`];
-      } else {
-        profileQuery = `SELECT * FROM user_profile_data ORDER BY created_at DESC LIMIT $1 OFFSET $2`;
-        countQuery = `SELECT COUNT(*) FROM user_profile_data`;
-        queryParams = [limit, offset];
-        countParams = [];
+        filteredAuth = authUsers.filter((u: any) => {
+          const email = (u.email || "").toLowerCase();
+          const meta = u.user_metadata || {};
+          const fullName = `${meta.first_name || ""} ${meta.last_name || ""}`.toLowerCase();
+          const uid = u.id.toLowerCase();
+          return email.includes(search) || fullName.includes(search) || uid.includes(search);
+        });
       }
 
-      const [usersRes, countRes] = await Promise.all([
-        pgPool.query(profileQuery, queryParams),
-        pgPool.query(countQuery, countParams),
-      ]);
-
-      const userIds = usersRes.rows.map((u: any) => u.user_id);
+      const userIds = filteredAuth.map((u: any) => u.id);
       if (userIds.length === 0) {
-        return res.json({ users: [], total: 0, page, limit });
+        return res.json({ users: [], total: search ? 0 : totalUsers, page, limit });
       }
 
-      const placeholders = userIds.map((_: any, i: number) => `$${i + 1}`).join(",");
-      const [subsRes, profilesCountRes, matchCountRes] = await Promise.all([
+      const [profilesRes, subsRes, profilesCountRes, matchCountRes] = await Promise.all([
+        pgPool.query(`SELECT * FROM user_profile_data WHERE user_id = ANY($1::uuid[])`, [userIds]),
         supabase.from("subscriptions").select("user_id, status, plan, trial_ends_at, current_period_ends_at").in("user_id", userIds),
         supabase.from("search_profiles").select("user_id").in("user_id", userIds),
-        pgPool.query(`SELECT user_id, COUNT(*) as cnt FROM user_matches WHERE user_id IN (${placeholders}) GROUP BY user_id`, userIds),
+        pgPool.query(`SELECT user_id, COUNT(*) as cnt FROM user_matches WHERE user_id = ANY($1::uuid[]) GROUP BY user_id`, [userIds]),
       ]);
+
+      const profileMap: Record<string, any> = {};
+      for (const p of profilesRes.rows) profileMap[p.user_id] = p;
 
       const subsMap: Record<string, any> = {};
       for (const s of (subsRes.data || [])) subsMap[s.user_id] = s;
@@ -4244,12 +4259,23 @@ export async function registerRoutes(
       const matchCountMap: Record<string, number> = {};
       for (const m of matchCountRes.rows) matchCountMap[m.user_id] = parseInt(m.cnt);
 
-      let users = usersRes.rows.map((u: any) => ({
-        ...u,
-        subscription: subsMap[u.user_id] || null,
-        searchProfileCount: profileCountMap[u.user_id] || 0,
-        matchCount: matchCountMap[u.user_id] || 0,
-      }));
+      let users = filteredAuth.map((authUser: any) => {
+        const profile = profileMap[authUser.id];
+        const meta = authUser.user_metadata || {};
+        return {
+          user_id: authUser.id,
+          first_name: profile?.first_name || meta.first_name || null,
+          last_name: profile?.last_name || meta.last_name || null,
+          email: authUser.email || null,
+          language: profile?.language || null,
+          profile_photo_url: profile?.profile_photo_url || null,
+          created_at: profile?.created_at || authUser.created_at,
+          has_profile_data: !!profile,
+          subscription: subsMap[authUser.id] || null,
+          searchProfileCount: profileCountMap[authUser.id] || 0,
+          matchCount: matchCountMap[authUser.id] || 0,
+        };
+      });
 
       if (filter === "paid") users = users.filter((u: any) => u.subscription?.status === "active");
       else if (filter === "trial") users = users.filter((u: any) => u.subscription?.status === "trial");
@@ -4258,7 +4284,7 @@ export async function registerRoutes(
 
       res.json({
         users,
-        total: parseInt(countRes.rows[0]?.count || "0"),
+        total: search ? filteredAuth.length : totalUsers,
         page,
         limit,
       });
@@ -4272,7 +4298,9 @@ export async function registerRoutes(
     try {
       const { userId } = req.params;
 
-      const [profileRes, subRes, searchProfilesRes, recentMatchesRes] = await Promise.all([
+      const adminSb = getSupabaseAdmin();
+      const [authUserRes, profileRes, subRes, searchProfilesRes, recentMatchesRes] = await Promise.all([
+        adminSb.auth.admin.getUserById(userId),
         pgPool.query("SELECT * FROM user_profile_data WHERE user_id = $1", [userId]),
         supabase.from("subscriptions").select("*").eq("user_id", userId).maybeSingle(),
         supabase.from("search_profiles").select("*").eq("user_id", userId),
@@ -4287,8 +4315,24 @@ export async function registerRoutes(
 
       const notifsRes = await supabase.from("user_notification_settings").select("*").eq("user_id", userId).maybeSingle();
 
+      const authUser = authUserRes.data?.user || null;
+      const pgProfile = profileRes.rows[0] || null;
+      const meta = authUser?.user_metadata || {};
+      const profile = pgProfile
+        ? { ...pgProfile, email: authUser?.email || null }
+        : authUser
+          ? {
+              user_id: authUser.id,
+              first_name: meta.first_name || null,
+              last_name: meta.last_name || null,
+              email: authUser.email || null,
+              created_at: authUser.created_at,
+              has_profile_data: false,
+            }
+          : null;
+
       res.json({
-        profile: profileRes.rows[0] || null,
+        profile,
         subscription: subRes.data || null,
         searchProfiles: searchProfilesRes.data || [],
         recentMatches: recentMatchesRes.rows,

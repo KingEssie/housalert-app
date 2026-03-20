@@ -599,6 +599,7 @@ function UserDetailView({ detail, onBack }: { detail: any; onBack: () => void })
         <h3 className="text-[15px] font-bold text-[#222222] mb-3">Profile</h3>
         <div className="space-y-2.5 text-[13px]">
           <div className="flex justify-between"><span className="text-[#717171]">Name</span><span className="font-medium text-[#222222]">{profile?.first_name || ""} {profile?.last_name || ""}</span></div>
+          <div className="flex justify-between"><span className="text-[#717171]">Email</span><span className="font-medium text-[#222222] max-w-[200px] truncate">{profile?.email || "—"}</span></div>
           <div className="flex justify-between"><span className="text-[#717171]">Phone</span><span className="font-medium text-[#222222]">{profile?.phone || "—"}</span></div>
           <div className="flex justify-between"><span className="text-[#717171]">Occupation</span><span className="font-medium text-[#222222]">{profile?.occupation || "—"}</span></div>
           <div className="flex justify-between"><span className="text-[#717171]">Created</span><span className="font-medium text-[#222222]">{profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : "—"}</span></div>
@@ -951,12 +952,12 @@ function UsersTab() {
             <div className="bg-white rounded-[20px] border border-[#F0F0F0] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] divide-y divide-[#F0F0F0]">
               {users.map((u: any) => (
                 <button key={u.user_id} onClick={() => openUser(u.user_id)} className="w-full px-4 py-3 flex items-center gap-3 text-left" data-testid={`user-card-${u.user_id}`}>
-                  <div className="w-9 h-9 rounded-full bg-[#FFF7ED] text-[#F97316] flex items-center justify-center flex-shrink-0 text-[13px] font-bold">
-                    {(u.first_name || "?")[0]}
+                  <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-[13px] font-bold ${u.has_profile_data === false ? "bg-[#F3F4F6] text-[#B0B0B0]" : "bg-[#FFF7ED] text-[#F97316]"}`}>
+                    {(u.first_name || u.email || "?")[0]?.toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-semibold text-[#222222] truncate">{u.first_name || ""} {u.last_name || ""}</p>
-                    <p className="text-[11px] text-[#717171]">{u.user_id?.substring(0, 8)}... · {u.searchProfileCount || 0} profiles · {u.matchCount || 0} matches</p>
+                    <p className="text-[13px] font-semibold text-[#222222] truncate">{u.first_name || u.email || "Unknown"} {u.last_name || ""}</p>
+                    <p className="text-[11px] text-[#717171] truncate">{u.email || u.user_id?.substring(0, 8)} · {u.searchProfileCount || 0} profiles · {u.matchCount || 0} matches</p>
                     {u.search_buddy_email && <p className="text-[10px] text-[#F97316] truncate">Buddy: {u.search_buddy_email}</p>}
                   </div>
                   <div className="flex flex-col items-end gap-1 flex-shrink-0">
