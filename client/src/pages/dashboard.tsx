@@ -572,6 +572,72 @@ function RecentlyViewedCard({ match }: { match: ApiMatch }) {
   );
 }
 
+function getProfileTitle(p: SearchProfile, t: (key: string, params?: Record<string, string | number>) => string): string {
+  const city = p.city_name || p.city || "";
+  if (p.location_mode === "commute" && p.commute_destination) {
+    const dest = p.commute_destination.split(",")[0].trim();
+    const mins = p.commute_minutes || 30;
+    const modeMap: Record<string, string> = { transit: t("searchProfiles.transit"), bicycling: t("searchProfiles.bike"), driving: t("searchProfiles.car"), walking: t("searchProfiles.walk") };
+    const modeLabel = modeMap[p.commute_mode || "transit"] || t("searchProfiles.transit");
+    return t("searchProfiles.commuteTitle", { dest, mins, mode: modeLabel });
+  }
+  if (p.location_mode === "radius" && p.radius_km && city) {
+    return t("searchProfiles.radiusTitle", { km: p.radius_km, city });
+  }
+  if (p.location_mode === "districts" && p.districts && p.districts.length > 0) {
+    const conjunction = t("searchProfiles.and");
+    const joined = p.districts.length <= 2 ? p.districts.join(` ${conjunction} `) : `${p.districts.slice(0, 2).join(", ")} +${p.districts.length - 2}`;
+    return t("searchProfiles.districtTitle", { districts: joined });
+  }
+  return t("searchProfiles.cityTitle", { city });
+}
+
+function getProfileSummary(p: SearchProfile, t: (key: string, params?: Record<string, string | number>) => string): string {
+  const parts: string[] = [];
+  if (p.price_min > 0 && p.price_max > 0) parts.push(`€${p.price_min} – €${p.price_max}`);
+  else if (p.price_max > 0) parts.push(`${t("searchProfiles.max")} €${p.price_max}`);
+  else if (p.price_min > 0) parts.push(`${t("searchProfiles.min")} €${p.price_min}`);
+  if (p.bedrooms_min > 0) parts.push(`${p.bedrooms_min}+ ${t("searchProfiles.bedrooms")}`);
+  if (p.size_min > 0) parts.push(`${p.size_min}+ m²`);
+  return parts.join(" · ");
+}
+
+function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile[]; navigate: (path: string) => void }) {
+  const { t } = useTranslation();
+  if (profiles.length === 0) return null;
+
+  return (
+    <div className="flex flex-col gap-3" data-testid="section-search-profiles">
+      <h2 className="text-section-title">{t("searchProfiles.sectionTitle")}</h2>
+      <div className="flex flex-col gap-2.5">
+        {profiles.map((p) => {
+          const gradient = getCityGradient(p.city);
+          return (
+            <button
+              key={p.id}
+              onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
+              className="w-full bg-white rounded-[16px] border border-[#F0F0F0] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] p-4 flex items-center gap-3.5 text-left active:scale-[0.985] transition-all duration-200"
+              data-testid={`card-search-profile-${p.id}`}
+            >
+              <div className="flex-1 min-w-0">
+                <p className="text-[15px] font-medium text-[#18181B] leading-snug line-clamp-1" data-testid={`text-profile-title-${p.id}`}>
+                  {getProfileTitle(p, t)}
+                </p>
+                <p className="text-[13px] text-[#9CA3AF] mt-0.5 line-clamp-1" data-testid={`text-profile-summary-${p.id}`}>
+                  {getProfileSummary(p, t)}
+                </p>
+              </div>
+              <div className={`w-[52px] h-[52px] rounded-[12px] bg-gradient-to-br ${gradient} flex items-center justify-center flex-shrink-0`}>
+                <MapPin className="w-5 h-5 text-white/60" />
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function ProgressRing({ progress, size = 44, strokeWidth = 3.5 }: { progress: number; size?: number; strokeWidth?: number }) {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
@@ -917,6 +983,10 @@ function HomeTab({
       <RecentlyViewedSection accessToken={accessToken} />
 
       <UnifiedTaskList accessToken={accessToken} navigate={navigate} setActiveTab={setActiveTab} />
+
+      {profiles.length > 0 && (
+        <SearchProfilesSection profiles={profiles} navigate={navigate} />
+      )}
 
       <RecenteMatchesSection accessToken={accessToken} setActiveTab={setActiveTab} subscription={subscription} navigate={navigate} />
 
