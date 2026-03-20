@@ -53,22 +53,22 @@ export function ReferralCodeModal({ open, onClose, code, loading }: ReferralCode
           <X className="w-4 h-4 text-[#71717A]" />
         </button>
 
-        <h2 className="text-[20px] font-semibold text-[#18181B] pr-8" data-testid="text-referral-modal-title">
+        <h2 className="text-[20px] font-semibold text-[#222222] pr-8" data-testid="text-referral-modal-title">
           {t("referral.modalTitle")}
         </h2>
-        <p className="text-[14px] text-[#6B7280] mt-2 leading-relaxed">
+        <p className="text-[14px] text-[#717171] mt-2 leading-relaxed">
           {t("referral.modalBody")}
         </p>
 
         <div className="mt-6">
-          <p className="text-[12px] font-medium text-[#9CA3AF] uppercase tracking-wider mb-2">
+          <p className="text-[12px] font-medium text-[#717171] uppercase tracking-wider mb-2">
             {t("referral.codeLabel")}
           </p>
           <div className="bg-[#F3F4F6] rounded-xl px-5 py-4 flex items-center justify-center" data-testid="text-referral-code">
             {loading ? (
-              <Loader2 className="w-5 h-5 text-[#9CA3AF] animate-spin" />
+              <Loader2 className="w-5 h-5 text-[#717171] animate-spin" />
             ) : (
-              <span className="text-[22px] font-bold tracking-[0.12em] text-[#18181B] select-all">
+              <span className="text-[22px] font-bold tracking-[0.12em] text-[#222222] select-all">
                 {code || "—"}
               </span>
             )}
@@ -102,14 +102,14 @@ export function ReferralCodeModal({ open, onClose, code, loading }: ReferralCode
               className="h-[48px] w-[48px] rounded-full border border-[#E5E7EB] bg-white flex items-center justify-center active:scale-[0.97] transition-transform disabled:opacity-50"
               data-testid="button-share-referral"
             >
-              <Share2 className="w-5 h-5 text-[#18181B]" />
+              <Share2 className="w-5 h-5 text-[#222222]" />
             </button>
           )}
         </div>
 
         <button
           onClick={onClose}
-          className="w-full mt-3 h-[44px] rounded-full text-[15px] font-medium text-[#6B7280] active:bg-[#F3F4F6] transition-colors"
+          className="w-full mt-3 h-[44px] rounded-full text-[15px] font-medium text-[#717171] active:bg-[#F3F4F6] transition-colors"
           data-testid="button-close-referral"
         >
           {t("referral.close")}

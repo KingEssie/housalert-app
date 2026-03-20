@@ -16,14 +16,14 @@ import {
 } from "lucide-react";
 
 const CITY_GRADIENTS: Record<string, string> = {
-  berlin: "from-[#1F2937] to-[#333333]",
-  münchen: "from-[#1F2937] to-[#333333]",
-  hamburg: "from-[#333333] to-[#1F2937]",
-  frankfurt: "from-[#1F2937] to-[#333333]",
-  köln: "from-[#333333] to-[#1F2937]",
-  düsseldorf: "from-[#1F2937] to-[#333333]",
-  stuttgart: "from-[#333333] to-[#1F2937]",
-  default: "from-[#1F2937] to-[#333333]",
+  berlin: "from-[#222222] to-[#333333]",
+  münchen: "from-[#222222] to-[#333333]",
+  hamburg: "from-[#333333] to-[#222222]",
+  frankfurt: "from-[#222222] to-[#333333]",
+  köln: "from-[#333333] to-[#222222]",
+  düsseldorf: "from-[#222222] to-[#333333]",
+  stuttgart: "from-[#333333] to-[#222222]",
+  default: "from-[#222222] to-[#333333]",
 };
 
 function getCityGradient(city: string): string {
@@ -295,16 +295,16 @@ export default function ApplyPage() {
       <main className="flex-1 max-w-xl mx-auto w-full pb-[120px] relative -mt-5 bg-white rounded-t-[24px]">
         <div className="px-5 pt-6 text-center">
           <h1
-            className="text-[22px] font-semibold text-[#18181B] leading-[1.3] tracking-[-0.02em] mx-auto"
+            className="text-[22px] font-semibold text-[#222222] leading-[1.3] tracking-[-0.02em] mx-auto"
             data-testid="text-apply-title"
           >
             {listing.title}
           </h1>
-          <p className="text-[15px] text-[#6B7280] mt-1.5" data-testid="text-apply-subtitle">
+          <p className="text-[15px] text-[#717171] mt-1.5" data-testid="text-apply-subtitle">
             {subtitle}
           </p>
           {detailLine && (
-            <p className="text-[14px] text-[#9CA3AF] mt-1" data-testid="text-apply-details">
+            <p className="text-[14px] text-[#717171] mt-1" data-testid="text-apply-details">
               {detailLine}
             </p>
           )}
@@ -313,10 +313,10 @@ export default function ApplyPage() {
         <div className="mx-5 mt-7 border-t border-[#EBEBEB]" />
 
         <div className="px-5 pt-6">
-          <h2 className="text-[15px] font-medium text-[#18181B] mb-3">{t("applySheet.applicationLetter")}</h2>
+          <h2 className="text-[15px] font-medium text-[#222222] mb-3">{t("applySheet.applicationLetter")}</h2>
           <div className="bg-[#FAFAFA] rounded-2xl px-5 py-5">
             <textarea
-              className="w-full text-[14px] text-[#1F2937] leading-[1.75] font-[inherit] bg-transparent border-none outline-none resize-none min-h-[220px]"
+              className="w-full text-[14px] text-[#222222] leading-[1.75] font-[inherit] bg-transparent border-none outline-none resize-none min-h-[220px]"
               value={editedLetter ?? filledLetter}
               onChange={(e) => setEditedLetter(e.target.value)}
               data-testid="apply-letter-preview"
@@ -331,8 +331,8 @@ export default function ApplyPage() {
         <div className="max-w-xl mx-auto flex items-center justify-between px-5 py-4">
           {listing.price > 0 && (
             <div className="flex flex-col" data-testid="text-sticky-price">
-              <span className="text-[20px] font-semibold text-[#18181B]">€{listing.price}</span>
-              <span className="text-[12px] text-[#9CA3AF] leading-none">{t("common.perMonthShort")}</span>
+              <span className="text-[20px] font-semibold text-[#222222]">€{listing.price}</span>
+              <span className="text-[12px] text-[#717171] leading-none">{t("common.perMonthShort")}</span>
             </div>
           )}
           <Button

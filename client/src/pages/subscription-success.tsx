@@ -87,14 +87,14 @@ export default function SubscriptionSuccessPage() {
             <CheckCircle className="w-8 h-8 text-[#0D6EFD]" />
           )}
         </div>
-        <h1 className="text-[22px] font-medium text-[#18181B] mb-2" data-testid="text-success-title">
+        <h1 className="text-[22px] font-medium text-[#222222] mb-2" data-testid="text-success-title">
           {syncing
             ? t("subscription.activating")
             : activated
               ? t("subscription.activated")
               : t("subscription.paymentReceived")}
         </h1>
-        <p className="text-[15px] text-[#1F2937] opacity-70" data-testid="text-success-redirect">
+        <p className="text-[15px] text-[#222222] opacity-70" data-testid="text-success-redirect">
           {syncing
             ? t("paywall.pleaseWait")
             : t("subscription.redirecting")}

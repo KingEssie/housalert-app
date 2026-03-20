@@ -87,10 +87,10 @@ export default function ChangePasswordPage() {
                 <CheckCircle2 className="w-7 h-7" style={{ color: "#16A34A" }} />
               </div>
             </div>
-            <h2 className="text-[20px] font-medium mb-2" style={{ color: "#1F2937" }} data-testid="text-success-title">
+            <h2 className="text-[20px] font-medium mb-2" style={{ color: "#222222" }} data-testid="text-success-title">
               {t("changePassword.successTitle")}
             </h2>
-            <p className="text-[15px] mb-6" style={{ color: "#6B7280" }}>
+            <p className="text-[15px] mb-6" style={{ color: "#717171" }}>
               {t("changePassword.successDesc")}
             </p>
             <button
@@ -113,7 +113,7 @@ export default function ChangePasswordPage() {
       <div className="flex-1 max-w-xl mx-auto w-full p-4 pb-8">
         <div className="bg-card rounded-2xl border p-5 space-y-5" style={{ borderColor: "#E5E7EB" }}>
           <div>
-            <label className="block text-[14px] font-medium mb-2" style={{ color: "#1F2937" }}>{t("changePassword.current")}</label>
+            <label className="block text-[14px] font-medium mb-2" style={{ color: "#222222" }}>{t("changePassword.current")}</label>
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2">
                 <Lock className="w-[18px] h-[18px] text-muted-foreground" />
@@ -123,7 +123,7 @@ export default function ChangePasswordPage() {
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 placeholder={t("changePassword.currentPlaceholder")}
-                className="w-full h-[52px] pl-11 pr-12 rounded-[20px] border border-transparent bg-[#F3F4F6] text-[16px] font-medium text-[#111827] placeholder:text-[#9CA3AF] placeholder:font-normal"
+                className="w-full h-[52px] pl-11 pr-12 rounded-[20px] border border-transparent bg-[#F3F4F6] text-[16px] font-medium text-[#222222] placeholder:text-[#717171] placeholder:font-normal"
                 data-testid="input-current-password"
               />
               <button
@@ -140,7 +140,7 @@ export default function ChangePasswordPage() {
           <div className="h-px" style={{ backgroundColor: "#E5E7EB" }} />
 
           <div>
-            <label className="block text-[14px] font-medium mb-2" style={{ color: "#1F2937" }}>{t("changePassword.new")}</label>
+            <label className="block text-[14px] font-medium mb-2" style={{ color: "#222222" }}>{t("changePassword.new")}</label>
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2">
                 <Lock className="w-[18px] h-[18px] text-muted-foreground" />
@@ -150,7 +150,7 @@ export default function ChangePasswordPage() {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder={t("changePassword.newPlaceholder")}
-                className="w-full h-[52px] pl-11 pr-12 rounded-[20px] border border-transparent bg-[#F3F4F6] text-[16px] font-medium text-[#111827] placeholder:text-[#9CA3AF] placeholder:font-normal"
+                className="w-full h-[52px] pl-11 pr-12 rounded-[20px] border border-transparent bg-[#F3F4F6] text-[16px] font-medium text-[#222222] placeholder:text-[#717171] placeholder:font-normal"
                 data-testid="input-new-password"
               />
               <button
@@ -170,7 +170,7 @@ export default function ChangePasswordPage() {
           </div>
 
           <div>
-            <label className="block text-[14px] font-medium mb-2" style={{ color: "#1F2937" }}>{t("changePassword.confirmLabel")}</label>
+            <label className="block text-[14px] font-medium mb-2" style={{ color: "#222222" }}>{t("changePassword.confirmLabel")}</label>
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2">
                 <Lock className="w-[18px] h-[18px] text-muted-foreground" />
@@ -180,7 +180,7 @@ export default function ChangePasswordPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder={t("changePassword.confirmPlaceholder")}
-                className="w-full h-[52px] pl-11 pr-12 rounded-[20px] border border-transparent bg-[#F3F4F6] text-[16px] font-medium text-[#111827] placeholder:text-[#9CA3AF] placeholder:font-normal"
+                className="w-full h-[52px] pl-11 pr-12 rounded-[20px] border border-transparent bg-[#F3F4F6] text-[16px] font-medium text-[#222222] placeholder:text-[#717171] placeholder:font-normal"
                 data-testid="input-confirm-password"
               />
               <button
@@ -210,7 +210,7 @@ export default function ChangePasswordPage() {
             className={`w-full h-[52px] rounded-full font-medium text-[16px] transition-colors flex items-center justify-center ${
               canSubmit
                 ? "bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white"
-                : "bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed"
+                : "bg-[#E5E7EB] text-[#717171] cursor-not-allowed"
             }`}
             data-testid="button-submit-password"
           >

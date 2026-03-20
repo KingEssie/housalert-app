@@ -30,10 +30,10 @@ function FloatingBackButton({ navigate }: { navigate: (to: string) => void }) {
 }
 
 const FRESH_BADGE_STYLES: Record<string, { bg: string; text: string }> = {
-  net_binnen: { bg: "bg-[#F5F7FA]", text: "text-[#1F2937]" },
-  nieuw: { bg: "bg-[#1F2937]", text: "text-white" },
-  vandaag: { bg: "bg-[#1F2937]", text: "text-white" },
-  ouder: { bg: "bg-[#F5F7FA]", text: "text-[#1F2937]" },
+  net_binnen: { bg: "bg-[#F5F7FA]", text: "text-[#222222]" },
+  nieuw: { bg: "bg-[#222222]", text: "text-white" },
+  vandaag: { bg: "bg-[#222222]", text: "text-white" },
+  ouder: { bg: "bg-[#F5F7FA]", text: "text-[#222222]" },
 };
 
 const FRESH_LABEL_KEYS: Record<string, string> = {
@@ -44,12 +44,12 @@ const FRESH_LABEL_KEYS: Record<string, string> = {
 };
 
 const CITY_GRADIENTS: Record<string, string> = {
-  berlin: "from-[#1F2937] to-[#333333]",
-  münchen: "from-[#1F2937] to-[#333333]",
-  hamburg: "from-[#333333] to-[#1F2937]",
-  frankfurt: "from-[#1F2937] to-[#333333]",
-  köln: "from-[#333333] to-[#1F2937]",
-  default: "from-[#1F2937] to-[#333333]",
+  berlin: "from-[#222222] to-[#333333]",
+  münchen: "from-[#222222] to-[#333333]",
+  hamburg: "from-[#333333] to-[#222222]",
+  frankfurt: "from-[#222222] to-[#333333]",
+  köln: "from-[#333333] to-[#222222]",
+  default: "from-[#222222] to-[#333333]",
 };
 
 function getCityGradient(city: string): string {
@@ -155,8 +155,8 @@ export default function ListingDetailPage() {
         <FloatingBackButton navigate={navigate} />
         <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-16">
           <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-8 text-center">
-            <p className="text-[18px] font-medium text-[#18181B] mb-2">{t("listing.notFound")}</p>
-            <p className="text-[13px] text-[#1F2937] mb-4">{t("listing.notFoundDesc")}</p>
+            <p className="text-[18px] font-medium text-[#222222] mb-2">{t("listing.notFound")}</p>
+            <p className="text-[13px] text-[#222222] mb-4">{t("listing.notFoundDesc")}</p>
             <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-full bg-[#0D6EFD] text-white text-[15px] font-medium" data-testid="button-back-dashboard">
               {t("listing.backToDashboard")}
             </Button>
@@ -210,11 +210,11 @@ export default function ListingDetailPage() {
       <main className="flex-1 max-w-xl mx-auto w-full px-5 -mt-6 relative z-10 pb-36">
         <div className="space-y-4">
           <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5">
-            <h1 className="text-[24px] font-medium text-[#18181B] leading-[1.2] tracking-[-0.02em] mb-2" data-testid="text-listing-title">
+            <h1 className="text-[24px] font-medium text-[#222222] leading-[1.2] tracking-[-0.02em] mb-2" data-testid="text-listing-title">
               {listing.title}
             </h1>
 
-            <div className="flex items-center gap-1.5 text-[14px] text-[#1F2937] mb-4">
+            <div className="flex items-center gap-1.5 text-[14px] text-[#222222] mb-4">
               <MapPin className="w-4 h-4 flex-shrink-0" />
               <span data-testid="text-listing-location">
                 {listing.district?.trim() ? `${listing.district.trim()} · ${listing.city}` : listing.city}
@@ -223,8 +223,8 @@ export default function ListingDetailPage() {
 
             {listing.price > 0 && (
               <div className="flex items-baseline gap-1 mb-1">
-                <span className="text-[28px] font-medium text-[#18181B]" data-testid="text-listing-price">€{listing.price}</span>
-                <span className="text-[15px] font-medium text-[#1F2937]">{t("common.perMonth")}</span>
+                <span className="text-[28px] font-medium text-[#222222]" data-testid="text-listing-price">€{listing.price}</span>
+                <span className="text-[15px] font-medium text-[#222222]">{t("common.perMonth")}</span>
               </div>
             )}
           </div>
@@ -238,8 +238,8 @@ export default function ListingDetailPage() {
                     <BedDouble className="w-5 h-5 text-[#71717A]" />
                   </div>
                   <div>
-                    <p className="text-[12px] text-[#1F2937]">{t("listing.bedrooms")}</p>
-                    <p className="text-[15px] font-medium text-[#18181B]" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
+                    <p className="text-[12px] text-[#222222]">{t("listing.bedrooms")}</p>
+                    <p className="text-[15px] font-medium text-[#222222]" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
                   </div>
                 </div>
               )}
@@ -250,8 +250,8 @@ export default function ListingDetailPage() {
                     <Ruler className="w-5 h-5 text-[#71717A]" />
                   </div>
                   <div>
-                    <p className="text-[12px] text-[#1F2937]">{t("listing.area")}</p>
-                    <p className="text-[15px] font-medium text-[#18181B]" data-testid="text-listing-size">{listing.size_m2} m²</p>
+                    <p className="text-[12px] text-[#222222]">{t("listing.area")}</p>
+                    <p className="text-[15px] font-medium text-[#222222]" data-testid="text-listing-size">{listing.size_m2} m²</p>
                   </div>
                 </div>
               )}
@@ -261,7 +261,7 @@ export default function ListingDetailPage() {
                   <Globe className="w-5 h-5 text-[#71717A]" />
                 </div>
                 <div>
-                  <p className="text-[12px] text-[#1F2937]">{t("listing.source")}</p>
+                  <p className="text-[12px] text-[#222222]">{t("listing.source")}</p>
                   <p className="text-[15px] font-medium capitalize" style={{ color: "#0D6EFD" }} data-testid="text-listing-source">{listing.source}</p>
                 </div>
               </div>
@@ -271,8 +271,8 @@ export default function ListingDetailPage() {
                   <Clock className="w-5 h-5 text-[#71717A]" />
                 </div>
                 <div>
-                  <p className="text-[12px] text-[#1F2937]">{t("listing.posted")}</p>
-                  <p className="text-[15px] font-medium text-[#18181B]" data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</p>
+                  <p className="text-[12px] text-[#222222]">{t("listing.posted")}</p>
+                  <p className="text-[15px] font-medium text-[#222222]" data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</p>
                 </div>
               </div>
             </div>
@@ -295,7 +295,7 @@ export default function ListingDetailPage() {
                 data-hybrid-pets={hf.pets}
               >
                 {unknowns.length > 0 && (
-                  <div className="flex items-start gap-2 text-[12px] text-[#1F2937]/50">
+                  <div className="flex items-start gap-2 text-[12px] text-[#222222]/50">
                     <Info className="w-3.5 h-3.5 flex-shrink-0 mt-[1px]" />
                     <div>
                       <p className="font-medium">{t("hybridFilter.unknownHint")}</p>
@@ -308,7 +308,7 @@ export default function ListingDetailPage() {
                   </div>
                 )}
                 {hasPetsNote && (
-                  <div className="flex items-start gap-2 text-[12px] text-[#1F2937]/50">
+                  <div className="flex items-start gap-2 text-[12px] text-[#222222]/50">
                     <Info className="w-3.5 h-3.5 flex-shrink-0 mt-[1px]" />
                     <p>{t("hybridFilter.petsNote")}</p>
                   </div>
@@ -323,8 +323,8 @@ export default function ListingDetailPage() {
         <div className="max-w-xl mx-auto flex flex-col gap-2">
           {listing.price > 0 && (
             <div className="flex items-baseline gap-1 mb-1">
-              <span className="text-[20px] font-medium text-[#18181B]" data-testid="text-bar-price">€{listing.price}</span>
-              <span className="text-[13px] font-medium text-[#6B7280]">{t("common.perMonth")}</span>
+              <span className="text-[20px] font-medium text-[#222222]" data-testid="text-bar-price">€{listing.price}</span>
+              <span className="text-[13px] font-medium text-[#717171]">{t("common.perMonth")}</span>
             </div>
           )}
           <Button

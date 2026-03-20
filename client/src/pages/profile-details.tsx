@@ -188,7 +188,7 @@ export default function ProfileDetailsPage() {
           onChange={e => onChange(e.target.value)}
           placeholder={placeholder}
           onKeyDown={e => { if (e.key === "Enter" && onEnter) onEnter(); }}
-          className="w-full bg-white rounded-2xl px-5 py-4 text-[16px] text-[#18181B] placeholder:text-[#C4C4C4] border border-[#E5E7EB] focus:border-[#0D6EFD] focus:shadow-[0_0_0_3px_rgba(13,110,253,0.08)] focus:outline-none transition-all h-[56px]"
+          className="w-full bg-white rounded-2xl px-5 py-4 text-[16px] text-[#222222] placeholder:text-[#C4C4C4] border border-[#E5E7EB] focus:border-[#0D6EFD] focus:shadow-[0_0_0_3px_rgba(13,110,253,0.08)] focus:outline-none transition-all h-[56px]"
           data-testid="input-edit-field"
         />
         {value && (
@@ -198,7 +198,7 @@ export default function ProfileDetailsPage() {
             className="absolute right-4 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-90 transition-transform"
             data-testid="button-clear-field"
           >
-            <X className="w-3.5 h-3.5 text-[#6B7280]" />
+            <X className="w-3.5 h-3.5 text-[#717171]" />
           </button>
         )}
       </div>
@@ -210,7 +210,7 @@ export default function ProfileDetailsPage() {
       <button
         onClick={onClick}
         disabled={saving}
-        className="h-[48px] px-8 rounded-xl bg-[#18181B] text-white text-[15px] font-medium disabled:opacity-50 transition-colors flex items-center gap-2"
+        className="h-[48px] px-8 rounded-xl bg-[#222222] text-white text-[15px] font-medium disabled:opacity-50 transition-colors flex items-center gap-2"
         data-testid="button-save-field"
       >
         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : t("profileDetails.saveAndContinue")}
@@ -238,8 +238,8 @@ export default function ProfileDetailsPage() {
                 <div key={section.key} className={!isLast ? "border-b border-[#F0F0F0]" : ""}>
                   <div className="flex items-start justify-between py-6" data-testid={`field-${section.key}`}>
                     <div className="min-w-0 flex-1">
-                      <p className="text-[12px] text-[#9CA3AF] mb-1">{section.label}</p>
-                      <p className={`text-[15px] leading-snug ${hasValue ? "text-[#18181B]" : "text-[#D1D5DB]"}`}>
+                      <p className="text-[12px] text-[#717171] mb-1">{section.label}</p>
+                      <p className={`text-[15px] leading-snug ${hasValue ? "text-[#222222]" : "text-[#D1D5DB]"}`}>
                         {getDisplayValue(section.key)}
                       </p>
                       {section.key === "email" && emailPending && isExpanded && (
@@ -248,7 +248,7 @@ export default function ProfileDetailsPage() {
                     </div>
                     <button
                       onClick={() => isExpanded ? handleCancel() : handleExpand(section.key)}
-                      className="text-[14px] font-medium text-[#18181B] underline underline-offset-2 ml-4 flex-shrink-0 mt-3 active:text-[#6B7280] transition-colors"
+                      className="text-[14px] font-medium text-[#222222] underline underline-offset-2 ml-4 flex-shrink-0 mt-3 active:text-[#717171] transition-colors"
                       data-testid={`button-edit-${section.key}`}
                     >
                       {isExpanded ? t("profileDetails.cancel") : (hasValue ? t("profileDetails.edit") : t("profileDetails.add"))}
@@ -259,11 +259,11 @@ export default function ProfileDetailsPage() {
                     <div className="pb-6 animate-in slide-in-from-top-1 duration-200" data-testid="editor-name">
                       <div className="flex flex-col gap-3 mb-4">
                         <div>
-                          <label className="text-[12px] text-[#9CA3AF] mb-1.5 block">{t("profileEdit.firstName")}</label>
+                          <label className="text-[12px] text-[#717171] mb-1.5 block">{t("profileEdit.firstName")}</label>
                           {renderInput("text", firstName, setFirstName, t("profileEdit.firstNamePlaceholder"), firstNameRef)}
                         </div>
                         <div>
-                          <label className="text-[12px] text-[#9CA3AF] mb-1.5 block">{t("profileEdit.lastName")}</label>
+                          <label className="text-[12px] text-[#717171] mb-1.5 block">{t("profileEdit.lastName")}</label>
                           {renderInput("text", lastName, setLastName, t("profileEdit.lastNamePlaceholder"), undefined, handleSaveName)}
                         </div>
                       </div>
@@ -274,7 +274,7 @@ export default function ProfileDetailsPage() {
                   {isExpanded && section.key === "email" && !emailPending && (
                     <div className="pb-6 animate-in slide-in-from-top-1 duration-200" data-testid="editor-email">
                       <div className="mb-4">
-                        <label className="text-[12px] text-[#9CA3AF] mb-1.5 block">{t("profileDetails.newEmail")}</label>
+                        <label className="text-[12px] text-[#717171] mb-1.5 block">{t("profileDetails.newEmail")}</label>
                         {renderInput("email", emailValue, setEmailValue, t("profileDetails.newEmailPlaceholder"), inputRef, handleSaveEmail)}
                       </div>
                       {renderSaveButton(handleSaveEmail)}

@@ -82,7 +82,7 @@ export function SubscriptionCancelConfirmPage() {
               </div>
             </div>
 
-            <h2 className="text-[20px] font-medium text-center mb-2" style={{ color: "#1F2937" }} data-testid="text-feedback-title">
+            <h2 className="text-[20px] font-medium text-center mb-2" style={{ color: "#222222" }} data-testid="text-feedback-title">
               {t("cancellation.feedbackQuestion")}
             </h2>
             <p className="text-[14px] text-center text-muted-foreground mb-5">
@@ -97,7 +97,7 @@ export function SubscriptionCancelConfirmPage() {
                   className={`w-full text-left px-4 py-3 rounded-xl border text-[15px] font-medium transition-colors ${
                     selectedReason === key
                       ? "border-[#0D6EFD] bg-[#EBF2FF] text-[#0D6EFD]"
-                      : "border-[#E5E7EB] bg-white text-[#1F2937] hover:bg-[#F9FAFB]"
+                      : "border-[#E5E7EB] bg-white text-[#222222] hover:bg-[#F9FAFB]"
                   }`}
                   data-testid={`button-reason-${key}`}
                 >
@@ -111,7 +111,7 @@ export function SubscriptionCancelConfirmPage() {
                 value={reasonText}
                 onChange={(e) => setReasonText(e.target.value)}
                 placeholder={t("cancellation.otherPlaceholder")}
-                className="w-full h-[80px] bg-[#F3F4F6] rounded-xl px-4 py-3 text-[14px] text-[#1F2937] placeholder:text-[#9CA3AF] resize-none mb-5 border border-transparent"
+                className="w-full h-[80px] bg-[#F3F4F6] rounded-xl px-4 py-3 text-[14px] text-[#222222] placeholder:text-[#717171] resize-none mb-5 border border-transparent"
                 data-testid="input-reason-text"
               />
             )}
@@ -152,7 +152,7 @@ export function SubscriptionCancelConfirmPage() {
             </div>
           </div>
 
-          <h2 className="text-[20px] font-medium text-center mb-3" style={{ color: "#1F2937" }} data-testid="text-cancel-title">
+          <h2 className="text-[20px] font-medium text-center mb-3" style={{ color: "#222222" }} data-testid="text-cancel-title">
             {t("subscription.cancelConfirm")}
           </h2>
 
@@ -215,7 +215,7 @@ export function SubscriptionCancelledPage() {
             </div>
           </div>
 
-          <h2 className="text-[20px] font-medium text-center mb-3" style={{ color: "#1F2937" }} data-testid="text-cancelled-title">
+          <h2 className="text-[20px] font-medium text-center mb-3" style={{ color: "#222222" }} data-testid="text-cancelled-title">
             {t("subscription.cancelled")}
           </h2>
 

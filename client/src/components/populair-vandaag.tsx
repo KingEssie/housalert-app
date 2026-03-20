@@ -19,14 +19,14 @@ interface PopularListing {
 }
 
 const CITY_GRADIENTS: Record<string, string> = {
-  berlin: "from-[#1F2937] to-[#333333]",
-  münchen: "from-[#1F2937] to-[#333333]",
-  hamburg: "from-[#333333] to-[#1F2937]",
-  frankfurt: "from-[#1F2937] to-[#333333]",
-  köln: "from-[#333333] to-[#1F2937]",
-  düsseldorf: "from-[#1F2937] to-[#333333]",
-  stuttgart: "from-[#333333] to-[#1F2937]",
-  default: "from-[#1F2937] to-[#333333]",
+  berlin: "from-[#222222] to-[#333333]",
+  münchen: "from-[#222222] to-[#333333]",
+  hamburg: "from-[#333333] to-[#222222]",
+  frankfurt: "from-[#222222] to-[#333333]",
+  köln: "from-[#333333] to-[#222222]",
+  düsseldorf: "from-[#222222] to-[#333333]",
+  stuttgart: "from-[#333333] to-[#222222]",
+  default: "from-[#222222] to-[#333333]",
 };
 
 function getCityGradient(city: string): string {
@@ -78,25 +78,25 @@ function PopularCard({ listing }: { listing: PopularListing }) {
 
       <div className="p-3 flex flex-col gap-1.5">
         <h3
-          className="font-medium text-[#18181B] text-[14px] leading-[1.3] line-clamp-2"
+          className="font-medium text-[#222222] text-[14px] leading-[1.3] line-clamp-2"
           data-testid={`text-popular-title-${listing.listing_id}`}
         >
           {listing.title}
         </h3>
 
         {listing.price > 0 && (
-          <span className="text-[15px] font-medium text-[#18181B]">
+          <span className="text-[15px] font-medium text-[#222222]">
             {"\u20AC"}{listing.price}
-            <span className="text-[11px] font-normal text-[#1F2937]">{t("common.perMonth")}</span>
+            <span className="text-[11px] font-normal text-[#222222]">{t("common.perMonth")}</span>
           </span>
         )}
 
-        <div className="flex items-center gap-1 text-[12px] text-[#1F2937]">
+        <div className="flex items-center gap-1 text-[12px] text-[#222222]">
           <MapPin className="w-3 h-3 flex-shrink-0" />
           <span className="truncate">{listing.city}</span>
         </div>
 
-        <div className="flex items-center gap-2 text-[11px] text-[#1F2937]">
+        <div className="flex items-center gap-2 text-[11px] text-[#222222]">
           {listing.bedrooms > 0 && (
             <span className="flex items-center gap-0.5">
               <BedDouble className="w-3 h-3" />
@@ -126,7 +126,7 @@ export function PopulairVandaagSection() {
       <div className="flex flex-col gap-3">
         <div>
           <h2 className="text-section-title">{t("popularToday.title")}</h2>
-          <p className="text-[13px] font-normal text-[#1F2937] mt-0.5">{t("popularToday.subtitle")}</p>
+          <p className="text-[13px] font-normal text-[#222222] mt-0.5">{t("popularToday.subtitle")}</p>
         </div>
         <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none">
           {[1, 2, 3].map((i) => (
@@ -146,7 +146,7 @@ export function PopulairVandaagSection() {
           <TrendingUp className="w-4 h-4 text-[#71717A]" />
           <h2 className="text-section-title">{t("popularToday.title")}</h2>
         </div>
-        <p className="text-[13px] text-[#1F2937] mt-0.5 ml-6">{t("popularToday.subtitle")}</p>
+        <p className="text-[13px] text-[#222222] mt-0.5 ml-6">{t("popularToday.subtitle")}</p>
       </div>
       <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 snap-x snap-mandatory scrollbar-none">
         {listings.map((listing) => (

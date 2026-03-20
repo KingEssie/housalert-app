@@ -72,9 +72,9 @@ export function calculateReactiesnelheid(rawDone: number, rawTotal: number, t?: 
 }
 
 const LEVEL_STYLES: Record<SpeedLevel, { dotColor: string; barColor: string; labelColor: string }> = {
-  fast: { dotColor: "bg-[#0D6EFD]", barColor: "bg-[#0D6EFD]", labelColor: "text-[#1F2937] bg-[#0D6EFD]/10" },
-  almost: { dotColor: "bg-[#0D6EFD]", barColor: "bg-[#0D6EFD]", labelColor: "text-[#1F2937] bg-[#0D6EFD]/10" },
-  building: { dotColor: "bg-[#E5E7EB]", barColor: "bg-[#E5E7EB]", labelColor: "text-[#1F2937] bg-[#F5F7FA]" },
+  fast: { dotColor: "bg-[#0D6EFD]", barColor: "bg-[#0D6EFD]", labelColor: "text-[#222222] bg-[#0D6EFD]/10" },
+  almost: { dotColor: "bg-[#0D6EFD]", barColor: "bg-[#0D6EFD]", labelColor: "text-[#222222] bg-[#0D6EFD]/10" },
+  building: { dotColor: "bg-[#E5E7EB]", barColor: "bg-[#E5E7EB]", labelColor: "text-[#222222] bg-[#F5F7FA]" },
 };
 
 function useReactiesnelheidData() {
@@ -143,12 +143,12 @@ export function ReactiesnelheidCard({
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
-            <p className="text-[15px] font-medium text-[#18181B]">{t("speedCard.title")}</p>
+            <p className="text-[15px] font-medium text-[#222222]">{t("speedCard.title")}</p>
             <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${styles.labelColor}`} data-testid="badge-speed-level">
               {state.label}
             </span>
           </div>
-          <p className="text-[13px] text-[#1F2937] leading-relaxed">{state.subtitle}</p>
+          <p className="text-[13px] text-[#222222] leading-relaxed">{state.subtitle}</p>
 
           <div className="mt-3 flex items-center gap-3">
             <div className="flex-1 h-1.5 bg-[#F5F7FA] rounded-full overflow-hidden">
@@ -157,7 +157,7 @@ export function ReactiesnelheidCard({
                 style={{ width: `${pct}%` }}
               />
             </div>
-            <span className="text-[12px] font-medium text-[#1F2937] flex-shrink-0" data-testid="text-speed-ratio">
+            <span className="text-[12px] font-medium text-[#222222] flex-shrink-0" data-testid="text-speed-ratio">
               {done}/{total}
             </span>
           </div>

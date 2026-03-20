@@ -107,7 +107,7 @@ export default function ProfileEditPage() {
         ) : (
           <div>
             {config.description && (
-              <p className="text-[14px] text-[#6B7280] leading-relaxed mb-4">{config.description}</p>
+              <p className="text-[14px] text-[#717171] leading-relaxed mb-4">{config.description}</p>
             )}
             <div className="relative">
             <input
@@ -117,7 +117,7 @@ export default function ProfileEditPage() {
               onChange={e => setValue(e.target.value)}
               placeholder={config.placeholder}
               aria-label={config.label}
-              className="w-full bg-[#F3F4F6] rounded-[20px] pl-6 pr-12 py-4 text-[16px] text-[#111827] placeholder:text-[#9CA3AF] border border-transparent focus:border-[#0D6EFD] focus:shadow-[0_0_0_3px_rgba(13,110,253,0.08)] focus:outline-none transition-all h-[60px]"
+              className="w-full bg-[#F3F4F6] rounded-[20px] pl-6 pr-12 py-4 text-[16px] text-[#222222] placeholder:text-[#717171] border border-transparent focus:border-[#0D6EFD] focus:shadow-[0_0_0_3px_rgba(13,110,253,0.08)] focus:outline-none transition-all h-[60px]"
               data-testid="input-edit-field"
             />
             {value && (
@@ -128,7 +128,7 @@ export default function ProfileEditPage() {
                 className="absolute right-4 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-[#E0E2E7] flex items-center justify-center active:scale-90 transition-transform"
                 data-testid="button-clear-field"
               >
-                <X className="w-3.5 h-3.5 text-[#6B7280]" />
+                <X className="w-3.5 h-3.5 text-[#717171]" />
               </button>
             )}
             </div>

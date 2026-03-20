@@ -137,7 +137,7 @@ export default function SubscriptionDetailPage() {
               <Crown className="w-[22px] h-[22px] text-[#0D6EFD]" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[15px] font-semibold text-[#18181B]" data-testid="text-plan-summary">
+              <p className="text-[15px] font-semibold text-[#222222]" data-testid="text-plan-summary">
                 {subscription?.isTrial ? t("subscription.status.trial") : getPlanLabel(subscription?.plan)}
               </p>
               <span
@@ -155,8 +155,8 @@ export default function SubscriptionDetailPage() {
                 key={row.testId}
                 className={`flex items-center justify-between py-[14px] ${idx < rows.length - 1 ? "border-b border-[#F0F0F0]" : ""}`}
               >
-                <p className="text-[13px] text-[#9CA3AF]">{row.label}</p>
-                <p className="text-[14px] text-[#18181B] font-medium" data-testid={row.testId}>{row.value}</p>
+                <p className="text-[13px] text-[#717171]">{row.label}</p>
+                <p className="text-[14px] text-[#222222] font-medium" data-testid={row.testId}>{row.value}</p>
               </div>
             ))}
           </div>
@@ -169,7 +169,7 @@ export default function SubscriptionDetailPage() {
             data-testid="button-manage-payment"
           >
             <CreditCard className="w-[22px] h-[22px] text-[#71717A] flex-shrink-0" />
-            <p className="text-[15px] text-[#18181B] flex-1">{t("subscription.managePayment")}</p>
+            <p className="text-[15px] text-[#222222] flex-1">{t("subscription.managePayment")}</p>
             <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
           </button>
 
@@ -193,8 +193,8 @@ export default function SubscriptionDetailPage() {
                 <AlertCircle className="w-5 h-5 text-[#0D6EFD]" />
               </div>
               <div>
-                <p className="text-[15px] font-medium text-[#18181B]">{t("subscription.expiredTitle")}</p>
-                <p className="text-[14px] text-[#6B7280] mt-0.5">{t("subscription.expiredDesc")}</p>
+                <p className="text-[15px] font-medium text-[#222222]">{t("subscription.expiredTitle")}</p>
+                <p className="text-[14px] text-[#717171] mt-0.5">{t("subscription.expiredDesc")}</p>
               </div>
             </div>
             <button

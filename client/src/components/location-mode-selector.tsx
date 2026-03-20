@@ -384,8 +384,8 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
               onClick={() => setTab(tab.id)}
               className={`flex-1 py-2.5 text-[13px] font-medium text-center rounded-lg transition-all ${
                 value.tab === tab.id
-                  ? "bg-white text-[#1F2937] shadow-sm"
-                  : "text-[#1F2937] hover:text-[#1F2937]"
+                  ? "bg-white text-[#222222] shadow-sm"
+                  : "text-[#222222] hover:text-[#222222]"
               }`}
               data-testid={`tab-location-${tab.id}`}
             >
@@ -401,8 +401,8 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
               onClick={() => setTab(tab.id)}
               className={`flex-1 pb-3 text-sm font-medium text-center transition-colors relative ${
                 value.tab === tab.id
-                  ? "text-[#1F2937]"
-                  : "text-[#1F2937] hover:text-[#1F2937]"
+                  ? "text-[#222222]"
+                  : "text-[#222222] hover:text-[#222222]"
               }`}
               data-testid={`tab-location-${tab.id}`}
             >
@@ -425,7 +425,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
               onChange={(e) => handleCityInput(e.target.value)}
               onFocus={() => { if (hasCityResults && !value.place) setCityOpen(true); }}
               placeholder={t("location.searchCity")}
-              className={`w-full min-h-[60px] rounded-[20px] bg-[#F3F4F6] border px-11 text-[16px] text-[#71717A] placeholder:text-[#9CA3AF] ${
+              className={`w-full min-h-[60px] rounded-[20px] bg-[#F3F4F6] border px-11 text-[16px] text-[#71717A] placeholder:text-[#717171] ${
                 value.place ? "border-[#0D6EFD] bg-[#F5F7FA]/30" : "border-[#E5E7EB]"
               }`}
               data-testid="input-city-search"
@@ -433,7 +433,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
             {cityQuery && (
               <button
                 onClick={handleCityClear}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#E5E7EB] flex items-center justify-center hover:bg-[#6B7280]/30 transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#E5E7EB] flex items-center justify-center hover:bg-[#717171]/30 transition-colors"
                 data-testid="button-clear-city"
               >
                 <X className="w-3.5 h-3.5 text-[#71717A]" />
@@ -460,7 +460,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                       <span>{s.state ? `${s.city_name}, ${s.state}` : s.city_name}</span>
                     </button>
                   ))}
-                  <div className="px-4 py-2 text-[11px] text-[#9CA3AF] text-right border-t border-[#F3F4F6]" data-testid="text-powered-by-google">
+                  <div className="px-4 py-2 text-[11px] text-[#717171] text-right border-t border-[#F3F4F6]" data-testid="text-powered-by-google">
                     {t("cityPicker.poweredByGoogle")}
                   </div>
                 </>
@@ -524,7 +524,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
 
       {value.tab === "radius" && (
         <div>
-          <label className="text-[16px] font-medium text-[#18181B] mb-3 block">{t("location.radiusLabel")}</label>
+          <label className="text-[16px] font-medium text-[#222222] mb-3 block">{t("location.radiusLabel")}</label>
           <div className="relative">
             <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A]" />
             <select
@@ -547,7 +547,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       {value.tab === "reistijd" && (
         <>
           <div ref={destContainerRef} className="relative">
-            <label className="text-[16px] font-medium text-[#18181B] mb-3 block">{t("location.workAddress")}</label>
+            <label className="text-[16px] font-medium text-[#222222] mb-3 block">{t("location.workAddress")}</label>
             <div className="relative">
               <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#71717A] pointer-events-none" />
               <input
@@ -556,7 +556,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                 onChange={(e) => handleDestInput(e.target.value)}
                 onFocus={() => { if (hasDestResults && value.commuteLat == null) setDestOpen(true); }}
                 placeholder={t("location.searchAddress")}
-                className={`w-full min-h-[60px] rounded-[20px] bg-[#F3F4F6] border px-11 text-[16px] text-[#71717A] placeholder:text-[#9CA3AF] ${
+                className={`w-full min-h-[60px] rounded-[20px] bg-[#F3F4F6] border px-11 text-[16px] text-[#71717A] placeholder:text-[#717171] ${
                   value.commuteLat != null ? "border-[#0D6EFD] bg-[#F5F7FA]/30" : "border-[#E5E7EB]"
                 }`}
                 data-testid="input-commute-destination"
@@ -564,7 +564,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
               {destQuery && (
                 <button
                   onClick={handleDestClear}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#E5E7EB] flex items-center justify-center hover:bg-[#6B7280]/30 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#E5E7EB] flex items-center justify-center hover:bg-[#717171]/30 transition-colors"
                   data-testid="button-clear-destination"
                 >
                   <X className="w-3.5 h-3.5 text-[#71717A]" />
@@ -591,7 +591,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                         <span>{s.state ? `${s.city_name}, ${s.state}` : s.display_name}</span>
                       </button>
                     ))}
-                    <div className="px-4 py-2 text-[11px] text-[#9CA3AF] text-right border-t border-[#F3F4F6]">
+                    <div className="px-4 py-2 text-[11px] text-[#717171] text-right border-t border-[#F3F4F6]">
                       {t("cityPicker.poweredByGoogle")}
                     </div>
                   </>
@@ -620,7 +620,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
           )}
 
           <div>
-            <label className="text-[16px] font-medium text-[#18181B] mb-3 block">{t("location.transport")}</label>
+            <label className="text-[16px] font-medium text-[#222222] mb-3 block">{t("location.transport")}</label>
             <div className="flex gap-2">
               {([
                 { id: "auto" as const, icon: Car, label: t("location.transportOptions.car") },
@@ -633,7 +633,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                   className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-lg text-xs font-medium transition-all ${
                     value.commuteMode === mode.id
                       ? "bg-[#0D6EFD] text-white"
-                      : "bg-[#F5F7FA] text-[#1F2937] hover:bg-[#E5E7EB]"
+                      : "bg-[#F5F7FA] text-[#222222] hover:bg-[#E5E7EB]"
                   }`}
                   data-testid={`button-transport-${mode.id}`}
                 >
@@ -645,7 +645,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
           </div>
 
           <div>
-            <label className="text-[16px] font-medium text-[#18181B] mb-3 block">{t("location.maxCommute")}</label>
+            <label className="text-[16px] font-medium text-[#222222] mb-3 block">{t("location.maxCommute")}</label>
             <div className="relative">
               <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A]" />
               <select
@@ -732,7 +732,7 @@ function DistrictMultiSelect({
         className="w-full flex items-center justify-between min-h-[52px] px-4 rounded-[20px] bg-[#F3F4F6] border border-[#E5E7EB] text-[15px] text-[#71717A] hover:bg-[#F5F7FA] transition-colors"
         data-testid="button-district-dropdown"
       >
-        <span className={selected.length > 0 ? "font-medium" : "text-[#9CA3AF]"}>
+        <span className={selected.length > 0 ? "font-medium" : "text-[#717171]"}>
           {selected.length > 0
             ? t("location.districtSelected", { count: selected.length, label: selected.length === 1 ? t("location.districtSingular") : t("location.districtPlural") })
             : t("location.selectDistricts")}

@@ -49,18 +49,18 @@
   --yo-teal-dark: #0A4FBA;
   --yo-pink: #0D6EFD;
   --yo-pink-light: #EBF2FF;
-  --yo-dark: #1F2937;
-  --yo-text: #1F2937;
-  --yo-muted: #6B7280;
+  --yo-dark: #222222;
+  --yo-text: #222222;
+  --yo-muted: #717171;
   --yo-bg: #FFFFFF;
   --yo-surface: #F5F7FA;
   --yo-divider: #E5E7EB;
   --yo-border: #E5E7EB;
   --yo-input-border: #D1D5DB;
-  --yo-tag-dark: #1F2937;
+  --yo-tag-dark: #222222;
   --yo-success: #4CAF50;
   --yo-chip-bg: #F5F7FA;
-  --yo-chip-text: #1F2937;
+  --yo-chip-text: #222222;
   --yo-banner-dark: #0B2A4A;
 
   --font-sans: 'Poppins', 'Inter', system-ui, -apple-system, sans-serif;
@@ -214,7 +214,7 @@
   .text-row-section-title {
     font-size: 12px;
     font-weight: 400;
-    color: #9CA3AF;
+    color: #717171;
     line-height: 1.3;
     letter-spacing: 0.04em;
     text-transform: uppercase;
@@ -223,42 +223,42 @@
   .text-row-title {
     font-size: 16px;
     font-weight: 400;
-    color: #111827;
+    color: #222222;
     line-height: 1.35;
   }
 
   .text-row-subtitle {
     font-size: 14px;
     font-weight: 400;
-    color: #9CA3AF;
+    color: #717171;
     line-height: 1.5;
   }
 
   .text-subtitle {
     font-size: 15px;
     font-weight: 400;
-    color: #9CA3AF;
+    color: #717171;
     line-height: 1.5;
   }
 
   .text-muted-body {
     font-size: 14px;
     font-weight: 400;
-    color: #9CA3AF;
+    color: #717171;
     line-height: 1.5;
   }
 
   .text-field-label {
     font-size: 13px;
     font-weight: 400;
-    color: #9CA3AF;
+    color: #717171;
     line-height: 1.3;
   }
 
   .text-field-value {
     font-size: 16px;
     font-weight: 400;
-    color: #111827;
+    color: #222222;
     line-height: 1.35;
   }
 

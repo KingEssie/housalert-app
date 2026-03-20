@@ -82,8 +82,8 @@ export default function DocumentsPage() {
           <div className="flex items-center gap-3 mb-4">
             <FileText className="w-5 h-5 text-[#71717A]" />
             <div>
-              <p className="text-[15px] font-medium text-[#1F2937]">{t("documents.heading")}</p>
-              <p className="text-[12px] text-[#6B7280]">
+              <p className="text-[15px] font-medium text-[#222222]">{t("documents.heading")}</p>
+              <p className="text-[12px] text-[#717171]">
                 {checkedCount}/{DOCUMENT_ITEMS.length} {t("documents.collected")}
               </p>
             </div>
@@ -115,7 +115,7 @@ export default function DocumentsPage() {
                   ) : (
                     <Circle className="w-5 h-5 text-[#D1D5DB] flex-shrink-0" />
                   )}
-                  <span className={`text-[14px] font-medium flex-1 ${checked ? "text-[#9CA3AF] line-through" : "text-[#1F2937]"}`}>
+                  <span className={`text-[14px] font-medium flex-1 ${checked ? "text-[#717171] line-through" : "text-[#222222]"}`}>
                     {t(`documents.items.${key}`)}
                   </span>
                 </button>
@@ -125,7 +125,7 @@ export default function DocumentsPage() {
         </div>
 
         <div className="rounded-[24px] border border-[#F0F0F0] bg-[#F9FAFB] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5">
-          <p className="text-[13px] text-[#6B7280] leading-relaxed">
+          <p className="text-[13px] text-[#717171] leading-relaxed">
             {t("documents.tip")}
           </p>
         </div>

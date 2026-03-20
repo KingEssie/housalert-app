@@ -21,7 +21,7 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
           data-testid={`progress-step-${i + 1}`}
         />
       ))}
-      <span className="text-[13px] font-medium text-[#1F2937] ml-1 whitespace-nowrap">
+      <span className="text-[13px] font-medium text-[#222222] ml-1 whitespace-nowrap">
         {t("onboarding.step", { step, total })}
       </span>
     </div>
@@ -39,14 +39,14 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
       </div>
 
       <h1
-        className="text-[28px] font-medium leading-tight text-[#1F2937] mb-4 max-w-[320px] tracking-wide"
+        className="text-[28px] font-medium leading-tight text-[#222222] mb-4 max-w-[320px] tracking-wide"
         data-testid="text-welcome-title"
       >
         {t("onboarding.welcome.title")}
       </h1>
 
       <p
-        className="text-[16px] leading-relaxed text-[#1F2937] mb-10 max-w-[320px]"
+        className="text-[16px] leading-relaxed text-[#222222] mb-10 max-w-[320px]"
         data-testid="text-welcome-subtitle"
       >
         {t("onboarding.welcome.subtitle")}
@@ -61,7 +61,7 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
         <ChevronRight className="w-5 h-5" />
       </button>
 
-      <p className="text-[13px] text-[#1F2937] mt-4" data-testid="text-duration-hint">
+      <p className="text-[13px] text-[#222222] mt-4" data-testid="text-duration-hint">
         {t("onboarding.welcome.hint")}
       </p>
     </div>
@@ -144,36 +144,36 @@ function BudgetStep({
 
         <div className="space-y-4">
           <div>
-            <label className="block text-[13px] font-medium text-[#18181B] tracking-wide mb-1.5">
+            <label className="block text-[13px] font-medium text-[#222222] tracking-wide mb-1.5">
               {t("onboarding.budget.minPrice")}
             </label>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#1F2937] text-[15px]">&#8364;</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#222222] text-[15px]">&#8364;</span>
               <input
                 type="number"
                 inputMode="numeric"
                 placeholder={t("onboarding.budget.minPlaceholder")}
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
-                className="w-full min-h-[56px] rounded-[20px] bg-[#F3F4F6] border border-transparent pl-9 pr-4 text-[16px] text-[#1F2937] placeholder:text-[#9CA3AF]"
+                className="w-full min-h-[56px] rounded-[20px] bg-[#F3F4F6] border border-transparent pl-9 pr-4 text-[16px] text-[#222222] placeholder:text-[#717171]"
                 data-testid="input-min-price"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-[13px] font-medium text-[#18181B] tracking-wide mb-1.5">
+            <label className="block text-[13px] font-medium text-[#222222] tracking-wide mb-1.5">
               {t("onboarding.budget.maxPrice")}
             </label>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#1F2937] text-[15px]">&#8364;</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#222222] text-[15px]">&#8364;</span>
               <input
                 type="number"
                 inputMode="numeric"
                 placeholder={t("onboarding.budget.maxPlaceholder")}
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
-                className="w-full min-h-[56px] rounded-[20px] bg-[#F3F4F6] border border-transparent pl-9 pr-4 text-[16px] text-[#1F2937] placeholder:text-[#9CA3AF]"
+                className="w-full min-h-[56px] rounded-[20px] bg-[#F3F4F6] border border-transparent pl-9 pr-4 text-[16px] text-[#222222] placeholder:text-[#717171]"
                 data-testid="input-max-price"
               />
             </div>
@@ -236,7 +236,7 @@ function PropertyTypeStep({
               className={`w-full min-h-[56px] rounded-2xl border-2 px-5 text-left text-[16px] font-medium transition-all flex items-center justify-between ${
                 propertyType === pt.value
                   ? "border-[#0D6EFD] bg-[#EBF2FF] text-[#0D6EFD]"
-                  : "border-[#E5E7EB] bg-white text-[#1F2937]"
+                  : "border-[#E5E7EB] bg-white text-[#222222]"
               }`}
               data-testid={`option-property-${pt.value}`}
             >
@@ -274,13 +274,13 @@ function AlertsStep({ onActivate, onSkip, saving }: { onActivate: () => void; on
       </div>
 
       <h2
-        className="text-[24px] font-medium text-[#18181B] mb-3 max-w-[300px] tracking-wide"
+        className="text-[24px] font-medium text-[#222222] mb-3 max-w-[300px] tracking-wide"
         data-testid="text-alerts-title"
       >
         {t("onboarding.alerts.title")}
       </h2>
 
-      <p className="text-[16px] text-[#1F2937] mb-4 max-w-[300px] leading-relaxed">
+      <p className="text-[16px] text-[#222222] mb-4 max-w-[300px] leading-relaxed">
         {t("onboarding.alerts.subtitle")}
       </p>
 

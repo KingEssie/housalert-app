@@ -133,7 +133,7 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
           {t("tips.title")}
         </h1>
         {read > 0 && (
-          <p className="text-[13px] text-[#6B7280] mt-1" data-testid="text-tips-progress">
+          <p className="text-[13px] text-[#717171] mt-1" data-testid="text-tips-progress">
             {read}/{total} {t("tips.completed")}
           </p>
         )}
@@ -147,8 +147,8 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
             <Lightbulb className="w-5 h-5 text-[#71717A]" />
           </div>
           <div>
-            <p className="text-[15px] font-medium text-[#18181B]">{t("tips.didYouKnow")}</p>
-            <p className="text-[13px] text-[#1F2937] mt-0.5 leading-relaxed">
+            <p className="text-[15px] font-medium text-[#222222]">{t("tips.didYouKnow")}</p>
+            <p className="text-[13px] text-[#222222] mt-0.5 leading-relaxed">
               {t("tips.intro")}
             </p>
           </div>
@@ -169,7 +169,7 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
                   <Icon className="w-5 h-5 text-[#0D6EFD]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className={`text-[15px] font-medium text-[#18181B] ${isRead ? "line-through text-[#9CA3AF]" : ""}`}>
+                  <p className={`text-[15px] font-medium text-[#222222] ${isRead ? "line-through text-[#717171]" : ""}`}>
                     {index + 1}. {guide.title}
                   </p>
                 </div>

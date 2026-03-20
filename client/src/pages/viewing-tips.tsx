@@ -101,7 +101,7 @@ export default function ViewingTipsPage() {
                   <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#EBF2FF" }}>
                     <Icon className="w-4.5 h-4.5" style={{ color: "#0D6EFD" }} />
                   </div>
-                  <h3 className="text-[16px] font-medium" style={{ color: "#1F2937" }}>{section.title}</h3>
+                  <h3 className="text-[16px] font-medium" style={{ color: "#222222" }}>{section.title}</h3>
                 </div>
                 <div className="px-6 pb-6">
                   <ul className="flex flex-col gap-2.5">

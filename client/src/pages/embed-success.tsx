@@ -10,7 +10,7 @@ import { apiFetch } from "@/lib/api-base";
 import { useEmbedded } from "@/hooks/use-embedded";
 import { useHashSearch } from "@/lib/hash-search";
 
-const INPUT_CLS = "w-full h-[44px] pl-11 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:bg-white";
+const INPUT_CLS = "w-full h-[44px] pl-11 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#222222] placeholder:text-[#717171] placeholder:font-normal focus:bg-white";
 
 export default function EmbedSuccessPage() {
   const [, navigate] = useLocation();
@@ -139,10 +139,10 @@ export default function EmbedSuccessPage() {
           <div className="w-16 h-16 rounded-full bg-[#E8FFF5] flex items-center justify-center mx-auto mb-5">
             <CheckCircle className="w-8 h-8 text-[#0D6EFD]" />
           </div>
-          <h1 className="text-[22px] font-medium text-[#18181B] mb-2" data-testid="text-embed-success-title">
+          <h1 className="text-[22px] font-medium text-[#222222] mb-2" data-testid="text-embed-success-title">
             {t("subscription.activated")}
           </h1>
-          <p className="text-[15px] text-[#1F2937] opacity-70" data-testid="text-embed-success-redirect">
+          <p className="text-[15px] text-[#222222] opacity-70" data-testid="text-embed-success-redirect">
             {t("subscription.redirecting")}
           </p>
         </div>
@@ -158,12 +158,12 @@ export default function EmbedSuccessPage() {
         </div>
 
         <h1
-          className="text-[22px] font-medium text-[#18181B] leading-[1.15] tracking-[-0.02em] mb-1 text-center"
+          className="text-[22px] font-medium text-[#222222] leading-[1.15] tracking-[-0.02em] mb-1 text-center"
           data-testid="text-embed-signup-title"
         >
           {t("embedSuccess.title")}
         </h1>
-        <p className="text-[14px] text-[#6B7280] mb-6 text-center">
+        <p className="text-[14px] text-[#717171] mb-6 text-center">
           {t("embedSuccess.subtitle")}
         </p>
 
@@ -226,7 +226,7 @@ export default function EmbedSuccessPage() {
           </form>
         </div>
 
-        <p className="text-center text-[12px] text-[#9CA3AF] mt-4">
+        <p className="text-center text-[12px] text-[#717171] mt-4">
           {t("auth.signup.footer")}
         </p>
       </main>

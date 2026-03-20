@@ -114,10 +114,10 @@ export function ReactieklaarCard({
         <div className="flex items-center justify-center">
           <Zap className="w-[18px] h-[18px] text-[#71717A]" />
         </div>
-        <h3 className="text-[15px] font-medium text-[#18181B] flex-1">{t("reactieklaar.title")}</h3>
+        <h3 className="text-[15px] font-medium text-[#222222] flex-1">{t("reactieklaar.title")}</h3>
         <span
           className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${
-            allDone ? "bg-[#16A34A]/10 text-[#1F2937]" : "bg-[#F5F7FA] text-[#1F2937]"
+            allDone ? "bg-[#16A34A]/10 text-[#222222]" : "bg-[#F5F7FA] text-[#222222]"
           }`}
           data-testid="text-reactieklaar-progress"
         >
@@ -153,11 +153,11 @@ export function ReactieklaarCard({
                 <div className="w-[18px] h-[18px] rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
               )}
               <Icon className={`w-4 h-4 flex-shrink-0 ${step.done ? "text-[#E5E7EB]" : "text-[#71717A]"}`} />
-              <span className={`text-[14px] flex-1 ${step.done ? "text-[#1F2937]" : "text-[#1F2937] font-medium"}`}>
+              <span className={`text-[14px] flex-1 ${step.done ? "text-[#222222]" : "text-[#222222] font-medium"}`}>
                 {getSpeedStepLabel(step.id, t)}
               </span>
               {hasAction && (
-                <ArrowRight className="w-3.5 h-3.5 text-[#1F2937] flex-shrink-0" />
+                <ArrowRight className="w-3.5 h-3.5 text-[#222222] flex-shrink-0" />
               )}
             </div>
           );

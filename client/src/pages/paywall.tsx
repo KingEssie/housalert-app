@@ -161,12 +161,12 @@ export default function PaywallPage() {
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-10 pb-32">
         <div className="text-center mb-8">
           <div className="w-14 h-14 rounded-2xl bg-[#F3F4F6] flex items-center justify-center mx-auto mb-4">
-            <Crown className="w-7 h-7 text-[#1F2937]" />
+            <Crown className="w-7 h-7 text-[#222222]" />
           </div>
-          <h1 className="text-[32px] font-medium text-[#18181B] tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-paywall-title">
+          <h1 className="text-[32px] font-medium text-[#222222] tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-paywall-title">
             {t("paywall.title")}
           </h1>
-          <p className="text-[15px] text-[#1F2937]">
+          <p className="text-[15px] text-[#222222]">
             {t("paywall.trialInfo")}
           </p>
         </div>
@@ -185,7 +185,7 @@ export default function PaywallPage() {
             >
               {plan.popular && (
                 <span
-                  className="absolute -top-3 left-5 px-3 py-0.5 bg-[#1F2937] text-white text-xs font-medium rounded-full"
+                  className="absolute -top-3 left-5 px-3 py-0.5 bg-[#222222] text-white text-xs font-medium rounded-full"
                   data-testid="badge-popular"
                 >
                   {t("paywall.mostChosen")}
@@ -194,11 +194,11 @@ export default function PaywallPage() {
 
               <div className="flex items-center justify-between gap-4 pr-8">
                 <div>
-                  <p className="text-[18px] font-medium text-[#18181B]">{t(plan.nameKey)}</p>
-                  <p className="text-[15px] text-[#1F2937]">{t(plan.pricePerMonthKey)}</p>
+                  <p className="text-[18px] font-medium text-[#222222]">{t(plan.nameKey)}</p>
+                  <p className="text-[15px] text-[#222222]">{t(plan.pricePerMonthKey)}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xl font-medium text-[#18181B]">{t(plan.priceKey)}</p>
+                  <p className="text-xl font-medium text-[#222222]">{t(plan.priceKey)}</p>
                   {plan.savingsKey && (
                     <p className="text-xs font-medium text-[#0D6EFD]">{t(plan.savingsKey)}</p>
                   )}
@@ -219,14 +219,14 @@ export default function PaywallPage() {
         </div>
 
         <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6">
-          <p className="text-[16px] font-medium text-[#18181B] mb-3">{t("paywall.featuresTitle")}</p>
+          <p className="text-[16px] font-medium text-[#222222] mb-3">{t("paywall.featuresTitle")}</p>
           <div className="space-y-2.5">
             {FEATURE_KEYS.map((key, i) => (
               <div key={i} className="flex items-center gap-3">
                 <div className="w-5 h-5 rounded-full bg-[#F5F7FA] flex items-center justify-center flex-shrink-0">
-                  <Check className="w-3 h-3 text-[#1F2937]" />
+                  <Check className="w-3 h-3 text-[#222222]" />
                 </div>
-                <span className="text-[15px] text-[#1F2937]">{t(key)}</span>
+                <span className="text-[15px] text-[#222222]">{t(key)}</span>
               </div>
             ))}
           </div>
@@ -251,7 +251,7 @@ export default function PaywallPage() {
               t("paywall.startTrial")
             )}
           </Button>
-          <p className="text-center text-[13px] text-[#1F2937] mt-3 opacity-60">
+          <p className="text-center text-[13px] text-[#222222] mt-3 opacity-60">
             {t("paywall.trialFooter")}
           </p>
         </div>

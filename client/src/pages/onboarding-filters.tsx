@@ -9,8 +9,8 @@ import { useEmbedded } from "@/hooks/use-embedded";
 import { getMatchEstimateRange } from "@/lib/match-estimate";
 import { apiFetch } from "@/lib/api-base";
 
-const INPUT_CLS = "w-full h-[44px] pl-10 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:bg-white";
-const SELECT_CLS = "w-full h-[44px] pl-10 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:bg-white cursor-pointer appearance-none";
+const INPUT_CLS = "w-full h-[44px] pl-10 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#222222] placeholder:text-[#717171] placeholder:font-normal focus:bg-white";
+const SELECT_CLS = "w-full h-[44px] pl-10 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#222222] focus:bg-white cursor-pointer appearance-none";
 
 export default function OnboardingFiltersPage() {
   const [, navigate] = useLocation();
@@ -99,10 +99,10 @@ export default function OnboardingFiltersPage() {
       <main className={`flex-1 ${containerClass} mx-auto w-full px-5 ${isEmbedded ? "pb-4 pt-1" : "pb-8 pt-3"}`}>
         {!isEmbedded && (
           <>
-            <h1 className="text-[24px] font-medium text-[#18181B] leading-[1.15] tracking-[-0.02em] mb-1" data-testid="text-filters-title">
+            <h1 className="text-[24px] font-medium text-[#222222] leading-[1.15] tracking-[-0.02em] mb-1" data-testid="text-filters-title">
               {t("onboardingFilters.title")}
             </h1>
-            <p className="text-[14px] text-[#6B7280] mb-5">
+            <p className="text-[14px] text-[#717171] mb-5">
               {t("onboardingFilters.subtitle", { city })}
             </p>
           </>
@@ -188,7 +188,7 @@ export default function OnboardingFiltersPage() {
             </Button>
 
             {city && (
-              <p className="text-center text-[14px] text-[#6B7280] mt-3" data-testid="text-embed-estimate">
+              <p className="text-center text-[14px] text-[#717171] mt-3" data-testid="text-embed-estimate">
                 {estimateLoading ? (
                   <span className="flex items-center justify-center gap-2">
                     <Loader2 className="w-4 h-4 animate-spin text-[#0D6EFD]" />

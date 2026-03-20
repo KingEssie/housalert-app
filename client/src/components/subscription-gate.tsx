@@ -18,12 +18,12 @@ export function SubscriptionGate({ isActive, children }: SubscriptionGateProps) 
   return (
     <div className="flex flex-col items-center justify-center text-center px-6 pt-20 pb-10 min-h-[70vh]">
       <div className="w-20 h-20 rounded-2xl bg-[#F5F7FA] flex items-center justify-center mx-auto mb-6">
-        <Crown className="w-10 h-10 text-[#1F2937]" />
+        <Crown className="w-10 h-10 text-[#222222]" />
       </div>
-      <h2 className="text-[22px] font-medium text-[#18181B] mb-3 leading-snug" data-testid="text-gate-title">
+      <h2 className="text-[22px] font-medium text-[#222222] mb-3 leading-snug" data-testid="text-gate-title">
         {t("subscription.gate.title")}
       </h2>
-      <p className="text-[15px] text-[#1F2937] opacity-70 max-w-[320px] mb-8 leading-relaxed">
+      <p className="text-[15px] text-[#222222] opacity-70 max-w-[320px] mb-8 leading-relaxed">
         {t("subscription.gate.desc")}
       </p>
       <button

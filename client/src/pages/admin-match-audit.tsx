@@ -41,8 +41,8 @@ function StatCard({ icon: Icon, label, value, color }: { icon: any; label: strin
         <Icon className="w-5 h-5 text-white" />
       </div>
       <div>
-        <p className="text-[22px] font-bold text-[#18181B] leading-none">{value}</p>
-        <p className="text-[13px] text-[#6B7280] mt-0.5">{label}</p>
+        <p className="text-[22px] font-bold text-[#222222] leading-none">{value}</p>
+        <p className="text-[13px] text-[#717171] mt-0.5">{label}</p>
       </div>
     </div>
   );
@@ -128,7 +128,7 @@ export default function AdminMatchAudit() {
         <PageHeader title="Match Audit" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
         <div className="p-4 pt-6 text-center">
           <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-3" />
-          <p className="text-[15px] text-[#6B7280]">{error}</p>
+          <p className="text-[15px] text-[#717171]">{error}</p>
           <button onClick={loadData} className="mt-4 px-6 py-2 bg-[#0D6EFD] text-white rounded-full text-[14px] font-semibold" data-testid="button-retry">Retry</button>
         </div>
       </div>
@@ -164,25 +164,25 @@ export default function AdminMatchAudit() {
         </div>
 
         <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 space-y-3" data-testid="card-timing">
-          <p className="text-[15px] font-bold text-[#18181B]">Timing</p>
+          <p className="text-[15px] font-bold text-[#222222]">Timing</p>
           <div className="space-y-2 text-[13px]">
             <div className="flex justify-between">
-              <span className="text-[#6B7280]">Last fetch run</span>
-              <span className="text-[#18181B] font-medium">{formatDate(timing.last_fetch_run_at)}</span>
+              <span className="text-[#717171]">Last fetch run</span>
+              <span className="text-[#222222] font-medium">{formatDate(timing.last_fetch_run_at)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[#6B7280]">Last email sent</span>
-              <span className="text-[#18181B] font-medium">{formatDate(timing.last_email_sent_at)}</span>
+              <span className="text-[#717171]">Last email sent</span>
+              <span className="text-[#222222] font-medium">{formatDate(timing.last_email_sent_at)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[#6B7280]">Last push sent</span>
-              <span className="text-[#18181B] font-medium">{formatDate(timing.last_push_sent_at)}</span>
+              <span className="text-[#717171]">Last push sent</span>
+              <span className="text-[#222222] font-medium">{formatDate(timing.last_push_sent_at)}</span>
             </div>
           </div>
         </div>
 
         <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 space-y-3" data-testid="card-actions">
-          <p className="text-[15px] font-bold text-[#18181B]">Actions</p>
+          <p className="text-[15px] font-bold text-[#222222]">Actions</p>
           <div className="flex gap-3">
             <button
               onClick={runBackfill}
@@ -195,7 +195,7 @@ export default function AdminMatchAudit() {
             </button>
             <button
               onClick={loadData}
-              className="flex items-center gap-2 px-4 py-2.5 bg-[#F5F6F8] text-[#18181B] rounded-xl text-[13px] font-semibold"
+              className="flex items-center gap-2 px-4 py-2.5 bg-[#F5F6F8] text-[#222222] rounded-xl text-[13px] font-semibold"
               data-testid="button-refresh"
             >
               <RefreshCw className="w-4 h-4" />
@@ -203,20 +203,20 @@ export default function AdminMatchAudit() {
             </button>
           </div>
           {backfillResult && (
-            <p className="text-[12px] text-[#6B7280] mt-2">{backfillResult}</p>
+            <p className="text-[12px] text-[#717171] mt-2">{backfillResult}</p>
           )}
         </div>
 
         {fetch_runs.length > 0 && (
           <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 space-y-3" data-testid="card-fetch-runs">
-            <p className="text-[15px] font-bold text-[#18181B]">Recent Fetch Runs</p>
+            <p className="text-[15px] font-bold text-[#222222]">Recent Fetch Runs</p>
             <div className="space-y-2">
               {fetch_runs.map((run: any, i: number) => (
                 <div key={run.id || i} className="flex items-center gap-3 py-2 border-b border-[#F3F4F6] last:border-0 text-[12px]">
                   <div className={`w-2 h-2 rounded-full ${run.status === "completed" ? "bg-green-500" : run.status === "failed" ? "bg-red-500" : "bg-yellow-500"}`} />
                   <div className="flex-1">
-                    <span className="text-[#18181B] font-medium">{formatDate(run.started_at)}</span>
-                    <span className="text-[#6B7280] ml-2">
+                    <span className="text-[#222222] font-medium">{formatDate(run.started_at)}</span>
+                    <span className="text-[#717171] ml-2">
                       fetched={run.fetched_count} matched={run.newly_matched_count} emails={run.emails_sent_count} errors={run.error_count}
                     </span>
                   </div>
@@ -227,20 +227,20 @@ export default function AdminMatchAudit() {
         )}
 
         <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 space-y-3" data-testid="card-recent-matches">
-          <p className="text-[15px] font-bold text-[#18181B]">Recent Match Deliveries ({recent_matches.length})</p>
+          <p className="text-[15px] font-bold text-[#222222]">Recent Match Deliveries ({recent_matches.length})</p>
           {recent_matches.length === 0 ? (
-            <p className="text-[13px] text-[#6B7280] text-center py-4">No canonical matches yet. Run backfill to populate.</p>
+            <p className="text-[13px] text-[#717171] text-center py-4">No canonical matches yet. Run backfill to populate.</p>
           ) : (
             <div className="space-y-0">
               {recent_matches.map((m: any, i: number) => (
                 <div key={m.id || i} className="py-3 border-b border-[#F3F4F6] last:border-0" data-testid={`match-row-${i}`}>
                   <div className="flex justify-between items-start mb-1">
-                    <p className="text-[13px] font-semibold text-[#18181B] leading-tight flex-1 pr-2">
+                    <p className="text-[13px] font-semibold text-[#222222] leading-tight flex-1 pr-2">
                       {m.listing_title || "Untitled"}
                     </p>
-                    <span className="text-[11px] text-[#6B7280] whitespace-nowrap">{formatDate(m.matched_at)}</span>
+                    <span className="text-[11px] text-[#717171] whitespace-nowrap">{formatDate(m.matched_at)}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-[11px] text-[#6B7280] mt-1">
+                  <div className="flex items-center gap-2 text-[11px] text-[#717171] mt-1">
                     <span>{m.listing_city || "—"}</span>
                     {m.listing_price && <span>€{m.listing_price}</span>}
                     <span>{m.listing_source || "—"}</span>
@@ -260,7 +260,7 @@ export default function AdminMatchAudit() {
                     </span>
                   </div>
                   {m.dedup_key && (
-                    <p className="text-[10px] text-[#9CA3AF] mt-1 font-mono truncate">dedup: {m.dedup_key}</p>
+                    <p className="text-[10px] text-[#717171] mt-1 font-mono truncate">dedup: {m.dedup_key}</p>
                   )}
                 </div>
               ))}
@@ -270,11 +270,11 @@ export default function AdminMatchAudit() {
 
         {data.search_profiles.profiles.length > 0 && (
           <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 space-y-3" data-testid="card-search-profiles">
-            <p className="text-[15px] font-bold text-[#18181B]">Search Profiles ({data.search_profiles.count})</p>
+            <p className="text-[15px] font-bold text-[#222222]">Search Profiles ({data.search_profiles.count})</p>
             {data.search_profiles.profiles.map((p: any, i: number) => (
               <div key={p.id || i} className="py-2 border-b border-[#F3F4F6] last:border-0 text-[12px]">
-                <span className="font-medium text-[#18181B]">{p.city_name || p.city}</span>
-                <span className="text-[#6B7280] ml-2">
+                <span className="font-medium text-[#222222]">{p.city_name || p.city}</span>
+                <span className="text-[#717171] ml-2">
                   €{p.price_min || 0}–€{p.price_max || "∞"} · {p.bedrooms_min || 0}+ rooms · {p.size_min || 0}+ m²
                 </span>
               </div>

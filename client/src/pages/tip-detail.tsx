@@ -26,7 +26,7 @@ export default function TipDetailPage() {
   if (!tip) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
-        <p className="text-[#6B7280]">{t("tips.notFound")}</p>
+        <p className="text-[#717171]">{t("tips.notFound")}</p>
       </div>
     );
   }
@@ -69,7 +69,7 @@ export default function TipDetailPage() {
           >
             <ArrowLeft className="w-4 h-4 text-[#71717A]" />
           </button>
-          <h1 className="text-[17px] font-medium text-[#18181B] flex-1 tracking-wide">
+          <h1 className="text-[17px] font-medium text-[#222222] flex-1 tracking-wide">
             {t("tips.tipLabel")} {currentIndex + 1}/{TIP_IDS.length}
           </h1>
         </div>
@@ -93,13 +93,13 @@ export default function TipDetailPage() {
             <p className="text-[12px] font-medium text-[#0D6EFD] uppercase tracking-wide">
               {t("tips.tipLabel")} {currentIndex + 1}
             </p>
-            <h2 className="text-[22px] font-medium text-[#18181B] leading-tight" data-testid="text-tip-title">
+            <h2 className="text-[22px] font-medium text-[#222222] leading-tight" data-testid="text-tip-title">
               {tip.title}
             </h2>
           </div>
         </div>
 
-        <p className="text-[15px] text-[#1F2937] leading-relaxed mb-6" data-testid="text-tip-description">
+        <p className="text-[15px] text-[#222222] leading-relaxed mb-6" data-testid="text-tip-description">
           {tip.description}
         </p>
 
@@ -109,7 +109,7 @@ export default function TipDetailPage() {
           data-testid="button-open-content"
         >
           <Icon className="w-5 h-5 text-[#0D6EFD] flex-shrink-0" />
-          <span className="text-[14px] font-medium text-[#18181B] flex-1">{t("tips.openContent")}</span>
+          <span className="text-[14px] font-medium text-[#222222] flex-1">{t("tips.openContent")}</span>
           <ChevronRight className="w-4 h-4 text-[#71717A]" />
         </button>
       </main>
@@ -122,7 +122,7 @@ export default function TipDetailPage() {
             className={`flex-1 h-[52px] rounded-full text-[15px] font-medium flex items-center justify-center gap-2 ${
               isRead
                 ? "bg-[#F0FDF4] text-[#16A34A] border border-[#BBF7D0] hover:bg-[#F0FDF4]"
-                : "bg-white text-[#1F2937] border border-[#E5E7EB] hover:bg-[#F5F7FA]"
+                : "bg-white text-[#222222] border border-[#E5E7EB] hover:bg-[#F5F7FA]"
             }`}
             data-testid="button-mark-read"
           >

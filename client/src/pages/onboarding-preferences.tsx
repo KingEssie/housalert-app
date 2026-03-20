@@ -11,7 +11,7 @@ const FURNISHED_OPTIONS = ["any", "furnished", "unfurnished"] as const;
 const HOUSING_TYPES = ["any", "apartment", "studio", "room", "house", "wg"] as const;
 const TARGET_GROUPS = ["any", "students", "couples", "families", "singles", "seniors"] as const;
 
-const SELECT_CLS = "w-full h-[44px] px-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] focus:bg-white cursor-pointer appearance-none";
+const SELECT_CLS = "w-full h-[44px] px-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#222222] focus:bg-white cursor-pointer appearance-none";
 
 export default function OnboardingPreferencesPage() {
   const [, navigate] = useLocation();
@@ -79,12 +79,12 @@ export default function OnboardingPreferencesPage() {
 
       <main className={`flex-1 ${containerClass} mx-auto w-full px-5 pb-8 pt-3`}>
         <h1
-          className="text-[24px] font-medium text-[#18181B] leading-[1.15] tracking-[-0.02em] mb-1"
+          className="text-[24px] font-medium text-[#222222] leading-[1.15] tracking-[-0.02em] mb-1"
           data-testid="text-preferences-title"
         >
           {t("onboardingPreferences.title")}
         </h1>
-        <p className="text-[14px] text-[#6B7280] mb-5">
+        <p className="text-[14px] text-[#717171] mb-5">
           {t("onboardingPreferences.subtitle")}
         </p>
 

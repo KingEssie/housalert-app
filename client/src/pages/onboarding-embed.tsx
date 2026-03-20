@@ -45,7 +45,7 @@ function EstimateBlock({ city, maxPrice }: { city: string; maxPrice: string }) {
         {loading ? (
           <div className="h-4 w-48 bg-[#EBF2FF] rounded animate-pulse" />
         ) : estimate !== null ? (
-          <p className="text-[13px] sm:text-[14px] font-medium text-[#18181B] leading-snug">
+          <p className="text-[13px] sm:text-[14px] font-medium text-[#222222] leading-snug">
             <span className="text-[#0D6EFD] text-[15px] font-medium">{getMatchEstimateRange(estimate).low}–{getMatchEstimateRange(estimate).high}</span> {t("onboardingEmbed.matchesPerWeek")}
           </p>
         ) : null}
@@ -64,10 +64,10 @@ function CompletionScreen({ draftId }: { draftId: string }) {
         <Check className="w-7 h-7 text-[#0D6EFD]" />
       </div>
 
-      <h2 className="text-[20px] font-medium text-[#18181B] mb-1.5 tracking-wide" data-testid="embed-text-done-title">
+      <h2 className="text-[20px] font-medium text-[#222222] mb-1.5 tracking-wide" data-testid="embed-text-done-title">
         {t("onboardingEmbed.doneTitle")}
       </h2>
-      <p className="text-[14px] text-[#1F2937] mb-7 max-w-[300px] leading-relaxed">
+      <p className="text-[14px] text-[#222222] mb-7 max-w-[300px] leading-relaxed">
         {t("onboardingEmbed.doneSubtitle")}
       </p>
 
@@ -83,7 +83,7 @@ function CompletionScreen({ draftId }: { draftId: string }) {
         </a>
 
         <button
-          className="w-full h-[56px] rounded-full border border-[#E5E7EB] bg-white text-[#1F2937] font-medium text-[14px] transition-colors flex items-center justify-center gap-2"
+          className="w-full h-[56px] rounded-full border border-[#E5E7EB] bg-white text-[#222222] font-medium text-[14px] transition-colors flex items-center justify-center gap-2"
           data-testid="embed-button-download-app"
           onClick={() => window.open(continueUrl, "_top")}
         >
@@ -92,7 +92,7 @@ function CompletionScreen({ draftId }: { draftId: string }) {
         </button>
       </div>
 
-      <p className="text-[11px] text-[#1F2937] mt-6">
+      <p className="text-[11px] text-[#222222] mt-6">
         Powered by HousAlert
       </p>
     </div>
@@ -203,7 +203,7 @@ export default function OnboardingEmbedPage() {
 
         <div className="text-center mb-5">
           <h1
-            className="text-[21px] sm:text-[24px] font-medium text-[#18181B] leading-[1.25] tracking-tight"
+            className="text-[21px] sm:text-[24px] font-medium text-[#222222] leading-[1.25] tracking-tight"
             data-testid="embed-text-hero-title"
           >
             {t("onboardingEmbed.heroTitle")}
@@ -226,7 +226,7 @@ export default function OnboardingEmbedPage() {
           <div className="px-5 py-3 space-y-3.5">
 
             <div>
-              <label className="text-[13px] font-medium text-[#18181B] tracking-wide mb-2 block">
+              <label className="text-[13px] font-medium text-[#222222] tracking-wide mb-2 block">
                 {t("onboardingEmbed.propertyType")}
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -237,7 +237,7 @@ export default function OnboardingEmbedPage() {
                     className={`px-3.5 py-[7px] rounded-full text-[13px] font-medium transition-all ${
                       propertyType === pt.value
                         ? "bg-[#0D6EFD] text-white shadow-sm"
-                        : "bg-[#F5F7FA] text-[#1F2937]"
+                        : "bg-[#F5F7FA] text-[#222222]"
                     }`}
                     data-testid={`embed-chip-property-${pt.value}`}
                   >
@@ -248,32 +248,32 @@ export default function OnboardingEmbedPage() {
             </div>
 
             <div>
-              <label className="text-[13px] font-medium text-[#18181B] tracking-wide mb-2 block">
+              <label className="text-[13px] font-medium text-[#222222] tracking-wide mb-2 block">
                 {t("onboardingEmbed.monthlyBudget")}
               </label>
               <div className="flex items-center gap-2">
                 <div className="relative flex-1">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1F2937] text-[13px] font-medium">EUR</span>
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#222222] text-[13px] font-medium">EUR</span>
                   <input
                     type="number"
                     inputMode="numeric"
                     placeholder="min"
                     value={minPrice}
                     onChange={(e) => setMinPrice(e.target.value)}
-                    className="w-full h-[42px] rounded-[20px] bg-[#F3F4F6] border border-transparent pl-[52px] pr-3 text-[14px] text-[#1F2937] placeholder:text-[#9CA3AF]"
+                    className="w-full h-[42px] rounded-[20px] bg-[#F3F4F6] border border-transparent pl-[52px] pr-3 text-[14px] text-[#222222] placeholder:text-[#717171]"
                     data-testid="embed-input-min-price"
                   />
                 </div>
                 <div className="w-3 h-px bg-[#E5E7EB]" />
                 <div className="relative flex-1">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#1F2937] text-[13px] font-medium">EUR</span>
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#222222] text-[13px] font-medium">EUR</span>
                   <input
                     type="number"
                     inputMode="numeric"
                     placeholder="max"
                     value={maxPrice}
                     onChange={(e) => setMaxPrice(e.target.value)}
-                    className="w-full h-[42px] rounded-[20px] bg-[#F3F4F6] border border-transparent pl-[52px] pr-3 text-[14px] text-[#1F2937] placeholder:text-[#9CA3AF]"
+                    className="w-full h-[42px] rounded-[20px] bg-[#F3F4F6] border border-transparent pl-[52px] pr-3 text-[14px] text-[#222222] placeholder:text-[#717171]"
                     data-testid="embed-input-max-price"
                   />
                 </div>
@@ -282,7 +282,7 @@ export default function OnboardingEmbedPage() {
 
             <EstimateBlock city={cityName} maxPrice={maxPrice} />
 
-            <div className="flex items-center gap-2 text-[12px] text-[#1F2937]">
+            <div className="flex items-center gap-2 text-[12px] text-[#222222]">
               <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
               <span>{t("onboardingEmbed.maxSearches")}</span>
             </div>
@@ -313,7 +313,7 @@ export default function OnboardingEmbedPage() {
           </div>
         </div>
 
-        <p className="text-center text-[11px] text-[#1F2937] mt-4">
+        <p className="text-center text-[11px] text-[#222222] mt-4">
           Powered by HousAlert
         </p>
       </div>

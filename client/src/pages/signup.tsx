@@ -11,7 +11,7 @@ import { useTranslation } from "@/i18n";
 import { apiFetch } from "@/lib/api-base";
 import { useEmbedded } from "@/hooks/use-embedded";
 
-const INPUT_CLS = "w-full h-[44px] pl-11 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#1F2937] placeholder:text-[#9CA3AF] placeholder:font-normal focus:bg-white";
+const INPUT_CLS = "w-full h-[44px] pl-11 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#222222] placeholder:text-[#717171] placeholder:font-normal focus:bg-white";
 
 export default function SignupPage() {
   const [, navigate] = useLocation();
@@ -194,12 +194,12 @@ export default function SignupPage() {
 
       <main className={`flex-1 ${containerClass} mx-auto w-full px-5 pb-8 pt-3`}>
         <h1
-          className="text-[24px] font-medium text-[#18181B] leading-[1.15] tracking-[-0.02em] mb-1"
+          className="text-[24px] font-medium text-[#222222] leading-[1.15] tracking-[-0.02em] mb-1"
           data-testid="text-signup-title"
         >
           {t("auth.signup.funnelTitle")}
         </h1>
-        <p className="text-[14px] text-[#6B7280] mb-5">
+        <p className="text-[14px] text-[#717171] mb-5">
           {t("auth.signup.funnelSubtitle")}
         </p>
 
@@ -248,7 +248,7 @@ export default function SignupPage() {
               <button
                 type="button"
                 onClick={() => setShowReferral(true)}
-                className="flex items-center gap-2 text-[13px] text-[#6B7280] hover:text-[#0D6EFD] transition-colors py-1"
+                className="flex items-center gap-2 text-[13px] text-[#717171] hover:text-[#0D6EFD] transition-colors py-1"
                 data-testid="button-show-referral"
               >
                 <Gift className="w-4 h-4" />
@@ -268,7 +268,7 @@ export default function SignupPage() {
                     autoCapitalize="characters"
                   />
                 </div>
-                <p className="text-[12px] text-[#9CA3AF] mt-1 ml-1">{t("referral.inputHelper")}</p>
+                <p className="text-[12px] text-[#717171] mt-1 ml-1">{t("referral.inputHelper")}</p>
               </div>
             )}
 
@@ -290,7 +290,7 @@ export default function SignupPage() {
           </form>
         </div>
 
-        <p className="text-center text-[14px] text-[#6B7280] mt-5">
+        <p className="text-center text-[14px] text-[#717171] mt-5">
           {t("auth.signup.hasAccount")}{" "}
           <button
             onClick={() => navigate("/login")}
@@ -301,7 +301,7 @@ export default function SignupPage() {
           </button>
         </p>
 
-        <p className="text-center text-[12px] text-[#9CA3AF] mt-3">
+        <p className="text-center text-[12px] text-[#717171] mt-3">
           {t("auth.signup.footer")}
         </p>
       </main>

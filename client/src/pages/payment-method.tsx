@@ -48,7 +48,7 @@ export default function PaymentMethodPage() {
       <div className="max-w-xl mx-auto p-4 space-y-4 pb-8">
         <div className="bg-card rounded-2xl border overflow-hidden" style={{ borderColor: "#E5E7EB" }}>
           <div className="px-5 pt-5 pb-2">
-            <p className="text-[13px] font-medium tracking-wider" style={{ color: "#6B7280" }} data-testid="text-section-title-payment">
+            <p className="text-[13px] font-medium tracking-wider" style={{ color: "#717171" }} data-testid="text-section-title-payment">
               {t("paymentMethodPage.currentMethod")}
             </p>
           </div>
@@ -59,10 +59,10 @@ export default function PaymentMethodPage() {
                 <CreditCard className="w-5 h-5" style={{ color: "#0D6EFD" }} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[16px] font-medium" style={{ color: "#1F2937" }} data-testid="text-card-brand">
+                <p className="text-[16px] font-medium" style={{ color: "#222222" }} data-testid="text-card-brand">
                   {t("paymentMethodPage.managedByStripe")}
                 </p>
-                <p className="text-[14px]" style={{ color: "#6B7280" }} data-testid="text-card-desc">
+                <p className="text-[14px]" style={{ color: "#717171" }} data-testid="text-card-desc">
                   {t("paymentMethodPage.managedByStripeDesc")}
                 </p>
               </div>
@@ -80,7 +80,7 @@ export default function PaymentMethodPage() {
           {loading ? t("paymentMethodPage.opening") : t("paymentMethodPage.manageViaStripe")}
         </Button>
 
-        <p className="text-[13px] text-[#6B7280] text-center px-4 leading-relaxed">
+        <p className="text-[13px] text-[#717171] text-center px-4 leading-relaxed">
           {t("paymentMethodPage.managedInfo")}
         </p>
       </div>

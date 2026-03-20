@@ -200,7 +200,7 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
           {query && (
             <button
               onClick={handleClear}
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#E5E7EB] flex items-center justify-center hover:bg-[#6B7280]/30 transition-colors"
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#E5E7EB] flex items-center justify-center hover:bg-[#717171]/30 transition-colors"
               data-testid="button-clear-city"
             >
               <X className="w-3.5 h-3.5 text-[#71717A]" />
@@ -229,7 +229,7 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
                     <span>{s.state ? `${s.city_name}, ${s.state}` : s.city_name}</span>
                   </button>
                 ))}
-                <div className="px-4 py-2 text-[11px] text-[#9CA3AF] text-right border-t border-[#F3F4F6]">
+                <div className="px-4 py-2 text-[11px] text-[#717171] text-right border-t border-[#F3F4F6]">
                   {t("cityPicker.poweredByGoogle")}
                 </div>
               </>

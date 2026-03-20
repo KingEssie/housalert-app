@@ -118,7 +118,7 @@ export default function ContinueDraftPage() {
         {status === "error" && (
           <>
             <AlertCircle className="w-10 h-10 text-destructive mx-auto mb-4" />
-            <p className="text-[16px] font-medium mb-2" style={{ color: "#1F2937" }}>{t("continueDraft.notFound")}</p>
+            <p className="text-[16px] font-medium mb-2" style={{ color: "#222222" }}>{t("continueDraft.notFound")}</p>
             <p className="text-[14px] text-muted-foreground mb-6">{t("continueDraft.linkExpired")}</p>
             <button
               onClick={() => navigate("/")}
@@ -132,7 +132,7 @@ export default function ContinueDraftPage() {
         {status === "done" && (
           <>
             <Check className="w-10 h-10 mx-auto mb-4" style={{ color: "#16A34A" }} />
-            <p className="text-[16px] font-medium" style={{ color: "#1F2937" }}>{t("continueDraft.claimed")}</p>
+            <p className="text-[16px] font-medium" style={{ color: "#222222" }}>{t("continueDraft.claimed")}</p>
           </>
         )}
       </div>

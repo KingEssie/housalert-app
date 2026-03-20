@@ -175,7 +175,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
         <div className="flex items-center justify-between px-6 pt-5 pb-3">
           <div className="flex items-center gap-2">
             <Send className="w-5 h-5 text-[#71717A]" />
-            <h2 className="text-[18px] font-medium text-[#18181B]">{t("applySheet.title")}</h2>
+            <h2 className="text-[18px] font-medium text-[#222222]">{t("applySheet.title")}</h2>
           </div>
           <button
             onClick={onClose}
@@ -187,7 +187,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
         </div>
 
         <div className="px-6 pb-2">
-          <p className="text-[13px] text-[#1F2937] line-clamp-1">{listing.title} · {listing.city}</p>
+          <p className="text-[13px] text-[#222222] line-clamp-1">{listing.title} · {listing.city}</p>
         </div>
 
         <div className="flex-1 overflow-y-auto px-6 pb-4">
@@ -199,9 +199,9 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
                   {item.done ? (
                     <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A]" />
                   ) : (
-                    <AlertCircle className="w-3.5 h-3.5 text-[#9CA3AF]" />
+                    <AlertCircle className="w-3.5 h-3.5 text-[#717171]" />
                   )}
-                  <span className={`text-[12px] ${item.done ? "text-[#1F2937]" : "text-[#9CA3AF]"}`}>
+                  <span className={`text-[12px] ${item.done ? "text-[#222222]" : "text-[#717171]"}`}>
                     {t(item.labelKey)}
                   </span>
                 </div>
@@ -211,15 +211,15 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
 
           <div className="bg-[#F5F7FA] rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-[12px] font-medium text-[#18181B] tracking-wide">{t("applySheet.applicationLetter")}</p>
+              <p className="text-[12px] font-medium text-[#222222] tracking-wide">{t("applySheet.applicationLetter")}</p>
               {readyCount === readinessItems.length && (
-                <span className="text-[11px] font-medium text-[#1F2937] bg-[#F5F7FA] px-2 py-0.5 rounded-full" data-testid="badge-ready">
+                <span className="text-[11px] font-medium text-[#222222] bg-[#F5F7FA] px-2 py-0.5 rounded-full" data-testid="badge-ready">
                   {t("applySheet.readyToSend")}
                 </span>
               )}
             </div>
             <textarea
-              className="w-full text-[14px] text-[#1F2937] leading-relaxed font-[inherit] bg-transparent border-none outline-none resize-none min-h-[200px]"
+              className="w-full text-[14px] text-[#222222] leading-relaxed font-[inherit] bg-transparent border-none outline-none resize-none min-h-[200px]"
               value={editedLetter ?? filledLetter}
               onChange={(e) => setEditedLetter(e.target.value)}
               data-testid="apply-letter-preview"

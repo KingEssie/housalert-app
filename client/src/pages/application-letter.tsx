@@ -89,10 +89,10 @@ export default function ApplicationLetterPage() {
 
           <div>
             <div className="flex items-center justify-between mb-2.5">
-              <h3 className="text-[14px] font-medium text-[#6B7280]">{t("applicationLetter.placeholders")}</h3>
+              <h3 className="text-[14px] font-medium text-[#717171]">{t("applicationLetter.placeholders")}</h3>
               <button
                 onClick={handleReset}
-                className="flex items-center gap-1 text-[13px] text-[#9CA3AF] active:text-[#6B7280] transition-colors"
+                className="flex items-center gap-1 text-[13px] text-[#717171] active:text-[#717171] transition-colors"
                 data-testid="button-reset-template"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
@@ -139,11 +139,11 @@ export default function ApplicationLetterPage() {
                 value={template}
                 onChange={(e) => setTemplate(e.target.value)}
                 placeholder={t("applicationLetter.placeholderText")}
-                className="w-full min-h-[340px] px-5 py-5 rounded-[20px] border border-[#F0F0F0] bg-white text-[15px] text-[#18181B] placeholder:text-[#C4C4C4] focus:outline-none focus:border-[#0D6EFD]/30 focus:shadow-[0_0_0_3px_rgba(13,110,253,0.08)] resize-y leading-relaxed shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] transition-all"
+                className="w-full min-h-[340px] px-5 py-5 rounded-[20px] border border-[#F0F0F0] bg-white text-[15px] text-[#222222] placeholder:text-[#C4C4C4] focus:outline-none focus:border-[#0D6EFD]/30 focus:shadow-[0_0_0_3px_rgba(13,110,253,0.08)] resize-y leading-relaxed shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] transition-all"
                 data-testid="input-template"
               />
               {!isLongEnough && template.length > 0 && (
-                <p className="text-[12px] text-[#9CA3AF] mt-2 px-1">{t("applicationLetter.minChars")}</p>
+                <p className="text-[12px] text-[#717171] mt-2 px-1">{t("applicationLetter.minChars")}</p>
               )}
             </div>
           )}
@@ -154,7 +154,7 @@ export default function ApplicationLetterPage() {
         <button
           onClick={() => saveMutation.mutate(template)}
           disabled={!isLongEnough || saveMutation.isPending}
-          className="pointer-events-auto h-[48px] px-8 rounded-full bg-[#18181B] text-white text-[15px] font-medium disabled:opacity-40 shadow-[0_4px_16px_rgba(0,0,0,0.16)] active:scale-95 transition-all"
+          className="pointer-events-auto h-[48px] px-8 rounded-full bg-[#222222] text-white text-[15px] font-medium disabled:opacity-40 shadow-[0_4px_16px_rgba(0,0,0,0.16)] active:scale-95 transition-all"
           data-testid="button-save-template"
         >
           {saveMutation.isPending ? t("applicationLetter.saving") : t("applicationLetter.saveLetter")}
