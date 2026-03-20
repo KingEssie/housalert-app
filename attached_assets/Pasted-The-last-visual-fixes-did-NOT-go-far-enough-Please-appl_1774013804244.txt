@@ -1,0 +1,112 @@
+The last visual fixes did NOT go far enough. Please apply stronger, visible adjustments to these 3 elements on the Profile screen.
+
+IMPORTANT:
+- I expect clearly visible changes this time
+- Do NOT give me micro-adjustments
+- If the avatar asset itself contains too much empty padding, compensate for that in implementation
+- Do NOT redesign the page, only fix these 3 visual issues
+
+==================================================
+1. AVATAR PLACEHOLDER — MUST VISUALLY FILL THE CIRCLE
+==================================================
+
+Current issue:
+- the empty-state avatar still does NOT visually fill the circular avatar area
+- it still looks too small inside the circle
+
+This must be fixed aggressively.
+
+IMPORTANT:
+If the uploaded avatar-placeholder image itself contains white/transparent padding,
+do NOT just leave it as-is.
+Compensate in code.
+
+Acceptable solutions:
+- crop the asset tighter
+- wrap the image and scale it up inside the circle
+- use transform: scale(...)
+- use overflow hidden on the circular container
+- use object-fit: cover plus inner scaling
+- or replace the current avatar rendering logic so the image visually fills the circle
+
+Goal:
+- the avatar placeholder should appear as one full circular visual
+- no obvious inner whitespace
+- no “small icon floating inside a big circle”
+- it must feel intentionally fitted, like Airbnb
+
+==================================================
+2. TWO SQUARE CARDS — MOVE TITLES MUCH HIGHER
+==================================================
+
+Cards:
+- Extra zoekprofiel
+- Vrienden uitnodigen
+
+Current issue:
+- the titles are still sitting too low
+- there is too much empty space under the text
+
+Fix:
+- move the titles clearly upward
+- place the title visually between the illustration and the card bottom
+- reduce the bottom dead space significantly
+
+Requirements:
+- keep cards square
+- keep illustration size as it is now
+- do NOT reduce image size
+- only rebalance the internal vertical layout
+
+Target composition:
+[ illustration ]
+[ tighter spacing ]
+[ title ]
+[ small bottom spacing ]
+
+The title should feel centered in the lower part of the card, not dropped to the bottom edge.
+
+==================================================
+3. NOTIFICATIONS ILLUSTRATION — MAKE IT NOTICEABLY LARGER
+==================================================
+
+Current issue:
+- the notifications illustration is still too small
+- it is not visually strong enough
+
+Fix:
+- increase it another clear step
+- do NOT make a tiny adjustment
+- make it noticeably larger at a glance
+
+Requirements:
+- keep it aligned on the left
+- shift the text block right if needed
+- keep toggles on the far right
+- preserve readability and balance
+
+Goal:
+- the illustration should be immediately recognizable
+- it should feel like a real feature visual, not a small icon
+
+==================================================
+4. NO-EXCUSE CHECK
+==================================================
+
+Before finishing, verify visually that:
+- the avatar now fills the circle much better
+- the titles in the two square cards are clearly higher than before
+- the notifications illustration is obviously larger than before
+
+If a change is too subtle to notice in screenshots, it is NOT enough.
+
+==================================================
+5. RESULT
+==================================================
+
+At the end, summarize:
+1. how the avatar issue was solved technically
+   (especially if the source image had built-in padding)
+2. how much the square-card title positioning was changed
+3. how much the notifications illustration was increased
+4. which files/components were updated

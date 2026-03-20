@@ -1706,8 +1706,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                 {photoUrl ? (
                   <img src={photoUrl} alt="" className="w-[104px] h-[104px] rounded-full object-cover shadow-[0_2px_12px_rgba(0,0,0,0.08)]" data-testid="img-profile-avatar" />
                 ) : (
-                  <div className="w-[104px] h-[104px] rounded-full overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
-                    <img src={avatarPlaceholderImg} alt="" className="w-[140%] h-[140%] object-cover -ml-[20%] -mt-[16%]" data-testid="img-avatar-placeholder" />
+                  <div className="w-[104px] h-[104px] rounded-full overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.08)] flex items-center justify-center">
+                    <img src={avatarPlaceholderImg} alt="" className="w-full h-full object-cover scale-[1.75]" data-testid="img-avatar-placeholder" />
                   </div>
                 )}
                 <p className="text-[24px] font-semibold text-[#18181B] mt-2.5 leading-tight text-center" data-testid="text-user-firstname">
@@ -1742,11 +1742,13 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={() => navigate("/dashboard/searches/new")}
-              className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] px-4 pt-3 pb-3 flex flex-col items-center justify-center text-center active:scale-[0.98] transition-transform aspect-square overflow-hidden"
+              className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] p-3 flex flex-col items-center text-center active:scale-[0.98] transition-transform aspect-square overflow-hidden"
               data-testid="button-extra-profile"
             >
-              <img src={extraSearchProfileImg} alt="" className="max-w-[85%] max-h-[70%] w-auto h-auto object-contain mb-1.5" loading="lazy" />
-              <p className="text-[13px] font-semibold text-[#18181B] leading-snug">{t("profile.extraProfile")}</p>
+              <div className="flex-1 flex items-center justify-center">
+                <img src={extraSearchProfileImg} alt="" className="max-w-[90%] max-h-full w-auto h-auto object-contain" loading="lazy" />
+              </div>
+              <p className="text-[13px] font-semibold text-[#18181B] leading-snug mt-1 pb-0.5">{t("profile.extraProfile")}</p>
             </button>
 
             <button
@@ -1762,11 +1764,13 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                   toast({ title: t("referral.copyFailed"), variant: "destructive" });
                 }
               }}
-              className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] px-4 pt-3 pb-3 flex flex-col items-center justify-center text-center active:scale-[0.98] transition-transform aspect-square overflow-hidden"
+              className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] p-3 flex flex-col items-center text-center active:scale-[0.98] transition-transform aspect-square overflow-hidden"
               data-testid="button-invite-friends"
             >
-              <img src={inviteFriendsImg} alt="" className="max-w-[85%] max-h-[70%] w-auto h-auto object-contain mb-1.5" loading="lazy" />
-              <p className="text-[13px] font-semibold text-[#18181B] leading-snug">{t("profile.inviteFriends")}</p>
+              <div className="flex-1 flex items-center justify-center">
+                <img src={inviteFriendsImg} alt="" className="max-w-[90%] max-h-full w-auto h-auto object-contain" loading="lazy" />
+              </div>
+              <p className="text-[13px] font-semibold text-[#18181B] leading-snug mt-1 pb-0.5">{t("profile.inviteFriends")}</p>
             </button>
           </div>
 
@@ -1798,8 +1802,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] px-5 py-5"
             data-testid="card-notifications"
           >
-            <div className="flex items-start gap-4">
-              <img src={notificationsImg} alt="" className="w-20 h-20 object-contain flex-shrink-0" loading="lazy" />
+            <div className="flex items-start gap-3">
+              <img src={notificationsImg} alt="" className="w-[100px] h-[100px] object-contain flex-shrink-0 -ml-1" loading="lazy" />
               <div className="flex-1 min-w-0">
                 <p className="text-[15px] font-semibold text-[#18181B] mb-3">{t("profile.notificationSettings")}</p>
                 <div className="flex flex-col gap-3.5">
