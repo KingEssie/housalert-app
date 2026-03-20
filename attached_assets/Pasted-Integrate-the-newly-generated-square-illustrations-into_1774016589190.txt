@@ -1,0 +1,77 @@
+Integrate the newly generated square illustrations into the app and replace the old ones.
+
+IMPORTANT:
+- Do NOT redesign layouts
+- Do NOT change spacing or structure (unless needed for correct image fit)
+- Only replace and correctly position the images
+
+==================================================
+1. REPLACE IMAGES
+==================================================
+
+Replace the existing illustrations in these components:
+
+1. "Extra zoekprofiel"
+2. "Vrienden uitnodigen"
+3. "Meldingen"
+4. Profile avatar placeholder
+
+Use the newly uploaded images provided in this session.
+
+==================================================
+2. IMAGE FITTING — VERY IMPORTANT
+==================================================
+
+All illustrations are square (1:1).
+
+For the square cards:
+- use object-fit: contain
+- center the image
+- prevent cropping
+- ensure full image is visible
+
+For the profile avatar:
+- use object-fit: cover
+- image must fully fill the circle
+- no inner whitespace
+- perfectly centered
+
+For the notifications card:
+- image aligned left
+- slightly larger than before
+- do not crop important parts
+
+==================================================
+3. CONSISTENT SIZING
+==================================================
+
+Ensure:
+
+- the two square cards use identical image sizing
+- images are visually balanced (not too small, not overflowing)
+- padding around images is consistent
+
+==================================================
+4. CLEANUP OLD ASSETS
+==================================================
+
+- remove old illustration imports
+- remove unused image files
+- ensure no old blue-themed images remain
+
+==================================================
+5. PERFORMANCE
+==================================================
+
+- optimize images if needed
+- ensure proper loading (no layout shift)
+
+==================================================
+6. RESULT
+==================================================
+
+Summarize:
+1. where each image was placed
+2. how image fitting was handled per component
+3. which old assets were removed
+4. which files/components were updated

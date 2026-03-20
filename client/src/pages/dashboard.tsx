@@ -1,10 +1,10 @@
 import { apiFetch } from "@/lib/api-base";
 import { useAuth } from "@/lib/auth";
 import { useLocation } from "wouter";
-import extraSearchProfileImg from "@assets/E493CA4C-BCC8-4E7F-B4E3-D01E4DE29963_1774011563409.png";
-import inviteFriendsImg from "@assets/1D221EB5-E485-4080-95F8-CB989B8FD22F_1774011563409.png";
-import notificationsImg from "@assets/ECF8F8EF-FDA3-4832-A502-28338DF9C8DA_1774011563409.png";
-import avatarPlaceholderImg from "@assets/98A0D97E-AD92-4376-A6E7-1EFEE47999BF_1774011563409.png";
+import extraSearchProfileImg from "@assets/035C2C6F-E3B7-4603-A7CD-BE58AE8A146E_1774016597513.png";
+import inviteFriendsImg from "@assets/8A1420D2-D9C7-48AD-B977-B3C926737083_1774016597514.png";
+import notificationsImg from "@assets/329DE0A7-F3DD-4F72-8A07-497AD0C8962F_1774016597514.png";
+import avatarPlaceholderImg from "@assets/93C55784-F987-4BEB-9FA7-F1BE78E189BE_1774016597514.png";
 import { useEffect, useState, useCallback } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getSearchProfiles, deleteSearchProfile, type SearchProfile } from "@/lib/search-profiles";
@@ -1707,7 +1707,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                   <img src={photoUrl} alt="" className="w-[104px] h-[104px] rounded-full object-cover shadow-[0_2px_12px_rgba(0,0,0,0.08)]" data-testid="img-profile-avatar" />
                 ) : (
                   <div className="w-[104px] h-[104px] rounded-full overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.08)] flex items-center justify-center">
-                    <img src={avatarPlaceholderImg} alt="" className="w-full h-full object-cover scale-[1.75]" data-testid="img-avatar-placeholder" />
+                    <img src={avatarPlaceholderImg} alt="" className="w-full h-full object-cover scale-[1.35]" data-testid="img-avatar-placeholder" />
                   </div>
                 )}
                 <p className="text-[24px] font-semibold text-[#222222] mt-2.5 leading-tight text-center" data-testid="text-user-firstname">
