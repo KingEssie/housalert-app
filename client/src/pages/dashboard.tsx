@@ -1744,36 +1744,36 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
 
           <div
             id="notification-settings"
-            className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] px-5 py-4"
+            className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] px-5 py-5"
             data-testid="card-notifications"
           >
-            <div className="flex items-center gap-4">
+            <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-2xl bg-[#F0F4FF] flex items-center justify-center flex-shrink-0">
                 <Bell className="w-[22px] h-[22px] text-[#0D6EFD]" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[15px] font-semibold text-[#18181B] mb-2">{t("profile.notificationSettings")}</p>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[13px] text-[#18181B]">Push</span>
+                <p className="text-[15px] font-semibold text-[#18181B] mb-3">{t("profile.notificationSettings")}</p>
+                <div className="flex flex-col gap-3.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[14px] text-[#18181B]">{t("profile.pushNotifications")}</span>
                     <button
                       onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
                       disabled={notifUpdating === "push_enabled"}
-                      className={`w-[40px] h-[24px] rounded-full relative transition-colors ${notifSettings?.push_enabled ? "bg-[#0D6EFD]" : "bg-[#E5E7EB]"} ${notifUpdating === "push_enabled" ? "opacity-50" : ""}`}
+                      className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.push_enabled ? "bg-[#0D6EFD]" : "bg-[#E5E7EB]"} ${notifUpdating === "push_enabled" ? "opacity-50" : ""}`}
                       data-testid="toggle-push"
                     >
-                      <span className={`absolute top-[3px] w-[18px] h-[18px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.push_enabled ? "left-[19px]" : "left-[3px]"}`} />
+                      <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.push_enabled ? "left-[23px]" : "left-[3px]"}`} />
                     </button>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[13px] text-[#18181B]">E-mail</span>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[14px] text-[#18181B]">{t("profile.emailNotifications")}</span>
                     <button
                       onClick={() => handleToggleNotif("email_enabled", !!notifSettings?.email_enabled)}
                       disabled={notifUpdating === "email_enabled"}
-                      className={`w-[40px] h-[24px] rounded-full relative transition-colors ${notifSettings?.email_enabled ? "bg-[#0D6EFD]" : "bg-[#E5E7EB]"} ${notifUpdating === "email_enabled" ? "opacity-50" : ""}`}
+                      className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.email_enabled ? "bg-[#0D6EFD]" : "bg-[#E5E7EB]"} ${notifUpdating === "email_enabled" ? "opacity-50" : ""}`}
                       data-testid="toggle-email"
                     >
-                      <span className={`absolute top-[3px] w-[18px] h-[18px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.email_enabled ? "left-[19px]" : "left-[3px]"}`} />
+                      <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.email_enabled ? "left-[23px]" : "left-[3px]"}`} />
                     </button>
                   </div>
                 </div>

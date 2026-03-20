@@ -1,0 +1,80 @@
+Refine ONLY the “Meldingen” card on the Profile page again.
+
+IMPORTANT:
+- Revert the previous compact two-column toggle idea
+- Keep the rest of the page unchanged
+- Only update the notifications card layout
+
+==================================================
+GOAL
+==================================================
+
+I want the notifications card to use the full labels again and show the two notification settings stacked vertically.
+
+Use this layout:
+
+- Pushnotificaties ................ [toggle]
+- E-mailnotificaties ............. [toggle]
+
+The labels should stay fully written out.
+The toggles should sit fully to the right.
+The toggles should also be slightly larger than they are now.
+
+==================================================
+1. LAYOUT
+==================================================
+
+Inside the “Meldingen” card:
+
+- keep the icon/image area on the left
+- keep the title “Meldingen”
+- below the title, show 2 stacked notification rows:
+  - Pushnotificaties
+  - E-mailnotificaties
+
+Each row should be:
+- label on the left
+- toggle aligned fully to the right
+
+Do NOT place the toggles side by side anymore.
+
+==================================================
+2. LABELS
+==================================================
+
+Use the full labels:
+- Pushnotificaties
+- E-mailnotificaties
+
+Do not shorten them to “Push” or “E-mail”.
+
+==================================================
+3. TOGGLES
+==================================================
+
+- make the toggles slightly larger than now
+- keep them aligned fully to the right edge of the content area
+- maintain existing toggle behavior and logic
+
+Do NOT rewrite notification logic.
+Only refine the layout and size.
+
+==================================================
+4. VISUAL STYLE
+==================================================
+
+- keep the current card style
+- keep the current icon area
+- keep the current shadow and rounded corners
+- keep the card calm and premium
+- balanced spacing between the two rows
+
+==================================================
+5. RESULT
+==================================================
+
+At the end, summarize:
+1. how the stacked layout was restored
+2. how the full labels were restored
+3. how the toggle size/alignment was changed
+4. which files/components were updated
