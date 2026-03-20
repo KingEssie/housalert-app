@@ -1138,7 +1138,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           />
         )
       ) : (
-        <div className="flex flex-col gap-[24px]">
+        <div className="flex flex-col gap-[28px]">
           {filteredMatches.map((m) => (
             <MatchCard
               key={m.listing_id}
@@ -2057,8 +2057,8 @@ export default function DashboardPage() {
                 className="flex-1 flex flex-col items-center justify-center gap-[3px]"
                 data-testid={`tab-${key}`}
               >
-                <Icon className={`w-[22px] h-[22px] transition-colors ${isActive ? "text-[#0D6EFD]" : "text-[#9CA3AF]"}`} strokeWidth={isActive ? 2 : 1.5} />
-                <span className={`text-[12px] transition-colors ${isActive ? "font-medium text-[#0D6EFD]" : "font-normal text-[#9CA3AF]"}`}>
+                <Icon className={`w-[26px] h-[26px] transition-colors ${isActive ? "text-[#0D6EFD]" : "text-[#9CA3AF]"}`} strokeWidth={isActive ? 2 : 1.5} />
+                <span className={`text-[11px] transition-colors ${isActive ? "font-medium text-[#0D6EFD]" : "font-normal text-[#9CA3AF]"}`}>
                   {t(labelKey)}
                 </span>
               </button>
