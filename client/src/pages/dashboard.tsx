@@ -1,6 +1,10 @@
 import { apiFetch } from "@/lib/api-base";
 import { useAuth } from "@/lib/auth";
 import { useLocation } from "wouter";
+import extraSearchProfileImg from "@assets/E493CA4C-BCC8-4E7F-B4E3-D01E4DE29963_1774011563409.png";
+import inviteFriendsImg from "@assets/1D221EB5-E485-4080-95F8-CB989B8FD22F_1774011563409.png";
+import notificationsImg from "@assets/ECF8F8EF-FDA3-4832-A502-28338DF9C8DA_1774011563409.png";
+import avatarPlaceholderImg from "@assets/98A0D97E-AD92-4376-A6E7-1EFEE47999BF_1774011563409.png";
 import { useEffect, useState, useCallback } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getSearchProfiles, deleteSearchProfile, type SearchProfile } from "@/lib/search-profiles";
@@ -1702,9 +1706,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                 {photoUrl ? (
                   <img src={photoUrl} alt="" className="w-[104px] h-[104px] rounded-full object-cover shadow-[0_2px_12px_rgba(0,0,0,0.08)]" data-testid="img-profile-avatar" />
                 ) : (
-                  <div className="w-[104px] h-[104px] rounded-full bg-gradient-to-br from-[#E5E7EB] to-[#F3F4F6] flex items-center justify-center shadow-[inset_0_1px_2px_rgba(0,0,0,0.06)]">
-                    <span className="text-[36px] font-semibold text-[#6B7280]">{initials}</span>
-                  </div>
+                  <img src={avatarPlaceholderImg} alt="" className="w-[104px] h-[104px] rounded-full object-cover shadow-[0_2px_12px_rgba(0,0,0,0.08)]" data-testid="img-avatar-placeholder" />
                 )}
                 <p className="text-[24px] font-semibold text-[#18181B] mt-2.5 leading-tight text-center" data-testid="text-user-firstname">
                   {firstName || displayName || t("profile.seeker")}
@@ -1741,9 +1743,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] px-5 py-6 flex flex-col items-center justify-center text-center active:scale-[0.98] transition-transform"
               data-testid="button-extra-profile"
             >
-              <div className="w-12 h-12 rounded-2xl bg-[#F0FDF4] flex items-center justify-center mb-3">
-                <Plus className="w-[22px] h-[22px] text-[#16A34A]" />
-              </div>
+              <img src={extraSearchProfileImg} alt="" className="h-[72px] w-auto object-contain mb-3" loading="lazy" />
               <p className="text-[14px] font-semibold text-[#18181B] leading-snug">{t("profile.extraProfile")}</p>
             </button>
 
@@ -1763,9 +1763,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] px-5 py-6 flex flex-col items-center justify-center text-center active:scale-[0.98] transition-transform"
               data-testid="button-invite-friends"
             >
-              <div className="w-12 h-12 rounded-2xl bg-[#EBF2FF] flex items-center justify-center mb-3">
-                <Gift className="w-[22px] h-[22px] text-[#0D6EFD]" />
-              </div>
+              <img src={inviteFriendsImg} alt="" className="h-[72px] w-auto object-contain mb-3" loading="lazy" />
               <p className="text-[14px] font-semibold text-[#18181B] leading-snug">{t("profile.inviteFriends")}</p>
             </button>
           </div>
@@ -1799,9 +1797,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             data-testid="card-notifications"
           >
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#F0F4FF] flex items-center justify-center flex-shrink-0">
-                <Bell className="w-[22px] h-[22px] text-[#0D6EFD]" />
-              </div>
+              <img src={notificationsImg} alt="" className="w-12 h-12 object-contain flex-shrink-0 mt-0.5" loading="lazy" />
               <div className="flex-1 min-w-0">
                 <p className="text-[15px] font-semibold text-[#18181B] mb-3">{t("profile.notificationSettings")}</p>
                 <div className="flex flex-col gap-3.5">

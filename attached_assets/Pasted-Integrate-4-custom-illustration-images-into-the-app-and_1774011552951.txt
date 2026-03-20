@@ -1,0 +1,103 @@
+Integrate 4 custom illustration images into the app and replace existing icons/placeholders.
+
+IMPORTANT:
+- I will upload 4 image assets manually
+- You must use THESE images (do not generate new ones)
+- Focus on correct placement, sizing, and consistency
+- Do NOT redesign layouts
+
+==================================================
+1. IMAGE MAPPING (VERY IMPORTANT)
+==================================================
+
+Use the uploaded images and map them as follows:
+
+1. extra-search-profile.png
+→ replace icon/image in "Extra zoekprofiel" card
+
+2. invite-friends.png
+→ replace icon/image in "Vrienden uitnodigen" card
+
+3. notifications.png
+→ replace bell icon in "Meldingen" section
+
+4. avatar-placeholder.png
+→ replace default user profile placeholder (when no profile image exists)
+
+==================================================
+2. IMPLEMENTATION RULES
+==================================================
+
+General:
+- images must scale properly on mobile
+- maintain aspect ratio
+- no distortion
+- lazy load if needed
+
+==================================================
+3. CARD IMAGES (TOP 2 TILES)
+==================================================
+
+For:
+- Extra zoekprofiel
+- Vrienden uitnodigen
+
+Requirements:
+- image centered inside the card
+- max height ~70–80px (adjust for visual balance)
+- keep padding consistent with existing layout
+- no background behind image (transparent or white)
+
+==================================================
+4. NOTIFICATIONS IMAGE
+==================================================
+
+Replace the bell icon:
+
+Requirements:
+- image should be smaller than card images
+- around 40–48px height
+- aligned left where icon currently is
+- vertically centered with text
+
+==================================================
+5. AVATAR PLACEHOLDER
+==================================================
+
+Replace default profile avatar:
+
+Behavior:
+- show avatar-placeholder.png when user has NO profile image
+- if user uploads image → replace it normally
+
+Requirements:
+- perfectly circular
+- use object-fit: cover
+- no stretching
+- maintain clean edges
+
+==================================================
+6. FILE HANDLING
+==================================================
+
+- place images in a proper assets folder (e.g. /assets/images)
+- use clear naming
+- import correctly in components
+
+==================================================
+7. DO NOT BREAK EXISTING LOGIC
+==================================================
+
+- keep all click handlers intact
+- keep navigation intact
+- only replace visuals
+
+==================================================
+8. RESULT
+==================================================
+
+At the end, explain:
+1. where each image is used
+2. which components were updated
+3. how responsiveness is handled
+4. how the avatar fallback works
