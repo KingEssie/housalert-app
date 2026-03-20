@@ -1742,10 +1742,10 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={() => navigate("/dashboard/searches/new")}
-              className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] px-4 py-3 flex flex-col items-center justify-end text-center active:scale-[0.98] transition-transform aspect-square"
+              className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] px-4 py-3 flex flex-col items-center justify-end text-center active:scale-[0.98] transition-transform aspect-square overflow-hidden"
               data-testid="button-extra-profile"
             >
-              <img src={extraSearchProfileImg} alt="" className="max-w-[85%] h-auto object-contain mb-2" loading="lazy" />
+              <img src={extraSearchProfileImg} alt="" className="max-w-[85%] max-h-[70%] w-auto h-auto object-contain mb-2" loading="lazy" />
               <p className="text-[13px] font-semibold text-[#18181B] leading-snug">{t("profile.extraProfile")}</p>
             </button>
 
@@ -1762,10 +1762,10 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                   toast({ title: t("referral.copyFailed"), variant: "destructive" });
                 }
               }}
-              className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] px-4 py-3 flex flex-col items-center justify-end text-center active:scale-[0.98] transition-transform aspect-square"
+              className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] px-4 py-3 flex flex-col items-center justify-end text-center active:scale-[0.98] transition-transform aspect-square overflow-hidden"
               data-testid="button-invite-friends"
             >
-              <img src={inviteFriendsImg} alt="" className="max-w-[85%] h-auto object-contain mb-2" loading="lazy" />
+              <img src={inviteFriendsImg} alt="" className="max-w-[85%] max-h-[70%] w-auto h-auto object-contain mb-2" loading="lazy" />
               <p className="text-[13px] font-semibold text-[#18181B] leading-snug">{t("profile.inviteFriends")}</p>
             </button>
           </div>
