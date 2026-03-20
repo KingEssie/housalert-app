@@ -1,0 +1,130 @@
+Refine the “Persoonlijke informatie” page again with two important changes:
+
+1. combine first name and last name into one editable “Naam” section
+2. make e-mail address editable with proper confirmation flow
+
+IMPORTANT:
+- Keep the Airbnb-style inline editing approach on the same page
+- Do NOT navigate to separate edit pages
+- Reuse existing save/update logic where possible
+- For e-mail changes, use the proper auth/email confirmation flow instead of only updating profile data
+- Do NOT break the current authentication system
+
+==================================================
+1. COMBINE FIRST NAME + LAST NAME INTO ONE “NAAM” SECTION
+==================================================
+
+Current issue:
+- Voornaam and Achternaam are separate rows
+- I want them combined like Airbnb-style name editing
+
+Required change:
+- replace the separate “Voornaam” and “Achternaam” rows with one row:
+  - label: Naam
+  - value: current full name (e.g. Martin Esajas)
+  - action: Aanpassen
+
+When the user clicks “Aanpassen”:
+- expand inline on the same page
+- show 2 input fields:
+  - Voornaam
+  - Achternaam
+- show one button underneath:
+  - Opslaan en doorgaan
+
+Behavior:
+- saving should update both fields together
+- after successful save, collapse the section again
+- the row should then show the updated full name
+
+IMPORTANT:
+- only one section should still be open at a time
+- keep the Airbnb-style inline editing behavior
+
+==================================================
+2. MAKE E-MAILADRES EDITABLE
+==================================================
+
+Current issue:
+- e-mail address is not really editable
+- I want the user to be able to change it properly
+
+Required change:
+- keep a row for:
+  - E-mailadres
+- show current e-mail
+- action: Aanpassen
+
+When clicked:
+- expand inline on the same page
+- show input for a new e-mail address
+- show button:
+  - Opslaan en doorgaan
+
+==================================================
+3. EMAIL CHANGE CONFIRMATION FLOW
+==================================================
+
+IMPORTANT:
+Changing the email address must use a proper verification flow.
+
+Desired behavior:
+- user enters a new e-mail address
+- user clicks save
+- a confirmation email is sent to that new address
+- only after the user confirms it, the new e-mail becomes officially active
+
+Until confirmed:
+- the old e-mail should remain active
+- optionally show a status like:
+  “Bevestiging verzonden”
+  or
+  “In afwachting van bevestiging”
+
+Use the proper authentication/email provider flow for this.
+If the app uses Supabase Auth, use the correct Supabase email update / email confirmation flow.
+Do NOT implement this as only a profile table update.
+
+==================================================
+4. UI / INLINE EDITING STYLE
+==================================================
+
+Keep the current Airbnb-inspired personal information layout:
+- clean rows
+- subtle dividers
+- inline expand/collapse
+- one open section at a time
+- no navigation to a new page
+
+For expanded sections:
+- rounded input fields
+- clear spacing
+- black save button:
+  “Opslaan en doorgaan”
+- optional “Annuleren” on the right in the row header
+
+==================================================
+5. SAVE / STATUS BEHAVIOR
+==================================================
+
+For “Naam”:
+- save immediately to the current profile data
+- collapse after success
+- update displayed value
+
+For “E-mailadres”:
+- trigger proper email change flow
+- show clear success state that confirmation mail has been sent
+- do not pretend the email changed before confirmation is completed
+
+==================================================
+6. RESULT
+==================================================
+
+At the end, summarize:
+1. how Voornaam + Achternaam were merged into one Naam section
+2. how the inline edit UI works for Naam
+3. how the E-mailadres inline edit was added
+4. how the email confirmation flow works technically
+5. how pending/unconfirmed email changes are handled
+6. which files/components were updated
