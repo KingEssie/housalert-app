@@ -203,13 +203,16 @@ function MatchCard({
 
         <button
           onClick={handleHeartClick}
-          className="absolute top-3.5 right-3.5 w-9 h-9 rounded-full bg-white/95 backdrop-blur-md flex items-center justify-center shadow-[0_1px_4px_rgba(0,0,0,0.06)] active:scale-90 transition-transform"
+          className="absolute top-3 right-3 p-0 border-0 bg-transparent active:scale-90 transition-transform"
           data-testid={`button-favorite-${match.listing_id}`}
         >
           <Heart
-            className={`w-[18px] h-[18px] transition-colors ${
-              isFavorited ? "fill-[#2F6FEA] text-[#2F6FEA]" : "fill-none text-[#717171]"
+            className={`w-7 h-7 transition-colors duration-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.4)] ${
+              isFavorited
+                ? "fill-[#FF5A5F] text-white stroke-white"
+                : "fill-[rgba(0,0,0,0.1)] text-white stroke-white"
             }`}
+            strokeWidth={2}
           />
         </button>
       </div>
