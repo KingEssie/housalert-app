@@ -6,6 +6,7 @@ import { HousAlertLogo } from "@/components/housalert-logo";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
+import { clearAllUserData } from "@/lib/queryClient";
 import { createSearchProfile } from "@/lib/search-profiles";
 import { useTranslation } from "@/i18n";
 import { apiFetch } from "@/lib/api-base";
@@ -79,6 +80,8 @@ export default function SignupPage() {
     submittingRef.current = true;
 
     setLoading(true);
+    console.log(`[IDENTITY] Signup attempt — email="${email}"`);
+    clearAllUserData();
     try {
       const res = await apiFetch("/api/auth/signup", {
         method: "POST",

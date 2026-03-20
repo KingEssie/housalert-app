@@ -59,3 +59,28 @@ export const queryClient = new QueryClient({
     },
   },
 });
+
+let _lastAuthUserId: string | null = null;
+
+export function getLastAuthUserId(): string | null {
+  return _lastAuthUserId;
+}
+
+export function setLastAuthUserId(id: string | null) {
+  _lastAuthUserId = id;
+}
+
+const USER_LOCAL_STORAGE_KEYS = [
+  "housalert_match_viewed",
+  "housalert_match_applied",
+  "housalert_tips_read",
+];
+
+export function clearAllUserData() {
+  console.log("[IDENTITY] clearAllUserData: removing all cached queries and user localStorage");
+  queryClient.removeQueries();
+  _lastAuthUserId = null;
+  for (const key of USER_LOCAL_STORAGE_KEYS) {
+    try { localStorage.removeItem(key); } catch {}
+  }
+}

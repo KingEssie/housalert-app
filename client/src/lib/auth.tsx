@@ -2,6 +2,7 @@ import { apiFetch } from "@/lib/api-base";
 import { createContext, useContext, useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
+import { clearAllUserData, setLastAuthUserId, getLastAuthUserId } from "./queryClient";
 
 interface AuthContextType {
   session: Session | null;
@@ -53,6 +54,20 @@ function notifyNativeAuth(session: Session | null) {
   }
 }
 
+function handleUserChange(newUserId: string | null, event: string) {
+  const prevUserId = getLastAuthUserId();
+  if (prevUserId && newUserId && prevUserId !== newUserId) {
+    console.warn(`[IDENTITY] User changed: ${prevUserId.substring(0, 8)}→${newUserId.substring(0, 8)} (event=${event}). Clearing ALL cached data.`);
+    clearAllUserData();
+  } else if (prevUserId && !newUserId) {
+    console.log(`[IDENTITY] User signed out (was ${prevUserId.substring(0, 8)}). Clearing ALL cached data.`);
+    clearAllUserData();
+  } else if (!prevUserId && newUserId) {
+    console.log(`[IDENTITY] User signed in: ${newUserId.substring(0, 8)}, email=${event}`);
+  }
+  setLastAuthUserId(newUserId);
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
@@ -62,14 +77,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     console.log("[WEBAUTH] getSession() starting");
     supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log(`[WEBAUTH] getSession() result: session ${session ? "yes" : "no"}`);
+      const uid = session?.user?.id ?? null;
+      const email = session?.user?.email ?? "unknown";
+      console.log(`[WEBAUTH] getSession() result: session ${session ? "yes" : "no"}, user=${uid?.substring(0, 8) ?? "null"}, email=${email}`);
+      console.log(`[IDENTITY] App load — user.id=${uid ?? "null"}, email=${email}, name=${session?.user?.user_metadata?.full_name ?? "null"}`);
+      handleUserChange(uid, `initial:${email}`);
       setSession(session);
       setLoading(false);
       notifyNativeAuth(session);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log(`[WEBAUTH] onAuthStateChange fired: ${event}`);
+      const uid = session?.user?.id ?? null;
+      const email = session?.user?.email ?? "unknown";
+      console.log(`[WEBAUTH] onAuthStateChange fired: ${event}, user=${uid?.substring(0, 8) ?? "null"}, email=${email}`);
+      console.log(`[IDENTITY] Auth event=${event} — user.id=${uid ?? "null"}, email=${email}, name=${session?.user?.user_metadata?.full_name ?? "null"}`);
+
+      if (event === "SIGNED_OUT") {
+        console.log("[IDENTITY] SIGNED_OUT event — clearing all user data");
+        clearAllUserData();
+      } else {
+        handleUserChange(uid, event);
+      }
+
       setSession(session);
       setLoading(false);
       notifyNativeAuth(session);
@@ -79,6 +109,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signOut = async () => {
+    console.log("[IDENTITY] signOut() called — clearing all cached data before Supabase sign-out");
+    clearAllUserData();
     await supabase.auth.signOut();
   };
 

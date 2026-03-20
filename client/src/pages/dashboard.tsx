@@ -960,7 +960,9 @@ function HomeTab({
     queryFn: async () => {
       const res = await apiFetch("/api/profile-data", { headers: { Authorization: `Bearer ${accessToken}` } });
       if (!res.ok) return {};
-      return res.json();
+      const data = await res.json();
+      console.log(`[IDENTITY] WelcomeBar profile fetch — first_name="${data?.first_name ?? "null"}", user_id="${data?.user_id ?? "unknown"}"`);
+      return data;
     },
     enabled: !!accessToken,
   });
@@ -1562,7 +1564,9 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) return null;
       const res = await apiFetch("/api/profile-data", { headers: { Authorization: `Bearer ${session.access_token}` } });
-      return res.json();
+      const data = await res.json();
+      console.log(`[IDENTITY] ProfielTab profile fetch — first_name="${data?.first_name ?? "null"}", user_id="${data?.user_id ?? "unknown"}", auth_user="${session.user?.id?.substring(0, 8) ?? "null"}"`);
+      return data;
     },
   });
 
@@ -2300,10 +2304,10 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (user) {
-      queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
-      queryClient.invalidateQueries({ queryKey: ["/search-profiles"] });
+      console.log(`[IDENTITY] Dashboard user effect — invalidating all queries for user=${user.id.substring(0, 8)}`);
+      queryClient.invalidateQueries();
     }
-  }, [user]);
+  }, [user?.id]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
