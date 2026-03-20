@@ -53,6 +53,7 @@ import {
   Phone,
   Lightbulb,
   Check,
+  MoreVertical,
 } from "lucide-react";
 import { TaskModal, PrepTaskModal } from "@/components/profile-strength";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
@@ -622,26 +623,88 @@ function getProfileSummary(p: SearchProfile, t: (key: string, params?: Record<st
   if (p.price_min > 0 && p.price_max > 0) parts.push(`€${p.price_min} – €${p.price_max}`);
   else if (p.price_max > 0) parts.push(`${t("searchProfiles.max")} €${p.price_max}`);
   else if (p.price_min > 0) parts.push(`${t("searchProfiles.min")} €${p.price_min}`);
+  else parts.push("€0 – €5.000+");
   if (p.bedrooms_min > 0) parts.push(`${p.bedrooms_min}+ ${t("searchProfiles.bedrooms")}`);
   if (p.size_min > 0) parts.push(`${p.size_min}+ m²`);
   return parts.join(" · ");
 }
 
+function SearchProfileCardMenu({ profileId, navigate, onDelete }: { profileId: string; navigate: (path: string) => void; onDelete: () => void }) {
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  return (
+    <div className="relative flex-shrink-0" ref={menuRef}>
+      <button
+        onClick={(e) => { e.stopPropagation(); setOpen(!open); }}
+        className="w-9 h-9 rounded-full flex items-center justify-center text-[#9CA3AF] hover:bg-[#F5F7FA] transition-colors"
+        data-testid={`button-menu-${profileId}`}
+      >
+        <MoreVertical className="w-[18px] h-[18px]" />
+      </button>
+      {open && (
+        <div className="absolute right-0 top-10 z-30 bg-white rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.12)] border border-[#F0F0F0] py-1.5 min-w-[160px] animate-in fade-in zoom-in-95 duration-150">
+          <button
+            onClick={(e) => { e.stopPropagation(); setOpen(false); navigate(`/dashboard/searches/edit/${profileId}`); }}
+            className="w-full text-left px-4 py-2.5 text-[14px] text-[#111827] hover:bg-[#F9FAFB] transition-colors flex items-center gap-2.5"
+            data-testid={`menu-edit-${profileId}`}
+          >
+            <Pencil className="w-4 h-4 text-[#6B7280]" />
+            {t("common.edit")}
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); setOpen(false); onDelete(); }}
+            className="w-full text-left px-4 py-2.5 text-[14px] text-[#EF4444] hover:bg-[#FEF2F2] transition-colors flex items-center gap-2.5"
+            data-testid={`menu-delete-${profileId}`}
+          >
+            <Trash2 className="w-4 h-4" />
+            {t("filters.deleteTitle")}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile[]; navigate: (path: string) => void }) {
   const { t, locale } = useTranslation();
+  const { toast } = useToast();
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteSearchProfile,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/search-profiles"] });
+      toast({ title: t("filters.deleted") });
+    },
+    onError: (err: any) => {
+      toast({ title: t("filters.deleteFailed"), description: err?.message ?? t("filters.retryDesc"), variant: "destructive" });
+    },
+    onSettled: () => setDeletingId(null),
+  });
+
   if (profiles.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-3" data-testid="section-search-profiles">
-      <h2 className="text-section-title">{t("searchProfiles.sectionTitle")}</h2>
-      <div className="flex flex-col gap-2.5">
-        {profiles.map((p) => {
-          const gradient = getCityGradient(p.city);
-          return (
-            <button
+    <>
+      <div className="flex flex-col gap-3" data-testid="section-search-profiles">
+        <h2 className="text-section-title">{t("searchProfiles.sectionTitle")}</h2>
+        <div className="flex flex-col gap-2.5">
+          {profiles.map((p) => (
+            <div
               key={p.id}
-              onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
-              className="w-full bg-white rounded-[16px] border border-[#F0F0F0] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] p-4 flex items-center gap-3.5 text-left active:scale-[0.985] transition-all duration-200"
+              className="w-full bg-white rounded-[16px] border border-[#F0F0F0] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] p-4 flex items-center gap-3.5"
               data-testid={`card-search-profile-${p.id}`}
             >
               <div className="flex-1 min-w-0">
@@ -652,14 +715,26 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
                   {getProfileSummary(p, t)}
                 </p>
               </div>
-              <div className={`w-[52px] h-[52px] rounded-[12px] bg-gradient-to-br ${gradient} flex items-center justify-center flex-shrink-0`}>
-                <MapPin className="w-5 h-5 text-white/60" />
-              </div>
-            </button>
-          );
-        })}
+              <SearchProfileCardMenu
+                profileId={p.id}
+                navigate={navigate}
+                onDelete={() => setConfirmDeleteId(p.id)}
+              />
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+      {confirmDeleteId && (
+        <DeleteConfirmScreen
+          onCancel={() => setConfirmDeleteId(null)}
+          onConfirm={() => {
+            setDeletingId(confirmDeleteId);
+            deleteMutation.mutate(confirmDeleteId);
+            setConfirmDeleteId(null);
+          }}
+        />
+      )}
+    </>
   );
 }
 
@@ -2003,9 +2078,9 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab }: { u
 
 const TAB_CONFIG: { key: TabKey; labelKey: string; Icon: any }[] = [
   { key: "home", labelKey: "nav.home", Icon: Home },
-  { key: "matches", labelKey: "nav.matches", Icon: Search },
+  { key: "matches", labelKey: "nav.matches", Icon: Check },
   { key: "tips", labelKey: "nav.tips", Icon: Zap },
-  { key: "filters", labelKey: "nav.filters", Icon: SlidersHorizontal },
+  { key: "filters", labelKey: "nav.filters", Icon: Search },
   { key: "profiel", labelKey: "nav.profile", Icon: User },
 ];
 

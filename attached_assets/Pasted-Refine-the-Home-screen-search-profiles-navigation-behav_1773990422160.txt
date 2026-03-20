@@ -1,0 +1,124 @@
+Refine the Home screen search profiles, navigation behavior, and bottom tab bar icons.
+
+IMPORTANT:
+- Do NOT create duplicate logic or new flows if they already exist
+- Reuse existing components where possible (especially Filters menu and delete screen)
+- Keep current design system and styling (shadows, spacing, colors)
+- This is a UX + behavior refinement, not a redesign
+
+==================================================
+1. SEARCH PROFILE CARDS — SUBTITLE MUST ALWAYS EXIST
+==================================================
+
+Each search profile card must always display a subtitle under the title.
+
+Current issue:
+- some cards show incomplete or minimal info
+
+Fix:
+- always render a subtitle line
+- build it from available filters (price, bedrooms, size, etc.)
+
+If price is missing:
+- use fallback: €0 – €5000+
+
+Examples:
+- €900 – €1600 · 1+ slaapkamers · 45+ m²
+- €0 – €5000+ · 1+ slaapkamers
+- €0 – €5000+
+
+Rules:
+- never show an empty subtitle
+- only show fields that exist
+- format clean and readable (no raw data)
+
+==================================================
+2. SEARCH PROFILE CARDS — ACTION MENU (3 DOTS)
+==================================================
+
+Replace the current right-side icon with a three-dots menu.
+
+IMPORTANT:
+- reuse the EXACT same menu component used in the Filters screen
+- do NOT create a new menu style
+
+Behavior:
+- small circular 3-dots button on the right
+- opens a floating popover menu (not fullscreen, not modal)
+
+Menu options:
+- Wijzig
+- Verwijder
+
+Actions:
+- Wijzig → navigate to existing search profile edit screen
+- Verwijder → navigate to existing “Zoekopdracht verwijderen” screen
+
+DO NOT:
+- create a new delete modal
+- duplicate delete logic
+
+==================================================
+3. REMOVE DIRECT CARD NAVIGATION
+==================================================
+
+Current issue:
+- tapping a search profile card opens edit/processing flow
+
+Fix:
+- disable navigation on full card tap
+- interaction should ONLY happen via the three-dots menu
+
+==================================================
+4. BACK BUTTON BEHAVIOR (GLOBAL FIX)
+==================================================
+
+Current issue:
+- back button sometimes routes to Filters instead of previous page
+
+Fix:
+- all back buttons must use navigation history first
+
+Behavior:
+- if user came from Home → go back to Home
+- if user came from another screen → go back there
+- only fallback to a default route if there is NO history
+
+Apply this consistently across:
+- search profile flows
+- delete screen
+- edit screens
+
+==================================================
+5. TAB BAR ICONS UPDATE
+==================================================
+
+Update bottom tab bar icons:
+
+- Matches → use a check icon
+- Filters → use a magnifying glass icon
+
+Keep:
+- same tab order
+- same styling
+- same active/inactive states
+
+==================================================
+6. DESIGN CONSISTENCY
+==================================================
+
+- keep current shadows (do NOT revert)
+- keep spacing and layout
+- do not change card sizes or structure beyond what is specified
+
+==================================================
+7. RESULT
+==================================================
+
+At the end, summarize:
+1. how subtitle fallback is implemented
+2. how the 3-dots menu reuses the Filters component
+3. how edit/delete navigation works
+4. how back button logic was fixed
+5. which tab bar icons were updated
+6. which components/files were changed

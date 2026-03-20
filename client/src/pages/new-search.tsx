@@ -168,7 +168,7 @@ export default function NewSearchPage() {
     getSearchProfile(editId).then((profile) => {
       if (!profile) {
         toast({ title: t("newSearch.toasts.notFound"), variant: "destructive" });
-        navigate("/dashboard?tab=filters");
+        if (window.history.length > 1) window.history.back(); else navigate("/dashboard?tab=home");
         return;
       }
       const tab = profile.location_mode === "commute" ? "reistijd"
@@ -243,7 +243,7 @@ export default function NewSearchPage() {
   };
 
   const goNext = () => { if (step < TOTAL_STEPS) setStep(step + 1); };
-  const goBack = () => { if (step > 1) setStep(step - 1); else navigate("/dashboard?tab=filters"); };
+  const goBack = () => { if (step > 1) setStep(step - 1); else if (window.history.length > 1) window.history.back(); else navigate("/dashboard?tab=home"); };
 
   function buildPayload() {
     const parsedPriceMin = parseInt(filters.priceMin) || 0;
@@ -336,7 +336,7 @@ export default function NewSearchPage() {
         toast({ title: t("newSearch.toasts.created"), description: t("newSearch.toasts.createdDesc") });
       }
 
-      navigate("/dashboard?tab=filters");
+      if (window.history.length > 1) window.history.back(); else navigate("/dashboard?tab=home");
     } catch (err: any) {
       console.error("[new-search] Save failed:", err);
       toast({
@@ -365,7 +365,7 @@ export default function NewSearchPage() {
         <header className="fixed top-0 left-0 right-0 z-50 bg-white">
           <div className="max-w-lg mx-auto flex items-center justify-between h-[56px] px-5">
             <button
-              onClick={() => navigate("/dashboard")}
+              onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=home")}
               className="w-12 h-12 rounded-full bg-[#F3F4F6] shadow-[0_1px_4px_rgba(0,0,0,0.06)] flex items-center justify-center"
               data-testid="button-wizard-header-back"
             >
@@ -383,7 +383,7 @@ export default function NewSearchPage() {
               {t("newSearch.limitDesc", { max: MAX_PROFILES })}
             </p>
             <Button
-              onClick={() => navigate("/dashboard")}
+              onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=home")}
               className="w-full h-[56px] rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-[15px] font-medium"
               data-testid="button-back-to-dashboard-limit"
             >
