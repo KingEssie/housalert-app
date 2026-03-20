@@ -1,7 +1,7 @@
 import { apiFetch } from "@/lib/api-base";
 import { useAuth } from "@/lib/auth";
 import { useLocation } from "wouter";
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getSearchProfiles, deleteSearchProfile, type SearchProfile } from "@/lib/search-profiles";
 import { fetchApiMatches, type ApiMatch, type ApiMatchesResponse, type CanonicalStats } from "@/lib/listings";
@@ -59,6 +59,7 @@ import { TaskModal, PrepTaskModal } from "@/components/profile-strength";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
 import TipsPage, { getTipsProgress } from "@/pages/tips";
 import { ReferralCodeModal } from "@/components/referral-code-modal";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 const MAX_PROFILES = 4;
 
@@ -629,53 +630,6 @@ function getProfileSummary(p: SearchProfile, t: (key: string, params?: Record<st
   return parts.join(" · ");
 }
 
-function SearchProfileCardMenu({ profileId, navigate, onDelete }: { profileId: string; navigate: (path: string) => void; onDelete: () => void }) {
-  const [open, setOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-  const { t } = useTranslation();
-
-  useEffect(() => {
-    if (!open) return;
-    const handler = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [open]);
-
-  return (
-    <div className="relative flex-shrink-0" ref={menuRef}>
-      <button
-        onClick={(e) => { e.stopPropagation(); setOpen(!open); }}
-        className="w-9 h-9 rounded-full flex items-center justify-center text-[#9CA3AF] hover:bg-[#F5F7FA] transition-colors"
-        data-testid={`button-menu-${profileId}`}
-      >
-        <MoreVertical className="w-[18px] h-[18px]" />
-      </button>
-      {open && (
-        <div className="absolute right-0 top-10 z-30 bg-white rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.12)] border border-[#F0F0F0] py-1.5 min-w-[160px] animate-in fade-in zoom-in-95 duration-150">
-          <button
-            onClick={(e) => { e.stopPropagation(); setOpen(false); navigate(`/dashboard/searches/edit/${profileId}`); }}
-            className="w-full text-left px-4 py-2.5 text-[14px] text-[#111827] hover:bg-[#F9FAFB] transition-colors flex items-center gap-2.5"
-            data-testid={`menu-edit-${profileId}`}
-          >
-            <Pencil className="w-4 h-4 text-[#6B7280]" />
-            {t("common.edit")}
-          </button>
-          <button
-            onClick={(e) => { e.stopPropagation(); setOpen(false); onDelete(); }}
-            className="w-full text-left px-4 py-2.5 text-[14px] text-[#EF4444] hover:bg-[#FEF2F2] transition-colors flex items-center gap-2.5"
-            data-testid={`menu-delete-${profileId}`}
-          >
-            <Trash2 className="w-4 h-4" />
-            {t("filters.deleteTitle")}
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
 function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile[]; navigate: (path: string) => void }) {
   const { t, locale } = useTranslation();
   const { toast } = useToast();
@@ -715,11 +669,34 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
                   {getProfileSummary(p, t)}
                 </p>
               </div>
-              <SearchProfileCardMenu
-                profileId={p.id}
-                navigate={navigate}
-                onDelete={() => setConfirmDeleteId(p.id)}
-              />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    className="w-9 h-9 rounded-full flex items-center justify-center text-[#9CA3AF] hover:bg-[#F5F7FA] transition-colors flex-shrink-0"
+                    data-testid={`button-menu-${p.id}`}
+                  >
+                    <MoreVertical className="w-[18px] h-[18px]" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="min-w-[160px]">
+                  <DropdownMenuItem
+                    onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
+                    className="flex items-center gap-2.5 cursor-pointer"
+                    data-testid={`menu-edit-${p.id}`}
+                  >
+                    <Pencil className="w-4 h-4 text-[#6B7280]" />
+                    {t("common.edit")}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => setConfirmDeleteId(p.id)}
+                    className="flex items-center gap-2.5 text-[#EF4444] focus:text-[#EF4444] cursor-pointer"
+                    data-testid={`menu-delete-${p.id}`}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    {t("filters.deleteTitle")}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           ))}
         </div>
