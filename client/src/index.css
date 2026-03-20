@@ -344,6 +344,13 @@
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
+textarea:focus {
+  border-color: #0D6EFD !important;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.08) !important;
+  outline: none !important;
+}
+
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;

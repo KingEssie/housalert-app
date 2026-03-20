@@ -287,6 +287,8 @@ export const nl: Record<string, any> = {
     buddyConnected: "Verbonden",
     buddyRemoved: "Zoekbuddy verwijderd",
     buddyRemoveLabel: "Verwijderen",
+    buddyDeleteTitle: "Zoekbuddy verwijderen?",
+    buddyDeleteDesc: "Weet je zeker dat je je zoekbuddy wilt verwijderen? Ze ontvangen dan geen match-mails meer.",
     subscriptionPlan: "Abonnement",
     activeStatus: "Actief",
     trialStatus: "Proefperiode",

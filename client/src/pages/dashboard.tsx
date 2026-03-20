@@ -1426,6 +1426,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
   const [buddyEmail, setBuddyEmail] = useState("");
   const [buddySaving, setBuddySaving] = useState(false);
   const [buddyExpanded, setBuddyExpanded] = useState(false);
+  const [showBuddyDeleteConfirm, setShowBuddyDeleteConfirm] = useState(false);
   const { toast } = useToast();
   const { t, locale, setLocale } = useTranslation();
 
@@ -1854,7 +1855,19 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
             </button>
             <div id="zoekbuddy-section" data-testid="row-zoekbuddy">
-              <div className="flex items-center gap-3.5 px-1 py-[14px]">
+              <button
+                onClick={() => {
+                  if (!buddyExpanded) {
+                    setBuddyEmail(pd?.search_buddy_email || "");
+                    setBuddyExpanded(true);
+                  } else {
+                    setBuddyExpanded(false);
+                    setBuddyEmail("");
+                  }
+                }}
+                className="w-full flex items-center gap-3.5 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
+                data-testid="button-buddy-toggle"
+              >
                 <Users className="w-[22px] h-[22px] text-[#71717A] flex-shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="text-[15px] text-[#18181B]">{t("profile.zoekbuddyTitle")}</p>
@@ -1865,22 +1878,19 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                     <p className="text-[12px] text-[#D1D5DB] mt-0.5">{t("profile.noBuddyYet")}</p>
                   )}
                 </div>
-                <button
-                  onClick={() => {
-                    if (buddyExpanded) {
-                      setBuddyExpanded(false);
-                      setBuddyEmail("");
-                    } else {
-                      setBuddyEmail(pd?.search_buddy_email || "");
-                      setBuddyExpanded(true);
-                    }
-                  }}
-                  className="text-[14px] font-medium text-[#18181B] underline underline-offset-2 ml-2 flex-shrink-0 active:text-[#6B7280] transition-colors"
-                  data-testid="button-buddy-toggle"
-                >
-                  {buddyExpanded ? t("profileDetails.cancel") : (pd?.search_buddy_email ? t("profileDetails.edit") : t("profileDetails.add"))}
-                </button>
-              </div>
+                {!buddyExpanded && pd?.search_buddy_email ? (
+                  <span
+                    role="button"
+                    onClick={e => { e.stopPropagation(); setShowBuddyDeleteConfirm(true); }}
+                    className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 active:bg-[#F3F4F6] transition-colors"
+                    data-testid="button-buddy-remove-x"
+                  >
+                    <X className="w-4 h-4 text-[#D1D5DB]" />
+                  </span>
+                ) : !buddyExpanded ? (
+                  <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+                ) : null}
+              </button>
               {buddyExpanded && (
                 <div className="pb-4 px-1 animate-in slide-in-from-top-1 duration-200" data-testid="editor-zoekbuddy">
                   <div className="pl-[36px]">
@@ -1892,7 +1902,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                         onKeyDown={e => { if (e.key === "Enter") handleBuddyInvite(); }}
                         placeholder={t("profileEdit.searchBuddyPlaceholder")}
                         autoFocus
-                        className="w-full bg-white rounded-2xl px-5 py-4 text-[16px] text-[#18181B] placeholder:text-[#C4C4C4] border border-[#E5E7EB] focus:border-[#18181B] focus:outline-none transition-colors h-[56px]"
+                        className="w-full bg-white rounded-2xl px-5 py-4 text-[16px] text-[#18181B] placeholder:text-[#C4C4C4] border border-[#E5E7EB] focus:border-[#0D6EFD] focus:shadow-[0_0_0_3px_rgba(13,110,253,0.08)] focus:outline-none transition-all h-[56px]"
                         data-testid="input-buddy-email"
                       />
                       {buddyEmail && (
@@ -1915,16 +1925,13 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                       >
                         {buddySaving ? <Loader2 className="w-4 h-4 animate-spin" /> : t("profileDetails.saveAndContinue")}
                       </button>
-                      {pd?.search_buddy_email && (
-                        <button
-                          onClick={() => { handleBuddyRemove(); setBuddyExpanded(false); }}
-                          disabled={buddySaving}
-                          className="h-[48px] px-5 rounded-xl text-[#EF4444] text-[14px] font-medium active:bg-[#FEF2F2] transition-colors disabled:opacity-50"
-                          data-testid="button-buddy-remove"
-                        >
-                          {t("profile.buddyRemoveLabel")}
-                        </button>
-                      )}
+                      <button
+                        onClick={() => { setBuddyExpanded(false); setBuddyEmail(""); }}
+                        className="h-[48px] px-5 rounded-xl text-[#6B7280] text-[14px] font-medium active:bg-[#F9FAFB] transition-colors"
+                        data-testid="button-buddy-cancel"
+                      >
+                        {t("profileDetails.cancel")}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -2049,6 +2056,39 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                   </button>
                 );
               })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showBuddyDeleteConfirm && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-end justify-center sm:items-center" onClick={() => setShowBuddyDeleteConfirm(false)}>
+          <div className="bg-white w-full max-w-[400px] rounded-t-[20px] sm:rounded-[20px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()} data-testid="dialog-buddy-delete">
+            <div className="w-12 h-12 rounded-2xl bg-[#FEF2F2] flex items-center justify-center mx-auto mb-5">
+              <Users className="w-6 h-6 text-[#EF4444]" />
+            </div>
+            <h3 className="text-[18px] font-medium text-[#18181B] text-center mb-2" data-testid="text-buddy-delete-title">
+              {t("profile.buddyDeleteTitle")}
+            </h3>
+            <p className="text-[14px] text-[#6B7280] text-center mb-8 leading-relaxed">
+              {t("profile.buddyDeleteDesc")}
+            </p>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => { handleBuddyRemove(); setShowBuddyDeleteConfirm(false); }}
+                disabled={buddySaving}
+                className="w-full h-[52px] rounded-full bg-[#EF4444] text-white text-[16px] font-medium transition-colors hover:bg-[#DC2626] disabled:opacity-50"
+                data-testid="button-buddy-delete-confirm"
+              >
+                {buddySaving ? t("common.loading") : t("profile.buddyRemoveLabel")}
+              </button>
+              <button
+                onClick={() => setShowBuddyDeleteConfirm(false)}
+                className="w-full h-[52px] rounded-full border border-[#E5E7EB] text-[#1F2937] text-[16px] font-medium hover:bg-[#F5F7FA] transition-colors"
+                data-testid="button-buddy-delete-cancel"
+              >
+                {t("common.cancel")}
+              </button>
             </div>
           </div>
         </div>

@@ -1,0 +1,119 @@
+Refine the Zoekbuddy row behavior and make input focus states consistent across the entire app.
+
+IMPORTANT:
+- Do NOT redesign the whole Profile page
+- Reuse the current inline expand/collapse behavior
+- This is a UX consistency and interaction refinement
+- Apply the input focus rule consistently across the app
+
+==================================================
+1. ZOEKBUDDY ROW — REMOVE RIGHT-SIDE ACTION TEXT
+==================================================
+
+Current issue:
+- the row still shows “Toevoegen” or “Aanpassen” text on the right
+
+Fix:
+- remove the right-side action text completely
+- the row itself should be the clickable trigger
+
+Desired behavior:
+- tapping/clicking the Zoekbuddy row opens the inline edit state
+- keep the row visually clean, similar to other settings rows
+
+==================================================
+2. ZOEKBUDDY ROW — CLICKABLE TITLE/ROW
+==================================================
+
+Make the Zoekbuddy row itself clickable.
+
+Behavior:
+- if no buddy exists:
+  - clicking the row opens the inline input form
+- if a buddy exists:
+  - clicking the row opens the inline edit state as well
+
+Keep the visual structure:
+- icon left
+- title: Zoekbuddy
+- optional smaller subtext underneath
+
+==================================================
+3. ZOEKBUDDY PRESENT STATE — SHOW SMALL DELETE “X” ON THE RIGHT
+==================================================
+
+If a zoekbuddy already exists:
+- show the buddy email in smaller text underneath the title
+- on the right side show a small “X” icon/button to remove the buddy
+
+Requirements:
+- the X should be subtle but clearly tappable
+- keep row visually balanced
+- do not show both a text action and an X
+
+==================================================
+4. DELETE FLOW — CONFIRM BEFORE REMOVING
+==================================================
+
+When the user clicks the X to remove the zoekbuddy:
+
+DO NOT delete immediately.
+
+Instead:
+- first go to a confirmation step/screen
+- ask something like:
+  “Weet je zeker dat je je zoekbuddy wilt verwijderen?”
+- only after confirmation should the buddy actually be removed
+
+Reuse an existing delete confirmation pattern if the app already has one.
+If there is already a similar confirmation screen pattern, reuse that style/logic.
+
+==================================================
+5. GLOBAL INPUT FOCUS STATE — BLUE BORDER EVERYWHERE
+==================================================
+
+I want all editable input fields in the app to respond consistently when active/focused.
+
+Required behavior:
+- whenever an input field becomes active/focused:
+  - show a blue border around that field
+- this should apply consistently across the app
+
+Examples:
+- personal information inputs
+- search profile inputs
+- zoekbuddy input
+- reaction letter fields
+- other editable inputs
+
+IMPORTANT:
+- use one consistent HousAlert blue focus state
+- do not mix different focus styles
+- make it feel like one design system
+
+==================================================
+6. VISUAL STYLE
+==================================================
+
+For the focus state:
+- blue border only when active/focused
+- clean, premium, not too harsh
+- optional subtle shadow/ring only if it improves clarity
+- keep rounded corners consistent
+
+For Zoekbuddy:
+- keep the row simple and aligned with the rest of the profile list
+- no oversized UI
+- clean, native-feeling interactions
+
+==================================================
+7. RESULT
+==================================================
+
+At the end, summarize:
+1. how the Zoekbuddy row was made fully clickable
+2. how the right-side action text was removed
+3. how the delete X is shown when a buddy exists
+4. how the delete confirmation flow works
+5. how the global blue focus border was implemented
+6. which files/components were updated

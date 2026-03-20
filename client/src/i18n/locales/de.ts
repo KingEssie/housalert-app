@@ -281,6 +281,8 @@ export const de: Record<string, any> = {
     buddyConnected: "Verbunden",
     buddyRemoved: "Suchpartner entfernt",
     buddyRemoveLabel: "Entfernen",
+    buddyDeleteTitle: "Suchpartner entfernen?",
+    buddyDeleteDesc: "Bist du sicher, dass du deinen Suchpartner entfernen möchtest? Er erhält dann keine Match-E-Mails mehr.",
     subscriptionPlan: "Abonnement",
     activeStatus: "Aktiv",
     trialStatus: "Testphase",

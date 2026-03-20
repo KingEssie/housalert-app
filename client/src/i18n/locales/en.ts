@@ -238,6 +238,8 @@ export const en: Record<string, any> = {
     buddyConnected: "Connected",
     buddyRemoved: "Search buddy removed",
     buddyRemoveLabel: "Remove",
+    buddyDeleteTitle: "Remove search buddy?",
+    buddyDeleteDesc: "Are you sure you want to remove your search buddy? They will no longer receive match emails.",
     subscriptionPlan: "Subscription",
     activeStatus: "Active",
     trialStatus: "Trial",
