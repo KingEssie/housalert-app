@@ -823,6 +823,9 @@ export const nl: Record<string, any> = {
     bedrooms: "Slaapkamers",
     website: "Website",
     posted: "Geplaatst",
+    propertyFallback: "Woning",
+    country: "Duitsland",
+    subtitleIn: "in",
   },
 
   applySheet: {

@@ -1,0 +1,120 @@
+Redesign the listing detail page intro to be much simpler and closer to Airbnb.
+
+IMPORTANT:
+- Do NOT change functionality
+- Do NOT redesign the page with extra cards or feature blocks
+- Keep the sticky bottom bar with monthly price and CTA
+- This is mainly a layout simplification
+- Keep HousAlert blue for the CTA
+
+## GOAL
+
+I want the top content section to follow this Airbnb-style structure:
+
+1. image
+2. title
+3. subtitle line like Airbnb
+4. details line
+5. subtle divider
+6. reactiebrief section
+
+## REMOVE THE CURRENT EXTRA DETAIL BLOCKS
+
+Remove the current larger detail-row layout with icons such as:
+- Locatie
+- Afmeting
+- Slaapkamers
+- etc.
+
+I do NOT want the detail page to show those rows anymore.
+
+Also remove any extra host/feature style sections from the top area if they are currently shown before the response letter.
+
+The intro should be much cleaner and simpler.
+
+## NEW STRUCTURE
+
+### 1. TITLE
+- keep the title centered
+- strong, premium, clean
+- slightly bold
+- similar visual hierarchy to Airbnb
+
+### 2. SUBTITLE LINE (LIKE AIRBNB)
+Directly under the title, show one subtitle line in the Airbnb style.
+
+Format:
+- “[Property type] in [City], [Country]”
+
+Examples:
+- “Appartement in Berlijn, Duitsland”
+- “Woning in München, Duitsland”
+- “Kamer in Parijs, Frankrijk”
+
+IMPORTANT:
+Only use the scraped property type if it is actually available and reliable.
+
+If property type is missing or unreliable, use a fallback:
+- “Woning in [City], [Country]”
+or
+- “Huurwoning in [City], [Country]”
+
+Do NOT guess a very specific type if the data is uncertain.
+
+### 3. DETAILS LINE
+Under the subtitle, show one compact line with details separated by dots.
+
+Format example:
+- “2 slaapkamers · 55 m² · 1 uur geleden”
+or whatever listing data is available
+
+Only show data that actually exists.
+Do not show fake placeholders.
+
+Use a clean Airbnb-like line:
+- centered
+- gray text
+- compact spacing
+
+### 4. SUBTLE DIVIDER
+Under the details line, show one subtle horizontal divider.
+- light gray
+- thin
+- lots of breathing room above and below
+- like Airbnb
+
+### 5. REACTIEBRIEF
+Immediately after the divider:
+- show the “Reactiebrief” section
+- clean heading
+- response letter below
+- no unnecessary extra intro blocks before it
+
+## VISUAL STYLE
+
+- calm
+- minimal
+- premium
+- lots of white space
+- centered intro block
+- no clutter
+- much closer to Airbnb
+
+## DATA HANDLING
+
+For the subtitle line:
+- use scraped property type only if available and trustworthy
+- otherwise use a safe fallback like “Woning”
+
+For the details line:
+- only include fields that exist
+- keep the order logical
+- avoid empty separators
+
+## RESULT
+
+At the end, summarize:
+- which sections were removed
+- how the subtitle line is generated
+- what fallback is used when property type is missing
+- which files/components were updated

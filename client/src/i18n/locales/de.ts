@@ -816,6 +816,9 @@ export const de: Record<string, any> = {
     bedrooms: "Schlafzimmer",
     website: "Webseite",
     posted: "Eingestellt",
+    propertyFallback: "Wohnung",
+    country: "Deutschland",
+    subtitleIn: "in",
   },
 
   applySheet: {

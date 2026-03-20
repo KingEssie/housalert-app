@@ -13,10 +13,6 @@ import {
   Copy,
   ArrowLeft,
   ImageIcon,
-  MapPin,
-  BedDouble,
-  Ruler,
-  Clock,
 } from "lucide-react";
 
 const CITY_GRADIENTS: Record<string, string> = {
@@ -155,21 +151,19 @@ export default function ApplyPage() {
           <div className="w-full bg-[#F0F0F0]" style={{ aspectRatio: "16/10" }} />
           <div className="max-w-xl mx-auto w-full px-5 pt-6 relative -mt-5 bg-white rounded-t-[24px]">
             <div className="flex flex-col items-center gap-2">
-              <div className="h-6 bg-[#F5F5F5] rounded-md w-4/5" />
-              <div className="h-6 bg-[#F5F5F5] rounded-md w-3/5" />
-              <div className="h-4 bg-[#F5F5F5] rounded-md w-2/5 mt-1" />
+              <div className="h-5 bg-[#F5F5F5] rounded-md w-4/5" />
+              <div className="h-5 bg-[#F5F5F5] rounded-md w-3/5" />
+              <div className="h-4 bg-[#F5F5F5] rounded-md w-2/5 mt-0.5" />
+              <div className="h-3.5 bg-[#F5F5F5] rounded-md w-3/5 mt-0.5" />
             </div>
-            <div className="mt-5 border-t border-[#EBEBEB]" />
-            <div className="pt-3">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="flex items-start gap-5 py-[10px]">
-                  <div className="w-7 h-7 bg-[#F0F0F0] rounded" />
-                  <div className="flex-1 space-y-1.5">
-                    <div className="h-4 bg-[#F5F5F5] rounded w-20" />
-                    <div className="h-3.5 bg-[#F5F5F5] rounded w-32" />
-                  </div>
-                </div>
-              ))}
+            <div className="mt-7 border-t border-[#EBEBEB]" />
+            <div className="pt-6">
+              <div className="h-4 bg-[#F5F5F5] rounded w-24 mb-3" />
+              <div className="bg-[#FAFAFA] rounded-2xl px-5 py-5 space-y-2">
+                <div className="h-3.5 bg-[#F0F0F0] rounded w-full" />
+                <div className="h-3.5 bg-[#F0F0F0] rounded w-5/6" />
+                <div className="h-3.5 bg-[#F0F0F0] rounded w-4/6" />
+              </div>
             </div>
           </div>
         </div>
@@ -251,21 +245,20 @@ export default function ApplyPage() {
   const hasImage = !!listing.image_url;
   const gradient = getCityGradient(listing.city);
 
-  const detailRows: { icon: typeof MapPin; title: string; detail: string }[] = [];
-  detailRows.push({ icon: MapPin, title: t("listingDetail.location"), detail: listing.city });
-  if (listing.size_m2 && listing.size_m2 > 0) {
-    detailRows.push({ icon: Ruler, title: t("listingDetail.size"), detail: `${listing.size_m2} m²` });
-  }
+  const propertyType = t("listingDetail.propertyFallback");
+  const subtitle = `${propertyType} ${t("listingDetail.subtitleIn")} ${listing.city}, ${t("listingDetail.country")}`;
+
+  const detailParts: string[] = [];
   if (listing.bedrooms && listing.bedrooms > 0) {
-    detailRows.push({ icon: BedDouble, title: t("listingDetail.bedrooms"), detail: `${listing.bedrooms} ${listing.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}` });
+    detailParts.push(`${listing.bedrooms} ${listing.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}`);
+  }
+  if (listing.size_m2 && listing.size_m2 > 0) {
+    detailParts.push(`${listing.size_m2} m²`);
   }
   if (listing.first_seen_at) {
-    detailRows.push({ icon: Clock, title: t("listingDetail.posted"), detail: relativeTime(listing.first_seen_at) });
+    detailParts.push(relativeTime(listing.first_seen_at));
   }
-
-  const subtitle = listing.source
-    ? `${listing.source} · ${listing.city}`
-    : listing.city;
+  const detailLine = detailParts.join(" · ");
 
   return (
     <div className="min-h-screen bg-white flex flex-col relative">
@@ -302,34 +295,24 @@ export default function ApplyPage() {
       <main className="flex-1 max-w-xl mx-auto w-full pb-[120px] relative -mt-5 bg-white rounded-t-[24px]">
         <div className="px-5 pt-6 text-center">
           <h1
-            className="text-[24px] font-semibold text-[#18181B] leading-[1.25] tracking-[-0.02em] mx-auto"
+            className="text-[22px] font-semibold text-[#18181B] leading-[1.3] tracking-[-0.02em] mx-auto"
             data-testid="text-apply-title"
           >
             {listing.title}
           </h1>
-          <p className="text-[15px] text-[#6B7280] mt-1.5 capitalize" data-testid="text-apply-subtitle">
+          <p className="text-[15px] text-[#6B7280] mt-1.5" data-testid="text-apply-subtitle">
             {subtitle}
           </p>
+          {detailLine && (
+            <p className="text-[14px] text-[#9CA3AF] mt-1" data-testid="text-apply-details">
+              {detailLine}
+            </p>
+          )}
         </div>
 
-        <div className="mx-5 mt-5 border-t border-[#EBEBEB]" />
+        <div className="mx-5 mt-7 border-t border-[#EBEBEB]" />
 
-        <div className="px-5 pt-3" data-testid="facts-block">
-          {detailRows.map((row, i) => {
-            const Icon = row.icon;
-            return (
-              <div key={i} className="flex items-start gap-5 py-[10px]">
-                <Icon className="w-7 h-7 text-[#18181B] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
-                <div className="flex-1 min-w-0">
-                  <p className="text-[15px] font-medium text-[#18181B]">{row.title}</p>
-                  <p className="text-[14px] text-[#717171] mt-0.5 capitalize">{row.detail}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="px-5 pt-5">
+        <div className="px-5 pt-6">
           <h2 className="text-[15px] font-medium text-[#18181B] mb-3">{t("applySheet.applicationLetter")}</h2>
           <div className="bg-[#FAFAFA] rounded-2xl px-5 py-5">
             <textarea
