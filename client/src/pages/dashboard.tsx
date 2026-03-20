@@ -2210,6 +2210,12 @@ export default function DashboardPage() {
     refetchOnWindowFocus: true,
   });
 
+  const dashProfileQuery = useQuery<{ profile_photo_url?: string | null }>({
+    queryKey: ["/api/profile-data"],
+    enabled: !!user && !!accessToken,
+  });
+  const tabPhotoUrl = dashProfileQuery.data?.profile_photo_url || null;
+
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
@@ -2294,19 +2300,26 @@ export default function DashboardPage() {
         )}
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#E5E7EB]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
-        <nav className="max-w-xl mx-auto flex h-[56px]" data-testid="bottom-nav">
+      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#F0F0F0]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+        <nav className="max-w-xl mx-auto flex h-[58px]" data-testid="bottom-nav">
           {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
             const isActive = activeTab === key;
+            const isProfileWithPhoto = key === "profiel" && !!tabPhotoUrl;
             return (
               <button
                 key={key}
                 onClick={() => setActiveTab(key)}
-                className="flex-1 flex flex-col items-center justify-center gap-[3px]"
+                className="flex-1 flex flex-col items-center justify-center gap-[5px]"
                 data-testid={`tab-${key}`}
               >
-                <Icon className={`w-[26px] h-[26px] transition-colors ${isActive ? "text-[#0D6EFD]" : "text-[#9CA3AF]"}`} strokeWidth={isActive ? 2 : 1.5} />
-                <span className={`text-[11px] transition-colors ${isActive ? "font-medium text-[#0D6EFD]" : "font-normal text-[#9CA3AF]"}`}>
+                {isProfileWithPhoto ? (
+                  <div className={`w-[28px] h-[28px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-[#0D6EFD] ring-offset-1" : ""}`}>
+                    <img src={tabPhotoUrl} alt="" className="w-full h-full object-cover" />
+                  </div>
+                ) : (
+                  <Icon className={`w-[28px] h-[28px] transition-colors ${isActive ? "text-[#0D6EFD]" : "text-[#9CA3AF]"}`} strokeWidth={isActive ? 2 : 1.5} />
+                )}
+                <span className={`text-[10px] transition-colors ${isActive ? "font-medium text-[#0D6EFD]" : "font-normal text-[#9CA3AF]"}`}>
                   {t(labelKey)}
                 </span>
               </button>

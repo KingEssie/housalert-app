@@ -1,0 +1,102 @@
+Refine the bottom tab bar to feel more like Airbnb in proportions, spacing, and hierarchy.
+
+IMPORTANT:
+- Do NOT change navigation logic
+- Do NOT change the tab structure
+- Keep the current icons/functionality
+- Only refine visual balance and the special profile-tab behavior
+
+==================================================
+1. MAKE ICONS SLIGHTLY LARGER
+==================================================
+
+Increase the tab bar icon size slightly so the UI feels more icon-first like Airbnb.
+
+Goal:
+- icons should become a bit more dominant
+- they should visually lead more than the text labels
+
+==================================================
+2. MAKE LABELS SMALLER AND LIGHTER
+==================================================
+
+Reduce the tab label font size slightly.
+
+Requirements:
+- labels should feel lighter and less dominant
+- keep them readable
+- closer to Airbnb’s tab bar hierarchy
+
+==================================================
+3. INCREASE SPACE BETWEEN ICON AND LABEL
+==================================================
+
+Add a bit more vertical spacing between:
+- the icon
+- and the label
+
+Goal:
+- more breathing room
+- lighter, more premium appearance
+- less cramped feeling
+
+==================================================
+4. PROFILE TAB — SPECIAL AVATAR BEHAVIOR
+==================================================
+
+This is IMPORTANT:
+
+The active-state circle/avatar treatment should NOT be applied to all tabs.
+
+Instead:
+
+ONLY for the Profile tab:
+- if the user has uploaded a real profile photo:
+  - show that small profile photo in the tab bar
+  - when the Profile tab is active, show a colored circular active ring/border around the photo
+  - make it feel similar to Airbnb’s profile-tab active appearance
+
+- if the user does NOT have a real profile photo:
+  - show the normal profile icon
+  - do NOT add the special avatar-circle treatment
+  - active state should then remain the normal color-based active state
+
+So:
+- real profile photo present → avatar in tab bar + active ring when active
+- no real profile photo → normal profile icon only
+
+IMPORTANT:
+- do not invent a circular highlight for the generic profile icon
+- only use the avatar-style active ring when there is an actual uploaded profile image
+
+==================================================
+5. KEEP OTHER ACTIVE STATES SIMPLE
+==================================================
+
+For all other tabs:
+- keep active state simple
+- colored icon + colored label is enough
+- do NOT add extra circles or badges around other icons
+
+==================================================
+6. OVERALL GOAL
+==================================================
+
+The tab bar should feel:
+- lighter
+- cleaner
+- more icon-first
+- more like Airbnb in spacing and balance
+
+But:
+- keep the special avatar behavior only for Profile, and only when a real user photo exists
+
+==================================================
+7. RESULT
+==================================================
+
+At the end, summarize:
+1. how much icon size was increased
+2. how much label size was reduced
+3. how spacing between icon and label was adjusted
+4.
