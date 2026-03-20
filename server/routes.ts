@@ -2313,10 +2313,14 @@ export async function registerRoutes(
       const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
+      log(`[profile-data] GET request userId=${user.id.substring(0, 8)}... email=${user.email}`);
+
       let { rows } = await pgPool.query(
         "SELECT * FROM user_profile_data WHERE user_id = $1 LIMIT 1",
         [user.id]
       );
+
+      log(`[profile-data] GET pgRow exists=${rows.length > 0} userId=${user.id.substring(0, 8)}...`);
 
       if (rows.length === 0) {
         const meta = user.user_metadata || {};
@@ -2377,6 +2381,8 @@ export async function registerRoutes(
       if (!token) return res.status(401).json({ error: "Unauthorized" });
       const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      log(`[profile-data] PUT request userId=${user.id.substring(0, 8)}... email=${user.email} fields=${JSON.stringify(Object.keys(req.body))}`);
 
       const ALLOWED_FIELDS = [
         "search_buddy_email", "search_buddy_enabled", "application_template", "document_checklist",
@@ -2449,7 +2455,13 @@ export async function registerRoutes(
         RETURNING *
       `;
 
-      const { rows } = await pgPool.query(query, insertValues);
+      const { rows, rowCount } = await pgPool.query(query, insertValues);
+      log(`[profile-data] PUT write userId=${user.id.substring(0, 8)}... rowCount=${rowCount} returned=${rows.length > 0} fields=${JSON.stringify(fields)}`);
+
+      if (rows.length === 0) {
+        log(`[profile-data] PUT FAILED - no rows returned for userId=${user.id.substring(0, 8)}... query was: ${query.substring(0, 200)}`);
+        return res.status(500).json({ error: "Profile save failed - no rows affected" });
+      }
 
       if (updates.language !== undefined) {
         console.log(`[LANG SAVE] userId=${user.id.substring(0, 8)}... CONFIRMED saved language="${rows[0]?.language}" in DB`);
@@ -2484,10 +2496,11 @@ export async function registerRoutes(
           });
       }
 
+      log(`[profile-data] PUT success userId=${user.id.substring(0, 8)}... saved fields: ${JSON.stringify(Object.fromEntries(fields.filter(f => f !== 'updated_at').map(f => [f, rows[0]?.[f]])))}`);
       return res.json(rows[0]);
     } catch (err: any) {
-      console.error("[profile-data] PUT error:", err.message);
-      return res.status(500).json({ error: "Speichern fehlgeschlagen. Bitte erneut versuchen." });
+      log(`[profile-data] PUT ERROR: ${err.message}\n${err.stack}`);
+      return res.status(500).json({ error: "Profile save failed. Please try again." });
     }
   });
 
@@ -4395,8 +4408,36 @@ export async function registerRoutes(
       const notifsRes = await supabase.from("user_notification_settings").select("*").eq("user_id", userId).maybeSingle();
 
       const authUser = authUserRes.data?.user || null;
-      const pgProfile = profileRes.rows[0] || null;
+      let pgProfile = profileRes.rows[0] || null;
       const meta = authUser?.user_metadata || {};
+
+      if (!pgProfile && authUser) {
+        let firstName = meta.first_name || null;
+        let lastName = meta.last_name || null;
+        if (!firstName && meta.full_name) {
+          const parts = (meta.full_name as string).trim().split(/\s+/);
+          firstName = parts[0] || null;
+          lastName = parts.slice(1).join(" ") || null;
+        }
+        if (!firstName) firstName = authUser.email?.split("@")[0] || null;
+        try {
+          const { rows: created } = await pgPool.query(
+            `INSERT INTO user_profile_data (user_id, first_name, last_name, created_at, updated_at)
+             VALUES ($1, $2, $3, NOW(), NOW())
+             ON CONFLICT (user_id) DO UPDATE SET
+               first_name = COALESCE(user_profile_data.first_name, EXCLUDED.first_name),
+               last_name = COALESCE(user_profile_data.last_name, EXCLUDED.last_name),
+               updated_at = NOW()
+             RETURNING *`,
+            [authUser.id, firstName, lastName]
+          );
+          pgProfile = created[0] || null;
+          log(`[admin-portal] Auto-bootstrapped profile row for user=${authUser.id.substring(0, 8)}... name="${firstName} ${lastName}"`);
+        } catch (bootstrapErr: any) {
+          log(`[admin-portal] Auto-bootstrap failed for user=${authUser.id.substring(0, 8)}...: ${bootstrapErr.message}`);
+        }
+      }
+
       const profile = pgProfile
         ? { ...pgProfile, email: authUser?.email || null }
         : authUser

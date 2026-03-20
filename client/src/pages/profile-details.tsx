@@ -111,7 +111,11 @@ export default function ProfileDetailsPage() {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
         body: JSON.stringify({ first_name: firstName.trim() || null, last_name: lastName.trim() || null }),
       });
-      if (!res.ok) throw new Error(t("profileEdit.saveFailed"));
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => ({}));
+        console.error("[profile-details] Save name failed:", res.status, errBody);
+        throw new Error(errBody.error || t("profileEdit.saveFailed"));
+      }
 
       queryClient.invalidateQueries({ queryKey: ["/api/profile-data"] });
       setProfileData(prev => prev ? { ...prev, first_name: firstName.trim() || null, last_name: lastName.trim() || null } : prev);
@@ -152,7 +156,11 @@ export default function ProfileDetailsPage() {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
         body: JSON.stringify({ [dbField]: fieldValue }),
       });
-      if (!res.ok) throw new Error(t("profileEdit.saveFailed"));
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => ({}));
+        console.error("[profile-details] Save failed:", dbField, res.status, errBody);
+        throw new Error(errBody.error || t("profileEdit.saveFailed"));
+      }
 
       queryClient.invalidateQueries({ queryKey: ["/api/profile-data"] });
       if (dbField === "phone") {
