@@ -231,19 +231,19 @@ function listingCard(listing: ListingInfo, showButton = false, cardNumber?: numb
     : "";
 
   const buttonHtml = showButton && linkTarget !== "#"
-    ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:10px;">
-        <tr><td>
-          <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${escapeHtml(linkTarget)}" style="height:44px;v-text-anchor:middle;width:100%;" arcsize="50%" strokecolor="${C.blue}" fillcolor="${C.blue}"><w:anchorlock/><center style="color:#FFFFFF;font-family:Arial,sans-serif;font-size:14px;font-weight:bold;">${escapeHtml(t(lang, "email.viewListing"))}</center></v:roundrect><![endif]-->
+    ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:14px;">
+        <tr><td align="center" style="padding:0 4px;">
+          <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${escapeHtml(linkTarget)}" style="height:48px;v-text-anchor:middle;width:100%;" arcsize="50%" strokecolor="${C.blue}" fillcolor="${C.blue}"><w:anchorlock/><center style="color:#FFFFFF;font-family:Arial,sans-serif;font-size:15px;font-weight:bold;">${escapeHtml(t(lang, "email.viewListing"))}</center></v:roundrect><![endif]-->
           <!--[if !mso]><!-->
-          <a href="${escapeHtml(linkTarget)}" target="_blank" style="display:block;background-color:${C.blue};color:${C.white} !important;-webkit-text-fill-color:${C.white};mso-line-height-rule:exactly;font-size:14px;font-weight:700;text-decoration:none;padding:0;height:44px;line-height:44px;border-radius:999px;text-align:center;mso-hide:all;"><span style="color:${C.white} !important;-webkit-text-fill-color:${C.white};">${escapeHtml(t(lang, "email.viewListing"))}</span></a>
+          <a href="${escapeHtml(linkTarget)}" target="_blank" style="display:block;background-color:${C.blue};color:${C.white} !important;-webkit-text-fill-color:${C.white};mso-line-height-rule:exactly;font-size:15px;font-weight:700;text-decoration:none;padding:14px 24px;border-radius:999px;text-align:center;mso-hide:all;-webkit-text-size-adjust:none;"><span style="color:${C.white} !important;-webkit-text-fill-color:${C.white};">${escapeHtml(t(lang, "email.viewListing"))}</span></a>
           <!--<![endif]-->
         </td></tr>
       </table>`
     : "";
 
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${C.white};border-radius:16px;overflow:hidden;margin:0 0 16px;border:1px solid ${C.border};">
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${C.white};border-radius:20px;overflow:hidden;margin:0 0 20px;border:1px solid ${C.border};">
 ${imageHtml}
-<tr><td style="padding:16px;">
+<tr><td style="padding:16px 16px 20px;">
   ${cardNumber ? `<p style="margin:0 0 8px;font-size:11px;font-weight:600;color:${C.muted};text-transform:uppercase;letter-spacing:0.04em;">${escapeHtml(t(lang, "email.listingLabel"))} ${cardNumber}</p>` : ""}
   <h3 style="margin:0 0 8px;font-size:18px;font-weight:700;color:${C.navy};line-height:1.3;">${escapeHtml(listing.title)}</h3>
   ${priceLine}

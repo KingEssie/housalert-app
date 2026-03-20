@@ -1,0 +1,138 @@
+Refine multiple UI issues across HousAlert, keeping the current design system and logic intact.
+
+IMPORTANT:
+- Do NOT redesign the app from scratch
+- Reuse existing components and styles where possible
+- Keep the current HousAlert visual direction
+- This is a targeted polish + layout correction pass
+- Do not break routes, email templates, or existing flows
+
+==================================================
+1. ZOEKPROFIELEN PAGE — MAKE CARDS MATCH HOME STYLE
+==================================================
+
+On the “Zoekprofielen” page, the search profile cards currently look too large and too different from the Home screen style.
+
+I want the search profile cards on the Zoekprofielen page to visually match the compact Home screen search profile style more closely.
+
+Requirements:
+- more compact card height
+- less empty vertical space
+- cleaner spacing
+- same general visual language as the Home search profile cards
+- keep title + subtitle + status readable
+- keep edit/delete actions working
+
+Do NOT make them huge dashboard cards.
+They should feel more compact and efficient, similar to how search profiles look on the Home screen.
+
+==================================================
+2. EMAIL TEMPLATE — “BEKIJK WONING” BUTTON IS CUT OFF
+==================================================
+
+In the email notification, the “Bekijk woning” button is being cut off / not fully visible, especially lower in the email.
+
+Fix the email template so the CTA button:
+- is always fully visible
+- has enough width and padding
+- does not overflow or get clipped
+- works well on mobile email clients
+- stays readable when scrolling further down in the email
+
+Please inspect the email layout and fix:
+- button width
+- container width
+- overflow issues
+- mobile responsiveness
+- spacing around the CTA button
+
+IMPORTANT:
+- do not change the email branding unnecessarily
+- do not remove the CTA
+- ensure the button renders properly in mobile email clients
+
+==================================================
+3. MORE ROUNDED CORNERS ON CARDS
+==================================================
+
+The cards should feel slightly softer and more premium.
+
+Increase border radius a bit more across relevant cards.
+
+This especially applies to:
+- “Onlangs bekeken woningen” cards
+- listing cards
+- search profile cards
+- similar content cards
+
+Do NOT overdo it.
+Just make them a little more rounded so they feel closer to Airbnb.
+
+Target feel:
+- slightly softer
+- more premium
+- more polished
+
+==================================================
+4. MATCHES PAGE — EVEN MORE SPACE BETWEEN LISTINGS
+==================================================
+
+The spacing between listing cards on the Matches page should be increased again.
+
+I want more breathing room between separate listings.
+
+Requirements:
+- increase vertical spacing between listing cards
+- do NOT change the compact text layout inside each card
+- only increase the gap between one listing and the next
+
+Goal:
+- calmer scroll rhythm
+- more premium spacing
+- closer to Airbnb list rhythm
+
+==================================================
+5. ZOEKPROFIELEN PAGE — MOVE THE PLUS ICON ABOVE THE TEXT
+==================================================
+
+On the Zoekprofielen page, I want the plus icon moved.
+
+Current issue:
+- the plus icon is below the text section (“3 van 4 zoekprofielen actief”)
+
+Fix:
+- move the plus icon ABOVE that text block
+- layout should become:
+
+[plus icon]
+3 van de 4 zoekprofielen actief
+Voeg extra zoekprofielen toe ...
+
+The plus icon should feel like the main visual CTA above the explanatory text.
+
+Keep:
+- current functionality
+- current action behavior
+
+==================================================
+6. KEEP THINGS CONSISTENT
+==================================================
+
+Please keep:
+- current shadows, unless only a small refinement is needed
+- current color system
+- current active/inactive states
+- current search profile logic
+- current card content logic
+
+==================================================
+7. RESULT
+==================================================
+
+At the end, summarize:
+1. how the Zoekprofielen cards were compacted
+2. what was fixed in the email CTA button/layout
+3. what border radius changes were made
+4. how much spacing was added between Matches listings
+5. how the plus icon was repositioned
+6. which files/components/templates were updated

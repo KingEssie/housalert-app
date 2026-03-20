@@ -7,7 +7,6 @@ import { getSearchProfiles, deleteSearchProfile, type SearchProfile } from "@/li
 import { fetchApiMatches, type ApiMatch, type ApiMatchesResponse, type CanonicalStats } from "@/lib/listings";
 import { queryClient } from "@/lib/queryClient";
 import { supabase } from "@/lib/supabase";
-import { dateLocale } from "../../../config/market";
 import { useSubscription } from "@/lib/subscription";
 import { SubscriptionGate } from "@/components/subscription-gate";
 import { Button } from "@/components/ui/button";
@@ -20,12 +19,7 @@ import {
   SlidersHorizontal,
   User,
   Plus,
-  MapPin,
   Trash2,
-  Euro,
-  BedDouble,
-  Ruler,
-  Clock,
   Search,
   Bell,
   LogOut,
@@ -162,7 +156,7 @@ function MatchCard({
       onClick={handleCardClick}
       data-testid={`card-match-${match.listing_id}`}
     >
-      <div className="relative rounded-[16px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
+      <div className="relative rounded-[20px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
         {hasImage && !imgError ? (
           <img
             src={match.image_url!}
@@ -232,93 +226,55 @@ function ProfileCard({
   deleting: boolean;
   onEdit: () => void;
 }) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
 
   return (
     <div
-      className="rounded-[24px] border border-[#F0F0F0] p-5 flex flex-col gap-5 shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)]"
+      className={`rounded-[20px] border border-[#F0F0F0] p-4 flex items-center gap-3.5 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] ${deleting ? "opacity-50 pointer-events-none" : ""}`}
       data-testid={`card-profile-${profile.id}`}
     >
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3.5">
-          <div className="w-10 h-10 rounded-xl bg-[#F8F9FA] flex items-center justify-center flex-shrink-0">
-            <MapPin className="w-[18px] h-[18px] text-[#71717A]" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2.5">
-              <h3 className="font-medium text-[#111827] text-[16px]" data-testid={`text-profile-city-${profile.id}`}>
-                {profile.city_name || profile.city}
-              </h3>
-              <span className="text-[10px] font-medium text-[#22C55E] bg-[#F0FDF4] px-2.5 py-0.5 rounded-full" data-testid={`badge-status-${profile.id}`}>
-                {t("common.active")}
-              </span>
-            </div>
-            <p className="text-[12px] text-[#9CA3AF] mt-1">
-              {t("filters.createdOn", { date: new Date(profile.created_at).toLocaleDateString(dateLocale, { day: "numeric", month: "short" }) })}
-            </p>
-          </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <h3 className="font-medium text-[#111827] text-[15px] leading-snug line-clamp-1" data-testid={`text-profile-city-${profile.id}`}>
+            {getProfileTitle(profile, t, locale)}
+          </h3>
+          <span className="text-[10px] font-medium text-[#22C55E] bg-[#F0FDF4] px-2 py-0.5 rounded-full flex-shrink-0" data-testid={`badge-status-${profile.id}`}>
+            {t("common.active")}
+          </span>
         </div>
-        <button
-          onClick={onDelete}
-          disabled={deleting}
-          className="w-9 h-9 rounded-xl flex items-center justify-center text-[#C4C8CC] hover:text-[#EF4444] hover:bg-[#FEF2F2] transition-all"
-          data-testid={`button-delete-${profile.id}`}
-        >
-          <Trash2 className="w-4 h-4" />
-        </button>
+        <p className="text-[13px] text-[#9CA3AF] mt-0.5 line-clamp-1" data-testid={`text-profile-summary-filters-${profile.id}`}>
+          {getProfileSummary(profile, t)}
+        </p>
       </div>
-
-      <div className="flex flex-wrap gap-2">
-        {profile.location_mode === "districts" && profile.districts && profile.districts.length > 0 && (
-          <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-[#F9FAFB] text-[#374151] px-2 py-1 rounded-md" data-testid={`badge-districts-${profile.id}`}>
-            <MapPin className="w-3 h-3 text-[#9CA3AF]" />
-            {profile.districts.length === 1 ? profile.districts[0] : t("filters.districtsCount", { count: profile.districts.length })}
-          </span>
-        )}
-        {profile.location_mode === "radius" && profile.radius_km && (
-          <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-[#F9FAFB] text-[#374151] px-2 py-1 rounded-md" data-testid={`badge-radius-${profile.id}`}>
-            <MapPin className="w-3 h-3 text-[#9CA3AF]" />
-            {profile.radius_km} {t("filters.radius")}
-          </span>
-        )}
-        {profile.location_mode === "commute" && profile.commute_destination && (
-          <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-[#F9FAFB] text-[#374151] px-2 py-1 rounded-md" data-testid={`badge-commute-${profile.id}`}>
-            <Clock className="w-3 h-3 text-[#9CA3AF]" />
-            {profile.commute_minutes ? t("filters.commute", { time: profile.commute_minutes }) : ""} {profile.commute_mode === "ov" ? t("filters.transit") : profile.commute_mode === "fiets" ? t("filters.bike") : t("filters.car")}
-          </span>
-        )}
-        {(profile.price_min > 0 || profile.price_max > 0) && (
-          <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-[#F9FAFB] text-[#374151] px-2 py-1 rounded-md">
-            <Euro className="w-3 h-3 text-[#9CA3AF]" />
-            {profile.price_min > 0 && profile.price_max > 0
-              ? `€${profile.price_min} – €${profile.price_max}`
-              : profile.price_min > 0
-              ? t("filters.fromPrice", { price: profile.price_min })
-              : t("filters.toPrice", { price: profile.price_max })}
-          </span>
-        )}
-        <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-[#F9FAFB] text-[#374151] px-2 py-1 rounded-md">
-          <BedDouble className="w-3 h-3 text-[#9CA3AF]" />
-          {bedroomLabel(profile.bedrooms_min, t)}
-        </span>
-        {profile.size_min > 0 && (
-          <span className="inline-flex items-center gap-1 text-[11px] font-medium bg-[#F9FAFB] text-[#374151] px-2 py-1 rounded-md">
-            <Ruler className="w-3 h-3 text-[#9CA3AF]" />
-            {profile.size_min}+ m²
-          </span>
-        )}
-      </div>
-
-      <div className="pt-1">
-        <button
-          onClick={onEdit}
-          className="h-9 px-5 rounded-xl bg-[#111827] text-[13px] font-medium text-white hover:bg-[#1F2937] transition-colors inline-flex items-center gap-2"
-          data-testid={`button-edit-${profile.id}`}
-        >
-          {t("common.edit")}
-          <ChevronRight className="w-3.5 h-3.5" />
-        </button>
-      </div>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button
+            className="w-9 h-9 rounded-full flex items-center justify-center text-[#9CA3AF] hover:bg-[#F5F7FA] transition-colors flex-shrink-0"
+            disabled={deleting}
+            data-testid={`button-menu-filters-${profile.id}`}
+          >
+            <MoreVertical className="w-[18px] h-[18px]" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="min-w-[160px]">
+          <DropdownMenuItem
+            onClick={onEdit}
+            className="flex items-center gap-2.5 cursor-pointer"
+            data-testid={`menu-edit-filters-${profile.id}`}
+          >
+            <Pencil className="w-4 h-4 text-[#6B7280]" />
+            {t("common.edit")}
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={onDelete}
+            className="flex items-center gap-2.5 text-[#EF4444] focus:text-[#EF4444] cursor-pointer"
+            data-testid={`menu-delete-filters-${profile.id}`}
+          >
+            <Trash2 className="w-4 h-4" />
+            {t("filters.deleteTitle")}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }
@@ -427,7 +383,7 @@ function RecentMatchCard({ match }: { match: ApiMatch }) {
     <div
       role="button"
       tabIndex={0}
-      className="flex-shrink-0 w-[72vw] max-w-[280px] cursor-pointer transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-[#0D6EFD]/40 rounded-[16px]"
+      className="flex-shrink-0 w-[72vw] max-w-[280px] cursor-pointer transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-[#0D6EFD]/40 rounded-[20px]"
       onClick={() => {
         markViewed(match.listing_id);
         navigate(`/apply/${match.listing_id}`);
@@ -441,7 +397,7 @@ function RecentMatchCard({ match }: { match: ApiMatch }) {
       }}
       data-testid={`card-recent-match-${match.listing_id}`}
     >
-      <div className="relative rounded-[16px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
+      <div className="relative rounded-[20px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
         {hasImage ? (
           <img
             src={match.image_url!}
@@ -534,7 +490,7 @@ function RecentlyViewedCard({ match }: { match: ApiMatch }) {
     <div
       role="button"
       tabIndex={0}
-      className="flex-shrink-0 w-[28vw] max-w-[130px] cursor-pointer snap-start transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-[#0D6EFD]/40 rounded-[12px]"
+      className="flex-shrink-0 w-[28vw] max-w-[130px] cursor-pointer snap-start transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-[#0D6EFD]/40 rounded-[16px]"
       onClick={() => navigate(`/apply/${match.listing_id}`)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -544,7 +500,7 @@ function RecentlyViewedCard({ match }: { match: ApiMatch }) {
       }}
       data-testid={`card-recently-viewed-${match.listing_id}`}
     >
-      <div className="relative rounded-[12px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
+      <div className="relative rounded-[16px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
         {hasImage ? (
           <img
             src={match.image_url!}
@@ -658,7 +614,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
           {profiles.map((p) => (
             <div
               key={p.id}
-              className="w-full bg-white rounded-[16px] border border-[#F0F0F0] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] p-4 flex items-center gap-3.5"
+              className="w-full bg-white rounded-[20px] border border-[#F0F0F0] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] p-4 flex items-center gap-3.5"
               data-testid={`card-search-profile-${p.id}`}
             >
               <div className="flex-1 min-w-0">
@@ -1224,7 +1180,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           />
         )
       ) : (
-        <div className="flex flex-col gap-[28px]">
+        <div className="flex flex-col gap-[36px]">
           {filteredMatches.map((m) => (
             <MatchCard
               key={m.listing_id}
@@ -1329,7 +1285,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
       {profilesQuery.isLoading ? (
         <div className="flex flex-col gap-3">
           {[1, 2].map((i) => (
-            <div key={i} className="bg-white rounded-[24px] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] border border-[#F0F0F0] p-5 animate-pulse">
+            <div key={i} className="bg-white rounded-[20px] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] border border-[#F0F0F0] p-4 animate-pulse">
               <div className="h-4 bg-[#F5F7FA] rounded w-1/3 mb-3" />
               <div className="flex gap-2">
                 <div className="h-6 bg-[#F5F7FA] rounded-full w-24" />
@@ -1360,21 +1316,21 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
           ))}
 
           <div className="flex flex-col items-center text-center mt-6 mb-2 px-4">
+            {!atLimit && (
+              <button
+                onClick={() => navigate("/dashboard/searches/new")}
+                className="w-14 h-14 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] flex items-center justify-center text-white transition-colors shadow-[0_4px_12px_rgba(13,110,253,0.3)] mb-5"
+                data-testid="button-add-search-card"
+              >
+                <Plus className="w-6 h-6" />
+              </button>
+            )}
             <p className="text-[17px] font-medium text-[#18181B]">
               {t("filters.activeCountTitle", { count: profileCount, max: MAX_PROFILES })}
             </p>
             <p className="text-[14px] text-[#6B7280] mt-2 leading-relaxed">
               {t("filters.activeCountDesc")}
             </p>
-            {!atLimit && (
-              <button
-                onClick={() => navigate("/dashboard/searches/new")}
-                className="w-14 h-14 rounded-full bg-[#0D6EFD] hover:bg-[#0B5ED7] flex items-center justify-center text-white transition-colors shadow-[0_4px_12px_rgba(13,110,253,0.3)] mt-5"
-                data-testid="button-add-search-card"
-              >
-                <Plus className="w-6 h-6" />
-              </button>
-            )}
           </div>
         </div>
       )}
