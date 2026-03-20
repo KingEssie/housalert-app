@@ -117,6 +117,50 @@ async function getSearchBuddyInfo(userId: string): Promise<BuddyInfo | null> {
   }
 }
 
+interface BuddyEligibility {
+  eligible: boolean;
+  reason: string;
+  buddyInfo: BuddyInfo | null;
+}
+
+async function canBuddyReceiveMatches(
+  userId: string,
+  prefetchedSubStatus?: import("../subscriptions").SubscriptionStatus
+): Promise<BuddyEligibility> {
+  const buddyInfo = await getSearchBuddyInfo(userId);
+
+  if (!buddyInfo) {
+    return { eligible: false, reason: "no buddy configured", buddyInfo: null };
+  }
+
+  if (!buddyInfo.enabled) {
+    return { eligible: false, reason: "feature disabled", buddyInfo };
+  }
+
+  const subStatus = prefetchedSubStatus ?? await getSubscriptionStatus(userId);
+  const hasActiveTrial = subStatus.isTrial;
+  const hasActivePaid = subStatus.isActive && subStatus.status === "active";
+  const canceledButStillActive = subStatus.status === "canceled" && !subStatus.isExpired;
+
+  if (hasActiveTrial) {
+    log(`[BUDDY] userId=${userId.substring(0, 8)}... buddy INCLUDED: active trial`);
+    return { eligible: true, reason: "active trial", buddyInfo };
+  }
+
+  if (hasActivePaid) {
+    log(`[BUDDY] userId=${userId.substring(0, 8)}... buddy INCLUDED: active paid subscription`);
+    return { eligible: true, reason: "active paid subscription", buddyInfo };
+  }
+
+  if (canceledButStillActive) {
+    log(`[BUDDY] userId=${userId.substring(0, 8)}... buddy INCLUDED: canceled but still in paid period`);
+    return { eligible: true, reason: "canceled but still in paid period", buddyInfo };
+  }
+
+  log(`[BUDDY] userId=${userId.substring(0, 8)}... buddy EXCLUDED: no active entitlement (status=${subStatus.status})`);
+  return { eligible: false, reason: `no active entitlement (status=${subStatus.status})`, buddyInfo };
+}
+
 export async function getUserLanguage(userId: string): Promise<import("../i18n").ServerLocale> {
   try {
     const { rows } = await pgPool.query(
@@ -353,15 +397,15 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
     const emailEnabled = settings?.email_enabled ?? true;
     const pushEnabled = settings?.push_enabled ?? false;
 
-    const buddyInfo = await getSearchBuddyInfo(userId);
+    const buddyEligibility = await canBuddyReceiveMatches(userId, subStatus);
     const userLang = await getUserLanguage(userId);
 
-    if (!emailEnabled && !pushEnabled && !buddyInfo?.enabled) {
+    if (!emailEnabled && !pushEnabled && !buddyEligibility.eligible) {
       skippedEmailOff++;
       const skipIds = listings.map(l => l.listing_id);
       try { await markEmailSent(userId, skipIds); } catch {}
       try { await markPushSent(userId, skipIds); } catch {}
-      log(`[ALERTS] Skipping user ${userId.substring(0, 8)}... (email_enabled=false, push_enabled=false, no active buddy) — marked ${skipIds.length} as sent`);
+      log(`[ALERTS] Skipping user ${userId.substring(0, 8)}... (email_enabled=false, push_enabled=false, buddy: ${buddyEligibility.reason}) — marked ${skipIds.length} as sent`);
       continue;
     }
 
@@ -421,11 +465,11 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
       }
     }
 
-    if (buddyInfo) {
+    if (buddyEligibility.eligible && buddyEligibility.buddyInfo) {
       const buddyCapped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
-      await sendBuddyEmail(userId, email, buddyInfo, buddyCapped, "[FLUSH]", userLang);
+      await sendBuddyEmail(userId, email, buddyEligibility.buddyInfo, buddyCapped, "[FLUSH]", userLang);
     } else {
-      log(`[ALERTS] Buddy skip for ${userId.substring(0, 8)}...: no buddy email configured`);
+      log(`[ALERTS] Buddy skip for ${userId.substring(0, 8)}...: ${buddyEligibility.reason}`);
     }
 
     if (emailedListingIds.length > 0) {
@@ -519,14 +563,14 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
   const emailEnabled = settingsErr ? true : (settings?.email_enabled ?? true);
   const pushEnabled = settingsErr ? false : (settings?.push_enabled ?? false);
 
-  const backfillBuddyCheck = await getSearchBuddyInfo(userId);
+  const backfillBuddyEligibility = await canBuddyReceiveMatches(userId, subStatus);
   const backfillLang = await getUserLanguage(userId);
 
-  if (!emailEnabled && !pushEnabled && !backfillBuddyCheck?.enabled) {
+  if (!emailEnabled && !pushEnabled && !backfillBuddyEligibility.eligible) {
     const skipIds = userBuf.listings.map(l => l.listing_id);
     try { await markEmailSent(userId, skipIds); } catch {}
     try { await markPushSent(userId, skipIds); } catch {}
-    log(`[ALERTS] Backfill: both channels off, no active buddy — marked ${skipIds.length} as sent`);
+    log(`[ALERTS] Backfill: both channels off, buddy: ${backfillBuddyEligibility.reason} — marked ${skipIds.length} as sent`);
     return;
   }
 
@@ -576,9 +620,11 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
     }
   }
 
-  if (backfillBuddyCheck && userBuf.email) {
+  if (backfillBuddyEligibility.eligible && backfillBuddyEligibility.buddyInfo && userBuf.email) {
     const buddyCapped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
-    await sendBuddyEmail(userId, userBuf.email, backfillBuddyCheck, buddyCapped, "[BACKFILL]", backfillLang);
+    await sendBuddyEmail(userId, userBuf.email, backfillBuddyEligibility.buddyInfo, buddyCapped, "[BACKFILL]", backfillLang);
+  } else if (userBuf.email) {
+    log(`[ALERTS] Backfill buddy skip for ${userId.substring(0, 8)}...: ${backfillBuddyEligibility.reason}`);
   }
 
   if (emailedListingIds.length > 0) {
@@ -678,12 +724,12 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
       .maybeSingle();
     const emailOn = notifSettings?.email_enabled ?? true;
     const pushOn = notifSettings?.push_enabled ?? false;
-    const recoveryBuddy = await getSearchBuddyInfo(userId);
-    if (!emailOn && !pushOn && !recoveryBuddy?.enabled) {
+    const recoveryBuddyEligibility = await canBuddyReceiveMatches(userId, subStatus);
+    if (!emailOn && !pushOn && !recoveryBuddyEligibility.eligible) {
       const skipIds = matches.map(m => m.listing_id);
       try { await markEmailSent(userId, skipIds); } catch {}
       try { await markPushSent(userId, skipIds); } catch {}
-      log(`[RECOVERY] User ${userId.substring(0, 8)}: notifications off, no active buddy — marked ${skipIds.length} as sent, skipping`);
+      log(`[RECOVERY] User ${userId.substring(0, 8)}: notifications off, buddy: ${recoveryBuddyEligibility.reason} — marked ${skipIds.length} as sent, skipping`);
       continue;
     }
 
