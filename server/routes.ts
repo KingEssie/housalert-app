@@ -4438,6 +4438,8 @@ export async function registerRoutes(
         }
       }
 
+      log(`[admin-portal] User detail userId=${userId.substring(0, 8)}... pgProfile=${!!pgProfile} authUser=${!!authUser} pgPhone=${pgProfile?.phone} pgOccupation=${pgProfile?.occupation} pgUpdatedAt=${pgProfile?.updated_at}`);
+
       const profile = pgProfile
         ? { ...pgProfile, email: authUser?.email || null }
         : authUser
@@ -4450,6 +4452,8 @@ export async function registerRoutes(
               has_profile_data: false,
             }
           : null;
+
+      log(`[admin-portal] User detail response profile.phone=${profile?.phone} profile.occupation=${profile?.occupation} profile.first_name=${profile?.first_name}`);
 
       res.json({
         profile,
