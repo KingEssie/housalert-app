@@ -286,6 +286,7 @@ export const nl: Record<string, any> = {
     buddyInvitePending: "Uitnodiging verstuurd",
     buddyConnected: "Verbonden",
     buddyRemoved: "Zoekbuddy verwijderd",
+    buddyRemoveLabel: "Verwijderen",
     subscriptionPlan: "Abonnement",
     activeStatus: "Actief",
     trialStatus: "Proefperiode",

@@ -1425,6 +1425,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
   const [showLangSheet, setShowLangSheet] = useState(false);
   const [buddyEmail, setBuddyEmail] = useState("");
   const [buddySaving, setBuddySaving] = useState(false);
+  const [buddyExpanded, setBuddyExpanded] = useState(false);
   const { toast } = useToast();
   const { t, locale, setLocale } = useTranslation();
 
@@ -1616,6 +1617,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       if (!res.ok) throw new Error("Failed");
       queryClient.invalidateQueries({ queryKey: ["/api/profile-data"] });
       setBuddyEmail("");
+      setBuddyExpanded(false);
       toast({ title: t("profile.buddyInviteSent") });
     } catch {
       toast({ title: t("common.error"), variant: "destructive" });
@@ -1829,57 +1831,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             </div>
           </div>
 
-          <div id="zoekbuddy-section" className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] px-5 py-5" data-testid="card-zoekbuddy">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#F0FFF4] flex items-center justify-center flex-shrink-0">
-                <Users className="w-[22px] h-[22px] text-[#22C55E]" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-[15px] font-semibold text-[#18181B]">{t("profile.zoekbuddyTitle")}</p>
-                <p className="text-[12px] text-[#9CA3AF] mt-0.5">{t("profile.zoekbuddySubtitle")}</p>
-
-                {!pd?.search_buddy_email ? (
-                  <div className="mt-4 flex gap-2">
-                    <input
-                      type="email"
-                      value={buddyEmail}
-                      onChange={e => setBuddyEmail(e.target.value)}
-                      onKeyDown={e => { if (e.key === "Enter") handleBuddyInvite(); }}
-                      placeholder={t("profileEdit.searchBuddyPlaceholder")}
-                      className="flex-1 min-w-0 h-[44px] bg-[#F9FAFB] rounded-xl px-4 text-[14px] text-[#18181B] placeholder:text-[#C4C4C4] border border-[#E5E7EB] focus:border-[#18181B] focus:outline-none transition-colors"
-                      data-testid="input-buddy-email"
-                    />
-                    <button
-                      onClick={handleBuddyInvite}
-                      disabled={buddySaving || !buddyEmail.trim()}
-                      className="h-[44px] px-5 rounded-xl bg-[#18181B] text-white text-[14px] font-medium disabled:opacity-40 active:scale-95 transition-all flex items-center gap-1.5 flex-shrink-0"
-                      data-testid="button-buddy-invite"
-                    >
-                      {buddySaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : t("profile.buddyInvite")}
-                    </button>
-                  </div>
-                ) : (
-                  <div className="mt-4 flex items-center gap-3 bg-[#F9FAFB] rounded-xl px-4 py-3" data-testid="buddy-active-row">
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[14px] text-[#18181B] truncate">{pd.search_buddy_email}</p>
-                      <p className={`text-[11px] mt-0.5 ${pd.search_buddy_enabled ? "text-[#22C55E]" : "text-[#F59E0B]"}`}>
-                        {pd.search_buddy_enabled ? t("profile.buddyConnected") : t("profile.buddyInvitePending")}
-                      </p>
-                    </div>
-                    <button
-                      onClick={handleBuddyRemove}
-                      disabled={buddySaving}
-                      className="w-8 h-8 rounded-full bg-white border border-[#E5E7EB] flex items-center justify-center flex-shrink-0 active:scale-90 transition-transform disabled:opacity-50"
-                      data-testid="button-buddy-remove"
-                    >
-                      {buddySaving ? <Loader2 className="w-3.5 h-3.5 animate-spin text-[#9CA3AF]" /> : <X className="w-3.5 h-3.5 text-[#9CA3AF]" />}
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
           <div className="flex flex-col gap-1">
             <button
               onClick={() => navigate("/application-letter")}
@@ -1902,6 +1853,83 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               <p className="text-[15px] text-[#18181B] flex-1">{t("profile.personalInfo")}</p>
               <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
             </button>
+            <div id="zoekbuddy-section" data-testid="row-zoekbuddy">
+              <div className="flex items-center gap-3.5 px-1 py-[14px]">
+                <Users className="w-[22px] h-[22px] text-[#71717A] flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[15px] text-[#18181B]">{t("profile.zoekbuddyTitle")}</p>
+                  {!buddyExpanded && pd?.search_buddy_email && (
+                    <p className="text-[12px] text-[#9CA3AF] mt-0.5 truncate">{pd.search_buddy_email}</p>
+                  )}
+                  {!buddyExpanded && !pd?.search_buddy_email && (
+                    <p className="text-[12px] text-[#D1D5DB] mt-0.5">{t("profile.noBuddyYet")}</p>
+                  )}
+                </div>
+                <button
+                  onClick={() => {
+                    if (buddyExpanded) {
+                      setBuddyExpanded(false);
+                      setBuddyEmail("");
+                    } else {
+                      setBuddyEmail(pd?.search_buddy_email || "");
+                      setBuddyExpanded(true);
+                    }
+                  }}
+                  className="text-[14px] font-medium text-[#18181B] underline underline-offset-2 ml-2 flex-shrink-0 active:text-[#6B7280] transition-colors"
+                  data-testid="button-buddy-toggle"
+                >
+                  {buddyExpanded ? t("profileDetails.cancel") : (pd?.search_buddy_email ? t("profileDetails.edit") : t("profileDetails.add"))}
+                </button>
+              </div>
+              {buddyExpanded && (
+                <div className="pb-4 px-1 animate-in slide-in-from-top-1 duration-200" data-testid="editor-zoekbuddy">
+                  <div className="pl-[36px]">
+                    <div className="relative mb-4">
+                      <input
+                        type="email"
+                        value={buddyEmail}
+                        onChange={e => setBuddyEmail(e.target.value)}
+                        onKeyDown={e => { if (e.key === "Enter") handleBuddyInvite(); }}
+                        placeholder={t("profileEdit.searchBuddyPlaceholder")}
+                        autoFocus
+                        className="w-full bg-white rounded-2xl px-5 py-4 text-[16px] text-[#18181B] placeholder:text-[#C4C4C4] border border-[#E5E7EB] focus:border-[#18181B] focus:outline-none transition-colors h-[56px]"
+                        data-testid="input-buddy-email"
+                      />
+                      {buddyEmail && (
+                        <button
+                          type="button"
+                          onClick={() => setBuddyEmail("")}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-90 transition-transform"
+                          data-testid="button-buddy-clear"
+                        >
+                          <X className="w-3.5 h-3.5 text-[#6B7280]" />
+                        </button>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={handleBuddyInvite}
+                        disabled={buddySaving || !buddyEmail.trim()}
+                        className="h-[48px] px-8 rounded-xl bg-[#18181B] text-white text-[15px] font-medium disabled:opacity-50 transition-colors flex items-center gap-2"
+                        data-testid="button-buddy-save"
+                      >
+                        {buddySaving ? <Loader2 className="w-4 h-4 animate-spin" /> : t("profileDetails.saveAndContinue")}
+                      </button>
+                      {pd?.search_buddy_email && (
+                        <button
+                          onClick={() => { handleBuddyRemove(); setBuddyExpanded(false); }}
+                          disabled={buddySaving}
+                          className="h-[48px] px-5 rounded-xl text-[#EF4444] text-[14px] font-medium active:bg-[#FEF2F2] transition-colors disabled:opacity-50"
+                          data-testid="button-buddy-remove"
+                        >
+                          {t("profile.buddyRemoveLabel")}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
             <button
               onClick={() => navigate("/account/subscription")}
               className="w-full flex items-center gap-3.5 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"

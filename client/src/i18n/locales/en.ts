@@ -237,6 +237,7 @@ export const en: Record<string, any> = {
     buddyInvitePending: "Invite sent",
     buddyConnected: "Connected",
     buddyRemoved: "Search buddy removed",
+    buddyRemoveLabel: "Remove",
     subscriptionPlan: "Subscription",
     activeStatus: "Active",
     trialStatus: "Trial",

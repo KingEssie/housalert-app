@@ -280,6 +280,7 @@ export const de: Record<string, any> = {
     buddyInvitePending: "Einladung gesendet",
     buddyConnected: "Verbunden",
     buddyRemoved: "Suchpartner entfernt",
+    buddyRemoveLabel: "Entfernen",
     subscriptionPlan: "Abonnement",
     activeStatus: "Aktiv",
     trialStatus: "Testphase",

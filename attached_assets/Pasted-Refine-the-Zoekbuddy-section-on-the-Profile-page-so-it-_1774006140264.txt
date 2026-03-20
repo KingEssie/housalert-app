@@ -1,0 +1,108 @@
+Refine the “Zoekbuddy” section on the Profile page so it matches the inline editing pattern used on “Persoonlijke informatie”.
+
+IMPORTANT:
+- Do NOT keep the current large standalone Zoekbuddy card with input + button always visible
+- Reuse the same inline expand/collapse editing pattern already used on the “Persoonlijke informatie” page
+- Keep the current backend/data logic for zoekbuddy where possible
+- Do NOT redesign the whole page, only the Zoekbuddy section
+
+==================================================
+GOAL
+==================================================
+
+I want “Zoekbuddy” to behave like an editable settings row instead of a large card.
+
+It should feel consistent with the rest of the profile/account editing UX.
+
+==================================================
+1. DEFAULT / COLLAPSED STATE
+==================================================
+
+In the normal collapsed state, show Zoekbuddy as a clean menu/settings row.
+
+Structure:
+- icon on the left
+- title: Zoekbuddy
+- small value/subtext underneath if a buddy exists
+- action on the right:
+  - “Toevoegen” if no buddy exists
+  - “Aanpassen” if buddy already exists
+
+If a buddy already exists:
+- show the buddy email in smaller text under the title
+
+If no buddy exists:
+- show a small subtle status like:
+  “Nog geen zoekbuddy”
+or keep it empty if the page looks cleaner that way
+
+IMPORTANT:
+- keep this row visually aligned with the other profile menu items
+- no oversized card
+- no always-open input field
+
+==================================================
+2. EXPANDED / EDIT STATE
+==================================================
+
+When the user clicks “Toevoegen” or “Aanpassen”:
+- expand the Zoekbuddy section inline on the same page
+- do NOT navigate to a separate page
+- do NOT keep a big permanent card open by default
+
+Show:
+- input field for e-mail address
+- button: “Opslaan en doorgaan”
+
+Optional:
+- “Annuleren” in the row header, consistent with the personal information editing pattern
+
+==================================================
+3. SAVE BEHAVIOR
+==================================================
+
+When the user saves:
+- use the existing zoekbuddy invite/save logic if already implemented
+- keep backend behavior intact
+- after successful save:
+  - collapse the section again
+  - show the buddy e-mail as the small value/subtext underneath the Zoekbuddy title
+
+If validation fails:
+- keep the section open
+- show inline validation feedback
+
+==================================================
+4. REMOVE CURRENT LARGE VERSION
+==================================================
+
+Remove the current oversized Zoekbuddy card layout that contains:
+- large subtitle
+- always-visible input field
+- always-visible button
+
+That layout is too heavy.
+
+Replace it completely with the inline expandable settings-row pattern.
+
+==================================================
+5. VISUAL STYLE
+==================================================
+
+- match the “Persoonlijke informatie” inline expand/collapse behavior
+- clean row in collapsed state
+- simple inline form in expanded state
+- subtle dividers
+- generous but not oversized spacing
+- premium, calm, Airbnb-inspired settings UX
+
+==================================================
+6. RESULT
+==================================================
+
+At the end, summarize:
+1. how the collapsed Zoekbuddy row is shown
+2. how the buddy e-mail is displayed when present
+3. how the inline expanded edit state works
+4. which old large card UI was removed
+5. which files/components were updated
