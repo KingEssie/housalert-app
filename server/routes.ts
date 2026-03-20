@@ -34,7 +34,7 @@ import { getReferralSummary, applyReferralCode, validateReferralCode, ensureUser
 import { initWebPush, sendPushToUser } from "./notifications/push";
 import { sendExpoTestPush } from "./notifications/expo-push";
 import { getSupabaseAdmin } from "./supabase-admin";
-import { markViewed, markApplied, markSaved, getUserMatchStats, getRecentUserMatches, getMatchCountForUser, getCanonicalMatchStates, getRecentFetchRuns, backfillFromSupabaseMatches } from "./user-matches";
+import { markViewed, markApplied, markSaved, getUserMatchStats, getRecentUserMatches, getMatchCountForUser, getCanonicalMatchStates, getRecentFetchRuns, backfillFromSupabaseMatches, upsertUserMatch } from "./user-matches";
 
 const TEN_MIN = 10 * 60 * 1000;
 const ONE_HOUR = 60 * 60 * 1000;
@@ -962,7 +962,27 @@ export async function registerRoutes(
       }
       if (!data || data.length === 0) return res.status(404).json({ error: "Match not found" });
 
-      markApplied(user.id, matchListingId, applied).catch(() => {});
+      if (applied) {
+        const listingMeta: any = { user_id: user.id, listing_id: matchListingId };
+        try {
+          const { data: listing } = await supabase.from("listings").select("title, city, price, source, url").eq("id", matchListingId).single();
+          if (listing) {
+            listingMeta.listing_title = listing.title || null;
+            listingMeta.listing_city = listing.city || null;
+            listingMeta.listing_price = listing.price || null;
+            listingMeta.listing_source = listing.source || null;
+            listingMeta.listing_url = listing.url || null;
+          }
+        } catch {}
+        try {
+          await upsertUserMatch(listingMeta);
+          await markApplied(user.id, matchListingId, true);
+        } catch (pgErr: any) {
+          console.error("[matches] canonical applied sync error:", pgErr.message);
+        }
+      } else {
+        markApplied(user.id, matchListingId, false).catch(() => {});
+      }
 
       return res.json(data[0]);
     } catch (err: any) {
@@ -2239,7 +2259,16 @@ export async function registerRoutes(
         }
       }
 
+      let oldBuddyEmail: string | null = null;
       if (updates.search_buddy_email !== undefined) {
+        try {
+          const { rows: oldRows } = await pgPool.query(
+            "SELECT search_buddy_email FROM user_profile_data WHERE user_id = $1 LIMIT 1",
+            [user.id]
+          );
+          oldBuddyEmail = oldRows[0]?.search_buddy_email?.trim() || null;
+        } catch {}
+
         const buddyEmail = typeof updates.search_buddy_email === "string" ? updates.search_buddy_email.trim() : "";
         if (buddyEmail) {
           if (updates.search_buddy_enabled === undefined) {
@@ -2283,6 +2312,20 @@ export async function registerRoutes(
 
       if (updates.language !== undefined) {
         console.log(`[LANG SAVE] userId=${user.id.substring(0, 8)}... CONFIRMED saved language="${rows[0]?.language}" in DB`);
+      }
+
+      if (updates.search_buddy_email !== undefined) {
+        const newBuddyEmail = rows[0]?.search_buddy_email?.trim() || null;
+        if (newBuddyEmail && newBuddyEmail.toLowerCase() !== (oldBuddyEmail || "").toLowerCase()) {
+          const inviterName = rows[0]?.first_name || user.email?.split("@")[0] || "Someone";
+          const userLang = rows[0]?.language || "nl";
+          import("./email").then(({ sendBuddyInvitationEmail }) => {
+            sendBuddyInvitationEmail(newBuddyEmail, inviterName, userLang as any).catch(err => {
+              console.error(`[profile-data] Buddy invite email failed: ${err.message}`);
+            });
+          }).catch(() => {});
+          console.log(`[profile-data] Buddy invite email queued for ${newBuddyEmail} (inviter: ${inviterName}, lang: ${userLang})`);
+        }
       }
 
       if (updates.phone !== undefined) {

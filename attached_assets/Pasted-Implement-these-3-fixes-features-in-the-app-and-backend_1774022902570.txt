@@ -1,0 +1,107 @@
+Implement these 3 fixes/features in the app and backend.
+
+IMPORTANT:
+- Do NOT redesign the UI unless needed for branding update in emails
+- Keep current UX and flows intact
+- Only add the missing logic and email behavior
+
+==================================================
+1. PROFILE STAT: “GEREAGEERD OP WONINGEN”
+==================================================
+
+Current issue:
+- the profile stat for reacted listings stays at 0
+
+Fix:
+- when the user taps “Kopieer en reageer” on a listing, mark that listing as reacted for that user
+- increase the profile stat based on UNIQUE reacted listings only
+
+Rules:
+- count only once per unique listing
+- if the user taps “Kopieer en reageer” again on the same listing, do NOT increment again
+- profile stat must reflect the total number of unique listings the user has reacted to
+
+Implementation requirements:
+- store a per-user reacted-listings record
+- dedupe on userId + listingId
+- use existing listing identifier if available
+- if no stable listing identifier exists yet, create a robust unique reaction key from source + external listing id
+- update the profile stats query so it reads from this deduped reacted-listings source
+
+==================================================
+2. EMAIL BRANDING UPDATE
+==================================================
+
+Update outgoing emails to match the new red-orange brand direction.
+
+Requirements:
+- replace old blue accent usage with the new red-orange branding
+- keep layout clean and premium
+- do NOT overuse the accent color
+- use accent color mainly for:
+  - buttons
+  - CTA highlights
+  - badges / emphasis
+- keep backgrounds white / neutral
+- keep primary text dark and secondary text gray
+
+Apply this to:
+- match notification emails
+- buddy-related emails
+- any other user-facing transactional templates that still use the old blue brand color
+
+==================================================
+3. ZOEKBUDDY INVITATION / NOTIFICATION EMAIL
+==================================================
+
+When a user successfully adds a Zoekbuddy, send that buddy an email.
+
+Behavior:
+- send only after the buddy has been successfully saved
+- do NOT send duplicate emails if the same buddy is already linked
+- if the buddy is changed, the new buddy should receive the email
+- if the buddy is removed, they should no longer receive future match emails
+
+Email content:
+- short
+- enthusiastic
+- clear
+- in Dutch by default (keep i18n-compatible if email system already supports locales)
+
+Message should explain:
+- they have been added as a Zoekbuddy in HousAlert
+- they will receive match emails for this housing search
+- this helps the main user respond faster and improve their chances
+- keep it concise and friendly
+
+Suggested tone:
+- energetic but professional
+- short intro
+- one clear CTA or explanation block
+
+Also:
+- make sure Zoekbuddy recipients are included in future match notification email sending logic where applicable
+- only include active/current buddy
+- do not send to removed or stale buddy records
+
+==================================================
+4. SAFETY / DEDUPE / EDGE CASES
+==================================================
+
+Ensure:
+- no duplicate reacted count for same listing
+- no duplicate buddy emails
+- no duplicate buddy match notifications
+- graceful handling if buddy email is invalid or send fails
+- log failures without breaking the user flow
+
+==================================================
+5. RESULT
+==================================================
+
+At the end, summarize:
+1. how reacted listings are stored and deduped
+2. how the profile stat now works
+3. which email templates were recolored to the new branding
+4. how the Zoekbuddy email flow works
+5. which files/components/routes were updated

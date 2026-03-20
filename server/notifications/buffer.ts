@@ -103,13 +103,14 @@ interface BuddyInfo {
 async function getSearchBuddyInfo(userId: string): Promise<BuddyInfo | null> {
   try {
     const { rows } = await pgPool.query(
-      "SELECT search_buddy_email FROM user_profile_data WHERE user_id = $1 LIMIT 1",
+      "SELECT search_buddy_email, search_buddy_enabled FROM user_profile_data WHERE user_id = $1 LIMIT 1",
       [userId]
     );
     if (!rows[0]) return null;
     const email = rows[0].search_buddy_email?.trim();
     if (!email) return null;
-    return { email, enabled: true };
+    const enabled = rows[0].search_buddy_enabled !== false;
+    return { email, enabled };
   } catch (err: any) {
     log(`[ALERTS] Failed to fetch buddy info for ${userId.substring(0, 8)}...: ${err.message}`);
     return null;

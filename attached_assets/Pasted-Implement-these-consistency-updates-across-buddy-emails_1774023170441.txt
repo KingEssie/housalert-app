@@ -1,0 +1,94 @@
+Implement these consistency updates across buddy emails, the floating admin button, and the admin portal UI.
+
+IMPORTANT:
+- Do NOT redesign product structure
+- Keep existing functionality and flows
+- Focus on consistency with the main user app
+
+==================================================
+1. ZOEKBUDDY EMAIL LANGUAGE
+==================================================
+
+Update the Zoekbuddy email flow so the outgoing buddy email uses the SAME language as the language selected in the main user’s app settings.
+
+Rules:
+- if the user’s app language is Dutch → send the buddy email in Dutch
+- if the user’s app language is German → send the buddy email in German
+- if the user’s app language is English → send the buddy email in English
+
+Implementation:
+- use the existing locale / app language setting of the user who adds the buddy
+- do not hardcode Dutch
+- keep email templates i18n-compatible
+- ensure subject line and body both use the correct locale
+
+==================================================
+2. FLOATING ADMIN BUTTON POSITION
+==================================================
+
+Adjust the floating dark “adminmodus” button.
+
+Current issue:
+- it sits too high above the bottom tab bar
+
+Fix:
+- move it lower
+- keep it centered horizontally
+- position it closer to the bottom tab bar
+- still leave enough spacing so it feels intentionally floating and not glued to the tab bar
+
+Goal:
+- visually match the lower floating-button placement style used in polished apps like Airbnb
+
+==================================================
+3. ADMIN PORTAL BRAND COLOR MIGRATION
+==================================================
+
+The admin portal still has too many old blue accents.
+
+Replace old blue accent usage with the new red-orange brand system used in the main user app.
+
+Apply to:
+- buttons
+- active states
+- badges
+- toggles
+- links
+- highlights
+- accent borders
+- any leftover blue UI states
+
+Use the same main accent system as the user app.
+
+==================================================
+4. ADMIN PORTAL ICON STYLE
+==================================================
+
+Current issue:
+- many admin icons still have colored background containers
+- this does not match the main user app
+
+Fix:
+- remove colored icon backgrounds where possible
+- use simple black/dark icons instead
+- match the icon presentation style from the user app
+
+Requirements:
+- icons should be black or near-black
+- no unnecessary blue/orange icon tiles
+- clean, direct icon styling
+- same visual language as the main user app
+
+==================================================
+5. ADMIN PORTAL UI CONSISTENCY
+==================================================
+
+Make the admin portal visually match the main user app.
+
+Align the following with the user app:
+- card styling
+- shadow strength
+- corner radius
+- text colors
+- gray color system
+- black text color system

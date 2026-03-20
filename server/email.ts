@@ -22,8 +22,8 @@ const C = {
   dark: "#1F2937",
   muted: "#6B7280",
   border: "#E5E7EB",
-  blue: "#0D6EFD",
-  blueHover: "#0B5ED7",
+  accent: "#F97316",
+  accentHover: "#EA580C",
   lightMuted: "#9CA3AF",
 };
 
@@ -172,7 +172,7 @@ ${preheaderHtml}
   <p style="margin:0 0 4px;font-size:12px;color:${C.lightMuted};line-height:1.6;">
     ${escapeHtml(t(lang, "email.footer"))}
   </p>
-  <a href="${baseUrl}/instellingen" target="_blank" style="font-size:12px;color:${C.blue};text-decoration:none;">${escapeHtml(t(lang, "email.manageNotifs"))}</a>
+  <a href="${baseUrl}/instellingen" target="_blank" style="font-size:12px;color:${C.accent};text-decoration:none;">${escapeHtml(t(lang, "email.manageNotifs"))}</a>
   <p style="margin:12px 0 0;font-size:11px;color:${C.border};">
     \u00A9 ${new Date().getFullYear()} HousAlert
   </p>
@@ -233,9 +233,9 @@ function listingCard(listing: ListingInfo, showButton = false, cardNumber?: numb
   const buttonHtml = showButton && linkTarget !== "#"
     ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:14px;">
         <tr><td align="center" style="padding:0 4px;">
-          <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${escapeHtml(linkTarget)}" style="height:48px;v-text-anchor:middle;width:100%;" arcsize="50%" strokecolor="${C.blue}" fillcolor="${C.blue}"><w:anchorlock/><center style="color:#FFFFFF;font-family:Arial,sans-serif;font-size:15px;font-weight:bold;">${escapeHtml(t(lang, "email.viewListing"))}</center></v:roundrect><![endif]-->
+          <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${escapeHtml(linkTarget)}" style="height:48px;v-text-anchor:middle;width:100%;" arcsize="50%" strokecolor="${C.accent}" fillcolor="${C.accent}"><w:anchorlock/><center style="color:#FFFFFF;font-family:Arial,sans-serif;font-size:15px;font-weight:bold;">${escapeHtml(t(lang, "email.viewListing"))}</center></v:roundrect><![endif]-->
           <!--[if !mso]><!-->
-          <a href="${escapeHtml(linkTarget)}" target="_blank" style="display:block;background-color:${C.blue};color:${C.white} !important;-webkit-text-fill-color:${C.white};mso-line-height-rule:exactly;font-size:15px;font-weight:700;text-decoration:none;padding:14px 24px;border-radius:999px;text-align:center;mso-hide:all;-webkit-text-size-adjust:none;"><span style="color:${C.white} !important;-webkit-text-fill-color:${C.white};">${escapeHtml(t(lang, "email.viewListing"))}</span></a>
+          <a href="${escapeHtml(linkTarget)}" target="_blank" style="display:block;background-color:${C.accent};color:${C.white} !important;-webkit-text-fill-color:${C.white};mso-line-height-rule:exactly;font-size:15px;font-weight:700;text-decoration:none;padding:14px 24px;border-radius:999px;text-align:center;mso-hide:all;-webkit-text-size-adjust:none;"><span style="color:${C.white} !important;-webkit-text-fill-color:${C.white};">${escapeHtml(t(lang, "email.viewListing"))}</span></a>
           <!--<![endif]-->
         </td></tr>
       </table>`
@@ -275,7 +275,7 @@ export async function sendMatchAlert(
     const textBody = `${t(lang, "email.greeting")},\n\n${t(lang, "email.singleIntro")}\n\n${listing.title}\n${detailsText}${listing.url ? `\n\n${t(lang, "email.viewListing")}: ${listing.url}` : ""}\n\n${t(lang, "email.closing")}`;
 
     const htmlContent = `
-<p style="margin:0 0 4px;font-size:12px;font-weight:600;color:${C.blue};text-transform:uppercase;letter-spacing:0.05em;">${escapeHtml(t(lang, "email.newMatch"))}</p>
+<p style="margin:0 0 4px;font-size:12px;font-weight:600;color:${C.accent};text-transform:uppercase;letter-spacing:0.05em;">${escapeHtml(t(lang, "email.newMatch"))}</p>
 <p style="margin:0 0 16px;font-size:14px;color:${C.muted};line-height:1.5;">${escapeHtml(t(lang, "email.matchFound"))}</p>
 ${listingCard(listing, true, undefined, lang)}`;
 
@@ -338,7 +338,7 @@ export async function sendBatchMatchAlert(
     });
 
     const htmlContent = `
-<p style="margin:0 0 4px;font-size:12px;font-weight:600;color:${C.blue};text-transform:uppercase;letter-spacing:0.05em;">${escapeHtml(matchesLabel)}</p>
+<p style="margin:0 0 4px;font-size:12px;font-weight:600;color:${C.accent};text-transform:uppercase;letter-spacing:0.05em;">${escapeHtml(matchesLabel)}</p>
 <p style="margin:0 0 16px;font-size:14px;color:${C.muted};line-height:1.5;">${escapeHtml(matchesDesc)}</p>
 ${htmlListings}`;
 
@@ -363,6 +363,105 @@ ${htmlListings}`;
     return true;
   } catch (err: any) {
     log(`[EMAIL ERROR] batch to=${userEmail} lang=${lang} err=${err.message} stack=${err.stack?.split("\n")[1]?.trim() || "N/A"}`);
+    return false;
+  }
+}
+
+export async function sendBuddyInvitationEmail(
+  buddyEmail: string,
+  inviterName: string,
+  lang: ServerLocale = "nl"
+): Promise<boolean> {
+  try {
+    const client = await getResendClient();
+    const baseUrl = getAppBaseUrl();
+
+    const subjects: Record<ServerLocale, string> = {
+      nl: `\u{1F3E0} ${inviterName} heeft je toegevoegd als Zoekbuddy op HousAlert`,
+      de: `\u{1F3E0} ${inviterName} hat dich als Suchbuddy bei HousAlert hinzugefügt`,
+      en: `\u{1F3E0} ${inviterName} added you as a Search Buddy on HousAlert`,
+    };
+
+    const htmlBodies: Record<ServerLocale, string> = {
+      nl: `
+<p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.navy};line-height:1.3;">Hey! \u{1F44B}</p>
+<p style="margin:0 0 16px;font-size:15px;color:${C.dark};line-height:1.6;">
+  <strong>${escapeHtml(inviterName)}</strong> heeft je toegevoegd als <strong>Zoekbuddy</strong> op HousAlert.
+</p>
+<p style="margin:0 0 16px;font-size:15px;color:${C.dark};line-height:1.6;">
+  Dit betekent dat je voortaan dezelfde woningmeldingen ontvangt als ${escapeHtml(inviterName)}. Zo kunnen jullie samen sneller reageren en de kans op een woning vergroten!
+</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:20px 0;">
+  <tr><td align="center">
+    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.accent};color:${C.white} !important;font-size:15px;font-weight:700;text-decoration:none;padding:14px 32px;border-radius:999px;">Bekijk HousAlert</a>
+  </td></tr>
+</table>
+<p style="margin:0;font-size:13px;color:${C.muted};line-height:1.6;">
+  Veel succes met de zoektocht!
+</p>`,
+      de: `
+<p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.navy};line-height:1.3;">Hey! \u{1F44B}</p>
+<p style="margin:0 0 16px;font-size:15px;color:${C.dark};line-height:1.6;">
+  <strong>${escapeHtml(inviterName)}</strong> hat dich als <strong>Suchbuddy</strong> bei HousAlert hinzugef\u00FCgt.
+</p>
+<p style="margin:0 0 16px;font-size:15px;color:${C.dark};line-height:1.6;">
+  Das bedeutet, dass du ab jetzt dieselben Wohnungsmeldungen erh\u00E4ltst wie ${escapeHtml(inviterName)}. So k\u00F6nnt ihr zusammen schneller reagieren und eure Chancen auf eine Wohnung erh\u00F6hen!
+</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:20px 0;">
+  <tr><td align="center">
+    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.accent};color:${C.white} !important;font-size:15px;font-weight:700;text-decoration:none;padding:14px 32px;border-radius:999px;">HousAlert ansehen</a>
+  </td></tr>
+</table>
+<p style="margin:0;font-size:13px;color:${C.muted};line-height:1.6;">
+  Viel Erfolg bei der Wohnungssuche!
+</p>`,
+      en: `
+<p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.navy};line-height:1.3;">Hey! \u{1F44B}</p>
+<p style="margin:0 0 16px;font-size:15px;color:${C.dark};line-height:1.6;">
+  <strong>${escapeHtml(inviterName)}</strong> added you as a <strong>Search Buddy</strong> on HousAlert.
+</p>
+<p style="margin:0 0 16px;font-size:15px;color:${C.dark};line-height:1.6;">
+  This means you\u2019ll receive the same listing alerts as ${escapeHtml(inviterName)}. Together, you can react faster and improve your chances of finding a home!
+</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:20px 0;">
+  <tr><td align="center">
+    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.accent};color:${C.white} !important;font-size:15px;font-weight:700;text-decoration:none;padding:14px 32px;border-radius:999px;">View HousAlert</a>
+  </td></tr>
+</table>
+<p style="margin:0;font-size:13px;color:${C.muted};line-height:1.6;">
+  Good luck with the search!
+</p>`,
+    };
+
+    const textBodies: Record<ServerLocale, string> = {
+      nl: `Hey!\n\n${inviterName} heeft je toegevoegd als Zoekbuddy op HousAlert.\n\nDit betekent dat je voortaan dezelfde woningmeldingen ontvangt. Zo kunnen jullie samen sneller reageren!\n\nBekijk HousAlert: ${baseUrl}\n\nVeel succes!`,
+      de: `Hey!\n\n${inviterName} hat dich als Suchbuddy bei HousAlert hinzugef\u00FCgt.\n\nDas bedeutet, dass du ab jetzt dieselben Wohnungsmeldungen erh\u00E4ltst. So k\u00F6nnt ihr zusammen schneller reagieren!\n\nHousAlert ansehen: ${baseUrl}\n\nViel Erfolg!`,
+      en: `Hey!\n\n${inviterName} added you as a Search Buddy on HousAlert.\n\nThis means you'll receive the same listing alerts. Together, you can react faster!\n\nView HousAlert: ${baseUrl}\n\nGood luck!`,
+    };
+
+    const subject = sanitizeSubject(subjects[lang] || subjects.nl);
+    const htmlContent = htmlBodies[lang] || htmlBodies.nl;
+    const textBody = textBodies[lang] || textBodies.nl;
+
+    log(`[EMAIL SEND] buddy-invite from="${VERIFIED_FROM}" to="${buddyEmail}" inviter="${inviterName}" lang=${lang}`);
+
+    const { data, error } = await client.emails.send({
+      from: VERIFIED_FROM,
+      to: buddyEmail,
+      subject,
+      text: textBody,
+      html: emailWrapper(htmlContent, `${inviterName} heeft je toegevoegd als Zoekbuddy`, lang),
+    });
+
+    if (error) {
+      log(`[EMAIL FAIL] buddy-invite to=${buddyEmail} error=${error.message}`);
+      return false;
+    }
+
+    log(`[EMAIL OK] buddy-invite to=${buddyEmail} id=${(data as any)?.id || "N/A"}`);
+    return true;
+  } catch (err: any) {
+    log(`[EMAIL ERROR] buddy-invite to=${buddyEmail} err=${err.message}`);
     return false;
   }
 }
