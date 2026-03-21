@@ -395,6 +395,17 @@ export const de: Record<string, any> = {
     },
   },
 
+  welcomeSlides: {
+    slide1Title: "Finde deine Wohnung vor allen anderen",
+    slide1Desc: "Erhalte neue Mietwohnungen sofort, sobald sie online gehen. Du reagierst als Erster.",
+    slide2Title: "Clever suchen, automatisch Matches",
+    slide2Desc: "Erstelle dein Suchprofil und wir durchsuchen hunderte Websites für dich. Kein endloses Suchen mehr.",
+    slide3Title: "Mehr Chancen auf deine Wohnung",
+    slide3Desc: "Reagiere schneller mit einer starken Bewerbung und erhöhe deine Chance, ausgewählt zu werden.",
+    createAccount: "Account erstellen",
+    login: "Einloggen",
+  },
+
   onboarding: {
     step: "{step}/{total}",
     welcome: {

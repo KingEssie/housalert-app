@@ -11,6 +11,7 @@ import { getSearchProfiles } from "@/lib/search-profiles";
 import { isNativePlatform } from "@/lib/capacitor";
 
 const IS_NATIVE = isNativePlatform();
+import WelcomePage from "@/pages/welcome";
 import LoginPage from "@/pages/login";
 import SignupPage from "@/pages/signup";
 import OnboardingLocationPage from "@/pages/onboarding-location";
@@ -87,13 +88,14 @@ function ProtectedRoute({ component: Component, skipOnboardingCheck }: { compone
 function RootRedirect() {
   const { user, loading } = useAuth();
   if (loading) return null;
-  return <Redirect to={user ? "/dashboard" : "/login"} />;
+  return <Redirect to={user ? "/dashboard" : "/welcome"} />;
 }
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={RootRedirect} />
+      <Route path="/welcome" component={WelcomePage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/signup" component={SignupPage} />
       <Route path="/auth/callback" component={AuthCallbackPage} />
