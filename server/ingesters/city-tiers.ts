@@ -1,5 +1,4 @@
 import { log } from "../log";
-import { getCitySlugs } from "./city-slugs";
 
 export type CityTier = 1 | 2 | 3;
 
@@ -74,7 +73,6 @@ export function buildScrapeQueue(
   }
 
   let dynamicCount = 0;
-  let skippedCount = 0;
 
   for (const raw of userCities) {
     if (typeof raw !== "string") continue;
@@ -83,12 +81,6 @@ export function buildScrapeQueue(
 
     const key = canonicalCity(trimmed);
     if (seen.has(key)) continue;
-
-    const slugs = getCitySlugs(trimmed);
-    if (!slugs) {
-      skippedCount++;
-      continue;
-    }
 
     seen.set(key, { name: trimmed, tier: 3 });
     dynamicCount++;
@@ -113,7 +105,7 @@ export function buildScrapeQueue(
     );
   }
   log(
-    `[CITY-TIERS] Dynamic user cities: ${t3}${skippedCount > 0 ? ` (${skippedCount} unsupported skipped)` : ""}`,
+    `[CITY-TIERS] Dynamic user cities: ${t3}`,
     "ingest",
   );
   log(`[CITY-TIERS] Final scrape queue: ${queue.length} cities`, "ingest");
