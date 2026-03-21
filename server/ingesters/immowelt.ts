@@ -146,20 +146,37 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
     const bedrooms = parseZimmer(keyFacts);
     const size = parseSize(keyFacts);
 
-    const imgEl = card.find("img[src*='immowelt'], img[src*='cdn.'], picture source[srcset]").first();
     let imageUrl: string | null = null;
-    if (imgEl.length) {
-      let raw = imgEl.attr("src") || imgEl.attr("srcset")?.split(",")[0]?.trim()?.split(" ")[0] || "";
-      if (raw && raw.startsWith("http")) {
-        try {
-          const imgUrl = new URL(raw);
-          if (imgUrl.hostname.includes("immowelt") && imgUrl.searchParams.has("h")) {
-            imgUrl.searchParams.set("h", "400");
-            raw = imgUrl.toString();
-          }
-        } catch {}
-        imageUrl = raw;
-      }
+    const galleryDiv = card.find('[data-testid="card-mfe-picture-box-gallery-test-id"]');
+
+    if (galleryDiv.length) {
+      const galleryImg = galleryDiv.find("img").first();
+      const src = galleryImg.attr("src") || "";
+      const srcset = galleryDiv.find("source[srcset]").first().attr("srcset") || "";
+      const raw = src.startsWith("http") ? src : srcset.split(",")[0]?.trim()?.split(" ")[0] || "";
+      if (raw.startsWith("http")) imageUrl = raw;
+    }
+
+    if (!imageUrl) {
+      const allImgs = card.find("img[src*='mms.immowelt.de']");
+      allImgs.each((_j, imgNode) => {
+        if (imageUrl) return;
+        const imgTag = $(imgNode);
+        const alt = (imgTag.attr("alt") || "").toLowerCase();
+        if (alt && !alt.includes("miete") && !alt.includes("wohnung") && !alt.includes("zimmer") && !alt.includes("m²") && alt.length < 80) return;
+        const src = imgTag.attr("src") || "";
+        if (src.startsWith("http")) imageUrl = src;
+      });
+    }
+
+    if (imageUrl) {
+      try {
+        const imgUrl = new URL(imageUrl);
+        if (imgUrl.hostname.includes("immowelt") && imgUrl.searchParams.has("h")) {
+          imgUrl.searchParams.set("h", "400");
+          imageUrl = imgUrl.toString();
+        }
+      } catch {}
     }
 
     const cardText = card.text();
