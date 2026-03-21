@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
 
-type TabId = "dashboard" | "growth" | "sources" | "users" | "system";
+type TabId = "dashboard" | "growth" | "sources" | "cities" | "users" | "system";
 
 async function adminFetch(path: string) {
   const { data: { session } } = await supabase.auth.getSession();
@@ -586,6 +586,172 @@ function SourcesTab() {
   );
 }
 
+function CitiesTab() {
+  const [cities, setCities] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [healthFilter, setHealthFilter] = useState("All");
+  const [countryFilter, setCountryFilter] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
+
+  function load() {
+    setLoading(true);
+    adminFetch("/api/admin/portal/dynamic-cities")
+      .then((d) => setCities(d.cities || []))
+      .catch(() => {})
+      .finally(() => { setLoading(false); setRefreshing(false); });
+  }
+
+  useEffect(() => { load(); }, []);
+
+  const countries = [...new Set(cities.map((c: any) => c.country_code))].sort();
+
+  const filtered = cities.filter((c: any) => {
+    if (healthFilter !== "All" && c.health_status !== healthFilter.toLowerCase()) return false;
+    if (countryFilter !== "All" && c.country_code !== countryFilter) return false;
+    if (searchQuery && !c.city_name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    return true;
+  });
+
+  const totalProfiles = cities.reduce((a: number, c: any) => a + c.active_profiles, 0);
+  const totalListings7d = cities.reduce((a: number, c: any) => a + c.listings_7d, 0);
+  const greenCount = cities.filter((c: any) => c.health_status === "green").length;
+  const yellowCount = cities.filter((c: any) => c.health_status === "yellow").length;
+  const redCount = cities.filter((c: any) => c.health_status === "red").length;
+  const tier3Count = cities.filter((c: any) => c.tier === 3).length;
+
+  if (loading) return <LoadingState />;
+
+  return (
+    <div className="space-y-5 pb-4">
+      <div className="flex items-center justify-between">
+        <h1 className="text-[22px] font-bold text-[#222222]" data-testid="text-cities-title">City Monitor</h1>
+        <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-full bg-[#F5F7FA] flex items-center justify-center" data-testid="button-refresh-cities">
+          <RefreshCw className={`w-4 h-4 text-[#717171] ${refreshing ? "animate-spin" : ""}`} />
+        </button>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <div className={`${CARD} p-3.5`}>
+          <Globe className="w-5 h-5 text-[#222222] mb-1.5" />
+          <p className="text-[20px] font-bold text-[#222222]" data-testid="metric-total-cities">{cities.length}</p>
+          <p className="text-[11px] text-[#717171] font-medium">Total cities</p>
+        </div>
+        <div className={`${CARD} p-3.5`}>
+          <Zap className="w-5 h-5 text-[#F97316] mb-1.5" />
+          <p className="text-[20px] font-bold text-[#222222]" data-testid="metric-dynamic-cities">{tier3Count}</p>
+          <p className="text-[11px] text-[#717171] font-medium">Dynamic (T3)</p>
+        </div>
+        <div className={`${CARD} p-3.5`}>
+          <Search className="w-5 h-5 text-[#222222] mb-1.5" />
+          <p className="text-[20px] font-bold text-[#222222]" data-testid="metric-total-profiles">{totalProfiles}</p>
+          <p className="text-[11px] text-[#717171] font-medium">Search profiles</p>
+        </div>
+        <div className={`${CARD} p-3.5`}>
+          <Layers className="w-5 h-5 text-[#222222] mb-1.5" />
+          <p className="text-[20px] font-bold text-[#222222]" data-testid="metric-listings-7d">{totalListings7d}</p>
+          <p className="text-[11px] text-[#717171] font-medium">Listings (7d)</p>
+        </div>
+      </div>
+
+      <div className={`${CARD} p-4`}>
+        <p className="text-[12px] font-semibold text-[#717171] mb-2">Health overview</p>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+            <span className="text-[13px] font-semibold text-[#222222]" data-testid="metric-health-green">{greenCount}</span>
+            <span className="text-[11px] text-[#717171]">&gt;20/wk</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+            <span className="text-[13px] font-semibold text-[#222222]" data-testid="metric-health-yellow">{yellowCount}</span>
+            <span className="text-[11px] text-[#717171]">5–20</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
+            <span className="text-[13px] font-semibold text-[#222222]" data-testid="metric-health-red">{redCount}</span>
+            <span className="text-[11px] text-[#717171]">&lt;5</span>
+          </div>
+        </div>
+      </div>
+
+      <input
+        placeholder="Search city..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="w-full h-10 px-4 rounded-[16px] bg-[#F5F7FA] text-[14px] text-[#222222] placeholder:text-[#B0B0B0] focus:outline-none"
+        data-testid="input-city-search"
+      />
+
+      <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4" style={{ WebkitOverflowScrolling: "touch" }}>
+        {["All", "Green", "Yellow", "Red"].map(f => (
+          <button key={f} onClick={() => setHealthFilter(f)} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${healthFilter === f ? PILL_ACTIVE : PILL_INACTIVE}`} data-testid={`filter-health-${f.toLowerCase()}`}>
+            {f === "All" ? "All" : <span className="flex items-center gap-1"><span className={`w-2 h-2 rounded-full ${f === "Green" ? "bg-emerald-400" : f === "Yellow" ? "bg-amber-400" : "bg-red-400"}`} />{f}</span>}
+          </button>
+        ))}
+        {countries.length > 1 && (
+          <select value={countryFilter} onChange={(e) => setCountryFilter(e.target.value)} className="px-3 py-1.5 rounded-full text-[12px] font-medium bg-white text-[#717171] border border-[#F0F0F0] cursor-pointer" data-testid="select-country-filter">
+            <option value="All">All countries</option>
+            {countries.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+        )}
+      </div>
+
+      <p className="text-[12px] text-[#717171]">{filtered.length} cities</p>
+
+      <div className={`${CARD_ELEVATED} divide-y divide-[#F0F0F0]`}>
+        {filtered.length > 0 ? filtered.map((c: any) => {
+          const healthColor = c.health_status === "green" ? "bg-emerald-400" : c.health_status === "yellow" ? "bg-amber-400" : "bg-red-400";
+          const tierLabel = c.tier === 1 ? "T1" : c.tier === 2 ? "T2" : "T3";
+          const tierColor = c.tier === 3 ? "bg-orange-50 text-[#EA580C] border-orange-200" : "bg-gray-50 text-[#717171] border-gray-200";
+          return (
+            <div key={c.city_name} className="px-4 py-3.5" data-testid={`city-row-${c.city_name.toLowerCase().replace(/\s/g, "-")}`}>
+              <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${healthColor}`} />
+                  <span className="text-[14px] font-semibold text-[#222222] truncate">{c.city_name}</span>
+                  <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-semibold border ${tierColor}`}>{tierLabel}</span>
+                </div>
+                <span className="text-[11px] text-[#717171] flex-shrink-0">{c.country_code}</span>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 mb-2">
+                <div>
+                  <p className="text-[10px] text-[#B0B0B0] font-medium">Profiles</p>
+                  <p className="text-[14px] font-bold text-[#222222]">{c.active_profiles}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] text-[#B0B0B0] font-medium">Last run</p>
+                  <p className="text-[14px] font-bold text-[#222222]">{c.listings_last_run}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] text-[#B0B0B0] font-medium">7-day</p>
+                  <p className="text-[14px] font-bold text-[#222222]">{c.listings_7d}</p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-1">
+                {c.active_sources.map((s: string) => (
+                  <span key={s} className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">{s}</span>
+                ))}
+                {c.failed_sources.map((f: any, i: number) => (
+                  <span key={i} className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-red-50 text-red-600 border border-red-200" title={f.reason}>{f.name}</span>
+                ))}
+              </div>
+
+              {c.last_scraped_at && (
+                <p className="text-[10px] text-[#B0B0B0] mt-1.5">Last scraped: {new Date(c.last_scraped_at).toLocaleString()}</p>
+              )}
+            </div>
+          );
+        }) : (
+          <div className="px-4 py-8 text-center text-[13px] text-[#717171]">No cities match this filter</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function UserDetailView({ detail, onBack }: { detail: any; onBack: () => void }) {
   const { profile, subscription, searchProfiles, recentMatches, cancellationFeedback, notificationSettings } = detail;
 
@@ -1087,6 +1253,7 @@ const TAB_CONFIG = [
   { id: "dashboard" as TabId, label: "Home", icon: LayoutDashboard },
   { id: "growth" as TabId, label: "Growth", icon: TrendingUp },
   { id: "sources" as TabId, label: "Sources", icon: Radio },
+  { id: "cities" as TabId, label: "Cities", icon: Globe },
   { id: "users" as TabId, label: "Users", icon: Users },
   { id: "system" as TabId, label: "System", icon: Signal },
 ];
@@ -1150,6 +1317,7 @@ export default function AdminPortalPage() {
         {activeTab === "dashboard" && <DashboardTab onNavigate={setActiveTab} userName={user.user_metadata?.first_name || user.email?.split("@")[0] || "Admin"} />}
         {activeTab === "growth" && <GrowthTab />}
         {activeTab === "sources" && <SourcesTab />}
+        {activeTab === "cities" && <CitiesTab />}
         {activeTab === "users" && <UsersTab />}
         {activeTab === "system" && <SystemTab />}
       </main>

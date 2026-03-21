@@ -27,7 +27,7 @@ import { detectLanguage } from "./i18n";
 import { computeMatchScore, getMatchReasons, computeHybridFilters } from "../shared/match-score";
 import { normalizeCity } from "../shared/city-normalize";
 import { pool as pgPool } from "./pg-pool";
-import { isAdminEmail, getRecentRuns, getRunDetail, getLatestRunCities, getSourceAggregates } from "./admin";
+import { isAdminEmail, getRecentRuns, getRunDetail, getLatestRunCities, getSourceAggregates, getDynamicCitiesReport } from "./admin";
 import { trackEvent as trackActivationEvent, getUserActivationStatus, getActivationFunnel, hasEvent as hasActivationEvent } from "./activation-events";
 import { saveCancellationFeedback, getCancellationStats } from "./cancellation-feedback";
 import { getReferralSummary, applyReferralCode, validateReferralCode, ensureUserHasReferralCode } from "./referrals";
@@ -4581,6 +4581,16 @@ export async function registerRoutes(
       res.json({ listings: data || [], total: count ?? 0, page, limit });
     } catch (err: any) {
       log(`[admin-portal] Listings error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/portal/dynamic-cities", requireAdmin, async (_req, res) => {
+    try {
+      const cities = await getDynamicCitiesReport(supabase);
+      res.json({ cities });
+    } catch (err: any) {
+      log(`[admin-portal] Dynamic cities error: ${err.message}`);
       res.status(500).json({ error: err.message });
     }
   });

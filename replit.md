@@ -254,7 +254,7 @@ A mobile-first rental alert application for the German market. Users can sign up
 - **ProtectedRoute** (`App.tsx`): Checks search profiles → redirects to `/onboarding` if 0 profiles. This ensures users always go through the onboarding wizard regardless of entry point.
 
 ### Admin Portal (Unified)
-- **Route**: `/admin/portal` — unified admin dashboard with 7 tabs
+- **Route**: `/admin/portal` — unified admin dashboard with 8 tabs
 - **Access control**: Same `requireAdmin` middleware (Supabase JWT + `ADMIN_EMAILS` allowlist)
 - **Frontend**: `client/src/pages/admin-portal.tsx` — desktop sidebar nav + mobile horizontal scroll tabs
 - **Tabs**:
@@ -263,8 +263,9 @@ A mobile-first rental alert application for the German market. Users can sign up
   3. **Subscriptions**: Paginated subscription list with status filters (all/active/trial/canceled/expired), Stripe dashboard links, user name enrichment
   4. **Search Profiles**: Paginated list showing city, location mode, price range, rooms, size. User name enrichment.
   5. **Listings & Sources**: Two sub-views — Source Monitor (ingestion run status, per-source found/inserted/duplicates/matches/errors) and Listings browser (filterable by city and source, with external links)
-  6. **Matches & Notifications**: Recent matches with user names, viewed/email/push status indicators. KPI cards for emails today, push today, delivery failures (7d).
-  7. **System Status**: Health checks for Stripe, Google Places API, Ingestion Scheduler, Email (Resend), Push Notifications (VAPID), Replit DB, Supabase DB. Refresh button.
+  6. **City Monitor**: Per-city monitoring dashboard. Shows all cities from user search profiles with tier (T1/T2/T3), active profile count, 7-day listing totals, last scrape timestamp, active/failed sources, and health status (green >20/wk, yellow 5–20, red <5). Filters by health, country, city name search. Data cached 5 minutes server-side.
+  7. **Matches & Notifications**: Recent matches with user names, viewed/email/push status indicators. KPI cards for emails today, push today, delivery failures (7d).
+  8. **System Status**: Health checks for Stripe, Google Places API, Ingestion Scheduler, Email (Resend), Push Notifications (VAPID), Replit DB, Supabase DB. Refresh button.
 - **API endpoints** (all `/api/admin/portal/*`, `requireAdmin`):
   - `GET /api/admin/portal/overview` — aggregated KPIs from both DBs
   - `GET /api/admin/portal/users?search=&filter=&page=&limit=` — paginated user list
@@ -273,6 +274,7 @@ A mobile-first rental alert application for the German market. Users can sign up
   - `GET /api/admin/portal/search-profiles?page=&limit=` — paginated search profiles
   - `GET /api/admin/portal/listings?source=&city=&page=&limit=` — paginated listings
   - `GET /api/admin/portal/sources` — ingestion source health from latest run
+  - `GET /api/admin/portal/dynamic-cities` — per-city monitoring data (profiles, listings, health, sources)
   - `GET /api/admin/portal/matches?page=&limit=` — paginated matches with notification stats
   - `GET /api/admin/portal/system-status` — service health checks
 
