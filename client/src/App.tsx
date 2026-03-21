@@ -33,6 +33,8 @@ import SubscriptionDetailPage from "@/pages/subscription-detail";
 import PaymentMethodPage from "@/pages/payment-method";
 import { SubscriptionCancelConfirmPage, SubscriptionCancelledPage } from "@/pages/subscription-cancel";
 import ChangePasswordPage from "@/pages/change-password";
+import ForgotPasswordPage from "@/pages/forgot-password";
+import ResetPasswordPage from "@/pages/reset-password";
 import OnboardingPage from "@/pages/onboarding";
 import OnboardingEmbedPage from "@/pages/onboarding-embed";
 import ContinueDraftPage from "@/pages/continue-draft";
@@ -99,6 +101,8 @@ function Router() {
       <Route path="/login" component={LoginPage} />
       <Route path="/signup" component={SignupPage} />
       <Route path="/auth/callback" component={AuthCallbackPage} />
+      <Route path="/forgot-password" component={ForgotPasswordPage} />
+      <Route path="/reset-password" component={ResetPasswordPage} />
       <Route path="/onboarding-embed" component={OnboardingEmbedPage} />
       <Route path="/continue" component={ContinueDraftPage} />
       <Route path="/onboarding/location" component={OnboardingLocationPage} />

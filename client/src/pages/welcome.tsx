@@ -58,7 +58,7 @@ function LanguageDropdown() {
         <div
           role="listbox"
           aria-label="Languages"
-          className="absolute top-full left-0 mt-1.5 w-[180px] bg-white rounded-2xl border border-[#E5E7EB] shadow-[0_8px_30px_rgba(0,0,0,0.15)] overflow-hidden z-50"
+          className="absolute top-full right-0 mt-1.5 w-[180px] bg-white rounded-2xl border border-[#E5E7EB] shadow-[0_8px_30px_rgba(0,0,0,0.15)] overflow-hidden z-50"
         >
           {LANGUAGES.map((lang) => {
             const isActive = locale === lang.code;
@@ -76,7 +76,7 @@ function LanguageDropdown() {
                   {lang.label}
                 </span>
                 {isActive && (
-                  <div className="ml-auto w-4.5 h-4.5 rounded-full flex items-center justify-center" style={{ backgroundColor: BRAND }}>
+                  <div className="ml-auto w-[18px] h-[18px] rounded-full flex items-center justify-center" style={{ backgroundColor: BRAND }}>
                     <svg width="9" height="9" viewBox="0 0 12 12" fill="none">
                       <path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
@@ -117,17 +117,18 @@ export default function WelcomePage() {
           background: "linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.55) 100%)"
         }} />
 
-        <div className="absolute top-0 left-0 right-0 pt-[max(env(safe-area-inset-top),8px)] px-5 flex items-center justify-between z-10">
-          <div className="pt-3">
-            <HousAlertLogo
-              size={32}
-              showText={true}
-              textClassName="font-bold text-white text-[17px] tracking-[-0.01em] drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)]"
-            />
-          </div>
+        <div className="absolute top-0 left-0 right-0 pt-[max(env(safe-area-inset-top),8px)] px-5 flex items-center justify-end z-10">
           <div className="pt-3">
             <LanguageDropdown />
           </div>
+        </div>
+
+        <div className="absolute bottom-0 left-0 right-0 flex justify-center z-10 pb-10">
+          <HousAlertLogo
+            size={38}
+            showText={true}
+            textClassName="font-bold text-white text-[20px] tracking-[-0.01em] drop-shadow-[0_2px_6px_rgba(0,0,0,0.4)]"
+          />
         </div>
       </div>
 
@@ -160,28 +161,28 @@ export default function WelcomePage() {
         <div className="px-6 pb-[max(env(safe-area-inset-bottom),16px)] flex flex-col items-center">
           <div className="w-full flex gap-3 mb-2">
             <button
-              onClick={() => navigate("/onboarding/location")}
+              onClick={() => navigate("/login")}
               className="flex-1 h-[50px] rounded-full text-[15px] font-bold text-white transition-all active:scale-[0.97] shadow-[0_4px_16px_rgba(249,115,22,0.35)]"
               style={{ backgroundColor: BRAND }}
               onMouseOver={(e) => (e.currentTarget.style.backgroundColor = BRAND_HOVER)}
               onMouseOut={(e) => (e.currentTarget.style.backgroundColor = BRAND)}
-              data-testid="button-signup"
-            >
-              {t("authScreen.signUp")}
-            </button>
-
-            <button
-              onClick={() => navigate("/login")}
-              className="flex-1 h-[50px] rounded-full text-[15px] font-semibold text-[#1A1A1A] border border-[#E0E0E0] bg-white hover:bg-[#F9FAFB] transition-colors active:scale-[0.97]"
               data-testid="button-login"
             >
               {t("authScreen.logIn")}
+            </button>
+
+            <button
+              onClick={() => navigate("/onboarding/location")}
+              className="flex-1 h-[50px] rounded-full text-[15px] font-semibold text-[#1A1A1A] border border-[#E0E0E0] bg-white hover:bg-[#F9FAFB] transition-colors active:scale-[0.97]"
+              data-testid="button-signup"
+            >
+              {t("authScreen.signUp")}
             </button>
           </div>
 
           <div className="w-full flex justify-end pr-1 mb-4">
             <button
-              onClick={() => navigate("/login")}
+              onClick={() => navigate("/forgot-password")}
               className="text-[12px] text-[#AAAAAA] font-medium hover:text-[#888888] transition-colors"
               data-testid="button-forgot-password"
             >

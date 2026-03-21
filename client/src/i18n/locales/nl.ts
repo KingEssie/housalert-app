@@ -810,6 +810,35 @@ export const nl: Record<string, any> = {
     mismatch: "Wachtwoorden komen niet overeen",
   },
 
+  forgotPassword: {
+    title: "Wachtwoord reset",
+    description: "Wachtwoord vergeten? Voer hieronder uw e-mailadres in en wij sturen u per e-mail instructies voor het instellen van een nieuw wachtwoord.",
+    emailPlaceholder: "E-mailadres",
+    submit: "Doorgaan",
+    error: "Fout",
+    enterEmail: "Voer een geldig e-mailadres in.",
+    sentTitle: "E-mail verzonden",
+    sentDesc: "Controleer je inbox voor een link om je wachtwoord opnieuw in te stellen. Het kan een paar minuten duren.",
+    backToLogin: "Terug naar inloggen",
+  },
+
+  resetPassword: {
+    title: "Nieuw wachtwoord instellen",
+    description: "Kies een nieuw wachtwoord voor je account.",
+    newPassword: "Nieuw wachtwoord",
+    confirmPassword: "Wachtwoord bevestigen",
+    submit: "Wachtwoord opslaan",
+    error: "Fout",
+    minLength: "Wachtwoord moet minimaal 8 tekens bevatten",
+    mismatch: "Wachtwoorden komen niet overeen",
+    successTitle: "Wachtwoord gewijzigd",
+    successDesc: "Je wachtwoord is succesvol gewijzigd. Je kunt nu inloggen met je nieuwe wachtwoord.",
+    goToLogin: "Naar inloggen",
+    expiredTitle: "Link verlopen",
+    expiredDesc: "Deze resetlink is verlopen of ongeldig. Vraag een nieuwe resetlink aan.",
+    tryAgain: "Opnieuw proberen",
+  },
+
   deleteAccount: {
     title: "Account verwijderen",
     warning: "Deze actie kan niet ongedaan worden gemaakt.",

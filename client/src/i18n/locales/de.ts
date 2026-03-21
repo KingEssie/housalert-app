@@ -803,6 +803,35 @@ export const de: Record<string, any> = {
     mismatch: "Passwörter stimmen nicht überein",
   },
 
+  forgotPassword: {
+    title: "Passwort zurücksetzen",
+    description: "Passwort vergessen? Gib unten deine E-Mail-Adresse ein und wir senden dir Anweisungen zum Festlegen eines neuen Passworts.",
+    emailPlaceholder: "E-Mail-Adresse",
+    submit: "Weiter",
+    error: "Fehler",
+    enterEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
+    sentTitle: "E-Mail gesendet",
+    sentDesc: "Überprüfe deinen Posteingang für einen Link zum Zurücksetzen deines Passworts. Es kann einige Minuten dauern.",
+    backToLogin: "Zurück zum Login",
+  },
+
+  resetPassword: {
+    title: "Neues Passwort festlegen",
+    description: "Wähle ein neues Passwort für dein Konto.",
+    newPassword: "Neues Passwort",
+    confirmPassword: "Passwort bestätigen",
+    submit: "Passwort speichern",
+    error: "Fehler",
+    minLength: "Passwort muss mindestens 8 Zeichen enthalten",
+    mismatch: "Passwörter stimmen nicht überein",
+    successTitle: "Passwort geändert",
+    successDesc: "Dein Passwort wurde erfolgreich geändert. Du kannst dich jetzt mit deinem neuen Passwort anmelden.",
+    goToLogin: "Zum Login",
+    expiredTitle: "Link abgelaufen",
+    expiredDesc: "Dieser Resetlink ist abgelaufen oder ungültig. Fordere einen neuen Resetlink an.",
+    tryAgain: "Erneut versuchen",
+  },
+
   deleteAccount: {
     title: "Account löschen",
     warning: "Diese Aktion kann nicht rückgängig gemacht werden.",

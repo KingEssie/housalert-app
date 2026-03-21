@@ -1,0 +1,127 @@
+Refine the current single auth entry screen and implement a complete password reset flow.
+
+IMPORTANT:
+Keep the current combined auth screen structure.
+Do NOT split it back into multiple onboarding screens.
+
+==================================================
+PART 1 — AUTH SCREEN REFINEMENTS
+==================================================
+
+Current direction is acceptable:
+- one screen
+- hero image on top
+- bottom white card
+- language autodetect already works
+
+Now make these exact changes:
+
+1. LOGO POSITION
+- Move the HousAlert logo to the horizontal center
+- Place it near the bottom of the hero image
+- It should sit visually centered over the image, just above the white card overlap
+- Do NOT keep it top-left or offset
+- It should feel premium and balanced
+
+2. BUTTON STYLING
+Swap the button styles:
+
+- "Inloggen"
+  - filled orange brand button
+  - white text
+  - pill shape
+
+- "Aanmelden"
+  - white background
+  - subtle border
+  - dark text
+  - same size and shape as login button
+
+3. LANGUAGE
+- Keep autodetect behavior exactly as it is
+- Keep the dropdown language selector
+- No change needed there unless necessary for polish
+
+==================================================
+PART 2 — FORGOT PASSWORD SCREEN
+==================================================
+
+When the user taps "Wachtwoord vergeten?", navigate to a dedicated password reset screen.
+
+This screen should match the app UI style and feel premium/minimal.
+
+LAYOUT:
+- Same clean background style as auth
+- Large centered HousAlert logo at the top
+- Large title:
+  "Wachtwoord reset"
+- Description text:
+  "Wachtwoord vergeten? Voer hieronder uw e-mailadres in en wij sturen u per e-mail instructies voor het instellen van een nieuw wachtwoord."
+- One email input field
+- One primary orange CTA button:
+  "Doorgaan"
+
+STYLE:
+- Match HousAlert design system
+- Rounded input
+- Rounded CTA
+- Plenty of whitespace
+- Mobile-first polished layout
+
+==================================================
+PART 3 — PASSWORD RESET FUNCTIONALITY
+==================================================
+
+Implement the real password reset flow so it actually works end-to-end.
+
+Requirements:
+1. On the reset screen, when the user submits an email:
+   - trigger the Supabase password reset flow
+   - send the reset email with the correct redirect URL
+
+2. Configure/reset flow so the email link brings the user back into the app/web flow correctly
+
+3. Create or verify the reset-password page/screen where the user can set a new password after clicking the email link
+
+4. The reset-password page should:
+   - match the HousAlert UI style
+   - have title like:
+     "Nieuw wachtwoord instellen"
+   - include:
+     - new password field
+     - confirm password field
+     - save/update button
+
+5. After successful password update:
+   - show success feedback
+   - redirect user back to the login screen
+   - user should then be able to log in with the new password
+
+==================================================
+PART 4 — TECHNICAL + SAFETY
+==================================================
+
+1. Use the existing auth system (Supabase)
+2. Do NOT break current signup/login flow
+3. Do NOT fake the reset flow — it must actually send the email and update the password
+4. Make sure redirect URLs are correct for the current environments:
+   - production
+   - preview/dev if applicable
+5. Add clear error handling for:
+   - invalid email
+   - unknown email
+   - expired/invalid reset token
+   - password mismatch
+6. Add success/error toasts/messages in Dutch
+7. Keep the implementation production-safe and minimal
+
+==================================================
+DELIVERABLE
+==================================================
+
+I want:
+- the current auth screen visually refined
+- a proper forgot password screen
+- a fully working password reset email flow
+- a fully working set-new-password screen
+- redirect back to login after successful reset
