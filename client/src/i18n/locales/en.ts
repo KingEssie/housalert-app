@@ -378,9 +378,10 @@ export const en: Record<string, any> = {
   authScreen: {
     title: "Find your home faster",
     subtitle: "Get new rental listings instantly and be the first to respond.",
-    signUp: "Sign up for free",
+    signUp: "Sign up",
     logIn: "Log in",
     or: "or",
+    forgotPassword: "Forgot password?",
     continueGoogle: "Continue with Google",
     continueApple: "Continue with Apple",
   },

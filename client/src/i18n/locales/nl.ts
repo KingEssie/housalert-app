@@ -411,9 +411,10 @@ export const nl: Record<string, any> = {
   authScreen: {
     title: "Vind jouw woning sneller",
     subtitle: "Ontvang direct nieuwe huurwoningen en reageer als eerste.",
-    signUp: "Gratis registreren",
+    signUp: "Aanmelden",
     logIn: "Inloggen",
     or: "of",
+    forgotPassword: "Wachtwoord vergeten?",
     continueGoogle: "Doorgaan met Google",
     continueApple: "Doorgaan met Apple",
   },

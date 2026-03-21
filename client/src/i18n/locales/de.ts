@@ -404,9 +404,10 @@ export const de: Record<string, any> = {
   authScreen: {
     title: "Finde deine Wohnung schneller",
     subtitle: "Erhalte sofort neue Mietwohnungen und reagiere als Erster.",
-    signUp: "Kostenlos registrieren",
+    signUp: "Anmelden",
     logIn: "Einloggen",
     or: "oder",
+    forgotPassword: "Passwort vergessen?",
     continueGoogle: "Weiter mit Google",
     continueApple: "Weiter mit Apple",
   },
