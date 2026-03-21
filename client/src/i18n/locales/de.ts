@@ -404,6 +404,8 @@ export const de: Record<string, any> = {
   authScreen: {
     title: "Finde deine Wohnung schneller",
     subtitle: "Erhalte sofort neue Mietwohnungen und reagiere als Erster.",
+    emailPlaceholder: "E-Mail-Adresse",
+    passwordPlaceholder: "Passwort",
     signUp: "Anmelden",
     logIn: "Einloggen",
     or: "oder",
@@ -804,7 +806,7 @@ export const de: Record<string, any> = {
   },
 
   forgotPassword: {
-    title: "Passwort zurücksetzen",
+    title: "Passwort vergessen",
     description: "Passwort vergessen? Gib unten deine E-Mail-Adresse ein und wir senden dir Anweisungen zum Festlegen eines neuen Passworts.",
     emailPlaceholder: "E-Mail-Adresse",
     submit: "Weiter",

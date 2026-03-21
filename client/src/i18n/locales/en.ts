@@ -378,6 +378,8 @@ export const en: Record<string, any> = {
   authScreen: {
     title: "Find your home faster",
     subtitle: "Get new rental listings instantly and be the first to respond.",
+    emailPlaceholder: "Email address",
+    passwordPlaceholder: "Password",
     signUp: "Sign up",
     logIn: "Log in",
     or: "or",
@@ -872,7 +874,7 @@ export const en: Record<string, any> = {
     profileHelperText: "Share your code with friends. When they use HousAlert, you'll also receive a reward.",
   },
   forgotPassword: {
-    title: "Password reset",
+    title: "Forgot password",
     description: "Forgot your password? Enter your email address below and we'll send you instructions to set a new password.",
     emailPlaceholder: "Email address",
     submit: "Continue",

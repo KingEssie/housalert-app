@@ -411,6 +411,8 @@ export const nl: Record<string, any> = {
   authScreen: {
     title: "Vind jouw woning sneller",
     subtitle: "Ontvang direct nieuwe huurwoningen en reageer als eerste.",
+    emailPlaceholder: "E-mailadres",
+    passwordPlaceholder: "Wachtwoord",
     signUp: "Aanmelden",
     logIn: "Inloggen",
     or: "of",
@@ -811,7 +813,7 @@ export const nl: Record<string, any> = {
   },
 
   forgotPassword: {
-    title: "Wachtwoord reset",
+    title: "Wachtwoord vergeten",
     description: "Wachtwoord vergeten? Voer hieronder uw e-mailadres in en wij sturen u per e-mail instructies voor het instellen van een nieuw wachtwoord.",
     emailPlaceholder: "E-mailadres",
     submit: "Doorgaan",
