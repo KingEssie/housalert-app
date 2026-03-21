@@ -4,6 +4,26 @@ import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
 import { clearAllUserData, setLastAuthUserId, getLastAuthUserId } from "./queryClient";
 
+let _recoveryMode = false;
+
+export function isRecoveryMode() {
+  return _recoveryMode;
+}
+
+export function setRecoveryMode(v: boolean) {
+  _recoveryMode = v;
+}
+
+function detectRecoveryInUrl(): boolean {
+  const hash = window.location.hash || "";
+  const search = window.location.search || "";
+  return hash.includes("type=recovery") || search.includes("type=recovery");
+}
+
+if (detectRecoveryInUrl()) {
+  _recoveryMode = true;
+}
+
 interface AuthContextType {
   session: Session | null;
   user: User | null;
@@ -92,6 +112,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const email = session?.user?.email ?? "unknown";
       console.log(`[WEBAUTH] onAuthStateChange fired: ${event}, user=${uid?.substring(0, 8) ?? "null"}, email=${email}`);
       console.log(`[IDENTITY] Auth event=${event} — user.id=${uid ?? "null"}, email=${email}, name=${session?.user?.user_metadata?.full_name ?? "null"}`);
+
+      if (event === "PASSWORD_RECOVERY") {
+        console.log("[IDENTITY] PASSWORD_RECOVERY event detected — forcing recovery mode");
+        _recoveryMode = true;
+        window.location.replace("/reset-password");
+        return;
+      }
 
       if (event === "SIGNED_OUT") {
         console.log("[IDENTITY] SIGNED_OUT event — clearing all user data");

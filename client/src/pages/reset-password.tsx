@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { HousAlertLogo } from "@/components/housalert-logo";
 import { supabase } from "@/lib/supabase";
+import { setRecoveryMode } from "@/lib/auth";
 import { useTranslation } from "@/i18n";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, Lock, CheckCircle2, Loader2 } from "lucide-react";
@@ -77,6 +78,8 @@ export default function ResetPasswordPage() {
       return;
     }
 
+    setRecoveryMode(false);
+    await supabase.auth.signOut();
     setSuccess(true);
   }
 
@@ -90,7 +93,7 @@ export default function ResetPasswordPage() {
           {t("resetPassword.expiredDesc")}
         </p>
         <button
-          onClick={() => navigate("/forgot-password")}
+          onClick={() => { setRecoveryMode(false); navigate("/forgot-password"); }}
           className="h-[50px] px-8 rounded-full text-[15px] font-bold text-white transition-all active:scale-[0.97]"
           style={{ backgroundColor: BRAND }}
           data-testid="button-try-again"
