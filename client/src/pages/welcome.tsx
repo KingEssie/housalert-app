@@ -41,7 +41,7 @@ export default function WelcomePage() {
     setActiveSlide(clamped);
     animateTracks(
       `-${clamped * 100}%`,
-      "transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)"
+      "transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)"
     );
   }, [animateTracks]);
 
@@ -97,7 +97,7 @@ export default function WelcomePage() {
           const next = (prev + 1) % slideCount;
           animateTracks(
             `-${next * 100}%`,
-            "transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)"
+            "transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)"
           );
           return next;
         });
@@ -108,24 +108,24 @@ export default function WelcomePage() {
 
   return (
     <div
-      className="h-[100dvh] bg-white flex flex-col overflow-hidden relative"
+      className="h-[100dvh] bg-[#FAFAFA] flex flex-col overflow-hidden relative"
       data-testid="welcome-page"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchCancel}
     >
-      <div className="relative w-full" style={{ height: "55%" }}>
+      <div className="relative w-full flex-shrink-0" style={{ height: "58%" }}>
         <div className="absolute inset-0 overflow-hidden">
           <div
             ref={imageTrackRef}
-            className="flex h-full"
+            className="flex h-full will-change-transform"
             style={{ width: `${slideCount * 100}%`, transform: "translateX(0%)" }}
           >
             {IMAGES.map((src, i) => (
               <div
                 key={i}
-                className="h-full"
+                className="h-full relative"
                 style={{ width: `${100 / slideCount}%` }}
               >
                 <img
@@ -140,18 +140,26 @@ export default function WelcomePage() {
           </div>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 pointer-events-none" style={{
+          background: "linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, transparent 30%, transparent 50%, rgba(0,0,0,0.45) 100%)"
+        }} />
 
-        <div className="absolute bottom-6 left-0 right-0 flex justify-center z-10">
-          <HousAlertLogo size={36} showText={true} textClassName="font-semibold text-white text-[17px] drop-shadow-sm" />
+        <div className="absolute top-0 left-0 right-0 pt-[max(env(safe-area-inset-top),12px)] px-5 flex justify-center z-10">
+          <div className="pt-3">
+            <HousAlertLogo
+              size={34}
+              showText={true}
+              textClassName="font-bold text-white text-[18px] tracking-[-0.01em]"
+            />
+          </div>
         </div>
       </div>
 
       <div
-        className="relative flex-1 bg-white flex flex-col"
-        style={{ borderRadius: "28px 28px 0 0", marginTop: "-28px", zIndex: 5 }}
+        className="relative flex-1 bg-white flex flex-col shadow-[0_-4px_30px_rgba(0,0,0,0.08)]"
+        style={{ borderRadius: "32px 32px 0 0", marginTop: "-36px", zIndex: 5 }}
       >
-        <div className="flex items-center justify-center gap-2 pt-5 pb-4" data-testid="progress-dots">
+        <div className="flex items-center justify-center gap-2.5 pt-6 pb-1" data-testid="progress-dots">
           {[0, 1, 2].map((i) => (
             <button
               key={i}
@@ -161,38 +169,38 @@ export default function WelcomePage() {
               aria-label={`Slide ${i + 1}`}
             >
               <div
-                className="rounded-full transition-all duration-300"
+                className="rounded-full transition-all duration-400 ease-out"
                 style={{
-                  width: activeSlide === i ? 24 : 8,
+                  width: activeSlide === i ? 28 : 8,
                   height: 8,
-                  backgroundColor: activeSlide === i ? BRAND : "#D1D5DB",
+                  backgroundColor: activeSlide === i ? BRAND : "#E5E7EB",
                 }}
               />
             </button>
           ))}
         </div>
 
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden min-h-0">
           <div
             ref={textTrackRef}
-            className="flex h-full"
+            className="flex h-full will-change-transform"
             style={{ width: `${slideCount * 100}%`, transform: "translateX(0%)" }}
           >
             {slides.map((slide, i) => (
               <div
                 key={i}
-                className="flex flex-col items-center justify-start text-center px-8 pt-2"
+                className="flex flex-col items-center justify-center text-center px-8"
                 style={{ width: `${100 / slideCount}%` }}
                 data-testid={`slide-${i}`}
               >
                 <h2
-                  className="text-[26px] font-bold text-[#222222] leading-[1.15] tracking-[-0.02em] mb-3"
+                  className="text-[28px] font-bold text-[#1A1A1A] leading-[1.12] tracking-[-0.03em] mb-3"
                   data-testid={`text-slide-title-${i}`}
                 >
                   {slide.title}
                 </h2>
                 <p
-                  className="text-[15px] text-[#717171] leading-[1.55] max-w-[320px]"
+                  className="text-[15px] text-[#888888] leading-[1.6] max-w-[300px]"
                   data-testid={`text-slide-desc-${i}`}
                 >
                   {slide.desc}
@@ -202,10 +210,10 @@ export default function WelcomePage() {
           </div>
         </div>
 
-        <div className="px-6 pb-8 pt-3 flex flex-col gap-3">
+        <div className="px-6 pb-[max(env(safe-area-inset-bottom),24px)] pt-2 flex flex-col gap-3">
           <button
             onClick={() => navigate("/onboarding/location")}
-            className="w-full h-[54px] rounded-full text-[16px] font-semibold text-white transition-colors active:scale-[0.98]"
+            className="w-full h-[56px] rounded-full text-[16px] font-bold text-white transition-all active:scale-[0.97] shadow-[0_4px_14px_rgba(249,115,22,0.35)]"
             style={{ backgroundColor: BRAND }}
             onMouseOver={(e) => (e.currentTarget.style.backgroundColor = BRAND_HOVER)}
             onMouseOut={(e) => (e.currentTarget.style.backgroundColor = BRAND)}
@@ -216,7 +224,7 @@ export default function WelcomePage() {
 
           <button
             onClick={() => navigate("/login")}
-            className="w-full h-[54px] rounded-full text-[16px] font-semibold text-[#222222] border border-[#E0E0E0] bg-white hover:bg-[#F9FAFB] transition-colors active:scale-[0.98]"
+            className="w-full h-[52px] rounded-full text-[15px] font-semibold text-[#555555] bg-transparent hover:text-[#222222] transition-colors active:scale-[0.97]"
             data-testid="button-login"
           >
             {t("welcomeSlides.login")}
