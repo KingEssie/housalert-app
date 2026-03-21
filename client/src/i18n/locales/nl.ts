@@ -409,8 +409,8 @@ export const nl: Record<string, any> = {
   },
 
   authScreen: {
-    title: "Vind je woning vóór iedereen",
-    subtitle: "Ontvang nieuwe huurwoningen direct zodra ze online komen.",
+    title: "Vind jouw woning sneller",
+    subtitle: "Ontvang direct nieuwe huurwoningen en reageer als eerste.",
     signUp: "Gratis registreren",
     logIn: "Inloggen",
     or: "of",

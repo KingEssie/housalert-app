@@ -1,0 +1,200 @@
+We are redesigning the authentication entry screen to match a premium mobile UX similar to YoungOnes.
+
+IMPORTANT:
+Do NOT improvise layout. Follow structure exactly.
+
+The goal:
+- Same layout system as YoungOnes
+- Own branding (orange)
+- Own images
+- Own text
+
+---
+
+GLOBAL LAYOUT STRUCTURE:
+
+The screen has TWO layers:
+
+1. TOP: Full-width HERO IMAGE
+2. BOTTOM: FLOATING CARD that overlaps the image
+
+These must visually feel like ONE connected design.
+
+---
+
+HERO IMAGE (TOP 55-60% HEIGHT):
+
+- Use provided housing image
+- Full width
+- Height ≈ 55–60% of screen
+- object-fit: cover
+- Position: relative
+
+ADD:
+- Dark gradient overlay from bottom (black → transparent)
+  So text/logo is readable
+
+LOGO:
+- Place HousAlert logo inside the image (NOT above it)
+- Top center or slightly below
+- White color
+
+---
+
+BOTTOM CARD (CRUCIAL PART):
+
+- Background: white
+- Position: absolute / overlapping image
+- Top overlaps image by ~40px
+- Border radius: 32px (very rounded)
+- Padding: 24px
+- Subtle shadow
+
+This card must feel like it is floating INTO the image.
+
+---
+
+CARD CONTENT STRUCTURE (STRICT ORDER):
+
+1. Title
+2. Subtitle
+3. Primary CTA
+4. Secondary CTA
+5. Divider ("of")
+6. Social buttons
+
+Spacing must be clean and consistent.
+
+---
+
+TEXT:
+
+Title:
+"Vind jouw woning sneller"
+
+Style:
+- Large
+- Bold
+- Centered
+
+Subtitle:
+"Ontvang direct nieuwe huurwoningen en reageer als eerste."
+
+Style:
+- Smaller
+- Gray (#6B7280)
+- Centered
+- Max 2 lines
+
+---
+
+BUTTONS:
+
+PRIMARY BUTTON:
+- Text: "Gratis registreren"
+- Full width
+- Height: 52px
+- Border radius: pill (999px)
+- Background: orange (brand color)
+- Text: white
+- Strong shadow
+
+SECONDARY BUTTON:
+- Text: "Inloggen"
+- Full width
+- Same height
+- White background
+- Border: light gray
+- Text: dark
+
+---
+
+DIVIDER:
+
+- Horizontal line left and right
+- Text: "of"
+- Centered
+
+---
+
+SOCIAL LOGIN:
+
+IMPORTANT: Match modern app style
+
+- Button: "Doorgaan met Google"
+- White background
+- Border
+- Google icon left
+
+- Button: "Doorgaan met Apple"
+- Black background
+- White text
+- Apple icon
+
+Even if not connected yet:
+→ Add placeholder handlers
+
+---
+
+LANGUAGE SELECTOR (IMPORTANT CHANGE):
+
+Replace current language list with:
+
+- Dropdown style selector (like YoungOnes)
+- Positioned ABOVE buttons (inside card OR just above card)
+
+Behavior:
+- Shows current language + flag
+- On tap → opens modal / dropdown
+- Options:
+  - 🇩🇪 Deutsch
+  - 🇳🇱 Nederlands
+  - 🇬🇧 English
+
+LOGIC:
+- Auto-detect language
+- Preselect
+- Allow override
+- Save in localStorage
+
+---
+
+VISUAL RULES:
+
+- No clutter
+- No extra elements
+- No extra icons
+- Keep everything minimal and premium
+
+---
+
+TECHNICAL:
+
+- Mobile-first
+- Respect safe area
+- Remove old onboarding completely
+- Do not break existing login/signup logic
+
+---
+
+GOAL:
+
+The result must feel like:
+- Airbnb
+- Uber
+- YoungOnes
+
+NOT like:
+- basic form page
+- stacked components
+
+---
+
+FINAL CHECK:
+
+If the screen does NOT look like:
+- image + overlapping card
+- premium spacing
+- strong CTA hierarchy
+
+Then it is WRONG and must be fixed.

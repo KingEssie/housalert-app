@@ -376,8 +376,8 @@ export const en: Record<string, any> = {
   },
 
   authScreen: {
-    title: "Find your home before everyone else",
-    subtitle: "Get new rental listings instantly as they go live.",
+    title: "Find your home faster",
+    subtitle: "Get new rental listings instantly and be the first to respond.",
     signUp: "Sign up for free",
     logIn: "Log in",
     or: "or",
