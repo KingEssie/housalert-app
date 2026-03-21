@@ -11,11 +11,19 @@ const locales: Record<Locale, TranslationMap> = { de, en, nl };
 
 const STORAGE_KEY = "housalert_locale";
 
-function detectBrowserLocale(): Locale {
+export function detectBrowserLocale(): Locale {
   const nav = navigator.language?.toLowerCase() ?? "";
   if (nav.startsWith("de")) return "de";
   if (nav.startsWith("nl")) return "nl";
   return "en";
+}
+
+export function hasExplicitLocale(): boolean {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored === "de" || stored === "en" || stored === "nl";
+  } catch {}
+  return false;
 }
 
 function getStoredLocale(): Locale {

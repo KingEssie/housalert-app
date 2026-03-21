@@ -402,15 +402,20 @@ export const nl: Record<string, any> = {
     },
   },
 
-  welcomeSlides: {
-    slide1Title: "Vind je woning vóór iedereen",
-    slide1Desc: "Ontvang nieuwe huurwoningen direct zodra ze online komen. Jij reageert als eerste.",
-    slide2Title: "Slim zoeken, automatisch matches",
-    slide2Desc: "Stel je zoekprofiel in en wij scannen honderden websites voor jou. Geen eindeloos zoeken meer.",
-    slide3Title: "Meer kans op jouw woning",
-    slide3Desc: "Reageer sneller met een sterke reactie en vergroot je kans om gekozen te worden.",
-    createAccount: "Account aanmaken",
-    login: "Log in",
+  languageScreen: {
+    title: "Kies je taal",
+    subtitle: "Je kunt de taal later altijd wijzigen.",
+    continue: "Doorgaan",
+  },
+
+  authScreen: {
+    title: "Vind je woning vóór iedereen",
+    subtitle: "Ontvang nieuwe huurwoningen direct zodra ze online komen.",
+    signUp: "Gratis registreren",
+    logIn: "Inloggen",
+    or: "of",
+    continueGoogle: "Doorgaan met Google",
+    continueApple: "Doorgaan met Apple",
   },
 
   onboarding: {

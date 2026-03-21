@@ -369,15 +369,20 @@ export const en: Record<string, any> = {
     },
   },
 
-  welcomeSlides: {
-    slide1Title: "Find your home before everyone else",
-    slide1Desc: "Get new rental listings instantly as they go live. You respond first.",
-    slide2Title: "Smart search, automatic matches",
-    slide2Desc: "Set up your search profile and we scan hundreds of websites for you. No more endless searching.",
-    slide3Title: "Better chances for your home",
-    slide3Desc: "Respond faster with a strong application and increase your chance of being chosen.",
-    createAccount: "Create account",
-    login: "Log in",
+  languageScreen: {
+    title: "Choose your language",
+    subtitle: "You can change the language at any time later.",
+    continue: "Continue",
+  },
+
+  authScreen: {
+    title: "Find your home before everyone else",
+    subtitle: "Get new rental listings instantly as they go live.",
+    signUp: "Sign up for free",
+    logIn: "Log in",
+    or: "or",
+    continueGoogle: "Continue with Google",
+    continueApple: "Continue with Apple",
   },
 
   onboarding: {
