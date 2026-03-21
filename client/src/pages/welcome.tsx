@@ -1,19 +1,21 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useLocation } from "wouter";
 import { HousAlertLogo } from "@/components/housalert-logo";
-import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
-import { Search, Bell, Zap } from "lucide-react";
+import slide1Img from "@assets/D17B6106-C626-4314-85C9-A17B7DD5D425_1774073011189.png";
+import slide2Img from "@assets/50F77D08-ED68-40B2-AFD3-67D49A86100C_1774073011189.png";
+import slide3Img from "@assets/9E0288D3-EDA2-445A-98E3-220B0CB5FAA4_1774073011189.png";
 
-const SLIDE_ICONS = [Search, Bell, Zap] as const;
-const ICON_BG = ["#EFF6FF", "#FFF7ED", "#F0FDF4"] as const;
-const ICON_COLOR = ["#2563EB", "#F97316", "#16A34A"] as const;
+const IMAGES = [slide1Img, slide2Img, slide3Img];
+const BRAND = "#F97316";
+const BRAND_HOVER = "#EA580C";
 
 export default function WelcomePage() {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
   const [activeSlide, setActiveSlide] = useState(0);
-  const trackRef = useRef<HTMLDivElement>(null);
+  const imageTrackRef = useRef<HTMLDivElement>(null);
+  const textTrackRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef(0);
   const touchDeltaX = useRef(0);
   const isDragging = useRef(false);
@@ -25,37 +27,48 @@ export default function WelcomePage() {
     { title: t("welcomeSlides.slide3Title"), desc: t("welcomeSlides.slide3Desc") },
   ];
 
+  const animateTracks = useCallback((percent: string, transition: string) => {
+    [imageTrackRef, textTrackRef].forEach((ref) => {
+      if (ref.current) {
+        ref.current.style.transition = transition;
+        ref.current.style.transform = `translateX(${percent})`;
+      }
+    });
+  }, []);
+
   const goToSlide = useCallback((index: number) => {
     const clamped = Math.max(0, Math.min(slideCount - 1, index));
     setActiveSlide(clamped);
-    if (trackRef.current) {
-      trackRef.current.style.transition = "transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-      trackRef.current.style.transform = `translateX(-${clamped * 100}%)`;
-    }
+    animateTracks(
+      `-${clamped * 100}%`,
+      "transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)"
+    );
+  }, [animateTracks]);
+
+  const getContainerWidth = useCallback(() => {
+    return imageTrackRef.current?.parentElement?.clientWidth || window.innerWidth;
   }, []);
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     isDragging.current = true;
     touchStartX.current = e.touches[0].clientX;
     touchDeltaX.current = 0;
-    if (trackRef.current) {
-      trackRef.current.style.transition = "none";
-    }
-  }, []);
-
-  const getContainerWidth = useCallback(() => {
-    return trackRef.current?.parentElement?.clientWidth || window.innerWidth;
-  }, []);
+    animateTracks("", "none");
+  }, [animateTracks]);
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
     if (!isDragging.current) return;
     const delta = e.touches[0].clientX - touchStartX.current;
     touchDeltaX.current = delta;
-    if (trackRef.current) {
-      const baseOffset = -activeSlide * 100;
-      const pxToPercent = (delta / getContainerWidth()) * 100;
-      trackRef.current.style.transform = `translateX(${baseOffset + pxToPercent}%)`;
-    }
+    const baseOffset = -activeSlide * 100;
+    const pxToPercent = (delta / getContainerWidth()) * 100;
+    const val = `${baseOffset + pxToPercent}%`;
+    [imageTrackRef, textTrackRef].forEach((ref) => {
+      if (ref.current) {
+        ref.current.style.transition = "none";
+        ref.current.style.transform = `translateX(${val})`;
+      }
+    });
   }, [activeSlide, getContainerWidth]);
 
   const handleTouchEnd = useCallback(() => {
@@ -82,107 +95,128 @@ export default function WelcomePage() {
       if (!isDragging.current) {
         setActiveSlide((prev) => {
           const next = (prev + 1) % slideCount;
-          if (trackRef.current) {
-            trackRef.current.style.transition = "transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-            trackRef.current.style.transform = `translateX(-${next * 100}%)`;
-          }
+          animateTracks(
+            `-${next * 100}%`,
+            "transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)"
+          );
           return next;
         });
       }
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [animateTracks]);
 
   return (
-    <div className="min-h-screen bg-white flex flex-col" data-testid="welcome-page">
-      <div className="flex-1 flex flex-col items-center justify-between px-6 py-8 max-w-md mx-auto w-full">
-        <div className="pt-6 pb-4">
-          <HousAlertLogo size={40} showText={false} />
-        </div>
-
-        <div
-          className="w-full overflow-hidden flex-1 flex flex-col justify-center"
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-          onTouchCancel={handleTouchCancel}
-        >
+    <div
+      className="h-[100dvh] bg-white flex flex-col overflow-hidden relative"
+      data-testid="welcome-page"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchCancel}
+    >
+      <div className="relative w-full" style={{ height: "55%" }}>
+        <div className="absolute inset-0 overflow-hidden">
           <div
-            ref={trackRef}
-            className="flex w-full"
-            style={{ transform: "translateX(0%)" }}
+            ref={imageTrackRef}
+            className="flex h-full"
+            style={{ width: `${slideCount * 100}%`, transform: "translateX(0%)" }}
           >
-            {slides.map((slide, i) => {
-              const Icon = SLIDE_ICONS[i];
-              return (
-                <div
-                  key={i}
-                  className="w-full flex-shrink-0 flex flex-col items-center text-center px-4"
-                  data-testid={`slide-${i}`}
-                >
-                  <div
-                    className="w-[120px] h-[120px] rounded-[32px] flex items-center justify-center mb-10"
-                    style={{ backgroundColor: ICON_BG[i] }}
-                  >
-                    <Icon
-                      className="w-12 h-12"
-                      style={{ color: ICON_COLOR[i] }}
-                      strokeWidth={1.5}
-                    />
-                  </div>
-
-                  <h2
-                    className="text-[28px] font-semibold text-[#222222] leading-[1.15] tracking-[-0.03em] mb-4 max-w-[300px]"
-                    data-testid={`text-slide-title-${i}`}
-                  >
-                    {slide.title}
-                  </h2>
-                  <p
-                    className="text-[16px] text-[#717171] leading-[1.5] max-w-[300px]"
-                    data-testid={`text-slide-desc-${i}`}
-                  >
-                    {slide.desc}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="w-full flex flex-col items-center gap-4 pb-6 pt-8">
-          <div className="flex items-center gap-2 mb-4" data-testid="progress-dots">
-            {[0, 1, 2].map((i) => (
-              <button
+            {IMAGES.map((src, i) => (
+              <div
                 key={i}
-                onClick={() => goToSlide(i)}
-                className="p-1"
-                data-testid={`dot-${i}`}
-                aria-label={`Slide ${i + 1}`}
+                className="h-full"
+                style={{ width: `${100 / slideCount}%` }}
               >
-                <div
-                  className="rounded-full transition-all duration-300"
-                  style={{
-                    width: activeSlide === i ? 24 : 8,
-                    height: 8,
-                    backgroundColor: activeSlide === i ? "hsl(214, 97%, 52%)" : "#D1D5DB",
-                  }}
+                <img
+                  src={src}
+                  alt=""
+                  className="w-full h-full object-cover"
+                  data-testid={`slide-image-${i}`}
+                  draggable={false}
                 />
-              </button>
+              </div>
             ))}
           </div>
+        </div>
 
-          <Button
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+
+        <div className="absolute bottom-6 left-0 right-0 flex justify-center z-10">
+          <HousAlertLogo size={36} showText={true} textClassName="font-semibold text-white text-[17px] drop-shadow-sm" />
+        </div>
+      </div>
+
+      <div
+        className="relative flex-1 bg-white flex flex-col"
+        style={{ borderRadius: "28px 28px 0 0", marginTop: "-28px", zIndex: 5 }}
+      >
+        <div className="flex items-center justify-center gap-2 pt-5 pb-4" data-testid="progress-dots">
+          {[0, 1, 2].map((i) => (
+            <button
+              key={i}
+              onClick={() => goToSlide(i)}
+              className="p-1"
+              data-testid={`dot-${i}`}
+              aria-label={`Slide ${i + 1}`}
+            >
+              <div
+                className="rounded-full transition-all duration-300"
+                style={{
+                  width: activeSlide === i ? 24 : 8,
+                  height: 8,
+                  backgroundColor: activeSlide === i ? BRAND : "#D1D5DB",
+                }}
+              />
+            </button>
+          ))}
+        </div>
+
+        <div className="flex-1 overflow-hidden">
+          <div
+            ref={textTrackRef}
+            className="flex h-full"
+            style={{ width: `${slideCount * 100}%`, transform: "translateX(0%)" }}
+          >
+            {slides.map((slide, i) => (
+              <div
+                key={i}
+                className="flex flex-col items-center justify-start text-center px-8 pt-2"
+                style={{ width: `${100 / slideCount}%` }}
+                data-testid={`slide-${i}`}
+              >
+                <h2
+                  className="text-[26px] font-bold text-[#222222] leading-[1.15] tracking-[-0.02em] mb-3"
+                  data-testid={`text-slide-title-${i}`}
+                >
+                  {slide.title}
+                </h2>
+                <p
+                  className="text-[15px] text-[#717171] leading-[1.55] max-w-[320px]"
+                  data-testid={`text-slide-desc-${i}`}
+                >
+                  {slide.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="px-6 pb-8 pt-3 flex flex-col gap-3">
+          <button
             onClick={() => navigate("/onboarding/location")}
-            className="w-full h-[56px] rounded-full text-[16px] font-semibold shadow-none"
-            style={{ backgroundColor: "hsl(214, 97%, 52%)" }}
+            className="w-full h-[54px] rounded-full text-[16px] font-semibold text-white transition-colors active:scale-[0.98]"
+            style={{ backgroundColor: BRAND }}
+            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = BRAND_HOVER)}
+            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = BRAND)}
             data-testid="button-create-account"
           >
             {t("welcomeSlides.createAccount")}
-          </Button>
+          </button>
 
           <button
             onClick={() => navigate("/login")}
-            className="w-full h-[56px] rounded-full text-[16px] font-semibold text-[#222222] border border-[#E5E7EB] bg-white hover:bg-[#F9FAFB] transition-colors"
+            className="w-full h-[54px] rounded-full text-[16px] font-semibold text-[#222222] border border-[#E0E0E0] bg-white hover:bg-[#F9FAFB] transition-colors active:scale-[0.98]"
             data-testid="button-login"
           >
             {t("welcomeSlides.login")}

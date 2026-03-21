@@ -1,0 +1,104 @@
+I want to completely redesign the onboarding / intro carousel screen so it visually matches the structure and feel of the YoungOnes example I shared.
+
+Important:
+The current version is NOT correct.
+It feels too empty, too static, and does not use the uploaded housing images as the main hero visuals.
+It also does not match my brand style, because the primary CTA is blue while my brand accent is orange-red.
+
+I have uploaded 3 onboarding images.
+Use those exact 3 uploaded images as the slide visuals.
+
+GOAL:
+Rebuild the onboarding so it feels like a premium mobile-first swipe intro similar to YoungOnes:
+- full-screen hero image on top
+- white rounded content panel overlapping the bottom of the image
+- only the image, title, and description should swipe
+- logo, dots, and CTA buttons should stay visually anchored like in the YoungOnes layout
+- use my orange-red brand color instead of blue
+
+DESIGN REQUIREMENTS:
+
+1. Layout structure
+- Full-screen mobile onboarding
+- Top ~55-60% of screen = full-width image
+- Bottom ~40-45% = white rounded panel/card overlapping the image
+- The white panel must have large rounded top corners, like YoungOnes
+- The app logo should sit centered on the image area near the lower part of the image, just above the white panel
+- Dots should appear at the top of the white panel content area
+- Main title centered
+- Description centered
+- Two CTA buttons at the bottom of the white panel:
+  - Primary: Account aanmaken
+  - Secondary: Log in
+
+2. Swipe behavior
+- There are 3 slides
+- Only these should change per slide:
+  - image
+  - title
+  - description
+- The overall layout and button positions should stay fixed and polished
+- Smooth horizontal swipe
+
+3. Use these 3 slide messages:
+Slide 1
+Title: Vind je woning vóór iedereen
+Description: Ontvang nieuwe huurwoningen direct zodra ze online komen. Jij reageert als eerste.
+
+Slide 2
+Title: Slim zoeken, automatisch matches
+Description: Stel je zoekprofiel in en wij scannen honderden websites voor jou. Geen eindeloos zoeken meer.
+
+Slide 3
+Title: Meer kans op jouw woning
+Description: Reageer sneller met een sterke reactie en vergroot je kans om gekozen te worden.
+
+4. Brand styling
+- Replace blue primary CTA styling with my orange-red brand color
+- Use the same orange-red accent for:
+  - active dot
+  - primary button
+  - important highlights if needed
+- Keep the rest clean and premium:
+  - white panel
+  - dark text
+  - soft grey secondary text
+- Do NOT use random colored icon boxes anymore
+- Do NOT show those generic search/bell/lightning icons anymore unless absolutely needed
+- Focus on the uploaded images as the hero
+
+5. Buttons
+- Primary button:
+  - filled orange-red background
+  - white text
+  - pill shape / strongly rounded
+- Secondary button:
+  - white background
+  - dark border
+  - dark text
+  - same width as primary
+- Buttons must look premium and aligned with the YoungOnes example
+
+6. Typography
+- Big bold title, centered
+- Softer grey description, centered
+- Good spacing, not cramped
+- Must feel polished and conversion-focused
+
+7. Technical requirements
+- Keep existing navigation:
+  - Account aanmaken → signup
+  - Log in → login
+- Do NOT break auth logic
+- Only redesign the onboarding screen
+- Make it production-ready and mobile polished
+
+8. Final visual target
+The screen should feel like:
+- YoungOnes-style onboarding composition
+- but adapted to HousAlert
+- using housing photography instead of people
+- with my orange-red branding instead of blue/green
+
+Deliverable:
+A fully redesigned onboarding carousel that visually resembles the YoungOnes layout and uses my 3 uploaded images correctly.
