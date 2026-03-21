@@ -109,7 +109,7 @@ function getLogoUrl(): string {
   return `${getAppBaseUrl()}/housalert-logo.png`;
 }
 
-function emailWrapper(content: string, preheader?: string, lang: ServerLocale = "en"): string {
+function emailWrapper(content: string, preheader?: string, lang: ServerLocale = "en", footerOverride?: string): string {
   const baseUrl = getAppBaseUrl();
   const logoUrl = getLogoUrl();
   const preheaderHtml = preheader
@@ -170,9 +170,9 @@ ${preheaderHtml}
 <tr><td style="padding:0 20px;"><div style="border-top:1px solid ${C.border};"></div></td></tr>
 <tr><td style="padding:16px 20px 24px;">
   <p style="margin:0 0 4px;font-size:12px;color:${C.lightMuted};line-height:1.6;">
-    ${escapeHtml(t(lang, "email.footer"))}
+    ${escapeHtml(footerOverride || t(lang, "email.footer"))}
   </p>
-  <a href="${baseUrl}/instellingen" target="_blank" style="font-size:12px;color:${C.accent};text-decoration:none;">${escapeHtml(t(lang, "email.manageNotifs"))}</a>
+  ${footerOverride ? "" : `<a href="${baseUrl}/instellingen" target="_blank" style="font-size:12px;color:${C.accent};text-decoration:none;">${escapeHtml(t(lang, "email.manageNotifs"))}</a>`}
   <p style="margin:12px 0 0;font-size:11px;color:${C.border};">
     \u00A9 ${new Date().getFullYear()} HousAlert
   </p>
@@ -468,6 +468,67 @@ export async function sendBuddyInvitationEmail(
     return true;
   } catch (err: any) {
     log(`[EMAIL ERROR] buddy-invite to=${buddyEmail} err=${err.message}`);
+    return false;
+  }
+}
+
+export async function sendPasswordResetEmail(
+  email: string,
+  resetUrl: string,
+  lang: ServerLocale = "nl"
+): Promise<boolean> {
+  try {
+    const client = await getResendClient();
+
+    const subject = sanitizeSubject(t(lang, "email.resetPassword.subject"));
+    const title = t(lang, "email.resetPassword.title");
+    const intro = t(lang, "email.resetPassword.intro");
+    const cta = t(lang, "email.resetPassword.cta");
+    const fallback = t(lang, "email.resetPassword.fallback");
+    const ignore = t(lang, "email.resetPassword.ignore");
+
+    const safeUrl = sanitizeUrl(resetUrl) || resetUrl;
+
+    const htmlContent = `
+<p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.navy};line-height:1.3;">${escapeHtml(title)}</p>
+<p style="margin:0 0 20px;font-size:15px;color:${C.dark};line-height:1.6;">
+  ${escapeHtml(intro)}
+</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
+  <tr><td align="center">
+    <a href="${safeUrl}" target="_blank" style="display:inline-block;background-color:${C.accent};color:${C.white} !important;font-size:15px;font-weight:700;text-decoration:none;padding:14px 32px;border-radius:999px;">${escapeHtml(cta)}</a>
+  </td></tr>
+</table>
+<p style="margin:0 0 12px;font-size:13px;color:${C.muted};line-height:1.6;">
+  ${escapeHtml(fallback)}<br />
+  <a href="${safeUrl}" target="_blank" style="color:${C.accent};text-decoration:underline;word-break:break-all;font-size:13px;">${safeUrl}</a>
+</p>
+<p style="margin:0;font-size:13px;color:${C.lightMuted};line-height:1.6;">
+  ${escapeHtml(ignore)}
+</p>`;
+
+    const textBody = `${title}\n\n${intro}\n\n${cta}: ${safeUrl}\n\n${fallback}\n${safeUrl}\n\n${ignore}`;
+
+    log(`[EMAIL SEND] password-reset to="${email}" lang=${lang}`);
+
+    const footer = t(lang, "email.resetPassword.footer");
+    const { data, error } = await client.emails.send({
+      from: VERIFIED_FROM,
+      to: email,
+      subject,
+      text: textBody,
+      html: emailWrapper(htmlContent, intro, lang, footer),
+    });
+
+    if (error) {
+      log(`[EMAIL FAIL] password-reset to=${email} error=${error.message}`);
+      return false;
+    }
+
+    log(`[EMAIL OK] password-reset to=${email} id=${(data as any)?.id || "N/A"}`);
+    return true;
+  } catch (err: any) {
+    log(`[EMAIL ERROR] password-reset to=${email} err=${err.message}`);
     return false;
   }
 }

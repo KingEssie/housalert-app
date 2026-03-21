@@ -1254,6 +1254,61 @@ export async function registerRoutes(
     }
   });
 
+  const forgotPwLimiter = new Map<string, number>();
+  setInterval(() => forgotPwLimiter.clear(), 60_000);
+
+  app.post("/api/auth/forgot-password", async (req, res) => {
+    try {
+      const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() || req.socket.remoteAddress || "unknown";
+      const now = Date.now();
+      const key = ip;
+      const last = forgotPwLimiter.get(key) || 0;
+      if (now - last < 15_000) {
+        return res.json({ ok: true });
+      }
+      forgotPwLimiter.set(key, now);
+
+      const { email, lang } = req.body;
+      if (!email) {
+        return res.status(400).json({ error: "Email is required" });
+      }
+
+      const maskedEmail = email.replace(/(.{2}).*(@.*)/, "$1***$2");
+      const locale = (lang === "nl" || lang === "de" || lang === "en") ? lang : "nl";
+      const adminSb = getSupabaseAdmin();
+
+      const baseUrl = process.env.APP_PUBLIC_BASE_URL || "https://app.housalert.com";
+      const redirectTo = `${baseUrl.replace(/\/$/, "")}/reset-password`;
+
+      const { data, error } = await adminSb.auth.admin.generateLink({
+        type: "recovery",
+        email: email.trim(),
+        options: { redirectTo },
+      });
+
+      if (error || !data?.properties?.action_link) {
+        log(`[FORGOT-PW] generateLink failed for ${maskedEmail}: ${error?.message || "no link"}`);
+        return res.json({ ok: true });
+      }
+
+      const actionLink = data.properties.action_link;
+      log(`[FORGOT-PW] Link generated for ${maskedEmail}, sending branded email (lang=${locale})`);
+
+      const { sendPasswordResetEmail } = await import("./email");
+      const sent = await sendPasswordResetEmail(email.trim(), actionLink, locale);
+
+      if (!sent) {
+        log(`[FORGOT-PW] Branded email failed for ${maskedEmail}, falling back to Supabase default`);
+        await adminSb.auth.resetPasswordForEmail(email.trim(), { redirectTo });
+      }
+
+      return res.json({ ok: true });
+    } catch (err: any) {
+      log(`[FORGOT-PW] Error: ${err.message}`);
+      return res.json({ ok: true });
+    }
+  });
+
   app.post("/api/auth/signup", async (req, res) => {
     try {
       const { email, password, fullName } = req.body;

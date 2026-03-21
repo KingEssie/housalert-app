@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { HousAlertLogo } from "@/components/housalert-logo";
-import { supabase } from "@/lib/supabase";
 import { useTranslation } from "@/i18n";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Mail, CheckCircle2 } from "lucide-react";
@@ -11,7 +10,7 @@ const BRAND_HOVER = "#EA580C";
 
 export default function ForgotPasswordPage() {
   const [, navigate] = useLocation();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const { toast } = useToast();
 
   const [email, setEmail] = useState("");
@@ -32,27 +31,28 @@ export default function ForgotPasswordPage() {
 
     setLoading(true);
 
-    const prodDomain = "https://app.housalert.com";
-    const devOrigin = window.location.origin;
-    const redirectTo = devOrigin.includes("housalert.com")
-      ? `${prodDomain}/reset-password`
-      : `${devOrigin}/reset-password`;
+    try {
+      const resp = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), lang: locale }),
+      });
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo,
-    });
-
-    setLoading(false);
-
-    if (error) {
+      if (!resp.ok) {
+        const data = await resp.json().catch(() => ({}));
+        throw new Error(data.error || "Request failed");
+      }
+    } catch (err: any) {
+      setLoading(false);
       toast({
         title: t("forgotPassword.error"),
-        description: error.message,
+        description: err.message,
         variant: "destructive",
       });
       return;
     }
 
+    setLoading(false);
     setSent(true);
   }
 
