@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { supabase } from "@/lib/supabase";
 import { ensureTrialForCurrentUser } from "@/lib/auth";
+import { apiFetch } from "@/lib/api-base";
 import { Loader2 } from "lucide-react";
 import { useI18n } from "@/i18n";
 
@@ -37,7 +38,23 @@ export default function AuthCallbackPage() {
           console.error("[auth-callback] Trial creation failed after email verification — continuing anyway");
         }
 
-        navigate("/dashboard", { replace: true });
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.access_token) {
+            const res = await apiFetch("/api/onboarding-status", {
+              headers: { Authorization: `Bearer ${session.access_token}` },
+            });
+            const data = await res.json();
+            const completed = data.onboarding_completed === true;
+            console.log(`[auth-callback] onboarding_completed=${completed}`);
+            navigate(completed ? "/dashboard" : "/onboarding/setup", { replace: true });
+            return;
+          }
+        } catch (err) {
+          console.error("[auth-callback] onboarding check failed, defaulting to onboarding/setup", err);
+        }
+
+        navigate("/onboarding/setup", { replace: true });
       })
       .catch((err) => {
         console.error("[auth-callback] Unexpected error:", err);

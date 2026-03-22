@@ -3126,6 +3126,25 @@ export async function registerRoutes(
     next();
   }
 
+  app.post("/api/admin/reset-onboarding", requireAdmin, async (req, res) => {
+    try {
+      const targetUserId = req.body?.user_id;
+      const adminUser = (req as any).adminUser;
+
+      const userId = targetUserId || adminUser.id;
+
+      await pgPool.query(
+        "UPDATE user_profile_data SET onboarding_completed = false, updated_at = NOW() WHERE user_id = $1",
+        [userId]
+      );
+      log(`[ADMIN] ${adminUser.email} reset onboarding_completed=false for userId=${userId.substring(0, 8)}...`);
+      return res.json({ success: true, user_id: userId, onboarding_completed: false });
+    } catch (err: any) {
+      log(`[ADMIN] Reset onboarding error: ${err.message}`);
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   app.post("/api/admin/test-email", requireAdmin, async (req, res) => {
     try {
       const adminUser = (req as any).adminUser;
@@ -3517,7 +3536,26 @@ export async function registerRoutes(
       }
     });
 
-    log("[DEV] Registered /api/dev/test-push, /api/dev/push-debug, /api/dev/expo-push-tokens-count, /api/dev/test-email-send, /api/dev/referral-seed (no auth, dev only)");
+    app.post("/api/dev/reset-onboarding", async (req, res) => {
+      try {
+        const token = (req.headers.authorization || "").replace("Bearer ", "").trim();
+        if (!token) return res.status(401).json({ error: "Unauthorized" });
+        const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+        if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+        await pgPool.query(
+          "UPDATE user_profile_data SET onboarding_completed = false, updated_at = NOW() WHERE user_id = $1",
+          [user.id]
+        );
+        log(`[DEV] Reset onboarding_completed=false for userId=${user.id.substring(0, 8)}...`);
+        return res.json({ success: true, user_id: user.id, onboarding_completed: false });
+      } catch (err: any) {
+        log(`[DEV] Reset onboarding error: ${err.message}`);
+        return res.status(500).json({ error: err.message });
+      }
+    });
+
+    log("[DEV] Registered /api/dev/test-push, /api/dev/push-debug, /api/dev/expo-push-tokens-count, /api/dev/test-email-send, /api/dev/referral-seed, /api/dev/reset-onboarding (no auth, dev only)");
   }
 
   app.get("/api/admin/push-delivery-log", requireAdmin, async (req, res) => {

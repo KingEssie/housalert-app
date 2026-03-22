@@ -80,7 +80,11 @@ function ProtectedRoute({ component: Component, skipOnboardingCheck }: { compone
         }
       })
       .catch(() => {
-        if (!cancelled) setChecking(false);
+        if (!cancelled) {
+          console.log("[ONBOARDING CHECK] API call failed — fail-closed, requiring onboarding");
+          setNeedsOnboarding(true);
+          setChecking(false);
+        }
       });
     return () => { cancelled = true; };
   }, [user, session, loading, skipOnboardingCheck]);
@@ -101,10 +105,31 @@ function ProtectedRoute({ component: Component, skipOnboardingCheck }: { compone
 }
 
 function RootRedirect() {
-  const { user, loading } = useAuth();
-  if (loading) return null;
-  if (isRecoveryMode()) return <Redirect to="/reset-password" />;
-  return <Redirect to={user ? "/dashboard" : "/welcome"} />;
+  const { user, session, loading } = useAuth();
+  const [destination, setDestination] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (loading) return;
+    if (isRecoveryMode()) { setDestination("/reset-password"); return; }
+    if (!user) { setDestination("/welcome"); return; }
+
+    const token = session?.access_token;
+    if (!token) { setDestination("/dashboard"); return; }
+
+    apiFetch("/api/onboarding-status", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const completed = data.onboarding_completed === true;
+        console.log(`[ROOT] onboarding_completed=${completed}`);
+        setDestination(completed ? "/dashboard" : "/onboarding/setup");
+      })
+      .catch(() => setDestination("/onboarding/setup"));
+  }, [user, session, loading]);
+
+  if (loading || !destination) return null;
+  return <Redirect to={destination} />;
 }
 
 function Router() {

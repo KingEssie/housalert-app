@@ -7,6 +7,7 @@ import { ChevronDown, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { ensureTrialForCurrentUser } from "@/lib/auth";
 import { clearAllUserData } from "@/lib/queryClient";
+import { apiFetch } from "@/lib/api-base";
 import { useToast } from "@/hooks/use-toast";
 import heroImg from "@assets/50F77D08-ED68-40B2-AFD3-67D49A86100C_1774074748083.png";
 
@@ -123,9 +124,28 @@ export default function WelcomePage() {
       toast({ title: t("auth.login.failed"), description: error.message, variant: "destructive" });
       return;
     }
+    console.log(`[WELCOME] Login success — user.id=${signInData?.user?.id?.substring(0, 8) ?? "null"}`);
     await ensureTrialForCurrentUser();
+
+    try {
+      const token = signInData.session?.access_token;
+      if (token) {
+        const res = await apiFetch("/api/onboarding-status", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        const completed = data.onboarding_completed === true;
+        console.log(`[WELCOME] onboarding_completed=${completed} → redirect=${completed ? "/dashboard" : "/onboarding/setup"}`);
+        setLoading(false);
+        navigate(completed ? "/dashboard" : "/onboarding/setup");
+        return;
+      }
+    } catch (err) {
+      console.log("[WELCOME] onboarding check failed, defaulting to onboarding/setup", err);
+    }
+
     setLoading(false);
-    navigate("/dashboard");
+    navigate("/onboarding/setup");
   }
 
   return (
@@ -241,7 +261,7 @@ export default function WelcomePage() {
           </div>
 
           <button
-            onClick={() => navigate("/onboarding/location")}
+            onClick={() => navigate("/signup")}
             className="w-full h-[46px] rounded-full text-[14px] font-semibold text-[#1A1A1A] border border-[#E0E0E0] bg-white hover:bg-[#F9FAFB] transition-colors active:scale-[0.97]"
             data-testid="button-signup"
           >
