@@ -7,7 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth, isRecoveryMode } from "@/lib/auth";
 import { I18nProvider } from "@/i18n";
-import { getSearchProfiles } from "@/lib/search-profiles";
+import { apiFetch } from "@/lib/api-base";
 import { isNativePlatform } from "@/lib/capacitor";
 
 const IS_NATIVE = isNativePlatform();
@@ -53,17 +53,29 @@ import TipDetailPage from "@/pages/tip-detail";
 import DocumentsPage from "@/pages/documents";
 
 function ProtectedRoute({ component: Component, skipOnboardingCheck }: { component: React.ComponentType; skipOnboardingCheck?: boolean }) {
-  const { user, loading } = useAuth();
+  const { user, session, loading } = useAuth();
   const [checking, setChecking] = useState(!skipOnboardingCheck);
   const [needsOnboarding, setNeedsOnboarding] = useState(false);
 
   useEffect(() => {
     if (loading || !user || skipOnboardingCheck) return;
     let cancelled = false;
-    getSearchProfiles()
-      .then((profiles) => {
+
+    const token = session?.access_token;
+    if (!token) {
+      setChecking(false);
+      return;
+    }
+
+    apiFetch("/api/onboarding-status", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => {
         if (!cancelled) {
-          setNeedsOnboarding(profiles.length === 0);
+          const completed = data.onboarding_completed === true;
+          console.log(`[ONBOARDING CHECK] userId=${user.id?.substring(0, 8)}... completed=${completed}`);
+          setNeedsOnboarding(!completed);
           setChecking(false);
         }
       })
@@ -71,7 +83,7 @@ function ProtectedRoute({ component: Component, skipOnboardingCheck }: { compone
         if (!cancelled) setChecking(false);
       });
     return () => { cancelled = true; };
-  }, [user, loading, skipOnboardingCheck]);
+  }, [user, session, loading, skipOnboardingCheck]);
 
   if (loading) return null;
   if (!user) {
@@ -84,7 +96,7 @@ function ProtectedRoute({ component: Component, skipOnboardingCheck }: { compone
     return <Redirect to={returnTo} />;
   }
   if (!skipOnboardingCheck && checking) return null;
-  if (!skipOnboardingCheck && needsOnboarding) return <Redirect to="/onboarding" />;
+  if (!skipOnboardingCheck && needsOnboarding) return <Redirect to="/onboarding/setup" />;
   return <Component />;
 }
 

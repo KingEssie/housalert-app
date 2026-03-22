@@ -26,6 +26,18 @@ A mobile-first rental alert application for the German market. Users can sign up
 - **Emails**: All email templates in `server/email.ts` use `t()` from `server/i18n.ts`. Language passed through entire notification pipeline (buffer → email/push).
 - **Push notifications**: Both web push (`server/notifications/push.ts`) and Expo push (`server/notifications/expo-push.ts`) accept `lang` parameter and use centralized translations.
 
+## Post-Login Onboarding Funnel
+- **Route**: `/onboarding/setup` — 9-step funnel (paywall → objection → push → personalInfo → housing → extras → letter → buddy → success)
+- **Component**: `client/src/pages/post-login-funnel.tsx`
+- **Onboarding flag**: `user_profile_data.onboarding_completed` (BOOLEAN, default false). Set true when user finishes the funnel success step.
+- **API**: `GET /api/onboarding-status` — returns `{ onboarding_completed: bool }`. Auto-backfills `true` for existing users who already have search profiles.
+- **Auth guard**: `ProtectedRoute` in App.tsx checks `/api/onboarding-status`. If `onboarding_completed=false`, redirects to `/onboarding/setup`. Skipped for routes with `skipOnboardingCheck`.
+- **Login redirect**: Login page checks onboarding status and redirects to `/onboarding/setup` if not completed, otherwise `/dashboard`.
+- **Signup redirect**: After signup → `/onboarding/setup`.
+- **Existing users**: Automatically marked as completed if they have any search profiles (backfill in onboarding-status API).
+- **i18n**: `funnel.*` keys in all 3 locale files (nl/de/en).
+- **Data persistence**: Each funnel step saves via `PUT /api/profile-data` (personal info, housing situation, extras, application letter, buddy email). Paywall uses `POST /api/checkout/session`.
+
 ## Search Buddy Feature
 - **What**: Users can add a "Zoekbuddy" (search buddy) email so a partner/friend also receives match alerts
 - **Simple rule**: buddy email present = ON, buddy email removed = OFF. No separate toggle in UI.

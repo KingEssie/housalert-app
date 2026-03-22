@@ -914,8 +914,20 @@ export default function PostLoginFunnel() {
   if (step === "success") {
     return (
       <SuccessStep
-        onFinish={() => {
+        onFinish={async () => {
           trackEvent("funnel_completed");
+          try {
+            if (session?.access_token) {
+              await apiFetch("/api/profile-data", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
+                body: JSON.stringify({ onboarding_completed: true }),
+              });
+              console.log("[FUNNEL] onboarding_completed=true saved, redirecting to dashboard");
+            }
+          } catch (err) {
+            console.error("[FUNNEL] Failed to save onboarding_completed", err);
+          }
           navigate("/dashboard");
         }}
         t={t}

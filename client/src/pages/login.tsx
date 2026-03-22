@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import { supabase } from "@/lib/supabase";
 import { ensureTrialForCurrentUser } from "@/lib/auth";
 import { clearAllUserData } from "@/lib/queryClient";
+import { apiFetch } from "@/lib/api-base";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
@@ -47,8 +48,35 @@ export default function LoginPage() {
 
     console.log(`[IDENTITY] Login success — user.id=${signInData?.user?.id?.substring(0, 8) ?? "null"}, email=${signInData?.user?.email ?? "unknown"}`);
     await ensureTrialForCurrentUser();
+
+    if (returnTo) {
+      console.log(`[IDENTITY] Login redirect → returnTo="${returnTo}"`);
+      setLoading(false);
+      navigate(returnTo);
+      return;
+    }
+
+    try {
+      const token = signInData.session?.access_token;
+      if (token) {
+        const res = await apiFetch("/api/onboarding-status", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        const completed = data.onboarding_completed === true;
+        console.log(`[IDENTITY] Login onboarding check — completed=${completed}`);
+        if (!completed) {
+          setLoading(false);
+          navigate("/onboarding/setup");
+          return;
+        }
+      }
+    } catch (err) {
+      console.log("[IDENTITY] Login onboarding check failed, defaulting to dashboard", err);
+    }
+
     setLoading(false);
-    navigate(returnTo || "/dashboard");
+    navigate("/dashboard");
   }
 
   async function handleForgotPassword() {

@@ -2361,6 +2361,50 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/onboarding-status", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { rows } = await pgPool.query(
+        "SELECT onboarding_completed FROM user_profile_data WHERE user_id = $1 LIMIT 1",
+        [user.id]
+      );
+
+      if (rows.length === 0) {
+        log(`[onboarding-status] userId=${user.id.substring(0, 8)}... no profile row → onboarding_completed=false`);
+        return res.json({ onboarding_completed: false });
+      }
+
+      let completed = rows[0].onboarding_completed === true;
+
+      if (!completed) {
+        const { data: profiles } = await supabase
+          .from("search_profiles")
+          .select("id")
+          .eq("user_id", user.id)
+          .limit(1);
+
+        if (profiles && profiles.length > 0) {
+          log(`[onboarding-status] userId=${user.id.substring(0, 8)}... has search profiles → backfilling onboarding_completed=true`);
+          await pgPool.query(
+            "UPDATE user_profile_data SET onboarding_completed = true, updated_at = NOW() WHERE user_id = $1",
+            [user.id]
+          );
+          completed = true;
+        }
+      }
+
+      log(`[onboarding-status] userId=${user.id.substring(0, 8)}... onboarding_completed=${completed}`);
+      return res.json({ onboarding_completed: completed });
+    } catch (err: any) {
+      log(`[onboarding-status] Error: ${err.message}`);
+      return res.status(500).json({ error: "Internal error" });
+    }
+  });
+
   app.get("/api/profile-data", async (req, res) => {
     try {
       const token = req.headers.authorization?.replace("Bearer ", "");
@@ -2444,6 +2488,7 @@ export async function registerRoutes(
         "network_task_done", "viewing_tips_done",
         "first_name", "last_name", "birth_date", "phone", "bio",
         "profile_photo_url", "occupation", "monthly_income", "language",
+        "onboarding_completed",
       ];
 
       const updates: Record<string, any> = {};

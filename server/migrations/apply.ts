@@ -18,6 +18,8 @@ export async function runStartupMigration() {
     log(`[MIGRATION] Error checking user_profile_data: ${err.message}`, "migration");
   }
 
+  await ensureOnboardingCompletedColumn();
+
   await createUserMatchesTable();
   await createFetchRunsTable();
   await createActivationEventsTable();
@@ -119,5 +121,21 @@ async function createFetchRunsTable() {
     log(`[MIGRATION] fetch_runs table OK (${colCheck.rows.length} columns)`, "migration");
   } catch (err: any) {
     log(`[MIGRATION] Error creating fetch_runs: ${err.message}`, "migration");
+  }
+}
+
+async function ensureOnboardingCompletedColumn() {
+  try {
+    const colExists = await pool.query(
+      "SELECT 1 FROM information_schema.columns WHERE table_name = 'user_profile_data' AND column_name = 'onboarding_completed'"
+    );
+    if (colExists.rows.length === 0) {
+      await pool.query("ALTER TABLE user_profile_data ADD COLUMN onboarding_completed BOOLEAN NOT NULL DEFAULT false");
+      log("[MIGRATION] Added onboarding_completed column to user_profile_data", "migration");
+    } else {
+      log("[MIGRATION] onboarding_completed column already exists", "migration");
+    }
+  } catch (err: any) {
+    log(`[MIGRATION] Error adding onboarding_completed: ${err.message}`, "migration");
   }
 }
