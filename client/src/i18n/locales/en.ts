@@ -388,6 +388,26 @@ export const en: Record<string, any> = {
     continueApple: "Continue with Apple",
   },
 
+  onboardingIntro: {
+    title: "Find your home faster than anyone",
+    subtitle: "Create a search profile and get matching listings instantly, before anyone else sees them.",
+    cta: "Create search profile",
+    secondary: "Back to login",
+    alreadyAccount: "Already have an account?",
+    benefit1: {
+      title: "All listings in one place",
+      desc: "We search multiple housing websites at once so you never miss a listing.",
+    },
+    benefit2: {
+      title: "Faster than anyone else",
+      desc: "Get new rental listings within minutes — be the first to respond.",
+    },
+    benefit3: {
+      title: "Instant notifications",
+      desc: "Push notifications and email alerts as soon as a matching listing goes live.",
+    },
+  },
+
   onboarding: {
     step: "{step}/{total}",
     welcome: {

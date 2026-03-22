@@ -414,6 +414,26 @@ export const de: Record<string, any> = {
     continueApple: "Weiter mit Apple",
   },
 
+  onboardingIntro: {
+    title: "Finde deine Wohnung schneller als alle anderen",
+    subtitle: "Erstelle dein Suchprofil und erhalte sofort passende Wohnungen, bevor andere sie sehen.",
+    cta: "Suchprofil erstellen",
+    secondary: "Zurück zur Anmeldung",
+    alreadyAccount: "Bereits ein Konto?",
+    benefit1: {
+      title: "Alle Wohnungen an einem Ort",
+      desc: "Wir durchsuchen mehrere Immobilien-Websites gleichzeitig, damit du nichts verpasst.",
+    },
+    benefit2: {
+      title: "Schneller als jeder andere",
+      desc: "Erhalte neue Mietwohnungen innerhalb von Minuten — reagiere als Erster.",
+    },
+    benefit3: {
+      title: "Sofortige Benachrichtigungen",
+      desc: "Push-Nachrichten und E-Mail-Alerts, sobald eine passende Wohnung online geht.",
+    },
+  },
+
   onboarding: {
     step: "{step}/{total}",
     welcome: {

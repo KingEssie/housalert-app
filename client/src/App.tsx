@@ -36,6 +36,7 @@ import ChangePasswordPage from "@/pages/change-password";
 import ForgotPasswordPage from "@/pages/forgot-password";
 import ResetPasswordPage from "@/pages/reset-password";
 import PostLoginFunnel from "@/pages/post-login-funnel";
+import OnboardingIntroPage from "@/pages/onboarding-intro";
 import OnboardingPage from "@/pages/onboarding";
 import OnboardingEmbedPage from "@/pages/onboarding-embed";
 import ContinueDraftPage from "@/pages/continue-draft";
@@ -137,17 +138,6 @@ function OldOnboardingRedirect() {
   return <Redirect to="/onboarding/setup" />;
 }
 
-function OldOnboardingLocationRedirect() {
-  console.log("[ROUTE] Old /onboarding/location route hit → redirecting to /signup");
-  return <Redirect to="/signup" />;
-}
-
-function OldOnboardingFlowRedirect() {
-  const path = typeof window !== "undefined" ? (window.location.hash || window.location.pathname) : "unknown";
-  console.log(`[ROUTE] Old onboarding flow route hit (${path}) → redirecting to /signup`);
-  return <Redirect to="/signup" />;
-}
-
 function Router() {
   return (
     <Switch>
@@ -160,12 +150,13 @@ function Router() {
       <Route path="/reset-password" component={ResetPasswordPage} />
       <Route path="/onboarding-embed" component={OnboardingEmbedPage} />
       <Route path="/continue" component={ContinueDraftPage} />
+      <Route path="/onboarding/intro" component={OnboardingIntroPage} />
       <Route path="/onboarding/setup" component={() => <ProtectedRoute component={PostLoginFunnel} skipOnboardingCheck />} />
-      <Route path="/onboarding/location" component={OldOnboardingLocationRedirect} />
-      <Route path="/onboarding/filters" component={OldOnboardingFlowRedirect} />
-      <Route path="/onboarding/estimate" component={OldOnboardingFlowRedirect} />
-      <Route path="/onboarding/preferences" component={OldOnboardingFlowRedirect} />
-      <Route path="/onboarding/value" component={OldOnboardingFlowRedirect} />
+      <Route path="/onboarding/location" component={OnboardingLocationPage} />
+      <Route path="/onboarding/filters" component={OnboardingFiltersPage} />
+      <Route path="/onboarding/estimate" component={OnboardingEstimatePage} />
+      <Route path="/onboarding/preferences" component={OnboardingPreferencesPage} />
+      <Route path="/onboarding/value" component={OnboardingValuePage} />
       <Route path="/onboarding" component={OldOnboardingRedirect} />
       <Route path="/paywall" component={PaywallPage} />
       <Route path="/subscription-success" component={() => <ProtectedRoute component={SubscriptionSuccessPage} skipOnboardingCheck />} />

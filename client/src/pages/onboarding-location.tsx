@@ -284,7 +284,7 @@ export default function OnboardingLocationPage() {
         <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
           <div className={`${containerClass} mx-auto px-5 h-[56px] flex items-center gap-3`}>
             <button
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/onboarding/intro")}
               className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-95 transition-transform"
               data-testid="button-back-landing"
             >

@@ -421,6 +421,26 @@ export const nl: Record<string, any> = {
     continueApple: "Doorgaan met Apple",
   },
 
+  onboardingIntro: {
+    title: "Vind jouw woning sneller dan iedereen",
+    subtitle: "Maak een zoekprofiel aan en ontvang direct passende woningen, voordat anderen ze zien.",
+    cta: "Zoekprofiel maken",
+    secondary: "Terug naar inloggen",
+    alreadyAccount: "Al een account?",
+    benefit1: {
+      title: "Alle woningen op één plek",
+      desc: "Wij doorzoeken meerdere woningwebsites tegelijk, zodat je niets mist.",
+    },
+    benefit2: {
+      title: "Sneller dan wie dan ook",
+      desc: "Ontvang nieuwe huurwoningen binnen minuten — reageer als eerste.",
+    },
+    benefit3: {
+      title: "Directe meldingen",
+      desc: "Push-notificaties en e-mail alerts zodra er een passende woning online komt.",
+    },
+  },
+
   onboarding: {
     step: "{step}/{total}",
     welcome: {

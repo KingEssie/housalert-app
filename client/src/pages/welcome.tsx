@@ -262,7 +262,7 @@ export default function WelcomePage() {
           </div>
 
           <button
-            onClick={() => navigate("/signup")}
+            onClick={() => navigate("/onboarding/intro")}
             className="w-full h-[46px] rounded-full text-[14px] font-semibold text-[#1A1A1A] border border-[#E0E0E0] bg-white hover:bg-[#F9FAFB] transition-colors active:scale-[0.97]"
             data-testid="button-signup"
           >
