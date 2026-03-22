@@ -416,14 +416,16 @@ export const de: Record<string, any> = {
 
   v2: {
     welcome: {
-      title: "Finde deine Traumwohnung",
+      title: "Willkommen bei\nHousAlert!",
       subtitle: "Melde dich an oder erstelle ein Suchprofil",
-      emailPlaceholder: "E-Mail-Adresse",
-      passwordPlaceholder: "Passwort",
+      emailLabel: "E-Mailadresse",
+      emailPlaceholder: "name@beispiel.de",
+      passwordLabel: "Passwort",
+      passwordPlaceholder: "Dein Passwort",
       forgotPassword: "Passwort vergessen?",
       login: "Einloggen",
       or: "oder",
-      signupCta: "Ich bin neu — Suchprofil erstellen",
+      signupCta: "Ich bin neu bei HousAlert",
       loginFailed: "Anmeldung fehlgeschlagen",
       enterEmailFirst: "Bitte gib zuerst deine E-Mail-Adresse ein",
       resetSent: "E-Mail zum Zurücksetzen wurde gesendet",

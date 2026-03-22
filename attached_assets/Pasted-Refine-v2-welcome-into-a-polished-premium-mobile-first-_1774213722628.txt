@@ -1,0 +1,304 @@
+Refine /v2/welcome into a polished, premium mobile-first login screen.
+
+IMPORTANT:
+Do NOT treat this as a generic form page.
+This is the first impression of the V2 experience and must feel intentional, high-converting, and visually close to the reference structure I shared.
+
+We are refining the existing /v2/welcome page, not creating a different flow.
+
+==================================================
+ROUTE
+==================================================
+
+Route:
+- /v2/welcome
+
+Keep it in the V2 route group.
+
+==================================================
+VISUAL GOAL
+==================================================
+
+The screen should feel:
+- dark
+- premium
+- minimal
+- trustworthy
+- mobile-first
+- high-converting
+
+The user should immediately understand:
+- this is where I log in
+- if I am new, I can start the setup flow
+- HousAlert helps me find housing faster
+
+Do NOT make it look like a basic admin login page.
+
+==================================================
+OVERALL LAYOUT
+==================================================
+
+The page is a full-screen dark layout.
+
+Structure from top to bottom:
+
+1. Top spacing / safe area
+2. Header row
+3. Large welcome title
+4. Email field
+5. Password field
+6. Forgot password link
+7. Primary login CTA
+8. Divider "OF"
+9. Secondary signup CTA
+10. Trustpilot / review strip near bottom
+11. Bottom safe area spacing
+
+No scroll on standard mobile viewport if possible.
+
+If spacing is tight:
+- reduce vertical whitespace slightly
+- but keep visual rhythm and breathing room
+
+==================================================
+BACKGROUND
+==================================================
+
+Use a dark solid background similar to the current V2 dark theme.
+Keep it simple.
+No gradients or decorative clutter for now.
+
+==================================================
+HEADER
+==================================================
+
+Top row should contain:
+
+LEFT:
+- HousAlert logo mark + HousAlert wordmark
+- aligned horizontally
+- modest size, not too large
+
+RIGHT:
+- language selector
+- compact dropdown style
+- current language code visible (e.g. NL / DE / EN)
+- subtle chevron
+
+The language selector should feel integrated into the dark UI.
+Not like a light big chip floating randomly.
+
+Spacing:
+- horizontal padding 24px
+- top margin respects safe area
+
+==================================================
+TITLE
+==================================================
+
+Large bold heading.
+
+Temporary text can remain equivalent to:
+- "Welkom bij HousAlert!"
+
+Style:
+- large
+- bold
+- white
+- max 2 lines
+- left aligned
+
+Spacing:
+- enough room below header
+- no cramped feel
+
+==================================================
+EMAIL FIELD
+==================================================
+
+Label above field:
+- "E-mailadres"
+
+Field:
+- full width
+- large height (around 60-64px)
+- white/light background
+- dark text
+- rounded corners
+- subtle border
+- large horizontal padding
+
+Placeholder:
+- soft gray
+- not too dark
+
+==================================================
+PASSWORD FIELD
+==================================================
+
+Label above field:
+- "Wachtwoord"
+
+Field:
+- same width and height as email field
+- same styling
+- show/hide icon on the right
+- icon vertically centered
+- touch target large enough
+
+==================================================
+FORGOT PASSWORD
+==================================================
+
+Right-aligned link under password field.
+
+Text:
+- "Wachtwoord vergeten"
+
+Style:
+- smaller font
+- accent blue or subtle linked style for now
+- clean and readable
+- enough spacing above and below
+
+Do NOT place it too close to the password field.
+Do NOT let it float awkwardly.
+
+==================================================
+PRIMARY CTA
+==================================================
+
+Main login button.
+
+Text:
+- "Inloggen"
+
+Style:
+- full width
+- strong filled accent button
+- rounded corners / pill style
+- bold white text
+- visually dominant
+
+Keep the Rentbird-like emphasis for now in V2.
+
+Icon:
+- optional small arrow icon on the right side if it helps match the reference
+- but keep it clean
+
+==================================================
+DIVIDER
+==================================================
+
+Centered divider with:
+- horizontal line left
+- text "OF"
+- horizontal line right
+
+Spacing:
+- enough room above and below
+- not too compressed
+
+==================================================
+SECONDARY CTA
+==================================================
+
+Signup button under divider.
+
+Text:
+- "Ik ben nieuw bij HousAlert"
+
+Style:
+- full width
+- transparent/dark background
+- outlined border in accent color
+- accent text color
+- same height as login button
+- rounded corners
+
+Behavior:
+- goes to /v2/onboarding/intro
+
+==================================================
+TRUST STRIP
+==================================================
+
+Near the lower part of the screen, add a trust/review strip.
+
+Structure:
+- Trustpilot label or equivalent trust element
+- rating stars/icons
+- numeric score
+
+Style:
+- understated but visible
+- horizontally centered
+- sits above bottom safe area
+- does not compete with CTA buttons
+
+This should help the screen feel like a real conversion screen, not just a login form.
+
+==================================================
+SPACING SYSTEM
+==================================================
+
+Use consistent vertical rhythm.
+
+Approximate spacing guidance:
+- header to title: 40px
+- title to email label: 32px
+- label to field: 12px
+- field to next label: 24px
+- password field to forgot password: 12px
+- forgot password to login CTA: 28px
+- login CTA to divider: 28px
+- divider to signup CTA: 24px
+- signup CTA to trust strip: flexible fill space
+- bottom safe area preserved
+
+==================================================
+TYPOGRAPHY
+==================================================
+
+Use strong hierarchy:
+
+- Header wordmark: medium-bold
+- Main title: large bold
+- Labels: medium-bold
+- Inputs: regular
+- Buttons: bold
+- Secondary texts: smaller and softer
+
+Do NOT make everything the same weight.
+Hierarchy matters.
+
+==================================================
+INTERACTIONS
+==================================================
+
+- Login button uses existing auth logic
+- Signup button routes to /v2/onboarding/intro
+- Forgot password routes to the existing forgot-password flow
+- Language selector remains functional
+
+==================================================
+IMPORTANT REFINEMENT RULES
+==================================================
+
+1. Do NOT reuse old HousAlert auth layout pieces
+2. Do NOT make it feel like a plain form page
+3. Do NOT add extra cards or panels unless needed
+4. Keep it visually close to the dark, clean, conversion-focused reference
+5. Focus on spacing, typography, and polish
+6. This screen must look intentionally designed, not assembled
+
+==================================================
+DELIVERABLE
+==================================================
+
+Refined /v2/welcome page that:
+- feels premium
+- matches the V2 dark Rentbird-style structure
+- is clearly usable on mobile
+- keeps existing logic
+- is ready to use as the V2 entry screen

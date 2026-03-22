@@ -423,14 +423,16 @@ export const nl: Record<string, any> = {
 
   v2: {
     welcome: {
-      title: "Vind jouw droomwoning",
+      title: "Welkom bij\nHousAlert!",
       subtitle: "Log in of maak een zoekprofiel aan",
-      emailPlaceholder: "E-mailadres",
-      passwordPlaceholder: "Wachtwoord",
+      emailLabel: "E-mailadres",
+      emailPlaceholder: "naam@voorbeeld.nl",
+      passwordLabel: "Wachtwoord",
+      passwordPlaceholder: "Jouw wachtwoord",
       forgotPassword: "Wachtwoord vergeten?",
       login: "Inloggen",
       or: "of",
-      signupCta: "Ik ben nieuw — Zoekprofiel maken",
+      signupCta: "Ik ben nieuw bij HousAlert",
       loginFailed: "Inloggen mislukt",
       enterEmailFirst: "Vul eerst je e-mailadres in",
       resetSent: "Reset e-mail is verzonden",
