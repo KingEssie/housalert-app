@@ -150,7 +150,7 @@ export default function SignupPage() {
         }
       }
 
-      navigate("/onboarding/value");
+      navigate("/onboarding/setup");
     } catch (err: any) {
       toast({ title: t("common.error"), description: err.message, variant: "destructive" });
     } finally {

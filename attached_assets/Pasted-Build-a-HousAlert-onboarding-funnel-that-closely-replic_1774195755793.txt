@@ -1,0 +1,98 @@
+Build a HousAlert onboarding funnel that closely replicates the structure, UX flow, and interaction patterns of the Rentbird onboarding experience.
+
+IMPORTANT:
+We want this to feel almost identical in flow, behavior, and layout structure, but using HousAlert branding (name, logo, colors).
+
+==================================================
+GOAL
+==================================================
+
+Recreate a high-converting onboarding funnel with the same sequence and UX patterns as Rentbird.
+
+The experience should feel extremely similar in:
+- screen order
+- layout structure
+- spacing
+- CTA positioning
+- interaction flow
+
+==================================================
+SCREENS TO BUILD
+==================================================
+
+1. Login screen
+2. Paywall (subscription selection)
+3. Objection / doubt screen
+4. Push notification screen
+5. Personal info form
+6. Housing situation form
+7. Extra questions screen
+8. AI-generated application letter
+9. Search buddy invite
+10. Success screen
+11. Redirect to home
+
+==================================================
+DESIGN RULES
+==================================================
+
+- Match layout structure VERY closely to Rentbird:
+  - same hierarchy
+  - same spacing logic
+  - same button placements
+  - same card layouts
+  - same flow transitions
+
+- Use HousAlert branding:
+  - replace all Rentbird text with HousAlert
+  - use HousAlert logo
+  - use orange as primary CTA color
+  - use neutral backgrounds (white / light grey / soft tones)
+
+- Typography:
+  - bold large headings
+  - simple readable body text
+  - strong CTA emphasis
+
+==================================================
+LOGIN SCREEN
+==================================================
+
+- Email field
+- Password field with show/hide
+- "Wachtwoord vergeten"
+- Primary button: "Inloggen"
+- Secondary button: "Aanmelden"
+- Divider "OF"
+- Social login buttons (Google / Apple)
+
+==================================================
+PAYWALL SCREEN
+==================================================
+
+- Title: "Mis geen enkele match"
+- 3 benefit bullets
+- 3 pricing options
+- highlight middle option
+- CTA: "Selecteer pakket"
+- secondary: "Doorgaan zonder abonnement"
+
+==================================================
+IMPORTANT
+==================================================
+
+We are intentionally replicating a proven onboarding funnel structure.
+
+However:
+- DO NOT use Rentbird name
+- DO NOT use their logo
+- DO NOT copy assets
+- ONLY replicate structure and UX behavior
+
+The result should feel extremely similar in flow and usability, but clearly branded as HousAlert.
+
+==================================================
+OUTPUT
+==================================================
+
+Fully working onboarding flow, mobile-first, production-ready UI.

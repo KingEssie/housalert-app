@@ -35,6 +35,7 @@ import { SubscriptionCancelConfirmPage, SubscriptionCancelledPage } from "@/page
 import ChangePasswordPage from "@/pages/change-password";
 import ForgotPasswordPage from "@/pages/forgot-password";
 import ResetPasswordPage from "@/pages/reset-password";
+import PostLoginFunnel from "@/pages/post-login-funnel";
 import OnboardingPage from "@/pages/onboarding";
 import OnboardingEmbedPage from "@/pages/onboarding-embed";
 import ContinueDraftPage from "@/pages/continue-draft";
@@ -109,6 +110,7 @@ function Router() {
       <Route path="/onboarding/location" component={OnboardingLocationPage} />
       <Route path="/onboarding/filters" component={OnboardingFiltersPage} />
       <Route path="/onboarding/estimate" component={OnboardingEstimatePage} />
+      <Route path="/onboarding/setup" component={() => <ProtectedRoute component={PostLoginFunnel} skipOnboardingCheck />} />
       <Route path="/onboarding/preferences" component={OnboardingPreferencesPage} />
       <Route path="/onboarding/value" component={OnboardingValuePage} />
       <Route path="/paywall" component={PaywallPage} />
