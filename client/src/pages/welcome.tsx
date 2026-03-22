@@ -97,6 +97,7 @@ function LanguageDropdown() {
 }
 
 export default function WelcomePage() {
+  console.log("[PAGE] WelcomePage v2.1 rendered (new Rentbird-style auth screen)");
   const [, navigate] = useLocation();
   const { t, setLocale } = useTranslation();
   const { toast } = useToast();

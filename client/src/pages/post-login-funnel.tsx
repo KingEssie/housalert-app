@@ -831,6 +831,7 @@ function SuccessStep({ onFinish, t }: { onFinish: () => void; t: (k: string) => 
 }
 
 export default function PostLoginFunnel() {
+  console.log("[PAGE] PostLoginFunnel v2.1 rendered (NEW onboarding/setup flow)");
   const [, navigate] = useLocation();
   const { user, session } = useAuth();
   const { t, locale } = useTranslation();

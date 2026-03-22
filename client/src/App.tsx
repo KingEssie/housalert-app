@@ -132,6 +132,22 @@ function RootRedirect() {
   return <Redirect to={destination} />;
 }
 
+function OldOnboardingRedirect() {
+  console.log("[ROUTE] Old /onboarding route hit → redirecting to /onboarding/setup");
+  return <Redirect to="/onboarding/setup" />;
+}
+
+function OldOnboardingLocationRedirect() {
+  console.log("[ROUTE] Old /onboarding/location route hit → redirecting to /signup");
+  return <Redirect to="/signup" />;
+}
+
+function OldOnboardingFlowRedirect() {
+  const path = typeof window !== "undefined" ? (window.location.hash || window.location.pathname) : "unknown";
+  console.log(`[ROUTE] Old onboarding flow route hit (${path}) → redirecting to /signup`);
+  return <Redirect to="/signup" />;
+}
+
 function Router() {
   return (
     <Switch>
@@ -144,16 +160,16 @@ function Router() {
       <Route path="/reset-password" component={ResetPasswordPage} />
       <Route path="/onboarding-embed" component={OnboardingEmbedPage} />
       <Route path="/continue" component={ContinueDraftPage} />
-      <Route path="/onboarding/location" component={OnboardingLocationPage} />
-      <Route path="/onboarding/filters" component={OnboardingFiltersPage} />
-      <Route path="/onboarding/estimate" component={OnboardingEstimatePage} />
       <Route path="/onboarding/setup" component={() => <ProtectedRoute component={PostLoginFunnel} skipOnboardingCheck />} />
-      <Route path="/onboarding/preferences" component={OnboardingPreferencesPage} />
-      <Route path="/onboarding/value" component={OnboardingValuePage} />
+      <Route path="/onboarding/location" component={OldOnboardingLocationRedirect} />
+      <Route path="/onboarding/filters" component={OldOnboardingFlowRedirect} />
+      <Route path="/onboarding/estimate" component={OldOnboardingFlowRedirect} />
+      <Route path="/onboarding/preferences" component={OldOnboardingFlowRedirect} />
+      <Route path="/onboarding/value" component={OldOnboardingFlowRedirect} />
+      <Route path="/onboarding" component={OldOnboardingRedirect} />
       <Route path="/paywall" component={PaywallPage} />
       <Route path="/subscription-success" component={() => <ProtectedRoute component={SubscriptionSuccessPage} skipOnboardingCheck />} />
       <Route path="/embed-success" component={EmbedSuccessPage} />
-      <Route path="/onboarding" component={() => <ProtectedRoute component={OnboardingPage} skipOnboardingCheck />} />
       <Route path="/dashboard" component={() => <ProtectedRoute component={DashboardPage} />} />
       <Route path="/dashboard/searches/new" component={() => <ProtectedRoute component={NewSearchPage} />} />
       <Route path="/dashboard/searches/edit/:id" component={() => <ProtectedRoute component={NewSearchPage} />} />
@@ -203,6 +219,7 @@ function AppShell() {
 }
 
 function App() {
+  console.log(`[APP BOOT] HousAlert v2.1 — IS_NATIVE=${IS_NATIVE} — ${new Date().toISOString()}`);
   if (IS_NATIVE) {
     return (
       <WouterRouter hook={useHashLocation}>
