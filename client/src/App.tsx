@@ -43,6 +43,10 @@ import ContinueDraftPage from "@/pages/continue-draft";
 import AuthCallbackPage from "@/pages/auth-callback";
 import { DocumentenGuidePage, SchufaGuidePage, ZoekstrategieGuidePage, NetwerkGuidePage } from "@/pages/guide";
 import DeleteAccountPage from "@/pages/delete-account";
+import V2WelcomePage from "@/pages/v2/welcome";
+import V2OnboardingIntroPage from "@/pages/v2/onboarding-intro";
+import V2OnboardingLocationPage from "@/pages/v2/onboarding-location";
+import { V2OnboardingProvider } from "@/lib/v2-onboarding-store";
 import SubscriptionSuccessPage from "@/pages/subscription-success";
 import EmbedSuccessPage from "@/pages/embed-success";
 import AdminIngestionPage from "@/pages/admin-ingestion";
@@ -189,6 +193,9 @@ function Router() {
       <Route path="/impressum" component={ImpressumPage} />
       <Route path="/datenschutz" component={DatenschutzPage} />
       <Route path="/terms" component={TermsPage} />
+      <Route path="/v2/welcome" component={V2WelcomePage} />
+      <Route path="/v2/onboarding/intro" component={V2OnboardingIntroPage} />
+      <Route path="/v2/onboarding/location" component={V2OnboardingLocationPage} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -200,8 +207,10 @@ function AppShell() {
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <AuthProvider>
-            <Toaster />
-            <Router />
+            <V2OnboardingProvider>
+              <Toaster />
+              <Router />
+            </V2OnboardingProvider>
           </AuthProvider>
         </TooltipProvider>
       </QueryClientProvider>

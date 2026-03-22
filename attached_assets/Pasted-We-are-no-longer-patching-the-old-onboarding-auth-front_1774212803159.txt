@@ -1,0 +1,261 @@
+We are no longer patching the old onboarding/auth frontend.
+
+We are starting a clean V2 frontend flow from scratch for HousAlert, inspired by the Rentbird conversion flow and screen structure.
+
+IMPORTANT:
+- Reuse the existing backend, APIs, auth, database, subscriptions, matching engine, notifications, and profile endpoints
+- But rebuild the frontend auth/onboarding/setup flow from zero as a new V2 implementation
+- Do NOT reuse old onboarding UI components
+- Do NOT keep trying to patch the old Stekkies-style screens
+- Build a clean new frontend shell and later connect it to the existing APIs
+
+==================================================
+GOAL
+==================================================
+
+Create a new V2 onboarding/auth/search-profile flow for HousAlert that is structurally inspired by Rentbird, but with HousAlert branding later.
+
+For now, it is acceptable to keep the Rentbird-like dark flow structure as the reference for layout and step order, but the implementation must be clean, modular, and owned by HousAlert.
+
+We want:
+- a fresh V2 auth + onboarding shell
+- a dedicated route group for V2
+- reusable layout components
+- reusable form components
+- step-by-step onboarding screens
+- clean state handling
+- easy future replacement of branding/colors/text
+
+==================================================
+ARCHITECTURE
+==================================================
+
+Create a new V2 route structure, separate from the old onboarding/auth flow.
+
+Example:
+- /v2/welcome
+- /v2/onboarding/intro
+- /v2/onboarding/location
+- /v2/onboarding/filters
+- /v2/onboarding/preferences
+- /v2/onboarding/value
+- /v2/signup
+- /v2/paywall
+- /v2/objection
+- /v2/push
+- /v2/profile/personal
+- /v2/profile/housing
+- /v2/profile/extras
+- /v2/profile/letter
+- /v2/profile/buddy
+- /v2/success
+
+Do not replace production entry immediately.
+First build and validate the V2 flow cleanly.
+
+==================================================
+STATE / DATA STRATEGY
+==================================================
+
+The V2 onboarding flow must preserve user progress across steps.
+
+Requirements:
+- use a dedicated onboarding state store/context
+- keep temporary state across all V2 screens
+- do not lose data when moving between steps
+- once signup/login occurs, persist relevant data to the existing backend APIs
+- make the flow resumable during the same session
+
+Onboarding data should include:
+- selected language
+- location data
+- filters/preferences
+- profile info
+- application letter inputs
+- buddy info
+- subscription choices if relevant
+
+==================================================
+V2 LAYOUT SYSTEM
+==================================================
+
+Create reusable V2 layout components:
+
+1. V2DarkScreenLayout
+- dark background
+- top logo/header area
+- main content area
+- sticky bottom CTA area if needed
+
+2. V2LightCardLayout
+- light card sections
+- rounded corners
+- proper spacing
+
+3. V2ProgressHeader
+- back button
+- title
+- progress chip like 1/4, 2/4, etc
+- close button where needed
+
+4. V2BottomCTA
+- sticky bottom bar
+- supports primary + secondary + back
+
+5. V2FormField components
+- text input
+- select/dropdown
+- segmented controls
+- toggle
+- chips/tags
+- slider
+- textarea
+
+Build these as reusable components first.
+
+==================================================
+FIRST SCREEN TO BUILD FIRST
+==================================================
+
+Start with the Welcome / Login screen as the first V2 screen.
+
+ROUTE:
+- /v2/welcome
+
+This screen must match the reference structure I shared:
+
+Layout:
+- dark background
+- logo top left
+- language selector top right
+- large title
+- email field
+- password field
+- forgot password link right-aligned
+- primary CTA: login
+- divider: OF
+- secondary outlined CTA: I am new / signup
+- trust/review element near bottom
+
+For now:
+- use placeholder Rentbird-style layout structure
+- keep all copy easy to swap later
+- keep styles modular
+- no old HousAlert onboarding components
+
+Behavior:
+- Login button → existing auth login
+- “I am new” / signup button → /v2/onboarding/intro
+
+==================================================
+SECOND SCREEN
+==================================================
+
+Then build:
+- /v2/onboarding/intro
+
+This screen should be the value-proposition intro screen before search-profile creation.
+
+Structure:
+- dark background
+- logo
+- trust score area
+- large headline
+- 3 numbered benefit blocks
+- primary CTA: create search profile
+- secondary link
+
+CTA:
+- /v2/onboarding/location
+
+==================================================
+SEARCH PROFILE FLOW
+==================================================
+
+Then build the search profile flow as separate V2 steps:
+
+1. /v2/onboarding/location
+2. /v2/onboarding/filters
+3. /v2/onboarding/preferences
+4. /v2/onboarding/value
+
+Requirements:
+- each screen rebuilt from scratch
+- use V2ProgressHeader
+- use sticky bottom CTA
+- match the reference layout structure:
+  - dark background
+  - search/map/segmented controls
+  - estimated matches in bottom bar
+  - progress steps 1/4, 2/4, 3/4, 4/4
+
+==================================================
+SIGNUP POSITION
+==================================================
+
+Signup should happen AFTER the search-profile creation steps.
+
+Flow:
+- welcome
+- intro
+- location
+- filters
+- preferences
+- value
+- signup
+- paywall
+- objection
+- push
+- profile setup
+- success
+- dashboard
+
+So:
+- /v2/signup must be later in the flow
+- not the first step
+
+==================================================
+EXISTING BACKEND CONNECTION
+==================================================
+
+Use the existing backend for:
+- auth
+- search profile persistence
+- profile-data
+- onboarding_completed
+- subscriptions
+- push preferences
+- AI letter generation if already available
+- buddy invites if already available
+
+But first build the V2 screens and state flow correctly before deeply integrating everything.
+
+==================================================
+IMPORTANT RULES
+==================================================
+
+1. Do NOT patch old onboarding pages
+2. Do NOT reuse old onboarding UI components
+3. Do NOT change production entrypoint yet
+4. Build V2 in isolation first
+5. Make the screens modular and reusable
+6. Keep old system intact until V2 is validated
+
+==================================================
+DELIVERABLE FOR PHASE 1
+==================================================
+
+For phase 1, I want:
+- V2 route structure created
+- reusable V2 layout/form components
+- /v2/welcome built
+- /v2/onboarding/intro built
+- /v2/onboarding/location built
+- temporary navigation between them working
+- existing auth login connected on welcome screen
+- signup button routing into the V2 flow
+
+After that, stop and report exactly:
+- which new files/components were created
+- which existing APIs were connected
+- how to test the V2 flow manually

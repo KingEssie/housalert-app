@@ -26,6 +26,17 @@ A mobile-first rental alert application for the German market. Users can sign up
 - **Emails**: All email templates in `server/email.ts` use `t()` from `server/i18n.ts`. Language passed through entire notification pipeline (buffer → email/push).
 - **Push notifications**: Both web push (`server/notifications/push.ts`) and Expo push (`server/notifications/expo-push.ts`) accept `lang` parameter and use centralized translations.
 
+## V2 Frontend Flow (In Development)
+- **Status**: Phase 1 complete — isolated V2 flow, not replacing production yet
+- **Routes**: `/v2/welcome`, `/v2/onboarding/intro`, `/v2/onboarding/location` (more in Phase 2)
+- **Design**: Dark background (#1A1A2E), Rentbird-inspired conversion flow
+- **Layout components**: `client/src/components/v2/` — V2DarkScreenLayout, V2DarkHeader, V2DarkContent, V2ProgressHeader, V2BottomCTA, V2FormField components (TextInput, PasswordInput, Select, SegmentedControl, ChipGroup, Slider, Toggle, Textarea)
+- **State store**: `client/src/lib/v2-onboarding-store.tsx` — React context preserving onboarding data across V2 steps (language, city, lat/lng, radius, filters, preferences)
+- **Pages**: `client/src/pages/v2/` — welcome.tsx, onboarding-intro.tsx, onboarding-location.tsx
+- **i18n keys**: Under `v2.*` namespace in all 3 locale files (de/en/nl)
+- **Auth**: V2 welcome page uses existing Supabase auth (signInWithPassword), same as old login
+- **Planned Phase 2**: /v2/onboarding/filters, /v2/onboarding/preferences, /v2/onboarding/value, /v2/signup, /v2/paywall, /v2/profile steps, /v2/success
+
 ## Post-Login Onboarding Funnel
 - **Route**: `/onboarding/setup` — 9-step funnel (paywall → objection → push → personalInfo → housing → extras → letter → buddy → success)
 - **Component**: `client/src/pages/post-login-funnel.tsx`
