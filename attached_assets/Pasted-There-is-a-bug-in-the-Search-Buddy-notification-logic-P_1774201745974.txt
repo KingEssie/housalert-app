@@ -1,0 +1,58 @@
+There is a bug in the Search Buddy notification logic.
+
+Problem:
+The main user has email notifications turned OFF, but the Search Buddy (elisebezemer@gmail.com) is still receiving match emails.
+
+That must NOT happen.
+
+Desired behavior:
+- If the main user's email_notifications setting is OFF:
+  - NO match emails should be sent to the Search Buddy either
+- If the main user's email_notifications setting is ON:
+  - Search Buddy may receive match emails, but only if all other Search Buddy rules pass
+
+Search Buddy should therefore depend on BOTH:
+1. valid buddy email exists
+2. main user's email notifications are enabled
+3. main user has active trial or paid subscription
+4. buddy email is not the same as main user email
+5. anti-retroactive rules stay intact
+
+Tasks:
+1. Trace the exact notification pipeline for Search Buddy emails
+2. Find where buddy recipient eligibility is currently evaluated
+3. Identify why buddy emails are still being sent when main user email notifications are OFF
+4. Fix the logic so buddy emails are blocked when main user email notifications are OFF
+5. Preserve all other existing rules:
+   - active subscription required
+   - duplicate prevention
+   - anti-retroactive guard
+   - do not break normal main-user email logic
+
+6. Add / preserve logs showing:
+   - main user email_notifications value
+   - buddy email exists or not
+   - subscription active or not
+   - duplicate email or not
+   - final decision: SEND or SKIP
+   - explicit skip reason:
+     - main user email notifications off
+     - no active subscription
+     - no buddy email
+     - duplicate email
+     - anti-retroactive guard
+
+7. Verify with a real test:
+   - main user email notifications OFF + valid buddy email + active subscription
+   - expected result: buddy gets NO email
+   - then main user email notifications ON
+   - expected result: buddy gets email again (if all other conditions pass)
+
+Important:
+- Do NOT refactor unrelated systems
+- Do NOT change app visibility of listings
+- Do NOT break main-user notification flow
+- Keep the fix minimal and production-safe
+
+Goal:
+Search Buddy must never receive match emails when the main user's email notifications setting is OFF.

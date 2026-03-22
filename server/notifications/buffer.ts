@@ -125,7 +125,8 @@ interface BuddyEligibility {
 
 async function canBuddyReceiveMatches(
   userId: string,
-  prefetchedSubStatus?: import("../subscriptions").SubscriptionStatus
+  prefetchedSubStatus?: import("../subscriptions").SubscriptionStatus,
+  mainUserEmailEnabled?: boolean
 ): Promise<BuddyEligibility> {
   const buddyInfo = await getSearchBuddyInfo(userId);
 
@@ -137,23 +138,28 @@ async function canBuddyReceiveMatches(
     return { eligible: false, reason: "feature disabled", buddyInfo };
   }
 
+  if (mainUserEmailEnabled === false) {
+    log(`[BUDDY] userId=${userId.substring(0, 8)}... buddy EXCLUDED: main user email notifications OFF`);
+    return { eligible: false, reason: "main user email notifications OFF", buddyInfo };
+  }
+
   const subStatus = prefetchedSubStatus ?? await getSubscriptionStatus(userId);
   const hasActiveTrial = subStatus.isTrial;
   const hasActivePaid = subStatus.isActive && subStatus.status === "active";
   const canceledButStillActive = subStatus.status === "canceled" && !subStatus.isExpired;
 
   if (hasActiveTrial) {
-    log(`[BUDDY] userId=${userId.substring(0, 8)}... buddy INCLUDED: active trial`);
+    log(`[BUDDY] userId=${userId.substring(0, 8)}... buddy INCLUDED: active trial (mainEmail=ON)`);
     return { eligible: true, reason: "active trial", buddyInfo };
   }
 
   if (hasActivePaid) {
-    log(`[BUDDY] userId=${userId.substring(0, 8)}... buddy INCLUDED: active paid subscription`);
+    log(`[BUDDY] userId=${userId.substring(0, 8)}... buddy INCLUDED: active paid subscription (mainEmail=ON)`);
     return { eligible: true, reason: "active paid subscription", buddyInfo };
   }
 
   if (canceledButStillActive) {
-    log(`[BUDDY] userId=${userId.substring(0, 8)}... buddy INCLUDED: canceled but still in paid period`);
+    log(`[BUDDY] userId=${userId.substring(0, 8)}... buddy INCLUDED: canceled but still in paid period (mainEmail=ON)`);
     return { eligible: true, reason: "canceled but still in paid period", buddyInfo };
   }
 
@@ -397,8 +403,10 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
     const emailEnabled = settings?.email_enabled ?? true;
     const pushEnabled = settings?.push_enabled ?? false;
 
-    const buddyEligibility = await canBuddyReceiveMatches(userId, subStatus);
+    const buddyEligibility = await canBuddyReceiveMatches(userId, subStatus, emailEnabled);
     const userLang = await getUserLanguage(userId);
+
+    log(`[ALERTS] User ${userId.substring(0, 8)}... decision: email_enabled=${emailEnabled}, push_enabled=${pushEnabled}, buddy_eligible=${buddyEligibility.eligible} (${buddyEligibility.reason}), buddy_email=${buddyEligibility.buddyInfo?.email || "none"}`);
 
     if (!emailEnabled && !pushEnabled && !buddyEligibility.eligible) {
       skippedEmailOff++;
@@ -563,8 +571,10 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
   const emailEnabled = settingsErr ? true : (settings?.email_enabled ?? true);
   const pushEnabled = settingsErr ? false : (settings?.push_enabled ?? false);
 
-  const backfillBuddyEligibility = await canBuddyReceiveMatches(userId, subStatus);
+  const backfillBuddyEligibility = await canBuddyReceiveMatches(userId, subStatus, emailEnabled);
   const backfillLang = await getUserLanguage(userId);
+
+  log(`[ALERTS] Backfill user ${userId.substring(0, 8)}... decision: email_enabled=${emailEnabled}, push_enabled=${pushEnabled}, buddy_eligible=${backfillBuddyEligibility.eligible} (${backfillBuddyEligibility.reason})`);
 
   if (!emailEnabled && !pushEnabled && !backfillBuddyEligibility.eligible) {
     const skipIds = userBuf.listings.map(l => l.listing_id);
@@ -724,7 +734,8 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
       .maybeSingle();
     const emailOn = notifSettings?.email_enabled ?? true;
     const pushOn = notifSettings?.push_enabled ?? false;
-    const recoveryBuddyEligibility = await canBuddyReceiveMatches(userId, subStatus);
+    const recoveryBuddyEligibility = await canBuddyReceiveMatches(userId, subStatus, emailOn);
+    log(`[RECOVERY] User ${userId.substring(0, 8)}: email_enabled=${emailOn}, push_enabled=${pushOn}, buddy_eligible=${recoveryBuddyEligibility.eligible} (${recoveryBuddyEligibility.reason})`);
     if (!emailOn && !pushOn && !recoveryBuddyEligibility.eligible) {
       const skipIds = matches.map(m => m.listing_id);
       try { await markEmailSent(userId, skipIds); } catch {}
