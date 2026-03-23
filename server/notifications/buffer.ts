@@ -123,11 +123,68 @@ interface BuddyEligibility {
   buddyInfo: BuddyInfo | null;
 }
 
+interface ShouldSendBuddyEmailParams {
+  userId: string;
+  mainUserEmail: string;
+  mainUserEmailEnabled: boolean;
+  buddyInfo: BuddyInfo | null;
+  subStatus: import("../subscriptions").SubscriptionStatus;
+}
+
+function shouldSendBuddyEmail(params: ShouldSendBuddyEmailParams): { send: boolean; reason: string } {
+  const { userId, mainUserEmail, mainUserEmailEnabled, buddyInfo, subStatus } = params;
+  const uid = userId.substring(0, 8);
+
+  if (mainUserEmailEnabled === false) {
+    log(`[BUDDY EMAIL CHECK] userId=${uid}... emailNotifications=false → RESULT: SKIP (reason: notifications disabled)`);
+    return { send: false, reason: "notifications disabled" };
+  }
+
+  if (!buddyInfo) {
+    log(`[BUDDY EMAIL CHECK] userId=${uid}... buddyExists=false → RESULT: SKIP (reason: no buddy email)`);
+    return { send: false, reason: "no buddy email" };
+  }
+
+  if (!buddyInfo.enabled) {
+    log(`[BUDDY EMAIL CHECK] userId=${uid}... buddyEnabled=false → RESULT: SKIP (reason: feature disabled)`);
+    return { send: false, reason: "feature disabled" };
+  }
+
+  if (!buddyInfo.email || buddyInfo.email.trim().length === 0) {
+    log(`[BUDDY EMAIL CHECK] userId=${uid}... buddyEmail=empty → RESULT: SKIP (reason: no buddy email)`);
+    return { send: false, reason: "no buddy email" };
+  }
+
+  if (buddyInfo.email.toLowerCase() === mainUserEmail.toLowerCase()) {
+    log(`[BUDDY EMAIL CHECK] userId=${uid}... buddyEmail=sameAsMain → RESULT: SKIP (reason: duplicate)`);
+    return { send: false, reason: "duplicate" };
+  }
+
+  const hasActiveTrial = subStatus.isTrial;
+  const hasActivePaid = subStatus.isActive && subStatus.status === "active";
+  const canceledButStillActive = subStatus.status === "canceled" && !subStatus.isExpired;
+
+  if (!hasActiveTrial && !hasActivePaid && !canceledButStillActive) {
+    log(`[BUDDY EMAIL CHECK] userId=${uid}... subscription=${subStatus.status} → RESULT: SKIP (reason: no subscription)`);
+    return { send: false, reason: "no subscription" };
+  }
+
+  const entitlement = hasActiveTrial ? "trial" : hasActivePaid ? "paid" : "canceled-but-active";
+  log(`[BUDDY EMAIL CHECK] userId=${uid}... emailNotifications=true subscription=${entitlement} buddyExists=true buddyEmail=${buddyInfo.email} → RESULT: SEND`);
+  return { send: true, reason: entitlement };
+}
+
 async function canBuddyReceiveMatches(
   userId: string,
   prefetchedSubStatus?: import("../subscriptions").SubscriptionStatus,
-  mainUserEmailEnabled?: boolean
+  mainUserEmailEnabled?: boolean,
+  mainUserEmail?: string
 ): Promise<BuddyEligibility> {
+  if (mainUserEmailEnabled === false) {
+    log(`[BUDDY] userId=${userId.substring(0, 8)}... buddy EXCLUDED: main user email notifications OFF`);
+    return { eligible: false, reason: "main user email notifications OFF", buddyInfo: null };
+  }
+
   const buddyInfo = await getSearchBuddyInfo(userId);
 
   if (!buddyInfo) {
@@ -138,9 +195,9 @@ async function canBuddyReceiveMatches(
     return { eligible: false, reason: "feature disabled", buddyInfo };
   }
 
-  if (mainUserEmailEnabled === false) {
-    log(`[BUDDY] userId=${userId.substring(0, 8)}... buddy EXCLUDED: main user email notifications OFF`);
-    return { eligible: false, reason: "main user email notifications OFF", buddyInfo };
+  if (mainUserEmail && buddyInfo.email.toLowerCase() === mainUserEmail.toLowerCase()) {
+    log(`[BUDDY] userId=${userId.substring(0, 8)}... buddy EXCLUDED: same email as main user`);
+    return { eligible: false, reason: "same email as main user", buddyInfo };
   }
 
   const subStatus = prefetchedSubStatus ?? await getSubscriptionStatus(userId);
@@ -189,27 +246,41 @@ async function sendBuddyEmail(
   buddyInfo: BuddyInfo,
   capped: BufferedMatch[],
   context: string,
-  lang: import("../i18n").ServerLocale = "en"
+  lang: import("../i18n").ServerLocale = "en",
+  mainUserEmailEnabled: boolean = true,
+  subStatus?: import("../subscriptions").SubscriptionStatus
 ): Promise<boolean> {
-  if (!buddyInfo.enabled) {
-    log(`[ALERTS] ${context} Buddy skip for ${userId.substring(0, 8)}...: toggle OFF`);
+  const uid = userId.substring(0, 8);
+
+  if (mainUserEmailEnabled === false) {
+    log(`[ALERTS] ${context} Buddy HARD BLOCK for ${uid}...: main user email notifications OFF — zero emails sent`);
     return false;
   }
-  if (buddyInfo.email.toLowerCase() === mainUserEmail.toLowerCase()) {
-    log(`[ALERTS] ${context} Buddy skip for ${userId.substring(0, 8)}...: same email as main user (duplicate prevention)`);
+
+  const decision = shouldSendBuddyEmail({
+    userId,
+    mainUserEmail,
+    mainUserEmailEnabled,
+    buddyInfo,
+    subStatus: subStatus ?? await getSubscriptionStatus(userId),
+  });
+
+  if (!decision.send) {
+    log(`[ALERTS] ${context} Buddy skip for ${uid}...: ${decision.reason}`);
     return false;
   }
+
   try {
-    log(`[NOTIF] buddy email to=${buddyInfo.email} userId=${userId.substring(0, 8)}... lang=${lang} count=${capped.length} path=${context.replace(/[\[\]]/g, "").toLowerCase()}`);
+    log(`[NOTIF] buddy email to=${buddyInfo.email} userId=${uid}... lang=${lang} count=${capped.length} path=${context.replace(/[\[\]]/g, "").toLowerCase()}`);
     const success = await sendBatchMatchAlert(buddyInfo.email, capped, lang);
     if (success) {
-      log(`[ALERTS] ${context} Buddy email sent to ${buddyInfo.email} for user ${userId.substring(0, 8)}... (${capped.length} listings, lang=${lang})`);
+      log(`[ALERTS] ${context} Buddy email sent to ${buddyInfo.email} for user ${uid}... (${capped.length} listings, lang=${lang})`);
     } else {
-      log(`[ALERTS] ${context} Buddy email FAILED to ${buddyInfo.email} for user ${userId.substring(0, 8)}...`);
+      log(`[ALERTS] ${context} Buddy email FAILED to ${buddyInfo.email} for user ${uid}...`);
     }
     return success;
   } catch (err: any) {
-    log(`[ALERTS] ${context} Buddy email ERROR for ${userId.substring(0, 8)}...: ${err.message}`);
+    log(`[ALERTS] ${context} Buddy email ERROR for ${uid}...: ${err.message}`);
     return false;
   }
 }
@@ -403,7 +474,7 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
     const emailEnabled = settings?.email_enabled ?? true;
     const pushEnabled = settings?.push_enabled ?? false;
 
-    const buddyEligibility = await canBuddyReceiveMatches(userId, subStatus, emailEnabled);
+    const buddyEligibility = await canBuddyReceiveMatches(userId, subStatus, emailEnabled, email);
     const userLang = await getUserLanguage(userId);
 
     log(`[ALERTS] User ${userId.substring(0, 8)}... decision: email_enabled=${emailEnabled}, push_enabled=${pushEnabled}, buddy_eligible=${buddyEligibility.eligible} (${buddyEligibility.reason}), buddy_email=${buddyEligibility.buddyInfo?.email || "none"}`);
@@ -475,7 +546,7 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
 
     if (buddyEligibility.eligible && buddyEligibility.buddyInfo) {
       const buddyCapped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
-      await sendBuddyEmail(userId, email, buddyEligibility.buddyInfo, buddyCapped, "[FLUSH]", userLang);
+      await sendBuddyEmail(userId, email, buddyEligibility.buddyInfo, buddyCapped, "[FLUSH]", userLang, emailEnabled, subStatus);
     } else {
       log(`[ALERTS] Buddy skip for ${userId.substring(0, 8)}...: ${buddyEligibility.reason}`);
     }
@@ -571,7 +642,7 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
   const emailEnabled = settingsErr ? true : (settings?.email_enabled ?? true);
   const pushEnabled = settingsErr ? false : (settings?.push_enabled ?? false);
 
-  const backfillBuddyEligibility = await canBuddyReceiveMatches(userId, subStatus, emailEnabled);
+  const backfillBuddyEligibility = await canBuddyReceiveMatches(userId, subStatus, emailEnabled, userBuf.email);
   const backfillLang = await getUserLanguage(userId);
 
   log(`[ALERTS] Backfill user ${userId.substring(0, 8)}... decision: email_enabled=${emailEnabled}, push_enabled=${pushEnabled}, buddy_eligible=${backfillBuddyEligibility.eligible} (${backfillBuddyEligibility.reason})`);
@@ -632,7 +703,7 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
 
   if (backfillBuddyEligibility.eligible && backfillBuddyEligibility.buddyInfo && userBuf.email) {
     const buddyCapped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
-    await sendBuddyEmail(userId, userBuf.email, backfillBuddyEligibility.buddyInfo, buddyCapped, "[BACKFILL]", backfillLang);
+    await sendBuddyEmail(userId, userBuf.email, backfillBuddyEligibility.buddyInfo, buddyCapped, "[BACKFILL]", backfillLang, emailEnabled, subStatus);
   } else if (userBuf.email) {
     log(`[ALERTS] Backfill buddy skip for ${userId.substring(0, 8)}...: ${backfillBuddyEligibility.reason}`);
   }
@@ -734,7 +805,7 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
       .maybeSingle();
     const emailOn = notifSettings?.email_enabled ?? true;
     const pushOn = notifSettings?.push_enabled ?? false;
-    const recoveryBuddyEligibility = await canBuddyReceiveMatches(userId, subStatus, emailOn);
+    const recoveryBuddyEligibility = await canBuddyReceiveMatches(userId, subStatus, emailOn, undefined);
     log(`[RECOVERY] User ${userId.substring(0, 8)}: email_enabled=${emailOn}, push_enabled=${pushOn}, buddy_eligible=${recoveryBuddyEligibility.eligible} (${recoveryBuddyEligibility.reason})`);
     if (!emailOn && !pushOn && !recoveryBuddyEligibility.eligible) {
       const skipIds = matches.map(m => m.listing_id);

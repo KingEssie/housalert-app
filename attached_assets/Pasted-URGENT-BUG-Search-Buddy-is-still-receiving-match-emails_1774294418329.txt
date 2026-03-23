@@ -1,0 +1,115 @@
+URGENT BUG: Search Buddy is still receiving match emails even when the main user's email notifications are OFF.
+
+This must be force-fixed immediately at backend level.
+
+==================================================
+GOAL
+==================================================
+
+Search Buddy must NEVER receive emails if the main user has email notifications disabled.
+
+This rule is absolute and must override any other logic.
+
+==================================================
+STEP 1 — HARD BLOCK (IMMEDIATE FIX)
+==================================================
+
+In the email sending pipeline (match notification service):
+
+Before sending ANY email to a Search Buddy, add this check FIRST:
+
+IF main_user.email_notifications === false:
+    → DO NOT SEND buddy email
+    → EXIT immediately
+
+This must be placed BEFORE any other conditions.
+
+==================================================
+STEP 2 — CENTRALIZE LOGIC
+==================================================
+
+Create or update a single function:
+
+shouldSendBuddyEmail(user, buddyEmail, subscription, match)
+
+Rules:
+
+Return TRUE only if ALL conditions pass:
+
+1. user.email_notifications === true
+2. user.subscription_active === true OR user.trial_active === true
+3. buddyEmail exists AND is valid
+4. buddyEmail !== user.email
+5. not duplicate (same listing already sent)
+6. passes anti-retroactive check
+
+If ANY fail → return FALSE
+
+==================================================
+STEP 3 — ENFORCE USAGE
+==================================================
+
+Ensure ALL buddy email sends go through this function.
+
+Search for:
+- any direct email send logic
+- any bypass logic
+- any legacy code
+
+Remove or refactor so NOTHING can bypass this check.
+
+==================================================
+STEP 4 — LOGGING (VERY IMPORTANT)
+==================================================
+
+Add logs like:
+
+[BUDDY EMAIL CHECK]
+userId=...
+emailNotifications=false
+subscription=true
+buddyExists=true
+→ RESULT: SKIP (reason: notifications disabled)
+
+Make skip reasons explicit:
+- notifications disabled
+- no subscription
+- no buddy email
+- duplicate
+- retroactive block
+
+==================================================
+STEP 5 — VERIFICATION
+==================================================
+
+Test case:
+
+- user.email_notifications = false
+- valid buddy email
+- active subscription
+
+Expected:
+→ buddy receives ZERO emails
+
+Then:
+
+- user.email_notifications = true
+
+Expected:
+→ buddy emails resume
+
+==================================================
+IMPORTANT
+==================================================
+
+- Do NOT touch UI
+- Do NOT break main user email flow
+- Do NOT add workarounds
+
+This must be a strict backend rule.
+
+==================================================
+DELIVERABLE
+==================================================
+
+Buddy emails completely stop when main user disables email notifications.
