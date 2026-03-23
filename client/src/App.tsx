@@ -46,6 +46,9 @@ import DeleteAccountPage from "@/pages/delete-account";
 import V2WelcomePage from "@/pages/v2/welcome";
 import V2OnboardingIntroPage from "@/pages/v2/onboarding-intro";
 import V2OnboardingLocationPage from "@/pages/v2/onboarding-location";
+import V2OnboardingFiltersPage from "@/pages/v2/onboarding-filters";
+import V2OnboardingPreferencesPage from "@/pages/v2/onboarding-preferences";
+import V2OnboardingValuePage from "@/pages/v2/onboarding-value";
 import { V2OnboardingProvider } from "@/lib/v2-onboarding-store";
 import SubscriptionSuccessPage from "@/pages/subscription-success";
 import EmbedSuccessPage from "@/pages/embed-success";
@@ -109,14 +112,14 @@ function ProtectedRoute({ component: Component, skipOnboardingCheck }: { compone
   return <Component />;
 }
 
-function RootRedirect() {
+function RootRoute() {
   const { user, session, loading } = useAuth();
   const [destination, setDestination] = useState<string | null>(null);
 
   useEffect(() => {
     if (loading) return;
     if (isRecoveryMode()) { setDestination("/reset-password"); return; }
-    if (!user) { setDestination("/welcome"); return; }
+    if (!user) { setDestination(null); return; }
 
     const token = session?.access_token;
     if (!token) { setDestination("/dashboard"); return; }
@@ -133,7 +136,9 @@ function RootRedirect() {
       .catch(() => setDestination("/onboarding/setup"));
   }, [user, session, loading]);
 
-  if (loading || !destination) return null;
+  if (loading) return null;
+  if (!user && !destination) return <V2WelcomePage />;
+  if (!destination) return null;
   return <Redirect to={destination} />;
 }
 
@@ -145,7 +150,7 @@ function OldOnboardingRedirect() {
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={RootRedirect} />
+      <Route path="/" component={RootRoute} />
       <Route path="/welcome" component={WelcomePage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/signup" component={SignupPage} />
@@ -196,6 +201,9 @@ function Router() {
       <Route path="/v2/welcome" component={V2WelcomePage} />
       <Route path="/v2/onboarding/intro" component={V2OnboardingIntroPage} />
       <Route path="/v2/onboarding/location" component={V2OnboardingLocationPage} />
+      <Route path="/v2/onboarding/filters" component={V2OnboardingFiltersPage} />
+      <Route path="/v2/onboarding/preferences" component={V2OnboardingPreferencesPage} />
+      <Route path="/v2/onboarding/value" component={V2OnboardingValuePage} />
       <Route component={NotFound} />
     </Switch>
   );
