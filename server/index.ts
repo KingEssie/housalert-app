@@ -96,6 +96,7 @@ app.use((req, res, next) => {
 });
 
 console.log("BOOT: server init");
+console.log("[SYSTEM] ████ BUDDY EMAIL KILL SWITCH ACTIVE ████ — All buddy emails globally disabled at startup");
 
 (async () => {
   await registerRoutes(httpServer, app);
@@ -137,8 +138,22 @@ console.log("BOOT: server init");
       log(`serving on port ${port}`);
 
       const BACKGROUND_DELAY_MS = 10_000;
-      setTimeout(() => {
+      setTimeout(async () => {
         console.log("BOOT: background jobs starting");
+
+        try {
+          const { clearBuffer, getBufferSize } = await import("./notifications/buffer");
+          const bufSize = getBufferSize();
+          if (bufSize.listings > 0) {
+            console.log(`[SYSTEM] Clearing in-memory buffer: ${bufSize.listings} pending listings for ${bufSize.users} users — PURGED`);
+            clearBuffer();
+          } else {
+            console.log("[SYSTEM] In-memory buffer empty — no stale sends pending");
+          }
+        } catch (e: any) {
+          console.error("[SYSTEM] Buffer clear error:", e.message);
+        }
+
         import("./migrations/apply").then(({ runStartupMigration }) =>
           runStartupMigration().catch((e) => console.error("Migration error:", e))
         );

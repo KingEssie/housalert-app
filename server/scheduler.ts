@@ -2,7 +2,7 @@ import { log } from "./log";
 import { runAllIngesters, OverlapError } from "./ingesters";
 import { persistIngestionRun } from "./admin";
 import { cleanupStaleFetchRuns } from "./user-matches";
-import { recoverUndeliveredMatches } from "./notifications/buffer";
+import { recoverUndeliveredMatches, BUDDY_EMAILS_GLOBAL_KILL_SWITCH } from "./notifications/buffer";
 import { checkExpoReceipts } from "./notifications/expo-push";
 import { updateStalenessStatuses } from "./listing-status";
 
@@ -68,14 +68,20 @@ export function getNextRun() {
 }
 
 export async function startScheduler() {
+  if (BUDDY_EMAILS_GLOBAL_KILL_SWITCH) {
+    log(`[SYSTEM] ████ BUDDY EMAIL KILL SWITCH ACTIVE ████ — All buddy emails globally disabled`, "scheduler");
+  }
+
   const cleaned = await cleanupStaleFetchRuns();
   if (cleaned > 0) {
     log(`[scheduler] Cleaned up ${cleaned} stale fetch runs from previous server`, "scheduler");
   }
 
-  setTimeout(() => runRecoveryCycle(), 30_000);
-  setInterval(() => runRecoveryCycle(), RECOVERY_INTERVAL_MS);
-  log(`Email recovery timer started — runs every ${RECOVERY_INTERVAL_MS / 1000}s`, "scheduler");
+  log(`[SYSTEM] Recovery scheduler DISABLED — buddy email investigation in progress`, "scheduler");
+  // TEMPORARILY DISABLED: Recovery scheduler was re-sending buddy emails every 5 minutes
+  // setTimeout(() => runRecoveryCycle(), 30_000);
+  // setInterval(() => runRecoveryCycle(), RECOVERY_INTERVAL_MS);
+  // log(`Email recovery timer started — runs every ${RECOVERY_INTERVAL_MS / 1000}s`, "scheduler");
 
   const RECEIPT_CHECK_MS = 20 * 60 * 1000;
   setTimeout(async () => {

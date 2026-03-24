@@ -245,7 +245,7 @@ export async function getUserLanguage(userId: string): Promise<import("../i18n")
   return "en";
 }
 
-const BUDDY_EMAILS_GLOBAL_KILL_SWITCH = true;
+export const BUDDY_EMAILS_GLOBAL_KILL_SWITCH = true;
 
 async function sendBuddyEmail(
   userId: string,
