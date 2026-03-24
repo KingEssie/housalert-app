@@ -2,6 +2,49 @@ import { Resend } from "resend";
 import { log } from "./log";
 import { t, type ServerLocale } from "./i18n";
 
+const BUDDY_EMAILS_HARD_BLOCK = true;
+
+const EMAIL_DENYLIST: string[] = [
+  "elisebezemer@gmail.com",
+  "king.essie@live.nl",
+];
+
+function isEmailDenylisted(recipient: string): boolean {
+  return EMAIL_DENYLIST.some(d => d.toLowerCase() === recipient.toLowerCase());
+}
+
+interface FinalSendParams {
+  to: string;
+  subject: string;
+  text: string;
+  html: string;
+  category?: string;
+}
+
+async function finalEmailDispatch(client: Resend, params: FinalSendParams, category: string = "unknown"): Promise<{ data: any; error: any }> {
+  const recipient = params.to.toLowerCase();
+
+  if (isEmailDenylisted(recipient)) {
+    log(`[FINAL SEND BLOCKED] recipient=${recipient} category=${category} reason=DENYLIST — email permanently blocked`);
+    return { data: null, error: { message: "BLOCKED_BY_DENYLIST" } };
+  }
+
+  if (BUDDY_EMAILS_HARD_BLOCK && (category === "buddy-match" || category === "buddy-invite")) {
+    log(`[FINAL SEND BLOCKED] recipient=${recipient} category=${category} reason=BUDDY_HARD_BLOCK — all buddy emails disabled`);
+    return { data: null, error: { message: "BLOCKED_BY_BUDDY_HARD_BLOCK" } };
+  }
+
+  log(`[FINAL SEND DISPATCH] recipient=${recipient} category=${category} subject="${params.subject.substring(0, 60)}" result=SEND`);
+
+  return client.emails.send({
+    from: VERIFIED_FROM,
+    to: params.to,
+    subject: params.subject,
+    text: params.text,
+    html: params.html,
+  });
+}
+
 interface ListingInfo {
   listing_id?: string;
   title: string;
@@ -281,13 +324,12 @@ ${listingCard(listing, true, undefined, lang)}`;
 
     log(`[EMAIL SEND] from="${VERIFIED_FROM}" to="${userEmail}" subject="${subject}" lang=${lang} image=${listing.image_url ? listing.image_url.substring(0, 80) : "NO_IMAGE"}`);
 
-    const { data, error } = await client.emails.send({
-      from: VERIFIED_FROM,
+    const { data, error } = await finalEmailDispatch(client, {
       to: userEmail,
       subject,
       text: textBody,
       html: emailWrapper(htmlContent, preheader, lang),
-    });
+    }, "user-match");
 
     if (error) {
       log(`[EMAIL FAIL] to=${userEmail} listing="${listing.title}" lang=${lang} error=${error.message} name=${(error as any).name || "unknown"} statusCode=${(error as any).statusCode || "N/A"}`);
@@ -305,7 +347,8 @@ ${listingCard(listing, true, undefined, lang)}`;
 export async function sendBatchMatchAlert(
   userEmail: string,
   listings: ListingInfo[],
-  lang: ServerLocale = "en"
+  lang: ServerLocale = "en",
+  emailCategory: string = "user-match"
 ): Promise<boolean> {
   if (listings.length === 0) return false;
 
@@ -346,23 +389,22 @@ ${htmlListings}`;
     log(`[EMAIL SEND] batch from="${VERIFIED_FROM}" to="${userEmail}" count=${listings.length} lang=${lang} subject="${subject}"`);
     log(`[EMAIL IMAGES] ${imageStats}`);
 
-    const { data, error } = await client.emails.send({
-      from: VERIFIED_FROM,
+    const { data, error } = await finalEmailDispatch(client, {
       to: userEmail,
       subject,
       text: textBody,
       html: emailWrapper(htmlContent, preheader, lang),
-    });
+    }, emailCategory);
 
     if (error) {
-      log(`[EMAIL FAIL] batch to=${userEmail} count=${listings.length} lang=${lang} error=${error.message} name=${(error as any).name || "unknown"} statusCode=${(error as any).statusCode || "N/A"}`);
+      log(`[EMAIL FAIL] batch to=${userEmail} count=${listings.length} lang=${lang} category=${emailCategory} error=${error.message} name=${(error as any).name || "unknown"} statusCode=${(error as any).statusCode || "N/A"}`);
       return false;
     }
 
-    log(`[EMAIL OK] batch to=${userEmail} count=${listings.length} lang=${lang} id=${(data as any)?.id || "N/A"}`);
+    log(`[EMAIL OK] batch to=${userEmail} count=${listings.length} lang=${lang} category=${emailCategory} id=${(data as any)?.id || "N/A"}`);
     return true;
   } catch (err: any) {
-    log(`[EMAIL ERROR] batch to=${userEmail} lang=${lang} err=${err.message} stack=${err.stack?.split("\n")[1]?.trim() || "N/A"}`);
+    log(`[EMAIL ERROR] batch to=${userEmail} lang=${lang} category=${emailCategory} err=${err.message} stack=${err.stack?.split("\n")[1]?.trim() || "N/A"}`);
     return false;
   }
 }
@@ -451,13 +493,12 @@ export async function sendBuddyInvitationEmail(
       en: `${inviterName} added you as a Search Buddy`,
     };
 
-    const { data, error } = await client.emails.send({
-      from: VERIFIED_FROM,
+    const { data, error } = await finalEmailDispatch(client, {
       to: buddyEmail,
       subject,
       text: textBody,
       html: emailWrapper(htmlContent, preheaders[lang] || preheaders.nl, lang),
-    });
+    }, "buddy-invite");
 
     if (error) {
       log(`[EMAIL FAIL] buddy-invite to=${buddyEmail} error=${error.message}`);
@@ -512,13 +553,12 @@ export async function sendPasswordResetEmail(
     log(`[EMAIL SEND] password-reset to="${email}" lang=${lang}`);
 
     const footer = t(lang, "email.resetPassword.footer");
-    const { data, error } = await client.emails.send({
-      from: VERIFIED_FROM,
+    const { data, error } = await finalEmailDispatch(client, {
       to: email,
       subject,
       text: textBody,
       html: emailWrapper(htmlContent, intro, lang, footer),
-    });
+    }, "password-reset");
 
     if (error) {
       log(`[EMAIL FAIL] password-reset to=${email} error=${error.message}`);

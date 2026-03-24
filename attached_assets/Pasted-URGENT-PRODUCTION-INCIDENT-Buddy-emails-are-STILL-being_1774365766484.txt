@@ -1,0 +1,88 @@
+URGENT PRODUCTION INCIDENT
+
+Buddy emails are STILL being sent to elisebezemer@gmail.com.
+This is confirmed by a real production email received after the supposed kill switch.
+
+So one of these is true:
+1. production is not running the new code
+2. there is another email sending path bypassing the kill switch
+3. another process/service is still sending old buddy emails
+
+This is now an INCIDENT and must be handled as such.
+
+==================================================
+IMMEDIATE ACTIONS — DO NOW
+==================================================
+
+1. HARD BLOCK THIS RECIPIENT IMMEDIATELY
+Add an emergency denylist at the absolute final email send layer:
+- if recipient === "elisebezemer@gmail.com"
+  => NEVER SEND
+This must happen at the LAST possible point before sending, so no logic path can bypass it.
+
+2. HARD BLOCK ALL BUDDY EMAILS AT THE FINAL SEND LAYER
+Not only in eligibility checks.
+At the actual final email dispatch function:
+- if email type/category is buddy-match-email
+  => NEVER SEND
+Main user emails may continue working.
+
+3. LOG EVERY ATTEMPT AT FINAL SEND
+At the final dispatch layer log:
+- recipient
+- email type
+- send path
+- result SEND/SKIP
+- exact reason
+
+4. VERIFY WHAT SERVICE IS SENDING
+Identify the exact production code path/service that sent the email in the screenshot:
+- normal flush
+- recovery scheduler
+- retry path
+- legacy worker
+- another deployed instance
+- another service/provider integration
+
+5. CHECK PROVIDER-LEVEL SENDS
+Check the actual email provider logs for that exact message to Elise:
+- what template/category was used
+- which API call/service created it
+- timestamp
+- metadata
+- source path if available
+
+6. PAUSE BUDDY EMAILS GLOBALLY
+Until root cause is confirmed:
+- disable all buddy email sending in production
+- not only by config check, but by final send block
+
+7. CONFIRM PRODUCTION VERSION
+Add a visible production startup log:
+[INCIDENT MODE] buddy emails hard-blocked at final send layer
+Then verify this appears in production logs after restart/deploy.
+
+8. RESTART EVERYTHING
+After code change:
+- redeploy
+- restart all workers/processes/schedulers/instances
+- confirm no old runtime remains active
+
+==================================================
+CRITICAL
+==================================================
+
+Do NOT tell me the logic should already block it.
+It clearly does not.
+
+I need:
+- immediate hard stop for Elise
+- immediate hard stop for all buddy emails
+- exact identification of the real sending source in production
+- proof from provider logs and production logs
+
+DELIVERABLE:
+1. Confirmation that elisebezemer@gmail.com is blocked at final send layer
+2. Confirmation that all buddy emails are globally blocked at final send layer
+3. Identification of the exact production sending path that sent the email in the screenshot
+4. Confirmation that all processes were restarted and old runtimes are gone

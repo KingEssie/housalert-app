@@ -97,6 +97,9 @@ app.use((req, res, next) => {
 
 console.log("BOOT: server init");
 console.log("[SYSTEM] ████ BUDDY EMAIL KILL SWITCH ACTIVE ████ — All buddy emails globally disabled at startup");
+console.log("[INCIDENT MODE] buddy emails hard-blocked at FINAL SEND LAYER (finalEmailDispatch)");
+console.log("[INCIDENT MODE] denylist active: elisebezemer@gmail.com, king.essie@live.nl");
+console.log("[INCIDENT MODE] all buddy-match and buddy-invite categories blocked at Resend dispatch");
 
 (async () => {
   await registerRoutes(httpServer, app);

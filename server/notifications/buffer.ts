@@ -284,7 +284,7 @@ async function sendBuddyEmail(
 
   try {
     log(`[BUDDY EMAIL ATTEMPT] recipient=${buddyInfo.email} userId=${uid}... lang=${lang} count=${capped.length} path=${context} result=SEND`);
-    const success = await sendBatchMatchAlert(buddyInfo.email, capped, lang);
+    const success = await sendBatchMatchAlert(buddyInfo.email, capped, lang, "buddy-match");
     if (success) {
       log(`[BUDDY EMAIL ATTEMPT] recipient=${buddyInfo.email} userId=${uid}... result=SENT (${capped.length} listings, lang=${lang})`);
     } else {
