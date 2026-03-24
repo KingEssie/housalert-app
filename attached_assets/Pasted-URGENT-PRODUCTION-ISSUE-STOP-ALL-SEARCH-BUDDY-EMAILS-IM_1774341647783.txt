@@ -1,0 +1,113 @@
+URGENT PRODUCTION ISSUE — STOP ALL SEARCH BUDDY EMAILS IMMEDIATELY
+
+Problem:
+Search Buddy emails are STILL being sent to Elise even after:
+- main user email notifications are OFF
+- buddy email was changed
+- buddy should no longer receive any emails
+- unsubscribe in the email did not solve it
+
+This must be treated as a production emergency.
+
+==================================================
+PHASE 1 — IMMEDIATE KILL SWITCH
+==================================================
+
+Implement an immediate backend kill switch:
+- Disable ALL Search Buddy email sending globally for now
+- No buddy emails may be sent to anyone until the root cause is confirmed
+- Main user email notifications must keep working
+- Only buddy emails must be hard-stopped
+
+This should be done at the earliest possible point in the email sending pipeline AND anywhere else buddy emails may be sent.
+
+==================================================
+PHASE 2 — FIND THE REAL SOURCE
+==================================================
+
+After the kill switch is in place, investigate the real cause.
+
+Tasks:
+1. Trace every possible path where buddy emails can be sent:
+   - normal flush
+   - backfill
+   - recovery
+   - queued/cron jobs
+   - retry jobs
+   - old workers
+   - any legacy notification path
+   - any direct email send calls
+
+2. Identify which exact path is still sending emails to Elise
+3. Check whether there are pending queued jobs for Elise or her old buddy email
+4. Check whether unsubscribe only affects email provider level and not your internal send logic
+5. Confirm whether old queued jobs are still being delivered even after buddy settings changed
+
+==================================================
+PHASE 3 — ELIMINATE ALL BACKDOORS
+==================================================
+
+Create a single backend source of truth function for buddy email sending:
+
+shouldSendBuddyEmail(...)
+
+And make ALL buddy email sends depend on it.
+No exceptions.
+No legacy bypasses.
+
+Rules must include:
+1. main user email_notifications must be true
+2. active trial or paid subscription required
+3. valid buddy email must exist
+4. buddy email must not equal main user email
+5. anti-retroactive rules apply
+6. buddy feature must be enabled by current valid buddy email presence
+
+If any check fails:
+→ SKIP
+
+==================================================
+PHASE 4 — CLEAR OLD PENDING SENDS
+==================================================
+
+Check for any pending/queued email jobs related to Elise / old buddy email.
+If they exist:
+- cancel them
+- prevent retry
+- clear stale pending buddy sends
+
+==================================================
+PHASE 5 — LOGGING
+==================================================
+
+Add strong logs for buddy email sending:
+
+[BUDDY EMAIL BLOCKED]
+recipient=...
+userId=...
+reason=...
+
+[BUDDY EMAIL ATTEMPT]
+path=flush|recovery|queue|retry|legacy
+recipient=...
+result=SEND|SKIP
+
+==================================================
+PHASE 6 — FINAL VERIFICATION
+==================================================
+
+Verify in production:
+- Elise receives ZERO further buddy emails
+- Main user email flow still works
+- No stale queue continues sending old buddy emails
+
+IMPORTANT:
+Do NOT give a theoretical answer.
+Do NOT just patch one path.
+Actually stop all buddy emails immediately, then find and fix the true sending path.
+
+DELIVERABLE:
+1. Confirmation that buddy emails are globally disabled immediately
+2. Identification of the exact path that kept sending to Elise
+3. Confirmation that queued/pending stale sends were removed
+4. Proof that Elise will receive no further buddy emails

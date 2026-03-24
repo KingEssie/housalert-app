@@ -180,6 +180,11 @@ async function canBuddyReceiveMatches(
   mainUserEmailEnabled?: boolean,
   mainUserEmail?: string
 ): Promise<BuddyEligibility> {
+  if (BUDDY_EMAILS_GLOBAL_KILL_SWITCH) {
+    log(`[BUDDY EMAIL BLOCKED] userId=${userId.substring(0, 8)}... reason=GLOBAL_KILL_SWITCH — canBuddyReceiveMatches forced ineligible`);
+    return { eligible: false, reason: "GLOBAL_KILL_SWITCH", buddyInfo: null };
+  }
+
   if (mainUserEmailEnabled === false) {
     log(`[BUDDY] userId=${userId.substring(0, 8)}... buddy EXCLUDED: main user email notifications OFF`);
     return { eligible: false, reason: "main user email notifications OFF", buddyInfo: null };
@@ -240,6 +245,8 @@ export async function getUserLanguage(userId: string): Promise<import("../i18n")
   return "en";
 }
 
+const BUDDY_EMAILS_GLOBAL_KILL_SWITCH = true;
+
 async function sendBuddyEmail(
   userId: string,
   mainUserEmail: string,
@@ -252,8 +259,13 @@ async function sendBuddyEmail(
 ): Promise<boolean> {
   const uid = userId.substring(0, 8);
 
+  if (BUDDY_EMAILS_GLOBAL_KILL_SWITCH) {
+    log(`[BUDDY EMAIL BLOCKED] recipient=${buddyInfo.email} userId=${uid}... reason=GLOBAL_KILL_SWITCH path=${context} — ALL buddy emails disabled`);
+    return false;
+  }
+
   if (mainUserEmailEnabled === false) {
-    log(`[ALERTS] ${context} Buddy HARD BLOCK for ${uid}...: main user email notifications OFF — zero emails sent`);
+    log(`[BUDDY EMAIL BLOCKED] recipient=${buddyInfo.email} userId=${uid}... reason=main_user_notifications_OFF path=${context}`);
     return false;
   }
 
@@ -266,21 +278,21 @@ async function sendBuddyEmail(
   });
 
   if (!decision.send) {
-    log(`[ALERTS] ${context} Buddy skip for ${uid}...: ${decision.reason}`);
+    log(`[BUDDY EMAIL BLOCKED] recipient=${buddyInfo.email} userId=${uid}... reason=${decision.reason} path=${context}`);
     return false;
   }
 
   try {
-    log(`[NOTIF] buddy email to=${buddyInfo.email} userId=${uid}... lang=${lang} count=${capped.length} path=${context.replace(/[\[\]]/g, "").toLowerCase()}`);
+    log(`[BUDDY EMAIL ATTEMPT] recipient=${buddyInfo.email} userId=${uid}... lang=${lang} count=${capped.length} path=${context} result=SEND`);
     const success = await sendBatchMatchAlert(buddyInfo.email, capped, lang);
     if (success) {
-      log(`[ALERTS] ${context} Buddy email sent to ${buddyInfo.email} for user ${uid}... (${capped.length} listings, lang=${lang})`);
+      log(`[BUDDY EMAIL ATTEMPT] recipient=${buddyInfo.email} userId=${uid}... result=SENT (${capped.length} listings, lang=${lang})`);
     } else {
-      log(`[ALERTS] ${context} Buddy email FAILED to ${buddyInfo.email} for user ${uid}...`);
+      log(`[BUDDY EMAIL ATTEMPT] recipient=${buddyInfo.email} userId=${uid}... result=FAILED`);
     }
     return success;
   } catch (err: any) {
-    log(`[ALERTS] ${context} Buddy email ERROR for ${uid}...: ${err.message}`);
+    log(`[BUDDY EMAIL ATTEMPT] recipient=${buddyInfo.email} userId=${uid}... result=ERROR err=${err.message}`);
     return false;
   }
 }
