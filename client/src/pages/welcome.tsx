@@ -137,20 +137,20 @@ export default function WelcomePage() {
         const data = await res.json();
         const prePaywall = data.onboarding_completed === true;
         const postPaywall = data.post_paywall_onboarding_completed === true;
-        let dest = "/onboarding/setup";
+        let dest = "/onboarding/intro";
         if (prePaywall && postPaywall) dest = "/home";
-        else if (prePaywall) dest = "/onboarding/continue";
+        else if (prePaywall) dest = "/onboarding/setup";
         console.log(`[WELCOME] onboarding_completed=${prePaywall} post_paywall=${postPaywall} → redirect=${dest}`);
         setLoading(false);
         navigate(dest);
         return;
       }
     } catch (err) {
-      console.log("[WELCOME] onboarding check failed, defaulting to onboarding/setup", err);
+      console.log("[WELCOME] onboarding check failed, defaulting to onboarding/intro", err);
     }
 
     setLoading(false);
-    navigate("/onboarding/setup");
+    navigate("/onboarding/intro");
   }
 
   return (

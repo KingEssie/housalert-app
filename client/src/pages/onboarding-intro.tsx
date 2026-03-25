@@ -79,7 +79,7 @@ export default function OnboardingIntroPage() {
           </div>
 
           <button
-            onClick={() => navigate("/signup")}
+            onClick={() => navigate("/onboarding/location")}
             className="w-full h-[52px] rounded-[6px] text-[16px] font-bold text-ha-text transition-all active:scale-[0.97] shadow-[0_4px_14px_rgba(233,30,99,0.3)]"
             style={{ backgroundColor: BRAND }}
             onMouseOver={(e) => (e.currentTarget.style.backgroundColor = BRAND_HOVER)}

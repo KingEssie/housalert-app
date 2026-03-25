@@ -14,7 +14,8 @@ const IS_NATIVE = isNativePlatform();
 import WelcomePage from "@/pages/welcome";
 import LoginPage from "@/pages/login";
 import SignupPage from "@/pages/signup";
-
+import OnboardingLocationPage from "@/pages/onboarding-location";
+import OnboardingFiltersPage from "@/pages/onboarding-filters";
 import PaywallPage from "@/pages/paywall";
 import DashboardPage from "@/pages/dashboard";
 import NewSearchPage from "@/pages/new-search";
@@ -32,7 +33,7 @@ import ChangePasswordPage from "@/pages/change-password";
 import ForgotPasswordPage from "@/pages/forgot-password";
 import ResetPasswordPage from "@/pages/reset-password";
 import PostLoginFunnel from "@/pages/post-login-funnel";
-import OnboardingFlow, { PostPaywallContinue } from "@/pages/onboarding-flow";
+import OnboardingFlow from "@/pages/onboarding-flow";
 import OnboardingIntroPage from "@/pages/onboarding-intro";
 import OnboardingPage from "@/pages/onboarding";
 import OnboardingEmbedPage from "@/pages/onboarding-embed";
@@ -102,7 +103,7 @@ function ProtectedRoute({ component: Component, skipOnboardingCheck }: { compone
     return <Redirect to="/" />;
   }
   if (!skipOnboardingCheck && checking) return null;
-  if (!skipOnboardingCheck && needsOnboarding) return <Redirect to="/onboarding/setup" />;
+  if (!skipOnboardingCheck && needsOnboarding) return <Redirect to="/onboarding/intro" />;
   return <Component />;
 }
 
@@ -126,11 +127,11 @@ function RootRoute() {
         const prePaywall = data.onboarding_completed === true;
         const postPaywall = data.post_paywall_onboarding_completed === true;
         console.log(`[ROOT] onboarding_completed=${prePaywall} post_paywall=${postPaywall}`);
-        if (!prePaywall) setDestination("/onboarding/setup");
-        else if (!postPaywall) setDestination("/onboarding/continue");
+        if (!prePaywall) setDestination("/onboarding/intro");
+        else if (!postPaywall) setDestination("/onboarding/setup");
         else setDestination("/home");
       })
-      .catch(() => setDestination("/onboarding/setup"));
+      .catch(() => setDestination("/onboarding/intro"));
   }, [user, session, loading]);
 
   if (loading) return null;
@@ -154,9 +155,9 @@ function Router() {
       <Route path="/continue" component={ContinueDraftPage} />
       <Route path="/onboarding/intro" component={OnboardingIntroPage} />
       <Route path="/onboarding/setup" component={() => <ProtectedRoute component={OnboardingFlow} skipOnboardingCheck />} />
-      <Route path="/onboarding/continue" component={() => <ProtectedRoute component={PostPaywallContinue} skipOnboardingCheck />} />
-      <Route path="/onboarding/location" component={() => <Redirect to="/onboarding/intro" />} />
-      <Route path="/onboarding/filters" component={() => <Redirect to="/onboarding/intro" />} />
+      <Route path="/onboarding/continue" component={() => <Redirect to="/onboarding/setup" />} />
+      <Route path="/onboarding/location" component={OnboardingLocationPage} />
+      <Route path="/onboarding/filters" component={OnboardingFiltersPage} />
       <Route path="/onboarding/estimate" component={() => <Redirect to="/onboarding/intro" />} />
       <Route path="/onboarding/preferences" component={() => <Redirect to="/onboarding/intro" />} />
       <Route path="/onboarding/value" component={() => <Redirect to="/onboarding/intro" />} />

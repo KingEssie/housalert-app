@@ -56,7 +56,7 @@ export default function OnboardingFiltersPage() {
       localStorage.setItem("housalert_embed_funnel", JSON.stringify(funnel));
       navigate(`/onboarding/value?${builtParams.toString()}`);
     } else {
-      navigate(`/onboarding/preferences?${builtParams.toString()}`);
+      navigate(`/signup?${builtParams.toString()}`);
     }
   }
 

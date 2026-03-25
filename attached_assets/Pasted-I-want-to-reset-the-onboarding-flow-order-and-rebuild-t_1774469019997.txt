@@ -1,0 +1,107 @@
+I want to reset the onboarding flow order and rebuild the routing logic exactly as follows.
+
+IMPORTANT:
+Do not interpret this.
+Do not simplify this.
+Do not merge steps.
+Do not skip steps.
+Implement the exact order below.
+
+==================================================
+CORRECT ONBOARDING FLOW
+==================================================
+
+1. Welcome / login screen
+2. Information screen with option to create a search profile
+3. Search profile creation
+   3.1 choose city
+   3.2 choose neighborhoods / radius / whole city
+   3.3 choose filters
+4. Name
+5. Email address
+6. Paywall
+7. Welcome letter screen
+8. Turn on notifications
+9. Personal details
+10. Housing situation
+11. Generated application letter
+12. Invite search buddy
+13. App ready for use
+14. Go to home
+
+==================================================
+PAYWALL RULE
+==================================================
+
+If the user chooses a subscription:
+- continue to step 7
+
+If the user does NOT choose a subscription:
+- also continue to step 7
+
+So the paywall is NOT a blocker.
+The paywall is only a monetization choice point.
+After either choice, the user continues through the same remaining setup flow.
+
+==================================================
+REQUIRED ROUTING BEHAVIOR
+==================================================
+
+New user:
+1 → 2 → 3.1 → 3.2 → 3.3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 → 12 → 13 → /home
+
+No screen may open out of order.
+
+The app must NEVER open directly on step 7 or later for a brand new user.
+
+==================================================
+RESUME RULES
+==================================================
+
+Only resume a saved onboarding step if the earlier required steps are already completed.
+
+Examples:
+- do not open step 8 if step 7 is not completed
+- do not open step 11 if steps 9 and 10 are incomplete
+- do not open step 13 if prior steps are incomplete
+
+If saved onboarding_current_step is invalid:
+- send user to the earliest incomplete valid step
+
+==================================================
+WHAT I WANT YOU TO DO
+==================================================
+
+1. Audit the current onboarding flow
+2. Remove any incorrect step ordering
+3. Rewire the routes to match the exact order above
+4. Fix all buttons and next/back navigation
+5. Fix signup/account creation timing so it fits this flow cleanly
+6. Ensure both paid and unpaid users continue from paywall to step 7
+7. Ensure successful completion lands on /home
+
+==================================================
+DELIVERABLE
+==================================================
+
+Give me:
+1. exact final route map
+2. which file(s) were changed
+3. how signup/account creation is handled in this sequence
+4. how onboarding_current_step is validated
+5. confirmation that the flow now matches exactly:
+
+1 welcome/login
+2 info/create-search-profile
+3 city / area / filters
+4 name
+5 email
+6 paywall
+7 welcome letter
+8 notifications
+9 personal details
+10 housing situation
+11 generated application letter
+12 search buddy
+13 app ready
+14 home
