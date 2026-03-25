@@ -161,7 +161,7 @@ export default function SignupPage() {
 
   function handleBack() {
     const p = new URLSearchParams(searchString);
-    navigate(`/onboarding/preferences?${p.toString()}`);
+    navigate("/onboarding/intro");
   }
 
   return (

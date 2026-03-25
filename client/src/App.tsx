@@ -14,11 +14,7 @@ const IS_NATIVE = isNativePlatform();
 import WelcomePage from "@/pages/welcome";
 import LoginPage from "@/pages/login";
 import SignupPage from "@/pages/signup";
-import OnboardingLocationPage from "@/pages/onboarding-location";
-import OnboardingFiltersPage from "@/pages/onboarding-filters";
-import OnboardingEstimatePage from "@/pages/onboarding-estimate";
-import OnboardingPreferencesPage from "@/pages/onboarding-preferences";
-import OnboardingValuePage from "@/pages/onboarding-value";
+
 import PaywallPage from "@/pages/paywall";
 import DashboardPage from "@/pages/dashboard";
 import NewSearchPage from "@/pages/new-search";
@@ -143,10 +139,6 @@ function RootRoute() {
   return <Redirect to={destination} />;
 }
 
-function OldOnboardingRedirect() {
-  console.log("[ROUTE] Old /onboarding route hit → redirecting to /onboarding/setup");
-  return <Redirect to="/onboarding/setup" />;
-}
 
 function Router() {
   return (
@@ -163,12 +155,12 @@ function Router() {
       <Route path="/onboarding/intro" component={OnboardingIntroPage} />
       <Route path="/onboarding/setup" component={() => <ProtectedRoute component={OnboardingFlow} skipOnboardingCheck />} />
       <Route path="/onboarding/continue" component={() => <ProtectedRoute component={PostPaywallContinue} skipOnboardingCheck />} />
-      <Route path="/onboarding/location" component={OnboardingLocationPage} />
-      <Route path="/onboarding/filters" component={OnboardingFiltersPage} />
-      <Route path="/onboarding/estimate" component={OnboardingEstimatePage} />
-      <Route path="/onboarding/preferences" component={OnboardingPreferencesPage} />
-      <Route path="/onboarding/value" component={OnboardingValuePage} />
-      <Route path="/onboarding" component={OldOnboardingRedirect} />
+      <Route path="/onboarding/location" component={() => <Redirect to="/onboarding/intro" />} />
+      <Route path="/onboarding/filters" component={() => <Redirect to="/onboarding/intro" />} />
+      <Route path="/onboarding/estimate" component={() => <Redirect to="/onboarding/intro" />} />
+      <Route path="/onboarding/preferences" component={() => <Redirect to="/onboarding/intro" />} />
+      <Route path="/onboarding/value" component={() => <Redirect to="/onboarding/intro" />} />
+      <Route path="/onboarding" component={() => <Redirect to="/onboarding/intro" />} />
       <Route path="/paywall" component={PaywallPage} />
       <Route path="/subscription-success" component={() => <ProtectedRoute component={SubscriptionSuccessPage} skipOnboardingCheck />} />
       <Route path="/embed-success" component={EmbedSuccessPage} />

@@ -49,7 +49,7 @@ export default function LandingPage() {
             <Button
               size="lg"
               className="h-[56px] px-10 rounded-full text-[16px] font-medium bg-primary text-primary-foreground"
-              onClick={() => navigate("/onboarding/location")}
+              onClick={() => navigate("/onboarding/intro")}
               data-testid="button-start-search"
             >
               {t("landing.startSearch")}
@@ -147,7 +147,7 @@ export default function LandingPage() {
             <Button
               size="lg"
               className="h-[56px] px-10 rounded-full text-[16px] font-medium bg-primary text-primary-foreground"
-              onClick={() => navigate("/onboarding/location")}
+              onClick={() => navigate("/onboarding/intro")}
               data-testid="button-start-search-bottom"
             >
               {t("landing.startSearch")}
