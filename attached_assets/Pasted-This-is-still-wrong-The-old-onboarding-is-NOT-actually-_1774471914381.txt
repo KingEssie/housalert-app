@@ -1,0 +1,61 @@
+This is still wrong.
+
+The old onboarding is NOT actually removed.
+It is still being rendered inside /onboarding/intro.
+
+PROBLEM:
+Even though the old onboarding routes were redirected, the UI shown after step 2 is still the old onboarding component/style (Berlin / Wijken / Radius / Reistijd / old layout).
+
+That means the legacy onboarding components are still being reused inside the new flow.
+
+I do NOT want that.
+
+==================================================
+DECISION
+==================================================
+
+The old onboarding UI/components must be completely removed from the active onboarding flow.
+
+Do not wrap them.
+Do not reuse them.
+Do not embed them inside /onboarding/intro.
+Do not keep their old visual layout.
+
+==================================================
+WHAT MUST HAPPEN
+==================================================
+
+1. Audit /onboarding/intro
+Find exactly which components are being rendered after step 2.
+
+2. Remove all reuse of old onboarding components, including any components such as:
+- onboarding-location
+- onboarding-filters
+- old Berlin/location step UI
+- old tabbed "Wijken / Radius / Reistijd" UI
+- any old legacy step cards/layout
+
+3. Build the new onboarding screens as true new screens/components, not wrappers around old ones.
+
+4. The onboarding intro flow must use ONLY the new intended design and structure.
+
+==================================================
+IMPORTANT
+==================================================
+
+This is not a routing issue anymore.
+This is a COMPONENT REUSE issue.
+
+The route may be correct, but the wrong old UI is still being rendered.
+
+==================================================
+REQUIRED DELIVERABLE
+==================================================
+
+Give me a report with:
+
+1. Which old components were still being used inside /onboarding/intro
+2. Which files were removed from the active onboarding flow
+3. Which new components now replace them
+4. Confirmation that no old onboarding UI is rendered anywhere in the new onboarding flow
+5. Confirmation that /onboarding/intro now uses only newly built onboarding UI and not legacy components

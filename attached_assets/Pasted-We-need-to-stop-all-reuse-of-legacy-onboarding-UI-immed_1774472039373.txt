@@ -1,0 +1,68 @@
+We need to stop all reuse of legacy onboarding UI immediately.
+
+IMPORTANT:
+The problem is NOT routing anymore.
+The problem is that old onboarding components/UI are still being rendered inside the new flow.
+
+I do not want any old onboarding code, UI, layout, or component reuse in the active onboarding anymore.
+
+==================================================
+HARD REQUIREMENT
+==================================================
+
+The legacy onboarding must be completely removed from the ACTIVE onboarding flow.
+
+That means:
+- no old onboarding-location component
+- no old onboarding-filters component
+- no old tabbed Wijken / Radius / Reistijd layout
+- no old Berlin-style onboarding UI
+- no wrappers around legacy onboarding components
+- no embedding legacy components inside /onboarding/intro
+- no imports of legacy onboarding components in the active flow
+
+==================================================
+WHAT TO DO
+==================================================
+
+1. Audit /onboarding/intro and identify every component used after step 2.
+2. Remove every legacy onboarding component from that flow.
+3. Build new onboarding UI as standalone fresh components.
+4. Keep only these active onboarding routes:
+   - /
+   - /onboarding/intro
+   - /signup
+   - /onboarding/setup
+   - /home
+5. The UI inside /onboarding/intro must be fully new and must not visually or technically depend on the old onboarding files.
+
+==================================================
+ALSO DO THIS
+==================================================
+
+Search the codebase for any imports/usages of legacy onboarding files in the active onboarding flow.
+
+Examples to search for:
+- onboarding-location
+- onboarding-filters
+- onboarding-estimate
+- onboarding-preferences
+- onboarding-value
+- any old location / filters step component
+- any old tabbed district/radius/travel-time component
+
+If they are still referenced in the active onboarding flow:
+- remove them
+- replace with new components
+
+==================================================
+OUTPUT I WANT
+==================================================
+
+Give me a strict report with:
+1. Which legacy onboarding components were still being used
+2. In which files they were used
+3. Which files were changed
+4. Which NEW components now replace them
+5. Confirmation that the active onboarding flow no longer renders any legacy onboarding component or UI
+6. Confirmation that /onboarding/intro is now fully independent from old onboarding files
