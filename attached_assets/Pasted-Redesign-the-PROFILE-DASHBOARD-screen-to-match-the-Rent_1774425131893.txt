@@ -1,0 +1,136 @@
+Redesign the PROFILE / DASHBOARD screen to match the Rentbird UI EXACTLY based on the provided screenshots.
+
+CRITICAL:
+- This is NOT a redesign
+- This is a visual replication
+- Do NOT improve, simplify, or reinterpret anything
+- Copy layout, spacing, colors, hierarchy, and structure as close as possible
+
+==================================================
+GLOBAL STYLE
+==================================================
+
+- Dark theme
+- Background: deep purple / dark blue (#1f1b3a style)
+- Text: white / light grey
+- Accent color: pink (primary CTA)
+- Secondary accents: green (success), red (warnings)
+
+==================================================
+HEADER (PROFILE TOP)
+==================================================
+
+- Curved purple background shape
+- Circular avatar centered (initials)
+- Name below (white, bold)
+- Subtext (light grey)
+- Settings icon top right
+
+NO white header — must match Rentbird style
+
+==================================================
+CARDS
+==================================================
+
+- Light grey cards on dark background
+- Rounded corners (16px)
+- No heavy shadows
+- Clear separation between sections
+
+Cards:
+1. Account completion
+2. Tips section
+3. Upgrade card (important)
+4. Zoekopdrachten
+5. Reactiebrief
+6. Zoekbuddy
+7. Extra sections
+
+==================================================
+ACCOUNT COMPLETION
+==================================================
+
+- Title left
+- Arrow right
+- Progress bar:
+   - green fill
+   - grey background
+- Percentage right side
+
+==================================================
+UPGRADE CARD
+==================================================
+
+- Light purple/pink background
+- Large bold title
+- Supporting text
+- Big pink CTA button ("Upgraden")
+
+Button:
+- full width
+- pink
+- white text
+- rounded
+
+==================================================
+LIST ITEMS (IMPORTANT)
+==================================================
+
+Each row:
+
+- Left: icon (pink or colored)
+- Middle:
+   - title (bold)
+   - subtitle (lighter)
+- Right:
+   - action text OR arrow
+
+Spacing:
+- tight but clean
+- identical to screenshots
+
+==================================================
+BUTTONS
+==================================================
+
+Primary:
+- pink background
+- white text
+- rounded (12–16px)
+- full width
+
+Secondary:
+- text or subtle
+
+==================================================
+BOTTOM NAV
+==================================================
+
+- Light background
+- icons + labels
+- active = blue
+- inactive = grey
+
+==================================================
+GOAL
+==================================================
+
+This screen should look like a 1:1 Rentbird clone.
+
+If I compare side-by-side with Rentbird:
+- layout must match
+- spacing must match
+- colors must match
+- structure must match
+
+==================================================
+DO NOT
+==================================================
+
+- do not introduce white/light theme
+- do not "modernize"
+- do not simplify
+- do not change UX
+- do not invent new components
+
+Just replicate the UI exactly.

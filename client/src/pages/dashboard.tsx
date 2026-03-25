@@ -1807,60 +1807,64 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
     : t("profile.freeStatus");
 
   const subStatusColor = subscription.isActive && !subscription.isTrial
-    ? "text-[#F97316] bg-[#FFF7ED]"
+    ? "text-[#2563EB] bg-[#EFF6FF]"
     : subscription.isTrial
     ? "text-[#D97706] bg-[#FEF3C7]"
     : "text-[#717171] bg-[#F3F4F6]";
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-white">
-      <div className="max-w-[480px] mx-auto px-6 pt-6 pb-8">
-        <h1 className="text-page-title mb-5" data-testid="text-profile-title">{t("profile.title")}</h1>
+    <div className="min-h-[calc(100vh-80px)] bg-[#f7f7f7]">
+      <div className="max-w-[480px] mx-auto px-4 pt-6 pb-8">
+        <h1 className="text-[22px] font-bold text-[#111] mb-5 px-1" data-testid="text-profile-title">{t("profile.title")}</h1>
 
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-3.5">
 
           <div
-            className="rounded-[24px] bg-white border border-[#F0F0F0] shadow-[0_2px_12px_rgba(15,23,42,0.06),0_8px_32px_rgba(15,23,42,0.08)] px-6 py-5"
+            className="rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.04)] px-5 py-5"
             data-testid="card-profile-summary"
           >
-            <div className="grid grid-cols-2 gap-0">
-              <button
-                onClick={() => navigate("/profile/details")}
-                className="flex flex-col items-center justify-center active:scale-95 transition-transform"
-                data-testid="button-profile-avatar"
-              >
-                {photoUrl ? (
-                  <img src={photoUrl} alt="" className="w-[104px] h-[104px] rounded-full object-cover shadow-[0_2px_12px_rgba(0,0,0,0.08)]" data-testid="img-profile-avatar" />
-                ) : (
-                  <div className="w-[104px] h-[104px] rounded-full overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
-                    <img src={avatarPlaceholderImg} alt="" className="w-full h-full object-cover scale-[1.15] object-center" data-testid="img-avatar-placeholder" />
-                  </div>
-                )}
-                <p className="text-[24px] font-semibold text-[#222222] mt-2.5 leading-tight text-center" data-testid="text-user-firstname">
+            <button
+              onClick={() => navigate("/profile/details")}
+              className="flex items-center gap-4 w-full text-left active:opacity-80 transition-opacity"
+              data-testid="button-profile-avatar"
+            >
+              {photoUrl ? (
+                <img src={photoUrl} alt="" className="w-16 h-16 rounded-full object-cover flex-shrink-0" data-testid="img-profile-avatar" />
+              ) : (
+                <div className="w-16 h-16 rounded-full bg-[#2563EB] flex items-center justify-center flex-shrink-0" data-testid="img-avatar-placeholder">
+                  <span className="text-white text-[20px] font-semibold">{initials}</span>
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <p className="text-[18px] font-semibold text-[#111] leading-tight truncate" data-testid="text-user-firstname">
                   {firstName || displayName || t("profile.seeker")}
                 </p>
                 {lastName && (
-                  <p className="text-[14px] font-normal text-[#717171] mt-0.5 leading-tight text-center" data-testid="text-user-lastname">
+                  <p className="text-[14px] text-[#111] mt-0.5 leading-tight truncate" data-testid="text-user-lastname">
                     {lastName}
                   </p>
                 )}
-              </button>
+                <p className="text-[13px] text-[#6B7280] mt-1 leading-snug" data-testid="text-member-since">
+                  {memberStatNumber} {memberStatLabel}
+                </p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+            </button>
 
-              <div className="flex flex-col justify-center pl-5">
-                <div className="py-2.5" data-testid="stat-member-since">
-                  <p className="text-[22px] font-bold text-[#222222] leading-tight">{memberStatNumber}</p>
-                  <p className="text-[13px] font-medium text-[#222222] mt-0.5 leading-snug">{memberStatLabel}</p>
-                </div>
-                <div className="h-px bg-[#F0F0F0]" />
-                <div className="py-2.5" data-testid="stat-listings-viewed">
-                  <p className="text-[22px] font-bold text-[#222222] leading-tight">{canonicalStats?.viewed ?? 0}</p>
-                  <p className="text-[13px] font-medium text-[#222222] mt-0.5 leading-snug">{t("profile.listingsViewed")}</p>
-                </div>
-                <div className="h-px bg-[#F0F0F0]" />
-                <div className="py-2.5" data-testid="stat-applications-sent">
-                  <p className="text-[22px] font-bold text-[#222222] leading-tight">{computedAppliedCount}</p>
-                  <p className="text-[13px] font-medium text-[#222222] mt-0.5 leading-snug">{t("profile.applicationsSent")}</p>
-                </div>
+            <div className="h-px bg-[#F0F0F0] my-4" />
+
+            <div className="grid grid-cols-3 text-center">
+              <div data-testid="stat-member-since">
+                <p className="text-[20px] font-bold text-[#111] leading-tight">{memberStatNumber}</p>
+                <p className="text-[12px] text-[#6B7280] mt-0.5 leading-snug">{memberStatLabel}</p>
+              </div>
+              <div data-testid="stat-listings-viewed">
+                <p className="text-[20px] font-bold text-[#111] leading-tight">{canonicalStats?.viewed ?? 0}</p>
+                <p className="text-[12px] text-[#6B7280] mt-0.5 leading-snug">{t("profile.listingsViewed")}</p>
+              </div>
+              <div data-testid="stat-applications-sent">
+                <p className="text-[20px] font-bold text-[#111] leading-tight">{computedAppliedCount}</p>
+                <p className="text-[12px] text-[#6B7280] mt-0.5 leading-snug">{t("profile.applicationsSent")}</p>
               </div>
             </div>
           </div>
@@ -1868,11 +1872,11 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={() => navigate("/dashboard/searches/new")}
-              className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] p-3 flex flex-col items-center justify-center text-center active:scale-[0.98] transition-transform aspect-square overflow-hidden"
+              className="rounded-2xl border border-[#E5E7EB] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-3 flex flex-col items-center justify-center text-center active:scale-[0.98] transition-transform aspect-square overflow-hidden"
               data-testid="button-extra-profile"
             >
               <img src={extraSearchProfileImg} alt="" className="max-w-[85%] max-h-[65%] w-auto h-auto object-contain" loading="lazy" />
-              <p className="text-[13px] font-semibold text-[#222222] leading-snug mt-2">{t("profile.extraProfile")}</p>
+              <p className="text-[13px] font-semibold text-[#111] leading-snug mt-2">{t("profile.extraProfile")}</p>
             </button>
 
             <button
@@ -1888,11 +1892,11 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                   toast({ title: t("referral.copyFailed"), variant: "destructive" });
                 }
               }}
-              className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] p-3 flex flex-col items-center justify-center text-center active:scale-[0.98] transition-transform aspect-square overflow-hidden"
+              className="rounded-2xl border border-[#E5E7EB] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-3 flex flex-col items-center justify-center text-center active:scale-[0.98] transition-transform aspect-square overflow-hidden"
               data-testid="button-invite-friends"
             >
               <img src={inviteFriendsImg} alt="" className="max-w-[85%] max-h-[65%] w-auto h-auto object-contain" loading="lazy" />
-              <p className="text-[13px] font-semibold text-[#222222] leading-snug mt-2">{t("profile.inviteFriends")}</p>
+              <p className="text-[13px] font-semibold text-[#111] leading-snug mt-2">{t("profile.inviteFriends")}</p>
             </button>
           </div>
 
@@ -1911,52 +1915,48 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
             <button
               onClick={() => navigate("/paywall")}
-              className="w-full h-[48px] rounded-xl bg-[#F97316] hover:bg-[#EA580C] text-white text-[14px] font-medium transition-colors flex items-center justify-center gap-2"
+              className="w-full h-[52px] rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-[15px] font-medium transition-colors flex items-center justify-center gap-2 shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
               data-testid="button-upgrade-subscription"
             >
-              <Crown className="w-4 h-4" />
+              <Crown className="w-4.5 h-4.5" />
               {t("profile.chooseSubscription")}
             </button>
           )}
 
           <div
             id="notification-settings"
-            className="rounded-[20px] border border-[#F0F0F0] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] px-5 py-5"
+            className="rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.04)] px-5 py-4"
             data-testid="card-notifications"
           >
-            <div className="flex items-start gap-3">
-              <img src={notificationsImg} alt="" className="w-[100px] h-[100px] object-contain flex-shrink-0 -ml-1" loading="lazy" />
-              <div className="flex-1 min-w-0">
-                <p className="text-[15px] font-semibold text-[#222222] mb-3">{t("profile.notificationSettings")}</p>
-                <div className="flex flex-col gap-3.5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[14px] text-[#222222]">{t("profile.pushNotifications")}</span>
-                    <button
-                      onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
-                      disabled={notifUpdating === "push_enabled"}
-                      className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.push_enabled ? "bg-[#F97316]" : "bg-[#E5E7EB]"} ${notifUpdating === "push_enabled" ? "opacity-50" : ""}`}
-                      data-testid="toggle-push"
-                    >
-                      <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.push_enabled ? "left-[23px]" : "left-[3px]"}`} />
-                    </button>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[14px] text-[#222222]">{t("profile.emailNotifications")}</span>
-                    <button
-                      onClick={() => handleToggleNotif("email_enabled", !!notifSettings?.email_enabled)}
-                      disabled={notifUpdating === "email_enabled"}
-                      className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.email_enabled ? "bg-[#F97316]" : "bg-[#E5E7EB]"} ${notifUpdating === "email_enabled" ? "opacity-50" : ""}`}
-                      data-testid="toggle-email"
-                    >
-                      <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.email_enabled ? "left-[23px]" : "left-[3px]"}`} />
-                    </button>
-                  </div>
-                </div>
+            <p className="text-[15px] font-semibold text-[#111] mb-4">{t("profile.notificationSettings")}</p>
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <span className="text-[14px] text-[#111]">{t("profile.pushNotifications")}</span>
+                <button
+                  onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
+                  disabled={notifUpdating === "push_enabled"}
+                  className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.push_enabled ? "bg-[#2563EB]" : "bg-[#D1D5DB]"} ${notifUpdating === "push_enabled" ? "opacity-50" : ""}`}
+                  data-testid="toggle-push"
+                >
+                  <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.push_enabled ? "left-[23px]" : "left-[3px]"}`} />
+                </button>
+              </div>
+              <div className="h-px bg-[#F0F0F0]" />
+              <div className="flex items-center justify-between">
+                <span className="text-[14px] text-[#111]">{t("profile.emailNotifications")}</span>
+                <button
+                  onClick={() => handleToggleNotif("email_enabled", !!notifSettings?.email_enabled)}
+                  disabled={notifUpdating === "email_enabled"}
+                  className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.email_enabled ? "bg-[#2563EB]" : "bg-[#D1D5DB]"} ${notifUpdating === "email_enabled" ? "opacity-50" : ""}`}
+                  data-testid="toggle-email"
+                >
+                  <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.email_enabled ? "left-[23px]" : "left-[3px]"}`} />
+                </button>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-col gap-1">
+          <div className="rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.04)] px-4 py-1">
             <div id="zoekbuddy-section" data-testid="row-zoekbuddy">
               <button
                 onClick={() => {
@@ -1968,17 +1968,19 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                     setBuddyEmail("");
                   }
                 }}
-                className="w-full flex items-center gap-3 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
+                className="w-full flex items-center gap-3 py-[14px] text-left active:opacity-80 transition-opacity"
                 data-testid="button-buddy-toggle"
               >
-                <Users className="w-[24px] h-[24px] text-[#2A2A2A] flex-shrink-0" />
+                <div className="w-9 h-9 rounded-xl bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
+                  <Users className="w-[18px] h-[18px] text-[#6B7280]" />
+                </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[16px] text-[#222222]">{t("profile.zoekbuddyTitle")}</p>
+                  <p className="text-[15px] text-[#111]">{t("profile.zoekbuddyTitle")}</p>
                   {!buddyExpanded && pd?.search_buddy_email && (
-                    <p className="text-[13px] text-[#6B6B6B] mt-0.5 truncate">{pd.search_buddy_email}</p>
+                    <p className="text-[13px] text-[#6B7280] mt-0.5 truncate">{pd.search_buddy_email}</p>
                   )}
                   {!buddyExpanded && !pd?.search_buddy_email && (
-                    <p className="text-[13px] text-[#D1D5DB] mt-0.5">{t("profile.noBuddyYet")}</p>
+                    <p className="text-[13px] text-[#9CA3AF] mt-0.5">{t("profile.noBuddyYet")}</p>
                   )}
                 </div>
                 {!buddyExpanded && pd?.search_buddy_email ? (
@@ -2040,98 +2042,125 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                 </div>
               )}
             </div>
+            <div className="h-px bg-[#F0F0F0]" />
             <button
               onClick={() => navigate("/application-letter")}
-              className="w-full flex items-center gap-3 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
+              className="w-full flex items-center gap-3 py-[14px] text-left active:opacity-80 transition-opacity"
               data-testid="button-reaction-letter"
             >
-              <FileText className="w-[24px] h-[24px] text-[#2A2A2A] flex-shrink-0" />
+              <div className="w-9 h-9 rounded-xl bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
+                <FileText className="w-[18px] h-[18px] text-[#6B7280]" />
+              </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[16px] text-[#222222]">{t("profile.reactionLetter2")}</p>
-                <p className="text-[13px] text-[#6B6B6B] mt-0.5 line-clamp-2">{letterPreview ? `${letterPreview}...` : t("profile.noLetterYet")}</p>
+                <p className="text-[15px] text-[#111]">{t("profile.reactionLetter2")}</p>
+                <p className="text-[13px] text-[#9CA3AF] mt-0.5 line-clamp-1">{letterPreview ? `${letterPreview}...` : t("profile.noLetterYet")}</p>
               </div>
               <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
             </button>
+            <div className="h-px bg-[#F0F0F0]" />
             <button
               onClick={() => navigate("/profile/details")}
-              className="w-full flex items-center gap-3 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
+              className="w-full flex items-center gap-3 py-[14px] text-left active:opacity-80 transition-opacity"
               data-testid="button-personal-info"
             >
-              <User className="w-[24px] h-[24px] text-[#2A2A2A] flex-shrink-0" />
-              <p className="text-[16px] text-[#222222] flex-1">{t("profile.personalInfo")}</p>
+              <div className="w-9 h-9 rounded-xl bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
+                <User className="w-[18px] h-[18px] text-[#6B7280]" />
+              </div>
+              <p className="text-[15px] text-[#111] flex-1">{t("profile.personalInfo")}</p>
               <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
             </button>
+            <div className="h-px bg-[#F0F0F0]" />
             <button
               onClick={() => navigate("/account/subscription")}
-              className="w-full flex items-center gap-3 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
+              className="w-full flex items-center gap-3 py-[14px] text-left active:opacity-80 transition-opacity"
               data-testid="button-subscription"
             >
-              <Crown className="w-[24px] h-[24px] text-[#2A2A2A] flex-shrink-0" />
-              <p className="text-[16px] text-[#222222] flex-1">{t("profile.subscriptionPlan")}</p>
+              <div className="w-9 h-9 rounded-xl bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
+                <Crown className="w-[18px] h-[18px] text-[#6B7280]" />
+              </div>
+              <p className="text-[15px] text-[#111] flex-1">{t("profile.subscriptionPlan")}</p>
               <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full flex-shrink-0 ${subStatusColor}`} data-testid="text-subscription-status">
                 {subStatusLabel}
               </span>
             </button>
+            <div className="h-px bg-[#F0F0F0]" />
             <button
               onClick={() => setShowLangSheet(true)}
-              className="w-full flex items-center gap-3 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
+              className="w-full flex items-center gap-3 py-[14px] text-left active:opacity-80 transition-opacity"
               data-testid="button-language"
             >
-              <Globe className="w-[24px] h-[24px] text-[#2A2A2A] flex-shrink-0" />
-              <p className="text-[16px] text-[#222222] flex-1">{t("profile.language")}</p>
-              <span className="text-[13px] text-[#717171] mr-1">{currentLangLabel}</span>
+              <div className="w-9 h-9 rounded-xl bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
+                <Globe className="w-[18px] h-[18px] text-[#6B7280]" />
+              </div>
+              <p className="text-[15px] text-[#111] flex-1">{t("profile.language")}</p>
+              <span className="text-[13px] text-[#6B7280] mr-1">{currentLangLabel}</span>
               <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
             </button>
           </div>
 
-          <div className="flex flex-col gap-1">
-            <p className="text-[11px] font-medium text-[#717171] uppercase tracking-wider mb-1 px-1">{t("profile.support")}</p>
-            <button
-              onClick={() => navigate("/datenschutz")}
-              className="w-full flex items-center gap-3 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
-              data-testid="button-privacy"
-            >
-              <Shield className="w-[24px] h-[24px] text-[#2A2A2A] flex-shrink-0" />
-              <p className="text-[16px] text-[#222222] flex-1">{t("profile.privacy")}</p>
-              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
-            </button>
-            <button
-              onClick={() => { window.location.href = "mailto:support@housalert.com"; }}
-              className="w-full flex items-center gap-3 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
-              data-testid="button-help-support"
-            >
-              <HelpCircle className="w-[24px] h-[24px] text-[#2A2A2A] flex-shrink-0" />
-              <p className="text-[16px] text-[#222222] flex-1">{t("profile.helpSupport")}</p>
-              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
-            </button>
-            <button
-              onClick={() => navigate("/terms")}
-              className="w-full flex items-center gap-3 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
-              data-testid="button-terms"
-            >
-              <FileText className="w-[24px] h-[24px] text-[#2A2A2A] flex-shrink-0" />
-              <p className="text-[16px] text-[#222222] flex-1">{t("profile.terms")}</p>
-              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
-            </button>
+          <div>
+            <p className="text-[11px] font-medium text-[#9CA3AF] uppercase tracking-wider mb-2 px-1">{t("profile.support")}</p>
+            <div className="rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.04)] px-4 py-1">
+              <button
+                onClick={() => navigate("/datenschutz")}
+                className="w-full flex items-center gap-3 py-[14px] text-left active:opacity-80 transition-opacity"
+                data-testid="button-privacy"
+              >
+                <div className="w-9 h-9 rounded-xl bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
+                  <Shield className="w-[18px] h-[18px] text-[#6B7280]" />
+                </div>
+                <p className="text-[15px] text-[#111] flex-1">{t("profile.privacy")}</p>
+                <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+              </button>
+              <div className="h-px bg-[#F0F0F0]" />
+              <button
+                onClick={() => { window.location.href = "mailto:support@housalert.com"; }}
+                className="w-full flex items-center gap-3 py-[14px] text-left active:opacity-80 transition-opacity"
+                data-testid="button-help-support"
+              >
+                <div className="w-9 h-9 rounded-xl bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
+                  <HelpCircle className="w-[18px] h-[18px] text-[#6B7280]" />
+                </div>
+                <p className="text-[15px] text-[#111] flex-1">{t("profile.helpSupport")}</p>
+                <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+              </button>
+              <div className="h-px bg-[#F0F0F0]" />
+              <button
+                onClick={() => navigate("/terms")}
+                className="w-full flex items-center gap-3 py-[14px] text-left active:opacity-80 transition-opacity"
+                data-testid="button-terms"
+              >
+                <div className="w-9 h-9 rounded-xl bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
+                  <FileText className="w-[18px] h-[18px] text-[#6B7280]" />
+                </div>
+                <p className="text-[15px] text-[#111] flex-1">{t("profile.terms")}</p>
+                <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+              </button>
+            </div>
           </div>
 
-          <div className="flex flex-col gap-1">
+          <div className="rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.04)] px-4 py-1">
             <button
               onClick={() => setShowLogoutConfirm(true)}
               disabled={signingOut}
-              className={`w-full flex items-center gap-3 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
+              className={`w-full flex items-center gap-3 py-[14px] text-left active:opacity-80 transition-opacity ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
               data-testid="button-logout"
             >
-              <LogOut className="w-[24px] h-[24px] text-[#EF4444] flex-shrink-0" />
-              <p className="text-[16px] text-[#EF4444] flex-1">{signingOut ? t("profile.signingOut") : t("profile.logout")}</p>
+              <div className="w-9 h-9 rounded-xl bg-[#FEF2F2] flex items-center justify-center flex-shrink-0">
+                <LogOut className="w-[18px] h-[18px] text-[#EF4444]" />
+              </div>
+              <p className="text-[15px] text-[#EF4444] flex-1">{signingOut ? t("profile.signingOut") : t("profile.logout")}</p>
             </button>
+            <div className="h-px bg-[#F0F0F0]" />
             <button
               onClick={() => navigate("/account/delete")}
-              className="w-full flex items-center gap-3 px-1 py-[14px] text-left active:bg-[#F9FAFB] transition-colors rounded-xl"
+              className="w-full flex items-center gap-3 py-[14px] text-left active:opacity-80 transition-opacity"
               data-testid="button-delete-account"
             >
-              <Trash2 className="w-[24px] h-[24px] text-[#2A2A2A] flex-shrink-0" />
-              <p className="text-[16px] text-[#6B6B6B] flex-1">{t("profile.deleteAccount")}</p>
+              <div className="w-9 h-9 rounded-xl bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
+                <Trash2 className="w-[18px] h-[18px] text-[#6B7280]" />
+              </div>
+              <p className="text-[15px] text-[#6B7280] flex-1">{t("profile.deleteAccount")}</p>
             </button>
           </div>
 
@@ -2172,11 +2201,11 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                   <button
                     key={opt.code}
                     onClick={() => handleLanguageChange(opt.code)}
-                    className={`flex items-center justify-between px-5 py-4 rounded-xl transition-all ${selected ? "bg-[#EFF6FF] shadow-[0_1px_4px_rgba(249,115,22,0.08)]" : "hover:bg-[#F8F9FA] active:bg-[#F3F4F6]"}`}
+                    className={`flex items-center justify-between px-5 py-4 rounded-xl transition-all ${selected ? "bg-[#EFF6FF]" : "hover:bg-[#F8F9FA] active:bg-[#F3F4F6]"}`}
                     data-testid={`button-lang-${opt.code}`}
                   >
-                    <span className={`text-[15px] font-medium ${selected ? "text-[#F97316]" : "text-[#222222]"}`}>{opt.label}</span>
-                    {selected && <CheckCircle2 className="w-5 h-5 text-[#F97316]" />}
+                    <span className={`text-[15px] font-medium ${selected ? "text-[#2563EB]" : "text-[#111]"}`}>{opt.label}</span>
+                    {selected && <CheckCircle2 className="w-5 h-5 text-[#2563EB]" />}
                   </button>
                 );
               })}
@@ -2246,7 +2275,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               <button
                 onClick={handleSignOut}
                 disabled={signingOut}
-                className="w-full h-[56px] rounded-full bg-[#F97316] text-white text-[16px] font-medium transition-colors hover:opacity-90 disabled:opacity-50"
+                className="w-full h-[56px] rounded-2xl bg-[#2563EB] text-white text-[16px] font-medium transition-colors hover:bg-[#1D4ED8] disabled:opacity-50"
                 data-testid="button-logout-confirm"
               >
                 {signingOut ? t("profile.signingOut") : t("profile.logoutYes")}
@@ -2432,7 +2461,7 @@ export default function DashboardPage() {
         )}
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#F0F0F0]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#E5E7EB]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
         <nav className="max-w-xl mx-auto flex h-[58px]" data-testid="bottom-nav">
           {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
             const isActive = activeTab === key;
@@ -2445,13 +2474,13 @@ export default function DashboardPage() {
                 data-testid={`tab-${key}`}
               >
                 {isProfileWithPhoto ? (
-                  <div className={`w-[28px] h-[28px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-[#F97316] ring-offset-1" : ""}`}>
+                  <div className={`w-[26px] h-[26px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-[#2563EB] ring-offset-1" : ""}`}>
                     <img src={tabPhotoUrl} alt="" className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <Icon className={`w-[28px] h-[28px] transition-colors ${isActive ? "text-[#F97316]" : "text-[#717171]"}`} strokeWidth={isActive ? 2 : 1.5} />
+                  <Icon className={`w-[24px] h-[24px] transition-colors ${isActive ? "text-[#2563EB]" : "text-[#9CA3AF]"}`} strokeWidth={isActive ? 2 : 1.5} />
                 )}
-                <span className={`text-[10px] transition-colors ${isActive ? "font-medium text-[#F97316]" : "font-normal text-[#717171]"}`}>
+                <span className={`text-[10px] transition-colors ${isActive ? "font-medium text-[#2563EB]" : "font-normal text-[#9CA3AF]"}`}>
                   {t(labelKey)}
                 </span>
               </button>
