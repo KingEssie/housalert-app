@@ -1,0 +1,139 @@
+Redesign the PROFILE / DASHBOARD screen to a clean, modern SaaS UI while keeping all existing logic and data intact.
+
+IMPORTANT:
+- Do NOT change functionality
+- Do NOT change routes or data
+- Only improve visual design, spacing, hierarchy, and consistency
+
+==================================================
+DESIGN SYSTEM
+==================================================
+
+Use a clean light theme:
+
+- Background: #f7f7f7
+- Cards: white
+- Primary color: blue (use existing HousAlert logo color)
+- Accent: pink/red only for warnings or highlights
+- Text: near black (#111)
+
+==================================================
+REMOVE OLD STYLE ISSUES
+==================================================
+
+- REMOVE heavy purple header background
+- REMOVE inconsistent colors (turquoise, random pink usage)
+- REMOVE hard shadows
+
+==================================================
+HEADER (TOP PROFILE AREA)
+==================================================
+
+Replace current purple header with:
+
+- clean white or light background
+- circular avatar (initials)
+- name below (bold)
+- small subtitle (member since...)
+
+Optional:
+- subtle divider line under header
+
+==================================================
+CARDS (VERY IMPORTANT)
+==================================================
+
+All sections must be consistent cards:
+
+- white background
+- border-radius: 16px
+- soft shadow (very subtle)
+- padding: 16–20px
+- spacing between cards: 12–16px
+
+==================================================
+ACCOUNT COMPLETION CARD
+==================================================
+
+Make this more premium:
+
+- title bold
+- progress bar:
+   - thin
+   - rounded
+   - green or blue
+- percentage aligned right
+- cleaner spacing
+
+==================================================
+UPGRADE CARD
+==================================================
+
+Make this a highlight card:
+
+- light tinted background (very subtle)
+- icon on left
+- strong CTA button:
+   - blue
+   - full width
+   - rounded 12–16px
+
+==================================================
+LIST ITEMS (Zoekopdrachten, Zoekbuddy, etc.)
+==================================================
+
+Each item:
+
+- left: icon
+- center: title + short description
+- right: action (edit / arrow)
+
+Better alignment:
+- vertically centered
+- clean spacing
+
+==================================================
+BUTTONS
+==================================================
+
+Primary:
+- blue
+- white text
+- full width
+- height ~52–56px
+- rounded 12–16px
+
+Secondary:
+- outline or text button
+
+==================================================
+BOTTOM NAV
+==================================================
+
+- keep structure
+- active item = blue
+- inactive = grey
+- remove extra colors
+
+==================================================
+GOAL
+==================================================
+
+The screen should feel:
+
+- clean
+- modern
+- calm
+- premium (Airbnb / Notion style)
+- NOT colorful or playful
+
+==================================================
+DO NOT
+==================================================
+
+- do not change layout structure
+- do not change navigation
+- do not add new features
+- do not use dark theme
+
+Only upgrade the UI visually.
