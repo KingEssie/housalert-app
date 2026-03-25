@@ -43,13 +43,13 @@ import ContinueDraftPage from "@/pages/continue-draft";
 import AuthCallbackPage from "@/pages/auth-callback";
 import { DocumentenGuidePage, SchufaGuidePage, ZoekstrategieGuidePage, NetwerkGuidePage } from "@/pages/guide";
 import DeleteAccountPage from "@/pages/delete-account";
+// V2 onboarding imports — kept but deactivated (routes still exist but are not the default entry)
 import V2WelcomePage from "@/pages/v2/welcome";
 import V2OnboardingIntroPage from "@/pages/v2/onboarding-intro";
 import V2OnboardingLocationPage from "@/pages/v2/onboarding-location";
 import V2OnboardingFiltersPage from "@/pages/v2/onboarding-filters";
 import V2OnboardingPreferencesPage from "@/pages/v2/onboarding-preferences";
 import V2OnboardingValuePage from "@/pages/v2/onboarding-value";
-import { V2OnboardingProvider } from "@/lib/v2-onboarding-store";
 import SubscriptionSuccessPage from "@/pages/subscription-success";
 import EmbedSuccessPage from "@/pages/embed-success";
 import AdminIngestionPage from "@/pages/admin-ingestion";
@@ -137,7 +137,7 @@ function RootRoute() {
   }, [user, session, loading]);
 
   if (loading) return null;
-  if (!user && !destination) return <V2WelcomePage />;
+  if (!user && !destination) return <Redirect to="/welcome" />;
   if (!destination) return null;
   return <Redirect to={destination} />;
 }
@@ -215,10 +215,8 @@ function AppShell() {
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <AuthProvider>
-            <V2OnboardingProvider>
-              <Toaster />
-              <Router />
-            </V2OnboardingProvider>
+            <Toaster />
+            <Router />
           </AuthProvider>
         </TooltipProvider>
       </QueryClientProvider>
