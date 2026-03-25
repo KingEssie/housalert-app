@@ -630,7 +630,17 @@ export const en: Record<string, any> = {
     },
     location: {
       title: "Where do you want to live?",
-      subtitle: "Choose a location, districts, radius or commute time.",
+      subtitle: "Choose your city and optionally select neighborhoods.",
+      noResults: "No results",
+      districtsLabel: "Neighborhoods (optional)",
+    },
+    filters: {
+      title: "What are you looking for?",
+      subtitle: "Narrow down your search so we only find matching apartments.",
+      maxPrice: "Maximum rent (€)",
+      minPrice: "Minimum rent (optional, €)",
+      minRooms: "Minimum number of rooms",
+      minSize: "Minimum size (m²)",
     },
     budget: {
       title: "What is your monthly budget?",

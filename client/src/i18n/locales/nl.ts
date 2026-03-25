@@ -648,7 +648,17 @@ export const nl: Record<string, any> = {
     },
     location: {
       title: "Waar wil je wonen?",
-      subtitle: "Kies een locatie, wijken, radius of reistijd.",
+      subtitle: "Kies je stad en eventueel wijken.",
+      noResults: "Geen resultaten",
+      districtsLabel: "Wijken (optioneel)",
+    },
+    filters: {
+      title: "Wat zoek je precies?",
+      subtitle: "Verfijn je zoekopdracht zodat we alleen passende woningen vinden.",
+      maxPrice: "Maximale huur (€)",
+      minPrice: "Minimale huur (optioneel, €)",
+      minRooms: "Minimaal aantal kamers",
+      minSize: "Minimale grootte (m²)",
     },
     budget: {
       title: "Wat is je maandelijks budget?",

@@ -219,10 +219,10 @@ function CityStep({
       </div>
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-10" style={{ paddingBottom: "max(40px, env(safe-area-inset-bottom, 40px))" }}>
         <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-city-title">
-          {t("onboarding.location.title")}
+          {t("onboarding.location.title") || "Wo möchtest du wohnen?"}
         </h1>
         <p className="text-[14px] mb-6" style={{ color: TEXT_SECONDARY }}>
-          {t("onboarding.location.subtitle")}
+          {t("onboarding.location.subtitle") || "Wähle deine Stadt und optional Stadtteile."}
         </p>
 
         <div className="relative mb-5">
@@ -253,7 +253,7 @@ function CityStep({
               </button>
             ))}
             {allResults.length === 0 && search.trim().length >= 2 && !searching && (
-              <p className="text-[13px] text-ha-text-muted text-center py-4">Keine Ergebnisse</p>
+              <p className="text-[13px] text-ha-text-muted text-center py-4">{t("onboarding.location.noResults") || "Keine Ergebnisse"}</p>
             )}
           </div>
         )}
@@ -261,7 +261,7 @@ function CityStep({
         {data.city && districts.length > 0 && (
           <div className="mb-6">
             <p className="text-[13px] font-medium text-ha-text-secondary mb-3">
-              Stadtteile (optional)
+              {t("onboarding.location.districtsLabel") || "Stadtteile (optional)"}
             </p>
             <div className="flex flex-wrap gap-2" data-testid="district-chips">
               {districts.map((d) => {
@@ -327,16 +327,16 @@ function FiltersStep({
       </div>
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-10" style={{ paddingBottom: "max(40px, env(safe-area-inset-bottom, 40px))" }}>
         <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-filters-title">
-          {t("onboarding.budget.title") || "Suchkriterien"}
+          {t("onboarding.filters.title") || "Was suchst du genau?"}
         </h1>
         <p className="text-[14px] mb-8" style={{ color: TEXT_SECONDARY }}>
-          {t("onboarding.budget.subtitle") || "Grenze deine Suche ein"}
+          {t("onboarding.filters.subtitle") || "Grenze deine Suche ein, damit wir nur passende Wohnungen finden."}
         </p>
 
         <div className="flex flex-col gap-5">
           <div>
             <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">
-              {t("onboarding.budget.maxPrice") || "Maximale Miete"}
+              {t("onboarding.filters.maxPrice") || "Maximale Miete (€)"}
             </label>
             <div className="relative">
               <Euro className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-ha-text-muted" />
@@ -355,7 +355,7 @@ function FiltersStep({
 
           <div>
             <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">
-              {t("onboarding.budget.minPrice") || "Minimale Miete (optional)"}
+              {t("onboarding.filters.minPrice") || "Mindestmiete (optional, €)"}
             </label>
             <div className="relative">
               <Euro className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-ha-text-muted" />
@@ -374,7 +374,7 @@ function FiltersStep({
 
           <div>
             <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">
-              {t("onboarding.rooms.title") || "Mindestanzahl Zimmer"}
+              {t("onboarding.filters.minRooms") || "Mindestanzahl Zimmer"}
             </label>
             <div className="relative">
               <BedDouble className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-ha-text-muted" />
@@ -393,7 +393,7 @@ function FiltersStep({
 
           <div>
             <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">
-              {t("onboarding.size.title") || "Mindestgröße (m²)"}
+              {t("onboarding.filters.minSize") || "Mindestgröße (m²)"}
             </label>
             <div className="relative">
               <Maximize2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-ha-text-muted" />

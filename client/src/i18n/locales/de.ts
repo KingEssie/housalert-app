@@ -641,7 +641,17 @@ export const de: Record<string, any> = {
     },
     location: {
       title: "Wo möchtest du wohnen?",
-      subtitle: "Wähle einen Standort, Stadtteile, Radius oder Pendelzeit.",
+      subtitle: "Wähle deine Stadt und optional Stadtteile.",
+      noResults: "Keine Ergebnisse",
+      districtsLabel: "Stadtteile (optional)",
+    },
+    filters: {
+      title: "Was suchst du genau?",
+      subtitle: "Grenze deine Suche ein, damit wir nur passende Wohnungen finden.",
+      maxPrice: "Maximale Miete (€)",
+      minPrice: "Mindestmiete (optional, €)",
+      minRooms: "Mindestanzahl Zimmer",
+      minSize: "Mindestgröße (m²)",
     },
     budget: {
       title: "Was ist dein monatliches Budget?",
