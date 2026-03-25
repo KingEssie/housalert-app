@@ -1497,7 +1497,7 @@ export default function OnboardingFlow({ initialStep }: { initialStep?: FlowStep
           if (d.push_test_completed) setPushState("granted");
 
           if (d.post_paywall_onboarding_completed) {
-            setProfileLoaded(true);
+            navigate("/home");
             return;
           }
 
@@ -1775,7 +1775,7 @@ export default function OnboardingFlow({ initialStep }: { initialStep?: FlowStep
       post_paywall_onboarding_completed: true,
       onboarding_current_step: "done",
     });
-    navigate("/dashboard");
+    navigate("/home");
   }
 
   useEffect(() => {

@@ -126,7 +126,7 @@ function RootRoute() {
     if (!user) { setDestination(null); return; }
 
     const token = session?.access_token;
-    if (!token) { setDestination("/dashboard"); return; }
+    if (!token) { setDestination("/home"); return; }
 
     apiFetch("/api/onboarding-status", {
       headers: { Authorization: `Bearer ${token}` },
@@ -135,7 +135,7 @@ function RootRoute() {
       .then((data) => {
         const completed = data.onboarding_completed === true;
         console.log(`[ROOT] onboarding_completed=${completed}`);
-        setDestination(completed ? "/dashboard" : "/onboarding/setup");
+        setDestination(completed ? "/home" : "/onboarding/setup");
       })
       .catch(() => setDestination("/onboarding/setup"));
   }, [user, session, loading]);
@@ -175,6 +175,7 @@ function Router() {
       <Route path="/paywall" component={PaywallPage} />
       <Route path="/subscription-success" component={() => <ProtectedRoute component={SubscriptionSuccessPage} skipOnboardingCheck />} />
       <Route path="/embed-success" component={EmbedSuccessPage} />
+      <Route path="/home" component={() => <ProtectedRoute component={DashboardPage} />} />
       <Route path="/dashboard" component={() => <ProtectedRoute component={DashboardPage} />} />
       <Route path="/dashboard/searches/new" component={() => <ProtectedRoute component={NewSearchPage} />} />
       <Route path="/dashboard/searches/edit/:id" component={() => <ProtectedRoute component={NewSearchPage} />} />

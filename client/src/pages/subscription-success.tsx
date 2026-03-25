@@ -47,7 +47,7 @@ export default function SubscriptionSuccessPage() {
 
       if (!token) {
         setSyncing(false);
-        setTimeout(() => navigate("/dashboard"), 2000);
+        setTimeout(() => navigate("/home"), 2000);
         return;
       }
 
