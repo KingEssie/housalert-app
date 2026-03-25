@@ -1,0 +1,113 @@
+We are committing fully to a Rentbird-style design system.
+
+The current app is a mixed hybrid (light HousAlert + partial dark Rentbird).
+This must be completely removed.
+
+GOAL:
+Rebuild ALL active UI screens to match Rentbird-style design exactly.
+
+IMPORTANT:
+This is NOT a redesign of logic or flow.
+This is a FULL visual transformation.
+
+DESIGN SYSTEM (STRICT):
+
+BACKGROUND:
+- Dark purple / navy gradient or solid (#1A1A2E or similar)
+- No light backgrounds anywhere
+
+CARDS:
+- Dark cards (slightly lighter than background)
+- Rounded corners (16–20px)
+- Soft shadows or subtle elevation
+
+PRIMARY COLOR:
+- Pink / magenta (Rentbird style)
+- Used for ALL primary buttons
+
+TEXT:
+- White / off-white for main text
+- Grey for secondary text
+
+INPUTS:
+- Light (almost white) input fields on dark background
+- Rounded, large (50–60px height)
+
+BUTTONS:
+- Primary: pink filled, rounded, bold text
+- Secondary: outlined pink
+
+ICONS:
+- White or soft colored
+- Consistent stroke
+
+BOTTOM NAV:
+- Dark background
+- Active tab highlighted (pink or white)
+- Inactive grey
+
+NO:
+- No blue primary color
+- No orange CTAs
+- No white screens
+- No mixed styles
+- No leftover HousAlert design
+
+---
+
+TASK:
+
+Apply this design system to ALL screens:
+
+1. Welcome / Login
+2. Signup
+3. Onboarding flow
+4. Home
+5. Matches
+6. Tips
+7. Filters / Search profiles
+8. Profile
+
+For EACH screen:
+- Redesign the FULL screen
+- Not partial updates
+- All components must match the same system
+
+---
+
+PROFILE SCREEN SPECIFIC:
+- Large dark header block (curved bottom)
+- Center avatar circle
+- Name + subtitle in white
+- Cards below with dark surfaces
+- Pink CTA buttons
+
+---
+
+MATCHES SCREEN:
+- Dark cards with image top
+- White text
+- Soft badges (light pills)
+- Heart icon top right
+
+---
+
+ONBOARDING:
+- Full screen dark flow
+- Step indicators
+- Large buttons
+- Clean spacing
+
+---
+
+IMPORTANT:
+Do NOT reuse old styles.
+Do NOT mix light and dark.
+Do NOT keep legacy components visually unchanged.
+
+This is a full visual rebuild using existing logic only.
+
+---
+
+OUTPUT:
+A fully consistent Rentbird-style UI across the entire app.

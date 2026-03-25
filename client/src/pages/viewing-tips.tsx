@@ -77,12 +77,12 @@ export default function ViewingTipsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-[#1A1A2E] flex flex-col">
       <PageHeader title={t("viewingTips.title")} onBack={() => navigate("/dashboard?tab=tips")} />
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-32">
         <div className="mb-6">
-          <p className="text-[15px] text-muted-foreground leading-relaxed">
+          <p className="text-[15px] text-[#9CA3AF] leading-relaxed">
             {t("viewingTips.intro")}
           </p>
         </div>
@@ -94,21 +94,21 @@ export default function ViewingTipsPage() {
             return (
               <div
                 key={idx}
-                className="bg-card rounded-lg shadow-sm overflow-hidden"
+                className="bg-[#252547] rounded-lg overflow-hidden"
                 data-testid={`card-tips-section-${idx}`}
               >
                 <div className="flex items-center gap-3 p-6 pb-3">
-                  <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#FFF7ED" }}>
-                    <Icon className="w-4.5 h-4.5" style={{ color: "#F97316" }} />
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 bg-[#E91E63]/10">
+                    <Icon className="w-4.5 h-4.5 text-[#E91E63]" />
                   </div>
-                  <h3 className="text-[16px] font-medium" style={{ color: "#222222" }}>{section.title}</h3>
+                  <h3 className="text-[16px] font-medium text-white">{section.title}</h3>
                 </div>
                 <div className="px-6 pb-6">
                   <ul className="flex flex-col gap-2.5">
                     {items.map((item: string, i: number) => (
                       <li key={i} className="flex items-start gap-2.5">
-                        <span className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0" style={{ backgroundColor: "#F97316" }} />
-                        <span className="text-[13px] text-muted-foreground leading-relaxed">{item}</span>
+                        <span className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0 bg-[#E91E63]" />
+                        <span className="text-[13px] text-[#9CA3AF] leading-relaxed">{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -119,10 +119,10 @@ export default function ViewingTipsPage() {
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-5 z-10" style={{ borderColor: "#E5E7EB" }}>
+      <div className="fixed bottom-0 left-0 right-0 bg-[#1A1A2E] border-t border-[#353560] p-5 z-10">
         <div className="max-w-xl mx-auto">
           {markedDone ? (
-            <div className="flex items-center justify-center gap-2 h-[56px]" style={{ color: "#F97316" }}>
+            <div className="flex items-center justify-center gap-2 h-[56px] text-[#E91E63]">
               <CheckCircle2 className="w-5 h-5" />
               <span className="text-[16px] font-medium">{t("viewingTips.completed")}</span>
             </div>
@@ -130,7 +130,7 @@ export default function ViewingTipsPage() {
             <Button
               onClick={() => markDoneMutation.mutate()}
               disabled={markDoneMutation.isPending}
-              className="w-full h-[56px] rounded-full text-[16px] font-medium bg-primary text-primary-foreground disabled:opacity-50"
+              className="w-full h-[56px] rounded-full text-[16px] font-medium bg-[#E91E63] hover:bg-[#D81B60] text-white disabled:opacity-50"
               data-testid="button-mark-tips-done"
             >
               {markDoneMutation.isPending ? t("viewingTips.saving") : t("viewingTips.markComplete")}

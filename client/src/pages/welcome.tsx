@@ -11,13 +11,13 @@ import { apiFetch } from "@/lib/api-base";
 import { useToast } from "@/hooks/use-toast";
 import heroImg from "@assets/50F77D08-ED68-40B2-AFD3-67D49A86100C_1774074748083.png";
 
-const BRAND = "#F97316";
-const BRAND_HOVER = "#EA580C";
+const BRAND = "#E91E63";
+const BRAND_HOVER = "#D81B60";
 
 const LANGUAGES: { code: Locale; label: string; flag: string }[] = [
-  { code: "de", label: "Deutsch", flag: "🇩🇪" },
-  { code: "nl", label: "Nederlands", flag: "🇳🇱" },
-  { code: "en", label: "English", flag: "🇬🇧" },
+  { code: "de", label: "Deutsch", flag: "\u{1F1E9}\u{1F1EA}" },
+  { code: "nl", label: "Nederlands", flag: "\u{1F1F3}\u{1F1F1}" },
+  { code: "en", label: "English", flag: "\u{1F1EC}\u{1F1E7}" },
 ];
 
 function LanguageDropdown() {
@@ -63,7 +63,7 @@ function LanguageDropdown() {
         <div
           role="listbox"
           aria-label="Languages"
-          className="absolute top-full right-0 mt-1.5 w-[180px] bg-white rounded-2xl border border-[#E5E7EB] shadow-[0_8px_30px_rgba(0,0,0,0.15)] overflow-hidden z-50"
+          className="absolute top-full right-0 mt-1.5 w-[180px] bg-[#252547] rounded-2xl border border-[#353560] shadow-[0_8px_30px_rgba(0,0,0,0.3)] overflow-hidden z-50"
         >
           {LANGUAGES.map((lang) => {
             const isActive = locale === lang.code;
@@ -73,11 +73,11 @@ function LanguageDropdown() {
                 role="option"
                 aria-selected={isActive}
                 onClick={() => { setLocale(lang.code); setOpen(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-3 transition-colors ${isActive ? "bg-[#FFF7ED]" : "hover:bg-[#F9FAFB]"}`}
+                className={`w-full flex items-center gap-3 px-4 py-3 transition-colors ${isActive ? "bg-[#E91E63]/15" : "hover:bg-[#353560]"}`}
                 data-testid={`button-lang-${lang.code}`}
               >
                 <span className="text-[16px]">{lang.flag}</span>
-                <span className={`text-[14px] font-semibold ${isActive ? "text-[#1A1A1A]" : "text-[#555555]"}`}>
+                <span className={`text-[14px] font-semibold ${isActive ? "text-[#E91E63]" : "text-white"}`}>
                   {lang.label}
                 </span>
                 {isActive && (
@@ -150,7 +150,7 @@ export default function WelcomePage() {
   }
 
   return (
-    <div className="h-[100dvh] bg-white flex flex-col overflow-hidden" data-testid="welcome-page">
+    <div className="h-[100dvh] bg-[#1A1A2E] flex flex-col overflow-hidden" data-testid="welcome-page">
       <div className="relative w-full flex-shrink-0" style={{ height: "38%", maxHeight: "40vh" }}>
         <img
           src={heroImg}
@@ -161,7 +161,7 @@ export default function WelcomePage() {
         />
 
         <div className="absolute inset-0 pointer-events-none" style={{
-          background: "linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 45%, rgba(0,0,0,0.55) 100%)"
+          background: "linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 45%, rgba(26,26,46,0.85) 100%)"
         }} />
 
         <div className="absolute top-0 left-0 right-0 pt-[max(env(safe-area-inset-top),8px)] px-5 flex items-center justify-end z-10">
@@ -180,24 +180,23 @@ export default function WelcomePage() {
       </div>
 
       <div
-        className="relative flex-1 bg-white flex flex-col"
+        className="relative flex-1 bg-[#1A1A2E] flex flex-col"
         style={{
           borderRadius: "28px 28px 0 0",
           marginTop: "-32px",
           zIndex: 5,
-          boxShadow: "0 -6px 30px rgba(0,0,0,0.08)",
         }}
       >
         <div className="flex flex-col px-6 pt-5 pb-[max(env(safe-area-inset-bottom),12px)] flex-1">
           <div className="text-center mb-4">
             <h1
-              className="text-[22px] font-bold text-[#1A1A1A] leading-[1.15] tracking-[-0.03em] mb-1"
+              className="text-[22px] font-bold text-white leading-[1.15] tracking-[-0.03em] mb-1"
               data-testid="text-auth-title"
             >
               {t("authScreen.title")}
             </h1>
             <p
-              className="text-[13px] text-[#6B7280] leading-[1.45]"
+              className="text-[13px] text-[#9CA3AF] leading-[1.45]"
               data-testid="text-auth-subtitle"
             >
               {t("authScreen.subtitle")}
@@ -211,7 +210,7 @@ export default function WelcomePage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t("authScreen.emailPlaceholder")}
               required
-              className="w-full h-[46px] px-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[14px] font-medium text-[#222222] placeholder:text-[#AAAAAA] placeholder:font-normal focus:bg-white focus:border-[#E5E7EB] focus:shadow-[0_0_0_3px_rgba(249,115,22,0.08)] outline-none transition-all"
+              className="w-full h-[46px] px-4 rounded-xl border border-[#353560] bg-[#252547] text-[14px] font-medium text-white placeholder:text-[#6B7280] placeholder:font-normal focus:border-[#E91E63] focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] outline-none transition-all"
               data-testid="input-email"
             />
 
@@ -222,7 +221,7 @@ export default function WelcomePage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t("authScreen.passwordPlaceholder")}
                 required
-                className="w-full h-[46px] px-4 pr-11 rounded-xl border border-transparent bg-[#F3F4F6] text-[14px] font-medium text-[#222222] placeholder:text-[#AAAAAA] placeholder:font-normal focus:bg-white focus:border-[#E5E7EB] focus:shadow-[0_0_0_3px_rgba(249,115,22,0.08)] outline-none transition-all"
+                className="w-full h-[46px] px-4 pr-11 rounded-xl border border-[#353560] bg-[#252547] text-[14px] font-medium text-white placeholder:text-[#6B7280] placeholder:font-normal focus:border-[#E91E63] focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] outline-none transition-all"
                 data-testid="input-password"
               />
               <button
@@ -233,16 +232,16 @@ export default function WelcomePage() {
                 data-testid="button-toggle-password"
               >
                 {showPassword
-                  ? <EyeOff className="w-[16px] h-[16px] text-[#AAAAAA]" />
-                  : <Eye className="w-[16px] h-[16px] text-[#AAAAAA]" />}
+                  ? <EyeOff className="w-[16px] h-[16px] text-[#6B7280]" />
+                  : <Eye className="w-[16px] h-[16px] text-[#6B7280]" />}
               </button>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-[46px] rounded-full text-[15px] font-bold text-white transition-all active:scale-[0.97] shadow-[0_4px_14px_rgba(249,115,22,0.3)] disabled:opacity-60"
-              style={{ backgroundColor: loading ? "#D4D4D4" : BRAND }}
+              className="w-full h-[46px] rounded-full text-[15px] font-bold text-white transition-all active:scale-[0.97] shadow-[0_4px_14px_rgba(233,30,99,0.3)] disabled:opacity-60"
+              style={{ backgroundColor: loading ? "#555" : BRAND }}
               onMouseOver={(e) => { if (!loading) e.currentTarget.style.backgroundColor = BRAND_HOVER; }}
               onMouseOut={(e) => { if (!loading) e.currentTarget.style.backgroundColor = BRAND; }}
               data-testid="button-login"
@@ -254,7 +253,7 @@ export default function WelcomePage() {
           <div className="flex justify-end mt-1.5 mb-2">
             <button
               onClick={() => navigate("/forgot-password")}
-              className="text-[11px] text-[#AAAAAA] font-medium hover:text-[#888888] transition-colors"
+              className="text-[11px] text-[#6B7280] font-medium hover:text-[#9CA3AF] transition-colors"
               data-testid="button-forgot-password"
             >
               {t("authScreen.forgotPassword")}
@@ -263,21 +262,21 @@ export default function WelcomePage() {
 
           <button
             onClick={() => navigate("/onboarding/intro")}
-            className="w-full h-[46px] rounded-full text-[14px] font-semibold text-[#1A1A1A] border border-[#E0E0E0] bg-white hover:bg-[#F9FAFB] transition-colors active:scale-[0.97]"
+            className="w-full h-[46px] rounded-full text-[14px] font-semibold text-white border border-[#353560] bg-transparent hover:bg-[#252547] transition-colors active:scale-[0.97]"
             data-testid="button-signup"
           >
             {t("authScreen.signUp")}
           </button>
 
           <div className="flex items-center gap-3 my-2.5">
-            <div className="flex-1 h-px bg-[#E5E7EB]" />
-            <span className="text-[12px] text-[#B0B0B0] font-medium">{t("authScreen.or")}</span>
-            <div className="flex-1 h-px bg-[#E5E7EB]" />
+            <div className="flex-1 h-px bg-[#353560]" />
+            <span className="text-[12px] text-[#6B7280] font-medium">{t("authScreen.or")}</span>
+            <div className="flex-1 h-px bg-[#353560]" />
           </div>
 
           <div className="flex justify-center gap-4">
             <button
-              className="w-[48px] h-[48px] rounded-full bg-white border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.08)] flex items-center justify-center hover:shadow-[0_4px_12px_rgba(0,0,0,0.12)] transition-shadow active:scale-[0.95]"
+              className="w-[48px] h-[48px] rounded-full bg-[#252547] border border-[#353560] flex items-center justify-center hover:bg-[#353560] transition-colors active:scale-[0.95]"
               data-testid="button-google"
               onClick={() => {}}
               aria-label="Continue with Google"
@@ -291,12 +290,12 @@ export default function WelcomePage() {
             </button>
 
             <button
-              className="w-[48px] h-[48px] rounded-full bg-black flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.15)] hover:bg-[#1A1A1A] transition-colors active:scale-[0.95]"
+              className="w-[48px] h-[48px] rounded-full bg-white flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.15)] hover:bg-[#F0F0F0] transition-colors active:scale-[0.95]"
               data-testid="button-apple"
               onClick={() => {}}
               aria-label="Continue with Apple"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
                 <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
               </svg>
             </button>

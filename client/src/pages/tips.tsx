@@ -128,12 +128,12 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
 
   return (
     <div className="flex flex-col pb-6">
-      <div className="sticky top-0 z-10 bg-white pt-5 pb-3 px-6">
+      <div className="sticky top-0 z-10 bg-[#1A1A2E] pt-5 pb-3 px-6">
         <h1 className="text-page-title" data-testid="heading-tips">
           {t("tips.title")}
         </h1>
         {read > 0 && (
-          <p className="text-[13px] text-[#717171] mt-1" data-testid="text-tips-progress">
+          <p className="text-[13px] text-[#9CA3AF] mt-1" data-testid="text-tips-progress">
             {read}/{total} {t("tips.completed")}
           </p>
         )}
@@ -142,13 +142,13 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
       <div className="px-6 flex flex-col gap-5">
         <ReferralPromoCard onOpen={() => setReferralModalOpen(true)} />
 
-        <div className="bg-[#F3F4F6] rounded-2xl p-5 flex items-start gap-4" data-testid="card-tips-intro">
-          <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center flex-shrink-0">
-            <Lightbulb className="w-5 h-5 text-[#71717A]" />
+        <div className="bg-[#252547] rounded-2xl p-5 flex items-start gap-4" data-testid="card-tips-intro">
+          <div className="w-10 h-10 rounded-lg bg-[#353560] flex items-center justify-center flex-shrink-0">
+            <Lightbulb className="w-5 h-5 text-[#FBBF24]" />
           </div>
           <div>
-            <p className="text-[15px] font-medium text-[#222222]">{t("tips.didYouKnow")}</p>
-            <p className="text-[13px] text-[#222222] mt-0.5 leading-relaxed">
+            <p className="text-[15px] font-medium text-white">{t("tips.didYouKnow")}</p>
+            <p className="text-[13px] text-[#9CA3AF] mt-0.5 leading-relaxed">
               {t("tips.intro")}
             </p>
           </div>
@@ -162,21 +162,21 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
               <button
                 key={guide.id}
                 onClick={() => navigate(`/tip/${guide.id}`)}
-                className={`bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 flex items-center gap-4 text-left hover:shadow-[0_4px_16px_rgba(15,23,42,0.08),0_12px_36px_rgba(15,23,42,0.08)] transition-all duration-200 active:scale-[0.985] w-full ${isRead ? "opacity-70" : ""}`}
+                className={`bg-[#252547] rounded-[24px] border border-[#353560] p-5 flex items-center gap-4 text-left hover:bg-[#2D2D52] transition-all duration-200 active:scale-[0.985] w-full ${isRead ? "opacity-70" : ""}`}
                 data-testid={`card-guide-${guide.id}`}
               >
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(249,115,22,0.1)" }}>
-                  <Icon className="w-5 h-5 text-[#F97316]" />
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 bg-[#E91E63]/10">
+                  <Icon className="w-5 h-5 text-[#E91E63]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className={`text-[15px] font-medium text-[#222222] ${isRead ? "line-through text-[#717171]" : ""}`}>
+                  <p className={`text-[15px] font-medium ${isRead ? "line-through text-[#6B7280]" : "text-white"}`}>
                     {index + 1}. {guide.title}
                   </p>
                 </div>
                 {isRead ? (
-                  <CheckCircle2 className="w-5 h-5 text-[#F97316] flex-shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-[#E91E63] flex-shrink-0" />
                 ) : (
-                  <ArrowRight className="w-4 h-4 text-[#71717A] flex-shrink-0" />
+                  <ArrowRight className="w-4 h-4 text-[#6B7280] flex-shrink-0" />
                 )}
               </button>
             );

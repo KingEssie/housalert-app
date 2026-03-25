@@ -78,23 +78,23 @@ export default function SubscriptionSuccessPage() {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-5">
+    <div className="min-h-screen bg-[#1A1A2E] flex items-center justify-center px-5">
       <div className="text-center max-w-sm">
-        <div className="w-16 h-16 rounded-full bg-[#E8FFF5] flex items-center justify-center mx-auto mb-5">
+        <div className="w-16 h-16 rounded-full bg-[#00C896]/15 flex items-center justify-center mx-auto mb-5">
           {syncing ? (
-            <Loader2 className="w-8 h-8 text-[#F97316] animate-spin" />
+            <Loader2 className="w-8 h-8 text-[#E91E63] animate-spin" />
           ) : (
-            <CheckCircle className="w-8 h-8 text-[#F97316]" />
+            <CheckCircle className="w-8 h-8 text-[#00C896]" />
           )}
         </div>
-        <h1 className="text-[22px] font-medium text-[#222222] mb-2" data-testid="text-success-title">
+        <h1 className="text-[22px] font-medium text-white mb-2" data-testid="text-success-title">
           {syncing
             ? t("subscription.activating")
             : activated
               ? t("subscription.activated")
               : t("subscription.paymentReceived")}
         </h1>
-        <p className="text-[15px] text-[#222222] opacity-70" data-testid="text-success-redirect">
+        <p className="text-[15px] text-[#9CA3AF]" data-testid="text-success-redirect">
           {syncing
             ? t("paywall.pleaseWait")
             : t("subscription.redirecting")}

@@ -24,16 +24,16 @@ function FloatingBackButton({ navigate }: { navigate: (to: string) => void }) {
   }
   return (
     <div className="fixed top-[max(0.75rem,env(safe-area-inset-top))] left-4 z-30">
-      <button onClick={handleBack} className="w-12 h-12 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.10)] flex items-center justify-center active:scale-95 transition-transform" aria-label="Back" data-testid="button-back"><ArrowLeft className="w-5 h-5 text-[#71717A]" /></button>
+      <button onClick={handleBack} className="w-12 h-12 rounded-full bg-[#252547] shadow-[0_2px_8px_rgba(0,0,0,0.3)] flex items-center justify-center active:scale-95 transition-transform" aria-label="Back" data-testid="button-back"><ArrowLeft className="w-5 h-5 text-white" /></button>
     </div>
   );
 }
 
 const FRESH_BADGE_STYLES: Record<string, { bg: string; text: string }> = {
-  net_binnen: { bg: "bg-[#F5F7FA]", text: "text-[#222222]" },
-  nieuw: { bg: "bg-[#222222]", text: "text-white" },
-  vandaag: { bg: "bg-[#222222]", text: "text-white" },
-  ouder: { bg: "bg-[#F5F7FA]", text: "text-[#222222]" },
+  net_binnen: { bg: "bg-[#E91E63]/20", text: "text-[#E91E63]" },
+  nieuw: { bg: "bg-[#E91E63]", text: "text-white" },
+  vandaag: { bg: "bg-[#E91E63]", text: "text-white" },
+  ouder: { bg: "bg-[#353560]", text: "text-[#9CA3AF]" },
 };
 
 const FRESH_LABEL_KEYS: Record<string, string> = {
@@ -44,12 +44,12 @@ const FRESH_LABEL_KEYS: Record<string, string> = {
 };
 
 const CITY_GRADIENTS: Record<string, string> = {
-  berlin: "from-[#222222] to-[#333333]",
-  münchen: "from-[#222222] to-[#333333]",
-  hamburg: "from-[#333333] to-[#222222]",
-  frankfurt: "from-[#222222] to-[#333333]",
-  köln: "from-[#333333] to-[#222222]",
-  default: "from-[#222222] to-[#333333]",
+  berlin: "from-[#1A1A2E] to-[#252547]",
+  münchen: "from-[#1A1A2E] to-[#252547]",
+  hamburg: "from-[#252547] to-[#1A1A2E]",
+  frankfurt: "from-[#1A1A2E] to-[#252547]",
+  köln: "from-[#252547] to-[#1A1A2E]",
+  default: "from-[#1A1A2E] to-[#252547]",
 };
 
 function getCityGradient(city: string): string {
@@ -133,15 +133,15 @@ export default function ListingDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#F5F7FA] flex flex-col relative">
+      <div className="min-h-screen bg-[#1A1A2E] flex flex-col relative">
         <FloatingBackButton navigate={navigate} />
         <div className="animate-pulse">
-          <div className="h-[260px] bg-[#E5E7EB]" />
+          <div className="h-[260px] bg-[#252547]" />
           <div className="max-w-xl mx-auto w-full px-5 pt-5 space-y-4">
-            <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 space-y-3">
-              <div className="h-5 bg-[#F5F7FA] rounded w-28" />
-              <div className="h-7 bg-[#F5F7FA] rounded w-3/4" />
-              <div className="h-4 bg-[#F5F7FA] rounded w-1/2" />
+            <div className="bg-[#252547] rounded-[24px] border border-[#353560] p-5 space-y-3">
+              <div className="h-5 bg-[#353560] rounded w-28" />
+              <div className="h-7 bg-[#353560] rounded w-3/4" />
+              <div className="h-4 bg-[#353560] rounded w-1/2" />
             </div>
           </div>
         </div>
@@ -151,13 +151,13 @@ export default function ListingDetailPage() {
 
   if (isError || !listing) {
     return (
-      <div className="min-h-screen bg-[#F5F7FA] flex flex-col relative">
+      <div className="min-h-screen bg-[#1A1A2E] flex flex-col relative">
         <FloatingBackButton navigate={navigate} />
         <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-16">
-          <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-8 text-center">
-            <p className="text-[18px] font-medium text-[#222222] mb-2">{t("listing.notFound")}</p>
-            <p className="text-[13px] text-[#222222] mb-4">{t("listing.notFoundDesc")}</p>
-            <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-full bg-[#F97316] text-white text-[15px] font-medium" data-testid="button-back-dashboard">
+          <div className="bg-[#252547] rounded-[24px] border border-[#353560] p-8 text-center">
+            <p className="text-[18px] font-medium text-white mb-2">{t("listing.notFound")}</p>
+            <p className="text-[13px] text-[#9CA3AF] mb-4">{t("listing.notFoundDesc")}</p>
+            <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-full bg-[#E91E63] hover:bg-[#D81B60] text-white text-[15px] font-medium" data-testid="button-back-dashboard">
               {t("listing.backToDashboard")}
             </Button>
           </div>
@@ -171,7 +171,7 @@ export default function ListingDetailPage() {
   const gradient = getCityGradient(listing.city);
 
   return (
-    <div className="min-h-screen bg-[#F5F7FA] flex flex-col relative">
+    <div className="min-h-screen bg-[#1A1A2E] flex flex-col relative">
       <FloatingBackButton navigate={navigate} />
 
       <div className="relative">
@@ -186,7 +186,7 @@ export default function ListingDetailPage() {
           />
         ) : (
           <div className={`w-full h-[260px] bg-gradient-to-br ${gradient} flex items-center justify-center relative`}>
-            <div className="absolute inset-0 bg-black/5" />
+            <div className="absolute inset-0 bg-black/10" />
             <div className="flex flex-col items-center gap-2 text-white/60">
               <ImageIcon className="w-10 h-10" />
               <span className="text-[13px] font-medium capitalize">{listing.source}</span>
@@ -209,12 +209,12 @@ export default function ListingDetailPage() {
 
       <main className="flex-1 max-w-xl mx-auto w-full px-5 -mt-6 relative z-10 pb-36">
         <div className="space-y-4">
-          <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5">
-            <h1 className="text-[24px] font-medium text-[#222222] leading-[1.2] tracking-[-0.02em] mb-2" data-testid="text-listing-title">
+          <div className="bg-[#252547] rounded-[24px] border border-[#353560] p-5">
+            <h1 className="text-[24px] font-medium text-white leading-[1.2] tracking-[-0.02em] mb-2" data-testid="text-listing-title">
               {listing.title}
             </h1>
 
-            <div className="flex items-center gap-1.5 text-[14px] text-[#222222] mb-4">
+            <div className="flex items-center gap-1.5 text-[14px] text-[#9CA3AF] mb-4">
               <MapPin className="w-4 h-4 flex-shrink-0" />
               <span data-testid="text-listing-location">
                 {listing.district?.trim() ? `${listing.district.trim()} · ${listing.city}` : listing.city}
@@ -223,56 +223,56 @@ export default function ListingDetailPage() {
 
             {listing.price > 0 && (
               <div className="flex items-baseline gap-1 mb-1">
-                <span className="text-[28px] font-medium text-[#222222]" data-testid="text-listing-price">€{listing.price}</span>
-                <span className="text-[15px] font-medium text-[#222222]">{t("common.perMonth")}</span>
+                <span className="text-[28px] font-medium text-white" data-testid="text-listing-price">€{listing.price}</span>
+                <span className="text-[15px] font-medium text-[#9CA3AF]">{t("common.perMonth")}</span>
               </div>
             )}
           </div>
 
-          <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5">
+          <div className="bg-[#252547] rounded-[24px] border border-[#353560] p-5">
             <h2 className="text-section-title mb-4">{t("listing.details")}</h2>
             <div className="grid grid-cols-2 gap-4">
               {listing.bedrooms > 0 && (
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-[#F5F7FA] flex items-center justify-center">
-                    <BedDouble className="w-5 h-5 text-[#71717A]" />
+                  <div className="w-10 h-10 rounded-lg bg-[#353560] flex items-center justify-center">
+                    <BedDouble className="w-5 h-5 text-[#9CA3AF]" />
                   </div>
                   <div>
-                    <p className="text-[12px] text-[#222222]">{t("listing.bedrooms")}</p>
-                    <p className="text-[15px] font-medium text-[#222222]" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
+                    <p className="text-[12px] text-[#9CA3AF]">{t("listing.bedrooms")}</p>
+                    <p className="text-[15px] font-medium text-white" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
                   </div>
                 </div>
               )}
 
               {listing.size_m2 > 0 && (
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-[#F5F7FA] flex items-center justify-center">
-                    <Ruler className="w-5 h-5 text-[#71717A]" />
+                  <div className="w-10 h-10 rounded-lg bg-[#353560] flex items-center justify-center">
+                    <Ruler className="w-5 h-5 text-[#9CA3AF]" />
                   </div>
                   <div>
-                    <p className="text-[12px] text-[#222222]">{t("listing.area")}</p>
-                    <p className="text-[15px] font-medium text-[#222222]" data-testid="text-listing-size">{listing.size_m2} m²</p>
+                    <p className="text-[12px] text-[#9CA3AF]">{t("listing.area")}</p>
+                    <p className="text-[15px] font-medium text-white" data-testid="text-listing-size">{listing.size_m2} m²</p>
                   </div>
                 </div>
               )}
 
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-[#F5F7FA] flex items-center justify-center">
-                  <Globe className="w-5 h-5 text-[#71717A]" />
+                <div className="w-10 h-10 rounded-lg bg-[#353560] flex items-center justify-center">
+                  <Globe className="w-5 h-5 text-[#9CA3AF]" />
                 </div>
                 <div>
-                  <p className="text-[12px] text-[#222222]">{t("listing.source")}</p>
-                  <p className="text-[15px] font-medium capitalize" style={{ color: "#F97316" }} data-testid="text-listing-source">{listing.source}</p>
+                  <p className="text-[12px] text-[#9CA3AF]">{t("listing.source")}</p>
+                  <p className="text-[15px] font-medium capitalize text-[#E91E63]" data-testid="text-listing-source">{listing.source}</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-[#F5F7FA] flex items-center justify-center">
-                  <Clock className="w-5 h-5 text-[#71717A]" />
+                <div className="w-10 h-10 rounded-lg bg-[#353560] flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-[#9CA3AF]" />
                 </div>
                 <div>
-                  <p className="text-[12px] text-[#222222]">{t("listing.posted")}</p>
-                  <p className="text-[15px] font-medium text-[#222222]" data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</p>
+                  <p className="text-[12px] text-[#9CA3AF]">{t("listing.posted")}</p>
+                  <p className="text-[15px] font-medium text-white" data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</p>
                 </div>
               </div>
             </div>
@@ -288,14 +288,14 @@ export default function ListingDetailPage() {
             if (unknowns.length === 0 && !hasPetsNote) return null;
             return (
               <div
-                className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-4 space-y-2"
+                className="bg-[#252547] rounded-[24px] border border-[#353560] p-4 space-y-2"
                 data-testid="section-hybrid-filters"
                 data-hybrid-furnished={hf.furnished}
                 data-hybrid-district={hf.district}
                 data-hybrid-pets={hf.pets}
               >
                 {unknowns.length > 0 && (
-                  <div className="flex items-start gap-2 text-[12px] text-[#222222]/50">
+                  <div className="flex items-start gap-2 text-[12px] text-[#9CA3AF]/70">
                     <Info className="w-3.5 h-3.5 flex-shrink-0 mt-[1px]" />
                     <div>
                       <p className="font-medium">{t("hybridFilter.unknownHint")}</p>
@@ -308,7 +308,7 @@ export default function ListingDetailPage() {
                   </div>
                 )}
                 {hasPetsNote && (
-                  <div className="flex items-start gap-2 text-[12px] text-[#222222]/50">
+                  <div className="flex items-start gap-2 text-[12px] text-[#9CA3AF]/70">
                     <Info className="w-3.5 h-3.5 flex-shrink-0 mt-[1px]" />
                     <p>{t("hybridFilter.petsNote")}</p>
                   </div>
@@ -319,17 +319,17 @@ export default function ListingDetailPage() {
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] p-4 pb-5 z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-[#1A1A2E] border-t border-[#353560] p-4 pb-5 z-10">
         <div className="max-w-xl mx-auto flex flex-col gap-2">
           {listing.price > 0 && (
             <div className="flex items-baseline gap-1 mb-1">
-              <span className="text-[20px] font-medium text-[#222222]" data-testid="text-bar-price">€{listing.price}</span>
-              <span className="text-[13px] font-medium text-[#717171]">{t("common.perMonth")}</span>
+              <span className="text-[20px] font-medium text-white" data-testid="text-bar-price">€{listing.price}</span>
+              <span className="text-[13px] font-medium text-[#9CA3AF]">{t("common.perMonth")}</span>
             </div>
           )}
           <Button
             onClick={() => navigate(`/apply/${listing.id}`)}
-            className="w-full h-[56px] rounded-full bg-[#F97316] text-white text-[15px] font-medium flex items-center justify-center gap-2"
+            className="w-full h-[56px] rounded-full bg-[#E91E63] hover:bg-[#D81B60] text-white text-[15px] font-medium flex items-center justify-center gap-2"
             data-testid="button-reageer-detail"
           >
             <Zap className="w-4 h-4" />

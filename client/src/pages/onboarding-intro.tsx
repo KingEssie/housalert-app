@@ -3,8 +3,8 @@ import { useTranslation } from "@/i18n";
 import { HousAlertLogo } from "@/components/housalert-logo";
 import { Search, Zap, Bell } from "lucide-react";
 
-const BRAND = "#F97316";
-const BRAND_HOVER = "#EA580C";
+const BRAND = "#E91E63";
+const BRAND_HOVER = "#D81B60";
 
 const BENEFITS = [
   { icon: Search, key: "benefit1" as const },
@@ -18,13 +18,13 @@ export default function OnboardingIntroPage() {
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-[100dvh] bg-white flex flex-col" data-testid="onboarding-intro-page">
-      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#F0F0F0]">
+    <div className="min-h-[100dvh] bg-[#1A1A2E] flex flex-col" data-testid="onboarding-intro-page">
+      <header className="w-full bg-[#1A1A2E] sticky top-0 z-20 border-b border-[#353560]">
         <div className="max-w-lg mx-auto px-5 h-[56px] flex items-center justify-between">
-          <HousAlertLogo size={32} textClassName="font-semibold text-[#222222] text-[17px] tracking-[-0.01em]" />
+          <HousAlertLogo size={32} textClassName="font-semibold text-white text-[17px] tracking-[-0.01em]" />
           <button
             onClick={() => navigate("/welcome")}
-            className="text-[13px] font-medium text-[#717171] hover:text-[#222222] transition-colors"
+            className="text-[13px] font-medium text-[#9CA3AF] hover:text-white transition-colors"
             data-testid="button-back-to-login"
           >
             {t("onboardingIntro.alreadyAccount")}
@@ -35,21 +35,20 @@ export default function OnboardingIntroPage() {
       <main className="flex-1 flex flex-col items-center justify-center px-6 pb-[max(env(safe-area-inset-bottom),24px)]">
         <div className="w-full max-w-[380px] flex flex-col items-center text-center">
           <div
-            className="w-[72px] h-[72px] rounded-2xl flex items-center justify-center mb-8"
-            style={{ backgroundColor: "#FFF7ED" }}
+            className="w-[72px] h-[72px] rounded-2xl flex items-center justify-center mb-8 bg-[#E91E63]/10"
           >
-            <Search className="w-8 h-8" style={{ color: BRAND }} />
+            <Search className="w-8 h-8 text-[#E91E63]" />
           </div>
 
           <h1
-            className="text-[26px] font-bold leading-[1.15] tracking-[-0.02em] text-[#222222] mb-3"
+            className="text-[26px] font-bold leading-[1.15] tracking-[-0.02em] text-white mb-3"
             data-testid="text-intro-title"
           >
             {t("onboardingIntro.title")}
           </h1>
 
           <p
-            className="text-[15px] leading-relaxed text-[#717171] mb-10"
+            className="text-[15px] leading-relaxed text-[#9CA3AF] mb-10"
             data-testid="text-intro-subtitle"
           >
             {t("onboardingIntro.subtitle")}
@@ -63,16 +62,15 @@ export default function OnboardingIntroPage() {
                 data-testid={`benefit-${i + 1}`}
               >
                 <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ backgroundColor: "#FFF7ED" }}
+                  className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-[#E91E63]/10"
                 >
-                  <Icon className="w-5 h-5" style={{ color: BRAND }} />
+                  <Icon className="w-5 h-5 text-[#E91E63]" />
                 </div>
                 <div>
-                  <p className="text-[15px] font-semibold text-[#222222] leading-snug">
+                  <p className="text-[15px] font-semibold text-white leading-snug">
                     {t(`onboardingIntro.${key}.title`)}
                   </p>
-                  <p className="text-[13px] text-[#717171] leading-relaxed mt-0.5">
+                  <p className="text-[13px] text-[#9CA3AF] leading-relaxed mt-0.5">
                     {t(`onboardingIntro.${key}.desc`)}
                   </p>
                 </div>
@@ -82,7 +80,7 @@ export default function OnboardingIntroPage() {
 
           <button
             onClick={() => navigate("/onboarding/location")}
-            className="w-full h-[52px] rounded-full text-[16px] font-bold text-white transition-all active:scale-[0.97] shadow-[0_4px_14px_rgba(249,115,22,0.3)]"
+            className="w-full h-[52px] rounded-full text-[16px] font-bold text-white transition-all active:scale-[0.97] shadow-[0_4px_14px_rgba(233,30,99,0.3)]"
             style={{ backgroundColor: BRAND }}
             onMouseOver={(e) => (e.currentTarget.style.backgroundColor = BRAND_HOVER)}
             onMouseOut={(e) => (e.currentTarget.style.backgroundColor = BRAND)}
@@ -93,7 +91,7 @@ export default function OnboardingIntroPage() {
 
           <button
             onClick={() => navigate("/welcome")}
-            className="mt-4 text-[13px] font-medium text-[#717171] hover:text-[#222222] transition-colors"
+            className="mt-4 text-[13px] font-medium text-[#9CA3AF] hover:text-white transition-colors"
             data-testid="button-browse-listings"
           >
             {t("onboardingIntro.secondary")}

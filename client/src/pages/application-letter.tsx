@@ -81,7 +81,7 @@ export default function ApplicationLetterPage() {
   const isLongEnough = template.trim().length >= 20;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-[#1A1A2E] flex flex-col">
       <PageHeader title={t("applicationLetter.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-32">
@@ -89,10 +89,10 @@ export default function ApplicationLetterPage() {
 
           <div>
             <div className="flex items-center justify-between mb-2.5">
-              <h3 className="text-[14px] font-medium text-[#717171]">{t("applicationLetter.placeholders")}</h3>
+              <h3 className="text-[14px] font-medium text-[#9CA3AF]">{t("applicationLetter.placeholders")}</h3>
               <button
                 onClick={handleReset}
-                className="flex items-center gap-1 text-[13px] text-[#717171] active:text-[#717171] transition-colors"
+                className="flex items-center gap-1 text-[13px] text-[#9CA3AF] active:text-white transition-colors"
                 data-testid="button-reset-template"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
@@ -119,7 +119,7 @@ export default function ApplicationLetterPage() {
                       setTemplate(template + p.key);
                     }
                   }}
-                  className="text-[11px] font-mono bg-[#F3F4F6] text-[#F97316] px-2.5 py-1.5 rounded-lg active:bg-[#E5E7EB] transition-colors"
+                  className="text-[11px] font-mono bg-[#252547] text-[#E91E63] px-2.5 py-1.5 rounded-lg active:bg-[#353560] transition-colors border border-[#353560]"
                   title={t(p.labelKey)}
                   data-testid={`placeholder-${p.key.replace(/\[|\]/g, "")}`}
                 >
@@ -130,8 +130,8 @@ export default function ApplicationLetterPage() {
           </div>
 
           {isLoading ? (
-            <div className="rounded-[20px] bg-[#F9FAFB] p-6 animate-pulse">
-              <div className="h-[300px] bg-[#F3F4F6] rounded-2xl" />
+            <div className="rounded-[20px] bg-[#252547] p-6 animate-pulse">
+              <div className="h-[300px] bg-[#353560] rounded-2xl" />
             </div>
           ) : (
             <div>
@@ -139,11 +139,11 @@ export default function ApplicationLetterPage() {
                 value={template}
                 onChange={(e) => setTemplate(e.target.value)}
                 placeholder={t("applicationLetter.placeholderText")}
-                className="w-full min-h-[340px] px-5 py-5 rounded-[20px] border border-[#F0F0F0] bg-white text-[15px] text-[#222222] placeholder:text-[#C4C4C4] focus:outline-none focus:border-[#F97316]/30 focus:shadow-[0_0_0_3px_rgba(249,115,22,0.08)] resize-y leading-relaxed shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] transition-all"
+                className="w-full min-h-[340px] px-5 py-5 rounded-[20px] border border-[#353560] bg-[#252547] text-[15px] text-white placeholder:text-[#6B7280] focus:outline-none focus:border-[#E91E63] focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] resize-y leading-relaxed transition-all"
                 data-testid="input-template"
               />
               {!isLongEnough && template.length > 0 && (
-                <p className="text-[12px] text-[#717171] mt-2 px-1">{t("applicationLetter.minChars")}</p>
+                <p className="text-[12px] text-[#9CA3AF] mt-2 px-1">{t("applicationLetter.minChars")}</p>
               )}
             </div>
           )}
@@ -154,7 +154,7 @@ export default function ApplicationLetterPage() {
         <button
           onClick={() => saveMutation.mutate(template)}
           disabled={!isLongEnough || saveMutation.isPending}
-          className="pointer-events-auto h-[48px] px-8 rounded-full bg-[#222222] text-white text-[15px] font-medium disabled:opacity-40 shadow-[0_4px_16px_rgba(0,0,0,0.16)] active:scale-95 transition-all"
+          className="pointer-events-auto h-[48px] px-8 rounded-full bg-[#E91E63] hover:bg-[#D81B60] text-white text-[15px] font-medium disabled:opacity-40 shadow-[0_4px_16px_rgba(0,0,0,0.16)] active:scale-95 transition-all"
           data-testid="button-save-template"
         >
           {saveMutation.isPending ? t("applicationLetter.saving") : t("applicationLetter.saveLetter")}

@@ -78,15 +78,15 @@ export default function OnboardingEstimatePage() {
   ].filter((c) => c.show);
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
+    <div className="min-h-screen bg-[#1A1A2E] flex flex-col">
+      <header className="w-full bg-[#1A1A2E] sticky top-0 z-20 border-b border-[#353560]">
         <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center gap-3">
           <button
             onClick={handleBack}
-            className="w-12 h-12 rounded-full bg-[#F3F4F6] shadow-[0_1px_4px_rgba(0,0,0,0.06)] flex items-center justify-center active:scale-95 transition-colors"
+            className="w-12 h-12 rounded-full bg-[#252547] flex items-center justify-center active:scale-95 transition-colors"
             data-testid="button-back-filters"
           >
-            <ChevronLeft className="w-5 h-5 text-[#71717A]" />
+            <ChevronLeft className="w-5 h-5 text-[#9CA3AF]" />
           </button>
           <HousAlertLogo size={28} />
         </div>
@@ -95,41 +95,41 @@ export default function OnboardingEstimatePage() {
       <div className="max-w-xl mx-auto w-full px-6 pt-6 pb-2">
         <div className="flex items-center gap-2">
           {[1, 2, 3].map((step) => (
-            <div key={step} className="flex-1 h-2 rounded-full overflow-hidden bg-[#E5E7EB]">
+            <div key={step} className="flex-1 h-2 rounded-full overflow-hidden bg-[#353560]">
               <div
-                className="h-full rounded-full w-full bg-[#F97316]"
+                className="h-full rounded-full w-full bg-[#E91E63]"
                 data-testid={`progress-step-${step}`}
               />
             </div>
           ))}
         </div>
-        <p className="text-xs font-medium text-[#222222] mt-2" data-testid="text-step-indicator">{t("onboardingEstimate.stepIndicator", { step: 3, total: 3 })}</p>
+        <p className="text-xs font-medium text-[#9CA3AF] mt-2" data-testid="text-step-indicator">{t("onboardingEstimate.stepIndicator", { step: 3, total: 3 })}</p>
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-8 pt-4 flex flex-col">
-        <h1 className="text-[32px] font-medium text-[#222222] leading-[1.1] tracking-[-0.03em] mb-3 text-center" data-testid="text-estimate-title">
+        <h1 className="text-[32px] font-medium text-white leading-[1.1] tracking-[-0.03em] mb-3 text-center" data-testid="text-estimate-title">
           {t("onboardingEstimate.title")}
         </h1>
-        <p className="text-[15px] text-[#222222] text-center mb-6">
+        <p className="text-[15px] text-[#9CA3AF] text-center mb-6">
           {t("onboardingEstimate.subtitle", { city })}
         </p>
 
-        <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6" data-testid="card-estimate">
-          <div className="text-center py-4 border-b border-[#E5E7EB]">
+        <div className="bg-[#252547] rounded-[24px] border border-[#353560] p-6" data-testid="card-estimate">
+          <div className="text-center py-4 border-b border-[#353560]">
             <div className="flex items-center justify-center mx-auto mb-4">
-              <TrendingUp className="w-7 h-7 text-[#717171]" />
+              <TrendingUp className="w-7 h-7 text-[#9CA3AF]" />
             </div>
 
             {loading ? (
               <div className="flex items-center justify-center py-4">
-                <Loader2 className="w-8 h-8 text-[#F97316] animate-spin" />
+                <Loader2 className="w-8 h-8 text-[#E91E63] animate-spin" />
               </div>
             ) : (
               <>
-                <p className="text-5xl font-medium text-[#222222] mb-3 tabular-nums" data-testid="text-estimate-number">
+                <p className="text-5xl font-medium text-white mb-3 tabular-nums" data-testid="text-estimate-number">
                   {getMatchEstimateRange(estimate ?? 0).low}–{getMatchEstimateRange(estimate ?? 0).high}
                 </p>
-                <p className="text-base text-[#222222] leading-relaxed max-w-sm mx-auto" data-testid="text-estimate-description">
+                <p className="text-base text-[#9CA3AF] leading-relaxed max-w-sm mx-auto" data-testid="text-estimate-description">
                   {t("onboardingEstimate.estimateDesc", getMatchEstimateRange(estimate ?? 0))}
                 </p>
               </>
@@ -137,13 +137,13 @@ export default function OnboardingEstimatePage() {
           </div>
 
           {filterChips.length > 0 && (
-            <div className="py-5 border-b border-[#E5E7EB]">
-              <p className="text-sm font-medium text-[#222222] mb-3">{t("onboardingEstimate.yourFilters")}</p>
+            <div className="py-5 border-b border-[#353560]">
+              <p className="text-sm font-medium text-white mb-3">{t("onboardingEstimate.yourFilters")}</p>
               <div className="flex flex-wrap gap-2">
                 {filterChips.map((chip) => (
                   <span
                     key={chip.testId}
-                    className="px-3.5 py-1.5 bg-[#F5F7FA] rounded-full text-sm font-medium text-[#222222]"
+                    className="px-3.5 py-1.5 bg-[#353560] rounded-full text-sm font-medium text-white"
                     data-testid={chip.testId}
                   >
                     {chip.label}
@@ -153,9 +153,9 @@ export default function OnboardingEstimatePage() {
             </div>
           )}
 
-          <div className="flex items-start gap-3 py-5 border-b border-[#E5E7EB]">
-            <Sparkles className="w-5 h-5 text-[#F97316] flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-[#222222] leading-relaxed">
+          <div className="flex items-start gap-3 py-5 border-b border-[#353560]">
+            <Sparkles className="w-5 h-5 text-[#E91E63] flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-[#9CA3AF] leading-relaxed">
               {t("onboardingEstimate.ctaText")}
             </p>
           </div>
@@ -164,7 +164,7 @@ export default function OnboardingEstimatePage() {
             <Button
               variant="outline"
               size="lg"
-              className="h-[48px] px-6 rounded-full text-[15px] font-medium border-[#E5E7EB] text-[#222222] hover:bg-[#F5F7FA]"
+              className="h-[48px] px-6 rounded-full text-[15px] font-medium border-[#353560] text-white hover:bg-[#353560]"
               onClick={handleBack}
               data-testid="button-back-estimate"
             >
@@ -172,7 +172,7 @@ export default function OnboardingEstimatePage() {
             </Button>
             <Button
               size="lg"
-              className="flex-1 h-[56px] rounded-full text-[16px] font-medium shadow-none bg-[#F97316] hover:bg-[#EA580C]"
+              className="flex-1 h-[56px] rounded-full text-[16px] font-medium shadow-none bg-[#E91E63] hover:bg-[#D81B60] text-white"
               onClick={handleCreateAccount}
               disabled={loading}
               data-testid="button-create-account"
