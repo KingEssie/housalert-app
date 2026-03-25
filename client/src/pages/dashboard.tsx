@@ -82,7 +82,7 @@ function relativeTime(dateStr: string | null | undefined, t: (key: string, param
   return days === 1 ? t("freshness.dayAgo", { n: days }) : t("freshness.daysAgo", { n: days });
 }
 
-type TabKey = "home" | "matches" | "filters" | "tips" | "profiel";
+type TabKey = "home" | "matches" | "filters" | "profiel" | "tips";
 type MatchSubTab = "nieuw" | "bekeken" | "gereageerd" | "favorieten";
 
 const CITY_GRADIENTS: Record<string, string> = {
@@ -430,53 +430,55 @@ function RecentMatchCard({ match }: { match: ApiMatch }) {
       }}
       data-testid={`card-recent-match-${match.listing_id}`}
     >
-      <div className="relative rounded-[6px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
-        {hasImage ? (
-          <img
-            src={match.image_url!}
-            alt={match.title}
-            className="w-full object-cover"
-            style={{ aspectRatio: "4/3" }}
-            loading="lazy"
-            onError={() => setImgError(true)}
-            referrerPolicy="no-referrer"
-          />
-        ) : (
-          <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "4/3" }}>
-            <div className="absolute inset-0 bg-black/5" />
-            <div className="flex flex-col items-center gap-1.5 text-ha-text/50">
-              <ImageIcon className="w-7 h-7" />
-              <span className="text-[11px] font-medium">{match.source}</span>
+      <div className="rounded-[6px] overflow-hidden bg-ha-card shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
+        <div className="relative">
+          {hasImage ? (
+            <img
+              src={match.image_url!}
+              alt={match.title}
+              className="w-full object-cover"
+              style={{ aspectRatio: "4/3" }}
+              loading="lazy"
+              onError={() => setImgError(true)}
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "4/3" }}>
+              <div className="absolute inset-0 bg-black/5" />
+              <div className="flex flex-col items-center gap-1.5 text-ha-text/50">
+                <ImageIcon className="w-7 h-7" />
+                <span className="text-[11px] font-medium">{match.source}</span>
+              </div>
             </div>
-          </div>
-        )}
-        <div className="absolute top-2.5 left-2.5">
-          <span className="text-[10px] font-medium bg-ha-card/95 backdrop-blur-md text-ha-text px-2.5 py-1 rounded-full shadow-[0_1px_3px_rgba(0,0,0,0.08)] capitalize">
-            {match.source}
-          </span>
-        </div>
-      </div>
-
-      <div className="pt-2.5 flex flex-col gap-0.5">
-        <span className="text-[15px] font-medium text-ha-text truncate" data-testid={`text-recent-city-${match.listing_id}`}>
-          {match.city}
-        </span>
-        <p className="text-[14px] text-ha-text-secondary line-clamp-1 leading-[1.35]" data-testid={`text-recent-title-${match.listing_id}`}>
-          {match.title}
-        </p>
-        <div className="flex items-center gap-1.5 text-[13px] text-ha-text-secondary mt-0.5">
-          {match.bedrooms > 0 && (
-            <span>{match.bedrooms} {match.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}</span>
           )}
-          {match.bedrooms > 0 && match.size_m2 > 0 && <span className="text-ha-text-muted">·</span>}
-          {match.size_m2 > 0 && <span>{match.size_m2} m²</span>}
+          <div className="absolute top-2.5 left-2.5">
+            <span className="text-[10px] font-medium bg-ha-card/95 backdrop-blur-md text-ha-text px-2.5 py-1 rounded-full shadow-[0_1px_3px_rgba(0,0,0,0.08)] capitalize">
+              {match.source}
+            </span>
+          </div>
         </div>
-        {match.price > 0 && (
-          <p className="mt-1" data-testid={`badge-recent-price-${match.listing_id}`}>
-            <span className="text-[15px] font-medium text-ha-text">€{match.price}</span>
-            <span className="text-[12px] text-ha-text-secondary ml-0.5">{t("common.perMonthShort")}</span>
+
+        <div className="px-3 py-3 flex flex-col gap-0.5">
+          <span className="text-[15px] font-medium text-ha-text truncate" data-testid={`text-recent-city-${match.listing_id}`}>
+            {match.city}
+          </span>
+          <p className="text-[14px] text-ha-text-secondary line-clamp-1 leading-[1.35]" data-testid={`text-recent-title-${match.listing_id}`}>
+            {match.title}
           </p>
-        )}
+          <div className="flex items-center gap-1.5 text-[13px] text-ha-text-secondary mt-0.5">
+            {match.bedrooms > 0 && (
+              <span>{match.bedrooms} {match.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}</span>
+            )}
+            {match.bedrooms > 0 && match.size_m2 > 0 && <span className="text-ha-text-muted">·</span>}
+            {match.size_m2 > 0 && <span>{match.size_m2} m²</span>}
+          </div>
+          {match.price > 0 && (
+            <p className="mt-1" data-testid={`badge-recent-price-${match.listing_id}`}>
+              <span className="text-[15px] font-medium text-ha-text">€{match.price}</span>
+              <span className="text-[12px] text-ha-text-secondary ml-0.5">{t("common.perMonthShort")}</span>
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -992,12 +994,12 @@ function HomeTab({
 
   return (
     <div className="flex flex-col pb-8">
-      <div className="sticky top-0 z-10 bg-ha-bg pt-6 pb-4 px-6">
+      <div className="px-6 pt-6 pb-2">
         <h1 className="text-page-title" data-testid="text-greeting">
           {firstName ? t("home.greeting", { name: firstName }) : t("home.greetingDefault")}
         </h1>
       </div>
-      <div className="flex flex-col gap-7 px-6 mt-1">
+      <div className="flex flex-col gap-7 px-6">
 
       <div className="rounded-[6px] bg-ha-card border border-ha-card-border p-5" data-testid="card-home-referral">
         <p className="text-[11px] font-semibold text-ha-primary tracking-wider uppercase mb-1" data-testid="text-referral-label">
@@ -1964,6 +1966,147 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             </div>
           </div>
 
+          <div className="rounded-[6px] bg-ha-card px-5 py-4" data-testid="card-search-profiles">
+            <div className="flex items-center gap-3 mb-1">
+              <Search className="w-5 h-5 text-ha-primary flex-shrink-0" />
+              <p className="text-[16px] font-bold text-ha-text flex-1">{t("profile.searchProfiles")}</p>
+              <span className="text-[13px] font-semibold text-ha-primary">{spCount}/{4}</span>
+            </div>
+            {spList.length > 0 && (
+              <div className="mt-3 flex flex-col gap-2">
+                {spList.map((sp: SearchProfile) => (
+                  <button
+                    key={sp.id}
+                    onClick={() => navigate(`/dashboard/searches/edit/${sp.id}`)}
+                    className="flex items-center gap-3 py-2 px-1 rounded-[6px] active:bg-ha-surface transition-colors text-left"
+                    data-testid={`button-search-profile-${sp.id}`}
+                  >
+                    <span className="w-2.5 h-2.5 rounded-full bg-ha-success flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[15px] font-semibold text-ha-text truncate">{sp.city_name || sp.city || t("profile.searchProfileDefault")}</p>
+                      {sp.districts && sp.districts.length > 0 && (
+                        <p className="text-[13px] text-ha-text-secondary mt-0.5 truncate">
+                          {sp.districts.length <= 2
+                            ? sp.districts.join(", ")
+                            : `${sp.districts[0]} ${t("profile.andOtherNeighborhoods", { count: sp.districts.length - 1 })}`
+                          }
+                        </p>
+                      )}
+                    </div>
+                    <Pencil className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
+                  </button>
+                ))}
+              </div>
+            )}
+            <button
+              onClick={() => navigate("/dashboard/searches/new")}
+              className="w-full mt-3 h-[44px] rounded-[6px] border border-ha-primary text-ha-primary text-[14px] font-semibold flex items-center justify-center gap-1.5 active:bg-ha-primary-light transition-colors"
+              data-testid="button-extra-profile"
+            >
+              {t("profile.newSearchProfile")} <Plus className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="rounded-[6px] bg-ha-card px-5 py-4">
+            <button
+              onClick={() => navigate("/application-letter")}
+              className="w-full flex items-center gap-3 text-left active:opacity-80 transition-opacity"
+              data-testid="button-reaction-letter"
+            >
+              <Sparkles className="w-5 h-5 text-ha-primary flex-shrink-0" />
+              <p className="text-[16px] font-bold text-ha-text flex-1">{t("profile.reactionLetter2")}</p>
+              <span className="text-[13px] font-semibold text-ha-primary">{letterPreview ? t("profile.editAction") : t("profile.generateAction")}</span>
+            </button>
+            {letterPreview ? (
+              <p className="text-[13px] text-ha-success mt-2 flex items-center gap-1.5 pl-8"><Check className="w-4 h-4" /> {t("profile.letterSet")}</p>
+            ) : (
+              <p className="text-[13px] text-ha-danger mt-2 flex items-center gap-1.5 pl-8"><X className="w-4 h-4" /> {t("profile.noLetterYet")}</p>
+            )}
+          </div>
+
+          <div className="rounded-[6px] bg-ha-card px-5 py-4" id="zoekbuddy-section" data-testid="row-zoekbuddy">
+            <button
+              onClick={() => {
+                if (!buddyExpanded) {
+                  setBuddyEmail(pd?.search_buddy_email || "");
+                  setBuddyExpanded(true);
+                } else {
+                  setBuddyExpanded(false);
+                  setBuddyEmail("");
+                }
+              }}
+              className="w-full flex items-center gap-3 text-left active:opacity-80 transition-opacity"
+              data-testid="button-buddy-toggle"
+            >
+              <Users className="w-5 h-5 text-ha-primary flex-shrink-0" />
+              <p className="text-[16px] font-bold text-ha-text flex-1">{t("profile.zoekbuddyTitle")}</p>
+              {!buddyExpanded && pd?.search_buddy_email ? (
+                <span
+                  role="button"
+                  onClick={e => { e.stopPropagation(); setShowBuddyDeleteConfirm(true); }}
+                  className="text-[13px] font-semibold text-ha-primary"
+                  data-testid="button-buddy-remove-x"
+                >
+                  {t("profile.manageAction")}
+                </span>
+              ) : !buddyExpanded ? (
+                <ChevronRight className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
+              ) : null}
+            </button>
+            {!buddyExpanded && (
+              <p className="text-[13px] text-ha-text-secondary mt-1.5 leading-relaxed pl-8">{t("profile.buddyDescription")}</p>
+            )}
+            {!buddyExpanded && pd?.search_buddy_email && (
+              <p className="text-[13px] text-ha-success mt-2 flex items-center gap-1.5 pl-8"><Check className="w-4 h-4" /> {pd.search_buddy_email}</p>
+            )}
+            {!buddyExpanded && !pd?.search_buddy_email && (
+              <p className="text-[13px] text-ha-danger mt-2 flex items-center gap-1.5 pl-8"><X className="w-4 h-4" /> {t("profile.noBuddyYet")}</p>
+            )}
+            {buddyExpanded && (
+              <div className="pt-3 pb-1 animate-in slide-in-from-top-1 duration-200" data-testid="editor-zoekbuddy">
+                <div className="relative mb-4">
+                  <input
+                    type="email"
+                    value={buddyEmail}
+                    onChange={e => setBuddyEmail(e.target.value)}
+                    onKeyDown={e => { if (e.key === "Enter") handleBuddyInvite(); }}
+                    placeholder={t("profileEdit.searchBuddyPlaceholder")}
+                    autoFocus
+                    className="w-full bg-ha-bg rounded-[6px] px-5 py-4 text-[16px] text-ha-text placeholder:text-ha-text-muted border border-ha-card-border focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] focus:outline-none transition-all h-[52px]"
+                    data-testid="input-buddy-email"
+                  />
+                  {buddyEmail && (
+                    <button
+                      type="button"
+                      onClick={() => setBuddyEmail("")}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-ha-surface flex items-center justify-center active:scale-90 transition-transform"
+                      data-testid="button-buddy-clear"
+                    >
+                      <X className="w-3.5 h-3.5 text-ha-text-secondary" />
+                    </button>
+                  )}
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleBuddyInvite}
+                    disabled={buddySaving || !buddyEmail.trim()}
+                    className="h-[48px] px-8 rounded-[6px] bg-ha-primary text-white text-[15px] font-medium disabled:opacity-50 transition-colors flex items-center gap-2"
+                    data-testid="button-buddy-save"
+                  >
+                    {buddySaving ? <Loader2 className="w-4 h-4 animate-spin" /> : t("profileDetails.saveAndContinue")}
+                  </button>
+                  <button
+                    onClick={() => { setBuddyExpanded(false); setBuddyEmail(""); }}
+                    className="h-[48px] px-5 rounded-[6px] text-ha-text-secondary text-[14px] font-medium active:bg-ha-surface transition-colors"
+                    data-testid="button-buddy-cancel"
+                  >
+                    {t("profileDetails.cancel")}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
           <button
             onClick={() => navigate("/settings")}
             className="w-full h-[48px] rounded-[6px] bg-ha-card text-ha-text text-[15px] font-semibold flex items-center justify-center gap-2 active:opacity-90 transition-opacity border border-ha-card-border"
@@ -1996,6 +2139,32 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
         />
       )}
 
+      {showBuddyDeleteConfirm && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowBuddyDeleteConfirm(false)}>
+          <div className="bg-ha-card w-full max-w-[400px] rounded-t-[6px] sm:rounded-[6px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
+            <p className="text-[17px] font-bold text-ha-text text-center">{t("profile.buddyDeleteTitle")}</p>
+            <p className="text-[14px] text-ha-text-secondary text-center mt-2 mb-6">{t("profile.buddyDeleteDesc")}</p>
+            <button
+              onClick={() => {
+                handleBuddyRemove();
+                setShowBuddyDeleteConfirm(false);
+              }}
+              className="w-full h-[48px] rounded-[6px] bg-ha-danger text-white text-[15px] font-semibold mb-3 active:scale-[0.98] transition-transform"
+              data-testid="button-buddy-delete-confirm"
+            >
+              {t("profile.buddyRemoveLabel")}
+            </button>
+            <button
+              onClick={() => setShowBuddyDeleteConfirm(false)}
+              className="w-full h-[48px] rounded-[6px] text-ha-text text-[15px] font-medium active:bg-ha-surface transition-colors"
+              data-testid="button-buddy-delete-cancel"
+            >
+              {t("profileDetails.cancel")}
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
@@ -2003,7 +2172,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
 const TAB_CONFIG: { key: TabKey; labelKey: string; Icon: any }[] = [
   { key: "home", labelKey: "nav.home", Icon: Home },
   { key: "matches", labelKey: "nav.matches", Icon: Check },
-  { key: "tips", labelKey: "nav.tips", Icon: Zap },
   { key: "filters", labelKey: "nav.filters", Icon: Search },
   { key: "profiel", labelKey: "nav.profile", Icon: User },
 ];
@@ -2166,7 +2334,7 @@ export default function DashboardPage() {
         )}
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 z-20 bg-ha-bg border-t border-ha-card-border" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#E5E5E5]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
         <nav className="max-w-xl mx-auto flex h-[58px]" data-testid="bottom-nav">
           {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
             const isActive = activeTab === key;
@@ -2183,9 +2351,9 @@ export default function DashboardPage() {
                     <img src={tabPhotoUrl} alt="" className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <Icon className={`w-[24px] h-[24px] transition-colors ${isActive ? "text-ha-primary" : "text-ha-text-secondary"}`} strokeWidth={isActive ? 2 : 1.5} />
+                  <Icon className={`w-[24px] h-[24px] transition-colors ${isActive ? "text-ha-primary" : "text-[#9CA3AF]"}`} strokeWidth={isActive ? 2 : 1.5} />
                 )}
-                <span className={`text-[10px] transition-colors ${isActive ? "font-medium text-ha-primary" : "font-normal text-ha-text-secondary"}`}>
+                <span className={`text-[10px] transition-colors ${isActive ? "font-medium text-ha-primary" : "font-normal text-[#9CA3AF]"}`}>
                   {t(labelKey)}
                 </span>
               </button>
