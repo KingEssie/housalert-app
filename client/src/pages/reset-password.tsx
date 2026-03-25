@@ -230,7 +230,7 @@ export default function ResetPasswordPage() {
           <button
             type="submit"
             disabled={!canSubmit}
-            className={`w-full h-[52px] rounded-full text-[16px] font-bold transition-all active:scale-[0.97] ${
+            className={`w-full h-[52px] rounded-[14px] text-[16px] font-bold transition-all active:scale-[0.97] ${
               canSubmit
                 ? "text-ha-text shadow-[0_4px_16px_rgba(233,30,99,0.35)]"
                 : "text-ha-text-muted bg-ha-surface cursor-not-allowed"

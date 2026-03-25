@@ -80,7 +80,7 @@ export default function OnboardingIntroPage() {
 
           <button
             onClick={() => navigate("/onboarding/location")}
-            className="w-full h-[52px] rounded-full text-[16px] font-bold text-ha-text transition-all active:scale-[0.97] shadow-[0_4px_14px_rgba(233,30,99,0.3)]"
+            className="w-full h-[52px] rounded-[14px] text-[16px] font-bold text-ha-text transition-all active:scale-[0.97] shadow-[0_4px_14px_rgba(233,30,99,0.3)]"
             style={{ backgroundColor: BRAND }}
             onMouseOver={(e) => (e.currentTarget.style.backgroundColor = BRAND_HOVER)}
             onMouseOut={(e) => (e.currentTarget.style.backgroundColor = BRAND)}

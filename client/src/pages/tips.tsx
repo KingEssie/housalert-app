@@ -162,7 +162,7 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
               <button
                 key={guide.id}
                 onClick={() => navigate(`/tip/${guide.id}`)}
-                className={`bg-ha-card rounded-[24px] border border-ha-card-border p-5 flex items-center gap-4 text-left hover:bg-ha-card-hover transition-all duration-200 active:scale-[0.985] w-full ${isRead ? "opacity-70" : ""}`}
+                className={`bg-ha-card rounded-[16px] border border-ha-card-border p-5 flex items-center gap-4 text-left hover:bg-ha-card-hover transition-all duration-200 active:scale-[0.985] w-full ${isRead ? "opacity-70" : ""}`}
                 data-testid={`card-guide-${guide.id}`}
               >
                 <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 bg-ha-primary/10">

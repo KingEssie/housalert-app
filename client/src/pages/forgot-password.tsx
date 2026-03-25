@@ -146,7 +146,7 @@ export default function ForgotPasswordPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full h-[52px] rounded-full text-[16px] font-bold text-ha-text transition-all active:scale-[0.97] shadow-[0_4px_16px_rgba(233,30,99,0.35)] disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full h-[52px] rounded-[14px] text-[16px] font-bold text-ha-text transition-all active:scale-[0.97] shadow-[0_4px_16px_rgba(233,30,99,0.35)] disabled:opacity-60 disabled:cursor-not-allowed"
             style={{ backgroundColor: loading ? "#555" : BRAND }}
             onMouseOver={(e) => { if (!loading) e.currentTarget.style.backgroundColor = BRAND_HOVER; }}
             onMouseOut={(e) => { if (!loading) e.currentTarget.style.backgroundColor = BRAND; }}

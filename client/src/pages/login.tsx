@@ -120,7 +120,7 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <div className="bg-ha-card rounded-[24px] border border-ha-card-border p-6">
+          <div className="bg-ha-card rounded-[16px] border border-ha-card-border p-6">
             <form onSubmit={handleLogin} className="flex flex-col gap-5">
               <div className="flex flex-col gap-2">
                 <Label htmlFor="login-email" className="text-[14px] font-medium text-ha-text">{t("auth.login.email")}</Label>
@@ -159,7 +159,7 @@ export default function LoginPage() {
               </div>
               <Button
                 type="submit"
-                className="w-full h-[56px] rounded-full text-[16px] font-medium bg-ha-primary hover:bg-ha-primary-hover text-white"
+                className="w-full h-[56px] rounded-[14px] text-[16px] font-medium bg-ha-primary hover:bg-ha-primary-hover text-white"
                 disabled={loading}
                 data-testid="button-login-submit"
               >

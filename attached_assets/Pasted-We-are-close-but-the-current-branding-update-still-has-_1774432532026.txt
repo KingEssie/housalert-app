@@ -1,0 +1,116 @@
+We are close, but the current branding update still has 4 important UI issues.
+
+Do NOT redesign the app again.
+Do NOT change logic, routes, or functionality.
+This is a visual refinement pass only.
+
+GOAL:
+Keep the Rentbird-inspired light theme direction, but fix contrast, border radius, profile header, and the floating admin button.
+
+--------------------------------------------------
+1. PAGE BACKGROUND VS CARDS
+--------------------------------------------------
+
+Problem:
+The page background is too close in color to the cards, especially on listing screens and menu screens.
+This makes cards and listings blend into the page.
+
+Fix:
+- Set the global page background to a slightly darker light grey
+  Example: #F3F3F5 or similar
+- Keep cards/listing cards pure white
+- Increase contrast between page background and cards
+- Listing cards must visually stand out more clearly from the page
+
+Important:
+Do NOT darken the whole app.
+This is still a light theme.
+Just improve separation between page and cards.
+
+--------------------------------------------------
+2. BORDER RADIUS TOO ROUND
+--------------------------------------------------
+
+Problem:
+Cards, buttons, tabs, and pills are currently too rounded.
+It looks softer than Rentbird.
+
+Fix:
+Reduce border radius across the app:
+
+- Main cards: around 16px
+- Buttons: around 14px
+- Small pills/tabs: around 12px
+- Listing image corners: around 16px, not overly rounded
+
+The app should feel cleaner and slightly sharper, closer to Rentbird.
+Do NOT use large bubble/marshmallow radii anymore.
+
+--------------------------------------------------
+3. PROFILE HEADER
+--------------------------------------------------
+
+Problem:
+On the account/profile page, the top header area with avatar/name is missing the dark purple background feeling from Rentbird.
+
+Fix:
+Restore the Rentbird-style profile header treatment:
+- dark purple header background
+- subtle curved or shaped bottom edge if already implemented
+- avatar centered within the header area
+- name and subtitle visually tied to that header section
+
+Important:
+- Only the header section should be dark purple
+- The rest of the profile page remains light
+- This contrast is intentional and should match Rentbird more closely
+
+--------------------------------------------------
+4. FLOATING ADMIN BUTTON
+--------------------------------------------------
+
+Problem:
+The floating admin panel button is not readable enough.
+The text is hard to see.
+
+Fix:
+- Background: dark purple
+- Text: white
+- Ensure sufficient contrast
+- Keep it pill-shaped but less rounded than now
+- Add subtle shadow so it floats clearly above the page
+- Make sure the label is always fully readable
+
+--------------------------------------------------
+GLOBAL STYLE RULES
+--------------------------------------------------
+
+Keep this design direction:
+
+- App background: light grey
+- Cards: white
+- Primary CTA: pink/magenta
+- Main text: dark navy/black
+- Secondary text: grey
+- Bottom nav: light background
+- Active nav/icons: Rentbird-style accent color
+- Profile header: dark purple only on that top section
+
+--------------------------------------------------
+DO NOT
+--------------------------------------------------
+
+- Do not switch the full app back to dark mode
+- Do not change logic or layout structure
+- Do not restyle admin portal yet
+- Do not change routes
+- Do not redesign screens from scratch
+
+This is a precise refinement pass.
+
+DELIVERABLE:
+A cleaner Rentbird-inspired light UI with:
+1. stronger card/background contrast
+2. less rounded cards/buttons
+3. dark purple profile header restored
+4. readable dark purple floating admin button

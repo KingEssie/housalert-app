@@ -276,7 +276,7 @@ export default function WelcomePage() {
 
           <div className="flex justify-center gap-4">
             <button
-              className="w-[48px] h-[48px] rounded-full bg-ha-card border border-ha-card-border flex items-center justify-center hover:bg-ha-surface transition-colors active:scale-[0.95]"
+              className="w-[48px] h-[48px] rounded-[14px] bg-ha-card border border-ha-card-border flex items-center justify-center hover:bg-ha-surface transition-colors active:scale-[0.95]"
               data-testid="button-google"
               onClick={() => {}}
               aria-label="Continue with Google"
@@ -290,7 +290,7 @@ export default function WelcomePage() {
             </button>
 
             <button
-              className="w-[48px] h-[48px] rounded-full bg-ha-card flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.15)] hover:bg-ha-surface transition-colors active:scale-[0.95]"
+              className="w-[48px] h-[48px] rounded-[14px] bg-ha-card flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.15)] hover:bg-ha-surface transition-colors active:scale-[0.95]"
               data-testid="button-apple"
               onClick={() => {}}
               aria-label="Continue with Apple"

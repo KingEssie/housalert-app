@@ -75,7 +75,7 @@ export default function SubscriptionDetailPage() {
       <div className="min-h-screen bg-ha-bg">
         <PageHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
         <div className="max-w-lg mx-auto px-6 pt-4">
-          <div className="rounded-[20px] border border-ha-card-border bg-ha-card p-6 animate-pulse">
+          <div className="rounded-[16px] border border-ha-card-border bg-ha-card p-6 animate-pulse">
             <div className="h-5 bg-ha-surface rounded w-1/3 mb-4" />
             <div className="h-4 bg-ha-surface rounded w-2/3 mb-3" />
             <div className="h-4 bg-ha-surface rounded w-1/2 mb-3" />
@@ -129,7 +129,7 @@ export default function SubscriptionDetailPage() {
 
       <div className="max-w-lg mx-auto px-6 pt-2 pb-12 flex flex-col gap-6">
         <div
-          className="rounded-[20px] border border-ha-card-border bg-ha-card px-5 py-5"
+          className="rounded-[16px] border border-ha-card-border bg-ha-card px-5 py-5"
           data-testid="card-subscription-info"
         >
           <div className="flex items-center gap-3 mb-5">
@@ -187,7 +187,7 @@ export default function SubscriptionDetailPage() {
         </div>
 
         {subscription?.isExpired && (
-          <div className="rounded-[20px] border border-ha-card-border bg-ha-card p-5" data-testid="card-expired-cta">
+          <div className="rounded-[16px] border border-ha-card-border bg-ha-card p-5" data-testid="card-expired-cta">
             <div className="flex items-start gap-3 mb-4">
               <div className="w-10 h-10 rounded-2xl bg-ha-primary/10 flex items-center justify-center flex-shrink-0">
                 <AlertCircle className="w-5 h-5 text-ha-primary" />

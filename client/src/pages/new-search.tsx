@@ -384,7 +384,7 @@ export default function NewSearchPage() {
             </p>
             <Button
               onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=home")}
-              className="w-full h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium"
+              className="w-full h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium"
               data-testid="button-back-to-dashboard-limit"
             >
               {t("newSearch.backToDashboard")}
@@ -509,7 +509,7 @@ function Step2Requirements({
             <select
               value={filters.priceMin}
               onChange={(e) => updateFilters({ priceMin: e.target.value })}
-              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border border-ha-card-border bg-ha-card text-[15px] font-medium text-ha-text appearance-none cursor-pointer"
+              className="w-full h-[60px] px-4 pr-10 rounded-[16px] border border-ha-card-border bg-ha-card text-[15px] font-medium text-ha-text appearance-none cursor-pointer"
               data-testid="select-price-min"
             >
               {RENT_OPTIONS.map(opt => (
@@ -529,7 +529,7 @@ function Step2Requirements({
             <select
               value={filters.priceMax}
               onChange={(e) => updateFilters({ priceMax: e.target.value })}
-              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border border-ha-card-border bg-ha-card text-[15px] font-medium text-ha-text appearance-none cursor-pointer"
+              className="w-full h-[60px] px-4 pr-10 rounded-[16px] border border-ha-card-border bg-ha-card text-[15px] font-medium text-ha-text appearance-none cursor-pointer"
               data-testid="select-price-max"
             >
               {RENT_OPTIONS.map(opt => (
@@ -549,7 +549,7 @@ function Step2Requirements({
             <select
               value={filters.bedroomsMin}
               onChange={(e) => updateFilters({ bedroomsMin: parseInt(e.target.value) })}
-              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border border-ha-card-border bg-ha-card text-[15px] font-medium text-ha-text appearance-none cursor-pointer"
+              className="w-full h-[60px] px-4 pr-10 rounded-[16px] border border-ha-card-border bg-ha-card text-[15px] font-medium text-ha-text appearance-none cursor-pointer"
               data-testid="select-bedrooms"
             >
               {BEDROOM_OPTIONS.map(opt => (
@@ -569,7 +569,7 @@ function Step2Requirements({
             <select
               value={filters.sizeMin}
               onChange={(e) => updateFilters({ sizeMin: parseInt(e.target.value) })}
-              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border border-ha-card-border bg-ha-card text-[15px] font-medium text-ha-text appearance-none cursor-pointer"
+              className="w-full h-[60px] px-4 pr-10 rounded-[16px] border border-ha-card-border bg-ha-card text-[15px] font-medium text-ha-text appearance-none cursor-pointer"
               data-testid="select-size"
             >
               {SIZE_OPTIONS.map(opt => (
@@ -589,7 +589,7 @@ function Step2Requirements({
             <select
               value={filters.furnished}
               onChange={(e) => updateFilters({ furnished: e.target.value })}
-              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border border-ha-card-border bg-ha-card text-[15px] font-medium text-ha-text appearance-none cursor-pointer"
+              className="w-full h-[60px] px-4 pr-10 rounded-[16px] border border-ha-card-border bg-ha-card text-[15px] font-medium text-ha-text appearance-none cursor-pointer"
               data-testid="select-furnished"
             >
               {FURNISHED_OPTIONS.map(opt => (
@@ -872,7 +872,7 @@ function StepReview({
           <Button
             onClick={onSubmit}
             disabled={submitting}
-            className="w-full h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium disabled:opacity-40 shadow-[0_2px_12px_rgba(0,0,0,0.3)]"
+            className="w-full h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium disabled:opacity-40 shadow-[0_2px_12px_rgba(0,0,0,0.3)]"
             data-testid="button-wizard-submit"
           >
             {submitting ? (

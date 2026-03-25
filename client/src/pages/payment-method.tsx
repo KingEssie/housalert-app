@@ -73,7 +73,7 @@ export default function PaymentMethodPage() {
         <Button
           onClick={openStripePortal}
           disabled={loading}
-          className="w-full h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium"
+          className="w-full h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium"
           data-testid="button-open-stripe-portal"
         >
           <ExternalLink className="w-4 h-4 mr-2" />

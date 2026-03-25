@@ -44,7 +44,7 @@ export function ReferralCodeModal({ open, onClose, code, loading }: ReferralCode
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center" data-testid="modal-referral">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" onClick={onClose} />
-      <div className="relative bg-ha-card rounded-[24px] w-[calc(100%-40px)] max-w-[380px] mx-auto p-6 shadow-[0_8px_40px_rgba(0,0,0,0.12)]">
+      <div className="relative bg-ha-card rounded-[16px] w-[calc(100%-40px)] max-w-[380px] mx-auto p-6 shadow-[0_8px_40px_rgba(0,0,0,0.12)]">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 w-8 h-8 rounded-full bg-ha-surface flex items-center justify-center"
@@ -79,7 +79,7 @@ export function ReferralCodeModal({ open, onClose, code, loading }: ReferralCode
           <button
             onClick={handleCopy}
             disabled={!code}
-            className="flex-1 h-[48px] rounded-full bg-ha-primary text-white text-[15px] font-medium flex items-center justify-center gap-2 active:scale-[0.97] transition-transform disabled:opacity-50"
+            className="flex-1 h-[48px] rounded-[14px] bg-ha-primary text-white text-[15px] font-medium flex items-center justify-center gap-2 active:scale-[0.97] transition-transform disabled:opacity-50"
             data-testid="button-copy-referral"
           >
             {copied ? (
@@ -109,7 +109,7 @@ export function ReferralCodeModal({ open, onClose, code, loading }: ReferralCode
 
         <button
           onClick={onClose}
-          className="w-full mt-3 h-[44px] rounded-full text-[15px] font-medium text-ha-text-secondary active:bg-ha-surface transition-colors"
+          className="w-full mt-3 h-[44px] rounded-[14px] text-[15px] font-medium text-ha-text-secondary active:bg-ha-surface transition-colors"
           data-testid="button-close-referral"
         >
           {t("referral.close")}

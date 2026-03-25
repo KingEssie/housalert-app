@@ -316,7 +316,7 @@ export default function OnboardingLocationPage() {
           </h1>
         )}
 
-        <div className={`bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] ${isEmbedded ? "p-4" : "p-6"}`}>
+        <div className={`bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] ${isEmbedded ? "p-4" : "p-6"}`}>
           <div className="flex border-b border-ha-card-border">
             {tabs.map((tab) => (
               <button
@@ -772,7 +772,7 @@ export default function OnboardingLocationPage() {
             <>
               <Button
                 size="lg"
-                className="w-full h-[48px] rounded-full text-[16px] font-medium bg-ha-primary hover:bg-ha-primary-hover shadow-none mt-3"
+                className="w-full h-[48px] rounded-[14px] text-[16px] font-medium bg-ha-primary hover:bg-ha-primary-hover shadow-none mt-3"
                 disabled={!canProceed}
                 onClick={handleNext}
                 data-testid="button-next-step"
@@ -838,7 +838,7 @@ export default function OnboardingLocationPage() {
 
               <Button
                 size="lg"
-                className="w-full h-[56px] rounded-full text-[16px] font-medium bg-ha-primary hover:bg-ha-primary-hover shadow-none mt-2"
+                className="w-full h-[56px] rounded-[14px] text-[16px] font-medium bg-ha-primary hover:bg-ha-primary-hover shadow-none mt-2"
                 disabled={!canProceed}
                 onClick={handleNext}
                 data-testid="button-next-step"

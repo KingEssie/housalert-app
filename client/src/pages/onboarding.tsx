@@ -54,7 +54,7 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
 
       <button
         onClick={onStart}
-        className="w-full max-w-[320px] min-h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
+        className="w-full max-w-[320px] min-h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
         data-testid="button-start-onboarding"
       >
         {t("onboarding.welcome.button")}
@@ -99,7 +99,7 @@ function LocationStep({
         <button
           onClick={onNext}
           disabled={!isLocationValid(locationData)}
-          className="w-full min-h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
+          className="w-full min-h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
           data-testid="button-city-next"
         >
           {t("common.next")}
@@ -155,7 +155,7 @@ function BudgetStep({
                 placeholder={t("onboarding.budget.minPlaceholder")}
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
-                className="w-full min-h-[56px] rounded-[20px] bg-ha-card border border-ha-card-border pl-9 pr-4 text-[16px] text-ha-text placeholder:text-ha-text-muted focus:border-ha-primary outline-none transition-all"
+                className="w-full min-h-[56px] rounded-[16px] bg-ha-card border border-ha-card-border pl-9 pr-4 text-[16px] text-ha-text placeholder:text-ha-text-muted focus:border-ha-primary outline-none transition-all"
                 data-testid="input-min-price"
               />
             </div>
@@ -173,7 +173,7 @@ function BudgetStep({
                 placeholder={t("onboarding.budget.maxPlaceholder")}
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
-                className="w-full min-h-[56px] rounded-[20px] bg-ha-card border border-ha-card-border pl-9 pr-4 text-[16px] text-ha-text placeholder:text-ha-text-muted focus:border-ha-primary outline-none transition-all"
+                className="w-full min-h-[56px] rounded-[16px] bg-ha-card border border-ha-card-border pl-9 pr-4 text-[16px] text-ha-text placeholder:text-ha-text-muted focus:border-ha-primary outline-none transition-all"
                 data-testid="input-max-price"
               />
             </div>
@@ -185,7 +185,7 @@ function BudgetStep({
         <button
           onClick={onNext}
           disabled={!valid}
-          className="w-full min-h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
+          className="w-full min-h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
           data-testid="button-budget-next"
         >
           {t("common.next")}
@@ -255,7 +255,7 @@ function PropertyTypeStep({
         <button
           onClick={onNext}
           disabled={!propertyType}
-          className="w-full min-h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
+          className="w-full min-h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
           data-testid="button-property-next"
         >
           {t("common.next")}
@@ -294,7 +294,7 @@ function AlertsStep({ onActivate, onSkip, saving }: { onActivate: () => void; on
       <button
         onClick={onActivate}
         disabled={saving}
-        className="w-full max-w-[320px] min-h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors disabled:opacity-60 flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
+        className="w-full max-w-[320px] min-h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors disabled:opacity-60 flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
         data-testid="button-activate-alerts"
       >
         {saving ? (

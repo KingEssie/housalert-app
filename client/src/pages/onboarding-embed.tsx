@@ -75,7 +75,7 @@ function CompletionScreen({ draftId }: { draftId: string }) {
         <a
           href={continueUrl}
           target="_top"
-          className="w-full min-h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[15px] transition-all flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.3)]"
+          className="w-full min-h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[15px] transition-all flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.3)]"
           data-testid="embed-link-continue-browser"
         >
           <ExternalLink className="w-4 h-4" />
@@ -83,7 +83,7 @@ function CompletionScreen({ draftId }: { draftId: string }) {
         </a>
 
         <button
-          className="w-full h-[56px] rounded-full border border-ha-card-border bg-ha-card text-ha-text font-medium text-[14px] transition-colors flex items-center justify-center gap-2"
+          className="w-full h-[56px] rounded-[14px] border border-ha-card-border bg-ha-card text-ha-text font-medium text-[14px] transition-colors flex items-center justify-center gap-2"
           data-testid="embed-button-download-app"
           onClick={() => window.open(continueUrl, "_top")}
         >
@@ -190,7 +190,7 @@ export default function OnboardingEmbedPage() {
   if (draftId) {
     return (
       <div className="min-h-screen bg-ha-card flex items-center justify-center p-4">
-        <div className="w-full max-w-[440px] bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden">
+        <div className="w-full max-w-[440px] bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden">
           <CompletionScreen draftId={draftId} />
         </div>
       </div>
@@ -210,7 +210,7 @@ export default function OnboardingEmbedPage() {
           </h1>
         </div>
 
-        <div className="bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-visible">
+        <div className="bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-visible">
 
           <div className="px-5 pt-5 pb-1">
             <LocationModeSelector
@@ -260,7 +260,7 @@ export default function OnboardingEmbedPage() {
                     placeholder="min"
                     value={minPrice}
                     onChange={(e) => setMinPrice(e.target.value)}
-                    className="w-full h-[42px] rounded-[20px] bg-ha-surface border border-transparent pl-[52px] pr-3 text-[14px] text-ha-text placeholder:text-ha-text-secondary"
+                    className="w-full h-[42px] rounded-[16px] bg-ha-surface border border-transparent pl-[52px] pr-3 text-[14px] text-ha-text placeholder:text-ha-text-secondary"
                     data-testid="embed-input-min-price"
                   />
                 </div>
@@ -273,7 +273,7 @@ export default function OnboardingEmbedPage() {
                     placeholder="max"
                     value={maxPrice}
                     onChange={(e) => setMaxPrice(e.target.value)}
-                    className="w-full h-[42px] rounded-[20px] bg-ha-surface border border-transparent pl-[52px] pr-3 text-[14px] text-ha-text placeholder:text-ha-text-secondary"
+                    className="w-full h-[42px] rounded-[16px] bg-ha-surface border border-transparent pl-[52px] pr-3 text-[14px] text-ha-text placeholder:text-ha-text-secondary"
                     data-testid="embed-input-max-price"
                   />
                 </div>
@@ -298,7 +298,7 @@ export default function OnboardingEmbedPage() {
             <button
               onClick={handleSubmit}
               disabled={!canSubmit || submitting}
-              className="w-full h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover active:scale-[0.98] text-white font-medium text-[16px] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 shadow-[0_2px_12px_rgba(0,0,0,0.35)]"
+              className="w-full h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover active:scale-[0.98] text-white font-medium text-[16px] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 shadow-[0_2px_12px_rgba(0,0,0,0.35)]"
               data-testid="embed-button-submit"
             >
               {submitting ? (

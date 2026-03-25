@@ -172,7 +172,7 @@ function MatchCard({
       onClick={handleCardClick}
       data-testid={`card-match-${match.listing_id}`}
     >
-      <div className="relative rounded-[20px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
+      <div className="relative rounded-[16px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
         {hasImage && !imgError ? (
           <img
             src={match.image_url!}
@@ -261,7 +261,7 @@ function ProfileCard({
 
   return (
     <div
-      className={`rounded-[20px] border border-ha-card-border bg-ha-card p-4 flex items-center gap-3.5 ${deleting ? "opacity-50 pointer-events-none" : ""}`}
+      className={`rounded-[16px] border border-ha-card-border bg-ha-card p-4 flex items-center gap-3.5 ${deleting ? "opacity-50 pointer-events-none" : ""}`}
       data-testid={`card-profile-${profile.id}`}
     >
       <div className="flex-1 min-w-0">
@@ -330,7 +330,7 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
     return (
       <div className="flex flex-col gap-3" data-testid="section-recente-matches-empty">
         <h2 className="text-section-title">{t("home.recentMatches")}</h2>
-        <div className="rounded-[24px] border border-ha-card-border bg-ha-card p-6 text-center">
+        <div className="rounded-[16px] border border-ha-card-border bg-ha-card p-6 text-center">
           <p className="text-[14px] text-ha-text-secondary mb-4 leading-relaxed">
             {t("home.matchesWillAppear")}
           </p>
@@ -370,7 +370,7 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
     return (
       <div className="flex flex-col gap-3" data-testid="section-recente-matches-empty">
         <h2 className="text-section-title">{t("home.recentMatches")}</h2>
-        <div className="rounded-[24px] border border-ha-card-border bg-ha-card p-6 text-center">
+        <div className="rounded-[16px] border border-ha-card-border bg-ha-card p-6 text-center">
           <p className="text-[14px] text-ha-text-secondary leading-relaxed">
             {t("home.firstMatchesWillAppear")}
           </p>
@@ -414,7 +414,7 @@ function RecentMatchCard({ match }: { match: ApiMatch }) {
     <div
       role="button"
       tabIndex={0}
-      className="flex-shrink-0 w-[72vw] max-w-[280px] cursor-pointer transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-ha-primary/40 rounded-[20px]"
+      className="flex-shrink-0 w-[72vw] max-w-[280px] cursor-pointer transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-ha-primary/40 rounded-[16px]"
       onClick={() => {
         markViewed(match.listing_id);
         navigate(`/apply/${match.listing_id}`);
@@ -428,7 +428,7 @@ function RecentMatchCard({ match }: { match: ApiMatch }) {
       }}
       data-testid={`card-recent-match-${match.listing_id}`}
     >
-      <div className="relative rounded-[20px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
+      <div className="relative rounded-[16px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
         {hasImage ? (
           <img
             src={match.image_url!}
@@ -645,7 +645,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
           {profiles.map((p) => (
             <div
               key={p.id}
-              className="w-full bg-ha-card rounded-[20px] border border-ha-card-border p-4 flex items-center gap-3.5"
+              className="w-full bg-ha-card rounded-[16px] border border-ha-card-border p-4 flex items-center gap-3.5"
               data-testid={`card-search-profile-${p.id}`}
             >
               <div className="flex-1 min-w-0">
@@ -862,7 +862,7 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
   const progressPercent = Math.round((doneCount / allTasks.length) * 100);
 
   return (
-    <div className="rounded-[24px] border border-ha-card-border bg-ha-card" data-testid="unified-task-list">
+    <div className="rounded-[16px] border border-ha-card-border bg-ha-card" data-testid="unified-task-list">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center gap-3.5 p-5 text-left"
@@ -997,7 +997,7 @@ function HomeTab({
       </div>
       <div className="flex flex-col gap-7 px-6 mt-1">
 
-      <div className="rounded-[20px] bg-ha-card border border-ha-card-border p-5" data-testid="card-home-referral">
+      <div className="rounded-[16px] bg-ha-card border border-ha-card-border p-5" data-testid="card-home-referral">
         <p className="text-[11px] font-semibold text-ha-primary tracking-wider uppercase mb-1" data-testid="text-referral-label">
           {t("referral.homeLabel")}
         </p>
@@ -1029,7 +1029,7 @@ function HomeTab({
       )}
 
       {subscription.isTrial && subscription.trialEndsAt && (
-        <div className="rounded-[24px] border border-ha-card-border bg-ha-card px-5 py-4 flex items-center gap-3.5" data-testid="banner-trial">
+        <div className="rounded-[16px] border border-ha-card-border bg-ha-card px-5 py-4 flex items-center gap-3.5" data-testid="banner-trial">
           <div className="w-10 h-10 rounded-xl bg-ha-surface flex items-center justify-center flex-shrink-0">
             <Crown className="w-[18px] h-[18px] text-amber-400" />
           </div>
@@ -1224,7 +1224,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
               <button
                 key={key}
                 onClick={() => setSubTab(key)}
-                className={`px-5 py-2.5 rounded-full text-[13px] font-medium transition-all ${
+                className={`px-5 py-2.5 rounded-[12px] text-[13px] font-medium transition-all ${
                   isActive
                     ? "bg-ha-primary text-white"
                     : "bg-ha-card text-ha-text-secondary hover:bg-ha-surface"
@@ -1254,7 +1254,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           ))}
         </div>
       ) : apiMatchesQuery.isError ? (
-        <div className="bg-ha-card rounded-[24px] border border-ha-card-border p-10 flex flex-col items-center text-center gap-4">
+        <div className="bg-ha-card rounded-[16px] border border-ha-card-border p-10 flex flex-col items-center text-center gap-4">
           <div className="w-14 h-14 rounded-2xl bg-ha-surface flex items-center justify-center">
             <AlertCircle className="w-6 h-6 text-ha-text-secondary" />
           </div>
@@ -1357,14 +1357,14 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
         <div className="w-full max-w-[320px] flex flex-col gap-3">
           <button
             onClick={onConfirm}
-            className="w-full h-[56px] rounded-full bg-ha-primary text-white text-[16px] font-medium transition-colors hover:bg-ha-primary-hover"
+            className="w-full h-[56px] rounded-[14px] bg-ha-primary text-white text-[16px] font-medium transition-colors hover:bg-ha-primary-hover"
             data-testid="button-delete-confirm"
           >
             {t("filters.deleteYes")}
           </button>
           <button
             onClick={onCancel}
-            className="w-full h-[52px] rounded-full border border-white/20 text-ha-text text-[16px] font-medium hover:bg-ha-card/5 transition-colors"
+            className="w-full h-[52px] rounded-[14px] border border-white/20 text-ha-text text-[16px] font-medium hover:bg-ha-card/5 transition-colors"
             data-testid="button-delete-cancel"
           >
             {t("filters.deleteNo")}
@@ -1415,7 +1415,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
       {profilesQuery.isLoading ? (
         <div className="flex flex-col gap-3">
           {[1, 2].map((i) => (
-            <div key={i} className="bg-ha-card rounded-[20px] border border-ha-card-border p-4 animate-pulse">
+            <div key={i} className="bg-ha-card rounded-[16px] border border-ha-card-border p-4 animate-pulse">
               <div className="h-4 bg-ha-surface rounded w-1/3 mb-3" />
               <div className="flex gap-2">
                 <div className="h-6 bg-ha-surface rounded-full w-24" />
@@ -1834,30 +1834,30 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
 
   return (
     <div className="min-h-[calc(100vh-80px)] bg-ha-bg">
-      <div className="bg-ha-card rounded-b-[32px] pt-10 pb-14 relative" data-testid="card-profile-summary">
+      <div className="bg-ha-profile-header rounded-b-[24px] pt-10 pb-14 relative" data-testid="card-profile-summary">
         <button
           onClick={() => navigate("/profile/details")}
-          className="absolute top-6 right-5 w-10 h-10 rounded-full bg-ha-card/15 flex items-center justify-center active:scale-95 transition-transform"
+          className="absolute top-6 right-5 w-10 h-10 rounded-full bg-white/15 flex items-center justify-center active:scale-95 transition-transform"
           data-testid="button-profile-settings"
         >
-          <Settings className="w-5 h-5 text-ha-text/90" />
+          <Settings className="w-5 h-5 text-white/90" />
         </button>
 
         <div className="flex flex-col items-center px-6">
           {photoUrl ? (
-            <img src={photoUrl} alt="" className="w-[84px] h-[84px] rounded-full object-cover border-[5px] border-ha-card-border" data-testid="img-profile-avatar" />
+            <img src={photoUrl} alt="" className="w-[84px] h-[84px] rounded-full object-cover border-[5px] border-white/20" data-testid="img-profile-avatar" />
           ) : (
-            <div className="w-[84px] h-[84px] rounded-full bg-ha-surface flex items-center justify-center border-[5px] border-ha-card-border" data-testid="img-avatar-placeholder">
-              <span className="text-ha-text text-[26px] font-bold">{initials}</span>
+            <div className="w-[84px] h-[84px] rounded-full bg-white/15 flex items-center justify-center border-[5px] border-white/20" data-testid="img-avatar-placeholder">
+              <span className="text-white text-[26px] font-bold">{initials}</span>
             </div>
           )}
-          <p className="text-ha-text text-[18px] font-bold mt-3 text-center" data-testid="text-user-firstname">
+          <p className="text-white text-[18px] font-bold mt-3 text-center" data-testid="text-user-firstname">
             {displayName || t("profile.seeker")}
           </p>
           {lastName && (
             <span className="hidden" data-testid="text-user-lastname">{lastName}</span>
           )}
-          <p className="text-ha-text/50 text-[13px] mt-0.5" data-testid="text-member-since">
+          <p className="text-white/60 text-[13px] mt-0.5" data-testid="text-member-since">
             {memberSinceLabel}
           </p>
         </div>
@@ -2230,7 +2230,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       {(user?.email?.toLowerCase() === "martin.essie87@gmail.com") && (
         <button
           onClick={() => navigate("/admin/portal")}
-          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+68px)] left-1/2 -translate-x-1/2 z-40 bg-ha-card text-white text-[14px] font-medium px-6 py-3 rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.16)] active:scale-95 transition-transform"
+          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+68px)] left-1/2 -translate-x-1/2 z-40 bg-ha-profile-header text-white text-[14px] font-medium px-6 py-3 rounded-[14px] shadow-[0_4px_20px_rgba(30,27,75,0.35)] active:scale-95 transition-transform"
           data-testid="button-admin-portal"
         >
           {t("profile.adminMode")}
@@ -2275,7 +2275,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
 
       {showBuddyDeleteConfirm && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end justify-center sm:items-center" onClick={() => setShowBuddyDeleteConfirm(false)}>
-          <div className="bg-ha-card w-full max-w-[400px] rounded-t-[20px] sm:rounded-[20px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()} data-testid="dialog-buddy-delete">
+          <div className="bg-ha-card w-full max-w-[400px] rounded-t-[20px] sm:rounded-[16px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()} data-testid="dialog-buddy-delete">
             <div className="w-12 h-12 rounded-2xl bg-ha-danger-light flex items-center justify-center mx-auto mb-5">
               <Users className="w-6 h-6 text-ha-danger" />
             </div>

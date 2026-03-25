@@ -78,7 +78,7 @@ export default function DocumentsPage() {
       <PageHeader title={t("documents.title")} />
 
       <div className="max-w-xl mx-auto p-4 space-y-4 pb-8">
-        <div className="bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5">
+        <div className="bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5">
           <div className="flex items-center gap-3 mb-4">
             <FileText className="w-5 h-5 text-ha-text-muted" />
             <div>
@@ -124,7 +124,7 @@ export default function DocumentsPage() {
           </div>
         </div>
 
-        <div className="rounded-[24px] border border-ha-card-border bg-ha-surface shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5">
+        <div className="rounded-[16px] border border-ha-card-border bg-ha-surface shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5">
           <p className="text-[13px] text-ha-text-secondary leading-relaxed">
             {t("documents.tip")}
           </p>

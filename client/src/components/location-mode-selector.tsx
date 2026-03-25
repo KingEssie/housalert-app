@@ -401,7 +401,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
               onChange={(e) => handleCityInput(e.target.value)}
               onFocus={() => { if (hasCityResults && !value.place) setCityOpen(true); }}
               placeholder={t("location.searchCity")}
-              className={`w-full min-h-[60px] rounded-[20px] bg-ha-surface border px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-secondary ${
+              className={`w-full min-h-[60px] rounded-[16px] bg-ha-surface border px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-secondary ${
                 value.place ? "border-ha-primary bg-ha-surface/30" : "border-ha-card-border"
               }`}
               data-testid="input-city-search"
@@ -523,7 +523,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                 onChange={(e) => handleDestInput(e.target.value)}
                 onFocus={() => { if (hasDestResults && value.commuteLat == null) setDestOpen(true); }}
                 placeholder={t("location.searchAddress")}
-                className={`w-full min-h-[60px] rounded-[20px] bg-ha-surface border px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-secondary ${
+                className={`w-full min-h-[60px] rounded-[16px] bg-ha-surface border px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-secondary ${
                   value.commuteLat != null ? "border-ha-primary bg-ha-surface/30" : "border-ha-card-border"
                 }`}
                 data-testid="input-commute-destination"
@@ -696,7 +696,7 @@ function DistrictMultiSelect({
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between min-h-[52px] px-4 rounded-[20px] bg-ha-surface border border-ha-card-border text-[15px] text-ha-text-muted hover:bg-ha-surface transition-colors"
+        className="w-full flex items-center justify-between min-h-[52px] px-4 rounded-[16px] bg-ha-surface border border-ha-card-border text-[15px] text-ha-text-muted hover:bg-ha-surface transition-colors"
         data-testid="button-district-dropdown"
       >
         <span className={selected.length > 0 ? "font-medium" : "text-ha-text-secondary"}>

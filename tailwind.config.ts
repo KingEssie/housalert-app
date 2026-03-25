@@ -104,6 +104,7 @@ export default {
           "danger-light": "var(--ha-danger-light)",
           "icon-secondary": "rgb(var(--ha-icon-secondary) / <alpha-value>)",
           "badge-bg": "rgb(var(--ha-badge-bg) / <alpha-value>)",
+          "profile-header": "rgb(var(--ha-profile-header) / <alpha-value>)",
         },
       },
       boxShadow: {

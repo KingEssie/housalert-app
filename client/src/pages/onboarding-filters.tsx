@@ -108,7 +108,7 @@ export default function OnboardingFiltersPage() {
           </>
         )}
 
-        <div className={`bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] ${isEmbedded ? "p-4" : "p-5"}`}>
+        <div className={`bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] ${isEmbedded ? "p-4" : "p-5"}`}>
           <div className="grid grid-cols-2 gap-3 mb-5">
             <div>
               <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">{t("onboardingFilters.minRent")}</label>
@@ -180,7 +180,7 @@ export default function OnboardingFiltersPage() {
         {isEmbedded ? (
           <div className="mt-3">
             <Button
-              className="w-full h-[48px] rounded-full text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover"
+              className="w-full h-[48px] rounded-[14px] text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover"
               onClick={handleNext}
               data-testid="button-next-filters"
             >
@@ -210,7 +210,7 @@ export default function OnboardingFiltersPage() {
               {t("onboardingFilters.back")}
             </Button>
             <Button
-              className="flex-1 h-[48px] rounded-full text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover"
+              className="flex-1 h-[48px] rounded-[14px] text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover"
               onClick={handleNext}
               data-testid="button-next-filters"
             >

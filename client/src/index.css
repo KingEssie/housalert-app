@@ -43,7 +43,7 @@
   --chart-4: 0 84% 60%;
   --chart-5: 260 60% 50%;
 
-  --ha-bg: 247 247 247;
+  --ha-bg: 243 243 245;
   --ha-card: 255 255 255;
   --ha-card-border: 229 231 235;
   --ha-card-hover: 243 244 246;
@@ -67,6 +67,7 @@
   --ha-icon-secondary: 156 163 175;
   --ha-badge-bg: 243 244 246;
   --ha-overlay: rgba(0, 0, 0, 0.05);
+  --ha-profile-header: 30 27 75;
   --ha-shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
   --ha-check-unchecked: transparent;
 
@@ -166,6 +167,7 @@
     --ha-danger-light: rgba(239, 68, 68, 0.15);
     --ha-icon-secondary: 156 163 175;
     --ha-badge-bg: 53 53 96;
+    --ha-profile-header: 30 27 75;
     --ha-overlay: rgba(0, 0, 0, 0.3);
     --ha-shadow-card: none;
     --ha-check-unchecked: transparent;

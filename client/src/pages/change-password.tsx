@@ -123,7 +123,7 @@ export default function ChangePasswordPage() {
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 placeholder={t("changePassword.currentPlaceholder")}
-                className="w-full h-[52px] pl-11 pr-12 rounded-[20px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
+                className="w-full h-[52px] pl-11 pr-12 rounded-[16px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
                 data-testid="input-current-password"
               />
               <button
@@ -150,7 +150,7 @@ export default function ChangePasswordPage() {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder={t("changePassword.newPlaceholder")}
-                className="w-full h-[52px] pl-11 pr-12 rounded-[20px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
+                className="w-full h-[52px] pl-11 pr-12 rounded-[16px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
                 data-testid="input-new-password"
               />
               <button
@@ -180,7 +180,7 @@ export default function ChangePasswordPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder={t("changePassword.confirmPlaceholder")}
-                className="w-full h-[52px] pl-11 pr-12 rounded-[20px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
+                className="w-full h-[52px] pl-11 pr-12 rounded-[16px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
                 data-testid="input-confirm-password"
               />
               <button
@@ -207,7 +207,7 @@ export default function ChangePasswordPage() {
           <button
             onClick={handleSubmit}
             disabled={!canSubmit}
-            className={`w-full h-[52px] rounded-full font-medium text-[16px] transition-colors flex items-center justify-center ${
+            className={`w-full h-[52px] rounded-[14px] font-medium text-[16px] transition-colors flex items-center justify-center ${
               canSubmit
                 ? "bg-ha-primary hover:bg-ha-primary-hover text-white"
                 : "bg-ha-card-border text-ha-text-secondary cursor-not-allowed"

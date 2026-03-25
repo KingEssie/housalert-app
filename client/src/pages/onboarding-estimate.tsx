@@ -114,7 +114,7 @@ export default function OnboardingEstimatePage() {
           {t("onboardingEstimate.subtitle", { city })}
         </p>
 
-        <div className="bg-ha-card rounded-[24px] border border-ha-card-border p-6" data-testid="card-estimate">
+        <div className="bg-ha-card rounded-[16px] border border-ha-card-border p-6" data-testid="card-estimate">
           <div className="text-center py-4 border-b border-ha-card-border">
             <div className="flex items-center justify-center mx-auto mb-4">
               <TrendingUp className="w-7 h-7 text-ha-text-secondary" />
@@ -172,7 +172,7 @@ export default function OnboardingEstimatePage() {
             </Button>
             <Button
               size="lg"
-              className="flex-1 h-[56px] rounded-full text-[16px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover text-white"
+              className="flex-1 h-[56px] rounded-[14px] text-[16px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover text-white"
               onClick={handleCreateAccount}
               disabled={loading}
               data-testid="button-create-account"

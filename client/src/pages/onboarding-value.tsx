@@ -320,7 +320,7 @@ export default function OnboardingValuePage() {
       <div className="fixed bottom-0 left-0 right-0 bg-ha-bg border-t border-ha-card-border p-4 z-10">
         <div className={`${containerClass} mx-auto`}>
           <Button
-            className="w-full h-[48px] rounded-full text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover text-white"
+            className="w-full h-[48px] rounded-[14px] text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover text-white"
             onClick={handleCheckout}
             disabled={loading}
             data-testid="button-select-payment"

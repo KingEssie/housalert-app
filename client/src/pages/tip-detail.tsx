@@ -119,7 +119,7 @@ export default function TipDetailPage() {
           <Button
             onClick={handleMarkRead}
             disabled={isRead}
-            className={`flex-1 h-[52px] rounded-full text-[15px] font-medium flex items-center justify-center gap-2 ${
+            className={`flex-1 h-[52px] rounded-[14px] text-[15px] font-medium flex items-center justify-center gap-2 ${
               isRead
                 ? "bg-ha-success-light text-ha-success border border-ha-success/30 hover:bg-ha-success-light"
                 : "bg-ha-card text-ha-text border border-ha-card-border hover:bg-ha-surface"
@@ -131,7 +131,7 @@ export default function TipDetailPage() {
           </Button>
           <Button
             onClick={handleNext}
-            className="flex-1 h-[52px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium flex items-center justify-center gap-2"
+            className="flex-1 h-[52px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium flex items-center justify-center gap-2"
             data-testid="button-next-tip"
           >
             {nextTip ? t("common.next") : t("tips.backToOverview")}

@@ -138,7 +138,7 @@ export default function ListingDetailPage() {
         <div className="animate-pulse">
           <div className="h-[260px] bg-ha-card" />
           <div className="max-w-xl mx-auto w-full px-5 pt-5 space-y-4">
-            <div className="bg-ha-card rounded-[24px] border border-ha-card-border p-5 space-y-3">
+            <div className="bg-ha-card rounded-[16px] border border-ha-card-border p-5 space-y-3">
               <div className="h-5 bg-ha-surface rounded w-28" />
               <div className="h-7 bg-ha-surface rounded w-3/4" />
               <div className="h-4 bg-ha-surface rounded w-1/2" />
@@ -154,10 +154,10 @@ export default function ListingDetailPage() {
       <div className="min-h-screen bg-ha-bg flex flex-col relative">
         <FloatingBackButton navigate={navigate} />
         <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-16">
-          <div className="bg-ha-card rounded-[24px] border border-ha-card-border p-8 text-center">
+          <div className="bg-ha-card rounded-[16px] border border-ha-card-border p-8 text-center">
             <p className="text-[18px] font-medium text-ha-text mb-2">{t("listing.notFound")}</p>
             <p className="text-[13px] text-ha-text-secondary mb-4">{t("listing.notFoundDesc")}</p>
-            <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium" data-testid="button-back-dashboard">
+            <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium" data-testid="button-back-dashboard">
               {t("listing.backToDashboard")}
             </Button>
           </div>
@@ -209,7 +209,7 @@ export default function ListingDetailPage() {
 
       <main className="flex-1 max-w-xl mx-auto w-full px-5 -mt-6 relative z-10 pb-36">
         <div className="space-y-4">
-          <div className="bg-ha-card rounded-[24px] border border-ha-card-border p-5">
+          <div className="bg-ha-card rounded-[16px] border border-ha-card-border p-5">
             <h1 className="text-[24px] font-medium text-ha-text leading-[1.2] tracking-[-0.02em] mb-2" data-testid="text-listing-title">
               {listing.title}
             </h1>
@@ -229,7 +229,7 @@ export default function ListingDetailPage() {
             )}
           </div>
 
-          <div className="bg-ha-card rounded-[24px] border border-ha-card-border p-5">
+          <div className="bg-ha-card rounded-[16px] border border-ha-card-border p-5">
             <h2 className="text-section-title mb-4">{t("listing.details")}</h2>
             <div className="grid grid-cols-2 gap-4">
               {listing.bedrooms > 0 && (
@@ -288,7 +288,7 @@ export default function ListingDetailPage() {
             if (unknowns.length === 0 && !hasPetsNote) return null;
             return (
               <div
-                className="bg-ha-card rounded-[24px] border border-ha-card-border p-4 space-y-2"
+                className="bg-ha-card rounded-[16px] border border-ha-card-border p-4 space-y-2"
                 data-testid="section-hybrid-filters"
                 data-hybrid-furnished={hf.furnished}
                 data-hybrid-district={hf.district}
@@ -329,7 +329,7 @@ export default function ListingDetailPage() {
           )}
           <Button
             onClick={() => navigate(`/apply/${listing.id}`)}
-            className="w-full h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium flex items-center justify-center gap-2"
+            className="w-full h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium flex items-center justify-center gap-2"
             data-testid="button-reageer-detail"
           >
             <Zap className="w-4 h-4" />

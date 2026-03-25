@@ -337,7 +337,7 @@ export default function ApplyPage() {
           )}
           <Button
             onClick={handleCopyAndRespond}
-            className={`h-[50px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium px-6 ${listing.price > 0 ? "" : "w-full"}`}
+            className={`h-[50px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium px-6 ${listing.price > 0 ? "" : "w-full"}`}
             data-testid="button-copy-and-respond"
           >
             <Copy className="w-4 h-4 mr-2" />

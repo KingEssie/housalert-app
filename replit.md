@@ -12,9 +12,13 @@ A mobile-first rental alert application for the German market. Users can sign up
 - **theme.ts**: `client/src/lib/theme.ts` — all colors reference CSS variables for runtime theme consistency.
 - **Excluded from tokenization**: `admin-*.tsx` pages, `v2/` pages/components (these have their own design systems). Google logo SVG colors, city gradient overlays, and amber warning banners (`#FEF3C7`/`#92400E`) remain hardcoded as semantic/brand colors.
 - **text-white rule**: `text-white` is preserved on elements with colored backgrounds (buttons with `bg-ha-primary`, success badges, hero image overlays). All other white text uses `text-ha-text`.
-- **Cards**: Subtle `border-ha-card-border` with `rounded-xl`, `shadow-ha-card` (none in dark mode)
-- **Bottom tab bar**: `bg-ha-card/95 backdrop-blur-lg`, active dot indicator
-- **Typography**: Page titles use `text-ha-text`, section labels use `text-ha-text-muted`
+- **Page background**: `bg-ha-bg` (#F3F3F5 light) — slightly darker grey for card/page contrast separation.
+- **Cards**: White `bg-ha-card`, subtle `border-ha-card-border`, `rounded-[16px]`, `shadow-ha-card` (none in dark mode).
+- **Buttons**: Primary CTAs use `rounded-[14px]`. Small pills/tabs use `rounded-[12px]`.
+- **Profile header**: Dark purple `bg-ha-profile-header` (#1E1B4B) with white text, `rounded-b-[24px]`. Only the profile tab header section is dark; rest of profile page is light.
+- **Admin button**: Floating pill with `bg-ha-profile-header` dark purple, white text, `rounded-[14px]`, visible shadow.
+- **Bottom tab bar**: `bg-ha-bg` background, `border-t border-ha-card-border`, active icons use `text-ha-primary`.
+- **Typography**: Page titles use `text-ha-text`, section labels use `text-ha-text-muted`.
 
 ### Multi-Language System
 - **Frontend i18n**: `client/src/i18n/index.tsx` with translation keys in `client/src/i18n/locales/{de,en,nl}.ts`. Fallback chain: current locale → de → nl.

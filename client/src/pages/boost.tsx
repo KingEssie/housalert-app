@@ -180,7 +180,7 @@ function BoostScoreCard({ score, remaining, completed, total }: { score: number;
   else headline = t("boostScore.readyToStart");
 
   return (
-    <div className="bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6" data-testid="card-boost-score">
+    <div className="bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6" data-testid="card-boost-score">
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
           <Zap className="w-5 h-5 text-ha-text-muted" />
@@ -244,7 +244,7 @@ function RecommendedSection({
           return (
             <div
               key={task.id}
-              className="bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5"
+              className="bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5"
               data-testid={`card-recommend-${task.id}`}
             >
               <div className="flex items-start gap-4">
@@ -295,7 +295,7 @@ function AllTasksSection({
       <h3 className="text-section-title mb-3">
         {t("boost.allSteps")}
       </h3>
-      <div className="bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden">
+      <div className="bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden">
         {incompleteTasks.map((task, i) => {
           const Icon = TASK_ICONS[task.id] || Shield;
           return (
@@ -448,7 +448,7 @@ function TaskModal({
           {taskId === "alerts_active" && (
             <Button
               onClick={() => { onClose(); navigate("/dashboard"); }}
-              className="w-full h-[56px] rounded-full bg-ha-primary text-white text-[15px] font-medium"
+              className="w-full h-[56px] rounded-[14px] bg-ha-primary text-white text-[15px] font-medium"
               data-testid="button-goto-notifications"
             >
               <Bell className="w-4 h-4 mr-2" />
@@ -459,7 +459,7 @@ function TaskModal({
           {taskId === "phone_number_added" && (
             <Button
               onClick={() => { onClose(); navigate("/profile/edit/phone"); }}
-              className="w-full h-[56px] rounded-full bg-ha-primary text-white text-[15px] font-medium"
+              className="w-full h-[56px] rounded-[14px] bg-ha-primary text-white text-[15px] font-medium"
               data-testid="button-goto-phone"
             >
               <Phone className="w-4 h-4 mr-2" />
@@ -475,14 +475,14 @@ function TaskModal({
                 value={buddyEmail}
                 onChange={(e) => setBuddyEmail(e.target.value)}
                 placeholder={t("boost.buddyEmailPlaceholder")}
-                className="w-full h-[60px] px-4 rounded-[20px] border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal focus:bg-ha-card"
+                className="w-full h-[60px] px-4 rounded-[16px] border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal focus:bg-ha-card"
                 data-testid="input-buddy-email"
               />
               <p className="text-[13px] font-normal text-ha-text">{t("boost.buddyHelp")}</p>
               <Button
                 onClick={() => handleSave({ search_buddy_email: buddyEmail }, t("boost.buddySaved"))}
                 disabled={!buddyEmail.includes("@") || updateProfileData.isPending}
-                className="w-full h-[56px] rounded-full bg-ha-primary text-white text-[15px] font-medium disabled:opacity-50"
+                className="w-full h-[56px] rounded-[14px] bg-ha-primary text-white text-[15px] font-medium disabled:opacity-50"
                 data-testid="button-save-buddy"
               >
                 {updateProfileData.isPending ? t("boost.saving") : t("boost.save")}
@@ -493,7 +493,7 @@ function TaskModal({
           {taskId === "housing_preferences_completed" && (
             <Button
               onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
-              className="w-full h-[56px] rounded-full bg-ha-primary text-white text-[15px] font-medium"
+              className="w-full h-[56px] rounded-[14px] bg-ha-primary text-white text-[15px] font-medium"
               data-testid="button-goto-filters"
             >
               <Search className="w-4 h-4 mr-2" />
@@ -504,7 +504,7 @@ function TaskModal({
           {taskId === "reaction_letter_ready" && (
             <Button
               onClick={() => { onClose(); navigate("/application-letter"); }}
-              className="w-full h-[56px] rounded-full bg-ha-primary text-white text-[15px] font-medium"
+              className="w-full h-[56px] rounded-[14px] bg-ha-primary text-white text-[15px] font-medium"
               data-testid="button-goto-letter"
             >
               <FileText className="w-4 h-4 mr-2" />
@@ -539,7 +539,7 @@ function TaskModal({
               <Button
                 onClick={() => handleSave({ document_checklist: checklist }, t("boost.docsSaved"))}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[56px] rounded-full bg-ha-primary text-white text-[15px] font-medium disabled:opacity-50"
+                className="w-full h-[56px] rounded-[14px] bg-ha-primary text-white text-[15px] font-medium disabled:opacity-50"
                 data-testid="button-save-income-docs"
               >
                 {updateProfileData.isPending ? t("boost.saving") : t("boost.save")}
@@ -574,7 +574,7 @@ function TaskModal({
               <Button
                 onClick={() => handleSave({ document_checklist: checklist }, t("boost.docsSaved"))}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[56px] rounded-full bg-ha-primary text-white text-[15px] font-medium disabled:opacity-50"
+                className="w-full h-[56px] rounded-[14px] bg-ha-primary text-white text-[15px] font-medium disabled:opacity-50"
                 data-testid="button-save-id-docs"
               >
                 {updateProfileData.isPending ? t("boost.saving") : t("boost.save")}
@@ -585,7 +585,7 @@ function TaskModal({
           {taskId === "profile_info_completed" && (
             <Button
               onClick={() => { onClose(); navigate("/dashboard"); }}
-              className="w-full h-[56px] rounded-full bg-ha-primary text-white text-[15px] font-medium"
+              className="w-full h-[56px] rounded-[14px] bg-ha-primary text-white text-[15px] font-medium"
               data-testid="button-goto-profile-info"
             >
               <UserCircle className="w-4 h-4 mr-2" />
@@ -600,7 +600,7 @@ function TaskModal({
               </p>
               <Button
                 onClick={() => navigate("/dashboard?tab=profiel")}
-                className="w-full h-[56px] rounded-full bg-ha-primary text-white text-[14px] font-medium"
+                className="w-full h-[56px] rounded-[14px] bg-ha-primary text-white text-[14px] font-medium"
                 data-testid="button-goto-profile-photo"
               >
                 {t("boost.goToProfilePhoto")}
@@ -625,11 +625,11 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
         <div className="mb-1">
           <h1 className="text-page-title">{t("boost.title")}</h1>
         </div>
-        <div className="bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-8 text-center" data-testid="boost-error">
+        <div className="bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-8 text-center" data-testid="boost-error">
           <p className="text-[15px] text-ha-text mb-4">{t("boost.errorMessage")}</p>
           <Button
             onClick={() => refetch()}
-            className="h-[56px] rounded-full bg-ha-primary text-white text-[15px] font-medium px-6"
+            className="h-[56px] rounded-[14px] bg-ha-primary text-white text-[15px] font-medium px-6"
             data-testid="button-retry-boost"
           >
             {t("boost.retry")}
@@ -646,12 +646,12 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
           <div className="h-8 bg-ha-surface rounded w-24 mb-2 animate-pulse" />
           <div className="h-4 bg-ha-surface rounded w-56 animate-pulse" />
         </div>
-        <div className="bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
+        <div className="bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
           <div className="h-4 bg-ha-surface rounded w-32 mb-3" />
           <div className="h-10 bg-ha-surface rounded w-20 mb-2" />
           <div className="h-2.5 bg-ha-surface rounded w-full" />
         </div>
-        <div className="bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
+        <div className="bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
           <div className="h-4 bg-ha-surface rounded w-48 mb-3" />
           <div className="h-12 bg-ha-surface rounded w-full mb-2" />
           <div className="h-12 bg-ha-surface rounded w-full" />
