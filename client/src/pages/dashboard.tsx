@@ -263,51 +263,62 @@ function ProfileCard({
 
   return (
     <div
-      className={`rounded-[6px] border border-ha-card-border bg-ha-card p-4 flex items-center gap-3.5 ${deleting ? "opacity-50 pointer-events-none" : ""}`}
+      className={`rounded-[6px] bg-ha-card px-5 py-4 ${deleting ? "opacity-50 pointer-events-none" : ""}`}
       data-testid={`card-profile-${profile.id}`}
     >
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <h3 className="font-medium text-ha-text text-[15px] leading-snug line-clamp-1" data-testid={`text-profile-city-${profile.id}`}>
-            {getProfileTitle(profile, t, locale)}
-          </h3>
-          <span className="text-[10px] font-medium text-green-500 bg-green-500/10 px-2 py-0.5 rounded-full flex-shrink-0" data-testid={`badge-status-${profile.id}`}>
-            {t("common.active")}
-          </span>
+      <div className="flex items-center gap-3">
+        <span className="w-2.5 h-2.5 rounded-full bg-ha-success flex-shrink-0" />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <h3 className="text-[15px] text-title text-ha-text line-clamp-1 flex-1" data-testid={`text-profile-city-${profile.id}`}>
+              {getProfileTitle(profile, t, locale)}
+            </h3>
+            <span className="text-[10px] font-medium text-green-500 bg-green-500/10 px-2 py-0.5 rounded-full flex-shrink-0" data-testid={`badge-status-${profile.id}`}>
+              {t("common.active")}
+            </span>
+          </div>
+          <p className="text-[13px] text-ha-text-secondary mt-0.5 line-clamp-1" data-testid={`text-profile-summary-filters-${profile.id}`}>
+            {getProfileSummary(profile, t)}
+          </p>
+          {profile.districts && profile.districts.length > 0 && (
+            <p className="text-[13px] text-ha-text-secondary mt-0.5 truncate">
+              {profile.districts.length <= 2
+                ? profile.districts.join(", ")
+                : `${profile.districts[0]} ${t("profile.andOtherNeighborhoods", { count: profile.districts.length - 1 })}`
+              }
+            </p>
+          )}
         </div>
-        <p className="text-[13px] text-ha-text-secondary mt-0.5 line-clamp-1" data-testid={`text-profile-summary-filters-${profile.id}`}>
-          {getProfileSummary(profile, t)}
-        </p>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              className="w-9 h-9 rounded-full flex items-center justify-center text-ha-text-secondary hover:bg-ha-surface transition-colors flex-shrink-0"
+              disabled={deleting}
+              data-testid={`button-menu-filters-${profile.id}`}
+            >
+              <MoreVertical className="w-[18px] h-[18px]" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="min-w-[160px]">
+            <DropdownMenuItem
+              onClick={onEdit}
+              className="flex items-center gap-2.5 cursor-pointer"
+              data-testid={`menu-edit-filters-${profile.id}`}
+            >
+              <Pencil className="w-4 h-4 text-ha-text-muted" />
+              {t("common.edit")}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={onDelete}
+              className="flex items-center gap-2.5 text-ha-danger focus:text-ha-danger cursor-pointer"
+              data-testid={`menu-delete-filters-${profile.id}`}
+            >
+              <Trash2 className="w-4 h-4" />
+              {t("filters.deleteTitle")}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <button
-            className="w-9 h-9 rounded-full flex items-center justify-center text-ha-text-secondary hover:bg-ha-surface transition-colors flex-shrink-0"
-            disabled={deleting}
-            data-testid={`button-menu-filters-${profile.id}`}
-          >
-            <MoreVertical className="w-[18px] h-[18px]" />
-          </button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="min-w-[160px]">
-          <DropdownMenuItem
-            onClick={onEdit}
-            className="flex items-center gap-2.5 cursor-pointer"
-            data-testid={`menu-edit-filters-${profile.id}`}
-          >
-            <Pencil className="w-4 h-4 text-ha-text-muted" />
-            {t("common.edit")}
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={onDelete}
-            className="flex items-center gap-2.5 text-ha-danger focus:text-ha-danger cursor-pointer"
-            data-testid={`menu-delete-filters-${profile.id}`}
-          >
-            <Trash2 className="w-4 h-4" />
-            {t("filters.deleteTitle")}
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
     </div>
   );
 }
@@ -459,7 +470,7 @@ function RecentMatchCard({ match }: { match: ApiMatch }) {
         </div>
 
         <div className="px-3 py-3 flex flex-col gap-0.5">
-          <span className="text-[15px] font-medium text-ha-text truncate" data-testid={`text-recent-city-${match.listing_id}`}>
+          <span className="text-[15px] text-title text-ha-text truncate" data-testid={`text-recent-city-${match.listing_id}`}>
             {match.city}
           </span>
           <p className="text-[14px] text-ha-text-secondary line-clamp-1 leading-[1.35]" data-testid={`text-recent-title-${match.listing_id}`}>
@@ -535,30 +546,32 @@ function RecentlyViewedCard({ match }: { match: ApiMatch }) {
       }}
       data-testid={`card-recently-viewed-${match.listing_id}`}
     >
-      <div className="relative rounded-[6px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
-        {hasImage ? (
-          <img
-            src={match.image_url!}
-            alt={match.title}
-            className="w-full object-cover"
-            style={{ aspectRatio: "1/1" }}
-            loading="lazy"
-            onError={() => setImgError(true)}
-            referrerPolicy="no-referrer"
-          />
-        ) : (
-          <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "1/1" }}>
-            <div className="absolute inset-0 bg-black/5" />
-            <ImageIcon className="w-5 h-5 text-ha-text/40" />
+      <div className="rounded-[6px] overflow-hidden bg-ha-card shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)]">
+        <div className="relative">
+          {hasImage ? (
+            <img
+              src={match.image_url!}
+              alt={match.title}
+              className="w-full object-cover"
+              style={{ aspectRatio: "1/1" }}
+              loading="lazy"
+              onError={() => setImgError(true)}
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "1/1" }}>
+              <div className="absolute inset-0 bg-black/5" />
+              <ImageIcon className="w-5 h-5 text-ha-text/40" />
+            </div>
+          )}
+        </div>
+        <div className="px-2.5 py-2 flex flex-col gap-0">
+          <p className="text-[12px] text-title text-ha-text line-clamp-1">{match.title}</p>
+          <div className="flex items-center gap-1 text-[11px] text-ha-text-secondary">
+            {match.price > 0 && <span>€{match.price}</span>}
+            {match.price > 0 && match.size_m2 > 0 && <span>·</span>}
+            {match.size_m2 > 0 && <span>{match.size_m2} m²</span>}
           </div>
-        )}
-      </div>
-      <div className="pt-1.5 flex flex-col gap-0">
-        <p className="text-[12px] font-medium text-ha-text line-clamp-1 leading-snug">{match.title}</p>
-        <div className="flex items-center gap-1 text-[11px] text-ha-text-secondary">
-          {match.price > 0 && <span>€{match.price}</span>}
-          {match.price > 0 && match.size_m2 > 0 && <span>·</span>}
-          {match.size_m2 > 0 && <span>{match.size_m2} m²</span>}
         </div>
       </div>
     </div>
@@ -653,7 +666,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
               data-testid={`card-search-profile-${p.id}`}
             >
               <div className="flex-1 min-w-0">
-                <p className="text-[15px] font-medium text-ha-text leading-snug line-clamp-1" data-testid={`text-profile-title-${p.id}`}>
+                <p className="text-[15px] text-title text-ha-text line-clamp-1" data-testid={`text-profile-title-${p.id}`}>
                   {getProfileTitle(p, t, locale)}
                 </p>
                 <p className="text-[13px] text-ha-text-secondary mt-0.5 line-clamp-1" data-testid={`text-profile-summary-${p.id}`}>
@@ -879,7 +892,7 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
           </span>
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-medium text-ha-text">{t("activation.title")}</p>
+          <p className="text-[15px] text-title text-ha-text">{t("activation.title")}</p>
           <p className="text-[13px] text-ha-text-secondary mt-0.5">{doneCount}/{allTasks.length} {t("activation.completed")}</p>
         </div>
         <ChevronDown className={`w-5 h-5 text-ha-text-secondary flex-shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
@@ -1262,7 +1275,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           <div className="w-14 h-14 rounded-[6px] bg-ha-surface flex items-center justify-center">
             <AlertCircle className="w-6 h-6 text-ha-text-secondary" />
           </div>
-          <p className="text-[18px] font-medium text-ha-text">{t("matches.loadError")}</p>
+          <p className="text-[18px] text-title text-ha-text">{t("matches.loadError")}</p>
           <p className="text-[14px] text-ha-text-secondary leading-relaxed">{t("matches.loadErrorDesc")}</p>
           <button
             onClick={() => apiMatchesQuery.refetch()}
@@ -1344,7 +1357,7 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
           >
             <ArrowLeft className="w-4 h-4 text-ha-text/80" />
           </button>
-          <h1 className="text-[17px] font-medium text-ha-text flex-1 tracking-wide">{t("filters.deleteTitle")}</h1>
+          <h1 className="text-[17px] text-title text-ha-text flex-1 tracking-wide">{t("filters.deleteTitle")}</h1>
         </div>
       </header>
 
@@ -1352,7 +1365,7 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
         <div className="w-16 h-16 rounded-[6px] bg-ha-primary flex items-center justify-center mb-6">
           <Trash2 className="w-8 h-8 text-white" />
         </div>
-        <h2 className="text-[22px] font-medium text-ha-text mb-3 text-center" data-testid="text-delete-title">
+        <h2 className="text-[22px] text-title text-ha-text mb-3 text-center" data-testid="text-delete-title">
           {t("filters.deleteQuestion")}
         </h2>
         <p className="text-[15px] text-ha-text/70 text-center max-w-[320px] mb-10 leading-relaxed" data-testid="text-delete-body">
@@ -1459,7 +1472,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
                 <Plus className="w-6 h-6" />
               </button>
             )}
-            <p className="text-[17px] font-medium text-ha-text">
+            <p className="text-[17px] text-title text-ha-text">
               {t("filters.activeCountTitle", { count: profileCount, max: MAX_PROFILES })}
             </p>
             <p className="text-[14px] text-ha-text-secondary mt-2 leading-relaxed">
@@ -1496,7 +1509,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
       >
         <div className="w-10 h-1 bg-ha-surface rounded-full mx-auto mb-6" />
         <div className="px-6">
-          <h3 className="text-[18px] font-medium text-ha-text mb-6">{t("profile.photo.title")}</h3>
+          <h3 className="text-[18px] text-title text-ha-text mb-6">{t("profile.photo.title")}</h3>
 
           {photoUrl && (
             <div className="flex justify-center mb-5">
