@@ -106,24 +106,25 @@ export default function HousingSituationPage() {
     }
   }
 
-  const selectClass = "w-full bg-ha-bg rounded-[6px] px-4 py-3.5 text-[15px] text-ha-text border border-ha-card-border focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] focus:outline-none transition-all h-[52px] appearance-none pr-10";
-  const inputClass = "w-full bg-ha-bg rounded-[6px] px-4 py-3.5 text-[15px] text-ha-text placeholder:text-ha-text-muted border border-ha-card-border focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] focus:outline-none transition-all h-[52px]";
-  const labelClass = "text-[13px] font-semibold text-ha-text mb-1.5 block";
+  const selectBase = "w-full rounded-[6px] px-4 text-[15px] border border-ha-card-border focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] focus:outline-none transition-all h-[48px] appearance-none pr-10 bg-ha-card";
+  const inputClass = "w-full rounded-[6px] px-4 text-[15px] text-ha-text placeholder:text-ha-text-muted border border-ha-card-border focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] focus:outline-none transition-all h-[48px] bg-ha-card";
+  const labelClass = "text-[13px] font-medium text-ha-text-secondary mb-1.5 block";
 
   function renderSelect(value: string, options: { value: string; label: string }[], onChange: (v: string) => void, testId: string) {
+    const hasValue = !!value;
     return (
       <div className="relative">
         <select
           value={value}
           onChange={e => onChange(e.target.value)}
-          className={selectClass}
+          className={`${selectBase} ${hasValue ? "text-ha-text" : "text-ha-text-muted"}`}
           data-testid={testId}
         >
           {options.map(opt => (
             <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
         </select>
-        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-ha-text-muted pointer-events-none" />
+        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-ha-text-muted pointer-events-none" />
       </div>
     );
   }
@@ -139,8 +140,8 @@ export default function HousingSituationPage() {
           </div>
         ) : (
           <div className="flex flex-col gap-5">
-            <div className="rounded-[6px] bg-ha-card px-5 py-5">
-              <div className="flex flex-col gap-4">
+            <div className="rounded-[6px] bg-ha-card px-5 py-6">
+              <div className="flex flex-col gap-5">
                 <div>
                   <label className={labelClass}>{t("settings.livingWith")}</label>
                   {renderSelect(data.living_with || "", LIVING_WITH_OPTIONS, v => setData({ ...data, living_with: v }), "select-living-with")}
@@ -178,7 +179,7 @@ export default function HousingSituationPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="w-full h-[52px] rounded-[6px] bg-ha-primary text-white text-[16px] font-semibold transition-colors hover:bg-ha-primary-hover active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full h-[50px] rounded-[6px] bg-ha-primary text-white text-[15px] font-semibold transition-colors hover:bg-ha-primary-hover active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
               data-testid="button-housing-save"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}

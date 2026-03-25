@@ -86,7 +86,7 @@ export default function ApplicationLetterPage() {
 
       <main className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-32">
         <div className="flex flex-col gap-5">
-          <div className="rounded-[6px] bg-ha-card px-5 py-5">
+          <div className="rounded-[6px] bg-ha-card px-5 py-4">
             <p className="text-[14px] text-ha-text-secondary leading-relaxed">
               {t("applicationLetter.helperText")}
             </p>
@@ -99,7 +99,7 @@ export default function ApplicationLetterPage() {
           ) : (
             <div className="rounded-[6px] bg-ha-card px-5 py-5">
               <div className="flex items-center justify-between mb-3">
-                <label className="text-[13px] font-semibold text-ha-text">{t("applicationLetter.letterLabel")}</label>
+                <label className="text-[13px] font-medium text-ha-text-secondary">{t("applicationLetter.letterLabel")}</label>
                 <button
                   onClick={handleReset}
                   className="flex items-center gap-1 text-[13px] text-ha-text-secondary active:text-ha-text transition-colors"
@@ -113,7 +113,7 @@ export default function ApplicationLetterPage() {
                 value={template}
                 onChange={(e) => setTemplate(e.target.value)}
                 placeholder={t("applicationLetter.placeholderText")}
-                className="w-full min-h-[340px] px-4 py-4 rounded-[6px] border border-ha-card-border bg-ha-bg text-[15px] text-ha-text placeholder:text-ha-text-muted focus:outline-none focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] resize-y leading-relaxed transition-all"
+                className="w-full min-h-[300px] px-4 py-4 rounded-[6px] border border-ha-card-border bg-ha-bg text-[15px] text-ha-text placeholder:text-ha-text-muted focus:outline-none focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] resize-y leading-relaxed transition-all"
                 data-testid="input-template"
               />
               {!isLongEnough && template.length > 0 && (
@@ -125,7 +125,7 @@ export default function ApplicationLetterPage() {
           <button
             onClick={() => saveMutation.mutate(template)}
             disabled={!isLongEnough || saveMutation.isPending}
-            className="w-full h-[52px] rounded-[6px] bg-ha-primary text-white text-[16px] font-semibold transition-colors hover:bg-ha-primary-hover active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full h-[50px] rounded-[6px] bg-ha-primary text-white text-[15px] font-semibold transition-colors hover:bg-ha-primary-hover active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
             data-testid="button-save-template"
           >
             {saveMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}

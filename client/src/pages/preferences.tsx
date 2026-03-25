@@ -3,11 +3,11 @@ import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/i18n";
-import { supabase } from "@/lib/supabase";
 import { apiFetch } from "@/lib/api-base";
 import { queryClient } from "@/lib/queryClient";
-import { ArrowLeft, Check, Bell, Mail, Globe } from "lucide-react";
+import { Check, Bell, Mail, Globe } from "lucide-react";
 import { isPushSupported, getPushPermissionState, subscribeToPush, unsubscribeFromPush } from "@/lib/push";
+import { PageHeader } from "@/components/ui/page-header";
 
 export default function PreferencesPage() {
   const { session } = useAuth();
@@ -94,23 +94,12 @@ export default function PreferencesPage() {
 
   return (
     <div className="min-h-screen bg-ha-bg">
-      <div className="sticky top-0 z-10 bg-ha-bg border-b border-ha-card-border px-4 py-3 flex items-center gap-3">
-        <button
-          onClick={() => navigate("/settings")}
-          className="w-9 h-9 rounded-[6px] flex items-center justify-center active:bg-ha-surface transition-colors"
-          data-testid="button-preferences-back"
-        >
-          <ArrowLeft className="w-5 h-5 text-ha-text" />
-        </button>
-        <h1 className="text-[18px] text-title text-ha-text" data-testid="text-preferences-title">
-          {t("settings.preferences")}
-        </h1>
-      </div>
+      <PageHeader title={t("settings.preferences")} onBack={() => navigate("/settings")} />
 
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
         <div className="flex flex-col gap-5">
           <div>
-            <p className="text-[12px] font-semibold text-ha-text-secondary uppercase tracking-wider px-1 mb-2">
+            <p className="text-[12px] font-medium text-ha-text-secondary uppercase tracking-wider px-1 mb-2">
               {t("settings.sectionLanguage")}
             </p>
             <div className="rounded-[6px] bg-ha-card px-5 py-1">
@@ -127,7 +116,7 @@ export default function PreferencesPage() {
           </div>
 
           <div>
-            <p className="text-[12px] font-semibold text-ha-text-secondary uppercase tracking-wider px-1 mb-2">
+            <p className="text-[12px] font-medium text-ha-text-secondary uppercase tracking-wider px-1 mb-2">
               {t("settings.sectionNotifications")}
             </p>
             <div className="rounded-[6px] bg-ha-card px-5 py-1">
