@@ -71,7 +71,7 @@ export default function SubscriptionSuccessPage() {
       queryClient.invalidateQueries({ queryKey: ["/api/profile-stats"] });
       queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
 
-      setTimeout(() => navigate("/dashboard"), 2000);
+      setTimeout(() => navigate("/onboarding/continue"), 2000);
     }
 
     verifyAndSync();

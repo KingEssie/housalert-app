@@ -36,7 +36,7 @@ import ChangePasswordPage from "@/pages/change-password";
 import ForgotPasswordPage from "@/pages/forgot-password";
 import ResetPasswordPage from "@/pages/reset-password";
 import PostLoginFunnel from "@/pages/post-login-funnel";
-import OnboardingFlow from "@/pages/onboarding-flow";
+import OnboardingFlow, { PostPaywallContinue } from "@/pages/onboarding-flow";
 import OnboardingIntroPage from "@/pages/onboarding-intro";
 import OnboardingPage from "@/pages/onboarding";
 import OnboardingEmbedPage from "@/pages/onboarding-embed";
@@ -165,6 +165,7 @@ function Router() {
       <Route path="/continue" component={ContinueDraftPage} />
       <Route path="/onboarding/intro" component={OnboardingIntroPage} />
       <Route path="/onboarding/setup" component={() => <ProtectedRoute component={OnboardingFlow} skipOnboardingCheck />} />
+      <Route path="/onboarding/continue" component={() => <ProtectedRoute component={PostPaywallContinue} skipOnboardingCheck />} />
       <Route path="/onboarding/location" component={OnboardingLocationPage} />
       <Route path="/onboarding/filters" component={OnboardingFiltersPage} />
       <Route path="/onboarding/estimate" component={OnboardingEstimatePage} />

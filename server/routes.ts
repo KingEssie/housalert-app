@@ -2489,6 +2489,8 @@ export async function registerRoutes(
         "first_name", "last_name", "birth_date", "phone", "bio",
         "profile_photo_url", "occupation", "monthly_income", "language",
         "onboarding_completed",
+        "gender", "living_with", "work_status", "move_reason", "pets_count",
+        "post_paywall_onboarding_completed", "onboarding_current_step", "push_test_completed",
       ];
 
       const updates: Record<string, any> = {};

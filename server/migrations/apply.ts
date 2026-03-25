@@ -19,6 +19,7 @@ export async function runStartupMigration() {
   }
 
   await ensureOnboardingCompletedColumn();
+  await ensurePostPaywallColumns();
 
   await createUserMatchesTable();
   await createFetchRunsTable();
@@ -121,6 +122,34 @@ async function createFetchRunsTable() {
     log(`[MIGRATION] fetch_runs table OK (${colCheck.rows.length} columns)`, "migration");
   } catch (err: any) {
     log(`[MIGRATION] Error creating fetch_runs: ${err.message}`, "migration");
+  }
+}
+
+async function ensurePostPaywallColumns() {
+  const cols = [
+    { name: "gender", sql: "TEXT" },
+    { name: "living_with", sql: "TEXT" },
+    { name: "work_status", sql: "TEXT" },
+    { name: "move_reason", sql: "TEXT" },
+    { name: "pets_count", sql: "INTEGER DEFAULT 0" },
+    { name: "post_paywall_onboarding_completed", sql: "BOOLEAN DEFAULT false" },
+    { name: "onboarding_current_step", sql: "TEXT" },
+    { name: "push_test_completed", sql: "BOOLEAN DEFAULT false" },
+  ];
+
+  for (const col of cols) {
+    try {
+      const exists = await pool.query(
+        "SELECT 1 FROM information_schema.columns WHERE table_name = 'user_profile_data' AND column_name = $1",
+        [col.name]
+      );
+      if (exists.rows.length === 0) {
+        await pool.query(`ALTER TABLE user_profile_data ADD COLUMN ${col.name} ${col.sql}`);
+        log(`[MIGRATION] Added ${col.name} column to user_profile_data`, "migration");
+      }
+    } catch (err: any) {
+      log(`[MIGRATION] Error adding ${col.name}: ${err.message}`, "migration");
+    }
   }
 }
 

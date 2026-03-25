@@ -1,0 +1,456 @@
+Build the next onboarding flow after the current paywall in HousAlert.
+
+IMPORTANT:
+- Keep the current paywall flow as it is.
+- If user pays OR skips payment, both routes must continue into the exact same onboarding continuation flow.
+- Do NOT implement AI generation yet.
+- For the application letter, generate a structured template letter using the user’s entered data.
+- Keep all routing, saving, and step order correct.
+- Use the current HousAlert app architecture, Supabase setup, translations, and existing styling system.
+- The resulting flow must feel polished, production-ready, and consistent with the current app.
+
+GOAL:
+Implement the continuation flow after paywall, ending on the Home screen.
+
+==================================================
+FLOW OVERVIEW
+==================================================
+
+After paywall:
+1. If paid -> continue flow
+2. If skipped -> show “limited access / are you sure?” screen first, then continue flow
+3. Then continue with:
+   A. Welcome / intro screen
+   B. Application letter - personal details
+   C. Application letter - housing/living situation
+   D. Generated application letter screen
+   E. Search buddy invite screen
+   F. Push notification test / confirmation screen
+   G. Final success screen
+   H. Redirect to Home
+
+==================================================
+ROUTING
+==================================================
+
+Use this route sequence:
+
+/onboarding/setup/paywall
+/onboarding/setup/limited-access
+/onboarding/setup/welcome
+/onboarding/setup/letter-personal
+/onboarding/setup/letter-living
+/onboarding/setup/letter-preview
+/onboarding/setup/search-buddy
+/onboarding/setup/push-test
+/onboarding/setup/success
+
+Then redirect to:
+/home
+
+RULES:
+- If the user chooses a paid plan and checkout succeeds, skip the limited-access screen and go directly to /onboarding/setup/welcome
+- If the user clicks “continue without subscription”, go to /onboarding/setup/limited-access first
+- From the limited-access screen, user can either go back to paywall or continue to /onboarding/setup/welcome
+- Every screen must have correct forward/back navigation
+- No broken loops
+- No dead ends
+- If the user refreshes during onboarding, progress must persist and reopen on the correct current step if possible
+
+==================================================
+DATA STORAGE
+==================================================
+
+Persist all onboarding continuation data in Supabase.
+
+Use the existing user profile / onboarding storage system if possible.
+If needed, extend the existing profile data storage with these fields:
+
+phone_number
+birth_day
+birth_month
+birth_year
+gender
+
+living_with
+work_status
+move_reason
+gross_monthly_income
+pets_count
+
+application_letter_generated
+application_letter_text
+
+search_buddy_email
+search_buddy_skipped
+
+push_test_completed
+post_paywall_onboarding_completed
+
+Requirements:
+- Save after each step or on each “Next”
+- Do not lose state on refresh
+- Keep this separate from payment state but linked to the user
+- Mark onboarding as fully complete only after the final success screen CTA is pressed
+
+==================================================
+SCREEN A
+WELCOME / INTRO
+==================================================
+
+Route:
+/onboarding/setup/welcome
+
+Purpose:
+Warm welcome after paywall and explain the next setup steps.
+
+Layout:
+- Large title
+- Intro text
+- Friendly onboarding explanation
+- Use HousAlert branding, not Rentbird
+- One primary CTA: “Volgende”
+
+Copy style:
+- Explain that the user is almost ready
+- Explain that finishing these steps increases success
+- Mention push notifications and reaction letter setup as useful tools
+- Keep it encouraging, practical, and clear
+
+Functionality:
+- CTA goes to /onboarding/setup/letter-personal
+
+==================================================
+SCREEN B
+APPLICATION LETTER - PERSONAL DETAILS
+==================================================
+
+Route:
+/onboarding/setup/letter-personal
+
+Purpose:
+Collect the personal details needed for the generated reaction/application letter.
+
+Fields:
+- Telefoonnummer
+- Geboortedatum:
+  - dag dropdown
+  - maand dropdown
+  - jaar dropdown
+- Geslacht dropdown
+
+Validation:
+- Telefoonnummer required
+- Geboortedatum required
+- Geslacht required
+
+Notes:
+- Use dropdowns/selects where appropriate
+- Use the visual hierarchy similar to the reference screenshots
+- Button at bottom: “Volgende”
+
+Save:
+- Save entered data before going next
+
+Next:
+- /onboarding/setup/letter-living
+
+Back:
+- /onboarding/setup/welcome
+
+==================================================
+SCREEN C
+APPLICATION LETTER - LIVING SITUATION
+==================================================
+
+Route:
+/onboarding/setup/letter-living
+
+Purpose:
+Collect living situation details to generate the application letter.
+
+Fields:
+1. Met wie ga je wonen? -> dropdown
+2. Wat is je huidige werksituatie? -> dropdown
+3. Wat is de reden voor je verhuizing? -> dropdown
+4. Wat is jouw / jullie gezamenlijk bruto maandinkomen? -> numeric input
+5. Welke huisdieren neem je mee? -> dropdown from 0 to 10
+
+Validation:
+- All required
+- Monthly income must be numeric and > 0
+- Pets count must always be set
+
+Dropdown values:
+Living with:
+- Alleen
+- Met partner
+- Met partner en kinderen
+- Met kinderen
+- Met huisgenoten
+- Met familie
+- Anders
+
+Work status:
+- In loondienst
+- Zelfstandig / ZZP
+- Student
+- Expat
+- Uitkeringsgerechtigde
+- Anders
+
+Move reason:
+- Verhuizen voor werk of studie
+- Voor het eerst samenwonen
+- Gezinsuitbreiding
+- Relatiebreuk of scheiding
+- Voor het eerst op mezelf
+- Groter willen wonen
+- Goedkoper willen wonen
+- Andere plaats of omgeving
+- Specifieke woonwensen
+- Energiezuinigere woning
+- Anders
+
+Pets count:
+- 0
+- 1
+- 2
+- 3
+- 4
+- 5
+- 6
+- 7
+- 8
+- 9
+- 10
+
+Save:
+- Save before next
+
+Next:
+- /onboarding/setup/letter-preview
+
+Back:
+- /onboarding/setup/letter-personal
+
+==================================================
+SCREEN D
+GENERATED APPLICATION LETTER
+==================================================
+
+Route:
+/onboarding/setup/letter-preview
+
+Purpose:
+Show the generated letter based on user inputs.
+
+IMPORTANT:
+No AI yet.
+Generate a clean template-based letter using the saved data.
+
+Layout:
+- Page title
+- Small note box above the letter:
+  “Wijzig het veld [ADRES] niet. Dit gebruiken we om per reactie het adres in te vullen.”
+- Large letter preview box
+- Primary CTA: “Volgende”
+
+Template logic:
+Build the letter from the saved user profile + onboarding values.
+
+Use a strong, clean Dutch rental application style.
+Use placeholders where needed, especially:
+[ADRES]
+
+Example structure:
+- Geachte heer/mevrouw,
+- Intro interest in the property at [ADRES]
+- Name and short living situation
+- Work/income stability
+- Mention pets / no pets
+- Mention reason for moving
+- Friendly closing with phone number and name
+
+Requirements:
+- Generate readable, polished Dutch text
+- If a field is missing unexpectedly, gracefully omit that sentence
+- Save generated text in database
+- User does not need to edit yet in this flow
+- Later editing can be added, but not required now
+
+Next:
+- /onboarding/setup/search-buddy
+
+Back:
+- /onboarding/setup/letter-living
+
+==================================================
+SCREEN E
+SEARCH BUDDY
+==================================================
+
+Route:
+/onboarding/setup/search-buddy
+
+Purpose:
+Invite a search buddy.
+
+Layout:
+- Explain what a search buddy can do
+- Use green checks for allowed features
+- Use red crosses for restricted features
+- Show two actions at bottom:
+  1. Link kopiëren
+  2. Uitnodigen
+- Secondary text action:
+  “Misschien later”
+
+Features copy:
+Allowed:
+- Woningalerts ontvangen via de app
+- Woningen markeren als favoriet
+- Reageren op woningen
+
+Not allowed:
+- Zoekopdrachten beheren
+- Reactiebrief beheren
+
+Functionality:
+- User can enter or use existing buddy invitation link
+- “Link kopiëren” copies invite link
+- “Uitnodigen” can open native share if available, or email invite flow if already implemented
+- “Misschien later” skips this step
+
+Save:
+- Save buddy step completion
+- If skipped, mark skipped
+- If invite started, save that too
+
+Next:
+- /onboarding/setup/push-test
+
+Back:
+- /onboarding/setup/letter-preview
+
+==================================================
+SCREEN F
+PUSH NOTIFICATION TEST
+==================================================
+
+Route:
+/onboarding/setup/push-test
+
+Purpose:
+Confirm push notifications are enabled and show a test notification step.
+
+Layout:
+- Title saying a test push notification has been sent
+- Info box explaining what to do if no push was received
+- Support/contact link
+- Large visual illustration area if already available
+- Bottom CTA: “Volgende”
+
+Functionality:
+- Trigger browser/app push permission flow if not already granted
+- If permission is denied, still allow continue but save denied state
+- If permission granted, mark push enabled
+- Mark push test step completed
+
+Notes:
+- Do not hard-block onboarding completion if permission is denied
+- But store state so later prompts can remind the user
+
+Next:
+- /onboarding/setup/success
+
+Back:
+- /onboarding/setup/search-buddy
+
+==================================================
+SCREEN G
+FINAL SUCCESS SCREEN
+==================================================
+
+Route:
+/onboarding/setup/success
+
+Purpose:
+Close the onboarding and push the user into the product.
+
+Layout:
+- Strong positive title
+- Friendly card/message
+- Explain:
+  - first matches will arrive soon
+  - use the app and react quickly
+  - practical tips are available in the app
+- Primary CTA:
+  “Ga naar de app”
+
+Functionality:
+- On click:
+  - mark post_paywall_onboarding_completed = true
+  - mark onboarding completed in the overall onboarding state
+  - redirect to /home
+
+Back:
+- /onboarding/setup/push-test
+
+==================================================
+FREE VS PAID LOGIC
+==================================================
+
+If paid:
+- user has active subscription
+- full functionality available
+
+If skipped:
+- user continues to app with free tier restrictions
+- do NOT block the onboarding continuation flow
+- do NOT loop them back to paywall
+- do save that they skipped payment
+- later parts of the app may show upgrade prompts
+
+==================================================
+STYLING
+==================================================
+
+Use the onboarding style already established:
+- dark purple / high-contrast onboarding screens where applicable
+- where the reference screens are light cards on purple background, match that pattern
+- buttons, spacing, borders, headings, and card hierarchy should feel premium and consistent
+- keep the UI close to the provided reference flow structure
+- but use HousAlert branding/text instead of Rentbird text
+
+==================================================
+TRANSLATIONS
+==================================================
+
+Add full translations for:
+- Dutch
+- German
+- English
+
+Dutch should be the primary source text.
+German and English must be properly translated, not machine-like placeholders.
+
+==================================================
+QUALITY REQUIREMENTS
+==================================================
+
+Before finishing:
+1. Verify route order works for both paid and skipped flows
+2. Verify all back buttons go to the correct previous screen
+3. Verify all data saves correctly in Supabase
+4. Verify refresh does not lose progress
+5. Verify application letter preview is generated from actual saved user values
+6. Verify final CTA lands on /home
+7. Verify onboarding does not restart after completion
+
+At the end, give me:
+- exact route map
+- exact database fields used
+- exact template used for the generated application letter
+- which existing files were modified
+- which new files were created
