@@ -5,7 +5,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/i18n";
 import { apiFetch } from "@/lib/api-base";
 import { queryClient } from "@/lib/queryClient";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { Loader2, ChevronDown } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
 
 interface HousingData {
   living_with?: string | null;
@@ -24,6 +25,47 @@ export default function HousingSituationPage() {
   const [data, setData] = useState<HousingData>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+
+  const LIVING_WITH_OPTIONS = [
+    { value: "", label: t("housing.selectOption") },
+    { value: "alone", label: t("housing.livingAlone") },
+    { value: "partner", label: t("housing.livingPartner") },
+    { value: "partner_children", label: t("housing.livingPartnerChildren") },
+    { value: "children", label: t("housing.livingChildren") },
+    { value: "friend", label: t("housing.livingFriend") },
+    { value: "family", label: t("housing.livingFamily") },
+    { value: "other", label: t("housing.livingOther") },
+  ];
+
+  const WORK_SITUATION_OPTIONS = [
+    { value: "", label: t("housing.selectOption") },
+    { value: "employed", label: t("housing.workEmployed") },
+    { value: "self_employed", label: t("housing.workSelfEmployed") },
+    { value: "student", label: t("housing.workStudent") },
+    { value: "retired", label: t("housing.workRetired") },
+    { value: "unemployed", label: t("housing.workUnemployed") },
+    { value: "other", label: t("housing.workOther") },
+  ];
+
+  const MOVE_REASON_OPTIONS = [
+    { value: "", label: t("housing.selectOption") },
+    { value: "job_change", label: t("housing.moveJobChange") },
+    { value: "study", label: t("housing.moveStudy") },
+    { value: "relationship", label: t("housing.moveRelationship") },
+    { value: "larger_home", label: t("housing.moveLargerHome") },
+    { value: "smaller_home", label: t("housing.moveSmallerHome") },
+    { value: "cheaper", label: t("housing.moveCheaper") },
+    { value: "neighborhood", label: t("housing.moveNeighborhood") },
+    { value: "other", label: t("housing.moveOther") },
+  ];
+
+  const PETS_OPTIONS = [
+    { value: "", label: t("housing.selectOption") },
+    ...Array.from({ length: 11 }, (_, i) => ({
+      value: String(i),
+      label: String(i),
+    })),
+  ];
 
   useEffect(() => {
     if (!session?.access_token) return;
@@ -64,22 +106,31 @@ export default function HousingSituationPage() {
     }
   }
 
-  const fieldClass = "w-full bg-ha-bg rounded-[6px] px-4 py-3.5 text-[15px] text-ha-text placeholder:text-ha-text-muted border border-ha-card-border focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] focus:outline-none transition-all";
+  const selectClass = "w-full bg-ha-bg rounded-[6px] px-4 py-3.5 text-[15px] text-ha-text border border-ha-card-border focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] focus:outline-none transition-all h-[52px] appearance-none pr-10";
+  const inputClass = "w-full bg-ha-bg rounded-[6px] px-4 py-3.5 text-[15px] text-ha-text placeholder:text-ha-text-muted border border-ha-card-border focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] focus:outline-none transition-all h-[52px]";
+  const labelClass = "text-[13px] font-semibold text-ha-text mb-1.5 block";
+
+  function renderSelect(value: string, options: { value: string; label: string }[], onChange: (v: string) => void, testId: string) {
+    return (
+      <div className="relative">
+        <select
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          className={selectClass}
+          data-testid={testId}
+        >
+          {options.map(opt => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))}
+        </select>
+        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-ha-text-muted pointer-events-none" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-ha-bg">
-      <div className="sticky top-0 z-10 bg-ha-bg border-b border-ha-card-border px-4 py-3 flex items-center gap-3">
-        <button
-          onClick={() => navigate("/settings")}
-          className="w-9 h-9 rounded-[6px] flex items-center justify-center active:bg-ha-surface transition-colors"
-          data-testid="button-housing-back"
-        >
-          <ArrowLeft className="w-5 h-5 text-ha-text" />
-        </button>
-        <h1 className="text-[18px] text-title text-ha-text" data-testid="text-housing-title">
-          {t("settings.housingSituation")}
-        </h1>
-      </div>
+      <PageHeader title={t("settings.housingSituation")} onBack={() => navigate("/settings")} />
 
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
         {loading ? (
@@ -91,63 +142,35 @@ export default function HousingSituationPage() {
             <div className="rounded-[6px] bg-ha-card px-5 py-5">
               <div className="flex flex-col gap-4">
                 <div>
-                  <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">{t("settings.livingWith")}</label>
-                  <input
-                    type="text"
-                    value={data.living_with || ""}
-                    onChange={(e) => setData({ ...data, living_with: e.target.value })}
-                    placeholder={t("settings.livingWithPlaceholder")}
-                    className={fieldClass}
-                    data-testid="input-living-with"
-                  />
+                  <label className={labelClass}>{t("settings.livingWith")}</label>
+                  {renderSelect(data.living_with || "", LIVING_WITH_OPTIONS, v => setData({ ...data, living_with: v }), "select-living-with")}
                 </div>
 
                 <div>
-                  <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">{t("settings.workSituation")}</label>
-                  <input
-                    type="text"
-                    value={data.work_situation || ""}
-                    onChange={(e) => setData({ ...data, work_situation: e.target.value })}
-                    placeholder={t("settings.workSituationPlaceholder")}
-                    className={fieldClass}
-                    data-testid="input-work-situation"
-                  />
+                  <label className={labelClass}>{t("settings.workSituation")}</label>
+                  {renderSelect(data.work_situation || "", WORK_SITUATION_OPTIONS, v => setData({ ...data, work_situation: v }), "select-work-situation")}
                 </div>
 
                 <div>
-                  <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">{t("settings.moveReason")}</label>
-                  <input
-                    type="text"
-                    value={data.move_reason || ""}
-                    onChange={(e) => setData({ ...data, move_reason: e.target.value })}
-                    placeholder={t("settings.moveReasonPlaceholder")}
-                    className={fieldClass}
-                    data-testid="input-move-reason"
-                  />
+                  <label className={labelClass}>{t("settings.moveReason")}</label>
+                  {renderSelect(data.move_reason || "", MOVE_REASON_OPTIONS, v => setData({ ...data, move_reason: v }), "select-move-reason")}
                 </div>
 
                 <div>
-                  <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">{t("settings.grossIncome")}</label>
+                  <label className={labelClass}>{t("settings.grossIncome")}</label>
                   <input
                     type="number"
                     value={data.gross_income || ""}
                     onChange={(e) => setData({ ...data, gross_income: e.target.value ? Number(e.target.value) : undefined })}
                     placeholder={t("settings.grossIncomePlaceholder")}
-                    className={fieldClass}
+                    className={inputClass}
                     data-testid="input-gross-income"
                   />
                 </div>
 
                 <div>
-                  <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">{t("settings.pets")}</label>
-                  <input
-                    type="text"
-                    value={data.pets || ""}
-                    onChange={(e) => setData({ ...data, pets: e.target.value })}
-                    placeholder={t("settings.petsPlaceholder")}
-                    className={fieldClass}
-                    data-testid="input-pets"
-                  />
+                  <label className={labelClass}>{t("settings.pets")}</label>
+                  {renderSelect(data.pets || "", PETS_OPTIONS, v => setData({ ...data, pets: v }), "select-pets")}
                 </div>
               </div>
             </div>

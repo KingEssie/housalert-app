@@ -6,8 +6,8 @@ import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { useTranslation } from "@/i18n";
-import { getDefaultTemplate, PLACEHOLDERS } from "@/lib/application-letter";
-import { RotateCcw } from "lucide-react";
+import { getDefaultTemplate } from "@/lib/application-letter";
+import { RotateCcw, Loader2 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 
 interface ProfileData {
@@ -82,51 +82,14 @@ export default function ApplicationLetterPage() {
 
   return (
     <div className="min-h-screen bg-ha-bg flex flex-col">
-      <PageHeader title={t("applicationLetter.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
+      <PageHeader title={t("applicationLetter.title")} onBack={() => navigate("/settings")} />
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-32">
-        <div className="flex flex-col gap-6">
-
-          <div>
-            <div className="flex items-center justify-between mb-2.5">
-              <h3 className="text-[14px] font-medium text-ha-text-secondary">{t("applicationLetter.placeholders")}</h3>
-              <button
-                onClick={handleReset}
-                className="flex items-center gap-1 text-[13px] text-ha-text-secondary active:text-ha-text transition-colors"
-                data-testid="button-reset-template"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                {t("applicationLetter.resetDefault")}
-              </button>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              {PLACEHOLDERS.map((p) => (
-                <button
-                  key={p.key}
-                  onClick={() => {
-                    const textarea = document.querySelector("[data-testid='input-template']") as HTMLTextAreaElement;
-                    if (textarea) {
-                      const start = textarea.selectionStart;
-                      const end = textarea.selectionEnd;
-                      const before = template.slice(0, start);
-                      const after = template.slice(end);
-                      setTemplate(before + p.key + after);
-                      setTimeout(() => {
-                        textarea.focus();
-                        textarea.setSelectionRange(start + p.key.length, start + p.key.length);
-                      }, 0);
-                    } else {
-                      setTemplate(template + p.key);
-                    }
-                  }}
-                  className="text-[11px] font-mono bg-ha-card text-ha-primary px-2.5 py-1.5 rounded-lg active:bg-ha-surface transition-colors border border-ha-card-border"
-                  title={t(p.labelKey)}
-                  data-testid={`placeholder-${p.key.replace(/\[|\]/g, "")}`}
-                >
-                  {p.key}
-                </button>
-              ))}
-            </div>
+      <main className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-32">
+        <div className="flex flex-col gap-5">
+          <div className="rounded-[6px] bg-ha-card px-5 py-5">
+            <p className="text-[14px] text-ha-text-secondary leading-relaxed">
+              {t("applicationLetter.helperText")}
+            </p>
           </div>
 
           {isLoading ? (
@@ -134,32 +97,42 @@ export default function ApplicationLetterPage() {
               <div className="h-[300px] bg-ha-surface rounded-[6px]" />
             </div>
           ) : (
-            <div>
+            <div className="rounded-[6px] bg-ha-card px-5 py-5">
+              <div className="flex items-center justify-between mb-3">
+                <label className="text-[13px] font-semibold text-ha-text">{t("applicationLetter.letterLabel")}</label>
+                <button
+                  onClick={handleReset}
+                  className="flex items-center gap-1 text-[13px] text-ha-text-secondary active:text-ha-text transition-colors"
+                  data-testid="button-reset-template"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  {t("applicationLetter.resetDefault")}
+                </button>
+              </div>
               <textarea
                 value={template}
                 onChange={(e) => setTemplate(e.target.value)}
                 placeholder={t("applicationLetter.placeholderText")}
-                className="w-full min-h-[340px] px-5 py-5 rounded-[6px] border border-ha-card-border bg-ha-card text-[15px] text-ha-text placeholder:text-ha-text-muted focus:outline-none focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] resize-y leading-relaxed transition-all"
+                className="w-full min-h-[340px] px-4 py-4 rounded-[6px] border border-ha-card-border bg-ha-bg text-[15px] text-ha-text placeholder:text-ha-text-muted focus:outline-none focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] resize-y leading-relaxed transition-all"
                 data-testid="input-template"
               />
               {!isLongEnough && template.length > 0 && (
-                <p className="text-[12px] text-ha-text-secondary mt-2 px-1">{t("applicationLetter.minChars")}</p>
+                <p className="text-[12px] text-ha-text-secondary mt-2">{t("applicationLetter.minChars")}</p>
               )}
             </div>
           )}
+
+          <button
+            onClick={() => saveMutation.mutate(template)}
+            disabled={!isLongEnough || saveMutation.isPending}
+            className="w-full h-[52px] rounded-[6px] bg-ha-primary text-white text-[16px] font-semibold transition-colors hover:bg-ha-primary-hover active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+            data-testid="button-save-template"
+          >
+            {saveMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+            {saveMutation.isPending ? t("applicationLetter.saving") : t("applicationLetter.saveLetter")}
+          </button>
         </div>
       </main>
-
-      <div className="fixed bottom-7 left-0 right-0 z-10 flex justify-center pointer-events-none">
-        <button
-          onClick={() => saveMutation.mutate(template)}
-          disabled={!isLongEnough || saveMutation.isPending}
-          className="pointer-events-auto h-[48px] px-8 rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium disabled:opacity-40 shadow-[0_4px_16px_rgba(0,0,0,0.16)] active:scale-95 transition-all"
-          data-testid="button-save-template"
-        >
-          {saveMutation.isPending ? t("applicationLetter.saving") : t("applicationLetter.saveLetter")}
-        </button>
-      </div>
     </div>
   );
 }

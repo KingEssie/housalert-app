@@ -73,7 +73,7 @@ export default function SubscriptionDetailPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-ha-bg">
-        <PageHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
+        <PageHeader title={t("subscription.title")} onBack={() => navigate("/settings")} />
         <div className="max-w-lg mx-auto px-6 pt-4">
           <div className="rounded-[6px] border border-ha-card-border bg-ha-card p-6 animate-pulse">
             <div className="h-5 bg-ha-surface rounded w-1/3 mb-4" />
@@ -125,7 +125,7 @@ export default function SubscriptionDetailPage() {
 
   return (
     <div className="min-h-screen bg-ha-bg" data-testid="page-subscription-detail">
-      <PageHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
+      <PageHeader title={t("subscription.title")} onBack={() => navigate("/settings")} />
 
       <div className="max-w-lg mx-auto px-6 pt-2 pb-12 flex flex-col gap-6">
         <div

@@ -1,0 +1,142 @@
+Apply the following Settings detail refinements.
+
+IMPORTANT:
+Use the uploaded screenshots as the source of truth for the dropdown options and structure.
+Do NOT invent new options if the screenshots already show the intended values.
+
+==================================================
+1. BACK NAVIGATION FIX
+==================================================
+
+Fix navigation so that when the user goes from Instellingen to any subpage and taps back, they always return to the Instellingen page.
+
+This must apply to:
+- Mijn gegevens
+- Woonsituatie
+- Reactiebrief
+- Voorkeuren
+- Wachtwoord
+- any other settings subpage
+
+Do NOT rely on inconsistent browser history.
+Use explicit app routing so back always returns to Instellingen.
+
+==================================================
+2. MIJN GEGEVENS PAGE
+==================================================
+
+Redesign the "Mijn gegevens" page to visually match Rentbird much more closely.
+
+Requirements:
+- Keep the same editable functionality and saved data
+- Keep HousAlert branding/colors
+- Make the structure/layout feel like Rentbird
+- Use stronger typography hierarchy
+- Labels and field headings should be clearly bold/semibold
+- This page should feel like a polished consumer settings page, not an admin form
+
+Fields:
+- Voornaam
+- Achternaam
+- E-mailadres
+- Telefoonnummer
+- Geboortedatum
+- Geslacht
+
+Keep the pink save button at the bottom.
+
+==================================================
+3. REACTIEBRIEF PAGE
+==================================================
+
+Redesign the "Reactiebrief" page to match the Rentbird logic/style more closely.
+
+Requirements:
+- Remove the unnecessary placeholder chips/tokens shown above the text field
+- Use a simpler explanation block like Rentbird
+- Focus on:
+  - title
+  - short explanation/helper text
+  - main editable reaction letter field
+  - save button
+- Keep existing save/generate logic intact
+
+Do NOT clutter the top of the page with placeholder pills.
+
+==================================================
+4. WOONSITUATIE PAGE
+==================================================
+
+Refine the "Woonsituatie" page.
+
+Requirements:
+- Use dropdown/select inputs for almost everything
+- Only bruto maandinkomen should remain a numeric text input
+
+Structure:
+- Met wie ga je wonen? -> dropdown
+- Wat is je huidige werksituatie? -> dropdown
+- Wat is de reden voor je verhuizing? -> dropdown
+- Bruto maandinkomen -> numeric input
+- Welke huisdieren neem je mee? -> dropdown
+
+Huisdieren dropdown:
+- values should be numeric options from 0 to 10
+
+Keep the pink save button at the bottom.
+
+==================================================
+5. DROPDOWN OPTIONS
+==================================================
+
+Use the uploaded screenshots as the reference for the dropdown values and wording.
+
+This applies to:
+- Met wie ga je wonen?
+- Huidige werksituatie
+- Reden verhuizing
+- Any other related dropdown shown in the screenshots
+
+Do NOT make up alternative labels if the screenshots already define them.
+Match the wording and order as closely as possible.
+
+==================================================
+6. VISUAL CONSISTENCY
+==================================================
+
+Keep the current HousAlert light style, but make these pages feel more Rentbird-like in structure and clarity.
+
+Keep:
+- light grey app background
+- white content cards
+- pink primary save buttons
+- same app typography family
+- same reduced border radius system
+
+Improve:
+- hierarchy
+- clarity
+- spacing
+- dropdown logic
+- consistency
+
+==================================================
+7. DO NOT
+==================================================
+
+- do not change business logic
+- do not remove save functionality
+- do not break existing profile data bindings
+- do not send users back to the wrong page on back navigation
+- do not keep the placeholder pills on the Reactiebrief page
+
+==================================================
+8. CONFIRMATION
+==================================================
+
+When done, confirm:
+1. which settings subpages now route back to Instellingen
+2. what changed on Mijn gegevens
+3. what changed on Reactiebrief
+4. which fields on Woonsituatie are now dropdowns
+5. which dropdown values were taken from the uploaded screenshots

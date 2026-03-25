@@ -79,7 +79,7 @@ export default function ChangePasswordPage() {
   if (success) {
     return (
       <div className="min-h-screen bg-background" data-testid="page-password-success">
-        <PageHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
+        <PageHeader title={t("changePassword.title")} onBack={() => navigate("/settings")} />
         <div className="max-w-xl mx-auto p-4 pb-8">
           <div className="bg-card rounded-[6px] border p-6 text-center" style={{ borderColor: "rgb(var(--ha-card-border))" }}>
             <div className="flex items-center justify-center mb-5">
@@ -94,7 +94,7 @@ export default function ChangePasswordPage() {
               {t("changePassword.successDesc")}
             </p>
             <button
-              onClick={() => navigate("/dashboard?tab=profiel&sub=account")}
+              onClick={() => navigate("/settings")}
               className="w-full h-[48px] bg-primary text-primary-foreground rounded-full font-medium text-[15px] transition-colors"
               data-testid="button-back-to-account"
             >
@@ -108,7 +108,7 @@ export default function ChangePasswordPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col" data-testid="page-change-password">
-      <PageHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
+      <PageHeader title={t("changePassword.title")} onBack={() => navigate("/settings")} />
 
       <div className="flex-1 max-w-xl mx-auto w-full p-4 pb-8">
         <div className="bg-card rounded-[6px] border p-5 space-y-5" style={{ borderColor: "rgb(var(--ha-card-border))" }}>

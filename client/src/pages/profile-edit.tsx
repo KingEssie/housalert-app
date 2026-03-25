@@ -82,7 +82,7 @@ export default function ProfileEditPage() {
       }
 
       toast({ title: t("profileEdit.saved") });
-      navigate(field === "search_buddy_email" ? "/dashboard?tab=profiel" : "/profile/details");
+      navigate("/settings");
     } catch (err: any) {
       toast({ title: t("common.error"), description: err.message || t("profileEdit.saveFailed"), variant: "destructive" });
     } finally {
@@ -97,7 +97,7 @@ export default function ProfileEditPage() {
 
   return (
     <div className="min-h-screen bg-ha-bg flex flex-col">
-      <PageHeader title={config.question} onBack={() => navigate(field === "search_buddy_email" ? "/dashboard?tab=profiel" : "/profile/details")} />
+      <PageHeader title={config.question} onBack={() => navigate("/settings")} />
 
       <div className="flex-1 max-w-xl mx-auto px-5 w-full">
         {loading ? (
