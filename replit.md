@@ -44,15 +44,20 @@ A mobile-first rental alert application for the German market. Users can sign up
 - **Auth**: V2 welcome page uses existing Supabase auth (signInWithPassword), same as old login
 - **Planned Phase 2**: /v2/onboarding/filters, /v2/onboarding/preferences, /v2/onboarding/value, /v2/signup, /v2/paywall, /v2/profile steps, /v2/success
 
-## Post-Login Onboarding Funnel
-- **Route**: `/onboarding/setup` — 9-step funnel (paywall → objection → push → personalInfo → housing → extras → letter → buddy → success)
-- **Component**: `client/src/pages/post-login-funnel.tsx`
-- **Onboarding flag**: `user_profile_data.onboarding_completed` (BOOLEAN, default false). Set true when user finishes the funnel success step.
+## Onboarding Flow (Active)
+- **Route**: `/onboarding/setup` — 6-step flow: location → radius → filters → preview → confirm → paywall
+- **Component**: `client/src/pages/onboarding-flow.tsx`
+- **Flow**: User selects city (Nominatim search + popular cities grid) → chooses radius (5-50km) → sets filters (price, bedrooms, size) → sees blurred result preview with match estimate → confirms search profile → paywall (plan selection → Stripe checkout or skip)
+- **Search profile creation**: Created on confirm step via `createSearchProfile()` to Supabase `search_profiles` table. `onboarding_completed` is set to `true` immediately after profile creation (before paywall), preventing onboarding loops.
+- **Paywall**: Reuses existing Stripe checkout flow (`POST /api/checkout/session`). Plans: monthly (€14.99), 2-month (€24.99), 3-month (€29.99). Skip option goes directly to dashboard.
+- **i18n**: `onboardingFlow.*` keys in de.ts. Paywall reuses existing `funnel.paywall.*` keys.
+- **Onboarding flag**: `user_profile_data.onboarding_completed` (BOOLEAN, default false). Set true after search profile creation.
 - **API**: `GET /api/onboarding-status` — returns `{ onboarding_completed: bool }`. Auto-backfills `true` for existing users who already have search profiles.
 - **Auth guard**: `ProtectedRoute` in App.tsx checks `/api/onboarding-status`. If `onboarding_completed=false`, redirects to `/onboarding/setup`. Skipped for routes with `skipOnboardingCheck`.
-- **Login redirect**: Login page checks onboarding status and redirects to `/onboarding/setup` if not completed, otherwise `/dashboard`.
-- **Signup redirect**: After signup → `/onboarding/setup`.
-- **Existing users**: Automatically marked as completed if they have any search profiles (backfill in onboarding-status API).
+
+## Post-Login Funnel (Legacy, still accessible)
+- **Component**: `client/src/pages/post-login-funnel.tsx` — 9-step funnel (paywall → objection → push → personalInfo → housing → extras → letter → buddy → success)
+- **No longer the default onboarding route** — replaced by OnboardingFlow above.
 - **i18n**: `funnel.*` keys in all 3 locale files (nl/de/en).
 - **Data persistence**: Each funnel step saves via `PUT /api/profile-data` (personal info, housing situation, extras, application letter, buddy email). Paywall uses `POST /api/checkout/session`.
 
