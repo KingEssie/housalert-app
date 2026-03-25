@@ -51,7 +51,7 @@ interface NominatimResult {
   };
 }
 
-export default function OnboardingLocationPage() {
+export default function OnboardingLocationPage({ onNext, onBack }: { onNext?: (params: string) => void; onBack?: () => void } = {}) {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
   const searchString = useHashSearch();
@@ -239,30 +239,34 @@ export default function OnboardingLocationPage() {
   }, [selectedCity, activeTab, travelAddress]);
 
   function handleNext() {
+    let params: URLSearchParams;
     if (activeTab === "reistijd") {
       if (!travelAddress) return;
-      const params = new URLSearchParams({ city: travelAddress });
+      params = new URLSearchParams({ city: travelAddress });
       params.set("locationMode", "commute");
       params.set("commuteAddress", travelAddress);
       params.set("commuteTime", travelTime);
       params.set("commuteMode", transportMode);
-      navigate(`/onboarding/filters?${params.toString()}`);
-      return;
-    }
-    if (!selectedCity) return;
-    const params = new URLSearchParams({ city: selectedCity.name });
-    if (selectedCity.lat) params.set("lat", String(selectedCity.lat));
-    if (selectedCity.lng) params.set("lng", String(selectedCity.lng));
-    if (activeTab === "wijken" && selectedDistricts.length > 0) {
-      params.set("locationMode", "districts");
-      params.set("districts", selectedDistricts.join(","));
-    } else if (activeTab === "radius") {
-      params.set("locationMode", "radius");
-      params.set("radiusKm", radius);
     } else {
-      params.set("locationMode", "city");
+      if (!selectedCity) return;
+      params = new URLSearchParams({ city: selectedCity.name });
+      if (selectedCity.lat) params.set("lat", String(selectedCity.lat));
+      if (selectedCity.lng) params.set("lng", String(selectedCity.lng));
+      if (activeTab === "wijken" && selectedDistricts.length > 0) {
+        params.set("locationMode", "districts");
+        params.set("districts", selectedDistricts.join(","));
+      } else if (activeTab === "radius") {
+        params.set("locationMode", "radius");
+        params.set("radiusKm", radius);
+      } else {
+        params.set("locationMode", "city");
+      }
     }
-    navigate(`/onboarding/filters?${params.toString()}`);
+    if (onNext) {
+      onNext(params.toString());
+    } else {
+      navigate(`/signup?${params.toString()}`);
+    }
   }
 
   const canProceed =
@@ -284,7 +288,7 @@ export default function OnboardingLocationPage() {
         <header className="w-full bg-ha-card sticky top-0 z-20 border-b border-ha-card-border">
           <div className={`${containerClass} mx-auto px-5 h-[56px] flex items-center gap-3`}>
             <button
-              onClick={() => navigate("/onboarding/intro")}
+              onClick={() => onBack ? onBack() : navigate("/onboarding/intro")}
               className="w-10 h-10 rounded-full bg-ha-surface flex items-center justify-center active:scale-95 transition-transform"
               data-testid="button-back-landing"
             >

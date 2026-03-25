@@ -14,8 +14,6 @@ const IS_NATIVE = isNativePlatform();
 import WelcomePage from "@/pages/welcome";
 import LoginPage from "@/pages/login";
 import SignupPage from "@/pages/signup";
-import OnboardingLocationPage from "@/pages/onboarding-location";
-import OnboardingFiltersPage from "@/pages/onboarding-filters";
 import PaywallPage from "@/pages/paywall";
 import DashboardPage from "@/pages/dashboard";
 import NewSearchPage from "@/pages/new-search";
@@ -35,19 +33,12 @@ import ResetPasswordPage from "@/pages/reset-password";
 import PostLoginFunnel from "@/pages/post-login-funnel";
 import OnboardingFlow from "@/pages/onboarding-flow";
 import OnboardingIntroPage from "@/pages/onboarding-intro";
-import OnboardingPage from "@/pages/onboarding";
 import OnboardingEmbedPage from "@/pages/onboarding-embed";
 import ContinueDraftPage from "@/pages/continue-draft";
 import AuthCallbackPage from "@/pages/auth-callback";
 import { DocumentenGuidePage, SchufaGuidePage, ZoekstrategieGuidePage, NetwerkGuidePage } from "@/pages/guide";
 import DeleteAccountPage from "@/pages/delete-account";
-// V2 onboarding imports — kept but deactivated (routes still exist but are not the default entry)
 import V2WelcomePage from "@/pages/v2/welcome";
-import V2OnboardingIntroPage from "@/pages/v2/onboarding-intro";
-import V2OnboardingLocationPage from "@/pages/v2/onboarding-location";
-import V2OnboardingFiltersPage from "@/pages/v2/onboarding-filters";
-import V2OnboardingPreferencesPage from "@/pages/v2/onboarding-preferences";
-import V2OnboardingValuePage from "@/pages/v2/onboarding-value";
 import SubscriptionSuccessPage from "@/pages/subscription-success";
 import EmbedSuccessPage from "@/pages/embed-success";
 import AdminIngestionPage from "@/pages/admin-ingestion";
@@ -156,8 +147,8 @@ function Router() {
       <Route path="/onboarding/intro" component={OnboardingIntroPage} />
       <Route path="/onboarding/setup" component={() => <ProtectedRoute component={OnboardingFlow} skipOnboardingCheck />} />
       <Route path="/onboarding/continue" component={() => <Redirect to="/onboarding/setup" />} />
-      <Route path="/onboarding/location" component={OnboardingLocationPage} />
-      <Route path="/onboarding/filters" component={OnboardingFiltersPage} />
+      <Route path="/onboarding/location" component={() => <Redirect to="/onboarding/intro" />} />
+      <Route path="/onboarding/filters" component={() => <Redirect to="/onboarding/intro" />} />
       <Route path="/onboarding/estimate" component={() => <Redirect to="/onboarding/intro" />} />
       <Route path="/onboarding/preferences" component={() => <Redirect to="/onboarding/intro" />} />
       <Route path="/onboarding/value" component={() => <Redirect to="/onboarding/intro" />} />
@@ -198,11 +189,11 @@ function Router() {
       <Route path="/datenschutz" component={DatenschutzPage} />
       <Route path="/terms" component={TermsPage} />
       <Route path="/v2/welcome" component={V2WelcomePage} />
-      <Route path="/v2/onboarding/intro" component={V2OnboardingIntroPage} />
-      <Route path="/v2/onboarding/location" component={V2OnboardingLocationPage} />
-      <Route path="/v2/onboarding/filters" component={V2OnboardingFiltersPage} />
-      <Route path="/v2/onboarding/preferences" component={V2OnboardingPreferencesPage} />
-      <Route path="/v2/onboarding/value" component={V2OnboardingValuePage} />
+      <Route path="/v2/onboarding/intro" component={() => <Redirect to="/onboarding/intro" />} />
+      <Route path="/v2/onboarding/location" component={() => <Redirect to="/onboarding/intro" />} />
+      <Route path="/v2/onboarding/filters" component={() => <Redirect to="/onboarding/intro" />} />
+      <Route path="/v2/onboarding/preferences" component={() => <Redirect to="/onboarding/intro" />} />
+      <Route path="/v2/onboarding/value" component={() => <Redirect to="/onboarding/intro" />} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -1,0 +1,83 @@
+Stop using the old onboarding flow completely. I do not want it in the app anymore.
+
+PROBLEM:
+After step 2, the app still goes to the old onboarding flow. This is causing confusion, wasted time, and repeated bad fixes.
+
+DECISION:
+The old onboarding flow is no longer needed at all.
+Do not preserve it.
+Do not keep it reachable.
+Do not redirect into it.
+Remove it from active app routing.
+
+==================================================
+GOAL
+==================================================
+
+There must be only ONE onboarding flow in the app.
+
+The correct flow is:
+
+1. /                       → welcome / login
+2. /onboarding/intro       → information screen + create search profile
+3. new onboarding step(s)  → search setup
+4. /signup                 → signup
+5. /onboarding/setup       → paywall
+6. /onboarding/setup       → welcome
+7. /onboarding/setup       → push-test
+8. /onboarding/setup       → personal details
+9. /onboarding/setup       → housing situation
+10. /onboarding/setup      → generated application letter
+11. /onboarding/setup      → search buddy
+12. /onboarding/setup      → success
+13. /home                  → home
+
+==================================================
+REQUIRED ACTIONS
+==================================================
+
+1. Find every old onboarding route and remove it from active routing.
+Examples include any legacy routes such as:
+- /onboarding
+- /onboarding/location
+- /onboarding/filters
+- /onboarding/estimate
+- /onboarding/preferences
+- /onboarding/value
+- any old Berlin/filter screens
+- any old onboarding component imports
+
+2. Search the entire codebase for ALL links, navigate calls, redirects, and button handlers that still point to any old onboarding route.
+Replace them so they only use the new flow.
+
+3. Remove old onboarding components from App.tsx route usage.
+If you do not want to delete the files yet, that is fine, but they must be completely unreachable from the running app.
+
+4. Verify step 2 CTA(s) do NOT point to any legacy onboarding route anymore.
+After the info screen, the user must continue only into the new flow.
+
+5. Verify there is no fallback logic anywhere that can send users into the old onboarding.
+
+6. Verify resume logic cannot send users to old onboarding routes.
+
+==================================================
+STRICT RULE
+==================================================
+
+After this change:
+- no old onboarding page may open
+- no old onboarding route may be reachable by normal navigation
+- no button may point to old onboarding
+- no redirect may point to old onboarding
+- the app must only use the new onboarding flow
+
+==================================================
+DELIVERABLE
+==================================================
+
+Give me a final report with:
+1. every old onboarding route that was removed or disabled
+2. every file where legacy onboarding navigation was found
+3. every file changed
+4. confirmation that step 2 no longer goes to the old onboarding
+5. confirmation that the old onboarding is now completely unreachable in the running app

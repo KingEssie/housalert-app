@@ -1624,7 +1624,7 @@ export async function registerRoutes(
           metadata: { supabase_user_id: user.id, plan },
         },
         success_url: `${baseUrl}/subscription-success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${baseUrl}/onboarding/value`,
+        cancel_url: `${baseUrl}/onboarding/setup`,
         metadata: { supabase_user_id: user.id, plan },
       });
 
@@ -1671,7 +1671,7 @@ export async function registerRoutes(
           metadata: { plan, source: "embed_guest" },
         },
         success_url: `${baseUrl}/?embed=true&session_id={CHECKOUT_SESSION_ID}#/embed-success`,
-        cancel_url: `${baseUrl}/?embed=true#/onboarding/value`,
+        cancel_url: `${baseUrl}/?embed=true#/onboarding/intro`,
         metadata: { plan, source: "embed_guest" },
       });
 
@@ -1835,7 +1835,7 @@ export async function registerRoutes(
           metadata: { supabase_user_id: user.id, plan },
         },
         success_url: `${baseUrl}/subscription-success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${baseUrl}/onboarding/value`,
+        cancel_url: `${baseUrl}/onboarding/setup`,
         metadata: { supabase_user_id: user.id, plan },
       });
 

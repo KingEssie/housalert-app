@@ -12,7 +12,7 @@ import { apiFetch } from "@/lib/api-base";
 const INPUT_CLS = "w-full h-[44px] pl-10 pr-4 rounded-[6px] border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal focus:bg-ha-card";
 const SELECT_CLS = "w-full h-[44px] pl-10 pr-4 rounded-[6px] border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text focus:bg-ha-card cursor-pointer appearance-none";
 
-export default function OnboardingFiltersPage() {
+export default function OnboardingFiltersPage({ onNext, onBack }: { onNext?: (params: string) => void; onBack?: () => void } = {}) {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
   const searchString = useHashSearch();
@@ -54,15 +54,21 @@ export default function OnboardingFiltersPage() {
       const funnel: Record<string, string> = {};
       builtParams.forEach((v, k) => { funnel[k] = v; });
       localStorage.setItem("housalert_embed_funnel", JSON.stringify(funnel));
-      navigate(`/onboarding/value?${builtParams.toString()}`);
+      navigate(`/signup?${builtParams.toString()}`);
+    } else if (onNext) {
+      onNext(builtParams.toString());
     } else {
       navigate(`/signup?${builtParams.toString()}`);
     }
   }
 
   function handleBack() {
-    const p = new URLSearchParams(searchString);
-    navigate(`/onboarding/location?${p.toString()}`);
+    if (onBack) {
+      onBack();
+    } else {
+      const p = new URLSearchParams(searchString);
+      navigate(`/onboarding/intro`);
+    }
   }
 
   return (

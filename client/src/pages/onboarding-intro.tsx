@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { useLocation } from "wouter";
 import { useTranslation } from "@/i18n";
 import { HousAlertLogo } from "@/components/housalert-logo";
 import { Search, Zap, Bell } from "lucide-react";
+import OnboardingLocationPage from "@/pages/onboarding-location";
+import OnboardingFiltersPage from "@/pages/onboarding-filters";
 
 const BRAND = "rgb(var(--ha-primary))";
 const BRAND_HOVER = "rgb(var(--ha-primary-hover))";
@@ -12,10 +15,44 @@ const BENEFITS = [
   { icon: Bell, key: "benefit3" as const },
 ];
 
+type IntroStep = "info" | "location" | "filters";
+
 export default function OnboardingIntroPage() {
   console.log("[PAGE] OnboardingIntroPage rendered (pre-auth value prop)");
   const [, navigate] = useLocation();
   const { t } = useTranslation();
+  const [step, setStep] = useState<IntroStep>("info");
+  const [locationParams, setLocationParams] = useState("");
+
+  if (step === "location") {
+    return (
+      <OnboardingLocationPage
+        onNext={(params) => {
+          setLocationParams(params);
+          window.history.replaceState(null, "", `#?${params}`);
+          setStep("filters");
+        }}
+        onBack={() => {
+          window.history.replaceState(null, "", window.location.pathname);
+          setStep("info");
+        }}
+      />
+    );
+  }
+
+  if (step === "filters") {
+    return (
+      <OnboardingFiltersPage
+        onNext={(params) => {
+          navigate(`/signup?${params}`);
+        }}
+        onBack={() => {
+          window.history.replaceState(null, "", `#?${locationParams}`);
+          setStep("location");
+        }}
+      />
+    );
+  }
 
   return (
     <div className="min-h-[100dvh] bg-ha-bg flex flex-col" data-testid="onboarding-intro-page">
@@ -79,7 +116,7 @@ export default function OnboardingIntroPage() {
           </div>
 
           <button
-            onClick={() => navigate("/onboarding/location")}
+            onClick={() => setStep("location")}
             className="w-full h-[52px] rounded-[6px] text-[16px] font-bold text-ha-text transition-all active:scale-[0.97] shadow-[0_4px_14px_rgba(233,30,99,0.3)]"
             style={{ backgroundColor: BRAND }}
             onMouseOver={(e) => (e.currentTarget.style.backgroundColor = BRAND_HOVER)}
