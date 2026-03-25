@@ -82,7 +82,7 @@ function relativeTime(dateStr: string | null | undefined, t: (key: string, param
   return days === 1 ? t("freshness.dayAgo", { n: days }) : t("freshness.daysAgo", { n: days });
 }
 
-type TabKey = "home" | "matches" | "filters" | "profiel" | "tips";
+type TabKey = "home" | "matches" | "favorieten" | "profiel" | "tips";
 type MatchSubTab = "nieuw" | "bekeken" | "gereageerd" | "favorieten";
 
 const CITY_GRADIENTS: Record<string, string> = {
@@ -1291,7 +1291,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           title={t("matches.emptyNew.title")}
           description={t("matches.emptyNew.desc")}
           ctaLabel={t("matches.adjustFilters")}
-          onCtaClick={() => setActiveTab("filters")}
+          onCtaClick={() => setActiveTab("profiel")}
           testId="empty-matches"
         />
       
@@ -1320,7 +1320,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
             title={t("matches.emptyViewed.title")}
             description={t("matches.emptyViewed.desc")}
             ctaLabel={t("matches.adjustFilters")}
-            onCtaClick={() => setActiveTab("filters")}
+            onCtaClick={() => setActiveTab("profiel")}
             testId="empty-filtered-matches"
           />
         )
@@ -1392,120 +1392,120 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
   );
 }
 
-function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
-  const { toast } = useToast();
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
-  const { t, locale } = useTranslation();
+function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
+  const { t } = useTranslation();
+  const [, navigate] = useLocation();
+  const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
+  const [favoriteListings, setFavoriteListings] = useState<ApiMatch[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const profilesQuery = useQuery<SearchProfile[]>({
-    queryKey: ["/search-profiles"],
-    queryFn: getSearchProfiles,
-  });
+  const fetchFavoriteListings = useCallback(() => {
+    if (!accessToken) return;
+    setIsLoading(true);
+    apiFetch("/api/favorites/listings", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.listings) setFavoriteListings(data.listings);
+      })
+      .catch(() => {})
+      .finally(() => setIsLoading(false));
+  }, [accessToken]);
 
-  const deleteMutation = useMutation({
-    mutationFn: deleteSearchProfile,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/search-profiles"] });
-      toast({ title: t("filters.deleted") });
-    },
-    onError: (err: any) => {
-      toast({
-        title: t("filters.deleteFailed"),
-        description: err?.message ?? t("filters.retryDesc"),
-        variant: "destructive",
+  useEffect(() => {
+    if (!accessToken) return;
+    apiFetch("/api/favorites", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.favoriteIds && Array.isArray(data.favoriteIds)) {
+          setFavoriteIds(new Set(data.favoriteIds));
+        }
+      })
+      .catch(() => {});
+    fetchFavoriteListings();
+  }, [accessToken, fetchFavoriteListings]);
+
+  const toggleFavorite = useCallback(
+    async (listingId: string) => {
+      if (!accessToken) return;
+      const wasFavorited = favoriteIds.has(listingId);
+      setFavoriteIds((prev) => {
+        const next = new Set(prev);
+        if (wasFavorited) next.delete(listingId);
+        else next.add(listingId);
+        return next;
       });
-    },
-    onSettled: () => setDeletingId(null),
-  });
+      if (wasFavorited) {
+        setFavoriteListings((prev) => prev.filter((l) => l.listing_id !== listingId));
+      }
 
-  const profiles = profilesQuery.data ?? [];
-  const profileCount = profiles.length;
-  const atLimit = profileCount >= MAX_PROFILES;
+      try {
+        const res = await apiFetch(`/api/favorites/${listingId}`, {
+          method: wasFavorited ? "DELETE" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        if (!res.ok) throw new Error("request failed");
+        if (!wasFavorited) fetchFavoriteListings();
+      } catch {
+        setFavoriteIds((prev) => {
+          const rollback = new Set(prev);
+          if (wasFavorited) rollback.add(listingId);
+          else rollback.delete(listingId);
+          return rollback;
+        });
+        if (wasFavorited) fetchFavoriteListings();
+      }
+    },
+    [accessToken, favoriteIds, fetchFavoriteListings],
+  );
+
+  const refreshStatuses = useCallback(() => {}, []);
 
   return (
     <div className="flex flex-col pb-8">
       <div className="sticky top-0 z-10 bg-ha-bg pt-6 pb-4 px-6">
-        <h1 className="text-page-title">{t("filters.title")}</h1>
+        <h1 className="text-page-title">{t("nav.favorites")}</h1>
       </div>
-      <div className="px-6 flex flex-col gap-5">
-      {profilesQuery.isLoading ? (
-        <div className="rounded-[6px] bg-ha-card px-5 py-4 animate-pulse">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="h-5 w-5 bg-ha-surface rounded" />
-            <div className="h-4 bg-ha-surface rounded w-1/3 flex-1" />
-            <div className="h-4 bg-ha-surface rounded w-8" />
-          </div>
-          <div className="flex flex-col gap-2 mt-3">
-            <div className="flex items-center gap-3 py-2 px-1">
-              <div className="w-2.5 h-2.5 rounded-full bg-ha-surface" />
-              <div className="h-4 bg-ha-surface rounded w-2/3" />
-            </div>
-          </div>
-          <div className="h-[44px] bg-ha-surface rounded-[6px] mt-3" />
-        </div>
-      ) : profiles.length === 0 ? (
-        <EmptyState
-          illustration={EMPTY_STATE_IMAGES.noMatches}
-          title={t("matches.emptyNew.title")}
-          description={t("filters.noProfilesDesc")}
-          ctaLabel={t("filters.createProfile")}
-          onCtaClick={() => navigate("/dashboard/searches/new")}
-          testId="empty-profiles"
-        />
-      ) : (
-        <div className="rounded-[6px] bg-ha-card px-5 py-4" data-testid="card-filters-search-profiles">
-          <div className="flex items-center gap-3 mb-1">
-            <Search className="w-5 h-5 text-ha-primary flex-shrink-0" />
-            <p className="text-[16px] text-title text-ha-text flex-1">{t("profile.searchProfiles")}</p>
-            <span className="text-[13px] font-semibold text-ha-primary">{profileCount}/{MAX_PROFILES}</span>
-          </div>
-          <div className="mt-3 flex flex-col gap-2">
-            {profiles.map((p) => (
-              <button
-                key={p.id}
-                onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
-                className="flex items-center gap-3 py-2 px-1 rounded-[6px] active:bg-ha-surface transition-colors text-left"
-                data-testid={`button-filter-profile-${p.id}`}
-              >
-                <span className="w-2.5 h-2.5 rounded-full bg-ha-success flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-[15px] font-semibold text-ha-text truncate">{getProfileTitle(p, t, locale)}</p>
-                  {p.districts && p.districts.length > 0 && (
-                    <p className="text-[13px] text-ha-text-secondary mt-0.5 truncate">
-                      {p.districts.length <= 2
-                        ? p.districts.join(", ")
-                        : `${p.districts[0]} ${t("profile.andOtherNeighborhoods", { count: p.districts.length - 1 })}`
-                      }
-                    </p>
-                  )}
+      <div className="px-6 flex flex-col gap-8">
+        {isLoading ? (
+          <div className="flex flex-col gap-6">
+            {[1, 2].map((i) => (
+              <div key={i} className="animate-pulse">
+                <div className="rounded-[6px] bg-ha-card" style={{ aspectRatio: "4/3" }} />
+                <div className="mt-3 flex flex-col gap-2">
+                  <div className="h-4 bg-ha-card rounded w-1/3" />
+                  <div className="h-4 bg-ha-card rounded w-2/3" />
+                  <div className="h-3 bg-ha-card rounded w-1/4" />
                 </div>
-                <Pencil className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
-              </button>
+              </div>
             ))}
           </div>
-          {!atLimit && (
-            <button
-              onClick={() => navigate("/dashboard/searches/new")}
-              className="w-full mt-3 h-[44px] rounded-[6px] border border-ha-primary text-ha-primary text-[14px] font-semibold flex items-center justify-center gap-1.5 active:bg-ha-primary-light transition-colors"
-              data-testid="button-add-search-filter"
-            >
-              {t("profile.newSearchProfile")} <Plus className="w-4 h-4" />
-            </button>
-          )}
-        </div>
-      )}
-
-      {confirmDeleteId && (
-        <DeleteConfirmScreen
-          onCancel={() => setConfirmDeleteId(null)}
-          onConfirm={() => {
-            setDeletingId(confirmDeleteId);
-            deleteMutation.mutate(confirmDeleteId);
-            setConfirmDeleteId(null);
-          }}
-        />
-      )}
+        ) : favoriteListings.length === 0 ? (
+          <EmptyState
+            illustration={EMPTY_STATE_IMAGES.noFilters}
+            title={t("matches.emptyFavorites.title")}
+            description={t("matches.emptyFavorites.desc")}
+            testId="empty-favorites-tab"
+          />
+        ) : (
+          <div className="flex flex-col gap-[36px]">
+            {favoriteListings.map((m) => (
+              <MatchCard
+                key={m.listing_id}
+                match={m}
+                onStatusChange={refreshStatuses}
+                isFavorited={favoriteIds.has(m.listing_id)}
+                onToggleFavorite={toggleFavorite}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -2199,7 +2199,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
 const TAB_CONFIG: { key: TabKey; labelKey: string; Icon: any }[] = [
   { key: "home", labelKey: "nav.home", Icon: Home },
   { key: "matches", labelKey: "nav.matches", Icon: Check },
-  { key: "filters", labelKey: "nav.filters", Icon: Search },
+  { key: "favorieten", labelKey: "nav.favorites", Icon: Heart },
   { key: "profiel", labelKey: "nav.profile", Icon: User },
 ];
 
@@ -2210,7 +2210,7 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<TabKey>(() => {
     const params = new URLSearchParams(window.location.search);
     const tab = params.get("tab");
-    if (tab && ["home", "matches", "tips", "filters", "profiel"].includes(tab)) {
+    if (tab && ["home", "matches", "tips", "favorieten", "profiel"].includes(tab)) {
       return tab as TabKey;
     }
     return "home";
@@ -2347,7 +2347,11 @@ export default function DashboardPage() {
           </SubscriptionGate>
         )}
         {activeTab === "tips" && <TipsPage navigate={navigate} />}
-        {activeTab === "filters" && <FiltersTab navigate={navigate} />}
+        {activeTab === "favorieten" && (
+          <SubscriptionGate isActive={sub.isActive || sub.isTrial}>
+            <FavorietenTab accessToken={accessToken} />
+          </SubscriptionGate>
+        )}
         {activeTab === "profiel" && (
           <ProfielTab
             user={user}

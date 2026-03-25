@@ -1,0 +1,79 @@
+Replace the current Filters tab/page with a Favorites tab/page.
+
+IMPORTANT:
+Do NOT keep the old Filters page.
+This page must be fully replaced by a Favorites overview.
+
+==================================================
+BOTTOM NAVIGATION
+==================================================
+
+1. Replace the "Filters" tab with:
+- label: "Favorieten"
+- icon: heart
+- active state styling consistent with the other tabs
+
+2. Keep the rest of the bottom navigation unchanged.
+
+==================================================
+FAVORITES PAGE
+==================================================
+
+Create a Favorites page that shows all listings the user has marked as favorite.
+
+This page should:
+- display all favorited matches/listings
+- use the same data source as the current favorite/heart functionality
+- show a clean empty state if there are no favorites yet
+
+Remove the old Filters page from normal navigation.
+
+==================================================
+CARD DESIGN
+==================================================
+
+Use the EXACT SAME card component as the Matches page.
+
+Do NOT create a new card variant.
+
+Favorites cards must match Matches cards exactly:
+- same white card background
+- same image at the top
+- same white content section below
+- same title/meta/price layout
+- same border radius
+- same spacing
+- same heart icon style
+
+The Favorites page should visually feel like a filtered version of the Matches page.
+
+==================================================
+EMPTY STATE
+==================================================
+
+If the user has no favorites:
+- show a simple empty state
+- use the existing heart/favorites visual language
+- keep the design consistent with the rest of the app
+
+==================================================
+DO NOT
+==================================================
+
+- do not keep the old Filters layout
+- do not create a compact or different listing card
+- do not create a second visual style for favorites
+- do not change logic for saving favorites, only use the existing favorite state
+
+==================================================
+GOAL
+==================================================
+
+The app structure should become:
+
+- Home
+- Matches
+- Favorieten
+- Profiel
+
+And the Favorites page should be a clean overview of all saved listings using the exact same card design as Matches.

@@ -30,6 +30,7 @@ export const en: Record<string, any> = {
     matches: "Matches",
     tips: "Tips",
     filters: "Filters",
+    favorites: "Favorites",
     profile: "Profile",
   },
 

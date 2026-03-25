@@ -482,7 +482,7 @@ export function TaskModal({
                 {t("profileStrength.optimizeDesc")}
               </p>
               <Button
-                onClick={() => { onClose(); navigate("/dashboard?tab=filters"); }}
+                onClick={() => { onClose(); navigate("/dashboard?tab=profiel"); }}
                 className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-goto-filters"
               >
