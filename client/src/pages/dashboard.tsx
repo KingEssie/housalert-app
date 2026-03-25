@@ -1396,7 +1396,7 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
   const { toast } = useToast();
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
 
   const profilesQuery = useQuery<SearchProfile[]>({
     queryKey: ["/search-profiles"],
@@ -1430,16 +1430,19 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
       </div>
       <div className="px-6 flex flex-col gap-5">
       {profilesQuery.isLoading ? (
-        <div className="flex flex-col gap-3">
-          {[1, 2].map((i) => (
-            <div key={i} className="bg-ha-card rounded-[6px] border border-ha-card-border p-4 animate-pulse">
-              <div className="h-4 bg-ha-surface rounded w-1/3 mb-3" />
-              <div className="flex gap-2">
-                <div className="h-6 bg-ha-surface rounded-full w-24" />
-                <div className="h-6 bg-ha-surface rounded-full w-16" />
-              </div>
+        <div className="rounded-[6px] bg-ha-card px-5 py-4 animate-pulse">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="h-5 w-5 bg-ha-surface rounded" />
+            <div className="h-4 bg-ha-surface rounded w-1/3 flex-1" />
+            <div className="h-4 bg-ha-surface rounded w-8" />
+          </div>
+          <div className="flex flex-col gap-2 mt-3">
+            <div className="flex items-center gap-3 py-2 px-1">
+              <div className="w-2.5 h-2.5 rounded-full bg-ha-surface" />
+              <div className="h-4 bg-ha-surface rounded w-2/3" />
             </div>
-          ))}
+          </div>
+          <div className="h-[44px] bg-ha-surface rounded-[6px] mt-3" />
         </div>
       ) : profiles.length === 0 ? (
         <EmptyState
@@ -1451,34 +1454,45 @@ function FiltersTab({ navigate }: { navigate: (path: string) => void }) {
           testId="empty-profiles"
         />
       ) : (
-        <div className="flex flex-col gap-3">
-          {profiles.map((p) => (
-            <ProfileCard
-              key={p.id}
-              profile={p}
-              onDelete={() => setConfirmDeleteId(p.id)}
-              deleting={deletingId === p.id}
-              onEdit={() => navigate(`/dashboard/searches/edit/${p.id}`)}
-            />
-          ))}
-
-          <div className="flex flex-col items-center text-center mt-6 mb-2 px-4">
-            {!atLimit && (
-              <button
-                onClick={() => navigate("/dashboard/searches/new")}
-                className="w-14 h-14 rounded-full bg-ha-primary hover:bg-ha-primary-hover flex items-center justify-center text-white transition-colors shadow-[0_4px_12px_rgba(233,30,99,0.3)] mb-5"
-                data-testid="button-add-search-card"
-              >
-                <Plus className="w-6 h-6" />
-              </button>
-            )}
-            <p className="text-[17px] text-title text-ha-text">
-              {t("filters.activeCountTitle", { count: profileCount, max: MAX_PROFILES })}
-            </p>
-            <p className="text-[14px] text-ha-text-secondary mt-2 leading-relaxed">
-              {t("filters.activeCountDesc")}
-            </p>
+        <div className="rounded-[6px] bg-ha-card px-5 py-4" data-testid="card-filters-search-profiles">
+          <div className="flex items-center gap-3 mb-1">
+            <Search className="w-5 h-5 text-ha-primary flex-shrink-0" />
+            <p className="text-[16px] text-title text-ha-text flex-1">{t("profile.searchProfiles")}</p>
+            <span className="text-[13px] font-semibold text-ha-primary">{profileCount}/{MAX_PROFILES}</span>
           </div>
+          <div className="mt-3 flex flex-col gap-2">
+            {profiles.map((p) => (
+              <button
+                key={p.id}
+                onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
+                className="flex items-center gap-3 py-2 px-1 rounded-[6px] active:bg-ha-surface transition-colors text-left"
+                data-testid={`button-filter-profile-${p.id}`}
+              >
+                <span className="w-2.5 h-2.5 rounded-full bg-ha-success flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[15px] font-semibold text-ha-text truncate">{getProfileTitle(p, t, locale)}</p>
+                  {p.districts && p.districts.length > 0 && (
+                    <p className="text-[13px] text-ha-text-secondary mt-0.5 truncate">
+                      {p.districts.length <= 2
+                        ? p.districts.join(", ")
+                        : `${p.districts[0]} ${t("profile.andOtherNeighborhoods", { count: p.districts.length - 1 })}`
+                      }
+                    </p>
+                  )}
+                </div>
+                <Pencil className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
+              </button>
+            ))}
+          </div>
+          {!atLimit && (
+            <button
+              onClick={() => navigate("/dashboard/searches/new")}
+              className="w-full mt-3 h-[44px] rounded-[6px] border border-ha-primary text-ha-primary text-[14px] font-semibold flex items-center justify-center gap-1.5 active:bg-ha-primary-light transition-colors"
+              data-testid="button-add-search-filter"
+            >
+              {t("profile.newSearchProfile")} <Plus className="w-4 h-4" />
+            </button>
+          )}
         </div>
       )}
 
