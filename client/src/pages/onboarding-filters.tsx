@@ -9,8 +9,8 @@ import { useEmbedded } from "@/hooks/use-embedded";
 import { getMatchEstimateRange } from "@/lib/match-estimate";
 import { apiFetch } from "@/lib/api-base";
 
-const INPUT_CLS = "w-full h-[44px] pl-10 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#222222] placeholder:text-[#717171] placeholder:font-normal focus:bg-white";
-const SELECT_CLS = "w-full h-[44px] pl-10 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#222222] focus:bg-white cursor-pointer appearance-none";
+const INPUT_CLS = "w-full h-[44px] pl-10 pr-4 rounded-xl border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal focus:bg-ha-card";
+const SELECT_CLS = "w-full h-[44px] pl-10 pr-4 rounded-xl border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text focus:bg-ha-card cursor-pointer appearance-none";
 
 export default function OnboardingFiltersPage() {
   const [, navigate] = useLocation();
@@ -66,16 +66,16 @@ export default function OnboardingFiltersPage() {
   }
 
   return (
-    <div className={`min-h-screen ${isEmbedded ? "bg-white" : "bg-[#F5F7FA]"} flex flex-col`}>
+    <div className={`min-h-screen ${isEmbedded ? "bg-ha-card" : "bg-ha-surface"} flex flex-col`}>
       {!isEmbedded && (
-        <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
+        <header className="w-full bg-ha-card sticky top-0 z-20 border-b border-ha-card-border">
           <div className={`${containerClass} mx-auto px-5 h-[56px] flex items-center gap-3`}>
             <button
               onClick={handleBack}
-              className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-95 transition-transform"
+              className="w-10 h-10 rounded-full bg-ha-surface flex items-center justify-center active:scale-95 transition-transform"
               data-testid="button-back-location"
             >
-              <ChevronLeft className="w-5 h-5 text-[#71717A]" />
+              <ChevronLeft className="w-5 h-5 text-ha-text-muted" />
             </button>
             <HousAlertLogo size={28} />
           </div>
@@ -88,7 +88,7 @@ export default function OnboardingFiltersPage() {
             <div
               key={step}
               className={`w-2 h-2 rounded-full transition-all ${
-                step <= 2 ? "bg-[#F97316]" : "bg-[#D1D5DB]"
+                step <= 2 ? "bg-ha-primary" : "bg-ha-input-border"
               }`}
               data-testid={`dot-step-${step}`}
             />
@@ -102,18 +102,18 @@ export default function OnboardingFiltersPage() {
             <h1 className="text-page-title mb-1" data-testid="text-filters-title">
               {t("onboardingFilters.title")}
             </h1>
-            <p className="text-[14px] text-[#717171] mb-5">
+            <p className="text-[14px] text-ha-text-secondary mb-5">
               {t("onboardingFilters.subtitle", { city })}
             </p>
           </>
         )}
 
-        <div className={`bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] ${isEmbedded ? "p-4" : "p-5"}`}>
+        <div className={`bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] ${isEmbedded ? "p-4" : "p-5"}`}>
           <div className="grid grid-cols-2 gap-3 mb-5">
             <div>
-              <label className="text-[13px] font-medium text-[#374151] mb-1.5 block">{t("onboardingFilters.minRent")}</label>
+              <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">{t("onboardingFilters.minRent")}</label>
               <div className="relative">
-                <Euro className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A]" />
+                <Euro className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-muted" />
                 <input
                   type="number"
                   placeholder="€ 0"
@@ -125,9 +125,9 @@ export default function OnboardingFiltersPage() {
               </div>
             </div>
             <div>
-              <label className="text-[13px] font-medium text-[#374151] mb-1.5 block">{t("onboardingFilters.maxRent")}</label>
+              <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">{t("onboardingFilters.maxRent")}</label>
               <div className="relative">
-                <Euro className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A]" />
+                <Euro className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-muted" />
                 <input
                   type="number"
                   placeholder="€ 2000"
@@ -141,9 +141,9 @@ export default function OnboardingFiltersPage() {
           </div>
 
           <div className="mb-5">
-            <label className="text-[13px] font-medium text-[#374151] mb-1.5 block">{t("onboardingFilters.bedrooms")}</label>
+            <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">{t("onboardingFilters.bedrooms")}</label>
             <div className="relative">
-              <BedDouble className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A]" />
+              <BedDouble className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-muted" />
               <select
                 value={bedrooms}
                 onChange={(e) => setBedrooms(e.target.value)}
@@ -162,9 +162,9 @@ export default function OnboardingFiltersPage() {
           </div>
 
           <div>
-            <label className="text-[13px] font-medium text-[#374151] mb-1.5 block">{t("onboardingFilters.minArea")}</label>
+            <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">{t("onboardingFilters.minArea")}</label>
             <div className="relative">
-              <Maximize2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A]" />
+              <Maximize2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-muted" />
               <input
                 type="number"
                 placeholder="0 m²"
@@ -180,7 +180,7 @@ export default function OnboardingFiltersPage() {
         {isEmbedded ? (
           <div className="mt-3">
             <Button
-              className="w-full h-[48px] rounded-full text-[15px] font-medium shadow-none bg-[#F97316] hover:bg-[#EA580C]"
+              className="w-full h-[48px] rounded-full text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover"
               onClick={handleNext}
               data-testid="button-next-filters"
             >
@@ -188,10 +188,10 @@ export default function OnboardingFiltersPage() {
             </Button>
 
             {city && (
-              <p className="text-center text-[14px] text-[#717171] mt-3" data-testid="text-embed-estimate">
+              <p className="text-center text-[14px] text-ha-text-secondary mt-3" data-testid="text-embed-estimate">
                 {estimateLoading ? (
                   <span className="flex items-center justify-center gap-2">
-                    <Loader2 className="w-4 h-4 animate-spin text-[#F97316]" />
+                    <Loader2 className="w-4 h-4 animate-spin text-ha-primary" />
                   </span>
                 ) : (
                   t("embedFilters.estimateText", getMatchEstimateRange(estimate ?? 0))
@@ -203,14 +203,14 @@ export default function OnboardingFiltersPage() {
           <div className="pt-5 flex gap-3">
             <Button
               variant="outline"
-              className="h-[48px] px-6 rounded-full text-[15px] font-medium border-[#E5E7EB] text-[#374151] hover:bg-[#F5F7FA]"
+              className="h-[48px] px-6 rounded-full text-[15px] font-medium border-ha-card-border text-ha-text-secondary hover:bg-ha-surface"
               onClick={handleBack}
               data-testid="button-back-filters"
             >
               {t("onboardingFilters.back")}
             </Button>
             <Button
-              className="flex-1 h-[48px] rounded-full text-[15px] font-medium shadow-none bg-[#F97316] hover:bg-[#EA580C]"
+              className="flex-1 h-[48px] rounded-full text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover"
               onClick={handleNext}
               data-testid="button-next-filters"
             >

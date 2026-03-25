@@ -17,11 +17,11 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
         <div
           key={i}
           className="h-[4px] flex-1 rounded-full transition-colors duration-300"
-          style={{ backgroundColor: i < step ? "#E91E63" : "#353560" }}
+          style={{ backgroundColor: i < step ? "rgb(var(--ha-primary))" : "rgb(var(--ha-card-border))" }}
           data-testid={`progress-step-${i + 1}`}
         />
       ))}
-      <span className="text-[13px] font-medium text-[#9CA3AF] ml-1 whitespace-nowrap">
+      <span className="text-[13px] font-medium text-ha-text-secondary ml-1 whitespace-nowrap">
         {t("onboarding.step", { step, total })}
       </span>
     </div>
@@ -31,22 +31,22 @@ function ProgressBar({ step, total }: { step: number; total: number }) {
 function WelcomeStep({ onStart }: { onStart: () => void }) {
   const { t } = useTranslation();
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-6 text-center bg-[#1A1A2E]">
+    <div className="flex flex-col items-center justify-center min-h-screen px-6 text-center bg-ha-bg">
       <div
-        className="w-[72px] h-[72px] rounded-2xl bg-[#E91E63]/10 flex items-center justify-center mb-8"
+        className="w-[72px] h-[72px] rounded-2xl bg-ha-primary/10 flex items-center justify-center mb-8"
       >
-        <Search className="w-8 h-8 text-[#E91E63]" />
+        <Search className="w-8 h-8 text-ha-primary" />
       </div>
 
       <h1
-        className="text-[28px] font-medium leading-tight text-white mb-4 max-w-[320px] tracking-wide"
+        className="text-[28px] font-medium leading-tight text-ha-text mb-4 max-w-[320px] tracking-wide"
         data-testid="text-welcome-title"
       >
         {t("onboarding.welcome.title")}
       </h1>
 
       <p
-        className="text-[16px] leading-relaxed text-[#9CA3AF] mb-10 max-w-[320px]"
+        className="text-[16px] leading-relaxed text-ha-text-secondary mb-10 max-w-[320px]"
         data-testid="text-welcome-subtitle"
       >
         {t("onboarding.welcome.subtitle")}
@@ -54,14 +54,14 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
 
       <button
         onClick={onStart}
-        className="w-full max-w-[320px] min-h-[56px] rounded-full bg-[#E91E63] hover:bg-[#D81B60] text-white font-medium text-[16px] transition-colors flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
+        className="w-full max-w-[320px] min-h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
         data-testid="button-start-onboarding"
       >
         {t("onboarding.welcome.button")}
         <ChevronRight className="w-5 h-5" />
       </button>
 
-      <p className="text-[13px] text-[#9CA3AF] mt-4" data-testid="text-duration-hint">
+      <p className="text-[13px] text-ha-text-secondary mt-4" data-testid="text-duration-hint">
         {t("onboarding.welcome.hint")}
       </p>
     </div>
@@ -81,8 +81,8 @@ function LocationStep({
   return (
     <div className="flex flex-col min-h-screen px-6 pt-4">
       <div className="flex-1">
-        <div className="w-[56px] h-[56px] rounded-2xl bg-[#E91E63]/10 flex items-center justify-center mb-6">
-          <MapPin className="w-6 h-6 text-[#E91E63]" />
+        <div className="w-[56px] h-[56px] rounded-2xl bg-ha-primary/10 flex items-center justify-center mb-6">
+          <MapPin className="w-6 h-6 text-ha-primary" />
         </div>
 
         <h2 className="text-page-title mb-2" data-testid="text-city-title">
@@ -99,7 +99,7 @@ function LocationStep({
         <button
           onClick={onNext}
           disabled={!isLocationValid(locationData)}
-          className="w-full min-h-[56px] rounded-full bg-[#E91E63] hover:bg-[#D81B60] text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
+          className="w-full min-h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
           data-testid="button-city-next"
         >
           {t("common.next")}
@@ -131,8 +131,8 @@ function BudgetStep({
   return (
     <div className="flex flex-col min-h-screen px-6 pt-4">
       <div className="flex-1">
-        <div className="w-[56px] h-[56px] rounded-2xl bg-[#E91E63]/10 flex items-center justify-center mb-6">
-          <span className="text-[24px] font-medium text-[#E91E63]">&#8364;</span>
+        <div className="w-[56px] h-[56px] rounded-2xl bg-ha-primary/10 flex items-center justify-center mb-6">
+          <span className="text-[24px] font-medium text-ha-primary">&#8364;</span>
         </div>
 
         <h2 className="text-page-title mb-2" data-testid="text-budget-title">
@@ -144,36 +144,36 @@ function BudgetStep({
 
         <div className="space-y-4">
           <div>
-            <label className="block text-[13px] font-medium text-[#9CA3AF] tracking-wide mb-1.5">
+            <label className="block text-[13px] font-medium text-ha-text-secondary tracking-wide mb-1.5">
               {t("onboarding.budget.minPrice")}
             </label>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white text-[15px]">&#8364;</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-ha-text text-[15px]">&#8364;</span>
               <input
                 type="number"
                 inputMode="numeric"
                 placeholder={t("onboarding.budget.minPlaceholder")}
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
-                className="w-full min-h-[56px] rounded-[20px] bg-[#252547] border border-[#353560] pl-9 pr-4 text-[16px] text-white placeholder:text-[#6B7280] focus:border-[#E91E63] outline-none transition-all"
+                className="w-full min-h-[56px] rounded-[20px] bg-ha-card border border-ha-card-border pl-9 pr-4 text-[16px] text-ha-text placeholder:text-ha-text-muted focus:border-ha-primary outline-none transition-all"
                 data-testid="input-min-price"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-[13px] font-medium text-[#9CA3AF] tracking-wide mb-1.5">
+            <label className="block text-[13px] font-medium text-ha-text-secondary tracking-wide mb-1.5">
               {t("onboarding.budget.maxPrice")}
             </label>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white text-[15px]">&#8364;</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-ha-text text-[15px]">&#8364;</span>
               <input
                 type="number"
                 inputMode="numeric"
                 placeholder={t("onboarding.budget.maxPlaceholder")}
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
-                className="w-full min-h-[56px] rounded-[20px] bg-[#252547] border border-[#353560] pl-9 pr-4 text-[16px] text-white placeholder:text-[#6B7280] focus:border-[#E91E63] outline-none transition-all"
+                className="w-full min-h-[56px] rounded-[20px] bg-ha-card border border-ha-card-border pl-9 pr-4 text-[16px] text-ha-text placeholder:text-ha-text-muted focus:border-ha-primary outline-none transition-all"
                 data-testid="input-max-price"
               />
             </div>
@@ -185,7 +185,7 @@ function BudgetStep({
         <button
           onClick={onNext}
           disabled={!valid}
-          className="w-full min-h-[56px] rounded-full bg-[#E91E63] hover:bg-[#D81B60] text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
+          className="w-full min-h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
           data-testid="button-budget-next"
         >
           {t("common.next")}
@@ -217,8 +217,8 @@ function PropertyTypeStep({
   return (
     <div className="flex flex-col min-h-screen px-6 pt-4">
       <div className="flex-1">
-        <div className="w-[56px] h-[56px] rounded-2xl bg-[#E91E63]/10 flex items-center justify-center mb-6">
-          <Search className="w-6 h-6 text-[#E91E63]" />
+        <div className="w-[56px] h-[56px] rounded-2xl bg-ha-primary/10 flex items-center justify-center mb-6">
+          <Search className="w-6 h-6 text-ha-primary" />
         </div>
 
         <h2 className="text-page-title mb-2" data-testid="text-property-title">
@@ -235,14 +235,14 @@ function PropertyTypeStep({
               onClick={() => setPropertyType(pt.value)}
               className={`w-full min-h-[56px] rounded-2xl border-2 px-5 text-left text-[16px] font-medium transition-all flex items-center justify-between ${
                 propertyType === pt.value
-                  ? "border-[#E91E63] bg-[#E91E63]/10 text-[#E91E63]"
-                  : "border-[#353560] bg-[#252547] text-white"
+                  ? "border-ha-primary bg-ha-primary/10 text-ha-primary"
+                  : "border-ha-card-border bg-ha-card text-ha-text"
               }`}
               data-testid={`option-property-${pt.value}`}
             >
               {pt.label}
               {propertyType === pt.value && (
-                <div className="w-6 h-6 rounded-full bg-[#E91E63] flex items-center justify-center">
+                <div className="w-6 h-6 rounded-full bg-ha-primary flex items-center justify-center">
                   <Check className="w-4 h-4 text-white" />
                 </div>
               )}
@@ -255,7 +255,7 @@ function PropertyTypeStep({
         <button
           onClick={onNext}
           disabled={!propertyType}
-          className="w-full min-h-[56px] rounded-full bg-[#E91E63] hover:bg-[#D81B60] text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
+          className="w-full min-h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
           data-testid="button-property-next"
         >
           {t("common.next")}
@@ -268,25 +268,25 @@ function PropertyTypeStep({
 function AlertsStep({ onActivate, onSkip, saving }: { onActivate: () => void; onSkip: () => void; saving: boolean }) {
   const { t } = useTranslation();
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-6 text-center bg-[#1A1A2E]">
-      <div className="w-[72px] h-[72px] rounded-2xl bg-[#E91E63]/10 flex items-center justify-center mb-8">
-        <Bell className="w-8 h-8 text-[#E91E63]" />
+    <div className="flex flex-col items-center justify-center min-h-screen px-6 text-center bg-ha-bg">
+      <div className="w-[72px] h-[72px] rounded-2xl bg-ha-primary/10 flex items-center justify-center mb-8">
+        <Bell className="w-8 h-8 text-ha-primary" />
       </div>
 
       <h2
-        className="text-[24px] font-medium text-white mb-3 max-w-[300px] tracking-wide"
+        className="text-[24px] font-medium text-ha-text mb-3 max-w-[300px] tracking-wide"
         data-testid="text-alerts-title"
       >
         {t("onboarding.alerts.title")}
       </h2>
 
-      <p className="text-[16px] text-[#9CA3AF] mb-4 max-w-[300px] leading-relaxed">
+      <p className="text-[16px] text-ha-text-secondary mb-4 max-w-[300px] leading-relaxed">
         {t("onboarding.alerts.subtitle")}
       </p>
 
-      <div className="flex items-center gap-2.5 bg-[#00C896]/15 rounded-xl px-4 py-3 mb-8 max-w-[320px]" data-testid="trial-note">
-        <Gift className="w-4 h-4 text-[#00C896] flex-shrink-0" />
-        <p className="text-[13px] font-medium text-[#00C896] text-left leading-snug">
+      <div className="flex items-center gap-2.5 bg-ha-success-light rounded-xl px-4 py-3 mb-8 max-w-[320px]" data-testid="trial-note">
+        <Gift className="w-4 h-4 text-ha-success flex-shrink-0" />
+        <p className="text-[13px] font-medium text-ha-success text-left leading-snug">
           {t("onboarding.alerts.trialNote")}
         </p>
       </div>
@@ -294,7 +294,7 @@ function AlertsStep({ onActivate, onSkip, saving }: { onActivate: () => void; on
       <button
         onClick={onActivate}
         disabled={saving}
-        className="w-full max-w-[320px] min-h-[56px] rounded-full bg-[#E91E63] hover:bg-[#D81B60] text-white font-medium text-[16px] transition-colors disabled:opacity-60 flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
+        className="w-full max-w-[320px] min-h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors disabled:opacity-60 flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
         data-testid="button-activate-alerts"
       >
         {saving ? (
@@ -310,7 +310,7 @@ function AlertsStep({ onActivate, onSkip, saving }: { onActivate: () => void; on
       <button
         onClick={onSkip}
         disabled={saving}
-        className="mt-4 text-[#E91E63] font-medium text-[15px] hover:underline disabled:opacity-40"
+        className="mt-4 text-ha-primary font-medium text-[15px] hover:underline disabled:opacity-40"
         data-testid="button-skip-alerts"
       >
         {t("onboarding.alerts.skip")}
@@ -467,7 +467,7 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#1A1A2E] flex flex-col">
+    <div className="min-h-screen bg-ha-bg flex flex-col">
       <ProgressBar step={step} total={4} />
 
       {step === 1 && (

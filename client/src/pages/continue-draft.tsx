@@ -109,7 +109,7 @@ export default function ContinueDraftPage() {
       <div className="text-center">
         {(status === "loading" || status === "claiming") && (
           <>
-            <Loader2 className="w-10 h-10 animate-spin mx-auto mb-4" style={{ color: "#F97316" }} />
+            <Loader2 className="w-10 h-10 animate-spin mx-auto mb-4" style={{ color: "rgb(var(--ha-primary))" }} />
             <p className="text-[16px] text-muted-foreground">
               {status === "loading" ? t("continueDraft.loading") : t("continueDraft.claiming")}
             </p>
@@ -118,7 +118,7 @@ export default function ContinueDraftPage() {
         {status === "error" && (
           <>
             <AlertCircle className="w-10 h-10 text-destructive mx-auto mb-4" />
-            <p className="text-[16px] font-medium mb-2" style={{ color: "#222222" }}>{t("continueDraft.notFound")}</p>
+            <p className="text-[16px] font-medium mb-2" style={{ color: "rgb(var(--ha-text))" }}>{t("continueDraft.notFound")}</p>
             <p className="text-[14px] text-muted-foreground mb-6">{t("continueDraft.linkExpired")}</p>
             <button
               onClick={() => navigate("/")}
@@ -131,8 +131,8 @@ export default function ContinueDraftPage() {
         )}
         {status === "done" && (
           <>
-            <Check className="w-10 h-10 mx-auto mb-4" style={{ color: "#16A34A" }} />
-            <p className="text-[16px] font-medium" style={{ color: "#222222" }}>{t("continueDraft.claimed")}</p>
+            <Check className="w-10 h-10 mx-auto mb-4" style={{ color: "rgb(var(--ha-success))" }} />
+            <p className="text-[16px] font-medium" style={{ color: "rgb(var(--ha-text))" }}>{t("continueDraft.claimed")}</p>
           </>
         )}
       </div>

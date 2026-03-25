@@ -2,20 +2,19 @@
 
 A mobile-first rental alert application for the German market. Users can sign up, log in, and manage saved rental search profiles. Listings are matched against profiles and shown as matches. Rebranded from "Stekkies" to "HousAlert". Supports three languages: German (de), English (en), Dutch (nl). Default/fallback: English (en).
 
-## UI Design System (Airbnb-Inspired Redesign)
-- **Design philosophy**: Clean, borderless, Airbnb-inspired mobile-first design
-- **Primary color**: Blue `#0D6EFD` — used for CTAs, active states, links
-- **Typography**: `text-[22px] font-bold text-[#111827] tracking-tight` for page titles (inline Tailwind, not CSS utility classes on dashboard)
-- **Cards**: Borderless or subtle `border-[#F3F4F6]` with `rounded-xl` — no heavy shadows
-- **Match cards**: 4:3 aspect ratio images, source tag overlay, city-first hierarchy (city bold, title as subtitle)
-- **Bottom tab bar**: Frosted glass effect (`bg-white/95 backdrop-blur-lg`), active dot indicator, rounded-2xl floating pill
-- **Match sub-tabs**: Pill-style buttons (`bg-[#111827] text-white` active, `bg-[#F3F4F6]` inactive) instead of underlined tabs
-- **Profile page**: Clean sections with `rounded-xl border border-[#F3F4F6]`, icon containers in `w-8 h-8 rounded-lg` boxes
-- **Buttons**: Primary CTAs use `rounded-lg bg-[#111827]` (dark) or `bg-[#0D6EFD]` (blue). Secondary: `border border-[#E5E7EB] rounded-lg`
-- **Task list**: Progress bar at top, green checkmarks for completed, chevrons for incomplete
-- **Section labels**: `text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wider` for group headers
-- **theme.ts**: Colors aligned with blue system (no legacy purple). Used for JS-driven styling (charts, etc.)
-- **Legacy CSS utilities**: `text-page-title`, `text-section-title` etc. still defined in `index.css` and used by non-dashboard pages (onboarding, tips, boost, etc.)
+## Theme System (Dual Light/Dark)
+- **Architecture**: CSS custom properties (`--ha-*`) in `client/src/index.css` with RGB triplet format (e.g., `--ha-primary: 233 30 99;`). Light mode in `:root`, dark mode via `@media (prefers-color-scheme: dark)`.
+- **Tailwind integration**: `darkMode: "media"` in `tailwind.config.ts`. All `ha.*` colors use `rgb(var(--ha-*) / <alpha-value>)` format for full opacity modifier support (e.g., `bg-ha-primary/10`, `text-ha-text/70`).
+- **Primary color**: Pink `#E91E63` (HousAlert brand) — all CTAs, active states, links use `bg-ha-primary`/`text-ha-primary`.
+- **Token naming**: `bg-ha-bg`, `bg-ha-card`, `bg-ha-surface`, `border-ha-card-border`, `text-ha-text`, `text-ha-text-secondary`, `text-ha-text-muted`, `bg-ha-primary`, `bg-ha-primary-hover`, `bg-ha-primary-light`, `bg-ha-success`, `text-ha-danger`, `text-ha-warning`, `bg-ha-input-bg`, `bg-ha-nav-bg`, `bg-ha-badge-bg`, `shadow-ha-card`.
+- **Pre-defined opacity tokens**: `--ha-primary-light`, `--ha-success-light`, `--ha-warning-light`, `--ha-danger-light` use rgba with fixed opacity (light: 0.08, dark: 0.15). These stay as raw CSS values (not RGB triplets).
+- **Inline styles**: When using ha tokens in `style={{}}` attributes, wrap in `rgb()`: `style={{ color: "rgb(var(--ha-primary))" }}`.
+- **theme.ts**: `client/src/lib/theme.ts` — all colors reference CSS variables for runtime theme consistency.
+- **Excluded from tokenization**: `admin-*.tsx` pages, `v2/` pages/components (these have their own design systems). Google logo SVG colors, city gradient overlays, and amber warning banners (`#FEF3C7`/`#92400E`) remain hardcoded as semantic/brand colors.
+- **text-white rule**: `text-white` is preserved on elements with colored backgrounds (buttons with `bg-ha-primary`, success badges, hero image overlays). All other white text uses `text-ha-text`.
+- **Cards**: Subtle `border-ha-card-border` with `rounded-xl`, `shadow-ha-card` (none in dark mode)
+- **Bottom tab bar**: `bg-ha-card/95 backdrop-blur-lg`, active dot indicator
+- **Typography**: Page titles use `text-ha-text`, section labels use `text-ha-text-muted`
 
 ### Multi-Language System
 - **Frontend i18n**: `client/src/i18n/index.tsx` with translation keys in `client/src/i18n/locales/{de,en,nl}.ts`. Fallback chain: current locale → de → nl.

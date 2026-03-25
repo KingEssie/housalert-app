@@ -223,7 +223,7 @@ export default function NotificationSettingsPage() {
               <ListRow
                 title={t("notifications.emailTitle")}
                 subtitle={t("notifications.emailDesc")}
-                icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "#F5F7FA" }}><Mail className="w-[18px] h-[18px]" style={{ color: "#222222" }} /></div>}
+                icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "rgb(var(--ha-surface))" }}><Mail className="w-[18px] h-[18px]" style={{ color: "rgb(var(--ha-text))" }} /></div>}
                 trailing={
                   <Switch
                     checked={emailEnabled}
@@ -237,7 +237,7 @@ export default function NotificationSettingsPage() {
               <ListRow
                 title={t("notifications.pushTitle")}
                 subtitle={getPushSubtitle()}
-                icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "#F5F7FA" }}><Bell className="w-[18px] h-[18px]" style={{ color: "#222222" }} /></div>}
+                icon={<div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "rgb(var(--ha-surface))" }}><Bell className="w-[18px] h-[18px]" style={{ color: "rgb(var(--ha-text))" }} /></div>}
                 trailing={
                   pushLoading ? (
                     <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
@@ -284,7 +284,7 @@ export default function NotificationSettingsPage() {
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="w-full h-[52px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium flex items-center justify-center transition-colors disabled:opacity-50"
+                  className="w-full h-[52px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium flex items-center justify-center transition-colors disabled:opacity-50"
                   data-testid="button-save"
                 >
                   {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : t("common.save")}

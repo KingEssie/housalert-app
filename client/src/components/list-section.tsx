@@ -8,7 +8,7 @@ export function ListSectionTitle({ children }: { children: ReactNode }) {
 }
 
 export function ListDivider() {
-  return <div className="h-px bg-[#E5E7EB] mx-5" />;
+  return <div className="h-px bg-ha-card-border mx-5" />;
 }
 
 export function ListRow({
@@ -35,7 +35,7 @@ export function ListRow({
     <Component
       {...(onClick ? { type: "button" as const, disabled } : {})}
       onClick={onClick}
-      className={`w-full flex items-center px-5 py-[18px] text-left ${onClick ? "cursor-pointer active:bg-[#F9FAFB] transition-colors" : ""} ${disabled ? "opacity-60 pointer-events-none" : ""}`}
+      className={`w-full flex items-center px-5 py-[18px] text-left ${onClick ? "cursor-pointer active:bg-ha-surface transition-colors" : ""} ${disabled ? "opacity-60 pointer-events-none" : ""}`}
       data-testid={testId}
     >
       {icon && (
@@ -49,7 +49,7 @@ export function ListRow({
           <p className="text-row-subtitle mt-0.5">{subtitle}</p>
         )}
       </div>
-      {trailing ?? (onClick ? <ChevronRight className="w-[18px] h-[18px] text-[#71717A] flex-shrink-0 ml-3" /> : null)}
+      {trailing ?? (onClick ? <ChevronRight className="w-[18px] h-[18px] text-ha-text-muted flex-shrink-0 ml-3" /> : null)}
     </Component>
   );
 }

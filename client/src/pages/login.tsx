@@ -97,14 +97,14 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#1A1A2E] flex flex-col">
-      <header className="w-full bg-[#1A1A2E] sticky top-0 z-20 border-b border-[#353560]">
+    <div className="min-h-screen bg-ha-bg flex flex-col">
+      <header className="w-full bg-ha-bg sticky top-0 z-20 border-b border-ha-card-border">
         <div className="max-w-5xl mx-auto px-6 h-[60px] flex items-center gap-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-lg bg-[#E91E63] flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-ha-primary flex items-center justify-center">
               <Home className="w-4 h-4 text-white" />
             </div>
-            <span className="font-medium text-white text-lg tracking-tight">{t("auth.appName")}</span>
+            <span className="font-medium text-ha-text text-lg tracking-tight">{t("auth.appName")}</span>
           </div>
         </div>
       </header>
@@ -112,18 +112,18 @@ export default function LoginPage() {
       <main className="flex-1 flex items-center justify-center px-6 py-20">
         <div className="w-full max-w-sm">
           <div className="text-center mb-8">
-            <h1 className="text-[28px] font-medium text-white tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-login-title">
+            <h1 className="text-[28px] font-medium text-ha-text tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-login-title">
               {t("auth.login.title")}
             </h1>
-            <p className="text-[15px] text-[#9CA3AF]">
+            <p className="text-[15px] text-ha-text-secondary">
               {t("auth.login.subtitle")}
             </p>
           </div>
 
-          <div className="bg-[#252547] rounded-[24px] border border-[#353560] p-6">
+          <div className="bg-ha-card rounded-[24px] border border-ha-card-border p-6">
             <form onSubmit={handleLogin} className="flex flex-col gap-5">
               <div className="flex flex-col gap-2">
-                <Label htmlFor="login-email" className="text-[14px] font-medium text-white">{t("auth.login.email")}</Label>
+                <Label htmlFor="login-email" className="text-[14px] font-medium text-ha-text">{t("auth.login.email")}</Label>
                 <input
                   id="login-email"
                   type="email"
@@ -131,12 +131,12 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-[48px] px-4 rounded-xl border border-[#353560] bg-[#1A1A2E] text-[15px] font-medium text-white placeholder:text-[#6B7280] placeholder:font-normal focus:border-[#E91E63] focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] outline-none transition-all"
+                  className="h-[48px] px-4 rounded-xl border border-ha-card-border bg-ha-bg text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted placeholder:font-normal focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] outline-none transition-all"
                   data-testid="input-login-email"
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <Label htmlFor="login-password" className="text-[14px] font-medium text-white">{t("auth.login.password")}</Label>
+                <Label htmlFor="login-password" className="text-[14px] font-medium text-ha-text">{t("auth.login.password")}</Label>
                 <input
                   id="login-password"
                   type="password"
@@ -144,14 +144,14 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="h-[48px] px-4 rounded-xl border border-[#353560] bg-[#1A1A2E] text-[15px] font-medium text-white placeholder:text-[#6B7280] placeholder:font-normal focus:border-[#E91E63] focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] outline-none transition-all"
+                  className="h-[48px] px-4 rounded-xl border border-ha-card-border bg-ha-bg text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted placeholder:font-normal focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] outline-none transition-all"
                   data-testid="input-login-password"
                 />
                 <button
                   type="button"
                   onClick={handleForgotPassword}
                   disabled={resetLoading}
-                  className="self-end text-[13px] font-medium text-[#E91E63] hover:underline mt-1"
+                  className="self-end text-[13px] font-medium text-ha-primary hover:underline mt-1"
                   data-testid="link-forgot-password"
                 >
                   {resetLoading ? t("common.loading") : t("auth.login.forgotPassword")}
@@ -159,7 +159,7 @@ export default function LoginPage() {
               </div>
               <Button
                 type="submit"
-                className="w-full h-[56px] rounded-full text-[16px] font-medium bg-[#E91E63] hover:bg-[#D81B60] text-white"
+                className="w-full h-[56px] rounded-full text-[16px] font-medium bg-ha-primary hover:bg-ha-primary-hover text-white"
                 disabled={loading}
                 data-testid="button-login-submit"
               >
@@ -169,11 +169,11 @@ export default function LoginPage() {
           </div>
 
           <div className="text-center mt-6">
-            <p className="text-[15px] text-[#9CA3AF]">
+            <p className="text-[15px] text-ha-text-secondary">
               {t("auth.login.noAccount")}{" "}
               <button
                 onClick={() => navigate("/onboarding/location")}
-                className="text-[#E91E63] font-medium hover:underline"
+                className="text-ha-primary font-medium hover:underline"
                 data-testid="link-signup"
               >
                 {t("auth.login.createAccount")}
@@ -181,7 +181,7 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <p className="text-center text-[13px] text-[#6B7280] mt-6">
+          <p className="text-center text-[13px] text-ha-text-muted mt-6">
             {t("auth.login.footer")}
           </p>
         </div>

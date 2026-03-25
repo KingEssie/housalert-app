@@ -44,31 +44,31 @@ export function ReferralCodeModal({ open, onClose, code, loading }: ReferralCode
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center" data-testid="modal-referral">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" onClick={onClose} />
-      <div className="relative bg-white rounded-[24px] w-[calc(100%-40px)] max-w-[380px] mx-auto p-6 shadow-[0_8px_40px_rgba(0,0,0,0.12)]">
+      <div className="relative bg-ha-card rounded-[24px] w-[calc(100%-40px)] max-w-[380px] mx-auto p-6 shadow-[0_8px_40px_rgba(0,0,0,0.12)]">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#F3F4F6] flex items-center justify-center"
+          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-ha-surface flex items-center justify-center"
           data-testid="button-close-referral-modal"
         >
-          <X className="w-4 h-4 text-[#71717A]" />
+          <X className="w-4 h-4 text-ha-text-muted" />
         </button>
 
-        <h2 className="text-[20px] font-semibold text-[#222222] pr-8" data-testid="text-referral-modal-title">
+        <h2 className="text-[20px] font-semibold text-ha-text pr-8" data-testid="text-referral-modal-title">
           {t("referral.modalTitle")}
         </h2>
-        <p className="text-[14px] text-[#717171] mt-2 leading-relaxed">
+        <p className="text-[14px] text-ha-text-secondary mt-2 leading-relaxed">
           {t("referral.modalBody")}
         </p>
 
         <div className="mt-6">
-          <p className="text-[12px] font-medium text-[#717171] uppercase tracking-wider mb-2">
+          <p className="text-[12px] font-medium text-ha-text-secondary uppercase tracking-wider mb-2">
             {t("referral.codeLabel")}
           </p>
-          <div className="bg-[#F3F4F6] rounded-xl px-5 py-4 flex items-center justify-center" data-testid="text-referral-code">
+          <div className="bg-ha-surface rounded-xl px-5 py-4 flex items-center justify-center" data-testid="text-referral-code">
             {loading ? (
-              <Loader2 className="w-5 h-5 text-[#717171] animate-spin" />
+              <Loader2 className="w-5 h-5 text-ha-text-secondary animate-spin" />
             ) : (
-              <span className="text-[22px] font-bold tracking-[0.12em] text-[#222222] select-all">
+              <span className="text-[22px] font-bold tracking-[0.12em] text-ha-text select-all">
                 {code || "—"}
               </span>
             )}
@@ -79,7 +79,7 @@ export function ReferralCodeModal({ open, onClose, code, loading }: ReferralCode
           <button
             onClick={handleCopy}
             disabled={!code}
-            className="flex-1 h-[48px] rounded-full bg-[#F97316] text-white text-[15px] font-medium flex items-center justify-center gap-2 active:scale-[0.97] transition-transform disabled:opacity-50"
+            className="flex-1 h-[48px] rounded-full bg-ha-primary text-white text-[15px] font-medium flex items-center justify-center gap-2 active:scale-[0.97] transition-transform disabled:opacity-50"
             data-testid="button-copy-referral"
           >
             {copied ? (
@@ -99,17 +99,17 @@ export function ReferralCodeModal({ open, onClose, code, loading }: ReferralCode
             <button
               onClick={handleShare}
               disabled={!code}
-              className="h-[48px] w-[48px] rounded-full border border-[#E5E7EB] bg-white flex items-center justify-center active:scale-[0.97] transition-transform disabled:opacity-50"
+              className="h-[48px] w-[48px] rounded-full border border-ha-card-border bg-ha-card flex items-center justify-center active:scale-[0.97] transition-transform disabled:opacity-50"
               data-testid="button-share-referral"
             >
-              <Share2 className="w-5 h-5 text-[#222222]" />
+              <Share2 className="w-5 h-5 text-ha-text" />
             </button>
           )}
         </div>
 
         <button
           onClick={onClose}
-          className="w-full mt-3 h-[44px] rounded-full text-[15px] font-medium text-[#717171] active:bg-[#F3F4F6] transition-colors"
+          className="w-full mt-3 h-[44px] rounded-full text-[15px] font-medium text-ha-text-secondary active:bg-ha-surface transition-colors"
           data-testid="button-close-referral"
         >
           {t("referral.close")}

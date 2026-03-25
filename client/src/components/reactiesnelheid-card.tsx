@@ -72,9 +72,9 @@ export function calculateReactiesnelheid(rawDone: number, rawTotal: number, t?: 
 }
 
 const LEVEL_STYLES: Record<SpeedLevel, { dotColor: string; barColor: string; labelColor: string }> = {
-  fast: { dotColor: "bg-[#F97316]", barColor: "bg-[#F97316]", labelColor: "text-[#222222] bg-[#F97316]/10" },
-  almost: { dotColor: "bg-[#F97316]", barColor: "bg-[#F97316]", labelColor: "text-[#222222] bg-[#F97316]/10" },
-  building: { dotColor: "bg-[#E5E7EB]", barColor: "bg-[#E5E7EB]", labelColor: "text-[#222222] bg-[#F5F7FA]" },
+  fast: { dotColor: "bg-ha-primary", barColor: "bg-ha-primary", labelColor: "text-ha-text bg-ha-primary/10" },
+  almost: { dotColor: "bg-ha-primary", barColor: "bg-ha-primary", labelColor: "text-ha-text bg-ha-primary/10" },
+  building: { dotColor: "bg-ha-card-border", barColor: "bg-ha-card-border", labelColor: "text-ha-text bg-ha-surface" },
 };
 
 function useReactiesnelheidData() {
@@ -115,10 +115,10 @@ export function ReactiesnelheidCard({
 
   if (loading) {
     return (
-      <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 animate-pulse" data-testid="card-reactiesnelheid-loading">
-        <div className="h-4 bg-[#F5F7FA] rounded w-32 mb-3" />
-        <div className="h-3 bg-[#F5F7FA] rounded w-48 mb-3" />
-        <div className="h-1.5 bg-[#F5F7FA] rounded-full w-full" />
+      <div className="bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 animate-pulse" data-testid="card-reactiesnelheid-loading">
+        <div className="h-4 bg-ha-surface rounded w-32 mb-3" />
+        <div className="h-3 bg-ha-surface rounded w-48 mb-3" />
+        <div className="h-1.5 bg-ha-surface rounded-full w-full" />
       </div>
     );
   }
@@ -134,36 +134,36 @@ export function ReactiesnelheidCard({
   return (
     <Wrapper
       onClick={onTap}
-      className={`bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 w-full text-left ${onTap ? "cursor-pointer" : ""}`}
+      className={`bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 w-full text-left ${onTap ? "cursor-pointer" : ""}`}
       data-testid="card-reactiesnelheid"
     >
       <div className="flex items-start gap-4">
-        <div className="w-10 h-10 rounded-lg bg-[#F5F7FA] flex items-center justify-center flex-shrink-0">
-          <Gauge className="w-5 h-5 text-[#71717A]" />
+        <div className="w-10 h-10 rounded-lg bg-ha-surface flex items-center justify-center flex-shrink-0">
+          <Gauge className="w-5 h-5 text-ha-text-muted" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
-            <p className="text-[15px] font-medium text-[#222222]">{t("speedCard.title")}</p>
+            <p className="text-[15px] font-medium text-ha-text">{t("speedCard.title")}</p>
             <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${styles.labelColor}`} data-testid="badge-speed-level">
               {state.label}
             </span>
           </div>
-          <p className="text-[13px] text-[#222222] leading-relaxed">{state.subtitle}</p>
+          <p className="text-[13px] text-ha-text leading-relaxed">{state.subtitle}</p>
 
           <div className="mt-3 flex items-center gap-3">
-            <div className="flex-1 h-1.5 bg-[#F5F7FA] rounded-full overflow-hidden">
+            <div className="flex-1 h-1.5 bg-ha-surface rounded-full overflow-hidden">
               <div
                 className={`h-full rounded-full transition-all duration-500 ${styles.barColor}`}
                 style={{ width: `${pct}%` }}
               />
             </div>
-            <span className="text-[12px] font-medium text-[#222222] flex-shrink-0" data-testid="text-speed-ratio">
+            <span className="text-[12px] font-medium text-ha-text flex-shrink-0" data-testid="text-speed-ratio">
               {done}/{total}
             </span>
           </div>
         </div>
         {onTap && (
-          <ChevronRight className="w-4 h-4 text-[#71717A] flex-shrink-0 mt-1" />
+          <ChevronRight className="w-4 h-4 text-ha-text-muted flex-shrink-0 mt-1" />
         )}
       </div>
     </Wrapper>

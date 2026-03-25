@@ -11,7 +11,7 @@ const FURNISHED_OPTIONS = ["any", "furnished", "unfurnished"] as const;
 const HOUSING_TYPES = ["any", "apartment", "studio", "room", "house", "wg"] as const;
 const TARGET_GROUPS = ["any", "students", "couples", "families", "singles", "seniors"] as const;
 
-const SELECT_CLS = "w-full h-[44px] px-4 rounded-xl border border-[#353560] bg-[#1A1A2E] text-[15px] font-medium text-white focus:border-[#E91E63] cursor-pointer appearance-none outline-none transition-all";
+const SELECT_CLS = "w-full h-[44px] px-4 rounded-xl border border-ha-card-border bg-ha-bg text-[15px] font-medium text-ha-text focus:border-ha-primary cursor-pointer appearance-none outline-none transition-all";
 
 export default function OnboardingPreferencesPage() {
   const [, navigate] = useLocation();
@@ -47,16 +47,16 @@ export default function OnboardingPreferencesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#1A1A2E] flex flex-col">
+    <div className="min-h-screen bg-ha-bg flex flex-col">
       {!isEmbedded && (
-        <header className="w-full bg-[#1A1A2E] sticky top-0 z-20 border-b border-[#353560]">
+        <header className="w-full bg-ha-bg sticky top-0 z-20 border-b border-ha-card-border">
           <div className={`${containerClass} mx-auto px-5 h-[56px] flex items-center gap-3`}>
             <button
               onClick={handleBack}
-              className="w-10 h-10 rounded-full bg-[#252547] flex items-center justify-center active:scale-95 transition-transform"
+              className="w-10 h-10 rounded-full bg-ha-card flex items-center justify-center active:scale-95 transition-transform"
               data-testid="button-back-preferences"
             >
-              <ChevronLeft className="w-5 h-5 text-[#9CA3AF]" />
+              <ChevronLeft className="w-5 h-5 text-ha-text-secondary" />
             </button>
             <HousAlertLogo size={28} />
           </div>
@@ -69,7 +69,7 @@ export default function OnboardingPreferencesPage() {
             <div
               key={step}
               className={`w-2 h-2 rounded-full transition-all ${
-                step <= 3 ? "bg-[#E91E63]" : "bg-[#353560]"
+                step <= 3 ? "bg-ha-primary" : "bg-ha-surface"
               }`}
               data-testid={`dot-step-${step}`}
             />
@@ -79,18 +79,18 @@ export default function OnboardingPreferencesPage() {
 
       <main className={`flex-1 ${containerClass} mx-auto w-full px-5 pb-8 pt-3`}>
         <h1
-          className="text-[24px] font-medium text-white leading-[1.15] tracking-[-0.02em] mb-1"
+          className="text-[24px] font-medium text-ha-text leading-[1.15] tracking-[-0.02em] mb-1"
           data-testid="text-preferences-title"
         >
           {t("onboardingPreferences.title")}
         </h1>
-        <p className="text-[14px] text-[#9CA3AF] mb-5">
+        <p className="text-[14px] text-ha-text-secondary mb-5">
           {t("onboardingPreferences.subtitle")}
         </p>
 
-        <div className="bg-[#252547] rounded-[24px] border border-[#353560] p-5 space-y-5">
+        <div className="bg-ha-card rounded-[24px] border border-ha-card-border p-5 space-y-5">
           <div>
-            <label className="text-[13px] font-medium text-[#9CA3AF] mb-1.5 block">
+            <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">
               {t("onboardingPreferences.furnished")}
             </label>
             <div className="relative">
@@ -106,12 +106,12 @@ export default function OnboardingPreferencesPage() {
                   </option>
                 ))}
               </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280] pointer-events-none" />
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-muted pointer-events-none" />
             </div>
           </div>
 
           <div>
-            <label className="text-[13px] font-medium text-[#9CA3AF] mb-1.5 block">
+            <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">
               {t("onboardingPreferences.housingType")}
             </label>
             <div className="relative">
@@ -129,12 +129,12 @@ export default function OnboardingPreferencesPage() {
                   </option>
                 ))}
               </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280] pointer-events-none" />
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-muted pointer-events-none" />
             </div>
           </div>
 
           <div>
-            <label className="text-[13px] font-medium text-[#9CA3AF] mb-1.5 block">
+            <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">
               {t("onboardingPreferences.targetGroup")}
             </label>
             <div className="relative">
@@ -150,7 +150,7 @@ export default function OnboardingPreferencesPage() {
                   </option>
                 ))}
               </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280] pointer-events-none" />
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-muted pointer-events-none" />
             </div>
           </div>
         </div>
@@ -158,14 +158,14 @@ export default function OnboardingPreferencesPage() {
         <div className="pt-5 flex gap-3">
           <Button
             variant="outline"
-            className="h-[48px] px-6 rounded-full text-[15px] font-medium border-[#353560] text-white hover:bg-[#252547]"
+            className="h-[48px] px-6 rounded-full text-[15px] font-medium border-ha-card-border text-ha-text hover:bg-ha-card"
             onClick={handleBack}
             data-testid="button-back-preferences"
           >
             {t("onboardingPreferences.back")}
           </Button>
           <Button
-            className="flex-1 h-[48px] rounded-full text-[15px] font-medium shadow-none bg-[#E91E63] hover:bg-[#D81B60] text-white"
+            className="flex-1 h-[48px] rounded-full text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover text-white"
             onClick={handleNext}
             data-testid="button-next-preferences"
           >

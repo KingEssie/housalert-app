@@ -139,30 +139,30 @@ export default function ApplyPage() {
 
   if (listingLoading || !listing) {
     return (
-      <div className="min-h-screen bg-white flex flex-col relative">
+      <div className="min-h-screen bg-ha-card flex flex-col relative">
         <button
           onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=matches")}
-          className="fixed top-[calc(12px+env(safe-area-inset-top))] left-4 z-20 w-12 h-12 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.10)] flex items-center justify-center"
+          className="fixed top-[calc(12px+env(safe-area-inset-top))] left-4 z-20 w-12 h-12 rounded-full bg-ha-card shadow-[0_2px_8px_rgba(0,0,0,0.10)] flex items-center justify-center"
           data-testid="button-back-apply"
         >
-          <ArrowLeft className="w-5 h-5 text-[#71717A]" />
+          <ArrowLeft className="w-5 h-5 text-ha-text-muted" />
         </button>
         <div className="animate-pulse">
-          <div className="w-full bg-[#F0F0F0]" style={{ aspectRatio: "16/10" }} />
-          <div className="max-w-xl mx-auto w-full px-5 pt-6 relative -mt-5 bg-white rounded-t-[24px]">
+          <div className="w-full bg-ha-surface" style={{ aspectRatio: "16/10" }} />
+          <div className="max-w-xl mx-auto w-full px-5 pt-6 relative -mt-5 bg-ha-card rounded-t-[24px]">
             <div className="flex flex-col items-center gap-2">
-              <div className="h-5 bg-[#F5F5F5] rounded-md w-4/5" />
-              <div className="h-5 bg-[#F5F5F5] rounded-md w-3/5" />
-              <div className="h-4 bg-[#F5F5F5] rounded-md w-2/5 mt-0.5" />
-              <div className="h-3.5 bg-[#F5F5F5] rounded-md w-3/5 mt-0.5" />
+              <div className="h-5 bg-ha-surface rounded-md w-4/5" />
+              <div className="h-5 bg-ha-surface rounded-md w-3/5" />
+              <div className="h-4 bg-ha-surface rounded-md w-2/5 mt-0.5" />
+              <div className="h-3.5 bg-ha-surface rounded-md w-3/5 mt-0.5" />
             </div>
-            <div className="mt-7 border-t border-[#EBEBEB]" />
+            <div className="mt-7 border-t border-ha-card-border" />
             <div className="pt-6">
-              <div className="h-4 bg-[#F5F5F5] rounded w-24 mb-3" />
-              <div className="bg-[#FAFAFA] rounded-2xl px-5 py-5 space-y-2">
-                <div className="h-3.5 bg-[#F0F0F0] rounded w-full" />
-                <div className="h-3.5 bg-[#F0F0F0] rounded w-5/6" />
-                <div className="h-3.5 bg-[#F0F0F0] rounded w-4/6" />
+              <div className="h-4 bg-ha-surface rounded w-24 mb-3" />
+              <div className="bg-ha-card rounded-2xl px-5 py-5 space-y-2">
+                <div className="h-3.5 bg-ha-surface rounded w-full" />
+                <div className="h-3.5 bg-ha-surface rounded w-5/6" />
+                <div className="h-3.5 bg-ha-surface rounded w-4/6" />
               </div>
             </div>
           </div>
@@ -261,13 +261,13 @@ export default function ApplyPage() {
   const detailLine = detailParts.join(" · ");
 
   return (
-    <div className="min-h-screen bg-white flex flex-col relative">
+    <div className="min-h-screen bg-ha-card flex flex-col relative">
       <button
         onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=matches")}
-        className="fixed top-[calc(12px+env(safe-area-inset-top))] left-4 z-20 w-12 h-12 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.10)] flex items-center justify-center active:scale-95 transition-transform"
+        className="fixed top-[calc(12px+env(safe-area-inset-top))] left-4 z-20 w-12 h-12 rounded-full bg-ha-card shadow-[0_2px_8px_rgba(0,0,0,0.10)] flex items-center justify-center active:scale-95 transition-transform"
         data-testid="button-back-apply"
       >
-        <ArrowLeft className="w-5 h-5 text-[#71717A]" />
+        <ArrowLeft className="w-5 h-5 text-ha-text-muted" />
       </button>
 
       <div className="relative">
@@ -292,31 +292,31 @@ export default function ApplyPage() {
         )}
       </div>
 
-      <main className="flex-1 max-w-xl mx-auto w-full pb-[120px] relative -mt-5 bg-white rounded-t-[24px]">
+      <main className="flex-1 max-w-xl mx-auto w-full pb-[120px] relative -mt-5 bg-ha-card rounded-t-[24px]">
         <div className="px-5 pt-6 text-center">
           <h1
-            className="text-[22px] font-semibold text-[#222222] leading-[1.3] tracking-[-0.02em] mx-auto"
+            className="text-[22px] font-semibold text-ha-text leading-[1.3] tracking-[-0.02em] mx-auto"
             data-testid="text-apply-title"
           >
             {listing.title}
           </h1>
-          <p className="text-[15px] text-[#717171] mt-1.5" data-testid="text-apply-subtitle">
+          <p className="text-[15px] text-ha-text-secondary mt-1.5" data-testid="text-apply-subtitle">
             {subtitle}
           </p>
           {detailLine && (
-            <p className="text-[14px] text-[#717171] mt-1" data-testid="text-apply-details">
+            <p className="text-[14px] text-ha-text-secondary mt-1" data-testid="text-apply-details">
               {detailLine}
             </p>
           )}
         </div>
 
-        <div className="mx-5 mt-7 border-t border-[#EBEBEB]" />
+        <div className="mx-5 mt-7 border-t border-ha-card-border" />
 
         <div className="px-5 pt-6">
-          <h2 className="text-[15px] font-medium text-[#222222] mb-3">{t("applySheet.applicationLetter")}</h2>
-          <div className="bg-[#FAFAFA] rounded-2xl px-5 py-5">
+          <h2 className="text-[15px] font-medium text-ha-text mb-3">{t("applySheet.applicationLetter")}</h2>
+          <div className="bg-ha-card rounded-2xl px-5 py-5">
             <textarea
-              className="w-full text-[14px] text-[#222222] leading-[1.75] font-[inherit] bg-transparent border-none outline-none resize-none min-h-[220px]"
+              className="w-full text-[14px] text-ha-text leading-[1.75] font-[inherit] bg-transparent border-none outline-none resize-none min-h-[220px]"
               value={editedLetter ?? filledLetter}
               onChange={(e) => setEditedLetter(e.target.value)}
               data-testid="apply-letter-preview"
@@ -327,17 +327,17 @@ export default function ApplyPage() {
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-[0_-2px_16px_rgba(0,0,0,0.06)] z-10 pb-[env(safe-area-inset-bottom)]">
+      <div className="fixed bottom-0 left-0 right-0 bg-ha-card rounded-t-2xl shadow-[0_-2px_16px_rgba(0,0,0,0.06)] z-10 pb-[env(safe-area-inset-bottom)]">
         <div className="max-w-xl mx-auto flex items-center justify-between px-5 py-4">
           {listing.price > 0 && (
             <div className="flex flex-col" data-testid="text-sticky-price">
-              <span className="text-[20px] font-semibold text-[#222222]">€{listing.price}</span>
-              <span className="text-[12px] text-[#717171] leading-none">{t("common.perMonthShort")}</span>
+              <span className="text-[20px] font-semibold text-ha-text">€{listing.price}</span>
+              <span className="text-[12px] text-ha-text-secondary leading-none">{t("common.perMonthShort")}</span>
             </div>
           )}
           <Button
             onClick={handleCopyAndRespond}
-            className={`h-[50px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[15px] font-medium px-6 ${listing.price > 0 ? "" : "w-full"}`}
+            className={`h-[50px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium px-6 ${listing.price > 0 ? "" : "w-full"}`}
             data-testid="button-copy-and-respond"
           >
             <Copy className="w-4 h-4 mr-2" />

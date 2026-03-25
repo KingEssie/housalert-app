@@ -13,12 +13,12 @@ import {
   Shield, Star, Clock, Zap, Eye, EyeOff, Loader2, CheckCircle2, ArrowRight,
 } from "lucide-react";
 
-const BRAND = "#F97316";
-const BRAND_HOVER = "#EA580C";
-const TEXT_PRIMARY = "#1A1A1A";
-const TEXT_SECONDARY = "#6B7280";
-const BG_LIGHT = "#F9FAFB";
-const BORDER = "#E5E7EB";
+const BRAND = "rgb(var(--ha-primary))";
+const BRAND_HOVER = "rgb(var(--ha-primary-hover))";
+const TEXT_PRIMARY = "rgb(var(--ha-text))";
+const TEXT_SECONDARY = "rgb(var(--ha-text-secondary))";
+const BG_LIGHT = "rgb(var(--ha-surface))";
+const BORDER = "rgb(var(--ha-card-border))";
 
 type Step = "paywall" | "objection" | "push" | "personalInfo" | "housing" | "extras" | "letter" | "buddy" | "success";
 
@@ -31,7 +31,7 @@ function ProgressBar({ current, total }: { current: number; total: number }) {
         <div
           key={i}
           className="h-1 flex-1 rounded-full transition-all duration-300"
-          style={{ backgroundColor: i < current ? BRAND : "#E5E7EB" }}
+          style={{ backgroundColor: i < current ? BRAND : "rgb(var(--ha-card-border))" }}
         />
       ))}
     </div>
@@ -49,7 +49,7 @@ function StepShell({
 }) {
   return (
     <div
-      className="min-h-[100dvh] flex flex-col bg-white"
+      className="min-h-[100dvh] flex flex-col bg-ha-card"
       data-testid={`funnel-step-${step}`}
     >
       <div className="pt-4 pb-2 px-6">
@@ -238,7 +238,7 @@ function ObjectionStep({ onNext, onSkip, t }: { onNext: () => void; onSkip: () =
           <div key={i} className="rounded-2xl p-4 border" style={{ borderColor: BORDER }}>
             <div className="flex items-center gap-1 mb-2">
               {Array.from({ length: 5 }).map((_, j) => (
-                <Star key={j} className="w-3.5 h-3.5 fill-current" style={{ color: "#FBBF24" }} />
+                <Star key={j} className="w-3.5 h-3.5 fill-current" style={{ color: "rgb(var(--ha-warning))" }} />
               ))}
             </div>
             <p className="text-[13px] leading-[1.55] mb-2" style={{ color: TEXT_PRIMARY }}>"{r.text}"</p>
@@ -795,7 +795,7 @@ function BuddyStep({ onNext, onSkip, t, session }: { onNext: () => void; onSkip:
 
 function SuccessStep({ onFinish, t }: { onFinish: () => void; t: (k: string) => string }) {
   return (
-    <div className="min-h-[100dvh] flex flex-col items-center justify-center px-6 bg-white" data-testid="funnel-step-success">
+    <div className="min-h-[100dvh] flex flex-col items-center justify-center px-6 bg-ha-card" data-testid="funnel-step-success">
       <div className="w-24 h-24 rounded-full flex items-center justify-center mb-8" style={{ backgroundColor: `${BRAND}15` }}>
         <Sparkles className="w-12 h-12" style={{ color: BRAND }} />
       </div>

@@ -21,7 +21,7 @@ export function HousAlertLogo({ size = 28, className = "", showText = true, text
       />
       {showText && (
         <span
-          className={textClassName || "font-medium text-[#222222] text-[15px]"}
+          className={textClassName || "font-medium text-ha-text text-[15px]"}
           data-testid="text-logo"
         >
           HousAlert

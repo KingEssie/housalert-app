@@ -353,15 +353,15 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
   return (
     <div className="flex flex-col gap-5">
       {segmentedTabs ? (
-        <div className="flex bg-[#F3F4F6] rounded-2xl p-1 gap-0.5">
+        <div className="flex bg-ha-surface rounded-2xl p-1 gap-0.5">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setTab(tab.id)}
               className={`flex-1 py-2.5 text-[13px] font-medium text-center rounded-lg transition-all ${
                 value.tab === tab.id
-                  ? "bg-white text-[#222222] shadow-sm"
-                  : "text-[#222222] hover:text-[#222222]"
+                  ? "bg-ha-card text-ha-text shadow-sm"
+                  : "text-ha-text hover:text-ha-text"
               }`}
               data-testid={`tab-location-${tab.id}`}
             >
@@ -370,21 +370,21 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
           ))}
         </div>
       ) : (
-        <div className="flex border-b border-[#E5E7EB]">
+        <div className="flex border-b border-ha-card-border">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setTab(tab.id)}
               className={`flex-1 pb-3 text-sm font-medium text-center transition-colors relative ${
                 value.tab === tab.id
-                  ? "text-[#222222]"
-                  : "text-[#222222] hover:text-[#222222]"
+                  ? "text-ha-text"
+                  : "text-ha-text hover:text-ha-text"
               }`}
               data-testid={`tab-location-${tab.id}`}
             >
               {tab.label}
               {value.tab === tab.id && (
-                <div className="absolute bottom-0 left-3 right-3 h-[3px] bg-[#F97316] rounded-t-full" />
+                <div className="absolute bottom-0 left-3 right-3 h-[3px] bg-ha-primary rounded-t-full" />
               )}
             </button>
           ))}
@@ -394,49 +394,49 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       {(value.tab === "wijken" || value.tab === "radius") && (
         <div ref={cityContainerRef} className="relative">
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#71717A] pointer-events-none" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text-muted pointer-events-none" />
             <input
               type="text"
               value={cityQuery}
               onChange={(e) => handleCityInput(e.target.value)}
               onFocus={() => { if (hasCityResults && !value.place) setCityOpen(true); }}
               placeholder={t("location.searchCity")}
-              className={`w-full min-h-[60px] rounded-[20px] bg-[#F3F4F6] border px-11 text-[16px] text-[#71717A] placeholder:text-[#717171] ${
-                value.place ? "border-[#F97316] bg-[#F5F7FA]/30" : "border-[#E5E7EB]"
+              className={`w-full min-h-[60px] rounded-[20px] bg-ha-surface border px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-secondary ${
+                value.place ? "border-ha-primary bg-ha-surface/30" : "border-ha-card-border"
               }`}
               data-testid="input-city-search"
             />
             {cityQuery && (
               <button
                 onClick={handleCityClear}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#E5E7EB] flex items-center justify-center hover:bg-[#717171]/30 transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-ha-card-border flex items-center justify-center hover:bg-ha-text-muted/30 transition-colors"
                 data-testid="button-clear-city"
               >
-                <X className="w-3.5 h-3.5 text-[#71717A]" />
+                <X className="w-3.5 h-3.5 text-ha-text-muted" />
               </button>
             )}
           </div>
           {cityIsLoading && (
             <div className="absolute right-12 top-[26px] -translate-y-1/2">
-              <div className="w-4 h-4 border-2 border-[#F97316]/30 border-t-[#F97316] rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-ha-primary/30 border-t-ha-primary rounded-full animate-spin" />
             </div>
           )}
           {cityOpen && hasCityResults && (
-            <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-[#E5E7EB] rounded-lg shadow-lg max-h-[260px] overflow-y-auto z-30">
+            <div className="absolute top-full left-0 right-0 mt-2 bg-ha-card border border-ha-card-border rounded-lg shadow-lg max-h-[260px] overflow-y-auto z-30">
               {usingGoogleForCity && googleCitySuggestions.length > 0 ? (
                 <>
                   {googleCitySuggestions.map((s) => (
                     <button
                       key={s.place_id}
                       onClick={() => handleGoogleCitySelect(s)}
-                      className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#71717A] hover:bg-[#F5F7FA] flex items-center gap-3"
+                      className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-ha-text-muted hover:bg-ha-surface flex items-center gap-3"
                       data-testid={`option-place-${s.place_id}`}
                     >
-                      <MapPin className="w-4 h-4 text-[#71717A] flex-shrink-0" />
+                      <MapPin className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
                       <span>{s.state ? `${s.city_name}, ${s.state}` : s.city_name}</span>
                     </button>
                   ))}
-                  <div className="px-4 py-2 text-[11px] text-[#717171] text-right border-t border-[#F3F4F6]" data-testid="text-powered-by-google">
+                  <div className="px-4 py-2 text-[11px] text-ha-text-secondary text-right border-t border-ha-card-border" data-testid="text-powered-by-google">
                     {t("cityPicker.poweredByGoogle")}
                   </div>
                 </>
@@ -449,10 +449,10 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                     <button
                       key={r.place_id}
                       onClick={() => handleNominatimCitySelect(r)}
-                      className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#71717A] hover:bg-[#F5F7FA] flex items-center gap-3"
+                      className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-ha-text-muted hover:bg-ha-surface flex items-center gap-3"
                       data-testid={`option-place-${r.place_id}`}
                     >
-                      <MapPin className="w-4 h-4 text-[#71717A] flex-shrink-0" />
+                      <MapPin className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
                       <span>{sub}</span>
                     </button>
                   );
@@ -465,7 +465,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
 
       {value.tab === "wijken" && value.place && (
         <>
-          <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#71717A] font-medium text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
+          <div className="inline-flex items-center gap-2 bg-ha-surface text-ha-text-muted font-medium text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
             <MapPin className="w-4 h-4" />
             {value.place.city_name}
           </div>
@@ -482,7 +482,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
 
       {value.tab === "radius" && value.place && (
         <>
-          <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#71717A] font-medium text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
+          <div className="inline-flex items-center gap-2 bg-ha-surface text-ha-text-muted font-medium text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
             <MapPin className="w-4 h-4" />
             {value.place.city_name}
           </div>
@@ -491,13 +491,13 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
 
       {value.tab === "radius" && (
         <div>
-          <label className="text-[16px] font-medium text-[#222222] mb-3 block">{t("location.radiusLabel")}</label>
+          <label className="text-[16px] font-medium text-ha-text mb-3 block">{t("location.radiusLabel")}</label>
           <div className="relative">
-            <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A]" />
+            <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-muted" />
             <select
               value={value.radiusKm}
               onChange={(e) => onChange({ ...value, radiusKm: parseInt(e.target.value) })}
-              className="w-full h-[52px] pl-11 pr-4 rounded-lg border border-transparent bg-[#F5F7FA] text-[15px] font-medium text-[#71717A] cursor-pointer appearance-none"
+              className="w-full h-[52px] pl-11 pr-4 rounded-lg border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text-muted cursor-pointer appearance-none"
               data-testid="select-radius"
             >
               <option value="2">2 km</option>
@@ -514,51 +514,51 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       {value.tab === "reistijd" && (
         <>
           <div ref={destContainerRef} className="relative">
-            <label className="text-[16px] font-medium text-[#222222] mb-3 block">{t("location.workAddress")}</label>
+            <label className="text-[16px] font-medium text-ha-text mb-3 block">{t("location.workAddress")}</label>
             <div className="relative">
-              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#71717A] pointer-events-none" />
+              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text-muted pointer-events-none" />
               <input
                 type="text"
                 value={destQuery}
                 onChange={(e) => handleDestInput(e.target.value)}
                 onFocus={() => { if (hasDestResults && value.commuteLat == null) setDestOpen(true); }}
                 placeholder={t("location.searchAddress")}
-                className={`w-full min-h-[60px] rounded-[20px] bg-[#F3F4F6] border px-11 text-[16px] text-[#71717A] placeholder:text-[#717171] ${
-                  value.commuteLat != null ? "border-[#F97316] bg-[#F5F7FA]/30" : "border-[#E5E7EB]"
+                className={`w-full min-h-[60px] rounded-[20px] bg-ha-surface border px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-secondary ${
+                  value.commuteLat != null ? "border-ha-primary bg-ha-surface/30" : "border-ha-card-border"
                 }`}
                 data-testid="input-commute-destination"
               />
               {destQuery && (
                 <button
                   onClick={handleDestClear}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#E5E7EB] flex items-center justify-center hover:bg-[#717171]/30 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-ha-card-border flex items-center justify-center hover:bg-ha-text-muted/30 transition-colors"
                   data-testid="button-clear-destination"
                 >
-                  <X className="w-3.5 h-3.5 text-[#71717A]" />
+                  <X className="w-3.5 h-3.5 text-ha-text-muted" />
                 </button>
               )}
             </div>
             {destIsLoading && (
               <div className="absolute right-12 top-[calc(24px+26px)] -translate-y-1/2">
-                <div className="w-4 h-4 border-2 border-[#F97316]/30 border-t-[#F97316] rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-ha-primary/30 border-t-ha-primary rounded-full animate-spin" />
               </div>
             )}
             {destOpen && hasDestResults && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-[#E5E7EB] rounded-lg shadow-lg max-h-[260px] overflow-y-auto z-30">
+              <div className="absolute top-full left-0 right-0 mt-2 bg-ha-card border border-ha-card-border rounded-lg shadow-lg max-h-[260px] overflow-y-auto z-30">
                 {usingGoogleForDest && googleDestSuggestions.length > 0 ? (
                   <>
                     {googleDestSuggestions.map((s) => (
                       <button
                         key={s.place_id}
                         onClick={() => handleGoogleDestSelect(s)}
-                        className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#71717A] hover:bg-[#F5F7FA] flex items-center gap-3"
+                        className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-ha-text-muted hover:bg-ha-surface flex items-center gap-3"
                         data-testid={`option-dest-${s.place_id}`}
                       >
-                        <MapPin className="w-4 h-4 text-[#71717A] flex-shrink-0" />
+                        <MapPin className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
                         <span>{s.state ? `${s.city_name}, ${s.state}` : s.display_name}</span>
                       </button>
                     ))}
-                    <div className="px-4 py-2 text-[11px] text-[#717171] text-right border-t border-[#F3F4F6]">
+                    <div className="px-4 py-2 text-[11px] text-ha-text-secondary text-right border-t border-ha-card-border">
                       {t("cityPicker.poweredByGoogle")}
                     </div>
                   </>
@@ -567,10 +567,10 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                     <button
                       key={r.place_id}
                       onClick={() => handleNominatimDestSelect(r)}
-                      className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#71717A] hover:bg-[#F5F7FA] flex items-center gap-3"
+                      className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-ha-text-muted hover:bg-ha-surface flex items-center gap-3"
                       data-testid={`option-dest-${r.place_id}`}
                     >
-                      <MapPin className="w-4 h-4 text-[#71717A] flex-shrink-0" />
+                      <MapPin className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
                       <span>{r.display_name.split(",").slice(0, 3).join(",")}</span>
                     </button>
                   ))
@@ -580,14 +580,14 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
           </div>
 
           {value.commuteLat != null && (
-            <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#71717A] font-medium text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-destination">
+            <div className="inline-flex items-center gap-2 bg-ha-surface text-ha-text-muted font-medium text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-destination">
               <MapPin className="w-4 h-4" />
               {value.commuteDestination}
             </div>
           )}
 
           <div>
-            <label className="text-[16px] font-medium text-[#222222] mb-3 block">{t("location.transport")}</label>
+            <label className="text-[16px] font-medium text-ha-text mb-3 block">{t("location.transport")}</label>
             <div className="flex gap-2">
               {([
                 { id: "auto" as const, icon: Car, label: t("location.transportOptions.car") },
@@ -599,8 +599,8 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                   onClick={() => onChange({ ...value, commuteMode: mode.id })}
                   className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-lg text-xs font-medium transition-all ${
                     value.commuteMode === mode.id
-                      ? "bg-[#F97316] text-white"
-                      : "bg-[#F5F7FA] text-[#222222] hover:bg-[#E5E7EB]"
+                      ? "bg-ha-primary text-white"
+                      : "bg-ha-surface text-ha-text hover:bg-ha-card-border"
                   }`}
                   data-testid={`button-transport-${mode.id}`}
                 >
@@ -612,13 +612,13 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
           </div>
 
           <div>
-            <label className="text-[16px] font-medium text-[#222222] mb-3 block">{t("location.maxCommute")}</label>
+            <label className="text-[16px] font-medium text-ha-text mb-3 block">{t("location.maxCommute")}</label>
             <div className="relative">
-              <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A]" />
+              <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-muted" />
               <select
                 value={value.commuteMinutes}
                 onChange={(e) => onChange({ ...value, commuteMinutes: parseInt(e.target.value) })}
-                className="w-full h-[52px] pl-11 pr-4 rounded-lg border border-transparent bg-[#F5F7FA] text-[15px] font-medium text-[#71717A] cursor-pointer appearance-none"
+                className="w-full h-[52px] pl-11 pr-4 rounded-lg border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text-muted cursor-pointer appearance-none"
                 data-testid="select-commute-minutes"
               >
                 <option value="15">15 min</option>
@@ -633,7 +633,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       )}
 
       {showMap && (
-        <div className="rounded-lg overflow-hidden border border-[#E5E7EB] relative" style={{ height: "200px", maxHeight: mapMaxHeight || "none", zIndex: 0 }} data-testid="map-preview">
+        <div className="rounded-lg overflow-hidden border border-ha-card-border relative" style={{ height: "200px", maxHeight: mapMaxHeight || "none", zIndex: 0 }} data-testid="map-preview">
           <MapContainer
             center={hasLocation ? [mapLat!, mapLng!] : [defaultLat, defaultLng]}
             zoom={hasLocation ? (value.tab === "radius" ? radiusToZoom(value.radiusKm) : 11) : defaultZoom}
@@ -650,8 +650,8 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                     center={[value.place.latitude, value.place.longitude]}
                     radius={value.radiusKm * 1000}
                     pathOptions={{
-                      color: "#F97316",
-                      fillColor: "#F97316",
+                      color: "rgb(var(--ha-primary))",
+                      fillColor: "rgb(var(--ha-primary))",
                       fillOpacity: 0.1,
                       weight: 2,
                     }}
@@ -696,30 +696,30 @@ function DistrictMultiSelect({
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between min-h-[52px] px-4 rounded-[20px] bg-[#F3F4F6] border border-[#E5E7EB] text-[15px] text-[#71717A] hover:bg-[#F5F7FA] transition-colors"
+        className="w-full flex items-center justify-between min-h-[52px] px-4 rounded-[20px] bg-ha-surface border border-ha-card-border text-[15px] text-ha-text-muted hover:bg-ha-surface transition-colors"
         data-testid="button-district-dropdown"
       >
-        <span className={selected.length > 0 ? "font-medium" : "text-[#717171]"}>
+        <span className={selected.length > 0 ? "font-medium" : "text-ha-text-secondary"}>
           {selected.length > 0
             ? t("location.districtSelected", { count: selected.length, label: selected.length === 1 ? t("location.districtSingular") : t("location.districtPlural") })
             : t("location.selectDistricts")}
         </span>
-        <ChevronDown className={`w-4 h-4 text-[#71717A] transition-transform ${open ? "rotate-180" : ""}`} />
+        <ChevronDown className={`w-4 h-4 text-ha-text-muted transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-[#E5E7EB] rounded-lg shadow-lg max-h-[260px] overflow-y-auto z-30">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-ha-card border border-ha-card-border rounded-lg shadow-lg max-h-[260px] overflow-y-auto z-30">
           {districts.map((d) => (
             <button
               key={d}
               onClick={() => onToggle(d)}
-              className="w-full text-left px-4 py-3 text-[15px] text-[#71717A] hover:bg-[#F5F7FA] flex items-center gap-3 transition-colors"
+              className="w-full text-left px-4 py-3 text-[15px] text-ha-text-muted hover:bg-ha-surface flex items-center gap-3 transition-colors"
               data-testid={`option-district-${d.toLowerCase().replace(/[\s-]/g, "-")}`}
             >
               <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
                 selected.includes(d)
-                  ? "bg-[#F97316] border-[#F97316]"
-                  : "border-[#D1D5DB]"
+                  ? "bg-ha-primary border-ha-primary"
+                  : "border-ha-input-border"
               }`}>
                 {selected.includes(d) && <Check className="w-3.5 h-3.5 text-white" />}
               </div>

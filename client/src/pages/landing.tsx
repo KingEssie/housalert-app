@@ -16,9 +16,9 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="w-full bg-background sticky top-0 z-20 border-b" style={{ borderColor: "#E5E7EB" }}>
+      <header className="w-full bg-background sticky top-0 z-20 border-b" style={{ borderColor: "rgb(var(--ha-card-border))" }}>
         <div className="max-w-5xl mx-auto px-6 h-[60px] flex items-center justify-between gap-4">
-          <HousAlertLogo size={36} textClassName="font-medium text-xl tracking-tight text-[#222222]" />
+          <HousAlertLogo size={36} textClassName="font-medium text-xl tracking-tight text-ha-text" />
           <Button
             variant="ghost"
             className="text-muted-foreground font-medium text-sm"
@@ -35,7 +35,7 @@ export default function LandingPage() {
           <div className="max-w-2xl mx-auto px-6 pt-20 pb-24 md:pt-28 md:pb-32 text-center">
             <h1
               className="text-[40px] md:text-[56px] font-semibold leading-[1.05] tracking-[-0.03em] mb-6"
-              style={{ color: "#222222" }}
+              style={{ color: "rgb(var(--ha-text))" }}
               data-testid="text-headline"
             >
               {t("landing.headline")}
@@ -58,11 +58,11 @@ export default function LandingPage() {
 
             <div className="flex items-center justify-center gap-6 mt-10 text-sm text-muted-foreground">
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4" style={{ color: "#F97316" }} />
+                <CheckCircle2 className="w-4 h-4" style={{ color: "rgb(var(--ha-primary))" }} />
                 {t("landing.freeStart")}
               </span>
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4" style={{ color: "#F97316" }} />
+                <CheckCircle2 className="w-4 h-4" style={{ color: "rgb(var(--ha-primary))" }} />
                 {t("landing.instantAlerts")}
               </span>
             </div>
@@ -71,35 +71,35 @@ export default function LandingPage() {
 
         <section className="px-6 py-20 md:py-28">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-[30px] md:text-[36px] font-medium text-center tracking-[-0.03em] leading-[1.1] mb-14" style={{ color: "#222222" }} data-testid="text-features-heading">
+            <h2 className="text-[30px] md:text-[36px] font-medium text-center tracking-[-0.03em] leading-[1.1] mb-14" style={{ color: "rgb(var(--ha-text))" }} data-testid="text-features-heading">
               {t("landing.featuresHeading")}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-card rounded-lg p-6 shadow-sm" data-testid="card-feature-search">
-                <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "#FFF7ED" }}>
-                  <Search className="w-6 h-6" style={{ color: "#F97316" }} />
+                <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "var(--ha-primary-light)" }}>
+                  <Search className="w-6 h-6" style={{ color: "rgb(var(--ha-primary))" }} />
                 </div>
-                <h3 className="text-[18px] font-medium mb-2" style={{ color: "#222222" }}>{t("landing.smartSearch")}</h3>
+                <h3 className="text-[18px] font-medium mb-2" style={{ color: "rgb(var(--ha-text))" }}>{t("landing.smartSearch")}</h3>
                 <p className="text-[15px] text-muted-foreground leading-relaxed">
                   {t("landing.smartSearchDesc")}
                 </p>
               </div>
 
               <div className="bg-card rounded-lg p-6 shadow-sm" data-testid="card-feature-alerts">
-                <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "#FFF7ED" }}>
-                  <Bell className="w-6 h-6" style={{ color: "#F97316" }} />
+                <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "var(--ha-primary-light)" }}>
+                  <Bell className="w-6 h-6" style={{ color: "rgb(var(--ha-primary))" }} />
                 </div>
-                <h3 className="text-[18px] font-medium mb-2" style={{ color: "#222222" }}>{t("landing.instantAlertsTitle")}</h3>
+                <h3 className="text-[18px] font-medium mb-2" style={{ color: "rgb(var(--ha-text))" }}>{t("landing.instantAlertsTitle")}</h3>
                 <p className="text-[15px] text-muted-foreground leading-relaxed">
                   {t("landing.instantAlertsDesc")}
                 </p>
               </div>
 
               <div className="bg-card rounded-lg p-6 shadow-sm" data-testid="card-feature-fast">
-                <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "#FFF7ED" }}>
-                  <Zap className="w-6 h-6" style={{ color: "#F97316" }} />
+                <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "var(--ha-primary-light)" }}>
+                  <Zap className="w-6 h-6" style={{ color: "rgb(var(--ha-primary))" }} />
                 </div>
-                <h3 className="text-[18px] font-medium mb-2" style={{ color: "#222222" }}>{t("landing.fasterTitle")}</h3>
+                <h3 className="text-[18px] font-medium mb-2" style={{ color: "rgb(var(--ha-text))" }}>{t("landing.fasterTitle")}</h3>
                 <p className="text-[15px] text-muted-foreground leading-relaxed">
                   {t("landing.fasterDesc")}
                 </p>
@@ -110,7 +110,7 @@ export default function LandingPage() {
 
         <section className="px-6 pb-20 md:pb-28">
           <div className="max-w-2xl mx-auto">
-            <h2 className="text-[30px] md:text-[36px] font-medium text-center tracking-[-0.03em] leading-[1.1] mb-14" style={{ color: "#222222" }} data-testid="text-how-it-works">
+            <h2 className="text-[30px] md:text-[36px] font-medium text-center tracking-[-0.03em] leading-[1.1] mb-14" style={{ color: "rgb(var(--ha-text))" }} data-testid="text-how-it-works">
               {t("landing.howItWorks")}
             </h2>
             <div className="space-y-0">
@@ -124,10 +124,10 @@ export default function LandingPage() {
                     <div className="w-11 h-11 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
                       <span className="text-primary-foreground font-medium text-sm">{item.step}</span>
                     </div>
-                    {i < 2 && <div className="w-0.5 h-10 mt-2" style={{ backgroundColor: "#E5E7EB" }} />}
+                    {i < 2 && <div className="w-0.5 h-10 mt-2" style={{ backgroundColor: "rgb(var(--ha-card-border))" }} />}
                   </div>
                   <div className="pt-2 pb-6">
-                    <h3 className="text-[18px] font-medium mb-1" style={{ color: "#222222" }}>{item.title}</h3>
+                    <h3 className="text-[18px] font-medium mb-1" style={{ color: "rgb(var(--ha-text))" }}>{item.title}</h3>
                     <p className="text-[15px] text-muted-foreground">{item.desc}</p>
                   </div>
                 </div>
@@ -138,7 +138,7 @@ export default function LandingPage() {
 
         <section className="px-6 pb-24 md:pb-32">
           <div className="max-w-xl mx-auto bg-card rounded-lg p-8 md:p-12 text-center shadow-sm">
-            <h2 className="text-[32px] font-medium tracking-[-0.03em] leading-[1.1] mb-4" style={{ color: "#222222" }} data-testid="text-cta-bottom">
+            <h2 className="text-[32px] font-medium tracking-[-0.03em] leading-[1.1] mb-4" style={{ color: "rgb(var(--ha-text))" }} data-testid="text-cta-bottom">
               {t("landing.ctaBottom")}
             </h2>
             <p className="text-[15px] text-muted-foreground mb-8">
@@ -157,7 +157,7 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <footer className="border-t py-8 px-6 bg-background" style={{ borderColor: "#E5E7EB" }}>
+      <footer className="border-t py-8 px-6 bg-background" style={{ borderColor: "rgb(var(--ha-card-border))" }}>
         <div className="max-w-5xl mx-auto flex flex-col items-center gap-3">
           <div className="flex items-center gap-4 flex-wrap justify-center text-sm text-muted-foreground">
             <a href="/impressum" className="hover:text-foreground transition-colors" data-testid="link-impressum">Impressum</a>

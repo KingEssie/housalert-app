@@ -279,16 +279,16 @@ export default function OnboardingLocationPage() {
   const showStaticDropdown = !showGoogleResults && !showNominatimFallback && !selectedCity && filteredCities.length > 0;
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-ha-card flex flex-col">
       {!isEmbedded && (
-        <header className="w-full bg-white sticky top-0 z-20 border-b border-[#E5E7EB]">
+        <header className="w-full bg-ha-card sticky top-0 z-20 border-b border-ha-card-border">
           <div className={`${containerClass} mx-auto px-5 h-[56px] flex items-center gap-3`}>
             <button
               onClick={() => navigate("/onboarding/intro")}
-              className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-95 transition-transform"
+              className="w-10 h-10 rounded-full bg-ha-surface flex items-center justify-center active:scale-95 transition-transform"
               data-testid="button-back-landing"
             >
-              <ChevronLeft className="w-5 h-5 text-[#71717A]" />
+              <ChevronLeft className="w-5 h-5 text-ha-text-muted" />
             </button>
             <HousAlertLogo size={28} />
           </div>
@@ -301,7 +301,7 @@ export default function OnboardingLocationPage() {
             <div
               key={step}
               className={`w-2 h-2 rounded-full transition-all ${
-                step <= 1 ? "bg-[#F97316]" : "bg-[#D1D5DB]"
+                step <= 1 ? "bg-ha-primary" : "bg-ha-input-border"
               }`}
               data-testid={`dot-step-${step}`}
             />
@@ -311,27 +311,27 @@ export default function OnboardingLocationPage() {
 
       <main className={`flex-1 ${containerClass} mx-auto w-full px-5 ${isEmbedded ? "pb-4 pt-1" : "pb-8 pt-3"}`}>
         {!isEmbedded && (
-          <h1 className="text-[24px] font-medium text-[#222222] leading-[1.15] tracking-[-0.02em] mb-5" data-testid="text-location-title">
+          <h1 className="text-[24px] font-medium text-ha-text leading-[1.15] tracking-[-0.02em] mb-5" data-testid="text-location-title">
             {t("onboardingLocation.title")}
           </h1>
         )}
 
-        <div className={`bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] ${isEmbedded ? "p-4" : "p-6"}`}>
-          <div className="flex border-b border-[#E5E7EB]">
+        <div className={`bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] ${isEmbedded ? "p-4" : "p-6"}`}>
+          <div className="flex border-b border-ha-card-border">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => { setActiveTab(tab.id); setDistrictDropdownOpen(false); }}
                 className={`flex-1 py-3.5 text-[15px] font-medium text-center transition-colors relative ${
                   activeTab === tab.id
-                    ? "text-[#222222]"
-                    : "text-[#717171]"
+                    ? "text-ha-text"
+                    : "text-ha-text-secondary"
                 }`}
                 data-testid={`tab-${tab.id}`}
               >
                 {tab.label}
                 {activeTab === tab.id && (
-                  <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#F97316] rounded-full" />
+                  <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-ha-primary rounded-full" />
                 )}
               </button>
             ))}
@@ -342,13 +342,13 @@ export default function OnboardingLocationPage() {
               <div className="space-y-0">
                 <div className="relative" ref={containerRef}>
                   <div
-                    className="flex items-center gap-3 h-[44px] px-4 rounded-xl border border-transparent bg-[#F3F4F6] cursor-text focus-within:ring-2 focus-within:ring-[#F97316] focus-within:border-[#F97316] focus-within:bg-white transition-all"
+                    className="flex items-center gap-3 h-[44px] px-4 rounded-xl border border-transparent bg-ha-surface cursor-text focus-within:ring-2 focus-within:ring-ha-primary focus-within:border-ha-primary focus-within:bg-ha-card transition-all"
                     onClick={() => {
                       const input = document.getElementById("city-search-input");
                       input?.focus();
                     }}
                   >
-                    <Search className="w-5 h-5 text-[#71717A] flex-shrink-0" />
+                    <Search className="w-5 h-5 text-ha-text-muted flex-shrink-0" />
                     <input
                       id="city-search-input"
                       type="text"
@@ -356,11 +356,11 @@ export default function OnboardingLocationPage() {
                       value={search}
                       onChange={(e) => handleSearchInput(e.target.value)}
                       onFocus={() => setShowDropdown(true)}
-                      className="flex-1 text-[15px] font-medium text-[#71717A] placeholder:text-[#717171] placeholder:font-normal bg-transparent border-none outline-none"
+                      className="flex-1 text-[15px] font-medium text-ha-text-muted placeholder:text-ha-text-secondary placeholder:font-normal bg-transparent border-none outline-none"
                       data-testid="input-city-search"
                     />
                     {isLoading && (
-                      <div className="w-4 h-4 border-2 border-[#F97316]/30 border-t-[#F97316] rounded-full animate-spin" />
+                      <div className="w-4 h-4 border-2 border-ha-primary/30 border-t-ha-primary rounded-full animate-spin" />
                     )}
                     {selectedCity && (
                       <button
@@ -372,32 +372,32 @@ export default function OnboardingLocationPage() {
                           places.clear();
                           setNominatimResults([]);
                         }}
-                        className={isEmbedded ? "w-6 h-6 flex items-center justify-center rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB]" : "text-xs text-[#71717A] hover:text-[#71717A]"}
+                        className={isEmbedded ? "w-6 h-6 flex items-center justify-center rounded-full bg-ha-card-border hover:bg-ha-input-border" : "text-xs text-ha-text-muted hover:text-ha-text-muted"}
                         data-testid="button-clear-city"
                       >
-                        {isEmbedded ? <X className="w-3.5 h-3.5 text-[#717171]" /> : t("onboardingLocation.clear")}
+                        {isEmbedded ? <X className="w-3.5 h-3.5 text-ha-text-secondary" /> : t("onboardingLocation.clear")}
                       </button>
                     )}
                   </div>
 
                   {showDropdown && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-10 max-h-64 overflow-y-auto">
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-ha-card rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-10 max-h-64 overflow-y-auto">
                       {showGoogleResults && googleSuggestions.map((s) => (
                         <button
                           key={s.place_id}
                           onClick={() => handleGoogleSelect(s)}
-                          className="w-full flex items-center gap-3 py-4 px-4 hover:bg-[#F5F7FA] transition-colors border-b border-[#E5E7EB] last:border-b-0"
+                          className="w-full flex items-center gap-3 py-4 px-4 hover:bg-ha-surface transition-colors border-b border-ha-card-border last:border-b-0"
                           data-testid={`option-city-${s.city_name.toLowerCase().replace(/\s/g, "-")}`}
                         >
-                          <MapPin className="w-4.5 h-4.5 text-[#71717A] flex-shrink-0" />
-                          <span className="text-[15px] font-medium text-[#71717A] flex-1 text-left">
+                          <MapPin className="w-4.5 h-4.5 text-ha-text-muted flex-shrink-0" />
+                          <span className="text-[15px] font-medium text-ha-text-muted flex-1 text-left">
                             {s.state ? `${s.city_name}, ${s.state}` : s.city_name}
                           </span>
-                          <ChevronRight className="w-4 h-4 text-[#71717A]" />
+                          <ChevronRight className="w-4 h-4 text-ha-text-muted" />
                         </button>
                       ))}
                       {showGoogleResults && (
-                        <div className="px-4 py-2 text-[11px] text-[#717171] text-right">
+                        <div className="px-4 py-2 text-[11px] text-ha-text-secondary text-right">
                           {t("cityPicker.poweredByGoogle")}
                         </div>
                       )}
@@ -408,14 +408,14 @@ export default function OnboardingLocationPage() {
                           <button
                             key={r.place_id}
                             onClick={() => handleNominatimSelect(r)}
-                            className="w-full flex items-center gap-3 py-4 px-4 hover:bg-[#F5F7FA] transition-colors border-b border-[#E5E7EB] last:border-b-0"
+                            className="w-full flex items-center gap-3 py-4 px-4 hover:bg-ha-surface transition-colors border-b border-ha-card-border last:border-b-0"
                             data-testid={`option-city-${label.toLowerCase().replace(/\s/g, "-")}`}
                           >
-                            <MapPin className="w-4.5 h-4.5 text-[#71717A] flex-shrink-0" />
-                            <span className="text-[15px] font-medium text-[#71717A] flex-1 text-left">
+                            <MapPin className="w-4.5 h-4.5 text-ha-text-muted flex-shrink-0" />
+                            <span className="text-[15px] font-medium text-ha-text-muted flex-1 text-left">
                               {a.state ? `${label}, ${a.state}` : label}
                             </span>
-                            <ChevronRight className="w-4 h-4 text-[#71717A]" />
+                            <ChevronRight className="w-4 h-4 text-ha-text-muted" />
                           </button>
                         );
                       })}
@@ -423,12 +423,12 @@ export default function OnboardingLocationPage() {
                         <button
                           key={city.name}
                           onClick={() => handleCitySelect(city)}
-                          className="w-full flex items-center gap-3 py-4 px-4 hover:bg-[#F5F7FA] transition-colors border-b border-[#E5E7EB] last:border-b-0"
+                          className="w-full flex items-center gap-3 py-4 px-4 hover:bg-ha-surface transition-colors border-b border-ha-card-border last:border-b-0"
                           data-testid={`option-city-${city.name.toLowerCase().replace(/\s/g, "-")}`}
                         >
-                          <MapPin className="w-4.5 h-4.5 text-[#71717A] flex-shrink-0" />
-                          <span className="text-[15px] font-medium text-[#71717A] flex-1 text-left">{city.name}</span>
-                          <ChevronRight className="w-4 h-4 text-[#71717A]" />
+                          <MapPin className="w-4.5 h-4.5 text-ha-text-muted flex-shrink-0" />
+                          <span className="text-[15px] font-medium text-ha-text-muted flex-1 text-left">{city.name}</span>
+                          <ChevronRight className="w-4 h-4 text-ha-text-muted" />
                         </button>
                       ))}
                     </div>
@@ -436,23 +436,23 @@ export default function OnboardingLocationPage() {
                 </div>
 
                 {selectedCity && activeCityDistricts.length > 0 && (
-                  <div className={isEmbedded ? "pt-3 pb-2" : "py-5 border-b border-[#E5E7EB]"}>
-                    <label className="text-[16px] font-medium text-[#222222] mb-3 block">{t("onboardingLocation.districtsLabel")} <span className="font-normal text-[13px] text-[#71717A]">{t("onboardingLocation.optional")}</span></label>
+                  <div className={isEmbedded ? "pt-3 pb-2" : "py-5 border-b border-ha-card-border"}>
+                    <label className="text-[16px] font-medium text-ha-text mb-3 block">{t("onboardingLocation.districtsLabel")} <span className="font-normal text-[13px] text-ha-text-muted">{t("onboardingLocation.optional")}</span></label>
                     <div className="relative" ref={districtDropdownRef}>
                       <button
                         type="button"
                         onClick={() => setDistrictDropdownOpen((v) => !v)}
-                        className="w-full flex items-center justify-between h-[44px] px-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-left focus:bg-white"
+                        className="w-full flex items-center justify-between h-[44px] px-4 rounded-xl border border-transparent bg-ha-surface text-[15px] font-medium text-left focus:bg-ha-card"
                         data-testid="dropdown-districts-trigger"
                       >
-                        <span className={selectedDistricts.length > 0 ? "text-[#222222]" : "text-[#717171] font-normal"}>
+                        <span className={selectedDistricts.length > 0 ? "text-ha-text" : "text-ha-text-secondary font-normal"}>
                           {selectedDistricts.length > 0
                             ? selectedDistricts.length === 1
                               ? selectedDistricts[0]
                               : `${selectedDistricts.length} ${t("onboardingLocation.districtsSelected")}`
                             : t("onboardingLocation.selectDistricts")}
                         </span>
-                        <ChevronDown className={`w-4 h-4 text-[#71717A] transition-transform ${districtDropdownOpen ? "rotate-180" : ""}`} />
+                        <ChevronDown className={`w-4 h-4 text-ha-text-muted transition-transform ${districtDropdownOpen ? "rotate-180" : ""}`} />
                       </button>
 
                       {selectedDistricts.length > 0 && (
@@ -460,13 +460,13 @@ export default function OnboardingLocationPage() {
                           {selectedDistricts.map((d) => (
                             <span
                               key={d}
-                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F97316]/10 text-[#F97316] text-[13px] font-medium"
+                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-ha-primary/10 text-ha-primary text-[13px] font-medium"
                             >
                               {d}
                               <button
                                 type="button"
                                 onClick={(e) => { e.stopPropagation(); toggleDistrict(d); }}
-                                className="hover:text-[#EA580C]"
+                                className="hover:text-ha-primary-hover"
                                 data-testid={`remove-district-${d.toLowerCase().replace(/[\s-]/g, "-")}`}
                               >
                                 <X className="w-3 h-3" />
@@ -477,23 +477,23 @@ export default function OnboardingLocationPage() {
                       )}
 
                       {districtDropdownOpen && (
-                        <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-[9999] max-h-56 overflow-y-auto">
+                        <div className="absolute top-full left-0 right-0 mt-1 bg-ha-card rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-[9999] max-h-56 overflow-y-auto">
                           {activeCityDistricts.map((district) => (
                             <button
                               key={district}
                               type="button"
                               onClick={() => toggleDistrict(district)}
-                              className="w-full flex items-center gap-3 py-3 px-4 hover:bg-[#F5F7FA] transition-colors border-b border-[#E5E7EB] last:border-b-0 text-left"
+                              className="w-full flex items-center gap-3 py-3 px-4 hover:bg-ha-surface transition-colors border-b border-ha-card-border last:border-b-0 text-left"
                               data-testid={`option-district-${district.toLowerCase().replace(/[\s-]/g, "-")}`}
                             >
                               <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
                                 selectedDistricts.includes(district)
-                                  ? "bg-[#F97316] border-[#F97316]"
-                                  : "border-[#D1D5DB]"
+                                  ? "bg-ha-primary border-ha-primary"
+                                  : "border-ha-input-border"
                               }`}>
                                 {selectedDistricts.includes(district) && <Check className="w-3 h-3 text-white" />}
                               </div>
-                              <span className="text-[15px] font-medium text-[#71717A]">{district}</span>
+                              <span className="text-[15px] font-medium text-ha-text-muted">{district}</span>
                             </button>
                           ))}
                         </div>
@@ -503,7 +503,7 @@ export default function OnboardingLocationPage() {
                 )}
 
                 {selectedCity && selectedCity.lat !== 0 && selectedCity.lng !== 0 && !districtDropdownOpen && (
-                  <div className={isEmbedded ? "pt-2 pb-1" : "py-5 border-b border-[#E5E7EB]"}>
+                  <div className={isEmbedded ? "pt-2 pb-1" : "py-5 border-b border-ha-card-border"}>
                     <div className="rounded-2xl overflow-hidden" data-testid="card-map-preview" style={{ height: "180px" }}>
                       <MapContainer
                         center={[selectedCity.lat, selectedCity.lng]}
@@ -526,13 +526,13 @@ export default function OnboardingLocationPage() {
 
                 {!selectedCity && (
                   <div className="py-5">
-                    <label className="text-[16px] font-medium text-[#222222] mb-3 block">{t("onboardingLocation.popularCities")}</label>
+                    <label className="text-[16px] font-medium text-ha-text mb-3 block">{t("onboardingLocation.popularCities")}</label>
                     <div className="flex flex-wrap gap-2">
                       {defaultCities.slice(0, 6).map((city) => (
                         <button
                           key={city.name}
                           onClick={() => handleCitySelect(city)}
-                          className="px-4 py-2.5 rounded-full bg-[#F5F7FA] text-sm font-medium text-[#71717A] hover:bg-[#E5E7EB] transition-colors"
+                          className="px-4 py-2.5 rounded-full bg-ha-surface text-sm font-medium text-ha-text-muted hover:bg-ha-card-hover transition-colors"
                           data-testid={`chip-city-${city.name.toLowerCase().replace(/\s/g, "-")}`}
                         >
                           {city.name}
@@ -548,13 +548,13 @@ export default function OnboardingLocationPage() {
               <div className="space-y-0">
                 <div className="relative" ref={containerRef}>
                   <div
-                    className="flex items-center gap-3 h-[44px] px-4 rounded-xl border border-transparent bg-[#F3F4F6] cursor-text focus-within:ring-2 focus-within:ring-[#F97316] focus-within:border-[#F97316] focus-within:bg-white transition-all"
+                    className="flex items-center gap-3 h-[44px] px-4 rounded-xl border border-transparent bg-ha-surface cursor-text focus-within:ring-2 focus-within:ring-ha-primary focus-within:border-ha-primary focus-within:bg-ha-card transition-all"
                     onClick={() => {
                       const input = document.getElementById("radius-city-input");
                       input?.focus();
                     }}
                   >
-                    <Search className="w-5 h-5 text-[#71717A] flex-shrink-0" />
+                    <Search className="w-5 h-5 text-ha-text-muted flex-shrink-0" />
                     <input
                       id="radius-city-input"
                       type="text"
@@ -562,11 +562,11 @@ export default function OnboardingLocationPage() {
                       value={search}
                       onChange={(e) => handleSearchInput(e.target.value)}
                       onFocus={() => setShowDropdown(true)}
-                      className="flex-1 text-[15px] font-medium text-[#71717A] placeholder:text-[#717171] placeholder:font-normal bg-transparent border-none outline-none"
+                      className="flex-1 text-[15px] font-medium text-ha-text-muted placeholder:text-ha-text-secondary placeholder:font-normal bg-transparent border-none outline-none"
                       data-testid="input-city-search"
                     />
                     {isLoading && (
-                      <div className="w-4 h-4 border-2 border-[#F97316]/30 border-t-[#F97316] rounded-full animate-spin" />
+                      <div className="w-4 h-4 border-2 border-ha-primary/30 border-t-ha-primary rounded-full animate-spin" />
                     )}
                     {selectedCity && (
                       <button
@@ -577,32 +577,32 @@ export default function OnboardingLocationPage() {
                           places.clear();
                           setNominatimResults([]);
                         }}
-                        className={isEmbedded ? "w-6 h-6 flex items-center justify-center rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB]" : "text-xs text-[#71717A] hover:text-[#71717A]"}
+                        className={isEmbedded ? "w-6 h-6 flex items-center justify-center rounded-full bg-ha-card-border hover:bg-ha-input-border" : "text-xs text-ha-text-muted hover:text-ha-text-muted"}
                         data-testid="button-clear-city"
                       >
-                        {isEmbedded ? <X className="w-3.5 h-3.5 text-[#717171]" /> : t("onboardingLocation.clear")}
+                        {isEmbedded ? <X className="w-3.5 h-3.5 text-ha-text-secondary" /> : t("onboardingLocation.clear")}
                       </button>
                     )}
                   </div>
 
                   {showDropdown && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-10 max-h-64 overflow-y-auto">
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-ha-card rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-10 max-h-64 overflow-y-auto">
                       {showGoogleResults && googleSuggestions.map((s) => (
                         <button
                           key={s.place_id}
                           onClick={() => handleGoogleSelect(s)}
-                          className="w-full flex items-center gap-3 py-4 px-4 hover:bg-[#F5F7FA] transition-colors border-b border-[#E5E7EB] last:border-b-0"
+                          className="w-full flex items-center gap-3 py-4 px-4 hover:bg-ha-surface transition-colors border-b border-ha-card-border last:border-b-0"
                           data-testid={`option-city-${s.city_name.toLowerCase().replace(/\s/g, "-")}`}
                         >
-                          <MapPin className="w-4.5 h-4.5 text-[#71717A] flex-shrink-0" />
-                          <span className="text-[15px] font-medium text-[#71717A] flex-1 text-left">
+                          <MapPin className="w-4.5 h-4.5 text-ha-text-muted flex-shrink-0" />
+                          <span className="text-[15px] font-medium text-ha-text-muted flex-1 text-left">
                             {s.state ? `${s.city_name}, ${s.state}` : s.city_name}
                           </span>
-                          <ChevronRight className="w-4 h-4 text-[#71717A]" />
+                          <ChevronRight className="w-4 h-4 text-ha-text-muted" />
                         </button>
                       ))}
                       {showGoogleResults && (
-                        <div className="px-4 py-2 text-[11px] text-[#717171] text-right">
+                        <div className="px-4 py-2 text-[11px] text-ha-text-secondary text-right">
                           {t("cityPicker.poweredByGoogle")}
                         </div>
                       )}
@@ -613,14 +613,14 @@ export default function OnboardingLocationPage() {
                           <button
                             key={r.place_id}
                             onClick={() => handleNominatimSelect(r)}
-                            className="w-full flex items-center gap-3 py-4 px-4 hover:bg-[#F5F7FA] transition-colors border-b border-[#E5E7EB] last:border-b-0"
+                            className="w-full flex items-center gap-3 py-4 px-4 hover:bg-ha-surface transition-colors border-b border-ha-card-border last:border-b-0"
                             data-testid={`option-city-${label.toLowerCase().replace(/\s/g, "-")}`}
                           >
-                            <MapPin className="w-4.5 h-4.5 text-[#71717A] flex-shrink-0" />
-                            <span className="text-[15px] font-medium text-[#71717A] flex-1 text-left">
+                            <MapPin className="w-4.5 h-4.5 text-ha-text-muted flex-shrink-0" />
+                            <span className="text-[15px] font-medium text-ha-text-muted flex-1 text-left">
                               {a.state ? `${label}, ${a.state}` : label}
                             </span>
-                            <ChevronRight className="w-4 h-4 text-[#71717A]" />
+                            <ChevronRight className="w-4 h-4 text-ha-text-muted" />
                           </button>
                         );
                       })}
@@ -628,12 +628,12 @@ export default function OnboardingLocationPage() {
                         <button
                           key={city.name}
                           onClick={() => handleCitySelect(city)}
-                          className="w-full flex items-center gap-3 py-4 px-4 hover:bg-[#F5F7FA] transition-colors border-b border-[#E5E7EB] last:border-b-0"
+                          className="w-full flex items-center gap-3 py-4 px-4 hover:bg-ha-surface transition-colors border-b border-ha-card-border last:border-b-0"
                           data-testid={`option-city-${city.name.toLowerCase().replace(/\s/g, "-")}`}
                         >
-                          <MapPin className="w-4.5 h-4.5 text-[#71717A] flex-shrink-0" />
-                          <span className="text-[15px] font-medium text-[#71717A] flex-1 text-left">{city.name}</span>
-                          <ChevronRight className="w-4 h-4 text-[#71717A]" />
+                          <MapPin className="w-4.5 h-4.5 text-ha-text-muted flex-shrink-0" />
+                          <span className="text-[15px] font-medium text-ha-text-muted flex-1 text-left">{city.name}</span>
+                          <ChevronRight className="w-4 h-4 text-ha-text-muted" />
                         </button>
                       ))}
                     </div>
@@ -641,13 +641,13 @@ export default function OnboardingLocationPage() {
                 </div>
 
                 <div className="mt-6">
-                  <label className="text-[16px] font-medium text-[#222222] mb-3 block">{t("onboardingLocation.radiusLabel")}</label>
+                  <label className="text-[16px] font-medium text-ha-text mb-3 block">{t("onboardingLocation.radiusLabel")}</label>
                   <div className="relative">
-                    <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A]" />
+                    <Navigation className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-muted" />
                     <select
                       value={radius}
                       onChange={(e) => setRadius(e.target.value)}
-                      className="w-full h-[48px] pl-11 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#71717A] focus:bg-white cursor-pointer appearance-none"
+                      className="w-full h-[48px] pl-11 pr-4 rounded-xl border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text-muted focus:bg-ha-card cursor-pointer appearance-none"
                       data-testid="select-radius"
                     >
                       <option value="2">2 km</option>
@@ -679,12 +679,12 @@ export default function OnboardingLocationPage() {
                         <Circle
                           center={[selectedCity.lat, selectedCity.lng]}
                           radius={parseInt(radius) * 1000}
-                          pathOptions={{ color: "#F97316", fillColor: "#F97316", fillOpacity: 0.1, weight: 2 }}
+                          pathOptions={{ color: "rgb(var(--ha-primary))", fillColor: "rgb(var(--ha-primary))", fillOpacity: 0.1, weight: 2 }}
                         />
                         <RecenterMap lat={selectedCity.lat} lng={selectedCity.lng} zoom={parseInt(radius) <= 5 ? 12 : parseInt(radius) <= 15 ? 10 : 9} />
                       </MapContainer>
                     </div>
-                    <p className="text-sm font-medium text-[#717171] text-center mt-2">{selectedCity.name} +{radius} km</p>
+                    <p className="text-sm font-medium text-ha-text-secondary text-center mt-2">{selectedCity.name} +{radius} km</p>
                   </div>
                 )}
               </div>
@@ -693,28 +693,28 @@ export default function OnboardingLocationPage() {
             {activeTab === "reistijd" && (
               <div className="space-y-0">
                 <div>
-                  <label className="text-[16px] font-medium text-[#222222] mb-3 block">{t("onboardingLocation.destinationLabel")}</label>
+                  <label className="text-[16px] font-medium text-ha-text mb-3 block">{t("onboardingLocation.destinationLabel")}</label>
                   <div className="relative">
-                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A]" />
+                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-muted" />
                     <input
                       type="text"
                       placeholder={t("onboardingLocation.destinationPlaceholder")}
                       value={travelAddress}
                       onChange={(e) => setTravelAddress(e.target.value)}
-                      className="w-full h-[48px] pl-11 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#71717A] placeholder:text-[#717171] placeholder:font-normal focus:bg-white"
+                      className="w-full h-[48px] pl-11 pr-4 rounded-xl border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text-muted placeholder:text-ha-text-secondary placeholder:font-normal focus:bg-ha-card"
                       data-testid="input-travel-address"
                     />
                   </div>
                 </div>
 
                 <div className="mt-6">
-                  <label className="text-[16px] font-medium text-[#222222] mb-3 block">{t("onboardingLocation.maxTravelTime")}</label>
+                  <label className="text-[16px] font-medium text-ha-text mb-3 block">{t("onboardingLocation.maxTravelTime")}</label>
                   <div className="relative">
-                    <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717A]" />
+                    <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-muted" />
                     <select
                       value={travelTime}
                       onChange={(e) => setTravelTime(e.target.value)}
-                      className="w-full h-[48px] pl-11 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#71717A] focus:bg-white cursor-pointer appearance-none"
+                      className="w-full h-[48px] pl-11 pr-4 rounded-xl border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text-muted focus:bg-ha-card cursor-pointer appearance-none"
                       data-testid="select-travel-time"
                     >
                       <option value="15">15 min</option>
@@ -727,7 +727,7 @@ export default function OnboardingLocationPage() {
                 </div>
 
                 <div className="mt-6">
-                  <label className="text-[16px] font-medium text-[#222222] mb-3 block">{t("onboardingLocation.transportLabel")}</label>
+                  <label className="text-[16px] font-medium text-ha-text mb-3 block">{t("onboardingLocation.transportLabel")}</label>
                   <div className="flex gap-2">
                     {[
                       { id: "auto", icon: Car, label: t("onboardingLocation.auto") },
@@ -739,8 +739,8 @@ export default function OnboardingLocationPage() {
                         onClick={() => setTransportMode(mode.id)}
                         className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-lg text-xs font-medium transition-all ${
                           transportMode === mode.id
-                            ? "bg-[#F97316] text-white"
-                            : "bg-[#F5F7FA] text-[#222222] hover:bg-[#E5E7EB]"
+                            ? "bg-ha-primary text-white"
+                            : "bg-ha-surface text-ha-text hover:bg-ha-card-hover"
                         }`}
                         data-testid={`button-transport-${mode.id}`}
                       >
@@ -753,12 +753,12 @@ export default function OnboardingLocationPage() {
 
                 {travelAddress && (
                   <div className="py-5">
-                    <div className="rounded-2xl overflow-hidden bg-[#F3F4F6]" data-testid="card-map-travel">
+                    <div className="rounded-2xl overflow-hidden bg-ha-surface" data-testid="card-map-travel">
                       <div className="h-36 flex items-center justify-center">
                         <div className="text-center">
-                          <Clock className="w-7 h-7 text-[#F97316] mx-auto mb-1.5" />
-                          <p className="text-sm font-medium text-[#222222]">{t("onboardingLocation.travelTimePreview", { time: travelTime })}</p>
-                          <p className="text-xs text-[#71717A] mt-0.5">{t("onboardingLocation.fromAddress", { address: travelAddress })}</p>
+                          <Clock className="w-7 h-7 text-ha-primary mx-auto mb-1.5" />
+                          <p className="text-sm font-medium text-ha-text">{t("onboardingLocation.travelTimePreview", { time: travelTime })}</p>
+                          <p className="text-xs text-ha-text-muted mt-0.5">{t("onboardingLocation.fromAddress", { address: travelAddress })}</p>
                         </div>
                       </div>
                     </div>
@@ -772,7 +772,7 @@ export default function OnboardingLocationPage() {
             <>
               <Button
                 size="lg"
-                className="w-full h-[48px] rounded-full text-[16px] font-medium bg-[#F97316] hover:bg-[#EA580C] shadow-none mt-3"
+                className="w-full h-[48px] rounded-full text-[16px] font-medium bg-ha-primary hover:bg-ha-primary-hover shadow-none mt-3"
                 disabled={!canProceed}
                 onClick={handleNext}
                 data-testid="button-next-step"
@@ -782,19 +782,19 @@ export default function OnboardingLocationPage() {
 
               {(selectedCity || (activeTab === "reistijd" && travelAddress)) && !districtDropdownOpen && (
                 <div className="mt-3">
-                  <div className="bg-[#FFF7ED] rounded-lg p-3" data-testid="card-estimate-preview">
+                  <div className="bg-ha-primary-light rounded-lg p-3" data-testid="card-estimate-preview">
                     {estimateLoading ? (
                       <div className="flex items-center gap-3">
-                        <Loader2 className="w-5 h-5 text-[#F97316] animate-spin" />
-                        <span className="text-sm text-[#71717A]">{t("onboardingLocation.estimateLoading")}</span>
+                        <Loader2 className="w-5 h-5 text-ha-primary animate-spin" />
+                        <span className="text-sm text-ha-text-muted">{t("onboardingLocation.estimateLoading")}</span>
                       </div>
                     ) : (
                       <>
-                        <p className="text-sm text-[#71717A] leading-relaxed">
+                        <p className="text-sm text-ha-text-muted leading-relaxed">
                           {t("onboardingLocation.estimateText", getMatchEstimateRange(estimate ?? 0))}
                         </p>
                         {estimate !== null && getMatchEstimateRange(estimate).low <= 3 && (
-                          <p className="text-[13px] text-[#717171] mt-1">
+                          <p className="text-[13px] text-ha-text-secondary mt-1">
                             {t("onboardingLocation.lowMatchHint")}
                           </p>
                         )}
@@ -808,19 +808,19 @@ export default function OnboardingLocationPage() {
             <>
               {(selectedCity || (activeTab === "reistijd" && travelAddress)) && !districtDropdownOpen && (
                 <div className="pt-5 mt-1">
-                  <div className="bg-[#FFF7ED] rounded-lg p-4 mb-6" data-testid="card-estimate-preview">
+                  <div className="bg-ha-primary-light rounded-lg p-4 mb-6" data-testid="card-estimate-preview">
                     {estimateLoading ? (
                       <div className="flex items-center gap-3">
-                        <Loader2 className="w-5 h-5 text-[#F97316] animate-spin" />
-                        <span className="text-sm text-[#71717A]">{t("onboardingLocation.estimateLoading")}</span>
+                        <Loader2 className="w-5 h-5 text-ha-primary animate-spin" />
+                        <span className="text-sm text-ha-text-muted">{t("onboardingLocation.estimateLoading")}</span>
                       </div>
                     ) : (
                       <>
-                        <p className="text-sm text-[#71717A] leading-relaxed">
+                        <p className="text-sm text-ha-text-muted leading-relaxed">
                           {t("onboardingLocation.estimateText", getMatchEstimateRange(estimate ?? 0))}
                         </p>
                         {estimate !== null && getMatchEstimateRange(estimate).low <= 3 && (
-                          <p className="text-[13px] text-[#717171] mt-1.5">
+                          <p className="text-[13px] text-ha-text-secondary mt-1.5">
                             {t("onboardingLocation.lowMatchHint")}
                           </p>
                         )}
@@ -830,15 +830,15 @@ export default function OnboardingLocationPage() {
                 </div>
               )}
 
-              <div className={`bg-[#F0F7FF] rounded-xl p-4 mt-4 mb-2 ${districtDropdownOpen ? "hidden" : ""}`} data-testid="info-helper-box">
-                <p className="text-[13px] text-[#374151] leading-[1.5]">
+              <div className={`bg-ha-surface rounded-xl p-4 mt-4 mb-2 ${districtDropdownOpen ? "hidden" : ""}`} data-testid="info-helper-box">
+                <p className="text-[13px] text-ha-text-secondary leading-[1.5]">
                   {t("onboardingLocation.helperText")}
                 </p>
               </div>
 
               <Button
                 size="lg"
-                className="w-full h-[56px] rounded-full text-[16px] font-medium bg-[#F97316] hover:bg-[#EA580C] shadow-none mt-2"
+                className="w-full h-[56px] rounded-full text-[16px] font-medium bg-ha-primary hover:bg-ha-primary-hover shadow-none mt-2"
                 disabled={!canProceed}
                 onClick={handleNext}
                 data-testid="button-next-step"

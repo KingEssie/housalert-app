@@ -184,10 +184,10 @@ export function ProfileStrengthCard() {
 
   if (isLoading || !data) {
     return (
-      <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
-        <div className="h-4 bg-[#F5F7FA] rounded w-32 mb-3" />
-        <div className="h-6 bg-[#F5F7FA] rounded w-20 mb-2" />
-        <div className="h-2 bg-[#F5F7FA] rounded w-full" />
+      <div className="bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
+        <div className="h-4 bg-ha-surface rounded w-32 mb-3" />
+        <div className="h-6 bg-ha-surface rounded w-20 mb-2" />
+        <div className="h-2 bg-ha-surface rounded w-full" />
       </div>
     );
   }
@@ -197,10 +197,10 @@ export function ProfileStrengthCard() {
   const pct = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
 
   const getStatusLabel = (s: number): { label: string; color: string; bg: string } => {
-    if (s >= 80) return { label: t("profileStrength.readyToReact"), color: "text-[#222222]", bg: "bg-[#16A34A]/10" };
-    if (s >= 60) return { label: t("profileStrength.wellPrepared"), color: "text-[#222222]", bg: "bg-[#16A34A]/10" };
-    if (s >= 30) return { label: t("profileStrength.onTheWay"), color: "text-[#222222]", bg: "bg-[#16A34A]/10" };
-    return { label: t("profileStrength.justStarted"), color: "text-[#222222]", bg: "bg-[#F5F7FA]" };
+    if (s >= 80) return { label: t("profileStrength.readyToReact"), color: "text-ha-text", bg: "bg-ha-success/10" };
+    if (s >= 60) return { label: t("profileStrength.wellPrepared"), color: "text-ha-text", bg: "bg-ha-success/10" };
+    if (s >= 30) return { label: t("profileStrength.onTheWay"), color: "text-ha-text", bg: "bg-ha-success/10" };
+    return { label: t("profileStrength.justStarted"), color: "text-ha-text", bg: "bg-ha-surface" };
   };
 
   const getRecommendation = (s: number, tasks: Task[]): string => {
@@ -216,11 +216,11 @@ export function ProfileStrengthCard() {
   const recommendation = getRecommendation(pct, allTasks);
 
   return (
-    <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6" data-testid="card-profile-strength">
+    <div className="bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6" data-testid="card-profile-strength">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <Shield className="w-[18px] h-[18px] text-[#71717A]" />
-          <h3 className="text-[15px] font-medium text-[#222222]">{t("profileStrength.title")}</h3>
+          <Shield className="w-[18px] h-[18px] text-ha-text-muted" />
+          <h3 className="text-[15px] font-medium text-ha-text">{t("profileStrength.title")}</h3>
         </div>
         <span className={`text-[13px] font-medium px-2.5 py-1 rounded-full ${status.bg} ${status.color}`} data-testid="text-status-label">
           {status.label}
@@ -228,22 +228,22 @@ export function ProfileStrengthCard() {
       </div>
 
       <div className="flex items-end gap-2 mb-3">
-        <span className="text-[32px] font-medium text-[#222222] leading-none" data-testid="text-profile-score">{score}</span>
-        <span className="text-[14px] text-[#222222] mb-1">/ {maxScore}</span>
+        <span className="text-[32px] font-medium text-ha-text leading-none" data-testid="text-profile-score">{score}</span>
+        <span className="text-[14px] text-ha-text mb-1">/ {maxScore}</span>
       </div>
 
-      <div className="w-full h-2 bg-[#F5F7FA] rounded-full overflow-hidden mb-3">
+      <div className="w-full h-2 bg-ha-surface rounded-full overflow-hidden mb-3">
         <div
           className="h-full rounded-full transition-all duration-500"
           style={{
             width: `${pct}%`,
-            background: pct >= 30 ? "#F97316" : "#717171",
+            background: pct >= 30 ? "rgb(var(--ha-primary))" : "rgb(var(--ha-text-muted))",
           }}
           data-testid="progress-profile-strength"
         />
       </div>
 
-      <p className="text-[13px] text-[#222222]" data-testid="text-recommendation">{recommendation}</p>
+      <p className="text-[13px] text-ha-text" data-testid="text-recommendation">{recommendation}</p>
     </div>
   );
 }
@@ -255,9 +255,9 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
 
   if (isLoading || !data) {
     return (
-      <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
-        <div className="h-4 bg-[#F5F7FA] rounded w-40 mb-3" />
-        <div className="h-3 bg-[#F5F7FA] rounded w-24" />
+      <div className="bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
+        <div className="h-4 bg-ha-surface rounded w-40 mb-3" />
+        <div className="h-3 bg-ha-surface rounded w-24" />
       </div>
     );
   }
@@ -267,7 +267,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
   const percentage = Math.round((completedCount / totalCount) * 100);
 
   return (
-    <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden" data-testid="card-account-completion">
+    <div className="bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden" data-testid="card-account-completion">
       <button
         className="w-full p-6 flex items-center justify-between text-left"
         onClick={() => setExpanded(!expanded)}
@@ -275,73 +275,73 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
       >
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <Sparkles className="w-4 h-4 text-[#71717A]" />
-            <h3 className="text-[15px] font-medium text-[#222222]">{t("profileStrength.completeAccount")}</h3>
+            <Sparkles className="w-4 h-4 text-ha-text-muted" />
+            <h3 className="text-[15px] font-medium text-ha-text">{t("profileStrength.completeAccount")}</h3>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-[13px] text-[#222222]">
+            <span className="text-[13px] text-ha-text">
               {t("profileStrength.tasksCompleted", { done: String(completedCount), total: String(totalCount) })}
             </span>
-            <span className="text-[13px] font-medium text-[#F97316]">{percentage}%</span>
+            <span className="text-[13px] font-medium text-ha-primary">{percentage}%</span>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 relative">
             <svg className="w-10 h-10 -rotate-90" viewBox="0 0 36 36">
-              <circle cx="18" cy="18" r="15.5" fill="none" stroke="#F5F7FA" strokeWidth="3" />
+              <circle cx="18" cy="18" r="15.5" fill="none" stroke="rgb(var(--ha-surface))" strokeWidth="3" />
               <circle
                 cx="18"
                 cy="18"
                 r="15.5"
                 fill="none"
-                stroke="#F97316"
+                stroke="rgb(var(--ha-primary))"
                 strokeWidth="3"
                 strokeDasharray={`${(percentage / 100) * 97.4} 97.4`}
                 strokeLinecap="round"
                 className="transition-all duration-500"
               />
             </svg>
-            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-medium text-[#222222]">
+            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-medium text-ha-text">
               {percentage}%
             </span>
           </div>
           {expanded ? (
-            <ChevronUp className="w-4 h-4 text-[#71717A]" />
+            <ChevronUp className="w-4 h-4 text-ha-text-muted" />
           ) : (
-            <ChevronDown className="w-4 h-4 text-[#71717A]" />
+            <ChevronDown className="w-4 h-4 text-ha-text-muted" />
           )}
         </div>
       </button>
 
       {expanded && (
-        <div className="border-t border-[#E5E7EB] px-6 pb-3">
+        <div className="border-t border-ha-card-border px-6 pb-3">
           {tasks.map((task) => {
             const Icon = TASK_ICONS[task.id] || Circle;
             return (
               <button
                 key={task.id}
                 onClick={() => !task.completed && onTaskClick(task.id)}
-                className={`w-full flex items-center gap-3 py-3.5 border-b border-[#F5F7FA] last:border-0 text-left ${
-                  task.completed ? "opacity-60" : "hover:bg-[#F5F7FA]"
+                className={`w-full flex items-center gap-3 py-3.5 border-b border-ha-surface last:border-0 text-left ${
+                  task.completed ? "opacity-60" : "hover:bg-ha-surface"
                 } transition-colors -mx-1 px-1 rounded-lg`}
                 data-testid={`task-${task.id}`}
                 disabled={task.completed}
               >
                 {task.completed ? (
-                  <div className="w-5 h-5 rounded-full bg-[#F97316]/10 flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="w-4 h-4 text-[#F97316]" />
+                  <div className="w-5 h-5 rounded-full bg-ha-primary/10 flex items-center justify-center flex-shrink-0">
+                    <CheckCircle2 className="w-4 h-4 text-ha-primary" />
                   </div>
                 ) : (
-                  <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
+                  <div className="w-5 h-5 rounded-full border-2 border-ha-card-border flex-shrink-0" />
                 )}
-                <Icon className={`w-4 h-4 flex-shrink-0 ${task.completed ? "text-[#71717A]" : "text-[#71717A]"}`} />
+                <Icon className={`w-4 h-4 flex-shrink-0 ${task.completed ? "text-ha-text-muted" : "text-ha-text-muted"}`} />
                 <div className="flex-1 min-w-0">
-                  <p className={`text-[14px] font-medium ${task.completed ? "text-[#222222] line-through" : "text-[#222222]"}`}>
+                  <p className={`text-[14px] font-medium ${task.completed ? "text-ha-text line-through" : "text-ha-text"}`}>
                     {getTaskLabel(task.id, t)}
                   </p>
-                  <p className="text-[11px] text-[#222222]">{t("profileStrength.points", { score: String(task.score) })}</p>
+                  <p className="text-[11px] text-ha-text">{t("profileStrength.points", { score: String(task.score) })}</p>
                 </div>
-                {!task.completed && <ArrowRight className="w-4 h-4 text-[#71717A] flex-shrink-0" />}
+                {!task.completed && <ArrowRight className="w-4 h-4 text-ha-text-muted flex-shrink-0" />}
               </button>
             );
           })}
@@ -423,17 +423,17 @@ export function TaskModal({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 bg-white flex flex-col">
-      <header className="sticky top-0 z-10 bg-white border-b border-[#E5E7EB]">
+    <div className="fixed inset-0 z-50 bg-ha-card flex flex-col">
+      <header className="sticky top-0 z-10 bg-ha-card border-b border-ha-card-border">
         <div className="max-w-lg mx-auto flex items-center h-[56px] px-5">
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-full bg-[#F5F7FA] flex items-center justify-center mr-3 active:scale-95 transition-transform"
+            className="w-9 h-9 rounded-full bg-ha-surface flex items-center justify-center mr-3 active:scale-95 transition-transform"
             data-testid="button-close-modal"
           >
-            <ArrowLeft className="w-4 h-4 text-[#71717A]" />
+            <ArrowLeft className="w-4 h-4 text-ha-text-muted" />
           </button>
-          <h1 className="text-[17px] font-medium text-[#222222] flex-1 tracking-wide">{title}</h1>
+          <h1 className="text-[17px] font-medium text-ha-text flex-1 tracking-wide">{title}</h1>
         </div>
       </header>
 
@@ -441,10 +441,10 @@ export function TaskModal({
         <div className="max-w-lg mx-auto px-5 py-6">
           {taskId === "alerts" && (
             <div className="flex flex-col gap-4">
-              <p className="text-[14px] text-[#222222]">{t("profileStrength.alertsDesc")}</p>
+              <p className="text-[14px] text-ha-text">{t("profileStrength.alertsDesc")}</p>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard"); }}
-                className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-goto-notifications"
               >
                 <Bell className="w-4 h-4 mr-2" />
@@ -455,20 +455,20 @@ export function TaskModal({
 
           {taskId === "search_buddy" && (
             <div className="flex flex-col gap-4">
-              <label className="text-[14px] font-medium text-[#222222]">{t("profileStrength.buddyEmail")}</label>
+              <label className="text-[14px] font-medium text-ha-text">{t("profileStrength.buddyEmail")}</label>
               <input
                 type="email"
                 value={buddyEmail}
                 onChange={(e) => setBuddyEmail(e.target.value)}
                 placeholder={t("profileStrength.buddyPlaceholder")}
-                className="w-full h-[60px] px-4 rounded-[20px] border border-transparent bg-[#F3F4F6] text-[16px] font-medium text-[#222222] placeholder:text-[#717171] placeholder:font-normal"
+                className="w-full h-[60px] px-4 rounded-[20px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
                 data-testid="input-buddy-email"
               />
-              <p className="text-[14px] text-[#222222]">{t("profileStrength.buddyDesc")}</p>
+              <p className="text-[14px] text-ha-text">{t("profileStrength.buddyDesc")}</p>
               <Button
                 onClick={() => handleSave({ search_buddy_email: buddyEmail }, t("profileStrength.buddySaved"))}
                 disabled={!buddyEmail.includes("@") || updateProfileData.isPending}
-                className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium disabled:opacity-50"
+                className="w-full h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium disabled:opacity-50"
                 data-testid="button-save-buddy"
               >
                 {updateProfileData.isPending ? t("profileStrength.saving") : t("profileStrength.save")}
@@ -478,12 +478,12 @@ export function TaskModal({
 
           {taskId === "search_optimize" && (
             <div className="flex flex-col gap-4">
-              <p className="text-[14px] text-[#222222]">
+              <p className="text-[14px] text-ha-text">
                 {t("profileStrength.optimizeDesc")}
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard?tab=filters"); }}
-                className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-goto-filters"
               >
                 <Search className="w-4 h-4 mr-2" />
@@ -494,12 +494,12 @@ export function TaskModal({
 
           {taskId === "application_template" && (
             <div className="flex flex-col gap-4">
-              <p className="text-[14px] text-[#222222]">
+              <p className="text-[14px] text-ha-text">
                 {t("profileStrength.letterDesc")}
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/application-letter"); }}
-                className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-goto-letter"
               >
                 <FileText className="w-4 h-4 mr-2" />
@@ -512,23 +512,23 @@ export function TaskModal({
             <div className="flex flex-col gap-5">
               {DOCUMENT_CHECKLIST.map((group) => (
                 <div key={group.group}>
-                  <h4 className="text-[14px] font-medium text-[#222222] mb-3">{group.group}</h4>
+                  <h4 className="text-[14px] font-medium text-ha-text mb-3">{group.group}</h4>
                   <div className="flex flex-col gap-1">
                     {group.items.map((item) => (
                       <button
                         key={item.id}
                         onClick={() => setChecklist((prev) => ({ ...prev, [item.id]: !prev[item.id] }))}
-                        className="flex items-center gap-3 py-3 px-3 rounded-lg hover:bg-[#F3F4F6] transition-colors text-left"
+                        className="flex items-center gap-3 py-3 px-3 rounded-lg hover:bg-ha-surface transition-colors text-left"
                         data-testid={`check-${item.id}`}
                       >
                         {checklist[item.id] ? (
-                          <div className="w-6 h-6 rounded-full bg-[#16A34A]/10 flex items-center justify-center flex-shrink-0">
-                            <CheckCircle2 className="w-5 h-5 text-[#16A34A]" />
+                          <div className="w-6 h-6 rounded-full bg-ha-success/10 flex items-center justify-center flex-shrink-0">
+                            <CheckCircle2 className="w-5 h-5 text-ha-success" />
                           </div>
                         ) : (
-                          <div className="w-6 h-6 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
+                          <div className="w-6 h-6 rounded-full border-2 border-ha-card-border flex-shrink-0" />
                         )}
-                        <span className={`text-[15px] ${checklist[item.id] ? "text-[#222222] line-through" : "text-[#222222]"}`}>
+                        <span className={`text-[15px] ${checklist[item.id] ? "text-ha-text line-through" : "text-ha-text"}`}>
                           {item.label}
                         </span>
                       </button>
@@ -539,7 +539,7 @@ export function TaskModal({
               <Button
                 onClick={() => handleSave({ document_checklist: checklist }, t("profileStrength.docListSaved"))}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium disabled:opacity-50"
+                className="w-full h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium disabled:opacity-50"
                 data-testid="button-save-documents"
               >
                 {updateProfileData.isPending ? t("profileStrength.saving") : t("profileStrength.save")}
@@ -549,19 +549,19 @@ export function TaskModal({
 
           {taskId === "phone" && (
             <div className="flex flex-col gap-4">
-              <label className="text-[14px] font-medium text-[#222222]">{t("profileStrength.phoneLabel")}</label>
+              <label className="text-[14px] font-medium text-ha-text">{t("profileStrength.phoneLabel")}</label>
               <input
                 type="tel"
                 value={phoneInput}
                 onChange={(e) => setPhoneInput(e.target.value)}
                 placeholder="+49 170 1234567"
-                className="w-full h-[60px] px-4 rounded-[20px] border border-transparent bg-[#F3F4F6] text-[16px] font-medium text-[#222222] placeholder:text-[#717171] placeholder:font-normal"
+                className="w-full h-[60px] px-4 rounded-[20px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
                 data-testid="input-phone"
               />
-              <p className="text-[14px] text-[#222222]">{t("profileStrength.phoneDesc")}</p>
+              <p className="text-[14px] text-ha-text">{t("profileStrength.phoneDesc")}</p>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard"); }}
-                className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-goto-phone-settings"
               >
                 <Phone className="w-4 h-4 mr-2" />
@@ -590,9 +590,9 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
 
   if (isLoading || !data) {
     return (
-      <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
-        <div className="h-4 bg-[#F5F7FA] rounded w-40 mb-3" />
-        <div className="h-3 bg-[#F5F7FA] rounded w-24" />
+      <div className="bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
+        <div className="h-4 bg-ha-surface rounded w-40 mb-3" />
+        <div className="h-3 bg-ha-surface rounded w-24" />
       </div>
     );
   }
@@ -602,7 +602,7 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
   const percentage = Math.round((prepCompletedCount / prepTotalCount) * 100);
 
   return (
-    <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden" data-testid="card-search-preparation">
+    <div className="bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden" data-testid="card-search-preparation">
       <button
         className="w-full p-6 flex items-center justify-between text-left"
         onClick={() => setExpanded(!expanded)}
@@ -610,73 +610,73 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
       >
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <Target className="w-4 h-4 text-[#71717A]" />
-            <h3 className="text-[15px] font-medium text-[#222222]">{t("profileStrength.prepareSearch")}</h3>
+            <Target className="w-4 h-4 text-ha-text-muted" />
+            <h3 className="text-[15px] font-medium text-ha-text">{t("profileStrength.prepareSearch")}</h3>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-[13px] text-[#222222]">
+            <span className="text-[13px] text-ha-text">
               {t("profileStrength.tasksCompleted", { done: String(prepCompletedCount), total: String(prepTotalCount) })}
             </span>
-            <span className="text-[13px] font-medium text-[#F97316]">{percentage}%</span>
+            <span className="text-[13px] font-medium text-ha-primary">{percentage}%</span>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 relative">
             <svg className="w-10 h-10 -rotate-90" viewBox="0 0 36 36">
-              <circle cx="18" cy="18" r="15.5" fill="none" stroke="#F5F7FA" strokeWidth="3" />
+              <circle cx="18" cy="18" r="15.5" fill="none" stroke="rgb(var(--ha-surface))" strokeWidth="3" />
               <circle
                 cx="18"
                 cy="18"
                 r="15.5"
                 fill="none"
-                stroke="#F97316"
+                stroke="rgb(var(--ha-primary))"
                 strokeWidth="3"
                 strokeDasharray={`${(percentage / 100) * 97.4} 97.4`}
                 strokeLinecap="round"
                 className="transition-all duration-500"
               />
             </svg>
-            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-medium text-[#222222]">
+            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-medium text-ha-text">
               {percentage}%
             </span>
           </div>
           {expanded ? (
-            <ChevronUp className="w-4 h-4 text-[#71717A]" />
+            <ChevronUp className="w-4 h-4 text-ha-text-muted" />
           ) : (
-            <ChevronDown className="w-4 h-4 text-[#71717A]" />
+            <ChevronDown className="w-4 h-4 text-ha-text-muted" />
           )}
         </div>
       </button>
 
       {expanded && (
-        <div className="border-t border-[#E5E7EB] px-6 pb-3">
+        <div className="border-t border-ha-card-border px-6 pb-3">
           {prepTasks.map((task) => {
             const Icon = PREP_TASK_ICONS[task.id] || Circle;
             return (
               <button
                 key={task.id}
                 onClick={() => !task.completed && onTaskClick(task.id)}
-                className={`w-full flex items-center gap-3 py-3.5 border-b border-[#F5F7FA] last:border-0 text-left ${
-                  task.completed ? "opacity-60" : "hover:bg-[#F5F7FA]"
+                className={`w-full flex items-center gap-3 py-3.5 border-b border-ha-surface last:border-0 text-left ${
+                  task.completed ? "opacity-60" : "hover:bg-ha-surface"
                 } transition-colors -mx-1 px-1 rounded-lg`}
                 data-testid={`task-${task.id}`}
                 disabled={task.completed}
               >
                 {task.completed ? (
-                  <div className="w-5 h-5 rounded-full bg-[#F97316]/10 flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="w-4 h-4 text-[#F97316]" />
+                  <div className="w-5 h-5 rounded-full bg-ha-primary/10 flex items-center justify-center flex-shrink-0">
+                    <CheckCircle2 className="w-4 h-4 text-ha-primary" />
                   </div>
                 ) : (
-                  <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
+                  <div className="w-5 h-5 rounded-full border-2 border-ha-card-border flex-shrink-0" />
                 )}
-                <Icon className={`w-4 h-4 flex-shrink-0 ${task.completed ? "text-[#71717A]" : "text-[#71717A]"}`} />
+                <Icon className={`w-4 h-4 flex-shrink-0 ${task.completed ? "text-ha-text-muted" : "text-ha-text-muted"}`} />
                 <div className="flex-1 min-w-0">
-                  <p className={`text-[14px] font-medium ${task.completed ? "text-[#222222] line-through" : "text-[#222222]"}`}>
+                  <p className={`text-[14px] font-medium ${task.completed ? "text-ha-text line-through" : "text-ha-text"}`}>
                     {getTaskLabel(task.id, t)}
                   </p>
-                  <p className="text-[11px] text-[#222222]">{t("profileStrength.points", { score: String(task.score) })}</p>
+                  <p className="text-[11px] text-ha-text">{t("profileStrength.points", { score: String(task.score) })}</p>
                 </div>
-                {!task.completed && <ArrowRight className="w-4 h-4 text-[#71717A] flex-shrink-0" />}
+                {!task.completed && <ArrowRight className="w-4 h-4 text-ha-text-muted flex-shrink-0" />}
               </button>
             );
           })}
@@ -724,17 +724,17 @@ export function PrepTaskModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-white flex flex-col">
-      <header className="sticky top-0 z-10 bg-white border-b border-[#E5E7EB]">
+    <div className="fixed inset-0 z-50 bg-ha-card flex flex-col">
+      <header className="sticky top-0 z-10 bg-ha-card border-b border-ha-card-border">
         <div className="max-w-lg mx-auto flex items-center h-[56px] px-5">
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-full bg-[#F5F7FA] flex items-center justify-center mr-3 active:scale-95 transition-transform"
+            className="w-9 h-9 rounded-full bg-ha-surface flex items-center justify-center mr-3 active:scale-95 transition-transform"
             data-testid="button-close-prep-modal"
           >
-            <ArrowLeft className="w-4 h-4 text-[#71717A]" />
+            <ArrowLeft className="w-4 h-4 text-ha-text-muted" />
           </button>
-          <h1 className="text-[17px] font-medium text-[#222222] flex-1 tracking-wide">{titles[taskId] || ""}</h1>
+          <h1 className="text-[17px] font-medium text-ha-text flex-1 tracking-wide">{titles[taskId] || ""}</h1>
         </div>
       </header>
 
@@ -742,12 +742,12 @@ export function PrepTaskModal({
         <div className="max-w-lg mx-auto px-5 py-6">
           {taskId === "prep_search_profile" && (
             <div className="flex flex-col gap-4">
-              <p className="text-[15px] text-[#222222] leading-relaxed">
+              <p className="text-[15px] text-ha-text leading-relaxed">
                 {t("profileStrength.prepCreateDesc")}
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
-                className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-prep-create-profile"
               >
                 <Search className="w-4 h-4 mr-2" />
@@ -758,12 +758,12 @@ export function PrepTaskModal({
 
           {taskId === "prep_letter" && (
             <div className="flex flex-col gap-4">
-              <p className="text-[15px] text-[#222222] leading-relaxed">
+              <p className="text-[15px] text-ha-text leading-relaxed">
                 {t("profileStrength.prepLetterDesc")}
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/application-letter"); }}
-                className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-prep-goto-letter"
               >
                 <FileText className="w-4 h-4 mr-2" />
@@ -774,20 +774,20 @@ export function PrepTaskModal({
 
           {taskId === "prep_extra_profile" && (
             <div className="flex flex-col gap-5">
-              <p className="text-[15px] text-[#222222] leading-relaxed">
+              <p className="text-[15px] text-ha-text leading-relaxed">
                 {t("profileStrength.prepExtraDesc")}
               </p>
-              <div className="bg-[#F3F4F6] rounded-2xl p-5">
-                <p className="text-[14px] font-medium text-[#222222] mb-3">{t("profileStrength.prepWhyTitle")}</p>
-                <ul className="text-[14px] text-[#222222] space-y-2">
-                  <li className="flex items-start gap-2"><span className="text-[#222222] mt-0.5">+</span>{t("profileStrength.prepWhy1")}</li>
-                  <li className="flex items-start gap-2"><span className="text-[#222222] mt-0.5">+</span>{t("profileStrength.prepWhy2")}</li>
-                  <li className="flex items-start gap-2"><span className="text-[#222222] mt-0.5">+</span>{t("profileStrength.prepWhy3")}</li>
+              <div className="bg-ha-surface rounded-2xl p-5">
+                <p className="text-[14px] font-medium text-ha-text mb-3">{t("profileStrength.prepWhyTitle")}</p>
+                <ul className="text-[14px] text-ha-text space-y-2">
+                  <li className="flex items-start gap-2"><span className="text-ha-text mt-0.5">+</span>{t("profileStrength.prepWhy1")}</li>
+                  <li className="flex items-start gap-2"><span className="text-ha-text mt-0.5">+</span>{t("profileStrength.prepWhy2")}</li>
+                  <li className="flex items-start gap-2"><span className="text-ha-text mt-0.5">+</span>{t("profileStrength.prepWhy3")}</li>
                 </ul>
               </div>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
-                className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-prep-add-profile"
               >
                 <Plus className="w-4 h-4 mr-2" />
@@ -798,17 +798,17 @@ export function PrepTaskModal({
 
           {taskId === "prep_network" && (
             <div className="flex flex-col gap-5">
-              <p className="text-[15px] text-[#222222] leading-relaxed">
+              <p className="text-[15px] text-ha-text leading-relaxed">
                 {t("profileStrength.prepNetworkDesc")}
               </p>
-              <div className="bg-[#F3F4F6] rounded-2xl p-5">
-                <p className="text-[14px] font-medium text-[#222222] mb-3">{t("profileStrength.shareTextLabel")}</p>
-                <p className="text-[14px] text-[#222222] leading-relaxed">{t("profileStrength.shareText")}</p>
+              <div className="bg-ha-surface rounded-2xl p-5">
+                <p className="text-[14px] font-medium text-ha-text mb-3">{t("profileStrength.shareTextLabel")}</p>
+                <p className="text-[14px] text-ha-text leading-relaxed">{t("profileStrength.shareText")}</p>
               </div>
               <Button
                 variant="outline"
                 onClick={handleCopyShare}
-                className="w-full h-[48px] rounded-lg text-[15px] font-medium border-[#E5E7EB] text-[#222222]"
+                className="w-full h-[48px] rounded-lg text-[15px] font-medium border-ha-card-border text-ha-text"
                 data-testid="button-copy-share"
               >
                 <Copy className="w-4 h-4 mr-2" />
@@ -817,7 +817,7 @@ export function PrepTaskModal({
               <Button
                 onClick={() => handleMarkDone("network_task_done")}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium disabled:opacity-50"
+                className="w-full h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium disabled:opacity-50"
                 data-testid="button-mark-network-done"
               >
                 {updateProfileData.isPending ? t("profileStrength.saving") : t("profileStrength.markComplete")}
@@ -827,12 +827,12 @@ export function PrepTaskModal({
 
           {taskId === "prep_viewing_tips" && (
             <div className="flex flex-col gap-4">
-              <p className="text-[15px] text-[#222222] leading-relaxed">
+              <p className="text-[15px] text-ha-text leading-relaxed">
                 {t("profileStrength.prepViewingDesc")}
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/tips/bezichtiging"); }}
-                className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-goto-viewing-tips"
               >
                 <Eye className="w-4 h-4 mr-2" />
@@ -852,9 +852,9 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
 
   if (isLoading || !data) {
     return (
-      <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 animate-pulse">
-        <div className="h-4 bg-[#F5F7FA] rounded w-40 mb-3" />
-        <div className="h-3 bg-[#F5F7FA] rounded w-32" />
+      <div className="bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 animate-pulse">
+        <div className="h-4 bg-ha-surface rounded w-40 mb-3" />
+        <div className="h-3 bg-ha-surface rounded w-32" />
       </div>
     );
   }
@@ -869,13 +869,13 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
   const activeCount = channelList.filter(c => c.enabled).length;
 
   return (
-    <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5" data-testid="card-notification-summary">
+    <div className="bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5" data-testid="card-notification-summary">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Bell className="w-[18px] h-[18px] text-[#71717A]" />
-          <h3 className="text-[15px] font-medium text-[#222222]">{t("profileStrength.notifChannels")}</h3>
+          <Bell className="w-[18px] h-[18px] text-ha-text-muted" />
+          <h3 className="text-[15px] font-medium text-ha-text">{t("profileStrength.notifChannels")}</h3>
         </div>
-        <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${activeCount > 0 ? "bg-[#F5F7FA] text-[#222222]" : "bg-[#F5F7FA] text-[#222222]"}`}>
+        <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${activeCount > 0 ? "bg-ha-surface text-ha-text" : "bg-ha-surface text-ha-text"}`}>
           {activeCount > 0 ? t("profileStrength.notifActive", { count: String(activeCount) }) : t("profileStrength.notifNoneActive")}
         </span>
       </div>
@@ -883,26 +883,26 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
       <div className="flex flex-col gap-2.5 mb-4">
         {channelList.map(({ key, label, enabled, Icon }) => (
           <div key={key} className="flex items-center gap-3" data-testid={`channel-status-${key}`}>
-            <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${enabled ? "bg-[#F5F7FA]" : "bg-[#F5F7FA]"}`}>
-              <Icon className={`w-3.5 h-3.5 ${enabled ? "text-[#222222]" : "text-[#222222]"}`} />
+            <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${enabled ? "bg-ha-surface" : "bg-ha-surface"}`}>
+              <Icon className={`w-3.5 h-3.5 ${enabled ? "text-ha-text" : "text-ha-text"}`} />
             </div>
-            <span className={`text-[14px] flex-1 ${enabled ? "text-[#222222] font-medium" : "text-[#222222]"}`}>
+            <span className={`text-[14px] flex-1 ${enabled ? "text-ha-text font-medium" : "text-ha-text"}`}>
               {label}
             </span>
             {enabled ? (
-              <div className="w-4 h-4 rounded-full bg-[#16A34A]/10 flex items-center justify-center">
-                <CheckCircle2 className="w-3 h-3 text-[#16A34A]" />
+              <div className="w-4 h-4 rounded-full bg-ha-success/10 flex items-center justify-center">
+                <CheckCircle2 className="w-3 h-3 text-ha-success" />
               </div>
             ) : (
-              <div className="w-4 h-4 rounded-full border-2 border-[#E5E7EB]" />
+              <div className="w-4 h-4 rounded-full border-2 border-ha-card-border" />
             )}
           </div>
         ))}
       </div>
 
       {recommendedChannel && (
-        <div className="bg-[#F3F4F6] rounded-2xl px-3.5 py-2.5 mb-3">
-          <p className="text-[12px] text-[#222222] font-medium flex items-center gap-1.5">
+        <div className="bg-ha-surface rounded-2xl px-3.5 py-2.5 mb-3">
+          <p className="text-[12px] text-ha-text font-medium flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5" />
             {t("profileStrength.fastestChannel", { channel: recommendedChannel })}
           </p>
@@ -911,7 +911,7 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
 
       <button
         onClick={() => navigate("/dashboard")}
-        className="w-full h-[40px] rounded-full border border-[#E5E7EB] bg-white text-[13px] font-medium text-[#222222] hover:bg-[#F5F7FA] transition-colors flex items-center justify-center gap-1.5"
+        className="w-full h-[40px] rounded-full border border-ha-card-border bg-ha-card text-[13px] font-medium text-ha-text hover:bg-ha-surface transition-colors flex items-center justify-center gap-1.5"
         data-testid="button-manage-channels"
       >
         <Bell className="w-3.5 h-3.5" />
@@ -927,9 +927,9 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
 
   if (isLoading || !data) {
     return (
-      <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 animate-pulse">
-        <div className="h-4 bg-[#F5F7FA] rounded w-40 mb-3" />
-        <div className="h-3 bg-[#F5F7FA] rounded w-24" />
+      <div className="bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 animate-pulse">
+        <div className="h-4 bg-ha-surface rounded w-40 mb-3" />
+        <div className="h-3 bg-ha-surface rounded w-24" />
       </div>
     );
   }
@@ -945,13 +945,13 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
   };
 
   return (
-    <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5" data-testid="card-speed-readiness">
+    <div className="bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5" data-testid="card-speed-readiness">
       <div className="flex items-center gap-2 mb-4">
-        <Zap className="w-[18px] h-[18px] text-[#71717A]" />
+        <Zap className="w-[18px] h-[18px] text-ha-text-muted" />
         <div className="flex-1">
-          <h3 className="text-[15px] font-medium text-[#222222]">{t("profileStrength.reactionSpeed")}</h3>
+          <h3 className="text-[15px] font-medium text-ha-text">{t("profileStrength.reactionSpeed")}</h3>
         </div>
-        <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${allDone ? "bg-[#16A34A]/10 text-[#222222]" : "bg-[#F5F7FA] text-[#222222]"}`}>
+        <span className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${allDone ? "bg-ha-success/10 text-ha-text" : "bg-ha-surface text-ha-text"}`}>
           {speedDone}/{speedTotal}
         </span>
       </div>
@@ -962,24 +962,24 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
           return (
             <div
               key={step.id}
-              className={`flex items-center gap-3 ${!step.done && route ? "cursor-pointer hover:bg-[#F5F7FA] -mx-2 px-2 py-1 rounded-lg transition-colors" : "py-0.5"}`}
+              className={`flex items-center gap-3 ${!step.done && route ? "cursor-pointer hover:bg-ha-surface -mx-2 px-2 py-1 rounded-lg transition-colors" : "py-0.5"}`}
               onClick={() => {
                 if (!step.done && route) navigate(route);
               }}
               data-testid={`speed-step-${step.id}`}
             >
               {step.done ? (
-                <div className="w-5 h-5 rounded-full bg-[#16A34A]/10 flex items-center justify-center flex-shrink-0">
-                  <CheckCircle2 className="w-4 h-4 text-[#16A34A]" />
+                <div className="w-5 h-5 rounded-full bg-ha-success/10 flex items-center justify-center flex-shrink-0">
+                  <CheckCircle2 className="w-4 h-4 text-ha-success" />
                 </div>
               ) : (
-                <div className="w-4.5 h-4.5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
+                <div className="w-4.5 h-4.5 rounded-full border-2 border-ha-card-border flex-shrink-0" />
               )}
-              <span className={`text-[14px] flex-1 ${step.done ? "text-[#222222]" : "text-[#222222] font-medium"}`}>
+              <span className={`text-[14px] flex-1 ${step.done ? "text-ha-text" : "text-ha-text font-medium"}`}>
                 {getSpeedStepLabel(step.id, t)}
               </span>
               {!step.done && route && (
-                <ArrowRight className="w-3.5 h-3.5 text-[#222222]" />
+                <ArrowRight className="w-3.5 h-3.5 text-ha-text" />
               )}
             </div>
           );
@@ -987,8 +987,8 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
       </div>
 
       {allDone && (
-        <div className="mt-4 bg-[#16A34A]/10 rounded-lg px-3.5 py-2.5">
-          <p className="text-[12px] text-[#16A34A] font-medium flex items-center gap-1.5">
+        <div className="mt-4 bg-ha-success/10 rounded-lg px-3.5 py-2.5">
+          <p className="text-[12px] text-ha-success font-medium flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5" />
             {t("profileStrength.readyFast")}
           </p>
@@ -1012,34 +1012,34 @@ export function SpeedBanner({ navigate }: { navigate: (path: string) => void }) 
   if (allDone) {
     return (
       <div
-        className="bg-[#F5F7FA] rounded-lg p-4 flex items-center gap-3 cursor-pointer hover:bg-[#F5F7FA]/80 transition-colors"
+        className="bg-ha-surface rounded-lg p-4 flex items-center gap-3 cursor-pointer hover:bg-ha-surface/80 transition-colors"
         onClick={() => navigate("/dashboard")}
         data-testid="banner-speed-ready"
       >
-        <Zap className="w-[18px] h-[18px] text-[#71717A] flex-shrink-0" />
+        <Zap className="w-[18px] h-[18px] text-ha-text-muted flex-shrink-0" />
         <div className="flex-1">
-          <p className="text-[14px] font-medium text-[#222222]">{t("profileStrength.readyFast")}</p>
-          <p className="text-[12px] text-[#717171]">{t("profileStrength.allStepsComplete")}</p>
+          <p className="text-[14px] font-medium text-ha-text">{t("profileStrength.readyFast")}</p>
+          <p className="text-[12px] text-ha-text-secondary">{t("profileStrength.allStepsComplete")}</p>
         </div>
-        <span className="text-[13px] font-medium text-[#222222]">{pct}%</span>
+        <span className="text-[13px] font-medium text-ha-text">{pct}%</span>
       </div>
     );
   }
 
   return (
     <div
-      className="bg-[#F5F7FA] rounded-lg p-4 flex items-center gap-3 cursor-pointer hover:bg-[#F5F7FA]/80 transition-colors"
+      className="bg-ha-surface rounded-lg p-4 flex items-center gap-3 cursor-pointer hover:bg-ha-surface/80 transition-colors"
       onClick={() => navigate("/dashboard")}
       data-testid="banner-speed-incomplete"
     >
-      <Zap className="w-[18px] h-[18px] text-[#71717A] flex-shrink-0" />
+      <Zap className="w-[18px] h-[18px] text-ha-text-muted flex-shrink-0" />
       <div className="flex-1">
-        <p className="text-[14px] font-medium text-[#222222]">
+        <p className="text-[14px] font-medium text-ha-text">
           {t("profileStrength.stepsRemaining", { count: String(remaining), label: remaining === 1 ? t("profileStrength.stepSingular") : t("profileStrength.stepPluralLabel") })}
         </p>
-        <p className="text-[12px] text-[#222222]">{t("profileStrength.completeYourProfile")}</p>
+        <p className="text-[12px] text-ha-text">{t("profileStrength.completeYourProfile")}</p>
       </div>
-      <ArrowRight className="w-4 h-4 text-[#71717A] flex-shrink-0" />
+      <ArrowRight className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
     </div>
   );
 }

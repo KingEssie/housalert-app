@@ -28,11 +28,11 @@ export function PageHeader({ title, onBack, trailing, closeButton }: PageHeaderP
       <div className="fixed top-[max(0.75rem,env(safe-area-inset-top))] left-4 z-30 flex items-center gap-2">
         <button
           onClick={handleBack}
-          className="w-12 h-12 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.10)] flex items-center justify-center active:scale-95 transition-transform"
+          className="w-12 h-12 rounded-full bg-ha-card shadow-ha-card flex items-center justify-center active:scale-95 transition-transform border border-ha-card-border"
           aria-label={closeButton ? "Close" : "Back"}
           data-testid="button-back"
         >
-          <Icon className="w-5 h-5 text-[#71717A]" />
+          <Icon className="w-5 h-5 text-ha-text-muted" />
         </button>
         {trailing && <div className="flex-shrink-0">{trailing}</div>}
       </div>

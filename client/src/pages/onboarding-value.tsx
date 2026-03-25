@@ -175,9 +175,9 @@ export default function OnboardingValuePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#1A1A2E] flex flex-col">
+    <div className="min-h-screen bg-ha-bg flex flex-col">
       {!isEmbedded && (
-        <header className="w-full bg-[#1A1A2E] sticky top-0 z-20 border-b border-[#353560]">
+        <header className="w-full bg-ha-bg sticky top-0 z-20 border-b border-ha-card-border">
           <div className={`${containerClass} mx-auto px-5 h-[56px] flex items-center gap-3`}>
             <HousAlertLogo size={28} />
           </div>
@@ -187,7 +187,7 @@ export default function OnboardingValuePage() {
       <main className={`flex-1 ${containerClass} mx-auto w-full px-5 pb-32`}>
         <div className="pt-8 pb-6 text-center">
           <h1
-            className="text-[24px] font-medium text-white leading-[1.15] tracking-[-0.02em]"
+            className="text-[24px] font-medium text-ha-text leading-[1.15] tracking-[-0.02em]"
             data-testid="text-value-title"
           >
             {t("valueStep.heroTitle")}
@@ -195,15 +195,15 @@ export default function OnboardingValuePage() {
         </div>
 
         <div className="mb-6">
-          <div className="bg-[#EF4444]/10 rounded-2xl p-5">
-            <p className="text-[15px] font-medium text-[#EF4444] mb-3" data-testid="text-without-title">
+          <div className="bg-ha-danger/10 rounded-2xl p-5">
+            <p className="text-[15px] font-medium text-ha-danger mb-3" data-testid="text-without-title">
               {t("valueStep.withoutTitle")}
             </p>
             <div className="space-y-2.5">
               {WITHOUT_ITEMS.map((key, i) => (
                 <div key={i} className="flex items-start gap-2.5">
-                  <div className="w-5 h-5 rounded-full bg-[#EF4444]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <X className="w-3 h-3 text-[#EF4444]" />
+                  <div className="w-5 h-5 rounded-full bg-ha-danger/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <X className="w-3 h-3 text-ha-danger" />
                   </div>
                   <span className="text-[14px] text-[#FCA5A5] leading-[1.4]">{t(key)}</span>
                 </div>
@@ -213,15 +213,15 @@ export default function OnboardingValuePage() {
         </div>
 
         <div className="mb-8">
-          <div className="bg-[#00C896]/10 rounded-2xl p-5">
-            <p className="text-[15px] font-medium text-[#00C896] mb-3" data-testid="text-with-title">
+          <div className="bg-ha-success-light rounded-2xl p-5">
+            <p className="text-[15px] font-medium text-ha-success mb-3" data-testid="text-with-title">
               {t("valueStep.withTitle")}
             </p>
             <div className="space-y-2.5">
               {WITH_ITEMS.map((key, i) => (
                 <div key={i} className="flex items-start gap-2.5">
-                  <div className="w-5 h-5 rounded-full bg-[#00C896]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Check className="w-3 h-3 text-[#00C896]" />
+                  <div className="w-5 h-5 rounded-full bg-ha-success/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Check className="w-3 h-3 text-ha-success" />
                   </div>
                   <span className="text-[14px] text-[#6EE7B7] leading-[1.4]">{t(key)}</span>
                 </div>
@@ -234,17 +234,17 @@ export default function OnboardingValuePage() {
           {EXPLANATIONS.map(({ icon: Icon, key }) => (
             <div
               key={key}
-              className="bg-[#252547] rounded-2xl p-5 flex items-start gap-4"
+              className="bg-ha-card rounded-2xl p-5 flex items-start gap-4"
               data-testid={`card-explain-${key}`}
             >
-              <div className="w-10 h-10 rounded-xl bg-[#353560] flex items-center justify-center flex-shrink-0">
-                <Icon className="w-5 h-5 text-[#E91E63]" />
+              <div className="w-10 h-10 rounded-xl bg-ha-surface flex items-center justify-center flex-shrink-0">
+                <Icon className="w-5 h-5 text-ha-primary" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[15px] font-medium text-white mb-0.5">
+                <p className="text-[15px] font-medium text-ha-text mb-0.5">
                   {t(`valueStep.explain.${key}.title`)}
                 </p>
-                <p className="text-[13px] text-[#9CA3AF] leading-[1.5]">
+                <p className="text-[13px] text-ha-text-secondary leading-[1.5]">
                   {t(`valueStep.explain.${key}.desc`)}
                 </p>
               </div>
@@ -252,14 +252,14 @@ export default function OnboardingValuePage() {
           ))}
         </div>
 
-        <div className="border-t border-[#353560] pt-8 mb-6">
+        <div className="border-t border-ha-card-border pt-8 mb-6">
           <h2
-            className="text-[22px] font-medium text-white text-center mb-1"
+            className="text-[22px] font-medium text-ha-text text-center mb-1"
             data-testid="text-plans-title"
           >
             {t("valueStep.plansTitle")}
           </h2>
-          <p className="text-[14px] text-[#9CA3AF] text-center mb-5">
+          <p className="text-[14px] text-ha-text-secondary text-center mb-5">
             {t("valueStep.plansSubtitle")}
           </p>
         </div>
@@ -269,16 +269,16 @@ export default function OnboardingValuePage() {
             <button
               key={plan.id}
               onClick={() => setSelectedPlan(plan.id)}
-              className={`w-full p-4 rounded-2xl border-2 transition-all text-left relative bg-[#252547] ${
+              className={`w-full p-4 rounded-2xl border-2 transition-all text-left relative bg-ha-card ${
                 selectedPlan === plan.id
-                  ? "border-[#E91E63] shadow-[0_0_0_1px_#E91E63]"
-                  : "border-[#353560] hover:border-[#4A4A70]"
+                  ? "border-ha-primary shadow-[0_0_0_1px_rgb(var(--ha-primary))]"
+                  : "border-ha-card-border hover:border-ha-text-muted"
               }`}
               data-testid={`card-plan-${plan.id}`}
             >
               {plan.popular && (
                 <span
-                  className="absolute -top-2.5 left-4 px-2.5 py-0.5 bg-[#E91E63] text-white text-[11px] font-medium rounded-full"
+                  className="absolute -top-2.5 left-4 px-2.5 py-0.5 bg-ha-primary text-white text-[11px] font-medium rounded-full"
                   data-testid="badge-popular"
                 >
                   {t("paywall.mostChosen")}
@@ -287,13 +287,13 @@ export default function OnboardingValuePage() {
 
               <div className="flex items-center justify-between gap-3 pr-8">
                 <div>
-                  <p className="text-[16px] font-medium text-white">{t(plan.nameKey)}</p>
-                  <p className="text-[13px] text-[#9CA3AF]">{t(plan.pricePerMonthKey)}</p>
+                  <p className="text-[16px] font-medium text-ha-text">{t(plan.nameKey)}</p>
+                  <p className="text-[13px] text-ha-text-secondary">{t(plan.pricePerMonthKey)}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-[18px] font-medium text-white">{t(plan.priceKey)}</p>
+                  <p className="text-[18px] font-medium text-ha-text">{t(plan.priceKey)}</p>
                   {plan.savingsKey && (
-                    <p className="text-[12px] font-medium text-[#E91E63]">{t(plan.savingsKey)}</p>
+                    <p className="text-[12px] font-medium text-ha-primary">{t(plan.savingsKey)}</p>
                   )}
                 </div>
               </div>
@@ -301,26 +301,26 @@ export default function OnboardingValuePage() {
               <div
                 className={`absolute top-4 right-4 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
                   selectedPlan === plan.id
-                    ? "bg-[#E91E63] border-[#E91E63]"
-                    : "border-[#6B7280]"
+                    ? "bg-ha-primary border-ha-primary"
+                    : "border-white-muted"
                 }`}
               >
-                {selectedPlan === plan.id && <Check className="w-3 h-3 text-white" />}
+                {selectedPlan === plan.id && <Check className="w-3 h-3 text-ha-text" />}
               </div>
             </button>
           ))}
         </div>
 
-        <div className="flex items-center justify-center gap-2 text-[13px] text-[#9CA3AF] mb-4">
+        <div className="flex items-center justify-center gap-2 text-[13px] text-ha-text-secondary mb-4">
           <Shield className="w-4 h-4" />
           <span>{t("valueStep.trustBadge")}</span>
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-[#1A1A2E] border-t border-[#353560] p-4 z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-ha-bg border-t border-ha-card-border p-4 z-10">
         <div className={`${containerClass} mx-auto`}>
           <Button
-            className="w-full h-[48px] rounded-full text-[15px] font-medium shadow-none bg-[#E91E63] hover:bg-[#D81B60] text-white"
+            className="w-full h-[48px] rounded-full text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover text-white"
             onClick={handleCheckout}
             disabled={loading}
             data-testid="button-select-payment"
@@ -334,7 +334,7 @@ export default function OnboardingValuePage() {
               t("valueStep.cta")
             )}
           </Button>
-          <p className="text-center text-[12px] text-[#6B7280] mt-2">
+          <p className="text-center text-[12px] text-ha-text-muted mt-2">
             {t("paywall.trialFooter")}
           </p>
         </div>

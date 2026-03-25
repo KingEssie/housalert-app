@@ -351,8 +351,8 @@ export default function NewSearchPage() {
 
   if (loading || (isEditMode && !editLoaded)) {
     return (
-      <div className="min-h-screen bg-[#1A1A2E] flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-2 border-[#E91E63] border-t-transparent animate-spin" />
+      <div className="min-h-screen bg-ha-bg flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-2 border-ha-primary border-t-transparent animate-spin" />
       </div>
     );
   }
@@ -361,30 +361,30 @@ export default function NewSearchPage() {
 
   if (atLimit) {
     return (
-      <div className="min-h-screen bg-[#1A1A2E] flex flex-col">
-        <header className="fixed top-0 left-0 right-0 z-50 bg-[#1A1A2E]">
+      <div className="min-h-screen bg-ha-bg flex flex-col">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-ha-bg">
           <div className="max-w-lg mx-auto flex items-center justify-between h-[56px] px-5">
             <button
               onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=home")}
-              className="w-12 h-12 rounded-full bg-[#252547] shadow-[0_1px_4px_rgba(0,0,0,0.2)] flex items-center justify-center"
+              className="w-12 h-12 rounded-full bg-ha-card shadow-[0_1px_4px_rgba(0,0,0,0.2)] flex items-center justify-center"
               data-testid="button-wizard-header-back"
             >
-              <ArrowLeft className="w-5 h-5 text-[#9CA3AF]" />
+              <ArrowLeft className="w-5 h-5 text-ha-text-secondary" />
             </button>
           </div>
         </header>
         <div className="flex-1 flex items-center justify-center px-5 pt-[56px]">
           <div className="text-center max-w-sm w-full">
-            <div className="w-14 h-14 rounded-lg bg-[#252547] flex items-center justify-center mx-auto mb-4">
-              <AlertCircle className="w-6 h-6 text-[#E91E63]" />
+            <div className="w-14 h-14 rounded-lg bg-ha-card flex items-center justify-center mx-auto mb-4">
+              <AlertCircle className="w-6 h-6 text-ha-primary" />
             </div>
-            <h2 className="text-[18px] font-medium text-white mb-2">{t("newSearch.limitTitle")}</h2>
-            <p className="text-[14px] text-[#9CA3AF] mb-5">
+            <h2 className="text-[18px] font-medium text-ha-text mb-2">{t("newSearch.limitTitle")}</h2>
+            <p className="text-[14px] text-ha-text-secondary mb-5">
               {t("newSearch.limitDesc", { max: MAX_PROFILES })}
             </p>
             <Button
               onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=home")}
-              className="w-full h-[56px] rounded-full bg-[#E91E63] hover:bg-[#D81B60] text-white text-[15px] font-medium"
+              className="w-full h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium"
               data-testid="button-back-to-dashboard-limit"
             >
               {t("newSearch.backToDashboard")}
@@ -398,17 +398,17 @@ export default function NewSearchPage() {
   const perWeekRaw = estimateQuery.data?.perWeekEstimate ?? 0;
 
   return (
-    <div className="min-h-screen bg-[#1A1A2E] flex flex-col">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#1A1A2E]">
+    <div className="min-h-screen bg-ha-bg flex flex-col">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-ha-bg">
         <div className="max-w-lg mx-auto flex items-center justify-between h-[56px] px-5">
           <button
             onClick={goBack}
-            className="w-12 h-12 rounded-full bg-[#252547] shadow-[0_1px_4px_rgba(0,0,0,0.2)] flex items-center justify-center"
+            className="w-12 h-12 rounded-full bg-ha-card shadow-[0_1px_4px_rgba(0,0,0,0.2)] flex items-center justify-center"
             data-testid="button-wizard-header-back"
           >
-            <ArrowLeft className="w-5 h-5 text-[#9CA3AF]" />
+            <ArrowLeft className="w-5 h-5 text-ha-text-secondary" />
           </button>
-          <span className="text-[13px] font-medium text-[#9CA3AF]" data-testid="text-step-indicator">
+          <span className="text-[13px] font-medium text-ha-text-secondary" data-testid="text-step-indicator">
             {t("newSearch.stepOf", { step, total: TOTAL_STEPS })}
           </span>
         </div>
@@ -439,7 +439,7 @@ export default function NewSearchPage() {
           <button
             onClick={step < TOTAL_STEPS - 1 ? goNext : () => setStep(5)}
             disabled={!canProceed()}
-            className="w-14 h-14 rounded-full bg-[#E91E63] hover:bg-[#D81B60] text-white flex items-center justify-center shadow-[0_4px_16px_rgba(0,0,0,0.3)] disabled:opacity-40 transition-all active:scale-95"
+            className="w-14 h-14 rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white flex items-center justify-center shadow-[0_4px_16px_rgba(0,0,0,0.3)] disabled:opacity-40 transition-all active:scale-95"
             data-testid="button-wizard-next"
           >
             <ArrowRight className="w-6 h-6" />
@@ -501,102 +501,102 @@ function Step2Requirements({
 
       <div className="space-y-6">
         <div>
-          <label className="text-[15px] font-medium text-white mb-2.5 flex items-center gap-2">
-            <Euro className="w-4 h-4 text-[#E91E63]" />
+          <label className="text-[15px] font-medium text-ha-text mb-2.5 flex items-center gap-2">
+            <Euro className="w-4 h-4 text-ha-primary" />
             {t("newSearch.step2.minPrice")}
           </label>
           <div className="relative">
             <select
               value={filters.priceMin}
               onChange={(e) => updateFilters({ priceMin: e.target.value })}
-              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border border-[#353560] bg-[#252547] text-[15px] font-medium text-white appearance-none cursor-pointer"
+              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border border-ha-card-border bg-ha-card text-[15px] font-medium text-ha-text appearance-none cursor-pointer"
               data-testid="select-price-min"
             >
               {RENT_OPTIONS.map(opt => (
                 <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-secondary pointer-events-none" />
           </div>
         </div>
 
         <div>
-          <label className="text-[15px] font-medium text-white mb-2.5 flex items-center gap-2">
-            <Euro className="w-4 h-4 text-[#E91E63]" />
+          <label className="text-[15px] font-medium text-ha-text mb-2.5 flex items-center gap-2">
+            <Euro className="w-4 h-4 text-ha-primary" />
             {t("newSearch.step2.maxPrice")}
           </label>
           <div className="relative">
             <select
               value={filters.priceMax}
               onChange={(e) => updateFilters({ priceMax: e.target.value })}
-              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border border-[#353560] bg-[#252547] text-[15px] font-medium text-white appearance-none cursor-pointer"
+              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border border-ha-card-border bg-ha-card text-[15px] font-medium text-ha-text appearance-none cursor-pointer"
               data-testid="select-price-max"
             >
               {RENT_OPTIONS.map(opt => (
                 <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-secondary pointer-events-none" />
           </div>
         </div>
 
         <div>
-          <label className="text-[15px] font-medium text-white mb-2.5 flex items-center gap-2">
-            <BedDouble className="w-4 h-4 text-[#E91E63]" />
+          <label className="text-[15px] font-medium text-ha-text mb-2.5 flex items-center gap-2">
+            <BedDouble className="w-4 h-4 text-ha-primary" />
             {t("newSearch.step2.bedrooms")}
           </label>
           <div className="relative">
             <select
               value={filters.bedroomsMin}
               onChange={(e) => updateFilters({ bedroomsMin: parseInt(e.target.value) })}
-              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border border-[#353560] bg-[#252547] text-[15px] font-medium text-white appearance-none cursor-pointer"
+              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border border-ha-card-border bg-ha-card text-[15px] font-medium text-ha-text appearance-none cursor-pointer"
               data-testid="select-bedrooms"
             >
               {BEDROOM_OPTIONS.map(opt => (
                 <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-secondary pointer-events-none" />
           </div>
         </div>
 
         <div>
-          <label className="text-[15px] font-medium text-white mb-2.5 flex items-center gap-2">
-            <Ruler className="w-4 h-4 text-[#E91E63]" />
+          <label className="text-[15px] font-medium text-ha-text mb-2.5 flex items-center gap-2">
+            <Ruler className="w-4 h-4 text-ha-primary" />
             {t("newSearch.step2.area")}
           </label>
           <div className="relative">
             <select
               value={filters.sizeMin}
               onChange={(e) => updateFilters({ sizeMin: parseInt(e.target.value) })}
-              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border border-[#353560] bg-[#252547] text-[15px] font-medium text-white appearance-none cursor-pointer"
+              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border border-ha-card-border bg-ha-card text-[15px] font-medium text-ha-text appearance-none cursor-pointer"
               data-testid="select-size"
             >
               {SIZE_OPTIONS.map(opt => (
                 <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-secondary pointer-events-none" />
           </div>
         </div>
 
         <div>
-          <label className="text-[15px] font-medium text-white mb-2.5 flex items-center gap-2">
-            <Sofa className="w-4 h-4 text-[#E91E63]" />
+          <label className="text-[15px] font-medium text-ha-text mb-2.5 flex items-center gap-2">
+            <Sofa className="w-4 h-4 text-ha-primary" />
             {t("newSearch.step2.furnished")}
           </label>
           <div className="relative">
             <select
               value={filters.furnished}
               onChange={(e) => updateFilters({ furnished: e.target.value })}
-              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border border-[#353560] bg-[#252547] text-[15px] font-medium text-white appearance-none cursor-pointer"
+              className="w-full h-[60px] px-4 pr-10 rounded-[20px] border border-ha-card-border bg-ha-card text-[15px] font-medium text-ha-text appearance-none cursor-pointer"
               data-testid="select-furnished"
             >
               {FURNISHED_OPTIONS.map(opt => (
                 <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-secondary pointer-events-none" />
           </div>
         </div>
       </div>
@@ -619,15 +619,15 @@ function CheckboxRow({
     <button
       type="button"
       onClick={onToggle}
-      className="w-full flex items-center gap-4 py-4 border-b border-[#353560] last:border-b-0 text-left"
+      className="w-full flex items-center gap-4 py-4 border-b border-ha-card-border last:border-b-0 text-left"
       data-testid={testId}
     >
       <div className={`w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 border-2 transition-colors ${
-        selected ? "bg-[#E91E63] border-[#E91E63]" : "border-[#E91E63] bg-transparent"
+        selected ? "bg-ha-primary border-ha-primary" : "border-ha-primary bg-transparent"
       }`}>
-        {selected && <Check className="w-4 h-4 text-white" />}
+        {selected && <Check className="w-4 h-4 text-ha-text" />}
       </div>
-      <span className="text-[15px] font-medium text-white">{label}</span>
+      <span className="text-[15px] font-medium text-ha-text">{label}</span>
     </button>
   );
 }
@@ -656,7 +656,7 @@ function Step3ExtraFeatures({
         </p>
       </div>
 
-      <div className="bg-[#252547] rounded-lg border border-[#353560]">
+      <div className="bg-ha-card rounded-lg border border-ha-card-border">
         {EXTRA_FEATURE_OPTIONS.map((opt) => (
           <CheckboxRow
             key={opt.value}
@@ -669,9 +669,9 @@ function Step3ExtraFeatures({
       </div>
 
       <div>
-        <h3 className="text-[14px] font-medium text-white mb-1">{t("newSearch.step3.preferencesTitle")}</h3>
-        <p className="text-[12px] text-[#9CA3AF] mb-2">{t("newSearch.step3.preferencesSubtitle")}</p>
-        <div className="bg-[#252547] rounded-lg border border-[#353560]">
+        <h3 className="text-[14px] font-medium text-ha-text mb-1">{t("newSearch.step3.preferencesTitle")}</h3>
+        <p className="text-[12px] text-ha-text-secondary mb-2">{t("newSearch.step3.preferencesSubtitle")}</p>
+        <div className="bg-ha-card rounded-lg border border-ha-card-border">
           {PREFERENCE_OPTIONS.map((opt) => (
             <div key={opt.value}>
               <CheckboxRow
@@ -681,7 +681,7 @@ function Step3ExtraFeatures({
                 testId={`option-pref-${opt.value}`}
               />
               {filters.extraFeatures.includes(opt.value) && (
-                <p className="text-[11px] text-[#9CA3AF] px-4 pb-3 -mt-1">{t(opt.hintKey)}</p>
+                <p className="text-[11px] text-ha-text-secondary px-4 pb-3 -mt-1">{t(opt.hintKey)}</p>
               )}
             </div>
           ))}
@@ -689,7 +689,7 @@ function Step3ExtraFeatures({
       </div>
 
       {filters.extraFeatures.length === 0 && (
-        <p className="text-[13px] text-[#9CA3AF] text-center">
+        <p className="text-[13px] text-ha-text-secondary text-center">
           {t("newSearch.step3.noSelectionHint")}
         </p>
       )}
@@ -721,7 +721,7 @@ function Step4TargetCategories({
         </p>
       </div>
 
-      <div className="bg-[#252547] rounded-lg border border-[#353560]">
+      <div className="bg-ha-card rounded-lg border border-ha-card-border">
         {TARGET_CATEGORY_OPTIONS.map((opt) => (
           <CheckboxRow
             key={opt.value}
@@ -734,7 +734,7 @@ function Step4TargetCategories({
       </div>
 
       {filters.targetCategories.length === 0 && (
-        <p className="text-[13px] text-[#9CA3AF] text-center">
+        <p className="text-[13px] text-ha-text-secondary text-center">
           {t("newSearch.step4.noSelectionHint")}
         </p>
       )}
@@ -744,17 +744,17 @@ function Step4TargetCategories({
 
 function ReviewRow({ label, value, onEdit }: { label: string; value: string; onEdit: () => void }) {
   return (
-    <div className="flex items-start justify-between py-3.5 border-b border-[#353560] last:border-b-0">
+    <div className="flex items-start justify-between py-3.5 border-b border-ha-card-border last:border-b-0">
       <div className="flex-1 min-w-0 mr-3">
-        <p className="text-[13px] font-medium text-[#9CA3AF] mb-0.5">{label}</p>
-        <p className="text-[15px] font-medium text-white">{value}</p>
+        <p className="text-[13px] font-medium text-ha-text-secondary mb-0.5">{label}</p>
+        <p className="text-[15px] font-medium text-ha-text">{value}</p>
       </div>
       <button
         onClick={onEdit}
-        className="flex-shrink-0 w-8 h-8 rounded-full bg-[#353560] flex items-center justify-center hover:bg-[#4A4A70] transition-colors"
+        className="flex-shrink-0 w-8 h-8 rounded-full bg-ha-surface flex items-center justify-center hover:bg-ha-card-hover transition-colors"
         data-testid={`button-review-edit-${label.toLowerCase().replace(/\s/g, "-")}`}
       >
-        <Pencil className="w-3.5 h-3.5 text-[#9CA3AF]" />
+        <Pencil className="w-3.5 h-3.5 text-ha-text-secondary" />
       </button>
     </div>
   );
@@ -834,17 +834,17 @@ function StepReview({
         </div>
 
         {!estimateLoading && (
-          <div className="rounded-xl bg-[#252547] border border-[#353560] p-5 flex items-center gap-3" data-testid="card-review-estimate">
-            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
-              <Sparkles className="w-5 h-5 text-white" />
+          <div className="rounded-xl bg-ha-card border border-ha-card-border p-5 flex items-center gap-3" data-testid="card-review-estimate">
+            <div className="w-10 h-10 rounded-full bg-ha-card/10 flex items-center justify-center flex-shrink-0">
+              <Sparkles className="w-5 h-5 text-ha-text" />
             </div>
             <div>
-              <p className="text-[15px] font-medium text-white">
+              <p className="text-[15px] font-medium text-ha-text">
                 {perWeek > 0
                   ? t("newSearch.step5.estimate", perWeekRange)
                   : t("newSearch.step5.noMatchesExpected")}
               </p>
-              <p className="text-[13px] text-white/60 mt-0.5">
+              <p className="text-[13px] text-ha-text/60 mt-0.5">
                 {perWeek > 0
                   ? t("newSearch.step5.estimateDesc")
                   : t("newSearch.step5.adjustFiltersLater")}
@@ -853,7 +853,7 @@ function StepReview({
           </div>
         )}
 
-        <div className="bg-[#252547] rounded-lg border border-[#353560]">
+        <div className="bg-ha-card rounded-lg border border-ha-card-border">
           <ReviewRow label={t("newSearch.step5.location")} value={locationLabel} onEdit={() => onEdit(1)} />
           {locationData.tab === "wijken" && (
             <ReviewRow label={t("newSearch.step5.districts")} value={districtsLabel} onEdit={() => onEdit(1)} />
@@ -867,12 +867,12 @@ function StepReview({
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#1A1A2E] border-t border-[#353560] p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-ha-bg border-t border-ha-card-border p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
         <div className="max-w-lg mx-auto">
           <Button
             onClick={onSubmit}
             disabled={submitting}
-            className="w-full h-[56px] rounded-full bg-[#E91E63] hover:bg-[#D81B60] text-white text-[16px] font-medium disabled:opacity-40 shadow-[0_2px_12px_rgba(0,0,0,0.3)]"
+            className="w-full h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium disabled:opacity-40 shadow-[0_2px_12px_rgba(0,0,0,0.3)]"
             data-testid="button-wizard-submit"
           >
             {submitting ? (

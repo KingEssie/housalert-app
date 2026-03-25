@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 
 export default {
-  darkMode: ["class"],
+  darkMode: "media",
   content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
@@ -11,7 +11,6 @@ export default {
         sm: ".1875rem", /* 3px */
       },
       colors: {
-        // Flat / base colors (regular buttons)
         background: "hsl(var(--background) / <alpha-value>)",
         foreground: "hsl(var(--foreground) / <alpha-value>)",
         border: "hsl(var(--border) / <alpha-value>)",
@@ -81,6 +80,34 @@ export default {
           busy: "rgb(239 68 68)",
           offline: "rgb(156 163 175)",
         },
+        ha: {
+          bg: "rgb(var(--ha-bg) / <alpha-value>)",
+          card: "rgb(var(--ha-card) / <alpha-value>)",
+          "card-border": "rgb(var(--ha-card-border) / <alpha-value>)",
+          "card-hover": "rgb(var(--ha-card-hover) / <alpha-value>)",
+          text: "rgb(var(--ha-text) / <alpha-value>)",
+          "text-secondary": "rgb(var(--ha-text-secondary) / <alpha-value>)",
+          "text-muted": "rgb(var(--ha-text-muted) / <alpha-value>)",
+          primary: "rgb(var(--ha-primary) / <alpha-value>)",
+          "primary-hover": "rgb(var(--ha-primary-hover) / <alpha-value>)",
+          "primary-light": "var(--ha-primary-light)",
+          "input-bg": "rgb(var(--ha-input-bg) / <alpha-value>)",
+          "input-border": "rgb(var(--ha-input-border) / <alpha-value>)",
+          surface: "rgb(var(--ha-surface) / <alpha-value>)",
+          "nav-bg": "rgb(var(--ha-nav-bg) / <alpha-value>)",
+          "nav-border": "rgb(var(--ha-nav-border) / <alpha-value>)",
+          success: "rgb(var(--ha-success) / <alpha-value>)",
+          "success-light": "var(--ha-success-light)",
+          warning: "rgb(var(--ha-warning) / <alpha-value>)",
+          "warning-light": "var(--ha-warning-light)",
+          danger: "rgb(var(--ha-danger) / <alpha-value>)",
+          "danger-light": "var(--ha-danger-light)",
+          "icon-secondary": "rgb(var(--ha-icon-secondary) / <alpha-value>)",
+          "badge-bg": "rgb(var(--ha-badge-bg) / <alpha-value>)",
+        },
+      },
+      boxShadow: {
+        "ha-card": "var(--ha-shadow-card)",
       },
       fontFamily: {
         sans: ["var(--font-sans)"],

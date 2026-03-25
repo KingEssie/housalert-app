@@ -10,7 +10,7 @@ import { apiFetch } from "@/lib/api-base";
 import { useEmbedded } from "@/hooks/use-embedded";
 import { useHashSearch } from "@/lib/hash-search";
 
-const INPUT_CLS = "w-full h-[44px] pl-11 pr-4 rounded-xl border border-transparent bg-[#F3F4F6] text-[15px] font-medium text-[#222222] placeholder:text-[#717171] placeholder:font-normal focus:bg-white";
+const INPUT_CLS = "w-full h-[44px] pl-11 pr-4 rounded-xl border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal focus:bg-ha-card";
 
 export default function EmbedSuccessPage() {
   const [, navigate] = useLocation();
@@ -134,15 +134,15 @@ export default function EmbedSuccessPage() {
 
   if (done) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center px-5">
+      <div className="min-h-screen bg-ha-card flex items-center justify-center px-5">
         <div className="text-center max-w-sm">
-          <div className="w-16 h-16 rounded-full bg-[#E8FFF5] flex items-center justify-center mx-auto mb-5">
-            <CheckCircle className="w-8 h-8 text-[#F97316]" />
+          <div className="w-16 h-16 rounded-full bg-ha-success-light flex items-center justify-center mx-auto mb-5">
+            <CheckCircle className="w-8 h-8 text-ha-primary" />
           </div>
-          <h1 className="text-[22px] font-medium text-[#222222] mb-2" data-testid="text-embed-success-title">
+          <h1 className="text-[22px] font-medium text-ha-text mb-2" data-testid="text-embed-success-title">
             {t("subscription.activated")}
           </h1>
-          <p className="text-[15px] text-[#222222] opacity-70" data-testid="text-embed-success-redirect">
+          <p className="text-[15px] text-ha-text opacity-70" data-testid="text-embed-success-redirect">
             {t("subscription.redirecting")}
           </p>
         </div>
@@ -151,26 +151,26 @@ export default function EmbedSuccessPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-ha-card flex flex-col">
       <main className={`flex-1 ${containerClass} mx-auto w-full px-5 pb-8 pt-6`}>
-        <div className="w-16 h-16 rounded-full bg-[#E8FFF5] flex items-center justify-center mx-auto mb-5">
-          <CheckCircle className="w-8 h-8 text-[#16A34A]" />
+        <div className="w-16 h-16 rounded-full bg-ha-success-light flex items-center justify-center mx-auto mb-5">
+          <CheckCircle className="w-8 h-8 text-ha-success" />
         </div>
 
         <h1
-          className="text-[22px] font-medium text-[#222222] leading-[1.15] tracking-[-0.02em] mb-1 text-center"
+          className="text-[22px] font-medium text-ha-text leading-[1.15] tracking-[-0.02em] mb-1 text-center"
           data-testid="text-embed-signup-title"
         >
           {t("embedSuccess.title")}
         </h1>
-        <p className="text-[14px] text-[#717171] mb-6 text-center">
+        <p className="text-[14px] text-ha-text-secondary mb-6 text-center">
           {t("embedSuccess.subtitle")}
         </p>
 
-        <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5">
+        <div className="bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5">
           <form onSubmit={handleSignup} className="space-y-4">
             <div className="relative">
-              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#71717A]" />
+              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text-muted" />
               <input
                 type="text"
                 placeholder={t("auth.signup.namePlaceholder")}
@@ -182,7 +182,7 @@ export default function EmbedSuccessPage() {
             </div>
 
             <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#71717A]" />
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text-muted" />
               <input
                 type="email"
                 placeholder={t("auth.signup.emailPlaceholder")}
@@ -195,7 +195,7 @@ export default function EmbedSuccessPage() {
             </div>
 
             <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#71717A]" />
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text-muted" />
               <input
                 type="password"
                 placeholder={t("auth.signup.passwordPlaceholder")}
@@ -210,7 +210,7 @@ export default function EmbedSuccessPage() {
 
             <Button
               type="submit"
-              className="w-full h-[48px] rounded-full text-[15px] font-medium shadow-none bg-[#F97316] hover:bg-[#EA580C] mt-1"
+              className="w-full h-[48px] rounded-full text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover mt-1"
               disabled={loading || !email || !password}
               data-testid="button-embed-signup-submit"
             >
@@ -226,7 +226,7 @@ export default function EmbedSuccessPage() {
           </form>
         </div>
 
-        <p className="text-center text-[12px] text-[#717171] mt-4">
+        <p className="text-center text-[12px] text-ha-text-secondary mt-4">
           {t("auth.signup.footer")}
         </p>
       </main>

@@ -12,7 +12,7 @@ import { useTranslation } from "@/i18n";
 import { apiFetch } from "@/lib/api-base";
 import { useEmbedded } from "@/hooks/use-embedded";
 
-const INPUT_CLS = "w-full h-[44px] pl-11 pr-4 rounded-xl border border-[#353560] bg-[#1A1A2E] text-[15px] font-medium text-white placeholder:text-[#6B7280] placeholder:font-normal focus:border-[#E91E63] focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] outline-none transition-all";
+const INPUT_CLS = "w-full h-[44px] pl-11 pr-4 rounded-xl border border-ha-card-border bg-ha-bg text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted placeholder:font-normal focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] outline-none transition-all";
 
 export default function SignupPage() {
   const [, navigate] = useLocation();
@@ -165,16 +165,16 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#1A1A2E] flex flex-col">
+    <div className="min-h-screen bg-ha-bg flex flex-col">
       {!isEmbedded && (
-        <header className="w-full bg-[#1A1A2E] sticky top-0 z-20 border-b border-[#353560]">
+        <header className="w-full bg-ha-bg sticky top-0 z-20 border-b border-ha-card-border">
           <div className={`${containerClass} mx-auto px-5 h-[56px] flex items-center gap-3`}>
             <button
               onClick={handleBack}
-              className="w-10 h-10 rounded-full bg-[#252547] flex items-center justify-center active:scale-95 transition-transform"
+              className="w-10 h-10 rounded-full bg-ha-card flex items-center justify-center active:scale-95 transition-transform"
               data-testid="button-back-signup"
             >
-              <ChevronLeft className="w-5 h-5 text-[#9CA3AF]" />
+              <ChevronLeft className="w-5 h-5 text-ha-text-secondary" />
             </button>
             <HousAlertLogo size={28} />
           </div>
@@ -187,7 +187,7 @@ export default function SignupPage() {
             <div
               key={step}
               className={`w-2 h-2 rounded-full transition-all ${
-                step <= 4 ? "bg-[#E91E63]" : "bg-[#353560]"
+                step <= 4 ? "bg-ha-primary" : "bg-ha-surface"
               }`}
               data-testid={`dot-step-${step}`}
             />
@@ -197,19 +197,19 @@ export default function SignupPage() {
 
       <main className={`flex-1 ${containerClass} mx-auto w-full px-5 pb-8 pt-3`}>
         <h1
-          className="text-[24px] font-medium text-white leading-[1.15] tracking-[-0.02em] mb-1"
+          className="text-[24px] font-medium text-ha-text leading-[1.15] tracking-[-0.02em] mb-1"
           data-testid="text-signup-title"
         >
           {t("auth.signup.funnelTitle")}
         </h1>
-        <p className="text-[14px] text-[#9CA3AF] mb-5">
+        <p className="text-[14px] text-ha-text-secondary mb-5">
           {t("auth.signup.funnelSubtitle")}
         </p>
 
-        <div className="bg-[#252547] rounded-[24px] border border-[#353560] p-5">
+        <div className="bg-ha-card rounded-[24px] border border-ha-card-border p-5">
           <form onSubmit={handleSignup} className="space-y-4">
             <div className="relative">
-              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#6B7280]" />
+              <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text-muted" />
               <input
                 type="text"
                 placeholder={t("auth.signup.namePlaceholder")}
@@ -221,7 +221,7 @@ export default function SignupPage() {
             </div>
 
             <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#6B7280]" />
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text-muted" />
               <input
                 type="email"
                 placeholder={t("auth.signup.emailPlaceholder")}
@@ -234,7 +234,7 @@ export default function SignupPage() {
             </div>
 
             <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#6B7280]" />
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text-muted" />
               <input
                 type="password"
                 placeholder={t("auth.signup.passwordPlaceholder")}
@@ -251,7 +251,7 @@ export default function SignupPage() {
               <button
                 type="button"
                 onClick={() => setShowReferral(true)}
-                className="flex items-center gap-2 text-[13px] text-[#9CA3AF] hover:text-[#E91E63] transition-colors py-1"
+                className="flex items-center gap-2 text-[13px] text-ha-text-secondary hover:text-ha-primary transition-colors py-1"
                 data-testid="button-show-referral"
               >
                 <Gift className="w-4 h-4" />
@@ -260,7 +260,7 @@ export default function SignupPage() {
             ) : (
               <div>
                 <div className="relative">
-                  <Gift className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#6B7280]" />
+                  <Gift className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text-muted" />
                   <input
                     type="text"
                     placeholder={t("referral.inputPlaceholder")}
@@ -271,13 +271,13 @@ export default function SignupPage() {
                     autoCapitalize="characters"
                   />
                 </div>
-                <p className="text-[12px] text-[#6B7280] mt-1 ml-1">{t("referral.inputHelper")}</p>
+                <p className="text-[12px] text-ha-text-muted mt-1 ml-1">{t("referral.inputHelper")}</p>
               </div>
             )}
 
             <Button
               type="submit"
-              className="w-full h-[48px] rounded-full text-[15px] font-medium shadow-none bg-[#E91E63] hover:bg-[#D81B60] text-white mt-1"
+              className="w-full h-[48px] rounded-full text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover text-white mt-1"
               disabled={loading || !email || !password}
               data-testid="button-signup-submit"
             >
@@ -293,18 +293,18 @@ export default function SignupPage() {
           </form>
         </div>
 
-        <p className="text-center text-[14px] text-[#9CA3AF] mt-5">
+        <p className="text-center text-[14px] text-ha-text-secondary mt-5">
           {t("auth.signup.hasAccount")}{" "}
           <button
             onClick={() => navigate("/login")}
-            className="text-[#E91E63] font-medium hover:underline"
+            className="text-ha-primary font-medium hover:underline"
             data-testid="link-login"
           >
             {t("auth.signup.loginLink")}
           </button>
         </p>
 
-        <p className="text-center text-[12px] text-[#6B7280] mt-3">
+        <p className="text-center text-[12px] text-ha-text-muted mt-3">
           {t("auth.signup.footer")}
         </p>
       </main>

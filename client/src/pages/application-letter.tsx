@@ -81,7 +81,7 @@ export default function ApplicationLetterPage() {
   const isLongEnough = template.trim().length >= 20;
 
   return (
-    <div className="min-h-screen bg-[#1A1A2E] flex flex-col">
+    <div className="min-h-screen bg-ha-bg flex flex-col">
       <PageHeader title={t("applicationLetter.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-32">
@@ -89,10 +89,10 @@ export default function ApplicationLetterPage() {
 
           <div>
             <div className="flex items-center justify-between mb-2.5">
-              <h3 className="text-[14px] font-medium text-[#9CA3AF]">{t("applicationLetter.placeholders")}</h3>
+              <h3 className="text-[14px] font-medium text-ha-text-secondary">{t("applicationLetter.placeholders")}</h3>
               <button
                 onClick={handleReset}
-                className="flex items-center gap-1 text-[13px] text-[#9CA3AF] active:text-white transition-colors"
+                className="flex items-center gap-1 text-[13px] text-ha-text-secondary active:text-ha-text transition-colors"
                 data-testid="button-reset-template"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
@@ -119,7 +119,7 @@ export default function ApplicationLetterPage() {
                       setTemplate(template + p.key);
                     }
                   }}
-                  className="text-[11px] font-mono bg-[#252547] text-[#E91E63] px-2.5 py-1.5 rounded-lg active:bg-[#353560] transition-colors border border-[#353560]"
+                  className="text-[11px] font-mono bg-ha-card text-ha-primary px-2.5 py-1.5 rounded-lg active:bg-ha-surface transition-colors border border-ha-card-border"
                   title={t(p.labelKey)}
                   data-testid={`placeholder-${p.key.replace(/\[|\]/g, "")}`}
                 >
@@ -130,8 +130,8 @@ export default function ApplicationLetterPage() {
           </div>
 
           {isLoading ? (
-            <div className="rounded-[20px] bg-[#252547] p-6 animate-pulse">
-              <div className="h-[300px] bg-[#353560] rounded-2xl" />
+            <div className="rounded-[20px] bg-ha-card p-6 animate-pulse">
+              <div className="h-[300px] bg-ha-surface rounded-2xl" />
             </div>
           ) : (
             <div>
@@ -139,11 +139,11 @@ export default function ApplicationLetterPage() {
                 value={template}
                 onChange={(e) => setTemplate(e.target.value)}
                 placeholder={t("applicationLetter.placeholderText")}
-                className="w-full min-h-[340px] px-5 py-5 rounded-[20px] border border-[#353560] bg-[#252547] text-[15px] text-white placeholder:text-[#6B7280] focus:outline-none focus:border-[#E91E63] focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] resize-y leading-relaxed transition-all"
+                className="w-full min-h-[340px] px-5 py-5 rounded-[20px] border border-ha-card-border bg-ha-card text-[15px] text-ha-text placeholder:text-ha-text-muted focus:outline-none focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] resize-y leading-relaxed transition-all"
                 data-testid="input-template"
               />
               {!isLongEnough && template.length > 0 && (
-                <p className="text-[12px] text-[#9CA3AF] mt-2 px-1">{t("applicationLetter.minChars")}</p>
+                <p className="text-[12px] text-ha-text-secondary mt-2 px-1">{t("applicationLetter.minChars")}</p>
               )}
             </div>
           )}
@@ -154,7 +154,7 @@ export default function ApplicationLetterPage() {
         <button
           onClick={() => saveMutation.mutate(template)}
           disabled={!isLongEnough || saveMutation.isPending}
-          className="pointer-events-auto h-[48px] px-8 rounded-full bg-[#E91E63] hover:bg-[#D81B60] text-white text-[15px] font-medium disabled:opacity-40 shadow-[0_4px_16px_rgba(0,0,0,0.16)] active:scale-95 transition-all"
+          className="pointer-events-auto h-[48px] px-8 rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium disabled:opacity-40 shadow-[0_4px_16px_rgba(0,0,0,0.16)] active:scale-95 transition-all"
           data-testid="button-save-template"
         >
           {saveMutation.isPending ? t("applicationLetter.saving") : t("applicationLetter.saveLetter")}

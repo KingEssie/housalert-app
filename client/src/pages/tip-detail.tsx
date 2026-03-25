@@ -25,8 +25,8 @@ export default function TipDetailPage() {
 
   if (!tip) {
     return (
-      <div className="min-h-screen bg-[#1A1A2E] flex items-center justify-center">
-        <p className="text-[#9CA3AF]">{t("tips.notFound")}</p>
+      <div className="min-h-screen bg-ha-bg flex items-center justify-center">
+        <p className="text-ha-text-secondary">{t("tips.notFound")}</p>
       </div>
     );
   }
@@ -59,26 +59,26 @@ export default function TipDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#1A1A2E] flex flex-col">
-      <header className="sticky top-0 z-10 bg-[#1A1A2E] border-b border-[#353560]">
+    <div className="min-h-screen bg-ha-bg flex flex-col">
+      <header className="sticky top-0 z-10 bg-ha-bg border-b border-ha-card-border">
         <div className="max-w-xl mx-auto flex items-center h-[56px] px-5">
           <button
             onClick={() => navigate("/dashboard?tab=tips")}
-            className="w-9 h-9 rounded-full bg-[#252547] flex items-center justify-center mr-3 active:scale-95 transition-transform"
+            className="w-9 h-9 rounded-full bg-ha-card flex items-center justify-center mr-3 active:scale-95 transition-transform"
             data-testid="button-back-tip"
           >
-            <ArrowLeft className="w-4 h-4 text-[#9CA3AF]" />
+            <ArrowLeft className="w-4 h-4 text-ha-text-secondary" />
           </button>
-          <h1 className="text-[17px] font-medium text-white flex-1 tracking-wide">
+          <h1 className="text-[17px] font-medium text-ha-text flex-1 tracking-wide">
             {t("tips.tipLabel")} {currentIndex + 1}/{TIP_IDS.length}
           </h1>
         </div>
       </header>
 
       <div className="max-w-xl mx-auto w-full px-5 pt-3">
-        <div className="w-full bg-[#353560] rounded-full h-1.5" data-testid="progress-bar">
+        <div className="w-full bg-ha-surface rounded-full h-1.5" data-testid="progress-bar">
           <div
-            className="bg-[#E91E63] h-1.5 rounded-full transition-all duration-300"
+            className="bg-ha-primary h-1.5 rounded-full transition-all duration-300"
             style={{ width: `${((currentIndex + 1) / TIP_IDS.length) * 100}%` }}
           />
         </div>
@@ -86,43 +86,43 @@ export default function TipDetailPage() {
 
       <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-8 pb-32">
         <div className="flex items-center gap-4 mb-6">
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 bg-[#E91E63]/10">
-            <Icon className="w-7 h-7 text-[#E91E63]" />
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 bg-ha-primary/10">
+            <Icon className="w-7 h-7 text-ha-primary" />
           </div>
           <div>
-            <p className="text-[12px] font-medium text-[#E91E63] uppercase tracking-wide">
+            <p className="text-[12px] font-medium text-ha-primary uppercase tracking-wide">
               {t("tips.tipLabel")} {currentIndex + 1}
             </p>
-            <h2 className="text-[22px] font-medium text-white leading-tight" data-testid="text-tip-title">
+            <h2 className="text-[22px] font-medium text-ha-text leading-tight" data-testid="text-tip-title">
               {tip.title}
             </h2>
           </div>
         </div>
 
-        <p className="text-[15px] text-[#9CA3AF] leading-relaxed mb-6" data-testid="text-tip-description">
+        <p className="text-[15px] text-ha-text-secondary leading-relaxed mb-6" data-testid="text-tip-description">
           {tip.description}
         </p>
 
         <button
           onClick={handleGoToContent}
-          className="w-full bg-[#252547] rounded-2xl p-5 flex items-center gap-3 text-left hover:bg-[#2D2D52] transition-colors active:scale-[0.985]"
+          className="w-full bg-ha-card rounded-2xl p-5 flex items-center gap-3 text-left hover:bg-ha-card-hover transition-colors active:scale-[0.985]"
           data-testid="button-open-content"
         >
-          <Icon className="w-5 h-5 text-[#E91E63] flex-shrink-0" />
-          <span className="text-[14px] font-medium text-white flex-1">{t("tips.openContent")}</span>
-          <ChevronRight className="w-4 h-4 text-[#6B7280]" />
+          <Icon className="w-5 h-5 text-ha-primary flex-shrink-0" />
+          <span className="text-[14px] font-medium text-ha-text flex-1">{t("tips.openContent")}</span>
+          <ChevronRight className="w-4 h-4 text-ha-text-muted" />
         </button>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-[#1A1A2E] border-t border-[#353560] p-4 pb-5 z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-ha-bg border-t border-ha-card-border p-4 pb-5 z-10">
         <div className="max-w-xl mx-auto flex gap-3">
           <Button
             onClick={handleMarkRead}
             disabled={isRead}
             className={`flex-1 h-[52px] rounded-full text-[15px] font-medium flex items-center justify-center gap-2 ${
               isRead
-                ? "bg-[#00C896]/15 text-[#00C896] border border-[#00C896]/30 hover:bg-[#00C896]/15"
-                : "bg-[#252547] text-white border border-[#353560] hover:bg-[#353560]"
+                ? "bg-ha-success-light text-ha-success border border-ha-success/30 hover:bg-ha-success-light"
+                : "bg-ha-card text-ha-text border border-ha-card-border hover:bg-ha-surface"
             }`}
             data-testid="button-mark-read"
           >
@@ -131,7 +131,7 @@ export default function TipDetailPage() {
           </Button>
           <Button
             onClick={handleNext}
-            className="flex-1 h-[52px] rounded-full bg-[#E91E63] hover:bg-[#D81B60] text-white text-[15px] font-medium flex items-center justify-center gap-2"
+            className="flex-1 h-[52px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium flex items-center justify-center gap-2"
             data-testid="button-next-tip"
           >
             {nextTip ? t("common.next") : t("tips.backToOverview")}

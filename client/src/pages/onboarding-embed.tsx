@@ -35,18 +35,18 @@ function EstimateBlock({ city, maxPrice }: { city: string; maxPrice: string }) {
 
   return (
     <div
-      className="flex items-center gap-3 bg-gradient-to-r from-[#FFF7ED] to-[#FFF7ED] rounded-2xl px-4 py-3.5"
+      className="flex items-center gap-3 bg-gradient-to-r from-ha-primary-light to-ha-primary-light rounded-2xl px-4 py-3.5"
       data-testid="embed-estimate-block"
     >
-      <div className="w-9 h-9 rounded-full bg-[#F97316] flex items-center justify-center flex-shrink-0">
+      <div className="w-9 h-9 rounded-full bg-ha-primary flex items-center justify-center flex-shrink-0">
         <Sparkles className="w-4 h-4 text-white" />
       </div>
       <div className="flex-1 min-w-0">
         {loading ? (
-          <div className="h-4 w-48 bg-[#FFF7ED] rounded animate-pulse" />
+          <div className="h-4 w-48 bg-ha-primary-light rounded animate-pulse" />
         ) : estimate !== null ? (
-          <p className="text-[13px] sm:text-[14px] font-medium text-[#222222] leading-snug">
-            <span className="text-[#F97316] text-[15px] font-medium">{getMatchEstimateRange(estimate).low}–{getMatchEstimateRange(estimate).high}</span> {t("onboardingEmbed.matchesPerWeek")}
+          <p className="text-[13px] sm:text-[14px] font-medium text-ha-text leading-snug">
+            <span className="text-ha-primary text-[15px] font-medium">{getMatchEstimateRange(estimate).low}–{getMatchEstimateRange(estimate).high}</span> {t("onboardingEmbed.matchesPerWeek")}
           </p>
         ) : null}
       </div>
@@ -60,14 +60,14 @@ function CompletionScreen({ draftId }: { draftId: string }) {
 
   return (
     <div className="flex flex-col items-center justify-center px-6 py-10 text-center">
-      <div className="w-[56px] h-[56px] rounded-2xl bg-[#FFF7ED] flex items-center justify-center mb-5">
-        <Check className="w-7 h-7 text-[#F97316]" />
+      <div className="w-[56px] h-[56px] rounded-2xl bg-ha-primary-light flex items-center justify-center mb-5">
+        <Check className="w-7 h-7 text-ha-primary" />
       </div>
 
-      <h2 className="text-[20px] font-medium text-[#222222] mb-1.5 tracking-wide" data-testid="embed-text-done-title">
+      <h2 className="text-[20px] font-medium text-ha-text mb-1.5 tracking-wide" data-testid="embed-text-done-title">
         {t("onboardingEmbed.doneTitle")}
       </h2>
-      <p className="text-[14px] text-[#222222] mb-7 max-w-[300px] leading-relaxed">
+      <p className="text-[14px] text-ha-text mb-7 max-w-[300px] leading-relaxed">
         {t("onboardingEmbed.doneSubtitle")}
       </p>
 
@@ -75,7 +75,7 @@ function CompletionScreen({ draftId }: { draftId: string }) {
         <a
           href={continueUrl}
           target="_top"
-          className="w-full min-h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] text-white font-medium text-[15px] transition-all flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.3)]"
+          className="w-full min-h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[15px] transition-all flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.3)]"
           data-testid="embed-link-continue-browser"
         >
           <ExternalLink className="w-4 h-4" />
@@ -83,7 +83,7 @@ function CompletionScreen({ draftId }: { draftId: string }) {
         </a>
 
         <button
-          className="w-full h-[56px] rounded-full border border-[#E5E7EB] bg-white text-[#222222] font-medium text-[14px] transition-colors flex items-center justify-center gap-2"
+          className="w-full h-[56px] rounded-full border border-ha-card-border bg-ha-card text-ha-text font-medium text-[14px] transition-colors flex items-center justify-center gap-2"
           data-testid="embed-button-download-app"
           onClick={() => window.open(continueUrl, "_top")}
         >
@@ -92,7 +92,7 @@ function CompletionScreen({ draftId }: { draftId: string }) {
         </button>
       </div>
 
-      <p className="text-[11px] text-[#222222] mt-6">
+      <p className="text-[11px] text-ha-text mt-6">
         Powered by HousAlert
       </p>
     </div>
@@ -189,8 +189,8 @@ export default function OnboardingEmbedPage() {
 
   if (draftId) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center p-4">
-        <div className="w-full max-w-[440px] bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden">
+      <div className="min-h-screen bg-ha-card flex items-center justify-center p-4">
+        <div className="w-full max-w-[440px] bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden">
           <CompletionScreen draftId={draftId} />
         </div>
       </div>
@@ -198,19 +198,19 @@ export default function OnboardingEmbedPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex items-start justify-center px-4 py-6 sm:py-8">
+    <div className="min-h-screen bg-ha-card flex items-start justify-center px-4 py-6 sm:py-8">
       <div className="w-full max-w-[440px]">
 
         <div className="text-center mb-5">
           <h1
-            className="text-[21px] sm:text-[24px] font-medium text-[#222222] leading-[1.25] tracking-tight"
+            className="text-[21px] sm:text-[24px] font-medium text-ha-text leading-[1.25] tracking-tight"
             data-testid="embed-text-hero-title"
           >
             {t("onboardingEmbed.heroTitle")}
           </h1>
         </div>
 
-        <div className="bg-white rounded-[24px] border border-[#F0F0F0] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-visible">
+        <div className="bg-ha-card rounded-[24px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-visible">
 
           <div className="px-5 pt-5 pb-1">
             <LocationModeSelector
@@ -221,12 +221,12 @@ export default function OnboardingEmbedPage() {
             />
           </div>
 
-          <div className="h-px bg-[#E5E7EB] mx-5 my-1" />
+          <div className="h-px bg-ha-card-border mx-5 my-1" />
 
           <div className="px-5 py-3 space-y-3.5">
 
             <div>
-              <label className="text-[13px] font-medium text-[#222222] tracking-wide mb-2 block">
+              <label className="text-[13px] font-medium text-ha-text tracking-wide mb-2 block">
                 {t("onboardingEmbed.propertyType")}
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -236,8 +236,8 @@ export default function OnboardingEmbedPage() {
                     onClick={() => setPropertyType(pt.value)}
                     className={`px-3.5 py-[7px] rounded-full text-[13px] font-medium transition-all ${
                       propertyType === pt.value
-                        ? "bg-[#F97316] text-white shadow-sm"
-                        : "bg-[#F5F7FA] text-[#222222]"
+                        ? "bg-ha-primary text-white shadow-sm"
+                        : "bg-ha-surface text-ha-text"
                     }`}
                     data-testid={`embed-chip-property-${pt.value}`}
                   >
@@ -248,32 +248,32 @@ export default function OnboardingEmbedPage() {
             </div>
 
             <div>
-              <label className="text-[13px] font-medium text-[#222222] tracking-wide mb-2 block">
+              <label className="text-[13px] font-medium text-ha-text tracking-wide mb-2 block">
                 {t("onboardingEmbed.monthlyBudget")}
               </label>
               <div className="flex items-center gap-2">
                 <div className="relative flex-1">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#222222] text-[13px] font-medium">EUR</span>
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ha-text text-[13px] font-medium">EUR</span>
                   <input
                     type="number"
                     inputMode="numeric"
                     placeholder="min"
                     value={minPrice}
                     onChange={(e) => setMinPrice(e.target.value)}
-                    className="w-full h-[42px] rounded-[20px] bg-[#F3F4F6] border border-transparent pl-[52px] pr-3 text-[14px] text-[#222222] placeholder:text-[#717171]"
+                    className="w-full h-[42px] rounded-[20px] bg-ha-surface border border-transparent pl-[52px] pr-3 text-[14px] text-ha-text placeholder:text-ha-text-secondary"
                     data-testid="embed-input-min-price"
                   />
                 </div>
-                <div className="w-3 h-px bg-[#E5E7EB]" />
+                <div className="w-3 h-px bg-ha-card-border" />
                 <div className="relative flex-1">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#222222] text-[13px] font-medium">EUR</span>
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ha-text text-[13px] font-medium">EUR</span>
                   <input
                     type="number"
                     inputMode="numeric"
                     placeholder="max"
                     value={maxPrice}
                     onChange={(e) => setMaxPrice(e.target.value)}
-                    className="w-full h-[42px] rounded-[20px] bg-[#F3F4F6] border border-transparent pl-[52px] pr-3 text-[14px] text-[#222222] placeholder:text-[#717171]"
+                    className="w-full h-[42px] rounded-[20px] bg-ha-surface border border-transparent pl-[52px] pr-3 text-[14px] text-ha-text placeholder:text-ha-text-secondary"
                     data-testid="embed-input-max-price"
                   />
                 </div>
@@ -282,7 +282,7 @@ export default function OnboardingEmbedPage() {
 
             <EstimateBlock city={cityName} maxPrice={maxPrice} />
 
-            <div className="flex items-center gap-2 text-[12px] text-[#222222]">
+            <div className="flex items-center gap-2 text-[12px] text-ha-text">
               <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
               <span>{t("onboardingEmbed.maxSearches")}</span>
             </div>
@@ -298,7 +298,7 @@ export default function OnboardingEmbedPage() {
             <button
               onClick={handleSubmit}
               disabled={!canSubmit || submitting}
-              className="w-full h-[56px] rounded-full bg-[#F97316] hover:bg-[#EA580C] active:scale-[0.98] text-white font-medium text-[16px] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 shadow-[0_2px_12px_rgba(0,0,0,0.35)]"
+              className="w-full h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover active:scale-[0.98] text-white font-medium text-[16px] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 shadow-[0_2px_12px_rgba(0,0,0,0.35)]"
               data-testid="embed-button-submit"
             >
               {submitting ? (
@@ -313,7 +313,7 @@ export default function OnboardingEmbedPage() {
           </div>
         </div>
 
-        <p className="text-center text-[11px] text-[#222222] mt-4">
+        <p className="text-center text-[11px] text-ha-text mt-4">
           Powered by HousAlert
         </p>
       </div>

@@ -182,51 +182,51 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
     <div className="flex flex-col gap-4" ref={containerRef}>
       <div className="relative">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#71717A] pointer-events-none" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text-muted pointer-events-none" />
           <input
             type="text"
             value={query}
             onChange={(e) => handleInputChange(e.target.value)}
             onFocus={() => { if (hasResults && !value) setOpen(true); }}
             placeholder={t("location.searchCity")}
-            className={`w-full min-h-[52px] rounded-lg bg-[#F5F7FA] border border-transparent px-11 text-[16px] text-[#71717A] placeholder:text-[#71717A] ${
-              showValidation ? "border-red-400" : value ? "border-[#F97316] bg-[#F5F7FA]/30" : "border-[#E5E7EB]"
+            className={`w-full min-h-[52px] rounded-lg bg-ha-surface border border-transparent px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-muted ${
+              showValidation ? "border-red-400" : value ? "border-ha-primary bg-ha-surface/30" : "border-ha-card-border"
             }`}
             data-testid="input-city-search"
           />
           {query && (
             <button
               onClick={handleClear}
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#E5E7EB] flex items-center justify-center hover:bg-[#717171]/30 transition-colors"
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-ha-card-border flex items-center justify-center hover:bg-ha-text-muted/30 transition-colors"
               data-testid="button-clear-city"
             >
-              <X className="w-3.5 h-3.5 text-[#71717A]" />
+              <X className="w-3.5 h-3.5 text-ha-text-muted" />
             </button>
           )}
         </div>
 
         {isLoading && (
           <div className="absolute right-12 top-1/2 -translate-y-1/2">
-            <div className="w-4 h-4 border-2 border-[#F97316]/30 border-t-[#F97316] rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-ha-primary/30 border-t-ha-primary rounded-full animate-spin" />
           </div>
         )}
 
         {open && hasResults && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-[#E5E7EB] rounded-lg shadow-lg max-h-[260px] overflow-y-auto z-30">
+          <div className="absolute top-full left-0 right-0 mt-2 bg-ha-card border border-ha-card-border rounded-lg shadow-lg max-h-[260px] overflow-y-auto z-30">
             {usingGoogle && places.suggestions.length > 0 ? (
               <>
                 {places.suggestions.map((s) => (
                   <button
                     key={s.place_id}
                     onClick={() => handleGoogleSelect(s)}
-                    className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#71717A] hover:bg-[#F5F7FA] flex items-center gap-3"
+                    className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-ha-text-muted hover:bg-ha-surface flex items-center gap-3"
                     data-testid={`option-place-${s.place_id}`}
                   >
-                    <MapPin className="w-4 h-4 text-[#71717A] flex-shrink-0" />
+                    <MapPin className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
                     <span>{s.state ? `${s.city_name}, ${s.state}` : s.city_name}</span>
                   </button>
                 ))}
-                <div className="px-4 py-2 text-[11px] text-[#717171] text-right border-t border-[#F3F4F6]">
+                <div className="px-4 py-2 text-[11px] text-ha-text-secondary text-right border-t border-ha-card-border">
                   {t("cityPicker.poweredByGoogle")}
                 </div>
               </>
@@ -239,10 +239,10 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
                   <button
                     key={r.place_id}
                     onClick={() => handleNominatimSelect(r)}
-                    className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-[#71717A] hover:bg-[#F5F7FA] flex items-center gap-3"
+                    className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-ha-text-muted hover:bg-ha-surface flex items-center gap-3"
                     data-testid={`option-place-${r.place_id}`}
                   >
-                    <MapPin className="w-4 h-4 text-[#71717A] flex-shrink-0" />
+                    <MapPin className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
                     <span>{label}</span>
                   </button>
                 );
@@ -268,12 +268,12 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
 
       {value && (
         <>
-          <div className="inline-flex items-center gap-2 bg-[#F5F7FA] text-[#71717A] font-medium text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
+          <div className="inline-flex items-center gap-2 bg-ha-surface text-ha-text-muted font-medium text-[14px] px-4 py-2 rounded-full self-start" data-testid="chip-selected-city">
             <MapPin className="w-4 h-4" />
             {value.city_name}
           </div>
 
-          <div className="rounded-lg overflow-hidden border border-[#E5E7EB] h-[200px]" data-testid="map-preview">
+          <div className="rounded-lg overflow-hidden border border-ha-card-border h-[200px]" data-testid="map-preview">
             <MapContainer
               center={[value.latitude, value.longitude]}
               zoom={11}
