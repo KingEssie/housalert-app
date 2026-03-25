@@ -1,0 +1,253 @@
+We are restructuring the Account and Settings experience in the app.
+
+IMPORTANT:
+Do NOT redesign the app from scratch.
+Do NOT change branding colors.
+Do NOT change the current light Rentbird-inspired HousAlert visual system.
+This task is about INFORMATION ARCHITECTURE, PAGE STRUCTURE, and CORRECT LINKING.
+
+The current problem:
+- Account and Settings responsibilities are mixed
+- Notifications are in the wrong place
+- Some feature pages belong under Account, not under Settings
+- Settings should behave more like Rentbird settings
+- The user should always understand where to find what
+
+==================================================
+GOAL
+==================================================
+
+We want:
+
+1. ACCOUNT PAGE = active user hub
+2. SETTINGS PAGE = structured settings overview
+3. EACH SETTINGS ITEM = its own page
+4. ALL LINKS AND ROUTES = logically correct
+5. EXISTING pages Zoekbuddy and Abonnement can stay visually/functionally as they are, but must be linked from the correct place
+
+==================================================
+1. ACCOUNT PAGE (PRIMARY HUB)
+==================================================
+
+The Account/Profile page should contain ONLY the following blocks in this exact order:
+
+A. Dark purple header block at the top:
+- user name
+- "Lid sinds ..."
+- settings icon top-right
+- keep current visual style
+- no avatar needed
+- compact height
+- no overlap with the first white card below
+
+B. Card: "Maak je account af"
+- keep existing functionality
+
+C. Card: "Vergroot je kansen met deze tips!"
+- keep existing functionality
+- tapping this opens the Tips page
+
+D. Card/block: "Zoekopdrachten"
+- same visual component as currently used on account
+- keep edit/new search profile functionality
+
+E. Card/block: "Reactiebrief"
+- opens Reactiebrief page
+
+F. Card/block: "Zoekbuddy"
+- opens Zoekbuddy beheren page
+
+G. Button or entry: "Instellingen"
+- opens Settings overview page
+
+IMPORTANT:
+- REMOVE notifications from the Account page
+- Notifications do NOT belong here anymore
+
+==================================================
+2. SETTINGS OVERVIEW PAGE
+==================================================
+
+The Settings page must become a structured settings overview, inspired by Rentbird.
+
+Use the same information architecture as Rentbird:
+- grouped sections
+- simple rows
+- chevrons on the right for internal pages
+- external-link icon for external pages where relevant
+- clean white settings card on light background
+
+Top bar:
+- back button on the left
+- title: "Instellingen"
+- optional logout/account action on the right if already present
+
+Inside the main white settings container, use these sections and rows:
+
+SECTION: Account
+- Voorkeuren
+- Wachtwoord
+- Abonnement
+
+SECTION: Persoonlijke gegevens
+- Mijn gegevens
+- Woonsituatie
+
+SECTION: Zoeken en reageren
+- Zoekbuddy beheren
+- Reactiebrief
+
+SECTION: Help
+- Veelgestelde vragen
+- Contacteer ons
+
+SECTION: Voorwaarden
+- Algemene voorwaarden
+- Privacybeleid
+
+Bottom of page:
+- HousAlert logo
+- version number
+- do NOT use Rentbird branding here
+
+==================================================
+3. INDIVIDUAL SETTINGS PAGES
+==================================================
+
+Each settings row should open its own page.
+
+A. Voorkeuren page
+This page should contain:
+- Taal
+- Thema
+- Hoe wil je woningmatches ontvangen?
+  - Pushmeldingen
+  - E-mail
+- optional popup preferences only if already supported in existing logic
+
+This is where notification toggles now live.
+Notifications should no longer appear on the Account page.
+
+B. Wachtwoord page
+Fields:
+- Wachtwoord
+- helper text about password requirements
+- Wachtwoord bevestigen
+- button: Opslaan
+
+C. Mijn gegevens page
+Fields:
+- Voornaam
+- Achternaam
+- E-mail
+- Telefoonnummer
+- Geboortedatum
+- Geslacht
+
+D. Woonsituatie page
+Fields:
+- Met wie ga je wonen?
+- Wat is je huidige werksituatie?
+- Wat is de reden voor je verhuizing?
+- Wat is jouw / jullie gezamenlijk bruto maandinkomen?
+- Welke huisdieren neem je mee?
+
+E. Reactiebrief page
+Keep existing functionality and page styling, but ensure route/linking is correct.
+
+F. Zoekbuddy beheren page
+Keep existing functionality and page styling, but ensure route/linking is correct.
+
+G. Abonnement page
+Keep existing functionality and page styling, but ensure route/linking is correct.
+
+==================================================
+4. LINKING LOGIC
+==================================================
+
+The following navigation must work correctly:
+
+FROM ACCOUNT PAGE:
+- settings icon -> Instellingen page
+- Maak je account af -> completion/onboarding flow
+- Vergroot je kansen met deze tips -> Tips page
+- Zoekopdrachten -> search profiles management
+- Reactiebrief -> Reactiebrief page
+- Zoekbuddy -> Zoekbuddy beheren page
+- Instellingen button -> Instellingen page
+
+FROM SETTINGS PAGE:
+- Voorkeuren -> Voorkeuren page
+- Wachtwoord -> Wachtwoord page
+- Abonnement -> Abonnement page
+- Mijn gegevens -> Mijn gegevens page
+- Woonsituatie -> Woonsituatie page
+- Zoekbuddy beheren -> Zoekbuddy page
+- Reactiebrief -> Reactiebrief page
+- Veelgestelde vragen -> FAQ page/link
+- Contacteer ons -> contact page/link
+- Algemene voorwaarden -> terms page/link
+- Privacybeleid -> privacy page/link
+
+==================================================
+5. VISUAL RULES
+==================================================
+
+Do NOT change the current app design direction.
+
+Keep:
+- light grey app background
+- white cards/containers
+- dark purple header areas
+- pink primary CTA/buttons
+- same typography system already established
+- same reduced corner radius system
+- same spacing rhythm
+
+The Settings overview should feel like Rentbird structurally,
+but still look like the current HousAlert light design system.
+
+==================================================
+6. DO NOT
+==================================================
+
+- do not put notifications back on the Account page
+- do not duplicate the same feature in multiple places
+- do not redesign Zoekbuddy or Abonnement unnecessarily
+- do not change business logic
+- do not remove existing data bindings
+- do not create alternate visual styles for similar pages
+
+==================================================
+7. EXPECTED RESULT
+==================================================
+
+Final structure should be:
+
+ACCOUNT PAGE:
+- header
+- progress
+- tips
+- zoekopdrachten
+- reactiebrief
+- zoekbuddy
+- instellingen entry
+
+SETTINGS PAGE:
+- preferences
+- password
+- subscription
+- personal details
+- housing situation
+- zoekbuddy
+- reaction letter
+- help
+- legal
+
+And everything must link to the correct destination.
+
+When done, confirm:
+1. which routes/pages were reused
+2. which links were updated
+3. where notifications now live
+4. whether Account and Settings are now fully separated correctly

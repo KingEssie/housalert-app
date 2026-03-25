@@ -60,6 +60,8 @@ import ApplyPage from "@/pages/apply";
 import TipDetailPage from "@/pages/tip-detail";
 import DocumentsPage from "@/pages/documents";
 import SettingsPage from "@/pages/settings";
+import PreferencesPage from "@/pages/preferences";
+import HousingSituationPage from "@/pages/housing-situation";
 
 function ProtectedRoute({ component: Component, skipOnboardingCheck }: { component: React.ComponentType; skipOnboardingCheck?: boolean }) {
   const { user, session, loading } = useAuth();
@@ -187,6 +189,8 @@ function Router() {
       <Route path="/tips/zoekstrategie" component={() => <ProtectedRoute component={ZoekstrategieGuidePage} />} />
       <Route path="/tips/netwerk" component={() => <ProtectedRoute component={NetwerkGuidePage} />} />
       <Route path="/settings" component={() => <ProtectedRoute component={SettingsPage} />} />
+      <Route path="/settings/preferences" component={() => <ProtectedRoute component={PreferencesPage} />} />
+      <Route path="/settings/housing" component={() => <ProtectedRoute component={HousingSituationPage} />} />
       <Route path="/account/subscription" component={() => <ProtectedRoute component={SubscriptionDetailPage} />} />
       <Route path="/account/subscription/cancel" component={() => <ProtectedRoute component={SubscriptionCancelConfirmPage} />} />
       <Route path="/account/subscription/cancelled" component={() => <ProtectedRoute component={SubscriptionCancelledPage} />} />

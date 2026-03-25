@@ -1574,12 +1574,8 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
 
 
 function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canonicalStats, computedAppliedCount }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null }; setActiveTab: (tab: TabKey) => void; canonicalStats?: CanonicalStats; computedAppliedCount: number }) {
-  const [signingOut, setSigningOut] = useState(false);
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [showPhotoSheet, setShowPhotoSheet] = useState(false);
   const [photoUploading, setPhotoUploading] = useState(false);
-  const [notifUpdating, setNotifUpdating] = useState<string | null>(null);
-  const [showLangSheet, setShowLangSheet] = useState(false);
   const [buddyEmail, setBuddyEmail] = useState("");
   const [buddySaving, setBuddySaving] = useState(false);
   const [buddyExpanded, setBuddyExpanded] = useState(false);
@@ -1596,16 +1592,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       const data = await res.json();
       console.log(`[IDENTITY] ProfielTab profile fetch — first_name="${data?.first_name ?? "null"}", user_id="${data?.user_id ?? "unknown"}", auth_user="${session.user?.id?.substring(0, 8) ?? "null"}"`);
       return data;
-    },
-  });
-
-  const notifQuery = useQuery({
-    queryKey: ["/api/notifications/settings"],
-    queryFn: async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) return null;
-      const res = await apiFetch("/api/notifications/settings", { headers: { Authorization: `Bearer ${session.access_token}` } });
-      return res.json();
     },
   });
 
@@ -1635,9 +1621,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
   });
 
   const pd = profileDataQuery.data;
-  const phone = pd?.phone || notifQuery.data?.phone_e164;
+  const phone = pd?.phone;
   const photoUrl = pd?.profile_photo_url || null;
-  const notifSettings = notifQuery.data;
 
   useEffect(() => {
     if (pd?.language && (pd.language === "de" || pd.language === "en" || pd.language === "nl") && pd.language !== locale) {
@@ -1648,12 +1633,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
   const displayName = [pd?.first_name, pd?.last_name].filter(Boolean).join(" ") || user.user_metadata?.full_name || "";
   const initials = displayName ? displayName.split(" ").map((w: string) => w[0]).join("").toUpperCase().slice(0, 2) : user.email?.[0]?.toUpperCase() ?? "?";
   const letterPreview = pd?.application_template?.slice(0, 120) || null;
-
-  async function handleSignOut() {
-    setSigningOut(true);
-    await signOut();
-    navigate("/login");
-  }
 
   async function handlePhotoUpload(file: File) {
     setPhotoUploading(true);
@@ -1708,65 +1687,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       toast({ title: t("common.error"), description: err.message, variant: "destructive" });
     }
   }
-
-  async function handleToggleNotif(key: "email_enabled" | "push_enabled", currentVal: boolean) {
-    setNotifUpdating(key);
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) return;
-      const res = await apiFetch("/api/notifications/settings", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
-        body: JSON.stringify({ [key]: !currentVal }),
-      });
-      if (!res.ok) throw new Error("Update failed");
-      queryClient.invalidateQueries({ queryKey: ["/api/notifications/settings"] });
-    } catch {
-      toast({ title: t("common.error"), variant: "destructive" });
-    } finally {
-      setNotifUpdating(null);
-    }
-  }
-
-  const LANG_OPTIONS = [
-    { code: "de" as const, label: "Deutsch" },
-    { code: "en" as const, label: "English" },
-    { code: "nl" as const, label: "Nederlands" },
-  ];
-
-  const currentLangLabel = LANG_OPTIONS.find(o => o.code === (pd?.language || locale))?.label || "Deutsch";
-
-  async function handleLanguageChange(code: "de" | "en" | "nl") {
-    setShowLangSheet(false);
-    setLocale(code);
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) {
-        console.error("[LANG] No session token — language not saved to server");
-        toast({ title: t("common.error"), description: "Session expired. Language saved locally but not synced.", variant: "destructive" });
-        return;
-      }
-      const resp = await apiFetch("/api/profile-data", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
-        body: JSON.stringify({ language: code }),
-      });
-      if (!resp.ok) {
-        console.error("[LANG] Server rejected language save:", resp.status);
-        toast({ title: t("common.error"), variant: "destructive" });
-        return;
-      }
-      const saved = await resp.json();
-      if (saved.language !== code) {
-        console.error("[LANG] Language mismatch after save:", saved.language, "expected:", code);
-      }
-      queryClient.invalidateQueries({ queryKey: ["/api/profile-data"] });
-    } catch (err) {
-      console.error("[LANG] Failed to save language:", err);
-      toast({ title: t("common.error"), variant: "destructive" });
-    }
-  }
-
 
   async function handleBuddyInvite() {
     if (!buddyEmail.trim() || !buddyEmail.includes("@")) return;
@@ -1959,39 +1879,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               </div>
             </div>
           )}
-
-          <div
-            id="notification-settings"
-            className="rounded-[6px] bg-ha-card px-5 py-4"
-            data-testid="card-notifications"
-          >
-            <p className="text-[15px] text-title text-ha-text mb-4">{t("profile.notificationSettings")}</p>
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center justify-between">
-                <span className="text-[14px] text-ha-text">{t("profile.pushNotifications")}</span>
-                <button
-                  onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
-                  disabled={notifUpdating === "push_enabled"}
-                  className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.push_enabled ? "bg-ha-primary" : "bg-ha-input-border"} ${notifUpdating === "push_enabled" ? "opacity-50" : ""}`}
-                  data-testid="toggle-push"
-                >
-                  <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-ha-card shadow-sm transition-transform ${notifSettings?.push_enabled ? "left-[23px]" : "left-[3px]"}`} />
-                </button>
-              </div>
-              <div className="h-px bg-ha-surface" />
-              <div className="flex items-center justify-between">
-                <span className="text-[14px] text-ha-text">{t("profile.emailNotifications")}</span>
-                <button
-                  onClick={() => handleToggleNotif("email_enabled", !!notifSettings?.email_enabled)}
-                  disabled={notifUpdating === "email_enabled"}
-                  className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.email_enabled ? "bg-ha-primary" : "bg-ha-input-border"} ${notifUpdating === "email_enabled" ? "opacity-50" : ""}`}
-                  data-testid="toggle-email"
-                >
-                  <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-ha-card shadow-sm transition-transform ${notifSettings?.email_enabled ? "left-[23px]" : "left-[3px]"}`} />
-                </button>
-              </div>
-            </div>
-          </div>
 
           <div className="rounded-[6px] bg-ha-card px-5 py-4" data-testid="card-search-profiles">
             <div className="flex items-center gap-3 mb-1">
