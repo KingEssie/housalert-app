@@ -103,13 +103,7 @@ function ProtectedRoute({ component: Component, skipOnboardingCheck }: { compone
 
   if (loading) return null;
   if (!user) {
-    const currentPath = window.location.hash
-      ? window.location.hash.replace("#", "")
-      : window.location.pathname;
-    const returnTo = currentPath && currentPath !== "/" && currentPath !== "/login"
-      ? `/login?returnTo=${encodeURIComponent(currentPath)}`
-      : "/login";
-    return <Redirect to={returnTo} />;
+    return <Redirect to="/" />;
   }
   if (!skipOnboardingCheck && checking) return null;
   if (!skipOnboardingCheck && needsOnboarding) return <Redirect to="/onboarding/setup" />;
@@ -133,15 +127,18 @@ function RootRoute() {
     })
       .then((res) => res.json())
       .then((data) => {
-        const completed = data.onboarding_completed === true;
-        console.log(`[ROOT] onboarding_completed=${completed}`);
-        setDestination(completed ? "/home" : "/onboarding/setup");
+        const prePaywall = data.onboarding_completed === true;
+        const postPaywall = data.post_paywall_onboarding_completed === true;
+        console.log(`[ROOT] onboarding_completed=${prePaywall} post_paywall=${postPaywall}`);
+        if (!prePaywall) setDestination("/onboarding/setup");
+        else if (!postPaywall) setDestination("/onboarding/continue");
+        else setDestination("/home");
       })
       .catch(() => setDestination("/onboarding/setup"));
   }, [user, session, loading]);
 
   if (loading) return null;
-  if (!user && !destination) return <Redirect to="/welcome" />;
+  if (!user && !destination) return <WelcomePage />;
   if (!destination) return null;
   return <Redirect to={destination} />;
 }
@@ -155,8 +152,8 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={RootRoute} />
-      <Route path="/welcome" component={WelcomePage} />
-      <Route path="/login" component={LoginPage} />
+      <Route path="/welcome" component={() => <Redirect to="/" />} />
+      <Route path="/login" component={() => <Redirect to="/" />} />
       <Route path="/signup" component={SignupPage} />
       <Route path="/auth/callback" component={AuthCallbackPage} />
       <Route path="/forgot-password" component={ForgotPasswordPage} />

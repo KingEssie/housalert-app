@@ -135,10 +135,14 @@ export default function WelcomePage() {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
-        const completed = data.onboarding_completed === true;
-        console.log(`[WELCOME] onboarding_completed=${completed} → redirect=${completed ? "/dashboard" : "/onboarding/setup"}`);
+        const prePaywall = data.onboarding_completed === true;
+        const postPaywall = data.post_paywall_onboarding_completed === true;
+        let dest = "/onboarding/setup";
+        if (prePaywall && postPaywall) dest = "/home";
+        else if (prePaywall) dest = "/onboarding/continue";
+        console.log(`[WELCOME] onboarding_completed=${prePaywall} post_paywall=${postPaywall} → redirect=${dest}`);
         setLoading(false);
-        navigate(completed ? "/dashboard" : "/onboarding/setup");
+        navigate(dest);
         return;
       }
     } catch (err) {

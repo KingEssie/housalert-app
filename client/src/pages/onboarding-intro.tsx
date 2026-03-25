@@ -23,7 +23,7 @@ export default function OnboardingIntroPage() {
         <div className="max-w-lg mx-auto px-5 h-[56px] flex items-center justify-between">
           <HousAlertLogo size={32} textClassName="font-semibold text-ha-text text-[17px] tracking-[-0.01em]" />
           <button
-            onClick={() => navigate("/welcome")}
+            onClick={() => navigate("/")}
             className="text-[13px] font-medium text-ha-text-secondary hover:text-ha-text transition-colors"
             data-testid="button-back-to-login"
           >
@@ -90,7 +90,7 @@ export default function OnboardingIntroPage() {
           </button>
 
           <button
-            onClick={() => navigate("/welcome")}
+            onClick={() => navigate("/")}
             className="mt-4 text-[13px] font-medium text-ha-text-secondary hover:text-ha-text transition-colors"
             data-testid="button-browse-listings"
           >

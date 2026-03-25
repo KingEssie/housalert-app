@@ -2369,7 +2369,7 @@ export async function registerRoutes(
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
       const { rows } = await pgPool.query(
-        "SELECT onboarding_completed FROM user_profile_data WHERE user_id = $1 LIMIT 1",
+        "SELECT onboarding_completed, post_paywall_onboarding_completed FROM user_profile_data WHERE user_id = $1 LIMIT 1",
         [user.id]
       );
 
@@ -2397,8 +2397,13 @@ export async function registerRoutes(
         }
       }
 
-      log(`[onboarding-status] userId=${user.id.substring(0, 8)}... onboarding_completed=${completed}`);
-      return res.json({ onboarding_completed: completed });
+      let postPaywallCompleted = false;
+      if (completed && rows.length > 0) {
+        postPaywallCompleted = rows[0].post_paywall_onboarding_completed === true;
+      }
+
+      log(`[onboarding-status] userId=${user.id.substring(0, 8)}... onboarding_completed=${completed} post_paywall=${postPaywallCompleted}`);
+      return res.json({ onboarding_completed: completed, post_paywall_onboarding_completed: postPaywallCompleted });
     } catch (err: any) {
       log(`[onboarding-status] Error: ${err.message}`);
       return res.status(500).json({ error: "Internal error" });

@@ -61,7 +61,7 @@ export default function ForgotPasswordPage() {
       <div className="h-[100dvh] bg-ha-bg flex flex-col" data-testid="page-forgot-password-sent">
         <div className="pt-[max(env(safe-area-inset-top),8px)] px-5">
           <button
-            onClick={() => navigate("/welcome")}
+            onClick={() => navigate("/")}
             className="mt-3 w-10 h-10 rounded-full flex items-center justify-center hover:bg-ha-card transition-colors"
             data-testid="button-back"
             aria-label="Back"
@@ -102,7 +102,7 @@ export default function ForgotPasswordPage() {
     <div className="h-[100dvh] bg-ha-bg flex flex-col" data-testid="page-forgot-password">
       <div className="pt-[max(env(safe-area-inset-top),8px)] px-5">
         <button
-          onClick={() => navigate("/welcome")}
+          onClick={() => navigate("/")}
           className="mt-3 w-10 h-10 rounded-full flex items-center justify-center hover:bg-ha-card transition-colors"
           data-testid="button-back"
           aria-label="Back"

@@ -1,0 +1,67 @@
+Change the app entry flow so the new login + onboarding flow is the default start of the app, without using redirect hacks from the old flow.
+
+GOAL:
+When a user opens app.housalert.com, they should land directly in the new login/start flow as the default root experience.
+
+IMPORTANT:
+- Do NOT keep the old page as the real entry and then redirect to the new one.
+- The new flow must be the actual default root flow.
+- The old login/welcome page may remain in code if needed, but it must no longer be the default entry experience.
+
+==================================================
+REQUIRED BEHAVIOR
+==================================================
+
+1. Root route `/`
+- Must directly render the new login/start page
+- No intermediate redirect from old flow to new flow
+- No flash of old UI
+- No fallback through the old welcome page
+
+2. New user flow
+- User opens `/`
+- Sees the new login/start page
+- Clicks “Aanmelden”
+- Goes into the new onboarding flow directly
+- Continues through paywall and post-paywall onboarding
+- Ends on `/home`
+
+3. Existing user flow
+- User opens `/`
+- Sees the new login/start page
+- Clicks “Inloggen”
+- After successful login:
+  - if onboarding not started → `/onboarding/setup`
+  - if pre-paywall complete but post-paywall incomplete → `/onboarding/continue`
+  - if fully complete → `/home`
+
+==================================================
+IMPLEMENTATION RULES
+==================================================
+
+- Make the new page/component the actual root page
+- Remove dependency on the old welcome/login route for normal usage
+- No redirect-based workaround
+- No old route flash before new page appears
+- Keep routing clean and production-ready
+
+==================================================
+CHECKS
+==================================================
+
+Verify:
+1. Opening `/` shows the new flow directly
+2. No old page appears first
+3. Signup starts the new onboarding flow
+4. Login goes to the correct next step based on onboarding flags
+5. Fully completed users land on `/home`
+
+==================================================
+DELIVERABLE
+==================================================
+
+Give me:
+- which file(s) were changed
+- what component now owns the `/` route
+- whether old welcome/login routes still exist and whether they are still reachable
+- confirmation that `/` now starts directly in the new flow without redirect workaround
