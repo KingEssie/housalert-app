@@ -2035,7 +2035,9 @@ export const de: Record<string, any> = {
       contactSupport: "Support kontaktieren",
       cta: "Weiter",
       enablePush: "Benachrichtigungen aktivieren",
-      denied: "Benachrichtigungen wurden abgelehnt. Du kannst dies später in den Einstellungen ändern.",
+      denied: "Benachrichtigungen wurden abgelehnt",
+      deniedHint: "Du kannst dies jederzeit in deinen Browser- oder Geräteeinstellungen ändern.",
+      idleHint: "Erhalte sofortige Benachrichtigungen, wenn neue Wohnungen deinen Kriterien entsprechen.",
     },
     success: {
       title: "Du bist startklar!",

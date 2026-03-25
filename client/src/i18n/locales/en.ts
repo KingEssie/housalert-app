@@ -1425,7 +1425,9 @@ export const en: Record<string, any> = {
       contactSupport: "Contact support",
       cta: "Next",
       enablePush: "Enable notifications",
-      denied: "Notifications were denied. You can change this later in settings.",
+      denied: "Notifications were denied",
+      deniedHint: "You can change this anytime in your browser or device settings.",
+      idleHint: "Get instant alerts when new apartments match your search criteria.",
     },
     success: {
       title: "You're all set!",

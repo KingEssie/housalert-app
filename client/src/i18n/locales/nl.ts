@@ -2205,7 +2205,9 @@ export const nl: Record<string, any> = {
       contactSupport: "Contact opnemen",
       cta: "Volgende",
       enablePush: "Meldingen inschakelen",
-      denied: "Meldingen zijn geweigerd. Je kunt dit later wijzigen in de instellingen.",
+      denied: "Meldingen zijn geweigerd",
+      deniedHint: "Je kunt dit op elk moment wijzigen in je browser- of apparaatinstellingen.",
+      idleHint: "Ontvang directe meldingen wanneer nieuwe woningen aan je zoekcriteria voldoen.",
     },
     success: {
       title: "Je bent er klaar voor!",

@@ -1,0 +1,61 @@
+Do a final polish pass on the full onboarding flow that is now functionally complete.
+
+IMPORTANT:
+Do not change the route logic or flow structure anymore.
+Do not change database fields or persistence logic unless required for bug fixing.
+This pass is only for UX/UI polish, consistency, and edge cases.
+
+Please review and improve:
+
+1. Visual consistency
+- consistent spacing between titles, cards, inputs, and buttons
+- consistent card radius and padding
+- consistent button heights and text alignment
+- consistent input styling across all onboarding continuation steps
+
+2. Header consistency
+- all onboarding screens should have consistent top spacing, title sizing, and branding behavior
+- back buttons should always align correctly
+- screens that intentionally have no back button must remain that way
+
+3. Form UX
+- clear validation messages
+- disabled state for CTA until required fields are filled where appropriate
+- no awkward keyboard overlap on mobile
+- proper numeric keypad for income field
+- dropdowns should open and close cleanly on mobile
+
+4. Letter preview polish
+- improve typography inside the generated letter box
+- ensure line spacing is readable
+- ensure helper note box above the letter looks polished and consistent
+
+5. Search buddy polish
+- improve spacing and button alignment for:
+  - copy link
+  - invite
+  - maybe later
+- make sure the permissions explanation is visually clear
+
+6. Push test polish
+- make the status clear for:
+  - permission granted
+  - permission denied
+  - not yet requested
+- ensure the continue CTA always behaves correctly
+
+7. Success screen polish
+- make the final completion moment feel rewarding and polished
+- ensure CTA “Ga naar de app” is visually strong
+
+8. Mobile QA
+- check for overflow
+- check bottom safe area spacing
+- check button visibility above browser bars / mobile chrome
+- check scroll behavior on smaller screens
+
+9. Final deliverable
+Give me a short report with:
+- files changed
+- UX issues fixed
+- any remaining non-critical issues

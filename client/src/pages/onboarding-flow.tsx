@@ -120,7 +120,7 @@ function FlowShell({
           </div>
         )}
       </header>
-      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pb-8 pt-4">
+      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-10" style={{ paddingBottom: "max(40px, env(safe-area-inset-bottom, 40px))" }}>
         {children}
       </main>
     </div>
@@ -740,7 +740,7 @@ function SecondaryBtn({
   return (
     <button
       onClick={onClick}
-      className="w-full h-[48px] rounded-[6px] text-[14px] font-medium border border-ha-card-border bg-ha-card transition-all active:scale-[0.97]"
+      className="w-full h-[52px] rounded-[6px] text-[15px] font-medium border border-ha-card-border bg-ha-card transition-all active:scale-[0.97]"
       style={{ color: TEXT_SECONDARY }}
       data-testid={testId}
     >
@@ -789,7 +789,7 @@ function LimitedAccessStep({
         </div>
       </div>
 
-      <div className="space-y-3 mt-6">
+      <div className="mt-auto space-y-3 pt-6">
         <PrimaryBtn onClick={onGoBack} testId="button-limited-goback">
           {t("onboardingFlow.limitedAccess.goBack")}
         </PrimaryBtn>
@@ -839,7 +839,7 @@ function WelcomeStep({
         </div>
       </div>
 
-      <div className="mt-6">
+      <div className="mt-auto pt-6">
         <PrimaryBtn onClick={onNext} testId="button-welcome-next">
           {t("onboardingFlow.welcome.cta")}
         </PrimaryBtn>
@@ -880,20 +880,21 @@ function LetterPersonalStep({
 
   return (
     <>
-      <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-1" style={{ color: TEXT_PRIMARY }} data-testid="text-letter-personal-title">
+      <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-letter-personal-title">
         {t("onboardingFlow.letterPersonal.title")}
       </h1>
-      <p className="text-[14px] mb-5" style={{ color: TEXT_SECONDARY }}>
+      <p className="text-[14px] mb-6" style={{ color: TEXT_SECONDARY }}>
         {t("onboardingFlow.letterPersonal.subtitle")}
       </p>
 
-      <div className="space-y-5 mb-6">
+      <div className="space-y-5 flex-1">
         <div>
           <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">
             {t("onboardingFlow.letterPersonal.phone")}
           </label>
           <input
             type="tel"
+            inputMode="tel"
             value={personalData.phone}
             onChange={(e) => onChange({ phone: e.target.value })}
             placeholder={t("onboardingFlow.letterPersonal.phonePlaceholder")}
@@ -908,30 +909,33 @@ function LetterPersonalStep({
           </label>
           <div className="grid grid-cols-3 gap-2">
             <input
-              type="number"
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
               placeholder={t("onboardingFlow.letterPersonal.day")}
               value={personalData.birthDay}
-              onChange={(e) => onChange({ birthDay: e.target.value })}
+              onChange={(e) => onChange({ birthDay: e.target.value.replace(/\D/g, "").slice(0, 2) })}
               className={INPUT_CLS + " text-center"}
-              min="1" max="31"
               data-testid="input-birth-day"
             />
             <input
-              type="number"
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
               placeholder={t("onboardingFlow.letterPersonal.month")}
               value={personalData.birthMonth}
-              onChange={(e) => onChange({ birthMonth: e.target.value })}
+              onChange={(e) => onChange({ birthMonth: e.target.value.replace(/\D/g, "").slice(0, 2) })}
               className={INPUT_CLS + " text-center"}
-              min="1" max="12"
               data-testid="input-birth-month"
             />
             <input
-              type="number"
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
               placeholder={t("onboardingFlow.letterPersonal.year")}
               value={personalData.birthYear}
-              onChange={(e) => onChange({ birthYear: e.target.value })}
+              onChange={(e) => onChange({ birthYear: e.target.value.replace(/\D/g, "").slice(0, 4) })}
               className={INPUT_CLS + " text-center"}
-              min="1940" max="2010"
               data-testid="input-birth-year"
             />
           </div>
@@ -946,7 +950,7 @@ function LetterPersonalStep({
               <button
                 key={opt.value}
                 onClick={() => onChange({ gender: opt.value })}
-                className="h-[44px] rounded-[6px] border-2 text-[14px] font-medium transition-all active:scale-[0.97]"
+                className="h-[46px] rounded-[6px] border-2 text-[14px] font-medium transition-all active:scale-[0.97]"
                 style={{
                   borderColor: personalData.gender === opt.value ? BRAND : "rgb(var(--ha-card-border))",
                   backgroundColor: personalData.gender === opt.value ? "rgba(249,115,22,0.06)" : "transparent",
@@ -961,7 +965,7 @@ function LetterPersonalStep({
         </div>
       </div>
 
-      <div className="mt-auto space-y-3">
+      <div className="mt-auto space-y-3 pt-6">
         <PrimaryBtn onClick={onNext} testId="button-personal-next">
           {t("onboardingFlow.letterPersonal.cta")}
         </PrimaryBtn>
@@ -998,7 +1002,7 @@ function OptionGrid({
         <button
           key={opt.value}
           onClick={() => onSelect(opt.value)}
-          className="px-3 py-2.5 rounded-[6px] border-2 text-[13px] font-medium transition-all active:scale-[0.97] text-left"
+          className="px-3 py-3 rounded-[6px] border-2 text-[13px] font-medium transition-all active:scale-[0.97] text-left"
           style={{
             borderColor: selected === opt.value ? BRAND : "rgb(var(--ha-card-border))",
             backgroundColor: selected === opt.value ? "rgba(249,115,22,0.06)" : "transparent",
@@ -1059,14 +1063,14 @@ function LetterLivingStep({
 
   return (
     <>
-      <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-1" style={{ color: TEXT_PRIMARY }} data-testid="text-letter-living-title">
+      <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-letter-living-title">
         {t("onboardingFlow.letterLiving.title")}
       </h1>
-      <p className="text-[14px] mb-5" style={{ color: TEXT_SECONDARY }}>
+      <p className="text-[14px] mb-6" style={{ color: TEXT_SECONDARY }}>
         {t("onboardingFlow.letterLiving.subtitle")}
       </p>
 
-      <div className="space-y-6 mb-6">
+      <div className="space-y-6 flex-1 overflow-y-auto">
         <div>
           <label className="text-[13px] font-medium text-ha-text-secondary mb-2 block">
             {t("onboardingFlow.letterLiving.livingWith")}
@@ -1107,9 +1111,11 @@ function LetterLivingStep({
           <div className="relative">
             <Euro className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-muted" />
             <input
-              type="number"
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
               value={livingData.income}
-              onChange={(e) => onChange({ income: e.target.value })}
+              onChange={(e) => onChange({ income: e.target.value.replace(/\D/g, "") })}
               placeholder={t("onboardingFlow.letterLiving.incomePlaceholder")}
               className={INPUT_CLS + " pl-10"}
               data-testid="input-income"
@@ -1126,7 +1132,7 @@ function LetterLivingStep({
               <button
                 key={val}
                 onClick={() => onChange({ petsCount: val })}
-                className="flex-1 h-[44px] rounded-[6px] border-2 text-[14px] font-medium transition-all active:scale-[0.97]"
+                className="flex-1 h-[46px] rounded-[6px] border-2 text-[14px] font-medium transition-all active:scale-[0.97]"
                 style={{
                   borderColor: livingData.petsCount === val ? BRAND : "rgb(var(--ha-card-border))",
                   backgroundColor: livingData.petsCount === val ? "rgba(249,115,22,0.06)" : "transparent",
@@ -1141,7 +1147,7 @@ function LetterLivingStep({
         </div>
       </div>
 
-      <div className="mt-auto space-y-3">
+      <div className="mt-auto space-y-3 pt-6">
         <PrimaryBtn onClick={onNext} testId="button-living-next">
           {t("onboardingFlow.letterLiving.cta")}
         </PrimaryBtn>
@@ -1168,15 +1174,16 @@ function LetterPreviewStep({
 }) {
   return (
     <>
-      <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-1" style={{ color: TEXT_PRIMARY }} data-testid="text-letter-preview-title">
+      <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-letter-preview-title">
         {t("onboardingFlow.letterPreview.title")}
       </h1>
-      <p className="text-[14px] mb-3" style={{ color: TEXT_SECONDARY }}>
+      <p className="text-[14px] mb-4" style={{ color: TEXT_SECONDARY }}>
         {t("onboardingFlow.letterPreview.subtitle")}
       </p>
 
-      <div className="bg-orange-50 border border-orange-200 rounded-[6px] px-4 py-3 mb-4">
-        <p className="text-[13px]" style={{ color: BRAND }}>
+      <div className="bg-orange-50 border border-orange-200 rounded-[6px] px-4 py-3 mb-4 flex items-start gap-2.5">
+        <FileText className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: BRAND }} />
+        <p className="text-[13px] leading-snug" style={{ color: BRAND }}>
           {t("onboardingFlow.letterPreview.addressNote")}
         </p>
       </div>
@@ -1184,11 +1191,12 @@ function LetterPreviewStep({
       <textarea
         value={letterText}
         onChange={(e) => onLetterChange(e.target.value)}
-        className="w-full flex-1 min-h-[300px] p-4 rounded-[6px] border border-ha-card-border bg-ha-card text-[14px] leading-relaxed text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-orange-200 resize-none"
+        className="w-full flex-1 min-h-[280px] p-4 rounded-[6px] border border-ha-card-border bg-ha-card text-[14px] leading-[1.7] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-orange-200 resize-none"
+        style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
         data-testid="textarea-letter"
       />
 
-      <div className="mt-4 space-y-3">
+      <div className="mt-auto space-y-3 pt-4">
         <PrimaryBtn onClick={onNext} testId="button-letter-next">
           {t("onboardingFlow.letterPreview.cta")}
         </PrimaryBtn>
@@ -1219,42 +1227,42 @@ function SearchBuddyStep({
 }) {
   return (
     <>
-      <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-1" style={{ color: TEXT_PRIMARY }} data-testid="text-buddy-title">
+      <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-buddy-title">
         {t("onboardingFlow.searchBuddy.title")}
       </h1>
-      <p className="text-[14px] mb-5" style={{ color: TEXT_SECONDARY }}>
+      <p className="text-[14px] mb-6" style={{ color: TEXT_SECONDARY }}>
         {t("onboardingFlow.searchBuddy.subtitle")}
       </p>
 
-      <div className="bg-ha-card rounded-[6px] border border-ha-card-border p-5 mb-5">
-        <div className="mb-4">
-          <p className="text-[13px] font-semibold mb-2" style={{ color: "rgb(34,197,94)" }}>
+      <div className="bg-ha-card rounded-[6px] border border-ha-card-border p-5 mb-6">
+        <div className="pb-4 mb-4 border-b border-ha-card-border">
+          <p className="text-[13px] font-semibold mb-2.5" style={{ color: "rgb(34,197,94)" }}>
             {t("onboardingFlow.searchBuddy.allowed")}
           </p>
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {[
               t("onboardingFlow.searchBuddy.canAlerts"),
               t("onboardingFlow.searchBuddy.canFavorite"),
               t("onboardingFlow.searchBuddy.canApply"),
             ].map((text, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
+              <div key={i} className="flex items-center gap-2.5">
+                <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
                 <span className="text-[13px]" style={{ color: TEXT_PRIMARY }}>{text}</span>
               </div>
             ))}
           </div>
         </div>
         <div>
-          <p className="text-[13px] font-semibold mb-2 text-red-500">
+          <p className="text-[13px] font-semibold mb-2.5 text-red-500">
             {t("onboardingFlow.searchBuddy.notAllowed")}
           </p>
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {[
               t("onboardingFlow.searchBuddy.cannotProfiles"),
               t("onboardingFlow.searchBuddy.cannotLetter"),
             ].map((text, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <X className="w-3.5 h-3.5 text-red-500 flex-shrink-0" />
+              <div key={i} className="flex items-center gap-2.5">
+                <X className="w-4 h-4 text-red-500 flex-shrink-0" />
                 <span className="text-[13px]" style={{ color: TEXT_PRIMARY }}>{text}</span>
               </div>
             ))}
@@ -1263,14 +1271,15 @@ function SearchBuddyStep({
       </div>
 
       {invited ? (
-        <div className="bg-green-50 border border-green-200 rounded-[6px] px-4 py-3 mb-5 flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" />
-          <span className="text-[13px] font-medium text-green-700">{t("onboardingFlow.searchBuddy.invited")}</span>
+        <div className="bg-green-50 border border-green-200 rounded-[6px] px-4 py-3.5 mb-6 flex items-center gap-2.5">
+          <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
+          <span className="text-[14px] font-medium text-green-700">{t("onboardingFlow.searchBuddy.invited")}</span>
         </div>
       ) : (
-        <div className="flex gap-2 mb-5">
+        <div className="flex gap-2 mb-6">
           <input
             type="email"
+            inputMode="email"
             value={buddyEmail}
             onChange={(e) => onBuddyEmailChange(e.target.value)}
             placeholder={t("onboardingFlow.searchBuddy.emailPlaceholder")}
@@ -1280,11 +1289,11 @@ function SearchBuddyStep({
           <button
             onClick={onInvite}
             disabled={!buddyEmail.includes("@") || loading}
-            className="h-[48px] px-5 rounded-[6px] text-[14px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-50"
+            className="h-[48px] px-5 rounded-[6px] text-[14px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center gap-1.5"
             style={{ backgroundColor: BRAND }}
             data-testid="button-buddy-invite"
           >
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : t("onboardingFlow.searchBuddy.invite")}
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Send className="w-4 h-4 flex-shrink-0" />{t("onboardingFlow.searchBuddy.invite")}</>}
           </button>
         </div>
       )}
@@ -1317,7 +1326,7 @@ function PushTestStep({
 }) {
   return (
     <>
-      <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-1" style={{ color: TEXT_PRIMARY }} data-testid="text-push-title">
+      <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-push-title">
         {t("onboardingFlow.pushTest.title")}
       </h1>
 
@@ -1326,19 +1335,21 @@ function PushTestStep({
           <p className="text-[14px] mb-6" style={{ color: TEXT_SECONDARY }}>
             {t("onboardingFlow.pushTest.subtitle")}
           </p>
-
           <div className="flex-1 flex flex-col items-center justify-center">
             <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: "rgba(34,197,94,0.1)" }}>
               <BellRing className="w-8 h-8 text-green-500" />
             </div>
 
-            <div className="bg-ha-card rounded-[6px] border border-ha-card-border p-5 w-full">
-              <p className="text-[13px] font-semibold mb-1" style={{ color: TEXT_PRIMARY }}>
-                {t("onboardingFlow.pushTest.infoTitle")}
-              </p>
-              <p className="text-[13px]" style={{ color: TEXT_SECONDARY }}>
-                {t("onboardingFlow.pushTest.infoText")}
-              </p>
+            <div className="bg-green-50 border border-green-200 rounded-[6px] px-5 py-4 w-full flex items-start gap-3">
+              <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-[14px] font-semibold mb-0.5 text-green-800">
+                  {t("onboardingFlow.pushTest.infoTitle")}
+                </p>
+                <p className="text-[13px] text-green-700 leading-snug">
+                  {t("onboardingFlow.pushTest.infoText")}
+                </p>
+              </div>
             </div>
           </div>
         </>
@@ -1347,8 +1358,11 @@ function PushTestStep({
           <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5 bg-red-50">
             <Bell className="w-8 h-8 text-red-500" />
           </div>
-          <p className="text-[14px] text-center max-w-[320px]" style={{ color: TEXT_SECONDARY }}>
+          <p className="text-[14px] text-center mb-4 max-w-[320px] font-medium" style={{ color: TEXT_PRIMARY }}>
             {t("onboardingFlow.pushTest.denied")}
+          </p>
+          <p className="text-[13px] text-center max-w-[300px]" style={{ color: TEXT_SECONDARY }}>
+            {t("onboardingFlow.pushTest.deniedHint")}
           </p>
         </div>
       ) : (
@@ -1356,15 +1370,26 @@ function PushTestStep({
           <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: "rgba(249,115,22,0.12)" }}>
             <Bell className="w-8 h-8" style={{ color: BRAND }} />
           </div>
-          {pushState === "requesting" && <Loader2 className="w-6 h-6 animate-spin mb-4" style={{ color: BRAND }} />}
+          {pushState === "requesting" ? (
+            <Loader2 className="w-6 h-6 animate-spin mb-4" style={{ color: BRAND }} />
+          ) : (
+            <p className="text-[14px] text-center max-w-[300px]" style={{ color: TEXT_SECONDARY }}>
+              {t("onboardingFlow.pushTest.idleHint")}
+            </p>
+          )}
         </div>
       )}
 
-      <div className="mt-auto space-y-3">
+      <div className="mt-auto space-y-3 pt-6">
         {pushState === "idle" ? (
-          <PrimaryBtn onClick={onEnable} testId="button-push-enable">
-            {t("onboardingFlow.pushTest.enablePush")}
-          </PrimaryBtn>
+          <>
+            <PrimaryBtn onClick={onEnable} testId="button-push-enable">
+              {t("onboardingFlow.pushTest.enablePush")}
+            </PrimaryBtn>
+            <SecondaryBtn onClick={onNext} testId="button-push-skip">
+              {t("onboardingFlow.pushTest.cta")}
+            </SecondaryBtn>
+          </>
         ) : (
           <PrimaryBtn onClick={onNext} testId="button-push-next">
             {t("onboardingFlow.pushTest.cta")}
@@ -1391,13 +1416,13 @@ function SuccessStep({
   return (
     <>
       <div className="flex-1 flex flex-col items-center justify-center text-center">
-        <div className="w-20 h-20 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: "rgba(34,197,94,0.1)" }}>
+        <div className="w-20 h-20 rounded-full flex items-center justify-center mb-6 animate-scale-in" style={{ backgroundColor: "rgba(34,197,94,0.12)" }}>
           <CheckCircle2 className="w-10 h-10 text-green-500" />
         </div>
-        <h1 className="text-[26px] font-bold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-success-title">
+        <h1 className="text-[28px] font-extrabold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-success-title">
           {t("onboardingFlow.success.title")}
         </h1>
-        <p className="text-[14px] mb-8 max-w-[320px]" style={{ color: TEXT_SECONDARY }}>
+        <p className="text-[15px] mb-8 max-w-[320px] leading-relaxed" style={{ color: TEXT_SECONDARY }}>
           {t("onboardingFlow.success.subtitle")}
         </p>
 
@@ -1413,9 +1438,12 @@ function SuccessStep({
         </div>
       </div>
 
-      <div className="mt-6">
+      <div className="mt-auto pt-6">
         <PrimaryBtn onClick={onFinish} testId="button-success-finish">
-          {t("onboardingFlow.success.cta")}
+          <span className="inline-flex items-center gap-2">
+            {t("onboardingFlow.success.cta")}
+            <ArrowRight className="w-5 h-5" />
+          </span>
         </PrimaryBtn>
       </div>
     </>
