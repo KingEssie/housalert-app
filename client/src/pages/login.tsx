@@ -120,7 +120,7 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <div className="bg-ha-card rounded-[16px] border border-ha-card-border p-6">
+          <div className="bg-ha-card rounded-[6px] border border-ha-card-border p-6">
             <form onSubmit={handleLogin} className="flex flex-col gap-5">
               <div className="flex flex-col gap-2">
                 <Label htmlFor="login-email" className="text-[14px] font-medium text-ha-text">{t("auth.login.email")}</Label>
@@ -131,7 +131,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-[48px] px-4 rounded-xl border border-ha-card-border bg-ha-bg text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted placeholder:font-normal focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] outline-none transition-all"
+                  className="h-[48px] px-4 rounded-[6px] border border-ha-card-border bg-ha-bg text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted placeholder:font-normal focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] outline-none transition-all"
                   data-testid="input-login-email"
                 />
               </div>
@@ -144,7 +144,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="h-[48px] px-4 rounded-xl border border-ha-card-border bg-ha-bg text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted placeholder:font-normal focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] outline-none transition-all"
+                  className="h-[48px] px-4 rounded-[6px] border border-ha-card-border bg-ha-bg text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted placeholder:font-normal focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] outline-none transition-all"
                   data-testid="input-login-password"
                 />
                 <button
@@ -159,7 +159,7 @@ export default function LoginPage() {
               </div>
               <Button
                 type="submit"
-                className="w-full h-[56px] rounded-[14px] text-[16px] font-medium bg-ha-primary hover:bg-ha-primary-hover text-white"
+                className="w-full h-[56px] rounded-[6px] text-[16px] font-medium bg-ha-primary hover:bg-ha-primary-hover text-white"
                 disabled={loading}
                 data-testid="button-login-submit"
               >

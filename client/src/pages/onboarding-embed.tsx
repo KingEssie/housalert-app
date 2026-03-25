@@ -35,7 +35,7 @@ function EstimateBlock({ city, maxPrice }: { city: string; maxPrice: string }) {
 
   return (
     <div
-      className="flex items-center gap-3 bg-gradient-to-r from-ha-primary-light to-ha-primary-light rounded-2xl px-4 py-3.5"
+      className="flex items-center gap-3 bg-gradient-to-r from-ha-primary-light to-ha-primary-light rounded-[6px] px-4 py-3.5"
       data-testid="embed-estimate-block"
     >
       <div className="w-9 h-9 rounded-full bg-ha-primary flex items-center justify-center flex-shrink-0">
@@ -60,7 +60,7 @@ function CompletionScreen({ draftId }: { draftId: string }) {
 
   return (
     <div className="flex flex-col items-center justify-center px-6 py-10 text-center">
-      <div className="w-[56px] h-[56px] rounded-2xl bg-ha-primary-light flex items-center justify-center mb-5">
+      <div className="w-[56px] h-[56px] rounded-[6px] bg-ha-primary-light flex items-center justify-center mb-5">
         <Check className="w-7 h-7 text-ha-primary" />
       </div>
 
@@ -75,7 +75,7 @@ function CompletionScreen({ draftId }: { draftId: string }) {
         <a
           href={continueUrl}
           target="_top"
-          className="w-full min-h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[15px] transition-all flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.3)]"
+          className="w-full min-h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[15px] transition-all flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(0,0,0,0.3)]"
           data-testid="embed-link-continue-browser"
         >
           <ExternalLink className="w-4 h-4" />
@@ -83,7 +83,7 @@ function CompletionScreen({ draftId }: { draftId: string }) {
         </a>
 
         <button
-          className="w-full h-[56px] rounded-[14px] border border-ha-card-border bg-ha-card text-ha-text font-medium text-[14px] transition-colors flex items-center justify-center gap-2"
+          className="w-full h-[56px] rounded-[6px] border border-ha-card-border bg-ha-card text-ha-text font-medium text-[14px] transition-colors flex items-center justify-center gap-2"
           data-testid="embed-button-download-app"
           onClick={() => window.open(continueUrl, "_top")}
         >
@@ -190,7 +190,7 @@ export default function OnboardingEmbedPage() {
   if (draftId) {
     return (
       <div className="min-h-screen bg-ha-card flex items-center justify-center p-4">
-        <div className="w-full max-w-[440px] bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden">
+        <div className="w-full max-w-[440px] bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden">
           <CompletionScreen draftId={draftId} />
         </div>
       </div>
@@ -210,7 +210,7 @@ export default function OnboardingEmbedPage() {
           </h1>
         </div>
 
-        <div className="bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-visible">
+        <div className="bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-visible">
 
           <div className="px-5 pt-5 pb-1">
             <LocationModeSelector
@@ -260,7 +260,7 @@ export default function OnboardingEmbedPage() {
                     placeholder="min"
                     value={minPrice}
                     onChange={(e) => setMinPrice(e.target.value)}
-                    className="w-full h-[42px] rounded-[16px] bg-ha-surface border border-transparent pl-[52px] pr-3 text-[14px] text-ha-text placeholder:text-ha-text-secondary"
+                    className="w-full h-[42px] rounded-[6px] bg-ha-surface border border-transparent pl-[52px] pr-3 text-[14px] text-ha-text placeholder:text-ha-text-secondary"
                     data-testid="embed-input-min-price"
                   />
                 </div>
@@ -273,7 +273,7 @@ export default function OnboardingEmbedPage() {
                     placeholder="max"
                     value={maxPrice}
                     onChange={(e) => setMaxPrice(e.target.value)}
-                    className="w-full h-[42px] rounded-[16px] bg-ha-surface border border-transparent pl-[52px] pr-3 text-[14px] text-ha-text placeholder:text-ha-text-secondary"
+                    className="w-full h-[42px] rounded-[6px] bg-ha-surface border border-transparent pl-[52px] pr-3 text-[14px] text-ha-text placeholder:text-ha-text-secondary"
                     data-testid="embed-input-max-price"
                   />
                 </div>
@@ -289,7 +289,7 @@ export default function OnboardingEmbedPage() {
           </div>
 
           {error && (
-            <div className="mx-5 mb-2 p-3 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-[13px]" data-testid="embed-error">
+            <div className="mx-5 mb-2 p-3 rounded-[6px] bg-red-50 border border-red-200 text-red-700 text-[13px]" data-testid="embed-error">
               {error}
             </div>
           )}
@@ -298,7 +298,7 @@ export default function OnboardingEmbedPage() {
             <button
               onClick={handleSubmit}
               disabled={!canSubmit || submitting}
-              className="w-full h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover active:scale-[0.98] text-white font-medium text-[16px] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 shadow-[0_2px_12px_rgba(0,0,0,0.35)]"
+              className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover active:scale-[0.98] text-white font-medium text-[16px] transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 shadow-[0_2px_12px_rgba(0,0,0,0.35)]"
               data-testid="embed-button-submit"
             >
               {submitting ? (

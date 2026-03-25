@@ -35,7 +35,7 @@ export default function OnboardingIntroPage() {
       <main className="flex-1 flex flex-col items-center justify-center px-6 pb-[max(env(safe-area-inset-bottom),24px)]">
         <div className="w-full max-w-[380px] flex flex-col items-center text-center">
           <div
-            className="w-[72px] h-[72px] rounded-2xl flex items-center justify-center mb-8 bg-ha-primary/10"
+            className="w-[72px] h-[72px] rounded-[6px] flex items-center justify-center mb-8 bg-ha-primary/10"
           >
             <Search className="w-8 h-8 text-ha-primary" />
           </div>
@@ -62,7 +62,7 @@ export default function OnboardingIntroPage() {
                 data-testid={`benefit-${i + 1}`}
               >
                 <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-ha-primary/10"
+                  className="w-10 h-10 rounded-[6px] flex items-center justify-center flex-shrink-0 bg-ha-primary/10"
                 >
                   <Icon className="w-5 h-5 text-ha-primary" />
                 </div>
@@ -80,7 +80,7 @@ export default function OnboardingIntroPage() {
 
           <button
             onClick={() => navigate("/onboarding/location")}
-            className="w-full h-[52px] rounded-[14px] text-[16px] font-bold text-ha-text transition-all active:scale-[0.97] shadow-[0_4px_14px_rgba(233,30,99,0.3)]"
+            className="w-full h-[52px] rounded-[6px] text-[16px] font-bold text-ha-text transition-all active:scale-[0.97] shadow-[0_4px_14px_rgba(233,30,99,0.3)]"
             style={{ backgroundColor: BRAND }}
             onMouseOver={(e) => (e.currentTarget.style.backgroundColor = BRAND_HOVER)}
             onMouseOut={(e) => (e.currentTarget.style.backgroundColor = BRAND)}

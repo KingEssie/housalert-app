@@ -13,10 +13,14 @@ A mobile-first rental alert application for the German market. Users can sign up
 - **Excluded from tokenization**: `admin-*.tsx` pages, `v2/` pages/components (these have their own design systems). Google logo SVG colors, city gradient overlays, and amber warning banners (`#FEF3C7`/`#92400E`) remain hardcoded as semantic/brand colors.
 - **text-white rule**: `text-white` is preserved on elements with colored backgrounds (buttons with `bg-ha-primary`, success badges, hero image overlays). All other white text uses `text-ha-text`.
 - **Page background**: `bg-ha-bg` (#F3F3F5 light) — slightly darker grey for card/page contrast separation.
-- **Cards**: White `bg-ha-card`, subtle `border-ha-card-border`, `rounded-[16px]`, `shadow-ha-card` (none in dark mode).
-- **Buttons**: Primary CTAs use `rounded-[14px]`. Small pills/tabs use `rounded-[12px]`.
-- **Profile header**: Dark purple `bg-ha-profile-header` (#1E1B4B) with white text, `rounded-b-[24px]`. Only the profile tab header section is dark; rest of profile page is light.
-- **Admin button**: Floating pill with `bg-ha-profile-header` dark purple, white text, `rounded-[14px]`, visible shadow.
+- **Cards**: White `bg-ha-card`, subtle `border-ha-card-border`, `rounded-[6px]`, `shadow-ha-card` (none in dark mode).
+- **Buttons**: All buttons use `rounded-[6px]`. Only small badges/tags keep `rounded-full` pill shape.
+- **Inputs**: All inputs use `rounded-[6px]`.
+- **Listing cards**: Unified single-card structure — image on top, white content section below, all inside one `rounded-[6px] overflow-hidden bg-ha-card` wrapper.
+- **Profile header**: Dark purple `bg-ha-profile-header` (#1E1B4B), no avatar, left-aligned name+member since, settings gear button on right. Compact height (pt-8 pb-6), mb-4 below.
+- **Profile tab structure**: Header → progress blocks (complete account + tips) → upgrade CTA (if applicable) → notification toggles → "Einstellungen" button. All menu items moved to `/settings` page.
+- **Settings page** (`/settings`): Contains search profiles, reaction letter, zoekbuddy, HousAlert Plus, personal info, language, privacy, help, terms, invite friends, logout, delete account.
+- **Admin button**: Floating `rounded-[8px]`, `px-4 py-2.5`, dark purple bg, white text, reduced shadow `shadow-[0_2px_10px_rgba(30,27,75,0.2)]`, positioned above tab bar.
 - **Bottom tab bar**: `bg-ha-bg` background, `border-t border-ha-card-border`, active icons use `text-ha-primary`.
 - **Typography**: Page titles use `text-ha-text`, section labels use `text-ha-text-muted`.
 

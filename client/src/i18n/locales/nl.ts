@@ -319,6 +319,11 @@ export const nl: Record<string, any> = {
     buddyDescription: "Zoek je met een partner of huisgenoot? Voeg deze als zoekbuddy toe en ontvang beide matches!",
     housAlertPlus: "HousAlert Plus",
     plusDescription: "Je zoektocht uitbesteden? Laat het team van HousAlert Plus bezichtigingen voor je regelen.",
+    settingsButton: "Instellingen",
+  },
+
+  settings: {
+    title: "Instellingen",
   },
 
   popularToday: {

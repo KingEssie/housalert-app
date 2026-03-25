@@ -33,7 +33,7 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6 text-center bg-ha-bg">
       <div
-        className="w-[72px] h-[72px] rounded-2xl bg-ha-primary/10 flex items-center justify-center mb-8"
+        className="w-[72px] h-[72px] rounded-[6px] bg-ha-primary/10 flex items-center justify-center mb-8"
       >
         <Search className="w-8 h-8 text-ha-primary" />
       </div>
@@ -54,7 +54,7 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
 
       <button
         onClick={onStart}
-        className="w-full max-w-[320px] min-h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
+        className="w-full max-w-[320px] min-h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
         data-testid="button-start-onboarding"
       >
         {t("onboarding.welcome.button")}
@@ -81,7 +81,7 @@ function LocationStep({
   return (
     <div className="flex flex-col min-h-screen px-6 pt-4">
       <div className="flex-1">
-        <div className="w-[56px] h-[56px] rounded-2xl bg-ha-primary/10 flex items-center justify-center mb-6">
+        <div className="w-[56px] h-[56px] rounded-[6px] bg-ha-primary/10 flex items-center justify-center mb-6">
           <MapPin className="w-6 h-6 text-ha-primary" />
         </div>
 
@@ -99,7 +99,7 @@ function LocationStep({
         <button
           onClick={onNext}
           disabled={!isLocationValid(locationData)}
-          className="w-full min-h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
+          className="w-full min-h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
           data-testid="button-city-next"
         >
           {t("common.next")}
@@ -131,7 +131,7 @@ function BudgetStep({
   return (
     <div className="flex flex-col min-h-screen px-6 pt-4">
       <div className="flex-1">
-        <div className="w-[56px] h-[56px] rounded-2xl bg-ha-primary/10 flex items-center justify-center mb-6">
+        <div className="w-[56px] h-[56px] rounded-[6px] bg-ha-primary/10 flex items-center justify-center mb-6">
           <span className="text-[24px] font-medium text-ha-primary">&#8364;</span>
         </div>
 
@@ -155,7 +155,7 @@ function BudgetStep({
                 placeholder={t("onboarding.budget.minPlaceholder")}
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
-                className="w-full min-h-[56px] rounded-[16px] bg-ha-card border border-ha-card-border pl-9 pr-4 text-[16px] text-ha-text placeholder:text-ha-text-muted focus:border-ha-primary outline-none transition-all"
+                className="w-full min-h-[56px] rounded-[6px] bg-ha-card border border-ha-card-border pl-9 pr-4 text-[16px] text-ha-text placeholder:text-ha-text-muted focus:border-ha-primary outline-none transition-all"
                 data-testid="input-min-price"
               />
             </div>
@@ -173,7 +173,7 @@ function BudgetStep({
                 placeholder={t("onboarding.budget.maxPlaceholder")}
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
-                className="w-full min-h-[56px] rounded-[16px] bg-ha-card border border-ha-card-border pl-9 pr-4 text-[16px] text-ha-text placeholder:text-ha-text-muted focus:border-ha-primary outline-none transition-all"
+                className="w-full min-h-[56px] rounded-[6px] bg-ha-card border border-ha-card-border pl-9 pr-4 text-[16px] text-ha-text placeholder:text-ha-text-muted focus:border-ha-primary outline-none transition-all"
                 data-testid="input-max-price"
               />
             </div>
@@ -185,7 +185,7 @@ function BudgetStep({
         <button
           onClick={onNext}
           disabled={!valid}
-          className="w-full min-h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
+          className="w-full min-h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
           data-testid="button-budget-next"
         >
           {t("common.next")}
@@ -217,7 +217,7 @@ function PropertyTypeStep({
   return (
     <div className="flex flex-col min-h-screen px-6 pt-4">
       <div className="flex-1">
-        <div className="w-[56px] h-[56px] rounded-2xl bg-ha-primary/10 flex items-center justify-center mb-6">
+        <div className="w-[56px] h-[56px] rounded-[6px] bg-ha-primary/10 flex items-center justify-center mb-6">
           <Search className="w-6 h-6 text-ha-primary" />
         </div>
 
@@ -233,7 +233,7 @@ function PropertyTypeStep({
             <button
               key={pt.value}
               onClick={() => setPropertyType(pt.value)}
-              className={`w-full min-h-[56px] rounded-2xl border-2 px-5 text-left text-[16px] font-medium transition-all flex items-center justify-between ${
+              className={`w-full min-h-[56px] rounded-[6px] border-2 px-5 text-left text-[16px] font-medium transition-all flex items-center justify-between ${
                 propertyType === pt.value
                   ? "border-ha-primary bg-ha-primary/10 text-ha-primary"
                   : "border-ha-card-border bg-ha-card text-ha-text"
@@ -255,7 +255,7 @@ function PropertyTypeStep({
         <button
           onClick={onNext}
           disabled={!propertyType}
-          className="w-full min-h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
+          className="w-full min-h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
           data-testid="button-property-next"
         >
           {t("common.next")}
@@ -269,7 +269,7 @@ function AlertsStep({ onActivate, onSkip, saving }: { onActivate: () => void; on
   const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6 text-center bg-ha-bg">
-      <div className="w-[72px] h-[72px] rounded-2xl bg-ha-primary/10 flex items-center justify-center mb-8">
+      <div className="w-[72px] h-[72px] rounded-[6px] bg-ha-primary/10 flex items-center justify-center mb-8">
         <Bell className="w-8 h-8 text-ha-primary" />
       </div>
 
@@ -284,7 +284,7 @@ function AlertsStep({ onActivate, onSkip, saving }: { onActivate: () => void; on
         {t("onboarding.alerts.subtitle")}
       </p>
 
-      <div className="flex items-center gap-2.5 bg-ha-success-light rounded-xl px-4 py-3 mb-8 max-w-[320px]" data-testid="trial-note">
+      <div className="flex items-center gap-2.5 bg-ha-success-light rounded-[6px] px-4 py-3 mb-8 max-w-[320px]" data-testid="trial-note">
         <Gift className="w-4 h-4 text-ha-success flex-shrink-0" />
         <p className="text-[13px] font-medium text-ha-success text-left leading-snug">
           {t("onboarding.alerts.trialNote")}
@@ -294,7 +294,7 @@ function AlertsStep({ onActivate, onSkip, saving }: { onActivate: () => void; on
       <button
         onClick={onActivate}
         disabled={saving}
-        className="w-full max-w-[320px] min-h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors disabled:opacity-60 flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
+        className="w-full max-w-[320px] min-h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors disabled:opacity-60 flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(233,30,99,0.3)]"
         data-testid="button-activate-alerts"
       >
         {saving ? (

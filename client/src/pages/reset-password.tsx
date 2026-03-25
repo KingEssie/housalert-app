@@ -172,7 +172,7 @@ export default function ResetPasswordPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full h-[52px] pl-11 pr-12 rounded-2xl border border-ha-card-border bg-ha-card text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted placeholder:font-normal focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.1)] outline-none transition-all"
+                className="w-full h-[52px] pl-11 pr-12 rounded-[6px] border border-ha-card-border bg-ha-card text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted placeholder:font-normal focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.1)] outline-none transition-all"
                 data-testid="input-new-password"
               />
               <button
@@ -206,7 +206,7 @@ export default function ResetPasswordPage() {
                 value={confirm}
                 onChange={(e) => setConfirm(e.target.value)}
                 placeholder="••••••••"
-                className="w-full h-[52px] pl-11 pr-12 rounded-2xl border border-ha-card-border bg-ha-card text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted placeholder:font-normal focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.1)] outline-none transition-all"
+                className="w-full h-[52px] pl-11 pr-12 rounded-[6px] border border-ha-card-border bg-ha-card text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted placeholder:font-normal focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.1)] outline-none transition-all"
                 data-testid="input-confirm-password"
               />
               <button
@@ -230,7 +230,7 @@ export default function ResetPasswordPage() {
           <button
             type="submit"
             disabled={!canSubmit}
-            className={`w-full h-[52px] rounded-[14px] text-[16px] font-bold transition-all active:scale-[0.97] ${
+            className={`w-full h-[52px] rounded-[6px] text-[16px] font-bold transition-all active:scale-[0.97] ${
               canSubmit
                 ? "text-ha-text shadow-[0_4px_16px_rgba(233,30,99,0.35)]"
                 : "text-ha-text-muted bg-ha-surface cursor-not-allowed"

@@ -63,7 +63,7 @@ function LanguageDropdown() {
         <div
           role="listbox"
           aria-label="Languages"
-          className="absolute top-full right-0 mt-1.5 w-[180px] bg-ha-card rounded-2xl border border-ha-card-border shadow-[0_8px_30px_rgba(0,0,0,0.3)] overflow-hidden z-50"
+          className="absolute top-full right-0 mt-1.5 w-[180px] bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_8px_30px_rgba(0,0,0,0.3)] overflow-hidden z-50"
         >
           {LANGUAGES.map((lang) => {
             const isActive = locale === lang.code;
@@ -210,7 +210,7 @@ export default function WelcomePage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t("authScreen.emailPlaceholder")}
               required
-              className="w-full h-[46px] px-4 rounded-xl border border-ha-card-border bg-ha-card text-[14px] font-medium text-ha-text placeholder:text-ha-text-muted placeholder:font-normal focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] outline-none transition-all"
+              className="w-full h-[46px] px-4 rounded-[6px] border border-ha-card-border bg-ha-card text-[14px] font-medium text-ha-text placeholder:text-ha-text-muted placeholder:font-normal focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] outline-none transition-all"
               data-testid="input-email"
             />
 
@@ -221,7 +221,7 @@ export default function WelcomePage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t("authScreen.passwordPlaceholder")}
                 required
-                className="w-full h-[46px] px-4 pr-11 rounded-xl border border-ha-card-border bg-ha-card text-[14px] font-medium text-ha-text placeholder:text-ha-text-muted placeholder:font-normal focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] outline-none transition-all"
+                className="w-full h-[46px] px-4 pr-11 rounded-[6px] border border-ha-card-border bg-ha-card text-[14px] font-medium text-ha-text placeholder:text-ha-text-muted placeholder:font-normal focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] outline-none transition-all"
                 data-testid="input-password"
               />
               <button
@@ -276,7 +276,7 @@ export default function WelcomePage() {
 
           <div className="flex justify-center gap-4">
             <button
-              className="w-[48px] h-[48px] rounded-[14px] bg-ha-card border border-ha-card-border flex items-center justify-center hover:bg-ha-surface transition-colors active:scale-[0.95]"
+              className="w-[48px] h-[48px] rounded-[6px] bg-ha-card border border-ha-card-border flex items-center justify-center hover:bg-ha-surface transition-colors active:scale-[0.95]"
               data-testid="button-google"
               onClick={() => {}}
               aria-label="Continue with Google"
@@ -290,7 +290,7 @@ export default function WelcomePage() {
             </button>
 
             <button
-              className="w-[48px] h-[48px] rounded-[14px] bg-ha-card flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.15)] hover:bg-ha-surface transition-colors active:scale-[0.95]"
+              className="w-[48px] h-[48px] rounded-[6px] bg-ha-card flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.15)] hover:bg-ha-surface transition-colors active:scale-[0.95]"
               data-testid="button-apple"
               onClick={() => {}}
               aria-label="Continue with Apple"

@@ -232,7 +232,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
         <div className="px-6 pb-6 pt-3 border-t border-ha-card-border flex flex-col gap-2.5">
           <Button
             onClick={handleCopyAndRespond}
-            className="w-full h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[14px] font-medium"
+            className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[14px] font-medium"
             data-testid="button-copy-and-respond"
           >
             <Copy className="w-4 h-4 mr-2" />

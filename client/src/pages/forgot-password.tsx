@@ -138,7 +138,7 @@ export default function ForgotPasswordPage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t("forgotPassword.emailPlaceholder")}
               required
-              className="w-full h-[52px] pl-11 pr-4 rounded-2xl border border-ha-card-border bg-ha-card text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted placeholder:font-normal focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.1)] outline-none transition-all"
+              className="w-full h-[52px] pl-11 pr-4 rounded-[6px] border border-ha-card-border bg-ha-card text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted placeholder:font-normal focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.1)] outline-none transition-all"
               data-testid="input-email"
             />
           </div>
@@ -146,7 +146,7 @@ export default function ForgotPasswordPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full h-[52px] rounded-[14px] text-[16px] font-bold text-ha-text transition-all active:scale-[0.97] shadow-[0_4px_16px_rgba(233,30,99,0.35)] disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full h-[52px] rounded-[6px] text-[16px] font-bold text-ha-text transition-all active:scale-[0.97] shadow-[0_4px_16px_rgba(233,30,99,0.35)] disabled:opacity-60 disabled:cursor-not-allowed"
             style={{ backgroundColor: loading ? "#555" : BRAND }}
             onMouseOver={(e) => { if (!loading) e.currentTarget.style.backgroundColor = BRAND_HOVER; }}
             onMouseOut={(e) => { if (!loading) e.currentTarget.style.backgroundColor = BRAND; }}

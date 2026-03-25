@@ -95,7 +95,7 @@ export function ReactieklaarCard({
 
   if (loading) {
     return (
-      <div className="bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 animate-pulse" data-testid="card-reactieklaar-loading">
+      <div className="bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 animate-pulse" data-testid="card-reactieklaar-loading">
         <div className="h-4 bg-ha-surface rounded w-36 mb-4" />
         <div className="flex flex-col gap-3">
           <div className="h-3 bg-ha-surface rounded w-32" />
@@ -109,7 +109,7 @@ export function ReactieklaarCard({
   const allDone = speedDone === speedTotal && speedTotal > 0;
 
   return (
-    <div className="bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5" data-testid="card-reactieklaar">
+    <div className="bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5" data-testid="card-reactieklaar">
       <div className="flex items-center gap-2.5 mb-4">
         <div className="flex items-center justify-center">
           <Zap className="w-[18px] h-[18px] text-ha-text-muted" />

@@ -75,9 +75,9 @@ export function SubscriptionCancelConfirmPage() {
         <PageHeader title={t("cancellation.feedbackTitle")} onBack={() => setStep("confirm")} />
 
         <div className="max-w-xl mx-auto p-4 pb-8">
-          <div className="bg-ha-card rounded-2xl border border-ha-card-border p-6">
+          <div className="bg-ha-card rounded-[6px] border border-ha-card-border p-6">
             <div className="flex items-center justify-center mb-5">
-              <div className="w-14 h-14 rounded-2xl bg-ha-primary/10 flex items-center justify-center">
+              <div className="w-14 h-14 rounded-[6px] bg-ha-primary/10 flex items-center justify-center">
                 <MessageSquare className="w-7 h-7 text-ha-primary" />
               </div>
             </div>
@@ -94,7 +94,7 @@ export function SubscriptionCancelConfirmPage() {
                 <button
                   key={key}
                   onClick={() => setSelectedReason(key)}
-                  className={`w-full text-left px-4 py-3 rounded-xl border text-[15px] font-medium transition-colors ${
+                  className={`w-full text-left px-4 py-3 rounded-[6px] border text-[15px] font-medium transition-colors ${
                     selectedReason === key
                       ? "border-ha-primary bg-ha-primary/10 text-ha-primary"
                       : "border-ha-card-border bg-ha-bg text-ha-text hover:bg-ha-surface"
@@ -111,7 +111,7 @@ export function SubscriptionCancelConfirmPage() {
                 value={reasonText}
                 onChange={(e) => setReasonText(e.target.value)}
                 placeholder={t("cancellation.otherPlaceholder")}
-                className="w-full h-[80px] bg-ha-bg rounded-xl px-4 py-3 text-[14px] text-ha-text placeholder:text-ha-text-muted resize-none mb-5 border border-ha-card-border focus:border-ha-primary focus:outline-none"
+                className="w-full h-[80px] bg-ha-bg rounded-[6px] px-4 py-3 text-[14px] text-ha-text placeholder:text-ha-text-muted resize-none mb-5 border border-ha-card-border focus:border-ha-primary focus:outline-none"
                 data-testid="input-reason-text"
               />
             )}
@@ -144,9 +144,9 @@ export function SubscriptionCancelConfirmPage() {
       <PageHeader title={t("subscription.cancelTitle")} onBack={() => navigate("/account/subscription")} />
 
       <div className="max-w-xl mx-auto p-4 pb-8">
-        <div className="bg-ha-card rounded-2xl border border-ha-card-border p-6">
+        <div className="bg-ha-card rounded-[6px] border border-ha-card-border p-6">
           <div className="flex items-center justify-center mb-5">
-            <div className="w-14 h-14 rounded-2xl bg-amber-400/10 flex items-center justify-center">
+            <div className="w-14 h-14 rounded-[6px] bg-amber-400/10 flex items-center justify-center">
               <AlertCircle className="w-7 h-7 text-amber-400" />
             </div>
           </div>
@@ -155,7 +155,7 @@ export function SubscriptionCancelConfirmPage() {
             {t("subscription.cancelConfirm")}
           </h2>
 
-          <div className="bg-ha-bg rounded-2xl p-4 mb-6">
+          <div className="bg-ha-bg rounded-[6px] p-4 mb-6">
             <p className="text-[15px] text-ha-text-secondary leading-relaxed" data-testid="text-cancel-info">
               {t("subscription.cancelInfo", { date: renewalDate })}
             </p>
@@ -206,9 +206,9 @@ export function SubscriptionCancelledPage() {
       <PageHeader title={t("subscription.cancelledTitle")} onBack={() => navigate("/account/subscription")} />
 
       <div className="max-w-xl mx-auto p-4 pb-8">
-        <div className="bg-ha-card rounded-2xl border border-ha-card-border p-6">
+        <div className="bg-ha-card rounded-[6px] border border-ha-card-border p-6">
           <div className="flex items-center justify-center mb-5">
-            <div className="w-14 h-14 rounded-2xl bg-ha-success-light flex items-center justify-center">
+            <div className="w-14 h-14 rounded-[6px] bg-ha-success-light flex items-center justify-center">
               <CheckCircle2 className="w-7 h-7 text-ha-success" />
             </div>
           </div>
@@ -217,7 +217,7 @@ export function SubscriptionCancelledPage() {
             {t("subscription.cancelled")}
           </h2>
 
-          <div className="bg-ha-bg rounded-2xl p-4 mb-6">
+          <div className="bg-ha-bg rounded-[6px] p-4 mb-6">
             <p className="text-[15px] text-ha-text-secondary leading-relaxed" data-testid="text-cancelled-info">
               {t("subscription.cancelledInfo", { date: renewalDate })}
             </p>

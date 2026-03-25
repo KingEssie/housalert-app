@@ -11,10 +11,10 @@ export function ReferralPromoCard({ onOpen }: ReferralPromoCardProps) {
   return (
     <button
       onClick={onOpen}
-      className="w-full bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 flex items-center gap-4 text-left hover:shadow-[0_4px_16px_rgba(15,23,42,0.08)] transition-all duration-200 active:scale-[0.985]"
+      className="w-full bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 flex items-center gap-4 text-left hover:shadow-[0_4px_16px_rgba(15,23,42,0.08)] transition-all duration-200 active:scale-[0.985]"
       data-testid="card-referral-promo"
     >
-      <div className="w-11 h-11 rounded-xl bg-ha-primary-light flex items-center justify-center flex-shrink-0">
+      <div className="w-11 h-11 rounded-[6px] bg-ha-primary-light flex items-center justify-center flex-shrink-0">
         <Gift className="w-[22px] h-[22px] text-ha-primary" />
       </div>
       <div className="flex-1 min-w-0">

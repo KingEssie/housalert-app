@@ -9,8 +9,8 @@ import { useEmbedded } from "@/hooks/use-embedded";
 import { getMatchEstimateRange } from "@/lib/match-estimate";
 import { apiFetch } from "@/lib/api-base";
 
-const INPUT_CLS = "w-full h-[44px] pl-10 pr-4 rounded-xl border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal focus:bg-ha-card";
-const SELECT_CLS = "w-full h-[44px] pl-10 pr-4 rounded-xl border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text focus:bg-ha-card cursor-pointer appearance-none";
+const INPUT_CLS = "w-full h-[44px] pl-10 pr-4 rounded-[6px] border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal focus:bg-ha-card";
+const SELECT_CLS = "w-full h-[44px] pl-10 pr-4 rounded-[6px] border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text focus:bg-ha-card cursor-pointer appearance-none";
 
 export default function OnboardingFiltersPage() {
   const [, navigate] = useLocation();
@@ -108,7 +108,7 @@ export default function OnboardingFiltersPage() {
           </>
         )}
 
-        <div className={`bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] ${isEmbedded ? "p-4" : "p-5"}`}>
+        <div className={`bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] ${isEmbedded ? "p-4" : "p-5"}`}>
           <div className="grid grid-cols-2 gap-3 mb-5">
             <div>
               <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">{t("onboardingFilters.minRent")}</label>
@@ -180,7 +180,7 @@ export default function OnboardingFiltersPage() {
         {isEmbedded ? (
           <div className="mt-3">
             <Button
-              className="w-full h-[48px] rounded-[14px] text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover"
+              className="w-full h-[48px] rounded-[6px] text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover"
               onClick={handleNext}
               data-testid="button-next-filters"
             >
@@ -210,7 +210,7 @@ export default function OnboardingFiltersPage() {
               {t("onboardingFilters.back")}
             </Button>
             <Button
-              className="flex-1 h-[48px] rounded-[14px] text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover"
+              className="flex-1 h-[48px] rounded-[6px] text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover"
               onClick={handleNext}
               data-testid="button-next-filters"
             >

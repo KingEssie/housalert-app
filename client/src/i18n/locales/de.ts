@@ -313,6 +313,11 @@ export const de: Record<string, any> = {
     buddyDescription: "Suchst du mit einem Partner oder Mitbewohner? Füge ihn als Suchpartner hinzu und erhaltet beide Matches!",
     housAlertPlus: "HousAlert Plus",
     plusDescription: "Deine Wohnungssuche auslagern? Lass das Team von HousAlert Plus Besichtigungen für dich organisieren.",
+    settingsButton: "Einstellungen",
+  },
+
+  settings: {
+    title: "Einstellungen",
   },
 
   popularToday: {

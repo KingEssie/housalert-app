@@ -46,7 +46,7 @@ export default function PaymentMethodPage() {
       <PageHeader title={t("paymentMethodPage.title")} />
 
       <div className="max-w-xl mx-auto p-4 space-y-4 pb-8">
-        <div className="bg-card rounded-2xl border overflow-hidden" style={{ borderColor: "rgb(var(--ha-card-border))" }}>
+        <div className="bg-card rounded-[6px] border overflow-hidden" style={{ borderColor: "rgb(var(--ha-card-border))" }}>
           <div className="px-5 pt-5 pb-2">
             <p className="text-[13px] font-medium tracking-wider" style={{ color: "rgb(var(--ha-text-secondary))" }} data-testid="text-section-title-payment">
               {t("paymentMethodPage.currentMethod")}
@@ -55,7 +55,7 @@ export default function PaymentMethodPage() {
 
           <div className="px-5 py-4" data-testid="card-payment-active">
             <div className="flex items-center gap-3">
-              <div className="w-[48px] h-[48px] rounded-2xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgb(var(--ha-surface))" }}>
+              <div className="w-[48px] h-[48px] rounded-[6px] flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgb(var(--ha-surface))" }}>
                 <CreditCard className="w-5 h-5" style={{ color: "rgb(var(--ha-primary))" }} />
               </div>
               <div className="flex-1 min-w-0">
@@ -73,7 +73,7 @@ export default function PaymentMethodPage() {
         <Button
           onClick={openStripePortal}
           disabled={loading}
-          className="w-full h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium"
+          className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium"
           data-testid="button-open-stripe-portal"
         >
           <ExternalLink className="w-4 h-4 mr-2" />

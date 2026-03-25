@@ -353,7 +353,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
   return (
     <div className="flex flex-col gap-5">
       {segmentedTabs ? (
-        <div className="flex bg-ha-surface rounded-2xl p-1 gap-0.5">
+        <div className="flex bg-ha-surface rounded-[6px] p-1 gap-0.5">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -401,7 +401,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
               onChange={(e) => handleCityInput(e.target.value)}
               onFocus={() => { if (hasCityResults && !value.place) setCityOpen(true); }}
               placeholder={t("location.searchCity")}
-              className={`w-full min-h-[60px] rounded-[16px] bg-ha-surface border px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-secondary ${
+              className={`w-full min-h-[60px] rounded-[6px] bg-ha-surface border px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-secondary ${
                 value.place ? "border-ha-primary bg-ha-surface/30" : "border-ha-card-border"
               }`}
               data-testid="input-city-search"
@@ -429,7 +429,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                     <button
                       key={s.place_id}
                       onClick={() => handleGoogleCitySelect(s)}
-                      className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-ha-text-muted hover:bg-ha-surface flex items-center gap-3"
+                      className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[6px] last:rounded-b-[6px] text-ha-text-muted hover:bg-ha-surface flex items-center gap-3"
                       data-testid={`option-place-${s.place_id}`}
                     >
                       <MapPin className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
@@ -449,7 +449,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                     <button
                       key={r.place_id}
                       onClick={() => handleNominatimCitySelect(r)}
-                      className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-ha-text-muted hover:bg-ha-surface flex items-center gap-3"
+                      className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[6px] last:rounded-b-[6px] text-ha-text-muted hover:bg-ha-surface flex items-center gap-3"
                       data-testid={`option-place-${r.place_id}`}
                     >
                       <MapPin className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
@@ -523,7 +523,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                 onChange={(e) => handleDestInput(e.target.value)}
                 onFocus={() => { if (hasDestResults && value.commuteLat == null) setDestOpen(true); }}
                 placeholder={t("location.searchAddress")}
-                className={`w-full min-h-[60px] rounded-[16px] bg-ha-surface border px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-secondary ${
+                className={`w-full min-h-[60px] rounded-[6px] bg-ha-surface border px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-secondary ${
                   value.commuteLat != null ? "border-ha-primary bg-ha-surface/30" : "border-ha-card-border"
                 }`}
                 data-testid="input-commute-destination"
@@ -551,7 +551,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                       <button
                         key={s.place_id}
                         onClick={() => handleGoogleDestSelect(s)}
-                        className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-ha-text-muted hover:bg-ha-surface flex items-center gap-3"
+                        className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[6px] last:rounded-b-[6px] text-ha-text-muted hover:bg-ha-surface flex items-center gap-3"
                         data-testid={`option-dest-${s.place_id}`}
                       >
                         <MapPin className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
@@ -567,7 +567,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                     <button
                       key={r.place_id}
                       onClick={() => handleNominatimDestSelect(r)}
-                      className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-ha-text-muted hover:bg-ha-surface flex items-center gap-3"
+                      className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[6px] last:rounded-b-[6px] text-ha-text-muted hover:bg-ha-surface flex items-center gap-3"
                       data-testid={`option-dest-${r.place_id}`}
                     >
                       <MapPin className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
@@ -696,7 +696,7 @@ function DistrictMultiSelect({
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between min-h-[52px] px-4 rounded-[16px] bg-ha-surface border border-ha-card-border text-[15px] text-ha-text-muted hover:bg-ha-surface transition-colors"
+        className="w-full flex items-center justify-between min-h-[52px] px-4 rounded-[6px] bg-ha-surface border border-ha-card-border text-[15px] text-ha-text-muted hover:bg-ha-surface transition-colors"
         data-testid="button-district-dropdown"
       >
         <span className={selected.length > 0 ? "font-medium" : "text-ha-text-secondary"}>

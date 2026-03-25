@@ -11,7 +11,7 @@ const FURNISHED_OPTIONS = ["any", "furnished", "unfurnished"] as const;
 const HOUSING_TYPES = ["any", "apartment", "studio", "room", "house", "wg"] as const;
 const TARGET_GROUPS = ["any", "students", "couples", "families", "singles", "seniors"] as const;
 
-const SELECT_CLS = "w-full h-[44px] px-4 rounded-xl border border-ha-card-border bg-ha-bg text-[15px] font-medium text-ha-text focus:border-ha-primary cursor-pointer appearance-none outline-none transition-all";
+const SELECT_CLS = "w-full h-[44px] px-4 rounded-[6px] border border-ha-card-border bg-ha-bg text-[15px] font-medium text-ha-text focus:border-ha-primary cursor-pointer appearance-none outline-none transition-all";
 
 export default function OnboardingPreferencesPage() {
   const [, navigate] = useLocation();
@@ -88,7 +88,7 @@ export default function OnboardingPreferencesPage() {
           {t("onboardingPreferences.subtitle")}
         </p>
 
-        <div className="bg-ha-card rounded-[16px] border border-ha-card-border p-5 space-y-5">
+        <div className="bg-ha-card rounded-[6px] border border-ha-card-border p-5 space-y-5">
           <div>
             <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">
               {t("onboardingPreferences.furnished")}
@@ -165,7 +165,7 @@ export default function OnboardingPreferencesPage() {
             {t("onboardingPreferences.back")}
           </Button>
           <Button
-            className="flex-1 h-[48px] rounded-[14px] text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover text-white"
+            className="flex-1 h-[48px] rounded-[6px] text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover text-white"
             onClick={handleNext}
             data-testid="button-next-preferences"
           >

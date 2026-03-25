@@ -196,7 +196,7 @@ export default function ProfileDetailsPage() {
           onChange={e => onChange(e.target.value)}
           placeholder={placeholder}
           onKeyDown={e => { if (e.key === "Enter" && onEnter) onEnter(); }}
-          className="w-full bg-ha-card rounded-2xl px-5 py-4 text-[16px] text-ha-text placeholder:text-ha-text-muted border border-ha-card-border focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] focus:outline-none transition-all h-[56px]"
+          className="w-full bg-ha-card rounded-[6px] px-5 py-4 text-[16px] text-ha-text placeholder:text-ha-text-muted border border-ha-card-border focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] focus:outline-none transition-all h-[56px]"
           data-testid="input-edit-field"
         />
         {value && (
@@ -218,7 +218,7 @@ export default function ProfileDetailsPage() {
       <button
         onClick={onClick}
         disabled={saving}
-        className="h-[48px] px-8 rounded-xl bg-ha-primary text-white text-[15px] font-medium disabled:opacity-50 transition-colors flex items-center gap-2"
+        className="h-[48px] px-8 rounded-[6px] bg-ha-primary text-white text-[15px] font-medium disabled:opacity-50 transition-colors flex items-center gap-2"
         data-testid="button-save-field"
       >
         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : t("profileDetails.saveAndContinue")}

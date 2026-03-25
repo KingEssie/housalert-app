@@ -184,7 +184,7 @@ export function ProfileStrengthCard() {
 
   if (isLoading || !data) {
     return (
-      <div className="bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
+      <div className="bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
         <div className="h-4 bg-ha-surface rounded w-32 mb-3" />
         <div className="h-6 bg-ha-surface rounded w-20 mb-2" />
         <div className="h-2 bg-ha-surface rounded w-full" />
@@ -216,7 +216,7 @@ export function ProfileStrengthCard() {
   const recommendation = getRecommendation(pct, allTasks);
 
   return (
-    <div className="bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6" data-testid="card-profile-strength">
+    <div className="bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6" data-testid="card-profile-strength">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Shield className="w-[18px] h-[18px] text-ha-text-muted" />
@@ -255,7 +255,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
 
   if (isLoading || !data) {
     return (
-      <div className="bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
+      <div className="bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
         <div className="h-4 bg-ha-surface rounded w-40 mb-3" />
         <div className="h-3 bg-ha-surface rounded w-24" />
       </div>
@@ -267,7 +267,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
   const percentage = Math.round((completedCount / totalCount) * 100);
 
   return (
-    <div className="bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden" data-testid="card-account-completion">
+    <div className="bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden" data-testid="card-account-completion">
       <button
         className="w-full p-6 flex items-center justify-between text-left"
         onClick={() => setExpanded(!expanded)}
@@ -444,7 +444,7 @@ export function TaskModal({
               <p className="text-[14px] text-ha-text">{t("profileStrength.alertsDesc")}</p>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard"); }}
-                className="w-full h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-goto-notifications"
               >
                 <Bell className="w-4 h-4 mr-2" />
@@ -461,14 +461,14 @@ export function TaskModal({
                 value={buddyEmail}
                 onChange={(e) => setBuddyEmail(e.target.value)}
                 placeholder={t("profileStrength.buddyPlaceholder")}
-                className="w-full h-[60px] px-4 rounded-[16px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
+                className="w-full h-[60px] px-4 rounded-[6px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
                 data-testid="input-buddy-email"
               />
               <p className="text-[14px] text-ha-text">{t("profileStrength.buddyDesc")}</p>
               <Button
                 onClick={() => handleSave({ search_buddy_email: buddyEmail }, t("profileStrength.buddySaved"))}
                 disabled={!buddyEmail.includes("@") || updateProfileData.isPending}
-                className="w-full h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium disabled:opacity-50"
+                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium disabled:opacity-50"
                 data-testid="button-save-buddy"
               >
                 {updateProfileData.isPending ? t("profileStrength.saving") : t("profileStrength.save")}
@@ -483,7 +483,7 @@ export function TaskModal({
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard?tab=filters"); }}
-                className="w-full h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-goto-filters"
               >
                 <Search className="w-4 h-4 mr-2" />
@@ -499,7 +499,7 @@ export function TaskModal({
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/application-letter"); }}
-                className="w-full h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-goto-letter"
               >
                 <FileText className="w-4 h-4 mr-2" />
@@ -539,7 +539,7 @@ export function TaskModal({
               <Button
                 onClick={() => handleSave({ document_checklist: checklist }, t("profileStrength.docListSaved"))}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium disabled:opacity-50"
+                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium disabled:opacity-50"
                 data-testid="button-save-documents"
               >
                 {updateProfileData.isPending ? t("profileStrength.saving") : t("profileStrength.save")}
@@ -555,13 +555,13 @@ export function TaskModal({
                 value={phoneInput}
                 onChange={(e) => setPhoneInput(e.target.value)}
                 placeholder="+49 170 1234567"
-                className="w-full h-[60px] px-4 rounded-[16px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
+                className="w-full h-[60px] px-4 rounded-[6px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
                 data-testid="input-phone"
               />
               <p className="text-[14px] text-ha-text">{t("profileStrength.phoneDesc")}</p>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard"); }}
-                className="w-full h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-goto-phone-settings"
               >
                 <Phone className="w-4 h-4 mr-2" />
@@ -590,7 +590,7 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
 
   if (isLoading || !data) {
     return (
-      <div className="bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
+      <div className="bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
         <div className="h-4 bg-ha-surface rounded w-40 mb-3" />
         <div className="h-3 bg-ha-surface rounded w-24" />
       </div>
@@ -602,7 +602,7 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
   const percentage = Math.round((prepCompletedCount / prepTotalCount) * 100);
 
   return (
-    <div className="bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden" data-testid="card-search-preparation">
+    <div className="bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden" data-testid="card-search-preparation">
       <button
         className="w-full p-6 flex items-center justify-between text-left"
         onClick={() => setExpanded(!expanded)}
@@ -747,7 +747,7 @@ export function PrepTaskModal({
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
-                className="w-full h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-prep-create-profile"
               >
                 <Search className="w-4 h-4 mr-2" />
@@ -763,7 +763,7 @@ export function PrepTaskModal({
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/application-letter"); }}
-                className="w-full h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-prep-goto-letter"
               >
                 <FileText className="w-4 h-4 mr-2" />
@@ -777,7 +777,7 @@ export function PrepTaskModal({
               <p className="text-[15px] text-ha-text leading-relaxed">
                 {t("profileStrength.prepExtraDesc")}
               </p>
-              <div className="bg-ha-surface rounded-2xl p-5">
+              <div className="bg-ha-surface rounded-[6px] p-5">
                 <p className="text-[14px] font-medium text-ha-text mb-3">{t("profileStrength.prepWhyTitle")}</p>
                 <ul className="text-[14px] text-ha-text space-y-2">
                   <li className="flex items-start gap-2"><span className="text-ha-text mt-0.5">+</span>{t("profileStrength.prepWhy1")}</li>
@@ -787,7 +787,7 @@ export function PrepTaskModal({
               </div>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
-                className="w-full h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-prep-add-profile"
               >
                 <Plus className="w-4 h-4 mr-2" />
@@ -801,7 +801,7 @@ export function PrepTaskModal({
               <p className="text-[15px] text-ha-text leading-relaxed">
                 {t("profileStrength.prepNetworkDesc")}
               </p>
-              <div className="bg-ha-surface rounded-2xl p-5">
+              <div className="bg-ha-surface rounded-[6px] p-5">
                 <p className="text-[14px] font-medium text-ha-text mb-3">{t("profileStrength.shareTextLabel")}</p>
                 <p className="text-[14px] text-ha-text leading-relaxed">{t("profileStrength.shareText")}</p>
               </div>
@@ -817,7 +817,7 @@ export function PrepTaskModal({
               <Button
                 onClick={() => handleMarkDone("network_task_done")}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium disabled:opacity-50"
+                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium disabled:opacity-50"
                 data-testid="button-mark-network-done"
               >
                 {updateProfileData.isPending ? t("profileStrength.saving") : t("profileStrength.markComplete")}
@@ -832,7 +832,7 @@ export function PrepTaskModal({
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/tips/bezichtiging"); }}
-                className="w-full h-[56px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
+                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-goto-viewing-tips"
               >
                 <Eye className="w-4 h-4 mr-2" />
@@ -852,7 +852,7 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
 
   if (isLoading || !data) {
     return (
-      <div className="bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 animate-pulse">
+      <div className="bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 animate-pulse">
         <div className="h-4 bg-ha-surface rounded w-40 mb-3" />
         <div className="h-3 bg-ha-surface rounded w-32" />
       </div>
@@ -869,7 +869,7 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
   const activeCount = channelList.filter(c => c.enabled).length;
 
   return (
-    <div className="bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5" data-testid="card-notification-summary">
+    <div className="bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5" data-testid="card-notification-summary">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Bell className="w-[18px] h-[18px] text-ha-text-muted" />
@@ -901,7 +901,7 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
       </div>
 
       {recommendedChannel && (
-        <div className="bg-ha-surface rounded-2xl px-3.5 py-2.5 mb-3">
+        <div className="bg-ha-surface rounded-[6px] px-3.5 py-2.5 mb-3">
           <p className="text-[12px] text-ha-text font-medium flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5" />
             {t("profileStrength.fastestChannel", { channel: recommendedChannel })}
@@ -927,7 +927,7 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
 
   if (isLoading || !data) {
     return (
-      <div className="bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 animate-pulse">
+      <div className="bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5 animate-pulse">
         <div className="h-4 bg-ha-surface rounded w-40 mb-3" />
         <div className="h-3 bg-ha-surface rounded w-24" />
       </div>
@@ -945,7 +945,7 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
   };
 
   return (
-    <div className="bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5" data-testid="card-speed-readiness">
+    <div className="bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5" data-testid="card-speed-readiness">
       <div className="flex items-center gap-2 mb-4">
         <Zap className="w-[18px] h-[18px] text-ha-text-muted" />
         <div className="flex-1">

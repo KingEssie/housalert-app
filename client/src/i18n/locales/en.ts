@@ -271,6 +271,11 @@ export const en: Record<string, any> = {
     buddyDescription: "Looking with a partner or roommate? Add them as a search buddy and both receive matches!",
     housAlertPlus: "HousAlert Plus",
     plusDescription: "Outsource your home search? Let the HousAlert Plus team arrange viewings for you.",
+    settingsButton: "Settings",
+  },
+
+  settings: {
+    title: "Settings",
   },
 
   profileEdit: {

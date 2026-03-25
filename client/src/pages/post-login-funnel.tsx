@@ -82,7 +82,7 @@ function PrimaryButton({
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className="w-full h-[52px] rounded-2xl text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 shadow-[0_4px_16px_rgba(249,115,22,0.3)]"
+      className="w-full h-[52px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 shadow-[0_4px_16px_rgba(249,115,22,0.3)]"
       style={{ backgroundColor: BRAND }}
       onMouseOver={(e) => (e.currentTarget.style.backgroundColor = BRAND_HOVER)}
       onMouseOut={(e) => (e.currentTarget.style.backgroundColor = BRAND)}
@@ -150,7 +150,7 @@ function PaywallStep({ onNext, onSkip, t }: { onNext: (plan: string) => void; on
           <button
             key={plan.id}
             onClick={() => setSelected(plan.id)}
-            className="w-full rounded-2xl p-4 border-2 transition-all relative text-left"
+            className="w-full rounded-[6px] p-4 border-2 transition-all relative text-left"
             style={{
               borderColor: selected === plan.id ? BRAND : BORDER,
               backgroundColor: selected === plan.id ? `${BRAND}08` : "white",
@@ -226,7 +226,7 @@ function ObjectionStep({ onNext, onSkip, t }: { onNext: () => void; onSkip: () =
 
       <div className="grid grid-cols-3 gap-3 mb-6">
         {stats.map((s, i) => (
-          <div key={i} className="text-center rounded-2xl p-3" style={{ backgroundColor: BG_LIGHT }}>
+          <div key={i} className="text-center rounded-[6px] p-3" style={{ backgroundColor: BG_LIGHT }}>
             <div className="text-[20px] font-bold" style={{ color: BRAND }}>{s.value}</div>
             <div className="text-[11px] mt-1" style={{ color: TEXT_SECONDARY }}>{s.label}</div>
           </div>
@@ -235,7 +235,7 @@ function ObjectionStep({ onNext, onSkip, t }: { onNext: () => void; onSkip: () =
 
       <div className="space-y-3 flex-1">
         {reviews.map((r, i) => (
-          <div key={i} className="rounded-2xl p-4 border" style={{ borderColor: BORDER }}>
+          <div key={i} className="rounded-[6px] p-4 border" style={{ borderColor: BORDER }}>
             <div className="flex items-center gap-1 mb-2">
               {Array.from({ length: 5 }).map((_, j) => (
                 <Star key={j} className="w-3.5 h-3.5 fill-current" style={{ color: "rgb(var(--ha-warning))" }} />
@@ -305,7 +305,7 @@ function PushStep({ onNext, onSkip, t, session }: { onNext: () => void; onSkip: 
           { icon: Check, text: t("funnel.push.benefit3") },
         ].map((b, i) => (
           <div key={i} className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: BG_LIGHT }}>
+            <div className="w-10 h-10 rounded-[6px] flex items-center justify-center flex-shrink-0" style={{ backgroundColor: BG_LIGHT }}>
               <b.icon className="w-5 h-5" style={{ color: BRAND }} />
             </div>
             <span className="text-[14px] font-medium" style={{ color: TEXT_PRIMARY }}>{b.text}</span>
@@ -361,7 +361,7 @@ function PersonalInfoStep({ onNext, onSkip, t, session }: { onNext: () => void; 
     setLoading(false);
   }
 
-  const inputStyle = "w-full h-[48px] rounded-xl border px-4 text-[14px] outline-none transition-all focus:ring-2 focus:ring-orange-200";
+  const inputStyle = "w-full h-[48px] rounded-[6px] border px-4 text-[14px] outline-none transition-all focus:ring-2 focus:ring-orange-200";
 
   return (
     <>
@@ -471,7 +471,7 @@ function HousingStep({ onNext, onSkip, t, session }: { onNext: () => void; onSki
             <button
               key={s}
               onClick={() => setSituation(s)}
-              className="w-full rounded-xl p-3.5 border text-left text-[14px] transition-all"
+              className="w-full rounded-[6px] p-3.5 border text-left text-[14px] transition-all"
               style={{
                 borderColor: situation === s ? BRAND : BORDER,
                 backgroundColor: situation === s ? `${BRAND}08` : "white",
@@ -494,7 +494,7 @@ function HousingStep({ onNext, onSkip, t, session }: { onNext: () => void; onSki
             <button
               key={m}
               onClick={() => setMoveIn(m)}
-              className="rounded-xl p-3 border text-center text-[13px] font-medium transition-all"
+              className="rounded-[6px] p-3 border text-center text-[13px] font-medium transition-all"
               style={{
                 borderColor: moveIn === m ? BRAND : BORDER,
                 backgroundColor: moveIn === m ? `${BRAND}08` : "white",
@@ -552,12 +552,12 @@ function ExtrasStep({ onNext, onSkip, t, session }: { onNext: () => void; onSkip
 
   function ToggleRow({ label, value, onChange, testIdPrefix }: { label: string; value: boolean | null; onChange: (v: boolean) => void; testIdPrefix: string }) {
     return (
-      <div className="rounded-2xl p-4 border" style={{ borderColor: BORDER }}>
+      <div className="rounded-[6px] p-4 border" style={{ borderColor: BORDER }}>
         <p className="text-[14px] font-medium mb-3" style={{ color: TEXT_PRIMARY }}>{label}</p>
         <div className="flex gap-3">
           <button
             onClick={() => onChange(true)}
-            className="flex-1 h-[42px] rounded-xl border text-[14px] font-medium transition-all"
+            className="flex-1 h-[42px] rounded-[6px] border text-[14px] font-medium transition-all"
             style={{
               borderColor: value === true ? BRAND : BORDER,
               backgroundColor: value === true ? `${BRAND}08` : "white",
@@ -569,7 +569,7 @@ function ExtrasStep({ onNext, onSkip, t, session }: { onNext: () => void; onSkip
           </button>
           <button
             onClick={() => onChange(false)}
-            className="flex-1 h-[42px] rounded-xl border text-[14px] font-medium transition-all"
+            className="flex-1 h-[42px] rounded-[6px] border text-[14px] font-medium transition-all"
             style={{
               borderColor: value === false ? BRAND : BORDER,
               backgroundColor: value === false ? `${BRAND}08` : "white",
@@ -675,7 +675,7 @@ function LetterStep({ onNext, onSkip, t, session, locale }: { onNext: () => void
       </div>
 
       <div className="flex-1 relative">
-        <div className="rounded-2xl border overflow-hidden" style={{ borderColor: BORDER }}>
+        <div className="rounded-[6px] border overflow-hidden" style={{ borderColor: BORDER }}>
           <div className="flex items-center justify-between px-4 py-2.5" style={{ backgroundColor: BG_LIGHT }}>
             <div className="flex items-center gap-2">
               <MessageSquare className="w-4 h-4" style={{ color: BRAND }} />
@@ -768,7 +768,7 @@ function BuddyStep({ onNext, onSkip, t, session }: { onNext: () => void; onSkip:
           </div>
         ) : (
           <input
-            className="w-full h-[48px] rounded-xl border px-4 text-[14px] outline-none transition-all focus:ring-2 focus:ring-orange-200"
+            className="w-full h-[48px] rounded-[6px] border px-4 text-[14px] outline-none transition-all focus:ring-2 focus:ring-orange-200"
             style={{ borderColor: BORDER }}
             type="email"
             placeholder={t("funnel.buddy.emailPlaceholder")}

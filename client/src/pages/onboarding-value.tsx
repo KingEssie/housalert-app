@@ -195,7 +195,7 @@ export default function OnboardingValuePage() {
         </div>
 
         <div className="mb-6">
-          <div className="bg-ha-danger/10 rounded-2xl p-5">
+          <div className="bg-ha-danger/10 rounded-[6px] p-5">
             <p className="text-[15px] font-medium text-ha-danger mb-3" data-testid="text-without-title">
               {t("valueStep.withoutTitle")}
             </p>
@@ -213,7 +213,7 @@ export default function OnboardingValuePage() {
         </div>
 
         <div className="mb-8">
-          <div className="bg-ha-success-light rounded-2xl p-5">
+          <div className="bg-ha-success-light rounded-[6px] p-5">
             <p className="text-[15px] font-medium text-ha-success mb-3" data-testid="text-with-title">
               {t("valueStep.withTitle")}
             </p>
@@ -234,10 +234,10 @@ export default function OnboardingValuePage() {
           {EXPLANATIONS.map(({ icon: Icon, key }) => (
             <div
               key={key}
-              className="bg-ha-card rounded-2xl p-5 flex items-start gap-4"
+              className="bg-ha-card rounded-[6px] p-5 flex items-start gap-4"
               data-testid={`card-explain-${key}`}
             >
-              <div className="w-10 h-10 rounded-xl bg-ha-surface flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-[6px] bg-ha-surface flex items-center justify-center flex-shrink-0">
                 <Icon className="w-5 h-5 text-ha-primary" />
               </div>
               <div className="flex-1 min-w-0">
@@ -269,7 +269,7 @@ export default function OnboardingValuePage() {
             <button
               key={plan.id}
               onClick={() => setSelectedPlan(plan.id)}
-              className={`w-full p-4 rounded-2xl border-2 transition-all text-left relative bg-ha-card ${
+              className={`w-full p-4 rounded-[6px] border-2 transition-all text-left relative bg-ha-card ${
                 selectedPlan === plan.id
                   ? "border-ha-primary shadow-[0_0_0_1px_rgb(var(--ha-primary))]"
                   : "border-ha-card-border hover:border-ha-text-muted"
@@ -320,7 +320,7 @@ export default function OnboardingValuePage() {
       <div className="fixed bottom-0 left-0 right-0 bg-ha-bg border-t border-ha-card-border p-4 z-10">
         <div className={`${containerClass} mx-auto`}>
           <Button
-            className="w-full h-[48px] rounded-[14px] text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover text-white"
+            className="w-full h-[48px] rounded-[6px] text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover text-white"
             onClick={handleCheckout}
             disabled={loading}
             data-testid="button-select-payment"

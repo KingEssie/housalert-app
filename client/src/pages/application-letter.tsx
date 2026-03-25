@@ -130,8 +130,8 @@ export default function ApplicationLetterPage() {
           </div>
 
           {isLoading ? (
-            <div className="rounded-[16px] bg-ha-card p-6 animate-pulse">
-              <div className="h-[300px] bg-ha-surface rounded-2xl" />
+            <div className="rounded-[6px] bg-ha-card p-6 animate-pulse">
+              <div className="h-[300px] bg-ha-surface rounded-[6px]" />
             </div>
           ) : (
             <div>
@@ -139,7 +139,7 @@ export default function ApplicationLetterPage() {
                 value={template}
                 onChange={(e) => setTemplate(e.target.value)}
                 placeholder={t("applicationLetter.placeholderText")}
-                className="w-full min-h-[340px] px-5 py-5 rounded-[16px] border border-ha-card-border bg-ha-card text-[15px] text-ha-text placeholder:text-ha-text-muted focus:outline-none focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] resize-y leading-relaxed transition-all"
+                className="w-full min-h-[340px] px-5 py-5 rounded-[6px] border border-ha-card-border bg-ha-card text-[15px] text-ha-text placeholder:text-ha-text-muted focus:outline-none focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] resize-y leading-relaxed transition-all"
                 data-testid="input-template"
               />
               {!isLongEnough && template.length > 0 && (

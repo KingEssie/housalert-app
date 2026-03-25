@@ -219,7 +219,7 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
                   <button
                     key={s.place_id}
                     onClick={() => handleGoogleSelect(s)}
-                    className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-ha-text-muted hover:bg-ha-surface flex items-center gap-3"
+                    className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[6px] last:rounded-b-[6px] text-ha-text-muted hover:bg-ha-surface flex items-center gap-3"
                     data-testid={`option-place-${s.place_id}`}
                   >
                     <MapPin className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
@@ -239,7 +239,7 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
                   <button
                     key={r.place_id}
                     onClick={() => handleNominatimSelect(r)}
-                    className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[14px] last:rounded-b-[14px] text-ha-text-muted hover:bg-ha-surface flex items-center gap-3"
+                    className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[6px] last:rounded-b-[6px] text-ha-text-muted hover:bg-ha-surface flex items-center gap-3"
                     data-testid={`option-place-${r.place_id}`}
                   >
                     <MapPin className="w-4 h-4 text-ha-text-muted flex-shrink-0" />

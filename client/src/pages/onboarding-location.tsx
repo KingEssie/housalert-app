@@ -316,7 +316,7 @@ export default function OnboardingLocationPage() {
           </h1>
         )}
 
-        <div className={`bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] ${isEmbedded ? "p-4" : "p-6"}`}>
+        <div className={`bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] ${isEmbedded ? "p-4" : "p-6"}`}>
           <div className="flex border-b border-ha-card-border">
             {tabs.map((tab) => (
               <button
@@ -342,7 +342,7 @@ export default function OnboardingLocationPage() {
               <div className="space-y-0">
                 <div className="relative" ref={containerRef}>
                   <div
-                    className="flex items-center gap-3 h-[44px] px-4 rounded-xl border border-transparent bg-ha-surface cursor-text focus-within:ring-2 focus-within:ring-ha-primary focus-within:border-ha-primary focus-within:bg-ha-card transition-all"
+                    className="flex items-center gap-3 h-[44px] px-4 rounded-[6px] border border-transparent bg-ha-surface cursor-text focus-within:ring-2 focus-within:ring-ha-primary focus-within:border-ha-primary focus-within:bg-ha-card transition-all"
                     onClick={() => {
                       const input = document.getElementById("city-search-input");
                       input?.focus();
@@ -381,7 +381,7 @@ export default function OnboardingLocationPage() {
                   </div>
 
                   {showDropdown && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-ha-card rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-10 max-h-64 overflow-y-auto">
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-ha-card rounded-[6px] shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-10 max-h-64 overflow-y-auto">
                       {showGoogleResults && googleSuggestions.map((s) => (
                         <button
                           key={s.place_id}
@@ -442,7 +442,7 @@ export default function OnboardingLocationPage() {
                       <button
                         type="button"
                         onClick={() => setDistrictDropdownOpen((v) => !v)}
-                        className="w-full flex items-center justify-between h-[44px] px-4 rounded-xl border border-transparent bg-ha-surface text-[15px] font-medium text-left focus:bg-ha-card"
+                        className="w-full flex items-center justify-between h-[44px] px-4 rounded-[6px] border border-transparent bg-ha-surface text-[15px] font-medium text-left focus:bg-ha-card"
                         data-testid="dropdown-districts-trigger"
                       >
                         <span className={selectedDistricts.length > 0 ? "text-ha-text" : "text-ha-text-secondary font-normal"}>
@@ -477,7 +477,7 @@ export default function OnboardingLocationPage() {
                       )}
 
                       {districtDropdownOpen && (
-                        <div className="absolute top-full left-0 right-0 mt-1 bg-ha-card rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-[9999] max-h-56 overflow-y-auto">
+                        <div className="absolute top-full left-0 right-0 mt-1 bg-ha-card rounded-[6px] shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-[9999] max-h-56 overflow-y-auto">
                           {activeCityDistricts.map((district) => (
                             <button
                               key={district}
@@ -504,7 +504,7 @@ export default function OnboardingLocationPage() {
 
                 {selectedCity && selectedCity.lat !== 0 && selectedCity.lng !== 0 && !districtDropdownOpen && (
                   <div className={isEmbedded ? "pt-2 pb-1" : "py-5 border-b border-ha-card-border"}>
-                    <div className="rounded-2xl overflow-hidden" data-testid="card-map-preview" style={{ height: "180px" }}>
+                    <div className="rounded-[6px] overflow-hidden" data-testid="card-map-preview" style={{ height: "180px" }}>
                       <MapContainer
                         center={[selectedCity.lat, selectedCity.lng]}
                         zoom={12}
@@ -548,7 +548,7 @@ export default function OnboardingLocationPage() {
               <div className="space-y-0">
                 <div className="relative" ref={containerRef}>
                   <div
-                    className="flex items-center gap-3 h-[44px] px-4 rounded-xl border border-transparent bg-ha-surface cursor-text focus-within:ring-2 focus-within:ring-ha-primary focus-within:border-ha-primary focus-within:bg-ha-card transition-all"
+                    className="flex items-center gap-3 h-[44px] px-4 rounded-[6px] border border-transparent bg-ha-surface cursor-text focus-within:ring-2 focus-within:ring-ha-primary focus-within:border-ha-primary focus-within:bg-ha-card transition-all"
                     onClick={() => {
                       const input = document.getElementById("radius-city-input");
                       input?.focus();
@@ -586,7 +586,7 @@ export default function OnboardingLocationPage() {
                   </div>
 
                   {showDropdown && (
-                    <div className="absolute top-full left-0 right-0 mt-1 bg-ha-card rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-10 max-h-64 overflow-y-auto">
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-ha-card rounded-[6px] shadow-[0_8px_30px_rgba(0,0,0,0.1)] overflow-hidden z-10 max-h-64 overflow-y-auto">
                       {showGoogleResults && googleSuggestions.map((s) => (
                         <button
                           key={s.place_id}
@@ -647,7 +647,7 @@ export default function OnboardingLocationPage() {
                     <select
                       value={radius}
                       onChange={(e) => setRadius(e.target.value)}
-                      className="w-full h-[48px] pl-11 pr-4 rounded-xl border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text-muted focus:bg-ha-card cursor-pointer appearance-none"
+                      className="w-full h-[48px] pl-11 pr-4 rounded-[6px] border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text-muted focus:bg-ha-card cursor-pointer appearance-none"
                       data-testid="select-radius"
                     >
                       <option value="2">2 km</option>
@@ -662,7 +662,7 @@ export default function OnboardingLocationPage() {
 
                 {selectedCity && selectedCity.lat !== 0 && selectedCity.lng !== 0 && (
                   <div className="py-5">
-                    <div className="rounded-2xl overflow-hidden" data-testid="card-map-radius" style={{ height: "180px" }}>
+                    <div className="rounded-[6px] overflow-hidden" data-testid="card-map-radius" style={{ height: "180px" }}>
                       <MapContainer
                         center={[selectedCity.lat, selectedCity.lng]}
                         zoom={12}
@@ -701,7 +701,7 @@ export default function OnboardingLocationPage() {
                       placeholder={t("onboardingLocation.destinationPlaceholder")}
                       value={travelAddress}
                       onChange={(e) => setTravelAddress(e.target.value)}
-                      className="w-full h-[48px] pl-11 pr-4 rounded-xl border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text-muted placeholder:text-ha-text-secondary placeholder:font-normal focus:bg-ha-card"
+                      className="w-full h-[48px] pl-11 pr-4 rounded-[6px] border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text-muted placeholder:text-ha-text-secondary placeholder:font-normal focus:bg-ha-card"
                       data-testid="input-travel-address"
                     />
                   </div>
@@ -714,7 +714,7 @@ export default function OnboardingLocationPage() {
                     <select
                       value={travelTime}
                       onChange={(e) => setTravelTime(e.target.value)}
-                      className="w-full h-[48px] pl-11 pr-4 rounded-xl border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text-muted focus:bg-ha-card cursor-pointer appearance-none"
+                      className="w-full h-[48px] pl-11 pr-4 rounded-[6px] border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text-muted focus:bg-ha-card cursor-pointer appearance-none"
                       data-testid="select-travel-time"
                     >
                       <option value="15">15 min</option>
@@ -753,7 +753,7 @@ export default function OnboardingLocationPage() {
 
                 {travelAddress && (
                   <div className="py-5">
-                    <div className="rounded-2xl overflow-hidden bg-ha-surface" data-testid="card-map-travel">
+                    <div className="rounded-[6px] overflow-hidden bg-ha-surface" data-testid="card-map-travel">
                       <div className="h-36 flex items-center justify-center">
                         <div className="text-center">
                           <Clock className="w-7 h-7 text-ha-primary mx-auto mb-1.5" />
@@ -772,7 +772,7 @@ export default function OnboardingLocationPage() {
             <>
               <Button
                 size="lg"
-                className="w-full h-[48px] rounded-[14px] text-[16px] font-medium bg-ha-primary hover:bg-ha-primary-hover shadow-none mt-3"
+                className="w-full h-[48px] rounded-[6px] text-[16px] font-medium bg-ha-primary hover:bg-ha-primary-hover shadow-none mt-3"
                 disabled={!canProceed}
                 onClick={handleNext}
                 data-testid="button-next-step"
@@ -830,7 +830,7 @@ export default function OnboardingLocationPage() {
                 </div>
               )}
 
-              <div className={`bg-ha-surface rounded-xl p-4 mt-4 mb-2 ${districtDropdownOpen ? "hidden" : ""}`} data-testid="info-helper-box">
+              <div className={`bg-ha-surface rounded-[6px] p-4 mt-4 mb-2 ${districtDropdownOpen ? "hidden" : ""}`} data-testid="info-helper-box">
                 <p className="text-[13px] text-ha-text-secondary leading-[1.5]">
                   {t("onboardingLocation.helperText")}
                 </p>
@@ -838,7 +838,7 @@ export default function OnboardingLocationPage() {
 
               <Button
                 size="lg"
-                className="w-full h-[56px] rounded-[14px] text-[16px] font-medium bg-ha-primary hover:bg-ha-primary-hover shadow-none mt-2"
+                className="w-full h-[56px] rounded-[6px] text-[16px] font-medium bg-ha-primary hover:bg-ha-primary-hover shadow-none mt-2"
                 disabled={!canProceed}
                 onClick={handleNext}
                 data-testid="button-next-step"

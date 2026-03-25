@@ -149,7 +149,7 @@ export default function ApplyPage() {
         </button>
         <div className="animate-pulse">
           <div className="w-full bg-ha-surface" style={{ aspectRatio: "16/10" }} />
-          <div className="max-w-xl mx-auto w-full px-5 pt-6 relative -mt-5 bg-ha-card rounded-t-[24px]">
+          <div className="max-w-xl mx-auto w-full px-5 pt-6 relative -mt-5 bg-ha-card rounded-t-[6px]">
             <div className="flex flex-col items-center gap-2">
               <div className="h-5 bg-ha-surface rounded-md w-4/5" />
               <div className="h-5 bg-ha-surface rounded-md w-3/5" />
@@ -159,7 +159,7 @@ export default function ApplyPage() {
             <div className="mt-7 border-t border-ha-card-border" />
             <div className="pt-6">
               <div className="h-4 bg-ha-surface rounded w-24 mb-3" />
-              <div className="bg-ha-card rounded-2xl px-5 py-5 space-y-2">
+              <div className="bg-ha-card rounded-[6px] px-5 py-5 space-y-2">
                 <div className="h-3.5 bg-ha-surface rounded w-full" />
                 <div className="h-3.5 bg-ha-surface rounded w-5/6" />
                 <div className="h-3.5 bg-ha-surface rounded w-4/6" />
@@ -292,7 +292,7 @@ export default function ApplyPage() {
         )}
       </div>
 
-      <main className="flex-1 max-w-xl mx-auto w-full pb-[120px] relative -mt-5 bg-ha-card rounded-t-[24px]">
+      <main className="flex-1 max-w-xl mx-auto w-full pb-[120px] relative -mt-5 bg-ha-card rounded-t-[6px]">
         <div className="px-5 pt-6 text-center">
           <h1
             className="text-[22px] font-semibold text-ha-text leading-[1.3] tracking-[-0.02em] mx-auto"
@@ -314,7 +314,7 @@ export default function ApplyPage() {
 
         <div className="px-5 pt-6">
           <h2 className="text-[15px] font-medium text-ha-text mb-3">{t("applySheet.applicationLetter")}</h2>
-          <div className="bg-ha-card rounded-2xl px-5 py-5">
+          <div className="bg-ha-card rounded-[6px] px-5 py-5">
             <textarea
               className="w-full text-[14px] text-ha-text leading-[1.75] font-[inherit] bg-transparent border-none outline-none resize-none min-h-[220px]"
               value={editedLetter ?? filledLetter}
@@ -327,7 +327,7 @@ export default function ApplyPage() {
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-ha-card rounded-t-2xl shadow-[0_-2px_16px_rgba(0,0,0,0.06)] z-10 pb-[env(safe-area-inset-bottom)]">
+      <div className="fixed bottom-0 left-0 right-0 bg-ha-card rounded-t-[6px] shadow-[0_-2px_16px_rgba(0,0,0,0.06)] z-10 pb-[env(safe-area-inset-bottom)]">
         <div className="max-w-xl mx-auto flex items-center justify-between px-5 py-4">
           {listing.price > 0 && (
             <div className="flex flex-col" data-testid="text-sticky-price">
@@ -337,7 +337,7 @@ export default function ApplyPage() {
           )}
           <Button
             onClick={handleCopyAndRespond}
-            className={`h-[50px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium px-6 ${listing.price > 0 ? "" : "w-full"}`}
+            className={`h-[50px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium px-6 ${listing.price > 0 ? "" : "w-full"}`}
             data-testid="button-copy-and-respond"
           >
             <Copy className="w-4 h-4 mr-2" />

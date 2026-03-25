@@ -160,7 +160,7 @@ export default function PaywallPage() {
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-10 pb-32">
         <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-ha-primary/10 flex items-center justify-center mx-auto mb-4">
+          <div className="w-14 h-14 rounded-[6px] bg-ha-primary/10 flex items-center justify-center mx-auto mb-4">
             <Crown className="w-7 h-7 text-ha-primary" />
           </div>
           <h1 className="text-[32px] font-medium text-ha-text tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-paywall-title">
@@ -176,7 +176,7 @@ export default function PaywallPage() {
             <button
               key={plan.id}
               onClick={() => setSelectedPlan(plan.id)}
-              className={`w-full p-6 rounded-[16px] border-2 transition-all text-left relative bg-ha-card ${
+              className={`w-full p-6 rounded-[6px] border-2 transition-all text-left relative bg-ha-card ${
                 selectedPlan === plan.id
                   ? "border-ha-primary"
                   : "border-ha-card-border hover:border-ha-text-muted"
@@ -218,7 +218,7 @@ export default function PaywallPage() {
           ))}
         </div>
 
-        <div className="bg-ha-card rounded-[16px] border border-ha-card-border p-6">
+        <div className="bg-ha-card rounded-[6px] border border-ha-card-border p-6">
           <p className="text-[16px] font-medium text-ha-text mb-3">{t("paywall.featuresTitle")}</p>
           <div className="space-y-2.5">
             {FEATURE_KEYS.map((key, i) => (
@@ -237,7 +237,7 @@ export default function PaywallPage() {
         <div className="max-w-xl mx-auto">
           <Button
             size="lg"
-            className="w-full h-[56px] rounded-[14px] text-[16px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover text-white"
+            className="w-full h-[56px] rounded-[6px] text-[16px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover text-white"
             onClick={handleCheckout}
             disabled={loading}
             data-testid="button-select-payment"

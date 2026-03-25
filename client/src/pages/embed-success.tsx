@@ -10,7 +10,7 @@ import { apiFetch } from "@/lib/api-base";
 import { useEmbedded } from "@/hooks/use-embedded";
 import { useHashSearch } from "@/lib/hash-search";
 
-const INPUT_CLS = "w-full h-[44px] pl-11 pr-4 rounded-xl border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal focus:bg-ha-card";
+const INPUT_CLS = "w-full h-[44px] pl-11 pr-4 rounded-[6px] border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal focus:bg-ha-card";
 
 export default function EmbedSuccessPage() {
   const [, navigate] = useLocation();
@@ -167,7 +167,7 @@ export default function EmbedSuccessPage() {
           {t("embedSuccess.subtitle")}
         </p>
 
-        <div className="bg-ha-card rounded-[16px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5">
+        <div className="bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5">
           <form onSubmit={handleSignup} className="space-y-4">
             <div className="relative">
               <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text-muted" />
@@ -210,7 +210,7 @@ export default function EmbedSuccessPage() {
 
             <Button
               type="submit"
-              className="w-full h-[48px] rounded-[14px] text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover mt-1"
+              className="w-full h-[48px] rounded-[6px] text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover mt-1"
               disabled={loading || !email || !password}
               data-testid="button-embed-signup-submit"
             >

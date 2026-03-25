@@ -86,7 +86,7 @@ export default function TipDetailPage() {
 
       <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-8 pb-32">
         <div className="flex items-center gap-4 mb-6">
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 bg-ha-primary/10">
+          <div className="w-14 h-14 rounded-[6px] flex items-center justify-center flex-shrink-0 bg-ha-primary/10">
             <Icon className="w-7 h-7 text-ha-primary" />
           </div>
           <div>
@@ -105,7 +105,7 @@ export default function TipDetailPage() {
 
         <button
           onClick={handleGoToContent}
-          className="w-full bg-ha-card rounded-2xl p-5 flex items-center gap-3 text-left hover:bg-ha-card-hover transition-colors active:scale-[0.985]"
+          className="w-full bg-ha-card rounded-[6px] p-5 flex items-center gap-3 text-left hover:bg-ha-card-hover transition-colors active:scale-[0.985]"
           data-testid="button-open-content"
         >
           <Icon className="w-5 h-5 text-ha-primary flex-shrink-0" />
@@ -119,7 +119,7 @@ export default function TipDetailPage() {
           <Button
             onClick={handleMarkRead}
             disabled={isRead}
-            className={`flex-1 h-[52px] rounded-[14px] text-[15px] font-medium flex items-center justify-center gap-2 ${
+            className={`flex-1 h-[52px] rounded-[6px] text-[15px] font-medium flex items-center justify-center gap-2 ${
               isRead
                 ? "bg-ha-success-light text-ha-success border border-ha-success/30 hover:bg-ha-success-light"
                 : "bg-ha-card text-ha-text border border-ha-card-border hover:bg-ha-surface"
@@ -131,7 +131,7 @@ export default function TipDetailPage() {
           </Button>
           <Button
             onClick={handleNext}
-            className="flex-1 h-[52px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium flex items-center justify-center gap-2"
+            className="flex-1 h-[52px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium flex items-center justify-center gap-2"
             data-testid="button-next-tip"
           >
             {nextTip ? t("common.next") : t("tips.backToOverview")}

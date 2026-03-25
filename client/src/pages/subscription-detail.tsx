@@ -75,7 +75,7 @@ export default function SubscriptionDetailPage() {
       <div className="min-h-screen bg-ha-bg">
         <PageHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
         <div className="max-w-lg mx-auto px-6 pt-4">
-          <div className="rounded-[16px] border border-ha-card-border bg-ha-card p-6 animate-pulse">
+          <div className="rounded-[6px] border border-ha-card-border bg-ha-card p-6 animate-pulse">
             <div className="h-5 bg-ha-surface rounded w-1/3 mb-4" />
             <div className="h-4 bg-ha-surface rounded w-2/3 mb-3" />
             <div className="h-4 bg-ha-surface rounded w-1/2 mb-3" />
@@ -129,11 +129,11 @@ export default function SubscriptionDetailPage() {
 
       <div className="max-w-lg mx-auto px-6 pt-2 pb-12 flex flex-col gap-6">
         <div
-          className="rounded-[16px] border border-ha-card-border bg-ha-card px-5 py-5"
+          className="rounded-[6px] border border-ha-card-border bg-ha-card px-5 py-5"
           data-testid="card-subscription-info"
         >
           <div className="flex items-center gap-3 mb-5">
-            <div className="w-12 h-12 rounded-2xl bg-ha-primary/10 flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 rounded-[6px] bg-ha-primary/10 flex items-center justify-center flex-shrink-0">
               <Crown className="w-[22px] h-[22px] text-ha-primary" />
             </div>
             <div className="flex-1 min-w-0">
@@ -165,7 +165,7 @@ export default function SubscriptionDetailPage() {
         <div className="flex flex-col gap-1">
           <button
             onClick={() => navigate("/account/payment-method")}
-            className="w-full flex items-center gap-3.5 px-1 py-[14px] text-left active:bg-ha-card transition-colors rounded-xl"
+            className="w-full flex items-center gap-3.5 px-1 py-[14px] text-left active:bg-ha-card transition-colors rounded-[6px]"
             data-testid="button-manage-payment"
           >
             <CreditCard className="w-[22px] h-[22px] text-ha-text-secondary flex-shrink-0" />
@@ -176,7 +176,7 @@ export default function SubscriptionDetailPage() {
           {!isCanceled && (
             <button
               onClick={() => navigate("/account/subscription/cancel")}
-              className="w-full flex items-center gap-3.5 px-1 py-[14px] text-left active:bg-ha-danger/10 transition-colors rounded-xl"
+              className="w-full flex items-center gap-3.5 px-1 py-[14px] text-left active:bg-ha-danger/10 transition-colors rounded-[6px]"
               data-testid="button-cancel-subscription"
             >
               <XCircle className="w-[22px] h-[22px] text-ha-danger flex-shrink-0" />
@@ -187,9 +187,9 @@ export default function SubscriptionDetailPage() {
         </div>
 
         {subscription?.isExpired && (
-          <div className="rounded-[16px] border border-ha-card-border bg-ha-card p-5" data-testid="card-expired-cta">
+          <div className="rounded-[6px] border border-ha-card-border bg-ha-card p-5" data-testid="card-expired-cta">
             <div className="flex items-start gap-3 mb-4">
-              <div className="w-10 h-10 rounded-2xl bg-ha-primary/10 flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-[6px] bg-ha-primary/10 flex items-center justify-center flex-shrink-0">
                 <AlertCircle className="w-5 h-5 text-ha-primary" />
               </div>
               <div>

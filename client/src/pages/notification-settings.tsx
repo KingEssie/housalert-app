@@ -260,12 +260,12 @@ export default function NotificationSettingsPage() {
               )}
             </ListSection>
 
-            <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-4">
+            <div className="rounded-[6px] border border-dashed border-gray-300 bg-gray-50 p-4">
               <p className="text-xs font-medium text-gray-500 mb-3 uppercase tracking-wide">Push Test</p>
               <button
                 onClick={handleTestPush}
                 disabled={testPushLoading}
-                className="w-full h-[44px] rounded-xl bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+                className="w-full h-[44px] rounded-[6px] bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
                 data-testid="button-test-push"
               >
                 {testPushLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
@@ -284,7 +284,7 @@ export default function NotificationSettingsPage() {
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="w-full h-[52px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium flex items-center justify-center transition-colors disabled:opacity-50"
+                  className="w-full h-[52px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium flex items-center justify-center transition-colors disabled:opacity-50"
                   data-testid="button-save"
                 >
                   {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : t("common.save")}

@@ -81,9 +81,9 @@ export default function ChangePasswordPage() {
       <div className="min-h-screen bg-background" data-testid="page-password-success">
         <PageHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
         <div className="max-w-xl mx-auto p-4 pb-8">
-          <div className="bg-card rounded-2xl border p-6 text-center" style={{ borderColor: "rgb(var(--ha-card-border))" }}>
+          <div className="bg-card rounded-[6px] border p-6 text-center" style={{ borderColor: "rgb(var(--ha-card-border))" }}>
             <div className="flex items-center justify-center mb-5">
-              <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ backgroundColor: "rgb(var(--ha-surface))" }}>
+              <div className="w-14 h-14 rounded-[6px] flex items-center justify-center" style={{ backgroundColor: "rgb(var(--ha-surface))" }}>
                 <CheckCircle2 className="w-7 h-7" style={{ color: "rgb(var(--ha-success))" }} />
               </div>
             </div>
@@ -111,7 +111,7 @@ export default function ChangePasswordPage() {
       <PageHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
       <div className="flex-1 max-w-xl mx-auto w-full p-4 pb-8">
-        <div className="bg-card rounded-2xl border p-5 space-y-5" style={{ borderColor: "rgb(var(--ha-card-border))" }}>
+        <div className="bg-card rounded-[6px] border p-5 space-y-5" style={{ borderColor: "rgb(var(--ha-card-border))" }}>
           <div>
             <label className="block text-[14px] font-medium mb-2" style={{ color: "rgb(var(--ha-text))" }}>{t("changePassword.current")}</label>
             <div className="relative">
@@ -123,7 +123,7 @@ export default function ChangePasswordPage() {
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 placeholder={t("changePassword.currentPlaceholder")}
-                className="w-full h-[52px] pl-11 pr-12 rounded-[16px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
+                className="w-full h-[52px] pl-11 pr-12 rounded-[6px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
                 data-testid="input-current-password"
               />
               <button
@@ -150,7 +150,7 @@ export default function ChangePasswordPage() {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder={t("changePassword.newPlaceholder")}
-                className="w-full h-[52px] pl-11 pr-12 rounded-[16px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
+                className="w-full h-[52px] pl-11 pr-12 rounded-[6px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
                 data-testid="input-new-password"
               />
               <button
@@ -180,7 +180,7 @@ export default function ChangePasswordPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder={t("changePassword.confirmPlaceholder")}
-                className="w-full h-[52px] pl-11 pr-12 rounded-[16px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
+                className="w-full h-[52px] pl-11 pr-12 rounded-[6px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
                 data-testid="input-confirm-password"
               />
               <button
@@ -207,7 +207,7 @@ export default function ChangePasswordPage() {
           <button
             onClick={handleSubmit}
             disabled={!canSubmit}
-            className={`w-full h-[52px] rounded-[14px] font-medium text-[16px] transition-colors flex items-center justify-center ${
+            className={`w-full h-[52px] rounded-[6px] font-medium text-[16px] transition-colors flex items-center justify-center ${
               canSubmit
                 ? "bg-ha-primary hover:bg-ha-primary-hover text-white"
                 : "bg-ha-card-border text-ha-text-secondary cursor-not-allowed"

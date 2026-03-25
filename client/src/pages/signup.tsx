@@ -12,7 +12,7 @@ import { useTranslation } from "@/i18n";
 import { apiFetch } from "@/lib/api-base";
 import { useEmbedded } from "@/hooks/use-embedded";
 
-const INPUT_CLS = "w-full h-[44px] pl-11 pr-4 rounded-xl border border-ha-card-border bg-ha-bg text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted placeholder:font-normal focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] outline-none transition-all";
+const INPUT_CLS = "w-full h-[44px] pl-11 pr-4 rounded-[6px] border border-ha-card-border bg-ha-bg text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted placeholder:font-normal focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] outline-none transition-all";
 
 export default function SignupPage() {
   const [, navigate] = useLocation();
@@ -206,7 +206,7 @@ export default function SignupPage() {
           {t("auth.signup.funnelSubtitle")}
         </p>
 
-        <div className="bg-ha-card rounded-[16px] border border-ha-card-border p-5">
+        <div className="bg-ha-card rounded-[6px] border border-ha-card-border p-5">
           <form onSubmit={handleSignup} className="space-y-4">
             <div className="relative">
               <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text-muted" />
@@ -277,7 +277,7 @@ export default function SignupPage() {
 
             <Button
               type="submit"
-              className="w-full h-[48px] rounded-[14px] text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover text-white mt-1"
+              className="w-full h-[48px] rounded-[6px] text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover text-white mt-1"
               disabled={loading || !email || !password}
               data-testid="button-signup-submit"
             >
