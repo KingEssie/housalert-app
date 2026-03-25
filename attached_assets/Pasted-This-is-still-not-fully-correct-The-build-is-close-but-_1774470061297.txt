@@ -1,0 +1,78 @@
+This is still not fully correct.
+
+The build is close, but there is one major flow bug and one sequence mismatch.
+
+==================================================
+CRITICAL BUG
+==================================================
+
+A user who does NOT choose a subscription must still continue through the onboarding flow after the paywall.
+
+Current logic is wrong:
+- if no active subscription, user starts at "paywall"
+
+That is NOT the intended behavior.
+
+Correct behavior:
+- if user has already passed the paywall decision once (paid OR skipped), they must continue from the next valid onboarding step
+- they must NOT be sent back to paywall just because they are unpaid
+- paywall is a choice point, not a blocker
+
+==================================================
+INTENDED FLOW
+==================================================
+
+1. welcome/login
+2. intro / information screen
+3. search profile creation
+   3.1 choose city
+   3.2 choose neighborhoods / radius / whole city
+   3.3 filters
+4. name
+5. email address
+6. paywall
+7. welcome letter
+8. notifications
+9. personal details
+10. housing situation
+11. generated application letter
+12. search buddy
+13. app ready
+14. /home
+
+==================================================
+WHAT TO FIX
+==================================================
+
+1. Introduce a proper "paywall completed" state
+Examples:
+- paywall_completed = true
+- paywall_choice = paid | skipped
+
+2. Resume logic must work like this:
+- if user has NOT reached paywall yet → continue from earliest incomplete pre-paywall step
+- if user HAS reached and completed paywall choice (paid OR skipped) → continue from the earliest incomplete post-paywall step
+- do NOT send skipped/free users back to paywall on re-entry
+
+3. Validate the step order exactly.
+Do not rely only on subscription status.
+Use actual step-completion logic.
+
+4. Confirm whether signup currently covers:
+- step 4 name
+- step 5 email
+If not, split these into explicit onboarding steps so the flow matches the required order exactly.
+
+==================================================
+DELIVERABLE
+==================================================
+
+Give me:
+1. exact final route map
+2. exact paywall completion fields used
+3. exact resume logic for:
+   - paid user
+   - skipped/free user
+   - incomplete new user
+4. confirmation that unpaid users no longer return to paywall after skipping it once
+5. confirmation whether step 4 (name) and step 5 (email) are explicit separate steps or handled inside signup

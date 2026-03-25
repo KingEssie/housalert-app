@@ -1964,6 +1964,7 @@ export async function registerRoutes(
               await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubscriptionId, plan, null, trialEndsAt);
               trackActivationEvent(userId, "trial_started", { plan, source: "webhook" });
               log(`[stripe-webhook] ACTIVATION: user=${userId} is now ACTIVE (trial) ✓`);
+              await pgPool.query("UPDATE user_profile_data SET paywall_completed = true, updated_at = NOW() WHERE user_id = $1", [userId]).catch((e: any) => log(`[stripe-webhook] paywall_completed update failed: ${e.message}`));
             } else {
               const rawEnd = (sub as any).current_period_end;
               const periodEnd = rawEnd && rawEnd > 0
@@ -1973,6 +1974,7 @@ export async function registerRoutes(
               await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubscriptionId, plan, periodEnd, null);
               trackActivationEvent(userId, "subscription_started", { plan, source: "webhook" });
               log(`[stripe-webhook] ACTIVATION: user=${userId} is now ACTIVE (paid) ✓`);
+              await pgPool.query("UPDATE user_profile_data SET paywall_completed = true, updated_at = NOW() WHERE user_id = $1", [userId]).catch((e: any) => log(`[stripe-webhook] paywall_completed update failed: ${e.message}`));
             }
           } else {
             log(`[stripe-webhook] SKIPPED checkout.session.completed — missing userId=${userId} or subscriptionId=${stripeSubscriptionId}`);
@@ -2495,7 +2497,7 @@ export async function registerRoutes(
         "profile_photo_url", "occupation", "monthly_income", "language",
         "onboarding_completed",
         "gender", "living_with", "work_status", "move_reason", "pets_count",
-        "post_paywall_onboarding_completed", "onboarding_current_step", "push_test_completed",
+        "post_paywall_onboarding_completed", "onboarding_current_step", "push_test_completed", "paywall_completed",
       ];
 
       const updates: Record<string, any> = {};

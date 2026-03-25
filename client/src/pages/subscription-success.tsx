@@ -67,6 +67,16 @@ export default function SubscriptionSuccessPage() {
       setActivated(active);
       setSyncing(false);
 
+      if (active) {
+        try {
+          await apiFetch("/api/profile-data", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ paywall_completed: true }),
+          });
+        } catch {}
+      }
+
       queryClient.invalidateQueries({ queryKey: ["/api/subscription/status"] });
       queryClient.invalidateQueries({ queryKey: ["/api/profile-stats"] });
       queryClient.invalidateQueries({ queryKey: ["/api/matches"] });

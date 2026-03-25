@@ -841,20 +841,19 @@ export default function OnboardingFlow({ initialStep }: { initialStep?: FlowStep
             return;
           }
 
-          const subRes = await apiFetch("/api/subscription/status", {
-            headers: { Authorization: `Bearer ${session.access_token}` },
-          }).catch(() => null);
-          const hasSub = subRes?.ok ? await subRes.json().then((s: any) => s.isActive || s.isTrial).catch(() => false) : false;
-
-          const earliestValid: FlowStep = hasSub ? "welcome" : "paywall";
+          const paywallDone = d.paywall_completed === true;
 
           const savedStep = d.onboarding_current_step;
           if (savedStep && ALL_STEPS.includes(savedStep as FlowStep)) {
-            const savedIdx = ALL_STEPS.indexOf(savedStep as FlowStep);
-            const earliestIdx = ALL_STEPS.indexOf(earliestValid);
-            setStep(savedIdx >= earliestIdx ? savedStep as FlowStep : earliestValid);
+            if (paywallDone && savedStep === "paywall") {
+              setStep("welcome");
+            } else {
+              setStep(savedStep as FlowStep);
+            }
+          } else if (paywallDone) {
+            setStep("welcome");
           } else {
-            setStep(earliestValid);
+            setStep("paywall");
           }
         }
       } catch (err) {
@@ -938,6 +937,7 @@ export default function OnboardingFlow({ initialStep }: { initialStep?: FlowStep
 
   function handleSkipPaywall() {
     trackEvent("onboarding_paywall_skipped");
+    saveProfileField({ paywall_completed: true });
     goStep("welcome");
   }
 
