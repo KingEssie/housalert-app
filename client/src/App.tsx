@@ -12,9 +12,7 @@ import { isNativePlatform } from "@/lib/capacitor";
 
 const IS_NATIVE = isNativePlatform();
 import WelcomePage from "@/pages/welcome";
-import LoginPage from "@/pages/login";
 import SignupPage from "@/pages/signup";
-import PaywallPage from "@/pages/paywall";
 import DashboardPage from "@/pages/dashboard";
 import NewSearchPage from "@/pages/new-search";
 import NotFound from "@/pages/not-found";
@@ -30,7 +28,6 @@ import { SubscriptionCancelConfirmPage, SubscriptionCancelledPage } from "@/page
 import ChangePasswordPage from "@/pages/change-password";
 import ForgotPasswordPage from "@/pages/forgot-password";
 import ResetPasswordPage from "@/pages/reset-password";
-import PostLoginFunnel from "@/pages/post-login-funnel";
 import OnboardingFlow from "@/pages/onboarding-flow";
 import OnboardingIntroPage from "@/pages/onboarding-intro";
 import OnboardingEmbedPage from "@/pages/onboarding-embed";
@@ -38,7 +35,6 @@ import ContinueDraftPage from "@/pages/continue-draft";
 import AuthCallbackPage from "@/pages/auth-callback";
 import { DocumentenGuidePage, SchufaGuidePage, ZoekstrategieGuidePage, NetwerkGuidePage } from "@/pages/guide";
 import DeleteAccountPage from "@/pages/delete-account";
-import V2WelcomePage from "@/pages/v2/welcome";
 import SubscriptionSuccessPage from "@/pages/subscription-success";
 import EmbedSuccessPage from "@/pages/embed-success";
 import AdminIngestionPage from "@/pages/admin-ingestion";
@@ -153,7 +149,7 @@ function Router() {
       <Route path="/onboarding/preferences" component={() => <Redirect to="/onboarding/intro" />} />
       <Route path="/onboarding/value" component={() => <Redirect to="/onboarding/intro" />} />
       <Route path="/onboarding" component={() => <Redirect to="/onboarding/intro" />} />
-      <Route path="/paywall" component={PaywallPage} />
+      <Route path="/paywall" component={() => <Redirect to="/onboarding/setup" />} />
       <Route path="/subscription-success" component={() => <ProtectedRoute component={SubscriptionSuccessPage} skipOnboardingCheck />} />
       <Route path="/embed-success" component={EmbedSuccessPage} />
       <Route path="/home" component={() => <ProtectedRoute component={DashboardPage} />} />
@@ -188,7 +184,7 @@ function Router() {
       <Route path="/impressum" component={ImpressumPage} />
       <Route path="/datenschutz" component={DatenschutzPage} />
       <Route path="/terms" component={TermsPage} />
-      <Route path="/v2/welcome" component={V2WelcomePage} />
+      <Route path="/v2/welcome" component={() => <Redirect to="/" />} />
       <Route path="/v2/onboarding/intro" component={() => <Redirect to="/onboarding/intro" />} />
       <Route path="/v2/onboarding/location" component={() => <Redirect to="/onboarding/intro" />} />
       <Route path="/v2/onboarding/filters" component={() => <Redirect to="/onboarding/intro" />} />

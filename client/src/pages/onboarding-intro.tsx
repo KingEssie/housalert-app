@@ -2,9 +2,11 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useLocation } from "wouter";
 import { useTranslation } from "@/i18n";
 import { HousAlertLogo } from "@/components/housalert-logo";
-import { Search, Zap, Bell, MapPin, ChevronLeft, Loader2, Euro, BedDouble, Maximize2, Check } from "lucide-react";
+import {
+  Search, Zap, Bell, MapPin, ChevronLeft, Loader2, Check,
+  Bath, Trees, Sun, Leaf, Sparkles,
+} from "lucide-react";
 import { defaultCities, cityDistricts } from "../../../config/market";
-import { apiFetch } from "@/lib/api-base";
 
 const BRAND = "rgb(var(--ha-primary))";
 const BRAND_HOVER = "rgb(var(--ha-primary-hover))";
@@ -13,17 +15,39 @@ const TEXT_SECONDARY = "rgb(var(--ha-text-secondary))";
 const BORDER = "rgb(var(--ha-card-border))";
 
 type IntroStep = "info" | "city" | "filters";
+type LocationMode = "city" | "districts" | "radius";
 
 interface SearchData {
   city: string;
   lat: number;
   lng: number;
+  locationMode: LocationMode;
   districts: string[];
-  minPrice: string;
-  maxPrice: string;
+  radiusKm: number;
+  minPrice: number;
+  maxPrice: number;
+  priceFlexible: boolean;
+  propertyType: string;
+  includeRooms: boolean;
   minRooms: string;
-  minSize: string;
+  minSize: number;
+  sizeNA: boolean;
+  furnished: string;
+  amenities: string[];
+  sendUnclear: boolean;
 }
+
+const INITIAL_DATA: SearchData = {
+  city: "", lat: 0, lng: 0,
+  locationMode: "city",
+  districts: [], radiusKm: 5,
+  minPrice: 0, maxPrice: 1500, priceFlexible: false,
+  propertyType: "any", includeRooms: false,
+  minRooms: "any", minSize: 30, sizeNA: false,
+  furnished: "any", amenities: [], sendUnclear: true,
+};
+
+const RADIUS_OPTIONS = [2, 5, 10, 15, 25, 50];
 
 function Header({ onBack, showBack }: { onBack?: () => void; showBack?: boolean }) {
   return (
@@ -62,6 +86,110 @@ function StepDots({ current, total }: { current: number; total: number }) {
           }}
         />
       ))}
+    </div>
+  );
+}
+
+function SegmentedControl({
+  options,
+  value,
+  onChange,
+  testId,
+}: {
+  options: { value: string; label: string }[];
+  value: string;
+  onChange: (v: string) => void;
+  testId: string;
+}) {
+  return (
+    <div className="flex gap-1 p-1 rounded-[6px] bg-ha-surface border border-ha-card-border" data-testid={testId}>
+      {options.map((opt) => (
+        <button
+          key={opt.value}
+          onClick={() => onChange(opt.value)}
+          className="flex-1 h-[38px] rounded-[5px] text-[13px] font-medium transition-all"
+          style={{
+            backgroundColor: value === opt.value ? BRAND : "transparent",
+            color: value === opt.value ? "#fff" : TEXT_SECONDARY,
+          }}
+          data-testid={`${testId}-${opt.value}`}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function Toggle({
+  checked,
+  onChange,
+  label,
+  testId,
+}: {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  label: string;
+  testId: string;
+}) {
+  return (
+    <button
+      onClick={() => onChange(!checked)}
+      className="flex items-center gap-3 w-full py-2"
+      data-testid={testId}
+    >
+      <div
+        className="w-[44px] h-[26px] rounded-full transition-all flex-shrink-0 relative"
+        style={{ backgroundColor: checked ? BRAND : "rgb(var(--ha-input-border))" }}
+      >
+        <div
+          className="w-[22px] h-[22px] rounded-full bg-white shadow-sm absolute top-[2px] transition-all"
+          style={{ left: checked ? 20 : 2 }}
+        />
+      </div>
+      <span className="text-[14px] text-ha-text text-left">{label}</span>
+    </button>
+  );
+}
+
+function RangeSlider({
+  min,
+  max,
+  step,
+  value,
+  onChange,
+  formatLabel,
+  testId,
+}: {
+  min: number;
+  max: number;
+  step: number;
+  value: number;
+  onChange: (v: number) => void;
+  formatLabel?: (v: number) => string;
+  testId: string;
+}) {
+  const pct = ((value - min) / (max - min)) * 100;
+  return (
+    <div className="w-full" data-testid={testId}>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="w-full h-2 rounded-full appearance-none cursor-pointer"
+        style={{
+          background: `linear-gradient(to right, ${BRAND} 0%, ${BRAND} ${pct}%, rgb(var(--ha-input-border)) ${pct}%, rgb(var(--ha-input-border)) 100%)`,
+        }}
+        data-testid={`${testId}-input`}
+      />
+      <div className="flex justify-between mt-1.5">
+        <span className="text-[12px] text-ha-text-muted">{formatLabel ? formatLabel(min) : min}</span>
+        <span className="text-[14px] font-semibold text-ha-text">{formatLabel ? formatLabel(value) : value}</span>
+        <span className="text-[12px] text-ha-text-muted">{formatLabel ? formatLabel(max) : max}</span>
+      </div>
     </div>
   );
 }
@@ -196,9 +324,15 @@ function CityStep({
 
   const allResults = filteredCities.length > 0 ? filteredCities : customResults;
   const districts = data.city ? cityDistricts[data.city] || [] : [];
+  const hasDistricts = districts.length > 0;
 
   function selectCity(city: { name: string; lat: number; lng: number }) {
-    onUpdate({ city: city.name, lat: city.lat, lng: city.lng, districts: [] });
+    const d = cityDistricts[city.name] || [];
+    onUpdate({
+      city: city.name, lat: city.lat, lng: city.lng,
+      districts: [],
+      locationMode: d.length > 0 ? "districts" : "city",
+    });
     setSearch("");
   }
 
@@ -211,6 +345,17 @@ function CityStep({
     }
   }
 
+  const locationModes: { value: LocationMode; label: string }[] = hasDistricts
+    ? [
+        { value: "districts", label: t("location.tabs.districts") || "Stadtteile" },
+        { value: "radius", label: t("location.tabs.radius") || "Radius" },
+        { value: "city", label: t("onboarding.location.wholeCity") || "Ganze Stadt" },
+      ]
+    : [
+        { value: "radius", label: t("location.tabs.radius") || "Radius" },
+        { value: "city", label: t("onboarding.location.wholeCity") || "Ganze Stadt" },
+      ];
+
   return (
     <div className="min-h-[100dvh] flex flex-col bg-ha-surface" data-testid="onboarding-step-city">
       <Header onBack={onBack} showBack />
@@ -219,10 +364,10 @@ function CityStep({
       </div>
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-10" style={{ paddingBottom: "max(40px, env(safe-area-inset-bottom, 40px))" }}>
         <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-city-title">
-          {t("onboarding.location.title") || "Wo möchtest du wohnen?"}
+          {t("onboarding.location.title")}
         </h1>
         <p className="text-[14px] mb-6" style={{ color: TEXT_SECONDARY }}>
-          {t("onboarding.location.subtitle") || "Wähle deine Stadt und optional Stadtteile."}
+          {t("onboarding.location.subtitle")}
         </p>
 
         <div className="relative mb-5">
@@ -230,8 +375,8 @@ function CityStep({
           <input
             type="text"
             value={search || data.city}
-            onChange={(e) => { setSearch(e.target.value); if (data.city) onUpdate({ city: "", lat: 0, lng: 0, districts: [] }); }}
-            placeholder={t("onboarding.location.title")}
+            onChange={(e) => { setSearch(e.target.value); if (data.city) onUpdate({ city: "", lat: 0, lng: 0, districts: [], locationMode: "city" }); }}
+            placeholder={t("onboarding.location.searchPlaceholder") || "Stadt suchen..."}
             className="w-full h-[48px] pl-11 pr-4 rounded-[6px] border bg-ha-card text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted focus:border-ha-primary outline-none transition-all"
             style={{ borderColor: BORDER }}
             data-testid="input-city-search"
@@ -258,53 +403,111 @@ function CityStep({
           </div>
         )}
 
-        {data.city && districts.length > 0 && (
-          <div className="mb-6">
-            <p className="text-[13px] font-medium text-ha-text-secondary mb-3">
-              {t("onboarding.location.districtsLabel") || "Stadtteile (optional)"}
-            </p>
-            <div className="flex flex-wrap gap-2" data-testid="district-chips">
-              {districts.map((d) => {
-                const active = data.districts.includes(d);
-                return (
-                  <button
-                    key={d}
-                    onClick={() => toggleDistrict(d)}
-                    className="px-3 py-1.5 rounded-full text-[13px] font-medium border transition-all"
-                    style={{
-                      backgroundColor: active ? BRAND : "transparent",
-                      borderColor: active ? BRAND : BORDER,
-                      color: active ? "#fff" : TEXT_SECONDARY,
-                    }}
-                    data-testid={`district-${d}`}
-                  >
-                    {active && <Check className="w-3 h-3 inline mr-1" />}
-                    {d}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
         {data.city && (
-          <div className="mt-auto pt-6">
-            <button
-              onClick={onNext}
-              className="w-full h-[52px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 shadow-[0_4px_16px_rgba(249,115,22,0.3)]"
-              style={{ backgroundColor: BRAND }}
-              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = BRAND_HOVER)}
-              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = BRAND)}
-              data-testid="button-city-next"
-            >
-              {t("common.next") || "Weiter"}
-            </button>
-          </div>
+          <>
+            <div className="mb-5">
+              <p className="text-[13px] font-medium text-ha-text-secondary mb-2">
+                {t("onboarding.location.modeLabel") || "Wie möchtest du suchen?"}
+              </p>
+              <SegmentedControl
+                options={locationModes}
+                value={data.locationMode}
+                onChange={(v) => onUpdate({ locationMode: v as LocationMode, districts: [] })}
+                testId="location-mode"
+              />
+            </div>
+
+            {data.locationMode === "districts" && hasDistricts && (
+              <div className="mb-6">
+                <p className="text-[13px] font-medium text-ha-text-secondary mb-3">
+                  {t("onboarding.location.districtsLabel") || "Stadtteile (optional)"}
+                </p>
+                <div className="flex flex-wrap gap-2" data-testid="district-chips">
+                  {districts.map((d) => {
+                    const active = data.districts.includes(d);
+                    return (
+                      <button
+                        key={d}
+                        onClick={() => toggleDistrict(d)}
+                        className="px-3 py-1.5 rounded-full text-[13px] font-medium border transition-all"
+                        style={{
+                          backgroundColor: active ? BRAND : "transparent",
+                          borderColor: active ? BRAND : BORDER,
+                          color: active ? "#fff" : TEXT_SECONDARY,
+                        }}
+                        data-testid={`district-${d}`}
+                      >
+                        {active && <Check className="w-3 h-3 inline mr-1" />}
+                        {d}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {data.locationMode === "radius" && (
+              <div className="mb-6">
+                <p className="text-[13px] font-medium text-ha-text-secondary mb-3">
+                  {t("location.radiusLabel") || "Radius"}
+                </p>
+                <div className="flex flex-wrap gap-2" data-testid="radius-options">
+                  {RADIUS_OPTIONS.map((km) => {
+                    const active = data.radiusKm === km;
+                    return (
+                      <button
+                        key={km}
+                        onClick={() => onUpdate({ radiusKm: km })}
+                        className="px-4 py-2 rounded-[6px] text-[14px] font-medium border-2 transition-all"
+                        style={{
+                          borderColor: active ? BRAND : BORDER,
+                          backgroundColor: active ? "rgba(var(--ha-primary-rgb, 233,30,99), 0.06)" : "transparent",
+                          color: active ? BRAND : TEXT_PRIMARY,
+                        }}
+                        data-testid={`radius-${km}`}
+                      >
+                        {km} km
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {data.locationMode === "city" && (
+              <div className="mb-6 bg-ha-card rounded-[6px] border border-ha-card-border p-4">
+                <p className="text-[14px] text-ha-text">
+                  {t("onboarding.location.wholeCityHint") || `Wir suchen in ganz ${data.city} nach passenden Wohnungen.`}
+                </p>
+              </div>
+            )}
+
+            <div className="mt-auto pt-6">
+              <button
+                onClick={onNext}
+                className="w-full h-[52px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 shadow-[0_4px_16px_rgba(249,115,22,0.3)]"
+                style={{ backgroundColor: BRAND }}
+                onMouseOver={(e) => (e.currentTarget.style.backgroundColor = BRAND_HOVER)}
+                onMouseOut={(e) => (e.currentTarget.style.backgroundColor = BRAND)}
+                data-testid="button-city-next"
+              >
+                {t("common.next") || "Weiter"}
+              </button>
+            </div>
+          </>
         )}
       </main>
     </div>
   );
 }
+
+const AMENITY_OPTIONS = [
+  { value: "bath", label: "Bad", icon: Bath },
+  { value: "balcony", label: "Balkon", icon: Sun },
+  { value: "garden", label: "Tuin", icon: Trees },
+  { value: "rooftop", label: "Dakterras", icon: Sun },
+  { value: "energy_c", label: "Energielabel C+", icon: Leaf },
+];
 
 function FiltersStep({
   data,
@@ -319,102 +522,254 @@ function FiltersStep({
   onBack: () => void;
   t: (k: string) => string;
 }) {
+  const ROOM_OPTIONS = [
+    { value: "any", label: "Studio+" },
+    { value: "1", label: "1+" },
+    { value: "2", label: "2+" },
+    { value: "3", label: "3+" },
+    { value: "4", label: "4+" },
+    { value: "5", label: "5+" },
+  ];
+
+  const PROPERTY_OPTIONS = [
+    { value: "any", label: t("onboarding.propertyType.any") || "Maakt niet uit" },
+    { value: "apartment", label: t("onboarding.propertyType.apartment") || "Appartement" },
+    { value: "house", label: t("onboarding.filters.house") || "Huis" },
+  ];
+
+  const FURNISHED_OPTIONS = [
+    { value: "any", label: t("onboarding.filters.furnishedAny") || "Maakt niet uit" },
+    { value: "furnished", label: t("onboarding.filters.furnishedYes") || "Ja" },
+    { value: "unfurnished", label: t("onboarding.filters.furnishedNo") || "Nee" },
+  ];
+
+  function toggleAmenity(a: string) {
+    const current = data.amenities;
+    if (current.includes(a)) {
+      onUpdate({ amenities: current.filter((x) => x !== a) });
+    } else {
+      onUpdate({ amenities: [...current, a] });
+    }
+  }
+
   return (
     <div className="min-h-[100dvh] flex flex-col bg-ha-surface" data-testid="onboarding-step-filters">
       <Header onBack={onBack} showBack />
       <div className="max-w-[480px] mx-auto px-5 w-full">
         <StepDots current={1} total={2} />
       </div>
-      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-10" style={{ paddingBottom: "max(40px, env(safe-area-inset-bottom, 40px))" }}>
+
+      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-[140px] overflow-y-auto">
         <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-filters-title">
           {t("onboarding.filters.title") || "Was suchst du genau?"}
         </h1>
-        <p className="text-[14px] mb-8" style={{ color: TEXT_SECONDARY }}>
-          {t("onboarding.filters.subtitle") || "Grenze deine Suche ein, damit wir nur passende Wohnungen finden."}
+        <p className="text-[14px] mb-6" style={{ color: TEXT_SECONDARY }}>
+          {t("onboarding.filters.subtitle") || "Verfijn je zoekopdracht."}
         </p>
 
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-7">
           <div>
-            <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">
-              {t("onboarding.filters.maxPrice") || "Maximale Miete (€)"}
+            <label className="text-[13px] font-semibold text-ha-text mb-3 block">
+              {t("onboarding.filters.rentLabel") || "Huurprijs"}
             </label>
-            <div className="relative">
-              <Euro className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-ha-text-muted" />
-              <input
-                type="number"
-                inputMode="numeric"
-                value={data.maxPrice}
-                onChange={(e) => onUpdate({ maxPrice: e.target.value })}
-                placeholder="1500"
-                className="w-full h-[48px] pl-11 pr-4 rounded-[6px] border bg-ha-card text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted focus:border-ha-primary outline-none transition-all"
-                style={{ borderColor: BORDER }}
-                data-testid="input-max-price"
+            <div className="flex items-center gap-3 mb-3">
+              <div className="flex-1">
+                <label className="text-[11px] text-ha-text-muted mb-1 block">Min</label>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  value={data.minPrice || ""}
+                  onChange={(e) => onUpdate({ minPrice: Number(e.target.value) || 0 })}
+                  placeholder="0"
+                  className="w-full h-[40px] px-3 rounded-[6px] border bg-ha-card text-[14px] font-medium text-ha-text placeholder:text-ha-text-muted focus:border-ha-primary outline-none"
+                  style={{ borderColor: BORDER }}
+                  data-testid="input-min-price"
+                />
+              </div>
+              <span className="text-ha-text-muted mt-5">—</span>
+              <div className="flex-1">
+                <label className="text-[11px] text-ha-text-muted mb-1 block">Max</label>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  value={data.maxPrice || ""}
+                  onChange={(e) => onUpdate({ maxPrice: Number(e.target.value) || 0 })}
+                  placeholder="1500"
+                  className="w-full h-[40px] px-3 rounded-[6px] border bg-ha-card text-[14px] font-medium text-ha-text placeholder:text-ha-text-muted focus:border-ha-primary outline-none"
+                  style={{ borderColor: BORDER }}
+                  data-testid="input-max-price"
+                />
+              </div>
+              <span className="text-[13px] font-medium text-ha-text-muted mt-5">€</span>
+            </div>
+            <RangeSlider
+              min={0}
+              max={3000}
+              step={50}
+              value={data.maxPrice}
+              onChange={(v) => onUpdate({ maxPrice: v })}
+              formatLabel={(v) => `€${v}`}
+              testId="slider-max-price"
+            />
+            <div className="mt-3">
+              <Toggle
+                checked={data.priceFlexible}
+                onChange={(v) => onUpdate({ priceFlexible: v })}
+                label={t("onboarding.filters.priceFlexible") || "Stuur ook iets duurdere perfecte matches"}
+                testId="toggle-price-flexible"
               />
             </div>
           </div>
 
+          <div className="h-px bg-ha-card-border" />
+
           <div>
-            <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">
-              {t("onboarding.filters.minPrice") || "Mindestmiete (optional, €)"}
+            <label className="text-[13px] font-semibold text-ha-text mb-3 block">
+              {t("onboarding.filters.propertyTypeLabel") || "Soort woning"}
             </label>
-            <div className="relative">
-              <Euro className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-ha-text-muted" />
-              <input
-                type="number"
-                inputMode="numeric"
-                value={data.minPrice}
-                onChange={(e) => onUpdate({ minPrice: e.target.value })}
-                placeholder="0"
-                className="w-full h-[48px] pl-11 pr-4 rounded-[6px] border bg-ha-card text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted focus:border-ha-primary outline-none transition-all"
-                style={{ borderColor: BORDER }}
-                data-testid="input-min-price"
+            <SegmentedControl
+              options={PROPERTY_OPTIONS}
+              value={data.propertyType}
+              onChange={(v) => onUpdate({ propertyType: v })}
+              testId="property-type"
+            />
+            <div className="mt-3">
+              <Toggle
+                checked={data.includeRooms}
+                onChange={(v) => onUpdate({ includeRooms: v })}
+                label={t("onboarding.filters.includeRooms") || "Zoek ook naar kamers / onzelfstandige woonruimtes"}
+                testId="toggle-include-rooms"
               />
             </div>
           </div>
 
+          <div className="h-px bg-ha-card-border" />
+
           <div>
-            <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">
-              {t("onboarding.filters.minRooms") || "Mindestanzahl Zimmer"}
+            <label className="text-[13px] font-semibold text-ha-text mb-3 block">
+              {t("onboarding.filters.bedroomsLabel") || "Slaapkamers"}
             </label>
-            <div className="relative">
-              <BedDouble className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-ha-text-muted" />
-              <input
-                type="number"
-                inputMode="numeric"
-                value={data.minRooms}
-                onChange={(e) => onUpdate({ minRooms: e.target.value })}
-                placeholder="1"
-                className="w-full h-[48px] pl-11 pr-4 rounded-[6px] border bg-ha-card text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted focus:border-ha-primary outline-none transition-all"
-                style={{ borderColor: BORDER }}
-                data-testid="input-min-rooms"
-              />
+            <div className="flex gap-1 p-1 rounded-[6px] bg-ha-surface border border-ha-card-border" data-testid="rooms-selector">
+              {ROOM_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => onUpdate({ minRooms: opt.value })}
+                  className="flex-1 h-[38px] rounded-[5px] text-[13px] font-medium transition-all"
+                  style={{
+                    backgroundColor: data.minRooms === opt.value ? BRAND : "transparent",
+                    color: data.minRooms === opt.value ? "#fff" : TEXT_SECONDARY,
+                  }}
+                  data-testid={`rooms-${opt.value}`}
+                >
+                  {opt.label}
+                </button>
+              ))}
             </div>
           </div>
 
+          <div className="h-px bg-ha-card-border" />
+
           <div>
-            <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">
-              {t("onboarding.filters.minSize") || "Mindestgröße (m²)"}
-            </label>
-            <div className="relative">
-              <Maximize2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-ha-text-muted" />
-              <input
-                type="number"
-                inputMode="numeric"
+            <div className="flex items-center justify-between mb-3">
+              <label className="text-[13px] font-semibold text-ha-text">
+                {t("onboarding.filters.minSizeLabel") || "Minimale oppervlakte"}
+              </label>
+              <button
+                onClick={() => onUpdate({ sizeNA: !data.sizeNA, minSize: data.sizeNA ? 30 : 0 })}
+                className="text-[12px] font-medium px-2.5 py-1 rounded-full border transition-all"
+                style={{
+                  borderColor: data.sizeNA ? BRAND : BORDER,
+                  backgroundColor: data.sizeNA ? "rgba(var(--ha-primary-rgb, 233,30,99), 0.06)" : "transparent",
+                  color: data.sizeNA ? BRAND : TEXT_SECONDARY,
+                }}
+                data-testid="button-size-na"
+              >
+                n.v.t.
+              </button>
+            </div>
+            {!data.sizeNA && (
+              <RangeSlider
+                min={0}
+                max={200}
+                step={5}
                 value={data.minSize}
-                onChange={(e) => onUpdate({ minSize: e.target.value })}
-                placeholder="30"
-                className="w-full h-[48px] pl-11 pr-4 rounded-[6px] border bg-ha-card text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted focus:border-ha-primary outline-none transition-all"
-                style={{ borderColor: BORDER }}
-                data-testid="input-min-size"
+                onChange={(v) => onUpdate({ minSize: v })}
+                formatLabel={(v) => `${v} m²`}
+                testId="slider-min-size"
               />
+            )}
+          </div>
+
+          <div className="h-px bg-ha-card-border" />
+
+          <div>
+            <label className="text-[13px] font-semibold text-ha-text mb-3 block">
+              {t("onboarding.filters.furnishedLabel") || "Gemeubileerd"}
+            </label>
+            <SegmentedControl
+              options={FURNISHED_OPTIONS}
+              value={data.furnished}
+              onChange={(v) => onUpdate({ furnished: v })}
+              testId="furnished-selector"
+            />
+          </div>
+
+          <div className="h-px bg-ha-card-border" />
+
+          <div>
+            <label className="text-[13px] font-semibold text-ha-text mb-3 block">
+              {t("onboarding.filters.amenitiesLabel") || "Overige wensen"}
+            </label>
+            <div className="flex flex-wrap gap-2" data-testid="amenity-chips">
+              {AMENITY_OPTIONS.map(({ value, label, icon: Icon }) => {
+                const active = data.amenities.includes(value);
+                return (
+                  <button
+                    key={value}
+                    onClick={() => toggleAmenity(value)}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-full text-[13px] font-medium border transition-all"
+                    style={{
+                      backgroundColor: active ? BRAND : "transparent",
+                      borderColor: active ? BRAND : BORDER,
+                      color: active ? "#fff" : TEXT_SECONDARY,
+                    }}
+                    data-testid={`amenity-${value}`}
+                  >
+                    {active && <Check className="w-3 h-3" />}
+                    <Icon className="w-3.5 h-3.5" />
+                    {label}
+                  </button>
+                );
+              })}
             </div>
+          </div>
+
+          <div className="h-px bg-ha-card-border" />
+
+          <div>
+            <Toggle
+              checked={data.sendUnclear}
+              onChange={(v) => onUpdate({ sendUnclear: v })}
+              label={t("onboarding.filters.sendUnclear") || "Stuur mij woningen waarbij mijn eisen niet duidelijk staan"}
+              testId="toggle-send-unclear"
+            />
           </div>
         </div>
+      </main>
 
-        <div className="mt-auto pt-8">
+      <div className="fixed bottom-0 left-0 right-0 bg-ha-card border-t border-ha-card-border z-30" style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom, 12px))" }}>
+        <div className="max-w-[480px] mx-auto px-5 pt-3 flex items-center gap-3">
+          <button
+            onClick={onBack}
+            className="h-[52px] px-6 rounded-[6px] text-[15px] font-medium border-2 transition-all active:scale-[0.97]"
+            style={{ borderColor: BORDER, color: TEXT_PRIMARY }}
+            data-testid="button-filters-back"
+          >
+            {t("common.back") || "Terug"}
+          </button>
           <button
             onClick={onNext}
-            className="w-full h-[52px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 shadow-[0_4px_16px_rgba(249,115,22,0.3)]"
+            className="flex-1 h-[52px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] shadow-[0_4px_16px_rgba(249,115,22,0.3)]"
             style={{ backgroundColor: BRAND }}
             onMouseOver={(e) => (e.currentTarget.style.backgroundColor = BRAND_HOVER)}
             onMouseOut={(e) => (e.currentTarget.style.backgroundColor = BRAND)}
@@ -423,7 +778,7 @@ function FiltersStep({
             {t("common.next") || "Weiter"}
           </button>
         </div>
-      </main>
+      </div>
     </div>
   );
 }
@@ -433,16 +788,7 @@ export default function OnboardingIntroPage() {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
   const [step, setStep] = useState<IntroStep>("info");
-  const [data, setData] = useState<SearchData>({
-    city: "",
-    lat: 0,
-    lng: 0,
-    districts: [],
-    minPrice: "",
-    maxPrice: "",
-    minRooms: "",
-    minSize: "",
-  });
+  const [data, setData] = useState<SearchData>(INITIAL_DATA);
 
   function updateData(partial: Partial<SearchData>) {
     setData((prev) => ({ ...prev, ...partial }));
@@ -453,16 +799,35 @@ export default function OnboardingIntroPage() {
     if (data.city) params.set("city", data.city);
     if (data.lat) params.set("lat", String(data.lat));
     if (data.lng) params.set("lng", String(data.lng));
-    if (data.districts.length > 0) {
+
+    if (data.locationMode === "districts" && data.districts.length > 0) {
       params.set("locationMode", "districts");
       params.set("districts", data.districts.join(","));
+    } else if (data.locationMode === "radius") {
+      params.set("locationMode", "radius");
+      params.set("radiusKm", String(data.radiusKm));
     } else {
       params.set("locationMode", "city");
     }
-    if (data.minPrice) params.set("minPrice", data.minPrice);
-    if (data.maxPrice) params.set("maxPrice", data.maxPrice);
-    if (data.minRooms) params.set("minRooms", data.minRooms);
-    if (data.minSize) params.set("minSize", data.minSize);
+
+    if (data.minPrice) params.set("minPrice", String(data.minPrice));
+    if (data.maxPrice) params.set("maxPrice", String(data.maxPrice));
+    if (data.priceFlexible) params.set("priceFlexible", "true");
+
+    if (data.propertyType !== "any") {
+      const types = [data.propertyType];
+      if (data.includeRooms) types.push("room");
+      params.set("propertyTypes", types.join(","));
+    } else if (data.includeRooms) {
+      params.set("propertyTypes", "apartment,house,room");
+    }
+
+    if (data.minRooms !== "any") params.set("minRooms", data.minRooms);
+    if (!data.sizeNA && data.minSize > 0) params.set("minSize", String(data.minSize));
+    if (data.furnished !== "any") params.set("furnished", data.furnished);
+    if (data.amenities.length > 0) params.set("amenities", data.amenities.join(","));
+    if (data.sendUnclear) params.set("sendUnclear", "true");
+
     navigate(`/signup?${params.toString()}`);
   }
 

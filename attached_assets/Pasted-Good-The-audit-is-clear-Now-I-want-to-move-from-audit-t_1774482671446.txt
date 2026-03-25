@@ -1,0 +1,132 @@
+Good. The audit is clear.
+
+Now I want to move from audit to cleanup + exact implementation.
+
+==================================================
+PART 1 — CLEANUP
+==================================================
+
+Remove all remaining legacy onboarding leaks and dead code.
+
+Do this now:
+1. Remove /v2/welcome from active routing
+2. Remove /paywall from active routing, or redirect it to /onboarding/setup
+3. Delete dead legacy onboarding files that are no longer used
+4. Remove zombie imports such as post-login-funnel imports
+5. Confirm that only the intended onboarding routes remain active:
+   - /
+   - /onboarding/intro
+   - /signup
+   - /onboarding/setup
+   - /subscription-success
+   - /home
+
+==================================================
+PART 2 — FIX STEP 3.2
+==================================================
+
+The city/location step is still incomplete.
+
+I want step 3.2 to support:
+- buurten
+- straal
+- gehele woonplaats
+
+So update the current CityStep to support all 3 location modes:
+1. Districts / neighborhoods
+2. Radius
+3. Whole city
+
+This must be part of the active onboarding flow.
+
+==================================================
+PART 3 — REBUILD FILTERS STEP
+==================================================
+
+The current filters step is too simplified and does not match the intended onboarding.
+
+Replace the current basic form with a richer filters step that includes:
+
+1. Huurprijs
+- range slider
+- visible min/max values
+- toggle for slightly more expensive perfect matches
+
+2. Soort woning
+- segmented control:
+  - Maakt niet uit
+  - Appartement
+  - Huis
+
+3. Extra toggle
+- Zoek ook naar kamers / onzelfstandige woonruimtes
+
+4. Slaapkamers
+- segmented control:
+  - Studio+
+  - 1+
+  - 2+
+  - 3+
+  - 4+
+  - 5+
+
+5. Minimale oppervlakte
+- slider
+- n.v.t. option
+
+6. Gemeubileerd
+- segmented control:
+  - Maakt niet uit
+  - Ja
+  - Nee
+
+7. Overige wensen
+- selectable chips:
+  - Bad
+  - Balkon
+  - Tuin
+  - Dakterras
+  - Energielabel C of beter
+
+8. Extra toggle
+- Stuur mij woningen waarbij mijn eisen niet duidelijk staan
+
+9. Sticky bottom action bar
+- estimated matches
+- back button
+- next button
+
+==================================================
+PART 4 — KEEP CURRENT FLOW ORDER
+==================================================
+
+Do not change the high-level route order.
+
+Keep the flow as:
+1. /
+2. /onboarding/intro
+   - info
+   - city/location
+   - filters
+3. /signup
+4. /onboarding/setup
+   - paywall
+   - welcome
+   - push
+   - personal
+   - living
+   - letter
+   - buddy
+   - success
+5. /home
+
+==================================================
+OUTPUT
+==================================================
+
+Give me:
+1. which legacy files/routes were removed
+2. which file was updated for CityStep
+3. which file was updated for FiltersStep
+4. confirmation that step 3.2 now supports buurten / straal / gehele woonplaats
+5. confirmation that the simplified filters form was fully replaced
