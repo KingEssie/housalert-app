@@ -1,0 +1,137 @@
+I need a full onboarding audit right now.
+
+IMPORTANT:
+Do not change anything yet.
+Do not refactor anything yet.
+Do not "fix" anything yet.
+
+First I want full visibility into the REAL onboarding flow that is currently active in the app.
+
+==================================================
+GOAL
+==================================================
+
+I want to know exactly:
+1. which onboarding screens currently exist
+2. which onboarding screens are actually reachable in the running app
+3. which of those are new screens
+4. which of those are old legacy screens
+5. the exact order users currently go through
+6. where old screens are still leaking into the active onboarding flow
+
+==================================================
+REQUIRED OUTPUT
+==================================================
+
+Give me a complete structured report with these sections:
+
+SECTION 1 — ACTIVE ONBOARDING ROUTE MAP
+List every onboarding-related route currently active in the app.
+For each route, show:
+- route path
+- component file name
+- whether it is new or legacy
+- whether it is directly reachable
+- whether it redirects
+
+SECTION 2 — ACTUAL USER FLOW
+Describe the REAL current flow for:
+- new user
+- existing incomplete user
+- completed user
+
+Write the exact current sequence step by step, based on the actual code, not assumptions.
+
+SECTION 3 — LEGACY SCREEN INVENTORY
+List every old onboarding screen/component/file still present in the codebase.
+For each one, show:
+- file name
+- whether it is still imported anywhere
+- where it is imported
+- whether it is still rendered in the active onboarding flow
+- whether it is unreachable dead code or still leaking into production flow
+
+SECTION 4 — NEW SCREEN INVENTORY
+List every newly built onboarding screen/component/file currently used in the intended new flow.
+For each one, show:
+- file name
+- route or parent component where it is used
+- its position in the current onboarding sequence
+
+SECTION 5 — STEP-BY-STEP SCREEN MAPPING
+I want a clean list like this:
+
+Step 1:
+- route
+- component
+- screen title shown to user
+
+Step 2:
+- route
+- component
+- screen title shown to user
+
+Continue until the user reaches /home.
+
+SECTION 6 — LEGACY LEAKS
+Identify every place where an old screen is still being shown, reused, wrapped, embedded, or indirectly rendered in the current onboarding flow.
+
+Be specific:
+- which file
+- which component
+- which step
+- why it is happening
+
+SECTION 7 — MISMATCH WITH INTENDED FLOW
+Compare the REAL current flow against this intended flow:
+
+1. welkom / login
+2. informatie + mogelijkheid zoekprofiel aan te maken
+3. zoekopdracht aanmaken
+   3.1 plaats kiezen
+   3.2 buurten / straal / gehele woonplaats
+   3.3 filters
+4. naam
+5. e-mailadres
+6. paywall
+7. welkom brief
+8. notificaties aanzetten
+9. persoonlijke gegevens
+10. woonsituatie
+11. gegenereerde reactiebrief
+12. zoekbuddy uitnodigen
+13. app klaar voor gebruik
+14. home
+
+For every mismatch:
+- explain what currently happens
+- explain which file/component causes it
+
+==================================================
+IMPORTANT RULE
+==================================================
+
+I do NOT want generic conclusions like:
+- "the flow is correct"
+- "the build runs"
+- "everything is wired"
+
+I want exact technical transparency.
+
+Use actual file names, actual routes, and actual currently-rendered components.
+
+==================================================
+FINAL DELIVERABLE
+==================================================
+
+At the end, give me:
+
+1. A plain-English summary:
+- which screens in the onboarding are still old
+- which screens are truly new
+- whether old onboarding is still leaking into production
+
+2. A recommended cleanup plan:
+- what must be removed first
+- what must be rebuilt
+- what can stay
