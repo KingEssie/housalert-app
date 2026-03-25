@@ -263,7 +263,14 @@ export const en: Record<string, any> = {
     generateAction: "Generate",
     manageAction: "Manage",
     shareAction: "Share",
+    viewAction: "View",
     memberSincePrefix: "Member since",
+    newSearchProfile: "New search profile",
+    searchProfileDefault: "Search profile",
+    andOtherNeighborhoods: "and {count} other neighborhoods",
+    buddyDescription: "Looking with a partner or roommate? Add them as a search buddy and both receive matches!",
+    housAlertPlus: "HousAlert Plus",
+    plusDescription: "Outsource your home search? Let the HousAlert Plus team arrange viewings for you.",
   },
 
   profileEdit: {

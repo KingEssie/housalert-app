@@ -305,7 +305,14 @@ export const de: Record<string, any> = {
     generateAction: "Generieren",
     manageAction: "Verwalten",
     shareAction: "Teilen",
+    viewAction: "Ansehen",
     memberSincePrefix: "Mitglied seit",
+    newSearchProfile: "Neues Suchprofil",
+    searchProfileDefault: "Suchprofil",
+    andOtherNeighborhoods: "und {count} weitere Stadtteile",
+    buddyDescription: "Suchst du mit einem Partner oder Mitbewohner? Füge ihn als Suchpartner hinzu und erhaltet beide Matches!",
+    housAlertPlus: "HousAlert Plus",
+    plusDescription: "Deine Wohnungssuche auslagern? Lass das Team von HousAlert Plus Besichtigungen für dich organisieren.",
   },
 
   popularToday: {
