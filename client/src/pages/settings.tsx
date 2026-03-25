@@ -62,7 +62,7 @@ export default function SettingsPage() {
         >
           <ArrowLeft className="w-5 h-5 text-ha-text" />
         </button>
-        <h1 className="text-[18px] font-semibold text-ha-text" data-testid="text-settings-title">
+        <h1 className="text-[18px] text-title text-ha-text" data-testid="text-settings-title">
           {t("settings.title")}
         </h1>
       </div>
@@ -152,7 +152,7 @@ export default function SettingsPage() {
       {showLogoutConfirm && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowLogoutConfirm(false)}>
           <div className="bg-ha-card w-full max-w-[400px] rounded-t-[6px] sm:rounded-[6px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
-            <p className="text-[17px] font-semibold text-ha-text text-center">{t("profile.logoutConfirm")}</p>
+            <p className="text-[17px] text-title text-ha-text text-center">{t("profile.logoutConfirm")}</p>
             <p className="text-[14px] text-ha-text-secondary text-center mt-2 mb-6">{t("profile.logoutDesc")}</p>
             <button
               onClick={handleLogout}
@@ -175,7 +175,7 @@ export default function SettingsPage() {
       {showLangSheet && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowLangSheet(false)}>
           <div className="bg-ha-card w-full max-w-[400px] rounded-t-[6px] sm:rounded-[6px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
-            <p className="text-[17px] font-semibold text-ha-text text-center mb-4">{t("profile.language")}</p>
+            <p className="text-[17px] text-title text-ha-text text-center mb-4">{t("profile.language")}</p>
             {[
               { code: "de", label: "Deutsch" },
               { code: "en", label: "English" },

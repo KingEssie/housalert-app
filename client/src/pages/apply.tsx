@@ -295,7 +295,7 @@ export default function ApplyPage() {
       <main className="flex-1 max-w-xl mx-auto w-full pb-[120px] relative -mt-5 bg-ha-card rounded-t-[6px]">
         <div className="px-5 pt-6 text-center">
           <h1
-            className="text-[22px] font-semibold text-ha-text leading-[1.3] tracking-[-0.02em] mx-auto"
+            className="text-[22px] text-title text-ha-text mx-auto"
             data-testid="text-apply-title"
           >
             {listing.title}
@@ -331,7 +331,7 @@ export default function ApplyPage() {
         <div className="max-w-xl mx-auto flex items-center justify-between px-5 py-4">
           {listing.price > 0 && (
             <div className="flex flex-col" data-testid="text-sticky-price">
-              <span className="text-[20px] font-semibold text-ha-text">€{listing.price}</span>
+              <span className="text-[20px] text-title text-ha-text">€{listing.price}</span>
               <span className="text-[12px] text-ha-text-secondary leading-none">{t("common.perMonthShort")}</span>
             </div>
           )}

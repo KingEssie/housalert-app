@@ -67,7 +67,7 @@ export default function OnboardingIntroPage() {
                   <Icon className="w-5 h-5 text-ha-primary" />
                 </div>
                 <div>
-                  <p className="text-[15px] font-semibold text-ha-text leading-snug">
+                  <p className="text-[15px] text-title text-ha-text">
                     {t(`onboardingIntro.${key}.title`)}
                   </p>
                   <p className="text-[13px] text-ha-text-secondary leading-relaxed mt-0.5">

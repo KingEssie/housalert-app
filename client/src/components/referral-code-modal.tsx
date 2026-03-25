@@ -53,7 +53,7 @@ export function ReferralCodeModal({ open, onClose, code, loading }: ReferralCode
           <X className="w-4 h-4 text-ha-text-muted" />
         </button>
 
-        <h2 className="text-[20px] font-semibold text-ha-text pr-8" data-testid="text-referral-modal-title">
+        <h2 className="text-[20px] text-title text-ha-text pr-8" data-testid="text-referral-modal-title">
           {t("referral.modalTitle")}
         </h2>
         <p className="text-[14px] text-ha-text-secondary mt-2 leading-relaxed">

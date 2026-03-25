@@ -137,7 +137,7 @@ export default function SubscriptionDetailPage() {
               <Crown className="w-[22px] h-[22px] text-ha-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[15px] font-semibold text-ha-text" data-testid="text-plan-summary">
+              <p className="text-[15px] text-title text-ha-text" data-testid="text-plan-summary">
                 {subscription?.isTrial ? t("subscription.status.trial") : getPlanLabel(subscription?.plan)}
               </p>
               <span
