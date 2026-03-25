@@ -1,10 +1,6 @@
 import { apiFetch } from "@/lib/api-base";
 import { useAuth } from "@/lib/auth";
 import { useLocation } from "wouter";
-import extraSearchProfileImg from "@assets/91006436-FE1C-41F7-8B66-D1367535585A_1774020314108.png";
-import inviteFriendsImg from "@assets/323F7AC6-4139-4578-9576-64B7686F3112_1774020314108.png";
-import notificationsImg from "@assets/88F5A2A4-4299-4D69-9042-AF08AEBB0CDE_1774020314108.png";
-import avatarPlaceholderImg from "@assets/97E2CABC-21F6-49B6-A7DC-16B866627182_1774020314108.png";
 import { useEffect, useState, useCallback } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getSearchProfiles, deleteSearchProfile, type SearchProfile } from "@/lib/search-profiles";
@@ -1798,87 +1794,349 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
   const firstName = pd?.first_name || "";
   const lastName = pd?.last_name || "";
 
-  const subStatusLabel = subscription.isActive && !subscription.isTrial
-    ? t("profile.activeStatus")
-    : subscription.isTrial
-    ? t("profile.trialStatus")
-    : subscription.isExpired
-    ? t("profile.expiredStatus")
-    : t("profile.freeStatus");
+  const profileCompletionFields = [
+    !!pd?.first_name,
+    !!pd?.last_name,
+    !!phone,
+    !!pd?.application_template,
+    !!pd?.profile_photo_url,
+    !!pd?.search_buddy_email,
+  ];
+  const profileCompletionDone = profileCompletionFields.filter(Boolean).length;
+  const profileCompletionTotal = profileCompletionFields.length;
+  const profileCompletionPct = Math.round((profileCompletionDone / profileCompletionTotal) * 100);
 
-  const subStatusColor = subscription.isActive && !subscription.isTrial
-    ? "text-[#2563EB] bg-[#EFF6FF]"
-    : subscription.isTrial
-    ? "text-[#D97706] bg-[#FEF3C7]"
-    : "text-[#717171] bg-[#F3F4F6]";
+  const tipsProgressLocal = getTipsProgress();
+  const tipsCompletionPct = tipsProgressLocal.total > 0 ? Math.round((tipsProgressLocal.read / tipsProgressLocal.total) * 100) : 0;
+
+  const memberSinceLabel = user.created_at
+    ? (() => {
+        const d = new Date(user.created_at);
+        const monthNames: Record<string, string[]> = {
+          de: ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"],
+          en: ["January","February","March","April","May","June","July","August","September","October","November","December"],
+          nl: ["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"],
+        };
+        const months = monthNames[locale] || monthNames.de;
+        return `${t("profile.memberSincePrefix")} ${months[d.getMonth()]} ${d.getFullYear()}`;
+      })()
+    : "";
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-[#f7f7f7]">
-      <div className="max-w-[480px] mx-auto px-4 pt-6 pb-8">
-        <h1 className="text-[22px] font-bold text-[#111] mb-5 px-1" data-testid="text-profile-title">{t("profile.title")}</h1>
+    <div className="min-h-[calc(100vh-80px)] bg-[#F0EFF5]">
+      <div className="bg-[#1E1B3A] rounded-b-[32px] pt-10 pb-12 relative" data-testid="card-profile-summary">
+        <button
+          onClick={() => navigate("/profile/details")}
+          className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center active:scale-95 transition-transform"
+          data-testid="button-profile-settings"
+        >
+          <SlidersHorizontal className="w-5 h-5 text-white/80" />
+        </button>
 
-        <div className="flex flex-col gap-3.5">
+        <div className="flex flex-col items-center px-6">
+          {photoUrl ? (
+            <img src={photoUrl} alt="" className="w-20 h-20 rounded-full object-cover border-4 border-[#2D2560]" data-testid="img-profile-avatar" />
+          ) : (
+            <div className="w-20 h-20 rounded-full bg-[#0D4A5C] flex items-center justify-center border-4 border-[#2D2560]" data-testid="img-avatar-placeholder">
+              <span className="text-white text-[24px] font-bold">{initials}</span>
+            </div>
+          )}
+          <p className="text-white text-[18px] font-bold mt-3 text-center" data-testid="text-user-firstname">
+            {displayName || t("profile.seeker")}
+          </p>
+          {lastName && (
+            <span className="hidden" data-testid="text-user-lastname">{lastName}</span>
+          )}
+          <p className="text-white/60 text-[13px] mt-1" data-testid="text-member-since">
+            {memberSinceLabel}
+          </p>
+        </div>
+      </div>
 
-          <div
-            className="rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.04)] px-5 py-5"
-            data-testid="card-profile-summary"
+      <div className="max-w-[480px] mx-auto px-4 -mt-4 pb-8">
+        <div className="flex flex-col gap-3">
+
+          <button
+            onClick={() => navigate("/profile/details")}
+            className="w-full rounded-2xl bg-white px-5 py-4 flex items-center gap-3 active:opacity-90 transition-opacity"
+            data-testid="button-profile-avatar"
           >
-            <button
-              onClick={() => navigate("/profile/details")}
-              className="flex items-center gap-4 w-full text-left active:opacity-80 transition-opacity"
-              data-testid="button-profile-avatar"
-            >
-              {photoUrl ? (
-                <img src={photoUrl} alt="" className="w-16 h-16 rounded-full object-cover flex-shrink-0" data-testid="img-profile-avatar" />
-              ) : (
-                <div className="w-16 h-16 rounded-full bg-[#2563EB] flex items-center justify-center flex-shrink-0" data-testid="img-avatar-placeholder">
-                  <span className="text-white text-[20px] font-semibold">{initials}</span>
-                </div>
-              )}
-              <div className="flex-1 min-w-0">
-                <p className="text-[18px] font-semibold text-[#111] leading-tight truncate" data-testid="text-user-firstname">
-                  {firstName || displayName || t("profile.seeker")}
-                </p>
-                {lastName && (
-                  <p className="text-[14px] text-[#111] mt-0.5 leading-tight truncate" data-testid="text-user-lastname">
-                    {lastName}
-                  </p>
-                )}
-                <p className="text-[13px] text-[#6B7280] mt-1 leading-snug" data-testid="text-member-since">
-                  {memberStatNumber} {memberStatLabel}
-                </p>
+            <CheckCircle2 className="w-6 h-6 text-[#E91E63] flex-shrink-0" />
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-[15px] font-bold text-[#111]">{t("profile.completeAccount")}</p>
+                <ChevronRight className="w-4 h-4 text-[#D1D5DB]" />
               </div>
+              <div className="flex items-center gap-3">
+                <div className="flex-1 h-[6px] rounded-full bg-[#E5E7EB] overflow-hidden">
+                  <div className="h-full rounded-full bg-[#10B981] transition-all duration-500" style={{ width: `${profileCompletionPct}%` }} />
+                </div>
+                <span className="text-[13px] font-semibold text-[#E91E63] whitespace-nowrap">{profileCompletionPct}% {t("profile.completedLabel")}</span>
+              </div>
+            </div>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("tips")}
+            className="w-full rounded-2xl bg-white px-5 py-4 flex items-center gap-3 active:opacity-90 transition-opacity"
+            data-testid="button-tips-progress"
+          >
+            <Rocket className="w-6 h-6 text-[#E91E63] flex-shrink-0" />
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-[15px] font-bold text-[#111]">{t("profile.tipsTitle")}</p>
+                <ChevronRight className="w-4 h-4 text-[#D1D5DB]" />
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex-1 h-[6px] rounded-full bg-[#E5E7EB] overflow-hidden">
+                  <div className="h-full rounded-full bg-[#FBBF24] transition-all duration-500" style={{ width: `${tipsCompletionPct}%` }} />
+                </div>
+                <span className="text-[13px] font-semibold text-[#E91E63] whitespace-nowrap">{tipsCompletionPct}% {t("profile.completedLabel")}</span>
+              </div>
+            </div>
+          </button>
+
+          {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
+            <div className="rounded-2xl bg-[#EDE9F6] px-5 py-5" data-testid="card-upgrade-cta">
+              <div className="flex items-start gap-3 mb-3">
+                <Crown className="w-6 h-6 text-[#111] flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-[16px] font-bold text-[#111] leading-snug">{t("profile.upgradeMissing")}</p>
+                  <p className="text-[13px] text-[#555] mt-1.5 leading-relaxed">{t("profile.upgradeDesc")}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => navigate("/paywall")}
+                className="w-full h-[52px] rounded-2xl bg-[#E91E63] text-white text-[16px] font-semibold transition-colors hover:bg-[#D81B60] active:scale-[0.98]"
+                data-testid="button-upgrade-subscription"
+              >
+                {t("profile.upgradeNow")}
+              </button>
+            </div>
+          )}
+
+          {subscription.isTrial && (
+            <div className="rounded-2xl bg-[#EDE9F6] px-5 py-4 flex items-start gap-3" data-testid="trial-explanation">
+              <Gift className="w-5 h-5 text-[#E91E63] flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-[14px] font-semibold text-[#111]">{t("trial.explanation")}</p>
+                <p className="text-[13px] text-[#555] mt-1 leading-relaxed">{t("trial.explanationDesc")}</p>
+              </div>
+            </div>
+          )}
+
+          <div className="rounded-2xl bg-white px-5 py-1" data-testid="card-search-profiles">
+            <button
+              onClick={() => setActiveTab("filters")}
+              className="w-full flex items-center gap-3 py-4 text-left active:opacity-80 transition-opacity"
+              data-testid="button-extra-profile"
+            >
+              <Search className="w-5 h-5 text-[#E91E63] flex-shrink-0" />
+              <p className="text-[15px] font-bold text-[#111] flex-1">{t("profile.searchProfiles")}</p>
               <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
             </button>
+          </div>
 
-            <div className="h-px bg-[#F0F0F0] my-4" />
+          <div className="rounded-2xl bg-white px-5 py-1">
+            <button
+              onClick={() => navigate("/application-letter")}
+              className="w-full flex items-center gap-3 py-4 text-left active:opacity-80 transition-opacity"
+              data-testid="button-reaction-letter"
+            >
+              <FileText className="w-5 h-5 text-[#E91E63] flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-[15px] font-bold text-[#111]">{t("profile.reactionLetter2")}</p>
+                {letterPreview ? (
+                  <p className="text-[13px] text-[#10B981] mt-0.5 flex items-center gap-1"><Check className="w-3.5 h-3.5" /> {t("profile.letterSet")}</p>
+                ) : (
+                  <p className="text-[13px] text-[#EF4444] mt-0.5 flex items-center gap-1"><X className="w-3.5 h-3.5" /> {t("profile.noLetterYet")}</p>
+                )}
+              </div>
+              <span className="text-[13px] font-semibold text-[#E91E63]">{letterPreview ? t("profile.editAction") : t("profile.generateAction")}</span>
+            </button>
+          </div>
 
-            <div className="grid grid-cols-3 text-center">
-              <div data-testid="stat-member-since">
-                <p className="text-[20px] font-bold text-[#111] leading-tight">{memberStatNumber}</p>
-                <p className="text-[12px] text-[#6B7280] mt-0.5 leading-snug">{memberStatLabel}</p>
+          <div className="rounded-2xl bg-white px-5 py-1" id="zoekbuddy-section" data-testid="row-zoekbuddy">
+            <button
+              onClick={() => {
+                if (!buddyExpanded) {
+                  setBuddyEmail(pd?.search_buddy_email || "");
+                  setBuddyExpanded(true);
+                } else {
+                  setBuddyExpanded(false);
+                  setBuddyEmail("");
+                }
+              }}
+              className="w-full flex items-center gap-3 py-4 text-left active:opacity-80 transition-opacity"
+              data-testid="button-buddy-toggle"
+            >
+              <Users className="w-5 h-5 text-[#E91E63] flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-[15px] font-bold text-[#111]">{t("profile.zoekbuddyTitle")}</p>
+                {!buddyExpanded && pd?.search_buddy_email && (
+                  <p className="text-[13px] text-[#10B981] mt-0.5 flex items-center gap-1"><Check className="w-3.5 h-3.5" /> {pd.search_buddy_email}</p>
+                )}
+                {!buddyExpanded && !pd?.search_buddy_email && (
+                  <p className="text-[13px] text-[#EF4444] mt-0.5 flex items-center gap-1"><X className="w-3.5 h-3.5" /> {t("profile.noBuddyYet")}</p>
+                )}
               </div>
-              <div data-testid="stat-listings-viewed">
-                <p className="text-[20px] font-bold text-[#111] leading-tight">{canonicalStats?.viewed ?? 0}</p>
-                <p className="text-[12px] text-[#6B7280] mt-0.5 leading-snug">{t("profile.listingsViewed")}</p>
+              {!buddyExpanded && pd?.search_buddy_email ? (
+                <span
+                  role="button"
+                  onClick={e => { e.stopPropagation(); setShowBuddyDeleteConfirm(true); }}
+                  className="text-[13px] font-semibold text-[#E91E63]"
+                  data-testid="button-buddy-remove-x"
+                >
+                  {t("profile.manageAction")}
+                </span>
+              ) : !buddyExpanded ? (
+                <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+              ) : null}
+            </button>
+            {buddyExpanded && (
+              <div className="pb-4 animate-in slide-in-from-top-1 duration-200" data-testid="editor-zoekbuddy">
+                <div className="relative mb-4">
+                  <input
+                    type="email"
+                    value={buddyEmail}
+                    onChange={e => setBuddyEmail(e.target.value)}
+                    onKeyDown={e => { if (e.key === "Enter") handleBuddyInvite(); }}
+                    placeholder={t("profileEdit.searchBuddyPlaceholder")}
+                    autoFocus
+                    className="w-full bg-white rounded-2xl px-5 py-4 text-[16px] text-[#222] placeholder:text-[#C4C4C4] border border-[#E5E7EB] focus:border-[#E91E63] focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] focus:outline-none transition-all h-[52px]"
+                    data-testid="input-buddy-email"
+                  />
+                  {buddyEmail && (
+                    <button
+                      type="button"
+                      onClick={() => setBuddyEmail("")}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-90 transition-transform"
+                      data-testid="button-buddy-clear"
+                    >
+                      <X className="w-3.5 h-3.5 text-[#717171]" />
+                    </button>
+                  )}
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleBuddyInvite}
+                    disabled={buddySaving || !buddyEmail.trim()}
+                    className="h-[48px] px-8 rounded-xl bg-[#E91E63] text-white text-[15px] font-medium disabled:opacity-50 transition-colors flex items-center gap-2"
+                    data-testid="button-buddy-save"
+                  >
+                    {buddySaving ? <Loader2 className="w-4 h-4 animate-spin" /> : t("profileDetails.saveAndContinue")}
+                  </button>
+                  <button
+                    onClick={() => { setBuddyExpanded(false); setBuddyEmail(""); }}
+                    className="h-[48px] px-5 rounded-xl text-[#717171] text-[14px] font-medium active:bg-[#F9FAFB] transition-colors"
+                    data-testid="button-buddy-cancel"
+                  >
+                    {t("profileDetails.cancel")}
+                  </button>
+                </div>
               </div>
-              <div data-testid="stat-applications-sent">
-                <p className="text-[20px] font-bold text-[#111] leading-tight">{computedAppliedCount}</p>
-                <p className="text-[12px] text-[#6B7280] mt-0.5 leading-snug">{t("profile.applicationsSent")}</p>
+            )}
+          </div>
+
+          <div
+            id="notification-settings"
+            className="rounded-2xl bg-white px-5 py-4"
+            data-testid="card-notifications"
+          >
+            <p className="text-[15px] font-bold text-[#111] mb-4">{t("profile.notificationSettings")}</p>
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <span className="text-[14px] text-[#111]">{t("profile.pushNotifications")}</span>
+                <button
+                  onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
+                  disabled={notifUpdating === "push_enabled"}
+                  className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.push_enabled ? "bg-[#E91E63]" : "bg-[#D1D5DB]"} ${notifUpdating === "push_enabled" ? "opacity-50" : ""}`}
+                  data-testid="toggle-push"
+                >
+                  <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.push_enabled ? "left-[23px]" : "left-[3px]"}`} />
+                </button>
+              </div>
+              <div className="h-px bg-[#F0F0F0]" />
+              <div className="flex items-center justify-between">
+                <span className="text-[14px] text-[#111]">{t("profile.emailNotifications")}</span>
+                <button
+                  onClick={() => handleToggleNotif("email_enabled", !!notifSettings?.email_enabled)}
+                  disabled={notifUpdating === "email_enabled"}
+                  className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.email_enabled ? "bg-[#E91E63]" : "bg-[#D1D5DB]"} ${notifUpdating === "email_enabled" ? "opacity-50" : ""}`}
+                  data-testid="toggle-email"
+                >
+                  <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.email_enabled ? "left-[23px]" : "left-[3px]"}`} />
+                </button>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="rounded-2xl bg-white px-5 py-1">
             <button
-              onClick={() => navigate("/dashboard/searches/new")}
-              className="rounded-2xl border border-[#E5E7EB] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-3 flex flex-col items-center justify-center text-center active:scale-[0.98] transition-transform aspect-square overflow-hidden"
-              data-testid="button-extra-profile"
+              onClick={() => navigate("/profile/details")}
+              className="w-full flex items-center gap-3 py-4 text-left active:opacity-80 transition-opacity"
+              data-testid="button-personal-info"
             >
-              <img src={extraSearchProfileImg} alt="" className="max-w-[85%] max-h-[65%] w-auto h-auto object-contain" loading="lazy" />
-              <p className="text-[13px] font-semibold text-[#111] leading-snug mt-2">{t("profile.extraProfile")}</p>
+              <User className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
+              <p className="text-[15px] text-[#111] flex-1">{t("profile.personalInfo")}</p>
+              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
             </button>
+            <div className="h-px bg-[#F0F0F0]" />
+            <button
+              onClick={() => navigate("/account/subscription")}
+              className="w-full flex items-center gap-3 py-4 text-left active:opacity-80 transition-opacity"
+              data-testid="button-subscription"
+            >
+              <Crown className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
+              <p className="text-[15px] text-[#111] flex-1">{t("profile.subscriptionPlan")}</p>
+              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+            </button>
+            <div className="h-px bg-[#F0F0F0]" />
+            <button
+              onClick={() => setShowLangSheet(true)}
+              className="w-full flex items-center gap-3 py-4 text-left active:opacity-80 transition-opacity"
+              data-testid="button-language"
+            >
+              <Globe className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
+              <p className="text-[15px] text-[#111] flex-1">{t("profile.language")}</p>
+              <span className="text-[13px] text-[#6B7280] mr-1">{currentLangLabel}</span>
+              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+            </button>
+          </div>
 
+          <div className="rounded-2xl bg-white px-5 py-1">
+            <button
+              onClick={() => navigate("/datenschutz")}
+              className="w-full flex items-center gap-3 py-4 text-left active:opacity-80 transition-opacity"
+              data-testid="button-privacy"
+            >
+              <Shield className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
+              <p className="text-[15px] text-[#111] flex-1">{t("profile.privacy")}</p>
+              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+            </button>
+            <div className="h-px bg-[#F0F0F0]" />
+            <button
+              onClick={() => { window.location.href = "mailto:support@housalert.com"; }}
+              className="w-full flex items-center gap-3 py-4 text-left active:opacity-80 transition-opacity"
+              data-testid="button-help-support"
+            >
+              <HelpCircle className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
+              <p className="text-[15px] text-[#111] flex-1">{t("profile.helpSupport")}</p>
+              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+            </button>
+            <div className="h-px bg-[#F0F0F0]" />
+            <button
+              onClick={() => navigate("/terms")}
+              className="w-full flex items-center gap-3 py-4 text-left active:opacity-80 transition-opacity"
+              data-testid="button-terms"
+            >
+              <FileText className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
+              <p className="text-[15px] text-[#111] flex-1">{t("profile.terms")}</p>
+              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+            </button>
+          </div>
+
+          <div className="rounded-2xl bg-white px-5 py-1">
             <button
               onClick={async () => {
                 const code = referralQuery.data?.code;
@@ -1892,274 +2150,32 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                   toast({ title: t("referral.copyFailed"), variant: "destructive" });
                 }
               }}
-              className="rounded-2xl border border-[#E5E7EB] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-3 flex flex-col items-center justify-center text-center active:scale-[0.98] transition-transform aspect-square overflow-hidden"
+              className="w-full flex items-center gap-3 py-4 text-left active:opacity-80 transition-opacity"
               data-testid="button-invite-friends"
             >
-              <img src={inviteFriendsImg} alt="" className="max-w-[85%] max-h-[65%] w-auto h-auto object-contain" loading="lazy" />
-              <p className="text-[13px] font-semibold text-[#111] leading-snug mt-2">{t("profile.inviteFriends")}</p>
+              <Gift className="w-5 h-5 text-[#E91E63] flex-shrink-0" />
+              <p className="text-[15px] font-bold text-[#111] flex-1">{t("profile.inviteFriends")}</p>
+              <span className="text-[13px] font-semibold text-[#E91E63]">{referralCopied ? t("referral.copiedShort") : t("profile.shareAction")}</span>
             </button>
           </div>
 
-          {subscription.isTrial && (
-            <div className="rounded-2xl border border-[#D1FAE5] bg-[#F0FDF4] px-5 py-4 flex items-start gap-3.5" data-testid="trial-explanation">
-              <div className="w-9 h-9 rounded-xl bg-[#DCFCE7] flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Gift className="w-[18px] h-[18px] text-[#16A34A]" />
-              </div>
-              <div>
-                <p className="text-[14px] font-medium text-[#15803D]">{t("trial.explanation")}</p>
-                <p className="text-[13px] text-[#15803D]/80 mt-1 leading-relaxed">{t("trial.explanationDesc")}</p>
-              </div>
-            </div>
-          )}
-
-          {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
-            <button
-              onClick={() => navigate("/paywall")}
-              className="w-full h-[52px] rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-[15px] font-medium transition-colors flex items-center justify-center gap-2 shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
-              data-testid="button-upgrade-subscription"
-            >
-              <Crown className="w-4.5 h-4.5" />
-              {t("profile.chooseSubscription")}
-            </button>
-          )}
-
-          <div
-            id="notification-settings"
-            className="rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.04)] px-5 py-4"
-            data-testid="card-notifications"
-          >
-            <p className="text-[15px] font-semibold text-[#111] mb-4">{t("profile.notificationSettings")}</p>
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center justify-between">
-                <span className="text-[14px] text-[#111]">{t("profile.pushNotifications")}</span>
-                <button
-                  onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
-                  disabled={notifUpdating === "push_enabled"}
-                  className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.push_enabled ? "bg-[#2563EB]" : "bg-[#D1D5DB]"} ${notifUpdating === "push_enabled" ? "opacity-50" : ""}`}
-                  data-testid="toggle-push"
-                >
-                  <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.push_enabled ? "left-[23px]" : "left-[3px]"}`} />
-                </button>
-              </div>
-              <div className="h-px bg-[#F0F0F0]" />
-              <div className="flex items-center justify-between">
-                <span className="text-[14px] text-[#111]">{t("profile.emailNotifications")}</span>
-                <button
-                  onClick={() => handleToggleNotif("email_enabled", !!notifSettings?.email_enabled)}
-                  disabled={notifUpdating === "email_enabled"}
-                  className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.email_enabled ? "bg-[#2563EB]" : "bg-[#D1D5DB]"} ${notifUpdating === "email_enabled" ? "opacity-50" : ""}`}
-                  data-testid="toggle-email"
-                >
-                  <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.email_enabled ? "left-[23px]" : "left-[3px]"}`} />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.04)] px-4 py-1">
-            <div id="zoekbuddy-section" data-testid="row-zoekbuddy">
-              <button
-                onClick={() => {
-                  if (!buddyExpanded) {
-                    setBuddyEmail(pd?.search_buddy_email || "");
-                    setBuddyExpanded(true);
-                  } else {
-                    setBuddyExpanded(false);
-                    setBuddyEmail("");
-                  }
-                }}
-                className="w-full flex items-center gap-3 py-[14px] text-left active:opacity-80 transition-opacity"
-                data-testid="button-buddy-toggle"
-              >
-                <div className="w-9 h-9 rounded-xl bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
-                  <Users className="w-[18px] h-[18px] text-[#6B7280]" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[15px] text-[#111]">{t("profile.zoekbuddyTitle")}</p>
-                  {!buddyExpanded && pd?.search_buddy_email && (
-                    <p className="text-[13px] text-[#6B7280] mt-0.5 truncate">{pd.search_buddy_email}</p>
-                  )}
-                  {!buddyExpanded && !pd?.search_buddy_email && (
-                    <p className="text-[13px] text-[#9CA3AF] mt-0.5">{t("profile.noBuddyYet")}</p>
-                  )}
-                </div>
-                {!buddyExpanded && pd?.search_buddy_email ? (
-                  <span
-                    role="button"
-                    onClick={e => { e.stopPropagation(); setShowBuddyDeleteConfirm(true); }}
-                    className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 active:bg-[#F3F4F6] transition-colors"
-                    data-testid="button-buddy-remove-x"
-                  >
-                    <X className="w-4 h-4 text-[#D1D5DB]" />
-                  </span>
-                ) : !buddyExpanded ? (
-                  <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
-                ) : null}
-              </button>
-              {buddyExpanded && (
-                <div className="pb-4 px-1 animate-in slide-in-from-top-1 duration-200" data-testid="editor-zoekbuddy">
-                  <div className="pl-[36px]">
-                    <div className="relative mb-4">
-                      <input
-                        type="email"
-                        value={buddyEmail}
-                        onChange={e => setBuddyEmail(e.target.value)}
-                        onKeyDown={e => { if (e.key === "Enter") handleBuddyInvite(); }}
-                        placeholder={t("profileEdit.searchBuddyPlaceholder")}
-                        autoFocus
-                        className="w-full bg-white rounded-2xl px-5 py-4 text-[16px] text-[#222222] placeholder:text-[#C4C4C4] border border-[#E5E7EB] focus:border-[#F97316] focus:shadow-[0_0_0_3px_rgba(249,115,22,0.08)] focus:outline-none transition-all h-[56px]"
-                        data-testid="input-buddy-email"
-                      />
-                      {buddyEmail && (
-                        <button
-                          type="button"
-                          onClick={() => setBuddyEmail("")}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-90 transition-transform"
-                          data-testid="button-buddy-clear"
-                        >
-                          <X className="w-3.5 h-3.5 text-[#717171]" />
-                        </button>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={handleBuddyInvite}
-                        disabled={buddySaving || !buddyEmail.trim()}
-                        className="h-[48px] px-8 rounded-xl bg-[#222222] text-white text-[15px] font-medium disabled:opacity-50 transition-colors flex items-center gap-2"
-                        data-testid="button-buddy-save"
-                      >
-                        {buddySaving ? <Loader2 className="w-4 h-4 animate-spin" /> : t("profileDetails.saveAndContinue")}
-                      </button>
-                      <button
-                        onClick={() => { setBuddyExpanded(false); setBuddyEmail(""); }}
-                        className="h-[48px] px-5 rounded-xl text-[#717171] text-[14px] font-medium active:bg-[#F9FAFB] transition-colors"
-                        data-testid="button-buddy-cancel"
-                      >
-                        {t("profileDetails.cancel")}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="h-px bg-[#F0F0F0]" />
-            <button
-              onClick={() => navigate("/application-letter")}
-              className="w-full flex items-center gap-3 py-[14px] text-left active:opacity-80 transition-opacity"
-              data-testid="button-reaction-letter"
-            >
-              <div className="w-9 h-9 rounded-xl bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
-                <FileText className="w-[18px] h-[18px] text-[#6B7280]" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-[15px] text-[#111]">{t("profile.reactionLetter2")}</p>
-                <p className="text-[13px] text-[#9CA3AF] mt-0.5 line-clamp-1">{letterPreview ? `${letterPreview}...` : t("profile.noLetterYet")}</p>
-              </div>
-              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
-            </button>
-            <div className="h-px bg-[#F0F0F0]" />
-            <button
-              onClick={() => navigate("/profile/details")}
-              className="w-full flex items-center gap-3 py-[14px] text-left active:opacity-80 transition-opacity"
-              data-testid="button-personal-info"
-            >
-              <div className="w-9 h-9 rounded-xl bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
-                <User className="w-[18px] h-[18px] text-[#6B7280]" />
-              </div>
-              <p className="text-[15px] text-[#111] flex-1">{t("profile.personalInfo")}</p>
-              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
-            </button>
-            <div className="h-px bg-[#F0F0F0]" />
-            <button
-              onClick={() => navigate("/account/subscription")}
-              className="w-full flex items-center gap-3 py-[14px] text-left active:opacity-80 transition-opacity"
-              data-testid="button-subscription"
-            >
-              <div className="w-9 h-9 rounded-xl bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
-                <Crown className="w-[18px] h-[18px] text-[#6B7280]" />
-              </div>
-              <p className="text-[15px] text-[#111] flex-1">{t("profile.subscriptionPlan")}</p>
-              <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full flex-shrink-0 ${subStatusColor}`} data-testid="text-subscription-status">
-                {subStatusLabel}
-              </span>
-            </button>
-            <div className="h-px bg-[#F0F0F0]" />
-            <button
-              onClick={() => setShowLangSheet(true)}
-              className="w-full flex items-center gap-3 py-[14px] text-left active:opacity-80 transition-opacity"
-              data-testid="button-language"
-            >
-              <div className="w-9 h-9 rounded-xl bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
-                <Globe className="w-[18px] h-[18px] text-[#6B7280]" />
-              </div>
-              <p className="text-[15px] text-[#111] flex-1">{t("profile.language")}</p>
-              <span className="text-[13px] text-[#6B7280] mr-1">{currentLangLabel}</span>
-              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
-            </button>
-          </div>
-
-          <div>
-            <p className="text-[11px] font-medium text-[#9CA3AF] uppercase tracking-wider mb-2 px-1">{t("profile.support")}</p>
-            <div className="rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.04)] px-4 py-1">
-              <button
-                onClick={() => navigate("/datenschutz")}
-                className="w-full flex items-center gap-3 py-[14px] text-left active:opacity-80 transition-opacity"
-                data-testid="button-privacy"
-              >
-                <div className="w-9 h-9 rounded-xl bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
-                  <Shield className="w-[18px] h-[18px] text-[#6B7280]" />
-                </div>
-                <p className="text-[15px] text-[#111] flex-1">{t("profile.privacy")}</p>
-                <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
-              </button>
-              <div className="h-px bg-[#F0F0F0]" />
-              <button
-                onClick={() => { window.location.href = "mailto:support@housalert.com"; }}
-                className="w-full flex items-center gap-3 py-[14px] text-left active:opacity-80 transition-opacity"
-                data-testid="button-help-support"
-              >
-                <div className="w-9 h-9 rounded-xl bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
-                  <HelpCircle className="w-[18px] h-[18px] text-[#6B7280]" />
-                </div>
-                <p className="text-[15px] text-[#111] flex-1">{t("profile.helpSupport")}</p>
-                <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
-              </button>
-              <div className="h-px bg-[#F0F0F0]" />
-              <button
-                onClick={() => navigate("/terms")}
-                className="w-full flex items-center gap-3 py-[14px] text-left active:opacity-80 transition-opacity"
-                data-testid="button-terms"
-              >
-                <div className="w-9 h-9 rounded-xl bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
-                  <FileText className="w-[18px] h-[18px] text-[#6B7280]" />
-                </div>
-                <p className="text-[15px] text-[#111] flex-1">{t("profile.terms")}</p>
-                <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
-              </button>
-            </div>
-          </div>
-
-          <div className="rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.04)] px-4 py-1">
+          <div className="rounded-2xl bg-white px-5 py-1">
             <button
               onClick={() => setShowLogoutConfirm(true)}
               disabled={signingOut}
-              className={`w-full flex items-center gap-3 py-[14px] text-left active:opacity-80 transition-opacity ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
+              className={`w-full flex items-center gap-3 py-4 text-left active:opacity-80 transition-opacity ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
               data-testid="button-logout"
             >
-              <div className="w-9 h-9 rounded-xl bg-[#FEF2F2] flex items-center justify-center flex-shrink-0">
-                <LogOut className="w-[18px] h-[18px] text-[#EF4444]" />
-              </div>
+              <LogOut className="w-5 h-5 text-[#EF4444] flex-shrink-0" />
               <p className="text-[15px] text-[#EF4444] flex-1">{signingOut ? t("profile.signingOut") : t("profile.logout")}</p>
             </button>
             <div className="h-px bg-[#F0F0F0]" />
             <button
               onClick={() => navigate("/account/delete")}
-              className="w-full flex items-center gap-3 py-[14px] text-left active:opacity-80 transition-opacity"
+              className="w-full flex items-center gap-3 py-4 text-left active:opacity-80 transition-opacity"
               data-testid="button-delete-account"
             >
-              <div className="w-9 h-9 rounded-xl bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
-                <Trash2 className="w-[18px] h-[18px] text-[#6B7280]" />
-              </div>
+              <Trash2 className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
               <p className="text-[15px] text-[#6B7280] flex-1">{t("profile.deleteAccount")}</p>
             </button>
           </div>
@@ -2171,7 +2187,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       {(user?.email?.toLowerCase() === "martin.essie87@gmail.com") && (
         <button
           onClick={() => navigate("/admin/portal")}
-          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+68px)] left-1/2 -translate-x-1/2 z-40 bg-[#222222] text-white text-[14px] font-medium px-6 py-3 rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.16)] active:scale-95 transition-transform"
+          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+68px)] left-1/2 -translate-x-1/2 z-40 bg-[#1E1B3A] text-white text-[14px] font-medium px-6 py-3 rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.16)] active:scale-95 transition-transform"
           data-testid="button-admin-portal"
         >
           {t("profile.adminMode")}
@@ -2192,7 +2208,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           <div className="absolute inset-0 bg-black/40" onClick={() => setShowLangSheet(false)} />
           <div className="relative w-full max-w-[480px] bg-white rounded-t-2xl px-6 pb-10 pt-3 animate-in slide-in-from-bottom duration-300">
             <div className="w-10 h-1 rounded-full bg-[#E5E7EB] mx-auto mb-6" />
-            <h3 className="text-[18px] font-medium text-[#222222] mb-1.5">{t("profile.language")}</h3>
+            <h3 className="text-[18px] font-medium text-[#222] mb-1.5">{t("profile.language")}</h3>
             <p className="text-[13px] text-[#717171] mb-6 leading-relaxed">{t("profile.languageDesc")}</p>
             <div className="flex flex-col gap-1.5">
               {LANG_OPTIONS.map(opt => {
@@ -2201,11 +2217,11 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                   <button
                     key={opt.code}
                     onClick={() => handleLanguageChange(opt.code)}
-                    className={`flex items-center justify-between px-5 py-4 rounded-xl transition-all ${selected ? "bg-[#EFF6FF]" : "hover:bg-[#F8F9FA] active:bg-[#F3F4F6]"}`}
+                    className={`flex items-center justify-between px-5 py-4 rounded-xl transition-all ${selected ? "bg-[#FCE4EC]" : "hover:bg-[#F8F9FA] active:bg-[#F3F4F6]"}`}
                     data-testid={`button-lang-${opt.code}`}
                   >
-                    <span className={`text-[15px] font-medium ${selected ? "text-[#2563EB]" : "text-[#111]"}`}>{opt.label}</span>
-                    {selected && <CheckCircle2 className="w-5 h-5 text-[#2563EB]" />}
+                    <span className={`text-[15px] font-medium ${selected ? "text-[#E91E63]" : "text-[#111]"}`}>{opt.label}</span>
+                    {selected && <CheckCircle2 className="w-5 h-5 text-[#E91E63]" />}
                   </button>
                 );
               })}
@@ -2220,7 +2236,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             <div className="w-12 h-12 rounded-2xl bg-[#FEF2F2] flex items-center justify-center mx-auto mb-5">
               <Users className="w-6 h-6 text-[#EF4444]" />
             </div>
-            <h3 className="text-[18px] font-medium text-[#222222] text-center mb-2" data-testid="text-buddy-delete-title">
+            <h3 className="text-[18px] font-medium text-[#222] text-center mb-2" data-testid="text-buddy-delete-title">
               {t("profile.buddyDeleteTitle")}
             </h3>
             <p className="text-[14px] text-[#717171] text-center mb-8 leading-relaxed">
@@ -2230,14 +2246,14 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               <button
                 onClick={() => { handleBuddyRemove(); setShowBuddyDeleteConfirm(false); }}
                 disabled={buddySaving}
-                className="w-full h-[52px] rounded-full bg-[#EF4444] text-white text-[16px] font-medium transition-colors hover:bg-[#DC2626] disabled:opacity-50"
+                className="w-full h-[52px] rounded-2xl bg-[#EF4444] text-white text-[16px] font-medium transition-colors hover:bg-[#DC2626] disabled:opacity-50"
                 data-testid="button-buddy-delete-confirm"
               >
                 {buddySaving ? t("common.loading") : t("profile.buddyRemoveLabel")}
               </button>
               <button
                 onClick={() => setShowBuddyDeleteConfirm(false)}
-                className="w-full h-[52px] rounded-full border border-[#E5E7EB] text-[#222222] text-[16px] font-medium hover:bg-[#F5F7FA] transition-colors"
+                className="w-full h-[52px] rounded-2xl border border-[#E5E7EB] text-[#222] text-[16px] font-medium hover:bg-[#F5F7FA] transition-colors"
                 data-testid="button-buddy-delete-cancel"
               >
                 {t("common.cancel")}
@@ -2248,41 +2264,41 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       )}
 
       {showLogoutConfirm && (
-        <div className="fixed inset-0 z-50 bg-white flex flex-col">
-          <header className="sticky top-0 z-10 bg-white border-b border-[#E5E7EB]">
+        <div className="fixed inset-0 z-50 bg-[#1E1B3A] flex flex-col">
+          <header className="sticky top-0 z-10">
             <div className="max-w-lg mx-auto flex items-center h-[56px] px-5">
               <button
                 onClick={() => setShowLogoutConfirm(false)}
-                className="w-9 h-9 rounded-full bg-[#F5F7FA] flex items-center justify-center mr-3 active:scale-95 transition-transform"
+                className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center mr-3 active:scale-95 transition-transform"
                 data-testid="button-logout-back"
               >
-                <ArrowLeft className="w-4 h-4 text-[#71717A]" />
+                <ArrowLeft className="w-4 h-4 text-white/80" />
               </button>
-              <h1 className="text-[17px] font-medium text-[#222222] flex-1 tracking-wide">{t("profile.logout")}</h1>
+              <h1 className="text-[17px] font-medium text-white flex-1 tracking-wide">{t("profile.logout")}</h1>
             </div>
           </header>
           <main className="flex-1 flex flex-col items-center justify-center px-6">
-            <div className="w-16 h-16 rounded-2xl bg-[#F5F7FA] flex items-center justify-center mb-6">
-              <LogOut className="w-8 h-8 text-[#222222]" />
+            <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center mb-6">
+              <LogOut className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-[22px] font-medium text-[#222222] mb-3 text-center" data-testid="text-logout-title">
+            <h2 className="text-[22px] font-medium text-white mb-3 text-center" data-testid="text-logout-title">
               {t("profile.logoutConfirm")}
             </h2>
-            <p className="text-[15px] text-[#222222] text-center max-w-[320px] mb-10 leading-relaxed">
+            <p className="text-[15px] text-white/70 text-center max-w-[320px] mb-10 leading-relaxed">
               {t("profile.logoutDesc")}
             </p>
             <div className="w-full max-w-[320px] flex flex-col gap-3">
               <button
                 onClick={handleSignOut}
                 disabled={signingOut}
-                className="w-full h-[56px] rounded-2xl bg-[#2563EB] text-white text-[16px] font-medium transition-colors hover:bg-[#1D4ED8] disabled:opacity-50"
+                className="w-full h-[56px] rounded-2xl bg-[#E91E63] text-white text-[16px] font-semibold transition-colors hover:bg-[#D81B60] disabled:opacity-50"
                 data-testid="button-logout-confirm"
               >
                 {signingOut ? t("profile.signingOut") : t("profile.logoutYes")}
               </button>
               <button
                 onClick={() => setShowLogoutConfirm(false)}
-                className="w-full h-[52px] rounded-full border border-[#E5E7EB] text-[#222222] text-[16px] font-medium hover:bg-[#F5F7FA] transition-colors"
+                className="w-full h-[52px] rounded-2xl border border-white/20 text-white text-[16px] font-medium hover:bg-white/5 transition-colors"
                 data-testid="button-logout-cancel"
               >
                 {t("common.cancel")}
