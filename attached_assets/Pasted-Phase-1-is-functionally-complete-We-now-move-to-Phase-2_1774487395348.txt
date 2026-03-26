@@ -1,0 +1,139 @@
+Phase 1 is functionally complete. We now move to Phase 2.
+
+IMPORTANT:
+Do not redesign Phase 1.
+Do not refactor the working Phase 1 flow.
+Focus now only on implementing the full Phase 2 flow functionally.
+
+==================================================
+PHASE 2 FLOW
+==================================================
+
+After the password/account creation step, the user must continue into:
+
+1. Paywall
+2. If user skips payment: limited-access warning screen
+3. Welcome screen / welcome brief
+4. Notifications step
+5. Personal details
+6. Housing situation
+7. Generated application letter
+8. Search buddy invite
+9. App ready / success
+10. /home
+
+==================================================
+PAYWALL RULE
+==================================================
+
+If user pays:
+- continue to step 3
+
+If user skips:
+- first show the limited-access screen
+- then continue to step 3
+
+So:
+- paywall is not a blocker
+- both paid and unpaid users continue through the same onboarding continuation flow
+
+==================================================
+REQUIRED PHASE 2 SCREENS
+==================================================
+
+1. Paywall
+- plan selection
+- Stripe checkout
+- skip option
+
+2. Limited-access screen
+- explain disadvantages of continuing without subscription
+- allow:
+  - go back to paywall
+  - continue anyway
+
+3. Welcome screen
+- onboarding continuation intro
+- CTA: next
+
+4. Notifications step
+- request push permission
+- allow continue even if denied
+- persist granted/denied/completed state
+
+5. Personal details
+Fields:
+- phone number
+- birth date
+- gender
+
+6. Housing situation
+Fields:
+- living with
+- work status
+- move reason
+- gross monthly income
+- pets count
+
+7. Generated application letter
+- generate a template-based letter from collected data
+- editable textarea
+- save generated text
+
+8. Search buddy
+- invite by email or skip
+- explain what buddy can/cannot do
+
+9. Success screen
+- mark onboarding complete
+- CTA to /home
+
+==================================================
+DATA / PERSISTENCE
+==================================================
+
+Persist all phase 2 progress in the database.
+
+Requirements:
+- save current step after every transition
+- save all form data
+- allow refresh/resume
+- if phase 2 is already completed, user should not see it again
+- use paywall_completed to decide whether the paywall has already been passed
+
+==================================================
+ROUTING RULES
+==================================================
+
+Phase 2 starts only after successful account creation.
+
+Expected route flow:
+- /onboarding/setup -> paywall
+- optional limited-access
+- then the rest of the phase 2 steps
+- final success -> /home
+
+Do not reuse any legacy onboarding component.
+
+==================================================
+VERIFY
+==================================================
+
+Before finishing, verify:
+1. paid flow works end-to-end
+2. skipped-paywall flow works end-to-end
+3. refresh resumes correctly
+4. generated letter uses real collected user data
+5. final success always leads to /home
+6. users are never forced back into paywall after skipping once
+
+==================================================
+DELIVERABLE
+==================================================
+
+When done, give me:
+1. exact phase 2 route map
+2. files created/changed
+3. database fields used
+4. how paywall_completed is handled
+5. how onboarding_current_step is saved and resumed

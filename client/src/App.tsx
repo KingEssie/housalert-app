@@ -28,7 +28,7 @@ import { SubscriptionCancelConfirmPage, SubscriptionCancelledPage } from "@/page
 import ChangePasswordPage from "@/pages/change-password";
 import ForgotPasswordPage from "@/pages/forgot-password";
 import ResetPasswordPage from "@/pages/reset-password";
-import OnboardingFlow from "@/pages/onboarding-flow";
+import OnboardingSetup from "@/pages/onboarding/setup";
 import OnboardingEmbedPage from "@/pages/onboarding-embed";
 import OnboardingIntroNew from "@/pages/onboarding/intro";
 import OnboardingCityNew from "@/pages/onboarding/city";
@@ -153,7 +153,7 @@ function Router() {
       <Route path="/onboarding/name" component={OnboardingNameNew} />
       <Route path="/onboarding/email" component={OnboardingEmailNew} />
       <Route path="/onboarding/password" component={OnboardingPasswordNew} />
-      <Route path="/onboarding/setup" component={() => <ProtectedRoute component={OnboardingFlow} skipOnboardingCheck />} />
+      <Route path="/onboarding/setup" component={() => <ProtectedRoute component={OnboardingSetup} skipOnboardingCheck />} />
       <Route path="/onboarding/continue" component={() => <Redirect to="/onboarding/setup" />} />
       <Route path="/onboarding/estimate" component={() => <Redirect to="/onboarding/intro" />} />
       <Route path="/onboarding/preferences" component={() => <Redirect to="/onboarding/intro" />} />
