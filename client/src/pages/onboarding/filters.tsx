@@ -221,7 +221,7 @@ export default function OnboardingFilters() {
     if (f.includeRooms) outParams.set("includeRooms", "true");
     if (f.sendUnclear) outParams.set("sendUnclear", "true");
 
-    navigate(`/signup?${outParams.toString()}`);
+    navigate(`/onboarding/name?${outParams.toString()}`);
   }
 
   function handleBack() {
