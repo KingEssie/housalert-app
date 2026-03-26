@@ -140,12 +140,9 @@ export default function WelcomePage() {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
-        const prePaywall = data.onboarding_completed === true;
-        const postPaywall = data.post_paywall_onboarding_completed === true;
-        let dest = "/onboarding/intro";
-        if (prePaywall && postPaywall) dest = "/home";
-        else if (prePaywall) dest = "/onboarding/setup";
-        console.log(`[WELCOME] onboarding_completed=${prePaywall} post_paywall=${postPaywall} → redirect=${dest}`);
+        const completed = data.onboarding_completed === true;
+        let dest = completed ? "/home" : "/onboarding/intro";
+        console.log(`[WELCOME] onboarding_completed=${completed} → redirect=${dest}`);
         setLoading(false);
         navigate(dest);
         return;

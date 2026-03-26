@@ -118,12 +118,10 @@ function RootRoute() {
     })
       .then((res) => res.json())
       .then((data) => {
-        const prePaywall = data.onboarding_completed === true;
-        const postPaywall = data.post_paywall_onboarding_completed === true;
-        console.log(`[ROOT] onboarding_completed=${prePaywall} post_paywall=${postPaywall}`);
-        if (!prePaywall) setDestination("/onboarding/intro");
-        else if (!postPaywall) setDestination("/onboarding/setup");
-        else setDestination("/home");
+        const completed = data.onboarding_completed === true;
+        console.log(`[ROOT] onboarding_completed=${completed}`);
+        if (completed) setDestination("/home");
+        else setDestination("/onboarding/intro");
       })
       .catch(() => setDestination("/onboarding/intro"));
   }, [user, session, loading]);
