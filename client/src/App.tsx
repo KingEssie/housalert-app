@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth, isRecoveryMode } from "@/lib/auth";
 import { I18nProvider } from "@/i18n";
+import { ThemeProvider } from "@/lib/theme-provider";
 import { apiFetch } from "@/lib/api-base";
 import { isNativePlatform } from "@/lib/capacitor";
 
@@ -207,16 +208,18 @@ function Router() {
 
 function AppShell() {
   return (
-    <I18nProvider>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <AuthProvider>
-            <Toaster />
-            <Router />
-          </AuthProvider>
-        </TooltipProvider>
-      </QueryClientProvider>
-    </I18nProvider>
+    <ThemeProvider>
+      <I18nProvider>
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <AuthProvider>
+              <Toaster />
+              <Router />
+            </AuthProvider>
+          </TooltipProvider>
+        </QueryClientProvider>
+      </I18nProvider>
+    </ThemeProvider>
   );
 }
 

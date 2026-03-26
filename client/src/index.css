@@ -102,8 +102,7 @@
   --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
+:root.dark {
     --button-outline: rgba(255,255,255, .10);
     --badge-outline: rgba(255,255,255, .05);
     --opaque-button-border-intensity: 9;
@@ -195,7 +194,6 @@
     --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
     --destructive-border: hsl(var(--destructive));
     --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-  }
 }
 
 @layer base {

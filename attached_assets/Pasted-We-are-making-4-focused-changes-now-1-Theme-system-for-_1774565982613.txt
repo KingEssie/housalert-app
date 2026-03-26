@@ -1,0 +1,169 @@
+We are making 4 focused changes now:
+
+1. Theme system for users
+2. Logout behavior
+3. Login redirect fix (CRITICAL)
+4. Login screen redesign to match Rentbird
+
+IMPORTANT:
+- Do NOT touch onboarding flow logic
+- Do NOT break onboarding for new users
+- Only fix routing conditions where explicitly mentioned
+- Keep implementation clean and minimal
+
+==================================================
+1. THEME SYSTEM
+==================================================
+
+Goal:
+Users must be able to choose:
+- Licht
+- Donker
+- Systeem (default)
+
+Behavior:
+- Default = "system"
+- If system → follow OS/browser theme
+- Preference must persist
+- Applied immediately on change
+- Restored on app load
+
+Implementation:
+- Store in user profile/settings (or local storage if needed)
+- Use one global theme source (context or similar)
+- Apply theme at root level (class or data-theme)
+
+UI:
+- On "Voorkeuren" page show a visible dropdown:
+  - Licht
+  - Donker
+  - Systeem
+
+==================================================
+2. LOGOUT BEHAVIOR
+==================================================
+
+Current issue:
+Logout sends user to onboarding → WRONG
+
+Fix:
+- After logout → ALWAYS redirect to login screen
+
+Expected route:
+"/"
+
+Requirements:
+- Session fully cleared
+- No onboarding redirect
+- No intro redirect
+- Always login screen
+
+==================================================
+3. LOGIN REDIRECT FIX (VERY IMPORTANT)
+==================================================
+
+Current issue:
+After login → user is sent to onboarding
+This is WRONG for returning users
+
+Correct behavior:
+
+IF user logs in successfully:
+- Check onboarding status
+
+IF user has completed onboarding:
+→ redirect to "/home"
+
+IF user has NOT completed onboarding:
+→ redirect to onboarding (existing logic stays)
+
+Rules:
+- Do NOT send completed users back into onboarding
+- This must be enforced at login success handler
+
+==================================================
+4. LOGIN SCREEN REDESIGN (MATCH RENTBIRD STYLE)
+==================================================
+
+Goal:
+Make login screen visually match Rentbird (layout & spacing), using HousAlert branding.
+
+REMOVE:
+- Hero image/banner
+- Google login button
+- Apple login button
+- "of" divider
+
+LAYOUT:
+- Dark purple background
+- HousAlert logo top-left
+- Language selector top-right
+- Title
+- Inputs
+- Primary button
+- Secondary button
+
+INPUTS:
+- Background: WHITE
+- Height: 56px
+- Border radius: 6px
+- Border: subtle gray
+- Text: dark
+- Placeholder: light gray
+- Padding: 16px
+- Password field: eye icon on right
+
+BUTTONS:
+
+Primary:
+- Text: "Inloggen"
+- Pink background
+- White bold text
+- Height: 56px
+- Border radius: 6px
+
+Secondary:
+- Text: "Nieuw bij HousAlert"
+- Outline style
+- Pink border
+- Pink text
+- Same height and radius
+
+OTHER:
+- Keep "Wachtwoord vergeten?"
+- Align spacing like Rentbird
+- No large empty gaps
+- No unnecessary elements
+
+BRANDING:
+- Use HousAlert logo (top-left)
+- No illustration/image
+
+==================================================
+5. REMOVE SOCIAL LOGIN UI
+==================================================
+
+Remove:
+- Google button
+- Apple button
+- Divider
+
+Do NOT break backend auth if it exists.
+
+==================================================
+6. DELIVERABLE
+==================================================
+
+Return:
+1. Files changed
+2. Where theme is stored
+3. Confirmation default theme = system
+4. Logout redirect path
+5. Login redirect logic explanation
+6. Confirmation:
+   - No image on login
+   - No social login buttons
+   - White inputs
+   - 6px radius everywhere
+   - "Nieuw bij HousAlert" implemented
+   - Returning users go to /home after login
