@@ -1,0 +1,84 @@
+We need to stop patching the current onboarding. This has become too messy and too expensive.
+
+NEW DECISION:
+We will rebuild the onboarding flow cleanly, screen by screen, without reusing ANY old onboarding components.
+
+IMPORTANT:
+Do not repair the old onboarding anymore.
+Do not wrap old components.
+Do not reuse old onboarding UI.
+Do not keep mixing old flow logic with new flow logic.
+
+==================================================
+GOAL
+==================================================
+
+Build a completely clean onboarding flow from scratch.
+
+Only continue with the active app once this new flow is correct.
+
+==================================================
+REBUILD STRATEGY
+==================================================
+
+Create a fresh onboarding implementation with brand-new components.
+
+Do this screen by screen.
+
+Flow:
+
+1. Welcome / login
+2. Intro / explanation
+3. Choose city
+4. Choose neighborhoods / radius / whole city
+5. Filters
+6. Signup
+7. Paywall
+8. Welcome message
+9. Enable notifications
+10. Personal details
+11. Housing situation
+12. Generated application letter
+13. Search buddy
+14. Success / app ready
+15. /home
+
+==================================================
+HARD RULES
+==================================================
+
+1. Do NOT reuse any old onboarding component.
+2. Do NOT import any legacy onboarding file into the new flow.
+3. Do NOT modify the current messy flow further.
+4. Build the new flow as a clean new implementation.
+5. Keep old onboarding out of the active new implementation entirely.
+
+==================================================
+WORK METHOD
+==================================================
+
+We will do this screen by screen.
+
+Start with ONLY phase 1:
+- Welcome / login
+- Intro / explanation
+- Choose city
+- Choose neighborhoods / radius / whole city
+- Filters
+- Signup
+
+Do not build the rest yet.
+
+Once phase 1 is done, give me:
+1. exact routes used
+2. exact files created
+3. confirmation that no legacy onboarding component is used
+4. a short summary of what each screen does
+
+Only after I review phase 1, we continue to phase 2.
+
+==================================================
+VERY IMPORTANT
+==================================================
+
+This must be a clean rebuild, not another repair pass.

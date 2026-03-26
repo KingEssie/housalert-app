@@ -620,8 +620,28 @@ export const en: Record<string, any> = {
     },
   },
 
+  amenities: {
+    bath: "Bathtub",
+    balcony: "Balcony",
+    garden: "Garden",
+    rooftop: "Rooftop terrace",
+    energyC: "Energy label C+",
+  },
+
   onboarding: {
     step: "{step}/{total}",
+    intro: {
+      title: "Find your dream apartment",
+      subtitle: "HousAlert searches all major rental platforms and notifies you instantly when new matches appear.",
+      benefit1Title: "All platforms, one alert",
+      benefit1Desc: "We search all major rental platforms simultaneously.",
+      benefit2Title: "Notified instantly",
+      benefit2Desc: "You receive a message within minutes when new matches appear.",
+      benefit3Title: "Never miss out",
+      benefit3Desc: "Be the first to apply for new apartments.",
+      cta: "Get started",
+      footerNote: "Setup takes less than 2 minutes",
+    },
     welcome: {
       title: "Find rental apartments faster than anyone",
       subtitle: "We collect apartments from multiple websites and send you a match as soon as something new appears.",

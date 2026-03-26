@@ -631,8 +631,28 @@ export const de: Record<string, any> = {
     },
   },
 
+  amenities: {
+    bath: "Badewanne",
+    balcony: "Balkon",
+    garden: "Garten",
+    rooftop: "Dachterrasse",
+    energyC: "Energielabel C+",
+  },
+
   onboarding: {
     step: "{step}/{total}",
+    intro: {
+      title: "Finde deine Traumwohnung",
+      subtitle: "HousAlert durchsucht alle großen Wohnungsportale und benachrichtigt dich sofort bei neuen Treffern.",
+      benefit1Title: "Alle Portale, ein Alert",
+      benefit1Desc: "Wir durchsuchen alle großen Wohnungsportale gleichzeitig.",
+      benefit2Title: "Sofort benachrichtigt",
+      benefit2Desc: "Du erhältst innerhalb von Minuten eine Nachricht bei neuen Treffern.",
+      benefit3Title: "Nie wieder verpassen",
+      benefit3Desc: "Sei der Erste, der sich auf neue Wohnungen bewirbt.",
+      cta: "Jetzt starten",
+      footerNote: "Einrichtung dauert weniger als 2 Minuten",
+    },
     welcome: {
       title: "Finde Mietwohnungen schneller als alle anderen",
       subtitle: "Wir sammeln Wohnungen von mehreren Websites und senden dir sofort ein Match, sobald etwas Neues erscheint.",

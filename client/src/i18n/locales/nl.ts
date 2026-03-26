@@ -638,8 +638,28 @@ export const nl: Record<string, any> = {
     },
   },
 
+  amenities: {
+    bath: "Badkuip",
+    balcony: "Balkon",
+    garden: "Tuin",
+    rooftop: "Dakterras",
+    energyC: "Energielabel C+",
+  },
+
   onboarding: {
     step: "{step}/{total}",
+    intro: {
+      title: "Vind jouw droomwoning",
+      subtitle: "HousAlert doorzoekt alle grote woningportalen en stuurt je direct een bericht bij nieuwe matches.",
+      benefit1Title: "Alle portalen, één alert",
+      benefit1Desc: "Wij doorzoeken alle grote woningportalen tegelijk.",
+      benefit2Title: "Direct op de hoogte",
+      benefit2Desc: "Je ontvangt binnen enkele minuten bericht bij nieuwe matches.",
+      benefit3Title: "Nooit meer missen",
+      benefit3Desc: "Wees de eerste die reageert op nieuwe woningen.",
+      cta: "Nu starten",
+      footerNote: "Instellen duurt minder dan 2 minuten",
+    },
     welcome: {
       title: "Vind huurwoningen sneller dan iedereen",
       subtitle: "Wij verzamelen woningen van meerdere websites en sturen je direct een match zodra er iets nieuws verschijnt.",

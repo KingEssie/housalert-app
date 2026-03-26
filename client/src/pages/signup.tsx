@@ -160,7 +160,7 @@ export default function SignupPage() {
   }
 
   function handleBack() {
-    navigate(`/onboarding/intro`);
+    navigate(`/onboarding/filters`);
   }
 
   return (

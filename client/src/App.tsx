@@ -29,8 +29,11 @@ import ChangePasswordPage from "@/pages/change-password";
 import ForgotPasswordPage from "@/pages/forgot-password";
 import ResetPasswordPage from "@/pages/reset-password";
 import OnboardingFlow from "@/pages/onboarding-flow";
-import OnboardingIntroPage from "@/pages/onboarding-intro";
 import OnboardingEmbedPage from "@/pages/onboarding-embed";
+import OnboardingIntroNew from "@/pages/onboarding/intro";
+import OnboardingCityNew from "@/pages/onboarding/city";
+import OnboardingLocationNew from "@/pages/onboarding/location";
+import OnboardingFiltersNew from "@/pages/onboarding/filters";
 import ContinueDraftPage from "@/pages/continue-draft";
 import AuthCallbackPage from "@/pages/auth-callback";
 import { DocumentenGuidePage, SchufaGuidePage, ZoekstrategieGuidePage, NetwerkGuidePage } from "@/pages/guide";
@@ -140,11 +143,12 @@ function Router() {
       <Route path="/reset-password" component={ResetPasswordPage} />
       <Route path="/onboarding-embed" component={OnboardingEmbedPage} />
       <Route path="/continue" component={ContinueDraftPage} />
-      <Route path="/onboarding/intro" component={OnboardingIntroPage} />
+      <Route path="/onboarding/intro" component={OnboardingIntroNew} />
+      <Route path="/onboarding/city" component={OnboardingCityNew} />
+      <Route path="/onboarding/location" component={OnboardingLocationNew} />
+      <Route path="/onboarding/filters" component={OnboardingFiltersNew} />
       <Route path="/onboarding/setup" component={() => <ProtectedRoute component={OnboardingFlow} skipOnboardingCheck />} />
       <Route path="/onboarding/continue" component={() => <Redirect to="/onboarding/setup" />} />
-      <Route path="/onboarding/location" component={() => <Redirect to="/onboarding/intro" />} />
-      <Route path="/onboarding/filters" component={() => <Redirect to="/onboarding/intro" />} />
       <Route path="/onboarding/estimate" component={() => <Redirect to="/onboarding/intro" />} />
       <Route path="/onboarding/preferences" component={() => <Redirect to="/onboarding/intro" />} />
       <Route path="/onboarding/value" component={() => <Redirect to="/onboarding/intro" />} />
