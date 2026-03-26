@@ -70,7 +70,7 @@ function ProgressDots({ current, total }: { current: number; total: number }) {
           className="h-1.5 rounded-full transition-all duration-300"
           style={{
             width: i === current ? 24 : 8,
-            backgroundColor: i <= current ? BRAND : "rgb(var(--ha-input-border))",
+            backgroundColor: i <= current ? BRAND : "rgba(255,255,255,0.15)",
           }}
         />
       ))}
@@ -95,16 +95,17 @@ function SetupShell({
   const hideProgress = step === "success";
 
   return (
-    <div className="min-h-[100dvh] flex flex-col bg-ha-surface" data-testid={`setup-step-${step}`}>
-      <header className="sticky top-0 z-20 bg-ha-card border-b border-ha-card-border">
+    <div className="min-h-[100dvh] flex flex-col ob-dark" style={{ background: "linear-gradient(180deg, #1e1b4b 0%, #0f0e2a 100%)" }} data-testid={`setup-step-${step}`}>
+      <header className="sticky top-0 z-20 backdrop-blur-md border-b" style={{ backgroundColor: "rgba(30,27,75,0.95)", borderColor: "rgba(255,255,255,0.08)" }}>
         <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
           {showBack && onBack ? (
             <button
               onClick={onBack}
-              className="w-10 h-10 rounded-full bg-ha-surface flex items-center justify-center active:scale-95 transition-transform"
+              className="w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-transform"
+              style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
               data-testid="button-setup-back"
             >
-              <ChevronLeft className="w-5 h-5 text-ha-text-muted" />
+              <ChevronLeft className="w-5 h-5" style={{ color: "rgba(255,255,255,0.7)" }} />
             </button>
           ) : (
             <div className="w-10" />
@@ -134,10 +135,8 @@ function PrimaryBtn({ onClick, children, loading, disabled, testId }: {
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className="w-full h-[52px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 shadow-[0_4px_16px_rgba(249,115,22,0.3)]"
-      style={{ backgroundColor: BRAND }}
-      onMouseOver={(e) => (e.currentTarget.style.backgroundColor = BRAND_HOVER)}
-      onMouseOut={(e) => (e.currentTarget.style.backgroundColor = BRAND)}
+      className="w-full h-[56px] rounded-[14px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50"
+      style={{ background: "linear-gradient(135deg, #e91e63 0%, #ec407a 100%)", boxShadow: "0 4px 15px rgba(233,30,99,0.3)" }}
       data-testid={testId}
     >
       {loading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : children}
@@ -151,7 +150,7 @@ function SecondaryBtn({ onClick, children, testId }: {
   return (
     <button
       onClick={onClick}
-      className="w-full h-[52px] rounded-[6px] text-[15px] font-semibold transition-all active:scale-[0.97] border-2"
+      className="w-full h-[56px] rounded-[14px] text-[15px] font-semibold transition-all active:scale-[0.97] border-2"
       style={{ borderColor: "rgb(var(--ha-card-border))", color: TEXT_SECONDARY }}
       data-testid={testId}
     >
@@ -169,10 +168,10 @@ function OptionGrid({ options, selected, onSelect, columns }: {
         <button
           key={opt.value}
           onClick={() => onSelect(opt.value)}
-          className="px-3 py-3 rounded-[6px] border-2 text-[13px] font-medium transition-all active:scale-[0.97] text-left"
+          className="px-3 py-3 rounded-[14px] border-2 text-[13px] font-medium transition-all active:scale-[0.97] text-left"
           style={{
             borderColor: selected === opt.value ? BRAND : "rgb(var(--ha-card-border))",
-            backgroundColor: selected === opt.value ? "rgba(249,115,22,0.06)" : "transparent",
+            backgroundColor: selected === opt.value ? "rgba(233,30,99,0.12)" : "transparent",
             color: selected === opt.value ? BRAND : TEXT_PRIMARY,
           }}
           data-testid={`option-${opt.value}`}
@@ -216,7 +215,7 @@ function PaywallStep({ onSelectPlan, onSkip, t }: {
   return (
     <>
       <div className="text-center mb-6">
-        <div className="w-14 h-14 rounded-[6px] flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: "rgba(249,115,22,0.12)" }}>
+        <div className="w-14 h-14 rounded-[14px] flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: "rgba(233,30,99,0.12)" }}>
           <Crown className="w-7 h-7" style={{ color: BRAND }} />
         </div>
         <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-paywall-title">
@@ -232,7 +231,7 @@ function PaywallStep({ onSelectPlan, onSkip, t }: {
           <button
             key={plan.id}
             onClick={() => setSelectedPlan(plan.id)}
-            className={`w-full p-5 rounded-[6px] border-2 transition-all text-left relative bg-ha-card ${
+            className={`w-full p-5 rounded-[14px] border-2 transition-all text-left relative bg-ha-card ${
               selectedPlan === plan.id ? "border-ha-primary" : "border-ha-card-border"
             }`}
             data-testid={`card-plan-${plan.id}`}
@@ -265,7 +264,7 @@ function PaywallStep({ onSelectPlan, onSkip, t }: {
         ))}
       </div>
 
-      <div className="bg-ha-card rounded-[6px] border border-ha-card-border p-5 mb-6">
+      <div className="bg-ha-card rounded-[14px] border border-ha-card-border p-5 mb-6">
         <p className="text-[14px] font-medium text-ha-text mb-3">{t("paywall.featuresTitle")}</p>
         <div className="space-y-2.5">
           {FEATURE_KEYS.map((key, i) => (
@@ -318,8 +317,8 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
 
         <div className="w-full space-y-3">
           {limitations.map((item, i) => (
-            <div key={i} className="flex items-center gap-4 bg-ha-card rounded-[6px] border border-ha-card-border px-5 py-4">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 bg-red-50">
+            <div key={i} className="flex items-center gap-4 bg-ha-card rounded-[14px] border border-ha-card-border px-5 py-4">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(239,68,68,0.12)" }}>
                 <item.icon className="w-5 h-5 text-red-500" />
               </div>
               <span className="text-[14px] font-medium text-left" style={{ color: TEXT_PRIMARY }}>{item.text}</span>
@@ -353,7 +352,7 @@ function WelcomeStep({ onNext, t }: {
   return (
     <>
       <div className="flex-1 flex flex-col items-center justify-center text-center">
-        <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: "rgba(249,115,22,0.12)" }}>
+        <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: "rgba(233,30,99,0.12)" }}>
           <Sparkles className="w-8 h-8" style={{ color: BRAND }} />
         </div>
         <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-welcome-title">
@@ -365,8 +364,8 @@ function WelcomeStep({ onNext, t }: {
 
         <div className="w-full space-y-4">
           {points.map((p, i) => (
-            <div key={i} className="flex items-center gap-4 bg-ha-card rounded-[6px] border border-ha-card-border px-5 py-4">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(249,115,22,0.12)" }}>
+            <div key={i} className="flex items-center gap-4 bg-ha-card rounded-[14px] border border-ha-card-border px-5 py-4">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(233,30,99,0.12)" }}>
                 <p.icon className="w-5 h-5" style={{ color: BRAND }} />
               </div>
               <span className="text-[14px] font-medium text-left" style={{ color: TEXT_PRIMARY }}>{p.text}</span>
@@ -405,18 +404,18 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
             <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: "rgba(34,197,94,0.1)" }}>
               <BellRing className="w-8 h-8 text-green-500" />
             </div>
-            <div className="bg-green-50 border border-green-200 rounded-[6px] px-5 py-4 w-full flex items-start gap-3">
-              <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+            <div className="rounded-[14px] px-5 py-4 w-full flex items-start gap-3" style={{ backgroundColor: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.25)" }}>
+              <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-[14px] font-semibold mb-0.5 text-green-800">{t("onboardingFlow.pushTest.infoTitle")}</p>
-                <p className="text-[13px] text-green-700 leading-snug">{t("onboardingFlow.pushTest.infoText")}</p>
+                <p className="text-[14px] font-semibold mb-0.5 text-green-400">{t("onboardingFlow.pushTest.infoTitle")}</p>
+                <p className="text-[13px] text-green-300 leading-snug">{t("onboardingFlow.pushTest.infoText")}</p>
               </div>
             </div>
           </div>
         </>
       ) : pushState === "denied" ? (
         <div className="flex-1 flex flex-col items-center justify-center">
-          <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5 bg-red-50">
+          <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: "rgba(239,68,68,0.12)" }}>
             <Bell className="w-8 h-8 text-red-500" />
           </div>
           <p className="text-[14px] text-center mb-4 max-w-[320px] font-medium" style={{ color: TEXT_PRIMARY }}>
@@ -428,7 +427,7 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
         </div>
       ) : (
         <div className="flex-1 flex flex-col items-center justify-center">
-          <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: "rgba(249,115,22,0.12)" }}>
+          <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: "rgba(233,30,99,0.12)" }}>
             <Bell className="w-8 h-8" style={{ color: BRAND }} />
           </div>
           {pushState === "requesting" ? (
@@ -468,7 +467,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
   onSkip: () => void;
   t: (k: string, p?: Record<string, any>) => string;
 }) {
-  const INPUT_CLS = "w-full h-[48px] px-4 rounded-[6px] border border-ha-card-border bg-ha-card text-[15px] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-orange-200";
+  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[14px] border border-ha-card-border bg-ha-card text-[15px] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-pink-300/20";
 
   const genderOptions = [
     { value: "male", label: t("onboardingFlow.letterPersonal.genderOptions.male") },
@@ -549,10 +548,10 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
               <button
                 key={opt.value}
                 onClick={() => onChange({ gender: opt.value })}
-                className="h-[46px] rounded-[6px] border-2 text-[14px] font-medium transition-all active:scale-[0.97]"
+                className="h-[48px] rounded-[14px] border-2 text-[14px] font-medium transition-all active:scale-[0.97]"
                 style={{
                   borderColor: personalData.gender === opt.value ? BRAND : "rgb(var(--ha-card-border))",
-                  backgroundColor: personalData.gender === opt.value ? "rgba(249,115,22,0.06)" : "transparent",
+                  backgroundColor: personalData.gender === opt.value ? "rgba(233,30,99,0.12)" : "transparent",
                   color: personalData.gender === opt.value ? BRAND : TEXT_PRIMARY,
                 }}
                 data-testid={`gender-${opt.value}`}
@@ -612,7 +611,7 @@ function LetterLivingStep({ livingData, onChange, onNext, onSkip, t }: {
     { value: "other", label: t("onboardingFlow.letterLiving.moveOptions.other") },
   ];
 
-  const INPUT_CLS = "w-full h-[48px] px-4 rounded-[6px] border border-ha-card-border bg-ha-card text-[15px] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-orange-200";
+  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[14px] border border-ha-card-border bg-ha-card text-[15px] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-pink-300/20";
 
   return (
     <>
@@ -673,10 +672,10 @@ function LetterLivingStep({ livingData, onChange, onNext, onSkip, t }: {
               <button
                 key={val}
                 onClick={() => onChange({ petsCount: val })}
-                className="flex-1 h-[46px] rounded-[6px] border-2 text-[14px] font-medium transition-all active:scale-[0.97]"
+                className="flex-1 h-[48px] rounded-[14px] border-2 text-[14px] font-medium transition-all active:scale-[0.97]"
                 style={{
                   borderColor: livingData.petsCount === val ? BRAND : "rgb(var(--ha-card-border))",
-                  backgroundColor: livingData.petsCount === val ? "rgba(249,115,22,0.06)" : "transparent",
+                  backgroundColor: livingData.petsCount === val ? "rgba(233,30,99,0.12)" : "transparent",
                   color: livingData.petsCount === val ? BRAND : TEXT_PRIMARY,
                 }}
                 data-testid={`pets-${val}`}
@@ -716,7 +715,7 @@ function LetterPreviewStep({ letterText, onLetterChange, onNext, onBack, t }: {
         {t("onboardingFlow.letterPreview.subtitle")}
       </p>
 
-      <div className="bg-orange-50 border border-orange-200 rounded-[6px] px-4 py-3 mb-4 flex items-start gap-2.5">
+      <div className="rounded-[14px] px-4 py-3 mb-4 flex items-start gap-2.5" style={{ backgroundColor: "rgba(233,30,99,0.08)", border: "1px solid rgba(233,30,99,0.2)" }}>
         <FileText className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: BRAND }} />
         <p className="text-[13px] leading-snug" style={{ color: BRAND }}>
           {t("onboardingFlow.letterPreview.addressNote")}
@@ -726,7 +725,7 @@ function LetterPreviewStep({ letterText, onLetterChange, onNext, onBack, t }: {
       <textarea
         value={letterText}
         onChange={(e) => onLetterChange(e.target.value)}
-        className="w-full flex-1 min-h-[280px] p-4 rounded-[6px] border border-ha-card-border bg-ha-card text-[14px] leading-[1.7] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-orange-200 resize-none"
+        className="w-full flex-1 min-h-[280px] p-4 rounded-[14px] border border-ha-card-border bg-ha-card text-[14px] leading-[1.7] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-pink-300/20 resize-none"
         style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
         data-testid="textarea-letter"
       />
@@ -761,7 +760,7 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
         {t("onboardingFlow.searchBuddy.subtitle")}
       </p>
 
-      <div className="bg-ha-card rounded-[6px] border border-ha-card-border p-5 mb-6">
+      <div className="bg-ha-card rounded-[14px] border border-ha-card-border p-5 mb-6">
         <div className="pb-4 mb-4 border-b border-ha-card-border">
           <p className="text-[13px] font-semibold mb-2.5" style={{ color: "rgb(34,197,94)" }}>
             {t("onboardingFlow.searchBuddy.allowed")}
@@ -798,9 +797,9 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
       </div>
 
       {invited ? (
-        <div className="bg-green-50 border border-green-200 rounded-[6px] px-4 py-3.5 mb-6 flex items-center gap-2.5">
-          <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
-          <span className="text-[14px] font-medium text-green-700">{t("onboardingFlow.searchBuddy.invited")}</span>
+        <div className="rounded-[14px] px-4 py-3.5 mb-6 flex items-center gap-2.5" style={{ backgroundColor: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.25)" }}>
+          <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
+          <span className="text-[14px] font-medium text-green-400">{t("onboardingFlow.searchBuddy.invited")}</span>
         </div>
       ) : (
         <div className="flex gap-2 mb-6">
@@ -810,13 +809,13 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
             value={buddyEmail}
             onChange={(e) => onBuddyEmailChange(e.target.value)}
             placeholder={t("onboardingFlow.searchBuddy.emailPlaceholder")}
-            className="flex-1 h-[48px] px-4 rounded-[6px] border border-ha-card-border bg-ha-card text-[14px] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-orange-200"
+            className="flex-1 h-[56px] px-4 rounded-[14px] border border-ha-card-border bg-ha-card text-[14px] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-pink-300/20"
             data-testid="input-buddy-email"
           />
           <button
             onClick={onInvite}
             disabled={!buddyEmail.includes("@") || loading}
-            className="h-[48px] px-5 rounded-[6px] text-[14px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center gap-1.5"
+            className="h-[56px] px-5 rounded-[14px] text-[14px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center gap-1.5"
             style={{ backgroundColor: BRAND }}
             data-testid="button-buddy-invite"
           >
@@ -865,7 +864,7 @@ function SuccessStep({ onFinish, t }: {
 
         <div className="w-full space-y-3">
           {points.map((p, i) => (
-            <div key={i} className="flex items-center gap-4 bg-ha-card rounded-[6px] border border-ha-card-border px-5 py-4">
+            <div key={i} className="flex items-center gap-4 bg-ha-card rounded-[14px] border border-ha-card-border px-5 py-4">
               <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(34,197,94,0.1)" }}>
                 <p.icon className="w-5 h-5 text-green-500" />
               </div>
@@ -1197,7 +1196,7 @@ export default function OnboardingSetup() {
 
   if (!profileLoaded) {
     return (
-      <div className="min-h-[100dvh] flex items-center justify-center bg-ha-surface">
+      <div className="min-h-[100dvh] flex items-center justify-center ob-dark" style={{ background: "linear-gradient(180deg, #1e1b4b 0%, #0f0e2a 100%)" }}>
         <Loader2 className="w-8 h-8 animate-spin" style={{ color: BRAND }} />
       </div>
     );

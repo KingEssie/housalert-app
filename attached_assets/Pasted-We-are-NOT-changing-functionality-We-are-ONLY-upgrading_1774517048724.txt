@@ -1,0 +1,185 @@
+We are NOT changing functionality.
+
+We are ONLY upgrading the onboarding UI to a premium, Rentbird-level design.
+
+IMPORTANT:
+- Do NOT change routes
+- Do NOT change logic
+- Do NOT change state handling
+- Only update styling, layout, and UI components
+
+==================================================
+GLOBAL DESIGN SYSTEM (APPLY TO ALL ONBOARDING SCREENS)
+==================================================
+
+1. BACKGROUND
+- Use a consistent dark purple background across ALL onboarding screens
+- No white backgrounds anywhere
+- No light theme inside onboarding
+- Use a subtle gradient (dark purple → slightly lighter purple)
+
+2. PAGE LAYOUT
+- Max width centered (mobile-first)
+- Horizontal padding: 20px
+- Vertical spacing: large (min 24–32px between sections)
+- Clear separation between sections
+
+3. TYPOGRAPHY
+- Titles:
+  - Large, bold (24–28px)
+  - White color
+- Subtitles:
+  - Medium size (14–16px)
+  - Slightly transparent white (opacity ~0.7)
+- Section labels:
+  - Smaller, but clearly visible
+
+4. INPUT FIELDS (CRITICAL)
+Replace ALL current inputs with a premium style:
+
+- Height: MIN 56px
+- Border radius: 14–16px
+- Background: slightly lighter purple (NOT white)
+- Border: subtle (1px, low opacity)
+- Padding: 16px horizontal
+- Text color: white
+- Placeholder: faded white
+
+Focus state:
+- Border becomes accent color (pink)
+- Slight glow or highlight
+
+NO default browser input styles allowed.
+
+5. BUTTONS
+Primary CTA:
+- Full width
+- Height: 56px
+- Rounded (14–16px)
+- Bright pink gradient
+- Bold white text
+- Slight shadow/glow
+
+Secondary:
+- Outline or subtle background
+
+6. STICKY BOTTOM BAR (VERY IMPORTANT)
+- Every onboarding step must have a sticky bottom CTA area
+- Contains:
+  - Back button (left)
+  - Next button (right or full width if no back)
+- Fixed at bottom with safe-area padding
+- Same style on every screen
+
+==================================================
+COMPONENT BEHAVIOR (MATCH RENTBIRD UX)
+==================================================
+
+1. RANGE / PRICE (Filters step)
+- Replace current inputs with:
+  - Slider (primary control)
+  - Optional min/max inputs above
+- Show values clearly under slider
+- Smooth interaction
+
+2. SEGMENTED CONTROLS
+Use for:
+- Property type (Apartment / House / Doesn't matter)
+- Furnished (Yes / No / Any)
+
+Style:
+- Pill-shaped container
+- Selected = filled (pink)
+- Unselected = dark background
+
+3. CHIP SELECTORS
+Use for:
+- Amenities
+- Districts
+
+Style:
+- Rounded pills
+- Subtle border
+- Selected = filled + accent color
+
+4. TOGGLES
+Use for:
+- “Include more expensive matches”
+- “Include rooms”
+
+Style:
+- iOS-style switch
+- Accent color when active
+
+==================================================
+SCREEN-SPECIFIC FIXES
+==================================================
+
+INTRO
+- Bigger hero spacing
+- Clear visual hierarchy
+- CTA strong and centered
+
+CITY SEARCH
+- Large input field (like above spec)
+- Suggestions styled as cards (not plain text)
+
+LOCATION MODE (VERY IMPORTANT)
+- 3 large selectable cards:
+  - Districts
+  - Radius
+  - Whole city
+- Each card:
+  - Icon
+  - Title
+  - Short description
+- Selected card = highlighted with accent border + background
+
+FILTERS
+- Break into sections:
+  - Price
+  - Property type
+  - Rooms
+  - Size
+  - Furnished
+  - Amenities
+- Each section clearly separated with spacing
+- Do NOT stack everything tightly
+
+NAME / EMAIL / PASSWORD
+- Same input style as above
+- Large spacing between fields
+- Clear labels
+
+==================================================
+CONSISTENCY RULE (CRITICAL)
+==================================================
+
+ALL onboarding screens must:
+- Use the SAME background
+- Use the SAME input style
+- Use the SAME button style
+- Use the SAME spacing system
+
+No visual differences between screens.
+
+==================================================
+DO NOT
+==================================================
+
+- Do NOT use white cards
+- Do NOT use default HTML inputs
+- Do NOT mix light and dark themes
+- Do NOT create inconsistent button styles
+- Do NOT redesign flow logic
+
+==================================================
+DELIVERABLE
+==================================================
+
+1. Updated onboarding screens with consistent premium design
+2. List of components updated/created
+3. Confirmation that:
+   - all inputs match the new style
+   - all screens use the same background
+   - sticky CTA is implemented everywhere

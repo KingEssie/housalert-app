@@ -4,28 +4,7 @@ import { useTranslation } from "@/i18n";
 import { HousAlertLogo } from "@/components/housalert-logo";
 import { ChevronLeft, Search, MapPin, Loader2 } from "lucide-react";
 import { defaultCities } from "../../../../config/market";
-
-const BRAND = "rgb(var(--ha-primary))";
-const BRAND_HOVER = "rgb(var(--ha-primary-hover))";
-const TEXT_SECONDARY = "rgb(var(--ha-text-secondary))";
-const BORDER = "rgb(var(--ha-card-border))";
-
-function ProgressDots({ current, total }: { current: number; total: number }) {
-  return (
-    <div className="flex gap-1.5 justify-center py-3" data-testid="progress-dots">
-      {Array.from({ length: total }).map((_, i) => (
-        <div
-          key={i}
-          className="h-[6px] rounded-full transition-all"
-          style={{
-            width: i === current ? 24 : 6,
-            backgroundColor: i <= current ? BRAND : "rgba(var(--ha-text-rgb, 26,26,46), 0.12)",
-          }}
-        />
-      ))}
-    </div>
-  );
-}
+import { OB, OBProgressDots, OBStickyBar } from "@/components/onboarding-ui";
 
 interface NominatimResult {
   display_name: string;
@@ -108,15 +87,16 @@ export default function OnboardingCity() {
   const showDropdown = !selectedCity && search.trim().length > 0;
 
   return (
-    <div className="min-h-[100dvh] flex flex-col bg-ha-bg" data-testid="screen-onboarding-city">
-      <header className="sticky top-0 z-20 bg-ha-card border-b border-ha-card-border">
+    <div className="min-h-[100dvh] flex flex-col ob-dark" style={{ background: OB.gradient }} data-testid="screen-onboarding-city">
+      <header className="sticky top-0 z-20 backdrop-blur-md border-b" style={{ backgroundColor: OB.headerBg, borderColor: OB.headerBorder }}>
         <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
           <button
             onClick={handleBack}
-            className="w-10 h-10 rounded-full bg-ha-surface flex items-center justify-center active:scale-95 transition-transform"
+            className="w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-transform"
+            style={{ backgroundColor: OB.backBtnBg }}
             data-testid="button-city-back"
           >
-            <ChevronLeft className="w-5 h-5 text-ha-text-muted" />
+            <ChevronLeft className="w-5 h-5" style={{ color: OB.textSecondary }} />
           </button>
           <div className="flex-1 flex justify-center">
             <HousAlertLogo size={28} />
@@ -126,22 +106,19 @@ export default function OnboardingCity() {
       </header>
 
       <div className="max-w-[480px] mx-auto px-5 w-full">
-        <ProgressDots current={0} total={4} />
+        <OBProgressDots current={0} total={4} />
       </div>
 
-      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-4 pb-8">
-        <h1
-          className="text-[24px] font-bold tracking-[-0.02em] text-ha-text mb-2"
-          data-testid="text-city-title"
-        >
+      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-4 pb-[100px]">
+        <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-2" style={{ color: OB.text }} data-testid="text-city-title">
           {t("onboarding.location.title") || "Wo möchtest du wohnen?"}
         </h1>
-        <p className="text-[14px] text-ha-text-secondary mb-5">
+        <p className="text-[14px] mb-5" style={{ color: OB.textSecondary }}>
           {t("onboarding.location.subtitle") || "Wähle deine Stadt."}
         </p>
 
         <div className="relative mb-4">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text-muted" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: OB.textMuted }} />
           <input
             type="text"
             value={search}
@@ -150,27 +127,28 @@ export default function OnboardingCity() {
               if (selectedCity) setSelectedCity(null);
             }}
             placeholder={t("onboarding.location.searchPlaceholder") || "Stadt suchen..."}
-            className="w-full h-[48px] pl-11 pr-4 rounded-[6px] border bg-ha-card text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted focus:border-ha-primary outline-none transition-all"
-            style={{ borderColor: selectedCity ? BRAND : BORDER }}
+            className="ob-input w-full h-[56px] pl-12 pr-4 rounded-[14px] text-[15px] font-medium"
+            style={selectedCity ? { borderColor: OB.pink } : undefined}
             autoFocus
             data-testid="input-city-search"
           />
           {searching && (
-            <Loader2 className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-ha-text-muted" />
+            <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin" style={{ color: OB.textMuted }} />
           )}
         </div>
 
         {showDropdown && (
-          <div className="bg-ha-card rounded-[6px] border border-ha-card-border overflow-hidden mb-4" data-testid="city-results">
+          <div className="rounded-[14px] border overflow-hidden mb-4" style={{ backgroundColor: OB.card, borderColor: OB.cardBorder }} data-testid="city-results">
             {presetMatches.map((city) => (
               <button
                 key={city.name}
                 onClick={() => selectPresetCity(city)}
-                className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-ha-surface transition-colors border-b border-ha-card-border last:border-b-0"
+                className="w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors border-b last:border-b-0 hover:bg-white/5"
+                style={{ borderColor: OB.divider }}
                 data-testid={`city-option-${city.name}`}
               >
-                <MapPin className="w-4 h-4 text-ha-text-muted shrink-0" />
-                <span className="text-[14px] font-medium text-ha-text">{city.name}</span>
+                <MapPin className="w-4 h-4 shrink-0" style={{ color: OB.textMuted }} />
+                <span className="text-[14px] font-medium" style={{ color: OB.text }}>{city.name}</span>
               </button>
             ))}
 
@@ -181,14 +159,15 @@ export default function OnboardingCity() {
                 <button
                   key={i}
                   onClick={() => selectNominatimCity(r)}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-ha-surface transition-colors border-b border-ha-card-border last:border-b-0"
+                  className="w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors border-b last:border-b-0 hover:bg-white/5"
+                  style={{ borderColor: OB.divider }}
                   data-testid={`city-nominatim-${i}`}
                 >
-                  <MapPin className="w-4 h-4 text-ha-text-muted shrink-0" />
+                  <MapPin className="w-4 h-4 shrink-0" style={{ color: OB.textMuted }} />
                   <div>
-                    <span className="text-[14px] font-medium text-ha-text block">{name}</span>
+                    <span className="text-[14px] font-medium block" style={{ color: OB.text }}>{name}</span>
                     {addr?.state && (
-                      <span className="text-[12px] text-ha-text-muted">{addr.state}</span>
+                      <span className="text-[12px]" style={{ color: OB.textMuted }}>{addr.state}</span>
                     )}
                   </div>
                 </button>
@@ -196,7 +175,7 @@ export default function OnboardingCity() {
             })}
 
             {presetMatches.length === 0 && nominatimResults.length === 0 && !searching && search.trim().length >= 3 && (
-              <p className="text-[13px] text-ha-text-muted text-center py-4">
+              <p className="text-[13px] text-center py-4" style={{ color: OB.textMuted }}>
                 {t("onboarding.location.noResults") || "Keine Ergebnisse"}
               </p>
             )}
@@ -204,43 +183,38 @@ export default function OnboardingCity() {
         )}
 
         {selectedCity && (
-          <div className="bg-ha-card rounded-[6px] border border-ha-card-border p-4 mb-6 flex items-center gap-3" data-testid="city-selected">
-            <div
-              className="w-10 h-10 rounded-[6px] flex items-center justify-center"
-              style={{ backgroundColor: "rgba(var(--ha-primary-rgb, 233,30,99), 0.08)" }}
-            >
-              <MapPin className="w-5 h-5" style={{ color: BRAND }} />
+          <div className="rounded-[14px] border p-4 mb-6 flex items-center gap-3" style={{ backgroundColor: OB.card, borderColor: OB.cardBorder }} data-testid="city-selected">
+            <div className="w-10 h-10 rounded-[14px] flex items-center justify-center" style={{ backgroundColor: OB.accentBg }}>
+              <MapPin className="w-5 h-5" style={{ color: OB.pink }} />
             </div>
             <div className="flex-1">
-              <p className="text-[15px] font-semibold text-ha-text">{selectedCity.name}</p>
-              <p className="text-[12px] text-ha-text-muted">Deutschland</p>
+              <p className="text-[15px] font-semibold" style={{ color: OB.text }}>{selectedCity.name}</p>
+              <p className="text-[12px]" style={{ color: OB.textMuted }}>Deutschland</p>
             </div>
             <button
               onClick={() => { setSelectedCity(null); setSearch(""); }}
-              className="text-[13px] font-medium px-3 py-1.5 rounded-[6px] border transition-colors hover:bg-ha-surface"
-              style={{ borderColor: BORDER, color: TEXT_SECONDARY }}
+              className="text-[13px] font-medium px-3 py-1.5 rounded-[14px] border transition-colors hover:bg-white/5"
+              style={{ borderColor: OB.cardBorder, color: OB.textSecondary }}
               data-testid="button-city-change"
             >
               {t("common.edit") || "Ändern"}
             </button>
           </div>
         )}
-
-        {selectedCity && (
-          <div className="mt-auto pt-6">
-            <button
-              onClick={handleNext}
-              className="w-full h-[52px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97]"
-              style={{ backgroundColor: BRAND }}
-              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = BRAND_HOVER)}
-              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = BRAND)}
-              data-testid="button-city-next"
-            >
-              {t("common.next") || "Weiter"}
-            </button>
-          </div>
-        )}
       </main>
+
+      {selectedCity && (
+        <OBStickyBar>
+          <button
+            onClick={handleNext}
+            className="w-full h-[56px] rounded-[14px] text-[15px] font-bold text-white transition-all active:scale-[0.97]"
+            style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
+            data-testid="button-city-next"
+          >
+            {t("common.next") || "Weiter"}
+          </button>
+        </OBStickyBar>
+      )}
     </div>
   );
 }

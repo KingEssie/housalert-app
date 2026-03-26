@@ -454,3 +454,46 @@ input[type="range"]::-moz-range-thumb {
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
+
+.ob-dark {
+  --ha-bg: 30 27 75;
+  --ha-card: 42 40 80;
+  --ha-card-border: 70 65 130;
+  --ha-card-hover: 55 52 105;
+  --ha-text: 255 255 255;
+  --ha-text-secondary: 180 178 210;
+  --ha-text-muted: 130 128 170;
+  --ha-primary: 233 30 99;
+  --ha-primary-hover: 216 27 96;
+  --ha-primary-light: rgba(233, 30, 99, 0.15);
+  --ha-input-bg: 50 47 95;
+  --ha-input-border: 70 65 130;
+  --ha-surface: 40 38 78;
+  --ha-nav-bg: 30 27 75;
+  --ha-nav-border: 70 65 130;
+  --ha-badge-bg: 50 47 95;
+  --ha-shadow-card: none;
+  --ha-check-unchecked: transparent;
+}
+.ob-input {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #ffffff;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.ob-input::placeholder {
+  color: rgba(255,255,255,0.4);
+}
+.ob-input:focus {
+  border-color: #e91e63 !important;
+  box-shadow: 0 0 0 3px rgba(233,30,99,0.2) !important;
+}
+.ob-dark input[type="range"]::-webkit-slider-thumb {
+  border-color: #1e1b4b;
+  box-shadow: 0 2px 8px rgba(233,30,99,0.3);
+}
+.ob-dark input[type="range"]::-moz-range-thumb {
+  border-color: #1e1b4b;
+  box-shadow: 0 2px 8px rgba(233,30,99,0.3);
+}

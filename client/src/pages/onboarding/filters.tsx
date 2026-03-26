@@ -6,29 +6,7 @@ import { HousAlertLogo } from "@/components/housalert-logo";
 import {
   ChevronLeft, Check, Bath, Sun, Trees, Leaf, Sparkles,
 } from "lucide-react";
-
-const BRAND = "rgb(var(--ha-primary))";
-const BRAND_HOVER = "rgb(var(--ha-primary-hover))";
-const TEXT_PRIMARY = "rgb(var(--ha-text))";
-const TEXT_SECONDARY = "rgb(var(--ha-text-secondary))";
-const BORDER = "rgb(var(--ha-card-border))";
-
-function ProgressDots({ current, total }: { current: number; total: number }) {
-  return (
-    <div className="flex gap-1.5 justify-center py-3" data-testid="progress-dots">
-      {Array.from({ length: total }).map((_, i) => (
-        <div
-          key={i}
-          className="h-[6px] rounded-full transition-all"
-          style={{
-            width: i === current ? 24 : 6,
-            backgroundColor: i <= current ? BRAND : "rgba(var(--ha-text-rgb, 26,26,46), 0.12)",
-          }}
-        />
-      ))}
-    </div>
-  );
-}
+import { OB, OBProgressDots, OBStickyBar } from "@/components/onboarding-ui";
 
 function SegmentedControl({
   options,
@@ -43,17 +21,18 @@ function SegmentedControl({
 }) {
   return (
     <div
-      className="flex gap-1 p-1 rounded-[6px] bg-ha-surface border border-ha-card-border"
+      className="flex gap-1 p-1 rounded-[14px] border"
+      style={{ backgroundColor: OB.surface, borderColor: OB.cardBorder }}
       data-testid={testId}
     >
       {options.map((opt) => (
         <button
           key={opt.value}
           onClick={() => onChange(opt.value)}
-          className="flex-1 h-[38px] rounded-[5px] text-[13px] font-medium transition-all"
+          className="flex-1 h-[40px] rounded-[12px] text-[13px] font-medium transition-all"
           style={{
-            backgroundColor: value === opt.value ? BRAND : "transparent",
-            color: value === opt.value ? "#fff" : TEXT_SECONDARY,
+            backgroundColor: value === opt.value ? OB.pink : "transparent",
+            color: value === opt.value ? "#fff" : OB.textSecondary,
           }}
           data-testid={`${testId}-${opt.value}`}
         >
@@ -79,7 +58,7 @@ function Toggle({
     <label className="flex items-center gap-3 cursor-pointer" data-testid={testId}>
       <div
         className="w-[44px] h-[24px] rounded-full p-[2px] transition-colors shrink-0"
-        style={{ backgroundColor: checked ? BRAND : "rgba(var(--ha-text-rgb, 26,26,46), 0.15)" }}
+        style={{ backgroundColor: checked ? OB.pink : "rgba(255,255,255,0.15)" }}
         onClick={() => onChange(!checked)}
       >
         <div
@@ -87,7 +66,7 @@ function Toggle({
           style={{ transform: checked ? "translateX(20px)" : "translateX(0)" }}
         />
       </div>
-      <span className="text-[13px] text-ha-text leading-snug">{label}</span>
+      <span className="text-[13px] leading-snug" style={{ color: OB.text }}>{label}</span>
     </label>
   );
 }
@@ -121,13 +100,13 @@ function RangeSlider({
         onChange={(e) => onChange(Number(e.target.value))}
         className="w-full"
         style={{
-          background: `linear-gradient(to right, ${BRAND} 0%, ${BRAND} ${pct}%, rgba(var(--ha-text-rgb,26,26,46),0.1) ${pct}%, rgba(var(--ha-text-rgb,26,26,46),0.1) 100%)`,
+          background: `linear-gradient(to right, ${OB.pink} 0%, ${OB.pink} ${pct}%, rgba(255,255,255,0.1) ${pct}%, rgba(255,255,255,0.1) 100%)`,
         }}
       />
       <div className="flex justify-between mt-1">
-        <span className="text-[12px] text-ha-text-muted">{formatLabel(min)}</span>
-        <span className="text-[13px] font-semibold" style={{ color: BRAND }}>{formatLabel(value)}</span>
-        <span className="text-[12px] text-ha-text-muted">{formatLabel(max)}</span>
+        <span className="text-[12px]" style={{ color: OB.textMuted }}>{formatLabel(min)}</span>
+        <span className="text-[13px] font-semibold" style={{ color: OB.pink }}>{formatLabel(value)}</span>
+        <span className="text-[12px]" style={{ color: OB.textMuted }}>{formatLabel(max)}</span>
       </div>
     </div>
   );
@@ -253,15 +232,16 @@ export default function OnboardingFilters() {
   ];
 
   return (
-    <div className="min-h-[100dvh] flex flex-col bg-ha-bg" data-testid="screen-onboarding-filters">
-      <header className="sticky top-0 z-20 bg-ha-card border-b border-ha-card-border">
+    <div className="min-h-[100dvh] flex flex-col ob-dark" style={{ background: OB.gradient }} data-testid="screen-onboarding-filters">
+      <header className="sticky top-0 z-20 backdrop-blur-md border-b" style={{ backgroundColor: OB.headerBg, borderColor: OB.headerBorder }}>
         <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
           <button
             onClick={handleBack}
-            className="w-10 h-10 rounded-full bg-ha-surface flex items-center justify-center active:scale-95 transition-transform"
+            className="w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-transform"
+            style={{ backgroundColor: OB.backBtnBg }}
             data-testid="button-filters-back"
           >
-            <ChevronLeft className="w-5 h-5 text-ha-text-muted" />
+            <ChevronLeft className="w-5 h-5" style={{ color: OB.textSecondary }} />
           </button>
           <div className="flex-1 flex justify-center">
             <HousAlertLogo size={28} />
@@ -271,54 +251,53 @@ export default function OnboardingFilters() {
       </header>
 
       <div className="max-w-[480px] mx-auto px-5 w-full">
-        <ProgressDots current={2} total={4} />
+        <OBProgressDots current={2} total={4} />
       </div>
 
-      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-4 pb-[140px] overflow-y-auto">
+      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-4 pb-[100px] overflow-y-auto">
         <h1
-          className="text-[24px] font-bold tracking-[-0.02em] text-ha-text mb-2"
+          className="text-[24px] font-bold tracking-[-0.02em] mb-2"
+          style={{ color: OB.text }}
           data-testid="text-filters-title"
         >
           {t("onboarding.filters.title") || "Was suchst du genau?"}
         </h1>
-        <p className="text-[14px] text-ha-text-secondary mb-6">
+        <p className="text-[14px] mb-6" style={{ color: OB.textSecondary }}>
           {t("onboarding.filters.subtitle") || "Grenze deine Suche ein."}
         </p>
 
         <div className="flex flex-col gap-7">
           <section>
-            <label className="text-[13px] font-semibold text-ha-text mb-3 block">
+            <label className="text-[13px] font-semibold mb-3 block" style={{ color: OB.text }}>
               {t("onboarding.filters.rentLabel") || "Mietpreis"}
             </label>
             <div className="flex items-center gap-3 mb-3">
               <div className="flex-1">
-                <label className="text-[11px] text-ha-text-muted mb-1 block">Min</label>
+                <label className="text-[11px] mb-1 block" style={{ color: OB.textMuted }}>Min</label>
                 <input
                   type="number"
                   inputMode="numeric"
                   value={f.minPrice || ""}
                   onChange={(e) => update({ minPrice: Number(e.target.value) || 0 })}
                   placeholder="0"
-                  className="w-full h-[40px] px-3 rounded-[6px] border bg-ha-card text-[14px] font-medium text-ha-text placeholder:text-ha-text-muted focus:border-ha-primary outline-none"
-                  style={{ borderColor: BORDER }}
+                  className="ob-input w-full h-[48px] px-3 rounded-[14px] text-[14px] font-medium"
                   data-testid="input-min-price"
                 />
               </div>
-              <span className="text-ha-text-muted mt-5">—</span>
+              <span style={{ color: OB.textMuted }} className="mt-5">—</span>
               <div className="flex-1">
-                <label className="text-[11px] text-ha-text-muted mb-1 block">Max</label>
+                <label className="text-[11px] mb-1 block" style={{ color: OB.textMuted }}>Max</label>
                 <input
                   type="number"
                   inputMode="numeric"
                   value={f.maxPrice || ""}
                   onChange={(e) => update({ maxPrice: Number(e.target.value) || 0 })}
                   placeholder="1500"
-                  className="w-full h-[40px] px-3 rounded-[6px] border bg-ha-card text-[14px] font-medium text-ha-text placeholder:text-ha-text-muted focus:border-ha-primary outline-none"
-                  style={{ borderColor: BORDER }}
+                  className="ob-input w-full h-[48px] px-3 rounded-[14px] text-[14px] font-medium"
                   data-testid="input-max-price"
                 />
               </div>
-              <span className="text-[13px] font-medium text-ha-text-muted mt-5">€</span>
+              <span className="text-[13px] font-medium mt-5" style={{ color: OB.textMuted }}>€</span>
             </div>
             <RangeSlider
               min={0}
@@ -339,10 +318,10 @@ export default function OnboardingFilters() {
             </div>
           </section>
 
-          <div className="h-px bg-ha-card-border" />
+          <div className="h-px" style={{ backgroundColor: OB.divider }} />
 
           <section>
-            <label className="text-[13px] font-semibold text-ha-text mb-3 block">
+            <label className="text-[13px] font-semibold mb-3 block" style={{ color: OB.text }}>
               {t("onboarding.filters.propertyTypeLabel") || "Wohnungsart"}
             </label>
             <SegmentedControl
@@ -361,24 +340,25 @@ export default function OnboardingFilters() {
             </div>
           </section>
 
-          <div className="h-px bg-ha-card-border" />
+          <div className="h-px" style={{ backgroundColor: OB.divider }} />
 
           <section>
-            <label className="text-[13px] font-semibold text-ha-text mb-3 block">
+            <label className="text-[13px] font-semibold mb-3 block" style={{ color: OB.text }}>
               {t("onboarding.filters.bedroomsLabel") || "Schlafzimmer"}
             </label>
             <div
-              className="flex gap-1 p-1 rounded-[6px] bg-ha-surface border border-ha-card-border"
+              className="flex gap-1 p-1 rounded-[14px] border"
+              style={{ backgroundColor: OB.surface, borderColor: OB.cardBorder }}
               data-testid="rooms-selector"
             >
               {ROOM_OPTIONS.map((opt) => (
                 <button
                   key={opt.value}
                   onClick={() => update({ minRooms: opt.value })}
-                  className="flex-1 h-[38px] rounded-[5px] text-[13px] font-medium transition-all"
+                  className="flex-1 h-[40px] rounded-[12px] text-[13px] font-medium transition-all"
                   style={{
-                    backgroundColor: f.minRooms === opt.value ? BRAND : "transparent",
-                    color: f.minRooms === opt.value ? "#fff" : TEXT_SECONDARY,
+                    backgroundColor: f.minRooms === opt.value ? OB.pink : "transparent",
+                    color: f.minRooms === opt.value ? "#fff" : OB.textSecondary,
                   }}
                   data-testid={`rooms-${opt.value}`}
                 >
@@ -388,20 +368,20 @@ export default function OnboardingFilters() {
             </div>
           </section>
 
-          <div className="h-px bg-ha-card-border" />
+          <div className="h-px" style={{ backgroundColor: OB.divider }} />
 
           <section>
             <div className="flex items-center justify-between mb-3">
-              <label className="text-[13px] font-semibold text-ha-text">
+              <label className="text-[13px] font-semibold" style={{ color: OB.text }}>
                 {t("onboarding.filters.minSizeLabel") || "Mindestfläche"}
               </label>
               <button
                 onClick={() => update({ sizeNA: !f.sizeNA, minSize: f.sizeNA ? 30 : 0 })}
                 className="text-[12px] font-medium px-2.5 py-1 rounded-full border transition-all"
                 style={{
-                  borderColor: f.sizeNA ? BRAND : BORDER,
-                  backgroundColor: f.sizeNA ? "rgba(var(--ha-primary-rgb, 233,30,99), 0.06)" : "transparent",
-                  color: f.sizeNA ? BRAND : TEXT_SECONDARY,
+                  borderColor: f.sizeNA ? OB.selectedBorder : OB.cardBorder,
+                  backgroundColor: f.sizeNA ? OB.selectedBg : "transparent",
+                  color: f.sizeNA ? OB.pink : OB.textSecondary,
                 }}
                 data-testid="button-size-na"
               >
@@ -421,10 +401,10 @@ export default function OnboardingFilters() {
             )}
           </section>
 
-          <div className="h-px bg-ha-card-border" />
+          <div className="h-px" style={{ backgroundColor: OB.divider }} />
 
           <section>
-            <label className="text-[13px] font-semibold text-ha-text mb-3 block">
+            <label className="text-[13px] font-semibold mb-3 block" style={{ color: OB.text }}>
               {t("onboarding.filters.furnishedLabel") || "Möbliert"}
             </label>
             <SegmentedControl
@@ -435,10 +415,10 @@ export default function OnboardingFilters() {
             />
           </section>
 
-          <div className="h-px bg-ha-card-border" />
+          <div className="h-px" style={{ backgroundColor: OB.divider }} />
 
           <section>
-            <label className="text-[13px] font-semibold text-ha-text mb-3 block">
+            <label className="text-[13px] font-semibold mb-3 block" style={{ color: OB.text }}>
               {t("onboarding.filters.amenitiesLabel") || "Weitere Wünsche"}
             </label>
             <div className="flex flex-wrap gap-2" data-testid="amenity-chips">
@@ -448,11 +428,11 @@ export default function OnboardingFilters() {
                   <button
                     key={value}
                     onClick={() => toggleAmenity(value)}
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-full text-[13px] font-medium border transition-all"
+                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[13px] font-medium border transition-all"
                     style={{
-                      backgroundColor: active ? BRAND : "transparent",
-                      borderColor: active ? BRAND : BORDER,
-                      color: active ? "#fff" : TEXT_SECONDARY,
+                      backgroundColor: active ? OB.pink : "transparent",
+                      borderColor: active ? OB.pink : OB.cardBorder,
+                      color: active ? "#fff" : OB.textSecondary,
                     }}
                     data-testid={`amenity-${value}`}
                   >
@@ -465,7 +445,7 @@ export default function OnboardingFilters() {
             </div>
           </section>
 
-          <div className="h-px bg-ha-card-border" />
+          <div className="h-px" style={{ backgroundColor: OB.divider }} />
 
           <section>
             <Toggle
@@ -478,31 +458,26 @@ export default function OnboardingFilters() {
         </div>
       </main>
 
-      <div
-        className="fixed bottom-0 left-0 right-0 bg-ha-card border-t border-ha-card-border z-30"
-        style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom, 12px))" }}
-      >
-        <div className="max-w-[480px] mx-auto px-5 pt-3 flex items-center gap-3">
+      <OBStickyBar>
+        <div className="flex items-center gap-3">
           <button
             onClick={handleBack}
-            className="h-[52px] px-6 rounded-[6px] text-[15px] font-medium border-2 transition-all active:scale-[0.97]"
-            style={{ borderColor: BORDER, color: TEXT_PRIMARY }}
+            className="h-[56px] px-6 rounded-[14px] text-[15px] font-medium transition-all active:scale-[0.97] border"
+            style={{ borderColor: "rgba(255,255,255,0.15)", color: OB.textSecondary }}
             data-testid="button-filters-back-bottom"
           >
             {t("common.back") || "Zurück"}
           </button>
           <button
             onClick={handleNext}
-            className="flex-1 h-[52px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97]"
-            style={{ backgroundColor: BRAND }}
-            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = BRAND_HOVER)}
-            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = BRAND)}
+            className="flex-1 h-[56px] rounded-[14px] text-[15px] font-bold text-white transition-all active:scale-[0.97]"
+            style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
             data-testid="button-filters-next"
           >
             {t("common.next") || "Weiter"}
           </button>
         </div>
-      </div>
+      </OBStickyBar>
     </div>
   );
 }
