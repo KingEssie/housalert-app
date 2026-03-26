@@ -45,7 +45,7 @@ export default function OnboardingIntro() {
       </header>
 
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pb-[100px]">
-        <div className="w-full aspect-[16/9] rounded-[14px] overflow-hidden mt-6 mb-6">
+        <div className="w-full aspect-[16/9] rounded-[6px] overflow-hidden mt-6 mb-6">
           <img
             src={heroImg}
             alt="HousAlert"
@@ -69,7 +69,7 @@ export default function OnboardingIntro() {
           {BENEFITS.map((b, i) => (
             <div key={i} className="flex items-start gap-4" data-testid={`benefit-${i}`}>
               <div
-                className="w-11 h-11 rounded-[14px] flex items-center justify-center shrink-0"
+                className="w-11 h-11 rounded-[6px] flex items-center justify-center shrink-0"
                 style={{ backgroundColor: OB.accentBg }}
               >
                 <b.icon className="w-5 h-5" style={{ color: OB.pink }} />
@@ -90,7 +90,7 @@ export default function OnboardingIntro() {
       <OBStickyBar>
         <button
           onClick={() => navigate("/onboarding/city")}
-          className="w-full h-[56px] rounded-[14px] text-[15px] font-bold text-white transition-all active:scale-[0.97] flex items-center justify-center gap-2"
+          className="w-full h-[56px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] flex items-center justify-center gap-2"
           style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
           data-testid="button-intro-start"
         >

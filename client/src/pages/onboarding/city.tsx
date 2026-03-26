@@ -118,7 +118,7 @@ export default function OnboardingCity() {
         </p>
 
         <div className="relative mb-4">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: OB.textMuted }} />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#999" }} />
           <input
             type="text"
             value={search}
@@ -127,18 +127,18 @@ export default function OnboardingCity() {
               if (selectedCity) setSelectedCity(null);
             }}
             placeholder={t("onboarding.location.searchPlaceholder") || "Stadt suchen..."}
-            className="ob-input w-full h-[56px] pl-12 pr-4 rounded-[14px] text-[15px] font-medium"
+            className="ob-input w-full h-[56px] pl-12 pr-4 rounded-[6px] text-[15px] font-medium"
             style={selectedCity ? { borderColor: OB.pink } : undefined}
             autoFocus
             data-testid="input-city-search"
           />
           {searching && (
-            <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin" style={{ color: OB.textMuted }} />
+            <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin" style={{ color: "#999" }} />
           )}
         </div>
 
         {showDropdown && (
-          <div className="rounded-[14px] border overflow-hidden mb-4" style={{ backgroundColor: OB.card, borderColor: OB.cardBorder }} data-testid="city-results">
+          <div className="rounded-[6px] border overflow-hidden mb-4" style={{ backgroundColor: OB.card, borderColor: OB.cardBorder }} data-testid="city-results">
             {presetMatches.map((city) => (
               <button
                 key={city.name}
@@ -183,8 +183,8 @@ export default function OnboardingCity() {
         )}
 
         {selectedCity && (
-          <div className="rounded-[14px] border p-4 mb-6 flex items-center gap-3" style={{ backgroundColor: OB.card, borderColor: OB.cardBorder }} data-testid="city-selected">
-            <div className="w-10 h-10 rounded-[14px] flex items-center justify-center" style={{ backgroundColor: OB.accentBg }}>
+          <div className="rounded-[6px] border p-4 mb-6 flex items-center gap-3" style={{ backgroundColor: OB.card, borderColor: OB.cardBorder }} data-testid="city-selected">
+            <div className="w-10 h-10 rounded-[6px] flex items-center justify-center" style={{ backgroundColor: OB.accentBg }}>
               <MapPin className="w-5 h-5" style={{ color: OB.pink }} />
             </div>
             <div className="flex-1">
@@ -193,7 +193,7 @@ export default function OnboardingCity() {
             </div>
             <button
               onClick={() => { setSelectedCity(null); setSearch(""); }}
-              className="text-[13px] font-medium px-3 py-1.5 rounded-[14px] border transition-colors hover:bg-white/5"
+              className="text-[13px] font-medium px-3 py-1.5 rounded-[6px] border transition-colors hover:bg-white/5"
               style={{ borderColor: OB.cardBorder, color: OB.textSecondary }}
               data-testid="button-city-change"
             >
@@ -207,7 +207,7 @@ export default function OnboardingCity() {
         <OBStickyBar>
           <button
             onClick={handleNext}
-            className="w-full h-[56px] rounded-[14px] text-[15px] font-bold text-white transition-all active:scale-[0.97]"
+            className="w-full h-[56px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97]"
             style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
             data-testid="button-city-next"
           >

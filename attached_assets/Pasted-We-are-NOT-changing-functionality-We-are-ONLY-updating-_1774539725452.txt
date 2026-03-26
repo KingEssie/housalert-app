@@ -1,0 +1,112 @@
+We are NOT changing functionality.
+
+We are ONLY updating onboarding UI styling.
+
+==================================================
+GLOBAL DESIGN SYSTEM
+==================================================
+
+1. BACKGROUND
+- Keep full onboarding background dark purple (no white pages)
+- Subtle gradient allowed
+- MUST be consistent across all screens
+
+==================================================
+INPUT FIELDS (UPDATED — IMPORTANT)
+==================================================
+
+ALL input fields must follow this EXACT style:
+
+- Background: WHITE
+- Text color: dark (#111)
+- Placeholder: medium gray (#999)
+- Height: 56px minimum
+- Border radius: 6px (NOT rounded pills)
+- Border: 1px solid #E5E7EB (light gray)
+- Padding: 16px horizontal
+- Font size: 16px
+
+FOCUS STATE:
+- Border color → primary accent (pink)
+- Optional subtle shadow (very light)
+
+DISABLED STATE:
+- Slightly dimmed white (#F9F9F9)
+
+==================================================
+LAYOUT RULE (VERY IMPORTANT)
+==================================================
+
+Because inputs are white:
+- Surrounding background MUST stay dark purple
+- Add MORE spacing between sections (min 24px)
+- Inputs should NOT feel cramped
+- Avoid stacking too many white elements without spacing
+
+==================================================
+BUTTONS
+==================================================
+
+Primary CTA:
+- Full width
+- Height: 56px
+- Border radius: 6px
+- Bright pink background
+- White bold text
+- Slight glow/shadow
+
+Secondary:
+- Outline or subtle dark variant
+
+==================================================
+COMPONENTS
+==================================================
+
+1. SEGMENTED CONTROLS
+- Border radius: 6px
+- Container: subtle dark background
+- Active: pink background + white text
+
+2. CHIP SELECTORS
+- Border radius: 6px
+- Border: light
+- Selected: pink fill
+
+3. TOGGLES
+- iOS style (no change needed)
+
+==================================================
+SPACING & STRUCTURE
+==================================================
+
+- Section spacing: 24–32px
+- Label → input spacing: 8–12px
+- Keep layout clean and breathable
+
+==================================================
+CRITICAL CONSISTENCY RULE
+==================================================
+
+ALL onboarding screens must:
+- Use the SAME input style (white boxes, 6px radius)
+- Use the SAME button style
+- Use the SAME spacing system
+- No mixing styles between screens
+
+==================================================
+DO NOT
+==================================================
+
+- Do NOT use rounded pill inputs
+- Do NOT mix white + purple inputs
+- Do NOT use default browser inputs
+- Do NOT reduce spacing (this is key)
+
+==================================================
+DELIVERABLE
+==================================================
+
+1. All onboarding inputs updated to white style
+2. Border radius consistently 6px everywhere
+3. Spacing adjusted to prevent clutter
+4. Confirmation list of updated components

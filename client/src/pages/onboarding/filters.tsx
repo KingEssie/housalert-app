@@ -21,7 +21,7 @@ function SegmentedControl({
 }) {
   return (
     <div
-      className="flex gap-1 p-1 rounded-[14px] border"
+      className="flex gap-1 p-1 rounded-[6px] border"
       style={{ backgroundColor: OB.surface, borderColor: OB.cardBorder }}
       data-testid={testId}
     >
@@ -29,7 +29,7 @@ function SegmentedControl({
         <button
           key={opt.value}
           onClick={() => onChange(opt.value)}
-          className="flex-1 h-[40px] rounded-[12px] text-[13px] font-medium transition-all"
+          className="flex-1 h-[40px] rounded-[4px] text-[13px] font-medium transition-all"
           style={{
             backgroundColor: value === opt.value ? OB.pink : "transparent",
             color: value === opt.value ? "#fff" : OB.textSecondary,
@@ -280,7 +280,7 @@ export default function OnboardingFilters() {
                   value={f.minPrice || ""}
                   onChange={(e) => update({ minPrice: Number(e.target.value) || 0 })}
                   placeholder="0"
-                  className="ob-input w-full h-[48px] px-3 rounded-[14px] text-[14px] font-medium"
+                  className="ob-input w-full h-[48px] px-3 rounded-[6px] text-[14px] font-medium"
                   data-testid="input-min-price"
                 />
               </div>
@@ -293,7 +293,7 @@ export default function OnboardingFilters() {
                   value={f.maxPrice || ""}
                   onChange={(e) => update({ maxPrice: Number(e.target.value) || 0 })}
                   placeholder="1500"
-                  className="ob-input w-full h-[48px] px-3 rounded-[14px] text-[14px] font-medium"
+                  className="ob-input w-full h-[48px] px-3 rounded-[6px] text-[14px] font-medium"
                   data-testid="input-max-price"
                 />
               </div>
@@ -347,7 +347,7 @@ export default function OnboardingFilters() {
               {t("onboarding.filters.bedroomsLabel") || "Schlafzimmer"}
             </label>
             <div
-              className="flex gap-1 p-1 rounded-[14px] border"
+              className="flex gap-1 p-1 rounded-[6px] border"
               style={{ backgroundColor: OB.surface, borderColor: OB.cardBorder }}
               data-testid="rooms-selector"
             >
@@ -355,7 +355,7 @@ export default function OnboardingFilters() {
                 <button
                   key={opt.value}
                   onClick={() => update({ minRooms: opt.value })}
-                  className="flex-1 h-[40px] rounded-[12px] text-[13px] font-medium transition-all"
+                  className="flex-1 h-[40px] rounded-[4px] text-[13px] font-medium transition-all"
                   style={{
                     backgroundColor: f.minRooms === opt.value ? OB.pink : "transparent",
                     color: f.minRooms === opt.value ? "#fff" : OB.textSecondary,
@@ -377,7 +377,7 @@ export default function OnboardingFilters() {
               </label>
               <button
                 onClick={() => update({ sizeNA: !f.sizeNA, minSize: f.sizeNA ? 30 : 0 })}
-                className="text-[12px] font-medium px-2.5 py-1 rounded-full border transition-all"
+                className="text-[12px] font-medium px-2.5 py-1 rounded-[6px] border transition-all"
                 style={{
                   borderColor: f.sizeNA ? OB.selectedBorder : OB.cardBorder,
                   backgroundColor: f.sizeNA ? OB.selectedBg : "transparent",
@@ -428,7 +428,7 @@ export default function OnboardingFilters() {
                   <button
                     key={value}
                     onClick={() => toggleAmenity(value)}
-                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[13px] font-medium border transition-all"
+                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-[6px] text-[13px] font-medium border transition-all"
                     style={{
                       backgroundColor: active ? OB.pink : "transparent",
                       borderColor: active ? OB.pink : OB.cardBorder,
@@ -462,7 +462,7 @@ export default function OnboardingFilters() {
         <div className="flex items-center gap-3">
           <button
             onClick={handleBack}
-            className="h-[56px] px-6 rounded-[14px] text-[15px] font-medium transition-all active:scale-[0.97] border"
+            className="h-[56px] px-6 rounded-[6px] text-[15px] font-medium transition-all active:scale-[0.97] border"
             style={{ borderColor: "rgba(255,255,255,0.15)", color: OB.textSecondary }}
             data-testid="button-filters-back-bottom"
           >
@@ -470,7 +470,7 @@ export default function OnboardingFilters() {
           </button>
           <button
             onClick={handleNext}
-            className="flex-1 h-[56px] rounded-[14px] text-[15px] font-bold text-white transition-all active:scale-[0.97]"
+            className="flex-1 h-[56px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97]"
             style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
             data-testid="button-filters-next"
           >

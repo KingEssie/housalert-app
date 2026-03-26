@@ -75,13 +75,13 @@ export default function OnboardingEmail() {
             {t("onboarding.email.label") || "E-Mail-Adresse"}
           </label>
           <div className="relative">
-            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: OB.textMuted }} />
+            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#999" }} />
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t("onboarding.email.placeholder") || "deine@email.de"}
-              className="ob-input w-full h-[56px] pl-12 pr-4 rounded-[14px] text-[15px] font-medium"
+              className="ob-input w-full h-[56px] pl-12 pr-4 rounded-[6px] text-[15px] font-medium"
               autoFocus
               data-testid="input-email"
             />
@@ -93,7 +93,7 @@ export default function OnboardingEmail() {
         <button
           onClick={handleNext}
           disabled={!isValidEmail(email)}
-          className="w-full h-[56px] rounded-[14px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50"
+          className="w-full h-[56px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50"
           style={{ background: OB.pinkGradient, boxShadow: isValidEmail(email) ? OB.pinkShadow : "none" }}
           data-testid="button-email-next"
         >

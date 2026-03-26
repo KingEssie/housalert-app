@@ -66,19 +66,19 @@ export default function OnboardingName() {
           {t("onboarding.name.subtitle") || "Damit Vermieter dich persönlich ansprechen können."}
         </p>
 
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-6">
           <div>
             <label className="text-[13px] font-medium mb-1.5 block" style={{ color: OB.textSecondary }}>
               {t("onboarding.name.firstNameLabel") || "Vorname"}
             </label>
             <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: OB.textMuted }} />
+              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#999" }} />
               <input
                 type="text"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 placeholder={t("onboarding.name.firstNamePlaceholder") || "Max"}
-                className="ob-input w-full h-[56px] pl-12 pr-4 rounded-[14px] text-[15px] font-medium"
+                className="ob-input w-full h-[56px] pl-12 pr-4 rounded-[6px] text-[15px] font-medium"
                 autoFocus
                 data-testid="input-first-name"
               />
@@ -90,13 +90,13 @@ export default function OnboardingName() {
               {t("onboarding.name.lastNameLabel") || "Nachname"}
             </label>
             <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: OB.textMuted }} />
+              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#999" }} />
               <input
                 type="text"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 placeholder={t("onboarding.name.lastNamePlaceholder") || "Mustermann"}
-                className="ob-input w-full h-[56px] pl-12 pr-4 rounded-[14px] text-[15px] font-medium"
+                className="ob-input w-full h-[56px] pl-12 pr-4 rounded-[6px] text-[15px] font-medium"
                 data-testid="input-last-name"
               />
             </div>
@@ -108,7 +108,7 @@ export default function OnboardingName() {
         <button
           onClick={handleNext}
           disabled={!firstName.trim()}
-          className="w-full h-[56px] rounded-[14px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50"
+          className="w-full h-[56px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50"
           style={{ background: OB.pinkGradient, boxShadow: firstName.trim() ? OB.pinkShadow : "none" }}
           data-testid="button-name-next"
         >

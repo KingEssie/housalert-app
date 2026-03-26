@@ -109,7 +109,7 @@ export default function OnboardingLocation() {
               <button
                 key={opt.value}
                 onClick={() => setMode(opt.value)}
-                className="flex items-center gap-4 p-4 rounded-[14px] border-2 transition-all text-left"
+                className="flex items-center gap-4 p-4 rounded-[6px] border-2 transition-all text-left"
                 style={{
                   borderColor: active ? OB.selectedBorder : OB.cardBorder,
                   backgroundColor: active ? OB.selectedBg : OB.card,
@@ -117,7 +117,7 @@ export default function OnboardingLocation() {
                 data-testid={`mode-${opt.value}`}
               >
                 <div
-                  className="w-12 h-12 rounded-[14px] flex items-center justify-center shrink-0"
+                  className="w-12 h-12 rounded-[6px] flex items-center justify-center shrink-0"
                   style={{
                     backgroundColor: active ? OB.accentBg : OB.surface,
                   }}
@@ -155,7 +155,7 @@ export default function OnboardingLocation() {
                   <button
                     key={d}
                     onClick={() => toggleDistrict(d)}
-                    className="px-3.5 py-2 rounded-full text-[13px] font-medium border transition-all"
+                    className="px-3.5 py-2 rounded-[6px] text-[13px] font-medium border transition-all"
                     style={{
                       backgroundColor: active ? OB.pink : "transparent",
                       borderColor: active ? OB.pink : OB.cardBorder,
@@ -184,7 +184,7 @@ export default function OnboardingLocation() {
                   <button
                     key={km}
                     onClick={() => setRadiusKm(km)}
-                    className="px-4 py-2.5 rounded-[14px] text-[14px] font-medium border-2 transition-all"
+                    className="px-4 py-2.5 rounded-[6px] text-[14px] font-medium border-2 transition-all"
                     style={{
                       borderColor: active ? OB.selectedBorder : OB.cardBorder,
                       backgroundColor: active ? OB.selectedBg : "transparent",
@@ -201,7 +201,7 @@ export default function OnboardingLocation() {
         )}
 
         {mode === "city" && (
-          <div className="rounded-[14px] border p-4 mb-6" style={{ backgroundColor: OB.card, borderColor: OB.cardBorder }}>
+          <div className="rounded-[6px] border p-4 mb-6" style={{ backgroundColor: OB.card, borderColor: OB.cardBorder }}>
             <p className="text-[14px] leading-relaxed" style={{ color: OB.textSecondary }}>
               {t("onboarding.location.wholeCityHint") || `Wir suchen in ganz ${city} nach passenden Wohnungen.`}
             </p>
@@ -212,7 +212,7 @@ export default function OnboardingLocation() {
       <OBStickyBar>
         <button
           onClick={handleNext}
-          className="w-full h-[56px] rounded-[14px] text-[15px] font-bold text-white transition-all active:scale-[0.97]"
+          className="w-full h-[56px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97]"
           style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
           data-testid="button-location-next"
         >

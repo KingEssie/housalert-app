@@ -476,18 +476,22 @@ input[type="range"]::-moz-range-thumb {
   --ha-check-unchecked: transparent;
 }
 .ob-input {
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
-  color: #ffffff;
+  background: #ffffff;
+  border: 1px solid #E5E7EB;
+  color: #111111;
+  font-size: 16px;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 .ob-input::placeholder {
-  color: rgba(255,255,255,0.4);
+  color: #999999;
 }
 .ob-input:focus {
   border-color: #e91e63 !important;
-  box-shadow: 0 0 0 3px rgba(233,30,99,0.2) !important;
+  box-shadow: 0 0 0 3px rgba(233,30,99,0.1) !important;
+}
+.ob-input:disabled {
+  background: #F9F9F9;
 }
 .ob-dark input[type="range"]::-webkit-slider-thumb {
   border-color: #1e1b4b;
