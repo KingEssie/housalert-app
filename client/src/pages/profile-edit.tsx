@@ -96,53 +96,53 @@ export default function ProfileEditPage() {
   }
 
   return (
-    <div className="min-h-screen bg-ha-bg flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F5F5F7" }}>
       <PageHeader title={config.question} onBack={() => navigate("/settings")} />
 
       <div className="flex-1 max-w-xl mx-auto px-5 w-full">
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-6 h-6 animate-spin text-ha-text-secondary" />
+            <Loader2 className="w-6 h-6 animate-spin text-[#9CA3AF]" />
           </div>
         ) : (
-          <div>
+          <div className="app-card">
             {config.description && (
-              <p className="text-[14px] text-ha-text-secondary leading-relaxed mb-4">{config.description}</p>
+              <p className="text-[14px] text-[#6B7280] leading-relaxed mb-4">{config.description}</p>
             )}
             <div className="relative">
-            <input
-              ref={inputRef}
-              type={config.type}
-              value={value}
-              onChange={e => setValue(e.target.value)}
-              placeholder={config.placeholder}
-              aria-label={config.label}
-              className="w-full bg-ha-card rounded-[6px] pl-6 pr-12 py-4 text-[16px] text-ha-text placeholder:text-ha-text-muted border border-ha-card-border focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] focus:outline-none transition-all h-[60px]"
-              data-testid="input-edit-field"
-            />
-            {value && (
-              <button
-                type="button"
-                onClick={handleClear}
-                aria-label="Clear"
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-ha-surface flex items-center justify-center active:scale-90 transition-transform"
-                data-testid="button-clear-field"
-              >
-                <X className="w-3.5 h-3.5 text-ha-text-secondary" />
-              </button>
-            )}
+              <input
+                ref={inputRef}
+                type={config.type}
+                value={value}
+                onChange={e => setValue(e.target.value)}
+                placeholder={config.placeholder}
+                aria-label={config.label}
+                className="app-input !pr-12"
+                data-testid="input-edit-field"
+              />
+              {value && (
+                <button
+                  type="button"
+                  onClick={handleClear}
+                  aria-label="Clear"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-[#F0F0F0] flex items-center justify-center active:scale-90 transition-transform"
+                  data-testid="button-clear-field"
+                >
+                  <X className="w-3.5 h-3.5 text-[#6B7280]" />
+                </button>
+              )}
             </div>
           </div>
         )}
       </div>
 
       {!loading && (
-        <div className="sticky bottom-0 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 px-5 bg-gradient-to-t from-ha-bg via-ha-bg to-transparent">
+        <div className="sticky bottom-0 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 px-5" style={{ background: "linear-gradient(to top, #F5F5F7, #F5F5F7 80%, transparent)" }}>
           <div className="max-w-xl mx-auto flex justify-center">
             <button
               onClick={handleSave}
               disabled={saving}
-              className="h-[48px] px-10 rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium flex items-center justify-center transition-colors disabled:opacity-50"
+              className="h-[56px] px-10 rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold flex items-center justify-center transition-colors disabled:opacity-50"
               data-testid="button-save-field"
             >
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : t("common.save")}

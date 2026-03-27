@@ -1,0 +1,207 @@
+We are going to standardize and upgrade the entire UI of the app to a consistent, premium, Rentbird-level design system.
+
+This is NOT a redesign per screen.
+This is a global UI system cleanup + enforcement across the entire app.
+
+--------------------------------------------------
+1. GLOBAL DESIGN RULES (MANDATORY)
+--------------------------------------------------
+
+Page background:
+- All pages use a light grey background
+- HEX: #F5F5F7 (or closest existing token)
+
+Content containers (VERY IMPORTANT):
+- NO content should sit directly on the grey background
+- ALL content must be inside white cards
+
+Card style:
+- background: #FFFFFF
+- border-radius: 12px
+- padding: 16–20px
+- border: 1px solid #E5E5E5
+- spacing between cards: 16px+
+
+This applies to:
+- settings
+- match detail
+- profile sections
+- search profiles
+- onboarding blocks
+- forms
+
+--------------------------------------------------
+2. TYPOGRAPHY SYSTEM
+--------------------------------------------------
+
+Page titles:
+- color: #000000
+- font-weight: 700
+- consistent size across all pages
+
+Section titles / labels:
+- color: #000000
+- font-weight: 600–700
+
+Secondary text:
+- muted grey (existing token ok)
+
+NO light grey titles allowed.
+
+--------------------------------------------------
+3. FORM SYSTEM (VERY IMPORTANT)
+--------------------------------------------------
+
+All inputs, dropdowns, and fields must follow ONE system:
+
+Field style:
+- background: #FFFFFF
+- border: 1.5px solid #000000
+- border-radius: 6px
+- height: ~56px
+- padding: 12–16px
+
+Labels:
+- placed above field
+- font-weight: 600+
+- color: #000000
+
+Applies to:
+- inputs
+- selects
+- dropdowns
+- textareas
+- onboarding fields
+- settings fields
+- filters
+
+NO soft grey or invisible fields.
+
+--------------------------------------------------
+4. SETTINGS SCREEN FIX
+--------------------------------------------------
+
+Structure:
+- Page background = grey
+- ALL content inside white cards
+
+Sections:
+- Account
+- Persoonlijke gegevens
+- Zoeken en reageren
+- Help
+- Voorwaarden
+
+Each section:
+- white card container
+- stacked list items
+- each item:
+  - bold black title
+  - right arrow icon
+  - divider between items
+
+Top profile block:
+- white card
+- avatar + name + email
+
+--------------------------------------------------
+5. HOME SCREEN — SEARCH PROFILE CARD
+--------------------------------------------------
+
+Update search profile tile:
+
+- convert into white card
+- bold black title
+- secondary info below
+- right-side action (edit/menu)
+- consistent padding
+
+Make this a reusable component.
+
+--------------------------------------------------
+6. MATCH DETAIL SCREEN
+--------------------------------------------------
+
+Page:
+- grey background
+
+Content:
+- split into white cards
+
+Blocks:
+1. Match info → white card
+2. Reaction letter → white card
+
+Reaction letter field:
+- white background
+- black border
+- textarea clearly visible
+- label "Reactiebrief" bold + black
+
+Spacing:
+- 16–20px between sections
+
+--------------------------------------------------
+7. REMOVE FLOATING UI
+--------------------------------------------------
+
+Audit all screens:
+- No content floating on grey background
+- Everything inside structured cards
+- Fix inconsistent spacing
+
+--------------------------------------------------
+8. FOOTER NAVIGATION
+--------------------------------------------------
+
+- Increase icon weight (thicker icons)
+- Clear active state
+- Improve visibility
+- Avoid thin/light icons
+
+--------------------------------------------------
+9. CONSISTENCY ENFORCEMENT
+--------------------------------------------------
+
+Create reusable components:
+- Card container
+- Input field
+- Section block
+- List item row
+
+Use them everywhere.
+
+DO NOT style per screen differently.
+
+--------------------------------------------------
+10. DO NOT CHANGE
+--------------------------------------------------
+
+- No routing changes
+- No logic changes
+- No onboarding flow changes
+- No backend changes
+
+UI only.
+
+--------------------------------------------------
+GOAL
+--------------------------------------------------
+
+The app must feel:
+- consistent
+- clean
+- premium
+- structured
+- similar quality to Rentbird
+
+--------------------------------------------------
+DONE CRITERIA
+--------------------------------------------------
+
+- No loose content on grey background
+- All forms identical styling
+- All titles bold + black
+- All content inside white cards
+- Match detail clean and structured
+- Settings screen premium quality

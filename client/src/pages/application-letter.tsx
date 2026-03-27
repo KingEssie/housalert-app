@@ -81,28 +81,28 @@ export default function ApplicationLetterPage() {
   const isLongEnough = template.trim().length >= 20;
 
   return (
-    <div className="min-h-screen bg-ha-bg flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F5F5F7" }}>
       <PageHeader title={t("applicationLetter.title")} onBack={() => navigate("/settings")} />
 
       <main className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-32">
-        <div className="flex flex-col gap-5">
-          <div className="rounded-[6px] bg-ha-card px-5 py-4">
-            <p className="text-[14px] text-ha-text-secondary leading-relaxed">
+        <div className="flex flex-col gap-4">
+          <div className="app-card">
+            <p className="text-[14px] text-[#6B7280] leading-relaxed">
               {t("applicationLetter.helperText")}
             </p>
           </div>
 
           {isLoading ? (
-            <div className="rounded-[6px] bg-ha-card p-6 animate-pulse">
-              <div className="h-[300px] bg-ha-surface rounded-[6px]" />
+            <div className="app-card animate-pulse">
+              <div className="h-[300px] bg-[#F5F5F7] rounded-[6px]" />
             </div>
           ) : (
-            <div className="rounded-[6px] bg-ha-card px-5 py-5">
+            <div className="app-card">
               <div className="flex items-center justify-between mb-3">
-                <label className="text-[13px] font-medium text-ha-text-secondary">{t("applicationLetter.letterLabel")}</label>
+                <label className="text-field-label">{t("applicationLetter.letterLabel")}</label>
                 <button
                   onClick={handleReset}
-                  className="flex items-center gap-1 text-[13px] text-ha-text-secondary active:text-ha-text transition-colors"
+                  className="flex items-center gap-1 text-[13px] text-[#6B7280] active:text-[#000] transition-colors"
                   data-testid="button-reset-template"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -113,11 +113,11 @@ export default function ApplicationLetterPage() {
                 value={template}
                 onChange={(e) => setTemplate(e.target.value)}
                 placeholder={t("applicationLetter.placeholderText")}
-                className="w-full min-h-[300px] px-4 py-4 rounded-[6px] border border-ha-card-border bg-ha-bg text-[15px] text-ha-text placeholder:text-ha-text-muted focus:outline-none focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] resize-y leading-relaxed transition-all"
+                className="app-textarea min-h-[300px] leading-relaxed"
                 data-testid="input-template"
               />
               {!isLongEnough && template.length > 0 && (
-                <p className="text-[12px] text-ha-text-secondary mt-2">{t("applicationLetter.minChars")}</p>
+                <p className="text-[12px] text-[#6B7280] mt-2">{t("applicationLetter.minChars")}</p>
               )}
             </div>
           )}
@@ -125,7 +125,7 @@ export default function ApplicationLetterPage() {
           <button
             onClick={() => saveMutation.mutate(template)}
             disabled={!isLongEnough || saveMutation.isPending}
-            className="w-full h-[50px] rounded-[6px] bg-ha-primary text-white text-[15px] font-semibold transition-colors hover:bg-ha-primary-hover active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full h-[56px] rounded-[6px] bg-ha-primary text-white text-[15px] font-semibold transition-colors hover:bg-ha-primary-hover active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
             data-testid="button-save-template"
           >
             {saveMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}

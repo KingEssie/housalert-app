@@ -10,6 +10,7 @@ import {
   ExternalLink,
   LogOut,
   Trash2,
+  User,
 } from "lucide-react";
 
 export default function SettingsPage() {
@@ -30,6 +31,10 @@ export default function SettingsPage() {
       setSigningOut(false);
     }
   };
+
+  const displayName = user?.user_metadata?.first_name
+    ? `${user.user_metadata.first_name}${user.user_metadata.last_name ? ` ${user.user_metadata.last_name}` : ""}`
+    : user?.email?.split("@")[0] || "";
 
   const sections = [
     {
@@ -71,31 +76,45 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-ha-bg">
-      <div className="sticky top-0 z-10 bg-ha-bg border-b border-ha-card-border px-4 py-3 flex items-center gap-3">
+    <div className="min-h-screen" style={{ backgroundColor: "#F5F5F7" }}>
+      <div className="sticky top-0 z-10 bg-white border-b border-[#E5E5E5] px-4 py-3 flex items-center gap-3">
         <button
           onClick={() => navigate("/dashboard?tab=profiel")}
-          className="w-9 h-9 rounded-[6px] flex items-center justify-center active:bg-ha-surface transition-colors"
+          className="w-9 h-9 rounded-[6px] flex items-center justify-center active:bg-gray-100 transition-colors"
           data-testid="button-settings-back"
         >
-          <ArrowLeft className="w-5 h-5 text-ha-text" />
+          <ArrowLeft className="w-5 h-5 text-[#000]" />
         </button>
-        <h1 className="text-[18px] text-title text-ha-text flex-1" data-testid="text-settings-title">
+        <h1 className="text-[18px] font-bold text-[#000] flex-1" data-testid="text-settings-title">
           {t("settings.title")}
         </h1>
       </div>
 
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-4">
+          <div className="app-card flex items-center gap-4" data-testid="card-profile-header">
+            <div className="w-14 h-14 rounded-full bg-[#F0F0F0] flex items-center justify-center flex-shrink-0">
+              <User className="w-6 h-6 text-[#9CA3AF]" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[16px] font-bold text-[#000] truncate" data-testid="text-profile-name">
+                {displayName}
+              </p>
+              <p className="text-[14px] text-[#6B7280] truncate" data-testid="text-profile-email">
+                {user?.email}
+              </p>
+            </div>
+          </div>
+
           {sections.map((section, si) => (
             <div key={si}>
-              <p className="text-[12px] font-semibold text-ha-text-secondary uppercase tracking-wider px-1 mb-2" data-testid={`text-section-${si}`}>
+              <p className="text-row-section-title px-1 mb-2" data-testid={`text-section-${si}`}>
                 {section.title}
               </p>
-              <div className="rounded-[6px] bg-ha-card px-5 py-1">
+              <div className="app-card !p-0">
                 {section.rows.map((row, ri) => (
                   <div key={ri}>
-                    {ri > 0 && <div className="h-px bg-ha-surface" />}
+                    {ri > 0 && <div className="h-px bg-[#F0F0F0] mx-5" />}
                     <button
                       onClick={() => {
                         if (row.external) {
@@ -104,14 +123,14 @@ export default function SettingsPage() {
                           navigate(row.route);
                         }
                       }}
-                      className="w-full flex items-center gap-3 py-3.5 text-left active:opacity-80 transition-opacity"
+                      className="w-full flex items-center gap-3 py-4 px-5 text-left active:bg-[#FAFAFA] transition-colors"
                       data-testid={`button-settings-${si}-${ri}`}
                     >
-                      <p className="text-[15px] text-ha-text flex-1">{row.label}</p>
+                      <p className="text-[15px] font-semibold text-[#000] flex-1">{row.label}</p>
                       {row.external ? (
-                        <ExternalLink className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
+                        <ExternalLink className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
                       ) : (
-                        <ChevronRight className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
+                        <ChevronRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
                       )}
                     </button>
                   </div>
@@ -120,51 +139,49 @@ export default function SettingsPage() {
             </div>
           ))}
 
-          <div>
-            <div className="rounded-[6px] bg-ha-card px-5 py-1">
-              <button
-                onClick={() => setShowLogoutConfirm(true)}
-                disabled={signingOut}
-                className={`w-full flex items-center gap-3 py-3.5 text-left active:opacity-80 transition-opacity ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
-                data-testid="button-logout"
-              >
-                <LogOut className="w-5 h-5 text-ha-danger flex-shrink-0" />
-                <p className="text-[15px] text-ha-danger flex-1">{signingOut ? t("profile.signingOut") : t("profile.logout")}</p>
-              </button>
-              <div className="h-px bg-ha-surface" />
-              <button
-                onClick={() => navigate("/account/delete")}
-                className="w-full flex items-center gap-3 py-3.5 text-left active:opacity-80 transition-opacity"
-                data-testid="button-delete-account"
-              >
-                <Trash2 className="w-5 h-5 text-ha-text-secondary flex-shrink-0" />
-                <p className="text-[15px] text-ha-text-secondary flex-1">{t("profile.deleteAccount")}</p>
-              </button>
-            </div>
+          <div className="app-card !p-0">
+            <button
+              onClick={() => setShowLogoutConfirm(true)}
+              disabled={signingOut}
+              className={`w-full flex items-center gap-3 py-4 px-5 text-left active:bg-[#FAFAFA] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
+              data-testid="button-logout"
+            >
+              <LogOut className="w-5 h-5 text-red-500 flex-shrink-0" />
+              <p className="text-[15px] font-semibold text-red-500 flex-1">{signingOut ? t("profile.signingOut") : t("profile.logout")}</p>
+            </button>
+            <div className="h-px bg-[#F0F0F0] mx-5" />
+            <button
+              onClick={() => navigate("/account/delete")}
+              className="w-full flex items-center gap-3 py-4 px-5 text-left active:bg-[#FAFAFA] transition-colors"
+              data-testid="button-delete-account"
+            >
+              <Trash2 className="w-5 h-5 text-[#9CA3AF] flex-shrink-0" />
+              <p className="text-[15px] text-[#6B7280] flex-1">{t("profile.deleteAccount")}</p>
+            </button>
           </div>
 
           <div className="flex flex-col items-center gap-1 pt-4 pb-2">
-            <p className="text-[14px] font-semibold text-ha-text">HousAlert</p>
-            <p className="text-[12px] text-ha-text-muted">v1.0.0</p>
+            <p className="text-[14px] font-bold text-[#000]">HousAlert</p>
+            <p className="text-[12px] text-[#9CA3AF]">v1.0.0</p>
           </div>
         </div>
       </div>
 
       {showLogoutConfirm && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowLogoutConfirm(false)}>
-          <div className="bg-ha-card w-full max-w-[400px] rounded-t-[6px] sm:rounded-[6px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
-            <p className="text-[17px] text-title text-ha-text text-center">{t("profile.logoutConfirm")}</p>
-            <p className="text-[14px] text-ha-text-secondary text-center mt-2 mb-6">{t("profile.logoutDesc")}</p>
+          <div className="bg-white w-full max-w-[400px] rounded-t-[12px] sm:rounded-[12px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
+            <p className="text-[17px] font-bold text-[#000] text-center">{t("profile.logoutConfirm")}</p>
+            <p className="text-[14px] text-[#6B7280] text-center mt-2 mb-6">{t("profile.logoutDesc")}</p>
             <button
               onClick={handleLogout}
-              className="w-full h-[48px] rounded-[6px] bg-ha-danger text-white text-[15px] font-semibold mb-3 active:scale-[0.98] transition-transform"
+              className="w-full h-[48px] rounded-[6px] bg-red-500 text-white text-[15px] font-semibold mb-3 active:scale-[0.98] transition-transform"
               data-testid="button-logout-confirm"
             >
               {t("profile.logoutYes")}
             </button>
             <button
               onClick={() => setShowLogoutConfirm(false)}
-              className="w-full h-[48px] rounded-[6px] text-ha-text text-[15px] font-medium active:bg-ha-surface transition-colors"
+              className="w-full h-[48px] rounded-[6px] text-[#000] text-[15px] font-medium active:bg-[#F5F5F7] transition-colors"
               data-testid="button-logout-cancel"
             >
               {t("profileDetails.cancel")}

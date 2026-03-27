@@ -106,9 +106,7 @@ export default function HousingSituationPage() {
     }
   }
 
-  const selectBase = "w-full rounded-[6px] px-4 text-[15px] border border-ha-card-border focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] focus:outline-none transition-all h-[48px] appearance-none pr-10 bg-ha-card";
-  const inputClass = "w-full rounded-[6px] px-4 text-[15px] text-ha-text placeholder:text-ha-text-muted border border-ha-card-border focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] focus:outline-none transition-all h-[48px] bg-ha-card";
-  const labelClass = "text-[13px] font-medium text-ha-text-secondary mb-1.5 block";
+  const labelClass = "text-field-label mb-2 block";
 
   function renderSelect(value: string, options: { value: string; label: string }[], onChange: (v: string) => void, testId: string) {
     const hasValue = !!value;
@@ -117,30 +115,30 @@ export default function HousingSituationPage() {
         <select
           value={value}
           onChange={e => onChange(e.target.value)}
-          className={`${selectBase} ${hasValue ? "text-ha-text" : "text-ha-text-muted"}`}
+          className={`app-select ${hasValue ? "" : "text-[#9CA3AF]"}`}
           data-testid={testId}
         >
           {options.map(opt => (
             <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
         </select>
-        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-ha-text-muted pointer-events-none" />
+        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#000] pointer-events-none" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-ha-bg">
+    <div className="min-h-screen" style={{ backgroundColor: "#F5F5F7" }}>
       <PageHeader title={t("settings.housingSituation")} onBack={() => navigate("/settings")} />
 
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <Loader2 className="w-6 h-6 animate-spin text-ha-text-muted" />
+            <Loader2 className="w-6 h-6 animate-spin text-[#9CA3AF]" />
           </div>
         ) : (
           <div className="flex flex-col gap-5">
-            <div className="rounded-[6px] bg-ha-card px-5 py-6">
+            <div className="app-card">
               <div className="flex flex-col gap-5">
                 <div>
                   <label className={labelClass}>{t("settings.livingWith")}</label>
@@ -164,7 +162,7 @@ export default function HousingSituationPage() {
                     value={data.gross_income || ""}
                     onChange={(e) => setData({ ...data, gross_income: e.target.value ? Number(e.target.value) : undefined })}
                     placeholder={t("settings.grossIncomePlaceholder")}
-                    className={inputClass}
+                    className="app-input"
                     data-testid="input-gross-income"
                   />
                 </div>
@@ -179,7 +177,7 @@ export default function HousingSituationPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="w-full h-[50px] rounded-[6px] bg-ha-primary text-white text-[15px] font-semibold transition-colors hover:bg-ha-primary-hover active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full h-[56px] rounded-[6px] bg-ha-primary text-white text-[15px] font-semibold transition-colors hover:bg-ha-primary-hover active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
               data-testid="button-housing-save"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}

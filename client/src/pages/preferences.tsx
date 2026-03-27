@@ -103,16 +103,16 @@ export default function PreferencesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-ha-bg">
+    <div className="min-h-screen" style={{ backgroundColor: "#F5F5F7" }}>
       <PageHeader title={t("settings.preferences")} onBack={() => navigate("/settings")} />
 
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-4">
           <div>
-            <p className="text-[12px] font-medium text-ha-text-secondary uppercase tracking-wider px-1 mb-2">
+            <p className="text-row-section-title px-1 mb-2">
               {t("settings.sectionTheme")}
             </p>
-            <div className="rounded-[6px] bg-ha-card px-2 py-2">
+            <div className="app-card !p-2">
               <div className="grid grid-cols-3 gap-1.5">
                 {THEME_OPTIONS.map((opt) => {
                   const isActive = theme === opt.value;
@@ -122,12 +122,12 @@ export default function PreferencesPage() {
                       key={opt.value}
                       onClick={() => setTheme(opt.value)}
                       className={`flex flex-col items-center gap-1.5 py-3 rounded-[6px] transition-all active:scale-[0.97] ${
-                        isActive ? "bg-ha-primary text-white" : "text-ha-text-secondary hover:bg-ha-surface"
+                        isActive ? "bg-ha-primary text-white" : "text-[#6B7280] hover:bg-[#F5F5F7]"
                       }`}
                       data-testid={`theme-${opt.value}`}
                     >
                       <Icon className="w-5 h-5" />
-                      <span className="text-[12px] font-medium">{opt.label}</span>
+                      <span className="text-[12px] font-semibold">{opt.label}</span>
                     </button>
                   );
                 })}
@@ -136,50 +136,50 @@ export default function PreferencesPage() {
           </div>
 
           <div>
-            <p className="text-[12px] font-medium text-ha-text-secondary uppercase tracking-wider px-1 mb-2">
+            <p className="text-row-section-title px-1 mb-2">
               {t("settings.sectionLanguage")}
             </p>
-            <div className="rounded-[6px] bg-ha-card px-5 py-1">
+            <div className="app-card !p-0">
               <button
                 onClick={() => setShowLangSheet(true)}
-                className="w-full flex items-center gap-3 py-3.5 text-left active:opacity-80 transition-opacity"
+                className="w-full flex items-center gap-3 py-4 px-5 text-left active:bg-[#FAFAFA] transition-colors"
                 data-testid="button-pref-language"
               >
-                <Globe className="w-5 h-5 text-ha-text-secondary flex-shrink-0" />
-                <p className="text-[15px] text-ha-text flex-1">{t("profile.language")}</p>
-                <span className="text-[13px] text-ha-text-secondary mr-1">{currentLangLabel}</span>
+                <Globe className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
+                <p className="text-[15px] font-semibold text-[#000] flex-1">{t("profile.language")}</p>
+                <span className="text-[13px] text-[#6B7280] mr-1">{currentLangLabel}</span>
               </button>
             </div>
           </div>
 
           <div>
-            <p className="text-[12px] font-medium text-ha-text-secondary uppercase tracking-wider px-1 mb-2">
+            <p className="text-row-section-title px-1 mb-2">
               {t("settings.sectionNotifications")}
             </p>
-            <div className="rounded-[6px] bg-ha-card px-5 py-1">
-              <div className="flex items-center gap-3 py-3.5">
-                <Bell className="w-5 h-5 text-ha-text-secondary flex-shrink-0" />
-                <span className="text-[15px] text-ha-text flex-1">{t("profile.pushNotifications")}</span>
+            <div className="app-card !p-0">
+              <div className="flex items-center gap-3 py-4 px-5">
+                <Bell className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
+                <span className="text-[15px] font-semibold text-[#000] flex-1">{t("profile.pushNotifications")}</span>
                 <button
                   onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
                   disabled={loading || notifUpdating === "push_enabled"}
-                  className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.push_enabled ? "bg-ha-primary" : "bg-ha-input-border"} ${(loading || notifUpdating === "push_enabled") ? "opacity-50" : ""}`}
+                  className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.push_enabled ? "bg-ha-primary" : "bg-[#D1D5DB]"} ${(loading || notifUpdating === "push_enabled") ? "opacity-50" : ""}`}
                   data-testid="toggle-push"
                 >
-                  <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-ha-card shadow-sm transition-transform ${notifSettings?.push_enabled ? "left-[23px]" : "left-[3px]"}`} />
+                  <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.push_enabled ? "left-[23px]" : "left-[3px]"}`} />
                 </button>
               </div>
-              <div className="h-px bg-ha-surface" />
-              <div className="flex items-center gap-3 py-3.5">
-                <Mail className="w-5 h-5 text-ha-text-secondary flex-shrink-0" />
-                <span className="text-[15px] text-ha-text flex-1">{t("profile.emailNotifications")}</span>
+              <div className="h-px bg-[#F0F0F0] mx-5" />
+              <div className="flex items-center gap-3 py-4 px-5">
+                <Mail className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
+                <span className="text-[15px] font-semibold text-[#000] flex-1">{t("profile.emailNotifications")}</span>
                 <button
                   onClick={() => handleToggleNotif("email_enabled", !!notifSettings?.email_enabled)}
                   disabled={loading || notifUpdating === "email_enabled"}
-                  className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.email_enabled ? "bg-ha-primary" : "bg-ha-input-border"} ${(loading || notifUpdating === "email_enabled") ? "opacity-50" : ""}`}
+                  className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.email_enabled ? "bg-ha-primary" : "bg-[#D1D5DB]"} ${(loading || notifUpdating === "email_enabled") ? "opacity-50" : ""}`}
                   data-testid="toggle-email"
                 >
-                  <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-ha-card shadow-sm transition-transform ${notifSettings?.email_enabled ? "left-[23px]" : "left-[3px]"}`} />
+                  <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.email_enabled ? "left-[23px]" : "left-[3px]"}`} />
                 </button>
               </div>
             </div>
@@ -189,16 +189,16 @@ export default function PreferencesPage() {
 
       {showLangSheet && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowLangSheet(false)}>
-          <div className="bg-ha-card w-full max-w-[400px] rounded-t-[6px] sm:rounded-[6px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
-            <p className="text-[17px] text-title text-ha-text text-center mb-4">{t("profile.language")}</p>
+          <div className="bg-white w-full max-w-[400px] rounded-t-[12px] sm:rounded-[12px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
+            <p className="text-[17px] font-bold text-[#000] text-center mb-4">{t("profile.language")}</p>
             {LANG_OPTIONS.map(lang => (
               <button
                 key={lang.code}
                 onClick={() => handleLanguageChange(lang.code)}
-                className={`w-full flex items-center justify-between py-3.5 px-2 rounded-[6px] text-left active:bg-ha-surface transition-colors ${locale === lang.code ? "bg-ha-primary-light" : ""}`}
+                className={`w-full flex items-center justify-between py-3.5 px-2 rounded-[6px] text-left active:bg-[#F5F5F7] transition-colors ${locale === lang.code ? "bg-ha-primary/10" : ""}`}
                 data-testid={`button-lang-${lang.code}`}
               >
-                <span className="text-[15px] text-ha-text">{lang.label}</span>
+                <span className="text-[15px] text-[#000] font-medium">{lang.label}</span>
                 {locale === lang.code && <Check className="w-5 h-5 text-ha-primary" />}
               </button>
             ))}
