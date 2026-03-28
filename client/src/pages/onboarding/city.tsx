@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "wouter";
 import { Search, MapPin, Loader2, X, ChevronLeft } from "lucide-react";
+import { defaultCities } from "../../../../config/market";
 import { OB } from "@/components/onboarding-ui";
 
 interface NominatimResult {
@@ -10,13 +11,7 @@ interface NominatimResult {
   address?: { city?: string; town?: string; village?: string; state?: string };
 }
 
-const TOP_CITIES = [
-  { name: "Amsterdam", lat: 52.3676, lng: 4.9041 },
-  { name: "Den Haag", lat: 52.0705, lng: 4.3007 },
-  { name: "Eindhoven", lat: 51.4416, lng: 5.4697 },
-  { name: "Rotterdam", lat: 51.9225, lng: 4.4792 },
-  { name: "Utrecht", lat: 52.0907, lng: 5.1214 },
-];
+const TOP_CITIES = defaultCities.slice(0, 5);
 
 export default function OnboardingCity() {
   const [, navigate] = useLocation();
@@ -35,7 +30,7 @@ export default function OnboardingCity() {
     setSearching(true);
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&addressdetails=1&limit=5&countrycodes=nl`
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&addressdetails=1&limit=5&countrycodes=de`
       );
       const data: NominatimResult[] = await res.json();
       setNominatimResults(data.filter((r) => {
