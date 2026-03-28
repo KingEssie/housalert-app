@@ -564,7 +564,7 @@ input[type="range"]::-moz-range-thumb {
 .ob-dark input[type="email"]::placeholder,
 .ob-dark input[type="password"]::placeholder,
 .ob-dark input[type="text"]::placeholder {
-  color: rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.45);
 }
 .ob-dark input[type="range"]::-webkit-slider-thumb {
   border-color: #1e1b4b;

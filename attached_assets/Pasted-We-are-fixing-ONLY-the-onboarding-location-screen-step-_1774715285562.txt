@@ -1,0 +1,161 @@
+We are fixing ONLY the onboarding location screen (step 1/4).
+
+IMPORTANT:
+- Do NOT change routing
+- Do NOT change logic
+- Do NOT change any other screens
+- ONLY fix this one screen
+- Do NOT redesign freely
+- Apply the exact corrections below
+
+==================================================
+CURRENT ISSUES TO FIX
+==================================================
+
+1. Raw translation keys are visible in the UI
+2. The search input is too short in height
+3. The search input is too rounded
+4. Too many cities are shown
+5. The header has extra UI that should not be there
+6. The spacing is still off
+7. The bottom action bar needs refinement
+
+==================================================
+1. REMOVE RAW TRANSLATION KEYS
+==================================================
+
+Replace these visible keys with real text:
+
+- onboarding.location.headerTitle
+  → "Zoekopdracht maken"
+
+- onboarding.location.sectionTitle
+  → "Locatie"
+
+- Placeholder text:
+  → "Zoek stad..."
+
+No raw translation keys may remain visible anywhere on this screen.
+
+==================================================
+2. HEADER — SIMPLIFY TO MATCH REFERENCE
+==================================================
+
+Remove extra visual clutter above the actual onboarding header.
+
+REMOVE:
+- any extra progress bar above the header
+- any duplicate top controls that are not in the reference
+
+KEEP ONLY:
+- left badge: "1/4"
+- centered title: "Zoekopdracht maken"
+- right circular close button (X)
+
+Header styling:
+- compact
+- clean
+- no extra bar above it
+
+==================================================
+3. SEARCH INPUT — FIX HEIGHT / RADIUS / STYLE
+==================================================
+
+Current input is incorrect.
+
+Make it exactly like this:
+- height: 56px
+- border-radius: 6px
+- background: transparent / dark
+- border: 1px solid rgba(255,255,255,0.7)
+- text color: white
+- placeholder color: rgba(255,255,255,0.45)
+- padding-left: 16px
+- padding-right: 48px
+- search icon inside on the right
+- icon color: white / 70%
+
+IMPORTANT:
+- no oversized rounding
+- no white background
+- no extra glow
+- clean and sharp
+
+==================================================
+4. CITY LIST — SHOW ONLY TOP 5
+==================================================
+
+Replace current long city list with ONLY these 5 cities:
+
+- Amsterdam
+- Den Haag
+- Eindhoven
+- Rotterdam
+- Utrecht
+
+Do NOT show Berlin, Hamburg, München, etc.
+Do NOT show more than 5 cities.
+
+List styling:
+- one row per city
+- left blue location icon
+- white text
+- thin divider line between rows
+- clean, minimal list
+
+==================================================
+5. SPACING
+==================================================
+
+Fix spacing to match the reference more closely:
+
+- header to section title: 20px
+- section title to input: 12px
+- input to first city row: 18px
+- row height/padding: compact but tappable
+
+Do NOT leave oversized empty gaps.
+
+==================================================
+6. BOTTOM ACTION BAR
+==================================================
+
+Refine the bottom bar only slightly:
+
+Back button:
+- square
+- 48px x 48px
+- border-radius: 12px
+- outlined
+- dark transparent fill
+
+Primary CTA:
+- "Volgende"
+- full pink button
+- same height as back button
+- visually enabled when a city is selected
+- text white and bold
+
+Do NOT make the footer too heavy or oversized.
+
+==================================================
+7. KEEP EVERYTHING ELSE THE SAME
+==================================================
+
+Do NOT change:
+- background color
+- navigation behavior
+- overall flow order
+
+==================================================
+ACCEPTANCE CRITERIA
+==================================================
+
+Only mark complete if ALL are true:
+- No raw translation keys remain
+- Header is simplified and clean
+- Input height is 56px
+- Input radius is 6px
+- Only 5 cities are shown
+- Cities are Amsterdam / Den Haag / Eindhoven / Rotterdam / Utrecht
+- Bottom bar looks clean and premium
