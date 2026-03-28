@@ -1,0 +1,117 @@
+We are fixing ONE screen: the onboarding intro screen.
+
+IMPORTANT:
+- Do NOT touch header
+- Do NOT touch bottom CTA section (button area stays as is for now)
+- Do NOT redesign colors globally
+- ONLY change the content section in the middle
+
+--------------------------------
+REMOVE CURRENT CONTENT
+--------------------------------
+
+Remove completely:
+- "Vind jouw droomwoning"
+- The paragraph below it
+- The 3 feature blocks with icons
+
+--------------------------------
+ADD NEW STRUCTURE (EXACTLY LIKE REFERENCE)
+--------------------------------
+
+Create a 3-step explanation block like this:
+
+--------------------------------
+MAIN TITLE
+--------------------------------
+
+Large bold heading:
+
+"Vind razendsnel jouw huurwoning"
+
+Style:
+- font-weight: 700
+- font-size: ~28–32px
+- line-height: tight (1.2)
+- color: white
+- margin-bottom: 24px
+
+--------------------------------
+STEP LIST (3 ITEMS)
+--------------------------------
+
+Each step has this structure:
+
+[GREEN CIRCLE WITH NUMBER] + [TEXT BLOCK]
+
+--------------------------------
+STEP ITEM STYLE
+--------------------------------
+
+Container:
+- display: flex
+- align-items: flex-start
+- gap: 12px
+- margin-bottom: 20px
+
+--------------------------------
+NUMBER CIRCLE
+--------------------------------
+
+- width: 28px
+- height: 28px
+- border-radius: 50%
+- background: #22c55e
+- color: black or dark
+- font-weight: 700
+- centered number (1,2,3)
+
+--------------------------------
+TEXT BLOCK
+--------------------------------
+
+TITLE:
+- color: #22c55e
+- font-weight: 600
+- font-size: ~16px
+
+DESCRIPTION:
+- color: rgba(255,255,255,0.8)
+- font-size: ~14px
+- margin-top: 4px
+
+--------------------------------
+CONTENT (EXACT TEXT)
+--------------------------------
+
+Step 1:
+Title: Plaats een zoekopdracht
+Description: Stel jouw woonwensen in en laat de zoekbots daarna het zware werk doen
+
+Step 2:
+Title: Wij zoeken woningmatches
+Description: Je ontvangt direct een melding zodra een woning online komt die bij jouw wensen past
+
+Step 3:
+Title: Reageer en bezichtig
+Description: Reageer direct op een woning en word vaker uitgenodigd voor een bezichtiging
+
+--------------------------------
+SPACING RULES
+--------------------------------
+
+- Space between title and first step: 24px
+- Space between steps: 20px
+- Keep layout compact (no large gaps)
+
+--------------------------------
+KEEP EVERYTHING ELSE EXACTLY THE SAME
+--------------------------------
+
+- Header
+- Bottom CTA (button + back button)
+- Colors outside this section
+
+--------------------------------
+END
+--------------------------------

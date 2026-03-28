@@ -642,7 +642,20 @@ export const en: Record<string, any> = {
     step: "{step}/{total}",
     intro: {
       title: "Find your dream apartment",
+      headline: "Find your rental lightning fast",
       subtitle: "HousAlert searches all major rental platforms and notifies you instantly when new matches appear.",
+      step1: {
+        title: "Create a search request",
+        desc: "Set your housing preferences and let the search bots do the heavy lifting",
+      },
+      step2: {
+        title: "We find matching homes",
+        desc: "You get notified instantly when a listing goes live that matches your preferences",
+      },
+      step3: {
+        title: "Respond and schedule viewings",
+        desc: "Respond directly to a listing and get invited to viewings more often",
+      },
       benefit1: {
         title: "All listings in one place",
         desc: "We search multiple housing websites at once so you never miss a listing.",

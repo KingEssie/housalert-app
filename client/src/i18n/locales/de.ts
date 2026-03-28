@@ -652,7 +652,20 @@ export const de: Record<string, any> = {
     step: "{step}/{total}",
     intro: {
       title: "Finde deine Traumwohnung",
+      headline: "Finde blitzschnell deine Mietwohnung",
       subtitle: "HousAlert durchsucht alle großen Wohnungsportale und benachrichtigt dich sofort bei neuen Treffern.",
+      step1: {
+        title: "Erstelle einen Suchauftrag",
+        desc: "Lege deine Wohnwünsche fest und lass die Suchbots die schwere Arbeit erledigen",
+      },
+      step2: {
+        title: "Wir finden passende Wohnungen",
+        desc: "Du wirst sofort benachrichtigt, sobald eine Wohnung online geht, die zu deinen Wünschen passt",
+      },
+      step3: {
+        title: "Reagiere und besichtige",
+        desc: "Reagiere direkt auf eine Wohnung und werde häufiger zur Besichtigung eingeladen",
+      },
       benefit1: {
         title: "Alle Wohnungen an einem Ort",
         desc: "Wir durchsuchen mehrere Immobilien-Websites gleichzeitig, damit du nichts verpasst.",

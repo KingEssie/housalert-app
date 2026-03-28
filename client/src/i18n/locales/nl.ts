@@ -659,7 +659,20 @@ export const nl: Record<string, any> = {
     step: "{step}/{total}",
     intro: {
       title: "Vind jouw droomwoning",
+      headline: "Vind razendsnel jouw huurwoning",
       subtitle: "HousAlert doorzoekt alle grote woningportalen en stuurt je direct een bericht bij nieuwe matches.",
+      step1: {
+        title: "Plaats een zoekopdracht",
+        desc: "Stel jouw woonwensen in en laat de zoekbots daarna het zware werk doen",
+      },
+      step2: {
+        title: "Wij zoeken woningmatches",
+        desc: "Je ontvangt direct een melding zodra een woning online komt die bij jouw wensen past",
+      },
+      step3: {
+        title: "Reageer en bezichtig",
+        desc: "Reageer direct op een woning en word vaker uitgenodigd voor een bezichtiging",
+      },
       benefit1: {
         title: "Alle woningen op één plek",
         desc: "Wij doorzoeken meerdere woningwebsites tegelijk, zodat je niets mist.",

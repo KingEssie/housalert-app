@@ -2,25 +2,13 @@ import { useLocation } from "wouter";
 import { useTranslation } from "@/i18n";
 import { HousAlertLogo } from "@/components/housalert-logo";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { Search, Zap, Bell, ArrowRight, ChevronLeft } from "lucide-react";
+import { ArrowRight, ChevronLeft } from "lucide-react";
 import { OB, OBStickyBar } from "@/components/onboarding-ui";
 
-const BENEFITS = [
-  {
-    icon: Search,
-    titleKey: "onboarding.intro.benefit1.title",
-    descKey: "onboarding.intro.benefit1.desc",
-  },
-  {
-    icon: Zap,
-    titleKey: "onboarding.intro.benefit2.title",
-    descKey: "onboarding.intro.benefit2.desc",
-  },
-  {
-    icon: Bell,
-    titleKey: "onboarding.intro.benefit3.title",
-    descKey: "onboarding.intro.benefit3.desc",
-  },
+const STEPS = [
+  { num: 1, titleKey: "onboarding.intro.step1.title", descKey: "onboarding.intro.step1.desc" },
+  { num: 2, titleKey: "onboarding.intro.step2.title", descKey: "onboarding.intro.step2.desc" },
+  { num: 3, titleKey: "onboarding.intro.step3.title", descKey: "onboarding.intro.step3.desc" },
 ];
 
 export default function OnboardingIntro() {
@@ -38,31 +26,28 @@ export default function OnboardingIntro() {
 
       <main className="flex-1 flex flex-col justify-center max-w-[480px] mx-auto w-full px-5 pb-[140px]">
         <h1
-          className="text-[30px] font-extrabold tracking-[-0.03em] leading-[1.15] mb-3"
+          className="text-[30px] font-bold tracking-[-0.02em] leading-[1.2] mb-6"
           style={{ color: OB.text }}
           data-testid="text-intro-title"
         >
-          {t("onboarding.intro.title")}
+          {t("onboarding.intro.headline")}
         </h1>
-        <p className="text-[15px] mb-10 leading-relaxed" style={{ color: OB.textSecondary }}>
-          {t("onboarding.intro.subtitle")}
-        </p>
 
-        <div className="flex flex-col gap-6">
-          {BENEFITS.map((b, i) => (
-            <div key={i} className="flex items-center gap-4" data-testid={`benefit-${i}`}>
+        <div className="flex flex-col gap-5">
+          {STEPS.map((step) => (
+            <div key={step.num} className="flex items-start gap-3" data-testid={`step-${step.num}`}>
               <div
-                className="w-12 h-12 rounded-[10px] flex items-center justify-center shrink-0"
-                style={{ backgroundColor: OB.accentBg }}
+                className="w-[28px] h-[28px] rounded-full flex items-center justify-center shrink-0 text-[14px] font-bold"
+                style={{ backgroundColor: "#22c55e", color: "#111" }}
               >
-                <b.icon className="w-5 h-5" style={{ color: OB.pink }} />
+                {step.num}
               </div>
               <div>
-                <p className="text-[15px] font-semibold" style={{ color: OB.text }}>
-                  {t(b.titleKey)}
+                <p className="text-[16px] font-semibold" style={{ color: "#22c55e" }}>
+                  {t(step.titleKey)}
                 </p>
-                <p className="text-[13px] mt-0.5 leading-relaxed" style={{ color: OB.textSecondary }}>
-                  {t(b.descKey)}
+                <p className="text-[14px] mt-1 leading-relaxed" style={{ color: "rgba(255,255,255,0.8)" }}>
+                  {t(step.descKey)}
                 </p>
               </div>
             </div>
