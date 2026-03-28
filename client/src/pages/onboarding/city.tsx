@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "wouter";
-import { Search, MapPin, Loader2, X, ChevronLeft } from "lucide-react";
+import { Search, MapPin, Loader2, X } from "lucide-react";
 import { defaultCities } from "../../../../config/market";
-import { OB, ONBOARDING_TOTAL_STEPS } from "@/components/onboarding-ui";
+import { OB, ONBOARDING_TOTAL_STEPS, OBFooter } from "@/components/onboarding-ui";
 
 interface NominatimResult {
   display_name: string;
@@ -225,39 +225,14 @@ export default function OnboardingCity() {
         )}
       </main>
 
-      <div
-        className="fixed bottom-0 left-0 right-0 z-30"
-        style={{
-          borderTop: "1px solid rgba(255,255,255,0.08)",
-          backgroundColor: "rgba(10,10,30,0.4)",
-          backdropFilter: "blur(10px)",
-          WebkitBackdropFilter: "blur(10px)",
-          paddingBottom: "max(8px, env(safe-area-inset-bottom, 8px))",
-        }}
-      >
-        <div className="max-w-[480px] mx-auto px-5 pt-3 flex items-center gap-3">
-          <button
-            onClick={handleBack}
-            className="w-[48px] h-[48px] rounded-[12px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
-            style={{
-              border: "1.5px solid rgba(255,255,255,0.25)",
-              backgroundColor: "transparent",
-            }}
-            data-testid="button-city-back"
-          >
-            <ChevronLeft className="w-[18px] h-[18px]" style={{ color: "#ffffff" }} />
-          </button>
-          <button
-            onClick={handleNext}
-            disabled={!selectedCity}
-            className="flex-1 ha-btn text-white font-bold disabled:opacity-40"
-            style={{ background: OB.pinkGradient, boxShadow: "0 8px 20px rgba(255,0,100,0.25)" }}
-            data-testid="button-city-next"
-          >
-            Volgende
-          </button>
-        </div>
-      </div>
+      <OBFooter
+        onBack={handleBack}
+        onNext={handleNext}
+        nextLabel="Volgende"
+        nextDisabled={!selectedCity}
+        backTestId="button-city-back"
+        nextTestId="button-city-next"
+      />
     </div>
   );
 }

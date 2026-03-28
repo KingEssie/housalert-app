@@ -1,0 +1,126 @@
+We are fixing ONLY the bottom footer action bar for the 3 search-profile onboarding screens.
+
+IMPORTANT:
+- Do NOT change routing
+- Do NOT change logic
+- Do NOT change content above the footer
+- Do NOT redesign the full screen
+- ONLY standardize the footer UI across step 1, step 2, and step 3
+
+==================================================
+CURRENT PROBLEM
+==================================================
+
+The footer action bar is inconsistent between the 3 search-profile screens.
+
+Step 1 and step 2 look closer to the intended design.
+Step 3 is different.
+
+Problems:
+1. The back button on step 3 is not aligned consistently with the other screens
+2. The back button is not the same height as the primary CTA
+3. The footer spacing / proportions differ between screens
+4. The back button must remain square, but its total visual height must match the CTA button
+
+==================================================
+GOAL
+==================================================
+
+Make the footer action bar identical across all 3 search-profile screens:
+
+- same footer height
+- same padding
+- same spacing
+- same back button size/position
+- same CTA button size/position
+
+==================================================
+TARGET FOOTER STRUCTURE
+==================================================
+
+Across ALL 3 screens, the footer must have:
+
+LEFT:
+- square outlined back button
+
+RIGHT:
+- large pink primary CTA button ("Volgende" or equivalent)
+
+Both must sit on the same horizontal line and be vertically aligned.
+
+==================================================
+BACK BUTTON RULES
+==================================================
+
+The back button must:
+
+- remain square
+- width: 56px
+- height: 56px
+- border-radius: 12px
+- border: 1.5px solid rgba(255,255,255,0.25)
+- background: transparent or subtle dark fill
+- icon centered perfectly
+
+IMPORTANT:
+Even though the button is square, its total height must match the primary CTA height exactly.
+
+So:
+- back button height = CTA button height = 56px
+
+==================================================
+PRIMARY CTA RULES
+==================================================
+
+The pink CTA button must be the same across all 3 screens:
+
+- height: 56px
+- border-radius: 12px (or keep current intended radius if already used consistently)
+- same vertical padding
+- same font-size
+- same font-weight
+- same shadow/glow
+- same horizontal alignment
+
+==================================================
+FOOTER CONTAINER RULES
+==================================================
+
+Use one consistent footer container across all 3 screens:
+
+- same top padding
+- same bottom padding
+- same left/right padding
+- same gap between back button and CTA
+- same background treatment
+- same border-top / blur if used
+
+If a shared footer component already exists, update that component.
+If not, create one shared component and use it for step 1, step 2, and step 3.
+
+==================================================
+DO NOT CHANGE
+==================================================
+
+Do NOT change:
+- CTA text
+- navigation behavior
+- estimated matches block
+- main page content
+- header
+- step logic
+
+Only standardize the footer action bar visuals.
+
+==================================================
+ACCEPTANCE CRITERIA
+==================================================
+
+Only mark complete if ALL are true:
+
+- step 1 footer, step 2 footer, and step 3 footer look identical in structure
+- the back button is square on all 3 screens
+- the back button height is exactly equal to the primary CTA height
+- the CTA button height is identical on all 3 screens
+- spacing and alignment are consistent across all 3 screens
+- step 3 no longer deviates visually from step 1 and 2

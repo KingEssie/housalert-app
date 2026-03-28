@@ -5,9 +5,9 @@ import { useTranslation } from "@/i18n";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import {
-  ChevronLeft, Check, Bath, Sun, Trees, Leaf, X, Loader2,
+  Check, Bath, Sun, Trees, Leaf, X,
 } from "lucide-react";
-import { OB, ONBOARDING_TOTAL_STEPS } from "@/components/onboarding-ui";
+import { OB, ONBOARDING_TOTAL_STEPS, OBFooter } from "@/components/onboarding-ui";
 import { createSearchProfile, type InsertSearchProfileInput } from "@/lib/search-profiles";
 import { queryClient } from "@/lib/queryClient";
 
@@ -519,40 +519,16 @@ export default function OnboardingFilters() {
         </div>
       </main>
 
-      <div
-        className="fixed bottom-0 left-0 right-0 z-30 border-t"
-        style={{
-          backgroundColor: OB.headerBg,
-          borderColor: OB.headerBorder,
-          paddingBottom: "max(12px, env(safe-area-inset-bottom, 12px))",
-        }}
-      >
-        <div className="max-w-[480px] mx-auto px-5 pt-3 flex items-center gap-3">
-          <button
-            onClick={handleBack}
-            className="w-[52px] h-[52px] rounded-[10px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
-            style={{
-              border: `2px solid ${OB.cardBorder}`,
-              backgroundColor: "transparent",
-            }}
-            data-testid="button-filters-back"
-          >
-            <ChevronLeft className="w-5 h-5" style={{ color: OB.text }} />
-          </button>
-          <button
-            onClick={handleNext}
-            disabled={saving}
-            className="flex-1 ha-btn text-white font-bold disabled:opacity-60"
-            style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
-            data-testid="button-filters-next"
-          >
-            {saving && <Loader2 className="w-4 h-4 animate-spin" />}
-            {isSearchOnlyMode
-              ? (t("newSearch.save") || "Opslaan")
-              : (t("common.next") || "Volgende")}
-          </button>
-        </div>
-      </div>
+      <OBFooter
+        onBack={handleBack}
+        onNext={handleNext}
+        nextLabel={isSearchOnlyMode
+          ? (t("newSearch.save") || "Opslaan")
+          : (t("common.next") || "Volgende")}
+        saving={saving}
+        backTestId="button-filters-back"
+        nextTestId="button-filters-next"
+      />
     </div>
   );
 }

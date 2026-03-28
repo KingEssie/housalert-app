@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
-import { ChevronLeft, ChevronDown, Check, Search, X } from "lucide-react";
+import { ChevronDown, Check, Search, X } from "lucide-react";
 import { cityDistricts } from "../../../../config/market";
-import { OB, ONBOARDING_TOTAL_STEPS } from "@/components/onboarding-ui";
+import { OB, ONBOARDING_TOTAL_STEPS, OBFooter } from "@/components/onboarding-ui";
 
 type LocationMode = "city" | "districts" | "radius";
 
@@ -292,50 +292,23 @@ export default function OnboardingLocation() {
         )}
       </main>
 
-      <div
-        className="fixed bottom-0 left-0 right-0 z-30"
-        style={{
-          borderTop: "1px solid rgba(255,255,255,0.08)",
-          backgroundColor: "rgba(10,10,30,0.4)",
-          backdropFilter: "blur(10px)",
-          WebkitBackdropFilter: "blur(10px)",
-          paddingBottom: "max(8px, env(safe-area-inset-bottom, 8px))",
-        }}
-      >
-        <div className="max-w-[480px] mx-auto px-5 pt-3">
-          <div className="flex items-center justify-between mb-2.5">
-            <div>
-              <p className="text-[13px] font-medium" style={{ color: "rgba(255,255,255,0.5)" }}>
-                Geschatte matches
-              </p>
-              <p className="text-[15px] font-bold" style={{ color: "#ffffff" }}>
-                121 per week 🔥
-              </p>
-            </div>
+      <OBFooter
+        onBack={handleBack}
+        onNext={handleNext}
+        nextLabel="Volgende"
+        backTestId="button-location-back"
+        nextTestId="button-location-next"
+        topContent={
+          <div>
+            <p className="text-[13px] font-medium" style={{ color: "rgba(255,255,255,0.5)" }}>
+              Geschatte matches
+            </p>
+            <p className="text-[15px] font-bold" style={{ color: "#ffffff" }}>
+              121 per week 🔥
+            </p>
           </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleBack}
-              className="w-[48px] h-[48px] rounded-[12px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
-              style={{
-                border: "1.5px solid rgba(255,255,255,0.25)",
-                backgroundColor: "transparent",
-              }}
-              data-testid="button-location-back"
-            >
-              <ChevronLeft className="w-[18px] h-[18px]" style={{ color: "#ffffff" }} />
-            </button>
-            <button
-              onClick={handleNext}
-              className="flex-1 ha-btn text-white font-bold"
-              style={{ background: OB.pinkGradient, boxShadow: "0 8px 20px rgba(255,0,100,0.25)" }}
-              data-testid="button-location-next"
-            >
-              Volgende
-            </button>
-          </div>
-        </div>
-      </div>
+        }
+      />
     </div>
   );
 }
