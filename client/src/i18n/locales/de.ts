@@ -440,7 +440,7 @@ export const de: Record<string, any> = {
   auth: {
     appName: "HousAlert",
     login: {
-      title: "Willkommen bei\nHousAlert!",
+      title: "Willkommen bei HousAlert!",
       subtitle: "Melde dich bei deinem HousAlert-Konto an.",
       email: "E-Mail-Adresse",
       emailPlaceholder: "deine@email.de",
@@ -507,7 +507,7 @@ export const de: Record<string, any> = {
 
   v2: {
     welcome: {
-      title: "Willkommen bei\nHousAlert!",
+      title: "Willkommen bei HousAlert!",
       subtitle: "Melde dich an oder erstelle ein Suchprofil",
       emailLabel: "E-Mailadresse",
       emailPlaceholder: "name@beispiel.de",

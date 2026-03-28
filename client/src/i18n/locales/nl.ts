@@ -446,7 +446,7 @@ export const nl: Record<string, any> = {
   auth: {
     appName: "HousAlert",
     login: {
-      title: "Welkom bij\nHousAlert!",
+      title: "Welkom bij HousAlert!",
       subtitle: "Log in op je HousAlert-account.",
       email: "E-mailadres",
       emailPlaceholder: "jouw@email.nl",
@@ -514,7 +514,7 @@ export const nl: Record<string, any> = {
 
   v2: {
     welcome: {
-      title: "Welkom bij\nHousAlert!",
+      title: "Welkom bij HousAlert!",
       subtitle: "Log in of maak een zoekprofiel aan",
       emailLabel: "E-mailadres",
       emailPlaceholder: "naam@voorbeeld.nl",

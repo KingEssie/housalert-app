@@ -187,13 +187,13 @@ export default function WelcomePage() {
 
       <main className="flex-1 flex flex-col w-full px-4 pt-6 pb-[max(env(safe-area-inset-bottom),12px)]">
         <h1
-          className="text-[28px] font-extrabold text-white leading-[1.15] tracking-[-0.02em] mb-6 whitespace-pre-line"
+          className="text-[26px] font-extrabold text-white leading-[1.15] tracking-[-0.02em] mb-8 whitespace-nowrap"
           data-testid="text-auth-title"
         >
           {t("v2.welcome.title")}
         </h1>
 
-        <form onSubmit={handleLogin} className="flex flex-col gap-4">
+        <form onSubmit={handleLogin} className="flex flex-col gap-6">
           <div className="flex flex-col gap-1.5">
             <label className="text-[14px] font-bold text-white" htmlFor="welcome-email">
               {t("v2.welcome.emailLabel")}
@@ -281,7 +281,7 @@ export default function WelcomePage() {
           </button>
         </form>
 
-        <div className="flex items-center gap-3 my-4">
+        <div className="flex items-center gap-3 my-6">
           <div className="flex-1 h-px" style={{ backgroundColor: "rgba(255,255,255,0.15)" }} />
           <span className="text-[13px] font-semibold uppercase tracking-wide" style={{ color: "rgba(255,255,255,0.5)" }}>
             {t("v2.welcome.or") || "OF"}
