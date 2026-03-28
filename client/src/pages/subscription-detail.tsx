@@ -61,10 +61,10 @@ export default function SubscriptionDetailPage() {
   }
 
   function getStatusColor(): string {
-    if (subscription?.isExpired) return "bg-ha-danger-light text-ha-danger";
-    if (isCanceled && subscription?.isActive) return "bg-amber-400/15 text-amber-400";
+    if (subscription?.isExpired) return "bg-red-100 text-red-600";
+    if (isCanceled && subscription?.isActive) return "bg-amber-100 text-amber-600";
     if (subscription?.isTrial) return "bg-ha-primary/15 text-ha-primary";
-    return "bg-ha-success-light text-ha-success";
+    return "bg-green-100 text-green-600";
   }
 
   const startDate = subscription?.created_at || null;
@@ -72,14 +72,14 @@ export default function SubscriptionDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-ha-bg">
+      <div className="min-h-screen" style={{ backgroundColor: "#F5F5F7" }}>
         <PageHeader title={t("subscription.title")} onBack={() => navigate("/settings")} />
-        <div className="max-w-lg mx-auto px-6 pt-4">
-          <div className="rounded-[6px] border border-ha-card-border bg-ha-card p-6 animate-pulse">
-            <div className="h-5 bg-ha-surface rounded w-1/3 mb-4" />
-            <div className="h-4 bg-ha-surface rounded w-2/3 mb-3" />
-            <div className="h-4 bg-ha-surface rounded w-1/2 mb-3" />
-            <div className="h-4 bg-ha-surface rounded w-2/3" />
+        <div className="max-w-lg mx-auto px-4 pt-4">
+          <div className="app-card animate-pulse">
+            <div className="h-5 bg-[#F0F0F0] rounded w-1/3 mb-4" />
+            <div className="h-4 bg-[#F0F0F0] rounded w-2/3 mb-3" />
+            <div className="h-4 bg-[#F0F0F0] rounded w-1/2 mb-3" />
+            <div className="h-4 bg-[#F0F0F0] rounded w-2/3" />
           </div>
         </div>
       </div>
@@ -124,24 +124,24 @@ export default function SubscriptionDetailPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-ha-bg" data-testid="page-subscription-detail">
+    <div className="min-h-screen" style={{ backgroundColor: "#F5F5F7" }} data-testid="page-subscription-detail">
       <PageHeader title={t("subscription.title")} onBack={() => navigate("/settings")} />
 
-      <div className="max-w-lg mx-auto px-6 pt-2 pb-12 flex flex-col gap-6">
+      <div className="max-w-lg mx-auto px-4 pt-2 pb-12 flex flex-col gap-4">
         <div
-          className="rounded-[6px] border border-ha-card-border bg-ha-card px-5 py-5"
+          className="app-card"
           data-testid="card-subscription-info"
         >
           <div className="flex items-center gap-3 mb-5">
-            <div className="w-12 h-12 rounded-[6px] bg-ha-primary/10 flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 rounded-[8px] bg-ha-primary/10 flex items-center justify-center flex-shrink-0">
               <Crown className="w-[22px] h-[22px] text-ha-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[15px] text-title text-ha-text" data-testid="text-plan-summary">
+              <p className="text-[15px] font-bold text-[#000]" data-testid="text-plan-summary">
                 {subscription?.isTrial ? t("subscription.status.trial") : getPlanLabel(subscription?.plan)}
               </p>
               <span
-                className={`inline-block mt-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full ${getStatusColor()}`}
+                className={`inline-block mt-1 text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${getStatusColor()}`}
                 data-testid="badge-subscription-status"
               >
                 {getStatusLabel()}
@@ -153,53 +153,56 @@ export default function SubscriptionDetailPage() {
             {rows.map((row, idx) => (
               <div
                 key={row.testId}
-                className={`flex items-center justify-between py-[14px] ${idx < rows.length - 1 ? "border-b border-ha-card-border" : ""}`}
+                className={`flex items-center justify-between py-[14px] ${idx < rows.length - 1 ? "border-b border-[#F0F0F0]" : ""}`}
               >
-                <p className="text-[13px] text-ha-text-secondary">{row.label}</p>
-                <p className="text-[14px] text-ha-text font-medium" data-testid={row.testId}>{row.value}</p>
+                <p className="text-[13px] text-[#6B7280]">{row.label}</p>
+                <p className="text-[14px] text-[#000] font-medium" data-testid={row.testId}>{row.value}</p>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="flex flex-col gap-1">
+        <div className="app-card !p-0">
           <button
             onClick={() => navigate("/account/payment-method")}
-            className="w-full flex items-center gap-3.5 px-1 py-[14px] text-left active:bg-ha-card transition-colors rounded-[6px]"
+            className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#FAFAFA] transition-colors"
             data-testid="button-manage-payment"
           >
-            <CreditCard className="w-[22px] h-[22px] text-ha-text-secondary flex-shrink-0" />
-            <p className="text-[15px] text-ha-text flex-1">{t("subscription.managePayment")}</p>
-            <ChevronRight className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
+            <CreditCard className="w-[22px] h-[22px] text-[#6B7280] flex-shrink-0" />
+            <p className="text-[15px] text-[#000] font-medium flex-1">{t("subscription.managePayment")}</p>
+            <ChevronRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
           </button>
 
           {!isCanceled && (
-            <button
-              onClick={() => navigate("/account/subscription/cancel")}
-              className="w-full flex items-center gap-3.5 px-1 py-[14px] text-left active:bg-ha-danger/10 transition-colors rounded-[6px]"
-              data-testid="button-cancel-subscription"
-            >
-              <XCircle className="w-[22px] h-[22px] text-ha-danger flex-shrink-0" />
-              <p className="text-[15px] text-ha-danger flex-1">{t("subscription.cancelSubscription")}</p>
-              <ChevronRight className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
-            </button>
+            <>
+              <div className="h-px bg-[#F0F0F0] mx-5" />
+              <button
+                onClick={() => navigate("/account/subscription/cancel")}
+                className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-red-50 transition-colors"
+                data-testid="button-cancel-subscription"
+              >
+                <XCircle className="w-[22px] h-[22px] text-red-500 flex-shrink-0" />
+                <p className="text-[15px] text-red-500 font-medium flex-1">{t("subscription.cancelSubscription")}</p>
+                <ChevronRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
+              </button>
+            </>
           )}
         </div>
 
         {subscription?.isExpired && (
-          <div className="rounded-[6px] border border-ha-card-border bg-ha-card p-5" data-testid="card-expired-cta">
+          <div className="app-card" data-testid="card-expired-cta">
             <div className="flex items-start gap-3 mb-4">
-              <div className="w-10 h-10 rounded-[6px] bg-ha-primary/10 flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-[8px] bg-ha-primary/10 flex items-center justify-center flex-shrink-0">
                 <AlertCircle className="w-5 h-5 text-ha-primary" />
               </div>
               <div>
-                <p className="text-[15px] font-medium text-ha-text">{t("subscription.expiredTitle")}</p>
-                <p className="text-[14px] text-ha-text-secondary mt-0.5">{t("subscription.expiredDesc")}</p>
+                <p className="text-[15px] font-bold text-[#000]">{t("subscription.expiredTitle")}</p>
+                <p className="text-[14px] text-[#6B7280] mt-0.5">{t("subscription.expiredDesc")}</p>
               </div>
             </div>
             <button
               onClick={() => navigate("/paywall")}
-              className="w-full h-[48px] bg-ha-primary hover:bg-ha-primary-hover text-white rounded-full font-medium text-[15px] transition-colors active:opacity-90"
+              className="w-full h-[56px] bg-ha-primary hover:bg-ha-primary-hover text-white rounded-[6px] font-semibold text-[15px] transition-colors active:scale-[0.98]"
               data-testid="button-renew-subscription"
             >
               {t("subscription.renewSubscription")}

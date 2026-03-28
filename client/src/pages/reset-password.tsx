@@ -7,9 +7,6 @@ import { useTranslation } from "@/i18n";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, Lock, CheckCircle2, Loader2 } from "lucide-react";
 
-const BRAND = "rgb(var(--ha-primary))";
-const BRAND_HOVER = "rgb(var(--ha-primary-hover))";
-
 export default function ResetPasswordPage() {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
@@ -85,17 +82,16 @@ export default function ResetPasswordPage() {
 
   if (sessionError) {
     return (
-      <div className="h-[100dvh] bg-ha-bg flex flex-col items-center justify-center px-8 text-center" data-testid="page-reset-error">
-        <h1 className="text-[22px] font-bold text-ha-text mb-3" data-testid="text-error-title">
+      <div className="h-[100dvh] flex flex-col items-center justify-center px-8 text-center" style={{ backgroundColor: "#F5F5F7" }} data-testid="page-reset-error">
+        <h1 className="text-[22px] font-bold text-[#000] mb-3" data-testid="text-error-title">
           {t("resetPassword.expiredTitle")}
         </h1>
-        <p className="text-[15px] text-ha-text-secondary leading-[1.5] max-w-[320px] mb-6">
+        <p className="text-[15px] text-[#6B7280] leading-[1.5] max-w-[320px] mb-6">
           {t("resetPassword.expiredDesc")}
         </p>
         <button
           onClick={() => { setRecoveryMode(false); navigate("/forgot-password"); }}
-          className="h-[50px] px-8 rounded-full text-[15px] font-bold text-ha-text transition-all active:scale-[0.97]"
-          style={{ backgroundColor: BRAND }}
+          className="h-[56px] px-8 rounded-[6px] text-[15px] font-semibold text-white bg-ha-primary hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
           data-testid="button-try-again"
         >
           {t("resetPassword.tryAgain")}
@@ -106,7 +102,7 @@ export default function ResetPasswordPage() {
 
   if (!ready) {
     return (
-      <div className="h-[100dvh] bg-ha-bg flex flex-col items-center justify-center">
+      <div className="h-[100dvh] flex flex-col items-center justify-center" style={{ backgroundColor: "#F5F5F7" }}>
         <Loader2 className="w-8 h-8 animate-spin text-ha-primary" />
       </div>
     );
@@ -114,22 +110,19 @@ export default function ResetPasswordPage() {
 
   if (success) {
     return (
-      <div className="h-[100dvh] bg-ha-bg flex flex-col items-center justify-center px-8 text-center" data-testid="page-reset-success">
-        <div className="w-16 h-16 rounded-full bg-ha-success-light flex items-center justify-center mb-6">
-          <CheckCircle2 className="w-8 h-8 text-ha-success" />
+      <div className="h-[100dvh] flex flex-col items-center justify-center px-8 text-center" style={{ backgroundColor: "#F5F5F7" }} data-testid="page-reset-success">
+        <div className="w-16 h-16 rounded-full bg-[#F0FDF4] flex items-center justify-center mb-6">
+          <CheckCircle2 className="w-8 h-8 text-green-500" />
         </div>
-        <h1 className="text-[24px] font-bold text-ha-text tracking-[-0.02em] mb-3" data-testid="text-success-title">
+        <h1 className="text-[24px] font-bold text-[#000] tracking-[-0.02em] mb-3" data-testid="text-success-title">
           {t("resetPassword.successTitle")}
         </h1>
-        <p className="text-[15px] text-ha-text-secondary leading-[1.55] max-w-[320px] mb-8">
+        <p className="text-[15px] text-[#6B7280] leading-[1.55] max-w-[320px] mb-8">
           {t("resetPassword.successDesc")}
         </p>
         <button
           onClick={() => navigate("/login")}
-          className="h-[50px] px-8 rounded-full text-[15px] font-bold text-ha-text transition-all active:scale-[0.97] shadow-[0_4px_16px_rgba(233,30,99,0.35)]"
-          style={{ backgroundColor: BRAND }}
-          onMouseOver={(e) => (e.currentTarget.style.backgroundColor = BRAND_HOVER)}
-          onMouseOut={(e) => (e.currentTarget.style.backgroundColor = BRAND)}
+          className="h-[56px] px-8 rounded-[6px] text-[15px] font-semibold text-white bg-ha-primary hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
           data-testid="button-go-login"
         >
           {t("resetPassword.goToLogin")}
@@ -139,40 +132,40 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="h-[100dvh] bg-ha-bg flex flex-col" data-testid="page-reset-password">
+    <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: "#F5F5F7" }} data-testid="page-reset-password">
       <div className="pt-[max(env(safe-area-inset-top),8px)]" />
 
       <div className="flex-1 flex flex-col px-7">
         <div className="flex justify-center pt-8 pb-8">
-          <HousAlertLogo size={44} showText={true} textClassName="font-bold text-ha-text text-[20px] tracking-[-0.01em]" />
+          <HousAlertLogo size={44} showText={true} textClassName="font-bold text-[#000] text-[20px] tracking-[-0.01em]" />
         </div>
 
         <h1
-          className="text-[26px] font-bold text-ha-text leading-[1.15] tracking-[-0.03em] mb-3 text-center"
+          className="text-[26px] font-bold text-[#000] leading-[1.15] tracking-[-0.03em] mb-3 text-center"
           data-testid="text-reset-title"
         >
           {t("resetPassword.title")}
         </h1>
 
-        <p className="text-[15px] text-ha-text-secondary leading-[1.55] text-center max-w-[340px] mx-auto mb-8">
+        <p className="text-[15px] text-[#6B7280] leading-[1.55] text-center max-w-[340px] mx-auto mb-8">
           {t("resetPassword.description")}
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label className="block text-[14px] font-medium text-ha-text mb-2">
+            <label className="text-field-label mb-2 block">
               {t("resetPassword.newPassword")}
             </label>
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                <Lock className="w-[18px] h-[18px] text-ha-text-muted" />
+                <Lock className="w-[18px] h-[18px] text-[#9CA3AF]" />
               </div>
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full h-[52px] pl-11 pr-12 rounded-[6px] border border-ha-card-border bg-ha-card text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted placeholder:font-normal focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.1)] outline-none transition-all"
+                className="app-input !pl-11 !pr-12"
                 data-testid="input-new-password"
               />
               <button
@@ -182,8 +175,8 @@ export default function ResetPasswordPage() {
                 data-testid="button-toggle-password"
               >
                 {showPassword
-                  ? <EyeOff className="w-[18px] h-[18px] text-ha-text-muted" />
-                  : <Eye className="w-[18px] h-[18px] text-ha-text-muted" />}
+                  ? <EyeOff className="w-[18px] h-[18px] text-[#9CA3AF]" />
+                  : <Eye className="w-[18px] h-[18px] text-[#9CA3AF]" />}
               </button>
             </div>
             {tooShort && (
@@ -194,19 +187,19 @@ export default function ResetPasswordPage() {
           </div>
 
           <div>
-            <label className="block text-[14px] font-medium text-ha-text mb-2">
+            <label className="text-field-label mb-2 block">
               {t("resetPassword.confirmPassword")}
             </label>
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                <Lock className="w-[18px] h-[18px] text-ha-text-muted" />
+                <Lock className="w-[18px] h-[18px] text-[#9CA3AF]" />
               </div>
               <input
                 type={showConfirm ? "text" : "password"}
                 value={confirm}
                 onChange={(e) => setConfirm(e.target.value)}
                 placeholder="••••••••"
-                className="w-full h-[52px] pl-11 pr-12 rounded-[6px] border border-ha-card-border bg-ha-card text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted placeholder:font-normal focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.1)] outline-none transition-all"
+                className="app-input !pl-11 !pr-12"
                 data-testid="input-confirm-password"
               />
               <button
@@ -216,8 +209,8 @@ export default function ResetPasswordPage() {
                 data-testid="button-toggle-confirm"
               >
                 {showConfirm
-                  ? <EyeOff className="w-[18px] h-[18px] text-ha-text-muted" />
-                  : <Eye className="w-[18px] h-[18px] text-ha-text-muted" />}
+                  ? <EyeOff className="w-[18px] h-[18px] text-[#9CA3AF]" />
+                  : <Eye className="w-[18px] h-[18px] text-[#9CA3AF]" />}
               </button>
             </div>
             {mismatch && (
@@ -230,14 +223,11 @@ export default function ResetPasswordPage() {
           <button
             type="submit"
             disabled={!canSubmit}
-            className={`w-full h-[52px] rounded-[6px] text-[16px] font-bold transition-all active:scale-[0.97] ${
+            className={`w-full h-[56px] rounded-[6px] text-[15px] font-semibold transition-colors active:scale-[0.97] ${
               canSubmit
-                ? "text-ha-text shadow-[0_4px_16px_rgba(233,30,99,0.35)]"
-                : "text-ha-text-muted bg-ha-surface cursor-not-allowed"
+                ? "bg-ha-primary hover:bg-ha-primary-hover text-white"
+                : "bg-[#E5E5E5] text-[#9CA3AF] cursor-not-allowed"
             }`}
-            style={canSubmit ? { backgroundColor: BRAND } : undefined}
-            onMouseOver={(e) => { if (canSubmit) e.currentTarget.style.backgroundColor = BRAND_HOVER; }}
-            onMouseOut={(e) => { if (canSubmit) e.currentTarget.style.backgroundColor = BRAND; }}
             data-testid="button-submit"
           >
             {loading ? t("common.loading") : t("resetPassword.submit")}

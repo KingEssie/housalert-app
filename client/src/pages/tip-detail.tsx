@@ -25,8 +25,8 @@ export default function TipDetailPage() {
 
   if (!tip) {
     return (
-      <div className="min-h-screen bg-ha-bg flex items-center justify-center">
-        <p className="text-ha-text-secondary">{t("tips.notFound")}</p>
+      <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center">
+        <p className="text-[#6B7280]">{t("tips.notFound")}</p>
       </div>
     );
   }
@@ -59,24 +59,24 @@ export default function TipDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-ha-bg flex flex-col">
-      <header className="sticky top-0 z-10 bg-ha-bg border-b border-ha-card-border">
+    <div className="min-h-screen bg-[#F5F5F7] flex flex-col">
+      <header className="sticky top-0 z-10 bg-[#F5F5F7] border-b border-[#E5E5E5]">
         <div className="max-w-xl mx-auto flex items-center h-[56px] px-5">
           <button
             onClick={() => navigate("/dashboard?tab=tips")}
-            className="w-9 h-9 rounded-full bg-ha-card flex items-center justify-center mr-3 active:scale-95 transition-transform"
+            className="w-9 h-9 rounded-full bg-white flex items-center justify-center mr-3 active:scale-95 transition-transform"
             data-testid="button-back-tip"
           >
-            <ArrowLeft className="w-4 h-4 text-ha-text-secondary" />
+            <ArrowLeft className="w-4 h-4 text-[#6B7280]" />
           </button>
-          <h1 className="text-[17px] font-medium text-ha-text flex-1 tracking-wide">
+          <h1 className="text-[17px] font-medium text-[#000] flex-1 tracking-wide">
             {t("tips.tipLabel")} {currentIndex + 1}/{TIP_IDS.length}
           </h1>
         </div>
       </header>
 
       <div className="max-w-xl mx-auto w-full px-5 pt-3">
-        <div className="w-full bg-ha-surface rounded-full h-1.5" data-testid="progress-bar">
+        <div className="w-full bg-[#F5F5F7] rounded-full h-1.5" data-testid="progress-bar">
           <div
             className="bg-ha-primary h-1.5 rounded-full transition-all duration-300"
             style={{ width: `${((currentIndex + 1) / TIP_IDS.length) * 100}%` }}
@@ -93,28 +93,28 @@ export default function TipDetailPage() {
             <p className="text-[12px] font-medium text-ha-primary uppercase tracking-wide">
               {t("tips.tipLabel")} {currentIndex + 1}
             </p>
-            <h2 className="text-[22px] font-medium text-ha-text leading-tight" data-testid="text-tip-title">
+            <h2 className="text-[22px] font-medium text-[#000] leading-tight" data-testid="text-tip-title">
               {tip.title}
             </h2>
           </div>
         </div>
 
-        <p className="text-[15px] text-ha-text-secondary leading-relaxed mb-6" data-testid="text-tip-description">
+        <p className="text-[15px] text-[#6B7280] leading-relaxed mb-6" data-testid="text-tip-description">
           {tip.description}
         </p>
 
         <button
           onClick={handleGoToContent}
-          className="w-full bg-ha-card rounded-[6px] p-5 flex items-center gap-3 text-left hover:bg-ha-card-hover transition-colors active:scale-[0.985]"
+          className="w-full bg-white rounded-[6px] p-5 flex items-center gap-3 text-left hover:bg-[#FAFAFA] transition-colors active:scale-[0.985]"
           data-testid="button-open-content"
         >
           <Icon className="w-5 h-5 text-ha-primary flex-shrink-0" />
-          <span className="text-[14px] font-medium text-ha-text flex-1">{t("tips.openContent")}</span>
-          <ChevronRight className="w-4 h-4 text-ha-text-muted" />
+          <span className="text-[14px] font-medium text-[#000] flex-1">{t("tips.openContent")}</span>
+          <ChevronRight className="w-4 h-4 text-[#9CA3AF]" />
         </button>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-ha-bg border-t border-ha-card-border p-4 pb-5 z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-[#F5F5F7] border-t border-[#E5E5E5] p-4 pb-5 z-10">
         <div className="max-w-xl mx-auto flex gap-3">
           <Button
             onClick={handleMarkRead}
@@ -122,7 +122,7 @@ export default function TipDetailPage() {
             className={`flex-1 h-[52px] rounded-[6px] text-[15px] font-medium flex items-center justify-center gap-2 ${
               isRead
                 ? "bg-ha-success-light text-ha-success border border-ha-success/30 hover:bg-ha-success-light"
-                : "bg-ha-card text-ha-text border border-ha-card-border hover:bg-ha-surface"
+                : "bg-white text-[#000] border border-[#E5E5E5] hover:bg-[#F5F5F7]"
             }`}
             data-testid="button-mark-read"
           >

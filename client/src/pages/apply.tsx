@@ -16,14 +16,14 @@ import {
 } from "lucide-react";
 
 const CITY_GRADIENTS: Record<string, string> = {
-  berlin: "from-[#222222] to-[#333333]",
-  münchen: "from-[#222222] to-[#333333]",
-  hamburg: "from-[#333333] to-[#222222]",
-  frankfurt: "from-[#222222] to-[#333333]",
-  köln: "from-[#333333] to-[#222222]",
-  düsseldorf: "from-[#222222] to-[#333333]",
-  stuttgart: "from-[#333333] to-[#222222]",
-  default: "from-[#222222] to-[#333333]",
+  berlin: "from-[#E5E5E5] to-[#D4D4D4]",
+  münchen: "from-[#E5E5E5] to-[#D4D4D4]",
+  hamburg: "from-[#D4D4D4] to-[#E5E5E5]",
+  frankfurt: "from-[#E5E5E5] to-[#D4D4D4]",
+  köln: "from-[#D4D4D4] to-[#E5E5E5]",
+  düsseldorf: "from-[#E5E5E5] to-[#D4D4D4]",
+  stuttgart: "from-[#D4D4D4] to-[#E5E5E5]",
+  default: "from-[#E5E5E5] to-[#D4D4D4]",
 };
 
 function getCityGradient(city: string): string {
@@ -139,30 +139,30 @@ export default function ApplyPage() {
 
   if (listingLoading || !listing) {
     return (
-      <div className="min-h-screen bg-ha-card flex flex-col relative">
+      <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F5F5F7" }}>
         <button
           onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=matches")}
-          className="fixed top-[calc(12px+env(safe-area-inset-top))] left-4 z-20 w-12 h-12 rounded-full bg-ha-card shadow-[0_2px_8px_rgba(0,0,0,0.10)] flex items-center justify-center"
+          className="fixed top-[calc(12px+env(safe-area-inset-top))] left-4 z-20 w-12 h-12 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)] flex items-center justify-center border border-[#E5E5E5]"
           data-testid="button-back-apply"
         >
-          <ArrowLeft className="w-5 h-5 text-ha-text-muted" />
+          <ArrowLeft className="w-5 h-5 text-[#000]" />
         </button>
         <div className="animate-pulse">
-          <div className="w-full bg-ha-surface" style={{ aspectRatio: "16/10" }} />
-          <div className="max-w-xl mx-auto w-full px-5 pt-6 relative -mt-5 bg-ha-card rounded-t-[6px]">
-            <div className="flex flex-col items-center gap-2">
-              <div className="h-5 bg-ha-surface rounded-md w-4/5" />
-              <div className="h-5 bg-ha-surface rounded-md w-3/5" />
-              <div className="h-4 bg-ha-surface rounded-md w-2/5 mt-0.5" />
-              <div className="h-3.5 bg-ha-surface rounded-md w-3/5 mt-0.5" />
+          <div className="w-full bg-[#E5E5E5]" style={{ aspectRatio: "16/10" }} />
+          <div className="max-w-xl mx-auto w-full px-5 pt-6 space-y-4">
+            <div className="app-card">
+              <div className="flex flex-col items-center gap-2">
+                <div className="h-5 bg-[#F0F0F0] rounded-md w-4/5" />
+                <div className="h-5 bg-[#F0F0F0] rounded-md w-3/5" />
+                <div className="h-4 bg-[#F0F0F0] rounded-md w-2/5 mt-0.5" />
+              </div>
             </div>
-            <div className="mt-7 border-t border-ha-card-border" />
-            <div className="pt-6">
-              <div className="h-4 bg-ha-surface rounded w-24 mb-3" />
-              <div className="bg-ha-card rounded-[6px] px-5 py-5 space-y-2">
-                <div className="h-3.5 bg-ha-surface rounded w-full" />
-                <div className="h-3.5 bg-ha-surface rounded w-5/6" />
-                <div className="h-3.5 bg-ha-surface rounded w-4/6" />
+            <div className="app-card">
+              <div className="h-4 bg-[#F0F0F0] rounded w-24 mb-3" />
+              <div className="space-y-2">
+                <div className="h-3.5 bg-[#F0F0F0] rounded w-full" />
+                <div className="h-3.5 bg-[#F0F0F0] rounded w-5/6" />
+                <div className="h-3.5 bg-[#F0F0F0] rounded w-4/6" />
               </div>
             </div>
           </div>
@@ -261,13 +261,13 @@ export default function ApplyPage() {
   const detailLine = detailParts.join(" · ");
 
   return (
-    <div className="min-h-screen bg-ha-card flex flex-col relative">
+    <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F5F5F7" }}>
       <button
         onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=matches")}
-        className="fixed top-[calc(12px+env(safe-area-inset-top))] left-4 z-20 w-12 h-12 rounded-full bg-ha-card shadow-[0_2px_8px_rgba(0,0,0,0.10)] flex items-center justify-center active:scale-95 transition-transform"
+        className="fixed top-[calc(12px+env(safe-area-inset-top))] left-4 z-20 w-12 h-12 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)] flex items-center justify-center active:scale-95 transition-transform border border-[#E5E5E5]"
         data-testid="button-back-apply"
       >
-        <ArrowLeft className="w-5 h-5 text-ha-text-muted" />
+        <ArrowLeft className="w-5 h-5 text-[#000]" />
       </button>
 
       <div className="relative">
@@ -284,7 +284,7 @@ export default function ApplyPage() {
         ) : (
           <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "16/10" }}>
             <div className="absolute inset-0 bg-black/5" />
-            <div className="flex flex-col items-center gap-2 text-white/50">
+            <div className="flex flex-col items-center gap-2 text-[#9CA3AF]">
               <ImageIcon className="w-10 h-10" />
               <span className="text-[12px] font-medium">{listing.source}</span>
             </div>
@@ -292,31 +292,29 @@ export default function ApplyPage() {
         )}
       </div>
 
-      <main className="flex-1 max-w-xl mx-auto w-full pb-[120px] relative -mt-5 bg-ha-card rounded-t-[6px]">
-        <div className="px-5 pt-6 text-center">
-          <h1
-            className="text-[22px] text-title text-ha-text mx-auto"
-            data-testid="text-apply-title"
-          >
-            {listing.title}
-          </h1>
-          <p className="text-[15px] text-ha-text-secondary mt-1.5" data-testid="text-apply-subtitle">
-            {subtitle}
-          </p>
-          {detailLine && (
-            <p className="text-[14px] text-ha-text-secondary mt-1" data-testid="text-apply-details">
-              {detailLine}
+      <main className="flex-1 max-w-xl mx-auto w-full pb-[120px] -mt-5 relative z-10 px-5 pt-5">
+        <div className="space-y-4">
+          <div className="app-card text-center">
+            <h1
+              className="text-[22px] font-bold text-[#000] leading-[1.2] tracking-[-0.02em]"
+              data-testid="text-apply-title"
+            >
+              {listing.title}
+            </h1>
+            <p className="text-[15px] text-[#6B7280] mt-1.5" data-testid="text-apply-subtitle">
+              {subtitle}
             </p>
-          )}
-        </div>
+            {detailLine && (
+              <p className="text-[14px] text-[#6B7280] mt-1" data-testid="text-apply-details">
+                {detailLine}
+              </p>
+            )}
+          </div>
 
-        <div className="mx-5 mt-7 border-t border-ha-card-border" />
-
-        <div className="px-5 pt-6">
-          <h2 className="text-[15px] font-medium text-ha-text mb-3">{t("applySheet.applicationLetter")}</h2>
-          <div className="bg-ha-card rounded-[6px] px-5 py-5">
+          <div className="app-card">
+            <h2 className="text-[15px] font-bold text-[#000] mb-3">{t("applySheet.applicationLetter")}</h2>
             <textarea
-              className="w-full text-[14px] text-ha-text leading-[1.75] font-[inherit] bg-transparent border-none outline-none resize-none min-h-[220px]"
+              className="app-textarea min-h-[220px] leading-[1.75]"
               value={editedLetter ?? filledLetter}
               onChange={(e) => setEditedLetter(e.target.value)}
               data-testid="apply-letter-preview"
@@ -327,17 +325,17 @@ export default function ApplyPage() {
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-ha-card rounded-t-[6px] shadow-[0_-2px_16px_rgba(0,0,0,0.06)] z-10 pb-[env(safe-area-inset-bottom)]">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E5E5] z-10 pb-[env(safe-area-inset-bottom)]">
         <div className="max-w-xl mx-auto flex items-center justify-between px-5 py-4">
           {listing.price > 0 && (
             <div className="flex flex-col" data-testid="text-sticky-price">
-              <span className="text-[20px] text-title text-ha-text">€{listing.price}</span>
-              <span className="text-[12px] text-ha-text-secondary leading-none">{t("common.perMonthShort")}</span>
+              <span className="text-[20px] font-bold text-[#000]">€{listing.price}</span>
+              <span className="text-[12px] text-[#6B7280] leading-none">{t("common.perMonthShort")}</span>
             </div>
           )}
           <Button
             onClick={handleCopyAndRespond}
-            className={`h-[50px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium px-6 ${listing.price > 0 ? "" : "w-full"}`}
+            className={`h-[50px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold px-6 ${listing.price > 0 ? "" : "w-full"}`}
             data-testid="button-copy-and-respond"
           >
             <Copy className="w-4 h-4 mr-2" />

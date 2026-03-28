@@ -180,13 +180,13 @@ function BoostScoreCard({ score, remaining, completed, total }: { score: number;
   else headline = t("boostScore.readyToStart");
 
   return (
-    <div className="bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6" data-testid="card-boost-score">
+    <div className="bg-white rounded-[12px] border border-[#E5E5E5] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6" data-testid="card-boost-score">
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
-          <Zap className="w-5 h-5 text-ha-text-muted" />
+          <Zap className="w-5 h-5 text-[#9CA3AF]" />
           <div>
-            <h3 className="text-[15px] font-medium text-ha-text">{headline}</h3>
-            <p className="text-[13px] text-ha-text">{t("boostScore.progress", { completed: String(completed), total: String(total) })}</p>
+            <h3 className="text-[15px] font-medium text-[#000]">{headline}</h3>
+            <p className="text-[13px] text-[#000]">{t("boostScore.progress", { completed: String(completed), total: String(total) })}</p>
           </div>
         </div>
         <span className="text-[36px] font-medium leading-none tracking-[-0.03em]" style={{ color }} data-testid="text-boost-score">
@@ -194,7 +194,7 @@ function BoostScoreCard({ score, remaining, completed, total }: { score: number;
         </span>
       </div>
 
-      <div className="w-full h-2 bg-ha-surface rounded-full overflow-hidden mb-4">
+      <div className="w-full h-2 bg-[#F5F5F7] rounded-full overflow-hidden mb-4">
         <div
           className="h-full rounded-full transition-all duration-700 ease-out"
           style={{ width: `${score}%`, background: color }}
@@ -202,7 +202,7 @@ function BoostScoreCard({ score, remaining, completed, total }: { score: number;
         />
       </div>
 
-      <p className="text-[14px] text-ha-text leading-relaxed" data-testid="text-boost-microcopy">
+      <p className="text-[14px] text-[#000] leading-relaxed" data-testid="text-boost-microcopy">
         {microcopy}
       </p>
     </div>
@@ -244,7 +244,7 @@ function RecommendedSection({
           return (
             <div
               key={task.id}
-              className="bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5"
+              className="bg-white rounded-[12px] border border-[#E5E5E5] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-5"
               data-testid={`card-recommend-${task.id}`}
             >
               <div className="flex items-start gap-4">
@@ -253,12 +253,12 @@ function RecommendedSection({
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
-                    <p className="text-[15px] font-medium text-ha-text leading-snug">{getBoostTaskLabel(task.id, t)}</p>
+                    <p className="text-[15px] font-medium text-[#000] leading-snug">{getBoostTaskLabel(task.id, t)}</p>
                     <span className="text-[12px] font-medium text-ha-primary px-2 py-0.5 rounded-full flex-shrink-0 whitespace-nowrap" style={{ backgroundColor: "var(--ha-primary-light)" }} data-testid={`badge-points-${task.id}`}>
                       +{task.weight}
                     </span>
                   </div>
-                  <p className="text-[13px] text-ha-text leading-relaxed mt-1">{subtitle}</p>
+                  <p className="text-[13px] text-[#000] leading-relaxed mt-1">{subtitle}</p>
                 </div>
               </div>
               <Button
@@ -295,25 +295,25 @@ function AllTasksSection({
       <h3 className="text-section-title mb-3">
         {t("boost.allSteps")}
       </h3>
-      <div className="bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden">
+      <div className="bg-white rounded-[12px] border border-[#E5E5E5] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] overflow-hidden">
         {incompleteTasks.map((task, i) => {
           const Icon = TASK_ICONS[task.id] || Shield;
           return (
             <button
               key={task.id}
               onClick={() => onTaskClick(task.id)}
-              className={`w-full flex items-center gap-3 p-4 text-left hover:bg-ha-surface transition-colors ${
-                i < incompleteTasks.length - 1 || completedTasks.length > 0 ? "border-b border-ha-card-border" : ""
+              className={`w-full flex items-center gap-3 p-4 text-left hover:bg-[#F5F5F7] transition-colors ${
+                i < incompleteTasks.length - 1 || completedTasks.length > 0 ? "border-b border-[#E5E5E5]" : ""
               }`}
               data-testid={`task-${task.id}`}
             >
-              <div className="w-5 h-5 rounded-full border-2 border-ha-card-border flex-shrink-0" />
-              <Icon className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
+              <div className="w-5 h-5 rounded-full border-2 border-[#E5E5E5] flex-shrink-0" />
+              <Icon className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-[14px] font-medium text-ha-text">{getBoostTaskLabel(task.id, t)}</p>
-                <p className="text-[13px] font-normal text-ha-text">+{task.weight} {t("boost.points")}</p>
+                <p className="text-[14px] font-medium text-[#000]">{getBoostTaskLabel(task.id, t)}</p>
+                <p className="text-[13px] font-normal text-[#000]">+{task.weight} {t("boost.points")}</p>
               </div>
-              <ArrowRight className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
+              <ArrowRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
             </button>
           );
         })}
@@ -323,15 +323,15 @@ function AllTasksSection({
             <div
               key={task.id}
               className={`flex items-center gap-3 p-4 opacity-60 ${
-                i < completedTasks.length - 1 ? "border-b border-ha-card-border" : ""
+                i < completedTasks.length - 1 ? "border-b border-[#E5E5E5]" : ""
               }`}
               data-testid={`task-done-${task.id}`}
             >
               <div className="w-5 h-5 rounded-full bg-ha-success-light flex items-center justify-center flex-shrink-0">
                 <CheckCircle2 className="w-4 h-4 text-ha-success" />
               </div>
-              <Icon className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
-              <p className="text-[14px] text-ha-text line-through">{getBoostTaskLabel(task.id, t)}</p>
+              <Icon className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
+              <p className="text-[14px] text-[#000] line-through">{getBoostTaskLabel(task.id, t)}</p>
             </div>
           );
         })}
@@ -343,14 +343,14 @@ function AllTasksSection({
 function EmptyState({ onStart }: { onStart: () => void }) {
   const { t } = useTranslation();
   return (
-    <div className="bg-ha-surface rounded-[6px] p-6 text-center" data-testid="boost-empty-state">
+    <div className="bg-[#F5F5F7] rounded-[12px] p-6 text-center" data-testid="boost-empty-state">
       <div className="flex items-center justify-center mx-auto mb-4">
-        <Zap className="w-6 h-6 text-ha-text-muted" />
+        <Zap className="w-6 h-6 text-[#9CA3AF]" />
       </div>
-      <h3 className="text-[18px] font-medium text-ha-text mb-1.5">
+      <h3 className="text-[18px] font-medium text-[#000] mb-1.5">
         {t("boost.startTitle")}
       </h3>
-      <p className="text-[14px] font-normal text-ha-text leading-relaxed mb-5 max-w-[260px] mx-auto">
+      <p className="text-[14px] font-normal text-[#000] leading-relaxed mb-5 max-w-[260px] mx-auto">
         {t("boost.startDesc")}
       </p>
       <Button
@@ -369,9 +369,9 @@ function HighProgressState({ remaining }: { remaining: number }) {
   const { t } = useTranslation();
   const stepsWord = remaining === 1 ? t("boost.step") : t("boost.steps");
   return (
-    <div className="bg-gradient-to-br from-ha-primary to-ha-primary-hover rounded-[6px] p-6 text-white" data-testid="boost-high-progress">
+    <div className="bg-gradient-to-br from-ha-primary to-ha-primary-hover rounded-[12px] p-6 text-white" data-testid="boost-high-progress">
       <div className="flex items-center gap-3 mb-2">
-        <div className="w-10 h-10 rounded-full bg-ha-card/15 flex items-center justify-center">
+        <div className="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center">
           <Rocket className="w-5 h-5 text-white" />
         </div>
         <h3 className="text-[16px] font-medium">{t("boost.almostDone")}</h3>
@@ -432,18 +432,18 @@ function TaskModal({
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center" onClick={onClose}>
       <div
-        className="bg-ha-card w-full max-w-md rounded-t-[6px] sm:rounded-[6px] max-h-[85vh] overflow-y-auto"
+        className="bg-white w-full max-w-md rounded-t-[6px] sm:rounded-[6px] max-h-[85vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 bg-ha-card border-b border-ha-card-border p-6 flex items-center justify-between rounded-t-lg">
-          <h2 className="text-[20px] font-medium text-ha-text tracking-[-0.02em]">{t(modalKeys.titleKey)}</h2>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-ha-surface flex items-center justify-center" data-testid="button-close-modal">
-            <X className="w-4 h-4 text-ha-text-muted" />
+        <div className="sticky top-0 bg-white border-b border-[#E5E5E5] p-6 flex items-center justify-between rounded-t-lg">
+          <h2 className="text-[20px] font-medium text-[#000] tracking-[-0.02em]">{t(modalKeys.titleKey)}</h2>
+          <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F5F5F7] flex items-center justify-center" data-testid="button-close-modal">
+            <X className="w-4 h-4 text-[#9CA3AF]" />
           </button>
         </div>
 
         <div className="p-5">
-          <p className="text-[14px] text-ha-text mb-5">{t(modalKeys.descKey)}</p>
+          <p className="text-[14px] text-[#000] mb-5">{t(modalKeys.descKey)}</p>
 
           {taskId === "alerts_active" && (
             <Button
@@ -469,16 +469,16 @@ function TaskModal({
 
           {taskId === "search_buddy_added" && (
             <div className="flex flex-col gap-3">
-              <label className="text-[13px] font-medium text-ha-text">{t("boost.buddyEmailLabel")}</label>
+              <label className="text-[13px] font-medium text-[#000]">{t("boost.buddyEmailLabel")}</label>
               <input
                 type="email"
                 value={buddyEmail}
                 onChange={(e) => setBuddyEmail(e.target.value)}
                 placeholder={t("boost.buddyEmailPlaceholder")}
-                className="w-full h-[60px] px-4 rounded-[6px] border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal focus:bg-ha-card"
+                className="w-full h-[60px] px-4 rounded-[6px] border border-transparent bg-[#F5F5F7] text-[15px] font-medium text-[#000] placeholder:text-[#6B7280] placeholder:font-normal focus:bg-white"
                 data-testid="input-buddy-email"
               />
-              <p className="text-[13px] font-normal text-ha-text">{t("boost.buddyHelp")}</p>
+              <p className="text-[13px] font-normal text-[#000]">{t("boost.buddyHelp")}</p>
               <Button
                 onClick={() => handleSave({ search_buddy_email: buddyEmail }, t("boost.buddySaved"))}
                 disabled={!buddyEmail.includes("@") || updateProfileData.isPending}
@@ -514,13 +514,13 @@ function TaskModal({
 
           {taskId === "income_documents_uploaded" && (
             <div className="flex flex-col gap-4">
-              <h4 className="text-[13px] font-medium text-ha-text">{t("boost.checkOffDocs")}</h4>
+              <h4 className="text-[13px] font-medium text-[#000]">{t("boost.checkOffDocs")}</h4>
               <div className="flex flex-col gap-1">
                 {INCOME_CHECKLIST_IDS.map((id) => (
                   <button
                     key={id}
                     onClick={() => setChecklist((prev) => ({ ...prev, [id]: !prev[id] }))}
-                    className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-ha-surface transition-colors text-left"
+                    className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-[#F5F5F7] transition-colors text-left"
                     data-testid={`check-${id}`}
                   >
                     {checklist[id] ? (
@@ -528,9 +528,9 @@ function TaskModal({
                         <CheckCircle2 className="w-4 h-4 text-ha-success" />
                       </div>
                     ) : (
-                      <div className="w-5 h-5 rounded-full border-2 border-ha-card-border flex-shrink-0" />
+                      <div className="w-5 h-5 rounded-full border-2 border-[#E5E5E5] flex-shrink-0" />
                     )}
-                    <span className={`text-[14px] ${checklist[id] ? "text-ha-text line-through" : "text-ha-text"}`}>
+                    <span className={`text-[14px] ${checklist[id] ? "text-[#000] line-through" : "text-[#000]"}`}>
                       {t(`checklist.${id}`)}
                     </span>
                   </button>
@@ -549,13 +549,13 @@ function TaskModal({
 
           {taskId === "id_document_uploaded" && (
             <div className="flex flex-col gap-4">
-              <h4 className="text-[13px] font-medium text-ha-text">{t("boost.checkOffDocs")}</h4>
+              <h4 className="text-[13px] font-medium text-[#000]">{t("boost.checkOffDocs")}</h4>
               <div className="flex flex-col gap-1">
                 {ID_CHECKLIST_IDS.map((id) => (
                   <button
                     key={id}
                     onClick={() => setChecklist((prev) => ({ ...prev, [id]: !prev[id] }))}
-                    className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-ha-surface transition-colors text-left"
+                    className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-[#F5F5F7] transition-colors text-left"
                     data-testid={`check-${id}`}
                   >
                     {checklist[id] ? (
@@ -563,9 +563,9 @@ function TaskModal({
                         <CheckCircle2 className="w-4 h-4 text-ha-success" />
                       </div>
                     ) : (
-                      <div className="w-5 h-5 rounded-full border-2 border-ha-card-border flex-shrink-0" />
+                      <div className="w-5 h-5 rounded-full border-2 border-[#E5E5E5] flex-shrink-0" />
                     )}
-                    <span className={`text-[14px] ${checklist[id] ? "text-ha-text line-through" : "text-ha-text"}`}>
+                    <span className={`text-[14px] ${checklist[id] ? "text-[#000] line-through" : "text-[#000]"}`}>
                       {t(`checklist.${id}`)}
                     </span>
                   </button>
@@ -595,7 +595,7 @@ function TaskModal({
 
           {taskId === "profile_photo_added" && (
             <div className="flex flex-col gap-3">
-              <p className="text-[13px] font-normal text-ha-text">
+              <p className="text-[13px] font-normal text-[#000]">
                 {t("boost.profilePhotoDesc")}
               </p>
               <Button
@@ -625,8 +625,8 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
         <div className="mb-1">
           <h1 className="text-page-title">{t("boost.title")}</h1>
         </div>
-        <div className="bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-8 text-center" data-testid="boost-error">
-          <p className="text-[15px] text-ha-text mb-4">{t("boost.errorMessage")}</p>
+        <div className="bg-white rounded-[12px] border border-[#E5E5E5] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-8 text-center" data-testid="boost-error">
+          <p className="text-[15px] text-[#000] mb-4">{t("boost.errorMessage")}</p>
           <Button
             onClick={() => refetch()}
             className="h-[56px] rounded-[6px] bg-ha-primary text-white text-[15px] font-medium px-6"
@@ -643,18 +643,18 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
     return (
       <div className="flex flex-col gap-4 px-6 pt-6">
         <div className="mb-2">
-          <div className="h-8 bg-ha-surface rounded w-24 mb-2 animate-pulse" />
-          <div className="h-4 bg-ha-surface rounded w-56 animate-pulse" />
+          <div className="h-8 bg-[#F5F5F7] rounded w-24 mb-2 animate-pulse" />
+          <div className="h-4 bg-[#F5F5F7] rounded w-56 animate-pulse" />
         </div>
-        <div className="bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
-          <div className="h-4 bg-ha-surface rounded w-32 mb-3" />
-          <div className="h-10 bg-ha-surface rounded w-20 mb-2" />
-          <div className="h-2.5 bg-ha-surface rounded w-full" />
+        <div className="bg-white rounded-[12px] border border-[#E5E5E5] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
+          <div className="h-4 bg-[#F5F5F7] rounded w-32 mb-3" />
+          <div className="h-10 bg-[#F5F5F7] rounded w-20 mb-2" />
+          <div className="h-2.5 bg-[#F5F5F7] rounded w-full" />
         </div>
-        <div className="bg-ha-card rounded-[6px] border border-ha-card-border shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
-          <div className="h-4 bg-ha-surface rounded w-48 mb-3" />
-          <div className="h-12 bg-ha-surface rounded w-full mb-2" />
-          <div className="h-12 bg-ha-surface rounded w-full" />
+        <div className="bg-white rounded-[12px] border border-[#E5E5E5] shadow-[0_2px_8px_rgba(15,23,42,0.04),0_10px_30px_rgba(15,23,42,0.06)] p-6 animate-pulse">
+          <div className="h-4 bg-[#F5F5F7] rounded w-48 mb-3" />
+          <div className="h-12 bg-[#F5F5F7] rounded w-full mb-2" />
+          <div className="h-12 bg-[#F5F5F7] rounded w-full" />
         </div>
       </div>
     );
