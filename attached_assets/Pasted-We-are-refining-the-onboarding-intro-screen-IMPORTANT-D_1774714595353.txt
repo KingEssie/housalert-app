@@ -1,0 +1,101 @@
+We are refining the onboarding intro screen.
+
+IMPORTANT:
+- Do NOT change layout
+- Do NOT change structure
+- Do NOT change text
+- Only apply the visual refinements below
+
+--------------------------------------------------
+1. TITLE — MAKE MORE PROMINENT
+--------------------------------------------------
+
+CURRENT:
+Title is slightly too small and lacks impact.
+
+FIX:
+- Increase font-size to 32–34px
+- font-weight: 700 (keep)
+- line-height: 1.1
+- reduce max-width slightly so it wraps more aggressively like reference
+
+RESULT:
+Title should feel bold, dominant, and slightly tighter.
+
+--------------------------------------------------
+2. GREEN COLOR — MAKE BRIGHTER
+--------------------------------------------------
+
+CURRENT:
+Green is too muted.
+
+FIX:
+Change ALL green elements (numbers + titles) to:
+
+#22C55E
+
+No gradients.
+Flat bright green.
+
+--------------------------------------------------
+3. STEP SPACING — MAKE MORE COMPACT
+--------------------------------------------------
+
+CURRENT:
+Too much vertical spacing between steps.
+
+FIX:
+- Reduce spacing between steps to 16px
+- Reduce space between title and first step to 20px
+
+RESULT:
+More compact, faster visual flow.
+
+--------------------------------------------------
+4. NUMBER CIRCLES — REDUCE VISUAL WEIGHT
+--------------------------------------------------
+
+CURRENT:
+Circles feel too big/heavy.
+
+FIX:
+- size: 26px (instead of 28px)
+- font-size: 14px
+- keep perfectly centered
+- keep bold
+
+RESULT:
+More subtle and clean like reference.
+
+--------------------------------------------------
+5. SPACE ABOVE CTA SECTION
+--------------------------------------------------
+
+CURRENT:
+Too much space before bottom CTA.
+
+FIX:
+- reduce margin-bottom of last step block by ~8–12px
+
+RESULT:
+CTA feels closer and more connected to content.
+
+--------------------------------------------------
+KEEP EVERYTHING ELSE EXACTLY THE SAME
+--------------------------------------------------
+
+- Header
+- CTA button
+- Back button
+- Colors outside green
+- Layout structure
+
+--------------------------------------------------
+ACCEPTANCE CRITERIA
+--------------------------------------------------
+
+- Title feels bigger and tighter
+- Green is clearly brighter (#22C55E)
+- Steps feel more compact
+- Number circles slightly smaller
+- CTA visually closer to content
