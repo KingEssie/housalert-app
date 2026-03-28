@@ -7,7 +7,7 @@ import { queryClient } from "@/lib/queryClient";
 import { useTranslation } from "@/i18n";
 import { supabase } from "@/lib/supabase";
 import { Loader2, ChevronDown } from "lucide-react";
-import { PageHeader } from "@/components/ui/page-header";
+import { AppHeader } from "@/components/ui/app-header";
 
 interface ProfileData {
   first_name?: string | null;
@@ -114,7 +114,7 @@ export default function ProfileDetailsPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#F5F5F7" }}>
-      <PageHeader title={t("profileDetails.title")} onBack={() => navigate("/settings")} />
+      <AppHeader title={t("profileDetails.title")} onBack={() => navigate("/settings")} />
 
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
         {loading ? (

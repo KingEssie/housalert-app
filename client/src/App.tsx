@@ -163,7 +163,7 @@ function Router() {
       <Route path="/embed-success" component={EmbedSuccessPage} />
       <Route path="/home" component={() => <ProtectedRoute component={DashboardPage} />} />
       <Route path="/dashboard" component={() => <ProtectedRoute component={DashboardPage} />} />
-      <Route path="/dashboard/searches/new" component={() => <ProtectedRoute component={NewSearchPage} />} />
+      <Route path="/dashboard/searches/new"><Redirect to="/onboarding/city" /></Route>
       <Route path="/dashboard/searches/edit/:id" component={() => <ProtectedRoute component={NewSearchPage} />} />
       <Route path="/listing/:id" component={() => <ProtectedRoute component={ListingDetailPage} />} />
       <Route path="/apply/:id" component={() => <ProtectedRoute component={ApplyPage} />} />

@@ -492,7 +492,7 @@ function TaskModal({
 
           {taskId === "housing_preferences_completed" && (
             <Button
-              onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
+              onClick={() => { onClose(); navigate("/onboarding/city"); }}
               className="w-full h-[56px] rounded-[6px] bg-ha-primary text-white text-[15px] font-medium"
               data-testid="button-goto-filters"
             >

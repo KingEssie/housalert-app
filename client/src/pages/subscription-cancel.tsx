@@ -1,7 +1,7 @@
 import { useLocation } from "wouter";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { PageHeader } from "@/components/ui/page-header";
+import { AppHeader } from "@/components/ui/app-header";
 import { AlertCircle, CheckCircle2, MessageSquare } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import { apiFetch } from "@/lib/api-base";
@@ -72,7 +72,7 @@ export function SubscriptionCancelConfirmPage() {
   if (step === "feedback") {
     return (
       <div className="min-h-screen" style={{ backgroundColor: "#F5F5F7" }} data-testid="page-cancel-feedback">
-        <PageHeader title={t("cancellation.feedbackTitle")} onBack={() => setStep("confirm")} />
+        <AppHeader title={t("cancellation.feedbackTitle")} onBack={() => setStep("confirm")} />
 
         <div className="max-w-xl mx-auto p-4 pb-8">
           <div className="app-card">
@@ -141,7 +141,7 @@ export function SubscriptionCancelConfirmPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#F5F5F7" }} data-testid="page-cancel-confirm">
-      <PageHeader title={t("subscription.cancelTitle")} onBack={() => navigate("/account/subscription")} />
+      <AppHeader title={t("subscription.cancelTitle")} onBack={() => navigate("/account/subscription")} />
 
       <div className="max-w-xl mx-auto p-4 pb-8">
         <div className="app-card">
@@ -203,7 +203,7 @@ export function SubscriptionCancelledPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#F5F5F7" }} data-testid="page-cancelled">
-      <PageHeader title={t("subscription.cancelledTitle")} onBack={() => navigate("/account/subscription")} />
+      <AppHeader title={t("subscription.cancelledTitle")} onBack={() => navigate("/account/subscription")} />
 
       <div className="max-w-xl mx-auto p-4 pb-8">
         <div className="app-card">

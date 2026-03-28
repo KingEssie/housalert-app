@@ -746,7 +746,7 @@ export function PrepTaskModal({
                 {t("profileStrength.prepCreateDesc")}
               </p>
               <Button
-                onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
+                onClick={() => { onClose(); navigate("/onboarding/city"); }}
                 className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-prep-create-profile"
               >
@@ -786,7 +786,7 @@ export function PrepTaskModal({
                 </ul>
               </div>
               <Button
-                onClick={() => { onClose(); navigate("/dashboard/searches/new"); }}
+                onClick={() => { onClose(); navigate("/onboarding/city"); }}
                 className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-prep-add-profile"
               >

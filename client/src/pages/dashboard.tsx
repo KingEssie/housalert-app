@@ -792,16 +792,11 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
   ]);
 
   const TASK_ACTION_MAP: Record<string, () => void> = {
-    profileCreated: () => navigate("/dashboard/searches/new"),
-    notificationsEnabled: () => {
-      setActiveTab("profiel");
-      setTimeout(() => {
-        document.getElementById("notification-settings")?.scrollIntoView({ behavior: "smooth", block: "center" });
-      }, 300);
-    },
+    profileCreated: () => navigate("/onboarding/city"),
+    notificationsEnabled: () => navigate("/onboarding/setup?step=push-test"),
     firstMatchViewed: () => setActiveTab("matches"),
-    firstReaction: () => { setActiveTab("matches"); },
-    search_buddy: () => { setActiveTab("profiel"); setTimeout(() => document.getElementById("zoekbuddy-section")?.scrollIntoView({ behavior: "smooth", block: "center" }), 200); },
+    firstReaction: () => setActiveTab("matches"),
+    search_buddy: () => navigate("/onboarding/setup?step=search-buddy"),
     application_template: () => navigate("/application-letter"),
     documents: () => navigate("/documents"),
     phone: () => navigate("/profile/edit/phone"),
@@ -1040,7 +1035,7 @@ function HomeTab({
           title={t("home.noProfileTitle")}
           description={t("home.noProfileDesc")}
           ctaLabel={t("home.createProfile")}
-          onCtaClick={() => navigate("/dashboard/searches/new")}
+          onCtaClick={() => navigate("/onboarding/city")}
           testId="hero-empty"
         />
       )}
@@ -1913,7 +1908,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               </div>
             )}
             <button
-              onClick={() => navigate("/dashboard/searches/new")}
+              onClick={() => navigate("/onboarding/city")}
               className="w-full mt-3 h-[44px] rounded-[6px] border border-ha-primary text-ha-primary text-[14px] font-semibold flex items-center justify-center gap-1.5 active:bg-ha-primary-light transition-colors"
               data-testid="button-extra-profile"
             >

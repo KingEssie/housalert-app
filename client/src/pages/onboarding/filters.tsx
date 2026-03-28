@@ -2,11 +2,15 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
 import { useTranslation } from "@/i18n";
+import { useAuth } from "@/lib/auth";
+import { useToast } from "@/hooks/use-toast";
 import { HousAlertLogo } from "@/components/housalert-logo";
 import {
-  ChevronLeft, Check, Bath, Sun, Trees, Leaf, Sparkles,
+  ChevronLeft, Check, Bath, Sun, Trees, Leaf, Sparkles, Loader2,
 } from "lucide-react";
 import { OB, OBProgressDots, OBStickyBar } from "@/components/onboarding-ui";
+import { createSearchProfile, type InsertSearchProfileInput } from "@/lib/search-profiles";
+import { queryClient } from "@/lib/queryClient";
 
 function SegmentedControl({
   options,
@@ -151,8 +155,12 @@ const INITIAL_FILTERS: FilterData = {
 export default function OnboardingFilters() {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [saving, setSaving] = useState(false);
   const searchString = useHashSearch();
   const incomingParams = new URLSearchParams(searchString);
+  const isSearchOnlyMode = !!user;
 
   const city = incomingParams.get("city") || "";
   const lat = incomingParams.get("lat") || "0";
@@ -176,7 +184,52 @@ export default function OnboardingFilters() {
     }));
   }
 
+  async function saveSearchProfileDirectly() {
+    if (!user) return;
+    setSaving(true);
+    try {
+      const input: InsertSearchProfileInput = {
+        user_id: user.id,
+        city_name: city,
+        country_code: "DE",
+        latitude: parseFloat(lat),
+        longitude: parseFloat(lng),
+        place_id: city.toLowerCase().replace(/\s+/g, "_") + "_de",
+        price_min: f.minPrice,
+        price_max: f.maxPrice,
+        bedrooms_min: f.minRooms === "any" ? 0 : parseInt(f.minRooms, 10),
+        size_min: f.sizeNA ? 0 : f.minSize,
+        location_mode: locationMode as any,
+        furnished: f.furnished !== "any" ? f.furnished : undefined,
+      };
+      if (districts) input.districts = districts.split(",");
+      if (radiusKm) input.radius_km = parseFloat(radiusKm);
+      if (f.propertyType !== "any") input.property_types = [f.propertyType];
+      if (f.amenities.length > 0) input.extra_features = f.amenities;
+
+      await createSearchProfile(input);
+      queryClient.invalidateQueries({ queryKey: ["/api/search-profiles"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/activation-status"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
+      toast({ title: t("newSearch.saved") || "Zoekopdracht opgeslagen!" });
+      navigate("/home");
+    } catch (err: any) {
+      toast({
+        title: t("common.error") || "Fout",
+        description: err.message || "Er ging iets mis",
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
+    }
+  }
+
   function handleNext() {
+    if (isSearchOnlyMode) {
+      saveSearchProfileDirectly();
+      return;
+    }
+
     const outParams = new URLSearchParams({
       city,
       lat,
@@ -470,11 +523,15 @@ export default function OnboardingFilters() {
           </button>
           <button
             onClick={handleNext}
-            className="flex-1 h-[56px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97]"
+            disabled={saving}
+            className="flex-1 h-[56px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-60 flex items-center justify-center gap-2"
             style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
             data-testid="button-filters-next"
           >
-            {t("common.next") || "Weiter"}
+            {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+            {isSearchOnlyMode
+              ? (t("newSearch.save") || "Opslaan")
+              : (t("common.next") || "Weiter")}
           </button>
         </div>
       </OBStickyBar>

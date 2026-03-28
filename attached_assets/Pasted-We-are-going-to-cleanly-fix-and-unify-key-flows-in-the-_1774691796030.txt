@@ -1,0 +1,338 @@
+We are going to cleanly fix and unify key flows in the HousAlert app.
+
+IMPORTANT:
+- Do NOT improvise
+- Do NOT leave legacy behavior active
+- Do NOT create parallel flows
+- Everything must be consistent and reusable
+
+==================================================
+CORE PRINCIPLE
+==================================================
+
+There must be ONE unified search creation flow.
+
+BUT:
+There are TWO usage modes:
+
+1. NEW USER (not logged in)
+→ full onboarding flow (account creation included)
+
+2. EXISTING USER (already logged in)
+→ ONLY create an additional search profile
+→ NO account steps
+→ NO paywall
+→ NO onboarding setup
+
+This distinction is critical and must be implemented correctly.
+
+==================================================
+PART 1 — UNIFY SEARCH PROFILE CREATION FLOW
+==================================================
+
+We currently have:
+- New onboarding search flow ✅
+- Old "zoekopdracht maken" flow ❌ (must be removed)
+
+We want ONE reusable flow system.
+
+--------------------------------------------------
+FLOW STRUCTURE
+--------------------------------------------------
+
+SHARED SCREENS (used in BOTH cases):
+- /onboarding/city
+- /onboarding/location
+- /onboarding/filters
+
+--------------------------------------------------
+NEW USER FLOW (NOT LOGGED IN)
+--------------------------------------------------
+
+/onboarding/intro  
+→ /onboarding/city  
+→ /onboarding/location  
+→ /onboarding/filters  
+→ /onboarding/name  
+→ /onboarding/email  
+→ /onboarding/password  
+→ /onboarding/setup (paywall + phase 2)
+
+--------------------------------------------------
+EXISTING USER FLOW (LOGGED IN)
+--------------------------------------------------
+
+START:
+→ /onboarding/city  
+→ /onboarding/location  
+→ /onboarding/filters  
+
+END:
+→ save search profile
+→ redirect to app (home or profile)
+
+IMPORTANT:
+- DO NOT show name/email/password screens
+- DO NOT call signup API
+- DO NOT trigger onboarding/setup
+- DO NOT show paywall
+
+--------------------------------------------------
+IMPLEMENTATION REQUIREMENTS
+--------------------------------------------------
+
+1. Detect if user is authenticated
+2. If authenticated:
+   - run "search-only mode"
+   - skip all account-related steps
+3. Reuse SAME UI components for city/location/filters
+4. After filters:
+   - directly create search profile
+   - store it correctly
+   - redirect to /home or /account
+
+--------------------------------------------------
+REMOVE LEGACY FLOW
+--------------------------------------------------
+
+Find ALL old entry points:
+- account screen "Nieuwe zoekopdracht"
+- home CTA
+- any old routes
+- any legacy create-search page
+
+REPLACE ALL with:
+→ new unified flow
+
+If legacy routes still exist:
+→ redirect them to /onboarding/city
+
+--------------------------------------------------
+DONE CRITERIA PART 1
+--------------------------------------------------
+
+- Only ONE search creation flow exists
+- Logged-out users go through full onboarding
+- Logged-in users only create a search profile
+- No duplicate flows remain
+
+==================================================
+PART 2 — FIX "MAAK JE ACCOUNT AF"
+==================================================
+
+Current problem:
+- does not expand properly
+- all tasks link to wrong screen
+
+--------------------------------------------------
+REQUIRED BEHAVIOR
+--------------------------------------------------
+
+1. Accordion behavior:
+- clickable
+- expands/collapses
+- shows tasks
+
+2. Show:
+- open tasks
+- completed tasks
+- correct progress %
+
+3. Task routing MUST be correct:
+
+Task → Destination
+
+- Push notifications → /onboarding/setup?step=push-test
+- Reactiebrief → /reactiebrief
+- Zoekbuddy → /onboarding/setup?step=search-buddy
+- Extra zoekopdracht → /onboarding/city (search-only mode)
+- Other tasks → correct matching screen
+
+IMPORTANT:
+- DO NOT route everything to “Mijn gegevens”
+
+--------------------------------------------------
+DONE CRITERIA PART 2
+--------------------------------------------------
+
+- Accordion works
+- Tasks show correct status
+- Each task opens correct screen
+
+==================================================
+PART 3 — REACTION LETTER SYSTEM (RENTBIRD STYLE)
+==================================================
+
+Current problem:
+- shows [[PLACEHOLDERS]]
+- feels like template
+
+We want:
+→ fully generated personal letter
+
+--------------------------------------------------
+RULES
+--------------------------------------------------
+
+ONLY allowed placeholder:
+[ADRES]
+
+REMOVE ALL:
+[[NAME]], [[CITY]], [[EMAIL]], etc.
+
+--------------------------------------------------
+DATA USAGE
+--------------------------------------------------
+
+Use actual user data:
+- first name
+- last name
+- phone
+- email
+- living situation
+- work status
+- move reason
+- monthly income
+- pets
+
+--------------------------------------------------
+GENERATION LOGIC
+--------------------------------------------------
+
+Generate a natural Dutch rental letter:
+- introduction
+- who user is
+- work/income
+- living situation
+- reason for moving
+- pets info
+- closing sentence
+
+--------------------------------------------------
+RESET BUTTON
+--------------------------------------------------
+
+"Herstel reactiebrief" must:
+- regenerate letter using CURRENT data
+- NOT restore old template
+- NOT show placeholders
+
+--------------------------------------------------
+DONE CRITERIA PART 3
+--------------------------------------------------
+
+- No [[...]] visible
+- Only [ADRES] remains
+- Letter feels natural and personal
+- Reset regenerates correctly
+
+==================================================
+PART 4 — HEADER + BACK BUTTON CONSISTENCY
+==================================================
+
+Problem:
+- inconsistent headers
+- floating back buttons
+
+--------------------------------------------------
+SOLUTION
+--------------------------------------------------
+
+Create ONE reusable header component:
+<AppHeader />
+
+--------------------------------------------------
+STRUCTURE
+--------------------------------------------------
+
+[←]  Title
+
+--------------------------------------------------
+RULES
+--------------------------------------------------
+
+- back button always left
+- title bold + black
+- consistent spacing
+- no floating buttons
+- no variations
+
+--------------------------------------------------
+APPLY TO:
+--------------------------------------------------
+
+- settings pages
+- reactiebrief
+- search flow
+- profile pages
+- match detail
+- all pages with back navigation
+
+--------------------------------------------------
+DONE CRITERIA PART 4
+--------------------------------------------------
+
+- all pages use same header
+- no inconsistencies remain
+
+==================================================
+PART 5 — DO NOT BREAK
+==================================================
+
+- login → /home must stay correct
+- onboarding logic must stay intact
+- theme system untouched
+- translations intact
+- no unrelated UI changes
+
+==================================================
+PART 6 — REQUIRED AUDIT BEFORE CODING
+==================================================
+
+Before implementing:
+
+1. List all:
+- search flow routes
+- legacy search pages
+- onboarding pages
+
+2. List all buttons triggering search creation
+
+3. Identify all legacy flow entry points
+
+THEN fix.
+
+==================================================
+PART 7 — FINAL REPORT
+==================================================
+
+After implementation, provide:
+
+1. Final flow for:
+   - new user
+   - existing user
+
+2. All replaced legacy routes
+
+3. Task → route mapping
+
+4. Reaction letter data mapping
+
+5. Header rollout list
+
+6. Confirmation:
+   - only [ADRES] placeholder remains
+   - logged-in users skip signup flow
+
+==================================================
+IMPORTANT
+==================================================
+
+We want:
+- ONE system
+- NO duplication
+- CLEAN architecture
+- PRODUCTION-READY behavior
+
+No hacks.
+No shortcuts.

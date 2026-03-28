@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { PageHeader } from "@/components/ui/page-header";
+import { AppHeader } from "@/components/ui/app-header";
 import { useAuth } from "@/lib/auth";
 import { useQuery } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
@@ -75,7 +75,7 @@ export default function DocumentsPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#F5F5F7" }} data-testid="page-documents">
-      <PageHeader title={t("documents.title")} />
+      <AppHeader title={t("documents.title")} />
 
       <div className="max-w-xl mx-auto p-4 space-y-4 pb-8">
         <div className="app-card">

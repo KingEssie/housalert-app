@@ -6,24 +6,46 @@ import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { useTranslation } from "@/i18n";
-import { getDefaultTemplate } from "@/lib/application-letter";
+import { generateOnboardingLetter, type OnboardingLetterData } from "@/lib/application-letter";
 import { RotateCcw, Loader2 } from "lucide-react";
-import { PageHeader } from "@/components/ui/page-header";
+import { AppHeader } from "@/components/ui/app-header";
 
 interface ProfileData {
   application_template: string | null;
-  occupation?: string | null;
+  first_name?: string | null;
+  last_name?: string | null;
+  phone?: string | null;
+  gender?: string | null;
+  living_with?: string | null;
+  work_status?: string | null;
+  move_reason?: string | null;
   monthly_income?: number | null;
+  pets_count?: number | null;
+  occupation?: string | null;
+}
+
+function buildLetterData(profile: ProfileData, email?: string): OnboardingLetterData {
+  return {
+    firstName: profile.first_name || undefined,
+    lastName: profile.last_name || undefined,
+    phone: profile.phone || undefined,
+    email: email || undefined,
+    gender: profile.gender || undefined,
+    livingWith: profile.living_with || undefined,
+    workStatus: profile.work_status || undefined,
+    moveReason: profile.move_reason || undefined,
+    grossIncome: profile.monthly_income || undefined,
+    petsCount: profile.pets_count ?? undefined,
+  };
 }
 
 export default function ApplicationLetterPage() {
   const [, navigate] = useLocation();
-  const { session } = useAuth();
+  const { session, user } = useAuth();
   const { toast } = useToast();
   const { t, locale } = useTranslation();
   const [template, setTemplate] = useState("");
   const [initialized, setInitialized] = useState(false);
-  const defaultTemplate = getDefaultTemplate(locale);
 
   const { data: profileData, isLoading } = useQuery<ProfileData>({
     queryKey: ["/api/profile-data"],
@@ -37,18 +59,23 @@ export default function ApplicationLetterPage() {
     enabled: !!session?.access_token,
   });
 
+  function generatePersonalLetter(): string {
+    if (!profileData) return "";
+    const data = buildLetterData(profileData, user?.email || undefined);
+    return generateOnboardingLetter(data, locale);
+  }
+
   useEffect(() => {
     if (profileData && !initialized) {
-      setTemplate(profileData.application_template || defaultTemplate);
+      const existing = profileData.application_template;
+      if (existing && existing.trim().length > 0) {
+        setTemplate(existing);
+      } else {
+        setTemplate(generatePersonalLetter());
+      }
       setInitialized(true);
     }
   }, [profileData, initialized]);
-
-  useEffect(() => {
-    if (initialized && profileData && !profileData.application_template) {
-      setTemplate(defaultTemplate);
-    }
-  }, [locale]);
 
   const saveMutation = useMutation({
     mutationFn: async (text: string) => {
@@ -74,7 +101,8 @@ export default function ApplicationLetterPage() {
   });
 
   const handleReset = () => {
-    setTemplate(defaultTemplate);
+    const letter = generatePersonalLetter();
+    setTemplate(letter);
     toast({ title: t("applicationLetter.resetDone"), description: t("applicationLetter.resetDoneDesc") });
   };
 
@@ -82,7 +110,7 @@ export default function ApplicationLetterPage() {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F5F5F7" }}>
-      <PageHeader title={t("applicationLetter.title")} onBack={() => navigate("/settings")} />
+      <AppHeader title={t("applicationLetter.title")} onBack={() => navigate("/settings")} />
 
       <main className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-32">
         <div className="flex flex-col gap-4">

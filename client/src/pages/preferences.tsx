@@ -7,7 +7,7 @@ import { apiFetch } from "@/lib/api-base";
 import { queryClient } from "@/lib/queryClient";
 import { Check, Bell, Mail, Globe, Sun, Moon, Monitor } from "lucide-react";
 import { isPushSupported, getPushPermissionState, subscribeToPush, unsubscribeFromPush } from "@/lib/push";
-import { PageHeader } from "@/components/ui/page-header";
+import { AppHeader } from "@/components/ui/app-header";
 import { useTheme } from "@/lib/theme-provider";
 
 type ThemeOption = "light" | "dark" | "system";
@@ -104,7 +104,7 @@ export default function PreferencesPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#F5F5F7" }}>
-      <PageHeader title={t("settings.preferences")} onBack={() => navigate("/settings")} />
+      <AppHeader title={t("settings.preferences")} onBack={() => navigate("/settings")} />
 
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
         <div className="flex flex-col gap-4">

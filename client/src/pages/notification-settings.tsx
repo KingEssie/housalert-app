@@ -6,7 +6,7 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/i18n";
 import { Mail, Bell, Loader2, AlertTriangle, Send } from "lucide-react";
-import { PageHeader } from "@/components/ui/page-header";
+import { AppHeader } from "@/components/ui/app-header";
 import { ListSection, ListRow, ListDivider } from "@/components/list-section";
 import { isPushSupported, getPushPermissionState, getPushUnsupportedReason, subscribeToPush, unsubscribeFromPush } from "@/lib/push";
 
@@ -204,7 +204,7 @@ export default function NotificationSettingsPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <PageHeader title={t("notifications.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
+      <AppHeader title={t("notifications.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
       <main className="flex-1 max-w-xl mx-auto w-full px-5 pb-6 flex flex-col gap-6">
         <div>

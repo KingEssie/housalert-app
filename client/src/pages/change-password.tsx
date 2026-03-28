@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { PageHeader } from "@/components/ui/page-header";
+import { AppHeader } from "@/components/ui/app-header";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
@@ -79,7 +79,7 @@ export default function ChangePasswordPage() {
   if (success) {
     return (
       <div className="min-h-screen" style={{ backgroundColor: "#F5F5F7" }} data-testid="page-password-success">
-        <PageHeader title={t("changePassword.title")} onBack={() => navigate("/settings")} />
+        <AppHeader title={t("changePassword.title")} onBack={() => navigate("/settings")} />
         <div className="max-w-xl mx-auto p-4 pb-8">
           <div className="app-card text-center">
             <div className="flex items-center justify-center mb-5">
@@ -108,7 +108,7 @@ export default function ChangePasswordPage() {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F5F5F7" }} data-testid="page-change-password">
-      <PageHeader title={t("changePassword.title")} onBack={() => navigate("/settings")} />
+      <AppHeader title={t("changePassword.title")} onBack={() => navigate("/settings")} />
 
       <div className="flex-1 max-w-xl mx-auto w-full p-4 pb-8">
         <div className="app-card space-y-5">

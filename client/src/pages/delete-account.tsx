@@ -7,7 +7,7 @@ import { useSubscription } from "@/lib/subscription";
 import { useTranslation } from "@/i18n";
 import { supabase } from "@/lib/supabase";
 import { AlertTriangle, Crown } from "lucide-react";
-import { PageHeader } from "@/components/ui/page-header";
+import { AppHeader } from "@/components/ui/app-header";
 
 export default function DeleteAccountPage() {
   const { user, signOut } = useAuth();
@@ -63,7 +63,7 @@ export default function DeleteAccountPage() {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F5F5F7" }}>
-      <PageHeader title={t("deleteAccount.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
+      <AppHeader title={t("deleteAccount.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
       <main className="flex-1 flex flex-col items-center justify-center px-6">
         <div className="w-16 h-16 rounded-[8px] bg-red-500 flex items-center justify-center mb-6">

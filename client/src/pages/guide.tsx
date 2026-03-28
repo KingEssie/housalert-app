@@ -1,6 +1,6 @@
 import { useLocation } from "wouter";
 import { FolderOpen, Shield, Search, Users, CheckCircle2 } from "lucide-react";
-import { PageHeader } from "@/components/ui/page-header";
+import { AppHeader } from "@/components/ui/app-header";
 import { useTranslation } from "@/i18n";
 
 function GuideSection({ title, items }: { title: string; items: string[] }) {
@@ -168,7 +168,7 @@ export function GuidePage({ guideId }: { guideId: string }) {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F5F5F7" }}>
-      <PageHeader title={guide.title} onBack={() => navigate("/dashboard?tab=tips")} />
+      <AppHeader title={guide.title} onBack={() => navigate("/dashboard?tab=tips")} />
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-32">
         <p className="text-[15px] text-[#000] leading-relaxed mb-6" data-testid={`text-guide-intro-${guideId}`}>
           {guide.intro}

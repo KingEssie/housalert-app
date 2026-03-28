@@ -6,7 +6,7 @@ import { useTranslation } from "@/i18n";
 import { apiFetch } from "@/lib/api-base";
 import { queryClient } from "@/lib/queryClient";
 import { Loader2, ChevronDown } from "lucide-react";
-import { PageHeader } from "@/components/ui/page-header";
+import { AppHeader } from "@/components/ui/app-header";
 
 interface HousingData {
   living_with?: string | null;
@@ -129,7 +129,7 @@ export default function HousingSituationPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#F5F5F7" }}>
-      <PageHeader title={t("settings.housingSituation")} onBack={() => navigate("/settings")} />
+      <AppHeader title={t("settings.housingSituation")} onBack={() => navigate("/settings")} />
 
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
         {loading ? (

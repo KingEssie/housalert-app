@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { PageHeader } from "@/components/ui/page-header";
+import { AppHeader } from "@/components/ui/app-header";
 import { CreditCard, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/i18n";
@@ -43,7 +43,7 @@ export default function PaymentMethodPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#F5F5F7" }} data-testid="page-payment-method">
-      <PageHeader title={t("paymentMethodPage.title")} />
+      <AppHeader title={t("paymentMethodPage.title")} />
 
       <div className="max-w-xl mx-auto p-4 space-y-4 pb-8">
         <div className="app-card">

@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { useTranslation } from "@/i18n";
 import { Loader2, X } from "lucide-react";
-import { PageHeader } from "@/components/ui/page-header";
+import { AppHeader } from "@/components/ui/app-header";
 
 export default function ProfileEditPage() {
   const [, params] = useRoute("/profile/edit/:field");
@@ -97,7 +97,7 @@ export default function ProfileEditPage() {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F5F5F7" }}>
-      <PageHeader title={config.question} onBack={() => navigate("/settings")} />
+      <AppHeader title={config.question} onBack={() => navigate("/settings")} />
 
       <div className="flex-1 max-w-xl mx-auto px-5 w-full">
         {loading ? (

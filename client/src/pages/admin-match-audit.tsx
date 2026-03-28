@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { apiFetch } from "@/lib/api-base";
 import { supabase } from "@/lib/supabase";
-import { PageHeader } from "@/components/ui/page-header";
+import { AppHeader } from "@/components/ui/app-header";
 import { Loader2, RefreshCw, Database, Mail, Bell, Eye, Send, CheckCircle2, Clock, AlertTriangle } from "lucide-react";
 
 interface AuditData {
@@ -125,7 +125,7 @@ export default function AdminMatchAudit() {
   if (error) {
     return (
       <div className="min-h-screen bg-[#F5F7FA]" data-testid="page-admin-audit">
-        <PageHeader title="Match Audit" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
+        <AppHeader title="Match Audit" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
         <div className="p-4 pt-6 text-center">
           <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-3" />
           <p className="text-[15px] text-[#717171]">{error}</p>
@@ -141,7 +141,7 @@ export default function AdminMatchAudit() {
 
   return (
     <div className="min-h-screen bg-[#F5F7FA]" data-testid="page-admin-audit">
-      <PageHeader title="Match Audit" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
+      <AppHeader title="Match Audit" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
       <div className="max-w-xl mx-auto px-4 pb-32 space-y-5">
         <div className="bg-[#0F172A] rounded-2xl p-5 text-white" data-testid="card-account-info">
