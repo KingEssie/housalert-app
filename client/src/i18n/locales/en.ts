@@ -23,6 +23,7 @@ export const en: Record<string, any> = {
     active: "Active",
     expired: "Expired",
     copied: "Copied!",
+    germany: "Germany",
   },
 
   nav: {
@@ -445,6 +446,8 @@ export const en: Record<string, any> = {
       resetSent: "Email sent",
       resetSentDesc: "Check your inbox for the reset link.",
       enterEmailFirst: "Enter your email address first to reset your password.",
+      or: "or",
+      newToHousAlert: "New to HousAlert? Start here",
     },
     signup: {
       title: "Create your account",
@@ -515,6 +518,7 @@ export const en: Record<string, any> = {
       cta: "Create search profile",
       secondary: "Back to login",
       alreadyAccount: "Already have an account?",
+      login: "Log in",
       trustScore: "4.8 — Rated by users",
       guarantee: "Try for free. Cancel anytime. No risk.",
       benefit1: {

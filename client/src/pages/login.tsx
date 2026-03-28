@@ -5,10 +5,10 @@ import { ensureTrialForCurrentUser } from "@/lib/auth";
 import { clearAllUserData } from "@/lib/queryClient";
 import { apiFetch } from "@/lib/api-base";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Home } from "lucide-react";
 import { useTranslation } from "@/i18n";
+import { HousAlertLogo } from "@/components/housalert-logo";
+import { OB } from "@/components/onboarding-ui";
 
 export default function LoginPage() {
   const [, navigate] = useLocation();
@@ -97,91 +97,94 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-ha-bg flex flex-col">
-      <header className="w-full bg-ha-bg sticky top-0 z-20 border-b border-ha-card-border">
-        <div className="max-w-5xl mx-auto px-6 h-[60px] flex items-center gap-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-lg bg-ha-primary flex items-center justify-center">
-              <Home className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-medium text-ha-text text-lg tracking-tight">{t("auth.appName")}</span>
-          </div>
+    <div className="min-h-screen flex flex-col ob-dark" style={{ background: OB.gradient }}>
+      <header className="w-full sticky top-0 z-20 backdrop-blur-md border-b" style={{ backgroundColor: OB.headerBg, borderColor: OB.headerBorder }}>
+        <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center justify-center">
+          <HousAlertLogo size={28} />
         </div>
       </header>
 
-      <main className="flex-1 flex items-center justify-center px-6 py-20">
-        <div className="w-full max-w-sm">
+      <main className="flex-1 flex items-center justify-center px-5 py-12">
+        <div className="w-full" style={{ maxWidth: 380 }}>
           <div className="text-center mb-8">
-            <h1 className="text-[28px] font-medium text-ha-text tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-login-title">
+            <h1 className="text-[26px] font-bold tracking-[-0.02em] leading-[1.1] mb-3" style={{ color: OB.text }} data-testid="text-login-title">
               {t("auth.login.title")}
             </h1>
-            <p className="text-[15px] text-ha-text-secondary">
+            <p className="text-[15px]" style={{ color: OB.textSecondary }}>
               {t("auth.login.subtitle")}
             </p>
           </div>
 
-          <div className="bg-ha-card rounded-[6px] border border-ha-card-border p-6">
-            <form onSubmit={handleLogin} className="flex flex-col gap-5">
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="login-email" className="text-[14px] font-medium text-ha-text">{t("auth.login.email")}</Label>
-                <input
-                  id="login-email"
-                  type="email"
-                  placeholder={t("auth.login.emailPlaceholder")}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="h-[48px] px-4 rounded-[6px] border border-ha-card-border bg-ha-bg text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted placeholder:font-normal focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] outline-none transition-all"
-                  data-testid="input-login-email"
-                />
-              </div>
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="login-password" className="text-[14px] font-medium text-ha-text">{t("auth.login.password")}</Label>
-                <input
-                  id="login-password"
-                  type="password"
-                  placeholder={t("auth.login.passwordPlaceholder")}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="h-[48px] px-4 rounded-[6px] border border-ha-card-border bg-ha-bg text-[15px] font-medium text-ha-text placeholder:text-ha-text-muted placeholder:font-normal focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] outline-none transition-all"
-                  data-testid="input-login-password"
-                />
-                <button
-                  type="button"
-                  onClick={handleForgotPassword}
-                  disabled={resetLoading}
-                  className="self-end text-[13px] font-medium text-ha-primary hover:underline mt-1"
-                  data-testid="link-forgot-password"
-                >
-                  {resetLoading ? t("common.loading") : t("auth.login.forgotPassword")}
-                </button>
-              </div>
-              <Button
-                type="submit"
-                className="w-full h-[56px] rounded-[6px] text-[16px] font-medium bg-ha-primary hover:bg-ha-primary-hover text-white"
-                disabled={loading}
-                data-testid="button-login-submit"
-              >
-                {loading ? t("common.loading") : t("auth.login.submit")}
-              </Button>
-            </form>
-          </div>
-
-          <div className="text-center mt-6">
-            <p className="text-[15px] text-ha-text-secondary">
-              {t("auth.login.noAccount")}{" "}
+          <form onSubmit={handleLogin} className="flex flex-col gap-5">
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="login-email" className="text-[14px] font-semibold" style={{ color: OB.text }}>
+                {t("auth.login.email")}
+              </label>
+              <input
+                id="login-email"
+                type="email"
+                placeholder={t("auth.login.emailPlaceholder")}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="ob-input h-[56px] px-4 rounded-[6px] text-[15px] font-medium w-full"
+                data-testid="input-login-email"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="login-password" className="text-[14px] font-semibold" style={{ color: OB.text }}>
+                {t("auth.login.password")}
+              </label>
+              <input
+                id="login-password"
+                type="password"
+                placeholder={t("auth.login.passwordPlaceholder")}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="ob-input h-[56px] px-4 rounded-[6px] text-[15px] font-medium w-full"
+                data-testid="input-login-password"
+              />
               <button
-                onClick={() => navigate("/onboarding/intro")}
-                className="text-ha-primary font-medium hover:underline"
-                data-testid="link-signup"
+                type="button"
+                onClick={handleForgotPassword}
+                disabled={resetLoading}
+                className="self-end text-[13px] font-medium mt-1 transition-colors hover:underline"
+                style={{ color: OB.pink }}
+                data-testid="link-forgot-password"
               >
-                {t("auth.login.createAccount")}
+                {resetLoading ? t("common.loading") : t("auth.login.forgotPassword")}
               </button>
-            </p>
+            </div>
+            <Button
+              type="submit"
+              className="w-full h-[56px] rounded-[6px] text-[16px] font-bold text-white border-0"
+              style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
+              disabled={loading}
+              data-testid="button-login-submit"
+            >
+              {loading ? t("common.loading") : t("auth.login.submit")}
+            </Button>
+          </form>
+
+          <div className="flex items-center gap-3 my-6">
+            <div className="flex-1 h-px" style={{ backgroundColor: "rgba(255,255,255,0.2)" }} />
+            <span className="text-[13px] font-medium" style={{ color: "rgba(255,255,255,0.7)" }}>
+              {t("auth.login.or") || "of"}
+            </span>
+            <div className="flex-1 h-px" style={{ backgroundColor: "rgba(255,255,255,0.2)" }} />
           </div>
 
-          <p className="text-center text-[13px] text-ha-text-muted mt-6">
+          <button
+            onClick={() => navigate("/onboarding/intro")}
+            className="w-full h-[56px] rounded-[6px] text-[15px] font-semibold border transition-all active:scale-[0.97]"
+            style={{ borderColor: "rgba(255,255,255,0.2)", color: OB.text, backgroundColor: "transparent" }}
+            data-testid="link-signup"
+          >
+            {t("auth.login.newToHousAlert") || "Nieuw bij HousAlert? Start hier"}
+          </button>
+
+          <p className="text-center text-[12px] mt-6" style={{ color: OB.textMuted }}>
             {t("auth.login.footer")}
           </p>
         </div>

@@ -23,6 +23,7 @@ export const de: Record<string, any> = {
     active: "Aktiv",
     expired: "Abgelaufen",
     copied: "Kopiert!",
+    germany: "Deutschland",
   },
 
   nav: {
@@ -456,6 +457,7 @@ export const de: Record<string, any> = {
       resetSentDesc: "Überprüfe dein Postfach für den Reset-Link.",
       enterEmailFirst: "Gib zuerst deine E-Mail-Adresse ein, um dein Passwort zurückzusetzen.",
       or: "oder",
+      newToHousAlert: "Neu bei HousAlert? Hier starten",
     },
     signup: {
       title: "Erstelle dein Konto",
@@ -526,6 +528,7 @@ export const de: Record<string, any> = {
       cta: "Suchprofil erstellen",
       secondary: "Zurück zur Anmeldung",
       alreadyAccount: "Bereits ein Konto?",
+      login: "Anmelden",
       trustScore: "4.8 — Bewertung von Nutzern",
       guarantee: "Kostenlos testen. Jederzeit kündbar. Kein Risiko.",
       benefit1: {

@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "wouter";
 import { useTranslation } from "@/i18n";
-import { HousAlertLogo } from "@/components/housalert-logo";
 import { ChevronLeft, Search, MapPin, Loader2 } from "lucide-react";
 import { defaultCities } from "../../../../config/market";
-import { OB, OBProgressDots, OBStickyBar } from "@/components/onboarding-ui";
+import { OB, OBStickyBar } from "@/components/onboarding-ui";
 
 interface NominatimResult {
   display_name: string;
@@ -84,41 +83,28 @@ export default function OnboardingCity() {
     navigate("/onboarding/intro");
   }
 
-  const showDropdown = !selectedCity && search.trim().length > 0;
+  const showDropdown = !selectedCity;
 
   return (
     <div className="min-h-[100dvh] flex flex-col ob-dark" style={{ background: OB.gradient }} data-testid="screen-onboarding-city">
-      <header className="sticky top-0 z-20 backdrop-blur-md border-b" style={{ backgroundColor: OB.headerBg, borderColor: OB.headerBorder }}>
-        <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
-          <button
-            onClick={handleBack}
-            className="w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-transform"
-            style={{ backgroundColor: OB.backBtnBg }}
-            data-testid="button-city-back"
-          >
-            <ChevronLeft className="w-5 h-5" style={{ color: OB.textSecondary }} />
-          </button>
-          <div className="flex-1 flex justify-center">
-            <HousAlertLogo size={28} />
-          </div>
-          <div className="w-10" />
-        </div>
-      </header>
+      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-[max(24px,env(safe-area-inset-top))] pb-[100px]">
+        <span
+          className="text-[12px] font-bold tracking-wider mb-4 inline-block self-start px-2.5 py-1 rounded-[4px]"
+          style={{ color: OB.textSecondary, backgroundColor: "rgba(255,255,255,0.08)" }}
+          data-testid="badge-step"
+        >
+          1/3
+        </span>
 
-      <div className="max-w-[480px] mx-auto px-5 w-full">
-        <OBProgressDots current={0} total={4} />
-      </div>
-
-      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-4 pb-[100px]">
         <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-2" style={{ color: OB.text }} data-testid="text-city-title">
-          {t("onboarding.location.title") || "Wo möchtest du wohnen?"}
+          {t("onboarding.location.title") || "Zoekopdracht maken"}
         </h1>
         <p className="text-[14px] mb-5" style={{ color: OB.textSecondary }}>
-          {t("onboarding.location.subtitle") || "Wähle deine Stadt."}
+          {t("onboarding.location.subtitle") || "In welke stad zoek je een woning?"}
         </p>
 
         <div className="relative mb-4">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#999" }} />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "rgba(255,255,255,0.5)" }} />
           <input
             type="text"
             value={search}
@@ -126,14 +112,14 @@ export default function OnboardingCity() {
               setSearch(e.target.value);
               if (selectedCity) setSelectedCity(null);
             }}
-            placeholder={t("onboarding.location.searchPlaceholder") || "Stadt suchen..."}
+            placeholder={t("onboarding.location.searchPlaceholder") || "Stad zoeken..."}
             className="ob-input w-full h-[56px] pl-12 pr-4 rounded-[6px] text-[15px] font-medium"
             style={selectedCity ? { borderColor: OB.pink } : undefined}
             autoFocus
             data-testid="input-city-search"
           />
           {searching && (
-            <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin" style={{ color: "#999" }} />
+            <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin" style={{ color: "rgba(255,255,255,0.5)" }} />
           )}
         </div>
 
@@ -147,7 +133,7 @@ export default function OnboardingCity() {
                 style={{ borderColor: OB.divider }}
                 data-testid={`city-option-${city.name}`}
               >
-                <MapPin className="w-4 h-4 shrink-0" style={{ color: OB.textMuted }} />
+                <MapPin className="w-4 h-4 shrink-0" style={{ color: OB.textSecondary }} />
                 <span className="text-[14px] font-medium" style={{ color: OB.text }}>{city.name}</span>
               </button>
             ))}
@@ -163,11 +149,11 @@ export default function OnboardingCity() {
                   style={{ borderColor: OB.divider }}
                   data-testid={`city-nominatim-${i}`}
                 >
-                  <MapPin className="w-4 h-4 shrink-0" style={{ color: OB.textMuted }} />
+                  <MapPin className="w-4 h-4 shrink-0" style={{ color: OB.textSecondary }} />
                   <div>
                     <span className="text-[14px] font-medium block" style={{ color: OB.text }}>{name}</span>
                     {addr?.state && (
-                      <span className="text-[12px]" style={{ color: OB.textMuted }}>{addr.state}</span>
+                      <span className="text-[12px]" style={{ color: OB.textSecondary }}>{addr.state}</span>
                     )}
                   </div>
                 </button>
@@ -175,8 +161,8 @@ export default function OnboardingCity() {
             })}
 
             {presetMatches.length === 0 && nominatimResults.length === 0 && !searching && search.trim().length >= 3 && (
-              <p className="text-[13px] text-center py-4" style={{ color: OB.textMuted }}>
-                {t("onboarding.location.noResults") || "Keine Ergebnisse"}
+              <p className="text-[13px] text-center py-4" style={{ color: OB.textSecondary }}>
+                {t("onboarding.location.noResults") || "Geen resultaten"}
               </p>
             )}
           </div>
@@ -189,7 +175,7 @@ export default function OnboardingCity() {
             </div>
             <div className="flex-1">
               <p className="text-[15px] font-semibold" style={{ color: OB.text }}>{selectedCity.name}</p>
-              <p className="text-[12px]" style={{ color: OB.textMuted }}>Deutschland</p>
+              <p className="text-[12px]" style={{ color: OB.textSecondary }}>{t("common.germany") || "Deutschland"}</p>
             </div>
             <button
               onClick={() => { setSelectedCity(null); setSearch(""); }}
@@ -197,11 +183,22 @@ export default function OnboardingCity() {
               style={{ borderColor: OB.cardBorder, color: OB.textSecondary }}
               data-testid="button-city-change"
             >
-              {t("common.edit") || "Ändern"}
+              {t("common.edit") || "Wijzig"}
             </button>
           </div>
         )}
       </main>
+
+      <div className="fixed bottom-[max(24px,env(safe-area-inset-bottom))] left-5 z-30">
+        <button
+          onClick={handleBack}
+          className="w-12 h-12 rounded-full flex items-center justify-center active:scale-95 transition-transform backdrop-blur-md shadow-lg"
+          style={{ backgroundColor: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.1)" }}
+          data-testid="button-city-back"
+        >
+          <ChevronLeft className="w-5 h-5" style={{ color: OB.text }} />
+        </button>
+      </div>
 
       {selectedCity && (
         <OBStickyBar>
@@ -211,7 +208,7 @@ export default function OnboardingCity() {
             style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
             data-testid="button-city-next"
           >
-            {t("common.next") || "Weiter"}
+            {t("common.next") || "Volgende"}
           </button>
         </OBStickyBar>
       )}

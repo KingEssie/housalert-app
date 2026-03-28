@@ -1,31 +1,31 @@
 import { useLocation } from "wouter";
 import { useTranslation } from "@/i18n";
 import { HousAlertLogo } from "@/components/housalert-logo";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { Search, Zap, Bell, ArrowRight } from "lucide-react";
-import heroImg from "@assets/50F77D08-ED68-40B2-AFD3-67D49A86100C_1774074748083.png";
 import { OB, OBStickyBar } from "@/components/onboarding-ui";
 
 const BENEFITS = [
   {
     icon: Search,
-    titleKey: "onboarding.intro.benefit1Title",
-    titleFallback: "Alle Portale, ein Alert",
-    descKey: "onboarding.intro.benefit1Desc",
-    descFallback: "Wir durchsuchen alle großen Wohnungsportale gleichzeitig.",
+    titleKey: "onboarding.intro.benefit1.title",
+    titleFallback: "Alle woningen op één plek",
+    descKey: "onboarding.intro.benefit1.desc",
+    descFallback: "Wij doorzoeken Kamernet, Pararius en meer tegelijk — je mist niets.",
   },
   {
     icon: Zap,
-    titleKey: "onboarding.intro.benefit2Title",
-    titleFallback: "Sofort benachrichtigt",
-    descKey: "onboarding.intro.benefit2Desc",
-    descFallback: "Du erhältst innerhalb von Minuten eine Nachricht bei neuen Treffern.",
+    titleKey: "onboarding.intro.benefit2.title",
+    titleFallback: "Sneller dan wie dan ook",
+    descKey: "onboarding.intro.benefit2.desc",
+    descFallback: "Ontvang nieuwe huurwoningen binnen minuten — reageer als eerste.",
   },
   {
     icon: Bell,
-    titleKey: "onboarding.intro.benefit3Title",
-    titleFallback: "Nie wieder verpassen",
-    descKey: "onboarding.intro.benefit3Desc",
-    descFallback: "Sei der Erste, der sich auf neue Wohnungen bewirbt.",
+    titleKey: "onboarding.intro.benefit3.title",
+    titleFallback: "Directe meldingen",
+    descKey: "onboarding.intro.benefit3.desc",
+    descFallback: "Push, e-mail of WhatsApp — je wordt direct geïnformeerd.",
   },
 ];
 
@@ -35,39 +35,28 @@ export default function OnboardingIntro() {
 
   return (
     <div className="min-h-[100dvh] flex flex-col ob-dark" style={{ background: OB.gradient }} data-testid="screen-onboarding-intro">
-      <header
-        className="sticky top-0 z-20 backdrop-blur-md border-b"
-        style={{ backgroundColor: OB.headerBg, borderColor: OB.headerBorder }}
-      >
-        <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center justify-center">
+      <header className="w-full pt-[max(16px,env(safe-area-inset-top))] px-5">
+        <div className="max-w-[480px] mx-auto flex items-center justify-between h-[56px]">
           <HousAlertLogo size={28} />
+          <LanguageSwitcher />
         </div>
       </header>
 
-      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pb-[100px]">
-        <div className="w-full aspect-[16/9] rounded-[6px] overflow-hidden mt-6 mb-6">
-          <img
-            src={heroImg}
-            alt="HousAlert"
-            className="w-full h-full object-cover"
-            data-testid="img-intro-hero"
-          />
-        </div>
-
+      <main className="flex-1 flex flex-col justify-center max-w-[480px] mx-auto w-full px-5 pb-[120px]">
         <h1
-          className="text-[26px] font-bold tracking-[-0.02em] mb-2"
+          className="text-[30px] font-bold tracking-[-0.03em] leading-[1.15] mb-3"
           style={{ color: OB.text }}
           data-testid="text-intro-title"
         >
-          {t("onboarding.intro.title") || "Finde deine Traumwohnung"}
+          {t("onboarding.intro.title") || "Vind jouw droomwoning"}
         </h1>
-        <p className="text-[15px] mb-8 leading-relaxed" style={{ color: OB.textSecondary }}>
-          {t("onboarding.intro.subtitle") || "HousAlert durchsucht alle großen Wohnungsportale und benachrichtigt dich sofort bei neuen Treffern."}
+        <p className="text-[15px] mb-10 leading-relaxed" style={{ color: OB.textSecondary }}>
+          {t("onboarding.intro.subtitle") || "HousAlert doorzoekt alle grote woningportalen en stuurt je direct een melding bij nieuwe woningen."}
         </p>
 
-        <div className="flex flex-col gap-5 mb-10">
+        <div className="flex flex-col gap-6">
           {BENEFITS.map((b, i) => (
-            <div key={i} className="flex items-start gap-4" data-testid={`benefit-${i}`}>
+            <div key={i} className="flex items-center gap-4" data-testid={`benefit-${i}`}>
               <div
                 className="w-11 h-11 rounded-[6px] flex items-center justify-center shrink-0"
                 style={{ backgroundColor: OB.accentBg }}
@@ -94,12 +83,22 @@ export default function OnboardingIntro() {
           style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
           data-testid="button-intro-start"
         >
-          {t("onboarding.intro.cta") || "Jetzt starten"}
+          {t("onboarding.intro.cta") || "Nu starten"}
           <ArrowRight className="w-4 h-4" />
         </button>
-        <p className="text-center text-[12px] mt-3 pb-1" style={{ color: OB.textMuted }}>
-          {t("onboarding.intro.footerNote") || "Einrichtung dauert weniger als 2 Minuten"}
-        </p>
+        <div className="flex items-center justify-center gap-1 mt-3 pb-1">
+          <span className="text-[12px]" style={{ color: OB.textMuted }}>
+            {t("onboarding.intro.alreadyAccount") || "Al een account?"}
+          </span>
+          <button
+            onClick={() => navigate("/login")}
+            className="text-[12px] font-semibold"
+            style={{ color: OB.pink }}
+            data-testid="link-intro-login"
+          >
+            {t("onboarding.intro.login") || "Inloggen"}
+          </button>
+        </div>
       </OBStickyBar>
     </div>
   );

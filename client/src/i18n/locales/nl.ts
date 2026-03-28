@@ -23,6 +23,7 @@ export const nl: Record<string, any> = {
     active: "Actief",
     expired: "Verlopen",
     copied: "Gekopieerd!",
+    germany: "Duitsland",
   },
 
   nav: {
@@ -462,6 +463,7 @@ export const nl: Record<string, any> = {
       resetSentDesc: "Controleer je inbox voor de resetlink.",
       enterEmailFirst: "Voer eerst je e-mailadres in om je wachtwoord te resetten.",
       or: "of",
+      newToHousAlert: "Nieuw bij HousAlert? Start hier",
     },
     signup: {
       title: "Maak je account aan",
@@ -533,6 +535,7 @@ export const nl: Record<string, any> = {
       cta: "Zoekprofiel maken",
       secondary: "Terug naar inloggen",
       alreadyAccount: "Al een account?",
+      login: "Inloggen",
       trustScore: "4.8 — Beoordeling van gebruikers",
       guarantee: "Gratis proberen. Altijd opzegbaar. Geen risico.",
       benefit1: {

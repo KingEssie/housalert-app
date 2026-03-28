@@ -1,0 +1,227 @@
+You are updating the HousAlert UI to achieve a clean, premium, Rentbird-level experience.
+
+Implement the following EXACT changes.
+
+--------------------------------------------------
+1. LOGIN SCREEN IMPROVEMENTS
+--------------------------------------------------
+
+Fix spacing and structure:
+
+- Reduce horizontal padding of the form container (too much side spacing now)
+  → max-width tighter (around 90% instead of current wide padding)
+
+- Add labels ABOVE each input field:
+  Example:
+    E-mailadres
+    [input]
+
+    Wachtwoord
+    [input]
+
+  Label style:
+    - text-white
+    - font-semibold
+    - mb-6px
+
+- Inputs:
+  - Keep white background
+  - border: 1px solid rgba(255,255,255,0.2)
+  - border-radius: 6px
+  - height: 56px
+
+- Add divider between buttons:
+
+  Layout:
+    [Inloggen button]
+
+    --- of ---
+
+    [Nieuw bij HousAlert button]
+
+  Divider style:
+    - horizontal line left and right
+    - thin white/20% opacity
+    - text "of" centered
+    - text-white/70
+
+--------------------------------------------------
+2. INTRO SCREEN REDESIGN (CRITICAL)
+--------------------------------------------------
+
+Remove:
+- ALL images (no apartment image)
+
+Replace with:
+
+- Full dark gradient background (same as onboarding screens)
+
+Structure:
+
+Top:
+- HousAlert logo (left)
+- Language selector (right)
+
+Middle:
+- Title:
+  "Vind jouw droomwoning"
+  → text-white
+  → font-bold
+  → large
+
+- Subtitle:
+  smaller, white/70
+
+Below:
+3 benefit rows (like current but cleaner):
+- icon left
+- text right
+- all white text
+
+Bottom:
+- CTA button: "Nu starten"
+
+IMPORTANT:
+- Remove ALL visual noise
+- Keep it clean, minimal, dark premium
+
+--------------------------------------------------
+3. SEARCH FLOW (3 STEPS) — FULL REDESIGN
+--------------------------------------------------
+
+These MUST visually match your screenshots (dark onboarding style).
+
+--------------------------------------------------
+GLOBAL RULES (ALL 3 STEPS)
+--------------------------------------------------
+
+- Background: dark gradient
+- NO header (remove logo + header back button)
+- Use ONLY:
+  → bottom-left floating back button
+- Text:
+  → ALWAYS white (no grey text)
+
+--------------------------------------------------
+STEP 1/3 — CITY INPUT
+--------------------------------------------------
+
+Top-left:
+- Badge: "1/3"
+
+Title:
+- "Zoekopdracht maken"
+
+Input field:
+- transparent background
+- white border (1px solid white/30)
+- white text
+- placeholder white/50
+
+Below:
+Top 5 cities list:
+- white text
+- divider lines (white/10)
+
+--------------------------------------------------
+STEP 2/3 — LOCATION / AREAS
+--------------------------------------------------
+
+Top-left:
+- "2/3"
+
+Selected city field:
+- same style as input (transparent + white border)
+
+Segment control:
+- Buurten
+- Straal
+- Gehele woonplaats
+
+Style:
+- pill background (dark purple)
+- active = slightly lighter
+
+Dropdown:
+- same style as input
+
+Map:
+- keep as is
+
+Bottom bar:
+- matches count (green text)
+- buttons:
+  ← back
+  Volgende →
+
+--------------------------------------------------
+STEP 3/3 — FILTERS
+--------------------------------------------------
+
+Top-left:
+- "3/3"
+
+Everything styled like step 2:
+
+- sliders
+- toggles
+- pills
+
+IMPORTANT:
+- All text = white
+- Secondary text = white/70 (NOT grey)
+
+--------------------------------------------------
+4. REMOVE HEADER IN SEARCH FLOW
+--------------------------------------------------
+
+For ALL 3 steps:
+- remove:
+  - top header
+  - logo
+  - top back button
+
+Use ONLY:
+- bottom-left floating back button
+
+--------------------------------------------------
+5. TEXT COLOR CONSISTENCY (IMPORTANT)
+--------------------------------------------------
+
+Across ALL dark screens:
+
+❌ Remove:
+- grey text (#9CA3AF etc)
+
+✅ Replace with:
+- primary: white
+- secondary: white/70
+- disabled: white/40
+
+This alone makes the UI feel 10x more premium.
+
+--------------------------------------------------
+6. CONSISTENCY RULE
+--------------------------------------------------
+
+From now on:
+
+ALL input fields in dark mode:
+- transparent background
+- white border
+- white text
+
+ALL input fields in light mode:
+- white background
+- black text
+- black border
+
+--------------------------------------------------
+
+Do NOT change logic.
+Do NOT change routing.
+
+ONLY UI + styling changes.
+
+Goal:
+Make the onboarding/search flow feel identical in quality to Rentbird.

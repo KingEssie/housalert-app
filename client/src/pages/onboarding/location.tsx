@@ -2,10 +2,9 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
 import { useTranslation } from "@/i18n";
-import { HousAlertLogo } from "@/components/housalert-logo";
 import { ChevronLeft, Check, MapPin, Crosshair, Map } from "lucide-react";
 import { cityDistricts } from "../../../../config/market";
-import { OB, OBProgressDots, OBStickyBar } from "@/components/onboarding-ui";
+import { OB, OBStickyBar } from "@/components/onboarding-ui";
 
 type LocationMode = "city" | "districts" | "radius";
 
@@ -61,35 +60,22 @@ export default function OnboardingLocation() {
   }
 
   const MODE_OPTIONS: { value: LocationMode; label: string; desc: string; icon: typeof Map; available: boolean }[] = [
-    ...(hasDistricts ? [{ value: "districts" as LocationMode, label: t("location.tabs.districts") || "Stadtteile", desc: t("location.tabs.districtsDesc") || "Wähle bestimmte Stadtteile aus", icon: MapPin, available: true }] : []),
-    { value: "radius", label: t("location.tabs.radius") || "Radius", desc: t("location.tabs.radiusDesc") || "Suche im Umkreis eines Punktes", icon: Crosshair, available: true },
-    { value: "city", label: t("onboarding.location.wholeCity") || "Ganze Stadt", desc: t("onboarding.location.wholeCityDesc") || "Alle Angebote in der gesamten Stadt", icon: Map, available: true },
+    ...(hasDistricts ? [{ value: "districts" as LocationMode, label: t("location.tabs.districts") || "Buurten", desc: t("location.tabs.districtsDesc") || "Selecteer specifieke buurten", icon: MapPin, available: true }] : []),
+    { value: "radius", label: t("location.tabs.radius") || "Straal", desc: t("location.tabs.radiusDesc") || "Zoek binnen een straal", icon: Crosshair, available: true },
+    { value: "city", label: t("onboarding.location.wholeCity") || "Gehele woonplaats", desc: t("onboarding.location.wholeCityDesc") || "Alle aanbod in de hele stad", icon: Map, available: true },
   ];
 
   return (
     <div className="min-h-[100dvh] flex flex-col ob-dark" style={{ background: OB.gradient }} data-testid="screen-onboarding-location">
-      <header className="sticky top-0 z-20 backdrop-blur-md border-b" style={{ backgroundColor: OB.headerBg, borderColor: OB.headerBorder }}>
-        <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
-          <button
-            onClick={handleBack}
-            className="w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-transform"
-            style={{ backgroundColor: OB.backBtnBg }}
-            data-testid="button-location-back"
-          >
-            <ChevronLeft className="w-5 h-5" style={{ color: OB.textSecondary }} />
-          </button>
-          <div className="flex-1 flex justify-center">
-            <HousAlertLogo size={28} />
-          </div>
-          <div className="w-10" />
-        </div>
-      </header>
+      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-[max(24px,env(safe-area-inset-top))] pb-[100px]">
+        <span
+          className="text-[12px] font-bold tracking-wider mb-4 inline-block self-start px-2.5 py-1 rounded-[4px]"
+          style={{ color: OB.textSecondary, backgroundColor: "rgba(255,255,255,0.08)" }}
+          data-testid="badge-step"
+        >
+          2/3
+        </span>
 
-      <div className="max-w-[480px] mx-auto px-5 w-full">
-        <OBProgressDots current={1} total={4} />
-      </div>
-
-      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-4 pb-[100px]">
         <h1
           className="text-[24px] font-bold tracking-[-0.02em] mb-1"
           style={{ color: OB.text }}
@@ -98,7 +84,7 @@ export default function OnboardingLocation() {
           {city}
         </h1>
         <p className="text-[14px] mb-6" style={{ color: OB.textSecondary }}>
-          {t("onboarding.location.modeLabel") || "Wie möchtest du suchen?"}
+          {t("onboarding.location.modeLabel") || "Hoe wil je zoeken?"}
         </p>
 
         <div className="flex flex-col gap-3 mb-6">
@@ -122,16 +108,16 @@ export default function OnboardingLocation() {
                     backgroundColor: active ? OB.accentBg : OB.surface,
                   }}
                 >
-                  <Icon className="w-5 h-5" style={{ color: active ? OB.pink : OB.textMuted }} />
+                  <Icon className="w-5 h-5" style={{ color: active ? OB.pink : OB.textSecondary }} />
                 </div>
                 <div className="flex-1">
                   <span
                     className="text-[15px] font-semibold block"
-                    style={{ color: active ? OB.text : OB.textSecondary }}
+                    style={{ color: OB.text }}
                   >
                     {opt.label}
                   </span>
-                  <span className="text-[13px] mt-0.5 block" style={{ color: OB.textMuted }}>
+                  <span className="text-[13px] mt-0.5 block" style={{ color: OB.textSecondary }}>
                     {opt.desc}
                   </span>
                 </div>
@@ -146,7 +132,7 @@ export default function OnboardingLocation() {
         {mode === "districts" && hasDistricts && (
           <div className="mb-6">
             <p className="text-[13px] font-medium mb-3" style={{ color: OB.textSecondary }}>
-              {t("onboarding.location.districtsLabel") || "Stadtteile (optional)"}
+              {t("onboarding.location.districtsLabel") || "Buurten (optioneel)"}
             </p>
             <div className="flex flex-wrap gap-2" data-testid="district-chips">
               {districtList.map((d) => {
@@ -175,7 +161,7 @@ export default function OnboardingLocation() {
         {mode === "radius" && (
           <div className="mb-6">
             <p className="text-[13px] font-medium mb-3" style={{ color: OB.textSecondary }}>
-              {t("location.radiusLabel") || "Radius"}
+              {t("location.radiusLabel") || "Straal"}
             </p>
             <div className="flex flex-wrap gap-2" data-testid="radius-options">
               {RADIUS_OPTIONS.map((km) => {
@@ -203,11 +189,22 @@ export default function OnboardingLocation() {
         {mode === "city" && (
           <div className="rounded-[6px] border p-4 mb-6" style={{ backgroundColor: OB.card, borderColor: OB.cardBorder }}>
             <p className="text-[14px] leading-relaxed" style={{ color: OB.textSecondary }}>
-              {t("onboarding.location.wholeCityHint") || `Wir suchen in ganz ${city} nach passenden Wohnungen.`}
+              {t("onboarding.location.wholeCityHint") || `We zoeken in heel ${city} naar passende woningen.`}
             </p>
           </div>
         )}
       </main>
+
+      <div className="fixed bottom-[max(24px,env(safe-area-inset-bottom))] left-5 z-30">
+        <button
+          onClick={handleBack}
+          className="w-12 h-12 rounded-full flex items-center justify-center active:scale-95 transition-transform backdrop-blur-md shadow-lg"
+          style={{ backgroundColor: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.1)" }}
+          data-testid="button-location-back"
+        >
+          <ChevronLeft className="w-5 h-5" style={{ color: OB.text }} />
+        </button>
+      </div>
 
       <OBStickyBar>
         <button
@@ -216,7 +213,7 @@ export default function OnboardingLocation() {
           style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
           data-testid="button-location-next"
         >
-          {t("common.next") || "Weiter"}
+          {t("common.next") || "Volgende"}
         </button>
       </OBStickyBar>
     </div>
