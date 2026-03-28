@@ -1,0 +1,233 @@
+We are fixing ONLY onboarding step 2 (location mode selection screen).
+
+IMPORTANT:
+- Do NOT change routing
+- Do NOT change business logic
+- Do NOT change step 1 or step 3
+- ONLY rebuild the UI structure of step 2 so it matches the provided reference much more closely
+
+This screen is currently incorrect.
+
+==================================================
+CURRENT ISSUES
+==================================================
+
+1. A raw translation key is visible:
+   onboarding.location.headerTitle
+
+2. The screen structure is wrong:
+   - it jumps directly to district chips
+   - it does NOT show the selected city input row
+   - it does NOT show the dropdown field
+   - it does NOT show the map like the reference
+
+3. Header layout is not clean enough
+
+==================================================
+TARGET STRUCTURE — MUST MATCH REFERENCE
+==================================================
+
+The screen must have this exact order:
+
+1. Top onboarding header
+2. Label "Woonplaats"
+3. Selected city input row
+4. Segmented control:
+   - Buurten
+   - Straal
+   - Gehele woonplaats
+5. Conditional content area
+   - if "Buurten" selected:
+     show dropdown field + map
+   - if "Straal" selected:
+     show radius options / radius UI
+   - if "Gehele woonplaats" selected:
+     show clean selected state, no district chips
+6. Sticky bottom footer:
+   - matches text block
+   - outlined back button
+   - pink next button
+
+==================================================
+1. HEADER FIX
+==================================================
+
+Remove any raw key and use real text.
+
+Header must be:
+
+LEFT:
+- badge: "2/4"
+
+CENTER:
+- title: "Zoekopdracht maken"
+
+RIGHT:
+- circular close button with X
+
+Style:
+- clean onboarding header
+- no extra top clutter
+- no raw translation keys anywhere
+
+==================================================
+2. WOONPLAATS FIELD
+==================================================
+
+Below the header, show label:
+
+"Woonplaats"
+
+Then show a selected-city input row like the reference:
+
+- dark background / transparent dark fill
+- thin white border
+- radius: 6px
+- height: 56px
+- left search icon
+- selected city text inside
+- right clear/remove icon inside
+
+Example content:
+"Rotterdam" (or selected city)
+
+Do NOT skip this field.
+
+==================================================
+3. SEGMENTED CONTROL
+==================================================
+
+Directly below the city field, show segmented control:
+
+- Buurten
+- Straal
+- Gehele woonplaats
+
+Style:
+- rounded pill container
+- dark purple outer background
+- active tab highlighted
+- height and spacing close to reference
+- white text
+- selected tab more prominent
+
+==================================================
+4. BUURTEN MODE (DEFAULT STATE IN REFERENCE)
+==================================================
+
+If Buurten tab is selected, show:
+
+A. Label:
+"Buurten"
+
+B. Dropdown field:
+- dark background
+- thin white border
+- radius: 6px
+- height: 56px
+- text inside: "Alle buurten geselecteerd"
+- chevron/down icon on right
+
+C. Map below dropdown
+- keep existing map functionality
+- map block width and height similar to reference
+- margin-top around 16px
+- radius subtle, not overly rounded
+
+IMPORTANT:
+Do NOT show all district chips directly on screen in this state.
+The reference uses a dropdown + map, not a big chip grid.
+
+==================================================
+5. STRAAL MODE
+==================================================
+
+If Straal tab is selected:
+- show radius selector UI
+- keep styling consistent with step 2
+- do NOT redesign wildly
+- use same field styles as rest of onboarding
+
+==================================================
+6. GEHELE WOONPLAATS MODE
+==================================================
+
+If Gehele woonplaats is selected:
+- show a clean selected-state UI
+- do NOT show district chips
+- keep it minimal
+
+==================================================
+7. REMOVE CURRENT DISTRICT CHIP GRID AS DEFAULT
+==================================================
+
+Current issue:
+The screen currently shows many district chips directly.
+
+Fix:
+- Do NOT show district chips by default in the main Buurten state
+- Replace that with dropdown + map
+- Only show chips if they are part of a later explicit district selection interaction, not as the main layout
+
+==================================================
+8. BOTTOM FOOTER
+==================================================
+
+Sticky footer should match reference more closely:
+
+LEFT:
+- text block:
+  "Geschatte matches"
+  "121 per week 🔥"
+
+CENTER:
+- outlined square back button
+- 48x48
+- radius: 12px
+
+RIGHT:
+- pink CTA:
+  "Volgende"
+- same height as back button area
+- visually prominent
+
+Spacing should be balanced and clean.
+
+==================================================
+9. STYLING RULES
+==================================================
+
+- radius for fields: 6px
+- no oversized rounding
+- no white cards
+- dark onboarding theme only
+- white primary text
+- white/70 secondary text
+- thin borders, not thick borders
+
+==================================================
+10. KEEP LOGIC THE SAME
+==================================================
+
+Do NOT break:
+- selected city state
+- tab switching logic
+- navigation to step 3
+- map behavior
+- query params
+
+Only fix the UI structure.
+
+==================================================
+ACCEPTANCE CRITERIA
+==================================================
+
+Only mark complete if ALL are true:
+
+- no raw translation key is visible
+- header says "Zoekopdracht maken"
+- the selected city field is visible below the header
+- tabs are visible and styled correctly
+- Buurten mode shows dropdown + map
+- district chip grid is no longer the main default layout
+- sticky footer matches the reference much more closely
