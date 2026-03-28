@@ -3,9 +3,10 @@ import { useState, useEffect } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
+import { useSubscription } from "@/lib/subscription";
 import { useTranslation } from "@/i18n";
 import { trackEvent } from "@/lib/track-event";
-import { MapPin, Euro, BedDouble, Ruler, Clock, Globe, Zap, ImageIcon, ArrowLeft, Info } from "lucide-react";
+import { MapPin, Euro, BedDouble, Ruler, Clock, Globe, Zap, ImageIcon, ArrowLeft, Info, Lock, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 function FloatingBackButton({ navigate }: { navigate: (to: string) => void }) {
@@ -104,6 +105,8 @@ export default function ListingDetailPage() {
   const [match, params] = useRoute("/listing/:id");
   const id = params?.id;
   const { session } = useAuth();
+  const sub = useSubscription();
+  const hasAccess = sub.isActive || sub.isTrial;
   const { t } = useTranslation();
   const [imgError, setImgError] = useState(false);
   const relativeTime = useRelativeTime();
@@ -262,7 +265,14 @@ export default function ListingDetailPage() {
                 </div>
                 <div>
                   <p className="text-[12px] text-[#6B7280]">{t("listing.source")}</p>
-                  <p className="text-[15px] font-semibold capitalize text-ha-primary" data-testid="text-listing-source">{listing.source}</p>
+                  {hasAccess ? (
+                    <p className="text-[15px] font-semibold capitalize text-ha-primary" data-testid="text-listing-source">{listing.source}</p>
+                  ) : (
+                    <p className="text-[15px] font-semibold text-[#9CA3AF] flex items-center gap-1" data-testid="text-listing-source-locked">
+                      <Lock className="w-3.5 h-3.5" />
+                      {t("listing.sourceHidden")}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -321,20 +331,38 @@ export default function ListingDetailPage() {
 
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E5E5] p-4 pb-5 z-10">
         <div className="max-w-xl mx-auto flex flex-col gap-2">
-          {listing.price > 0 && (
-            <div className="flex items-baseline gap-1 mb-1">
-              <span className="text-[20px] font-bold text-[#000]" data-testid="text-bar-price">€{listing.price}</span>
-              <span className="text-[13px] font-medium text-[#6B7280]">{t("common.perMonth")}</span>
-            </div>
+          {hasAccess ? (
+            <>
+              {listing.price > 0 && (
+                <div className="flex items-baseline gap-1 mb-1">
+                  <span className="text-[20px] font-bold text-[#000]" data-testid="text-bar-price">€{listing.price}</span>
+                  <span className="text-[13px] font-medium text-[#6B7280]">{t("common.perMonth")}</span>
+                </div>
+              )}
+              <Button
+                onClick={() => navigate(`/apply/${listing.id}`)}
+                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold flex items-center justify-center gap-2"
+                data-testid="button-reageer-detail"
+              >
+                <Zap className="w-4 h-4" />
+                {t("listing.applyDirect")}
+              </Button>
+            </>
+          ) : (
+            <>
+              <p className="text-[13px] text-[#6B7280] text-center mb-1" data-testid="text-locked-hint">
+                {t("listing.lockedHint")}
+              </p>
+              <Button
+                onClick={() => navigate("/paywall")}
+                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold flex items-center justify-center gap-2"
+                data-testid="button-upgrade-detail"
+              >
+                <Lock className="w-4 h-4" />
+                {t("listing.upgradeCta")}
+              </Button>
+            </>
           )}
-          <Button
-            onClick={() => navigate(`/apply/${listing.id}`)}
-            className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold flex items-center justify-center gap-2"
-            data-testid="button-reageer-detail"
-          >
-            <Zap className="w-4 h-4" />
-            {t("listing.applyDirect")}
-          </Button>
         </div>
       </div>
 

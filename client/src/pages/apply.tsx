@@ -1,6 +1,7 @@
 import { apiFetch } from "@/lib/api-base";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
+import { useSubscription } from "@/lib/subscription";
 import { useQuery } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -12,6 +13,7 @@ import { useLocation, useRoute } from "wouter";
 import {
   Copy,
   ImageIcon,
+  Lock,
 } from "lucide-react";
 import { AppHeader } from "@/components/ui/app-header";
 
@@ -83,6 +85,8 @@ export default function ApplyPage() {
   const [, params] = useRoute("/apply/:id");
   const listingId = params?.id;
   const { user, session } = useAuth();
+  const sub = useSubscription();
+  const hasAccess = sub.isActive || sub.isTrial;
   const { toast } = useToast();
   const { t, locale } = useTranslation();
   const [marked, setMarked] = useState(false);
@@ -136,6 +140,35 @@ export default function ApplyPage() {
     },
     enabled: !!accessToken,
   });
+
+  if (!sub.loading && !hasAccess) {
+    return (
+      <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F5F5F7" }}>
+        <AppHeader title={t("applySheet.title") || "Reageren"} onBack={() => navigate("/dashboard?tab=matches")} />
+        <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-8">
+          <div className="app-card text-center py-10">
+            <div className="w-16 h-16 rounded-full bg-[#F5F5F7] flex items-center justify-center mx-auto mb-5">
+              <Lock className="w-7 h-7 text-[#6B7280]" />
+            </div>
+            <h2 className="text-[18px] font-bold text-[#000] mb-2" data-testid="text-apply-locked-title">
+              {t("listing.upgradeCta")}
+            </h2>
+            <p className="text-[14px] text-[#6B7280] mb-6 leading-relaxed max-w-[280px] mx-auto" data-testid="text-apply-locked-desc">
+              {t("listing.lockedHint")}
+            </p>
+            <Button
+              onClick={() => navigate("/paywall")}
+              className="w-full max-w-[280px] h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold flex items-center justify-center gap-2"
+              data-testid="button-apply-upgrade"
+            >
+              <Lock className="w-4 h-4" />
+              {t("listing.upgradeCta")}
+            </Button>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   if (listingLoading || !listing) {
     return (

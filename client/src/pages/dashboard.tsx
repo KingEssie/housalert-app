@@ -143,11 +143,13 @@ function MatchCard({
   onStatusChange,
   isFavorited,
   onToggleFavorite,
+  locked,
 }: {
   match: ApiMatch;
   onStatusChange: () => void;
   isFavorited: boolean;
   onToggleFavorite: (listingId: string) => void;
+  locked?: boolean;
 }) {
   const [, navigate] = useLocation();
   const [imgError, setImgError] = useState(false);
@@ -260,6 +262,12 @@ function MatchCard({
             {(match.bedrooms > 0 || match.size_m2 > 0) && <span>·</span>}
             <span>{relativeTime(match.matched_at || match.first_seen_at, t)}</span>
           </div>
+          {locked && (
+            <div className="flex items-center gap-1 mt-[6px] text-[12px] text-[#9CA3AF]" data-testid={`lock-indicator-${match.listing_id}`}>
+              <Lock className="w-3 h-3" />
+              <span>{t("listing.lockLabel")}</span>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -1124,6 +1132,8 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
   const [, navigate] = useLocation();
   const { t } = useTranslation();
   const { toast } = useToast();
+  const sub = useSubscription();
+  const hasAccess = sub.isActive || sub.isTrial;
 
   const apiMatchesQuery = useQuery<ApiMatchesResponse>({
     queryKey: ["/api/matches"],
@@ -1356,6 +1366,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
               onStatusChange={refreshStatuses}
               isFavorited={favoriteIds.has(m.listing_id)}
               onToggleFavorite={toggleFavorite}
+              locked={!hasAccess}
             />
           ))}
         </div>
@@ -1421,6 +1432,8 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const [favoriteListings, setFavoriteListings] = useState<ApiMatch[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const sub = useSubscription();
+  const hasAccess = sub.isActive || sub.isTrial;
 
   const fetchFavoriteListings = useCallback(() => {
     if (!accessToken) return;
@@ -1525,6 +1538,7 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
                 onStatusChange={refreshStatuses}
                 isFavorited={favoriteIds.has(m.listing_id)}
                 onToggleFavorite={toggleFavorite}
+                locked={!hasAccess}
               />
             ))}
           </div>
@@ -2252,15 +2266,11 @@ export default function DashboardPage() {
           />
         )}
         {activeTab === "matches" && (
-          <SubscriptionGate isActive={sub.isActive || sub.isTrial}>
-            <MatchesTab accessToken={accessToken} setActiveTab={setActiveTab} />
-          </SubscriptionGate>
+          <MatchesTab accessToken={accessToken} setActiveTab={setActiveTab} />
         )}
         {activeTab === "tips" && <TipsPage navigate={navigate} />}
         {activeTab === "favorieten" && (
-          <SubscriptionGate isActive={sub.isActive || sub.isTrial}>
-            <FavorietenTab accessToken={accessToken} />
-          </SubscriptionGate>
+          <FavorietenTab accessToken={accessToken} />
         )}
         {activeTab === "profiel" && (
           <ProfielTab

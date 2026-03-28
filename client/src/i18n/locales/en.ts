@@ -791,8 +791,19 @@ export const en: Record<string, any> = {
   listing: {
     notFound: "Listing not found",
     notFoundDesc: "This listing no longer exists or has been removed.",
+    backToDashboard: "Back to dashboard",
+    details: "Details",
+    bedrooms: "Bedrooms",
+    area: "Area",
+    source: "Source",
+    posted: "Posted",
+    whyMatch: "Why this match?",
     roomsShort: "rooms",
     applyDirect: "Apply directly",
+    sourceHidden: "Source hidden",
+    lockLabel: "Subscription required to apply",
+    lockedHint: "You can view this listing, but applying requires a subscription",
+    upgradeCta: "Upgrade to apply directly",
     openOriginal: "Open original listing",
   },
 
@@ -879,7 +890,7 @@ export const en: Record<string, any> = {
   },
 
   activation: {
-    title: "Get started",
+    title: "Complete your profile",
     subtitle: "Complete these steps to find an apartment faster",
     profileCreated: "Search profile created",
     notificationsEnabled: "Notifications enabled",

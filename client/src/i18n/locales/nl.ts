@@ -1008,6 +1008,10 @@ export const nl: Record<string, any> = {
     whyMatch: "Waarom deze match?",
     roomsShort: "Zi.",
     applyDirect: "Reageer direct",
+    sourceHidden: "Bron verborgen",
+    lockLabel: "Reageren vereist abonnement",
+    lockedHint: "Je ziet deze woning, maar reageren is alleen beschikbaar met een abonnement",
+    upgradeCta: "Upgrade om direct te reageren",
     openOriginal: "Originele advertentie openen",
     matchReasons: {
       inCity: "In jouw gekozen stad",
@@ -1754,7 +1758,7 @@ export const nl: Record<string, any> = {
   },
 
   activation: {
-    title: "Aan de slag",
+    title: "Maak je profiel af",
     subtitle: "Voltooi deze stappen om sneller een woning te vinden",
     profileCreated: "Zoekprofiel aangemaakt",
     notificationsEnabled: "Meldingen ingeschakeld",

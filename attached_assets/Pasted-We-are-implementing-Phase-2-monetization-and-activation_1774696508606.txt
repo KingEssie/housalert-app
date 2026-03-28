@@ -1,0 +1,153 @@
+We are implementing Phase 2 monetization and activation improvements in HousAlert.
+
+IMPORTANT:
+Do NOT redesign the app.
+Do NOT change routing structure.
+Do NOT break existing working flows.
+
+Only implement the following targeted improvements.
+
+----------------------------------------
+1. RENTBIRD-STYLE PREMIUM LOCK (HIGH PRIORITY)
+----------------------------------------
+
+Goal:
+Free users should SEE listings but NOT be able to act on them.
+
+Implement the following for users WITHOUT an active subscription:
+
+A. Listing detail page:
+
+- Show:
+  • Image
+  • Price
+  • Basic info (rooms, size, city)
+  
+- Hide or restrict:
+  • Source website name
+  • External link
+  • Apply/reaction functionality
+
+B. Replace interaction area with a locked state:
+
+Add a prominent section:
+
+- Pink CTA button:
+  "Upgrade om direct te reageren"
+
+- Lock message (below card or in a white box):
+  "Je hebt momenteel geen actief abonnement. Upgrade om direct te reageren op woningen."
+
+IMPORTANT:
+❌ Do NOT say "je kan deze woning niet bekijken"
+✅ The user CAN view, but NOT act
+
+C. Optional enhancement (recommended):
+
+- Blur or mask the source label (e.g. "Immowelt")
+- Replace with:
+  "Bron verborgen"
+
+----------------------------------------
+2. MATCH CARD LOCK INDICATION (SUBTLE)
+----------------------------------------
+
+For free users:
+
+- Keep cards visible
+- Add small lock indicator (🔒) on cards where action is restricted
+
+Optional label:
+"Reageren vereist abonnement"
+
+Do NOT block scrolling or browsing
+
+----------------------------------------
+3. "MAAK JE PROFIEL AF" BLOCK (FIX + UPGRADE)
+----------------------------------------
+
+Replace current "Aan de slag" block with:
+
+"Maak je profiel af"
+
+Behavior MUST be:
+
+A. Click = expand (accordion)
+NOT navigation
+
+B. Show list of tasks inside:
+
+Examples:
+- Activeer pushmeldingen
+- Genereer een AI reactiebrief
+- Nodig een zoekbuddy uit
+- Maak een extra zoekopdracht
+
+C. Each item:
+- Has status (completed / incomplete)
+- Is clickable
+
+D. Clicking a task routes correctly:
+
+- push notifications → /onboarding/setup?step=push-test
+- reaction letter → /application-letter
+- search buddy → /onboarding/setup?step=search-buddy
+- extra search → /onboarding/city
+
+IMPORTANT:
+❌ Do NOT navigate on parent click
+✅ Only navigate when clicking individual tasks
+
+----------------------------------------
+4. FIX CURRENT BUG (CRITICAL)
+----------------------------------------
+
+Current issue:
+Clicking "Maak je profiel af" navigates to personal data screen.
+
+Fix:
+- Remove navigation from parent container
+- Implement local state:
+
+const [expanded, setExpanded] = useState(false)
+
+- Toggle expansion on click
+- Render tasks conditionally
+
+----------------------------------------
+5. COPY & MESSAGING IMPROVEMENTS
+----------------------------------------
+
+Replace any blocking text like:
+
+❌ "Je kan deze woning niet bekijken"
+
+WITH:
+
+✅ "Upgrade om direct te reageren op deze woning"
+✅ "Je ziet deze woning, maar reageren is alleen beschikbaar met een abonnement"
+
+Tone:
+- Clear
+- Action-focused
+- Not negative
+
+----------------------------------------
+6. GENERAL RULES
+----------------------------------------
+
+- Keep styling consistent with existing UI
+- Use white cards with black text
+- Buttons: pink primary CTA
+- Border radius: 6px
+- Do NOT introduce new design systems
+
+----------------------------------------
+EXPECTED RESULT
+----------------------------------------
+
+- Free users can browse listings
+- Clear friction when trying to act
+- Strong upgrade trigger
+- Profile completion becomes interactive
+- No broken navigation

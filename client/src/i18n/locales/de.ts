@@ -1001,6 +1001,10 @@ export const de: Record<string, any> = {
     whyMatch: "Warum dieses Match?",
     roomsShort: "Zi.",
     applyDirect: "Direkt bewerben",
+    sourceHidden: "Quelle verborgen",
+    lockLabel: "Abonnement zum Bewerben erforderlich",
+    lockedHint: "Du siehst diese Wohnung, aber zum Bewerben brauchst du ein Abonnement",
+    upgradeCta: "Upgrade um direkt zu reagieren",
     openOriginal: "Originalanzeige öffnen",
     matchReasons: {
       inCity: "In deiner gewählten Stadt",
@@ -1707,7 +1711,7 @@ export const de: Record<string, any> = {
   },
 
   activation: {
-    title: "Los geht's",
+    title: "Vervollständige dein Profil",
     subtitle: "Schließe diese Schritte ab, um schneller eine Wohnung zu finden",
     profileCreated: "Suchprofil erstellt",
     notificationsEnabled: "Benachrichtigungen aktiviert",
