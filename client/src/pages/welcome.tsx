@@ -205,11 +205,11 @@ export default function WelcomePage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t("v2.welcome.emailPlaceholder")}
               required
-              className="w-full h-[56px] px-4 rounded-[12px] text-[15px] font-medium outline-none"
+              className="w-full h-[56px] px-4 rounded-[6px] text-[15px] font-medium outline-none"
               style={{
-                backgroundColor: "#1c1940",
-                border: "1.5px solid rgba(255,255,255,0.12)",
-                color: "#ffffff",
+                backgroundColor: "#ffffff",
+                border: "1px solid #E5E7EB",
+                color: "#111111",
               }}
               data-testid="input-email"
             />
@@ -227,11 +227,11 @@ export default function WelcomePage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t("v2.welcome.passwordPlaceholder")}
                 required
-                className="w-full h-[56px] px-4 pr-12 rounded-[12px] text-[15px] font-medium outline-none"
+                className="w-full h-[56px] px-4 pr-12 rounded-[6px] text-[15px] font-medium outline-none"
                 style={{
-                  backgroundColor: "#1c1940",
-                  border: "1.5px solid rgba(255,255,255,0.12)",
-                  color: "#ffffff",
+                  backgroundColor: "#ffffff",
+                  border: "1px solid #E5E7EB",
+                  color: "#111111",
                 }}
                 data-testid="input-password"
               />
@@ -239,7 +239,7 @@ export default function WelcomePage() {
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors"
-                style={{ color: "rgba(255,255,255,0.45)" }}
+                style={{ color: "#666666" }}
                 tabIndex={-1}
                 data-testid="button-toggle-password"
               >
@@ -264,7 +264,7 @@ export default function WelcomePage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full h-[52px] rounded-[12px] text-[16px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full h-[56px] rounded-[6px] text-[16px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
             style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
             data-testid="button-login"
           >
@@ -292,7 +292,7 @@ export default function WelcomePage() {
         <button
           type="button"
           onClick={() => navigate("/onboarding/intro")}
-          className="w-full h-[52px] rounded-[12px] text-[15px] font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.97]"
+          className="w-full h-[56px] rounded-[6px] text-[15px] font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.97]"
           style={{
             border: `1.5px solid ${OB.pink}`,
             color: OB.pink,
