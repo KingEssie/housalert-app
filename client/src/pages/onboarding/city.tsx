@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "wouter";
 import { Search, MapPin, Loader2, X, ChevronLeft } from "lucide-react";
 import { defaultCities } from "../../../../config/market";
-import { OB } from "@/components/onboarding-ui";
+import { OB, ONBOARDING_TOTAL_STEPS } from "@/components/onboarding-ui";
 
 interface NominatimResult {
   display_name: string;
@@ -109,7 +109,7 @@ export default function OnboardingCity() {
             style={{ backgroundColor: "rgba(255,255,255,0.1)", color: "#ffffff" }}
             data-testid="badge-step"
           >
-            1/4
+            {`1/${ONBOARDING_TOTAL_STEPS}`}
           </span>
           <span className="text-[18px] font-semibold" style={{ color: "#ffffff" }}>
             Zoekopdracht maken

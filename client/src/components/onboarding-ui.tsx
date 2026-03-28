@@ -1,3 +1,5 @@
+export const ONBOARDING_TOTAL_STEPS = 3;
+
 export const OB = {
   gradient: "linear-gradient(180deg, #1e1b4b 0%, #0f0e2a 100%)",
   headerBg: "rgba(30,27,75,0.95)",

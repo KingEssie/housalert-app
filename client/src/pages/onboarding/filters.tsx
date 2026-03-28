@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   ChevronLeft, Check, Bath, Sun, Trees, Leaf, X, Loader2,
 } from "lucide-react";
-import { OB } from "@/components/onboarding-ui";
+import { OB, ONBOARDING_TOTAL_STEPS } from "@/components/onboarding-ui";
 import { createSearchProfile, type InsertSearchProfileInput } from "@/lib/search-profiles";
 import { queryClient } from "@/lib/queryClient";
 
@@ -299,7 +299,7 @@ export default function OnboardingFilters() {
             style={{ backgroundColor: "rgba(99,102,241,0.2)", color: "#818cf8" }}
             data-testid="badge-step"
           >
-            3/3
+            {`3/${ONBOARDING_TOTAL_STEPS}`}
           </span>
           <span className="text-[15px] font-semibold" style={{ color: OB.text }}>
             {t("onboarding.filters.headerTitle") || "Zoekopdracht maken"}

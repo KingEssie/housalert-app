@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
 import { ChevronLeft, ChevronDown, Check, Search, X } from "lucide-react";
 import { cityDistricts } from "../../../../config/market";
-import { OB } from "@/components/onboarding-ui";
+import { OB, ONBOARDING_TOTAL_STEPS } from "@/components/onboarding-ui";
 
 type LocationMode = "city" | "districts" | "radius";
 
@@ -87,7 +87,7 @@ export default function OnboardingLocation() {
             style={{ backgroundColor: "rgba(255,255,255,0.1)", color: "#ffffff" }}
             data-testid="badge-step"
           >
-            2/4
+            {`2/${ONBOARDING_TOTAL_STEPS}`}
           </span>
           <span className="text-[18px] font-semibold" style={{ color: "#ffffff" }}>
             Zoekopdracht maken
