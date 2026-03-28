@@ -10,7 +10,7 @@ import { apiFetch } from "@/lib/api-base";
 import { useEmbedded } from "@/hooks/use-embedded";
 import { useHashSearch } from "@/lib/hash-search";
 
-const INPUT_CLS = "w-full h-[44px] pl-11 pr-4 rounded-[6px] border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal focus:bg-ha-card";
+const INPUT_CLS = "w-full ha-field ha-field-light bg-ha-surface pl-11 pr-4 border-transparent focus:bg-ha-card";
 
 export default function EmbedSuccessPage() {
   const [, navigate] = useLocation();
@@ -210,7 +210,7 @@ export default function EmbedSuccessPage() {
 
             <Button
               type="submit"
-              className="w-full h-[48px] rounded-[6px] text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover mt-1"
+              className="w-full ha-btn bg-ha-primary hover:bg-ha-primary-hover font-medium shadow-none mt-1"
               disabled={loading || !email || !password}
               data-testid="button-embed-signup-submit"
             >

@@ -276,7 +276,7 @@ export default function SignupPage() {
 
             <Button
               type="submit"
-              className="w-full h-[48px] rounded-[6px] text-[15px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover text-white mt-1"
+              className="w-full ha-btn bg-ha-primary hover:bg-ha-primary-hover text-white font-medium shadow-none mt-1"
               disabled={loading || !email || !password}
               data-testid="button-signup-submit"
             >

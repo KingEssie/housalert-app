@@ -163,14 +163,14 @@ export default function SettingsPage() {
             <p className="text-[14px] text-[#6B7280] text-center mt-2 mb-6">{t("profile.logoutDesc")}</p>
             <button
               onClick={handleLogout}
-              className="w-full h-[48px] rounded-[6px] bg-red-500 text-white text-[15px] font-semibold mb-3 active:scale-[0.98] transition-transform"
+              className="w-full ha-btn bg-red-500 text-white font-semibold mb-3"
               data-testid="button-logout-confirm"
             >
               {t("profile.logoutYes")}
             </button>
             <button
               onClick={() => setShowLogoutConfirm(false)}
-              className="w-full h-[48px] rounded-[6px] text-[#000] text-[15px] font-medium active:bg-[#F5F5F7] transition-colors"
+              className="w-full ha-btn text-[#000] font-medium active:bg-[#F5F5F7]"
               data-testid="button-logout-cancel"
             >
               {t("profileDetails.cancel")}

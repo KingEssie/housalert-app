@@ -177,7 +177,7 @@ export default function HousingSituationPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="w-full h-[56px] rounded-[6px] bg-ha-primary text-white text-[15px] font-semibold transition-colors hover:bg-ha-primary-hover active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full ha-btn bg-ha-primary text-white font-semibold hover:bg-ha-primary-hover"
               data-testid="button-housing-save"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}

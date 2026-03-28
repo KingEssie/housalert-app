@@ -205,12 +205,7 @@ export default function WelcomePage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t("v2.welcome.emailPlaceholder")}
               required
-              className="w-full h-[56px] px-4 rounded-[6px] text-[15px] font-medium outline-none"
-              style={{
-                backgroundColor: "#ffffff",
-                border: "1px solid #E5E7EB",
-                color: "#111111",
-              }}
+              className="w-full ha-field ha-field-light"
               data-testid="input-email"
             />
           </div>
@@ -227,12 +222,7 @@ export default function WelcomePage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t("v2.welcome.passwordPlaceholder")}
                 required
-                className="w-full h-[56px] px-4 pr-12 rounded-[6px] text-[15px] font-medium outline-none"
-                style={{
-                  backgroundColor: "#ffffff",
-                  border: "1px solid #E5E7EB",
-                  color: "#111111",
-                }}
+                className="w-full ha-field ha-field-light pr-12"
                 data-testid="input-password"
               />
               <button
@@ -264,7 +254,7 @@ export default function WelcomePage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full h-[56px] rounded-[6px] text-[16px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full ha-btn text-white font-bold"
             style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
             data-testid="button-login"
           >
@@ -292,7 +282,7 @@ export default function WelcomePage() {
         <button
           type="button"
           onClick={() => navigate("/onboarding/intro")}
-          className="w-full h-[56px] rounded-[6px] text-[15px] font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.97]"
+          className="w-full ha-btn font-semibold"
           style={{
             border: `1.5px solid ${OB.pink}`,
             color: OB.pink,

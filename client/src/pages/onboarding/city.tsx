@@ -143,12 +143,7 @@ export default function OnboardingCity() {
               if (selectedCity) setSelectedCity(null);
             }}
             placeholder="Zoek stad..."
-            className="w-full h-[56px] pl-4 pr-12 rounded-[6px] text-[15px] font-medium outline-none"
-            style={{
-              backgroundColor: "transparent",
-              border: "1px solid rgba(255,255,255,0.7)",
-              color: "#ffffff",
-            }}
+            className="w-full ha-field ha-field-dark pr-12"
             autoFocus
             data-testid="input-city-search"
           />
@@ -255,7 +250,7 @@ export default function OnboardingCity() {
           <button
             onClick={handleNext}
             disabled={!selectedCity}
-            className="flex-1 h-[48px] rounded-[12px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center"
+            className="flex-1 ha-btn text-white font-bold disabled:opacity-40"
             style={{ background: OB.pinkGradient, boxShadow: "0 8px 20px rgba(255,0,100,0.25)" }}
             data-testid="button-city-next"
           >

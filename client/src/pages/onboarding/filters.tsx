@@ -542,7 +542,7 @@ export default function OnboardingFilters() {
           <button
             onClick={handleNext}
             disabled={saving}
-            className="flex-1 h-[52px] rounded-[10px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-60 flex items-center justify-center gap-2"
+            className="flex-1 ha-btn text-white font-bold disabled:opacity-60"
             style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
             data-testid="button-filters-next"
           >

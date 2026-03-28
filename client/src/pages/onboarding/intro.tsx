@@ -80,7 +80,7 @@ export default function OnboardingIntro() {
             </button>
             <button
               onClick={() => navigate("/onboarding/city")}
-              className="flex-1 h-[52px] rounded-[14px] text-[15px] font-semibold text-white transition-all active:scale-[0.97] flex items-center justify-center gap-2"
+              className="flex-1 ha-btn text-white font-semibold"
               style={{ background: OB.pinkGradient, boxShadow: "0 8px 20px rgba(255,0,100,0.25)" }}
               data-testid="button-intro-start"
             >

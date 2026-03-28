@@ -1,0 +1,147 @@
+We are standardizing ALL form fields and buttons across the entire app.
+
+IMPORTANT:
+- Do NOT redesign screens
+- Do NOT change routing
+- Do NOT change business logic
+- Do NOT change copy
+- ONLY standardize the visual system for:
+  1. input fields
+  2. select/dropdown fields
+  3. primary buttons
+  4. secondary/outlined buttons
+
+The goal is consistency across the full app.
+
+==================================================
+GOAL
+==================================================
+
+All fields and buttons in the app should use the same height, radius, padding, and visual rhythm.
+
+Right now there is inconsistency between screens.
+Fix this globally using shared styles/components/tokens.
+
+==================================================
+1. GLOBAL FIELD STANDARD
+==================================================
+
+Apply this as the default style for ALL text inputs, textareas (where applicable), and field-like controls:
+
+- height: 56px
+- border-radius: 6px
+- horizontal padding: 16px
+- font-size: 16px
+- line-height: normal
+- border-width: 1px
+
+For LIGHT SCREENS:
+- background: white
+- text color: near-black
+- placeholder: medium gray
+- border: subtle gray/black border
+
+For DARK SCREENS:
+- background: transparent or dark fill
+- text color: white
+- placeholder: white with reduced opacity
+- border: thin white border
+
+IMPORTANT:
+Do NOT leave some fields at 48px and others at 56px.
+All standard fields must be visually consistent.
+
+==================================================
+2. GLOBAL SELECT / DROPDOWN STANDARD
+==================================================
+
+All select fields / dropdown triggers / combobox-style controls must match the same field standard:
+
+- height: 56px
+- border-radius: 6px
+- horizontal padding: 16px
+- same border logic as inputs
+- right icon aligned vertically centered
+- same font size and visual weight
+
+This applies across onboarding, profile forms, settings, etc.
+
+==================================================
+3. GLOBAL BUTTON STANDARD
+==================================================
+
+All primary and secondary buttons must use a consistent base size.
+
+PRIMARY BUTTONS:
+- height: 56px
+- border-radius: 6px
+- font-weight: 600
+- font-size: 16px
+- horizontal padding: 20px
+- icon spacing consistent
+
+SECONDARY / OUTLINED BUTTONS:
+- height: 56px
+- border-radius: 6px
+- font-weight: 600
+- font-size: 16px
+- horizontal padding: 20px
+- border width consistent
+
+Square icon buttons (back, close, etc.) may remain smaller if required by layout, but standard CTA buttons must match each other.
+
+==================================================
+4. SHARED STYLE SYSTEM
+==================================================
+
+Do NOT patch every screen manually with random one-off classes.
+
+Instead:
+- create or update shared base styles / shared UI components / utility classes
+- use one source of truth for:
+  - field height
+  - button height
+  - border radius
+  - padding
+
+If the app already has shared button/input components, update those.
+If not, create shared style utilities and apply them consistently.
+
+==================================================
+5. DO NOT OVERRIDE SPECIAL CASES INCORRECTLY
+==================================================
+
+Do NOT break:
+- textareas that intentionally need more height
+- segmented controls
+- map controls
+- chips/tags
+- icon-only floating buttons unless they are meant to stay smaller
+
+Only standardize real fields and real CTA buttons.
+
+==================================================
+6. APPLY ACROSS THE APP
+==================================================
+
+This should affect:
+- login screen
+- signup flow
+- onboarding forms
+- profile edit forms
+- settings forms
+- reaction letter inputs where applicable
+- all standard CTA buttons
+
+==================================================
+7. ACCEPTANCE CRITERIA
+==================================================
+
+Only mark complete if ALL are true:
+
+- all normal input fields now share the same height
+- all dropdown/select fields now share the same height
+- all standard CTA buttons now share the same height
+- all these controls use 6px border radius
+- the implementation is done via shared styles/components, not random one-off fixes
+- no routing or business logic changed

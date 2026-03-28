@@ -129,12 +129,8 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full h-[56px] px-4 rounded-[12px] text-[15px] font-medium outline-none"
-                style={{
-                  backgroundColor: "#1c1940",
-                  border: "1.5px solid rgba(255,255,255,0.12)",
-                  color: "#ffffff",
-                }}
+                className="w-full ha-field ha-field-dark"
+                style={{ backgroundColor: "#1c1940", borderColor: "rgba(255,255,255,0.12)" }}
                 data-testid="input-login-email"
               />
             </div>
@@ -151,12 +147,8 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full h-[56px] px-4 pr-12 rounded-[12px] text-[15px] font-medium outline-none"
-                  style={{
-                    backgroundColor: "#1c1940",
-                    border: "1.5px solid rgba(255,255,255,0.12)",
-                    color: "#ffffff",
-                  }}
+                  className="w-full ha-field ha-field-dark pr-12"
+                  style={{ backgroundColor: "#1c1940", borderColor: "rgba(255,255,255,0.12)" }}
                   data-testid="input-login-password"
                 />
                 <button
@@ -183,7 +175,7 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className="w-full h-[52px] rounded-[12px] text-[16px] font-bold text-white border-0 flex items-center justify-center gap-2 transition-all active:scale-[0.97]"
+              className="w-full ha-btn text-white border-0 font-bold"
               style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
               disabled={loading}
               data-testid="button-login-submit"
@@ -207,7 +199,7 @@ export default function LoginPage() {
 
           <button
             onClick={() => navigate("/onboarding/intro")}
-            className="w-full h-[52px] rounded-[12px] text-[15px] font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.97]"
+            className="w-full ha-btn font-semibold"
             style={{
               border: `1.5px solid ${OB.pink}`,
               color: OB.pink,

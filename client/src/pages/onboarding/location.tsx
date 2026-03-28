@@ -112,8 +112,7 @@ export default function OnboardingLocation() {
         </p>
         <button
           onClick={() => navigate("/onboarding/city")}
-          className="w-full h-[56px] rounded-[6px] flex items-center px-4 gap-3 mb-5"
-          style={{ border: "1px solid rgba(255,255,255,0.7)", backgroundColor: "transparent" }}
+          className="w-full ha-field ha-field-dark flex items-center gap-3 mb-5"
           data-testid="field-city-display"
         >
           <Search className="w-[16px] h-[16px] shrink-0" style={{ color: "rgba(255,255,255,0.5)" }} />
@@ -157,8 +156,7 @@ export default function OnboardingLocation() {
             </p>
             <button
               onClick={() => setShowDistrictPicker(!showDistrictPicker)}
-              className="w-full h-[56px] rounded-[6px] flex items-center justify-between px-4 shrink-0"
-              style={{ border: "1px solid rgba(255,255,255,0.7)", backgroundColor: "transparent" }}
+              className="w-full ha-field ha-field-dark flex items-center justify-between shrink-0"
               data-testid="dropdown-districts"
             >
               <span className="text-[15px] font-medium" style={{ color: "#ffffff" }}>
@@ -329,7 +327,7 @@ export default function OnboardingLocation() {
             </button>
             <button
               onClick={handleNext}
-              className="flex-1 h-[48px] rounded-[12px] text-[15px] font-bold text-white transition-all active:scale-[0.97] flex items-center justify-center"
+              className="flex-1 ha-btn text-white font-bold"
               style={{ background: OB.pinkGradient, boxShadow: "0 8px 20px rgba(255,0,100,0.25)" }}
               data-testid="button-location-next"
             >

@@ -248,7 +248,7 @@ export default function PaywallPage() {
       <div className="fixed bottom-0 left-0 right-0 bg-ha-bg border-t border-ha-card-border p-5 z-10">
         <div className="max-w-xl mx-auto">
           <button
-            className="w-full h-[56px] rounded-[12px] text-[16px] font-bold text-white transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+            className="w-full ha-btn text-white font-bold"
             style={{ backgroundColor: BRAND }}
             onClick={handleCheckout}
             disabled={loading}

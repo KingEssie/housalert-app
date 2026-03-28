@@ -97,14 +97,14 @@ export default function DeleteAccountPage() {
           <button
             onClick={handleDelete}
             disabled={deleting || hasActivePaidSub}
-            className="w-full h-[56px] rounded-[6px] bg-red-500 text-white text-[15px] font-semibold transition-colors hover:bg-red-600 disabled:opacity-50"
+            className="w-full ha-btn bg-red-500 text-white font-semibold hover:bg-red-600"
             data-testid="button-delete-account-confirm"
           >
             {deleting ? t("deleteAccount.deleting") : t("deleteAccount.confirmDelete")}
           </button>
           <button
             onClick={() => navigate("/dashboard?tab=profiel&sub=account")}
-            className="w-full h-[56px] rounded-[6px] border border-[#E5E5E5] text-[#000] text-[15px] font-semibold hover:bg-white transition-colors"
+            className="w-full ha-btn border border-[#E5E5E5] text-[#000] font-semibold hover:bg-white"
             data-testid="button-delete-account-cancel"
           >
             {t("common.cancel")}

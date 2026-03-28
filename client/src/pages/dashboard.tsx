@@ -1899,7 +1899,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               <p className="text-[14px] text-[#000]/70 mt-1 mb-5 leading-relaxed">{t("profile.upgradeDesc")}</p>
               <button
                 onClick={() => navigate("/paywall")}
-                className="w-full h-[52px] rounded-[6px] bg-ha-primary text-white text-[16px] font-semibold transition-colors hover:bg-ha-primary-hover active:scale-[0.98]"
+                className="w-full ha-btn bg-ha-primary text-white font-semibold hover:bg-ha-primary-hover"
                 data-testid="button-upgrade-subscription"
               >
                 {t("profile.upgradeNow")}
@@ -2023,7 +2023,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                     onKeyDown={e => { if (e.key === "Enter") handleBuddyInvite(); }}
                     placeholder={t("profileEdit.searchBuddyPlaceholder")}
                     autoFocus
-                    className="w-full bg-[#F5F5F7] rounded-[6px] px-5 py-4 text-[16px] text-[#000] placeholder:text-[#9CA3AF] border border-[#E5E5E5] focus:border-ha-primary focus:shadow-[0_0_0_3px_rgba(233,30,99,0.08)] focus:outline-none transition-all h-[52px]"
+                    className="w-full ha-field ha-field-light bg-[#F5F5F7]"
                     data-testid="input-buddy-email"
                   />
                   {buddyEmail && (
@@ -2041,7 +2041,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                   <button
                     onClick={handleBuddyInvite}
                     disabled={buddySaving || !buddyEmail.trim()}
-                    className="h-[48px] px-8 rounded-[6px] bg-ha-primary text-white text-[15px] font-semibold disabled:opacity-50 transition-colors flex items-center gap-2"
+                    className="ha-btn bg-ha-primary text-white font-semibold disabled:opacity-50"
                     data-testid="button-buddy-save"
                   >
                     {buddySaving ? <Loader2 className="w-4 h-4 animate-spin" /> : t("profileDetails.saveAndContinue")}
@@ -2060,7 +2060,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
 
           <button
             onClick={() => navigate("/settings")}
-            className="w-full h-[48px] rounded-[6px] bg-white text-[#000] text-[15px] font-semibold flex items-center justify-center gap-2 active:opacity-90 transition-opacity border border-[#E5E5E5]"
+            className="w-full ha-btn bg-white text-[#000] font-semibold border border-[#E5E5E5]"
             data-testid="button-open-settings"
           >
             <Settings className="w-4.5 h-4.5 text-[#6B7280]" />
@@ -2100,14 +2100,14 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                 handleBuddyRemove();
                 setShowBuddyDeleteConfirm(false);
               }}
-              className="w-full h-[48px] rounded-[6px] bg-ha-danger text-white text-[15px] font-semibold mb-3 active:scale-[0.98] transition-transform"
+              className="w-full ha-btn bg-ha-danger text-white font-semibold mb-3"
               data-testid="button-buddy-delete-confirm"
             >
               {t("profile.buddyRemoveLabel")}
             </button>
             <button
               onClick={() => setShowBuddyDeleteConfirm(false)}
-              className="w-full h-[48px] rounded-[6px] text-[#000] text-[15px] font-medium active:bg-[#F5F5F7] transition-colors"
+              className="w-full ha-btn text-[#000] font-medium active:bg-[#F5F5F7]"
               data-testid="button-buddy-delete-cancel"
             >
               {t("profileDetails.cancel")}
