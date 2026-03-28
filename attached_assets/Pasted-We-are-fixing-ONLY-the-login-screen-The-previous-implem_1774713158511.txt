@@ -1,0 +1,171 @@
+We are fixing ONLY the login screen.
+The previous implementation failed because it did NOT actually apply the requested visual changes.
+
+IMPORTANT:
+- Do NOT touch routing
+- Do NOT touch auth logic
+- Do NOT touch API calls
+- Do NOT touch the rest of onboarding
+- ONLY update the login screen UI
+- This is a strict visual correction task
+
+REFERENCE:
+Use the Rentbird login screenshot as the exact visual target.
+
+==================================================
+CURRENT PROBLEMS THAT MUST BE FIXED
+==================================================
+
+1. The form is still too narrow
+2. Labels above the fields are missing
+3. The screen title/headline is wrong
+4. "Wachtwoord vergeten" is the wrong color/style
+5. The main button is missing the arrow icon and wrong wording
+6. The OF divider is missing
+7. The secondary button text/style is wrong
+8. Trustpilot block is missing
+9. Vertical spacing and grouping still do not match the reference
+
+==================================================
+REQUIRED CHANGES
+==================================================
+
+A. SCREEN TITLE
+Replace the current title/subtitle block.
+
+REMOVE:
+- "Vind jouw woning sneller"
+- "Ontvang direct nieuwe huurwoningen en reageer als eerste."
+
+ADD:
+- Main headline: "Welkom bij HousAlert!"
+- Large, bold, white
+- Same position and visual weight as the Rentbird reference
+
+B. FORM WIDTH
+The inputs and buttons must become MUCH wider.
+
+RULE:
+- left and right page padding: 16px
+- inputs full width inside that container
+- primary button full width
+- secondary button full width
+
+The current screen still has too much horizontal margin. Reduce it.
+
+C. LABELS ABOVE INPUTS
+Add proper labels above each field:
+
+- "E-mailadres"
+- "Wachtwoord"
+
+Style:
+- white
+- bold / semibold
+- small margin-bottom
+- same alignment as reference
+
+D. INPUTS
+Keep:
+- white background
+- rounded corners
+
+But ensure:
+- width matches Rentbird
+- height approximately matches reference
+- password eye icon inside right side
+- placeholders light gray
+
+E. FORGOT PASSWORD
+Change "Wachtwoord vergeten?" styling to match reference:
+
+- right aligned
+- blue color
+- smaller text
+- visually clear as a link
+
+F. PRIMARY BUTTON
+Update the main CTA to match reference:
+
+Text:
+- "Login"
+
+Style:
+- full width
+- pink gradient
+- rounded
+- white bold text
+- add circular arrow icon on the right side inside the button
+
+G. DIVIDER
+Insert a divider between the primary and secondary buttons:
+
+Layout:
+- horizontal line
+- centered text: "OF"
+- horizontal line
+
+Style:
+- subtle white/gray line
+- white text
+- centered exactly like reference
+
+H. SECONDARY BUTTON
+Replace current text:
+- "Nieuw bij HousAlert"
+
+WITH:
+- "Ik ben nieuw bij HousAlert"
+
+Style:
+- full width
+- transparent background
+- pink outline border
+- pink text
+- arrow icon on the right side
+- same height as primary button
+
+I. TRUSTPILOT BLOCK
+Add the trust block at the bottom of the screen.
+
+Structure:
+- centered horizontally
+- Trustpilot wordmark style equivalent
+- green stars/icons
+- rating number: "4.8"
+
+Match the spacing from the reference.
+
+J. SPACING / GROUPING
+Adjust vertical spacing so the screen feels dense and premium like Rentbird.
+
+Specifically:
+- proper gap from header to title
+- proper gap from title to labels
+- proper gap between fields
+- proper gap before buttons
+- proper gap before Trustpilot
+
+==================================================
+STRICT ACCEPTANCE CRITERIA
+==================================================
+
+Do NOT mark complete unless ALL of these are true:
+
+- The title says "Welkom bij HousAlert!"
+- The labels above the fields exist
+- The form is clearly wider than before
+- The main button says "Login" and has an arrow icon
+- The divider with "OF" exists
+- The secondary button says "Ik ben nieuw bij HousAlert"
+- The Trustpilot block exists at the bottom
+- The screen visually matches the Rentbird reference much more closely than the current version
+
+==================================================
+OUTPUT EXPECTATION
+==================================================
+
+After implementing, provide:
+1. exact file(s) changed
+2. short summary of each visual fix applied
+3. confirmation that ONLY the login screen was changed

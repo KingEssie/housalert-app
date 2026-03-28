@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { HousAlertLogo } from "@/components/housalert-logo";
 import { useTranslation, hasExplicitLocale, detectBrowserLocale } from "@/i18n";
 import type { Locale } from "@/i18n";
-import { ChevronDown, Eye, EyeOff, Loader2 } from "lucide-react";
+import { ChevronDown, Eye, EyeOff, Loader2, ArrowRight, Star } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { ensureTrialForCurrentUser } from "@/lib/auth";
 import { clearAllUserData } from "@/lib/queryClient";
@@ -119,6 +119,21 @@ export default function WelcomePage() {
     }
   }, [setLocale]);
 
+  async function handleForgotPassword() {
+    if (!email) {
+      toast({ title: t("auth.login.emailRequired"), description: t("auth.login.enterEmailFirst"), variant: "destructive" });
+      return;
+    }
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/account/change-password`,
+    });
+    if (error) {
+      toast({ title: t("auth.login.failed"), description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: t("auth.login.resetSent"), description: t("auth.login.resetSentDesc") });
+    }
+  }
+
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     if (!email || !password) return;
@@ -157,11 +172,11 @@ export default function WelcomePage() {
 
   return (
     <div
-      className="h-[100dvh] flex flex-col overflow-hidden"
+      className="h-[100dvh] flex flex-col overflow-auto ob-dark"
       style={{ background: OB.gradient }}
       data-testid="welcome-page"
     >
-      <header className="flex items-center justify-between px-5 pt-[max(env(safe-area-inset-top),12px)] pb-2">
+      <header className="flex items-center justify-between px-4 pt-[max(env(safe-area-inset-top),12px)] pb-2">
         <HousAlertLogo
           size={28}
           showText={true}
@@ -170,90 +185,152 @@ export default function WelcomePage() {
         <LanguageDropdown />
       </header>
 
-      <main className="flex-1 flex flex-col justify-center max-w-[400px] mx-auto w-full px-6 pb-[max(env(safe-area-inset-bottom),12px)]">
-        <div className="mb-8">
-          <h1
-            className="text-[26px] font-bold text-white leading-[1.15] tracking-[-0.03em] mb-2"
-            data-testid="text-auth-title"
-          >
-            {t("authScreen.title")}
-          </h1>
-          <p
-            className="text-[14px] leading-[1.5]"
-            style={{ color: OB.textSecondary }}
-            data-testid="text-auth-subtitle"
-          >
-            {t("authScreen.subtitle")}
-          </p>
-        </div>
+      <main className="flex-1 flex flex-col w-full px-4 pt-6 pb-[max(env(safe-area-inset-bottom),12px)]">
+        <h1
+          className="text-[28px] font-extrabold text-white leading-[1.15] tracking-[-0.02em] mb-6 whitespace-pre-line"
+          data-testid="text-auth-title"
+        >
+          {t("v2.welcome.title")}
+        </h1>
 
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder={t("authScreen.emailPlaceholder")}
-            required
-            className="ob-input w-full h-[56px] px-4 rounded-[6px] text-[16px] font-medium"
-            data-testid="input-email"
-          />
-
-          <div className="relative">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[14px] font-bold text-white" htmlFor="welcome-email">
+              {t("v2.welcome.emailLabel")}
+            </label>
             <input
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder={t("authScreen.passwordPlaceholder")}
+              id="welcome-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={t("v2.welcome.emailPlaceholder")}
               required
-              className="ob-input w-full h-[56px] px-4 pr-12 rounded-[6px] text-[16px] font-medium"
-              data-testid="input-password"
+              className="w-full h-[56px] px-4 rounded-[12px] text-[15px] font-medium outline-none"
+              style={{
+                backgroundColor: "#1c1940",
+                border: "1.5px solid rgba(255,255,255,0.12)",
+                color: "#ffffff",
+              }}
+              data-testid="input-email"
             />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors"
-              style={{ color: "#999" }}
-              tabIndex={-1}
-              data-testid="button-toggle-password"
-            >
-              {showPassword
-                ? <EyeOff className="w-[18px] h-[18px]" />
-                : <Eye className="w-[18px] h-[18px]" />}
-            </button>
           </div>
 
-          <div className="flex justify-end -mt-1">
-            <button
-              type="button"
-              onClick={() => navigate("/forgot-password")}
-              className="text-[12px] font-medium transition-colors"
-              style={{ color: OB.textSecondary }}
-              data-testid="button-forgot-password"
-            >
-              {t("authScreen.forgotPassword")}
-            </button>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[14px] font-bold text-white" htmlFor="welcome-password">
+              {t("v2.welcome.passwordLabel")}
+            </label>
+            <div className="relative">
+              <input
+                id="welcome-password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder={t("v2.welcome.passwordPlaceholder")}
+                required
+                className="w-full h-[56px] px-4 pr-12 rounded-[12px] text-[15px] font-medium outline-none"
+                style={{
+                  backgroundColor: "#1c1940",
+                  border: "1.5px solid rgba(255,255,255,0.12)",
+                  color: "#ffffff",
+                }}
+                data-testid="input-password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors"
+                style={{ color: "rgba(255,255,255,0.45)" }}
+                tabIndex={-1}
+                data-testid="button-toggle-password"
+              >
+                {showPassword
+                  ? <EyeOff className="w-5 h-5" />
+                  : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
+            <div className="flex justify-end mt-0.5">
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                className="text-[14px] font-medium transition-colors hover:underline"
+                style={{ color: "#5b8def" }}
+                data-testid="button-forgot-password"
+              >
+                {t("v2.welcome.forgotPassword")}
+              </button>
+            </div>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full h-[56px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full h-[52px] rounded-[12px] text-[16px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
             style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
             data-testid="button-login"
           >
-            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : t("authScreen.logIn")}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => navigate("/onboarding/intro")}
-            className="w-full h-[56px] rounded-[6px] text-[14px] font-semibold transition-all active:scale-[0.97]"
-            style={{ border: `1.5px solid ${OB.pink}`, color: OB.pink, backgroundColor: "transparent" }}
-            data-testid="button-signup"
-          >
-            {t("authScreen.signUp")}
+            {loading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <>
+                {t("v2.welcome.login")}
+                <div className="w-[22px] h-[22px] rounded-full border-[1.5px] border-white/50 flex items-center justify-center ml-1">
+                  <ArrowRight className="w-3 h-3" />
+                </div>
+              </>
+            )}
           </button>
         </form>
+
+        <div className="flex items-center gap-3 my-4">
+          <div className="flex-1 h-px" style={{ backgroundColor: "rgba(255,255,255,0.15)" }} />
+          <span className="text-[13px] font-semibold uppercase tracking-wide" style={{ color: "rgba(255,255,255,0.5)" }}>
+            {t("v2.welcome.or") || "OF"}
+          </span>
+          <div className="flex-1 h-px" style={{ backgroundColor: "rgba(255,255,255,0.15)" }} />
+        </div>
+
+        <button
+          type="button"
+          onClick={() => navigate("/onboarding/intro")}
+          className="w-full h-[52px] rounded-[12px] text-[15px] font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.97]"
+          style={{
+            border: `1.5px solid ${OB.pink}`,
+            color: OB.pink,
+            backgroundColor: "transparent",
+          }}
+          data-testid="button-signup"
+        >
+          {t("v2.welcome.signupCta")}
+          <div className="w-[22px] h-[22px] rounded-full border-[1.5px] flex items-center justify-center ml-1" style={{ borderColor: OB.pink }}>
+            <ArrowRight className="w-3 h-3" />
+          </div>
+        </button>
+
+        <div className="flex-1" />
+
+        <div className="flex items-center justify-center gap-2.5 pt-6 pb-2">
+          <span className="text-[13px] font-semibold" style={{ color: "rgba(255,255,255,0.55)" }}>
+            Trustpilot
+          </span>
+          <div className="flex items-center gap-[3px]">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div
+                key={i}
+                className="w-[22px] h-[22px] flex items-center justify-center rounded-[3px]"
+                style={{ backgroundColor: i <= 4 ? "#00b67a" : "#dce4e8" }}
+              >
+                <Star
+                  className="w-3 h-3"
+                  fill={i <= 4 ? "#ffffff" : "#00b67a"}
+                  stroke="none"
+                />
+              </div>
+            ))}
+          </div>
+          <span className="text-[14px] font-bold" style={{ color: "rgba(255,255,255,0.7)" }}>
+            4.8
+          </span>
+        </div>
       </main>
     </div>
   );
