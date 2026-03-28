@@ -440,7 +440,7 @@ export const de: Record<string, any> = {
   auth: {
     appName: "HousAlert",
     login: {
-      title: "Willkommen zurück",
+      title: "Willkommen bei\nHousAlert!",
       subtitle: "Melde dich bei deinem HousAlert-Konto an.",
       email: "E-Mail-Adresse",
       emailPlaceholder: "deine@email.de",
@@ -457,7 +457,7 @@ export const de: Record<string, any> = {
       resetSentDesc: "Überprüfe dein Postfach für den Reset-Link.",
       enterEmailFirst: "Gib zuerst deine E-Mail-Adresse ein, um dein Passwort zurückzusetzen.",
       or: "oder",
-      newToHousAlert: "Neu bei HousAlert? Hier starten",
+      newToHousAlert: "Ich bin neu bei HousAlert",
     },
     signup: {
       title: "Erstelle dein Konto",

@@ -561,6 +561,11 @@ input[type="range"]::-moz-range-thumb {
 .ob-input:disabled {
   background: #F9F9F9;
 }
+.ob-dark input[type="email"]::placeholder,
+.ob-dark input[type="password"]::placeholder,
+.ob-dark input[type="text"]::placeholder {
+  color: rgba(255,255,255,0.35);
+}
 .ob-dark input[type="range"]::-webkit-slider-thumb {
   border-color: #1e1b4b;
   box-shadow: 0 2px 8px rgba(233,30,99,0.3);

@@ -4,11 +4,12 @@ import { supabase } from "@/lib/supabase";
 import { ensureTrialForCurrentUser } from "@/lib/auth";
 import { clearAllUserData } from "@/lib/queryClient";
 import { apiFetch } from "@/lib/api-base";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/i18n";
 import { HousAlertLogo } from "@/components/housalert-logo";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { OB } from "@/components/onboarding-ui";
+import { Eye, EyeOff, ArrowRight, Star } from "lucide-react";
 
 export default function LoginPage() {
   const [, navigate] = useLocation();
@@ -28,6 +29,7 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
 
@@ -98,26 +100,26 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex flex-col ob-dark" style={{ background: OB.gradient }}>
-      <header className="w-full sticky top-0 z-20 backdrop-blur-md border-b" style={{ backgroundColor: OB.headerBg, borderColor: OB.headerBorder }}>
-        <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center justify-center">
-          <HousAlertLogo size={28} />
+      <header className="w-full pt-3 px-4">
+        <div className="max-w-[480px] mx-auto flex items-center justify-between">
+          <HousAlertLogo size={32} textClassName="font-bold text-white text-[18px]" />
+          <LanguageSwitcher />
         </div>
       </header>
 
-      <main className="flex-1 flex items-center justify-center px-5 py-12">
-        <div className="w-full" style={{ maxWidth: 380 }}>
-          <div className="text-center mb-8">
-            <h1 className="text-[26px] font-bold tracking-[-0.02em] leading-[1.1] mb-3" style={{ color: OB.text }} data-testid="text-login-title">
-              {t("auth.login.title")}
-            </h1>
-            <p className="text-[15px]" style={{ color: OB.textSecondary }}>
-              {t("auth.login.subtitle")}
-            </p>
-          </div>
+      <main className="flex-1 flex flex-col px-4 pt-8 pb-6">
+        <div className="w-full max-w-[480px] mx-auto flex flex-col flex-1">
+          <h1
+            className="text-[28px] font-extrabold tracking-[-0.02em] leading-[1.15] mb-8 whitespace-pre-line"
+            style={{ color: OB.text }}
+            data-testid="text-login-title"
+          >
+            {t("auth.login.title")}
+          </h1>
 
           <form onSubmit={handleLogin} className="flex flex-col gap-5">
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="login-email" className="text-[14px] font-semibold" style={{ color: OB.text }}>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="login-email" className="text-[14px] font-bold" style={{ color: OB.text }}>
                 {t("auth.login.email")}
               </label>
               <input
@@ -127,66 +129,121 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="ob-input h-[56px] px-4 rounded-[6px] text-[15px] font-medium w-full"
+                className="w-full h-[56px] px-4 rounded-[12px] text-[15px] font-medium outline-none"
+                style={{
+                  backgroundColor: "#1c1940",
+                  border: "1.5px solid rgba(255,255,255,0.12)",
+                  color: "#ffffff",
+                }}
                 data-testid="input-login-email"
               />
             </div>
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="login-password" className="text-[14px] font-semibold" style={{ color: OB.text }}>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor="login-password" className="text-[14px] font-bold" style={{ color: OB.text }}>
                 {t("auth.login.password")}
               </label>
-              <input
-                id="login-password"
-                type="password"
-                placeholder={t("auth.login.passwordPlaceholder")}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="ob-input h-[56px] px-4 rounded-[6px] text-[15px] font-medium w-full"
-                data-testid="input-login-password"
-              />
+              <div className="relative">
+                <input
+                  id="login-password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder={t("auth.login.passwordPlaceholder")}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full h-[56px] px-4 pr-12 rounded-[12px] text-[15px] font-medium outline-none"
+                  style={{
+                    backgroundColor: "#1c1940",
+                    border: "1.5px solid rgba(255,255,255,0.12)",
+                    color: "#ffffff",
+                  }}
+                  data-testid="input-login-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 p-0"
+                  style={{ color: "rgba(255,255,255,0.5)" }}
+                  data-testid="button-toggle-password"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
               <button
                 type="button"
                 onClick={handleForgotPassword}
                 disabled={resetLoading}
-                className="self-end text-[13px] font-medium mt-1 transition-colors hover:underline"
-                style={{ color: OB.pink }}
+                className="self-end text-[14px] font-medium mt-0.5 transition-colors hover:underline"
+                style={{ color: "#5b8def" }}
                 data-testid="link-forgot-password"
               >
                 {resetLoading ? t("common.loading") : t("auth.login.forgotPassword")}
               </button>
             </div>
-            <Button
+
+            <button
               type="submit"
-              className="w-full h-[56px] rounded-[6px] text-[16px] font-bold text-white border-0"
+              className="w-full h-[52px] rounded-[12px] text-[16px] font-bold text-white border-0 flex items-center justify-center gap-2 transition-all active:scale-[0.97]"
               style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
               disabled={loading}
               data-testid="button-login-submit"
             >
-              {loading ? t("common.loading") : t("auth.login.submit")}
-            </Button>
+              {loading ? t("common.loading") : (
+                <>
+                  {t("auth.login.submit")}
+                  <ArrowRight className="w-[18px] h-[18px]" />
+                </>
+              )}
+            </button>
           </form>
 
-          <div className="flex items-center gap-3 my-6">
-            <div className="flex-1 h-px" style={{ backgroundColor: "rgba(255,255,255,0.2)" }} />
-            <span className="text-[13px] font-medium" style={{ color: "rgba(255,255,255,0.7)" }}>
-              {t("auth.login.or") || "of"}
+          <div className="flex items-center gap-3 my-5">
+            <div className="flex-1 h-px" style={{ backgroundColor: "rgba(255,255,255,0.15)" }} />
+            <span className="text-[13px] font-semibold uppercase tracking-wide" style={{ color: "rgba(255,255,255,0.5)" }}>
+              {t("auth.login.or") || "OF"}
             </span>
-            <div className="flex-1 h-px" style={{ backgroundColor: "rgba(255,255,255,0.2)" }} />
+            <div className="flex-1 h-px" style={{ backgroundColor: "rgba(255,255,255,0.15)" }} />
           </div>
 
           <button
             onClick={() => navigate("/onboarding/intro")}
-            className="w-full h-[56px] rounded-[6px] text-[15px] font-semibold border transition-all active:scale-[0.97]"
-            style={{ borderColor: "rgba(255,255,255,0.2)", color: OB.text, backgroundColor: "transparent" }}
+            className="w-full h-[52px] rounded-[12px] text-[15px] font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.97]"
+            style={{
+              border: `1.5px solid ${OB.pink}`,
+              color: OB.pink,
+              backgroundColor: "transparent",
+            }}
             data-testid="link-signup"
           >
-            {t("auth.login.newToHousAlert") || "Nieuw bij HousAlert? Start hier"}
+            {t("auth.login.newToHousAlert") || "Ik ben nieuw bij HousAlert"}
+            <ArrowRight className="w-4 h-4" />
           </button>
 
-          <p className="text-center text-[12px] mt-6" style={{ color: OB.textMuted }}>
-            {t("auth.login.footer")}
-          </p>
+          <div className="flex-1" />
+
+          <div className="flex items-center justify-center gap-2 pt-8 pb-2">
+            <span className="text-[13px] font-semibold" style={{ color: "rgba(255,255,255,0.6)" }}>
+              Trustpilot
+            </span>
+            <div className="flex items-center gap-0.5">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div
+                  key={i}
+                  className="w-[22px] h-[22px] flex items-center justify-center rounded-[3px]"
+                  style={{ backgroundColor: i <= 4 ? "#00b67a" : "#dce4e8" }}
+                >
+                  <Star
+                    className="w-3 h-3"
+                    fill={i <= 4 ? "#ffffff" : "#00b67a"}
+                    stroke="none"
+                  />
+                </div>
+              ))}
+            </div>
+            <span className="text-[14px] font-bold" style={{ color: "rgba(255,255,255,0.7)" }}>
+              4.8
+            </span>
+          </div>
         </div>
       </main>
     </div>

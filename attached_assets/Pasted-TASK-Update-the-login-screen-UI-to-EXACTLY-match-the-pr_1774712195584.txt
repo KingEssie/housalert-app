@@ -1,0 +1,117 @@
+TASK: Update the login screen UI to EXACTLY match the provided Rentbird reference.
+
+IMPORTANT:
+- Do NOT change any logic, routing, API calls, or form handling.
+- ONLY update styling, spacing, layout, and typography.
+- The result must visually match the reference as closely as possible.
+
+--------------------------------------------------
+LAYOUT & WIDTH
+--------------------------------------------------
+- Reduce horizontal padding significantly.
+- Form content should be nearly full-width (like Rentbird).
+- Use ~16px side padding max.
+- Inputs and buttons must span full width.
+
+--------------------------------------------------
+HEADER
+--------------------------------------------------
+- Keep logo left and language selector right.
+- Increase spacing between header and title.
+- Title:
+  - Large, bold
+  - White color
+  - Same scale as Rentbird
+
+--------------------------------------------------
+FORM FIELDS
+--------------------------------------------------
+Add labels ABOVE inputs:
+
+1. "E-mailadres"
+2. "Wachtwoord"
+
+Inputs:
+- Full width
+- Light background (#F3F3F3 or similar)
+- Border-radius ~10-12px
+- Height ~56px
+- Padding inside ~16px
+- Placeholder color: light gray
+- Text color: dark
+
+Password field:
+- Eye icon inside right
+- Vertically centered
+
+--------------------------------------------------
+"PASSWORD FORGOTTEN"
+--------------------------------------------------
+- Right aligned
+- Blue color (like Rentbird)
+- Smaller font (~14px)
+
+--------------------------------------------------
+PRIMARY BUTTON (LOGIN)
+--------------------------------------------------
+- Full width
+- Height ~52-56px
+- Gradient pink background
+- Rounded corners (~12px)
+- Bold white text
+- Include arrow icon inside button (right side)
+- Margin-top spacing consistent with reference
+
+--------------------------------------------------
+DIVIDER ("OF")
+--------------------------------------------------
+- Add horizontal divider between buttons
+- Style:
+  --- line ---  OF  --- line ---
+- Line color: subtle gray
+- Text: uppercase "OF"
+- Centered
+- Spacing above and below consistent
+
+--------------------------------------------------
+SECONDARY BUTTON (SIGNUP)
+--------------------------------------------------
+Text:
+"Ik ben nieuw bij HousAlert"
+
+Style:
+- Full width
+- Transparent background
+- Pink border (1.5px–2px)
+- Rounded corners (~12px)
+- Pink text
+- Arrow icon inside button
+- Same height as primary button
+
+--------------------------------------------------
+TRUSTPILOT SECTION
+--------------------------------------------------
+- Add Trustpilot row at bottom
+- Centered horizontally
+- Star icons + rating (4.8)
+- Small size
+- Keep subtle spacing from buttons
+
+--------------------------------------------------
+COLORS
+--------------------------------------------------
+Background: dark purple/blue gradient (match existing)
+Primary pink: keep current brand color
+Text:
+- White for titles
+- Light gray for secondary text
+- Blue for links
+
+--------------------------------------------------
+FINAL CHECK
+--------------------------------------------------
+The login screen must:
+- Look visually identical to Rentbird layout
+- Have correct spacing between ALL elements
+- Use consistent widths for inputs and buttons
+- Feel dense and premium (NOT airy like current version)
