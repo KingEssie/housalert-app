@@ -894,35 +894,31 @@ export const nl: Record<string, any> = {
   },
 
   paywall: {
-    title: "Kies je abonnement",
+    headline: "Vind sneller een woning met HousAlert Premium",
     plans: {
       monthly: "1 maand",
       twoMonth: "2 maanden",
       threeMonth: "3 maanden",
     },
-    pricePerMonth: {
-      monthly: "€14,99/maand",
-      twoMonth: "€12,50/maand",
-      threeMonth: "€10,00/maand",
-    },
-    prices: {
-      monthly: "€14,99",
-      twoMonth: "€24,99",
-      threeMonth: "€29,99",
-    },
+    perMonth: "p/m",
     mostChosen: "Populairst",
-    save17: "Bespaar 17%",
-    save33: "Bespaar 33%",
-    features: {
-      profiles: "Tot 4 zoekprofielen",
-      emailAlerts: "Directe meldingen per e-mail",
-      pushAlerts: "Push-notificaties (binnenkort)",
-      firstAccess: "Nieuwe woningen als eerste zien",
+    outOf: "van",
+    selectPlan: "Selecteer pakket",
+    skipFree: "Doorgaan zonder abonnement",
+    benefits: {
+      speed: {
+        title: "Sneller dan andere zoekers",
+        desc: "Ontvang alerts binnen 30 seconden na publicatie",
+      },
+      sources: {
+        title: "Alle bronnen, één plek",
+        desc: "Funda, Pararius, Kamernet en 30+ andere bronnen",
+      },
+      letter: {
+        title: "Automatische sollicitatiebrief",
+        desc: "Reageer direct met een persoonlijke brief",
+      },
     },
-    featuresTitle: "Dit is allemaal inbegrepen:",
-    trialInfo: "Start met 14 dagen gratis proefperiode. Daarna automatisch verlengd.",
-    startTrial: "Gratis proefperiode starten",
-    trialFooter: "14 dagen gratis. Daarna automatisch verlengd. Op elk moment opzegbaar.",
     pleaseWait: "Even geduld...",
     notLoggedIn: "Je bent niet ingelogd",
     loginAgain: "Log opnieuw in.",
@@ -950,9 +946,9 @@ export const nl: Record<string, any> = {
       default: "Premium",
     },
     priceLabel: {
-      monthly: "€14,99 / maand",
-      twoMonth: "€24,99 / 2 maanden",
-      threeMonth: "€29,99 / 3 maanden",
+      monthly: "€24,99 / maand",
+      twoMonth: "€34,99 / 2 maanden",
+      threeMonth: "€44,99 / 3 maanden",
     },
     billingFrequencyValue: {
       monthly: "Maandelijks",
@@ -2181,13 +2177,13 @@ export const nl: Record<string, any> = {
     back: "Terug",
     startSearching: "Start met zoeken",
     limitedAccess: {
-      title: "Beperkte toegang",
-      subtitle: "Zonder abonnement ontvang je beperkte woningmeldingen en heb je geen toegang tot alle functies.",
-      feature1: "Vertraagde meldingen",
-      feature2: "Maximaal 3 matches per week",
-      feature3: "Geen sollicitatiebrief",
-      goBack: "Terug naar pakketkeuze",
-      continueAnyway: "Toch doorgaan",
+      title: "Weet je het zeker?",
+      subtitle: "Zonder abonnement mis je de belangrijkste voordelen van HousAlert.",
+      loss1: "Je ontvangt woningmeldingen pas na 24 uur — andere zoekers zijn je voor",
+      loss2: "Bronnen zoals Funda en Pararius zijn verborgen — je ziet niet waar de woning staat",
+      loss3: "Geen automatische sollicitatiebrief — je moet alles handmatig doen",
+      goBack: "Abonnement kiezen",
+      continueAnyway: "Ik kies voor beperkte toegang",
     },
     welcome: {
       title: "Bijna klaar!",

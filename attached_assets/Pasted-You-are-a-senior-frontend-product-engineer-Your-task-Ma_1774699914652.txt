@@ -1,0 +1,200 @@
+You are a senior frontend + product engineer.
+
+Your task:
+Make the HousAlert paywall and post-paywall flow EXACTLY match the Rentbird UX/UI and behavior, with correct branding and fully working payments.
+
+This is NOT a redesign.
+This is a pixel-perfect implementation based on the provided screenshots.
+
+--------------------------------
+PART 1 — PAYWALL (CRITICAL)
+--------------------------------
+
+Rebuild the paywall screen to match Rentbird EXACTLY in:
+
+Layout:
+1. Top bar:
+   - Left: HousAlert logo (NOT Rentbird)
+   - Right: Trust indicator (e.g. "4,6 uit 5 ★ Trustpilot")
+
+2. Headline:
+   - Large bold text
+   - Example: "Mis geen enkele match!"
+
+3. Benefits (3 items):
+   - Green check icons
+   - Bold titles + lighter description text
+
+4. Pricing section (cards):
+   - 3 selectable options
+   - Rounded cards
+   - Selected state highlighted
+   - Discount badge on the right
+
+Plans:
+- 3 months → €44,99
+- 2 months → €34,99
+- 1 month → €24,99
+
+UI details:
+- “Meest gekozen” badge on middle plan
+- Discount percentages styled:
+  - green (high)
+  - orange (medium)
+  - red (low)
+
+5. CTA button:
+   - Full width
+   - Pink background
+   - Text: "Selecteer pakket →"
+
+6. Secondary action:
+   - Text button below:
+   - "Doorgaan zonder abonnement"
+
+Spacing, font sizes, paddings, and colors must match the screenshots exactly.
+
+--------------------------------
+PART 2 — STRIPE INTEGRATION
+--------------------------------
+
+Implement correct payment flow:
+
+Use 3 products:
+
+- housalert_3m → €44.99
+- housalert_2m → €34.99
+- housalert_1m → €24.99
+
+Use ONE-TIME PAYMENTS (not subscriptions).
+
+After successful payment:
+- Set user.isPremium = true in database (Supabase)
+- Redirect user to /home
+- Persist premium status
+
+Handle:
+- loading state
+- error state
+- retry
+
+--------------------------------
+PART 3 — FREE USER FLOW (NO SUBSCRIPTION)
+--------------------------------
+
+If user clicks:
+"Doorgaan zonder abonnement"
+
+Show EXACT same flow as screenshots:
+
+Screen 1:
+- Title: "Weet je het zeker?"
+- 3 red bullet points (loss framing)
+- Primary button: "Abonnement kiezen"
+- Secondary button: "Ik kies voor beperkte toegang"
+
+Then continue through all onboarding-style screens:
+
+- Welcome screen (speech bubble + person)
+- Push notification screen
+- Profile completion screens
+- Buddy invite screen
+- Final success screen
+
+IMPORTANT:
+- Match layout, spacing, font sizes EXACTLY
+- Buttons always bottom fixed
+- Same hierarchy and visual weight
+
+--------------------------------
+PART 4 — REACTIEBRIEF FIX (CRITICAL BUG)
+--------------------------------
+
+Fix the generated application letter.
+
+Currently incorrect placeholders exist:
+[JOB]
+[PHONE]
+[REASON_FOR_MOVING]
+
+This is WRONG.
+
+Fix logic:
+
+- Replace ALL placeholders with real user data from profile
+- ONLY allow one placeholder:
+  [ADRES]
+
+Example:
+
+❌ WRONG:
+"I work as [JOB]"
+
+✅ CORRECT:
+"I work as account manager"
+
+Data sources:
+- profile.firstName
+- profile.phone
+- profile.income
+- profile.livingSituation
+- etc.
+
+Ensure regeneration always uses latest saved profile data.
+
+--------------------------------
+PART 5 — BRANDING FIX
+--------------------------------
+
+Remove ALL references to "Rentbird".
+
+Replace with:
+- HousAlert name
+- HousAlert logo
+
+Do NOT leave any Rentbird text in UI.
+
+--------------------------------
+PART 6 — FINAL FLOW
+--------------------------------
+
+After final onboarding screen:
+
+User must land on:
+→ /home
+
+NOT:
+- onboarding
+- paywall
+- previous steps
+
+--------------------------------
+PART 7 — UI CONSISTENCY RULES
+--------------------------------
+
+- Dark background = ALL text white (no grey low contrast)
+- Buttons:
+  - Primary = pink
+  - Secondary = outlined or subtle
+- Border radius consistent (12–16px)
+- Spacing consistent across screens
+- Inputs:
+  - white border
+  - transparent/dark background
+
+--------------------------------
+PART 8 — ACCEPTANCE CRITERIA
+--------------------------------
+
+The implementation is ONLY complete if:
+
+- Paywall visually matches screenshots 1:1
+- Stripe payments work end-to-end
+- Free flow matches screenshots exactly
+- No placeholder bugs remain
+- No Rentbird branding remains
+- User ends on home screen correctly
+
+Do not simplify anything.
+Do not redesign anything.
+Match the reference exactly.

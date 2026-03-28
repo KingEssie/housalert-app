@@ -41,24 +41,49 @@ const RESUMABLE_STEPS: FlowStep[] = [
 
 interface Plan {
   id: string;
-  nameKey: string;
-  priceKey: string;
-  pricePerMonthKey: string;
+  label: string;
+  price: string;
+  perMonth: string;
   popular: boolean;
-  savingsKey?: string;
+  discountLabel?: string;
+  discountColor?: string;
 }
 
-const PLANS: Plan[] = [
-  { id: "monthly", nameKey: "paywall.plans.monthly", priceKey: "paywall.prices.monthly", pricePerMonthKey: "paywall.pricePerMonth.monthly", popular: false },
-  { id: "two_month", nameKey: "paywall.plans.twoMonth", priceKey: "paywall.prices.twoMonth", pricePerMonthKey: "paywall.pricePerMonth.twoMonth", popular: true, savingsKey: "paywall.save17" },
-  { id: "three_month", nameKey: "paywall.plans.threeMonth", priceKey: "paywall.prices.threeMonth", pricePerMonthKey: "paywall.pricePerMonth.threeMonth", popular: false, savingsKey: "paywall.save33" },
-];
+function getPlans(t: (k: string) => string): Plan[] {
+  return [
+    {
+      id: "three_month",
+      label: t("paywall.plans.threeMonth"),
+      price: "€44,99",
+      perMonth: "€15,00 " + t("paywall.perMonth"),
+      popular: false,
+      discountLabel: "-40%",
+      discountColor: "#22c55e",
+    },
+    {
+      id: "two_month",
+      label: t("paywall.plans.twoMonth"),
+      price: "€34,99",
+      perMonth: "€17,50 " + t("paywall.perMonth"),
+      popular: true,
+      discountLabel: "-30%",
+      discountColor: "#f97316",
+    },
+    {
+      id: "monthly",
+      label: t("paywall.plans.monthly"),
+      price: "€24,99",
+      perMonth: "€24,99 " + t("paywall.perMonth"),
+      popular: false,
+      discountLabel: "",
+    },
+  ];
+}
 
-const FEATURE_KEYS = [
-  "paywall.features.profiles",
-  "paywall.features.emailAlerts",
-  "paywall.features.pushAlerts",
-  "paywall.features.firstAccess",
+const BENEFIT_KEYS = [
+  { titleKey: "paywall.benefits.speed.title", descKey: "paywall.benefits.speed.desc" },
+  { titleKey: "paywall.benefits.sources.title", descKey: "paywall.benefits.sources.desc" },
+  { titleKey: "paywall.benefits.letter.title", descKey: "paywall.benefits.letter.desc" },
 ];
 
 function ProgressDots({ current, total }: { current: number; total: number }) {
@@ -204,6 +229,7 @@ function PaywallStep({ onSelectPlan, onSkip, t }: {
   onSkip: () => void;
   t: (k: string, p?: Record<string, any>) => string;
 }) {
+  const plans = getPlans(t);
   const [selectedPlan, setSelectedPlan] = useState("two_month");
   const [loading, setLoading] = useState(false);
 
@@ -214,78 +240,97 @@ function PaywallStep({ onSelectPlan, onSkip, t }: {
 
   return (
     <>
-      <div className="text-center mb-6">
-        <div className="w-14 h-14 rounded-[6px] flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: "rgba(233,30,99,0.12)" }}>
-          <Crown className="w-7 h-7" style={{ color: BRAND }} />
+      <div className="flex items-center justify-between mb-6">
+        <HousAlertLogo size={24} />
+        <div className="flex items-center gap-1.5">
+          <span className="text-[12px] font-medium" style={{ color: TEXT_SECONDARY }}>
+            4,6 {t("paywall.outOf")} 5 ★
+          </span>
         </div>
-        <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-paywall-title">
-          {t("paywall.title")}
-        </h1>
-        <p className="text-[14px]" style={{ color: TEXT_SECONDARY }}>
-          {t("paywall.trialInfo")}
-        </p>
       </div>
 
-      <div className="space-y-3 mb-6">
-        {PLANS.map((plan) => (
-          <button
-            key={plan.id}
-            onClick={() => setSelectedPlan(plan.id)}
-            className={`w-full p-5 rounded-[6px] border-2 transition-all text-left relative bg-ha-card ${
-              selectedPlan === plan.id ? "border-ha-primary" : "border-ha-card-border"
-            }`}
-            data-testid={`card-plan-${plan.id}`}
-          >
-            {plan.popular && (
-              <span className="absolute -top-3 left-5 px-3 py-0.5 bg-ha-primary text-white text-xs font-medium rounded-full" data-testid="badge-popular">
-                {t("paywall.mostChosen")}
-              </span>
-            )}
-            <div className="flex items-center justify-between gap-4 pr-8">
-              <div>
-                <p className="text-[16px] font-medium text-ha-text">{t(plan.nameKey)}</p>
-                <p className="text-[14px] text-ha-text-secondary">{t(plan.pricePerMonthKey)}</p>
-              </div>
-              <div className="text-right">
-                <p className="text-[18px] font-medium text-ha-text">{t(plan.priceKey)}</p>
-                {plan.savingsKey && (
-                  <p className="text-xs font-medium" style={{ color: BRAND }}>{t(plan.savingsKey)}</p>
-                )}
-              </div>
+      <h1 className="text-[28px] font-extrabold tracking-[-0.03em] leading-[1.1] mb-6" style={{ color: TEXT_PRIMARY }} data-testid="text-paywall-title">
+        {t("paywall.headline")}
+      </h1>
+
+      <div className="space-y-4 mb-8">
+        {BENEFIT_KEYS.map((b, i) => (
+          <div key={i} className="flex items-start gap-3" data-testid={`paywall-benefit-${i}`}>
+            <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgba(34,197,94,0.15)" }}>
+              <Check className="w-3.5 h-3.5 text-green-500" />
             </div>
-            <div
-              className={`absolute top-5 right-5 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-                selectedPlan === plan.id ? "bg-ha-primary border-ha-primary" : "border-ha-card-border"
-              }`}
-            >
-              {selectedPlan === plan.id && <Check className="w-3.5 h-3.5 text-white" />}
+            <div>
+              <p className="text-[15px] font-semibold" style={{ color: TEXT_PRIMARY }}>{t(b.titleKey)}</p>
+              <p className="text-[13px] mt-0.5" style={{ color: TEXT_SECONDARY }}>{t(b.descKey)}</p>
             </div>
-          </button>
+          </div>
         ))}
       </div>
 
-      <div className="bg-ha-card rounded-[6px] border border-ha-card-border p-5 mb-6">
-        <p className="text-[14px] font-medium text-ha-text mb-3">{t("paywall.featuresTitle")}</p>
-        <div className="space-y-2.5">
-          {FEATURE_KEYS.map((key, i) => (
-            <div key={i} className="flex items-center gap-3">
-              <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(34,197,94,0.1)" }}>
-                <Check className="w-3 h-3 text-green-500" />
+      <div className="space-y-3 mb-6">
+        {plans.map((plan) => {
+          const isSelected = selectedPlan === plan.id;
+          return (
+            <button
+              key={plan.id}
+              onClick={() => setSelectedPlan(plan.id)}
+              className="w-full rounded-[12px] border-2 transition-all text-left relative overflow-hidden"
+              style={{
+                borderColor: isSelected ? BRAND : "rgba(255,255,255,0.12)",
+                backgroundColor: isSelected ? "rgba(233,30,99,0.08)" : "rgba(255,255,255,0.04)",
+              }}
+              data-testid={`card-plan-${plan.id}`}
+            >
+              {plan.popular && (
+                <div className="w-full text-center py-1 text-[11px] font-bold tracking-wider uppercase" style={{ backgroundColor: BRAND, color: "#fff" }} data-testid="badge-popular">
+                  {t("paywall.mostChosen")}
+                </div>
+              )}
+              <div className="flex items-center justify-between px-4 py-3.5">
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors"
+                    style={{
+                      borderColor: isSelected ? BRAND : "rgba(255,255,255,0.25)",
+                      backgroundColor: isSelected ? BRAND : "transparent",
+                    }}
+                  >
+                    {isSelected && <Check className="w-3 h-3 text-white" />}
+                  </div>
+                  <div>
+                    <p className="text-[15px] font-semibold" style={{ color: TEXT_PRIMARY }}>{plan.label}</p>
+                    <p className="text-[12px]" style={{ color: TEXT_SECONDARY }}>{plan.perMonth}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <span className="text-[18px] font-bold" style={{ color: TEXT_PRIMARY }}>{plan.price}</span>
+                  {plan.discountLabel && (
+                    <span
+                      className="text-[11px] font-bold px-2 py-0.5 rounded-[4px]"
+                      style={{ backgroundColor: plan.discountColor + "20", color: plan.discountColor }}
+                    >
+                      {plan.discountLabel}
+                    </span>
+                  )}
+                </div>
               </div>
-              <span className="text-[13px] text-ha-text-secondary">{t(key)}</span>
-            </div>
-          ))}
-        </div>
+            </button>
+          );
+        })}
       </div>
 
       <div className="mt-auto space-y-3">
         <PrimaryBtn onClick={handleCheckout} loading={loading} testId="button-setup-checkout">
-          {t("paywall.startTrial")}
+          {t("paywall.selectPlan")} →
         </PrimaryBtn>
-        <SecondaryBtn onClick={onSkip} testId="button-setup-skip-paywall">
-          {t("onboardingFlow.continueWithout")}
-        </SecondaryBtn>
-        <p className="text-center text-[12px] text-ha-text-muted">{t("paywall.trialFooter")}</p>
+        <button
+          onClick={onSkip}
+          className="w-full text-center text-[13px] font-medium py-3 transition-colors"
+          style={{ color: TEXT_SECONDARY }}
+          data-testid="button-setup-skip-paywall"
+        >
+          {t("paywall.skipFree")}
+        </button>
       </div>
     </>
   );
@@ -296,10 +341,10 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
   onContinue: () => void;
   t: (k: string, p?: Record<string, any>) => string;
 }) {
-  const limitations = [
-    { icon: AlertTriangle, text: t("onboardingFlow.limitedAccess.feature1") },
-    { icon: AlertTriangle, text: t("onboardingFlow.limitedAccess.feature2") },
-    { icon: AlertTriangle, text: t("onboardingFlow.limitedAccess.feature3") },
+  const losses = [
+    t("onboardingFlow.limitedAccess.loss1"),
+    t("onboardingFlow.limitedAccess.loss2"),
+    t("onboardingFlow.limitedAccess.loss3"),
   ];
 
   return (
@@ -308,7 +353,7 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
         <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: "rgba(239,68,68,0.1)" }}>
           <ShieldAlert className="w-8 h-8 text-red-500" />
         </div>
-        <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-limited-title">
+        <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-limited-title">
           {t("onboardingFlow.limitedAccess.title")}
         </h1>
         <p className="text-[14px] mb-8 max-w-[320px]" style={{ color: TEXT_SECONDARY }}>
@@ -316,12 +361,12 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
         </p>
 
         <div className="w-full space-y-3">
-          {limitations.map((item, i) => (
-            <div key={i} className="flex items-center gap-4 bg-ha-card rounded-[6px] border border-ha-card-border px-5 py-4">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(239,68,68,0.12)" }}>
-                <item.icon className="w-5 h-5 text-red-500" />
+          {losses.map((text, i) => (
+            <div key={i} className="flex items-start gap-3 text-left px-1">
+              <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgba(239,68,68,0.15)" }}>
+                <X className="w-3 h-3 text-red-500" />
               </div>
-              <span className="text-[14px] font-medium text-left" style={{ color: TEXT_PRIMARY }}>{item.text}</span>
+              <span className="text-[14px] font-medium" style={{ color: TEXT_PRIMARY }}>{text}</span>
             </div>
           ))}
         </div>
@@ -331,9 +376,14 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
         <PrimaryBtn onClick={onGoBack} testId="button-limited-goback">
           {t("onboardingFlow.limitedAccess.goBack")}
         </PrimaryBtn>
-        <SecondaryBtn onClick={onContinue} testId="button-limited-continue">
+        <button
+          onClick={onContinue}
+          className="w-full text-center text-[13px] font-medium py-3 transition-colors"
+          style={{ color: TEXT_SECONDARY }}
+          data-testid="button-limited-continue"
+        >
           {t("onboardingFlow.limitedAccess.continueAnyway")}
-        </SecondaryBtn>
+        </button>
       </div>
     </>
   );

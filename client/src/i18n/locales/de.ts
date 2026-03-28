@@ -887,35 +887,31 @@ export const de: Record<string, any> = {
   },
 
   paywall: {
-    title: "Wähle dein Abonnement",
+    headline: "Finde schneller eine Wohnung mit HousAlert Premium",
     plans: {
       monthly: "1 Monat",
       twoMonth: "2 Monate",
       threeMonth: "3 Monate",
     },
-    pricePerMonth: {
-      monthly: "€14,99/Monat",
-      twoMonth: "€12,50/Monat",
-      threeMonth: "€10,00/Monat",
-    },
-    prices: {
-      monthly: "€14,99",
-      twoMonth: "€24,99",
-      threeMonth: "€29,99",
-    },
+    perMonth: "p/M",
     mostChosen: "Am beliebtesten",
-    save17: "Spare 17%",
-    save33: "Spare 33%",
-    features: {
-      profiles: "Bis zu 4 Suchprofile",
-      emailAlerts: "Sofortige Benachrichtigungen per E-Mail",
-      pushAlerts: "Push-Benachrichtigungen (demnächst)",
-      firstAccess: "Neue Wohnungen als Erster sehen",
+    outOf: "von",
+    selectPlan: "Paket auswählen",
+    skipFree: "Ohne Abonnement fortfahren",
+    benefits: {
+      speed: {
+        title: "Schneller als andere Suchende",
+        desc: "Erhalte Alerts innerhalb von 30 Sekunden nach Veröffentlichung",
+      },
+      sources: {
+        title: "Alle Quellen, ein Ort",
+        desc: "Funda, Pararius, Kamernet und 30+ weitere Quellen",
+      },
+      letter: {
+        title: "Automatisches Bewerbungsschreiben",
+        desc: "Antworte sofort mit einem persönlichen Schreiben",
+      },
     },
-    featuresTitle: "Das ist alles enthalten:",
-    trialInfo: "Starte mit 14 Tagen kostenloser Testphase. Danach automatisch verlängert.",
-    startTrial: "Kostenlose Testphase starten",
-    trialFooter: "14 Tage kostenlos. Danach automatisch verlängert. Jederzeit kündbar.",
     pleaseWait: "Bitte warten...",
     notLoggedIn: "Du bist nicht eingeloggt",
     loginAgain: "Bitte melde dich erneut an.",
@@ -944,9 +940,9 @@ export const de: Record<string, any> = {
       default: "Premium",
     },
     priceLabel: {
-      monthly: "€14,99 / Monat",
-      twoMonth: "€24,99 / 2 Monate",
-      threeMonth: "€29,99 / 3 Monate",
+      monthly: "€24,99 / Monat",
+      twoMonth: "€34,99 / 2 Monate",
+      threeMonth: "€44,99 / 3 Monate",
     },
     billingFrequencyValue: {
       monthly: "Monatlich",
@@ -2011,13 +2007,13 @@ export const de: Record<string, any> = {
     back: "Zurück",
     startSearching: "Suche starten",
     limitedAccess: {
-      title: "Eingeschränkter Zugang",
-      subtitle: "Ohne Abo erhältst du nur begrenzte Wohnungsmeldungen und kannst nicht auf alle Funktionen zugreifen.",
-      feature1: "Verzögerte Benachrichtigungen",
-      feature2: "Maximal 3 Matches pro Woche",
-      feature3: "Kein Bewerbungsschreiben",
-      goBack: "Zurück zur Paketauswahl",
-      continueAnyway: "Trotzdem fortfahren",
+      title: "Bist du sicher?",
+      subtitle: "Ohne Abonnement verpasst du die wichtigsten Vorteile von HousAlert.",
+      loss1: "Du erhältst Wohnungsmeldungen erst nach 24 Stunden — andere Suchende sind schneller",
+      loss2: "Quellen wie Funda und Pararius sind ausgeblendet — du siehst nicht, wo die Wohnung ist",
+      loss3: "Kein automatisches Bewerbungsschreiben — du musst alles manuell erledigen",
+      goBack: "Abonnement wählen",
+      continueAnyway: "Ich wähle eingeschränkten Zugang",
     },
     welcome: {
       title: "Fast geschafft!",

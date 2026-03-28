@@ -2,55 +2,63 @@ import { apiFetch } from "@/lib/api-base";
 import { useHashSearch } from "@/lib/hash-search";
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, Check, Crown, Loader2 } from "lucide-react";
+import { ArrowLeft, Check, Loader2, X, ShieldAlert } from "lucide-react";
 import { HousAlertLogo } from "@/components/housalert-logo";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { useTranslation } from "@/i18n";
 import { trackEvent, trackEventLazy } from "@/lib/track-event";
 
+const BRAND = "rgb(var(--ha-primary))";
+const TEXT_PRIMARY = "rgb(var(--ha-text))";
+const TEXT_SECONDARY = "rgb(var(--ha-text-secondary))";
+
 interface Plan {
   id: string;
-  nameKey: string;
-  priceKey: string;
-  pricePerMonthKey: string;
+  label: string;
+  price: string;
+  perMonth: string;
   popular: boolean;
-  savingsKey?: string;
+  discountLabel?: string;
+  discountColor?: string;
 }
 
-const PLANS: Plan[] = [
-  {
-    id: "monthly",
-    nameKey: "paywall.plans.monthly",
-    priceKey: "paywall.prices.monthly",
-    pricePerMonthKey: "paywall.pricePerMonth.monthly",
-    popular: false,
-  },
-  {
-    id: "two_month",
-    nameKey: "paywall.plans.twoMonth",
-    priceKey: "paywall.prices.twoMonth",
-    pricePerMonthKey: "paywall.pricePerMonth.twoMonth",
-    popular: true,
-    savingsKey: "paywall.save17",
-  },
-  {
-    id: "three_month",
-    nameKey: "paywall.plans.threeMonth",
-    priceKey: "paywall.prices.threeMonth",
-    pricePerMonthKey: "paywall.pricePerMonth.threeMonth",
-    popular: false,
-    savingsKey: "paywall.save33",
-  },
-];
+function getPlans(t: (k: string) => string): Plan[] {
+  return [
+    {
+      id: "three_month",
+      label: t("paywall.plans.threeMonth"),
+      price: "€44,99",
+      perMonth: "€15,00 " + t("paywall.perMonth"),
+      popular: false,
+      discountLabel: "-40%",
+      discountColor: "#22c55e",
+    },
+    {
+      id: "two_month",
+      label: t("paywall.plans.twoMonth"),
+      price: "€34,99",
+      perMonth: "€17,50 " + t("paywall.perMonth"),
+      popular: true,
+      discountLabel: "-30%",
+      discountColor: "#f97316",
+    },
+    {
+      id: "monthly",
+      label: t("paywall.plans.monthly"),
+      price: "€24,99",
+      perMonth: "€24,99 " + t("paywall.perMonth"),
+      popular: false,
+      discountLabel: "",
+    },
+  ];
+}
 
-const FEATURE_KEYS = [
-  "paywall.features.profiles",
-  "paywall.features.emailAlerts",
-  "paywall.features.pushAlerts",
-  "paywall.features.firstAccess",
+const BENEFIT_KEYS = [
+  { titleKey: "paywall.benefits.speed.title", descKey: "paywall.benefits.speed.desc" },
+  { titleKey: "paywall.benefits.sources.title", descKey: "paywall.benefits.sources.desc" },
+  { titleKey: "paywall.benefits.letter.title", descKey: "paywall.benefits.letter.desc" },
 ];
 
 export default function PaywallPage() {
@@ -63,8 +71,11 @@ export default function PaywallPage() {
   const planFromUrl = queryParams.get("plan");
   const autoCheckout = queryParams.get("autoCheckout") === "true";
 
+  const plans = getPlans(t);
+  const validPlanIds = plans.map((p) => p.id);
+
   const [selectedPlan, setSelectedPlan] = useState(
-    planFromUrl && PLANS.some((p) => p.id === planFromUrl) ? planFromUrl : "two_month"
+    planFromUrl && validPlanIds.includes(planFromUrl) ? planFromUrl : "two_month"
   );
   const [loading, setLoading] = useState(false);
   const autoCheckoutTriggered = useRef(false);
@@ -155,105 +166,103 @@ export default function PaywallPage() {
             <ArrowLeft className="w-4 h-4 text-ha-text-secondary" />
           </button>
           <HousAlertLogo size={28} />
+          <div className="ml-auto flex items-center gap-1.5">
+            <span className="text-[12px] font-medium" style={{ color: TEXT_SECONDARY }}>
+              4,6 {t("paywall.outOf")} 5 ★
+            </span>
+          </div>
         </div>
       </header>
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-10 pb-32">
-        <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-[6px] bg-ha-primary/10 flex items-center justify-center mx-auto mb-4">
-            <Crown className="w-7 h-7 text-ha-primary" />
-          </div>
-          <h1 className="text-[32px] font-medium text-ha-text tracking-[-0.03em] leading-[1.1] mb-3" data-testid="text-paywall-title">
-            {t("paywall.title")}
-          </h1>
-          <p className="text-[15px] text-ha-text-secondary">
-            {t("paywall.trialInfo")}
-          </p>
-        </div>
+      <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-8 pb-32">
+        <h1 className="text-[28px] font-extrabold tracking-[-0.03em] leading-[1.1] mb-6" style={{ color: TEXT_PRIMARY }} data-testid="text-paywall-title">
+          {t("paywall.headline")}
+        </h1>
 
-        <div className="space-y-3 mb-6">
-          {PLANS.map((plan) => (
-            <button
-              key={plan.id}
-              onClick={() => setSelectedPlan(plan.id)}
-              className={`w-full p-6 rounded-[6px] border-2 transition-all text-left relative bg-ha-card ${
-                selectedPlan === plan.id
-                  ? "border-ha-primary"
-                  : "border-ha-card-border hover:border-ha-text-muted"
-              }`}
-              data-testid={`card-plan-${plan.id}`}
-            >
-              {plan.popular && (
-                <span
-                  className="absolute -top-3 left-5 px-3 py-0.5 bg-ha-primary text-white text-xs font-medium rounded-full"
-                  data-testid="badge-popular"
-                >
-                  {t("paywall.mostChosen")}
-                </span>
-              )}
-
-              <div className="flex items-center justify-between gap-4 pr-8">
-                <div>
-                  <p className="text-[18px] font-medium text-ha-text">{t(plan.nameKey)}</p>
-                  <p className="text-[15px] text-ha-text-secondary">{t(plan.pricePerMonthKey)}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-xl font-medium text-ha-text">{t(plan.priceKey)}</p>
-                  {plan.savingsKey && (
-                    <p className="text-xs font-medium text-ha-primary">{t(plan.savingsKey)}</p>
-                  )}
-                </div>
+        <div className="space-y-4 mb-8">
+          {BENEFIT_KEYS.map((b, i) => (
+            <div key={i} className="flex items-start gap-3" data-testid={`paywall-benefit-${i}`}>
+              <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgba(34,197,94,0.15)" }}>
+                <Check className="w-3.5 h-3.5 text-green-500" />
               </div>
-
-              <div
-                className={`absolute top-6 right-6 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-                  selectedPlan === plan.id
-                    ? "bg-ha-primary border-ha-primary"
-                    : "border-white-muted"
-                }`}
-              >
-                {selectedPlan === plan.id && <Check className="w-3.5 h-3.5 text-ha-text" />}
+              <div>
+                <p className="text-[15px] font-semibold" style={{ color: TEXT_PRIMARY }}>{t(b.titleKey)}</p>
+                <p className="text-[13px] mt-0.5" style={{ color: TEXT_SECONDARY }}>{t(b.descKey)}</p>
               </div>
-            </button>
+            </div>
           ))}
         </div>
 
-        <div className="bg-ha-card rounded-[6px] border border-ha-card-border p-6">
-          <p className="text-[16px] font-medium text-ha-text mb-3">{t("paywall.featuresTitle")}</p>
-          <div className="space-y-2.5">
-            {FEATURE_KEYS.map((key, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded-full bg-ha-success-light flex items-center justify-center flex-shrink-0">
-                  <Check className="w-3 h-3 text-ha-success" />
+        <div className="space-y-3 mb-6">
+          {plans.map((plan) => {
+            const isSelected = selectedPlan === plan.id;
+            return (
+              <button
+                key={plan.id}
+                onClick={() => setSelectedPlan(plan.id)}
+                className="w-full rounded-[12px] border-2 transition-all text-left relative overflow-hidden bg-ha-card"
+                style={{
+                  borderColor: isSelected ? BRAND : "rgb(var(--ha-card-border))",
+                }}
+                data-testid={`card-plan-${plan.id}`}
+              >
+                {plan.popular && (
+                  <div className="w-full text-center py-1 text-[11px] font-bold tracking-wider uppercase" style={{ backgroundColor: BRAND, color: "#fff" }} data-testid="badge-popular">
+                    {t("paywall.mostChosen")}
+                  </div>
+                )}
+                <div className="flex items-center justify-between px-4 py-3.5">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors"
+                      style={{
+                        borderColor: isSelected ? BRAND : "rgb(var(--ha-card-border))",
+                        backgroundColor: isSelected ? BRAND : "transparent",
+                      }}
+                    >
+                      {isSelected && <Check className="w-3 h-3 text-white" />}
+                    </div>
+                    <div>
+                      <p className="text-[15px] font-semibold text-ha-text">{plan.label}</p>
+                      <p className="text-[12px] text-ha-text-secondary">{plan.perMonth}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-[18px] font-bold text-ha-text">{plan.price}</span>
+                    {plan.discountLabel && (
+                      <span
+                        className="text-[11px] font-bold px-2 py-0.5 rounded-[4px]"
+                        style={{ backgroundColor: plan.discountColor + "20", color: plan.discountColor }}
+                      >
+                        {plan.discountLabel}
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <span className="text-[15px] text-ha-text-secondary">{t(key)}</span>
-              </div>
-            ))}
-          </div>
+              </button>
+            );
+          })}
         </div>
       </main>
 
       <div className="fixed bottom-0 left-0 right-0 bg-ha-bg border-t border-ha-card-border p-5 z-10">
         <div className="max-w-xl mx-auto">
-          <Button
-            size="lg"
-            className="w-full h-[56px] rounded-[6px] text-[16px] font-medium shadow-none bg-ha-primary hover:bg-ha-primary-hover text-white"
+          <button
+            className="w-full h-[56px] rounded-[12px] text-[16px] font-bold text-white transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+            style={{ backgroundColor: BRAND }}
             onClick={handleCheckout}
             disabled={loading}
             data-testid="button-select-payment"
           >
             {loading ? (
               <>
-                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                <Loader2 className="w-5 h-5 animate-spin" />
                 {t("paywall.pleaseWait")}
               </>
             ) : (
-              t("paywall.startTrial")
+              <>{t("paywall.selectPlan")} →</>
             )}
-          </Button>
-          <p className="text-center text-[13px] text-ha-text-muted mt-3">
-            {t("paywall.trialFooter")}
-          </p>
+          </button>
         </div>
       </div>
     </div>
