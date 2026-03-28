@@ -26,7 +26,7 @@ export default function OnboardingIntro() {
 
       <main className="flex-1 flex flex-col justify-center max-w-[480px] mx-auto w-full px-5 pb-[140px]">
         <h1
-          className="text-[30px] font-bold tracking-[-0.02em] leading-[1.2] mb-6"
+          className="text-[30px] font-bold tracking-[-0.02em] leading-[1.15] mb-6"
           style={{ color: OB.text }}
           data-testid="text-intro-title"
         >
@@ -37,16 +37,16 @@ export default function OnboardingIntro() {
           {STEPS.map((step) => (
             <div key={step.num} className="flex items-start gap-3" data-testid={`step-${step.num}`}>
               <div
-                className="w-[28px] h-[28px] rounded-full flex items-center justify-center shrink-0 text-[14px] font-bold"
-                style={{ backgroundColor: "#22c55e", color: "#111" }}
+                className="w-[28px] h-[28px] rounded-full flex items-center justify-center shrink-0 text-[16px] font-bold mt-[2px]"
+                style={{ backgroundColor: "#10d38a", color: "#111" }}
               >
                 {step.num}
               </div>
               <div>
-                <p className="text-[16px] font-semibold" style={{ color: "#22c55e" }}>
+                <p className="text-[16px] font-bold leading-[1.25]" style={{ color: "#10d38a" }}>
                   {t(step.titleKey)}
                 </p>
-                <p className="text-[14px] mt-1 leading-relaxed" style={{ color: "rgba(255,255,255,0.8)" }}>
+                <p className="text-[15px] mt-1 leading-[1.45]" style={{ color: "rgba(255,255,255,0.88)" }}>
                   {t(step.descKey)}
                 </p>
               </div>

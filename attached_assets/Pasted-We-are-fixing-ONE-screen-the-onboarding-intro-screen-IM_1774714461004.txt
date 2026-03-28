@@ -1,0 +1,159 @@
+We are fixing ONE screen: the onboarding intro screen.
+
+IMPORTANT:
+- Do NOT touch header
+- Do NOT touch bottom CTA section
+- Do NOT touch routing or logic
+- ONLY replace the middle content block so it matches the Rentbird reference more closely
+
+CURRENT SCREEN PROBLEM:
+The current intro screen still uses a generic marketing layout:
+- title "Vind jouw droomwoning"
+- subtitle paragraph
+- 3 icon feature cards
+
+This is incorrect.
+
+We need the middle content to match the Rentbird structure:
+- one large multi-line title
+- 3 numbered benefit steps
+- green step numbers and green step titles
+- compact vertical rhythm
+
+--------------------------------------------------
+1. REMOVE CURRENT MIDDLE CONTENT
+--------------------------------------------------
+
+Remove entirely:
+- title: "Vind jouw droomwoning"
+- subtitle paragraph below it
+- the 3 icon feature blocks
+
+Do NOT remove header.
+Do NOT remove bottom CTA area.
+
+--------------------------------------------------
+2. ADD NEW TITLE
+--------------------------------------------------
+
+Add this exact heading:
+
+"Vind razendsnel jouw huurwoning"
+
+Style:
+- color: white
+- font-weight: 700
+- font-size: 30px on mobile
+- line-height: 1.15
+- letter-spacing: slight negative if needed
+- margin-bottom: 24px
+- max-width similar to reference so it wraps naturally across multiple lines
+
+--------------------------------------------------
+3. ADD 3-STEP BENEFIT LIST
+--------------------------------------------------
+
+Under the title, add 3 stacked step rows.
+
+Each row structure:
+
+[green numbered circle] [text block]
+
+Row layout:
+- display: flex
+- align-items: flex-start
+- gap: 12px
+- margin-bottom: 20px
+
+--------------------------------------------------
+4. NUMBER CIRCLE STYLE
+--------------------------------------------------
+
+For step numbers 1, 2, 3:
+
+- width: 28px
+- height: 28px
+- border-radius: 9999px
+- background: #10d38a or very similar bright green
+- color: #111111
+- font-size: 16px
+- font-weight: 700
+- display flex
+- align-items center
+- justify-content center
+- flex-shrink: 0
+- margin-top: 2px
+
+--------------------------------------------------
+5. TEXT BLOCK STYLE
+--------------------------------------------------
+
+Step title:
+- color: same green as number circle
+- font-size: 16px
+- font-weight: 700
+- line-height: 1.25
+
+Step description:
+- color: rgba(255,255,255,0.88)
+- font-size: 15px
+- line-height: 1.45
+- margin-top: 4px
+
+--------------------------------------------------
+6. EXACT TEXT CONTENT
+--------------------------------------------------
+
+Step 1
+Title:
+"Plaats een zoekopdracht"
+Description:
+"Stel jouw woonwensen in en laat de zoekbots daarna het zware werk doen"
+
+Step 2
+Title:
+"Wij zoeken woningmatches"
+Description:
+"Je ontvangt direct een melding zodra een woning online komt die bij jouw wensen past"
+
+Step 3
+Title:
+"Reageer en bezichtig"
+Description:
+"Reageer direct op een woning en word vaker uitgenodigd voor een bezichtiging"
+
+--------------------------------------------------
+7. SPACING RULES
+--------------------------------------------------
+
+- Header to title: keep current spacing
+- Title to first step: 24px
+- Between each step: 20px
+- Last step to bottom CTA section: keep balanced spacing similar to reference
+- Do NOT leave oversized empty space in the middle
+
+--------------------------------------------------
+8. KEEP THESE PARTS EXACTLY AS THEY ARE
+--------------------------------------------------
+
+Do NOT change:
+- HousAlert logo/header
+- language selector
+- bottom back button
+- pink CTA button
+- "Al een account? Inloggen"
+- page background
+- page routing / navigation
+
+--------------------------------------------------
+9. ACCEPTANCE CRITERIA
+--------------------------------------------------
+
+Only mark complete if:
+- the old icon feature cards are gone
+- the new large multi-line title is present
+- there are exactly 3 numbered green steps
+- the step titles are green
+- the descriptions are white/light
+- the middle section now visually matches the Rentbird reference structure much more closely
+- nothing else on the screen changed
