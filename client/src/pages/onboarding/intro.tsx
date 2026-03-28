@@ -3,7 +3,7 @@ import { useTranslation } from "@/i18n";
 import { HousAlertLogo } from "@/components/housalert-logo";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { ArrowRight, ChevronLeft } from "lucide-react";
-import { OB, OBStickyBar } from "@/components/onboarding-ui";
+import { OB } from "@/components/onboarding-ui";
 
 const STEPS = [
   { num: 1, titleKey: "onboarding.intro.step1.title", descKey: "onboarding.intro.step1.desc" },
@@ -55,43 +55,54 @@ export default function OnboardingIntro() {
         </div>
       </main>
 
-      <OBStickyBar>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate("/")}
-            className="w-[52px] h-[52px] rounded-[10px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
-            style={{
-              border: `2px solid ${OB.cardBorder}`,
-              backgroundColor: "transparent",
-            }}
-            data-testid="button-intro-back"
-          >
-            <ChevronLeft className="w-5 h-5" style={{ color: OB.text }} />
-          </button>
-          <button
-            onClick={() => navigate("/onboarding/city")}
-            className="flex-1 h-[52px] rounded-[10px] text-[15px] font-bold text-white transition-all active:scale-[0.97] flex items-center justify-center gap-2"
-            style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
-            data-testid="button-intro-start"
-          >
-            {t("onboarding.intro.cta")}
-            <ArrowRight className="w-4 h-4" />
-          </button>
+      <div
+        className="fixed bottom-0 left-0 right-0 z-30"
+        style={{
+          borderTop: "1px solid rgba(255,255,255,0.08)",
+          backgroundColor: "rgba(10,10,30,0.4)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          paddingBottom: "max(8px, env(safe-area-inset-bottom, 8px))",
+        }}
+      >
+        <div className="max-w-[480px] mx-auto px-5 pt-3">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate("/")}
+              className="w-[48px] h-[48px] rounded-[12px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
+              style={{
+                border: "1.5px solid rgba(255,255,255,0.25)",
+                backgroundColor: "transparent",
+              }}
+              data-testid="button-intro-back"
+            >
+              <ChevronLeft className="w-[18px] h-[18px]" style={{ color: OB.text }} />
+            </button>
+            <button
+              onClick={() => navigate("/onboarding/city")}
+              className="flex-1 h-[52px] rounded-[14px] text-[15px] font-semibold text-white transition-all active:scale-[0.97] flex items-center justify-center gap-2"
+              style={{ background: OB.pinkGradient, boxShadow: "0 8px 20px rgba(255,0,100,0.25)" }}
+              data-testid="button-intro-start"
+            >
+              {t("onboarding.intro.cta")}
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="flex items-center justify-center gap-1 mt-2.5 pb-0.5">
+            <span className="text-[14px]" style={{ color: "rgba(255,255,255,0.7)" }}>
+              {t("onboarding.intro.alreadyAccount")}
+            </span>
+            <button
+              onClick={() => navigate("/login")}
+              className="text-[14px] font-semibold"
+              style={{ color: "#ff4d8d" }}
+              data-testid="link-intro-login"
+            >
+              {t("onboarding.intro.login")}
+            </button>
+          </div>
         </div>
-        <div className="flex items-center justify-center gap-1 mt-3 pb-1">
-          <span className="text-[12px]" style={{ color: OB.textMuted }}>
-            {t("onboarding.intro.alreadyAccount")}
-          </span>
-          <button
-            onClick={() => navigate("/login")}
-            className="text-[12px] font-semibold"
-            style={{ color: OB.pink }}
-            data-testid="link-intro-login"
-          >
-            {t("onboarding.intro.login")}
-          </button>
-        </div>
-      </OBStickyBar>
+      </div>
     </div>
   );
 }

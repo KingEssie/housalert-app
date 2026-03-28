@@ -1,0 +1,111 @@
+We are refining ONLY the bottom CTA section of the onboarding screen.
+
+IMPORTANT:
+- Do NOT change anything above this section
+- Do NOT change layout structure
+- Only refine styling of the CTA area
+
+--------------------------------------------------
+1. CTA CONTAINER — ADD DEPTH
+--------------------------------------------------
+
+CURRENT:
+CTA section feels flat.
+
+FIX:
+- Add subtle top border:
+  border-top: 1px solid rgba(255,255,255,0.08)
+
+- Add slight background separation:
+  background: rgba(10, 10, 30, 0.4)
+
+- Add backdrop blur:
+  backdrop-filter: blur(10px)
+
+RESULT:
+CTA feels like a floating layer above content.
+
+--------------------------------------------------
+2. BACK BUTTON — MAKE CLEAN & SHARP
+--------------------------------------------------
+
+CURRENT:
+Back button is too soft.
+
+FIX:
+- width: 48px
+- height: 48px
+- border-radius: 12px (not too round)
+- border: 1.5px solid rgba(255,255,255,0.25)
+- background: transparent
+
+ICON:
+- slightly smaller
+- centered perfectly
+
+RESULT:
+Clean outlined square button.
+
+--------------------------------------------------
+3. CTA BUTTON — MAKE STRONGER
+--------------------------------------------------
+
+CURRENT:
+Button is good but not punchy enough.
+
+FIX:
+- height: 52px
+- border-radius: 14px
+- gradient stays the same
+
+ADD GLOW:
+box-shadow:
+0 8px 20px rgba(255, 0, 100, 0.25)
+
+TEXT:
+- font-weight: 600
+- keep centered
+
+RESULT:
+More premium and clickable.
+
+--------------------------------------------------
+4. SPACING INSIDE CTA AREA
+--------------------------------------------------
+
+FIX:
+- Reduce space between button and text below to 10px
+- Reduce bottom padding slightly
+
+RESULT:
+More compact like reference.
+
+--------------------------------------------------
+5. "AL EEN ACCOUNT? INLOGGEN"
+--------------------------------------------------
+
+FIX:
+- font-size: 14px
+- color: rgba(255,255,255,0.7)
+
+"INLOGGEN":
+- color: #ff4d8d (same as CTA tone)
+- font-weight: 600
+
+--------------------------------------------------
+KEEP EVERYTHING ELSE EXACTLY THE SAME
+--------------------------------------------------
+
+- Text content
+- Button text
+- Navigation
+- Screen layout
+
+--------------------------------------------------
+ACCEPTANCE CRITERIA
+--------------------------------------------------
+
+- CTA section feels like a floating layer
+- Back button is sharp and square
+- CTA button has more presence
+- Text below is tighter and cleaner
