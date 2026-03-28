@@ -660,13 +660,21 @@ export const nl: Record<string, any> = {
     intro: {
       title: "Vind jouw droomwoning",
       subtitle: "HousAlert doorzoekt alle grote woningportalen en stuurt je direct een bericht bij nieuwe matches.",
-      benefit1Title: "Alle portalen, één alert",
-      benefit1Desc: "Wij doorzoeken alle grote woningportalen tegelijk.",
-      benefit2Title: "Direct op de hoogte",
-      benefit2Desc: "Je ontvangt binnen enkele minuten bericht bij nieuwe matches.",
-      benefit3Title: "Nooit meer missen",
-      benefit3Desc: "Wees de eerste die reageert op nieuwe woningen.",
+      benefit1: {
+        title: "Alle woningen op één plek",
+        desc: "Wij doorzoeken meerdere woningwebsites tegelijk, zodat je niets mist.",
+      },
+      benefit2: {
+        title: "Sneller dan wie dan ook",
+        desc: "Ontvang nieuwe huurwoningen binnen minuten — reageer als eerste.",
+      },
+      benefit3: {
+        title: "Directe meldingen",
+        desc: "Push-notificaties en e-mail alerts zodra er een passende woning online komt.",
+      },
       cta: "Nu starten",
+      alreadyAccount: "Al een account?",
+      login: "Inloggen",
       footerNote: "Instellen duurt minder dan 2 minuten",
     },
     name: {

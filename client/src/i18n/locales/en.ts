@@ -643,13 +643,21 @@ export const en: Record<string, any> = {
     intro: {
       title: "Find your dream apartment",
       subtitle: "HousAlert searches all major rental platforms and notifies you instantly when new matches appear.",
-      benefit1Title: "All platforms, one alert",
-      benefit1Desc: "We search all major rental platforms simultaneously.",
-      benefit2Title: "Notified instantly",
-      benefit2Desc: "You receive a message within minutes when new matches appear.",
-      benefit3Title: "Never miss out",
-      benefit3Desc: "Be the first to apply for new apartments.",
+      benefit1: {
+        title: "All listings in one place",
+        desc: "We search multiple housing websites at once so you never miss a listing.",
+      },
+      benefit2: {
+        title: "Faster than anyone else",
+        desc: "Get new rental listings within minutes — be the first to respond.",
+      },
+      benefit3: {
+        title: "Instant notifications",
+        desc: "Push notifications and email alerts as soon as a matching listing goes live.",
+      },
       cta: "Get started",
+      alreadyAccount: "Already have an account?",
+      login: "Log in",
       footerNote: "Setup takes less than 2 minutes",
     },
     name: {

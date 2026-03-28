@@ -1,0 +1,223 @@
+We are fixing the HousAlert onboarding/search-profile flow UI to match the Rentbird reference screenshots MUCH more closely.
+
+IMPORTANT:
+Do NOT touch routing or logic.
+Do NOT change flow order.
+Only fix the UI and missing translations for:
+- intro page
+- search profile step 2
+- search profile step 3
+
+==================================================
+1. INTRO PAGE FIX
+==================================================
+
+Current problems:
+- translation keys are visible instead of real text
+- missing outlined back button left of the CTA
+- overall layout is not yet matching the Rentbird reference
+
+Fix all of this.
+
+A. TRANSLATIONS
+Replace all visible translation keys on the intro page with actual localized strings in NL / DE / EN.
+
+Use proper keys and make sure they render as real text:
+- onboarding.intro.benefit1.title
+- onboarding.intro.benefit1.desc
+- onboarding.intro.benefit2.title
+- onboarding.intro.benefit2.desc
+- onboarding.intro.benefit3.title
+- onboarding.intro.benefit3.desc
+- onboarding.intro.alreadyAccount
+- onboarding.intro.login
+
+Do NOT leave any raw key strings visible in the UI.
+
+B. INTRO PAGE LAYOUT
+Keep the dark premium background.
+
+Structure should be:
+- logo top left
+- language selector top right
+- large title
+- subtitle
+- 3 benefit rows with icon left + text right
+- bottom CTA row
+
+C. CTA ROW
+At the bottom, use EXACT structure like the Rentbird reference:
+
+LEFT:
+- square outlined back button
+- dark transparent/outlined style
+- same height as the primary CTA
+- icon only (left arrow)
+
+RIGHT:
+- large pink CTA button
+- text: “Nu starten”
+- arrow icon on the right
+
+The back button must sit directly left of the CTA.
+The two buttons must align horizontally and share the same vertical rhythm.
+
+D. “Already have account?”
+Below the CTA row:
+- small subtle text
+- login link styled correctly
+- no raw translation keys
+
+==================================================
+2. SEARCH PROFILE STEP 2 FIX
+==================================================
+
+Target:
+Make step 2 visually match the Rentbird screenshot exactly.
+
+Current issue:
+It still looks like the previous custom variant, not the Rentbird version.
+
+Required changes:
+
+A. TOP AREA
+- top-left blue badge: “2/4”
+- centered title: “Zoekopdracht maken”
+- top-right circular close button
+- thin divider line below header
+
+B. INPUT FIELD
+- label: “Woonplaats”
+- dark input with white border
+- left search icon
+- selected city text
+- right clear / close icon
+
+C. SEGMENTED CONTROL
+Use the exact Rentbird style for:
+- Buurten
+- Straal
+- Gehele woonplaats
+
+Style:
+- rounded purple pill container
+- active tab highlighted
+- typography and spacing should match the reference closely
+
+D. BUURTEN DROPDOWN
+- label “Buurten”
+- white outlined dropdown
+- same height and spacing as reference
+- arrow on right
+
+E. MAP
+Keep current map functionality, but size and spacing should match the screenshot more closely.
+
+F. BOTTOM ACTION BAR
+Exact Rentbird-style bottom bar:
+- dark/purple fixed footer
+- left text block:
+  “Geschatte matches”
+  “121 per week 🔥” style
+- middle square outlined back button
+- right pink “Volgende” button
+
+IMPORTANT:
+This step must NOT use the old custom card layout from the previous version.
+It must feel like the Rentbird reference screenshot.
+
+==================================================
+3. SEARCH PROFILE STEP 3 FIX
+==================================================
+
+Target:
+Make step 3 visually match the Rentbird screenshot exactly.
+
+A. TOP AREA
+- top-left blue badge: “3/4”
+- centered title: “Zoekopdracht maken”
+- top-right circular close button
+- divider below
+
+B. RENT SLIDER
+- exact layout from reference:
+  left value, right value, slider below
+- typography white
+- slider track and handles styled closely to Rentbird
+
+C. TOGGLES
+- correct spacing and alignment
+- dark background
+- white text
+- switch style must match the reference
+
+D. SEGMENTED CONTROLS
+Use Rentbird-style pill controls for:
+- Soort woning
+- Slaapkamers
+- Gemeubileerd
+
+The selected state, spacing, pill height, radius, and font weight must match the reference much more closely.
+
+E. EXTRA WISHES
+- chips like Bad, Balkon, Tuin, Dakterras etc.
+- outlined pills
+- spacing like reference
+
+F. BOTTOM ACTION BAR
+Same fixed footer as step 2:
+- left estimated matches block
+- middle square outlined back button
+- right pink “Volgende” CTA
+
+IMPORTANT:
+Step 3 should look like the Rentbird screenshot, not like a generic custom filter form.
+
+==================================================
+4. BACK BUTTON CONSISTENCY
+==================================================
+
+Use the SAME outlined square back button in:
+- intro page CTA row
+- step 2 footer
+- step 3 footer
+
+Rules:
+- square-ish shape
+- outline border
+- transparent/dark fill
+- icon centered
+- visually premium
+- must match the reference style
+
+==================================================
+5. TEXT COLOR RULES
+==================================================
+
+On all dark onboarding/search-profile screens:
+- primary text = white
+- secondary text = white with lower opacity
+- no random gray text that becomes unreadable
+
+==================================================
+6. DO NOT CHANGE
+==================================================
+
+Do NOT:
+- change navigation flow
+- change business logic
+- touch paywall
+- touch later onboarding steps
+- redesign outside these 3 screens
+
+==================================================
+7. ACCEPTANCE CRITERIA
+==================================================
+
+Only mark complete if all of this is true:
+- intro page shows real translated text, not keys
+- intro page has the outlined back button left of “Nu starten”
+- step 2 visually matches the Rentbird reference much more closely
+- step 3 visually matches the Rentbird reference much more closely
+- same outlined back button is used consistently
+- no routing or logic is broken

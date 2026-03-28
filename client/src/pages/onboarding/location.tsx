@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
 import { useTranslation } from "@/i18n";
-import { ChevronLeft, Check, MapPin, Crosshair, Map } from "lucide-react";
+import { ChevronLeft, Check, MapPin, Crosshair, Map, X } from "lucide-react";
 import { cityDistricts } from "../../../../config/market";
-import { OB, OBStickyBar } from "@/components/onboarding-ui";
+import { OB } from "@/components/onboarding-ui";
 
 type LocationMode = "city" | "districts" | "radius";
 
@@ -59,80 +59,81 @@ export default function OnboardingLocation() {
     navigate("/onboarding/city");
   }
 
-  const MODE_OPTIONS: { value: LocationMode; label: string; desc: string; icon: typeof Map; available: boolean }[] = [
-    ...(hasDistricts ? [{ value: "districts" as LocationMode, label: t("location.tabs.districts") || "Buurten", desc: t("location.tabs.districtsDesc") || "Selecteer specifieke buurten", icon: MapPin, available: true }] : []),
-    { value: "radius", label: t("location.tabs.radius") || "Straal", desc: t("location.tabs.radiusDesc") || "Zoek binnen een straal", icon: Crosshair, available: true },
-    { value: "city", label: t("onboarding.location.wholeCity") || "Gehele woonplaats", desc: t("onboarding.location.wholeCityDesc") || "Alle aanbod in de hele stad", icon: Map, available: true },
+  function handleClose() {
+    navigate("/");
+  }
+
+  const TAB_OPTIONS: { value: LocationMode; label: string; available: boolean }[] = [
+    ...(hasDistricts ? [{ value: "districts" as LocationMode, label: t("location.tabs.districts") || "Buurten", available: true }] : []),
+    { value: "radius", label: t("location.tabs.radius") || "Straal", available: true },
+    { value: "city", label: t("onboarding.location.wholeCity") || "Gehele woonplaats", available: true },
   ];
 
   return (
     <div className="min-h-[100dvh] flex flex-col ob-dark" style={{ background: OB.gradient }} data-testid="screen-onboarding-location">
-      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-[max(24px,env(safe-area-inset-top))] pb-[100px]">
-        <span
-          className="text-[12px] font-bold tracking-wider mb-4 inline-block self-start px-2.5 py-1 rounded-[4px]"
-          style={{ color: OB.textSecondary, backgroundColor: "rgba(255,255,255,0.08)" }}
-          data-testid="badge-step"
-        >
-          2/3
-        </span>
+      <header
+        className="w-full sticky top-0 z-20 border-b"
+        style={{ backgroundColor: OB.headerBg, borderColor: OB.headerBorder, paddingTop: "max(8px, env(safe-area-inset-top))" }}
+      >
+        <div className="max-w-[480px] mx-auto px-5 h-[52px] flex items-center justify-between">
+          <span
+            className="text-[12px] font-bold px-2.5 py-1 rounded-[6px]"
+            style={{ backgroundColor: "rgba(99,102,241,0.2)", color: "#818cf8" }}
+            data-testid="badge-step"
+          >
+            2/3
+          </span>
+          <span className="text-[15px] font-semibold" style={{ color: OB.text }}>
+            {t("onboarding.location.headerTitle") || "Zoekopdracht maken"}
+          </span>
+          <button
+            onClick={handleClose}
+            className="w-8 h-8 rounded-full flex items-center justify-center active:scale-95 transition-transform"
+            style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
+            data-testid="button-location-close"
+          >
+            <X className="w-4 h-4" style={{ color: OB.textSecondary }} />
+          </button>
+        </div>
+      </header>
 
-        <h1
-          className="text-[24px] font-bold tracking-[-0.02em] mb-1"
+      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-[120px] overflow-y-auto">
+        <h2
+          className="text-[22px] font-bold tracking-[-0.02em] mb-1"
           style={{ color: OB.text }}
           data-testid="text-location-title"
         >
           {city}
-        </h1>
-        <p className="text-[14px] mb-6" style={{ color: OB.textSecondary }}>
+        </h2>
+        <p className="text-[14px] mb-5" style={{ color: OB.textSecondary }}>
           {t("onboarding.location.modeLabel") || "Hoe wil je zoeken?"}
         </p>
 
-        <div className="flex flex-col gap-3 mb-6">
-          {MODE_OPTIONS.map((opt) => {
-            const active = mode === opt.value;
-            const Icon = opt.icon;
-            return (
-              <button
-                key={opt.value}
-                onClick={() => setMode(opt.value)}
-                className="flex items-center gap-4 p-4 rounded-[6px] border-2 transition-all text-left"
-                style={{
-                  borderColor: active ? OB.selectedBorder : OB.cardBorder,
-                  backgroundColor: active ? OB.selectedBg : OB.card,
-                }}
-                data-testid={`mode-${opt.value}`}
-              >
-                <div
-                  className="w-12 h-12 rounded-[6px] flex items-center justify-center shrink-0"
-                  style={{
-                    backgroundColor: active ? OB.accentBg : OB.surface,
-                  }}
-                >
-                  <Icon className="w-5 h-5" style={{ color: active ? OB.pink : OB.textSecondary }} />
-                </div>
-                <div className="flex-1">
-                  <span
-                    className="text-[15px] font-semibold block"
-                    style={{ color: OB.text }}
-                  >
-                    {opt.label}
-                  </span>
-                  <span className="text-[13px] mt-0.5 block" style={{ color: OB.textSecondary }}>
-                    {opt.desc}
-                  </span>
-                </div>
-                {active && (
-                  <Check className="w-5 h-5 ml-auto shrink-0" style={{ color: OB.pink }} />
-                )}
-              </button>
-            );
-          })}
+        <div
+          className="flex p-1 rounded-full mb-6"
+          style={{ backgroundColor: "rgba(99,102,241,0.12)" }}
+          data-testid="location-tabs"
+        >
+          {TAB_OPTIONS.map((tab) => (
+            <button
+              key={tab.value}
+              onClick={() => setMode(tab.value)}
+              className="flex-1 h-[40px] rounded-full text-[13px] font-semibold transition-all"
+              style={{
+                backgroundColor: mode === tab.value ? "rgba(99,102,241,0.35)" : "transparent",
+                color: mode === tab.value ? "#fff" : OB.textSecondary,
+              }}
+              data-testid={`tab-${tab.value}`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
 
         {mode === "districts" && hasDistricts && (
           <div className="mb-6">
-            <p className="text-[13px] font-medium mb-3" style={{ color: OB.textSecondary }}>
-              {t("onboarding.location.districtsLabel") || "Buurten (optioneel)"}
+            <p className="text-[13px] font-semibold mb-3" style={{ color: OB.text }}>
+              {t("onboarding.location.districtsLabel") || "Buurten"}
             </p>
             <div className="flex flex-wrap gap-2" data-testid="district-chips">
               {districtList.map((d) => {
@@ -141,7 +142,7 @@ export default function OnboardingLocation() {
                   <button
                     key={d}
                     onClick={() => toggleDistrict(d)}
-                    className="px-3.5 py-2 rounded-[6px] text-[13px] font-medium border transition-all"
+                    className="px-3.5 py-2 rounded-full text-[13px] font-medium border transition-all flex items-center gap-1.5"
                     style={{
                       backgroundColor: active ? OB.pink : "transparent",
                       borderColor: active ? OB.pink : OB.cardBorder,
@@ -149,7 +150,7 @@ export default function OnboardingLocation() {
                     }}
                     data-testid={`district-${d}`}
                   >
-                    {active && <Check className="w-3 h-3 inline mr-1" />}
+                    {active && <Check className="w-3 h-3" />}
                     {d}
                   </button>
                 );
@@ -160,7 +161,7 @@ export default function OnboardingLocation() {
 
         {mode === "radius" && (
           <div className="mb-6">
-            <p className="text-[13px] font-medium mb-3" style={{ color: OB.textSecondary }}>
+            <p className="text-[13px] font-semibold mb-3" style={{ color: OB.text }}>
               {t("location.radiusLabel") || "Straal"}
             </p>
             <div className="flex flex-wrap gap-2" data-testid="radius-options">
@@ -170,7 +171,7 @@ export default function OnboardingLocation() {
                   <button
                     key={km}
                     onClick={() => setRadiusKm(km)}
-                    className="px-4 py-2.5 rounded-[6px] text-[14px] font-medium border-2 transition-all"
+                    className="px-4 py-2.5 rounded-full text-[14px] font-medium border-2 transition-all"
                     style={{
                       borderColor: active ? OB.selectedBorder : OB.cardBorder,
                       backgroundColor: active ? OB.selectedBg : "transparent",
@@ -187,7 +188,7 @@ export default function OnboardingLocation() {
         )}
 
         {mode === "city" && (
-          <div className="rounded-[6px] border p-4 mb-6" style={{ backgroundColor: OB.card, borderColor: OB.cardBorder }}>
+          <div className="rounded-[10px] border p-4 mb-6" style={{ backgroundColor: OB.card, borderColor: OB.cardBorder }}>
             <p className="text-[14px] leading-relaxed" style={{ color: OB.textSecondary }}>
               {t("onboarding.location.wholeCityHint") || `We zoeken in heel ${city} naar passende woningen.`}
             </p>
@@ -195,27 +196,36 @@ export default function OnboardingLocation() {
         )}
       </main>
 
-      <div className="fixed bottom-[max(24px,env(safe-area-inset-bottom))] left-5 z-30">
-        <button
-          onClick={handleBack}
-          className="w-12 h-12 rounded-full flex items-center justify-center active:scale-95 transition-transform backdrop-blur-md shadow-lg"
-          style={{ backgroundColor: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.1)" }}
-          data-testid="button-location-back"
-        >
-          <ChevronLeft className="w-5 h-5" style={{ color: OB.text }} />
-        </button>
+      <div
+        className="fixed bottom-0 left-0 right-0 z-30 border-t"
+        style={{
+          backgroundColor: OB.headerBg,
+          borderColor: OB.headerBorder,
+          paddingBottom: "max(12px, env(safe-area-inset-bottom, 12px))",
+        }}
+      >
+        <div className="max-w-[480px] mx-auto px-5 pt-3 flex items-center gap-3">
+          <button
+            onClick={handleBack}
+            className="w-[52px] h-[52px] rounded-[10px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
+            style={{
+              border: `2px solid ${OB.cardBorder}`,
+              backgroundColor: "transparent",
+            }}
+            data-testid="button-location-back"
+          >
+            <ChevronLeft className="w-5 h-5" style={{ color: OB.text }} />
+          </button>
+          <button
+            onClick={handleNext}
+            className="flex-1 h-[52px] rounded-[10px] text-[15px] font-bold text-white transition-all active:scale-[0.97] flex items-center justify-center gap-2"
+            style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
+            data-testid="button-location-next"
+          >
+            {t("common.next") || "Volgende"}
+          </button>
+        </div>
       </div>
-
-      <OBStickyBar>
-        <button
-          onClick={handleNext}
-          className="w-full h-[56px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97]"
-          style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
-          data-testid="button-location-next"
-        >
-          {t("common.next") || "Volgende"}
-        </button>
-      </OBStickyBar>
     </div>
   );
 }

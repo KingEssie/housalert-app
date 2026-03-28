@@ -653,13 +653,21 @@ export const de: Record<string, any> = {
     intro: {
       title: "Finde deine Traumwohnung",
       subtitle: "HousAlert durchsucht alle großen Wohnungsportale und benachrichtigt dich sofort bei neuen Treffern.",
-      benefit1Title: "Alle Portale, ein Alert",
-      benefit1Desc: "Wir durchsuchen alle großen Wohnungsportale gleichzeitig.",
-      benefit2Title: "Sofort benachrichtigt",
-      benefit2Desc: "Du erhältst innerhalb von Minuten eine Nachricht bei neuen Treffern.",
-      benefit3Title: "Nie wieder verpassen",
-      benefit3Desc: "Sei der Erste, der sich auf neue Wohnungen bewirbt.",
+      benefit1: {
+        title: "Alle Wohnungen an einem Ort",
+        desc: "Wir durchsuchen mehrere Immobilien-Websites gleichzeitig, damit du nichts verpasst.",
+      },
+      benefit2: {
+        title: "Schneller als jeder andere",
+        desc: "Erhalte neue Mietwohnungen innerhalb von Minuten — reagiere als Erster.",
+      },
+      benefit3: {
+        title: "Sofortige Benachrichtigungen",
+        desc: "Push-Nachrichten und E-Mail-Alerts, sobald eine passende Wohnung online geht.",
+      },
       cta: "Jetzt starten",
+      alreadyAccount: "Bereits ein Konto?",
+      login: "Anmelden",
       footerNote: "Einrichtung dauert weniger als 2 Minuten",
     },
     name: {

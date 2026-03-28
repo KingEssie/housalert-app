@@ -5,9 +5,9 @@ import { useTranslation } from "@/i18n";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import {
-  ChevronLeft, Check, Bath, Sun, Trees, Leaf, Sparkles, Loader2,
+  ChevronLeft, Check, Bath, Sun, Trees, Leaf, X, Loader2,
 } from "lucide-react";
-import { OB, OBStickyBar } from "@/components/onboarding-ui";
+import { OB } from "@/components/onboarding-ui";
 import { createSearchProfile, type InsertSearchProfileInput } from "@/lib/search-profiles";
 import { queryClient } from "@/lib/queryClient";
 
@@ -24,17 +24,17 @@ function SegmentedControl({
 }) {
   return (
     <div
-      className="flex gap-1 p-1 rounded-[6px] border"
-      style={{ backgroundColor: OB.surface, borderColor: OB.cardBorder }}
+      className="flex p-1 rounded-full"
+      style={{ backgroundColor: "rgba(99,102,241,0.12)" }}
       data-testid={testId}
     >
       {options.map((opt) => (
         <button
           key={opt.value}
           onClick={() => onChange(opt.value)}
-          className="flex-1 h-[40px] rounded-[4px] text-[13px] font-medium transition-all"
+          className="flex-1 h-[40px] rounded-full text-[13px] font-semibold transition-all"
           style={{
-            backgroundColor: value === opt.value ? OB.pink : "transparent",
+            backgroundColor: value === opt.value ? "rgba(99,102,241,0.35)" : "transparent",
             color: value === opt.value ? "#fff" : OB.textSecondary,
           }}
           data-testid={`${testId}-${opt.value}`}
@@ -116,10 +116,10 @@ function RangeSlider({
 }
 
 const AMENITY_OPTIONS = [
-  { value: "bath", labelKey: "amenities.bath", fallback: "Badewanne", icon: Bath },
+  { value: "bath", labelKey: "amenities.bath", fallback: "Bad", icon: Bath },
   { value: "balcony", labelKey: "amenities.balcony", fallback: "Balkon", icon: Sun },
-  { value: "garden", labelKey: "amenities.garden", fallback: "Garten", icon: Trees },
-  { value: "rooftop", labelKey: "amenities.rooftop", fallback: "Dachterrasse", icon: Sun },
+  { value: "garden", labelKey: "amenities.garden", fallback: "Tuin", icon: Trees },
+  { value: "rooftop", labelKey: "amenities.rooftop", fallback: "Dakterras", icon: Sun },
   { value: "energy_c", labelKey: "amenities.energyC", fallback: "Energielabel C+", icon: Leaf },
 ];
 
@@ -262,6 +262,10 @@ export default function OnboardingFilters() {
     navigate(`/onboarding/location?${backParams.toString()}`);
   }
 
+  function handleClose() {
+    navigate("/");
+  }
+
   const ROOM_OPTIONS = [
     { value: "any", label: "Studio+" },
     { value: "1", label: "1+" },
@@ -285,22 +289,40 @@ export default function OnboardingFilters() {
 
   return (
     <div className="min-h-[100dvh] flex flex-col ob-dark" style={{ background: OB.gradient }} data-testid="screen-onboarding-filters">
-      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-[max(24px,env(safe-area-inset-top))] pb-[100px] overflow-y-auto">
-        <span
-          className="text-[12px] font-bold tracking-wider mb-4 inline-block self-start px-2.5 py-1 rounded-[4px]"
-          style={{ color: OB.textSecondary, backgroundColor: "rgba(255,255,255,0.08)" }}
-          data-testid="badge-step"
-        >
-          3/3
-        </span>
+      <header
+        className="w-full sticky top-0 z-20 border-b"
+        style={{ backgroundColor: OB.headerBg, borderColor: OB.headerBorder, paddingTop: "max(8px, env(safe-area-inset-top))" }}
+      >
+        <div className="max-w-[480px] mx-auto px-5 h-[52px] flex items-center justify-between">
+          <span
+            className="text-[12px] font-bold px-2.5 py-1 rounded-[6px]"
+            style={{ backgroundColor: "rgba(99,102,241,0.2)", color: "#818cf8" }}
+            data-testid="badge-step"
+          >
+            3/3
+          </span>
+          <span className="text-[15px] font-semibold" style={{ color: OB.text }}>
+            {t("onboarding.filters.headerTitle") || "Zoekopdracht maken"}
+          </span>
+          <button
+            onClick={handleClose}
+            className="w-8 h-8 rounded-full flex items-center justify-center active:scale-95 transition-transform"
+            style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
+            data-testid="button-filters-close"
+          >
+            <X className="w-4 h-4" style={{ color: OB.textSecondary }} />
+          </button>
+        </div>
+      </header>
 
-        <h1
-          className="text-[24px] font-bold tracking-[-0.02em] mb-2"
+      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-[120px] overflow-y-auto">
+        <h2
+          className="text-[22px] font-bold tracking-[-0.02em] mb-1"
           style={{ color: OB.text }}
           data-testid="text-filters-title"
         >
           {t("onboarding.filters.title") || "Wat zoek je precies?"}
-        </h1>
+        </h2>
         <p className="text-[14px] mb-6" style={{ color: OB.textSecondary }}>
           {t("onboarding.filters.subtitle") || "Verfijn je zoekopdracht."}
         </p>
@@ -319,7 +341,7 @@ export default function OnboardingFilters() {
                   value={f.minPrice || ""}
                   onChange={(e) => update({ minPrice: Number(e.target.value) || 0 })}
                   placeholder="0"
-                  className="ob-input w-full h-[48px] px-3 rounded-[6px] text-[14px] font-medium"
+                  className="ob-input w-full h-[48px] px-3 rounded-[10px] text-[14px] font-medium"
                   data-testid="input-min-price"
                 />
               </div>
@@ -332,7 +354,7 @@ export default function OnboardingFilters() {
                   value={f.maxPrice || ""}
                   onChange={(e) => update({ maxPrice: Number(e.target.value) || 0 })}
                   placeholder="1500"
-                  className="ob-input w-full h-[48px] px-3 rounded-[6px] text-[14px] font-medium"
+                  className="ob-input w-full h-[48px] px-3 rounded-[10px] text-[14px] font-medium"
                   data-testid="input-max-price"
                 />
               </div>
@@ -386,17 +408,17 @@ export default function OnboardingFilters() {
               {t("onboarding.filters.bedroomsLabel") || "Slaapkamers"}
             </label>
             <div
-              className="flex gap-1 p-1 rounded-[6px] border"
-              style={{ backgroundColor: OB.surface, borderColor: OB.cardBorder }}
+              className="flex p-1 rounded-full"
+              style={{ backgroundColor: "rgba(99,102,241,0.12)" }}
               data-testid="rooms-selector"
             >
               {ROOM_OPTIONS.map((opt) => (
                 <button
                   key={opt.value}
                   onClick={() => update({ minRooms: opt.value })}
-                  className="flex-1 h-[40px] rounded-[4px] text-[13px] font-medium transition-all"
+                  className="flex-1 h-[40px] rounded-full text-[13px] font-semibold transition-all"
                   style={{
-                    backgroundColor: f.minRooms === opt.value ? OB.pink : "transparent",
+                    backgroundColor: f.minRooms === opt.value ? "rgba(99,102,241,0.35)" : "transparent",
                     color: f.minRooms === opt.value ? "#fff" : OB.textSecondary,
                   }}
                   data-testid={`rooms-${opt.value}`}
@@ -416,7 +438,7 @@ export default function OnboardingFilters() {
               </label>
               <button
                 onClick={() => update({ sizeNA: !f.sizeNA, minSize: f.sizeNA ? 30 : 0 })}
-                className="text-[12px] font-medium px-2.5 py-1 rounded-[6px] border transition-all"
+                className="text-[12px] font-medium px-2.5 py-1 rounded-full border transition-all"
                 style={{
                   borderColor: f.sizeNA ? OB.selectedBorder : OB.cardBorder,
                   backgroundColor: f.sizeNA ? OB.selectedBg : "transparent",
@@ -467,7 +489,7 @@ export default function OnboardingFilters() {
                   <button
                     key={value}
                     onClick={() => toggleAmenity(value)}
-                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-[6px] text-[13px] font-medium border transition-all"
+                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[13px] font-medium border transition-all"
                     style={{
                       backgroundColor: active ? OB.pink : "transparent",
                       borderColor: active ? OB.pink : OB.cardBorder,
@@ -497,31 +519,40 @@ export default function OnboardingFilters() {
         </div>
       </main>
 
-      <div className="fixed bottom-[max(24px,env(safe-area-inset-bottom))] left-5 z-30">
-        <button
-          onClick={handleBack}
-          className="w-12 h-12 rounded-full flex items-center justify-center active:scale-95 transition-transform backdrop-blur-md shadow-lg"
-          style={{ backgroundColor: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.1)" }}
-          data-testid="button-filters-back"
-        >
-          <ChevronLeft className="w-5 h-5" style={{ color: OB.text }} />
-        </button>
+      <div
+        className="fixed bottom-0 left-0 right-0 z-30 border-t"
+        style={{
+          backgroundColor: OB.headerBg,
+          borderColor: OB.headerBorder,
+          paddingBottom: "max(12px, env(safe-area-inset-bottom, 12px))",
+        }}
+      >
+        <div className="max-w-[480px] mx-auto px-5 pt-3 flex items-center gap-3">
+          <button
+            onClick={handleBack}
+            className="w-[52px] h-[52px] rounded-[10px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
+            style={{
+              border: `2px solid ${OB.cardBorder}`,
+              backgroundColor: "transparent",
+            }}
+            data-testid="button-filters-back"
+          >
+            <ChevronLeft className="w-5 h-5" style={{ color: OB.text }} />
+          </button>
+          <button
+            onClick={handleNext}
+            disabled={saving}
+            className="flex-1 h-[52px] rounded-[10px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-60 flex items-center justify-center gap-2"
+            style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
+            data-testid="button-filters-next"
+          >
+            {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+            {isSearchOnlyMode
+              ? (t("newSearch.save") || "Opslaan")
+              : (t("common.next") || "Volgende")}
+          </button>
+        </div>
       </div>
-
-      <OBStickyBar>
-        <button
-          onClick={handleNext}
-          disabled={saving}
-          className="w-full h-[56px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-60 flex items-center justify-center gap-2"
-          style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
-          data-testid="button-filters-next"
-        >
-          {saving && <Loader2 className="w-4 h-4 animate-spin" />}
-          {isSearchOnlyMode
-            ? (t("newSearch.save") || "Opslaan")
-            : (t("common.next") || "Volgende")}
-        </button>
-      </OBStickyBar>
     </div>
   );
 }
