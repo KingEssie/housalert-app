@@ -11,9 +11,9 @@ import { trackEvent } from "@/lib/track-event";
 import { useLocation, useRoute } from "wouter";
 import {
   Copy,
-  ArrowLeft,
   ImageIcon,
 } from "lucide-react";
+import { AppHeader } from "@/components/ui/app-header";
 
 const CITY_GRADIENTS: Record<string, string> = {
   berlin: "from-[#E5E5E5] to-[#D4D4D4]",
@@ -140,13 +140,7 @@ export default function ApplyPage() {
   if (listingLoading || !listing) {
     return (
       <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F5F5F7" }}>
-        <button
-          onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=matches")}
-          className="fixed top-[calc(12px+env(safe-area-inset-top))] left-4 z-20 w-12 h-12 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)] flex items-center justify-center border border-[#E5E5E5]"
-          data-testid="button-back-apply"
-        >
-          <ArrowLeft className="w-5 h-5 text-[#000]" />
-        </button>
+        <AppHeader title={t("applySheet.title") || "Reageren"} onBack={() => navigate("/dashboard?tab=matches")} />
         <div className="animate-pulse">
           <div className="w-full bg-[#E5E5E5]" style={{ aspectRatio: "16/10" }} />
           <div className="max-w-xl mx-auto w-full px-5 pt-6 space-y-4">
@@ -262,13 +256,7 @@ export default function ApplyPage() {
 
   return (
     <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F5F5F7" }}>
-      <button
-        onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=matches")}
-        className="fixed top-[calc(12px+env(safe-area-inset-top))] left-4 z-20 w-12 h-12 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)] flex items-center justify-center active:scale-95 transition-transform border border-[#E5E5E5]"
-        data-testid="button-back-apply"
-      >
-        <ArrowLeft className="w-5 h-5 text-[#000]" />
-      </button>
+      <AppHeader title={t("applySheet.title") || "Reageren"} onBack={() => navigate("/dashboard?tab=matches")} />
 
       <div className="relative">
         {hasImage && !imgError ? (

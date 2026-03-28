@@ -5,13 +5,13 @@ import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/i18n";
 import {
-  ArrowLeft,
   ChevronRight,
   ExternalLink,
   LogOut,
   Trash2,
   User,
 } from "lucide-react";
+import { AppHeader } from "@/components/ui/app-header";
 
 export default function SettingsPage() {
   const { user } = useAuth();
@@ -77,18 +77,7 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#F5F5F7" }}>
-      <div className="sticky top-0 z-10 bg-white border-b border-[#E5E5E5] px-4 py-3 flex items-center gap-3">
-        <button
-          onClick={() => navigate("/dashboard?tab=profiel")}
-          className="w-9 h-9 rounded-[6px] flex items-center justify-center active:bg-gray-100 transition-colors"
-          data-testid="button-settings-back"
-        >
-          <ArrowLeft className="w-5 h-5 text-[#000]" />
-        </button>
-        <h1 className="text-[18px] font-bold text-[#000] flex-1" data-testid="text-settings-title">
-          {t("settings.title")}
-        </h1>
-      </div>
+      <AppHeader title={t("settings.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
         <div className="flex flex-col gap-4">
