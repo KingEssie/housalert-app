@@ -1,0 +1,125 @@
+We are improving the HousAlert UI to increase clarity, urgency, and conversion. 
+Do NOT redesign the entire app. Only apply targeted improvements.
+
+----------------------------------------
+GOAL
+----------------------------------------
+Make the app feel more valuable and action-driven:
+- Users should immediately see NEW matches
+- Matches should feel urgent and clickable
+- The product should feel premium (not like a basic tool)
+
+----------------------------------------
+1. HOME SCREEN REORDER (HIGH PRIORITY)
+----------------------------------------
+
+Current issue:
+Important content (matches) is too low on the page.
+
+Fix:
+Reorder sections on the home screen to:
+
+1. Recente matches (TOP PRIORITY)
+2. Zoekprofielen
+3. Account progress ("Aan de slag")
+4. Referral / promo block (lowest priority or optional)
+
+Do NOT change styling of cards.
+Only change order and spacing.
+
+----------------------------------------
+2. MATCH CARD IMPROVEMENTS
+----------------------------------------
+
+Goal:
+Make listings feel NEW and clickable.
+
+For each match card:
+
+1. Add a badge:
+   - Show "Nieuw" if listing is recent (<24h)
+   - Otherwise show "X uur geleden"
+
+2. Improve hierarchy:
+   - Price: bold and darker (primary focus)
+   - Title: bold
+   - Meta (m², rooms): lighter gray
+
+3. Keep layout identical.
+Do NOT redesign the card.
+
+----------------------------------------
+3. MATCH DETAIL SCREEN IMPROVEMENTS
+----------------------------------------
+
+Goal:
+Make the screen feel stronger and more premium.
+
+Changes:
+
+A. Header section:
+- Keep image
+- Make price slightly more prominent (larger or bolder)
+- Ensure title is bold and black
+
+B. Reactiebrief section:
+
+- Title "Reactiebrief":
+  → bold (font-weight 600/700)
+  → black
+
+- Add small helper label above field:
+  "Automatisch gegenereerd op basis van jouw profiel"
+
+- Textarea:
+  → white background
+  → 2px black border
+  → border-radius: 6px
+  → padding: 16px+
+  → font-size: 15–16px
+
+- Ensure good spacing between paragraphs
+
+C. CTA (bottom button):
+- Keep existing design
+- Ensure full width and strong contrast
+
+----------------------------------------
+4. PREMIUM FEEL (SUBTLE)
+----------------------------------------
+
+Goal:
+Increase perceived value without being aggressive.
+
+Implement ONE of the following (choose best fit):
+
+Option A:
+Show small label above matches:
+"+X nieuwe matches vandaag"
+
+Option B:
+If user is free:
+Show subtle text:
+"Je ziet niet alle matches – upgrade voor volledig overzicht"
+
+Do NOT block the UI.
+Do NOT add heavy paywalls here.
+
+----------------------------------------
+5. GENERAL RULES
+----------------------------------------
+
+- Do NOT change routing
+- Do NOT touch onboarding flow
+- Do NOT break existing components
+- Only adjust UI, order, and small logic additions
+- Keep everything mobile-first
+
+----------------------------------------
+EXPECTED RESULT
+----------------------------------------
+
+- Home feels instantly useful
+- Matches feel urgent
+- Detail page feels premium
+- Users are more likely to click and convert

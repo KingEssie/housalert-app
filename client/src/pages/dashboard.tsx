@@ -198,6 +198,24 @@ function MatchCard({
             <span className="text-[11px] font-medium bg-white/95 backdrop-blur-md text-[#000] px-3 py-1.5 rounded-full shadow-[0_1px_4px_rgba(0,0,0,0.06)] capitalize">
               {match.source}
             </span>
+            {(() => {
+              const seenAt = match.first_seen_at || match.matched_at;
+              if (!seenAt) return null;
+              const hoursAgo = (Date.now() - new Date(seenAt).getTime()) / 3600000;
+              if (hoursAgo < 24) {
+                return (
+                  <span className="text-[11px] font-semibold bg-ha-primary text-white px-3 py-1.5 rounded-full shadow-[0_1px_4px_rgba(0,0,0,0.1)]" data-testid={`badge-new-${match.listing_id}`}>
+                    {t("freshness.new") || "Nieuw"}
+                  </span>
+                );
+              }
+              const h = Math.floor(hoursAgo);
+              return (
+                <span className="text-[11px] font-medium bg-[#000]/70 backdrop-blur-md text-white px-3 py-1.5 rounded-full" data-testid={`badge-time-${match.listing_id}`}>
+                  {h} {t("freshness.hoursAgoShort") || "uur geleden"}
+                </span>
+              );
+            })()}
           </div>
 
           <button
@@ -219,21 +237,21 @@ function MatchCard({
         <div className="px-3 py-3">
           <div className="flex items-baseline justify-between gap-2 leading-[1.25]">
             <h3
-              className="text-[16px] font-semibold text-[#000] leading-[1.25] line-clamp-1 flex-1 min-w-0"
+              className="text-[15px] font-bold text-[#000] leading-[1.25] line-clamp-1 flex-1 min-w-0"
               data-testid={`text-match-title-${match.listing_id}`}
             >
               {match.title}
             </h3>
             {match.price > 0 && (
-              <span className="text-[16px] font-semibold text-[#000] leading-[1.25] flex-shrink-0 whitespace-nowrap" data-testid={`badge-price-${match.listing_id}`}>
-                €{match.price} <span className="text-[16px] font-normal text-[#6B7280]">{t("common.perMonthShort")}</span>
+              <span className="text-[17px] font-bold text-[#000] leading-[1.25] flex-shrink-0 whitespace-nowrap" data-testid={`badge-price-${match.listing_id}`}>
+                €{match.price}<span className="text-[13px] font-normal text-[#9CA3AF] ml-0.5">{t("common.perMonthShort")}</span>
               </span>
             )}
           </div>
-          <p className="text-[16px] text-[#6B7280] leading-[1.25] mt-[3px] truncate" data-testid={`text-match-city-${match.listing_id}`}>
+          <p className="text-[14px] text-[#9CA3AF] leading-[1.25] mt-[3px] truncate" data-testid={`text-match-city-${match.listing_id}`}>
             {match.city}
           </p>
-          <div className="flex items-center gap-1.5 mt-[2px] text-[16px] text-[#6B7280] leading-[1.25]">
+          <div className="flex items-center gap-1.5 mt-[2px] text-[13px] text-[#9CA3AF] leading-[1.25]">
             {match.bedrooms > 0 && (
               <span>{match.bedrooms} {match.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}</span>
             )}
@@ -392,8 +410,18 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
     );
   }
 
+  const todayCount = matches.filter(m => {
+    const seen = m.first_seen_at || m.matched_at;
+    return seen && (Date.now() - new Date(seen).getTime()) < 86400000;
+  }).length;
+
   return (
     <div className="flex flex-col gap-4" data-testid="section-recente-matches">
+      {todayCount > 0 && (
+        <p className="text-[13px] font-semibold text-ha-primary" data-testid="text-new-matches-today">
+          +{todayCount} {t("home.newMatchesToday") || "nieuwe matches vandaag"}
+        </p>
+      )}
       <div className="flex items-center justify-between">
         <h2 className="text-section-title">{t("home.recentMatches")}</h2>
         <button
@@ -1009,26 +1037,6 @@ function HomeTab({
       </div>
       <div className="flex flex-col gap-7 px-6">
 
-      <div className="rounded-[12px] bg-[#1E1B4B] p-5" data-testid="card-home-referral">
-        <p className="text-[11px] font-semibold text-ha-primary tracking-wider uppercase mb-1" data-testid="text-referral-label">
-          {t("referral.homeLabel")}
-        </p>
-        <p className="text-[16px] text-title text-white" data-testid="text-referral-body">
-          {t("referral.homeBody")}
-        </p>
-        <p className="text-[13px] text-white/60 mt-1 leading-relaxed" data-testid="text-referral-helper">
-          {t("referral.homeHelper")}
-        </p>
-        <button
-          onClick={() => setReferralModalOpen(true)}
-          className="mt-4 h-[42px] px-6 rounded-[6px] bg-ha-primary text-white text-[14px] font-semibold transition-all hover:bg-ha-primary-hover active:scale-[0.97] inline-flex items-center gap-2"
-          data-testid="button-home-referral-cta"
-        >
-          {t("referral.promoCta")}
-          <ChevronRight className="w-3.5 h-3.5" />
-        </button>
-      </div>
-
       {!hasProfiles && (
         <EmptyState
           illustration={EMPTY_STATE_IMAGES.noMatches}
@@ -1039,6 +1047,14 @@ function HomeTab({
           testId="hero-empty"
         />
       )}
+
+      <RecenteMatchesSection accessToken={accessToken} setActiveTab={setActiveTab} subscription={subscription} navigate={navigate} />
+
+      {profiles.length > 0 && (
+        <SearchProfilesSection profiles={profiles} navigate={navigate} />
+      )}
+
+      <UnifiedTaskList accessToken={accessToken} navigate={navigate} setActiveTab={setActiveTab} />
 
       {subscription.isTrial && subscription.trialEndsAt && (
         <div className="rounded-[12px] border border-[#E5E5E5] bg-white px-5 py-4 flex items-center gap-3.5" data-testid="banner-trial">
@@ -1060,13 +1076,25 @@ function HomeTab({
 
       <RecentlyViewedSection accessToken={accessToken} />
 
-      <UnifiedTaskList accessToken={accessToken} navigate={navigate} setActiveTab={setActiveTab} />
-
-      {profiles.length > 0 && (
-        <SearchProfilesSection profiles={profiles} navigate={navigate} />
-      )}
-
-      <RecenteMatchesSection accessToken={accessToken} setActiveTab={setActiveTab} subscription={subscription} navigate={navigate} />
+      <div className="rounded-[12px] bg-[#1E1B4B] p-5" data-testid="card-home-referral">
+        <p className="text-[11px] font-semibold text-ha-primary tracking-wider uppercase mb-1" data-testid="text-referral-label">
+          {t("referral.homeLabel")}
+        </p>
+        <p className="text-[16px] text-title text-white" data-testid="text-referral-body">
+          {t("referral.homeBody")}
+        </p>
+        <p className="text-[13px] text-white/60 mt-1 leading-relaxed" data-testid="text-referral-helper">
+          {t("referral.homeHelper")}
+        </p>
+        <button
+          onClick={() => setReferralModalOpen(true)}
+          className="mt-4 h-[42px] px-6 rounded-[6px] bg-ha-primary text-white text-[14px] font-semibold transition-all hover:bg-ha-primary-hover active:scale-[0.97] inline-flex items-center gap-2"
+          data-testid="button-home-referral-cta"
+        >
+          {t("referral.promoCta")}
+          <ChevronRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
 
 
       </div>
