@@ -148,13 +148,8 @@ function getAppBaseUrl(): string {
   return "https://app.housalert.com";
 }
 
-function getLogoUrl(): string {
-  return `${getAppBaseUrl()}/housalert-logo.png`;
-}
-
-function emailWrapper(content: string, preheader?: string, lang: ServerLocale = "en", footerOverride?: string): string {
+function emailWrapper(content: string, preheader?: string, lang: ServerLocale = "nl", footerOverride?: string): string {
   const baseUrl = getAppBaseUrl();
-  const logoUrl = getLogoUrl();
   const preheaderHtml = preheader
     ? `<div style="display:none;font-size:1px;color:${C.white};line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">${escapeHtml(preheader)}</div>`
     : "";
@@ -176,18 +171,7 @@ ${preheaderHtml}
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td style="vertical-align:middle;">
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-      <tr>
-        <td style="vertical-align:middle;padding-right:8px;">
-          <a href="${baseUrl}" target="_blank" style="text-decoration:none;">
-            <img src="${logoUrl}" alt="HousAlert" width="36" height="36" style="display:block;width:36px;height:36px;border-radius:8px;border:0;outline:none;" />
-          </a>
-        </td>
-        <td style="vertical-align:middle;">
-          <a href="${baseUrl}" target="_blank" style="text-decoration:none;font-size:17px;font-weight:700;color:${C.navy};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;">HousAlert</a>
-        </td>
-      </tr>
-      </table>
+      <a href="${baseUrl}" target="_blank" style="text-decoration:none;font-size:17px;font-weight:700;color:${C.navy};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;">HousAlert</a>
     </td>
     <td align="right" style="vertical-align:middle;">
       <a href="${baseUrl}/instellingen" target="_blank" style="font-size:13px;color:${C.muted};text-decoration:none;">${escapeHtml(t(lang, "email.settings"))}</a>
@@ -240,7 +224,19 @@ function upgradeImageUrl(url: string): string {
   return url;
 }
 
-function listingCard(listing: ListingInfo, showButton = false, cardNumber?: number, lang: ServerLocale = "en"): string {
+function ctaButton(href: string, label: string, primary: boolean): string {
+  const bg = primary ? C.accent : C.white;
+  const fg = primary ? C.white : C.accent;
+  const border = primary ? C.accent : C.accent;
+  return `<tr><td align="center" style="padding:0 4px ${primary ? "8px" : "0"};">
+          <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${escapeHtml(href)}" style="height:48px;v-text-anchor:middle;width:100%;" arcsize="50%" strokecolor="${border}" fillcolor="${bg}"><w:anchorlock/><center style="color:${fg};font-family:Arial,sans-serif;font-size:15px;font-weight:bold;">${escapeHtml(label)}</center></v:roundrect><![endif]-->
+          <!--[if !mso]><!-->
+          <a href="${escapeHtml(href)}" target="_blank" style="display:block;background-color:${bg};color:${fg} !important;-webkit-text-fill-color:${fg};mso-line-height-rule:exactly;font-size:15px;font-weight:700;text-decoration:none;padding:14px 24px;border-radius:999px;text-align:center;mso-hide:all;-webkit-text-size-adjust:none;${primary ? "" : `border:2px solid ${C.accent};`}"><span style="color:${fg} !important;-webkit-text-fill-color:${fg};">${escapeHtml(label)}</span></a>
+          <!--<![endif]-->
+        </td></tr>`;
+}
+
+function listingCard(listing: ListingInfo, showButton = false, cardNumber?: number, lang: ServerLocale = "nl"): string {
   const safeUrl = sanitizeUrl(listing.url);
   const baseUrl = getAppBaseUrl();
   const applyUrl = listing.listing_id ? `${baseUrl}/apply/${listing.listing_id}` : null;
@@ -256,10 +252,6 @@ function listingCard(listing: ListingInfo, showButton = false, cardNumber?: numb
       </td></tr>`
     : "";
 
-  const priceOnImage = safeImageUrl && listing.price > 0
-    ? ""
-    : "";
-
   const priceLine = listing.price > 0
     ? `<p style="margin:0 0 6px;font-size:20px;font-weight:800;color:${C.navy};line-height:1.2;">${formatPrice(listing.price)}<span style="font-size:12px;font-weight:500;color:${C.muted};margin-left:2px;">${escapeHtml(t(lang, "email.perMonth"))}</span></p>`
     : "";
@@ -273,14 +265,19 @@ function listingCard(listing: ListingInfo, showButton = false, cardNumber?: numb
     ? `<p style="margin:0 0 6px;font-size:13px;color:${C.dark};line-height:1.5;">${metaParts.join(`<span style="color:${C.border};"> &middot; </span>`)}</p>`
     : "";
 
-  const buttonHtml = showButton && linkTarget !== "#"
+  const ctaRows: string[] = [];
+  if (showButton) {
+    if (applyUrl) {
+      ctaRows.push(ctaButton(applyUrl, t(lang, "email.applyDirect"), true));
+    }
+    if (safeUrl) {
+      ctaRows.push(ctaButton(safeUrl, t(lang, "email.viewProperty"), !applyUrl));
+    }
+  }
+
+  const buttonHtml = ctaRows.length > 0
     ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:14px;">
-        <tr><td align="center" style="padding:0 4px;">
-          <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${escapeHtml(linkTarget)}" style="height:48px;v-text-anchor:middle;width:100%;" arcsize="50%" strokecolor="${C.accent}" fillcolor="${C.accent}"><w:anchorlock/><center style="color:#FFFFFF;font-family:Arial,sans-serif;font-size:15px;font-weight:bold;">${escapeHtml(t(lang, "email.viewListing"))}</center></v:roundrect><![endif]-->
-          <!--[if !mso]><!-->
-          <a href="${escapeHtml(linkTarget)}" target="_blank" style="display:block;background-color:${C.accent};color:${C.white} !important;-webkit-text-fill-color:${C.white};mso-line-height-rule:exactly;font-size:15px;font-weight:700;text-decoration:none;padding:14px 24px;border-radius:999px;text-align:center;mso-hide:all;-webkit-text-size-adjust:none;"><span style="color:${C.white} !important;-webkit-text-fill-color:${C.white};">${escapeHtml(t(lang, "email.viewListing"))}</span></a>
-          <!--<![endif]-->
-        </td></tr>
+        ${ctaRows.join("\n        ")}
       </table>`
     : "";
 
@@ -299,7 +296,7 @@ ${imageHtml}
 export async function sendMatchAlert(
   userEmail: string,
   listing: ListingInfo,
-  lang: ServerLocale = "en"
+  lang: ServerLocale = "nl"
 ): Promise<boolean> {
   try {
     const client = await getResendClient();
@@ -315,7 +312,8 @@ export async function sendMatchAlert(
       listing.size_m2 > 0 ? `${t(lang, "email.area")}: ${listing.size_m2} m\u00B2` : null,
     ].filter(Boolean).join("\n");
 
-    const textBody = `${t(lang, "email.greeting")},\n\n${t(lang, "email.singleIntro")}\n\n${listing.title}\n${detailsText}${listing.url ? `\n\n${t(lang, "email.viewListing")}: ${listing.url}` : ""}\n\n${t(lang, "email.closing")}`;
+    const safeUrl = sanitizeUrl(listing.url);
+    const textBody = `${t(lang, "email.greeting")},\n\n${t(lang, "email.singleIntro")}\n\n${listing.title}\n${detailsText}${safeUrl ? `\n\n${t(lang, "email.viewProperty")}: ${safeUrl}` : ""}\n\n${t(lang, "email.closing")}`;
 
     const htmlContent = `
 <p style="margin:0 0 4px;font-size:12px;font-weight:600;color:${C.accent};text-transform:uppercase;letter-spacing:0.05em;">${escapeHtml(t(lang, "email.newMatch"))}</p>
@@ -347,7 +345,7 @@ ${listingCard(listing, true, undefined, lang)}`;
 export async function sendBatchMatchAlert(
   userEmail: string,
   listings: ListingInfo[],
-  lang: ServerLocale = "en",
+  lang: ServerLocale = "nl",
   emailCategory: string = "user-match"
 ): Promise<boolean> {
   if (listings.length === 0) return false;
