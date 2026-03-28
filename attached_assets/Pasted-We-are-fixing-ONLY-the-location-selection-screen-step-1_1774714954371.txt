@@ -1,0 +1,136 @@
+We are fixing ONLY the location selection screen (step 1 of onboarding).
+
+IMPORTANT:
+- This is an onboarding flow screen
+- Do NOT use the main app header
+- Do NOT redesign other screens
+- Only apply the changes below
+
+--------------------------------------------------
+1. REMOVE CURRENT HEADER
+--------------------------------------------------
+
+Remove:
+- HousAlert logo
+- language selector
+- default app header
+
+--------------------------------------------------
+2. ADD ONBOARDING HEADER (EXACT STRUCTURE)
+--------------------------------------------------
+
+Top layout:
+
+LEFT:
+- small rounded badge:
+  text: "1/4"
+  background: rgba(255,255,255,0.1)
+  color: white
+  padding: 6px 10px
+  border-radius: 8px
+  font-size: 12px
+  font-weight: 600
+
+CENTER:
+Title:
+"Zoekopdracht maken"
+- font-size: 18px
+- font-weight: 600
+- color: white
+
+RIGHT:
+Close button (X)
+- size: 36px
+- circular
+- background: rgba(255,255,255,0.08)
+
+--------------------------------------------------
+3. SECTION TITLE
+--------------------------------------------------
+
+Title:
+"Locatie"
+
+Style:
+- font-size: 18px
+- font-weight: 600
+- color: white
+- margin-top: 20px
+
+--------------------------------------------------
+4. SEARCH INPUT (VERY IMPORTANT)
+--------------------------------------------------
+
+Replace current input with:
+
+STYLE:
+- background: transparent
+- border: 1px solid rgba(255,255,255,0.2)
+- border-radius: 10px
+- height: 48px
+- padding: 0 16px
+- color: white
+
+PLACEHOLDER:
+"Locatie"
+color: rgba(255,255,255,0.5)
+
+RIGHT ICON:
+- search icon inside input
+- color: rgba(255,255,255,0.6)
+
+NO white background allowed.
+
+--------------------------------------------------
+5. CITY LIST — REMOVE CARDS
+--------------------------------------------------
+
+Remove all card-style containers.
+
+Replace with simple list:
+
+Each row:
+- display: flex
+- align-items: center
+- gap: 12px
+- padding: 14px 0
+
+LEFT ICON:
+- location pin
+- color: #38bdf8 (light blue)
+
+TEXT:
+- color: white
+- font-size: 16px
+- font-weight: 500
+
+DIVIDER:
+- line between items:
+  border-bottom: 1px solid rgba(255,255,255,0.08)
+
+--------------------------------------------------
+6. SPACING
+--------------------------------------------------
+
+- Space between input and first item: 16px
+- Keep list tight and scrollable
+- No large blocks or card spacing
+
+--------------------------------------------------
+KEEP EVERYTHING ELSE THE SAME
+--------------------------------------------------
+
+- Background color
+- Navigation logic
+- Step flow
+
+--------------------------------------------------
+ACCEPTANCE CRITERIA
+--------------------------------------------------
+
+- Header is onboarding style (1/4 + title + X)
+- Input is dark with thin border (NOT white)
+- List is clean (no cards)
+- Blue icons on left
+- Thin divider lines
+- Screen feels lightweight and fast
