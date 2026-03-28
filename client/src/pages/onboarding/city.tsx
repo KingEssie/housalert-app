@@ -55,28 +55,36 @@ export default function OnboardingCity() {
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
   }, [search, selectedCity, presetMatches.length, nominatimSearch]);
 
+  function goToStep2(city: { name: string; lat: number; lng: number }) {
+    const params = new URLSearchParams({
+      city: city.name,
+      lat: String(city.lat),
+      lng: String(city.lng),
+    });
+    navigate(`/onboarding/location?${params.toString()}`);
+  }
+
   function selectPresetCity(city: typeof TOP_CITIES[0]) {
-    setSelectedCity({ name: city.name, lat: city.lat, lng: city.lng });
+    const selected = { name: city.name, lat: city.lat, lng: city.lng };
+    setSelectedCity(selected);
     setSearch(city.name);
     setNominatimResults([]);
+    goToStep2(selected);
   }
 
   function selectNominatimCity(result: NominatimResult) {
     const addr = result.address;
     const name = addr?.city || addr?.town || addr?.village || result.display_name.split(",")[0];
-    setSelectedCity({ name, lat: parseFloat(result.lat), lng: parseFloat(result.lon) });
+    const selected = { name, lat: parseFloat(result.lat), lng: parseFloat(result.lon) };
+    setSelectedCity(selected);
     setSearch(name);
     setNominatimResults([]);
+    goToStep2(selected);
   }
 
   function handleNext() {
     if (!selectedCity) return;
-    const params = new URLSearchParams({
-      city: selectedCity.name,
-      lat: String(selectedCity.lat),
-      lng: String(selectedCity.lng),
-    });
-    navigate(`/onboarding/location?${params.toString()}`);
+    goToStep2(selectedCity);
   }
 
   function handleBack() {

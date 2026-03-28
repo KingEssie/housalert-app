@@ -1,0 +1,69 @@
+We are changing ONLY the interaction behavior of onboarding step 1 (location/city selection).
+
+IMPORTANT:
+- Do NOT change styling
+- Do NOT change layout
+- Do NOT change routing structure
+- Do NOT change other onboarding steps
+- ONLY update the step-1 selection behavior
+
+==================================================
+GOAL
+==================================================
+
+When the user selects a city on step 1, the app must immediately continue to step 2.
+
+This must work for BOTH:
+1. selecting a city from the visible city list
+2. selecting a city through the search input / autocomplete
+
+The user should NOT need to press "Volgende" anymore after choosing a city.
+
+==================================================
+REQUIRED BEHAVIOR
+==================================================
+
+A. CITY LIST SELECTION
+When the user taps a city row in the list:
+- save the selected city exactly as before
+- immediately trigger the same navigation/action that the "Volgende" button would have done
+- continue directly to onboarding step 2
+
+B. SEARCH / INPUT SELECTION
+When the user selects a city from the search/autocomplete result:
+- save the selected city exactly as before
+- immediately trigger the same navigation/action that the "Volgende" button would have done
+- continue directly to onboarding step 2
+
+IMPORTANT:
+This should only happen after a valid city selection.
+Not on every keystroke.
+Not when the user is still typing.
+
+==================================================
+KEEP THESE THINGS THE SAME
+==================================================
+
+- Existing styling
+- Existing city validation
+- Existing query params / navigation format
+- Existing selected city state
+- Existing step 2 behavior
+
+==================================================
+VOLGENDE BUTTON
+==================================================
+
+Do NOT remove the button visually unless necessary for code simplicity.
+But after implementation, the user should no longer need to use it in normal step-1 flow.
+
+==================================================
+ACCEPTANCE CRITERIA
+==================================================
+
+Only mark complete if:
+- tapping a city from the list instantly moves to step 2
+- selecting a city from search/autocomplete instantly moves to step 2
+- typing alone does not trigger navigation
+- invalid input does not trigger navigation
+- step 2 still receives the correct selected city
