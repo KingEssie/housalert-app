@@ -103,7 +103,7 @@ export default function OnboardingLocation() {
         </div>
       </header>
 
-      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pb-[160px] overflow-y-auto">
+      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pb-[140px] min-h-0">
         <p
           className="text-[14px] font-medium"
           style={{ color: "rgba(255,255,255,0.6)", marginTop: "20px", marginBottom: "8px" }}
@@ -148,16 +148,16 @@ export default function OnboardingLocation() {
         </div>
 
         {mode === "districts" && hasDistricts && (
-          <div className="mb-4">
+          <div className="flex-1 flex flex-col min-h-0">
             <p
-              className="text-[14px] font-medium mb-2"
+              className="text-[14px] font-medium mb-2 shrink-0"
               style={{ color: "rgba(255,255,255,0.6)" }}
             >
               Buurten
             </p>
             <button
               onClick={() => setShowDistrictPicker(!showDistrictPicker)}
-              className="w-full h-[56px] rounded-[6px] flex items-center justify-between px-4"
+              className="w-full h-[56px] rounded-[6px] flex items-center justify-between px-4 shrink-0"
               style={{ border: "1px solid rgba(255,255,255,0.7)", backgroundColor: "transparent" }}
               data-testid="dropdown-districts"
             >
@@ -175,8 +175,8 @@ export default function OnboardingLocation() {
 
             {showDistrictPicker && (
               <div
-                className="mt-2 rounded-[6px] overflow-hidden"
-                style={{ border: "1px solid rgba(255,255,255,0.1)", backgroundColor: "rgba(255,255,255,0.04)" }}
+                className="mt-2 rounded-[6px] overflow-hidden shrink-0"
+                style={{ border: "1px solid rgba(255,255,255,0.1)", backgroundColor: "rgba(255,255,255,0.04)", maxHeight: "200px", overflowY: "auto" }}
                 data-testid="district-list"
               >
                 {districtList.map((d, i) => {
@@ -203,14 +203,14 @@ export default function OnboardingLocation() {
             )}
 
             <div
-              className="mt-4 rounded-[6px] overflow-hidden"
+              className="mt-4 rounded-[6px] overflow-hidden flex-1 min-h-[120px]"
               style={{ border: "1px solid rgba(255,255,255,0.1)" }}
             >
               <iframe
                 title="Map"
                 src={`https://www.openstreetmap.org/export/embed.html?bbox=${parseFloat(lng) - 0.05},${parseFloat(lat) - 0.03},${parseFloat(lng) + 0.05},${parseFloat(lat) + 0.03}&layer=mapnik&marker=${lat},${lng}`}
-                className="w-full"
-                style={{ height: "180px", border: "none", opacity: 0.85 }}
+                className="w-full h-full"
+                style={{ border: "none", opacity: 0.85 }}
                 data-testid="location-map"
               />
             </div>
@@ -218,14 +218,14 @@ export default function OnboardingLocation() {
         )}
 
         {mode === "radius" && (
-          <div className="mb-4">
+          <div className="flex-1 flex flex-col min-h-0">
             <p
-              className="text-[14px] font-medium mb-3"
+              className="text-[14px] font-medium mb-3 shrink-0"
               style={{ color: "rgba(255,255,255,0.6)" }}
             >
               Straal
             </p>
-            <div className="flex flex-wrap gap-2" data-testid="radius-options">
+            <div className="flex flex-wrap gap-2 shrink-0" data-testid="radius-options">
               {RADIUS_OPTIONS.map((km) => {
                 const active = radiusKm === km;
                 return (
@@ -247,14 +247,14 @@ export default function OnboardingLocation() {
             </div>
 
             <div
-              className="mt-4 rounded-[6px] overflow-hidden"
+              className="mt-4 rounded-[6px] overflow-hidden flex-1 min-h-[120px]"
               style={{ border: "1px solid rgba(255,255,255,0.1)" }}
             >
               <iframe
                 title="Map"
                 src={`https://www.openstreetmap.org/export/embed.html?bbox=${parseFloat(lng) - 0.08},${parseFloat(lat) - 0.05},${parseFloat(lng) + 0.08},${parseFloat(lat) + 0.05}&layer=mapnik&marker=${lat},${lng}`}
-                className="w-full"
-                style={{ height: "180px", border: "none", opacity: 0.85 }}
+                className="w-full h-full"
+                style={{ border: "none", opacity: 0.85 }}
                 data-testid="location-map"
               />
             </div>
@@ -262,9 +262,9 @@ export default function OnboardingLocation() {
         )}
 
         {mode === "city" && (
-          <div className="mb-4">
+          <div className="flex-1 flex flex-col min-h-0">
             <div
-              className="rounded-[6px] p-4 flex items-center gap-3"
+              className="rounded-[6px] p-4 flex items-center gap-3 shrink-0"
               style={{ border: "1px solid rgba(255,255,255,0.1)", backgroundColor: "rgba(255,255,255,0.04)" }}
             >
               <div
@@ -279,14 +279,14 @@ export default function OnboardingLocation() {
             </div>
 
             <div
-              className="mt-4 rounded-[6px] overflow-hidden"
+              className="mt-4 rounded-[6px] overflow-hidden flex-1 min-h-[120px]"
               style={{ border: "1px solid rgba(255,255,255,0.1)" }}
             >
               <iframe
                 title="Map"
                 src={`https://www.openstreetmap.org/export/embed.html?bbox=${parseFloat(lng) - 0.06},${parseFloat(lat) - 0.04},${parseFloat(lng) + 0.06},${parseFloat(lat) + 0.04}&layer=mapnik&marker=${lat},${lng}`}
-                className="w-full"
-                style={{ height: "180px", border: "none", opacity: 0.85 }}
+                className="w-full h-full"
+                style={{ border: "none", opacity: 0.85 }}
                 data-testid="location-map"
               />
             </div>

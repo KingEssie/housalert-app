@@ -1,0 +1,93 @@
+We are fixing ONLY the map height behavior on onboarding step 2.
+
+IMPORTANT:
+- Do NOT change layout structure
+- Do NOT change styling of other elements
+- ONLY adjust how the map fills vertical space
+
+==================================================
+CURRENT ISSUE
+==================================================
+
+The map is too short and leaves empty space between:
+- the bottom of the map
+- and the top of the bottom action bar
+
+This makes the layout feel broken and not aligned.
+
+==================================================
+GOAL
+==================================================
+
+The map should expand vertically to fill ALL available space between:
+- the dropdown field above
+- and the bottom action bar below
+
+There should be NO unnecessary gap.
+
+==================================================
+IMPLEMENTATION REQUIREMENTS
+==================================================
+
+1. REMOVE FIXED HEIGHT
+
+If the map currently uses:
+- fixed height (e.g. h-64, 300px, etc.)
+
+REMOVE it.
+
+--------------------------------------------------
+
+2. USE FLEX LAYOUT
+
+The content area should be structured like:
+
+- container: display flex, flex-direction column, height: 100%
+- map container: flex-grow: 1
+
+This allows the map to automatically fill remaining space.
+
+--------------------------------------------------
+
+3. MAP CONTAINER RULES
+
+Apply:
+
+- flex: 1
+- width: 100%
+- margin-top: 16px
+- no max-height limiting it
+
+Optional:
+- border-radius subtle (keep existing)
+- overflow hidden if needed
+
+--------------------------------------------------
+
+4. BOTTOM ALIGNMENT
+
+Ensure the map bottom edge sits directly above the bottom action bar.
+
+There should be:
+- no visible gap
+- no extra padding pushing it upward
+
+--------------------------------------------------
+
+5. RESPONSIVE BEHAVIOR
+
+The map must:
+- scale correctly on different screen heights
+- always fill available vertical space
+- never overflow into the footer
+- never become too small
+
+==================================================
+ACCEPTANCE CRITERIA
+==================================================
+
+- map stretches down to just above the bottom bar
+- no empty space under the map
+- no fixed pixel height remains
+- layout still works on different screen sizes
+- no overlap with footer
