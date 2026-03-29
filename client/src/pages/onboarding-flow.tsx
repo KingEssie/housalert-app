@@ -32,23 +32,6 @@ const ALL_STEPS: FlowStep[] = ["paywall", "welcome", "push-test", "letter-person
 const POST_PAYWALL_STEPS: FlowStep[] = ["welcome", "push-test", "letter-personal", "letter-living", "letter-preview", "search-buddy", "success"];
 
 
-function ProgressDots({ current, total }: { current: number; total: number }) {
-  return (
-    <div className="flex gap-1.5 justify-center py-3" data-testid="onboarding-progress">
-      {Array.from({ length: total }).map((_, i) => (
-        <div
-          key={i}
-          className="h-1.5 rounded-full transition-all duration-300"
-          style={{
-            width: i === current ? 24 : 8,
-            backgroundColor: i <= current ? BRAND : "rgb(var(--ha-input-border))",
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
 function FlowShell({
   children,
   step,
@@ -60,9 +43,6 @@ function FlowShell({
   onBack?: () => void;
   showBack?: boolean;
 }) {
-  const stepIndex = ALL_STEPS.indexOf(step);
-  const hideProgress = step === "success";
-
   return (
     <div className="min-h-[100dvh] flex flex-col bg-ha-surface" data-testid={`onboarding-step-${step}`}>
       <header className="sticky top-0 z-20 bg-ha-card border-b border-ha-card-border">
@@ -83,11 +63,6 @@ function FlowShell({
           </div>
           <div className="w-10" />
         </div>
-        {!hideProgress && (
-          <div className="max-w-[480px] mx-auto px-5">
-            <ProgressDots current={stepIndex} total={ALL_STEPS.length} />
-          </div>
-        )}
       </header>
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-10" style={{ paddingBottom: "max(40px, env(safe-area-inset-bottom, 40px))" }}>
         {children}

@@ -4,7 +4,7 @@ import { useHashSearch } from "@/lib/hash-search";
 import { useTranslation } from "@/i18n";
 import { HousAlertLogo } from "@/components/housalert-logo";
 import { ChevronLeft, User } from "lucide-react";
-import { OB, OBProgressDots, OBStickyBar } from "@/components/onboarding-ui";
+import { OB, OBStickyBar } from "@/components/onboarding-ui";
 
 export default function OnboardingName() {
   const [, navigate] = useLocation();
@@ -49,10 +49,6 @@ export default function OnboardingName() {
           <div className="w-10" />
         </div>
       </header>
-
-      <div className="max-w-[480px] mx-auto px-5 w-full">
-        <OBProgressDots current={3} total={7} />
-      </div>
 
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-4 pb-[100px]">
         <h1

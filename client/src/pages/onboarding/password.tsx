@@ -9,7 +9,7 @@ import { clearAllUserData } from "@/lib/queryClient";
 import { createSearchProfile } from "@/lib/search-profiles";
 import { useToast } from "@/hooks/use-toast";
 import { apiFetch } from "@/lib/api-base";
-import { OB, OBProgressDots, OBStickyBar } from "@/components/onboarding-ui";
+import { OB, OBStickyBar } from "@/components/onboarding-ui";
 
 export default function OnboardingPassword() {
   const [, navigate] = useLocation();
@@ -166,10 +166,6 @@ export default function OnboardingPassword() {
           <div className="w-10" />
         </div>
       </header>
-
-      <div className="max-w-[480px] mx-auto px-5 w-full">
-        <OBProgressDots current={5} total={7} />
-      </div>
 
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-4 pb-[100px]">
         <h1

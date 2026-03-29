@@ -1,0 +1,130 @@
+We have a critical issue: the onboarding flow is inconsistent and previous UI updates were not applied correctly.
+
+We are fixing THREE things:
+
+1. account deletion redirect
+2. removing ALL progress dots
+3. replacing old onboarding screens with the new Rentbird-style screens
+
+IMPORTANT:
+- Do NOT partially implement anything
+- Do NOT create duplicate screens
+- We must REPLACE old screens, not add new ones
+
+==================================================
+PART 1 — FIX ACCOUNT DELETE REDIRECT
+==================================================
+
+Current issue:
+After deleting an account, the user is redirected to the onboarding start screen instead of the login screen.
+
+Fix:
+After account deletion:
+- clear auth/session بالكامل
+- redirect ALWAYS to /login (or login route)
+
+Ensure:
+- no fallback redirect to onboarding
+- no auto re-trigger of onboarding flow
+
+==================================================
+PART 2 — REMOVE ALL PROGRESS DOTS
+==================================================
+
+Current issue:
+Progress dots are still visible in onboarding screens.
+
+Fix globally:
+
+1. Find the shared layout:
+- OnboardingLayout
+- Header component
+- ProgressIndicator component
+
+2. REMOVE:
+- dot indicators
+- progress bars
+- step indicators
+
+3. DO NOT TOUCH:
+- 1/3, 2/3, 3/3 labels (search flow only)
+
+Result:
+No dots anywhere in onboarding.
+
+==================================================
+PART 3 — REMOVE OLD SCREENS (CRITICAL)
+==================================================
+
+Current issue:
+Old onboarding screens are still being shown instead of new ones.
+
+Action:
+
+1. Identify current flow screens:
+- intro / start screen
+- name/email
+- "Bijna klaar"
+- notifications
+- AI letter intro
+- etc
+
+2. REMOVE or DISCONNECT:
+- old components
+- old routes
+- old step mapping
+
+We should NOT have:
+- duplicate versions
+- unused screens still rendered
+
+==================================================
+PART 4 — CONNECT NEW FLOW (THIS IS THE REAL FIX)
+==================================================
+
+We must define ONE clean onboarding flow after paywall:
+
+NEW FLOW ORDER:
+
+1. "Weet je het zeker?" (skip-paywall warning screen)
+2. Welcome screen (COO Elise)
+3. Notifications screen
+4. AI reactiebrief intro screen
+5. Personal data form (existing)
+
+Make sure:
+- navigation goes step-by-step in this order
+- no old screens are still reachable
+
+==================================================
+PART 5 — VERIFY SCREEN RENDERING
+==================================================
+
+After implementing:
+
+Check:
+
+1. Deleting account:
+→ goes to login screen
+
+2. Opening onboarding:
+→ NO progress dots anywhere
+
+3. Flow order:
+→ correct sequence:
+   Weet je het zeker → Welcome → Notifications → AI → Form
+
+4. Visual confirmation:
+→ new designs are actually rendered (not old ones)
+
+==================================================
+PART 6 — DEBUG OUTPUT REQUIRED
+==================================================
+
+At the end, report:
+
+1. Which files were removed or replaced
+2. Which component controls onboarding flow
+3. Which routes were updated
+4. Confirmation that NO old screens remain active
+5. Confirmation that progress dots are fully removed
