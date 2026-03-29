@@ -12,7 +12,18 @@ function renderError(err: unknown) {
   }
 }
 
+function redirectNonHashPaths() {
+  const path = window.location.pathname;
+  if (path.startsWith("/onboarding/") || path === "/onboarding") {
+    const qs = window.location.search;
+    window.location.replace("/#" + path + qs);
+    return true;
+  }
+  return false;
+}
+
 async function bootstrap() {
+  if (redirectNonHashPaths()) return;
   try {
     try {
       const { restoreAuthFromNative } = await import("./lib/capacitor-storage");

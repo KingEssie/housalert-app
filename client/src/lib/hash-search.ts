@@ -1,7 +1,5 @@
 import { useSyncExternalStore } from "react";
 
-const isNative = (window as any).Capacitor?.isNativePlatform?.() === true;
-
 const listeners: Array<() => void> = [];
 
 function subscribe(cb: () => void) {
@@ -25,11 +23,9 @@ function notify() {
 }
 
 function getSearch(): string {
-  if (isNative) {
-    const hash = window.location.hash;
-    const qIdx = hash.indexOf("?");
-    return qIdx >= 0 ? hash.slice(qIdx) : "";
-  }
+  const hash = window.location.hash;
+  const qIdx = hash.indexOf("?");
+  if (qIdx >= 0) return hash.slice(qIdx);
   return window.location.search;
 }
 
