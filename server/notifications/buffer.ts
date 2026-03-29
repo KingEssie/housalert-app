@@ -95,7 +95,7 @@ function sortBufferedMatches(listings: BufferedMatch[]): BufferedMatch[] {
   });
 }
 
-type BuddyStatus = "pending" | "active" | "revoked" | "removed" | "expired";
+type BuddyStatus = "pending" | "active" | "revoked" | "removed" | "expired" | "revoked_by_buddy";
 
 interface BuddyInfo {
   email: string;
