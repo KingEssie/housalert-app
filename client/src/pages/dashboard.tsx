@@ -1740,53 +1740,53 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
   return (
     <div className="min-h-[calc(100vh-80px)] bg-[#F5F5F7]">
       <div className="relative" data-testid="card-profile-summary">
-        <div className="bg-ha-profile-header h-[140px] rounded-b-[24px]">
+        <div className="bg-ha-profile-header h-[160px]" style={{ borderRadius: "0 0 50% 50% / 0 0 36px 36px" }}>
           <button
             onClick={() => navigate("/settings")}
-            className="absolute right-4 top-4 w-10 h-10 rounded-full bg-white/15 flex items-center justify-center active:scale-95 transition-transform"
+            className="absolute right-5 top-5 w-11 h-11 rounded-full bg-white/15 flex items-center justify-center active:scale-95 transition-transform"
             data-testid="button-profile-settings"
           >
-            <Settings className="w-5 h-5 text-white/90" />
+            <Settings className="w-5 h-5 text-white/80" />
           </button>
         </div>
-        <div className="flex flex-col items-center -mt-10 mb-4">
-          <div className="w-20 h-20 rounded-full bg-[#312e81] flex items-center justify-center border-4 border-[#F5F5F7]">
+        <div className="flex flex-col items-center -mt-12 mb-5">
+          <div className="w-24 h-24 rounded-full bg-[#312e81] flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.12)]">
             {photoUrl ? (
               <img src={photoUrl} alt="" className="w-full h-full rounded-full object-cover" />
             ) : (
-              <span className="text-[22px] font-semibold text-white">{initials}</span>
+              <span className="text-[26px] font-bold text-white tracking-wide">{initials}</span>
             )}
           </div>
-          <p className="text-[18px] font-semibold text-black mt-3" data-testid="text-user-firstname">
+          <p className="text-[20px] font-bold text-black mt-3" data-testid="text-user-firstname">
             {displayName || t("profile.seeker")}
           </p>
           {lastName && (
             <span className="hidden" data-testid="text-user-lastname">{lastName}</span>
           )}
-          <p className="text-[13px] text-gray-500" data-testid="text-member-since">
+          <p className="text-[14px] text-gray-400 mt-0.5" data-testid="text-member-since">
             {memberSinceLabel}
           </p>
         </div>
       </div>
 
-      <div className="max-w-[480px] mx-auto px-4 pb-8">
-        <div className="flex flex-col gap-3">
+      <div className="max-w-[480px] mx-auto px-5 pb-8">
+        <div className="flex flex-col gap-3.5">
 
           <ProfileAccountCompletionCard navigate={navigate} />
           <ProfileTipsCompletionCard setActiveTab={setActiveTab} />
 
           {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
-            <div className="rounded-[6px] bg-[#F5F5F7] px-5 py-5" data-testid="card-upgrade-cta">
+            <div className="rounded-[12px] bg-white border border-gray-100 px-5 py-5" data-testid="card-upgrade-cta">
               <div className="flex items-start gap-3 mb-3">
-                <Lock className="w-6 h-6 text-[#000] flex-shrink-0 mt-0.5" />
+                <Lock className="w-6 h-6 text-black flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-[17px] text-title text-[#000]">{t("profile.upgradeMissing")}</p>
+                  <p className="text-[18px] font-bold text-black">{t("profile.upgradeMissing")}</p>
                 </div>
               </div>
-              <p className="text-[14px] text-[#000]/70 mt-1 mb-5 leading-relaxed">{t("profile.upgradeDesc")}</p>
+              <p className="text-[14px] text-gray-500 mt-1 mb-5 leading-relaxed">{t("profile.upgradeDesc")}</p>
               <button
                 onClick={() => navigate("/paywall")}
-                className="w-full ha-btn bg-ha-primary text-white font-semibold hover:bg-ha-primary-hover"
+                className="w-full h-[56px] rounded-[12px] bg-[#e91e63] text-white text-[16px] font-bold hover:bg-[#d81b60] transition-colors active:scale-[0.98]"
                 data-testid="button-upgrade-subscription"
               >
                 {t("profile.upgradeNow")}
@@ -1795,35 +1795,35 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           )}
 
           {subscription.isTrial && (
-            <div className="rounded-[6px] bg-[#F5F5F7] px-5 py-4 flex items-start gap-3" data-testid="trial-explanation">
+            <div className="rounded-[12px] bg-white border border-gray-100 px-5 py-5 flex items-start gap-3" data-testid="trial-explanation">
               <Gift className="w-5 h-5 text-ha-primary flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-[14px] text-title text-[#000]">{t("trial.explanation")}</p>
-                <p className="text-[13px] text-[#000]/60 mt-1 leading-relaxed">{t("trial.explanationDesc")}</p>
+                <p className="text-[15px] font-bold text-black">{t("trial.explanation")}</p>
+                <p className="text-[13px] text-gray-400 mt-1 leading-relaxed">{t("trial.explanationDesc")}</p>
               </div>
             </div>
           )}
 
-          <div className="rounded-[6px] bg-white border border-gray-200 px-5 py-4" data-testid="card-search-profiles">
+          <div className="rounded-[12px] bg-white border border-gray-100 px-5 py-5" data-testid="card-search-profiles">
             <div className="flex items-center gap-3 mb-1">
               <Search className="w-5 h-5 text-ha-primary flex-shrink-0" />
-              <p className="text-[16px] text-title text-[#000] flex-1">{t("profile.searchProfiles")}</p>
-              <span className="text-[13px] font-semibold text-ha-primary">{spCount}/{4}</span>
+              <p className="text-[17px] font-bold text-black flex-1">{t("profile.searchProfiles")}</p>
+              <span className="text-[14px] font-semibold text-ha-primary">{spCount}/{4}</span>
             </div>
             {spList.length > 0 && (
-              <div className="mt-3 flex flex-col gap-2">
+              <div className="mt-3 flex flex-col gap-1">
                 {spList.map((sp: SearchProfile) => (
                   <button
                     key={sp.id}
                     onClick={() => navigate(`/dashboard/searches/edit/${sp.id}`)}
-                    className="flex items-center gap-3 py-2 px-1 rounded-[6px] active:bg-[#F5F5F7] transition-colors text-left"
+                    className="flex items-center gap-3 py-3 px-1 rounded-[8px] active:bg-[#F5F5F7] transition-colors text-left"
                     data-testid={`button-search-profile-${sp.id}`}
                   >
                     <span className="w-2.5 h-2.5 rounded-full bg-ha-success flex-shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-[15px] font-semibold text-[#000] truncate">{sp.city_name || sp.city || t("profile.searchProfileDefault")}</p>
+                      <p className="text-[16px] font-bold text-black truncate">{sp.city_name || sp.city || t("profile.searchProfileDefault")}</p>
                       {sp.districts && sp.districts.length > 0 && (
-                        <p className="text-[13px] text-[#6B7280] mt-0.5 truncate">
+                        <p className="text-[13px] text-gray-400 mt-0.5 truncate">
                           {sp.districts.length <= 2
                             ? sp.districts.join(", ")
                             : `${sp.districts[0]} ${t("profile.andOtherNeighborhoods", { count: sp.districts.length - 1 })}`
@@ -1831,38 +1831,38 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                         </p>
                       )}
                     </div>
-                    <Pencil className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
+                    <Pencil className="w-4 h-4 text-gray-300 flex-shrink-0" />
                   </button>
                 ))}
               </div>
             )}
             <button
               onClick={() => navigate("/onboarding/city")}
-              className="w-full mt-3 h-[56px] rounded-[6px] border border-[#e91e63] text-[#e91e63] text-[14px] font-semibold flex items-center justify-center gap-1.5 active:bg-ha-primary-light transition-colors"
+              className="w-full mt-3 h-[48px] rounded-full border border-[#e91e63] text-[#e91e63] text-[14px] font-semibold flex items-center justify-center gap-1.5 active:bg-pink-50 transition-colors"
               data-testid="button-extra-profile"
             >
               {t("profile.newSearchProfile")} <Plus className="w-4 h-4" />
             </button>
           </div>
 
-          <div className="rounded-[6px] bg-white border border-gray-200 px-5 py-4">
+          <div className="rounded-[12px] bg-white border border-gray-100 px-5 py-5">
             <button
               onClick={() => navigate("/application-letter")}
               className="w-full flex items-center gap-3 text-left active:opacity-80 transition-opacity"
               data-testid="button-reaction-letter"
             >
               <Sparkles className="w-5 h-5 text-ha-primary flex-shrink-0" />
-              <p className="text-[16px] text-title text-[#000] flex-1">{t("profile.reactionLetter2")}</p>
+              <p className="text-[17px] font-bold text-black flex-1">{t("profile.reactionLetter2")}</p>
               <span className="text-[13px] font-semibold text-ha-primary">{letterPreview ? t("profile.editAction") : t("profile.generateAction")}</span>
             </button>
             {letterPreview ? (
-              <p className="text-[13px] text-ha-success mt-2 flex items-center gap-1.5 pl-8"><Check className="w-4 h-4" /> {t("profile.letterSet")}</p>
+              <p className="text-[13px] text-ha-success mt-2.5 flex items-center gap-1.5 pl-8"><Check className="w-4 h-4" /> {t("profile.letterSet")}</p>
             ) : (
-              <p className="text-[13px] text-ha-danger mt-2 flex items-center gap-1.5 pl-8"><X className="w-4 h-4" /> {t("profile.noLetterYet")}</p>
+              <p className="text-[13px] text-ha-danger mt-2.5 flex items-center gap-1.5 pl-8"><X className="w-4 h-4" /> {t("profile.noLetterYet")}</p>
             )}
           </div>
 
-          <div className="rounded-[6px] bg-white border border-gray-200 px-5 py-4" id="zoekbuddy-section" data-testid="row-zoekbuddy">
+          <div className="rounded-[12px] bg-white border border-gray-100 px-5 py-5" id="zoekbuddy-section" data-testid="row-zoekbuddy">
             <button
               onClick={() => {
                 if (!buddyExpanded) {
@@ -1877,7 +1877,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               data-testid="button-buddy-toggle"
             >
               <Users className="w-5 h-5 text-ha-primary flex-shrink-0" />
-              <p className="text-[16px] text-title text-[#000] flex-1">{t("profile.zoekbuddyTitle")}</p>
+              <p className="text-[17px] font-bold text-black flex-1">{t("profile.zoekbuddyTitle")}</p>
               {!buddyExpanded && pd?.search_buddy_email ? (
                 <span
                   role="button"
@@ -1888,17 +1888,17 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                   {t("profile.manageAction")}
                 </span>
               ) : !buddyExpanded ? (
-                <ChevronRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
+                <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
               ) : null}
             </button>
             {!buddyExpanded && (
-              <p className="text-[13px] text-[#6B7280] mt-1.5 leading-relaxed pl-8">{t("profile.buddyDescription")}</p>
+              <p className="text-[13px] text-gray-400 mt-1.5 leading-relaxed pl-8">{t("profile.buddyDescription")}</p>
             )}
             {!buddyExpanded && pd?.search_buddy_email && (
-              <p className="text-[13px] text-ha-success mt-2 flex items-center gap-1.5 pl-8"><Check className="w-4 h-4" /> {pd.search_buddy_email}</p>
+              <p className="text-[13px] text-ha-success mt-2.5 flex items-center gap-1.5 pl-8"><Check className="w-4 h-4" /> {pd.search_buddy_email}</p>
             )}
             {!buddyExpanded && !pd?.search_buddy_email && (
-              <p className="text-[13px] text-ha-danger mt-2 flex items-center gap-1.5 pl-8"><X className="w-4 h-4" /> {t("profile.noBuddyYet")}</p>
+              <p className="text-[13px] text-ha-danger mt-2.5 flex items-center gap-1.5 pl-8"><X className="w-4 h-4" /> {t("profile.noBuddyYet")}</p>
             )}
             {buddyExpanded && (
               <div className="pt-3 pb-1 animate-in slide-in-from-top-1 duration-200" data-testid="editor-zoekbuddy">
@@ -1947,10 +1947,10 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
 
           <button
             onClick={() => navigate("/settings")}
-            className="w-full ha-btn bg-white text-[#000] font-semibold border border-gray-200"
+            className="w-full ha-btn bg-white text-black font-semibold border border-gray-100 rounded-[12px]"
             data-testid="button-open-settings"
           >
-            <Settings className="w-4.5 h-4.5 text-[#6B7280]" />
+            <Settings className="w-4.5 h-4.5 text-gray-400" />
             {t("profile.settingsButton")}
           </button>
 

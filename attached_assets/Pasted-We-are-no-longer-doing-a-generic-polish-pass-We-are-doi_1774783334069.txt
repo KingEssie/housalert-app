@@ -1,0 +1,60 @@
+We are no longer doing a generic polish pass.
+
+We are doing a SCREEN-SPECIFIC visual rebuild of the PROFILE / ACCOUNT screen so it matches the supplied Rentbird reference as closely as possible.
+
+IMPORTANT:
+- Do NOT change routing
+- Do NOT change business logic
+- Do NOT change completion logic
+- Do NOT change section order unless explicitly stated below
+- ONLY change visual design/layout/styling/content composition of the account/profile screen
+- Use the supplied Rentbird screenshots as the visual source of truth
+
+==================================================
+GOAL
+==================================================
+
+Rebuild the HousAlert account/profile screen so it feels like a direct visual replica of the Rentbird account screen.
+
+The current version is TOO hard / too technical:
+- titles became too small and not heavy enough
+- cards have borders that are too visible
+- everything feels too sharp / too boxed
+- Rentbird feels softer, friendlier, cleaner
+
+We want the HousAlert account screen to copy Rentbird's style as closely as possible.
+
+==================================================
+GENERAL STYLE DIRECTION
+==================================================
+
+Use these principles everywhere on the account screen:
+
+- softer UI
+- larger, heavier titles
+- less visible card borders
+- cards should feel calm and premium, not outlined harshly
+- more visual softness
+- slightly more breathing room
+- dark purple header + soft light-gray body
+- white cards with very subtle border or almost no visible border
+- no hard/sharp "component library" feeling
+
+==================================================
+PROFILE HEADER — MATCH RENTBIRD
+==================================================
+
+Rebuild the profile header to visually match the Rentbird reference:
+
+- dark purple top area
+- curved lower edge exactly in the Rentbird style
+- centered avatar circle overlapping the curve
+- avatar should feel larger and cleaner
+- name centered below avatar
+- subtitle "Lid sinds ..." smaller and muted
+- settings button on the right inside the purple area, matching Rentbird sizing and spacing
+- the whole header should feel softer and more premium
+
+Styling rules:
+- do NOT use a harsh border around the avatar
+- do NOT make typography too small

@@ -33,34 +33,36 @@ export function ExpandableCompletionCard({
 
   return (
     <div
-      className="bg-white rounded-[6px] border border-gray-200 overflow-hidden"
+      className="bg-white rounded-[12px] border border-gray-100 overflow-hidden"
       data-testid={testId}
     >
       <button
-        className="w-full px-4 py-4 flex items-center gap-3 text-left"
+        className="w-full px-5 py-5 flex items-center gap-3 text-left"
         onClick={() => setExpanded(!expanded)}
         data-testid={`${testId}-toggle`}
       >
         <div className="flex-shrink-0">{icon}</div>
         <div className="flex-1 min-w-0">
-          <p className="text-[14px] font-semibold text-black">{title}</p>
-          <div className="mt-2 flex items-center gap-3">
-            <div className="flex-1 h-2 rounded-full bg-gray-200 overflow-hidden">
+          <div className="flex items-center justify-between">
+            <p className="text-[17px] font-bold text-black">{title}</p>
+            <ChevronDown
+              className={`w-5 h-5 text-gray-400 flex-shrink-0 transition-transform duration-200 ml-2 ${
+                expanded ? "rotate-180" : ""
+              }`}
+            />
+          </div>
+          <div className="mt-2.5 flex items-center gap-3">
+            <div className="flex-1 h-[6px] rounded-full bg-gray-100 overflow-hidden">
               <div
                 className="h-full rounded-full bg-[#e91e63] transition-all duration-500"
                 style={{ width: `${percentage}%` }}
               />
             </div>
-            <span className="text-[13px] font-medium text-gray-500 whitespace-nowrap">
+            <span className="text-[14px] font-semibold text-[#e91e63] whitespace-nowrap">
               {percentage}% {completedLabel}
             </span>
           </div>
         </div>
-        <ChevronDown
-          className={`w-5 h-5 text-[#9CA3AF] flex-shrink-0 transition-transform duration-200 ${
-            expanded ? "rotate-180" : ""
-          }`}
-        />
       </button>
 
       <div
@@ -68,7 +70,7 @@ export function ExpandableCompletionCard({
           expanded ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <div className="border-t border-gray-100 px-4 pb-3">
+        <div className="border-t border-gray-50 px-5 pb-3">
           {steps.map((step, idx) => (
             <button
               key={step.id}
@@ -76,14 +78,14 @@ export function ExpandableCompletionCard({
               disabled={step.completed}
               className={`w-full h-[56px] flex items-center gap-3 text-left transition-colors rounded-[6px] ${
                 !step.completed ? "active:bg-[#F5F5F7]" : ""
-              } ${idx < steps.length - 1 ? "border-b border-gray-100" : ""}`}
+              } ${idx < steps.length - 1 ? "border-b border-gray-50" : ""}`}
               data-testid={`${testId}-step-${step.id}`}
             >
-              <span className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-[12px] font-semibold text-gray-500 flex-shrink-0">
+              <span className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-[12px] font-semibold text-gray-400 flex-shrink-0">
                 {idx + 1}
               </span>
               <span
-                className={`text-[14px] font-medium flex-1 leading-snug ${
+                className={`text-[15px] font-medium flex-1 leading-snug ${
                   step.completed
                     ? "text-gray-400 line-through"
                     : "text-black"
@@ -97,7 +99,7 @@ export function ExpandableCompletionCard({
                     <CheckCircle2 className="w-[14px] h-[14px] text-white" />
                   </div>
                 ) : (
-                  <ChevronRight className="w-4 h-4 text-[#9CA3AF]" />
+                  <ChevronRight className="w-4 h-4 text-gray-300" />
                 )}
               </div>
             </button>
