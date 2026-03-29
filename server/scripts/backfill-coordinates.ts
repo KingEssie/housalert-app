@@ -5,6 +5,7 @@ import {
   CITY_CENTER_COORDS,
   normalizeCityKey,
   extractPostcodeFromText,
+  extractStreetFromAddress,
   type CoordinatePrecision,
   type GeocodableFields,
 } from "../ingesters/geocoding";
@@ -29,6 +30,7 @@ interface BackfillOptions {
   recentOnly: boolean;
   skipNominatim: boolean;
   pauseBetweenBatchesMs: number;
+  upgrade: boolean;
 }
 
 interface BackfillStats {
@@ -39,8 +41,19 @@ interface BackfillStats {
   cityFallback: number;
   unresolved: number;
   skippedAlreadyGood: number;
+  skippedNoData: number;
   upgraded: number;
+  upgradedToExact: number;
+  upgradedToApproximate: number;
   errors: number;
+}
+
+function emptyStats(): BackfillStats {
+  return {
+    candidates: 0, processed: 0, directCoords: 0, geocoded: 0,
+    cityFallback: 0, unresolved: 0, skippedAlreadyGood: 0, skippedNoData: 0,
+    upgraded: 0, upgradedToExact: 0, upgradedToApproximate: 0, errors: 0,
+  };
 }
 
 function parseArgs(): BackfillOptions {
@@ -53,6 +66,7 @@ function parseArgs(): BackfillOptions {
     recentOnly: false,
     skipNominatim: false,
     pauseBetweenBatchesMs: 2000,
+    upgrade: false,
   };
 
   for (const arg of args) {
@@ -63,6 +77,7 @@ function parseArgs(): BackfillOptions {
     else if (arg === "--recent-only") opts.recentOnly = true;
     else if (arg === "--skip-nominatim") opts.skipNominatim = true;
     else if (arg.startsWith("--pause=")) opts.pauseBetweenBatchesMs = parseInt(arg.split("=")[1], 10);
+    else if (arg === "--upgrade") opts.upgrade = true;
     else console.log(`Unknown argument: ${arg}`);
   }
 
@@ -80,37 +95,6 @@ async function checkRequiredColumns(): Promise<{ hasLatLng: boolean; hasCoordMet
   };
 }
 
-function buildGeocodableFields(listing: any): GeocodableFields {
-  const fields: GeocodableFields = {
-    city: listing.city,
-    latitude: listing.latitude ?? null,
-    longitude: listing.longitude ?? null,
-    district: listing.district ?? null,
-  };
-
-  if (listing.title) {
-    const postcode = extractPostcodeFromText(listing.title);
-    if (postcode) fields.postcode = postcode;
-  }
-
-  return fields;
-}
-
-function shouldSkip(listing: any): boolean {
-  if (listing.coordinate_precision) {
-    const currentRank = PRECISION_RANK[listing.coordinate_precision] ?? 0;
-    if (currentRank >= 3) return true;
-  }
-
-  if (listing.latitude != null && listing.longitude != null &&
-      listing.latitude !== 0 && listing.longitude !== 0) {
-    if (!listing.coordinate_source) return false;
-    if (listing.coordinate_source === "direct") return true;
-  }
-
-  return false;
-}
-
 function isUpgrade(currentPrecision: string | null, newPrecision: CoordinatePrecision): boolean {
   const currentRank = PRECISION_RANK[currentPrecision ?? ""] ?? 0;
   const newRank = PRECISION_RANK[newPrecision] ?? 0;
@@ -118,17 +102,7 @@ function isUpgrade(currentPrecision: string | null, newPrecision: CoordinatePrec
 }
 
 async function runBulkCityFallback(opts: BackfillOptions, columns: { hasCoordMeta: boolean }): Promise<BackfillStats> {
-  const stats: BackfillStats = {
-    candidates: 0,
-    processed: 0,
-    directCoords: 0,
-    geocoded: 0,
-    cityFallback: 0,
-    unresolved: 0,
-    skippedAlreadyGood: 0,
-    upgraded: 0,
-    errors: 0,
-  };
+  const stats = emptyStats();
 
   let query = supabase
     .from("listings")
@@ -151,8 +125,7 @@ async function runBulkCityFallback(opts: BackfillOptions, columns: { hasCoordMet
 
   const cityGroups = new Map<string, number>();
   for (const row of allRows) {
-    const city = row.city;
-    cityGroups.set(city, (cityGroups.get(city) || 0) + 1);
+    cityGroups.set(row.city, (cityGroups.get(row.city) || 0) + 1);
   }
 
   console.log(`Found ${cityGroups.size} distinct cities across ${stats.candidates} candidate listings`);
@@ -180,21 +153,13 @@ async function runBulkCityFallback(opts: BackfillOptions, columns: { hasCoordMet
       continue;
     }
 
-    const updateData: Record<string, any> = {
-      latitude: coords.lat,
-      longitude: coords.lng,
-    };
+    const updateData: Record<string, any> = { latitude: coords.lat, longitude: coords.lng };
     if (columns.hasCoordMeta) {
       updateData.coordinate_source = "city_fallback";
       updateData.coordinate_precision = "city_level";
     }
 
-    let updateQuery = supabase
-      .from("listings")
-      .update(updateData)
-      .eq("city", city)
-      .is("latitude", null);
-
+    let updateQuery = supabase.from("listings").update(updateData).eq("city", city).is("latitude", null);
     if (opts.source) updateQuery = updateQuery.eq("source", opts.source);
 
     const { error, count: updatedCount } = await updateQuery.select("id", { count: "exact", head: true });
@@ -215,18 +180,174 @@ async function runBulkCityFallback(opts: BackfillOptions, columns: { hasCoordMet
   return stats;
 }
 
-async function runRowByRow(opts: BackfillOptions, columns: { hasCoordMeta: boolean }): Promise<BackfillStats> {
-  const stats: BackfillStats = {
-    candidates: 0,
-    processed: 0,
-    directCoords: 0,
-    geocoded: 0,
-    cityFallback: 0,
-    unresolved: 0,
-    skippedAlreadyGood: 0,
-    upgraded: 0,
-    errors: 0,
+function extractUpgradeFields(listing: any): GeocodableFields | null {
+  const city = listing.city;
+  if (!city) return null;
+
+  let postcode: string | null = null;
+  let street: string | null = null;
+  let district: string | null = null;
+
+  if (listing.title) {
+    postcode = extractPostcodeFromText(listing.title);
+    street = extractStreetFromAddress(listing.title, city);
+  }
+
+  if (listing.district) {
+    const distPostcode = extractPostcodeFromText(listing.district);
+    if (distPostcode && !postcode) postcode = distPostcode;
+
+    const distStreet = extractStreetFromAddress(listing.district, city);
+    if (distStreet && !street) street = distStreet;
+
+    if (!street && !distStreet) {
+      const cleaned = listing.district.replace(/\(\d{5}\)/, "").replace(/\d{5}/, "").trim();
+      if (cleaned.length > 2 && cleaned !== city) {
+        district = cleaned;
+      }
+    }
+  }
+
+  if (!postcode && !street && !district) return null;
+
+  return {
+    city,
+    postcode,
+    street,
+    district,
+    latitude: null,
+    longitude: null,
   };
+}
+
+async function runUpgrade(opts: BackfillOptions, columns: { hasCoordMeta: boolean }): Promise<BackfillStats> {
+  const stats = emptyStats();
+
+  let countQuery = supabase
+    .from("listings")
+    .select("*", { count: "exact", head: true })
+    .eq("coordinate_source", "city_fallback");
+  if (opts.source) countQuery = countQuery.eq("source", opts.source);
+
+  const { count } = await countQuery;
+  stats.candidates = count ?? 0;
+
+  const effectiveLimit = Math.min(opts.limit, stats.candidates);
+  console.log(`City-fallback candidates: ${stats.candidates}`);
+  console.log(`Will evaluate up to: ${effectiveLimit}`);
+  console.log("");
+
+  if (stats.candidates === 0) {
+    console.log("No city_fallback listings to upgrade.");
+    return stats;
+  }
+
+  let totalProcessed = 0;
+  let batchNum = 0;
+  let lastId: string | null = null;
+
+  while (totalProcessed < effectiveLimit) {
+    batchNum++;
+
+    let fetchQuery = supabase
+      .from("listings")
+      .select("id, source, title, city, district, latitude, longitude, coordinate_source, coordinate_precision")
+      .eq("coordinate_source", "city_fallback")
+      .order("id", { ascending: true })
+      .limit(opts.batchSize);
+
+    if (opts.source) fetchQuery = fetchQuery.eq("source", opts.source);
+    if (lastId) fetchQuery = fetchQuery.gt("id", lastId);
+
+    const { data: batch, error: fetchErr } = await fetchQuery;
+    if (fetchErr) {
+      console.error(`[Batch ${batchNum}] Fetch error: ${fetchErr.message}`);
+      stats.errors++;
+      break;
+    }
+    if (!batch || batch.length === 0) {
+      console.log(`[Batch ${batchNum}] No more candidates.`);
+      break;
+    }
+
+    lastId = batch[batch.length - 1].id;
+
+    let batchUpgraded = 0;
+    let batchSkipped = 0;
+    let batchNoData = 0;
+
+    for (const listing of batch) {
+      if (totalProcessed >= effectiveLimit) break;
+      totalProcessed++;
+      stats.processed++;
+
+      const fields = extractUpgradeFields(listing);
+      if (!fields) {
+        batchNoData++;
+        stats.skippedNoData++;
+        continue;
+      }
+
+      try {
+        const resolved = await resolveCoordinates(fields);
+
+        if (!resolved || resolved.coordinate_source === "city_fallback") {
+          batchSkipped++;
+          stats.cityFallback++;
+          continue;
+        }
+
+        if (!isUpgrade(listing.coordinate_precision, resolved.coordinate_precision)) {
+          batchSkipped++;
+          stats.skippedAlreadyGood++;
+          continue;
+        }
+
+        if (opts.dryRun) {
+          console.log(`  [DRY] ${listing.id} (${listing.source}/${listing.city}): ${listing.coordinate_precision} → ${resolved.coordinate_precision} (${resolved.coordinate_source}) ${resolved.latitude.toFixed(4)}, ${resolved.longitude.toFixed(4)}`);
+        } else {
+          const { error: updateErr } = await supabase
+            .from("listings")
+            .update({
+              latitude: resolved.latitude,
+              longitude: resolved.longitude,
+              coordinate_source: resolved.coordinate_source,
+              coordinate_precision: resolved.coordinate_precision,
+            })
+            .eq("id", listing.id);
+
+          if (updateErr) {
+            console.error(`  [ERR] ${listing.id}: ${updateErr.message}`);
+            stats.errors++;
+            continue;
+          }
+        }
+
+        batchUpgraded++;
+        stats.upgraded++;
+        stats.geocoded++;
+
+        if (resolved.coordinate_precision === "exact") stats.upgradedToExact++;
+        else if (resolved.coordinate_precision === "approximate") stats.upgradedToApproximate++;
+
+      } catch (err: any) {
+        console.error(`  [ERR] ${listing.id}: ${err.message}`);
+        stats.errors++;
+      }
+    }
+
+    console.log(`[Batch ${batchNum}] ${batch.length} evaluated, ${batchUpgraded} upgraded, ${batchNoData} no data, ${batchSkipped} skipped | Total: ${totalProcessed}/${effectiveLimit}`);
+
+    if (totalProcessed < effectiveLimit && batch.length === opts.batchSize) {
+      await new Promise(r => setTimeout(r, opts.pauseBetweenBatchesMs));
+    }
+  }
+
+  return stats;
+}
+
+async function runRowByRow(opts: BackfillOptions, columns: { hasCoordMeta: boolean }): Promise<BackfillStats> {
+  const stats = emptyStats();
 
   let countQuery = supabase
     .from("listings")
@@ -281,14 +402,24 @@ async function runRowByRow(opts: BackfillOptions, columns: { hasCoordMeta: boole
     for (const listing of batch) {
       if (totalProcessed >= effectiveLimit) break;
 
-      if (shouldSkip(listing)) {
+      if (listing.coordinate_precision === "exact" || listing.coordinate_source === "direct") {
         stats.skippedAlreadyGood++;
         totalProcessed++;
         continue;
       }
 
       try {
-        const fields = buildGeocodableFields(listing);
+        const fields: GeocodableFields = {
+          city: listing.city,
+          latitude: listing.latitude ?? null,
+          longitude: listing.longitude ?? null,
+          district: listing.district ?? null,
+        };
+        if (listing.title) {
+          const postcode = extractPostcodeFromText(listing.title);
+          if (postcode) fields.postcode = postcode;
+        }
+
         const resolved = await resolveCoordinates(fields);
 
         if (!resolved) {
@@ -299,16 +430,16 @@ async function runRowByRow(opts: BackfillOptions, columns: { hasCoordMeta: boole
         }
 
         const currentPrecision = listing.coordinate_precision ?? null;
-        const isUpgradeCase = currentPrecision && isUpgrade(currentPrecision, resolved.coordinate_precision);
+        const upgradeCase = currentPrecision && isUpgrade(currentPrecision, resolved.coordinate_precision);
 
-        if (listing.latitude != null && listing.longitude != null && !isUpgradeCase) {
+        if (listing.latitude != null && listing.longitude != null && !upgradeCase) {
           stats.skippedAlreadyGood++;
           totalProcessed++;
           continue;
         }
 
         if (opts.dryRun) {
-          console.log(`  [DRY] ${listing.id} (${listing.source}/${listing.city}): would set ${resolved.coordinate_source}/${resolved.coordinate_precision} → ${resolved.latitude.toFixed(4)}, ${resolved.longitude.toFixed(4)}${isUpgradeCase ? " [UPGRADE]" : ""}`);
+          console.log(`  [DRY] ${listing.id} (${listing.source}/${listing.city}): would set ${resolved.coordinate_source}/${resolved.coordinate_precision} → ${resolved.latitude.toFixed(4)}, ${resolved.longitude.toFixed(4)}${upgradeCase ? " [UPGRADE]" : ""}`);
         } else {
           const updateData: Record<string, any> = {
             latitude: resolved.latitude,
@@ -339,7 +470,7 @@ async function runRowByRow(opts: BackfillOptions, columns: { hasCoordMeta: boole
           case "city_fallback": stats.cityFallback++; break;
         }
 
-        if (isUpgradeCase) stats.upgraded++;
+        if (upgradeCase) stats.upgraded++;
         stats.processed++;
         totalProcessed++;
       } catch (err: any) {
@@ -364,12 +495,13 @@ async function run() {
   const opts = parseArgs();
 
   console.log("=== COORDINATE BACKFILL ===");
-  console.log(`Mode: ${opts.dryRun ? "DRY RUN" : "LIVE"}`);
+  console.log(`Mode: ${opts.dryRun ? "DRY RUN" : "LIVE"}${opts.upgrade ? " [UPGRADE]" : ""}`);
   console.log(`Limit: ${opts.limit}`);
   console.log(`Batch size: ${opts.batchSize}`);
   console.log(`Source filter: ${opts.source ?? "all"}`);
   console.log(`Recent only: ${opts.recentOnly}`);
   console.log(`Skip Nominatim: ${opts.skipNominatim}`);
+  console.log(`Upgrade mode: ${opts.upgrade}`);
   console.log(`Pause between batches: ${opts.pauseBetweenBatchesMs}ms`);
   console.log("");
 
@@ -382,26 +514,38 @@ async function run() {
 
   if (!columns.hasLatLng) {
     console.error("ABORT: latitude/longitude columns do not exist on listings table.");
-    console.error("Run migration 015 in Supabase SQL Editor first.");
-    console.error("File: server/migrations/PENDING_RUN_IN_SUPABASE.sql");
     process.exit(1);
   }
 
-  const stats = opts.skipNominatim
-    ? await runBulkCityFallback(opts, columns)
-    : await runRowByRow(opts, columns);
+  let stats: BackfillStats;
+
+  if (opts.upgrade) {
+    stats = await runUpgrade(opts, columns);
+  } else if (opts.skipNominatim) {
+    stats = await runBulkCityFallback(opts, columns);
+  } else {
+    stats = await runRowByRow(opts, columns);
+  }
 
   console.log("");
   console.log("=== BACKFILL SUMMARY ===");
-  console.log(`Mode:                ${opts.dryRun ? "DRY RUN (no writes)" : "LIVE"}`);
+  console.log(`Mode:                ${opts.dryRun ? "DRY RUN (no writes)" : "LIVE"}${opts.upgrade ? " [UPGRADE]" : ""}`);
   console.log(`Total candidates:    ${stats.candidates}`);
   console.log(`Processed:           ${stats.processed}`);
-  console.log(`Direct coords:       ${stats.directCoords}`);
-  console.log(`Geocoded:            ${stats.geocoded}`);
-  console.log(`City fallback:       ${stats.cityFallback}`);
-  console.log(`Unresolved:          ${stats.unresolved}`);
-  console.log(`Skipped (good):      ${stats.skippedAlreadyGood}`);
-  console.log(`Upgraded precision:  ${stats.upgraded}`);
+  if (opts.upgrade) {
+    console.log(`Upgraded total:      ${stats.upgraded}`);
+    console.log(`  → to exact:        ${stats.upgradedToExact}`);
+    console.log(`  → to approximate:  ${stats.upgradedToApproximate}`);
+    console.log(`Skipped (no data):   ${stats.skippedNoData}`);
+    console.log(`Remained city_level: ${stats.cityFallback}`);
+  } else {
+    console.log(`Direct coords:       ${stats.directCoords}`);
+    console.log(`Geocoded:            ${stats.geocoded}`);
+    console.log(`City fallback:       ${stats.cityFallback}`);
+    console.log(`Unresolved:          ${stats.unresolved}`);
+    console.log(`Skipped (good):      ${stats.skippedAlreadyGood}`);
+    console.log(`Upgraded precision:  ${stats.upgraded}`);
+  }
   console.log(`Errors:              ${stats.errors}`);
   console.log("========================");
 
