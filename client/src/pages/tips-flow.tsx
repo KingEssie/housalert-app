@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { ArrowLeft, X, Check } from "lucide-react";
-import { getTipsReadSet, markTipRead } from "./tips";
+import { getTipsReadSet, markTipRead, unmarkTipRead } from "./tips";
 
-const FLOW_TIP_IDS = [
+export const FLOW_TIP_IDS = [
   "dokumente",
   "finanzen",
   "reaktion",
@@ -14,7 +14,7 @@ const FLOW_TIP_IDS = [
   "followup",
 ] as const;
 
-type FlowTipId = (typeof FLOW_TIP_IDS)[number];
+export type FlowTipId = (typeof FLOW_TIP_IDS)[number];
 
 interface TipStepContent {
   id: FlowTipId;
@@ -88,6 +88,21 @@ const STEPS: TipStepContent[] = [
   },
 ];
 
+const FLOW_TIP_TITLES: Record<FlowTipId, string> = {
+  dokumente: "Verzamel je documenten",
+  finanzen: "Check je financiële situatie",
+  reaktion: "Zorg voor een sterke reactie",
+  plattformen: "Meld je aan voor lokale groepen",
+  neubau: "Houd nieuwbouwprojecten in de gaten",
+  netzwerk: "Gebruik je netwerk",
+  besichtigung: "Maak een sterke indruk bij bezichtigingen",
+  followup: "Stuur een sterke follow-up",
+};
+
+export function getFlowTipSteps(): { id: string; title: string }[] {
+  return FLOW_TIP_IDS.map((id) => ({ id, title: FLOW_TIP_TITLES[id] }));
+}
+
 export default function TipsFlowPage() {
   const [, navigate] = useLocation();
   const [currentStep, setCurrentStep] = useState(0);
@@ -110,6 +125,7 @@ export default function TipsFlowPage() {
     const next = new Set(checkedSteps);
     if (next.has(step.id)) {
       next.delete(step.id);
+      unmarkTipRead(step.id);
     } else {
       next.add(step.id);
       markTipRead(step.id);

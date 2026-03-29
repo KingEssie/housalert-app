@@ -28,7 +28,6 @@ import {
   CheckCircle2,
   AlertCircle,
   Sparkles,
-  Mail,
   Crown,
   Eye,
   Send,
@@ -57,6 +56,7 @@ import {
 import { ExpandableCompletionCard, type CompletionStep } from "@/components/expandable-completion-card";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
 import TipsPage, { getTipConfig, getTipsReadSet } from "@/pages/tips";
+import { getFlowTipSteps } from "@/pages/tips-flow";
 import { ReferralCodeModal } from "@/components/referral-code-modal";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
@@ -825,10 +825,10 @@ function HomeAccountCompletionCard({ accessToken, navigate }: { accessToken: str
 function HomeTipsCompletionCard({ navigate }: { navigate: (path: string) => void }) {
   const { t } = useTranslation();
 
-  const tipConfigs = getTipConfig(t);
+  const flowSteps = getFlowTipSteps();
   const readSet = getTipsReadSet();
 
-  const steps: CompletionStep[] = tipConfigs.map((tip) => ({
+  const steps: CompletionStep[] = flowSteps.map((tip) => ({
     id: tip.id,
     label: tip.title,
     completed: readSet.has(tip.id),
@@ -901,10 +901,10 @@ function ProfileAccountCompletionCard({ navigate }: { navigate: (path: string) =
 function ProfileTipsCompletionCard({ navigate }: { navigate: (path: string) => void }) {
   const { t } = useTranslation();
 
-  const tipConfigs = getTipConfig(t);
+  const flowSteps = getFlowTipSteps();
   const readSet = getTipsReadSet();
 
-  const steps: CompletionStep[] = tipConfigs.map((tip) => ({
+  const steps: CompletionStep[] = flowSteps.map((tip) => ({
     id: tip.id,
     label: tip.title,
     completed: readSet.has(tip.id),
@@ -1018,23 +1018,6 @@ function HomeTab({
         </div>
       )}
 
-      {subscription.isTrial && subscription.trialEndsAt && (
-        <div className="rounded-[6px] border border-gray-200 bg-white px-5 py-4 flex items-center gap-3.5" data-testid="banner-trial">
-          <div className="w-10 h-10 rounded-[6px] bg-[#EBEBF0] flex items-center justify-center flex-shrink-0">
-            <Crown className="w-[18px] h-[18px] text-amber-400" />
-          </div>
-          <p className="text-[14px] font-medium text-[#000] flex-1 leading-snug">
-            {t("home.trialUntil", { date: new Date(subscription.trialEndsAt).toLocaleDateString("de-DE", { day: "numeric", month: "long" }) })}
-          </p>
-          <button
-            onClick={() => navigate("/paywall")}
-            className="text-[13px] font-medium text-ha-primary hover:underline flex-shrink-0"
-            data-testid="button-trial-upgrade"
-          >
-            {t("home.upgrade")}
-          </button>
-        </div>
-      )}
 
       {profiles.length > 0 && (
         <SearchProfilesSection profiles={profiles} navigate={navigate} />
@@ -1981,44 +1964,9 @@ export default function DashboardPage() {
     ? allMatches.filter(m => getMatchTab(m) === "gereageerd").length
     : (apiMatchesQuery.data?.canonicalStats?.applied ?? 0);
 
-  const emailNeedsVerification = user?.user_metadata?.email_needs_verification === true;
-
   return (
     <div className="min-h-screen bg-[#EBEBF0] flex flex-col">
       <main className="flex-1 max-w-xl mx-auto w-full pb-[100px]">
-        {emailNeedsVerification && (
-          <div className="mx-4 mt-3 mb-1 flex items-center gap-3 bg-[#FEF3C7] rounded-[6px] px-4 py-3" data-testid="banner-email-confirm">
-            <Mail className="w-5 h-5 text-[#92400E] flex-shrink-0" />
-            <p className="text-[13px] text-[#92400E] flex-1">{t("dashboard.confirmEmailBanner")}</p>
-            <button
-              onClick={async () => {
-                try {
-                  const { data: sess } = await supabase.auth.getSession();
-                  const token = sess?.session?.access_token;
-                  if (token) {
-                    const res = await fetch("/api/auth/send-verification", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-                    });
-                    if (res.ok) {
-                      toast({ title: t("dashboard.confirmEmailSent") });
-                    } else {
-                      await supabase.auth.resend({ type: "signup", email: user.email! });
-                      toast({ title: t("dashboard.confirmEmailSent") });
-                    }
-                  } else {
-                    await supabase.auth.resend({ type: "signup", email: user.email! });
-                    toast({ title: t("dashboard.confirmEmailSent") });
-                  }
-                } catch {}
-              }}
-              className="text-[13px] font-medium text-[#92400E] underline whitespace-nowrap"
-              data-testid="button-confirm-email"
-            >
-              {t("dashboard.confirmEmailBtn")}
-            </button>
-          </div>
-        )}
         {activeTab === "home" && (
           <HomeTab
             user={user}

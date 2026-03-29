@@ -53,6 +53,12 @@ export function markTipRead(tipId: string) {
   localStorage.setItem(TIPS_READ_KEY, JSON.stringify(Array.from(s)));
 }
 
+export function unmarkTipRead(tipId: string) {
+  const s = getTipsReadSet();
+  s.delete(tipId);
+  localStorage.setItem(TIPS_READ_KEY, JSON.stringify(Array.from(s)));
+}
+
 export function getTipsProgress(): { read: number; total: number } {
   const readSet = getTipsReadSet();
   const read = TIP_IDS.filter((id) => readSet.has(id)).length;

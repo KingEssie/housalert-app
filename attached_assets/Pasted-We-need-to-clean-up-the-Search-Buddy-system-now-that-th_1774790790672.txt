@@ -1,0 +1,163 @@
+We need to clean up the Search Buddy system now that the underlying bug has been fixed.
+
+IMPORTANT:
+- Do NOT use temporary workarounds anymore
+- Remove old emergency restrictions that were added only because buddies were incorrectly being treated as main users
+- Fully support buddy self-unsubscribe from email
+- Keep the system safe: no removed/revoked buddy may ever receive future emails
+
+==================================================
+PART 1 — REMOVE TEMPORARY BLOCKED EMAIL WORKAROUNDS
+==================================================
+
+Audit the current Search Buddy implementation for any temporary email blocking logic.
+
+We previously blocked 1 or more specific email addresses because Search Buddy emails were behaving incorrectly and those buddies were being treated like main users.
+
+Now that the real Search Buddy logic is fixed, remove these temporary blocked-email workarounds.
+
+This includes:
+- hardcoded blocked email addresses
+- denylist checks added only as a workaround
+- special-case conditions preventing those addresses from being used as Search Buddy
+
+IMPORTANT:
+Only remove the workaround logic if the current Search Buddy send-time validation and ownership logic are already correct.
+Do NOT reintroduce the original bug.
+
+==================================================
+PART 2 — BUDDY UNSUBSCRIBE MUST REMOVE THE BUDDY RELATION
+==================================================
+
+When a Search Buddy clicks "unsubscribe" in an email, this must do more than stop email delivery.
+
+It must fully remove/deactivate the Search Buddy relationship.
+
+Required behavior when buddy unsubscribes from email:
+1. validate the unsubscribe token/link securely
+2. find the active buddy relationship
+3. mark the buddy as no longer active
+4. store a clear status such as:
+   - revoked_by_buddy
+   OR
+   - removed
+5. set timestamp like revoked_at / removed_at
+6. stop all future buddy emails immediately
+7. remove the buddy from the main user's active Search Buddy UI
+8. invalidate caches / stale state
+9. ensure queued jobs can no longer send to that buddy
+
+IMPORTANT:
+A buddy unsubscribing from mail must functionally behave like:
+"this buddy is no longer an active search buddy"
+
+==================================================
+PART 3 — SERVER-SIDE ELIGIBILITY MUST STILL HOLD
+==================================================
+
+Keep the existing strict eligibility logic.
+
+A Search Buddy may receive emails ONLY if:
+- buddy email exists and is valid
+- buddy status is active
+- owner user has active paid subscription OR active trial
+- owner account is not suspended/disabled
+- buddy has not been removed/revoked/unsubscribed
+- send-time validation passes
+
+If buddy status is revoked_by_buddy / removed / inactive:
+- never send again
+
+==================================================
+PART 4 — MAIN USER UI SYNC
+==================================================
+
+If a buddy unsubscribes via email:
+- the main user must no longer see that buddy as active
+- the invite/search buddy screen should reflect that no active buddy exists
+- the main user should be able to invite a new buddy again
+
+If there is a status label/message system, optionally show:
+"Je zoekbuddy heeft zich afgemeld voor meldingen"
+
+But only if that fits the current UI cleanly.
+
+==================================================
+PART 5 — DATA MODEL
+==================================================
+
+Use a proper status-driven relationship model for Search Buddy.
+
+Preferred statuses:
+- pending
+- active
+- removed_by_owner
+- revoked_by_buddy
+- expired
+
+If a simpler equivalent already exists, normalize it and use it consistently.
+Do NOT rely only on a raw email field.
+
+==================================================
+PART 6 — TEST CASES
+==================================================
+
+Implement and verify these test scenarios:
+
+CASE 1:
+- previously blocked buddy email is used now
+- if all rules are valid, it can be added successfully
+
+CASE 2:
+- active buddy receives emails normally
+- main user has active trial or paid account
+
+CASE 3:
+- buddy clicks unsubscribe in email
+- buddy is immediately removed/revoked
+- no more buddy emails are sent
+
+CASE 4:
+- main user opens Search Buddy UI after buddy unsubscribed
+- buddy no longer appears as active
+
+CASE 5:
+- main user invites a new buddy after old buddy unsubscribed
+- new buddy can be added and used normally
+
+CASE 6:
+- queued email exists before unsubscribe
+- buddy unsubscribes before send
+- queued email must NOT send
+
+==================================================
+DO NOT CHANGE
+==================================================
+
+Do NOT:
+- break main user email notifications
+- break subscription logic
+- break invite flow
+- keep old hardcoded email blocks
+- allow revoked/removed buddies to receive future emails
+
+==================================================
+ACCEPTANCE CRITERIA
+==================================================
+
+Only mark complete if ALL are true:
+
+1. temporary blocked Search Buddy email workarounds are removed
+2. those email addresses can now be used normally if valid
+3. unsubscribe from buddy email fully revokes/removes the buddy relationship
+4. unsubscribed buddies disappear from the main user's active Search Buddy state
+5. unsubscribed buddies receive no future emails
+6. queued/stale jobs cannot bypass the removal
+7. a new buddy can be invited afterward without issue
+
+At the end report:
+1. which temporary blocked-email logic was removed
+2. exact status used when buddy unsubscribes
+3. where unsubscribe now updates the buddy relationship
+4. where send-time validation prevents future buddy emails
+5. which files were changed
