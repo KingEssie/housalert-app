@@ -2045,13 +2045,14 @@ export const de: Record<string, any> = {
       infoDesc: "Kein Risiko — du kannst jederzeit kündigen. Probiere es aus und entdecke, wie viel schneller du eine Wohnung findest.",
     },
     welcome: {
-      title: "Fast geschafft!",
+      title: "Lass uns HousAlert zusammen einrichten!",
       cooRole: "COO, HousAlert",
       subtitle: "Noch ein paar kurze Schritte und dein HousAlert-Konto ist vollständig eingerichtet.",
+      speechBody: "Eine Wohnung zu finden ist schwer, und schnelles Reagieren macht einen großen Unterschied. In den nächsten Schritten helfen wir dir, HousAlert richtig einzurichten, damit du schneller handeln kannst, sobald ein Match reinkommt.\n\nWir beginnen mit Benachrichtigungen, damit du keine Chancen verpasst.",
       point1: "Erstelle ein automatisches Bewerbungsschreiben",
       point2: "Lade einen Suchbuddy ein",
       point3: "Aktiviere Push-Benachrichtigungen",
-      cta: "Los geht's",
+      cta: "Weiter",
     },
     letterPersonal: {
       title: "Persönliche Angaben",

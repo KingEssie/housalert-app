@@ -2215,13 +2215,14 @@ export const nl: Record<string, any> = {
       infoDesc: "Geen risico — je kunt altijd opzeggen. Probeer het en ontdek hoe veel sneller je een woning vindt.",
     },
     welcome: {
-      title: "Bijna klaar!",
+      title: "Laten we samen HousAlert instellen!",
       cooRole: "COO, HousAlert",
       subtitle: "Nog een paar korte stappen en je HousAlert-account is volledig ingesteld.",
+      speechBody: "Een woning vinden is lastig en snel reageren maakt een groot verschil. In de volgende stappen helpen we je om HousAlert goed in te stellen, zodat je sneller kunt handelen zodra er een match binnenkomt.\n\nWe beginnen met meldingen, zodat je geen kansen mist.",
       point1: "Maak een automatische sollicitatiebrief",
       point2: "Nodig een zoekbuddy uit",
       point3: "Schakel pushmeldingen in",
-      cta: "Aan de slag",
+      cta: "Volgende",
     },
     letterPersonal: {
       title: "Persoonlijke gegevens",

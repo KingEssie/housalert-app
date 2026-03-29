@@ -1483,13 +1483,14 @@ export const en: Record<string, any> = {
       infoDesc: "No risk — you can cancel anytime. Give it a try and discover how much faster you find a home.",
     },
     welcome: {
-      title: "Almost there!",
+      title: "Let's set up HousAlert together!",
       cooRole: "COO, HousAlert",
       subtitle: "Just a few more steps and your HousAlert account will be fully set up.",
+      speechBody: "Finding a rental is tough, and responding quickly makes a big difference. In the next steps, we'll help you set up HousAlert properly so you can act faster as soon as a match comes in.\n\nWe'll start with notifications so you don't miss any opportunities.",
       point1: "Create an automatic application letter",
       point2: "Invite a search buddy",
       point3: "Enable push notifications",
-      cta: "Let's go",
+      cta: "Next",
     },
     letterPersonal: {
       title: "Personal details",

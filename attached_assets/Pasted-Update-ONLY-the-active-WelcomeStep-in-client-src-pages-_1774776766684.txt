@@ -1,0 +1,245 @@
+Update ONLY the active WelcomeStep in:
+
+client/src/pages/onboarding/setup.tsx
+
+IMPORTANT:
+- Do NOT create a new screen
+- Do NOT leave the old placeholder version active
+- Do NOT change routing
+- Do NOT change onboarding order
+- Only replace the CURRENT active WelcomeStep UI
+- Keep HousAlert branding
+- Do not touch other onboarding steps
+
+GOAL:
+Make the active WelcomeStep match the provided Rentbird-style reference much more closely, but with HousAlert branding and Elise as COO.
+
+==================================================
+ACTIVE SCREEN TO CHANGE
+==================================================
+
+File:
+client/src/pages/onboarding/setup.tsx
+
+Component:
+WelcomeStep
+
+This is the ONLY screen to update.
+
+==================================================
+IMAGE TO USE
+==================================================
+
+Use the real Elise portrait image already available in the project/session.
+
+Do NOT use:
+- crown icon
+- placeholder avatar
+- generic icon circle
+- stock placeholder block
+
+Use the actual Elise image as the person shown on the welcome screen.
+
+Name shown:
+Elise
+
+Role shown:
+COO
+
+==================================================
+LAYOUT STRUCTURE
+==================================================
+
+Rebuild WelcomeStep with this structure:
+
+1. DARK TOP BAR
+2. LIGHT PAGE BODY
+3. LARGE BLACK TITLE
+4. WHITE CARD
+5. LIGHT BLUE SPEECH BUBBLE inside the card
+6. Elise photo below the speech bubble
+7. "Elise" + "COO" text beside / near the photo
+8. PINK PRIMARY CTA at the bottom
+
+The current crown-icon based dark screen must be replaced.
+
+==================================================
+TOP BAR
+==================================================
+
+Keep HousAlert branding in the top bar.
+
+Top bar style:
+- dark purple background
+- HousAlert logo/name
+- clean layout
+- no crown icon
+- no placeholder subtitle
+- no progress dots
+
+==================================================
+PAGE BACKGROUND
+==================================================
+
+Below the top bar:
+- switch to a light gray page background like the reference
+- use the same clean light section style as the Rentbird example
+
+Suggested background:
+#F3F3F5 or the closest existing light neutral used in the app
+
+==================================================
+TITLE
+==================================================
+
+Large black title at the top of the light section:
+
+"Laten we samen HousAlert instellen!"
+
+Style:
+- bold
+- black
+- large
+- same hierarchy as reference
+- aligned left
+- correct spacing above the card
+
+==================================================
+WHITE CARD
+==================================================
+
+Use a large white rounded card centered in the content area.
+
+Card style:
+- white background
+- rounded corners
+- subtle shadow or none if app style is flatter
+- generous internal padding
+- visually close to the reference
+
+==================================================
+SPEECH BUBBLE
+==================================================
+
+Inside the white card, place a large light-blue speech bubble.
+
+Style:
+- light blue background
+- rounded corners
+- little speech-tail pointer at the bottom pointing toward Elise photo
+- generous padding
+- black text
+- left aligned
+
+Use this content:
+
+Heading:
+"Welkom!"
+
+Body:
+"Een woning vinden is lastig en snel reageren maakt een groot verschil. In de volgende stappen helpen we je om HousAlert goed in te stellen, zodat je sneller kunt handelen zodra er een match binnenkomt.
+
+We beginnen met meldingen, zodat je geen kansen mist."
+
+IMPORTANT:
+- keep the speech bubble large enough
+- do not compress the text too tightly
+- make it visually similar to the Rentbird reference
+
+==================================================
+PHOTO + COO BLOCK
+==================================================
+
+Under the speech bubble inside the white card:
+
+- show the real Elise image prominently
+- circular or softly rounded crop, depending on what matches the reference best
+- make the face clearly visible
+- size should feel like a featured team photo, not a tiny avatar
+
+Near the photo, show:
+
+Elise
+COO
+
+Typography:
+- "Elise" more prominent
+- "COO" smaller underneath
+- black text
+- clean spacing
+
+Do NOT use:
+- placeholder crown
+- icon circle
+- fake initials
+- missing-image fallback
+
+==================================================
+CTA BUTTON
+==================================================
+
+At the bottom of the page, place a single primary pink button:
+
+Text:
+"Volgende"
+
+Style:
+- same primary CTA style as the rest of onboarding
+- height 56px
+- consistent radius with global button system
+- centered / full-width within the content width
+- proper bottom spacing
+
+==================================================
+REMOVE OLD ELEMENTS
+==================================================
+
+Remove from WelcomeStep:
+- crown icon in a pink circle
+- placeholder COO subtitle under heading
+- old dark-only layout
+- old feature-card layout if still present
+- any placeholder visual that is not part of the new card/speech-bubble/photo layout
+
+==================================================
+SPACING RULES
+==================================================
+
+Keep spacing clean and premium:
+
+- top bar to title: generous spacing
+- title to white card: 20–24px
+- card padding: generous
+- speech bubble to photo block: balanced
+- card to CTA: clear separation
+- no cramped sections
+- no oversized empty dead space
+
+==================================================
+DO NOT CHANGE
+==================================================
+
+Do NOT change:
+- route
+- step order
+- button behavior
+- onboarding state logic
+- other steps in setup.tsx
+
+Only replace the active WelcomeStep UI.
+
+==================================================
+ACCEPTANCE CRITERIA
+==================================================
+
+Only mark complete if ALL are true:
+
+- active WelcomeStep in setup.tsx is updated
+- Elise real photo is used
+- name shown = Elise
+- title shown = COO
+- speech bubble layout is present
+- crown icon/placeholder is fully removed
+- page uses dark top bar + light body like reference
+- CTA says "Volgende"
+- no new duplicate welcome screen was created

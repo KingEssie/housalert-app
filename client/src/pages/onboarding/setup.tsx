@@ -11,9 +11,10 @@ import { generateOnboardingLetter, type OnboardingLetterData } from "@/lib/appli
 import {
   ChevronLeft, Loader2, Check, ArrowRight,
   Euro, Bell, AlertTriangle, X, CheckCircle2, Send,
-  BellRing, FileText, Users, Sparkles, Zap, Star, Crown,
+  BellRing, FileText, Users, Sparkles, Zap, Star,
   ShieldAlert,
 } from "lucide-react";
+import elisePhoto from "@assets/4261FC63-DAC9-464F-B16D-9E62B0AB2B73_1774776772340.png";
 
 const BRAND = "rgb(var(--ha-primary))";
 const BRAND_HOVER = "rgb(var(--ha-primary-hover))";
@@ -391,46 +392,58 @@ function WelcomeStep({ onNext, t }: {
   onNext: () => void;
   t: (k: string, p?: Record<string, any>) => string;
 }) {
-  const points = [
-    { icon: FileText, text: t("onboardingFlow.welcome.point1") },
-    { icon: Users, text: t("onboardingFlow.welcome.point2") },
-    { icon: Bell, text: t("onboardingFlow.welcome.point3") },
-  ];
-
   return (
-    <>
-      <div className="flex-1 flex flex-col items-center text-center pt-4">
-        <div className="w-[72px] h-[72px] rounded-full mb-4 flex items-center justify-center overflow-hidden" style={{ backgroundColor: "rgba(233,30,99,0.15)", border: "2px solid rgba(233,30,99,0.3)" }}>
-          <Crown className="w-8 h-8" style={{ color: BRAND }} />
+    <div className="min-h-[100dvh] flex flex-col" style={{ backgroundColor: "#F3F3F5" }} data-testid="setup-step-welcome">
+      <header className="sticky top-0 z-20 border-b" style={{ backgroundColor: "rgba(30,27,75,0.98)", borderColor: "rgba(255,255,255,0.08)" }}>
+        <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
+          <div className="w-10" />
+          <div className="flex-1 flex justify-center">
+            <HousAlertLogo size={28} />
+          </div>
+          <div className="w-10" />
         </div>
-        <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-1" style={{ color: "#ffffff" }} data-testid="text-welcome-title">
+      </header>
+
+      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-10" style={{ paddingBottom: "max(40px, env(safe-area-inset-bottom, 40px))" }}>
+        <h1 className="text-[24px] font-extrabold tracking-[-0.02em] mb-5 text-[#111]" data-testid="text-welcome-title">
           {t("onboardingFlow.welcome.title")}
         </h1>
-        <p className="text-[14px] mb-2 font-medium" style={{ color: "rgba(255,255,255,0.5)" }}>
-          {t("onboardingFlow.welcome.cooRole")}
-        </p>
-        <p className="text-[14px] mb-8 max-w-[340px] leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>
-          {t("onboardingFlow.welcome.subtitle")}
-        </p>
 
-        <div className="w-full space-y-3">
-          {points.map((p, i) => (
-            <div key={i} className="flex items-center gap-4 rounded-[12px] px-5 py-4" style={{ backgroundColor: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
-              <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(233,30,99,0.12)" }}>
-                <p.icon className="w-5 h-5" style={{ color: BRAND }} />
-              </div>
-              <span className="text-[14px] font-medium text-left" style={{ color: "#ffffff" }}>{p.text}</span>
+        <div className="rounded-[16px] bg-white p-5" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
+          <div className="relative rounded-[12px] px-5 py-5 mb-4" style={{ backgroundColor: "#E8F4FD" }}>
+            <p className="text-[17px] font-bold text-[#111] mb-2">Welkom!</p>
+            <p className="text-[14px] leading-[1.6] text-[#333]">
+              {t("onboardingFlow.welcome.speechBody")}
+            </p>
+            <div className="absolute -bottom-[8px] left-8 w-4 h-4 rotate-45" style={{ backgroundColor: "#E8F4FD" }} />
+          </div>
+
+          <div className="flex items-center gap-3.5 pt-2">
+            <img
+              src={elisePhoto}
+              alt="Elise — COO HousAlert"
+              className="w-[56px] h-[56px] rounded-full object-cover flex-shrink-0"
+              data-testid="img-elise-photo"
+            />
+            <div>
+              <p className="text-[16px] font-bold text-[#111]">Elise</p>
+              <p className="text-[13px] text-[#666]">COO</p>
             </div>
-          ))}
+          </div>
         </div>
-      </div>
 
-      <div className="mt-auto pt-6">
-        <PrimaryBtn onClick={onNext} testId="button-welcome-next">
-          {t("onboardingFlow.welcome.cta")}
-        </PrimaryBtn>
-      </div>
-    </>
+        <div className="mt-auto pt-8">
+          <button
+            onClick={onNext}
+            className="w-full h-[56px] rounded-[12px] text-[16px] font-semibold text-white transition-all active:scale-[0.97]"
+            style={{ background: `linear-gradient(135deg, ${BRAND}, #c2185b)` }}
+            data-testid="button-welcome-next"
+          >
+            {t("onboardingFlow.welcome.cta")}
+          </button>
+        </div>
+      </main>
+    </div>
   );
 }
 
@@ -1259,6 +1272,10 @@ export default function OnboardingSetup() {
 
   const showBack = step !== "paywall" && step !== "welcome" && step !== "success" && step !== "limited-access";
 
+  if (step === "welcome") {
+    return <WelcomeStep onNext={() => goStep("push-test")} t={t} />;
+  }
+
   return (
     <SetupShell step={step} onBack={handleBack} showBack={showBack}>
       {step === "paywall" && (
@@ -1266,9 +1283,6 @@ export default function OnboardingSetup() {
       )}
       {step === "limited-access" && (
         <LimitedAccessStep onGoBack={handleLimitedGoBack} onContinue={handleLimitedContinue} t={t} />
-      )}
-      {step === "welcome" && (
-        <WelcomeStep onNext={() => goStep("push-test")} t={t} />
       )}
       {step === "push-test" && (
         <PushTestStep
