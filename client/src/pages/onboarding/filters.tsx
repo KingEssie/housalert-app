@@ -74,6 +74,47 @@ function Toggle({
   );
 }
 
+function RangeSlider({
+  min,
+  max,
+  step,
+  value,
+  onChange,
+  formatLabel,
+  testId,
+}: {
+  min: number;
+  max: number;
+  step: number;
+  value: number;
+  onChange: (v: number) => void;
+  formatLabel: (v: number) => string;
+  testId: string;
+}) {
+  const pct = ((value - min) / (max - min)) * 100;
+  return (
+    <div data-testid={testId}>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="w-full"
+        style={{
+          background: `linear-gradient(to right, ${OB.pink} 0%, ${OB.pink} ${pct}%, rgba(255,255,255,0.1) ${pct}%, rgba(255,255,255,0.1) 100%)`,
+        }}
+      />
+      <div className="flex justify-between mt-1">
+        <span className="text-[12px]" style={{ color: OB.textSecondary }}>{formatLabel(min)}</span>
+        <span className="text-[13px] font-semibold" style={{ color: OB.pink }}>{formatLabel(value)}</span>
+        <span className="text-[12px]" style={{ color: OB.textSecondary }}>{formatLabel(max)}</span>
+      </div>
+    </div>
+  );
+}
+
 function DualRangeSlider({
   min,
   max,

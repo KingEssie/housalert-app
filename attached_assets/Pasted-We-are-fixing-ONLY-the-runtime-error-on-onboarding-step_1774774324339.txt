@@ -1,0 +1,82 @@
+We are fixing ONLY the runtime error on onboarding step 3.
+
+IMPORTANT:
+- Do NOT redesign anything
+- Do NOT change styling
+- Do NOT change layout
+- Do NOT change routing
+- ONLY fix the code error so the page renders again
+
+==================================================
+CURRENT ERROR
+==================================================
+
+Runtime error:
+Can't find variable: RangeSlider
+
+This happens when opening onboarding step 3.
+
+==================================================
+GOAL
+==================================================
+
+Fix the missing RangeSlider reference so step 3 renders correctly again.
+
+==================================================
+REQUIRED DEBUGGING TASK
+==================================================
+
+1. Find where <RangeSlider ... /> is being used in onboarding step 3.
+
+2. Check why RangeSlider is undefined:
+- missing import
+- wrong import path
+- renamed component
+- component no longer exists
+- missing export
+
+3. Fix it using the SMALLEST possible code change.
+
+==================================================
+IMPLEMENTATION RULES
+==================================================
+
+- If RangeSlider already exists somewhere in the codebase:
+  import it correctly
+
+- If it was renamed:
+  update the JSX to use the correct component name
+
+- If it was deleted accidentally:
+  restore the correct component reference
+
+- If no RangeSlider component actually exists:
+  replace it with the currently intended slider component already used elsewhere in the app
+
+==================================================
+DO NOT CHANGE
+==================================================
+
+- UI design
+- price logic
+- step layout
+- filters
+- footer
+- header
+
+Only fix the runtime error.
+
+==================================================
+ACCEPTANCE CRITERIA
+==================================================
+
+Only mark complete if:
+- step 3 loads without runtime errors
+- no "RangeSlider" undefined error remains
+- the rent slider area renders again
+- no unrelated UI changes were made
+
+At the end, report:
+1. which file caused the error
+2. what the exact cause was
+3. what minimal fix was applied
