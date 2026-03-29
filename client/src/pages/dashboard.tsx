@@ -39,13 +39,11 @@ import {
   Copy,
   Pencil,
   Users,
-  Circle,
   Globe,
   Rocket,
   Gift,
   FileText,
   Phone,
-  Lightbulb,
   Check,
   MoreVertical,
   Shield,
@@ -56,9 +54,9 @@ import {
   Settings,
   Lock,
 } from "lucide-react";
-import { TaskModal, PrepTaskModal } from "@/components/profile-strength";
+import { ExpandableCompletionCard, type CompletionStep } from "@/components/expandable-completion-card";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
-import TipsPage, { getTipsProgress } from "@/pages/tips";
+import TipsPage, { getTipConfig, getTipsReadSet } from "@/pages/tips";
 import { ReferralCodeModal } from "@/components/referral-code-modal";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
@@ -755,23 +753,6 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
   );
 }
 
-function ProgressRing({ progress, size = 44, strokeWidth = 3.5 }: { progress: number; size?: number; strokeWidth?: number }) {
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (progress / 100) * circumference;
-  return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="flex-shrink-0 -rotate-90">
-      <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="rgb(var(--ha-card-border))" strokeWidth={strokeWidth} />
-      <circle
-        cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="rgb(var(--ha-primary))"
-        strokeWidth={strokeWidth} strokeLinecap="round"
-        strokeDasharray={circumference} strokeDashoffset={offset}
-        className="transition-all duration-700 ease-out"
-      />
-    </svg>
-  );
-}
-
 interface ActivationStatus {
   profileCreated: boolean;
   notificationsEnabled: boolean;
@@ -781,12 +762,10 @@ interface ActivationStatus {
   subscriptionStarted: boolean;
 }
 
-function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken: string | undefined; navigate: (path: string) => void; setActiveTab: (tab: TabKey) => void }) {
+function HomeAccountCompletionCard({ accessToken, navigate }: { accessToken: string | undefined; navigate: (path: string) => void }) {
   const { t } = useTranslation();
-  const [isOpen, setIsOpen] = useState(false);
-  const [expanded, setExpanded] = useState(false);
 
-  const statusQuery = useQuery<ActivationStatus & { profileCreatedAt?: string | null; totalMatches?: number }>({
+  const statusQuery = useQuery<ActivationStatus>({
     queryKey: ["/api/activation-status"],
     queryFn: async () => {
       const res = await apiFetch("/api/activation-status", {
@@ -799,7 +778,7 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
     staleTime: 60_000,
   });
 
-  const strengthQuery = useQuery<{ tasks: { id: string; completed: boolean }[]; prepTasks: { id: string; completed: boolean }[] }>({
+  const strengthQuery = useQuery<{ tasks: { id: string; completed: boolean }[] }>({
     queryKey: ["/api/profile-strength"],
     queryFn: async () => {
       const res = await apiFetch("/api/profile-strength", {
@@ -814,173 +793,125 @@ function UnifiedTaskList({ accessToken, navigate, setActiveTab }: { accessToken:
 
   const status = statusQuery.data;
   const strength = strengthQuery.data;
-  if (!status && !strength) return null;
+  if (!status) return null;
 
-  const HIDDEN_TASK_IDS = new Set([
-    "alerts",
-    "prep_letter",
-    "prep_network",
-    "prep_search_profile",
-    "trialStarted",
-    "subscriptionStarted",
-    "prep_extra_profile",
-    "search_optimize",
-  ]);
+  const getStrengthTask = (id: string) => strength?.tasks?.find(t => t.id === id);
 
-  const TASK_ACTION_MAP: Record<string, () => void> = {
-    profileCreated: () => navigate("/onboarding/city"),
-    notificationsEnabled: () => navigate("/onboarding/setup?step=push-test"),
-    firstMatchViewed: () => setActiveTab("matches"),
-    firstReaction: () => setActiveTab("matches"),
-    search_buddy: () => navigate("/onboarding/setup?step=search-buddy"),
-    application_template: () => navigate("/application-letter"),
-    documents: () => navigate("/documents"),
-    phone: () => navigate("/profile/edit/phone"),
-    prep_viewing_tips: () => setActiveTab("tips"),
-  };
-
-  const TASK_ICON_MAP: Record<string, typeof Bell> = {
-    profileCreated: Search,
-    notificationsEnabled: Bell,
-    firstMatchViewed: Eye,
-    firstReaction: Send,
-    search_buddy: Users,
-    application_template: Pencil,
-    documents: FileText,
-    phone: Phone,
-    tips_lezen: Lightbulb,
-  };
-
-  const allTasks: { key: string; label: string; done: boolean; action: () => void }[] = [];
-
-  if (status) {
-    const activationTasks = [
-      { key: "profileCreated", label: t("activation.profileCreated"), done: status.profileCreated },
-      { key: "notificationsEnabled", label: t("activation.notificationsEnabled"), done: status.notificationsEnabled },
-      { key: "firstMatchViewed", label: t("activation.firstMatchViewed"), done: status.firstMatchViewed },
-      { key: "firstReaction", label: t("activation.firstReaction"), done: status.firstReaction },
-    ];
-    activationTasks.forEach((task) => {
-      allTasks.push({ ...task, action: TASK_ACTION_MAP[task.key] || (() => {}) });
-    });
-  }
-
-  const STRENGTH_LABEL_MAP: Record<string, string> = {
-    search_buddy: t("strengthTask.searchBuddy"),
-    application_template: t("strengthTask.applicationTemplate"),
-    documents: t("strengthTask.documents"),
-    phone: t("strengthTask.phone"),
-    prep_viewing_tips: t("strengthTask.prepViewingTips"),
-  };
-
-  if (strength) {
-    const existingKeys = new Set(allTasks.map(t => t.key));
-    [...strength.tasks, ...strength.prepTasks].forEach((task) => {
-      if (!existingKeys.has(task.id) && task.id !== "prep_viewing_tips" && !HIDDEN_TASK_IDS.has(task.id)) {
-        existingKeys.add(task.id);
-        allTasks.push({
-          key: task.id,
-          label: STRENGTH_LABEL_MAP[task.id] || task.id,
-          done: task.completed,
-          action: TASK_ACTION_MAP[task.id] || (() => {}),
-        });
-      }
-    });
-  }
-
-  const tipsProgress = getTipsProgress();
-  allTasks.push({
-    key: "tips_lezen",
-    label: `${t("activation.tipsRead")} — ${tipsProgress.read}/${tipsProgress.total}`,
-    done: tipsProgress.read >= tipsProgress.total,
-    action: () => setActiveTab("tips"),
-  });
-
-  const doneCount = allTasks.filter((t) => t.done).length;
-  if (doneCount === allTasks.length) return null;
-
-  const completedTasks = allTasks.filter((t) => t.done);
-  const incompleteTasks = allTasks.filter((t) => !t.done);
-  const sortedTasks = [...incompleteTasks, ...completedTasks];
-
-  const INITIAL_SHOW = 5;
-  const visibleTasks = expanded ? sortedTasks : sortedTasks.slice(0, INITIAL_SHOW);
-  const hasMore = sortedTasks.length > INITIAL_SHOW;
-
-  const progressPercent = Math.round((doneCount / allTasks.length) * 100);
+  const steps: CompletionStep[] = [
+    { id: "push", label: t("activation.notificationsEnabled"), completed: status.notificationsEnabled, action: () => navigate("/onboarding/setup?step=push-test") },
+    { id: "letter", label: t("strengthTask.applicationTemplate"), completed: getStrengthTask("application_template")?.completed ?? false, action: () => navigate("/onboarding/setup?step=letter-personal") },
+    { id: "buddy", label: t("strengthTask.searchBuddy"), completed: getStrengthTask("search_buddy")?.completed ?? false, action: () => navigate("/onboarding/setup?step=search-buddy") },
+    { id: "search", label: t("activation.profileCreated"), completed: status.profileCreated, action: () => navigate("/onboarding/city") },
+  ];
 
   return (
-    <div className="rounded-[12px] border border-[#E5E5E5] bg-white" data-testid="unified-task-list">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center gap-3.5 p-5 text-left"
-        data-testid="button-toggle-tasks"
-      >
-        <div className="relative flex-shrink-0">
-          <ProgressRing progress={progressPercent} size={44} strokeWidth={3.5} />
-          <span className="absolute inset-0 flex items-center justify-center text-[12px] font-semibold text-[#000]">
-            {progressPercent}%
-          </span>
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-[15px] text-title text-[#000]">{t("activation.title")}</p>
-          <p className="text-[13px] text-[#6B7280] mt-0.5">{doneCount}/{allTasks.length} {t("activation.completed")}</p>
-        </div>
-        <ChevronDown className={`w-5 h-5 text-[#6B7280] flex-shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
-      </button>
+    <ExpandableCompletionCard
+      title={t("profile.completeAccount")}
+      icon={<CheckCircle2 className="w-6 h-6 text-[#e91e63]" />}
+      steps={steps}
+      completedLabel={t("activation.completed")}
+      testId="card-account-completion"
+    />
+  );
+}
 
-      {isOpen && (
-        <div className="px-5 pb-5">
-          <div className="h-px bg-[#F5F5F7] mb-2" />
-          <div className="flex flex-col">
-            {visibleTasks.map((task, idx) => {
-              const IconComponent = TASK_ICON_MAP[task.key] || Circle;
-              return (
-                <div key={task.key}>
-                  {idx > 0 && <div className="h-px bg-[#F5F5F7] mx-1" />}
-                  <button
-                    onClick={task.done ? undefined : task.action}
-                    className={`w-full flex items-center gap-4 py-[14px] px-1 text-left transition-all duration-200 rounded-[6px] ${
-                      task.done ? "opacity-60" : "active:bg-[#F5F5F7]"
-                    }`}
-                    disabled={task.done}
-                    data-testid={`task-${task.key}`}
-                  >
-                    <div className="w-7 flex items-center justify-center flex-shrink-0">
-                      <IconComponent className={`w-[18px] h-[18px] ${task.done ? "text-[#9CA3AF]" : "text-[#6B7280]"}`} />
-                    </div>
-                    <span className={`text-[14px] font-medium flex-1 leading-snug ${
-                      task.done ? "text-[#9CA3AF] line-through decoration-ha-text-muted" : "text-[#000]"
-                    }`}>
-                      {task.label}
-                    </span>
-                    <div className="flex-shrink-0">
-                      {task.done ? (
-                        <div className="w-[22px] h-[22px] rounded-full bg-green-500 flex items-center justify-center">
-                          <Check className="w-[12px] h-[12px] text-white" strokeWidth={3} />
-                        </div>
-                      ) : (
-                        <div className="w-[22px] h-[22px] rounded-full border-2 border-[#E5E5E5]" />
-                      )}
-                    </div>
-                  </button>
-                </div>
-              );
-            })}
-          </div>
+function HomeTipsCompletionCard({ setActiveTab }: { setActiveTab: (tab: TabKey) => void }) {
+  const { t } = useTranslation();
 
-          {hasMore && (
-            <button
-              onClick={() => setExpanded(!expanded)}
-              className="w-full mt-1 text-[13px] font-medium text-ha-primary py-2"
-              data-testid="button-expand-tasks"
-            >
-              {expanded ? t("activation.showLess") : t("activation.showMore", { count: sortedTasks.length - INITIAL_SHOW })}
-            </button>
-          )}
-        </div>
-      )}
-    </div>
+  const tipConfigs = getTipConfig(t);
+  const readSet = getTipsReadSet();
+
+  const steps: CompletionStep[] = tipConfigs.map((tip) => ({
+    id: tip.id,
+    label: tip.title,
+    completed: readSet.has(tip.id),
+    action: () => setActiveTab("tips"),
+  }));
+
+  return (
+    <ExpandableCompletionCard
+      title={t("profile.tipsTitle")}
+      icon={<Rocket className="w-6 h-6 text-[#e91e63]" />}
+      steps={steps}
+      completedLabel={t("activation.completed")}
+      testId="card-tips-completion"
+    />
+  );
+}
+
+function ProfileAccountCompletionCard({ navigate }: { navigate: (path: string) => void }) {
+  const { t } = useTranslation();
+
+  const strengthQuery = useQuery<{ tasks: { id: string; completed: boolean }[]; channels: { push: boolean } }>({
+    queryKey: ["/api/profile-strength"],
+    queryFn: async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) throw new Error("No token");
+      const res = await apiFetch("/api/profile-strength", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (!res.ok) throw new Error("Failed to load");
+      return res.json();
+    },
+  });
+
+  const statusQuery = useQuery<ActivationStatus>({
+    queryKey: ["/api/activation-status"],
+    queryFn: async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) throw new Error("No token");
+      const res = await apiFetch("/api/activation-status", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (!res.ok) throw new Error("Failed to load");
+      return res.json();
+    },
+  });
+
+  const strength = strengthQuery.data;
+  const status = statusQuery.data;
+
+  const getStrengthTask = (id: string) => strength?.tasks?.find(t => t.id === id);
+
+  const steps: CompletionStep[] = [
+    { id: "push", label: t("activation.notificationsEnabled"), completed: status?.notificationsEnabled ?? false, action: () => navigate("/onboarding/setup?step=push-test") },
+    { id: "letter", label: t("strengthTask.applicationTemplate"), completed: getStrengthTask("application_template")?.completed ?? false, action: () => navigate("/onboarding/setup?step=letter-personal") },
+    { id: "buddy", label: t("strengthTask.searchBuddy"), completed: getStrengthTask("search_buddy")?.completed ?? false, action: () => navigate("/onboarding/setup?step=search-buddy") },
+    { id: "search", label: t("activation.profileCreated"), completed: status?.profileCreated ?? false, action: () => navigate("/onboarding/city") },
+  ];
+
+  return (
+    <ExpandableCompletionCard
+      title={t("profile.completeAccount")}
+      icon={<CheckCircle2 className="w-6 h-6 text-[#e91e63]" />}
+      steps={steps}
+      completedLabel={t("profile.completedLabel")}
+      testId="card-profile-account-completion"
+    />
+  );
+}
+
+function ProfileTipsCompletionCard({ setActiveTab }: { setActiveTab: (tab: TabKey) => void }) {
+  const { t } = useTranslation();
+
+  const tipConfigs = getTipConfig(t);
+  const readSet = getTipsReadSet();
+
+  const steps: CompletionStep[] = tipConfigs.map((tip) => ({
+    id: tip.id,
+    label: tip.title,
+    completed: readSet.has(tip.id),
+    action: () => setActiveTab("tips"),
+  }));
+
+  return (
+    <ExpandableCompletionCard
+      title={t("profile.tipsTitle")}
+      icon={<Rocket className="w-6 h-6 text-[#e91e63]" />}
+      steps={steps}
+      completedLabel={t("profile.completedLabel")}
+      testId="card-profile-tips-completion"
+    />
   );
 }
 
@@ -1062,7 +993,8 @@ function HomeTab({
         <SearchProfilesSection profiles={profiles} navigate={navigate} />
       )}
 
-      <UnifiedTaskList accessToken={accessToken} navigate={navigate} setActiveTab={setActiveTab} />
+      <HomeAccountCompletionCard accessToken={accessToken} navigate={navigate} />
+      <HomeTipsCompletionCard setActiveTab={setActiveTab} />
 
       {subscription.isTrial && subscription.trialEndsAt && (
         <div className="rounded-[12px] border border-[#E5E5E5] bg-white px-5 py-4 flex items-center gap-3.5" data-testid="banner-trial">
@@ -1789,21 +1721,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
   const firstName = pd?.first_name || "";
   const lastName = pd?.last_name || "";
 
-  const profileCompletionFields = [
-    !!pd?.first_name,
-    !!pd?.last_name,
-    !!phone,
-    !!pd?.application_template,
-    !!pd?.profile_photo_url,
-    !!pd?.search_buddy_email,
-  ];
-  const profileCompletionDone = profileCompletionFields.filter(Boolean).length;
-  const profileCompletionTotal = profileCompletionFields.length;
-  const profileCompletionPct = Math.round((profileCompletionDone / profileCompletionTotal) * 100);
-
-  const tipsProgressLocal = getTipsProgress();
-  const tipsCompletionPct = tipsProgressLocal.total > 0 ? Math.round((tipsProgressLocal.read / tipsProgressLocal.total) * 100) : 0;
-
   const memberSinceLabel = user.created_at
     ? (() => {
         const d = new Date(user.created_at);
@@ -1848,45 +1765,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       <div className="max-w-[480px] mx-auto px-4 pb-8">
         <div className="flex flex-col gap-3">
 
-          <button
-            onClick={() => navigate("/profile/details")}
-            className="w-full rounded-[6px] bg-white px-5 py-4 flex items-start gap-3.5 active:opacity-90 transition-opacity"
-            data-testid="button-profile-avatar"
-          >
-            <CheckCircle2 className="w-6 h-6 text-ha-primary flex-shrink-0 mt-0.5" />
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between mb-2.5">
-                <p className="text-[16px] text-title text-[#000]">{t("profile.completeAccount")}</p>
-                <ChevronRight className="w-5 h-5 text-[#9CA3AF]" />
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex-1 h-[7px] rounded-full bg-[#F5F5F7] overflow-hidden">
-                  <div className="h-full rounded-full bg-ha-success transition-all duration-500" style={{ width: `${profileCompletionPct}%` }} />
-                </div>
-                <span className="text-[13px] font-semibold text-ha-primary whitespace-nowrap">{profileCompletionPct}% {t("profile.completedLabel")}</span>
-              </div>
-            </div>
-          </button>
-
-          <button
-            onClick={() => setActiveTab("tips")}
-            className="w-full rounded-[6px] bg-white px-5 py-4 flex items-start gap-3.5 active:opacity-90 transition-opacity"
-            data-testid="button-tips-progress"
-          >
-            <Rocket className="w-6 h-6 text-ha-primary flex-shrink-0 mt-0.5" />
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between mb-2.5">
-                <p className="text-[16px] text-title text-[#000]">{t("profile.tipsTitle")}</p>
-                <ChevronRight className="w-5 h-5 text-[#9CA3AF]" />
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex-1 h-[7px] rounded-full bg-[#F5F5F7] overflow-hidden">
-                  <div className="h-full rounded-full bg-amber-400 transition-all duration-500" style={{ width: `${tipsCompletionPct}%` }} />
-                </div>
-                <span className="text-[13px] font-semibold text-ha-primary whitespace-nowrap">{tipsCompletionPct}% {t("profile.completedLabel")}</span>
-              </div>
-            </div>
-          </button>
+          <ProfileAccountCompletionCard navigate={navigate} />
+          <ProfileTipsCompletionCard setActiveTab={setActiveTab} />
 
           {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
             <div className="rounded-[6px] bg-[#F5F5F7] px-5 py-5" data-testid="card-upgrade-cta">
