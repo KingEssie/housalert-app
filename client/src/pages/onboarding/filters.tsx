@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Check, Bath, Sun, Trees, Leaf, X,
 } from "lucide-react";
-import { OB, ONBOARDING_TOTAL_STEPS, OBFooter } from "@/components/onboarding-ui";
+import { OB, OBW, ONBOARDING_TOTAL_STEPS, OBFooter, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
 import { createSearchProfile, type InsertSearchProfileInput } from "@/lib/search-profiles";
 import { queryClient } from "@/lib/queryClient";
 
@@ -16,16 +16,20 @@ function SegmentedControl({
   value,
   onChange,
   testId,
+  theme,
 }: {
   options: { value: string; label: string }[];
   value: string;
   onChange: (v: string) => void;
   testId: string;
+  theme?: typeof OB;
 }) {
+  const t = theme || OB;
+  const isLight = theme === OBW;
   return (
     <div
       className="flex p-1 rounded-full"
-      style={{ backgroundColor: "rgba(99,102,241,0.12)" }}
+      style={{ backgroundColor: isLight ? OBW.tabBg : "rgba(99,102,241,0.12)" }}
       data-testid={testId}
     >
       {options.map((opt) => (
@@ -34,8 +38,8 @@ function SegmentedControl({
           onClick={() => onChange(opt.value)}
           className="flex-1 h-[40px] rounded-full text-[13px] font-semibold transition-all"
           style={{
-            backgroundColor: value === opt.value ? "rgba(99,102,241,0.35)" : "transparent",
-            color: value === opt.value ? "#fff" : OB.textSecondary,
+            backgroundColor: value === opt.value ? (isLight ? OBW.tabActiveBg : "rgba(99,102,241,0.35)") : "transparent",
+            color: value === opt.value ? (isLight ? OBW.tabActiveColor : "#fff") : t.textSecondary,
           }}
           data-testid={`${testId}-${opt.value}`}
         >
@@ -51,17 +55,21 @@ function Toggle({
   onChange,
   label,
   testId,
+  theme,
 }: {
   checked: boolean;
   onChange: (v: boolean) => void;
   label: string;
   testId: string;
+  theme?: typeof OB;
 }) {
+  const t = theme || OB;
+  const isLight = theme === OBW;
   return (
     <label className="flex items-center gap-3 cursor-pointer" data-testid={testId}>
       <div
         className="w-[44px] h-[24px] rounded-full p-[2px] transition-colors shrink-0"
-        style={{ backgroundColor: checked ? OB.pink : "rgba(255,255,255,0.15)" }}
+        style={{ backgroundColor: checked ? OB.pink : (isLight ? "#d1d5db" : "rgba(255,255,255,0.15)") }}
         onClick={() => onChange(!checked)}
       >
         <div
@@ -69,7 +77,7 @@ function Toggle({
           style={{ transform: checked ? "translateX(20px)" : "translateX(0)" }}
         />
       </div>
-      <span className="text-[13px] leading-snug" style={{ color: OB.text }}>{label}</span>
+      <span className="text-[13px] leading-snug" style={{ color: t.text }}>{label}</span>
     </label>
   );
 }
@@ -82,6 +90,7 @@ function RangeSlider({
   onChange,
   formatLabel,
   testId,
+  theme,
 }: {
   min: number;
   max: number;
@@ -90,7 +99,11 @@ function RangeSlider({
   onChange: (v: number) => void;
   formatLabel: (v: number) => string;
   testId: string;
+  theme?: typeof OB;
 }) {
+  const t = theme || OB;
+  const isLight = theme === OBW;
+  const trackInactive = isLight ? "#d1d5db" : "rgba(255,255,255,0.1)";
   const pct = ((value - min) / (max - min)) * 100;
   return (
     <div data-testid={testId}>
@@ -103,13 +116,13 @@ function RangeSlider({
         onChange={(e) => onChange(Number(e.target.value))}
         className="w-full"
         style={{
-          background: `linear-gradient(to right, ${OB.pink} 0%, ${OB.pink} ${pct}%, rgba(255,255,255,0.1) ${pct}%, rgba(255,255,255,0.1) 100%)`,
+          background: `linear-gradient(to right, ${OB.pink} 0%, ${OB.pink} ${pct}%, ${trackInactive} ${pct}%, ${trackInactive} 100%)`,
         }}
       />
       <div className="flex justify-between mt-1">
-        <span className="text-[12px]" style={{ color: OB.textSecondary }}>{formatLabel(min)}</span>
+        <span className="text-[12px]" style={{ color: t.textSecondary }}>{formatLabel(min)}</span>
         <span className="text-[13px] font-semibold" style={{ color: OB.pink }}>{formatLabel(value)}</span>
-        <span className="text-[12px]" style={{ color: OB.textSecondary }}>{formatLabel(max)}</span>
+        <span className="text-[12px]" style={{ color: t.textSecondary }}>{formatLabel(max)}</span>
       </div>
     </div>
   );
@@ -125,6 +138,7 @@ function DualRangeSlider({
   onChangeHigh,
   formatLabel,
   testId,
+  theme,
 }: {
   min: number;
   max: number;
@@ -135,16 +149,20 @@ function DualRangeSlider({
   onChangeHigh: (v: number) => void;
   formatLabel: (v: number) => string;
   testId: string;
+  theme?: typeof OB;
 }) {
+  const t = theme || OB;
+  const isLight = theme === OBW;
+  const trackInactive = isLight ? "#d1d5db" : "rgba(255,255,255,0.1)";
   const pctLow = ((valueLow - min) / (max - min)) * 100;
   const pctHigh = ((valueHigh - min) / (max - min)) * 100;
-  const trackBg = `linear-gradient(to right, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.1) ${pctLow}%, ${OB.pink} ${pctLow}%, ${OB.pink} ${pctHigh}%, rgba(255,255,255,0.1) ${pctHigh}%, rgba(255,255,255,0.1) 100%)`;
+  const trackBg = `linear-gradient(to right, ${trackInactive} 0%, ${trackInactive} ${pctLow}%, ${OB.pink} ${pctLow}%, ${OB.pink} ${pctHigh}%, ${trackInactive} ${pctHigh}%, ${trackInactive} 100%)`;
 
   return (
     <div data-testid={testId}>
       <div className="flex justify-between mb-2">
-        <span className="text-[14px] font-semibold" style={{ color: OB.text }}>{formatLabel(valueLow)}</span>
-        <span className="text-[14px] font-semibold" style={{ color: OB.text }}>{formatLabel(valueHigh)}</span>
+        <span className="text-[14px] font-semibold" style={{ color: t.text }}>{formatLabel(valueLow)}</span>
+        <span className="text-[14px] font-semibold" style={{ color: t.text }}>{formatLabel(valueHigh)}</span>
       </div>
       <div className="relative h-[36px]">
         <input
@@ -223,6 +241,8 @@ export default function OnboardingFilters() {
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
   const searchString = useHashSearch();
+  const w = useWebsiteMode();
+  const T = w ? OBW : OB;
   const incomingParams = new URLSearchParams(searchString);
   const isSearchOnlyMode = !!user;
 
@@ -319,14 +339,14 @@ export default function OnboardingFilters() {
     if (f.includeRooms) outParams.set("includeRooms", "true");
     if (f.sendUnclear) outParams.set("sendUnclear", "true");
 
-    navigate(`/onboarding/name?${outParams.toString()}`);
+    navigate(appendWebsiteParams(`/onboarding/name?${outParams.toString()}`, searchString));
   }
 
   function handleBack() {
     const backParams = new URLSearchParams({ city, lat, lng, locationMode });
     if (districts) backParams.set("districts", districts);
     if (radiusKm) backParams.set("radiusKm", radiusKm);
-    navigate(`/onboarding/location?${backParams.toString()}`);
+    navigate(appendWebsiteParams(`/onboarding/location?${backParams.toString()}`, searchString));
   }
 
   function handleClose() {
@@ -355,29 +375,41 @@ export default function OnboardingFilters() {
   ];
 
   return (
-    <div className="min-h-[100dvh] flex flex-col ob-dark" style={{ background: OB.gradient }} data-testid="screen-onboarding-filters">
+    <div
+      className={`min-h-[100dvh] flex flex-col ${w ? "" : "ob-dark"}`}
+      style={{ background: T.gradient, borderRadius: w ? 0 : undefined }}
+      data-testid="screen-onboarding-filters"
+    >
       <header
         className="w-full sticky top-0 z-20 border-b"
-        style={{ backgroundColor: OB.headerBg, borderColor: OB.headerBorder, paddingTop: "max(8px, env(safe-area-inset-top))" }}
+        style={{
+          backgroundColor: T.headerBg,
+          borderColor: T.headerBorder,
+          paddingTop: w ? "0px" : "max(8px, env(safe-area-inset-top))",
+          borderRadius: w ? 0 : undefined,
+        }}
       >
         <div className="max-w-[480px] mx-auto px-5 h-[52px] flex items-center justify-between">
           <span
             className="text-[12px] font-bold px-2.5 py-1 rounded-[6px]"
-            style={{ backgroundColor: "rgba(56,189,248,0.15)", color: "#38bdf8" }}
+            style={{
+              backgroundColor: w ? OBW.badgeBg : "rgba(56,189,248,0.15)",
+              color: w ? OBW.badgeColor : "#38bdf8",
+            }}
             data-testid="badge-step"
           >
-            {`3/${ONBOARDING_TOTAL_STEPS}`}
+            {`${w ? "2" : "3"}/${w ? "2" : ONBOARDING_TOTAL_STEPS}`}
           </span>
-          <span className="text-[15px] font-semibold" style={{ color: OB.text }}>
+          <span className="text-[15px] font-semibold" style={{ color: T.text }}>
             {t("onboarding.filters.headerTitle") || "Zoekopdracht maken"}
           </span>
           <button
             onClick={handleClose}
             className="w-8 h-8 rounded-full flex items-center justify-center active:scale-95 transition-transform"
-            style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
+            style={{ backgroundColor: w ? OBW.closeBtnBg : "rgba(255,255,255,0.1)" }}
             data-testid="button-filters-close"
           >
-            <X className="w-4 h-4" style={{ color: OB.textSecondary }} />
+            <X className="w-4 h-4" style={{ color: T.textSecondary }} />
           </button>
         </div>
       </header>
@@ -385,18 +417,18 @@ export default function OnboardingFilters() {
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-[120px] overflow-y-auto">
         <h2
           className="text-[22px] font-bold tracking-[-0.02em] mb-1"
-          style={{ color: OB.text }}
+          style={{ color: T.text }}
           data-testid="text-filters-title"
         >
           {t("onboarding.filters.title") || "Wat zoek je precies?"}
         </h2>
-        <p className="text-[14px] mb-6" style={{ color: OB.textSecondary }}>
+        <p className="text-[14px] mb-6" style={{ color: T.textSecondary }}>
           {t("onboarding.filters.subtitle") || "Verfijn je zoekopdracht."}
         </p>
 
         <div className="flex flex-col gap-7">
           <section>
-            <label className="text-[13px] font-semibold mb-3 block" style={{ color: OB.text }}>
+            <label className="text-[13px] font-semibold mb-3 block" style={{ color: T.text }}>
               {t("onboarding.filters.rentLabel") || "Huurprijs"}
             </label>
             <DualRangeSlider
@@ -409,6 +441,7 @@ export default function OnboardingFilters() {
               onChangeHigh={(v) => update({ maxPrice: v })}
               formatLabel={(v) => `€${v}`}
               testId="slider-rent-price"
+              theme={T}
             />
             <div className="mt-3">
               <Toggle
@@ -416,14 +449,15 @@ export default function OnboardingFilters() {
                 onChange={(v) => update({ priceFlexible: v })}
                 label={t("onboarding.filters.priceFlexible") || "Stuur ook iets duurdere perfecte matches"}
                 testId="toggle-price-flexible"
+                theme={T}
               />
             </div>
           </section>
 
-          <div className="h-px" style={{ backgroundColor: OB.divider }} />
+          <div className="h-px" style={{ backgroundColor: T.divider }} />
 
           <section>
-            <label className="text-[13px] font-semibold mb-3 block" style={{ color: OB.text }}>
+            <label className="text-[13px] font-semibold mb-3 block" style={{ color: T.text }}>
               {t("onboarding.filters.propertyTypeLabel") || "Woningtype"}
             </label>
             <SegmentedControl
@@ -431,6 +465,7 @@ export default function OnboardingFilters() {
               value={f.propertyType}
               onChange={(v) => update({ propertyType: v })}
               testId="property-type"
+              theme={T}
             />
             <div className="mt-3">
               <Toggle
@@ -438,19 +473,20 @@ export default function OnboardingFilters() {
                 onChange={(v) => update({ includeRooms: v })}
                 label={t("onboarding.filters.includeRooms") || "Zoek ook kamers / onzelfstandige woonruimte"}
                 testId="toggle-include-rooms"
+                theme={T}
               />
             </div>
           </section>
 
-          <div className="h-px" style={{ backgroundColor: OB.divider }} />
+          <div className="h-px" style={{ backgroundColor: T.divider }} />
 
           <section>
-            <label className="text-[13px] font-semibold mb-3 block" style={{ color: OB.text }}>
+            <label className="text-[13px] font-semibold mb-3 block" style={{ color: T.text }}>
               {t("onboarding.filters.bedroomsLabel") || "Slaapkamers"}
             </label>
             <div
               className="flex p-1 rounded-full"
-              style={{ backgroundColor: "rgba(99,102,241,0.12)" }}
+              style={{ backgroundColor: w ? OBW.tabBg : "rgba(99,102,241,0.12)" }}
               data-testid="rooms-selector"
             >
               {ROOM_OPTIONS.map((opt) => (
@@ -459,8 +495,8 @@ export default function OnboardingFilters() {
                   onClick={() => update({ minRooms: opt.value })}
                   className="flex-1 h-[40px] rounded-full text-[13px] font-semibold transition-all"
                   style={{
-                    backgroundColor: f.minRooms === opt.value ? "rgba(99,102,241,0.35)" : "transparent",
-                    color: f.minRooms === opt.value ? "#fff" : OB.textSecondary,
+                    backgroundColor: f.minRooms === opt.value ? (w ? OBW.tabActiveBg : "rgba(99,102,241,0.35)") : "transparent",
+                    color: f.minRooms === opt.value ? (w ? OBW.tabActiveColor : "#fff") : T.textSecondary,
                   }}
                   data-testid={`rooms-${opt.value}`}
                 >
@@ -470,20 +506,20 @@ export default function OnboardingFilters() {
             </div>
           </section>
 
-          <div className="h-px" style={{ backgroundColor: OB.divider }} />
+          <div className="h-px" style={{ backgroundColor: T.divider }} />
 
           <section>
             <div className="flex items-center justify-between mb-3">
-              <label className="text-[13px] font-semibold" style={{ color: OB.text }}>
+              <label className="text-[13px] font-semibold" style={{ color: T.text }}>
                 {t("onboarding.filters.minSizeLabel") || "Minimale oppervlakte"}
               </label>
               <button
                 onClick={() => update({ sizeNA: !f.sizeNA, minSize: f.sizeNA ? 30 : 0 })}
                 className="text-[12px] font-medium px-2.5 py-1 rounded-full border transition-all"
                 style={{
-                  borderColor: f.sizeNA ? OB.selectedBorder : OB.cardBorder,
-                  backgroundColor: f.sizeNA ? OB.selectedBg : "transparent",
-                  color: f.sizeNA ? OB.pink : OB.textSecondary,
+                  borderColor: f.sizeNA ? T.selectedBorder : T.cardBorder,
+                  backgroundColor: f.sizeNA ? T.selectedBg : "transparent",
+                  color: f.sizeNA ? OB.pink : T.textSecondary,
                 }}
                 data-testid="button-size-na"
               >
@@ -499,14 +535,15 @@ export default function OnboardingFilters() {
                 onChange={(v) => update({ minSize: v })}
                 formatLabel={(v) => `${v} m²`}
                 testId="slider-min-size"
+                theme={T}
               />
             )}
           </section>
 
-          <div className="h-px" style={{ backgroundColor: OB.divider }} />
+          <div className="h-px" style={{ backgroundColor: T.divider }} />
 
           <section>
-            <label className="text-[13px] font-semibold mb-3 block" style={{ color: OB.text }}>
+            <label className="text-[13px] font-semibold mb-3 block" style={{ color: T.text }}>
               {t("onboarding.filters.furnishedLabel") || "Gemeubileerd"}
             </label>
             <SegmentedControl
@@ -514,13 +551,14 @@ export default function OnboardingFilters() {
               value={f.furnished}
               onChange={(v) => update({ furnished: v })}
               testId="furnished-selector"
+              theme={T}
             />
           </section>
 
-          <div className="h-px" style={{ backgroundColor: OB.divider }} />
+          <div className="h-px" style={{ backgroundColor: T.divider }} />
 
           <section>
-            <label className="text-[13px] font-semibold mb-3 block" style={{ color: OB.text }}>
+            <label className="text-[13px] font-semibold mb-3 block" style={{ color: T.text }}>
               {t("onboarding.filters.amenitiesLabel") || "Extra wensen"}
             </label>
             <div className="flex flex-wrap gap-2" data-testid="amenity-chips">
@@ -533,8 +571,8 @@ export default function OnboardingFilters() {
                     className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[13px] font-medium border transition-all"
                     style={{
                       backgroundColor: active ? OB.pink : "transparent",
-                      borderColor: active ? OB.pink : OB.cardBorder,
-                      color: active ? "#fff" : OB.textSecondary,
+                      borderColor: active ? OB.pink : T.cardBorder,
+                      color: active ? "#fff" : T.textSecondary,
                     }}
                     data-testid={`amenity-${value}`}
                   >
@@ -547,7 +585,7 @@ export default function OnboardingFilters() {
             </div>
           </section>
 
-          <div className="h-px" style={{ backgroundColor: OB.divider }} />
+          <div className="h-px" style={{ backgroundColor: T.divider }} />
 
           <section>
             <Toggle
@@ -555,6 +593,7 @@ export default function OnboardingFilters() {
               onChange={(v) => update({ sendUnclear: v })}
               label={t("onboarding.filters.sendUnclear") || "Stuur ook woningen waarvan de criteria onduidelijk zijn"}
               testId="toggle-send-unclear"
+              theme={T}
             />
           </section>
         </div>
@@ -569,6 +608,7 @@ export default function OnboardingFilters() {
         saving={saving}
         backTestId="button-filters-back"
         nextTestId="button-filters-next"
+        websiteMode={w}
       />
     </div>
   );

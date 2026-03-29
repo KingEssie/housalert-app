@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
 import { Search, MapPin, Loader2, X } from "lucide-react";
 import { defaultCities } from "../../../../config/market";
-import { OB, ONBOARDING_TOTAL_STEPS, OBFooter } from "@/components/onboarding-ui";
+import { OB, OBW, ONBOARDING_TOTAL_STEPS, OBFooter, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
 
 interface NominatimResult {
   display_name: string;
@@ -45,6 +45,8 @@ function getInitialSearchFromQuery(searchString: string): string {
 export default function OnboardingCity() {
   const [, navigate] = useLocation();
   const searchString = useHashSearch();
+  const w = useWebsiteMode();
+  const T = w ? OBW : OB;
   const didAutostartRef = useRef(false);
   const [search, setSearch] = useState(() => getInitialSearchFromQuery(searchString));
   const [selectedCity, setSelectedCity] = useState<{ name: string; lat: number; lng: number } | null>(
@@ -65,7 +67,7 @@ export default function OnboardingCity() {
       lat: String(autostartCity.lat),
       lng: String(autostartCity.lng),
     });
-    navigate(`/onboarding/location?${step2Params.toString()}`);
+    navigate(appendWebsiteParams(`/onboarding/location?${step2Params.toString()}`, searchString));
   }, [searchString, navigate]);
 
   const presetMatches = search.trim().length > 0
@@ -122,7 +124,7 @@ export default function OnboardingCity() {
       lat: String(city.lat),
       lng: String(city.lng),
     });
-    navigate(`/onboarding/location?${params.toString()}`);
+    navigate(appendWebsiteParams(`/onboarding/location?${params.toString()}`, searchString));
   }
 
   function selectPresetCity(city: typeof TOP_CITIES[0]) {
@@ -159,29 +161,41 @@ export default function OnboardingCity() {
   const showDropdown = !selectedCity;
 
   return (
-    <div className="min-h-[100dvh] flex flex-col ob-dark" style={{ background: OB.gradient }} data-testid="screen-onboarding-city">
+    <div
+      className={`min-h-[100dvh] flex flex-col ${w ? "" : "ob-dark"}`}
+      style={{ background: T.gradient, borderRadius: w ? 0 : undefined }}
+      data-testid="screen-onboarding-city"
+    >
       <header
         className="w-full sticky top-0 z-20"
-        style={{ backgroundColor: OB.headerBg, borderBottom: "1px solid rgba(255,255,255,0.08)", paddingTop: "max(8px, env(safe-area-inset-top))" }}
+        style={{
+          backgroundColor: T.headerBg,
+          borderBottom: `1px solid ${T.headerBorder}`,
+          paddingTop: w ? "0px" : "max(8px, env(safe-area-inset-top))",
+          borderRadius: w ? 0 : undefined,
+        }}
       >
         <div className="max-w-[480px] mx-auto px-5 h-[52px] flex items-center justify-between">
           <span
             className="text-[12px] font-bold px-2.5 py-1 rounded-[6px]"
-            style={{ backgroundColor: "rgba(56,189,248,0.15)", color: "#38bdf8" }}
+            style={{
+              backgroundColor: w ? OBW.badgeBg : "rgba(56,189,248,0.15)",
+              color: w ? OBW.badgeColor : "#38bdf8",
+            }}
             data-testid="badge-step"
           >
             {`1/${ONBOARDING_TOTAL_STEPS}`}
           </span>
-          <span className="text-[18px] font-semibold" style={{ color: "#ffffff" }}>
+          <span className="text-[18px] font-semibold" style={{ color: T.text }}>
             Zoekopdracht maken
           </span>
           <button
             onClick={handleClose}
             className="w-[36px] h-[36px] rounded-full flex items-center justify-center active:scale-95 transition-transform"
-            style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
+            style={{ backgroundColor: w ? OBW.closeBtnBg : "rgba(255,255,255,0.08)" }}
             data-testid="button-city-close"
           >
-            <X className="w-4 h-4" style={{ color: "rgba(255,255,255,0.7)" }} />
+            <X className="w-4 h-4" style={{ color: w ? OBW.closeBtnColor : "rgba(255,255,255,0.7)" }} />
           </button>
         </div>
       </header>
@@ -189,7 +203,7 @@ export default function OnboardingCity() {
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pb-[120px] overflow-y-auto">
         <h2
           className="text-[18px] font-semibold"
-          style={{ color: "#ffffff", marginTop: "20px", marginBottom: "12px" }}
+          style={{ color: T.text, marginTop: "20px", marginBottom: "12px" }}
           data-testid="text-city-title"
         >
           Locatie
@@ -204,14 +218,15 @@ export default function OnboardingCity() {
               if (selectedCity) setSelectedCity(null);
             }}
             placeholder="Zoek stad..."
-            className="w-full ha-field ha-field-dark pr-12"
+            className={`w-full pr-12 ${w ? "ha-field" : "ha-field ha-field-dark"}`}
+            style={w ? { backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text } : undefined}
             autoFocus
             data-testid="input-city-search"
           />
           {searching ? (
-            <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] animate-spin" style={{ color: "rgba(255,255,255,0.7)" }} />
+            <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] animate-spin" style={{ color: T.textSecondary }} />
           ) : (
-            <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "rgba(255,255,255,0.7)" }} />
+            <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: T.textSecondary }} />
           )}
         </div>
 
@@ -221,15 +236,15 @@ export default function OnboardingCity() {
               <button
                 key={city.name}
                 onClick={() => selectPresetCity(city)}
-                className="w-full flex items-center gap-3 text-left transition-colors hover:bg-white/5"
+                className={`w-full flex items-center gap-3 text-left transition-colors ${w ? "hover:bg-gray-50" : "hover:bg-white/5"}`}
                 style={{
                   padding: "14px 0",
-                  borderBottom: i < presetMatches.length - 1 ? "1px solid rgba(255,255,255,0.08)" : "none",
+                  borderBottom: i < presetMatches.length - 1 ? `1px solid ${T.divider}` : "none",
                 }}
                 data-testid={`city-option-${city.name}`}
               >
-                <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: "#38bdf8" }} />
-                <span className="text-[16px] font-medium" style={{ color: "#ffffff" }}>{city.name}</span>
+                <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: w ? OBW.pink : "#38bdf8" }} />
+                <span className="text-[16px] font-medium" style={{ color: T.text }}>{city.name}</span>
               </button>
             ))}
 
@@ -240,18 +255,18 @@ export default function OnboardingCity() {
                 <button
                   key={i}
                   onClick={() => selectNominatimCity(r)}
-                  className="w-full flex items-center gap-3 text-left transition-colors hover:bg-white/5"
+                  className={`w-full flex items-center gap-3 text-left transition-colors ${w ? "hover:bg-gray-50" : "hover:bg-white/5"}`}
                   style={{
                     padding: "14px 0",
-                    borderBottom: "1px solid rgba(255,255,255,0.08)",
+                    borderBottom: `1px solid ${T.divider}`,
                   }}
                   data-testid={`city-nominatim-${i}`}
                 >
-                  <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: "#38bdf8" }} />
+                  <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: w ? OBW.pink : "#38bdf8" }} />
                   <div>
-                    <span className="text-[16px] font-medium block" style={{ color: "#ffffff" }}>{name}</span>
+                    <span className="text-[16px] font-medium block" style={{ color: T.text }}>{name}</span>
                     {addr?.state && (
-                      <span className="text-[12px]" style={{ color: OB.textSecondary }}>{addr.state}</span>
+                      <span className="text-[12px]" style={{ color: T.textSecondary }}>{addr.state}</span>
                     )}
                   </div>
                 </button>
@@ -259,7 +274,7 @@ export default function OnboardingCity() {
             })}
 
             {presetMatches.length === 0 && nominatimResults.length === 0 && !searching && search.trim().length >= 3 && (
-              <p className="text-[13px] text-center py-4" style={{ color: OB.textSecondary }}>
+              <p className="text-[13px] text-center py-4" style={{ color: T.textSecondary }}>
                 Geen resultaten
               </p>
             )}
@@ -269,15 +284,15 @@ export default function OnboardingCity() {
         {selectedCity && (
           <div
             className="flex items-center gap-3"
-            style={{ padding: "14px 0", borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+            style={{ padding: "14px 0", borderBottom: `1px solid ${T.divider}` }}
             data-testid="city-selected"
           >
-            <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: "#38bdf8" }} />
-            <span className="text-[16px] font-medium flex-1" style={{ color: "#ffffff" }}>{selectedCity.name}</span>
+            <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: w ? OBW.pink : "#38bdf8" }} />
+            <span className="text-[16px] font-medium flex-1" style={{ color: T.text }}>{selectedCity.name}</span>
             <button
               onClick={() => { setSelectedCity(null); setSearch(""); }}
-              className="text-[13px] font-medium px-3 py-1.5 rounded-[6px] transition-colors hover:bg-white/5"
-              style={{ color: OB.textSecondary }}
+              className={`text-[13px] font-medium px-3 py-1.5 rounded-[6px] transition-colors ${w ? "hover:bg-gray-100" : "hover:bg-white/5"}`}
+              style={{ color: T.textSecondary }}
               data-testid="button-city-change"
             >
               Wijzig
@@ -293,6 +308,7 @@ export default function OnboardingCity() {
         nextDisabled={!selectedCity}
         backTestId="button-city-back"
         nextTestId="button-city-next"
+        websiteMode={w}
       />
     </div>
   );

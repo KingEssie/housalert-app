@@ -1,0 +1,74 @@
+We want a dedicated website-friendly version of the onboarding flow, without creating a completely separate product flow.
+
+CONTEXT:
+The onboarding is opened inside a website popup/iframe from Duda.
+For website traffic, we want a lighter, cleaner, less app-like onboarding presentation.
+
+GOAL:
+Add a website mode to the onboarding flow.
+
+Use query params like:
+- source=website
+- theme=light
+
+Example:
+https://app.housalert.com/onboarding/city?source=website&theme=light
+
+==================================================
+REQUIREMENTS
+==================================================
+
+1. WEBSITE MODE DETECTION
+- Detect when onboarding is opened with:
+  - source=website
+  - and/or theme=light
+
+2. LIGHT THEME FOR WEBSITE MODE
+When website mode is active:
+- use light theme
+- white/light background
+- dark text
+- no dark app shell styling
+- no dark onboarding theme
+
+3. NO ROUNDED CORNERS IN WEBSITE MODE
+When website mode is active:
+- remove rounded corners from the onboarding container/shell
+- make it sit cleanly in the popup/iframe
+- do not rely on rounded mobile app card styling for the outer shell
+
+IMPORTANT:
+Only remove outer-shell rounding where needed for the website popup experience.
+Do not break the normal app onboarding styling.
+
+4. STEP 2/3 LOCATION MODE SIMPLIFICATION
+In website mode only:
+- do NOT show the choice between:
+  - buurten
+  - straal
+  - gehele woonplaats
+- default this step to:
+  - straal
+- the user should continue with radius mode directly
+
+This means:
+- location mode should be preset to radius
+- the UI for selecting the other options should be hidden/removed in website mode
+- the rest of the step should continue normally
+
+5. DO NOT BREAK NORMAL APP FLOW
+Outside website mode:
+- current onboarding should behave exactly as before
+- dark app styling can remain
+- users can still choose buurten / straal / gehele woonplaats normally
+
+6. RETURN
+At the end report:
+- which files were changed
+- how website mode is detected
+- which route/URL format should be used from the website popup
+- confirmation that:
+  - website mode is light theme
+  - outer shell has no rounded corners
+  - step 2/3 is forced to radius in website mode
+  - normal app onboarding is unchanged
