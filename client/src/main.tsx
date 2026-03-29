@@ -12,18 +12,30 @@ function renderError(err: unknown) {
   }
 }
 
-function redirectNonHashPaths() {
-  const path = window.location.pathname;
-  if (path.startsWith("/onboarding/") || path === "/onboarding") {
-    const qs = window.location.search;
-    window.location.replace("/#" + path + qs);
+function isNative(): boolean {
+  const w = window as any;
+  if (w.Capacitor?.isNativePlatform?.() === true) return true;
+  if (w.__HOUSALERT_NATIVE__ === true) return true;
+  try {
+    if (new URLSearchParams(window.location.search).get("native") === "1") return true;
+  } catch {}
+  return false;
+}
+
+function normalizeHashPaths() {
+  if (isNative()) return false;
+  const hash = window.location.hash;
+  if (hash && hash.startsWith("#/onboarding")) {
+    const hashPath = hash.slice(1);
+    const newUrl = window.location.origin + hashPath;
+    window.location.replace(newUrl);
     return true;
   }
   return false;
 }
 
 async function bootstrap() {
-  if (redirectNonHashPaths()) return;
+  if (normalizeHashPaths()) return;
   try {
     try {
       const { restoreAuthFromNative } = await import("./lib/capacitor-storage");
