@@ -13,7 +13,7 @@ import {
   Euro, Bell, AlertTriangle, X, CheckCircle2, Send,
   BellRing,
 } from "lucide-react";
-import elisePhoto from "@assets/4261FC63-DAC9-464F-B16D-9E62B0AB2B73_1774776772340.png";
+import elisePhoto from "@assets/A5C2A5AD-87B0-4076-94E3-D2ED9BAC419E_1774778653522.png";
 
 const BRAND = "rgb(var(--ha-primary))";
 const TEXT_PRIMARY = "rgb(var(--ha-text))";
@@ -443,17 +443,17 @@ function WelcomeStep({ onNext, t }: {
           <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45" style={{ backgroundColor: "#E8F4FD" }} />
         </div>
 
-        <div className="flex items-center gap-4 pt-1">
+        <div className="flex items-center gap-3 pt-1">
           <img
             src={elisePhoto}
             alt="Elise — COO HousAlert"
-            className="w-[120px] h-[120px] rounded-full object-cover flex-shrink-0"
-            style={{ boxShadow: "0 10px 30px rgba(0,0,0,0.15)" }}
+            className="w-24 h-24 rounded-full object-cover flex-shrink-0"
+            style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.12)", objectPosition: "50% 35%" }}
             data-testid="img-elise-photo"
           />
           <div>
-            <p className="text-[20px] font-semibold text-[#111]" style={{ fontStyle: "italic" }}>Elise</p>
-            <p className="text-[14px] text-[#6B7280]" style={{ fontStyle: "italic" }}>COO</p>
+            <p className="text-[16px] font-semibold text-[#111]" style={{ fontStyle: "italic" }}>Elise</p>
+            <p className="text-[13px] text-[#6B7280] mt-0.5" style={{ fontStyle: "italic" }}>COO</p>
           </div>
         </div>
       </div>
@@ -600,16 +600,16 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
             <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45" style={{ backgroundColor: "#E8F4FD" }} />
           </div>
 
-          <div className="flex items-center gap-4 pt-1">
+          <div className="flex items-center gap-3 pt-1">
             <img
               src={elisePhoto}
               alt="Elise — COO HousAlert"
-              className="w-[120px] h-[120px] rounded-full object-cover flex-shrink-0"
-              style={{ boxShadow: "0 10px 30px rgba(0,0,0,0.15)" }}
+              className="w-24 h-24 rounded-full object-cover flex-shrink-0"
+              style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.12)", objectPosition: "50% 35%" }}
             />
             <div>
-              <p className="text-[20px] font-semibold text-[#111]" style={{ fontStyle: "italic" }}>Elise</p>
-              <p className="text-[14px] text-[#6B7280]" style={{ fontStyle: "italic" }}>COO</p>
+              <p className="text-[16px] font-semibold text-[#111]" style={{ fontStyle: "italic" }}>Elise</p>
+              <p className="text-[13px] text-[#6B7280] mt-0.5" style={{ fontStyle: "italic" }}>COO</p>
             </div>
           </div>
         </div>
@@ -1017,16 +1017,16 @@ function SuccessStep({ onFinish, t }: {
           <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45" style={{ backgroundColor: "#E8F4FD" }} />
         </div>
 
-        <div className="flex items-center gap-4 pt-1">
+        <div className="flex items-center gap-3 pt-1">
           <img
             src={elisePhoto}
             alt="Elise — COO HousAlert"
-            className="w-[100px] h-[100px] rounded-full object-cover flex-shrink-0"
-            style={{ boxShadow: "0 10px 30px rgba(0,0,0,0.15)" }}
+            className="w-24 h-24 rounded-full object-cover flex-shrink-0"
+            style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.12)", objectPosition: "50% 35%" }}
           />
           <div>
-            <p className="text-[20px] font-semibold text-[#111]" style={{ fontStyle: "italic" }}>Elise</p>
-            <p className="text-[14px] text-[#6B7280]" style={{ fontStyle: "italic" }}>COO</p>
+            <p className="text-[16px] font-semibold text-[#111]" style={{ fontStyle: "italic" }}>Elise</p>
+            <p className="text-[13px] text-[#6B7280] mt-0.5" style={{ fontStyle: "italic" }}>COO</p>
           </div>
         </div>
       </div>
