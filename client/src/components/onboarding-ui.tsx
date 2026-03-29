@@ -76,7 +76,12 @@ export const OBW = {
 export function useWebsiteMode(): boolean {
   const searchString = useHashSearch();
   const params = new URLSearchParams(searchString);
-  return params.get("source") === "website" || params.get("theme") === "light";
+  if (params.get("source") === "website" || params.get("theme") === "light") return true;
+  try {
+    const loc = new URLSearchParams(window.location.search);
+    if (loc.get("source") === "website" || loc.get("theme") === "light") return true;
+  } catch {}
+  return false;
 }
 
 export function getWebsiteParams(searchString: string): string {
