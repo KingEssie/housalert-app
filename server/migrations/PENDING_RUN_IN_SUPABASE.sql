@@ -270,3 +270,17 @@ DO $$ BEGIN
       USING (true) WITH CHECK (true);
   END IF;
 END $$;
+
+-- -----------------------------------------------
+-- Migration 024: Optional feature columns on listings
+-- -----------------------------------------------
+ALTER TABLE listings ADD COLUMN IF NOT EXISTS garden BOOLEAN DEFAULT NULL;
+ALTER TABLE listings ADD COLUMN IF NOT EXISTS bath BOOLEAN DEFAULT NULL;
+ALTER TABLE listings ADD COLUMN IF NOT EXISTS roof_terrace BOOLEAN DEFAULT NULL;
+ALTER TABLE listings ADD COLUMN IF NOT EXISTS energy_label TEXT DEFAULT NULL;
+ALTER TABLE listings ADD COLUMN IF NOT EXISTS property_type TEXT DEFAULT NULL;
+
+-- -----------------------------------------------
+-- Migration 025: Parking column on listings
+-- -----------------------------------------------
+ALTER TABLE listings ADD COLUMN IF NOT EXISTS parking BOOLEAN DEFAULT NULL;

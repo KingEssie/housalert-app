@@ -1,0 +1,157 @@
+We need to complete the production rollout for the new parking filter by making sure the database migration is actually applied in Supabase and then verifying it end-to-end.
+
+IMPORTANT:
+- This is NOT a UI task
+- Do NOT redesign anything
+- Do NOT change unrelated logic
+- Focus only on getting the new `parking` field live in Supabase/production and confirming it is really being used
+
+==================================================
+GOAL
+==================================================
+
+Ensure that the new parking field is truly active in production:
+
+1. the `parking` column exists in Supabase on the `listings` table
+2. the app/server can read and write it
+3. ingestion can store parking values
+4. matching queries can select and use it
+5. this is verified, not assumed
+
+==================================================
+PART 1 — APPLY / VERIFY THE MIGRATION
+==================================================
+
+Migration file already exists:
+- server/migrations/025_listings_parking.sql
+
+Task:
+- apply this migration to Supabase if it has not already been applied
+- if your environment uses a migration runner, run it properly
+- if the column already exists, confirm that clearly instead of reapplying blindly
+
+We need the final production/schema state to include:
+
+`parking BOOLEAN DEFAULT NULL`
+
+on the `listings` table.
+
+==================================================
+PART 2 — CONFIRM SCHEMA STATE
+==================================================
+
+After migration, verify the live schema and report:
+
+- table name
+- column name
+- data type
+- default value
+- nullable yes/no
+
+Expected:
+- table: listings
+- column: parking
+- type: boolean
+- default: null
+- nullable: yes
+
+==================================================
+PART 3 — VERIFY SERVER QUERY SUPPORT
+==================================================
+
+Confirm that the active server-side code path already includes `parking` in:
+
+- listing selection / SELECT clauses
+- normalized listing typing/interfaces
+- matching engine comparisons
+- any relevant insert/update ingestion paths
+
+If any production query path still ignores `parking`, fix that and report it.
+
+==================================================
+PART 4 — VERIFY INGESTION WRITES
+==================================================
+
+Using the real ingestion code, confirm that parking can now be written through the pipeline into Supabase.
+
+Check at least:
+- WG-Gesucht
+- Immowelt
+- Kleinanzeigen
+
+Verify that extracted values:
+- true
+- false
+- null
+
+can all make it into the database field correctly.
+
+If possible, provide a small real or simulated verification example per source.
+
+==================================================
+PART 5 — VERIFY MATCHING CAN READ IT
+==================================================
+
+Confirm that the matching engine can now read `parking` from listings in the live schema and use it for filtering.
+
+We need to verify:
+- listings SELECT includes parking
+- engine reads the value
+- engine applies parking matching rules
+- send_unclear behavior still works correctly with parking = null
+
+==================================================
+PART 6 — END-TO-END CONFIRMATION
+==================================================
+
+Run or simulate an end-to-end check with these examples:
+
+CASE 1:
+- listing parking = true
+- user wants parking = yes
+=> listing can match
+
+CASE 2:
+- listing parking = false
+- user wants parking = yes
+=> listing must not match
+
+CASE 3:
+- listing parking = null
+- user wants parking = yes
+- send_unclear = false
+=> listing must not match
+
+CASE 4:
+- listing parking = null
+- user wants parking = yes
+- send_unclear = true
+=> listing may match
+
+==================================================
+DO NOT CHANGE
+==================================================
+
+Do NOT:
+- redesign the app
+- change unrelated filters
+- start radius work yet
+- change frontend screens unless absolutely required for a real bug
+
+==================================================
+FINAL REPORT
+==================================================
+
+At the end report clearly:
+
+1. Was migration 025 applied in Supabase? (yes/no)
+2. Does `listings.parking` now exist in the live schema? (yes/no)
+3. Exact live schema details for the column
+4. Which files/code paths were verified or changed
+5. Whether ingestion now stores parking in Supabase correctly
+6. Whether matching now reads parking correctly end-to-end
+7. Whether all 4 parking test cases pass
+
+IMPORTANT:
+Do not say “should be”.
+Only report what is actually confirmed.
