@@ -86,23 +86,6 @@ const BENEFIT_KEYS = [
   { titleKey: "paywall.benefits.letter.title", descKey: "paywall.benefits.letter.desc" },
 ];
 
-function ProgressDots({ current, total }: { current: number; total: number }) {
-  return (
-    <div className="flex gap-1.5 justify-center py-3" data-testid="setup-progress">
-      {Array.from({ length: total }).map((_, i) => (
-        <div
-          key={i}
-          className="h-1.5 rounded-full transition-all duration-300"
-          style={{
-            width: i === current ? 24 : 8,
-            backgroundColor: i <= current ? BRAND : "rgba(255,255,255,0.15)",
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
 function SetupShell({
   children,
   step,
@@ -114,11 +97,6 @@ function SetupShell({
   onBack?: () => void;
   showBack?: boolean;
 }) {
-  const progressSteps: FlowStep[] = ["paywall", "welcome", "push-test", "letter-personal", "letter-living", "letter-preview", "search-buddy", "success"];
-  const mappedStep = step === "limited-access" ? "paywall" : step;
-  const stepIndex = progressSteps.indexOf(mappedStep);
-  const hideProgress = step === "success";
-
   return (
     <div className="min-h-[100dvh] flex flex-col ob-dark" style={{ background: "linear-gradient(180deg, #1e1b4b 0%, #0f0e2a 100%)" }} data-testid={`setup-step-${step}`}>
       <header className="sticky top-0 z-20 backdrop-blur-md border-b" style={{ backgroundColor: "rgba(30,27,75,0.95)", borderColor: "rgba(255,255,255,0.08)" }}>
@@ -140,11 +118,6 @@ function SetupShell({
           </div>
           <div className="w-10" />
         </div>
-        {!hideProgress && stepIndex >= 0 && (
-          <div className="max-w-[480px] mx-auto px-5">
-            <ProgressDots current={stepIndex} total={progressSteps.length} />
-          </div>
-        )}
       </header>
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-10" style={{ paddingBottom: "max(40px, env(safe-area-inset-bottom, 40px))" }}>
         {children}
@@ -341,35 +314,47 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
   onContinue: () => void;
   t: (k: string, p?: Record<string, any>) => string;
 }) {
-  const losses = [
-    t("onboardingFlow.limitedAccess.loss1"),
-    t("onboardingFlow.limitedAccess.loss2"),
-    t("onboardingFlow.limitedAccess.loss3"),
+  const blocks = [
+    {
+      title: t("onboardingFlow.limitedAccess.block1Title"),
+      desc: t("onboardingFlow.limitedAccess.block1Desc"),
+    },
+    {
+      title: t("onboardingFlow.limitedAccess.block2Title"),
+      desc: t("onboardingFlow.limitedAccess.block2Desc"),
+    },
+    {
+      title: t("onboardingFlow.limitedAccess.block3Title"),
+      desc: t("onboardingFlow.limitedAccess.block3Desc"),
+    },
   ];
 
   return (
     <>
-      <div className="flex-1 flex flex-col items-center justify-center text-center">
-        <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: "rgba(239,68,68,0.1)" }}>
-          <ShieldAlert className="w-8 h-8 text-red-500" />
+      <div className="flex items-center justify-between mb-6">
+        <HousAlertLogo size={24} />
+        <div className="text-right">
+          <p className="text-[13px] font-bold" style={{ color: "#00b67a" }}>★ 4,6 uit 5</p>
+          <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.5)" }}>Trustpilot</p>
         </div>
-        <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-limited-title">
-          {t("onboardingFlow.limitedAccess.title")}
-        </h1>
-        <p className="text-[14px] mb-8 max-w-[320px]" style={{ color: TEXT_SECONDARY }}>
-          {t("onboardingFlow.limitedAccess.subtitle")}
-        </p>
+      </div>
 
-        <div className="w-full space-y-3">
-          {losses.map((text, i) => (
-            <div key={i} className="flex items-start gap-3 text-left px-1">
-              <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgba(239,68,68,0.15)" }}>
-                <X className="w-3 h-3 text-red-500" />
-              </div>
-              <span className="text-[14px] font-medium" style={{ color: TEXT_PRIMARY }}>{text}</span>
+      <h1 className="text-[28px] font-extrabold tracking-[-0.02em] mb-6" style={{ color: "#ffffff" }} data-testid="text-limited-title">
+        {t("onboardingFlow.limitedAccess.title")}
+      </h1>
+
+      <div className="space-y-4 flex-1">
+        {blocks.map((block, i) => (
+          <div key={i} className="flex items-start gap-3.5">
+            <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgba(239,68,68,0.15)" }}>
+              <X className="w-4 h-4 text-red-500" />
             </div>
-          ))}
-        </div>
+            <div>
+              <p className="text-[15px] font-bold text-red-400 mb-0.5">{block.title}</p>
+              <p className="text-[13px] leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>{block.desc}</p>
+            </div>
+          </div>
+        ))}
       </div>
 
       <div className="mt-auto space-y-3 pt-6">
@@ -378,12 +363,25 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
         </PrimaryBtn>
         <button
           onClick={onContinue}
-          className="w-full text-center text-[13px] font-medium py-3 transition-colors"
-          style={{ color: TEXT_SECONDARY }}
+          className="w-full h-[52px] rounded-[12px] text-[15px] font-semibold transition-all active:scale-[0.97]"
+          style={{
+            border: "1.5px solid rgba(255,255,255,0.2)",
+            backgroundColor: "transparent",
+            color: "rgba(255,255,255,0.7)",
+          }}
           data-testid="button-limited-continue"
         >
           {t("onboardingFlow.limitedAccess.continueAnyway")}
         </button>
+      </div>
+
+      <div className="mt-4 rounded-[12px] p-4" style={{ backgroundColor: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
+        <p className="text-[14px] font-bold mb-1" style={{ color: "#ffffff" }}>
+          {t("onboardingFlow.limitedAccess.infoTitle")}
+        </p>
+        <p className="text-[13px] leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
+          {t("onboardingFlow.limitedAccess.infoDesc")}
+        </p>
       </div>
     </>
   );
@@ -401,24 +399,27 @@ function WelcomeStep({ onNext, t }: {
 
   return (
     <>
-      <div className="flex-1 flex flex-col items-center justify-center text-center">
-        <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: "rgba(233,30,99,0.12)" }}>
-          <Sparkles className="w-8 h-8" style={{ color: BRAND }} />
+      <div className="flex-1 flex flex-col items-center text-center pt-4">
+        <div className="w-[72px] h-[72px] rounded-full mb-4 flex items-center justify-center overflow-hidden" style={{ backgroundColor: "rgba(233,30,99,0.15)", border: "2px solid rgba(233,30,99,0.3)" }}>
+          <Crown className="w-8 h-8" style={{ color: BRAND }} />
         </div>
-        <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-welcome-title">
+        <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-1" style={{ color: "#ffffff" }} data-testid="text-welcome-title">
           {t("onboardingFlow.welcome.title")}
         </h1>
-        <p className="text-[14px] mb-8 max-w-[320px]" style={{ color: TEXT_SECONDARY }}>
+        <p className="text-[14px] mb-2 font-medium" style={{ color: "rgba(255,255,255,0.5)" }}>
+          {t("onboardingFlow.welcome.cooRole")}
+        </p>
+        <p className="text-[14px] mb-8 max-w-[340px] leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>
           {t("onboardingFlow.welcome.subtitle")}
         </p>
 
-        <div className="w-full space-y-4">
+        <div className="w-full space-y-3">
           {points.map((p, i) => (
-            <div key={i} className="flex items-center gap-4 bg-ha-card rounded-[6px] border border-ha-card-border px-5 py-4">
+            <div key={i} className="flex items-center gap-4 rounded-[12px] px-5 py-4" style={{ backgroundColor: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
               <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(233,30,99,0.12)" }}>
                 <p.icon className="w-5 h-5" style={{ color: BRAND }} />
               </div>
-              <span className="text-[14px] font-medium text-left" style={{ color: TEXT_PRIMARY }}>{p.text}</span>
+              <span className="text-[14px] font-medium text-left" style={{ color: "#ffffff" }}>{p.text}</span>
             </div>
           ))}
         </div>
@@ -441,54 +442,51 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
 }) {
   return (
     <>
-      <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-push-title">
-        {t("onboardingFlow.pushTest.title")}
-      </h1>
+      <div className="flex-1 flex flex-col items-center justify-center text-center">
+        <div className="w-[72px] h-[72px] rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: pushState === "granted" ? "rgba(34,197,94,0.12)" : pushState === "denied" ? "rgba(239,68,68,0.12)" : "rgba(233,30,99,0.12)" }}>
+          {pushState === "granted" ? (
+            <BellRing className="w-8 h-8 text-green-400" />
+          ) : pushState === "denied" ? (
+            <Bell className="w-8 h-8 text-red-400" />
+          ) : pushState === "requesting" ? (
+            <Loader2 className="w-8 h-8 animate-spin" style={{ color: BRAND }} />
+          ) : (
+            <Bell className="w-8 h-8" style={{ color: BRAND }} />
+          )}
+        </div>
 
-      {pushState === "granted" ? (
-        <>
-          <p className="text-[14px] mb-6" style={{ color: TEXT_SECONDARY }}>
-            {t("onboardingFlow.pushTest.subtitle")}
-          </p>
-          <div className="flex-1 flex flex-col items-center justify-center">
-            <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: "rgba(34,197,94,0.1)" }}>
-              <BellRing className="w-8 h-8 text-green-500" />
-            </div>
-            <div className="rounded-[6px] px-5 py-4 w-full flex items-start gap-3" style={{ backgroundColor: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.25)" }}>
+        <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-2" style={{ color: "#ffffff" }} data-testid="text-push-title">
+          {t("onboardingFlow.pushTest.title")}
+        </h1>
+
+        {pushState === "granted" ? (
+          <>
+            <p className="text-[14px] mb-6 max-w-[320px]" style={{ color: "rgba(255,255,255,0.7)" }}>
+              {t("onboardingFlow.pushTest.subtitle")}
+            </p>
+            <div className="rounded-[12px] px-5 py-4 w-full flex items-start gap-3" style={{ backgroundColor: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.25)" }}>
               <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-              <div>
+              <div className="text-left">
                 <p className="text-[14px] font-semibold mb-0.5 text-green-400">{t("onboardingFlow.pushTest.infoTitle")}</p>
                 <p className="text-[13px] text-green-300 leading-snug">{t("onboardingFlow.pushTest.infoText")}</p>
               </div>
             </div>
-          </div>
-        </>
-      ) : pushState === "denied" ? (
-        <div className="flex-1 flex flex-col items-center justify-center">
-          <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: "rgba(239,68,68,0.12)" }}>
-            <Bell className="w-8 h-8 text-red-500" />
-          </div>
-          <p className="text-[14px] text-center mb-4 max-w-[320px] font-medium" style={{ color: TEXT_PRIMARY }}>
-            {t("onboardingFlow.pushTest.denied")}
-          </p>
-          <p className="text-[13px] text-center max-w-[300px]" style={{ color: TEXT_SECONDARY }}>
-            {t("onboardingFlow.pushTest.deniedHint")}
-          </p>
-        </div>
-      ) : (
-        <div className="flex-1 flex flex-col items-center justify-center">
-          <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: "rgba(233,30,99,0.12)" }}>
-            <Bell className="w-8 h-8" style={{ color: BRAND }} />
-          </div>
-          {pushState === "requesting" ? (
-            <Loader2 className="w-6 h-6 animate-spin mb-4" style={{ color: BRAND }} />
-          ) : (
-            <p className="text-[14px] text-center max-w-[300px]" style={{ color: TEXT_SECONDARY }}>
-              {t("onboardingFlow.pushTest.idleHint")}
+          </>
+        ) : pushState === "denied" ? (
+          <>
+            <p className="text-[14px] mb-4 max-w-[320px] font-medium" style={{ color: "#ffffff" }}>
+              {t("onboardingFlow.pushTest.denied")}
             </p>
-          )}
-        </div>
-      )}
+            <p className="text-[13px] max-w-[300px]" style={{ color: "rgba(255,255,255,0.5)" }}>
+              {t("onboardingFlow.pushTest.deniedHint")}
+            </p>
+          </>
+        ) : (
+          <p className="text-[14px] max-w-[320px] leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>
+            {t("onboardingFlow.pushTest.idleHint")}
+          </p>
+        )}
+      </div>
 
       <div className="mt-auto space-y-3 pt-6">
         {pushState === "idle" ? (
@@ -528,10 +526,17 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
 
   return (
     <>
-      <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-letter-personal-title">
-        {t("onboardingFlow.letterPersonal.title")}
-      </h1>
-      <p className="text-[14px] mb-6" style={{ color: TEXT_SECONDARY }}>
+      <div className="flex items-center gap-3 mb-2">
+        <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(233,30,99,0.12)" }}>
+          <Sparkles className="w-5 h-5" style={{ color: BRAND }} />
+        </div>
+        <div>
+          <h1 className="text-[22px] font-extrabold tracking-[-0.02em]" style={{ color: "#ffffff" }} data-testid="text-letter-personal-title">
+            {t("onboardingFlow.letterPersonal.title")}
+          </h1>
+        </div>
+      </div>
+      <p className="text-[14px] mb-6 leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
         {t("onboardingFlow.letterPersonal.subtitle")}
       </p>
 

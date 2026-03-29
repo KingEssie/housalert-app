@@ -1,0 +1,119 @@
+We are updating the post-paywall onboarding flow to match the provided Rentbird reference screens much more closely.
+
+IMPORTANT:
+- Do NOT change routing
+- Do NOT change business logic
+- Do NOT change payment logic
+- Do NOT change copy unless explicitly requested below
+- ONLY update the onboarding UI/screens listed here
+- Keep HousAlert branding and product naming where relevant
+
+We are changing these screens in this exact scope:
+1. remove progress dots from the post-paywall onboarding flow
+2. rebuild the "Weet je het zeker?" limited-access / skip-paywall screen
+3. rebuild the welcome screen with COO photo section
+4. rebuild the notifications screen
+5. rebuild the "AI reactiebrief genereren" intro screen
+
+==================================================
+PART 1 — REMOVE PROGRESS DOTS FROM POST-PAYWALL FLOW
+==================================================
+
+CURRENT ISSUE:
+Small progress dots are still visible on multiple post-paywall onboarding screens.
+
+REQUIRED FIX:
+Remove the progress dots completely from the entire post-paywall onboarding flow.
+
+Apply this to:
+- "Weet je het zeker?"
+- welcome screen
+- notifications screen
+- AI reactiebrief genereren screen
+- any subsequent post-paywall setup screens using the same onboarding shell
+
+KEEP:
+- header
+- back button if present
+- logo if present
+- CTA buttons
+
+REMOVE ONLY:
+- the progress dot indicator row
+
+IMPORTANT:
+Do NOT remove the 1/3, 2/3, 3/3 badges from the search-profile flow.
+This change is ONLY for the post-paywall onboarding screens.
+
+==================================================
+PART 2 — "WEET JE HET ZEKER?" SCREEN
+==================================================
+
+CURRENT ISSUE:
+The limited-access / skip-paywall screen does not match the Rentbird reference structure and visual hierarchy.
+
+REBUILD THIS SCREEN TO MATCH THE REFERENCE STYLE:
+
+LAYOUT:
+- dark purple background
+- top row with brand/logo left and Trustpilot score right
+- large white heading: "Weet je het zeker?"
+- three stacked warning/limitation blocks
+- primary pink button
+- secondary outlined button
+- dark info card at the bottom
+
+TOP BAR:
+LEFT:
+- HousAlert logo / HousAlert branding
+RIGHT:
+- Trustpilot text block like reference
+- example: "4,6 uit 5" + Trustpilot label
+
+MAIN HEADING:
+- large white bold heading
+- match Rentbird proportions and spacing
+
+THREE LIMITATION BLOCKS:
+Each block must have:
+- red circular icon with X on the left
+- red bold title
+- white description below/right
+
+Use HousAlert-relevant copy, but keep the same structure and tone.
+
+Use these three blocks:
+
+1.
+Title:
+"Je kan niet direct reageren op woningen"
+Description:
+"We sturen je wel woningmatches, maar direct reageren vanuit HousAlert is niet mogelijk."
+
+2.
+Title:
+"Bronnen blijven verborgen"
+Description:
+"Je ziet wel matches, maar de bronwebsite en directe route naar reageren blijven afgeschermd."
+
+3.
+Title:
+"Je mist snelheid en gemak"
+Description:
+"Met een abonnement reageer je sneller en haal je meer uit HousAlert tijdens je zoektocht."
+
+BUTTONS:
+Primary pink button:
+"Abonnement kiezen"
+
+Secondary outlined button:
+"Ik kies voor beperkte toegang"
+
+BOTTOM INFO CARD:
+- dark card
+- white bold heading
+- white paragraph text
+
+Use:
+Heading:
+"Probeer Hous
