@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "wouter";
+import { useHashSearch } from "@/lib/hash-search";
 import { Search, MapPin, Loader2, X } from "lucide-react";
 import { defaultCities } from "../../../../config/market";
 import { OB, ONBOARDING_TOTAL_STEPS, OBFooter } from "@/components/onboarding-ui";
@@ -13,13 +14,32 @@ interface NominatimResult {
 
 const TOP_CITIES = defaultCities.slice(0, 5);
 
+function getInitialCityFromQuery(searchString: string): { name: string; lat: number; lng: number } | null {
+  const params = new URLSearchParams(searchString);
+  const cityParam = params.get("city")?.trim();
+  if (!cityParam) return null;
+  const match = defaultCities.find(
+    (c) => c.name.toLowerCase() === cityParam.toLowerCase()
+  );
+  return match ? { name: match.name, lat: match.lat, lng: match.lng } : null;
+}
+
+function getInitialSearchFromQuery(searchString: string): string {
+  const params = new URLSearchParams(searchString);
+  return params.get("city")?.trim() || "";
+}
+
 export default function OnboardingCity() {
   const [, navigate] = useLocation();
-  const [search, setSearch] = useState("");
-  const [selectedCity, setSelectedCity] = useState<{ name: string; lat: number; lng: number } | null>(null);
+  const searchString = useHashSearch();
+  const [search, setSearch] = useState(() => getInitialSearchFromQuery(searchString));
+  const [selectedCity, setSelectedCity] = useState<{ name: string; lat: number; lng: number } | null>(
+    () => getInitialCityFromQuery(searchString)
+  );
   const [nominatimResults, setNominatimResults] = useState<NominatimResult[]>([]);
   const [searching, setSearching] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const didAutoSearchRef = useRef(false);
 
   const presetMatches = search.trim().length > 0
     ? TOP_CITIES.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()))
@@ -46,6 +66,7 @@ export default function OnboardingCity() {
 
   useEffect(() => {
     if (selectedCity) return;
+    if (didAutoSearchRef.current) { didAutoSearchRef.current = false; return; }
     if (debounceRef.current) clearTimeout(debounceRef.current);
     if (search.trim().length >= 3 && presetMatches.length === 0) {
       debounceRef.current = setTimeout(() => nominatimSearch(search.trim()), 400);
@@ -54,6 +75,19 @@ export default function OnboardingCity() {
     }
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
   }, [search, selectedCity, presetMatches.length, nominatimSearch]);
+
+  useEffect(() => {
+    if (didAutoSearchRef.current) return;
+    const params = new URLSearchParams(searchString);
+    const cityParam = params.get("city")?.trim();
+    if (!cityParam || cityParam.length < 3) return;
+    const presetMatch = defaultCities.find(
+      (c) => c.name.toLowerCase() === cityParam.toLowerCase()
+    );
+    if (presetMatch) return;
+    didAutoSearchRef.current = true;
+    nominatimSearch(cityParam);
+  }, [searchString, nominatimSearch]);
 
   function goToStep2(city: { name: string; lat: number; lng: number }) {
     const params = new URLSearchParams({
