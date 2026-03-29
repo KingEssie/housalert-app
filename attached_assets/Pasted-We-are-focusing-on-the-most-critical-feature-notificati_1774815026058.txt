@@ -1,0 +1,104 @@
+We are focusing on the most critical feature: notifications.
+
+GOAL:
+Ensure all core notification flows work correctly, reliably, and without spam.
+
+IMPORTANT:
+- Do NOT redesign UI
+- Do NOT add unnecessary features
+- Focus only on correctness and reliability
+
+==================================================
+TASK 1 — MATCH NOTIFICATIONS (CORE)
+==================================================
+
+Verify and fix:
+
+1. When a new listing matches a user profile:
+- a notification is triggered
+
+2. Email notification:
+- contains:
+  - title
+  - price
+  - city/district
+  - size
+  - link
+- no missing data
+- no broken formatting
+
+3. Push notification (if implemented):
+- triggered correctly
+- contains short useful summary
+
+4. Timing:
+- ensure notifications are sent as soon as possible after ingestion
+- no large delays
+
+==================================================
+TASK 2 — DUPLICATES & SPAM
+==================================================
+
+Verify:
+
+- user does NOT receive duplicate notifications for the same listing
+- listing IDs are tracked correctly
+- buffering system prevents double sends
+
+Fix if needed.
+
+==================================================
+TASK 3 — SEARCH BUDDY
+==================================================
+
+Verify:
+
+- buddy only receives emails if:
+  - active subscription or trial
+  - buddy is enabled
+  - status = active
+
+- buddy does NOT receive emails if:
+  - removed
+  - unsubscribed
+  - disabled
+
+- unsubscribe link works correctly
+
+==================================================
+TASK 4 — FILTER CORRECTNESS
+==================================================
+
+Verify:
+
+- notifications only sent for TRUE matches
+- filters respected:
+  - price
+  - size
+  - rooms
+  - features
+  - send_unclear logic
+
+==================================================
+TASK 5 — PERFORMANCE
+==================================================
+
+Check:
+
+- notification sending does not block ingestion
+- no slow bottlenecks
+- system scales for multiple users
+
+==================================================
+TASK 6 — REPORT
+==================================================
+
+Return:
+
+1. which notification flows were tested
+2. bugs found (if any)
+3. fixes applied
+4. confirmation:
+   - notifications reliable? yes/no
+   - duplicates prevented? yes/no
+   - timing acceptable? yes/no

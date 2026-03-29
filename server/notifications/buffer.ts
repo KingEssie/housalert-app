@@ -572,6 +572,11 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
 
     if (emailEnabled) {
       const capped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
+      const overflowIds = verified.slice(MAX_LISTINGS_PER_EMAIL).map(l => l.listing_id);
+      if (overflowIds.length > 0) {
+        try { await markEmailSent(userId, overflowIds); } catch {}
+        log(`[ALERTS] User ${userId.substring(0, 8)}...: ${overflowIds.length} overflow listings beyond cap=${MAX_LISTINGS_PER_EMAIL} — marked email_sent (visible in app)`);
+      }
       await enrichMissingImages(capped, supabase);
       log(`[EMAIL ORDER] userId=${userId.substring(0, 8)}... emailOrder=[${capped.slice(0, 10).map(l => l.listing_id.substring(0, 8)).join(",")}] sortField=matched_at timestamps=[${capped.slice(0, 10).map(l => l.matched_at || "N/A").join(",")}]`);
       try {
@@ -735,6 +740,11 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
 
   if (emailEnabled) {
     const capped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
+    const overflowIds = verified.slice(MAX_LISTINGS_PER_EMAIL).map(l => l.listing_id);
+    if (overflowIds.length > 0) {
+      try { await markEmailSent(userId, overflowIds); } catch {}
+      log(`[ALERTS] Backfill: ${overflowIds.length} overflow listings beyond cap=${MAX_LISTINGS_PER_EMAIL} — marked email_sent (visible in app)`);
+    }
     await enrichMissingImages(capped, supabase);
     try {
       log(`[NOTIF] backfill email to=${userBuf.email} userId=${userId.substring(0, 8)}... lang=${backfillLang} count=${capped.length} path=backfill`);
@@ -845,6 +855,14 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
       continue;
     }
 
+    const { data: userData } = await supabase.auth.admin.getUserById(userId);
+    const email = userData?.user?.email;
+    if (!email) {
+      skippedNoEmail += matches.length;
+      log(`[RECOVERY] User ${userId.substring(0, 8)}: skipped ${matches.length} matches (no email found)`);
+      continue;
+    }
+
     const { data: notifSettings } = await supabase
       .from("user_notification_settings")
       .select("email_enabled, push_enabled")
@@ -852,7 +870,7 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
       .maybeSingle();
     const emailOn = notifSettings?.email_enabled ?? true;
     const pushOn = notifSettings?.push_enabled ?? false;
-    const recoveryBuddyEligibility = await canBuddyReceiveMatches(userId, subStatus, emailOn, undefined);
+    const recoveryBuddyEligibility = await canBuddyReceiveMatches(userId, subStatus, emailOn, email);
     log(`[RECOVERY] User ${userId.substring(0, 8)}: email_enabled=${emailOn}, push_enabled=${pushOn}, buddy_eligible=${recoveryBuddyEligibility.eligible} (${recoveryBuddyEligibility.reason})`);
     if (!emailOn && !pushOn && !recoveryBuddyEligibility.eligible) {
       const skipIds = matches.map(m => m.listing_id);
@@ -876,14 +894,6 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
     }
     if (eligibleMatches.length === 0) {
       log(`[RECOVERY] User ${userId.substring(0, 8)}: 0 eligible matches after subscription-start filter`);
-      continue;
-    }
-
-    const { data: userData } = await supabase.auth.admin.getUserById(userId);
-    const email = userData?.user?.email;
-    if (!email) {
-      skippedNoEmail += eligibleMatches.length;
-      log(`[RECOVERY] User ${userId.substring(0, 8)}: skipped ${eligibleMatches.length} matches (no email found)`);
       continue;
     }
 
@@ -924,7 +934,7 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
       }
       bufferMatchAlert(userId, email, {
         listing_id: m.listing_id,
-        title: m.listing_title || "Nieuwe woning",
+        title: m.listing_title || "Neue Wohnung",
         city: m.listing_city || "",
         price: Number(m.listing_price) || 0,
         bedrooms: enriched?.bedrooms || 0,

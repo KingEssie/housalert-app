@@ -386,8 +386,7 @@ export async function getUndeliveredMatches(maxAgeHours: number = 24): Promise<U
     const result = await pool.query(
       `SELECT user_id, listing_id, listing_title, listing_city, listing_price, listing_url, matched_at
        FROM user_matches
-       WHERE email_sent = false
-         AND push_sent = false
+       WHERE (email_sent = false OR push_sent = false)
          AND visible_in_app = true
          AND dismissed = false
          AND matched_at >= $1
