@@ -668,6 +668,10 @@ Modular ingestion runner at `server/ingesters/`:
   - Config fields: name, baseUrl, searchUrl, city, source, cardSelector, fields (title/url/price/size_m2/bedrooms), sourceIdRegex, botBlockPatterns, rateLimitMs
 - `index.ts` — Multi-city ingestion orchestrator: queries active cities from `search_profiles`, builds per-city ingesters, runs sources in parallel batches of 3 per city, per-city notification flush, overlap lock. Skips broken/gone sources. Tier-based inter-city delays (T1: 800ms, T2/T3: 1200ms).
 
+Scripts (`server/scripts/`):
+- `backfill-coordinates.ts` — Resumable coordinate backfill for existing listings. Uses the 3-layer geocoding pipeline. Run: `npx tsx server/scripts/backfill-coordinates.ts [options]`. Options: `--limit=N`, `--batch=N`, `--source=SOURCE`, `--dry-run`, `--recent-only`, `--pause=MS`. Requires migration 015 (latitude/longitude columns). Skips listings with exact/direct coords; upgrades lower precision to higher. Serialized Nominatim via shared queue.
+- `backfill-images.ts` — Image URL backfill for listings missing images.
+
 Scheduler (`server/scheduler.ts`):
 - `setInterval`-based, runs `runAllIngesters()` every `INGEST_INTERVAL_MINUTES` (default 5)
 - Gated by `ENABLE_INGEST_SCHEDULER=true`; first run 5s after startup

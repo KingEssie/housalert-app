@@ -1,0 +1,183 @@
+We need a safe production backfill system for listing coordinates and related metadata.
+
+IMPORTANT:
+- Do NOT redesign the app
+- Do NOT change frontend
+- Do NOT remove existing ingestion logic
+- Build a controlled backfill process for existing listings only
+- Must be safe for rate-limited geocoding
+- Must be resumable
+- Must not hammer Nominatim or any geocoding provider
+
+==================================================
+GOAL
+==================================================
+
+Backfill existing listings with missing location metadata in a safe and controlled way.
+
+We want to backfill at least:
+- latitude
+- longitude
+- coordinate_source
+- coordinate_precision
+
+And if relevant:
+- parking
+- balcony
+- elevator
+- pets_allowed
+- other newly added fields that can be refreshed safely from raw listing text/data
+
+Focus first on coordinates.
+
+==================================================
+PART 1 — BUILD A BACKFILL SCRIPT / JOB
+==================================================
+
+Create a dedicated backfill script or admin job that processes existing listings in batches.
+
+Requirements:
+- resumable
+- idempotent
+- safe to run multiple times
+- logs progress
+- does not reprocess rows unnecessarily
+
+Suggested behavior:
+- only select listings where latitude/longitude are NULL
+- process in small batches (e.g. 50 or 100 rows)
+- after each batch, persist progress / allow restart safely
+
+==================================================
+PART 2 — PRIORITY ORDER
+==================================================
+
+Process listings in this order:
+
+1. newest listings first
+2. then by source priority:
+   - WG-Gesucht
+   - Immowelt
+   - Kleinanzeigen
+   - others later
+
+Reason:
+Recent listings are most valuable for live user matching.
+
+==================================================
+PART 3 — COORDINATE RESOLUTION LOGIC
+==================================================
+
+Use the existing 3-layer coordinate pipeline:
+
+1. direct source coordinates if available
+2. geocode from address/postcode/city if possible
+3. fallback to city center if needed
+
+Store:
+- latitude
+- longitude
+- coordinate_source
+- coordinate_precision
+
+Do NOT overwrite better precision with worse precision.
+
+Example rule:
+- if current row already has direct/exact coords, skip
+- if row only has city fallback and now exact geocode is available, upgrade it
+
+==================================================
+PART 4 — RATE LIMIT SAFETY
+==================================================
+
+This is critical.
+
+Requirements:
+- geocoding requests must be serialized or rate-limited
+- respect the existing Nominatim queue/throttle
+- no parallel geocoding bursts
+- no provider abuse
+
+Add:
+- configurable batch size
+- configurable sleep/pause between batches
+- dry-run mode
+- max rows per run option
+
+==================================================
+PART 5 — CACHING
+==================================================
+
+Use geocode cache if available.
+
+Requirements:
+- before geocoding, check cache
+- after successful geocoding, store result in cache
+- avoid duplicate requests for same address/city/postcode combo
+
+If migration 027 / geocode_cache is not active yet, handle gracefully and report it.
+
+==================================================
+PART 6 — SAFETY / OBSERVABILITY
+==================================================
+
+Add clear logs:
+
+For each run report:
+- total candidates
+- processed rows
+- successful direct coords
+- successful geocodes
+- city fallback count
+- unresolved count
+- skipped count
+- upgraded precision count
+- errors count
+
+At the end of each run:
+- print summary
+- return exit status clearly
+
+==================================================
+PART 7 — ADMIN USAGE
+==================================================
+
+Make it easy to run manually, for example:
+
+- npm script
+- node script
+- tsx script
+- admin endpoint (only if safe and already patterned in app)
+
+Preferred:
+A script/command first, not a public endpoint.
+
+Support arguments like:
+- --limit=200
+- --batch=50
+- --source=immowelt
+- --dry-run
+- --recent-only
+
+==================================================
+PART 8 — DO NOT CHANGE
+==================================================
+
+Do NOT:
+- trigger full re-scraping of all listings
+- geocode everything in one big uncontrolled run
+- overwrite good coordinates with worse ones
+- break existing live ingestion
+
+==================================================
+PART 9 — FINAL REPORT
+==================================================
+
+At the end report:
+1. exact files created/changed
+2. how to run the backfill
+3. batch size / throttling strategy
+4. how resumability works
+5. how better-vs-worse coordinate precision is handled
+6. whether geocode cache is used
+7. any prerequisites (migrations, env vars, etc.)
