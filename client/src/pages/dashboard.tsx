@@ -1776,7 +1776,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           <ProfileTipsCompletionCard setActiveTab={setActiveTab} />
 
           {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
-            <div className="rounded-[12px] bg-white border border-gray-100 px-5 py-5" data-testid="card-upgrade-cta">
+            <div className="rounded-[12px] bg-white px-5 py-5" style={{ border: "1px solid rgba(15, 23, 42, 0.04)" }} data-testid="card-upgrade-cta">
               <div className="flex items-start gap-3 mb-3">
                 <Lock className="w-6 h-6 text-black flex-shrink-0 mt-0.5" />
                 <div>
@@ -1795,7 +1795,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           )}
 
           {subscription.isTrial && (
-            <div className="rounded-[12px] bg-white border border-gray-100 px-5 py-5 flex items-start gap-3" data-testid="trial-explanation">
+            <div className="rounded-[12px] bg-white px-5 py-5 flex items-start gap-3" style={{ border: "1px solid rgba(15, 23, 42, 0.04)" }} data-testid="trial-explanation">
               <Gift className="w-5 h-5 text-ha-primary flex-shrink-0 mt-0.5" />
               <div>
                 <p className="text-[15px] font-bold text-black">{t("trial.explanation")}</p>
@@ -1804,7 +1804,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             </div>
           )}
 
-          <div className="rounded-[12px] bg-white border border-gray-100 px-5 py-5" data-testid="card-search-profiles">
+          <div className="rounded-[12px] bg-white px-5 py-5" style={{ border: "1px solid rgba(15, 23, 42, 0.04)" }} data-testid="card-search-profiles">
             <div className="flex items-center gap-3 mb-1">
               <Search className="w-5 h-5 text-ha-primary flex-shrink-0" />
               <p className="text-[17px] font-bold text-black flex-1">{t("profile.searchProfiles")}</p>
@@ -1845,7 +1845,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             </button>
           </div>
 
-          <div className="rounded-[12px] bg-white border border-gray-100 px-5 py-5">
+          <div className="rounded-[12px] bg-white px-5 py-5" style={{ border: "1px solid rgba(15, 23, 42, 0.04)" }}>
             <button
               onClick={() => navigate("/application-letter")}
               className="w-full flex items-center gap-3 text-left active:opacity-80 transition-opacity"
@@ -1862,7 +1862,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             )}
           </div>
 
-          <div className="rounded-[12px] bg-white border border-gray-100 px-5 py-5" id="zoekbuddy-section" data-testid="row-zoekbuddy">
+          <div className="rounded-[12px] bg-white px-5 py-5" style={{ border: "1px solid rgba(15, 23, 42, 0.04)" }} id="zoekbuddy-section" data-testid="row-zoekbuddy">
             <button
               onClick={() => {
                 if (!buddyExpanded) {
@@ -1944,15 +1944,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               </div>
             )}
           </div>
-
-          <button
-            onClick={() => navigate("/settings")}
-            className="w-full ha-btn bg-white text-black font-semibold border border-gray-100 rounded-[12px]"
-            data-testid="button-open-settings"
-          >
-            <Settings className="w-4.5 h-4.5 text-gray-400" />
-            {t("profile.settingsButton")}
-          </button>
 
           {(user?.email?.toLowerCase() === "martin.essie87@gmail.com") && <div className="h-16" />}
         </div>

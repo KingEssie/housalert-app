@@ -1,0 +1,154 @@
+We are doing a final account/profile screen visual cleanup pass.
+
+IMPORTANT:
+- Do NOT change routing
+- Do NOT change business logic
+- Do NOT change completion logic
+- Do NOT change section order
+- Do NOT change expand/collapse behavior
+- ONLY fix the remaining visual issues on the active account/profile screen
+
+Use the supplied Rentbird account screenshots as the visual source of truth.
+
+==================================================
+GOAL
+==================================================
+
+Make the active HousAlert account/profile screen feel even closer to the Rentbird reference.
+
+Current remaining problems:
+1. some cards still have borders that are too visible / too harsh
+2. the duplicate lower "Instellingen" section still exists and must be removed
+3. the progress bars should be GREEN like Rentbird, not pink
+4. progress percentage text should visually match the Rentbird style
+
+We want:
+- softer, calmer cards
+- no hard gray outlines
+- green progress bar treatment like Rentbird
+- only one settings entry (the top header button)
+
+==================================================
+PART 1 — SOFTEN ALL PROFILE CARD BORDERS
+==================================================
+
+Apply this to ALL white cards on the account/profile page:
+- "Maak je account af"
+- "Vergroot je kansen met deze tips!"
+- free trial / membership card
+- zoekopdrachten card
+- reactiebrief card
+- zoekbuddy card
+- any other white card on this active profile/account page
+
+Required card styling:
+- white background
+- border-radius stays as already established
+- border must be extremely subtle, almost invisible
+- no obvious medium-gray outline
+- no hard form-field-like border
+- no harsh component-box feeling
+
+Use a very soft border like:
+- border: 1px solid rgba(15, 23, 42, 0.04)
+or an equivalent ultra-light border
+
+If needed:
+- rely mostly on white card vs page background contrast
+- remove any darker border color currently used on this page
+- keep the cards visually soft and premium like Rentbird
+
+==================================================
+PART 2 — MAKE PROGRESS BARS GREEN LIKE RENTBIRD
+==================================================
+
+For the progress bars inside:
+- "Maak je account af"
+- "Vergroot je kansen met deze tips!"
+
+Change the visual treatment to match Rentbird more closely:
+
+BAR TRACK:
+- very soft light gray
+- subtle and clean
+- not too dark
+
+BAR FILL:
+- green like Rentbird
+- use a softer success green, not neon
+- no pink fill here
+
+PERCENTAGE TEXT:
+- green like Rentbird
+- softer, not too saturated
+- align visually with the bar
+- keep it readable and premium
+
+Do NOT change:
+- percentage values
+- progress calculations
+- layout structure
+
+Only change the visual color treatment and subtle styling.
+
+==================================================
+PART 3 — REMOVE DUPLICATE LOWER SETTINGS SECTION
+==================================================
+
+There is still a duplicate "Instellingen" card/button lower on the account/profile page.
+
+Remove it entirely.
+
+Rules:
+- keep ONLY the top settings button in the purple header area
+- remove the lower settings section/card/button completely
+- do not leave an awkward empty gap where it used to be
+- rebalance spacing naturally after removal
+
+==================================================
+PART 4 — KEEP THESE THINGS AS-IS
+==================================================
+
+Do NOT change:
+- top header settings button
+- profile header layout
+- completion calculations
+- section order
+- navigation targets
+- accordion behavior
+- text content unless needed for spacing only
+
+==================================================
+PART 5 — VISUAL TARGET
+==================================================
+
+The account/profile screen should now feel:
+- softer
+- calmer
+- closer to Rentbird
+- less outlined
+- more premium
+- more cohesive
+
+Especially:
+- white cards should not feel like hard outlined boxes
+- progress bars should immediately read as Rentbird-like green completion bars
+- no duplicate settings option should remain below
+
+==================================================
+ACCEPTANCE CRITERIA
+==================================================
+
+Only mark complete if ALL are true:
+1. all account/profile cards now have much softer / nearly invisible borders
+2. no harsh visible outlines remain on the profile page cards
+3. both completion cards use GREEN progress bars like Rentbird
+4. percentage text visually matches the green Rentbird-style completion treatment
+5. the lower duplicate "Instellingen" section is fully removed
+6. spacing still looks balanced after removal
+
+At the end report:
+1. exact file(s) changed
+2. whether borders were softened globally for this page or per component
+3. which green color/token is now used for the progress bars and percentage text
+4. confirmation that the lower settings section was removed

@@ -33,7 +33,8 @@ export function ExpandableCompletionCard({
 
   return (
     <div
-      className="bg-white rounded-[12px] border border-gray-100 overflow-hidden"
+      className="bg-white rounded-[12px] overflow-hidden"
+      style={{ border: "1px solid rgba(15, 23, 42, 0.04)" }}
       data-testid={testId}
     >
       <button
@@ -54,11 +55,11 @@ export function ExpandableCompletionCard({
           <div className="mt-2.5 flex items-center gap-3">
             <div className="flex-1 h-[6px] rounded-full bg-gray-100 overflow-hidden">
               <div
-                className="h-full rounded-full bg-[#e91e63] transition-all duration-500"
+                className="h-full rounded-full bg-[#22c55e] transition-all duration-500"
                 style={{ width: `${percentage}%` }}
               />
             </div>
-            <span className="text-[14px] font-semibold text-[#e91e63] whitespace-nowrap">
+            <span className="text-[14px] font-semibold text-[#22c55e] whitespace-nowrap">
               {percentage}% {completedLabel}
             </span>
           </div>
