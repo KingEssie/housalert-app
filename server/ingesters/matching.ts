@@ -31,6 +31,7 @@ export interface ParsedListing {
   garden?: boolean | null;
   bath?: boolean | null;
   roof_terrace?: boolean | null;
+  parking?: boolean | null;
   energy_label?: string | null;
   property_type?: string | null;
   district?: string | null;
@@ -115,7 +116,7 @@ async function checkAdvancedColumns(): Promise<boolean> {
 
 const ADVANCED_FIELDS: (keyof ParsedListing)[] = [
   "pets_allowed", "balcony", "elevator",
-  "garden", "bath", "roof_terrace", "energy_label", "property_type",
+  "garden", "bath", "roof_terrace", "parking", "energy_label", "property_type",
   "latitude", "longitude", "extra_features", "target_categories",
 ];
 

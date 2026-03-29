@@ -7,6 +7,9 @@ const BATH_PATTERNS = /badewanne|bathtub|mit\s*badewanne|wanne/i;
 const NO_ROOF_TERRACE_PATTERNS = /keine\s*dachterrasse|ohne\s*dachterrasse|no\s*roof\s*terrace/i;
 const ROOF_TERRACE_PATTERNS = /dachterrasse|dachterasse|roof\s*terrace|rooftop\s*terrace/i;
 
+const NO_PARKING_PATTERNS = /kein(?:en?)?\s*(?:pkw[- ]?)?(?:stell|park)platz|ohne\s*(?:pkw[- ]?)?(?:stell|park)platz|keine?\s*(?:tief)?garage(?:nstellplatz)?|ohne\s*(?:tief)?garage(?:nstellplatz)?|kein(?:en?)?\s*carport|ohne\s*carport|kein(?:en?)?\s*duplex[- ]?parker|ohne\s*duplex[- ]?parker|no\s*parking/i;
+const PARKING_PATTERNS = /\bstellplatz\b|stellplätze|pkw[- ]?stellplatz|tiefgarage|tiefgaragenstellplatz|\bgarage\b|garagenstellplatz|\bparkplatz\b|parkfläche|\bcarport\b|duplex[- ]?parker|parking/i;
+
 const ENERGY_LABEL_PATTERN = /energi?e[_\-\s]*(?:effizienz[_\-\s]*)?(?:klasse|label|rating|class|kennwert)[:\s]*([A-Ga-g][+]?)|(?:Energieklasse|Effizienzklasse|Energy\s*class|Energy\s*rating)[:\s]*([A-Ga-g][+]?)/i;
 const ENERGY_LABEL_STANDALONE = /\b(?:EEK|Energielabel)\s*:?\s*([A-Ga-g][+]?)\b/i;
 
@@ -75,6 +78,16 @@ export function extractRoofTerrace(text: string): boolean | null {
   if (!hasPos && !hasNeg) return null;
   if (hasNeg) {
     return hasExtraPositive(text, NO_ROOF_TERRACE_PATTERNS, ROOF_TERRACE_PATTERNS) ? true : false;
+  }
+  return true;
+}
+
+export function extractParking(text: string): boolean | null {
+  const hasNeg = NO_PARKING_PATTERNS.test(text);
+  const hasPos = PARKING_PATTERNS.test(text);
+  if (!hasPos && !hasNeg) return null;
+  if (hasNeg) {
+    return hasExtraPositive(text, NO_PARKING_PATTERNS, PARKING_PATTERNS) ? true : false;
   }
   return true;
 }

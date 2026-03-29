@@ -3,7 +3,7 @@ import type { Ingester, IngestionResult } from "./types";
 import type { ParsedListing } from "./matching";
 import { insertAndMatchListings } from "./matching";
 import { getCitySlugs } from "./city-slugs";
-import { extractGarden, extractBath, extractRoofTerrace, extractEnergyLabel, extractPropertyTypeFromText } from "./feature-extraction";
+import { extractGarden, extractBath, extractRoofTerrace, extractParking, extractEnergyLabel, extractPropertyTypeFromText } from "./feature-extraction";
 
 const WG_GESUCHT_BASE = "https://www.wg-gesucht.de";
 const API_BASE = `${WG_GESUCHT_BASE}/api/asset/offers/`;
@@ -54,6 +54,7 @@ function extractFeatures(text: string): {
   garden: boolean | null;
   bath: boolean | null;
   roof_terrace: boolean | null;
+  parking: boolean | null;
   energy_label: string | null;
   property_type: string | null;
 } {
@@ -73,6 +74,7 @@ function extractFeatures(text: string): {
     garden: extractGarden(text),
     bath: extractBath(text),
     roof_terrace: extractRoofTerrace(text),
+    parking: extractParking(text),
     energy_label: extractEnergyLabel(text),
     property_type: extractPropertyTypeFromText(text),
   };
@@ -108,6 +110,16 @@ function buildListingUrl(offer: WgOffer): string {
   return `${WG_GESUCHT_BASE}/${offer.offer_id}.html`;
 }
 
+function wgCategoryToPropertyType(category: string): string | null {
+  switch (category) {
+    case "0": return "room";
+    case "1": return "studio";
+    case "2": return "apartment";
+    case "3": return "house";
+    default: return null;
+  }
+}
+
 function offerToListing(offer: WgOffer, city: string): ParsedListing | null {
   if (offer.deactivated === "1") return null;
   if (offer.offer_in_exchange === "1") return null;
@@ -124,6 +136,9 @@ function offerToListing(offer: WgOffer, city: string): ParsedListing | null {
 
   const district = (offer.district_custom || "").trim() || null;
   const features = extractFeatures(title);
+
+  const propertyType = features.property_type || wgCategoryToPropertyType(offer.category);
+  const targetCategories = propertyType ? [propertyType] : null;
 
   return {
     title,
@@ -142,11 +157,13 @@ function offerToListing(offer: WgOffer, city: string): ParsedListing | null {
     garden: features.garden,
     bath: features.bath,
     roof_terrace: features.roof_terrace,
+    parking: features.parking,
     energy_label: features.energy_label,
-    property_type: features.property_type,
+    property_type: propertyType,
     district,
     latitude: lat,
     longitude: lng,
+    target_categories: targetCategories,
   };
 }
 

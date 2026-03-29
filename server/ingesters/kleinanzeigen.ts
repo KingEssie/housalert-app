@@ -5,7 +5,7 @@ import type { Ingester, IngestionResult } from "./types";
 import type { ParsedListing } from "./matching";
 import { insertAndMatchListings } from "./matching";
 import { getKleinanzeigenUrl } from "./city-slugs";
-import { extractGarden, extractBath, extractRoofTerrace, extractEnergyLabel, extractPropertyTypeFromText } from "./feature-extraction";
+import { extractGarden, extractBath, extractRoofTerrace, extractParking, extractEnergyLabel, extractPropertyTypeFromText } from "./feature-extraction";
 
 const KLEINANZEIGEN_BASE = "https://www.kleinanzeigen.de";
 const USER_AGENT =
@@ -80,6 +80,7 @@ function extractFeatures(text: string): {
   garden: boolean | null;
   bath: boolean | null;
   roof_terrace: boolean | null;
+  parking: boolean | null;
   energy_label: string | null;
   property_type: string | null;
 } {
@@ -91,6 +92,7 @@ function extractFeatures(text: string): {
     garden: extractGarden(text),
     bath: extractBath(text),
     roof_terrace: extractRoofTerrace(text),
+    parking: extractParking(text),
     energy_label: extractEnergyLabel(text),
     property_type: extractPropertyTypeFromText(text),
   };
@@ -219,6 +221,8 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
     const locationText = card.find(".aditem-main--top--left").text().trim();
     const district = extractDistrict(locationText, title, city);
 
+    const targetCategories = features.property_type ? [features.property_type] : null;
+
     listings.push({
       title,
       url: fullUrl,
@@ -236,9 +240,11 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
       garden: features.garden,
       bath: features.bath,
       roof_terrace: features.roof_terrace,
+      parking: features.parking,
       energy_label: features.energy_label,
       property_type: features.property_type,
       district,
+      target_categories: targetCategories,
     });
   });
 

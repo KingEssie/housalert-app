@@ -49,6 +49,7 @@ interface DbListing {
   garden?: boolean | null;
   bath?: boolean | null;
   roof_terrace?: boolean | null;
+  parking?: boolean | null;
   energy_label?: string | null;
   property_type?: string | null;
   district?: string | null;
@@ -59,7 +60,7 @@ interface DbListing {
   created_at?: string | null;
 }
 
-const LISTING_SELECT = "id, source, url, title, city, price, bedrooms, size_m2, image_url, furnished, pets_allowed, balcony, elevator, garden, bath, roof_terrace, energy_label, property_type, district, latitude, longitude, extra_features, target_categories";
+const LISTING_SELECT = "id, source, url, title, city, price, bedrooms, size_m2, image_url, furnished, pets_allowed, balcony, elevator, garden, bath, roof_terrace, parking, energy_label, property_type, district, latitude, longitude, extra_features, target_categories";
 
 let hasFurnishedColumn: boolean | null = null;
 let hasDistrictColumn: boolean | null = null;
@@ -91,7 +92,7 @@ function getListingSelect(): string {
   const parts = [base];
   if (hasFurnishedColumn !== false) parts.push("furnished");
   if (hasDistrictColumn !== false) parts.push("district");
-  if (hasAdvancedListingColumns !== false) parts.push("pets_allowed, balcony, elevator, garden, bath, roof_terrace, energy_label, property_type, latitude, longitude, extra_features, target_categories");
+  if (hasAdvancedListingColumns !== false) parts.push("pets_allowed, balcony, elevator, garden, bath, roof_terrace, parking, energy_label, property_type, latitude, longitude, extra_features, target_categories");
   return parts.join(", ");
 }
 
@@ -124,7 +125,6 @@ const SUPPORTED_FEATURES = new Set([
 ]);
 
 const UNSUPPORTED_FEATURES = new Set([
-  "parking", "parkeerplaats",
   "basement", "kelder",
 ]);
 
@@ -145,6 +145,12 @@ function mapExtraFeatureToListingField(feature: string, listing: DbListing): { v
     case "rooftop":
     case "dakterras":
     case "dachterrasse": return { value: listing.roof_terrace ?? null, fieldName: "roof_terrace", supported: true };
+    case "parking":
+    case "parkeerplaats":
+    case "stellplatz":
+    case "parkplatz":
+    case "garage":
+    case "tiefgarage": return { value: listing.parking ?? null, fieldName: "parking", supported: true };
     default: return { value: null, fieldName: feature, supported: false };
   }
 }

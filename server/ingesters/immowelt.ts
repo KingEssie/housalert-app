@@ -4,7 +4,7 @@ import type { Ingester, IngestionResult } from "./types";
 import type { ParsedListing } from "./matching";
 import { insertAndMatchListings } from "./matching";
 import { getImmoweltUrl } from "./city-slugs";
-import { extractGarden, extractBath, extractRoofTerrace, extractEnergyLabel, extractPropertyTypeFromText } from "./feature-extraction";
+import { extractGarden, extractBath, extractRoofTerrace, extractParking, extractEnergyLabel, extractPropertyTypeFromText } from "./feature-extraction";
 
 const USER_AGENT =
   "HousAlert/1.0 (rental alert app; polite single-page fetch; contact: support@housalert.com)";
@@ -72,6 +72,7 @@ function extractFeatures(text: string): {
   garden: boolean | null;
   bath: boolean | null;
   roof_terrace: boolean | null;
+  parking: boolean | null;
   energy_label: string | null;
   property_type: string | null;
 } {
@@ -83,6 +84,7 @@ function extractFeatures(text: string): {
     garden: extractGarden(text),
     bath: extractBath(text),
     roof_terrace: extractRoofTerrace(text),
+    parking: extractParking(text),
     energy_label: extractEnergyLabel(text),
     property_type: extractPropertyTypeFromText(text),
   };
@@ -214,6 +216,8 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
     const features = extractFeatures(cardText);
     const district = extractDistrict(address, city);
 
+    const targetCategories = features.property_type ? [features.property_type] : null;
+
     listings.push({
       title,
       url: fullUrl,
@@ -231,9 +235,11 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
       garden: features.garden,
       bath: features.bath,
       roof_terrace: features.roof_terrace,
+      parking: features.parking,
       energy_label: features.energy_label,
       property_type: features.property_type,
       district,
+      target_categories: targetCategories,
     });
   });
 

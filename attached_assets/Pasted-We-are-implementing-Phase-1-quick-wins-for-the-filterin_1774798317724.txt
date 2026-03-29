@@ -1,0 +1,183 @@
+We are implementing Phase 1 quick wins for the filtering system.
+
+IMPORTANT:
+- Do NOT redesign the UI
+- Do NOT remove any filters
+- Do NOT change unrelated matching logic
+- ONLY make these 2 filters truly functional end-to-end:
+  1. target categories
+  2. parking
+
+We want both to become real filters across:
+- scraping / extraction
+- DB / storage
+- normalization
+- matching engine
+- send_unclear toggle behavior where applicable
+
+==================================================
+PART 1 — TARGET CATEGORIES END-TO-END
+==================================================
+
+Current issue:
+Target categories are visible/stored but not fully supported end-to-end.
+
+Required:
+Make target categories fully functional.
+
+Tasks:
+1. Audit current storage for target categories in search profiles
+2. Audit current listing-side category/type fields
+3. Add/extend extraction so listing categories are populated reliably
+4. Normalize source-specific values into canonical categories
+5. Ensure matching engine compares search profile target categories against listing categories
+6. If listing category is unknown/null:
+   - include only when send_unclear = true
+   - exclude when send_unclear = false
+7. If listing category is known and mismatches:
+   - always exclude
+
+Canonical category set should be consistent across the app.
+Use existing categories if already defined; otherwise normalize to a small stable set such as:
+- apartment
+- house
+- studio
+- room
+- shared
+- maisonette
+
+Use structured source fields first.
+Use title/description keyword extraction as fallback.
+
+==================================================
+PART 2 — PARKING END-TO-END
+==================================================
+
+Current issue:
+Parking is visible as a user-facing filter but not truly backend-ready.
+
+Make parking a real optional feature filter.
+
+Tasks:
+1. Add a canonical listing storage field for parking if it does not exist yet
+2. Preserve 3-state behavior:
+   - true
+   - false
+   - null
+3. Add scraping/extraction logic for parking
+4. Use structured fields where available
+5. Use description/title keyword extraction where structured data is missing
+
+Positive examples:
+- Stellplatz
+- Parkplatz
+- Tiefgarage
+- Garage
+- PKW-Stellplatz
+- Carport
+
+Negative examples:
+- kein Stellplatz
+- ohne Stellplatz
+- keine Garage
+- kein Parkplatz
+
+IMPORTANT:
+- If parking is not clearly mentioned, store null
+- Do NOT collapse unknown into false
+
+==================================================
+PART 3 — MATCHING ENGINE RULES
+==================================================
+
+Implement/verify these exact matching rules:
+
+TARGET CATEGORIES:
+- user has no preference -> pass
+- known category match -> pass
+- known category mismatch -> fail
+- unknown/null -> pass only if send_unclear = true
+
+PARKING:
+- user has no preference -> pass
+- listing parking = true -> pass
+- listing parking = false -> fail
+- listing parking = null -> pass only if send_unclear = true
+
+IMPORTANT:
+send_unclear only affects unknown/null.
+It must NEVER override a known mismatch.
+
+==================================================
+PART 4 — TEST CASES
+==================================================
+
+Verify at least these cases:
+
+CASE 1:
+User wants parking = yes
+Listing parking = true
+=> MUST match
+
+CASE 2:
+User wants parking = yes
+Listing parking = false
+=> MUST NOT match
+
+CASE 3:
+User wants parking = yes
+Listing parking = null
+send_unclear = false
+=> MUST NOT match
+
+CASE 4:
+User wants parking = yes
+Listing parking = null
+send_unclear = true
+=> MAY match
+
+CASE 5:
+User wants target category = apartment
+Listing category = apartment
+=> MUST match
+
+CASE 6:
+User wants target category = apartment
+Listing category = house
+=> MUST NOT match
+
+CASE 7:
+User wants target category = apartment
+Listing category = null
+send_unclear = false
+=> MUST NOT match
+
+CASE 8:
+User wants target category = apartment
+Listing category = null
+send_unclear = true
+=> MAY match
+
+==================================================
+PART 5 — DO NOT CHANGE
+==================================================
+
+Do NOT change:
+- radius / commute logic
+- other already-working filters
+- frontend design
+- routing
+
+Only implement target categories and parking properly.
+
+==================================================
+PART 6 — FINAL REPORT
+==================================================
+
+At the end report:
+1. exact files changed
+2. whether a DB column was added for parking
+3. which sources now extract parking
+4. what canonical target category mapping is used
+5. whether both filters are now fully supported end-to-end
+6. which test cases passed
