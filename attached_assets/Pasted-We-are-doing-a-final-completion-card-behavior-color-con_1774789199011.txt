@@ -1,0 +1,89 @@
+We are doing a final completion-card behavior + color consistency pass.
+
+IMPORTANT:
+- Do NOT change unrelated screens
+- Do NOT change progress logic
+- Do NOT change backend logic
+- ONLY fix:
+  1. step linking behavior
+  2. green color consistency between progress bar and percentage text
+
+==================================================
+PART 1 — MAKE EACH COMPLETION STEP LINK TO THE RIGHT SCREEN
+==================================================
+
+In the "Maak je account af" expandable completion card, each incomplete step must navigate to the correct place.
+
+Implement the following exact destinations:
+
+1. "Activeer push meldingen"
+   -> navigate to the Preferences / Voorkeuren screen
+   -> specifically the place where push/email notification settings can be enabled or managed
+
+2. "Genereer een AI reactiebrief"
+   -> navigate to the Reactiebrief flow entry
+   -> this must open the guided AI reaction letter flow
+   -> not a random old page, not a preview directly unless saved-state intentionally supports that
+
+3. "Nodig een Zoekbuddy uit"
+   -> navigate to the Zoekbuddy invite page / screen
+   -> specifically the page where the user can enter an email address and invite a search buddy
+
+4. "Maak een extra zoekopdracht"
+   -> navigate to the 3-step new search profile flow
+   -> this must open the create-search flow, not just a generic search page
+
+IMPORTANT:
+- Completed steps do not need to navigate
+- Incomplete steps must be clickable and go to the correct destination
+- Keep existing completion logic intact
+- Keep the expandable card layout exactly as is
+
+==================================================
+PART 2 — GREEN COLOR MUST MATCH EXACTLY
+==================================================
+
+The green progress fill and the green percentage text must use the EXACT same green color value.
+
+Apply this to both completion cards:
+- "Maak je account af"
+- "Vergroot je kansen met deze tips!"
+
+Requirements:
+- the progress fill color and percentage text color must be identical
+- use one shared color/token
+- no slightly different shades
+- keep the current thicker progress bar
+
+==================================================
+DO NOT CHANGE
+==================================================
+
+Do NOT change:
+- progress percentages
+- completion rules
+- card structure
+- card layout
+- spacing
+- typography hierarchy
+
+Only fix:
+- step click destinations
+- green color consistency
+
+==================================================
+ACCEPTANCE CRITERIA
+==================================================
+
+Only mark complete if ALL are true:
+1. "Activeer push meldingen" opens Preferences / notification settings
+2. "Genereer een AI reactiebrief" opens the AI reaction letter flow
+3. "Nodig een Zoekbuddy uit" opens the zoekbuddy invite screen
+4. "Maak een extra zoekopdracht" opens the 3-step create-search flow
+5. the green percentage text uses the exact same green as the progress bar fill
+6. this works in the active completion card UI
+
+At the end report:
+1. exact files changed
+2. exact routes/screens each step now opens
+3. the exact green color value used for both fill and percentage text

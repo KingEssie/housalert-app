@@ -1,0 +1,246 @@
+We are rebuilding the “Reactiebrief” flow so it works like a clear guided Rentbird-style generation flow.
+
+IMPORTANT:
+- Do NOT change backend logic unless needed for this flow to work
+- Do NOT break existing saved letter data
+- Do NOT remove existing letter generation functionality
+- ONLY restructure the user flow, screen sequence, screen styling, and CTA behavior
+- Use the supplied Rentbird screenshots as the visual source of truth
+
+==================================================
+GOAL
+==================================================
+
+When the user clicks “Reactiebrief”, they should enter a guided multi-step flow to generate their AI reaction letter.
+
+This must feel like the Rentbird flow:
+- light gray page background
+- white card layouts
+- dark text
+- pink primary CTA
+- back button in the top bar
+- clear step-by-step structure
+- Elise visible again in the intro screen as COO
+- no random jumps between unrelated letter pages
+
+==================================================
+FLOW STRUCTURE
+==================================================
+
+The “Reactiebrief” entry should open this flow in this exact order:
+
+STEP 1 — INTRO SCREEN
+STEP 2 — PERSOONLIJKE GEGEVENS
+STEP 3 — WOONSITUATIE
+STEP 4 — LETTER PREVIEW / GENERATE RESULT
+
+If there is already saved data, prefill where possible.
+But still keep the same guided flow structure.
+
+==================================================
+STEP 1 — INTRO SCREEN
+==================================================
+
+This screen must visually follow the Rentbird reference.
+
+Header/top:
+- simple top bar with back button on the left
+- page label/title: “Reactiebrief”
+
+Body:
+- large page heading:
+  “AI Reactiebrief genereren”
+
+Then a white card with:
+- a light blue speech bubble block
+- Elise photo prominently visible
+- Elise name
+- title: COO
+
+IMPORTANT:
+- use Elise’s existing photo already used elsewhere
+- do NOT use crown icon
+- do NOT use placeholder
+- do NOT use any male placeholder image
+- Elise must be clearly visible like the earlier welcome-style speech bubble card
+
+Speech bubble text should explain:
+- that a reaction letter helps the user respond faster
+- that the AI-generated letter can be copied and used quickly
+- that the next steps collect the information needed
+
+Bottom CTA:
+- full-width pink primary button
+- label: “Volgende”
+
+This screen should visually match the Rentbird-style intro shown in the screenshots:
+- light gray background
+- white outer card
+- blue speech bubble
+- Elise image below/next to the bubble
+- clean spacing
+- no harsh borders
+
+==================================================
+STEP 2 — PERSOONLIJKE GEGEVENS
+==================================================
+
+This should be the personal details screen, visually matching the Rentbird-style form screen.
+
+Top bar:
+- back button
+- page label “Reactiebrief”
+
+Page title:
+- “Persoonlijke gegevens”
+
+Inside a white card:
+- Telefoonnummer
+- Geboortedatum
+- Geslacht
+
+Requirements:
+- styling must match Rentbird:
+  - white card
+  - soft borders
+  - consistent field heights
+  - dark readable labels
+  - no oversized rounding
+- keep dropdowns/selects if already supported
+- keep existing data model
+- keep existing save/prefill support
+
+Bottom CTA:
+- full-width pink button
+- label: “Volgende”
+
+==================================================
+STEP 3 — WOONSITUATIE
+==================================================
+
+This must be the living situation screen.
+
+Top bar:
+- back button
+- page label “Reactiebrief”
+
+Screen contents:
+- questions like:
+  - met wie ga je wonen?
+  - huidige werksituatie
+  - reden van verhuizing
+  - bruto maandinkomen
+  - huisdieren
+
+This screen should visually follow the supplied Rentbird reference:
+- white card container
+- soft field borders
+- clear dark labels
+- consistent vertical spacing
+- clean dropdown/select behavior
+
+VERY IMPORTANT:
+The bottom primary CTA on this screen must say exactly:
+
+“AI reactiebrief maken”
+
+Not “Volgende”.
+
+That button should:
+- validate/save the entered information
+- generate/open the letter preview step
+
+==================================================
+STEP 4 — LETTER PREVIEW
+==================================================
+
+After the user clicks “AI reactiebrief maken”, go to the generated letter preview screen.
+
+Top bar:
+- back button
+- page label “Reactiebrief”
+
+Screen title:
+- “Reactiebrief”
+
+Inside a white card:
+- small helper/info box at the top
+- then the generated letter preview in a clean editable text area / preview area
+
+Requirements:
+- keep placeholders like [ADRES] working as they already do
+- keep edit/save behavior intact
+- keep existing generation logic intact
+- use the app’s normal sans-serif font
+- no serif font
+- no incorrect placeholder rendering regressions
+
+Primary button:
+- full-width pink button
+- label can remain “Opslaan” if that is the correct save action
+
+Secondary action below:
+- “Nieuwe AI reactiebrief maken”
+- keep only if it truly regenerates/reset flow correctly
+
+==================================================
+ENTRY BEHAVIOR
+==================================================
+
+When user clicks the “Reactiebrief” card from Home/Profile:
+- always enter this guided flow
+- not a random old page
+- not directly into the preview unless explicitly intended by existing saved-state logic
+
+If existing saved data exists:
+- prefill the steps
+- but maintain the same visual flow
+
+==================================================
+VISUAL RULES
+==================================================
+
+Use Rentbird screenshots as visual reference for:
+- spacing
+- card composition
+- title hierarchy
+- light gray background
+- white card styling
+- speech bubble layout
+- primary CTA placement
+- form rhythm
+
+Use the existing HousAlert branding where appropriate, but the layout and feel should closely mirror the Rentbird flow.
+
+==================================================
+DO NOT CHANGE
+==================================================
+
+Do NOT:
+- change backend schemas unless required
+- remove current letter generation logic
+- remove save/edit support
+- break existing generated text handling
+- change placeholder mechanics like [ADRES] unless currently broken
+
+==================================================
+ACCEPTANCE CRITERIA
+==================================================
+
+Only mark complete if ALL are true:
+1. clicking “Reactiebrief” opens a guided multi-step flow
+2. step 1 shows Elise photo and title COO in a Rentbird-style intro card
+3. step 2 is the personal data form in Rentbird-like styling
+4. step 3 is the living situation form in Rentbird-like styling
+5. step 3 primary CTA says exactly “AI reactiebrief maken”
+6. step 4 shows the generated reaction letter preview
+7. the flow visually matches the Rentbird screenshots closely
+8. saved data/prefill still works
+9. no old unrelated letter screens are leaking into the flow
+
+At the end report:
+1. exact files changed
+2. how the Reactiebrief entry route now works
+3. which screen is step 1, 2, 3, 4
+4. confirmation that Elise photo + COO are shown in step 1
+5. confirmation that the step 3 CTA now says “AI reactiebrief maken”
