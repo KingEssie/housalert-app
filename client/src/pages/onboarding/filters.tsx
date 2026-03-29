@@ -74,42 +74,66 @@ function Toggle({
   );
 }
 
-function RangeSlider({
+function DualRangeSlider({
   min,
   max,
   step,
-  value,
-  onChange,
+  valueLow,
+  valueHigh,
+  onChangeLow,
+  onChangeHigh,
   formatLabel,
   testId,
 }: {
   min: number;
   max: number;
   step: number;
-  value: number;
-  onChange: (v: number) => void;
+  valueLow: number;
+  valueHigh: number;
+  onChangeLow: (v: number) => void;
+  onChangeHigh: (v: number) => void;
   formatLabel: (v: number) => string;
   testId: string;
 }) {
-  const pct = ((value - min) / (max - min)) * 100;
+  const pctLow = ((valueLow - min) / (max - min)) * 100;
+  const pctHigh = ((valueHigh - min) / (max - min)) * 100;
+  const trackBg = `linear-gradient(to right, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.1) ${pctLow}%, ${OB.pink} ${pctLow}%, ${OB.pink} ${pctHigh}%, rgba(255,255,255,0.1) ${pctHigh}%, rgba(255,255,255,0.1) 100%)`;
+
   return (
     <div data-testid={testId}>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full"
-        style={{
-          background: `linear-gradient(to right, ${OB.pink} 0%, ${OB.pink} ${pct}%, rgba(255,255,255,0.1) ${pct}%, rgba(255,255,255,0.1) 100%)`,
-        }}
-      />
-      <div className="flex justify-between mt-1">
-        <span className="text-[12px]" style={{ color: OB.textSecondary }}>{formatLabel(min)}</span>
-        <span className="text-[13px] font-semibold" style={{ color: OB.pink }}>{formatLabel(value)}</span>
-        <span className="text-[12px]" style={{ color: OB.textSecondary }}>{formatLabel(max)}</span>
+      <div className="flex justify-between mb-2">
+        <span className="text-[14px] font-semibold" style={{ color: OB.text }}>{formatLabel(valueLow)}</span>
+        <span className="text-[14px] font-semibold" style={{ color: OB.text }}>{formatLabel(valueHigh)}</span>
+      </div>
+      <div className="relative h-[36px]">
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={valueLow}
+          onChange={(e) => {
+            const v = Number(e.target.value);
+            if (v <= valueHigh) onChangeLow(v);
+          }}
+          className="w-full absolute inset-0 dual-range-thumb"
+          style={{ background: trackBg, zIndex: valueLow > max - step ? 3 : 1 }}
+          data-testid="slider-min-price"
+        />
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={valueHigh}
+          onChange={(e) => {
+            const v = Number(e.target.value);
+            if (v >= valueLow) onChangeHigh(v);
+          }}
+          className="w-full absolute inset-0 dual-range-thumb"
+          style={{ background: "transparent", zIndex: 2 }}
+          data-testid="slider-max-price"
+        />
       </div>
     </div>
   );
@@ -332,42 +356,16 @@ export default function OnboardingFilters() {
             <label className="text-[13px] font-semibold mb-3 block" style={{ color: OB.text }}>
               {t("onboarding.filters.rentLabel") || "Huurprijs"}
             </label>
-            <div className="flex items-center gap-3 mb-3">
-              <div className="flex-1">
-                <label className="text-[11px] mb-1 block" style={{ color: OB.textSecondary }}>Min</label>
-                <input
-                  type="number"
-                  inputMode="numeric"
-                  value={f.minPrice || ""}
-                  onChange={(e) => update({ minPrice: Number(e.target.value) || 0 })}
-                  placeholder="0"
-                  className="ob-input w-full h-[48px] px-3 rounded-[10px] text-[14px] font-medium"
-                  data-testid="input-min-price"
-                />
-              </div>
-              <span style={{ color: OB.textSecondary }} className="mt-5">—</span>
-              <div className="flex-1">
-                <label className="text-[11px] mb-1 block" style={{ color: OB.textSecondary }}>Max</label>
-                <input
-                  type="number"
-                  inputMode="numeric"
-                  value={f.maxPrice || ""}
-                  onChange={(e) => update({ maxPrice: Number(e.target.value) || 0 })}
-                  placeholder="1500"
-                  className="ob-input w-full h-[48px] px-3 rounded-[10px] text-[14px] font-medium"
-                  data-testid="input-max-price"
-                />
-              </div>
-              <span className="text-[13px] font-medium mt-5" style={{ color: OB.textSecondary }}>€</span>
-            </div>
-            <RangeSlider
+            <DualRangeSlider
               min={0}
               max={3000}
               step={50}
-              value={f.maxPrice}
-              onChange={(v) => update({ maxPrice: v })}
+              valueLow={f.minPrice}
+              valueHigh={f.maxPrice}
+              onChangeLow={(v) => update({ minPrice: v })}
+              onChangeHigh={(v) => update({ maxPrice: v })}
               formatLabel={(v) => `€${v}`}
-              testId="slider-max-price"
+              testId="slider-rent-price"
             />
             <div className="mt-3">
               <Toggle

@@ -637,3 +637,12 @@ input[type="range"]::-moz-range-thumb {
   border-color: #1e1b4b;
   box-shadow: 0 2px 8px rgba(233,30,99,0.3);
 }
+.dual-range-thumb {
+  pointer-events: none;
+}
+.dual-range-thumb::-webkit-slider-thumb {
+  pointer-events: auto;
+}
+.dual-range-thumb::-moz-range-thumb {
+  pointer-events: auto;
+}

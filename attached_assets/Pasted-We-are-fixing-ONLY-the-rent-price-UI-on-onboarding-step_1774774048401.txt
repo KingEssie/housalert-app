@@ -1,0 +1,88 @@
+We are fixing ONLY the rent price UI on onboarding step 3.
+
+IMPORTANT:
+- Do NOT change anything else on the screen
+- Do NOT change routing
+- Do NOT change other filters
+- ONLY remove the min/max input fields and keep one dual-range slider
+
+==================================================
+CURRENT ISSUE
+==================================================
+
+The screen still shows two white input fields for:
+- minimum rent
+- maximum rent
+
+This is incorrect.
+
+We want NO input fields for rent at all.
+
+==================================================
+REQUIRED FIX
+==================================================
+
+1. REMOVE BOTH RENT INPUT FIELDS COMPLETELY
+
+Remove:
+- the Min input box
+- the Max input box
+- the dash between them
+- the euro icon attached to the max input box
+
+These elements must not render anymore.
+
+2. KEEP ONLY ONE DUAL-RANGE SLIDER
+
+The rent price UI must consist of:
+- one dual-handle slider only
+- left handle = minimum rent
+- right handle = maximum rent
+
+3. SHOW VALUES AS TEXT ONLY
+
+Display the selected values as plain text labels, not input fields.
+
+Layout:
+- minimum amount shown on the left above the slider
+- maximum amount shown on the right above the slider
+
+Example:
+€0                            €1500
+
+These must be text labels only.
+
+4. STEP SIZE
+
+The slider must snap in increments of €50.
+
+5. KEEP STATE / LOGIC THE SAME
+
+Do NOT break the existing min/max rent state.
+Do NOT break passing the selected values forward.
+Only change the UI.
+
+==================================================
+DO NOT CHANGE
+==================================================
+
+- header
+- footer
+- toggles
+- segmented controls
+- spacing of unrelated sections
+- styling of other controls
+
+==================================================
+ACCEPTANCE CRITERIA
+==================================================
+
+Only mark complete if ALL are true:
+
+- no min input field is visible
+- no max input field is visible
+- no dash between the fields is visible
+- no euro icon attached to a removed input is visible
+- only one dual-range slider remains
+- rent values are shown as plain text labels only
+- slider still works in €50 increments
