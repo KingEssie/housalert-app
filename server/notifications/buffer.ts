@@ -1,5 +1,5 @@
 import { log } from "../log";
-import { sendBatchMatchAlert } from "../email";
+import { sendBatchMatchAlert, getBuddyUnsubscribeUrl } from "../email";
 import { getSubscriptionStatus } from "../subscriptions";
 import { sendMatchPushNotifications, type PushMatchListing } from "./push";
 import { sendExpoMatchPush, type ExpoMatchListing } from "./expo-push";
@@ -259,7 +259,7 @@ export async function getUserLanguage(userId: string): Promise<import("../i18n")
   return "en";
 }
 
-export const BUDDY_EMAILS_GLOBAL_KILL_SWITCH = true;
+export const BUDDY_EMAILS_GLOBAL_KILL_SWITCH = false;
 
 async function sendBuddyEmail(
   userId: string,
@@ -317,8 +317,9 @@ async function sendBuddyEmail(
   }
 
   try {
+    const unsubUrl = getBuddyUnsubscribeUrl(userId, freshBuddyInfo.email) || undefined;
     log(`[BUDDY EMAIL ATTEMPT] recipient=${freshBuddyInfo.email} userId=${uid}... lang=${lang} count=${capped.length} path=${context} result=SEND`);
-    const success = await sendBatchMatchAlert(freshBuddyInfo.email, capped, lang, "buddy-match");
+    const success = await sendBatchMatchAlert(freshBuddyInfo.email, capped, lang, "buddy-match", unsubUrl);
     if (success) {
       log(`[BUDDY EMAIL ATTEMPT] recipient=${freshBuddyInfo.email} userId=${uid}... result=SENT (${capped.length} listings, lang=${lang})`);
     } else {

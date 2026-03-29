@@ -1,0 +1,208 @@
+We need a full QA / verification pass for the Search Buddy system after the recent fixes.
+
+IMPORTANT:
+- This is a TEST / QA task
+- Do NOT redesign the feature
+- Do NOT make speculative assumptions
+- Verify actual behavior end-to-end
+- If something fails, clearly report where and why
+
+==================================================
+GOAL
+==================================================
+
+Verify that Search Buddy now works correctly and safely in all key scenarios.
+
+We especially need to confirm:
+
+1. old temporary blocked buddy emails no longer block valid use
+2. a removed buddy never keeps receiving emails
+3. a buddy who unsubscribes from email is truly removed/revoked
+4. only eligible buddies receive emails
+5. main user UI stays in sync with backend state
+
+==================================================
+PART 1 — AUDIT CURRENT IMPLEMENTATION
+==================================================
+
+First inspect the current implementation and report:
+
+- where Search Buddy relationship is stored
+- which status values are used
+- where email send eligibility is checked
+- where unsubscribe is handled
+- whether any hardcoded blocked email logic still exists
+- whether queued/stale email jobs can still bypass current state
+
+Do not change anything yet in this step.
+Just inspect and document.
+
+==================================================
+PART 2 — REQUIRED TEST SCENARIOS
+==================================================
+
+Run through these scenarios as thoroughly as possible.
+
+----------------------------------
+CASE 1 — VALID BUDDY CAN BE ADDED
+----------------------------------
+
+Given:
+- main user has active trial OR paid plan
+- buddy email is valid
+- buddy is not blocked by any old workaround
+
+Verify:
+- buddy can be added successfully
+- buddy appears as active in UI
+- relationship is correctly stored in database/state
+
+----------------------------------
+CASE 2 — REMOVED BUDDY STOPS RECEIVING EMAILS
+----------------------------------
+
+Given:
+- active buddy exists
+- buddy has already been receiving emails
+
+Action:
+- main user removes buddy
+
+Verify:
+- buddy status changes correctly
+- buddy disappears from active UI
+- future emails no longer go to buddy
+- there is no stale email recipient path left behind
+
+----------------------------------
+CASE 3 — BUDDY UNSUBSCRIBE FROM EMAIL
+----------------------------------
+
+Given:
+- buddy is active
+- buddy receives an email with unsubscribe link
+
+Action:
+- buddy clicks unsubscribe
+
+Verify:
+- unsubscribe token/link resolves correctly
+- buddy relationship is revoked/removed
+- status updates correctly in database
+- buddy no longer appears active for main user
+- future buddy emails are blocked
+- queued jobs cannot still send after unsubscribe
+
+----------------------------------
+CASE 4 — ENTITLEMENT ENFORCEMENT
+----------------------------------
+
+Verify that buddy emails are sent ONLY when:
+- owner has active trial
+OR
+- owner has paid subscription
+
+Verify that buddy emails are NOT sent when:
+- owner is free without trial
+- trial expired
+- paid expired / inactive
+
+----------------------------------
+CASE 5 — RE-INVITE AFTER REMOVAL
+----------------------------------
+
+Given:
+- old buddy was removed or unsubscribed
+
+Verify:
+- main user can invite a new buddy
+- new buddy works normally
+- old buddy stays inactive
+- no cross-contamination between old and new buddy records
+
+----------------------------------
+CASE 6 — OLD BLOCK WORKAROUND REMOVED
+----------------------------------
+
+Verify:
+- previously blocked buddy email addresses are no longer blocked by workaround logic
+- valid addresses can now be added if all rules pass
+
+If this cannot be tested directly, inspect the code and confirm whether the denylist/workaround still exists or not.
+
+----------------------------------
+CASE 7 — SEND-TIME VALIDATION
+----------------------------------
+
+Verify:
+- final email sending path re-checks buddy eligibility at send-time
+- not only at invite-time or queue-time
+
+Confirm whether these conditions are checked at final send:
+- buddy exists
+- buddy status active
+- buddy email valid
+- owner entitlement active
+- buddy not removed/revoked/unsubscribed
+
+----------------------------------
+CASE 8 — UI STATE CONSISTENCY
+----------------------------------
+
+Verify:
+- main user UI matches actual backend state
+- removed buddy is not shown as active
+- unsubscribed buddy is not shown as active
+- invite screen allows new invite when there is no active buddy
+
+==================================================
+PART 3 — FAILURE ANALYSIS
+==================================================
+
+If any scenario fails, report clearly:
+
+- which case failed
+- exact file/function/component involved
+- whether the issue is:
+  - database state issue
+  - UI sync issue
+  - send-time validation issue
+  - unsubscribe issue
+  - stale queue/cache issue
+- what the correct behavior should be
+
+==================================================
+PART 4 — FINAL REPORT FORMAT
+==================================================
+
+Return the final QA report in this exact structure:
+
+1. Current implementation summary
+   - data model
+   - statuses
+   - send-time validation location
+   - unsubscribe handling location
+
+2. Scenario results
+   - CASE 1: PASS / FAIL
+   - CASE 2: PASS / FAIL
+   - CASE 3: PASS / FAIL
+   - CASE 4: PASS / FAIL
+   - CASE 5: PASS / FAIL
+   - CASE 6: PASS / FAIL
+   - CASE 7: PASS / FAIL
+   - CASE 8: PASS / FAIL
+
+3. Remaining risks
+   - list any risks still present
+
+4. Exact files involved
+   - list all important files related to Search Buddy
+
+5. Recommended fixes
+   - only if something still fails
+
+IMPORTANT:
+Do not give a vague summary.
+Be concrete and technical.
+We need to know with confidence whether Search Buddy is now truly safe and correct.

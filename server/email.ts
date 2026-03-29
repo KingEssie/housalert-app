@@ -1,17 +1,7 @@
 import { Resend } from "resend";
+import { createHmac } from "crypto";
 import { log } from "./log";
 import { t, type ServerLocale } from "./i18n";
-
-const BUDDY_EMAILS_HARD_BLOCK = true;
-
-const EMAIL_DENYLIST: string[] = [
-  "elisebezemer@gmail.com",
-  "king.essie@live.nl",
-];
-
-function isEmailDenylisted(recipient: string): boolean {
-  return EMAIL_DENYLIST.some(d => d.toLowerCase() === recipient.toLowerCase());
-}
 
 interface FinalSendParams {
   to: string;
@@ -23,16 +13,6 @@ interface FinalSendParams {
 
 async function finalEmailDispatch(client: Resend, params: FinalSendParams, category: string = "unknown"): Promise<{ data: any; error: any }> {
   const recipient = params.to.toLowerCase();
-
-  if (isEmailDenylisted(recipient)) {
-    log(`[FINAL SEND BLOCKED] recipient=${recipient} category=${category} reason=DENYLIST — email permanently blocked`);
-    return { data: null, error: { message: "BLOCKED_BY_DENYLIST" } };
-  }
-
-  if (BUDDY_EMAILS_HARD_BLOCK && (category === "buddy-match" || category === "buddy-invite")) {
-    log(`[FINAL SEND BLOCKED] recipient=${recipient} category=${category} reason=BUDDY_HARD_BLOCK — all buddy emails disabled`);
-    return { data: null, error: { message: "BLOCKED_BY_BUDDY_HARD_BLOCK" } };
-  }
 
   log(`[FINAL SEND DISPATCH] recipient=${recipient} category=${category} subject="${params.subject.substring(0, 60)}" result=SEND`);
 
@@ -148,7 +128,7 @@ function getAppBaseUrl(): string {
   return "https://app.housalert.com";
 }
 
-function emailWrapper(content: string, preheader?: string, lang: ServerLocale = "nl", footerOverride?: string): string {
+function emailWrapper(content: string, preheader?: string, lang: ServerLocale = "nl", footerOverride?: string, buddyUnsubscribeUrl?: string): string {
   const baseUrl = getAppBaseUrl();
   const preheaderHtml = preheader
     ? `<div style="display:none;font-size:1px;color:${C.white};line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">${escapeHtml(preheader)}</div>`
@@ -200,6 +180,7 @@ ${preheaderHtml}
     ${escapeHtml(footerOverride || t(lang, "email.footer"))}
   </p>
   ${footerOverride ? "" : `<a href="${baseUrl}/instellingen" target="_blank" style="font-size:12px;color:${C.accent};text-decoration:none;">${escapeHtml(t(lang, "email.manageNotifs"))}</a>`}
+  ${buddyUnsubscribeUrl ? `<br><a href="${buddyUnsubscribeUrl}" target="_blank" style="font-size:11px;color:${C.lightMuted};text-decoration:underline;">${lang === "de" ? "Suchbuddy-Benachrichtigungen abmelden" : lang === "nl" ? "Afmelden voor zoekbuddy-meldingen" : "Unsubscribe from Search Buddy alerts"}</a>` : ""}
   <p style="margin:12px 0 0;font-size:11px;color:${C.border};">
     \u00A9 ${new Date().getFullYear()} HousAlert
   </p>
@@ -296,7 +277,8 @@ ${imageHtml}
 export async function sendMatchAlert(
   userEmail: string,
   listing: ListingInfo,
-  lang: ServerLocale = "nl"
+  lang: ServerLocale = "nl",
+  buddyUnsubscribeUrl?: string
 ): Promise<boolean> {
   try {
     const client = await getResendClient();
@@ -326,8 +308,8 @@ ${listingCard(listing, true, undefined, lang)}`;
       to: userEmail,
       subject,
       text: textBody,
-      html: emailWrapper(htmlContent, preheader, lang),
-    }, "user-match");
+      html: emailWrapper(htmlContent, preheader, lang, undefined, buddyUnsubscribeUrl),
+    }, buddyUnsubscribeUrl ? "buddy-match" : "user-match");
 
     if (error) {
       log(`[EMAIL FAIL] to=${userEmail} listing="${listing.title}" lang=${lang} error=${error.message} name=${(error as any).name || "unknown"} statusCode=${(error as any).statusCode || "N/A"}`);
@@ -346,12 +328,13 @@ export async function sendBatchMatchAlert(
   userEmail: string,
   listings: ListingInfo[],
   lang: ServerLocale = "nl",
-  emailCategory: string = "user-match"
+  emailCategory: string = "user-match",
+  buddyUnsubscribeUrl?: string
 ): Promise<boolean> {
   if (listings.length === 0) return false;
 
   if (listings.length === 1) {
-    return sendMatchAlert(userEmail, listings[0], lang);
+    return sendMatchAlert(userEmail, listings[0], lang, buddyUnsubscribeUrl);
   }
 
   try {
@@ -391,7 +374,7 @@ ${htmlListings}`;
       to: userEmail,
       subject,
       text: textBody,
-      html: emailWrapper(htmlContent, preheader, lang),
+      html: emailWrapper(htmlContent, preheader, lang, undefined, buddyUnsubscribeUrl),
     }, emailCategory);
 
     if (error) {
@@ -509,6 +492,59 @@ export async function sendBuddyInvitationEmail(
     log(`[EMAIL ERROR] buddy-invite to=${buddyEmail} err=${err.message}`);
     return false;
   }
+}
+
+function getBuddyUnsubscribeSecret(): string | null {
+  const secret = process.env.SESSION_SECRET;
+  if (!secret || secret.length < 16) {
+    return null;
+  }
+  return secret;
+}
+
+export function generateBuddyUnsubscribeToken(ownerUserId: string, buddyEmail: string): string | null {
+  const secret = getBuddyUnsubscribeSecret();
+  if (!secret) {
+    log("[BUDDY UNSUB] Cannot generate token — SESSION_SECRET not configured");
+    return null;
+  }
+  const payload = `${ownerUserId}:${buddyEmail.toLowerCase().trim()}`;
+  const hmac = createHmac("sha256", secret);
+  hmac.update(payload);
+  const signature = hmac.digest("hex");
+  const data = Buffer.from(JSON.stringify({ u: ownerUserId, e: buddyEmail.toLowerCase().trim() })).toString("base64url");
+  return `${data}.${signature}`;
+}
+
+export function validateBuddyUnsubscribeToken(token: string): { ownerUserId: string; buddyEmail: string } | null {
+  const secret = getBuddyUnsubscribeSecret();
+  if (!secret) {
+    log("[BUDDY UNSUB] Cannot validate token — SESSION_SECRET not configured");
+    return null;
+  }
+  try {
+    const [data, signature] = token.split(".");
+    if (!data || !signature) return null;
+    const parsed = JSON.parse(Buffer.from(data, "base64url").toString("utf8"));
+    const ownerUserId = parsed.u;
+    const buddyEmail = parsed.e;
+    if (!ownerUserId || !buddyEmail) return null;
+    const payload = `${ownerUserId}:${buddyEmail.toLowerCase().trim()}`;
+    const hmac = createHmac("sha256", secret);
+    hmac.update(payload);
+    const expected = hmac.digest("hex");
+    if (signature !== expected) return null;
+    return { ownerUserId, buddyEmail: buddyEmail.toLowerCase().trim() };
+  } catch {
+    return null;
+  }
+}
+
+export function getBuddyUnsubscribeUrl(ownerUserId: string, buddyEmail: string): string | null {
+  const token = generateBuddyUnsubscribeToken(ownerUserId, buddyEmail);
+  if (!token) return null;
+  const baseUrl = getAppBaseUrl();
+  return `${baseUrl}/api/buddy-unsubscribe?token=${encodeURIComponent(token)}`;
 }
 
 export async function sendPasswordResetEmail(

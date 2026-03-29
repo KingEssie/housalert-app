@@ -23,6 +23,7 @@ import {
   findUserByStripeCustomerId,
 } from "./subscriptions";
 import { log } from "./log";
+import { validateBuddyUnsubscribeToken } from "./email";
 import { detectLanguage } from "./i18n";
 import { computeMatchScore, getMatchReasons, computeHybridFilters } from "../shared/match-score";
 import { normalizeCity } from "../shared/city-normalize";
@@ -74,6 +75,77 @@ export async function registerRoutes(
     }
   });
 
+
+  app.get("/api/buddy-unsubscribe", async (req, res) => {
+    try {
+      const token = typeof req.query.token === "string" ? req.query.token : "";
+      if (!token) {
+        return res.status(400).send("Missing token.");
+      }
+      const parsed = validateBuddyUnsubscribeToken(token);
+      if (!parsed) {
+        return res.status(400).send("Invalid or expired link.");
+      }
+      return res.status(200).send(`
+        <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Unsubscribe - HousAlert</title></head>
+        <body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:480px;margin:40px auto;text-align:center;padding:20px;">
+          <h2 style="margin-bottom:12px;">Unsubscribe from Search Buddy alerts?</h2>
+          <p style="color:#4B5563;margin-bottom:24px;">You will no longer receive listing alerts as a Search Buddy for this account.</p>
+          <form method="POST" action="/api/buddy-unsubscribe">
+            <input type="hidden" name="token" value="${token.replace(/"/g, "&quot;")}">
+            <button type="submit" style="background:#e91e63;color:#fff;border:none;border-radius:6px;padding:14px 32px;font-size:16px;cursor:pointer;font-weight:600;">Yes, unsubscribe me</button>
+          </form>
+        </body></html>
+      `);
+    } catch (err: any) {
+      log(`[BUDDY UNSUB] GET ERROR: ${err.message}`);
+      return res.status(500).send("Something went wrong. Please try again later.");
+    }
+  });
+
+  app.post("/api/buddy-unsubscribe", async (req, res) => {
+    try {
+      const token = typeof req.body?.token === "string" ? req.body.token : "";
+      if (!token) {
+        return res.status(400).send("Missing token.");
+      }
+      const parsed = validateBuddyUnsubscribeToken(token);
+      if (!parsed) {
+        return res.status(400).send("Invalid or expired link.");
+      }
+      const { ownerUserId, buddyEmail } = parsed;
+      log(`[BUDDY UNSUB] POST token valid — ownerUserId=${ownerUserId.substring(0, 8)}... buddyEmail=${buddyEmail}`);
+
+      const result = await pgPool.query(
+        `UPDATE user_profile_data SET search_buddy_enabled = false, search_buddy_status = 'revoked_by_buddy', search_buddy_removed_at = NOW() WHERE user_id = $1 AND lower(trim(search_buddy_email)) = $2 AND search_buddy_status = 'active'`,
+        [ownerUserId, buddyEmail]
+      );
+
+      if (result.rowCount === 0) {
+        log(`[BUDDY UNSUB] no active buddy matched — userId=${ownerUserId.substring(0, 8)}... buddyEmail=${buddyEmail}`);
+        return res.status(200).send(`
+          <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>HousAlert</title></head>
+          <body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:480px;margin:40px auto;text-align:center;padding:20px;">
+            <h2>Already unsubscribed</h2>
+            <p style="color:#4B5563;">This buddy email is no longer active on this account.</p>
+          </body></html>
+        `);
+      }
+
+      log(`[BUDDY UNSUB] SUCCESS — userId=${ownerUserId.substring(0, 8)}... buddyEmail=${buddyEmail} status→revoked_by_buddy`);
+
+      return res.status(200).send(`
+        <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>HousAlert</title></head>
+        <body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:480px;margin:40px auto;text-align:center;padding:20px;">
+          <h2>Unsubscribed</h2>
+          <p style="color:#4B5563;">You have been removed as a Search Buddy. You will no longer receive listing alerts for this account.</p>
+        </body></html>
+      `);
+    } catch (err: any) {
+      log(`[BUDDY UNSUB] POST ERROR: ${err.message}`);
+      return res.status(500).send("Something went wrong. Please try again later.");
+    }
+  });
 
   const missingStripeVars: string[] = [];
   if (!process.env.STRIPE_PRICE_MONTHLY && !process.env.STRIPE_PRICE_1_MONTH) missingStripeVars.push("STRIPE_PRICE_MONTHLY");

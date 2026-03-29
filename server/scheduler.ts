@@ -77,11 +77,9 @@ export async function startScheduler() {
     log(`[scheduler] Cleaned up ${cleaned} stale fetch runs from previous server`, "scheduler");
   }
 
-  log(`[SYSTEM] Recovery scheduler DISABLED — buddy email investigation in progress`, "scheduler");
-  // TEMPORARILY DISABLED: Recovery scheduler was re-sending buddy emails every 5 minutes
-  // setTimeout(() => runRecoveryCycle(), 30_000);
-  // setInterval(() => runRecoveryCycle(), RECOVERY_INTERVAL_MS);
-  // log(`Email recovery timer started — runs every ${RECOVERY_INTERVAL_MS / 1000}s`, "scheduler");
+  setTimeout(() => runRecoveryCycle(), 30_000);
+  setInterval(() => runRecoveryCycle(), RECOVERY_INTERVAL_MS);
+  log(`Email recovery timer started — runs every ${RECOVERY_INTERVAL_MS / 1000}s`, "scheduler");
 
   const RECEIPT_CHECK_MS = 20 * 60 * 1000;
   setTimeout(async () => {
