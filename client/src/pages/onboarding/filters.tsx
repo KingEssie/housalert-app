@@ -11,6 +11,8 @@ import { OB, OBW, ONBOARDING_TOTAL_STEPS, OBFooter, OBWebHeader, OBWebFooter, us
 import { createSearchProfile, type InsertSearchProfileInput } from "@/lib/search-profiles";
 import { queryClient } from "@/lib/queryClient";
 
+type OBTheme = typeof OB | typeof OBW;
+
 function SegmentedControl({
   options,
   value,
@@ -22,7 +24,7 @@ function SegmentedControl({
   value: string;
   onChange: (v: string) => void;
   testId: string;
-  theme?: typeof OB;
+  theme?: OBTheme;
 }) {
   const t = theme || OB;
   const isLight = theme === OBW;
@@ -61,7 +63,7 @@ function Toggle({
   onChange: (v: boolean) => void;
   label: string;
   testId: string;
-  theme?: typeof OB;
+  theme?: OBTheme;
 }) {
   const t = theme || OB;
   const isLight = theme === OBW;
@@ -99,7 +101,7 @@ function RangeSlider({
   onChange: (v: number) => void;
   formatLabel: (v: number) => string;
   testId: string;
-  theme?: typeof OB;
+  theme?: OBTheme;
 }) {
   const t = theme || OB;
   const isLight = theme === OBW;
@@ -149,7 +151,7 @@ function DualRangeSlider({
   onChangeHigh: (v: number) => void;
   formatLabel: (v: number) => string;
   testId: string;
-  theme?: typeof OB;
+  theme?: OBTheme;
 }) {
   const t = theme || OB;
   const isLight = theme === OBW;
@@ -384,10 +386,12 @@ export default function OnboardingFilters() {
     { value: "unfurnished", label: t("onboarding.filters.furnishedNo") || "Nein" },
   ];
 
+  const sLabel = w ? "text-[15px] font-bold mb-3 block" : "text-[13px] font-semibold mb-3 block";
+
   const filterSections = (
-    <div className="flex flex-col gap-7">
+    <div className="flex flex-col gap-6">
       <section>
-        <label className="text-[13px] font-semibold mb-3 block" style={{ color: T.text }}>
+        <label className={sLabel} style={{ color: T.text }}>
           {t("onboarding.filters.rentLabel") || "Huurprijs"}
         </label>
         <DualRangeSlider
@@ -416,7 +420,7 @@ export default function OnboardingFilters() {
       <div className="h-px" style={{ backgroundColor: T.divider }} />
 
       <section>
-        <label className="text-[13px] font-semibold mb-3 block" style={{ color: T.text }}>
+        <label className={sLabel} style={{ color: T.text }}>
           {t("onboarding.filters.propertyTypeLabel") || "Woningtype"}
         </label>
         <SegmentedControl
@@ -440,7 +444,7 @@ export default function OnboardingFilters() {
       <div className="h-px" style={{ backgroundColor: T.divider }} />
 
       <section>
-        <label className="text-[13px] font-semibold mb-3 block" style={{ color: T.text }}>
+        <label className={sLabel} style={{ color: T.text }}>
           {t("onboarding.filters.bedroomsLabel") || "Slaapkamers"}
         </label>
         <div
@@ -469,7 +473,7 @@ export default function OnboardingFilters() {
 
       <section>
         <div className="flex items-center justify-between mb-3">
-          <label className="text-[13px] font-semibold" style={{ color: T.text }}>
+          <label className={w ? "text-[15px] font-bold" : "text-[13px] font-semibold"} style={{ color: T.text }}>
             {t("onboarding.filters.minSizeLabel") || "Minimale oppervlakte"}
           </label>
           <button
@@ -502,7 +506,7 @@ export default function OnboardingFilters() {
       <div className="h-px" style={{ backgroundColor: T.divider }} />
 
       <section>
-        <label className="text-[13px] font-semibold mb-3 block" style={{ color: T.text }}>
+        <label className={sLabel} style={{ color: T.text }}>
           {t("onboarding.filters.furnishedLabel") || "Gemeubileerd"}
         </label>
         <SegmentedControl
@@ -517,7 +521,7 @@ export default function OnboardingFilters() {
       <div className="h-px" style={{ backgroundColor: T.divider }} />
 
       <section>
-        <label className="text-[13px] font-semibold mb-3 block" style={{ color: T.text }}>
+        <label className={sLabel} style={{ color: T.text }}>
           {t("onboarding.filters.amenitiesLabel") || "Extra wensen"}
         </label>
         <div className="flex flex-wrap gap-2" data-testid="amenity-chips">
@@ -567,15 +571,15 @@ export default function OnboardingFilters() {
       >
         <OBWebHeader step={2} onClose={handleClose} />
 
-        <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-[100px] overflow-y-auto">
+        <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[100px] overflow-y-auto">
           <h2
-            className="text-[20px] font-bold tracking-[-0.01em] mb-1"
+            className="text-[24px] font-bold tracking-[-0.02em] mb-1"
             style={{ color: OBW.text }}
             data-testid="text-filters-title"
           >
             Wat zoek je precies?
           </h2>
-          <p className="text-[14px] mb-6" style={{ color: OBW.textSecondary }}>
+          <p className="text-[14px] mb-6 leading-relaxed" style={{ color: OBW.textSecondary }}>
             Verfijn je zoekopdracht voor de beste resultaten.
           </p>
 

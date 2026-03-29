@@ -124,18 +124,18 @@ export function OBWebHeader({ step, totalSteps = 3, onClose }: { step: number; t
       className="w-full sticky top-0 z-20"
       style={{ backgroundColor: OBW.headerBg, borderBottom: `1px solid ${OBW.headerBorder}` }}
     >
-      <div className="max-w-[480px] mx-auto px-5 h-[52px] flex items-center justify-between">
+      <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center justify-between">
         <span
-          className="text-[12px] font-bold px-2.5 py-1 rounded-[6px]"
+          className="text-[11px] font-bold px-2.5 py-1 rounded-[6px] uppercase tracking-wide"
           style={{ backgroundColor: OBW.badgeBg, color: OBW.badgeColor }}
           data-testid="badge-step"
         >
           Stap {step}/{totalSteps}
         </span>
-        <HousAlertLogo size={24} />
+        <HousAlertLogo size={28} />
         <button
           onClick={onClose}
-          className="w-[32px] h-[32px] rounded-full flex items-center justify-center active:scale-95 transition-transform"
+          className="w-[34px] h-[34px] rounded-full flex items-center justify-center active:scale-95 transition-transform"
           style={{ backgroundColor: OBW.closeBtnBg }}
           data-testid="button-close"
         >
@@ -175,25 +175,25 @@ export function OBWebFooter({
           <p className="text-[11px] font-medium uppercase tracking-wide" style={{ color: OBW.textMuted }}>
             Geschatte matches
           </p>
-          <p className="text-[16px] font-bold" style={{ color: OBW.text }}>
-            {matchCount} per week
+          <p className="text-[17px] font-bold flex items-center gap-1" style={{ color: OBW.text }}>
+            {matchCount} per week <span className="text-[14px]">🔥</span>
           </p>
         </div>
         {onBack && (
           <button
             onClick={onBack}
-            className="w-[44px] h-[44px] rounded-[6px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
+            className="w-[48px] h-[48px] rounded-[6px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
             style={{ border: `1.5px solid ${OBW.backBtnBorder}`, backgroundColor: OBW.backBtnBg }}
             data-testid={backTestId || "button-back"}
           >
-            <ChevronLeft className="w-[16px] h-[16px]" style={{ color: OBW.backBtnColor }} />
+            <ChevronLeft className="w-[18px] h-[18px]" style={{ color: OBW.backBtnColor }} />
           </button>
         )}
         <button
           onClick={onNext}
           disabled={nextDisabled || saving}
-          className="px-6 h-[44px] rounded-[6px] text-[14px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-1.5 shrink-0"
-          style={{ background: OBW.pinkGradient, boxShadow: nextDisabled ? "none" : "0 4px 12px rgba(233,30,99,0.2)" }}
+          className="px-7 h-[48px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-1.5 shrink-0"
+          style={{ background: OBW.pinkGradient, boxShadow: nextDisabled ? "none" : "0 4px 14px rgba(233,30,99,0.25)" }}
           data-testid={nextTestId || "button-next"}
         >
           {saving && <Loader2 className="w-4 h-4 animate-spin" />}

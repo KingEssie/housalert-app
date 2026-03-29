@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
 import { useTranslation } from "@/i18n";
 import { HousAlertLogo } from "@/components/housalert-logo";
-import { ChevronLeft, Lock, Loader2, Eye, EyeOff, Gift, User, Mail, MapPin, Clock } from "lucide-react";
+import { ChevronLeft, Lock, Loader2, Eye, EyeOff, Gift, MapPin } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { clearAllUserData } from "@/lib/queryClient";
 import { createSearchProfile } from "@/lib/search-profiles";
@@ -181,40 +181,34 @@ export default function OnboardingPassword() {
       >
         <OBWebHeader step={3} onClose={handleClose} />
 
-        <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-[100px] overflow-y-auto">
+        <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[120px] overflow-y-auto">
           <h2
-            className="text-[20px] font-bold tracking-[-0.01em] mb-1"
+            className="text-[24px] font-bold tracking-[-0.02em] mb-1"
             style={{ color: OBW.text }}
             data-testid="text-password-title"
           >
             Maak je account aan
           </h2>
-          <p className="text-[14px] mb-5" style={{ color: OBW.textSecondary }}>
+          <p className="text-[14px] mb-5 leading-relaxed" style={{ color: OBW.textSecondary }}>
             Begin direct met zoeken naar je nieuwe woning.
           </p>
 
-          <button
-            onClick={handleBack}
-            className="flex items-center gap-1.5 text-[13px] font-medium mb-4 transition-colors hover:opacity-80"
-            style={{ color: OBW.textSecondary }}
-            data-testid="button-password-back"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Terug naar filters
-          </button>
-
           {city && (
             <div
-              className="rounded-[12px] p-4 mb-4"
-              style={{ backgroundColor: OBW.surface, border: `1px solid ${OBW.cardBorder}` }}
+              className="rounded-[10px] p-4 mb-4"
+              style={{
+                backgroundColor: OBW.surface,
+                border: `1px solid ${OBW.cardBorder}`,
+                borderLeft: "3px solid #e91e63",
+              }}
               data-testid="search-summary-card"
             >
-              <p className="text-[12px] font-semibold uppercase tracking-wide mb-2" style={{ color: OBW.textMuted }}>
+              <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: OBW.textMuted }}>
                 Jouw zoekopdracht
               </p>
               <div className="flex items-center gap-2 mb-1">
                 <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color: OBW.pink }} />
-                <span className="text-[14px] font-medium" style={{ color: OBW.text }}>
+                <span className="text-[14px] font-semibold" style={{ color: OBW.text }}>
                   {city}{radiusKm ? ` · ${radiusKm} km straal` : ""}
                 </span>
               </div>
@@ -226,83 +220,70 @@ export default function OnboardingPassword() {
 
           <div className="mb-5">
             <OBInfoBox>
-              <div className="flex items-start gap-2">
-                <Clock className="w-4 h-4 shrink-0 mt-0.5" style={{ color: "#0284c7" }} />
-                <span>Er waren afgelopen week <strong>121 woningen</strong> beschikbaar in {city || "jouw regio"}. Maak een account aan om ze niet te missen!</span>
-              </div>
+              Er waren afgelopen week <strong>121 woningen</strong> beschikbaar in {city || "jouw regio"}. Maak een account aan om ze niet te missen!
             </OBInfoBox>
           </div>
 
           <div className="flex flex-col gap-4">
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-[12px] font-medium mb-1.5 block" style={{ color: OBW.textSecondary }}>
+                <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: OBW.text }}>
                   Voornaam
                 </label>
-                <div className="relative">
-                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[16px] h-[16px]" style={{ color: "#9ca3af" }} />
-                  <input
-                    type="text"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="Max"
-                    className="w-full h-[48px] pl-10 pr-3 rounded-[6px] text-[14px] font-medium ha-field"
-                    style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
-                    autoFocus
-                    data-testid="input-first-name"
-                  />
-                </div>
+                <input
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="Max"
+                  className="w-full h-[48px] px-3.5 rounded-[8px] text-[14px] ha-field"
+                  style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
+                  autoFocus
+                  data-testid="input-first-name"
+                />
               </div>
               <div>
-                <label className="text-[12px] font-medium mb-1.5 block" style={{ color: OBW.textSecondary }}>
+                <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: OBW.text }}>
                   Achternaam
                 </label>
-                <div className="relative">
-                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[16px] h-[16px]" style={{ color: "#9ca3af" }} />
-                  <input
-                    type="text"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    placeholder="Müller"
-                    className="w-full h-[48px] pl-10 pr-3 rounded-[6px] text-[14px] font-medium ha-field"
-                    style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
-                    data-testid="input-last-name"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <label className="text-[12px] font-medium mb-1.5 block" style={{ color: OBW.textSecondary }}>
-                E-mailadres
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[16px] h-[16px]" style={{ color: "#9ca3af" }} />
                 <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="jouw@email.de"
-                  className="w-full h-[48px] pl-10 pr-3 rounded-[6px] text-[14px] font-medium ha-field"
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder="Müller"
+                  className="w-full h-[48px] px-3.5 rounded-[8px] text-[14px] ha-field"
                   style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
-                  data-testid="input-email"
+                  data-testid="input-last-name"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-[12px] font-medium mb-1.5 block" style={{ color: OBW.textSecondary }}>
+              <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: OBW.text }}>
+                E-mailadres
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="jouw@email.de"
+                className="w-full h-[48px] px-3.5 rounded-[8px] text-[14px] ha-field"
+                style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
+                data-testid="input-email"
+              />
+            </div>
+
+            <div>
+              <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: OBW.text }}>
                 Wachtwoord
               </label>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[16px] h-[16px]" style={{ color: "#9ca3af" }} />
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Minimaal 6 tekens"
                   minLength={6}
-                  className="w-full h-[48px] pl-10 pr-12 rounded-[6px] text-[14px] font-medium ha-field"
+                  className="w-full h-[48px] px-3.5 pr-12 rounded-[8px] text-[14px] ha-field"
                   style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
                   data-testid="input-password"
                 />
@@ -336,22 +317,19 @@ export default function OnboardingPassword() {
               </button>
             ) : (
               <div>
-                <label className="text-[12px] font-medium mb-1.5 block" style={{ color: OBW.textSecondary }}>
+                <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: OBW.text }}>
                   Empfehlungscode
                 </label>
-                <div className="relative">
-                  <Gift className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[16px] h-[16px]" style={{ color: "#9ca3af" }} />
-                  <input
-                    type="text"
-                    placeholder="ABC123"
-                    value={referralCode}
-                    onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
-                    className="w-full h-[48px] pl-10 pr-3 rounded-[6px] text-[14px] font-medium ha-field"
-                    style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
-                    autoCapitalize="characters"
-                    data-testid="input-referral-code"
-                  />
-                </div>
+                <input
+                  type="text"
+                  placeholder="ABC123"
+                  value={referralCode}
+                  onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+                  className="w-full h-[48px] px-3.5 rounded-[8px] text-[14px] ha-field"
+                  style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
+                  autoCapitalize="characters"
+                  data-testid="input-referral-code"
+                />
                 <p className="text-[12px] mt-1 ml-1" style={{ color: OBW.textMuted }}>
                   Optioneel
                 </p>
@@ -360,40 +338,55 @@ export default function OnboardingPassword() {
           </div>
         </main>
 
-        <OBStickyBar websiteMode={true}>
-          <button
-            onClick={handleCreateAccount}
-            disabled={!canSubmit}
-            className="w-full h-[52px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
-            style={{ background: OBW.pinkGradient, boxShadow: canSubmit ? OBW.pinkShadow : "none" }}
-            data-testid="button-create-account"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                Account wordt aangemaakt...
-              </>
-            ) : (
-              "Account aanmaken"
-            )}
-          </button>
+        <div
+          className="fixed bottom-0 left-0 right-0 z-30"
+          style={{ borderTop: `1px solid ${OBW.footerBorder}`, backgroundColor: OBW.footerBg }}
+        >
+          <div className="max-w-[480px] mx-auto px-5 pt-4 pb-4">
+            <div className="flex items-center gap-3 mb-3">
+              <button
+                onClick={handleBack}
+                className="w-[48px] h-[48px] rounded-[6px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
+                style={{ border: `1.5px solid ${OBW.backBtnBorder}`, backgroundColor: OBW.backBtnBg }}
+                data-testid="button-password-back"
+              >
+                <ChevronLeft className="w-[18px] h-[18px]" style={{ color: OBW.backBtnColor }} />
+              </button>
+              <button
+                onClick={handleCreateAccount}
+                disabled={!canSubmit}
+                className="flex-1 h-[48px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-2"
+                style={{ background: OBW.pinkGradient, boxShadow: canSubmit ? "0 4px 14px rgba(233,30,99,0.25)" : "none" }}
+                data-testid="button-create-account"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Wordt aangemaakt...
+                  </>
+                ) : (
+                  "Account aanmaken"
+                )}
+              </button>
+            </div>
 
-          <p className="text-center text-[11px] mt-3 leading-relaxed" style={{ color: OBW.textMuted }}>
-            Met de registratie accepteer je onze Nutzungsbedingungen en Datenschutzrichtlinie.
-          </p>
+            <p className="text-center text-[11px] leading-relaxed" style={{ color: OBW.textMuted }}>
+              Met de registratie accepteer je onze Nutzungsbedingungen en Datenschutzrichtlinie.
+            </p>
 
-          <p className="text-center text-[13px] mt-2 pb-1" style={{ color: OBW.textSecondary }}>
-            Heb je al een account?{" "}
-            <button
-              onClick={() => navigate("/")}
-              className="font-medium hover:underline"
-              style={{ color: OB.pink }}
-              data-testid="link-login"
-            >
-              Inloggen
-            </button>
-          </p>
-        </OBStickyBar>
+            <p className="text-center text-[13px] mt-1.5" style={{ color: OBW.textSecondary }}>
+              Heb je al een account?{" "}
+              <button
+                onClick={() => navigate("/")}
+                className="font-semibold hover:underline"
+                style={{ color: OB.pink }}
+                data-testid="link-login"
+              >
+                Inloggen
+              </button>
+            </p>
+          </div>
+        </div>
       </div>
     );
   }
