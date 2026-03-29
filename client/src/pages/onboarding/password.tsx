@@ -9,13 +9,15 @@ import { clearAllUserData } from "@/lib/queryClient";
 import { createSearchProfile } from "@/lib/search-profiles";
 import { useToast } from "@/hooks/use-toast";
 import { apiFetch } from "@/lib/api-base";
-import { OB, OBStickyBar } from "@/components/onboarding-ui";
+import { OB, OBW, OBStickyBar, useWebsiteMode } from "@/components/onboarding-ui";
 
 export default function OnboardingPassword() {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
   const { toast } = useToast();
   const searchString = useHashSearch();
+  const w = useWebsiteMode();
+  const T = w ? OBW : OB;
   const params = new URLSearchParams(searchString);
 
   const firstName = params.get("firstName") || "";
@@ -149,16 +151,27 @@ export default function OnboardingPassword() {
   const canSubmit = password.length >= 6 && email && !loading;
 
   return (
-    <div className="min-h-[100dvh] flex flex-col ob-dark" style={{ background: OB.gradient }} data-testid="screen-onboarding-password">
-      <header className="sticky top-0 z-20 backdrop-blur-md border-b" style={{ backgroundColor: OB.headerBg, borderColor: OB.headerBorder }}>
+    <div
+      className={`min-h-[100dvh] flex flex-col ${w ? "" : "ob-dark"}`}
+      style={{ background: T.gradient }}
+      data-testid="screen-onboarding-password"
+    >
+      <header
+        className="sticky top-0 z-20 backdrop-blur-md border-b"
+        style={{
+          backgroundColor: T.headerBg,
+          borderColor: T.headerBorder,
+          paddingTop: w ? "0px" : undefined,
+        }}
+      >
         <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
           <button
             onClick={handleBack}
             className="w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-transform"
-            style={{ backgroundColor: OB.backBtnBg }}
+            style={{ backgroundColor: w ? OBW.backBtnBg : OB.backBtnBg }}
             data-testid="button-password-back"
           >
-            <ChevronLeft className="w-5 h-5" style={{ color: OB.textSecondary }} />
+            <ChevronLeft className="w-5 h-5" style={{ color: T.textSecondary }} />
           </button>
           <div className="flex-1 flex justify-center">
             <HousAlertLogo size={28} />
@@ -170,18 +183,18 @@ export default function OnboardingPassword() {
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-4 pb-[100px]">
         <h1
           className="text-[24px] font-bold tracking-[-0.02em] mb-2"
-          style={{ color: OB.text }}
+          style={{ color: T.text }}
           data-testid="text-password-title"
         >
           {t("onboarding.password.title") || "Wähle ein Passwort"}
         </h1>
-        <p className="text-[14px] mb-6 leading-relaxed" style={{ color: OB.textSecondary }}>
+        <p className="text-[14px] mb-6 leading-relaxed" style={{ color: T.textSecondary }}>
           {t("onboarding.password.subtitle") || "Mindestens 6 Zeichen, damit dein Konto sicher ist."}
         </p>
 
         <div className="flex flex-col gap-6">
           <div>
-            <label className="text-[13px] font-medium mb-1.5 block" style={{ color: OB.textSecondary }}>
+            <label className="text-[13px] font-medium mb-1.5 block" style={{ color: T.textSecondary }}>
               {t("onboarding.password.label") || "Passwort"}
             </label>
             <div className="relative">
@@ -192,7 +205,8 @@ export default function OnboardingPassword() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t("onboarding.password.placeholder") || "Mindestens 6 Zeichen"}
                 minLength={6}
-                className="ob-input w-full h-[56px] pl-12 pr-12 rounded-[6px] text-[15px] font-medium"
+                className={`w-full h-[56px] pl-12 pr-12 rounded-[6px] text-[15px] font-medium ${w ? "ha-field" : "ob-input"}`}
+                style={w ? { backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text } : undefined}
                 autoFocus
                 data-testid="input-password"
               />
@@ -207,7 +221,7 @@ export default function OnboardingPassword() {
               </button>
             </div>
             {password.length > 0 && password.length < 6 && (
-              <p className="text-[12px] text-red-400 mt-1.5" data-testid="text-password-hint">
+              <p className={`text-[12px] mt-1.5 ${w ? "text-red-500" : "text-red-400"}`} data-testid="text-password-hint">
                 {t("onboarding.password.tooShort") || "Mindestens 6 Zeichen erforderlich"}
               </p>
             )}
@@ -218,7 +232,7 @@ export default function OnboardingPassword() {
               type="button"
               onClick={() => setShowReferral(true)}
               className="flex items-center gap-2 text-[13px] py-1 transition-colors"
-              style={{ color: OB.textSecondary }}
+              style={{ color: T.textSecondary }}
               data-testid="button-show-referral"
             >
               <Gift className="w-4 h-4" />
@@ -226,7 +240,7 @@ export default function OnboardingPassword() {
             </button>
           ) : (
             <div>
-              <label className="text-[13px] font-medium mb-1.5 block" style={{ color: OB.textSecondary }}>
+              <label className="text-[13px] font-medium mb-1.5 block" style={{ color: T.textSecondary }}>
                 {t("referral.inputLabel") || "Empfehlungscode"}
               </label>
               <div className="relative">
@@ -236,12 +250,13 @@ export default function OnboardingPassword() {
                   placeholder={t("referral.inputPlaceholder") || "ABC123"}
                   value={referralCode}
                   onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
-                  className="ob-input w-full h-[56px] pl-12 pr-4 rounded-[6px] text-[15px] font-medium"
+                  className={`w-full h-[56px] pl-12 pr-4 rounded-[6px] text-[15px] font-medium ${w ? "ha-field" : "ob-input"}`}
+                  style={w ? { backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text } : undefined}
                   autoCapitalize="characters"
                   data-testid="input-referral-code"
                 />
               </div>
-              <p className="text-[12px] mt-1 ml-1" style={{ color: OB.textMuted }}>
+              <p className="text-[12px] mt-1 ml-1" style={{ color: T.textMuted }}>
                 {t("referral.inputHelper") || "Optional"}
               </p>
             </div>
@@ -249,12 +264,12 @@ export default function OnboardingPassword() {
         </div>
       </main>
 
-      <OBStickyBar>
+      <OBStickyBar websiteMode={w}>
         <button
           onClick={handleCreateAccount}
           disabled={!canSubmit}
           className="w-full h-[56px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
-          style={{ background: OB.pinkGradient, boxShadow: canSubmit ? OB.pinkShadow : "none" }}
+          style={{ background: T.pinkGradient, boxShadow: canSubmit ? T.pinkShadow : "none" }}
           data-testid="button-create-account"
         >
           {loading ? (
@@ -267,11 +282,11 @@ export default function OnboardingPassword() {
           )}
         </button>
 
-        <p className="text-center text-[12px] mt-3 leading-relaxed" style={{ color: OB.textMuted }}>
+        <p className="text-center text-[12px] mt-3 leading-relaxed" style={{ color: T.textMuted }}>
           {t("onboarding.password.terms") || "Mit der Registrierung akzeptierst du unsere Nutzungsbedingungen und Datenschutzrichtlinie."}
         </p>
 
-        <p className="text-center text-[14px] mt-3 pb-1" style={{ color: OB.textSecondary }}>
+        <p className="text-center text-[14px] mt-3 pb-1" style={{ color: T.textSecondary }}>
           {t("auth.signup.hasAccount") || "Hast du schon ein Konto?"}{" "}
           <button
             onClick={() => navigate("/")}

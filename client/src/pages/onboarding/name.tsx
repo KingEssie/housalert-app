@@ -4,12 +4,14 @@ import { useHashSearch } from "@/lib/hash-search";
 import { useTranslation } from "@/i18n";
 import { HousAlertLogo } from "@/components/housalert-logo";
 import { ChevronLeft, User } from "lucide-react";
-import { OB, OBStickyBar } from "@/components/onboarding-ui";
+import { OB, OBW, OBStickyBar, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
 
 export default function OnboardingName() {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
   const searchString = useHashSearch();
+  const w = useWebsiteMode();
+  const T = w ? OBW : OB;
   const incomingParams = new URLSearchParams(searchString);
 
   const [firstName, setFirstName] = useState(incomingParams.get("firstName") || "");
@@ -32,16 +34,27 @@ export default function OnboardingName() {
   }
 
   return (
-    <div className="min-h-[100dvh] flex flex-col ob-dark" style={{ background: OB.gradient }} data-testid="screen-onboarding-name">
-      <header className="sticky top-0 z-20 backdrop-blur-md border-b" style={{ backgroundColor: OB.headerBg, borderColor: OB.headerBorder }}>
+    <div
+      className={`min-h-[100dvh] flex flex-col ${w ? "" : "ob-dark"}`}
+      style={{ background: T.gradient }}
+      data-testid="screen-onboarding-name"
+    >
+      <header
+        className="sticky top-0 z-20 backdrop-blur-md border-b"
+        style={{
+          backgroundColor: T.headerBg,
+          borderColor: T.headerBorder,
+          paddingTop: w ? "0px" : undefined,
+        }}
+      >
         <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
           <button
             onClick={handleBack}
             className="w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-transform"
-            style={{ backgroundColor: OB.backBtnBg }}
+            style={{ backgroundColor: w ? OBW.backBtnBg : OB.backBtnBg }}
             data-testid="button-name-back"
           >
-            <ChevronLeft className="w-5 h-5" style={{ color: OB.textSecondary }} />
+            <ChevronLeft className="w-5 h-5" style={{ color: T.textSecondary }} />
           </button>
           <div className="flex-1 flex justify-center">
             <HousAlertLogo size={28} />
@@ -53,18 +66,18 @@ export default function OnboardingName() {
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-4 pb-[100px]">
         <h1
           className="text-[24px] font-bold tracking-[-0.02em] mb-2"
-          style={{ color: OB.text }}
+          style={{ color: T.text }}
           data-testid="text-name-title"
         >
           {t("onboarding.name.title") || "Wie heißt du?"}
         </h1>
-        <p className="text-[14px] mb-6 leading-relaxed" style={{ color: OB.textSecondary }}>
+        <p className="text-[14px] mb-6 leading-relaxed" style={{ color: T.textSecondary }}>
           {t("onboarding.name.subtitle") || "Damit Vermieter dich persönlich ansprechen können."}
         </p>
 
         <div className="flex flex-col gap-6">
           <div>
-            <label className="text-[13px] font-medium mb-1.5 block" style={{ color: OB.textSecondary }}>
+            <label className="text-[13px] font-medium mb-1.5 block" style={{ color: T.textSecondary }}>
               {t("onboarding.name.firstNameLabel") || "Vorname"}
             </label>
             <div className="relative">
@@ -74,7 +87,8 @@ export default function OnboardingName() {
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 placeholder={t("onboarding.name.firstNamePlaceholder") || "Max"}
-                className="ob-input w-full h-[56px] pl-12 pr-4 rounded-[6px] text-[15px] font-medium"
+                className={`w-full h-[56px] pl-12 pr-4 rounded-[6px] text-[15px] font-medium ${w ? "ha-field" : "ob-input"}`}
+                style={w ? { backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text } : undefined}
                 autoFocus
                 data-testid="input-first-name"
               />
@@ -82,7 +96,7 @@ export default function OnboardingName() {
           </div>
 
           <div>
-            <label className="text-[13px] font-medium mb-1.5 block" style={{ color: OB.textSecondary }}>
+            <label className="text-[13px] font-medium mb-1.5 block" style={{ color: T.textSecondary }}>
               {t("onboarding.name.lastNameLabel") || "Nachname"}
             </label>
             <div className="relative">
@@ -92,7 +106,8 @@ export default function OnboardingName() {
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 placeholder={t("onboarding.name.lastNamePlaceholder") || "Mustermann"}
-                className="ob-input w-full h-[56px] pl-12 pr-4 rounded-[6px] text-[15px] font-medium"
+                className={`w-full h-[56px] pl-12 pr-4 rounded-[6px] text-[15px] font-medium ${w ? "ha-field" : "ob-input"}`}
+                style={w ? { backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text } : undefined}
                 data-testid="input-last-name"
               />
             </div>
@@ -100,12 +115,12 @@ export default function OnboardingName() {
         </div>
       </main>
 
-      <OBStickyBar>
+      <OBStickyBar websiteMode={w}>
         <button
           onClick={handleNext}
           disabled={!firstName.trim()}
           className="w-full h-[56px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50"
-          style={{ background: OB.pinkGradient, boxShadow: firstName.trim() ? OB.pinkShadow : "none" }}
+          style={{ background: T.pinkGradient, boxShadow: firstName.trim() ? T.pinkShadow : "none" }}
           data-testid="button-name-next"
         >
           {t("common.next") || "Weiter"}

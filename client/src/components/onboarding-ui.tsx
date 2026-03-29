@@ -112,14 +112,15 @@ export function OBProgressDots({ current, total }: { current: number; total: num
 
 import { ChevronLeft, Loader2 } from "lucide-react";
 
-export function OBStickyBar({ children }: { children: React.ReactNode }) {
+export function OBStickyBar({ children, websiteMode }: { children: React.ReactNode; websiteMode?: boolean }) {
+  const t = websiteMode ? OBW : OB;
   return (
     <div
       className="fixed bottom-0 left-0 right-0 z-30 border-t backdrop-blur-xl"
       style={{
-        backgroundColor: OB.headerBg,
-        borderColor: OB.headerBorder,
-        paddingBottom: "max(12px, env(safe-area-inset-bottom, 12px))",
+        backgroundColor: t.footerBg || t.headerBg,
+        borderColor: t.footerBorder || t.headerBorder,
+        paddingBottom: websiteMode ? "12px" : "max(12px, env(safe-area-inset-bottom, 12px))",
       }}
     >
       <div className="max-w-[480px] mx-auto px-5 pt-3">

@@ -4,7 +4,7 @@ import { useHashSearch } from "@/lib/hash-search";
 import { useTranslation } from "@/i18n";
 import { HousAlertLogo } from "@/components/housalert-logo";
 import { ChevronLeft, Mail } from "lucide-react";
-import { OB, OBStickyBar } from "@/components/onboarding-ui";
+import { OB, OBW, OBStickyBar, useWebsiteMode } from "@/components/onboarding-ui";
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -14,6 +14,8 @@ export default function OnboardingEmail() {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
   const searchString = useHashSearch();
+  const w = useWebsiteMode();
+  const T = w ? OBW : OB;
   const incomingParams = new URLSearchParams(searchString);
 
   const [email, setEmail] = useState(incomingParams.get("email") || "");
@@ -36,16 +38,27 @@ export default function OnboardingEmail() {
   }
 
   return (
-    <div className="min-h-[100dvh] flex flex-col ob-dark" style={{ background: OB.gradient }} data-testid="screen-onboarding-email">
-      <header className="sticky top-0 z-20 backdrop-blur-md border-b" style={{ backgroundColor: OB.headerBg, borderColor: OB.headerBorder }}>
+    <div
+      className={`min-h-[100dvh] flex flex-col ${w ? "" : "ob-dark"}`}
+      style={{ background: T.gradient }}
+      data-testid="screen-onboarding-email"
+    >
+      <header
+        className="sticky top-0 z-20 backdrop-blur-md border-b"
+        style={{
+          backgroundColor: T.headerBg,
+          borderColor: T.headerBorder,
+          paddingTop: w ? "0px" : undefined,
+        }}
+      >
         <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
           <button
             onClick={handleBack}
             className="w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-transform"
-            style={{ backgroundColor: OB.backBtnBg }}
+            style={{ backgroundColor: w ? OBW.backBtnBg : OB.backBtnBg }}
             data-testid="button-email-back"
           >
-            <ChevronLeft className="w-5 h-5" style={{ color: OB.textSecondary }} />
+            <ChevronLeft className="w-5 h-5" style={{ color: T.textSecondary }} />
           </button>
           <div className="flex-1 flex justify-center">
             <HousAlertLogo size={28} />
@@ -57,17 +70,17 @@ export default function OnboardingEmail() {
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-4 pb-[100px]">
         <h1
           className="text-[24px] font-bold tracking-[-0.02em] mb-2"
-          style={{ color: OB.text }}
+          style={{ color: T.text }}
           data-testid="text-email-title"
         >
           {t("onboarding.email.title") || "Wie lautet deine E-Mail?"}
         </h1>
-        <p className="text-[14px] mb-6 leading-relaxed" style={{ color: OB.textSecondary }}>
+        <p className="text-[14px] mb-6 leading-relaxed" style={{ color: T.textSecondary }}>
           {t("onboarding.email.subtitle") || "Hierhin senden wir deine Wohnungsalarme."}
         </p>
 
         <div>
-          <label className="text-[13px] font-medium mb-1.5 block" style={{ color: OB.textSecondary }}>
+          <label className="text-[13px] font-medium mb-1.5 block" style={{ color: T.textSecondary }}>
             {t("onboarding.email.label") || "E-Mail-Adresse"}
           </label>
           <div className="relative">
@@ -77,7 +90,8 @@ export default function OnboardingEmail() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t("onboarding.email.placeholder") || "deine@email.de"}
-              className="ob-input w-full h-[56px] pl-12 pr-4 rounded-[6px] text-[15px] font-medium"
+              className={`w-full h-[56px] pl-12 pr-4 rounded-[6px] text-[15px] font-medium ${w ? "ha-field" : "ob-input"}`}
+              style={w ? { backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text } : undefined}
               autoFocus
               data-testid="input-email"
             />
@@ -85,12 +99,12 @@ export default function OnboardingEmail() {
         </div>
       </main>
 
-      <OBStickyBar>
+      <OBStickyBar websiteMode={w}>
         <button
           onClick={handleNext}
           disabled={!isValidEmail(email)}
           className="w-full h-[56px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50"
-          style={{ background: OB.pinkGradient, boxShadow: isValidEmail(email) ? OB.pinkShadow : "none" }}
+          style={{ background: T.pinkGradient, boxShadow: isValidEmail(email) ? T.pinkShadow : "none" }}
           data-testid="button-email-next"
         >
           {t("common.next") || "Weiter"}
