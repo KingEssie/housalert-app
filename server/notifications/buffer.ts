@@ -921,6 +921,7 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
     }
 
     let skippedPreSub = 0;
+    let skippedAlreadyEmailed = 0;
     for (const m of eligibleMatches) {
       const enriched = enrichMap.get(m.listing_id);
       if (enriched?.created_at) {
@@ -931,6 +932,11 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
           try { await markPushSent(userId, [m.listing_id]); } catch {}
           continue;
         }
+      }
+      if (m.email_sent && !m.push_sent) {
+        skippedAlreadyEmailed++;
+        try { await markPushSent(userId, [m.listing_id]); } catch {}
+        continue;
       }
       bufferMatchAlert(userId, email, {
         listing_id: m.listing_id,
@@ -947,6 +953,9 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
     }
     if (skippedPreSub > 0) {
       log(`[RECOVERY] User ${userId.substring(0, 8)}: ${skippedPreSub} listings created before subscription — marked sent`);
+    }
+    if (skippedAlreadyEmailed > 0) {
+      log(`[RECOVERY] User ${userId.substring(0, 8)}: ${skippedAlreadyEmailed} already emailed — marked push_sent, skipped re-buffer`);
     }
   }
 

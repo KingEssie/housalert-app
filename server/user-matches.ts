@@ -377,6 +377,8 @@ export interface UndeliveredMatch {
   listing_price: number;
   listing_url: string | null;
   matched_at: string;
+  email_sent: boolean;
+  push_sent: boolean;
 }
 
 export async function getUndeliveredMatches(maxAgeHours: number = 24): Promise<UndeliveredMatch[]> {
@@ -384,7 +386,7 @@ export async function getUndeliveredMatches(maxAgeHours: number = 24): Promise<U
   try {
     const cutoff = new Date(Date.now() - maxAgeHours * 60 * 60 * 1000).toISOString();
     const result = await pool.query(
-      `SELECT user_id, listing_id, listing_title, listing_city, listing_price, listing_url, matched_at
+      `SELECT user_id, listing_id, listing_title, listing_city, listing_price, listing_url, matched_at, email_sent, push_sent
        FROM user_matches
        WHERE (email_sent = false OR push_sent = false)
          AND visible_in_app = true
