@@ -22,8 +22,28 @@ const FURNISHED_PATTERNS = /möbliert|furnished|teilmöbliert|voll\s*möbliert/i
 const NO_PETS_PATTERNS =
   /keine\s*haustiere|keine\s*tiere|no\s*pets|haustiere\s*nicht\s*erlaubt|tiere\s*nicht\s*erlaubt/i;
 const PETS_PATTERNS = /haustier|pet|tiere?\s*erlaubt/i;
+const NO_BALCONY_PATTERNS = /kein(en?)?\s*balkon|ohne\s*balkon|no\s*balcony/i;
 const BALCONY_PATTERNS = /balkon|balcony|terrasse|loggia/i;
+const TERRACE_LOGGIA_PATTERNS = /terrasse|loggia/i;
+const NO_ELEVATOR_PATTERNS = /kein(en?)?\s*(aufzug|fahrstuhl|lift)|ohne\s*(aufzug|fahrstuhl|lift)|no\s*elevator/i;
 const ELEVATOR_PATTERNS = /aufzug|fahrstuhl|elevator|lift/i;
+
+function extractBalcony(text: string): boolean | null {
+  const hasNegative = NO_BALCONY_PATTERNS.test(text);
+  const hasPositive = BALCONY_PATTERNS.test(text);
+  if (!hasPositive) return null;
+  if (hasNegative && TERRACE_LOGGIA_PATTERNS.test(text)) return true;
+  if (hasNegative) return false;
+  return true;
+}
+
+function extractElevator(text: string): boolean | null {
+  const hasNegative = NO_ELEVATOR_PATTERNS.test(text);
+  const hasPositive = ELEVATOR_PATTERNS.test(text);
+  if (!hasPositive) return null;
+  if (hasNegative) return false;
+  return true;
+}
 
 function extractFeatures(text: string): {
   furnished: boolean | null;
@@ -42,8 +62,8 @@ function extractFeatures(text: string): {
       : PETS_PATTERNS.test(text)
         ? true
         : null,
-    balcony: BALCONY_PATTERNS.test(text) ? true : null,
-    elevator: ELEVATOR_PATTERNS.test(text) ? true : null,
+    balcony: extractBalcony(text),
+    elevator: extractElevator(text),
   };
 }
 
