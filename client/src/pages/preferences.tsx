@@ -104,7 +104,7 @@ export default function PreferencesPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#EBEBF0" }}>
-      <AppHeader title={t("settings.preferences")} onBack={() => navigate("/settings")} />
+      <AppHeader title={t("settings.preferences")} onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
         <div className="flex flex-col gap-4">

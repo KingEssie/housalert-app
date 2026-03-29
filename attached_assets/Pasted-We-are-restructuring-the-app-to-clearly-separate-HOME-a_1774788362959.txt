@@ -1,0 +1,123 @@
+We are restructuring the app to clearly separate:
+- HOME (action / usage / growth)
+- PROFILE (account + settings)
+
+IMPORTANT:
+- Do NOT change any backend logic
+- Do NOT break routing
+- Only move UI blocks and adjust layout
+- Keep all existing functionality intact
+
+Use current components where possible.
+
+==================================================
+PART 1 — HOME SCREEN (PRIMARY DASHBOARD)
+==================================================
+
+Home screen should ONLY focus on helping the user take action.
+
+REMOVE from Home:
+- "Recente matches" section entirely
+
+KEEP and STRUCTURE Home like this (top → bottom):
+
+1. Completion Card
+   - "Maak je account af"
+
+2. Tips Card
+   - "Vergroot je kansen met deze tips"
+
+3. Upgrade / Trial Card
+   - "Je loopt mogelijk je droomwoning mis..." (conditional)
+
+4. Search Profiles section
+   - same Rentbird-style layout
+   - DO NOT include "Nieuwe zoekopdracht" button here
+
+5. Action Cards (if present)
+   - Reactiebrief
+   - Zoekbuddy
+   - etc.
+
+GOAL:
+Home = clean, focused, action-driven dashboard
+
+==================================================
+PART 2 — PROFILE SCREEN → SETTINGS SCREEN
+==================================================
+
+Transform the current Profile screen into a true Settings screen.
+
+KEEP at the top:
+- Dark purple header
+- Avatar circle
+- Name
+- "Lid sinds ..."
+
+REMOVE from Profile screen:
+- Completion cards
+- Tips cards
+- Search profiles section
+- Upgrade block
+- Any "home-like" content
+
+ADD / STRUCTURE Settings content like this:
+
+SECTION: Account
+- Persoonlijke gegevens
+- E-mailadres
+- Wachtwoord wijzigen
+
+SECTION: Voorkeuren
+- Meldingen (push/email)
+- Taal (if exists)
+
+SECTION: Abonnement
+- Huidig plan
+- Upgrade / beheren
+
+SECTION: Overig
+- Support
+- Privacybeleid / voorwaarden
+- Account verwijderen
+- Uitloggen
+
+STYLE:
+- Same card system (soft white cards, no harsh borders)
+- Same spacing as rest of app
+- Icons on left, chevron on right
+
+==================================================
+PART 3 — REMOVE SETTINGS ICON
+==================================================
+
+- REMOVE the gear icon from the Profile header
+- User is already inside settings → no need for duplicate entry
+
+==================================================
+PART 4 — CONSISTENCY RULES
+==================================================
+
+Ensure:
+- Home and Profile have clearly different purposes
+- No duplicated sections between the two screens
+- Visual style remains consistent (colors, spacing, typography)
+
+==================================================
+ACCEPTANCE CRITERIA
+==================================================
+
+Only mark complete if:
+
+1. Home no longer contains "Recente matches"
+2. Home feels like a focused action dashboard
+3. Profile contains ONLY account/settings-related content
+4. All "home blocks" are removed from Profile
+5. Gear icon is removed from Profile header
+6. Navigation still works correctly
+7. No broken UI or missing data
+
+At the end report:
+- which components were moved
+- which components were removed
+- confirmation that no logic was changed

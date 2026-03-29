@@ -98,7 +98,7 @@ export default function HousingSituationPage() {
       if (!res.ok) throw new Error("Failed");
       queryClient.invalidateQueries({ queryKey: ["/api/profile-data"] });
       toast({ title: t("settings.saved") });
-      navigate("/settings");
+      navigate("/dashboard?tab=profiel");
     } catch {
       toast({ title: t("common.error"), variant: "destructive" });
     } finally {
@@ -129,7 +129,7 @@ export default function HousingSituationPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#EBEBF0" }}>
-      <AppHeader title={t("settings.housingSituation")} onBack={() => navigate("/settings")} />
+      <AppHeader title={t("settings.housingSituation")} onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
         {loading ? (

@@ -994,12 +994,6 @@ function HomeTab({
         />
       )}
 
-      <RecenteMatchesSection accessToken={accessToken} setActiveTab={setActiveTab} subscription={subscription} navigate={navigate} />
-
-      {profiles.length > 0 && (
-        <SearchProfilesSection profiles={profiles} navigate={navigate} />
-      )}
-
       <HomeAccountCompletionCard accessToken={accessToken} navigate={navigate} />
       <HomeTipsCompletionCard setActiveTab={setActiveTab} />
 
@@ -1041,6 +1035,40 @@ function HomeTab({
           </button>
         </div>
       )}
+
+      {profiles.length > 0 && (
+        <SearchProfilesSection profiles={profiles} navigate={navigate} />
+      )}
+
+      <div className="rounded-[12px] bg-white px-5 py-5" style={{ border: "1px solid rgba(15, 23, 42, 0.04)" }}>
+        <button
+          onClick={() => navigate("/application-letter")}
+          className="w-full flex items-center gap-3 text-left active:opacity-80 transition-opacity"
+          data-testid="button-home-reaction-letter"
+        >
+          <Sparkles className="w-5 h-5 text-ha-primary flex-shrink-0" />
+          <div className="flex-1 min-w-0">
+            <p className="text-[17px] font-bold text-black">{t("profile.reactionLetter2")}</p>
+            <p className="text-[14px] text-[#4B5563] mt-0.5">{t("settings.reactionLetter")}</p>
+          </div>
+          <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
+        </button>
+      </div>
+
+      <div className="rounded-[12px] bg-white px-5 py-5" style={{ border: "1px solid rgba(15, 23, 42, 0.04)" }}>
+        <button
+          onClick={() => navigate("/profile/edit/search_buddy_email")}
+          className="w-full flex items-center gap-3 text-left active:opacity-80 transition-opacity"
+          data-testid="button-home-zoekbuddy"
+        >
+          <Users className="w-5 h-5 text-ha-primary flex-shrink-0" />
+          <div className="flex-1 min-w-0">
+            <p className="text-[17px] font-bold text-black">{t("profile.zoekbuddyTitle")}</p>
+            <p className="text-[14px] text-[#4B5563] mt-0.5">{t("profile.buddyDescription")}</p>
+          </div>
+          <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
+        </button>
+      </div>
 
       <RecentlyViewedSection accessToken={accessToken} />
 
@@ -1550,12 +1578,20 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
 function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canonicalStats, computedAppliedCount }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null }; setActiveTab: (tab: TabKey) => void; canonicalStats?: CanonicalStats; computedAppliedCount: number }) {
   const [showPhotoSheet, setShowPhotoSheet] = useState(false);
   const [photoUploading, setPhotoUploading] = useState(false);
-  const [buddyEmail, setBuddyEmail] = useState("");
-  const [buddySaving, setBuddySaving] = useState(false);
-  const [buddyExpanded, setBuddyExpanded] = useState(false);
-  const [showBuddyDeleteConfirm, setShowBuddyDeleteConfirm] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const { toast } = useToast();
   const { t, locale, setLocale } = useTranslation();
+
+  const handleLogout = async () => {
+    setSigningOut(true);
+    try {
+      await supabase.auth.signOut();
+      window.location.replace("/");
+    } catch {
+      setSigningOut(false);
+    }
+  };
 
   const profileDataQuery = useQuery({
     queryKey: ["/api/profile-data"],
@@ -1569,33 +1605,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
     },
   });
 
-  const referralQuery = useQuery<{
-    code: string;
-    totalInvited: number;
-    pending: number;
-    qualified: number;
-    rewarded: number;
-  }>({
-    queryKey: ["/api/referrals/me"],
-    queryFn: async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) throw new Error("No token");
-      const res = await apiFetch("/api/referrals/me", {
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
-      if (!res.ok) throw new Error("Failed");
-      return res.json();
-    },
-  });
-  const [referralCopied, setReferralCopied] = useState(false);
-
-  const searchProfilesQuery = useQuery<SearchProfile[]>({
-    queryKey: ["/search-profiles"],
-    queryFn: getSearchProfiles,
-  });
-
   const pd = profileDataQuery.data;
-  const phone = pd?.phone;
   const photoUrl = pd?.profile_photo_url || null;
 
   useEffect(() => {
@@ -1606,8 +1616,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
 
   const displayName = [pd?.first_name, pd?.last_name].filter(Boolean).join(" ") || user.user_metadata?.full_name || "";
   const initials = displayName ? displayName.split(" ").map((w: string) => w[0]).join("").toUpperCase().slice(0, 2) : user.email?.[0]?.toUpperCase() ?? "?";
-  const letterPreview = pd?.application_template?.slice(0, 120) || null;
-
   async function handlePhotoUpload(file: File) {
     setPhotoUploading(true);
     try {
@@ -1662,49 +1670,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
     }
   }
 
-  async function handleBuddyInvite() {
-    if (!buddyEmail.trim() || !buddyEmail.includes("@")) return;
-    setBuddySaving(true);
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) return;
-      const res = await apiFetch("/api/profile-data", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
-        body: JSON.stringify({ search_buddy_email: buddyEmail.trim() }),
-      });
-      if (!res.ok) throw new Error("Failed");
-      queryClient.invalidateQueries({ queryKey: ["/api/profile-data"] });
-      setBuddyEmail("");
-      setBuddyExpanded(false);
-      toast({ title: t("profile.buddyInviteSent") });
-    } catch {
-      toast({ title: t("common.error"), variant: "destructive" });
-    } finally {
-      setBuddySaving(false);
-    }
-  }
-
-  async function handleBuddyRemove() {
-    setBuddySaving(true);
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) return;
-      const res = await apiFetch("/api/profile-data", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
-        body: JSON.stringify({ search_buddy_email: "" }),
-      });
-      if (!res.ok) throw new Error("Failed");
-      queryClient.invalidateQueries({ queryKey: ["/api/profile-data"] });
-      toast({ title: t("profile.buddyRemoved") });
-    } catch {
-      toast({ title: t("common.error"), variant: "destructive" });
-    } finally {
-      setBuddySaving(false);
-    }
-  }
-
   const accountAgeDays = user.created_at
     ? Math.max(0, Math.floor((Date.now() - new Date(user.created_at).getTime()) / (1000 * 60 * 60 * 24)))
     : 0;
@@ -1739,21 +1704,10 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       })()
     : "";
 
-  const spList = searchProfilesQuery.data || [];
-  const spCount = spList.length;
-
   return (
     <div className="min-h-[calc(100vh-80px)] bg-[#EBEBF0]">
       <div className="relative" data-testid="card-profile-summary">
-        <div className="bg-ha-profile-header h-[160px]" style={{ borderRadius: "0 0 50% 50% / 0 0 36px 36px" }}>
-          <button
-            onClick={() => navigate("/settings")}
-            className="absolute right-5 top-5 w-11 h-11 rounded-full bg-white/15 flex items-center justify-center active:scale-95 transition-transform"
-            data-testid="button-profile-settings"
-          >
-            <Settings className="w-5 h-5 text-white/80" />
-          </button>
-        </div>
+        <div className="bg-ha-profile-header h-[160px]" style={{ borderRadius: "0 0 50% 50% / 0 0 36px 36px" }} />
         <div className="flex flex-col items-center -mt-12 mb-5">
           <div className="w-24 h-24 rounded-full bg-[#312e81] flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.12)]">
             {photoUrl ? (
@@ -1775,182 +1729,109 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       </div>
 
       <div className="max-w-[480px] mx-auto px-5 pb-8">
-        <div className="flex flex-col gap-3.5">
+        <div className="flex flex-col gap-4">
 
-          <ProfileAccountCompletionCard navigate={navigate} />
-          <ProfileTipsCompletionCard setActiveTab={setActiveTab} />
-
-          {!subscription.isTrial && !subscription.isActive && (
-            <div className="rounded-[12px] bg-[#EDE9F6] px-5 py-5" data-testid="card-upgrade-warning-profile">
-              <div className="flex items-start gap-3 mb-3">
-                <Lock className="w-5 h-5 text-[#7C3AED] flex-shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-[16px] font-bold text-black">Je loopt mogelijk je droomwoning mis...</p>
-                  <p className="text-[14px] text-[#4B5563] mt-1.5 leading-relaxed">
-                    Met een gratis abonnement kan je niet reageren op woningen. Zo loop je mogelijk je droomwoning mis. Upgrade naar een betaald account en mis nooit meer een huurwoning!
-                  </p>
+          <div>
+            <p className="text-row-section-title px-1 mb-2" data-testid="text-section-account">{t("settings.sectionAccount")}</p>
+            <div className="app-card !p-0">
+              {[
+                { label: t("settings.myDetails"), route: "/profile/details", icon: <User className="w-5 h-5 text-[#6B7280]" /> },
+                { label: t("settings.password"), route: "/account/change-password", icon: <Lock className="w-5 h-5 text-[#6B7280]" /> },
+              ].map((row, ri) => (
+                <div key={ri}>
+                  {ri > 0 && <div className="h-px bg-[#F0F0F0] mx-5" />}
+                  <button
+                    onClick={() => navigate(row.route)}
+                    className="w-full flex items-center gap-3 py-4 px-5 text-left active:bg-[#FAFAFA] transition-colors"
+                    data-testid={`button-profile-account-${ri}`}
+                  >
+                    {row.icon}
+                    <p className="text-[15px] font-semibold text-[#000] flex-1">{row.label}</p>
+                    <ChevronRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
+                  </button>
                 </div>
-              </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <p className="text-row-section-title px-1 mb-2" data-testid="text-section-preferences">{t("settings.preferences")}</p>
+            <div className="app-card !p-0">
               <button
-                onClick={() => navigate("/paywall")}
-                className="w-full h-[56px] rounded-[6px] bg-[#e91e63] text-white text-[16px] font-bold hover:bg-[#d81b60] transition-colors active:scale-[0.98]"
-                data-testid="button-upgrade-subscription"
+                onClick={() => navigate("/settings/preferences")}
+                className="w-full flex items-center gap-3 py-4 px-5 text-left active:bg-[#FAFAFA] transition-colors"
+                data-testid="button-profile-preferences"
               >
-                Upgraden
+                <Bell className="w-5 h-5 text-[#6B7280]" />
+                <p className="text-[15px] font-semibold text-[#000] flex-1">{t("settings.preferences")}</p>
+                <ChevronRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
               </button>
             </div>
-          )}
+          </div>
 
-          {subscription.isTrial && (
-            <div className="rounded-[12px] bg-white px-5 py-5 flex items-start gap-3" style={{ border: "1px solid rgba(15, 23, 42, 0.04)" }} data-testid="trial-explanation">
-              <Gift className="w-5 h-5 text-ha-primary flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="text-[15px] font-bold text-black">{t("trial.explanation")}</p>
-                <p className="text-[14px] text-[#4B5563] mt-1 leading-relaxed">{t("trial.explanationDesc")}</p>
-              </div>
+          <div>
+            <p className="text-row-section-title px-1 mb-2" data-testid="text-section-subscription">{t("settings.subscription")}</p>
+            <div className="app-card !p-0">
+              <button
+                onClick={() => navigate("/account/subscription")}
+                className="w-full flex items-center gap-3 py-4 px-5 text-left active:bg-[#FAFAFA] transition-colors"
+                data-testid="button-profile-subscription"
+              >
+                <Crown className="w-5 h-5 text-[#6B7280]" />
+                <p className="text-[15px] font-semibold text-[#000] flex-1">{t("settings.subscription")}</p>
+                <ChevronRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
+              </button>
             </div>
-          )}
+          </div>
 
-          <div className="rounded-[12px] bg-white px-5 py-5" style={{ border: "1px solid rgba(15, 23, 42, 0.04)" }} data-testid="card-search-profiles">
-            <div className="flex items-center gap-3 mb-4">
-              <Search className="w-5 h-5 text-ha-primary flex-shrink-0" />
-              <p className="text-[17px] font-bold text-black flex-1">{t("profile.searchProfiles")}</p>
-              <span className="text-[13px] font-semibold text-[#0ea5e9] bg-[#e0f2fe] px-2.5 py-0.5 rounded-full">{spCount}/{4}</span>
-            </div>
-            {spList.length > 0 && (
-              <div className="flex flex-col gap-2">
-                {spList.map((sp: SearchProfile) => (
+          <div>
+            <p className="text-row-section-title px-1 mb-2" data-testid="text-section-other">{t("settings.sectionHelp")}</p>
+            <div className="app-card !p-0">
+              {[
+                { label: t("settings.contactUs"), action: () => { window.location.href = "mailto:support@housalert.com"; }, icon: <HelpCircle className="w-5 h-5 text-[#6B7280]" /> },
+                { label: t("settings.privacyPolicy"), action: () => navigate("/datenschutz"), icon: <Shield className="w-5 h-5 text-[#6B7280]" /> },
+                { label: t("settings.termsConditions"), action: () => navigate("/terms"), icon: <FileText className="w-5 h-5 text-[#6B7280]" /> },
+              ].map((row, ri) => (
+                <div key={ri}>
+                  {ri > 0 && <div className="h-px bg-[#F0F0F0] mx-5" />}
                   <button
-                    key={sp.id}
-                    onClick={() => navigate(`/dashboard/searches/edit/${sp.id}`)}
-                    className="flex items-center gap-3 py-3.5 px-4 rounded-[10px] bg-[#F3F3F5] active:bg-[#EBEBED] transition-colors text-left"
-                    data-testid={`button-search-profile-${sp.id}`}
+                    onClick={row.action}
+                    className="w-full flex items-center gap-3 py-4 px-5 text-left active:bg-[#FAFAFA] transition-colors"
+                    data-testid={`button-profile-other-${ri}`}
                   >
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#34d399] flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[16px] font-bold text-black truncate">{sp.city_name || sp.city || t("profile.searchProfileDefault")}</p>
-                      <p className="text-[14px] text-[#4B5563] mt-0.5 truncate">
-                        {sp.districts && sp.districts.length > 0
-                          ? (sp.districts.length <= 2
-                              ? sp.districts.join(", ")
-                              : `${sp.districts[0]} ${t("profile.andOtherNeighborhoods", { count: sp.districts.length - 1 })}`)
-                          : sp.radius_km
-                            ? `Straal ${sp.radius_km} km`
-                            : getProfileSummary(sp, t)}
-                      </p>
-                    </div>
-                    <Pencil className="w-4 h-4 text-gray-300 flex-shrink-0" />
+                    {row.icon}
+                    <p className="text-[15px] font-semibold text-[#000] flex-1">{row.label}</p>
+                    <ChevronRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
                   </button>
-                ))}
-              </div>
-            )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="app-card !p-0">
             <button
-              onClick={() => navigate("/onboarding/city")}
-              className="w-full mt-4 h-[56px] rounded-[12px] border border-[#e91e63] text-[#e91e63] text-[15px] font-semibold flex items-center justify-center gap-1.5 active:bg-pink-50 transition-colors"
-              data-testid="button-extra-profile"
+              onClick={() => setShowLogoutConfirm(true)}
+              disabled={signingOut}
+              className={`w-full flex items-center gap-3 py-4 px-5 text-left active:bg-[#FAFAFA] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
+              data-testid="button-profile-logout"
             >
-              {t("profile.newSearchProfile")} <Plus className="w-4 h-4" />
+              <LogOut className="w-5 h-5 text-red-500 flex-shrink-0" />
+              <p className="text-[15px] font-semibold text-red-500 flex-1">{signingOut ? t("profile.signingOut") : t("profile.logout")}</p>
+            </button>
+            <div className="h-px bg-[#F0F0F0] mx-5" />
+            <button
+              onClick={() => navigate("/account/delete")}
+              className="w-full flex items-center gap-3 py-4 px-5 text-left active:bg-[#FAFAFA] transition-colors"
+              data-testid="button-profile-delete-account"
+            >
+              <Trash2 className="w-5 h-5 text-[#9CA3AF] flex-shrink-0" />
+              <p className="text-[15px] text-[#6B7280] flex-1">{t("profile.deleteAccount")}</p>
             </button>
           </div>
 
-          <div className="rounded-[12px] bg-white px-5 py-5" style={{ border: "1px solid rgba(15, 23, 42, 0.04)" }}>
-            <button
-              onClick={() => navigate("/application-letter")}
-              className="w-full flex items-center gap-3 text-left active:opacity-80 transition-opacity"
-              data-testid="button-reaction-letter"
-            >
-              <Sparkles className="w-5 h-5 text-ha-primary flex-shrink-0" />
-              <p className="text-[17px] font-bold text-black flex-1">{t("profile.reactionLetter2")}</p>
-              <span className="text-[13px] font-semibold text-ha-primary">{letterPreview ? t("profile.editAction") : t("profile.generateAction")}</span>
-            </button>
-            {letterPreview ? (
-              <p className="text-[14px] text-ha-success mt-2.5 flex items-center gap-1.5 pl-8"><Check className="w-4 h-4" /> {t("profile.letterSet")}</p>
-            ) : (
-              <p className="text-[14px] text-ha-danger mt-2.5 flex items-center gap-1.5 pl-8"><X className="w-4 h-4" /> {t("profile.noLetterYet")}</p>
-            )}
-          </div>
-
-          <div className="rounded-[12px] bg-white px-5 py-5" style={{ border: "1px solid rgba(15, 23, 42, 0.04)" }} id="zoekbuddy-section" data-testid="row-zoekbuddy">
-            <button
-              onClick={() => {
-                if (!buddyExpanded) {
-                  setBuddyEmail(pd?.search_buddy_email || "");
-                  setBuddyExpanded(true);
-                } else {
-                  setBuddyExpanded(false);
-                  setBuddyEmail("");
-                }
-              }}
-              className="w-full flex items-center gap-3 text-left active:opacity-80 transition-opacity"
-              data-testid="button-buddy-toggle"
-            >
-              <Users className="w-5 h-5 text-ha-primary flex-shrink-0" />
-              <p className="text-[17px] font-bold text-black flex-1">{t("profile.zoekbuddyTitle")}</p>
-              {!buddyExpanded && pd?.search_buddy_email ? (
-                <span
-                  role="button"
-                  onClick={e => { e.stopPropagation(); setShowBuddyDeleteConfirm(true); }}
-                  className="text-[13px] font-semibold text-ha-primary"
-                  data-testid="button-buddy-remove-x"
-                >
-                  {t("profile.manageAction")}
-                </span>
-              ) : !buddyExpanded ? (
-                <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
-              ) : null}
-            </button>
-            {!buddyExpanded && (
-              <p className="text-[14px] text-[#4B5563] mt-1.5 leading-relaxed pl-8">{t("profile.buddyDescription")}</p>
-            )}
-            {!buddyExpanded && pd?.search_buddy_email && (
-              <p className="text-[14px] text-ha-success mt-2.5 flex items-center gap-1.5 pl-8"><Check className="w-4 h-4" /> {pd.search_buddy_email}</p>
-            )}
-            {!buddyExpanded && !pd?.search_buddy_email && (
-              <p className="text-[14px] text-ha-danger mt-2.5 flex items-center gap-1.5 pl-8"><X className="w-4 h-4" /> {t("profile.noBuddyYet")}</p>
-            )}
-            {buddyExpanded && (
-              <div className="pt-3 pb-1 animate-in slide-in-from-top-1 duration-200" data-testid="editor-zoekbuddy">
-                <div className="relative mb-4">
-                  <input
-                    type="email"
-                    value={buddyEmail}
-                    onChange={e => setBuddyEmail(e.target.value)}
-                    onKeyDown={e => { if (e.key === "Enter") handleBuddyInvite(); }}
-                    placeholder={t("profileEdit.searchBuddyPlaceholder")}
-                    autoFocus
-                    className="w-full ha-field ha-field-light bg-[#EBEBF0]"
-                    data-testid="input-buddy-email"
-                  />
-                  {buddyEmail && (
-                    <button
-                      type="button"
-                      onClick={() => setBuddyEmail("")}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-[#EBEBF0] flex items-center justify-center active:scale-90 transition-transform"
-                      data-testid="button-buddy-clear"
-                    >
-                      <X className="w-3.5 h-3.5 text-[#6B7280]" />
-                    </button>
-                  )}
-                </div>
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={handleBuddyInvite}
-                    disabled={buddySaving || !buddyEmail.trim()}
-                    className="ha-btn bg-ha-primary text-white font-semibold disabled:opacity-50"
-                    data-testid="button-buddy-save"
-                  >
-                    {buddySaving ? <Loader2 className="w-4 h-4 animate-spin" /> : t("profileDetails.saveAndContinue")}
-                  </button>
-                  <button
-                    onClick={() => { setBuddyExpanded(false); setBuddyEmail(""); }}
-                    className="h-[56px] px-5 rounded-[6px] text-[#6B7280] text-[14px] font-medium active:bg-[#EBEBF0] transition-colors"
-                    data-testid="button-buddy-cancel"
-                  >
-                    {t("profileDetails.cancel")}
-                  </button>
-                </div>
-              </div>
-            )}
+          <div className="flex flex-col items-center gap-1 pt-4 pb-2">
+            <p className="text-[14px] font-bold text-[#000]">HousAlert</p>
+            <p className="text-[12px] text-[#9CA3AF]">v1.0.0</p>
           </div>
 
           {(user?.email?.toLowerCase() === "martin.essie87@gmail.com") && <div className="h-16" />}
@@ -1976,25 +1857,22 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
         />
       )}
 
-      {showBuddyDeleteConfirm && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowBuddyDeleteConfirm(false)}>
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowLogoutConfirm(false)}>
           <div className="bg-white w-full max-w-[400px] rounded-t-[6px] sm:rounded-[6px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
-            <p className="text-[17px] text-title text-[#000] text-center">{t("profile.buddyDeleteTitle")}</p>
-            <p className="text-[15px] text-[#4B5563] text-center mt-2 mb-6">{t("profile.buddyDeleteDesc")}</p>
+            <p className="text-[17px] font-bold text-[#000] text-center">{t("profile.logoutConfirm")}</p>
+            <p className="text-[15px] text-[#4B5563] text-center mt-2 mb-6">{t("profile.logoutDesc")}</p>
             <button
-              onClick={() => {
-                handleBuddyRemove();
-                setShowBuddyDeleteConfirm(false);
-              }}
-              className="w-full ha-btn bg-ha-danger text-white font-semibold mb-3"
-              data-testid="button-buddy-delete-confirm"
+              onClick={handleLogout}
+              className="w-full ha-btn bg-red-500 text-white font-semibold mb-3"
+              data-testid="button-profile-logout-confirm"
             >
-              {t("profile.buddyRemoveLabel")}
+              {t("profile.logoutYes")}
             </button>
             <button
-              onClick={() => setShowBuddyDeleteConfirm(false)}
+              onClick={() => setShowLogoutConfirm(false)}
               className="w-full ha-btn text-[#000] font-medium active:bg-[#EBEBF0]"
-              data-testid="button-buddy-delete-cancel"
+              data-testid="button-profile-logout-cancel"
             >
               {t("profileDetails.cancel")}
             </button>

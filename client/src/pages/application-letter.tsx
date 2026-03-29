@@ -110,7 +110,7 @@ export default function ApplicationLetterPage() {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#EBEBF0" }}>
-      <AppHeader title={t("applicationLetter.title")} onBack={() => navigate("/settings")} />
+      <AppHeader title={t("applicationLetter.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <main className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-32">
         <div className="flex flex-col gap-4">
