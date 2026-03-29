@@ -1,8 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 import {
   resolveCoordinates,
+  resolveCoordinatesCityOnly,
   extractPostcodeFromText,
-  extractStreetFromAddress,
   type CoordinatePrecision,
   type GeocodableFields,
 } from "../ingesters/geocoding";
@@ -25,6 +25,7 @@ interface BackfillOptions {
   source: string | null;
   dryRun: boolean;
   recentOnly: boolean;
+  skipNominatim: boolean;
   pauseBetweenBatchesMs: number;
 }
 
@@ -48,6 +49,7 @@ function parseArgs(): BackfillOptions {
     source: null,
     dryRun: false,
     recentOnly: false,
+    skipNominatim: false,
     pauseBetweenBatchesMs: 2000,
   };
 
@@ -57,6 +59,7 @@ function parseArgs(): BackfillOptions {
     else if (arg.startsWith("--source=")) opts.source = arg.split("=")[1];
     else if (arg === "--dry-run") opts.dryRun = true;
     else if (arg === "--recent-only") opts.recentOnly = true;
+    else if (arg === "--skip-nominatim") opts.skipNominatim = true;
     else if (arg.startsWith("--pause=")) opts.pauseBetweenBatchesMs = parseInt(arg.split("=")[1], 10);
     else console.log(`Unknown argument: ${arg}`);
   }
@@ -88,17 +91,6 @@ function buildGeocodableFields(listing: any): GeocodableFields {
     if (postcode) fields.postcode = postcode;
   }
 
-  if (listing.source === "wg-gesucht" && listing.url) {
-    try {
-      const parts = new URL(listing.url).pathname.split("/");
-      const cityPart = parts.find((p: string) => p.includes("."));
-      if (cityPart) {
-        const postcodeFromUrl = extractPostcodeFromText(listing.title || "");
-        if (postcodeFromUrl && !fields.postcode) fields.postcode = postcodeFromUrl;
-      }
-    } catch {}
-  }
-
   return fields;
 }
 
@@ -123,11 +115,8 @@ function isUpgrade(currentPrecision: string | null, newPrecision: CoordinatePrec
   return newRank > currentRank;
 }
 
-const SOURCE_PRIORITY_ORDER = ["wg-gesucht", "immowelt", "kleinanzeigen", "wohnungsboerse", "nestpick", "rentola"];
-
 async function fetchBatch(
   opts: BackfillOptions,
-  offset: number,
   columns: { hasCoordMeta: boolean }
 ): Promise<any[]> {
   const selectCols = "id, source, url, title, city, district, latitude, longitude" +
@@ -138,7 +127,7 @@ async function fetchBatch(
     .select(selectCols)
     .is("latitude", null)
     .order("created_at", { ascending: false })
-    .range(offset, offset + opts.batchSize - 1);
+    .limit(opts.batchSize);
 
   if (opts.source) {
     query = query.eq("source", opts.source);
@@ -151,7 +140,7 @@ async function fetchBatch(
 
   const { data, error } = await query;
   if (error) {
-    console.error(`[BACKFILL] Fetch error at offset=${offset}: ${error.message}`);
+    console.error(`[BACKFILL] Fetch error: ${error.message}`);
     return [];
   }
   return data ?? [];
@@ -189,6 +178,7 @@ async function run() {
   console.log(`Batch size: ${opts.batchSize}`);
   console.log(`Source filter: ${opts.source ?? "all"}`);
   console.log(`Recent only: ${opts.recentOnly}`);
+  console.log(`Skip Nominatim: ${opts.skipNominatim}`);
   console.log(`Pause between batches: ${opts.pauseBetweenBatchesMs}ms`);
   console.log("");
 
@@ -229,13 +219,12 @@ async function run() {
     errors: 0,
   };
 
-  let offset = 0;
   let totalProcessed = 0;
   let batchNum = 0;
 
   while (totalProcessed < effectiveLimit) {
     batchNum++;
-    const batch = await fetchBatch(opts, 0, columns);
+    const batch = await fetchBatch(opts, columns);
 
     if (batch.length === 0) {
       console.log(`[Batch ${batchNum}] No more candidates. Stopping.`);
@@ -255,7 +244,10 @@ async function run() {
 
       try {
         const fields = buildGeocodableFields(listing);
-        const resolved = await resolveCoordinates(fields);
+
+        const resolved = opts.skipNominatim
+          ? resolveCoordinatesCityOnly(fields)
+          : await resolveCoordinates(fields);
 
         if (!resolved) {
           stats.unresolved++;

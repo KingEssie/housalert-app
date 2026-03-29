@@ -22,7 +22,8 @@ export interface GeocodableFields {
 
 const NOMINATIM_BASE = "https://nominatim.openstreetmap.org/search";
 const NOMINATIM_UA = "HousAlert/1.0 (rental-alert-app; contact: support@housalert.com)";
-const NOMINATIM_DELAY_MS = 1100;
+const NOMINATIM_DELAY_MS = 1500;
+const NOMINATIM_MAX_RETRIES = 3;
 
 const geocodeMemoryCache = new Map<string, { lat: number; lng: number } | null>();
 
@@ -110,42 +111,53 @@ function makeCacheKey(parts: { city: string; postcode?: string | null; street?: 
 }
 
 async function nominatimFetch(query: string): Promise<{ lat: number; lng: number } | null> {
-  await new Promise(r => setTimeout(r, NOMINATIM_DELAY_MS));
+  for (let attempt = 0; attempt < NOMINATIM_MAX_RETRIES; attempt++) {
+    const delay = attempt === 0 ? NOMINATIM_DELAY_MS : NOMINATIM_DELAY_MS * Math.pow(2, attempt);
+    await new Promise(r => setTimeout(r, delay));
 
-  try {
-    const url = `${NOMINATIM_BASE}?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=de,at,ch,nl`;
+    try {
+      const url = `${NOMINATIM_BASE}?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=de,at,ch,nl`;
 
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 10_000);
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 10_000);
 
-    const resp = await fetch(url, {
-      headers: {
-        "User-Agent": NOMINATIM_UA,
-        "Accept": "application/json",
-      },
-      signal: controller.signal,
-    });
-    clearTimeout(timer);
+      const resp = await fetch(url, {
+        headers: {
+          "User-Agent": NOMINATIM_UA,
+          "Accept": "application/json",
+        },
+        signal: controller.signal,
+      });
+      clearTimeout(timer);
 
-    if (!resp.ok) {
-      log(`[GEOCODE] Nominatim returned ${resp.status} for query="${query}"`);
+      if (resp.status === 429) {
+        log(`[GEOCODE] Nominatim 429 for query="${query}", attempt ${attempt + 1}/${NOMINATIM_MAX_RETRIES}, backing off ${delay * 2}ms`);
+        continue;
+      }
+
+      if (!resp.ok) {
+        log(`[GEOCODE] Nominatim returned ${resp.status} for query="${query}"`);
+        return null;
+      }
+
+      const results = await resp.json() as Array<{ lat: string; lon: string; display_name: string }>;
+      if (results.length === 0) {
+        return null;
+      }
+
+      const lat = parseFloat(results[0].lat);
+      const lng = parseFloat(results[0].lon);
+      if (isNaN(lat) || isNaN(lng)) return null;
+
+      return { lat, lng };
+    } catch (err: any) {
+      log(`[GEOCODE] Nominatim error for query="${query}": ${err.message}`);
       return null;
     }
-
-    const results = await resp.json() as Array<{ lat: string; lon: string; display_name: string }>;
-    if (results.length === 0) {
-      return null;
-    }
-
-    const lat = parseFloat(results[0].lat);
-    const lng = parseFloat(results[0].lon);
-    if (isNaN(lat) || isNaN(lng)) return null;
-
-    return { lat, lng };
-  } catch (err: any) {
-    log(`[GEOCODE] Nominatim error for query="${query}": ${err.message}`);
-    return null;
   }
+
+  log(`[GEOCODE] Nominatim exhausted retries for query="${query}"`);
+  return null;
 }
 
 function rateLimitedNominatimCall(query: string): Promise<{ lat: number; lng: number } | null> {
@@ -254,6 +266,31 @@ async function checkGeocodeCacheTable(): Promise<boolean> {
     hasGeocodeCache = false;
   }
   return hasGeocodeCache;
+}
+
+export function resolveCoordinatesCityOnly(fields: GeocodableFields): ResolvedCoordinates | null {
+  if (fields.latitude != null && fields.longitude != null &&
+      fields.latitude !== 0 && fields.longitude !== 0 &&
+      !isNaN(fields.latitude) && !isNaN(fields.longitude)) {
+    return {
+      latitude: fields.latitude,
+      longitude: fields.longitude,
+      coordinate_source: "direct",
+      coordinate_precision: "exact",
+    };
+  }
+
+  const fallback = getCityFallback(fields.city);
+  if (fallback) {
+    return {
+      latitude: fallback.lat,
+      longitude: fallback.lng,
+      coordinate_source: "city_fallback",
+      coordinate_precision: "city_level",
+    };
+  }
+
+  return null;
 }
 
 export async function resolveCoordinates(fields: GeocodableFields): Promise<ResolvedCoordinates | null> {
