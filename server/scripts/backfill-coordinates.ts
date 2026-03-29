@@ -2,6 +2,8 @@ import { createClient } from "@supabase/supabase-js";
 import {
   resolveCoordinates,
   resolveCoordinatesCityOnly,
+  CITY_CENTER_COORDS,
+  normalizeCityKey,
   extractPostcodeFromText,
   type CoordinatePrecision,
   type GeocodableFields,
@@ -115,100 +117,9 @@ function isUpgrade(currentPrecision: string | null, newPrecision: CoordinatePrec
   return newRank > currentRank;
 }
 
-async function fetchBatch(
-  opts: BackfillOptions,
-  columns: { hasCoordMeta: boolean }
-): Promise<any[]> {
-  const selectCols = "id, source, url, title, city, district, latitude, longitude" +
-    (columns.hasCoordMeta ? ", coordinate_source, coordinate_precision" : "");
-
-  let query = supabase
-    .from("listings")
-    .select(selectCols)
-    .is("latitude", null)
-    .order("created_at", { ascending: false })
-    .limit(opts.batchSize);
-
-  if (opts.source) {
-    query = query.eq("source", opts.source);
-  }
-
-  if (opts.recentOnly) {
-    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-    query = query.gte("created_at", sevenDaysAgo);
-  }
-
-  const { data, error } = await query;
-  if (error) {
-    console.error(`[BACKFILL] Fetch error: ${error.message}`);
-    return [];
-  }
-  return data ?? [];
-}
-
-async function countCandidates(opts: BackfillOptions): Promise<number> {
-  let query = supabase
-    .from("listings")
-    .select("*", { count: "exact", head: true })
-    .is("latitude", null);
-
-  if (opts.source) {
-    query = query.eq("source", opts.source);
-  }
-
-  if (opts.recentOnly) {
-    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-    query = query.gte("created_at", sevenDaysAgo);
-  }
-
-  const { count, error } = await query;
-  if (error) {
-    console.error(`[BACKFILL] Count error: ${error.message}`);
-    return 0;
-  }
-  return count ?? 0;
-}
-
-async function run() {
-  const opts = parseArgs();
-
-  console.log("=== COORDINATE BACKFILL ===");
-  console.log(`Mode: ${opts.dryRun ? "DRY RUN" : "LIVE"}`);
-  console.log(`Limit: ${opts.limit}`);
-  console.log(`Batch size: ${opts.batchSize}`);
-  console.log(`Source filter: ${opts.source ?? "all"}`);
-  console.log(`Recent only: ${opts.recentOnly}`);
-  console.log(`Skip Nominatim: ${opts.skipNominatim}`);
-  console.log(`Pause between batches: ${opts.pauseBetweenBatchesMs}ms`);
-  console.log("");
-
-  const columns = await checkRequiredColumns();
-  console.log(`Schema check:`);
-  console.log(`  latitude/longitude columns: ${columns.hasLatLng ? "YES" : "NO"}`);
-  console.log(`  coordinate_source/precision: ${columns.hasCoordMeta ? "YES" : "NO"}`);
-  console.log(`  geocode_cache table: ${columns.hasGeocodeCache ? "YES" : "NO"}`);
-  console.log("");
-
-  if (!columns.hasLatLng) {
-    console.error("ABORT: latitude/longitude columns do not exist on listings table.");
-    console.error("Run migration 015 in Supabase SQL Editor first.");
-    console.error("File: server/migrations/PENDING_RUN_IN_SUPABASE.sql");
-    process.exit(1);
-  }
-
-  const totalCandidates = await countCandidates(opts);
-  const effectiveLimit = Math.min(opts.limit, totalCandidates);
-  console.log(`Candidates (latitude IS NULL): ${totalCandidates}`);
-  console.log(`Will process up to: ${effectiveLimit}`);
-  console.log("");
-
-  if (totalCandidates === 0) {
-    console.log("No listings need coordinate backfill. Done.");
-    process.exit(0);
-  }
-
+async function runBulkCityFallback(opts: BackfillOptions, columns: { hasCoordMeta: boolean }): Promise<BackfillStats> {
   const stats: BackfillStats = {
-    candidates: totalCandidates,
+    candidates: 0,
     processed: 0,
     directCoords: 0,
     geocoded: 0,
@@ -219,14 +130,148 @@ async function run() {
     errors: 0,
   };
 
+  let query = supabase
+    .from("listings")
+    .select("city", { count: "exact" })
+    .is("latitude", null);
+
+  if (opts.source) query = query.eq("source", opts.source);
+  if (opts.recentOnly) {
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    query = query.gte("created_at", sevenDaysAgo);
+  }
+
+  const { data: allRows, count } = await query;
+  stats.candidates = count ?? 0;
+
+  if (!allRows || allRows.length === 0) {
+    console.log("No candidates found.");
+    return stats;
+  }
+
+  const cityGroups = new Map<string, number>();
+  for (const row of allRows) {
+    const city = row.city;
+    cityGroups.set(city, (cityGroups.get(city) || 0) + 1);
+  }
+
+  console.log(`Found ${cityGroups.size} distinct cities across ${stats.candidates} candidate listings`);
+  console.log("");
+
+  let totalUpdated = 0;
+
+  for (const [city, rowCount] of Array.from(cityGroups.entries()).sort((a, b) => b[1] - a[1])) {
+    if (opts.limit > 0 && totalUpdated >= opts.limit) break;
+
+    const key = normalizeCityKey(city);
+    const coords = CITY_CENTER_COORDS[key];
+
+    if (!coords) {
+      console.log(`  [SKIP] "${city}" (${rowCount} rows) — not in city center table`);
+      stats.unresolved += rowCount;
+      continue;
+    }
+
+    if (opts.dryRun) {
+      console.log(`  [DRY] "${city}" (${rowCount} rows) → ${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)} city_fallback/city_level`);
+      stats.cityFallback += rowCount;
+      stats.processed += rowCount;
+      totalUpdated += rowCount;
+      continue;
+    }
+
+    const updateData: Record<string, any> = {
+      latitude: coords.lat,
+      longitude: coords.lng,
+    };
+    if (columns.hasCoordMeta) {
+      updateData.coordinate_source = "city_fallback";
+      updateData.coordinate_precision = "city_level";
+    }
+
+    let updateQuery = supabase
+      .from("listings")
+      .update(updateData)
+      .eq("city", city)
+      .is("latitude", null);
+
+    if (opts.source) updateQuery = updateQuery.eq("source", opts.source);
+
+    const { error, count: updatedCount } = await updateQuery.select("id", { count: "exact", head: true });
+
+    if (error) {
+      console.error(`  [ERR] "${city}": ${error.message}`);
+      stats.errors += rowCount;
+      continue;
+    }
+
+    const affected = updatedCount ?? rowCount;
+    console.log(`  [OK] "${city}": ${affected} rows → ${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`);
+    stats.cityFallback += affected;
+    stats.processed += affected;
+    totalUpdated += affected;
+  }
+
+  return stats;
+}
+
+async function runRowByRow(opts: BackfillOptions, columns: { hasCoordMeta: boolean }): Promise<BackfillStats> {
+  const stats: BackfillStats = {
+    candidates: 0,
+    processed: 0,
+    directCoords: 0,
+    geocoded: 0,
+    cityFallback: 0,
+    unresolved: 0,
+    skippedAlreadyGood: 0,
+    upgraded: 0,
+    errors: 0,
+  };
+
+  let countQuery = supabase
+    .from("listings")
+    .select("*", { count: "exact", head: true })
+    .is("latitude", null);
+  if (opts.source) countQuery = countQuery.eq("source", opts.source);
+  if (opts.recentOnly) {
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    countQuery = countQuery.gte("created_at", sevenDaysAgo);
+  }
+  const { count } = await countQuery;
+  stats.candidates = count ?? 0;
+
+  const effectiveLimit = Math.min(opts.limit, stats.candidates);
+  console.log(`Candidates (latitude IS NULL): ${stats.candidates}`);
+  console.log(`Will process up to: ${effectiveLimit}`);
+  console.log("");
+
+  if (stats.candidates === 0) {
+    console.log("No listings need coordinate backfill. Done.");
+    return stats;
+  }
+
   let totalProcessed = 0;
   let batchNum = 0;
 
   while (totalProcessed < effectiveLimit) {
     batchNum++;
-    const batch = await fetchBatch(opts, columns);
+    const selectCols = "id, source, url, title, city, district, latitude, longitude" +
+      (columns.hasCoordMeta ? ", coordinate_source, coordinate_precision" : "");
 
-    if (batch.length === 0) {
+    let fetchQuery = supabase
+      .from("listings")
+      .select(selectCols)
+      .is("latitude", null)
+      .order("created_at", { ascending: false })
+      .limit(opts.batchSize);
+    if (opts.source) fetchQuery = fetchQuery.eq("source", opts.source);
+    if (opts.recentOnly) {
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      fetchQuery = fetchQuery.gte("created_at", sevenDaysAgo);
+    }
+
+    const { data: batch, error: fetchErr } = await fetchQuery;
+    if (fetchErr || !batch || batch.length === 0) {
       console.log(`[Batch ${batchNum}] No more candidates. Stopping.`);
       break;
     }
@@ -244,10 +289,7 @@ async function run() {
 
       try {
         const fields = buildGeocodableFields(listing);
-
-        const resolved = opts.skipNominatim
-          ? resolveCoordinatesCityOnly(fields)
-          : await resolveCoordinates(fields);
+        const resolved = await resolveCoordinates(fields);
 
         if (!resolved) {
           stats.unresolved++;
@@ -314,6 +356,40 @@ async function run() {
       await new Promise(r => setTimeout(r, opts.pauseBetweenBatchesMs));
     }
   }
+
+  return stats;
+}
+
+async function run() {
+  const opts = parseArgs();
+
+  console.log("=== COORDINATE BACKFILL ===");
+  console.log(`Mode: ${opts.dryRun ? "DRY RUN" : "LIVE"}`);
+  console.log(`Limit: ${opts.limit}`);
+  console.log(`Batch size: ${opts.batchSize}`);
+  console.log(`Source filter: ${opts.source ?? "all"}`);
+  console.log(`Recent only: ${opts.recentOnly}`);
+  console.log(`Skip Nominatim: ${opts.skipNominatim}`);
+  console.log(`Pause between batches: ${opts.pauseBetweenBatchesMs}ms`);
+  console.log("");
+
+  const columns = await checkRequiredColumns();
+  console.log(`Schema check:`);
+  console.log(`  latitude/longitude columns: ${columns.hasLatLng ? "YES" : "NO"}`);
+  console.log(`  coordinate_source/precision: ${columns.hasCoordMeta ? "YES" : "NO"}`);
+  console.log(`  geocode_cache table: ${columns.hasGeocodeCache ? "YES" : "NO"}`);
+  console.log("");
+
+  if (!columns.hasLatLng) {
+    console.error("ABORT: latitude/longitude columns do not exist on listings table.");
+    console.error("Run migration 015 in Supabase SQL Editor first.");
+    console.error("File: server/migrations/PENDING_RUN_IN_SUPABASE.sql");
+    process.exit(1);
+  }
+
+  const stats = opts.skipNominatim
+    ? await runBulkCityFallback(opts, columns)
+    : await runRowByRow(opts, columns);
 
   console.log("");
   console.log("=== BACKFILL SUMMARY ===");

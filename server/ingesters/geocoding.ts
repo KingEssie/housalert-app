@@ -98,7 +98,9 @@ const CITY_CENTER_COORDS: Record<string, { lat: number; lng: number }> = {
   "utrecht": { lat: 52.0907, lng: 5.1214 },
 };
 
-function normalizeCityKey(city: string): string {
+export { CITY_CENTER_COORDS };
+
+export function normalizeCityKey(city: string): string {
   return city.toLowerCase().trim().replace(/\s+/g, " ");
 }
 
