@@ -1,0 +1,299 @@
+We need a full audit + hardening pass of the HousAlert matching engine.
+
+IMPORTANT:
+- This is NOT a UI task
+- This is NOT a scraper redesign task
+- This is a backend/data/matching correctness task
+- Inspect the ACTUAL current implementation
+- Fix only what is needed to make matching behavior truthful, consistent, and reliable
+- Do NOT guess
+- Do NOT give a theoretical answer only
+- Audit the real code, then implement the fixes
+
+==================================================
+GOAL
+==================================================
+
+We need to ensure that a "match" really is a match based on the user's saved search profile.
+
+That means:
+1. all currently supported filters must be evaluated correctly
+2. unknown values must be handled correctly
+3. hard filters vs soft/unknown-sensitive filters must behave correctly
+4. the toggle:
+   "Stuur mij woningen waarbij mijn eisen niet duidelijk staan aangegeven"
+   must work exactly as intended
+5. no field should silently behave as fake-supported when backend data does not truly exist
+
+==================================================
+PART 1 — INVENTORY THE ACTIVE MATCHING ENGINE
+==================================================
+
+Inspect the ACTUAL code path used to decide whether a scraped listing matches a user's search profile.
+
+Report:
+- exact files involved
+- main match function(s)
+- where the search profile is read
+- where listing fields are compared
+- where final inclusion/exclusion is decided
+
+We need the real active path, not dead code.
+
+==================================================
+PART 2 — AUDIT ALL CURRENT FILTERS AGAINST MATCHING
+==================================================
+
+Inspect every active user filter currently exposed in the search profile flow and verify whether it is truly supported in the matching engine.
+
+At minimum audit:
+
+Core filters:
+- min rent
+- max rent
+- "stuur ook iets duurdere perfecte matches"
+- property type
+- bedrooms / rooms
+- minimum area
+- city
+- district / neighborhood
+- radius
+- furnished
+- pets_allowed
+
+Optional feature filters:
+- balcony
+- garden
+- bath
+- roof_terrace
+- energy_label
+- elevator
+
+For EACH filter, report:
+1. is it stored in the profile?
+2. does a normalized listing field exist?
+3. is it currently used in matching?
+4. is the logic correct?
+5. is unknown preserved?
+6. if unsupported, is the UI currently overpromising?
+
+==================================================
+PART 3 — DEFINE HARD FILTERS VS UNKNOWN-SENSITIVE FILTERS
+==================================================
+
+Implement and/or verify this rule set:
+
+----------------------------------
+HARD FILTERS
+----------------------------------
+These should be strict:
+- location (city / district / radius)
+- max rent
+- min rent (if used)
+- property type
+- bedrooms / rooms minimum
+- area minimum
+
+Behavior:
+- if listing clearly fails → reject
+- if required field is missing and the system cannot safely compare → report current behavior
+- do NOT silently pretend it matches unless there is already an intentional business rule
+
+----------------------------------
+UNKNOWN-SENSITIVE FILTERS
+----------------------------------
+These must support 3-state logic:
+- furnished
+- pets_allowed
+- balcony
+- garden
+- bath
+- roof_terrace
+- energy_label
+- elevator
+
+Behavior for these filters:
+If user explicitly wants a feature (for example balcony = yes):
+- listing true → include
+- listing false → exclude
+- listing null/unknown → include ONLY if unknown-toggle is ON
+
+If user does not care about that feature:
+- do not filter on it
+
+This rule must be implemented consistently for all supported optional feature filters.
+
+==================================================
+PART 4 — TOGGLE IMPLEMENTATION
+==================================================
+
+Audit and fix the behavior of:
+
+"Stuur mij woningen waarbij mijn eisen niet duidelijk staan aangegeven"
+
+We need exact intended behavior:
+
+If toggle = OFF:
+- listings with unknown values for explicitly requested optional filters must be excluded
+
+If toggle = ON:
+- listings with unknown values for explicitly requested optional filters may still be included
+- BUT known mismatches must still be excluded
+
+Example:
+User wants balcony = yes
+
+Listing balcony:
+- true → include
+- false → exclude
+- null → include only when toggle ON
+
+Implement/verify this exact logic for all supported optional feature filters.
+
+IMPORTANT:
+The toggle must NOT turn false into true.
+It only allows unknown values to pass.
+
+==================================================
+PART 5 — DO NOT PRETEND UNSUPPORTED FILTERS WORK
+==================================================
+
+Some fields may not exist yet in DB/scraping, such as:
+- garden
+- bath
+- roof_terrace
+- energy_label
+
+If a filter is currently shown in UI but there is NO real backend field and NO real matching support:
+
+You must report it explicitly.
+
+If the current matching code incorrectly pretends to support such fields:
+- fix that behavior
+- do not silently treat them as matching
+- do not silently treat missing as false
+- make the system honest
+
+If a filter cannot yet be supported end-to-end, report that clearly rather than faking support.
+
+==================================================
+PART 6 — IMPLEMENT A CLEAN MATCH EVALUATION MODEL
+==================================================
+
+Refactor the matching logic so it is easier to reason about and safer.
+
+Preferred structure:
+- central match evaluator
+- per-field evaluation helpers
+- explicit return states where useful
+
+For optional boolean-ish filters, use a clear helper pattern similar to:
+
+- user has no preference -> pass
+- listing true -> pass
+- listing false -> fail
+- listing null -> pass only if unknown-toggle ON
+
+Keep the implementation clean and maintainable.
+Do not duplicate similar logic across many places if it can be centralized safely.
+
+==================================================
+PART 7 — ADD DEBUG / AUDIT VISIBILITY
+==================================================
+
+Add lightweight internal debug visibility so we can understand why a listing matched or failed.
+
+At minimum make it possible (through logs or a debug object) to know:
+- which filters passed
+- which filters failed
+- which filters were unknown
+- whether unknown-toggle affected the decision
+
+Do NOT expose this in the end-user UI unless already intended.
+This is for developer/debugging confidence.
+
+==================================================
+PART 8 — TEST CASES TO PASS
+==================================================
+
+Implement and verify these cases using the real matching engine:
+
+CASE 1:
+User wants balcony = yes
+Listing balcony = true
+=> MUST match
+
+CASE 2:
+User wants balcony = yes
+Listing balcony = false
+=> MUST NOT match
+
+CASE 3:
+User wants balcony = yes
+Listing balcony = null
+Toggle OFF
+=> MUST NOT match
+
+CASE 4:
+User wants balcony = yes
+Listing balcony = null
+Toggle ON
+=> MAY match
+
+CASE 5:
+User wants furnished = yes
+Listing furnished = false
+=> MUST NOT match
+
+CASE 6:
+User wants furnished = yes
+Listing furnished = null
+Toggle ON
+=> MAY match
+
+CASE 7:
+User max rent = 1500
+Listing price = 1600
+No price flexibility
+=> MUST NOT match
+
+CASE 8:
+User max rent = 1500
+Listing price = 1600
+Price flexibility enabled
+=> verify exact intended behavior and implement consistently
+
+CASE 9:
+User min area = 50
+Listing area = 45
+=> MUST NOT match
+
+CASE 10:
+User wants a filter that is currently unsupported in backend
+=> system must not silently fake a reliable match result
+
+==================================================
+PART 9 — REPORT THE GAPS CLEARLY
+==================================================
+
+At the end, report exactly:
+
+1. Which filters are now fully supported end-to-end
+2. Which filters are partially supported
+3. Which filters still cannot work correctly because DB/scraping fields are missing
+4. Which files were changed
+5. What matching logic was fixed
+6. Whether the unknown-toggle now works correctly
+7. Whether any UI filters are currently ahead of backend capability
+
+==================================================
+IMPORTANT CONSTRAINTS
+==================================================
+
+- Do NOT redesign the frontend
+- Do NOT add huge new product features
+- Do NOT invent unsupported matching behavior
+- Make the current system truthful, correct, and debuggable
+
+The most important thing:
+A user must be able to trust that a "match" is actually based on their search profile in a correct and explainable way.

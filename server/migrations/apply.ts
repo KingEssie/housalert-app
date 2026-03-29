@@ -22,6 +22,7 @@ export async function runStartupMigration() {
   await ensurePostPaywallColumns();
   await ensureBuddyStatusColumns();
 
+  await ensureSearchProfileToggles();
   await createUserMatchesTable();
   await createFetchRunsTable();
   await createActivationEventsTable();
@@ -188,6 +189,28 @@ async function ensureBuddyStatusColumns() {
       }
     } catch (err: any) {
       log(`[MIGRATION] Error adding ${col.name}: ${err.message}`, "migration");
+    }
+  }
+}
+
+async function ensureSearchProfileToggles() {
+  const cols = [
+    { name: "send_unclear", sql: "BOOLEAN DEFAULT TRUE" },
+    { name: "price_flexible", sql: "BOOLEAN DEFAULT FALSE" },
+  ];
+
+  for (const col of cols) {
+    try {
+      const exists = await pool.query(
+        "SELECT 1 FROM information_schema.columns WHERE table_name = 'search_profiles' AND column_name = $1",
+        [col.name]
+      );
+      if (exists.rows.length === 0) {
+        await pool.query(`ALTER TABLE search_profiles ADD COLUMN ${col.name} ${col.sql}`);
+        log(`[MIGRATION] Added ${col.name} column to search_profiles`, "migration");
+      }
+    } catch (err: any) {
+      log(`[MIGRATION] Error adding search_profiles.${col.name}: ${err.message}`, "migration");
     }
   }
 }

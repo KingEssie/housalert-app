@@ -28,6 +28,8 @@ export interface SearchProfile {
   property_types?: string[];
   extra_features?: string[];
   target_categories?: string[];
+  send_unclear?: boolean;
+  price_flexible?: boolean;
   created_at: string;
 }
 
@@ -54,6 +56,8 @@ export interface InsertSearchProfileInput {
   property_types?: string[];
   extra_features?: string[];
   target_categories?: string[];
+  send_unclear?: boolean;
+  price_flexible?: boolean;
 }
 
 const OPTIONAL_COLUMNS = [
@@ -61,6 +65,7 @@ const OPTIONAL_COLUMNS = [
   "location_mode", "districts", "radius_km",
   "commute_destination", "commute_lat", "commute_lng", "commute_mode", "commute_minutes",
   "furnished", "property_types", "extra_features", "target_categories",
+  "send_unclear", "price_flexible",
 ] as const;
 
 export async function getSearchProfiles(): Promise<SearchProfile[]> {
@@ -113,6 +118,8 @@ export async function createSearchProfile(
   if (input.property_types && input.property_types.length > 0) fullRow.property_types = input.property_types;
   if (input.extra_features && input.extra_features.length > 0) fullRow.extra_features = input.extra_features;
   if (input.target_categories && input.target_categories.length > 0) fullRow.target_categories = input.target_categories;
+  if (input.send_unclear != null) fullRow.send_unclear = input.send_unclear;
+  if (input.price_flexible != null) fullRow.price_flexible = input.price_flexible;
 
   const { data, error } = await supabase
     .from("search_profiles")
@@ -185,6 +192,8 @@ export async function updateSearchProfile(
     property_types: input.property_types && input.property_types.length > 0 ? input.property_types : null,
     extra_features: input.extra_features && input.extra_features.length > 0 ? input.extra_features : null,
     target_categories: input.target_categories && input.target_categories.length > 0 ? input.target_categories : null,
+    send_unclear: input.send_unclear != null ? input.send_unclear : true,
+    price_flexible: input.price_flexible != null ? input.price_flexible : false,
   };
 
   const res = await apiFetch(`/api/search-profiles/${id}`, {

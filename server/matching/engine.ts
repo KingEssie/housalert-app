@@ -28,6 +28,8 @@ interface SearchProfile {
   districts?: string[] | null;
   property_types?: string[] | null;
   location_mode?: string | null;
+  send_unclear?: boolean | null;
+  price_flexible?: boolean | null;
 }
 
 interface DbListing {
@@ -97,6 +99,8 @@ export interface FilterCheck {
   rule: string;
   passed: boolean;
   hybridPass?: boolean;
+  skipped?: boolean;
+  unsupported?: boolean;
 }
 
 export interface MatchExplanation {
@@ -105,23 +109,49 @@ export interface MatchExplanation {
   reason: string;
 }
 
-function mapExtraFeatureToListingField(feature: string, listing: DbListing): { value: boolean | null; fieldName: string } {
+const SUPPORTED_FEATURES = new Set([
+  "pets_allowed", "huisdieren",
+  "balcony", "balkon",
+  "elevator", "lift",
+]);
+
+const UNSUPPORTED_FEATURES = new Set([
+  "parking", "parkeerplaats",
+  "garden", "tuin",
+  "basement", "kelder",
+  "bath", "bad",
+  "rooftop", "dakterras",
+  "energy_c", "energielabel",
+]);
+
+function mapExtraFeatureToListingField(feature: string, listing: DbListing): { value: boolean | null; fieldName: string; supported: boolean } {
   switch (feature) {
     case "pets_allowed":
-    case "huisdieren": return { value: listing.pets_allowed ?? null, fieldName: "pets_allowed" };
+    case "huisdieren": return { value: listing.pets_allowed ?? null, fieldName: "pets_allowed", supported: true };
     case "balcony":
-    case "balkon": return { value: listing.balcony ?? null, fieldName: "balcony" };
+    case "balkon": return { value: listing.balcony ?? null, fieldName: "balcony", supported: true };
     case "elevator":
-    case "lift": return { value: listing.elevator ?? null, fieldName: "elevator" };
-    case "parking":
-    case "parkeerplaats":
-    case "garden":
-    case "tuin":
-    case "basement":
-    case "kelder":
-      return { value: null, fieldName: feature };
-    default: return { value: null, fieldName: feature };
+    case "lift": return { value: listing.elevator ?? null, fieldName: "elevator", supported: true };
+    default: return { value: null, fieldName: feature, supported: false };
   }
+}
+
+function evaluateOptionalBooleanFilter(
+  listingValue: boolean | null,
+  sendUnclear: boolean,
+  filterName: string,
+  fieldName: string,
+): { passed: boolean; hybridPass: boolean; rule: string } {
+  if (listingValue === true) {
+    return { passed: true, hybridPass: false, rule: `${filterName}: listing.${fieldName}=true → pass` };
+  }
+  if (listingValue === false) {
+    return { passed: false, hybridPass: false, rule: `${filterName}: listing.${fieldName}=false → known mismatch → reject` };
+  }
+  if (sendUnclear) {
+    return { passed: true, hybridPass: true, rule: `${filterName}: listing.${fieldName}=null (unknown) + send_unclear=ON → allowed` };
+  }
+  return { passed: false, hybridPass: false, rule: `${filterName}: listing.${fieldName}=null (unknown) + send_unclear=OFF → reject` };
 }
 
 const GERMAN_CITY_ALIASES: Record<string, string[]> = {
@@ -188,6 +218,9 @@ export function citiesMatch(listingCity: string, profileCity: string): boolean {
 
 export function explainMatchInternal(listing: DbListing, profile: SearchProfile): MatchExplanation {
   const checks: FilterCheck[] = [];
+  const sendUnclear = profile.send_unclear !== false;
+  const priceFlexible = profile.price_flexible === true;
+
   const listingCity = normalizeCity(listing.city);
   const profileCity = normalizeCity(profile.city_name || profile.city || "");
 
@@ -236,7 +269,10 @@ export function explainMatchInternal(listing: DbListing, profile: SearchProfile)
     priceMaxPassed = true;
     priceMaxHybrid = true;
   } else {
-    priceMaxPassed = listing.price <= profile.price_max;
+    const effectiveMax = priceFlexible
+      ? Math.round(profile.price_max * 1.10)
+      : profile.price_max;
+    priceMaxPassed = listing.price <= effectiveMax;
   }
   checks.push({
     filter: "price_max",
@@ -245,12 +281,14 @@ export function explainMatchInternal(listing: DbListing, profile: SearchProfile)
     listingField: "price",
     listingValue: String(listing.price),
     rule: listingPriceKnown
-      ? "listing.price <= profile.price_max (skipped if price_max=0)"
+      ? priceFlexible
+        ? `listing.price <= profile.price_max * 1.10 (${Math.round(profile.price_max * 1.10)}€, price_flexible=ON)`
+        : "listing.price <= profile.price_max (skipped if price_max=0)"
       : "hybrid: listing.price=0 (unknown) → allowed",
     passed: priceMaxPassed,
     hybridPass: priceMaxHybrid,
   });
-  if (!priceMaxPassed) return { matched: false, checks, reason: `Price ${listing.price} > max ${profile.price_max}` };
+  if (!priceMaxPassed) return { matched: false, checks, reason: `Price ${listing.price} > max ${priceFlexible ? Math.round(profile.price_max * 1.10) : profile.price_max}${priceFlexible ? " (flexible +10%)" : ""}` };
 
   const listingBedsKnown = listing.bedrooms > 0;
   let bedroomsPassed: boolean;
@@ -304,27 +342,23 @@ export function explainMatchInternal(listing: DbListing, profile: SearchProfile)
 
   if (profile.furnished && profile.furnished !== "any" && profile.furnished !== "no_preference") {
     const listingFurnished = listing.furnished ?? null;
+    const wantsFurnished = profile.furnished === "furnished";
+    const expectedValue = wantsFurnished;
     let furnishedPassed: boolean;
     let isHybridPass = false;
     let rule: string;
-    if (profile.furnished === "unfurnished") {
-      if (listingFurnished === null) {
+    if (listingFurnished === null) {
+      if (sendUnclear) {
         furnishedPassed = true;
         isHybridPass = true;
-        rule = "hybrid: profile requires unfurnished → listing.furnished is null/unknown → allowed (hybrid pass)";
+        rule = `furnished: listing.furnished=null (unknown) + send_unclear=ON → allowed`;
       } else {
-        furnishedPassed = listingFurnished === false;
-        rule = "hybrid: profile requires unfurnished → listing.furnished is known → must be false";
+        furnishedPassed = false;
+        rule = `furnished: listing.furnished=null (unknown) + send_unclear=OFF → reject`;
       }
     } else {
-      if (listingFurnished === null) {
-        furnishedPassed = true;
-        isHybridPass = true;
-        rule = "hybrid: profile requires furnished → listing.furnished is null/unknown → allowed (hybrid pass)";
-      } else {
-        furnishedPassed = listingFurnished === true;
-        rule = "hybrid: profile requires furnished → listing.furnished is known → must be true";
-      }
+      furnishedPassed = listingFurnished === expectedValue;
+      rule = `furnished: listing.furnished=${listingFurnished}, profile wants ${profile.furnished} → ${furnishedPassed ? "pass" : "known mismatch → reject"}`;
     }
     checks.push({
       filter: "furnished",
@@ -341,40 +375,38 @@ export function explainMatchInternal(listing: DbListing, profile: SearchProfile)
     }
   }
 
-  const HYBRID_FEATURES = new Set(["pets_allowed", "huisdieren"]);
-
   if (profile.extra_features && profile.extra_features.length > 0) {
     for (const feature of profile.extra_features) {
-      const { value, fieldName } = mapExtraFeatureToListingField(feature, listing);
-      const isHybridFeature = HYBRID_FEATURES.has(feature);
-      let featurePassed: boolean;
-      let isHybridPass = false;
-      let rule: string;
-      if (value === null && isHybridFeature) {
-        featurePassed = true;
-        isHybridPass = true;
-        rule = `hybrid: profile requires ${feature} → listing.${fieldName} is null/unknown → allowed (hybrid pass)`;
-      } else if (value === null) {
-        featurePassed = false;
-        rule = `strict: profile requires ${feature} → listing.${fieldName} is null/unknown → rejected`;
-      } else {
-        featurePassed = value === true;
-        rule = isHybridFeature
-          ? `hybrid: profile requires ${feature} → listing.${fieldName} is known (${value}) → must be true`
-          : `strict: profile requires ${feature} → listing.${fieldName} must be true`;
+      const { value, fieldName, supported } = mapExtraFeatureToListingField(feature, listing);
+
+      if (!supported) {
+        checks.push({
+          filter: `extra_feature:${feature}`,
+          profileField: "extra_features",
+          profileValue: feature,
+          listingField: fieldName,
+          listingValue: "(no DB column)",
+          rule: `unsupported: no backend data exists for "${feature}" — skipping filter (not blocking match)`,
+          passed: true,
+          skipped: true,
+          unsupported: true,
+        });
+        continue;
       }
+
+      const result = evaluateOptionalBooleanFilter(value, sendUnclear, feature, fieldName);
       checks.push({
         filter: `extra_feature:${feature}`,
         profileField: "extra_features",
         profileValue: feature,
         listingField: fieldName,
         listingValue: String(value),
-        rule,
-        passed: featurePassed,
-        hybridPass: isHybridPass,
+        rule: result.rule,
+        passed: result.passed,
+        hybridPass: result.hybridPass,
       });
-      if (!featurePassed) {
-        return { matched: false, checks, reason: `Feature "${feature}" required but listing.${fieldName}=${value}` };
+      if (!result.passed) {
+        return { matched: false, checks, reason: `Feature "${feature}" required but listing.${fieldName}=${value}${!sendUnclear && value === null ? " (send_unclear=OFF)" : ""}` };
       }
     }
   }
@@ -388,17 +420,22 @@ export function explainMatchInternal(listing: DbListing, profile: SearchProfile)
     let isHybridPass = false;
     let rule: string;
     if (!listingDistrict) {
-      districtPassed = true;
-      isHybridPass = true;
-      rule = "hybrid: listing.district is null/unknown → allowed (hybrid pass)";
+      if (sendUnclear) {
+        districtPassed = true;
+        isHybridPass = true;
+        rule = "district: listing.district=null (unknown) + send_unclear=ON → allowed";
+      } else {
+        districtPassed = false;
+        rule = "district: listing.district=null (unknown) + send_unclear=OFF → reject";
+      }
     } else {
-      districtPassed = profile.districts.some(d =>
+      districtPassed = profile.districts!.some(d =>
         listingDistrict.includes(d.toLowerCase().trim()) ||
         d.toLowerCase().trim().includes(listingDistrict)
       );
       rule = districtPassed
-        ? "hybrid: listing.district is known and matches profile districts → allowed"
-        : "hybrid: listing.district is known but does NOT match profile districts → rejected";
+        ? "district: listing.district matches profile districts → pass"
+        : "district: listing.district does NOT match profile districts → reject";
     }
     checks.push({
       filter: "district",

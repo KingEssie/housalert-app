@@ -41,6 +41,9 @@ export default function SignupPage() {
     const propertyTypes = params.get("propertyTypes")?.split(",").filter(Boolean) || undefined;
     const targetGroup = params.get("targetGroup");
     const targetCategories = targetGroup && targetGroup !== "any" ? [targetGroup] : undefined;
+    const extraFeatures = params.get("amenities")?.split(",").filter(Boolean) || undefined;
+    const sendUnclear = params.get("sendUnclear") !== "false";
+    const priceFlexible = params.get("priceFlexible") === "true";
 
     const locationMode = params.get("locationMode") as any || undefined;
     const districts = params.get("districts")?.split(",").filter(Boolean) || undefined;
@@ -70,6 +73,9 @@ export default function SignupPage() {
       furnished: furnished && furnished !== "any" ? furnished : undefined,
       property_types: propertyTypes && propertyTypes.length > 0 ? propertyTypes : undefined,
       target_categories: targetCategories,
+      extra_features: extraFeatures && extraFeatures.length > 0 ? extraFeatures : undefined,
+      send_unclear: sendUnclear,
+      price_flexible: priceFlexible,
     });
   }
 

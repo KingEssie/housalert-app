@@ -270,6 +270,8 @@ export default function OnboardingFilters() {
       if (radiusKm) input.radius_km = parseFloat(radiusKm);
       if (f.propertyType !== "any") input.property_types = [f.propertyType];
       if (f.amenities.length > 0) input.extra_features = f.amenities;
+      input.send_unclear = f.sendUnclear;
+      input.price_flexible = f.priceFlexible;
 
       await createSearchProfile(input);
       queryClient.invalidateQueries({ queryKey: ["/api/search-profiles"] });

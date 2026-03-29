@@ -126,6 +126,8 @@ interface FilterData {
   furnished: string;
   targetCategories: string[];
   extraFeatures: string[];
+  sendUnclear: boolean;
+  priceFlexible: boolean;
 }
 
 function resolveOptionLabel(opt: { label?: string; labelKey?: string }, t: (key: string, params?: Record<string, string | number>) => string): string {
@@ -155,6 +157,8 @@ export default function NewSearchPage() {
     furnished: "",
     targetCategories: [],
     extraFeatures: [],
+    sendUnclear: true,
+    priceFlexible: false,
   });
 
   const profilesQuery = useQuery({
@@ -202,6 +206,8 @@ export default function NewSearchPage() {
         furnished: profile.furnished || "",
         targetCategories: profile.target_categories || [],
         extraFeatures: profile.extra_features || [],
+        sendUnclear: profile.send_unclear !== false,
+        priceFlexible: profile.price_flexible === true,
       });
 
       setEditLoaded(true);
@@ -277,6 +283,8 @@ export default function NewSearchPage() {
       property_types: undefined,
       extra_features: filters.extraFeatures.length > 0 ? filters.extraFeatures : undefined,
       target_categories: filters.targetCategories.length > 0 ? filters.targetCategories : undefined,
+      send_unclear: filters.sendUnclear,
+      price_flexible: filters.priceFlexible,
     };
   }
 
@@ -599,8 +607,43 @@ function Step2Requirements({
             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280] pointer-events-none" />
           </div>
         </div>
+
+        <ToggleSwitch
+          checked={filters.priceFlexible}
+          onChange={(v) => updateFilters({ priceFlexible: v })}
+          label={t("onboarding.filters.priceFlexible")}
+          testId="toggle-price-flexible"
+        />
       </div>
     </div>
+  );
+}
+
+function ToggleSwitch({
+  checked,
+  onChange,
+  label,
+  testId,
+}: {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  label: string;
+  testId: string;
+}) {
+  return (
+    <label className="flex items-center gap-3 cursor-pointer" data-testid={testId}>
+      <div
+        className="w-[44px] h-[24px] rounded-full p-[2px] transition-colors shrink-0"
+        style={{ backgroundColor: checked ? "#e91e63" : "#D1D5DB" }}
+        onClick={() => onChange(!checked)}
+      >
+        <div
+          className="w-[20px] h-[20px] rounded-full bg-white transition-transform shadow-sm"
+          style={{ transform: checked ? "translateX(20px)" : "translateX(0)" }}
+        />
+      </div>
+      <span className="text-[13px] leading-snug text-[#000]">{label}</span>
+    </label>
   );
 }
 
@@ -693,6 +736,13 @@ function Step3ExtraFeatures({
           {t("newSearch.step3.noSelectionHint")}
         </p>
       )}
+
+      <ToggleSwitch
+        checked={filters.sendUnclear}
+        onChange={(v) => updateFilters({ sendUnclear: v })}
+        label={t("onboarding.filters.sendUnclear")}
+        testId="toggle-send-unclear"
+      />
     </div>
   );
 }
