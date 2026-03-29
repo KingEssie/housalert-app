@@ -50,6 +50,7 @@ import AdminMatchAuditPage from "@/pages/admin-match-audit";
 import AdminActivationPage from "@/pages/admin-activation";
 import ApplyPage from "@/pages/apply";
 import TipDetailPage from "@/pages/tip-detail";
+import TipsFlowPage from "@/pages/tips-flow";
 import DocumentsPage from "@/pages/documents";
 import SettingsPage from "@/pages/settings";
 import PreferencesPage from "@/pages/preferences";
@@ -171,6 +172,7 @@ function Router() {
       <Route path="/application-letter" component={() => <ProtectedRoute component={ApplicationLetterPage} />} />
       <Route path="/profile/details" component={() => <ProtectedRoute component={ProfileDetailsPage} />} />
       <Route path="/profile/edit/:field" component={() => <ProtectedRoute component={ProfileEditPage} />} />
+      <Route path="/tips/flow" component={() => <ProtectedRoute component={TipsFlowPage} />} />
       <Route path="/tip/:id" component={() => <ProtectedRoute component={TipDetailPage} />} />
       <Route path="/tips/bezichtiging" component={() => <ProtectedRoute component={ViewingTipsPage} />} />
       <Route path="/tips/documenten" component={() => <ProtectedRoute component={DocumentenGuidePage} />} />

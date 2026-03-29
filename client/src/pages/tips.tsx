@@ -24,6 +24,14 @@ export const TIP_IDS = [
   "schufa",
   "zoekstrategie",
   "netwerk",
+  "dokumente",
+  "finanzen",
+  "reaktion",
+  "plattformen",
+  "neubau",
+  "netzwerk",
+  "besichtigung",
+  "followup",
 ] as const;
 
 export type TipId = (typeof TIP_IDS)[number];

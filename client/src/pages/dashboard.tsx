@@ -822,7 +822,7 @@ function HomeAccountCompletionCard({ accessToken, navigate }: { accessToken: str
   );
 }
 
-function HomeTipsCompletionCard({ setActiveTab }: { setActiveTab: (tab: TabKey) => void }) {
+function HomeTipsCompletionCard({ navigate }: { navigate: (path: string) => void }) {
   const { t } = useTranslation();
 
   const tipConfigs = getTipConfig(t);
@@ -832,7 +832,7 @@ function HomeTipsCompletionCard({ setActiveTab }: { setActiveTab: (tab: TabKey) 
     id: tip.id,
     label: tip.title,
     completed: readSet.has(tip.id),
-    action: () => setActiveTab("tips"),
+    action: () => navigate("/tips/flow"),
   }));
 
   return (
@@ -898,7 +898,7 @@ function ProfileAccountCompletionCard({ navigate }: { navigate: (path: string) =
   );
 }
 
-function ProfileTipsCompletionCard({ setActiveTab }: { setActiveTab: (tab: TabKey) => void }) {
+function ProfileTipsCompletionCard({ navigate }: { navigate: (path: string) => void }) {
   const { t } = useTranslation();
 
   const tipConfigs = getTipConfig(t);
@@ -908,7 +908,7 @@ function ProfileTipsCompletionCard({ setActiveTab }: { setActiveTab: (tab: TabKe
     id: tip.id,
     label: tip.title,
     completed: readSet.has(tip.id),
-    action: () => setActiveTab("tips"),
+    action: () => navigate("/tips/flow"),
   }));
 
   return (
@@ -995,7 +995,7 @@ function HomeTab({
       )}
 
       <HomeAccountCompletionCard accessToken={accessToken} navigate={navigate} />
-      <HomeTipsCompletionCard setActiveTab={setActiveTab} />
+      <HomeTipsCompletionCard navigate={navigate} />
 
       {!subscription.isTrial && !subscription.isActive && (
         <div className="rounded-[12px] bg-[#EDE9F6] px-5 py-5" data-testid="card-upgrade-warning">
