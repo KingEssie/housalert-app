@@ -1,0 +1,319 @@
+We are making the currently visible search-profile filters truly backend-ready, instead of pretending they work.
+
+IMPORTANT:
+- Do NOT redesign the UI
+- Do NOT remove these filters from the UI
+- Do NOT break current matching
+- Extend the backend/data/matching model so these filters become real and trustworthy
+- Preserve the existing "send unclear" toggle behavior
+- Use a strict 3-state model where applicable: true / false / null
+
+==================================================
+GOAL
+==================================================
+
+Keep these filters visible in the UI and make them genuinely functional end-to-end:
+
+PRIORITY FILTERS TO IMPLEMENT:
+1. property types
+2. target categories
+3. garden
+4. bath
+5. roof_terrace
+6. energy_label
+
+These must become:
+- stored in DB
+- scraped / extracted where possible
+- normalized
+- evaluated in the matching engine
+- compatible with the "send unclear" toggle
+
+IMPORTANT:
+This prompt does NOT include commute/routing features.
+This prompt does NOT use the toggle as a workaround for missing geo logic.
+
+==================================================
+PART 1 — PROPERTY TYPES + TARGET CATEGORIES
+==================================================
+
+Audit the current implementation of:
+- property types
+- target categories
+
+They are currently stored but not truly used in matching.
+
+REQUIRED FIX:
+Wire both into the active matching engine.
+
+Requirements:
+- use the actual stored search profile values
+- compare against normalized listing fields
+- if listing type/category is known and mismatches the user preference → reject
+- if listing type/category is unknown:
+  - include only if send_unclear = true
+  - exclude if send_unclear = false
+
+If listing source uses multiple naming systems, normalize them first.
+
+Examples of property type values may include:
+- apartment
+- house
+- studio
+- room
+- shared
+- maisonette
+- etc.
+
+Build/extend a canonical mapping layer so source-specific values map into one internal enum/set.
+
+==================================================
+PART 2 — ADD DB SUPPORT FOR NEW OPTIONAL FEATURES
+==================================================
+
+Add proper database/storage support for these listing fields:
+
+- garden
+- bath
+- roof_terrace
+- energy_label
+
+Requirements:
+- add canonical storage fields if they do not exist yet
+- preserve unknown as null
+- DO NOT use false as a default for "not found"
+- make sure the DB shape supports:
+  true / false / null
+
+For energy_label:
+- use a normalized text value if possible (e.g. A+, A, B, C, D...)
+- if the user filter is "C of beter", matching must compare correctly
+- if energy label is missing, treat it as unknown/null
+
+==================================================
+PART 3 — SCRAPING / EXTRACTION LAYER
+==================================================
+
+For each of these fields:
+- garden
+- bath
+- roof_terrace
+- energy_label
+- property_type
+- target_category
+
+Audit the current ingesters and add extraction logic where possible.
+
+Use:
+1. structured source fields when available
+2. description/title keyword extraction when structured fields are missing
+
+IMPORTANT:
+When using keyword extraction:
+- support positive detection
+- support negative detection where realistic
+- preserve null when not reliably found
+
+Examples:
+garden:
+- "Garten", "mit Garten", "Gartennutzung"
+- negative: "ohne Garten"
+
+bath:
+- "Badewanne", "mit Badewanne"
+- negative: "keine Badewanne"
+
+roof_terrace:
+- "Dachterrasse", "mit Dachterrasse"
+- negative: "ohne Dachterrasse"
+
+energy_label:
+- extract actual label if present
+- do not infer fake labels when absent
+
+Do this per main source where feasible.
+If a source cannot provide the field, keep null.
+
+==================================================
+PART 4 — NORMALIZATION RULES
+==================================================
+
+Normalize all newly supported optional features into canonical internal fields.
+
+Rules:
+- true = explicitly present
+- false = explicitly absent / negatively stated
+- null = unknown / not clearly mentioned
+
+This is critical.
+Do NOT collapse null into false.
+
+For property types and categories:
+- normalize source-specific labels into internal canonical values
+- document the mapping you use
+
+==================================================
+PART 5 — MATCHING ENGINE SUPPORT
+==================================================
+
+Update the active matching engine so these fields are truly evaluated.
+
+For optional boolean-like filters:
+- garden
+- bath
+- roof_terrace
+
+Use exact behavior:
+If user wants feature = yes:
+- listing true → include
+- listing false → exclude
+- listing null → include only if send_unclear = true
+
+If user has no preference:
+- do not filter on that field
+
+For energy_label:
+If user wants "C or better":
+- A+/A/B/C → include
+- D/E/F/G/unknown-lower → exclude
+- null/unknown → include only if send_unclear = true
+
+For property_type / target_category:
+- known mismatch → exclude
+- known match → include
+- unknown → include only if send_unclear = true
+
+==================================================
+PART 6 — DO NOT ABUSE SEND_UNCLEAR
+==================================================
+
+Very important:
+The "send unclear" toggle is ONLY for unknown/missing values.
+
+It must NOT:
+- turn false into true
+- bypass a known mismatch
+- pretend unsupported location/routing logic exists
+
+Example:
+User wants garden = yes
+- listing garden = true → include
+- listing garden = false → exclude
+- listing garden = null → include only if send_unclear = true
+
+This exact principle must be enforced consistently.
+
+==================================================
+PART 7 — DEBUG / AUDITABILITY
+==================================================
+
+Add lightweight debug visibility to the matching process for these new fields.
+
+We need to be able to inspect why a listing matched or failed, including:
+- property type result
+- target category result
+- garden result
+- bath result
+- roof terrace result
+- energy label result
+- whether send_unclear affected the decision
+
+Do not expose this in user UI unless already intended.
+Developer logs or debug object is enough.
+
+==================================================
+PART 8 — TEST CASES TO PASS
+==================================================
+
+Verify at least these cases:
+
+CASE 1:
+User wants garden = yes
+Listing garden = true
+=> MUST match
+
+CASE 2:
+User wants garden = yes
+Listing garden = false
+=> MUST NOT match
+
+CASE 3:
+User wants garden = yes
+Listing garden = null
+send_unclear = false
+=> MUST NOT match
+
+CASE 4:
+User wants garden = yes
+Listing garden = null
+send_unclear = true
+=> MAY match
+
+CASE 5:
+User wants bath = yes
+Listing bath = false
+=> MUST NOT match
+
+CASE 6:
+User wants roof_terrace = yes
+Listing roof_terrace = null
+send_unclear = true
+=> MAY match
+
+CASE 7:
+User wants energy_label C+
+Listing energy_label = B
+=> MUST match
+
+CASE 8:
+User wants energy_label C+
+Listing energy_label = D
+=> MUST NOT match
+
+CASE 9:
+User wants energy_label C+
+Listing energy_label = null
+send_unclear = false
+=> MUST NOT match
+
+CASE 10:
+User wants property_type = apartment
+Listing property_type = house
+=> MUST NOT match
+
+CASE 11:
+User wants property_type = apartment
+Listing property_type = null
+send_unclear = true
+=> MAY match
+
+CASE 12:
+User wants target category X
+Listing category known mismatch
+=> MUST NOT match
+
+==================================================
+PART 9 — FINAL REPORT
+==================================================
+
+At the end, report clearly:
+
+1. exact files changed
+2. which DB columns/fields were added
+3. which sources now extract:
+   - garden
+   - bath
+   - roof_terrace
+   - energy_label
+4. what normalization mapping is used for property types and categories
+5. which filters are now fully supported end-to-end
+6. which filters are still only partially supported
+7. confirmation that send_unclear only affects unknown/null, never known mismatches
+
+==================================================
+CONSTRAINT
+==================================================
+
+Do NOT start commute/routing work in this task.
+Do NOT add fake support for radius or commute.
+Focus only on making these currently visible optional filters truly work.

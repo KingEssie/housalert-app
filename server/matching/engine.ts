@@ -46,6 +46,11 @@ interface DbListing {
   pets_allowed?: boolean | null;
   balcony?: boolean | null;
   elevator?: boolean | null;
+  garden?: boolean | null;
+  bath?: boolean | null;
+  roof_terrace?: boolean | null;
+  energy_label?: string | null;
+  property_type?: string | null;
   district?: string | null;
   latitude?: number | null;
   longitude?: number | null;
@@ -54,7 +59,7 @@ interface DbListing {
   created_at?: string | null;
 }
 
-const LISTING_SELECT = "id, source, url, title, city, price, bedrooms, size_m2, image_url, furnished, pets_allowed, balcony, elevator, district, latitude, longitude, extra_features, target_categories";
+const LISTING_SELECT = "id, source, url, title, city, price, bedrooms, size_m2, image_url, furnished, pets_allowed, balcony, elevator, garden, bath, roof_terrace, energy_label, property_type, district, latitude, longitude, extra_features, target_categories";
 
 let hasFurnishedColumn: boolean | null = null;
 let hasDistrictColumn: boolean | null = null;
@@ -86,7 +91,7 @@ function getListingSelect(): string {
   const parts = [base];
   if (hasFurnishedColumn !== false) parts.push("furnished");
   if (hasDistrictColumn !== false) parts.push("district");
-  if (hasAdvancedListingColumns !== false) parts.push("pets_allowed, balcony, elevator, latitude, longitude, extra_features, target_categories");
+  if (hasAdvancedListingColumns !== false) parts.push("pets_allowed, balcony, elevator, garden, bath, roof_terrace, energy_label, property_type, latitude, longitude, extra_features, target_categories");
   return parts.join(", ");
 }
 
@@ -113,15 +118,14 @@ const SUPPORTED_FEATURES = new Set([
   "pets_allowed", "huisdieren",
   "balcony", "balkon",
   "elevator", "lift",
+  "garden", "tuin",
+  "bath", "bad", "badewanne",
+  "roof_terrace", "rooftop", "dakterras", "dachterrasse",
 ]);
 
 const UNSUPPORTED_FEATURES = new Set([
   "parking", "parkeerplaats",
-  "garden", "tuin",
   "basement", "kelder",
-  "bath", "bad",
-  "rooftop", "dakterras",
-  "energy_c", "energielabel",
 ]);
 
 function mapExtraFeatureToListingField(feature: string, listing: DbListing): { value: boolean | null; fieldName: string; supported: boolean } {
@@ -132,8 +136,48 @@ function mapExtraFeatureToListingField(feature: string, listing: DbListing): { v
     case "balkon": return { value: listing.balcony ?? null, fieldName: "balcony", supported: true };
     case "elevator":
     case "lift": return { value: listing.elevator ?? null, fieldName: "elevator", supported: true };
+    case "garden":
+    case "tuin": return { value: listing.garden ?? null, fieldName: "garden", supported: true };
+    case "bath":
+    case "bad":
+    case "badewanne": return { value: listing.bath ?? null, fieldName: "bath", supported: true };
+    case "roof_terrace":
+    case "rooftop":
+    case "dakterras":
+    case "dachterrasse": return { value: listing.roof_terrace ?? null, fieldName: "roof_terrace", supported: true };
     default: return { value: null, fieldName: feature, supported: false };
   }
+}
+
+const ENERGY_LABEL_ORDER: Record<string, number> = {
+  "A+": 1, "A": 2, "B": 3, "C": 4, "D": 5, "E": 6, "F": 7, "G": 8, "H": 9,
+};
+
+function energyLabelMeetsMinimum(listingLabel: string, requiredLabel: string): boolean {
+  const listingRank = ENERGY_LABEL_ORDER[listingLabel.toUpperCase()];
+  const requiredRank = ENERGY_LABEL_ORDER[requiredLabel.toUpperCase()];
+  if (!listingRank || !requiredRank) return false;
+  return listingRank <= requiredRank;
+}
+
+const PROPERTY_TYPE_ALIASES: Record<string, string> = {
+  "wohnung": "apartment",
+  "flat": "apartment",
+  "etagenwohnung": "apartment",
+  "haus": "house",
+  "villa": "house",
+  "bungalow": "house",
+  "einzimmerwohnung": "studio",
+  "zimmer": "room",
+  "wg-zimmer": "room",
+  "wg": "shared",
+  "wohngemeinschaft": "shared",
+  "maisonettewohnung": "maisonette",
+};
+
+function normalizePropertyTypeForMatch(raw: string): string {
+  const lower = raw.toLowerCase().trim();
+  return PROPERTY_TYPE_ALIASES[lower] || lower;
 }
 
 function evaluateOptionalBooleanFilter(
@@ -408,6 +452,118 @@ export function explainMatchInternal(listing: DbListing, profile: SearchProfile)
       if (!result.passed) {
         return { matched: false, checks, reason: `Feature "${feature}" required but listing.${fieldName}=${value}${!sendUnclear && value === null ? " (send_unclear=OFF)" : ""}` };
       }
+    }
+  }
+
+  if (profile.property_types && profile.property_types.length > 0) {
+    const listingType = listing.property_type ? normalizePropertyTypeForMatch(listing.property_type) : null;
+    const profileTypes = profile.property_types.map(t => normalizePropertyTypeForMatch(t));
+    let ptPassed: boolean;
+    let ptHybrid = false;
+    let ptRule: string;
+    if (listingType === null) {
+      if (sendUnclear) {
+        ptPassed = true;
+        ptHybrid = true;
+        ptRule = `property_type: listing.property_type=null (unknown) + send_unclear=ON → allowed`;
+      } else {
+        ptPassed = false;
+        ptRule = `property_type: listing.property_type=null (unknown) + send_unclear=OFF → reject`;
+      }
+    } else {
+      ptPassed = profileTypes.includes(listingType);
+      ptRule = ptPassed
+        ? `property_type: listing="${listingType}" matches profile types → pass`
+        : `property_type: listing="${listingType}" not in profile types [${profileTypes.join(",")}] → known mismatch → reject`;
+    }
+    checks.push({
+      filter: "property_type",
+      profileField: "property_types",
+      profileValue: JSON.stringify(profile.property_types),
+      listingField: "property_type",
+      listingValue: listingType ?? "(null)",
+      rule: ptRule,
+      passed: ptPassed,
+      hybridPass: ptHybrid,
+    });
+    if (!ptPassed) {
+      return { matched: false, checks, reason: `Property type "${listingType}" not in profile types ${JSON.stringify(profile.property_types)}` };
+    }
+  }
+
+  if (profile.target_categories && profile.target_categories.length > 0) {
+    const listingCats = listing.target_categories ?? null;
+    let tcPassed: boolean;
+    let tcHybrid = false;
+    let tcRule: string;
+    if (!listingCats || listingCats.length === 0) {
+      if (sendUnclear) {
+        tcPassed = true;
+        tcHybrid = true;
+        tcRule = `target_categories: listing has no categories (unknown) + send_unclear=ON → allowed`;
+      } else {
+        tcPassed = false;
+        tcRule = `target_categories: listing has no categories (unknown) + send_unclear=OFF → reject`;
+      }
+    } else {
+      const profileCatsLower = profile.target_categories.map(c => c.toLowerCase().trim());
+      const listingCatsLower = listingCats.map(c => c.toLowerCase().trim());
+      tcPassed = profileCatsLower.some(pc => listingCatsLower.includes(pc));
+      tcRule = tcPassed
+        ? `target_categories: listing categories overlap with profile → pass`
+        : `target_categories: listing [${listingCatsLower.join(",")}] has no overlap with profile [${profileCatsLower.join(",")}] → known mismatch → reject`;
+    }
+    checks.push({
+      filter: "target_categories",
+      profileField: "target_categories",
+      profileValue: JSON.stringify(profile.target_categories),
+      listingField: "target_categories",
+      listingValue: JSON.stringify(listingCats),
+      rule: tcRule,
+      passed: tcPassed,
+      hybridPass: tcHybrid,
+    });
+    if (!tcPassed) {
+      return { matched: false, checks, reason: `Target categories mismatch: listing=${JSON.stringify(listingCats)} vs profile=${JSON.stringify(profile.target_categories)}` };
+    }
+  }
+
+  const energyFeature = profile.extra_features?.find(f =>
+    f === "energy_c" || f === "energielabel" || f.startsWith("energy_")
+  );
+  if (energyFeature) {
+    const requiredLabel = energyFeature === "energy_c" || energyFeature === "energielabel" ? "C" : energyFeature.replace("energy_", "").toUpperCase();
+    const listingLabel = listing.energy_label ?? null;
+    let ePassed: boolean;
+    let eHybrid = false;
+    let eRule: string;
+    if (listingLabel === null) {
+      if (sendUnclear) {
+        ePassed = true;
+        eHybrid = true;
+        eRule = `energy_label: listing.energy_label=null (unknown) + send_unclear=ON → allowed`;
+      } else {
+        ePassed = false;
+        eRule = `energy_label: listing.energy_label=null (unknown) + send_unclear=OFF → reject`;
+      }
+    } else {
+      ePassed = energyLabelMeetsMinimum(listingLabel, requiredLabel);
+      eRule = ePassed
+        ? `energy_label: listing="${listingLabel}" meets requirement "${requiredLabel} or better" → pass`
+        : `energy_label: listing="${listingLabel}" worse than required "${requiredLabel}" → known mismatch → reject`;
+    }
+    checks.push({
+      filter: "energy_label",
+      profileField: "extra_features",
+      profileValue: energyFeature,
+      listingField: "energy_label",
+      listingValue: listingLabel ?? "(null)",
+      rule: eRule,
+      passed: ePassed,
+      hybridPass: eHybrid,
+    });
+    if (!ePassed) {
+      return { matched: false, checks, reason: `Energy label "${listingLabel}" does not meet requirement "${requiredLabel} or better"` };
     }
   }
 

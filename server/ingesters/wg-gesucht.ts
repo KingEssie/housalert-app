@@ -3,6 +3,7 @@ import type { Ingester, IngestionResult } from "./types";
 import type { ParsedListing } from "./matching";
 import { insertAndMatchListings } from "./matching";
 import { getCitySlugs } from "./city-slugs";
+import { extractGarden, extractBath, extractRoofTerrace, extractEnergyLabel, extractPropertyTypeFromText } from "./feature-extraction";
 
 const WG_GESUCHT_BASE = "https://www.wg-gesucht.de";
 const API_BASE = `${WG_GESUCHT_BASE}/api/asset/offers/`;
@@ -50,6 +51,11 @@ function extractFeatures(text: string): {
   pets_allowed: boolean | null;
   balcony: boolean | null;
   elevator: boolean | null;
+  garden: boolean | null;
+  bath: boolean | null;
+  roof_terrace: boolean | null;
+  energy_label: string | null;
+  property_type: string | null;
 } {
   return {
     furnished: UNFURNISHED_PATTERNS.test(text)
@@ -64,6 +70,11 @@ function extractFeatures(text: string): {
         : null,
     balcony: extractBalcony(text),
     elevator: extractElevator(text),
+    garden: extractGarden(text),
+    bath: extractBath(text),
+    roof_terrace: extractRoofTerrace(text),
+    energy_label: extractEnergyLabel(text),
+    property_type: extractPropertyTypeFromText(text),
   };
 }
 
@@ -128,6 +139,11 @@ function offerToListing(offer: WgOffer, city: string): ParsedListing | null {
     pets_allowed: features.pets_allowed,
     balcony: features.balcony,
     elevator: features.elevator,
+    garden: features.garden,
+    bath: features.bath,
+    roof_terrace: features.roof_terrace,
+    energy_label: features.energy_label,
+    property_type: features.property_type,
     district,
     latitude: lat,
     longitude: lng,

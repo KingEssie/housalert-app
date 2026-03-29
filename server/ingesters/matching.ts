@@ -28,6 +28,11 @@ export interface ParsedListing {
   pets_allowed?: boolean | null;
   balcony?: boolean | null;
   elevator?: boolean | null;
+  garden?: boolean | null;
+  bath?: boolean | null;
+  roof_terrace?: boolean | null;
+  energy_label?: string | null;
+  property_type?: string | null;
   district?: string | null;
   latitude?: number | null;
   longitude?: number | null;
@@ -110,6 +115,7 @@ async function checkAdvancedColumns(): Promise<boolean> {
 
 const ADVANCED_FIELDS: (keyof ParsedListing)[] = [
   "pets_allowed", "balcony", "elevator",
+  "garden", "bath", "roof_terrace", "energy_label", "property_type",
   "latitude", "longitude", "extra_features", "target_categories",
 ];
 

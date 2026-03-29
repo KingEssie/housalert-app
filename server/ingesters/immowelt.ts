@@ -4,6 +4,7 @@ import type { Ingester, IngestionResult } from "./types";
 import type { ParsedListing } from "./matching";
 import { insertAndMatchListings } from "./matching";
 import { getImmoweltUrl } from "./city-slugs";
+import { extractGarden, extractBath, extractRoofTerrace, extractEnergyLabel, extractPropertyTypeFromText } from "./feature-extraction";
 
 const USER_AGENT =
   "HousAlert/1.0 (rental alert app; polite single-page fetch; contact: support@housalert.com)";
@@ -68,12 +69,22 @@ function extractFeatures(text: string): {
   pets_allowed: boolean | null;
   balcony: boolean | null;
   elevator: boolean | null;
+  garden: boolean | null;
+  bath: boolean | null;
+  roof_terrace: boolean | null;
+  energy_label: string | null;
+  property_type: string | null;
 } {
   return {
     furnished: parseFurnished(text),
     pets_allowed: NO_PETS_PATTERNS.test(text) ? false : PETS_PATTERNS.test(text) ? true : null,
     balcony: extractBalcony(text),
     elevator: extractElevator(text),
+    garden: extractGarden(text),
+    bath: extractBath(text),
+    roof_terrace: extractRoofTerrace(text),
+    energy_label: extractEnergyLabel(text),
+    property_type: extractPropertyTypeFromText(text),
   };
 }
 
@@ -217,6 +228,11 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
       pets_allowed: features.pets_allowed,
       balcony: features.balcony,
       elevator: features.elevator,
+      garden: features.garden,
+      bath: features.bath,
+      roof_terrace: features.roof_terrace,
+      energy_label: features.energy_label,
+      property_type: features.property_type,
       district,
     });
   });
