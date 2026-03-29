@@ -78,17 +78,17 @@ export function ExpandableCompletionCard({
               onClick={step.completed ? undefined : step.action}
               disabled={step.completed}
               className={`w-full h-[56px] flex items-center gap-3 text-left transition-colors rounded-[6px] ${
-                !step.completed ? "active:bg-[#F5F5F7]" : ""
+                !step.completed ? "active:bg-[#EBEBF0]" : ""
               } ${idx < steps.length - 1 ? "border-b border-gray-50" : ""}`}
               data-testid={`${testId}-step-${step.id}`}
             >
-              <span className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-[12px] font-semibold text-gray-400 flex-shrink-0">
+              <span className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-[12px] font-semibold text-[#6B7280] flex-shrink-0">
                 {idx + 1}
               </span>
               <span
                 className={`text-[15px] font-medium flex-1 leading-snug ${
                   step.completed
-                    ? "text-gray-400 line-through"
+                    ? "text-[#6B7280] line-through"
                     : "text-black"
                 }`}
               >

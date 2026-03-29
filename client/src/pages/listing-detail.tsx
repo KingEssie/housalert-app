@@ -136,7 +136,7 @@ export default function ListingDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F5F5F7" }}>
+      <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#EBEBF0" }}>
         <FloatingBackButton navigate={navigate} />
         <div className="animate-pulse">
           <div className="h-[260px] bg-[#E5E5E5]" />
@@ -154,12 +154,12 @@ export default function ListingDetailPage() {
 
   if (isError || !listing) {
     return (
-      <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F5F5F7" }}>
+      <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#EBEBF0" }}>
         <FloatingBackButton navigate={navigate} />
         <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-16">
           <div className="app-card text-center">
             <p className="text-[18px] font-bold text-[#000] mb-2">{t("listing.notFound")}</p>
-            <p className="text-[13px] text-[#6B7280] mb-4">{t("listing.notFoundDesc")}</p>
+            <p className="text-[14px] text-[#4B5563] mb-4">{t("listing.notFoundDesc")}</p>
             <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold" data-testid="button-back-dashboard">
               {t("listing.backToDashboard")}
             </Button>
@@ -174,7 +174,7 @@ export default function ListingDetailPage() {
   const gradient = getCityGradient(listing.city);
 
   return (
-    <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F5F5F7" }}>
+    <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#EBEBF0" }}>
       <FloatingBackButton navigate={navigate} />
 
       <div className="relative">
@@ -217,7 +217,7 @@ export default function ListingDetailPage() {
               {listing.title}
             </h1>
 
-            <div className="flex items-center gap-1.5 text-[14px] text-[#6B7280] mb-4">
+            <div className="flex items-center gap-1.5 text-[15px] text-[#4B5563] mb-4">
               <MapPin className="w-4 h-4 flex-shrink-0" />
               <span data-testid="text-listing-location">
                 {listing.district?.trim() ? `${listing.district.trim()} · ${listing.city}` : listing.city}
@@ -237,7 +237,7 @@ export default function ListingDetailPage() {
             <div className="grid grid-cols-2 gap-4">
               {listing.bedrooms > 0 && (
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-[8px] bg-[#F5F5F7] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-[8px] bg-[#EBEBF0] flex items-center justify-center">
                     <BedDouble className="w-5 h-5 text-[#6B7280]" />
                   </div>
                   <div>
@@ -249,7 +249,7 @@ export default function ListingDetailPage() {
 
               {listing.size_m2 > 0 && (
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-[8px] bg-[#F5F5F7] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-[8px] bg-[#EBEBF0] flex items-center justify-center">
                     <Ruler className="w-5 h-5 text-[#6B7280]" />
                   </div>
                   <div>
@@ -260,7 +260,7 @@ export default function ListingDetailPage() {
               )}
 
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-[8px] bg-[#F5F5F7] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-[8px] bg-[#EBEBF0] flex items-center justify-center">
                   <Globe className="w-5 h-5 text-[#6B7280]" />
                 </div>
                 <div>
@@ -277,7 +277,7 @@ export default function ListingDetailPage() {
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-[8px] bg-[#F5F5F7] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-[8px] bg-[#EBEBF0] flex items-center justify-center">
                   <Clock className="w-5 h-5 text-[#6B7280]" />
                 </div>
                 <div>
@@ -350,7 +350,7 @@ export default function ListingDetailPage() {
             </>
           ) : (
             <>
-              <p className="text-[13px] text-[#6B7280] text-center mb-1" data-testid="text-locked-hint">
+              <p className="text-[14px] text-[#4B5563] text-center mb-1" data-testid="text-locked-hint">
                 {t("listing.lockedHint")}
               </p>
               <Button

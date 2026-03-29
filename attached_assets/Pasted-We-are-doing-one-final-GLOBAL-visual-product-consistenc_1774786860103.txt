@@ -1,0 +1,172 @@
+We are doing one final GLOBAL visual/product consistency pass across the app.
+
+IMPORTANT:
+- Do NOT change routing unless explicitly requested below
+- Do NOT change business logic
+- Do NOT change backend/API behavior
+- Do NOT redesign flows beyond what is specified
+- ONLY apply the requested UI/UX structure and visual consistency changes
+
+==================================================
+PART 1 — GLOBAL TEXT CONTRAST FIX
+==================================================
+
+Across the ENTIRE app:
+
+The current secondary/muted text is too pale and too small.
+We want stronger readability and a more premium look.
+
+Apply globally:
+1. Make secondary/muted text noticeably darker
+   - use a dark gray close to near-black
+   - still secondary, but no more washed-out pale gray
+   - apply to subtitles, helper text, meta text, descriptions, labels, member-since text, section descriptions, card subtext, muted info text
+
+2. Increase smaller text styles by approximately 2px globally
+   - examples:
+     - 13px -> 15px
+     - 14px -> 16px
+   - only apply this to smaller secondary/body/meta/helper text
+   - do NOT enlarge already-large headings unnecessarily
+   - keep hierarchy intact
+   - prevent overflow/wrapping issues with small layout adjustments if needed
+
+==================================================
+PART 2 — GLOBAL PAGE BACKGROUND
+==================================================
+
+The current light gray page background is too bright.
+
+Update the global app/page background to a subtly darker light gray:
+- slightly darker than current
+- still soft and premium
+- white cards should stand out better
+- apply consistently across the entire app
+
+Do NOT make it dark.
+Just one shade darker and more balanced.
+
+==================================================
+PART 3 — MATCHES PAGE STRUCTURE CHANGE
+==================================================
+
+On the MATCHES page:
+
+Remove the top tab filters completely.
+That means remove tabs such as:
+- Nieuw
+- Bekeken
+- Gereageerd
+- and similar top filter tabs
+
+New behavior/structure:
+- show only ONE unified matches list
+- sorted from newest to oldest
+- no top tab bar on this page
+- keep the page clean and focused
+
+IMPORTANT:
+- keep existing match cards and match logic
+- only remove the tabbed filter UI and make the default list newest-first
+- do not break existing matching behavior
+
+==================================================
+PART 4 — FAVORITES PAGE TAB STRUCTURE
+==================================================
+
+On the FAVORIETEN page:
+
+Keep only 2 top tabs:
+1. Favorieten
+2. Gereageerd
+
+Do NOT show other tabs.
+
+Requirements:
+- clean, simple top tab switcher
+- visual style consistent with app
+- active tab state should be clear
+- spacing should feel balanced
+- follow the cleaner simplified structure shown in the reference
+
+==================================================
+PART 5 — BOTTOM TAB BAR VISUAL UPDATE
+==================================================
+
+Update the bottom navigation tab bar across the app:
+
+Current issue:
+- inactive icons/text are too light
+- icons feel too thin
+- labels feel slightly too small
+
+Apply globally to the bottom tab bar:
+1. Make inactive tab icons/text a slightly darker gray
+2. Active tab should be blue
+3. Make the tab bar icons visually thicker / heavier
+4. Make tab labels slightly larger
+5. Keep the tab bar clean and premium
+6. Maintain consistency across:
+   - Home
+   - Matches
+   - Favorieten
+   - Profiel
+   - Notificaties (if present in bottom nav)
+
+Do NOT make the tab bar bulky.
+Just improve clarity and readability.
+
+==================================================
+PART 6 — KEEP CONSISTENCY
+==================================================
+
+All these changes must feel like one coherent system.
+
+This means:
+- the darker muted text should match the new darker page background
+- the tab bar colors should feel aligned with the rest of the app
+- updated text sizing should remain consistent across all screens
+- no one-off styling exceptions unless absolutely necessary
+
+==================================================
+PART 7 — DO NOT CHANGE
+==================================================
+
+Do NOT change:
+- card logic
+- search logic
+- favorites logic
+- matches data source
+- profile/account logic
+- onboarding logic
+- paywall logic
+
+Only update:
+- global text contrast
+- global small text sizing
+- global light gray background
+- matches page tab removal
+- favorites page limited 2-tab structure
+- bottom tab bar styling
+
+==================================================
+ACCEPTANCE CRITERIA
+==================================================
+
+Only mark complete if ALL are true:
+1. secondary text across the app is darker and more readable
+2. smaller text is about 2px larger across the app
+3. page background is subtly darker everywhere
+4. matches page no longer has top filter tabs and shows one newest-first list
+5. favorites page has only 2 tabs: Favorieten and Gereageerd
+6. bottom nav inactive labels/icons are darker gray
+7. bottom nav active tab is blue
+8. bottom nav icons feel thicker and labels slightly larger
+9. no layouts break due to text-size changes
+
+At the end report:
+1. exact files changed
+2. which global tokens/classes were updated
+3. what was changed on the matches page
+4. what was changed on the favorites page
+5. what was changed in the bottom tab bar

@@ -71,7 +71,7 @@ export function SubscriptionCancelConfirmPage() {
 
   if (step === "feedback") {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: "#F5F5F7" }} data-testid="page-cancel-feedback">
+      <div className="min-h-screen" style={{ backgroundColor: "#EBEBF0" }} data-testid="page-cancel-feedback">
         <AppHeader title={t("cancellation.feedbackTitle")} onBack={() => setStep("confirm")} />
 
         <div className="max-w-xl mx-auto p-4 pb-8">
@@ -97,7 +97,7 @@ export function SubscriptionCancelConfirmPage() {
                   className={`w-full text-left px-4 py-3.5 rounded-[6px] border text-[15px] font-medium transition-colors ${
                     selectedReason === key
                       ? "border-ha-primary bg-ha-primary/10 text-ha-primary"
-                      : "border-[#E5E5E5] bg-[#F5F5F7] text-[#000] hover:bg-[#EFEFEF]"
+                      : "border-[#E5E5E5] bg-[#EBEBF0] text-[#000] hover:bg-[#EFEFEF]"
                   }`}
                   data-testid={`button-reason-${key}`}
                 >
@@ -140,7 +140,7 @@ export function SubscriptionCancelConfirmPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#F5F5F7" }} data-testid="page-cancel-confirm">
+    <div className="min-h-screen" style={{ backgroundColor: "#EBEBF0" }} data-testid="page-cancel-confirm">
       <AppHeader title={t("subscription.cancelTitle")} onBack={() => navigate("/account/subscription")} />
 
       <div className="max-w-xl mx-auto p-4 pb-8">
@@ -155,7 +155,7 @@ export function SubscriptionCancelConfirmPage() {
             {t("subscription.cancelConfirm")}
           </h2>
 
-          <div className="bg-[#F5F5F7] rounded-[6px] p-4 mb-6">
+          <div className="bg-[#EBEBF0] rounded-[6px] p-4 mb-6">
             <p className="text-[15px] text-[#6B7280] leading-relaxed" data-testid="text-cancel-info">
               {t("subscription.cancelInfo", { date: renewalDate })}
             </p>
@@ -202,7 +202,7 @@ export function SubscriptionCancelledPage() {
   const renewalDate = formatDate(subscription?.current_period_ends_at || subscription?.trial_ends_at, t("subscription.futureDate"));
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#F5F5F7" }} data-testid="page-cancelled">
+    <div className="min-h-screen" style={{ backgroundColor: "#EBEBF0" }} data-testid="page-cancelled">
       <AppHeader title={t("subscription.cancelledTitle")} onBack={() => navigate("/account/subscription")} />
 
       <div className="max-w-xl mx-auto p-4 pb-8">
@@ -217,7 +217,7 @@ export function SubscriptionCancelledPage() {
             {t("subscription.cancelled")}
           </h2>
 
-          <div className="bg-[#F5F5F7] rounded-[6px] p-4 mb-6">
+          <div className="bg-[#EBEBF0] rounded-[6px] p-4 mb-6">
             <p className="text-[15px] text-[#6B7280] leading-relaxed" data-testid="text-cancelled-info">
               {t("subscription.cancelledInfo", { date: renewalDate })}
             </p>

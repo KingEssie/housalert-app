@@ -143,11 +143,11 @@ export default function ApplyPage() {
 
   if (!sub.loading && !hasAccess) {
     return (
-      <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F5F5F7" }}>
+      <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#EBEBF0" }}>
         <AppHeader title={t("applySheet.title") || "Reageren"} onBack={() => navigate("/dashboard?tab=matches")} />
         <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-8">
           <div className="app-card text-center py-10">
-            <div className="w-16 h-16 rounded-full bg-[#F5F5F7] flex items-center justify-center mx-auto mb-5">
+            <div className="w-16 h-16 rounded-full bg-[#EBEBF0] flex items-center justify-center mx-auto mb-5">
               <Lock className="w-7 h-7 text-[#6B7280]" />
             </div>
             <h2 className="text-[18px] font-bold text-[#000] mb-2" data-testid="text-apply-locked-title">
@@ -172,7 +172,7 @@ export default function ApplyPage() {
 
   if (listingLoading || !listing) {
     return (
-      <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F5F5F7" }}>
+      <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#EBEBF0" }}>
         <AppHeader title={t("applySheet.title") || "Reageren"} onBack={() => navigate("/dashboard?tab=matches")} />
         <div className="animate-pulse">
           <div className="w-full bg-[#E5E5E5]" style={{ aspectRatio: "16/10" }} />
@@ -288,7 +288,7 @@ export default function ApplyPage() {
   const detailLine = detailParts.join(" · ");
 
   return (
-    <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F5F5F7" }}>
+    <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#EBEBF0" }}>
       <AppHeader title={t("applySheet.title") || "Reageren"} onBack={() => navigate("/dashboard?tab=matches")} />
 
       <div className="relative">

@@ -76,7 +76,7 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#F5F5F7" }}>
+    <div className="min-h-screen" style={{ backgroundColor: "#EBEBF0" }}>
       <AppHeader title={t("settings.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
@@ -89,7 +89,7 @@ export default function SettingsPage() {
               <p className="text-[16px] font-bold text-[#000] truncate" data-testid="text-profile-name">
                 {displayName}
               </p>
-              <p className="text-[14px] text-[#6B7280] truncate" data-testid="text-profile-email">
+              <p className="text-[15px] text-[#4B5563] truncate" data-testid="text-profile-email">
                 {user?.email}
               </p>
             </div>
@@ -160,7 +160,7 @@ export default function SettingsPage() {
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowLogoutConfirm(false)}>
           <div className="bg-white w-full max-w-[400px] rounded-t-[6px] sm:rounded-[6px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
             <p className="text-[17px] font-bold text-[#000] text-center">{t("profile.logoutConfirm")}</p>
-            <p className="text-[14px] text-[#6B7280] text-center mt-2 mb-6">{t("profile.logoutDesc")}</p>
+            <p className="text-[15px] text-[#4B5563] text-center mt-2 mb-6">{t("profile.logoutDesc")}</p>
             <button
               onClick={handleLogout}
               className="w-full ha-btn bg-red-500 text-white font-semibold mb-3"
@@ -170,7 +170,7 @@ export default function SettingsPage() {
             </button>
             <button
               onClick={() => setShowLogoutConfirm(false)}
-              className="w-full ha-btn text-[#000] font-medium active:bg-[#F5F5F7]"
+              className="w-full ha-btn text-[#000] font-medium active:bg-[#EBEBF0]"
               data-testid="button-logout-cancel"
             >
               {t("profileDetails.cancel")}

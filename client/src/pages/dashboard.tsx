@@ -251,7 +251,7 @@ function MatchCard({
           <p className="text-[14px] text-[#9CA3AF] leading-[1.25] mt-[3px] truncate" data-testid={`text-match-city-${match.listing_id}`}>
             {match.city}
           </p>
-          <div className="flex items-center gap-1.5 mt-[2px] text-[13px] text-[#9CA3AF] leading-[1.25]">
+          <div className="flex items-center gap-1.5 mt-[2px] text-[15px] text-[#4B5563] leading-[1.25]">
             {match.bedrooms > 0 && (
               <span>{match.bedrooms} {match.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}</span>
             )}
@@ -301,11 +301,11 @@ function ProfileCard({
               {t("common.active")}
             </span>
           </div>
-          <p className="text-[13px] text-[#6B7280] mt-0.5 line-clamp-1" data-testid={`text-profile-summary-filters-${profile.id}`}>
+          <p className="text-[15px] text-[#4B5563] mt-0.5 line-clamp-1" data-testid={`text-profile-summary-filters-${profile.id}`}>
             {getProfileSummary(profile, t)}
           </p>
           {profile.districts && profile.districts.length > 0 && (
-            <p className="text-[13px] text-[#6B7280] mt-0.5 truncate">
+            <p className="text-[15px] text-[#4B5563] mt-0.5 truncate">
               {profile.districts.length <= 2
                 ? profile.districts.join(", ")
                 : `${profile.districts[0]} ${t("profile.andOtherNeighborhoods", { count: profile.districts.length - 1 })}`
@@ -316,7 +316,7 @@ function ProfileCard({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className="w-9 h-9 rounded-full flex items-center justify-center text-[#6B7280] hover:bg-[#F5F5F7] transition-colors flex-shrink-0"
+              className="w-9 h-9 rounded-full flex items-center justify-center text-[#6B7280] hover:bg-[#EBEBF0] transition-colors flex-shrink-0"
               disabled={deleting}
               data-testid={`button-menu-filters-${profile.id}`}
             >
@@ -368,7 +368,7 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
       <div className="flex flex-col gap-3" data-testid="section-recente-matches-empty">
         <h2 className="text-section-title">{t("home.recentMatches")}</h2>
         <div className="rounded-[6px] border border-gray-200 bg-white p-6 text-center">
-          <p className="text-[14px] text-[#6B7280] mb-4 leading-relaxed">
+          <p className="text-[15px] text-[#4B5563] mb-4 leading-relaxed">
             {t("home.matchesWillAppear")}
           </p>
           <button
@@ -408,7 +408,7 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
       <div className="flex flex-col gap-3" data-testid="section-recente-matches-empty">
         <h2 className="text-section-title">{t("home.recentMatches")}</h2>
         <div className="rounded-[6px] border border-gray-200 bg-white p-6 text-center">
-          <p className="text-[14px] text-[#6B7280] leading-relaxed">
+          <p className="text-[15px] text-[#4B5563] leading-relaxed">
             {t("home.firstMatchesWillAppear")}
           </p>
         </div>
@@ -507,10 +507,10 @@ function RecentMatchCard({ match }: { match: ApiMatch }) {
           <span className="text-[15px] text-title text-[#000] truncate" data-testid={`text-recent-city-${match.listing_id}`}>
             {match.city}
           </span>
-          <p className="text-[14px] text-[#6B7280] line-clamp-1 leading-[1.35]" data-testid={`text-recent-title-${match.listing_id}`}>
+          <p className="text-[15px] text-[#4B5563] line-clamp-1 leading-[1.35]" data-testid={`text-recent-title-${match.listing_id}`}>
             {match.title}
           </p>
-          <div className="flex items-center gap-1.5 text-[13px] text-[#6B7280] mt-0.5">
+          <div className="flex items-center gap-1.5 text-[15px] text-[#4B5563] mt-0.5">
             {match.bedrooms > 0 && (
               <span>{match.bedrooms} {match.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}</span>
             )}
@@ -709,7 +709,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
                   <p className="text-[16px] font-bold text-black line-clamp-1" data-testid={`text-profile-title-${p.id}`}>
                     {getProfileTitle(p, t, locale)}
                   </p>
-                  <p className="text-[13px] text-gray-400 mt-0.5 line-clamp-1" data-testid={`text-profile-summary-${p.id}`}>
+                  <p className="text-[14px] text-[#4B5563] mt-0.5 line-clamp-1" data-testid={`text-profile-summary-${p.id}`}>
                     {getProfileSummary(p, t)}
                   </p>
                 </div>
@@ -1005,7 +1005,7 @@ function HomeTab({
 
       {subscription.isTrial && subscription.trialEndsAt && (
         <div className="rounded-[6px] border border-gray-200 bg-white px-5 py-4 flex items-center gap-3.5" data-testid="banner-trial">
-          <div className="w-10 h-10 rounded-[6px] bg-[#F5F5F7] flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-[6px] bg-[#EBEBF0] flex items-center justify-center flex-shrink-0">
             <Crown className="w-[18px] h-[18px] text-amber-400" />
           </div>
           <p className="text-[14px] font-medium text-[#000] flex-1 leading-snug">
@@ -1030,7 +1030,7 @@ function HomeTab({
         <p className="text-[16px] text-title text-white" data-testid="text-referral-body">
           {t("referral.homeBody")}
         </p>
-        <p className="text-[13px] text-white/60 mt-1 leading-relaxed" data-testid="text-referral-helper">
+        <p className="text-[14px] text-white/60 mt-1 leading-relaxed" data-testid="text-referral-helper">
           {t("referral.homeHelper")}
         </p>
         <button
@@ -1064,11 +1064,8 @@ const MATCH_SUB_TAB_CONFIG: { key: MatchSubTab; labelKey: string; Icon: any }[] 
 ];
 
 function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undefined; setActiveTab: (tab: TabKey) => void }) {
-  const [subTab, setSubTab] = useState<MatchSubTab>("nieuw");
   const [refreshKey, setRefreshKey] = useState(0);
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
-  const [favoriteListings, setFavoriteListings] = useState<ApiMatch[]>([]);
-  const [, navigate] = useLocation();
   const { t } = useTranslation();
   const { toast } = useToast();
   const sub = useSubscription();
@@ -1138,22 +1135,6 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
       .catch(() => {});
   }, [accessToken]);
 
-  const fetchFavoriteListings = useCallback(() => {
-    if (!accessToken) return;
-    apiFetch("/api/favorites/listings", {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    })
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.listings) setFavoriteListings(data.listings);
-      })
-      .catch(() => {});
-  }, [accessToken]);
-
-  useEffect(() => {
-    if (subTab === "favorieten") fetchFavoriteListings();
-  }, [subTab, fetchFavoriteListings]);
-
   const toggleFavorite = useCallback(
     async (listingId: string) => {
       if (!accessToken) return;
@@ -1166,15 +1147,13 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
       });
 
       try {
-        const res = await apiFetch(`/api/favorites/${listingId}`, {
+        await apiFetch(`/api/favorites/${listingId}`, {
           method: wasFavorited ? "DELETE" : "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        if (!res.ok) throw new Error("request failed");
-        if (subTab === "favorieten") fetchFavoriteListings();
       } catch {
         setFavoriteIds((prev) => {
           const rollback = new Set(prev);
@@ -1184,7 +1163,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
         });
       }
     },
-    [accessToken, favoriteIds, subTab, fetchFavoriteListings],
+    [accessToken, favoriteIds],
   );
 
   const matches = apiMatchesQuery.data?.matches ?? [];
@@ -1194,36 +1173,17 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
     setRefreshKey((k) => k + 1);
   }, []);
 
-  const matchTabs = matches.map((m) => ({ ...m, _tab: getMatchTab(m) }));
-  const filteredMatches =
-    subTab === "favorieten"
-      ? favoriteListings
-      : matchTabs.filter((m) => m._tab === subTab);
+  const allMatchesSorted = [...matches].sort((a, b) => {
+    const dateA = a.first_seen_at || a.published_at || "";
+    const dateB = b.first_seen_at || b.published_at || "";
+    return dateB.localeCompare(dateA);
+  });
 
   return (
     <div className="flex flex-col pb-8">
-      <div className="sticky top-0 z-10 bg-[#F5F5F7] pt-6 pb-0 px-6">
-        <div className="flex items-center justify-between mb-5">
+      <div className="sticky top-0 z-10 bg-[#EBEBF0] pt-6 pb-4 px-6">
+        <div className="flex items-center justify-between">
           <h1 className="text-page-title">{t("matches.title")}</h1>
-        </div>
-        <div className="flex gap-2.5 pb-4" data-testid="match-sub-tabs">
-          {MATCH_SUB_TAB_CONFIG.map(({ key, labelKey }) => {
-            const isActive = subTab === key;
-            return (
-              <button
-                key={key}
-                onClick={() => setSubTab(key)}
-                className={`px-5 py-2.5 rounded-[6px] text-[13px] font-medium transition-all ${
-                  isActive
-                    ? "bg-ha-primary text-white"
-                    : "bg-white text-[#6B7280] hover:bg-[#F5F5F7]"
-                }`}
-                data-testid={`tab-matches-${key}`}
-              >
-                {t(labelKey)}
-              </button>
-            );
-          })}
         </div>
       </div>
 
@@ -1244,11 +1204,11 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
         </div>
       ) : apiMatchesQuery.isError ? (
         <div className="bg-white rounded-[6px] border border-gray-200 p-10 flex flex-col items-center text-center gap-4">
-          <div className="w-14 h-14 rounded-[6px] bg-[#F5F5F7] flex items-center justify-center">
+          <div className="w-14 h-14 rounded-[6px] bg-[#EBEBF0] flex items-center justify-center">
             <AlertCircle className="w-6 h-6 text-[#6B7280]" />
           </div>
           <p className="text-[18px] text-title text-[#000]">{t("matches.loadError")}</p>
-          <p className="text-[14px] text-[#6B7280] leading-relaxed">{t("matches.loadErrorDesc")}</p>
+          <p className="text-[15px] text-[#4B5563] leading-relaxed">{t("matches.loadErrorDesc")}</p>
           <button
             onClick={() => apiMatchesQuery.refetch()}
             className="text-[13px] font-medium text-ha-primary"
@@ -1266,39 +1226,9 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           onCtaClick={() => setActiveTab("profiel")}
           testId="empty-matches"
         />
-      
-      ) : filteredMatches.length === 0 ? (
-        subTab === "gereageerd" ? (
-          <EmptyState
-            illustration={EMPTY_STATE_IMAGES.noApplications}
-            title={t("matches.emptyApplied.title")}
-            description={t("matches.emptyApplied.desc")}
-            ctaLabel={t("matches.discoverListings")}
-            onCtaClick={() => setSubTab("nieuw")}
-            testId="empty-applications"
-          />
-        ) : subTab === "favorieten" ? (
-          <EmptyState
-            illustration={EMPTY_STATE_IMAGES.noFilters}
-            title={t("matches.emptyFavorites.title")}
-            description={t("matches.emptyFavorites.desc")}
-            ctaLabel={t("matches.discoverListings")}
-            onCtaClick={() => setSubTab("nieuw")}
-            testId="empty-favorites"
-          />
-        ) : (
-          <EmptyState
-            illustration={EMPTY_STATE_IMAGES.noFilters}
-            title={t("matches.emptyViewed.title")}
-            description={t("matches.emptyViewed.desc")}
-            ctaLabel={t("matches.adjustFilters")}
-            onCtaClick={() => setActiveTab("profiel")}
-            testId="empty-filtered-matches"
-          />
-        )
       ) : (
         <div className="flex flex-col gap-[36px]">
-          {filteredMatches.map((m) => (
+          {allMatchesSorted.map((m) => (
             <MatchCard
               key={m.listing_id}
               match={m}
@@ -1320,7 +1250,7 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
   const { t } = useTranslation();
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#F5F5F7] flex flex-col">
+    <div className="fixed inset-0 z-50 bg-[#EBEBF0] flex flex-col">
       <header className="sticky top-0 z-10">
         <div className="max-w-lg mx-auto flex items-center h-[56px] px-5">
           <button
@@ -1365,11 +1295,15 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
   );
 }
 
+type FavSubTab = "favorieten" | "gereageerd";
+
 function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
   const { t } = useTranslation();
   const [, navigate] = useLocation();
+  const [favSubTab, setFavSubTab] = useState<FavSubTab>("favorieten");
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const [favoriteListings, setFavoriteListings] = useState<ApiMatch[]>([]);
+  const [appliedListings, setAppliedListings] = useState<ApiMatch[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const sub = useSubscription();
   const hasAccess = sub.isActive || sub.isTrial;
@@ -1388,6 +1322,24 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
       .finally(() => setIsLoading(false));
   }, [accessToken]);
 
+  const fetchAppliedListings = useCallback(() => {
+    if (!accessToken) return;
+    const appliedIds = safeGetSet(MATCH_APPLIED_KEY);
+    apiFetch("/api/matches", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+      .then((r) => r.json())
+      .then((data: ApiMatchesResponse) => {
+        if (data.matches) {
+          const applied = data.matches.filter(
+            (m) => m.canonical_applied || appliedIds.has(m.listing_id)
+          );
+          setAppliedListings(applied);
+        }
+      })
+      .catch(() => {});
+  }, [accessToken]);
+
   useEffect(() => {
     if (!accessToken) return;
     apiFetch("/api/favorites", {
@@ -1401,7 +1353,8 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
       })
       .catch(() => {});
     fetchFavoriteListings();
-  }, [accessToken, fetchFavoriteListings]);
+    fetchAppliedListings();
+  }, [accessToken, fetchFavoriteListings, fetchAppliedListings]);
 
   const toggleFavorite = useCallback(
     async (listingId: string) => {
@@ -1442,13 +1395,37 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
 
   const refreshStatuses = useCallback(() => {}, []);
 
+  const currentListings = favSubTab === "favorieten" ? favoriteListings : appliedListings;
+
   return (
     <div className="flex flex-col pb-8">
-      <div className="sticky top-0 z-10 bg-[#F5F5F7] pt-6 pb-4 px-6">
-        <h1 className="text-page-title">{t("nav.favorites")}</h1>
+      <div className="sticky top-0 z-10 bg-[#EBEBF0] pt-6 pb-0 px-6">
+        <h1 className="text-page-title mb-4">{t("nav.favorites")}</h1>
+        <div className="flex gap-2.5 pb-4" data-testid="fav-sub-tabs">
+          {([
+            { key: "favorieten" as FavSubTab, label: t("nav.favorites") },
+            { key: "gereageerd" as FavSubTab, label: t("matches.subtabs.applied") },
+          ]).map(({ key, label }) => {
+            const isActive = favSubTab === key;
+            return (
+              <button
+                key={key}
+                onClick={() => setFavSubTab(key)}
+                className={`px-5 py-2.5 rounded-[6px] text-[14px] font-medium transition-all ${
+                  isActive
+                    ? "bg-[#3b82f6] text-white"
+                    : "bg-white text-[#4B5563]"
+                }`}
+                data-testid={`tab-fav-${key}`}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
       </div>
-      <div className="px-6 flex flex-col gap-8">
-        {isLoading ? (
+      <div className="px-6 flex flex-col gap-8 mt-4">
+        {isLoading && favSubTab === "favorieten" ? (
           <div className="flex flex-col gap-6">
             {[1, 2].map((i) => (
               <div key={i} className="animate-pulse">
@@ -1461,16 +1438,16 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
               </div>
             ))}
           </div>
-        ) : favoriteListings.length === 0 ? (
+        ) : currentListings.length === 0 ? (
           <EmptyState
-            illustration={EMPTY_STATE_IMAGES.noFilters}
-            title={t("matches.emptyFavorites.title")}
-            description={t("matches.emptyFavorites.desc")}
-            testId="empty-favorites-tab"
+            illustration={favSubTab === "favorieten" ? EMPTY_STATE_IMAGES.noFilters : EMPTY_STATE_IMAGES.noApplications}
+            title={favSubTab === "favorieten" ? t("matches.emptyFavorites.title") : t("matches.emptyApplied.title")}
+            description={favSubTab === "favorieten" ? t("matches.emptyFavorites.desc") : t("matches.emptyApplied.desc")}
+            testId={`empty-${favSubTab}-tab`}
           />
         ) : (
           <div className="flex flex-col gap-[36px]">
-            {favoriteListings.map((m) => (
+            {currentListings.map((m) => (
               <MatchCard
                 key={m.listing_id}
                 match={m}
@@ -1497,7 +1474,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
         className="relative w-full max-w-[480px] bg-white rounded-t-[6px] pb-10 pt-3 animate-in slide-in-from-bottom duration-300"
         onClick={e => e.stopPropagation()}
       >
-        <div className="w-10 h-1 bg-[#F5F5F7] rounded-full mx-auto mb-6" />
+        <div className="w-10 h-1 bg-[#EBEBF0] rounded-full mx-auto mb-6" />
         <div className="px-6">
           <h3 className="text-[18px] text-title text-[#000] mb-6">{t("profile.photo.title")}</h3>
 
@@ -1526,7 +1503,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
             {photoUrl && (
               <button
                 onClick={onRemove}
-                className="mt-3 w-full h-[56px] flex items-center justify-center gap-2 rounded-[6px] border border-gray-200 text-[#000] text-[15px] font-medium active:bg-[#F5F5F7] transition-colors"
+                className="mt-3 w-full h-[56px] flex items-center justify-center gap-2 rounded-[6px] border border-gray-200 text-[#000] text-[15px] font-medium active:bg-[#EBEBF0] transition-colors"
                 data-testid="button-remove-photo"
               >
                 <Trash2 className="w-[18px] h-[18px]" />
@@ -1536,7 +1513,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
 
             <button
               onClick={onClose}
-              className="mt-3 w-full h-[56px] flex items-center justify-center rounded-[6px] text-[#000]/70 text-[15px] font-medium active:bg-[#F5F5F7] transition-colors"
+              className="mt-3 w-full h-[56px] flex items-center justify-center rounded-[6px] text-[#000]/70 text-[15px] font-medium active:bg-[#EBEBF0] transition-colors"
               data-testid="button-cancel-photo"
             >
               {t("common.cancel")}
@@ -1745,7 +1722,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
   const spCount = spList.length;
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-[#F5F5F7]">
+    <div className="min-h-[calc(100vh-80px)] bg-[#EBEBF0]">
       <div className="relative" data-testid="card-profile-summary">
         <div className="bg-ha-profile-header h-[160px]" style={{ borderRadius: "0 0 50% 50% / 0 0 36px 36px" }}>
           <button
@@ -1770,7 +1747,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           {lastName && (
             <span className="hidden" data-testid="text-user-lastname">{lastName}</span>
           )}
-          <p className="text-[14px] text-gray-400 mt-0.5" data-testid="text-member-since">
+          <p className="text-[14px] text-[#4B5563] mt-0.5" data-testid="text-member-since">
             {memberSinceLabel}
           </p>
         </div>
@@ -1790,7 +1767,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                   <p className="text-[18px] font-bold text-black">{t("profile.upgradeMissing")}</p>
                 </div>
               </div>
-              <p className="text-[14px] text-gray-500 mt-1 mb-5 leading-relaxed">{t("profile.upgradeDesc")}</p>
+              <p className="text-[15px] text-[#4B5563] mt-1 mb-5 leading-relaxed">{t("profile.upgradeDesc")}</p>
               <button
                 onClick={() => navigate("/paywall")}
                 className="w-full h-[56px] rounded-[12px] bg-[#e91e63] text-white text-[16px] font-bold hover:bg-[#d81b60] transition-colors active:scale-[0.98]"
@@ -1806,7 +1783,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               <Gift className="w-5 h-5 text-ha-primary flex-shrink-0 mt-0.5" />
               <div>
                 <p className="text-[15px] font-bold text-black">{t("trial.explanation")}</p>
-                <p className="text-[13px] text-gray-400 mt-1 leading-relaxed">{t("trial.explanationDesc")}</p>
+                <p className="text-[14px] text-[#4B5563] mt-1 leading-relaxed">{t("trial.explanationDesc")}</p>
               </div>
             </div>
           )}
@@ -1830,7 +1807,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                     <div className="flex-1 min-w-0">
                       <p className="text-[16px] font-bold text-black truncate">{sp.city_name || sp.city || t("profile.searchProfileDefault")}</p>
                       {sp.districts && sp.districts.length > 0 && (
-                        <p className="text-[13px] text-gray-400 mt-0.5 truncate">
+                        <p className="text-[14px] text-[#4B5563] mt-0.5 truncate">
                           {sp.districts.length <= 2
                             ? sp.districts.join(", ")
                             : `${sp.districts[0]} ${t("profile.andOtherNeighborhoods", { count: sp.districts.length - 1 })}`
@@ -1863,9 +1840,9 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               <span className="text-[13px] font-semibold text-ha-primary">{letterPreview ? t("profile.editAction") : t("profile.generateAction")}</span>
             </button>
             {letterPreview ? (
-              <p className="text-[13px] text-ha-success mt-2.5 flex items-center gap-1.5 pl-8"><Check className="w-4 h-4" /> {t("profile.letterSet")}</p>
+              <p className="text-[14px] text-ha-success mt-2.5 flex items-center gap-1.5 pl-8"><Check className="w-4 h-4" /> {t("profile.letterSet")}</p>
             ) : (
-              <p className="text-[13px] text-ha-danger mt-2.5 flex items-center gap-1.5 pl-8"><X className="w-4 h-4" /> {t("profile.noLetterYet")}</p>
+              <p className="text-[14px] text-ha-danger mt-2.5 flex items-center gap-1.5 pl-8"><X className="w-4 h-4" /> {t("profile.noLetterYet")}</p>
             )}
           </div>
 
@@ -1899,13 +1876,13 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               ) : null}
             </button>
             {!buddyExpanded && (
-              <p className="text-[13px] text-gray-400 mt-1.5 leading-relaxed pl-8">{t("profile.buddyDescription")}</p>
+              <p className="text-[14px] text-[#4B5563] mt-1.5 leading-relaxed pl-8">{t("profile.buddyDescription")}</p>
             )}
             {!buddyExpanded && pd?.search_buddy_email && (
-              <p className="text-[13px] text-ha-success mt-2.5 flex items-center gap-1.5 pl-8"><Check className="w-4 h-4" /> {pd.search_buddy_email}</p>
+              <p className="text-[14px] text-ha-success mt-2.5 flex items-center gap-1.5 pl-8"><Check className="w-4 h-4" /> {pd.search_buddy_email}</p>
             )}
             {!buddyExpanded && !pd?.search_buddy_email && (
-              <p className="text-[13px] text-ha-danger mt-2.5 flex items-center gap-1.5 pl-8"><X className="w-4 h-4" /> {t("profile.noBuddyYet")}</p>
+              <p className="text-[14px] text-ha-danger mt-2.5 flex items-center gap-1.5 pl-8"><X className="w-4 h-4" /> {t("profile.noBuddyYet")}</p>
             )}
             {buddyExpanded && (
               <div className="pt-3 pb-1 animate-in slide-in-from-top-1 duration-200" data-testid="editor-zoekbuddy">
@@ -1917,14 +1894,14 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                     onKeyDown={e => { if (e.key === "Enter") handleBuddyInvite(); }}
                     placeholder={t("profileEdit.searchBuddyPlaceholder")}
                     autoFocus
-                    className="w-full ha-field ha-field-light bg-[#F5F5F7]"
+                    className="w-full ha-field ha-field-light bg-[#EBEBF0]"
                     data-testid="input-buddy-email"
                   />
                   {buddyEmail && (
                     <button
                       type="button"
                       onClick={() => setBuddyEmail("")}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-[#F5F5F7] flex items-center justify-center active:scale-90 transition-transform"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-[#EBEBF0] flex items-center justify-center active:scale-90 transition-transform"
                       data-testid="button-buddy-clear"
                     >
                       <X className="w-3.5 h-3.5 text-[#6B7280]" />
@@ -1942,7 +1919,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                   </button>
                   <button
                     onClick={() => { setBuddyExpanded(false); setBuddyEmail(""); }}
-                    className="h-[56px] px-5 rounded-[6px] text-[#6B7280] text-[14px] font-medium active:bg-[#F5F5F7] transition-colors"
+                    className="h-[56px] px-5 rounded-[6px] text-[#6B7280] text-[14px] font-medium active:bg-[#EBEBF0] transition-colors"
                     data-testid="button-buddy-cancel"
                   >
                     {t("profileDetails.cancel")}
@@ -1979,7 +1956,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowBuddyDeleteConfirm(false)}>
           <div className="bg-white w-full max-w-[400px] rounded-t-[6px] sm:rounded-[6px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
             <p className="text-[17px] text-title text-[#000] text-center">{t("profile.buddyDeleteTitle")}</p>
-            <p className="text-[14px] text-[#6B7280] text-center mt-2 mb-6">{t("profile.buddyDeleteDesc")}</p>
+            <p className="text-[15px] text-[#4B5563] text-center mt-2 mb-6">{t("profile.buddyDeleteDesc")}</p>
             <button
               onClick={() => {
                 handleBuddyRemove();
@@ -1992,7 +1969,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             </button>
             <button
               onClick={() => setShowBuddyDeleteConfirm(false)}
-              className="w-full ha-btn text-[#000] font-medium active:bg-[#F5F5F7]"
+              className="w-full ha-btn text-[#000] font-medium active:bg-[#EBEBF0]"
               data-testid="button-buddy-delete-cancel"
             >
               {t("profileDetails.cancel")}
@@ -2082,7 +2059,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center">
+      <div className="min-h-screen bg-[#EBEBF0] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 rounded-[6px] bg-white animate-pulse" />
           <p className="text-[#000]/70 text-sm">{t("common.loading")}</p>
@@ -2105,7 +2082,7 @@ export default function DashboardPage() {
   const emailNeedsVerification = user?.user_metadata?.email_needs_verification === true;
 
   return (
-    <div className="min-h-screen bg-[#F5F5F7] flex flex-col">
+    <div className="min-h-screen bg-[#EBEBF0] flex flex-col">
       <main className="flex-1 max-w-xl mx-auto w-full pb-[100px]">
         {emailNeedsVerification && (
           <div className="mx-4 mt-3 mb-1 flex items-center gap-3 bg-[#FEF3C7] rounded-[6px] px-4 py-3" data-testid="banner-email-confirm">
@@ -2183,13 +2160,13 @@ export default function DashboardPage() {
                 data-testid={`tab-${key}`}
               >
                 {isProfileWithPhoto ? (
-                  <div className={`w-[26px] h-[26px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-ha-primary ring-offset-1 ring-offset-[#F5F5F7]" : ""}`}>
+                  <div className={`w-[26px] h-[26px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-[#3b82f6] ring-offset-1 ring-offset-white" : ""}`}>
                     <img src={tabPhotoUrl} alt="" className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <Icon className={`w-[24px] h-[24px] transition-colors ${isActive ? "text-ha-primary" : "text-[#9CA3AF]"}`} strokeWidth={isActive ? 2 : 1.5} />
+                  <Icon className={`w-[24px] h-[24px] transition-colors ${isActive ? "text-[#3b82f6]" : "text-[#6B7280]"}`} strokeWidth={isActive ? 2.2 : 2} />
                 )}
-                <span className={`text-[10px] transition-colors ${isActive ? "font-medium text-ha-primary" : "font-normal text-[#9CA3AF]"}`}>
+                <span className={`text-[11px] transition-colors ${isActive ? "font-semibold text-[#3b82f6]" : "font-medium text-[#6B7280]"}`}>
                   {t(labelKey)}
                 </span>
               </button>

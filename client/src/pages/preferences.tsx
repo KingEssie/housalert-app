@@ -103,7 +103,7 @@ export default function PreferencesPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#F5F5F7" }}>
+    <div className="min-h-screen" style={{ backgroundColor: "#EBEBF0" }}>
       <AppHeader title={t("settings.preferences")} onBack={() => navigate("/settings")} />
 
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
@@ -122,7 +122,7 @@ export default function PreferencesPage() {
                       key={opt.value}
                       onClick={() => setTheme(opt.value)}
                       className={`flex flex-col items-center gap-1.5 py-3 rounded-[6px] transition-all active:scale-[0.97] ${
-                        isActive ? "bg-ha-primary text-white" : "text-[#6B7280] hover:bg-[#F5F5F7]"
+                        isActive ? "bg-ha-primary text-white" : "text-[#6B7280] hover:bg-[#EBEBF0]"
                       }`}
                       data-testid={`theme-${opt.value}`}
                     >
@@ -147,7 +147,7 @@ export default function PreferencesPage() {
               >
                 <Globe className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
                 <p className="text-[15px] font-semibold text-[#000] flex-1">{t("profile.language")}</p>
-                <span className="text-[13px] text-[#6B7280] mr-1">{currentLangLabel}</span>
+                <span className="text-[14px] text-[#4B5563] mr-1">{currentLangLabel}</span>
               </button>
             </div>
           </div>
@@ -195,7 +195,7 @@ export default function PreferencesPage() {
               <button
                 key={lang.code}
                 onClick={() => handleLanguageChange(lang.code)}
-                className={`w-full flex items-center justify-between py-3.5 px-2 rounded-[6px] text-left active:bg-[#F5F5F7] transition-colors ${locale === lang.code ? "bg-ha-primary/10" : ""}`}
+                className={`w-full flex items-center justify-between py-3.5 px-2 rounded-[6px] text-left active:bg-[#EBEBF0] transition-colors ${locale === lang.code ? "bg-ha-primary/10" : ""}`}
                 data-testid={`button-lang-${lang.code}`}
               >
                 <span className="text-[15px] text-[#000] font-medium">{lang.label}</span>

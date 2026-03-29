@@ -109,20 +109,20 @@ export default function ApplicationLetterPage() {
   const isLongEnough = template.trim().length >= 20;
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F5F5F7" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#EBEBF0" }}>
       <AppHeader title={t("applicationLetter.title")} onBack={() => navigate("/settings")} />
 
       <main className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-32">
         <div className="flex flex-col gap-4">
           <div className="app-card">
-            <p className="text-[14px] text-[#6B7280] leading-relaxed">
+            <p className="text-[15px] text-[#4B5563] leading-relaxed">
               {t("applicationLetter.helperText")}
             </p>
           </div>
 
           {isLoading ? (
             <div className="app-card animate-pulse">
-              <div className="h-[300px] bg-[#F5F5F7] rounded-[6px]" />
+              <div className="h-[300px] bg-[#EBEBF0] rounded-[6px]" />
             </div>
           ) : (
             <div className="app-card">
@@ -130,7 +130,7 @@ export default function ApplicationLetterPage() {
                 <label className="text-field-label">{t("applicationLetter.letterLabel")}</label>
                 <button
                   onClick={handleReset}
-                  className="flex items-center gap-1 text-[13px] text-[#6B7280] active:text-[#000] transition-colors"
+                  className="flex items-center gap-1 text-[14px] text-[#4B5563] active:text-[#000] transition-colors"
                   data-testid="button-reset-template"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
