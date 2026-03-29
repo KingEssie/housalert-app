@@ -11,8 +11,7 @@ import { generateOnboardingLetter, type OnboardingLetterData } from "@/lib/appli
 import {
   ChevronLeft, Loader2, Check, ArrowRight,
   Euro, Bell, AlertTriangle, X, CheckCircle2, Send,
-  BellRing, FileText, Users, Sparkles, Zap, Star,
-  ShieldAlert,
+  BellRing, Zap, Star,
 } from "lucide-react";
 import elisePhoto from "@assets/4261FC63-DAC9-464F-B16D-9E62B0AB2B73_1774776772340.png";
 
@@ -158,29 +157,6 @@ function SecondaryBtn({ onClick, children, testId }: {
   );
 }
 
-function OptionGrid({ options, selected, onSelect, columns }: {
-  options: { value: string; label: string }[]; selected: string; onSelect: (v: string) => void; columns?: number;
-}) {
-  return (
-    <div className={`grid gap-2 ${columns === 3 ? "grid-cols-3" : "grid-cols-2"}`}>
-      {options.map((opt) => (
-        <button
-          key={opt.value}
-          onClick={() => onSelect(opt.value)}
-          className="px-3 py-3 rounded-[6px] border-2 text-[13px] font-medium transition-all active:scale-[0.97] text-left"
-          style={{
-            borderColor: selected === opt.value ? BRAND : "rgb(var(--ha-card-border))",
-            backgroundColor: selected === opt.value ? "rgba(233,30,99,0.12)" : "transparent",
-            color: selected === opt.value ? BRAND : TEXT_PRIMARY,
-          }}
-          data-testid={`option-${opt.value}`}
-        >
-          {opt.label}
-        </button>
-      ))}
-    </div>
-  );
-}
 
 interface PersonalData {
   phone: string;
@@ -388,62 +364,107 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
   );
 }
 
+function LightShell({
+  children,
+  step,
+  onBack,
+  showBack,
+  topContent,
+}: {
+  children: React.ReactNode;
+  step: string;
+  onBack?: () => void;
+  showBack?: boolean;
+  topContent?: React.ReactNode;
+}) {
+  return (
+    <div className="min-h-[100dvh] flex flex-col" style={{ backgroundColor: "#F3F3F5" }} data-testid={`setup-step-${step}`}>
+      <header className="sticky top-0 z-20 border-b" style={{ backgroundColor: "rgba(30,27,75,0.98)", borderColor: "rgba(255,255,255,0.08)" }}>
+        <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
+          {showBack && onBack ? (
+            <button
+              onClick={onBack}
+              className="w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-transform"
+              style={{ backgroundColor: "rgba(255,255,255,0.15)" }}
+              data-testid="button-setup-back"
+            >
+              <ChevronLeft className="w-5 h-5 text-white/70" />
+            </button>
+          ) : (
+            <div className="w-10" />
+          )}
+          <div className="flex-1 flex justify-center">
+            <HousAlertLogo size={28} />
+          </div>
+          <div className="w-10 flex items-center justify-end">
+            <span className="text-[11px] font-bold" style={{ color: "#00b67a" }}>★ 4,6</span>
+          </div>
+        </div>
+      </header>
+      {topContent}
+      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-10" style={{ paddingBottom: "max(40px, env(safe-area-inset-bottom, 40px))" }}>
+        {children}
+      </main>
+    </div>
+  );
+}
+
+function LightPrimaryBtn({ onClick, children, loading, disabled, testId }: {
+  onClick: () => void; children: React.ReactNode; loading?: boolean; disabled?: boolean; testId: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled || loading}
+      className="w-full h-[56px] rounded-[12px] text-[16px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
+      style={{ background: "linear-gradient(135deg, #e91e63 0%, #ec407a 100%)", boxShadow: "0 4px 15px rgba(233,30,99,0.25)" }}
+      data-testid={testId}
+    >
+      {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>{children} <ArrowRight className="w-4 h-4" /></>}
+    </button>
+  );
+}
+
 function WelcomeStep({ onNext, t }: {
   onNext: () => void;
   t: (k: string, p?: Record<string, any>) => string;
 }) {
   return (
-    <div className="min-h-[100dvh] flex flex-col" style={{ backgroundColor: "#F3F3F5" }} data-testid="setup-step-welcome">
-      <header className="sticky top-0 z-20 border-b" style={{ backgroundColor: "rgba(30,27,75,0.98)", borderColor: "rgba(255,255,255,0.08)" }}>
-        <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
-          <div className="w-10" />
-          <div className="flex-1 flex justify-center">
-            <HousAlertLogo size={28} />
-          </div>
-          <div className="w-10" />
-        </div>
-      </header>
+    <LightShell step="welcome">
+      <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-5 text-[#111]" data-testid="text-welcome-title">
+        {t("onboardingFlow.welcome.title")}
+      </h1>
 
-      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-10" style={{ paddingBottom: "max(40px, env(safe-area-inset-bottom, 40px))" }}>
-        <h1 className="text-[24px] font-extrabold tracking-[-0.02em] mb-5 text-[#111]" data-testid="text-welcome-title">
-          {t("onboardingFlow.welcome.title")}
-        </h1>
-
-        <div className="rounded-[16px] bg-white p-5" style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
-          <div className="relative rounded-[12px] px-5 py-5 mb-4" style={{ backgroundColor: "#E8F4FD" }}>
-            <p className="text-[17px] font-bold text-[#111] mb-2">Welkom!</p>
-            <p className="text-[14px] leading-[1.6] text-[#333]">
-              {t("onboardingFlow.welcome.speechBody")}
-            </p>
-            <div className="absolute -bottom-[8px] left-8 w-4 h-4 rotate-45" style={{ backgroundColor: "#E8F4FD" }} />
-          </div>
-
-          <div className="flex items-center gap-3.5 pt-2">
-            <img
-              src={elisePhoto}
-              alt="Elise — COO HousAlert"
-              className="w-[56px] h-[56px] rounded-full object-cover flex-shrink-0"
-              data-testid="img-elise-photo"
-            />
-            <div>
-              <p className="text-[16px] font-bold text-[#111]">Elise</p>
-              <p className="text-[13px] text-[#666]">COO</p>
-            </div>
-          </div>
+      <div className="rounded-[20px] bg-white p-5" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+        <div className="relative rounded-[16px] px-5 py-5 mb-5" style={{ backgroundColor: "#E8F4FD" }}>
+          <p className="text-[17px] font-bold text-[#111] mb-3">Welkom!</p>
+          <p className="text-[15px] leading-[1.65] text-[#333]" style={{ whiteSpace: "pre-line" }}>
+            {t("onboardingFlow.welcome.speechBody")}
+          </p>
+          <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45" style={{ backgroundColor: "#E8F4FD" }} />
         </div>
 
-        <div className="mt-auto pt-8">
-          <button
-            onClick={onNext}
-            className="w-full h-[56px] rounded-[12px] text-[16px] font-semibold text-white transition-all active:scale-[0.97]"
-            style={{ background: `linear-gradient(135deg, ${BRAND}, #c2185b)` }}
-            data-testid="button-welcome-next"
-          >
-            {t("onboardingFlow.welcome.cta")}
-          </button>
+        <div className="flex items-center gap-4 pt-1">
+          <img
+            src={elisePhoto}
+            alt="Elise — COO HousAlert"
+            className="w-[120px] h-[120px] rounded-full object-cover flex-shrink-0"
+            style={{ boxShadow: "0 10px 30px rgba(0,0,0,0.15)" }}
+            data-testid="img-elise-photo"
+          />
+          <div>
+            <p className="text-[20px] font-semibold text-[#111]" style={{ fontStyle: "italic" }}>Elise</p>
+            <p className="text-[14px] text-[#6B7280]" style={{ fontStyle: "italic" }}>COO</p>
+          </div>
         </div>
-      </main>
-    </div>
+      </div>
+
+      <div className="mt-auto pt-8">
+        <LightPrimaryBtn onClick={onNext} testId="button-welcome-next">
+          {t("onboardingFlow.welcome.cta")}
+        </LightPrimaryBtn>
+      </div>
+    </LightShell>
   );
 }
 
@@ -454,48 +475,71 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
   t: (k: string, p?: Record<string, any>) => string;
 }) {
   return (
-    <>
-      <div className="flex-1 flex flex-col items-center justify-center text-center">
-        <div className="w-[72px] h-[72px] rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: pushState === "granted" ? "rgba(34,197,94,0.12)" : pushState === "denied" ? "rgba(239,68,68,0.12)" : "rgba(233,30,99,0.12)" }}>
-          {pushState === "granted" ? (
-            <BellRing className="w-8 h-8 text-green-400" />
-          ) : pushState === "denied" ? (
-            <Bell className="w-8 h-8 text-red-400" />
-          ) : pushState === "requesting" ? (
-            <Loader2 className="w-8 h-8 animate-spin" style={{ color: BRAND }} />
-          ) : (
-            <Bell className="w-8 h-8" style={{ color: BRAND }} />
-          )}
+    <LightShell step="push-test" showBack={false}>
+      <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-5 text-[#111]" data-testid="text-push-title">
+        {t("onboardingFlow.pushTest.title")}
+      </h1>
+
+      {pushState === "granted" && (
+        <div className="rounded-[12px] px-5 py-4 mb-5 flex items-start gap-3" style={{ backgroundColor: "#F0FDF4", border: "1px solid #BBF7D0" }}>
+          <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-[14px] font-semibold text-green-700 mb-0.5">{t("onboardingFlow.pushTest.infoTitle")}</p>
+            <p className="text-[13px] text-green-600 leading-snug">{t("onboardingFlow.pushTest.infoText")}</p>
+          </div>
         </div>
+      )}
 
-        <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-2" style={{ color: "#ffffff" }} data-testid="text-push-title">
-          {t("onboardingFlow.pushTest.title")}
-        </h1>
-
-        {pushState === "granted" ? (
-          <>
-            <p className="text-[14px] mb-6 max-w-[320px]" style={{ color: "rgba(255,255,255,0.7)" }}>
-              {t("onboardingFlow.pushTest.subtitle")}
-            </p>
-            <div className="rounded-[12px] px-5 py-4 w-full flex items-start gap-3" style={{ backgroundColor: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.25)" }}>
-              <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-              <div className="text-left">
-                <p className="text-[14px] font-semibold mb-0.5 text-green-400">{t("onboardingFlow.pushTest.infoTitle")}</p>
-                <p className="text-[13px] text-green-300 leading-snug">{t("onboardingFlow.pushTest.infoText")}</p>
-              </div>
-            </div>
-          </>
-        ) : pushState === "denied" ? (
-          <>
-            <p className="text-[14px] mb-4 max-w-[320px] font-medium" style={{ color: "#ffffff" }}>
+      {pushState === "denied" && (
+        <div className="rounded-[12px] px-5 py-4 mb-5 flex items-start gap-3" style={{ backgroundColor: "#FEF9E7", border: "1px solid #FDE68A" }}>
+          <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-[14px] font-medium text-[#111] mb-1">
               {t("onboardingFlow.pushTest.denied")}
             </p>
-            <p className="text-[13px] max-w-[300px]" style={{ color: "rgba(255,255,255,0.5)" }}>
+            <p className="text-[13px] text-[#666] leading-snug">
               {t("onboardingFlow.pushTest.deniedHint")}
             </p>
-          </>
-        ) : (
-          <p className="text-[14px] max-w-[320px] leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>
+          </div>
+        </div>
+      )}
+
+      <div className="flex-1 flex flex-col items-center justify-center py-6">
+        <div className="relative w-[200px] h-[160px] flex items-center justify-center mb-6">
+          <div className="absolute inset-0 rounded-[16px] opacity-80" style={{ background: "linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)" }}>
+            <div className="absolute top-3 left-3 flex items-center gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: BRAND }} />
+              <div className="h-2 w-12 rounded-full bg-white/20" />
+              <div className="h-2 w-8 rounded-full bg-white/10" />
+            </div>
+            <div className="absolute top-9 left-3 right-3 space-y-2">
+              <div className="h-2.5 w-full rounded-full" style={{ backgroundColor: "rgba(139,92,246,0.5)" }} />
+              <div className="h-2.5 w-3/4 rounded-full" style={{ backgroundColor: "rgba(139,92,246,0.3)" }} />
+              <div className="h-2.5 w-5/6 rounded-full" style={{ backgroundColor: "rgba(139,92,246,0.4)" }} />
+            </div>
+          </div>
+          <div className="relative z-10 mt-4">
+            <div className="w-[64px] h-[64px] rounded-full flex items-center justify-center" style={{ backgroundColor: pushState === "granted" ? "#22c55e" : BRAND }}>
+              {pushState === "granted" ? (
+                <BellRing className="w-8 h-8 text-white" />
+              ) : pushState === "requesting" ? (
+                <Loader2 className="w-8 h-8 text-white animate-spin" />
+              ) : (
+                <Bell className="w-8 h-8 text-white" />
+              )}
+            </div>
+            {pushState !== "requesting" && (
+              <>
+                <div className="absolute -top-1 -right-3 text-pink-500 text-lg">✦</div>
+                <div className="absolute -bottom-1 -left-3 text-pink-400 text-sm">✦</div>
+                <div className="absolute top-1/2 -right-5 text-pink-500 text-xs">✦</div>
+              </>
+            )}
+          </div>
+        </div>
+
+        {pushState !== "granted" && pushState !== "denied" && (
+          <p className="text-[14px] text-[#666] text-center max-w-[300px] leading-relaxed">
             {t("onboardingFlow.pushTest.idleHint")}
           </p>
         )}
@@ -504,20 +548,25 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
       <div className="mt-auto space-y-3 pt-6">
         {pushState === "idle" ? (
           <>
-            <PrimaryBtn onClick={onEnable} testId="button-push-enable">
+            <LightPrimaryBtn onClick={onEnable} testId="button-push-enable">
               {t("onboardingFlow.pushTest.enablePush")}
-            </PrimaryBtn>
-            <SecondaryBtn onClick={onNext} testId="button-push-skip">
+            </LightPrimaryBtn>
+            <button
+              onClick={onNext}
+              className="w-full h-[48px] text-[14px] font-semibold transition-all active:scale-[0.97]"
+              style={{ color: "#6B7280" }}
+              data-testid="button-push-skip"
+            >
               {t("onboardingFlow.pushTest.cta")}
-            </SecondaryBtn>
+            </button>
           </>
         ) : (
-          <PrimaryBtn onClick={onNext} testId="button-push-next">
+          <LightPrimaryBtn onClick={onNext} testId="button-push-next">
             {t("onboardingFlow.pushTest.cta")}
-          </PrimaryBtn>
+          </LightPrimaryBtn>
         )}
       </div>
-    </>
+    </LightShell>
   );
 }
 
@@ -528,7 +577,8 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
   onSkip: () => void;
   t: (k: string, p?: Record<string, any>) => string;
 }) {
-  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] text-[#111] placeholder:text-[#999] focus:outline-none focus:ring-2 focus:ring-pink-300/20";
+  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[12px] border border-[#E5E7EB] bg-white text-[15px] text-[#111] placeholder:text-[#999] focus:outline-none focus:ring-2 focus:ring-pink-300/20";
+  const [showForm, setShowForm] = useState(false);
 
   const genderOptions = [
     { value: "male", label: t("onboardingFlow.letterPersonal.genderOptions.male") },
@@ -537,25 +587,64 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
     { value: "prefer_not", label: t("onboardingFlow.letterPersonal.genderOptions.prefer_not") },
   ];
 
-  return (
-    <>
-      <div className="flex items-center gap-3 mb-2">
-        <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(233,30,99,0.12)" }}>
-          <Sparkles className="w-5 h-5" style={{ color: BRAND }} />
-        </div>
-        <div>
-          <h1 className="text-[22px] font-extrabold tracking-[-0.02em]" style={{ color: "#ffffff" }} data-testid="text-letter-personal-title">
-            {t("onboardingFlow.letterPersonal.title")}
-          </h1>
-        </div>
-      </div>
-      <p className="text-[14px] mb-6 leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
-        {t("onboardingFlow.letterPersonal.subtitle")}
-      </p>
+  if (!showForm) {
+    return (
+      <LightShell step="letter-personal" showBack>
+        <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-5 text-[#111]" data-testid="text-letter-personal-title">
+          {t("onboardingFlow.letterPersonal.title")}
+        </h1>
 
-      <div className="space-y-6 flex-1">
+        <div className="rounded-[20px] bg-white p-5" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+          <div className="relative rounded-[16px] px-5 py-5 mb-5" style={{ backgroundColor: "#E8F4FD" }}>
+            <p className="text-[17px] font-bold text-[#111] mb-3">
+              {t("onboardingFlow.letterPersonal.speechTitle")}
+            </p>
+            <p className="text-[15px] leading-[1.65] text-[#333]" style={{ whiteSpace: "pre-line" }}>
+              {t("onboardingFlow.letterPersonal.speechBody")}
+            </p>
+            <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45" style={{ backgroundColor: "#E8F4FD" }} />
+          </div>
+
+          <div className="flex items-center gap-4 pt-1">
+            <img
+              src={elisePhoto}
+              alt="Elise — COO HousAlert"
+              className="w-[120px] h-[120px] rounded-full object-cover flex-shrink-0"
+              style={{ boxShadow: "0 10px 30px rgba(0,0,0,0.15)" }}
+            />
+            <div>
+              <p className="text-[20px] font-semibold text-[#111]" style={{ fontStyle: "italic" }}>Elise</p>
+              <p className="text-[14px] text-[#6B7280]" style={{ fontStyle: "italic" }}>COO</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-auto space-y-3 pt-8">
+          <LightPrimaryBtn onClick={() => setShowForm(true)} testId="button-letter-intro-next">
+            {t("onboardingFlow.welcome.cta")}
+          </LightPrimaryBtn>
+          <button
+            onClick={onSkip}
+            className="w-full h-[48px] text-[14px] font-semibold transition-all active:scale-[0.97]"
+            style={{ color: "#6B7280" }}
+            data-testid="button-personal-skip"
+          >
+            {t("onboardingFlow.letterPersonal.skip")}
+          </button>
+        </div>
+      </LightShell>
+    );
+  }
+
+  return (
+    <LightShell step="letter-personal-form" showBack onBack={() => setShowForm(false)}>
+      <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-6 text-[#111]">
+        {t("onboardingFlow.letterPersonal.formTitle")}
+      </h1>
+
+      <div className="rounded-[20px] bg-white p-5 space-y-5" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         <div>
-          <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">
+          <label className="text-[14px] font-bold text-[#111] mb-2 block">
             {t("onboardingFlow.letterPersonal.phone")}
           </label>
           <input
@@ -570,7 +659,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
         </div>
 
         <div>
-          <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">
+          <label className="text-[14px] font-bold text-[#111] mb-2 block">
             {t("onboardingFlow.letterPersonal.birthDate")}
           </label>
           <div className="grid grid-cols-3 gap-2">
@@ -608,46 +697,37 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
         </div>
 
         <div>
-          <label className="text-[13px] font-medium text-ha-text-secondary mb-2 block">
+          <label className="text-[14px] font-bold text-[#111] mb-2 block">
             {t("onboardingFlow.letterPersonal.gender")}
           </label>
-          <div className="grid grid-cols-2 gap-2">
+          <select
+            value={personalData.gender}
+            onChange={(e) => onChange({ gender: e.target.value })}
+            className={INPUT_CLS}
+            data-testid="select-gender"
+          >
+            <option value="" disabled></option>
             {genderOptions.map((opt) => (
-              <button
-                key={opt.value}
-                onClick={() => onChange({ gender: opt.value })}
-                className="h-[48px] rounded-[6px] border-2 text-[14px] font-medium transition-all active:scale-[0.97]"
-                style={{
-                  borderColor: personalData.gender === opt.value ? BRAND : "rgb(var(--ha-card-border))",
-                  backgroundColor: personalData.gender === opt.value ? "rgba(233,30,99,0.12)" : "transparent",
-                  color: personalData.gender === opt.value ? BRAND : TEXT_PRIMARY,
-                }}
-                data-testid={`gender-${opt.value}`}
-              >
-                {opt.label}
-              </button>
+              <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
-          </div>
+          </select>
         </div>
       </div>
 
-      <div className="mt-auto space-y-3 pt-6">
-        <PrimaryBtn onClick={onNext} testId="button-personal-next">
+      <div className="mt-auto pt-8">
+        <LightPrimaryBtn onClick={onNext} testId="button-personal-next">
           {t("onboardingFlow.letterPersonal.cta")}
-        </PrimaryBtn>
-        <SecondaryBtn onClick={onSkip} testId="button-personal-skip">
-          {t("onboardingFlow.letterPersonal.skip")}
-        </SecondaryBtn>
+        </LightPrimaryBtn>
       </div>
-    </>
+    </LightShell>
   );
 }
 
-function LetterLivingStep({ livingData, onChange, onNext, onSkip, t }: {
+function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
   livingData: LivingData;
   onChange: (d: Partial<LivingData>) => void;
   onNext: () => void;
-  onSkip: () => void;
+  onBack: () => void;
   t: (k: string, p?: Record<string, any>) => string;
 }) {
   const livingOptions = [
@@ -679,45 +759,66 @@ function LetterLivingStep({ livingData, onChange, onNext, onSkip, t }: {
     { value: "other", label: t("onboardingFlow.letterLiving.moveOptions.other") },
   ];
 
-  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] text-[#111] placeholder:text-[#999] focus:outline-none focus:ring-2 focus:ring-pink-300/20";
+  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[12px] border border-[#E5E7EB] bg-white text-[15px] text-[#111] placeholder:text-[#999] focus:outline-none focus:ring-2 focus:ring-pink-300/20";
 
   return (
-    <>
-      <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-letter-living-title">
+    <LightShell step="letter-living" showBack onBack={onBack}>
+      <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-6 text-[#111]" data-testid="text-letter-living-title">
         {t("onboardingFlow.letterLiving.title")}
       </h1>
-      <p className="text-[14px] mb-6" style={{ color: TEXT_SECONDARY }}>
-        {t("onboardingFlow.letterLiving.subtitle")}
-      </p>
 
-      <div className="space-y-6 flex-1 overflow-y-auto">
+      <div className="rounded-[20px] bg-white p-5 space-y-5" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         <div>
-          <label className="text-[13px] font-medium text-ha-text-secondary mb-2 block">
+          <label className="text-[14px] font-bold text-[#111] mb-2 block">
             {t("onboardingFlow.letterLiving.livingWith")}
           </label>
-          <OptionGrid options={livingOptions} selected={livingData.livingWith} onSelect={(v) => onChange({ livingWith: v })} />
+          <select
+            value={livingData.livingWith}
+            onChange={(e) => onChange({ livingWith: e.target.value })}
+            className={INPUT_CLS}
+            data-testid="select-living-with"
+          >
+            <option value="" disabled></option>
+            {livingOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+          </select>
         </div>
 
         <div>
-          <label className="text-[13px] font-medium text-ha-text-secondary mb-2 block">
+          <label className="text-[14px] font-bold text-[#111] mb-2 block">
             {t("onboardingFlow.letterLiving.workStatus")}
           </label>
-          <OptionGrid options={workOptions} selected={livingData.workStatus} onSelect={(v) => onChange({ workStatus: v })} />
+          <select
+            value={livingData.workStatus}
+            onChange={(e) => onChange({ workStatus: e.target.value })}
+            className={INPUT_CLS}
+            data-testid="select-work-status"
+          >
+            <option value="" disabled></option>
+            {workOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+          </select>
         </div>
 
         <div>
-          <label className="text-[13px] font-medium text-ha-text-secondary mb-2 block">
+          <label className="text-[14px] font-bold text-[#111] mb-2 block">
             {t("onboardingFlow.letterLiving.moveReason")}
           </label>
-          <OptionGrid options={moveOptions} selected={livingData.moveReason} onSelect={(v) => onChange({ moveReason: v })} />
+          <select
+            value={livingData.moveReason}
+            onChange={(e) => onChange({ moveReason: e.target.value })}
+            className={INPUT_CLS}
+            data-testid="select-move-reason"
+          >
+            <option value="" disabled></option>
+            {moveOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+          </select>
         </div>
 
         <div>
-          <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">
+          <label className="text-[14px] font-bold text-[#111] mb-2 block">
             {t("onboardingFlow.letterLiving.income")}
           </label>
           <div className="relative">
-            <Euro className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#999" }} />
+            <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#999]" />
             <input
               type="text"
               inputMode="numeric"
@@ -732,38 +833,30 @@ function LetterLivingStep({ livingData, onChange, onNext, onSkip, t }: {
         </div>
 
         <div>
-          <label className="text-[13px] font-medium text-ha-text-secondary mb-1.5 block">
+          <label className="text-[14px] font-bold text-[#111] mb-2 block">
             {t("onboardingFlow.letterLiving.pets")}
           </label>
-          <div className="flex gap-2">
-            {["0", "1", "2", "3+"].map((val) => (
-              <button
-                key={val}
-                onClick={() => onChange({ petsCount: val })}
-                className="flex-1 h-[48px] rounded-[6px] border-2 text-[14px] font-medium transition-all active:scale-[0.97]"
-                style={{
-                  borderColor: livingData.petsCount === val ? BRAND : "rgb(var(--ha-card-border))",
-                  backgroundColor: livingData.petsCount === val ? "rgba(233,30,99,0.12)" : "transparent",
-                  color: livingData.petsCount === val ? BRAND : TEXT_PRIMARY,
-                }}
-                data-testid={`pets-${val}`}
-              >
-                {val}
-              </button>
-            ))}
-          </div>
+          <input
+            type="text"
+            value={livingData.petsCount === "0" ? t("onboardingFlow.letterLiving.petsNone") : livingData.petsCount}
+            readOnly
+            onClick={() => {
+              const vals = ["0", "1", "2", "3+"];
+              const cur = vals.indexOf(livingData.petsCount);
+              onChange({ petsCount: vals[(cur + 1) % vals.length] });
+            }}
+            className={INPUT_CLS + " cursor-pointer"}
+            data-testid="input-pets"
+          />
         </div>
       </div>
 
-      <div className="mt-auto space-y-3 pt-6">
-        <PrimaryBtn onClick={onNext} testId="button-living-next">
+      <div className="mt-auto pt-8">
+        <LightPrimaryBtn onClick={onNext} testId="button-living-next">
           {t("onboardingFlow.letterLiving.cta")}
-        </PrimaryBtn>
-        <SecondaryBtn onClick={onSkip} testId="button-living-skip">
-          {t("onboardingFlow.letterLiving.skip")}
-        </SecondaryBtn>
+        </LightPrimaryBtn>
       </div>
-    </>
+    </LightShell>
   );
 }
 
@@ -775,38 +868,34 @@ function LetterPreviewStep({ letterText, onLetterChange, onNext, onBack, t }: {
   t: (k: string, p?: Record<string, any>) => string;
 }) {
   return (
-    <>
-      <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-letter-preview-title">
+    <LightShell step="letter-preview" showBack onBack={onBack}>
+      <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-5 text-[#111]" data-testid="text-letter-preview-title">
         {t("onboardingFlow.letterPreview.title")}
       </h1>
-      <p className="text-[14px] mb-4" style={{ color: TEXT_SECONDARY }}>
-        {t("onboardingFlow.letterPreview.subtitle")}
-      </p>
 
-      <div className="rounded-[6px] px-4 py-3 mb-4 flex items-start gap-2.5" style={{ backgroundColor: "rgba(233,30,99,0.08)", border: "1px solid rgba(233,30,99,0.2)" }}>
-        <FileText className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: BRAND }} />
-        <p className="text-[13px] leading-snug" style={{ color: BRAND }}>
+      <div className="rounded-[12px] px-4 py-3 mb-5 flex items-start gap-2.5" style={{ backgroundColor: "#FEF9E7", border: "1px solid #FDE68A" }}>
+        <span className="text-[16px] mt-0.5">💡</span>
+        <p className="text-[13px] leading-snug text-[#333]">
           {t("onboardingFlow.letterPreview.addressNote")}
         </p>
       </div>
 
-      <textarea
-        value={letterText}
-        onChange={(e) => onLetterChange(e.target.value)}
-        className="w-full flex-1 min-h-[280px] p-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[14px] leading-[1.7] text-[#111] placeholder:text-[#999] focus:outline-none focus:ring-2 focus:ring-pink-300/20 resize-none"
-        style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
-        data-testid="textarea-letter"
-      />
-
-      <div className="mt-auto space-y-3 pt-4">
-        <PrimaryBtn onClick={onNext} testId="button-letter-next">
-          {t("onboardingFlow.letterPreview.cta")}
-        </PrimaryBtn>
-        <SecondaryBtn onClick={onBack} testId="button-letter-back">
-          {t("onboardingFlow.letterPreview.back")}
-        </SecondaryBtn>
+      <div className="rounded-[20px] bg-white p-5 flex-1 flex flex-col" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+        <textarea
+          value={letterText}
+          onChange={(e) => onLetterChange(e.target.value)}
+          className="w-full flex-1 min-h-[280px] p-0 bg-transparent text-[14px] leading-[1.7] text-[#111] placeholder:text-[#999] focus:outline-none resize-none"
+          style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
+          data-testid="textarea-letter"
+        />
       </div>
-    </>
+
+      <div className="mt-auto pt-6">
+        <LightPrimaryBtn onClick={onNext} testId="button-letter-next">
+          {t("onboardingFlow.letterPreview.cta")}
+        </LightPrimaryBtn>
+      </div>
+    </LightShell>
   );
 }
 
@@ -1275,6 +1364,49 @@ export default function OnboardingSetup() {
   if (step === "welcome") {
     return <WelcomeStep onNext={() => goStep("push-test")} t={t} />;
   }
+  if (step === "push-test") {
+    return (
+      <PushTestStep
+        onNext={() => goStep("letter-personal")}
+        onEnable={handlePushEnable}
+        pushState={pushState}
+        t={t}
+      />
+    );
+  }
+  if (step === "letter-personal") {
+    return (
+      <LetterPersonalStep
+        personalData={personalData}
+        onChange={updatePersonalData}
+        onNext={handleLetterPersonalNext}
+        onSkip={() => goStep("letter-living")}
+        t={t}
+      />
+    );
+  }
+  if (step === "letter-living") {
+    return (
+      <LetterLivingStep
+        livingData={livingData}
+        onChange={updateLivingData}
+        onNext={handleLetterLivingNext}
+        onBack={() => goStep("letter-personal")}
+        t={t}
+      />
+    );
+  }
+  if (step === "letter-preview") {
+    return (
+      <LetterPreviewStep
+        letterText={letterText}
+        onLetterChange={setLetterText}
+        onNext={handleLetterPreviewNext}
+        onBack={() => goStep("letter-living")}
+        t={t}
+      />
+    );
+  }
 
   return (
     <SetupShell step={step} onBack={handleBack} showBack={showBack}>
@@ -1283,41 +1415,6 @@ export default function OnboardingSetup() {
       )}
       {step === "limited-access" && (
         <LimitedAccessStep onGoBack={handleLimitedGoBack} onContinue={handleLimitedContinue} t={t} />
-      )}
-      {step === "push-test" && (
-        <PushTestStep
-          onNext={() => goStep("letter-personal")}
-          onEnable={handlePushEnable}
-          pushState={pushState}
-          t={t}
-        />
-      )}
-      {step === "letter-personal" && (
-        <LetterPersonalStep
-          personalData={personalData}
-          onChange={updatePersonalData}
-          onNext={handleLetterPersonalNext}
-          onSkip={() => goStep("letter-living")}
-          t={t}
-        />
-      )}
-      {step === "letter-living" && (
-        <LetterLivingStep
-          livingData={livingData}
-          onChange={updateLivingData}
-          onNext={handleLetterLivingNext}
-          onSkip={() => { handleLetterLivingNext(); }}
-          t={t}
-        />
-      )}
-      {step === "letter-preview" && (
-        <LetterPreviewStep
-          letterText={letterText}
-          onLetterChange={setLetterText}
-          onNext={handleLetterPreviewNext}
-          onBack={() => goStep("letter-living")}
-          t={t}
-        />
       )}
       {step === "search-buddy" && (
         <SearchBuddyStep

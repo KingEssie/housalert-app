@@ -1,0 +1,164 @@
+We are going to upgrade multiple onboarding screens to EXACTLY match the Rentbird UX level.
+
+IMPORTANT:
+- This is NOT a redesign
+- This is a precise UI replication with HousAlert branding
+- Focus on hierarchy, spacing, and visual weight
+- Mobile-first only
+
+----------------------------------------
+1. FIX WELCOME STEP (setup.tsx)
+----------------------------------------
+
+GOAL:
+Make this screen visually identical in structure to Rentbird.
+
+CHANGES:
+
+1. Elise image
+- Replace small avatar with LARGE portrait
+- Size: 120px–140px diameter
+- Fully rounded (border-radius: 9999px)
+- Centered horizontally under speech bubble
+- Add subtle shadow:
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15)
+
+2. Name + role
+- Position: to the RIGHT of the image (not below)
+- Layout:
+  [IMAGE]   Elise
+            COO
+- Name:
+  font-size: 20px
+  font-weight: 600
+- Role:
+  font-size: 14px
+  color: #6B7280
+
+3. Speech bubble
+- Max width: 100%
+- Padding: 20px
+- Border radius: 16px
+- Background: #E8F4FD
+- Text:
+  font-size: 16px
+  line-height: 1.6
+
+4. Bubble tail
+- Must point EXACTLY to Elise image
+- Position bottom-left of bubble
+- Triangle using CSS
+- Offset so it visually connects to the image
+
+5. Layout structure
+Order MUST be:
+
+- Title
+- Card container
+  - Speech bubble
+  - Elise block (image + text inline)
+- CTA button
+
+6. Card container
+- background: white
+- border-radius: 20px
+- padding: 20px
+- shadow: subtle (same as Rentbird)
+
+----------------------------------------
+2. FIX PUSH NOTIFICATION SCREEN (PushTestStep)
+----------------------------------------
+
+GOAL:
+Make it feel alive, not empty.
+
+CHANGES:
+
+1. Add illustration block
+- Large visual element (bell or notification UI)
+- Centered
+- Max width: 220px
+- Margin: 32px top + bottom
+
+2. Title
+- font-size: 28px
+- font-weight: 700
+- centered
+
+3. Subtitle
+- font-size: 16px
+- color: #9CA3AF
+- centered
+- max width: 280px
+
+4. Success state (IMPORTANT)
+When permission is granted:
+- Show success banner at top:
+  background: #F0FDF4
+  text: “Gelukt 🎉 Je krijgt nu meldingen”
+- Animate icon (scale or fade)
+
+5. Empty state fix
+- DO NOT leave large empty dark areas
+- Always fill with visual (icon/illustration)
+
+----------------------------------------
+3. FIX AI REACTIEBRIEF INTRO (LetterPersonalStep)
+----------------------------------------
+
+GOAL:
+Match Rentbird EXACT layout
+
+CHANGES:
+
+1. Same structure as WelcomeStep:
+- White card
+- Blue speech bubble
+- Large person image (reuse Elise or second persona if needed)
+
+2. Image size
+- SAME as welcome (120px+)
+- Not small avatar
+
+3. Layout:
+- Bubble on top
+- Image below left
+- Name + role right of image
+
+4. Typography
+- Same as welcome (consistency)
+
+----------------------------------------
+4. GLOBAL RULES
+----------------------------------------
+
+- Remove ALL small avatars → replace with large visual anchors
+- Increase vertical spacing between sections (min 24px)
+- Keep CTA always:
+  - full width
+  - bottom anchored
+  - gradient pink
+
+----------------------------------------
+5. DO NOT TOUCH
+----------------------------------------
+
+- Routing
+- Step order
+- Logic
+- API calls
+
+ONLY UI + layout
+
+----------------------------------------
+END RESULT
+----------------------------------------
+
+The onboarding must feel:
+- Personal
+- Guided
+- Premium
+- Human (not system-like)
+
+It should feel like:
+“someone is helping me” not “I am filling a form”
