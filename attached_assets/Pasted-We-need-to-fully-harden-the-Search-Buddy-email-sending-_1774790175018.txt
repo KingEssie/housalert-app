@@ -1,0 +1,199 @@
+We need to fully harden the Search Buddy email sending logic and database state so a removed buddy can NEVER keep receiving emails.
+
+IMPORTANT:
+- This is a reliability/data-integrity fix
+- Do not only patch the frontend
+- Fix the full flow: database state, business rules, sending logic, and cleanup behavior
+- Prevent all stale state / cached recipient / queued job issues
+
+==================================================
+GOAL
+==================================================
+
+A search buddy may receive emails ONLY if ALL conditions are true:
+
+1. buddy email exists and is valid
+2. buddy status is active
+3. owner user has an active paid subscription OR active trial
+4. owner account is not suspended/disabled
+5. there is at least one active search profile that can generate notifications
+6. buddy has not been removed/revoked/expired
+7. email eligibility is checked again at send-time on the server
+
+If any condition fails, NO email may be sent to the search buddy.
+
+==================================================
+PART 1 — DATABASE / DATA MODEL
+==================================================
+
+Audit the current search buddy storage model.
+
+If search buddy is currently only stored as a loose email string, improve this structure.
+
+Use or introduce a proper search buddy state model with fields like:
+
+- id
+- owner_user_id
+- buddy_email
+- status
+- created_at
+- updated_at
+- activated_at
+- revoked_at
+- removed_at
+
+Allowed statuses:
+- pending
+- active
+- revoked
+- removed
+- expired
+
+If the existing schema already supports this, normalize it and use it consistently.
+Do NOT duplicate state across multiple conflicting fields.
+
+==================================================
+PART 2 — REMOVE / REVOKE LOGIC
+==================================================
+
+When the owner removes a search buddy:
+
+- immediately set status = removed
+- set removed_at timestamp
+- clear any active relationship used for outbound emails
+- invalidate related caches
+- ensure UI reflects removed state
+- ensure future mail jobs no longer include this buddy
+
+IMPORTANT:
+Removing a buddy must have effect immediately.
+No stale background state may continue sending.
+
+==================================================
+PART 3 — SEND-TIME ELIGIBILITY CHECK
+==================================================
+
+Before ANY email is sent to a search buddy, the server must re-check eligibility.
+
+At send-time verify all of these:
+
+- buddy record exists
+- buddy_email is present and valid
+- buddy status === active
+- owner has active paid subscription OR active trial
+- owner is not suspended/blocked
+- relevant search profile is still active
+- buddy is not removed/revoked/expired
+
+If any check fails:
+- do NOT send
+- log the reason cleanly
+
+This must happen inside the server-side email sending flow, not only in frontend or precomputed logic.
+
+==================================================
+PART 4 — SUBSCRIPTION / TRIAL RULE
+==================================================
+
+Enforce this exact business rule:
+
+Search buddy emails are allowed ONLY when:
+- owner has active paid subscription
+OR
+- owner has active trial
+
+Search buddy emails are NOT allowed when:
+- free plan only
+- trial expired
+- paid expired
+- canceled and no longer active
+
+Use the existing subscription/trial source of truth.
+Do not invent a second source of truth.
+
+==================================================
+PART 5 — QUEUE / STALE JOB PROTECTION
+==================================================
+
+If email jobs are queued:
+
+- prevent stale jobs from sending to removed buddies
+- ideally re-check eligibility right before final send
+- if possible, cancel/remove queued jobs for removed buddies
+
+Even if a job was created before removal, it must not send if the buddy is now ineligible.
+
+==================================================
+PART 6 — CACHE / SYNC HARDENING
+==================================================
+
+Audit and fix any stale state issues.
+
+If search buddy data is cached anywhere:
+- invalidate cache after add/update/remove
+- do not trust cached recipient lists for outbound emails
+
+The database / current server state must be the source of truth.
+
+==================================================
+PART 7 — TEST CASES TO PASS
+==================================================
+
+Implement and verify these cases:
+
+CASE 1:
+- user adds buddy
+- buddy active
+- user has active trial
+=> buddy receives emails
+
+CASE 2:
+- user removes buddy
+=> buddy immediately stops receiving all future emails
+
+CASE 3:
+- user has buddy but trial expires
+=> buddy stops receiving emails
+
+CASE 4:
+- user upgrades again
+- buddy still exists but status removed
+=> buddy still receives nothing
+
+CASE 5:
+- user adds a new buddy after removing old one
+=> only new active buddy may receive emails
+
+CASE 6:
+- queued email created before buddy removal
+- buddy removed before actual send
+=> queued email must NOT send
+
+==================================================
+DO NOT CHANGE
+==================================================
+
+Do NOT:
+- break existing search match logic
+- break normal owner email notifications
+- send duplicate emails
+- rely only on frontend logic
+
+==================================================
+ACCEPTANCE CRITERIA
+==================================================
+
+Only mark complete if ALL are true:
+
+1. removed buddies can never continue receiving emails
+2. send-time eligibility is enforced server-side
+3. subscription/trial entitlement is enforced correctly
+4. stale cache / queued jobs cannot bypass removal
+5. only active buddies with valid entitlement receive emails
+
+At the end report:
+1. current data model used for search buddy
+2. exact eligibility rules implemented
+3. where send-time validation now happens
+4. how removal now invalidates future sends
+5. which files were changed

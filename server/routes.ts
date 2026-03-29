@@ -2491,7 +2491,8 @@ export async function registerRoutes(
       log(`[profile-data] PUT request userId=${user.id.substring(0, 8)}... email=${user.email} fields=${JSON.stringify(Object.keys(req.body))}`);
 
       const ALLOWED_FIELDS = [
-        "search_buddy_email", "search_buddy_enabled", "application_template", "document_checklist",
+        "search_buddy_email", "search_buddy_enabled",
+        "application_template", "document_checklist",
         "network_task_done", "viewing_tips_done",
         "first_name", "last_name", "birth_date", "phone", "bio",
         "profile_photo_url", "occupation", "monthly_income", "language",
@@ -2526,19 +2527,31 @@ export async function registerRoutes(
         } catch {}
 
         const buddyEmail = typeof updates.search_buddy_email === "string" ? updates.search_buddy_email.trim() : "";
-        if (buddyEmail) {
+        const explicitlyDisabled = updates.search_buddy_enabled === false;
+
+        if (buddyEmail && !explicitlyDisabled) {
           if (updates.search_buddy_enabled === undefined) {
             updates.search_buddy_enabled = true;
-            console.log(`[profile-data] Buddy auto-enabled for user ${user.id.substring(0, 8)}... (first email entry: ${buddyEmail})`);
           }
+          updates.search_buddy_status = "active";
+          updates.search_buddy_removed_at = null;
+          console.log(`[profile-data] Buddy ACTIVATED for user ${user.id.substring(0, 8)}... (email: ${buddyEmail}, status→active)`);
         } else {
-          updates.search_buddy_email = null;
+          updates.search_buddy_email = buddyEmail || null;
           updates.search_buddy_enabled = false;
-          console.log(`[profile-data] Buddy auto-disabled for user ${user.id.substring(0, 8)}... (email removed)`);
+          updates.search_buddy_status = "removed";
+          updates.search_buddy_removed_at = new Date().toISOString();
+          console.log(`[profile-data] Buddy REMOVED for user ${user.id.substring(0, 8)}... (status→removed, removed_at=${updates.search_buddy_removed_at}${explicitlyDisabled ? ", reason=explicitly_disabled" : ", reason=email_cleared"})`);
         }
       }
       if (updates.search_buddy_enabled !== undefined && updates.search_buddy_email === undefined) {
-        console.log(`[profile-data] Buddy toggle changed for user ${user.id.substring(0, 8)}...: search_buddy_enabled=${updates.search_buddy_enabled}`);
+        if (updates.search_buddy_enabled === false) {
+          updates.search_buddy_status = "removed";
+          updates.search_buddy_removed_at = new Date().toISOString();
+          console.log(`[profile-data] Buddy DISABLED/REMOVED for user ${user.id.substring(0, 8)}...: search_buddy_enabled=false, status→removed`);
+        } else {
+          console.log(`[profile-data] Buddy toggle changed for user ${user.id.substring(0, 8)}...: search_buddy_enabled=${updates.search_buddy_enabled}`);
+        }
       }
 
       if (Object.keys(updates).length === 0) {

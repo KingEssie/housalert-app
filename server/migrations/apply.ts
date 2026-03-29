@@ -20,6 +20,7 @@ export async function runStartupMigration() {
 
   await ensureOnboardingCompletedColumn();
   await ensurePostPaywallColumns();
+  await ensureBuddyStatusColumns();
 
   await createUserMatchesTable();
   await createFetchRunsTable();
@@ -146,6 +147,44 @@ async function ensurePostPaywallColumns() {
       if (exists.rows.length === 0) {
         await pool.query(`ALTER TABLE user_profile_data ADD COLUMN ${col.name} ${col.sql}`);
         log(`[MIGRATION] Added ${col.name} column to user_profile_data`, "migration");
+      }
+    } catch (err: any) {
+      log(`[MIGRATION] Error adding ${col.name}: ${err.message}`, "migration");
+    }
+  }
+}
+
+async function ensureBuddyStatusColumns() {
+  const buddyCols = [
+    { name: "search_buddy_status", sql: "TEXT DEFAULT 'removed'" },
+    { name: "search_buddy_removed_at", sql: "TIMESTAMPTZ" },
+  ];
+
+  for (const col of buddyCols) {
+    try {
+      const exists = await pool.query(
+        "SELECT 1 FROM information_schema.columns WHERE table_name = 'user_profile_data' AND column_name = $1",
+        [col.name]
+      );
+      if (exists.rows.length === 0) {
+        await pool.query(`ALTER TABLE user_profile_data ADD COLUMN ${col.name} ${col.sql}`);
+        log(`[MIGRATION] Added ${col.name} column to user_profile_data`, "migration");
+
+        if (col.name === "search_buddy_status") {
+          await pool.query(`
+            UPDATE user_profile_data
+            SET search_buddy_status = 'active'
+            WHERE search_buddy_email IS NOT NULL
+              AND search_buddy_email != ''
+              AND search_buddy_enabled = TRUE
+          `);
+          await pool.query(`
+            UPDATE user_profile_data
+            SET search_buddy_status = 'removed'
+            WHERE search_buddy_status IS NULL OR search_buddy_status NOT IN ('active', 'pending')
+          `);
+          log("[MIGRATION] Normalized existing buddy status values", "migration");
+        }
       }
     } catch (err: any) {
       log(`[MIGRATION] Error adding ${col.name}: ${err.message}`, "migration");

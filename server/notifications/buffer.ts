@@ -95,22 +95,26 @@ function sortBufferedMatches(listings: BufferedMatch[]): BufferedMatch[] {
   });
 }
 
+type BuddyStatus = "pending" | "active" | "revoked" | "removed" | "expired";
+
 interface BuddyInfo {
   email: string;
   enabled: boolean;
+  status: BuddyStatus;
 }
 
 async function getSearchBuddyInfo(userId: string): Promise<BuddyInfo | null> {
   try {
     const { rows } = await pgPool.query(
-      "SELECT search_buddy_email, search_buddy_enabled FROM user_profile_data WHERE user_id = $1 LIMIT 1",
+      "SELECT search_buddy_email, search_buddy_enabled, search_buddy_status FROM user_profile_data WHERE user_id = $1 LIMIT 1",
       [userId]
     );
     if (!rows[0]) return null;
     const email = rows[0].search_buddy_email?.trim();
     if (!email) return null;
     const enabled = rows[0].search_buddy_enabled !== false;
-    return { email, enabled };
+    const status: BuddyStatus = rows[0].search_buddy_status || "removed";
+    return { email, enabled, status };
   } catch (err: any) {
     log(`[ALERTS] Failed to fetch buddy info for ${userId.substring(0, 8)}...: ${err.message}`);
     return null;
@@ -145,6 +149,11 @@ function shouldSendBuddyEmail(params: ShouldSendBuddyEmailParams): { send: boole
     return { send: false, reason: "no buddy email" };
   }
 
+  if (buddyInfo.status !== "active") {
+    log(`[BUDDY EMAIL CHECK] userId=${uid}... buddyStatus=${buddyInfo.status} → RESULT: SKIP (reason: buddy not active)`);
+    return { send: false, reason: `buddy status is '${buddyInfo.status}', not 'active'` };
+  }
+
   if (!buddyInfo.enabled) {
     log(`[BUDDY EMAIL CHECK] userId=${uid}... buddyEnabled=false → RESULT: SKIP (reason: feature disabled)`);
     return { send: false, reason: "feature disabled" };
@@ -170,7 +179,7 @@ function shouldSendBuddyEmail(params: ShouldSendBuddyEmailParams): { send: boole
   }
 
   const entitlement = hasActiveTrial ? "trial" : hasActivePaid ? "paid" : "canceled-but-active";
-  log(`[BUDDY EMAIL CHECK] userId=${uid}... emailNotifications=true subscription=${entitlement} buddyExists=true buddyEmail=${buddyInfo.email} → RESULT: SEND`);
+  log(`[BUDDY EMAIL CHECK] userId=${uid}... emailNotifications=true subscription=${entitlement} buddyStatus=active buddyEmail=${buddyInfo.email} → RESULT: SEND`);
   return { send: true, reason: entitlement };
 }
 
@@ -194,6 +203,11 @@ async function canBuddyReceiveMatches(
 
   if (!buddyInfo) {
     return { eligible: false, reason: "no buddy configured", buddyInfo: null };
+  }
+
+  if (buddyInfo.status !== "active") {
+    log(`[BUDDY] userId=${userId.substring(0, 8)}... buddy EXCLUDED: status is '${buddyInfo.status}', not 'active'`);
+    return { eligible: false, reason: `buddy status '${buddyInfo.status}'`, buddyInfo };
   }
 
   if (!buddyInfo.enabled) {
@@ -269,30 +283,50 @@ async function sendBuddyEmail(
     return false;
   }
 
+  const freshBuddyInfo = await getSearchBuddyInfo(userId);
+  if (!freshBuddyInfo) {
+    log(`[BUDDY EMAIL BLOCKED] recipient=${buddyInfo.email} userId=${uid}... reason=SEND_TIME_RECHECK_no_buddy path=${context} — buddy removed between eligibility check and send`);
+    return false;
+  }
+  if (freshBuddyInfo.status !== "active") {
+    log(`[BUDDY EMAIL BLOCKED] recipient=${buddyInfo.email} userId=${uid}... reason=SEND_TIME_RECHECK_status=${freshBuddyInfo.status} path=${context} — buddy no longer active`);
+    return false;
+  }
+  if (!freshBuddyInfo.enabled) {
+    log(`[BUDDY EMAIL BLOCKED] recipient=${buddyInfo.email} userId=${uid}... reason=SEND_TIME_RECHECK_disabled path=${context} — buddy disabled between check and send`);
+    return false;
+  }
+  if (!freshBuddyInfo.email || freshBuddyInfo.email.trim().length === 0) {
+    log(`[BUDDY EMAIL BLOCKED] recipient=${buddyInfo.email} userId=${uid}... reason=SEND_TIME_RECHECK_no_email path=${context} — buddy email cleared`);
+    return false;
+  }
+
+  const freshSubStatus = await getSubscriptionStatus(userId);
+
   const decision = shouldSendBuddyEmail({
     userId,
     mainUserEmail,
     mainUserEmailEnabled,
-    buddyInfo,
-    subStatus: subStatus ?? await getSubscriptionStatus(userId),
+    buddyInfo: freshBuddyInfo,
+    subStatus: freshSubStatus,
   });
 
   if (!decision.send) {
-    log(`[BUDDY EMAIL BLOCKED] recipient=${buddyInfo.email} userId=${uid}... reason=${decision.reason} path=${context}`);
+    log(`[BUDDY EMAIL BLOCKED] recipient=${freshBuddyInfo.email} userId=${uid}... reason=SEND_TIME_FINAL_CHECK_${decision.reason} path=${context}`);
     return false;
   }
 
   try {
-    log(`[BUDDY EMAIL ATTEMPT] recipient=${buddyInfo.email} userId=${uid}... lang=${lang} count=${capped.length} path=${context} result=SEND`);
-    const success = await sendBatchMatchAlert(buddyInfo.email, capped, lang, "buddy-match");
+    log(`[BUDDY EMAIL ATTEMPT] recipient=${freshBuddyInfo.email} userId=${uid}... lang=${lang} count=${capped.length} path=${context} result=SEND`);
+    const success = await sendBatchMatchAlert(freshBuddyInfo.email, capped, lang, "buddy-match");
     if (success) {
-      log(`[BUDDY EMAIL ATTEMPT] recipient=${buddyInfo.email} userId=${uid}... result=SENT (${capped.length} listings, lang=${lang})`);
+      log(`[BUDDY EMAIL ATTEMPT] recipient=${freshBuddyInfo.email} userId=${uid}... result=SENT (${capped.length} listings, lang=${lang})`);
     } else {
-      log(`[BUDDY EMAIL ATTEMPT] recipient=${buddyInfo.email} userId=${uid}... result=FAILED`);
+      log(`[BUDDY EMAIL ATTEMPT] recipient=${freshBuddyInfo.email} userId=${uid}... result=FAILED`);
     }
     return success;
   } catch (err: any) {
-    log(`[BUDDY EMAIL ATTEMPT] recipient=${buddyInfo.email} userId=${uid}... result=ERROR err=${err.message}`);
+    log(`[BUDDY EMAIL ATTEMPT] recipient=${freshBuddyInfo.email} userId=${uid}... result=ERROR err=${err.message}`);
     return false;
   }
 }

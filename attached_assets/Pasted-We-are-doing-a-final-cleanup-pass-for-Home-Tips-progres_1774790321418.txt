@@ -1,0 +1,103 @@
+We are doing a final cleanup pass for Home + Tips progress behavior.
+
+IMPORTANT:
+- Do NOT change unrelated UI
+- Do NOT change backend logic unless needed for progress syncing
+- Do NOT break existing tip-completion storage
+- Only fix the 3 issues below
+
+==================================================
+PART 1 — TIPS COMPLETION MUST UPDATE SUMMARY CARD
+==================================================
+
+Fix the "Vergroot je kansen met deze tips!" completion card so that completed tips correctly affect:
+
+1. the green progress bar
+2. the completion percentage
+3. the completed/remaining count behind that summary
+
+Current issue:
+- user can mark a tip as completed
+- but this is not reflected in the summary card progress / percentage
+
+Required behavior:
+- each completed tip must count toward the total tip progress
+- progress must update immediately after marking a tip complete
+- if a tip is unmarked, progress must decrease again
+- the summary card must always reflect the actual completion state of all tip steps
+
+IMPORTANT:
+- use the real persisted tip completion state
+- do not fake percentages in the UI
+- if there are 8 tips total, progress must be based on 8
+- if all are complete, progress should be 100%
+- if none are complete, progress should be 0%
+
+==================================================
+PART 2 — REMOVE TRIAL DURATION BLOCK FROM HOME
+==================================================
+
+Remove the trial/proefperiode block from the Home screen entirely.
+
+This includes blocks like:
+- "14 dagen gratis uitproberen"
+- trial duration messaging
+- plan/trial promo info shown as a standalone Home card
+
+IMPORTANT:
+- remove it from Home only
+- do not break subscription logic
+- do not affect paywall or subscription pages
+- do not affect upgrade CTA logic elsewhere unless directly tied to this removed Home block
+
+==================================================
+PART 3 — REMOVE VERIFY EMAIL BANNER FROM APP
+==================================================
+
+Remove the in-app email verification banner / alert from the app UI.
+
+This includes banners like:
+- "Bevestig je e-mailadres om alle functies te gebruiken"
+- any top yellow verification banner shown inside the logged-in app
+
+IMPORTANT:
+- remove the banner from the app interface
+- do not break actual email verification logic in auth
+- if verification is still needed technically, just do not surface it as this in-app banner
+
+==================================================
+DO NOT CHANGE
+==================================================
+
+Do NOT change:
+- bottom navigation
+- search profile cards
+- completion card layout
+- subscription logic
+- auth verification backend behavior
+- tip content
+- tip flow screens
+
+Only fix:
+1. tip progress sync
+2. remove trial block from Home
+3. remove verify-email banner from app UI
+
+==================================================
+ACCEPTANCE CRITERIA
+==================================================
+
+Only mark complete if ALL are true:
+
+1. marking a tip completed updates the "Vergroot je kansen" progress bar immediately
+2. the percentage on that card updates correctly
+3. unmarking a tip also updates progress correctly
+4. the trial/proefperiode block is gone from Home
+5. the email verification banner is gone from the app UI
+6. no unrelated UI regressions were introduced
+
+At the end report:
+1. which files were changed
+2. where tip progress is now calculated from
+3. confirmation that the trial block was removed from Home
+4. confirmation that the verify-email banner was removed from the app UI
