@@ -60,10 +60,12 @@ interface DbListing {
   longitude?: number | null;
   extra_features?: string[] | null;
   target_categories?: string[] | null;
+  coordinate_source?: string | null;
+  coordinate_precision?: string | null;
   created_at?: string | null;
 }
 
-const LISTING_SELECT = "id, source, url, title, city, price, bedrooms, size_m2, image_url, furnished, pets_allowed, balcony, elevator, garden, bath, roof_terrace, parking, energy_label, property_type, district, latitude, longitude, extra_features, target_categories";
+
 
 let hasFurnishedColumn: boolean | null = null;
 let hasDistrictColumn: boolean | null = null;

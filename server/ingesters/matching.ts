@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { log } from "../log";
 import { trackListingSeen } from "../freshness";
 import { matchListingAgainstProfiles } from "../matching/engine";
+import { resolveCoordinates, type GeocodableFields } from "./geocoding";
 
 const SUPABASE_URL = (process.env.VITE_SUPABASE_URL ?? "").replace(/\/$/, "");
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
@@ -39,6 +40,10 @@ export interface ParsedListing {
   longitude?: number | null;
   extra_features?: string[] | null;
   target_categories?: string[] | null;
+  postcode?: string | null;
+  street?: string | null;
+  coordinate_source?: string | null;
+  coordinate_precision?: string | null;
 }
 
 interface DbListing {
@@ -114,10 +119,26 @@ async function checkAdvancedColumns(): Promise<boolean> {
   return hasAdvancedColumns;
 }
 
+let hasCoordMetadataColumns: boolean | null = null;
+
+async function checkCoordMetadataColumns(): Promise<boolean> {
+  if (hasCoordMetadataColumns !== null) return hasCoordMetadataColumns;
+  const { error } = await supabase.from("listings").select("coordinate_source, coordinate_precision").limit(1);
+  hasCoordMetadataColumns = !error;
+  if (!hasCoordMetadataColumns) {
+    log("Coordinate metadata columns not found — run migration 026 in Supabase SQL Editor. Coordinates will still be resolved but metadata won't be stored.");
+  }
+  return hasCoordMetadataColumns;
+}
+
 const ADVANCED_FIELDS: (keyof ParsedListing)[] = [
   "pets_allowed", "balcony", "elevator",
   "garden", "bath", "roof_terrace", "parking", "energy_label", "property_type",
   "latitude", "longitude", "extra_features", "target_categories",
+];
+
+const COORD_METADATA_FIELDS: (keyof ParsedListing)[] = [
+  "coordinate_source", "coordinate_precision",
 ];
 
 export async function insertAndMatchListings(
@@ -128,6 +149,7 @@ export async function insertAndMatchListings(
   const useFurnished = await checkFurnishedColumn();
   const useDistrict = await checkDistrictColumn();
   const useAdvanced = await checkAdvancedColumns();
+  const useCoordMeta = await checkCoordMetadataColumns();
 
   let inserted = 0;
   let duplicates = 0;
@@ -178,7 +200,42 @@ export async function insertAndMatchListings(
     }
   }
 
+  let coordsResolved = 0;
+  let coordsFailed = 0;
+  const coordStats: Record<string, number> = { direct: 0, geocoded: 0, city_fallback: 0 };
+
   for (const listing of parsed) {
+    if (useAdvanced && (listing.latitude == null || listing.longitude == null || listing.latitude === 0 || listing.longitude === 0)) {
+      try {
+        const geoFields: GeocodableFields = {
+          latitude: listing.latitude,
+          longitude: listing.longitude,
+          city: listing.city,
+          postcode: listing.postcode,
+          street: listing.street,
+          district: listing.district,
+        };
+        const resolved = await resolveCoordinates(geoFields);
+        if (resolved) {
+          listing.latitude = resolved.latitude;
+          listing.longitude = resolved.longitude;
+          listing.coordinate_source = resolved.coordinate_source;
+          listing.coordinate_precision = resolved.coordinate_precision;
+          coordsResolved++;
+          coordStats[resolved.coordinate_source] = (coordStats[resolved.coordinate_source] || 0) + 1;
+        } else {
+          coordsFailed++;
+        }
+      } catch (err: any) {
+        log(`[GEOCODE] Error resolving coords for "${listing.title}": ${err.message}`);
+        coordsFailed++;
+      }
+    } else if (listing.latitude != null && listing.longitude != null) {
+      if (!listing.coordinate_source) listing.coordinate_source = "direct";
+      if (!listing.coordinate_precision) listing.coordinate_precision = "exact";
+      coordStats.direct = (coordStats.direct || 0) + 1;
+    }
+
     let isDuplicate = false;
     let duplicateId: string | null = null;
 
@@ -214,6 +271,13 @@ export async function insertAndMatchListings(
         }
         if (useAdvanced) {
           for (const field of ADVANCED_FIELDS) {
+            if (listing[field] != null) {
+              updateData[field] = listing[field];
+            }
+          }
+        }
+        if (useCoordMeta) {
+          for (const field of COORD_METADATA_FIELDS) {
             if (listing[field] != null) {
               updateData[field] = listing[field];
             }
@@ -261,6 +325,14 @@ export async function insertAndMatchListings(
       }
     }
 
+    if (useCoordMeta) {
+      for (const field of COORD_METADATA_FIELDS) {
+        if (listing[field] != null) {
+          insertData[field] = listing[field];
+        }
+      }
+    }
+
     const { data: row, error: insertErr } = await supabase
       .from("listings")
       .insert(insertData)
@@ -301,6 +373,10 @@ export async function insertAndMatchListings(
       }
       totalMatches += matchCount;
     }
+  }
+
+  if (coordsResolved > 0 || coordsFailed > 0) {
+    log(`[GEOCODE] Coordinate resolution: resolved=${coordsResolved} (direct=${coordStats.direct}, geocoded=${coordStats.geocoded}, city_fallback=${coordStats.city_fallback}), failed=${coordsFailed}`);
   }
 
   return { inserted, duplicates, matches: totalMatches, errors };

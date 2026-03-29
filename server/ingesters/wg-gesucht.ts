@@ -135,10 +135,14 @@ function offerToListing(offer: WgOffer, city: string): ParsedListing | null {
   const lng = parseFloat(offer.geo_longitude) || null;
 
   const district = (offer.district_custom || "").trim() || null;
+  const postcode = (offer.postcode || "").trim() || null;
+  const street = (offer.street || "").trim() || null;
   const features = extractFeatures(title);
 
   const propertyType = features.property_type || wgCategoryToPropertyType(offer.category);
   const targetCategories = propertyType ? [propertyType] : null;
+
+  const hasDirectCoords = lat != null && lng != null;
 
   return {
     title,
@@ -161,8 +165,12 @@ function offerToListing(offer: WgOffer, city: string): ParsedListing | null {
     energy_label: features.energy_label,
     property_type: propertyType,
     district,
+    postcode,
+    street,
     latitude: lat,
     longitude: lng,
+    coordinate_source: hasDirectCoords ? "direct" : null,
+    coordinate_precision: hasDirectCoords ? "exact" : null,
     target_categories: targetCategories,
   };
 }

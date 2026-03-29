@@ -1,0 +1,207 @@
+We are upgrading the location system to make radius filtering fully production-ready across ALL sources and future countries.
+
+IMPORTANT:
+- This is a backend/data pipeline task
+- Do NOT redesign the UI
+- Do NOT change existing matching logic except where needed to support coordinates
+- We are building a scalable, multi-layer coordinate system
+- This must work for future sources and countries, not just Germany
+
+==================================================
+GOAL
+==================================================
+
+Ensure that EVERY listing in the system has usable latitude/longitude via a 3-layer fallback strategy:
+
+1. Direct coordinates from source (best)
+2. Geocoding from address (fallback)
+3. City-level fallback (last resort)
+
+This must work for:
+- WG-Gesucht (already working)
+- Immowelt
+- Kleinanzeigen
+- and all future sources
+
+==================================================
+PART 1 — AUDIT CURRENT DATA
+==================================================
+
+Inspect current listing data and report:
+
+- which fields are available per source:
+  - latitude
+  - longitude
+  - street
+  - postcode
+  - city
+  - district
+
+Confirm:
+- WG-Gesucht has lat/lng (already known)
+- Immowelt address availability
+- Kleinanzeigen address availability
+
+==================================================
+PART 2 — IMPLEMENT COORDINATE PIPELINE
+==================================================
+
+Build a unified coordinate resolution system:
+
+For each listing:
+
+STEP 1:
+If source provides latitude/longitude:
+→ use directly
+
+STEP 2:
+Else if street + city or postcode exists:
+→ geocode using external API (Mapbox or similar)
+
+STEP 3:
+Else if only city exists:
+→ fallback to city center coordinates
+
+Store final result in:
+- listings.latitude
+- listings.longitude
+
+Also store:
+- coordinate_source: "direct" | "geocoded" | "city_fallback"
+
+==================================================
+PART 3 — IMMOWELT & KLEINANZEIGEN SUPPORT
+==================================================
+
+Extend ingesters:
+
+IMMOWELT:
+- extract address data if available
+- pass address into coordinate pipeline
+
+KLEINANZEIGEN:
+- extract location (often partial)
+- attempt:
+  - postcode
+  - district
+  - city
+- pass into coordinate pipeline
+
+Do NOT skip listings just because coordinates are missing.
+Always attempt fallback.
+
+==================================================
+PART 4 — GEOCODING IMPLEMENTATION
+==================================================
+
+Implement a geocoding layer:
+
+Requirements:
+- use a provider (Mapbox recommended)
+- build a reusable function:
+  geocodeAddress(address, city, postcode)
+
+Must:
+- return lat/lng
+- handle failures gracefully
+- NOT block ingestion if API fails
+
+IMPORTANT:
+- cache results (very important for cost + speed)
+- avoid duplicate requests for same address
+
+==================================================
+PART 5 — CITY FALLBACK SYSTEM
+==================================================
+
+Create a city → coordinates mapping system:
+
+- maintain a lookup for major cities
+- or use geocoding once and cache
+
+If only city is known:
+→ assign center coordinates
+
+Mark:
+coordinate_source = "city_fallback"
+
+==================================================
+PART 6 — MATCHING ENGINE INTEGRATION
+==================================================
+
+Ensure matching engine uses coordinates consistently:
+
+- radius logic uses listings.latitude / longitude
+- no changes needed to Haversine logic
+- BUT now more listings should have coordinates
+
+IMPORTANT:
+Listings with:
+- direct coords → highest quality
+- geocoded coords → good
+- city fallback → less precise but acceptable
+
+Do NOT treat fallback coords as exact precision.
+
+==================================================
+PART 7 — QUALITY FLAGS (IMPORTANT)
+==================================================
+
+Add a field or metadata:
+
+- coordinate_precision:
+  - exact
+  - approximate
+  - city_level
+
+This allows future improvements like:
+- better ranking
+- UI indicators
+- filtering quality
+
+==================================================
+PART 8 — TEST CASES
+==================================================
+
+Verify:
+
+CASE 1:
+Immowelt listing with address
+→ gets geocoded → has lat/lng
+
+CASE 2:
+Kleinanzeigen listing with only city
+→ gets city fallback coords
+
+CASE 3:
+Listing with direct coords
+→ unchanged
+
+CASE 4:
+Radius filtering now includes listings from all 3 sources
+
+CASE 5:
+Geocoding failure
+→ does not crash ingestion
+→ falls back correctly
+
+==================================================
+PART 9 — FINAL REPORT
+==================================================
+
+Return:
+
+1. which sources now have coordinates
+2. how many listings have:
+   - direct coords
+   - geocoded coords
+   - city fallback
+3. which files were changed
+4. which geocoding provider is used
+5. whether caching is implemented
+6. confirmation that radius now works across all sources
+7. any remaining gaps
+
+IMPORTANT:
+Do NOT say "should work"
+Only report what is actually implemented

@@ -5,6 +5,7 @@ import type { ParsedListing } from "./matching";
 import { insertAndMatchListings } from "./matching";
 import { getImmoweltUrl } from "./city-slugs";
 import { extractGarden, extractBath, extractRoofTerrace, extractParking, extractEnergyLabel, extractPropertyTypeFromText } from "./feature-extraction";
+import { extractPostcodeFromText, extractStreetFromAddress } from "./geocoding";
 
 const USER_AGENT =
   "HousAlert/1.0 (rental alert app; polite single-page fetch; contact: support@housalert.com)";
@@ -216,6 +217,9 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
     const features = extractFeatures(cardText);
     const district = extractDistrict(address, city);
 
+    const postcode = extractPostcodeFromText(address);
+    const street = extractStreetFromAddress(address, city);
+
     const targetCategories = features.property_type ? [features.property_type] : null;
 
     listings.push({
@@ -239,6 +243,8 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
       energy_label: features.energy_label,
       property_type: features.property_type,
       district,
+      postcode,
+      street,
       target_categories: targetCategories,
     });
   });

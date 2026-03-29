@@ -656,10 +656,11 @@ user_id uuid PK, phone_e164 text, whatsapp_enabled bool, sms_enabled bool, email
 
 Modular ingestion runner at `server/ingesters/`:
 - `types.ts` — Common `Ingester` interface: `{ name, run() → {found, inserted, duplicates, matches, errors} }`
-- `matching.ts` — Shared Supabase client, matching logic, and `insertAndMatchListings()` used by all ingesters
-- `wg-gesucht.ts` — WG-Gesucht scraper factory, city-parameterized via `createWgGesuchtIngester(city)`
-- `kleinanzeigen.ts` — Kleinanzeigen scraper factory, city-parameterized via `createKleinanzeigenIngester(city)`
-- `immowelt.ts` — Immowelt scraper factory, city-parameterized via `createImmoweltIngester(city)`
+- `matching.ts` — Shared Supabase client, matching logic, and `insertAndMatchListings()` used by all ingesters. Includes coordinate resolution pipeline: calls `resolveCoordinates()` for listings without lat/lng before insert.
+- `geocoding.ts` — **3-layer coordinate resolution pipeline**: (1) direct coords from source → (2) geocode via Nominatim from address/postcode → (3) city center fallback. Stores `coordinate_source` ("direct"/"geocoded"/"city_fallback") and `coordinate_precision` ("exact"/"approximate"/"city_level"). Caches results in `geocode_cache` table + in-memory. Rate-limited to 1 req/sec for Nominatim. City center lookup table covers 50+ cities (DE/AT/CH/NL). Helper functions: `extractPostcodeFromText()`, `extractStreetFromAddress()`.
+- `wg-gesucht.ts` — WG-Gesucht scraper factory, city-parameterized via `createWgGesuchtIngester(city)`. Provides direct lat/lng from API (`geo_latitude`/`geo_longitude`), plus postcode/street for fallback.
+- `kleinanzeigen.ts` — Kleinanzeigen scraper factory, city-parameterized via `createKleinanzeigenIngester(city)`. Extracts postcode from location text for geocoding fallback.
+- `immowelt.ts` — Immowelt scraper factory, city-parameterized via `createImmoweltIngester(city)`. Extracts postcode and street from address text for geocoding fallback.
 - `city-slugs.ts` — City→URL slug mappings for all scrapers (34 German cities); WG-Gesucht city codes, Kleinanzeigen location codes, Immowelt/generic slugs
 - `html-config.ts` — Generic config-driven ingester engine: fetches a page, parses cards via CSS selectors, extracts fields via regex
 - `config/sources.ts` — Source templates with `buildSourcesForCity(city, slug)` factory; each run generates city-specific configs

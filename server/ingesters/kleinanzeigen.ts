@@ -6,6 +6,7 @@ import type { ParsedListing } from "./matching";
 import { insertAndMatchListings } from "./matching";
 import { getKleinanzeigenUrl } from "./city-slugs";
 import { extractGarden, extractBath, extractRoofTerrace, extractParking, extractEnergyLabel, extractPropertyTypeFromText } from "./feature-extraction";
+import { extractPostcodeFromText } from "./geocoding";
 
 const KLEINANZEIGEN_BASE = "https://www.kleinanzeigen.de";
 const USER_AGENT =
@@ -221,6 +222,8 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
     const locationText = card.find(".aditem-main--top--left").text().trim();
     const district = extractDistrict(locationText, title, city);
 
+    const postcode = extractPostcodeFromText(locationText) || extractPostcodeFromText(title);
+
     const targetCategories = features.property_type ? [features.property_type] : null;
 
     listings.push({
@@ -244,6 +247,7 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
       energy_label: features.energy_label,
       property_type: features.property_type,
       district,
+      postcode,
       target_categories: targetCategories,
     });
   });
