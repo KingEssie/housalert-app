@@ -105,8 +105,8 @@ export default function OnboardingCity() {
       >
         <div className="max-w-[480px] mx-auto px-5 h-[52px] flex items-center justify-between">
           <span
-            className="text-[12px] font-semibold px-2.5 py-1 rounded-[8px]"
-            style={{ backgroundColor: "rgba(255,255,255,0.1)", color: "#ffffff" }}
+            className="text-[12px] font-bold px-2.5 py-1 rounded-[6px]"
+            style={{ backgroundColor: "rgba(56,189,248,0.15)", color: "#38bdf8" }}
             data-testid="badge-step"
           >
             {`1/${ONBOARDING_TOTAL_STEPS}`}

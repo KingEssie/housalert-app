@@ -296,7 +296,7 @@ export default function OnboardingFilters() {
         <div className="max-w-[480px] mx-auto px-5 h-[52px] flex items-center justify-between">
           <span
             className="text-[12px] font-bold px-2.5 py-1 rounded-[6px]"
-            style={{ backgroundColor: "rgba(99,102,241,0.2)", color: "#818cf8" }}
+            style={{ backgroundColor: "rgba(56,189,248,0.15)", color: "#38bdf8" }}
             data-testid="badge-step"
           >
             {`3/${ONBOARDING_TOTAL_STEPS}`}
