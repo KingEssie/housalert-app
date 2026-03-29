@@ -96,6 +96,7 @@ const CITY_CENTER_COORDS: Record<string, { lat: number; lng: number }> = {
   "rotterdam": { lat: 51.9225, lng: 4.4792 },
   "den haag": { lat: 52.0705, lng: 4.3007 },
   "utrecht": { lat: 52.0907, lng: 5.1214 },
+  "nordwalde": { lat: 52.0833, lng: 7.4833 },
 };
 
 export { CITY_CENTER_COORDS };
