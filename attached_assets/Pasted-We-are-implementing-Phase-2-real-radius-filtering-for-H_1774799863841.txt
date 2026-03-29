@@ -1,0 +1,203 @@
+We are implementing Phase 2: real radius filtering for HousAlert.
+
+IMPORTANT:
+- This is a backend/data/matching task
+- Do NOT redesign the UI
+- Do NOT start commute/routing work
+- Do NOT fake support
+- Build real radius filtering based on coordinates
+- Keep the current search-profile UI intact unless a true bug requires a small fix
+
+==================================================
+GOAL
+==================================================
+
+Make the user-selected radius (km) in the search profile truly functional end-to-end.
+
+Radius filtering must:
+1. use real geographic coordinates
+2. calculate distance correctly
+3. include listings inside the selected radius
+4. exclude listings outside the selected radius
+5. behave safely when coordinates are missing
+
+==================================================
+PART 1 — AUDIT CURRENT LOCATION DATA
+==================================================
+
+Inspect the current implementation and report:
+
+1. how search-profile location is stored
+   - city
+   - lat
+   - lng
+   - radius_km or equivalent
+
+2. how listing location is stored
+   - city
+   - district
+   - latitude
+   - longitude
+
+3. whether listing lat/lng is currently available and populated reliably enough to support radius filtering
+
+Do not guess.
+Use actual code and schema.
+
+==================================================
+PART 2 — IMPLEMENT REAL DISTANCE FILTERING
+==================================================
+
+Implement true radius filtering in the active matching engine.
+
+Requirements:
+- use geographic distance based on:
+  - search profile center point (lat/lng)
+  - listing point (lat/lng)
+- use a correct distance formula such as Haversine
+- compare computed distance against the selected radius in kilometers
+- if distance <= radius_km -> pass
+- if distance > radius_km -> fail
+
+IMPORTANT:
+This must be real filtering, not city-name approximation.
+
+==================================================
+PART 3 — MISSING COORDINATES BEHAVIOR
+==================================================
+
+Define and implement the correct behavior when coordinates are missing.
+
+If user selected radius mode and listing has no usable lat/lng:
+- do NOT pretend the radius matches
+- do NOT let send_unclear override missing geo logic
+- treat the listing as not radius-matchable
+
+If search profile center point has no lat/lng:
+- radius filtering cannot work
+- report/fix whatever is needed so the search profile stores usable center coordinates
+
+IMPORTANT:
+send_unclear is for unknown property attributes, not for missing geographic distance logic.
+
+==================================================
+PART 4 — LOCATION MODE BEHAVIOR
+==================================================
+
+Audit and fix the active search-location mode logic.
+
+The system should clearly support:
+- districts mode
+- radius mode
+- whole city mode
+
+Required behavior:
+1. Whole city mode
+   - match by city only (existing behavior if already implemented)
+
+2. Districts mode
+   - match by district/neighborhood logic (existing behavior if already implemented)
+
+3. Radius mode
+   - match by actual distance calculation only
+
+Make sure the matching engine respects the selected mode properly.
+Do not let radius mode silently fall back to district or city matching unless explicitly designed.
+
+==================================================
+PART 5 — STORAGE / DATA FLOW
+==================================================
+
+Ensure the active search profile stores all radius-related fields needed by the engine, such as:
+- center_lat
+- center_lng
+- radius_km
+- location_mode
+
+If fields already exist, verify they are actively used.
+If field names differ, normalize and document them.
+
+Also verify that edit/update flows preserve these values correctly.
+
+==================================================
+PART 6 — PERFORMANCE / SAFETY
+==================================================
+
+Keep the implementation production-safe.
+
+Requirements:
+- avoid expensive unnecessary recalculation if there is a better place to do it
+- do not break existing matching
+- keep code readable and centralized
+- if there is a central match evaluator, radius logic should live there
+
+If SQL-side filtering is not practical right now, engine-side filtering is acceptable as long as it is correct and safe.
+
+==================================================
+PART 7 — TEST CASES
+==================================================
+
+Verify at least these cases:
+
+CASE 1:
+- user center = Berlin Mitte
+- radius = 5 km
+- listing distance = 3.2 km
+=> MUST match
+
+CASE 2:
+- user center = Berlin Mitte
+- radius = 5 km
+- listing distance = 7.8 km
+=> MUST NOT match
+
+CASE 3:
+- radius mode active
+- listing lat/lng missing
+=> MUST NOT match
+
+CASE 4:
+- whole city mode active
+- listing in same city
+=> matching should follow whole-city logic, not radius logic
+
+CASE 5:
+- districts mode active
+- district match exists
+=> matching should follow district logic, not radius logic
+
+CASE 6:
+- radius mode active
+- search profile lat/lng missing
+=> report/fix the search profile data issue and ensure matching does not incorrectly pass
+
+==================================================
+PART 8 — DEBUG / AUDIT VISIBILITY
+==================================================
+
+Add lightweight debug visibility so we can tell:
+- which location mode was used
+- computed distance (if radius mode)
+- whether lat/lng were missing
+- why a listing passed or failed the radius check
+
+This can be logs or debug metadata, not end-user UI.
+
+==================================================
+PART 9 — FINAL REPORT
+==================================================
+
+At the end report clearly:
+
+1. exact files changed
+2. where radius is now evaluated
+3. which search profile fields are used
+4. which listing fields are used
+5. how missing coordinates are handled
+6. whether radius mode is now truly functional end-to-end
+7. results of all radius test cases
+8. whether districts mode / whole city mode still work correctly
+
+IMPORTANT:
+Do not say “should work”.
+Only report what is actually implemented and verified.

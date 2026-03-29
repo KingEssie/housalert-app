@@ -28,6 +28,9 @@ interface SearchProfile {
   districts?: string[] | null;
   property_types?: string[] | null;
   location_mode?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  radius_km?: number | null;
   send_unclear?: boolean | null;
   price_flexible?: boolean | null;
 }
@@ -266,6 +269,21 @@ export function citiesMatch(listingCity: string, profileCity: string): boolean {
   return false;
 }
 
+export function haversineDistanceKm(
+  lat1: number, lng1: number,
+  lat2: number, lng2: number,
+): number {
+  const R = 6371;
+  const toRad = (deg: number) => deg * (Math.PI / 180);
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+    Math.sin(dLng / 2) * Math.sin(dLng / 2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
 export function explainMatchInternal(listing: DbListing, profile: SearchProfile): MatchExplanation {
   const checks: FilterCheck[] = [];
   const sendUnclear = profile.send_unclear !== false;
@@ -273,18 +291,72 @@ export function explainMatchInternal(listing: DbListing, profile: SearchProfile)
 
   const listingCity = normalizeCity(listing.city);
   const profileCity = normalizeCity(profile.city_name || profile.city || "");
+  const isRadiusMode = profile.location_mode === "radius";
 
-  const cityPassed = citiesMatch(listingCity, profileCity);
-  checks.push({
-    filter: "city",
-    profileField: "city_name || city",
-    profileValue: profileCity || "(empty)",
-    listingField: "city",
-    listingValue: listingCity,
-    rule: "exact match or alias match (case-insensitive, German aliases supported)",
-    passed: cityPassed,
-  });
-  if (!cityPassed) return { matched: false, checks, reason: `City mismatch: listing="${listingCity}" vs profile="${profileCity}"` };
+  if (isRadiusMode) {
+    const profileLat = profile.latitude ?? null;
+    const profileLng = profile.longitude ?? null;
+    const radiusKm = profile.radius_km ?? null;
+
+    if (profileLat == null || profileLng == null || radiusKm == null || radiusKm <= 0) {
+      checks.push({
+        filter: "radius",
+        profileField: "latitude/longitude/radius_km",
+        profileValue: `lat=${profileLat}, lng=${profileLng}, radius=${radiusKm}km`,
+        listingField: "latitude/longitude",
+        listingValue: `lat=${listing.latitude}, lng=${listing.longitude}`,
+        rule: "radius mode active but profile center coordinates or radius_km missing/invalid → cannot evaluate → reject",
+        passed: false,
+      });
+      return { matched: false, checks, reason: `Radius mode active but profile missing center coordinates or radius_km (lat=${profileLat}, lng=${profileLng}, radius=${radiusKm})` };
+    }
+
+    const listingLat = listing.latitude ?? null;
+    const listingLng = listing.longitude ?? null;
+
+    if (listingLat == null || listingLng == null) {
+      checks.push({
+        filter: "radius",
+        profileField: "latitude/longitude/radius_km",
+        profileValue: `center=(${profileLat}, ${profileLng}), radius=${radiusKm}km`,
+        listingField: "latitude/longitude",
+        listingValue: `lat=${listingLat}, lng=${listingLng}`,
+        rule: "radius mode active but listing has no coordinates → not radius-matchable → reject (send_unclear does NOT override missing geo)",
+        passed: false,
+      });
+      return { matched: false, checks, reason: `Radius mode: listing has no coordinates (lat=${listingLat}, lng=${listingLng}) — cannot compute distance` };
+    }
+
+    const distanceKm = haversineDistanceKm(profileLat, profileLng, listingLat, listingLng);
+    const radiusPassed = distanceKm <= radiusKm;
+
+    checks.push({
+      filter: "radius",
+      profileField: "latitude/longitude/radius_km",
+      profileValue: `center=(${profileLat}, ${profileLng}), radius=${radiusKm}km`,
+      listingField: "latitude/longitude",
+      listingValue: `(${listingLat}, ${listingLng}), distance=${distanceKm.toFixed(2)}km`,
+      rule: radiusPassed
+        ? `distance ${distanceKm.toFixed(2)}km <= radius ${radiusKm}km → pass`
+        : `distance ${distanceKm.toFixed(2)}km > radius ${radiusKm}km → reject`,
+      passed: radiusPassed,
+    });
+    if (!radiusPassed) {
+      return { matched: false, checks, reason: `Radius: distance ${distanceKm.toFixed(2)}km > radius ${radiusKm}km` };
+    }
+  } else {
+    const cityPassed = citiesMatch(listingCity, profileCity);
+    checks.push({
+      filter: "city",
+      profileField: "city_name || city",
+      profileValue: profileCity || "(empty)",
+      listingField: "city",
+      listingValue: listingCity,
+      rule: "exact match or alias match (case-insensitive, German aliases supported)",
+      passed: cityPassed,
+    });
+    if (!cityPassed) return { matched: false, checks, reason: `City mismatch: listing="${listingCity}" vs profile="${profileCity}"` };
+  }
 
   const listingPriceKnown = listing.price > 0;
   let priceMinPassed: boolean;
@@ -798,7 +870,8 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
   let pErr: any = null;
 
   if (searchTerms.length > 0) {
-    const orFilter = searchTerms.map(t => `city.ilike.%${t}%,city_name.ilike.%${t}%`).join(",");
+    const cityFilter = searchTerms.map(t => `city.ilike.%${t}%,city_name.ilike.%${t}%`).join(",");
+    const orFilter = `${cityFilter},location_mode.eq.radius`;
     const result = await supabase
       .from("search_profiles")
       .select("*")

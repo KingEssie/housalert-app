@@ -23,6 +23,10 @@ interface SearchProfile {
   districts?: string[] | null;
   property_types?: string[] | null;
   location_mode?: string | null;
+  send_unclear?: boolean;
+  latitude?: number | null;
+  longitude?: number | null;
+  radius_km?: number | null;
 }
 
 interface DbListing {
@@ -44,6 +48,12 @@ interface DbListing {
   longitude?: number | null;
   extra_features?: string[] | null;
   target_categories?: string[] | null;
+  garden?: boolean | null;
+  bath?: boolean | null;
+  roof_terrace?: boolean | null;
+  energy_label?: string | null;
+  property_type?: string | null;
+  parking?: boolean | null;
 }
 
 function makeProfile(overrides: Partial<SearchProfile> = {}): SearchProfile {
@@ -413,8 +423,15 @@ describe("Match Engine Unit Tests", () => {
       expect(result.matched).toBe(false);
     });
 
-    it("fails when profile requires balcony but listing balcony is null (strict mode)", () => {
+    it("passes when listing balcony is null with send_unclear=ON (default)", () => {
       const result = explain({ balcony: null }, { extra_features: ["balcony"] });
+      expect(result.matched).toBe(true);
+      const check = findCheck(result, "extra_feature:balcony");
+      expect(check?.hybridPass).toBe(true);
+    });
+
+    it("fails when listing balcony is null with send_unclear=OFF", () => {
+      const result = explain({ balcony: null }, { extra_features: ["balcony"], send_unclear: false });
       expect(result.matched).toBe(false);
     });
   });
@@ -425,8 +442,15 @@ describe("Match Engine Unit Tests", () => {
       expect(result.matched).toBe(true);
     });
 
-    it("fails when listing elevator is null", () => {
+    it("passes when listing elevator is null with send_unclear=ON (default)", () => {
       const result = explain({ elevator: null }, { extra_features: ["elevator"] });
+      expect(result.matched).toBe(true);
+      const check = findCheck(result, "extra_feature:elevator");
+      expect(check?.hybridPass).toBe(true);
+    });
+
+    it("fails when listing elevator is null with send_unclear=OFF", () => {
+      const result = explain({ elevator: null }, { extra_features: ["elevator"], send_unclear: false });
       expect(result.matched).toBe(false);
     });
 
@@ -472,10 +496,19 @@ describe("Match Engine Unit Tests", () => {
       expect(result.matched).toBe(true);
     });
 
-    it("skips district check when location_mode is not districts", () => {
+    it("skips district check when location_mode is city", () => {
       const result = explain(
         { district: "Spandau" },
-        { districts: ["Mitte"], location_mode: "radius" }
+        { districts: ["Mitte"], location_mode: "city" }
+      );
+      expect(result.matched).toBe(true);
+      expect(findCheck(result, "district")).toBeUndefined();
+    });
+
+    it("skips district check when location_mode is radius", () => {
+      const result = explain(
+        { district: "Spandau", city: "berlin", latitude: 52.52, longitude: 13.405 },
+        { districts: ["Mitte"], location_mode: "radius", latitude: 52.52, longitude: 13.405, radius_km: 10 }
       );
       expect(result.matched).toBe(true);
       expect(findCheck(result, "district")).toBeUndefined();
@@ -597,21 +630,52 @@ describe("Match Engine Unit Tests", () => {
     });
   });
 
-  describe("Extra features — unknown features", () => {
-    it("rejects listing when profile requires unknown feature (strict by default)", () => {
+  describe("Extra features — supported features with null listing data", () => {
+    it("passes listing when garden=null with send_unclear=ON (default)", () => {
       const result = explain(
         {},
         { extra_features: ["garden"] }
       );
-      expect(result.matched).toBe(false);
+      expect(result.matched).toBe(true);
+      const check = findCheck(result, "extra_feature:garden");
+      expect(check?.hybridPass).toBe(true);
     });
 
-    it("rejects listing when profile requires parking (not available in listing data)", () => {
+    it("passes listing when parking=null with send_unclear=ON (default)", () => {
       const result = explain(
         {},
         { extra_features: ["parking"] }
       );
+      expect(result.matched).toBe(true);
+      const check = findCheck(result, "extra_feature:parking");
+      expect(check?.hybridPass).toBe(true);
+    });
+
+    it("rejects listing when garden=null with send_unclear=OFF", () => {
+      const result = explain(
+        {},
+        { extra_features: ["garden"], send_unclear: false }
+      );
       expect(result.matched).toBe(false);
+    });
+
+    it("rejects listing when parking=null with send_unclear=OFF", () => {
+      const result = explain(
+        {},
+        { extra_features: ["parking"], send_unclear: false }
+      );
+      expect(result.matched).toBe(false);
+    });
+
+    it("rejects listing when profile requires truly unknown feature (basement)", () => {
+      const result = explain(
+        {},
+        { extra_features: ["basement"] }
+      );
+      expect(result.matched).toBe(true);
+      const check = findCheck(result, "extra_feature:basement");
+      expect(check?.skipped).toBe(true);
+      expect(check?.unsupported).toBe(true);
     });
   });
 

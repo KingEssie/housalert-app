@@ -164,11 +164,11 @@ const GOLDEN_CASES: GoldenCase[] = [
     reason: "Explicit districts mode — filter active and matches",
   },
   {
-    name: "location_mode=radius with stale districts → MATCH (filter skipped)",
+    name: "location_mode=radius with stale districts → REJECT (radius enforced, no center coords)",
     listing: { district: "Neukölln" },
     profile: { districts: ["Kreuzberg"], location_mode: "radius" },
-    expected: true,
-    reason: "Radius mode — district filter must be skipped even if profile has stale districts",
+    expected: false,
+    reason: "Radius mode — radius filter is now enforced; missing profile center coordinates → reject",
   },
   {
     name: "location_mode=commute with stale districts → MATCH (filter skipped)",
