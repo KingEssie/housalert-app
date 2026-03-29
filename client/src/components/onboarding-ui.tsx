@@ -115,16 +115,116 @@ export function OBProgressDots({ current, total }: { current: number; total: num
   );
 }
 
-import { ChevronLeft, Loader2 } from "lucide-react";
+import { ChevronLeft, Loader2, X, Info } from "lucide-react";
+import { HousAlertLogo } from "@/components/housalert-logo";
+
+export function OBWebHeader({ step, totalSteps = 3, onClose }: { step: number; totalSteps?: number; onClose: () => void }) {
+  return (
+    <header
+      className="w-full sticky top-0 z-20"
+      style={{ backgroundColor: OBW.headerBg, borderBottom: `1px solid ${OBW.headerBorder}` }}
+    >
+      <div className="max-w-[480px] mx-auto px-5 h-[52px] flex items-center justify-between">
+        <span
+          className="text-[12px] font-bold px-2.5 py-1 rounded-[6px]"
+          style={{ backgroundColor: OBW.badgeBg, color: OBW.badgeColor }}
+          data-testid="badge-step"
+        >
+          Stap {step}/{totalSteps}
+        </span>
+        <HousAlertLogo size={24} />
+        <button
+          onClick={onClose}
+          className="w-[32px] h-[32px] rounded-full flex items-center justify-center active:scale-95 transition-transform"
+          style={{ backgroundColor: OBW.closeBtnBg }}
+          data-testid="button-close"
+        >
+          <X className="w-4 h-4" style={{ color: OBW.closeBtnColor }} />
+        </button>
+      </div>
+    </header>
+  );
+}
+
+export function OBWebFooter({
+  onBack,
+  onNext,
+  nextLabel,
+  nextDisabled,
+  saving,
+  matchCount = 121,
+  backTestId,
+  nextTestId,
+}: {
+  onBack?: () => void;
+  onNext: () => void;
+  nextLabel: string;
+  nextDisabled?: boolean;
+  saving?: boolean;
+  matchCount?: number;
+  backTestId?: string;
+  nextTestId?: string;
+}) {
+  return (
+    <div
+      className="fixed bottom-0 left-0 right-0 z-30"
+      style={{ borderTop: `1px solid ${OBW.footerBorder}`, backgroundColor: OBW.footerBg }}
+    >
+      <div className="max-w-[480px] mx-auto px-5 py-3 flex items-center gap-3">
+        <div className="flex-1 min-w-0">
+          <p className="text-[11px] font-medium uppercase tracking-wide" style={{ color: OBW.textMuted }}>
+            Geschatte matches
+          </p>
+          <p className="text-[16px] font-bold" style={{ color: OBW.text }}>
+            {matchCount} per week
+          </p>
+        </div>
+        {onBack && (
+          <button
+            onClick={onBack}
+            className="w-[44px] h-[44px] rounded-[6px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
+            style={{ border: `1.5px solid ${OBW.backBtnBorder}`, backgroundColor: OBW.backBtnBg }}
+            data-testid={backTestId || "button-back"}
+          >
+            <ChevronLeft className="w-[16px] h-[16px]" style={{ color: OBW.backBtnColor }} />
+          </button>
+        )}
+        <button
+          onClick={onNext}
+          disabled={nextDisabled || saving}
+          className="px-6 h-[44px] rounded-[6px] text-[14px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-1.5 shrink-0"
+          style={{ background: OBW.pinkGradient, boxShadow: nextDisabled ? "none" : "0 4px 12px rgba(233,30,99,0.2)" }}
+          data-testid={nextTestId || "button-next"}
+        >
+          {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+          {nextLabel}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export function OBInfoBox({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      className="rounded-[12px] p-4 flex items-start gap-3"
+      style={{ backgroundColor: "#f0f9ff", border: "1px solid #bae6fd" }}
+    >
+      <Info className="w-4 h-4 shrink-0 mt-0.5" style={{ color: "#0284c7" }} />
+      <div className="text-[13px] leading-relaxed" style={{ color: "#0369a1" }}>
+        {children}
+      </div>
+    </div>
+  );
+}
 
 export function OBStickyBar({ children, websiteMode }: { children: React.ReactNode; websiteMode?: boolean }) {
-  const t = websiteMode ? OBW : OB;
   return (
     <div
       className="fixed bottom-0 left-0 right-0 z-30 border-t backdrop-blur-xl"
       style={{
-        backgroundColor: t.footerBg || t.headerBg,
-        borderColor: t.footerBorder || t.headerBorder,
+        backgroundColor: websiteMode ? OBW.footerBg : OB.headerBg,
+        borderColor: websiteMode ? OBW.footerBorder : OB.headerBorder,
         paddingBottom: websiteMode ? "12px" : "max(12px, env(safe-area-inset-bottom, 12px))",
       }}
     >

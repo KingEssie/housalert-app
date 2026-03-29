@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Check, Bath, Sun, Trees, Leaf, X,
 } from "lucide-react";
-import { OB, OBW, ONBOARDING_TOTAL_STEPS, OBFooter, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
+import { OB, OBW, ONBOARDING_TOTAL_STEPS, OBFooter, OBWebHeader, OBWebFooter, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
 import { createSearchProfile, type InsertSearchProfileInput } from "@/lib/search-profiles";
 import { queryClient } from "@/lib/queryClient";
 
@@ -339,14 +339,24 @@ export default function OnboardingFilters() {
     if (f.includeRooms) outParams.set("includeRooms", "true");
     if (f.sendUnclear) outParams.set("sendUnclear", "true");
 
-    navigate(appendWebsiteParams(`/onboarding/name?${outParams.toString()}`, searchString));
+    if (w) {
+      navigate(appendWebsiteParams(`/onboarding/password?${outParams.toString()}`, searchString));
+    } else {
+      navigate(appendWebsiteParams(`/onboarding/name?${outParams.toString()}`, searchString));
+    }
   }
 
   function handleBack() {
-    const backParams = new URLSearchParams({ city, lat, lng, locationMode });
-    if (districts) backParams.set("districts", districts);
-    if (radiusKm) backParams.set("radiusKm", radiusKm);
-    navigate(appendWebsiteParams(`/onboarding/location?${backParams.toString()}`, searchString));
+    if (w) {
+      const backParams = new URLSearchParams({ city, lat, lng });
+      if (radiusKm) backParams.set("radiusKm", radiusKm);
+      navigate(appendWebsiteParams(`/onboarding/city?${backParams.toString()}`, searchString));
+    } else {
+      const backParams = new URLSearchParams({ city, lat, lng, locationMode });
+      if (districts) backParams.set("districts", districts);
+      if (radiusKm) backParams.set("radiusKm", radiusKm);
+      navigate(appendWebsiteParams(`/onboarding/location?${backParams.toString()}`, searchString));
+    }
   }
 
   function handleClose() {
@@ -374,10 +384,220 @@ export default function OnboardingFilters() {
     { value: "unfurnished", label: t("onboarding.filters.furnishedNo") || "Nein" },
   ];
 
+  const filterSections = (
+    <div className="flex flex-col gap-7">
+      <section>
+        <label className="text-[13px] font-semibold mb-3 block" style={{ color: T.text }}>
+          {t("onboarding.filters.rentLabel") || "Huurprijs"}
+        </label>
+        <DualRangeSlider
+          min={0}
+          max={3000}
+          step={50}
+          valueLow={f.minPrice}
+          valueHigh={f.maxPrice}
+          onChangeLow={(v) => update({ minPrice: v })}
+          onChangeHigh={(v) => update({ maxPrice: v })}
+          formatLabel={(v) => `€${v}`}
+          testId="slider-rent-price"
+          theme={T}
+        />
+        <div className="mt-3">
+          <Toggle
+            checked={f.priceFlexible}
+            onChange={(v) => update({ priceFlexible: v })}
+            label={t("onboarding.filters.priceFlexible") || "Stuur ook iets duurdere perfecte matches"}
+            testId="toggle-price-flexible"
+            theme={T}
+          />
+        </div>
+      </section>
+
+      <div className="h-px" style={{ backgroundColor: T.divider }} />
+
+      <section>
+        <label className="text-[13px] font-semibold mb-3 block" style={{ color: T.text }}>
+          {t("onboarding.filters.propertyTypeLabel") || "Woningtype"}
+        </label>
+        <SegmentedControl
+          options={PROPERTY_OPTIONS}
+          value={f.propertyType}
+          onChange={(v) => update({ propertyType: v })}
+          testId="property-type"
+          theme={T}
+        />
+        <div className="mt-3">
+          <Toggle
+            checked={f.includeRooms}
+            onChange={(v) => update({ includeRooms: v })}
+            label={t("onboarding.filters.includeRooms") || "Zoek ook kamers / onzelfstandige woonruimte"}
+            testId="toggle-include-rooms"
+            theme={T}
+          />
+        </div>
+      </section>
+
+      <div className="h-px" style={{ backgroundColor: T.divider }} />
+
+      <section>
+        <label className="text-[13px] font-semibold mb-3 block" style={{ color: T.text }}>
+          {t("onboarding.filters.bedroomsLabel") || "Slaapkamers"}
+        </label>
+        <div
+          className="flex p-1 rounded-full"
+          style={{ backgroundColor: w ? OBW.tabBg : "rgba(99,102,241,0.12)" }}
+          data-testid="rooms-selector"
+        >
+          {ROOM_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              onClick={() => update({ minRooms: opt.value })}
+              className="flex-1 h-[40px] rounded-full text-[13px] font-semibold transition-all"
+              style={{
+                backgroundColor: f.minRooms === opt.value ? (w ? OBW.tabActiveBg : "rgba(99,102,241,0.35)") : "transparent",
+                color: f.minRooms === opt.value ? (w ? OBW.tabActiveColor : "#fff") : T.textSecondary,
+              }}
+              data-testid={`rooms-${opt.value}`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <div className="h-px" style={{ backgroundColor: T.divider }} />
+
+      <section>
+        <div className="flex items-center justify-between mb-3">
+          <label className="text-[13px] font-semibold" style={{ color: T.text }}>
+            {t("onboarding.filters.minSizeLabel") || "Minimale oppervlakte"}
+          </label>
+          <button
+            onClick={() => update({ sizeNA: !f.sizeNA, minSize: f.sizeNA ? 30 : 0 })}
+            className="text-[12px] font-medium px-2.5 py-1 rounded-full border transition-all"
+            style={{
+              borderColor: f.sizeNA ? T.selectedBorder : T.cardBorder,
+              backgroundColor: f.sizeNA ? T.selectedBg : "transparent",
+              color: f.sizeNA ? OB.pink : T.textSecondary,
+            }}
+            data-testid="button-size-na"
+          >
+            n.v.t.
+          </button>
+        </div>
+        {!f.sizeNA && (
+          <RangeSlider
+            min={0}
+            max={200}
+            step={5}
+            value={f.minSize}
+            onChange={(v) => update({ minSize: v })}
+            formatLabel={(v) => `${v} m²`}
+            testId="slider-min-size"
+            theme={T}
+          />
+        )}
+      </section>
+
+      <div className="h-px" style={{ backgroundColor: T.divider }} />
+
+      <section>
+        <label className="text-[13px] font-semibold mb-3 block" style={{ color: T.text }}>
+          {t("onboarding.filters.furnishedLabel") || "Gemeubileerd"}
+        </label>
+        <SegmentedControl
+          options={FURNISHED_OPTIONS}
+          value={f.furnished}
+          onChange={(v) => update({ furnished: v })}
+          testId="furnished-selector"
+          theme={T}
+        />
+      </section>
+
+      <div className="h-px" style={{ backgroundColor: T.divider }} />
+
+      <section>
+        <label className="text-[13px] font-semibold mb-3 block" style={{ color: T.text }}>
+          {t("onboarding.filters.amenitiesLabel") || "Extra wensen"}
+        </label>
+        <div className="flex flex-wrap gap-2" data-testid="amenity-chips">
+          {AMENITY_OPTIONS.map(({ value, labelKey, fallback, icon: Icon }) => {
+            const active = f.amenities.includes(value);
+            return (
+              <button
+                key={value}
+                onClick={() => toggleAmenity(value)}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[13px] font-medium border transition-all"
+                style={{
+                  backgroundColor: active ? OB.pink : "transparent",
+                  borderColor: active ? OB.pink : T.cardBorder,
+                  color: active ? "#fff" : T.textSecondary,
+                }}
+                data-testid={`amenity-${value}`}
+              >
+                {active && <Check className="w-3 h-3" />}
+                <Icon className="w-3.5 h-3.5" />
+                {t(labelKey) || fallback}
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      <div className="h-px" style={{ backgroundColor: T.divider }} />
+
+      <section>
+        <Toggle
+          checked={f.sendUnclear}
+          onChange={(v) => update({ sendUnclear: v })}
+          label={t("onboarding.filters.sendUnclear") || "Stuur ook woningen waarvan de criteria onduidelijk zijn"}
+          testId="toggle-send-unclear"
+          theme={T}
+        />
+      </section>
+    </div>
+  );
+
+  if (w) {
+    return (
+      <div
+        className="min-h-[100dvh] flex flex-col"
+        style={{ background: "#ffffff" }}
+        data-testid="screen-onboarding-filters"
+      >
+        <OBWebHeader step={2} onClose={handleClose} />
+
+        <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-[100px] overflow-y-auto">
+          <h2
+            className="text-[20px] font-bold tracking-[-0.01em] mb-1"
+            style={{ color: OBW.text }}
+            data-testid="text-filters-title"
+          >
+            Wat zoek je precies?
+          </h2>
+          <p className="text-[14px] mb-6" style={{ color: OBW.textSecondary }}>
+            Verfijn je zoekopdracht voor de beste resultaten.
+          </p>
+
+          {filterSections}
+        </main>
+
+        <OBWebFooter
+          onBack={handleBack}
+          onNext={handleNext}
+          nextLabel={isSearchOnlyMode ? (t("newSearch.save") || "Opslaan") : "Volgende"}
+          saving={saving}
+          backTestId="button-filters-back"
+          nextTestId="button-filters-next"
+        />
+      </div>
+    );
+  }
+
   return (
     <div
-      className={`min-h-[100dvh] flex flex-col ${w ? "" : "ob-dark"}`}
-      style={{ background: T.gradient, borderRadius: w ? 0 : undefined }}
+      className="min-h-[100dvh] flex flex-col ob-dark"
+      style={{ background: T.gradient }}
       data-testid="screen-onboarding-filters"
     >
       <header
@@ -385,20 +605,19 @@ export default function OnboardingFilters() {
         style={{
           backgroundColor: T.headerBg,
           borderColor: T.headerBorder,
-          paddingTop: w ? "0px" : "max(8px, env(safe-area-inset-top))",
-          borderRadius: w ? 0 : undefined,
+          paddingTop: "max(8px, env(safe-area-inset-top))",
         }}
       >
         <div className="max-w-[480px] mx-auto px-5 h-[52px] flex items-center justify-between">
           <span
             className="text-[12px] font-bold px-2.5 py-1 rounded-[6px]"
             style={{
-              backgroundColor: w ? OBW.badgeBg : "rgba(56,189,248,0.15)",
-              color: w ? OBW.badgeColor : "#38bdf8",
+              backgroundColor: "rgba(56,189,248,0.15)",
+              color: "#38bdf8",
             }}
             data-testid="badge-step"
           >
-            {`${w ? "2" : "3"}/${w ? "2" : ONBOARDING_TOTAL_STEPS}`}
+            {`3/${ONBOARDING_TOTAL_STEPS}`}
           </span>
           <span className="text-[15px] font-semibold" style={{ color: T.text }}>
             {t("onboarding.filters.headerTitle") || "Zoekopdracht maken"}
@@ -406,7 +625,7 @@ export default function OnboardingFilters() {
           <button
             onClick={handleClose}
             className="w-8 h-8 rounded-full flex items-center justify-center active:scale-95 transition-transform"
-            style={{ backgroundColor: w ? OBW.closeBtnBg : "rgba(255,255,255,0.1)" }}
+            style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
             data-testid="button-filters-close"
           >
             <X className="w-4 h-4" style={{ color: T.textSecondary }} />
@@ -426,177 +645,7 @@ export default function OnboardingFilters() {
           {t("onboarding.filters.subtitle") || "Verfijn je zoekopdracht."}
         </p>
 
-        <div className="flex flex-col gap-7">
-          <section>
-            <label className="text-[13px] font-semibold mb-3 block" style={{ color: T.text }}>
-              {t("onboarding.filters.rentLabel") || "Huurprijs"}
-            </label>
-            <DualRangeSlider
-              min={0}
-              max={3000}
-              step={50}
-              valueLow={f.minPrice}
-              valueHigh={f.maxPrice}
-              onChangeLow={(v) => update({ minPrice: v })}
-              onChangeHigh={(v) => update({ maxPrice: v })}
-              formatLabel={(v) => `€${v}`}
-              testId="slider-rent-price"
-              theme={T}
-            />
-            <div className="mt-3">
-              <Toggle
-                checked={f.priceFlexible}
-                onChange={(v) => update({ priceFlexible: v })}
-                label={t("onboarding.filters.priceFlexible") || "Stuur ook iets duurdere perfecte matches"}
-                testId="toggle-price-flexible"
-                theme={T}
-              />
-            </div>
-          </section>
-
-          <div className="h-px" style={{ backgroundColor: T.divider }} />
-
-          <section>
-            <label className="text-[13px] font-semibold mb-3 block" style={{ color: T.text }}>
-              {t("onboarding.filters.propertyTypeLabel") || "Woningtype"}
-            </label>
-            <SegmentedControl
-              options={PROPERTY_OPTIONS}
-              value={f.propertyType}
-              onChange={(v) => update({ propertyType: v })}
-              testId="property-type"
-              theme={T}
-            />
-            <div className="mt-3">
-              <Toggle
-                checked={f.includeRooms}
-                onChange={(v) => update({ includeRooms: v })}
-                label={t("onboarding.filters.includeRooms") || "Zoek ook kamers / onzelfstandige woonruimte"}
-                testId="toggle-include-rooms"
-                theme={T}
-              />
-            </div>
-          </section>
-
-          <div className="h-px" style={{ backgroundColor: T.divider }} />
-
-          <section>
-            <label className="text-[13px] font-semibold mb-3 block" style={{ color: T.text }}>
-              {t("onboarding.filters.bedroomsLabel") || "Slaapkamers"}
-            </label>
-            <div
-              className="flex p-1 rounded-full"
-              style={{ backgroundColor: w ? OBW.tabBg : "rgba(99,102,241,0.12)" }}
-              data-testid="rooms-selector"
-            >
-              {ROOM_OPTIONS.map((opt) => (
-                <button
-                  key={opt.value}
-                  onClick={() => update({ minRooms: opt.value })}
-                  className="flex-1 h-[40px] rounded-full text-[13px] font-semibold transition-all"
-                  style={{
-                    backgroundColor: f.minRooms === opt.value ? (w ? OBW.tabActiveBg : "rgba(99,102,241,0.35)") : "transparent",
-                    color: f.minRooms === opt.value ? (w ? OBW.tabActiveColor : "#fff") : T.textSecondary,
-                  }}
-                  data-testid={`rooms-${opt.value}`}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-          </section>
-
-          <div className="h-px" style={{ backgroundColor: T.divider }} />
-
-          <section>
-            <div className="flex items-center justify-between mb-3">
-              <label className="text-[13px] font-semibold" style={{ color: T.text }}>
-                {t("onboarding.filters.minSizeLabel") || "Minimale oppervlakte"}
-              </label>
-              <button
-                onClick={() => update({ sizeNA: !f.sizeNA, minSize: f.sizeNA ? 30 : 0 })}
-                className="text-[12px] font-medium px-2.5 py-1 rounded-full border transition-all"
-                style={{
-                  borderColor: f.sizeNA ? T.selectedBorder : T.cardBorder,
-                  backgroundColor: f.sizeNA ? T.selectedBg : "transparent",
-                  color: f.sizeNA ? OB.pink : T.textSecondary,
-                }}
-                data-testid="button-size-na"
-              >
-                n.v.t.
-              </button>
-            </div>
-            {!f.sizeNA && (
-              <RangeSlider
-                min={0}
-                max={200}
-                step={5}
-                value={f.minSize}
-                onChange={(v) => update({ minSize: v })}
-                formatLabel={(v) => `${v} m²`}
-                testId="slider-min-size"
-                theme={T}
-              />
-            )}
-          </section>
-
-          <div className="h-px" style={{ backgroundColor: T.divider }} />
-
-          <section>
-            <label className="text-[13px] font-semibold mb-3 block" style={{ color: T.text }}>
-              {t("onboarding.filters.furnishedLabel") || "Gemeubileerd"}
-            </label>
-            <SegmentedControl
-              options={FURNISHED_OPTIONS}
-              value={f.furnished}
-              onChange={(v) => update({ furnished: v })}
-              testId="furnished-selector"
-              theme={T}
-            />
-          </section>
-
-          <div className="h-px" style={{ backgroundColor: T.divider }} />
-
-          <section>
-            <label className="text-[13px] font-semibold mb-3 block" style={{ color: T.text }}>
-              {t("onboarding.filters.amenitiesLabel") || "Extra wensen"}
-            </label>
-            <div className="flex flex-wrap gap-2" data-testid="amenity-chips">
-              {AMENITY_OPTIONS.map(({ value, labelKey, fallback, icon: Icon }) => {
-                const active = f.amenities.includes(value);
-                return (
-                  <button
-                    key={value}
-                    onClick={() => toggleAmenity(value)}
-                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[13px] font-medium border transition-all"
-                    style={{
-                      backgroundColor: active ? OB.pink : "transparent",
-                      borderColor: active ? OB.pink : T.cardBorder,
-                      color: active ? "#fff" : T.textSecondary,
-                    }}
-                    data-testid={`amenity-${value}`}
-                  >
-                    {active && <Check className="w-3 h-3" />}
-                    <Icon className="w-3.5 h-3.5" />
-                    {t(labelKey) || fallback}
-                  </button>
-                );
-              })}
-            </div>
-          </section>
-
-          <div className="h-px" style={{ backgroundColor: T.divider }} />
-
-          <section>
-            <Toggle
-              checked={f.sendUnclear}
-              onChange={(v) => update({ sendUnclear: v })}
-              label={t("onboarding.filters.sendUnclear") || "Stuur ook woningen waarvan de criteria onduidelijk zijn"}
-              testId="toggle-send-unclear"
-              theme={T}
-            />
-          </section>
-        </div>
+        {filterSections}
       </main>
 
       <OBFooter
@@ -608,7 +657,6 @@ export default function OnboardingFilters() {
         saving={saving}
         backTestId="button-filters-back"
         nextTestId="button-filters-next"
-        websiteMode={w}
       />
     </div>
   );

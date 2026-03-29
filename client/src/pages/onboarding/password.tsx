@@ -3,13 +3,17 @@ import { useLocation } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
 import { useTranslation } from "@/i18n";
 import { HousAlertLogo } from "@/components/housalert-logo";
-import { ChevronLeft, Lock, Loader2, Eye, EyeOff, Gift } from "lucide-react";
+import { ChevronLeft, Lock, Loader2, Eye, EyeOff, Gift, User, Mail, MapPin, Clock } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { clearAllUserData } from "@/lib/queryClient";
 import { createSearchProfile } from "@/lib/search-profiles";
 import { useToast } from "@/hooks/use-toast";
 import { apiFetch } from "@/lib/api-base";
-import { OB, OBW, OBStickyBar, useWebsiteMode } from "@/components/onboarding-ui";
+import { OB, OBW, OBStickyBar, OBWebHeader, OBInfoBox, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
+
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
 
 export default function OnboardingPassword() {
   const [, navigate] = useLocation();
@@ -20,11 +24,15 @@ export default function OnboardingPassword() {
   const T = w ? OBW : OB;
   const params = new URLSearchParams(searchString);
 
-  const firstName = params.get("firstName") || "";
-  const lastName = params.get("lastName") || "";
-  const email = params.get("email") || "";
   const city = params.get("city") || "";
+  const radiusKm = params.get("radiusKm") || "";
+  const minPrice = params.get("minPrice") || "0";
+  const maxPrice = params.get("maxPrice") || "0";
+  const minRooms = params.get("minRooms") || "0";
 
+  const [firstName, setFirstName] = useState(params.get("firstName") || "");
+  const [lastName, setLastName] = useState(params.get("lastName") || "");
+  const [email, setEmail] = useState(params.get("email") || "");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [referralCode, setReferralCode] = useState("");
@@ -33,15 +41,15 @@ export default function OnboardingPassword() {
   const submittingRef = useRef(false);
 
   async function saveSearchProfile(userId: string) {
-    const minPrice = parseInt(params.get("minPrice") || "0") || 0;
-    const maxPrice = parseInt(params.get("maxPrice") || "0") || 0;
+    const spMinPrice = parseInt(params.get("minPrice") || "0") || 0;
+    const spMaxPrice = parseInt(params.get("maxPrice") || "0") || 0;
     const bedroomsMin = parseInt(params.get("minRooms") || "0") || 0;
     const sizeMin = parseInt(params.get("minSize") || "0") || 0;
     const furnished = params.get("furnished") || undefined;
     const propertyTypes = params.get("propertyTypes")?.split(",").filter(Boolean) || undefined;
     const locationMode = params.get("locationMode") as any || undefined;
     const districts = params.get("districts")?.split(",").filter(Boolean) || undefined;
-    const radiusKm = parseInt(params.get("radiusKm") || "0") || undefined;
+    const spRadiusKm = parseInt(params.get("radiusKm") || "0") || undefined;
     const lat = parseFloat(params.get("lat") || "0") || undefined;
     const lng = parseFloat(params.get("lng") || "0") || undefined;
 
@@ -51,13 +59,13 @@ export default function OnboardingPassword() {
       country_code: "DE",
       latitude: lat,
       longitude: lng,
-      price_min: minPrice,
-      price_max: maxPrice,
+      price_min: spMinPrice,
+      price_max: spMaxPrice,
       bedrooms_min: bedroomsMin,
       size_min: sizeMin,
       location_mode: locationMode,
       districts: districts && districts.length > 0 ? districts : undefined,
-      radius_km: radiusKm,
+      radius_km: spRadiusKm,
       furnished: furnished && furnished !== "any" ? furnished : undefined,
       property_types: propertyTypes && propertyTypes.length > 0 ? propertyTypes : undefined,
     });
@@ -65,6 +73,7 @@ export default function OnboardingPassword() {
 
   async function handleCreateAccount() {
     if (!email || !password || password.length < 6) return;
+    if (w && !firstName.trim()) return;
     if (loading || submittingRef.current) return;
     submittingRef.current = true;
     setLoading(true);
@@ -144,15 +153,254 @@ export default function OnboardingPassword() {
   }
 
   function handleBack() {
-    const out = new URLSearchParams(searchString);
-    navigate(`/onboarding/email?${out.toString()}`);
+    if (w) {
+      const backParams = new URLSearchParams(searchString);
+      navigate(appendWebsiteParams(`/onboarding/filters?${backParams.toString()}`, searchString));
+    } else {
+      const out = new URLSearchParams(searchString);
+      navigate(`/onboarding/email?${out.toString()}`);
+    }
   }
 
-  const canSubmit = password.length >= 6 && email && !loading;
+  function handleClose() {
+    navigate("/");
+  }
+
+  const canSubmit = w
+    ? (firstName.trim() && isValidEmail(email) && password.length >= 6 && !loading)
+    : (password.length >= 6 && email && !loading);
+
+  const roomsLabel = minRooms === "0" ? "Studio+" : `${minRooms}+`;
+
+  if (w) {
+    return (
+      <div
+        className="min-h-[100dvh] flex flex-col"
+        style={{ background: "#ffffff" }}
+        data-testid="screen-onboarding-password"
+      >
+        <OBWebHeader step={3} onClose={handleClose} />
+
+        <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-[100px] overflow-y-auto">
+          <h2
+            className="text-[20px] font-bold tracking-[-0.01em] mb-1"
+            style={{ color: OBW.text }}
+            data-testid="text-password-title"
+          >
+            Maak je account aan
+          </h2>
+          <p className="text-[14px] mb-5" style={{ color: OBW.textSecondary }}>
+            Begin direct met zoeken naar je nieuwe woning.
+          </p>
+
+          <button
+            onClick={handleBack}
+            className="flex items-center gap-1.5 text-[13px] font-medium mb-4 transition-colors hover:opacity-80"
+            style={{ color: OBW.textSecondary }}
+            data-testid="button-password-back"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Terug naar filters
+          </button>
+
+          {city && (
+            <div
+              className="rounded-[12px] p-4 mb-4"
+              style={{ backgroundColor: OBW.surface, border: `1px solid ${OBW.cardBorder}` }}
+              data-testid="search-summary-card"
+            >
+              <p className="text-[12px] font-semibold uppercase tracking-wide mb-2" style={{ color: OBW.textMuted }}>
+                Jouw zoekopdracht
+              </p>
+              <div className="flex items-center gap-2 mb-1">
+                <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color: OBW.pink }} />
+                <span className="text-[14px] font-medium" style={{ color: OBW.text }}>
+                  {city}{radiusKm ? ` · ${radiusKm} km straal` : ""}
+                </span>
+              </div>
+              <p className="text-[13px] ml-5.5" style={{ color: OBW.textSecondary }}>
+                €{minPrice} – €{maxPrice} · {roomsLabel} kamers
+              </p>
+            </div>
+          )}
+
+          <div className="mb-5">
+            <OBInfoBox>
+              <div className="flex items-start gap-2">
+                <Clock className="w-4 h-4 shrink-0 mt-0.5" style={{ color: "#0284c7" }} />
+                <span>Er waren afgelopen week <strong>121 woningen</strong> beschikbaar in {city || "jouw regio"}. Maak een account aan om ze niet te missen!</span>
+              </div>
+            </OBInfoBox>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-[12px] font-medium mb-1.5 block" style={{ color: OBW.textSecondary }}>
+                  Voornaam
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[16px] h-[16px]" style={{ color: "#9ca3af" }} />
+                  <input
+                    type="text"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="Max"
+                    className="w-full h-[48px] pl-10 pr-3 rounded-[6px] text-[14px] font-medium ha-field"
+                    style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
+                    autoFocus
+                    data-testid="input-first-name"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-[12px] font-medium mb-1.5 block" style={{ color: OBW.textSecondary }}>
+                  Achternaam
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[16px] h-[16px]" style={{ color: "#9ca3af" }} />
+                  <input
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    placeholder="Müller"
+                    className="w-full h-[48px] pl-10 pr-3 rounded-[6px] text-[14px] font-medium ha-field"
+                    style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
+                    data-testid="input-last-name"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label className="text-[12px] font-medium mb-1.5 block" style={{ color: OBW.textSecondary }}>
+                E-mailadres
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[16px] h-[16px]" style={{ color: "#9ca3af" }} />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="jouw@email.de"
+                  className="w-full h-[48px] pl-10 pr-3 rounded-[6px] text-[14px] font-medium ha-field"
+                  style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
+                  data-testid="input-email"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-[12px] font-medium mb-1.5 block" style={{ color: OBW.textSecondary }}>
+                Wachtwoord
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[16px] h-[16px]" style={{ color: "#9ca3af" }} />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Minimaal 6 tekens"
+                  minLength={6}
+                  className="w-full h-[48px] pl-10 pr-12 rounded-[6px] text-[14px] font-medium ha-field"
+                  style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
+                  data-testid="input-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 transition-colors"
+                  style={{ color: "#9ca3af" }}
+                  data-testid="button-toggle-password"
+                >
+                  {showPassword ? <EyeOff className="w-[16px] h-[16px]" /> : <Eye className="w-[16px] h-[16px]" />}
+                </button>
+              </div>
+              {password.length > 0 && password.length < 6 && (
+                <p className="text-[12px] mt-1.5 text-red-500" data-testid="text-password-hint">
+                  Minimaal 6 tekens vereist
+                </p>
+              )}
+            </div>
+
+            {!showReferral ? (
+              <button
+                type="button"
+                onClick={() => setShowReferral(true)}
+                className="flex items-center gap-2 text-[13px] py-1 transition-colors"
+                style={{ color: OBW.textSecondary }}
+                data-testid="button-show-referral"
+              >
+                <Gift className="w-4 h-4" />
+                Empfehlungscode eingeben
+              </button>
+            ) : (
+              <div>
+                <label className="text-[12px] font-medium mb-1.5 block" style={{ color: OBW.textSecondary }}>
+                  Empfehlungscode
+                </label>
+                <div className="relative">
+                  <Gift className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[16px] h-[16px]" style={{ color: "#9ca3af" }} />
+                  <input
+                    type="text"
+                    placeholder="ABC123"
+                    value={referralCode}
+                    onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+                    className="w-full h-[48px] pl-10 pr-3 rounded-[6px] text-[14px] font-medium ha-field"
+                    style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
+                    autoCapitalize="characters"
+                    data-testid="input-referral-code"
+                  />
+                </div>
+                <p className="text-[12px] mt-1 ml-1" style={{ color: OBW.textMuted }}>
+                  Optioneel
+                </p>
+              </div>
+            )}
+          </div>
+        </main>
+
+        <OBStickyBar websiteMode={true}>
+          <button
+            onClick={handleCreateAccount}
+            disabled={!canSubmit}
+            className="w-full h-[52px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
+            style={{ background: OBW.pinkGradient, boxShadow: canSubmit ? OBW.pinkShadow : "none" }}
+            data-testid="button-create-account"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Account wordt aangemaakt...
+              </>
+            ) : (
+              "Account aanmaken"
+            )}
+          </button>
+
+          <p className="text-center text-[11px] mt-3 leading-relaxed" style={{ color: OBW.textMuted }}>
+            Met de registratie accepteer je onze Nutzungsbedingungen en Datenschutzrichtlinie.
+          </p>
+
+          <p className="text-center text-[13px] mt-2 pb-1" style={{ color: OBW.textSecondary }}>
+            Heb je al een account?{" "}
+            <button
+              onClick={() => navigate("/")}
+              className="font-medium hover:underline"
+              style={{ color: OB.pink }}
+              data-testid="link-login"
+            >
+              Inloggen
+            </button>
+          </p>
+        </OBStickyBar>
+      </div>
+    );
+  }
 
   return (
     <div
-      className={`min-h-[100dvh] flex flex-col ${w ? "" : "ob-dark"}`}
+      className="min-h-[100dvh] flex flex-col ob-dark"
       style={{ background: T.gradient }}
       data-testid="screen-onboarding-password"
     >
@@ -161,14 +409,13 @@ export default function OnboardingPassword() {
         style={{
           backgroundColor: T.headerBg,
           borderColor: T.headerBorder,
-          paddingTop: w ? "0px" : undefined,
         }}
       >
         <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
           <button
             onClick={handleBack}
             className="w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-transform"
-            style={{ backgroundColor: w ? OBW.backBtnBg : OB.backBtnBg }}
+            style={{ backgroundColor: OB.backBtnBg }}
             data-testid="button-password-back"
           >
             <ChevronLeft className="w-5 h-5" style={{ color: T.textSecondary }} />
@@ -205,8 +452,7 @@ export default function OnboardingPassword() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t("onboarding.password.placeholder") || "Mindestens 6 Zeichen"}
                 minLength={6}
-                className={`w-full h-[56px] pl-12 pr-12 rounded-[6px] text-[15px] font-medium ${w ? "ha-field" : "ob-input"}`}
-                style={w ? { backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text } : undefined}
+                className="w-full h-[56px] pl-12 pr-12 rounded-[6px] text-[15px] font-medium ob-input"
                 autoFocus
                 data-testid="input-password"
               />
@@ -221,7 +467,7 @@ export default function OnboardingPassword() {
               </button>
             </div>
             {password.length > 0 && password.length < 6 && (
-              <p className={`text-[12px] mt-1.5 ${w ? "text-red-500" : "text-red-400"}`} data-testid="text-password-hint">
+              <p className="text-[12px] mt-1.5 text-red-400" data-testid="text-password-hint">
                 {t("onboarding.password.tooShort") || "Mindestens 6 Zeichen erforderlich"}
               </p>
             )}
@@ -250,8 +496,7 @@ export default function OnboardingPassword() {
                   placeholder={t("referral.inputPlaceholder") || "ABC123"}
                   value={referralCode}
                   onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
-                  className={`w-full h-[56px] pl-12 pr-4 rounded-[6px] text-[15px] font-medium ${w ? "ha-field" : "ob-input"}`}
-                  style={w ? { backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text } : undefined}
+                  className="w-full h-[56px] pl-12 pr-4 rounded-[6px] text-[15px] font-medium ob-input"
                   autoCapitalize="characters"
                   data-testid="input-referral-code"
                 />
@@ -264,7 +509,7 @@ export default function OnboardingPassword() {
         </div>
       </main>
 
-      <OBStickyBar websiteMode={w}>
+      <OBStickyBar>
         <button
           onClick={handleCreateAccount}
           disabled={!canSubmit}

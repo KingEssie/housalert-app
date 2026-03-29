@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
 import { Search, MapPin, Loader2, X } from "lucide-react";
 import { defaultCities } from "../../../../config/market";
-import { OB, OBW, ONBOARDING_TOTAL_STEPS, OBFooter, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
+import { OB, OBW, ONBOARDING_TOTAL_STEPS, OBFooter, OBWebHeader, OBWebFooter, OBInfoBox, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
 
 interface NominatimResult {
   display_name: string;
@@ -13,6 +13,7 @@ interface NominatimResult {
 }
 
 const TOP_CITIES = defaultCities.slice(0, 5);
+const RADIUS_OPTIONS = [2, 5, 10, 15, 25, 50];
 
 function parseAutostartCity(searchString: string): { name: string; lat: number; lng: number } | null {
   const params = new URLSearchParams(searchString);
@@ -54,10 +55,15 @@ export default function OnboardingCity() {
   );
   const [nominatimResults, setNominatimResults] = useState<NominatimResult[]>([]);
   const [searching, setSearching] = useState(false);
+  const [radiusKm, setRadiusKm] = useState(() => {
+    const p = new URLSearchParams(searchString);
+    return parseInt(p.get("radiusKm") || "5") || 5;
+  });
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const didAutoSearchRef = useRef(false);
 
   useEffect(() => {
+    if (w) return;
     if (didAutostartRef.current) return;
     const autostartCity = parseAutostartCity(searchString);
     if (!autostartCity) return;
@@ -68,7 +74,7 @@ export default function OnboardingCity() {
       lng: String(autostartCity.lng),
     });
     navigate(appendWebsiteParams(`/onboarding/location?${step2Params.toString()}`, searchString));
-  }, [searchString, navigate]);
+  }, [searchString, navigate, w]);
 
   const presetMatches = search.trim().length > 0
     ? TOP_CITIES.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()))
@@ -132,7 +138,7 @@ export default function OnboardingCity() {
     setSelectedCity(selected);
     setSearch(city.name);
     setNominatimResults([]);
-    goToStep2(selected);
+    if (!w) goToStep2(selected);
   }
 
   function selectNominatimCity(result: NominatimResult) {
@@ -142,11 +148,22 @@ export default function OnboardingCity() {
     setSelectedCity(selected);
     setSearch(name);
     setNominatimResults([]);
-    goToStep2(selected);
+    if (!w) goToStep2(selected);
   }
 
   function handleNext() {
     if (!selectedCity) return;
+    if (w) {
+      const p = new URLSearchParams({
+        city: selectedCity.name,
+        lat: String(selectedCity.lat),
+        lng: String(selectedCity.lng),
+        locationMode: "radius",
+        radiusKm: String(radiusKm),
+      });
+      navigate(appendWebsiteParams(`/onboarding/filters?${p.toString()}`, searchString));
+      return;
+    }
     goToStep2(selectedCity);
   }
 
@@ -160,10 +177,192 @@ export default function OnboardingCity() {
 
   const showDropdown = !selectedCity;
 
+  if (w) {
+    return (
+      <div
+        className="min-h-[100dvh] flex flex-col"
+        style={{ background: "#ffffff" }}
+        data-testid="screen-onboarding-city"
+      >
+        <OBWebHeader step={1} onClose={handleClose} />
+
+        <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pb-[100px] overflow-y-auto">
+          <h2
+            className="text-[20px] font-bold tracking-[-0.01em]"
+            style={{ color: OBW.text, marginTop: "20px", marginBottom: "4px" }}
+            data-testid="text-city-title"
+          >
+            In welke stad zoek je?
+          </h2>
+          <p
+            className="text-[14px] mb-4"
+            style={{ color: OBW.textSecondary }}
+          >
+            Voer je gewenste stad in om te beginnen.
+          </p>
+
+          <div className="relative" style={{ marginBottom: "12px" }}>
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                if (selectedCity) setSelectedCity(null);
+              }}
+              placeholder="Zoek stad..."
+              className="w-full ha-field"
+              style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text, paddingRight: "48px" }}
+              autoFocus
+              data-testid="input-city-search"
+            />
+            {searching ? (
+              <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] animate-spin" style={{ color: OBW.textSecondary }} />
+            ) : (
+              <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: OBW.textSecondary }} />
+            )}
+          </div>
+
+          {showDropdown && (
+            <div data-testid="city-results">
+              {presetMatches.map((city, i) => (
+                <button
+                  key={city.name}
+                  onClick={() => selectPresetCity(city)}
+                  className="w-full flex items-center gap-3 text-left transition-colors hover:bg-gray-50"
+                  style={{
+                    padding: "12px 0",
+                    borderBottom: i < presetMatches.length - 1 ? `1px solid ${OBW.divider}` : "none",
+                  }}
+                  data-testid={`city-option-${city.name}`}
+                >
+                  <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: OBW.pink }} />
+                  <span className="text-[15px] font-medium" style={{ color: OBW.text }}>{city.name}</span>
+                </button>
+              ))}
+
+              {presetMatches.length === 0 && nominatimResults.length > 0 && nominatimResults.map((r, i) => {
+                const addr = r.address;
+                const name = addr?.city || addr?.town || addr?.village || r.display_name.split(",")[0];
+                return (
+                  <button
+                    key={i}
+                    onClick={() => selectNominatimCity(r)}
+                    className="w-full flex items-center gap-3 text-left transition-colors hover:bg-gray-50"
+                    style={{
+                      padding: "12px 0",
+                      borderBottom: `1px solid ${OBW.divider}`,
+                    }}
+                    data-testid={`city-nominatim-${i}`}
+                  >
+                    <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: OBW.pink }} />
+                    <div>
+                      <span className="text-[15px] font-medium block" style={{ color: OBW.text }}>{name}</span>
+                      {addr?.state && (
+                        <span className="text-[12px]" style={{ color: OBW.textSecondary }}>{addr.state}</span>
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
+
+              {presetMatches.length === 0 && nominatimResults.length === 0 && !searching && search.trim().length >= 3 && (
+                <p className="text-[13px] text-center py-4" style={{ color: OBW.textSecondary }}>
+                  Geen resultaten
+                </p>
+              )}
+            </div>
+          )}
+
+          {selectedCity && (
+            <>
+              <div
+                className="flex items-center gap-3 rounded-[12px] px-4"
+                style={{
+                  padding: "12px 16px",
+                  backgroundColor: OBW.surface,
+                  border: `1px solid ${OBW.cardBorder}`,
+                }}
+                data-testid="city-selected"
+              >
+                <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: OBW.pink }} />
+                <span className="text-[15px] font-semibold flex-1" style={{ color: OBW.text }}>{selectedCity.name}</span>
+                <button
+                  onClick={() => { setSelectedCity(null); setSearch(""); }}
+                  className="text-[13px] font-medium px-3 py-1.5 rounded-[6px] transition-colors hover:bg-gray-100"
+                  style={{ color: OBW.pink }}
+                  data-testid="button-city-change"
+                >
+                  Wijzig
+                </button>
+              </div>
+
+              <div style={{ marginTop: "24px" }}>
+                <p
+                  className="text-[15px] font-semibold mb-3"
+                  style={{ color: OBW.text }}
+                >
+                  Straal
+                </p>
+                <div className="flex flex-wrap gap-2" data-testid="radius-options">
+                  {RADIUS_OPTIONS.map((km) => {
+                    const active = radiusKm === km;
+                    return (
+                      <button
+                        key={km}
+                        onClick={() => setRadiusKm(km)}
+                        className="px-4 py-2.5 rounded-full text-[14px] font-medium transition-all"
+                        style={{
+                          border: active
+                            ? "1.5px solid rgba(233,30,99,0.6)"
+                            : `1px solid ${OBW.chipBorder}`,
+                          backgroundColor: active ? OBW.selectedBg : "transparent",
+                          color: active ? OBW.pink : OBW.text,
+                        }}
+                        data-testid={`radius-${km}`}
+                      >
+                        {km} km
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div
+                className="mt-4 rounded-[12px] overflow-hidden relative"
+                style={{ height: "200px", border: `1px solid ${OBW.mapBorder}` }}
+              >
+                <iframe
+                  title="Map"
+                  src={`https://www.openstreetmap.org/export/embed.html?bbox=${selectedCity.lng - 0.08},${selectedCity.lat - 0.05},${selectedCity.lng + 0.08},${selectedCity.lat + 0.05}&layer=mapnik&marker=${selectedCity.lat},${selectedCity.lng}`}
+                  className="absolute inset-0 w-full h-full"
+                  style={{ border: "none" }}
+                  data-testid="location-map"
+                />
+              </div>
+
+              <div className="mt-4">
+                <OBInfoBox>
+                  We doorzoeken alle huurwoningen in een straal van {radiusKm} km rondom {selectedCity.name}. Je ontvangt direct een bericht bij nieuwe woningen.
+                </OBInfoBox>
+              </div>
+            </>
+          )}
+        </main>
+
+        <OBWebFooter
+          onNext={handleNext}
+          nextLabel="Volgende"
+          nextDisabled={!selectedCity}
+          nextTestId="button-city-next"
+        />
+      </div>
+    );
+  }
+
   return (
     <div
-      className={`min-h-[100dvh] flex flex-col ${w ? "" : "ob-dark"}`}
-      style={{ background: T.gradient, borderRadius: w ? 0 : undefined }}
+      className="min-h-[100dvh] flex flex-col ob-dark"
+      style={{ background: T.gradient }}
       data-testid="screen-onboarding-city"
     >
       <header
@@ -171,16 +370,15 @@ export default function OnboardingCity() {
         style={{
           backgroundColor: T.headerBg,
           borderBottom: `1px solid ${T.headerBorder}`,
-          paddingTop: w ? "0px" : "max(8px, env(safe-area-inset-top))",
-          borderRadius: w ? 0 : undefined,
+          paddingTop: "max(8px, env(safe-area-inset-top))",
         }}
       >
         <div className="max-w-[480px] mx-auto px-5 h-[52px] flex items-center justify-between">
           <span
             className="text-[12px] font-bold px-2.5 py-1 rounded-[6px]"
             style={{
-              backgroundColor: w ? OBW.badgeBg : "rgba(56,189,248,0.15)",
-              color: w ? OBW.badgeColor : "#38bdf8",
+              backgroundColor: "rgba(56,189,248,0.15)",
+              color: "#38bdf8",
             }}
             data-testid="badge-step"
           >
@@ -192,10 +390,10 @@ export default function OnboardingCity() {
           <button
             onClick={handleClose}
             className="w-[36px] h-[36px] rounded-full flex items-center justify-center active:scale-95 transition-transform"
-            style={{ backgroundColor: w ? OBW.closeBtnBg : "rgba(255,255,255,0.08)" }}
+            style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
             data-testid="button-city-close"
           >
-            <X className="w-4 h-4" style={{ color: w ? OBW.closeBtnColor : "rgba(255,255,255,0.7)" }} />
+            <X className="w-4 h-4" style={{ color: "rgba(255,255,255,0.7)" }} />
           </button>
         </div>
       </header>
@@ -218,8 +416,7 @@ export default function OnboardingCity() {
               if (selectedCity) setSelectedCity(null);
             }}
             placeholder="Zoek stad..."
-            className={`w-full pr-12 ${w ? "ha-field" : "ha-field ha-field-dark"}`}
-            style={w ? { backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text } : undefined}
+            className="w-full pr-12 ha-field ha-field-dark"
             autoFocus
             data-testid="input-city-search"
           />
@@ -236,14 +433,14 @@ export default function OnboardingCity() {
               <button
                 key={city.name}
                 onClick={() => selectPresetCity(city)}
-                className={`w-full flex items-center gap-3 text-left transition-colors ${w ? "hover:bg-gray-50" : "hover:bg-white/5"}`}
+                className="w-full flex items-center gap-3 text-left transition-colors hover:bg-white/5"
                 style={{
                   padding: "14px 0",
                   borderBottom: i < presetMatches.length - 1 ? `1px solid ${T.divider}` : "none",
                 }}
                 data-testid={`city-option-${city.name}`}
               >
-                <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: w ? OBW.pink : "#38bdf8" }} />
+                <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: "#38bdf8" }} />
                 <span className="text-[16px] font-medium" style={{ color: T.text }}>{city.name}</span>
               </button>
             ))}
@@ -255,14 +452,14 @@ export default function OnboardingCity() {
                 <button
                   key={i}
                   onClick={() => selectNominatimCity(r)}
-                  className={`w-full flex items-center gap-3 text-left transition-colors ${w ? "hover:bg-gray-50" : "hover:bg-white/5"}`}
+                  className="w-full flex items-center gap-3 text-left transition-colors hover:bg-white/5"
                   style={{
                     padding: "14px 0",
                     borderBottom: `1px solid ${T.divider}`,
                   }}
                   data-testid={`city-nominatim-${i}`}
                 >
-                  <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: w ? OBW.pink : "#38bdf8" }} />
+                  <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: "#38bdf8" }} />
                   <div>
                     <span className="text-[16px] font-medium block" style={{ color: T.text }}>{name}</span>
                     {addr?.state && (
@@ -287,11 +484,11 @@ export default function OnboardingCity() {
             style={{ padding: "14px 0", borderBottom: `1px solid ${T.divider}` }}
             data-testid="city-selected"
           >
-            <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: w ? OBW.pink : "#38bdf8" }} />
+            <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: "#38bdf8" }} />
             <span className="text-[16px] font-medium flex-1" style={{ color: T.text }}>{selectedCity.name}</span>
             <button
               onClick={() => { setSelectedCity(null); setSearch(""); }}
-              className={`text-[13px] font-medium px-3 py-1.5 rounded-[6px] transition-colors ${w ? "hover:bg-gray-100" : "hover:bg-white/5"}`}
+              className="text-[13px] font-medium px-3 py-1.5 rounded-[6px] transition-colors hover:bg-white/5"
               style={{ color: T.textSecondary }}
               data-testid="button-city-change"
             >
@@ -308,7 +505,6 @@ export default function OnboardingCity() {
         nextDisabled={!selectedCity}
         backTestId="button-city-back"
         nextTestId="button-city-next"
-        websiteMode={w}
       />
     </div>
   );
