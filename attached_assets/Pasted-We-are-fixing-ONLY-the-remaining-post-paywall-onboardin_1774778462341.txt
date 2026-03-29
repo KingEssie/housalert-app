@@ -1,0 +1,269 @@
+We are fixing ONLY the remaining post-paywall onboarding design mismatches.
+
+IMPORTANT:
+- Do NOT change routing
+- Do NOT change onboarding order
+- Do NOT change business logic
+- Do NOT change state handling
+- Do NOT change translations except where explicitly needed for layout consistency
+- Do NOT redesign unrelated screens
+- ONLY fix the screens and style regressions listed below
+
+We are using the newly supplied Rentbird reference screenshots as the design source of truth.
+
+==================================================
+PART 1 — GLOBAL UI REGRESSION FIX
+==================================================
+
+CURRENT ISSUE:
+Across the app and onboarding flow, some fields and buttons have become too rounded again and some heights are inconsistent.
+
+REQUIRED FIX:
+Restore the globally agreed field/button standards everywhere these shared components are used.
+
+Use these rules:
+
+INPUTS / SELECTS / TEXTAREAS:
+- height: 56px minimum for standard single-line fields
+- border radius: 6px
+- white background on light screens
+- dark background only where intentionally required by design
+- border visible and clean
+- consistent internal horizontal padding
+- no oversized rounding
+- no 12px/16px rounded pill-like fields unless explicitly part of a segmented control
+
+PRIMARY BUTTONS:
+- height: 56px
+- border radius: 6px
+- same pink gradient style already established in HousAlert
+- consistent typography
+- no extra rounding beyond 6px
+
+SECONDARY / OUTLINE BUTTONS:
+- height: 56px
+- border radius: 6px
+- consistent border thickness
+- same standard across the app
+
+APPLY THIS especially to:
+- post-paywall onboarding forms
+- notification screens CTA
+- reactiebrief screens
+- zoekbuddy step
+- success screen
+- any shared input/button component used by these screens
+
+IMPORTANT:
+Do NOT change segmented controls or chips that intentionally have pill styling.
+Only fix actual fields/buttons.
+
+==================================================
+PART 2 — FIX REACTIEBRIEF FONT REGRESSION
+==================================================
+
+CURRENT ISSUE:
+The generated reactiebrief text is using the wrong font and no longer matches the app’s intended style.
+
+REQUIRED FIX:
+Restore the correct font for the reactiebrief preview / generated letter text.
+
+Rules:
+- use the same intended font family that was previously used for the letter preview
+- do NOT use a mismatched serif if that was introduced accidentally
+- keep typography readable and premium
+- keep line-height comfortable
+- preserve placeholder [[ADRES]] behavior
+- only fix typography, not logic/content
+
+Apply to:
+- LetterPreviewStep
+- any generated reactiebrief textarea/card/preview in the onboarding flow
+- any shared letter preview component if reused elsewhere
+
+At the end, confirm exactly which font family is now used.
+
+==================================================
+PART 3 — PUSH NOTIFICATION SCREEN MUST MATCH RENTBIRD REFERENCE
+==================================================
+
+CURRENT ISSUE:
+The current push notification screen still does not match the Rentbird design composition.
+
+Rebuild ONLY the active push notification screen to visually match the supplied reference much more closely.
+
+ACTIVE SCREEN:
+- PushTestStep in the post-paywall onboarding flow
+
+REQUIRED STRUCTURE:
+1. dark top bar
+2. light gray page background below
+3. large black heading at the top of the light area
+4. white rounded card
+5. gray support/info box inside the card
+6. large visual illustration area
+7. bottom pink CTA button
+
+TOP AREA:
+- keep HousAlert branding in top bar
+- keep trustpilot/right-side rating if currently used consistently in this flow
+- no progress dots
+
+MAIN HEADING:
+Use the active localized title already intended for this screen, but visually match the Rentbird hierarchy:
+- large
+- black
+- bold
+- left aligned
+
+WHITE CARD:
+- large white card
+- generous padding
+- rounded corners
+- subtle shadow if consistent with the rest of the light onboarding screens
+
+INFO BOX:
+- gray background
+- rounded corners
+- warning/support text inside
+- support link styled clearly
+- match Rentbird spacing
+
+ILLUSTRATION:
+- make it visually prominent
+- centered
+- should not leave the screen feeling empty
+- use the current HousAlert illustration assets if available
+- if there is a sample notification banner/toast, position it like the reference and make it feel intentional, not floating randomly
+
+CTA:
+- same standard button height/radius (56px, 6px)
+- pink gradient
+- proper spacing from the card
+
+The final feeling must be much closer to the provided Rentbird push notification reference.
+
+==================================================
+PART 4 — ZOEKBUDDY UITNODIGEN SCREEN MUST MATCH RENTBIRD REFERENCE
+==================================================
+
+CURRENT ISSUE:
+The current Zoekbuddy uitnodigen screen does not match the Rentbird reference layout closely enough.
+
+ACTIVE SCREEN:
+- SearchBuddyStep
+
+REQUIRED LAYOUT:
+- dark top bar
+- light gray body below (if reference uses light body)
+- large black heading like the reference
+- white content card
+- inside the card: the “can / cannot” list with clear spacing and correct icon colors
+- bottom action row must match the reference layout much more closely
+
+CONTENT STRUCTURE:
+- title at top of page
+- large white card with:
+  - black subheading
+  - list of what the buddy can do (green check icons)
+  - list of what the buddy cannot do (red x icons)
+- spacing must match reference closely
+- typography must be darker/stronger on light areas, not washed out
+
+BOTTOM ACTIONS:
+Match the Rentbird structure:
+- left action = copy link
+- right action = invite
+- “Misschien later” below
+- correct widths, spacing, and alignment
+
+If there is currently an empty white input-like box where it should not be, remove or correct it to match the reference.
+
+Buttons:
+- follow the global 56px / 6px standards unless the reference clearly requires a different shape for that specific action row
+
+==================================================
+PART 5 — SUCCESS SCREEN (“KLAAR VOOR GEBRUIK”) MUST MATCH RENTBIRD REFERENCE
+==================================================
+
+CURRENT ISSUE:
+The current success screen differs too much from the supplied Rentbird reference.
+
+ACTIVE SCREEN:
+- SuccessStep
+
+REQUIRED LAYOUT:
+Rebuild to match the Rentbird reference more closely:
+
+1. dark purple top bar with branding/rating
+2. light gray body below
+3. large bold black heading
+4. large white card
+5. light blue speech bubble inside the card
+6. large person image / supportive human element if reference uses it
+7. supporting text inside the bubble
+8. bottom CTA matching the reference layout
+
+IMPORTANT:
+Do NOT leave the current generic icon + checklist-card version if the reference is the speech-bubble human version.
+
+Use the supplied reference as the source of truth:
+- hierarchy
+- spacing
+- composition
+- visual tone
+
+Keep HousAlert branding, but visually it should feel very close to the Rentbird final onboarding success screen.
+
+==================================================
+PART 6 — CONSISTENCY RULES
+==================================================
+
+Across the updated screens:
+- same top bar height
+- same light background on light sections
+- same title spacing
+- same white card styling
+- same button heights and radius
+- same font system
+- no accidental regressions back to extra-rounded controls
+- no old inactive UI patterns reintroduced
+
+==================================================
+PART 7 — DO NOT TOUCH
+==================================================
+
+Do NOT change:
+- flow order
+- delete-account logic
+- paywall logic
+- search-profile flow
+- route mapping
+- state machine order
+
+Only fix the UI of:
+- PushTestStep
+- LetterPreviewStep font regression
+- SearchBuddyStep
+- SuccessStep
+- shared field/button radius+height regression where applicable
+
+==================================================
+ACCEPTANCE CRITERIA
+==================================================
+
+Only mark complete if ALL are true:
+
+- push notification screen now matches the Rentbird reference much more closely
+- generated reactiebrief font is restored and consistent
+- zoekbuddy uitnodigen screen visually matches the reference much more closely
+- success screen matches the supplied Rentbird-style reference much more closely
+- fields/buttons no longer have accidental oversized rounding
+- standard fields/buttons use 56px height and 6px radius again
+- no routing or logic changed
+
+At the end, report:
+1. exact files changed
+2. which shared input/button styles were corrected
+3. which font family is used now for the reactiebrief preview
+4. whether the current success screen still uses the old card/checklist layout or was fully replaced

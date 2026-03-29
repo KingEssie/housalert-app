@@ -1,0 +1,102 @@
+We are updating the COO image (Elise) in the WelcomeStep to ensure it displays correctly and professionally.
+
+IMPORTANT:
+- Do NOT change layout structure
+- Do NOT change flow or logic
+- ONLY fix the image rendering and styling
+
+==================================================
+GOAL
+==================================================
+
+The image must:
+- be perfectly centered
+- show Elise’s full face clearly
+- not be cropped awkwardly (no cut-off head/chin)
+- feel like a professional 1:1 profile photo
+- match Rentbird-style onboarding quality
+
+==================================================
+IMAGE REQUIREMENTS
+==================================================
+
+1. IMAGE CONTAINER
+- width: 96px
+- height: 96px
+- border-radius: 50% (perfect circle)
+- overflow: hidden
+
+2. IMAGE STYLE
+- object-fit: cover
+- object-position: center center
+- ensure face is centered (NOT top-aligned like portrait crops)
+
+3. CRITICAL FIX
+If the current image still crops incorrectly:
+→ wrap image in container with:
+   display: flex
+   align-items: center
+   justify-content: center
+
+→ OR explicitly force:
+   object-position: 50% 35%
+
+(This ensures the face—not chest—is centered)
+
+4. IMAGE QUALITY
+- high resolution
+- no blur
+- no zoom distortion
+- no stretching
+
+==================================================
+EXACT IMPLEMENTATION EXAMPLE
+==================================================
+
+<img
+  src="/images/elise.jpg"
+  alt="Elise"
+  className="w-24 h-24 rounded-full object-cover object-center"
+/>
+
+If needed adjust:
+
+object-position: 50% 40%;
+
+==================================================
+SPACING (VERY IMPORTANT)
+==================================================
+
+- space between speech bubble and image: 16px
+- image + name row alignment:
+   → horizontal layout
+   → image left, text right
+   → gap: 12px
+
+- name:
+   font-weight: 600
+   font-size: ~16px
+
+- title (COO):
+   smaller
+   muted color
+   margin-top: 2px
+
+==================================================
+DO NOT
+==================================================
+
+- do NOT use portrait full image
+- do NOT stretch image
+- do NOT use object-fit: contain
+- do NOT leave face off-center
+- do NOT use small 56px avatar anymore
+
+==================================================
+ACCEPTANCE CRITERIA
+==================================================
+
+- Elise’s face is fully visible (no cropping issues)
+- image looks like a clean profile picture (1:1 feel)
+- perfectly centered in circle
+- same visual quality as Rentbird onboarding

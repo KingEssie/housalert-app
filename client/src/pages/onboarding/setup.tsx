@@ -11,12 +11,11 @@ import { generateOnboardingLetter, type OnboardingLetterData } from "@/lib/appli
 import {
   ChevronLeft, Loader2, Check, ArrowRight,
   Euro, Bell, AlertTriangle, X, CheckCircle2, Send,
-  BellRing, Zap, Star,
+  BellRing,
 } from "lucide-react";
 import elisePhoto from "@assets/4261FC63-DAC9-464F-B16D-9E62B0AB2B73_1774776772340.png";
 
 const BRAND = "rgb(var(--ha-primary))";
-const BRAND_HOVER = "rgb(var(--ha-primary-hover))";
 const TEXT_PRIMARY = "rgb(var(--ha-text))";
 const TEXT_SECONDARY = "rgb(var(--ha-text-secondary))";
 
@@ -340,7 +339,7 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
         </PrimaryBtn>
         <button
           onClick={onContinue}
-          className="w-full h-[52px] rounded-[12px] text-[15px] font-semibold transition-all active:scale-[0.97]"
+          className="w-full h-[56px] rounded-[6px] text-[15px] font-semibold transition-all active:scale-[0.97]"
           style={{
             border: "1.5px solid rgba(255,255,255,0.2)",
             backgroundColor: "transparent",
@@ -352,7 +351,7 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
         </button>
       </div>
 
-      <div className="mt-4 rounded-[12px] p-4" style={{ backgroundColor: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
+      <div className="mt-4 rounded-[6px] p-4" style={{ backgroundColor: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
         <p className="text-[14px] font-bold mb-1" style={{ color: "#ffffff" }}>
           {t("onboardingFlow.limitedAccess.infoTitle")}
         </p>
@@ -416,7 +415,7 @@ function LightPrimaryBtn({ onClick, children, loading, disabled, testId }: {
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className="w-full h-[56px] rounded-[12px] text-[16px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
+      className="w-full h-[56px] rounded-[6px] text-[16px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
       style={{ background: "linear-gradient(135deg, #e91e63 0%, #ec407a 100%)", boxShadow: "0 4px 15px rgba(233,30,99,0.25)" }}
       data-testid={testId}
     >
@@ -435,8 +434,8 @@ function WelcomeStep({ onNext, t }: {
         {t("onboardingFlow.welcome.title")}
       </h1>
 
-      <div className="rounded-[20px] bg-white p-5" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-        <div className="relative rounded-[16px] px-5 py-5 mb-5" style={{ backgroundColor: "#E8F4FD" }}>
+      <div className="rounded-[6px] bg-white p-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+        <div className="relative rounded-[6px] px-5 py-5 mb-5" style={{ backgroundColor: "#E8F4FD" }}>
           <p className="text-[17px] font-bold text-[#111] mb-3">Welkom!</p>
           <p className="text-[15px] leading-[1.65] text-[#333]" style={{ whiteSpace: "pre-line" }}>
             {t("onboardingFlow.welcome.speechBody")}
@@ -480,72 +479,68 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
         {t("onboardingFlow.pushTest.title")}
       </h1>
 
-      {pushState === "granted" && (
-        <div className="rounded-[12px] px-5 py-4 mb-5 flex items-start gap-3" style={{ backgroundColor: "#F0FDF4", border: "1px solid #BBF7D0" }}>
-          <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-          <div>
-            <p className="text-[14px] font-semibold text-green-700 mb-0.5">{t("onboardingFlow.pushTest.infoTitle")}</p>
-            <p className="text-[13px] text-green-600 leading-snug">{t("onboardingFlow.pushTest.infoText")}</p>
+      <div className="rounded-[6px] bg-white p-5" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+        {pushState === "granted" && (
+          <div className="rounded-[6px] px-4 py-3 mb-5 flex items-start gap-3" style={{ backgroundColor: "#F0FDF4", border: "1px solid #BBF7D0" }}>
+            <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-[14px] font-semibold text-green-700 mb-0.5">{t("onboardingFlow.pushTest.infoTitle")}</p>
+              <p className="text-[13px] text-green-600 leading-snug">{t("onboardingFlow.pushTest.infoText")}</p>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {pushState === "denied" && (
-        <div className="rounded-[12px] px-5 py-4 mb-5 flex items-start gap-3" style={{ backgroundColor: "#FEF9E7", border: "1px solid #FDE68A" }}>
-          <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-          <div>
-            <p className="text-[14px] font-medium text-[#111] mb-1">
-              {t("onboardingFlow.pushTest.denied")}
-            </p>
-            <p className="text-[13px] text-[#666] leading-snug">
-              {t("onboardingFlow.pushTest.deniedHint")}
-            </p>
-          </div>
-        </div>
-      )}
-
-      <div className="flex-1 flex flex-col items-center justify-center py-6">
-        <div className="relative w-[200px] h-[160px] flex items-center justify-center mb-6">
-          <div className="absolute inset-0 rounded-[16px] opacity-80" style={{ background: "linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)" }}>
-            <div className="absolute top-3 left-3 flex items-center gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: BRAND }} />
-              <div className="h-2 w-12 rounded-full bg-white/20" />
-              <div className="h-2 w-8 rounded-full bg-white/10" />
-            </div>
-            <div className="absolute top-9 left-3 right-3 space-y-2">
-              <div className="h-2.5 w-full rounded-full" style={{ backgroundColor: "rgba(139,92,246,0.5)" }} />
-              <div className="h-2.5 w-3/4 rounded-full" style={{ backgroundColor: "rgba(139,92,246,0.3)" }} />
-              <div className="h-2.5 w-5/6 rounded-full" style={{ backgroundColor: "rgba(139,92,246,0.4)" }} />
+        {pushState === "denied" && (
+          <div className="rounded-[6px] px-4 py-3 mb-5 flex items-start gap-3" style={{ backgroundColor: "#FEF9E7", border: "1px solid #FDE68A" }}>
+            <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-[14px] font-medium text-[#111] mb-1">{t("onboardingFlow.pushTest.denied")}</p>
+              <p className="text-[13px] text-[#666] leading-snug">{t("onboardingFlow.pushTest.deniedHint")}</p>
             </div>
           </div>
-          <div className="relative z-10 mt-4">
-            <div className="w-[64px] h-[64px] rounded-full flex items-center justify-center" style={{ backgroundColor: pushState === "granted" ? "#22c55e" : BRAND }}>
-              {pushState === "granted" ? (
-                <BellRing className="w-8 h-8 text-white" />
-              ) : pushState === "requesting" ? (
-                <Loader2 className="w-8 h-8 text-white animate-spin" />
-              ) : (
-                <Bell className="w-8 h-8 text-white" />
-              )}
-            </div>
-            {pushState !== "requesting" && (
-              <>
-                <div className="absolute -top-1 -right-3 text-pink-500 text-lg">✦</div>
-                <div className="absolute -bottom-1 -left-3 text-pink-400 text-sm">✦</div>
-                <div className="absolute top-1/2 -right-5 text-pink-500 text-xs">✦</div>
-              </>
-            )}
-          </div>
-        </div>
+        )}
 
         {pushState !== "granted" && pushState !== "denied" && (
-          <p className="text-[14px] text-[#666] text-center max-w-[300px] leading-relaxed">
-            {t("onboardingFlow.pushTest.idleHint")}
-          </p>
+          <div className="rounded-[6px] px-4 py-3 mb-5" style={{ backgroundColor: "#F3F4F6" }}>
+            <p className="text-[13px] text-[#666] leading-snug">
+              {t("onboardingFlow.pushTest.idleHint")}
+            </p>
+          </div>
         )}
+
+        <div className="flex items-center justify-center py-8">
+          <div className="relative">
+            <div className="w-[240px] h-[140px] rounded-[12px] overflow-hidden" style={{ background: "linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)" }}>
+              <div className="absolute top-3 left-3 flex items-center gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: BRAND }} />
+                <div className="h-2 w-14 rounded-full bg-white/20" />
+              </div>
+              <div className="absolute top-9 left-3 right-3 space-y-2">
+                <div className="h-2 w-full rounded-full bg-white/10" />
+                <div className="h-2 w-3/4 rounded-full bg-white/10" />
+                <div className="h-2 w-5/6 rounded-full bg-white/10" />
+              </div>
+            </div>
+            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[200px] rounded-[8px] bg-white px-3 py-2.5 flex items-center gap-2.5" style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.15)" }}>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: pushState === "granted" ? "#22c55e" : BRAND }}>
+                {pushState === "granted" ? (
+                  <BellRing className="w-4 h-4 text-white" />
+                ) : pushState === "requesting" ? (
+                  <Loader2 className="w-4 h-4 text-white animate-spin" />
+                ) : (
+                  <Bell className="w-4 h-4 text-white" />
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] font-bold text-[#111] truncate">HousAlert</p>
+                <p className="text-[10px] text-[#999] truncate">{t("onboardingFlow.pushTest.sampleNotification")}</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="mt-auto space-y-3 pt-6">
+      <div className="mt-auto space-y-3 pt-8">
         {pushState === "idle" ? (
           <>
             <LightPrimaryBtn onClick={onEnable} testId="button-push-enable">
@@ -553,7 +548,7 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
             </LightPrimaryBtn>
             <button
               onClick={onNext}
-              className="w-full h-[48px] text-[14px] font-semibold transition-all active:scale-[0.97]"
+              className="w-full h-[56px] text-[14px] font-semibold transition-all active:scale-[0.97]"
               style={{ color: "#6B7280" }}
               data-testid="button-push-skip"
             >
@@ -577,7 +572,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
   onSkip: () => void;
   t: (k: string, p?: Record<string, any>) => string;
 }) {
-  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[12px] border border-[#E5E7EB] bg-white text-[15px] text-[#111] placeholder:text-[#999] focus:outline-none focus:ring-2 focus:ring-pink-300/20";
+  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] text-[#111] placeholder:text-[#999] focus:outline-none focus:ring-2 focus:ring-pink-300/20";
   const [showForm, setShowForm] = useState(false);
 
   const genderOptions = [
@@ -594,8 +589,8 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
           {t("onboardingFlow.letterPersonal.title")}
         </h1>
 
-        <div className="rounded-[20px] bg-white p-5" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-          <div className="relative rounded-[16px] px-5 py-5 mb-5" style={{ backgroundColor: "#E8F4FD" }}>
+        <div className="rounded-[6px] bg-white p-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+          <div className="relative rounded-[6px] px-5 py-5 mb-5" style={{ backgroundColor: "#E8F4FD" }}>
             <p className="text-[17px] font-bold text-[#111] mb-3">
               {t("onboardingFlow.letterPersonal.speechTitle")}
             </p>
@@ -625,7 +620,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
           </LightPrimaryBtn>
           <button
             onClick={onSkip}
-            className="w-full h-[48px] text-[14px] font-semibold transition-all active:scale-[0.97]"
+            className="w-full h-[56px] text-[14px] font-semibold transition-all active:scale-[0.97]"
             style={{ color: "#6B7280" }}
             data-testid="button-personal-skip"
           >
@@ -642,7 +637,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
         {t("onboardingFlow.letterPersonal.formTitle")}
       </h1>
 
-      <div className="rounded-[20px] bg-white p-5 space-y-5" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+      <div className="rounded-[6px] bg-white p-5 space-y-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         <div>
           <label className="text-[14px] font-bold text-[#111] mb-2 block">
             {t("onboardingFlow.letterPersonal.phone")}
@@ -759,7 +754,7 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
     { value: "other", label: t("onboardingFlow.letterLiving.moveOptions.other") },
   ];
 
-  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[12px] border border-[#E5E7EB] bg-white text-[15px] text-[#111] placeholder:text-[#999] focus:outline-none focus:ring-2 focus:ring-pink-300/20";
+  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] text-[#111] placeholder:text-[#999] focus:outline-none focus:ring-2 focus:ring-pink-300/20";
 
   return (
     <LightShell step="letter-living" showBack onBack={onBack}>
@@ -767,7 +762,7 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
         {t("onboardingFlow.letterLiving.title")}
       </h1>
 
-      <div className="rounded-[20px] bg-white p-5 space-y-5" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+      <div className="rounded-[6px] bg-white p-5 space-y-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         <div>
           <label className="text-[14px] font-bold text-[#111] mb-2 block">
             {t("onboardingFlow.letterLiving.livingWith")}
@@ -873,19 +868,18 @@ function LetterPreviewStep({ letterText, onLetterChange, onNext, onBack, t }: {
         {t("onboardingFlow.letterPreview.title")}
       </h1>
 
-      <div className="rounded-[12px] px-4 py-3 mb-5 flex items-start gap-2.5" style={{ backgroundColor: "#FEF9E7", border: "1px solid #FDE68A" }}>
+      <div className="rounded-[6px] px-4 py-3 mb-5 flex items-start gap-2.5" style={{ backgroundColor: "#FEF9E7", border: "1px solid #FDE68A" }}>
         <span className="text-[16px] mt-0.5">💡</span>
         <p className="text-[13px] leading-snug text-[#333]">
           {t("onboardingFlow.letterPreview.addressNote")}
         </p>
       </div>
 
-      <div className="rounded-[20px] bg-white p-5 flex-1 flex flex-col" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+      <div className="rounded-[6px] bg-white p-5 flex-1 flex flex-col border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         <textarea
           value={letterText}
           onChange={(e) => onLetterChange(e.target.value)}
           className="w-full flex-1 min-h-[280px] p-0 bg-transparent text-[14px] leading-[1.7] text-[#111] placeholder:text-[#999] focus:outline-none resize-none"
-          style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
           data-testid="textarea-letter"
         />
       </div>
@@ -909,90 +903,96 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
   t: (k: string, p?: Record<string, any>) => string;
 }) {
   return (
-    <>
-      <h1 className="text-[24px] font-bold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-buddy-title">
+    <LightShell step="search-buddy">
+      <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-5 text-[#111]" data-testid="text-buddy-title">
         {t("onboardingFlow.searchBuddy.title")}
       </h1>
-      <p className="text-[14px] mb-6" style={{ color: TEXT_SECONDARY }}>
-        {t("onboardingFlow.searchBuddy.subtitle")}
-      </p>
 
-      <div className="bg-ha-card rounded-[6px] border border-ha-card-border p-5 mb-6">
-        <div className="pb-4 mb-4 border-b border-ha-card-border">
-          <p className="text-[13px] font-semibold mb-2.5" style={{ color: "rgb(34,197,94)" }}>
-            {t("onboardingFlow.searchBuddy.allowed")}
-          </p>
-          <div className="space-y-2.5">
-            {[
-              t("onboardingFlow.searchBuddy.canAlerts"),
-              t("onboardingFlow.searchBuddy.canFavorite"),
-              t("onboardingFlow.searchBuddy.canApply"),
-            ].map((text, i) => (
-              <div key={i} className="flex items-center gap-2.5">
-                <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                <span className="text-[13px]" style={{ color: TEXT_PRIMARY }}>{text}</span>
-              </div>
-            ))}
-          </div>
+      <div className="rounded-[6px] bg-white p-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+        <p className="text-[16px] font-bold text-[#111] mb-1">{t("onboardingFlow.searchBuddy.subtitle")}</p>
+        <p className="text-[13px] font-semibold text-[#111] mb-3">{t("onboardingFlow.searchBuddy.allowed")}</p>
+        <div className="space-y-3 mb-5">
+          {[
+            t("onboardingFlow.searchBuddy.canAlerts"),
+            t("onboardingFlow.searchBuddy.canFavorite"),
+            t("onboardingFlow.searchBuddy.canApply"),
+          ].map((text, i) => (
+            <div key={i} className="flex items-center gap-2.5">
+              <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+              <span className="text-[14px] text-[#111]">{text}</span>
+            </div>
+          ))}
         </div>
-        <div>
-          <p className="text-[13px] font-semibold mb-2.5 text-red-500">
-            {t("onboardingFlow.searchBuddy.notAllowed")}
-          </p>
-          <div className="space-y-2.5">
-            {[
-              t("onboardingFlow.searchBuddy.cannotProfiles"),
-              t("onboardingFlow.searchBuddy.cannotLetter"),
-            ].map((text, i) => (
-              <div key={i} className="flex items-center gap-2.5">
-                <X className="w-4 h-4 text-red-500 flex-shrink-0" />
-                <span className="text-[13px]" style={{ color: TEXT_PRIMARY }}>{text}</span>
-              </div>
-            ))}
-          </div>
+        <div className="space-y-3">
+          {[
+            t("onboardingFlow.searchBuddy.cannotProfiles"),
+            t("onboardingFlow.searchBuddy.cannotLetter"),
+          ].map((text, i) => (
+            <div key={i} className="flex items-center gap-2.5">
+              <X className="w-5 h-5 text-red-500 flex-shrink-0" />
+              <span className="text-[14px] text-[#111]">{text}</span>
+            </div>
+          ))}
         </div>
       </div>
 
-      {invited ? (
-        <div className="rounded-[6px] px-4 py-3.5 mb-6 flex items-center gap-2.5" style={{ backgroundColor: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.25)" }}>
-          <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
-          <span className="text-[14px] font-medium text-green-400">{t("onboardingFlow.searchBuddy.invited")}</span>
+      {invited && (
+        <div className="rounded-[6px] px-4 py-3.5 mt-4 flex items-center gap-2.5" style={{ backgroundColor: "#F0FDF4", border: "1px solid #BBF7D0" }}>
+          <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
+          <span className="text-[14px] font-medium text-green-700">{t("onboardingFlow.searchBuddy.invited")}</span>
         </div>
-      ) : (
-        <div className="flex gap-2 mb-6">
+      )}
+
+      {!invited && (
+        <div className="mt-5">
           <input
             type="email"
             inputMode="email"
             value={buddyEmail}
             onChange={(e) => onBuddyEmailChange(e.target.value)}
             placeholder={t("onboardingFlow.searchBuddy.emailPlaceholder")}
-            className="flex-1 h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[14px] text-[#111] placeholder:text-[#999] focus:outline-none focus:ring-2 focus:ring-pink-300/20"
+            className="w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[14px] text-[#111] placeholder:text-[#999] focus:outline-none focus:ring-2 focus:ring-pink-300/20"
             data-testid="input-buddy-email"
           />
-          <button
-            onClick={onInvite}
-            disabled={!buddyEmail.includes("@") || loading}
-            className="h-[56px] px-5 rounded-[6px] text-[14px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center gap-1.5"
-            style={{ backgroundColor: BRAND }}
-            data-testid="button-buddy-invite"
-          >
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Send className="w-4 h-4 flex-shrink-0" />{t("onboardingFlow.searchBuddy.invite")}</>}
-          </button>
         </div>
       )}
 
-      <div className="mt-auto space-y-3">
-        {invited ? (
-          <PrimaryBtn onClick={onSkip} testId="button-buddy-continue">
-            {t("onboardingFlow.next")}
-          </PrimaryBtn>
-        ) : (
-          <SecondaryBtn onClick={onSkip} testId="button-buddy-skip">
-            {t("onboardingFlow.searchBuddy.maybeLater")}
-          </SecondaryBtn>
+      <div className="mt-auto pt-6 space-y-3">
+        {!invited && (
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                if (navigator.clipboard) {
+                  navigator.clipboard.writeText(window.location.origin + "/invite");
+                }
+              }}
+              className="flex-1 h-[56px] rounded-[6px] text-[14px] font-semibold transition-all active:scale-[0.97] flex items-center justify-center gap-2 border-2"
+              style={{ borderColor: BRAND, color: BRAND }}
+              data-testid="button-buddy-copy"
+            >
+              {t("onboardingFlow.searchBuddy.copyLink")} 📋
+            </button>
+            <button
+              onClick={onInvite}
+              disabled={!buddyEmail.includes("@") || loading}
+              className="flex-1 h-[56px] rounded-[6px] text-[14px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
+              style={{ background: "linear-gradient(135deg, #e91e63 0%, #ec407a 100%)" }}
+              data-testid="button-buddy-invite"
+            >
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{t("onboardingFlow.searchBuddy.invite")} <Send className="w-4 h-4" /></>}
+            </button>
+          </div>
         )}
+        <button
+          onClick={onSkip}
+          className="w-full h-[56px] text-[14px] font-semibold transition-all active:scale-[0.97]"
+          style={{ color: BRAND }}
+          data-testid="button-buddy-skip"
+        >
+          {t("onboardingFlow.searchBuddy.maybeLater")}
+        </button>
       </div>
-    </>
+    </LightShell>
   );
 }
 
@@ -1000,46 +1000,43 @@ function SuccessStep({ onFinish, t }: {
   onFinish: () => void;
   t: (k: string, p?: Record<string, any>) => string;
 }) {
-  const points = [
-    { icon: Zap, text: t("onboardingFlow.success.point1") },
-    { icon: ArrowRight, text: t("onboardingFlow.success.point2") },
-    { icon: Star, text: t("onboardingFlow.success.point3") },
-  ];
-
   return (
-    <>
-      <div className="flex-1 flex flex-col items-center justify-center text-center">
-        <div className="w-20 h-20 rounded-full flex items-center justify-center mb-6 animate-scale-in" style={{ backgroundColor: "rgba(34,197,94,0.12)" }}>
-          <CheckCircle2 className="w-10 h-10 text-green-500" />
-        </div>
-        <h1 className="text-[28px] font-extrabold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-success-title">
-          {t("onboardingFlow.success.title")}
-        </h1>
-        <p className="text-[15px] mb-8 max-w-[320px] leading-relaxed" style={{ color: TEXT_SECONDARY }}>
-          {t("onboardingFlow.success.subtitle")}
-        </p>
+    <LightShell step="success">
+      <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-5 text-[#111]" data-testid="text-success-title">
+        {t("onboardingFlow.success.title")}
+      </h1>
 
-        <div className="w-full space-y-3">
-          {points.map((p, i) => (
-            <div key={i} className="flex items-center gap-4 bg-ha-card rounded-[6px] border border-ha-card-border px-5 py-4">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(34,197,94,0.1)" }}>
-                <p.icon className="w-5 h-5 text-green-500" />
-              </div>
-              <span className="text-[14px] font-medium text-left" style={{ color: TEXT_PRIMARY }}>{p.text}</span>
-            </div>
-          ))}
+      <div className="rounded-[6px] bg-white p-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+        <div className="relative rounded-[6px] px-5 py-5 mb-5" style={{ backgroundColor: "#E8F4FD" }}>
+          <p className="text-[16px] font-bold text-[#111] mb-3">
+            {t("onboardingFlow.success.speechTitle")}
+          </p>
+          <p className="text-[14px] leading-[1.65] text-[#333]" style={{ whiteSpace: "pre-line" }}>
+            {t("onboardingFlow.success.speechBody")}
+          </p>
+          <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45" style={{ backgroundColor: "#E8F4FD" }} />
+        </div>
+
+        <div className="flex items-center gap-4 pt-1">
+          <img
+            src={elisePhoto}
+            alt="Elise — COO HousAlert"
+            className="w-[100px] h-[100px] rounded-full object-cover flex-shrink-0"
+            style={{ boxShadow: "0 10px 30px rgba(0,0,0,0.15)" }}
+          />
+          <div>
+            <p className="text-[20px] font-semibold text-[#111]" style={{ fontStyle: "italic" }}>Elise</p>
+            <p className="text-[14px] text-[#6B7280]" style={{ fontStyle: "italic" }}>COO</p>
+          </div>
         </div>
       </div>
 
-      <div className="mt-auto pt-6">
-        <PrimaryBtn onClick={onFinish} testId="button-success-finish">
-          <span className="inline-flex items-center gap-2">
-            {t("onboardingFlow.success.cta")}
-            <ArrowRight className="w-5 h-5" />
-          </span>
-        </PrimaryBtn>
+      <div className="mt-auto pt-8">
+        <LightPrimaryBtn onClick={onFinish} testId="button-success-finish">
+          {t("onboardingFlow.success.cta")}
+        </LightPrimaryBtn>
       </div>
-    </>
+    </LightShell>
   );
 }
 
@@ -1408,6 +1405,23 @@ export default function OnboardingSetup() {
     );
   }
 
+  if (step === "search-buddy") {
+    return (
+      <SearchBuddyStep
+        buddyEmail={buddyEmail}
+        onBuddyEmailChange={setBuddyEmail}
+        onInvite={handleBuddyInvite}
+        onSkip={handleBuddySkip}
+        invited={buddyInvited}
+        loading={buddyLoading}
+        t={t}
+      />
+    );
+  }
+  if (step === "success") {
+    return <SuccessStep onFinish={handleSuccessFinish} t={t} />;
+  }
+
   return (
     <SetupShell step={step} onBack={handleBack} showBack={showBack}>
       {step === "paywall" && (
@@ -1415,20 +1429,6 @@ export default function OnboardingSetup() {
       )}
       {step === "limited-access" && (
         <LimitedAccessStep onGoBack={handleLimitedGoBack} onContinue={handleLimitedContinue} t={t} />
-      )}
-      {step === "search-buddy" && (
-        <SearchBuddyStep
-          buddyEmail={buddyEmail}
-          onBuddyEmailChange={setBuddyEmail}
-          onInvite={handleBuddyInvite}
-          onSkip={handleBuddySkip}
-          invited={buddyInvited}
-          loading={buddyLoading}
-          t={t}
-        />
-      )}
-      {step === "success" && (
-        <SuccessStep onFinish={handleSuccessFinish} t={t} />
       )}
     </SetupShell>
   );
