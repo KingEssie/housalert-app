@@ -14,10 +14,23 @@ interface NominatimResult {
 
 const TOP_CITIES = defaultCities.slice(0, 5);
 
+function parseAutostartCity(searchString: string): { name: string; lat: number; lng: number } | null {
+  const params = new URLSearchParams(searchString);
+  const city = params.get("city")?.trim();
+  const lat = parseFloat(params.get("lat") || "");
+  const lng = parseFloat(params.get("lng") || "");
+  const autostart = params.get("autostart");
+  if (!city || isNaN(lat) || isNaN(lng) || autostart !== "1") return null;
+  return { name: city, lat, lng };
+}
+
 function getInitialCityFromQuery(searchString: string): { name: string; lat: number; lng: number } | null {
   const params = new URLSearchParams(searchString);
   const cityParam = params.get("city")?.trim();
   if (!cityParam) return null;
+  const lat = parseFloat(params.get("lat") || "");
+  const lng = parseFloat(params.get("lng") || "");
+  if (!isNaN(lat) && !isNaN(lng)) return { name: cityParam, lat, lng };
   const match = defaultCities.find(
     (c) => c.name.toLowerCase() === cityParam.toLowerCase()
   );
@@ -32,6 +45,7 @@ function getInitialSearchFromQuery(searchString: string): string {
 export default function OnboardingCity() {
   const [, navigate] = useLocation();
   const searchString = useHashSearch();
+  const didAutostartRef = useRef(false);
   const [search, setSearch] = useState(() => getInitialSearchFromQuery(searchString));
   const [selectedCity, setSelectedCity] = useState<{ name: string; lat: number; lng: number } | null>(
     () => getInitialCityFromQuery(searchString)
@@ -40,6 +54,19 @@ export default function OnboardingCity() {
   const [searching, setSearching] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const didAutoSearchRef = useRef(false);
+
+  useEffect(() => {
+    if (didAutostartRef.current) return;
+    const autostartCity = parseAutostartCity(searchString);
+    if (!autostartCity) return;
+    didAutostartRef.current = true;
+    const step2Params = new URLSearchParams({
+      city: autostartCity.name,
+      lat: String(autostartCity.lat),
+      lng: String(autostartCity.lng),
+    });
+    navigate(`/onboarding/location?${step2Params.toString()}`);
+  }, [searchString, navigate]);
 
   const presetMatches = search.trim().length > 0
     ? TOP_CITIES.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()))
