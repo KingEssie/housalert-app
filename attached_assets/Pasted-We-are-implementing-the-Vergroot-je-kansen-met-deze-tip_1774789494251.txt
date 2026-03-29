@@ -1,0 +1,210 @@
+We are implementing the "Vergroot je kansen met deze tips!" flow.
+
+IMPORTANT:
+- The UI/UX must be IDENTICAL to Rentbird:
+  - same layout
+  - same spacing
+  - same step cards
+  - same navigation (Volgende / Afronden)
+  - same progress bar behavior
+- BUT the CONTENT must be adapted for GERMANY (not Netherlands)
+
+==================================================
+STRUCTURE
+==================================================
+
+This is a step-by-step tips flow with:
+
+- Top header:
+  "Vergroot je kansen met deze tips!"
+  back arrow (left)
+  close button (X right)
+
+- Progress bar at top (green)
+- Step cards with:
+  - number (1–8)
+  - title
+  - text content
+- Bottom:
+  checkbox: "Markeer als voltooid"
+  CTA button: "Volgende"
+  final step button: "Afronden"
+
+==================================================
+CONTENT — GERMANY VERSION
+==================================================
+
+STEP 1 — Dokumente vorbereiten
+
+Title:
+"Verzamel je documenten"
+
+Content:
+In Germany landlords are very strict about documents.
+
+Replace with:
+
+"Verhuurders in Duitsland hechten veel waarde aan een complete en professionele aanvraag. Zorg dat je deze documenten alvast klaar hebt staan."
+
+Subsections:
+
+"Als je in loondienst werkt:"
+- Kopie ID / paspoort
+- Arbeitsvertrag (arbeidsovereenkomst)
+- Laatste 3 loonstroken
+- SCHUFA-Auskunft (zeer belangrijk in Duitsland)
+- Mietschuldenfreiheitsbescheinigung (verklaring vorige verhuurder)
+- Bankafschriften (optioneel)
+
+"Als je zelfstandig bent:"
+- Kopie ID / paspoort
+- Uittreksel Kamer van Koophandel (of Duits equivalent: Gewerbeanmeldung)
+- Inkomensoverzicht / belastingaangifte laatste 2-3 jaar
+- SCHUFA-Auskunft
+
+==================================================
+
+STEP 2 — Check je financiële situatie
+
+Keep structure, adapt:
+
+"De meeste verhuurders in Duitsland hanteren een inkomenseis van minimaal 3x de kale huurprijs."
+
+Explain:
+- €1.000 huur → €3.000 inkomen
+- soms 2.5x – 3.5x
+
+==================================================
+
+STEP 3 — Zorg voor een sterke reactie
+
+NEW (important for Germany)
+
+Title:
+"Zorg voor een sterke reactie"
+
+Content:
+"In Duitsland reageren verhuurders vaak op basis van wie het meest professioneel en compleet reageert. Gebruik een duidelijke en persoonlijke reactiebrief."
+
+Mention:
+- korte introductie
+- werk/inkomen
+- betrouwbaarheid
+- geen huisdieren (indien relevant)
+
+==================================================
+
+STEP 4 — Facebook & lokale platforms
+
+Replace NL Facebook groups with DE:
+
+Title:
+"Meld je aan voor lokale groepen"
+
+Content:
+"In Duitsland worden veel woningen gedeeld via platforms en communities."
+
+Include:
+- Facebook groepen (Wohnung + stad)
+- WG-Gesucht
+- Kleinanzeigen (eBay Kleinanzeigen / Kleinanzeigen.de)
+
+Example:
+"Zoek op: Wohnung Berlin, Wohnung München, WG Zimmer Hamburg"
+
+==================================================
+
+STEP 5 — Houd nieuwbouwprojecten in de gaten
+
+Keep similar but adjust:
+
+Mention:
+- Neubauprojekte
+- ImmobilienScout project listings
+
+Replace link:
+→ remove Dutch link
+→ generic: "bekijk nieuwbouwprojecten via ImmobilienScout24 of projectwebsites"
+
+==================================================
+
+STEP 6 — Gebruik je netwerk
+
+Keep but slightly more direct:
+
+"In Duitsland worden veel woningen via via verhuurd. Laat je netwerk weten dat je op zoek bent."
+
+==================================================
+
+STEP 7 — Maak een sterke indruk bij bezichtigingen
+
+Keep structure but cleaner:
+
+- Kom op tijd
+- Kleed je netjes
+- Stel slimme vragen
+- Laat zien dat je serieus bent
+
+==================================================
+
+STEP 8 — Stuur een follow-up / reactiebrief
+
+Title:
+"Stuur een sterke follow-up"
+
+Content:
+"Na een bezichtiging kan een goede follow-up het verschil maken. Stuur een korte bevestiging en eventueel je reactiebrief."
+
+Mention:
+- herhaal interesse
+- voeg documenten toe
+- wees snel
+
+==================================================
+
+DESIGN REQUIREMENTS
+==================================================
+
+- Cards:
+  rounded-xl
+  soft white background
+  subtle border (same as rest app)
+- Step number:
+  dark purple circle
+- Titles:
+  semibold
+- Body text:
+  darker gray (consistent with app)
+- Progress bar:
+  same green as completion card
+- Buttons:
+  pink primary (Volgende / Afronden)
+
+==================================================
+BEHAVIOR
+==================================================
+
+- "Volgende" → next step
+- last step → button changes to "Afronden"
+- checkbox "Markeer als voltooid" updates progress
+- progress % updates visually
+
+==================================================
+DO NOT CHANGE
+==================================================
+
+- navigation structure
+- layout style
+- spacing system
+- existing component patterns
+
+==================================================
+ACCEPTANCE CRITERIA
+==================================================
+
+1. Flow looks identical to Rentbird visually
+2. Content is clearly Germany-specific (SCHUFA, etc.)
+3. All 8 steps are present
+4. Navigation works smoothly
+5. Progress updates correctly
+6. Final step shows "Afronden"

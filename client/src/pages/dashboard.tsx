@@ -805,9 +805,9 @@ function HomeAccountCompletionCard({ accessToken, navigate }: { accessToken: str
   const getStrengthTask = (id: string) => strength?.tasks?.find(t => t.id === id);
 
   const steps: CompletionStep[] = [
-    { id: "push", label: t("activation.notificationsEnabled"), completed: status.notificationsEnabled, action: () => navigate("/onboarding/setup?step=push-test") },
-    { id: "letter", label: t("strengthTask.applicationTemplate"), completed: getStrengthTask("application_template")?.completed ?? false, action: () => navigate("/onboarding/setup?step=letter-personal") },
-    { id: "buddy", label: t("strengthTask.searchBuddy"), completed: getStrengthTask("search_buddy")?.completed ?? false, action: () => navigate("/onboarding/setup?step=search-buddy") },
+    { id: "push", label: t("activation.notificationsEnabled"), completed: status.notificationsEnabled, action: () => navigate("/settings/preferences") },
+    { id: "letter", label: t("strengthTask.applicationTemplate"), completed: getStrengthTask("application_template")?.completed ?? false, action: () => navigate("/application-letter") },
+    { id: "buddy", label: t("strengthTask.searchBuddy"), completed: getStrengthTask("search_buddy")?.completed ?? false, action: () => navigate("/profile/edit/search_buddy_email") },
     { id: "search", label: t("activation.profileCreated"), completed: status.profileCreated, action: () => navigate("/onboarding/city") },
   ];
 
@@ -881,9 +881,9 @@ function ProfileAccountCompletionCard({ navigate }: { navigate: (path: string) =
   const getStrengthTask = (id: string) => strength?.tasks?.find(t => t.id === id);
 
   const steps: CompletionStep[] = [
-    { id: "push", label: t("activation.notificationsEnabled"), completed: status?.notificationsEnabled ?? false, action: () => navigate("/onboarding/setup?step=push-test") },
-    { id: "letter", label: t("strengthTask.applicationTemplate"), completed: getStrengthTask("application_template")?.completed ?? false, action: () => navigate("/onboarding/setup?step=letter-personal") },
-    { id: "buddy", label: t("strengthTask.searchBuddy"), completed: getStrengthTask("search_buddy")?.completed ?? false, action: () => navigate("/onboarding/setup?step=search-buddy") },
+    { id: "push", label: t("activation.notificationsEnabled"), completed: status?.notificationsEnabled ?? false, action: () => navigate("/settings/preferences") },
+    { id: "letter", label: t("strengthTask.applicationTemplate"), completed: getStrengthTask("application_template")?.completed ?? false, action: () => navigate("/application-letter") },
+    { id: "buddy", label: t("strengthTask.searchBuddy"), completed: getStrengthTask("search_buddy")?.completed ?? false, action: () => navigate("/profile/edit/search_buddy_email") },
     { id: "search", label: t("activation.profileCreated"), completed: status?.profileCreated ?? false, action: () => navigate("/onboarding/city") },
   ];
 
