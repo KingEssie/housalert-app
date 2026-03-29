@@ -1,0 +1,72 @@
+We now know the real blocker: Supabase schema is behind the codebase.
+
+Do NOT build new features.
+Do NOT change matching logic.
+Do NOT change UI.
+
+We need a rollout checklist and verification for applying the pending production migrations safely.
+
+==================================================
+GOAL
+==================================================
+
+Prepare and verify the production rollout of the pending Supabase migrations so the live app schema matches the current codebase.
+
+The key blocker is that the advanced listing columns and geocode cache table do not exist yet in Supabase.
+
+==================================================
+TASKS
+==================================================
+
+1. Confirm which migrations are included in:
+- server/migrations/PENDING_RUN_IN_SUPABASE.sql
+
+2. Confirm that the file is safe/idempotent to run as a whole in Supabase SQL Editor
+
+3. Give me a clear ordered rollout checklist:
+- run SQL
+- redeploy
+- verify schema
+- verify ingestion
+- verify radius
+- optional backfill
+
+4. After that, provide a strict post-migration verification checklist for these exact items:
+- listings.balcony exists
+- listings.elevator exists
+- listings.pets_allowed exists
+- listings.latitude exists
+- listings.longitude exists
+- listings.parking exists
+- listings.coordinate_source exists
+- listings.coordinate_precision exists
+- geocode_cache table exists
+
+5. Also provide the exact verification queries I can run in Supabase SQL Editor to confirm:
+- columns exist
+- table exists
+- new listings are storing coordinates
+- coordinate_source is being filled
+- parking is being filled where available
+
+6. Provide a recommended backfill strategy for the 17,086 existing listings:
+- safest order
+- which sources to prioritize
+- whether to do full backfill or rolling backfill
+- how to avoid hammering Nominatim
+
+==================================================
+OUTPUT FORMAT
+==================================================
+
+Return:
+
+1. Safe rollout checklist
+2. SQL verification queries
+3. Post-deploy verification checklist
+4. Backfill recommendation
+5. Any migration risk warnings
+
+IMPORTANT:
+No vague answer.
+I need an operator-style rollout plan.
