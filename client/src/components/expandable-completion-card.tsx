@@ -33,7 +33,7 @@ export function ExpandableCompletionCard({
 
   return (
     <div
-      className="bg-white rounded-[6px] border border-[#E5E7EB] overflow-hidden"
+      className="bg-white rounded-[6px] border border-gray-200 overflow-hidden"
       data-testid={testId}
     >
       <button
@@ -43,18 +43,15 @@ export function ExpandableCompletionCard({
       >
         <div className="flex-shrink-0">{icon}</div>
         <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-semibold text-[#111]">{title}</p>
+          <p className="text-[14px] font-semibold text-black">{title}</p>
           <div className="mt-2 flex items-center gap-3">
-            <div className="flex-1 h-[6px] rounded-full bg-[#F3F3F5] overflow-hidden">
+            <div className="flex-1 h-2 rounded-full bg-gray-200 overflow-hidden">
               <div
-                className="h-full rounded-full transition-all duration-500"
-                style={{
-                  width: `${percentage}%`,
-                  background: "linear-gradient(90deg, #e91e63 0%, #ec407a 100%)",
-                }}
+                className="h-full rounded-full bg-[#e91e63] transition-all duration-500"
+                style={{ width: `${percentage}%` }}
               />
             </div>
-            <span className="text-[13px] font-medium text-[#6B7280] whitespace-nowrap">
+            <span className="text-[13px] font-medium text-gray-500 whitespace-nowrap">
               {percentage}% {completedLabel}
             </span>
           </div>
@@ -71,25 +68,25 @@ export function ExpandableCompletionCard({
           expanded ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <div className="border-t border-[#F3F3F5] px-4 pb-3">
+        <div className="border-t border-gray-100 px-4 pb-3">
           {steps.map((step, idx) => (
             <button
               key={step.id}
               onClick={step.completed ? undefined : step.action}
               disabled={step.completed}
-              className={`w-full h-[56px] flex items-center gap-3.5 text-left transition-colors rounded-[6px] ${
-                !step.completed ? "active:bg-[#F5F5F7]" : "opacity-60"
-              } ${idx < steps.length - 1 ? "border-b border-[#F5F5F7]" : ""}`}
+              className={`w-full h-[56px] flex items-center gap-3 text-left transition-colors rounded-[6px] ${
+                !step.completed ? "active:bg-[#F5F5F7]" : ""
+              } ${idx < steps.length - 1 ? "border-b border-gray-100" : ""}`}
               data-testid={`${testId}-step-${step.id}`}
             >
-              <span className="w-6 h-6 rounded-full bg-[#F3F3F5] flex items-center justify-center text-[12px] font-semibold text-[#6B7280] flex-shrink-0">
+              <span className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-[12px] font-semibold text-gray-500 flex-shrink-0">
                 {idx + 1}
               </span>
               <span
                 className={`text-[14px] font-medium flex-1 leading-snug ${
                   step.completed
-                    ? "text-[#9CA3AF] line-through"
-                    : "text-[#111]"
+                    ? "text-gray-400 line-through"
+                    : "text-black"
                 }`}
               >
                 {step.label}

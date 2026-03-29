@@ -234,8 +234,8 @@
 @layer utilities {
 
   .text-page-title {
-    font-size: 26px;
-    font-weight: 700;
+    font-size: 22px;
+    font-weight: 600;
     color: #000000;
     line-height: 1.2;
     text-transform: none;
@@ -243,14 +243,14 @@
   }
 
   .text-title {
-    font-weight: 700 !important;
+    font-weight: 600 !important;
     line-height: 1.2;
     letter-spacing: -0.01em;
   }
 
   .text-section-title {
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 16px;
+    font-weight: 600;
     color: #000000;
     line-height: 1.3;
     letter-spacing: -0.01em;

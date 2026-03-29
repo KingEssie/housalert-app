@@ -172,7 +172,7 @@ function MatchCard({
       onClick={handleCardClick}
       data-testid={`card-match-${match.listing_id}`}
     >
-      <div className="rounded-[6px] overflow-hidden bg-white border border-[#E5E5E5] shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <div className="rounded-[6px] overflow-hidden bg-white border border-gray-200">
         <div className="relative">
           {hasImage && !imgError ? (
             <img
@@ -287,7 +287,7 @@ function ProfileCard({
 
   return (
     <div
-      className={`rounded-[6px] border border-[#E5E5E5] bg-white px-5 py-4 ${deleting ? "opacity-50 pointer-events-none" : ""}`}
+      className={`rounded-[6px] border border-gray-200 bg-white px-5 py-4 ${deleting ? "opacity-50 pointer-events-none" : ""}`}
       data-testid={`card-profile-${profile.id}`}
     >
       <div className="flex items-center gap-3">
@@ -367,13 +367,13 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
     return (
       <div className="flex flex-col gap-3" data-testid="section-recente-matches-empty">
         <h2 className="text-section-title">{t("home.recentMatches")}</h2>
-        <div className="rounded-[6px] border border-[#E5E5E5] bg-white p-6 text-center">
+        <div className="rounded-[6px] border border-gray-200 bg-white p-6 text-center">
           <p className="text-[14px] text-[#6B7280] mb-4 leading-relaxed">
             {t("home.matchesWillAppear")}
           </p>
           <button
             onClick={() => navigate("/paywall")}
-            className="h-[42px] px-6 rounded-[6px] bg-ha-primary text-white text-[13px] font-semibold transition-colors hover:bg-ha-primary-hover"
+            className="h-[56px] px-6 rounded-[6px] bg-ha-primary text-white text-[14px] font-semibold transition-colors hover:bg-ha-primary-hover"
             data-testid="button-activate-sub-matches"
           >
             {t("home.viewSubscriptions")}
@@ -407,7 +407,7 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
     return (
       <div className="flex flex-col gap-3" data-testid="section-recente-matches-empty">
         <h2 className="text-section-title">{t("home.recentMatches")}</h2>
-        <div className="rounded-[6px] border border-[#E5E5E5] bg-white p-6 text-center">
+        <div className="rounded-[6px] border border-gray-200 bg-white p-6 text-center">
           <p className="text-[14px] text-[#6B7280] leading-relaxed">
             {t("home.firstMatchesWillAppear")}
           </p>
@@ -475,7 +475,7 @@ function RecentMatchCard({ match }: { match: ApiMatch }) {
       }}
       data-testid={`card-recent-match-${match.listing_id}`}
     >
-      <div className="rounded-[6px] overflow-hidden bg-white border border-[#E5E5E5] shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <div className="rounded-[6px] overflow-hidden bg-white border border-gray-200">
         <div className="relative">
           {hasImage ? (
             <img
@@ -580,7 +580,7 @@ function RecentlyViewedCard({ match }: { match: ApiMatch }) {
       }}
       data-testid={`card-recently-viewed-${match.listing_id}`}
     >
-      <div className="rounded-[6px] overflow-hidden bg-white border border-[#E5E5E5] shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <div className="rounded-[6px] overflow-hidden bg-white border border-gray-200">
         <div className="relative">
           {hasImage ? (
             <img
@@ -696,7 +696,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
           {profiles.map((p) => (
             <div
               key={p.id}
-              className="w-full bg-white rounded-[6px] border border-[#E5E5E5] p-4 flex items-center gap-3.5"
+              className="w-full bg-white rounded-[6px] border border-gray-200 p-4 flex items-center gap-3"
               data-testid={`card-search-profile-${p.id}`}
             >
               <div className="flex-1 min-w-0">
@@ -974,7 +974,7 @@ function HomeTab({
           {firstName ? t("home.greeting", { name: firstName }) : t("home.greetingDefault")}
         </h1>
       </div>
-      <div className="flex flex-col gap-7 px-6">
+      <div className="flex flex-col gap-4 px-6">
 
       {!hasProfiles && (
         <EmptyState
@@ -997,7 +997,7 @@ function HomeTab({
       <HomeTipsCompletionCard setActiveTab={setActiveTab} />
 
       {subscription.isTrial && subscription.trialEndsAt && (
-        <div className="rounded-[6px] border border-[#E5E5E5] bg-white px-5 py-4 flex items-center gap-3.5" data-testid="banner-trial">
+        <div className="rounded-[6px] border border-gray-200 bg-white px-5 py-4 flex items-center gap-3.5" data-testid="banner-trial">
           <div className="w-10 h-10 rounded-[6px] bg-[#F5F5F7] flex items-center justify-center flex-shrink-0">
             <Crown className="w-[18px] h-[18px] text-amber-400" />
           </div>
@@ -1028,7 +1028,7 @@ function HomeTab({
         </p>
         <button
           onClick={() => setReferralModalOpen(true)}
-          className="mt-4 h-[42px] px-6 rounded-[6px] bg-ha-primary text-white text-[14px] font-semibold transition-all hover:bg-ha-primary-hover active:scale-[0.97] inline-flex items-center gap-2"
+          className="mt-4 h-[56px] px-6 rounded-[6px] bg-ha-primary text-white text-[14px] font-semibold transition-all hover:bg-ha-primary-hover active:scale-[0.97] inline-flex items-center gap-2"
           data-testid="button-home-referral-cta"
         >
           {t("referral.promoCta")}
@@ -1236,7 +1236,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           ))}
         </div>
       ) : apiMatchesQuery.isError ? (
-        <div className="bg-white rounded-[6px] border border-[#E5E5E5] p-10 flex flex-col items-center text-center gap-4">
+        <div className="bg-white rounded-[6px] border border-gray-200 p-10 flex flex-col items-center text-center gap-4">
           <div className="w-14 h-14 rounded-[6px] bg-[#F5F5F7] flex items-center justify-center">
             <AlertCircle className="w-6 h-6 text-[#6B7280]" />
           </div>
@@ -1501,7 +1501,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
           )}
 
           <div className="flex flex-col">
-            <label className="w-full h-[56px] flex items-center justify-center gap-2 rounded-full bg-ha-primary text-white text-[15px] font-semibold cursor-pointer active:bg-ha-primary-hover transition-colors">
+            <label className="w-full h-[56px] flex items-center justify-center gap-2 rounded-[6px] bg-ha-primary text-white text-[15px] font-semibold cursor-pointer active:bg-ha-primary-hover transition-colors">
               <Camera className="w-[18px] h-[18px]" />
               {photoUrl ? t("profile.photo.choose") : t("profile.photo.upload")}
               <input
@@ -1519,7 +1519,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
             {photoUrl && (
               <button
                 onClick={onRemove}
-                className="mt-3 w-full h-[56px] flex items-center justify-center gap-2 rounded-full border border-[#E5E5E5] text-[#000] text-[15px] font-medium active:bg-[#F5F5F7] transition-colors"
+                className="mt-3 w-full h-[56px] flex items-center justify-center gap-2 rounded-[6px] border border-gray-200 text-[#000] text-[15px] font-medium active:bg-[#F5F5F7] transition-colors"
                 data-testid="button-remove-photo"
               >
                 <Trash2 className="w-[18px] h-[18px]" />
@@ -1529,7 +1529,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
 
             <button
               onClick={onClose}
-              className="mt-3 w-full h-[56px] flex items-center justify-center rounded-full text-[#000]/70 text-[15px] font-medium active:bg-[#F5F5F7] transition-colors"
+              className="mt-3 w-full h-[56px] flex items-center justify-center rounded-[6px] text-[#000]/70 text-[15px] font-medium active:bg-[#F5F5F7] transition-colors"
               data-testid="button-cancel-photo"
             >
               {t("common.cancel")}
@@ -1739,26 +1739,33 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
 
   return (
     <div className="min-h-[calc(100vh-80px)] bg-[#F5F5F7]">
-      <div className="bg-ha-profile-header pt-8 pb-6 px-6 mb-4" data-testid="card-profile-summary">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-white text-[20px] text-title" data-testid="text-user-firstname">
-              {displayName || t("profile.seeker")}
-            </p>
-            {lastName && (
-              <span className="hidden" data-testid="text-user-lastname">{lastName}</span>
-            )}
-            <p className="text-white/60 text-[13px] mt-0.5" data-testid="text-member-since">
-              {memberSinceLabel}
-            </p>
-          </div>
+      <div className="relative" data-testid="card-profile-summary">
+        <div className="bg-ha-profile-header h-[140px] rounded-b-[24px]">
           <button
             onClick={() => navigate("/settings")}
-            className="w-10 h-10 rounded-[6px] bg-white/15 flex items-center justify-center active:scale-95 transition-transform"
+            className="absolute right-4 top-4 w-10 h-10 rounded-full bg-white/15 flex items-center justify-center active:scale-95 transition-transform"
             data-testid="button-profile-settings"
           >
             <Settings className="w-5 h-5 text-white/90" />
           </button>
+        </div>
+        <div className="flex flex-col items-center -mt-10 mb-4">
+          <div className="w-20 h-20 rounded-full bg-[#312e81] flex items-center justify-center border-4 border-[#F5F5F7]">
+            {photoUrl ? (
+              <img src={photoUrl} alt="" className="w-full h-full rounded-full object-cover" />
+            ) : (
+              <span className="text-[22px] font-semibold text-white">{initials}</span>
+            )}
+          </div>
+          <p className="text-[18px] font-semibold text-black mt-3" data-testid="text-user-firstname">
+            {displayName || t("profile.seeker")}
+          </p>
+          {lastName && (
+            <span className="hidden" data-testid="text-user-lastname">{lastName}</span>
+          )}
+          <p className="text-[13px] text-gray-500" data-testid="text-member-since">
+            {memberSinceLabel}
+          </p>
         </div>
       </div>
 
@@ -1797,7 +1804,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             </div>
           )}
 
-          <div className="rounded-[6px] bg-white px-5 py-4" data-testid="card-search-profiles">
+          <div className="rounded-[6px] bg-white border border-gray-200 px-5 py-4" data-testid="card-search-profiles">
             <div className="flex items-center gap-3 mb-1">
               <Search className="w-5 h-5 text-ha-primary flex-shrink-0" />
               <p className="text-[16px] text-title text-[#000] flex-1">{t("profile.searchProfiles")}</p>
@@ -1831,14 +1838,14 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             )}
             <button
               onClick={() => navigate("/onboarding/city")}
-              className="w-full mt-3 h-[44px] rounded-[6px] border border-ha-primary text-ha-primary text-[14px] font-semibold flex items-center justify-center gap-1.5 active:bg-ha-primary-light transition-colors"
+              className="w-full mt-3 h-[56px] rounded-[6px] border border-[#e91e63] text-[#e91e63] text-[14px] font-semibold flex items-center justify-center gap-1.5 active:bg-ha-primary-light transition-colors"
               data-testid="button-extra-profile"
             >
               {t("profile.newSearchProfile")} <Plus className="w-4 h-4" />
             </button>
           </div>
 
-          <div className="rounded-[6px] bg-white px-5 py-4">
+          <div className="rounded-[6px] bg-white border border-gray-200 px-5 py-4">
             <button
               onClick={() => navigate("/application-letter")}
               className="w-full flex items-center gap-3 text-left active:opacity-80 transition-opacity"
@@ -1855,7 +1862,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             )}
           </div>
 
-          <div className="rounded-[6px] bg-white px-5 py-4" id="zoekbuddy-section" data-testid="row-zoekbuddy">
+          <div className="rounded-[6px] bg-white border border-gray-200 px-5 py-4" id="zoekbuddy-section" data-testid="row-zoekbuddy">
             <button
               onClick={() => {
                 if (!buddyExpanded) {
@@ -1940,7 +1947,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
 
           <button
             onClick={() => navigate("/settings")}
-            className="w-full ha-btn bg-white text-[#000] font-semibold border border-[#E5E5E5]"
+            className="w-full ha-btn bg-white text-[#000] font-semibold border border-gray-200"
             data-testid="button-open-settings"
           >
             <Settings className="w-4.5 h-4.5 text-[#6B7280]" />
@@ -2165,7 +2172,7 @@ export default function DashboardPage() {
         )}
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#E5E5E5]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-gray-200" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
         <nav className="max-w-xl mx-auto flex h-[58px]" data-testid="bottom-nav">
           {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
             const isActive = activeTab === key;

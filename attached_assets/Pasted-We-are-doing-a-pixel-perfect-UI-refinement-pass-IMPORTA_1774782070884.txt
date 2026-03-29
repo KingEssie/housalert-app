@@ -1,0 +1,183 @@
+We are doing a pixel-perfect UI refinement pass.
+
+IMPORTANT:
+Do NOT change logic, routing, state, or data.
+Do NOT refactor components.
+Only adjust styling, spacing, typography, and layout.
+
+Goal:
+Make the Home screen and Profile screen visually match Rentbird EXACTLY.
+
+--------------------------------------------------
+GLOBAL DESIGN RULES (apply everywhere)
+--------------------------------------------------
+
+1. Border radius
+- All cards: rounded-[6px]
+- Inputs/buttons: rounded-[6px]
+- No rounded-lg / xl / 2xl anywhere
+
+2. Heights
+- Buttons / inputs / rows: h-[56px]
+- Step rows: EXACTLY 56px height
+
+3. Card styling
+- Background: white
+- Border: border border-gray-200
+- Shadow: NONE
+- Padding: p-4
+- Gap between cards: space-y-4
+
+4. Typography
+- Titles: text-[18px] font-semibold text-black
+- Section titles: text-[16px] font-semibold text-black
+- Body text: text-[14px] text-gray-600
+- Secondary text: text-[13px] text-gray-500
+
+5. Icons
+- Size: w-5 h-5
+- Stroke: default (not bold)
+- Align perfectly center vertically
+
+6. Progress bars
+- Height: h-2
+- Background: bg-gray-200
+- Fill: pink (#e91e63)
+- Rounded: rounded-full
+
+7. Colors
+- Primary: #e91e63
+- Success: green-500
+- Error: red-500
+- Text primary: black
+- Text secondary: gray-600
+
+--------------------------------------------------
+PROFILE HEADER FIX
+--------------------------------------------------
+
+Refactor profile header to match Rentbird:
+
+- Top area:
+  - Background: dark purple
+  - Height: ~140px
+  - Smooth curve bottom (already present → keep)
+
+- Avatar:
+  - Centered circle
+  - Size: w-20 h-20
+  - Background: purple
+  - Initials centered
+
+- Name:
+  - text-[18px] font-semibold text-black
+  - margin-top: mt-3
+
+- Subtext:
+  - text-[13px] text-gray-500
+  - "Lid sinds ..."
+
+- Settings button:
+  - absolute right-4 top-4
+  - w-10 h-10
+  - rounded-full
+  - bg-gray-100
+  - centered icon
+
+--------------------------------------------------
+HOME HEADER FIX
+--------------------------------------------------
+
+- "Hallo, [name]"
+  - text-[22px] font-semibold
+- Section titles (Recente matches / Zoekprofielen):
+  - text-[16px] font-semibold
+- Reduce vertical spacing:
+  - mt-4 between sections (NOT larger)
+
+--------------------------------------------------
+EXPANDABLE CARDS FIX (VERY IMPORTANT)
+--------------------------------------------------
+
+For BOTH:
+- "Maak je account af"
+- "Vergroot je kansen met deze tips"
+
+Adjust:
+
+HEADER ROW:
+- Left: icon (pink)
+- Title next to icon
+- Right: chevron (rotate on open)
+- Same vertical alignment (center)
+
+PROGRESS ROW:
+- Progress bar left
+- Percentage right
+- Align horizontally (same baseline)
+
+EXPANDED STATE:
+- Divider line: border-t border-gray-100
+- Step rows:
+
+Each row:
+- height: h-[56px]
+- layout:
+  [number] [text]           [icon]
+
+Completed:
+- text-gray-400 line-through
+- green check icon
+
+Incomplete:
+- text-black
+- chevron right icon
+
+Spacing:
+- px-4
+- gap-3 between elements
+
+Animation:
+- duration-200 ease-in-out
+
+--------------------------------------------------
+SEARCH PROFILE CARD FIX
+--------------------------------------------------
+
+- Title: bold
+- Subtitle: gray text
+- Right icon: smaller + aligned
+- Padding: p-4
+- Remove any oversized spacing
+
+--------------------------------------------------
+BUTTON FIXES
+--------------------------------------------------
+
+Primary button:
+- h-[56px]
+- rounded-[6px]
+- bg-[#e91e63]
+- text-white font-semibold
+
+Secondary button:
+- border border-[#e91e63]
+- text-[#e91e63]
+
+--------------------------------------------------
+FINAL CHECK
+--------------------------------------------------
+
+Ensure:
+- No mixed border radius values remain
+- No inconsistent font sizes
+- No oversized paddings
+- All sections visually aligned
+- Home and Profile look like SAME design system
+
+Do NOT touch:
+- logic
+- API
+- navigation
+
+Only visual refinement.
