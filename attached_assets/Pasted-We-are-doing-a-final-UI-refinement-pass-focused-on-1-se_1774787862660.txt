@@ -1,0 +1,151 @@
+We are doing a final UI refinement pass focused on:
+1. search profile information
+2. completion progress bars
+3. bottom navigation color
+4. AND adding the Rentbird-style upgrade warning card
+
+IMPORTANT:
+- Do NOT change routing
+- Do NOT change logic
+- Do NOT change subscription logic
+- ONLY adjust visuals and conditional rendering
+
+Use the Rentbird screenshots as the source of truth.
+
+==================================================
+PART 1 — SEARCH PROFILE CARD (MORE INFO)
+==================================================
+
+Enhance the search profile cards on Home and Profile.
+
+Show:
+- primary line: city / profile name
+- secondary line: useful context using existing data:
+  - districts OR
+  - radius OR
+  - filters summary
+
+Examples:
+- "Amstelveen en 20 andere buurten"
+- "Straal 10 km"
+- "Max €1500 · 30+ m²"
+
+Rules:
+- Use only real data from the profile
+- Keep it short and readable
+- Prefer district summary if available
+
+==================================================
+PART 2 — PROGRESS BAR (THICKER + RENTBIRD GREEN)
+==================================================
+
+Update both completion cards:
+
+- Make progress bar thicker (both track + fill)
+- Use a softer Rentbird-like green (not neon)
+- Match percentage text color to this green
+
+Do NOT change:
+- progress logic
+- percentages
+
+==================================================
+PART 3 — BOTTOM TAB ACTIVE COLOR
+==================================================
+
+Update bottom navigation:
+
+- Active tab = Rentbird-style blue (calm, not too bright)
+- Apply to icon + label
+- Keep inactive tabs gray
+
+==================================================
+PART 4 — ADD RENTBIRD-STYLE UPGRADE WARNING CARD
+==================================================
+
+Add a card BELOW the completion cards on Home AND Profile.
+
+ONLY show this card if:
+- user has NO active trial
+AND
+- user has NO paid subscription
+
+(Use existing subscription state — do NOT create new logic)
+
+-----------------------------------
+CARD DESIGN (VERY IMPORTANT)
+-----------------------------------
+
+Style:
+- soft light purple background
+  (NOT gray, NOT white)
+  (similar to Rentbird tone)
+- no hard borders
+- rounded corners (6px)
+- same padding as other cards
+
+Content:
+
+Title (bold):
+"Je loopt mogelijk je droomwoning mis..."
+
+Body text:
+"Met een gratis abonnement kan je niet reageren op woningen. Zo loop je mogelijk je droomwoning mis. Upgrade naar een betaald account en mis nooit meer een huurwoning!"
+
+Button:
+- full width
+- height: 56px
+- pink background (existing primary CTA color)
+- white text
+- label: "Upgraden"
+
+Spacing:
+- same vertical rhythm as other cards
+- icon on the left (subtle lock icon)
+
+-----------------------------------
+BEHAVIOR
+-----------------------------------
+
+- Card must NOT show for:
+  - trial users
+  - paid users
+
+- Card must ALWAYS show for:
+  - free users without trial
+
+- Position:
+  directly under:
+    - "Maak je account af"
+    - "Vergroot je kansen"
+
+==================================================
+DO NOT CHANGE
+==================================================
+
+Do NOT touch:
+- navigation
+- API logic
+- search profile logic
+- completion logic
+
+==================================================
+ACCEPTANCE CRITERIA
+==================================================
+
+Only mark complete if:
+
+1. search profiles show extra useful context
+2. progress bars are thicker and green matches Rentbird style
+3. bottom nav active tab uses correct blue tone
+4. upgrade card appears ONLY for free users
+5. upgrade card visually matches Rentbird (light purple, soft, no harsh borders)
+6. upgrade button is full-width and prominent
+
+At the end report:
+1. files changed
+2. how subscription state is checked
+3. hex values used for:
+   - green progress
+   - blue active tab
+   - purple upgrade card

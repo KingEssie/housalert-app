@@ -1003,6 +1003,27 @@ function HomeTab({
       <HomeAccountCompletionCard accessToken={accessToken} navigate={navigate} />
       <HomeTipsCompletionCard setActiveTab={setActiveTab} />
 
+      {!subscription.isTrial && !subscription.isActive && (
+        <div className="rounded-[12px] bg-[#EDE9F6] px-5 py-5" data-testid="card-upgrade-warning">
+          <div className="flex items-start gap-3 mb-3">
+            <Lock className="w-5 h-5 text-[#7C3AED] flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-[16px] font-bold text-black">Je loopt mogelijk je droomwoning mis...</p>
+              <p className="text-[14px] text-[#4B5563] mt-1.5 leading-relaxed">
+                Met een gratis abonnement kan je niet reageren op woningen. Zo loop je mogelijk je droomwoning mis. Upgrade naar een betaald account en mis nooit meer een huurwoning!
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => navigate("/paywall")}
+            className="w-full h-[56px] rounded-[6px] bg-[#e91e63] text-white text-[16px] font-bold hover:bg-[#d81b60] transition-colors active:scale-[0.98]"
+            data-testid="button-upgrade-warning-cta"
+          >
+            Upgraden
+          </button>
+        </div>
+      )}
+
       {subscription.isTrial && subscription.trialEndsAt && (
         <div className="rounded-[6px] border border-gray-200 bg-white px-5 py-4 flex items-center gap-3.5" data-testid="banner-trial">
           <div className="w-10 h-10 rounded-[6px] bg-[#EBEBF0] flex items-center justify-center flex-shrink-0">
@@ -1759,21 +1780,23 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           <ProfileAccountCompletionCard navigate={navigate} />
           <ProfileTipsCompletionCard setActiveTab={setActiveTab} />
 
-          {(subscription.isExpired || (!subscription.isActive && !subscription.isTrial)) && (
-            <div className="rounded-[12px] bg-white px-5 py-5" style={{ border: "1px solid rgba(15, 23, 42, 0.04)" }} data-testid="card-upgrade-cta">
+          {!subscription.isTrial && !subscription.isActive && (
+            <div className="rounded-[12px] bg-[#EDE9F6] px-5 py-5" data-testid="card-upgrade-warning-profile">
               <div className="flex items-start gap-3 mb-3">
-                <Lock className="w-6 h-6 text-black flex-shrink-0 mt-0.5" />
+                <Lock className="w-5 h-5 text-[#7C3AED] flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-[18px] font-bold text-black">{t("profile.upgradeMissing")}</p>
+                  <p className="text-[16px] font-bold text-black">Je loopt mogelijk je droomwoning mis...</p>
+                  <p className="text-[14px] text-[#4B5563] mt-1.5 leading-relaxed">
+                    Met een gratis abonnement kan je niet reageren op woningen. Zo loop je mogelijk je droomwoning mis. Upgrade naar een betaald account en mis nooit meer een huurwoning!
+                  </p>
                 </div>
               </div>
-              <p className="text-[15px] text-[#4B5563] mt-1 mb-5 leading-relaxed">{t("profile.upgradeDesc")}</p>
               <button
                 onClick={() => navigate("/paywall")}
-                className="w-full h-[56px] rounded-[12px] bg-[#e91e63] text-white text-[16px] font-bold hover:bg-[#d81b60] transition-colors active:scale-[0.98]"
+                className="w-full h-[56px] rounded-[6px] bg-[#e91e63] text-white text-[16px] font-bold hover:bg-[#d81b60] transition-colors active:scale-[0.98]"
                 data-testid="button-upgrade-subscription"
               >
-                {t("profile.upgradeNow")}
+                Upgraden
               </button>
             </div>
           )}
@@ -1806,14 +1829,15 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                     <span className="w-2.5 h-2.5 rounded-full bg-[#34d399] flex-shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="text-[16px] font-bold text-black truncate">{sp.city_name || sp.city || t("profile.searchProfileDefault")}</p>
-                      {sp.districts && sp.districts.length > 0 && (
-                        <p className="text-[14px] text-[#4B5563] mt-0.5 truncate">
-                          {sp.districts.length <= 2
-                            ? sp.districts.join(", ")
-                            : `${sp.districts[0]} ${t("profile.andOtherNeighborhoods", { count: sp.districts.length - 1 })}`
-                          }
-                        </p>
-                      )}
+                      <p className="text-[14px] text-[#4B5563] mt-0.5 truncate">
+                        {sp.districts && sp.districts.length > 0
+                          ? (sp.districts.length <= 2
+                              ? sp.districts.join(", ")
+                              : `${sp.districts[0]} ${t("profile.andOtherNeighborhoods", { count: sp.districts.length - 1 })}`)
+                          : sp.radius_km
+                            ? `Straal ${sp.radius_km} km`
+                            : getProfileSummary(sp, t)}
+                      </p>
                     </div>
                     <Pencil className="w-4 h-4 text-gray-300 flex-shrink-0" />
                   </button>

@@ -53,13 +53,13 @@ export function ExpandableCompletionCard({
             />
           </div>
           <div className="mt-2.5 flex items-center gap-3">
-            <div className="flex-1 h-[6px] rounded-full bg-gray-100 overflow-hidden">
+            <div className="flex-1 h-[8px] rounded-full bg-gray-100 overflow-hidden">
               <div
-                className="h-full rounded-full bg-[#22c55e] transition-all duration-500"
+                className="h-full rounded-full bg-[#4ade80] transition-all duration-500"
                 style={{ width: `${percentage}%` }}
               />
             </div>
-            <span className="text-[14px] font-semibold text-[#22c55e] whitespace-nowrap">
+            <span className="text-[14px] font-semibold text-[#16a34a] whitespace-nowrap">
               {percentage}% {completedLabel}
             </span>
           </div>
