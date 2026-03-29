@@ -1,0 +1,179 @@
+We are doing a pixel-perfect rebuild of the search profile card layout so it matches the supplied Rentbird reference much more closely.
+
+IMPORTANT:
+- Do NOT change routing
+- Do NOT change business logic
+- Do NOT change search profile data
+- Do NOT change card functionality
+- ONLY update the visual layout/styling/composition of the search profile section
+- Use the supplied Rentbird screenshot as the visual source of truth
+
+==================================================
+GOAL
+==================================================
+
+Make the search profile section on BOTH:
+1. Home screen
+2. Profile/account screen
+
+look visually like the Rentbird reference.
+
+However:
+- On the PROFILE screen: keep/show the "Nieuwe zoekopdracht" button
+- On the HOME screen: DO NOT show a "Nieuwe zoekopdracht" button
+
+So:
+- same design language
+- same card style
+- same typography
+- same spacing
+- but different CTA visibility depending on screen
+
+==================================================
+VISUAL TARGET — RENTBIRD STYLE
+==================================================
+
+The search profile section should visually follow this structure:
+
+OUTER CARD:
+- white background
+- very soft / nearly invisible border
+- subtle radius matching the rest of the screen
+- padding similar to Rentbird
+- clean premium spacing
+
+HEADER ROW:
+- left: pink search icon
+- title: "Zoekopdrachten"
+- right: small rounded light-blue badge like Rentbird (e.g. 1/10)
+- title should be bold and larger, matching Rentbird
+- icon and title vertically aligned perfectly
+
+INNER SEARCH PROFILE ITEM:
+- light gray inner panel/card
+- softer than current
+- no visible hard border
+- radius slightly softer than current
+- left: green status dot
+- title: city / search name (bold)
+- subtitle: smaller muted text
+- right: edit icon aligned like Rentbird
+
+TYPOGRAPHY:
+- title heavier and slightly larger
+- subtitle muted gray and smaller
+- card hierarchy should feel premium and calm
+
+SPACING:
+- more like Rentbird
+- keep enough air above and below the inner card
+- consistent left/right padding
+- align badge, icon, title, and edit button carefully
+
+==================================================
+PROFILE SCREEN VERSION
+==================================================
+
+On the PROFILE / ACCOUNT screen:
+
+Below the inner search profile item, show:
+- "Nieuwe zoekopdracht" button
+- exact Rentbird-style outlined button treatment
+- centered label
+- pink border
+- pink text
+- plus icon on the right of the label
+- height: 56px
+- soft radius
+- same spacing as Rentbird
+
+This button must stay on the profile screen.
+
+==================================================
+HOME SCREEN VERSION
+==================================================
+
+On the HOME screen:
+
+Use the SAME search profile section design language:
+- same outer card style
+- same inner search profile item style
+- same typography
+- same spacing
+- same icon treatment
+
+BUT:
+- do NOT show the "Nieuwe zoekopdracht" button
+- home should only show the existing search profile card itself
+- keep it cleaner and more compact for browsing
+
+==================================================
+STRICT DIFFERENCE BETWEEN HOME AND PROFILE
+==================================================
+
+PROFILE:
+- includes "Nieuwe zoekopdracht" button
+
+HOME:
+- no "Nieuwe zoekopdracht" button
+
+Everything else should feel like the same component family.
+
+==================================================
+DETAIL RULES
+==================================================
+
+1. Remove any overly visible border lines
+2. Keep card softness consistent with the rest of the Rentbird-like profile style
+3. The green status dot should be subtle and clean
+4. The edit icon should not feel oversized or too dark
+5. The blue badge (1/10 etc.) should match Rentbird's feel:
+   - small pill
+   - soft light blue background
+   - blue text
+   - not oversized
+
+==================================================
+DO NOT CHANGE
+==================================================
+
+Do NOT change:
+- navigation behavior
+- add/edit search logic
+- counts
+- badge logic
+- data loading
+- click actions
+
+Only visual styling and CTA visibility by screen.
+
+==================================================
+FILES / COMPONENTS
+==================================================
+
+Update the active search profile card components/sections used on:
+- Home
+- Profile
+
+If needed:
+- extract a shared SearchProfileCard component with a prop like:
+  showCreateButton={true/false}
+
+But only if that helps keep visual consistency.
+
+==================================================
+ACCEPTANCE CRITERIA
+==================================================
+
+Only mark complete if ALL are true:
+1. profile search profile section visually matches the Rentbird reference much more closely
+2. home search profile section uses the same design language
+3. profile screen still shows "Nieuwe zoekopdracht"
+4. home screen does NOT show "Nieuwe zoekopdracht"
+5. spacing, colors, typography, badge, inner card, and edit icon feel consistent with Rentbird
+6. no logic or routing changed
+
+At the end report:
+1. exact file(s) changed
+2. whether a shared component was introduced
+3. confirmation that create button remains only on profile and not on home

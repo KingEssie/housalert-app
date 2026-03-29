@@ -691,52 +691,59 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
   return (
     <>
       <div className="flex flex-col gap-3" data-testid="section-search-profiles">
-        <h2 className="text-section-title">{t("searchProfiles.sectionTitle")}</h2>
-        <div className="flex flex-col gap-2.5">
-          {profiles.map((p) => (
-            <div
-              key={p.id}
-              className="w-full bg-white rounded-[6px] border border-gray-200 p-4 flex items-center gap-3"
-              data-testid={`card-search-profile-${p.id}`}
-            >
-              <div className="flex-1 min-w-0">
-                <p className="text-[15px] text-title text-[#000] line-clamp-1" data-testid={`text-profile-title-${p.id}`}>
-                  {getProfileTitle(p, t, locale)}
-                </p>
-                <p className="text-[13px] text-[#6B7280] mt-0.5 line-clamp-1" data-testid={`text-profile-summary-${p.id}`}>
-                  {getProfileSummary(p, t)}
-                </p>
+        <div className="rounded-[12px] bg-white px-5 py-5" style={{ border: "1px solid rgba(15, 23, 42, 0.04)" }}>
+          <div className="flex items-center gap-3 mb-4">
+            <Search className="w-5 h-5 text-ha-primary flex-shrink-0" />
+            <p className="text-[17px] font-bold text-black flex-1">{t("searchProfiles.sectionTitle")}</p>
+            <span className="text-[13px] font-semibold text-[#0ea5e9] bg-[#e0f2fe] px-2.5 py-0.5 rounded-full">{profiles.length}/{4}</span>
+          </div>
+          <div className="flex flex-col gap-2">
+            {profiles.map((p) => (
+              <div
+                key={p.id}
+                className="flex items-center gap-3 py-3.5 px-4 rounded-[10px] bg-[#F3F3F5]"
+                data-testid={`card-search-profile-${p.id}`}
+              >
+                <span className="w-2.5 h-2.5 rounded-full bg-[#34d399] flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[16px] font-bold text-black line-clamp-1" data-testid={`text-profile-title-${p.id}`}>
+                    {getProfileTitle(p, t, locale)}
+                  </p>
+                  <p className="text-[13px] text-gray-400 mt-0.5 line-clamp-1" data-testid={`text-profile-summary-${p.id}`}>
+                    {getProfileSummary(p, t)}
+                  </p>
+                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      className="w-9 h-9 rounded-full flex items-center justify-center text-gray-300 hover:bg-[#EBEBED] transition-colors flex-shrink-0"
+                      data-testid={`button-menu-${p.id}`}
+                    >
+                      <MoreVertical className="w-[18px] h-[18px]" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="min-w-[160px]">
+                    <DropdownMenuItem
+                      onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
+                      className="flex items-center gap-2.5 cursor-pointer"
+                      data-testid={`menu-edit-${p.id}`}
+                    >
+                      <Pencil className="w-4 h-4 text-[#6B7280]" />
+                      {t("common.edit")}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setConfirmDeleteId(p.id)}
+                      className="flex items-center gap-2.5 text-ha-danger focus:text-ha-danger cursor-pointer"
+                      data-testid={`menu-delete-${p.id}`}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      {t("filters.deleteTitle")}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    className="w-9 h-9 rounded-full flex items-center justify-center text-[#6B7280] hover:bg-[#F5F5F7] transition-colors flex-shrink-0"
-                    data-testid={`button-menu-${p.id}`}
-                  >
-                    <MoreVertical className="w-[18px] h-[18px]" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="min-w-[160px]">
-                  <DropdownMenuItem
-                    onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
-                    className="flex items-center gap-2.5 cursor-pointer"
-                    data-testid={`menu-edit-${p.id}`}
-                  >
-                    <Pencil className="w-4 h-4 text-[#6B7280]" />
-                    {t("common.edit")}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => setConfirmDeleteId(p.id)}
-                    className="flex items-center gap-2.5 text-ha-danger focus:text-ha-danger cursor-pointer"
-                    data-testid={`menu-delete-${p.id}`}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    {t("filters.deleteTitle")}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
       {confirmDeleteId && (
@@ -1805,21 +1812,21 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           )}
 
           <div className="rounded-[12px] bg-white px-5 py-5" style={{ border: "1px solid rgba(15, 23, 42, 0.04)" }} data-testid="card-search-profiles">
-            <div className="flex items-center gap-3 mb-1">
+            <div className="flex items-center gap-3 mb-4">
               <Search className="w-5 h-5 text-ha-primary flex-shrink-0" />
               <p className="text-[17px] font-bold text-black flex-1">{t("profile.searchProfiles")}</p>
-              <span className="text-[14px] font-semibold text-ha-primary">{spCount}/{4}</span>
+              <span className="text-[13px] font-semibold text-[#0ea5e9] bg-[#e0f2fe] px-2.5 py-0.5 rounded-full">{spCount}/{4}</span>
             </div>
             {spList.length > 0 && (
-              <div className="mt-3 flex flex-col gap-1">
+              <div className="flex flex-col gap-2">
                 {spList.map((sp: SearchProfile) => (
                   <button
                     key={sp.id}
                     onClick={() => navigate(`/dashboard/searches/edit/${sp.id}`)}
-                    className="flex items-center gap-3 py-3 px-1 rounded-[8px] active:bg-[#F5F5F7] transition-colors text-left"
+                    className="flex items-center gap-3 py-3.5 px-4 rounded-[10px] bg-[#F3F3F5] active:bg-[#EBEBED] transition-colors text-left"
                     data-testid={`button-search-profile-${sp.id}`}
                   >
-                    <span className="w-2.5 h-2.5 rounded-full bg-ha-success flex-shrink-0" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#34d399] flex-shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="text-[16px] font-bold text-black truncate">{sp.city_name || sp.city || t("profile.searchProfileDefault")}</p>
                       {sp.districts && sp.districts.length > 0 && (
@@ -1838,7 +1845,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             )}
             <button
               onClick={() => navigate("/onboarding/city")}
-              className="w-full mt-3 h-[48px] rounded-full border border-[#e91e63] text-[#e91e63] text-[14px] font-semibold flex items-center justify-center gap-1.5 active:bg-pink-50 transition-colors"
+              className="w-full mt-4 h-[56px] rounded-[12px] border border-[#e91e63] text-[#e91e63] text-[15px] font-semibold flex items-center justify-center gap-1.5 active:bg-pink-50 transition-colors"
               data-testid="button-extra-profile"
             >
               {t("profile.newSearchProfile")} <Plus className="w-4 h-4" />
