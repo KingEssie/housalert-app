@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "kTDoaE0M-H15JWaPVacLL"
+uri = "file://.local/audit-search-filtering.md"
+type = "text"
+title = "Search-Profile Filtering Audit Report"

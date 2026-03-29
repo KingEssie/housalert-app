@@ -1,0 +1,307 @@
+We need a full technical audit of the search-profile filtering system for HousAlert.
+
+This is NOT a UI redesign task.
+This is a backend + data + matching audit.
+
+IMPORTANT:
+- Do NOT guess
+- Do NOT give generic scraping advice
+- Inspect the actual codebase and current implementation
+- We need to know exactly what is already working, what is partially working, and what is missing
+- Focus on the current Germany rental-alert product
+
+==================================================
+GOAL
+==================================================
+
+Audit the full chain behind search-profile filtering:
+
+1. what fields the user can set in the search profile UI
+2. what listing fields are actually scraped and stored
+3. how those scraped fields are normalized
+4. how the matching engine currently evaluates those fields
+5. whether the toggle
+   "Stuur mij woningen waarbij mijn eisen niet duidelijk staan aangegeven"
+   is implemented correctly or not
+6. what gaps exist between frontend filters and backend data reality
+
+We need a precise, code-based report.
+
+==================================================
+PART 1 — INVENTORY ALL USER FILTERS
+==================================================
+
+Inspect the active search-profile creation/edit flow and list every filter the user can currently set.
+
+We especially want to verify all filters shown in the 3/3 step, including but not limited to:
+
+- min/max rent
+- "stuur ook iets duurdere perfecte matches"
+- property type / soort woning
+- bedrooms / slaapkamers
+- minimum area / minimale oppervlakte
+- furnished / gemeubileerd
+- extra features:
+  - bad
+  - balkon
+  - tuin
+  - dakterras
+  - energielabel C of beter
+- pets (if present elsewhere)
+- radius / district / neighborhoods
+- toggle:
+  "Stuur mij woningen waarbij mijn eisen niet duidelijk staan aangegeven"
+
+For each filter, report:
+- exact UI label
+- internal field name
+- where it is stored
+- whether it is actively used in matching logic
+
+==================================================
+PART 2 — AUDIT SCRAPED LISTING FIELDS
+==================================================
+
+Inspect the scraper ingestion pipeline and database/storage model.
+
+We need an exact list of which listing fields are currently scraped / persisted / normalized.
+
+For each field below, report one of:
+- FULLY AVAILABLE
+- PARTIALLY AVAILABLE
+- NOT AVAILABLE
+- AVAILABLE ONLY FOR SOME SOURCES
+- DERIVED FROM DESCRIPTION ONLY
+
+Audit at least these fields:
+
+Core:
+- source
+- source listing id
+- url
+- title
+- description
+- city
+- district / neighborhood
+- address / street
+- postcode
+- latitude / longitude
+- listed_at / created_at
+- availability date
+- price
+- basic rent / kaltmiete if applicable
+- service costs / warmmiete if applicable
+
+Property characteristics:
+- property type
+- area_sqm
+- rooms_total
+- bedrooms
+- furnished
+- upholstered
+- pets_allowed
+- balcony
+- garden
+- roof_terrace
+- bath / bathtub
+- energy_label
+- parking
+- elevator
+- outdoor space
+
+For each field say:
+- where it comes from in code
+- where it is stored
+- whether it is normalized into one canonical field
+- whether it is source-specific only
+- whether unknown is distinguishable from false
+
+==================================================
+PART 3 — UNKNOWN VS FALSE AUDIT
+==================================================
+
+This is critical.
+
+For all optional/boolean-ish fields (especially balcony, garden, bath, roof terrace, furnished, energy label, pets),
+verify whether the system correctly distinguishes:
+
+- yes / true
+- no / false
+- unknown / null / missing
+
+We need to know if the code accidentally treats:
+"not found" as "false"
+
+For each relevant filterable field, report:
+- exact data shape
+- whether unknown is preserved
+- whether false and missing are currently conflated
+
+==================================================
+PART 4 — MATCHING ENGINE AUDIT
+==================================================
+
+Inspect the active matching logic.
+
+For every user filter, report:
+- where matching happens
+- whether it is currently enforced
+- whether it is a hard filter or soft filter
+- whether missing data excludes the listing
+- whether missing data is ignored
+- whether the toggle affects it
+
+Specifically verify how matching currently works for:
+- price max
+- price min
+- "stuur ook iets duurdere perfecte matches"
+- area minimum
+- property type
+- bedrooms
+- furnished
+- neighborhood / district
+- radius
+- pets
+- balcony
+- garden
+- roof terrace
+- bath
+- energy label
+
+We need actual behavior, not intended behavior.
+
+==================================================
+PART 5 — TOGGLE AUDIT
+==================================================
+
+Audit the exact current implementation of:
+
+"Stuur mij woningen waarbij mijn eisen niet duidelijk staan aangegeven"
+
+We need to know:
+
+1. does the toggle exist only in UI, or is it stored?
+2. if stored, where?
+3. is it used in matching logic today?
+4. if yes, for which fields does it apply?
+5. if yes, does it correctly mean:
+   - include listings where a field is UNKNOWN
+   - but still exclude listings where the field is a known mismatch
+6. if no, what is currently happening?
+
+VERY IMPORTANT:
+The correct intended behavior should be:
+
+- If user wants balcony = yes
+- Listing balcony = true → include
+- Listing balcony = false → exclude
+- Listing balcony = unknown → include only if toggle is ON
+
+Check whether the current implementation actually behaves like this.
+
+==================================================
+PART 6 — SOURCE-BY-SOURCE RELIABILITY
+==================================================
+
+Audit the main German listing sources currently scraped.
+
+For each source, report which important filter fields are realistically available.
+
+At minimum inspect:
+- which core fields always exist
+- which optional fields are usually missing
+- which fields come from structured source data
+- which fields only come from text parsing
+- which sources are too weak to support certain frontend filters reliably
+
+We do NOT need a marketing summary.
+We need operational truth.
+
+Example output style per source:
+- Source X:
+  - price: reliable
+  - city: reliable
+  - area: reliable
+  - furnished: partial
+  - balcony: mostly missing
+  - energy label: unavailable
+  - etc.
+
+==================================================
+PART 7 — GAP ANALYSIS
+==================================================
+
+Compare:
+A. filters exposed in the frontend
+vs
+B. fields actually available + matchable in backend
+
+Identify all gaps such as:
+- UI filter exists but not stored
+- stored but not used in matching
+- matched but data not reliably scraped
+- optional field incorrectly modeled
+- toggle exists but has no backend effect
+- source data too weak for promised filter behavior
+
+==================================================
+PART 8 — RECOMMENDED IMPLEMENTATION ORDER
+==================================================
+
+Based on the audit, propose a realistic implementation order:
+
+Priority 1:
+- must-fix items to make current filters honest and reliable
+
+Priority 2:
+- fields/features that should be improved next
+
+Priority 3:
+- fields that are too unreliable and should maybe be hidden until robust
+
+Be practical.
+Do not suggest huge rewrites unless truly necessary.
+
+==================================================
+FINAL REPORT FORMAT
+==================================================
+
+Return the report in this exact structure:
+
+1. Active user filters
+   - table/list of every filter in the current UI
+   - internal field names
+   - stored yes/no
+   - matched yes/no
+
+2. Scraped listing fields
+   - field-by-field availability audit
+
+3. Unknown vs false handling
+   - which fields preserve unknown correctly
+   - which fields are broken
+
+4. Matching behavior
+   - exact current matching rules per filter
+
+5. Toggle audit
+   - stored?
+   - used?
+   - correct?
+   - broken?
+
+6. Source reliability
+   - per main source, which fields are actually trustworthy
+
+7. Gap analysis
+   - clear list of mismatches between UI promise and backend reality
+
+8. Recommended action plan
+   - Priority 1 / 2 / 3
+
+9. Exact files involved
+   - list all important files inspected
+
+IMPORTANT:
+Do NOT give a vague summary.
+We need a precise code-driven audit that tells us whether the filtering system truly works end-to-end.
