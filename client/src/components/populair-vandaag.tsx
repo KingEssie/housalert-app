@@ -130,7 +130,7 @@ export function PopulairVandaagSection() {
         </div>
         <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="flex-shrink-0 w-[220px] h-[220px] bg-ha-surface rounded-lg animate-pulse" />
+            <div key={i} className="flex-shrink-0 w-[220px] h-[220px] bg-ha-surface rounded-[6px] animate-pulse" />
           ))}
         </div>
       </div>

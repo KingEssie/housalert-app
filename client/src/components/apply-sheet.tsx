@@ -209,7 +209,7 @@ export function ApplySheet({ listing, open, onClose, onMarkedApplied }: ApplyShe
             })}
           </div>
 
-          <div className="bg-ha-surface rounded-lg p-4">
+          <div className="bg-ha-surface rounded-[6px] p-4">
             <div className="flex items-center justify-between mb-2">
               <p className="text-[12px] font-medium text-ha-text tracking-wide">{t("applySheet.applicationLetter")}</p>
               {readyCount === readinessItems.length && (

@@ -77,7 +77,7 @@ export function SubscriptionCancelConfirmPage() {
         <div className="max-w-xl mx-auto p-4 pb-8">
           <div className="app-card">
             <div className="flex items-center justify-center mb-5">
-              <div className="w-14 h-14 rounded-[8px] bg-ha-primary/10 flex items-center justify-center">
+              <div className="w-14 h-14 rounded-[6px] bg-ha-primary/10 flex items-center justify-center">
                 <MessageSquare className="w-7 h-7 text-ha-primary" />
               </div>
             </div>
@@ -146,7 +146,7 @@ export function SubscriptionCancelConfirmPage() {
       <div className="max-w-xl mx-auto p-4 pb-8">
         <div className="app-card">
           <div className="flex items-center justify-center mb-5">
-            <div className="w-14 h-14 rounded-[8px] bg-amber-100 flex items-center justify-center">
+            <div className="w-14 h-14 rounded-[6px] bg-amber-100 flex items-center justify-center">
               <AlertCircle className="w-7 h-7 text-amber-500" />
             </div>
           </div>
@@ -208,7 +208,7 @@ export function SubscriptionCancelledPage() {
       <div className="max-w-xl mx-auto p-4 pb-8">
         <div className="app-card">
           <div className="flex items-center justify-center mb-5">
-            <div className="w-14 h-14 rounded-[8px] bg-[#F0FDF4] flex items-center justify-center">
+            <div className="w-14 h-14 rounded-[6px] bg-[#F0FDF4] flex items-center justify-center">
               <CheckCircle2 className="w-7 h-7 text-green-500" />
             </div>
           </div>

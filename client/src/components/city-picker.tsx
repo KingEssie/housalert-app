@@ -189,7 +189,7 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
             onChange={(e) => handleInputChange(e.target.value)}
             onFocus={() => { if (hasResults && !value) setOpen(true); }}
             placeholder={t("location.searchCity")}
-            className={`w-full min-h-[52px] rounded-lg bg-ha-surface border border-transparent px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-muted ${
+            className={`w-full min-h-[56px] rounded-[6px] bg-ha-surface border border-transparent px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-muted ${
               showValidation ? "border-red-400" : value ? "border-ha-primary bg-ha-surface/30" : "border-ha-card-border"
             }`}
             data-testid="input-city-search"
@@ -212,7 +212,7 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
         )}
 
         {open && hasResults && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-ha-card border border-ha-card-border rounded-lg shadow-lg max-h-[260px] overflow-y-auto z-30">
+          <div className="absolute top-full left-0 right-0 mt-2 bg-ha-card border border-ha-card-border rounded-[6px] shadow-lg max-h-[260px] overflow-y-auto z-30">
             {usingGoogle && places.suggestions.length > 0 ? (
               <>
                 {places.suggestions.map((s) => (
@@ -273,7 +273,7 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
             {value.city_name}
           </div>
 
-          <div className="rounded-lg overflow-hidden border border-ha-card-border h-[200px]" data-testid="map-preview">
+          <div className="rounded-[6px] overflow-hidden border border-ha-card-border h-[200px]" data-testid="map-preview">
             <MapContainer
               center={[value.latitude, value.longitude]}
               zoom={11}

@@ -135,7 +135,7 @@ export function ReactieklaarCard({
             <div
               key={step.id}
               className={`flex items-center gap-3 py-2 ${
-                hasAction ? "cursor-pointer hover:bg-ha-surface -mx-2 px-2 rounded-lg transition-colors" : ""
+                hasAction ? "cursor-pointer hover:bg-ha-surface -mx-2 px-2 rounded-[6px] transition-colors" : ""
               }`}
               onClick={() => {
                 if (!step.done) {
@@ -165,7 +165,7 @@ export function ReactieklaarCard({
       </div>
 
       {allDone && (
-        <div className="mt-4 bg-ha-success/10 rounded-lg px-3.5 py-2.5">
+        <div className="mt-4 bg-ha-success/10 rounded-[6px] px-3.5 py-2.5">
           <p className="text-[12px] text-ha-success font-medium flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5" />
             {t("reactieklaar.readyMessage")}

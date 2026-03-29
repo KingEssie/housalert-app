@@ -1,0 +1,103 @@
+We are doing a full visual system refactor to match the Rentbird design style across the ENTIRE app.
+
+IMPORTANT:
+- Do NOT change logic, flows, or routing
+- Do NOT change feature behavior
+- ONLY refactor styling, spacing, typography, and UI consistency
+- Everything must follow ONE unified design system
+
+==================================================
+CREATE A GLOBAL DESIGN SYSTEM
+==================================================
+
+Create or refactor a central design system (tokens + reusable styles).
+
+Define:
+
+COLORS:
+- background: soft light gray
+- card: pure white
+- primary text: near-black
+- secondary text: muted gray
+- accent pink: consistent across buttons/icons
+- success green: soft (not neon)
+- border: subtle gray
+
+TYPOGRAPHY:
+- headings: bold, tight spacing
+- body: clean, slightly smaller than current if needed
+- secondary text: lighter gray
+- consistent font usage everywhere (NO random variations)
+
+SPACING SYSTEM:
+Use a consistent scale:
+- 4 / 8 / 12 / 16 / 20 / 24 px
+
+CARD SYSTEM:
+- border radius: 6px ONLY
+- consistent padding (16px or 20px max)
+- subtle border
+- minimal shadow
+
+BUTTON SYSTEM:
+- height: 56px
+- radius: 6px
+- consistent font + weight
+- consistent gradient/pink usage
+
+LIST / ROW SYSTEM:
+- row height: 56px
+- consistent vertical alignment
+- left icon + label + right action alignment fixed
+
+PROGRESS BARS:
+- consistent height
+- soft gray background
+- controlled accent color
+
+ICONS:
+- consistent size across app
+- consistent stroke weight
+- no mixing styles
+
+==================================================
+APPLY THIS SYSTEM TO ENTIRE APP
+==================================================
+
+Refactor ALL screens to use this system:
+
+- onboarding flow
+- paywall
+- welcome step
+- push notification screen
+- AI letter screens
+- search buddy
+- success screen
+- home screen
+- profile screen
+- cards and lists
+
+Remove any:
+- inconsistent spacing
+- inconsistent font sizes
+- different border radii
+- duplicate styles
+
+Everything must feel like ONE product.
+
+==================================================
+STRICT RULES
+==================================================
+
+- NO component should have custom spacing outside system
+- NO different radius values anywhere
+- NO inconsistent font sizes between screens
+- NO random color variations
+
+==================================================
+OUTPUT
+==================================================
+
+1. What global styles/tokens were created
+2. Which components were refactored
+3. Confirmation that all screens now follow the same system

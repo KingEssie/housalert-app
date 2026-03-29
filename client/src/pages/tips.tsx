@@ -142,8 +142,8 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
       <div className="px-6 flex flex-col gap-5">
         <ReferralPromoCard onOpen={() => setReferralModalOpen(true)} />
 
-        <div className="bg-white rounded-[12px] p-5 flex items-start gap-4" data-testid="card-tips-intro">
-          <div className="w-10 h-10 rounded-lg bg-[#F5F5F7] flex items-center justify-center flex-shrink-0">
+        <div className="bg-white rounded-[6px] border border-[#E5E7EB] p-4 flex items-start gap-4" data-testid="card-tips-intro">
+          <div className="w-10 h-10 rounded-[6px] bg-[#F5F5F7] flex items-center justify-center flex-shrink-0">
             <Lightbulb className="w-5 h-5 text-amber-400" />
           </div>
           <div>
@@ -162,10 +162,10 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
               <button
                 key={guide.id}
                 onClick={() => navigate(`/tip/${guide.id}`)}
-                className={`bg-white rounded-[12px] border border-[#E5E5E5] p-5 flex items-center gap-4 text-left hover:bg-[#FAFAFA] transition-all duration-200 active:scale-[0.985] w-full ${isRead ? "opacity-70" : ""}`}
+                className={`bg-white rounded-[6px] border border-[#E5E7EB] p-4 flex items-center gap-4 text-left hover:bg-[#FAFAFA] transition-all duration-200 active:scale-[0.985] w-full ${isRead ? "opacity-70" : ""}`}
                 data-testid={`card-guide-${guide.id}`}
               >
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 bg-ha-primary/10">
+                <div className="w-10 h-10 rounded-[6px] flex items-center justify-center flex-shrink-0 bg-ha-primary/10">
                   <Icon className="w-5 h-5 text-ha-primary" />
                 </div>
                 <div className="flex-1 min-w-0">

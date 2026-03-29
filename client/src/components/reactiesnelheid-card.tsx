@@ -138,7 +138,7 @@ export function ReactiesnelheidCard({
       data-testid="card-reactiesnelheid"
     >
       <div className="flex items-start gap-4">
-        <div className="w-10 h-10 rounded-lg bg-ha-surface flex items-center justify-center flex-shrink-0">
+        <div className="w-10 h-10 rounded-[6px] bg-ha-surface flex items-center justify-center flex-shrink-0">
           <Gauge className="w-5 h-5 text-ha-text-muted" />
         </div>
         <div className="flex-1 min-w-0">

@@ -7,7 +7,7 @@ function renderError(err: unknown) {
     root.innerHTML = `<div style="padding:32px;font-family:system-ui;color:#222222;text-align:center;">
       <h2>App konnte nicht geladen werden</h2>
       <p style="color:#717171;font-size:14px;margin-top:12px;">${err instanceof Error ? err.message : "Unbekannter Fehler"}</p>
-      <button onclick="location.reload()" style="margin-top:20px;padding:10px 24px;border-radius:8px;background:#F97316;color:#fff;border:none;font-size:16px;">Erneut versuchen</button>
+      <button onclick="location.reload()" style="margin-top:20px;padding:10px 24px;border-radius:6px;background:#e91e63;color:#fff;border:none;font-size:16px;">Erneut versuchen</button>
     </div>`;
   }
 }

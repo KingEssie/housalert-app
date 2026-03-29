@@ -375,7 +375,7 @@ export default function NewSearchPage() {
         </header>
         <div className="flex-1 flex items-center justify-center px-5 pt-[56px]">
           <div className="text-center max-w-sm w-full">
-            <div className="w-14 h-14 rounded-lg bg-white flex items-center justify-center mx-auto mb-4">
+            <div className="w-14 h-14 rounded-[6px] bg-white flex items-center justify-center mx-auto mb-4">
               <AlertCircle className="w-6 h-6 text-ha-primary" />
             </div>
             <h2 className="text-[18px] font-medium text-[#000] mb-2">{t("newSearch.limitTitle")}</h2>
@@ -509,7 +509,7 @@ function Step2Requirements({
             <select
               value={filters.priceMin}
               onChange={(e) => updateFilters({ priceMin: e.target.value })}
-              className="w-full h-[60px] px-4 pr-10 rounded-[12px] border border-[#E5E5E5] bg-white text-[15px] font-medium text-[#000] appearance-none cursor-pointer"
+              className="w-full h-[56px] px-4 pr-10 rounded-[6px] border border-[#E5E5E5] bg-white text-[15px] font-medium text-[#000] appearance-none cursor-pointer"
               data-testid="select-price-min"
             >
               {RENT_OPTIONS.map(opt => (
@@ -529,7 +529,7 @@ function Step2Requirements({
             <select
               value={filters.priceMax}
               onChange={(e) => updateFilters({ priceMax: e.target.value })}
-              className="w-full h-[60px] px-4 pr-10 rounded-[12px] border border-[#E5E5E5] bg-white text-[15px] font-medium text-[#000] appearance-none cursor-pointer"
+              className="w-full h-[56px] px-4 pr-10 rounded-[6px] border border-[#E5E5E5] bg-white text-[15px] font-medium text-[#000] appearance-none cursor-pointer"
               data-testid="select-price-max"
             >
               {RENT_OPTIONS.map(opt => (
@@ -549,7 +549,7 @@ function Step2Requirements({
             <select
               value={filters.bedroomsMin}
               onChange={(e) => updateFilters({ bedroomsMin: parseInt(e.target.value) })}
-              className="w-full h-[60px] px-4 pr-10 rounded-[12px] border border-[#E5E5E5] bg-white text-[15px] font-medium text-[#000] appearance-none cursor-pointer"
+              className="w-full h-[56px] px-4 pr-10 rounded-[6px] border border-[#E5E5E5] bg-white text-[15px] font-medium text-[#000] appearance-none cursor-pointer"
               data-testid="select-bedrooms"
             >
               {BEDROOM_OPTIONS.map(opt => (
@@ -569,7 +569,7 @@ function Step2Requirements({
             <select
               value={filters.sizeMin}
               onChange={(e) => updateFilters({ sizeMin: parseInt(e.target.value) })}
-              className="w-full h-[60px] px-4 pr-10 rounded-[12px] border border-[#E5E5E5] bg-white text-[15px] font-medium text-[#000] appearance-none cursor-pointer"
+              className="w-full h-[56px] px-4 pr-10 rounded-[6px] border border-[#E5E5E5] bg-white text-[15px] font-medium text-[#000] appearance-none cursor-pointer"
               data-testid="select-size"
             >
               {SIZE_OPTIONS.map(opt => (
@@ -589,7 +589,7 @@ function Step2Requirements({
             <select
               value={filters.furnished}
               onChange={(e) => updateFilters({ furnished: e.target.value })}
-              className="w-full h-[60px] px-4 pr-10 rounded-[12px] border border-[#E5E5E5] bg-white text-[15px] font-medium text-[#000] appearance-none cursor-pointer"
+              className="w-full h-[56px] px-4 pr-10 rounded-[6px] border border-[#E5E5E5] bg-white text-[15px] font-medium text-[#000] appearance-none cursor-pointer"
               data-testid="select-furnished"
             >
               {FURNISHED_OPTIONS.map(opt => (
@@ -656,7 +656,7 @@ function Step3ExtraFeatures({
         </p>
       </div>
 
-      <div className="bg-white rounded-lg border border-[#E5E5E5]">
+      <div className="bg-white rounded-[6px] border border-[#E5E7EB]">
         {EXTRA_FEATURE_OPTIONS.map((opt) => (
           <CheckboxRow
             key={opt.value}
@@ -671,7 +671,7 @@ function Step3ExtraFeatures({
       <div>
         <h3 className="text-[14px] font-medium text-[#000] mb-1">{t("newSearch.step3.preferencesTitle")}</h3>
         <p className="text-[12px] text-[#6B7280] mb-2">{t("newSearch.step3.preferencesSubtitle")}</p>
-        <div className="bg-white rounded-lg border border-[#E5E5E5]">
+        <div className="bg-white rounded-[6px] border border-[#E5E7EB]">
           {PREFERENCE_OPTIONS.map((opt) => (
             <div key={opt.value}>
               <CheckboxRow
@@ -721,7 +721,7 @@ function Step4TargetCategories({
         </p>
       </div>
 
-      <div className="bg-white rounded-lg border border-[#E5E5E5]">
+      <div className="bg-white rounded-[6px] border border-[#E5E7EB]">
         {TARGET_CATEGORY_OPTIONS.map((opt) => (
           <CheckboxRow
             key={opt.value}
@@ -834,7 +834,7 @@ function StepReview({
         </div>
 
         {!estimateLoading && (
-          <div className="rounded-[12px] bg-white border border-[#E5E5E5] p-5 flex items-center gap-3" data-testid="card-review-estimate">
+          <div className="rounded-[6px] bg-white border border-[#E5E5E5] p-5 flex items-center gap-3" data-testid="card-review-estimate">
             <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
               <Sparkles className="w-5 h-5 text-[#000]" />
             </div>
@@ -853,7 +853,7 @@ function StepReview({
           </div>
         )}
 
-        <div className="bg-white rounded-lg border border-[#E5E5E5]">
+        <div className="bg-white rounded-[6px] border border-[#E5E7EB]">
           <ReviewRow label={t("newSearch.step5.location")} value={locationLabel} onEdit={() => onEdit(1)} />
           {locationData.tab === "wijken" && (
             <ReviewRow label={t("newSearch.step5.districts")} value={districtsLabel} onEdit={() => onEdit(1)} />

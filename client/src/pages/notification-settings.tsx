@@ -272,7 +272,7 @@ export default function NotificationSettingsPage() {
                 Stuur test push
               </button>
               {testPushResult && (
-                <div className={`mt-3 text-xs rounded-lg p-3 font-mono ${testPushResult.success ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`} data-testid="test-push-result">
+                <div className={`mt-3 text-xs rounded-[6px] p-3 font-mono ${testPushResult.success ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`} data-testid="test-push-result">
                   <p>{testPushResult.success ? "Verzonden" : "Mislukt"} — {testPushResult.tokens_found} token(s)</p>
                   {testPushResult.error && <p className="mt-1 break-all">{testPushResult.error}</p>}
                 </div>
@@ -284,7 +284,7 @@ export default function NotificationSettingsPage() {
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="w-full h-[52px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium flex items-center justify-center transition-colors disabled:opacity-50"
+                  className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium flex items-center justify-center transition-colors disabled:opacity-50"
                   data-testid="button-save"
                 >
                   {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : t("common.save")}

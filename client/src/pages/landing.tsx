@@ -48,7 +48,7 @@ export default function LandingPage() {
             </p>
             <Button
               size="lg"
-              className="h-[56px] px-10 rounded-full text-[16px] font-medium bg-primary text-primary-foreground"
+              className="h-[56px] px-10 rounded-[6px] text-[16px] font-medium bg-primary text-primary-foreground"
               onClick={() => navigate("/onboarding/intro")}
               data-testid="button-start-search"
             >
@@ -75,8 +75,8 @@ export default function LandingPage() {
               {t("landing.featuresHeading")}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-card rounded-lg p-6 shadow-sm" data-testid="card-feature-search">
-                <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "var(--ha-primary-light)" }}>
+              <div className="bg-card rounded-[6px] p-6 shadow-sm" data-testid="card-feature-search">
+                <div className="w-12 h-12 rounded-[6px] flex items-center justify-center mb-5" style={{ backgroundColor: "var(--ha-primary-light)" }}>
                   <Search className="w-6 h-6" style={{ color: "rgb(var(--ha-primary))" }} />
                 </div>
                 <h3 className="text-[18px] font-medium mb-2" style={{ color: "rgb(var(--ha-text))" }}>{t("landing.smartSearch")}</h3>
@@ -85,8 +85,8 @@ export default function LandingPage() {
                 </p>
               </div>
 
-              <div className="bg-card rounded-lg p-6 shadow-sm" data-testid="card-feature-alerts">
-                <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "var(--ha-primary-light)" }}>
+              <div className="bg-card rounded-[6px] p-6 shadow-sm" data-testid="card-feature-alerts">
+                <div className="w-12 h-12 rounded-[6px] flex items-center justify-center mb-5" style={{ backgroundColor: "var(--ha-primary-light)" }}>
                   <Bell className="w-6 h-6" style={{ color: "rgb(var(--ha-primary))" }} />
                 </div>
                 <h3 className="text-[18px] font-medium mb-2" style={{ color: "rgb(var(--ha-text))" }}>{t("landing.instantAlertsTitle")}</h3>
@@ -95,8 +95,8 @@ export default function LandingPage() {
                 </p>
               </div>
 
-              <div className="bg-card rounded-lg p-6 shadow-sm" data-testid="card-feature-fast">
-                <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-5" style={{ backgroundColor: "var(--ha-primary-light)" }}>
+              <div className="bg-card rounded-[6px] p-6 shadow-sm" data-testid="card-feature-fast">
+                <div className="w-12 h-12 rounded-[6px] flex items-center justify-center mb-5" style={{ backgroundColor: "var(--ha-primary-light)" }}>
                   <Zap className="w-6 h-6" style={{ color: "rgb(var(--ha-primary))" }} />
                 </div>
                 <h3 className="text-[18px] font-medium mb-2" style={{ color: "rgb(var(--ha-text))" }}>{t("landing.fasterTitle")}</h3>
@@ -137,7 +137,7 @@ export default function LandingPage() {
         </section>
 
         <section className="px-6 pb-24 md:pb-32">
-          <div className="max-w-xl mx-auto bg-card rounded-lg p-8 md:p-12 text-center shadow-sm">
+          <div className="max-w-xl mx-auto bg-card rounded-[6px] p-8 md:p-12 text-center shadow-sm">
             <h2 className="text-[32px] font-medium tracking-[-0.03em] leading-[1.1] mb-4" style={{ color: "rgb(var(--ha-text))" }} data-testid="text-cta-bottom">
               {t("landing.ctaBottom")}
             </h2>
@@ -146,7 +146,7 @@ export default function LandingPage() {
             </p>
             <Button
               size="lg"
-              className="h-[56px] px-10 rounded-full text-[16px] font-medium bg-primary text-primary-foreground"
+              className="h-[56px] px-10 rounded-[6px] text-[16px] font-medium bg-primary text-primary-foreground"
               onClick={() => navigate("/onboarding/intro")}
               data-testid="button-start-search-bottom"
             >

@@ -94,7 +94,7 @@ export default function ViewingTipsPage() {
             return (
               <div
                 key={idx}
-                className="bg-white rounded-lg overflow-hidden"
+                className="bg-white rounded-[6px] border border-[#E5E7EB] overflow-hidden"
                 data-testid={`card-tips-section-${idx}`}
               >
                 <div className="flex items-center gap-3 p-6 pb-3">

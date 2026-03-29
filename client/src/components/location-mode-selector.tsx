@@ -358,7 +358,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
             <button
               key={tab.id}
               onClick={() => setTab(tab.id)}
-              className={`flex-1 py-2.5 text-[13px] font-medium text-center rounded-lg transition-all ${
+              className={`flex-1 py-2.5 text-[13px] font-medium text-center rounded-[6px] transition-all ${
                 value.tab === tab.id
                   ? "bg-ha-card text-ha-text shadow-sm"
                   : "text-ha-text hover:text-ha-text"
@@ -401,7 +401,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
               onChange={(e) => handleCityInput(e.target.value)}
               onFocus={() => { if (hasCityResults && !value.place) setCityOpen(true); }}
               placeholder={t("location.searchCity")}
-              className={`w-full min-h-[60px] rounded-[6px] bg-ha-surface border px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-secondary ${
+              className={`w-full min-h-[56px] rounded-[6px] bg-ha-surface border px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-secondary ${
                 value.place ? "border-ha-primary bg-ha-surface/30" : "border-ha-card-border"
               }`}
               data-testid="input-city-search"
@@ -422,7 +422,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
             </div>
           )}
           {cityOpen && hasCityResults && (
-            <div className="absolute top-full left-0 right-0 mt-2 bg-ha-card border border-ha-card-border rounded-lg shadow-lg max-h-[260px] overflow-y-auto z-30">
+            <div className="absolute top-full left-0 right-0 mt-2 bg-ha-card border border-ha-card-border rounded-[6px] shadow-lg max-h-[260px] overflow-y-auto z-30">
               {usingGoogleForCity && googleCitySuggestions.length > 0 ? (
                 <>
                   {googleCitySuggestions.map((s) => (
@@ -497,7 +497,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
             <select
               value={value.radiusKm}
               onChange={(e) => onChange({ ...value, radiusKm: parseInt(e.target.value) })}
-              className="w-full h-[52px] pl-11 pr-4 rounded-lg border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text-muted cursor-pointer appearance-none"
+              className="w-full h-[56px] pl-11 pr-4 rounded-[6px] border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text-muted cursor-pointer appearance-none"
               data-testid="select-radius"
             >
               <option value="2">2 km</option>
@@ -523,7 +523,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                 onChange={(e) => handleDestInput(e.target.value)}
                 onFocus={() => { if (hasDestResults && value.commuteLat == null) setDestOpen(true); }}
                 placeholder={t("location.searchAddress")}
-                className={`w-full min-h-[60px] rounded-[6px] bg-ha-surface border px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-secondary ${
+                className={`w-full min-h-[56px] rounded-[6px] bg-ha-surface border px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-secondary ${
                   value.commuteLat != null ? "border-ha-primary bg-ha-surface/30" : "border-ha-card-border"
                 }`}
                 data-testid="input-commute-destination"
@@ -544,7 +544,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
               </div>
             )}
             {destOpen && hasDestResults && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-ha-card border border-ha-card-border rounded-lg shadow-lg max-h-[260px] overflow-y-auto z-30">
+              <div className="absolute top-full left-0 right-0 mt-2 bg-ha-card border border-ha-card-border rounded-[6px] shadow-lg max-h-[260px] overflow-y-auto z-30">
                 {usingGoogleForDest && googleDestSuggestions.length > 0 ? (
                   <>
                     {googleDestSuggestions.map((s) => (
@@ -597,7 +597,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                 <button
                   key={mode.id}
                   onClick={() => onChange({ ...value, commuteMode: mode.id })}
-                  className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-lg text-xs font-medium transition-all ${
+                  className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-[6px] text-xs font-medium transition-all ${
                     value.commuteMode === mode.id
                       ? "bg-ha-primary text-white"
                       : "bg-ha-surface text-ha-text hover:bg-ha-card-border"
@@ -618,7 +618,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
               <select
                 value={value.commuteMinutes}
                 onChange={(e) => onChange({ ...value, commuteMinutes: parseInt(e.target.value) })}
-                className="w-full h-[52px] pl-11 pr-4 rounded-lg border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text-muted cursor-pointer appearance-none"
+                className="w-full h-[56px] pl-11 pr-4 rounded-[6px] border border-transparent bg-ha-surface text-[15px] font-medium text-ha-text-muted cursor-pointer appearance-none"
                 data-testid="select-commute-minutes"
               >
                 <option value="15">15 min</option>
@@ -633,7 +633,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       )}
 
       {showMap && (
-        <div className="rounded-lg overflow-hidden border border-ha-card-border relative" style={{ height: "200px", maxHeight: mapMaxHeight || "none", zIndex: 0 }} data-testid="map-preview">
+        <div className="rounded-[6px] overflow-hidden border border-ha-card-border relative" style={{ height: "200px", maxHeight: mapMaxHeight || "none", zIndex: 0 }} data-testid="map-preview">
           <MapContainer
             center={hasLocation ? [mapLat!, mapLng!] : [defaultLat, defaultLng]}
             zoom={hasLocation ? (value.tab === "radius" ? radiusToZoom(value.radiusKm) : 11) : defaultZoom}
@@ -696,7 +696,7 @@ function DistrictMultiSelect({
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between min-h-[52px] px-4 rounded-[6px] bg-ha-surface border border-ha-card-border text-[15px] text-ha-text-muted hover:bg-ha-surface transition-colors"
+        className="w-full flex items-center justify-between min-h-[56px] px-4 rounded-[6px] bg-ha-surface border border-ha-card-border text-[15px] text-ha-text-muted hover:bg-ha-surface transition-colors"
         data-testid="button-district-dropdown"
       >
         <span className={selected.length > 0 ? "font-medium" : "text-ha-text-secondary"}>
@@ -708,7 +708,7 @@ function DistrictMultiSelect({
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-ha-card border border-ha-card-border rounded-lg shadow-lg max-h-[260px] overflow-y-auto z-30">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-ha-card border border-ha-card-border rounded-[6px] shadow-lg max-h-[260px] overflow-y-auto z-30">
           {districts.map((d) => (
             <button
               key={d}

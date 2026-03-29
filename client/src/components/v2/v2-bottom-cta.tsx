@@ -13,7 +13,7 @@ interface V2BottomCTAProps {
   children?: ReactNode;
 }
 
-const BRAND = "#F97316";
+const BRAND = "#e91e63";
 
 export function V2BottomCTA({
   primaryLabel,
@@ -34,7 +34,7 @@ export function V2BottomCTA({
         <button
           onClick={onPrimary}
           disabled={primaryDisabled || primaryLoading}
-          className="w-full h-[52px] rounded-full text-[16px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_4px_14px_rgba(249,115,22,0.3)]"
+          className="w-full h-[56px] rounded-[6px] text-[16px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_4px_14px_rgba(233,30,99,0.3)]"
           style={{ backgroundColor: BRAND }}
           data-testid="button-v2-primary-cta"
         >
@@ -48,7 +48,7 @@ export function V2BottomCTA({
         {secondaryLabel && onSecondary && (
           <button
             onClick={onSecondary}
-            className="w-full h-[46px] rounded-full text-[14px] font-semibold text-white border border-white/20 bg-transparent hover:bg-white/5 transition-colors active:scale-[0.97]"
+            className="w-full h-[56px] rounded-[6px] text-[14px] font-semibold text-white border border-white/20 bg-transparent hover:bg-white/5 transition-colors active:scale-[0.97]"
             data-testid="button-v2-secondary-cta"
           >
             {secondaryLabel}

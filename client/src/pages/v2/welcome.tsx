@@ -10,7 +10,7 @@ import { useV2Onboarding } from "@/lib/v2-onboarding-store";
 import { Eye, EyeOff, ChevronDown, ArrowRight, Loader2, Star } from "lucide-react";
 import { HousAlertLogo } from "@/components/housalert-logo";
 
-const ACCENT = "#F97316";
+const ACCENT = "#e91e63";
 const BG = "#1A1A2E";
 
 export default function V2WelcomePage() {
@@ -114,14 +114,14 @@ export default function V2WelcomePage() {
         <div className="relative">
           <button
             onClick={() => setShowLangPicker(!showLangPicker)}
-            className="flex items-center gap-1 text-[13px] font-medium text-white/50 hover:text-white/70 transition-colors px-2.5 py-1.5 rounded-lg hover:bg-white/5"
+            className="flex items-center gap-1 text-[13px] font-medium text-white/50 hover:text-white/70 transition-colors px-2.5 py-1.5 rounded-[6px] hover:bg-white/5"
             data-testid="button-v2-language"
           >
             {currentLang.short}
             <ChevronDown className="w-3.5 h-3.5" />
           </button>
           {showLangPicker && (
-            <div className="absolute right-0 top-full mt-1.5 bg-[#252540] border border-white/10 rounded-xl shadow-2xl py-1 z-50 min-w-[150px]">
+            <div className="absolute right-0 top-full mt-1.5 bg-[#252540] border border-white/10 rounded-[6px] shadow-2xl py-1 z-50 min-w-[150px]">
               {languages.map((l) => (
                 <button
                   key={l.code}
@@ -132,7 +132,7 @@ export default function V2WelcomePage() {
                   }}
                   className={`w-full px-4 py-2.5 text-left text-[14px] flex items-center justify-between hover:bg-white/5 transition-colors ${
                     locale === l.code
-                      ? "text-[#F97316] font-medium"
+                      ? "text-[#e91e63] font-medium"
                       : "text-white/70"
                   }`}
                   data-testid={`lang-${l.code}`}
@@ -167,7 +167,7 @@ export default function V2WelcomePage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t("v2.welcome.emailPlaceholder")}
               autoComplete="email"
-              className="w-full h-[60px] rounded-2xl bg-white px-5 text-[16px] text-[#1A1A2E] placeholder-[#B0B0B0] outline-none border-2 border-transparent focus:border-[#F97316] transition-colors"
+              className="w-full h-[56px] rounded-[6px] bg-white px-5 text-[16px] text-[#1A1A2E] placeholder-[#B0B0B0] outline-none border-2 border-transparent focus:border-[#e91e63] transition-colors"
               data-testid="input-v2-email"
             />
           </div>
@@ -183,7 +183,7 @@ export default function V2WelcomePage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t("v2.welcome.passwordPlaceholder")}
                 autoComplete="current-password"
-                className="w-full h-[60px] rounded-2xl bg-white px-5 pr-14 text-[16px] text-[#1A1A2E] placeholder-[#B0B0B0] outline-none border-2 border-transparent focus:border-[#F97316] transition-colors"
+                className="w-full h-[56px] rounded-[6px] bg-white px-5 pr-14 text-[16px] text-[#1A1A2E] placeholder-[#B0B0B0] outline-none border-2 border-transparent focus:border-[#e91e63] transition-colors"
                 data-testid="input-v2-password"
               />
               <button
@@ -205,7 +205,7 @@ export default function V2WelcomePage() {
         <div className="flex justify-end mt-3 mb-7">
           <button
             onClick={handleForgotPassword}
-            className="text-[13px] font-medium text-[#F97316]/70 hover:text-[#F97316] transition-colors py-1"
+            className="text-[13px] font-medium text-[#e91e63]/70 hover:text-[#e91e63] transition-colors py-1"
             data-testid="button-v2-forgot-password"
           >
             {t("v2.welcome.forgotPassword")}
@@ -215,10 +215,10 @@ export default function V2WelcomePage() {
         <button
           onClick={handleLogin}
           disabled={loading || !email || !password}
-          className="w-full h-[56px] rounded-full text-[16px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="w-full h-[56px] rounded-[6px] text-[16px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           style={{
             backgroundColor: ACCENT,
-            boxShadow: "0 6px 20px rgba(249, 115, 22, 0.35)",
+            boxShadow: "0 6px 20px rgba(233, 30, 99, 0.35)",
           }}
           data-testid="button-v2-login"
         >
@@ -242,7 +242,7 @@ export default function V2WelcomePage() {
 
         <button
           onClick={() => navigate("/v2/onboarding/intro")}
-          className="w-full h-[56px] rounded-full text-[15px] font-semibold transition-all active:scale-[0.97] flex items-center justify-center"
+          className="w-full h-[56px] rounded-[6px] text-[15px] font-semibold transition-all active:scale-[0.97] flex items-center justify-center"
           style={{
             color: ACCENT,
             border: `1.5px solid ${ACCENT}`,

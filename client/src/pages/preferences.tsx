@@ -189,7 +189,7 @@ export default function PreferencesPage() {
 
       {showLangSheet && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowLangSheet(false)}>
-          <div className="bg-white w-full max-w-[400px] rounded-t-[12px] sm:rounded-[12px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
+          <div className="bg-white w-full max-w-[400px] rounded-t-[6px] sm:rounded-[6px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
             <p className="text-[17px] font-bold text-[#000] text-center mb-4">{t("profile.language")}</p>
             {LANG_OPTIONS.map(lang => (
               <button

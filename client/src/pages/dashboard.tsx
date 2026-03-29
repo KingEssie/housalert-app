@@ -172,7 +172,7 @@ function MatchCard({
       onClick={handleCardClick}
       data-testid={`card-match-${match.listing_id}`}
     >
-      <div className="rounded-[12px] overflow-hidden bg-white border border-[#E5E5E5] shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <div className="rounded-[6px] overflow-hidden bg-white border border-[#E5E5E5] shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
         <div className="relative">
           {hasImage && !imgError ? (
             <img
@@ -287,7 +287,7 @@ function ProfileCard({
 
   return (
     <div
-      className={`rounded-[12px] border border-[#E5E5E5] bg-white px-5 py-4 ${deleting ? "opacity-50 pointer-events-none" : ""}`}
+      className={`rounded-[6px] border border-[#E5E5E5] bg-white px-5 py-4 ${deleting ? "opacity-50 pointer-events-none" : ""}`}
       data-testid={`card-profile-${profile.id}`}
     >
       <div className="flex items-center gap-3">
@@ -367,7 +367,7 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
     return (
       <div className="flex flex-col gap-3" data-testid="section-recente-matches-empty">
         <h2 className="text-section-title">{t("home.recentMatches")}</h2>
-        <div className="rounded-[12px] border border-[#E5E5E5] bg-white p-6 text-center">
+        <div className="rounded-[6px] border border-[#E5E5E5] bg-white p-6 text-center">
           <p className="text-[14px] text-[#6B7280] mb-4 leading-relaxed">
             {t("home.matchesWillAppear")}
           </p>
@@ -390,7 +390,7 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
         <div className="flex gap-[14px] overflow-x-auto pb-1 scrollbar-none">
           {[1, 2, 3].map((i) => (
             <div key={i} className="flex-shrink-0 w-[72vw] max-w-[280px]">
-              <div className="w-full bg-[#F0F0F0] rounded-[12px] animate-pulse" style={{ aspectRatio: "4/3" }} />
+              <div className="w-full bg-[#F0F0F0] rounded-[6px] animate-pulse" style={{ aspectRatio: "4/3" }} />
               <div className="pt-2.5 flex flex-col gap-2">
                 <div className="h-4 bg-white rounded-md w-2/3 animate-pulse" />
                 <div className="h-3.5 bg-white rounded-md w-full animate-pulse" />
@@ -407,7 +407,7 @@ function RecenteMatchesSection({ accessToken, setActiveTab, subscription, naviga
     return (
       <div className="flex flex-col gap-3" data-testid="section-recente-matches-empty">
         <h2 className="text-section-title">{t("home.recentMatches")}</h2>
-        <div className="rounded-[12px] border border-[#E5E5E5] bg-white p-6 text-center">
+        <div className="rounded-[6px] border border-[#E5E5E5] bg-white p-6 text-center">
           <p className="text-[14px] text-[#6B7280] leading-relaxed">
             {t("home.firstMatchesWillAppear")}
           </p>
@@ -475,7 +475,7 @@ function RecentMatchCard({ match }: { match: ApiMatch }) {
       }}
       data-testid={`card-recent-match-${match.listing_id}`}
     >
-      <div className="rounded-[12px] overflow-hidden bg-white border border-[#E5E5E5] shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <div className="rounded-[6px] overflow-hidden bg-white border border-[#E5E5E5] shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
         <div className="relative">
           {hasImage ? (
             <img
@@ -580,7 +580,7 @@ function RecentlyViewedCard({ match }: { match: ApiMatch }) {
       }}
       data-testid={`card-recently-viewed-${match.listing_id}`}
     >
-      <div className="rounded-[12px] overflow-hidden bg-white border border-[#E5E5E5] shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+      <div className="rounded-[6px] overflow-hidden bg-white border border-[#E5E5E5] shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
         <div className="relative">
           {hasImage ? (
             <img
@@ -696,7 +696,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
           {profiles.map((p) => (
             <div
               key={p.id}
-              className="w-full bg-white rounded-[12px] border border-[#E5E5E5] p-4 flex items-center gap-3.5"
+              className="w-full bg-white rounded-[6px] border border-[#E5E5E5] p-4 flex items-center gap-3.5"
               data-testid={`card-search-profile-${p.id}`}
             >
               <div className="flex-1 min-w-0">
@@ -997,7 +997,7 @@ function HomeTab({
       <HomeTipsCompletionCard setActiveTab={setActiveTab} />
 
       {subscription.isTrial && subscription.trialEndsAt && (
-        <div className="rounded-[12px] border border-[#E5E5E5] bg-white px-5 py-4 flex items-center gap-3.5" data-testid="banner-trial">
+        <div className="rounded-[6px] border border-[#E5E5E5] bg-white px-5 py-4 flex items-center gap-3.5" data-testid="banner-trial">
           <div className="w-10 h-10 rounded-[6px] bg-[#F5F5F7] flex items-center justify-center flex-shrink-0">
             <Crown className="w-[18px] h-[18px] text-amber-400" />
           </div>
@@ -1016,7 +1016,7 @@ function HomeTab({
 
       <RecentlyViewedSection accessToken={accessToken} />
 
-      <div className="rounded-[12px] bg-[#1E1B4B] p-5" data-testid="card-home-referral">
+      <div className="rounded-[6px] bg-[#1E1B4B] p-5" data-testid="card-home-referral">
         <p className="text-[11px] font-semibold text-ha-primary tracking-wider uppercase mb-1" data-testid="text-referral-label">
           {t("referral.homeLabel")}
         </p>
@@ -1236,7 +1236,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           ))}
         </div>
       ) : apiMatchesQuery.isError ? (
-        <div className="bg-white rounded-[12px] border border-[#E5E5E5] p-10 flex flex-col items-center text-center gap-4">
+        <div className="bg-white rounded-[6px] border border-[#E5E5E5] p-10 flex flex-col items-center text-center gap-4">
           <div className="w-14 h-14 rounded-[6px] bg-[#F5F5F7] flex items-center justify-center">
             <AlertCircle className="w-6 h-6 text-[#6B7280]" />
           </div>
@@ -1347,7 +1347,7 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
           </button>
           <button
             onClick={onCancel}
-            className="w-full h-[52px] rounded-[6px] border border-white/20 text-[#000] text-[16px] font-medium hover:bg-white/5 transition-colors"
+            className="w-full h-[56px] rounded-[6px] border border-white/20 text-[#000] text-[16px] font-medium hover:bg-white/5 transition-colors"
             data-testid="button-delete-cancel"
           >
             {t("filters.deleteNo")}
@@ -1501,7 +1501,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
           )}
 
           <div className="flex flex-col">
-            <label className="w-full h-[52px] flex items-center justify-center gap-2 rounded-full bg-ha-primary text-white text-[15px] font-semibold cursor-pointer active:bg-ha-primary-hover transition-colors">
+            <label className="w-full h-[56px] flex items-center justify-center gap-2 rounded-full bg-ha-primary text-white text-[15px] font-semibold cursor-pointer active:bg-ha-primary-hover transition-colors">
               <Camera className="w-[18px] h-[18px]" />
               {photoUrl ? t("profile.photo.choose") : t("profile.photo.upload")}
               <input
@@ -1519,7 +1519,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
             {photoUrl && (
               <button
                 onClick={onRemove}
-                className="mt-3 w-full h-[52px] flex items-center justify-center gap-2 rounded-full border border-[#E5E5E5] text-[#000] text-[15px] font-medium active:bg-[#F5F5F7] transition-colors"
+                className="mt-3 w-full h-[56px] flex items-center justify-center gap-2 rounded-full border border-[#E5E5E5] text-[#000] text-[15px] font-medium active:bg-[#F5F5F7] transition-colors"
                 data-testid="button-remove-photo"
               >
                 <Trash2 className="w-[18px] h-[18px]" />
@@ -1529,7 +1529,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
 
             <button
               onClick={onClose}
-              className="mt-3 w-full h-[52px] flex items-center justify-center rounded-full text-[#000]/70 text-[15px] font-medium active:bg-[#F5F5F7] transition-colors"
+              className="mt-3 w-full h-[56px] flex items-center justify-center rounded-full text-[#000]/70 text-[15px] font-medium active:bg-[#F5F5F7] transition-colors"
               data-testid="button-cancel-photo"
             >
               {t("common.cancel")}
@@ -1928,7 +1928,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                   </button>
                   <button
                     onClick={() => { setBuddyExpanded(false); setBuddyEmail(""); }}
-                    className="h-[48px] px-5 rounded-[6px] text-[#6B7280] text-[14px] font-medium active:bg-[#F5F5F7] transition-colors"
+                    className="h-[56px] px-5 rounded-[6px] text-[#6B7280] text-[14px] font-medium active:bg-[#F5F5F7] transition-colors"
                     data-testid="button-buddy-cancel"
                   >
                     {t("profileDetails.cancel")}
@@ -1954,7 +1954,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       {(user?.email?.toLowerCase() === "martin.essie87@gmail.com") && (
         <button
           onClick={() => navigate("/admin/portal")}
-          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+62px)] left-1/2 -translate-x-1/2 z-40 bg-ha-profile-header text-white text-[14px] font-medium px-4 py-2.5 rounded-[8px] shadow-[0_2px_10px_rgba(30,27,75,0.2)] active:scale-95 transition-transform"
+          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+62px)] left-1/2 -translate-x-1/2 z-40 bg-ha-profile-header text-white text-[14px] font-medium px-4 py-2.5 rounded-[6px] shadow-[0_2px_10px_rgba(30,27,75,0.2)] active:scale-95 transition-transform"
           data-testid="button-admin-portal"
         >
           {t("profile.adminMode")}
@@ -2079,7 +2079,7 @@ export default function DashboardPage() {
     return (
       <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-white animate-pulse" />
+          <div className="w-8 h-8 rounded-[6px] bg-white animate-pulse" />
           <p className="text-[#000]/70 text-sm">{t("common.loading")}</p>
         </div>
       </div>

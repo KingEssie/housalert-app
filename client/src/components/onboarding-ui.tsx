@@ -99,7 +99,7 @@ export function OBFooter({
         <div className="flex items-center gap-3">
           <button
             onClick={onBack}
-            className="w-[56px] h-[56px] rounded-[12px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
+            className="w-[56px] h-[56px] rounded-[6px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
             style={{
               border: "1.5px solid rgba(255,255,255,0.25)",
               backgroundColor: "transparent",

@@ -323,7 +323,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
                 onClick={() => !task.completed && onTaskClick(task.id)}
                 className={`w-full flex items-center gap-3 py-3.5 border-b border-ha-surface last:border-0 text-left ${
                   task.completed ? "opacity-60" : "hover:bg-ha-surface"
-                } transition-colors -mx-1 px-1 rounded-lg`}
+                } transition-colors -mx-1 px-1 rounded-[6px]`}
                 data-testid={`task-${task.id}`}
                 disabled={task.completed}
               >
@@ -461,7 +461,7 @@ export function TaskModal({
                 value={buddyEmail}
                 onChange={(e) => setBuddyEmail(e.target.value)}
                 placeholder={t("profileStrength.buddyPlaceholder")}
-                className="w-full h-[60px] px-4 rounded-[6px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
+                className="w-full h-[56px] px-4 rounded-[6px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
                 data-testid="input-buddy-email"
               />
               <p className="text-[14px] text-ha-text">{t("profileStrength.buddyDesc")}</p>
@@ -518,7 +518,7 @@ export function TaskModal({
                       <button
                         key={item.id}
                         onClick={() => setChecklist((prev) => ({ ...prev, [item.id]: !prev[item.id] }))}
-                        className="flex items-center gap-3 py-3 px-3 rounded-lg hover:bg-ha-surface transition-colors text-left"
+                        className="flex items-center gap-3 py-3 px-3 rounded-[6px] hover:bg-ha-surface transition-colors text-left"
                         data-testid={`check-${item.id}`}
                       >
                         {checklist[item.id] ? (
@@ -555,7 +555,7 @@ export function TaskModal({
                 value={phoneInput}
                 onChange={(e) => setPhoneInput(e.target.value)}
                 placeholder="+49 170 1234567"
-                className="w-full h-[60px] px-4 rounded-[6px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
+                className="w-full h-[56px] px-4 rounded-[6px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
                 data-testid="input-phone"
               />
               <p className="text-[14px] text-ha-text">{t("profileStrength.phoneDesc")}</p>
@@ -658,7 +658,7 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
                 onClick={() => !task.completed && onTaskClick(task.id)}
                 className={`w-full flex items-center gap-3 py-3.5 border-b border-ha-surface last:border-0 text-left ${
                   task.completed ? "opacity-60" : "hover:bg-ha-surface"
-                } transition-colors -mx-1 px-1 rounded-lg`}
+                } transition-colors -mx-1 px-1 rounded-[6px]`}
                 data-testid={`task-${task.id}`}
                 disabled={task.completed}
               >
@@ -808,7 +808,7 @@ export function PrepTaskModal({
               <Button
                 variant="outline"
                 onClick={handleCopyShare}
-                className="w-full h-[48px] rounded-lg text-[15px] font-medium border-ha-card-border text-ha-text"
+                className="w-full h-[56px] rounded-[6px] text-[15px] font-medium border-ha-card-border text-ha-text"
                 data-testid="button-copy-share"
               >
                 <Copy className="w-4 h-4 mr-2" />
@@ -883,7 +883,7 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
       <div className="flex flex-col gap-2.5 mb-4">
         {channelList.map(({ key, label, enabled, Icon }) => (
           <div key={key} className="flex items-center gap-3" data-testid={`channel-status-${key}`}>
-            <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${enabled ? "bg-ha-surface" : "bg-ha-surface"}`}>
+            <div className={`w-7 h-7 rounded-[6px] flex items-center justify-center ${enabled ? "bg-ha-surface" : "bg-ha-surface"}`}>
               <Icon className={`w-3.5 h-3.5 ${enabled ? "text-ha-text" : "text-ha-text"}`} />
             </div>
             <span className={`text-[14px] flex-1 ${enabled ? "text-ha-text font-medium" : "text-ha-text"}`}>
@@ -962,7 +962,7 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
           return (
             <div
               key={step.id}
-              className={`flex items-center gap-3 ${!step.done && route ? "cursor-pointer hover:bg-ha-surface -mx-2 px-2 py-1 rounded-lg transition-colors" : "py-0.5"}`}
+              className={`flex items-center gap-3 ${!step.done && route ? "cursor-pointer hover:bg-ha-surface -mx-2 px-2 py-1 rounded-[6px] transition-colors" : "py-0.5"}`}
               onClick={() => {
                 if (!step.done && route) navigate(route);
               }}
@@ -987,7 +987,7 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
       </div>
 
       {allDone && (
-        <div className="mt-4 bg-ha-success/10 rounded-lg px-3.5 py-2.5">
+        <div className="mt-4 bg-ha-success/10 rounded-[6px] px-3.5 py-2.5">
           <p className="text-[12px] text-ha-success font-medium flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5" />
             {t("profileStrength.readyFast")}
@@ -1012,7 +1012,7 @@ export function SpeedBanner({ navigate }: { navigate: (path: string) => void }) 
   if (allDone) {
     return (
       <div
-        className="bg-ha-surface rounded-lg p-4 flex items-center gap-3 cursor-pointer hover:bg-ha-surface/80 transition-colors"
+        className="bg-ha-surface rounded-[6px] p-4 flex items-center gap-3 cursor-pointer hover:bg-ha-surface/80 transition-colors"
         onClick={() => navigate("/dashboard")}
         data-testid="banner-speed-ready"
       >
@@ -1028,7 +1028,7 @@ export function SpeedBanner({ navigate }: { navigate: (path: string) => void }) 
 
   return (
     <div
-      className="bg-ha-surface rounded-lg p-4 flex items-center gap-3 cursor-pointer hover:bg-ha-surface/80 transition-colors"
+      className="bg-ha-surface rounded-[6px] p-4 flex items-center gap-3 cursor-pointer hover:bg-ha-surface/80 transition-colors"
       onClick={() => navigate("/dashboard")}
       data-testid="banner-speed-incomplete"
     >

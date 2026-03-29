@@ -5,7 +5,7 @@ import { useTranslation } from "@/i18n";
 
 function GuideSection({ title, items }: { title: string; items: string[] }) {
   return (
-    <div className="bg-white rounded-[12px] border border-[#E5E5E5] p-5">
+    <div className="bg-white rounded-[6px] border border-[#E5E7EB] p-4">
       <h3 className="text-[16px] font-medium text-[#000] mb-3">{title}</h3>
       <ul className="flex flex-col gap-2.5">
         {items.map((item, i) => (
