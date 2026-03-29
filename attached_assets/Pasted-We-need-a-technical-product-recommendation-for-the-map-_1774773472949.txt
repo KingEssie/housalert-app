@@ -1,0 +1,97 @@
+We need a technical product recommendation for the map provider used in HousAlert.
+
+IMPORTANT:
+Do NOT migrate anything yet.
+Do NOT change code yet.
+First perform an evaluation only.
+
+CONTEXT:
+HousAlert is a premium rental alert app focused on Germany.
+The map is used in onboarding and may later be used more broadly in the product.
+
+Current issue:
+- we currently see OpenStreetMap-style rendering
+- the map should feel premium, fast, mobile-friendly, and scalable
+- we want to know whether to:
+  1. keep the current map stack
+  2. migrate to Mapbox
+  3. migrate to Google Maps
+
+YOUR TASK:
+Evaluate the best option for HousAlert based on product needs.
+
+==================================================
+PRODUCT REQUIREMENTS
+==================================================
+
+The map solution should support:
+
+- premium mobile UI feel
+- fast rendering on mobile
+- reliable place search / geocoding
+- clean city search and neighborhood selection
+- future support for radius selection
+- future support for polygons / districts if needed
+- easy styling to match the app design
+- reasonable cost for an early-stage startup
+- good developer experience and maintainability
+
+==================================================
+COMPARE THESE OPTIONS
+==================================================
+
+1. Current stack (OpenStreetMap + current implementation)
+2. Mapbox
+3. Google Maps
+
+==================================================
+OUTPUT FORMAT
+==================================================
+
+Provide:
+
+1. Current stack analysis
+- pros
+- cons
+- whether it is good enough short term
+
+2. Mapbox analysis
+- pros
+- cons
+- likely fit for HousAlert
+
+3. Google Maps analysis
+- pros
+- cons
+- likely fit for HousAlert
+
+4. Recommendation
+Choose ONE of these:
+- stay on current stack for now
+- move to Mapbox
+- move to Google Maps
+
+5. Decision reasoning
+Explain specifically for HousAlert:
+- onboarding UX
+- scale
+- costs
+- implementation complexity
+- future product flexibility
+
+6. Migration risk
+If migration is recommended, explain:
+- what would need to change
+- how risky it is
+- whether it should be done now or later
+
+==================================================
+IMPORTANT CONSTRAINT
+==================================================
+
+Do NOT start implementation.
+Do NOT modify files.
+This is an evaluation/report only.
+
+At the end, give a clear final advice in one sentence:
+"Best choice for HousAlert right now: X"
