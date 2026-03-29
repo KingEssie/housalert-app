@@ -33,6 +33,7 @@ export default function ProfileEditPage() {
   const [value, setValue] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [buddyRevokedByBuddy, setBuddyRevokedByBuddy] = useState(false);
 
   useEffect(() => {
     if (!session?.access_token || !config) return;
@@ -41,8 +42,14 @@ export default function ProfileEditPage() {
     apiFetch("/api/profile-data", { headers })
       .then(r => r.json())
       .then(d => {
-        const v = d?.[config.dbField];
-        setValue(v != null ? String(v) : "");
+        if (config.dbField === "search_buddy_email" && d?.search_buddy_status === "revoked_by_buddy") {
+          setBuddyRevokedByBuddy(true);
+          setValue("");
+        } else {
+          setBuddyRevokedByBuddy(false);
+          const v = d?.[config.dbField];
+          setValue(v != null ? String(v) : "");
+        }
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -80,6 +87,9 @@ export default function ProfileEditPage() {
       if (config.dbField === "phone") {
         queryClient.invalidateQueries({ queryKey: ["/api/notifications/settings"] });
       }
+      if (config.dbField === "search_buddy_email") {
+        queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
+      }
 
       toast({ title: t("profileEdit.saved") });
       navigate("/dashboard?tab=profiel");
@@ -106,6 +116,9 @@ export default function ProfileEditPage() {
           </div>
         ) : (
           <div className="app-card">
+            {buddyRevokedByBuddy && (
+              <p className="text-[13px] text-[#9CA3AF] mb-3">{t("profileEdit.buddyUnsubscribed")}</p>
+            )}
             {config.description && (
               <p className="text-[15px] text-[#4B5563] leading-relaxed mb-4">{config.description}</p>
             )}

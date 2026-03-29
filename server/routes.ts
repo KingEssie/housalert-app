@@ -2346,7 +2346,7 @@ export async function registerRoutes(
       const searchProfiles = searchProfilesResult.data ?? [];
 
       const hasAlertChannel = !!(notif.email_enabled);
-      const hasSearchBuddy = !!(profileData?.search_buddy_email && profileData.search_buddy_email.trim().length > 0);
+      const hasSearchBuddy = !!(profileData?.search_buddy_email && profileData.search_buddy_email.trim().length > 0 && profileData.search_buddy_status !== "revoked_by_buddy");
 
       const hasStrongProfile = searchProfiles.some(p => {
         let filters = 0;

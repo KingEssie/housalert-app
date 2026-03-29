@@ -76,6 +76,7 @@ function getBoostTaskDescription(taskId: string, t: (key: string) => string): st
 
 interface ProfileData {
   search_buddy_email: string | null;
+  search_buddy_status: string | null;
   application_template: string | null;
   document_checklist: Record<string, boolean>;
   network_task_done: boolean;
@@ -401,7 +402,8 @@ function TaskModal({
 
   useEffect(() => {
     if (profileData) {
-      setBuddyEmail(profileData.search_buddy_email || "");
+      const buddyRevoked = profileData.search_buddy_status === "revoked_by_buddy";
+      setBuddyEmail(buddyRevoked ? "" : (profileData.search_buddy_email || ""));
       setChecklist(profileData.document_checklist || {});
     }
   }, [profileData]);

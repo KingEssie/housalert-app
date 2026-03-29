@@ -66,6 +66,7 @@ interface ProfileStrengthData {
 
 interface ProfileData {
   search_buddy_email: string | null;
+  search_buddy_status: string | null;
   application_template: string | null;
   document_checklist: Record<string, boolean>;
   network_task_done: boolean;
@@ -372,7 +373,8 @@ export function TaskModal({
   const [initialized, setInitialized] = useState(false);
 
   if (profileData && !initialized) {
-    setBuddyEmail(profileData.search_buddy_email || "");
+    const buddyRevoked = profileData.search_buddy_status === "revoked_by_buddy";
+    setBuddyEmail(buddyRevoked ? "" : (profileData.search_buddy_email || ""));
     setTemplate(profileData.application_template || "");
     setChecklist(profileData.document_checklist || {});
     setInitialized(true);

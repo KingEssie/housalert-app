@@ -76,7 +76,7 @@ export function calculateBoostScore(states: CompletionStates): BoostResult {
 
 export function resolveCompletionStates(
   notif: { email_enabled?: boolean; phone_e164?: string | null },
-  profileData: { search_buddy_email?: string | null; application_template?: string | null; document_checklist?: Record<string, boolean> | null; profile_photo_url?: string | null; phone?: string | null } | null,
+  profileData: { search_buddy_email?: string | null; search_buddy_status?: string | null; application_template?: string | null; document_checklist?: Record<string, boolean> | null; profile_photo_url?: string | null; phone?: string | null } | null,
   searchProfiles: { price_min: number; price_max: number; bedrooms_min: number; size_min: number }[],
   userEmail: string | null,
 ): CompletionStates {
@@ -98,7 +98,7 @@ export function resolveCompletionStates(
 
   return {
     alertsActive: !!(notif.email_enabled),
-    searchBuddyAdded: !!(profileData?.search_buddy_email && profileData.search_buddy_email.trim().length > 0),
+    searchBuddyAdded: !!(profileData?.search_buddy_email && profileData.search_buddy_email.trim().length > 0 && profileData.search_buddy_status !== "revoked_by_buddy"),
     incomeDocumentsUploaded: incomeChecked >= 2,
     idDocumentUploaded: idChecked >= 1,
     reactionLetterReady: !!(profileData?.application_template && profileData.application_template.trim().length > 20),

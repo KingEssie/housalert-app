@@ -433,6 +433,7 @@ export const de: Record<string, any> = {
     searchBuddyLabel: "Suchpartner E-Mail",
     searchBuddyPlaceholder: "partner@beispiel.de",
     searchBuddyDesc: "Dein Suchpartner erhält automatisch Match-E-Mails an diese Adresse. Entferne die E-Mail-Adresse, um dies zu deaktivieren.",
+    buddyUnsubscribed: "Dein Suchbuddy hat sich von Benachrichtigungen abgemeldet. Du kannst einen neuen Buddy hinzufügen.",
     saved: "Gespeichert!",
     saveFailed: "Speichern fehlgeschlagen",
   },

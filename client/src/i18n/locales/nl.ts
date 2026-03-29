@@ -439,6 +439,7 @@ export const nl: Record<string, any> = {
     searchBuddyLabel: "Zoekbuddy e-mail",
     searchBuddyPlaceholder: "buddy@email.com",
     searchBuddyDesc: "Je zoekbuddy ontvangt automatisch match-mails op dit adres. Verwijder het e-mailadres om dit uit te schakelen.",
+    buddyUnsubscribed: "Je zoekbuddy heeft zich afgemeld voor meldingen. Je kunt een nieuwe buddy toevoegen.",
     saved: "Opgeslagen!",
     saveFailed: "Opslaan mislukt",
   },

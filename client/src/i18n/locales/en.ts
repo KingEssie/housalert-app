@@ -366,6 +366,7 @@ export const en: Record<string, any> = {
     searchBuddyLabel: "Search Buddy email",
     searchBuddyPlaceholder: "buddy@email.com",
     searchBuddyDesc: "Your Search Buddy automatically receives match emails at this address. Remove the email address to disable this.",
+    buddyUnsubscribed: "Your Search Buddy has unsubscribed from notifications. You can add a new buddy.",
     saved: "Saved!",
     saveFailed: "Save failed",
   },
