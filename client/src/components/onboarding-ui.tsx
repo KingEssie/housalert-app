@@ -124,10 +124,10 @@ export function OBWebHeader({ step, totalSteps = 3, onClose }: { step?: number; 
       className="w-full sticky top-0 z-20"
       style={{ backgroundColor: OBW.headerBg, borderBottom: `1px solid ${OBW.headerBorder}` }}
     >
-      <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center justify-between">
+      <div className="max-w-[480px] mx-auto px-5 h-[52px] flex items-center justify-between">
         {step ? (
           <span
-            className="text-[11px] font-bold px-2.5 py-1 rounded-[6px] uppercase tracking-wide"
+            className="text-[11px] font-bold px-2 py-0.5 rounded-[5px] uppercase tracking-[0.04em]"
             style={{ backgroundColor: OBW.badgeBg, color: OBW.badgeColor }}
             data-testid="badge-step"
           >
@@ -136,14 +136,14 @@ export function OBWebHeader({ step, totalSteps = 3, onClose }: { step?: number; 
         ) : (
           <div className="w-[50px]" />
         )}
-        <HousAlertLogo size={28} />
+        <HousAlertLogo size={26} />
         <button
           onClick={onClose}
-          className="w-[34px] h-[34px] rounded-full flex items-center justify-center active:scale-95 transition-transform"
+          className="w-[32px] h-[32px] rounded-full flex items-center justify-center active:scale-95 transition-transform"
           style={{ backgroundColor: OBW.closeBtnBg }}
           data-testid="button-close"
         >
-          <X className="w-4 h-4" style={{ color: OBW.closeBtnColor }} />
+          <X className="w-[15px] h-[15px]" style={{ color: OBW.closeBtnColor }} />
         </button>
       </div>
     </header>
@@ -174,29 +174,29 @@ export function OBWebFooter({
       className="fixed bottom-0 left-0 right-0 z-30"
       style={{ borderTop: `1px solid ${OBW.footerBorder}`, backgroundColor: OBW.footerBg }}
     >
-      <div className="max-w-[480px] mx-auto px-5 py-3 flex items-center gap-3">
+      <div className="max-w-[480px] mx-auto px-5 py-2.5 flex items-center gap-3">
         <div className="flex-1 min-w-0">
-          <p className="text-[11px] font-medium uppercase tracking-wide" style={{ color: OBW.textMuted }}>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.06em]" style={{ color: OBW.textMuted }}>
             Geschatte matches
           </p>
-          <p className="text-[17px] font-bold flex items-center gap-1" style={{ color: OBW.text }}>
-            {matchCount} per week <span className="text-[14px]">🔥</span>
+          <p className="text-[16px] font-bold flex items-center gap-1" style={{ color: OBW.text }}>
+            {matchCount} per week <span className="text-[13px]">🔥</span>
           </p>
         </div>
         {onBack && (
           <button
             onClick={onBack}
-            className="w-[48px] h-[48px] rounded-[6px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
+            className="w-[44px] h-[44px] rounded-[8px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
             style={{ border: `1.5px solid ${OBW.backBtnBorder}`, backgroundColor: OBW.backBtnBg }}
             data-testid={backTestId || "button-back"}
           >
-            <ChevronLeft className="w-[18px] h-[18px]" style={{ color: OBW.backBtnColor }} />
+            <ChevronLeft className="w-[17px] h-[17px]" style={{ color: OBW.backBtnColor }} />
           </button>
         )}
         <button
           onClick={onNext}
           disabled={nextDisabled || saving}
-          className="px-7 h-[48px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-1.5 shrink-0"
+          className="min-w-[120px] px-6 h-[44px] rounded-[8px] text-[14px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-1.5 shrink-0"
           style={{ background: OBW.pinkGradient, boxShadow: nextDisabled ? "none" : "0 4px 14px rgba(233,30,99,0.25)" }}
           data-testid={nextTestId || "button-next"}
         >
@@ -211,11 +211,11 @@ export function OBWebFooter({
 export function OBInfoBox({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="rounded-[12px] p-4 flex items-start gap-3"
-      style={{ backgroundColor: "#f0f9ff", border: "1px solid #bae6fd" }}
+      className="rounded-[10px] p-3.5 flex items-start gap-2.5"
+      style={{ backgroundColor: "#f0f9ff", border: "1px solid #bfdbfe" }}
     >
-      <Info className="w-4 h-4 shrink-0 mt-0.5" style={{ color: "#0284c7" }} />
-      <div className="text-[13px] leading-relaxed" style={{ color: "#0369a1" }}>
+      <Info className="w-[15px] h-[15px] shrink-0 mt-[1px]" style={{ color: "#3b82f6" }} />
+      <div className="text-[13px] leading-[1.55]" style={{ color: "#1e40af" }}>
         {children}
       </div>
     </div>

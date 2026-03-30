@@ -188,21 +188,21 @@ export default function OnboardingCity() {
 
         <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pb-[100px] overflow-y-auto">
           <h2
-            className="text-[24px] font-bold tracking-[-0.02em]"
-            style={{ color: OBW.text, marginTop: "24px", marginBottom: "6px" }}
+            className="text-[22px] font-bold tracking-[-0.02em]"
+            style={{ color: OBW.text, marginTop: "22px", marginBottom: "4px" }}
             data-testid="text-city-title"
           >
             Waar wil je wonen?
           </h2>
           <p
-            className="text-[14px] mb-5 leading-relaxed"
+            className="text-[13px] mb-4 leading-relaxed"
             style={{ color: OBW.textSecondary }}
           >
             Kies je stad en zoekradius.
           </p>
 
-          <div className="relative" style={{ marginBottom: "16px" }}>
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: OBW.textMuted }} />
+          <div className="relative" style={{ marginBottom: "14px" }}>
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[16px] h-[16px]" style={{ color: OBW.textMuted }} />
             <input
               type="text"
               value={search}
@@ -211,8 +211,8 @@ export default function OnboardingCity() {
                 if (selectedCity) setSelectedCity(null);
               }}
               placeholder="Zoek stad..."
-              className="w-full ha-field"
-              style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text, paddingLeft: "44px", paddingRight: "48px" }}
+              className="w-full ha-field-web"
+              style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text, paddingLeft: "40px", paddingRight: "44px" }}
               autoFocus
               data-testid="input-city-search"
             />
@@ -227,15 +227,15 @@ export default function OnboardingCity() {
                 <button
                   key={city.name}
                   onClick={() => selectPresetCity(city)}
-                  className="w-full flex items-center gap-3 text-left transition-colors hover:bg-gray-50"
+                  className="w-full flex items-center gap-2.5 text-left transition-colors hover:bg-gray-50"
                   style={{
-                    padding: "12px 0",
+                    padding: "10px 0",
                     borderBottom: i < presetMatches.length - 1 ? `1px solid ${OBW.divider}` : "none",
                   }}
                   data-testid={`city-option-${city.name}`}
                 >
-                  <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: OBW.pink }} />
-                  <span className="text-[15px] font-medium" style={{ color: OBW.text }}>{city.name}</span>
+                  <MapPin className="w-[16px] h-[16px] shrink-0" style={{ color: OBW.pink }} />
+                  <span className="text-[14px] font-medium" style={{ color: OBW.text }}>{city.name}</span>
                 </button>
               ))}
 
@@ -246,16 +246,16 @@ export default function OnboardingCity() {
                   <button
                     key={i}
                     onClick={() => selectNominatimCity(r)}
-                    className="w-full flex items-center gap-3 text-left transition-colors hover:bg-gray-50"
+                    className="w-full flex items-center gap-2.5 text-left transition-colors hover:bg-gray-50"
                     style={{
-                      padding: "12px 0",
+                      padding: "10px 0",
                       borderBottom: `1px solid ${OBW.divider}`,
                     }}
                     data-testid={`city-nominatim-${i}`}
                   >
-                    <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: OBW.pink }} />
+                    <MapPin className="w-[16px] h-[16px] shrink-0" style={{ color: OBW.pink }} />
                     <div>
-                      <span className="text-[15px] font-medium block" style={{ color: OBW.text }}>{name}</span>
+                      <span className="text-[14px] font-medium block" style={{ color: OBW.text }}>{name}</span>
                       {addr?.state && (
                         <span className="text-[12px]" style={{ color: OBW.textSecondary }}>{addr.state}</span>
                       )}
@@ -275,16 +275,16 @@ export default function OnboardingCity() {
           {selectedCity && (
             <>
               <div
-                className="flex items-center gap-3 rounded-[10px]"
+                className="flex items-center gap-2.5 rounded-[10px]"
                 style={{
-                  padding: "14px 16px",
+                  padding: "12px 14px",
                   backgroundColor: OBW.selectedBg,
                   border: `1.5px solid rgba(233,30,99,0.25)`,
                 }}
                 data-testid="city-selected"
               >
-                <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: OBW.pink }} />
-                <span className="text-[15px] font-semibold flex-1" style={{ color: OBW.text }}>{selectedCity.name}</span>
+                <MapPin className="w-[16px] h-[16px] shrink-0" style={{ color: OBW.pink }} />
+                <span className="text-[14px] font-semibold flex-1" style={{ color: OBW.text }}>{selectedCity.name}</span>
                 <button
                   onClick={() => { setSelectedCity(null); setSearch(""); }}
                   className="text-[13px] font-semibold px-3 py-1.5 rounded-[6px] transition-colors hover:bg-gray-100"
@@ -295,9 +295,9 @@ export default function OnboardingCity() {
                 </button>
               </div>
 
-              <div style={{ marginTop: "28px" }}>
+              <div style={{ marginTop: "24px" }}>
                 <p
-                  className="text-[15px] font-bold mb-3"
+                  className="text-[14px] font-bold mb-2.5"
                   style={{ color: OBW.text }}
                 >
                   Straal rondom {selectedCity.name}
@@ -309,7 +309,7 @@ export default function OnboardingCity() {
                       <button
                         key={km}
                         onClick={() => setRadiusKm(km)}
-                        className="px-4 py-2 rounded-full text-[13px] font-semibold transition-all"
+                        className="h-[36px] px-4 rounded-full text-[13px] font-semibold transition-all flex items-center justify-center"
                         style={{
                           border: active
                             ? "2px solid #e91e63"
@@ -327,8 +327,8 @@ export default function OnboardingCity() {
               </div>
 
               <div
-                className="mt-5 rounded-[12px] overflow-hidden relative"
-                style={{ height: "240px", border: `1px solid ${OBW.mapBorder}` }}
+                className="mt-4 rounded-[10px] overflow-hidden relative"
+                style={{ height: "200px", border: `1px solid ${OBW.mapBorder}` }}
               >
                 <iframe
                   title="Map"
@@ -339,7 +339,7 @@ export default function OnboardingCity() {
                 />
               </div>
 
-              <div className="mt-4">
+              <div className="mt-3.5">
                 <OBInfoBox>
                   We doorzoeken alle huurwoningen in een straal van {radiusKm} km rondom {selectedCity.name}. Je ontvangt direct een bericht bij nieuwe woningen.
                 </OBInfoBox>

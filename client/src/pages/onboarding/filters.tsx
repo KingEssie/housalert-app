@@ -616,25 +616,25 @@ export default function OnboardingFilters() {
 
         <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[100px] overflow-y-auto">
           <h2
-            className="text-[24px] font-bold tracking-[-0.02em] mb-1"
+            className="text-[22px] font-bold tracking-[-0.02em] mb-1"
             style={{ color: OBW.text }}
             data-testid="text-filters-title"
           >
             Wat zoek je precies?
           </h2>
-          <p className="text-[14px] mb-6 leading-relaxed" style={{ color: OBW.textSecondary }}>
+          <p className="text-[13px] mb-5 leading-relaxed" style={{ color: OBW.textSecondary }}>
             Verfijn je zoekopdracht voor de beste resultaten.
           </p>
 
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-4">
             <div>
-              <label className="text-[15px] font-bold mb-2 block" style={{ color: OBW.text }}>
+              <label className="text-[14px] font-bold mb-2 block" style={{ color: OBW.text }}>
                 Maximale huurprijs
               </label>
               <select
                 value={String(f.maxPrice)}
                 onChange={(e) => update({ maxPrice: parseInt(e.target.value), minPrice: 0 })}
-                className="w-full h-[48px] px-3.5 rounded-[8px] text-[14px] ha-field"
+                className="w-full ha-select-web"
                 style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
                 data-testid="select-max-price"
               >
@@ -647,7 +647,7 @@ export default function OnboardingFilters() {
             <div className="h-px" style={{ backgroundColor: OBW.divider }} />
 
             <div>
-              <label className="text-[15px] font-bold mb-2 block" style={{ color: OBW.text }}>
+              <label className="text-[14px] font-bold mb-2 block" style={{ color: OBW.text }}>
                 Slaapkamers
               </label>
               <SegmentedControl
@@ -662,7 +662,7 @@ export default function OnboardingFilters() {
             <div className="h-px" style={{ backgroundColor: OBW.divider }} />
 
             <div>
-              <label className="text-[15px] font-bold mb-2 block" style={{ color: OBW.text }}>
+              <label className="text-[14px] font-bold mb-2 block" style={{ color: OBW.text }}>
                 Minimum oppervlakte
               </label>
               <select
@@ -671,7 +671,7 @@ export default function OnboardingFilters() {
                   const v = parseInt(e.target.value);
                   update({ minSize: v, sizeNA: v === 0 });
                 }}
-                className="w-full h-[48px] px-3.5 rounded-[8px] text-[14px] ha-field"
+                className="w-full ha-select-web"
                 style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
                 data-testid="select-min-size"
               >
@@ -684,7 +684,7 @@ export default function OnboardingFilters() {
             <div className="h-px" style={{ backgroundColor: OBW.divider }} />
 
             <div>
-              <label className="text-[15px] font-bold mb-2 block" style={{ color: OBW.text }}>
+              <label className="text-[14px] font-bold mb-2 block" style={{ color: OBW.text }}>
                 Gemeubileerd
               </label>
               <SegmentedControl
@@ -699,7 +699,7 @@ export default function OnboardingFilters() {
             <div className="h-px" style={{ backgroundColor: OBW.divider }} />
 
             <div>
-              <label className="text-[15px] font-bold mb-2 block" style={{ color: OBW.text }}>
+              <label className="text-[14px] font-bold mb-2 block" style={{ color: OBW.text }}>
                 Woningtype
               </label>
               <SegmentedControl
