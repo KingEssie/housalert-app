@@ -103,7 +103,7 @@ function WebsitePaywall({
     >
       <OBWebHeader />
 
-      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[100px] overflow-y-auto">
+      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-10 overflow-y-auto">
         <h2
           className="text-[22px] font-bold tracking-[-0.02em] mb-1"
           style={{ color: OBW.text }}
@@ -111,13 +111,13 @@ function WebsitePaywall({
         >
           Selecteer je pakket
         </h2>
-        <p className="text-[13px] mb-4 leading-relaxed" style={{ color: OBW.textSecondary }}>
+        <p className="text-[13px] mb-5 leading-relaxed" style={{ color: OBW.textSecondary }}>
           Kies een abonnement en ontvang direct woningmatches.
         </p>
 
         {city && (
           <div
-            className="rounded-[4px] p-3.5 mb-4 flex items-start gap-3"
+            className="rounded-[4px] p-3.5 mb-5 flex items-start gap-3"
             style={{
               backgroundColor: "#fdf2f8",
               border: "1px solid rgba(233,30,99,0.15)",
@@ -136,19 +136,25 @@ function WebsitePaywall({
           </div>
         )}
 
-        <div className="mb-4">
-          <OBInfoBox>
-            Er waren afgelopen week <strong>121 woningen</strong> beschikbaar in {city || "jouw regio"}. Activeer alerts om ze niet te missen!
-          </OBInfoBox>
-        </div>
+        <p
+          className="text-[16px] font-bold mb-3"
+          style={{ color: OBW.text }}
+        >
+          Selecteer jouw kortingsperiode
+        </p>
 
-        <div className="flex flex-col" data-testid="plan-options">
+        <div
+          className="rounded-[4px] mb-5"
+          style={{ border: `1px solid ${OBW.cardBorder}` }}
+          data-testid="plan-options"
+        >
           {WEBSITE_PLANS.map((plan, i) => {
             const isSelected = selectedPlan === plan.id;
+            const isLast = i === WEBSITE_PLANS.length - 1;
             return (
               <div key={plan.id} className="relative">
                 {plan.popular && (
-                  <div className="flex justify-center" style={{ marginBottom: "-12px", position: "relative", zIndex: 2 }}>
+                  <div className="flex justify-center" style={{ marginTop: "-1px", marginBottom: "-12px", position: "relative", zIndex: 2 }}>
                     <span
                       className="text-[11px] font-bold px-3 py-1 rounded-full"
                       style={{ backgroundColor: "#22c55e", color: "#ffffff" }}
@@ -162,11 +168,9 @@ function WebsitePaywall({
                   onClick={() => setSelectedPlan(plan.id)}
                   className="w-full text-left transition-all"
                   style={{
-                    border: isSelected ? `2px solid ${OBW.pink}` : `1px solid ${OBW.cardBorder}`,
-                    borderRadius: "4px",
-                    backgroundColor: isSelected ? "rgba(233,30,99,0.04)" : "#ffffff",
-                    padding: plan.popular ? "16px 16px 12px 16px" : "12px 16px",
-                    marginBottom: i < WEBSITE_PLANS.length - 1 ? "8px" : "0",
+                    borderBottom: !isLast ? `1px solid ${OBW.cardBorder}` : "none",
+                    backgroundColor: isSelected ? "rgba(233,30,99,0.03)" : "#ffffff",
+                    padding: plan.popular ? "18px 16px 14px 16px" : "14px 16px",
                   }}
                   data-testid={`card-plan-${plan.id}`}
                 >
@@ -206,9 +210,27 @@ function WebsitePaywall({
           })}
         </div>
 
-        <div className="h-px my-4" style={{ backgroundColor: OBW.divider }} />
+        <button
+          onClick={handleCheckout}
+          disabled={loading}
+          className="w-full h-[48px] rounded-[4px] text-[15px] font-bold text-white transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2 mb-6"
+          style={{
+            background: OBW.pinkGradient,
+            boxShadow: "0 4px 14px rgba(233,30,99,0.25)",
+          }}
+          data-testid="button-select-payment"
+        >
+          {loading ? (
+            <Loader2 className="w-5 h-5 animate-spin" />
+          ) : (
+            <>
+              Activeer woonalerts
+              <span className="text-[16px]">→</span>
+            </>
+          )}
+        </button>
 
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-3 mb-6">
           <div className="flex items-start gap-2.5">
             <div
               className="w-[20px] h-[20px] rounded-full flex items-center justify-center shrink-0 mt-[1px]"
@@ -239,19 +261,23 @@ function WebsitePaywall({
               <Check className="w-3 h-3" style={{ color: "#22c55e" }} />
             </div>
             <p className="text-[13px] leading-[1.5]" style={{ color: OBW.text }}>
-              <strong>14 dagen geld-terug-garantie</strong> — zonder fratsen
+              De meeste HousAlert-gebruikers vinden in <strong>4–8 weken</strong> een huurwoning
             </p>
           </div>
         </div>
-      </main>
 
-      <OBWebFooter
-        onNext={handleCheckout}
-        nextLabel={loading ? "Even geduld..." : "Activeer woonalerts"}
-        nextDisabled={loading}
-        saving={loading}
-        nextTestId="button-select-payment"
-      />
+        <div
+          className="rounded-[4px] p-4"
+          style={{ backgroundColor: "#f0f9ff", border: "1px solid #bfdbfe" }}
+        >
+          <p className="text-[15px] font-bold mb-1" style={{ color: "#1e40af" }}>
+            Probeer HousAlert zonder risico!
+          </p>
+          <p className="text-[13px] leading-[1.55]" style={{ color: "#1e40af" }}>
+            Ben je binnen 14 dagen niet tevreden over HousAlert? Dan krijg jij het volledige bedrag terug. Zonder fratsen.
+          </p>
+        </div>
+      </main>
     </div>
   );
 }
