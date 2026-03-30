@@ -186,10 +186,10 @@ export default function OnboardingCity() {
       >
         <OBWebHeader step={1} onClose={handleClose} />
 
-        <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pb-[100px] overflow-y-auto">
+        <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[100px] overflow-y-auto">
           <h2
-            className="text-[22px] font-bold tracking-[-0.02em]"
-            style={{ color: OBW.text, marginTop: "22px", marginBottom: "4px" }}
+            className="text-[22px] font-bold tracking-[-0.02em] mb-1"
+            style={{ color: OBW.text }}
             data-testid="text-city-title"
           >
             Waar wil je wonen?
@@ -201,7 +201,7 @@ export default function OnboardingCity() {
             Kies je stad en zoekradius.
           </p>
 
-          <div className="relative" style={{ marginBottom: "14px" }}>
+          <div className="relative mb-2.5">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[16px] h-[16px]" style={{ color: OBW.textMuted }} />
             <input
               type="text"
@@ -274,8 +274,8 @@ export default function OnboardingCity() {
 
           {selectedCity && (
             <>
-              <div style={{ marginTop: "8px" }}>
-                <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
+              <div style={{ marginTop: "4px" }}>
+                <label className="text-[13px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
                   Straal rondom {selectedCity.name}
                 </label>
                 <select
@@ -292,8 +292,8 @@ export default function OnboardingCity() {
               </div>
 
               <div
-                className="mt-4 rounded-[4px] overflow-hidden relative"
-                style={{ height: "200px", border: `1px solid ${OBW.mapBorder}` }}
+                className="mt-3 rounded-[4px] overflow-hidden relative"
+                style={{ height: "180px", border: `1px solid ${OBW.mapBorder}` }}
               >
                 <iframe
                   title="Map"
@@ -304,7 +304,7 @@ export default function OnboardingCity() {
                 />
               </div>
 
-              <div className="mt-3.5">
+              <div className="mt-3">
                 <OBInfoBox>
                   We doorzoeken alle huurwoningen in een straal van {radiusKm} km rondom {selectedCity.name}. Je ontvangt direct een bericht bij nieuwe woningen.
                 </OBInfoBox>

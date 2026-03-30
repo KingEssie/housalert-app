@@ -251,7 +251,7 @@ export default function OnboardingPassword() {
             </div>
 
             <div>
-              <label className="text-[12px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
+              <label className="text-[12px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
                 E-mailadres
               </label>
               <input
@@ -266,7 +266,7 @@ export default function OnboardingPassword() {
             </div>
 
             <div>
-              <label className="text-[12px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
+              <label className="text-[12px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
                 Wachtwoord
               </label>
               <div className="relative">
