@@ -185,78 +185,69 @@ export default function OnboardingPassword() {
 
         <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[130px] overflow-y-auto">
           <h2
-            className="text-[22px] font-bold tracking-[-0.02em] mb-1"
+            className="text-[22px] font-bold tracking-[-0.02em] mb-4"
             style={{ color: OBW.text }}
             data-testid="text-password-title"
           >
             Waar kunnen we je matches heen sturen?
           </h2>
-          <p className="text-[13px] mb-4 leading-relaxed" style={{ color: OBW.textSecondary }}>
-            Maak een gratis account aan en ontvang direct matches.
-          </p>
-
           {city && (
             <div
-              className="rounded-[4px] p-4 mb-4"
+              className="rounded-[4px] p-3.5 mb-4 flex items-start gap-3"
               style={{
-                backgroundColor: OBW.surface,
-                border: `1px solid ${OBW.cardBorder}`,
-                borderLeft: "3px solid #e91e63",
+                backgroundColor: "#fdf2f8",
+                border: `1px solid rgba(233,30,99,0.15)`,
               }}
               data-testid="search-summary-card"
             >
-              <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: OBW.textMuted }}>
-                Jouw zoekopdracht
-              </p>
-              <div className="flex items-center gap-2 mb-1">
-                <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color: OBW.pink }} />
-                <span className="text-[14px] font-semibold" style={{ color: OBW.text }}>
-                  {city}{radiusKm ? ` · ${radiusKm} km straal` : ""}
-                </span>
+              <MapPin className="w-4 h-4 shrink-0 mt-0.5" style={{ color: OBW.pink }} />
+              <div className="min-w-0">
+                <p className="text-[14px] font-semibold" style={{ color: OBW.text }}>
+                  {city}{radiusKm ? ` · ${radiusKm} km` : ""}
+                </p>
+                <p className="text-[12px]" style={{ color: OBW.textSecondary }}>
+                  €{minPrice}–€{maxPrice} · {roomsLabel} kamers
+                </p>
               </div>
-              <p className="text-[13px] ml-5.5" style={{ color: OBW.textSecondary }}>
-                €{minPrice} – €{maxPrice} · {roomsLabel} kamers
-              </p>
             </div>
           )}
 
-          <div className="mb-5">
+          <div className="mb-4">
             <OBInfoBox>
               Er waren afgelopen week <strong>121 woningen</strong> beschikbaar in {city || "jouw regio"}. Maak een account aan om ze niet te missen!
             </OBInfoBox>
           </div>
 
-          <div className="flex flex-col gap-3.5">
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="text-[12px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
-                  Voornaam
-                </label>
-                <input
-                  type="text"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  placeholder="Max"
-                  className="w-full ha-field-web"
-                  style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
-                  autoFocus
-                  data-testid="input-first-name"
-                />
-              </div>
-              <div>
-                <label className="text-[12px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
-                  Achternaam
-                </label>
-                <input
-                  type="text"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  placeholder="Müller"
-                  className="w-full ha-field-web"
-                  style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
-                  data-testid="input-last-name"
-                />
-              </div>
+          <div className="flex flex-col gap-2.5">
+            <div>
+              <label className="text-[12px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
+                Voornaam
+              </label>
+              <input
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="Max"
+                className="w-full ha-field-web"
+                style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
+                autoFocus
+                data-testid="input-first-name"
+              />
+            </div>
+
+            <div>
+              <label className="text-[12px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
+                Achternaam
+              </label>
+              <input
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                placeholder="Müller"
+                className="w-full ha-field-web"
+                style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
+                data-testid="input-last-name"
+              />
             </div>
 
             <div>
@@ -349,10 +340,10 @@ export default function OnboardingPassword() {
               <button
                 onClick={handleBack}
                 className="w-[44px] h-[44px] rounded-[4px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
-                style={{ border: `1.5px solid ${OBW.backBtnBorder}`, backgroundColor: OBW.backBtnBg }}
+                style={{ border: `1.5px solid ${OBW.pink}`, backgroundColor: "transparent" }}
                 data-testid="button-password-back"
               >
-                <ChevronLeft className="w-[17px] h-[17px]" style={{ color: OBW.backBtnColor }} />
+                <ChevronLeft className="w-[17px] h-[17px]" style={{ color: OBW.pink }} />
               </button>
               <button
                 onClick={handleCreateAccount}

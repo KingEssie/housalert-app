@@ -709,9 +709,9 @@ export default function OnboardingFilters() {
             Verfijn je zoekopdracht voor de beste resultaten.
           </p>
 
-          <div className="flex flex-col gap-3.5">
+          <div className="flex flex-col gap-2.5">
             <div>
-              <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
+              <label className="text-[13px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
                 Maximale huurprijs
               </label>
               <select
@@ -727,10 +727,8 @@ export default function OnboardingFilters() {
               </select>
             </div>
 
-            <div className="h-px" style={{ backgroundColor: OBW.divider }} />
-
             <div>
-              <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
+              <label className="text-[13px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
                 Slaapkamers
               </label>
               <select
@@ -746,10 +744,8 @@ export default function OnboardingFilters() {
               </select>
             </div>
 
-            <div className="h-px" style={{ backgroundColor: OBW.divider }} />
-
             <div>
-              <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
+              <label className="text-[13px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
                 Minimum oppervlakte
               </label>
               <select
@@ -768,10 +764,8 @@ export default function OnboardingFilters() {
               </select>
             </div>
 
-            <div className="h-px" style={{ backgroundColor: OBW.divider }} />
-
             <div>
-              <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
+              <label className="text-[13px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
                 Gemeubileerd
               </label>
               <select
@@ -787,18 +781,21 @@ export default function OnboardingFilters() {
               </select>
             </div>
 
-            <div className="h-px" style={{ backgroundColor: OBW.divider }} />
-
             <div>
-              <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
+              <label className="text-[13px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
                 Woningtype
               </label>
-              <WebSegmentedControl
-                options={PROPERTY_OPTIONS}
+              <select
                 value={f.propertyType}
-                onChange={(v) => update({ propertyType: v })}
-                testId="property-type"
-              />
+                onChange={(e) => update({ propertyType: e.target.value })}
+                className="w-full ha-select-web"
+                style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
+                data-testid="select-property-type"
+              >
+                {PROPERTY_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
             </div>
           </div>
         </main>

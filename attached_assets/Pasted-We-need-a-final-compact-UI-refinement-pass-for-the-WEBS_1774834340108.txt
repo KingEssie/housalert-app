@@ -1,0 +1,133 @@
+We need a final compact UI refinement pass for the WEBSITE onboarding flow only.
+
+IMPORTANT:
+- Website mode only
+- source=website / theme=light only
+- Do NOT change normal app onboarding
+- Do NOT change dark/native mode
+- Do NOT touch backend logic
+- Do NOT change routing flow
+- Keep the current website step order as-is
+
+GOAL:
+Tighten and simplify the website onboarding UI so it looks closer to Rentbird and less boxy / less spaced out.
+
+==================================================
+STEP 2/3 — FILTERS
+==================================================
+
+1. Woningtype
+- Change Woningtype to a dropdown select
+- No segmented buttons for Woningtype in website mode
+
+2. Compact dropdown layout
+- Reduce vertical spacing between dropdown sections
+- Remove the divider line between dropdown sections
+- Keep all dropdowns the same height and same width
+- Make the whole step feel more compact and cleaner
+
+3. Inputs / dropdown background
+- All fields, dropdowns, inputs should have a white or transparent background
+- No gray-filled fields in website mode
+
+==================================================
+STEP BADGE / PROGRESS
+==================================================
+
+For the step progress badge (1/3, 2/3, 3/3):
+- Make the text bold
+- Use the same bright blue background style as Rentbird
+- Use white text
+- Keep it compact
+
+==================================================
+ACCOUNT CREATION SCREEN
+==================================================
+
+1. Remove extra line
+- Remove the text:
+  "Maak een gratis account aan"
+  if it still appears anywhere
+
+2. Search summary card
+- Redesign the “Jouw zoekopdracht” card to feel more modern and closer to Rentbird
+- Keep HousAlert branding
+- Make the card cleaner and more polished
+- Preserve the missed matches message if still used, but make the container feel more premium and compact
+
+3. Form layout
+- Do NOT place fields side by side
+- Use one field per row / one field per section
+- Stack all fields vertically:
+  - Voornaam
+  - Achternaam
+  - E-mail
+  - Wachtwoord
+
+4. Field styling
+- Fields should use white or transparent background
+- No gray-filled input look
+
+==================================================
+FOOTER BUTTONS
+==================================================
+
+1. Back button
+- Back button should use the same pink color as the Next button
+- But only as:
+  - border color
+  - text/icon color
+- Button background itself should stay white or transparent
+
+2. Next button
+- Keep the filled pink style
+
+3. Keep both buttons same height and aligned cleanly
+
+==================================================
+STEP 3/3 — PREFERENCES
+==================================================
+
+1. Remove separate boxes
+- Do NOT place every choice in its own boxed container
+- Remove the large separate card-style wrappers around each choice
+- Make the list more compact
+
+2. Preference layout
+- Show the preference text in a vertical list
+- Checkbox on the RIGHT
+- Text on the LEFT
+- No extra surrounding boxes per row
+- Make it visually lighter and tighter, more like Rentbird
+
+3. “Unclear criteria” option
+- Remove any surrounding box/container around this row
+- Layout should be:
+  - toggle first
+  - text after it
+- Toggle color should be GREEN
+- Keep it compact and clean
+
+==================================================
+GLOBAL WEBSITE-MODE VISUAL RULES
+==================================================
+
+- White / transparent inputs and dropdowns
+- Compact spacing
+- No unnecessary divider lines
+- No heavy boxed rows unless truly needed
+- Keep a cleaner Rentbird-like hierarchy
+- Preserve HousAlert branding
+
+==================================================
+RETURN
+==================================================
+
+Return:
+1. exact files changed
+2. confirmation that Woningtype is now a dropdown
+3. confirmation that spacing/divider lines were reduced on step 2
+4. confirmation that step badges now use bold white text on blue background
+5. confirmation that account fields are stacked vertically
+6. confirmation that step 3 choices no longer each sit in separate boxes
+7. confirmation that the unclear-criteria toggle is now green and placed before the text

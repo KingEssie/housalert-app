@@ -36,7 +36,7 @@ export const OBW = {
   headerBorder: "#e5e7eb",
   card: "#f9fafb",
   cardBorder: "#e5e7eb",
-  inputBg: "#f3f4f6",
+  inputBg: "#ffffff",
   inputBorder: "#d1d5db",
   text: "#111827",
   textSecondary: "#6b7280",
@@ -128,8 +128,8 @@ export function OBWebHeader({ step, totalSteps = 3 }: { step?: number; totalStep
         <HousAlertLogo size={26} />
         {step ? (
           <span
-            className="text-[12px] font-semibold"
-            style={{ color: OBW.textMuted }}
+            className="text-[11px] font-bold px-2.5 py-1 rounded-[4px]"
+            style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
             data-testid="badge-step"
           >
             {step}/{totalSteps}
@@ -179,10 +179,10 @@ export function OBWebFooter({
           <button
             onClick={onBack}
             className="w-[44px] h-[44px] rounded-[4px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
-            style={{ border: `1.5px solid ${OBW.backBtnBorder}`, backgroundColor: OBW.backBtnBg }}
+            style={{ border: `1.5px solid ${OBW.pink}`, backgroundColor: "transparent" }}
             data-testid={backTestId || "button-back"}
           >
-            <ChevronLeft className="w-[17px] h-[17px]" style={{ color: OBW.backBtnColor }} />
+            <ChevronLeft className="w-[17px] h-[17px]" style={{ color: OBW.pink }} />
           </button>
         )}
         <button
