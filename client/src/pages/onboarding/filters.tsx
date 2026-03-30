@@ -30,7 +30,7 @@ function WebSegmentedControl({
       style={{
         gridTemplateColumns: `repeat(${options.length}, 1fr)`,
         border: `1px solid ${OBW.inputBorder}`,
-        borderRadius: "8px",
+        borderRadius: "4px",
         backgroundColor: OBW.inputBg,
       }}
       data-testid={testId}
@@ -733,12 +733,17 @@ export default function OnboardingFilters() {
               <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
                 Slaapkamers
               </label>
-              <WebSegmentedControl
-                options={ROOM_OPTIONS}
+              <select
                 value={f.minRooms}
-                onChange={(v) => update({ minRooms: v })}
-                testId="rooms-selector"
-              />
+                onChange={(e) => update({ minRooms: e.target.value })}
+                className="w-full ha-select-web"
+                style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
+                data-testid="select-rooms"
+              >
+                {ROOM_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
             </div>
 
             <div className="h-px" style={{ backgroundColor: OBW.divider }} />
@@ -769,12 +774,17 @@ export default function OnboardingFilters() {
               <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
                 Gemeubileerd
               </label>
-              <WebSegmentedControl
-                options={FURNISHED_OPTIONS}
+              <select
                 value={f.furnished}
-                onChange={(v) => update({ furnished: v })}
-                testId="furnished-selector"
-              />
+                onChange={(e) => update({ furnished: e.target.value })}
+                className="w-full ha-select-web"
+                style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
+                data-testid="select-furnished"
+              >
+                {FURNISHED_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
             </div>
 
             <div className="h-px" style={{ backgroundColor: OBW.divider }} />
@@ -789,24 +799,7 @@ export default function OnboardingFilters() {
                 onChange={(v) => update({ propertyType: v })}
                 testId="property-type"
               />
-              <div className="mt-2.5">
-                <WebToggle
-                  checked={f.includeRooms}
-                  onChange={(v) => update({ includeRooms: v })}
-                  label="Zoek ook kamers / onzelfstandige woonruimte"
-                  testId="toggle-include-rooms"
-                />
-              </div>
             </div>
-
-            <div className="h-px" style={{ backgroundColor: OBW.divider }} />
-
-            <WebToggle
-              checked={f.priceFlexible}
-              onChange={(v) => update({ priceFlexible: v })}
-              label="Stuur ook iets duurdere perfecte matches"
-              testId="toggle-price-flexible"
-            />
           </div>
         </main>
 

@@ -197,7 +197,7 @@ export default function OnboardingPassword() {
 
           {city && (
             <div
-              className="rounded-[10px] p-4 mb-4"
+              className="rounded-[4px] p-4 mb-4"
               style={{
                 backgroundColor: OBW.surface,
                 border: `1px solid ${OBW.cardBorder}`,
@@ -348,7 +348,7 @@ export default function OnboardingPassword() {
             <div className="flex items-center gap-3 mb-2.5">
               <button
                 onClick={handleBack}
-                className="w-[44px] h-[44px] rounded-[8px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
+                className="w-[44px] h-[44px] rounded-[4px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
                 style={{ border: `1.5px solid ${OBW.backBtnBorder}`, backgroundColor: OBW.backBtnBg }}
                 data-testid="button-password-back"
               >
@@ -357,7 +357,7 @@ export default function OnboardingPassword() {
               <button
                 onClick={handleCreateAccount}
                 disabled={!canSubmit}
-                className="flex-1 h-[44px] rounded-[8px] text-[14px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-2"
+                className="flex-1 h-[44px] rounded-[4px] text-[14px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-2"
                 style={{ background: OBW.pinkGradient, boxShadow: canSubmit ? "0 4px 14px rgba(233,30,99,0.25)" : "none" }}
                 data-testid="button-create-account"
               >

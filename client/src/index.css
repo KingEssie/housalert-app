@@ -608,7 +608,7 @@ input[type="range"]::-moz-range-thumb {
 }
 .ha-field-web {
   height: 48px;
-  border-radius: 8px;
+  border-radius: 4px;
   padding-left: 14px;
   padding-right: 14px;
   font-size: 14px;
@@ -627,7 +627,7 @@ input[type="range"]::-moz-range-thumb {
 }
 .ha-select-web {
   height: 48px;
-  border-radius: 8px;
+  border-radius: 4px;
   padding-left: 14px;
   padding-right: 40px;
   font-size: 14px;

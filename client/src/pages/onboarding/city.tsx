@@ -274,60 +274,25 @@ export default function OnboardingCity() {
 
           {selectedCity && (
             <>
-              <div
-                className="flex items-center gap-2.5 rounded-[10px]"
-                style={{
-                  padding: "12px 14px",
-                  backgroundColor: OBW.selectedBg,
-                  border: `1.5px solid rgba(233,30,99,0.25)`,
-                }}
-                data-testid="city-selected"
-              >
-                <MapPin className="w-[16px] h-[16px] shrink-0" style={{ color: OBW.pink }} />
-                <span className="text-[14px] font-semibold flex-1" style={{ color: OBW.text }}>{selectedCity.name}</span>
-                <button
-                  onClick={() => { setSelectedCity(null); setSearch(""); }}
-                  className="text-[13px] font-semibold px-3 py-1.5 rounded-[6px] transition-colors hover:bg-gray-100"
-                  style={{ color: OBW.pink }}
-                  data-testid="button-city-change"
-                >
-                  Wijzig
-                </button>
-              </div>
-
-              <div style={{ marginTop: "24px" }}>
-                <p
-                  className="text-[14px] font-bold mb-2.5"
-                  style={{ color: OBW.text }}
-                >
+              <div style={{ marginTop: "8px" }}>
+                <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
                   Straal rondom {selectedCity.name}
-                </p>
-                <div className="flex flex-wrap gap-2" data-testid="radius-options">
-                  {RADIUS_OPTIONS.map((km) => {
-                    const active = radiusKm === km;
-                    return (
-                      <button
-                        key={km}
-                        onClick={() => setRadiusKm(km)}
-                        className="h-[36px] px-4 rounded-full text-[13px] font-semibold transition-all flex items-center justify-center"
-                        style={{
-                          border: active
-                            ? "2px solid #e91e63"
-                            : `1.5px solid ${OBW.chipBorder}`,
-                          backgroundColor: active ? "#e91e63" : "transparent",
-                          color: active ? "#ffffff" : OBW.text,
-                        }}
-                        data-testid={`radius-${km}`}
-                      >
-                        {km} km
-                      </button>
-                    );
-                  })}
-                </div>
+                </label>
+                <select
+                  value={String(radiusKm)}
+                  onChange={(e) => setRadiusKm(parseInt(e.target.value))}
+                  className="w-full ha-select-web"
+                  style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
+                  data-testid="select-radius"
+                >
+                  {RADIUS_OPTIONS.map((km) => (
+                    <option key={km} value={km}>{km} km</option>
+                  ))}
+                </select>
               </div>
 
               <div
-                className="mt-4 rounded-[10px] overflow-hidden relative"
+                className="mt-4 rounded-[4px] overflow-hidden relative"
                 style={{ height: "200px", border: `1px solid ${OBW.mapBorder}` }}
               >
                 <iframe

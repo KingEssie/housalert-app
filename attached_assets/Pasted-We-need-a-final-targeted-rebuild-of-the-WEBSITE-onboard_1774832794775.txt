@@ -1,0 +1,131 @@
+We need a final targeted rebuild of the WEBSITE onboarding flow only.
+
+IMPORTANT:
+- Website mode only
+- source=website / theme=light only
+- Do NOT change normal app onboarding
+- Do NOT change dark/native flow
+- Do NOT redesign unrelated screens
+- Keep backend logic intact unless explicitly requested below
+
+GOAL:
+Fix the remaining website onboarding UX issues so the flow matches the intended Rentbird-like structure much more closely.
+
+==================================================
+PART 1 — STEP 1 FIXES
+==================================================
+
+On website-mode Step 1 (city + radius):
+
+1. Selected city duplication
+- If a city has been chosen, show it ONLY inside the input field
+- Do NOT repeat the selected city again underneath
+- Remove that duplicate selected-city display entirely
+
+2. Radius control
+- Replace the current radius chip/button selection with a DROPDOWN select
+- It should feel like a clean website form field, not pills/chips
+
+3. Border radius
+- Set all website-mode fields and buttons on this flow to 4px radius
+- Inputs, selects, buttons, cards where appropriate should visually align to this
+
+4. Header layout
+- Put HousAlert logo on the LEFT
+- Put progress indicator (e.g. 1/3) on the RIGHT
+- Remove the close/X button completely in website mode
+
+==================================================
+PART 2 — STEP 2 FIXES
+==================================================
+
+On website-mode Step 2 (core filters):
+
+1. Slaapkamers
+- Must be a dropdown select
+- No segmented/pill buttons
+
+2. Gemeubileerd
+- Must be a dropdown select
+- No segmented/pill buttons
+
+3. Remove toggles completely:
+- "Zoek ook kamers" must be removed from website mode
+- "Stuur duurdere perfecte matches" must be removed from website mode
+
+4. Border radius
+- Use 4px radius on inputs, selects, and buttons
+
+5. Header layout
+- Logo left
+- Progress right
+- No close/X button
+
+==================================================
+PART 3 — STEP 3 FIXES
+==================================================
+
+On website-mode Step 3 (specific housing wishes):
+
+1. Checkbox layout
+- Text/content on the LEFT
+- Check buttons / indicators on the RIGHT
+
+2. Header layout
+- Logo left
+- Progress right
+- No close/X button
+
+3. Border radius
+- Use 4px radius consistently here too
+
+==================================================
+PART 4 — WEEKLY LISTINGS COUNT AUDIT
+==================================================
+
+We also need to verify whether the “aantal listings per week” shown to the user is actually correct.
+
+Audit and report:
+
+1. Where does this number come from?
+- exact file(s)
+- exact function or calculation
+- whether it is real data, estimated data, or static/heuristic
+
+2. Is it based on:
+- actual historical listing volume for that city/filter
+- a rough estimate
+- a hardcoded number
+- a fallback formula
+
+3. Is it trustworthy enough to show to users?
+- yes/no
+- explain why
+
+4. If it is not trustworthy:
+- propose the smallest clean fix
+- do NOT implement a huge analytics system unless necessary
+
+==================================================
+PART 5 — IMPORTANT RULES
+==================================================
+
+- Only change website mode
+- Do NOT touch app mode
+- Do NOT break routing
+- Do NOT break query param forwarding
+- Do NOT break data persistence
+- Do NOT add extra UI clutter
+
+==================================================
+REPORT BACK
+==================================================
+
+Return:
+
+1. exact files changed
+2. confirmation of each UI fix above
+3. whether all website-mode controls now use 4px radius
+4. whether the close button was removed from website mode
+5. where the “listings per week” number comes from
+6. whether that number is truly reliable or not

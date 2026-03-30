@@ -118,33 +118,25 @@ export function OBProgressDots({ current, total }: { current: number; total: num
 import { ChevronLeft, Loader2, X, Info } from "lucide-react";
 import { HousAlertLogo } from "@/components/housalert-logo";
 
-export function OBWebHeader({ step, totalSteps = 3, onClose }: { step?: number; totalSteps?: number; onClose: () => void }) {
+export function OBWebHeader({ step, totalSteps = 3 }: { step?: number; totalSteps?: number; onClose?: () => void }) {
   return (
     <header
       className="w-full sticky top-0 z-20"
       style={{ backgroundColor: OBW.headerBg, borderBottom: `1px solid ${OBW.headerBorder}` }}
     >
       <div className="max-w-[480px] mx-auto px-5 h-[52px] flex items-center justify-between">
+        <HousAlertLogo size={26} />
         {step ? (
           <span
-            className="text-[11px] font-bold px-2 py-0.5 rounded-[5px] uppercase tracking-[0.04em]"
-            style={{ backgroundColor: OBW.badgeBg, color: OBW.badgeColor }}
+            className="text-[12px] font-semibold"
+            style={{ color: OBW.textMuted }}
             data-testid="badge-step"
           >
-            Stap {step}/{totalSteps}
+            {step}/{totalSteps}
           </span>
         ) : (
-          <div className="w-[50px]" />
+          <div className="w-[30px]" />
         )}
-        <HousAlertLogo size={26} />
-        <button
-          onClick={onClose}
-          className="w-[32px] h-[32px] rounded-full flex items-center justify-center active:scale-95 transition-transform"
-          style={{ backgroundColor: OBW.closeBtnBg }}
-          data-testid="button-close"
-        >
-          <X className="w-[15px] h-[15px]" style={{ color: OBW.closeBtnColor }} />
-        </button>
       </div>
     </header>
   );
@@ -186,7 +178,7 @@ export function OBWebFooter({
         {onBack && (
           <button
             onClick={onBack}
-            className="w-[44px] h-[44px] rounded-[8px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
+            className="w-[44px] h-[44px] rounded-[4px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
             style={{ border: `1.5px solid ${OBW.backBtnBorder}`, backgroundColor: OBW.backBtnBg }}
             data-testid={backTestId || "button-back"}
           >
@@ -196,7 +188,7 @@ export function OBWebFooter({
         <button
           onClick={onNext}
           disabled={nextDisabled || saving}
-          className="min-w-[120px] px-6 h-[44px] rounded-[8px] text-[14px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-1.5 shrink-0"
+          className="min-w-[120px] px-6 h-[44px] rounded-[4px] text-[14px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-1.5 shrink-0"
           style={{ background: OBW.pinkGradient, boxShadow: nextDisabled ? "none" : "0 4px 14px rgba(233,30,99,0.25)" }}
           data-testid={nextTestId || "button-next"}
         >
@@ -211,7 +203,7 @@ export function OBWebFooter({
 export function OBInfoBox({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="rounded-[10px] p-3.5 flex items-start gap-2.5"
+      className="rounded-[4px] p-3.5 flex items-start gap-2.5"
       style={{ backgroundColor: "#f0f9ff", border: "1px solid #bfdbfe" }}
     >
       <Info className="w-[15px] h-[15px] shrink-0 mt-[1px]" style={{ color: "#3b82f6" }} />
