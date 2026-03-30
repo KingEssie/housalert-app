@@ -1,0 +1,61 @@
+The website onboarding flow order is wrong and must be fixed.
+
+CURRENT WRONG FLOW:
+City → Filters → Preferences → Paywall → Account Creation → Checkout
+
+REQUIRED CORRECT FLOW:
+City → Filters → Preferences → Account Creation → Paywall → Stripe Checkout → Dashboard
+
+IMPORTANT:
+Do NOT change app-mode onboarding.
+Do NOT change dark/native flow.
+Only fix website mode (source=website / theme=light).
+
+==================================================
+REQUIRED FIX
+==================================================
+
+1. Correct website flow order
+Website mode must go in this exact order:
+- Step 1: City + radius
+- Step 2: Core filters
+- Step 3: Specific housing wishes
+- Then: Account creation page
+- Then: Paywall / plan selection page
+- Then: Stripe checkout
+- Then: Dashboard
+
+2. After step 3 (preferences)
+Do NOT redirect to paywall anymore.
+Instead redirect out of the iframe/popup to the full-page account creation screen.
+
+3. After account creation
+Redirect to the full-page paywall screen with all onboarding/search data preserved.
+
+4. On the paywall
+When a plan is selected and the CTA is clicked:
+- initiate the real Stripe checkout
+- do NOT redirect to account creation anymore
+- account already exists by then
+
+5. Existing account/session handling
+- If the user is already logged in AND came from the website flow:
+  - still preserve the intended sequence
+  - preferences should continue to account/paywall logic correctly
+- do NOT jump straight into dashboard unless payment/subscription state explicitly allows it
+
+6. Preserve state
+Make sure all selected search profile data survives through:
+- preferences → account
+- account → paywall
+- paywall → checkout
+- checkout success → dashboard
+
+7. Return
+Please report:
+- exact files changed
+- exact new website flow order
+- where the redirect after preferences now goes
+- where the redirect after account creation now goes
+- confirmation that paywall now comes AFTER account creation
+- confirmation that selecting a package now leads to Stripe checkout instead of account creation

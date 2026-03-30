@@ -45,16 +45,16 @@ export default function OnboardingPreferences() {
     outParams.set("sendUnclear", String(sendUnclear));
 
     if (w) {
-      const paywallUrl = new URL("https://app.housalert.com/paywall");
-      paywallUrl.searchParams.set("source", "website");
-      paywallUrl.searchParams.set("theme", "light");
+      const accountUrl = new URL("https://app.housalert.com/onboarding/password");
+      accountUrl.searchParams.set("source", "website");
+      accountUrl.searchParams.set("theme", "light");
       outParams.forEach((value, key) => {
-        paywallUrl.searchParams.set(key, value);
+        accountUrl.searchParams.set(key, value);
       });
       try {
-        window.top!.location.href = paywallUrl.toString();
+        window.top!.location.href = accountUrl.toString();
       } catch {
-        window.location.href = paywallUrl.toString();
+        window.location.href = accountUrl.toString();
       }
       return;
     }

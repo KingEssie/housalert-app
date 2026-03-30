@@ -144,8 +144,17 @@ export default function OnboardingPassword() {
       }
 
       if (w) {
-        const plan = params.get("plan") || "two_month";
-        navigate(`/paywall?source=website&theme=light&plan=${plan}&autoCheckout=true`);
+        const paywallParams = new URLSearchParams();
+        paywallParams.set("source", "website");
+        paywallParams.set("theme", "light");
+        ["city", "lat", "lng", "locationMode", "districts", "radiusKm",
+         "minPrice", "maxPrice", "minRooms", "minSize", "furnished",
+         "propertyTypes", "amenities", "sendUnclear", "priceFlexible",
+         "includeRooms"].forEach((key) => {
+          const val = params.get(key);
+          if (val) paywallParams.set(key, val);
+        });
+        navigate(`/paywall?${paywallParams.toString()}`);
       } else {
         navigate("/onboarding/setup");
       }

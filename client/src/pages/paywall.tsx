@@ -70,7 +70,6 @@ export default function PaywallPage() {
   const queryParams = new URLSearchParams(searchString);
   const planFromUrl = queryParams.get("plan");
   const autoCheckout = queryParams.get("autoCheckout") === "true";
-  const isWebsiteMode = queryParams.get("source") === "website";
 
   const plans = getPlans(t);
   const validPlanIds = plans.map((p) => p.id);
@@ -94,15 +93,7 @@ export default function PaywallPage() {
 
   async function handleCheckout() {
     if (!user) {
-      if (isWebsiteMode) {
-        const accountParams = new URLSearchParams(searchString);
-        accountParams.set("plan", selectedPlan);
-        accountParams.set("source", "website");
-        accountParams.set("theme", "light");
-        navigate(`/onboarding/password?${accountParams.toString()}`);
-      } else {
-        navigate(`/signup?plan=${selectedPlan}`);
-      }
+      navigate(`/signup?plan=${selectedPlan}`);
       return;
     }
 
