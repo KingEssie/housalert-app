@@ -192,13 +192,13 @@ export default function OnboardingCity() {
             style={{ color: OBW.text, marginTop: "24px", marginBottom: "6px" }}
             data-testid="text-city-title"
           >
-            In welke stad zoek je?
+            Waar wil je wonen?
           </h2>
           <p
             className="text-[14px] mb-5 leading-relaxed"
             style={{ color: OBW.textSecondary }}
           >
-            Voer je gewenste stad in om te beginnen.
+            Kies je stad en zoekradius.
           </p>
 
           <div className="relative" style={{ marginBottom: "16px" }}>

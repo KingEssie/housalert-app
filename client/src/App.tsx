@@ -38,6 +38,7 @@ import OnboardingFiltersNew from "@/pages/onboarding/filters";
 import OnboardingNameNew from "@/pages/onboarding/name";
 import OnboardingEmailNew from "@/pages/onboarding/email";
 import OnboardingPasswordNew from "@/pages/onboarding/password";
+import OnboardingPreferencesNew from "@/pages/onboarding/preferences";
 import ContinueDraftPage from "@/pages/continue-draft";
 import AuthCallbackPage from "@/pages/auth-callback";
 import { DocumentenGuidePage, SchufaGuidePage, ZoekstrategieGuidePage, NetwerkGuidePage } from "@/pages/guide";
@@ -156,7 +157,7 @@ function Router() {
       <Route path="/onboarding/setup" component={() => <ProtectedRoute component={OnboardingSetup} skipOnboardingCheck />} />
       <Route path="/onboarding/continue" component={() => <Redirect to="/onboarding/setup" />} />
       <Route path="/onboarding/estimate" component={() => <Redirect to="/onboarding/intro" />} />
-      <Route path="/onboarding/preferences" component={() => <Redirect to="/onboarding/intro" />} />
+      <Route path="/onboarding/preferences" component={OnboardingPreferencesNew} />
       <Route path="/onboarding/value" component={() => <Redirect to="/onboarding/intro" />} />
       <Route path="/onboarding" component={() => <Redirect to="/onboarding/intro" />} />
       <Route path="/paywall" component={() => <Redirect to="/onboarding/setup" />} />

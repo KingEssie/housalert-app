@@ -1,0 +1,389 @@
+We need a full rebuild of the WEBSITE onboarding flow only.
+
+IMPORTANT:
+This task is ONLY for the website popup/iframe onboarding flow opened with:
+- source=website
+- theme=light
+
+Do NOT change the normal in-app onboarding flow.
+Do NOT change the dark/native app flow.
+Do NOT break backend logic, saved profile logic, or matching logic.
+Do NOT create a second product flow with separate data models.
+This must be a WEBSITE-MODE presentation + structure rebuild on top of the existing logic.
+
+GOAL:
+Rebuild the website onboarding flow so it closely matches the Rentbird reference flow in:
+- structure
+- step order
+- hierarchy
+- layout
+- controls
+- pacing
+- conversion UX
+
+Use HousAlert branding instead of Rentbird branding.
+No Rentbird text or logo may remain anywhere.
+
+==================================================
+PRIMARY GOAL
+==================================================
+
+The website flow should feel like this:
+
+STEP 1/3
+- City search / choose city
+- Radius selection
+- Map
+- Small neutral info box
+- Sticky footer with estimated matches + Next CTA
+
+STEP 2/3
+- Main search filters
+- Use Rentbird-style simple controls
+- Sticky footer with estimated matches + back/next
+
+STEP 3/3
+- Specific housing wishes / optional preferences
+- This screen is currently missing in our flow and must be added in website mode
+- Sticky footer with estimated matches + back/next
+
+THEN AFTER STEP 3:
+- Account creation screen
+- Search summary card
+- Missed matches / FOMO info box
+- Form fields
+- Primary CTA
+- Small trust/legal copy
+
+IMPORTANT:
+The account creation screen is NOT part of the 3 numbered filtering steps.
+The numbered steps must end at the preferences screen, just like in the reference.
+
+==================================================
+FLOW ORDER REQUIRED
+==================================================
+
+Website mode only must use this exact order:
+
+1. City + radius
+2. Core filters
+3. Specific housing wishes
+4. Account creation / signup
+5. Website paywall / offer screen if applicable
+
+Do NOT skip the specific housing wishes step.
+Do NOT show account creation as step 3/3.
+
+==================================================
+WEBSITE MODE DETECTION
+==================================================
+
+Website mode is active when:
+- source=website
+or
+- theme=light
+
+Preserve these params through the entire website flow.
+
+==================================================
+DESIGN TARGET
+==================================================
+
+Rebuild website mode to visually align very closely with the attached Rentbird references:
+
+- light background
+- dark text
+- compact top header
+- left step badge
+- centered HousAlert logo/wordmark
+- right close icon
+- clean white cards
+- muted gray borders
+- soft blue info boxes where appropriate
+- sticky bottom bar
+- compact, conversion-focused spacing
+- no dark gradient
+- no app-shell look
+- no outer rounded iframe shell styling in website mode
+
+Use our HousAlert logo/wordmark.
+If asset unavailable, create a clean temporary HousAlert wordmark/header treatment.
+
+==================================================
+STEP 1/3 — CITY + RADIUS
+==================================================
+
+Rebuild website-mode city step to match Rentbird reference more closely:
+
+Structure:
+- top header with step badge + centered HousAlert logo + close icon
+- title:
+  "Waar wil je wonen?"
+- city search field
+- selected city state
+- radius section directly below
+- map visible below radius
+- small neutral info card below map
+- sticky bottom footer with:
+  - estimated matches on the left
+  - primary next button on the right
+
+Behavior:
+- in website mode, force radius mode only
+- do NOT show options to switch between:
+  - buurten
+  - straal
+  - gehele woonplaats
+- do NOT show tabs or location mode toggles
+- radius must be the only location method in website mode
+
+Copy/style should align closely with the reference.
+
+==================================================
+STEP 2/3 — CORE FILTERS
+==================================================
+
+This step currently differs too much from the reference.
+
+Rebuild website-mode filters step to match Rentbird’s interaction style.
+
+IMPORTANT:
+For website mode, replace the current more “app-like” controls with a more Rentbird-like form structure.
+
+Use this structure:
+
+- Step badge: "Stap 2/3"
+- HousAlert logo centered
+- close icon right
+
+Fields in this order:
+1. Maximale huurprijs
+2. Slaapkamers
+3. Minimum oppervlakte
+4. Gemeubileerd
+
+Under these:
+5. Optional extras / wishes section if applicable
+
+Behavior/UI requirements:
+- Prefer simple dropdown / stepped controls over sliders where the reference does so
+- Where appropriate, use:
+  - select/dropdown field
+  - plus/minus buttons beside fields
+- Avoid heavy “fancy app UI” feel
+- Make the screen feel like a simple, clear conversion form
+
+Specific:
+- Replace website-mode slider-heavy interaction where possible with reference-like controls
+- If the backend still expects numeric values, map the simpler UI back to the existing data model
+- Keep logic intact, but make UI much closer to the reference
+
+For website mode:
+- price flexible toggle should still exist if needed, but align visually with reference
+- room search toggle should still exist if needed, but align visually with reference
+
+Sticky footer:
+- estimated matches left
+- back button
+- next button
+
+==================================================
+STEP 3/3 — SPECIFIC HOUSING WISHES
+==================================================
+
+This screen is missing in our current website flow.
+Add it in website mode.
+
+This must come AFTER core filters and BEFORE account creation.
+
+Structure should closely match Rentbird reference:
+
+- Step badge: "Stap 3/3"
+- HousAlert logo centered
+- close icon right
+
+Content:
+- small explanatory info box at top
+- section title:
+  "Specifieke woonwensen"
+- optional preference list with simple checkbox layout
+
+Include website-mode preferences such as:
+- Tuin
+- Balkon
+- Met bad / Badkuip
+- Energielabel C of beter
+- Dakterras
+- Other supported preference fields if relevant
+
+Also include:
+- "Alle geselecteerde criteria zijn vereist" checkbox
+- “Stuur mij woningen waarbij mijn eisen niet duidelijk staan aangegeven” option
+- keep this visible and styled like the reference
+
+IMPORTANT:
+This step should feel optional and lightweight.
+It should not feel like another heavy settings screen.
+
+Sticky footer:
+- estimated matches left
+- back button
+- next button
+
+==================================================
+ACCOUNT CREATION SCREEN
+==================================================
+
+After step 3, show the account creation screen.
+
+This screen should closely match Rentbird reference in structure:
+
+- prominent heading:
+  "Waar kunnen we je matches heen sturen?"
+or similar conversion-focused Dutch copy
+- search summary card ("Jouw zoekopdracht")
+- missed matches / FOMO box
+- clean form layout
+- large primary CTA
+- small legal/privacy copy below
+
+Fields:
+- Voornaam
+- Achternaam
+- E-mail
+- Wachtwoord
+
+Requirements:
+- do NOT treat this as step 3/3
+- keep it as a separate conversion screen after the numbered filter steps
+- preserve signup/auth logic exactly
+- preserve password validation
+- keep “already have account? inloggen” if useful
+
+The visual hierarchy must match the reference:
+value first, form second.
+
+==================================================
+PAYWALL / OFFER SCREEN
+==================================================
+
+If website flow includes a pricing/offer/paywall screen after signup:
+rebuild website-mode layout to closely match the Rentbird-style offer screen.
+
+Structure:
+- heading
+- search summary card
+- missed matches info card
+- pricing options stacked vertically
+- one highlighted / recommended option
+- large CTA
+- short benefits list
+- trust / guarantee block below
+
+Use HousAlert branding only.
+
+==================================================
+VISUAL RULES
+==================================================
+
+For website mode only:
+
+- no dark theme
+- no dark cards
+- no dark gradient
+- no outer shell rounded corners
+- clean gray/white backgrounds
+- dark headings
+- muted secondary text
+- strong CTA color
+- compact spacing similar to reference
+- fields height and structure should resemble the references
+
+Typography should feel:
+- bold, simple, high-contrast
+- no overly app-like tiny labels
+- no over-stylized UI
+
+==================================================
+COMPONENT RULES
+==================================================
+
+Do NOT make sweeping changes across the whole app.
+Website mode only.
+
+You may:
+- add website-mode variants to existing onboarding components
+- create small website-only helper components if needed
+- restructure website-mode screens internally
+
+But:
+- keep same saved data behavior
+- keep same backend contract
+- keep same route chain
+- keep normal app onboarding unchanged
+
+==================================================
+DATA / LOGIC RULES
+==================================================
+
+Do NOT break:
+- onboarding persistence
+- search profile creation
+- source=website param forwarding
+- theme=light param forwarding
+- estimated match calculations
+- auth/signup logic
+- pricing flow
+- radius-only website mode
+
+==================================================
+CONVERSION PRIORITY
+==================================================
+
+Primary objective is not code elegance.
+Primary objective is:
+- make website onboarding convert more like Rentbird
+
+This means:
+- simpler interaction
+- less cognitive load
+- correct step order
+- correct pacing
+- trust + FOMO + clean CTA structure
+
+==================================================
+FILES TO REVIEW / LIKELY TOUCH
+==================================================
+
+Likely files include:
+- client/src/pages/onboarding/city.tsx
+- client/src/pages/onboarding/location.tsx
+- client/src/pages/onboarding/filters.tsx
+- client/src/pages/onboarding/name.tsx
+- client/src/pages/onboarding/email.tsx
+- client/src/pages/onboarding/password.tsx
+- client/src/components/onboarding-ui.tsx
+
+You may also create a dedicated website-mode step for preferences if needed.
+
+==================================================
+REPORT BACK
+==================================================
+
+Return a detailed report with:
+
+1. exact files changed
+2. exact step order in website mode after rebuild
+3. what was changed on:
+   - city step
+   - filters step
+   - new preferences step
+   - account creation screen
+   - paywall screen if touched
+4. which controls were changed from app-style to Rentbird-style
+5. confirmation that:
+   - website mode now visually aligns much more closely with the reference
+   - the missing "specifieke woonwensen" step now exists
+   - account creation is no longer incorrectly treated as step 3/3
+   - normal app onboarding remains unchanged
+   - HousAlert branding is used everywhere

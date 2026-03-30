@@ -155,7 +155,9 @@ export default function OnboardingPassword() {
   function handleBack() {
     if (w) {
       const backParams = new URLSearchParams(searchString);
-      navigate(appendWebsiteParams(`/onboarding/filters?${backParams.toString()}`, searchString));
+      backParams.delete("source");
+      backParams.delete("theme");
+      navigate(appendWebsiteParams(`/onboarding/preferences?${backParams.toString()}`, searchString));
     } else {
       const out = new URLSearchParams(searchString);
       navigate(`/onboarding/email?${out.toString()}`);
@@ -179,7 +181,7 @@ export default function OnboardingPassword() {
         style={{ background: "#ffffff" }}
         data-testid="screen-onboarding-password"
       >
-        <OBWebHeader step={3} onClose={handleClose} />
+        <OBWebHeader onClose={handleClose} />
 
         <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[120px] overflow-y-auto">
           <h2
@@ -187,10 +189,10 @@ export default function OnboardingPassword() {
             style={{ color: OBW.text }}
             data-testid="text-password-title"
           >
-            Maak je account aan
+            Waar kunnen we je matches heen sturen?
           </h2>
           <p className="text-[14px] mb-5 leading-relaxed" style={{ color: OBW.textSecondary }}>
-            Begin direct met zoeken naar je nieuwe woning.
+            Maak een gratis account aan en ontvang direct matches.
           </p>
 
           {city && (

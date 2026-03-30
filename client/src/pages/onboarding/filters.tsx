@@ -255,7 +255,27 @@ export default function OnboardingFilters() {
   const districts = incomingParams.get("districts") || "";
   const radiusKm = incomingParams.get("radiusKm") || "";
 
-  const [f, setF] = useState<FilterData>(INITIAL_FILTERS);
+  const [f, setF] = useState<FilterData>(() => {
+    if (incomingParams.has("maxPrice")) {
+      const rawMinSize = incomingParams.get("minSize");
+      const minSizeVal = rawMinSize !== null ? parseInt(rawMinSize) : INITIAL_FILTERS.minSize;
+      const rawMinRooms = incomingParams.get("minRooms");
+      return {
+        minPrice: parseInt(incomingParams.get("minPrice") || "0") || 0,
+        maxPrice: parseInt(incomingParams.get("maxPrice") || "1500") || INITIAL_FILTERS.maxPrice,
+        priceFlexible: incomingParams.get("priceFlexible") === "true",
+        propertyType: incomingParams.get("propertyTypes") || "any",
+        includeRooms: incomingParams.get("includeRooms") === "true",
+        minRooms: (!rawMinRooms || rawMinRooms === "0") ? "any" : rawMinRooms,
+        minSize: minSizeVal || 0,
+        sizeNA: minSizeVal === 0,
+        furnished: incomingParams.get("furnished") || "any",
+        amenities: incomingParams.get("amenities")?.split(",").filter(Boolean) || [],
+        sendUnclear: incomingParams.get("sendUnclear") !== "false",
+      };
+    }
+    return INITIAL_FILTERS;
+  });
 
   function update(partial: Partial<FilterData>) {
     setF((prev) => ({ ...prev, ...partial }));
@@ -342,7 +362,7 @@ export default function OnboardingFilters() {
     if (f.sendUnclear) outParams.set("sendUnclear", "true");
 
     if (w) {
-      navigate(appendWebsiteParams(`/onboarding/password?${outParams.toString()}`, searchString));
+      navigate(appendWebsiteParams(`/onboarding/preferences?${outParams.toString()}`, searchString));
     } else {
       navigate(appendWebsiteParams(`/onboarding/name?${outParams.toString()}`, searchString));
     }
@@ -386,9 +406,32 @@ export default function OnboardingFilters() {
     { value: "unfurnished", label: t("onboarding.filters.furnishedNo") || "Nein" },
   ];
 
+  const WEB_PRICE_OPTIONS = [
+    { value: "500", label: "€500" },
+    { value: "750", label: "€750" },
+    { value: "1000", label: "€1.000" },
+    { value: "1250", label: "€1.250" },
+    { value: "1500", label: "€1.500" },
+    { value: "1750", label: "€1.750" },
+    { value: "2000", label: "€2.000" },
+    { value: "2500", label: "€2.500" },
+    { value: "3000", label: "€3.000" },
+  ];
+
+  const WEB_SIZE_OPTIONS = [
+    { value: "0", label: "Niet belangrijk" },
+    { value: "20", label: "20 m²" },
+    { value: "30", label: "30 m²" },
+    { value: "40", label: "40 m²" },
+    { value: "50", label: "50 m²" },
+    { value: "60", label: "60 m²" },
+    { value: "80", label: "80 m²" },
+    { value: "100", label: "100 m²" },
+  ];
+
   const sLabel = w ? "text-[15px] font-bold mb-3 block" : "text-[13px] font-semibold mb-3 block";
 
-  const filterSections = (
+  const darkFilterSections = (
     <div className="flex flex-col gap-6">
       <section>
         <label className={sLabel} style={{ color: T.text }}>
@@ -449,7 +492,7 @@ export default function OnboardingFilters() {
         </label>
         <div
           className="flex p-1 rounded-full"
-          style={{ backgroundColor: w ? OBW.tabBg : "rgba(99,102,241,0.12)" }}
+          style={{ backgroundColor: "rgba(99,102,241,0.12)" }}
           data-testid="rooms-selector"
         >
           {ROOM_OPTIONS.map((opt) => (
@@ -458,8 +501,8 @@ export default function OnboardingFilters() {
               onClick={() => update({ minRooms: opt.value })}
               className="flex-1 h-[40px] rounded-full text-[13px] font-semibold transition-all"
               style={{
-                backgroundColor: f.minRooms === opt.value ? (w ? OBW.tabActiveBg : "rgba(99,102,241,0.35)") : "transparent",
-                color: f.minRooms === opt.value ? (w ? OBW.tabActiveColor : "#fff") : T.textSecondary,
+                backgroundColor: f.minRooms === opt.value ? "rgba(99,102,241,0.35)" : "transparent",
+                color: f.minRooms === opt.value ? "#fff" : T.textSecondary,
               }}
               data-testid={`rooms-${opt.value}`}
             >
@@ -473,7 +516,7 @@ export default function OnboardingFilters() {
 
       <section>
         <div className="flex items-center justify-between mb-3">
-          <label className={w ? "text-[15px] font-bold" : "text-[13px] font-semibold"} style={{ color: T.text }}>
+          <label className="text-[13px] font-semibold" style={{ color: T.text }}>
             {t("onboarding.filters.minSizeLabel") || "Minimale oppervlakte"}
           </label>
           <button
@@ -583,7 +626,110 @@ export default function OnboardingFilters() {
             Verfijn je zoekopdracht voor de beste resultaten.
           </p>
 
-          {filterSections}
+          <div className="flex flex-col gap-5">
+            <div>
+              <label className="text-[15px] font-bold mb-2 block" style={{ color: OBW.text }}>
+                Maximale huurprijs
+              </label>
+              <select
+                value={String(f.maxPrice)}
+                onChange={(e) => update({ maxPrice: parseInt(e.target.value), minPrice: 0 })}
+                className="w-full h-[48px] px-3.5 rounded-[8px] text-[14px] ha-field"
+                style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
+                data-testid="select-max-price"
+              >
+                {WEB_PRICE_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="h-px" style={{ backgroundColor: OBW.divider }} />
+
+            <div>
+              <label className="text-[15px] font-bold mb-2 block" style={{ color: OBW.text }}>
+                Slaapkamers
+              </label>
+              <SegmentedControl
+                options={ROOM_OPTIONS}
+                value={f.minRooms}
+                onChange={(v) => update({ minRooms: v })}
+                testId="rooms-selector"
+                theme={OBW}
+              />
+            </div>
+
+            <div className="h-px" style={{ backgroundColor: OBW.divider }} />
+
+            <div>
+              <label className="text-[15px] font-bold mb-2 block" style={{ color: OBW.text }}>
+                Minimum oppervlakte
+              </label>
+              <select
+                value={String(f.sizeNA ? 0 : f.minSize)}
+                onChange={(e) => {
+                  const v = parseInt(e.target.value);
+                  update({ minSize: v, sizeNA: v === 0 });
+                }}
+                className="w-full h-[48px] px-3.5 rounded-[8px] text-[14px] ha-field"
+                style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
+                data-testid="select-min-size"
+              >
+                {WEB_SIZE_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="h-px" style={{ backgroundColor: OBW.divider }} />
+
+            <div>
+              <label className="text-[15px] font-bold mb-2 block" style={{ color: OBW.text }}>
+                Gemeubileerd
+              </label>
+              <SegmentedControl
+                options={FURNISHED_OPTIONS}
+                value={f.furnished}
+                onChange={(v) => update({ furnished: v })}
+                testId="furnished-selector"
+                theme={OBW}
+              />
+            </div>
+
+            <div className="h-px" style={{ backgroundColor: OBW.divider }} />
+
+            <div>
+              <label className="text-[15px] font-bold mb-2 block" style={{ color: OBW.text }}>
+                Woningtype
+              </label>
+              <SegmentedControl
+                options={PROPERTY_OPTIONS}
+                value={f.propertyType}
+                onChange={(v) => update({ propertyType: v })}
+                testId="property-type"
+                theme={OBW}
+              />
+              <div className="mt-3">
+                <Toggle
+                  checked={f.includeRooms}
+                  onChange={(v) => update({ includeRooms: v })}
+                  label="Zoek ook kamers / onzelfstandige woonruimte"
+                  testId="toggle-include-rooms"
+                  theme={OBW}
+                />
+              </div>
+            </div>
+
+            <div className="h-px" style={{ backgroundColor: OBW.divider }} />
+
+            <Toggle
+              checked={f.priceFlexible}
+              onChange={(v) => update({ priceFlexible: v })}
+              label="Stuur ook iets duurdere perfecte matches"
+              testId="toggle-price-flexible"
+              theme={OBW}
+            />
+          </div>
         </main>
 
         <OBWebFooter
@@ -649,7 +795,7 @@ export default function OnboardingFilters() {
           {t("onboarding.filters.subtitle") || "Verfijn je zoekopdracht."}
         </p>
 
-        {filterSections}
+        {darkFilterSections}
       </main>
 
       <OBFooter

@@ -118,20 +118,24 @@ export function OBProgressDots({ current, total }: { current: number; total: num
 import { ChevronLeft, Loader2, X, Info } from "lucide-react";
 import { HousAlertLogo } from "@/components/housalert-logo";
 
-export function OBWebHeader({ step, totalSteps = 3, onClose }: { step: number; totalSteps?: number; onClose: () => void }) {
+export function OBWebHeader({ step, totalSteps = 3, onClose }: { step?: number; totalSteps?: number; onClose: () => void }) {
   return (
     <header
       className="w-full sticky top-0 z-20"
       style={{ backgroundColor: OBW.headerBg, borderBottom: `1px solid ${OBW.headerBorder}` }}
     >
       <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center justify-between">
-        <span
-          className="text-[11px] font-bold px-2.5 py-1 rounded-[6px] uppercase tracking-wide"
-          style={{ backgroundColor: OBW.badgeBg, color: OBW.badgeColor }}
-          data-testid="badge-step"
-        >
-          Stap {step}/{totalSteps}
-        </span>
+        {step ? (
+          <span
+            className="text-[11px] font-bold px-2.5 py-1 rounded-[6px] uppercase tracking-wide"
+            style={{ backgroundColor: OBW.badgeBg, color: OBW.badgeColor }}
+            data-testid="badge-step"
+          >
+            Stap {step}/{totalSteps}
+          </span>
+        ) : (
+          <div className="w-[50px]" />
+        )}
         <HousAlertLogo size={28} />
         <button
           onClick={onClose}
