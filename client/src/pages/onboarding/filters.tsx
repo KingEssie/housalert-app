@@ -329,7 +329,7 @@ export default function OnboardingFilters() {
   const w = useWebsiteMode();
   const T = w ? OBW : OB;
   const incomingParams = new URLSearchParams(searchString);
-  const isSearchOnlyMode = !!user;
+  const isSearchOnlyMode = w ? false : !!user;
 
   const city = incomingParams.get("city") || "";
   const lat = incomingParams.get("lat") || "0";

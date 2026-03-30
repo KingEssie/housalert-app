@@ -143,7 +143,12 @@ export default function OnboardingPassword() {
         }
       }
 
-      navigate("/onboarding/setup");
+      if (w) {
+        const plan = params.get("plan") || "two_month";
+        navigate(`/paywall?source=website&theme=light&plan=${plan}&autoCheckout=true`);
+      } else {
+        navigate("/onboarding/setup");
+      }
     } catch (err: any) {
       toast({ title: t("common.error") || "Fehler", description: err.message, variant: "destructive" });
     } finally {

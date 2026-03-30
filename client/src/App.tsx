@@ -45,6 +45,7 @@ import { DocumentenGuidePage, SchufaGuidePage, ZoekstrategieGuidePage, NetwerkGu
 import DeleteAccountPage from "@/pages/delete-account";
 import SubscriptionSuccessPage from "@/pages/subscription-success";
 import EmbedSuccessPage from "@/pages/embed-success";
+import PaywallPage from "@/pages/paywall";
 import AdminIngestionPage from "@/pages/admin-ingestion";
 import AdminPortalPage from "@/pages/admin-portal";
 import AdminMatchAuditPage from "@/pages/admin-match-audit";
@@ -160,7 +161,7 @@ function Router() {
       <Route path="/onboarding/preferences" component={OnboardingPreferencesNew} />
       <Route path="/onboarding/value" component={() => <Redirect to="/onboarding/intro" />} />
       <Route path="/onboarding" component={() => <Redirect to="/onboarding/intro" />} />
-      <Route path="/paywall" component={() => <Redirect to="/onboarding/setup" />} />
+      <Route path="/paywall" component={PaywallPage} />
       <Route path="/subscription-success" component={() => <ProtectedRoute component={SubscriptionSuccessPage} skipOnboardingCheck />} />
       <Route path="/embed-success" component={EmbedSuccessPage} />
       <Route path="/home" component={() => <ProtectedRoute component={DashboardPage} />} />
