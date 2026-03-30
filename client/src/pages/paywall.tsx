@@ -2,13 +2,14 @@ import { apiFetch } from "@/lib/api-base";
 import { useHashSearch } from "@/lib/hash-search";
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, Check, Loader2, X, ShieldAlert } from "lucide-react";
+import { ArrowLeft, Check, Loader2, X, ShieldAlert, ChevronDown, ArrowRight, Shield, Clock, Zap } from "lucide-react";
 import { HousAlertLogo } from "@/components/housalert-logo";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { useTranslation } from "@/i18n";
 import { trackEvent, trackEventLazy } from "@/lib/track-event";
+import { OBW } from "@/components/onboarding-ui";
 
 const BRAND = "rgb(var(--ha-primary))";
 const TEXT_PRIMARY = "rgb(var(--ha-text))";
@@ -61,6 +62,255 @@ const BENEFIT_KEYS = [
   { titleKey: "paywall.benefits.letter.title", descKey: "paywall.benefits.letter.desc" },
 ];
 
+interface WebsitePlan {
+  id: string;
+  label: string;
+  perMonth: string;
+  discount: string;
+  popular: boolean;
+}
+
+const WEBSITE_PLANS: WebsitePlan[] = [
+  { id: "three_month", label: "3 maanden", perMonth: "€15,00 per maand", discount: "40% korting", popular: false },
+  { id: "two_month", label: "2 maanden", perMonth: "€17,50 per maand", discount: "30% korting", popular: true },
+  { id: "monthly", label: "1 maand", perMonth: "€24,99 per maand", discount: "0% korting", popular: false },
+];
+
+function WebsitePaywall({
+  selectedPlan,
+  setSelectedPlan,
+  loading,
+  handleCheckout,
+  queryParams,
+}: {
+  selectedPlan: string;
+  setSelectedPlan: (id: string) => void;
+  loading: boolean;
+  handleCheckout: () => void;
+  queryParams: URLSearchParams;
+}) {
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  const city = queryParams.get("city") || "";
+  const maxPrice = queryParams.get("maxPrice") || "";
+  const minSize = queryParams.get("minSize") || "";
+  const minRooms = queryParams.get("minRooms") || "";
+  const radiusKm = queryParams.get("radiusKm") || "";
+
+  const searchDetails: string[] = [];
+  if (city) searchDetails.push(city);
+  if (radiusKm && radiusKm !== "0") searchDetails.push(`+ ${radiusKm} km`);
+  if (maxPrice && maxPrice !== "0") searchDetails.push(`max €${maxPrice}`);
+  if (minSize && minSize !== "0") searchDetails.push(`${minSize}m²+`);
+  if (minRooms && minRooms !== "0") searchDetails.push(`${minRooms}+ kamers`);
+
+  return (
+    <div
+      className="min-h-[100dvh] flex flex-col"
+      style={{ background: "#ffffff" }}
+      data-testid="screen-paywall-website"
+    >
+      <header
+        className="w-full sticky top-0 z-20"
+        style={{ backgroundColor: OBW.headerBg, borderBottom: `1px solid ${OBW.headerBorder}` }}
+      >
+        <div className="max-w-[480px] mx-auto px-5 h-[52px] flex items-center justify-between">
+          <HousAlertLogo size={26} />
+          <div className="w-[30px]" />
+        </div>
+      </header>
+
+      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-8">
+        <h2
+          className="text-[22px] font-bold tracking-[-0.02em] mb-5"
+          style={{ color: OBW.text }}
+          data-testid="text-paywall-title"
+        >
+          Selecteer je pakket
+        </h2>
+
+        {city && (
+          <div
+            className="rounded-[4px] mb-5"
+            style={{ border: `1px solid ${OBW.cardBorder}`, backgroundColor: "#ffffff" }}
+          >
+            <button
+              className="w-full flex items-center justify-between px-4 py-3"
+              onClick={() => setSearchOpen(!searchOpen)}
+              data-testid="button-search-summary-toggle"
+            >
+              <span className="text-[15px] font-semibold" style={{ color: OBW.text }}>
+                Jouw zoekopdracht
+              </span>
+              <ChevronDown
+                className="w-4 h-4 transition-transform"
+                style={{
+                  color: OBW.textSecondary,
+                  transform: searchOpen ? "rotate(180deg)" : "rotate(0deg)",
+                }}
+              />
+            </button>
+            {searchOpen && (
+              <div className="px-4 pb-3">
+                <div
+                  className="rounded-[4px] p-3"
+                  style={{ backgroundColor: "#f0f9ff", border: "1px solid #bfdbfe" }}
+                >
+                  <p className="text-[13px] leading-[1.5]" style={{ color: "#1e40af" }}>
+                    {searchDetails.length > 0 ? searchDetails.join(" · ") : "Geen zoekcriteria ingesteld"}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        <p
+          className="text-[15px] font-semibold mb-3"
+          style={{ color: OBW.text }}
+        >
+          Selecteer jouw kortingsperiode
+        </p>
+
+        <div className="flex flex-col gap-0" data-testid="plan-options">
+          {WEBSITE_PLANS.map((plan) => {
+            const isSelected = selectedPlan === plan.id;
+            return (
+              <div key={plan.id} className="relative">
+                {plan.popular && (
+                  <div className="flex justify-center" style={{ marginBottom: "-12px", position: "relative", zIndex: 2 }}>
+                    <span
+                      className="text-[11px] font-bold px-3 py-1 rounded-full"
+                      style={{ backgroundColor: "#22c55e", color: "#ffffff" }}
+                      data-testid="badge-popular"
+                    >
+                      Meest gekozen
+                    </span>
+                  </div>
+                )}
+                <button
+                  onClick={() => setSelectedPlan(plan.id)}
+                  className="w-full text-left transition-all"
+                  style={{
+                    border: isSelected ? `2px solid ${OBW.pink}` : `1px solid ${OBW.cardBorder}`,
+                    borderRadius: "4px",
+                    backgroundColor: isSelected ? "rgba(233,30,99,0.04)" : "#ffffff",
+                    padding: plan.popular ? "16px 16px 12px 16px" : "12px 16px",
+                    marginBottom: "8px",
+                  }}
+                  data-testid={`card-plan-${plan.id}`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-[22px] h-[22px] rounded-full flex items-center justify-center shrink-0"
+                        style={{
+                          border: isSelected ? "none" : `2px solid ${OBW.chipBorder}`,
+                          backgroundColor: isSelected ? "#22c55e" : "transparent",
+                        }}
+                      >
+                        {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
+                      </div>
+                      <span
+                        className="text-[15px] font-bold"
+                        style={{ color: OBW.text }}
+                      >
+                        {plan.label}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[13px]" style={{ color: OBW.textSecondary }}>
+                        {plan.perMonth}
+                      </span>
+                      <span
+                        className="text-[13px] font-bold"
+                        style={{ color: plan.discount === "0% korting" ? OBW.textSecondary : "#e91e63" }}
+                      >
+                        {plan.discount}
+                      </span>
+                    </div>
+                  </div>
+                </button>
+              </div>
+            );
+          })}
+        </div>
+
+        <button
+          onClick={handleCheckout}
+          disabled={loading}
+          className="w-full h-[48px] rounded-[4px] text-[15px] font-bold text-white transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2 mt-2 mb-6"
+          style={{
+            background: OBW.pinkGradient,
+            boxShadow: "0 4px 14px rgba(233,30,99,0.25)",
+          }}
+          data-testid="button-select-payment"
+        >
+          {loading ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin" />
+              Even geduld...
+            </>
+          ) : (
+            <>
+              Activeer woonalerts
+              <ArrowRight className="w-4 h-4" />
+            </>
+          )}
+        </button>
+
+        <div className="flex flex-col gap-3 mb-6">
+          <div className="flex items-start gap-2.5">
+            <div
+              className="w-[20px] h-[20px] rounded-full flex items-center justify-center shrink-0 mt-[1px]"
+              style={{ backgroundColor: "rgba(34,197,94,0.12)" }}
+            >
+              <Check className="w-3 h-3" style={{ color: "#22c55e" }} />
+            </div>
+            <p className="text-[13px] leading-[1.5]" style={{ color: OBW.text }}>
+              <strong>Bespaar tijd (en stress):</strong> wij vinden woningmatches die bij je passen
+            </p>
+          </div>
+          <div className="flex items-start gap-2.5">
+            <div
+              className="w-[20px] h-[20px] rounded-full flex items-center justify-center shrink-0 mt-[1px]"
+              style={{ backgroundColor: "rgba(34,197,94,0.12)" }}
+            >
+              <Check className="w-3 h-3" style={{ color: "#22c55e" }} />
+            </div>
+            <p className="text-[13px] leading-[1.5]" style={{ color: OBW.text }}>
+              <strong>Ongelimiteerd woningmatches</strong> direct via de HousAlert app
+            </p>
+          </div>
+          <div className="flex items-start gap-2.5">
+            <div
+              className="w-[20px] h-[20px] rounded-full flex items-center justify-center shrink-0 mt-[1px]"
+              style={{ backgroundColor: "rgba(34,197,94,0.12)" }}
+            >
+              <Check className="w-3 h-3" style={{ color: "#22c55e" }} />
+            </div>
+            <p className="text-[13px] leading-[1.5]" style={{ color: OBW.text }}>
+              De meeste HousAlert-gebruikers vinden in <strong>4–8 weken</strong> een huurwoning
+            </p>
+          </div>
+        </div>
+
+        <div
+          className="rounded-[4px] p-4"
+          style={{ backgroundColor: "#f0f9ff", border: "1px solid #bfdbfe" }}
+        >
+          <p className="text-[15px] font-bold mb-1" style={{ color: "#1e40af" }}>
+            Probeer HousAlert zonder risico!
+          </p>
+          <p className="text-[13px] leading-[1.55]" style={{ color: "#1e40af" }}>
+            Ben je binnen 14 dagen niet tevreden over HousAlert? Dan krijg jij het volledige bedrag terug. Zonder fratsen.
+          </p>
+        </div>
+      </main>
+    </div>
+  );
+}
+
 export default function PaywallPage() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
@@ -70,6 +320,7 @@ export default function PaywallPage() {
   const queryParams = new URLSearchParams(searchString);
   const planFromUrl = queryParams.get("plan");
   const autoCheckout = queryParams.get("autoCheckout") === "true";
+  const isWebsiteMode = queryParams.get("source") === "website" || queryParams.get("theme") === "light";
 
   const plans = getPlans(t);
   const validPlanIds = plans.map((p) => p.id);
@@ -152,6 +403,18 @@ export default function PaywallPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  if (isWebsiteMode) {
+    return (
+      <WebsitePaywall
+        selectedPlan={selectedPlan}
+        setSelectedPlan={setSelectedPlan}
+        loading={loading}
+        handleCheckout={handleCheckout}
+        queryParams={queryParams}
+      />
+    );
   }
 
   return (
