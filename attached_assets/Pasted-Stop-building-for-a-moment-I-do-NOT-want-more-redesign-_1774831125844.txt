@@ -1,0 +1,92 @@
+Stop building for a moment. I do NOT want more redesign changes yet.
+
+I want a strict diagnosis of why website mode is still inconsistent.
+
+Problem:
+In website mode, some parts look correct, but other parts still look like app mode:
+- text sometimes too small
+- controls still look like app UI
+- sliders / segmented controls still appear where dropdown-style website controls were expected
+- overall visual behavior is inconsistent across screens
+
+I want you to investigate first, not blindly change more UI.
+
+==================================================
+DIAGNOSIS TASK
+==================================================
+
+Please inspect the website-mode onboarding flow screen by screen and answer with evidence.
+
+Check these screens:
+1. city
+2. location
+3. filters
+4. preferences
+5. account creation
+
+For EACH screen, tell me:
+
+1. Is website mode detection actually true on this screen?
+   - show exactly how it is detected
+   - show whether it is passed correctly
+
+2. Which render path is being used?
+   - a true separate website render path
+   - or app UI with conditional styling
+   - or mixed
+
+3. Which components still come from app mode instead of website mode?
+   For example:
+   - sliders
+   - segmented controls
+   - toggles
+   - footer
+   - form fields
+   - step layout
+   - header
+   - cards
+   - info boxes
+
+4. Are there CSS conflicts?
+   - check index.css
+   - check onboarding-ui.tsx
+   - check utility classes
+   - check if website-mode classes are being overridden by app classes
+
+5. Are the current live-looking differences caused by:
+   - wrong component path
+   - stale CSS
+   - conditional render not used
+   - shared component still app-like
+   - build/cache issue
+   - something else
+
+==================================================
+IMPORTANT
+==================================================
+
+Do NOT redesign yet.
+Do NOT implement major UI changes yet.
+Only diagnose and explain exactly what is still wrong.
+
+==================================================
+OUTPUT FORMAT
+==================================================
+
+Return:
+
+A. Per screen:
+- websiteMode true/false
+- render path used
+- components still app-like
+- problems found
+
+B. Global causes:
+- top 3 root causes of inconsistency
+
+C. Recommended fix plan:
+- exact minimal set of files/components to change
+- in what order
+
+D. Confidence:
+- tell me whether the issue is mainly logic, component reuse, css override, or cache
