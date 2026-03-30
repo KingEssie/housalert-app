@@ -2,7 +2,7 @@ import { apiFetch } from "@/lib/api-base";
 import { useHashSearch } from "@/lib/hash-search";
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, Check, Loader2, X, ShieldAlert, MapPin } from "lucide-react";
+import { ArrowLeft, Check, Loader2, X, ShieldAlert, MapPin, CircleArrowRight } from "lucide-react";
 import { HousAlertLogo } from "@/components/housalert-logo";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/lib/auth";
@@ -144,7 +144,7 @@ function WebsitePaywall({
         </p>
 
         <div
-          className="rounded-[4px] mb-5"
+          className="rounded-[8px] overflow-hidden mb-3"
           style={{ border: `1px solid ${OBW.cardBorder}` }}
           data-testid="plan-options"
         >
@@ -154,9 +154,12 @@ function WebsitePaywall({
             return (
               <div key={plan.id} className="relative">
                 {plan.popular && (
-                  <div className="flex justify-center" style={{ marginTop: "-1px", marginBottom: "-12px", position: "relative", zIndex: 2 }}>
+                  <div
+                    className="flex justify-center"
+                    style={{ marginBottom: "-11px", position: "relative", zIndex: 2 }}
+                  >
                     <span
-                      className="text-[11px] font-bold px-3 py-1 rounded-full"
+                      className="text-[11px] font-bold px-3.5 py-[3px] rounded-full"
                       style={{ backgroundColor: "#22c55e", color: "#ffffff" }}
                       data-testid="badge-popular"
                     >
@@ -166,20 +169,20 @@ function WebsitePaywall({
                 )}
                 <button
                   onClick={() => setSelectedPlan(plan.id)}
-                  className="w-full text-left transition-all"
+                  className="w-full text-left transition-colors"
                   style={{
                     borderBottom: !isLast ? `1px solid ${OBW.cardBorder}` : "none",
-                    backgroundColor: isSelected ? "rgba(233,30,99,0.03)" : "#ffffff",
-                    padding: plan.popular ? "18px 16px 14px 16px" : "14px 16px",
+                    backgroundColor: isSelected ? "rgba(233,30,99,0.04)" : "#ffffff",
+                    padding: plan.popular ? "18px 14px 13px 14px" : "13px 14px",
                   }}
                   data-testid={`card-plan-${plan.id}`}
                 >
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2.5">
                       <div
                         className="w-[22px] h-[22px] rounded-full flex items-center justify-center shrink-0"
                         style={{
-                          border: isSelected ? "none" : `2px solid ${OBW.chipBorder}`,
+                          border: isSelected ? "none" : `1.5px solid ${OBW.chipBorder}`,
                           backgroundColor: isSelected ? "#22c55e" : "transparent",
                         }}
                       >
@@ -192,7 +195,7 @@ function WebsitePaywall({
                         {plan.label}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       <span className="text-[13px]" style={{ color: OBW.textSecondary }}>
                         {plan.perMonth}
                       </span>
@@ -213,7 +216,7 @@ function WebsitePaywall({
         <button
           onClick={handleCheckout}
           disabled={loading}
-          className="w-full h-[48px] rounded-[4px] text-[15px] font-bold text-white transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2 mb-6"
+          className="w-full h-[50px] rounded-[8px] text-[15px] font-bold text-white transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2.5 mb-6"
           style={{
             background: OBW.pinkGradient,
             boxShadow: "0 4px 14px rgba(233,30,99,0.25)",
@@ -225,12 +228,12 @@ function WebsitePaywall({
           ) : (
             <>
               Activeer woonalerts
-              <span className="text-[16px]">→</span>
+              <CircleArrowRight className="w-[18px] h-[18px]" />
             </>
           )}
         </button>
 
-        <div className="flex flex-col gap-3 mb-6">
+        <div className="flex flex-col gap-2.5 mb-6">
           <div className="flex items-start gap-2.5">
             <div
               className="w-[20px] h-[20px] rounded-full flex items-center justify-center shrink-0 mt-[1px]"
@@ -267,13 +270,13 @@ function WebsitePaywall({
         </div>
 
         <div
-          className="rounded-[4px] p-4"
-          style={{ backgroundColor: "#f0f9ff", border: "1px solid #bfdbfe" }}
+          className="rounded-[8px] p-4"
+          style={{ backgroundColor: "#1e1b4b" }}
         >
-          <p className="text-[15px] font-bold mb-1" style={{ color: "#1e40af" }}>
+          <p className="text-[15px] font-bold mb-1 text-white">
             Probeer HousAlert zonder risico!
           </p>
-          <p className="text-[13px] leading-[1.55]" style={{ color: "#1e40af" }}>
+          <p className="text-[13px] leading-[1.55]" style={{ color: "rgba(255,255,255,0.8)" }}>
             Ben je binnen 14 dagen niet tevreden over HousAlert? Dan krijg jij het volledige bedrag terug. Zonder fratsen.
           </p>
         </div>
