@@ -2,14 +2,14 @@ import { apiFetch } from "@/lib/api-base";
 import { useHashSearch } from "@/lib/hash-search";
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, Check, Loader2, X, ShieldAlert, ChevronDown, ArrowRight, Shield, Clock, Zap } from "lucide-react";
+import { ArrowLeft, Check, Loader2, X, ShieldAlert, MapPin } from "lucide-react";
 import { HousAlertLogo } from "@/components/housalert-logo";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { useTranslation } from "@/i18n";
 import { trackEvent, trackEventLazy } from "@/lib/track-event";
-import { OBW } from "@/components/onboarding-ui";
+import { OBW, OBWebHeader, OBWebFooter, OBInfoBox } from "@/components/onboarding-ui";
 
 const BRAND = "rgb(var(--ha-primary))";
 const TEXT_PRIMARY = "rgb(var(--ha-text))";
@@ -89,20 +89,11 @@ function WebsitePaywall({
   handleCheckout: () => void;
   queryParams: URLSearchParams;
 }) {
-  const [searchOpen, setSearchOpen] = useState(false);
-
   const city = queryParams.get("city") || "";
   const maxPrice = queryParams.get("maxPrice") || "";
-  const minSize = queryParams.get("minSize") || "";
   const minRooms = queryParams.get("minRooms") || "";
   const radiusKm = queryParams.get("radiusKm") || "";
-
-  const searchDetails: string[] = [];
-  if (city) searchDetails.push(city);
-  if (radiusKm && radiusKm !== "0") searchDetails.push(`+ ${radiusKm} km`);
-  if (maxPrice && maxPrice !== "0") searchDetails.push(`max €${maxPrice}`);
-  if (minSize && minSize !== "0") searchDetails.push(`${minSize}m²+`);
-  if (minRooms && minRooms !== "0") searchDetails.push(`${minRooms}+ kamers`);
+  const roomsLabel = (!minRooms || minRooms === "0") ? "Studio+" : `${minRooms}+`;
 
   return (
     <div
@@ -110,70 +101,49 @@ function WebsitePaywall({
       style={{ background: "#ffffff" }}
       data-testid="screen-paywall-website"
     >
-      <header
-        className="w-full sticky top-0 z-20"
-        style={{ backgroundColor: OBW.headerBg, borderBottom: `1px solid ${OBW.headerBorder}` }}
-      >
-        <div className="max-w-[480px] mx-auto px-5 h-[52px] flex items-center justify-between">
-          <HousAlertLogo size={26} />
-          <div className="w-[30px]" />
-        </div>
-      </header>
+      <OBWebHeader />
 
-      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-8">
+      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[100px] overflow-y-auto">
         <h2
-          className="text-[22px] font-bold tracking-[-0.02em] mb-5"
+          className="text-[22px] font-bold tracking-[-0.02em] mb-1"
           style={{ color: OBW.text }}
           data-testid="text-paywall-title"
         >
           Selecteer je pakket
         </h2>
+        <p className="text-[13px] mb-4 leading-relaxed" style={{ color: OBW.textSecondary }}>
+          Kies een abonnement en ontvang direct woningmatches.
+        </p>
 
         {city && (
           <div
-            className="rounded-[4px] mb-5"
-            style={{ border: `1px solid ${OBW.cardBorder}`, backgroundColor: "#ffffff" }}
+            className="rounded-[4px] p-3.5 mb-4 flex items-start gap-3"
+            style={{
+              backgroundColor: "#fdf2f8",
+              border: "1px solid rgba(233,30,99,0.15)",
+            }}
+            data-testid="search-summary-card"
           >
-            <button
-              className="w-full flex items-center justify-between px-4 py-3"
-              onClick={() => setSearchOpen(!searchOpen)}
-              data-testid="button-search-summary-toggle"
-            >
-              <span className="text-[15px] font-semibold" style={{ color: OBW.text }}>
-                Jouw zoekopdracht
-              </span>
-              <ChevronDown
-                className="w-4 h-4 transition-transform"
-                style={{
-                  color: OBW.textSecondary,
-                  transform: searchOpen ? "rotate(180deg)" : "rotate(0deg)",
-                }}
-              />
-            </button>
-            {searchOpen && (
-              <div className="px-4 pb-3">
-                <div
-                  className="rounded-[4px] p-3"
-                  style={{ backgroundColor: "#f0f9ff", border: "1px solid #bfdbfe" }}
-                >
-                  <p className="text-[13px] leading-[1.5]" style={{ color: "#1e40af" }}>
-                    {searchDetails.length > 0 ? searchDetails.join(" · ") : "Geen zoekcriteria ingesteld"}
-                  </p>
-                </div>
-              </div>
-            )}
+            <MapPin className="w-4 h-4 shrink-0 mt-0.5" style={{ color: OBW.pink }} />
+            <div className="min-w-0">
+              <p className="text-[14px] font-semibold" style={{ color: OBW.text }}>
+                {city}{radiusKm && radiusKm !== "0" ? ` · ${radiusKm} km` : ""}
+              </p>
+              <p className="text-[12px]" style={{ color: OBW.textSecondary }}>
+                max €{maxPrice} · {roomsLabel} kamers
+              </p>
+            </div>
           </div>
         )}
 
-        <p
-          className="text-[15px] font-semibold mb-3"
-          style={{ color: OBW.text }}
-        >
-          Selecteer jouw kortingsperiode
-        </p>
+        <div className="mb-4">
+          <OBInfoBox>
+            Er waren afgelopen week <strong>121 woningen</strong> beschikbaar in {city || "jouw regio"}. Activeer alerts om ze niet te missen!
+          </OBInfoBox>
+        </div>
 
-        <div className="flex flex-col gap-0" data-testid="plan-options">
-          {WEBSITE_PLANS.map((plan) => {
+        <div className="flex flex-col" data-testid="plan-options">
+          {WEBSITE_PLANS.map((plan, i) => {
             const isSelected = selectedPlan === plan.id;
             return (
               <div key={plan.id} className="relative">
@@ -196,7 +166,7 @@ function WebsitePaywall({
                     borderRadius: "4px",
                     backgroundColor: isSelected ? "rgba(233,30,99,0.04)" : "#ffffff",
                     padding: plan.popular ? "16px 16px 12px 16px" : "12px 16px",
-                    marginBottom: "8px",
+                    marginBottom: i < WEBSITE_PLANS.length - 1 ? "8px" : "0",
                   }}
                   data-testid={`card-plan-${plan.id}`}
                 >
@@ -236,30 +206,9 @@ function WebsitePaywall({
           })}
         </div>
 
-        <button
-          onClick={handleCheckout}
-          disabled={loading}
-          className="w-full h-[48px] rounded-[4px] text-[15px] font-bold text-white transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2 mt-2 mb-6"
-          style={{
-            background: OBW.pinkGradient,
-            boxShadow: "0 4px 14px rgba(233,30,99,0.25)",
-          }}
-          data-testid="button-select-payment"
-        >
-          {loading ? (
-            <>
-              <Loader2 className="w-5 h-5 animate-spin" />
-              Even geduld...
-            </>
-          ) : (
-            <>
-              Activeer woonalerts
-              <ArrowRight className="w-4 h-4" />
-            </>
-          )}
-        </button>
+        <div className="h-px my-4" style={{ backgroundColor: OBW.divider }} />
 
-        <div className="flex flex-col gap-3 mb-6">
+        <div className="flex flex-col gap-2.5">
           <div className="flex items-start gap-2.5">
             <div
               className="w-[20px] h-[20px] rounded-full flex items-center justify-center shrink-0 mt-[1px]"
@@ -290,23 +239,19 @@ function WebsitePaywall({
               <Check className="w-3 h-3" style={{ color: "#22c55e" }} />
             </div>
             <p className="text-[13px] leading-[1.5]" style={{ color: OBW.text }}>
-              De meeste HousAlert-gebruikers vinden in <strong>4–8 weken</strong> een huurwoning
+              <strong>14 dagen geld-terug-garantie</strong> — zonder fratsen
             </p>
           </div>
         </div>
-
-        <div
-          className="rounded-[4px] p-4"
-          style={{ backgroundColor: "#f0f9ff", border: "1px solid #bfdbfe" }}
-        >
-          <p className="text-[15px] font-bold mb-1" style={{ color: "#1e40af" }}>
-            Probeer HousAlert zonder risico!
-          </p>
-          <p className="text-[13px] leading-[1.55]" style={{ color: "#1e40af" }}>
-            Ben je binnen 14 dagen niet tevreden over HousAlert? Dan krijg jij het volledige bedrag terug. Zonder fratsen.
-          </p>
-        </div>
       </main>
+
+      <OBWebFooter
+        onNext={handleCheckout}
+        nextLabel={loading ? "Even geduld..." : "Activeer woonalerts"}
+        nextDisabled={loading}
+        saving={loading}
+        nextTestId="button-select-payment"
+      />
     </div>
   );
 }
