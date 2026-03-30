@@ -13,6 +13,89 @@ import { queryClient } from "@/lib/queryClient";
 
 type OBTheme = typeof OB | typeof OBW;
 
+function WebSegmentedControl({
+  options,
+  value,
+  onChange,
+  testId,
+}: {
+  options: { value: string; label: string }[];
+  value: string;
+  onChange: (v: string) => void;
+  testId: string;
+}) {
+  return (
+    <div
+      className="grid overflow-hidden"
+      style={{
+        gridTemplateColumns: `repeat(${options.length}, 1fr)`,
+        border: `1px solid ${OBW.inputBorder}`,
+        borderRadius: "8px",
+        backgroundColor: OBW.inputBg,
+      }}
+      data-testid={testId}
+    >
+      {options.map((opt, i) => {
+        const active = value === opt.value;
+        return (
+          <button
+            key={opt.value}
+            onClick={() => onChange(opt.value)}
+            className="h-[44px] text-[13px] font-semibold transition-all relative"
+            style={{
+              backgroundColor: active ? "#ffffff" : "transparent",
+              color: active ? OBW.text : OBW.textMuted,
+              borderRight: i < options.length - 1 ? `1px solid ${OBW.inputBorder}` : "none",
+              boxShadow: active ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
+            }}
+            data-testid={`${testId}-${opt.value}`}
+          >
+            {opt.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function WebToggle({
+  checked,
+  onChange,
+  label,
+  testId,
+}: {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  label: string;
+  testId: string;
+}) {
+  return (
+    <label
+      className="flex items-start gap-3 cursor-pointer rounded-[8px] p-3 transition-colors"
+      style={{
+        backgroundColor: checked ? "rgba(233,30,99,0.04)" : "transparent",
+        border: `1px solid ${checked ? "rgba(233,30,99,0.2)" : OBW.divider}`,
+      }}
+      data-testid={testId}
+    >
+      <div
+        className="w-[38px] h-[22px] rounded-full p-[2px] transition-colors shrink-0 mt-[1px]"
+        style={{ backgroundColor: checked ? "#e91e63" : "#d1d5db" }}
+        onClick={(e) => { e.preventDefault(); onChange(!checked); }}
+      >
+        <div
+          className="w-[18px] h-[18px] rounded-full bg-white transition-transform"
+          style={{
+            transform: checked ? "translateX(16px)" : "translateX(0)",
+            boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
+          }}
+        />
+      </div>
+      <span className="text-[13px] leading-snug" style={{ color: OBW.text }}>{label}</span>
+    </label>
+  );
+}
+
 function SegmentedControl({
   options,
   value,
@@ -626,9 +709,9 @@ export default function OnboardingFilters() {
             Verfijn je zoekopdracht voor de beste resultaten.
           </p>
 
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3.5">
             <div>
-              <label className="text-[14px] font-bold mb-2 block" style={{ color: OBW.text }}>
+              <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
                 Maximale huurprijs
               </label>
               <select
@@ -647,22 +730,21 @@ export default function OnboardingFilters() {
             <div className="h-px" style={{ backgroundColor: OBW.divider }} />
 
             <div>
-              <label className="text-[14px] font-bold mb-2 block" style={{ color: OBW.text }}>
+              <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
                 Slaapkamers
               </label>
-              <SegmentedControl
+              <WebSegmentedControl
                 options={ROOM_OPTIONS}
                 value={f.minRooms}
                 onChange={(v) => update({ minRooms: v })}
                 testId="rooms-selector"
-                theme={OBW}
               />
             </div>
 
             <div className="h-px" style={{ backgroundColor: OBW.divider }} />
 
             <div>
-              <label className="text-[14px] font-bold mb-2 block" style={{ color: OBW.text }}>
+              <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
                 Minimum oppervlakte
               </label>
               <select
@@ -684,50 +766,46 @@ export default function OnboardingFilters() {
             <div className="h-px" style={{ backgroundColor: OBW.divider }} />
 
             <div>
-              <label className="text-[14px] font-bold mb-2 block" style={{ color: OBW.text }}>
+              <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
                 Gemeubileerd
               </label>
-              <SegmentedControl
+              <WebSegmentedControl
                 options={FURNISHED_OPTIONS}
                 value={f.furnished}
                 onChange={(v) => update({ furnished: v })}
                 testId="furnished-selector"
-                theme={OBW}
               />
             </div>
 
             <div className="h-px" style={{ backgroundColor: OBW.divider }} />
 
             <div>
-              <label className="text-[14px] font-bold mb-2 block" style={{ color: OBW.text }}>
+              <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
                 Woningtype
               </label>
-              <SegmentedControl
+              <WebSegmentedControl
                 options={PROPERTY_OPTIONS}
                 value={f.propertyType}
                 onChange={(v) => update({ propertyType: v })}
                 testId="property-type"
-                theme={OBW}
               />
-              <div className="mt-3">
-                <Toggle
+              <div className="mt-2.5">
+                <WebToggle
                   checked={f.includeRooms}
                   onChange={(v) => update({ includeRooms: v })}
                   label="Zoek ook kamers / onzelfstandige woonruimte"
                   testId="toggle-include-rooms"
-                  theme={OBW}
                 />
               </div>
             </div>
 
             <div className="h-px" style={{ backgroundColor: OBW.divider }} />
 
-            <Toggle
+            <WebToggle
               checked={f.priceFlexible}
               onChange={(v) => update({ priceFlexible: v })}
               label="Stuur ook iets duurdere perfecte matches"
               testId="toggle-price-flexible"
-              theme={OBW}
             />
           </div>
         </main>

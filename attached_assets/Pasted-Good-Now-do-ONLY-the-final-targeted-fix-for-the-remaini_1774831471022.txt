@@ -1,0 +1,92 @@
+Good. Now do ONLY the final targeted fix for the remaining website-mode inconsistency.
+
+Do NOT redesign the whole flow again.
+Do NOT touch routing, auth, iframe behavior, or dark app mode.
+Do NOT touch screens outside the actual website flow unless absolutely necessary.
+
+GOAL:
+Fix the remaining app-like controls in the WEBSITE onboarding flow so the website flow looks more like Rentbird.
+
+REAL WEBSITE FLOW:
+- city
+- filters
+- preferences
+- password/account creation
+
+The diagnosis already confirmed the main remaining problem is in filters.tsx, especially shared controls that still look app-like.
+
+==================================================
+TASK
+==================================================
+
+Focus on website mode only in:
+- client/src/pages/onboarding/filters.tsx
+
+And any directly related shared subcomponents used there.
+
+1. SegmentedControl
+Current problem:
+- still looks like app UI
+- rounded pill feel
+- too similar to native app controls
+
+Required fix in website mode only:
+- make it feel more like a clean website form control
+- less pill-like
+- less app-like
+- closer to Rentbird style
+- clearer rectangular / segmented field treatment
+- cleaner inactive/active contrast
+- tighter spacing
+- proper font size and weight for website onboarding
+
+2. Toggle
+Current problem:
+- still somewhat app-like
+- should feel more neutral and website-form-like in website mode
+
+Required fix in website mode only:
+- refine the website appearance
+- reduce “mobile app toggle” feel
+- keep behavior the same
+- keep accessibility good
+
+3. Filters screen fidelity
+Make the website-mode filters screen visually closer to Rentbird by tightening:
+- section spacing
+- field spacing
+- label hierarchy
+- control proportions
+- overall balance of white space
+
+4. Do NOT break data handling
+- same values
+- same state
+- same submission logic
+- same website flow
+- same app flow untouched
+
+==================================================
+IMPORTANT
+==================================================
+
+Do NOT give me another broad rebuild.
+Do NOT say “mostly fixed”.
+Actually replace/refine the remaining app-like controls in website mode.
+
+If needed:
+- create a dedicated website-only segmented control component
+- create a dedicated website-only toggle component
+
+That is better than reusing app controls with only color changes.
+
+==================================================
+RETURN
+==================================================
+
+Return:
+1. exact files changed
+2. whether SegmentedControl was replaced or restyled for website mode
+3. whether Toggle was replaced or restyled for website mode
+4. what visual differences vs Rentbird were reduced
+5. confirmation that only website mode changed
