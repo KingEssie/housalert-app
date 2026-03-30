@@ -1,0 +1,198 @@
+We need a final WEBSITE-MODE paywall rebuild only.
+
+IMPORTANT:
+- Website mode only
+- source=website / theme=light only
+- Do NOT change dark/app mode
+- Do NOT change Stripe logic
+- Do NOT change routing order
+- Keep current correct flow:
+  City → Filters → Preferences → Account Creation → Paywall → Stripe → Dashboard
+
+GOAL:
+Make the WEBSITE paywall match the attached Rentbird-style reference as closely as possible in layout, spacing, typography, card styling, and hierarchy — but with HousAlert branding and our own pricing.
+
+==================================================
+PRIMARY GOAL
+==================================================
+
+The paywall should feel like a natural continuation of the website onboarding screens.
+
+Right now it works, but it still feels too different from the rest of the flow.
+
+We want:
+- same light visual system as the onboarding
+- same visual language as steps 1/3, 2/3, 3/3, and account creation
+- clean modern SaaS checkout screen
+- as close as possible to the Rentbird reference structure
+
+==================================================
+DESIGN DIRECTION
+==================================================
+
+Make the paywall closely match the reference in:
+
+1. White/light background
+2. Same compact spacing rhythm as the website onboarding
+3. Same form/card border style
+4. Same 4px radius everywhere
+5. Same strong dark heading style
+6. Same clean CTA treatment
+7. Same muted explanatory copy style
+8. Same card and section spacing feel
+9. Same premium but minimal checkout hierarchy
+
+But:
+- use HousAlert branding only
+- use OUR actual pricing
+- no Rentbird text/logo anywhere
+
+==================================================
+PAYWALL STRUCTURE
+==================================================
+
+Rebuild the page in this order:
+
+1. Header
+- same website-mode header language as the onboarding
+- logo on the LEFT
+- no close button
+- clean white header
+- visually consistent with previous onboarding screens
+
+2. Main heading
+Use a clear heading similar to the reference checkout/payment screen style, for example:
+- "Selecteer je pakket"
+or
+- "Kies je abonnement"
+
+Keep it strong and clean.
+
+3. Search summary card
+- keep "Jouw zoekopdracht"
+- redesign it to visually match the onboarding/account cards
+- same border style, same white background, same subtle blue info box inside if useful
+- make it feel premium and modern, not bulky
+
+4. Pricing options
+Show 3 pricing options stacked vertically, like the reference.
+
+Each card should contain:
+- radio/check indicator on the left
+- plan duration
+- monthly or total pricing
+- discount text on the right
+- one highlighted recommended option
+
+IMPORTANT:
+- use OUR actual pricing values
+- keep the selected option visually obvious
+- selected card should use subtle highlighted background
+- add a “Meest gekozen” badge to the recommended plan if that is still the desired plan
+
+5. Main CTA
+- large pink button
+- same style language as the rest of website onboarding
+- clean consistent button height
+- keep CTA copy strong and direct, e.g.:
+  "Activeer woonalerts"
+or similar
+
+6. Benefits list
+Below CTA, show a short benefit list like the reference:
+- Bespaar tijd (en stress)
+- Onbeperkt woningmatches
+- [third benefit relevant to HousAlert]
+
+Make it clean and visually aligned with the rest of the website flow.
+
+7. Trust / reassurance block
+Below benefits, include a reassurance block styled consistently with the website flow.
+
+For example:
+- "Probeer HousAlert zonder risico"
+- "14 dagen geld terug"
+
+IMPORTANT:
+Make this block visually fit the website mode.
+Do NOT let it feel like a leftover dark app section unless that is truly intentional and visually polished.
+If a dark reassurance block is kept, it must feel premium and deliberate, not disconnected.
+
+==================================================
+PAYMENT DETAILS SCREEN
+==================================================
+
+If there is a second paywall/payment-details screen before Stripe:
+
+Make it visually match the reference more closely:
+- summary at top
+- country selector
+- payment method selector
+- clean payment CTA
+- compact legal/payment copy below
+
+Use the same website-mode style system:
+- 4px radius
+- white inputs
+- clean borders
+- consistent spacing
+- same typography hierarchy
+
+==================================================
+STYLING RULES
+==================================================
+
+For website mode only:
+
+- 4px radius everywhere
+- no unnecessary shadows
+- no dark app-shell look
+- white/transparent input backgrounds
+- same control height rhythm as the rest of website onboarding
+- same border color family
+- same heading scale family
+- same button sizing family
+
+The paywall should feel like it belongs to the onboarding flow, not like a different product.
+
+==================================================
+CONTENT RULES
+==================================================
+
+- HousAlert branding only
+- no Rentbird text anywhere
+- use our own pricing
+- keep copy concise and conversion-focused
+- keep Dutch language for website mode
+
+==================================================
+DO NOT CHANGE
+==================================================
+
+- checkout logic
+- plan selection logic
+- Stripe flow
+- account creation order
+- website flow order
+- app mode
+
+==================================================
+FILES TO REVIEW
+==================================================
+
+Likely:
+- client/src/pages/paywall.tsx
+- client/src/components/onboarding-ui.tsx
+- any website-mode pricing card components used by paywall
+
+==================================================
+RETURN
+==================================================
+
+Return:
+1. exact files changed
+2. what was changed visually on the paywall
+3. what was changed visually on the payment details screen (if applicable)
+4. confirmation that the paywall now visually aligns with the website onboarding flow
+5. confirmation that our own pricing is used
+6. confirmation that checkout logic was not changed
