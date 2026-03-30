@@ -144,7 +144,7 @@ function WebsitePaywall({
         </p>
 
         <div
-          className="rounded-[8px] overflow-hidden mb-3"
+          className="rounded-[10px] overflow-hidden mb-4"
           style={{ border: `1px solid ${OBW.cardBorder}` }}
           data-testid="plan-options"
         >
@@ -173,12 +173,12 @@ function WebsitePaywall({
                   style={{
                     borderBottom: !isLast ? `1px solid ${OBW.cardBorder}` : "none",
                     backgroundColor: isSelected ? "rgba(233,30,99,0.04)" : "#ffffff",
-                    padding: plan.popular ? "18px 14px 13px 14px" : "13px 14px",
+                    padding: plan.popular ? "20px 16px 16px 16px" : "16px 16px",
                   }}
                   data-testid={`card-plan-${plan.id}`}
                 >
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
+                    <div className="flex items-center gap-3">
                       <div
                         className="w-[22px] h-[22px] rounded-full flex items-center justify-center shrink-0"
                         style={{
@@ -195,7 +195,7 @@ function WebsitePaywall({
                         {plan.label}
                       </span>
                     </div>
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-baseline gap-2">
                       <span className="text-[13px]" style={{ color: OBW.textSecondary }}>
                         {plan.perMonth}
                       </span>
@@ -216,7 +216,7 @@ function WebsitePaywall({
         <button
           onClick={handleCheckout}
           disabled={loading}
-          className="w-full h-[50px] rounded-[8px] text-[15px] font-bold text-white transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2.5 mb-6"
+          className="w-full h-[52px] rounded-[10px] text-[15px] font-bold text-white transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2.5 mb-6"
           style={{
             background: OBW.pinkGradient,
             boxShadow: "0 4px 14px rgba(233,30,99,0.25)",
@@ -233,13 +233,13 @@ function WebsitePaywall({
           )}
         </button>
 
-        <div className="flex flex-col gap-2.5 mb-6">
+        <div className="flex flex-col gap-3 mb-6">
           <div className="flex items-start gap-2.5">
             <div
               className="w-[20px] h-[20px] rounded-full flex items-center justify-center shrink-0 mt-[1px]"
-              style={{ backgroundColor: "rgba(34,197,94,0.12)" }}
+              style={{ backgroundColor: "#22c55e" }}
             >
-              <Check className="w-3 h-3" style={{ color: "#22c55e" }} />
+              <Check className="w-3 h-3 text-white" />
             </div>
             <p className="text-[13px] leading-[1.5]" style={{ color: OBW.text }}>
               <strong>Bespaar tijd (en stress):</strong> wij vinden woningmatches die bij je passen
@@ -248,9 +248,9 @@ function WebsitePaywall({
           <div className="flex items-start gap-2.5">
             <div
               className="w-[20px] h-[20px] rounded-full flex items-center justify-center shrink-0 mt-[1px]"
-              style={{ backgroundColor: "rgba(34,197,94,0.12)" }}
+              style={{ backgroundColor: "#22c55e" }}
             >
-              <Check className="w-3 h-3" style={{ color: "#22c55e" }} />
+              <Check className="w-3 h-3 text-white" />
             </div>
             <p className="text-[13px] leading-[1.5]" style={{ color: OBW.text }}>
               <strong>Ongelimiteerd woningmatches</strong> direct via de HousAlert app
@@ -259,9 +259,9 @@ function WebsitePaywall({
           <div className="flex items-start gap-2.5">
             <div
               className="w-[20px] h-[20px] rounded-full flex items-center justify-center shrink-0 mt-[1px]"
-              style={{ backgroundColor: "rgba(34,197,94,0.12)" }}
+              style={{ backgroundColor: "#22c55e" }}
             >
-              <Check className="w-3 h-3" style={{ color: "#22c55e" }} />
+              <Check className="w-3 h-3 text-white" />
             </div>
             <p className="text-[13px] leading-[1.5]" style={{ color: OBW.text }}>
               De meeste HousAlert-gebruikers vinden in <strong>4–8 weken</strong> een huurwoning
@@ -270,13 +270,13 @@ function WebsitePaywall({
         </div>
 
         <div
-          className="rounded-[8px] p-4"
-          style={{ backgroundColor: "#1e1b4b" }}
+          className="rounded-[10px] p-4"
+          style={{ backgroundColor: "#e0f2fe" }}
         >
-          <p className="text-[15px] font-bold mb-1 text-white">
+          <p className="text-[15px] font-bold mb-1" style={{ color: "#1e293b" }}>
             Probeer HousAlert zonder risico!
           </p>
-          <p className="text-[13px] leading-[1.55]" style={{ color: "rgba(255,255,255,0.8)" }}>
+          <p className="text-[13px] leading-[1.55]" style={{ color: "#334155" }}>
             Ben je binnen 14 dagen niet tevreden over HousAlert? Dan krijg jij het volledige bedrag terug. Zonder fratsen.
           </p>
         </div>
