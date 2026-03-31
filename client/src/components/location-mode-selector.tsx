@@ -1,31 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { MapPin, Search, X, AlertCircle, Navigation, Clock, Car, Train, Bike, ChevronDown, Check } from "lucide-react";
-import { MapContainer, TileLayer, Marker, Circle, useMap } from "react-leaflet";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
+import MapView from "@/components/map-view";
 import { cityDistricts } from "../../../config/market";
 import { useTranslation } from "@/i18n";
 import { usePlacesAutocomplete, type PlaceSuggestion } from "@/hooks/use-places-autocomplete";
-
-const MARKER_ICON = new L.Icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-});
-
-const DEST_ICON = new L.Icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-});
 
 export type LocationTab = "wijken" | "radius" | "reistijd";
 
@@ -90,14 +68,6 @@ export function isLocationValid(d: LocationData): boolean {
     default:
       return false;
   }
-}
-
-function MapUpdater({ lat, lng, zoom }: { lat: number; lng: number; zoom?: number }) {
-  const map = useMap();
-  useEffect(() => {
-    map.setView([lat, lng], zoom ?? 11, { animate: true });
-  }, [lat, lng, zoom, map]);
-  return null;
 }
 
 function radiusToZoom(km: number): number {
@@ -633,38 +603,24 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       )}
 
       {showMap && (
-        <div className="rounded-[6px] overflow-hidden border border-ha-card-border relative" style={{ height: "200px", maxHeight: mapMaxHeight || "none", zIndex: 0 }} data-testid="map-preview">
-          <MapContainer
-            center={hasLocation ? [mapLat!, mapLng!] : [defaultLat, defaultLng]}
+        <div data-testid="map-preview" style={{ maxHeight: mapMaxHeight || "none" }}>
+          <MapView
+            lat={hasLocation ? mapLat! : defaultLat}
+            lng={hasLocation ? mapLng! : defaultLng}
             zoom={hasLocation ? (value.tab === "radius" ? radiusToZoom(value.radiusKm) : 11) : defaultZoom}
-            style={{ height: "100%", width: "100%" }}
-            zoomControl={false}
-            attributionControl={false}
-          >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            {hasLocation && (
-              <>
-                <Marker position={[mapLat!, mapLng!]} icon={value.tab === "reistijd" ? DEST_ICON : MARKER_ICON} />
-                {value.tab === "radius" && value.place && (
-                  <Circle
-                    center={[value.place.latitude, value.place.longitude]}
-                    radius={value.radiusKm * 1000}
-                    pathOptions={{
-                      color: "rgb(var(--ha-primary))",
-                      fillColor: "rgb(var(--ha-primary))",
-                      fillOpacity: 0.1,
-                      weight: 2,
-                    }}
-                  />
-                )}
-              </>
-            )}
-            <MapUpdater
-              lat={hasLocation ? mapLat! : defaultLat}
-              lng={hasLocation ? mapLng! : defaultLng}
-              zoom={hasLocation ? (value.tab === "radius" ? radiusToZoom(value.radiusKm) : 11) : defaultZoom}
-            />
-          </MapContainer>
+            markers={
+              hasLocation
+                ? [{ lat: mapLat!, lng: mapLng!, type: value.tab === "reistijd" ? "destination" : "primary" }]
+                : []
+            }
+            circles={
+              value.tab === "radius" && value.place
+                ? [{ lat: value.place.latitude, lng: value.place.longitude, radiusMeters: value.radiusKm * 1000 }]
+                : []
+            }
+            height="200px"
+            className="rounded-[6px] overflow-hidden border border-ha-card-border"
+          />
         </div>
       )}
     </div>

@@ -1,20 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { MapPin, Search, X, AlertCircle } from "lucide-react";
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
+import MapView from "@/components/map-view";
 import { useTranslation } from "@/i18n";
 import { usePlacesAutocomplete, type PlaceSuggestion } from "@/hooks/use-places-autocomplete";
-
-const MARKER_ICON = new L.Icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-});
 
 export interface SelectedPlace {
   city_name: string;
@@ -38,14 +26,6 @@ interface NominatimResult {
     country_code?: string;
   };
   type: string;
-}
-
-function MapUpdater({ lat, lng }: { lat: number; lng: number }) {
-  const map = useMap();
-  useEffect(() => {
-    map.setView([lat, lng], 11, { animate: true });
-  }, [lat, lng, map]);
-  return null;
 }
 
 interface CityPickerProps {
@@ -273,19 +253,14 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
             {value.city_name}
           </div>
 
-          <div className="rounded-[6px] overflow-hidden border border-ha-card-border h-[200px]" data-testid="map-preview">
-            <MapContainer
-              center={[value.latitude, value.longitude]}
-              zoom={11}
-              style={{ height: "100%", width: "100%" }}
-              zoomControl={false}
-              attributionControl={false}
-            >
-              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-              <Marker position={[value.latitude, value.longitude]} icon={MARKER_ICON} />
-              <MapUpdater lat={value.latitude} lng={value.longitude} />
-            </MapContainer>
-          </div>
+          <MapView
+            lat={value.latitude}
+            lng={value.longitude}
+            zoom={11}
+            markers={[{ lat: value.latitude, lng: value.longitude, type: "primary" }]}
+            height="200px"
+            className="rounded-[6px] overflow-hidden border border-ha-card-border"
+          />
         </>
       )}
     </div>
