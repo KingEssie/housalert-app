@@ -1,17 +1,11 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
 import { Search, MapPin, Loader2, X } from "lucide-react";
 import { defaultCities } from "../../../../config/market";
 import { OB, OBW, ONBOARDING_TOTAL_STEPS, OBFooter, OBWebHeader, OBWebFooter, OBInfoBox, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
 import MapView from "@/components/map-view";
-
-interface NominatimResult {
-  display_name: string;
-  lat: string;
-  lon: string;
-  address?: { city?: string; town?: string; village?: string; state?: string };
-}
+import { useGeocoderSearch } from "@/hooks/use-geocoder-search";
 
 const TOP_CITIES = defaultCities.slice(0, 5);
 const RADIUS_OPTIONS = [2, 5, 10, 15, 25, 50];
@@ -54,13 +48,11 @@ export default function OnboardingCity() {
   const [selectedCity, setSelectedCity] = useState<{ name: string; lat: number; lng: number } | null>(
     () => getInitialCityFromQuery(searchString)
   );
-  const [nominatimResults, setNominatimResults] = useState<NominatimResult[]>([]);
-  const [searching, setSearching] = useState(false);
+  const geocoder = useGeocoderSearch({ debounceMs: 300, minChars: 3, limit: 5 });
   const [radiusKm, setRadiusKm] = useState(() => {
     const p = new URLSearchParams(searchString);
     return parseInt(p.get("radiusKm") || "5") || 5;
   });
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const didAutoSearchRef = useRef(false);
 
   useEffect(() => {
@@ -81,49 +73,27 @@ export default function OnboardingCity() {
     ? TOP_CITIES.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()))
     : TOP_CITIES;
 
-  const nominatimSearch = useCallback(async (q: string) => {
-    if (q.length < 3) return;
-    setSearching(true);
-    try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&addressdetails=1&limit=5&countrycodes=de`
-      );
-      const data: NominatimResult[] = await res.json();
-      setNominatimResults(data.filter((r) => {
-        const addr = r.address;
-        return addr?.city || addr?.town || addr?.village;
-      }));
-    } catch {
-      setNominatimResults([]);
-    } finally {
-      setSearching(false);
-    }
-  }, []);
+  const initialSearchDoneRef = useRef(false);
 
   useEffect(() => {
+    if (!initialSearchDoneRef.current) {
+      const params = new URLSearchParams(searchString);
+      const cityParam = params.get("city")?.trim();
+      if (cityParam && cityParam.length >= 3 && !defaultCities.find((c) => c.name.toLowerCase() === cityParam.toLowerCase())) {
+        initialSearchDoneRef.current = true;
+        geocoder.searchImmediate(cityParam);
+        return;
+      }
+      initialSearchDoneRef.current = true;
+    }
     if (selectedCity) return;
     if (didAutoSearchRef.current) { didAutoSearchRef.current = false; return; }
-    if (debounceRef.current) clearTimeout(debounceRef.current);
     if (search.trim().length >= 3 && presetMatches.length === 0) {
-      debounceRef.current = setTimeout(() => nominatimSearch(search.trim()), 400);
+      geocoder.search(search.trim());
     } else {
-      setNominatimResults([]);
+      geocoder.clear();
     }
-    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
-  }, [search, selectedCity, presetMatches.length, nominatimSearch]);
-
-  useEffect(() => {
-    if (didAutoSearchRef.current) return;
-    const params = new URLSearchParams(searchString);
-    const cityParam = params.get("city")?.trim();
-    if (!cityParam || cityParam.length < 3) return;
-    const presetMatch = defaultCities.find(
-      (c) => c.name.toLowerCase() === cityParam.toLowerCase()
-    );
-    if (presetMatch) return;
-    didAutoSearchRef.current = true;
-    nominatimSearch(cityParam);
-  }, [searchString, nominatimSearch]);
+  }, [search, selectedCity, presetMatches.length]);
 
   function goToStep2(city: { name: string; lat: number; lng: number }) {
     const params = new URLSearchParams({
@@ -138,17 +108,15 @@ export default function OnboardingCity() {
     const selected = { name: city.name, lat: city.lat, lng: city.lng };
     setSelectedCity(selected);
     setSearch(city.name);
-    setNominatimResults([]);
+    geocoder.clear();
     if (!w) goToStep2(selected);
   }
 
-  function selectNominatimCity(result: NominatimResult) {
-    const addr = result.address;
-    const name = addr?.city || addr?.town || addr?.village || result.display_name.split(",")[0];
-    const selected = { name, lat: parseFloat(result.lat), lng: parseFloat(result.lon) };
+  function selectGeocoderCity(result: typeof geocoder.results[0]) {
+    const selected = { name: result.city, lat: result.lat, lng: result.lng };
     setSelectedCity(selected);
-    setSearch(name);
-    setNominatimResults([]);
+    setSearch(result.city);
+    geocoder.clear();
     if (!w) goToStep2(selected);
   }
 
@@ -217,7 +185,7 @@ export default function OnboardingCity() {
               autoFocus
               data-testid="input-city-search"
             />
-            {searching && (
+            {geocoder.loading && (
               <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] animate-spin" style={{ color: OBW.textSecondary }} />
             )}
           </div>
@@ -240,13 +208,10 @@ export default function OnboardingCity() {
                 </button>
               ))}
 
-              {presetMatches.length === 0 && nominatimResults.length > 0 && nominatimResults.map((r, i) => {
-                const addr = r.address;
-                const name = addr?.city || addr?.town || addr?.village || r.display_name.split(",")[0];
-                return (
+              {presetMatches.length === 0 && geocoder.results.length > 0 && geocoder.results.map((r, i) => (
                   <button
-                    key={i}
-                    onClick={() => selectNominatimCity(r)}
+                    key={r.placeId || i}
+                    onClick={() => selectGeocoderCity(r)}
                     className="w-full flex items-center gap-2.5 text-left transition-colors hover:bg-gray-50"
                     style={{
                       padding: "10px 0",
@@ -256,16 +221,15 @@ export default function OnboardingCity() {
                   >
                     <MapPin className="w-[16px] h-[16px] shrink-0" style={{ color: OBW.pink }} />
                     <div>
-                      <span className="text-[14px] font-medium block" style={{ color: OBW.text }}>{name}</span>
-                      {addr?.state && (
-                        <span className="text-[12px]" style={{ color: OBW.textSecondary }}>{addr.state}</span>
+                      <span className="text-[14px] font-medium block" style={{ color: OBW.text }}>{r.city}</span>
+                      {r.label !== r.city && (
+                        <span className="text-[12px]" style={{ color: OBW.textSecondary }}>{r.label.replace(`${r.city}, `, "")}</span>
                       )}
                     </div>
                   </button>
-                );
-              })}
+              ))}
 
-              {presetMatches.length === 0 && nominatimResults.length === 0 && !searching && search.trim().length >= 3 && (
+              {presetMatches.length === 0 && geocoder.results.length === 0 && !geocoder.loading && search.trim().length >= 3 && (
                 <p className="text-[13px] text-center py-4" style={{ color: OBW.textSecondary }}>
                   Geen resultaten
                 </p>
@@ -383,7 +347,7 @@ export default function OnboardingCity() {
             autoFocus
             data-testid="input-city-search"
           />
-          {searching ? (
+          {geocoder.loading ? (
             <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] animate-spin" style={{ color: T.textSecondary }} />
           ) : (
             <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: T.textSecondary }} />
@@ -408,13 +372,10 @@ export default function OnboardingCity() {
               </button>
             ))}
 
-            {presetMatches.length === 0 && nominatimResults.length > 0 && nominatimResults.map((r, i) => {
-              const addr = r.address;
-              const name = addr?.city || addr?.town || addr?.village || r.display_name.split(",")[0];
-              return (
+            {presetMatches.length === 0 && geocoder.results.length > 0 && geocoder.results.map((r, i) => (
                 <button
-                  key={i}
-                  onClick={() => selectNominatimCity(r)}
+                  key={r.placeId || i}
+                  onClick={() => selectGeocoderCity(r)}
                   className="w-full flex items-center gap-3 text-left transition-colors hover:bg-white/5"
                   style={{
                     padding: "14px 0",
@@ -424,16 +385,15 @@ export default function OnboardingCity() {
                 >
                   <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: "#38bdf8" }} />
                   <div>
-                    <span className="text-[16px] font-medium block" style={{ color: T.text }}>{name}</span>
-                    {addr?.state && (
-                      <span className="text-[12px]" style={{ color: T.textSecondary }}>{addr.state}</span>
+                    <span className="text-[16px] font-medium block" style={{ color: T.text }}>{r.city}</span>
+                    {r.label !== r.city && (
+                      <span className="text-[12px]" style={{ color: T.textSecondary }}>{r.label.replace(`${r.city}, `, "")}</span>
                     )}
                   </div>
                 </button>
-              );
-            })}
+            ))}
 
-            {presetMatches.length === 0 && nominatimResults.length === 0 && !searching && search.trim().length >= 3 && (
+            {presetMatches.length === 0 && geocoder.results.length === 0 && !geocoder.loading && search.trim().length >= 3 && (
               <p className="text-[13px] text-center py-4" style={{ color: T.textSecondary }}>
                 Geen resultaten
               </p>

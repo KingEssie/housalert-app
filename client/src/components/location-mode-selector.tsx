@@ -135,30 +135,28 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
     setCityQuery(cityName);
     setCityOpen(false);
     places.clear();
-    setNominatimCityResults([]);
+    cityGeocoder.clear();
     onChange({ ...value, place, districts: [] });
   }
 
-  function handleNominatimCitySelect(r: NominatimResult) {
-    const a = r.address;
-    const cityName = a.city || a.town || a.village || a.municipality || "";
+  function handleGeocoderCitySelect(r: typeof cityGeocoder.results[0]) {
     const place: SelectedPlace = {
-      city_name: cityName,
-      country_code: a.country_code?.toUpperCase() || "DE",
-      latitude: parseFloat(r.lat),
-      longitude: parseFloat(r.lon),
-      place_id: String(r.place_id),
+      city_name: r.city,
+      country_code: r.country,
+      latitude: r.lat,
+      longitude: r.lng,
+      place_id: r.placeId ?? "",
     };
-    setCityQuery(cityName);
+    setCityQuery(r.city);
     setCityOpen(false);
-    setNominatimCityResults([]);
+    cityGeocoder.clear();
     places.clear();
     onChange({ ...value, place, districts: [] });
   }
 
   function handleCityClear() {
     setCityQuery("");
-    setNominatimCityResults([]);
+    cityGeocoder.clear();
     places.clear();
     onChange({ ...value, place: null, districts: [] });
   }
@@ -171,15 +169,11 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       onChange({ ...value, commuteDestination: val });
     }
 
-    if (destNominatimDebounce.current) clearTimeout(destNominatimDebounce.current);
-
     if (destPlaces.isAvailable) {
       destPlaces.search(val);
-      setNominatimDestResults([]);
+      destGeocoder.clear();
     } else {
-      destNominatimDebounce.current = setTimeout(() => {
-        searchNominatim(val, setNominatimDestResults, setDestOpen, setNominatimDestLoading);
-      }, 350);
+      destGeocoder.search(val);
     }
 
     if (val.trim().length >= 2) {
@@ -194,7 +188,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
     setDestQuery(displayName);
     setDestOpen(false);
     destPlaces.clear();
-    setNominatimDestResults([]);
+    destGeocoder.clear();
     onChange({
       ...value,
       commuteDestination: displayName,
@@ -204,26 +198,23 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
     });
   }
 
-  function handleNominatimDestSelect(r: NominatimResult) {
-    const displayName = r.display_name.split(",").slice(0, 2).join(",").trim();
-    const a = r.address;
-    const city = a.city || a.town || a.village || a.municipality || displayName.split(",")[0].trim();
-    setDestQuery(displayName);
+  function handleGeocoderDestSelect(r: typeof destGeocoder.results[0]) {
+    setDestQuery(r.label);
     setDestOpen(false);
-    setNominatimDestResults([]);
+    destGeocoder.clear();
     destPlaces.clear();
     onChange({
       ...value,
-      commuteDestination: displayName,
-      commuteCity: city,
-      commuteLat: parseFloat(r.lat),
-      commuteLng: parseFloat(r.lon),
+      commuteDestination: r.label,
+      commuteCity: r.city,
+      commuteLat: r.lat,
+      commuteLng: r.lng,
     });
   }
 
   function handleDestClear() {
     setDestQuery("");
-    setNominatimDestResults([]);
+    destGeocoder.clear();
     destPlaces.clear();
     onChange({ ...value, commuteDestination: "", commuteCity: "", commuteLat: null, commuteLng: null });
   }
@@ -256,13 +247,13 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
   const defaultZoom = 11;
 
   const googleCitySuggestions = places.suggestions;
-  const cityIsLoading = places.loading || nominatimCityLoading;
+  const cityIsLoading = places.loading || cityGeocoder.loading;
 
   const googleDestSuggestions = destPlaces.suggestions;
-  const destIsLoading = destPlaces.loading || nominatimDestLoading;
+  const destIsLoading = destPlaces.loading || destGeocoder.loading;
 
-  const hasCityResults = (usingGoogleForCity && googleCitySuggestions.length > 0) || nominatimCityResults.length > 0;
-  const hasDestResults = (usingGoogleForDest && googleDestSuggestions.length > 0) || nominatimDestResults.length > 0;
+  const hasCityResults = (usingGoogleForCity && googleCitySuggestions.length > 0) || cityGeocoder.results.length > 0;
+  const hasDestResults = (usingGoogleForDest && googleDestSuggestions.length > 0) || destGeocoder.results.length > 0;
 
   return (
     <div className="flex flex-col gap-5">
@@ -355,22 +346,17 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                   </div>
                 </>
               ) : (
-                nominatimCityResults.map((r) => {
-                  const a = r.address;
-                  const label = a.city || a.town || a.village || a.municipality || "";
-                  const sub = a.state ? `${label}, ${a.state}` : label;
-                  return (
+                cityGeocoder.results.map((r) => (
                     <button
-                      key={r.place_id}
-                      onClick={() => handleNominatimCitySelect(r)}
+                      key={r.placeId || `${r.lat}-${r.lng}`}
+                      onClick={() => handleGeocoderCitySelect(r)}
                       className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[6px] last:rounded-b-[6px] text-ha-text-muted hover:bg-ha-surface flex items-center gap-3"
-                      data-testid={`option-place-${r.place_id}`}
+                      data-testid={`option-place-${r.placeId}`}
                     >
                       <MapPin className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
-                      <span>{sub}</span>
+                      <span>{r.label}</span>
                     </button>
-                  );
-                })
+                  ))
               )}
             </div>
           )}
@@ -477,15 +463,15 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                     </div>
                   </>
                 ) : (
-                  nominatimDestResults.map((r) => (
+                  destGeocoder.results.map((r) => (
                     <button
-                      key={r.place_id}
-                      onClick={() => handleNominatimDestSelect(r)}
+                      key={r.placeId || `${r.lat}-${r.lng}`}
+                      onClick={() => handleGeocoderDestSelect(r)}
                       className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[6px] last:rounded-b-[6px] text-ha-text-muted hover:bg-ha-surface flex items-center gap-3"
-                      data-testid={`option-dest-${r.place_id}`}
+                      data-testid={`option-dest-${r.placeId}`}
                     >
                       <MapPin className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
-                      <span>{r.display_name.split(",").slice(0, 3).join(",")}</span>
+                      <span>{r.label}</span>
                     </button>
                   ))
                 )}

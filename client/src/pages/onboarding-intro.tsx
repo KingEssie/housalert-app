@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useTranslation } from "@/i18n";
 import { HousAlertLogo } from "@/components/housalert-logo";
@@ -7,6 +7,7 @@ import {
   Bath, Trees, Sun, Leaf, Sparkles,
 } from "lucide-react";
 import { defaultCities, cityDistricts } from "../../../config/market";
+import { useGeocoderSearch } from "@/hooks/use-geocoder-search";
 
 const BRAND = "rgb(var(--ha-primary))";
 const BRAND_HOVER = "rgb(var(--ha-primary-hover))";
@@ -285,44 +286,22 @@ function CityStep({
   t: (k: string) => string;
 }) {
   const [search, setSearch] = useState("");
-  const [customResults, setCustomResults] = useState<typeof defaultCities>([]);
-  const [searching, setSearching] = useState(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const geocoder = useGeocoderSearch({ debounceMs: 400, minChars: 2, limit: 5 });
 
   const filteredCities = search.trim()
     ? defaultCities.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()))
     : defaultCities;
 
-  const searchNominatim = useCallback(async (q: string) => {
-    if (q.trim().length < 2) { setCustomResults([]); return; }
-    setSearching(true);
-    try {
-      const params = new URLSearchParams({ q, format: "json", addressdetails: "1", countrycodes: "de", limit: "5", "accept-language": "de" });
-      const res = await fetch(`https://nominatim.openstreetmap.org/search?${params}`, { headers: { "User-Agent": "HousAlert/1.0" } });
-      const results = await res.json();
-      const mapped = results
-        .filter((r: any) => r.address?.city || r.address?.town || r.address?.village || r.address?.municipality)
-        .map((r: any) => ({
-          name: r.address?.city || r.address?.town || r.address?.village || r.address?.municipality || r.display_name.split(",")[0],
-          lat: parseFloat(r.lat),
-          lng: parseFloat(r.lon),
-        }));
-      setCustomResults(mapped);
-    } catch { setCustomResults([]); }
-    finally { setSearching(false); }
-  }, []);
-
   useEffect(() => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
     if (search.trim().length >= 2 && filteredCities.length === 0) {
-      debounceRef.current = setTimeout(() => searchNominatim(search), 400);
+      geocoder.search(search.trim());
     } else {
-      setCustomResults([]);
+      geocoder.clear();
     }
-    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
   }, [search]);
 
-  const allResults = filteredCities.length > 0 ? filteredCities : customResults;
+  const geocoderCities = geocoder.results.map((r) => ({ name: r.city, lat: r.lat, lng: r.lng }));
+  const allResults = filteredCities.length > 0 ? filteredCities : geocoderCities;
   const districts = data.city ? cityDistricts[data.city] || [] : [];
   const hasDistricts = districts.length > 0;
 
@@ -381,7 +360,7 @@ function CityStep({
             style={{ borderColor: BORDER }}
             data-testid="input-city-search"
           />
-          {searching && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-ha-text-muted" />}
+          {geocoder.loading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-ha-text-muted" />}
         </div>
 
         {!data.city && (
@@ -397,7 +376,7 @@ function CityStep({
                 <span className="text-[15px] font-medium text-ha-text">{city.name}</span>
               </button>
             ))}
-            {allResults.length === 0 && search.trim().length >= 2 && !searching && (
+            {allResults.length === 0 && search.trim().length >= 2 && !geocoder.loading && (
               <p className="text-[13px] text-ha-text-muted text-center py-4">{t("onboarding.location.noResults") || "Keine Ergebnisse"}</p>
             )}
           </div>

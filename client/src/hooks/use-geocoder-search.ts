@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import type { LocationResult } from "@/lib/location-types";
 import { geocoderSearch, type PlaceSearchOptions } from "@/lib/place-search-service";
 
@@ -60,6 +60,13 @@ export function useGeocoderSearch(options: UseGeocoderSearchOptions = {}) {
     abortRef.current++;
     setResults([]);
     setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      abortRef.current++;
+    };
   }, []);
 
   return { results, loading, search, searchImmediate, clear };
