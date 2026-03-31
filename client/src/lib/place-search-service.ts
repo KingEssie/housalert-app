@@ -26,10 +26,11 @@ export class GooglePlacesProvider implements PlaceSearchProvider {
       input: query,
       session_token: this.sessionToken,
     });
+    if (options.language) params.set("language", options.language);
     const res = await fetch(`/api/places/autocomplete?${params}`);
     if (!res.ok) return [];
     const data = await res.json();
-    return (data.suggestions ?? []).map((s: any) => ({
+    let results: LocationResult[] = (data.suggestions ?? []).map((s: any) => ({
       label: s.state ? `${s.city_name}, ${s.state}` : s.city_name,
       city: s.city_name,
       country: s.country_code ?? "DE",
@@ -38,6 +39,12 @@ export class GooglePlacesProvider implements PlaceSearchProvider {
       source: "google" as const,
       placeId: s.place_id,
     }));
+    if (options.limit) results = results.slice(0, options.limit);
+    if (options.countryCodes?.length) {
+      const codes = options.countryCodes.map((c) => c.toUpperCase());
+      results = results.filter((r) => codes.includes(r.country.toUpperCase()));
+    }
+    return results;
   }
 
   async getDetails(placeId: string): Promise<LocationResult | null> {

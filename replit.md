@@ -44,6 +44,19 @@ A mobile-first rental alert application for the German market. Users can sign up
 - **Auth**: V2 welcome page uses existing Supabase auth (signInWithPassword), same as old login
 - **Planned Phase 2**: /v2/onboarding/filters, /v2/onboarding/preferences, /v2/onboarding/value, /v2/signup, /v2/paywall, /v2/profile steps, /v2/success
 
+## Map & Geocoding Architecture
+- **Provider abstraction**: Map rendering and place search use separate provider layers, switchable via feature flags.
+- **Feature flags** (`client/src/lib/feature-flags.ts`):
+  - `VITE_USE_MAPBOX_MAPS` — switches map tile rendering (Leaflet/OSM ↔ Mapbox GL). Default: `"false"`.
+  - `VITE_USE_MAPBOX_GEOCODER` — switches place search provider (Google/Nominatim ↔ Mapbox). Default: `"false"`. Not yet implemented.
+  - `VITE_MAPBOX_TOKEN` — Mapbox public access token (`pk.*`), used client-side only.
+- **Shared types** (`client/src/lib/location-types.ts`): `LocationResult` (label, city, country, lat, lng, bbox, source, placeId), `MapMarker`, `MapCircle`, `MapViewProps`.
+- **MapView adapter** (`client/src/components/map-view.tsx`): Lazy-loads either `map-view-leaflet.tsx` (Leaflet + OSM tiles) or `map-view-mapbox.tsx` (Mapbox GL JS) based on `USE_MAPBOX_MAPS` flag. Both accept same `MapViewProps` interface.
+- **Consumers**: `city-picker.tsx` and `location-mode-selector.tsx` both use `<MapView>` — no direct Leaflet imports.
+- **Place search service** (`client/src/lib/place-search-service.ts`): `PlaceSearchProvider` interface with `GooglePlacesProvider`, `NominatimProvider`, `MapboxGeocoderProvider` (stub). Factory: `createSearchProvider()`. Phase 2 will wire this into UI components.
+- **Current state (Phase 1)**: Map rendering ready for Mapbox (set `VITE_USE_MAPBOX_MAPS=true`). Place search still uses existing Google Places + Nominatim fallback directly in components.
+- **Backend geocoding** (`server/ingesters/geocoding.ts`): Uses Nominatim for listing ingestion. Unchanged by this migration.
+
 ## Onboarding Flow (Active)
 - **Route**: `/onboarding/setup` — 6-step flow: location → radius → filters → preview → confirm → paywall
 - **Component**: `client/src/pages/onboarding-flow.tsx`

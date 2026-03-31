@@ -67,59 +67,64 @@ export default function MapViewMapbox({
     const map = mapRef.current;
     if (!map) return;
 
-    function updateCircles() {
+    let cancelled = false;
+
+    function removeCircleLayers() {
+      try {
+        circles.forEach((_, i) => {
+          const sourceId = `circle-source-${i}`;
+          const layerId = `circle-layer-${i}`;
+          const outlineId = `circle-outline-${i}`;
+          if (map!.getLayer(outlineId)) map!.removeLayer(outlineId);
+          if (map!.getLayer(layerId)) map!.removeLayer(layerId);
+          if (map!.getSource(sourceId)) map!.removeSource(sourceId);
+        });
+      } catch {}
+    }
+
+    function addCircleLayers() {
+      if (cancelled) return;
+      removeCircleLayers();
       circles.forEach((c, i) => {
         const sourceId = `circle-source-${i}`;
         const layerId = `circle-layer-${i}`;
         const outlineId = `circle-outline-${i}`;
 
-        if (map!.getSource(sourceId)) {
-          (map!.getSource(sourceId) as mapboxgl.GeoJSONSource).setData(
-            createCircleGeoJSON(c.lat, c.lng, c.radiusMeters)
-          );
-        } else {
-          map!.addSource(sourceId, {
-            type: "geojson",
-            data: createCircleGeoJSON(c.lat, c.lng, c.radiusMeters),
-          });
-          map!.addLayer({
-            id: layerId,
-            type: "fill",
-            source: sourceId,
-            paint: {
-              "fill-color": c.color ?? "#6366f1",
-              "fill-opacity": c.fillOpacity ?? 0.1,
-            },
-          });
-          map!.addLayer({
-            id: outlineId,
-            type: "line",
-            source: sourceId,
-            paint: {
-              "line-color": c.color ?? "#6366f1",
-              "line-width": 2,
-            },
-          });
-        }
+        map!.addSource(sourceId, {
+          type: "geojson",
+          data: createCircleGeoJSON(c.lat, c.lng, c.radiusMeters),
+        });
+        map!.addLayer({
+          id: layerId,
+          type: "fill",
+          source: sourceId,
+          paint: {
+            "fill-color": c.color ?? "#6366f1",
+            "fill-opacity": c.fillOpacity ?? 0.1,
+          },
+        });
+        map!.addLayer({
+          id: outlineId,
+          type: "line",
+          source: sourceId,
+          paint: {
+            "line-color": c.color ?? "#6366f1",
+            "line-width": 2,
+          },
+        });
       });
     }
 
     if (map.isStyleLoaded()) {
-      updateCircles();
+      addCircleLayers();
     } else {
-      map.on("style.load", updateCircles);
+      map.on("style.load", addCircleLayers);
     }
 
     return () => {
-      if (!map.isStyleLoaded()) return;
-      circles.forEach((_, i) => {
-        const sourceId = `circle-source-${i}`;
-        const layerId = `circle-layer-${i}`;
-        const outlineId = `circle-outline-${i}`;
-        if (map.getLayer(outlineId)) map.removeLayer(outlineId);
-        if (map.getLayer(layerId)) map.removeLayer(layerId);
-        if (map.getSource(sourceId)) map.removeSource(sourceId);
-      });
+      cancelled = true;
+      map.off("style.load", addCircleLayers);
+      try { removeCircleLayers(); } catch {}
     };
   }, [circles]);
 
