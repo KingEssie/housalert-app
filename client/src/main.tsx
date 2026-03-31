@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 function renderError(err: unknown) {
   const root = document.getElementById("root");
