@@ -1,0 +1,218 @@
+We are preparing for launch.
+
+I want a full pre-launch audit of the HousAlert product.
+Do NOT redesign anything unless a real bug requires a fix.
+Do NOT build new features.
+Focus on testing, verification, and fixing only what is broken or risky.
+
+GOAL:
+Verify that the complete user journey works end-to-end and that critical systems actually function in production-like conditions.
+
+==================================================
+SCOPE
+==================================================
+
+Audit and verify these systems:
+
+1. Website onboarding flow
+2. Popup onboarding flow
+3. Full-page onboarding continuation
+4. Account creation
+5. Paywall flow
+6. Stripe checkout flow
+7. Post-payment redirect flow
+8. Dashboard access
+9. Search profile creation and persistence
+10. Notifications
+11. Search buddy
+12. Mapbox maps + place search
+13. Matching engine
+14. Email sending / branding integrity
+15. Critical data persistence and redirects
+
+==================================================
+PART 1 — WEBSITE / ONBOARDING FLOW
+==================================================
+
+Verify the exact website-mode flow:
+
+- website city search input works
+- dropdown suggestions appear correctly
+- clicking a city opens popup
+- popup starts at onboarding step 1/3
+- step 1 -> step 2 -> step 3 works
+- after step 3, flow breaks out of iframe/popup correctly
+- user lands on full-page account creation
+- then full-page paywall
+- then Stripe checkout
+- then dashboard after payment
+
+Check for:
+- wrong redirects
+- skipped steps
+- old sessions hijacking flow
+- broken query param forwarding
+- lost onboarding data between steps
+
+==================================================
+PART 2 — ACCOUNT CREATION / AUTH
+==================================================
+
+Verify:
+- new account creation works
+- duplicate email handling works
+- password validation works
+- user is correctly authenticated after signup
+- old session behavior does NOT break onboarding
+- no accidental redirect to login during onboarding
+- logged-in users do not bypass critical steps incorrectly
+
+==================================================
+PART 3 — PAYWALL / STRIPE
+==================================================
+
+Verify:
+- paywall loads correctly
+- correct plan selection works
+- selected plan persists
+- checkout button actually starts Stripe
+- checkout success redirect works
+- cancel redirect works
+- user lands in the correct place afterward
+- no redirect loops
+- no accidental bypass of payment
+
+If test mode is available, use Stripe test flow.
+
+==================================================
+PART 4 — SEARCH PROFILE / MATCHING
+==================================================
+
+Verify:
+- selected city, lat, lng, radius, filters, preferences all persist correctly
+- search profile is actually saved
+- matching engine receives correct profile values
+- core filters still behave correctly:
+  - city
+  - radius
+  - price
+  - bedrooms
+  - size
+  - furnished
+  - preferences
+  - send_unclear
+- no obvious mismatch between UI values and saved DB values
+
+==================================================
+PART 5 — MAPBOX / LOCATION
+==================================================
+
+Verify:
+- Mapbox map renders on all expected screens
+- city selection flow still works
+- map height and zoom are acceptable
+- radius visualization still works
+- no blank maps
+- no fallback to broken state
+- place search/autocomplete still returns usable results
+
+Check both:
+- onboarding
+- create new search profile flow
+
+==================================================
+PART 6 — NOTIFICATIONS
+==================================================
+
+Verify:
+- matched listings still enter notification pipeline
+- no duplicate match notifications
+- no orphaned delivery states
+- email notifications still send correctly
+- push logic (if active) does not break
+- website-created users can still receive notifications correctly after signup/payment
+
+==================================================
+PART 7 — SEARCH BUDDY
+==================================================
+
+Verify:
+- buddy logic still works
+- buddy does not receive emails when removed/unsubscribed
+- buddy only receives emails when allowed
+- no regression from recent onboarding/payment work
+
+==================================================
+PART 8 — EMAIL / CONTENT INTEGRITY
+==================================================
+
+Verify:
+- no broken email templates
+- no obvious placeholder text
+- no Rentbird branding leaks
+- HousAlert branding only
+- no broken Dutch copy on launch-critical screens
+
+==================================================
+PART 9 — DATABASE / PERSISTENCE
+==================================================
+
+Verify:
+- data created during onboarding is saved correctly
+- account creation does not lose selected search profile data
+- paywall/checkout flow does not lose onboarding state
+- dashboard reflects the newly created profile correctly
+
+==================================================
+PART 10 — PRODUCTION READINESS
+==================================================
+
+Check for:
+- console errors
+- failed API requests
+- broken loading states
+- redirect loops
+- blank screens
+- bad mobile layout on critical screens
+- auth/session edge cases
+- cached stale routes or stale UI issues
+
+==================================================
+TEST SCENARIOS REQUIRED
+==================================================
+
+Run at least these scenarios:
+
+1. Brand new user, full website flow, completes signup, reaches paywall
+2. Brand new user, goes to Stripe test checkout, returns successfully
+3. Brand new user cancels checkout
+4. Existing logged-in user re-enters website flow
+5. User with previous session/cookies
+6. User with no payment
+7. User after payment reaches dashboard
+8. Search profile actually exists after completion
+
+==================================================
+FIX RULE
+==================================================
+
+If you find critical or medium bugs:
+- fix them
+- retest the affected flow
+- do not do unnecessary refactors
+- do not redesign unless a bug requires it
+
+==================================================
+OUTPUT FORMAT
+==================================================
+
+Return a launch audit report with:
+
+1. Critical bugs found
+2. Medium bugs found
+3. Low issues / polish issues
+4. What was fixed
+5. What remains
+6. Whether the product is launch-ready: yes / no
+7. If not fully ready, list only the remaining blockers
+8. A final recommended go-live checklist in priority order

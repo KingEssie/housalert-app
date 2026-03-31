@@ -442,7 +442,7 @@ export default function OnboardingFilters() {
     }
     if (f.priceFlexible) outParams.set("priceFlexible", "true");
     if (f.includeRooms) outParams.set("includeRooms", "true");
-    if (f.sendUnclear) outParams.set("sendUnclear", "true");
+    outParams.set("sendUnclear", String(f.sendUnclear));
 
     if (w) {
       navigate(appendWebsiteParams(`/onboarding/preferences?${outParams.toString()}`, searchString));

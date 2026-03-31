@@ -52,6 +52,9 @@ export default function OnboardingPassword() {
     const spRadiusKm = parseInt(params.get("radiusKm") || "0") || undefined;
     const lat = parseFloat(params.get("lat") || "0") || undefined;
     const lng = parseFloat(params.get("lng") || "0") || undefined;
+    const amenities = params.get("amenities")?.split(",").filter(Boolean) || undefined;
+    const sendUnclear = params.get("sendUnclear") !== "false";
+    const priceFlexible = params.get("priceFlexible") === "true";
 
     await createSearchProfile({
       user_id: userId,
@@ -68,6 +71,9 @@ export default function OnboardingPassword() {
       radius_km: spRadiusKm,
       furnished: furnished && furnished !== "any" ? furnished : undefined,
       property_types: propertyTypes && propertyTypes.length > 0 ? propertyTypes : undefined,
+      extra_features: amenities && amenities.length > 0 ? amenities : undefined,
+      send_unclear: sendUnclear,
+      price_flexible: priceFlexible,
     });
   }
 
