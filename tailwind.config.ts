@@ -105,6 +105,9 @@ export default {
           "icon-secondary": "rgb(var(--ha-icon-secondary) / <alpha-value>)",
           "badge-bg": "rgb(var(--ha-badge-bg) / <alpha-value>)",
           "profile-header": "rgb(var(--ha-profile-header) / <alpha-value>)",
+          "brand-dark": "rgb(var(--ha-brand-dark) / <alpha-value>)",
+          "brand-dark-hover": "rgb(var(--ha-brand-dark-hover) / <alpha-value>)",
+          "brand-dark-border": "rgb(var(--ha-brand-dark-border) / <alpha-value>)",
         },
       },
       boxShadow: {

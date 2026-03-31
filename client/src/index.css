@@ -67,7 +67,10 @@
   --ha-icon-secondary: 156 163 175;
   --ha-badge-bg: 243 244 246;
   --ha-overlay: rgba(0, 0, 0, 0.05);
-  --ha-profile-header: 30 27 75;
+  --ha-brand-dark: 21 18 38;
+  --ha-brand-dark-hover: 28 25 50;
+  --ha-brand-dark-border: 45 40 75;
+  --ha-profile-header: 21 18 38;
   --ha-shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
   --ha-check-unchecked: transparent;
 
@@ -143,21 +146,21 @@
     --chart-4: 0 84% 65%;
     --chart-5: 260 60% 65%;
 
-    --ha-bg: 26 26 46;
-    --ha-card: 36 36 58;
-    --ha-card-border: 53 53 96;
-    --ha-card-hover: 45 45 74;
+    --ha-bg: 21 18 38;
+    --ha-card: 30 27 50;
+    --ha-card-border: 45 40 75;
+    --ha-card-hover: 38 35 62;
     --ha-text: 255 255 255;
     --ha-text-secondary: 156 163 175;
     --ha-text-muted: 107 114 128;
     --ha-primary: 233 30 99;
     --ha-primary-hover: 216 27 96;
     --ha-primary-light: rgba(233, 30, 99, 0.15);
-    --ha-input-bg: 42 42 69;
-    --ha-input-border: 53 53 96;
-    --ha-surface: 53 53 96;
-    --ha-nav-bg: 26 26 46;
-    --ha-nav-border: 53 53 96;
+    --ha-input-bg: 35 32 58;
+    --ha-input-border: 45 40 75;
+    --ha-surface: 45 40 75;
+    --ha-nav-bg: 21 18 38;
+    --ha-nav-border: 45 40 75;
     --ha-success: 0 200 150;
     --ha-success-light: rgba(0, 200, 150, 0.15);
     --ha-warning: 251 191 36;
@@ -165,8 +168,11 @@
     --ha-danger: 239 68 68;
     --ha-danger-light: rgba(239, 68, 68, 0.15);
     --ha-icon-secondary: 156 163 175;
-    --ha-badge-bg: 53 53 96;
-    --ha-profile-header: 30 27 75;
+    --ha-badge-bg: 45 40 75;
+    --ha-brand-dark: 21 18 38;
+    --ha-brand-dark-hover: 28 25 50;
+    --ha-brand-dark-border: 45 40 75;
+    --ha-profile-header: 21 18 38;
     --ha-overlay: rgba(0, 0, 0, 0.3);
     --ha-shadow-card: none;
     --ha-check-unchecked: transparent;
@@ -524,22 +530,22 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .ob-dark {
-  --ha-bg: 30 27 75;
-  --ha-card: 42 40 80;
-  --ha-card-border: 70 65 130;
-  --ha-card-hover: 55 52 105;
+  --ha-bg: 21 18 38;
+  --ha-card: 28 25 50;
+  --ha-card-border: 45 40 75;
+  --ha-card-hover: 35 32 62;
   --ha-text: 255 255 255;
-  --ha-text-secondary: 180 178 210;
-  --ha-text-muted: 130 128 170;
+  --ha-text-secondary: 170 168 195;
+  --ha-text-muted: 120 118 155;
   --ha-primary: 233 30 99;
   --ha-primary-hover: 216 27 96;
   --ha-primary-light: rgba(233, 30, 99, 0.15);
-  --ha-input-bg: 50 47 95;
-  --ha-input-border: 70 65 130;
-  --ha-surface: 40 38 78;
-  --ha-nav-bg: 30 27 75;
-  --ha-nav-border: 70 65 130;
-  --ha-badge-bg: 50 47 95;
+  --ha-input-bg: 32 28 55;
+  --ha-input-border: 45 40 75;
+  --ha-surface: 25 22 45;
+  --ha-nav-bg: 21 18 38;
+  --ha-nav-border: 45 40 75;
+  --ha-badge-bg: 40 36 70;
   --ha-shadow-card: none;
   --ha-check-unchecked: transparent;
 }
@@ -672,11 +678,11 @@ input[type="range"]::-moz-range-thumb {
   color: rgba(255,255,255,0.45);
 }
 .ob-dark input[type="range"]::-webkit-slider-thumb {
-  border-color: #1e1b4b;
+  border-color: #151226;
   box-shadow: 0 2px 8px rgba(233,30,99,0.3);
 }
 .ob-dark input[type="range"]::-moz-range-thumb {
-  border-color: #1e1b4b;
+  border-color: #151226;
   box-shadow: 0 2px 8px rgba(233,30,99,0.3);
 }
 .dual-range-thumb {

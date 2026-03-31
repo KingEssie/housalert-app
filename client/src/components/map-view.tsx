@@ -21,7 +21,7 @@ export default function MapView(props: MapViewProps) {
       fallback={
         <div
           className={props.className}
-          style={{ height: props.height ?? "200px", background: "#1a1a2e" }}
+          style={{ height: props.height ?? "200px", background: "#151226" }}
         />
       }
     >

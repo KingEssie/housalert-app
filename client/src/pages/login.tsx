@@ -130,7 +130,7 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full ha-field ha-field-dark"
-                style={{ backgroundColor: "#1c1940", borderColor: "rgba(255,255,255,0.12)" }}
+                style={{ backgroundColor: "#151226", borderColor: "rgba(255,255,255,0.12)" }}
                 data-testid="input-login-email"
               />
             </div>
@@ -148,7 +148,7 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   className="w-full ha-field ha-field-dark pr-12"
-                  style={{ backgroundColor: "#1c1940", borderColor: "rgba(255,255,255,0.12)" }}
+                  style={{ backgroundColor: "#151226", borderColor: "rgba(255,255,255,0.12)" }}
                   data-testid="input-login-password"
                 />
                 <button

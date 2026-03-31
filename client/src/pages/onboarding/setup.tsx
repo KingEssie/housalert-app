@@ -97,8 +97,8 @@ function SetupShell({
   showBack?: boolean;
 }) {
   return (
-    <div className="min-h-[100dvh] flex flex-col ob-dark" style={{ background: "linear-gradient(180deg, #1e1b4b 0%, #0f0e2a 100%)" }} data-testid={`setup-step-${step}`}>
-      <header className="sticky top-0 z-20 backdrop-blur-md border-b" style={{ backgroundColor: "rgba(30,27,75,0.95)", borderColor: "rgba(255,255,255,0.08)" }}>
+    <div className="min-h-[100dvh] flex flex-col ob-dark" style={{ background: "linear-gradient(180deg, #151226 0%, #0d0b1e 100%)" }} data-testid={`setup-step-${step}`}>
+      <header className="sticky top-0 z-20 backdrop-blur-md border-b" style={{ backgroundColor: "rgba(21,18,38,0.95)", borderColor: "rgba(255,255,255,0.08)" }}>
         <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
           {showBack && onBack ? (
             <button
@@ -378,7 +378,7 @@ function LightShell({
 }) {
   return (
     <div className="min-h-[100dvh] flex flex-col" style={{ backgroundColor: "#F3F3F5" }} data-testid={`setup-step-${step}`}>
-      <header className="sticky top-0 z-20 border-b" style={{ backgroundColor: "rgba(30,27,75,0.98)", borderColor: "rgba(255,255,255,0.08)" }}>
+      <header className="sticky top-0 z-20 border-b" style={{ backgroundColor: "rgba(21,18,38,0.98)", borderColor: "rgba(255,255,255,0.08)" }}>
         <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
           {showBack && onBack ? (
             <button
@@ -510,7 +510,7 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
 
         <div className="flex items-center justify-center py-8">
           <div className="relative">
-            <div className="w-[240px] h-[140px] rounded-[12px] overflow-hidden" style={{ background: "linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)" }}>
+            <div className="w-[240px] h-[140px] rounded-[12px] overflow-hidden" style={{ background: "linear-gradient(135deg, #151226 0%, #1c1932 100%)" }}>
               <div className="absolute top-3 left-3 flex items-center gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: BRAND }} />
                 <div className="h-2 w-14 rounded-full bg-white/20" />
@@ -1350,7 +1350,7 @@ export default function OnboardingSetup() {
 
   if (!profileLoaded) {
     return (
-      <div className="min-h-[100dvh] flex items-center justify-center ob-dark" style={{ background: "linear-gradient(180deg, #1e1b4b 0%, #0f0e2a 100%)" }}>
+      <div className="min-h-[100dvh] flex items-center justify-center ob-dark" style={{ background: "linear-gradient(180deg, #151226 0%, #0d0b1e 100%)" }}>
         <Loader2 className="w-8 h-8 animate-spin" style={{ color: BRAND }} />
       </div>
     );

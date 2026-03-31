@@ -3,8 +3,8 @@ import { useHashSearch } from "@/lib/hash-search";
 export const ONBOARDING_TOTAL_STEPS = 3;
 
 export const OB = {
-  gradient: "linear-gradient(180deg, #1e1b4b 0%, #0f0e2a 100%)",
-  headerBg: "rgba(30,27,75,0.95)",
+  gradient: "linear-gradient(180deg, #151226 0%, #0d0b1e 100%)",
+  headerBg: "rgba(21,18,38,0.95)",
   headerBorder: "rgba(255,255,255,0.08)",
   card: "rgba(255,255,255,0.06)",
   cardBorder: "rgba(255,255,255,0.10)",

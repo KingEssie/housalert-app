@@ -1030,9 +1030,9 @@ function HomeTab({
       <HomeTipsCompletionCard navigate={navigate} />
 
       {!subscription.isTrial && !subscription.isActive && (
-        <div className="rounded-[12px] bg-[#EDE9F6] px-5 py-5" data-testid="card-upgrade-warning">
+        <div className="rounded-[12px] bg-[#EDEAF2] px-5 py-5" data-testid="card-upgrade-warning">
           <div className="flex items-start gap-3 mb-3">
-            <Lock className="w-5 h-5 text-[#7C3AED] flex-shrink-0 mt-0.5" />
+            <Lock className="w-5 h-5 text-[#151226] flex-shrink-0 mt-0.5" />
             <div>
               <p className="text-[16px] font-bold text-black">Je loopt mogelijk je droomwoning mis...</p>
               <p className="text-[14px] text-[#4B5563] mt-1.5 leading-relaxed">
@@ -1084,7 +1084,7 @@ function HomeTab({
 
       <RecentlyViewedSection accessToken={accessToken} />
 
-      <div className="rounded-[6px] bg-[#1E1B4B] p-5" data-testid="card-home-referral">
+      <div className="rounded-[6px] bg-[#151226] p-5" data-testid="card-home-referral">
         <p className="text-[11px] font-semibold text-ha-primary tracking-wider uppercase mb-1" data-testid="text-referral-label">
           {t("referral.homeLabel")}
         </p>
@@ -1721,7 +1721,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       <div className="relative" data-testid="card-profile-summary">
         <div className="bg-ha-profile-header h-[160px]" style={{ borderRadius: "0 0 50% 50% / 0 0 36px 36px" }} />
         <div className="flex flex-col items-center -mt-12 mb-5">
-          <div className="w-24 h-24 rounded-full bg-[#312e81] flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.12)]">
+          <div className="w-24 h-24 rounded-full bg-[#151226] flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.12)]">
             {photoUrl ? (
               <img src={photoUrl} alt="" className="w-full h-full rounded-full object-cover" />
             ) : (
@@ -1853,7 +1853,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       {(user?.email?.toLowerCase() === "martin.essie87@gmail.com") && (
         <button
           onClick={() => navigate("/admin/portal")}
-          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+62px)] left-1/2 -translate-x-1/2 z-40 bg-ha-profile-header text-white text-[14px] font-medium px-4 py-2.5 rounded-[6px] shadow-[0_2px_10px_rgba(30,27,75,0.2)] active:scale-95 transition-transform"
+          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+62px)] left-1/2 -translate-x-1/2 z-40 bg-ha-profile-header text-white text-[14px] font-medium px-4 py-2.5 rounded-[6px] shadow-[0_2px_10px_rgba(21,18,38,0.2)] active:scale-95 transition-transform"
           data-testid="button-admin-portal"
         >
           {t("profile.adminMode")}

@@ -11,7 +11,7 @@ import { Eye, EyeOff, ChevronDown, ArrowRight, Loader2, Star } from "lucide-reac
 import { HousAlertLogo } from "@/components/housalert-logo";
 
 const ACCENT = "#e91e63";
-const BG = "#1A1A2E";
+const BG = "#151226";
 
 export default function V2WelcomePage() {
   const [, navigate] = useLocation();
@@ -167,7 +167,7 @@ export default function V2WelcomePage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t("v2.welcome.emailPlaceholder")}
               autoComplete="email"
-              className="w-full h-[56px] rounded-[6px] bg-white px-5 text-[16px] text-[#1A1A2E] placeholder-[#B0B0B0] outline-none border-2 border-transparent focus:border-[#e91e63] transition-colors"
+              className="w-full h-[56px] rounded-[6px] bg-white px-5 text-[16px] text-[#151226] placeholder-[#B0B0B0] outline-none border-2 border-transparent focus:border-[#e91e63] transition-colors"
               data-testid="input-v2-email"
             />
           </div>
@@ -183,7 +183,7 @@ export default function V2WelcomePage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t("v2.welcome.passwordPlaceholder")}
                 autoComplete="current-password"
-                className="w-full h-[56px] rounded-[6px] bg-white px-5 pr-14 text-[16px] text-[#1A1A2E] placeholder-[#B0B0B0] outline-none border-2 border-transparent focus:border-[#e91e63] transition-colors"
+                className="w-full h-[56px] rounded-[6px] bg-white px-5 pr-14 text-[16px] text-[#151226] placeholder-[#B0B0B0] outline-none border-2 border-transparent focus:border-[#e91e63] transition-colors"
                 data-testid="input-v2-password"
               />
               <button

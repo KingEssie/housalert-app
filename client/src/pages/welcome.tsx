@@ -11,7 +11,7 @@ import { apiFetch } from "@/lib/api-base";
 import { useToast } from "@/hooks/use-toast";
 
 const OB = {
-  gradient: "linear-gradient(180deg, #1e1b4b 0%, #0f0e2a 100%)",
+  gradient: "linear-gradient(180deg, #151226 0%, #0d0b1e 100%)",
   pink: "#e91e63",
   pinkGradient: "linear-gradient(135deg, #e91e63 0%, #ec407a 100%)",
   pinkShadow: "0 4px 15px rgba(233,30,99,0.3)",
@@ -69,7 +69,7 @@ function LanguageDropdown() {
           role="listbox"
           aria-label="Languages"
           className="absolute top-full right-0 mt-1.5 w-[180px] rounded-[6px] border overflow-hidden z-50 shadow-[0_8px_30px_rgba(0,0,0,0.3)]"
-          style={{ backgroundColor: "rgba(30,27,75,0.95)", borderColor: "rgba(255,255,255,0.1)" }}
+          style={{ backgroundColor: "rgba(21,18,38,0.95)", borderColor: "rgba(255,255,255,0.1)" }}
         >
           {LANGUAGES.map((lang) => {
             const isActive = locale === lang.code;

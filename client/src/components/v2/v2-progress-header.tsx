@@ -16,7 +16,7 @@ export function V2ProgressHeader({
   onClose,
 }: V2ProgressHeaderProps) {
   return (
-    <header className="w-full sticky top-0 z-20 bg-[#1A1A2E]/95 backdrop-blur-sm border-b border-white/10">
+    <header className="w-full sticky top-0 z-20 bg-[#151226]/95 backdrop-blur-sm border-b border-white/10">
       <div className="max-w-lg mx-auto px-4 h-[56px] flex items-center gap-3">
         {onBack && (
           <button

@@ -17,10 +17,10 @@ A mobile-first rental alert application for the German market. Users can sign up
 - **Buttons**: All buttons use `rounded-[6px]`. Only small badges/tags keep `rounded-full` pill shape.
 - **Inputs**: All inputs use `rounded-[6px]`.
 - **Listing cards**: Unified single-card structure — image on top, white content section below, all inside one `rounded-[6px] overflow-hidden bg-ha-card` wrapper.
-- **Profile header**: Dark purple `bg-ha-profile-header` (#1E1B4B), no avatar, left-aligned name+member since, settings gear button on right. Compact height (pt-8 pb-6), mb-4 below.
+- **Profile header**: Dark brand `bg-ha-profile-header` (#151226), no avatar, left-aligned name+member since, settings gear button on right. Compact height (pt-8 pb-6), mb-4 below.
 - **Profile tab structure**: Header → progress blocks (complete account + tips) → upgrade CTA (if applicable) → notification toggles → "Einstellungen" button. All menu items moved to `/settings` page.
 - **Settings page** (`/settings`): Contains search profiles, reaction letter, zoekbuddy, HousAlert Plus, personal info, language, privacy, help, terms, invite friends, logout, delete account.
-- **Admin button**: Floating `rounded-[8px]`, `px-4 py-2.5`, dark purple bg, white text, reduced shadow `shadow-[0_2px_10px_rgba(30,27,75,0.2)]`, positioned above tab bar.
+- **Admin button**: Floating `rounded-[8px]`, `px-4 py-2.5`, dark brand bg, white text, reduced shadow `shadow-[0_2px_10px_rgba(21,18,38,0.2)]`, positioned above tab bar.
 - **Bottom tab bar**: `bg-ha-bg` background, `border-t border-ha-card-border`, active icons use `text-ha-primary`.
 - **Typography**: Page titles use `text-ha-text`, section labels use `text-ha-text-muted`.
 
@@ -36,7 +36,7 @@ A mobile-first rental alert application for the German market. Users can sign up
 ## V2 Frontend Flow (In Development)
 - **Status**: Phase 1 complete — isolated V2 flow, not replacing production yet
 - **Routes**: `/v2/welcome`, `/v2/onboarding/intro`, `/v2/onboarding/location` (more in Phase 2)
-- **Design**: Dark background (#1A1A2E), Rentbird-inspired conversion flow
+- **Design**: Dark background (#151226), Rentbird-inspired conversion flow
 - **Layout components**: `client/src/components/v2/` — V2DarkScreenLayout, V2DarkHeader, V2DarkContent, V2ProgressHeader, V2BottomCTA, V2FormField components (TextInput, PasswordInput, Select, SegmentedControl, ChipGroup, Slider, Toggle, Textarea)
 - **State store**: `client/src/lib/v2-onboarding-store.tsx` — React context preserving onboarding data across V2 steps (language, city, lat/lng, radius, filters, preferences)
 - **Pages**: `client/src/pages/v2/` — welcome.tsx, onboarding-intro.tsx, onboarding-location.tsx
