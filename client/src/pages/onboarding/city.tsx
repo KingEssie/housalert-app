@@ -298,7 +298,7 @@ export default function OnboardingCity() {
                   lng={selectedCity.lng}
                   zoom={10}
                   markers={[{ lat: selectedCity.lat, lng: selectedCity.lng, type: "primary" }]}
-                  height="420px"
+                  height="clamp(240px, 35vh, 360px)"
                   className="rounded-[4px] overflow-hidden"
                 />
               </div>

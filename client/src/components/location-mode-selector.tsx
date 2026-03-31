@@ -618,7 +618,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                 ? [{ lat: value.place.latitude, lng: value.place.longitude, radiusMeters: value.radiusKm * 1000 }]
                 : []
             }
-            height="420px"
+            height="clamp(240px, 35vh, 360px)"
             className="rounded-[6px] overflow-hidden border border-ha-card-border"
           />
         </div>

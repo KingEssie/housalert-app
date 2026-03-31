@@ -233,7 +233,7 @@ export default function OnboardingLocation() {
                 lng={parseFloat(lng)}
                 zoom={10}
                 markers={[{ lat: parseFloat(lat), lng: parseFloat(lng), type: "primary" }]}
-                height="420px"
+                height="clamp(240px, 35vh, 360px)"
                 className="rounded-[6px] overflow-hidden"
               />
             </div>
@@ -278,7 +278,7 @@ export default function OnboardingLocation() {
                 zoom={10}
                 markers={[{ lat: parseFloat(lat), lng: parseFloat(lng), type: "primary" }]}
                 circles={[{ lat: parseFloat(lat), lng: parseFloat(lng), radiusMeters: radiusKm * 1000 }]}
-                height="420px"
+                height="clamp(240px, 35vh, 360px)"
                 className="rounded-[6px] overflow-hidden"
               />
             </div>
@@ -308,7 +308,7 @@ export default function OnboardingLocation() {
                 lng={parseFloat(lng)}
                 zoom={10}
                 markers={[{ lat: parseFloat(lat), lng: parseFloat(lng), type: "primary" }]}
-                height="420px"
+                height="clamp(240px, 35vh, 360px)"
                 className="rounded-[6px] overflow-hidden"
               />
             </div>
