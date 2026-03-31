@@ -1,6 +1,5 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import mapboxgl from "mapbox-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
 import { MAPBOX_TOKEN } from "@/lib/feature-flags";
 import type { MapViewProps } from "@/lib/location-types";
 
@@ -16,27 +15,116 @@ export default function MapViewMapbox({
 }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
+  const readyRef = useRef(false);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
 
+  const syncMarkers = useCallback(() => {
+    const map = mapRef.current;
+    if (!map || !readyRef.current) return;
+
+    markersRef.current.forEach((m) => m.remove());
+    markersRef.current = [];
+
+    markers.forEach((m) => {
+      const el = document.createElement("div");
+      el.style.width = "16px";
+      el.style.height = "16px";
+      el.style.borderRadius = "50%";
+      el.style.backgroundColor = "#e91e63";
+      el.style.border = "2px solid #fff";
+      el.style.boxShadow = "0 1px 4px rgba(0,0,0,0.3)";
+      const marker = new mapboxgl.Marker({ element: el })
+        .setLngLat([m.lng, m.lat])
+        .addTo(map);
+      markersRef.current.push(marker);
+    });
+  }, [markers]);
+
+  const syncCircles = useCallback(() => {
+    const map = mapRef.current;
+    if (!map || !readyRef.current) return;
+
+    for (let i = 0; i < 20; i++) {
+      const outlineId = `circle-outline-${i}`;
+      const layerId = `circle-layer-${i}`;
+      const sourceId = `circle-source-${i}`;
+      try {
+        if (map.getLayer(outlineId)) map.removeLayer(outlineId);
+        if (map.getLayer(layerId)) map.removeLayer(layerId);
+        if (map.getSource(sourceId)) map.removeSource(sourceId);
+      } catch {}
+    }
+
+    circles.forEach((c, i) => {
+      const sourceId = `circle-source-${i}`;
+      const layerId = `circle-layer-${i}`;
+      const outlineId = `circle-outline-${i}`;
+
+      map.addSource(sourceId, {
+        type: "geojson",
+        data: createCircleGeoJSON(c.lat, c.lng, c.radiusMeters),
+      });
+      map.addLayer({
+        id: layerId,
+        type: "fill",
+        source: sourceId,
+        paint: {
+          "fill-color": c.color ?? "#6366f1",
+          "fill-opacity": c.fillOpacity ?? 0.15,
+        },
+      });
+      map.addLayer({
+        id: outlineId,
+        type: "line",
+        source: sourceId,
+        paint: {
+          "line-color": c.color ?? "#6366f1",
+          "line-width": 2,
+        },
+      });
+    });
+  }, [circles]);
+
   useEffect(() => {
-    if (!containerRef.current) return;
+    const el = containerRef.current;
+    if (!el) return;
 
     mapboxgl.accessToken = MAPBOX_TOKEN;
 
     const map = new mapboxgl.Map({
-      container: containerRef.current,
-      style: "mapbox://styles/mapbox/streets-v12",
+      container: el,
+      style: "mapbox://styles/mapbox/streets-v11",
       center: [lng, lat],
       zoom,
       interactive,
       attributionControl: false,
+      fadeDuration: 0,
     });
 
     mapRef.current = map;
+    readyRef.current = false;
+
+    map.on("error", (e) => {
+      console.error("[MapViewMapbox] map error:", e.error?.message || e);
+    });
+
+    map.on("load", () => {
+      readyRef.current = true;
+      map.resize();
+      syncMarkers();
+      syncCircles();
+    });
+
+    const ro = new ResizeObserver(() => {
+      if (mapRef.current) mapRef.current.resize();
+    });
+    ro.observe(el);
 
     return () => {
+      ro.disconnect();
       markersRef.current.forEach((m) => m.remove());
       markersRef.current = [];
+      readyRef.current = false;
       map.remove();
       mapRef.current = null;
     };
@@ -44,95 +132,32 @@ export default function MapViewMapbox({
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map) return;
-    map.flyTo({ center: [lng, lat], zoom, duration: 500 });
+    if (!map || !readyRef.current) return;
+    map.easeTo({ center: [lng, lat], zoom, duration: 400 });
   }, [lat, lng, zoom]);
 
   useEffect(() => {
-    const map = mapRef.current;
-    if (!map) return;
-
-    markersRef.current.forEach((m) => m.remove());
-    markersRef.current = [];
-
-    markers.forEach((m) => {
-      const marker = new mapboxgl.Marker()
-        .setLngLat([m.lng, m.lat])
-        .addTo(map);
-      markersRef.current.push(marker);
-    });
-  }, [markers]);
+    syncMarkers();
+  }, [syncMarkers]);
 
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
-
-    let cancelled = false;
-
-    function removeCircleLayers() {
-      try {
-        circles.forEach((_, i) => {
-          const sourceId = `circle-source-${i}`;
-          const layerId = `circle-layer-${i}`;
-          const outlineId = `circle-outline-${i}`;
-          if (map!.getLayer(outlineId)) map!.removeLayer(outlineId);
-          if (map!.getLayer(layerId)) map!.removeLayer(layerId);
-          if (map!.getSource(sourceId)) map!.removeSource(sourceId);
-        });
-      } catch {}
-    }
-
-    function addCircleLayers() {
-      if (cancelled) return;
-      removeCircleLayers();
-      circles.forEach((c, i) => {
-        const sourceId = `circle-source-${i}`;
-        const layerId = `circle-layer-${i}`;
-        const outlineId = `circle-outline-${i}`;
-
-        map!.addSource(sourceId, {
-          type: "geojson",
-          data: createCircleGeoJSON(c.lat, c.lng, c.radiusMeters),
-        });
-        map!.addLayer({
-          id: layerId,
-          type: "fill",
-          source: sourceId,
-          paint: {
-            "fill-color": c.color ?? "#6366f1",
-            "fill-opacity": c.fillOpacity ?? 0.1,
-          },
-        });
-        map!.addLayer({
-          id: outlineId,
-          type: "line",
-          source: sourceId,
-          paint: {
-            "line-color": c.color ?? "#6366f1",
-            "line-width": 2,
-          },
-        });
-      });
-    }
-
-    if (map.isStyleLoaded()) {
-      addCircleLayers();
+    if (readyRef.current) {
+      syncCircles();
     } else {
-      map.on("style.load", addCircleLayers);
+      const onLoad = () => syncCircles();
+      map.on("load", onLoad);
+      return () => { map.off("load", onLoad); };
     }
-
-    return () => {
-      cancelled = true;
-      map.off("style.load", addCircleLayers);
-      try { removeCircleLayers(); } catch {}
-    };
-  }, [circles]);
+  }, [syncCircles]);
 
   return (
     <div
       ref={containerRef}
+      data-testid="mapbox-container"
       className={className}
-      style={{ height, width: "100%" }}
+      style={{ height, width: "100%", minHeight: "120px" }}
     />
   );
 }
