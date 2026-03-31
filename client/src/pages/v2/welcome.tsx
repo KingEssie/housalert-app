@@ -121,7 +121,7 @@ export default function V2WelcomePage() {
             <ChevronDown className="w-3.5 h-3.5" />
           </button>
           {showLangPicker && (
-            <div className="absolute right-0 top-full mt-1.5 bg-[#252540] border border-white/10 rounded-[6px] shadow-2xl py-1 z-50 min-w-[150px]">
+            <div className="absolute right-0 top-full mt-1.5 bg-[#1c1932] border border-white/10 rounded-[6px] shadow-2xl py-1 z-50 min-w-[150px]">
               {languages.map((l) => (
                 <button
                   key={l.code}
