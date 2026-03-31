@@ -133,8 +133,21 @@ export default function MapViewMapbox({
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !readyRef.current) return;
-    map.easeTo({ center: [lng, lat], zoom, duration: 400 });
-  }, [lat, lng, zoom]);
+
+    if (circles.length > 0) {
+      const c = circles[0];
+      const km = c.radiusMeters / 1000;
+      const pad = 1.3;
+      const dlat = (km * pad) / 110.574;
+      const dlng = (km * pad) / (111.32 * Math.cos((c.lat * Math.PI) / 180));
+      map.fitBounds(
+        [[c.lng - dlng, c.lat - dlat], [c.lng + dlng, c.lat + dlat]],
+        { padding: 24, duration: 400 }
+      );
+    } else {
+      map.easeTo({ center: [lng, lat], zoom, duration: 400 });
+    }
+  }, [lat, lng, zoom, circles]);
 
   useEffect(() => {
     syncMarkers();

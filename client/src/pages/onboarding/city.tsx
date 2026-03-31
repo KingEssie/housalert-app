@@ -296,9 +296,9 @@ export default function OnboardingCity() {
                 <MapView
                   lat={selectedCity.lat}
                   lng={selectedCity.lng}
-                  zoom={11}
+                  zoom={10}
                   markers={[{ lat: selectedCity.lat, lng: selectedCity.lng, type: "primary" }]}
-                  height="180px"
+                  height="260px"
                   className="rounded-[4px] overflow-hidden"
                 />
               </div>

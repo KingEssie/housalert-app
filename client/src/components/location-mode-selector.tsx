@@ -607,7 +607,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
           <MapView
             lat={hasLocation ? mapLat! : defaultLat}
             lng={hasLocation ? mapLng! : defaultLng}
-            zoom={hasLocation ? (value.tab === "radius" ? radiusToZoom(value.radiusKm) : 11) : defaultZoom}
+            zoom={hasLocation ? (value.tab === "radius" ? radiusToZoom(value.radiusKm) : 10) : defaultZoom}
             markers={
               hasLocation
                 ? [{ lat: mapLat!, lng: mapLng!, type: value.tab === "reistijd" ? "destination" : "primary" }]
@@ -618,7 +618,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                 ? [{ lat: value.place.latitude, lng: value.place.longitude, radiusMeters: value.radiusKm * 1000 }]
                 : []
             }
-            height="200px"
+            height="280px"
             className="rounded-[6px] overflow-hidden border border-ha-card-border"
           />
         </div>

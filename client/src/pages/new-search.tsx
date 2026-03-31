@@ -482,7 +482,7 @@ function Step1Location({
         onChange={setLocationData}
         segmentedTabs
         alwaysShowMap
-        mapMaxHeight="40vh"
+        mapMaxHeight="50vh"
       />
     </div>
   );

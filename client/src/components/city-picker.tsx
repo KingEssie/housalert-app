@@ -256,9 +256,9 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
           <MapView
             lat={value.latitude}
             lng={value.longitude}
-            zoom={11}
+            zoom={10}
             markers={[{ lat: value.latitude, lng: value.longitude, type: "primary" }]}
-            height="200px"
+            height="280px"
             className="rounded-[6px] overflow-hidden border border-ha-card-border"
           />
         </>

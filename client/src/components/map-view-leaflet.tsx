@@ -14,11 +14,20 @@ const PRIMARY_ICON = new L.Icon({
   shadowSize: [41, 41],
 });
 
-function Updater({ lat, lng, zoom }: { lat: number; lng: number; zoom: number }) {
+function Updater({ lat, lng, zoom, circles }: { lat: number; lng: number; zoom: number; circles: MapViewProps["circles"] }) {
   const map = useMap();
   useEffect(() => {
-    map.setView([lat, lng], zoom, { animate: true });
-  }, [lat, lng, zoom, map]);
+    if (circles && circles.length > 0) {
+      const c = circles[0];
+      const km = c.radiusMeters / 1000;
+      const pad = 1.3;
+      const dlat = (km * pad) / 110.574;
+      const dlng = (km * pad) / (111.32 * Math.cos((c.lat * Math.PI) / 180));
+      map.fitBounds([[c.lat - dlat, c.lng - dlng], [c.lat + dlat, c.lng + dlng]], { animate: true, padding: [24, 24] });
+    } else {
+      map.setView([lat, lng], zoom, { animate: true });
+    }
+  }, [lat, lng, zoom, circles, map]);
   return null;
 }
 
@@ -62,7 +71,7 @@ export default function MapViewLeaflet({
             }}
           />
         ))}
-        <Updater lat={lat} lng={lng} zoom={zoom} />
+        <Updater lat={lat} lng={lng} zoom={zoom} circles={circles} />
       </MapContainer>
     </div>
   );
