@@ -227,13 +227,13 @@ export default function OnboardingLocation() {
               </div>
             )}
 
-            <div className="mt-4 flex-1 min-h-[200px]" data-testid="location-map">
+            <div className="mt-4" data-testid="location-map">
               <MapView
                 lat={parseFloat(lat)}
                 lng={parseFloat(lng)}
                 zoom={10}
                 markers={[{ lat: parseFloat(lat), lng: parseFloat(lng), type: "primary" }]}
-                height="100%"
+                height="420px"
                 className="rounded-[6px] overflow-hidden"
               />
             </div>
@@ -271,14 +271,14 @@ export default function OnboardingLocation() {
               })}
             </div>
 
-            <div className="mt-4 flex-1 min-h-[200px]" data-testid="location-map">
+            <div className="mt-4" data-testid="location-map">
               <MapView
                 lat={parseFloat(lat)}
                 lng={parseFloat(lng)}
                 zoom={10}
                 markers={[{ lat: parseFloat(lat), lng: parseFloat(lng), type: "primary" }]}
                 circles={[{ lat: parseFloat(lat), lng: parseFloat(lng), radiusMeters: radiusKm * 1000 }]}
-                height="100%"
+                height="420px"
                 className="rounded-[6px] overflow-hidden"
               />
             </div>
@@ -302,13 +302,13 @@ export default function OnboardingLocation() {
               </p>
             </div>
 
-            <div className="mt-4 flex-1 min-h-[200px]" data-testid="location-map">
+            <div className="mt-4" data-testid="location-map">
               <MapView
                 lat={parseFloat(lat)}
                 lng={parseFloat(lng)}
                 zoom={10}
                 markers={[{ lat: parseFloat(lat), lng: parseFloat(lng), type: "primary" }]}
-                height="100%"
+                height="420px"
                 className="rounded-[6px] overflow-hidden"
               />
             </div>

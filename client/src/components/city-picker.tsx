@@ -258,7 +258,7 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
             lng={value.longitude}
             zoom={10}
             markers={[{ lat: value.latitude, lng: value.longitude, type: "primary" }]}
-            height="280px"
+            height="420px"
             className="rounded-[6px] overflow-hidden border border-ha-card-border"
           />
         </>
