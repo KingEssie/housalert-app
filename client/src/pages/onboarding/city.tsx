@@ -4,6 +4,7 @@ import { useHashSearch } from "@/lib/hash-search";
 import { Search, MapPin, Loader2, X } from "lucide-react";
 import { defaultCities } from "../../../../config/market";
 import { OB, OBW, ONBOARDING_TOTAL_STEPS, OBFooter, OBWebHeader, OBWebFooter, OBInfoBox, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
+import MapView from "@/components/map-view";
 
 interface NominatimResult {
   display_name: string;
@@ -291,16 +292,14 @@ export default function OnboardingCity() {
                 </select>
               </div>
 
-              <div
-                className="mt-3 rounded-[4px] overflow-hidden relative"
-                style={{ height: "180px", border: `1px solid ${OBW.mapBorder}` }}
-              >
-                <iframe
-                  title="Map"
-                  src={`https://www.openstreetmap.org/export/embed.html?bbox=${selectedCity.lng - 0.08},${selectedCity.lat - 0.05},${selectedCity.lng + 0.08},${selectedCity.lat + 0.05}&layer=mapnik&marker=${selectedCity.lat},${selectedCity.lng}`}
-                  className="absolute inset-0 w-full h-full"
-                  style={{ border: "none" }}
-                  data-testid="location-map"
+              <div className="mt-3" data-testid="location-map">
+                <MapView
+                  lat={selectedCity.lat}
+                  lng={selectedCity.lng}
+                  zoom={11}
+                  markers={[{ lat: selectedCity.lat, lng: selectedCity.lng, type: "primary" }]}
+                  height="180px"
+                  className="rounded-[4px] overflow-hidden"
                 />
               </div>
 

@@ -4,6 +4,7 @@ import { useHashSearch } from "@/lib/hash-search";
 import { ChevronDown, Check, Search, X } from "lucide-react";
 import { cityDistricts } from "../../../../config/market";
 import { OB, OBW, ONBOARDING_TOTAL_STEPS, OBFooter, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
+import MapView from "@/components/map-view";
 
 type LocationMode = "city" | "districts" | "radius";
 
@@ -226,16 +227,14 @@ export default function OnboardingLocation() {
               </div>
             )}
 
-            <div
-              className="mt-4 rounded-[6px] overflow-hidden flex-1 min-h-[120px] relative"
-              style={{ border: `1px solid ${T.cardBorder}` }}
-            >
-              <iframe
-                title="Map"
-                src={`https://www.openstreetmap.org/export/embed.html?bbox=${parseFloat(lng) - 0.05},${parseFloat(lat) - 0.03},${parseFloat(lng) + 0.05},${parseFloat(lat) + 0.03}&layer=mapnik&marker=${lat},${lng}`}
-                className="absolute inset-0 w-full h-full"
-                style={{ border: "none", opacity: w ? 1 : 0.85 }}
-                data-testid="location-map"
+            <div className="mt-4 flex-1 min-h-[120px]" data-testid="location-map">
+              <MapView
+                lat={parseFloat(lat)}
+                lng={parseFloat(lng)}
+                zoom={12}
+                markers={[{ lat: parseFloat(lat), lng: parseFloat(lng), type: "primary" }]}
+                height="100%"
+                className="rounded-[6px] overflow-hidden"
               />
             </div>
           </div>
@@ -272,16 +271,15 @@ export default function OnboardingLocation() {
               })}
             </div>
 
-            <div
-              className="mt-4 rounded-[6px] overflow-hidden flex-1 min-h-[120px] relative"
-              style={{ border: `1px solid ${w ? OBW.mapBorder : "rgba(255,255,255,0.1)"}` }}
-            >
-              <iframe
-                title="Map"
-                src={`https://www.openstreetmap.org/export/embed.html?bbox=${parseFloat(lng) - 0.08},${parseFloat(lat) - 0.05},${parseFloat(lng) + 0.08},${parseFloat(lat) + 0.05}&layer=mapnik&marker=${lat},${lng}`}
-                className="absolute inset-0 w-full h-full"
-                style={{ border: "none", opacity: w ? 1 : 0.85 }}
-                data-testid="location-map"
+            <div className="mt-4 flex-1 min-h-[120px]" data-testid="location-map">
+              <MapView
+                lat={parseFloat(lat)}
+                lng={parseFloat(lng)}
+                zoom={11}
+                markers={[{ lat: parseFloat(lat), lng: parseFloat(lng), type: "primary" }]}
+                circles={[{ lat: parseFloat(lat), lng: parseFloat(lng), radiusMeters: radiusKm * 1000 }]}
+                height="100%"
+                className="rounded-[6px] overflow-hidden"
               />
             </div>
           </div>
@@ -304,16 +302,14 @@ export default function OnboardingLocation() {
               </p>
             </div>
 
-            <div
-              className="mt-4 rounded-[6px] overflow-hidden flex-1 min-h-[120px] relative"
-              style={{ border: `1px solid ${T.cardBorder}` }}
-            >
-              <iframe
-                title="Map"
-                src={`https://www.openstreetmap.org/export/embed.html?bbox=${parseFloat(lng) - 0.06},${parseFloat(lat) - 0.04},${parseFloat(lng) + 0.06},${parseFloat(lat) + 0.04}&layer=mapnik&marker=${lat},${lng}`}
-                className="absolute inset-0 w-full h-full"
-                style={{ border: "none", opacity: 0.85 }}
-                data-testid="location-map"
+            <div className="mt-4 flex-1 min-h-[120px]" data-testid="location-map">
+              <MapView
+                lat={parseFloat(lat)}
+                lng={parseFloat(lng)}
+                zoom={12}
+                markers={[{ lat: parseFloat(lat), lng: parseFloat(lng), type: "primary" }]}
+                height="100%"
+                className="rounded-[6px] overflow-hidden"
               />
             </div>
           </div>
