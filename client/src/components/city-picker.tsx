@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { MapPin, Search, X, AlertCircle } from "lucide-react";
 import MapView from "@/components/map-view";
 import { useTranslation } from "@/i18n";
 import { usePlacesAutocomplete, type PlaceSuggestion } from "@/hooks/use-places-autocomplete";
+import { useGeocoderSearch } from "@/hooks/use-geocoder-search";
 
 export interface SelectedPlace {
   city_name: string;
@@ -10,22 +11,6 @@ export interface SelectedPlace {
   latitude: number;
   longitude: number;
   place_id: string;
-}
-
-interface NominatimResult {
-  place_id: number;
-  display_name: string;
-  lat: string;
-  lon: string;
-  address: {
-    city?: string;
-    town?: string;
-    village?: string;
-    municipality?: string;
-    state?: string;
-    country_code?: string;
-  };
-  type: string;
 }
 
 interface CityPickerProps {
@@ -42,10 +27,7 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
   const containerRef = useRef<HTMLDivElement>(null);
 
   const places = usePlacesAutocomplete();
-
-  const [nominatimResults, setNominatimResults] = useState<NominatimResult[]>([]);
-  const [nominatimLoading, setNominatimLoading] = useState(false);
-  const nominatimDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const geocoder = useGeocoderSearch({ debounceMs: 300, limit: 6 });
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -57,51 +39,16 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const searchNominatim = useCallback(async (q: string) => {
-    if (q.trim().length < 2) {
-      setNominatimResults([]);
-      return;
-    }
-    setNominatimLoading(true);
-    try {
-      const params = new URLSearchParams({
-        q,
-        format: "json",
-        addressdetails: "1",
-        countrycodes: "de",
-        limit: "8",
-        featuretype: "city",
-        "accept-language": "de",
-      });
-      const res = await fetch(`https://nominatim.openstreetmap.org/search?${params}`, {
-        headers: { "User-Agent": "HousAlert/1.0" },
-      });
-      const data: NominatimResult[] = await res.json();
-      const filtered = data.filter((r) => {
-        const a = r.address;
-        return !!(a.city || a.town || a.village || a.municipality);
-      });
-      setNominatimResults(filtered);
-      setOpen(filtered.length > 0);
-    } catch {
-      setNominatimResults([]);
-    } finally {
-      setNominatimLoading(false);
-    }
-  }, []);
-
   function handleInputChange(val: string) {
     setQuery(val);
     setTouched(true);
     if (value) onChange(null);
 
-    if (nominatimDebounce.current) clearTimeout(nominatimDebounce.current);
-
     if (places.isAvailable) {
       places.search(val);
-      setNominatimResults([]);
+      geocoder.clear();
     } else {
-      nominatimDebounce.current = setTimeout(() => searchNominatim(val), 350);
+      geocoder.search(val);
     }
 
     if (val.trim().length >= 2) {
@@ -124,38 +71,36 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
     setOpen(false);
     setTouched(false);
     places.clear();
-    setNominatimResults([]);
+    geocoder.clear();
   }
 
-  function handleNominatimSelect(r: NominatimResult) {
-    const a = r.address;
-    const cityName = a.city || a.town || a.village || a.municipality || "";
+  function handleGeocoderSelect(r: typeof geocoder.results[0]) {
     const place: SelectedPlace = {
-      city_name: cityName,
-      country_code: a.country_code?.toUpperCase() || "DE",
-      latitude: parseFloat(r.lat),
-      longitude: parseFloat(r.lon),
-      place_id: String(r.place_id),
+      city_name: r.city,
+      country_code: r.country,
+      latitude: r.lat,
+      longitude: r.lng,
+      place_id: r.placeId ?? "",
     };
     onChange(place);
-    setQuery(cityName);
+    setQuery(r.city);
     setOpen(false);
     setTouched(false);
     places.clear();
-    setNominatimResults([]);
+    geocoder.clear();
   }
 
   function handleClear() {
     setQuery("");
     onChange(null);
-    setNominatimResults([]);
+    geocoder.clear();
     places.clear();
     setTouched(false);
   }
 
   const usingGoogle = places.isAvailable;
-  const isLoading = places.loading || nominatimLoading;
-  const hasResults = (usingGoogle && places.suggestions.length > 0) || nominatimResults.length > 0;
+  const isLoading = places.loading || geocoder.loading;
+  const hasResults = (usingGoogle && places.suggestions.length > 0) || geocoder.results.length > 0;
   const showValidation = touched && !value && query.trim().length > 0;
 
   return (
@@ -211,22 +156,17 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
                 </div>
               </>
             ) : (
-              nominatimResults.map((r) => {
-                const a = r.address;
-                const city = a.city || a.town || a.village || a.municipality || "";
-                const label = a.state ? `${city}, ${a.state}` : city;
-                return (
-                  <button
-                    key={r.place_id}
-                    onClick={() => handleNominatimSelect(r)}
-                    className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[6px] last:rounded-b-[6px] text-ha-text-muted hover:bg-ha-surface flex items-center gap-3"
-                    data-testid={`option-place-${r.place_id}`}
-                  >
-                    <MapPin className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
-                    <span>{label}</span>
-                  </button>
-                );
-              })
+              geocoder.results.map((r) => (
+                <button
+                  key={r.placeId || `${r.lat}-${r.lng}`}
+                  onClick={() => handleGeocoderSelect(r)}
+                  className="w-full text-left px-4 py-3.5 text-[15px] transition-colors first:rounded-t-[6px] last:rounded-b-[6px] text-ha-text-muted hover:bg-ha-surface flex items-center gap-3"
+                  data-testid={`option-place-${r.placeId}`}
+                >
+                  <MapPin className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
+                  <span>{r.label}</span>
+                </button>
+              ))
             )}
           </div>
         )}

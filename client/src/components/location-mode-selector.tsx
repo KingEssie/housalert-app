@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { MapPin, Search, X, AlertCircle, Navigation, Clock, Car, Train, Bike, ChevronDown, Check } from "lucide-react";
 import MapView from "@/components/map-view";
 import { cityDistricts } from "../../../config/market";
 import { useTranslation } from "@/i18n";
 import { usePlacesAutocomplete, type PlaceSuggestion } from "@/hooks/use-places-autocomplete";
+import { useGeocoderSearch } from "@/hooks/use-geocoder-search";
 
 export type LocationTab = "wijken" | "radius" | "reistijd";
 
@@ -26,22 +27,6 @@ export interface LocationData {
   commuteLng: number | null;
   commuteMode: "auto" | "ov" | "fiets";
   commuteMinutes: number;
-}
-
-interface NominatimResult {
-  place_id: number;
-  display_name: string;
-  lat: string;
-  lon: string;
-  address: {
-    city?: string;
-    town?: string;
-    village?: string;
-    municipality?: string;
-    state?: string;
-    country_code?: string;
-  };
-  type: string;
 }
 
 export const DEFAULT_LOCATION_DATA: LocationData = {
@@ -96,16 +81,11 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
 
   const places = usePlacesAutocomplete();
   const destPlaces = usePlacesAutocomplete();
-
-  const [nominatimCityResults, setNominatimCityResults] = useState<NominatimResult[]>([]);
-  const [nominatimCityLoading, setNominatimCityLoading] = useState(false);
-  const cityNominatimDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cityGeocoder = useGeocoderSearch({ debounceMs: 300, limit: 6 });
+  const destGeocoder = useGeocoderSearch({ debounceMs: 300, limit: 6 });
 
   const [destQuery, setDestQuery] = useState(value.commuteDestination);
   const [destOpen, setDestOpen] = useState(false);
-  const [nominatimDestResults, setNominatimDestResults] = useState<NominatimResult[]>([]);
-  const [nominatimDestLoading, setNominatimDestLoading] = useState(false);
-  const destNominatimDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
   const destContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -121,38 +101,6 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const searchNominatim = useCallback(async (q: string, setResults: (r: NominatimResult[]) => void, setOpen: (o: boolean) => void, setLoading: (l: boolean) => void) => {
-    if (q.trim().length < 2) {
-      setResults([]);
-      return;
-    }
-    setLoading(true);
-    try {
-      const params = new URLSearchParams({
-        q,
-        format: "json",
-        addressdetails: "1",
-        countrycodes: "de",
-        limit: "8",
-        "accept-language": "de",
-      });
-      const res = await fetch(`https://nominatim.openstreetmap.org/search?${params}`, {
-        headers: { "User-Agent": "HousAlert/1.0" },
-      });
-      const data: NominatimResult[] = await res.json();
-      const filtered = data.filter((r) => {
-        const a = r.address;
-        return !!(a.city || a.town || a.village || a.municipality);
-      });
-      setResults(filtered);
-      setOpen(filtered.length > 0);
-    } catch {
-      setResults([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
   const usingGoogleForCity = places.isAvailable;
   const usingGoogleForDest = destPlaces.isAvailable;
 
@@ -162,15 +110,11 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
       onChange({ ...value, place: null, districts: [] });
     }
 
-    if (cityNominatimDebounce.current) clearTimeout(cityNominatimDebounce.current);
-
     if (places.isAvailable) {
       places.search(val);
-      setNominatimCityResults([]);
+      cityGeocoder.clear();
     } else {
-      cityNominatimDebounce.current = setTimeout(() => {
-        searchNominatim(val, setNominatimCityResults, setCityOpen, setNominatimCityLoading);
-      }, 350);
+      cityGeocoder.search(val);
     }
 
     if (val.trim().length >= 2) {

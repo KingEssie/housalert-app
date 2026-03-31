@@ -1,4 +1,5 @@
 import type { LocationResult } from "./location-types";
+import { USE_MAPBOX_GEOCODER, MAPBOX_TOKEN } from "./feature-flags";
 
 export interface PlaceSearchProvider {
   name: string;
@@ -115,9 +116,66 @@ export class NominatimProvider implements PlaceSearchProvider {
 export class MapboxGeocoderProvider implements PlaceSearchProvider {
   name = "mapbox" as const;
 
-  async search(_query: string, _options: PlaceSearchOptions = {}): Promise<LocationResult[]> {
-    throw new Error("MapboxGeocoderProvider is not yet implemented. Enable USE_MAPBOX_GEOCODER when ready.");
+  async search(query: string, options: PlaceSearchOptions = {}): Promise<LocationResult[]> {
+    if (!MAPBOX_TOKEN) return [];
+
+    const countries = (options.countryCodes ?? ["de"]).join(",");
+    const limit = Math.min(options.limit ?? 5, 10);
+    const lang = options.language ?? "de";
+
+    const params = new URLSearchParams({
+      access_token: MAPBOX_TOKEN,
+      autocomplete: "true",
+      types: "place,locality",
+      country: countries,
+      limit: String(limit),
+      language: lang,
+    });
+
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?${params}`;
+
+    const res = await fetch(url);
+    if (!res.ok) return [];
+    const data = await res.json();
+
+    return (data.features ?? []).map((f: any) => {
+      const context = f.context ?? [];
+      const regionCtx = context.find((c: any) => c.id?.startsWith("region"));
+      const countryCtx = context.find((c: any) => c.id?.startsWith("country"));
+      const cityName = f.text ?? f.place_name ?? "";
+      const region = regionCtx?.text ?? "";
+      const countryCode = (countryCtx?.short_code ?? countries.split(",")[0]).toUpperCase();
+
+      return {
+        label: region ? `${cityName}, ${region}` : cityName,
+        city: cityName,
+        country: countryCode,
+        lat: f.center[1],
+        lng: f.center[0],
+        bbox: f.bbox ? [f.bbox[0], f.bbox[1], f.bbox[2], f.bbox[3]] as [number, number, number, number] : undefined,
+        source: "mapbox" as const,
+        placeId: f.id ?? "",
+      };
+    });
   }
+}
+
+const nominatimFallback = new NominatimProvider();
+const mapboxProvider = new MapboxGeocoderProvider();
+
+export async function geocoderSearch(
+  query: string,
+  options: PlaceSearchOptions = {}
+): Promise<LocationResult[]> {
+  if (USE_MAPBOX_GEOCODER && MAPBOX_TOKEN) {
+    try {
+      const results = await mapboxProvider.search(query, options);
+      if (results.length > 0) return results;
+    } catch (err) {
+      console.warn("[geocoderSearch] Mapbox failed, falling back to Nominatim:", err);
+    }
+  }
+  return nominatimFallback.search(query, options);
 }
 
 export function createSearchProvider(provider: "google" | "nominatim" | "mapbox"): PlaceSearchProvider {
