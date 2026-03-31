@@ -1,0 +1,94 @@
+I want to replace all dark purple branding colors in my HousAlert app with a new primary dark brand color.
+
+New target color:
+- Hex: #151226
+- RGB: 21, 18, 38
+
+Goal:
+Update the app so every dark purple UI element that was previously introduced or customized is now consistently based on #151226, while preserving good contrast, hover states, borders, shadows, and accessibility.
+
+Instructions:
+
+1. Audit the full codebase for all dark purple usages
+Search for and update ALL color references that are visually part of the dark purple brand system, including:
+- hardcoded hex values
+- rgb/rgba values
+- hsl/hsla values
+- Tailwind classes
+- CSS variables
+- theme files
+- component-level inline styles
+- styled components
+- gradient definitions
+- box shadows with purple tint
+- borders, rings, focus states, hover states, active states
+- dark purple backgrounds, pills, chips, buttons, headers, nav items, cards, modals, menus, icons, badges, tabs, and overlays
+
+2. Standardize the color system
+Create or update a central color token / theme variable for the new dark brand color:
+- primary-dark: #151226
+
+Then derive consistent related states from that base color:
+- hover state: slightly lighter than #151226
+- active/pressed state: slightly darker or richer
+- subtle background tint if needed
+- border color variant
+- focus ring variant
+- shadow tint variant
+
+Do not leave scattered one-off purple values in the codebase if they belong to the same brand family.
+
+3. Replace all old dark-purple branding colors
+Replace all dark purple colors that were chosen to resemble the previous style direction with the new color family based on #151226.
+Important:
+- only replace branding-related dark purples
+- do NOT accidentally replace unrelated colors like success green, error red, warning orange, neutral grays, white, black, or pink accent colors unless they were incorrectly purple-tinted
+- preserve semantic colors
+
+4. Check all relevant UI areas
+Make sure the new dark brand color is consistently applied in all of these places if they currently use dark purple:
+- top bars
+- menu buttons
+- navigation backgrounds
+- CTA buttons
+- icon buttons
+- cards
+- dropdowns
+- modals
+- sheets/drawers
+- toggles
+- tabs
+- selected states
+- badges
+- onboarding screens
+- account completion widgets
+- search profile UI
+- settings/profile pages
+- authentication screens
+- landing/dashboard sections inside the app
+
+5. Accessibility and visual quality
+After replacement:
+- ensure text contrast remains strong and readable
+- keep white text/icons readable on #151226
+- adjust hover/active states where needed
+- make sure borders and shadows still look polished
+- avoid muddy or low-contrast dark-on-dark combinations
+
+6. Clean-up requirement
+After updating:
+- remove duplicate outdated purple tokens if they are no longer needed
+- consolidate color definitions into a single theme source where possible
+- prevent future inconsistencies by reusing tokens instead of hardcoded values
+
+7. Verification
+At the end, provide:
+- a list of all changed files
+- the old purple tokens / classes / values that were replaced
+- the new centralized color tokens introduced or updated
+- any places that were intentionally left unchanged
+- any components that may still need manual visual review
+
+8. Important implementation note
+Do a careful codebase-wide replacement, not a superficial one.
+I want this to cover everything that belongs to the dark purple brand layer, including secondary states and hidden theme references, so the app no longer visually resembles the previous dark purple styling.

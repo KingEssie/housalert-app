@@ -673,6 +673,8 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
   const { toast } = useToast();
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const MAX_PROFILES = 4;
+  const canAdd = profiles.length < MAX_PROFILES;
 
   const deleteMutation = useMutation({
     mutationFn: deleteSearchProfile,
@@ -686,7 +688,33 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
     onSettled: () => setDeletingId(null),
   });
 
-  if (profiles.length === 0) return null;
+  if (profiles.length === 0) {
+    return (
+      <div className="flex flex-col gap-3" data-testid="section-search-profiles-empty">
+        <div className="rounded-[12px] bg-white px-5 py-5" style={{ border: "1px solid rgba(15, 23, 42, 0.04)" }}>
+          <div className="flex items-center gap-3 mb-4">
+            <Search className="w-5 h-5 text-ha-primary flex-shrink-0" />
+            <p className="text-[17px] font-bold text-black flex-1">{t("searchProfiles.sectionTitle")}</p>
+            <span className="text-[13px] font-semibold text-[#0ea5e9] bg-[#e0f2fe] px-2.5 py-0.5 rounded-full">0/{MAX_PROFILES}</span>
+          </div>
+          <div className="flex flex-col items-center text-center py-6 px-4">
+            <div className="w-12 h-12 rounded-full bg-[#e0f2fe] flex items-center justify-center mb-3">
+              <Search className="w-6 h-6 text-[#0ea5e9]" />
+            </div>
+            <p className="text-[16px] font-bold text-black mb-1" data-testid="text-empty-title">{t("searchProfiles.emptyTitle")}</p>
+            <p className="text-[14px] text-[#4B5563] mb-4" data-testid="text-empty-subtitle">{t("searchProfiles.emptySubtitle")}</p>
+            <button
+              onClick={() => navigate("/dashboard/searches/new")}
+              className="px-5 py-2.5 rounded-full bg-ha-primary text-white font-semibold text-[15px] hover:opacity-90 transition-opacity"
+              data-testid="button-create-first-profile"
+            >
+              {t("searchProfiles.createFirst")}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -695,13 +723,14 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
           <div className="flex items-center gap-3 mb-4">
             <Search className="w-5 h-5 text-ha-primary flex-shrink-0" />
             <p className="text-[17px] font-bold text-black flex-1">{t("searchProfiles.sectionTitle")}</p>
-            <span className="text-[13px] font-semibold text-[#0ea5e9] bg-[#e0f2fe] px-2.5 py-0.5 rounded-full">{profiles.length}/{4}</span>
+            <span className="text-[13px] font-semibold text-[#0ea5e9] bg-[#e0f2fe] px-2.5 py-0.5 rounded-full">{profiles.length}/{MAX_PROFILES}</span>
           </div>
           <div className="flex flex-col gap-2">
             {profiles.map((p) => (
               <div
                 key={p.id}
-                className="flex items-center gap-3 py-3.5 px-4 rounded-[10px] bg-[#F3F3F5]"
+                className="flex items-center gap-3 py-3.5 px-4 rounded-[10px] bg-[#F3F3F5] cursor-pointer hover:bg-[#EBEBED] transition-colors"
+                onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
                 data-testid={`card-search-profile-${p.id}`}
               >
                 <span className="w-2.5 h-2.5 rounded-full bg-[#34d399] flex-shrink-0" />
@@ -716,7 +745,8 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button
-                      className="w-9 h-9 rounded-full flex items-center justify-center text-gray-300 hover:bg-[#EBEBED] transition-colors flex-shrink-0"
+                      onClick={(e) => e.stopPropagation()}
+                      className="w-9 h-9 rounded-full flex items-center justify-center text-gray-300 hover:bg-[#DDDDE0] transition-colors flex-shrink-0"
                       data-testid={`button-menu-${p.id}`}
                     >
                       <MoreVertical className="w-[18px] h-[18px]" />
@@ -744,6 +774,19 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
               </div>
             ))}
           </div>
+          {canAdd ? (
+            <button
+              onClick={() => navigate("/dashboard/searches/new")}
+              className="w-full mt-3 py-3 rounded-[10px] border-2 border-dashed border-[#D1D5DB] text-[15px] font-semibold text-ha-primary hover:border-ha-primary hover:bg-[#f0f9ff] transition-colors"
+              data-testid="button-add-search-profile"
+            >
+              {t("searchProfiles.addProfile")}
+            </button>
+          ) : (
+            <p className="mt-3 text-[13px] text-[#6B7280] text-center" data-testid="text-max-profiles-reached">
+              {t("searchProfiles.maxReached")}
+            </p>
+          )}
         </div>
       </div>
       {confirmDeleteId && (
@@ -808,7 +851,7 @@ function HomeAccountCompletionCard({ accessToken, navigate }: { accessToken: str
     { id: "push", label: t("activation.notificationsEnabled"), completed: status.notificationsEnabled, action: () => navigate("/settings/preferences") },
     { id: "letter", label: t("strengthTask.applicationTemplate"), completed: getStrengthTask("application_template")?.completed ?? false, action: () => navigate("/application-letter") },
     { id: "buddy", label: t("strengthTask.searchBuddy"), completed: getStrengthTask("search_buddy")?.completed ?? false, action: () => navigate("/profile/edit/search_buddy_email") },
-    { id: "search", label: t("activation.profileCreated"), completed: status.profileCreated, action: () => navigate("/onboarding/city") },
+    { id: "search", label: t("activation.profileCreated"), completed: status.profileCreated, action: () => navigate("/dashboard/searches/new") },
   ];
 
   return (
@@ -884,7 +927,7 @@ function ProfileAccountCompletionCard({ navigate }: { navigate: (path: string) =
     { id: "push", label: t("activation.notificationsEnabled"), completed: status?.notificationsEnabled ?? false, action: () => navigate("/settings/preferences") },
     { id: "letter", label: t("strengthTask.applicationTemplate"), completed: getStrengthTask("application_template")?.completed ?? false, action: () => navigate("/application-letter") },
     { id: "buddy", label: t("strengthTask.searchBuddy"), completed: getStrengthTask("search_buddy")?.completed ?? false, action: () => navigate("/profile/edit/search_buddy_email") },
-    { id: "search", label: t("activation.profileCreated"), completed: status?.profileCreated ?? false, action: () => navigate("/onboarding/city") },
+    { id: "search", label: t("activation.profileCreated"), completed: status?.profileCreated ?? false, action: () => navigate("/dashboard/searches/new") },
   ];
 
   return (
@@ -951,8 +994,6 @@ function HomeTab({
     enabled: !!accessToken,
   });
   const firstName = profileDataQuery.data?.first_name || null;
-  const hasProfiles = profiles.length > 0;
-
   const [referralModalOpen, setReferralModalOpen] = useState(false);
 
   const { data: referralData, isLoading: referralLoading } = useQuery<{
@@ -983,16 +1024,7 @@ function HomeTab({
       </div>
       <div className="flex flex-col gap-4 px-6">
 
-      {!hasProfiles && (
-        <EmptyState
-          illustration={EMPTY_STATE_IMAGES.noMatches}
-          title={t("home.noProfileTitle")}
-          description={t("home.noProfileDesc")}
-          ctaLabel={t("home.createProfile")}
-          onCtaClick={() => navigate("/onboarding/city")}
-          testId="hero-empty"
-        />
-      )}
+      <SearchProfilesSection profiles={profiles} navigate={navigate} />
 
       <HomeAccountCompletionCard accessToken={accessToken} navigate={navigate} />
       <HomeTipsCompletionCard navigate={navigate} />
@@ -1019,9 +1051,6 @@ function HomeTab({
       )}
 
 
-      {profiles.length > 0 && (
-        <SearchProfilesSection profiles={profiles} navigate={navigate} />
-      )}
 
       <div className="rounded-[12px] bg-white px-5 py-5" style={{ border: "1px solid rgba(15, 23, 42, 0.04)" }}>
         <button

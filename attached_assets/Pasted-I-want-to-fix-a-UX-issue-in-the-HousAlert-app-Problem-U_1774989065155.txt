@@ -1,0 +1,60 @@
+I want to fix a UX issue in the HousAlert app.
+
+Problem:
+Users can see their existing search profile on the home screen, but there is no clear button to create an additional search profile. This is confusing, especially because the UI shows a counter like 1/4, which implies multiple profiles are allowed.
+
+Goal:
+Add a clear and prominent “create new search profile” CTA on the home screen and on the search profiles page.
+
+Requirements:
+
+1. Home screen search profiles card
+- Keep the existing header with icon, title, and profile count badge (example: 1/4).
+- Show the user’s existing search profiles in compact cards.
+- If the user has fewer than the allowed maximum number of profiles, show a prominent CTA at the bottom of the card:
+  “+ Zoekprofiel toevoegen”
+- This CTA must navigate directly to the create-search-profile flow.
+- If the user already reached the max number of profiles, hide the CTA and optionally show a subtle message like:
+  “Je hebt het maximale aantal zoekprofielen bereikt.”
+
+2. Empty state
+- If the user has zero search profiles, replace the list with a clean empty state:
+  Title: “Maak je eerste zoekprofiel aan”
+  Subtitle: “Ontvang matches voor stad, prijs en woonwensen.”
+  Primary button: “Zoekprofiel aanmaken”
+- This button must also navigate to the create-search-profile flow.
+
+3. Search profiles overview page
+- Add a clear “+” action in the header or a large button at the bottom:
+  “+ Nieuw zoekprofiel”
+- This must also navigate to the same create-search-profile route.
+
+4. Interaction improvements
+- Make each existing search profile card clickable to edit/view that profile.
+- Keep the create button visually distinct from the profile cards.
+- Ensure all buttons are mobile-friendly with enough tap area.
+
+5. Styling direction
+- Keep the current HousAlert visual style.
+- Use a clean, modern, minimal card layout inspired by top-tier rental apps.
+- Do NOT copy another brand literally; instead, aim for:
+  - strong hierarchy
+  - soft card backgrounds
+  - clear CTA contrast
+  - minimal clutter
+  - polished mobile-first spacing
+
+6. Technical requirements
+- Reuse existing components where possible.
+- Do not break current profile rendering.
+- Verify that the create route exists and is connected correctly.
+- If the create route is missing or broken, fix the routing and wiring.
+- Add any missing conditional rendering logic for:
+  - zero profiles
+  - 1+ profiles but below max
+  - max reached
+
+7. Output
+- Implement the UI changes
+- Show me which files were changed
+- Briefly explain the route and state logic

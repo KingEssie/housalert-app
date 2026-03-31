@@ -1988,6 +1988,11 @@ export const de: Record<string, any> = {
     max: "max",
     min: "min",
     bedrooms: "Zimmer",
+    addProfile: "+ Suchprofil hinzufügen",
+    maxReached: "Du hast die maximale Anzahl an Suchprofilen erreicht.",
+    emptyTitle: "Erstelle dein erstes Suchprofil",
+    emptySubtitle: "Erhalte Matches für Stadt, Preis und Wohnwünsche.",
+    createFirst: "Suchprofil erstellen",
   },
 
   onboardingFlow: {

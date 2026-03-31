@@ -2034,6 +2034,11 @@ export const nl: Record<string, any> = {
     max: "max",
     min: "min",
     bedrooms: "slaapkamers",
+    addProfile: "+ Zoekprofiel toevoegen",
+    maxReached: "Je hebt het maximale aantal zoekprofielen bereikt.",
+    emptyTitle: "Maak je eerste zoekprofiel aan",
+    emptySubtitle: "Ontvang matches voor stad, prijs en woonwensen.",
+    createFirst: "Zoekprofiel aanmaken",
   },
 
   funnel: {

@@ -1302,6 +1302,11 @@ export const en: Record<string, any> = {
     max: "max",
     min: "min",
     bedrooms: "bedrooms",
+    addProfile: "+ Add search profile",
+    maxReached: "You've reached the maximum number of search profiles.",
+    emptyTitle: "Create your first search profile",
+    emptySubtitle: "Get matches for city, price and housing preferences.",
+    createFirst: "Create search profile",
   },
 
   funnel: {
