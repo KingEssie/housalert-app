@@ -297,7 +297,7 @@ function ProfileCard({
             <h3 className="text-[15px] text-title text-[#000] line-clamp-1 flex-1" data-testid={`text-profile-city-${profile.id}`}>
               {getProfileTitle(profile, t, locale)}
             </h3>
-            <span className="text-[10px] font-medium text-green-500 bg-green-500/10 px-2 py-0.5 rounded-full flex-shrink-0" data-testid={`badge-status-${profile.id}`}>
+            <span className="text-[10px] font-medium text-ha-success bg-ha-success/10 px-2 py-0.5 rounded-full flex-shrink-0" data-testid={`badge-status-${profile.id}`}>
               {t("common.active")}
             </span>
           </div>
@@ -733,7 +733,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
                 onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
                 data-testid={`card-search-profile-${p.id}`}
               >
-                <span className="w-2.5 h-2.5 rounded-full bg-ha-status-green flex-shrink-0" />
+                <span className="w-2.5 h-2.5 rounded-full bg-ha-success flex-shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="text-[16px] font-bold text-black line-clamp-1" data-testid={`text-profile-title-${p.id}`}>
                     {getProfileTitle(p, t, locale)}

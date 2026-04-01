@@ -181,7 +181,7 @@ export default function TipsFlowPage() {
         <div className="max-w-[480px] mx-auto px-4 pb-3">
           <div className="w-full h-[6px] rounded-full bg-gray-100 overflow-hidden">
             <div
-              className="h-full rounded-full bg-[#22c55e] transition-all duration-500"
+              className="h-full rounded-full bg-ha-success transition-all duration-500"
               style={{ width: `${progressPercent}%` }}
               data-testid="progress-bar-fill"
             />
@@ -190,7 +190,7 @@ export default function TipsFlowPage() {
             <span className="text-[12px] text-ha-text-muted">
               Stap {currentStep + 1} van {STEPS.length}
             </span>
-            <span className="text-[12px] font-semibold text-[#22c55e]">
+            <span className="text-[12px] font-semibold text-ha-success">
               {progressPercent}% voltooid
             </span>
           </div>
@@ -222,7 +222,7 @@ export default function TipsFlowPage() {
                 <ul className="space-y-1.5">
                   {section.items.map((item, iIdx) => (
                     <li key={iIdx} className="flex items-start gap-2 text-[14px] text-[#374151] leading-relaxed">
-                      <span className="text-[#22c55e] mt-0.5 flex-shrink-0">•</span>
+                      <span className="text-ha-success mt-0.5 flex-shrink-0">•</span>
                       {item}
                     </li>
                   ))}
@@ -239,9 +239,9 @@ export default function TipsFlowPage() {
             onClick={handleToggleCheck}
             className="w-full h-[48px] rounded-[--ha-btn-radius] flex items-center justify-center gap-2 text-[15px] font-medium transition-colors active:scale-[0.98]"
             style={{
-              background: isChecked ? "rgba(34, 197, 94, 0.08)" : "#F3F4F6",
-              color: isChecked ? "#22c55e" : "#374151",
-              border: isChecked ? "1px solid rgba(34, 197, 94, 0.3)" : "1px solid transparent",
+              background: isChecked ? "rgb(var(--ha-success) / 0.08)" : "#F3F4F6",
+              color: isChecked ? "rgb(var(--ha-success))" : "#374151",
+              border: isChecked ? "1px solid rgb(var(--ha-success) / 0.3)" : "1px solid transparent",
             }}
             data-testid="button-mark-complete"
           >

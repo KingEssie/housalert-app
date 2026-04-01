@@ -111,8 +111,8 @@ export default function ResetPasswordPage() {
   if (success) {
     return (
       <div className="h-[100dvh] flex flex-col items-center justify-center px-8 text-center" style={{ backgroundColor: "#EBEBF0" }} data-testid="page-reset-success">
-        <div className="w-16 h-16 rounded-full bg-[#F0FDF4] flex items-center justify-center mb-6">
-          <CheckCircle2 className="w-8 h-8 text-green-500" />
+        <div className="w-16 h-16 rounded-full bg-ha-success/10 flex items-center justify-center mb-6">
+          <CheckCircle2 className="w-8 h-8 text-ha-success" />
         </div>
         <h1 className="text-[24px] font-bold text-[#000] tracking-[-0.02em] mb-3" data-testid="text-success-title">
           {t("resetPassword.successTitle")}

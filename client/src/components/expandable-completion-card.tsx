@@ -54,11 +54,11 @@ export function ExpandableCompletionCard({
           <div className="mt-2.5 flex items-center gap-3">
             <div className="flex-1 h-[8px] rounded-full bg-gray-100 overflow-hidden">
               <div
-                className="h-full rounded-full bg-ha-status-green transition-all duration-500"
+                className="h-full rounded-full bg-ha-success transition-all duration-500"
                 style={{ width: `${percentage}%` }}
               />
             </div>
-            <span className="text-[14px] font-semibold text-ha-status-green whitespace-nowrap">
+            <span className="text-[14px] font-semibold text-ha-success whitespace-nowrap">
               {percentage}% {completedLabel}
             </span>
           </div>
@@ -95,7 +95,7 @@ export function ExpandableCompletionCard({
               </span>
               <div className="flex-shrink-0">
                 {step.completed ? (
-                  <div className="w-[22px] h-[22px] rounded-full bg-green-500 flex items-center justify-center">
+                  <div className="w-[22px] h-[22px] rounded-full bg-ha-success flex items-center justify-center">
                     <CheckCircle2 className="w-[14px] h-[14px] text-white" />
                   </div>
                 ) : (

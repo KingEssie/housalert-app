@@ -19,7 +19,7 @@ A mobile-first rental alert application for the German market. Users can sign up
 - **Inputs**: All inputs use `rounded-[--ha-btn-radius]` (10px).
 - **Listing cards**: Unified single-card structure — image on top, white content section below, all inside one `rounded-[--ha-card-radius] overflow-hidden bg-ha-card` wrapper.
 - **Semantic gray tokens**: `text-ha-text-secondary` (#4B5563), `text-ha-text-muted` (#6B7280), `text-ha-icon-secondary` (#9CA3AF), `bg-ha-surface` (skeleton/placeholder bg), `bg-ha-divider` (divider lines), `bg-ha-surface-hover`/`bg-ha-surface-active` (interactive states).
-- **Status tokens**: `ha-status-green` (#34d399), `ha-status-red`, `ha-avatar-purple` (#7C3AED). CSS utilities: `.ha-status-positive`, `.ha-status-negative`.
+- **Status tokens**: `ha-success` (#34d399 / 52 211 153) is the single canonical success green. `ha-status-green` is an alias (same value). `ha-status-red`. `ha-avatar-purple` (#4B3F72 — muted, premium purple). CSS utilities: `.ha-status-positive`, `.ha-status-negative`.
 - **Profile header**: Dark brand `bg-ha-profile-header` (#151226), no avatar, left-aligned name+member since, settings gear button on right. Compact height (pt-8 pb-6), mb-4 below.
 - **Profile tab structure**: Header → progress blocks (complete account + tips) → upgrade CTA (if applicable) → notification toggles → "Einstellungen" button. All menu items moved to `/settings` page.
 - **Settings page** (`/settings`): Contains search profiles, reaction letter, zoekbuddy, HousAlert Plus, personal info, language, privacy, help, terms, invite friends, logout, delete account.

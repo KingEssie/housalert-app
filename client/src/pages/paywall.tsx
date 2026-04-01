@@ -34,7 +34,7 @@ function getPlans(t: (k: string) => string): Plan[] {
       perMonth: "€15,00 " + t("paywall.perMonth"),
       popular: false,
       discountLabel: "-40%",
-      discountColor: "#22c55e",
+      discountColor: "rgb(var(--ha-success))",
     },
     {
       id: "two_month",
@@ -160,7 +160,7 @@ function WebsitePaywall({
                   >
                     <span
                       className="text-[11px] font-bold px-3.5 py-[3px] rounded-full"
-                      style={{ backgroundColor: "#22c55e", color: "#ffffff" }}
+                      style={{ backgroundColor: "rgb(var(--ha-success))", color: "#ffffff" }}
                       data-testid="badge-popular"
                     >
                       Meest gekozen
@@ -183,7 +183,7 @@ function WebsitePaywall({
                         className="w-[22px] h-[22px] rounded-full flex items-center justify-center shrink-0"
                         style={{
                           border: isSelected ? "none" : `1.5px solid ${OBW.chipBorder}`,
-                          backgroundColor: isSelected ? "#22c55e" : "transparent",
+                          backgroundColor: isSelected ? "rgb(var(--ha-success))" : "transparent",
                         }}
                       >
                         {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
@@ -237,7 +237,7 @@ function WebsitePaywall({
           <div className="flex items-start gap-2.5">
             <div
               className="w-[20px] h-[20px] rounded-full flex items-center justify-center shrink-0 mt-[1px]"
-              style={{ backgroundColor: "#22c55e" }}
+              style={{ backgroundColor: "rgb(var(--ha-success))" }}
             >
               <Check className="w-3 h-3 text-white" />
             </div>
@@ -248,7 +248,7 @@ function WebsitePaywall({
           <div className="flex items-start gap-2.5">
             <div
               className="w-[20px] h-[20px] rounded-full flex items-center justify-center shrink-0 mt-[1px]"
-              style={{ backgroundColor: "#22c55e" }}
+              style={{ backgroundColor: "rgb(var(--ha-success))" }}
             >
               <Check className="w-3 h-3 text-white" />
             </div>
@@ -259,7 +259,7 @@ function WebsitePaywall({
           <div className="flex items-start gap-2.5">
             <div
               className="w-[20px] h-[20px] rounded-full flex items-center justify-center shrink-0 mt-[1px]"
-              style={{ backgroundColor: "#22c55e" }}
+              style={{ backgroundColor: "rgb(var(--ha-success))" }}
             >
               <Check className="w-3 h-3 text-white" />
             </div>
@@ -419,8 +419,8 @@ export default function PaywallPage() {
         <div className="space-y-4 mb-8">
           {BENEFIT_KEYS.map((b, i) => (
             <div key={i} className="flex items-start gap-3" data-testid={`paywall-benefit-${i}`}>
-              <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgba(34,197,94,0.15)" }}>
-                <Check className="w-3.5 h-3.5 text-green-500" />
+              <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgb(var(--ha-success) / 0.15)" }}>
+                <Check className="w-3.5 h-3.5 text-ha-success" />
               </div>
               <div>
                 <p className="text-[15px] font-semibold" style={{ color: TEXT_PRIMARY }}>{t(b.titleKey)}</p>

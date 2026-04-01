@@ -64,7 +64,7 @@ export default function SubscriptionDetailPage() {
     if (subscription?.isExpired) return "bg-red-100 text-red-600";
     if (isCanceled && subscription?.isActive) return "bg-amber-100 text-amber-600";
     if (subscription?.isTrial) return "bg-ha-primary/15 text-ha-primary";
-    return "bg-green-100 text-green-600";
+    return "bg-ha-success/10 text-ha-success";
   }
 
   const startDate = subscription?.created_at || null;

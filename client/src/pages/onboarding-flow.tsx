@@ -534,7 +534,7 @@ function SearchBuddyStep({
 
       <div className="bg-ha-card rounded-[6px] border border-ha-card-border p-5 mb-6">
         <div className="pb-4 mb-4 border-b border-ha-card-border">
-          <p className="text-[13px] font-semibold mb-2.5" style={{ color: "rgb(34,197,94)" }}>
+          <p className="text-[13px] font-semibold mb-2.5" style={{ color: "rgb(var(--ha-success))" }}>
             {t("onboardingFlow.searchBuddy.allowed")}
           </p>
           <div className="space-y-2.5">
@@ -544,7 +544,7 @@ function SearchBuddyStep({
               t("onboardingFlow.searchBuddy.canApply"),
             ].map((text, i) => (
               <div key={i} className="flex items-center gap-2.5">
-                <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                <Check className="w-4 h-4 text-ha-success flex-shrink-0" />
                 <span className="text-[13px]" style={{ color: TEXT_PRIMARY }}>{text}</span>
               </div>
             ))}
@@ -569,9 +569,9 @@ function SearchBuddyStep({
       </div>
 
       {invited ? (
-        <div className="bg-green-50 border border-green-200 rounded-[6px] px-4 py-3.5 mb-6 flex items-center gap-2.5">
-          <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
-          <span className="text-[14px] font-medium text-green-700">{t("onboardingFlow.searchBuddy.invited")}</span>
+        <div className="bg-ha-success/5 border border-ha-success/20 rounded-[6px] px-4 py-3.5 mb-6 flex items-center gap-2.5">
+          <CheckCircle2 className="w-5 h-5 text-ha-success flex-shrink-0" />
+          <span className="text-[14px] font-medium text-ha-success">{t("onboardingFlow.searchBuddy.invited")}</span>
         </div>
       ) : (
         <div className="flex gap-2 mb-6">
@@ -634,17 +634,17 @@ function PushTestStep({
             {t("onboardingFlow.pushTest.subtitle")}
           </p>
           <div className="flex-1 flex flex-col items-center justify-center">
-            <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: "rgba(34,197,94,0.1)" }}>
-              <BellRing className="w-8 h-8 text-green-500" />
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: "rgb(var(--ha-success) / 0.1)" }}>
+              <BellRing className="w-8 h-8 text-ha-success" />
             </div>
 
-            <div className="bg-green-50 border border-green-200 rounded-[6px] px-5 py-4 w-full flex items-start gap-3">
-              <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+            <div className="bg-ha-success/5 border border-ha-success/20 rounded-[6px] px-5 py-4 w-full flex items-start gap-3">
+              <CheckCircle2 className="w-5 h-5 text-ha-success flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-[14px] font-semibold mb-0.5 text-green-800">
+                <p className="text-[14px] font-semibold mb-0.5 text-ha-success">
                   {t("onboardingFlow.pushTest.infoTitle")}
                 </p>
-                <p className="text-[13px] text-green-700 leading-snug">
+                <p className="text-[13px] text-ha-success leading-snug">
                   {t("onboardingFlow.pushTest.infoText")}
                 </p>
               </div>
@@ -714,8 +714,8 @@ function SuccessStep({
   return (
     <>
       <div className="flex-1 flex flex-col items-center justify-center text-center">
-        <div className="w-20 h-20 rounded-full flex items-center justify-center mb-6 animate-scale-in" style={{ backgroundColor: "rgba(34,197,94,0.12)" }}>
-          <CheckCircle2 className="w-10 h-10 text-green-500" />
+        <div className="w-20 h-20 rounded-full flex items-center justify-center mb-6 animate-scale-in" style={{ backgroundColor: "rgb(var(--ha-success) / 0.12)" }}>
+          <CheckCircle2 className="w-10 h-10 text-ha-success" />
         </div>
         <h1 className="text-[28px] font-extrabold tracking-[-0.02em] mb-2" style={{ color: TEXT_PRIMARY }} data-testid="text-success-title">
           {t("onboardingFlow.success.title")}
@@ -727,8 +727,8 @@ function SuccessStep({
         <div className="w-full space-y-3">
           {points.map((p, i) => (
             <div key={i} className="flex items-center gap-4 bg-ha-card rounded-[6px] border border-ha-card-border px-5 py-4">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(34,197,94,0.1)" }}>
-                <p.icon className="w-5 h-5 text-green-500" />
+              <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgb(var(--ha-success) / 0.1)" }}>
+                <p.icon className="w-5 h-5 text-ha-success" />
               </div>
               <span className="text-[14px] font-medium text-left" style={{ color: TEXT_PRIMARY }}>{p.text}</span>
             </div>

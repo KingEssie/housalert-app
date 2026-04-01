@@ -57,7 +57,7 @@ function getPlans(t: (k: string) => string): Plan[] {
       perMonth: "€15,00 " + t("paywall.perMonth"),
       popular: false,
       discountLabel: "-40%",
-      discountColor: "#22c55e",
+      discountColor: "rgb(var(--ha-success))",
     },
     {
       id: "two_month",
@@ -205,8 +205,8 @@ function PaywallStep({ onSelectPlan, onSkip, t }: {
       <div className="space-y-4 mb-8">
         {BENEFIT_KEYS.map((b, i) => (
           <div key={i} className="flex items-start gap-3" data-testid={`paywall-benefit-${i}`}>
-            <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgba(34,197,94,0.15)" }}>
-              <Check className="w-3.5 h-3.5 text-green-500" />
+            <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgb(var(--ha-success) / 0.15)" }}>
+              <Check className="w-3.5 h-3.5 text-ha-success" />
             </div>
             <div>
               <p className="text-[15px] font-semibold" style={{ color: TEXT_PRIMARY }}>{t(b.titleKey)}</p>
@@ -481,11 +481,11 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
 
       <div className="rounded-[6px] bg-white p-5" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         {pushState === "granted" && (
-          <div className="rounded-[6px] px-4 py-3 mb-5 flex items-start gap-3" style={{ backgroundColor: "#F0FDF4", border: "1px solid #BBF7D0" }}>
-            <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+          <div className="rounded-[6px] px-4 py-3 mb-5 flex items-start gap-3" style={{ backgroundColor: "rgb(var(--ha-success) / 0.08)", border: "1px solid rgb(var(--ha-success) / 0.25)" }}>
+            <CheckCircle2 className="w-5 h-5 text-ha-success flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-[14px] font-semibold text-green-700 mb-0.5">{t("onboardingFlow.pushTest.infoTitle")}</p>
-              <p className="text-[13px] text-green-600 leading-snug">{t("onboardingFlow.pushTest.infoText")}</p>
+              <p className="text-[14px] font-semibold text-ha-success mb-0.5">{t("onboardingFlow.pushTest.infoTitle")}</p>
+              <p className="text-[13px] text-ha-success leading-snug">{t("onboardingFlow.pushTest.infoText")}</p>
             </div>
           </div>
         )}
@@ -522,7 +522,7 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
               </div>
             </div>
             <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[200px] rounded-[8px] bg-white px-3 py-2.5 flex items-center gap-2.5" style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.15)" }}>
-              <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: pushState === "granted" ? "#22c55e" : BRAND }}>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: pushState === "granted" ? "rgb(var(--ha-success))" : BRAND }}>
                 {pushState === "granted" ? (
                   <BellRing className="w-4 h-4 text-white" />
                 ) : pushState === "requesting" ? (
@@ -918,7 +918,7 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
             t("onboardingFlow.searchBuddy.canApply"),
           ].map((text, i) => (
             <div key={i} className="flex items-center gap-2.5">
-              <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+              <CheckCircle2 className="w-5 h-5 text-ha-success flex-shrink-0" />
               <span className="text-[14px] text-[#111]">{text}</span>
             </div>
           ))}
@@ -937,9 +937,9 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
       </div>
 
       {invited && (
-        <div className="rounded-[6px] px-4 py-3.5 mt-4 flex items-center gap-2.5" style={{ backgroundColor: "#F0FDF4", border: "1px solid #BBF7D0" }}>
-          <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
-          <span className="text-[14px] font-medium text-green-700">{t("onboardingFlow.searchBuddy.invited")}</span>
+        <div className="rounded-[6px] px-4 py-3.5 mt-4 flex items-center gap-2.5" style={{ backgroundColor: "rgb(var(--ha-success) / 0.08)", border: "1px solid rgb(var(--ha-success) / 0.25)" }}>
+          <CheckCircle2 className="w-5 h-5 text-ha-success flex-shrink-0" />
+          <span className="text-[14px] font-medium text-ha-success">{t("onboardingFlow.searchBuddy.invited")}</span>
         </div>
       )}
 

@@ -1,0 +1,193 @@
+I want to do Phase 2 of the HousAlert light-mode UI polish.
+
+Phase 1 already improved the visual foundation.
+Now Phase 2 must focus on the Home screen, status cards, and the reusable listing card design.
+
+IMPORTANT
+This phase should create a polished, premium mobile UI for the most visible parts of the app.
+Do not do a superficial styling pass.
+Refine structure, spacing, hierarchy, status handling, and reusable listing card composition.
+
+==================================================
+PHASE 2 TASKS
+==================================================
+
+1. HOME SCREEN POLISH
+Refine the Home screen so it feels cleaner, more premium, and more intentional.
+
+Requirements:
+- improve visual hierarchy between sections
+- ensure spacing between widgets/cards feels balanced
+- keep the screen mobile-first and clean
+- avoid a cluttered dashboard feel
+- use the Phase 1 foundation (spacing, color tokens, radius, surface styles)
+
+Sections that must be improved:
+- Zoekprofielen
+- Maak je account af
+- Vergroot je kansen met deze tips
+- Reactiebrief
+- Zoekbuddy
+
+The Home screen should feel like one cohesive product, not separate unrelated cards.
+
+2. SEARCH PROFILE CARD POLISH
+Improve the “Zoekprofielen” card without removing existing functionality.
+
+Requirements:
+- keep the header with icon, title, and count badge
+- keep the existing search profile visible
+- improve spacing/alignment inside the inner profile card
+- ensure the status dot, title, subtitle, and action menu feel aligned and intentional
+- keep the “+ Zoekprofiel toevoegen” CTA visible if below max
+- make this CTA feel more premium and deliberate
+- the add button should be clearly tappable and consistent with the app style
+- preserve logic for max count / existing profiles / empty states
+
+3. REACTIEBRIEF STATUS CARD
+Redesign the Reactiebrief card to clearly show status.
+
+Desired behavior:
+- if reaction letter exists:
+  show green check icon + green text: “Reactiebrief ingesteld”
+- if no reaction letter exists:
+  show red cross icon + red text: “Nog geen reactiebrief”
+
+Requirements:
+- the status line should be visually clear and compact
+- keep the card clean and premium
+- preserve main action on the right side where relevant (such as Genereren / Beheren / Openen depending on current logic)
+- hierarchy should be:
+  title
+  status line
+  optional supporting text if useful
+- do not make the card overly busy
+
+4. SEARCH BUDDY STATUS CARD
+Redesign the Zoekbuddy card in the same system as Reactiebrief.
+
+Desired behavior:
+- if search buddy exists:
+  show green check icon + green text: “Zoekbuddy ingesteld”
+- if no search buddy exists:
+  show red cross icon + red text: “Nog geen zoekbuddy”
+
+Requirements:
+- same status style language as Reactiebrief
+- preserve supporting explanatory copy below
+- preserve/manage right-side action where relevant (such as Beheren / Toevoegen / Openen based on current logic)
+- keep layout clean and readable
+
+5. STANDARDIZE STATUS CARD PATTERN
+Reactiebrief and Zoekbuddy should feel like siblings in the same design system.
+
+Make sure both cards share:
+- same internal spacing rhythm
+- same status line style
+- same title/action structure
+- same icon treatment
+- same text hierarchy
+- same card quality level
+
+6. REDESIGN REUSABLE LISTING CARD
+Redesign the main property/listing card to feel much more premium and modern, inspired by the provided reference direction.
+
+Important:
+Do NOT literally clone another brand.
+Use the reference as structural inspiration only.
+
+Design direction:
+- large clean image on top
+- rounded corners similar to the reference
+- stronger premium card feel
+- cleaner spacing and hierarchy
+- property card should feel desirable, not just functional
+- image and content should feel like one coherent card
+
+Keep the favorite heart behavior and favorite action.
+
+7. UPDATE LISTING CARD CONTENT MAPPING
+Re-map the listing card content exactly like this:
+
+A. Main title line
+- show listing title (example: Business Day)
+
+B. Address line
+- show the address here
+
+C. Meta line under address
+- show: “X tijd geleden — website.com”
+Examples:
+- “6 dagen geleden — vastgoednederland.nl”
+- “2 uur geleden — pararius.nl”
+
+D. Bottom feature row (3 items)
+Use this order:
+1. Place/city
+2. Number of bedrooms
+3. Square meters
+
+Do not show the old information structure if it conflicts with this.
+
+8. LISTING CARD VISUAL DETAILS
+The card should include:
+- image top section with rounded top corners
+- content section with clean padding
+- rounded overall card corners similar to the visual reference
+- balanced spacing between image, text, and feature row
+- elegant dividers only if they improve clarity
+- readable secondary text
+- premium-looking info row
+
+Requirements:
+- keep the heart/favorite behavior
+- ensure the heart placement still works visually
+- avoid cluttering the image with too many overlays unless already needed
+- maintain responsive behavior on mobile
+
+9. REUSABLE CARD ARCHITECTURE
+Do not hardcode this as a one-off just for one screen.
+Refactor or create a reusable listing card component/variant that can later also support:
+- matches
+- favorites
+- responded/applied states in Phase 3
+
+10. KEEP FUNCTIONALITY SAFE
+Do not break:
+- navigation
+- favorite toggling
+- listing click behavior
+- search profile interactions
+- existing data loading
+- conditional rendering logic
+
+==================================================
+DELIVERABLES AFTER IMPLEMENTATION
+==================================================
+
+After finishing, show me:
+1. which files were changed
+2. how the Reactiebrief state logic works
+3. how the Zoekbuddy state logic works
+4. which reusable status card styles/components were introduced
+5. how the listing card was refactored
+6. which screens now use the updated listing card
+7. anything intentionally left for Phase 3
+
+==================================================
+IMPORTANT DESIGN DIRECTION
+==================================================
+
+The end result should feel:
+- cleaner
+- more premium
+- more consistent
+- less boxy and less utilitarian
+- more like a polished consumer rental app
+
+Prioritize:
+- hierarchy
+- spacing
+- card beauty
+- clear state communication
+- mobile-first usability

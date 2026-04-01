@@ -83,8 +83,8 @@ export default function ChangePasswordPage() {
         <div className="max-w-xl mx-auto p-4 pb-8">
           <div className="app-card text-center">
             <div className="flex items-center justify-center mb-5">
-              <div className="w-14 h-14 rounded-full bg-[#F0FDF4] flex items-center justify-center">
-                <CheckCircle2 className="w-7 h-7 text-green-500" />
+              <div className="w-14 h-14 rounded-full bg-ha-success/10 flex items-center justify-center">
+                <CheckCircle2 className="w-7 h-7 text-ha-success" />
               </div>
             </div>
             <h2 className="text-[20px] font-bold text-[#000] mb-2" data-testid="text-success-title">
