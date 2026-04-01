@@ -866,8 +866,9 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
 type FavSubTab = "favorieten" | "gereageerd";
 
 function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [, navigate] = useLocation();
+  const { toast } = useToast();
   const [favSubTab, setFavSubTab] = useState<FavSubTab>("favorieten");
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const [favoriteListings, setFavoriteListings] = useState<ApiMatch[]>([]);
@@ -961,7 +962,37 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
     [accessToken, favoriteIds, fetchFavoriteListings],
   );
 
-  const refreshStatuses = useCallback(() => {}, []);
+  const removeApplied = useCallback(async (listingId: string) => {
+    if (!accessToken) return;
+    const prevListings = appliedListings;
+    setAppliedListings((prev) => prev.filter((l) => l.listing_id !== listingId));
+    const localApplied = safeGetSet(MATCH_APPLIED_KEY);
+    localApplied.delete(listingId);
+    safeSetSet(MATCH_APPLIED_KEY, localApplied);
+    try {
+      const res = await apiFetch(`/api/matches/${listingId}/applied`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ applied: false }),
+      });
+      if (!res.ok) throw new Error("request failed");
+      toast({ title: t("matches.responseRemoved") });
+    } catch {
+      setAppliedListings(prevListings);
+      localApplied.add(listingId);
+      safeSetSet(MATCH_APPLIED_KEY, localApplied);
+      fetchAppliedListings();
+    }
+  }, [accessToken, appliedListings, fetchAppliedListings, t, toast]);
+
+  function formatRespondedDate(match: ApiMatch): string {
+    const dateStr = match.matched_at || match.first_seen_at;
+    if (!dateStr) return "";
+    const d = new Date(dateStr);
+    const intlLocale = locale === "de" ? "de-DE" : locale === "en" ? "en-GB" : "nl-NL";
+    const formatted = d.toLocaleDateString(intlLocale, { day: "numeric", month: "long", year: "numeric" });
+    return t("matches.respondedOn", { date: formatted });
+  }
 
   const currentListings = favSubTab === "favorieten" ? favoriteListings : appliedListings;
 
@@ -969,7 +1000,7 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
     <div className="flex flex-col pb-8">
       <div className="sticky top-0 z-10 bg-[#EBEBF0] pt-6 pb-0 px-4">
         <h1 className="text-page-title mb-4">{t("nav.favorites")}</h1>
-        <div className="flex gap-2.5 pb-4" data-testid="fav-sub-tabs">
+        <div className="flex gap-0 border-b border-ha-divider pb-0" data-testid="fav-sub-tabs">
           {([
             { key: "favorieten" as FavSubTab, label: t("nav.favorites") },
             { key: "gereageerd" as FavSubTab, label: t("matches.subtabs.applied") },
@@ -979,10 +1010,10 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
               <button
                 key={key}
                 onClick={() => setFavSubTab(key)}
-                className={`px-5 py-2.5 rounded-[--ha-btn-radius] text-[14px] font-medium transition-all ${
+                className={`px-5 py-3 text-[14px] font-semibold transition-all border-b-2 -mb-px ${
                   isActive
-                    ? "bg-[#3b82f6] text-white"
-                    : "bg-white text-ha-text-secondary"
+                    ? "border-ha-primary text-ha-primary"
+                    : "border-transparent text-ha-text-muted hover:text-ha-text-secondary"
                 }`}
                 data-testid={`tab-fav-${key}`}
               >
@@ -992,12 +1023,12 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
           })}
         </div>
       </div>
-      <div className="px-4 flex flex-col gap-8 mt-4">
+      <div className="px-4 flex flex-col gap-8 mt-6">
         {isLoading && favSubTab === "favorieten" ? (
           <div className="flex flex-col gap-6">
             {[1, 2].map((i) => (
               <div key={i} className="animate-pulse">
-                <div className="rounded-[6px] bg-white" style={{ aspectRatio: "4/3" }} />
+                <div className="rounded-[--ha-card-radius] bg-white" style={{ aspectRatio: "4/3" }} />
                 <div className="mt-3 flex flex-col gap-2">
                   <div className="h-4 bg-white rounded w-1/3" />
                   <div className="h-4 bg-white rounded w-2/3" />
@@ -1013,7 +1044,7 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
             description={favSubTab === "favorieten" ? t("matches.emptyFavorites.desc") : t("matches.emptyApplied.desc")}
             testId={`empty-${favSubTab}-tab`}
           />
-        ) : (
+        ) : favSubTab === "favorieten" ? (
           <div className="flex flex-col gap-5">
             {currentListings.map((m) => (
               <ListingCardFull
@@ -1023,11 +1054,30 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
                 onToggleFavorite={toggleFavorite}
                 onCardClick={() => {
                   markViewed(m.listing_id);
-                  refreshStatuses();
                   navigate(`/apply/${m.listing_id}`);
                 }}
                 locked={!hasAccess}
               />
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-5">
+            {currentListings.map((m) => (
+              <div key={m.listing_id} data-testid={`card-applied-${m.listing_id}`}>
+                <ListingCardFull
+                  match={m}
+                  isFavorited={favoriteIds.has(m.listing_id)}
+                  onToggleFavorite={toggleFavorite}
+                  onCardClick={() => {
+                    markViewed(m.listing_id);
+                    navigate(`/apply/${m.listing_id}`);
+                  }}
+                  locked={!hasAccess}
+                  respondedLabel={formatRespondedDate(m)}
+                  onRemoveResponse={() => removeApplied(m.listing_id)}
+                  removeResponseLabel={t("matches.removeResponse")}
+                />
+              </div>
             ))}
           </div>
         )}

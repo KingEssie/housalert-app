@@ -1,0 +1,180 @@
+I want to implement Phase 3 of the HousAlert UI polish.
+
+This phase focuses on:
+- Favorites page (Favorieten)
+- Responded listings (Gereageerd)
+- Profile/menu screen restructuring
+
+IMPORTANT:
+This is not a visual tweak only.
+This phase must improve structure, clarity, and product experience.
+
+==================================================
+PART 1 — FAVORITES PAGE WITH TABS
+==================================================
+
+Create a tab-based layout at the top of the Favorites page.
+
+Tabs:
+- Favorieten
+- Gereageerd
+
+Requirements:
+- tabs must be clearly visible at the top
+- active tab must be visually highlighted
+- clean minimal style (white background, subtle underline or indicator)
+- mobile-friendly spacing
+
+Behavior:
+- switching tabs updates content below
+- do not reload entire page unnecessarily
+
+==================================================
+PART 2 — FAVORIETEN TAB
+==================================================
+
+Show all favorited listings using the updated listing card.
+
+Requirements:
+- reuse the same listing card component from Phase 2
+- no redesign needed
+- maintain favorite heart behavior
+
+Empty state:
+If no favorites:
+- show a clean empty state
+- example:
+  “Nog geen favorieten”
+  “Sla woningen op om ze hier terug te vinden”
+
+Keep it minimal and clean.
+
+==================================================
+PART 3 — GEREAGEERD TAB
+==================================================
+
+This is a variation of the listing card.
+
+Each card must show:
+- same base layout as normal listing card
+- plus an extra status layer
+
+Add:
+
+1. Response status line
+- show:
+  “Gereageerd op [datum]”
+- place this clearly within the card (above title or just below image)
+
+2. Remove response action
+- add a clear action:
+  “Reactie verwijderen”
+- this should be clickable
+- place it as a button or inline action (clean, not aggressive)
+
+3. Maintain existing listing info
+- title
+- price
+- location line
+- meta line
+- detail row
+
+4. Visual difference
+- the card should feel slightly different from normal listings
+- but not completely redesigned
+- subtle status indication is enough
+
+Empty state:
+If no responded listings:
+- show:
+  “Je hebt nog niet gereageerd op woningen”
+
+==================================================
+PART 4 — REMOVE RESPONSE FUNCTIONALITY
+==================================================
+
+Implement or connect:
+- “Reactie verwijderen”
+
+Requirements:
+- removes the response state for that listing
+- updates UI immediately
+- moves item out of Gereageerd tab
+- does NOT delete the listing itself
+
+==================================================
+PART 5 — PROFILE / MENU SCREEN RESTRUCTURE
+==================================================
+
+Redesign the profile screen layout.
+
+Current problem:
+- too many separate cards
+- feels fragmented
+
+New structure:
+
+1. Top section
+- avatar (keep purple from Phase 1)
+- name
+- subtitle (e.g. “Lid sinds ...”)
+
+2. Main menu container
+- ONE large white container
+- all menu items inside this container
+
+Menu items:
+- Mijn gegevens
+- Wachtwoord
+- Voorkeuren
+- Abonnement
+- etc.
+
+Requirements:
+- items styled as a clean list
+- each row:
+  icon (left)
+  label
+  arrow (right)
+- subtle dividers between items
+- consistent spacing
+- no separate floating cards per item
+
+3. Visual direction
+- cleaner
+- less clutter
+- more premium
+- closer to modern mobile app settings screens
+
+==================================================
+PART 6 — KEEP CONSISTENCY
+==================================================
+
+Ensure:
+- same spacing system from Phase 1
+- same card style from Phase 2
+- same colors and status styles
+- no random deviations between screens
+
+==================================================
+PART 7 — SAFETY
+==================================================
+
+Do not break:
+- navigation
+- favorites logic
+- response logic
+- user profile data
+- existing routes
+
+==================================================
+OUTPUT
+==================================================
+
+After finishing show:
+1. which files were changed
+2. how tabs were implemented
+3. how responded state is stored and rendered
+4. how “Reactie verwijderen” works
+5. how profile screen layout was refactored
+6. which components were reused vs new

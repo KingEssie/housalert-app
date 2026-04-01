@@ -151,6 +151,9 @@ export const nl: Record<string, any> = {
       title: "Je hebt nog niet gereageerd",
       desc: "Reageer op woningen die je interessant vindt om je kansen te vergroten.",
     },
+    respondedOn: "Gereageerd op {date}",
+    removeResponse: "Reactie verwijderen",
+    responseRemoved: "Reactie verwijderd",
     emptyFavorites: {
       title: "Nog geen favorieten",
       desc: "Tik op het hartje bij een woning om deze als favoriet op te slaan.",

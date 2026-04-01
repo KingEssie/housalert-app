@@ -145,6 +145,9 @@ export const de: Record<string, any> = {
       title: "Du hast noch nicht reagiert",
       desc: "Bewirb dich auf Wohnungen, die dich interessieren, um deine Chancen zu erhöhen.",
     },
+    respondedOn: "Reagiert am {date}",
+    removeResponse: "Reaktion entfernen",
+    responseRemoved: "Reaktion entfernt",
     emptyFavorites: {
       title: "Noch keine Favoriten",
       desc: "Tippe auf das Herz-Symbol bei einer Wohnung, um sie als Favorit zu speichern.",

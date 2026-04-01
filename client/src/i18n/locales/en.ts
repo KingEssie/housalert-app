@@ -127,6 +127,9 @@ export const en: Record<string, any> = {
       title: "You haven't applied yet",
       desc: "Apply to listings you're interested in to increase your chances.",
     },
+    respondedOn: "Responded on {date}",
+    removeResponse: "Remove response",
+    responseRemoved: "Response removed",
     emptyFavorites: {
       title: "No favorites yet",
       desc: "Tap the heart icon on a listing to save it as a favorite.",

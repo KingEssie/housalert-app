@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Heart, ImageIcon, Lock, MapPin, BedDouble, Maximize2 } from "lucide-react";
+import { Heart, ImageIcon, Lock, MapPin, BedDouble, Maximize2, CheckCircle2 } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import type { ApiMatch } from "@/lib/listings";
 
@@ -60,6 +60,9 @@ interface ListingCardFullProps {
   onToggleFavorite: (listingId: string) => void;
   onCardClick: () => void;
   locked?: boolean;
+  respondedLabel?: string;
+  onRemoveResponse?: () => void;
+  removeResponseLabel?: string;
 }
 
 export function ListingCardFull({
@@ -68,6 +71,9 @@ export function ListingCardFull({
   onToggleFavorite,
   onCardClick,
   locked,
+  respondedLabel,
+  onRemoveResponse,
+  removeResponseLabel,
 }: ListingCardFullProps) {
   const [imgError, setImgError] = useState(false);
   const { t, locale } = useTranslation();
@@ -189,6 +195,24 @@ export function ListingCardFull({
             <div className="flex items-center gap-1.5 mt-2.5 text-[13px] text-ha-icon-secondary" data-testid={`lock-indicator-${match.listing_id}`}>
               <Lock className="w-3.5 h-3.5" />
               <span>{t("listing.lockLabel")}</span>
+            </div>
+          )}
+
+          {respondedLabel && (
+            <div className="flex items-center justify-between mt-3 pt-3 border-t border-ha-divider/40">
+              <span className="flex items-center gap-1.5 text-[13px] text-ha-success font-medium" data-testid={`text-responded-${match.listing_id}`}>
+                <CheckCircle2 className="w-4 h-4" />
+                {respondedLabel}
+              </span>
+              {onRemoveResponse && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); onRemoveResponse(); }}
+                  className="text-[13px] text-ha-text-muted hover:text-ha-danger transition-colors"
+                  data-testid={`button-remove-response-${match.listing_id}`}
+                >
+                  {removeResponseLabel}
+                </button>
+              )}
             </div>
           )}
         </div>
