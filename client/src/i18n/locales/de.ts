@@ -24,6 +24,10 @@ export const de: Record<string, any> = {
     expired: "Abgelaufen",
     copied: "Kopiert!",
     germany: "Deutschland",
+    manage: "Verwalten",
+    generate: "Erstellen",
+    add: "Hinzufügen",
+    open: "Öffnen",
   },
 
   nav: {

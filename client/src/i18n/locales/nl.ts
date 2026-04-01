@@ -24,6 +24,10 @@ export const nl: Record<string, any> = {
     expired: "Verlopen",
     copied: "Gekopieerd!",
     germany: "Duitsland",
+    manage: "Beheren",
+    generate: "Genereren",
+    add: "Toevoegen",
+    open: "Openen",
   },
 
   nav: {

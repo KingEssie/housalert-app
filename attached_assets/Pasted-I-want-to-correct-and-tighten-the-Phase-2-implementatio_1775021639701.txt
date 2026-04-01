@@ -1,0 +1,222 @@
+I want to correct and tighten the Phase 2 implementation in my HousAlert app.
+
+The current result is not close enough to the intended design direction yet.
+
+IMPORTANT:
+Do not redo unrelated work.
+This is a targeted correction pass for:
+1. wrong text labels in Reactiebrief / Zoekbuddy
+2. listing card structure, hierarchy, sizing, and layout
+
+==================================================
+PART 1 — FIX WRONG LABEL TEXT
+==================================================
+
+Problem:
+The UI is showing untranslated keys like:
+- common.manage
+- common.add
+
+This is incorrect.
+
+Fix this so the user sees real Dutch labels instead of translation keys.
+
+Requirements:
+- audit the Reactiebrief and Zoekbuddy cards
+- replace raw translation keys with proper rendered labels
+- use the correct action text based on state and current logic
+
+Examples:
+- Beheren
+- Toevoegen
+- Genereren
+- Openen
+
+Do not show any raw i18n keys in the UI.
+
+Also verify there are no similar untranslated keys visible elsewhere on Home.
+
+==================================================
+PART 2 — LISTING CARD MUST MATCH THE INTENDED DESIGN MUCH MORE CLOSELY
+==================================================
+
+The current listing card is still too far from the desired card style.
+
+I want the reusable property/listing card to be redesigned much closer to the provided reference direction:
+- cleaner
+- more premium
+- stronger hierarchy
+- larger and more readable details
+- price in the correct place
+- image and white card integrated elegantly
+- rounded image inside the white card
+- visually closer to the reference card composition
+
+IMPORTANT:
+Do NOT literally clone another brand.
+But structurally and visually, this needs to be much closer to the reference quality and layout.
+
+==================================================
+TARGET CARD STRUCTURE
+==================================================
+
+The listing card should follow this structure:
+
+1. OUTER CARD
+- one white rounded card container
+- soft premium radius
+- balanced padding
+- clean shadow/subtle elevation
+- image and content must feel like one coherent card
+
+2. IMAGE AREA
+- large image at the top
+- image sits inside the white card with rounded corners
+- image corners must be clearly rounded, like the reference
+- keep favorite heart overlay on the image
+- keep the current favorite behavior/functionality
+
+3. CONTENT AREA
+Inside the white card below the image:
+
+ROW 1:
+- left: listing title
+- right: price
+
+Examples:
+- left: Business Day
+- right: €1.500/mnd
+
+Requirements:
+- title must be bold and clearly readable
+- price must be visually strong and clearly placed on the right
+- do NOT place price as a bottom overlay on the image
+- do NOT bury the price in a secondary row
+- this row must feel like the primary information row
+
+ROW 2:
+- full-width address line
+
+ROW 3:
+- full-width meta line:
+  “X tijd geleden — website.nl”
+
+Examples:
+- “6 dagen geleden — vastgoednederland.nl”
+- “20 uur geleden — wg-gesucht.de”
+
+This line should be clearly readable, not tiny, not too faint.
+
+ROW 4:
+- bottom details row with exactly 3 items:
+  1. place/city
+  2. number of bedrooms
+  3. square meters
+
+Use this order only:
+- Plaats
+- Slaapkamers
+- m²
+
+==================================================
+DETAIL ROW REQUIREMENTS
+==================================================
+
+The bottom details row is currently too small and too hard to read.
+
+Fix this by:
+- increasing font size
+- increasing icon size slightly if needed
+- improving spacing between icon and text
+- improving spacing between the 3 detail groups
+- ensuring details are readable at a glance on mobile
+- making the row feel premium and intentionally designed
+
+Do not make these tiny muted crumbs.
+They should be clearly legible.
+
+==================================================
+TYPOGRAPHY / HIERARCHY REQUIREMENTS
+==================================================
+
+Improve text sizing and hierarchy inside the listing card:
+
+- Title: clearly dominant
+- Price: strong and readable
+- Address: secondary but still easy to read
+- Meta line: subtle but clearly legible
+- Bottom details: medium emphasis, not tiny
+
+Avoid:
+- overly small metadata
+- cramped lines
+- weak contrast
+- awkward alignment between title and price
+
+==================================================
+VISUAL DESIGN REQUIREMENTS
+==================================================
+
+The card should feel much closer to the reference in overall quality.
+
+Improve:
+- image-to-content transition
+- internal spacing
+- card radius
+- image radius
+- visual balance
+- premium feel
+- readability
+
+The image should feel like it belongs inside the card, not like a separate block awkwardly attached.
+
+==================================================
+DATA MAPPING REQUIREMENTS
+==================================================
+
+Use this exact content mapping:
+
+- Title = listing title
+- Address line = address
+- Meta line = time since posted — source website
+- Detail 1 = place/city
+- Detail 2 = number of bedrooms
+- Detail 3 = square meters
+- Price = top-right in content row, not overlayed on image
+
+Do not mix this up.
+
+==================================================
+REUSABILITY
+==================================================
+
+Keep the listing card reusable.
+Do not hardcode this only for one page.
+This card component should remain usable later for:
+- matches
+- favorites
+- responded state variants
+
+==================================================
+SAFETY
+==================================================
+
+Do not break:
+- navigation to listing details
+- favorite toggling
+- image rendering
+- data loading
+- responsive layout
+- existing business logic
+
+==================================================
+OUTPUT AFTER IMPLEMENTATION
+==================================================
+
+After finishing, show me:
+1. which files were changed
+2. how the untranslated label issue was fixed
+3. the final text labels used for Reactiebrief and Zoekbuddy actions
+4. how the listing card layout was changed
+5. how title, price, address, meta line, and detail row are now mapped
+6. which screens/components now use the updated card
