@@ -1,0 +1,99 @@
+I want to refine the listing card in my HousAlert app to improve readability, hierarchy, and data correctness.
+
+This is a focused improvement pass. Do not change unrelated parts.
+
+==================================================
+PART 1 — FIX ADDRESS LINE (REMOVE DUPLICATION)
+==================================================
+
+Problem:
+The address line currently shows city/district (e.g. “München, Sendling”), while the city is already shown again in the detail row.
+
+Fix:
+- The address line must ONLY show street name + house number
+- Do NOT repeat city or district here
+- City must ONLY appear in the bottom detail row
+
+Example:
+Correct:
+- Address line: “Baan 34E16”
+- Detail row: “Rotterdam | 1 | 46 m²”
+
+Wrong:
+- “Rotterdam, Centrum” in address AND “Rotterdam” again below
+
+If street + house number is not available:
+- fallback to best available address string WITHOUT duplicating city twice
+
+==================================================
+PART 2 — MAKE DETAIL ROW MUCH MORE PROMINENT
+==================================================
+
+The bottom detail row (place, bedrooms, m²) is currently too weak.
+
+Fix this by:
+
+- increase font size
+- increase font weight (medium or semibold)
+- use a darker color (near black, not light grey)
+- improve spacing between items
+- ensure the row is clearly readable at a glance
+
+Details should feel like important information, not metadata.
+
+==================================================
+PART 3 — IMPROVE ICON STYLE IN DETAIL ROW
+==================================================
+
+Icons are currently too light and weak.
+
+Fix:
+- use darker color (same tone as text or slightly softer)
+- increase icon size slightly
+- increase stroke weight if possible (or use a bolder icon variant)
+- improve spacing between icon and text
+
+Icons should feel:
+- clear
+- readable
+- aligned with text
+- not decorative but functional
+
+==================================================
+PART 4 — KEEP STRUCTURE INTACT
+==================================================
+
+Maintain this structure:
+
+- image (top, rounded)
+- title (left) + price (right)
+- address (street + number)
+- meta line (time — source)
+- detail row (place, bedrooms, m²)
+
+Do NOT move price
+Do NOT change card hierarchy
+
+==================================================
+PART 5 — VISUAL QUALITY
+==================================================
+
+Goal:
+Make the listing card feel closer to a premium rental app.
+
+Check:
+- text contrast
+- spacing balance
+- readability on mobile
+- visual hierarchy
+- consistency with other cards
+
+==================================================
+OUTPUT
+==================================================
+
+After finishing:
+- show what was changed in the listing card component
+- confirm address mapping logic
+- confirm updated font sizes and colors for detail row
+- confirm icon updates
