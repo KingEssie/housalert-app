@@ -9,48 +9,34 @@ import { queryClient } from "@/lib/queryClient";
 import { supabase } from "@/lib/supabase";
 import { useSubscription } from "@/lib/subscription";
 import { SubscriptionGate } from "@/components/subscription-gate";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/i18n";
 import { trackEvent } from "@/lib/track-event";
 import {
   Home,
-  SlidersHorizontal,
   User,
-  Plus,
   Trash2,
   Search,
   Bell,
   LogOut,
   ChevronRight,
-  ChevronDown,
   CheckCircle2,
   AlertCircle,
   Sparkles,
   Crown,
   Eye,
   Send,
-  ImageIcon,
-  Zap,
-  Camera,
   ArrowLeft,
-  Copy,
+  Camera,
   Pencil,
   Users,
-  Globe,
   Rocket,
-  Gift,
   FileText,
-  Phone,
   Check,
   MoreVertical,
   Shield,
   HelpCircle,
-  Loader2,
-  X,
   Heart,
-  Settings,
   Lock,
 } from "lucide-react";
 import { ExpandableCompletionCard, type CompletionStep } from "@/components/expandable-completion-card";
@@ -59,48 +45,13 @@ import TipsPage, { getTipConfig, getTipsReadSet } from "@/pages/tips";
 import { getFlowTipSteps } from "@/pages/tips-flow";
 import { ReferralCodeModal } from "@/components/referral-code-modal";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { StatusCard } from "@/components/status-card";
+import { ListingCardFull, ListingCardMini } from "@/components/listing-card";
 
 const MAX_PROFILES = 4;
 
-function bedroomLabel(min: number, t: (key: string) => string) {
-  if (min === 0) return t("profile.studioPlus");
-  return `${min}+`;
-}
-
-function relativeTime(dateStr: string | null | undefined, t: (key: string, params?: Record<string, string | number>) => string): string {
-  if (!dateStr) return "";
-  const diff = Date.now() - new Date(dateStr).getTime();
-  if (diff < 0) return t("freshness.justNow");
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return t("freshness.justNow");
-  if (mins < 60) return t("freshness.minutesAgo", { n: mins });
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return t("freshness.hoursAgo", { n: hours });
-  const days = Math.floor(hours / 24);
-  return days === 1 ? t("freshness.dayAgo", { n: days }) : t("freshness.daysAgo", { n: days });
-}
-
 type TabKey = "home" | "matches" | "favorieten" | "profiel" | "tips";
 type MatchSubTab = "nieuw" | "bekeken" | "gereageerd" | "favorieten";
-
-const CITY_GRADIENTS: Record<string, string> = {
-  berlin: "from-ha-card to-ha-surface",
-  münchen: "from-ha-card to-ha-surface",
-  hamburg: "from-ha-surface to-ha-card",
-  frankfurt: "from-ha-card to-ha-surface",
-  köln: "from-ha-surface to-ha-card",
-  düsseldorf: "from-ha-card to-ha-surface",
-  stuttgart: "from-ha-surface to-ha-card",
-  default: "from-ha-card to-ha-surface",
-};
-
-function getCityGradient(city: string): string {
-  const key = city.toLowerCase().trim();
-  for (const [name, gradient] of Object.entries(CITY_GRADIENTS)) {
-    if (key.includes(name)) return gradient;
-  }
-  return CITY_GRADIENTS.default;
-}
 
 const MATCH_VIEWED_KEY = "housalert_match_viewed";
 const MATCH_APPLIED_KEY = "housalert_match_applied";
@@ -135,400 +86,6 @@ function getMatchTab(match: ApiMatch): MatchSubTab {
   return "nieuw";
 }
 
-
-function MatchCard({
-  match,
-  onStatusChange,
-  isFavorited,
-  onToggleFavorite,
-  locked,
-}: {
-  match: ApiMatch;
-  onStatusChange: () => void;
-  isFavorited: boolean;
-  onToggleFavorite: (listingId: string) => void;
-  locked?: boolean;
-}) {
-  const [, navigate] = useLocation();
-  const [imgError, setImgError] = useState(false);
-  const { t } = useTranslation();
-  const gradient = getCityGradient(match.city);
-  const hasImage = !!match.image_url;
-
-  function handleCardClick() {
-    markViewed(match.listing_id);
-    onStatusChange();
-    navigate(`/apply/${match.listing_id}`);
-  }
-
-  function handleHeartClick(e: React.MouseEvent) {
-    e.stopPropagation();
-    onToggleFavorite(match.listing_id);
-  }
-
-  return (
-    <div
-      className="cursor-pointer group"
-      onClick={handleCardClick}
-      data-testid={`card-match-${match.listing_id}`}
-    >
-      <div className="rounded-[--ha-card-radius] overflow-hidden bg-white border border-ha-card-border/15 shadow-ha-card">
-        <div className="relative">
-          {hasImage && !imgError ? (
-            <img
-              src={match.image_url!}
-              alt={match.title}
-              className="w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-              style={{ aspectRatio: "4/3" }}
-              loading="lazy"
-              onError={() => setImgError(true)}
-              referrerPolicy="no-referrer"
-            />
-          ) : (
-            <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "4/3" }}>
-              <div className="absolute inset-0 bg-black/5" />
-              <div className="flex flex-col items-center gap-2.5 text-[#000]/50">
-                <ImageIcon className="w-8 h-8" />
-                <span className="text-[12px] font-medium">{match.source}</span>
-              </div>
-            </div>
-          )}
-
-          <div className="absolute top-3.5 left-3.5 flex gap-1.5">
-            <span className="text-[11px] font-medium bg-white/95 backdrop-blur-md text-[#000] px-3 py-1.5 rounded-full shadow-[0_1px_4px_rgba(0,0,0,0.06)] capitalize">
-              {match.source}
-            </span>
-            {(() => {
-              const seenAt = match.first_seen_at || match.matched_at;
-              if (!seenAt) return null;
-              const hoursAgo = (Date.now() - new Date(seenAt).getTime()) / 3600000;
-              if (hoursAgo < 24) {
-                return (
-                  <span className="text-[11px] font-semibold bg-ha-primary text-white px-3 py-1.5 rounded-full shadow-[0_1px_4px_rgba(0,0,0,0.1)]" data-testid={`badge-new-${match.listing_id}`}>
-                    {t("freshness.new") || "Nieuw"}
-                  </span>
-                );
-              }
-              const h = Math.floor(hoursAgo);
-              return (
-                <span className="text-[11px] font-medium bg-[#000]/70 backdrop-blur-md text-white px-3 py-1.5 rounded-full" data-testid={`badge-time-${match.listing_id}`}>
-                  {h} {t("freshness.hoursAgoShort") || "uur geleden"}
-                </span>
-              );
-            })()}
-          </div>
-
-          <button
-            onClick={handleHeartClick}
-            className="absolute top-3 right-3 p-0 border-0 bg-transparent active:scale-90 transition-transform"
-            data-testid={`button-favorite-${match.listing_id}`}
-          >
-            <Heart
-              className={`w-7 h-7 transition-colors duration-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.4)] ${
-                isFavorited
-                  ? "fill-[#FF5A5F] text-[#000] stroke-white"
-                  : "fill-[rgba(0,0,0,0.1)] text-[#000] stroke-white"
-              }`}
-              strokeWidth={2}
-            />
-          </button>
-        </div>
-
-        <div className="px-3 py-3">
-          <div className="flex items-baseline justify-between gap-2 leading-[1.25]">
-            <h3
-              className="text-[15px] font-bold text-[#000] leading-[1.25] line-clamp-1 flex-1 min-w-0"
-              data-testid={`text-match-title-${match.listing_id}`}
-            >
-              {match.title}
-            </h3>
-            {match.price > 0 && (
-              <span className="text-[17px] font-bold text-[#000] leading-[1.25] flex-shrink-0 whitespace-nowrap" data-testid={`badge-price-${match.listing_id}`}>
-                €{match.price}<span className="text-[13px] font-normal text-ha-icon-secondary ml-0.5">{t("common.perMonthShort")}</span>
-              </span>
-            )}
-          </div>
-          <p className="text-[14px] text-ha-icon-secondary leading-[1.25] mt-[3px] truncate" data-testid={`text-match-city-${match.listing_id}`}>
-            {match.city}
-          </p>
-          <div className="flex items-center gap-1.5 mt-[2px] text-[15px] text-ha-text-secondary leading-[1.25]">
-            {match.bedrooms > 0 && (
-              <span>{match.bedrooms} {match.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}</span>
-            )}
-            {match.bedrooms > 0 && match.size_m2 > 0 && <span>·</span>}
-            {match.size_m2 > 0 && <span>{match.size_m2} m²</span>}
-            {(match.bedrooms > 0 || match.size_m2 > 0) && <span>·</span>}
-            <span>{relativeTime(match.matched_at || match.first_seen_at, t)}</span>
-          </div>
-          {locked && (
-            <div className="flex items-center gap-1 mt-[6px] text-[12px] text-ha-icon-secondary" data-testid={`lock-indicator-${match.listing_id}`}>
-              <Lock className="w-3 h-3" />
-              <span>{t("listing.lockLabel")}</span>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ProfileCard({
-  profile,
-  onDelete,
-  deleting,
-  onEdit,
-}: {
-  profile: SearchProfile;
-  onDelete: () => void;
-  deleting: boolean;
-  onEdit: () => void;
-}) {
-  const { t, locale } = useTranslation();
-
-  return (
-    <div
-      className={`ha-card !py-4 ${deleting ? "opacity-50 pointer-events-none" : ""}`}
-      data-testid={`card-profile-${profile.id}`}
-    >
-      <div className="flex items-center gap-3">
-        <span className="w-2.5 h-2.5 rounded-full bg-ha-success flex-shrink-0" />
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <h3 className="text-[15px] text-title text-[#000] line-clamp-1 flex-1" data-testid={`text-profile-city-${profile.id}`}>
-              {getProfileTitle(profile, t, locale)}
-            </h3>
-            <span className="text-[10px] font-medium text-ha-success bg-ha-success/10 px-2 py-0.5 rounded-full flex-shrink-0" data-testid={`badge-status-${profile.id}`}>
-              {t("common.active")}
-            </span>
-          </div>
-          <p className="text-[15px] text-ha-text-secondary mt-0.5 line-clamp-1" data-testid={`text-profile-summary-filters-${profile.id}`}>
-            {getProfileSummary(profile, t)}
-          </p>
-          {profile.districts && profile.districts.length > 0 && (
-            <p className="text-[15px] text-ha-text-secondary mt-0.5 truncate">
-              {profile.districts.length <= 2
-                ? profile.districts.join(", ")
-                : `${profile.districts[0]} ${t("profile.andOtherNeighborhoods", { count: profile.districts.length - 1 })}`
-              }
-            </p>
-          )}
-        </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button
-              className="w-9 h-9 rounded-full flex items-center justify-center text-ha-text-muted hover:bg-[#EBEBF0] transition-colors flex-shrink-0"
-              disabled={deleting}
-              data-testid={`button-menu-filters-${profile.id}`}
-            >
-              <MoreVertical className="w-[18px] h-[18px]" />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="min-w-[160px]">
-            <DropdownMenuItem
-              onClick={onEdit}
-              className="flex items-center gap-2.5 cursor-pointer"
-              data-testid={`menu-edit-filters-${profile.id}`}
-            >
-              <Pencil className="w-4 h-4 text-ha-icon-secondary" />
-              {t("common.edit")}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={onDelete}
-              className="flex items-center gap-2.5 text-ha-danger focus:text-ha-danger cursor-pointer"
-              data-testid={`menu-delete-filters-${profile.id}`}
-            >
-              <Trash2 className="w-4 h-4" />
-              {t("filters.deleteTitle")}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </div>
-  );
-}
-
-function RecenteMatchesSection({ accessToken, setActiveTab, subscription, navigate }: { accessToken: string | undefined; setActiveTab: (tab: TabKey) => void; subscription: { isTrial: boolean; isExpired: boolean; isActive: boolean; trialEndsAt: string | null }; navigate: (path: string) => void }) {
-  const hasActiveSub = subscription.isActive || subscription.isTrial;
-  const { t } = useTranslation();
-
-  const apiMatchesQuery = useQuery<ApiMatchesResponse>({
-    queryKey: ["/api/matches"],
-    queryFn: () => fetchApiMatches(accessToken!),
-    enabled: !!accessToken && hasActiveSub,
-    staleTime: 30_000,
-    refetchOnWindowFocus: true,
-  });
-  const matches = (apiMatchesQuery.data?.matches ?? [])
-    .filter(m => m.title && m.url && m.listing_id)
-    .slice(0, 8);
-  const isLoading = apiMatchesQuery.isLoading;
-
-  if (!hasActiveSub) {
-    return (
-      <div className="flex flex-col gap-3" data-testid="section-recente-matches-empty">
-        <h2 className="text-section-title">{t("home.recentMatches")}</h2>
-        <div className="ha-card text-center">
-          <p className="text-[15px] text-ha-text-secondary mb-4 leading-relaxed">
-            {t("home.matchesWillAppear")}
-          </p>
-          <button
-            onClick={() => navigate("/paywall")}
-            className="h-[56px] px-6 rounded-[--ha-btn-radius] bg-ha-primary text-white text-[14px] font-semibold transition-colors hover:bg-ha-primary-hover"
-            data-testid="button-activate-sub-matches"
-          >
-            {t("home.viewSubscriptions")}
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <div className="flex flex-col gap-3">
-        <h2 className="text-section-title">{t("home.recentMatches")}</h2>
-        <div className="flex gap-[14px] overflow-x-auto pb-1 scrollbar-none">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="flex-shrink-0 w-[72vw] max-w-[280px]">
-              <div className="w-full bg-ha-surface rounded-[--ha-card-radius] animate-pulse" style={{ aspectRatio: "4/3" }} />
-              <div className="pt-2.5 flex flex-col gap-2">
-                <div className="h-4 bg-white rounded-md w-2/3 animate-pulse" />
-                <div className="h-3.5 bg-white rounded-md w-full animate-pulse" />
-                <div className="h-3 bg-white rounded-md w-1/2 animate-pulse" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  if (!matches || matches.length === 0) {
-    return (
-      <div className="flex flex-col gap-3" data-testid="section-recente-matches-empty">
-        <h2 className="text-section-title">{t("home.recentMatches")}</h2>
-        <div className="ha-card text-center">
-          <p className="text-[15px] text-ha-text-secondary leading-relaxed">
-            {t("home.firstMatchesWillAppear")}
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  const todayCount = matches.filter(m => {
-    const seen = m.first_seen_at || m.matched_at;
-    return seen && (Date.now() - new Date(seen).getTime()) < 86400000;
-  }).length;
-
-  return (
-    <div className="flex flex-col gap-4" data-testid="section-recente-matches">
-      {todayCount > 0 && (
-        <p className="text-[13px] font-semibold text-ha-primary" data-testid="text-new-matches-today">
-          +{todayCount} {t("home.newMatchesToday") || "nieuwe matches vandaag"}
-        </p>
-      )}
-      <div className="flex items-center justify-between">
-        <h2 className="text-section-title">{t("home.recentMatches")}</h2>
-        <button
-          onClick={() => setActiveTab("matches")}
-          className="text-[13px] font-medium text-ha-primary flex items-center gap-0.5"
-          data-testid="button-view-all-matches"
-        >
-          {t("home.viewAll")}
-          <ChevronRight className="w-3.5 h-3.5" />
-        </button>
-      </div>
-      <div className="flex gap-[14px] overflow-x-auto pb-1 scrollbar-none" style={{ scrollSnapType: "x proximity" }}>
-        {matches.map((match) => (
-          <div key={match.listing_id} className="snap-start first:pl-0 last:pr-1">
-            <RecentMatchCard match={match} />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function RecentMatchCard({ match }: { match: ApiMatch }) {
-  const [, navigate] = useLocation();
-  const [imgError, setImgError] = useState(false);
-  const { t } = useTranslation();
-  const hasImage = !!match.image_url && !imgError;
-  const gradient = getCityGradient(match.city);
-
-  return (
-    <div
-      role="button"
-      tabIndex={0}
-      className="flex-shrink-0 w-[72vw] max-w-[280px] cursor-pointer transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-ha-primary/40 rounded-[--ha-card-radius]"
-      onClick={() => {
-        markViewed(match.listing_id);
-        navigate(`/apply/${match.listing_id}`);
-      }}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          markViewed(match.listing_id);
-          navigate(`/apply/${match.listing_id}`);
-        }
-      }}
-      data-testid={`card-recent-match-${match.listing_id}`}
-    >
-      <div className="rounded-[--ha-card-radius] overflow-hidden bg-white border border-ha-card-border/15 shadow-ha-card">
-        <div className="relative">
-          {hasImage ? (
-            <img
-              src={match.image_url!}
-              alt={match.title}
-              className="w-full object-cover"
-              style={{ aspectRatio: "4/3" }}
-              loading="lazy"
-              onError={() => setImgError(true)}
-              referrerPolicy="no-referrer"
-            />
-          ) : (
-            <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "4/3" }}>
-              <div className="absolute inset-0 bg-black/5" />
-              <div className="flex flex-col items-center gap-1.5 text-[#000]/50">
-                <ImageIcon className="w-7 h-7" />
-                <span className="text-[11px] font-medium">{match.source}</span>
-              </div>
-            </div>
-          )}
-          <div className="absolute top-2.5 left-2.5">
-            <span className="text-[10px] font-medium bg-white/95 backdrop-blur-md text-[#000] px-2.5 py-1 rounded-full shadow-[0_1px_3px_rgba(0,0,0,0.08)] capitalize">
-              {match.source}
-            </span>
-          </div>
-        </div>
-
-        <div className="px-3 py-3 flex flex-col gap-0.5">
-          <span className="text-[15px] text-title text-[#000] truncate" data-testid={`text-recent-city-${match.listing_id}`}>
-            {match.city}
-          </span>
-          <p className="text-[15px] text-ha-text-secondary line-clamp-1 leading-[1.35]" data-testid={`text-recent-title-${match.listing_id}`}>
-            {match.title}
-          </p>
-          <div className="flex items-center gap-1.5 text-[15px] text-ha-text-secondary mt-0.5">
-            {match.bedrooms > 0 && (
-              <span>{match.bedrooms} {match.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}</span>
-            )}
-            {match.bedrooms > 0 && match.size_m2 > 0 && <span className="text-ha-icon-secondary">·</span>}
-            {match.size_m2 > 0 && <span>{match.size_m2} m²</span>}
-          </div>
-          {match.price > 0 && (
-            <p className="mt-1" data-testid={`badge-recent-price-${match.listing_id}`}>
-              <span className="text-[15px] font-medium text-[#000]">€{match.price}</span>
-              <span className="text-[12px] text-ha-text-muted ml-0.5">{t("common.perMonthShort")}</span>
-            </p>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function RecentlyViewedSection({ accessToken }: { accessToken: string | undefined }) {
   const { t } = useTranslation();
   const [, navigate] = useLocation();
@@ -552,61 +109,12 @@ function RecentlyViewedSection({ accessToken }: { accessToken: string | undefine
       <h2 className="text-section-title">{t("home.recentlyViewed")}</h2>
       <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-none" style={{ scrollSnapType: "x proximity" }}>
         {viewedMatches.map((match) => (
-          <RecentlyViewedCard key={match.listing_id} match={match} />
+          <ListingCardMini
+            key={match.listing_id}
+            match={match}
+            onCardClick={() => navigate(`/apply/${match.listing_id}`)}
+          />
         ))}
-      </div>
-    </div>
-  );
-}
-
-function RecentlyViewedCard({ match }: { match: ApiMatch }) {
-  const [, navigate] = useLocation();
-  const [imgError, setImgError] = useState(false);
-  const { t } = useTranslation();
-  const hasImage = !!match.image_url && !imgError;
-  const gradient = getCityGradient(match.city);
-
-  return (
-    <div
-      role="button"
-      tabIndex={0}
-      className="flex-shrink-0 w-[28vw] max-w-[130px] cursor-pointer snap-start transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-ha-primary/40 rounded-[--ha-card-radius]"
-      onClick={() => navigate(`/apply/${match.listing_id}`)}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          navigate(`/apply/${match.listing_id}`);
-        }
-      }}
-      data-testid={`card-recently-viewed-${match.listing_id}`}
-    >
-      <div className="rounded-[--ha-card-radius] overflow-hidden bg-white border border-ha-card-border/15 shadow-ha-card">
-        <div className="relative">
-          {hasImage ? (
-            <img
-              src={match.image_url!}
-              alt={match.title}
-              className="w-full object-cover"
-              style={{ aspectRatio: "1/1" }}
-              loading="lazy"
-              onError={() => setImgError(true)}
-              referrerPolicy="no-referrer"
-            />
-          ) : (
-            <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "1/1" }}>
-              <div className="absolute inset-0 bg-black/5" />
-              <ImageIcon className="w-5 h-5 text-[#000]/40" />
-            </div>
-          )}
-        </div>
-        <div className="px-2.5 py-2 flex flex-col gap-0">
-          <p className="text-[12px] text-title text-[#000] line-clamp-1">{match.title}</p>
-          <div className="flex items-center gap-1 text-[11px] text-ha-text-muted">
-            {match.price > 0 && <span>€{match.price}</span>}
-            {match.price > 0 && match.size_m2 > 0 && <span>·</span>}
-            {match.size_m2 > 0 && <span>{match.size_m2} m²</span>}
-          </div>
-        </div>
       </div>
     </div>
   );
@@ -777,9 +285,10 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
           {canAdd ? (
             <button
               onClick={() => navigate("/dashboard/searches/new")}
-              className="w-full mt-3 py-3 rounded-[--ha-card-inner-radius] border-2 border-dashed border-[#D1D5DB] text-[15px] font-semibold text-ha-primary hover:border-ha-primary hover:bg-ha-primary/5 transition-colors"
+              className="w-full mt-3 py-3 rounded-[--ha-card-inner-radius] bg-ha-primary/5 border border-ha-primary/20 text-[15px] font-semibold text-ha-primary hover:bg-ha-primary/10 transition-colors flex items-center justify-center gap-1.5"
               data-testid="button-add-search-profile"
             >
+              <span className="text-[18px] leading-none">+</span>
               {t("searchProfiles.addProfile")}
             </button>
           ) : (
@@ -982,7 +491,7 @@ function HomeTab({
 }) {
   const { t } = useTranslation();
 
-  const profileDataQuery = useQuery<{ first_name?: string }>({
+  const profileDataQuery = useQuery<{ first_name?: string; application_template?: string; search_buddy_email?: string; search_buddy_status?: string }>({
     queryKey: ["/api/profile-data"],
     queryFn: async () => {
       const res = await apiFetch("/api/profile-data", { headers: { Authorization: `Bearer ${accessToken}` } });
@@ -994,6 +503,8 @@ function HomeTab({
     enabled: !!accessToken,
   });
   const firstName = profileDataQuery.data?.first_name || null;
+  const hasReactieBrief = !!(profileDataQuery.data?.application_template && profileDataQuery.data.application_template.trim().length > 20);
+  const hasZoekbuddy = !!(profileDataQuery.data?.search_buddy_email && profileDataQuery.data.search_buddy_email.trim().length > 0 && profileDataQuery.data.search_buddy_status !== "revoked_by_buddy");
   const [referralModalOpen, setReferralModalOpen] = useState(false);
 
   const { data: referralData, isLoading: referralLoading } = useQuery<{
@@ -1017,12 +528,12 @@ function HomeTab({
 
   return (
     <div className="flex flex-col pb-8">
-      <div className="px-4 pt-6 pb-2">
+      <div className="px-4 pt-6 pb-4">
         <h1 className="text-page-title" data-testid="text-greeting">
           {firstName ? t("home.greeting", { name: firstName }) : t("home.greetingDefault")}
         </h1>
       </div>
-      <div className="flex flex-col gap-4 px-4">
+      <div className="flex flex-col gap-3 px-4">
 
       <SearchProfilesSection profiles={profiles} navigate={navigate} />
 
@@ -1052,35 +563,27 @@ function HomeTab({
 
 
 
-      <div className="ha-card">
-        <button
-          onClick={() => navigate("/application-letter")}
-          className="w-full flex items-center gap-3 text-left active:opacity-80 transition-opacity"
-          data-testid="button-home-reaction-letter"
-        >
-          <Sparkles className="w-5 h-5 text-ha-primary flex-shrink-0" />
-          <div className="flex-1 min-w-0">
-            <p className="text-[17px] font-bold text-black">{t("profile.reactionLetter2")}</p>
-            <p className="text-[14px] text-ha-text-secondary mt-0.5">{t("settings.reactionLetter")}</p>
-          </div>
-          <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
-        </button>
-      </div>
+      <StatusCard
+        icon={<Sparkles className="w-5 h-5 text-ha-primary" />}
+        title={t("profile.reactionLetter2")}
+        configured={hasReactieBrief}
+        configuredText={t("home.reactionLetterConfigured") || "Reactiebrief ingesteld"}
+        unconfiguredText={t("home.reactionLetterMissing") || "Nog geen reactiebrief"}
+        actionLabel={hasReactieBrief ? (t("common.manage") || "Beheren") : (t("common.generate") || "Genereren")}
+        onAction={() => navigate("/application-letter")}
+        testId="card-home-reaction-letter"
+      />
 
-      <div className="ha-card">
-        <button
-          onClick={() => navigate("/profile/edit/search_buddy_email")}
-          className="w-full flex items-center gap-3 text-left active:opacity-80 transition-opacity"
-          data-testid="button-home-zoekbuddy"
-        >
-          <Users className="w-5 h-5 text-ha-primary flex-shrink-0" />
-          <div className="flex-1 min-w-0">
-            <p className="text-[17px] font-bold text-black">{t("profile.zoekbuddyTitle")}</p>
-            <p className="text-[14px] text-ha-text-secondary mt-0.5">{t("profile.buddyDescription")}</p>
-          </div>
-          <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
-        </button>
-      </div>
+      <StatusCard
+        icon={<Users className="w-5 h-5 text-ha-primary" />}
+        title={t("profile.zoekbuddyTitle")}
+        configured={hasZoekbuddy}
+        configuredText={t("home.zoekbuddyConfigured") || "Zoekbuddy ingesteld"}
+        unconfiguredText={t("home.zoekbuddyMissing") || "Nog geen zoekbuddy"}
+        actionLabel={hasZoekbuddy ? (t("common.manage") || "Beheren") : (t("common.add") || "Toevoegen")}
+        onAction={() => navigate("/profile/edit/search_buddy_email")}
+        testId="card-home-zoekbuddy"
+      />
 
       <RecentlyViewedSection accessToken={accessToken} />
 
@@ -1129,6 +632,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const { t } = useTranslation();
   const { toast } = useToast();
+  const [, navigate] = useLocation();
   const sub = useSubscription();
   const hasAccess = sub.isActive || sub.isTrial;
 
@@ -1235,8 +739,8 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
   }, []);
 
   const allMatchesSorted = [...matches].sort((a, b) => {
-    const dateA = a.first_seen_at || a.published_at || "";
-    const dateB = b.first_seen_at || b.published_at || "";
+    const dateA = a.first_seen_at || a.matched_at || "";
+    const dateB = b.first_seen_at || b.matched_at || "";
     return dateB.localeCompare(dateA);
   });
 
@@ -1288,14 +792,18 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           testId="empty-matches"
         />
       ) : (
-        <div className="flex flex-col gap-[36px]">
+        <div className="flex flex-col gap-5">
           {allMatchesSorted.map((m) => (
-            <MatchCard
+            <ListingCardFull
               key={m.listing_id}
               match={m}
-              onStatusChange={refreshStatuses}
               isFavorited={favoriteIds.has(m.listing_id)}
               onToggleFavorite={toggleFavorite}
+              onCardClick={() => {
+                markViewed(m.listing_id);
+                refreshStatuses();
+                navigate(`/apply/${m.listing_id}`);
+              }}
               locked={!hasAccess}
             />
           ))}
@@ -1507,14 +1015,18 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
             testId={`empty-${favSubTab}-tab`}
           />
         ) : (
-          <div className="flex flex-col gap-[36px]">
+          <div className="flex flex-col gap-5">
             {currentListings.map((m) => (
-              <MatchCard
+              <ListingCardFull
                 key={m.listing_id}
                 match={m}
-                onStatusChange={refreshStatuses}
                 isFavorited={favoriteIds.has(m.listing_id)}
                 onToggleFavorite={toggleFavorite}
+                onCardClick={() => {
+                  markViewed(m.listing_id);
+                  refreshStatuses();
+                  navigate(`/apply/${m.listing_id}`);
+                }}
                 locked={!hasAccess}
               />
             ))}
