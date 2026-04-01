@@ -1,0 +1,108 @@
+I want a final refinement pass for the HousAlert search profile CTA and listing card readability.
+
+Do not change unrelated parts.
+This is a focused polish pass.
+
+==================================================
+PART 1 — FIX SEARCH PROFILE CTA
+==================================================
+
+Problem:
+The “Zoekprofiel toevoegen” button is showing two plus symbols.
+This looks sloppy.
+
+Fix:
+- show only ONE plus symbol
+- final button label should be either:
+  “+ Zoekprofiel toevoegen”
+or
+  “Zoekprofiel toevoegen”
+- but never two pluses
+
+Check the component and remove any duplicate icon/text prefix logic.
+
+==================================================
+PART 2 — MAKE STREET + HOUSE NUMBER CLEARLY VISIBLE
+==================================================
+
+Problem:
+The address line still does not clearly show street + house number.
+It is either too weak, too small, or still using the wrong field.
+
+Fix:
+- map the address line to street + house number
+- make this line more prominent than it is now
+- increase font size
+- increase readability
+- use stronger contrast
+- make sure it is visually distinct from the meta line below it
+
+Requirements:
+- the address line should be easy to scan
+- it should not look like weak secondary metadata
+- if exact street + house number is available, use that
+- if not available, use the best available street-level address fallback, but do not duplicate the city from the detail row
+
+==================================================
+PART 3 — MAKE THE DETAIL ROW EVEN MORE PROMINENT
+==================================================
+
+The bottom row with:
+- place
+- bedrooms
+- square meters
+
+still needs to be more visible.
+
+Fix:
+- increase text size again slightly
+- use darker text (near black)
+- increase font weight slightly
+- improve spacing between items
+- ensure all 3 items are easy to read at a glance on mobile
+
+These details should feel important and premium.
+
+==================================================
+PART 4 — MAKE DETAIL ICONS LARGER AND STRONGER
+==================================================
+
+Problem:
+The icons next to place / bedrooms / m² are still too subtle.
+
+Fix:
+- make icons larger
+- make icons darker
+- use a visually stronger stroke weight or bolder variant if available
+- align icon size better with the larger text
+- improve icon/text spacing
+
+The icons should support readability, not fade into the background.
+
+==================================================
+PART 5 — HIERARCHY CHECK
+==================================================
+
+After updates, the card hierarchy should be:
+
+1. image
+2. title + price
+3. street + house number
+4. time ago — source
+5. prominent detail row with larger icons and larger text
+
+Do not move price.
+Do not change the overall card structure.
+Only improve correctness and readability.
+
+==================================================
+PART 6 — OUTPUT
+==================================================
+
+After finishing, show:
+1. which files were changed
+2. how the duplicate plus was removed
+3. how address mapping now works
+4. the final font size/style used for the address line
+5. the final font size/style used for the detail row
+6. the icon sizing/styling changes

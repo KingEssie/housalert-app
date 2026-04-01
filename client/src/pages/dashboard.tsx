@@ -288,7 +288,6 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
               className="w-full mt-3 py-3 rounded-[--ha-card-inner-radius] bg-ha-primary/5 border border-ha-primary/20 text-[15px] font-semibold text-ha-primary hover:bg-ha-primary/10 transition-colors flex items-center justify-center gap-1.5"
               data-testid="button-add-search-profile"
             >
-              <span className="text-[18px] leading-none">+</span>
               {t("searchProfiles.addProfile")}
             </button>
           ) : (
