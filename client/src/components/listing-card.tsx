@@ -153,7 +153,7 @@ export function ListingCardFull({
           </div>
 
           {match.district && (
-            <p className="text-[15px] font-medium text-ha-text-secondary mt-1 leading-snug line-clamp-1" data-testid={`text-match-address-${match.listing_id}`}>
+            <p className="text-[15px] font-medium text-ha-text mt-1 leading-snug line-clamp-1" data-testid={`text-match-address-${match.listing_id}`}>
               {match.district}
             </p>
           )}
@@ -166,20 +166,20 @@ export function ListingCardFull({
 
           <div className="flex items-center gap-5 mt-3.5 pt-3 border-t border-ha-divider/40">
             {match.city && (
-              <span className="flex items-center gap-2 text-[15px] font-semibold text-ha-text" data-testid={`detail-city-${match.listing_id}`}>
-                <MapPin className="w-5 h-5 text-ha-text-secondary flex-shrink-0" strokeWidth={2.4} />
+              <span className="flex items-center gap-2 text-[15px] font-bold text-black" data-testid={`detail-city-${match.listing_id}`}>
+                <MapPin className="w-[22px] h-[22px] text-ha-text flex-shrink-0" strokeWidth={2.4} />
                 <span className="line-clamp-1">{match.city}</span>
               </span>
             )}
             {match.bedrooms > 0 && (
-              <span className="flex items-center gap-2 text-[15px] font-semibold text-ha-text" data-testid={`detail-bedrooms-${match.listing_id}`}>
-                <BedDouble className="w-5 h-5 text-ha-text-secondary flex-shrink-0" strokeWidth={2.4} />
+              <span className="flex items-center gap-2 text-[15px] font-bold text-black" data-testid={`detail-bedrooms-${match.listing_id}`}>
+                <BedDouble className="w-[22px] h-[22px] text-ha-text flex-shrink-0" strokeWidth={2.4} />
                 {match.bedrooms}
               </span>
             )}
             {match.size_m2 > 0 && (
-              <span className="flex items-center gap-2 text-[15px] font-semibold text-ha-text" data-testid={`detail-size-${match.listing_id}`}>
-                <Maximize2 className="w-5 h-5 text-ha-text-secondary flex-shrink-0" strokeWidth={2.4} />
+              <span className="flex items-center gap-2 text-[15px] font-bold text-black" data-testid={`detail-size-${match.listing_id}`}>
+                <Maximize2 className="w-[22px] h-[22px] text-ha-text flex-shrink-0" strokeWidth={2.4} />
                 {match.size_m2} m²
               </span>
             )}
