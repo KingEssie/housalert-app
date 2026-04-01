@@ -527,12 +527,12 @@ function HomeTab({
 
   return (
     <div className="flex flex-col pb-8">
-      <div className="px-4 pt-6 pb-4">
+      <div className="bg-white px-4 pt-6 pb-5 shadow-[0_1px_0_rgba(0,0,0,0.06)]">
         <h1 className="text-page-title" data-testid="text-greeting">
           {firstName ? t("home.greeting", { name: firstName }) : t("home.greetingDefault")}
         </h1>
       </div>
-      <div className="flex flex-col gap-3 px-4">
+      <div className="flex flex-col gap-3 px-4 mt-4">
 
       <SearchProfilesSection profiles={profiles} navigate={navigate} />
 
@@ -745,10 +745,8 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
 
   return (
     <div className="flex flex-col pb-8">
-      <div className="sticky top-0 z-10 bg-[#EBEBF0] pt-6 pb-4 px-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-page-title">{t("matches.title")}</h1>
-        </div>
+      <div className="sticky top-0 z-10 bg-white pt-6 pb-5 px-4 shadow-[0_1px_0_rgba(0,0,0,0.06)]">
+        <h1 className="text-page-title">{t("matches.title")}</h1>
       </div>
 
       <div className="px-4 flex flex-col gap-8 mt-4">
@@ -998,9 +996,9 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
 
   return (
     <div className="flex flex-col pb-8">
-      <div className="sticky top-0 z-10 bg-[#EBEBF0] pt-6 pb-0 px-4">
-        <h1 className="text-page-title mb-4">{t("nav.favorites")}</h1>
-        <div className="flex gap-0 border-b border-ha-divider pb-0" data-testid="fav-sub-tabs">
+      <div className="sticky top-0 z-10 bg-white pt-6 pb-0 px-4 shadow-[0_1px_0_rgba(0,0,0,0.06)]">
+        <h1 className="text-page-title mb-3">{t("nav.favorites")}</h1>
+        <div className="flex gap-0" data-testid="fav-sub-tabs">
           {([
             { key: "favorieten" as FavSubTab, label: t("nav.favorites") },
             { key: "gereageerd" as FavSubTab, label: t("matches.subtabs.applied") },
@@ -1010,7 +1008,7 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
               <button
                 key={key}
                 onClick={() => setFavSubTab(key)}
-                className={`px-5 py-3 text-[14px] font-semibold transition-all border-b-2 -mb-px ${
+                className={`px-5 py-3 text-[14px] font-semibold transition-all border-b-2 ${
                   isActive
                     ? "border-ha-primary text-ha-primary"
                     : "border-transparent text-ha-text-muted hover:text-ha-text-secondary"
@@ -1302,21 +1300,23 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       </div>
 
       <div className="max-w-[480px] mx-auto px-4 pb-8">
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-5">
 
           <div>
             <p className="text-row-section-title px-1 mb-2" data-testid="text-section-account">{t("settings.sectionAccount")}</p>
             <div className="app-card !p-0">
               {[
-                { label: t("settings.myDetails"), route: "/profile/details", icon: <User className="w-5 h-5 text-ha-text-muted" /> },
-                { label: t("settings.password"), route: "/account/change-password", icon: <Lock className="w-5 h-5 text-ha-text-muted" /> },
+                { label: t("settings.myDetails"), action: () => navigate("/profile/details"), icon: <User className="w-5 h-5 text-ha-text-muted" />, testId: "button-profile-account-0" },
+                { label: t("settings.password"), action: () => navigate("/account/change-password"), icon: <Lock className="w-5 h-5 text-ha-text-muted" />, testId: "button-profile-account-1" },
+                { label: t("settings.preferences"), action: () => navigate("/settings/preferences"), icon: <Bell className="w-5 h-5 text-ha-text-muted" />, testId: "button-profile-preferences" },
+                { label: t("settings.subscription"), action: () => navigate("/account/subscription"), icon: <Crown className="w-5 h-5 text-ha-text-muted" />, testId: "button-profile-subscription" },
               ].map((row, ri) => (
                 <div key={ri}>
                   {ri > 0 && <div className="h-px bg-ha-divider mx-5" />}
                   <button
-                    onClick={() => navigate(row.route)}
+                    onClick={row.action}
                     className="w-full flex items-center gap-3 py-4 px-5 text-left active:bg-ha-surface-active transition-colors"
-                    data-testid={`button-profile-account-${ri}`}
+                    data-testid={row.testId}
                   >
                     {row.icon}
                     <p className="text-[15px] font-semibold text-[#000] flex-1">{row.label}</p>
@@ -1328,49 +1328,19 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           </div>
 
           <div>
-            <p className="text-row-section-title px-1 mb-2" data-testid="text-section-preferences">{t("settings.preferences")}</p>
-            <div className="app-card !p-0">
-              <button
-                onClick={() => navigate("/settings/preferences")}
-                className="w-full flex items-center gap-3 py-4 px-5 text-left active:bg-ha-surface-active transition-colors"
-                data-testid="button-profile-preferences"
-              >
-                <Bell className="w-5 h-5 text-ha-text-muted" />
-                <p className="text-[15px] font-semibold text-[#000] flex-1">{t("settings.preferences")}</p>
-                <ChevronRight className="w-4 h-4 text-ha-icon-secondary flex-shrink-0" />
-              </button>
-            </div>
-          </div>
-
-          <div>
-            <p className="text-row-section-title px-1 mb-2" data-testid="text-section-subscription">{t("settings.subscription")}</p>
-            <div className="app-card !p-0">
-              <button
-                onClick={() => navigate("/account/subscription")}
-                className="w-full flex items-center gap-3 py-4 px-5 text-left active:bg-ha-surface-active transition-colors"
-                data-testid="button-profile-subscription"
-              >
-                <Crown className="w-5 h-5 text-ha-text-muted" />
-                <p className="text-[15px] font-semibold text-[#000] flex-1">{t("settings.subscription")}</p>
-                <ChevronRight className="w-4 h-4 text-ha-icon-secondary flex-shrink-0" />
-              </button>
-            </div>
-          </div>
-
-          <div>
             <p className="text-row-section-title px-1 mb-2" data-testid="text-section-other">{t("settings.sectionHelp")}</p>
             <div className="app-card !p-0">
               {[
-                { label: t("settings.contactUs"), action: () => { window.location.href = "mailto:support@housalert.com"; }, icon: <HelpCircle className="w-5 h-5 text-ha-text-muted" /> },
-                { label: t("settings.privacyPolicy"), action: () => navigate("/datenschutz"), icon: <Shield className="w-5 h-5 text-ha-text-muted" /> },
-                { label: t("settings.termsConditions"), action: () => navigate("/terms"), icon: <FileText className="w-5 h-5 text-ha-text-muted" /> },
+                { label: t("settings.contactUs"), action: () => { window.location.href = "mailto:support@housalert.com"; }, icon: <HelpCircle className="w-5 h-5 text-ha-text-muted" />, testId: "button-profile-other-0" },
+                { label: t("settings.privacyPolicy"), action: () => navigate("/datenschutz"), icon: <Shield className="w-5 h-5 text-ha-text-muted" />, testId: "button-profile-other-1" },
+                { label: t("settings.termsConditions"), action: () => navigate("/terms"), icon: <FileText className="w-5 h-5 text-ha-text-muted" />, testId: "button-profile-other-2" },
               ].map((row, ri) => (
                 <div key={ri}>
                   {ri > 0 && <div className="h-px bg-ha-divider mx-5" />}
                   <button
                     onClick={row.action}
                     className="w-full flex items-center gap-3 py-4 px-5 text-left active:bg-ha-surface-active transition-colors"
-                    data-testid={`button-profile-other-${ri}`}
+                    data-testid={row.testId}
                   >
                     {row.icon}
                     <p className="text-[15px] font-semibold text-[#000] flex-1">{row.label}</p>

@@ -1,0 +1,155 @@
+I want to correct the Phase 3 implementation in my HousAlert app.
+
+The current result is not matching the intended structure yet.
+
+This correction pass must focus on:
+1. top page headers for Home, Matches, and Favorites
+2. Favorites tabs inside the white header area
+3. profile/menu screen restructuring so it no longer feels like many separate floating cards
+
+Do not change unrelated parts.
+
+==================================================
+PART 1 — ADD A WHITE TOP HEADER AREA ON KEY SCREENS
+==================================================
+
+Add a dedicated white top header section to these screens:
+- Home
+- Matches
+- Favorites
+
+Goal:
+The page title must sit inside a white header block, not directly on the light grey page background.
+
+Requirements:
+- create a reusable page header pattern/component if possible
+- header background must be white
+- page title must sit inside this white area
+- content/cards should start below the white header area
+- the transition between white header and page content should feel clean and intentional
+- keep it mobile-first and visually polished
+
+Examples:
+- Home: “Hallo, Martin”
+- Matches: “Matches”
+- Favorites: “Favorieten”
+
+Do not leave the page title floating directly on the grey background.
+
+==================================================
+PART 2 — FAVORITES TABS MUST LIVE INSIDE THE WHITE HEADER
+==================================================
+
+On the Favorites page:
+- place the tabs inside the white header area
+- tabs should appear directly below the page title
+- tabs:
+  - Favorieten
+  - Gereageerd
+
+Requirements:
+- white header contains both title and tabs
+- tabs should feel integrated into the header, not separate floating controls
+- active tab should have a clean visual indicator
+- use a minimal premium style
+- maintain existing tab functionality
+
+Desired structure:
+
+[white header]
+Favorieten
+[tabs: Favorieten | Gereageerd]
+[/white header]
+
+[content area below]
+cards or empty state
+
+==================================================
+PART 3 — KEEP CONTENT AREA SEPARATE
+==================================================
+
+Below the white top header:
+- keep the page background light
+- cards/content should live in the content area below
+- maintain spacing consistency from earlier phases
+
+This applies to:
+- Home cards
+- Matches listing cards
+- Favorites content
+- Gereageerd content
+
+==================================================
+PART 4 — PROFILE/MENU SCREEN RESTRUCTURE
+==================================================
+
+The profile screen is still too fragmented and still feels like multiple separate cards.
+This needs to be cleaned up.
+
+Current problem:
+- too many separate white boxes
+- too much visual fragmentation
+
+Goal:
+Make the profile/settings screen feel more like a unified settings page.
+
+Requirements:
+1. Keep the top profile section:
+- dark top area
+- purple avatar
+- name
+- subtitle
+
+2. Refactor the menu area below:
+- reduce the fragmented floating-card feel
+- consolidate menu items into larger grouped containers
+- make the page feel calmer and more unified
+- use fewer, larger menu groups instead of many disconnected cards
+
+3. Inside each menu group:
+- left icon
+- label
+- right chevron
+- subtle divider between rows
+- consistent row height and padding
+
+4. Visual direction:
+- cleaner
+- more premium
+- less boxy fragmentation
+- closer to a polished mobile settings screen
+
+Important:
+Do not leave the menu looking basically unchanged.
+
+==================================================
+PART 5 — REUSABILITY / CONSISTENCY
+==================================================
+
+- reuse a shared top header component for Home, Matches, and Favorites if possible
+- keep spacing consistent with the rest of the app
+- keep colors, radius, shadows, and typography aligned with earlier phases
+
+==================================================
+PART 6 — SAFETY
+==================================================
+
+Do not break:
+- navigation
+- tabs logic
+- favorites logic
+- profile routes
+- menu interactions
+- existing cards/content below the header
+
+==================================================
+OUTPUT
+==================================================
+
+After finishing, show:
+1. which files were changed
+2. how the reusable white page header was implemented
+3. which screens now use it
+4. how the Favorites tabs were moved into the white header
+5. how the profile/menu screen was restructured
+6. what was consolidated in the menu area
