@@ -223,7 +223,7 @@ function PaywallStep({ onSelectPlan, onSkip, t }: {
             <button
               key={plan.id}
               onClick={() => setSelectedPlan(plan.id)}
-              className="w-full rounded-[12px] border-2 transition-all text-left relative overflow-hidden"
+              className="w-full rounded-[--ha-card-radius] border-2 transition-all text-left relative overflow-hidden"
               style={{
                 borderColor: isSelected ? BRAND : "rgba(255,255,255,0.12)",
                 backgroundColor: isSelected ? "rgba(233,30,99,0.08)" : "rgba(255,255,255,0.04)",
@@ -510,7 +510,7 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
 
         <div className="flex items-center justify-center py-8">
           <div className="relative">
-            <div className="w-[240px] h-[140px] rounded-[12px] overflow-hidden" style={{ background: "linear-gradient(135deg, #151226 0%, #1c1932 100%)" }}>
+            <div className="w-[240px] h-[140px] rounded-[--ha-card-radius] overflow-hidden" style={{ background: "linear-gradient(135deg, #151226 0%, #1c1932 100%)" }}>
               <div className="absolute top-3 left-3 flex items-center gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: BRAND }} />
                 <div className="h-2 w-14 rounded-full bg-white/20" />

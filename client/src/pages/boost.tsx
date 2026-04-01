@@ -184,7 +184,7 @@ function BoostScoreCard({ score, remaining, completed, total }: { score: number;
     <div className="bg-white rounded-[6px] border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.06)] p-6" data-testid="card-boost-score">
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
-          <Zap className="w-5 h-5 text-[#9CA3AF]" />
+          <Zap className="w-5 h-5 text-ha-icon-secondary" />
           <div>
             <h3 className="text-[15px] font-medium text-[#000]">{headline}</h3>
             <p className="text-[13px] text-[#000]">{t("boostScore.progress", { completed: String(completed), total: String(total) })}</p>
@@ -309,12 +309,12 @@ function AllTasksSection({
               data-testid={`task-${task.id}`}
             >
               <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
-              <Icon className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
+              <Icon className="w-4 h-4 text-ha-icon-secondary flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="text-[14px] font-medium text-[#000]">{getBoostTaskLabel(task.id, t)}</p>
                 <p className="text-[13px] font-normal text-[#000]">+{task.weight} {t("boost.points")}</p>
               </div>
-              <ArrowRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
+              <ArrowRight className="w-4 h-4 text-ha-icon-secondary flex-shrink-0" />
             </button>
           );
         })}
@@ -331,7 +331,7 @@ function AllTasksSection({
               <div className="w-5 h-5 rounded-full bg-ha-success-light flex items-center justify-center flex-shrink-0">
                 <CheckCircle2 className="w-4 h-4 text-ha-success" />
               </div>
-              <Icon className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
+              <Icon className="w-4 h-4 text-ha-icon-secondary flex-shrink-0" />
               <p className="text-[14px] text-[#000] line-through">{getBoostTaskLabel(task.id, t)}</p>
             </div>
           );
@@ -346,7 +346,7 @@ function EmptyState({ onStart }: { onStart: () => void }) {
   return (
     <div className="bg-[#EBEBF0] rounded-[6px] p-6 text-center" data-testid="boost-empty-state">
       <div className="flex items-center justify-center mx-auto mb-4">
-        <Zap className="w-6 h-6 text-[#9CA3AF]" />
+        <Zap className="w-6 h-6 text-ha-icon-secondary" />
       </div>
       <h3 className="text-[18px] font-medium text-[#000] mb-1.5">
         {t("boost.startTitle")}
@@ -440,7 +440,7 @@ function TaskModal({
         <div className="sticky top-0 bg-white border-b border-[#E5E7EB] p-6 flex items-center justify-between rounded-t-[6px]">
           <h2 className="text-[20px] font-medium text-[#000] tracking-[-0.02em]">{t(modalKeys.titleKey)}</h2>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#EBEBF0] flex items-center justify-center" data-testid="button-close-modal">
-            <X className="w-4 h-4 text-[#9CA3AF]" />
+            <X className="w-4 h-4 text-ha-icon-secondary" />
           </button>
         </div>
 
@@ -477,7 +477,7 @@ function TaskModal({
                 value={buddyEmail}
                 onChange={(e) => setBuddyEmail(e.target.value)}
                 placeholder={t("boost.buddyEmailPlaceholder")}
-                className="w-full h-[56px] px-4 rounded-[6px] border border-transparent bg-[#EBEBF0] text-[15px] font-medium text-[#000] placeholder:text-[#6B7280] placeholder:font-normal focus:bg-white"
+                className="w-full h-[56px] px-4 rounded-[6px] border border-transparent bg-[#EBEBF0] text-[15px] font-medium text-[#000] placeholder:text-ha-text-muted placeholder:font-normal focus:bg-white"
                 data-testid="input-buddy-email"
               />
               <p className="text-[13px] font-normal text-[#000]">{t("boost.buddyHelp")}</p>

@@ -33,8 +33,7 @@ export function ExpandableCompletionCard({
 
   return (
     <div
-      className="bg-white rounded-[12px] overflow-hidden"
-      style={{ border: "1px solid rgba(15, 23, 42, 0.04)" }}
+      className="ha-card !p-0 overflow-hidden"
       data-testid={testId}
     >
       <button
@@ -55,11 +54,11 @@ export function ExpandableCompletionCard({
           <div className="mt-2.5 flex items-center gap-3">
             <div className="flex-1 h-[8px] rounded-full bg-gray-100 overflow-hidden">
               <div
-                className="h-full rounded-full bg-[#22c55e] transition-all duration-500"
+                className="h-full rounded-full bg-ha-status-green transition-all duration-500"
                 style={{ width: `${percentage}%` }}
               />
             </div>
-            <span className="text-[14px] font-semibold text-[#22c55e] whitespace-nowrap">
+            <span className="text-[14px] font-semibold text-ha-status-green whitespace-nowrap">
               {percentage}% {completedLabel}
             </span>
           </div>
@@ -77,8 +76,8 @@ export function ExpandableCompletionCard({
               key={step.id}
               onClick={step.completed ? undefined : step.action}
               disabled={step.completed}
-              className={`w-full h-[56px] flex items-center gap-3 text-left transition-colors rounded-[6px] ${
-                !step.completed ? "active:bg-[#EBEBF0]" : ""
+              className={`w-full h-[56px] flex items-center gap-3 text-left transition-colors rounded-[--ha-card-inner-radius] ${
+                !step.completed ? "active:bg-ha-surface-hover" : ""
               } ${idx < steps.length - 1 ? "border-b border-gray-50" : ""}`}
               data-testid={`${testId}-step-${step.id}`}
             >

@@ -116,7 +116,7 @@ export default function ChangePasswordPage() {
             <label className="text-field-label mb-2 block">{t("changePassword.current")}</label>
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                <Lock className="w-[18px] h-[18px] text-[#9CA3AF]" />
+                <Lock className="w-[18px] h-[18px] text-ha-icon-secondary" />
               </div>
               <input
                 type={showCurrent ? "text" : "password"}
@@ -132,7 +132,7 @@ export default function ChangePasswordPage() {
                 className="absolute right-4 top-1/2 -translate-y-1/2"
                 data-testid="button-toggle-current"
               >
-                {showCurrent ? <EyeOff className="w-[18px] h-[18px] text-[#9CA3AF]" /> : <Eye className="w-[18px] h-[18px] text-[#9CA3AF]" />}
+                {showCurrent ? <EyeOff className="w-[18px] h-[18px] text-ha-icon-secondary" /> : <Eye className="w-[18px] h-[18px] text-ha-icon-secondary" />}
               </button>
             </div>
           </div>
@@ -143,7 +143,7 @@ export default function ChangePasswordPage() {
             <label className="text-field-label mb-2 block">{t("changePassword.new")}</label>
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                <Lock className="w-[18px] h-[18px] text-[#9CA3AF]" />
+                <Lock className="w-[18px] h-[18px] text-ha-icon-secondary" />
               </div>
               <input
                 type={showNew ? "text" : "password"}
@@ -159,7 +159,7 @@ export default function ChangePasswordPage() {
                 className="absolute right-4 top-1/2 -translate-y-1/2"
                 data-testid="button-toggle-new"
               >
-                {showNew ? <EyeOff className="w-[18px] h-[18px] text-[#9CA3AF]" /> : <Eye className="w-[18px] h-[18px] text-[#9CA3AF]" />}
+                {showNew ? <EyeOff className="w-[18px] h-[18px] text-ha-icon-secondary" /> : <Eye className="w-[18px] h-[18px] text-ha-icon-secondary" />}
               </button>
             </div>
             {newTooShort && (
@@ -173,7 +173,7 @@ export default function ChangePasswordPage() {
             <label className="text-field-label mb-2 block">{t("changePassword.confirmLabel")}</label>
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                <Lock className="w-[18px] h-[18px] text-[#9CA3AF]" />
+                <Lock className="w-[18px] h-[18px] text-ha-icon-secondary" />
               </div>
               <input
                 type={showConfirm ? "text" : "password"}
@@ -189,7 +189,7 @@ export default function ChangePasswordPage() {
                 className="absolute right-4 top-1/2 -translate-y-1/2"
                 data-testid="button-toggle-confirm"
               >
-                {showConfirm ? <EyeOff className="w-[18px] h-[18px] text-[#9CA3AF]" /> : <Eye className="w-[18px] h-[18px] text-[#9CA3AF]" />}
+                {showConfirm ? <EyeOff className="w-[18px] h-[18px] text-ha-icon-secondary" /> : <Eye className="w-[18px] h-[18px] text-ha-icon-secondary" />}
               </button>
             </div>
             {mismatch && (
@@ -209,7 +209,7 @@ export default function ChangePasswordPage() {
             className={`w-full h-[56px] rounded-[6px] font-semibold text-[15px] transition-colors flex items-center justify-center ${
               canSubmit
                 ? "bg-ha-primary hover:bg-ha-primary-hover text-white"
-                : "bg-[#E5E5E5] text-[#9CA3AF] cursor-not-allowed"
+                : "bg-[#E5E5E5] text-ha-icon-secondary cursor-not-allowed"
             }`}
             data-testid="button-submit-password"
           >

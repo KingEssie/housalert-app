@@ -112,15 +112,15 @@ export default function ProfileEditPage() {
       <div className="flex-1 max-w-xl mx-auto px-5 w-full">
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-6 h-6 animate-spin text-[#9CA3AF]" />
+            <Loader2 className="w-6 h-6 animate-spin text-ha-icon-secondary" />
           </div>
         ) : (
           <div className="app-card">
             {buddyRevokedByBuddy && (
-              <p className="text-[13px] text-[#9CA3AF] mb-3">{t("profileEdit.buddyUnsubscribed")}</p>
+              <p className="text-[13px] text-ha-icon-secondary mb-3">{t("profileEdit.buddyUnsubscribed")}</p>
             )}
             {config.description && (
-              <p className="text-[15px] text-[#4B5563] leading-relaxed mb-4">{config.description}</p>
+              <p className="text-[15px] text-ha-text-secondary leading-relaxed mb-4">{config.description}</p>
             )}
             <div className="relative">
               <input
@@ -138,10 +138,10 @@ export default function ProfileEditPage() {
                   type="button"
                   onClick={handleClear}
                   aria-label="Clear"
-                  className="absolute right-4 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-[#F0F0F0] flex items-center justify-center active:scale-90 transition-transform"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-ha-surface flex items-center justify-center active:scale-90 transition-transform"
                   data-testid="button-clear-field"
                 >
-                  <X className="w-3.5 h-3.5 text-[#6B7280]" />
+                  <X className="w-3.5 h-3.5 text-ha-text-muted" />
                 </button>
               )}
             </div>

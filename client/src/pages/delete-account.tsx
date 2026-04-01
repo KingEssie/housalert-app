@@ -72,14 +72,14 @@ export default function DeleteAccountPage() {
         <h2 className="text-[22px] font-bold text-[#000] mb-3 text-center" data-testid="text-delete-account-title">
           {t("deleteAccount.confirmTitle")}
         </h2>
-        <p className="text-[15px] text-[#6B7280] text-center max-w-[320px] mb-6 leading-relaxed" data-testid="text-delete-account-body">
+        <p className="text-[15px] text-ha-text-muted text-center max-w-[320px] mb-6 leading-relaxed" data-testid="text-delete-account-body">
           {t("deleteAccount.confirmBody")}
         </p>
 
         {hasActivePaidSub && (
           <div className="w-full max-w-[320px] app-card flex items-start gap-3 mb-6" data-testid="warning-active-sub">
             <Crown className="w-5 h-5 text-ha-primary flex-shrink-0 mt-0.5" />
-            <p className="text-[13px] text-[#6B7280] leading-relaxed">
+            <p className="text-[13px] text-ha-text-muted leading-relaxed">
               {t("deleteAccount.activeSubWarning")}{" "}
               <button
                 onClick={() => navigate("/account/subscription")}

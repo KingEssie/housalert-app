@@ -377,7 +377,7 @@ export default function NewSearchPage() {
               className="w-12 h-12 rounded-full bg-white shadow-[0_1px_4px_rgba(0,0,0,0.2)] flex items-center justify-center"
               data-testid="button-wizard-header-back"
             >
-              <ArrowLeft className="w-5 h-5 text-[#6B7280]" />
+              <ArrowLeft className="w-5 h-5 text-ha-text-muted" />
             </button>
           </div>
         </header>
@@ -387,7 +387,7 @@ export default function NewSearchPage() {
               <AlertCircle className="w-6 h-6 text-ha-primary" />
             </div>
             <h2 className="text-[18px] font-medium text-[#000] mb-2">{t("newSearch.limitTitle")}</h2>
-            <p className="text-[14px] text-[#6B7280] mb-5">
+            <p className="text-[14px] text-ha-text-muted mb-5">
               {t("newSearch.limitDesc", { max: MAX_PROFILES })}
             </p>
             <Button
@@ -414,9 +414,9 @@ export default function NewSearchPage() {
             className="w-12 h-12 rounded-full bg-white shadow-[0_1px_4px_rgba(0,0,0,0.2)] flex items-center justify-center"
             data-testid="button-wizard-header-back"
           >
-            <ArrowLeft className="w-5 h-5 text-[#6B7280]" />
+            <ArrowLeft className="w-5 h-5 text-ha-text-muted" />
           </button>
-          <span className="text-[13px] font-medium text-[#6B7280]" data-testid="text-step-indicator">
+          <span className="text-[13px] font-medium text-ha-text-muted" data-testid="text-step-indicator">
             {t("newSearch.stepOf", { step, total: TOTAL_STEPS })}
           </span>
         </div>
@@ -524,7 +524,7 @@ function Step2Requirements({
                 <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280] pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-muted pointer-events-none" />
           </div>
         </div>
 
@@ -544,7 +544,7 @@ function Step2Requirements({
                 <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280] pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-muted pointer-events-none" />
           </div>
         </div>
 
@@ -564,7 +564,7 @@ function Step2Requirements({
                 <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280] pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-muted pointer-events-none" />
           </div>
         </div>
 
@@ -584,7 +584,7 @@ function Step2Requirements({
                 <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280] pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-muted pointer-events-none" />
           </div>
         </div>
 
@@ -604,7 +604,7 @@ function Step2Requirements({
                 <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280] pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-muted pointer-events-none" />
           </div>
         </div>
 
@@ -713,7 +713,7 @@ function Step3ExtraFeatures({
 
       <div>
         <h3 className="text-[14px] font-medium text-[#000] mb-1">{t("newSearch.step3.preferencesTitle")}</h3>
-        <p className="text-[12px] text-[#6B7280] mb-2">{t("newSearch.step3.preferencesSubtitle")}</p>
+        <p className="text-[12px] text-ha-text-muted mb-2">{t("newSearch.step3.preferencesSubtitle")}</p>
         <div className="bg-white rounded-[6px] border border-[#E5E7EB]">
           {PREFERENCE_OPTIONS.map((opt) => (
             <div key={opt.value}>
@@ -724,7 +724,7 @@ function Step3ExtraFeatures({
                 testId={`option-pref-${opt.value}`}
               />
               {filters.extraFeatures.includes(opt.value) && (
-                <p className="text-[11px] text-[#6B7280] px-4 pb-3 -mt-1">{t(opt.hintKey)}</p>
+                <p className="text-[11px] text-ha-text-muted px-4 pb-3 -mt-1">{t(opt.hintKey)}</p>
               )}
             </div>
           ))}
@@ -732,7 +732,7 @@ function Step3ExtraFeatures({
       </div>
 
       {filters.extraFeatures.length === 0 && (
-        <p className="text-[13px] text-[#6B7280] text-center">
+        <p className="text-[13px] text-ha-text-muted text-center">
           {t("newSearch.step3.noSelectionHint")}
         </p>
       )}
@@ -784,7 +784,7 @@ function Step4TargetCategories({
       </div>
 
       {filters.targetCategories.length === 0 && (
-        <p className="text-[13px] text-[#6B7280] text-center">
+        <p className="text-[13px] text-ha-text-muted text-center">
           {t("newSearch.step4.noSelectionHint")}
         </p>
       )}
@@ -796,7 +796,7 @@ function ReviewRow({ label, value, onEdit }: { label: string; value: string; onE
   return (
     <div className="flex items-start justify-between py-3.5 border-b border-[#E5E5E5] last:border-b-0">
       <div className="flex-1 min-w-0 mr-3">
-        <p className="text-[13px] font-medium text-[#6B7280] mb-0.5">{label}</p>
+        <p className="text-[13px] font-medium text-ha-text-muted mb-0.5">{label}</p>
         <p className="text-[15px] font-medium text-[#000]">{value}</p>
       </div>
       <button
@@ -804,7 +804,7 @@ function ReviewRow({ label, value, onEdit }: { label: string; value: string; onE
         className="flex-shrink-0 w-8 h-8 rounded-full bg-[#EBEBF0] flex items-center justify-center hover:bg-[#FAFAFA] transition-colors"
         data-testid={`button-review-edit-${label.toLowerCase().replace(/\s/g, "-")}`}
       >
-        <Pencil className="w-3.5 h-3.5 text-[#6B7280]" />
+        <Pencil className="w-3.5 h-3.5 text-ha-text-muted" />
       </button>
     </div>
   );

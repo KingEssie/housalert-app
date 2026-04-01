@@ -437,7 +437,7 @@ export default function PaywallPage() {
               <button
                 key={plan.id}
                 onClick={() => setSelectedPlan(plan.id)}
-                className="w-full rounded-[12px] border-2 transition-all text-left relative overflow-hidden bg-ha-card"
+                className="w-full rounded-[--ha-card-radius] border-2 transition-all text-left relative overflow-hidden bg-ha-card"
                 style={{
                   borderColor: isSelected ? BRAND : "rgb(var(--ha-card-border))",
                 }}

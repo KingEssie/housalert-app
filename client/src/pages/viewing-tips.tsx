@@ -108,7 +108,7 @@ export default function ViewingTipsPage() {
                     {items.map((item: string, i: number) => (
                       <li key={i} className="flex items-start gap-2.5">
                         <span className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0 bg-ha-primary" />
-                        <span className="text-[14px] text-[#4B5563] leading-relaxed">{item}</span>
+                        <span className="text-[14px] text-ha-text-secondary leading-relaxed">{item}</span>
                       </li>
                     ))}
                   </ul>

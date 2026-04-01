@@ -55,7 +55,7 @@ export default function PaymentMethodPage() {
               <p className="text-[16px] font-bold text-[#000]" data-testid="text-card-brand">
                 {t("paymentMethodPage.managedByStripe")}
               </p>
-              <p className="text-[14px] text-[#6B7280]" data-testid="text-card-desc">
+              <p className="text-[14px] text-ha-text-muted" data-testid="text-card-desc">
                 {t("paymentMethodPage.managedByStripeDesc")}
               </p>
             </div>
@@ -72,7 +72,7 @@ export default function PaymentMethodPage() {
           {loading ? t("paymentMethodPage.opening") : t("paymentMethodPage.manageViaStripe")}
         </Button>
 
-        <p className="text-[13px] text-[#6B7280] text-center px-4 leading-relaxed">
+        <p className="text-[13px] text-ha-text-muted text-center px-4 leading-relaxed">
           {t("paymentMethodPage.managedInfo")}
         </p>
       </div>

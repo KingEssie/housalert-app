@@ -13,10 +13,13 @@ A mobile-first rental alert application for the German market. Users can sign up
 - **Excluded from tokenization**: `admin-*.tsx` pages, `v2/` pages/components (these have their own design systems). Google logo SVG colors, city gradient overlays, and amber warning banners (`#FEF3C7`/`#92400E`) remain hardcoded as semantic/brand colors.
 - **text-white rule**: `text-white` is preserved on elements with colored backgrounds (buttons with `bg-ha-primary`, success badges, hero image overlays). All other white text uses `text-ha-text`.
 - **Page background**: `bg-ha-bg` (#F3F3F5 light) — slightly darker grey for card/page contrast separation.
-- **Cards**: White `bg-ha-card`, subtle `border-ha-card-border`, `rounded-[6px]`, `shadow-ha-card` (none in dark mode).
-- **Buttons**: All buttons use `rounded-[6px]`. Only small badges/tags keep `rounded-full` pill shape.
-- **Inputs**: All inputs use `rounded-[6px]`.
-- **Listing cards**: Unified single-card structure — image on top, white content section below, all inside one `rounded-[6px] overflow-hidden bg-ha-card` wrapper.
+- **Cards**: White `bg-ha-card`, subtle `border-ha-card-border`, `rounded-[--ha-card-radius]` (14px), `shadow-ha-card` (none in dark mode). Use `.ha-card` CSS utility for standard cards.
+- **Inner card surfaces**: `rounded-[--ha-card-inner-radius]` (10px), `bg-ha-surface`.
+- **Buttons**: All buttons use `rounded-[--ha-btn-radius]` (10px). Only small badges/tags keep `rounded-full` pill shape. Button component uses `ha-primary`/`ha-primary-hover` tokens.
+- **Inputs**: All inputs use `rounded-[--ha-btn-radius]` (10px).
+- **Listing cards**: Unified single-card structure — image on top, white content section below, all inside one `rounded-[--ha-card-radius] overflow-hidden bg-ha-card` wrapper.
+- **Semantic gray tokens**: `text-ha-text-secondary` (#4B5563), `text-ha-text-muted` (#6B7280), `text-ha-icon-secondary` (#9CA3AF), `bg-ha-surface` (skeleton/placeholder bg), `bg-ha-divider` (divider lines), `bg-ha-surface-hover`/`bg-ha-surface-active` (interactive states).
+- **Status tokens**: `ha-status-green` (#34d399), `ha-status-red`, `ha-avatar-purple` (#7C3AED). CSS utilities: `.ha-status-positive`, `.ha-status-negative`.
 - **Profile header**: Dark brand `bg-ha-profile-header` (#151226), no avatar, left-aligned name+member since, settings gear button on right. Compact height (pt-8 pb-6), mb-4 below.
 - **Profile tab structure**: Header → progress blocks (complete account + tips) → upgrade CTA (if applicable) → notification toggles → "Einstellungen" button. All menu items moved to `/settings` page.
 - **Settings page** (`/settings`): Contains search profiles, reaction letter, zoekbuddy, HousAlert Plus, personal info, language, privacy, help, terms, invite friends, logout, delete account.

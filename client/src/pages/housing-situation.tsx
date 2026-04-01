@@ -115,7 +115,7 @@ export default function HousingSituationPage() {
         <select
           value={value}
           onChange={e => onChange(e.target.value)}
-          className={`app-select ${hasValue ? "" : "text-[#9CA3AF]"}`}
+          className={`app-select ${hasValue ? "" : "text-ha-icon-secondary"}`}
           data-testid={testId}
         >
           {options.map(opt => (
@@ -134,7 +134,7 @@ export default function HousingSituationPage() {
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <Loader2 className="w-6 h-6 animate-spin text-[#9CA3AF]" />
+            <Loader2 className="w-6 h-6 animate-spin text-ha-icon-secondary" />
           </div>
         ) : (
           <div className="flex flex-col gap-5">

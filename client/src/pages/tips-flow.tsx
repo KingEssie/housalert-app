@@ -187,7 +187,7 @@ export default function TipsFlowPage() {
             />
           </div>
           <div className="flex items-center justify-between mt-1.5">
-            <span className="text-[12px] text-[#6B7280]">
+            <span className="text-[12px] text-ha-text-muted">
               Stap {currentStep + 1} van {STEPS.length}
             </span>
             <span className="text-[12px] font-semibold text-[#22c55e]">
@@ -199,8 +199,7 @@ export default function TipsFlowPage() {
 
       <main className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-[200px]">
         <div
-          className="bg-white rounded-[12px] overflow-hidden"
-          style={{ border: "1px solid rgba(15, 23, 42, 0.04)" }}
+          className="ha-card !p-0 overflow-hidden"
           data-testid={`card-step-${step.id}`}
         >
           <div className="px-5 py-5">
@@ -238,7 +237,7 @@ export default function TipsFlowPage() {
         <div className="max-w-[480px] mx-auto px-4 py-4 pb-5 space-y-3">
           <button
             onClick={handleToggleCheck}
-            className="w-full h-[48px] rounded-[6px] flex items-center justify-center gap-2 text-[15px] font-medium transition-colors active:scale-[0.98]"
+            className="w-full h-[48px] rounded-[--ha-btn-radius] flex items-center justify-center gap-2 text-[15px] font-medium transition-colors active:scale-[0.98]"
             style={{
               background: isChecked ? "rgba(34, 197, 94, 0.08)" : "#F3F4F6",
               color: isChecked ? "#22c55e" : "#374151",
@@ -252,7 +251,7 @@ export default function TipsFlowPage() {
 
           <button
             onClick={handleNext}
-            className="w-full h-[56px] rounded-[6px] bg-[#e91e63] hover:bg-[#d81b60] text-white text-[16px] font-bold transition-colors active:scale-[0.98]"
+            className="w-full h-[56px] rounded-[--ha-btn-radius] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-bold transition-colors active:scale-[0.98]"
             data-testid="button-tips-next"
           >
             {isLastStep ? "Afronden" : "Volgende"}

@@ -76,10 +76,10 @@ export default function SubscriptionDetailPage() {
         <AppHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
         <div className="max-w-lg mx-auto px-4 pt-4">
           <div className="app-card animate-pulse">
-            <div className="h-5 bg-[#F0F0F0] rounded w-1/3 mb-4" />
-            <div className="h-4 bg-[#F0F0F0] rounded w-2/3 mb-3" />
-            <div className="h-4 bg-[#F0F0F0] rounded w-1/2 mb-3" />
-            <div className="h-4 bg-[#F0F0F0] rounded w-2/3" />
+            <div className="h-5 bg-ha-surface rounded w-1/3 mb-4" />
+            <div className="h-4 bg-ha-surface rounded w-2/3 mb-3" />
+            <div className="h-4 bg-ha-surface rounded w-1/2 mb-3" />
+            <div className="h-4 bg-ha-surface rounded w-2/3" />
           </div>
         </div>
       </div>
@@ -153,9 +153,9 @@ export default function SubscriptionDetailPage() {
             {rows.map((row, idx) => (
               <div
                 key={row.testId}
-                className={`flex items-center justify-between py-[14px] ${idx < rows.length - 1 ? "border-b border-[#F0F0F0]" : ""}`}
+                className={`flex items-center justify-between py-[14px] ${idx < rows.length - 1 ? "border-b border-ha-divider" : ""}`}
               >
-                <p className="text-[13px] text-[#6B7280]">{row.label}</p>
+                <p className="text-[13px] text-ha-text-muted">{row.label}</p>
                 <p className="text-[14px] text-[#000] font-medium" data-testid={row.testId}>{row.value}</p>
               </div>
             ))}
@@ -168,14 +168,14 @@ export default function SubscriptionDetailPage() {
             className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#FAFAFA] transition-colors"
             data-testid="button-manage-payment"
           >
-            <CreditCard className="w-[22px] h-[22px] text-[#6B7280] flex-shrink-0" />
+            <CreditCard className="w-[22px] h-[22px] text-ha-text-muted flex-shrink-0" />
             <p className="text-[15px] text-[#000] font-medium flex-1">{t("subscription.managePayment")}</p>
-            <ChevronRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
+            <ChevronRight className="w-4 h-4 text-ha-icon-secondary flex-shrink-0" />
           </button>
 
           {!isCanceled && (
             <>
-              <div className="h-px bg-[#F0F0F0] mx-5" />
+              <div className="h-px bg-ha-surface mx-5" />
               <button
                 onClick={() => navigate("/account/subscription/cancel")}
                 className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-red-50 transition-colors"
@@ -183,7 +183,7 @@ export default function SubscriptionDetailPage() {
               >
                 <XCircle className="w-[22px] h-[22px] text-red-500 flex-shrink-0" />
                 <p className="text-[15px] text-red-500 font-medium flex-1">{t("subscription.cancelSubscription")}</p>
-                <ChevronRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
+                <ChevronRight className="w-4 h-4 text-ha-icon-secondary flex-shrink-0" />
               </button>
             </>
           )}
@@ -197,7 +197,7 @@ export default function SubscriptionDetailPage() {
               </div>
               <div>
                 <p className="text-[15px] font-bold text-[#000]">{t("subscription.expiredTitle")}</p>
-                <p className="text-[14px] text-[#6B7280] mt-0.5">{t("subscription.expiredDesc")}</p>
+                <p className="text-[14px] text-ha-text-muted mt-0.5">{t("subscription.expiredDesc")}</p>
               </div>
             </div>
             <button

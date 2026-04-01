@@ -85,7 +85,7 @@ export function SubscriptionCancelConfirmPage() {
             <h2 className="text-[20px] font-bold text-[#000] text-center mb-2" data-testid="text-feedback-title">
               {t("cancellation.feedbackQuestion")}
             </h2>
-            <p className="text-[14px] text-center text-[#6B7280] mb-5">
+            <p className="text-[14px] text-center text-ha-text-muted mb-5">
               {t("cancellation.feedbackSubtitle")}
             </p>
 
@@ -127,7 +127,7 @@ export function SubscriptionCancelConfirmPage() {
               </button>
               <button
                 onClick={() => navigate("/account/subscription")}
-                className="w-full h-[56px] bg-white border border-[#E5E5E5] text-[#6B7280] rounded-[6px] font-semibold text-[15px] hover:bg-[#FAFAFA] transition-colors"
+                className="w-full h-[56px] bg-white border border-[#E5E5E5] text-ha-text-muted rounded-[6px] font-semibold text-[15px] hover:bg-[#FAFAFA] transition-colors"
                 data-testid="button-keep-instead"
               >
                 {t("subscription.keepSubscription")}
@@ -156,7 +156,7 @@ export function SubscriptionCancelConfirmPage() {
           </h2>
 
           <div className="bg-[#EBEBF0] rounded-[6px] p-4 mb-6">
-            <p className="text-[15px] text-[#6B7280] leading-relaxed" data-testid="text-cancel-info">
+            <p className="text-[15px] text-ha-text-muted leading-relaxed" data-testid="text-cancel-info">
               {t("subscription.cancelInfo", { date: renewalDate })}
             </p>
           </div>
@@ -171,7 +171,7 @@ export function SubscriptionCancelConfirmPage() {
             </button>
             <button
               onClick={() => setStep("feedback")}
-              className="w-full h-[56px] bg-white border border-[#E5E5E5] text-[#6B7280] rounded-[6px] font-semibold text-[15px] hover:bg-[#FAFAFA] transition-colors"
+              className="w-full h-[56px] bg-white border border-[#E5E5E5] text-ha-text-muted rounded-[6px] font-semibold text-[15px] hover:bg-[#FAFAFA] transition-colors"
               data-testid="button-confirm-cancel"
             >
               {t("subscription.confirmCancel")}
@@ -218,7 +218,7 @@ export function SubscriptionCancelledPage() {
           </h2>
 
           <div className="bg-[#EBEBF0] rounded-[6px] p-4 mb-6">
-            <p className="text-[15px] text-[#6B7280] leading-relaxed" data-testid="text-cancelled-info">
+            <p className="text-[15px] text-ha-text-muted leading-relaxed" data-testid="text-cancelled-info">
               {t("subscription.cancelledInfo", { date: renewalDate })}
             </p>
           </div>

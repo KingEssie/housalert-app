@@ -77,7 +77,7 @@ export default function ForgotPasswordPage() {
           >
             {t("forgotPassword.sentTitle")}
           </h1>
-          <p className="text-[15px] text-[#6B7280] leading-[1.55] max-w-[320px] mb-8" data-testid="text-sent-desc">
+          <p className="text-[15px] text-ha-text-muted leading-[1.55] max-w-[320px] mb-8" data-testid="text-sent-desc">
             {t("forgotPassword.sentDesc")}
           </p>
           <button
@@ -117,14 +117,14 @@ export default function ForgotPasswordPage() {
           {t("forgotPassword.title")}
         </h1>
 
-        <p className="text-[15px] text-[#6B7280] leading-[1.55] text-center max-w-[340px] mx-auto mb-8" data-testid="text-forgot-desc">
+        <p className="text-[15px] text-ha-text-muted leading-[1.55] text-center max-w-[340px] mx-auto mb-8" data-testid="text-forgot-desc">
           {t("forgotPassword.description")}
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div className="relative">
             <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-              <Mail className="w-[18px] h-[18px] text-[#9CA3AF]" />
+              <Mail className="w-[18px] h-[18px] text-ha-icon-secondary" />
             </div>
             <input
               type="email"

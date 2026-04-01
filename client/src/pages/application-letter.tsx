@@ -245,7 +245,7 @@ export default function ApplicationLetterPage() {
         <select
           value={value}
           onChange={e => onChange(e.target.value)}
-          className={`app-select ${hasValue ? "" : "text-[#9CA3AF]"}`}
+          className={`app-select ${hasValue ? "" : "text-ha-icon-secondary"}`}
           data-testid={testId}
         >
           {options.map(opt => (
@@ -264,7 +264,7 @@ export default function ApplicationLetterPage() {
       <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#EBEBF0" }}>
         <AppHeader title="Reactiebrief" onBack={() => navigate("/dashboard?tab=home")} />
         <div className="flex-1 flex items-center justify-center">
-          <Loader2 className="w-6 h-6 animate-spin text-[#9CA3AF]" />
+          <Loader2 className="w-6 h-6 animate-spin text-ha-icon-secondary" />
         </div>
       </div>
     );
@@ -282,8 +282,8 @@ export default function ApplicationLetterPage() {
               AI Reactiebrief genereren
             </h1>
 
-            <div className="rounded-[12px] bg-white px-5 py-5" style={{ border: "1px solid rgba(15, 23, 42, 0.04)" }}>
-              <div className="rounded-[10px] bg-[#EBF5FF] px-4 py-4 mb-5" data-testid="card-speech-bubble">
+            <div className="ha-card">
+              <div className="rounded-[--ha-card-inner-radius] bg-[#EBF5FF] px-4 py-4 mb-5" data-testid="card-speech-bubble">
                 <p className="text-[15px] text-[#1e293b] leading-relaxed">
                   Een reactiebrief helpt je sneller te reageren op woningen. Met onze AI-generator maak je in een paar stappen een professionele brief die je direct kunt kopiëren en gebruiken. In de volgende stappen verzamelen we de informatie die nodig is.
                 </p>
@@ -299,14 +299,14 @@ export default function ApplicationLetterPage() {
                 />
                 <div>
                   <p className="text-[16px] font-semibold text-[#111]">Elise</p>
-                  <p className="text-[13px] text-[#6B7280] mt-0.5">COO</p>
+                  <p className="text-[13px] text-ha-text-muted mt-0.5">COO</p>
                 </div>
               </div>
             </div>
 
             <button
               onClick={() => setStep(2)}
-              className="w-full h-[56px] rounded-[6px] bg-[#e91e63] text-white text-[16px] font-bold hover:bg-[#d81b60] transition-colors active:scale-[0.98]"
+              className="w-full h-[56px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[16px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
               data-testid="button-intro-next"
             >
               Volgende
@@ -320,7 +320,7 @@ export default function ApplicationLetterPage() {
               Persoonlijke gegevens
             </h1>
 
-            <div className="rounded-[12px] bg-white px-5 py-5" style={{ border: "1px solid rgba(15, 23, 42, 0.04)" }}>
+            <div className="ha-card">
               <div className="flex flex-col gap-5">
                 <div>
                   <label className={labelClass}>Telefoonnummer</label>
@@ -355,7 +355,7 @@ export default function ApplicationLetterPage() {
             <button
               onClick={handleStep2Next}
               disabled={saving}
-              className="w-full h-[56px] rounded-[6px] bg-[#e91e63] text-white text-[16px] font-bold hover:bg-[#d81b60] transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full h-[56px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[16px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
               data-testid="button-personal-next"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -370,7 +370,7 @@ export default function ApplicationLetterPage() {
               Woonsituatie
             </h1>
 
-            <div className="rounded-[12px] bg-white px-5 py-5" style={{ border: "1px solid rgba(15, 23, 42, 0.04)" }}>
+            <div className="ha-card">
               <div className="flex flex-col gap-5">
                 <div>
                   <label className={labelClass}>{t("settings.livingWith")}</label>
@@ -409,7 +409,7 @@ export default function ApplicationLetterPage() {
             <button
               onClick={handleStep3Generate}
               disabled={saving}
-              className="w-full h-[56px] rounded-[6px] bg-[#e91e63] text-white text-[16px] font-bold hover:bg-[#d81b60] transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full h-[56px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[16px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
               data-testid="button-generate-letter"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -424,8 +424,8 @@ export default function ApplicationLetterPage() {
               Reactiebrief
             </h1>
 
-            <div className="rounded-[12px] bg-white px-5 py-5" style={{ border: "1px solid rgba(15, 23, 42, 0.04)" }}>
-              <div className="rounded-[8px] bg-[#EBF5FF] px-4 py-3 mb-4">
+            <div className="ha-card">
+              <div className="rounded-[--ha-card-inner-radius] bg-[#EBF5FF] px-4 py-3 mb-4">
                 <p className="text-[14px] text-[#1e293b] leading-relaxed">
                   {t("applicationLetter.helperText")}
                 </p>
@@ -435,7 +435,7 @@ export default function ApplicationLetterPage() {
                 <label className="text-field-label">{t("applicationLetter.letterLabel")}</label>
                 <button
                   onClick={handleReset}
-                  className="flex items-center gap-1 text-[14px] text-[#4B5563] active:text-[#000] transition-colors"
+                  className="flex items-center gap-1 text-[14px] text-ha-text-secondary active:text-[#000] transition-colors"
                   data-testid="button-reset-template"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -450,14 +450,14 @@ export default function ApplicationLetterPage() {
                 data-testid="input-template"
               />
               {template.length > 0 && template.trim().length < 20 && (
-                <p className="text-[12px] text-[#6B7280] mt-2">{t("applicationLetter.minChars")}</p>
+                <p className="text-[12px] text-ha-text-muted mt-2">{t("applicationLetter.minChars")}</p>
               )}
             </div>
 
             <button
               onClick={() => saveMutation.mutate(template)}
               disabled={template.trim().length < 20 || saveMutation.isPending}
-              className="w-full h-[56px] rounded-[6px] bg-[#e91e63] text-white text-[16px] font-bold hover:bg-[#d81b60] transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full h-[56px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[16px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
               data-testid="button-save-template"
             >
               {saveMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -469,7 +469,7 @@ export default function ApplicationLetterPage() {
                 const letter = generatePersonalLetter();
                 setTemplate(letter);
               }}
-              className="w-full h-[56px] rounded-[6px] border border-[#e91e63] text-[#e91e63] text-[15px] font-semibold hover:bg-pink-50 transition-colors active:scale-[0.98]"
+              className="w-full h-[56px] rounded-[--ha-btn-radius] border border-ha-primary text-ha-primary text-[15px] font-semibold hover:bg-pink-50 transition-colors active:scale-[0.98]"
               data-testid="button-regenerate-letter"
             >
               Nieuwe AI reactiebrief maken

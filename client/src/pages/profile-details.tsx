@@ -119,7 +119,7 @@ export default function ProfileDetailsPage() {
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
         {loading ? (
           <div className="flex items-center justify-center py-24">
-            <Loader2 className="w-6 h-6 animate-spin text-[#9CA3AF]" />
+            <Loader2 className="w-6 h-6 animate-spin text-ha-icon-secondary" />
           </div>
         ) : (
           <div className="flex flex-col gap-5">
@@ -200,7 +200,7 @@ export default function ProfileDetailsPage() {
                     <select
                       value={gender}
                       onChange={e => setGender(e.target.value)}
-                      className={`app-select ${gender ? "" : "text-[#9CA3AF]"}`}
+                      className={`app-select ${gender ? "" : "text-ha-icon-secondary"}`}
                       data-testid="select-gender"
                     >
                       {GENDER_OPTIONS.map(opt => (

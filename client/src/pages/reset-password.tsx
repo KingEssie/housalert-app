@@ -86,7 +86,7 @@ export default function ResetPasswordPage() {
         <h1 className="text-[22px] font-bold text-[#000] mb-3" data-testid="text-error-title">
           {t("resetPassword.expiredTitle")}
         </h1>
-        <p className="text-[15px] text-[#6B7280] leading-[1.5] max-w-[320px] mb-6">
+        <p className="text-[15px] text-ha-text-muted leading-[1.5] max-w-[320px] mb-6">
           {t("resetPassword.expiredDesc")}
         </p>
         <button
@@ -117,7 +117,7 @@ export default function ResetPasswordPage() {
         <h1 className="text-[24px] font-bold text-[#000] tracking-[-0.02em] mb-3" data-testid="text-success-title">
           {t("resetPassword.successTitle")}
         </h1>
-        <p className="text-[15px] text-[#6B7280] leading-[1.55] max-w-[320px] mb-8">
+        <p className="text-[15px] text-ha-text-muted leading-[1.55] max-w-[320px] mb-8">
           {t("resetPassword.successDesc")}
         </p>
         <button
@@ -147,7 +147,7 @@ export default function ResetPasswordPage() {
           {t("resetPassword.title")}
         </h1>
 
-        <p className="text-[15px] text-[#6B7280] leading-[1.55] text-center max-w-[340px] mx-auto mb-8">
+        <p className="text-[15px] text-ha-text-muted leading-[1.55] text-center max-w-[340px] mx-auto mb-8">
           {t("resetPassword.description")}
         </p>
 
@@ -158,7 +158,7 @@ export default function ResetPasswordPage() {
             </label>
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                <Lock className="w-[18px] h-[18px] text-[#9CA3AF]" />
+                <Lock className="w-[18px] h-[18px] text-ha-icon-secondary" />
               </div>
               <input
                 type={showPassword ? "text" : "password"}
@@ -175,8 +175,8 @@ export default function ResetPasswordPage() {
                 data-testid="button-toggle-password"
               >
                 {showPassword
-                  ? <EyeOff className="w-[18px] h-[18px] text-[#9CA3AF]" />
-                  : <Eye className="w-[18px] h-[18px] text-[#9CA3AF]" />}
+                  ? <EyeOff className="w-[18px] h-[18px] text-ha-icon-secondary" />
+                  : <Eye className="w-[18px] h-[18px] text-ha-icon-secondary" />}
               </button>
             </div>
             {tooShort && (
@@ -192,7 +192,7 @@ export default function ResetPasswordPage() {
             </label>
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                <Lock className="w-[18px] h-[18px] text-[#9CA3AF]" />
+                <Lock className="w-[18px] h-[18px] text-ha-icon-secondary" />
               </div>
               <input
                 type={showConfirm ? "text" : "password"}
@@ -209,8 +209,8 @@ export default function ResetPasswordPage() {
                 data-testid="button-toggle-confirm"
               >
                 {showConfirm
-                  ? <EyeOff className="w-[18px] h-[18px] text-[#9CA3AF]" />
-                  : <Eye className="w-[18px] h-[18px] text-[#9CA3AF]" />}
+                  ? <EyeOff className="w-[18px] h-[18px] text-ha-icon-secondary" />
+                  : <Eye className="w-[18px] h-[18px] text-ha-icon-secondary" />}
               </button>
             </div>
             {mismatch && (
@@ -226,7 +226,7 @@ export default function ResetPasswordPage() {
             className={`w-full h-[56px] rounded-[6px] text-[15px] font-semibold transition-colors active:scale-[0.97] ${
               canSubmit
                 ? "bg-ha-primary hover:bg-ha-primary-hover text-white"
-                : "bg-[#E5E5E5] text-[#9CA3AF] cursor-not-allowed"
+                : "bg-[#E5E5E5] text-ha-icon-secondary cursor-not-allowed"
             }`}
             data-testid="button-submit"
           >

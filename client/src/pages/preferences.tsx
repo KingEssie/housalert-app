@@ -122,7 +122,7 @@ export default function PreferencesPage() {
                       key={opt.value}
                       onClick={() => setTheme(opt.value)}
                       className={`flex flex-col items-center gap-1.5 py-3 rounded-[6px] transition-all active:scale-[0.97] ${
-                        isActive ? "bg-ha-primary text-white" : "text-[#6B7280] hover:bg-[#EBEBF0]"
+                        isActive ? "bg-ha-primary text-white" : "text-ha-text-muted hover:bg-[#EBEBF0]"
                       }`}
                       data-testid={`theme-${opt.value}`}
                     >
@@ -145,9 +145,9 @@ export default function PreferencesPage() {
                 className="w-full flex items-center gap-3 py-4 px-5 text-left active:bg-[#FAFAFA] transition-colors"
                 data-testid="button-pref-language"
               >
-                <Globe className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
+                <Globe className="w-5 h-5 text-ha-text-muted flex-shrink-0" />
                 <p className="text-[15px] font-semibold text-[#000] flex-1">{t("profile.language")}</p>
-                <span className="text-[14px] text-[#4B5563] mr-1">{currentLangLabel}</span>
+                <span className="text-[14px] text-ha-text-secondary mr-1">{currentLangLabel}</span>
               </button>
             </div>
           </div>
@@ -158,7 +158,7 @@ export default function PreferencesPage() {
             </p>
             <div className="app-card !p-0">
               <div className="flex items-center gap-3 py-4 px-5">
-                <Bell className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
+                <Bell className="w-5 h-5 text-ha-text-muted flex-shrink-0" />
                 <span className="text-[15px] font-semibold text-[#000] flex-1">{t("profile.pushNotifications")}</span>
                 <button
                   onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
@@ -169,9 +169,9 @@ export default function PreferencesPage() {
                   <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.push_enabled ? "left-[23px]" : "left-[3px]"}`} />
                 </button>
               </div>
-              <div className="h-px bg-[#F0F0F0] mx-5" />
+              <div className="h-px bg-ha-divider mx-5" />
               <div className="flex items-center gap-3 py-4 px-5">
-                <Mail className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
+                <Mail className="w-5 h-5 text-ha-text-muted flex-shrink-0" />
                 <span className="text-[15px] font-semibold text-[#000] flex-1">{t("profile.emailNotifications")}</span>
                 <button
                   onClick={() => handleToggleNotif("email_enabled", !!notifSettings?.email_enabled)}

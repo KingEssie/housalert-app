@@ -147,7 +147,7 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
           {t("tips.title")}
         </h1>
         {read > 0 && (
-          <p className="text-[14px] text-[#4B5563] mt-1" data-testid="text-tips-progress">
+          <p className="text-[14px] text-ha-text-secondary mt-1" data-testid="text-tips-progress">
             {read}/{total} {t("tips.completed")}
           </p>
         )}
@@ -162,7 +162,7 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
           </div>
           <div>
             <p className="text-[15px] font-medium text-[#000]">{t("tips.didYouKnow")}</p>
-            <p className="text-[14px] text-[#4B5563] mt-0.5 leading-relaxed">
+            <p className="text-[14px] text-ha-text-secondary mt-0.5 leading-relaxed">
               {t("tips.intro")}
             </p>
           </div>
@@ -183,14 +183,14 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
                   <Icon className="w-5 h-5 text-ha-primary" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className={`text-[15px] font-medium ${isRead ? "line-through text-[#9CA3AF]" : "text-[#000]"}`}>
+                  <p className={`text-[15px] font-medium ${isRead ? "line-through text-ha-icon-secondary" : "text-[#000]"}`}>
                     {index + 1}. {guide.title}
                   </p>
                 </div>
                 {isRead ? (
                   <CheckCircle2 className="w-5 h-5 text-ha-primary flex-shrink-0" />
                 ) : (
-                  <ArrowRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
+                  <ArrowRight className="w-4 h-4 text-ha-icon-secondary flex-shrink-0" />
                 )}
               </button>
             );

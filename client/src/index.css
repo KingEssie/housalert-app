@@ -58,15 +58,24 @@
   --ha-surface: 243 244 246;
   --ha-nav-bg: 255 255 255;
   --ha-nav-border: 229 231 235;
-  --ha-success: 0 200 150;
-  --ha-success-light: rgba(0, 200, 150, 0.08);
+  --ha-success: 52 211 153;
+  --ha-success-light: rgba(52, 211, 153, 0.08);
   --ha-warning: 251 191 36;
   --ha-warning-light: rgba(251, 191, 36, 0.08);
   --ha-danger: 239 68 68;
   --ha-danger-light: rgba(239, 68, 68, 0.08);
+  --ha-status-green: 52 211 153;
+  --ha-status-red: 239 68 68;
+  --ha-avatar-purple: 124 58 237;
   --ha-icon-secondary: 156 163 175;
   --ha-badge-bg: 243 244 246;
+  --ha-surface-active: 250 250 250;
+  --ha-surface-hover: 235 235 237;
+  --ha-divider: 240 240 240;
   --ha-overlay: rgba(0, 0, 0, 0.05);
+  --ha-card-radius: 14px;
+  --ha-card-inner-radius: 10px;
+  --ha-btn-radius: 10px;
   --ha-brand-dark: 21 18 38;
   --ha-brand-dark-hover: 28 25 50;
   --ha-brand-dark-border: 45 40 75;
@@ -161,14 +170,23 @@
     --ha-surface: 45 40 75;
     --ha-nav-bg: 21 18 38;
     --ha-nav-border: 45 40 75;
-    --ha-success: 0 200 150;
-    --ha-success-light: rgba(0, 200, 150, 0.15);
+    --ha-success: 52 211 153;
+    --ha-success-light: rgba(52, 211, 153, 0.15);
     --ha-warning: 251 191 36;
     --ha-warning-light: rgba(251, 191, 36, 0.15);
     --ha-danger: 239 68 68;
     --ha-danger-light: rgba(239, 68, 68, 0.15);
+    --ha-status-green: 52 211 153;
+    --ha-status-red: 239 68 68;
+    --ha-avatar-purple: 139 92 246;
     --ha-icon-secondary: 156 163 175;
     --ha-badge-bg: 45 40 75;
+    --ha-surface-active: 35 32 58;
+    --ha-surface-hover: 42 38 68;
+    --ha-divider: 45 40 75;
+    --ha-card-radius: 14px;
+    --ha-card-inner-radius: 10px;
+    --ha-btn-radius: 10px;
     --ha-brand-dark: 21 18 38;
     --ha-brand-dark-hover: 28 25 50;
     --ha-brand-dark-border: 45 40 75;
@@ -314,10 +332,57 @@
   }
 
   .app-card {
-    background: #ffffff;
-    border-radius: 12px;
-    border: 1px solid rgba(15, 23, 42, 0.04);
+    background: rgb(var(--ha-card));
+    border-radius: var(--ha-card-radius);
+    border: 1px solid rgb(var(--ha-card-border) / 0.15);
     padding: 16px;
+    box-shadow: var(--ha-shadow-card);
+  }
+
+  .ha-card {
+    background: rgb(var(--ha-card));
+    border-radius: var(--ha-card-radius);
+    border: 1px solid rgb(var(--ha-card-border) / 0.15);
+    padding: 20px;
+    box-shadow: var(--ha-shadow-card);
+  }
+
+  .ha-card-inner {
+    background: rgb(var(--ha-surface));
+    border-radius: var(--ha-card-inner-radius);
+    padding: 14px 16px;
+  }
+
+  .ha-status-positive {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgb(var(--ha-status-green));
+  }
+  .ha-status-positive svg {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+  }
+  .ha-status-positive span {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .ha-status-negative {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgb(var(--ha-status-red));
+  }
+  .ha-status-negative svg {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+  }
+  .ha-status-negative span {
+    font-size: 14px;
+    font-weight: 500;
   }
 
   .app-input {
@@ -590,7 +655,7 @@ input[type="range"]::-moz-range-thumb {
 }
 .ha-btn {
   height: 56px;
-  border-radius: 6px;
+  border-radius: var(--ha-btn-radius);
   font-weight: 600;
   font-size: 16px;
   padding-left: 20px;

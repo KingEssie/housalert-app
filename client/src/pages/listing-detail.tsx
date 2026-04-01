@@ -34,7 +34,7 @@ const FRESH_BADGE_STYLES: Record<string, { bg: string; text: string }> = {
   net_binnen: { bg: "bg-ha-primary/20", text: "text-ha-primary" },
   nieuw: { bg: "bg-ha-primary", text: "text-white" },
   vandaag: { bg: "bg-ha-primary", text: "text-white" },
-  ouder: { bg: "bg-[#F0F0F0]", text: "text-[#6B7280]" },
+  ouder: { bg: "bg-ha-surface", text: "text-ha-text-muted" },
 };
 
 const FRESH_LABEL_KEYS: Record<string, string> = {
@@ -142,9 +142,9 @@ export default function ListingDetailPage() {
           <div className="h-[260px] bg-[#E5E5E5]" />
           <div className="max-w-xl mx-auto w-full px-5 pt-5 space-y-4">
             <div className="app-card space-y-3">
-              <div className="h-5 bg-[#F0F0F0] rounded w-28" />
-              <div className="h-7 bg-[#F0F0F0] rounded w-3/4" />
-              <div className="h-4 bg-[#F0F0F0] rounded w-1/2" />
+              <div className="h-5 bg-ha-surface rounded w-28" />
+              <div className="h-7 bg-ha-surface rounded w-3/4" />
+              <div className="h-4 bg-ha-surface rounded w-1/2" />
             </div>
           </div>
         </div>
@@ -159,7 +159,7 @@ export default function ListingDetailPage() {
         <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-16">
           <div className="app-card text-center">
             <p className="text-[18px] font-bold text-[#000] mb-2">{t("listing.notFound")}</p>
-            <p className="text-[14px] text-[#4B5563] mb-4">{t("listing.notFoundDesc")}</p>
+            <p className="text-[14px] text-ha-text-secondary mb-4">{t("listing.notFoundDesc")}</p>
             <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold" data-testid="button-back-dashboard">
               {t("listing.backToDashboard")}
             </Button>
@@ -190,7 +190,7 @@ export default function ListingDetailPage() {
         ) : (
           <div className={`w-full h-[260px] bg-gradient-to-br ${gradient} flex items-center justify-center relative`}>
             <div className="absolute inset-0 bg-black/5" />
-            <div className="flex flex-col items-center gap-2 text-[#9CA3AF]">
+            <div className="flex flex-col items-center gap-2 text-ha-icon-secondary">
               <ImageIcon className="w-10 h-10" />
               <span className="text-[13px] font-medium capitalize">{listing.source}</span>
             </div>
@@ -217,7 +217,7 @@ export default function ListingDetailPage() {
               {listing.title}
             </h1>
 
-            <div className="flex items-center gap-1.5 text-[15px] text-[#4B5563] mb-4">
+            <div className="flex items-center gap-1.5 text-[15px] text-ha-text-secondary mb-4">
               <MapPin className="w-4 h-4 flex-shrink-0" />
               <span data-testid="text-listing-location">
                 {listing.district?.trim() ? `${listing.district.trim()} · ${listing.city}` : listing.city}
@@ -227,7 +227,7 @@ export default function ListingDetailPage() {
             {listing.price > 0 && (
               <div className="flex items-baseline gap-1 mb-1">
                 <span className="text-[28px] font-bold text-[#000]" data-testid="text-listing-price">€{listing.price}</span>
-                <span className="text-[15px] font-medium text-[#6B7280]">{t("common.perMonth")}</span>
+                <span className="text-[15px] font-medium text-ha-text-muted">{t("common.perMonth")}</span>
               </div>
             )}
           </div>
@@ -238,10 +238,10 @@ export default function ListingDetailPage() {
               {listing.bedrooms > 0 && (
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-[8px] bg-[#EBEBF0] flex items-center justify-center">
-                    <BedDouble className="w-5 h-5 text-[#6B7280]" />
+                    <BedDouble className="w-5 h-5 text-ha-text-muted" />
                   </div>
                   <div>
-                    <p className="text-[12px] text-[#6B7280]">{t("listing.bedrooms")}</p>
+                    <p className="text-[12px] text-ha-text-muted">{t("listing.bedrooms")}</p>
                     <p className="text-[15px] font-semibold text-[#000]" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
                   </div>
                 </div>
@@ -250,10 +250,10 @@ export default function ListingDetailPage() {
               {listing.size_m2 > 0 && (
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-[8px] bg-[#EBEBF0] flex items-center justify-center">
-                    <Ruler className="w-5 h-5 text-[#6B7280]" />
+                    <Ruler className="w-5 h-5 text-ha-text-muted" />
                   </div>
                   <div>
-                    <p className="text-[12px] text-[#6B7280]">{t("listing.area")}</p>
+                    <p className="text-[12px] text-ha-text-muted">{t("listing.area")}</p>
                     <p className="text-[15px] font-semibold text-[#000]" data-testid="text-listing-size">{listing.size_m2} m²</p>
                   </div>
                 </div>
@@ -261,14 +261,14 @@ export default function ListingDetailPage() {
 
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-[8px] bg-[#EBEBF0] flex items-center justify-center">
-                  <Globe className="w-5 h-5 text-[#6B7280]" />
+                  <Globe className="w-5 h-5 text-ha-text-muted" />
                 </div>
                 <div>
-                  <p className="text-[12px] text-[#6B7280]">{t("listing.source")}</p>
+                  <p className="text-[12px] text-ha-text-muted">{t("listing.source")}</p>
                   {hasAccess ? (
                     <p className="text-[15px] font-semibold capitalize text-ha-primary" data-testid="text-listing-source">{listing.source}</p>
                   ) : (
-                    <p className="text-[15px] font-semibold text-[#9CA3AF] flex items-center gap-1" data-testid="text-listing-source-locked">
+                    <p className="text-[15px] font-semibold text-ha-icon-secondary flex items-center gap-1" data-testid="text-listing-source-locked">
                       <Lock className="w-3.5 h-3.5" />
                       {t("listing.sourceHidden")}
                     </p>
@@ -278,10 +278,10 @@ export default function ListingDetailPage() {
 
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-[8px] bg-[#EBEBF0] flex items-center justify-center">
-                  <Clock className="w-5 h-5 text-[#6B7280]" />
+                  <Clock className="w-5 h-5 text-ha-text-muted" />
                 </div>
                 <div>
-                  <p className="text-[12px] text-[#6B7280]">{t("listing.posted")}</p>
+                  <p className="text-[12px] text-ha-text-muted">{t("listing.posted")}</p>
                   <p className="text-[15px] font-semibold text-[#000]" data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</p>
                 </div>
               </div>
@@ -305,7 +305,7 @@ export default function ListingDetailPage() {
                 data-hybrid-pets={hf.pets}
               >
                 {unknowns.length > 0 && (
-                  <div className="flex items-start gap-2 text-[12px] text-[#9CA3AF]">
+                  <div className="flex items-start gap-2 text-[12px] text-ha-icon-secondary">
                     <Info className="w-3.5 h-3.5 flex-shrink-0 mt-[1px]" />
                     <div>
                       <p className="font-semibold">{t("hybridFilter.unknownHint")}</p>
@@ -318,7 +318,7 @@ export default function ListingDetailPage() {
                   </div>
                 )}
                 {hasPetsNote && (
-                  <div className="flex items-start gap-2 text-[12px] text-[#9CA3AF]">
+                  <div className="flex items-start gap-2 text-[12px] text-ha-icon-secondary">
                     <Info className="w-3.5 h-3.5 flex-shrink-0 mt-[1px]" />
                     <p>{t("hybridFilter.petsNote")}</p>
                   </div>
@@ -336,7 +336,7 @@ export default function ListingDetailPage() {
               {listing.price > 0 && (
                 <div className="flex items-baseline gap-1 mb-1">
                   <span className="text-[20px] font-bold text-[#000]" data-testid="text-bar-price">€{listing.price}</span>
-                  <span className="text-[13px] font-medium text-[#6B7280]">{t("common.perMonth")}</span>
+                  <span className="text-[13px] font-medium text-ha-text-muted">{t("common.perMonth")}</span>
                 </div>
               )}
               <Button
@@ -350,7 +350,7 @@ export default function ListingDetailPage() {
             </>
           ) : (
             <>
-              <p className="text-[14px] text-[#4B5563] text-center mb-1" data-testid="text-locked-hint">
+              <p className="text-[14px] text-ha-text-secondary text-center mb-1" data-testid="text-locked-hint">
                 {t("listing.lockedHint")}
               </p>
               <Button

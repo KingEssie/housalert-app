@@ -1,0 +1,172 @@
+I want to do Phase 1 of a full HousAlert light-mode UI polish.
+
+This phase is about creating a solid visual foundation across the app before we restyle individual screens in later phases.
+
+GOAL
+Create a consistent design foundation across the full app so the UI feels tighter, cleaner, more premium, and less visually scattered.
+
+IMPORTANT
+Do not redesign every individual screen yet.
+In this phase, focus on global layout, spacing, color tokens, radius, and shared surface styling.
+Prepare the system so later phases can restyle Home, Favorites, and Profile cleanly.
+
+==================================================
+PHASE 1 TASKS
+==================================================
+
+1. REDUCE HORIZONTAL WHITESPACE APP-WIDE
+The app currently has too much empty space on the left and right sides.
+Reduce horizontal whitespace across the app in a controlled and consistent way.
+
+Requirements:
+- Audit page containers, wrappers, cards, sections, and mobile layouts
+- Reduce horizontal page padding/margins so screens feel fuller
+- Keep enough breathing room for readability and touch safety
+- Standardize mobile page spacing across screens
+- Avoid each page using different side spacing
+- Cards should sit more confidently in the viewport, not look too narrow or floating
+
+Apply this to:
+- main app screens
+- cards
+- content sections
+- profile/menu screen
+- favorites/matches screens
+- onboarding/account widgets where applicable
+
+2. CREATE / CLEAN A CENTRAL COLOR SYSTEM
+Create or update centralized color tokens / theme variables.
+Stop relying on scattered hardcoded values where possible.
+
+Add or standardize these key tokens:
+
+A. Success/status green
+Use the same green as the green status dot visible in the search profile card.
+This green should become the main positive/status green across the app.
+
+Use it for:
+- green check icons
+- positive status text
+- “ingesteld” states
+- status dots
+- success indicators where appropriate
+
+B. Error/not-set red
+Create one central red token for “not configured / not set” states.
+
+Use it for:
+- red cross icons
+- red warning/status text
+- missing setup states such as no search buddy / no reaction letter
+
+C. Avatar purple
+Set the profile avatar purple to match the provided visual reference (the circular avatar background).
+Use this only for avatar/profile identity styling where relevant.
+
+D. Keep the existing pink accent as the primary action accent unless already centrally defined.
+Do not accidentally replace semantic pink accents that are already working.
+
+3. STANDARDIZE BORDER RADIUS / CARD SHAPE
+The app needs a softer, more premium card style.
+Create a consistent radius system for:
+- primary cards
+- inner cards
+- buttons
+- chips / pills
+- image corners
+- modals/sheets if applicable
+
+The direction should be:
+- softer rounded corners
+- modern mobile UI feel
+- visually closer to premium rental app styling
+- not exaggerated or cartoonish
+
+Do not use random different radii per component unless there is a clear hierarchy.
+
+4. STANDARDIZE SURFACE / CARD STYLING
+Create a more polished shared card/surface system.
+
+Requirements:
+- unify card backgrounds
+- unify border usage
+- unify subtle shadow/elevation approach
+- make cards feel less inconsistent across screens
+- avoid random mixes of flat, bordered, and elevated cards unless intentional
+- inner panels inside cards should feel related to the outer container
+
+This should improve:
+- home widgets
+- listing containers
+- profile menu sections
+- favorites containers
+- status cards
+
+5. STANDARDIZE SHARED TEXT / UI HIERARCHY
+Without redesigning each screen, normalize shared typography usage where possible:
+- headings
+- card titles
+- secondary text
+- meta/status text
+- helper text
+
+Make sure:
+- hierarchy feels clear
+- spacing between title and subtitle is consistent
+- status text sizing does not feel random
+- secondary text has good contrast but stays softer than primary text
+
+6. PREPARE REUSABLE STATUS STYLES
+Create reusable status styles/components/tokens for:
+- positive status row (green icon + green text)
+- negative/not-set status row (red icon + red text)
+
+These will be used in later phases for:
+- Reactiebrief ingesteld / niet ingesteld
+- Zoekbuddy ingesteld / niet ingesteld
+
+Do not fully redesign those cards yet if that belongs to a later phase.
+Just make sure the base reusable styling exists now.
+
+7. KEEP FUNCTIONALITY SAFE
+This phase should be visual/system-level only.
+Do not break:
+- routing
+- existing card rendering
+- search profile behavior
+- favorites logic
+- menu interactions
+- responsive behavior
+
+8. CLEANUP
+- replace scattered duplicate color values where appropriate
+- consolidate theme values where possible
+- keep semantic naming clear
+- avoid one-off hardcoded values when they belong in the theme
+
+==================================================
+DELIVERABLES AFTER IMPLEMENTATION
+==================================================
+
+After finishing, show me:
+1. which files were changed
+2. which global spacing rules were updated
+3. which color tokens were introduced/updated
+4. which radius/surface styles were standardized
+5. which shared/reusable status styles were prepared
+6. anything intentionally not yet changed because it belongs to phase 2 or 3
+
+==================================================
+IMPORTANT DESIGN DIRECTION
+==================================================
+
+Visual direction:
+- cleaner and fuller mobile layout
+- less side whitespace
+- softer premium card styling
+- consistent status colors
+- cohesive light-mode foundation
+- closer to a polished rental app feel, but not a literal brand copy
+
+Do not do a superficial patch.
+Do a careful system-level cleanup that makes later UI restyling much easier and more consistent.

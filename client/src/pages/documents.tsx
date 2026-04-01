@@ -80,7 +80,7 @@ export default function DocumentsPage() {
       <div className="max-w-xl mx-auto p-4 space-y-4 pb-8">
         <div className="app-card">
           <div className="flex items-center gap-3 mb-4">
-            <FileText className="w-5 h-5 text-[#9CA3AF]" />
+            <FileText className="w-5 h-5 text-ha-icon-secondary" />
             <div>
               <p className="text-[15px] font-bold text-[#000]">{t("documents.heading")}</p>
               <p className="text-[12px] text-[#6B7280]">
@@ -115,7 +115,7 @@ export default function DocumentsPage() {
                   ) : (
                     <Circle className="w-5 h-5 text-[#D1D5DB] flex-shrink-0" />
                   )}
-                  <span className={`text-[14px] font-medium flex-1 ${checked ? "text-[#9CA3AF] line-through" : "text-[#000]"}`}>
+                  <span className={`text-[14px] font-medium flex-1 ${checked ? "text-ha-icon-secondary line-through" : "text-[#000]"}`}>
                     {t(`documents.items.${key}`)}
                   </span>
                 </button>
@@ -125,7 +125,7 @@ export default function DocumentsPage() {
         </div>
 
         <div className="app-card">
-          <p className="text-[14px] text-[#4B5563] leading-relaxed">
+          <p className="text-[14px] text-ha-text-secondary leading-relaxed">
             {t("documents.tip")}
           </p>
         </div>

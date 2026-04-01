@@ -5,24 +5,24 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[6px] text-[16px] font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/20 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 transition-colors",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[--ha-btn-radius] text-[16px] font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/20 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 transition-colors",
   {
     variants: {
       variant: {
         default:
-          "bg-[#e91e63] hover:bg-[#d81b60] text-white border-0",
+          "bg-ha-primary hover:bg-ha-primary-hover text-white border-0",
         destructive:
           "bg-destructive text-destructive-foreground border border-destructive-border",
         outline:
-          "border-2 border-[#e91e63] bg-white text-[#e91e63] hover:bg-[#fce4ec]",
-        secondary: "border border-[#E5E7EB] bg-white text-ha-text hover:bg-[#F3F4F6]",
-        ghost: "border border-transparent hover:bg-[#F3F4F6]",
-        banner: "bg-white text-ha-text hover:bg-[#F3F4F6] border-0 font-medium",
+          "border-2 border-ha-primary bg-white text-ha-primary hover:bg-ha-primary/5",
+        secondary: "border border-[#E5E7EB] bg-white text-ha-text hover:bg-ha-surface-hover",
+        ghost: "border border-transparent hover:bg-ha-surface-hover",
+        banner: "bg-white text-ha-text hover:bg-ha-surface-hover border-0 font-medium",
       },
       size: {
         default: "min-h-[56px] px-7 py-3.5",
-        sm: "min-h-8 rounded-[6px] px-4 text-xs",
-        lg: "min-h-[56px] rounded-[6px] px-8",
+        sm: "min-h-8 rounded-[--ha-btn-radius] px-4 text-xs",
+        lg: "min-h-[56px] rounded-[--ha-btn-radius] px-8",
         icon: "h-9 w-9",
         compact: "min-h-[44px] px-5 py-2 text-[14px]",
         save: "min-h-[56px] w-[180px] px-6",
