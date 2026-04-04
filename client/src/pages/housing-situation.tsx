@@ -128,7 +128,7 @@ export default function HousingSituationPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#EBEBF0" }}>
+    <div className="min-h-screen" style={{ backgroundColor: "#F7F7F7" }}>
       <AppHeader title={t("settings.housingSituation")} onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">

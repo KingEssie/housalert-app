@@ -167,7 +167,7 @@ export function GuidePage({ guideId }: { guideId: string }) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#EBEBF0" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F7F7F7" }}>
       <AppHeader title={guide.title} onBack={() => navigate("/dashboard?tab=tips")} />
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-32">
         <p className="text-[15px] text-[#000] leading-relaxed mb-6" data-testid={`text-guide-intro-${guideId}`}>

@@ -30,7 +30,7 @@ export default function MapViewMapbox({
       el.style.width = "16px";
       el.style.height = "16px";
       el.style.borderRadius = "50%";
-      el.style.backgroundColor = "#e91e63";
+      el.style.backgroundColor = "#FF385C";
       el.style.border = "2px solid #fff";
       el.style.boxShadow = "0 1px 4px rgba(0,0,0,0.3)";
       const marker = new mapboxgl.Marker({ element: el })

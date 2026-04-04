@@ -103,7 +103,7 @@ export default function PreferencesPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#EBEBF0" }}>
+    <div className="min-h-screen" style={{ backgroundColor: "#F7F7F7" }}>
       <AppHeader title={t("settings.preferences")} onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
@@ -122,7 +122,7 @@ export default function PreferencesPage() {
                       key={opt.value}
                       onClick={() => setTheme(opt.value)}
                       className={`flex flex-col items-center gap-1.5 py-3 rounded-[6px] transition-all active:scale-[0.97] ${
-                        isActive ? "bg-ha-primary text-white" : "text-ha-text-muted hover:bg-[#EBEBF0]"
+                        isActive ? "bg-ha-primary text-white" : "text-ha-text-muted hover:bg-[#F7F7F7]"
                       }`}
                       data-testid={`theme-${opt.value}`}
                     >
@@ -195,7 +195,7 @@ export default function PreferencesPage() {
               <button
                 key={lang.code}
                 onClick={() => handleLanguageChange(lang.code)}
-                className={`w-full flex items-center justify-between py-3.5 px-2 rounded-[6px] text-left active:bg-[#EBEBF0] transition-colors ${locale === lang.code ? "bg-ha-primary/10" : ""}`}
+                className={`w-full flex items-center justify-between py-3.5 px-2 rounded-[6px] text-left active:bg-[#F7F7F7] transition-colors ${locale === lang.code ? "bg-ha-primary/10" : ""}`}
                 data-testid={`button-lang-${lang.code}`}
               >
                 <span className="text-[15px] text-[#000] font-medium">{lang.label}</span>

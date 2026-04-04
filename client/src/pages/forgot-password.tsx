@@ -55,7 +55,7 @@ export default function ForgotPasswordPage() {
 
   if (sent) {
     return (
-      <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: "#EBEBF0" }} data-testid="page-forgot-password-sent">
+      <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: "#F7F7F7" }} data-testid="page-forgot-password-sent">
         <div className="pt-[max(env(safe-area-inset-top),8px)] px-5">
           <button
             onClick={() => navigate("/")}
@@ -93,7 +93,7 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: "#EBEBF0" }} data-testid="page-forgot-password">
+    <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: "#F7F7F7" }} data-testid="page-forgot-password">
       <div className="pt-[max(env(safe-area-inset-top),8px)] px-5">
         <button
           onClick={() => navigate("/")}

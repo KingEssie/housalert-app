@@ -1,0 +1,134 @@
+Refactor the entire app design system to a clean, minimal Airbnb-style foundation.
+
+GOAL:
+Create a modern, premium, minimal UI by simplifying colors, typography, and background usage.
+
+----------------------------------------
+1. COLOR SYSTEM (STRICT)
+----------------------------------------
+
+Replace ALL current colors with this system:
+
+Primary color:
+- #FF385C (Airbnb-style pink)
+
+Text colors:
+- Primary text: #111111
+- Secondary text: #6B7280
+- Muted text: #9CA3AF
+
+Backgrounds:
+- App background: #F7F7F7
+- Card background: #FFFFFF
+
+Borders:
+- #E5E7EB (very subtle)
+
+Status colors:
+- Success (green): #16A34A
+- Error (red): #DC2626
+
+REMOVE:
+- ALL purple colors
+- ALL blue accents
+- ANY random hex colors not listed above
+
+----------------------------------------
+2. GLOBAL STYLING RULES
+----------------------------------------
+
+- Remove heavy shadows
+- Use VERY subtle shadows only:
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05)
+
+- Border radius:
+  Use consistent radius everywhere:
+  border-radius: 16px
+
+- Remove visual clutter:
+  No thick borders
+  No unnecessary dividers
+
+----------------------------------------
+3. TYPOGRAPHY SYSTEM
+----------------------------------------
+
+Apply consistent typography:
+
+Page titles:
+- font-size: 24px
+- font-weight: 700
+- color: #111111
+
+Card titles:
+- font-size: 18px
+- font-weight: 600
+- color: #111111
+
+Body text:
+- font-size: 14px
+- color: #6B7280
+
+Important info (price, key data):
+- font-size: 16px–18px
+- font-weight: 600
+- color: #111111
+
+REMOVE:
+- light grey small unreadable text
+- inconsistent font sizes
+
+----------------------------------------
+4. BACKGROUND & LAYOUT
+----------------------------------------
+
+- Entire app background = #F7F7F7
+- All content sits on white cards
+
+- Add consistent padding:
+  padding: 16px
+
+- Ensure spacing between sections:
+  margin-bottom: 16px–24px
+
+----------------------------------------
+5. ICONS
+----------------------------------------
+
+- All icons should be:
+  color: #111111 or #6B7280
+- Remove colored icons except:
+  - primary actions (pink)
+  - status (green/red)
+
+----------------------------------------
+6. BUTTONS
+----------------------------------------
+
+Primary buttons:
+- background: #FF385C
+- color: white
+- border-radius: 999px
+- font-weight: 600
+
+Secondary buttons:
+- background: transparent
+- color: #FF385C
+
+----------------------------------------
+7. CLEANUP TASK
+----------------------------------------
+
+- Remove any inconsistent styles
+- Replace inline styles with system values
+- Ensure consistency across ALL screens:
+  - Home
+  - Matches
+  - Favorieten
+  - Profiel
+
+----------------------------------------
+
+IMPORTANT:
+Do NOT change layout or functionality yet.
+Only apply visual system changes.

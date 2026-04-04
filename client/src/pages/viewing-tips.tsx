@@ -77,7 +77,7 @@ export default function ViewingTipsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#EBEBF0] flex flex-col">
+    <div className="min-h-screen bg-[#F7F7F7] flex flex-col">
       <AppHeader title={t("viewingTips.title")} onBack={() => navigate("/dashboard?tab=tips")} />
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-32">
@@ -119,7 +119,7 @@ export default function ViewingTipsPage() {
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-[#EBEBF0] border-t border-[#E5E5E5] p-5 z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-[#F7F7F7] border-t border-[#E5E5E5] p-5 z-10">
         <div className="max-w-xl mx-auto">
           {markedDone ? (
             <div className="flex items-center justify-center gap-2 h-[56px] text-ha-primary">

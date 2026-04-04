@@ -97,7 +97,7 @@ function SetupShell({
   showBack?: boolean;
 }) {
   return (
-    <div className="min-h-[100dvh] flex flex-col ob-dark" style={{ background: "linear-gradient(180deg, #151226 0%, #0d0b1e 100%)" }} data-testid={`setup-step-${step}`}>
+    <div className="min-h-[100dvh] flex flex-col ob-dark" style={{ background: "linear-gradient(180deg, #111111 0%, #0a0a0a 100%)" }} data-testid={`setup-step-${step}`}>
       <header className="sticky top-0 z-20 backdrop-blur-md border-b" style={{ backgroundColor: "rgba(21,18,38,0.95)", borderColor: "rgba(255,255,255,0.08)" }}>
         <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
           {showBack && onBack ? (
@@ -133,7 +133,7 @@ function PrimaryBtn({ onClick, children, loading, disabled, testId }: {
       onClick={onClick}
       disabled={disabled || loading}
       className="w-full h-[56px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50"
-      style={{ background: "linear-gradient(135deg, #e91e63 0%, #ec407a 100%)", boxShadow: "0 4px 15px rgba(233,30,99,0.3)" }}
+      style={{ background: "linear-gradient(135deg, #FF385C 0%, #FF6B81 100%)", boxShadow: "0 4px 15px rgba(255,56,92,0.3)" }}
       data-testid={testId}
     >
       {loading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : children}
@@ -226,7 +226,7 @@ function PaywallStep({ onSelectPlan, onSkip, t }: {
               className="w-full rounded-[--ha-card-radius] border-2 transition-all text-left relative overflow-hidden"
               style={{
                 borderColor: isSelected ? BRAND : "rgba(255,255,255,0.12)",
-                backgroundColor: isSelected ? "rgba(233,30,99,0.08)" : "rgba(255,255,255,0.04)",
+                backgroundColor: isSelected ? "rgba(255,56,92,0.08)" : "rgba(255,255,255,0.04)",
               }}
               data-testid={`card-plan-${plan.id}`}
             >
@@ -416,7 +416,7 @@ function LightPrimaryBtn({ onClick, children, loading, disabled, testId }: {
       onClick={onClick}
       disabled={disabled || loading}
       className="w-full h-[56px] rounded-[6px] text-[16px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
-      style={{ background: "linear-gradient(135deg, #e91e63 0%, #ec407a 100%)", boxShadow: "0 4px 15px rgba(233,30,99,0.25)" }}
+      style={{ background: "linear-gradient(135deg, #FF385C 0%, #FF6B81 100%)", boxShadow: "0 4px 15px rgba(255,56,92,0.25)" }}
       data-testid={testId}
     >
       {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>{children} <ArrowRight className="w-4 h-4" /></>}
@@ -510,7 +510,7 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
 
         <div className="flex items-center justify-center py-8">
           <div className="relative">
-            <div className="w-[240px] h-[140px] rounded-[--ha-card-radius] overflow-hidden" style={{ background: "linear-gradient(135deg, #151226 0%, #1c1932 100%)" }}>
+            <div className="w-[240px] h-[140px] rounded-[--ha-card-radius] overflow-hidden" style={{ background: "linear-gradient(135deg, #111111 0%, #1a1a1a 100%)" }}>
               <div className="absolute top-3 left-3 flex items-center gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: BRAND }} />
                 <div className="h-2 w-14 rounded-full bg-white/20" />
@@ -976,7 +976,7 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
               onClick={onInvite}
               disabled={!buddyEmail.includes("@") || loading}
               className="flex-1 h-[56px] rounded-[6px] text-[14px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
-              style={{ background: "linear-gradient(135deg, #e91e63 0%, #ec407a 100%)" }}
+              style={{ background: "linear-gradient(135deg, #FF385C 0%, #FF6B81 100%)" }}
               data-testid="button-buddy-invite"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{t("onboardingFlow.searchBuddy.invite")} <Send className="w-4 h-4" /></>}
@@ -1350,7 +1350,7 @@ export default function OnboardingSetup() {
 
   if (!profileLoaded) {
     return (
-      <div className="min-h-[100dvh] flex items-center justify-center ob-dark" style={{ background: "linear-gradient(180deg, #151226 0%, #0d0b1e 100%)" }}>
+      <div className="min-h-[100dvh] flex items-center justify-center ob-dark" style={{ background: "linear-gradient(180deg, #111111 0%, #0a0a0a 100%)" }}>
         <Loader2 className="w-8 h-8 animate-spin" style={{ color: BRAND }} />
       </div>
     );

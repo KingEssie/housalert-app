@@ -201,7 +201,7 @@ function WebsitePaywall({
                       </span>
                       <span
                         className="text-[13px] font-bold"
-                        style={{ color: plan.discount === "0% korting" ? OBW.textSecondary : "#e91e63" }}
+                        style={{ color: plan.discount === "0% korting" ? OBW.textSecondary : "#FF385C" }}
                       >
                         {plan.discount}
                       </span>

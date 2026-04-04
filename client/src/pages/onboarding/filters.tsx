@@ -80,7 +80,7 @@ function WebToggle({
     >
       <div
         className="w-[38px] h-[22px] rounded-full p-[2px] transition-colors shrink-0 mt-[1px]"
-        style={{ backgroundColor: checked ? "#e91e63" : "#d1d5db" }}
+        style={{ backgroundColor: checked ? "#FF385C" : "#d1d5db" }}
         onClick={(e) => { e.preventDefault(); onChange(!checked); }}
       >
         <div

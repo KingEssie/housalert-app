@@ -5,7 +5,7 @@ import { useTranslation } from "@/i18n";
 export default function NotFound() {
   const { t } = useTranslation();
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-[#EBEBF0]">
+    <div className="min-h-screen w-full flex items-center justify-center bg-[#F7F7F7]">
       <Card className="w-full max-w-md mx-4">
         <CardContent className="pt-6">
           <div className="flex mb-4 gap-2">

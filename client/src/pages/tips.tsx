@@ -142,7 +142,7 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
 
   return (
     <div className="flex flex-col pb-6">
-      <div className="sticky top-0 z-10 bg-[#EBEBF0] pt-5 pb-3 px-6">
+      <div className="sticky top-0 z-10 bg-[#F7F7F7] pt-5 pb-3 px-6">
         <h1 className="text-page-title" data-testid="heading-tips">
           {t("tips.title")}
         </h1>
@@ -157,7 +157,7 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
         <ReferralPromoCard onOpen={() => setReferralModalOpen(true)} />
 
         <div className="bg-white rounded-[6px] border border-[#E5E7EB] p-4 flex items-start gap-4" data-testid="card-tips-intro">
-          <div className="w-10 h-10 rounded-[6px] bg-[#EBEBF0] flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-[6px] bg-[#F7F7F7] flex items-center justify-center flex-shrink-0">
             <Lightbulb className="w-5 h-5 text-amber-400" />
           </div>
           <div>

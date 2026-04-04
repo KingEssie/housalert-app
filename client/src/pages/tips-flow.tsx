@@ -156,12 +156,12 @@ export default function TipsFlowPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#EBEBF0" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F7F7F7" }}>
       <header className="sticky top-0 z-10 bg-white border-b border-[rgba(15,23,42,0.04)]">
         <div className="max-w-[480px] mx-auto flex items-center h-[56px] px-4">
           <button
             onClick={handleBack}
-            className="w-9 h-9 rounded-full flex items-center justify-center active:bg-[#EBEBF0] transition-colors"
+            className="w-9 h-9 rounded-full flex items-center justify-center active:bg-[#F7F7F7] transition-colors"
             data-testid="button-tips-back"
           >
             <ArrowLeft className="w-5 h-5 text-[#000]" />
@@ -171,7 +171,7 @@ export default function TipsFlowPage() {
           </h1>
           <button
             onClick={handleClose}
-            className="w-9 h-9 rounded-full flex items-center justify-center active:bg-[#EBEBF0] transition-colors"
+            className="w-9 h-9 rounded-full flex items-center justify-center active:bg-[#F7F7F7] transition-colors"
             data-testid="button-tips-close"
           >
             <X className="w-5 h-5 text-[#000]" />
@@ -204,7 +204,7 @@ export default function TipsFlowPage() {
         >
           <div className="px-5 py-5">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-9 h-9 rounded-full bg-[#151226] flex items-center justify-center flex-shrink-0">
+              <div className="w-9 h-9 rounded-full bg-[#111111] flex items-center justify-center flex-shrink-0">
                 <span className="text-[14px] font-bold text-white">{currentStep + 1}</span>
               </div>
               <h2 className="text-[18px] font-semibold text-[#000] leading-tight" data-testid="text-step-title">

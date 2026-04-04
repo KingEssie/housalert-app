@@ -13,7 +13,7 @@ interface V2BottomCTAProps {
   children?: ReactNode;
 }
 
-const BRAND = "#e91e63";
+const BRAND = "#FF385C";
 
 export function V2BottomCTA({
   primaryLabel,
@@ -27,7 +27,7 @@ export function V2BottomCTA({
   children,
 }: V2BottomCTAProps) {
   return (
-    <div className="sticky bottom-0 z-30 bg-[#151226]/95 backdrop-blur-sm border-t border-white/10">
+    <div className="sticky bottom-0 z-30 bg-[#111111]/95 backdrop-blur-sm border-t border-white/10">
       <div className="max-w-lg mx-auto px-5 py-4 flex flex-col gap-2.5 pb-[max(env(safe-area-inset-bottom),16px)]">
         {children}
 

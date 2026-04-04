@@ -11,9 +11,9 @@ import { apiFetch } from "@/lib/api-base";
 import { useToast } from "@/hooks/use-toast";
 
 const OB = {
-  gradient: "linear-gradient(180deg, #151226 0%, #0d0b1e 100%)",
-  pink: "#e91e63",
-  pinkGradient: "linear-gradient(135deg, #e91e63 0%, #ec407a 100%)",
+  gradient: "linear-gradient(180deg, #111111 0%, #0a0a0a 100%)",
+  pink: "#FF385C",
+  pinkGradient: "linear-gradient(135deg, #FF385C 0%, #FF6B81 100%)",
   pinkShadow: "0 4px 15px rgba(233,30,99,0.3)",
   text: "#ffffff",
   textSecondary: "rgba(255,255,255,0.65)",
@@ -83,7 +83,7 @@ function LanguageDropdown() {
                 data-testid={`button-lang-${lang.code}`}
               >
                 <span className="text-[16px]">{lang.flag}</span>
-                <span className={`text-[14px] font-semibold ${isActive ? "text-[#e91e63]" : "text-white"}`}>
+                <span className={`text-[14px] font-semibold ${isActive ? "text-[#FF385C]" : "text-white"}`}>
                   {lang.label}
                 </span>
                 {isActive && (

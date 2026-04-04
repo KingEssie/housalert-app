@@ -25,7 +25,7 @@ export default function TipDetailPage() {
 
   if (!tip) {
     return (
-      <div className="min-h-screen bg-[#EBEBF0] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F7F7F7] flex items-center justify-center">
         <p className="text-[#6B7280]">{t("tips.notFound")}</p>
       </div>
     );
@@ -59,8 +59,8 @@ export default function TipDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#EBEBF0] flex flex-col">
-      <header className="sticky top-0 z-10 bg-[#EBEBF0] border-b border-[#E5E5E5]">
+    <div className="min-h-screen bg-[#F7F7F7] flex flex-col">
+      <header className="sticky top-0 z-10 bg-[#F7F7F7] border-b border-[#E5E5E5]">
         <div className="max-w-xl mx-auto flex items-center h-[56px] px-5">
           <button
             onClick={() => navigate("/dashboard?tab=tips")}
@@ -76,7 +76,7 @@ export default function TipDetailPage() {
       </header>
 
       <div className="max-w-xl mx-auto w-full px-5 pt-3">
-        <div className="w-full bg-[#EBEBF0] rounded-full h-1.5" data-testid="progress-bar">
+        <div className="w-full bg-[#F7F7F7] rounded-full h-1.5" data-testid="progress-bar">
           <div
             className="bg-ha-primary h-1.5 rounded-full transition-all duration-300"
             style={{ width: `${((currentIndex + 1) / TIP_IDS.length) * 100}%` }}
@@ -114,7 +114,7 @@ export default function TipDetailPage() {
         </button>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-[#EBEBF0] border-t border-[#E5E5E5] p-4 pb-5 z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-[#F7F7F7] border-t border-[#E5E5E5] p-4 pb-5 z-10">
         <div className="max-w-xl mx-auto flex gap-3">
           <Button
             onClick={handleMarkRead}
@@ -122,7 +122,7 @@ export default function TipDetailPage() {
             className={`flex-1 ha-btn font-medium ${
               isRead
                 ? "bg-ha-success-light text-ha-success border border-ha-success/30 hover:bg-ha-success-light"
-                : "bg-white text-[#000] border border-[#E5E5E5] hover:bg-[#EBEBF0]"
+                : "bg-white text-[#000] border border-[#E5E5E5] hover:bg-[#F7F7F7]"
             }`}
             data-testid="button-mark-read"
           >

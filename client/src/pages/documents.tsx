@@ -74,7 +74,7 @@ export default function DocumentsPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#EBEBF0" }} data-testid="page-documents">
+    <div className="min-h-screen" style={{ backgroundColor: "#F7F7F7" }} data-testid="page-documents">
       <AppHeader title={t("documents.title")} />
 
       <div className="max-w-xl mx-auto p-4 space-y-4 pb-8">
@@ -107,7 +107,7 @@ export default function DocumentsPage() {
                   key={key}
                   onClick={() => toggleItem(key)}
                   disabled={saving}
-                  className="flex items-center gap-3 py-3.5 px-2 rounded-[6px] text-left transition-colors hover:bg-[#EBEBF0] active:bg-[#EBEBF0]"
+                  className="flex items-center gap-3 py-3.5 px-2 rounded-[6px] text-left transition-colors hover:bg-[#F7F7F7] active:bg-[#F7F7F7]"
                   data-testid={`doc-${key}`}
                 >
                   {checked ? (

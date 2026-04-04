@@ -10,8 +10,8 @@ import { useV2Onboarding } from "@/lib/v2-onboarding-store";
 import { Eye, EyeOff, ChevronDown, ArrowRight, Loader2, Star } from "lucide-react";
 import { HousAlertLogo } from "@/components/housalert-logo";
 
-const ACCENT = "#e91e63";
-const BG = "#151226";
+const ACCENT = "#FF385C";
+const BG = "#111111";
 
 export default function V2WelcomePage() {
   const [, navigate] = useLocation();
@@ -132,7 +132,7 @@ export default function V2WelcomePage() {
                   }}
                   className={`w-full px-4 py-2.5 text-left text-[14px] flex items-center justify-between hover:bg-white/5 transition-colors ${
                     locale === l.code
-                      ? "text-[#e91e63] font-medium"
+                      ? "text-[#FF385C] font-medium"
                       : "text-white/70"
                   }`}
                   data-testid={`lang-${l.code}`}
@@ -167,7 +167,7 @@ export default function V2WelcomePage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t("v2.welcome.emailPlaceholder")}
               autoComplete="email"
-              className="w-full h-[56px] rounded-[6px] bg-white px-5 text-[16px] text-[#151226] placeholder-[#B0B0B0] outline-none border-2 border-transparent focus:border-[#e91e63] transition-colors"
+              className="w-full h-[56px] rounded-[6px] bg-white px-5 text-[16px] text-[#111111] placeholder-[#B0B0B0] outline-none border-2 border-transparent focus:border-[#FF385C] transition-colors"
               data-testid="input-v2-email"
             />
           </div>
@@ -183,7 +183,7 @@ export default function V2WelcomePage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t("v2.welcome.passwordPlaceholder")}
                 autoComplete="current-password"
-                className="w-full h-[56px] rounded-[6px] bg-white px-5 pr-14 text-[16px] text-[#151226] placeholder-[#B0B0B0] outline-none border-2 border-transparent focus:border-[#e91e63] transition-colors"
+                className="w-full h-[56px] rounded-[6px] bg-white px-5 pr-14 text-[16px] text-[#111111] placeholder-[#B0B0B0] outline-none border-2 border-transparent focus:border-[#FF385C] transition-colors"
                 data-testid="input-v2-password"
               />
               <button
@@ -205,7 +205,7 @@ export default function V2WelcomePage() {
         <div className="flex justify-end mt-3 mb-7">
           <button
             onClick={handleForgotPassword}
-            className="text-[13px] font-medium text-[#e91e63]/70 hover:text-[#e91e63] transition-colors py-1"
+            className="text-[13px] font-medium text-[#FF385C]/70 hover:text-[#FF385C] transition-colors py-1"
             data-testid="button-v2-forgot-password"
           >
             {t("v2.welcome.forgotPassword")}

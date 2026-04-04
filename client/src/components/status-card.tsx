@@ -24,35 +24,35 @@ export function StatusCard({
   testId,
 }: StatusCardProps) {
   return (
-    <div className="ha-card !p-0 overflow-hidden" data-testid={testId}>
+    <div className="rounded-[--ha-card-radius] bg-white shadow-ha-card overflow-hidden" data-testid={testId}>
       <button
         onClick={onAction}
-        className="w-full px-5 py-[18px] flex items-center gap-3.5 text-left active:bg-ha-surface-hover transition-colors"
+        className="w-full px-5 py-4 flex items-center gap-4 text-left active:bg-ha-surface-hover transition-colors"
         data-testid={`${testId}-action`}
       >
-        <div className="w-10 h-10 rounded-[--ha-card-inner-radius] bg-ha-surface flex items-center justify-center flex-shrink-0">
+        <div className="w-11 h-11 rounded-full bg-ha-surface flex items-center justify-center flex-shrink-0">
           {icon}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[16px] font-bold text-black leading-snug">{title}</p>
-          <div className="flex items-center gap-1.5 mt-1">
+          <p className="text-[15px] font-semibold text-[#111111] leading-snug">{title}</p>
+          <div className="flex items-center gap-1.5 mt-0.5" data-testid={`${testId}-status`}>
             {configured ? (
               <>
-                <CheckCircle2 className="w-[15px] h-[15px] text-ha-success flex-shrink-0" />
+                <CheckCircle2 className="w-[14px] h-[14px] text-ha-success flex-shrink-0" />
                 <span className="text-[13px] font-medium text-ha-success">{configuredText}</span>
               </>
             ) : (
               <>
-                <XCircle className="w-[15px] h-[15px] text-ha-danger flex-shrink-0" />
+                <XCircle className="w-[14px] h-[14px] text-ha-danger flex-shrink-0" />
                 <span className="text-[13px] font-medium text-ha-danger">{unconfiguredText}</span>
               </>
             )}
           </div>
           {description && (
-            <p className="text-[13px] text-ha-text-muted mt-1 leading-snug line-clamp-2">{description}</p>
+            <p className="text-[13px] text-ha-text-muted mt-0.5 leading-snug line-clamp-2">{description}</p>
           )}
         </div>
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="flex items-center gap-1.5 flex-shrink-0">
           {actionLabel && (
             <span className="text-[13px] font-semibold text-ha-primary">{actionLabel}</span>
           )}

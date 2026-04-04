@@ -359,7 +359,7 @@ export default function NewSearchPage() {
 
   if (loading || (isEditMode && !editLoaded)) {
     return (
-      <div className="min-h-screen bg-[#EBEBF0] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F7F7F7] flex items-center justify-center">
         <div className="w-8 h-8 rounded-full border-2 border-ha-primary border-t-transparent animate-spin" />
       </div>
     );
@@ -369,8 +369,8 @@ export default function NewSearchPage() {
 
   if (atLimit) {
     return (
-      <div className="min-h-screen bg-[#EBEBF0] flex flex-col">
-        <header className="fixed top-0 left-0 right-0 z-50 bg-[#EBEBF0]">
+      <div className="min-h-screen bg-[#F7F7F7] flex flex-col">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-[#F7F7F7]">
           <div className="max-w-lg mx-auto flex items-center justify-between h-[56px] px-5">
             <button
               onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=home")}
@@ -406,8 +406,8 @@ export default function NewSearchPage() {
   const perWeekRaw = estimateQuery.data?.perWeekEstimate ?? 0;
 
   return (
-    <div className="min-h-screen bg-[#EBEBF0] flex flex-col">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#EBEBF0]">
+    <div className="min-h-screen bg-[#F7F7F7] flex flex-col">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#F7F7F7]">
         <div className="max-w-lg mx-auto flex items-center justify-between h-[56px] px-5">
           <button
             onClick={goBack}
@@ -634,7 +634,7 @@ function ToggleSwitch({
     <label className="flex items-center gap-3 cursor-pointer" data-testid={testId}>
       <div
         className="w-[44px] h-[24px] rounded-full p-[2px] transition-colors shrink-0"
-        style={{ backgroundColor: checked ? "#e91e63" : "#D1D5DB" }}
+        style={{ backgroundColor: checked ? "#FF385C" : "#D1D5DB" }}
         onClick={() => onChange(!checked)}
       >
         <div
@@ -801,7 +801,7 @@ function ReviewRow({ label, value, onEdit }: { label: string; value: string; onE
       </div>
       <button
         onClick={onEdit}
-        className="flex-shrink-0 w-8 h-8 rounded-full bg-[#EBEBF0] flex items-center justify-center hover:bg-[#FAFAFA] transition-colors"
+        className="flex-shrink-0 w-8 h-8 rounded-full bg-[#F7F7F7] flex items-center justify-center hover:bg-[#FAFAFA] transition-colors"
         data-testid={`button-review-edit-${label.toLowerCase().replace(/\s/g, "-")}`}
       >
         <Pencil className="w-3.5 h-3.5 text-ha-text-muted" />
@@ -917,7 +917,7 @@ function StepReview({
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#EBEBF0] border-t border-[#E5E5E5] p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#F7F7F7] border-t border-[#E5E5E5] p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
         <div className="max-w-lg mx-auto">
           <Button
             onClick={onSubmit}

@@ -106,7 +106,7 @@ export default function ProfileEditPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#EBEBF0" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F7F7F7" }}>
       <AppHeader title={config.question} onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <div className="flex-1 max-w-xl mx-auto px-5 w-full">
@@ -150,7 +150,7 @@ export default function ProfileEditPage() {
       </div>
 
       {!loading && (
-        <div className="sticky bottom-0 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 px-5" style={{ background: "linear-gradient(to top, #EBEBF0, #EBEBF0 80%, transparent)" }}>
+        <div className="sticky bottom-0 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 px-5" style={{ background: "linear-gradient(to top, #F7F7F7, #F7F7F7 80%, transparent)" }}>
           <div className="max-w-xl mx-auto flex justify-center">
             <button
               onClick={handleSave}

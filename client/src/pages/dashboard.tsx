@@ -202,14 +202,14 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
         <div className="ha-card">
           <div className="flex items-center gap-3 mb-4">
             <Search className="w-5 h-5 text-ha-primary flex-shrink-0" />
-            <p className="text-[17px] font-bold text-black flex-1">{t("searchProfiles.sectionTitle")}</p>
-            <span className="text-[13px] font-semibold text-[#0ea5e9] bg-[#e0f2fe] px-2.5 py-0.5 rounded-full">0/{MAX_PROFILES}</span>
+            <p className="text-[17px] font-bold text-[#111111] flex-1">{t("searchProfiles.sectionTitle")}</p>
+            <span className="text-[13px] font-semibold text-[#6B7280] bg-[#F3F4F6] px-2.5 py-0.5 rounded-full">0/{MAX_PROFILES}</span>
           </div>
           <div className="flex flex-col items-center text-center py-6 px-4">
-            <div className="w-12 h-12 rounded-full bg-[#e0f2fe] flex items-center justify-center mb-3">
-              <Search className="w-6 h-6 text-[#0ea5e9]" />
+            <div className="w-12 h-12 rounded-full bg-[#F3F4F6] flex items-center justify-center mb-3">
+              <Search className="w-6 h-6 text-[#6B7280]" />
             </div>
-            <p className="text-[16px] font-bold text-black mb-1" data-testid="text-empty-title">{t("searchProfiles.emptyTitle")}</p>
+            <p className="text-[16px] font-bold text-[#111111] mb-1" data-testid="text-empty-title">{t("searchProfiles.emptyTitle")}</p>
             <p className="text-[14px] text-ha-text-secondary mb-4" data-testid="text-empty-subtitle">{t("searchProfiles.emptySubtitle")}</p>
             <button
               onClick={() => navigate("/dashboard/searches/new")}
@@ -230,8 +230,8 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
         <div className="ha-card">
           <div className="flex items-center gap-3 mb-4">
             <Search className="w-5 h-5 text-ha-primary flex-shrink-0" />
-            <p className="text-[17px] font-bold text-black flex-1">{t("searchProfiles.sectionTitle")}</p>
-            <span className="text-[13px] font-semibold text-[#0ea5e9] bg-[#e0f2fe] px-2.5 py-0.5 rounded-full">{profiles.length}/{MAX_PROFILES}</span>
+            <p className="text-[17px] font-bold text-[#111111] flex-1">{t("searchProfiles.sectionTitle")}</p>
+            <span className="text-[13px] font-semibold text-[#6B7280] bg-[#F3F4F6] px-2.5 py-0.5 rounded-full">{profiles.length}/{MAX_PROFILES}</span>
           </div>
           <div className="flex flex-col gap-2">
             {profiles.map((p) => (
@@ -243,7 +243,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
               >
                 <span className="w-2.5 h-2.5 rounded-full bg-ha-success flex-shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-[16px] font-bold text-black line-clamp-1" data-testid={`text-profile-title-${p.id}`}>
+                  <p className="text-[16px] font-bold text-[#111111] line-clamp-1" data-testid={`text-profile-title-${p.id}`}>
                     {getProfileTitle(p, t, locale)}
                   </p>
                   <p className="text-[14px] text-ha-text-secondary mt-0.5 line-clamp-1" data-testid={`text-profile-summary-${p.id}`}>
@@ -365,7 +365,7 @@ function HomeAccountCompletionCard({ accessToken, navigate }: { accessToken: str
   return (
     <ExpandableCompletionCard
       title={t("profile.completeAccount")}
-      icon={<CheckCircle2 className="w-6 h-6 text-[#e91e63]" />}
+      icon={<CheckCircle2 className="w-6 h-6 text-[#FF385C]" />}
       steps={steps}
       completedLabel={t("activation.completed")}
       testId="card-account-completion"
@@ -389,7 +389,7 @@ function HomeTipsCompletionCard({ navigate }: { navigate: (path: string) => void
   return (
     <ExpandableCompletionCard
       title={t("profile.tipsTitle")}
-      icon={<Rocket className="w-6 h-6 text-[#e91e63]" />}
+      icon={<Rocket className="w-6 h-6 text-[#FF385C]" />}
       steps={steps}
       completedLabel={t("activation.completed")}
       testId="card-tips-completion"
@@ -441,7 +441,7 @@ function ProfileAccountCompletionCard({ navigate }: { navigate: (path: string) =
   return (
     <ExpandableCompletionCard
       title={t("profile.completeAccount")}
-      icon={<CheckCircle2 className="w-6 h-6 text-[#e91e63]" />}
+      icon={<CheckCircle2 className="w-6 h-6 text-[#FF385C]" />}
       steps={steps}
       completedLabel={t("profile.completedLabel")}
       testId="card-profile-account-completion"
@@ -465,7 +465,7 @@ function ProfileTipsCompletionCard({ navigate }: { navigate: (path: string) => v
   return (
     <ExpandableCompletionCard
       title={t("profile.tipsTitle")}
-      icon={<Rocket className="w-6 h-6 text-[#e91e63]" />}
+      icon={<Rocket className="w-6 h-6 text-[#FF385C]" />}
       steps={steps}
       completedLabel={t("profile.completedLabel")}
       testId="card-profile-tips-completion"
@@ -532,7 +532,7 @@ function HomeTab({
           {firstName ? t("home.greeting", { name: firstName }) : t("home.greetingDefault")}
         </h1>
       </div>
-      <div className="flex flex-col gap-3 px-4 mt-4">
+      <div className="flex flex-col gap-5 px-4 mt-5">
 
       <SearchProfilesSection profiles={profiles} navigate={navigate} />
 
@@ -540,19 +540,21 @@ function HomeTab({
       <HomeTipsCompletionCard navigate={navigate} />
 
       {!subscription.isTrial && !subscription.isActive && (
-        <div className="ha-card !bg-[#EDEAF2]" data-testid="card-upgrade-warning">
-          <div className="flex items-start gap-3 mb-3">
-            <Lock className="w-5 h-5 text-[#151226] flex-shrink-0 mt-0.5" />
-            <div>
-              <p className="text-[16px] font-bold text-black">Je loopt mogelijk je droomwoning mis...</p>
-              <p className="text-[14px] text-ha-text-secondary mt-1.5 leading-relaxed">
+        <div className="rounded-[--ha-card-radius] bg-white shadow-ha-card p-5" data-testid="card-upgrade-warning">
+          <div className="flex items-start gap-3 mb-4">
+            <div className="w-10 h-10 rounded-full bg-ha-surface flex items-center justify-center flex-shrink-0 mt-0.5">
+              <Lock className="w-5 h-5 text-[#111111]" />
+            </div>
+            <div className="flex-1">
+              <p className="text-[15px] font-semibold text-[#111111]">Je loopt mogelijk je droomwoning mis...</p>
+              <p className="text-[14px] text-ha-text-secondary mt-1 leading-relaxed">
                 Met een gratis abonnement kan je niet reageren op woningen. Zo loop je mogelijk je droomwoning mis. Upgrade naar een betaald account en mis nooit meer een huurwoning!
               </p>
             </div>
           </div>
           <button
             onClick={() => navigate("/paywall")}
-            className="w-full h-[56px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[16px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
+            className="w-full h-[52px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[15px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
             data-testid="button-upgrade-warning-cta"
           >
             Upgraden
@@ -560,33 +562,33 @@ function HomeTab({
         </div>
       )}
 
+      <div className="flex flex-col gap-2.5">
+        <StatusCard
+          icon={<Sparkles className="w-5 h-5 text-ha-primary" />}
+          title={t("profile.reactionLetter2")}
+          configured={hasReactieBrief}
+          configuredText={t("home.reactionLetterConfigured") || "Reactiebrief ingesteld"}
+          unconfiguredText={t("home.reactionLetterMissing") || "Nog geen reactiebrief"}
+          actionLabel={hasReactieBrief ? (t("common.manage") || "Beheren") : (t("common.generate") || "Genereren")}
+          onAction={() => navigate("/application-letter")}
+          testId="card-home-reaction-letter"
+        />
 
-
-      <StatusCard
-        icon={<Sparkles className="w-5 h-5 text-ha-primary" />}
-        title={t("profile.reactionLetter2")}
-        configured={hasReactieBrief}
-        configuredText={t("home.reactionLetterConfigured") || "Reactiebrief ingesteld"}
-        unconfiguredText={t("home.reactionLetterMissing") || "Nog geen reactiebrief"}
-        actionLabel={hasReactieBrief ? (t("common.manage") || "Beheren") : (t("common.generate") || "Genereren")}
-        onAction={() => navigate("/application-letter")}
-        testId="card-home-reaction-letter"
-      />
-
-      <StatusCard
-        icon={<Users className="w-5 h-5 text-ha-primary" />}
-        title={t("profile.zoekbuddyTitle")}
-        configured={hasZoekbuddy}
-        configuredText={t("home.zoekbuddyConfigured") || "Zoekbuddy ingesteld"}
-        unconfiguredText={t("home.zoekbuddyMissing") || "Nog geen zoekbuddy"}
-        actionLabel={hasZoekbuddy ? (t("common.manage") || "Beheren") : (t("common.add") || "Toevoegen")}
-        onAction={() => navigate("/profile/edit/search_buddy_email")}
-        testId="card-home-zoekbuddy"
-      />
+        <StatusCard
+          icon={<Users className="w-5 h-5 text-ha-primary" />}
+          title={t("profile.zoekbuddyTitle")}
+          configured={hasZoekbuddy}
+          configuredText={t("home.zoekbuddyConfigured") || "Zoekbuddy ingesteld"}
+          unconfiguredText={t("home.zoekbuddyMissing") || "Nog geen zoekbuddy"}
+          actionLabel={hasZoekbuddy ? (t("common.manage") || "Beheren") : (t("common.add") || "Toevoegen")}
+          onAction={() => navigate("/profile/edit/search_buddy_email")}
+          testId="card-home-zoekbuddy"
+        />
+      </div>
 
       <RecentlyViewedSection accessToken={accessToken} />
 
-      <div className="rounded-[--ha-card-radius] bg-[#151226] p-5" data-testid="card-home-referral">
+      <div className="rounded-[--ha-card-radius] bg-[#111111] p-5" data-testid="card-home-referral">
         <p className="text-[11px] font-semibold text-ha-primary tracking-wider uppercase mb-1" data-testid="text-referral-label">
           {t("referral.homeLabel")}
         </p>
@@ -749,17 +751,18 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
         <h1 className="text-page-title">{t("matches.title")}</h1>
       </div>
 
-      <div className="px-4 flex flex-col gap-8 mt-4">
+      <div className="px-4 flex flex-col gap-5 mt-5">
 
       {apiMatchesQuery.isLoading ? (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
           {[1, 2].map((i) => (
-            <div key={i} className="animate-pulse">
-              <div className="rounded-[6px] bg-white" style={{ aspectRatio: "4/3" }} />
-              <div className="mt-3 flex flex-col gap-2">
-                <div className="h-4 bg-white rounded w-1/3" />
-                <div className="h-4 bg-white rounded w-2/3" />
-                <div className="h-3 bg-white rounded w-1/4" />
+            <div key={i} className="animate-pulse rounded-[--ha-card-radius] bg-white shadow-ha-card overflow-hidden">
+              <div className="p-3 pb-0">
+                <div className="rounded-[12px] bg-ha-surface" style={{ aspectRatio: "16/10" }} />
+              </div>
+              <div className="px-4 pt-3 pb-3.5 flex flex-col gap-2">
+                <div className="h-4 bg-ha-surface rounded w-2/3" />
+                <div className="h-3 bg-ha-surface rounded w-1/3" />
               </div>
             </div>
           ))}
@@ -769,7 +772,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           <div className="w-14 h-14 rounded-[--ha-card-inner-radius] bg-ha-surface flex items-center justify-center">
             <AlertCircle className="w-6 h-6 text-ha-text-muted" />
           </div>
-          <p className="text-[18px] text-title text-[#000]">{t("matches.loadError")}</p>
+          <p className="text-[18px] text-title text-[#111111]">{t("matches.loadError")}</p>
           <p className="text-[15px] text-ha-text-secondary leading-relaxed">{t("matches.loadErrorDesc")}</p>
           <button
             onClick={() => apiMatchesQuery.refetch()}
@@ -789,7 +792,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           testId="empty-matches"
         />
       ) : (
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-4">
           {allMatchesSorted.map((m) => (
             <ListingCardFull
               key={m.listing_id}
@@ -816,7 +819,7 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
   const { t } = useTranslation();
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#EBEBF0] flex flex-col">
+    <div className="fixed inset-0 z-50 bg-[#F7F7F7] flex flex-col">
       <header className="sticky top-0 z-10">
         <div className="max-w-lg mx-auto flex items-center h-[56px] px-4">
           <button
@@ -824,9 +827,9 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
             className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center mr-3 active:scale-95 transition-transform"
             data-testid="button-delete-back"
           >
-            <ArrowLeft className="w-4 h-4 text-[#000]/80" />
+            <ArrowLeft className="w-4 h-4 text-[#111111]/80" />
           </button>
-          <h1 className="text-[17px] text-title text-[#000] flex-1 tracking-wide">{t("filters.deleteTitle")}</h1>
+          <h1 className="text-[17px] text-title text-[#111111] flex-1 tracking-wide">{t("filters.deleteTitle")}</h1>
         </div>
       </header>
 
@@ -834,10 +837,10 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
         <div className="w-16 h-16 rounded-[--ha-card-inner-radius] bg-ha-primary flex items-center justify-center mb-6">
           <Trash2 className="w-8 h-8 text-white" />
         </div>
-        <h2 className="text-[22px] text-title text-[#000] mb-3 text-center" data-testid="text-delete-title">
+        <h2 className="text-[22px] text-title text-[#111111] mb-3 text-center" data-testid="text-delete-title">
           {t("filters.deleteQuestion")}
         </h2>
-        <p className="text-[15px] text-[#000]/70 text-center max-w-[320px] mb-10 leading-relaxed" data-testid="text-delete-body">
+        <p className="text-[15px] text-[#111111]/70 text-center max-w-[320px] mb-10 leading-relaxed" data-testid="text-delete-body">
           {t("filters.deleteConfirm")}
         </p>
         <div className="w-full max-w-[320px] flex flex-col gap-3">
@@ -850,7 +853,7 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
           </button>
           <button
             onClick={onCancel}
-            className="w-full h-[56px] rounded-[--ha-btn-radius] border border-white/20 text-[#000] text-[16px] font-medium hover:bg-white/5 transition-colors"
+            className="w-full h-[56px] rounded-[--ha-btn-radius] border border-white/20 text-[#111111] text-[16px] font-medium hover:bg-white/5 transition-colors"
             data-testid="button-delete-cancel"
           >
             {t("filters.deleteNo")}
@@ -1021,16 +1024,17 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
           })}
         </div>
       </div>
-      <div className="px-4 flex flex-col gap-8 mt-6">
+      <div className="px-4 flex flex-col gap-5 mt-5">
         {isLoading && favSubTab === "favorieten" ? (
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4">
             {[1, 2].map((i) => (
-              <div key={i} className="animate-pulse">
-                <div className="rounded-[--ha-card-radius] bg-white" style={{ aspectRatio: "4/3" }} />
-                <div className="mt-3 flex flex-col gap-2">
-                  <div className="h-4 bg-white rounded w-1/3" />
-                  <div className="h-4 bg-white rounded w-2/3" />
-                  <div className="h-3 bg-white rounded w-1/4" />
+              <div key={i} className="animate-pulse rounded-[--ha-card-radius] bg-white shadow-ha-card overflow-hidden">
+                <div className="p-3 pb-0">
+                  <div className="rounded-[12px] bg-ha-surface" style={{ aspectRatio: "16/10" }} />
+                </div>
+                <div className="px-4 pt-3 pb-3.5 flex flex-col gap-2">
+                  <div className="h-4 bg-ha-surface rounded w-2/3" />
+                  <div className="h-3 bg-ha-surface rounded w-1/3" />
                 </div>
               </div>
             ))}
@@ -1043,7 +1047,7 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
             testId={`empty-${favSubTab}-tab`}
           />
         ) : favSubTab === "favorieten" ? (
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-4">
             {currentListings.map((m) => (
               <ListingCardFull
                 key={m.listing_id}
@@ -1059,7 +1063,7 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
             ))}
           </div>
         ) : (
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-4">
             {currentListings.map((m) => (
               <div key={m.listing_id} data-testid={`card-applied-${m.listing_id}`}>
                 <ListingCardFull
@@ -1096,7 +1100,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
       >
         <div className="w-10 h-1 bg-ha-surface-hover rounded-full mx-auto mb-6" />
         <div className="px-4">
-          <h3 className="text-[18px] text-title text-[#000] mb-6">{t("profile.photo.title")}</h3>
+          <h3 className="text-[18px] text-title text-[#111111] mb-6">{t("profile.photo.title")}</h3>
 
           {photoUrl && (
             <div className="flex justify-center mb-5">
@@ -1123,7 +1127,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
             {photoUrl && (
               <button
                 onClick={onRemove}
-                className="mt-3 w-full h-[56px] flex items-center justify-center gap-2 rounded-[--ha-btn-radius] border border-gray-200 text-[#000] text-[15px] font-medium active:bg-ha-surface-hover transition-colors"
+                className="mt-3 w-full h-[56px] flex items-center justify-center gap-2 rounded-[--ha-btn-radius] border border-gray-200 text-[#111111] text-[15px] font-medium active:bg-ha-surface-hover transition-colors"
                 data-testid="button-remove-photo"
               >
                 <Trash2 className="w-[18px] h-[18px]" />
@@ -1133,7 +1137,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
 
             <button
               onClick={onClose}
-              className="mt-3 w-full h-[56px] flex items-center justify-center rounded-[--ha-btn-radius] text-[#000]/70 text-[15px] font-medium active:bg-ha-surface-hover transition-colors"
+              className="mt-3 w-full h-[56px] flex items-center justify-center rounded-[--ha-btn-radius] text-[#111111]/70 text-[15px] font-medium active:bg-ha-surface-hover transition-colors"
               data-testid="button-cancel-photo"
             >
               {t("common.cancel")}
@@ -1276,18 +1280,18 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
     : "";
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-[#EBEBF0]">
+    <div className="min-h-[calc(100vh-80px)] bg-[#F7F7F7]">
       <div className="relative" data-testid="card-profile-summary">
         <div className="bg-ha-profile-header h-[160px]" style={{ borderRadius: "0 0 50% 50% / 0 0 36px 36px" }} />
         <div className="flex flex-col items-center -mt-12 mb-5">
-          <div className="w-24 h-24 rounded-full bg-ha-avatar-purple flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.12)]">
+          <div className="w-24 h-24 rounded-full bg-ha-avatar-purple flex items-center justify-center shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
             {photoUrl ? (
               <img src={photoUrl} alt="" className="w-full h-full rounded-full object-cover" />
             ) : (
               <span className="text-[26px] font-bold text-white tracking-wide">{initials}</span>
             )}
           </div>
-          <p className="text-[20px] font-bold text-black mt-3" data-testid="text-user-firstname">
+          <p className="text-[20px] font-bold text-[#111111] mt-3" data-testid="text-user-firstname">
             {displayName || t("profile.seeker")}
           </p>
           {lastName && (
@@ -1319,7 +1323,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                     data-testid={row.testId}
                   >
                     {row.icon}
-                    <p className="text-[15px] font-semibold text-[#000] flex-1">{row.label}</p>
+                    <p className="text-[15px] font-semibold text-[#111111] flex-1">{row.label}</p>
                     <ChevronRight className="w-4 h-4 text-ha-icon-secondary flex-shrink-0" />
                   </button>
                 </div>
@@ -1343,7 +1347,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                     data-testid={row.testId}
                   >
                     {row.icon}
-                    <p className="text-[15px] font-semibold text-[#000] flex-1">{row.label}</p>
+                    <p className="text-[15px] font-semibold text-[#111111] flex-1">{row.label}</p>
                     <ChevronRight className="w-4 h-4 text-ha-icon-secondary flex-shrink-0" />
                   </button>
                 </div>
@@ -1373,7 +1377,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           </div>
 
           <div className="flex flex-col items-center gap-1 pt-4 pb-2">
-            <p className="text-[14px] font-bold text-[#000]">HousAlert</p>
+            <p className="text-[14px] font-bold text-[#111111]">HousAlert</p>
             <p className="text-[12px] text-ha-icon-secondary">v1.0.0</p>
           </div>
 
@@ -1384,7 +1388,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       {(user?.email?.toLowerCase() === "martin.essie87@gmail.com") && (
         <button
           onClick={() => navigate("/admin/portal")}
-          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+62px)] left-1/2 -translate-x-1/2 z-40 bg-ha-profile-header text-white text-[14px] font-medium px-4 py-2.5 rounded-[--ha-btn-radius] shadow-[0_2px_10px_rgba(21,18,38,0.2)] active:scale-95 transition-transform"
+          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+62px)] left-1/2 -translate-x-1/2 z-40 bg-ha-profile-header text-white text-[14px] font-medium px-4 py-2.5 rounded-[--ha-btn-radius] shadow-[0_1px_2px_rgba(0,0,0,0.1)] active:scale-95 transition-transform"
           data-testid="button-admin-portal"
         >
           {t("profile.adminMode")}
@@ -1403,7 +1407,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       {showLogoutConfirm && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowLogoutConfirm(false)}>
           <div className="bg-white w-full max-w-[400px] rounded-t-[--ha-card-radius] sm:rounded-[--ha-card-radius] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
-            <p className="text-[17px] font-bold text-[#000] text-center">{t("profile.logoutConfirm")}</p>
+            <p className="text-[17px] font-bold text-[#111111] text-center">{t("profile.logoutConfirm")}</p>
             <p className="text-[15px] text-ha-text-secondary text-center mt-2 mb-6">{t("profile.logoutDesc")}</p>
             <button
               onClick={handleLogout}
@@ -1414,7 +1418,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             </button>
             <button
               onClick={() => setShowLogoutConfirm(false)}
-              className="w-full ha-btn text-[#000] font-medium active:bg-ha-surface-hover"
+              className="w-full ha-btn text-[#111111] font-medium active:bg-ha-surface-hover"
               data-testid="button-profile-logout-cancel"
             >
               {t("profileDetails.cancel")}
@@ -1504,10 +1508,10 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#EBEBF0] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F7F7F7] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 rounded-[6px] bg-white animate-pulse" />
-          <p className="text-[#000]/70 text-sm">{t("common.loading")}</p>
+          <p className="text-[#111111]/70 text-sm">{t("common.loading")}</p>
         </div>
       </div>
     );
@@ -1525,7 +1529,7 @@ export default function DashboardPage() {
     : (apiMatchesQuery.data?.canonicalStats?.applied ?? 0);
 
   return (
-    <div className="min-h-screen bg-[#EBEBF0] flex flex-col">
+    <div className="min-h-screen bg-[#F7F7F7] flex flex-col">
       <main className="flex-1 max-w-xl mx-auto w-full pb-[100px]">
         {activeTab === "home" && (
           <HomeTab
