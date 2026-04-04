@@ -25,7 +25,7 @@ export function AppHeader({ title, onBack, closeButton, trailing }: AppHeaderPro
 
   return (
     <div
-      className="sticky top-0 z-30 flex items-center gap-3 px-4 bg-[#F7F7F7]"
+      className="sticky top-0 z-30 flex items-center gap-3 px-4 bg-white"
       style={{ paddingTop: "max(16px, env(safe-area-inset-top))" }}
       data-testid="app-header"
     >

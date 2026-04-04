@@ -3,10 +3,6 @@ import { Heart, ImageIcon, Lock, MapPin, CheckCircle2 } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import type { ApiMatch } from "@/lib/listings";
 
-function getCityGradient(): string {
-  return "bg-[#EAEAEA]";
-}
-
 function formatPrice(price: number, locale: string): string {
   const intlLocale = locale === "de" ? "de-DE" : locale === "en" ? "en-IE" : "nl-NL";
   if (price >= 1000) {
@@ -54,7 +50,7 @@ export function ListingCardFull({
       onClick={onCardClick}
       data-testid={`card-match-${match.listing_id}`}
     >
-      <div className="relative overflow-hidden rounded-[12px]">
+      <div className="relative overflow-hidden rounded-[16px]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
         {hasImage ? (
           <img
             src={match.image_url!}
@@ -66,29 +62,34 @@ export function ListingCardFull({
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className={`w-full ${getCityGradient()} flex items-center justify-center`} style={{ aspectRatio: "3/2" }}>
-            <ImageIcon className="w-10 h-10 text-black/10" />
+          <div className="w-full bg-[#F0F0F0] flex items-center justify-center" style={{ aspectRatio: "3/2" }}>
+            <ImageIcon className="w-10 h-10 text-black/8" />
           </div>
         )}
 
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
 
         {isNew && (
-          <span className="absolute top-3 left-3 text-[11px] font-bold bg-ha-primary text-white px-3 py-1 rounded-full" data-testid={`badge-new-${match.listing_id}`}>
+          <span
+            className="absolute top-3 left-3 text-[11px] font-bold bg-white text-[#111111] px-2.5 py-[5px] rounded-full"
+            style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}
+            data-testid={`badge-new-${match.listing_id}`}
+          >
             {t("freshness.new") || "Nieuw"}
           </span>
         )}
 
         <button
           onClick={handleHeartClick}
-          className="absolute top-3 right-3 p-0 border-0 bg-transparent active:scale-90 transition-transform"
+          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform"
+          style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}
           data-testid={`button-favorite-${match.listing_id}`}
         >
           <Heart
-            className={`w-7 h-7 transition-colors duration-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.25)] ${
+            className={`w-[18px] h-[18px] transition-colors duration-200 ${
               isFavorited
-                ? "fill-ha-primary stroke-white"
-                : "fill-black/20 stroke-white"
+                ? "fill-ha-primary stroke-ha-primary"
+                : "fill-transparent stroke-[#111111]"
             }`}
             strokeWidth={2}
           />
@@ -96,7 +97,11 @@ export function ListingCardFull({
 
         {match.price > 0 && (
           <div className="absolute bottom-3 left-3">
-            <span className="text-[16px] font-bold text-white" data-testid={`badge-price-${match.listing_id}`}>
+            <span
+              className="text-[16px] font-bold text-white"
+              style={{ textShadow: "0 1px 2px rgba(0,0,0,0.4)" }}
+              data-testid={`badge-price-${match.listing_id}`}
+            >
               {formatPrice(match.price, locale)}
               <span className="text-[12px] font-normal opacity-70 ml-0.5">{t("common.perMonthShort")}</span>
             </span>
@@ -104,7 +109,7 @@ export function ListingCardFull({
         )}
       </div>
 
-      <div className="pt-2.5 pb-1">
+      <div className="pt-2 pb-0.5">
         <h3
           className="text-[15px] font-semibold text-[#111111] leading-[1.35] line-clamp-2"
           data-testid={`text-match-title-${match.listing_id}`}
@@ -112,7 +117,7 @@ export function ListingCardFull({
           {match.title}
         </h3>
 
-        <div className="flex items-center gap-1 mt-0.5 text-[13px] text-[#9CA3AF]">
+        <div className="flex items-center gap-1 mt-[2px] text-[13px] text-[#6B7280]">
           <MapPin className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={1.8} />
           <span className="line-clamp-1" data-testid={`detail-city-${match.listing_id}`}>{match.city}</span>
         </div>
@@ -160,7 +165,7 @@ export function ListingCardCompact({ match, onCardClick }: ListingCardCompactPro
     <div
       role="button"
       tabIndex={0}
-      className="flex-shrink-0 w-[72vw] max-w-[280px] cursor-pointer transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-ha-primary/40 rounded-[12px]"
+      className="flex-shrink-0 w-[72vw] max-w-[280px] cursor-pointer transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-ha-primary/40 rounded-[16px]"
       onClick={onCardClick}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -170,7 +175,7 @@ export function ListingCardCompact({ match, onCardClick }: ListingCardCompactPro
       }}
       data-testid={`card-recent-match-${match.listing_id}`}
     >
-      <div className="relative overflow-hidden rounded-[12px]">
+      <div className="relative overflow-hidden rounded-[16px]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
         {hasImage ? (
           <img
             src={match.image_url!}
@@ -182,16 +187,16 @@ export function ListingCardCompact({ match, onCardClick }: ListingCardCompactPro
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className={`w-full ${getCityGradient()} flex items-center justify-center`} style={{ aspectRatio: "16/9" }}>
-            <ImageIcon className="w-7 h-7 text-black/10" />
+          <div className="w-full bg-[#F0F0F0] flex items-center justify-center" style={{ aspectRatio: "16/9" }}>
+            <ImageIcon className="w-7 h-7 text-black/8" />
           </div>
         )}
 
-        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
 
         {match.price > 0 && (
           <div className="absolute bottom-2 left-2.5">
-            <span className="text-[13px] font-bold text-white">
+            <span className="text-[13px] font-bold text-white" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.4)" }}>
               {formatPrice(match.price, locale)}
             </span>
           </div>
@@ -202,7 +207,7 @@ export function ListingCardCompact({ match, onCardClick }: ListingCardCompactPro
         <h3 className="text-[14px] font-semibold text-[#111111] leading-snug line-clamp-1" data-testid={`text-recent-title-${match.listing_id}`}>
           {match.title}
         </h3>
-        <p className="text-[12px] text-[#9CA3AF] mt-0.5 line-clamp-1" data-testid={`text-recent-city-${match.listing_id}`}>
+        <p className="text-[12px] text-[#6B7280] mt-[2px] line-clamp-1" data-testid={`text-recent-city-${match.listing_id}`}>
           {match.city}
         </p>
       </div>
@@ -223,7 +228,7 @@ export function ListingCardMini({ match, onCardClick }: ListingCardMiniProps) {
     <div
       role="button"
       tabIndex={0}
-      className="flex-shrink-0 w-[28vw] max-w-[130px] cursor-pointer snap-start transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-ha-primary/40 rounded-[10px]"
+      className="flex-shrink-0 w-[28vw] max-w-[130px] cursor-pointer snap-start transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-ha-primary/40 rounded-[16px]"
       onClick={onCardClick}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -233,7 +238,7 @@ export function ListingCardMini({ match, onCardClick }: ListingCardMiniProps) {
       }}
       data-testid={`card-recently-viewed-${match.listing_id}`}
     >
-      <div className="relative overflow-hidden rounded-[10px]">
+      <div className="relative overflow-hidden rounded-[16px]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
         {hasImage ? (
           <img
             src={match.image_url!}
@@ -245,14 +250,14 @@ export function ListingCardMini({ match, onCardClick }: ListingCardMiniProps) {
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className={`w-full ${getCityGradient()} flex items-center justify-center`} style={{ aspectRatio: "1/1" }}>
-            <ImageIcon className="w-5 h-5 text-black/10" />
+          <div className="w-full bg-[#F0F0F0] flex items-center justify-center" style={{ aspectRatio: "1/1" }}>
+            <ImageIcon className="w-5 h-5 text-black/8" />
           </div>
         )}
       </div>
       <div className="pt-1.5 pb-0.5">
         <p className="text-[12px] font-semibold text-[#111111] line-clamp-1" data-testid={`text-mini-title-${match.listing_id}`}>{match.title}</p>
-        <p className="text-[11px] text-[#9CA3AF] mt-0.5" data-testid={`text-mini-meta-${match.listing_id}`}>
+        <p className="text-[11px] text-[#6B7280] mt-[2px]" data-testid={`text-mini-meta-${match.listing_id}`}>
           {match.price > 0 && <span className="font-semibold text-[#111111]">€{match.price}</span>}
           {match.price > 0 && match.size_m2 > 0 && <span> · </span>}
           {match.size_m2 > 0 && <span>{match.size_m2} m²</span>}

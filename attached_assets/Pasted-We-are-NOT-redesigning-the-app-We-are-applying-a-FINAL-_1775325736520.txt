@@ -1,0 +1,172 @@
+We are NOT redesigning the app.
+
+We are applying a FINAL micro-polish pass to reach Airbnb-level UI quality.
+
+IMPORTANT:
+- Do NOT change layout structure
+- Do NOT move components
+- Do NOT add new features
+- Only refine visuals, spacing, typography, and details
+
+Goal:
+Make the app feel as refined, light, and premium as Airbnb through micro-adjustments.
+
+-------------------------------------
+1. GLOBAL BACKGROUND & SURFACES
+-------------------------------------
+
+- Change main app background to pure white (#FFFFFF)
+- Remove the grey-ish canvas feel
+- Keep dividers extremely subtle (#F0F0F0 or lighter)
+- Avoid large grey containers unless necessary
+
+-------------------------------------
+2. LISTING IMAGES (HIGH IMPACT)
+-------------------------------------
+
+- Increase border radius → 16px (important)
+- Add VERY subtle shadow to images:
+  shadow: 0 2px 8px rgba(0,0,0,0.04)
+
+- Keep images edge-to-edge in feed
+- Maintain clean spacing below image:
+  image → 8px → title → 2px → location
+
+-------------------------------------
+3. IMAGE OVERLAYS (PRICE / LABELS)
+-------------------------------------
+
+PRICE ON IMAGE:
+- Keep white text
+- Slightly stronger text-shadow for readability:
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4)
+
+GRADIENT:
+- Reduce heaviness:
+  from-black/30 → transparent
+  (NOT darker)
+
+LABELS (e.g. "Nieuw"):
+- Background: pure white
+- Text: #111111
+- Border radius: full (pill)
+- Padding: 6px 10px
+- Add soft shadow:
+  0 2px 6px rgba(0,0,0,0.08)
+
+-------------------------------------
+4. HEART / FAVORITE BUTTON
+-------------------------------------
+
+- Add subtle background for separation:
+  background: rgba(255,255,255,0.9)
+- Add blur:
+  backdrop-blur: small
+- Border radius: full
+- Size slightly larger
+- Add soft shadow
+
+- Position consistently:
+  top: 12px
+  right: 12px
+
+-------------------------------------
+5. BOTTOM NAVIGATION BAR
+-------------------------------------
+
+- Increase icon size (important)
+- Increase label font-size slightly
+- Improve spacing between icon and label
+
+- Active state:
+  - Icon: #FF385C
+  - Label: #111111 (not grey)
+
+- Inactive:
+  - Icon: #9CA3AF
+  - Label: #9CA3AF
+
+- Reduce top border visibility (lighter divider)
+
+-------------------------------------
+6. TYPOGRAPHY REFINEMENT
+-------------------------------------
+
+TITLES:
+- Keep bold, but avoid overly heavy feel
+- Ensure good line-height (~1.3–1.4)
+
+SECONDARY TEXT:
+- Use #6B7280 (NOT too light)
+- Avoid #C4C4C4 for important info
+
+LOCATION TEXT:
+- Slightly softer but still readable
+
+-------------------------------------
+7. SPACING PRECISION (VERY IMPORTANT)
+-------------------------------------
+
+Apply consistent vertical rhythm:
+
+- Section spacing: 24px
+- Between cards: 20px
+- Inside listing:
+  image → 8px → title → 2px → location
+
+- Remove any “almost correct” spacing
+Everything must feel intentional and consistent
+
+-------------------------------------
+8. HEADER POLISH
+-------------------------------------
+
+- Reduce visual weight of header shadows
+- Ensure header background is pure white
+- Icons inside header:
+  - slightly larger
+  - consistent padding
+  - perfectly centered vertically
+
+-------------------------------------
+9. BUTTONS (CTA)
+-------------------------------------
+
+- Keep rounded-full (pill)
+- Ensure padding is generous:
+  height ~48px
+
+- Add subtle depth:
+  shadow: 0 2px 6px rgba(0,0,0,0.08)
+
+- Avoid overly strong colors or gradients
+
+-------------------------------------
+10. REMOVE LAST UI NOISE
+-------------------------------------
+
+- Remove anything that feels:
+  - redundant
+  - duplicated
+  - visually competing
+
+- Prioritize:
+  IMAGE → PRICE → TITLE
+
+Everything else is secondary
+
+-------------------------------------
+
+FINAL CHECK:
+The UI should feel:
+
+- lighter
+- cleaner
+- more premium
+- less “built”, more “designed”
+
+Think:
+Airbnb, Apple-level polish
+
+NOT:
+dashboard / SaaS / dev UI

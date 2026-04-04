@@ -525,7 +525,7 @@ function HomeTab({
         </h1>
       </div>
 
-      <div className="flex flex-col gap-5 px-4">
+      <div className="flex flex-col gap-6 px-4">
         <SearchProfilesSection profiles={profiles} navigate={navigate} />
 
         <RecentlyViewedSection accessToken={accessToken} />
@@ -743,15 +743,15 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
         </div>
       </div>
 
-      <div className="px-3 flex flex-col pt-2">
+      <div className="px-4 flex flex-col pt-2">
         {apiMatchesQuery.isLoading ? (
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-5">
             {[1, 2].map((i) => (
               <div key={i} className="animate-pulse">
-                <div className="bg-[#EAEAEA] rounded-[12px]" style={{ aspectRatio: "3/2" }} />
-                <div className="pt-2.5 flex flex-col gap-1.5">
-                  <div className="h-4 bg-[#EAEAEA] rounded w-3/4" />
-                  <div className="h-3 bg-[#EAEAEA] rounded w-1/3" />
+                <div className="bg-[#F0F0F0] rounded-[16px]" style={{ aspectRatio: "3/2" }} />
+                <div className="pt-2 flex flex-col gap-1.5">
+                  <div className="h-4 bg-[#F0F0F0] rounded w-3/4" />
+                  <div className="h-3 bg-[#F0F0F0] rounded w-1/3" />
                 </div>
               </div>
             ))}
@@ -760,7 +760,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           <div className="py-16 flex flex-col items-center text-center gap-3 px-4">
             <AlertCircle className="w-8 h-8 text-[#C4C4C4]" />
             <p className="text-[16px] font-bold text-[#111111]">{t("matches.loadError")}</p>
-            <p className="text-[13px] text-[#9CA3AF] leading-relaxed">{t("matches.loadErrorDesc")}</p>
+            <p className="text-[13px] text-[#6B7280] leading-relaxed">{t("matches.loadErrorDesc")}</p>
             <button
               onClick={() => apiMatchesQuery.refetch()}
               className="text-[14px] font-semibold text-ha-primary mt-1"
@@ -779,7 +779,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
             testId="empty-matches"
           />
         ) : (
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-5">
             {allMatchesSorted.map((m) => (
               <ListingCardFull
                 key={m.listing_id}
@@ -1011,15 +1011,15 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
         </div>
       </div>
 
-      <div className="px-3 flex flex-col pt-2">
+      <div className="px-4 flex flex-col pt-2">
         {isLoading && favSubTab === "favorieten" ? (
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-5">
             {[1, 2].map((i) => (
               <div key={i} className="animate-pulse">
-                <div className="bg-[#EAEAEA] rounded-[12px]" style={{ aspectRatio: "3/2" }} />
-                <div className="pt-2.5 flex flex-col gap-1.5">
-                  <div className="h-4 bg-[#EAEAEA] rounded w-3/4" />
-                  <div className="h-3 bg-[#EAEAEA] rounded w-1/3" />
+                <div className="bg-[#F0F0F0] rounded-[16px]" style={{ aspectRatio: "3/2" }} />
+                <div className="pt-2 flex flex-col gap-1.5">
+                  <div className="h-4 bg-[#F0F0F0] rounded w-3/4" />
+                  <div className="h-3 bg-[#F0F0F0] rounded w-1/3" />
                 </div>
               </div>
             ))}
@@ -1032,7 +1032,7 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
             testId={`empty-${favSubTab}-tab`}
           />
         ) : favSubTab === "favorieten" ? (
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-5">
             {currentListings.map((m) => (
               <ListingCardFull
                 key={m.listing_id}
@@ -1048,7 +1048,7 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
             ))}
           </div>
         ) : (
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-5">
             {currentListings.map((m) => (
               <div key={m.listing_id} data-testid={`card-applied-${m.listing_id}`}>
                 <ListingCardFull
@@ -1265,7 +1265,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
     : "";
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-[#F7F7F7]">
+    <div className="min-h-[calc(100vh-80px)] bg-white">
       <div className="bg-white pb-6" data-testid="card-profile-summary">
         <div className="flex flex-col items-center pt-10">
           <button
@@ -1489,7 +1489,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F7F7F7] flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 rounded-[6px] bg-white animate-pulse" />
           <p className="text-[#111111]/70 text-sm">{t("common.loading")}</p>
@@ -1510,8 +1510,8 @@ export default function DashboardPage() {
     : (apiMatchesQuery.data?.canonicalStats?.applied ?? 0);
 
   return (
-    <div className="min-h-screen bg-[#F7F7F7] flex flex-col">
-      <main className="flex-1 max-w-xl mx-auto w-full pb-[90px]">
+    <div className="min-h-screen bg-white flex flex-col">
+      <main className="flex-1 max-w-xl mx-auto w-full pb-[96px]">
         {activeTab === "home" && (
           <HomeTab
             user={user}
@@ -1542,8 +1542,8 @@ export default function DashboardPage() {
         )}
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#E5E7EB]/60" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
-        <nav className="max-w-xl mx-auto flex h-[52px]" data-testid="bottom-nav">
+      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#F0F0F0]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+        <nav className="max-w-xl mx-auto flex h-[56px]" data-testid="bottom-nav">
           {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
             const isActive = activeTab === key;
             const isProfileWithPhoto = key === "profiel" && !!tabPhotoUrl;
@@ -1551,17 +1551,17 @@ export default function DashboardPage() {
               <button
                 key={key}
                 onClick={() => setActiveTab(key)}
-                className="flex-1 flex flex-col items-center justify-center gap-[3px]"
+                className="flex-1 flex flex-col items-center justify-center gap-1"
                 data-testid={`tab-${key}`}
               >
                 {isProfileWithPhoto ? (
-                  <div className={`w-[24px] h-[24px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-ha-primary ring-offset-1 ring-offset-white" : ""}`}>
+                  <div className={`w-[26px] h-[26px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-ha-primary ring-offset-1 ring-offset-white" : ""}`}>
                     <img src={tabPhotoUrl} alt="" className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <Icon className={`w-[22px] h-[22px] transition-colors ${isActive ? "text-ha-primary" : "text-[#9CA3AF]"}`} strokeWidth={isActive ? 2.2 : 1.8} />
+                  <Icon className={`w-[24px] h-[24px] transition-colors ${isActive ? "text-ha-primary" : "text-[#9CA3AF]"}`} strokeWidth={isActive ? 2 : 1.6} />
                 )}
-                <span className={`text-[10px] transition-colors ${isActive ? "font-bold text-ha-primary" : "font-medium text-[#9CA3AF]"}`}>
+                <span className={`text-[11px] transition-colors ${isActive ? "font-semibold text-[#111111]" : "font-medium text-[#9CA3AF]"}`}>
                   {t(labelKey)}
                 </span>
               </button>

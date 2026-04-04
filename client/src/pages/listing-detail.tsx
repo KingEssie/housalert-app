@@ -25,16 +25,16 @@ function FloatingBackButton({ navigate }: { navigate: (to: string) => void }) {
   }
   return (
     <div className="fixed top-[max(0.75rem,env(safe-area-inset-top))] left-4 z-30">
-      <button onClick={handleBack} className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center active:scale-95 transition-transform" aria-label="Back" data-testid="button-back"><ArrowLeft className="w-5 h-5 text-[#111111]" /></button>
+      <button onClick={handleBack} className="w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center active:scale-95 transition-transform" style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }} aria-label="Back" data-testid="button-back"><ArrowLeft className="w-[18px] h-[18px] text-[#111111]" /></button>
     </div>
   );
 }
 
 const FRESH_BADGE_STYLES: Record<string, { bg: string; text: string }> = {
-  net_binnen: { bg: "bg-ha-primary/20", text: "text-ha-primary" },
-  nieuw: { bg: "bg-ha-primary", text: "text-white" },
-  vandaag: { bg: "bg-ha-primary", text: "text-white" },
-  ouder: { bg: "bg-white/20", text: "text-white/80" },
+  net_binnen: { bg: "bg-white", text: "text-[#111111]" },
+  nieuw: { bg: "bg-white", text: "text-[#111111]" },
+  vandaag: { bg: "bg-white", text: "text-[#111111]" },
+  ouder: { bg: "bg-white/80", text: "text-[#111111]/60" },
 };
 
 const FRESH_LABEL_KEYS: Record<string, string> = {
@@ -178,16 +178,16 @@ export default function ListingDetailPage() {
             data-testid="img-listing-hero"
           />
         ) : (
-          <div className="w-full bg-[#EAEAEA] flex items-center justify-center" style={{ aspectRatio: "4/3", maxHeight: "420px" }}>
-            <ImageIcon className="w-12 h-12 text-black/10" />
+          <div className="w-full bg-[#F0F0F0] flex items-center justify-center" style={{ aspectRatio: "4/3", maxHeight: "420px" }}>
+            <ImageIcon className="w-12 h-12 text-black/8" />
           </div>
         )}
 
-        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
 
         <div className="absolute top-3 left-[56px] flex items-center gap-2">
           {listing.fresh_label !== "ouder" && (
-            <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full backdrop-blur-sm ${style.bg} ${style.text}`} data-testid="badge-freshness">
+            <span className={`text-[11px] font-bold px-2.5 py-[5px] rounded-full ${style.bg} ${style.text}`} style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }} data-testid="badge-freshness">
               {t(FRESH_LABEL_KEYS[listing.fresh_label] ?? "freshness.older")}
             </span>
           )}
@@ -195,8 +195,8 @@ export default function ListingDetailPage() {
 
         {listing.price > 0 && (
           <div className="absolute bottom-4 left-5">
-            <span className="text-[24px] font-bold text-white" data-testid="text-listing-price">€{listing.price}</span>
-            <span className="text-[13px] text-white/70 ml-1">{t("common.perMonth")}</span>
+            <span className="text-[24px] font-bold text-white" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.4)" }} data-testid="text-listing-price">€{listing.price}</span>
+            <span className="text-[13px] text-white/70 ml-1" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.4)" }}>{t("common.perMonth")}</span>
           </div>
         )}
       </div>
@@ -206,7 +206,7 @@ export default function ListingDetailPage() {
           {listing.title}
         </h1>
 
-        <div className="flex items-center gap-1 text-[14px] text-[#9CA3AF] mt-1">
+        <div className="flex items-center gap-1 text-[14px] text-[#6B7280] mt-1">
           <MapPin className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={1.8} />
           <span data-testid="text-listing-location">
             {listing.district?.trim() ? `${listing.district.trim()} · ${listing.city}` : listing.city}
@@ -224,7 +224,7 @@ export default function ListingDetailPage() {
           ))}
         </div>
 
-        <div className="flex items-center gap-1 mt-3 text-[12px] text-[#C4C4C4]">
+        <div className="flex items-center gap-1 mt-3 text-[12px] text-[#9CA3AF]">
           <Clock className="w-3 h-3" />
           <span data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</span>
         </div>
@@ -274,7 +274,8 @@ export default function ListingDetailPage() {
           {hasAccess ? (
             <Button
               onClick={() => navigate(`/apply/${listing.id}`)}
-              className="w-full h-[52px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-bold flex items-center justify-center gap-2"
+              className="w-full h-[48px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-bold flex items-center justify-center gap-2"
+              style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}
               data-testid="button-reageer-detail"
             >
               <Zap className="w-4 h-4" />
@@ -283,7 +284,8 @@ export default function ListingDetailPage() {
           ) : (
             <Button
               onClick={() => navigate("/paywall")}
-              className="w-full h-[52px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-bold flex items-center justify-center gap-2"
+              className="w-full h-[48px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-bold flex items-center justify-center gap-2"
+              style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}
               data-testid="button-upgrade-detail"
             >
               <Lock className="w-4 h-4" />
