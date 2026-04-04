@@ -1,0 +1,92 @@
+Update the Home screen "Recente matches" section to follow strict subscription access logic.
+
+GOAL:
+Only trial users and paid active users should receive and see matches.
+If a user has no subscription or the subscription has expired, the Home screen must show a locked empty state instead of matches.
+
+==================================================
+1. ACCESS LOGIC
+==================================================
+
+Show real recent matches only if:
+- user has an active trial
+OR
+- user has an active paid subscription
+
+Show the locked empty state if:
+- user has no subscription
+- subscription is expired
+- user is not entitled to receive matches
+
+==================================================
+2. EMPTY STATE UI
+==================================================
+
+If the user is not entitled, show the "Recente matches" section as a locked empty state.
+
+Structure:
+- section title: "Recente matches"
+- inside a rounded white card:
+  - lock illustration/icon
+  - title: "Laten we beginnen!"
+  - supporting text: "Schrijf je in om direct matches te ontvangen."
+  - CTA button: "Abonneer"
+
+Requirements:
+- keep the layout visually close to the current design
+- make it feel like a clean conversion/paywall teaser
+- no real match data should be shown in this state
+
+==================================================
+3. MATCH STATE UI
+==================================================
+
+If the user is entitled (trial or paid):
+- show actual recent matches
+- preserve the current recent matches component / preview behavior
+
+==================================================
+4. DATA / FETCHING BEHAVIOR
+==================================================
+
+If the user is not entitled:
+- do not render recent match cards
+- ideally do not fetch or expose match data for this section
+- the section should behave as a locked state, not a hidden data state
+
+==================================================
+5. SUBSCRIPTION STATUS HANDLING
+==================================================
+
+Use the existing subscription / billing / entitlement state if available.
+
+Treat these as entitled:
+- active trial
+- active paid subscription
+
+Treat these as not entitled:
+- no subscription
+- expired subscription
+- cancelled and expired
+- inactive access
+
+==================================================
+6. KEEP EVERYTHING ELSE INTACT
+==================================================
+
+Do not change:
+- other Home sections
+- gamification cards
+- filters summary
+- bottom nav
+- matches page access logic unless it should follow the same entitlement rule and is already connected
+
+==================================================
+7. OUTPUT
+==================================================
+
+After implementation, show:
+1. which entitlement states now show real matches
+2. which states show the locked empty state
+3. whether recent matches are still fetched when the user is not entitled
+4. which files were changed
