@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Heart, ImageIcon, Lock, MapPin, CheckCircle2 } from "lucide-react";
+import { Heart, Home as HomeIcon, Lock, MapPin, CheckCircle2 } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import type { ApiMatch } from "@/lib/listings";
 
@@ -62,8 +62,8 @@ export function ListingCardFull({
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="w-full bg-[#F0F0F0] flex items-center justify-center" style={{ aspectRatio: "3/2" }}>
-            <ImageIcon className="w-10 h-10 text-black/8" />
+          <div className="w-full bg-[#F3F4F6] flex items-center justify-center" style={{ aspectRatio: "3/2" }}>
+            <HomeIcon className="w-10 h-10 text-[#9CA3AF]" />
           </div>
         )}
 
@@ -187,8 +187,8 @@ export function ListingCardCompact({ match, onCardClick }: ListingCardCompactPro
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="w-full bg-[#F0F0F0] flex items-center justify-center" style={{ aspectRatio: "16/9" }}>
-            <ImageIcon className="w-7 h-7 text-black/8" />
+          <div className="w-full bg-[#F3F4F6] flex items-center justify-center" style={{ aspectRatio: "16/9" }}>
+            <HomeIcon className="w-7 h-7 text-[#9CA3AF]" />
           </div>
         )}
 
@@ -250,8 +250,8 @@ export function ListingCardMini({ match, onCardClick }: ListingCardMiniProps) {
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="w-full bg-[#F0F0F0] flex items-center justify-center" style={{ aspectRatio: "1/1" }}>
-            <ImageIcon className="w-5 h-5 text-black/8" />
+          <div className="w-full bg-[#F3F4F6] flex items-center justify-center" style={{ aspectRatio: "1/1" }}>
+            <HomeIcon className="w-5 h-5 text-[#9CA3AF]" />
           </div>
         )}
       </div>

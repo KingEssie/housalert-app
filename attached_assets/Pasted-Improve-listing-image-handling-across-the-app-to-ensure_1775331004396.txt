@@ -1,0 +1,87 @@
+Improve listing image handling across the app to ensure maximum image coverage and proper fallback behavior.
+
+GOAL:
+- Increase percentage of listings with images
+- Ensure no listing ever appears without a visual element
+
+==================================================
+1. MULTI-SOURCE IMAGE EXTRACTION
+==================================================
+
+Update scraper logic:
+
+For each listing, attempt:
+
+1. cover image field
+2. gallery array (first image)
+3. thumbnail field
+4. HTML <img> tags:
+   - src
+   - data-src
+   - srcset (first valid URL)
+
+Never rely on a single field.
+
+==================================================
+2. HANDLE LAZY LOADED IMAGES
+==================================================
+
+Ensure scraper checks:
+- data-src
+- data-lazy
+- srcset
+
+If needed, adjust scraping logic to capture these attributes.
+
+==================================================
+3. OPTIONAL DETAIL PAGE FALLBACK
+==================================================
+
+If no image found:
+- fetch listing detail page
+- attempt to extract gallery images
+
+Limit this to:
+- first X listings
+- or high-priority matches
+
+==================================================
+4. DO NOT OVER-FILTER IMAGES
+==================================================
+
+Relax filtering:
+- allow most valid URLs
+- do not reject images too aggressively
+
+==================================================
+5. UI FALLBACK (CRITICAL)
+==================================================
+
+If a listing has NO image:
+
+Show a placeholder:
+
+- background: #F3F4F6
+- centered icon (house or image icon)
+- no broken image visuals
+
+Keep:
+- same aspect ratio
+- same border radius (16px)
+
+==================================================
+6. CONSISTENCY
+==================================================
+
+Ensure:
+- listings always visually consistent
+- no layout shifts when image missing
+
+==================================================
+7. OUTPUT
+==================================================
+
+After implementing:
+- explain which image sources are now used
+- confirm fallback logic works
+- confirm no listing renders without a visual element

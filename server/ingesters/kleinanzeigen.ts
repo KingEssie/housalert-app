@@ -210,10 +210,19 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
       .text();
     const price = parsePrice(priceText);
 
-    const imgEl = card.find("img[src*='kleinanzeigen.de']").first();
-    let imageUrl: string | null = imgEl.attr("src") || null;
+    const imgEl = card.find("img[src*='kleinanzeigen.de'], img[data-src*='kleinanzeigen.de']").first();
+    let imageUrl: string | null = imgEl.attr("src") || imgEl.attr("data-src") || imgEl.attr("data-lazy") || null;
     if (imageUrl) {
       imageUrl = imageUrl.replace(/\?rule=\$_\d+\.AUTO/, "?rule=$_35.AUTO");
+    }
+    if (!imageUrl) {
+      const srcset = imgEl.attr("srcset") || "";
+      if (srcset) {
+        const firstSrc = srcset.split(",")[0]?.trim()?.split(" ")[0] || "";
+        if (firstSrc.startsWith("http")) {
+          imageUrl = firstSrc.replace(/\?rule=\$_\d+\.AUTO/, "?rule=$_35.AUTO");
+        }
+      }
     }
 
     const cardText = card.text() + " " + title;

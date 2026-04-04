@@ -2994,7 +2994,7 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/backfill-images", async (req, res) => {
+  app.post("/api/backfill-images", requireAdmin, async (req, res) => {
     try {
       const cheerio = await import("cheerio");
       const UA = "HousAlert/1.0 (rental alert app; polite single-page fetch; contact: support@housalert.com)";
@@ -3011,6 +3011,36 @@ export async function registerRoutes(
       let updated = 0;
       let failed = 0;
 
+      function normalizeUrl(raw: string): string | null {
+        if (!raw || raw.startsWith("data:") || raw.includes("blank")) return null;
+        if (raw.startsWith("http")) return raw;
+        if (raw.startsWith("//")) return "https:" + raw;
+        return null;
+      }
+
+      function extractImgFromEl($: any, selector: string): string | null {
+        const img = $(selector).first();
+        if (!img.length) return null;
+        const src = img.attr("src") || img.attr("data-src") || img.attr("data-lazy") || img.attr("data-original") || "";
+        const resolved = normalizeUrl(src);
+        if (resolved) return resolved;
+        const srcset = img.attr("srcset") || "";
+        if (srcset) {
+          const first = srcset.split(",")[0]?.trim()?.split(" ")[0] || "";
+          const r = normalizeUrl(first);
+          if (r) return r;
+        }
+        return null;
+      }
+
+      function extractOgImage($: any): string | null {
+        return normalizeUrl($("meta[property='og:image']").attr("content") || "");
+      }
+
+      function extractTwitterImage($: any): string | null {
+        return normalizeUrl($("meta[name='twitter:image'], meta[property='twitter:image']").attr("content") || "");
+      }
+
       for (const listing of listings) {
         try {
           await new Promise(r => setTimeout(r, 800));
@@ -3024,29 +3054,34 @@ export async function registerRoutes(
 
           let imageUrl: string | null = null;
           if (listing.source === "kleinanzeigen") {
-            const img = $("#viewad-image img, .galleryimage-element img, img[src*='img.kleinanzeigen.de']").first();
-            imageUrl = img.attr("src") || null;
-            if (!imageUrl) {
-              const meta = $("meta[property='og:image']").attr("content") || null;
-              if (meta && meta.startsWith("http")) imageUrl = meta;
-            }
+            imageUrl = extractImgFromEl($, "#viewad-image img, .galleryimage-element img, img[src*='img.kleinanzeigen.de'], img[data-src*='img.kleinanzeigen.de']");
+            if (imageUrl) imageUrl = imageUrl.replace(/\?rule=\$_\d+\.AUTO/, "?rule=$_35.AUTO");
           } else if (listing.source === "wohnungsboerse") {
-            const img = $("img[src*='wohnungsboerse.net/assets']").first();
-            imageUrl = img.attr("src") || null;
-            if (!imageUrl) {
-              const meta = $("meta[property='og:image']").attr("content") || null;
-              if (meta && meta.startsWith("http")) imageUrl = meta;
-            }
+            imageUrl = extractImgFromEl($, "img[src*='wohnungsboerse.net/assets'], img[data-src*='wohnungsboerse.net/assets']");
           } else if (listing.source === "wg-gesucht") {
-            const img = $("img.sp-gallery__image, img[src*='img.wg-gesucht.de']").first();
-            imageUrl = img.attr("src") || null;
-            if (!imageUrl) {
-              const meta = $("meta[property='og:image']").attr("content") || null;
-              if (meta && meta.startsWith("http")) imageUrl = meta;
+            imageUrl = extractImgFromEl($, "img.sp-gallery__image, img[src*='img.wg-gesucht.de'], img[data-src*='img.wg-gesucht.de'], .gallery img, .detail-image img");
+          } else if (listing.source === "immowelt") {
+            imageUrl = extractImgFromEl($, "img[src*='mms.immowelt.de'], img[data-src*='mms.immowelt.de'], [data-testid='gallery'] img, .gallery img");
+          }
+
+          if (!imageUrl) imageUrl = extractOgImage($);
+          if (!imageUrl) imageUrl = extractTwitterImage($);
+          if (!imageUrl) {
+            const anyImg = $("article img, .listing img, .detail img, main img").first();
+            if (anyImg.length) {
+              const src = anyImg.attr("src") || anyImg.attr("data-src") || anyImg.attr("data-lazy") || anyImg.attr("data-original") || "";
+              const resolved = normalizeUrl(src);
+              if (resolved && !resolved.includes("logo") && !resolved.includes("icon") && !resolved.includes("avatar")) {
+                imageUrl = resolved;
+              }
+              if (!imageUrl) {
+                const srcset = anyImg.attr("srcset") || "";
+                if (srcset) {
+                  const first = srcset.split(",")[0]?.trim()?.split(" ")[0] || "";
+                  imageUrl = normalizeUrl(first);
+                }
+              }
             }
-          } else {
-            const meta = $("meta[property='og:image']").attr("content") || null;
-            if (meta && meta.startsWith("http")) imageUrl = meta;
           }
 
           if (imageUrl) {

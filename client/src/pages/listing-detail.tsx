@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth";
 import { useSubscription } from "@/lib/subscription";
 import { useTranslation } from "@/i18n";
 import { trackEvent } from "@/lib/track-event";
-import { MapPin, BedDouble, Ruler, Clock, Globe, Zap, ImageIcon, ArrowLeft, Info, Lock } from "lucide-react";
+import { MapPin, BedDouble, Ruler, Clock, Globe, Zap, Home as HomeIcon, ArrowLeft, Info, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 function FloatingBackButton({ navigate }: { navigate: (to: string) => void }) {
@@ -178,8 +178,8 @@ export default function ListingDetailPage() {
             data-testid="img-listing-hero"
           />
         ) : (
-          <div className="w-full bg-[#F0F0F0] flex items-center justify-center" style={{ aspectRatio: "4/3", maxHeight: "420px" }}>
-            <ImageIcon className="w-12 h-12 text-black/8" />
+          <div className="w-full bg-[#F3F4F6] flex items-center justify-center" style={{ aspectRatio: "4/3", maxHeight: "420px" }}>
+            <HomeIcon className="w-12 h-12 text-[#9CA3AF]" />
           </div>
         )}
 

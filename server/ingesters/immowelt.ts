@@ -185,20 +185,18 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
 
     if (galleryDiv.length) {
       const galleryImg = galleryDiv.find("img").first();
-      const src = galleryImg.attr("src") || "";
+      const src = galleryImg.attr("src") || galleryImg.attr("data-src") || "";
       const srcset = galleryDiv.find("source[srcset]").first().attr("srcset") || "";
       const raw = src.startsWith("http") ? src : srcset.split(",")[0]?.trim()?.split(" ")[0] || "";
       if (raw.startsWith("http")) imageUrl = raw;
     }
 
     if (!imageUrl) {
-      const allImgs = card.find("img[src*='mms.immowelt.de']");
+      const allImgs = card.find("img[src*='mms.immowelt.de'], img[data-src*='mms.immowelt.de']");
       allImgs.each((_j, imgNode) => {
         if (imageUrl) return;
         const imgTag = $(imgNode);
-        const alt = (imgTag.attr("alt") || "").toLowerCase();
-        if (alt && !alt.includes("miete") && !alt.includes("wohnung") && !alt.includes("zimmer") && !alt.includes("m²") && alt.length < 80) return;
-        const src = imgTag.attr("src") || "";
+        const src = imgTag.attr("src") || imgTag.attr("data-src") || imgTag.attr("data-lazy") || "";
         if (src.startsWith("http")) imageUrl = src;
       });
     }
