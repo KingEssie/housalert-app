@@ -200,6 +200,11 @@ export const nl: Record<string, any> = {
       title: "Nog geen favorieten",
       desc: "Tik op het hartje bij een woning om deze als favoriet op te slaan.",
     },
+    locked: {
+      headline: "Ontvang direct nieuwe matches",
+      desc: "Activeer je abonnement om nieuwe woningen te bekijken en direct meldingen te ontvangen.",
+      cta: "Abonneer nu",
+    },
     adjustFilters: "Filters aanpassen",
     loadError: "Kon matches niet laden",
     loadErrorDesc: "Controleer je verbinding en probeer het opnieuw.",

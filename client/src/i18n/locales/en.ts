@@ -134,6 +134,11 @@ export const en: Record<string, any> = {
       title: "No favorites yet",
       desc: "Tap the heart icon on a listing to save it as a favorite.",
     },
+    locked: {
+      headline: "Get new matches instantly",
+      desc: "Activate your subscription to browse new listings and receive instant notifications.",
+      cta: "Subscribe now",
+    },
     adjustFilters: "Adjust filters",
     discoverListings: "Discover listings",
     loadError: "Could not load matches",

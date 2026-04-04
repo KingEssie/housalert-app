@@ -861,13 +861,13 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
   const apiMatchesQuery = useQuery<ApiMatchesResponse>({
     queryKey: ["/api/matches"],
     queryFn: () => fetchApiMatches(accessToken!),
-    enabled: !!accessToken,
+    enabled: !!accessToken && hasAccess,
     staleTime: 30_000,
     refetchOnWindowFocus: true,
   });
 
   useEffect(() => {
-    if (!accessToken) return;
+    if (!accessToken || !hasAccess) return;
     apiFetch("/api/matches/applied", {
       headers: { Authorization: `Bearer ${accessToken}` },
     })
@@ -906,10 +906,11 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
         }
       })
       .catch(() => {});
-  }, [accessToken]);
+  }, [accessToken, hasAccess]);
 
   useEffect(() => {
     if (!accessToken) return;
+    if (!hasAccess) return;
     apiFetch("/api/favorites", {
       headers: { Authorization: `Bearer ${accessToken}` },
     })
@@ -920,7 +921,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
         }
       })
       .catch(() => {});
-  }, [accessToken]);
+  }, [accessToken, hasAccess]);
 
   const toggleFavorite = useCallback(
     async (listingId: string) => {
@@ -965,6 +966,39 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
     const dateB = b.first_seen_at || b.matched_at || "";
     return dateB.localeCompare(dateA);
   });
+
+  if (!hasAccess) {
+    return (
+      <div className="flex flex-col pb-8" data-testid="matches-locked">
+        <div className="sticky top-0 z-10 bg-white px-5 pt-6 pb-3">
+          <div className="flex items-baseline justify-between">
+            <h1 className="text-page-title">{t("matches.title")}</h1>
+          </div>
+        </div>
+
+        <div className="px-4 pt-10">
+          <div className="flex flex-col items-center text-center px-6 py-10">
+            <div className="w-14 h-14 rounded-full bg-[#FFF1F3] flex items-center justify-center mb-5">
+              <Lock className="w-6 h-6 text-ha-primary" />
+            </div>
+            <h2 className="text-[20px] font-bold text-[#111111] mb-2" data-testid="text-locked-headline">
+              {t("matches.locked.headline")}
+            </h2>
+            <p className="text-[15px] text-[#6B7280] leading-relaxed max-w-[300px] mb-7" data-testid="text-locked-desc">
+              {t("matches.locked.desc")}
+            </p>
+            <button
+              onClick={() => navigate("/paywall")}
+              className="h-[48px] px-8 rounded-full bg-ha-primary text-white text-[15px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
+              data-testid="button-locked-subscribe"
+            >
+              {t("matches.locked.cta")}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col pb-8">

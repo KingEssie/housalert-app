@@ -194,6 +194,11 @@ export const de: Record<string, any> = {
       title: "Noch keine Favoriten",
       desc: "Tippe auf das Herz-Symbol bei einer Wohnung, um sie als Favorit zu speichern.",
     },
+    locked: {
+      headline: "Erhalte sofort neue Matches",
+      desc: "Aktiviere dein Abonnement, um neue Wohnungen zu sehen und sofort Benachrichtigungen zu erhalten.",
+      cta: "Jetzt abonnieren",
+    },
     adjustFilters: "Filter anpassen",
     loadError: "Matches konnten nicht geladen werden",
     loadErrorDesc: "Überprüfe deine Verbindung und versuche es erneut.",

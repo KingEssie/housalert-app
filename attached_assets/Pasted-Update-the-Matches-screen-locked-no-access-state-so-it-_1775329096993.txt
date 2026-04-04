@@ -1,0 +1,107 @@
+Update the Matches screen locked / no-access state so it uses HousAlert’s current premium Airbnb-style design language instead of the current generic centered empty state.
+
+GOAL:
+If the user does not have an active subscription or active trial, the Matches screen should show a premium locked state that visually fits the current HousAlert app style.
+
+IMPORTANT:
+- Keep the same entitlement logic:
+  - show real matches only for active trial or active paid subscription
+  - show locked state for no subscription / expired subscription / inactive access
+- Do NOT use the current generic full-empty centered layout style
+- Make it feel consistent with the current Airbnb-inspired design direction
+
+==================================================
+1. KEEP THE NORMAL MATCHES PAGE HEADER
+==================================================
+
+- Keep the normal Matches page header at the top
+- Use the same white header style as the rest of the app
+- If the user is not entitled, do not show the live match count on the right, or replace it with a subtle locked/upgrade state if needed
+
+==================================================
+2. REPLACE THE CURRENT LOCKED STATE UI
+==================================================
+
+Replace the current large centered empty state with a more premium content block inside the Matches page.
+
+Desired structure below the header:
+- generous top spacing
+- a clean empty-state section / card
+- subtle lock illustration/icon
+- headline
+- short supporting text
+- one strong pill CTA button
+
+Do NOT make it look like a generic onboarding page.
+
+==================================================
+3. DESIGN DIRECTION
+==================================================
+
+Match the current HousAlert Airbnb-style look:
+- white app background
+- clean spacing
+- minimal visual clutter
+- subtle premium typography
+- one primary pink CTA
+- no oversized generic empty-state layout
+- no harsh borders or outdated box styling
+
+The block can be:
+- a soft white card with rounded corners
+OR
+- an open layout section with centered content
+Choose whichever fits the current app best, but it must feel premium and consistent.
+
+==================================================
+4. COPY
+==================================================
+
+Use this copy:
+
+Headline:
+"Ontvang direct nieuwe matches"
+
+Supporting text:
+"Activeer je abonnement om nieuwe woningen te bekijken en direct meldingen te ontvangen."
+
+Primary CTA:
+"Abonneer nu"
+
+Optional secondary text link if useful:
+"Meer info"
+
+Keep the copy concise and premium.
+
+==================================================
+5. MATCHES FEED BEHAVIOR
+==================================================
+
+If user is not entitled:
+- do not render real match cards behind the locked state
+- do not show actual recent match data
+- treat the screen as a locked premium access screen
+
+If user is entitled:
+- show the normal matches feed exactly as before
+
+==================================================
+6. KEEP EVERYTHING ELSE INTACT
+==================================================
+
+Do not change:
+- navigation
+- bottom nav
+- other screens
+- paid/trial entitlement logic
+- real match feed layout for entitled users
+
+==================================================
+7. OUTPUT
+==================================================
+
+After finishing, show:
+1. what entitlement states now show the locked Matches screen
+2. how the locked layout was redesigned
+3. whether the match count is hidden or changed in the locked state
+4. which files were changed
