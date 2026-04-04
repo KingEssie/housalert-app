@@ -31,10 +31,12 @@ import {
   FileText,
   MoreVertical,
   Shield,
+  ShieldBan,
   HelpCircle,
   Heart,
   Lock,
   MapPin,
+  X,
 } from "lucide-react";
 import { ExpandableCompletionCard, type CompletionStep } from "@/components/expandable-completion-card";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
@@ -1352,6 +1354,24 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
 }
 
 
+const BLOCKED_SOURCE_DISPLAY: Record<string, string> = {
+  immowelt: "immowelt.de",
+  kleinanzeigen: "kleinanzeigen.de",
+  "wg-gesucht": "wg-gesucht.de",
+  wohnungsboerse: "wohnungsboerse.net",
+  immoscout: "immobilienscout24.de",
+  immonet: "immonet.de",
+  rentola: "rentola.de",
+  nestpick: "nestpick.com",
+  pararius: "pararius.nl",
+  funda: "funda.nl",
+  kamernet: "kamernet.nl",
+};
+
+function formatBlockedSourceDisplay(source: string): string {
+  return BLOCKED_SOURCE_DISPLAY[source] || source;
+}
+
 function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canonicalStats, computedAppliedCount }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null }; setActiveTab: (tab: TabKey) => void; canonicalStats?: CanonicalStats; computedAppliedCount: number }) {
   const [showPhotoSheet, setShowPhotoSheet] = useState(false);
   const [photoUploading, setPhotoUploading] = useState(false);
@@ -1381,6 +1401,35 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       return data;
     },
   });
+
+  const blockedSourcesQuery = useQuery<{ blockedSources: string[] }>({
+    queryKey: ["/api/blocked-sources"],
+    queryFn: async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return { blockedSources: [] };
+      const res = await apiFetch("/api/blocked-sources", { headers: { Authorization: `Bearer ${session.access_token}` } });
+      return res.json();
+    },
+  });
+
+  const blockedSources = blockedSourcesQuery.data?.blockedSources ?? [];
+
+  async function handleUnblock(source: string) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) return;
+    try {
+      const res = await apiFetch(`/api/blocked-sources/${encodeURIComponent(source)}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (!res.ok) throw new Error("unblock failed");
+      queryClient.invalidateQueries({ queryKey: ["/api/blocked-sources"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
+      toast({ title: t("profile.blockedSources.unblocked") });
+    } catch {
+      toast({ title: t("common.error"), variant: "destructive" });
+    }
+  }
 
   const pd = profileDataQuery.data;
   const photoUrl = pd?.profile_photo_url || null;
@@ -1574,6 +1623,35 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                 </button>
               </div>
             ))}
+          </div>
+
+          <div className="rounded-[16px] border border-[#E5E7EB] bg-white overflow-hidden" data-testid="section-blocked-sources">
+            <div className="flex items-center gap-2 px-4 pt-4 pb-1">
+              <ShieldBan className="w-3.5 h-3.5 text-[#9CA3AF]" />
+              <p className="text-[12px] font-semibold text-[#9CA3AF] uppercase tracking-wider">{t("profile.blockedSources.title")}</p>
+            </div>
+            {blockedSources.length === 0 ? (
+              <div className="px-4 py-4">
+                <p className="text-[14px] text-[#9CA3AF]">{t("profile.blockedSources.empty")}</p>
+              </div>
+            ) : (
+              blockedSources.map((source, i) => (
+                <div key={source}>
+                  {i > 0 && <div className="h-px bg-[#F0F0F0] mx-4" />}
+                  <div className="flex items-center justify-between h-[48px] px-4">
+                    <span className="text-[15px] text-[#111111]">{formatBlockedSourceDisplay(source)}</span>
+                    <button
+                      onClick={() => handleUnblock(source)}
+                      className="flex items-center gap-1 text-[13px] text-ha-primary font-medium active:opacity-70 transition-opacity"
+                      data-testid={`button-unblock-${source}`}
+                    >
+                      <X className="w-3.5 h-3.5" />
+                      {t("profile.blockedSources.unblock")}
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
 
           <div className="rounded-[16px] border border-[#E5E7EB] bg-white overflow-hidden">

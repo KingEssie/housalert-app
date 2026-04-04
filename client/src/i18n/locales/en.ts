@@ -244,6 +244,12 @@ export const en: Record<string, any> = {
     adminSection: "Admin",
     adminPortal: "Admin Portal",
     adminMode: "Admin mode",
+    blockedSources: {
+      title: "Excluded websites",
+      empty: "You haven't blocked any websites yet",
+      unblock: "Unblock",
+      unblocked: "Website unblocked",
+    },
     copyButton: "Copy",
     editButton: "Edit",
     letterCopied: "Application letter copied",
@@ -942,6 +948,16 @@ export const en: Record<string, any> = {
     lockedHint: "You can view this listing, but applying requires a subscription",
     upgradeCta: "Upgrade to apply directly",
     openOriginal: "Open original listing",
+    favoriteAdded: "Saved to favorites",
+    favoriteRemoved: "Removed from favorites",
+    blockSource: {
+      title: "Block website",
+      description: "Are you sure you no longer want to receive matches from {source}?",
+      cancel: "No",
+      confirm: "Yes, block",
+      success: "Website blocked",
+      successDesc: "You will no longer receive matches from {source}",
+    },
   },
 
   tips: {

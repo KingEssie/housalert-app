@@ -900,9 +900,30 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
   let totalMatches = 0;
   const resolvedEmails = new Map<string, string>();
   const userSubCache = new Map<string, { hasAccess: boolean }>();
+  const userBlockedCache = new Map<string, Set<string>>();
 
   for (const profile of profiles as SearchProfile[]) {
     if (!doesListingMatchProfile(listing as DbListing, profile)) continue;
+
+    if (!userBlockedCache.has(profile.user_id)) {
+      try {
+        const { getBlockedSources } = await import("../blocked-sources");
+        const blocked = await getBlockedSources(profile.user_id);
+        userBlockedCache.set(profile.user_id, new Set(blocked));
+      } catch {
+        userBlockedCache.set(profile.user_id, new Set());
+      }
+    }
+    const blockedSet = userBlockedCache.get(profile.user_id)!;
+    if (blockedSet.size > 0) {
+      try {
+        const { normalizeSourceName } = await import("../blocked-sources");
+        const normalizedSource = normalizeSourceName((listing as DbListing).source || "");
+        if (normalizedSource && blockedSet.has(normalizedSource)) {
+          continue;
+        }
+      } catch {}
+    }
 
     const result = await insertMatchIfNew(profile.user_id, profile.id, listing.id, listing as DbListing);
     if (!result.created) continue;
@@ -1010,11 +1031,26 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
   let skippedStale = 0;
   const matchedEntries: { listing: DbListing; matched_at: string }[] = [];
 
+  let backfillBlockedSet = new Set<string>();
+  try {
+    const { getBlockedSources } = await import("../blocked-sources");
+    const blocked = await getBlockedSources(sp.user_id);
+    backfillBlockedSet = new Set(blocked);
+  } catch {}
+
   for (const listing of listings as DbListing[]) {
     const lStatus = statusMap[listing.id] ?? "active";
     if (!isListingMatchable(lStatus)) {
       skippedStale++;
       continue;
+    }
+
+    if (backfillBlockedSet.size > 0) {
+      try {
+        const { normalizeSourceName: normSrc } = await import("../blocked-sources");
+        const ns = normSrc(listing.source || "");
+        if (ns && backfillBlockedSet.has(ns)) continue;
+      } catch {}
     }
 
     if (!doesListingMatchProfile(listing, sp)) continue;

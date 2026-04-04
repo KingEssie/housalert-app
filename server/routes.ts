@@ -31,6 +31,7 @@ import { pool as pgPool } from "./pg-pool";
 import { isAdminEmail, getRecentRuns, getRunDetail, getLatestRunCities, getSourceAggregates, getDynamicCitiesReport } from "./admin";
 import { trackEvent as trackActivationEvent, getUserActivationStatus, getActivationFunnel, hasEvent as hasActivationEvent } from "./activation-events";
 import { saveCancellationFeedback, getCancellationStats } from "./cancellation-feedback";
+import { getBlockedSources, addBlockedSource, removeBlockedSource, normalizeSourceName } from "./blocked-sources";
 import { getReferralSummary, applyReferralCode, validateReferralCode, ensureUserHasReferralCode } from "./referrals";
 import { initWebPush, sendPushToUser } from "./notifications/push";
 import { sendExpoTestPush } from "./notifications/expo-push";
@@ -905,8 +906,16 @@ export async function registerRoutes(
       const listingMap: Record<string, any> = {};
       for (const l of listingsData) listingMap[l.id] = l;
 
+      const blockedSources = await getBlockedSources(user.id);
+      const blockedSet = new Set(blockedSources);
+
       const validListingIds = new Set(Object.keys(listingMap));
-      const validMatches = uniqueMatches.filter((m: any) => validListingIds.has(m.listing_id));
+      const validMatches = uniqueMatches.filter((m: any) => {
+        if (!validListingIds.has(m.listing_id)) return false;
+        const l = listingMap[m.listing_id];
+        if (l?.source && blockedSet.has(normalizeSourceName(l.source))) return false;
+        return true;
+      });
 
       const profileMap: Record<string, any> = {};
       for (const p of profilesData) profileMap[p.id] = p;
@@ -1193,6 +1202,53 @@ export async function registerRoutes(
         [user.id, listingId]
       );
       return res.json({ favorited: false, listing_id: listingId });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/blocked-sources", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const sources = await getBlockedSources(user.id);
+      return res.json({ blockedSources: sources });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/blocked-sources", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { source } = req.body;
+      if (!source || typeof source !== "string") return res.status(400).json({ error: "source is required" });
+
+      const ok = await addBlockedSource(user.id, source);
+      if (!ok) return res.status(500).json({ error: "Failed to block source" });
+      return res.json({ blocked: true, source: normalizeSourceName(source) });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.delete("/api/blocked-sources/:source", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { source } = req.params;
+      await removeBlockedSource(user.id, source);
+      return res.json({ blocked: false, source });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
     }

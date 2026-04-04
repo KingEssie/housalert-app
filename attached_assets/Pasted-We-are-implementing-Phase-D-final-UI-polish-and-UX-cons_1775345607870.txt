@@ -1,0 +1,165 @@
+We are implementing Phase D: final UI polish and UX consistency for the HousAlert app.
+
+IMPORTANT:
+This is a polish phase.
+Do NOT add new major features.
+Do NOT change navigation structure again.
+Do NOT rebuild logic for blocking, favorites, or matches.
+
+GOAL:
+Make the app feel premium, consistent, and closer to Airbnb / Stekkies quality.
+
+==================================================
+1. PROFILE SCREEN POLISH (STEKKIES STYLE)
+==================================================
+
+Refine the Profile screen to match a clean Stekkies-like structure.
+
+Sections:
+- Account
+- Notificaties
+- Zoekbuddy
+- Standaard reactiebrief
+- Uitgesloten websites
+- Abonnementen
+- Meer info & hulp
+- Uitloggen (bottom CTA)
+
+Requirements:
+- use rounded cards for each section
+- consistent spacing between sections
+- clean typography hierarchy
+- no visual clutter
+
+Fix:
+- remove all blue toggles → use brand color
+- align icons and text properly
+- keep everything light and minimal
+
+==================================================
+2. BOTTOM NAV FINAL POLISH
+==================================================
+
+Improve bottom navigation:
+
+- slightly increase height
+- increase icon size
+- ensure labels are readable
+- active tab:
+  - red/pink icon
+  - red/pink text
+- inactive:
+  - soft grey
+
+Make spacing perfectly even.
+
+Keep design clean and modern (Airbnb-like).
+
+==================================================
+3. MATCHES SCREEN POLISH
+==================================================
+
+Refine Matches screen:
+
+- consistent spacing between cards (~20px)
+- clean padding on sides
+- remove heavy borders
+- maintain light UI
+
+Ensure top tabs feel clean and responsive.
+
+==================================================
+4. SEARCH (ZOEK) SCREEN CLEANUP
+==================================================
+
+Improve search profiles screen:
+
+- make cards more compact
+- reduce unnecessary vertical space
+- keep information scannable:
+  - place
+  - price range (fallback: €0 – €5000+)
+  - short summary
+
+Ensure 3-dot menu aligns properly and feels stable.
+
+==================================================
+5. EMPTY STATES CONSISTENCY
+==================================================
+
+Unify all empty states across:
+- Matches
+- Home
+- Profile (subscriptions)
+- any other empty data views
+
+Requirements:
+- same icon style
+- same spacing
+- same CTA button style
+- consistent tone of voice
+
+==================================================
+6. COLOR & ICON CONSISTENCY
+==================================================
+
+Remove inconsistent colors:
+
+- no blue UI elements
+- only use:
+  - black / grey
+  - brand red/pink
+
+Ensure icons:
+- consistent stroke width
+- consistent style (no random mix)
+
+==================================================
+7. TYPOGRAPHY REFINEMENT
+==================================================
+
+Improve text system:
+
+- titles: strong but clean
+- body: readable (not too light)
+- labels: subtle grey
+- increase line-height slightly for readability
+
+Ensure consistency across all screens.
+
+==================================================
+8. MICRO UX IMPROVEMENTS
+==================================================
+
+Add small but important UX improvements:
+
+- tap feedback on cards and buttons
+- smooth transitions where possible
+- clean text truncation with ellipsis (…)
+- optional: skeleton loaders for loading states
+
+==================================================
+9. SAFETY
+==================================================
+
+Do NOT break:
+- navigation
+- matches logic
+- favorites
+- blocked websites
+- search profiles
+- subscription flow
+
+==================================================
+10. OUTPUT
+==================================================
+
+After finishing, show:
+1. what changed in Profile screen
+2. bottom nav improvements
+3. spacing adjustments in Matches
+4. improvements in Zoek screen
+5. how empty states were unified
+6. color system cleanup
+7. typography changes
+8. files that were modified

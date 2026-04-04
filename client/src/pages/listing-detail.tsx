@@ -5,8 +5,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
 import { useSubscription } from "@/lib/subscription";
 import { useTranslation } from "@/i18n";
+import { useToast } from "@/hooks/use-toast";
 import { trackEvent } from "@/lib/track-event";
-import { MapPin, BedDouble, Ruler, Clock, Globe, Zap, Home as HomeIcon, ArrowLeft, Info, Lock } from "lucide-react";
+import { queryClient } from "@/lib/queryClient";
+import { MapPin, BedDouble, Ruler, Clock, Globe, Zap, Home as HomeIcon, ArrowLeft, Info, Lock, Heart, ShieldBan } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 function FloatingBackButton({ navigate }: { navigate: (to: string) => void }) {
@@ -28,6 +30,25 @@ function FloatingBackButton({ navigate }: { navigate: (to: string) => void }) {
       <button onClick={handleBack} className="w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center active:scale-95 transition-transform" style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }} aria-label="Back" data-testid="button-back"><ArrowLeft className="w-[18px] h-[18px] text-[#111111]" /></button>
     </div>
   );
+}
+
+const SOURCE_DISPLAY: Record<string, string> = {
+  immowelt: "immowelt.de",
+  kleinanzeigen: "kleinanzeigen.de",
+  "wg-gesucht": "wg-gesucht.de",
+  wohnungsboerse: "wohnungsboerse.net",
+  immoscout: "immobilienscout24.de",
+  immonet: "immonet.de",
+  rentola: "rentola.de",
+  nestpick: "nestpick.com",
+  pararius: "pararius.nl",
+  funda: "funda.nl",
+  kamernet: "kamernet.nl",
+};
+
+function formatSourceDisplay(source: string): string {
+  const s = (source || "").trim().toLowerCase();
+  return SOURCE_DISPLAY[s] || s;
 }
 
 const FRESH_BADGE_STYLES: Record<string, { bg: string; text: string }> = {
@@ -91,7 +112,12 @@ export default function ListingDetailPage() {
   const sub = useSubscription();
   const hasAccess = sub.isActive || sub.isTrial;
   const { t } = useTranslation();
+  const { toast } = useToast();
   const [imgError, setImgError] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [favLoading, setFavLoading] = useState(false);
+  const [showBlockModal, setShowBlockModal] = useState(false);
+  const [blockLoading, setBlockLoading] = useState(false);
   const relativeTime = useRelativeTime();
 
   const { data: listing, isLoading, isError } = useQuery<Listing>({
@@ -110,12 +136,80 @@ export default function ListingDetailPage() {
 
   useEffect(() => {
     if (!id || !session?.access_token) return;
+    apiFetch("/api/favorites", {
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.favoriteIds && Array.isArray(data.favoriteIds)) {
+          setIsFavorited(data.favoriteIds.includes(id));
+        }
+      })
+      .catch(() => {});
+  }, [id, session?.access_token]);
+
+  useEffect(() => {
+    if (!id || !session?.access_token) return;
     apiFetch(`/api/matches/${id}/viewed`, {
       method: "PATCH",
       headers: { Authorization: `Bearer ${session.access_token}` },
     }).catch(() => {});
     trackEvent("listing_opened", { listingId: id });
   }, [id, session?.access_token]);
+
+  async function handleToggleFavorite() {
+    if (!id || !session?.access_token || favLoading) return;
+    const wasFavorited = isFavorited;
+    setIsFavorited(!wasFavorited);
+    setFavLoading(true);
+    try {
+      const res = await apiFetch(`/api/favorites/${id}`, {
+        method: wasFavorited ? "DELETE" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+      if (!res.ok) throw new Error("request failed");
+      queryClient.invalidateQueries({ queryKey: ["/api/favorites"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/favorites/listings"] });
+      toast({
+        title: wasFavorited ? t("listing.favoriteRemoved") : t("listing.favoriteAdded"),
+      });
+    } catch {
+      setIsFavorited(wasFavorited);
+    } finally {
+      setFavLoading(false);
+    }
+  }
+
+  async function handleBlockSource() {
+    if (!listing || !session?.access_token || blockLoading) return;
+    setBlockLoading(true);
+    try {
+      const res = await apiFetch("/api/blocked-sources", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ source: listing.source }),
+      });
+      if (!res.ok) throw new Error("request failed");
+      queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/blocked-sources"] });
+      toast({
+        title: t("listing.blockSource.success"),
+        description: t("listing.blockSource.successDesc", { source: formatSourceDisplay(listing.source) }),
+      });
+      setShowBlockModal(false);
+      trackEvent("source_blocked", { source: listing.source });
+    } catch {
+      toast({ title: "Error", variant: "destructive" });
+    } finally {
+      setBlockLoading(false);
+    }
+  }
 
   if (isLoading) {
     return (
@@ -157,7 +251,7 @@ export default function ListingDetailPage() {
   detailItems.push({
     icon: Globe,
     label: t("listing.source"),
-    value: hasAccess ? listing.source : t("listing.sourceHidden"),
+    value: hasAccess ? formatSourceDisplay(listing.source) : t("listing.sourceHidden"),
     color: hasAccess ? "text-ha-primary" : undefined,
     locked: !hasAccess,
   });
@@ -165,6 +259,38 @@ export default function ListingDetailPage() {
   return (
     <div className="min-h-screen flex flex-col relative bg-white">
       <FloatingBackButton navigate={navigate} />
+
+      <div className="fixed top-[max(0.75rem,env(safe-area-inset-top))] right-4 z-30 flex items-center gap-2">
+        <button
+          onClick={handleToggleFavorite}
+          disabled={favLoading}
+          className={`w-9 h-9 rounded-full flex items-center justify-center active:scale-95 transition-all ${
+            isFavorited
+              ? "bg-ha-primary border border-white/80"
+              : "bg-black/40 border border-white/50"
+          }`}
+          style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}
+          aria-label="Favorite"
+          data-testid="button-favorite-detail"
+        >
+          <Heart
+            className={`w-[18px] h-[18px] ${isFavorited ? "text-white fill-white" : "text-white"}`}
+            strokeWidth={2}
+          />
+        </button>
+
+        {hasAccess && (
+          <button
+            onClick={() => setShowBlockModal(true)}
+            className="w-9 h-9 rounded-full bg-black/40 border border-white/50 flex items-center justify-center active:scale-95 transition-transform"
+            style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}
+            aria-label="Block source"
+            data-testid="button-block-source"
+          >
+            <ShieldBan className="w-[18px] h-[18px] text-white" strokeWidth={2} />
+          </button>
+        )}
+      </div>
 
       <div className="relative">
         {hasImage && !imgError ? (
@@ -294,6 +420,39 @@ export default function ListingDetailPage() {
           )}
         </div>
       </div>
+
+      {showBlockModal && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowBlockModal(false)}>
+          <div className="bg-white w-full max-w-[400px] rounded-t-[20px] sm:rounded-[20px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-center mb-4">
+              <div className="w-12 h-12 rounded-full bg-[#FFF1F3] flex items-center justify-center">
+                <ShieldBan className="w-6 h-6 text-ha-primary" />
+              </div>
+            </div>
+            <p className="text-[17px] font-bold text-[#111111] text-center" data-testid="text-block-title">
+              {t("listing.blockSource.title")}
+            </p>
+            <p className="text-[15px] text-[#6B7280] text-center mt-2 mb-6" data-testid="text-block-desc">
+              {t("listing.blockSource.description", { source: formatSourceDisplay(listing.source) })}
+            </p>
+            <button
+              onClick={handleBlockSource}
+              disabled={blockLoading}
+              className="w-full h-[48px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-bold mb-3 active:scale-[0.98] transition-transform disabled:opacity-60"
+              data-testid="button-block-confirm"
+            >
+              {blockLoading ? "..." : t("listing.blockSource.confirm")}
+            </button>
+            <button
+              onClick={() => setShowBlockModal(false)}
+              className="w-full h-[48px] rounded-full text-[#111111] text-[15px] font-medium active:bg-[#F9FAFB] transition-colors"
+              data-testid="button-block-cancel"
+            >
+              {t("listing.blockSource.cancel")}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
