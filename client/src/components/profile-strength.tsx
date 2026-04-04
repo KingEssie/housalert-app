@@ -427,7 +427,7 @@ export function TaskModal({
   return (
     <div className="fixed inset-0 z-50 bg-ha-card flex flex-col">
       <header className="sticky top-0 z-10 bg-ha-card border-b border-ha-card-border">
-        <div className="max-w-lg mx-auto flex items-center h-[56px] px-5">
+        <div className="max-w-lg mx-auto flex items-center h-[48px] px-5">
           <button
             onClick={onClose}
             className="w-9 h-9 rounded-full bg-ha-surface flex items-center justify-center mr-3 active:scale-95 transition-transform"
@@ -446,7 +446,7 @@ export function TaskModal({
               <p className="text-[14px] text-ha-text">{t("profileStrength.alertsDesc")}</p>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard"); }}
-                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
+                className="w-full h-[48px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-goto-notifications"
               >
                 <Bell className="w-4 h-4 mr-2" />
@@ -463,14 +463,14 @@ export function TaskModal({
                 value={buddyEmail}
                 onChange={(e) => setBuddyEmail(e.target.value)}
                 placeholder={t("profileStrength.buddyPlaceholder")}
-                className="w-full h-[56px] px-4 rounded-[6px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
+                className="w-full h-[48px] px-4 rounded-[6px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
                 data-testid="input-buddy-email"
               />
               <p className="text-[14px] text-ha-text">{t("profileStrength.buddyDesc")}</p>
               <Button
                 onClick={() => handleSave({ search_buddy_email: buddyEmail }, t("profileStrength.buddySaved"))}
                 disabled={!buddyEmail.includes("@") || updateProfileData.isPending}
-                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium disabled:opacity-50"
+                className="w-full h-[48px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium disabled:opacity-50"
                 data-testid="button-save-buddy"
               >
                 {updateProfileData.isPending ? t("profileStrength.saving") : t("profileStrength.save")}
@@ -485,7 +485,7 @@ export function TaskModal({
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard?tab=profiel"); }}
-                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
+                className="w-full h-[48px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-goto-filters"
               >
                 <Search className="w-4 h-4 mr-2" />
@@ -501,7 +501,7 @@ export function TaskModal({
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/application-letter"); }}
-                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
+                className="w-full h-[48px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-goto-letter"
               >
                 <FileText className="w-4 h-4 mr-2" />
@@ -541,7 +541,7 @@ export function TaskModal({
               <Button
                 onClick={() => handleSave({ document_checklist: checklist }, t("profileStrength.docListSaved"))}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium disabled:opacity-50"
+                className="w-full h-[48px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium disabled:opacity-50"
                 data-testid="button-save-documents"
               >
                 {updateProfileData.isPending ? t("profileStrength.saving") : t("profileStrength.save")}
@@ -557,13 +557,13 @@ export function TaskModal({
                 value={phoneInput}
                 onChange={(e) => setPhoneInput(e.target.value)}
                 placeholder="+49 170 1234567"
-                className="w-full h-[56px] px-4 rounded-[6px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
+                className="w-full h-[48px] px-4 rounded-[6px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:font-normal"
                 data-testid="input-phone"
               />
               <p className="text-[14px] text-ha-text">{t("profileStrength.phoneDesc")}</p>
               <Button
                 onClick={() => { onClose(); navigate("/dashboard"); }}
-                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
+                className="w-full h-[48px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-goto-phone-settings"
               >
                 <Phone className="w-4 h-4 mr-2" />
@@ -728,7 +728,7 @@ export function PrepTaskModal({
   return (
     <div className="fixed inset-0 z-50 bg-ha-card flex flex-col">
       <header className="sticky top-0 z-10 bg-ha-card border-b border-ha-card-border">
-        <div className="max-w-lg mx-auto flex items-center h-[56px] px-5">
+        <div className="max-w-lg mx-auto flex items-center h-[48px] px-5">
           <button
             onClick={onClose}
             className="w-9 h-9 rounded-full bg-ha-surface flex items-center justify-center mr-3 active:scale-95 transition-transform"
@@ -749,7 +749,7 @@ export function PrepTaskModal({
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/onboarding/city"); }}
-                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
+                className="w-full h-[48px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-prep-create-profile"
               >
                 <Search className="w-4 h-4 mr-2" />
@@ -765,7 +765,7 @@ export function PrepTaskModal({
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/application-letter"); }}
-                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
+                className="w-full h-[48px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-prep-goto-letter"
               >
                 <FileText className="w-4 h-4 mr-2" />
@@ -789,7 +789,7 @@ export function PrepTaskModal({
               </div>
               <Button
                 onClick={() => { onClose(); navigate("/onboarding/city"); }}
-                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
+                className="w-full h-[48px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-prep-add-profile"
               >
                 <Plus className="w-4 h-4 mr-2" />
@@ -810,7 +810,7 @@ export function PrepTaskModal({
               <Button
                 variant="outline"
                 onClick={handleCopyShare}
-                className="w-full h-[56px] rounded-[6px] text-[15px] font-medium border-ha-card-border text-ha-text"
+                className="w-full h-[48px] rounded-[6px] text-[15px] font-medium border-ha-card-border text-ha-text"
                 data-testid="button-copy-share"
               >
                 <Copy className="w-4 h-4 mr-2" />
@@ -819,7 +819,7 @@ export function PrepTaskModal({
               <Button
                 onClick={() => handleMarkDone("network_task_done")}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium disabled:opacity-50"
+                className="w-full h-[48px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium disabled:opacity-50"
                 data-testid="button-mark-network-done"
               >
                 {updateProfileData.isPending ? t("profileStrength.saving") : t("profileStrength.markComplete")}
@@ -834,7 +834,7 @@ export function PrepTaskModal({
               </p>
               <Button
                 onClick={() => { onClose(); navigate("/tips/bezichtiging"); }}
-                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
+                className="w-full h-[48px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium"
                 data-testid="button-goto-viewing-tips"
               >
                 <Eye className="w-4 h-4 mr-2" />

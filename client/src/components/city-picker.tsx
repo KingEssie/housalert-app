@@ -114,7 +114,7 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
             onChange={(e) => handleInputChange(e.target.value)}
             onFocus={() => { if (hasResults && !value) setOpen(true); }}
             placeholder={t("location.searchCity")}
-            className={`w-full min-h-[56px] rounded-[6px] bg-ha-surface border border-transparent px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-muted ${
+            className={`w-full min-h-[48px] rounded-[6px] bg-ha-surface border border-transparent px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-muted ${
               showValidation ? "border-red-400" : value ? "border-ha-primary bg-ha-surface/30" : "border-ha-card-border"
             }`}
             data-testid="input-city-search"

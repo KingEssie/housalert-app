@@ -195,7 +195,7 @@ function BoostScoreCard({ score, remaining, completed, total }: { score: number;
         </span>
       </div>
 
-      <div className="w-full h-2 bg-[#F7F7F7] rounded-full overflow-hidden mb-4">
+      <div className="w-full h-2 bg-[#F9FAFB] rounded-full overflow-hidden mb-4">
         <div
           className="h-full rounded-full transition-all duration-700 ease-out"
           style={{ width: `${score}%`, background: color }}
@@ -265,7 +265,7 @@ function RecommendedSection({
               <Button
                 onClick={handleAction}
                 variant="default"
-                className="w-full mt-4 rounded-[6px] text-[14px] font-medium h-[56px]"
+                className="w-full mt-4 rounded-[6px] text-[14px] font-medium h-[48px]"
                 data-testid={`button-recommend-${task.id}`}
               >
                 {ctaLabel}
@@ -303,7 +303,7 @@ function AllTasksSection({
             <button
               key={task.id}
               onClick={() => onTaskClick(task.id)}
-              className={`w-full flex items-center gap-3 p-4 text-left hover:bg-[#F7F7F7] transition-colors ${
+              className={`w-full flex items-center gap-3 p-4 text-left hover:bg-[#F9FAFB] transition-colors ${
                 i < incompleteTasks.length - 1 || completedTasks.length > 0 ? "border-b border-[#E5E7EB]" : ""
               }`}
               data-testid={`task-${task.id}`}
@@ -344,7 +344,7 @@ function AllTasksSection({
 function EmptyState({ onStart }: { onStart: () => void }) {
   const { t } = useTranslation();
   return (
-    <div className="bg-[#F7F7F7] rounded-[6px] p-6 text-center" data-testid="boost-empty-state">
+    <div className="bg-[#F9FAFB] rounded-[6px] p-6 text-center" data-testid="boost-empty-state">
       <div className="flex items-center justify-center mx-auto mb-4">
         <Zap className="w-6 h-6 text-ha-icon-secondary" />
       </div>
@@ -356,7 +356,7 @@ function EmptyState({ onStart }: { onStart: () => void }) {
       </p>
       <Button
         onClick={onStart}
-        className="h-[56px] px-8 rounded-[6px] bg-ha-primary text-white text-[15px] font-medium"
+        className="h-[48px] px-8 rounded-[6px] bg-ha-primary text-white text-[15px] font-medium"
         data-testid="button-start-boost"
       >
         <Zap className="w-4 h-4 mr-1.5" />
@@ -439,7 +439,7 @@ function TaskModal({
       >
         <div className="sticky top-0 bg-white border-b border-[#E5E7EB] p-6 flex items-center justify-between rounded-t-[6px]">
           <h2 className="text-[20px] font-medium text-[#111111] tracking-[-0.02em]">{t(modalKeys.titleKey)}</h2>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F7F7F7] flex items-center justify-center" data-testid="button-close-modal">
+          <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F9FAFB] flex items-center justify-center" data-testid="button-close-modal">
             <X className="w-4 h-4 text-ha-icon-secondary" />
           </button>
         </div>
@@ -450,7 +450,7 @@ function TaskModal({
           {taskId === "alerts_active" && (
             <Button
               onClick={() => { onClose(); navigate("/dashboard"); }}
-              className="w-full h-[56px] rounded-[6px] bg-ha-primary text-white text-[15px] font-medium"
+              className="w-full h-[48px] rounded-[6px] bg-ha-primary text-white text-[15px] font-medium"
               data-testid="button-goto-notifications"
             >
               <Bell className="w-4 h-4 mr-2" />
@@ -461,7 +461,7 @@ function TaskModal({
           {taskId === "phone_number_added" && (
             <Button
               onClick={() => { onClose(); navigate("/profile/edit/phone"); }}
-              className="w-full h-[56px] rounded-[6px] bg-ha-primary text-white text-[15px] font-medium"
+              className="w-full h-[48px] rounded-[6px] bg-ha-primary text-white text-[15px] font-medium"
               data-testid="button-goto-phone"
             >
               <Phone className="w-4 h-4 mr-2" />
@@ -477,14 +477,14 @@ function TaskModal({
                 value={buddyEmail}
                 onChange={(e) => setBuddyEmail(e.target.value)}
                 placeholder={t("boost.buddyEmailPlaceholder")}
-                className="w-full h-[56px] px-4 rounded-[6px] border border-transparent bg-[#F7F7F7] text-[15px] font-medium text-[#111111] placeholder:text-ha-text-muted placeholder:font-normal focus:bg-white"
+                className="w-full h-[48px] px-4 rounded-[6px] border border-transparent bg-[#F9FAFB] text-[15px] font-medium text-[#111111] placeholder:text-ha-text-muted placeholder:font-normal focus:bg-white"
                 data-testid="input-buddy-email"
               />
               <p className="text-[13px] font-normal text-[#111111]">{t("boost.buddyHelp")}</p>
               <Button
                 onClick={() => handleSave({ search_buddy_email: buddyEmail }, t("boost.buddySaved"))}
                 disabled={!buddyEmail.includes("@") || updateProfileData.isPending}
-                className="w-full h-[56px] rounded-[6px] bg-ha-primary text-white text-[15px] font-medium disabled:opacity-50"
+                className="w-full h-[48px] rounded-[6px] bg-ha-primary text-white text-[15px] font-medium disabled:opacity-50"
                 data-testid="button-save-buddy"
               >
                 {updateProfileData.isPending ? t("boost.saving") : t("boost.save")}
@@ -495,7 +495,7 @@ function TaskModal({
           {taskId === "housing_preferences_completed" && (
             <Button
               onClick={() => { onClose(); navigate("/onboarding/city"); }}
-              className="w-full h-[56px] rounded-[6px] bg-ha-primary text-white text-[15px] font-medium"
+              className="w-full h-[48px] rounded-[6px] bg-ha-primary text-white text-[15px] font-medium"
               data-testid="button-goto-filters"
             >
               <Search className="w-4 h-4 mr-2" />
@@ -506,7 +506,7 @@ function TaskModal({
           {taskId === "reaction_letter_ready" && (
             <Button
               onClick={() => { onClose(); navigate("/application-letter"); }}
-              className="w-full h-[56px] rounded-[6px] bg-ha-primary text-white text-[15px] font-medium"
+              className="w-full h-[48px] rounded-[6px] bg-ha-primary text-white text-[15px] font-medium"
               data-testid="button-goto-letter"
             >
               <FileText className="w-4 h-4 mr-2" />
@@ -522,7 +522,7 @@ function TaskModal({
                   <button
                     key={id}
                     onClick={() => setChecklist((prev) => ({ ...prev, [id]: !prev[id] }))}
-                    className="flex items-center gap-3 py-2.5 px-2 rounded-[6px] hover:bg-[#F7F7F7] transition-colors text-left"
+                    className="flex items-center gap-3 py-2.5 px-2 rounded-[6px] hover:bg-[#F9FAFB] transition-colors text-left"
                     data-testid={`check-${id}`}
                   >
                     {checklist[id] ? (
@@ -541,7 +541,7 @@ function TaskModal({
               <Button
                 onClick={() => handleSave({ document_checklist: checklist }, t("boost.docsSaved"))}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[56px] rounded-[6px] bg-ha-primary text-white text-[15px] font-medium disabled:opacity-50"
+                className="w-full h-[48px] rounded-[6px] bg-ha-primary text-white text-[15px] font-medium disabled:opacity-50"
                 data-testid="button-save-income-docs"
               >
                 {updateProfileData.isPending ? t("boost.saving") : t("boost.save")}
@@ -557,7 +557,7 @@ function TaskModal({
                   <button
                     key={id}
                     onClick={() => setChecklist((prev) => ({ ...prev, [id]: !prev[id] }))}
-                    className="flex items-center gap-3 py-2.5 px-2 rounded-[6px] hover:bg-[#F7F7F7] transition-colors text-left"
+                    className="flex items-center gap-3 py-2.5 px-2 rounded-[6px] hover:bg-[#F9FAFB] transition-colors text-left"
                     data-testid={`check-${id}`}
                   >
                     {checklist[id] ? (
@@ -576,7 +576,7 @@ function TaskModal({
               <Button
                 onClick={() => handleSave({ document_checklist: checklist }, t("boost.docsSaved"))}
                 disabled={updateProfileData.isPending}
-                className="w-full h-[56px] rounded-[6px] bg-ha-primary text-white text-[15px] font-medium disabled:opacity-50"
+                className="w-full h-[48px] rounded-[6px] bg-ha-primary text-white text-[15px] font-medium disabled:opacity-50"
                 data-testid="button-save-id-docs"
               >
                 {updateProfileData.isPending ? t("boost.saving") : t("boost.save")}
@@ -587,7 +587,7 @@ function TaskModal({
           {taskId === "profile_info_completed" && (
             <Button
               onClick={() => { onClose(); navigate("/dashboard"); }}
-              className="w-full h-[56px] rounded-[6px] bg-ha-primary text-white text-[15px] font-medium"
+              className="w-full h-[48px] rounded-[6px] bg-ha-primary text-white text-[15px] font-medium"
               data-testid="button-goto-profile-info"
             >
               <UserCircle className="w-4 h-4 mr-2" />
@@ -602,7 +602,7 @@ function TaskModal({
               </p>
               <Button
                 onClick={() => navigate("/dashboard?tab=profiel")}
-                className="w-full h-[56px] rounded-[6px] bg-ha-primary text-white text-[14px] font-medium"
+                className="w-full h-[48px] rounded-[6px] bg-ha-primary text-white text-[14px] font-medium"
                 data-testid="button-goto-profile-photo"
               >
                 {t("boost.goToProfilePhoto")}
@@ -631,7 +631,7 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
           <p className="text-[15px] text-[#111111] mb-4">{t("boost.errorMessage")}</p>
           <Button
             onClick={() => refetch()}
-            className="h-[56px] rounded-[6px] bg-ha-primary text-white text-[15px] font-medium px-6"
+            className="h-[48px] rounded-[6px] bg-ha-primary text-white text-[15px] font-medium px-6"
             data-testid="button-retry-boost"
           >
             {t("boost.retry")}
@@ -645,18 +645,18 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
     return (
       <div className="flex flex-col gap-4 px-6 pt-6">
         <div className="mb-2">
-          <div className="h-8 bg-[#F7F7F7] rounded w-24 mb-2 animate-pulse" />
-          <div className="h-4 bg-[#F7F7F7] rounded w-56 animate-pulse" />
+          <div className="h-8 bg-[#F9FAFB] rounded w-24 mb-2 animate-pulse" />
+          <div className="h-4 bg-[#F9FAFB] rounded w-56 animate-pulse" />
         </div>
         <div className="bg-white rounded-[6px] border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.06)] p-6 animate-pulse">
-          <div className="h-4 bg-[#F7F7F7] rounded w-32 mb-3" />
-          <div className="h-10 bg-[#F7F7F7] rounded w-20 mb-2" />
-          <div className="h-2.5 bg-[#F7F7F7] rounded w-full" />
+          <div className="h-4 bg-[#F9FAFB] rounded w-32 mb-3" />
+          <div className="h-10 bg-[#F9FAFB] rounded w-20 mb-2" />
+          <div className="h-2.5 bg-[#F9FAFB] rounded w-full" />
         </div>
         <div className="bg-white rounded-[6px] border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.06)] p-6 animate-pulse">
-          <div className="h-4 bg-[#F7F7F7] rounded w-48 mb-3" />
-          <div className="h-12 bg-[#F7F7F7] rounded w-full mb-2" />
-          <div className="h-12 bg-[#F7F7F7] rounded w-full" />
+          <div className="h-4 bg-[#F9FAFB] rounded w-48 mb-3" />
+          <div className="h-12 bg-[#F9FAFB] rounded w-full mb-2" />
+          <div className="h-12 bg-[#F9FAFB] rounded w-full" />
         </div>
       </div>
     );

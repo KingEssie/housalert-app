@@ -20,12 +20,12 @@ const buttonVariants = cva(
         banner: "bg-white text-ha-text hover:bg-ha-surface-hover border-0 font-medium",
       },
       size: {
-        default: "min-h-[56px] px-7 py-3.5",
+        default: "min-h-[48px] px-7 py-3",
         sm: "min-h-8 rounded-[--ha-btn-radius] px-4 text-xs",
-        lg: "min-h-[56px] rounded-[--ha-btn-radius] px-8",
+        lg: "min-h-[48px] rounded-[--ha-btn-radius] px-8",
         icon: "h-9 w-9",
         compact: "min-h-[44px] px-5 py-2 text-[14px]",
-        save: "min-h-[56px] w-[180px] px-6",
+        save: "min-h-[48px] w-[180px] px-6",
       },
     },
     defaultVariants: {

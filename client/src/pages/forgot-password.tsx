@@ -55,7 +55,7 @@ export default function ForgotPasswordPage() {
 
   if (sent) {
     return (
-      <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: "#F7F7F7" }} data-testid="page-forgot-password-sent">
+      <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: "#F9FAFB" }} data-testid="page-forgot-password-sent">
         <div className="pt-[max(env(safe-area-inset-top),8px)] px-5">
           <button
             onClick={() => navigate("/")}
@@ -82,7 +82,7 @@ export default function ForgotPasswordPage() {
           </p>
           <button
             onClick={() => navigate("/login")}
-            className="h-[56px] px-8 rounded-[6px] text-[15px] font-semibold text-white bg-ha-primary hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
+            className="h-[48px] px-8 rounded-[6px] text-[15px] font-semibold text-white bg-ha-primary hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
             data-testid="button-back-to-login"
           >
             {t("forgotPassword.backToLogin")}
@@ -93,7 +93,7 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: "#F7F7F7" }} data-testid="page-forgot-password">
+    <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: "#F9FAFB" }} data-testid="page-forgot-password">
       <div className="pt-[max(env(safe-area-inset-top),8px)] px-5">
         <button
           onClick={() => navigate("/")}
@@ -140,7 +140,7 @@ export default function ForgotPasswordPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full h-[56px] rounded-[6px] text-[15px] font-semibold text-white bg-ha-primary hover:bg-ha-primary-hover transition-colors active:scale-[0.97] disabled:opacity-50"
+            className="w-full h-[48px] rounded-[6px] text-[15px] font-semibold text-white bg-ha-primary hover:bg-ha-primary-hover transition-colors active:scale-[0.97] disabled:opacity-50"
             data-testid="button-submit"
           >
             {loading ? t("common.loading") : t("forgotPassword.submit")}

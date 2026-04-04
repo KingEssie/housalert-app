@@ -77,7 +77,7 @@ export default function ViewingTipsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#F7F7F7] flex flex-col">
+    <div className="min-h-screen bg-[#F9FAFB] flex flex-col">
       <AppHeader title={t("viewingTips.title")} onBack={() => navigate("/dashboard?tab=tips")} />
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-32">
@@ -119,10 +119,10 @@ export default function ViewingTipsPage() {
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-[#F7F7F7] border-t border-[#E5E7EB] p-5 z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-[#F9FAFB] border-t border-[#E5E7EB] p-5 z-10">
         <div className="max-w-xl mx-auto">
           {markedDone ? (
-            <div className="flex items-center justify-center gap-2 h-[56px] text-ha-primary">
+            <div className="flex items-center justify-center gap-2 h-[48px] text-ha-primary">
               <CheckCircle2 className="w-5 h-5" />
               <span className="text-[16px] font-medium">{t("viewingTips.completed")}</span>
             </div>
@@ -130,7 +130,7 @@ export default function ViewingTipsPage() {
             <Button
               onClick={() => markDoneMutation.mutate()}
               disabled={markDoneMutation.isPending}
-              className="w-full h-[56px] rounded-[6px] text-[16px] font-medium bg-ha-primary hover:bg-ha-primary-hover text-white disabled:opacity-50"
+              className="w-full h-[48px] rounded-[6px] text-[16px] font-medium bg-ha-primary hover:bg-ha-primary-hover text-white disabled:opacity-50"
               data-testid="button-mark-tips-done"
             >
               {markDoneMutation.isPending ? t("viewingTips.saving") : t("viewingTips.markComplete")}

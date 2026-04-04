@@ -139,7 +139,7 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
           </h2>
           <button
             onClick={() => setReferralModalOpen(true)}
-            className="w-full rounded-[16px] bg-white border border-[#F0F0F0] p-4 text-left active:bg-[#F8F8F8] transition-colors"
+            className="w-full rounded-[16px] bg-white border border-[#E5E7EB] p-4 text-left active:bg-[#F9FAFB] transition-colors"
             data-testid="card-referral-promo"
           >
             <div className="flex items-center gap-3.5">
@@ -167,7 +167,7 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
           <h2 className="text-[16px] font-bold text-[#111111] mb-3" data-testid="text-guides-title">
             {t("tips.guidesTitle")}
           </h2>
-          <div className="rounded-[16px] bg-white border border-[#F0F0F0] overflow-hidden">
+          <div className="rounded-[16px] bg-white border border-[#E5E7EB] overflow-hidden">
             {guides.map((guide, idx) => {
               const isRead = readSet.has(guide.id);
               return (
@@ -175,7 +175,7 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
                   {idx > 0 && <div className="h-px bg-[#F0F0F0] mx-4" />}
                   <button
                     onClick={() => navigate(guide.route)}
-                    className="w-full flex items-center gap-3 px-4 h-[52px] text-left active:bg-[#F8F8F8] transition-colors"
+                    className="w-full flex items-center gap-3 px-4 h-[52px] text-left active:bg-[#F9FAFB] transition-colors"
                     data-testid={`row-guide-${guide.id}`}
                   >
                     <p className={`flex-1 text-[15px] min-w-0 truncate ${isRead ? "text-[#9CA3AF]" : "font-medium text-[#111111]"}`}>

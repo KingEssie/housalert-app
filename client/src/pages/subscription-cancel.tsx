@@ -71,7 +71,7 @@ export function SubscriptionCancelConfirmPage() {
 
   if (step === "feedback") {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: "#F7F7F7" }} data-testid="page-cancel-feedback">
+      <div className="min-h-screen" style={{ backgroundColor: "#F9FAFB" }} data-testid="page-cancel-feedback">
         <AppHeader title={t("cancellation.feedbackTitle")} onBack={() => setStep("confirm")} />
 
         <div className="max-w-xl mx-auto p-4 pb-8">
@@ -97,7 +97,7 @@ export function SubscriptionCancelConfirmPage() {
                   className={`w-full text-left px-4 py-3.5 rounded-[6px] border text-[15px] font-medium transition-colors ${
                     selectedReason === key
                       ? "border-ha-primary bg-ha-primary/10 text-ha-primary"
-                      : "border-[#E5E7EB] bg-[#F7F7F7] text-[#111111] hover:bg-[#F7F7F7]"
+                      : "border-[#E5E7EB] bg-[#F9FAFB] text-[#111111] hover:bg-[#F9FAFB]"
                   }`}
                   data-testid={`button-reason-${key}`}
                 >
@@ -120,14 +120,14 @@ export function SubscriptionCancelConfirmPage() {
               <button
                 onClick={submitFeedback}
                 disabled={!selectedReason || submitting}
-                className="w-full h-[56px] bg-ha-primary hover:bg-ha-primary-hover text-white rounded-[6px] font-semibold text-[15px] transition-colors disabled:opacity-50"
+                className="w-full h-[48px] bg-ha-primary hover:bg-ha-primary-hover text-white rounded-[6px] font-semibold text-[15px] transition-colors disabled:opacity-50"
                 data-testid="button-submit-feedback"
               >
                 {submitting ? t("common.loading") : t("cancellation.submitAndCancel")}
               </button>
               <button
                 onClick={() => navigate("/account/subscription")}
-                className="w-full h-[56px] bg-white border border-[#E5E7EB] text-ha-text-muted rounded-[6px] font-semibold text-[15px] hover:bg-[#F7F7F7] transition-colors"
+                className="w-full h-[48px] bg-white border border-[#E5E7EB] text-ha-text-muted rounded-[6px] font-semibold text-[15px] hover:bg-[#F9FAFB] transition-colors"
                 data-testid="button-keep-instead"
               >
                 {t("subscription.keepSubscription")}
@@ -140,13 +140,13 @@ export function SubscriptionCancelConfirmPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#F7F7F7" }} data-testid="page-cancel-confirm">
+    <div className="min-h-screen" style={{ backgroundColor: "#F9FAFB" }} data-testid="page-cancel-confirm">
       <AppHeader title={t("subscription.cancelTitle")} onBack={() => navigate("/account/subscription")} />
 
       <div className="max-w-xl mx-auto p-4 pb-8">
         <div className="app-card">
           <div className="flex items-center justify-center mb-5">
-            <div className="w-14 h-14 rounded-[6px] bg-[#F7F7F7] flex items-center justify-center">
+            <div className="w-14 h-14 rounded-[6px] bg-[#F9FAFB] flex items-center justify-center">
               <AlertCircle className="w-7 h-7 text-[#6B7280]" />
             </div>
           </div>
@@ -155,7 +155,7 @@ export function SubscriptionCancelConfirmPage() {
             {t("subscription.cancelConfirm")}
           </h2>
 
-          <div className="bg-[#F7F7F7] rounded-[6px] p-4 mb-6">
+          <div className="bg-[#F9FAFB] rounded-[6px] p-4 mb-6">
             <p className="text-[15px] text-ha-text-muted leading-relaxed" data-testid="text-cancel-info">
               {t("subscription.cancelInfo", { date: renewalDate })}
             </p>
@@ -164,14 +164,14 @@ export function SubscriptionCancelConfirmPage() {
           <div className="space-y-3">
             <button
               onClick={() => navigate("/account/subscription")}
-              className="w-full h-[56px] bg-ha-primary hover:bg-ha-primary-hover text-white rounded-[6px] font-semibold text-[15px] transition-colors"
+              className="w-full h-[48px] bg-ha-primary hover:bg-ha-primary-hover text-white rounded-[6px] font-semibold text-[15px] transition-colors"
               data-testid="button-keep-subscription"
             >
               {t("subscription.keepSubscription")}
             </button>
             <button
               onClick={() => setStep("feedback")}
-              className="w-full h-[56px] bg-white border border-[#E5E7EB] text-ha-text-muted rounded-[6px] font-semibold text-[15px] hover:bg-[#F7F7F7] transition-colors"
+              className="w-full h-[48px] bg-white border border-[#E5E7EB] text-ha-text-muted rounded-[6px] font-semibold text-[15px] hover:bg-[#F9FAFB] transition-colors"
               data-testid="button-confirm-cancel"
             >
               {t("subscription.confirmCancel")}
@@ -202,7 +202,7 @@ export function SubscriptionCancelledPage() {
   const renewalDate = formatDate(subscription?.current_period_ends_at || subscription?.trial_ends_at, t("subscription.futureDate"));
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#F7F7F7" }} data-testid="page-cancelled">
+    <div className="min-h-screen" style={{ backgroundColor: "#F9FAFB" }} data-testid="page-cancelled">
       <AppHeader title={t("subscription.cancelledTitle")} onBack={() => navigate("/account/subscription")} />
 
       <div className="max-w-xl mx-auto p-4 pb-8">
@@ -217,7 +217,7 @@ export function SubscriptionCancelledPage() {
             {t("subscription.cancelled")}
           </h2>
 
-          <div className="bg-[#F7F7F7] rounded-[6px] p-4 mb-6">
+          <div className="bg-[#F9FAFB] rounded-[6px] p-4 mb-6">
             <p className="text-[15px] text-ha-text-muted leading-relaxed" data-testid="text-cancelled-info">
               {t("subscription.cancelledInfo", { date: renewalDate })}
             </p>
@@ -225,7 +225,7 @@ export function SubscriptionCancelledPage() {
 
           <button
             onClick={() => navigate("/dashboard?tab=profiel&sub=account")}
-            className="w-full h-[56px] bg-ha-primary hover:bg-ha-primary-hover text-white rounded-[6px] font-semibold text-[15px] transition-colors"
+            className="w-full h-[48px] bg-ha-primary hover:bg-ha-primary-hover text-white rounded-[6px] font-semibold text-[15px] transition-colors"
             data-testid="button-back-to-account"
           >
             {t("subscription.backToAccount")}

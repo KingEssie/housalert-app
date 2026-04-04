@@ -2,32 +2,55 @@
 
 A mobile-first rental alert application for the German market. Users can sign up, log in, and manage saved rental search profiles. Listings are matched against profiles and shown as matches. Rebranded from "Stekkies" to "HousAlert". Supports three languages: German (de), English (en), Dutch (nl). Default/fallback: English (en).
 
-## Theme System (Dual Light/Dark)
-- **Architecture**: CSS custom properties (`--ha-*`) in `client/src/index.css` with RGB triplet format (e.g., `--ha-primary: 233 30 99;`). Light mode in `:root`, dark mode via `@media (prefers-color-scheme: dark)`.
-- **Tailwind integration**: `darkMode: "media"` in `tailwind.config.ts`. All `ha.*` colors use `rgb(var(--ha-*) / <alpha-value>)` format for full opacity modifier support (e.g., `bg-ha-primary/10`, `text-ha-text/70`).
-- **Primary color**: Pink `#E91E63` (HousAlert brand) — all CTAs, active states, links use `bg-ha-primary`/`text-ha-primary`.
-- **Token naming**: `bg-ha-bg`, `bg-ha-card`, `bg-ha-surface`, `border-ha-card-border`, `text-ha-text`, `text-ha-text-secondary`, `text-ha-text-muted`, `bg-ha-primary`, `bg-ha-primary-hover`, `bg-ha-primary-light`, `bg-ha-success`, `text-ha-danger`, `text-ha-warning`, `bg-ha-input-bg`, `bg-ha-nav-bg`, `bg-ha-badge-bg`, `shadow-ha-card`.
-- **Pre-defined opacity tokens**: `--ha-primary-light`, `--ha-success-light`, `--ha-warning-light`, `--ha-danger-light` use rgba with fixed opacity (light: 0.08, dark: 0.15). These stay as raw CSS values (not RGB triplets).
-- **Inline styles**: When using ha tokens in `style={{}}` attributes, wrap in `rgb()`: `style={{ color: "rgb(var(--ha-primary))" }}`.
-- **theme.ts**: `client/src/lib/theme.ts` — all colors reference CSS variables for runtime theme consistency.
-- **Excluded from tokenization**: `admin-*.tsx` pages, `v2/` pages/components (these have their own design systems). Google logo SVG colors, city gradient overlays, and amber warning banners (`#FEF3C7`/`#92400E`) remain hardcoded as semantic/brand colors.
-- **text-white rule**: `text-white` is preserved on elements with colored backgrounds (buttons with `bg-ha-primary`, success badges, hero image overlays). All other white text uses `text-ha-text`.
-- **Page background**: `bg-ha-bg` (#F3F3F5 light) — slightly darker grey for card/page contrast separation.
-- **Cards**: White `bg-ha-card`, subtle `border-ha-card-border`, `rounded-[--ha-card-radius]` (14px), `shadow-ha-card` (none in dark mode). Use `.ha-card` CSS utility for standard cards.
-- **Inner card surfaces**: `rounded-[--ha-card-inner-radius]` (10px), `bg-ha-surface`.
-- **Buttons**: All buttons use `rounded-[--ha-btn-radius]` (10px). Only small badges/tags keep `rounded-full` pill shape. Button component uses `ha-primary`/`ha-primary-hover` tokens.
-- **Inputs**: All inputs use `rounded-[--ha-btn-radius]` (10px).
-- **Listing cards**: Reusable component in `client/src/components/listing-card.tsx` — three variants: `ListingCardFull` (matches/favorites tabs), `ListingCardCompact` (carousel), `ListingCardMini` (recently viewed). Full: edge-to-edge image (3:2 ratio), `rounded-[16px]`, price overlaid on image (white text + drop-shadow), only title + city below image (minimal text density), heart overlay. Compact: 16:9 image, price on image, title + city only. Mini: 1:1 image, `rounded-[14px]`. All white bg, no card shadow. Supports `locked` prop.
-- **Listing detail**: `listing-detail.tsx` — white bg, flat layout (no `app-card`), 4:3 hero image (max 400px), title/city/price stacked, horizontal detail row (bedrooms/size/source with icon squares), time as muted footnote, single full-width `rounded-full` CTA in bottom bar. Back button: 40px `rounded-full bg-white/90 backdrop-blur-sm`.
-- **Status cards**: Reusable `StatusCard` component in `client/src/components/status-card.tsx` — used for Reactiebrief and Zoekbuddy on Home tab. Shows green check + text when configured, red X + text when not. Props: `configured`, `configuredText`, `unconfiguredText`, `actionLabel`, icon, onAction.
-- **Semantic gray tokens**: `text-ha-text-secondary` (#4B5563), `text-ha-text-muted` (#6B7280), `text-ha-icon-secondary` (#9CA3AF), `bg-ha-surface` (skeleton/placeholder bg), `bg-ha-divider` (divider lines), `bg-ha-surface-hover`/`bg-ha-surface-active` (interactive states).
-- **Status tokens**: `ha-success` (#34d399 / 52 211 153) is the single canonical success green. `ha-status-green` is an alias (same value). `ha-status-red`. `ha-avatar-purple` (#4B3F72 — muted, premium purple). CSS utilities: `.ha-status-positive`, `.ha-status-negative`.
-- **Profile header**: Dark brand `bg-ha-profile-header` (#151226), no avatar, left-aligned name+member since, settings gear button on right. Compact height (pt-8 pb-6), mb-4 below.
-- **Profile tab structure**: Header → progress blocks (complete account + tips) → upgrade CTA (if applicable) → notification toggles → "Einstellungen" button. All menu items moved to `/settings` page.
-- **Settings page** (`/settings`): Contains search profiles, reaction letter, zoekbuddy, HousAlert Plus, personal info, language, privacy, help, terms, invite friends, logout, delete account.
-- **Admin button**: Floating `rounded-[8px]`, `px-4 py-2.5`, dark brand bg, white text, reduced shadow `shadow-[0_2px_10px_rgba(21,18,38,0.2)]`, positioned above tab bar.
-- **Bottom tab bar**: `bg-ha-bg` background, `border-t border-ha-card-border`, active icons use `text-ha-primary`.
-- **Typography**: Page titles use `text-ha-text`, section labels use `text-ha-text-muted`.
+## Design System (Light-Only)
+- **Mode**: Light-only, no dark mode. ThemeProvider is a no-op (always light). No `.dark` class ever applied.
+- **Architecture**: CSS custom properties (`--ha-*`) in `client/src/index.css`. Tailwind `ha.*` colors use `rgb(var(--ha-*) / <alpha-value>)`.
+- **theme.ts**: `client/src/lib/theme.ts` — direct hex color values, no CSS variable indirection.
+
+### Colors
+- **Primary accent**: `#FF385C` (brand pink) — all CTAs, active states, links
+- **Text**: Primary `#111111`, Secondary `#6B7280`, Muted `#9CA3AF`
+- **Surfaces**: Background `#FFFFFF`, Subtle surface `#F9FAFB`, Border `#E5E7EB`, Divider `#F0F0F0`
+- **Status**: Success `#16A34A`, Error `#DC2626`, Warning `#F59E0B`
+- **Token naming**: `bg-ha-bg`, `bg-ha-card`, `bg-ha-surface`, `border-ha-card-border`, `text-ha-text`, `text-ha-text-secondary`, `text-ha-text-muted`, `bg-ha-primary`
+- **Opacity tokens**: `--ha-primary-light` (rgba 0.08), `--ha-success-light`, `--ha-warning-light`, `--ha-danger-light`
+
+### Typography (CSS utility classes)
+- `.text-page-title`: 32px / 700 / line-height 1.15
+- `.text-section-title`: 24px / 700 / line-height 1.2
+- `.text-card-title`: 18px / 700 / line-height 1.3
+- `.text-body`: 16px / 400 / line-height 1.5
+- `.text-secondary` / `.text-row-subtitle` / `.text-muted-body`: 14px / 400 / line-height 1.45
+- `.text-small-label` / `.text-row-section-title`: 12px / 600
+
+### Spacing
+- Fixed scale: 4, 8, 12, 16, 20, 24, 32
+- Screen horizontal padding: 24px (`px-6`)
+- Section spacing: 24px
+- Feed item spacing: 20px
+- Card internal padding: 16px
+
+### Radius
+- Small: 12px (`rounded-md`)
+- Medium: 16px (`rounded-lg`, `--ha-card-radius`)
+- Large: 20px (`rounded-xl`)
+- Pill: 999px (`rounded-pill`, `--ha-btn-radius`)
+
+### Shadows
+- Card: `0 2px 8px rgba(0,0,0,0.04)` (`--ha-shadow-card`)
+- Overlay: `0 2px 6px rgba(0,0,0,0.08)` (`--ha-shadow-overlay`)
+
+### Component Rules
+- **Cards**: White bg, `rounded-[16px]`, `border border-[#E5E7EB]`, `shadow-ha-card`. Use `.app-card` or `.ha-card` utilities.
+- **Inner surfaces**: `#F9FAFB` bg, `rounded-[12px]`. Use `.ha-card-inner`.
+- **Buttons**: Primary = pink pill, white text, 48px height. Secondary = white/light, subtle border. Ghost = text only.
+- **Inputs**: White bg, `#E5E7EB` border, `rounded-[12px]`, 48px height.
+- **Settings rows**: Icon left, label, chevron right, `#F0F0F0` divider.
+- **Page backgrounds**: Secondary pages use `#F9FAFB`, main screens use `#FFFFFF`.
+- **Bottom tab bar**: White bg, `border-t border-[#E5E7EB]`, active icons `text-ha-primary`, inactive `#9CA3AF`.
+- **Listing cards**: `listing-card.tsx` — 3 variants (Full/Compact/Mini), image-first, price overlay, `rounded-[16px]`.
+- **Status cards**: `status-card.tsx` — green check or red X with text.
+- **Excluded**: `admin-*.tsx`, `v2/` pages, `ob-dark` onboarding scope have their own styles.
 
 ### Multi-Language System
 - **Frontend i18n**: `client/src/i18n/index.tsx` with translation keys in `client/src/i18n/locales/{de,en,nl}.ts`. Fallback chain: current locale → de → nl.

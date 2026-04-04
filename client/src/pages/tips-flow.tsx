@@ -156,12 +156,12 @@ export default function TipsFlowPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F7F7F7" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F9FAFB" }}>
       <header className="sticky top-0 z-10 bg-white border-b border-[rgba(15,23,42,0.04)]">
-        <div className="max-w-[480px] mx-auto flex items-center h-[56px] px-4">
+        <div className="max-w-[480px] mx-auto flex items-center h-[48px] px-4">
           <button
             onClick={handleBack}
-            className="w-9 h-9 rounded-full flex items-center justify-center active:bg-[#F7F7F7] transition-colors"
+            className="w-9 h-9 rounded-full flex items-center justify-center active:bg-[#F9FAFB] transition-colors"
             data-testid="button-tips-back"
           >
             <ArrowLeft className="w-5 h-5 text-[#111111]" />
@@ -171,7 +171,7 @@ export default function TipsFlowPage() {
           </h1>
           <button
             onClick={handleClose}
-            className="w-9 h-9 rounded-full flex items-center justify-center active:bg-[#F7F7F7] transition-colors"
+            className="w-9 h-9 rounded-full flex items-center justify-center active:bg-[#F9FAFB] transition-colors"
             data-testid="button-tips-close"
           >
             <X className="w-5 h-5 text-[#111111]" />
@@ -179,7 +179,7 @@ export default function TipsFlowPage() {
         </div>
 
         <div className="max-w-[480px] mx-auto px-4 pb-3">
-          <div className="w-full h-[6px] rounded-full bg-[#F7F7F7] overflow-hidden">
+          <div className="w-full h-[6px] rounded-full bg-[#F9FAFB] overflow-hidden">
             <div
               className="h-full rounded-full bg-ha-success transition-all duration-500"
               style={{ width: `${progressPercent}%` }}
@@ -239,7 +239,7 @@ export default function TipsFlowPage() {
             onClick={handleToggleCheck}
             className="w-full h-[48px] rounded-[--ha-btn-radius] flex items-center justify-center gap-2 text-[15px] font-medium transition-colors active:scale-[0.98]"
             style={{
-              background: isChecked ? "rgb(var(--ha-success) / 0.08)" : "#F7F7F7",
+              background: isChecked ? "rgb(var(--ha-success) / 0.08)" : "#F9FAFB",
               color: isChecked ? "rgb(var(--ha-success))" : "#111111",
               border: isChecked ? "1px solid rgb(var(--ha-success) / 0.3)" : "1px solid transparent",
             }}
@@ -251,7 +251,7 @@ export default function TipsFlowPage() {
 
           <button
             onClick={handleNext}
-            className="w-full h-[56px] rounded-[--ha-btn-radius] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-bold transition-colors active:scale-[0.98]"
+            className="w-full h-[48px] rounded-[--ha-btn-radius] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-bold transition-colors active:scale-[0.98]"
             data-testid="button-tips-next"
           >
             {isLastStep ? "Afronden" : "Volgende"}

@@ -62,7 +62,7 @@ export default function SubscriptionDetailPage() {
 
   function getStatusColor(): string {
     if (subscription?.isExpired) return "bg-red-100 text-red-600";
-    if (isCanceled && subscription?.isActive) return "bg-[#F7F7F7] text-[#6B7280]";
+    if (isCanceled && subscription?.isActive) return "bg-[#F9FAFB] text-[#6B7280]";
     if (subscription?.isTrial) return "bg-ha-primary/15 text-ha-primary";
     return "bg-ha-success/10 text-ha-success";
   }
@@ -72,7 +72,7 @@ export default function SubscriptionDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: "#F7F7F7" }}>
+      <div className="min-h-screen" style={{ backgroundColor: "#F9FAFB" }}>
         <AppHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
         <div className="max-w-lg mx-auto px-4 pt-4">
           <div className="app-card animate-pulse">
@@ -124,7 +124,7 @@ export default function SubscriptionDetailPage() {
   ];
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#F7F7F7" }} data-testid="page-subscription-detail">
+    <div className="min-h-screen" style={{ backgroundColor: "#F9FAFB" }} data-testid="page-subscription-detail">
       <AppHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <div className="max-w-lg mx-auto px-4 pt-2 pb-12 flex flex-col gap-4">
@@ -165,7 +165,7 @@ export default function SubscriptionDetailPage() {
         <div className="app-card !p-0">
           <button
             onClick={() => navigate("/account/payment-method")}
-            className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F7F7F7] transition-colors"
+            className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F9FAFB] transition-colors"
             data-testid="button-manage-payment"
           >
             <CreditCard className="w-[22px] h-[22px] text-ha-text-muted flex-shrink-0" />
@@ -202,7 +202,7 @@ export default function SubscriptionDetailPage() {
             </div>
             <button
               onClick={() => navigate("/paywall")}
-              className="w-full h-[56px] bg-ha-primary hover:bg-ha-primary-hover text-white rounded-[6px] font-semibold text-[15px] transition-colors active:scale-[0.98]"
+              className="w-full h-[48px] bg-ha-primary hover:bg-ha-primary-hover text-white rounded-[6px] font-semibold text-[15px] transition-colors active:scale-[0.98]"
               data-testid="button-renew-subscription"
             >
               {t("subscription.renewSubscription")}

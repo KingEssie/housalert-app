@@ -31,7 +31,7 @@ export function AppHeader({ title, onBack, closeButton, trailing }: AppHeaderPro
     >
       <button
         onClick={handleBack}
-        className="w-10 h-10 flex items-center justify-center rounded-full active:bg-[#F7F7F7] transition-colors shrink-0"
+        className="w-10 h-10 flex items-center justify-center rounded-full active:bg-[#F9FAFB] transition-colors shrink-0"
         aria-label={closeButton ? "Close" : "Back"}
         data-testid="button-back"
       >

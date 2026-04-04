@@ -42,13 +42,13 @@ export default function PaymentMethodPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#F7F7F7" }} data-testid="page-payment-method">
+    <div className="min-h-screen" style={{ backgroundColor: "#F9FAFB" }} data-testid="page-payment-method">
       <AppHeader title={t("paymentMethodPage.title")} />
 
       <div className="max-w-xl mx-auto p-4 space-y-4 pb-8">
         <div className="app-card">
           <div className="flex items-center gap-3">
-            <div className="w-[48px] h-[48px] rounded-[8px] bg-[#F7F7F7] flex items-center justify-center flex-shrink-0">
+            <div className="w-[48px] h-[48px] rounded-[8px] bg-[#F9FAFB] flex items-center justify-center flex-shrink-0">
               <CreditCard className="w-5 h-5 text-ha-primary" />
             </div>
             <div className="flex-1 min-w-0">
@@ -65,7 +65,7 @@ export default function PaymentMethodPage() {
         <Button
           onClick={openStripePortal}
           disabled={loading}
-          className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold"
+          className="w-full h-[48px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold"
           data-testid="button-open-stripe-portal"
         >
           <ExternalLink className="w-4 h-4 mr-2" />

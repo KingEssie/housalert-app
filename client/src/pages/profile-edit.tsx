@@ -106,7 +106,7 @@ export default function ProfileEditPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F7F7F7" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F9FAFB" }}>
       <AppHeader title={config.question} onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <div className="flex-1 max-w-xl mx-auto px-5 w-full">
@@ -150,12 +150,12 @@ export default function ProfileEditPage() {
       </div>
 
       {!loading && (
-        <div className="sticky bottom-0 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 px-5" style={{ background: "linear-gradient(to top, #F7F7F7, #F7F7F7 80%, transparent)" }}>
+        <div className="sticky bottom-0 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 px-5" style={{ background: "linear-gradient(to top, #F9FAFB, #F9FAFB 80%, transparent)" }}>
           <div className="max-w-xl mx-auto flex justify-center">
             <button
               onClick={handleSave}
               disabled={saving}
-              className="h-[56px] px-10 rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold flex items-center justify-center transition-colors disabled:opacity-50"
+              className="h-[48px] px-10 rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold flex items-center justify-center transition-colors disabled:opacity-50"
               data-testid="button-save-field"
             >
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : t("common.save")}

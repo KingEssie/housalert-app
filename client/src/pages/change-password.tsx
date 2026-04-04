@@ -78,7 +78,7 @@ export default function ChangePasswordPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: "#F7F7F7" }} data-testid="page-password-success">
+      <div className="min-h-screen" style={{ backgroundColor: "#F9FAFB" }} data-testid="page-password-success">
         <AppHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
         <div className="max-w-xl mx-auto p-4 pb-8">
           <div className="app-card text-center">
@@ -95,7 +95,7 @@ export default function ChangePasswordPage() {
             </p>
             <button
               onClick={() => navigate("/dashboard?tab=profiel")}
-              className="w-full h-[56px] bg-ha-primary text-white rounded-[6px] font-semibold text-[15px] transition-colors hover:bg-ha-primary-hover"
+              className="w-full h-[48px] bg-ha-primary text-white rounded-[6px] font-semibold text-[15px] transition-colors hover:bg-ha-primary-hover"
               data-testid="button-back-to-account"
             >
               {t("changePassword.backToAccount")}
@@ -107,7 +107,7 @@ export default function ChangePasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F7F7F7" }} data-testid="page-change-password">
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F9FAFB" }} data-testid="page-change-password">
       <AppHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <div className="flex-1 max-w-xl mx-auto w-full p-4 pb-8">
@@ -201,12 +201,12 @@ export default function ChangePasswordPage() {
         </div>
       </div>
 
-      <div className="sticky bottom-0 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 px-5" style={{ background: "linear-gradient(to top, #F7F7F7, #F7F7F7 80%, transparent)" }}>
+      <div className="sticky bottom-0 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 px-5" style={{ background: "linear-gradient(to top, #F9FAFB, #F9FAFB 80%, transparent)" }}>
         <div className="max-w-xl mx-auto">
           <button
             onClick={handleSubmit}
             disabled={!canSubmit}
-            className={`w-full h-[56px] rounded-[6px] font-semibold text-[15px] transition-colors flex items-center justify-center ${
+            className={`w-full h-[48px] rounded-[6px] font-semibold text-[15px] transition-colors flex items-center justify-center ${
               canSubmit
                 ? "bg-ha-primary hover:bg-ha-primary-hover text-white"
                 : "bg-[#E5E7EB] text-ha-icon-secondary cursor-not-allowed"

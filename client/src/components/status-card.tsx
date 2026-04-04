@@ -27,10 +27,10 @@ export function StatusCard({
     <div className="rounded-[--ha-card-radius] bg-white overflow-hidden" data-testid={testId}>
       <button
         onClick={onAction}
-        className="w-full px-5 py-4 flex items-center gap-4 text-left active:bg-[#F7F7F7] transition-colors"
+        className="w-full px-5 py-4 flex items-center gap-4 text-left active:bg-[#F9FAFB] transition-colors"
         data-testid={`${testId}-action`}
       >
-        <div className="w-11 h-11 rounded-full bg-[#F7F7F7] flex items-center justify-center flex-shrink-0">
+        <div className="w-11 h-11 rounded-full bg-[#F9FAFB] flex items-center justify-center flex-shrink-0">
           {icon}
         </div>
         <div className="flex-1 min-w-0">
@@ -76,10 +76,10 @@ export function StatusCardInline({
   return (
     <button
       onClick={onAction}
-      className="w-full px-5 py-3.5 flex items-center gap-3.5 text-left active:bg-[#F7F7F7] transition-colors"
+      className="w-full px-5 py-3.5 flex items-center gap-3.5 text-left active:bg-[#F9FAFB] transition-colors"
       data-testid={`${testId}-action`}
     >
-      <div className="w-9 h-9 rounded-full bg-[#F7F7F7] flex items-center justify-center flex-shrink-0">
+      <div className="w-9 h-9 rounded-full bg-[#F9FAFB] flex items-center justify-center flex-shrink-0">
         {icon}
       </div>
       <div className="flex-1 min-w-0">

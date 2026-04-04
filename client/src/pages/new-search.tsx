@@ -359,7 +359,7 @@ export default function NewSearchPage() {
 
   if (loading || (isEditMode && !editLoaded)) {
     return (
-      <div className="min-h-screen bg-[#F7F7F7] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center">
         <div className="w-8 h-8 rounded-full border-2 border-ha-primary border-t-transparent animate-spin" />
       </div>
     );
@@ -369,9 +369,9 @@ export default function NewSearchPage() {
 
   if (atLimit) {
     return (
-      <div className="min-h-screen bg-[#F7F7F7] flex flex-col">
-        <header className="fixed top-0 left-0 right-0 z-50 bg-[#F7F7F7]">
-          <div className="max-w-lg mx-auto flex items-center justify-between h-[56px] px-5">
+      <div className="min-h-screen bg-[#F9FAFB] flex flex-col">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-[#F9FAFB]">
+          <div className="max-w-lg mx-auto flex items-center justify-between h-[48px] px-5">
             <button
               onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=home")}
               className="w-12 h-12 rounded-full bg-white shadow-[0_1px_4px_rgba(0,0,0,0.2)] flex items-center justify-center"
@@ -392,7 +392,7 @@ export default function NewSearchPage() {
             </p>
             <Button
               onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=home")}
-              className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium"
+              className="w-full h-[48px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium"
               data-testid="button-back-to-dashboard-limit"
             >
               {t("newSearch.backToDashboard")}
@@ -406,9 +406,9 @@ export default function NewSearchPage() {
   const perWeekRaw = estimateQuery.data?.perWeekEstimate ?? 0;
 
   return (
-    <div className="min-h-screen bg-[#F7F7F7] flex flex-col">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#F7F7F7]">
-        <div className="max-w-lg mx-auto flex items-center justify-between h-[56px] px-5">
+    <div className="min-h-screen bg-[#F9FAFB] flex flex-col">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#F9FAFB]">
+        <div className="max-w-lg mx-auto flex items-center justify-between h-[48px] px-5">
           <button
             onClick={goBack}
             className="w-12 h-12 rounded-full bg-white shadow-[0_1px_4px_rgba(0,0,0,0.2)] flex items-center justify-center"
@@ -517,7 +517,7 @@ function Step2Requirements({
             <select
               value={filters.priceMin}
               onChange={(e) => updateFilters({ priceMin: e.target.value })}
-              className="w-full h-[56px] px-4 pr-10 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] appearance-none cursor-pointer"
+              className="w-full h-[48px] px-4 pr-10 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] appearance-none cursor-pointer"
               data-testid="select-price-min"
             >
               {RENT_OPTIONS.map(opt => (
@@ -537,7 +537,7 @@ function Step2Requirements({
             <select
               value={filters.priceMax}
               onChange={(e) => updateFilters({ priceMax: e.target.value })}
-              className="w-full h-[56px] px-4 pr-10 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] appearance-none cursor-pointer"
+              className="w-full h-[48px] px-4 pr-10 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] appearance-none cursor-pointer"
               data-testid="select-price-max"
             >
               {RENT_OPTIONS.map(opt => (
@@ -557,7 +557,7 @@ function Step2Requirements({
             <select
               value={filters.bedroomsMin}
               onChange={(e) => updateFilters({ bedroomsMin: parseInt(e.target.value) })}
-              className="w-full h-[56px] px-4 pr-10 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] appearance-none cursor-pointer"
+              className="w-full h-[48px] px-4 pr-10 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] appearance-none cursor-pointer"
               data-testid="select-bedrooms"
             >
               {BEDROOM_OPTIONS.map(opt => (
@@ -577,7 +577,7 @@ function Step2Requirements({
             <select
               value={filters.sizeMin}
               onChange={(e) => updateFilters({ sizeMin: parseInt(e.target.value) })}
-              className="w-full h-[56px] px-4 pr-10 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] appearance-none cursor-pointer"
+              className="w-full h-[48px] px-4 pr-10 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] appearance-none cursor-pointer"
               data-testid="select-size"
             >
               {SIZE_OPTIONS.map(opt => (
@@ -597,7 +597,7 @@ function Step2Requirements({
             <select
               value={filters.furnished}
               onChange={(e) => updateFilters({ furnished: e.target.value })}
-              className="w-full h-[56px] px-4 pr-10 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] appearance-none cursor-pointer"
+              className="w-full h-[48px] px-4 pr-10 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] appearance-none cursor-pointer"
               data-testid="select-furnished"
             >
               {FURNISHED_OPTIONS.map(opt => (
@@ -801,7 +801,7 @@ function ReviewRow({ label, value, onEdit }: { label: string; value: string; onE
       </div>
       <button
         onClick={onEdit}
-        className="flex-shrink-0 w-8 h-8 rounded-full bg-[#F7F7F7] flex items-center justify-center hover:bg-[#F7F7F7] transition-colors"
+        className="flex-shrink-0 w-8 h-8 rounded-full bg-[#F9FAFB] flex items-center justify-center hover:bg-[#F9FAFB] transition-colors"
         data-testid={`button-review-edit-${label.toLowerCase().replace(/\s/g, "-")}`}
       >
         <Pencil className="w-3.5 h-3.5 text-ha-text-muted" />
@@ -917,12 +917,12 @@ function StepReview({
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#F7F7F7] border-t border-[#E5E7EB] p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#F9FAFB] border-t border-[#E5E7EB] p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
         <div className="max-w-lg mx-auto">
           <Button
             onClick={onSubmit}
             disabled={submitting}
-            className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium disabled:opacity-40 shadow-[0_2px_12px_rgba(0,0,0,0.3)]"
+            className="w-full h-[48px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium disabled:opacity-40 shadow-[0_2px_12px_rgba(0,0,0,0.3)]"
             data-testid="button-wizard-submit"
           >
             {submitting ? (

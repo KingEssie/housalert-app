@@ -143,11 +143,11 @@ export default function ApplyPage() {
 
   if (!sub.loading && !hasAccess) {
     return (
-      <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F7F7F7" }}>
+      <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F9FAFB" }}>
         <AppHeader title={t("applySheet.title") || "Reageren"} onBack={() => navigate("/dashboard?tab=matches")} />
         <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-8">
           <div className="app-card text-center py-10">
-            <div className="w-16 h-16 rounded-full bg-[#F7F7F7] flex items-center justify-center mx-auto mb-5">
+            <div className="w-16 h-16 rounded-full bg-[#F9FAFB] flex items-center justify-center mx-auto mb-5">
               <Lock className="w-7 h-7 text-ha-text-muted" />
             </div>
             <h2 className="text-[18px] font-bold text-[#111111] mb-2" data-testid="text-apply-locked-title">
@@ -158,7 +158,7 @@ export default function ApplyPage() {
             </p>
             <Button
               onClick={() => navigate("/paywall")}
-              className="w-full max-w-[280px] h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold flex items-center justify-center gap-2"
+              className="w-full max-w-[280px] h-[48px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold flex items-center justify-center gap-2"
               data-testid="button-apply-upgrade"
             >
               <Lock className="w-4 h-4" />
@@ -172,7 +172,7 @@ export default function ApplyPage() {
 
   if (listingLoading || !listing) {
     return (
-      <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F7F7F7" }}>
+      <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F9FAFB" }}>
         <AppHeader title={t("applySheet.title") || "Reageren"} onBack={() => navigate("/dashboard?tab=matches")} />
         <div className="animate-pulse">
           <div className="w-full bg-[#E5E7EB]" style={{ aspectRatio: "16/10" }} />
@@ -288,7 +288,7 @@ export default function ApplyPage() {
   const detailLine = detailParts.join(" · ");
 
   return (
-    <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F7F7F7" }}>
+    <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F9FAFB" }}>
       <AppHeader title={t("applySheet.title") || "Reageren"} onBack={() => navigate("/dashboard?tab=matches")} />
 
       <div className="relative">

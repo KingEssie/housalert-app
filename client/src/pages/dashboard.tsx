@@ -226,7 +226,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
           {profiles.map((p) => (
             <div
               key={p.id}
-              className="flex items-center gap-3 py-3 px-3.5 rounded-[12px] bg-white cursor-pointer hover:bg-[#F7F7F7] transition-colors active:scale-[0.99]"
+              className="flex items-center gap-3 py-3 px-3.5 rounded-[12px] bg-white cursor-pointer hover:bg-[#F9FAFB] transition-colors active:scale-[0.99]"
               onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
               data-testid={`card-search-profile-${p.id}`}
             >
@@ -533,14 +533,14 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
       </p>
 
       {profiles.length > 0 ? (
-        <div className="rounded-[16px] bg-white border border-[#F0F0F0] overflow-hidden" data-testid="card-zoekopdrachten">
+        <div className="rounded-[16px] bg-white border border-[#E5E7EB] overflow-hidden" data-testid="card-zoekopdrachten">
           {profiles.map((p, idx) => {
             const { city, price } = profileSummary(p);
             return (
               <div key={p.id}>
                 {idx > 0 && <div className="h-px bg-[#F0F0F0] mx-4" />}
                 <div
-                  className="flex items-center h-[50px] px-4 cursor-pointer active:bg-[#F8F8F8] transition-colors"
+                  className="flex items-center h-[50px] px-4 cursor-pointer active:bg-[#F9FAFB] transition-colors"
                   onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
                   data-testid={`row-zoekopdracht-${p.id}`}
                 >
@@ -584,7 +584,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
           })}
         </div>
       ) : (
-        <div className="rounded-[16px] bg-white border border-[#F0F0F0] p-5 text-center" data-testid="card-zoekopdrachten-empty">
+        <div className="rounded-[16px] bg-white border border-[#E5E7EB] p-5 text-center" data-testid="card-zoekopdrachten-empty">
           <p className="text-[14px] text-[#6B7280] mb-3">{t("home.noProfileDesc")}</p>
           <button
             onClick={() => navigate("/dashboard/searches/new")}
@@ -618,7 +618,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
             <div className="flex gap-3">
               <button
                 onClick={() => setConfirmDeleteId(null)}
-                className="flex-1 h-[46px] rounded-full border border-[#E5E7EB] text-[15px] font-semibold text-[#111111] active:bg-[#F8F8F8] transition-colors"
+                className="flex-1 h-[46px] rounded-full border border-[#E5E7EB] text-[15px] font-semibold text-[#111111] active:bg-[#F9FAFB] transition-colors"
                 data-testid="button-delete-no"
               >
                 {t("home.deleteNo")}
@@ -674,7 +674,7 @@ function RecentMatchesSection({
       </h2>
 
       {!hasAccess ? (
-        <div className="rounded-[16px] bg-white border border-[#F0F0F0] p-6 flex flex-col items-center text-center" data-testid="card-paywall">
+        <div className="rounded-[16px] bg-white border border-[#E5E7EB] p-6 flex flex-col items-center text-center" data-testid="card-paywall">
           <div className="w-14 h-14 rounded-full bg-[#F0F0F0] flex items-center justify-center mb-4">
             <Lock className="w-6 h-6 text-[#9CA3AF]" />
           </div>
@@ -705,14 +705,14 @@ function RecentMatchesSection({
           </div>
           <button
             onClick={() => setActiveTab("matches")}
-            className="mt-3 w-full h-[44px] rounded-full border border-[#F0F0F0] text-[14px] font-semibold text-[#111111] hover:bg-[#F8F8F8] transition-colors active:scale-[0.98]"
+            className="mt-3 w-full h-[44px] rounded-full border border-[#E5E7EB] text-[14px] font-semibold text-[#111111] hover:bg-[#F9FAFB] transition-colors active:scale-[0.98]"
             data-testid="button-view-all-matches"
           >
             {t("home.viewAll")}
           </button>
         </div>
       ) : (
-        <div className="rounded-[16px] bg-white border border-[#F0F0F0] p-5 text-center" data-testid="card-no-matches">
+        <div className="rounded-[16px] bg-white border border-[#E5E7EB] p-5 text-center" data-testid="card-no-matches">
           <p className="text-[14px] text-[#6B7280]">{t("home.firstMatchesWillAppear")}</p>
         </div>
       )}
@@ -776,7 +776,7 @@ function HomeTab({
           <span className="text-[18px] font-bold text-[#111111] tracking-[-0.01em]" data-testid="text-brand">HousAlert</span>
           <button
             onClick={() => navigate("/settings/preferences")}
-            className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#F8F8F8] transition-colors"
+            className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#F9FAFB] transition-colors"
             data-testid="button-help"
           >
             <HelpCircle className="w-5 h-5 text-[#9CA3AF]" />
@@ -792,7 +792,7 @@ function HomeTab({
 
       <div className="flex flex-col gap-6 px-4 pt-4">
         <div
-          className="rounded-[16px] bg-white border border-[#F0F0F0] px-4 py-3.5 flex items-center gap-3 cursor-pointer active:bg-[#F8F8F8] transition-colors"
+          className="rounded-[16px] bg-white border border-[#E5E7EB] px-4 py-3.5 flex items-center gap-3 cursor-pointer active:bg-[#F9FAFB] transition-colors"
           onClick={() => setReferralModalOpen(true)}
           data-testid="card-home-referral"
         >
@@ -1075,9 +1075,9 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
   const { t } = useTranslation();
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#F7F7F7] flex flex-col">
+    <div className="fixed inset-0 z-50 bg-[#F9FAFB] flex flex-col">
       <header className="sticky top-0 z-10">
-        <div className="max-w-lg mx-auto flex items-center h-[56px] px-4">
+        <div className="max-w-lg mx-auto flex items-center h-[48px] px-4">
           <button
             onClick={onCancel}
             className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center mr-3 active:scale-95 transition-transform"
@@ -1102,14 +1102,14 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
         <div className="w-full max-w-[320px] flex flex-col gap-3">
           <button
             onClick={onConfirm}
-            className="w-full h-[56px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[16px] font-semibold transition-colors hover:bg-ha-primary-hover"
+            className="w-full h-[48px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[16px] font-semibold transition-colors hover:bg-ha-primary-hover"
             data-testid="button-delete-confirm"
           >
             {t("filters.deleteYes")}
           </button>
           <button
             onClick={onCancel}
-            className="w-full h-[56px] rounded-[--ha-btn-radius] border border-white/20 text-[#111111] text-[16px] font-medium hover:bg-white/5 transition-colors"
+            className="w-full h-[48px] rounded-[--ha-btn-radius] border border-white/20 text-[#111111] text-[16px] font-medium hover:bg-white/5 transition-colors"
             data-testid="button-delete-cancel"
           >
             {t("filters.deleteNo")}
@@ -1364,7 +1364,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
           )}
 
           <div className="flex flex-col">
-            <label className="w-full h-[56px] flex items-center justify-center gap-2 rounded-[--ha-btn-radius] bg-ha-primary text-white text-[15px] font-semibold cursor-pointer active:bg-ha-primary-hover transition-colors">
+            <label className="w-full h-[48px] flex items-center justify-center gap-2 rounded-[--ha-btn-radius] bg-ha-primary text-white text-[15px] font-semibold cursor-pointer active:bg-ha-primary-hover transition-colors">
               <Camera className="w-[18px] h-[18px]" />
               {photoUrl ? t("profile.photo.choose") : t("profile.photo.upload")}
               <input
@@ -1382,7 +1382,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
             {photoUrl && (
               <button
                 onClick={onRemove}
-                className="mt-3 w-full h-[56px] flex items-center justify-center gap-2 rounded-[--ha-btn-radius] border border-[#E5E7EB] text-[#111111] text-[15px] font-medium active:bg-ha-surface-hover transition-colors"
+                className="mt-3 w-full h-[48px] flex items-center justify-center gap-2 rounded-[--ha-btn-radius] border border-[#E5E7EB] text-[#111111] text-[15px] font-medium active:bg-ha-surface-hover transition-colors"
                 data-testid="button-remove-photo"
               >
                 <Trash2 className="w-[18px] h-[18px]" />
@@ -1392,7 +1392,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
 
             <button
               onClick={onClose}
-              className="mt-3 w-full h-[56px] flex items-center justify-center rounded-[--ha-btn-radius] text-[#111111]/70 text-[15px] font-medium active:bg-ha-surface-hover transition-colors"
+              className="mt-3 w-full h-[48px] flex items-center justify-center rounded-[--ha-btn-radius] text-[#111111]/70 text-[15px] font-medium active:bg-ha-surface-hover transition-colors"
               data-testid="button-cancel-photo"
             >
               {t("common.cancel")}
@@ -1568,7 +1568,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
         <div className="flex flex-col gap-5">
 
           {!(subscription.isActive || subscription.isTrial) && (
-            <div className="rounded-[16px] bg-white border border-[#F0F0F0] p-5" data-testid="card-subscription-locked">
+            <div className="rounded-[16px] bg-white border border-[#E5E7EB] p-5" data-testid="card-subscription-locked">
               <div className="flex items-start gap-3.5">
                 <div className="w-10 h-10 rounded-full bg-[#FFF1F3] flex items-center justify-center flex-shrink-0 mt-0.5">
                   <Lock className="w-5 h-5 text-ha-primary" />
@@ -1591,7 +1591,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           {(subscription.isActive || subscription.isTrial) && (
             <button
               onClick={() => navigate("/account/subscription")}
-              className="rounded-[16px] bg-white border border-[#F0F0F0] p-4 flex items-center gap-3.5 text-left active:bg-[#F8F8F8] transition-colors"
+              className="rounded-[16px] bg-white border border-[#E5E7EB] p-4 flex items-center gap-3.5 text-left active:bg-[#F9FAFB] transition-colors"
               data-testid="card-subscription-active"
             >
               <div className="w-10 h-10 rounded-full bg-[#F0FDF4] flex items-center justify-center flex-shrink-0">
@@ -1607,7 +1607,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             </button>
           )}
 
-          <div className="rounded-[16px] border border-[#F0F0F0] bg-white overflow-hidden">
+          <div className="rounded-[16px] border border-[#E5E7EB] bg-white overflow-hidden">
             <p className="text-[12px] font-semibold text-[#9CA3AF] uppercase tracking-wider px-4 pt-4 pb-1" data-testid="text-section-account">{t("settings.sectionAccount")}</p>
             {[
               { label: t("settings.myDetails"), action: () => navigate("/profile/details"), icon: <User className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-profile-account-0" },
@@ -1618,7 +1618,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                 {ri > 0 && <div className="h-px bg-[#F0F0F0] mx-4" />}
                 <button
                   onClick={row.action}
-                  className="w-full flex items-center gap-3 h-[48px] px-4 text-left active:bg-[#F8F8F8] transition-colors"
+                  className="w-full flex items-center gap-3 h-[48px] px-4 text-left active:bg-[#F9FAFB] transition-colors"
                   data-testid={row.testId}
                 >
                   {row.icon}
@@ -1629,7 +1629,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             ))}
           </div>
 
-          <div className="rounded-[16px] border border-[#F0F0F0] bg-white overflow-hidden">
+          <div className="rounded-[16px] border border-[#E5E7EB] bg-white overflow-hidden">
             <p className="text-[12px] font-semibold text-[#9CA3AF] uppercase tracking-wider px-4 pt-4 pb-1" data-testid="text-section-help">{t("profile.helpTitle")}</p>
             {[
               { label: t("profile.helpMissedMatches"), action: () => navigate("/settings/preferences"), icon: <Search className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-help-missed" },
@@ -1642,7 +1642,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                 {ri > 0 && <div className="h-px bg-[#F0F0F0] mx-4" />}
                 <button
                   onClick={row.action}
-                  className="w-full flex items-center gap-3 h-[48px] px-4 text-left active:bg-[#F8F8F8] transition-colors"
+                  className="w-full flex items-center gap-3 h-[48px] px-4 text-left active:bg-[#F9FAFB] transition-colors"
                   data-testid={row.testId}
                 >
                   {row.icon}
@@ -1656,7 +1656,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           <button
             onClick={() => setShowLogoutConfirm(true)}
             disabled={signingOut}
-            className={`rounded-[16px] border border-[#F0F0F0] bg-white w-full flex items-center gap-3 h-[48px] px-4 text-left active:bg-[#F8F8F8] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
+            className={`rounded-[16px] border border-[#E5E7EB] bg-white w-full flex items-center gap-3 h-[48px] px-4 text-left active:bg-[#F9FAFB] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
             data-testid="button-profile-logout"
           >
             <LogOut className="w-[18px] h-[18px] text-ha-danger flex-shrink-0" />
@@ -1856,7 +1856,7 @@ export default function DashboardPage() {
       </main>
 
       <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#F0F0F0]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
-        <nav className="max-w-xl mx-auto flex h-[56px]" data-testid="bottom-nav">
+        <nav className="max-w-xl mx-auto flex h-[48px]" data-testid="bottom-nav">
           {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
             const isActive = activeTab === key;
             const isProfileWithPhoto = key === "profiel" && !!tabPhotoUrl;

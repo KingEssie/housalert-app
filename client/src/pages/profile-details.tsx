@@ -113,7 +113,7 @@ export default function ProfileDetailsPage() {
   const labelClass = "text-field-label mb-2 block";
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#F7F7F7" }}>
+    <div className="min-h-screen" style={{ backgroundColor: "#F9FAFB" }}>
       <AppHeader title={t("profileDetails.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
@@ -216,7 +216,7 @@ export default function ProfileDetailsPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="w-full h-[56px] rounded-[6px] bg-ha-primary text-white text-[15px] font-semibold transition-colors hover:bg-ha-primary-hover active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full h-[48px] rounded-[6px] bg-ha-primary text-white text-[15px] font-semibold transition-colors hover:bg-ha-primary-hover active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
               data-testid="button-save-details"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}

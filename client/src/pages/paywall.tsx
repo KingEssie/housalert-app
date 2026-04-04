@@ -119,7 +119,7 @@ function WebsitePaywall({
           <div
             className="rounded-[4px] p-3.5 mb-5 flex items-start gap-3"
             style={{
-              backgroundColor: "#F7F7F7",
+              backgroundColor: "#F9FAFB",
               border: "1px solid rgba(255,56,92,0.15)",
             }}
             data-testid="search-summary-card"
@@ -271,7 +271,7 @@ function WebsitePaywall({
 
         <div
           className="rounded-[10px] p-4"
-          style={{ backgroundColor: "#F7F7F7" }}
+          style={{ backgroundColor: "#F9FAFB" }}
         >
           <p className="text-[15px] font-bold mb-1" style={{ color: "#111111" }}>
             Probeer HousAlert zonder risico!

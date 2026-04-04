@@ -73,7 +73,7 @@ export function ExpandableCompletionCard({
 
   return (
     <div
-      className="rounded-[16px] bg-white border border-[#F0F0F0] overflow-hidden"
+      className="rounded-[16px] bg-white border border-[#E5E7EB] overflow-hidden"
       data-testid={testId}
     >
       <button
@@ -109,7 +109,7 @@ export function ExpandableCompletionCard({
               onClick={step.completed ? undefined : step.action}
               disabled={step.completed}
               className={`w-full h-[48px] flex items-center gap-3 px-3.5 text-left rounded-[12px] transition-colors ${
-                step.completed ? "bg-[#F8F8F8]" : "bg-[#F8F8F8] active:bg-[#EBEBEB]"
+                step.completed ? "bg-[#F9FAFB]" : "bg-[#F9FAFB] active:bg-[#EBEBEB]"
               }`}
               data-testid={`${testId}-step-${step.id}`}
             >

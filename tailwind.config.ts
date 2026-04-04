@@ -6,9 +6,11 @@ export default {
   theme: {
     extend: {
       borderRadius: {
-        lg: ".5625rem", /* 9px */
-        md: ".375rem", /* 6px */
-        sm: ".1875rem", /* 3px */
+        lg: "16px",
+        md: "12px",
+        sm: "8px",
+        xl: "20px",
+        pill: "999px",
       },
       colors: {
         background: "hsl(var(--background) / <alpha-value>)",
