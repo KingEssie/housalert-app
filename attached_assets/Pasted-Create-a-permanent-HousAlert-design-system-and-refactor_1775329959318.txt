@@ -1,0 +1,129 @@
+Create a permanent HousAlert design system and refactor the app to consistently follow it.
+
+GOAL:
+Standardize the entire app so every current and future screen follows one clean premium consumer-app style.
+
+IMPORTANT:
+Do not redesign the app from scratch.
+Use the current HousAlert structure, but enforce one consistent design system.
+
+==================================================
+1. COLORS
+==================================================
+
+Use only these colors:
+
+Primary accent:
+- #FF385C
+
+Text:
+- Primary: #111111
+- Secondary: #6B7280
+- Muted: #9CA3AF
+
+Surfaces:
+- Background: #FFFFFF
+- Subtle surface: #F9FAFB
+- Border: #E5E7EB
+- Divider: #F0F0F0
+
+Status:
+- Success: #16A34A
+- Error: #DC2626
+- Warning: #F59E0B
+
+Remove all unused/legacy colors.
+No blue toggles, no purple, no extra accent colors.
+
+==================================================
+2. TYPOGRAPHY
+==================================================
+
+Standardize:
+- Page title: 32px / 700 / line-height 1.15
+- Section title: 24px / 700 / line-height 1.2
+- Card title: 18px / 700 / line-height 1.3
+- Body: 16px / 400 / line-height 1.5
+- Secondary: 14px / 400 / line-height 1.45
+- Small labels: 12px / 600
+
+==================================================
+3. SPACING
+==================================================
+
+Use a fixed spacing scale:
+4, 8, 12, 16, 20, 24, 32
+
+Apply:
+- screen horizontal padding: 24px
+- section spacing: 24px
+- feed item spacing: 20px
+- card internal padding: 16px
+
+==================================================
+4. RADIUS
+==================================================
+
+Use:
+- 12px small
+- 16px medium
+- 20px large
+- 999px pill
+
+==================================================
+5. SHADOWS
+==================================================
+
+Use only subtle shadows:
+- 0 2px 8px rgba(0,0,0,0.04)
+- 0 2px 6px rgba(0,0,0,0.08) for overlays only
+
+==================================================
+6. COMPONENT RULES
+==================================================
+
+Listings:
+- image-first
+- image radius 16px
+- price overlay on image
+- white pill badge
+- white circular heart overlay
+- title max 2 lines
+- location 1 line
+- no info overload
+
+Buttons:
+- primary = pink pill, white text, 48px height
+- secondary = white/light, subtle border
+- ghost = text only
+
+Settings rows:
+- icon left
+- label
+- chevron right
+- subtle divider
+
+Empty states:
+- icon/illustration
+- short title
+- one supporting sentence
+- one primary CTA
+
+==================================================
+7. GLOBAL RULES
+==================================================
+
+- No dark mode
+- No blue active states
+- No overly grey canvas backgrounds
+- No heavy card stacking
+- Prefer open layouts and spacing over too many boxes
+
+==================================================
+8. OUTPUT
+==================================================
+
+After refactoring, show:
+1. which theme/tokens/components were standardized
+2. which old styles were removed
+3. which shared component styles now define the app

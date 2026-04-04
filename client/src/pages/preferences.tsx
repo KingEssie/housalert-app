@@ -5,19 +5,15 @@ import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/i18n";
 import { apiFetch } from "@/lib/api-base";
 import { queryClient } from "@/lib/queryClient";
-import { Check, Bell, Mail, Globe, Sun, Moon, Monitor } from "lucide-react";
+import { Check, Bell, Mail, Globe } from "lucide-react";
 import { isPushSupported, getPushPermissionState, subscribeToPush, unsubscribeFromPush } from "@/lib/push";
 import { AppHeader } from "@/components/ui/app-header";
-import { useTheme } from "@/lib/theme-provider";
-
-type ThemeOption = "light" | "dark" | "system";
 
 export default function PreferencesPage() {
   const { session } = useAuth();
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const { t, locale, setLocale } = useTranslation();
-  const { theme, setTheme } = useTheme();
 
   const [showLangSheet, setShowLangSheet] = useState(false);
   const [notifSettings, setNotifSettings] = useState<{ push_enabled: boolean; email_enabled: boolean } | null>(null);
@@ -30,12 +26,6 @@ export default function PreferencesPage() {
     { code: "nl" as const, label: "Nederlands" },
   ];
   const currentLangLabel = LANG_OPTIONS.find(o => o.code === locale)?.label || "Deutsch";
-
-  const THEME_OPTIONS: { value: ThemeOption; label: string; icon: typeof Sun }[] = [
-    { value: "light", label: t("settings.themeLight"), icon: Sun },
-    { value: "dark", label: t("settings.themeDark"), icon: Moon },
-    { value: "system", label: t("settings.themeSystem"), icon: Monitor },
-  ];
 
   useEffect(() => {
     if (!session?.access_token) return;
@@ -108,33 +98,6 @@ export default function PreferencesPage() {
 
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
         <div className="flex flex-col gap-4">
-          <div>
-            <p className="text-row-section-title px-1 mb-2">
-              {t("settings.sectionTheme")}
-            </p>
-            <div className="app-card !p-2">
-              <div className="grid grid-cols-3 gap-1.5">
-                {THEME_OPTIONS.map((opt) => {
-                  const isActive = theme === opt.value;
-                  const Icon = opt.icon;
-                  return (
-                    <button
-                      key={opt.value}
-                      onClick={() => setTheme(opt.value)}
-                      className={`flex flex-col items-center gap-1.5 py-3 rounded-[6px] transition-all active:scale-[0.97] ${
-                        isActive ? "bg-ha-primary text-white" : "text-ha-text-muted hover:bg-[#F7F7F7]"
-                      }`}
-                      data-testid={`theme-${opt.value}`}
-                    >
-                      <Icon className="w-5 h-5" />
-                      <span className="text-[12px] font-semibold">{opt.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
           <div>
             <p className="text-row-section-title px-1 mb-2">
               {t("settings.sectionLanguage")}
