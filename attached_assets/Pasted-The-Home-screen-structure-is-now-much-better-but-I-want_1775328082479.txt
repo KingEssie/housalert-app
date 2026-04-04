@@ -1,0 +1,115 @@
+The Home screen structure is now much better, but I want to make 2 targeted refinements to match the intended HousAlert branding and simplify the Filters summary.
+
+IMPORTANT:
+Do not redesign the Home screen again.
+Do not change the overall Stekkies-style structure.
+This is only a focused refinement pass for:
+1. gamification task icons / completion states
+2. Filters summary simplification
+
+==================================================
+1. GAMIFICATION ICONS — MATCH HOUSALERT BRANDING
+==================================================
+
+Problem:
+The current gamification task icons use blue check icons, which do not match my HousAlert branding.
+Also, the completion-state icon behavior should work more like Stekkies:
+- incomplete = outlined icon
+- complete = filled icon
+
+Fix this as follows:
+
+A. Remove all blue task-state icons from the Home screen gamification cards.
+
+B. Use HousAlert brand-consistent colors only:
+- primary accent: #FF385C
+- neutral outline/inactive: #9CA3AF or subtle grey
+- do NOT use blue
+
+C. Task state rules:
+- COMPLETED task:
+  - show a filled circular icon/button
+  - use HousAlert primary accent (#FF385C) as the fill
+  - use a white check icon inside
+- INCOMPLETE but actionable task:
+  - show an outlined circular icon/button
+  - outline color should be the HousAlert primary accent or a subtle neutral if needed
+  - use a chevron/arrow icon inside, not a filled check
+- avoid using visually unrelated colors
+
+D. Preserve the Stekkies-like behavior:
+- completed feels “done”
+- incomplete feels “next action”
+- icon states should be easy to scan at a glance
+
+E. Keep the progress card structure unchanged:
+- circular progress indicator on the left
+- title/subtitle in the middle
+- expand/collapse chevron on the right
+- task rows below when expanded
+
+==================================================
+2. FILTERS SUMMARY — SHOW ONLY THE CORE 3 ITEMS
+==================================================
+
+The Home screen Filters section is still too detailed and technical.
+
+Simplify the Home screen Filters summary so it only shows these 3 items:
+
+1. Plaats
+2. Vanaf
+3. Tot
+
+Requirements:
+- remove all other filter summary rows from the Home screen
+- do NOT show:
+  - Kamers
+  - Oppervlakte
+  - Huisdieren
+  - Gemeubileerd
+  - any other extra filters
+- this is only for the Home screen summary block
+- do NOT remove the full filters page elsewhere in the app
+
+Desired display:
+- Plaats — [city / area]
+- Vanaf — [minimum price]
+- Tot — [maximum price]
+
+Design requirements:
+- keep the same clean white rounded card style
+- align labels on the left and values on the right
+- keep the section lightweight and easy to scan
+- if the 3-dot action buttons are not necessary, remove them for a cleaner summary
+- preserve the line above showing:
+  “Je kunt [X] matches per week verwachten”
+
+Fallback behavior:
+- if place is missing, show a safe fallback like “Niet ingesteld”
+- if min or max price is missing, show “Niet ingesteld” or the best available fallback
+
+==================================================
+3. KEEP EVERYTHING ELSE INTACT
+==================================================
+
+Do not change:
+- overall Home layout
+- welcome section
+- referral card
+- section order
+- recent matches section
+- bottom navigation
+- other screens
+
+This is only a refinement pass.
+
+==================================================
+4. OUTPUT
+==================================================
+
+After finishing, show:
+1. which gamification icon colors/states were changed
+2. how completed vs incomplete task icons now work
+3. which filter rows were removed from the Home summary
+4. how Plaats / Vanaf / Tot are populated
+5. any fallback logic used

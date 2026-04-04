@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CheckCircle2, ChevronDown, ChevronRight } from "lucide-react";
+import { Check, ChevronDown, ChevronRight } from "lucide-react";
 
 export interface CompletionStep {
   id: string;
@@ -124,12 +124,12 @@ export function ExpandableCompletionCard({
               </span>
               <div className="flex-shrink-0">
                 {step.completed ? (
-                  <div className="w-[24px] h-[24px] rounded-full bg-[#3B82F6] flex items-center justify-center">
-                    <CheckCircle2 className="w-[14px] h-[14px] text-white" />
+                  <div className="w-[24px] h-[24px] rounded-full bg-[#FF385C] flex items-center justify-center">
+                    <Check className="w-[13px] h-[13px] text-white" strokeWidth={3} />
                   </div>
                 ) : (
-                  <div className="w-[24px] h-[24px] rounded-full bg-[#3B82F6] flex items-center justify-center">
-                    <ChevronRight className="w-[14px] h-[14px] text-white" />
+                  <div className="w-[24px] h-[24px] rounded-full border-[1.5px] border-[#9CA3AF] flex items-center justify-center">
+                    <ChevronRight className="w-[13px] h-[13px] text-[#9CA3AF]" strokeWidth={2.5} />
                   </div>
                 )}
               </div>

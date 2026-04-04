@@ -505,32 +505,16 @@ function FiltersSection({ profiles, navigate }: { profiles: SearchProfile[]; nav
 
   const filterRows = activeProfile ? [
     {
-      label: t("home.filterBudget"),
-      value: activeProfile.price_max > 0
-        ? (activeProfile.price_min > 0 ? `€${activeProfile.price_min} – €${activeProfile.price_max}` : `Max €${activeProfile.price_max}`)
-        : t("home.filterNotSet"),
-    },
-    {
-      label: t("home.filterRooms"),
-      value: activeProfile.bedrooms_min > 0 ? `${activeProfile.bedrooms_min}+` : t("home.filterAny"),
-    },
-    {
-      label: t("home.filterSize"),
-      value: activeProfile.size_min > 0 ? `${activeProfile.size_min}+ m²` : t("home.filterAny"),
-    },
-    {
-      label: t("home.filterCity"),
+      label: t("home.filterPlace"),
       value: localizeCityName(activeProfile.city_name || activeProfile.city || "", locale) || t("home.filterNotSet"),
     },
     {
-      label: t("home.filterPets"),
-      value: (activeProfile.extra_features && activeProfile.extra_features.includes("pets_allowed"))
-        ? t("common.yes")
-        : t("home.filterAny"),
+      label: t("home.filterFrom"),
+      value: activeProfile.price_min > 0 ? `€${activeProfile.price_min}` : t("home.filterNotSet"),
     },
     {
-      label: t("home.filterFurnished"),
-      value: activeProfile.furnished === "yes" ? t("common.yes") : activeProfile.furnished === "no" ? t("common.no") : t("home.filterAny"),
+      label: t("home.filterTo"),
+      value: activeProfile.price_max > 0 ? `€${activeProfile.price_max}` : t("home.filterNotSet"),
     },
   ] : [];
 
@@ -555,8 +539,7 @@ function FiltersSection({ profiles, navigate }: { profiles: SearchProfile[]; nav
               data-testid={`filter-row-${idx}`}
             >
               <span className="text-[14px] text-[#6B7280] flex-1">{row.label}</span>
-              <span className="text-[14px] font-medium text-[#111111] mr-2">{row.value}</span>
-              <MoreVertical className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+              <span className="text-[14px] font-medium text-[#111111]">{row.value}</span>
             </button>
           ))}
         </div>
