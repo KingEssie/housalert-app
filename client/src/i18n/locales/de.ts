@@ -152,6 +152,14 @@ export const de: Record<string, any> = {
     taskOnlinePresence: "Online-Präsenz verbessern",
     taskViewingTips: "Besichtigungstipps lesen",
     completionSubtitle: "{done} von {total} abgeschlossen",
+    zoekopdrachtenTitle: "Suchprofile",
+    menuEdit: "Bearbeiten",
+    menuDelete: "Löschen",
+    addZoekopdracht: "Suchprofil hinzufügen",
+    deleteTitle: "Suchprofil löschen",
+    deleteDesc: "Bist du sicher, dass du dein Suchprofil löschen möchtest? Du kannst jederzeit ein neues erstellen!",
+    deleteNo: "Nein",
+    deleteYes: "Ja",
   },
 
   matches: {

@@ -1,0 +1,120 @@
+Refactor the Home screen "Filters" section into a fully functional "Zoekopdrachten" (Search Profiles) management component.
+
+GOAL:
+Turn the current static filter display into a dynamic, editable search profile system similar to Stekkies.
+
+==================================================
+1. RENAME SECTION
+==================================================
+
+Change the section title:
+"Filters" → "Zoekopdrachten"
+
+Keep the match prediction text below it.
+
+==================================================
+2. SEARCH PROFILE UI
+==================================================
+
+Replace the current multi-row filter layout with a compact single-row summary per search profile.
+
+Each search profile should display:
+
+[City] · [Price range]
+
+Examples:
+- München · €0 – €2000
+- Amsterdam · €800 – €1500
+
+Remove:
+- separate rows (Budget, Kamers, etc.)
+- sliders
+- "Niet ingesteld"
+
+==================================================
+3. PRICE FALLBACK LOGIC
+==================================================
+
+- no min/max → €0 – €5000+
+- only min → €[min] – €5000+
+- only max → €0 – €[max]
+- both → €[min] – €[max]
+
+==================================================
+4. ACTION MENU (3 DOTS)
+==================================================
+
+Add a 3-dot menu on the right side of each search profile row.
+
+Menu options:
+- Wijzig
+- Verwijder
+
+Style:
+- subtle
+- consistent with iOS/clean UI
+- small rounded popup
+
+==================================================
+5. EDIT FLOW (WIJZIG)
+==================================================
+
+When user taps "Wijzig":
+
+- Navigate to the existing search profile / onboarding flow
+- Pre-fill all fields with current values
+- Allow user to update and save
+
+==================================================
+6. DELETE FLOW (VERWIJDER)
+==================================================
+
+When user taps "Verwijder":
+
+Open a confirmation modal/screen with:
+
+Title:
+"Verwijder zoekopdracht"
+
+Text:
+"Weet je zeker dat je je zoekopdracht wil verwijderen? Je kunt altijd een nieuwe toevoegen!"
+
+Buttons:
+- "Nee" (outline)
+- "Ja" (primary, destructive intent)
+
+If confirmed:
+- remove search profile from database/state
+- update UI immediately
+
+==================================================
+7. INTERACTION IMPROVEMENTS
+==================================================
+
+- Entire search profile row should be clickable → opens edit flow
+- 3-dot menu should not block row tap
+- Add subtle hover/press feedback
+
+==================================================
+8. DATA STRUCTURE
+==================================================
+
+Ensure search profiles are stored properly:
+- id
+- city
+- minPrice
+- maxPrice
+- other filters (optional for later)
+
+UI should render dynamically based on stored profiles.
+
+==================================================
+9. OUTPUT
+==================================================
+
+After implementing, show:
+1. updated UI structure
+2. example search profile rendering
+3. menu interaction behavior
+4. edit + delete flow connection
+5. what components/files were updated

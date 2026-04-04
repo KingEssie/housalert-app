@@ -845,6 +845,14 @@ export const en: Record<string, any> = {
     taskOnlinePresence: "Polish your online presence",
     taskViewingTips: "Read our viewing tips",
     completionSubtitle: "{done} of {total} completed",
+    zoekopdrachtenTitle: "Search profiles",
+    menuEdit: "Edit",
+    menuDelete: "Delete",
+    addZoekopdracht: "Add search profile",
+    deleteTitle: "Delete search profile",
+    deleteDesc: "Are you sure you want to delete your search profile? You can always create a new one!",
+    deleteNo: "No",
+    deleteYes: "Yes",
   },
 
   subscription: {

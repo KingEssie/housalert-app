@@ -158,6 +158,14 @@ export const nl: Record<string, any> = {
     taskOnlinePresence: "Poets je online presentatie op",
     taskViewingTips: "Lees onze bezichtigingstips",
     completionSubtitle: "{done} van de {total} voltooid",
+    zoekopdrachtenTitle: "Zoekopdrachten",
+    menuEdit: "Wijzig",
+    menuDelete: "Verwijder",
+    addZoekopdracht: "Zoekopdracht toevoegen",
+    deleteTitle: "Verwijder zoekopdracht",
+    deleteDesc: "Weet je zeker dat je je zoekopdracht wil verwijderen? Je kunt altijd een nieuwe toevoegen!",
+    deleteNo: "Nee",
+    deleteYes: "Ja",
   },
 
   matches: {

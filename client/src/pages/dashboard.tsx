@@ -494,25 +494,37 @@ function ProfileTipsCompletionCard({ navigate }: { navigate: (path: string) => v
   );
 }
 
-function FiltersSection({ profiles, navigate }: { profiles: SearchProfile[]; navigate: (path: string) => void }) {
+function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile[]; navigate: (path: string) => void }) {
   const { t, locale } = useTranslation();
+  const { toast } = useToast();
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
-  const activeProfile = profiles[0];
+  const deleteMutation = useMutation({
+    mutationFn: deleteSearchProfile,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/search-profiles"] });
+      toast({ title: t("filters.deleted") });
+    },
+    onError: (err: any) => {
+      toast({ title: t("filters.deleteFailed"), description: err?.message ?? t("filters.retryDesc"), variant: "destructive" });
+    },
+  });
 
   const estimatedCount = profiles.length > 0
     ? Math.max(3, Math.min(25, profiles.length * 8))
     : null;
 
-  const place = activeProfile
-    ? (localizeCityName(activeProfile.city_name || activeProfile.city || "", locale) || "")
-    : "";
-  const priceMin = activeProfile && activeProfile.price_min > 0 ? `€${activeProfile.price_min}` : "€0";
-  const priceMax = activeProfile && activeProfile.price_max > 0 ? `€${activeProfile.price_max}` : "€5.000+";
+  function profileSummary(p: SearchProfile) {
+    const city = localizeCityName(p.city_name || p.city || "", locale) || "";
+    const min = p.price_min > 0 ? `€${p.price_min}` : "€0";
+    const max = p.price_max > 0 ? `€${p.price_max}` : "€5.000+";
+    return { city, price: `${min} – ${max}` };
+  }
 
   return (
-    <div data-testid="section-filters">
-      <h2 className="text-[18px] font-bold text-[#111111] mb-1" data-testid="text-filters-title">
-        {t("home.filtersTitle")}
+    <div data-testid="section-zoekopdrachten">
+      <h2 className="text-[18px] font-bold text-[#111111] mb-1" data-testid="text-zoekopdrachten-title">
+        {t("home.zoekopdrachtenTitle")}
       </h2>
       <p className="text-[14px] text-[#6B7280] mb-3" data-testid="text-filters-expected">
         {estimatedCount
@@ -520,26 +532,109 @@ function FiltersSection({ profiles, navigate }: { profiles: SearchProfile[]; nav
           : t("home.filtersExpectedFallback")}
       </p>
 
-      {activeProfile ? (
-        <button
-          onClick={() => navigate(`/dashboard/searches/edit/${activeProfile.id}`)}
-          className="w-full rounded-[16px] bg-white border border-[#F0F0F0] px-4 py-3.5 text-left active:bg-[#F8F8F8] transition-colors"
-          data-testid="card-filters-summary"
-        >
-          <span className="text-[15px] font-semibold text-[#111111]" data-testid="text-filter-place">{place}</span>
-          <span className="text-[15px] text-[#6B7280]"> · </span>
-          <span className="text-[15px] text-[#6B7280]" data-testid="text-filter-price">{priceMin} – {priceMax}</span>
-        </button>
+      {profiles.length > 0 ? (
+        <div className="rounded-[16px] bg-white border border-[#F0F0F0] overflow-hidden" data-testid="card-zoekopdrachten">
+          {profiles.map((p, idx) => {
+            const { city, price } = profileSummary(p);
+            return (
+              <div key={p.id}>
+                {idx > 0 && <div className="h-px bg-[#F0F0F0] mx-4" />}
+                <div
+                  className="flex items-center h-[50px] px-4 cursor-pointer active:bg-[#F8F8F8] transition-colors"
+                  onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
+                  data-testid={`row-zoekopdracht-${p.id}`}
+                >
+                  <div className="flex-1 min-w-0 truncate">
+                    <span className="text-[15px] font-semibold text-[#111111]">{city}</span>
+                    <span className="text-[15px] text-[#6B7280]"> · </span>
+                    <span className="text-[15px] text-[#6B7280]">{price}</span>
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        onClick={(e) => e.stopPropagation()}
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-[#9CA3AF] hover:bg-[#F0F0F0] transition-colors flex-shrink-0 ml-2"
+                        data-testid={`button-menu-${p.id}`}
+                      >
+                        <MoreVertical className="w-[16px] h-[16px]" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="min-w-[140px]">
+                      <DropdownMenuItem
+                        onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
+                        className="flex items-center gap-2.5 cursor-pointer"
+                        data-testid={`menu-edit-${p.id}`}
+                      >
+                        <Pencil className="w-4 h-4 text-[#6B7280]" />
+                        {t("home.menuEdit")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => setConfirmDeleteId(p.id)}
+                        className="flex items-center gap-2.5 text-ha-danger focus:text-ha-danger cursor-pointer"
+                        data-testid={`menu-delete-${p.id}`}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        {t("home.menuDelete")}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       ) : (
-        <div className="rounded-[16px] bg-white border border-[#F0F0F0] p-5 text-center" data-testid="card-filters-empty">
+        <div className="rounded-[16px] bg-white border border-[#F0F0F0] p-5 text-center" data-testid="card-zoekopdrachten-empty">
           <p className="text-[14px] text-[#6B7280] mb-3">{t("home.noProfileDesc")}</p>
           <button
             onClick={() => navigate("/dashboard/searches/new")}
             className="h-[44px] px-6 rounded-full bg-ha-primary text-white text-[14px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
-            data-testid="button-filters-create-profile"
+            data-testid="button-create-first-profile"
           >
             {t("home.createProfile")}
           </button>
+        </div>
+      )}
+
+      {profiles.length > 0 && profiles.length < MAX_PROFILES && (
+        <button
+          onClick={() => navigate("/dashboard/searches/new")}
+          className="w-full mt-2 h-[40px] rounded-full border border-dashed border-[#D1D5DB] text-[13px] font-semibold text-[#9CA3AF] hover:border-ha-primary hover:text-ha-primary transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
+          data-testid="button-add-zoekopdracht"
+        >
+          {t("home.addZoekopdracht")}
+        </button>
+      )}
+
+      {confirmDeleteId && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setConfirmDeleteId(null)}>
+          <div className="bg-white w-full max-w-[400px] rounded-t-[16px] sm:rounded-[16px] px-6 pt-7 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
+            <p className="text-[17px] font-bold text-[#111111] text-center" data-testid="text-delete-title">
+              {t("home.deleteTitle")}
+            </p>
+            <p className="text-[14px] text-[#6B7280] text-center mt-2 mb-6 leading-relaxed" data-testid="text-delete-body">
+              {t("home.deleteDesc")}
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setConfirmDeleteId(null)}
+                className="flex-1 h-[46px] rounded-full border border-[#E5E7EB] text-[15px] font-semibold text-[#111111] active:bg-[#F8F8F8] transition-colors"
+                data-testid="button-delete-no"
+              >
+                {t("home.deleteNo")}
+              </button>
+              <button
+                onClick={() => {
+                  deleteMutation.mutate(confirmDeleteId);
+                  setConfirmDeleteId(null);
+                }}
+                className="flex-1 h-[46px] rounded-full bg-ha-primary text-white text-[15px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
+                data-testid="button-delete-yes"
+              >
+                {t("home.deleteYes")}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -727,7 +822,7 @@ function HomeTab({
           </div>
         </div>
 
-        <FiltersSection profiles={profiles} navigate={navigate} />
+        <ZoekopdrachtenSection profiles={profiles} navigate={navigate} />
 
         <RecentMatchesSection
           accessToken={accessToken}
