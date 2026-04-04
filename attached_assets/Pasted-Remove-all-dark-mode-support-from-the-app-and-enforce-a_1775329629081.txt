@@ -1,0 +1,83 @@
+Remove all dark mode support from the app and enforce a consistent light (white) theme across all screens.
+
+IMPORTANT:
+This app should ONLY support a light theme, similar to Airbnb.
+No dark mode fallback or system-based switching.
+
+==================================================
+1. REMOVE DARK MODE LOGIC
+==================================================
+
+- Remove:
+  - prefers-color-scheme logic
+  - theme toggles
+  - dark mode state
+  - theme providers (if present)
+  - any "dark:" Tailwind classes
+
+- Ensure no component depends on theme switching
+
+==================================================
+2. FORCE LIGHT THEME
+==================================================
+
+Set global styles:
+
+- Background: pure white (#FFFFFF)
+- Primary text: #111111
+- Secondary text: #6B7280
+- Borders: #E5E7EB
+- Cards: white (#FFFFFF)
+- Subtle backgrounds: #F9FAFB
+
+==================================================
+3. FIX ALL COMPONENTS
+==================================================
+
+For ALL screens:
+- Home
+- Matches
+- Tips
+- Filters / Zoekopdrachten
+- Profile
+
+Ensure:
+- No dark backgrounds anywhere
+- No greyish app background (must feel clean white)
+- Cards blend naturally into white canvas
+- No contrast issues
+
+==================================================
+4. NAVBAR
+==================================================
+
+- Background: white
+- Top border: very subtle (#E5E7EB)
+- Active icon: brand color
+- Inactive: grey
+
+==================================================
+5. OVERLAYS / MODALS
+==================================================
+
+- Background: white cards
+- Backdrop: light blur or soft dim (not dark-heavy)
+
+==================================================
+6. FINAL CHECK
+==================================================
+
+Verify:
+- No dark styles remain in codebase
+- App looks consistent on all devices
+- No flicker between themes
+- No unreadable text anywhere
+
+==================================================
+7. OUTPUT
+==================================================
+
+After finishing:
+- List what dark mode code was removed
+- Confirm app is now 100% light-only
+- Mention any components that needed manual fixes

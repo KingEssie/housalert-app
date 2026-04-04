@@ -1565,72 +1565,114 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       </div>
 
       <div className="max-w-[480px] mx-auto px-4 pt-4 pb-8">
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-5">
 
-          <div className="rounded-[--ha-card-radius] bg-white overflow-hidden">
-            <p className="text-[12px] font-semibold text-[#9CA3AF] uppercase tracking-wider px-5 pt-4 pb-1.5" data-testid="text-section-account">{t("settings.sectionAccount")}</p>
+          {!(subscription.isActive || subscription.isTrial) && (
+            <div className="rounded-[16px] bg-white border border-[#F0F0F0] p-5" data-testid="card-subscription-locked">
+              <div className="flex items-start gap-3.5">
+                <div className="w-10 h-10 rounded-full bg-[#FFF1F3] flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Lock className="w-5 h-5 text-ha-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[16px] font-bold text-[#111111]" data-testid="text-sub-locked-title">{t("profile.subLocked.title")}</p>
+                  <p className="text-[14px] text-[#6B7280] mt-0.5 leading-relaxed">{t("profile.subLocked.desc")}</p>
+                  <button
+                    onClick={() => navigate("/paywall")}
+                    className="mt-3 h-[38px] px-6 rounded-full bg-ha-primary text-white text-[14px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
+                    data-testid="button-sub-locked-cta"
+                  >
+                    {t("profile.subLocked.cta")}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {(subscription.isActive || subscription.isTrial) && (
+            <button
+              onClick={() => navigate("/account/subscription")}
+              className="rounded-[16px] bg-white border border-[#F0F0F0] p-4 flex items-center gap-3.5 text-left active:bg-[#F8F8F8] transition-colors"
+              data-testid="card-subscription-active"
+            >
+              <div className="w-10 h-10 rounded-full bg-[#F0FDF4] flex items-center justify-center flex-shrink-0">
+                <CheckCircle2 className="w-5 h-5 text-[#22C55E]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[15px] font-semibold text-[#111111]">
+                  {subscription.isTrial ? t("profile.subActive.trial") : t("profile.subActive.active")}
+                </p>
+                <p className="text-[13px] text-[#6B7280] mt-0.5">{t("profile.subActive.manage")}</p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+            </button>
+          )}
+
+          <div className="rounded-[16px] border border-[#F0F0F0] bg-white overflow-hidden">
+            <p className="text-[12px] font-semibold text-[#9CA3AF] uppercase tracking-wider px-4 pt-4 pb-1" data-testid="text-section-account">{t("settings.sectionAccount")}</p>
             {[
               { label: t("settings.myDetails"), action: () => navigate("/profile/details"), icon: <User className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-profile-account-0" },
               { label: t("settings.password"), action: () => navigate("/account/change-password"), icon: <Lock className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-profile-account-1" },
               { label: t("settings.preferences"), action: () => navigate("/settings/preferences"), icon: <Bell className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-profile-preferences" },
-              { label: t("settings.subscription"), action: () => navigate("/account/subscription"), icon: <Crown className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-profile-subscription" },
             ].map((row, ri) => (
               <div key={ri}>
-                {ri > 0 && <div className="h-px bg-[#E5E7EB]/50 mx-5" />}
+                {ri > 0 && <div className="h-px bg-[#F0F0F0] mx-4" />}
                 <button
                   onClick={row.action}
-                  className="w-full flex items-center gap-3.5 h-[48px] px-5 text-left active:bg-[#F7F7F7] transition-colors"
+                  className="w-full flex items-center gap-3 h-[48px] px-4 text-left active:bg-[#F8F8F8] transition-colors"
                   data-testid={row.testId}
                 >
                   {row.icon}
                   <p className="text-[15px] font-medium text-[#111111] flex-1">{row.label}</p>
-                  <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+                  <ChevronRight className="w-4 h-4 text-[#C4C4C4] flex-shrink-0" />
                 </button>
               </div>
             ))}
+          </div>
 
-            <div className="h-px bg-[#E5E7EB] mx-5 my-0.5" />
-            <p className="text-[12px] font-semibold text-[#9CA3AF] uppercase tracking-wider px-5 pt-3 pb-1.5" data-testid="text-section-other">{t("settings.sectionHelp")}</p>
+          <div className="rounded-[16px] border border-[#F0F0F0] bg-white overflow-hidden">
+            <p className="text-[12px] font-semibold text-[#9CA3AF] uppercase tracking-wider px-4 pt-4 pb-1" data-testid="text-section-help">{t("profile.helpTitle")}</p>
             {[
-              { label: t("settings.contactUs"), action: () => { window.location.href = "mailto:support@housalert.com"; }, icon: <HelpCircle className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-profile-other-0" },
-              { label: t("settings.privacyPolicy"), action: () => navigate("/datenschutz"), icon: <Shield className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-profile-other-1" },
-              { label: t("settings.termsConditions"), action: () => navigate("/terms"), icon: <FileText className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-profile-other-2" },
+              { label: t("profile.helpMissedMatches"), action: () => navigate("/settings/preferences"), icon: <Search className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-help-missed" },
+              { label: t("profile.helpFeedback"), action: () => { window.location.href = "mailto:support@housalert.com?subject=Feedback"; }, icon: <Send className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-help-feedback" },
+              { label: t("profile.helpFaq"), action: () => { window.location.href = "mailto:support@housalert.com"; }, icon: <HelpCircle className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-help-faq" },
+              { label: t("profile.helpPrivacy"), action: () => navigate("/datenschutz"), icon: <Shield className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-help-privacy" },
+              { label: t("settings.termsConditions"), action: () => navigate("/terms"), icon: <FileText className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-help-terms" },
             ].map((row, ri) => (
               <div key={ri}>
-                {ri > 0 && <div className="h-px bg-[#E5E7EB]/50 mx-5" />}
+                {ri > 0 && <div className="h-px bg-[#F0F0F0] mx-4" />}
                 <button
                   onClick={row.action}
-                  className="w-full flex items-center gap-3.5 h-[48px] px-5 text-left active:bg-[#F7F7F7] transition-colors"
+                  className="w-full flex items-center gap-3 h-[48px] px-4 text-left active:bg-[#F8F8F8] transition-colors"
                   data-testid={row.testId}
                 >
                   {row.icon}
                   <p className="text-[15px] font-medium text-[#111111] flex-1">{row.label}</p>
-                  <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+                  <ChevronRight className="w-4 h-4 text-[#C4C4C4] flex-shrink-0" />
                 </button>
               </div>
             ))}
-
-            <div className="h-px bg-[#E5E7EB] mx-5 my-0.5" />
-            <button
-              onClick={() => setShowLogoutConfirm(true)}
-              disabled={signingOut}
-              className={`w-full flex items-center gap-3.5 h-[48px] px-5 text-left active:bg-[#F7F7F7] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
-              data-testid="button-profile-logout"
-            >
-              <LogOut className="w-[18px] h-[18px] text-ha-danger flex-shrink-0" />
-              <p className="text-[15px] font-medium text-ha-danger flex-1">{signingOut ? t("profile.signingOut") : t("profile.logout")}</p>
-            </button>
           </div>
 
           <button
-            onClick={() => navigate("/account/delete")}
-            className="text-[13px] text-[#9CA3AF] text-center py-2"
-            data-testid="button-profile-delete-account"
+            onClick={() => setShowLogoutConfirm(true)}
+            disabled={signingOut}
+            className={`rounded-[16px] border border-[#F0F0F0] bg-white w-full flex items-center gap-3 h-[48px] px-4 text-left active:bg-[#F8F8F8] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
+            data-testid="button-profile-logout"
           >
-            {t("profile.deleteAccount")}
+            <LogOut className="w-[18px] h-[18px] text-ha-danger flex-shrink-0" />
+            <p className="text-[15px] font-medium text-ha-danger flex-1">{signingOut ? t("profile.signingOut") : t("profile.logout")}</p>
           </button>
 
-          <p className="text-[12px] text-[#D1D5DB] text-center pb-2">HousAlert v1.0.0</p>
+          <div className="flex flex-col items-center gap-2 pt-1 pb-2">
+            <button
+              onClick={() => navigate("/account/delete")}
+              className="text-[13px] text-[#9CA3AF]"
+              data-testid="button-profile-delete-account"
+            >
+              {t("profile.deleteAccount")}
+            </button>
+            <p className="text-[12px] text-[#D1D5DB]">HousAlert v1.0.0</p>
+          </div>
 
           {(user?.email?.toLowerCase() === "martin.essie87@gmail.com") && <div className="h-16" />}
         </div>
