@@ -539,22 +539,22 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
             const { city, price } = profileSummary(p);
             return (
               <div key={p.id}>
-                {idx > 0 && <div className="h-px bg-[#F0F0F0] mx-4" />}
+                {idx > 0 && <div className="h-px bg-[#F5F5F5] mx-4" />}
                 <div
-                  className="flex items-center h-[50px] px-4 cursor-pointer active:bg-[#F9FAFB] transition-colors"
+                  className="flex items-center h-[48px] px-4 cursor-pointer active:bg-[#F9FAFB] transition-colors"
                   onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
                   data-testid={`row-zoekopdracht-${p.id}`}
                 >
                   <div className="flex-1 min-w-0 truncate">
                     <span className="text-[15px] font-semibold text-[#111111]">{city}</span>
-                    <span className="text-[15px] text-[#6B7280]"> · </span>
-                    <span className="text-[15px] text-[#6B7280]">{price}</span>
+                    <span className="text-[14px] text-[#9CA3AF]"> · </span>
+                    <span className="text-[14px] text-[#9CA3AF]">{price}</span>
                   </div>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button
                         onClick={(e) => e.stopPropagation()}
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-[#9CA3AF] hover:bg-[#F0F0F0] transition-colors flex-shrink-0 ml-2"
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-[#9CA3AF] hover:bg-[#F0F0F0] active:bg-[#E5E7EB] transition-colors flex-shrink-0 ml-2"
                         data-testid={`button-menu-${p.id}`}
                       >
                         <MoreVertical className="w-[16px] h-[16px]" />
@@ -586,10 +586,10 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
         </div>
       ) : (
         <div className="rounded-[16px] bg-white border border-[#E5E7EB] p-5 text-center" data-testid="card-zoekopdrachten-empty">
-          <p className="text-[14px] text-[#6B7280] mb-3">{t("home.noProfileDesc")}</p>
+          <p className="text-[14px] text-[#9CA3AF] mb-3">{t("home.noProfileDesc")}</p>
           <button
             onClick={() => navigate("/dashboard/searches/new")}
-            className="h-[44px] px-6 rounded-full bg-ha-primary text-white text-[14px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
+            className="h-[44px] px-6 rounded-full bg-ha-primary text-white text-[14px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
             data-testid="button-create-first-profile"
           >
             {t("home.createProfile")}
@@ -600,7 +600,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
       {profiles.length > 0 && profiles.length < MAX_PROFILES && (
         <button
           onClick={() => navigate("/dashboard/searches/new")}
-          className="w-full mt-2 h-[40px] rounded-full border border-dashed border-[#D1D5DB] text-[13px] font-semibold text-[#9CA3AF] hover:border-ha-primary hover:text-ha-primary transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
+          className="w-full mt-2 h-[40px] rounded-full border border-dashed border-[#D1D5DB] text-[13px] font-semibold text-[#9CA3AF] hover:border-ha-primary hover:text-ha-primary transition-colors flex items-center justify-center gap-1.5 active:scale-[0.97]"
           data-testid="button-add-zoekopdracht"
         >
           {t("home.addZoekopdracht")}
@@ -791,7 +791,7 @@ function HomeTab({
         </p>
       </div>
 
-      <div className="flex flex-col gap-6 px-4 pt-4">
+      <div className="flex flex-col gap-6 px-5 pt-4">
         <div
           className="rounded-[16px] bg-white border border-[#E5E7EB] px-4 py-3.5 flex items-center gap-3 cursor-pointer active:bg-[#F9FAFB] transition-colors"
           onClick={() => setReferralModalOpen(true)}
@@ -1057,20 +1057,20 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
           </div>
         </div>
 
-        <div className="px-4 pt-10">
-          <div className="flex flex-col items-center text-center px-6 py-10">
+        <div className="px-5 pt-12">
+          <div className="flex flex-col items-center text-center px-6 pb-4">
             <div className="w-14 h-14 rounded-full bg-[#FFF1F3] flex items-center justify-center mb-5">
               <Lock className="w-6 h-6 text-ha-primary" />
             </div>
-            <h2 className="text-[20px] font-bold text-[#111111] mb-2" data-testid="text-locked-headline">
+            <h2 className="text-[18px] font-bold text-[#111111] mb-2" data-testid="text-locked-headline">
               {t("matches.locked.headline")}
             </h2>
-            <p className="text-[15px] text-[#6B7280] leading-relaxed max-w-[300px] mb-7" data-testid="text-locked-desc">
+            <p className="text-[14px] text-[#9CA3AF] leading-relaxed max-w-[260px] mb-7" data-testid="text-locked-desc">
               {t("matches.locked.desc")}
             </p>
             <button
               onClick={() => navigate("/paywall")}
-              className="h-[48px] px-8 rounded-full bg-ha-primary text-white text-[15px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
+              className="h-[44px] px-8 rounded-full bg-ha-primary text-white text-[15px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
               data-testid="button-locked-subscribe"
             >
               {t("matches.locked.cta")}
@@ -1085,14 +1085,14 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
     <div className="flex flex-col pb-8">
       <div className="sticky top-0 z-10 bg-white px-5 pt-6 pb-0">
         <h1 className="text-page-title mb-3">{t("matches.title")}</h1>
-        <div className="flex border-b border-[#E5E7EB]" data-testid="matches-top-tabs">
+        <div className="flex border-b border-[#F0F0F0]" data-testid="matches-top-tabs">
           {topTabs.map(({ key, label }) => {
             const isActive = topTab === key;
             return (
               <button
                 key={key}
                 onClick={() => setTopTab(key)}
-                className={`flex-1 py-2.5 text-[14px] font-semibold text-center transition-all border-b-2 -mb-px ${
+                className={`flex-1 py-2.5 text-[14px] font-semibold text-center transition-colors border-b-2 -mb-px active:opacity-70 ${
                   isActive
                     ? "border-[#111111] text-[#111111]"
                     : "border-transparent text-[#9CA3AF] hover:text-[#6B7280]"
@@ -1106,29 +1106,32 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
         </div>
       </div>
 
-      <div className="px-4 flex flex-col pt-4">
+      <div className="px-5 flex flex-col pt-5">
         {topTab === "matches" && (
           <>
             {apiMatchesQuery.isLoading ? (
               <div className="flex flex-col gap-5">
                 {[1, 2].map((i) => (
                   <div key={i} className="animate-pulse">
-                    <div className="bg-[#F0F0F0] rounded-[16px]" style={{ aspectRatio: "3/2" }} />
-                    <div className="pt-2 flex flex-col gap-1.5">
-                      <div className="h-4 bg-[#F0F0F0] rounded w-3/4" />
-                      <div className="h-3 bg-[#F0F0F0] rounded w-1/3" />
+                    <div className="bg-[#F3F4F6] rounded-[16px]" style={{ aspectRatio: "4/5" }} />
+                    <div className="pt-3 flex flex-col gap-2">
+                      <div className="h-4 bg-[#F3F4F6] rounded-full w-3/4" />
+                      <div className="h-3 bg-[#F3F4F6] rounded-full w-1/2" />
+                      <div className="h-3 bg-[#F3F4F6] rounded-full w-1/3" />
                     </div>
                   </div>
                 ))}
               </div>
             ) : apiMatchesQuery.isError ? (
               <div className="py-16 flex flex-col items-center text-center gap-3 px-4">
-                <AlertCircle className="w-8 h-8 text-[#C4C4C4]" />
+                <div className="w-12 h-12 rounded-full bg-[#F9FAFB] flex items-center justify-center mb-1">
+                  <AlertCircle className="w-6 h-6 text-[#9CA3AF]" />
+                </div>
                 <p className="text-[16px] font-bold text-[#111111]">{t("matches.loadError")}</p>
-                <p className="text-[13px] text-[#6B7280] leading-relaxed">{t("matches.loadErrorDesc")}</p>
+                <p className="text-[14px] text-[#6B7280] leading-relaxed max-w-[280px]">{t("matches.loadErrorDesc")}</p>
                 <button
                   onClick={() => apiMatchesQuery.refetch()}
-                  className="text-[14px] font-semibold text-ha-primary mt-1"
+                  className="text-[14px] font-semibold text-ha-primary mt-2 active:opacity-70 transition-opacity"
                   data-testid="button-retry-matches"
                 >
                   {t("common.retry")}
@@ -1203,10 +1206,11 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
               <div className="flex flex-col gap-5">
                 {[1, 2].map((i) => (
                   <div key={i} className="animate-pulse">
-                    <div className="bg-[#F0F0F0] rounded-[16px]" style={{ aspectRatio: "3/2" }} />
-                    <div className="pt-2 flex flex-col gap-1.5">
-                      <div className="h-4 bg-[#F0F0F0] rounded w-3/4" />
-                      <div className="h-3 bg-[#F0F0F0] rounded w-1/3" />
+                    <div className="bg-[#F3F4F6] rounded-[16px]" style={{ aspectRatio: "4/5" }} />
+                    <div className="pt-3 flex flex-col gap-2">
+                      <div className="h-4 bg-[#F3F4F6] rounded-full w-3/4" />
+                      <div className="h-3 bg-[#F3F4F6] rounded-full w-1/2" />
+                      <div className="h-3 bg-[#F3F4F6] rounded-full w-1/3" />
                     </div>
                   </div>
                 ))}
@@ -1531,20 +1535,20 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
     : "";
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-white">
-      <div className="bg-white pb-6" data-testid="card-profile-summary">
+    <div className="min-h-[calc(100vh-80px)] bg-[#F9FAFB]">
+      <div className="bg-white pb-7" data-testid="card-profile-summary">
         <div className="flex flex-col items-center pt-10">
           <button
             onClick={() => setShowPhotoSheet(true)}
-            className="relative w-20 h-20 rounded-full bg-ha-avatar-purple flex items-center justify-center group"
+            className="relative w-[76px] h-[76px] rounded-full bg-ha-avatar-purple flex items-center justify-center group active:scale-95 transition-transform"
             data-testid="button-profile-photo"
           >
             {photoUrl ? (
               <img src={photoUrl} alt="" className="w-full h-full rounded-full object-cover" />
             ) : (
-              <span className="text-[24px] font-bold text-white tracking-wide">{initials}</span>
+              <span className="text-[22px] font-bold text-white tracking-wide">{initials}</span>
             )}
-            <div className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-white flex items-center justify-center shadow-[0_1px_3px_rgba(0,0,0,0.15)]">
+            <div className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-white flex items-center justify-center shadow-[0_1px_3px_rgba(0,0,0,0.12)]">
               <Camera className="w-3 h-3 text-[#6B7280]" />
             </div>
           </button>
@@ -1554,17 +1558,17 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           {lastName && (
             <span className="hidden" data-testid="text-user-lastname">{lastName}</span>
           )}
-          <p className="text-[14px] text-[#6B7280] mt-0.5" data-testid="text-member-since">
+          <p className="text-[13px] text-[#9CA3AF] mt-0.5" data-testid="text-member-since">
             {memberSinceLabel}
           </p>
         </div>
       </div>
 
-      <div className="max-w-[480px] mx-auto px-4 pt-4 pb-8">
-        <div className="flex flex-col gap-5">
+      <div className="max-w-[480px] mx-auto px-4 pt-5 pb-8">
+        <div className="flex flex-col gap-4">
 
           {!(subscription.isActive || subscription.isTrial) && (
-            <div className="rounded-[16px] bg-white border border-[#E5E7EB] p-5" data-testid="card-subscription-locked">
+            <div className="rounded-[16px] bg-white p-5" data-testid="card-subscription-locked">
               <div className="flex items-start gap-3.5">
                 <div className="w-10 h-10 rounded-full bg-[#FFF1F3] flex items-center justify-center flex-shrink-0 mt-0.5">
                   <Lock className="w-5 h-5 text-ha-primary" />
@@ -1574,7 +1578,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                   <p className="text-[14px] text-[#6B7280] mt-0.5 leading-relaxed">{t("profile.subLocked.desc")}</p>
                   <button
                     onClick={() => navigate("/paywall")}
-                    className="mt-3 h-[38px] px-6 rounded-full bg-ha-primary text-white text-[14px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
+                    className="mt-3 h-[40px] px-6 rounded-full bg-ha-primary text-white text-[14px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
                     data-testid="button-sub-locked-cta"
                   >
                     {t("profile.subLocked.cta")}
@@ -1587,7 +1591,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           {(subscription.isActive || subscription.isTrial) && (
             <button
               onClick={() => navigate("/account/subscription")}
-              className="rounded-[16px] bg-white border border-[#E5E7EB] p-4 flex items-center gap-3.5 text-left active:bg-[#F9FAFB] transition-colors"
+              className="rounded-[16px] bg-white p-4 flex items-center gap-3.5 text-left active:bg-[#F9FAFB] transition-colors"
               data-testid="card-subscription-active"
             >
               <div className="w-10 h-10 rounded-full bg-[#F0FDF4] flex items-center justify-center flex-shrink-0">
@@ -1597,35 +1601,35 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                 <p className="text-[15px] font-semibold text-[#111111]">
                   {subscription.isTrial ? t("profile.subActive.trial") : t("profile.subActive.active")}
                 </p>
-                <p className="text-[13px] text-[#6B7280] mt-0.5">{t("profile.subActive.manage")}</p>
+                <p className="text-[13px] text-[#9CA3AF] mt-0.5">{t("profile.subActive.manage")}</p>
               </div>
               <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
             </button>
           )}
 
-          <div className="rounded-[16px] border border-[#E5E7EB] bg-white overflow-hidden">
+          <div className="rounded-[16px] bg-white overflow-hidden">
             <p className="text-[12px] font-semibold text-[#9CA3AF] uppercase tracking-wider px-4 pt-4 pb-1" data-testid="text-section-account">{t("settings.sectionAccount")}</p>
             {[
-              { label: t("settings.myDetails"), action: () => navigate("/profile/details"), icon: <User className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-profile-account-0" },
-              { label: t("settings.password"), action: () => navigate("/account/change-password"), icon: <Lock className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-profile-account-1" },
-              { label: t("settings.preferences"), action: () => navigate("/settings/preferences"), icon: <Bell className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-profile-preferences" },
+              { label: t("settings.myDetails"), action: () => navigate("/profile/details"), icon: <User className="w-[18px] h-[18px] text-[#9CA3AF]" />, testId: "button-profile-account-0" },
+              { label: t("settings.password"), action: () => navigate("/account/change-password"), icon: <Lock className="w-[18px] h-[18px] text-[#9CA3AF]" />, testId: "button-profile-account-1" },
+              { label: t("settings.preferences"), action: () => navigate("/settings/preferences"), icon: <Bell className="w-[18px] h-[18px] text-[#9CA3AF]" />, testId: "button-profile-preferences" },
             ].map((row, ri) => (
               <div key={ri}>
-                {ri > 0 && <div className="h-px bg-[#F0F0F0] mx-4" />}
+                {ri > 0 && <div className="h-px bg-[#F5F5F5] mx-4" />}
                 <button
                   onClick={row.action}
-                  className="w-full flex items-center gap-3 h-[48px] px-4 text-left active:bg-[#F9FAFB] transition-colors"
+                  className="w-full flex items-center gap-3 h-[50px] px-4 text-left active:bg-[#F9FAFB] transition-colors"
                   data-testid={row.testId}
                 >
                   {row.icon}
                   <p className="text-[15px] font-medium text-[#111111] flex-1">{row.label}</p>
-                  <ChevronRight className="w-4 h-4 text-[#C4C4C4] flex-shrink-0" />
+                  <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
                 </button>
               </div>
             ))}
           </div>
 
-          <div className="rounded-[16px] border border-[#E5E7EB] bg-white overflow-hidden" data-testid="section-blocked-sources">
+          <div className="rounded-[16px] bg-white overflow-hidden" data-testid="section-blocked-sources">
             <div className="flex items-center gap-2 px-4 pt-4 pb-1">
               <ShieldBan className="w-3.5 h-3.5 text-[#9CA3AF]" />
               <p className="text-[12px] font-semibold text-[#9CA3AF] uppercase tracking-wider">{t("profile.blockedSources.title")}</p>
@@ -1637,8 +1641,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             ) : (
               blockedSources.map((source, i) => (
                 <div key={source}>
-                  {i > 0 && <div className="h-px bg-[#F0F0F0] mx-4" />}
-                  <div className="flex items-center justify-between h-[48px] px-4">
+                  {i > 0 && <div className="h-px bg-[#F5F5F5] mx-4" />}
+                  <div className="flex items-center justify-between h-[50px] px-4">
                     <span className="text-[15px] text-[#111111]">{formatBlockedSourceDisplay(source)}</span>
                     <button
                       onClick={() => handleUnblock(source)}
@@ -1654,25 +1658,25 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             )}
           </div>
 
-          <div className="rounded-[16px] border border-[#E5E7EB] bg-white overflow-hidden">
+          <div className="rounded-[16px] bg-white overflow-hidden">
             <p className="text-[12px] font-semibold text-[#9CA3AF] uppercase tracking-wider px-4 pt-4 pb-1" data-testid="text-section-help">{t("profile.helpTitle")}</p>
             {[
-              { label: t("profile.helpMissedMatches"), action: () => navigate("/settings/preferences"), icon: <Search className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-help-missed" },
-              { label: t("profile.helpFeedback"), action: () => { window.location.href = "mailto:support@housalert.com?subject=Feedback"; }, icon: <Send className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-help-feedback" },
-              { label: t("profile.helpFaq"), action: () => { window.location.href = "mailto:support@housalert.com"; }, icon: <HelpCircle className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-help-faq" },
-              { label: t("profile.helpPrivacy"), action: () => navigate("/datenschutz"), icon: <Shield className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-help-privacy" },
-              { label: t("settings.termsConditions"), action: () => navigate("/terms"), icon: <FileText className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-help-terms" },
+              { label: t("profile.helpMissedMatches"), action: () => navigate("/settings/preferences"), icon: <Search className="w-[18px] h-[18px] text-[#9CA3AF]" />, testId: "button-help-missed" },
+              { label: t("profile.helpFeedback"), action: () => { window.location.href = "mailto:support@housalert.com?subject=Feedback"; }, icon: <Send className="w-[18px] h-[18px] text-[#9CA3AF]" />, testId: "button-help-feedback" },
+              { label: t("profile.helpFaq"), action: () => { window.location.href = "mailto:support@housalert.com"; }, icon: <HelpCircle className="w-[18px] h-[18px] text-[#9CA3AF]" />, testId: "button-help-faq" },
+              { label: t("profile.helpPrivacy"), action: () => navigate("/datenschutz"), icon: <Shield className="w-[18px] h-[18px] text-[#9CA3AF]" />, testId: "button-help-privacy" },
+              { label: t("settings.termsConditions"), action: () => navigate("/terms"), icon: <FileText className="w-[18px] h-[18px] text-[#9CA3AF]" />, testId: "button-help-terms" },
             ].map((row, ri) => (
               <div key={ri}>
-                {ri > 0 && <div className="h-px bg-[#F0F0F0] mx-4" />}
+                {ri > 0 && <div className="h-px bg-[#F5F5F5] mx-4" />}
                 <button
                   onClick={row.action}
-                  className="w-full flex items-center gap-3 h-[48px] px-4 text-left active:bg-[#F9FAFB] transition-colors"
+                  className="w-full flex items-center gap-3 h-[50px] px-4 text-left active:bg-[#F9FAFB] transition-colors"
                   data-testid={row.testId}
                 >
                   {row.icon}
                   <p className="text-[15px] font-medium text-[#111111] flex-1">{row.label}</p>
-                  <ChevronRight className="w-4 h-4 text-[#C4C4C4] flex-shrink-0" />
+                  <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
                 </button>
               </div>
             ))}
@@ -1681,17 +1685,17 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           <button
             onClick={() => setShowLogoutConfirm(true)}
             disabled={signingOut}
-            className={`rounded-[16px] border border-[#E5E7EB] bg-white w-full flex items-center gap-3 h-[48px] px-4 text-left active:bg-[#F9FAFB] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
+            className={`rounded-[16px] bg-white w-full flex items-center gap-3 h-[50px] px-4 text-left active:bg-[#F9FAFB] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
             data-testid="button-profile-logout"
           >
             <LogOut className="w-[18px] h-[18px] text-ha-danger flex-shrink-0" />
             <p className="text-[15px] font-medium text-ha-danger flex-1">{signingOut ? t("profile.signingOut") : t("profile.logout")}</p>
           </button>
 
-          <div className="flex flex-col items-center gap-2 pt-1 pb-2">
+          <div className="flex flex-col items-center gap-2 pt-2 pb-2">
             <button
               onClick={() => navigate("/account/delete")}
-              className="text-[13px] text-[#9CA3AF]"
+              className="text-[13px] text-[#9CA3AF] active:opacity-70 transition-opacity"
               data-testid="button-profile-delete-account"
             >
               {t("profile.deleteAccount")}
@@ -1753,10 +1757,10 @@ function ZoekTab({ profiles, navigate }: { profiles: SearchProfile[]; navigate: 
   const { t } = useTranslation();
   return (
     <div className="flex flex-col pb-8">
-      <div className="sticky top-0 z-10 bg-white px-5 pt-6 pb-3">
+      <div className="sticky top-0 z-10 bg-white px-5 pt-6 pb-4">
         <h1 className="text-page-title">{t("nav.search")}</h1>
       </div>
-      <div className="px-4 pt-2">
+      <div className="px-5 pt-1">
         <ZoekopdrachtenSection profiles={profiles} navigate={navigate} />
       </div>
     </div>
@@ -1902,8 +1906,8 @@ export default function DashboardPage() {
         )}
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#E5E7EB]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
-        <nav className="max-w-xl mx-auto flex h-[60px]" data-testid="bottom-nav">
+      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#F0F0F0]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+        <nav className="max-w-xl mx-auto flex h-[64px]" data-testid="bottom-nav">
           {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
             const isActive = activeTab === key;
             const isProfileWithPhoto = key === "profiel" && !!tabPhotoUrl;
@@ -1911,7 +1915,7 @@ export default function DashboardPage() {
               <button
                 key={key}
                 onClick={() => setActiveTab(key)}
-                className="flex-1 flex flex-col items-center justify-center gap-1.5"
+                className="flex-1 flex flex-col items-center justify-center gap-1 active:opacity-70 transition-opacity"
                 data-testid={`tab-${key}`}
               >
                 {isProfileWithPhoto ? (
@@ -1919,9 +1923,9 @@ export default function DashboardPage() {
                     <img src={tabPhotoUrl} alt="" className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <Icon className={`w-[26px] h-[26px] transition-colors ${isActive ? "text-ha-primary" : "text-[#9CA3AF]"}`} strokeWidth={isActive ? 2 : 1.5} />
+                  <Icon className={`w-[26px] h-[26px] transition-colors ${isActive ? "text-ha-primary" : "text-[#B0B5BD]"}`} strokeWidth={isActive ? 2.2 : 1.6} />
                 )}
-                <span className={`text-[11px] transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-[#9CA3AF]"}`}>
+                <span className={`text-[11px] leading-tight transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-[#B0B5BD]"}`}>
                   {t(labelKey)}
                 </span>
               </button>

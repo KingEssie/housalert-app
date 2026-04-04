@@ -21,23 +21,23 @@ interface EmptyStateProps {
 
 export function EmptyState({ illustration, title, description, ctaLabel, onCtaClick, testId }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center text-center pt-10" data-testid={testId}>
+    <div className="flex flex-col items-center text-center pt-12 pb-4" data-testid={testId}>
       <img
         src={illustration}
         alt=""
-        className="w-[240px] h-auto mb-6"
+        className="w-[200px] h-auto mb-6"
         draggable={false}
       />
-      <h2 className="text-[20px] font-medium text-ha-text leading-snug mb-2" data-testid="text-empty-title">
+      <h2 className="text-[18px] font-bold text-[#111111] leading-snug mb-2" data-testid="text-empty-title">
         {title}
       </h2>
-      <p className="text-[14px] text-ha-text leading-relaxed max-w-[280px] mb-6" data-testid="text-empty-description">
+      <p className="text-[14px] text-[#9CA3AF] leading-relaxed max-w-[260px] mb-7" data-testid="text-empty-description">
         {description}
       </p>
       {ctaLabel && onCtaClick && (
         <button
           onClick={onCtaClick}
-          className="h-[48px] px-8 rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium transition-colors"
+          className="h-[44px] px-8 rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold transition-colors active:scale-[0.97]"
           data-testid="button-empty-cta"
         >
           {ctaLabel}

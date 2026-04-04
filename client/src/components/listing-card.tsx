@@ -80,7 +80,7 @@ export function ListingCardFull({
 
   return (
     <div
-      className="cursor-pointer group"
+      className="cursor-pointer group active:scale-[0.985] transition-transform duration-200"
       onClick={onCardClick}
       data-testid={`card-match-${match.listing_id}`}
     >
