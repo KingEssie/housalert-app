@@ -1,0 +1,169 @@
+We are implementing Phase A: navigation and structure refactor for the HousAlert app.
+
+IMPORTANT:
+This phase is ONLY about navigation, tab structure, and screen organization.
+Do NOT redesign listing cards yet.
+Do NOT implement website blocking yet.
+Do NOT rebuild the profile screen yet.
+Do NOT change unrelated business logic.
+
+GOAL:
+Refactor the app information architecture so it works like this:
+
+BOTTOM NAV:
+1. Home
+2. Matches
+3. Tips
+4. Zoek
+5. Profiel
+
+MATCHES TOP TABS:
+- Matches
+- Gereageerd
+- Favorieten
+
+This phase should make the app structure feel cleaner and more logical.
+
+==================================================
+1. BOTTOM NAVIGATION RESTRUCTURE
+==================================================
+
+Update the bottom tab bar to this final order:
+
+1. Home
+2. Matches
+3. Tips
+4. Zoek
+5. Profiel
+
+Requirements:
+- Remove "Favorieten" from the bottom tab bar
+- Add "Zoek" as a new bottom tab item
+- "Zoek" should point to the search profiles / search assignments screen
+- Keep "Tips" as the 3rd tab item
+- Keep visual style consistent with the current HousAlert design
+
+Visual requirements:
+- make the bottom nav slightly taller
+- increase icon size
+- improve vertical spacing between icon and label
+- active tab should show:
+  - red/pink icon
+  - red/pink label text
+- inactive tab should remain neutral grey
+- keep the nav premium, light, and clean
+
+==================================================
+2. SEARCH TAB / ZOEK SCREEN ROUTING
+==================================================
+
+The new bottom tab "Zoek" should open the search profiles screen.
+
+This screen should represent:
+- search profiles / zoekopdrachten
+- existing search assignment management
+- add / edit / delete search profile logic already built
+
+If the current screen is still named "Filters" internally, update the routing and labeling so the user sees "Zoek".
+
+Do not fully redesign this screen in this phase.
+Only make sure the bottom nav correctly routes to it.
+
+==================================================
+3. MATCHES SCREEN TOP TABS
+==================================================
+
+Refactor the Matches screen so it now contains a top tab navigation directly under the Matches page header.
+
+Tabs:
+- Matches
+- Gereageerd
+- Favorieten
+
+Requirements:
+- this top tab bar should feel similar to Airbnb-style segmented top tabs
+- keep it simple, clean, and mobile-first
+- active tab should be visually clear
+- preserve white header area and premium styling
+
+Behavior:
+- Matches tab:
+  shows the normal matches feed
+- Gereageerd tab:
+  shows listings the user has responded to
+- Favorieten tab:
+  shows the user’s favorited listings
+
+Important:
+- Favorieten should NO LONGER be a bottom-level navigation destination
+- Favorieten should now live inside Matches as a subtab
+- Gereageerd should also live inside Matches as a subtab
+
+==================================================
+4. FAVORITES / RESPONDED DATA CONNECTION
+==================================================
+
+Connect the Matches top tabs to the existing data/state if already available:
+
+- "Matches" = current main feed
+- "Gereageerd" = current responded listings state / screen
+- "Favorieten" = current favorites state / screen
+
+If those views already exist separately, reuse them inside the new tab container instead of rebuilding from scratch.
+
+Do not redesign the internals of those listing views yet in this phase.
+Only move them into the Matches tab structure.
+
+==================================================
+5. HOME GAMIFICATION DEFAULT STATE
+==================================================
+
+Change the "Rond je account af" progress card so it is CLOSED by default on the Home screen.
+
+Requirements:
+- no longer auto-expanded on initial load
+- user can still expand it manually
+- preserve all current task logic
+
+If the second progress card also auto-opens and that is not intended, make it closed by default too.
+
+==================================================
+6. KEEP OTHER SCREENS STABLE
+==================================================
+
+Do NOT redesign:
+- Home layout
+- Listing cards
+- Profile layout
+- Tips screen
+- Search profile card styling
+- Detail screen
+
+This phase is strictly about:
+- navigation hierarchy
+- routing
+- tab placement
+- default open/closed state of progress cards
+
+==================================================
+7. TECHNICAL SAFETY
+==================================================
+
+Do not break:
+- existing favorites state
+- existing responded state
+- existing search profile editing/deleting
+- bottom nav routing
+- page headers
+
+==================================================
+8. OUTPUT
+==================================================
+
+After finishing, show:
+1. which bottom tab items changed
+2. what route/screen now opens for "Zoek"
+3. how the Matches top tabs were implemented
+4. which existing favorites/responded components were reused
+5. whether "Rond je account af" now defaults to closed
+6. which files were changed

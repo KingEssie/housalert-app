@@ -24,7 +24,6 @@ import {
   AlertCircle,
   Sparkles,
   Crown,
-  Eye,
   Send,
   ArrowLeft,
   Camera,
@@ -35,6 +34,7 @@ import {
   HelpCircle,
   Heart,
   Lock,
+  MapPin,
 } from "lucide-react";
 import { ExpandableCompletionCard, type CompletionStep } from "@/components/expandable-completion-card";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
@@ -46,8 +46,8 @@ import { ListingCardFull, ListingCardMini } from "@/components/listing-card";
 
 const MAX_PROFILES = 4;
 
-type TabKey = "home" | "matches" | "favorieten" | "profiel" | "tips";
-type MatchSubTab = "nieuw" | "bekeken" | "gereageerd" | "favorieten";
+type TabKey = "home" | "matches" | "zoek" | "profiel" | "tips";
+type MatchesTopTab = "matches" | "gereageerd" | "favorieten";
 
 const MATCH_VIEWED_KEY = "housalert_match_viewed";
 const MATCH_APPLIED_KEY = "housalert_match_applied";
@@ -76,7 +76,7 @@ function markViewed(listingId: string) {
   }
 }
 
-function getMatchTab(match: ApiMatch): MatchSubTab {
+function getMatchTab(match: ApiMatch): "gereageerd" | "bekeken" | "nieuw" {
   if (match.canonical_applied || safeGetSet(MATCH_APPLIED_KEY).has(match.listing_id)) return "gereageerd";
   if (match.canonical_viewed || safeGetSet(MATCH_VIEWED_KEY).has(match.listing_id)) return "bekeken";
   return "nieuw";
@@ -358,7 +358,6 @@ function HomeAccountCompletionCard({ accessToken, navigate }: { accessToken: str
       completedLabel={t("activation.completed")}
       subtitleFormat={t("home.completionSubtitle")}
       testId="card-account-completion"
-      defaultExpanded
     />
   );
 }
@@ -842,17 +841,15 @@ function HomeTab({
   );
 }
 
-const MATCH_SUB_TAB_CONFIG: { key: MatchSubTab; labelKey: string; Icon: any }[] = [
-  { key: "nieuw", labelKey: "matches.subtabs.new", Icon: Sparkles },
-  { key: "bekeken", labelKey: "matches.subtabs.viewed", Icon: Eye },
-  { key: "gereageerd", labelKey: "matches.subtabs.applied", Icon: Send },
-  { key: "favorieten", labelKey: "matches.subtabs.favorites", Icon: Heart },
-];
 
-function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undefined; setActiveTab: (tab: TabKey) => void }) {
+function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken: string | undefined; setActiveTab: (tab: TabKey) => void; initialTopTab?: MatchesTopTab | null }) {
   const [refreshKey, setRefreshKey] = useState(0);
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
-  const { t } = useTranslation();
+  const [topTab, setTopTab] = useState<MatchesTopTab>(initialTopTab || "matches");
+  const [favoriteListings, setFavoriteListings] = useState<ApiMatch[]>([]);
+  const [appliedListings, setAppliedListings] = useState<ApiMatch[]>([]);
+  const [favLoading, setFavLoading] = useState(true);
+  const { t, locale } = useTranslation();
   const { toast } = useToast();
   const [, navigate] = useLocation();
   const sub = useSubscription();
@@ -865,6 +862,44 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
     staleTime: 30_000,
     refetchOnWindowFocus: true,
   });
+
+  const fetchFavoriteListings = useCallback(() => {
+    if (!accessToken) return;
+    setFavLoading(true);
+    apiFetch("/api/favorites/listings", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.listings) setFavoriteListings(data.listings);
+      })
+      .catch(() => {})
+      .finally(() => setFavLoading(false));
+  }, [accessToken]);
+
+  const fetchAppliedListings = useCallback(() => {
+    if (!accessToken) return;
+    const appliedIds = safeGetSet(MATCH_APPLIED_KEY);
+    apiFetch("/api/matches", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+      .then((r) => r.json())
+      .then((data: ApiMatchesResponse) => {
+        if (data.matches) {
+          const applied = data.matches.filter(
+            (m) => m.canonical_applied || appliedIds.has(m.listing_id)
+          );
+          setAppliedListings(applied);
+        }
+      })
+      .catch(() => {});
+  }, [accessToken]);
+
+  useEffect(() => {
+    if (!accessToken || !hasAccess) return;
+    fetchFavoriteListings();
+    fetchAppliedListings();
+  }, [accessToken, hasAccess, fetchFavoriteListings, fetchAppliedListings]);
 
   useEffect(() => {
     if (!accessToken || !hasAccess) return;
@@ -933,15 +968,20 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
         else next.add(listingId);
         return next;
       });
+      if (wasFavorited) {
+        setFavoriteListings((prev) => prev.filter((l) => l.listing_id !== listingId));
+      }
 
       try {
-        await apiFetch(`/api/favorites/${listingId}`, {
+        const res = await apiFetch(`/api/favorites/${listingId}`, {
           method: wasFavorited ? "DELETE" : "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
           },
         });
+        if (!res.ok) throw new Error("request failed");
+        if (!wasFavorited) fetchFavoriteListings();
       } catch {
         setFavoriteIds((prev) => {
           const rollback = new Set(prev);
@@ -949,9 +989,10 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
           else rollback.delete(listingId);
           return rollback;
         });
+        if (wasFavorited) fetchFavoriteListings();
       }
     },
-    [accessToken, favoriteIds],
+    [accessToken, favoriteIds, fetchFavoriteListings],
   );
 
   const matches = apiMatchesQuery.data?.matches ?? [];
@@ -966,6 +1007,44 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
     const dateB = b.first_seen_at || b.matched_at || "";
     return dateB.localeCompare(dateA);
   });
+
+  const removeApplied = useCallback(async (listingId: string) => {
+    if (!accessToken) return;
+    const prevListings = appliedListings;
+    setAppliedListings((prev) => prev.filter((l) => l.listing_id !== listingId));
+    const localApplied = safeGetSet(MATCH_APPLIED_KEY);
+    localApplied.delete(listingId);
+    safeSetSet(MATCH_APPLIED_KEY, localApplied);
+    try {
+      const res = await apiFetch(`/api/matches/${listingId}/applied`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ applied: false }),
+      });
+      if (!res.ok) throw new Error("request failed");
+      toast({ title: t("matches.responseRemoved") });
+    } catch {
+      setAppliedListings(prevListings);
+      localApplied.add(listingId);
+      safeSetSet(MATCH_APPLIED_KEY, localApplied);
+      fetchAppliedListings();
+    }
+  }, [accessToken, appliedListings, fetchAppliedListings, t, toast]);
+
+  function formatRespondedDate(match: ApiMatch): string {
+    const dateStr = match.matched_at || match.first_seen_at;
+    if (!dateStr) return "";
+    const d = new Date(dateStr);
+    const intlLocale = locale === "de" ? "de-DE" : locale === "en" ? "en-GB" : "nl-NL";
+    const formatted = d.toLocaleDateString(intlLocale, { day: "numeric", month: "long", year: "numeric" });
+    return t("matches.respondedOn", { date: formatted });
+  }
+
+  const topTabs: { key: MatchesTopTab; label: string }[] = [
+    { key: "matches", label: t("matches.title") },
+    { key: "gereageerd", label: t("matches.subtabs.applied") },
+    { key: "favorieten", label: t("nav.favorites") },
+  ];
 
   if (!hasAccess) {
     return (
@@ -1002,69 +1081,159 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
 
   return (
     <div className="flex flex-col pb-8">
-      <div className="sticky top-0 z-10 bg-white px-5 pt-6 pb-3">
-        <div className="flex items-baseline justify-between">
-          <h1 className="text-page-title">{t("matches.title")}</h1>
-          {totalCount > 0 && (
-            <span className="text-[13px] font-medium text-[#9CA3AF]" data-testid="text-match-count">
-              {totalCount} {totalCount === 1 ? "match" : "matches"}
-            </span>
-          )}
+      <div className="sticky top-0 z-10 bg-white px-5 pt-6 pb-0">
+        <h1 className="text-page-title mb-3">{t("matches.title")}</h1>
+        <div className="flex border-b border-[#E5E7EB]" data-testid="matches-top-tabs">
+          {topTabs.map(({ key, label }) => {
+            const isActive = topTab === key;
+            return (
+              <button
+                key={key}
+                onClick={() => setTopTab(key)}
+                className={`flex-1 py-2.5 text-[14px] font-semibold text-center transition-all border-b-2 -mb-px ${
+                  isActive
+                    ? "border-[#111111] text-[#111111]"
+                    : "border-transparent text-[#9CA3AF] hover:text-[#6B7280]"
+                }`}
+                data-testid={`tab-matches-${key}`}
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      <div className="px-4 flex flex-col pt-2">
-        {apiMatchesQuery.isLoading ? (
-          <div className="flex flex-col gap-5">
-            {[1, 2].map((i) => (
-              <div key={i} className="animate-pulse">
-                <div className="bg-[#F0F0F0] rounded-[16px]" style={{ aspectRatio: "3/2" }} />
-                <div className="pt-2 flex flex-col gap-1.5">
-                  <div className="h-4 bg-[#F0F0F0] rounded w-3/4" />
-                  <div className="h-3 bg-[#F0F0F0] rounded w-1/3" />
-                </div>
+      <div className="px-4 flex flex-col pt-4">
+        {topTab === "matches" && (
+          <>
+            {apiMatchesQuery.isLoading ? (
+              <div className="flex flex-col gap-5">
+                {[1, 2].map((i) => (
+                  <div key={i} className="animate-pulse">
+                    <div className="bg-[#F0F0F0] rounded-[16px]" style={{ aspectRatio: "3/2" }} />
+                    <div className="pt-2 flex flex-col gap-1.5">
+                      <div className="h-4 bg-[#F0F0F0] rounded w-3/4" />
+                      <div className="h-3 bg-[#F0F0F0] rounded w-1/3" />
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        ) : apiMatchesQuery.isError ? (
-          <div className="py-16 flex flex-col items-center text-center gap-3 px-4">
-            <AlertCircle className="w-8 h-8 text-[#C4C4C4]" />
-            <p className="text-[16px] font-bold text-[#111111]">{t("matches.loadError")}</p>
-            <p className="text-[13px] text-[#6B7280] leading-relaxed">{t("matches.loadErrorDesc")}</p>
-            <button
-              onClick={() => apiMatchesQuery.refetch()}
-              className="text-[14px] font-semibold text-ha-primary mt-1"
-              data-testid="button-retry-matches"
-            >
-              {t("common.retry")}
-            </button>
-          </div>
-        ) : matches.length === 0 ? (
-          <EmptyState
-            illustration={EMPTY_STATE_IMAGES.noMatches}
-            title={t("matches.emptyNew.title")}
-            description={t("matches.emptyNew.desc")}
-            ctaLabel={t("matches.adjustFilters")}
-            onCtaClick={() => setActiveTab("profiel")}
-            testId="empty-matches"
-          />
-        ) : (
-          <div className="flex flex-col gap-5">
-            {allMatchesSorted.map((m) => (
-              <ListingCardFull
-                key={m.listing_id}
-                match={m}
-                isFavorited={favoriteIds.has(m.listing_id)}
-                onToggleFavorite={toggleFavorite}
-                onCardClick={() => {
-                  markViewed(m.listing_id);
-                  refreshStatuses();
-                  navigate(`/apply/${m.listing_id}`);
-                }}
-                locked={!hasAccess}
+            ) : apiMatchesQuery.isError ? (
+              <div className="py-16 flex flex-col items-center text-center gap-3 px-4">
+                <AlertCircle className="w-8 h-8 text-[#C4C4C4]" />
+                <p className="text-[16px] font-bold text-[#111111]">{t("matches.loadError")}</p>
+                <p className="text-[13px] text-[#6B7280] leading-relaxed">{t("matches.loadErrorDesc")}</p>
+                <button
+                  onClick={() => apiMatchesQuery.refetch()}
+                  className="text-[14px] font-semibold text-ha-primary mt-1"
+                  data-testid="button-retry-matches"
+                >
+                  {t("common.retry")}
+                </button>
+              </div>
+            ) : matches.length === 0 ? (
+              <EmptyState
+                illustration={EMPTY_STATE_IMAGES.noMatches}
+                title={t("matches.emptyNew.title")}
+                description={t("matches.emptyNew.desc")}
+                ctaLabel={t("matches.adjustFilters")}
+                onCtaClick={() => setActiveTab("zoek")}
+                testId="empty-matches"
               />
-            ))}
-          </div>
+            ) : (
+              <div className="flex flex-col gap-5">
+                {allMatchesSorted.map((m) => (
+                  <ListingCardFull
+                    key={m.listing_id}
+                    match={m}
+                    isFavorited={favoriteIds.has(m.listing_id)}
+                    onToggleFavorite={toggleFavorite}
+                    onCardClick={() => {
+                      markViewed(m.listing_id);
+                      refreshStatuses();
+                      navigate(`/apply/${m.listing_id}`);
+                    }}
+                    locked={!hasAccess}
+                  />
+                ))}
+              </div>
+            )}
+          </>
+        )}
+
+        {topTab === "gereageerd" && (
+          <>
+            {appliedListings.length === 0 ? (
+              <EmptyState
+                illustration={EMPTY_STATE_IMAGES.noApplications}
+                title={t("matches.emptyApplied.title")}
+                description={t("matches.emptyApplied.desc")}
+                testId="empty-gereageerd-tab"
+              />
+            ) : (
+              <div className="flex flex-col gap-5">
+                {appliedListings.map((m) => (
+                  <div key={m.listing_id} data-testid={`card-applied-${m.listing_id}`}>
+                    <ListingCardFull
+                      match={m}
+                      isFavorited={favoriteIds.has(m.listing_id)}
+                      onToggleFavorite={toggleFavorite}
+                      onCardClick={() => {
+                        markViewed(m.listing_id);
+                        navigate(`/apply/${m.listing_id}`);
+                      }}
+                      locked={!hasAccess}
+                      respondedLabel={formatRespondedDate(m)}
+                      onRemoveResponse={() => removeApplied(m.listing_id)}
+                      removeResponseLabel={t("matches.removeResponse")}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+
+        {topTab === "favorieten" && (
+          <>
+            {favLoading ? (
+              <div className="flex flex-col gap-5">
+                {[1, 2].map((i) => (
+                  <div key={i} className="animate-pulse">
+                    <div className="bg-[#F0F0F0] rounded-[16px]" style={{ aspectRatio: "3/2" }} />
+                    <div className="pt-2 flex flex-col gap-1.5">
+                      <div className="h-4 bg-[#F0F0F0] rounded w-3/4" />
+                      <div className="h-3 bg-[#F0F0F0] rounded w-1/3" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : favoriteListings.length === 0 ? (
+              <EmptyState
+                illustration={EMPTY_STATE_IMAGES.noFilters}
+                title={t("matches.emptyFavorites.title")}
+                description={t("matches.emptyFavorites.desc")}
+                testId="empty-favorieten-tab"
+              />
+            ) : (
+              <div className="flex flex-col gap-5">
+                {favoriteListings.map((m) => (
+                  <ListingCardFull
+                    key={m.listing_id}
+                    match={m}
+                    isFavorited={favoriteIds.has(m.listing_id)}
+                    onToggleFavorite={toggleFavorite}
+                    onCardClick={() => {
+                      markViewed(m.listing_id);
+                      navigate(`/apply/${m.listing_id}`);
+                    }}
+                    locked={!hasAccess}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
@@ -1120,228 +1289,6 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
   );
 }
 
-type FavSubTab = "favorieten" | "gereageerd";
-
-function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
-  const { t, locale } = useTranslation();
-  const [, navigate] = useLocation();
-  const { toast } = useToast();
-  const [favSubTab, setFavSubTab] = useState<FavSubTab>("favorieten");
-  const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
-  const [favoriteListings, setFavoriteListings] = useState<ApiMatch[]>([]);
-  const [appliedListings, setAppliedListings] = useState<ApiMatch[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const sub = useSubscription();
-  const hasAccess = sub.isActive || sub.isTrial;
-
-  const fetchFavoriteListings = useCallback(() => {
-    if (!accessToken) return;
-    setIsLoading(true);
-    apiFetch("/api/favorites/listings", {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    })
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.listings) setFavoriteListings(data.listings);
-      })
-      .catch(() => {})
-      .finally(() => setIsLoading(false));
-  }, [accessToken]);
-
-  const fetchAppliedListings = useCallback(() => {
-    if (!accessToken) return;
-    const appliedIds = safeGetSet(MATCH_APPLIED_KEY);
-    apiFetch("/api/matches", {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    })
-      .then((r) => r.json())
-      .then((data: ApiMatchesResponse) => {
-        if (data.matches) {
-          const applied = data.matches.filter(
-            (m) => m.canonical_applied || appliedIds.has(m.listing_id)
-          );
-          setAppliedListings(applied);
-        }
-      })
-      .catch(() => {});
-  }, [accessToken]);
-
-  useEffect(() => {
-    if (!accessToken) return;
-    apiFetch("/api/favorites", {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    })
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.favoriteIds && Array.isArray(data.favoriteIds)) {
-          setFavoriteIds(new Set(data.favoriteIds));
-        }
-      })
-      .catch(() => {});
-    fetchFavoriteListings();
-    fetchAppliedListings();
-  }, [accessToken, fetchFavoriteListings, fetchAppliedListings]);
-
-  const toggleFavorite = useCallback(
-    async (listingId: string) => {
-      if (!accessToken) return;
-      const wasFavorited = favoriteIds.has(listingId);
-      setFavoriteIds((prev) => {
-        const next = new Set(prev);
-        if (wasFavorited) next.delete(listingId);
-        else next.add(listingId);
-        return next;
-      });
-      if (wasFavorited) {
-        setFavoriteListings((prev) => prev.filter((l) => l.listing_id !== listingId));
-      }
-
-      try {
-        const res = await apiFetch(`/api/favorites/${listingId}`, {
-          method: wasFavorited ? "DELETE" : "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        if (!res.ok) throw new Error("request failed");
-        if (!wasFavorited) fetchFavoriteListings();
-      } catch {
-        setFavoriteIds((prev) => {
-          const rollback = new Set(prev);
-          if (wasFavorited) rollback.add(listingId);
-          else rollback.delete(listingId);
-          return rollback;
-        });
-        if (wasFavorited) fetchFavoriteListings();
-      }
-    },
-    [accessToken, favoriteIds, fetchFavoriteListings],
-  );
-
-  const removeApplied = useCallback(async (listingId: string) => {
-    if (!accessToken) return;
-    const prevListings = appliedListings;
-    setAppliedListings((prev) => prev.filter((l) => l.listing_id !== listingId));
-    const localApplied = safeGetSet(MATCH_APPLIED_KEY);
-    localApplied.delete(listingId);
-    safeSetSet(MATCH_APPLIED_KEY, localApplied);
-    try {
-      const res = await apiFetch(`/api/matches/${listingId}/applied`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
-        body: JSON.stringify({ applied: false }),
-      });
-      if (!res.ok) throw new Error("request failed");
-      toast({ title: t("matches.responseRemoved") });
-    } catch {
-      setAppliedListings(prevListings);
-      localApplied.add(listingId);
-      safeSetSet(MATCH_APPLIED_KEY, localApplied);
-      fetchAppliedListings();
-    }
-  }, [accessToken, appliedListings, fetchAppliedListings, t, toast]);
-
-  function formatRespondedDate(match: ApiMatch): string {
-    const dateStr = match.matched_at || match.first_seen_at;
-    if (!dateStr) return "";
-    const d = new Date(dateStr);
-    const intlLocale = locale === "de" ? "de-DE" : locale === "en" ? "en-GB" : "nl-NL";
-    const formatted = d.toLocaleDateString(intlLocale, { day: "numeric", month: "long", year: "numeric" });
-    return t("matches.respondedOn", { date: formatted });
-  }
-
-  const currentListings = favSubTab === "favorieten" ? favoriteListings : appliedListings;
-
-  return (
-    <div className="flex flex-col pb-8">
-      <div className="sticky top-0 z-10 bg-white px-5 pt-6 pb-0">
-        <h1 className="text-page-title mb-4">{t("nav.favorites")}</h1>
-        <div className="flex" data-testid="fav-sub-tabs">
-          {([
-            { key: "favorieten" as FavSubTab, label: t("nav.favorites") },
-            { key: "gereageerd" as FavSubTab, label: t("matches.subtabs.applied") },
-          ]).map(({ key, label }) => {
-            const isActive = favSubTab === key;
-            return (
-              <button
-                key={key}
-                onClick={() => setFavSubTab(key)}
-                className={`px-5 py-2.5 text-[14px] font-semibold transition-all border-b-2 ${
-                  isActive
-                    ? "border-ha-primary text-ha-primary"
-                    : "border-transparent text-[#9CA3AF] hover:text-[#6B7280]"
-                }`}
-                data-testid={`tab-fav-${key}`}
-              >
-                {label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="px-4 flex flex-col pt-2">
-        {isLoading && favSubTab === "favorieten" ? (
-          <div className="flex flex-col gap-5">
-            {[1, 2].map((i) => (
-              <div key={i} className="animate-pulse">
-                <div className="bg-[#F0F0F0] rounded-[16px]" style={{ aspectRatio: "3/2" }} />
-                <div className="pt-2 flex flex-col gap-1.5">
-                  <div className="h-4 bg-[#F0F0F0] rounded w-3/4" />
-                  <div className="h-3 bg-[#F0F0F0] rounded w-1/3" />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : currentListings.length === 0 ? (
-          <EmptyState
-            illustration={favSubTab === "favorieten" ? EMPTY_STATE_IMAGES.noFilters : EMPTY_STATE_IMAGES.noApplications}
-            title={favSubTab === "favorieten" ? t("matches.emptyFavorites.title") : t("matches.emptyApplied.title")}
-            description={favSubTab === "favorieten" ? t("matches.emptyFavorites.desc") : t("matches.emptyApplied.desc")}
-            testId={`empty-${favSubTab}-tab`}
-          />
-        ) : favSubTab === "favorieten" ? (
-          <div className="flex flex-col gap-5">
-            {currentListings.map((m) => (
-              <ListingCardFull
-                key={m.listing_id}
-                match={m}
-                isFavorited={favoriteIds.has(m.listing_id)}
-                onToggleFavorite={toggleFavorite}
-                onCardClick={() => {
-                  markViewed(m.listing_id);
-                  navigate(`/apply/${m.listing_id}`);
-                }}
-                locked={!hasAccess}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col gap-5">
-            {currentListings.map((m) => (
-              <div key={m.listing_id} data-testid={`card-applied-${m.listing_id}`}>
-                <ListingCardFull
-                  match={m}
-                  isFavorited={favoriteIds.has(m.listing_id)}
-                  onToggleFavorite={toggleFavorite}
-                  onCardClick={() => {
-                    markViewed(m.listing_id);
-                    navigate(`/apply/${m.listing_id}`);
-                  }}
-                  locked={!hasAccess}
-                  respondedLabel={formatRespondedDate(m)}
-                  onRemoveResponse={() => removeApplied(m.listing_id)}
-                  removeResponseLabel={t("matches.removeResponse")}
-                />
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
 
 function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl: string | null; onClose: () => void; onUpload: (file: File) => void; onRemove: () => void }) {
   const { t } = useTranslation();
@@ -1724,11 +1671,25 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
   );
 }
 
+function ZoekTab({ profiles, navigate }: { profiles: SearchProfile[]; navigate: (path: string) => void }) {
+  const { t } = useTranslation();
+  return (
+    <div className="flex flex-col pb-8">
+      <div className="sticky top-0 z-10 bg-white px-5 pt-6 pb-3">
+        <h1 className="text-page-title">{t("nav.search")}</h1>
+      </div>
+      <div className="px-4 pt-2">
+        <ZoekopdrachtenSection profiles={profiles} navigate={navigate} />
+      </div>
+    </div>
+  );
+}
+
 const TAB_CONFIG: { key: TabKey; labelKey: string; Icon: any }[] = [
   { key: "home", labelKey: "nav.home", Icon: Home },
   { key: "matches", labelKey: "nav.matches", Icon: Search },
   { key: "tips", labelKey: "nav.tips", Icon: Sparkles },
-  { key: "favorieten", labelKey: "nav.favorites", Icon: Heart },
+  { key: "zoek", labelKey: "nav.search", Icon: MapPin },
   { key: "profiel", labelKey: "nav.profile", Icon: User },
 ];
 
@@ -1736,10 +1697,18 @@ export default function DashboardPage() {
   const { user, session, loading, signOut } = useAuth();
   const [, navigate] = useLocation();
   const { t } = useTranslation();
+  const [initialMatchesTopTab] = useState<MatchesTopTab | null>(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get("tab");
+    if (tab === "favorieten") return "favorieten";
+    if (tab === "gereageerd") return "gereageerd";
+    return null;
+  });
   const [activeTab, setActiveTab] = useState<TabKey>(() => {
     const params = new URLSearchParams(window.location.search);
     const tab = params.get("tab");
-    if (tab && ["home", "matches", "tips", "favorieten", "profiel"].includes(tab)) {
+    if (tab === "favorieten" || tab === "gereageerd") return "matches";
+    if (tab && ["home", "matches", "tips", "zoek", "profiel"].includes(tab)) {
       return tab as TabKey;
     }
     return "home";
@@ -1836,11 +1805,11 @@ export default function DashboardPage() {
           />
         )}
         {activeTab === "matches" && (
-          <MatchesTab accessToken={accessToken} setActiveTab={setActiveTab} />
+          <MatchesTab accessToken={accessToken} setActiveTab={setActiveTab} initialTopTab={initialMatchesTopTab} />
         )}
         {activeTab === "tips" && <TipsPage navigate={navigate} />}
-        {activeTab === "favorieten" && (
-          <FavorietenTab accessToken={accessToken} />
+        {activeTab === "zoek" && (
+          <ZoekTab profiles={profiles} navigate={navigate} />
         )}
         {activeTab === "profiel" && (
           <ProfielTab
@@ -1855,8 +1824,8 @@ export default function DashboardPage() {
         )}
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#F0F0F0]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
-        <nav className="max-w-xl mx-auto flex h-[48px]" data-testid="bottom-nav">
+      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#E5E7EB]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+        <nav className="max-w-xl mx-auto flex h-[60px]" data-testid="bottom-nav">
           {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
             const isActive = activeTab === key;
             const isProfileWithPhoto = key === "profiel" && !!tabPhotoUrl;
@@ -1864,17 +1833,17 @@ export default function DashboardPage() {
               <button
                 key={key}
                 onClick={() => setActiveTab(key)}
-                className="flex-1 flex flex-col items-center justify-center gap-1"
+                className="flex-1 flex flex-col items-center justify-center gap-1.5"
                 data-testid={`tab-${key}`}
               >
                 {isProfileWithPhoto ? (
-                  <div className={`w-[26px] h-[26px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-ha-primary ring-offset-1 ring-offset-white" : ""}`}>
+                  <div className={`w-[28px] h-[28px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-ha-primary ring-offset-1 ring-offset-white" : ""}`}>
                     <img src={tabPhotoUrl} alt="" className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <Icon className={`w-[24px] h-[24px] transition-colors ${isActive ? "text-ha-primary" : "text-[#9CA3AF]"}`} strokeWidth={isActive ? 2 : 1.6} />
+                  <Icon className={`w-[26px] h-[26px] transition-colors ${isActive ? "text-ha-primary" : "text-[#9CA3AF]"}`} strokeWidth={isActive ? 2 : 1.5} />
                 )}
-                <span className={`text-[11px] transition-colors ${isActive ? "font-semibold text-[#111111]" : "font-medium text-[#9CA3AF]"}`}>
+                <span className={`text-[11px] transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-[#9CA3AF]"}`}>
                   {t(labelKey)}
                 </span>
               </button>

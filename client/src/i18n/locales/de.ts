@@ -36,6 +36,7 @@ export const de: Record<string, any> = {
     tips: "Tipps",
     filters: "Filter",
     favorites: "Favoriten",
+    search: "Suche",
     profile: "Profil",
   },
 

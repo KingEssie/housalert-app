@@ -36,6 +36,7 @@ export const en: Record<string, any> = {
     tips: "Tips",
     filters: "Filters",
     favorites: "Favorites",
+    search: "Search",
     profile: "Profile",
   },
 

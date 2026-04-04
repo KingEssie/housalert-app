@@ -1,0 +1,158 @@
+We are implementing Phase B: listing card redesign for the HousAlert app.
+
+IMPORTANT:
+This phase is ONLY about listing card visuals and content hierarchy.
+Do NOT change navigation.
+Do NOT implement website blocking.
+Do NOT rebuild the profile screen.
+Do NOT change detail screen actions yet.
+Do NOT change unrelated business logic.
+
+GOAL:
+Make listing cards feel closer to Airbnb:
+- taller images
+- cleaner text hierarchy
+- stronger favorite heart styling
+- more premium feed presentation
+
+==================================================
+1. LISTING IMAGE HEIGHT
+==================================================
+
+Increase the visual height of listing images so they feel more like Airbnb listing cards.
+
+Requirements:
+- images should be noticeably taller than the current version
+- preserve rounded corners
+- keep a premium image-first presentation
+- maintain consistent aspect ratio across cards
+- avoid making cards feel flat or compressed
+
+Use a taller image treatment closer to Airbnb’s feed/listing cards.
+
+==================================================
+2. HEART / FAVORITE BUTTON STYLING
+==================================================
+
+Restyle the favorite heart overlay to match this behavior:
+
+NOT FAVORITED:
+- dark semi-transparent background
+- white border
+- white heart icon
+
+FAVORITED:
+- Airbnb-like red/pink filled background
+- white border
+- white heart icon
+
+Requirements:
+- heart sits on the image
+- keep premium spacing from top-right edge
+- maintain consistent size across all listing cards
+- add subtle depth if needed, but keep it clean
+
+==================================================
+3. TEXT ORDER UNDER THE IMAGE
+==================================================
+
+Rebuild the content under the image so the order is exactly:
+
+1. Title
+2. Address
+3. Square meters - number of bedrooms
+4. Website name
+
+==================================================
+4. TITLE STYLING
+==================================================
+
+Title rules:
+- bold
+- single line only
+- truncate with ellipsis (…) if too long
+- use primary text color
+- this should be the most prominent line under the image
+
+Important:
+Use the listing title/address headline in a way that fits a single clean row.
+
+==================================================
+5. ADDRESS STYLING
+==================================================
+
+Second line = Address
+
+Rules:
+- one line only
+- truncate if necessary
+- use slightly lighter text than title
+- should still be easy to read
+
+==================================================
+6. META LINE
+==================================================
+
+Third line = square meters and bedrooms
+
+Format:
+[XX m²] - [X slaapkamers]
+
+Requirements:
+- smaller and lighter than address
+- one clean line
+- no icons needed unless they already look premium
+- keep it very scannable
+
+==================================================
+7. WEBSITE NAME
+==================================================
+
+Fourth line = website/source name
+
+Examples:
+- immowelt.de
+- wg-gesucht.de
+- kleinanzeigen.de
+
+Rules:
+- smallest / most subtle text line
+- still readable
+- keep it below the meta line
+
+==================================================
+8. CONSISTENCY ACROSS TABS
+==================================================
+
+Apply this redesigned listing card consistently to:
+- Matches tab
+- Gereageerd tab
+- Favorieten tab
+- any shared listing feed component used by these tabs
+
+If these tabs reuse the same component, refactor that shared component instead of duplicating styles.
+
+==================================================
+9. KEEP OTHER THINGS UNCHANGED
+==================================================
+
+Do NOT change:
+- bottom navigation
+- top tab structure
+- profile screen
+- detail screen actions
+- search profile screens
+- subscription logic
+
+This phase is strictly about listing card presentation.
+
+==================================================
+10. OUTPUT
+==================================================
+
+After finishing, show:
+1. new image aspect/height used
+2. how the heart button behaves in favorited vs non-favorited state
+3. how the text order was changed
+4. which shared listing components were updated
+5. which screens/tabs now use the new card style
