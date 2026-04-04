@@ -27,14 +27,14 @@ export function StatusCard({
     <div className="rounded-[--ha-card-radius] bg-white overflow-hidden" data-testid={testId}>
       <button
         onClick={onAction}
-        className="w-full px-5 py-4 flex items-center gap-4 text-left active:bg-ha-surface-hover transition-colors"
+        className="w-full px-5 py-4 flex items-center gap-4 text-left active:bg-[#F7F7F7] transition-colors"
         data-testid={`${testId}-action`}
       >
-        <div className="w-11 h-11 rounded-full bg-ha-surface flex items-center justify-center flex-shrink-0">
+        <div className="w-11 h-11 rounded-full bg-[#F7F7F7] flex items-center justify-center flex-shrink-0">
           {icon}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-semibold text-[#111111] leading-snug">{title}</p>
+          <p className="text-[15px] font-bold text-[#111111] leading-snug">{title}</p>
           <div className="flex items-center gap-1.5 mt-0.5" data-testid={`${testId}-status`}>
             {configured ? (
               <>
@@ -49,14 +49,14 @@ export function StatusCard({
             )}
           </div>
           {description && (
-            <p className="text-[13px] text-ha-text-muted mt-0.5 leading-snug line-clamp-2">{description}</p>
+            <p className="text-[13px] text-[#9CA3AF] mt-0.5 leading-snug line-clamp-2">{description}</p>
           )}
         </div>
         <div className="flex items-center gap-1.5 flex-shrink-0">
           {actionLabel && (
             <span className="text-[13px] font-semibold text-ha-primary">{actionLabel}</span>
           )}
-          <ChevronRight className="w-4 h-4 text-ha-icon-secondary" />
+          <ChevronRight className="w-4 h-4 text-[#D1D5DB]" />
         </div>
       </button>
     </div>
@@ -76,14 +76,14 @@ export function StatusCardInline({
   return (
     <button
       onClick={onAction}
-      className="w-full px-5 py-4 flex items-center gap-4 text-left active:bg-ha-surface-hover transition-colors"
+      className="w-full px-5 py-3.5 flex items-center gap-3.5 text-left active:bg-[#F7F7F7] transition-colors"
       data-testid={`${testId}-action`}
     >
-      <div className="w-10 h-10 rounded-full bg-ha-surface flex items-center justify-center flex-shrink-0">
+      <div className="w-9 h-9 rounded-full bg-[#F7F7F7] flex items-center justify-center flex-shrink-0">
         {icon}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-[15px] font-semibold text-[#111111] leading-snug">{title}</p>
+        <p className="text-[15px] font-bold text-[#111111] leading-snug">{title}</p>
         <div className="flex items-center gap-1.5 mt-0.5" data-testid={`${testId}-status`}>
           {configured ? (
             <>
@@ -98,7 +98,7 @@ export function StatusCardInline({
           )}
         </div>
       </div>
-      <ChevronRight className="w-4 h-4 text-ha-icon-secondary flex-shrink-0" />
+      <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
     </button>
   );
 }

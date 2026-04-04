@@ -1,0 +1,122 @@
+Now move to Phase 3: visual hierarchy and listing experience upgrade.
+
+GOAL:
+Make the app feel like a premium consumer product by improving typography, reducing UI noise, and making listings more attractive and dominant.
+
+IMPORTANT:
+Do not change layout structure drastically.
+Focus on visual hierarchy, typography, and content emphasis.
+
+==================================================
+1. LISTING CARDS — MAKE THEM FEEL PREMIUM
+==================================================
+
+The listing cards are currently functional but not visually compelling enough.
+
+Improve them:
+
+- Make the image more dominant and visually attractive
+- Increase title font size and weight
+- Make price more prominent and easier to scan
+- Reduce visual clutter inside the card
+- Ensure strong contrast (avoid too much grey text)
+- Improve spacing so the card breathes more
+
+Goal:
+Users should feel like they WANT to click the listing.
+
+==================================================
+2. TYPOGRAPHY — STRONGER HIERARCHY
+==================================================
+
+Fix weak typography:
+
+- Reduce usage of muted grey text
+- Increase contrast for important info
+- Ensure clear hierarchy:
+  title > price > location > meta
+
+Guidelines:
+- Titles: bold and clearly dominant
+- Price: strong and easy to scan
+- Secondary info: readable, not faded
+
+Avoid:
+- tiny grey text
+- weak contrast
+- everything looking the same importance
+
+==================================================
+3. REDUCE UI NOISE
+==================================================
+
+Where possible:
+
+- remove unnecessary labels
+- remove redundant helper text
+- simplify visual elements
+- reduce icon usage if not needed
+
+Goal:
+Less UI, more content.
+
+==================================================
+4. HOME SCREEN — CREATE FOCUS
+==================================================
+
+The Home screen still feels slightly like a dashboard.
+
+Improve:
+
+- emphasize one primary action or section
+- make secondary sections less visually dominant
+- create a clear top-to-bottom flow
+
+Goal:
+User instantly understands what to do next.
+
+==================================================
+5. MATCHES FEED — MORE LIKE A CONTENT FEED
+==================================================
+
+Make Matches feel less like stacked cards and more like a scrollable feed:
+
+- ensure consistent rhythm between cards
+- reduce visual interruption between items
+- make scrolling feel smooth and natural
+
+==================================================
+6. PROFILE — FINAL POLISH
+==================================================
+
+Refine:
+
+- spacing consistency
+- alignment of icons and labels
+- text hierarchy
+
+Make it feel closer to a native mobile settings screen.
+
+==================================================
+7. FINAL CONSISTENCY PASS
+==================================================
+
+Check across all screens:
+
+- typography consistency
+- spacing rhythm
+- icon usage
+- color usage
+
+Ensure everything feels like ONE system.
+
+==================================================
+OUTPUT
+==================================================
+
+After finishing, show:
+1. what was changed in listing cards
+2. typography adjustments made
+3. what UI elements were removed or simplified
+4. how Home focus was improved
+5. final consistency changes across screens

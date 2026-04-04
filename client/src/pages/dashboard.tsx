@@ -200,20 +200,20 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
     return (
       <div data-testid="section-search-profiles-empty">
         <div className="rounded-[--ha-card-radius] bg-white p-5">
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-3 mb-3">
             <Search className="w-5 h-5 text-ha-primary flex-shrink-0" />
             <p className="text-[17px] font-bold text-[#111111] flex-1">{t("searchProfiles.sectionTitle")}</p>
-            <span className="text-[13px] font-semibold text-[#6B7280] bg-[#F7F7F7] px-2.5 py-0.5 rounded-full">0/{MAX_PROFILES}</span>
+            <span className="text-[12px] font-semibold text-[#9CA3AF]">0/{MAX_PROFILES}</span>
           </div>
           <div className="flex flex-col items-center text-center py-6 px-4">
             <div className="w-12 h-12 rounded-full bg-[#F7F7F7] flex items-center justify-center mb-3">
-              <Search className="w-6 h-6 text-[#6B7280]" />
+              <Search className="w-6 h-6 text-[#9CA3AF]" />
             </div>
             <p className="text-[16px] font-bold text-[#111111] mb-1" data-testid="text-empty-title">{t("searchProfiles.emptyTitle")}</p>
-            <p className="text-[14px] text-ha-text-secondary mb-4" data-testid="text-empty-subtitle">{t("searchProfiles.emptySubtitle")}</p>
+            <p className="text-[14px] text-[#4B5563] mb-4" data-testid="text-empty-subtitle">{t("searchProfiles.emptySubtitle")}</p>
             <button
               onClick={() => navigate("/dashboard/searches/new")}
-              className="px-5 py-2.5 rounded-full bg-ha-primary text-white font-semibold text-[15px] hover:opacity-90 transition-opacity"
+              className="px-5 py-2.5 rounded-full bg-ha-primary text-white font-bold text-[15px] hover:opacity-90 transition-opacity"
               data-testid="button-create-first-profile"
             >
               {t("searchProfiles.createFirst")}
@@ -228,25 +228,25 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
     <>
       <div data-testid="section-search-profiles">
         <div className="rounded-[--ha-card-radius] bg-white p-5">
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-3 mb-3">
             <Search className="w-5 h-5 text-ha-primary flex-shrink-0" />
             <p className="text-[17px] font-bold text-[#111111] flex-1">{t("searchProfiles.sectionTitle")}</p>
-            <span className="text-[13px] font-semibold text-[#6B7280] bg-[#F7F7F7] px-2.5 py-0.5 rounded-full">{profiles.length}/{MAX_PROFILES}</span>
+            <span className="text-[12px] font-semibold text-[#9CA3AF]">{profiles.length}/{MAX_PROFILES}</span>
           </div>
           <div className="flex flex-col gap-2">
             {profiles.map((p) => (
               <div
                 key={p.id}
-                className="flex items-center gap-3 py-3.5 px-4 rounded-[--ha-card-inner-radius] bg-ha-surface cursor-pointer hover:bg-ha-surface-hover transition-colors"
+                className="flex items-center gap-3 py-3.5 px-4 rounded-[--ha-card-inner-radius] bg-[#F7F7F7] cursor-pointer hover:bg-[#F0F0F0] transition-colors"
                 onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
                 data-testid={`card-search-profile-${p.id}`}
               >
                 <span className="w-2.5 h-2.5 rounded-full bg-ha-success flex-shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-[16px] font-bold text-[#111111] line-clamp-1" data-testid={`text-profile-title-${p.id}`}>
+                  <p className="text-[15px] font-bold text-[#111111] line-clamp-1" data-testid={`text-profile-title-${p.id}`}>
                     {getProfileTitle(p, t, locale)}
                   </p>
-                  <p className="text-[14px] text-ha-text-secondary mt-0.5 line-clamp-1" data-testid={`text-profile-summary-${p.id}`}>
+                  <p className="text-[13px] text-[#4B5563] mt-0.5 line-clamp-1" data-testid={`text-profile-summary-${p.id}`}>
                     {getProfileSummary(p, t)}
                   </p>
                 </div>
@@ -291,7 +291,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
               {t("searchProfiles.addProfile")}
             </button>
           ) : (
-            <p className="mt-3 text-[13px] text-ha-text-muted text-center" data-testid="text-max-profiles-reached">
+            <p className="mt-3 text-[13px] text-[#9CA3AF] text-center" data-testid="text-max-profiles-reached">
               {t("searchProfiles.maxReached")}
             </p>
           )}
@@ -533,38 +533,31 @@ function HomeTab({
         </h1>
       </div>
 
-      <div className="flex flex-col gap-6 px-4 pt-5">
+      <div className="flex flex-col gap-5 px-4 pt-5">
         <SearchProfilesSection profiles={profiles} navigate={navigate} />
 
         {(!subscription.isTrial && !subscription.isActive) && (
           <div className="rounded-[--ha-card-radius] bg-white p-5" data-testid="card-upgrade-warning">
             <div className="flex items-start gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-ha-surface flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="w-10 h-10 rounded-full bg-[#F7F7F7] flex items-center justify-center flex-shrink-0 mt-0.5">
                 <Lock className="w-5 h-5 text-[#111111]" />
               </div>
               <div className="flex-1">
-                <p className="text-[15px] font-semibold text-[#111111]">Je loopt mogelijk je droomwoning mis...</p>
-                <p className="text-[14px] text-ha-text-secondary mt-1 leading-relaxed">
+                <p className="text-[16px] font-bold text-[#111111]">Je loopt mogelijk je droomwoning mis...</p>
+                <p className="text-[14px] text-[#4B5563] mt-1 leading-relaxed">
                   Met een gratis abonnement kan je niet reageren op woningen. Zo loop je mogelijk je droomwoning mis. Upgrade naar een betaald account en mis nooit meer een huurwoning!
                 </p>
               </div>
             </div>
             <button
               onClick={() => navigate("/paywall")}
-              className="w-full h-[52px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[15px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
+              className="w-full h-[50px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[15px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
               data-testid="button-upgrade-warning-cta"
             >
               Upgraden
             </button>
           </div>
         )}
-
-        <div data-testid="section-setup-progress">
-          <HomeAccountCompletionCard accessToken={accessToken} navigate={navigate} />
-          <div className="mt-2.5">
-            <HomeTipsCompletionCard navigate={navigate} />
-          </div>
-        </div>
 
         <div className="rounded-[--ha-card-radius] bg-white overflow-hidden" data-testid="section-tools">
           <StatusCardInline
@@ -577,7 +570,7 @@ function HomeTab({
             onAction={() => navigate("/application-letter")}
             testId="card-home-reaction-letter"
           />
-          <div className="h-px bg-[#E5E7EB] mx-5" />
+          <div className="h-px bg-[#E5E7EB]/60 mx-5" />
           <StatusCardInline
             icon={<Users className="w-5 h-5 text-ha-primary" />}
             title={t("profile.zoekbuddyTitle")}
@@ -590,21 +583,26 @@ function HomeTab({
           />
         </div>
 
+        <div data-testid="section-setup-progress" className="flex flex-col gap-2.5">
+          <HomeAccountCompletionCard accessToken={accessToken} navigate={navigate} />
+          <HomeTipsCompletionCard navigate={navigate} />
+        </div>
+
         <RecentlyViewedSection accessToken={accessToken} />
 
         <div className="rounded-[--ha-card-radius] bg-[#111111] p-5" data-testid="card-home-referral">
-          <p className="text-[11px] font-semibold text-ha-primary tracking-wider uppercase mb-1" data-testid="text-referral-label">
+          <p className="text-[11px] font-bold text-ha-primary tracking-wider uppercase mb-1" data-testid="text-referral-label">
             {t("referral.homeLabel")}
           </p>
-          <p className="text-[16px] text-title text-white" data-testid="text-referral-body">
+          <p className="text-[17px] font-bold text-white leading-snug" data-testid="text-referral-body">
             {t("referral.homeBody")}
           </p>
-          <p className="text-[14px] text-white/60 mt-1 leading-relaxed" data-testid="text-referral-helper">
+          <p className="text-[14px] text-white/50 mt-1.5 leading-relaxed" data-testid="text-referral-helper">
             {t("referral.homeHelper")}
           </p>
           <button
             onClick={() => setReferralModalOpen(true)}
-            className="mt-4 h-[48px] px-6 rounded-[--ha-btn-radius] bg-ha-primary text-white text-[14px] font-semibold transition-all hover:bg-ha-primary-hover active:scale-[0.97] inline-flex items-center gap-2"
+            className="mt-4 h-[46px] px-6 rounded-[--ha-btn-radius] bg-ha-primary text-white text-[14px] font-bold transition-all hover:bg-ha-primary-hover active:scale-[0.97] inline-flex items-center gap-2"
             data-testid="button-home-referral-cta"
           >
             {t("referral.promoCta")}
@@ -749,42 +747,43 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
 
   return (
     <div className="flex flex-col pb-8">
-      <div className="sticky top-0 z-10 bg-white px-5 pt-6 pb-4">
+      <div className="sticky top-0 z-10 bg-white px-5 pt-6 pb-3">
         <div className="flex items-baseline justify-between">
           <h1 className="text-page-title">{t("matches.title")}</h1>
           {totalCount > 0 && (
-            <span className="text-[13px] font-medium text-ha-text-muted" data-testid="text-match-count">
+            <span className="text-[13px] font-medium text-[#9CA3AF]" data-testid="text-match-count">
               {totalCount} {totalCount === 1 ? "match" : "matches"}
             </span>
           )}
         </div>
       </div>
 
-      <div className="px-4 flex flex-col gap-4 pt-4">
+      <div className="px-4 flex flex-col pt-3">
         {apiMatchesQuery.isLoading ? (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3">
             {[1, 2].map((i) => (
               <div key={i} className="animate-pulse rounded-[--ha-card-radius] bg-white overflow-hidden">
                 <div className="p-3 pb-0">
-                  <div className="rounded-[12px] bg-ha-surface" style={{ aspectRatio: "16/10" }} />
+                  <div className="rounded-[12px] bg-[#F7F7F7]" style={{ aspectRatio: "16/9" }} />
                 </div>
-                <div className="px-4 pt-3 pb-3.5 flex flex-col gap-2">
-                  <div className="h-4 bg-ha-surface rounded w-2/3" />
-                  <div className="h-3 bg-ha-surface rounded w-1/3" />
+                <div className="px-4 pt-3.5 pb-4 flex flex-col gap-2.5">
+                  <div className="h-5 bg-[#F7F7F7] rounded w-3/4" />
+                  <div className="h-4 bg-[#F7F7F7] rounded w-1/3" />
+                  <div className="h-3 bg-[#F7F7F7] rounded w-1/2" />
                 </div>
               </div>
             ))}
           </div>
         ) : apiMatchesQuery.isError ? (
           <div className="rounded-[--ha-card-radius] bg-white p-10 flex flex-col items-center text-center gap-4">
-            <div className="w-14 h-14 rounded-[--ha-card-inner-radius] bg-ha-surface flex items-center justify-center">
-              <AlertCircle className="w-6 h-6 text-ha-text-muted" />
+            <div className="w-14 h-14 rounded-[--ha-card-inner-radius] bg-[#F7F7F7] flex items-center justify-center">
+              <AlertCircle className="w-6 h-6 text-[#9CA3AF]" />
             </div>
-            <p className="text-[18px] text-title text-[#111111]">{t("matches.loadError")}</p>
-            <p className="text-[15px] text-ha-text-secondary leading-relaxed">{t("matches.loadErrorDesc")}</p>
+            <p className="text-[18px] font-bold text-[#111111]">{t("matches.loadError")}</p>
+            <p className="text-[14px] text-[#4B5563] leading-relaxed">{t("matches.loadErrorDesc")}</p>
             <button
               onClick={() => apiMatchesQuery.refetch()}
-              className="text-[13px] font-medium text-ha-primary"
+              className="text-[14px] font-semibold text-ha-primary"
               data-testid="button-retry-matches"
             >
               {t("common.retry")}
@@ -800,7 +799,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
             testId="empty-matches"
           />
         ) : (
-          <div className="flex flex-col gap-3.5">
+          <div className="flex flex-col gap-3">
             {allMatchesSorted.map((m) => (
               <ListingCardFull
                 key={m.listing_id}
@@ -1021,7 +1020,7 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
                 className={`px-5 py-2.5 text-[14px] font-semibold transition-all border-b-2 ${
                   isActive
                     ? "border-ha-primary text-ha-primary"
-                    : "border-transparent text-ha-text-muted hover:text-ha-text-secondary"
+                    : "border-transparent text-[#9CA3AF] hover:text-[#6B7280]"
                 }`}
                 data-testid={`tab-fav-${key}`}
               >
@@ -1032,17 +1031,17 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
         </div>
       </div>
 
-      <div className="px-4 flex flex-col gap-3.5 pt-4">
+      <div className="px-4 flex flex-col pt-3">
         {isLoading && favSubTab === "favorieten" ? (
-          <div className="flex flex-col gap-3.5">
+          <div className="flex flex-col gap-3">
             {[1, 2].map((i) => (
               <div key={i} className="animate-pulse rounded-[--ha-card-radius] bg-white overflow-hidden">
                 <div className="p-3 pb-0">
-                  <div className="rounded-[12px] bg-ha-surface" style={{ aspectRatio: "16/10" }} />
+                  <div className="rounded-[12px] bg-[#F7F7F7]" style={{ aspectRatio: "16/9" }} />
                 </div>
-                <div className="px-4 pt-3 pb-3.5 flex flex-col gap-2">
-                  <div className="h-4 bg-ha-surface rounded w-2/3" />
-                  <div className="h-3 bg-ha-surface rounded w-1/3" />
+                <div className="px-4 pt-3.5 pb-4 flex flex-col gap-2.5">
+                  <div className="h-5 bg-[#F7F7F7] rounded w-3/4" />
+                  <div className="h-4 bg-[#F7F7F7] rounded w-1/3" />
                 </div>
               </div>
             ))}
@@ -1055,7 +1054,7 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
             testId={`empty-${favSubTab}-tab`}
           />
         ) : favSubTab === "favorieten" ? (
-          <div className="flex flex-col gap-3.5">
+          <div className="flex flex-col gap-3">
             {currentListings.map((m) => (
               <ListingCardFull
                 key={m.listing_id}
@@ -1071,7 +1070,7 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
             ))}
           </div>
         ) : (
-          <div className="flex flex-col gap-3.5">
+          <div className="flex flex-col gap-3">
             {currentListings.map((m) => (
               <div key={m.listing_id} data-testid={`card-applied-${m.listing_id}`}>
                 <ListingCardFull
@@ -1311,81 +1310,79 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           {lastName && (
             <span className="hidden" data-testid="text-user-lastname">{lastName}</span>
           )}
-          <p className="text-[14px] text-ha-text-secondary mt-0.5" data-testid="text-member-since">
+          <p className="text-[14px] text-[#6B7280] mt-0.5" data-testid="text-member-since">
             {memberSinceLabel}
           </p>
         </div>
       </div>
 
-      <div className="max-w-[480px] mx-auto px-4 pt-5 pb-8">
+      <div className="max-w-[480px] mx-auto px-4 pt-4 pb-8">
         <div className="flex flex-col gap-4">
 
           <div className="rounded-[--ha-card-radius] bg-white overflow-hidden">
-            <p className="text-row-section-title px-5 pt-4 pb-1" data-testid="text-section-account">{t("settings.sectionAccount")}</p>
+            <p className="text-[12px] font-semibold text-[#9CA3AF] uppercase tracking-wider px-5 pt-4 pb-1.5" data-testid="text-section-account">{t("settings.sectionAccount")}</p>
             {[
-              { label: t("settings.myDetails"), action: () => navigate("/profile/details"), icon: <User className="w-5 h-5 text-ha-text-muted" />, testId: "button-profile-account-0" },
-              { label: t("settings.password"), action: () => navigate("/account/change-password"), icon: <Lock className="w-5 h-5 text-ha-text-muted" />, testId: "button-profile-account-1" },
-              { label: t("settings.preferences"), action: () => navigate("/settings/preferences"), icon: <Bell className="w-5 h-5 text-ha-text-muted" />, testId: "button-profile-preferences" },
-              { label: t("settings.subscription"), action: () => navigate("/account/subscription"), icon: <Crown className="w-5 h-5 text-ha-text-muted" />, testId: "button-profile-subscription" },
+              { label: t("settings.myDetails"), action: () => navigate("/profile/details"), icon: <User className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-profile-account-0" },
+              { label: t("settings.password"), action: () => navigate("/account/change-password"), icon: <Lock className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-profile-account-1" },
+              { label: t("settings.preferences"), action: () => navigate("/settings/preferences"), icon: <Bell className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-profile-preferences" },
+              { label: t("settings.subscription"), action: () => navigate("/account/subscription"), icon: <Crown className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-profile-subscription" },
             ].map((row, ri) => (
               <div key={ri}>
-                {ri > 0 && <div className="h-px bg-[#E5E7EB]/60 mx-5" />}
+                {ri > 0 && <div className="h-px bg-[#E5E7EB]/50 mx-5" />}
                 <button
                   onClick={row.action}
-                  className="w-full flex items-center gap-3.5 py-3.5 px-5 text-left active:bg-ha-surface-active transition-colors"
+                  className="w-full flex items-center gap-3.5 h-[48px] px-5 text-left active:bg-[#F7F7F7] transition-colors"
                   data-testid={row.testId}
                 >
                   {row.icon}
                   <p className="text-[15px] font-medium text-[#111111] flex-1">{row.label}</p>
-                  <ChevronRight className="w-4 h-4 text-ha-icon-secondary flex-shrink-0" />
+                  <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
                 </button>
               </div>
             ))}
 
-            <div className="h-px bg-[#E5E7EB] mx-5 my-1" />
-            <p className="text-row-section-title px-5 pt-3 pb-1" data-testid="text-section-other">{t("settings.sectionHelp")}</p>
+            <div className="h-px bg-[#E5E7EB] mx-5 my-0.5" />
+            <p className="text-[12px] font-semibold text-[#9CA3AF] uppercase tracking-wider px-5 pt-3 pb-1.5" data-testid="text-section-other">{t("settings.sectionHelp")}</p>
             {[
-              { label: t("settings.contactUs"), action: () => { window.location.href = "mailto:support@housalert.com"; }, icon: <HelpCircle className="w-5 h-5 text-ha-text-muted" />, testId: "button-profile-other-0" },
-              { label: t("settings.privacyPolicy"), action: () => navigate("/datenschutz"), icon: <Shield className="w-5 h-5 text-ha-text-muted" />, testId: "button-profile-other-1" },
-              { label: t("settings.termsConditions"), action: () => navigate("/terms"), icon: <FileText className="w-5 h-5 text-ha-text-muted" />, testId: "button-profile-other-2" },
+              { label: t("settings.contactUs"), action: () => { window.location.href = "mailto:support@housalert.com"; }, icon: <HelpCircle className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-profile-other-0" },
+              { label: t("settings.privacyPolicy"), action: () => navigate("/datenschutz"), icon: <Shield className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-profile-other-1" },
+              { label: t("settings.termsConditions"), action: () => navigate("/terms"), icon: <FileText className="w-[18px] h-[18px] text-[#6B7280]" />, testId: "button-profile-other-2" },
             ].map((row, ri) => (
               <div key={ri}>
-                {ri > 0 && <div className="h-px bg-[#E5E7EB]/60 mx-5" />}
+                {ri > 0 && <div className="h-px bg-[#E5E7EB]/50 mx-5" />}
                 <button
                   onClick={row.action}
-                  className="w-full flex items-center gap-3.5 py-3.5 px-5 text-left active:bg-ha-surface-active transition-colors"
+                  className="w-full flex items-center gap-3.5 h-[48px] px-5 text-left active:bg-[#F7F7F7] transition-colors"
                   data-testid={row.testId}
                 >
                   {row.icon}
                   <p className="text-[15px] font-medium text-[#111111] flex-1">{row.label}</p>
-                  <ChevronRight className="w-4 h-4 text-ha-icon-secondary flex-shrink-0" />
+                  <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
                 </button>
               </div>
             ))}
 
-            <div className="h-px bg-[#E5E7EB] mx-5 my-1" />
+            <div className="h-px bg-[#E5E7EB] mx-5 my-0.5" />
             <button
               onClick={() => setShowLogoutConfirm(true)}
               disabled={signingOut}
-              className={`w-full flex items-center gap-3.5 py-3.5 px-5 text-left active:bg-ha-surface-active transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
+              className={`w-full flex items-center gap-3.5 h-[48px] px-5 text-left active:bg-[#F7F7F7] transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
               data-testid="button-profile-logout"
             >
-              <LogOut className="w-5 h-5 text-ha-status-red flex-shrink-0" />
-              <p className="text-[15px] font-medium text-ha-status-red flex-1">{signingOut ? t("profile.signingOut") : t("profile.logout")}</p>
+              <LogOut className="w-[18px] h-[18px] text-ha-danger flex-shrink-0" />
+              <p className="text-[15px] font-medium text-ha-danger flex-1">{signingOut ? t("profile.signingOut") : t("profile.logout")}</p>
             </button>
           </div>
 
           <button
             onClick={() => navigate("/account/delete")}
-            className="text-[13px] text-ha-text-muted text-center py-2"
+            className="text-[13px] text-[#9CA3AF] text-center py-2"
             data-testid="button-profile-delete-account"
           >
             {t("profile.deleteAccount")}
           </button>
 
-          <div className="flex flex-col items-center gap-1 pt-2 pb-2">
-            <p className="text-[13px] font-medium text-ha-text-muted">HousAlert v1.0.0</p>
-          </div>
+          <p className="text-[12px] text-[#D1D5DB] text-center pb-2">HousAlert v1.0.0</p>
 
           {(user?.email?.toLowerCase() === "martin.essie87@gmail.com") && <div className="h-16" />}
         </div>
@@ -1536,7 +1533,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#F7F7F7] flex flex-col">
-      <main className="flex-1 max-w-xl mx-auto w-full pb-[100px]">
+      <main className="flex-1 max-w-xl mx-auto w-full pb-[90px]">
         {activeTab === "home" && (
           <HomeTab
             user={user}
@@ -1567,8 +1564,8 @@ export default function DashboardPage() {
         )}
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#E5E7EB]/80" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
-        <nav className="max-w-xl mx-auto flex h-[56px]" data-testid="bottom-nav">
+      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#E5E7EB]/60" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+        <nav className="max-w-xl mx-auto flex h-[52px]" data-testid="bottom-nav">
           {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
             const isActive = activeTab === key;
             const isProfileWithPhoto = key === "profiel" && !!tabPhotoUrl;
@@ -1576,17 +1573,17 @@ export default function DashboardPage() {
               <button
                 key={key}
                 onClick={() => setActiveTab(key)}
-                className="flex-1 flex flex-col items-center justify-center gap-[5px]"
+                className="flex-1 flex flex-col items-center justify-center gap-[3px]"
                 data-testid={`tab-${key}`}
               >
                 {isProfileWithPhoto ? (
-                  <div className={`w-[26px] h-[26px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-ha-primary ring-offset-1 ring-offset-white" : ""}`}>
+                  <div className={`w-[24px] h-[24px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-ha-primary ring-offset-1 ring-offset-white" : ""}`}>
                     <img src={tabPhotoUrl} alt="" className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <Icon className={`w-[24px] h-[24px] transition-colors ${isActive ? "text-ha-primary" : "text-ha-text-muted"}`} strokeWidth={isActive ? 2.2 : 2} />
+                  <Icon className={`w-[22px] h-[22px] transition-colors ${isActive ? "text-ha-primary" : "text-[#9CA3AF]"}`} strokeWidth={isActive ? 2.2 : 1.8} />
                 )}
-                <span className={`text-[11px] transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-ha-text-muted"}`}>
+                <span className={`text-[10px] transition-colors ${isActive ? "font-bold text-ha-primary" : "font-medium text-[#9CA3AF]"}`}>
                   {t(labelKey)}
                 </span>
               </button>
