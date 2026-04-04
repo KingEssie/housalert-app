@@ -503,20 +503,11 @@ function FiltersSection({ profiles, navigate }: { profiles: SearchProfile[]; nav
     ? Math.max(3, Math.min(25, profiles.length * 8))
     : null;
 
-  const filterRows = activeProfile ? [
-    {
-      label: t("home.filterPlace"),
-      value: localizeCityName(activeProfile.city_name || activeProfile.city || "", locale) || t("home.filterNotSet"),
-    },
-    {
-      label: t("home.filterFrom"),
-      value: activeProfile.price_min > 0 ? `€${activeProfile.price_min}` : t("home.filterNotSet"),
-    },
-    {
-      label: t("home.filterTo"),
-      value: activeProfile.price_max > 0 ? `€${activeProfile.price_max}` : t("home.filterNotSet"),
-    },
-  ] : [];
+  const place = activeProfile
+    ? (localizeCityName(activeProfile.city_name || activeProfile.city || "", locale) || "")
+    : "";
+  const priceMin = activeProfile && activeProfile.price_min > 0 ? `€${activeProfile.price_min}` : "€0";
+  const priceMax = activeProfile && activeProfile.price_max > 0 ? `€${activeProfile.price_max}` : "€5.000+";
 
   return (
     <div data-testid="section-filters">
@@ -529,20 +520,16 @@ function FiltersSection({ profiles, navigate }: { profiles: SearchProfile[]; nav
           : t("home.filtersExpectedFallback")}
       </p>
 
-      {filterRows.length > 0 ? (
-        <div className="rounded-[16px] bg-white border border-[#F0F0F0] overflow-hidden" data-testid="card-filters-summary">
-          {filterRows.map((row, idx) => (
-            <button
-              key={idx}
-              onClick={() => navigate(`/dashboard/searches/edit/${activeProfile.id}`)}
-              className="w-full flex items-center h-[48px] px-4 text-left active:bg-[#F8F8F8] transition-colors"
-              data-testid={`filter-row-${idx}`}
-            >
-              <span className="text-[14px] text-[#6B7280] flex-1">{row.label}</span>
-              <span className="text-[14px] font-medium text-[#111111]">{row.value}</span>
-            </button>
-          ))}
-        </div>
+      {activeProfile ? (
+        <button
+          onClick={() => navigate(`/dashboard/searches/edit/${activeProfile.id}`)}
+          className="w-full rounded-[16px] bg-white border border-[#F0F0F0] px-4 py-3.5 text-left active:bg-[#F8F8F8] transition-colors"
+          data-testid="card-filters-summary"
+        >
+          <span className="text-[15px] font-semibold text-[#111111]" data-testid="text-filter-place">{place}</span>
+          <span className="text-[15px] text-[#6B7280]"> · </span>
+          <span className="text-[15px] text-[#6B7280]" data-testid="text-filter-price">{priceMin} – {priceMax}</span>
+        </button>
       ) : (
         <div className="rounded-[16px] bg-white border border-[#F0F0F0] p-5 text-center" data-testid="card-filters-empty">
           <p className="text-[14px] text-[#6B7280] mb-3">{t("home.noProfileDesc")}</p>
