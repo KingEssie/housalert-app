@@ -24,7 +24,7 @@ export function StatusCard({
   testId,
 }: StatusCardProps) {
   return (
-    <div className="rounded-[--ha-card-radius] bg-white shadow-ha-card overflow-hidden" data-testid={testId}>
+    <div className="rounded-[--ha-card-radius] bg-white overflow-hidden" data-testid={testId}>
       <button
         onClick={onAction}
         className="w-full px-5 py-4 flex items-center gap-4 text-left active:bg-ha-surface-hover transition-colors"
@@ -60,5 +60,45 @@ export function StatusCard({
         </div>
       </button>
     </div>
+  );
+}
+
+export function StatusCardInline({
+  icon,
+  title,
+  configured,
+  configuredText,
+  unconfiguredText,
+  actionLabel,
+  onAction,
+  testId,
+}: StatusCardProps) {
+  return (
+    <button
+      onClick={onAction}
+      className="w-full px-5 py-4 flex items-center gap-4 text-left active:bg-ha-surface-hover transition-colors"
+      data-testid={`${testId}-action`}
+    >
+      <div className="w-10 h-10 rounded-full bg-ha-surface flex items-center justify-center flex-shrink-0">
+        {icon}
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-[15px] font-semibold text-[#111111] leading-snug">{title}</p>
+        <div className="flex items-center gap-1.5 mt-0.5" data-testid={`${testId}-status`}>
+          {configured ? (
+            <>
+              <CheckCircle2 className="w-[13px] h-[13px] text-ha-success flex-shrink-0" />
+              <span className="text-[13px] text-ha-success">{configuredText}</span>
+            </>
+          ) : (
+            <>
+              <XCircle className="w-[13px] h-[13px] text-ha-danger flex-shrink-0" />
+              <span className="text-[13px] text-ha-danger">{unconfiguredText}</span>
+            </>
+          )}
+        </div>
+      </div>
+      <ChevronRight className="w-4 h-4 text-ha-icon-secondary flex-shrink-0" />
+    </button>
   );
 }

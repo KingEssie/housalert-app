@@ -95,7 +95,7 @@ export function ListingCardFull({
       onClick={onCardClick}
       data-testid={`card-match-${match.listing_id}`}
     >
-      <div className="rounded-[--ha-card-radius] bg-white shadow-ha-card overflow-hidden">
+      <div className="rounded-[--ha-card-radius] bg-white overflow-hidden">
         <div className="p-3 pb-0">
           <div className="relative rounded-[12px] overflow-hidden">
             {hasImage ? (
@@ -249,7 +249,7 @@ export function ListingCardCompact({ match, onCardClick }: ListingCardCompactPro
       }}
       data-testid={`card-recent-match-${match.listing_id}`}
     >
-      <div className="rounded-[--ha-card-radius] bg-white shadow-ha-card overflow-hidden">
+      <div className="rounded-[--ha-card-radius] bg-white overflow-hidden">
         <div className="p-2 pb-0">
           <div className="relative rounded-[10px] overflow-hidden">
             {hasImage ? (
@@ -337,7 +337,7 @@ export function ListingCardMini({ match, onCardClick }: ListingCardMiniProps) {
       }}
       data-testid={`card-recently-viewed-${match.listing_id}`}
     >
-      <div className="rounded-[--ha-card-radius] bg-white shadow-ha-card overflow-hidden">
+      <div className="rounded-[--ha-card-radius] bg-white overflow-hidden">
         <div className="p-1.5 pb-0">
           <div className="relative rounded-[10px] overflow-hidden">
             {hasImage ? (

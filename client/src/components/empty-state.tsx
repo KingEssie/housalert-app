@@ -14,8 +14,8 @@ interface EmptyStateProps {
   illustration: string;
   title: string;
   description: string;
-  ctaLabel: string;
-  onCtaClick: () => void;
+  ctaLabel?: string;
+  onCtaClick?: () => void;
   testId?: string;
 }
 
@@ -34,13 +34,15 @@ export function EmptyState({ illustration, title, description, ctaLabel, onCtaCl
       <p className="text-[14px] text-ha-text leading-relaxed max-w-[280px] mb-6" data-testid="text-empty-description">
         {description}
       </p>
-      <button
-        onClick={onCtaClick}
-        className="h-[48px] px-8 rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium transition-colors"
-        data-testid="button-empty-cta"
-      >
-        {ctaLabel}
-      </button>
+      {ctaLabel && onCtaClick && (
+        <button
+          onClick={onCtaClick}
+          className="h-[48px] px-8 rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium transition-colors"
+          data-testid="button-empty-cta"
+        >
+          {ctaLabel}
+        </button>
+      )}
     </div>
   );
 }

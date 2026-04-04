@@ -1,0 +1,151 @@
+Now that the Phase 1 design foundation cleanup is complete, I want to do Phase 2: layout simplification and visual structure cleanup.
+
+GOAL:
+Make the app feel more modern, premium, and less fragmented by reducing card overload and improving section hierarchy.
+The direction should feel closer to a polished consumer app, with more visual calm and less dashboard/SaaS clutter.
+
+IMPORTANT:
+Do not change the color system again.
+Do not do micro-polish only.
+Focus on layout structure, grouping, spacing, and reducing visual fragmentation.
+
+==================================================
+1. HOME SCREEN — REDUCE CARD OVERLOAD
+==================================================
+
+Current problem:
+The Home screen still feels like too many separate floating cards stacked on top of each other.
+
+Goal:
+Make Home feel more structured, calmer, and more intentional.
+
+Requirements:
+- reduce the feeling of “5 unrelated cards in a row”
+- combine related content where appropriate
+- use fewer, larger section containers when it improves calmness
+- keep enough separation for readability, but avoid every feature becoming its own isolated block
+
+Suggested direction:
+- Zoekprofielen remains a clear primary section
+- “Maak je account af” and “Vergroot je kansen” should feel like related progress/setup content
+- “Reactiebrief” and “Zoekbuddy” should feel like related action/setup items, preferably grouped together in one larger section or one shared container if that improves calmness
+
+The result should feel more like:
+- a product flow
+and less like:
+- a dashboard of unrelated widgets
+
+==================================================
+2. MATCHES SCREEN — MAKE IT FEEL CLEANER
+==================================================
+
+Current problem:
+Matches still feels like a stack of cards without enough page structure.
+
+Requirements:
+- keep the white page header with the title
+- improve how the listing feed starts below the header
+- make spacing between the header and the first card feel intentional
+- keep listing cards prominent, but avoid the page feeling cramped or overly boxed in
+
+Do not redesign the listing card itself in this phase unless required for better feed rhythm.
+This phase is about page composition, not redoing the card internals.
+
+==================================================
+3. FAVORITES SCREEN — CLEANER STRUCTURE
+==================================================
+
+Requirements:
+- keep the white top header
+- keep the tabs inside the white header
+- improve spacing and visual hierarchy between:
+  - title
+  - tab bar
+  - first card / content
+- make the page feel less like header + random content and more like one clean view
+
+If the favorites and responded views use the same card family, ensure the overall spacing and section rhythm feels consistent.
+
+==================================================
+4. PROFILE SCREEN — REDUCE FRAGMENTATION FURTHER
+==================================================
+
+Current problem:
+The profile screen is improved, but still slightly blocky and segmented.
+
+Goal:
+Make it feel more like a modern mobile settings/account page.
+
+Requirements:
+- keep the top profile identity section
+- simplify the menu area below so it feels calmer
+- use fewer visual containers if possible
+- reduce the feeling of multiple disconnected white boxes
+- keep grouped menu sections, but make them feel more unified and less like separate floating cards scattered down the page
+
+Keep:
+- avatar
+- name
+- subtitle
+- grouped settings rows
+- help rows
+
+But refine spacing and grouping so the page feels cleaner and more premium.
+
+==================================================
+5. GLOBAL SPACING / SECTION RHYTHM
+==================================================
+
+Audit the spacing rhythm across these screens:
+- Home
+- Matches
+- Favorieten
+- Profiel
+
+Standardize:
+- top padding below header
+- spacing between major sections
+- spacing between grouped blocks
+- spacing before first content item
+- bottom padding above bottom nav
+
+Goal:
+The app should feel calmer, cleaner, and more deliberate.
+
+==================================================
+6. REDUCE UNNECESSARY VISUAL SEPARATION
+==================================================
+
+Where appropriate:
+- reduce excessive nested card-in-card feeling
+- reduce unnecessary borders/dividers
+- avoid every subsection looking like a separate widget
+- let related content live together more naturally
+
+IMPORTANT:
+Do not flatten everything into one blob.
+The goal is better grouping, not losing structure.
+
+==================================================
+7. KEEP FUNCTIONALITY SAFE
+==================================================
+
+Do not break:
+- search profile interactions
+- onboarding/progress logic
+- favorites logic
+- tabs logic
+- profile menu navigation
+- listing card behavior
+
+==================================================
+OUTPUT
+==================================================
+
+After finishing, show:
+1. which files were changed
+2. what sections were grouped or simplified
+3. how Home was restructured
+4. how Profile was made less fragmented
+5. what spacing rules were standardized
+6. anything intentionally left for the next phase
