@@ -253,15 +253,15 @@ export default function NotificationSettingsPage() {
                 testId="setting-push"
               />
               {pushPermission === "denied" && (
-                <div className="flex items-start gap-2 px-4 pb-3 text-xs text-amber-600">
+                <div className="flex items-start gap-2 px-4 pb-3 text-xs text-[#6B7280]">
                   <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
                   <span>{t("notifications.pushDeniedHint")}</span>
                 </div>
               )}
             </ListSection>
 
-            <div className="rounded-[6px] border border-dashed border-gray-300 bg-gray-50 p-4">
-              <p className="text-xs font-medium text-gray-500 mb-3 uppercase tracking-wide">Push Test</p>
+            <div className="rounded-[6px] border border-dashed border-[#E5E7EB] bg-[#F7F7F7] p-4">
+              <p className="text-xs font-medium text-[#6B7280] mb-3 uppercase tracking-wide">Push Test</p>
               <button
                 onClick={handleTestPush}
                 disabled={testPushLoading}

@@ -86,7 +86,7 @@ export default function SettingsPage() {
               <User className="w-6 h-6 text-ha-icon-secondary" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[16px] font-bold text-[#000] truncate" data-testid="text-profile-name">
+              <p className="text-[16px] font-bold text-[#111111] truncate" data-testid="text-profile-name">
                 {displayName}
               </p>
               <p className="text-[15px] text-ha-text-secondary truncate" data-testid="text-profile-email">
@@ -115,7 +115,7 @@ export default function SettingsPage() {
                       className="w-full flex items-center gap-3 py-4 px-5 text-left active:bg-ha-surface-active transition-colors"
                       data-testid={`button-settings-${si}-${ri}`}
                     >
-                      <p className="text-[15px] font-semibold text-[#000] flex-1">{row.label}</p>
+                      <p className="text-[15px] font-semibold text-[#111111] flex-1">{row.label}</p>
                       {row.external ? (
                         <ExternalLink className="w-4 h-4 text-ha-icon-secondary flex-shrink-0" />
                       ) : (
@@ -150,7 +150,7 @@ export default function SettingsPage() {
           </div>
 
           <div className="flex flex-col items-center gap-1 pt-4 pb-2">
-            <p className="text-[14px] font-bold text-[#000]">HousAlert</p>
+            <p className="text-[14px] font-bold text-[#111111]">HousAlert</p>
             <p className="text-[12px] text-ha-icon-secondary">v1.0.0</p>
           </div>
         </div>
@@ -159,7 +159,7 @@ export default function SettingsPage() {
       {showLogoutConfirm && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowLogoutConfirm(false)}>
           <div className="bg-white w-full max-w-[400px] rounded-t-[--ha-card-radius] sm:rounded-[--ha-card-radius] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
-            <p className="text-[17px] font-bold text-[#000] text-center">{t("profile.logoutConfirm")}</p>
+            <p className="text-[17px] font-bold text-[#111111] text-center">{t("profile.logoutConfirm")}</p>
             <p className="text-[15px] text-ha-text-secondary text-center mt-2 mb-6">{t("profile.logoutDesc")}</p>
             <button
               onClick={handleLogout}
@@ -170,7 +170,7 @@ export default function SettingsPage() {
             </button>
             <button
               onClick={() => setShowLogoutConfirm(false)}
-              className="w-full ha-btn text-[#000] font-medium active:bg-ha-surface-hover"
+              className="w-full ha-btn text-[#111111] font-medium active:bg-ha-surface-hover"
               data-testid="button-logout-cancel"
             >
               {t("profileDetails.cancel")}

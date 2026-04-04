@@ -66,7 +66,7 @@ function getPlans(t: (k: string) => string): Plan[] {
       perMonth: "€17,50 " + t("paywall.perMonth"),
       popular: true,
       discountLabel: "-30%",
-      discountColor: "#f97316",
+      discountColor: "#FF385C",
     },
     {
       id: "monthly",
@@ -377,7 +377,7 @@ function LightShell({
   topContent?: React.ReactNode;
 }) {
   return (
-    <div className="min-h-[100dvh] flex flex-col" style={{ backgroundColor: "#F3F3F5" }} data-testid={`setup-step-${step}`}>
+    <div className="min-h-[100dvh] flex flex-col" style={{ backgroundColor: "#F7F7F7" }} data-testid={`setup-step-${step}`}>
       <header className="sticky top-0 z-20 border-b" style={{ backgroundColor: "rgba(21,18,38,0.98)", borderColor: "rgba(255,255,255,0.08)" }}>
         <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
           {showBack && onBack ? (
@@ -430,17 +430,17 @@ function WelcomeStep({ onNext, t }: {
 }) {
   return (
     <LightShell step="welcome">
-      <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-5 text-[#111]" data-testid="text-welcome-title">
+      <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-welcome-title">
         {t("onboardingFlow.welcome.title")}
       </h1>
 
       <div className="rounded-[6px] bg-white p-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-        <div className="relative rounded-[6px] px-5 py-5 mb-5" style={{ backgroundColor: "#E8F4FD" }}>
-          <p className="text-[17px] font-bold text-[#111] mb-3">Welkom!</p>
-          <p className="text-[15px] leading-[1.65] text-[#333]" style={{ whiteSpace: "pre-line" }}>
+        <div className="relative rounded-[6px] px-5 py-5 mb-5" style={{ backgroundColor: "#F7F7F7" }}>
+          <p className="text-[17px] font-bold text-[#111111] mb-3">Welkom!</p>
+          <p className="text-[15px] leading-[1.65] text-[#111111]" style={{ whiteSpace: "pre-line" }}>
             {t("onboardingFlow.welcome.speechBody")}
           </p>
-          <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45" style={{ backgroundColor: "#E8F4FD" }} />
+          <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45" style={{ backgroundColor: "#F7F7F7" }} />
         </div>
 
         <div className="flex items-center gap-3 pt-1">
@@ -452,7 +452,7 @@ function WelcomeStep({ onNext, t }: {
             data-testid="img-elise-photo"
           />
           <div>
-            <p className="text-[16px] font-semibold text-[#111]" style={{ fontStyle: "italic" }}>Elise</p>
+            <p className="text-[16px] font-semibold text-[#111111]" style={{ fontStyle: "italic" }}>Elise</p>
             <p className="text-[13px] text-[#6B7280] mt-0.5" style={{ fontStyle: "italic" }}>COO</p>
           </div>
         </div>
@@ -475,7 +475,7 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
 }) {
   return (
     <LightShell step="push-test" showBack={false}>
-      <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-5 text-[#111]" data-testid="text-push-title">
+      <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-push-title">
         {t("onboardingFlow.pushTest.title")}
       </h1>
 
@@ -491,18 +491,18 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
         )}
 
         {pushState === "denied" && (
-          <div className="rounded-[6px] px-4 py-3 mb-5 flex items-start gap-3" style={{ backgroundColor: "#FEF9E7", border: "1px solid #FDE68A" }}>
-            <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+          <div className="rounded-[6px] px-4 py-3 mb-5 flex items-start gap-3" style={{ backgroundColor: "#F7F7F7", border: "1px solid #F7F7F7" }}>
+            <AlertTriangle className="w-5 h-5 text-[#6B7280] flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-[14px] font-medium text-[#111] mb-1">{t("onboardingFlow.pushTest.denied")}</p>
-              <p className="text-[13px] text-[#666] leading-snug">{t("onboardingFlow.pushTest.deniedHint")}</p>
+              <p className="text-[14px] font-medium text-[#111111] mb-1">{t("onboardingFlow.pushTest.denied")}</p>
+              <p className="text-[13px] text-[#6B7280] leading-snug">{t("onboardingFlow.pushTest.deniedHint")}</p>
             </div>
           </div>
         )}
 
         {pushState !== "granted" && pushState !== "denied" && (
-          <div className="rounded-[6px] px-4 py-3 mb-5" style={{ backgroundColor: "#F3F4F6" }}>
-            <p className="text-[13px] text-[#666] leading-snug">
+          <div className="rounded-[6px] px-4 py-3 mb-5" style={{ backgroundColor: "#F7F7F7" }}>
+            <p className="text-[13px] text-[#6B7280] leading-snug">
               {t("onboardingFlow.pushTest.idleHint")}
             </p>
           </div>
@@ -532,8 +532,8 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[11px] font-bold text-[#111] truncate">HousAlert</p>
-                <p className="text-[10px] text-[#999] truncate">{t("onboardingFlow.pushTest.sampleNotification")}</p>
+                <p className="text-[11px] font-bold text-[#111111] truncate">HousAlert</p>
+                <p className="text-[10px] text-[#9CA3AF] truncate">{t("onboardingFlow.pushTest.sampleNotification")}</p>
               </div>
             </div>
           </div>
@@ -572,7 +572,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
   onSkip: () => void;
   t: (k: string, p?: Record<string, any>) => string;
 }) {
-  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] text-[#111] placeholder:text-[#999] focus:outline-none focus:ring-2 focus:ring-pink-300/20";
+  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-pink-300/20";
   const [showForm, setShowForm] = useState(false);
 
   const genderOptions = [
@@ -585,19 +585,19 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
   if (!showForm) {
     return (
       <LightShell step="letter-personal" showBack>
-        <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-5 text-[#111]" data-testid="text-letter-personal-title">
+        <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-letter-personal-title">
           {t("onboardingFlow.letterPersonal.title")}
         </h1>
 
         <div className="rounded-[6px] bg-white p-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-          <div className="relative rounded-[6px] px-5 py-5 mb-5" style={{ backgroundColor: "#E8F4FD" }}>
-            <p className="text-[17px] font-bold text-[#111] mb-3">
+          <div className="relative rounded-[6px] px-5 py-5 mb-5" style={{ backgroundColor: "#F7F7F7" }}>
+            <p className="text-[17px] font-bold text-[#111111] mb-3">
               {t("onboardingFlow.letterPersonal.speechTitle")}
             </p>
-            <p className="text-[15px] leading-[1.65] text-[#333]" style={{ whiteSpace: "pre-line" }}>
+            <p className="text-[15px] leading-[1.65] text-[#111111]" style={{ whiteSpace: "pre-line" }}>
               {t("onboardingFlow.letterPersonal.speechBody")}
             </p>
-            <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45" style={{ backgroundColor: "#E8F4FD" }} />
+            <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45" style={{ backgroundColor: "#F7F7F7" }} />
           </div>
 
           <div className="flex items-center gap-3 pt-1">
@@ -608,7 +608,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
               style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.12)", objectPosition: "50% 35%" }}
             />
             <div>
-              <p className="text-[16px] font-semibold text-[#111]" style={{ fontStyle: "italic" }}>Elise</p>
+              <p className="text-[16px] font-semibold text-[#111111]" style={{ fontStyle: "italic" }}>Elise</p>
               <p className="text-[13px] text-[#6B7280] mt-0.5" style={{ fontStyle: "italic" }}>COO</p>
             </div>
           </div>
@@ -633,13 +633,13 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
 
   return (
     <LightShell step="letter-personal-form" showBack onBack={() => setShowForm(false)}>
-      <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-6 text-[#111]">
+      <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-6 text-[#111111]">
         {t("onboardingFlow.letterPersonal.formTitle")}
       </h1>
 
       <div className="rounded-[6px] bg-white p-5 space-y-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         <div>
-          <label className="text-[14px] font-bold text-[#111] mb-2 block">
+          <label className="text-[14px] font-bold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterPersonal.phone")}
           </label>
           <input
@@ -654,7 +654,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
         </div>
 
         <div>
-          <label className="text-[14px] font-bold text-[#111] mb-2 block">
+          <label className="text-[14px] font-bold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterPersonal.birthDate")}
           </label>
           <div className="grid grid-cols-3 gap-2">
@@ -692,7 +692,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
         </div>
 
         <div>
-          <label className="text-[14px] font-bold text-[#111] mb-2 block">
+          <label className="text-[14px] font-bold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterPersonal.gender")}
           </label>
           <select
@@ -754,17 +754,17 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
     { value: "other", label: t("onboardingFlow.letterLiving.moveOptions.other") },
   ];
 
-  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] text-[#111] placeholder:text-[#999] focus:outline-none focus:ring-2 focus:ring-pink-300/20";
+  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-pink-300/20";
 
   return (
     <LightShell step="letter-living" showBack onBack={onBack}>
-      <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-6 text-[#111]" data-testid="text-letter-living-title">
+      <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-6 text-[#111111]" data-testid="text-letter-living-title">
         {t("onboardingFlow.letterLiving.title")}
       </h1>
 
       <div className="rounded-[6px] bg-white p-5 space-y-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         <div>
-          <label className="text-[14px] font-bold text-[#111] mb-2 block">
+          <label className="text-[14px] font-bold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterLiving.livingWith")}
           </label>
           <select
@@ -779,7 +779,7 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
         </div>
 
         <div>
-          <label className="text-[14px] font-bold text-[#111] mb-2 block">
+          <label className="text-[14px] font-bold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterLiving.workStatus")}
           </label>
           <select
@@ -794,7 +794,7 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
         </div>
 
         <div>
-          <label className="text-[14px] font-bold text-[#111] mb-2 block">
+          <label className="text-[14px] font-bold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterLiving.moveReason")}
           </label>
           <select
@@ -809,11 +809,11 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
         </div>
 
         <div>
-          <label className="text-[14px] font-bold text-[#111] mb-2 block">
+          <label className="text-[14px] font-bold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterLiving.income")}
           </label>
           <div className="relative">
-            <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#999]" />
+            <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
             <input
               type="text"
               inputMode="numeric"
@@ -828,7 +828,7 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
         </div>
 
         <div>
-          <label className="text-[14px] font-bold text-[#111] mb-2 block">
+          <label className="text-[14px] font-bold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterLiving.pets")}
           </label>
           <input
@@ -864,13 +864,13 @@ function LetterPreviewStep({ letterText, onLetterChange, onNext, onBack, t }: {
 }) {
   return (
     <LightShell step="letter-preview" showBack onBack={onBack}>
-      <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-5 text-[#111]" data-testid="text-letter-preview-title">
+      <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-letter-preview-title">
         {t("onboardingFlow.letterPreview.title")}
       </h1>
 
-      <div className="rounded-[6px] px-4 py-3 mb-5 flex items-start gap-2.5" style={{ backgroundColor: "#FEF9E7", border: "1px solid #FDE68A" }}>
+      <div className="rounded-[6px] px-4 py-3 mb-5 flex items-start gap-2.5" style={{ backgroundColor: "#F7F7F7", border: "1px solid #F7F7F7" }}>
         <span className="text-[16px] mt-0.5">💡</span>
-        <p className="text-[13px] leading-snug text-[#333]">
+        <p className="text-[13px] leading-snug text-[#111111]">
           {t("onboardingFlow.letterPreview.addressNote")}
         </p>
       </div>
@@ -879,7 +879,7 @@ function LetterPreviewStep({ letterText, onLetterChange, onNext, onBack, t }: {
         <textarea
           value={letterText}
           onChange={(e) => onLetterChange(e.target.value)}
-          className="w-full flex-1 min-h-[280px] p-0 bg-transparent text-[14px] leading-[1.7] text-[#111] placeholder:text-[#999] focus:outline-none resize-none"
+          className="w-full flex-1 min-h-[280px] p-0 bg-transparent text-[14px] leading-[1.7] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none resize-none"
           data-testid="textarea-letter"
         />
       </div>
@@ -904,13 +904,13 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
 }) {
   return (
     <LightShell step="search-buddy">
-      <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-5 text-[#111]" data-testid="text-buddy-title">
+      <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-buddy-title">
         {t("onboardingFlow.searchBuddy.title")}
       </h1>
 
       <div className="rounded-[6px] bg-white p-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-        <p className="text-[16px] font-bold text-[#111] mb-1">{t("onboardingFlow.searchBuddy.subtitle")}</p>
-        <p className="text-[13px] font-semibold text-[#111] mb-3">{t("onboardingFlow.searchBuddy.allowed")}</p>
+        <p className="text-[16px] font-bold text-[#111111] mb-1">{t("onboardingFlow.searchBuddy.subtitle")}</p>
+        <p className="text-[13px] font-semibold text-[#111111] mb-3">{t("onboardingFlow.searchBuddy.allowed")}</p>
         <div className="space-y-3 mb-5">
           {[
             t("onboardingFlow.searchBuddy.canAlerts"),
@@ -919,7 +919,7 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
           ].map((text, i) => (
             <div key={i} className="flex items-center gap-2.5">
               <CheckCircle2 className="w-5 h-5 text-ha-success flex-shrink-0" />
-              <span className="text-[14px] text-[#111]">{text}</span>
+              <span className="text-[14px] text-[#111111]">{text}</span>
             </div>
           ))}
         </div>
@@ -930,7 +930,7 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
           ].map((text, i) => (
             <div key={i} className="flex items-center gap-2.5">
               <X className="w-5 h-5 text-red-500 flex-shrink-0" />
-              <span className="text-[14px] text-[#111]">{text}</span>
+              <span className="text-[14px] text-[#111111]">{text}</span>
             </div>
           ))}
         </div>
@@ -951,7 +951,7 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
             value={buddyEmail}
             onChange={(e) => onBuddyEmailChange(e.target.value)}
             placeholder={t("onboardingFlow.searchBuddy.emailPlaceholder")}
-            className="w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[14px] text-[#111] placeholder:text-[#999] focus:outline-none focus:ring-2 focus:ring-pink-300/20"
+            className="w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[14px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-pink-300/20"
             data-testid="input-buddy-email"
           />
         </div>
@@ -1002,19 +1002,19 @@ function SuccessStep({ onFinish, t }: {
 }) {
   return (
     <LightShell step="success">
-      <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-5 text-[#111]" data-testid="text-success-title">
+      <h1 className="text-[26px] font-extrabold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-success-title">
         {t("onboardingFlow.success.title")}
       </h1>
 
       <div className="rounded-[6px] bg-white p-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-        <div className="relative rounded-[6px] px-5 py-5 mb-5" style={{ backgroundColor: "#E8F4FD" }}>
-          <p className="text-[16px] font-bold text-[#111] mb-3">
+        <div className="relative rounded-[6px] px-5 py-5 mb-5" style={{ backgroundColor: "#F7F7F7" }}>
+          <p className="text-[16px] font-bold text-[#111111] mb-3">
             {t("onboardingFlow.success.speechTitle")}
           </p>
-          <p className="text-[14px] leading-[1.65] text-[#333]" style={{ whiteSpace: "pre-line" }}>
+          <p className="text-[14px] leading-[1.65] text-[#111111]" style={{ whiteSpace: "pre-line" }}>
             {t("onboardingFlow.success.speechBody")}
           </p>
-          <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45" style={{ backgroundColor: "#E8F4FD" }} />
+          <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45" style={{ backgroundColor: "#F7F7F7" }} />
         </div>
 
         <div className="flex items-center gap-3 pt-1">
@@ -1025,7 +1025,7 @@ function SuccessStep({ onFinish, t }: {
             style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.12)", objectPosition: "50% 35%" }}
           />
           <div>
-            <p className="text-[16px] font-semibold text-[#111]" style={{ fontStyle: "italic" }}>Elise</p>
+            <p className="text-[16px] font-semibold text-[#111111]" style={{ fontStyle: "italic" }}>Elise</p>
             <p className="text-[13px] text-[#6B7280] mt-0.5" style={{ fontStyle: "italic" }}>COO</p>
           </div>
         </div>

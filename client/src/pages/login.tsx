@@ -166,7 +166,7 @@ export default function LoginPage() {
                 onClick={handleForgotPassword}
                 disabled={resetLoading}
                 className="self-end text-[14px] font-medium mt-0.5 transition-colors hover:underline"
-                style={{ color: "#5b8def" }}
+                style={{ color: "#FF385C" }}
                 data-testid="link-forgot-password"
               >
                 {resetLoading ? t("common.loading") : t("auth.login.forgotPassword")}
@@ -222,7 +222,7 @@ export default function LoginPage() {
                 <div
                   key={i}
                   className="w-[22px] h-[22px] flex items-center justify-center rounded-[3px]"
-                  style={{ backgroundColor: i <= 4 ? "#00b67a" : "#dce4e8" }}
+                  style={{ backgroundColor: i <= 4 ? "#00b67a" : "#E5E7EB" }}
                 >
                   <Star
                     className="w-3 h-3"

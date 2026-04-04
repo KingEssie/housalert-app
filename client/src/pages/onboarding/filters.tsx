@@ -73,14 +73,14 @@ function WebToggle({
     <label
       className="flex items-start gap-3 cursor-pointer rounded-[8px] p-3 transition-colors"
       style={{
-        backgroundColor: checked ? "rgba(233,30,99,0.04)" : "transparent",
-        border: `1px solid ${checked ? "rgba(233,30,99,0.2)" : OBW.divider}`,
+        backgroundColor: checked ? "rgba(255,56,92,0.04)" : "transparent",
+        border: `1px solid ${checked ? "rgba(255,56,92,0.2)" : OBW.divider}`,
       }}
       data-testid={testId}
     >
       <div
         className="w-[38px] h-[22px] rounded-full p-[2px] transition-colors shrink-0 mt-[1px]"
-        style={{ backgroundColor: checked ? "#FF385C" : "#d1d5db" }}
+        style={{ backgroundColor: checked ? "#FF385C" : "#E5E7EB" }}
         onClick={(e) => { e.preventDefault(); onChange(!checked); }}
       >
         <div
@@ -154,7 +154,7 @@ function Toggle({
     <label className="flex items-center gap-3 cursor-pointer" data-testid={testId}>
       <div
         className="w-[44px] h-[24px] rounded-full p-[2px] transition-colors shrink-0"
-        style={{ backgroundColor: checked ? OB.pink : (isLight ? "#d1d5db" : "rgba(255,255,255,0.15)") }}
+        style={{ backgroundColor: checked ? OB.pink : (isLight ? "#E5E7EB" : "rgba(255,255,255,0.15)") }}
         onClick={() => onChange(!checked)}
       >
         <div
@@ -188,7 +188,7 @@ function RangeSlider({
 }) {
   const t = theme || OB;
   const isLight = theme === OBW;
-  const trackInactive = isLight ? "#d1d5db" : "rgba(255,255,255,0.1)";
+  const trackInactive = isLight ? "#E5E7EB" : "rgba(255,255,255,0.1)";
   const pct = ((value - min) / (max - min)) * 100;
   return (
     <div data-testid={testId}>
@@ -238,7 +238,7 @@ function DualRangeSlider({
 }) {
   const t = theme || OB;
   const isLight = theme === OBW;
-  const trackInactive = isLight ? "#d1d5db" : "rgba(255,255,255,0.1)";
+  const trackInactive = isLight ? "#E5E7EB" : "rgba(255,255,255,0.1)";
   const pctLow = ((valueLow - min) / (max - min)) * 100;
   const pctHigh = ((valueHigh - min) / (max - min)) * 100;
   const trackBg = `linear-gradient(to right, ${trackInactive} 0%, ${trackInactive} ${pctLow}%, ${OB.pink} ${pctLow}%, ${OB.pink} ${pctHigh}%, ${trackInactive} ${pctHigh}%, ${trackInactive} 100%)`;
@@ -831,7 +831,7 @@ export default function OnboardingFilters() {
             className="text-[12px] font-bold px-2.5 py-1 rounded-[6px]"
             style={{
               backgroundColor: "rgba(56,189,248,0.15)",
-              color: "#38bdf8",
+              color: "#FF385C",
             }}
             data-testid="badge-step"
           >

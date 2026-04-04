@@ -82,7 +82,7 @@ export function SubscriptionCancelConfirmPage() {
               </div>
             </div>
 
-            <h2 className="text-[20px] font-bold text-[#000] text-center mb-2" data-testid="text-feedback-title">
+            <h2 className="text-[20px] font-bold text-[#111111] text-center mb-2" data-testid="text-feedback-title">
               {t("cancellation.feedbackQuestion")}
             </h2>
             <p className="text-[14px] text-center text-ha-text-muted mb-5">
@@ -97,7 +97,7 @@ export function SubscriptionCancelConfirmPage() {
                   className={`w-full text-left px-4 py-3.5 rounded-[6px] border text-[15px] font-medium transition-colors ${
                     selectedReason === key
                       ? "border-ha-primary bg-ha-primary/10 text-ha-primary"
-                      : "border-[#E5E5E5] bg-[#F7F7F7] text-[#000] hover:bg-[#EFEFEF]"
+                      : "border-[#E5E7EB] bg-[#F7F7F7] text-[#111111] hover:bg-[#F7F7F7]"
                   }`}
                   data-testid={`button-reason-${key}`}
                 >
@@ -127,7 +127,7 @@ export function SubscriptionCancelConfirmPage() {
               </button>
               <button
                 onClick={() => navigate("/account/subscription")}
-                className="w-full h-[56px] bg-white border border-[#E5E5E5] text-ha-text-muted rounded-[6px] font-semibold text-[15px] hover:bg-[#FAFAFA] transition-colors"
+                className="w-full h-[56px] bg-white border border-[#E5E7EB] text-ha-text-muted rounded-[6px] font-semibold text-[15px] hover:bg-[#F7F7F7] transition-colors"
                 data-testid="button-keep-instead"
               >
                 {t("subscription.keepSubscription")}
@@ -146,12 +146,12 @@ export function SubscriptionCancelConfirmPage() {
       <div className="max-w-xl mx-auto p-4 pb-8">
         <div className="app-card">
           <div className="flex items-center justify-center mb-5">
-            <div className="w-14 h-14 rounded-[6px] bg-amber-100 flex items-center justify-center">
-              <AlertCircle className="w-7 h-7 text-amber-500" />
+            <div className="w-14 h-14 rounded-[6px] bg-[#F7F7F7] flex items-center justify-center">
+              <AlertCircle className="w-7 h-7 text-[#6B7280]" />
             </div>
           </div>
 
-          <h2 className="text-[20px] font-bold text-[#000] text-center mb-3" data-testid="text-cancel-title">
+          <h2 className="text-[20px] font-bold text-[#111111] text-center mb-3" data-testid="text-cancel-title">
             {t("subscription.cancelConfirm")}
           </h2>
 
@@ -171,7 +171,7 @@ export function SubscriptionCancelConfirmPage() {
             </button>
             <button
               onClick={() => setStep("feedback")}
-              className="w-full h-[56px] bg-white border border-[#E5E5E5] text-ha-text-muted rounded-[6px] font-semibold text-[15px] hover:bg-[#FAFAFA] transition-colors"
+              className="w-full h-[56px] bg-white border border-[#E5E7EB] text-ha-text-muted rounded-[6px] font-semibold text-[15px] hover:bg-[#F7F7F7] transition-colors"
               data-testid="button-confirm-cancel"
             >
               {t("subscription.confirmCancel")}
@@ -213,7 +213,7 @@ export function SubscriptionCancelledPage() {
             </div>
           </div>
 
-          <h2 className="text-[20px] font-bold text-[#000] text-center mb-3" data-testid="text-cancelled-title">
+          <h2 className="text-[20px] font-bold text-[#111111] text-center mb-3" data-testid="text-cancelled-title">
             {t("subscription.cancelled")}
           </h2>
 

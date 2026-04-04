@@ -25,7 +25,7 @@ function FloatingBackButton({ navigate }: { navigate: (to: string) => void }) {
   }
   return (
     <div className="fixed top-[max(0.75rem,env(safe-area-inset-top))] left-4 z-30">
-      <button onClick={handleBack} className="w-12 h-12 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)] flex items-center justify-center active:scale-95 transition-transform border border-[#E5E5E5]" aria-label="Back" data-testid="button-back"><ArrowLeft className="w-5 h-5 text-[#000]" /></button>
+      <button onClick={handleBack} className="w-12 h-12 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)] flex items-center justify-center active:scale-95 transition-transform border border-[#E5E7EB]" aria-label="Back" data-testid="button-back"><ArrowLeft className="w-5 h-5 text-[#111111]" /></button>
     </div>
   );
 }
@@ -45,12 +45,12 @@ const FRESH_LABEL_KEYS: Record<string, string> = {
 };
 
 const CITY_GRADIENTS: Record<string, string> = {
-  berlin: "from-[#E5E5E5] to-[#D4D4D4]",
-  münchen: "from-[#E5E5E5] to-[#D4D4D4]",
-  hamburg: "from-[#D4D4D4] to-[#E5E5E5]",
-  frankfurt: "from-[#E5E5E5] to-[#D4D4D4]",
-  köln: "from-[#D4D4D4] to-[#E5E5E5]",
-  default: "from-[#E5E5E5] to-[#D4D4D4]",
+  berlin: "from-[#E5E7EB] to-[#E5E7EB]",
+  münchen: "from-[#E5E7EB] to-[#E5E7EB]",
+  hamburg: "from-[#E5E7EB] to-[#E5E7EB]",
+  frankfurt: "from-[#E5E7EB] to-[#E5E7EB]",
+  köln: "from-[#E5E7EB] to-[#E5E7EB]",
+  default: "from-[#E5E7EB] to-[#E5E7EB]",
 };
 
 function getCityGradient(city: string): string {
@@ -139,7 +139,7 @@ export default function ListingDetailPage() {
       <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F7F7F7" }}>
         <FloatingBackButton navigate={navigate} />
         <div className="animate-pulse">
-          <div className="h-[260px] bg-[#E5E5E5]" />
+          <div className="h-[260px] bg-[#E5E7EB]" />
           <div className="max-w-xl mx-auto w-full px-5 pt-5 space-y-4">
             <div className="app-card space-y-3">
               <div className="h-5 bg-ha-surface rounded w-28" />
@@ -158,7 +158,7 @@ export default function ListingDetailPage() {
         <FloatingBackButton navigate={navigate} />
         <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-16">
           <div className="app-card text-center">
-            <p className="text-[18px] font-bold text-[#000] mb-2">{t("listing.notFound")}</p>
+            <p className="text-[18px] font-bold text-[#111111] mb-2">{t("listing.notFound")}</p>
             <p className="text-[14px] text-ha-text-secondary mb-4">{t("listing.notFoundDesc")}</p>
             <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold" data-testid="button-back-dashboard">
               {t("listing.backToDashboard")}
@@ -213,7 +213,7 @@ export default function ListingDetailPage() {
       <main className="flex-1 max-w-xl mx-auto w-full px-5 -mt-6 relative z-10 pb-36">
         <div className="space-y-4">
           <div className="app-card">
-            <h1 className="text-[24px] font-bold text-[#000] leading-[1.2] tracking-[-0.02em] mb-2" data-testid="text-listing-title">
+            <h1 className="text-[24px] font-bold text-[#111111] leading-[1.2] tracking-[-0.02em] mb-2" data-testid="text-listing-title">
               {listing.title}
             </h1>
 
@@ -226,7 +226,7 @@ export default function ListingDetailPage() {
 
             {listing.price > 0 && (
               <div className="flex items-baseline gap-1 mb-1">
-                <span className="text-[28px] font-bold text-[#000]" data-testid="text-listing-price">€{listing.price}</span>
+                <span className="text-[28px] font-bold text-[#111111]" data-testid="text-listing-price">€{listing.price}</span>
                 <span className="text-[15px] font-medium text-ha-text-muted">{t("common.perMonth")}</span>
               </div>
             )}
@@ -242,7 +242,7 @@ export default function ListingDetailPage() {
                   </div>
                   <div>
                     <p className="text-[12px] text-ha-text-muted">{t("listing.bedrooms")}</p>
-                    <p className="text-[15px] font-semibold text-[#000]" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
+                    <p className="text-[15px] font-semibold text-[#111111]" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
                   </div>
                 </div>
               )}
@@ -254,7 +254,7 @@ export default function ListingDetailPage() {
                   </div>
                   <div>
                     <p className="text-[12px] text-ha-text-muted">{t("listing.area")}</p>
-                    <p className="text-[15px] font-semibold text-[#000]" data-testid="text-listing-size">{listing.size_m2} m²</p>
+                    <p className="text-[15px] font-semibold text-[#111111]" data-testid="text-listing-size">{listing.size_m2} m²</p>
                   </div>
                 </div>
               )}
@@ -282,7 +282,7 @@ export default function ListingDetailPage() {
                 </div>
                 <div>
                   <p className="text-[12px] text-ha-text-muted">{t("listing.posted")}</p>
-                  <p className="text-[15px] font-semibold text-[#000]" data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</p>
+                  <p className="text-[15px] font-semibold text-[#111111]" data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</p>
                 </div>
               </div>
             </div>
@@ -329,13 +329,13 @@ export default function ListingDetailPage() {
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E5E5] p-4 pb-5 z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] p-4 pb-5 z-10">
         <div className="max-w-xl mx-auto flex flex-col gap-2">
           {hasAccess ? (
             <>
               {listing.price > 0 && (
                 <div className="flex items-baseline gap-1 mb-1">
-                  <span className="text-[20px] font-bold text-[#000]" data-testid="text-bar-price">€{listing.price}</span>
+                  <span className="text-[20px] font-bold text-[#111111]" data-testid="text-bar-price">€{listing.price}</span>
                   <span className="text-[13px] font-medium text-ha-text-muted">{t("common.perMonth")}</span>
                 </div>
               )}

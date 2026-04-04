@@ -87,7 +87,7 @@ export default function ChangePasswordPage() {
                 <CheckCircle2 className="w-7 h-7 text-ha-success" />
               </div>
             </div>
-            <h2 className="text-[20px] font-bold text-[#000] mb-2" data-testid="text-success-title">
+            <h2 className="text-[20px] font-bold text-[#111111] mb-2" data-testid="text-success-title">
               {t("changePassword.successTitle")}
             </h2>
             <p className="text-[15px] text-[#6B7280] mb-6">
@@ -137,7 +137,7 @@ export default function ChangePasswordPage() {
             </div>
           </div>
 
-          <div className="h-px bg-[#E5E5E5]" />
+          <div className="h-px bg-[#E5E7EB]" />
 
           <div>
             <label className="text-field-label mb-2 block">{t("changePassword.new")}</label>
@@ -209,7 +209,7 @@ export default function ChangePasswordPage() {
             className={`w-full h-[56px] rounded-[6px] font-semibold text-[15px] transition-colors flex items-center justify-center ${
               canSubmit
                 ? "bg-ha-primary hover:bg-ha-primary-hover text-white"
-                : "bg-[#E5E5E5] text-ha-icon-secondary cursor-not-allowed"
+                : "bg-[#E5E7EB] text-ha-icon-secondary cursor-not-allowed"
             }`}
             data-testid="button-submit-password"
           >

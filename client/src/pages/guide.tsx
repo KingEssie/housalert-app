@@ -6,10 +6,10 @@ import { useTranslation } from "@/i18n";
 function GuideSection({ title, items }: { title: string; items: string[] }) {
   return (
     <div className="bg-white rounded-[6px] border border-[#E5E7EB] p-4">
-      <h3 className="text-[16px] font-medium text-[#000] mb-3">{title}</h3>
+      <h3 className="text-[16px] font-medium text-[#111111] mb-3">{title}</h3>
       <ul className="flex flex-col gap-2.5">
         {items.map((item, i) => (
-          <li key={i} className="flex items-start gap-3 text-[14px] text-[#000] leading-relaxed">
+          <li key={i} className="flex items-start gap-3 text-[14px] text-[#111111] leading-relaxed">
             <CheckCircle2 className="w-4 h-4 text-ha-primary flex-shrink-0 mt-0.5" />
             <span>{item}</span>
           </li>
@@ -170,7 +170,7 @@ export function GuidePage({ guideId }: { guideId: string }) {
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F7F7F7" }}>
       <AppHeader title={guide.title} onBack={() => navigate("/dashboard?tab=tips")} />
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-32">
-        <p className="text-[15px] text-[#000] leading-relaxed mb-6" data-testid={`text-guide-intro-${guideId}`}>
+        <p className="text-[15px] text-[#111111] leading-relaxed mb-6" data-testid={`text-guide-intro-${guideId}`}>
           {guide.intro}
         </p>
         <div className="flex flex-col gap-4">

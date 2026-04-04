@@ -14,16 +14,16 @@ export const OB = {
   textSecondary: "rgba(255,255,255,0.7)",
   textMuted: "rgba(255,255,255,0.45)",
   pink: "#FF385C",
-  pinkHover: "#d81b60",
+  pinkHover: "#FF385C",
   pinkGradient: "linear-gradient(135deg, #FF385C 0%, #FF6B81 100%)",
-  pinkShadow: "0 4px 15px rgba(233,30,99,0.3)",
+  pinkShadow: "0 4px 15px rgba(255,56,92,0.3)",
   surface: "rgba(255,255,255,0.05)",
   divider: "rgba(255,255,255,0.08)",
   progressInactive: "rgba(255,255,255,0.15)",
   backBtnBg: "rgba(255,255,255,0.1)",
-  selectedBg: "rgba(233,30,99,0.12)",
+  selectedBg: "rgba(255,56,92,0.12)",
   selectedBorder: "#FF385C",
-  accentBg: "rgba(233,30,99,0.08)",
+  accentBg: "rgba(255,56,92,0.08)",
   greenBg: "rgb(var(--ha-success) / 0.12)",
   greenBorder: "rgb(var(--ha-success) / 0.25)",
   redBg: "rgba(239,68,68,0.12)",
@@ -33,44 +33,44 @@ export const OB = {
 export const OBW = {
   gradient: "#ffffff",
   headerBg: "#ffffff",
-  headerBorder: "#e5e7eb",
-  card: "#f9fafb",
-  cardBorder: "#e5e7eb",
+  headerBorder: "#E5E7EB",
+  card: "#F7F7F7",
+  cardBorder: "#E5E7EB",
   inputBg: "#ffffff",
-  inputBorder: "#d1d5db",
-  text: "#111827",
-  textSecondary: "#6b7280",
-  textMuted: "#9ca3af",
+  inputBorder: "#E5E7EB",
+  text: "#111111",
+  textSecondary: "#6B7280",
+  textMuted: "#9CA3AF",
   pink: "#FF385C",
-  pinkHover: "#d81b60",
+  pinkHover: "#FF385C",
   pinkGradient: "linear-gradient(135deg, #FF385C 0%, #FF6B81 100%)",
-  pinkShadow: "0 4px 15px rgba(233,30,99,0.3)",
-  surface: "#f9fafb",
-  divider: "#e5e7eb",
-  progressInactive: "#d1d5db",
-  backBtnBg: "#f3f4f6",
-  selectedBg: "rgba(233,30,99,0.08)",
+  pinkShadow: "0 4px 15px rgba(255,56,92,0.3)",
+  surface: "#F7F7F7",
+  divider: "#E5E7EB",
+  progressInactive: "#E5E7EB",
+  backBtnBg: "#F7F7F7",
+  selectedBg: "rgba(255,56,92,0.08)",
   selectedBorder: "#FF385C",
-  accentBg: "rgba(233,30,99,0.06)",
+  accentBg: "rgba(255,56,92,0.06)",
   greenBg: "rgb(var(--ha-success) / 0.08)",
   greenBorder: "rgb(var(--ha-success) / 0.2)",
   redBg: "rgba(239,68,68,0.08)",
   redBorder: "rgba(239,68,68,0.2)",
   footerBg: "#ffffff",
-  footerBorder: "#e5e7eb",
-  backBtnBorder: "#d1d5db",
-  backBtnColor: "#374151",
-  badgeBg: "rgba(233,30,99,0.08)",
+  footerBorder: "#E5E7EB",
+  backBtnBorder: "#E5E7EB",
+  backBtnColor: "#111111",
+  badgeBg: "rgba(255,56,92,0.08)",
   badgeColor: "#FF385C",
-  closeBtnBg: "#f3f4f6",
-  closeBtnColor: "#6b7280",
-  tabBg: "#f3f4f6",
-  tabActiveBg: "#e5e7eb",
-  tabActiveColor: "#111827",
-  tabInactiveColor: "#6b7280",
-  chipBorder: "#d1d5db",
+  closeBtnBg: "#F7F7F7",
+  closeBtnColor: "#6B7280",
+  tabBg: "#F7F7F7",
+  tabActiveBg: "#E5E7EB",
+  tabActiveColor: "#111111",
+  tabInactiveColor: "#6B7280",
+  chipBorder: "#E5E7EB",
   chipActiveColor: "#ffffff",
-  mapBorder: "#e5e7eb",
+  mapBorder: "#E5E7EB",
 } as const;
 
 export function useWebsiteMode(): boolean {
@@ -129,7 +129,7 @@ export function OBWebHeader({ step, totalSteps = 3 }: { step?: number; totalStep
         {step ? (
           <span
             className="text-[11px] font-bold px-2.5 py-1 rounded-[4px]"
-            style={{ backgroundColor: "#2563eb", color: "#ffffff" }}
+            style={{ backgroundColor: "#FF385C", color: "#ffffff" }}
             data-testid="badge-step"
           >
             {step}/{totalSteps}
@@ -189,7 +189,7 @@ export function OBWebFooter({
           onClick={onNext}
           disabled={nextDisabled || saving}
           className="min-w-[120px] px-6 h-[44px] rounded-[4px] text-[14px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-1.5 shrink-0"
-          style={{ background: OBW.pinkGradient, boxShadow: nextDisabled ? "none" : "0 4px 14px rgba(233,30,99,0.25)" }}
+          style={{ background: OBW.pinkGradient, boxShadow: nextDisabled ? "none" : "0 4px 14px rgba(255,56,92,0.25)" }}
           data-testid={nextTestId || "button-next"}
         >
           {saving && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -204,10 +204,10 @@ export function OBInfoBox({ children }: { children: React.ReactNode }) {
   return (
     <div
       className="rounded-[4px] p-3.5 flex items-start gap-2.5"
-      style={{ backgroundColor: "#f0f9ff", border: "1px solid #bfdbfe" }}
+      style={{ backgroundColor: "#F7F7F7", border: "1px solid #E5E7EB" }}
     >
-      <Info className="w-[15px] h-[15px] shrink-0 mt-[1px]" style={{ color: "#3b82f6" }} />
-      <div className="text-[13px] leading-[1.55]" style={{ color: "#1e40af" }}>
+      <Info className="w-[15px] h-[15px] shrink-0 mt-[1px]" style={{ color: "#FF385C" }} />
+      <div className="text-[13px] leading-[1.55]" style={{ color: "#FF385C" }}>
         {children}
       </div>
     </div>

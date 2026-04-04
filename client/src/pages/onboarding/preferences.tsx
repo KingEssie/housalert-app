@@ -149,7 +149,7 @@ export default function OnboardingPreferences() {
         >
           <div
             className="w-[40px] h-[22px] rounded-full p-[2px] transition-colors shrink-0 cursor-pointer"
-            style={{ backgroundColor: sendUnclear ? "rgb(var(--ha-success))" : "#d1d5db" }}
+            style={{ backgroundColor: sendUnclear ? "rgb(var(--ha-success))" : "#E5E7EB" }}
           >
             <div
               className="w-[18px] h-[18px] rounded-full bg-white transition-transform shadow-sm"

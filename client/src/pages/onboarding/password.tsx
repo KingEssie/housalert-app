@@ -215,8 +215,8 @@ export default function OnboardingPassword() {
             <div
               className="rounded-[4px] p-3.5 mb-4 flex items-start gap-3"
               style={{
-                backgroundColor: "#fdf2f8",
-                border: `1px solid rgba(233,30,99,0.15)`,
+                backgroundColor: "#F7F7F7",
+                border: `1px solid rgba(255,56,92,0.15)`,
               }}
               data-testid="search-summary-card"
             >
@@ -304,7 +304,7 @@ export default function OnboardingPassword() {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3.5 top-1/2 -translate-y-1/2 transition-colors"
-                  style={{ color: "#9ca3af" }}
+                  style={{ color: "#9CA3AF" }}
                   data-testid="button-toggle-password"
                 >
                   {showPassword ? <EyeOff className="w-[16px] h-[16px]" /> : <Eye className="w-[16px] h-[16px]" />}
@@ -369,7 +369,7 @@ export default function OnboardingPassword() {
                 onClick={handleCreateAccount}
                 disabled={!canSubmit}
                 className="flex-1 h-[44px] rounded-[4px] text-[14px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-2"
-                style={{ background: OBW.pinkGradient, boxShadow: canSubmit ? "0 4px 14px rgba(233,30,99,0.25)" : "none" }}
+                style={{ background: OBW.pinkGradient, boxShadow: canSubmit ? "0 4px 14px rgba(255,56,92,0.25)" : "none" }}
                 data-testid="button-create-account"
               >
                 {loading ? (
@@ -451,7 +451,7 @@ export default function OnboardingPassword() {
               {t("onboarding.password.label") || "Passwort"}
             </label>
             <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#999" }} />
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#9CA3AF" }} />
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
@@ -466,7 +466,7 @@ export default function OnboardingPassword() {
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors"
-                style={{ color: "#999" }}
+                style={{ color: "#9CA3AF" }}
                 data-testid="button-toggle-password"
               >
                 {showPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
@@ -496,7 +496,7 @@ export default function OnboardingPassword() {
                 {t("referral.inputLabel") || "Empfehlungscode"}
               </label>
               <div className="relative">
-                <Gift className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#999" }} />
+                <Gift className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#9CA3AF" }} />
                 <input
                   type="text"
                   placeholder={t("referral.inputPlaceholder") || "ABC123"}

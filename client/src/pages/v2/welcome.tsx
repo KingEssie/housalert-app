@@ -121,7 +121,7 @@ export default function V2WelcomePage() {
             <ChevronDown className="w-3.5 h-3.5" />
           </button>
           {showLangPicker && (
-            <div className="absolute right-0 top-full mt-1.5 bg-[#1c1932] border border-white/10 rounded-[6px] shadow-2xl py-1 z-50 min-w-[150px]">
+            <div className="absolute right-0 top-full mt-1.5 bg-[#111111] border border-white/10 rounded-[6px] shadow-2xl py-1 z-50 min-w-[150px]">
               {languages.map((l) => (
                 <button
                   key={l.code}
@@ -167,7 +167,7 @@ export default function V2WelcomePage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t("v2.welcome.emailPlaceholder")}
               autoComplete="email"
-              className="w-full h-[56px] rounded-[6px] bg-white px-5 text-[16px] text-[#111111] placeholder-[#B0B0B0] outline-none border-2 border-transparent focus:border-[#FF385C] transition-colors"
+              className="w-full h-[56px] rounded-[6px] bg-white px-5 text-[16px] text-[#111111] placeholder-[#9CA3AF] outline-none border-2 border-transparent focus:border-[#FF385C] transition-colors"
               data-testid="input-v2-email"
             />
           </div>
@@ -183,13 +183,13 @@ export default function V2WelcomePage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t("v2.welcome.passwordPlaceholder")}
                 autoComplete="current-password"
-                className="w-full h-[56px] rounded-[6px] bg-white px-5 pr-14 text-[16px] text-[#111111] placeholder-[#B0B0B0] outline-none border-2 border-transparent focus:border-[#FF385C] transition-colors"
+                className="w-full h-[56px] rounded-[6px] bg-white px-5 pr-14 text-[16px] text-[#111111] placeholder-[#9CA3AF] outline-none border-2 border-transparent focus:border-[#FF385C] transition-colors"
                 data-testid="input-v2-password"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-[#B0B0B0] hover:text-[#717171] transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-[#9CA3AF] hover:text-[#6B7280] transition-colors"
                 data-testid="button-toggle-password"
               >
                 {showPassword ? (
@@ -261,8 +261,8 @@ export default function V2WelcomePage() {
               <Star
                 key={i}
                 className="w-[14px] h-[14px]"
-                fill={i <= 4 ? "#22C55E" : "none"}
-                stroke={i <= 4 ? "#22C55E" : "rgba(255,255,255,0.2)"}
+                fill={i <= 4 ? "#16A34A" : "none"}
+                stroke={i <= 4 ? "#16A34A" : "rgba(255,255,255,0.2)"}
               />
             ))}
           </div>

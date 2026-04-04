@@ -62,7 +62,7 @@ export default function SubscriptionDetailPage() {
 
   function getStatusColor(): string {
     if (subscription?.isExpired) return "bg-red-100 text-red-600";
-    if (isCanceled && subscription?.isActive) return "bg-amber-100 text-amber-600";
+    if (isCanceled && subscription?.isActive) return "bg-[#F7F7F7] text-[#6B7280]";
     if (subscription?.isTrial) return "bg-ha-primary/15 text-ha-primary";
     return "bg-ha-success/10 text-ha-success";
   }
@@ -137,7 +137,7 @@ export default function SubscriptionDetailPage() {
               <Crown className="w-[22px] h-[22px] text-ha-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[15px] font-bold text-[#000]" data-testid="text-plan-summary">
+              <p className="text-[15px] font-bold text-[#111111]" data-testid="text-plan-summary">
                 {subscription?.isTrial ? t("subscription.status.trial") : getPlanLabel(subscription?.plan)}
               </p>
               <span
@@ -156,7 +156,7 @@ export default function SubscriptionDetailPage() {
                 className={`flex items-center justify-between py-[14px] ${idx < rows.length - 1 ? "border-b border-ha-divider" : ""}`}
               >
                 <p className="text-[13px] text-ha-text-muted">{row.label}</p>
-                <p className="text-[14px] text-[#000] font-medium" data-testid={row.testId}>{row.value}</p>
+                <p className="text-[14px] text-[#111111] font-medium" data-testid={row.testId}>{row.value}</p>
               </div>
             ))}
           </div>
@@ -165,11 +165,11 @@ export default function SubscriptionDetailPage() {
         <div className="app-card !p-0">
           <button
             onClick={() => navigate("/account/payment-method")}
-            className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#FAFAFA] transition-colors"
+            className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-[#F7F7F7] transition-colors"
             data-testid="button-manage-payment"
           >
             <CreditCard className="w-[22px] h-[22px] text-ha-text-muted flex-shrink-0" />
-            <p className="text-[15px] text-[#000] font-medium flex-1">{t("subscription.managePayment")}</p>
+            <p className="text-[15px] text-[#111111] font-medium flex-1">{t("subscription.managePayment")}</p>
             <ChevronRight className="w-4 h-4 text-ha-icon-secondary flex-shrink-0" />
           </button>
 
@@ -196,7 +196,7 @@ export default function SubscriptionDetailPage() {
                 <AlertCircle className="w-5 h-5 text-ha-primary" />
               </div>
               <div>
-                <p className="text-[15px] font-bold text-[#000]">{t("subscription.expiredTitle")}</p>
+                <p className="text-[15px] font-bold text-[#111111]">{t("subscription.expiredTitle")}</p>
                 <p className="text-[14px] text-ha-text-muted mt-0.5">{t("subscription.expiredDesc")}</p>
               </div>
             </div>

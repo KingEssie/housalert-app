@@ -69,7 +69,7 @@ export default function MapViewMapbox({
         type: "fill",
         source: sourceId,
         paint: {
-          "fill-color": c.color ?? "#6366f1",
+          "fill-color": c.color ?? "#FF385C",
           "fill-opacity": c.fillOpacity ?? 0.15,
         },
       });
@@ -78,7 +78,7 @@ export default function MapViewMapbox({
         type: "line",
         source: sourceId,
         paint: {
-          "line-color": c.color ?? "#6366f1",
+          "line-color": c.color ?? "#FF385C",
           "line-width": 2,
         },
       });

@@ -81,7 +81,7 @@ export default function OnboardingName() {
               {t("onboarding.name.firstNameLabel") || "Vorname"}
             </label>
             <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#999" }} />
+              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#9CA3AF" }} />
               <input
                 type="text"
                 value={firstName}
@@ -100,7 +100,7 @@ export default function OnboardingName() {
               {t("onboarding.name.lastNameLabel") || "Nachname"}
             </label>
             <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#999" }} />
+              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#9CA3AF" }} />
               <input
                 type="text"
                 value={lastName}

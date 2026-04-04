@@ -69,7 +69,7 @@ export default function DeleteAccountPage() {
         <div className="w-16 h-16 rounded-[6px] bg-red-500 flex items-center justify-center mb-6">
           <AlertTriangle className="w-8 h-8 text-white" />
         </div>
-        <h2 className="text-[22px] font-bold text-[#000] mb-3 text-center" data-testid="text-delete-account-title">
+        <h2 className="text-[22px] font-bold text-[#111111] mb-3 text-center" data-testid="text-delete-account-title">
           {t("deleteAccount.confirmTitle")}
         </h2>
         <p className="text-[15px] text-ha-text-muted text-center max-w-[320px] mb-6 leading-relaxed" data-testid="text-delete-account-body">
@@ -104,7 +104,7 @@ export default function DeleteAccountPage() {
           </button>
           <button
             onClick={() => navigate("/dashboard?tab=profiel&sub=account")}
-            className="w-full ha-btn border border-[#E5E5E5] text-[#000] font-semibold hover:bg-white"
+            className="w-full ha-btn border border-[#E5E7EB] text-[#111111] font-semibold hover:bg-white"
             data-testid="button-delete-account-cancel"
           >
             {t("common.cancel")}

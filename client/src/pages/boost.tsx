@@ -186,8 +186,8 @@ function BoostScoreCard({ score, remaining, completed, total }: { score: number;
         <div className="flex items-center gap-3">
           <Zap className="w-5 h-5 text-ha-icon-secondary" />
           <div>
-            <h3 className="text-[15px] font-medium text-[#000]">{headline}</h3>
-            <p className="text-[13px] text-[#000]">{t("boostScore.progress", { completed: String(completed), total: String(total) })}</p>
+            <h3 className="text-[15px] font-medium text-[#111111]">{headline}</h3>
+            <p className="text-[13px] text-[#111111]">{t("boostScore.progress", { completed: String(completed), total: String(total) })}</p>
           </div>
         </div>
         <span className="text-[36px] font-medium leading-none tracking-[-0.03em]" style={{ color }} data-testid="text-boost-score">
@@ -203,7 +203,7 @@ function BoostScoreCard({ score, remaining, completed, total }: { score: number;
         />
       </div>
 
-      <p className="text-[14px] text-[#000] leading-relaxed" data-testid="text-boost-microcopy">
+      <p className="text-[14px] text-[#111111] leading-relaxed" data-testid="text-boost-microcopy">
         {microcopy}
       </p>
     </div>
@@ -254,12 +254,12 @@ function RecommendedSection({
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
-                    <p className="text-[15px] font-medium text-[#000] leading-snug">{getBoostTaskLabel(task.id, t)}</p>
+                    <p className="text-[15px] font-medium text-[#111111] leading-snug">{getBoostTaskLabel(task.id, t)}</p>
                     <span className="text-[12px] font-medium text-ha-primary px-2 py-0.5 rounded-full flex-shrink-0 whitespace-nowrap" style={{ backgroundColor: "var(--ha-primary-light)" }} data-testid={`badge-points-${task.id}`}>
                       +{task.weight}
                     </span>
                   </div>
-                  <p className="text-[13px] text-[#000] leading-relaxed mt-1">{subtitle}</p>
+                  <p className="text-[13px] text-[#111111] leading-relaxed mt-1">{subtitle}</p>
                 </div>
               </div>
               <Button
@@ -311,8 +311,8 @@ function AllTasksSection({
               <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
               <Icon className="w-4 h-4 text-ha-icon-secondary flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-[14px] font-medium text-[#000]">{getBoostTaskLabel(task.id, t)}</p>
-                <p className="text-[13px] font-normal text-[#000]">+{task.weight} {t("boost.points")}</p>
+                <p className="text-[14px] font-medium text-[#111111]">{getBoostTaskLabel(task.id, t)}</p>
+                <p className="text-[13px] font-normal text-[#111111]">+{task.weight} {t("boost.points")}</p>
               </div>
               <ArrowRight className="w-4 h-4 text-ha-icon-secondary flex-shrink-0" />
             </button>
@@ -332,7 +332,7 @@ function AllTasksSection({
                 <CheckCircle2 className="w-4 h-4 text-ha-success" />
               </div>
               <Icon className="w-4 h-4 text-ha-icon-secondary flex-shrink-0" />
-              <p className="text-[14px] text-[#000] line-through">{getBoostTaskLabel(task.id, t)}</p>
+              <p className="text-[14px] text-[#111111] line-through">{getBoostTaskLabel(task.id, t)}</p>
             </div>
           );
         })}
@@ -348,10 +348,10 @@ function EmptyState({ onStart }: { onStart: () => void }) {
       <div className="flex items-center justify-center mx-auto mb-4">
         <Zap className="w-6 h-6 text-ha-icon-secondary" />
       </div>
-      <h3 className="text-[18px] font-medium text-[#000] mb-1.5">
+      <h3 className="text-[18px] font-medium text-[#111111] mb-1.5">
         {t("boost.startTitle")}
       </h3>
-      <p className="text-[14px] font-normal text-[#000] leading-relaxed mb-5 max-w-[260px] mx-auto">
+      <p className="text-[14px] font-normal text-[#111111] leading-relaxed mb-5 max-w-[260px] mx-auto">
         {t("boost.startDesc")}
       </p>
       <Button
@@ -438,14 +438,14 @@ function TaskModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sticky top-0 bg-white border-b border-[#E5E7EB] p-6 flex items-center justify-between rounded-t-[6px]">
-          <h2 className="text-[20px] font-medium text-[#000] tracking-[-0.02em]">{t(modalKeys.titleKey)}</h2>
+          <h2 className="text-[20px] font-medium text-[#111111] tracking-[-0.02em]">{t(modalKeys.titleKey)}</h2>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F7F7F7] flex items-center justify-center" data-testid="button-close-modal">
             <X className="w-4 h-4 text-ha-icon-secondary" />
           </button>
         </div>
 
         <div className="p-5">
-          <p className="text-[14px] text-[#000] mb-5">{t(modalKeys.descKey)}</p>
+          <p className="text-[14px] text-[#111111] mb-5">{t(modalKeys.descKey)}</p>
 
           {taskId === "alerts_active" && (
             <Button
@@ -471,16 +471,16 @@ function TaskModal({
 
           {taskId === "search_buddy_added" && (
             <div className="flex flex-col gap-3">
-              <label className="text-[13px] font-medium text-[#000]">{t("boost.buddyEmailLabel")}</label>
+              <label className="text-[13px] font-medium text-[#111111]">{t("boost.buddyEmailLabel")}</label>
               <input
                 type="email"
                 value={buddyEmail}
                 onChange={(e) => setBuddyEmail(e.target.value)}
                 placeholder={t("boost.buddyEmailPlaceholder")}
-                className="w-full h-[56px] px-4 rounded-[6px] border border-transparent bg-[#F7F7F7] text-[15px] font-medium text-[#000] placeholder:text-ha-text-muted placeholder:font-normal focus:bg-white"
+                className="w-full h-[56px] px-4 rounded-[6px] border border-transparent bg-[#F7F7F7] text-[15px] font-medium text-[#111111] placeholder:text-ha-text-muted placeholder:font-normal focus:bg-white"
                 data-testid="input-buddy-email"
               />
-              <p className="text-[13px] font-normal text-[#000]">{t("boost.buddyHelp")}</p>
+              <p className="text-[13px] font-normal text-[#111111]">{t("boost.buddyHelp")}</p>
               <Button
                 onClick={() => handleSave({ search_buddy_email: buddyEmail }, t("boost.buddySaved"))}
                 disabled={!buddyEmail.includes("@") || updateProfileData.isPending}
@@ -516,7 +516,7 @@ function TaskModal({
 
           {taskId === "income_documents_uploaded" && (
             <div className="flex flex-col gap-4">
-              <h4 className="text-[13px] font-medium text-[#000]">{t("boost.checkOffDocs")}</h4>
+              <h4 className="text-[13px] font-medium text-[#111111]">{t("boost.checkOffDocs")}</h4>
               <div className="flex flex-col gap-1">
                 {INCOME_CHECKLIST_IDS.map((id) => (
                   <button
@@ -532,7 +532,7 @@ function TaskModal({
                     ) : (
                       <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
                     )}
-                    <span className={`text-[14px] ${checklist[id] ? "text-[#000] line-through" : "text-[#000]"}`}>
+                    <span className={`text-[14px] ${checklist[id] ? "text-[#111111] line-through" : "text-[#111111]"}`}>
                       {t(`checklist.${id}`)}
                     </span>
                   </button>
@@ -551,7 +551,7 @@ function TaskModal({
 
           {taskId === "id_document_uploaded" && (
             <div className="flex flex-col gap-4">
-              <h4 className="text-[13px] font-medium text-[#000]">{t("boost.checkOffDocs")}</h4>
+              <h4 className="text-[13px] font-medium text-[#111111]">{t("boost.checkOffDocs")}</h4>
               <div className="flex flex-col gap-1">
                 {ID_CHECKLIST_IDS.map((id) => (
                   <button
@@ -567,7 +567,7 @@ function TaskModal({
                     ) : (
                       <div className="w-5 h-5 rounded-full border-2 border-[#E5E7EB] flex-shrink-0" />
                     )}
-                    <span className={`text-[14px] ${checklist[id] ? "text-[#000] line-through" : "text-[#000]"}`}>
+                    <span className={`text-[14px] ${checklist[id] ? "text-[#111111] line-through" : "text-[#111111]"}`}>
                       {t(`checklist.${id}`)}
                     </span>
                   </button>
@@ -597,7 +597,7 @@ function TaskModal({
 
           {taskId === "profile_photo_added" && (
             <div className="flex flex-col gap-3">
-              <p className="text-[13px] font-normal text-[#000]">
+              <p className="text-[13px] font-normal text-[#111111]">
                 {t("boost.profilePhotoDesc")}
               </p>
               <Button
@@ -628,7 +628,7 @@ export default function BoostPage({ navigate }: { navigate: (path: string) => vo
           <h1 className="text-page-title">{t("boost.title")}</h1>
         </div>
         <div className="bg-white rounded-[6px] border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.06)] p-8 text-center" data-testid="boost-error">
-          <p className="text-[15px] text-[#000] mb-4">{t("boost.errorMessage")}</p>
+          <p className="text-[15px] text-[#111111] mb-4">{t("boost.errorMessage")}</p>
           <Button
             onClick={() => refetch()}
             className="h-[56px] rounded-[6px] bg-ha-primary text-white text-[15px] font-medium px-6"

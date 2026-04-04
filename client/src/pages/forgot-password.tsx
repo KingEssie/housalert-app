@@ -63,7 +63,7 @@ export default function ForgotPasswordPage() {
             data-testid="button-back"
             aria-label="Back"
           >
-            <ArrowLeft className="w-5 h-5 text-[#000]" />
+            <ArrowLeft className="w-5 h-5 text-[#111111]" />
           </button>
         </div>
 
@@ -72,7 +72,7 @@ export default function ForgotPasswordPage() {
             <CheckCircle2 className="w-8 h-8 text-ha-success" />
           </div>
           <h1
-            className="text-[24px] font-bold text-[#000] tracking-[-0.02em] mb-3"
+            className="text-[24px] font-bold text-[#111111] tracking-[-0.02em] mb-3"
             data-testid="text-sent-title"
           >
             {t("forgotPassword.sentTitle")}
@@ -101,17 +101,17 @@ export default function ForgotPasswordPage() {
           data-testid="button-back"
           aria-label="Back"
         >
-          <ArrowLeft className="w-5 h-5 text-[#000]" />
+          <ArrowLeft className="w-5 h-5 text-[#111111]" />
         </button>
       </div>
 
       <div className="flex-1 flex flex-col px-7">
         <div className="flex justify-center pt-8 pb-8">
-          <HousAlertLogo size={44} showText={true} textClassName="font-bold text-[#000] text-[20px] tracking-[-0.01em]" />
+          <HousAlertLogo size={44} showText={true} textClassName="font-bold text-[#111111] text-[20px] tracking-[-0.01em]" />
         </div>
 
         <h1
-          className="text-[26px] font-bold text-[#000] leading-[1.15] tracking-[-0.03em] mb-3 text-center"
+          className="text-[26px] font-bold text-[#111111] leading-[1.15] tracking-[-0.03em] mb-3 text-center"
           data-testid="text-forgot-title"
         >
           {t("forgotPassword.title")}

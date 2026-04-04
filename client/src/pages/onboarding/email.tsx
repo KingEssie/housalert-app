@@ -84,7 +84,7 @@ export default function OnboardingEmail() {
             {t("onboarding.email.label") || "E-Mail-Adresse"}
           </label>
           <div className="relative">
-            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#999" }} />
+            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#9CA3AF" }} />
             <input
               type="email"
               value={email}

@@ -4,7 +4,7 @@ export const theme = {
     primaryHover: "rgb(var(--ha-primary-hover))",
     primaryLight: "var(--ha-primary-light)",
     iconBackground: "var(--ha-primary-light)",
-    neon: "#CBFF02",
+    neon: "#FF385C",
     darkLabel: "rgb(var(--ha-text))",
     successMain: "rgb(var(--ha-success))",
     successDark: "rgb(var(--ha-success))",

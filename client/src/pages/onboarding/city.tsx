@@ -196,7 +196,7 @@ export default function OnboardingCity() {
                 <button
                   key={city.name}
                   onClick={() => selectPresetCity(city)}
-                  className="w-full flex items-center gap-2.5 text-left transition-colors hover:bg-gray-50"
+                  className="w-full flex items-center gap-2.5 text-left transition-colors hover:bg-[#F7F7F7]"
                   style={{
                     padding: "10px 0",
                     borderBottom: i < presetMatches.length - 1 ? `1px solid ${OBW.divider}` : "none",
@@ -212,7 +212,7 @@ export default function OnboardingCity() {
                   <button
                     key={r.placeId || i}
                     onClick={() => selectGeocoderCity(r)}
-                    className="w-full flex items-center gap-2.5 text-left transition-colors hover:bg-gray-50"
+                    className="w-full flex items-center gap-2.5 text-left transition-colors hover:bg-[#F7F7F7]"
                     style={{
                       padding: "10px 0",
                       borderBottom: `1px solid ${OBW.divider}`,
@@ -305,7 +305,7 @@ export default function OnboardingCity() {
             className="text-[12px] font-bold px-2.5 py-1 rounded-[6px]"
             style={{
               backgroundColor: "rgba(56,189,248,0.15)",
-              color: "#38bdf8",
+              color: "#FF385C",
             }}
             data-testid="badge-step"
           >
@@ -367,7 +367,7 @@ export default function OnboardingCity() {
                 }}
                 data-testid={`city-option-${city.name}`}
               >
-                <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: "#38bdf8" }} />
+                <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: "#FF385C" }} />
                 <span className="text-[16px] font-medium" style={{ color: T.text }}>{city.name}</span>
               </button>
             ))}
@@ -383,7 +383,7 @@ export default function OnboardingCity() {
                   }}
                   data-testid={`city-nominatim-${i}`}
                 >
-                  <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: "#38bdf8" }} />
+                  <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: "#FF385C" }} />
                   <div>
                     <span className="text-[16px] font-medium block" style={{ color: T.text }}>{r.city}</span>
                     {r.label !== r.city && (
@@ -407,7 +407,7 @@ export default function OnboardingCity() {
             style={{ padding: "14px 0", borderBottom: `1px solid ${T.divider}` }}
             data-testid="city-selected"
           >
-            <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: "#38bdf8" }} />
+            <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: "#FF385C" }} />
             <span className="text-[16px] font-medium flex-1" style={{ color: T.text }}>{selectedCity.name}</span>
             <button
               onClick={() => { setSelectedCity(null); setSearch(""); }}

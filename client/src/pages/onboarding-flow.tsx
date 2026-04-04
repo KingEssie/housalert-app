@@ -88,7 +88,7 @@ function PrimaryBtn({
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className="w-full h-[56px] rounded-[6px] text-[16px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 shadow-[0_4px_16px_rgba(233,30,99,0.3)]"
+      className="w-full h-[56px] rounded-[6px] text-[16px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 shadow-[0_4px_16px_rgba(255,56,92,0.3)]"
       style={{ backgroundColor: BRAND }}
       onMouseOver={(e) => (e.currentTarget.style.backgroundColor = BRAND_HOVER)}
       onMouseOut={(e) => (e.currentTarget.style.backgroundColor = BRAND)}
@@ -479,7 +479,7 @@ function LetterPreviewStep({
         {t("onboardingFlow.letterPreview.subtitle")}
       </p>
 
-      <div className="bg-pink-50 border border-pink-200 rounded-[6px] px-4 py-3 mb-4 flex items-start gap-2.5">
+      <div className="bg-ha-primary/5 border border-ha-primary/20 rounded-[6px] px-4 py-3 mb-4 flex items-start gap-2.5">
         <FileText className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: BRAND }} />
         <p className="text-[13px] leading-snug" style={{ color: BRAND }}>
           {t("onboardingFlow.letterPreview.addressNote")}

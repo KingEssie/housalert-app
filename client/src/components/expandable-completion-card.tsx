@@ -46,13 +46,13 @@ export function ExpandableCompletionCard({
           <div className="flex items-center justify-between">
             <p className="text-[17px] font-bold text-black">{title}</p>
             <ChevronDown
-              className={`w-5 h-5 text-gray-400 flex-shrink-0 transition-transform duration-200 ml-2 ${
+              className={`w-5 h-5 text-[#9CA3AF] flex-shrink-0 transition-transform duration-200 ml-2 ${
                 expanded ? "rotate-180" : ""
               }`}
             />
           </div>
           <div className="mt-2.5 flex items-center gap-3">
-            <div className="flex-1 h-[8px] rounded-full bg-gray-100 overflow-hidden">
+            <div className="flex-1 h-[8px] rounded-full bg-[#F7F7F7] overflow-hidden">
               <div
                 className="h-full rounded-full bg-ha-success transition-all duration-500"
                 style={{ width: `${percentage}%` }}
@@ -81,7 +81,7 @@ export function ExpandableCompletionCard({
               } ${idx < steps.length - 1 ? "border-b border-gray-50" : ""}`}
               data-testid={`${testId}-step-${step.id}`}
             >
-              <span className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-[12px] font-semibold text-[#6B7280] flex-shrink-0">
+              <span className="w-6 h-6 rounded-full bg-[#F7F7F7] flex items-center justify-center text-[12px] font-semibold text-[#6B7280] flex-shrink-0">
                 {idx + 1}
               </span>
               <span
@@ -99,7 +99,7 @@ export function ExpandableCompletionCard({
                     <CheckCircle2 className="w-[14px] h-[14px] text-white" />
                   </div>
                 ) : (
-                  <ChevronRight className="w-4 h-4 text-gray-300" />
+                  <ChevronRight className="w-4 h-4 text-[#9CA3AF]" />
                 )}
               </div>
             </button>

@@ -252,7 +252,7 @@ export default function ApplicationLetterPage() {
             <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
         </select>
-        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#000] pointer-events-none" />
+        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#111111] pointer-events-none" />
       </div>
     );
   }
@@ -283,8 +283,8 @@ export default function ApplicationLetterPage() {
             </h1>
 
             <div className="ha-card">
-              <div className="rounded-[--ha-card-inner-radius] bg-[#EBF5FF] px-4 py-4 mb-5" data-testid="card-speech-bubble">
-                <p className="text-[15px] text-[#1e293b] leading-relaxed">
+              <div className="rounded-[--ha-card-inner-radius] bg-[#F7F7F7] px-4 py-4 mb-5" data-testid="card-speech-bubble">
+                <p className="text-[15px] text-[#111111] leading-relaxed">
                   Een reactiebrief helpt je sneller te reageren op woningen. Met onze AI-generator maak je in een paar stappen een professionele brief die je direct kunt kopiëren en gebruiken. In de volgende stappen verzamelen we de informatie die nodig is.
                 </p>
               </div>
@@ -298,7 +298,7 @@ export default function ApplicationLetterPage() {
                   data-testid="img-elise-photo"
                 />
                 <div>
-                  <p className="text-[16px] font-semibold text-[#111]">Elise</p>
+                  <p className="text-[16px] font-semibold text-[#111111]">Elise</p>
                   <p className="text-[13px] text-ha-text-muted mt-0.5">COO</p>
                 </div>
               </div>
@@ -425,8 +425,8 @@ export default function ApplicationLetterPage() {
             </h1>
 
             <div className="ha-card">
-              <div className="rounded-[--ha-card-inner-radius] bg-[#EBF5FF] px-4 py-3 mb-4">
-                <p className="text-[14px] text-[#1e293b] leading-relaxed">
+              <div className="rounded-[--ha-card-inner-radius] bg-[#F7F7F7] px-4 py-3 mb-4">
+                <p className="text-[14px] text-[#111111] leading-relaxed">
                   {t("applicationLetter.helperText")}
                 </p>
               </div>
@@ -435,7 +435,7 @@ export default function ApplicationLetterPage() {
                 <label className="text-field-label">{t("applicationLetter.letterLabel")}</label>
                 <button
                   onClick={handleReset}
-                  className="flex items-center gap-1 text-[14px] text-ha-text-secondary active:text-[#000] transition-colors"
+                  className="flex items-center gap-1 text-[14px] text-ha-text-secondary active:text-[#111111] transition-colors"
                   data-testid="button-reset-template"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -469,7 +469,7 @@ export default function ApplicationLetterPage() {
                 const letter = generatePersonalLetter();
                 setTemplate(letter);
               }}
-              className="w-full h-[56px] rounded-[--ha-btn-radius] border border-ha-primary text-ha-primary text-[15px] font-semibold hover:bg-pink-50 transition-colors active:scale-[0.98]"
+              className="w-full h-[56px] rounded-[--ha-btn-radius] border border-ha-primary text-ha-primary text-[15px] font-semibold hover:bg-ha-primary/5 transition-colors active:scale-[0.98]"
               data-testid="button-regenerate-letter"
             >
               Nieuwe AI reactiebrief maken

@@ -203,10 +203,10 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
           <div className="flex items-center gap-3 mb-4">
             <Search className="w-5 h-5 text-ha-primary flex-shrink-0" />
             <p className="text-[17px] font-bold text-[#111111] flex-1">{t("searchProfiles.sectionTitle")}</p>
-            <span className="text-[13px] font-semibold text-[#6B7280] bg-[#F3F4F6] px-2.5 py-0.5 rounded-full">0/{MAX_PROFILES}</span>
+            <span className="text-[13px] font-semibold text-[#6B7280] bg-[#F7F7F7] px-2.5 py-0.5 rounded-full">0/{MAX_PROFILES}</span>
           </div>
           <div className="flex flex-col items-center text-center py-6 px-4">
-            <div className="w-12 h-12 rounded-full bg-[#F3F4F6] flex items-center justify-center mb-3">
+            <div className="w-12 h-12 rounded-full bg-[#F7F7F7] flex items-center justify-center mb-3">
               <Search className="w-6 h-6 text-[#6B7280]" />
             </div>
             <p className="text-[16px] font-bold text-[#111111] mb-1" data-testid="text-empty-title">{t("searchProfiles.emptyTitle")}</p>
@@ -231,7 +231,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
           <div className="flex items-center gap-3 mb-4">
             <Search className="w-5 h-5 text-ha-primary flex-shrink-0" />
             <p className="text-[17px] font-bold text-[#111111] flex-1">{t("searchProfiles.sectionTitle")}</p>
-            <span className="text-[13px] font-semibold text-[#6B7280] bg-[#F3F4F6] px-2.5 py-0.5 rounded-full">{profiles.length}/{MAX_PROFILES}</span>
+            <span className="text-[13px] font-semibold text-[#6B7280] bg-[#F7F7F7] px-2.5 py-0.5 rounded-full">{profiles.length}/{MAX_PROFILES}</span>
           </div>
           <div className="flex flex-col gap-2">
             {profiles.map((p) => (
@@ -254,7 +254,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
                   <DropdownMenuTrigger asChild>
                     <button
                       onClick={(e) => e.stopPropagation()}
-                      className="w-9 h-9 rounded-full flex items-center justify-center text-gray-300 hover:bg-ha-surface-hover transition-colors flex-shrink-0"
+                      className="w-9 h-9 rounded-full flex items-center justify-center text-[#9CA3AF] hover:bg-ha-surface-hover transition-colors flex-shrink-0"
                       data-testid={`button-menu-${p.id}`}
                     >
                       <MoreVertical className="w-[18px] h-[18px]" />
@@ -1127,7 +1127,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
             {photoUrl && (
               <button
                 onClick={onRemove}
-                className="mt-3 w-full h-[56px] flex items-center justify-center gap-2 rounded-[--ha-btn-radius] border border-gray-200 text-[#111111] text-[15px] font-medium active:bg-ha-surface-hover transition-colors"
+                className="mt-3 w-full h-[56px] flex items-center justify-center gap-2 rounded-[--ha-btn-radius] border border-[#E5E7EB] text-[#111111] text-[15px] font-medium active:bg-ha-surface-hover transition-colors"
                 data-testid="button-remove-photo"
               >
                 <Trash2 className="w-[18px] h-[18px]" />
@@ -1561,7 +1561,7 @@ export default function DashboardPage() {
         )}
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-gray-200" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#E5E7EB]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
         <nav className="max-w-xl mx-auto flex h-[58px]" data-testid="bottom-nav">
           {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
             const isActive = activeTab === key;
@@ -1574,13 +1574,13 @@ export default function DashboardPage() {
                 data-testid={`tab-${key}`}
               >
                 {isProfileWithPhoto ? (
-                  <div className={`w-[26px] h-[26px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-[#3b82f6] ring-offset-1 ring-offset-white" : ""}`}>
+                  <div className={`w-[26px] h-[26px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-ha-primary ring-offset-1 ring-offset-white" : ""}`}>
                     <img src={tabPhotoUrl} alt="" className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <Icon className={`w-[24px] h-[24px] transition-colors ${isActive ? "text-[#3b82f6]" : "text-ha-text-muted"}`} strokeWidth={isActive ? 2.2 : 2} />
+                  <Icon className={`w-[24px] h-[24px] transition-colors ${isActive ? "text-ha-primary" : "text-ha-text-muted"}`} strokeWidth={isActive ? 2.2 : 2} />
                 )}
-                <span className={`text-[11px] transition-colors ${isActive ? "font-semibold text-[#3b82f6]" : "font-medium text-ha-text-muted"}`}>
+                <span className={`text-[11px] transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-ha-text-muted"}`}>
                   {t(labelKey)}
                 </span>
               </button>

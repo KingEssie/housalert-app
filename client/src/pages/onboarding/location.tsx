@@ -98,7 +98,7 @@ export default function OnboardingLocation() {
             className="text-[12px] font-bold px-2.5 py-1 rounded-[6px]"
             style={{
               backgroundColor: w ? OBW.badgeBg : "rgba(56,189,248,0.15)",
-              color: w ? OBW.badgeColor : "#38bdf8",
+              color: w ? OBW.badgeColor : "#FF385C",
             }}
             data-testid="badge-step"
           >
@@ -210,7 +210,7 @@ export default function OnboardingLocation() {
                     <button
                       key={d}
                       onClick={() => toggleDistrict(d)}
-                      className={`w-full flex items-center justify-between px-4 transition-colors ${w ? "hover:bg-gray-50" : "hover:bg-white/5"}`}
+                      className={`w-full flex items-center justify-between px-4 transition-colors ${w ? "hover:bg-[#F7F7F7]" : "hover:bg-white/5"}`}
                       style={{
                         padding: "12px 16px",
                         borderBottom: i < districtList.length - 1 ? `1px solid ${T.divider}` : "none",
@@ -258,7 +258,7 @@ export default function OnboardingLocation() {
                     className="px-4 py-2.5 rounded-full text-[14px] font-medium transition-all"
                     style={{
                       border: active
-                        ? "1.5px solid rgba(233,30,99,0.6)"
+                        ? "1.5px solid rgba(255,56,92,0.6)"
                         : `1px solid ${w ? OBW.chipBorder : "rgba(255,255,255,0.2)"}`,
                       backgroundColor: active ? OB.selectedBg : "transparent",
                       color: active ? OB.pink : (w ? OBW.text : "rgba(255,255,255,0.8)"),

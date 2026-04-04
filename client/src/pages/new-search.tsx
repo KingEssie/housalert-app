@@ -386,7 +386,7 @@ export default function NewSearchPage() {
             <div className="w-14 h-14 rounded-[6px] bg-white flex items-center justify-center mx-auto mb-4">
               <AlertCircle className="w-6 h-6 text-ha-primary" />
             </div>
-            <h2 className="text-[18px] font-medium text-[#000] mb-2">{t("newSearch.limitTitle")}</h2>
+            <h2 className="text-[18px] font-medium text-[#111111] mb-2">{t("newSearch.limitTitle")}</h2>
             <p className="text-[14px] text-ha-text-muted mb-5">
               {t("newSearch.limitDesc", { max: MAX_PROFILES })}
             </p>
@@ -509,7 +509,7 @@ function Step2Requirements({
 
       <div className="space-y-6">
         <div>
-          <label className="text-[15px] font-medium text-[#000] mb-2.5 flex items-center gap-2">
+          <label className="text-[15px] font-medium text-[#111111] mb-2.5 flex items-center gap-2">
             <Euro className="w-4 h-4 text-ha-primary" />
             {t("newSearch.step2.minPrice")}
           </label>
@@ -517,7 +517,7 @@ function Step2Requirements({
             <select
               value={filters.priceMin}
               onChange={(e) => updateFilters({ priceMin: e.target.value })}
-              className="w-full h-[56px] px-4 pr-10 rounded-[6px] border border-[#E5E5E5] bg-white text-[15px] font-medium text-[#000] appearance-none cursor-pointer"
+              className="w-full h-[56px] px-4 pr-10 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] appearance-none cursor-pointer"
               data-testid="select-price-min"
             >
               {RENT_OPTIONS.map(opt => (
@@ -529,7 +529,7 @@ function Step2Requirements({
         </div>
 
         <div>
-          <label className="text-[15px] font-medium text-[#000] mb-2.5 flex items-center gap-2">
+          <label className="text-[15px] font-medium text-[#111111] mb-2.5 flex items-center gap-2">
             <Euro className="w-4 h-4 text-ha-primary" />
             {t("newSearch.step2.maxPrice")}
           </label>
@@ -537,7 +537,7 @@ function Step2Requirements({
             <select
               value={filters.priceMax}
               onChange={(e) => updateFilters({ priceMax: e.target.value })}
-              className="w-full h-[56px] px-4 pr-10 rounded-[6px] border border-[#E5E5E5] bg-white text-[15px] font-medium text-[#000] appearance-none cursor-pointer"
+              className="w-full h-[56px] px-4 pr-10 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] appearance-none cursor-pointer"
               data-testid="select-price-max"
             >
               {RENT_OPTIONS.map(opt => (
@@ -549,7 +549,7 @@ function Step2Requirements({
         </div>
 
         <div>
-          <label className="text-[15px] font-medium text-[#000] mb-2.5 flex items-center gap-2">
+          <label className="text-[15px] font-medium text-[#111111] mb-2.5 flex items-center gap-2">
             <BedDouble className="w-4 h-4 text-ha-primary" />
             {t("newSearch.step2.bedrooms")}
           </label>
@@ -557,7 +557,7 @@ function Step2Requirements({
             <select
               value={filters.bedroomsMin}
               onChange={(e) => updateFilters({ bedroomsMin: parseInt(e.target.value) })}
-              className="w-full h-[56px] px-4 pr-10 rounded-[6px] border border-[#E5E5E5] bg-white text-[15px] font-medium text-[#000] appearance-none cursor-pointer"
+              className="w-full h-[56px] px-4 pr-10 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] appearance-none cursor-pointer"
               data-testid="select-bedrooms"
             >
               {BEDROOM_OPTIONS.map(opt => (
@@ -569,7 +569,7 @@ function Step2Requirements({
         </div>
 
         <div>
-          <label className="text-[15px] font-medium text-[#000] mb-2.5 flex items-center gap-2">
+          <label className="text-[15px] font-medium text-[#111111] mb-2.5 flex items-center gap-2">
             <Ruler className="w-4 h-4 text-ha-primary" />
             {t("newSearch.step2.area")}
           </label>
@@ -577,7 +577,7 @@ function Step2Requirements({
             <select
               value={filters.sizeMin}
               onChange={(e) => updateFilters({ sizeMin: parseInt(e.target.value) })}
-              className="w-full h-[56px] px-4 pr-10 rounded-[6px] border border-[#E5E5E5] bg-white text-[15px] font-medium text-[#000] appearance-none cursor-pointer"
+              className="w-full h-[56px] px-4 pr-10 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] appearance-none cursor-pointer"
               data-testid="select-size"
             >
               {SIZE_OPTIONS.map(opt => (
@@ -589,7 +589,7 @@ function Step2Requirements({
         </div>
 
         <div>
-          <label className="text-[15px] font-medium text-[#000] mb-2.5 flex items-center gap-2">
+          <label className="text-[15px] font-medium text-[#111111] mb-2.5 flex items-center gap-2">
             <Sofa className="w-4 h-4 text-ha-primary" />
             {t("newSearch.step2.furnished")}
           </label>
@@ -597,7 +597,7 @@ function Step2Requirements({
             <select
               value={filters.furnished}
               onChange={(e) => updateFilters({ furnished: e.target.value })}
-              className="w-full h-[56px] px-4 pr-10 rounded-[6px] border border-[#E5E5E5] bg-white text-[15px] font-medium text-[#000] appearance-none cursor-pointer"
+              className="w-full h-[56px] px-4 pr-10 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] appearance-none cursor-pointer"
               data-testid="select-furnished"
             >
               {FURNISHED_OPTIONS.map(opt => (
@@ -634,7 +634,7 @@ function ToggleSwitch({
     <label className="flex items-center gap-3 cursor-pointer" data-testid={testId}>
       <div
         className="w-[44px] h-[24px] rounded-full p-[2px] transition-colors shrink-0"
-        style={{ backgroundColor: checked ? "#FF385C" : "#D1D5DB" }}
+        style={{ backgroundColor: checked ? "#FF385C" : "#E5E7EB" }}
         onClick={() => onChange(!checked)}
       >
         <div
@@ -642,7 +642,7 @@ function ToggleSwitch({
           style={{ transform: checked ? "translateX(20px)" : "translateX(0)" }}
         />
       </div>
-      <span className="text-[13px] leading-snug text-[#000]">{label}</span>
+      <span className="text-[13px] leading-snug text-[#111111]">{label}</span>
     </label>
   );
 }
@@ -662,15 +662,15 @@ function CheckboxRow({
     <button
       type="button"
       onClick={onToggle}
-      className="w-full flex items-center gap-4 py-4 border-b border-[#E5E5E5] last:border-b-0 text-left"
+      className="w-full flex items-center gap-4 py-4 border-b border-[#E5E7EB] last:border-b-0 text-left"
       data-testid={testId}
     >
       <div className={`w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 border-2 transition-colors ${
         selected ? "bg-ha-primary border-ha-primary" : "border-ha-primary bg-transparent"
       }`}>
-        {selected && <Check className="w-4 h-4 text-[#000]" />}
+        {selected && <Check className="w-4 h-4 text-[#111111]" />}
       </div>
-      <span className="text-[15px] font-medium text-[#000]">{label}</span>
+      <span className="text-[15px] font-medium text-[#111111]">{label}</span>
     </button>
   );
 }
@@ -712,7 +712,7 @@ function Step3ExtraFeatures({
       </div>
 
       <div>
-        <h3 className="text-[14px] font-medium text-[#000] mb-1">{t("newSearch.step3.preferencesTitle")}</h3>
+        <h3 className="text-[14px] font-medium text-[#111111] mb-1">{t("newSearch.step3.preferencesTitle")}</h3>
         <p className="text-[12px] text-ha-text-muted mb-2">{t("newSearch.step3.preferencesSubtitle")}</p>
         <div className="bg-white rounded-[6px] border border-[#E5E7EB]">
           {PREFERENCE_OPTIONS.map((opt) => (
@@ -794,14 +794,14 @@ function Step4TargetCategories({
 
 function ReviewRow({ label, value, onEdit }: { label: string; value: string; onEdit: () => void }) {
   return (
-    <div className="flex items-start justify-between py-3.5 border-b border-[#E5E5E5] last:border-b-0">
+    <div className="flex items-start justify-between py-3.5 border-b border-[#E5E7EB] last:border-b-0">
       <div className="flex-1 min-w-0 mr-3">
         <p className="text-[13px] font-medium text-ha-text-muted mb-0.5">{label}</p>
-        <p className="text-[15px] font-medium text-[#000]">{value}</p>
+        <p className="text-[15px] font-medium text-[#111111]">{value}</p>
       </div>
       <button
         onClick={onEdit}
-        className="flex-shrink-0 w-8 h-8 rounded-full bg-[#F7F7F7] flex items-center justify-center hover:bg-[#FAFAFA] transition-colors"
+        className="flex-shrink-0 w-8 h-8 rounded-full bg-[#F7F7F7] flex items-center justify-center hover:bg-[#F7F7F7] transition-colors"
         data-testid={`button-review-edit-${label.toLowerCase().replace(/\s/g, "-")}`}
       >
         <Pencil className="w-3.5 h-3.5 text-ha-text-muted" />
@@ -884,17 +884,17 @@ function StepReview({
         </div>
 
         {!estimateLoading && (
-          <div className="rounded-[6px] bg-white border border-[#E5E5E5] p-5 flex items-center gap-3" data-testid="card-review-estimate">
+          <div className="rounded-[6px] bg-white border border-[#E5E7EB] p-5 flex items-center gap-3" data-testid="card-review-estimate">
             <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
-              <Sparkles className="w-5 h-5 text-[#000]" />
+              <Sparkles className="w-5 h-5 text-[#111111]" />
             </div>
             <div>
-              <p className="text-[15px] font-medium text-[#000]">
+              <p className="text-[15px] font-medium text-[#111111]">
                 {perWeek > 0
                   ? t("newSearch.step5.estimate", perWeekRange)
                   : t("newSearch.step5.noMatchesExpected")}
               </p>
-              <p className="text-[13px] text-[#000]/60 mt-0.5">
+              <p className="text-[13px] text-[#111111]/60 mt-0.5">
                 {perWeek > 0
                   ? t("newSearch.step5.estimateDesc")
                   : t("newSearch.step5.adjustFiltersLater")}
@@ -917,7 +917,7 @@ function StepReview({
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#F7F7F7] border-t border-[#E5E5E5] p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#F7F7F7] border-t border-[#E5E7EB] p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
         <div className="max-w-lg mx-auto">
           <Button
             onClick={onSubmit}

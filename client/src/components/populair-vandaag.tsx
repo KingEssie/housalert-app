@@ -19,14 +19,14 @@ interface PopularListing {
 }
 
 const CITY_GRADIENTS: Record<string, string> = {
-  berlin: "from-[#222222] to-[#333333]",
-  münchen: "from-[#222222] to-[#333333]",
-  hamburg: "from-[#333333] to-[#222222]",
-  frankfurt: "from-[#222222] to-[#333333]",
-  köln: "from-[#333333] to-[#222222]",
-  düsseldorf: "from-[#222222] to-[#333333]",
-  stuttgart: "from-[#333333] to-[#222222]",
-  default: "from-[#222222] to-[#333333]",
+  berlin: "from-[#111111] to-[#1a1a1a]",
+  münchen: "from-[#111111] to-[#1a1a1a]",
+  hamburg: "from-[#1a1a1a] to-[#111111]",
+  frankfurt: "from-[#111111] to-[#1a1a1a]",
+  köln: "from-[#1a1a1a] to-[#111111]",
+  düsseldorf: "from-[#111111] to-[#1a1a1a]",
+  stuttgart: "from-[#1a1a1a] to-[#111111]",
+  default: "from-[#111111] to-[#1a1a1a]",
 };
 
 function getCityGradient(city: string): string {

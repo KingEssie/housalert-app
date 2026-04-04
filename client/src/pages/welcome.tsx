@@ -14,7 +14,7 @@ const OB = {
   gradient: "linear-gradient(180deg, #111111 0%, #0a0a0a 100%)",
   pink: "#FF385C",
   pinkGradient: "linear-gradient(135deg, #FF385C 0%, #FF6B81 100%)",
-  pinkShadow: "0 4px 15px rgba(233,30,99,0.3)",
+  pinkShadow: "0 4px 15px rgba(255,56,92,0.3)",
   text: "#ffffff",
   textSecondary: "rgba(255,255,255,0.65)",
 };
@@ -229,7 +229,7 @@ export default function WelcomePage() {
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors"
-                style={{ color: "#666666" }}
+                style={{ color: "#6B7280" }}
                 tabIndex={-1}
                 data-testid="button-toggle-password"
               >
@@ -243,7 +243,7 @@ export default function WelcomePage() {
                 type="button"
                 onClick={handleForgotPassword}
                 className="text-[14px] font-medium transition-colors hover:underline"
-                style={{ color: "#5b8def" }}
+                style={{ color: "#FF385C" }}
                 data-testid="button-forgot-password"
               >
                 {t("v2.welcome.forgotPassword")}
@@ -307,7 +307,7 @@ export default function WelcomePage() {
               <div
                 key={i}
                 className="w-[22px] h-[22px] flex items-center justify-center rounded-[3px]"
-                style={{ backgroundColor: i <= 4 ? "#00b67a" : "#dce4e8" }}
+                style={{ backgroundColor: i <= 4 ? "#00b67a" : "#E5E7EB" }}
               >
                 <Star
                   className="w-3 h-3"

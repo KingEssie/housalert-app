@@ -142,11 +142,11 @@ export default function PreferencesPage() {
             <div className="app-card !p-0">
               <button
                 onClick={() => setShowLangSheet(true)}
-                className="w-full flex items-center gap-3 py-4 px-5 text-left active:bg-[#FAFAFA] transition-colors"
+                className="w-full flex items-center gap-3 py-4 px-5 text-left active:bg-[#F7F7F7] transition-colors"
                 data-testid="button-pref-language"
               >
                 <Globe className="w-5 h-5 text-ha-text-muted flex-shrink-0" />
-                <p className="text-[15px] font-semibold text-[#000] flex-1">{t("profile.language")}</p>
+                <p className="text-[15px] font-semibold text-[#111111] flex-1">{t("profile.language")}</p>
                 <span className="text-[14px] text-ha-text-secondary mr-1">{currentLangLabel}</span>
               </button>
             </div>
@@ -159,11 +159,11 @@ export default function PreferencesPage() {
             <div className="app-card !p-0">
               <div className="flex items-center gap-3 py-4 px-5">
                 <Bell className="w-5 h-5 text-ha-text-muted flex-shrink-0" />
-                <span className="text-[15px] font-semibold text-[#000] flex-1">{t("profile.pushNotifications")}</span>
+                <span className="text-[15px] font-semibold text-[#111111] flex-1">{t("profile.pushNotifications")}</span>
                 <button
                   onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
                   disabled={loading || notifUpdating === "push_enabled"}
-                  className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.push_enabled ? "bg-ha-primary" : "bg-[#D1D5DB]"} ${(loading || notifUpdating === "push_enabled") ? "opacity-50" : ""}`}
+                  className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.push_enabled ? "bg-ha-primary" : "bg-[#E5E7EB]"} ${(loading || notifUpdating === "push_enabled") ? "opacity-50" : ""}`}
                   data-testid="toggle-push"
                 >
                   <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.push_enabled ? "left-[23px]" : "left-[3px]"}`} />
@@ -172,11 +172,11 @@ export default function PreferencesPage() {
               <div className="h-px bg-ha-divider mx-5" />
               <div className="flex items-center gap-3 py-4 px-5">
                 <Mail className="w-5 h-5 text-ha-text-muted flex-shrink-0" />
-                <span className="text-[15px] font-semibold text-[#000] flex-1">{t("profile.emailNotifications")}</span>
+                <span className="text-[15px] font-semibold text-[#111111] flex-1">{t("profile.emailNotifications")}</span>
                 <button
                   onClick={() => handleToggleNotif("email_enabled", !!notifSettings?.email_enabled)}
                   disabled={loading || notifUpdating === "email_enabled"}
-                  className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.email_enabled ? "bg-ha-primary" : "bg-[#D1D5DB]"} ${(loading || notifUpdating === "email_enabled") ? "opacity-50" : ""}`}
+                  className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.email_enabled ? "bg-ha-primary" : "bg-[#E5E7EB]"} ${(loading || notifUpdating === "email_enabled") ? "opacity-50" : ""}`}
                   data-testid="toggle-email"
                 >
                   <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.email_enabled ? "left-[23px]" : "left-[3px]"}`} />
@@ -190,7 +190,7 @@ export default function PreferencesPage() {
       {showLangSheet && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowLangSheet(false)}>
           <div className="bg-white w-full max-w-[400px] rounded-t-[6px] sm:rounded-[6px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
-            <p className="text-[17px] font-bold text-[#000] text-center mb-4">{t("profile.language")}</p>
+            <p className="text-[17px] font-bold text-[#111111] text-center mb-4">{t("profile.language")}</p>
             {LANG_OPTIONS.map(lang => (
               <button
                 key={lang.code}
@@ -198,7 +198,7 @@ export default function PreferencesPage() {
                 className={`w-full flex items-center justify-between py-3.5 px-2 rounded-[6px] text-left active:bg-[#F7F7F7] transition-colors ${locale === lang.code ? "bg-ha-primary/10" : ""}`}
                 data-testid={`button-lang-${lang.code}`}
               >
-                <span className="text-[15px] text-[#000] font-medium">{lang.label}</span>
+                <span className="text-[15px] text-[#111111] font-medium">{lang.label}</span>
                 {locale === lang.code && <Check className="w-5 h-5 text-ha-primary" />}
               </button>
             ))}

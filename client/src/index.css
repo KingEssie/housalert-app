@@ -387,12 +387,12 @@
 
   .app-input {
     background: #ffffff;
-    border: 1.5px solid #000000;
-    border-radius: 6px;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 12px;
     height: 56px;
     padding: 12px 16px;
-    font-size: 15px;
-    color: #000000;
+    font-size: 16px;
+    color: #111111;
     width: 100%;
     outline: none;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
@@ -405,19 +405,19 @@
     box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.12);
   }
   .app-input:disabled {
-    background: #F9FAFB;
+    background: #F7F7F7;
     color: #6B7280;
   }
 
   .app-select {
     background: #ffffff;
-    border: 1.5px solid #000000;
-    border-radius: 6px;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 12px;
     height: 56px;
     padding: 12px 16px;
     padding-right: 40px;
-    font-size: 15px;
-    color: #000000;
+    font-size: 16px;
+    color: #111111;
     width: 100%;
     outline: none;
     appearance: none;
@@ -430,11 +430,11 @@
 
   .app-textarea {
     background: #ffffff;
-    border: 1.5px solid #000000;
-    border-radius: 6px;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 12px;
     padding: 16px;
-    font-size: 15px;
-    color: #000000;
+    font-size: 16px;
+    color: #111111;
     width: 100%;
     outline: none;
     resize: vertical;
@@ -632,14 +632,14 @@ input[type="range"]::-moz-range-thumb {
   border-color: #E5E7EB;
 }
 .ha-field-light::placeholder {
-  color: #999999;
+  color: #9CA3AF;
 }
 .ha-field-light:focus {
   border-color: #FF385C;
   box-shadow: 0 0 0 3px rgba(255,56,92,0.1);
 }
 .ha-field-light:disabled {
-  background: #F9F9F9;
+  background: #F7F7F7;
 }
 .ha-field-dark {
   background: transparent;
@@ -728,14 +728,14 @@ input[type="range"]::-moz-range-thumb {
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 .ob-input::placeholder {
-  color: #999999;
+  color: #9CA3AF;
 }
 .ob-input:focus {
   border-color: #FF385C !important;
   box-shadow: 0 0 0 3px rgba(255,56,92,0.1) !important;
 }
 .ob-input:disabled {
-  background: #F9F9F9;
+  background: #F7F7F7;
 }
 .ob-dark input[type="email"]::placeholder,
 .ob-dark input[type="password"]::placeholder,

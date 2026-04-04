@@ -60,7 +60,7 @@ export default function TipDetailPage() {
 
   return (
     <div className="min-h-screen bg-[#F7F7F7] flex flex-col">
-      <header className="sticky top-0 z-10 bg-[#F7F7F7] border-b border-[#E5E5E5]">
+      <header className="sticky top-0 z-10 bg-[#F7F7F7] border-b border-[#E5E7EB]">
         <div className="max-w-xl mx-auto flex items-center h-[56px] px-5">
           <button
             onClick={() => navigate("/dashboard?tab=tips")}
@@ -69,7 +69,7 @@ export default function TipDetailPage() {
           >
             <ArrowLeft className="w-4 h-4 text-[#6B7280]" />
           </button>
-          <h1 className="text-[17px] font-medium text-[#000] flex-1 tracking-wide">
+          <h1 className="text-[17px] font-medium text-[#111111] flex-1 tracking-wide">
             {t("tips.tipLabel")} {currentIndex + 1}/{TIP_IDS.length}
           </h1>
         </div>
@@ -93,7 +93,7 @@ export default function TipDetailPage() {
             <p className="text-[12px] font-medium text-ha-primary uppercase tracking-wide">
               {t("tips.tipLabel")} {currentIndex + 1}
             </p>
-            <h2 className="text-[22px] font-medium text-[#000] leading-tight" data-testid="text-tip-title">
+            <h2 className="text-[22px] font-medium text-[#111111] leading-tight" data-testid="text-tip-title">
               {tip.title}
             </h2>
           </div>
@@ -105,16 +105,16 @@ export default function TipDetailPage() {
 
         <button
           onClick={handleGoToContent}
-          className="w-full bg-white rounded-[6px] p-5 flex items-center gap-3 text-left hover:bg-[#FAFAFA] transition-colors active:scale-[0.985]"
+          className="w-full bg-white rounded-[6px] p-5 flex items-center gap-3 text-left hover:bg-[#F7F7F7] transition-colors active:scale-[0.985]"
           data-testid="button-open-content"
         >
           <Icon className="w-5 h-5 text-ha-primary flex-shrink-0" />
-          <span className="text-[14px] font-medium text-[#000] flex-1">{t("tips.openContent")}</span>
+          <span className="text-[14px] font-medium text-[#111111] flex-1">{t("tips.openContent")}</span>
           <ChevronRight className="w-4 h-4 text-[#9CA3AF]" />
         </button>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-[#F7F7F7] border-t border-[#E5E5E5] p-4 pb-5 z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-[#F7F7F7] border-t border-[#E5E7EB] p-4 pb-5 z-10">
         <div className="max-w-xl mx-auto flex gap-3">
           <Button
             onClick={handleMarkRead}
@@ -122,7 +122,7 @@ export default function TipDetailPage() {
             className={`flex-1 ha-btn font-medium ${
               isRead
                 ? "bg-ha-success-light text-ha-success border border-ha-success/30 hover:bg-ha-success-light"
-                : "bg-white text-[#000] border border-[#E5E5E5] hover:bg-[#F7F7F7]"
+                : "bg-white text-[#111111] border border-[#E5E7EB] hover:bg-[#F7F7F7]"
             }`}
             data-testid="button-mark-read"
           >

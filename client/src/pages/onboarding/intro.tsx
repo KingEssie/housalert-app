@@ -38,12 +38,12 @@ export default function OnboardingIntro() {
             <div key={step.num} className="flex items-start gap-3" data-testid={`step-${step.num}`}>
               <div
                 className="w-[26px] h-[26px] rounded-full flex items-center justify-center shrink-0 text-[14px] font-bold mt-[2px]"
-                style={{ backgroundColor: "#22C55E", color: "#111" }}
+                style={{ backgroundColor: "#16A34A", color: "#111111" }}
               >
                 {step.num}
               </div>
               <div>
-                <p className="text-[16px] font-bold leading-[1.25]" style={{ color: "#22C55E" }}>
+                <p className="text-[16px] font-bold leading-[1.25]" style={{ color: "#16A34A" }}>
                   {t(step.titleKey)}
                 </p>
                 <p className="text-[15px] mt-1 leading-[1.45]" style={{ color: "rgba(255,255,255,0.88)" }}>
@@ -95,7 +95,7 @@ export default function OnboardingIntro() {
             <button
               onClick={() => navigate("/login")}
               className="text-[14px] font-semibold"
-              style={{ color: "#ff4d8d" }}
+              style={{ color: "#FF385C" }}
               data-testid="link-intro-login"
             >
               {t("onboarding.intro.login")}

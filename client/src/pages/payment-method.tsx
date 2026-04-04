@@ -52,7 +52,7 @@ export default function PaymentMethodPage() {
               <CreditCard className="w-5 h-5 text-ha-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[16px] font-bold text-[#000]" data-testid="text-card-brand">
+              <p className="text-[16px] font-bold text-[#111111]" data-testid="text-card-brand">
                 {t("paymentMethodPage.managedByStripe")}
               </p>
               <p className="text-[14px] text-ha-text-muted" data-testid="text-card-desc">
