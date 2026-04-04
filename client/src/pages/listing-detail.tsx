@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth";
 import { useSubscription } from "@/lib/subscription";
 import { useTranslation } from "@/i18n";
 import { trackEvent } from "@/lib/track-event";
-import { MapPin, Euro, BedDouble, Ruler, Clock, Globe, Zap, ImageIcon, ArrowLeft, Info, Lock, Crown } from "lucide-react";
+import { MapPin, BedDouble, Ruler, Clock, Globe, Zap, ImageIcon, ArrowLeft, Info, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 function FloatingBackButton({ navigate }: { navigate: (to: string) => void }) {
@@ -25,7 +25,7 @@ function FloatingBackButton({ navigate }: { navigate: (to: string) => void }) {
   }
   return (
     <div className="fixed top-[max(0.75rem,env(safe-area-inset-top))] left-4 z-30">
-      <button onClick={handleBack} className="w-12 h-12 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)] flex items-center justify-center active:scale-95 transition-transform border border-[#E5E7EB]" aria-label="Back" data-testid="button-back"><ArrowLeft className="w-5 h-5 text-[#111111]" /></button>
+      <button onClick={handleBack} className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center active:scale-95 transition-transform" aria-label="Back" data-testid="button-back"><ArrowLeft className="w-5 h-5 text-[#111111]" /></button>
     </div>
   );
 }
@@ -34,7 +34,7 @@ const FRESH_BADGE_STYLES: Record<string, { bg: string; text: string }> = {
   net_binnen: { bg: "bg-ha-primary/20", text: "text-ha-primary" },
   nieuw: { bg: "bg-ha-primary", text: "text-white" },
   vandaag: { bg: "bg-ha-primary", text: "text-white" },
-  ouder: { bg: "bg-ha-surface", text: "text-ha-text-muted" },
+  ouder: { bg: "bg-white/20", text: "text-white/80" },
 };
 
 const FRESH_LABEL_KEYS: Record<string, string> = {
@@ -136,16 +136,14 @@ export default function ListingDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F7F7F7" }}>
+      <div className="min-h-screen flex flex-col relative bg-white">
         <FloatingBackButton navigate={navigate} />
         <div className="animate-pulse">
-          <div className="h-[260px] bg-[#E5E7EB]" />
-          <div className="max-w-xl mx-auto w-full px-5 pt-5 space-y-4">
-            <div className="app-card space-y-3">
-              <div className="h-5 bg-ha-surface rounded w-28" />
-              <div className="h-7 bg-ha-surface rounded w-3/4" />
-              <div className="h-4 bg-ha-surface rounded w-1/2" />
-            </div>
+          <div className="w-full bg-[#F7F7F7]" style={{ aspectRatio: "4/3" }} />
+          <div className="px-5 pt-5 space-y-3">
+            <div className="h-6 bg-[#F7F7F7] rounded w-3/4" />
+            <div className="h-4 bg-[#F7F7F7] rounded w-1/2" />
+            <div className="h-8 bg-[#F7F7F7] rounded w-1/3 mt-2" />
           </div>
         </div>
       </div>
@@ -154,13 +152,13 @@ export default function ListingDetailPage() {
 
   if (isError || !listing) {
     return (
-      <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F7F7F7" }}>
+      <div className="min-h-screen flex flex-col relative bg-white">
         <FloatingBackButton navigate={navigate} />
-        <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-16">
-          <div className="app-card text-center">
-            <p className="text-[18px] font-bold text-[#111111] mb-2">{t("listing.notFound")}</p>
-            <p className="text-[14px] text-ha-text-secondary mb-4">{t("listing.notFoundDesc")}</p>
-            <Button onClick={() => navigate("/dashboard")} className="h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold" data-testid="button-back-dashboard">
+        <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-20">
+          <div className="text-center">
+            <p className="text-[20px] font-bold text-[#111111] mb-2">{t("listing.notFound")}</p>
+            <p className="text-[14px] text-[#6B7280] mb-6">{t("listing.notFoundDesc")}</p>
+            <Button onClick={() => navigate("/dashboard")} className="h-[50px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-bold px-8" data-testid="button-back-dashboard">
               {t("listing.backToDashboard")}
             </Button>
           </div>
@@ -174,7 +172,7 @@ export default function ListingDetailPage() {
   const gradient = getCityGradient(listing.city);
 
   return (
-    <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F7F7F7" }}>
+    <div className="min-h-screen flex flex-col relative bg-white">
       <FloatingBackButton navigate={navigate} />
 
       <div className="relative">
@@ -182,24 +180,22 @@ export default function ListingDetailPage() {
           <img
             src={listing.image_url!}
             alt={listing.title}
-            className="w-full h-[260px] object-cover"
+            className="w-full object-cover"
+            style={{ aspectRatio: "4/3", maxHeight: "360px" }}
             onError={() => setImgError(true)}
             referrerPolicy="no-referrer"
             data-testid="img-listing-hero"
           />
         ) : (
-          <div className={`w-full h-[260px] bg-gradient-to-br ${gradient} flex items-center justify-center relative`}>
+          <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "4/3", maxHeight: "360px" }}>
             <div className="absolute inset-0 bg-black/5" />
-            <div className="flex flex-col items-center gap-2 text-ha-icon-secondary">
-              <ImageIcon className="w-10 h-10" />
-              <span className="text-[13px] font-medium capitalize">{listing.source}</span>
-            </div>
+            <ImageIcon className="w-12 h-12 text-[#111111]/15" />
           </div>
         )}
 
-        <div className="absolute top-3 left-[68px] flex items-center gap-2">
+        <div className="absolute top-3 left-[56px] flex items-center gap-2">
           {listing.fresh_label !== "ouder" && (
-            <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm ${style.bg} ${style.text}`} data-testid="badge-freshness">
+            <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full backdrop-blur-sm ${style.bg} ${style.text}`} data-testid="badge-freshness">
               {t(FRESH_LABEL_KEYS[listing.fresh_label] ?? "freshness.older")}
             </span>
           )}
@@ -210,158 +206,151 @@ export default function ListingDetailPage() {
         </div>
       </div>
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-5 -mt-6 relative z-10 pb-36">
-        <div className="space-y-4">
-          <div className="app-card">
-            <h1 className="text-[24px] font-bold text-[#111111] leading-[1.2] tracking-[-0.02em] mb-2" data-testid="text-listing-title">
-              {listing.title}
-            </h1>
+      <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-5 pb-36">
+        <h1 className="text-[22px] font-bold text-[#111111] leading-[1.25] tracking-[-0.01em]" data-testid="text-listing-title">
+          {listing.title}
+        </h1>
 
-            <div className="flex items-center gap-1.5 text-[15px] text-ha-text-secondary mb-4">
-              <MapPin className="w-4 h-4 flex-shrink-0" />
-              <span data-testid="text-listing-location">
-                {listing.district?.trim() ? `${listing.district.trim()} · ${listing.city}` : listing.city}
-              </span>
-            </div>
-
-            {listing.price > 0 && (
-              <div className="flex items-baseline gap-1 mb-1">
-                <span className="text-[28px] font-bold text-[#111111]" data-testid="text-listing-price">€{listing.price}</span>
-                <span className="text-[15px] font-medium text-ha-text-muted">{t("common.perMonth")}</span>
-              </div>
-            )}
-          </div>
-
-          <div className="app-card">
-            <h2 className="text-section-title mb-4">{t("listing.details")}</h2>
-            <div className="grid grid-cols-2 gap-4">
-              {listing.bedrooms > 0 && (
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-[8px] bg-[#F7F7F7] flex items-center justify-center">
-                    <BedDouble className="w-5 h-5 text-ha-text-muted" />
-                  </div>
-                  <div>
-                    <p className="text-[12px] text-ha-text-muted">{t("listing.bedrooms")}</p>
-                    <p className="text-[15px] font-semibold text-[#111111]" data-testid="text-listing-bedrooms">{listing.bedrooms}</p>
-                  </div>
-                </div>
-              )}
-
-              {listing.size_m2 > 0 && (
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-[8px] bg-[#F7F7F7] flex items-center justify-center">
-                    <Ruler className="w-5 h-5 text-ha-text-muted" />
-                  </div>
-                  <div>
-                    <p className="text-[12px] text-ha-text-muted">{t("listing.area")}</p>
-                    <p className="text-[15px] font-semibold text-[#111111]" data-testid="text-listing-size">{listing.size_m2} m²</p>
-                  </div>
-                </div>
-              )}
-
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-[8px] bg-[#F7F7F7] flex items-center justify-center">
-                  <Globe className="w-5 h-5 text-ha-text-muted" />
-                </div>
-                <div>
-                  <p className="text-[12px] text-ha-text-muted">{t("listing.source")}</p>
-                  {hasAccess ? (
-                    <p className="text-[15px] font-semibold capitalize text-ha-primary" data-testid="text-listing-source">{listing.source}</p>
-                  ) : (
-                    <p className="text-[15px] font-semibold text-ha-icon-secondary flex items-center gap-1" data-testid="text-listing-source-locked">
-                      <Lock className="w-3.5 h-3.5" />
-                      {t("listing.sourceHidden")}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-[8px] bg-[#F7F7F7] flex items-center justify-center">
-                  <Clock className="w-5 h-5 text-ha-text-muted" />
-                </div>
-                <div>
-                  <p className="text-[12px] text-ha-text-muted">{t("listing.posted")}</p>
-                  <p className="text-[15px] font-semibold text-[#111111]" data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {(() => {
-            const hf = listing.hybrid_filters;
-            if (!hf) return null;
-            const unknowns: { key: string; label: string }[] = [];
-            if (hf.furnished === "unknown") unknowns.push({ key: "furnished", label: t("hybridFilter.furnishedUnknown") });
-            if (hf.district === "unknown") unknowns.push({ key: "district", label: t("hybridFilter.districtUnknown") });
-            const hasPetsNote = hf.pets === "unknown";
-            if (unknowns.length === 0 && !hasPetsNote) return null;
-            return (
-              <div
-                className="app-card space-y-2"
-                data-testid="section-hybrid-filters"
-                data-hybrid-furnished={hf.furnished}
-                data-hybrid-district={hf.district}
-                data-hybrid-pets={hf.pets}
-              >
-                {unknowns.length > 0 && (
-                  <div className="flex items-start gap-2 text-[12px] text-ha-icon-secondary">
-                    <Info className="w-3.5 h-3.5 flex-shrink-0 mt-[1px]" />
-                    <div>
-                      <p className="font-semibold">{t("hybridFilter.unknownHint")}</p>
-                      <ul className="mt-1 space-y-0.5">
-                        {unknowns.map((u) => (
-                          <li key={u.key}>· {u.label}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                )}
-                {hasPetsNote && (
-                  <div className="flex items-start gap-2 text-[12px] text-ha-icon-secondary">
-                    <Info className="w-3.5 h-3.5 flex-shrink-0 mt-[1px]" />
-                    <p>{t("hybridFilter.petsNote")}</p>
-                  </div>
-                )}
-              </div>
-            );
-          })()}
+        <div className="flex items-center gap-1 text-[14px] text-[#6B7280] mt-2">
+          <MapPin className="w-4 h-4 flex-shrink-0" strokeWidth={1.8} />
+          <span data-testid="text-listing-location">
+            {listing.district?.trim() ? `${listing.district.trim()} · ${listing.city}` : listing.city}
+          </span>
         </div>
+
+        {listing.price > 0 && (
+          <div className="flex items-baseline gap-1.5 mt-4">
+            <span className="text-[26px] font-bold text-[#111111]" data-testid="text-listing-price">€{listing.price}</span>
+            <span className="text-[14px] text-[#9CA3AF]">{t("common.perMonth")}</span>
+          </div>
+        )}
+
+        <div className="grid grid-cols-2 gap-x-4 gap-y-4 mt-6 pt-5 border-t border-[#F0F0F0]">
+          {listing.bedrooms > 0 && (
+            <div className="flex items-center gap-3" data-testid="text-listing-bedrooms">
+              <div className="w-10 h-10 rounded-[10px] bg-[#F7F7F7] flex items-center justify-center">
+                <BedDouble className="w-5 h-5 text-[#9CA3AF]" />
+              </div>
+              <div>
+                <p className="text-[12px] text-[#9CA3AF]">{t("listing.bedrooms")}</p>
+                <p className="text-[15px] font-bold text-[#111111]">{listing.bedrooms}</p>
+              </div>
+            </div>
+          )}
+
+          {listing.size_m2 > 0 && (
+            <div className="flex items-center gap-3" data-testid="text-listing-size">
+              <div className="w-10 h-10 rounded-[10px] bg-[#F7F7F7] flex items-center justify-center">
+                <Ruler className="w-5 h-5 text-[#9CA3AF]" />
+              </div>
+              <div>
+                <p className="text-[12px] text-[#9CA3AF]">{t("listing.area")}</p>
+                <p className="text-[15px] font-bold text-[#111111]">{listing.size_m2} m²</p>
+              </div>
+            </div>
+          )}
+
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-[10px] bg-[#F7F7F7] flex items-center justify-center">
+              <Globe className="w-5 h-5 text-[#9CA3AF]" />
+            </div>
+            <div>
+              <p className="text-[12px] text-[#9CA3AF]">{t("listing.source")}</p>
+              {hasAccess ? (
+                <p className="text-[15px] font-bold capitalize text-ha-primary" data-testid="text-listing-source">{listing.source}</p>
+              ) : (
+                <p className="text-[15px] font-bold text-[#9CA3AF] flex items-center gap-1" data-testid="text-listing-source-locked">
+                  <Lock className="w-3.5 h-3.5" />
+                  {t("listing.sourceHidden")}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-[10px] bg-[#F7F7F7] flex items-center justify-center">
+              <Clock className="w-5 h-5 text-[#9CA3AF]" />
+            </div>
+            <div>
+              <p className="text-[12px] text-[#9CA3AF]">{t("listing.posted")}</p>
+              <p className="text-[15px] font-bold text-[#111111]" data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</p>
+            </div>
+          </div>
+        </div>
+
+        {(() => {
+          const hf = listing.hybrid_filters;
+          if (!hf) return null;
+          const unknowns: { key: string; label: string }[] = [];
+          if (hf.furnished === "unknown") unknowns.push({ key: "furnished", label: t("hybridFilter.furnishedUnknown") });
+          if (hf.district === "unknown") unknowns.push({ key: "district", label: t("hybridFilter.districtUnknown") });
+          const hasPetsNote = hf.pets === "unknown";
+          if (unknowns.length === 0 && !hasPetsNote) return null;
+          return (
+            <div
+              className="mt-5 pt-4 border-t border-[#F0F0F0] space-y-2"
+              data-testid="section-hybrid-filters"
+              data-hybrid-furnished={hf.furnished}
+              data-hybrid-district={hf.district}
+              data-hybrid-pets={hf.pets}
+            >
+              {unknowns.length > 0 && (
+                <div className="flex items-start gap-2 text-[12px] text-[#9CA3AF]">
+                  <Info className="w-3.5 h-3.5 flex-shrink-0 mt-[1px]" />
+                  <div>
+                    <p className="font-semibold">{t("hybridFilter.unknownHint")}</p>
+                    <ul className="mt-1 space-y-0.5">
+                      {unknowns.map((u) => (
+                        <li key={u.key}>· {u.label}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
+              {hasPetsNote && (
+                <div className="flex items-start gap-2 text-[12px] text-[#9CA3AF]">
+                  <Info className="w-3.5 h-3.5 flex-shrink-0 mt-[1px]" />
+                  <p>{t("hybridFilter.petsNote")}</p>
+                </div>
+              )}
+            </div>
+          );
+        })()}
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] p-4 pb-5 z-10">
-        <div className="max-w-xl mx-auto flex flex-col gap-2">
+      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-[#F0F0F0] px-5 pt-3 pb-5 z-10" style={{ paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))" }}>
+        <div className="max-w-xl mx-auto">
           {hasAccess ? (
-            <>
+            <div className="flex items-center gap-4">
               {listing.price > 0 && (
-                <div className="flex items-baseline gap-1 mb-1">
+                <div className="flex-shrink-0">
                   <span className="text-[20px] font-bold text-[#111111]" data-testid="text-bar-price">€{listing.price}</span>
-                  <span className="text-[13px] font-medium text-ha-text-muted">{t("common.perMonth")}</span>
+                  <span className="text-[12px] text-[#9CA3AF] ml-1">{t("common.perMonth")}</span>
                 </div>
               )}
               <Button
                 onClick={() => navigate(`/apply/${listing.id}`)}
-                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold flex items-center justify-center gap-2"
+                className="flex-1 h-[50px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-bold flex items-center justify-center gap-2"
                 data-testid="button-reageer-detail"
               >
                 <Zap className="w-4 h-4" />
                 {t("listing.applyDirect")}
               </Button>
-            </>
+            </div>
           ) : (
-            <>
-              <p className="text-[14px] text-ha-text-secondary text-center mb-1" data-testid="text-locked-hint">
+            <div>
+              <p className="text-[13px] text-[#9CA3AF] text-center mb-2" data-testid="text-locked-hint">
                 {t("listing.lockedHint")}
               </p>
               <Button
                 onClick={() => navigate("/paywall")}
-                className="w-full h-[56px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold flex items-center justify-center gap-2"
+                className="w-full h-[50px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-bold flex items-center justify-center gap-2"
                 data-testid="button-upgrade-detail"
               >
                 <Lock className="w-4 h-4" />
                 {t("listing.upgradeCta")}
               </Button>
-            </>
+            </div>
           )}
         </div>
       </div>

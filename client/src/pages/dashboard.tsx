@@ -199,21 +199,19 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
   if (profiles.length === 0) {
     return (
       <div data-testid="section-search-profiles-empty">
-        <div className="rounded-[--ha-card-radius] bg-white p-5">
+        <div className="rounded-[16px] bg-white p-5">
           <div className="flex items-center gap-3 mb-3">
-            <Search className="w-5 h-5 text-ha-primary flex-shrink-0" />
-            <p className="text-[17px] font-bold text-[#111111] flex-1">{t("searchProfiles.sectionTitle")}</p>
-            <span className="text-[12px] font-semibold text-[#9CA3AF]">0/{MAX_PROFILES}</span>
-          </div>
-          <div className="flex flex-col items-center text-center py-6 px-4">
-            <div className="w-12 h-12 rounded-full bg-[#F7F7F7] flex items-center justify-center mb-3">
-              <Search className="w-6 h-6 text-[#9CA3AF]" />
+            <div className="w-8 h-8 rounded-full bg-ha-primary/10 flex items-center justify-center flex-shrink-0">
+              <Search className="w-4 h-4 text-ha-primary" />
             </div>
-            <p className="text-[16px] font-bold text-[#111111] mb-1" data-testid="text-empty-title">{t("searchProfiles.emptyTitle")}</p>
-            <p className="text-[14px] text-[#4B5563] mb-4" data-testid="text-empty-subtitle">{t("searchProfiles.emptySubtitle")}</p>
+            <p className="text-[17px] font-bold text-[#111111] flex-1">{t("searchProfiles.sectionTitle")}</p>
+          </div>
+          <div className="flex flex-col items-center text-center py-5 px-4">
+            <p className="text-[15px] font-bold text-[#111111] mb-1" data-testid="text-empty-title">{t("searchProfiles.emptyTitle")}</p>
+            <p className="text-[13px] text-[#9CA3AF] mb-5 leading-relaxed" data-testid="text-empty-subtitle">{t("searchProfiles.emptySubtitle")}</p>
             <button
               onClick={() => navigate("/dashboard/searches/new")}
-              className="px-5 py-2.5 rounded-full bg-ha-primary text-white font-bold text-[15px] hover:opacity-90 transition-opacity"
+              className="w-full h-[48px] rounded-full bg-ha-primary text-white font-bold text-[15px] hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
               data-testid="button-create-first-profile"
             >
               {t("searchProfiles.createFirst")}
@@ -227,26 +225,28 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
   return (
     <>
       <div data-testid="section-search-profiles">
-        <div className="rounded-[--ha-card-radius] bg-white p-5">
+        <div className="rounded-[16px] bg-white p-5">
           <div className="flex items-center gap-3 mb-3">
-            <Search className="w-5 h-5 text-ha-primary flex-shrink-0" />
+            <div className="w-8 h-8 rounded-full bg-ha-primary/10 flex items-center justify-center flex-shrink-0">
+              <Search className="w-4 h-4 text-ha-primary" />
+            </div>
             <p className="text-[17px] font-bold text-[#111111] flex-1">{t("searchProfiles.sectionTitle")}</p>
-            <span className="text-[12px] font-semibold text-[#9CA3AF]">{profiles.length}/{MAX_PROFILES}</span>
+            <span className="text-[12px] font-medium text-[#C4C4C4]">{profiles.length}/{MAX_PROFILES}</span>
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1.5">
             {profiles.map((p) => (
               <div
                 key={p.id}
-                className="flex items-center gap-3 py-3.5 px-4 rounded-[--ha-card-inner-radius] bg-[#F7F7F7] cursor-pointer hover:bg-[#F0F0F0] transition-colors"
+                className="flex items-center gap-3 py-3 px-3.5 rounded-[12px] bg-[#F7F7F7] cursor-pointer hover:bg-[#F0F0F0] transition-colors active:scale-[0.99]"
                 onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
                 data-testid={`card-search-profile-${p.id}`}
               >
-                <span className="w-2.5 h-2.5 rounded-full bg-ha-success flex-shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-ha-success flex-shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-[15px] font-bold text-[#111111] line-clamp-1" data-testid={`text-profile-title-${p.id}`}>
+                  <p className="text-[14px] font-bold text-[#111111] line-clamp-1" data-testid={`text-profile-title-${p.id}`}>
                     {getProfileTitle(p, t, locale)}
                   </p>
-                  <p className="text-[13px] text-[#4B5563] mt-0.5 line-clamp-1" data-testid={`text-profile-summary-${p.id}`}>
+                  <p className="text-[12px] text-[#9CA3AF] mt-0.5 line-clamp-1" data-testid={`text-profile-summary-${p.id}`}>
                     {getProfileSummary(p, t)}
                   </p>
                 </div>
@@ -285,7 +285,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
           {canAdd ? (
             <button
               onClick={() => navigate("/dashboard/searches/new")}
-              className="w-full mt-3 py-3 rounded-[--ha-card-inner-radius] bg-ha-primary/5 border border-ha-primary/20 text-[15px] font-semibold text-ha-primary hover:bg-ha-primary/10 transition-colors flex items-center justify-center gap-1.5"
+              className="w-full mt-2 h-[44px] rounded-full bg-ha-primary/8 text-[14px] font-bold text-ha-primary hover:bg-ha-primary/15 transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
               data-testid="button-add-search-profile"
             >
               {t("searchProfiles.addProfile")}

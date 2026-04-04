@@ -1,0 +1,92 @@
+Now move to Phase 4: final premium polish and visual impact upgrade.
+
+GOAL:
+Transform the app from “clean and correct” to “premium and attractive”.
+
+IMPORTANT:
+Do NOT redesign everything.
+Focus on making key elements more visually impactful and reducing remaining dullness.
+
+==================================================
+1. LISTINGS — IMAGE FIRST DESIGN
+==================================================
+
+Make listings feel more visual and engaging:
+
+- increase visual dominance of the image
+- reduce visual weight of text below the image
+- slightly increase image height if needed
+- ensure image corners feel premium (soft radius, consistent)
+
+Goal:
+Listings should feel scrollable and attractive, not just informational.
+
+==================================================
+2. STRONGER CONTRAST
+==================================================
+
+Reduce remaining dull grey feeling:
+
+- make titles darker (#111111)
+- ensure price stands out clearly
+- reduce overuse of mid-grey text
+- increase contrast between levels
+
+Goal:
+Clear hierarchy at a glance.
+
+==================================================
+3. REDUCE TEXT DENSITY
+==================================================
+
+Where possible:
+
+- shorten or truncate long titles better
+- avoid overly long listing titles dominating the card
+- keep it clean and scannable
+
+==================================================
+4. HOME — CREATE A PRIMARY ACTION FEEL
+==================================================
+
+Improve first impression:
+
+- make Zoekprofielen feel like the main entry point
+- reduce visual competition from other sections
+- consider slightly increasing its prominence (spacing or emphasis)
+
+Goal:
+User immediately knows what to do.
+
+==================================================
+5. DETAIL SCREEN — REMOVE NESTED CARD FEELING
+==================================================
+
+Simplify:
+
+- reduce “card inside card” feeling
+- flatten sections where possible
+- improve vertical flow
+
+Goal:
+Feels like a natural screen, not stacked UI blocks.
+
+==================================================
+6. MICRO POLISH
+==================================================
+
+- check alignment everywhere
+- ensure consistent padding
+- refine icon sizes vs text
+- smooth out spacing inconsistencies
+
+==================================================
+OUTPUT
+==================================================
+
+After finishing, show:
+1. what changed in listing visuals
+2. how contrast was improved
+3. what text density changes were made
+4. what was simplified in detail screen
+5. final polish changes
