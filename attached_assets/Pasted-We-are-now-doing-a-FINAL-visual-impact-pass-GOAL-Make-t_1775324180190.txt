@@ -1,0 +1,66 @@
+We are now doing a FINAL visual impact pass.
+
+GOAL:
+Make the app feel visually attractive and engaging, not just clean.
+
+IMPORTANT:
+This is NOT about small polish.
+This is about visual impact and simplifying what the user sees.
+
+==================================================
+1. LISTING CARDS — SIMPLIFY AND MAKE THEM VISUAL
+==================================================
+
+- Reduce visible text density
+- Title max 2 lines, prefer shorter display
+- Increase spacing between image and text
+- Make image feel more dominant than text
+- Reduce emphasis on secondary info (location, meta)
+- Keep only the most important info visible at a glance
+
+Goal:
+Listings should feel like visual content, not information blocks.
+
+==================================================
+2. TYPOGRAPHY — INCREASE CONTRAST
+==================================================
+
+- Titles: strong black (#111111), bold
+- Price: clearly separated and easy to scan
+- Secondary text: lighter and less dominant
+
+Avoid:
+Everything having equal visual weight.
+
+==================================================
+3. HOME — CREATE ONE CLEAR ENTRY POINT
+==================================================
+
+- Make Zoekprofielen visually dominant
+- Reduce emphasis of other sections
+- Increase spacing around primary section
+- Make it obvious what the user should do first
+
+==================================================
+4. REDUCE OVERALL VISUAL NOISE
+==================================================
+
+- Remove anything not strictly needed
+- Reduce text where possible
+- Keep screens cleaner and more minimal
+
+==================================================
+5. KEEP FUNCTIONALITY UNCHANGED
+==================================================
+
+Only visual changes.
+
+==================================================
+OUTPUT
+==================================================
+
+Explain:
+1. what was simplified in listings
+2. how text density was reduced
+3. how home focus was improved
+4. what visual impact improvements were made

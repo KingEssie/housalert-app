@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Heart, ImageIcon, Lock, MapPin, BedDouble, Maximize2, CheckCircle2 } from "lucide-react";
+import { Heart, ImageIcon, Lock, MapPin, CheckCircle2 } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import type { ApiMatch } from "@/lib/listings";
 
@@ -20,19 +20,6 @@ function getCityGradient(city: string): string {
     if (key.includes(name)) return gradient;
   }
   return CITY_GRADIENTS.default;
-}
-
-function relativeTimeShort(dateStr: string | null | undefined, t: (key: string, params?: Record<string, string | number>) => string): string {
-  if (!dateStr) return "";
-  const diff = Date.now() - new Date(dateStr).getTime();
-  if (diff < 0) return t("freshness.justNow");
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return t("freshness.justNow");
-  if (mins < 60) return t("freshness.minutesAgo", { n: mins });
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return t("freshness.hoursAgo", { n: hours });
-  const days = Math.floor(hours / 24);
-  return days === 1 ? t("freshness.dayAgo", { n: days }) : t("freshness.daysAgo", { n: days });
 }
 
 function formatPrice(price: number, locale: string): string {
@@ -70,7 +57,6 @@ export function ListingCardFull({
   const gradient = getCityGradient(match.city);
   const hasImage = !!match.image_url && !imgError;
   const seenAt = match.first_seen_at || match.matched_at;
-  const timeAgo = relativeTimeShort(seenAt, t);
   const isNew = seenAt ? (Date.now() - new Date(seenAt).getTime()) / 3600000 < 24 : false;
 
   function handleHeartClick(e: React.MouseEvent) {
@@ -85,7 +71,7 @@ export function ListingCardFull({
       data-testid={`card-match-${match.listing_id}`}
     >
       <div className="rounded-[16px] bg-white overflow-hidden">
-        <div className="relative overflow-hidden rounded-t-[16px]">
+        <div className="relative overflow-hidden">
           {hasImage ? (
             <img
               src={match.image_url!}
@@ -99,17 +85,15 @@ export function ListingCardFull({
           ) : (
             <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "3/2" }}>
               <div className="absolute inset-0 bg-black/5" />
-              <ImageIcon className="w-10 h-10 text-[#111111]/15" />
+              <ImageIcon className="w-10 h-10 text-[#111111]/10" />
             </div>
           )}
 
-          <div className="absolute top-3 left-3 flex gap-1.5">
-            {isNew && (
-              <span className="text-[11px] font-bold bg-ha-primary text-white px-3 py-1 rounded-full tracking-wide" data-testid={`badge-new-${match.listing_id}`}>
-                {t("freshness.new") || "Nieuw"}
-              </span>
-            )}
-          </div>
+          {isNew && (
+            <span className="absolute top-3 left-3 text-[11px] font-bold bg-ha-primary text-white px-3 py-1 rounded-full" data-testid={`badge-new-${match.listing_id}`}>
+              {t("freshness.new") || "Nieuw"}
+            </span>
+          )}
 
           <button
             onClick={handleHeartClick}
@@ -125,47 +109,28 @@ export function ListingCardFull({
               strokeWidth={2}
             />
           </button>
+
+          {match.price > 0 && (
+            <div className="absolute bottom-3 left-3">
+              <span className="text-[15px] font-bold text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]" data-testid={`badge-price-${match.listing_id}`}>
+                {formatPrice(match.price, locale)}
+                <span className="text-[12px] font-normal opacity-80 ml-0.5">{t("common.perMonthShort")}</span>
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="px-4 pt-3 pb-3.5">
           <h3
-            className="text-[16px] font-bold text-[#111111] leading-[1.3] line-clamp-1"
+            className="text-[16px] font-bold text-[#111111] leading-[1.3] line-clamp-2"
             data-testid={`text-match-title-${match.listing_id}`}
           >
             {match.title}
           </h3>
 
-          {match.price > 0 && (
-            <p className="text-[15px] font-bold text-[#111111] mt-1" data-testid={`badge-price-${match.listing_id}`}>
-              {formatPrice(match.price, locale)}
-              <span className="text-[13px] font-normal text-[#9CA3AF] ml-1">{t("common.perMonthShort")}</span>
-            </p>
-          )}
-
-          <div className="flex items-center gap-3 mt-2 text-[13px] text-[#6B7280]">
-            {match.city && (
-              <span className="flex items-center gap-1" data-testid={`detail-city-${match.listing_id}`}>
-                <MapPin className="w-[14px] h-[14px] text-[#9CA3AF] flex-shrink-0" strokeWidth={1.8} />
-                <span className="line-clamp-1">{match.city}</span>
-              </span>
-            )}
-            {match.bedrooms > 0 && (
-              <span className="flex items-center gap-1" data-testid={`detail-bedrooms-${match.listing_id}`}>
-                <BedDouble className="w-[14px] h-[14px] text-[#9CA3AF] flex-shrink-0" strokeWidth={1.8} />
-                {match.bedrooms}
-              </span>
-            )}
-            {match.size_m2 > 0 && (
-              <span className="flex items-center gap-1" data-testid={`detail-size-${match.listing_id}`}>
-                <Maximize2 className="w-[14px] h-[14px] text-[#9CA3AF] flex-shrink-0" strokeWidth={1.8} />
-                {match.size_m2} m²
-              </span>
-            )}
-            {timeAgo && (
-              <span className="text-[12px] text-[#9CA3AF] ml-auto flex-shrink-0">
-                {timeAgo}
-              </span>
-            )}
+          <div className="flex items-center gap-1 mt-1.5 text-[13px] text-[#9CA3AF]">
+            <MapPin className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={1.8} />
+            <span className="line-clamp-1" data-testid={`detail-city-${match.listing_id}`}>{match.city}</span>
           </div>
 
           {locked && (
@@ -205,7 +170,7 @@ interface ListingCardCompactProps {
 
 export function ListingCardCompact({ match, onCardClick }: ListingCardCompactProps) {
   const [imgError, setImgError] = useState(false);
-  const { t, locale } = useTranslation();
+  const { locale } = useTranslation();
   const hasImage = !!match.image_url && !imgError;
   const gradient = getCityGradient(match.city);
 
@@ -224,7 +189,7 @@ export function ListingCardCompact({ match, onCardClick }: ListingCardCompactPro
       data-testid={`card-recent-match-${match.listing_id}`}
     >
       <div className="rounded-[16px] bg-white overflow-hidden">
-        <div className="relative overflow-hidden rounded-t-[16px]">
+        <div className="relative overflow-hidden">
           {hasImage ? (
             <img
               src={match.image_url!}
@@ -238,21 +203,23 @@ export function ListingCardCompact({ match, onCardClick }: ListingCardCompactPro
           ) : (
             <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "16/9" }}>
               <div className="absolute inset-0 bg-black/5" />
-              <ImageIcon className="w-7 h-7 text-[#111111]/15" />
+              <ImageIcon className="w-7 h-7 text-[#111111]/10" />
+            </div>
+          )}
+
+          {match.price > 0 && (
+            <div className="absolute bottom-2 left-2.5">
+              <span className="text-[13px] font-bold text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]">
+                {formatPrice(match.price, locale)}
+              </span>
             </div>
           )}
         </div>
 
-        <div className="px-3.5 pt-2.5 pb-3">
+        <div className="px-3.5 pt-2 pb-2.5">
           <h3 className="text-[14px] font-bold text-[#111111] leading-snug line-clamp-1" data-testid={`text-recent-title-${match.listing_id}`}>
             {match.title}
           </h3>
-          {match.price > 0 && (
-            <p className="text-[13px] font-bold text-[#111111] mt-0.5">
-              {formatPrice(match.price, locale)}
-              <span className="text-[11px] font-normal text-[#9CA3AF] ml-0.5">{t("common.perMonthShort")}</span>
-            </p>
-          )}
           <p className="text-[12px] text-[#9CA3AF] mt-0.5 line-clamp-1" data-testid={`text-recent-city-${match.listing_id}`}>
             {match.city}
           </p>
@@ -287,7 +254,7 @@ export function ListingCardMini({ match, onCardClick }: ListingCardMiniProps) {
       data-testid={`card-recently-viewed-${match.listing_id}`}
     >
       <div className="rounded-[14px] bg-white overflow-hidden">
-        <div className="relative overflow-hidden rounded-t-[14px]">
+        <div className="relative overflow-hidden">
           {hasImage ? (
             <img
               src={match.image_url!}
@@ -301,17 +268,17 @@ export function ListingCardMini({ match, onCardClick }: ListingCardMiniProps) {
           ) : (
             <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "1/1" }}>
               <div className="absolute inset-0 bg-black/5" />
-              <ImageIcon className="w-5 h-5 text-[#111111]/15" />
+              <ImageIcon className="w-5 h-5 text-[#111111]/10" />
             </div>
           )}
         </div>
         <div className="px-2.5 pt-2 pb-2.5">
           <p className="text-[12px] font-bold text-[#111111] line-clamp-1" data-testid={`text-mini-title-${match.listing_id}`}>{match.title}</p>
-          <div className="flex items-center gap-1 text-[11px] text-[#9CA3AF] mt-0.5" data-testid={`text-mini-meta-${match.listing_id}`}>
+          <p className="text-[11px] text-[#9CA3AF] mt-0.5" data-testid={`text-mini-meta-${match.listing_id}`}>
             {match.price > 0 && <span className="font-semibold text-[#111111]">€{match.price}</span>}
-            {match.price > 0 && match.size_m2 > 0 && <span>·</span>}
+            {match.price > 0 && match.size_m2 > 0 && <span> · </span>}
             {match.size_m2 > 0 && <span>{match.size_m2} m²</span>}
-          </div>
+          </p>
         </div>
       </div>
     </div>

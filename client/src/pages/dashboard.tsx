@@ -533,25 +533,25 @@ function HomeTab({
         </h1>
       </div>
 
-      <div className="flex flex-col gap-5 px-4 pt-5">
+      <div className="flex flex-col gap-4 px-4 pt-5">
         <SearchProfilesSection profiles={profiles} navigate={navigate} />
 
         {(!subscription.isTrial && !subscription.isActive) && (
-          <div className="rounded-[--ha-card-radius] bg-white p-5" data-testid="card-upgrade-warning">
+          <div className="rounded-[16px] bg-white p-5" data-testid="card-upgrade-warning">
             <div className="flex items-start gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-[#F7F7F7] flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Lock className="w-5 h-5 text-[#111111]" />
+              <div className="w-9 h-9 rounded-full bg-[#F7F7F7] flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Lock className="w-4 h-4 text-[#111111]" />
               </div>
               <div className="flex-1">
-                <p className="text-[16px] font-bold text-[#111111]">Je loopt mogelijk je droomwoning mis...</p>
-                <p className="text-[14px] text-[#4B5563] mt-1 leading-relaxed">
-                  Met een gratis abonnement kan je niet reageren op woningen. Zo loop je mogelijk je droomwoning mis. Upgrade naar een betaald account en mis nooit meer een huurwoning!
+                <p className="text-[15px] font-bold text-[#111111]">Je loopt mogelijk je droomwoning mis...</p>
+                <p className="text-[13px] text-[#9CA3AF] mt-1 leading-relaxed">
+                  Upgrade en mis nooit meer een huurwoning!
                 </p>
               </div>
             </div>
             <button
               onClick={() => navigate("/paywall")}
-              className="w-full h-[50px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[15px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
+              className="w-full h-[48px] rounded-full bg-ha-primary text-white text-[15px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
               data-testid="button-upgrade-warning-cta"
             >
               Upgraden
@@ -559,7 +559,7 @@ function HomeTab({
           </div>
         )}
 
-        <div className="rounded-[--ha-card-radius] bg-white overflow-hidden" data-testid="section-tools">
+        <div className="rounded-[16px] bg-white overflow-hidden" data-testid="section-tools">
           <StatusCardInline
             icon={<Sparkles className="w-5 h-5 text-ha-primary" />}
             title={t("profile.reactionLetter2")}
@@ -570,7 +570,7 @@ function HomeTab({
             onAction={() => navigate("/application-letter")}
             testId="card-home-reaction-letter"
           />
-          <div className="h-px bg-[#E5E7EB]/60 mx-5" />
+          <div className="h-px bg-[#F0F0F0] mx-5" />
           <StatusCardInline
             icon={<Users className="w-5 h-5 text-ha-primary" />}
             title={t("profile.zoekbuddyTitle")}
@@ -583,26 +583,26 @@ function HomeTab({
           />
         </div>
 
-        <div data-testid="section-setup-progress" className="flex flex-col gap-2.5">
+        <div data-testid="section-setup-progress" className="flex flex-col gap-2">
           <HomeAccountCompletionCard accessToken={accessToken} navigate={navigate} />
           <HomeTipsCompletionCard navigate={navigate} />
         </div>
 
         <RecentlyViewedSection accessToken={accessToken} />
 
-        <div className="rounded-[--ha-card-radius] bg-[#111111] p-5" data-testid="card-home-referral">
+        <div className="rounded-[16px] bg-[#111111] p-5" data-testid="card-home-referral">
           <p className="text-[11px] font-bold text-ha-primary tracking-wider uppercase mb-1" data-testid="text-referral-label">
             {t("referral.homeLabel")}
           </p>
-          <p className="text-[17px] font-bold text-white leading-snug" data-testid="text-referral-body">
+          <p className="text-[16px] font-bold text-white leading-snug" data-testid="text-referral-body">
             {t("referral.homeBody")}
           </p>
-          <p className="text-[14px] text-white/50 mt-1.5 leading-relaxed" data-testid="text-referral-helper">
+          <p className="text-[13px] text-white/40 mt-1 leading-relaxed" data-testid="text-referral-helper">
             {t("referral.homeHelper")}
           </p>
           <button
             onClick={() => setReferralModalOpen(true)}
-            className="mt-4 h-[46px] px-6 rounded-[--ha-btn-radius] bg-ha-primary text-white text-[14px] font-bold transition-all hover:bg-ha-primary-hover active:scale-[0.97] inline-flex items-center gap-2"
+            className="mt-3 h-[44px] px-6 rounded-full bg-ha-primary text-white text-[14px] font-bold transition-all hover:bg-ha-primary-hover active:scale-[0.97] inline-flex items-center gap-2"
             data-testid="button-home-referral-cta"
           >
             {t("referral.promoCta")}
@@ -762,14 +762,11 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
         {apiMatchesQuery.isLoading ? (
           <div className="flex flex-col gap-3">
             {[1, 2].map((i) => (
-              <div key={i} className="animate-pulse rounded-[--ha-card-radius] bg-white overflow-hidden">
-                <div className="p-3 pb-0">
-                  <div className="rounded-[12px] bg-[#F7F7F7]" style={{ aspectRatio: "16/9" }} />
-                </div>
-                <div className="px-4 pt-3.5 pb-4 flex flex-col gap-2.5">
-                  <div className="h-5 bg-[#F7F7F7] rounded w-3/4" />
-                  <div className="h-4 bg-[#F7F7F7] rounded w-1/3" />
-                  <div className="h-3 bg-[#F7F7F7] rounded w-1/2" />
+              <div key={i} className="animate-pulse rounded-[16px] bg-white overflow-hidden">
+                <div className="bg-[#F0F0F0]" style={{ aspectRatio: "3/2" }} />
+                <div className="px-4 pt-3 pb-3.5 flex flex-col gap-2">
+                  <div className="h-5 bg-[#F0F0F0] rounded-lg w-3/4" />
+                  <div className="h-3.5 bg-[#F0F0F0] rounded-lg w-1/3" />
                 </div>
               </div>
             ))}
