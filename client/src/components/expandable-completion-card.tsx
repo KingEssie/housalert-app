@@ -10,20 +10,60 @@ export interface CompletionStep {
 
 interface ExpandableCompletionCardProps {
   title: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   steps: CompletionStep[];
   completedLabel: string;
+  subtitleFormat?: string;
   testId: string;
+  defaultExpanded?: boolean;
+}
+
+function CircularProgress({ percentage, size = 44 }: { percentage: number; size?: number }) {
+  const strokeWidth = 3.5;
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (percentage / 100) * circumference;
+
+  return (
+    <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="-rotate-90">
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke="#F0F0F0"
+          strokeWidth={strokeWidth}
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke="#FF385C"
+          strokeWidth={strokeWidth}
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          strokeLinecap="round"
+          className="transition-all duration-500"
+        />
+      </svg>
+      <span className="absolute inset-0 flex items-center justify-center text-[12px] font-bold text-[#111111]">
+        {percentage}%
+      </span>
+    </div>
+  );
 }
 
 export function ExpandableCompletionCard({
   title,
-  icon,
   steps,
   completedLabel,
+  subtitleFormat,
   testId,
+  defaultExpanded = false,
 }: ExpandableCompletionCardProps) {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(defaultExpanded);
 
   const doneCount = steps.filter((s) => s.completed).length;
   const totalCount = steps.length;
@@ -33,36 +73,28 @@ export function ExpandableCompletionCard({
 
   return (
     <div
-      className="rounded-[--ha-card-radius] bg-white overflow-hidden"
+      className="rounded-[16px] bg-white border border-[#F0F0F0] overflow-hidden"
       data-testid={testId}
     >
       <button
-        className="w-full px-5 py-4 flex items-center gap-3 text-left"
+        className="w-full px-4 py-4 flex items-center gap-3.5 text-left"
         onClick={() => setExpanded(!expanded)}
         data-testid={`${testId}-toggle`}
       >
-        <div className="flex-shrink-0">{icon}</div>
+        <CircularProgress percentage={percentage} />
         <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between">
-            <p className="text-[16px] font-bold text-[#111111]">{title}</p>
-            <ChevronDown
-              className={`w-5 h-5 text-[#9CA3AF] flex-shrink-0 transition-transform duration-200 ml-2 ${
-                expanded ? "rotate-180" : ""
-              }`}
-            />
-          </div>
-          <div className="mt-2 flex items-center gap-3">
-            <div className="flex-1 h-[6px] rounded-full bg-[#F7F7F7] overflow-hidden">
-              <div
-                className="h-full rounded-full bg-ha-success transition-all duration-500"
-                style={{ width: `${percentage}%` }}
-              />
-            </div>
-            <span className="text-[13px] font-semibold text-ha-success whitespace-nowrap">
-              {percentage}%
-            </span>
-          </div>
+          <p className="text-[15px] font-bold text-[#111111] leading-snug">{title}</p>
+          <p className="text-[13px] text-[#6B7280] mt-0.5">
+            {subtitleFormat
+              ? subtitleFormat.replace("{done}", String(doneCount)).replace("{total}", String(totalCount))
+              : `${doneCount} / ${totalCount} ${completedLabel}`}
+          </p>
         </div>
+        <ChevronDown
+          className={`w-5 h-5 text-[#9CA3AF] flex-shrink-0 transition-transform duration-200 ${
+            expanded ? "rotate-180" : ""
+          }`}
+        />
       </button>
 
       <div
@@ -70,36 +102,35 @@ export function ExpandableCompletionCard({
           expanded ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <div className="border-t border-[#E5E7EB]/60 px-5 pb-3">
-          {steps.map((step, idx) => (
+        <div className="px-4 pb-3 flex flex-col gap-1.5">
+          {steps.map((step) => (
             <button
               key={step.id}
               onClick={step.completed ? undefined : step.action}
               disabled={step.completed}
-              className={`w-full h-[50px] flex items-center gap-3 text-left transition-colors rounded-[--ha-card-inner-radius] ${
-                !step.completed ? "active:bg-ha-surface-hover" : ""
-              } ${idx < steps.length - 1 ? "border-b border-[#E5E7EB]/40" : ""}`}
+              className={`w-full h-[48px] flex items-center gap-3 px-3.5 text-left rounded-[12px] transition-colors ${
+                step.completed ? "bg-[#F8F8F8]" : "bg-[#F8F8F8] active:bg-[#EBEBEB]"
+              }`}
               data-testid={`${testId}-step-${step.id}`}
             >
-              <span className="w-6 h-6 rounded-full bg-[#F7F7F7] flex items-center justify-center text-[12px] font-semibold text-[#6B7280] flex-shrink-0">
-                {idx + 1}
-              </span>
               <span
-                className={`text-[14px] font-medium flex-1 leading-snug ${
+                className={`text-[14px] flex-1 leading-snug ${
                   step.completed
-                    ? "text-[#9CA3AF] line-through"
-                    : "text-[#111111]"
+                    ? "text-[#9CA3AF] line-through font-normal"
+                    : "text-[#111111] font-medium"
                 }`}
               >
                 {step.label}
               </span>
               <div className="flex-shrink-0">
                 {step.completed ? (
-                  <div className="w-[20px] h-[20px] rounded-full bg-ha-success flex items-center justify-center">
-                    <CheckCircle2 className="w-[12px] h-[12px] text-white" />
+                  <div className="w-[24px] h-[24px] rounded-full bg-[#3B82F6] flex items-center justify-center">
+                    <CheckCircle2 className="w-[14px] h-[14px] text-white" />
                   </div>
                 ) : (
-                  <ChevronRight className="w-4 h-4 text-[#9CA3AF]" />
+                  <div className="w-[24px] h-[24px] rounded-full bg-[#3B82F6] flex items-center justify-center">
+                    <ChevronRight className="w-[14px] h-[14px] text-white" />
+                  </div>
                 )}
               </div>
             </button>

@@ -29,10 +29,7 @@ import {
   ArrowLeft,
   Camera,
   Pencil,
-  Users,
-  Rocket,
   FileText,
-  Check,
   MoreVertical,
   Shield,
   HelpCircle,
@@ -45,7 +42,6 @@ import TipsPage, { getTipConfig, getTipsReadSet } from "@/pages/tips";
 import { getFlowTipSteps } from "@/pages/tips-flow";
 import { ReferralCodeModal } from "@/components/referral-code-modal";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { StatusCard, StatusCardInline } from "@/components/status-card";
 import { ListingCardFull, ListingCardMini } from "@/components/listing-card";
 
 const MAX_PROFILES = 4;
@@ -348,43 +344,78 @@ function HomeAccountCompletionCard({ accessToken, navigate }: { accessToken: str
   const getStrengthTask = (id: string) => strength?.tasks?.find(t => t.id === id);
 
   const steps: CompletionStep[] = [
-    { id: "push", label: t("activation.notificationsEnabled"), completed: status.notificationsEnabled, action: () => navigate("/settings/preferences") },
-    { id: "letter", label: t("strengthTask.applicationTemplate"), completed: getStrengthTask("application_template")?.completed ?? false, action: () => navigate("/application-letter") },
-    { id: "buddy", label: t("strengthTask.searchBuddy"), completed: getStrengthTask("search_buddy")?.completed ?? false, action: () => navigate("/profile/edit/search_buddy_email") },
-    { id: "search", label: t("activation.profileCreated"), completed: status.profileCreated, action: () => navigate("/dashboard/searches/new") },
+    { id: "push", label: t("home.taskNotifications"), completed: status.notificationsEnabled, action: () => navigate("/settings/preferences") },
+    { id: "buddy", label: t("home.taskSearchBuddy"), completed: getStrengthTask("search_buddy")?.completed ?? false, action: () => navigate("/profile/edit/search_buddy_email") },
+    { id: "search", label: t("home.taskOptimizeSearch"), completed: status.profileCreated, action: () => navigate("/dashboard/searches/new") },
+    { id: "letter", label: t("home.taskPrepLetter"), completed: getStrengthTask("application_template")?.completed ?? false, action: () => navigate("/application-letter") },
+    { id: "documents", label: t("home.taskDocuments"), completed: false, action: () => navigate("/tips/flow") },
   ];
 
   return (
     <ExpandableCompletionCard
-      title={t("profile.completeAccount")}
-      icon={<CheckCircle2 className="w-6 h-6 text-[#FF385C]" />}
+      title={t("home.accountCardTitle")}
       steps={steps}
       completedLabel={t("activation.completed")}
+      subtitleFormat={t("home.completionSubtitle")}
       testId="card-account-completion"
+      defaultExpanded
     />
   );
 }
 
-function HomeTipsCompletionCard({ navigate }: { navigate: (path: string) => void }) {
+function HomePrepCompletionCard({ accessToken, navigate, onTellFriends }: { accessToken: string | undefined; navigate: (path: string) => void; onTellFriends: () => void }) {
   const { t } = useTranslation();
 
+  const statusQuery = useQuery<ActivationStatus>({
+    queryKey: ["/api/activation-status"],
+    queryFn: async () => {
+      const res = await apiFetch("/api/activation-status", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      if (!res.ok) throw new Error("Failed to load");
+      return res.json();
+    },
+    enabled: !!accessToken,
+    staleTime: 60_000,
+  });
+
+  const strengthQuery = useQuery<{ tasks: { id: string; completed: boolean }[] }>({
+    queryKey: ["/api/profile-strength"],
+    queryFn: async () => {
+      const res = await apiFetch("/api/profile-strength", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      if (!res.ok) throw new Error("Failed to load");
+      return res.json();
+    },
+    enabled: !!accessToken,
+    staleTime: 60_000,
+  });
+
+  const status = statusQuery.data;
+  const strength = strengthQuery.data;
   const flowSteps = getFlowTipSteps();
   const readSet = getTipsReadSet();
+  if (!status) return null;
 
-  const steps: CompletionStep[] = flowSteps.map((tip) => ({
-    id: tip.id,
-    label: tip.title,
-    completed: readSet.has(tip.id),
-    action: () => navigate("/tips/flow"),
-  }));
+  const getStrengthTask = (id: string) => strength?.tasks?.find(t => t.id === id);
+
+  const steps: CompletionStep[] = [
+    { id: "intro_letter", label: t("home.taskWriteLetter"), completed: getStrengthTask("application_template")?.completed ?? false, action: () => navigate("/application-letter") },
+    { id: "tell_friends", label: t("home.taskTellFriends"), completed: false, action: onTellFriends },
+    { id: "add_search", label: t("home.taskAddSearch"), completed: status.profileCreated, action: () => navigate("/dashboard/searches/new") },
+    { id: "create_account", label: t("home.taskCreateAccount"), completed: true, action: () => {} },
+    { id: "online_presence", label: t("home.taskOnlinePresence"), completed: false, action: () => navigate("/profile/details") },
+    { id: "viewing_tips", label: t("home.taskViewingTips"), completed: readSet.has("besichtigung"), action: () => navigate("/tips/flow") },
+  ];
 
   return (
     <ExpandableCompletionCard
-      title={t("profile.tipsTitle")}
-      icon={<Rocket className="w-6 h-6 text-[#FF385C]" />}
+      title={t("home.prepCardTitle")}
       steps={steps}
       completedLabel={t("activation.completed")}
-      testId="card-tips-completion"
+      subtitleFormat={t("home.completionSubtitle")}
+      testId="card-prep-completion"
     />
   );
 }
@@ -433,7 +464,6 @@ function ProfileAccountCompletionCard({ navigate }: { navigate: (path: string) =
   return (
     <ExpandableCompletionCard
       title={t("profile.completeAccount")}
-      icon={<CheckCircle2 className="w-6 h-6 text-[#FF385C]" />}
       steps={steps}
       completedLabel={t("profile.completedLabel")}
       testId="card-profile-account-completion"
@@ -457,11 +487,171 @@ function ProfileTipsCompletionCard({ navigate }: { navigate: (path: string) => v
   return (
     <ExpandableCompletionCard
       title={t("profile.tipsTitle")}
-      icon={<Rocket className="w-6 h-6 text-[#FF385C]" />}
       steps={steps}
       completedLabel={t("profile.completedLabel")}
       testId="card-profile-tips-completion"
     />
+  );
+}
+
+function FiltersSection({ profiles, navigate }: { profiles: SearchProfile[]; navigate: (path: string) => void }) {
+  const { t, locale } = useTranslation();
+
+  const activeProfile = profiles[0];
+
+  const estimatedCount = profiles.length > 0
+    ? Math.max(3, Math.min(25, profiles.length * 8))
+    : null;
+
+  const filterRows = activeProfile ? [
+    {
+      label: t("home.filterBudget"),
+      value: activeProfile.price_max > 0
+        ? (activeProfile.price_min > 0 ? `€${activeProfile.price_min} – €${activeProfile.price_max}` : `Max €${activeProfile.price_max}`)
+        : t("home.filterNotSet"),
+    },
+    {
+      label: t("home.filterRooms"),
+      value: activeProfile.bedrooms_min > 0 ? `${activeProfile.bedrooms_min}+` : t("home.filterAny"),
+    },
+    {
+      label: t("home.filterSize"),
+      value: activeProfile.size_min > 0 ? `${activeProfile.size_min}+ m²` : t("home.filterAny"),
+    },
+    {
+      label: t("home.filterCity"),
+      value: localizeCityName(activeProfile.city_name || activeProfile.city || "", locale) || t("home.filterNotSet"),
+    },
+    {
+      label: t("home.filterPets"),
+      value: (activeProfile.extra_features && activeProfile.extra_features.includes("pets_allowed"))
+        ? t("common.yes")
+        : t("home.filterAny"),
+    },
+    {
+      label: t("home.filterFurnished"),
+      value: activeProfile.furnished === "yes" ? t("common.yes") : activeProfile.furnished === "no" ? t("common.no") : t("home.filterAny"),
+    },
+  ] : [];
+
+  return (
+    <div data-testid="section-filters">
+      <h2 className="text-[18px] font-bold text-[#111111] mb-1" data-testid="text-filters-title">
+        {t("home.filtersTitle")}
+      </h2>
+      <p className="text-[14px] text-[#6B7280] mb-3" data-testid="text-filters-expected">
+        {estimatedCount
+          ? t("home.filtersExpected", { count: estimatedCount })
+          : t("home.filtersExpectedFallback")}
+      </p>
+
+      {filterRows.length > 0 ? (
+        <div className="rounded-[16px] bg-white border border-[#F0F0F0] overflow-hidden" data-testid="card-filters-summary">
+          {filterRows.map((row, idx) => (
+            <button
+              key={idx}
+              onClick={() => navigate(`/dashboard/searches/edit/${activeProfile.id}`)}
+              className="w-full flex items-center h-[48px] px-4 text-left active:bg-[#F8F8F8] transition-colors"
+              data-testid={`filter-row-${idx}`}
+            >
+              <span className="text-[14px] text-[#6B7280] flex-1">{row.label}</span>
+              <span className="text-[14px] font-medium text-[#111111] mr-2">{row.value}</span>
+              <MoreVertical className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-[16px] bg-white border border-[#F0F0F0] p-5 text-center" data-testid="card-filters-empty">
+          <p className="text-[14px] text-[#6B7280] mb-3">{t("home.noProfileDesc")}</p>
+          <button
+            onClick={() => navigate("/dashboard/searches/new")}
+            className="h-[44px] px-6 rounded-full bg-ha-primary text-white text-[14px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
+            data-testid="button-filters-create-profile"
+          >
+            {t("home.createProfile")}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function RecentMatchesSection({
+  accessToken,
+  subscription,
+  navigate,
+  setActiveTab,
+}: {
+  accessToken: string | undefined;
+  subscription: { isTrial: boolean; isExpired: boolean; isActive: boolean };
+  navigate: (path: string) => void;
+  setActiveTab: (tab: TabKey) => void;
+}) {
+  const { t } = useTranslation();
+  const [, nav] = useLocation();
+  const hasAccess = subscription.isActive || subscription.isTrial;
+
+  const apiMatchesQuery = useQuery<ApiMatchesResponse>({
+    queryKey: ["/api/matches"],
+    queryFn: () => fetchApiMatches(accessToken!),
+    enabled: !!accessToken && hasAccess,
+    staleTime: 30_000,
+  });
+
+  const recentMatches = (apiMatchesQuery.data?.matches ?? [])
+    .filter(m => m.title && m.url && m.listing_id)
+    .slice(0, 6);
+
+  return (
+    <div data-testid="section-recent-matches">
+      <h2 className="text-[18px] font-bold text-[#111111] mb-3" data-testid="text-recent-matches-title">
+        {t("home.recentMatchesTitle")}
+      </h2>
+
+      {!hasAccess ? (
+        <div className="rounded-[16px] bg-white border border-[#F0F0F0] p-6 flex flex-col items-center text-center" data-testid="card-paywall">
+          <div className="w-14 h-14 rounded-full bg-[#F0F0F0] flex items-center justify-center mb-4">
+            <Lock className="w-6 h-6 text-[#9CA3AF]" />
+          </div>
+          <p className="text-[17px] font-bold text-[#111111] mb-1" data-testid="text-paywall-title">
+            {t("home.paywallTitle")}
+          </p>
+          <p className="text-[14px] text-[#6B7280] mb-4 leading-relaxed max-w-[260px]" data-testid="text-paywall-desc">
+            {t("home.paywallDesc")}
+          </p>
+          <button
+            onClick={() => navigate("/paywall")}
+            className="h-[46px] px-8 rounded-full bg-ha-primary text-white text-[15px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
+            data-testid="button-paywall-cta"
+          >
+            {t("home.paywallCta")}
+          </button>
+        </div>
+      ) : recentMatches.length > 0 ? (
+        <div>
+          <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-none" style={{ scrollSnapType: "x proximity" }}>
+            {recentMatches.map((match) => (
+              <ListingCardMini
+                key={match.listing_id}
+                match={match}
+                onCardClick={() => nav(`/apply/${match.listing_id}`)}
+              />
+            ))}
+          </div>
+          <button
+            onClick={() => setActiveTab("matches")}
+            className="mt-3 w-full h-[44px] rounded-full border border-[#F0F0F0] text-[14px] font-semibold text-[#111111] hover:bg-[#F8F8F8] transition-colors active:scale-[0.98]"
+            data-testid="button-view-all-matches"
+          >
+            {t("home.viewAll")}
+          </button>
+        </div>
+      ) : (
+        <div className="rounded-[16px] bg-white border border-[#F0F0F0] p-5 text-center" data-testid="card-no-matches">
+          <p className="text-[14px] text-[#6B7280]">{t("home.firstMatchesWillAppear")}</p>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -488,14 +678,11 @@ function HomeTab({
       const res = await apiFetch("/api/profile-data", { headers: { Authorization: `Bearer ${accessToken}` } });
       if (!res.ok) return {};
       const data = await res.json();
-      console.log(`[IDENTITY] WelcomeBar profile fetch — first_name="${data?.first_name ?? "null"}", user_id="${data?.user_id ?? "unknown"}"`);
       return data;
     },
     enabled: !!accessToken,
   });
   const firstName = profileDataQuery.data?.first_name || null;
-  const hasReactieBrief = !!(profileDataQuery.data?.application_template && profileDataQuery.data.application_template.trim().length > 20);
-  const hasZoekbuddy = !!(profileDataQuery.data?.search_buddy_email && profileDataQuery.data.search_buddy_email.trim().length > 0 && profileDataQuery.data.search_buddy_status !== "revoked_by_buddy");
   const [referralModalOpen, setReferralModalOpen] = useState(false);
 
   const { data: referralData, isLoading: referralLoading } = useQuery<{
@@ -519,81 +706,65 @@ function HomeTab({
 
   return (
     <div className="flex flex-col pb-8">
-      <div className="px-5 pt-6 pb-4">
-        <h1 className="text-[24px] font-bold text-[#111111] tracking-[-0.02em]" data-testid="text-greeting">
-          {firstName ? t("home.greeting", { name: firstName }) : t("home.greetingDefault")}
+      <div className="px-5 pt-6 pb-2" data-testid="section-welcome">
+        <div className="flex items-center justify-between mb-5">
+          <span className="text-[18px] font-bold text-[#111111] tracking-[-0.01em]" data-testid="text-brand">HousAlert</span>
+          <button
+            onClick={() => navigate("/settings/preferences")}
+            className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#F8F8F8] transition-colors"
+            data-testid="button-help"
+          >
+            <HelpCircle className="w-5 h-5 text-[#9CA3AF]" />
+          </button>
+        </div>
+        <h1 className="text-[26px] font-bold text-[#111111] tracking-[-0.02em] leading-tight" data-testid="text-greeting">
+          {firstName ? t("home.greeting", { name: firstName }) : t("home.greetingDefault")} 👋
         </h1>
+        <p className="text-[15px] text-[#6B7280] mt-1" data-testid="text-welcome-subtitle">
+          {t("home.welcomeSubtitle")}
+        </p>
       </div>
 
-      <div className="flex flex-col gap-6 px-4">
-        <SearchProfilesSection profiles={profiles} navigate={navigate} />
-
-        <RecentlyViewedSection accessToken={accessToken} />
-
-        {(!subscription.isTrial && !subscription.isActive) && (
-          <div className="px-1" data-testid="card-upgrade-warning">
-            <div className="flex items-center gap-3 mb-3">
-              <Lock className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
-              <p className="text-[14px] font-semibold text-[#111111]">Je loopt mogelijk je droomwoning mis...</p>
-            </div>
-            <button
-              onClick={() => navigate("/paywall")}
-              className="w-full h-[46px] rounded-full bg-ha-primary text-white text-[15px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
-              data-testid="button-upgrade-warning-cta"
-            >
-              Upgraden
-            </button>
+      <div className="flex flex-col gap-6 px-4 pt-4">
+        <div
+          className="rounded-[16px] bg-white border border-[#F0F0F0] px-4 py-3.5 flex items-center gap-3 cursor-pointer active:bg-[#F8F8F8] transition-colors"
+          onClick={() => setReferralModalOpen(true)}
+          data-testid="card-home-referral"
+        >
+          <div className="flex-1 min-w-0">
+            <p className="text-[11px] font-bold text-[#9CA3AF] tracking-wider uppercase mb-0.5" data-testid="text-referral-label">
+              {t("referral.promoLabel")}
+            </p>
+            <p className="text-[15px] font-semibold text-[#111111] leading-snug" data-testid="text-referral-body">
+              {t("referral.promoBody")}
+            </p>
           </div>
-        )}
-
-        <div data-testid="section-tools">
-          <StatusCardInline
-            icon={<Sparkles className="w-5 h-5 text-ha-primary" />}
-            title={t("profile.reactionLetter2")}
-            configured={hasReactieBrief}
-            configuredText={t("home.reactionLetterConfigured") || "Reactiebrief ingesteld"}
-            unconfiguredText={t("home.reactionLetterMissing") || "Nog geen reactiebrief"}
-            actionLabel={hasReactieBrief ? (t("common.manage") || "Beheren") : (t("common.generate") || "Genereren")}
-            onAction={() => navigate("/application-letter")}
-            testId="card-home-reaction-letter"
-          />
-          <div className="h-px bg-[#F0F0F0] mx-1" />
-          <StatusCardInline
-            icon={<Users className="w-5 h-5 text-ha-primary" />}
-            title={t("profile.zoekbuddyTitle")}
-            configured={hasZoekbuddy}
-            configuredText={t("home.zoekbuddyConfigured") || "Zoekbuddy ingesteld"}
-            unconfiguredText={t("home.zoekbuddyMissing") || "Nog geen zoekbuddy"}
-            actionLabel={hasZoekbuddy ? (t("common.manage") || "Beheren") : (t("common.add") || "Toevoegen")}
-            onAction={() => navigate("/profile/edit/search_buddy_email")}
-            testId="card-home-zoekbuddy"
-          />
-        </div>
-
-        <div data-testid="section-setup-progress" className="flex flex-col gap-2">
-          <HomeAccountCompletionCard accessToken={accessToken} navigate={navigate} />
-          <HomeTipsCompletionCard navigate={navigate} />
-        </div>
-
-        <div className="rounded-[12px] bg-[#111111] p-5" data-testid="card-home-referral">
-          <p className="text-[11px] font-bold text-ha-primary tracking-wider uppercase mb-1" data-testid="text-referral-label">
-            {t("referral.homeLabel")}
-          </p>
-          <p className="text-[16px] font-bold text-white leading-snug" data-testid="text-referral-body">
-            {t("referral.homeBody")}
-          </p>
-          <p className="text-[13px] text-white/40 mt-1 leading-relaxed" data-testid="text-referral-helper">
-            {t("referral.homeHelper")}
-          </p>
           <button
-            onClick={() => setReferralModalOpen(true)}
-            className="mt-3 h-[42px] px-5 rounded-full bg-ha-primary text-white text-[14px] font-bold transition-all hover:bg-ha-primary-hover active:scale-[0.97] inline-flex items-center gap-2"
+            className="h-[36px] px-4 rounded-full bg-ha-primary text-white text-[13px] font-bold hover:bg-ha-primary-hover transition-colors flex-shrink-0"
             data-testid="button-home-referral-cta"
           >
             {t("referral.promoCta")}
-            <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
+
+        <div data-testid="section-gamification">
+          <h2 className="text-[18px] font-bold text-[#111111] mb-3" data-testid="text-gamification-title">
+            {t("home.gamificationTitle")}
+          </h2>
+          <div className="flex flex-col gap-2.5">
+            <HomeAccountCompletionCard accessToken={accessToken} navigate={navigate} />
+            <HomePrepCompletionCard accessToken={accessToken} navigate={navigate} onTellFriends={() => setReferralModalOpen(true)} />
+          </div>
+        </div>
+
+        <FiltersSection profiles={profiles} navigate={navigate} />
+
+        <RecentMatchesSection
+          accessToken={accessToken}
+          subscription={subscription}
+          navigate={navigate}
+          setActiveTab={setActiveTab}
+        />
       </div>
 
       <ReferralCodeModal
@@ -1414,7 +1585,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
 
 const TAB_CONFIG: { key: TabKey; labelKey: string; Icon: any }[] = [
   { key: "home", labelKey: "nav.home", Icon: Home },
-  { key: "matches", labelKey: "nav.matches", Icon: Check },
+  { key: "matches", labelKey: "nav.matches", Icon: Search },
+  { key: "tips", labelKey: "nav.tips", Icon: Sparkles },
   { key: "favorieten", labelKey: "nav.favorites", Icon: Heart },
   { key: "profiel", labelKey: "nav.profile", Icon: User },
 ];

@@ -1,0 +1,250 @@
+I want to rebuild the HousAlert home screen to closely follow the structure, UX logic, and visual hierarchy of the Stekkies home screen reference.
+
+IMPORTANT:
+- Clone the STRUCTURE and interaction pattern of Stekkies as closely as possible
+- Do NOT redesign the whole app
+- Only refactor the HOME screen in this pass
+- Reuse my current HousAlert colors, typography system, and components where possible
+- Keep the final implementation mobile-first
+- Keep all existing HousAlert functionality, but reorganize it into the Stekkies-style home structure
+
+GOAL:
+Turn the current HousAlert home screen into a high-converting dashboard/funnel that mirrors Stekkies:
+- personal welcome
+- referral block
+- progress/gamification section
+- filter overview + expected matches
+- recent matches teaser / paywall trigger
+
+==================================================
+1. TOP HEADER / WELCOME AREA
+==================================================
+
+Build a top section like Stekkies:
+
+Content order:
+- HousAlert wordmark or compact logo at top-left
+- help / info icon on the right
+- greeting headline:
+  “Hi, Martin 👋”
+- supporting line:
+  “Laten we je nieuwe woning vinden”
+
+Requirements:
+- this must feel warm and personal
+- keep lots of white space
+- not a dashboard header, but a welcoming top block
+- visually close to Stekkies
+
+==================================================
+2. REFERRAL / DISCOUNT BLOCK
+==================================================
+
+Directly below the welcome area, add a referral card with the same role and hierarchy as Stekkies.
+
+Structure:
+- small overline label:
+  “HELP JE VRIENDEN”
+- main copy:
+  “Deel jouw persoonlijke kortingscode”
+- CTA button on the right:
+  “Bekijk code”
+
+Requirements:
+- use a rounded white card with subtle border
+- keep the CTA button pill-shaped
+- the card should feel like a growth / invite module
+- reuse my current HousAlert styling, but follow Stekkies layout proportions closely
+
+==================================================
+3. GAMIFICATION SECTION
+==================================================
+
+Add a main section title:
+“Verhoog je kansen op een huurwoning”
+
+Under this title, create TWO expandable progress cards, just like Stekkies:
+
+CARD A:
+Title:
+“Rond je account af”
+
+Subtitle:
+“X van de Y voltooid”
+
+CARD B:
+Title:
+“Bereid je zoekopdracht voor”
+
+Subtitle:
+“X van de Y voltooid”
+
+Each card must contain:
+- circular percentage progress indicator on the left
+- title and subtitle in the middle
+- expand/collapse chevron on the right
+- rounded white card with subtle border
+- when expanded: show a stack of pill-shaped task rows inside the card
+
+==================================================
+4. TASK LISTS INSIDE THE GAMIFICATION CARDS
+==================================================
+
+The expanded task rows should look and behave like Stekkies:
+- rounded pill rows
+- light background
+- each row has:
+  - task label on the left
+  - state icon/action on the right
+
+Use these exact HousAlert tasks.
+
+CARD A — “Rond je account af”
+Tasks:
+1. Activeer notificaties
+2. Voeg zoekbuddy toe
+3. Optimaliseer je zoekopdracht
+4. Bereid je reactiebrief voor
+5. Verzamel je documenten
+
+CARD B — “Bereid je zoekopdracht voor”
+Tasks:
+1. Schrijf een introductiebrief
+2. Vertel je vrienden
+3. Voeg zoekopdracht toe
+4. Maak een account aan
+5. Poets je online presentatie op
+6. Lees onze bezichtigingstips
+
+Task row states:
+- completed task = blue circular check icon on the right (match Stekkies behavior closely)
+- incomplete but actionable task = blue circular arrow/chevron button on the right
+- preserve actual HousAlert logic where possible
+
+Interaction:
+- tapping a task row should navigate to the relevant HousAlert flow/page
+- tapping the chevron in the header expands/collapses the card
+- progress percentage and “X van de Y voltooid” must update from real state if available
+
+==================================================
+5. FILTERS SECTION
+==================================================
+
+Below the gamification cards, add a section exactly like Stekkies:
+
+Section title:
+“Filters”
+
+Supporting text:
+“Je kunt [X] matches per week verwachten”
+
+Requirements:
+- use the actual estimated match count if available
+- if not available, build the component and wire a placeholder/fallback
+
+Below this text, show a rounded white card containing a vertical stack of filter summary rows.
+
+Each row should look like Stekkies:
+- left side = filter label / selected value
+- right side = current selected value or summary
+- far right = 3-dot action button
+
+Use my actual HousAlert filters where possible, for example:
+- Budget
+- Kamers
+- Oppervlakte
+- Stad / buurt
+- Huisdieren
+- Gemeubileerd
+
+If the current system does not support all rows yet, still build the visual structure and map the available filters.
+
+==================================================
+6. RECENTE MATCHES SECTION
+==================================================
+
+Below Filters, add:
+
+Section title:
+“Recente matches”
+
+Use this section as a paywall / teaser module, just like Stekkies.
+
+If the user is not entitled / not subscribed / not fully activated:
+- show a rounded white card with lock illustration/icon
+- title:
+  “Laten we beginnen!”
+- supporting text:
+  “Schrijf je in om direct matches te ontvangen.”
+- CTA button:
+  “Abonneer”
+
+If the user does have access:
+- show a horizontally scrollable recent matches preview or a compact feed preview
+- but keep the section visually consistent with the Stekkies structure
+
+This section should clearly drive conversion.
+
+==================================================
+7. BOTTOM NAVIGATION
+==================================================
+
+Keep the bottom nav simple and close in spirit to the Stekkies structure.
+
+Tabs:
+- Home
+- Matches
+- Tips
+- Filters
+- Profiel
+
+If my app currently uses a different tab setup, preserve existing routing logic where possible, but visually align the bottom nav closer to Stekkies:
+- rounded top container
+- centered icons
+- small label under icon
+- active tab highlighted
+
+==================================================
+8. VISUAL DIRECTION
+==================================================
+
+The Home screen should closely resemble Stekkies in:
+- section order
+- spacing rhythm
+- hierarchy
+- card proportions
+- expandable progress modules
+- overall funnel logic
+
+Do NOT make it look like a dashboard.
+Do NOT scatter unrelated widgets.
+Do NOT keep the current HousAlert home structure.
+
+This must feel like:
+- one guided conversion journey
+- clear, calm, mobile-first
+- close to Stekkies
+
+==================================================
+9. TECHNICAL REQUIREMENTS
+==================================================
+
+- Reuse existing components where possible
+- Preserve current HousAlert business logic
+- Do not break navigation
+- Do not break existing state
+- Wire real completion state where possible
+- If some data is missing, implement the UI structure with safe fallbacks
+
+==================================================
+10. OUTPUT
+==================================================
+
+After implementation, show:
+1. which files were changed
+2. how the new home screen is structured
+3. how each gamification card calculates progress
+4. which HousAlert tasks are wired and where they navigate
+5. how the Filters block is populated
+6. how the Recente matches paywall logic works
+7. what is still placeholder vs fully connected
