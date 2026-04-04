@@ -1099,6 +1099,27 @@ export const de: Record<string, any> = {
 
   tips: {
     title: "Tipps",
+    pageTitle: "HousAlert Tipps",
+    pageSubtitle: "Nützliche Tipps, um schneller eine Wohnung zu finden und besser zu reagieren.",
+    recommendedTitle: "Für dich empfohlen",
+    referralOverline: "HILF DEINEN FREUNDEN",
+    referralText: "Teile deinen persönlichen Rabattcode",
+    referralCta: "Code anzeigen",
+    guidesTitle: "Ratgeber",
+    guide: {
+      reageren: "Tipps für die Bewerbung auf eine Mietwohnung",
+      bezichtiging: "Tipps für Besichtigungen + Checkliste",
+      kansen: "So erhöhst du deine Chancen auf eine Mietwohnung",
+      documenten: "Welche Dokumente brauchst du?",
+      introductiebrief: "Wie schreibst du ein starkes Anschreiben?",
+    },
+    guideDesc: {
+      reageren: "Erfahre, wie du schnell und professionell auf Mietwohnungen reagierst.",
+      bezichtiging: "Bereite dich mit unseren praktischen Tipps und einer Checkliste auf Besichtigungen vor.",
+      kansen: "Entdecke bewährte Strategien, um deine Chancen auf dem Mietmarkt zu erhöhen.",
+      documenten: "Eine Übersicht aller Dokumente, die du zum Mieten in Deutschland brauchst.",
+      introductiebrief: "Schreibe ein überzeugendes Anschreiben, das bei Vermietern auffällt.",
+    },
     subtitle: "Nützliche Ratgeber, um deine Chancen zu erhöhen",
     didYouKnow: "Wusstest du?",
     intro: "Mieter, die gut vorbereitet sind, reagieren durchschnittlich 3x schneller und bekommen häufiger eine Wohnung.",

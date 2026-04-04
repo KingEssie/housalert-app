@@ -1,0 +1,122 @@
+Refactor the Profile (Account) screen to improve hierarchy, branding consistency, and match a more Airbnb-like clean design style.
+
+IMPORTANT:
+- Keep current functionality
+- Improve UI structure, spacing, and consistency
+- Remove any blue UI elements (especially toggles)
+- Use HousAlert brand colors (pink, black, white, subtle greys)
+
+==================================================
+1. NOTIFICATIONS (FIX BRANDING)
+==================================================
+
+- Replace all blue toggle switches with the HousAlert primary color (pink/red)
+- Ensure active state uses brand color
+- Inactive state remains neutral grey
+
+==================================================
+2. REACTION LETTER (MAKE COMPACT)
+==================================================
+
+Refactor the "Standaard reactiebrief" section:
+
+- Show only a preview (max 3 lines of text)
+- Add subtle fade-out at the bottom
+- Add 2 buttons:
+  - "Bewerk"
+  - "Kopieer"
+
+- Keep it inside a rounded card but reduce height significantly
+
+==================================================
+3. ABONNEMENT SECTION (IMPROVE IMPORTANCE)
+==================================================
+
+Improve the subscription block:
+
+If user has NO subscription:
+- Show:
+  - lock icon
+  - title: "Laten we beginnen!"
+  - short text:
+    "Schrijf je in om direct matches te ontvangen."
+  - CTA: "Abonneer"
+
+Design:
+- less padding than current version
+- cleaner card style (Airbnb-like)
+- slightly more emphasis than other cards
+
+OPTIONAL:
+- prepare structure to later show:
+  - "Actief"
+  - "Proefperiode"
+  - "Verlopen"
+
+==================================================
+4. UITGESLOTEN WEBSITES (SIMPLIFY)
+==================================================
+
+- Reduce text length
+- Keep it minimal and readable
+- Avoid large paragraph blocks
+
+==================================================
+5. HELP SECTION (AIRBNB STYLE LIST)
+==================================================
+
+Refactor "Meer info & hulp":
+
+Each item should be:
+- left icon
+- title
+- right chevron
+- thin divider between rows
+
+Remove heavy card feel:
+- lighter container
+- more list-style
+
+Items:
+- Gemiste matches
+- Geef feedback
+- Veelgestelde vragen & Hulp
+- Privacy
+
+==================================================
+6. GENERAL SPACING & STYLE
+==================================================
+
+- Reduce visual heaviness of cards
+- Use more list-style rows instead of big blocks
+- Keep:
+  - white background
+  - subtle borders (#E5E7EB)
+  - rounded corners (12–16px)
+- Ensure consistent vertical spacing between sections
+
+==================================================
+7. KEEP EXISTING STRUCTURE
+==================================================
+
+Do NOT remove:
+- Account (Email, Taal)
+- Notificaties
+- Zoekbuddy
+- Reactiebrief
+- Uitgesloten websites
+- Abonnement
+- Help
+- Logout
+
+Only improve layout, styling, and hierarchy
+
+==================================================
+8. OUTPUT
+==================================================
+
+After finishing, explain:
+1. what changed visually
+2. how the hierarchy improved
+3. how branding consistency was fixed
+4. how this aligns better with Airbnb-style UI

@@ -930,6 +930,27 @@ export const en: Record<string, any> = {
 
   tips: {
     title: "Tips",
+    pageTitle: "HousAlert tips",
+    pageSubtitle: "Helpful tips to find a home faster and respond more effectively.",
+    recommendedTitle: "Recommended for you",
+    referralOverline: "HELP YOUR FRIENDS",
+    referralText: "Share your personal discount code",
+    referralCta: "View code",
+    guidesTitle: "Guides",
+    guide: {
+      reageren: "Tips for responding to a rental listing",
+      bezichtiging: "Tips for viewings + checklist",
+      kansen: "How to increase your chances of getting a rental",
+      documenten: "Which documents do you need?",
+      introductiebrief: "How to write a strong introduction letter?",
+    },
+    guideDesc: {
+      reageren: "Learn how to respond quickly and professionally to rental listings.",
+      bezichtiging: "Prepare for viewings with our practical tips and checklist.",
+      kansen: "Discover proven strategies to increase your chances on the rental market.",
+      documenten: "An overview of all documents you need to rent in Germany.",
+      introductiebrief: "Write a compelling introduction letter that stands out to landlords.",
+    },
     didYouKnow: "Did you know?",
     intro: "Tenants who are well prepared respond on average 3x faster and get an apartment more often.",
     viewingTips: "Viewing tips",

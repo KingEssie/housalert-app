@@ -1,0 +1,123 @@
+Add a new 3rd tab item to the bottom navigation called "Tips" and build a new Tips screen inspired by the Stekkies structure, but fully in the current HousAlert branding and design system.
+
+IMPORTANT:
+- Keep the current HousAlert visual style
+- Do NOT use Stekkies colors
+- Do NOT add the "Tijdelijk aanbod" block
+- This should feel like a HousAlert version of the Stekkies Tips page
+
+==================================================
+1. BOTTOM NAVIGATION
+==================================================
+
+Update the bottom tab bar so the 3rd item becomes:
+
+1. Home
+2. Matches
+3. Tips
+4. Zoekopdrachten (or Filters, depending on the current final naming)
+5. Profiel
+
+Requirements:
+- keep visual style consistent with the current HousAlert bottom nav
+- the new "Tips" tab should have its own icon
+- active/inactive states should match current HousAlert branding
+
+==================================================
+2. TIPS SCREEN STRUCTURE
+==================================================
+
+Build a new Tips screen with this structure:
+
+A. Header section
+- Title: "HousAlert tips"
+- Supporting text:
+  "Handige tips om sneller een woning te vinden en sterker te reageren."
+
+B. Section: "Voor jou aanbevolen"
+- Show one recommendation card:
+  - overline label: "HELP JE VRIENDEN"
+  - main text: "Deel jouw persoonlijke kortingscode"
+  - CTA button: "Bekijk code"
+
+C. Section: "Guides"
+- Show a vertical list of clickable guide rows/cards
+- Each row:
+  - guide title on the left
+  - chevron on the right
+  - rounded white card
+  - subtle border
+  - mobile-friendly spacing
+
+==================================================
+3. GUIDES CONTENT
+==================================================
+
+Use these initial guide titles:
+
+1. Tips voor het reageren op een huurwoning
+2. Tips voor bezichtigingen + checklist
+3. Zo vergroot je je kans op een huurwoning
+4. Welke documenten heb je nodig?
+5. Hoe schrijf je een sterke introductiebrief?
+
+If some guide detail pages do not exist yet:
+- still build the list
+- wire rows to placeholder routes or stubs
+- keep architecture ready for real content pages
+
+==================================================
+4. DESIGN REQUIREMENTS
+==================================================
+
+Use the current HousAlert branding:
+- white/light background
+- black primary text
+- subtle grey secondary text
+- pink CTA buttons
+- rounded cards
+- soft borders
+- no blue Stekkies accents
+- no extra promotional/deal card besides the referral card
+
+The screen should feel:
+- calm
+- useful
+- premium
+- educational
+- consistent with the rest of the app
+
+==================================================
+5. INTERACTIONS
+==================================================
+
+- tapping "Bekijk code" should open the existing referral/discount flow if available
+- tapping a guide row should open its guide page (or placeholder/stub)
+- make sure navigation works correctly from the new bottom tab
+
+==================================================
+6. KEEP EVERYTHING ELSE INTACT
+==================================================
+
+Do not redesign:
+- Home
+- Matches
+- Profiel
+- existing paywall logic
+- existing search profile logic
+
+Only add:
+- the new tab item
+- the new Tips screen
+- the guide row navigation structure
+
+==================================================
+7. OUTPUT
+==================================================
+
+After finishing, show:
+1. which files were changed
+2. how the bottom nav was updated
+3. what guide rows were created
+4. which routes are real vs placeholder
+5. how the Tips screen matches the HousAlert branding

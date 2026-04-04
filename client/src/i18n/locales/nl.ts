@@ -1106,6 +1106,27 @@ export const nl: Record<string, any> = {
 
   tips: {
     title: "Tips",
+    pageTitle: "HousAlert tips",
+    pageSubtitle: "Handige tips om sneller een woning te vinden en sterker te reageren.",
+    recommendedTitle: "Voor jou aanbevolen",
+    referralOverline: "HELP JE VRIENDEN",
+    referralText: "Deel jouw persoonlijke kortingscode",
+    referralCta: "Bekijk code",
+    guidesTitle: "Guides",
+    guide: {
+      reageren: "Tips voor het reageren op een huurwoning",
+      bezichtiging: "Tips voor bezichtigingen + checklist",
+      kansen: "Zo vergroot je je kans op een huurwoning",
+      documenten: "Welke documenten heb je nodig?",
+      introductiebrief: "Hoe schrijf je een sterke introductiebrief?",
+    },
+    guideDesc: {
+      reageren: "Leer hoe je snel en professioneel reageert op een huurwoning en je kansen vergroot.",
+      bezichtiging: "Bereid je voor op een bezichtiging met onze praktische tips en checklist.",
+      kansen: "Ontdek bewezen strategieën om je kansen op de huurmarkt te vergroten.",
+      documenten: "Een overzicht van alle documenten die je nodig hebt om te huren in Duitsland.",
+      introductiebrief: "Schrijf een overtuigende introductiebrief die opvalt bij verhuurders.",
+    },
     subtitle: "Handige gidsen om je kansen te vergroten",
     didYouKnow: "Wist je dat?",
     intro: "Huurders die goed voorbereid zijn, reageren gemiddeld 3x sneller en krijgen vaker een woning.",

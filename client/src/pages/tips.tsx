@@ -1,37 +1,26 @@
 import { useState } from "react";
 import {
-  Eye,
+  MessageSquare,
   FileText,
   FolderOpen,
-  Search,
-  Users,
-  Shield,
-  ArrowRight,
-  Lightbulb,
+  TrendingUp,
+  PenTool,
+  ChevronRight,
   CheckCircle2,
+  Gift,
 } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
 import { apiFetch } from "@/lib/api-base";
-import { ReferralPromoCard } from "@/components/referral-promo-card";
 import { ReferralCodeModal } from "@/components/referral-code-modal";
 
 export const TIP_IDS = [
+  "reageren",
   "bezichtiging",
-  "aanmeldingsbrief",
+  "kansen",
   "documenten",
-  "schufa",
-  "zoekstrategie",
-  "netwerk",
-  "dokumente",
-  "finanzen",
-  "reaktion",
-  "plattformen",
-  "neubau",
-  "netzwerk",
-  "besichtigung",
-  "followup",
+  "introductiebrief",
 ] as const;
 
 export type TipId = (typeof TIP_IDS)[number];
@@ -68,46 +57,39 @@ export function getTipsProgress(): { read: number; total: number } {
 export function getTipConfig(t: (key: string) => string) {
   return [
     {
+      id: "reageren" as TipId,
+      icon: MessageSquare,
+      title: t("tips.guide.reageren"),
+      description: t("tips.guideDesc.reageren"),
+      route: "/tips/flow",
+    },
+    {
       id: "bezichtiging" as TipId,
-      icon: Eye,
-      title: t("tips.viewingTips"),
-      description: t("tips.viewingTipsDesc"),
+      icon: TrendingUp,
+      title: t("tips.guide.bezichtiging"),
+      description: t("tips.guideDesc.bezichtiging"),
       route: "/tips/bezichtiging",
     },
     {
-      id: "aanmeldingsbrief" as TipId,
-      icon: FileText,
-      title: t("tips.applicationLetter"),
-      description: t("tips.applicationLetterDesc"),
-      route: "/application-letter",
+      id: "kansen" as TipId,
+      icon: TrendingUp,
+      title: t("tips.guide.kansen"),
+      description: t("tips.guideDesc.kansen"),
+      route: "/tips/flow",
     },
     {
       id: "documenten" as TipId,
       icon: FolderOpen,
-      title: t("tips.documentsChecklist"),
-      description: t("tips.documentsChecklistDesc"),
+      title: t("tips.guide.documenten"),
+      description: t("tips.guideDesc.documenten"),
       route: "/tips/documenten",
     },
     {
-      id: "schufa" as TipId,
-      icon: Shield,
-      title: t("tips.schufa"),
-      description: t("tips.schufaDesc"),
-      route: "/tips/schufa",
-    },
-    {
-      id: "zoekstrategie" as TipId,
-      icon: Search,
-      title: t("tips.searchStrategy"),
-      description: t("tips.searchStrategyDesc"),
-      route: "/tips/zoekstrategie",
-    },
-    {
-      id: "netwerk" as TipId,
-      icon: Users,
-      title: t("tips.useNetwork"),
-      description: t("tips.useNetworkDesc"),
-      route: "/tips/netwerk",
+      id: "introductiebrief" as TipId,
+      icon: PenTool,
+      title: t("tips.guide.introductiebrief"),
+      description: t("tips.guideDesc.introductiebrief"),
+      route: "/application-letter",
     },
   ];
 }
@@ -117,7 +99,6 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
   const { session } = useAuth();
   const guides = getTipConfig(t);
   const readSet = getTipsReadSet();
-  const { read, total } = getTipsProgress();
   const [referralModalOpen, setReferralModalOpen] = useState(false);
 
   const { data: referralData, isLoading: referralLoading } = useQuery<{
@@ -141,60 +122,75 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
   });
 
   return (
-    <div className="flex flex-col pb-6">
-      <div className="sticky top-0 z-10 bg-[#F7F7F7] pt-5 pb-3 px-6">
+    <div className="flex flex-col pb-8">
+      <div className="sticky top-0 z-10 bg-white px-5 pt-6 pb-4">
         <h1 className="text-page-title" data-testid="heading-tips">
-          {t("tips.title")}
+          {t("tips.pageTitle")}
         </h1>
-        {read > 0 && (
-          <p className="text-[14px] text-ha-text-secondary mt-1" data-testid="text-tips-progress">
-            {read}/{total} {t("tips.completed")}
-          </p>
-        )}
+        <p className="text-[14px] text-[#6B7280] mt-1 leading-relaxed" data-testid="text-tips-subtitle">
+          {t("tips.pageSubtitle")}
+        </p>
       </div>
 
-      <div className="px-6 flex flex-col gap-5">
-        <ReferralPromoCard onOpen={() => setReferralModalOpen(true)} />
-
-        <div className="bg-white rounded-[6px] border border-[#E5E7EB] p-4 flex items-start gap-4" data-testid="card-tips-intro">
-          <div className="w-10 h-10 rounded-[6px] bg-[#F7F7F7] flex items-center justify-center flex-shrink-0">
-            <Lightbulb className="w-5 h-5 text-[#9CA3AF]" />
-          </div>
-          <div>
-            <p className="text-[15px] font-medium text-[#111111]">{t("tips.didYouKnow")}</p>
-            <p className="text-[14px] text-ha-text-secondary mt-0.5 leading-relaxed">
-              {t("tips.intro")}
-            </p>
-          </div>
+      <div className="px-4 flex flex-col gap-6 pt-2">
+        <div data-testid="section-recommended">
+          <h2 className="text-[16px] font-bold text-[#111111] mb-3" data-testid="text-recommended-title">
+            {t("tips.recommendedTitle")}
+          </h2>
+          <button
+            onClick={() => setReferralModalOpen(true)}
+            className="w-full rounded-[16px] bg-white border border-[#F0F0F0] p-4 text-left active:bg-[#F8F8F8] transition-colors"
+            data-testid="card-referral-promo"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-full bg-[#FFF1F3] flex items-center justify-center flex-shrink-0">
+                <Gift className="w-5 h-5 text-ha-primary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-0.5">
+                  {t("tips.referralOverline")}
+                </p>
+                <p className="text-[15px] font-semibold text-[#111111]">
+                  {t("tips.referralText")}
+                </p>
+              </div>
+            </div>
+            <div className="mt-3">
+              <span className="inline-flex h-[36px] px-5 rounded-full bg-ha-primary text-white text-[13px] font-bold items-center hover:bg-ha-primary-hover transition-colors">
+                {t("tips.referralCta")}
+              </span>
+            </div>
+          </button>
         </div>
 
-        <div className="flex flex-col gap-3" data-testid="section-guides">
-          {guides.map((guide, index) => {
-            const Icon = guide.icon;
-            const isRead = readSet.has(guide.id);
-            return (
-              <button
-                key={guide.id}
-                onClick={() => navigate(`/tip/${guide.id}`)}
-                className={`bg-white rounded-[6px] border border-[#E5E7EB] p-4 flex items-center gap-4 text-left hover:bg-[#F7F7F7] transition-all duration-200 active:scale-[0.985] w-full ${isRead ? "opacity-70" : ""}`}
-                data-testid={`card-guide-${guide.id}`}
-              >
-                <div className="w-10 h-10 rounded-[6px] flex items-center justify-center flex-shrink-0 bg-ha-primary/10">
-                  <Icon className="w-5 h-5 text-ha-primary" />
+        <div data-testid="section-guides">
+          <h2 className="text-[16px] font-bold text-[#111111] mb-3" data-testid="text-guides-title">
+            {t("tips.guidesTitle")}
+          </h2>
+          <div className="rounded-[16px] bg-white border border-[#F0F0F0] overflow-hidden">
+            {guides.map((guide, idx) => {
+              const isRead = readSet.has(guide.id);
+              return (
+                <div key={guide.id}>
+                  {idx > 0 && <div className="h-px bg-[#F0F0F0] mx-4" />}
+                  <button
+                    onClick={() => navigate(guide.route)}
+                    className="w-full flex items-center gap-3 px-4 h-[52px] text-left active:bg-[#F8F8F8] transition-colors"
+                    data-testid={`row-guide-${guide.id}`}
+                  >
+                    <p className={`flex-1 text-[15px] min-w-0 truncate ${isRead ? "text-[#9CA3AF]" : "font-medium text-[#111111]"}`}>
+                      {guide.title}
+                    </p>
+                    {isRead ? (
+                      <CheckCircle2 className="w-[18px] h-[18px] text-ha-primary flex-shrink-0" />
+                    ) : (
+                      <ChevronRight className="w-[18px] h-[18px] text-[#C4C4C4] flex-shrink-0" />
+                    )}
+                  </button>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className={`text-[15px] font-medium ${isRead ? "line-through text-ha-icon-secondary" : "text-[#111111]"}`}>
-                    {index + 1}. {guide.title}
-                  </p>
-                </div>
-                {isRead ? (
-                  <CheckCircle2 className="w-5 h-5 text-ha-primary flex-shrink-0" />
-                ) : (
-                  <ArrowRight className="w-4 h-4 text-ha-icon-secondary flex-shrink-0" />
-                )}
-              </button>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
 
