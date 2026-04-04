@@ -1,0 +1,181 @@
+We are implementing Phase C: detail actions and website blocking logic for the HousAlert app.
+
+IMPORTANT:
+This phase is ONLY about:
+1. adding favorite and block-source actions to the match detail screen
+2. building the source blocking logic
+3. connecting blocked websites to the profile screen
+4. ensuring favorites sync correctly from the detail screen
+
+Do NOT redesign listing cards again.
+Do NOT rebuild the profile layout.
+Do NOT change bottom navigation.
+Do NOT change the search profiles screen.
+Do NOT change unrelated screens.
+
+GOAL:
+Make the match detail screen actionable and allow users to:
+- favorite a listing
+- block an entire website/source from future matches
+
+==================================================
+1. DETAIL SCREEN ACTIONS
+==================================================
+
+Add two clear actions to the match detail screen:
+
+A. Favorite action
+- add a heart icon/button on the detail screen
+- it should reflect current favorite state
+- tapping it toggles favorite on/off
+
+B. Block source action
+- add a block / shield / block-website icon/button on the detail screen
+- this action should represent:
+  "Do not show me matches from this website anymore"
+
+Requirements:
+- actions should fit the existing HousAlert style
+- keep them clean, premium, and easy to understand
+- do not clutter the detail screen
+
+==================================================
+2. FAVORITES STATE SYNC
+==================================================
+
+Ensure favorites work consistently from the detail screen.
+
+When user favorites a listing from detail:
+- it should immediately be added to the Favorieten tab inside Matches
+
+When user unfavorites from detail:
+- it should immediately disappear from Favorieten if that tab is open/refreshed
+
+This favorite state must remain consistent across:
+- Matches feed
+- Gereageerd tab (if relevant)
+- Favorieten tab
+- Detail screen
+
+Reuse existing favorite logic/state where possible.
+
+==================================================
+3. WEBSITE BLOCKING DATA MODEL
+==================================================
+
+Implement a per-user blocked website/source system.
+
+Store at minimum:
+- user_id
+- source_name or source_domain
+- created_at
+
+A blocked source means:
+- listings from that source should no longer appear for that user
+- new matches from that source should be excluded
+- future alerts/emails from that source should also be excluded if the alert pipeline respects the same filtering
+
+Use the existing source/site field from listings if possible.
+
+==================================================
+4. BLOCK ACTION FLOW
+==================================================
+
+When the user taps the block-source action on the detail screen:
+
+Show a confirmation modal or confirmation step.
+
+Suggested copy:
+Title:
+"Website blokkeren"
+
+Text:
+"Weet je zeker dat je geen matches meer wilt ontvangen van deze website?"
+
+Buttons:
+- "Nee"
+- "Ja, blokkeer"
+
+If confirmed:
+- save the blocked source for that user
+- remove listings from that source from future match results
+- ensure current feed updates accordingly if practical
+
+==================================================
+5. FILTERING LOGIC
+==================================================
+
+Update match retrieval/filtering so blocked sources are excluded.
+
+This should apply to:
+- Matches feed
+- Home recent matches
+- any user-specific match preview that should respect the same match eligibility logic
+
+If alerts/emails use the same matching pipeline:
+- make sure blocked sources are also excluded there, or at least structure the logic so they can be
+
+IMPORTANT:
+Do not fake the UI only.
+The source blocking must actually affect results.
+
+==================================================
+6. PROFILE SCREEN CONNECTION
+==================================================
+
+Connect the "Uitgesloten websites" section in the Profile screen to real data.
+
+If user has no blocked websites:
+- show empty state
+
+If user has blocked websites:
+- show actual list of blocked sites
+
+If possible in this phase:
+- allow unblocking directly from the Profile section
+OR
+- add a simple remove/unblock action per item
+
+Keep the existing profile screen layout intact for now.
+Only connect the data and actions.
+
+==================================================
+7. SOURCE IDENTIFICATION
+==================================================
+
+Use the listing’s actual source / site field consistently.
+
+Examples:
+- wg-gesucht.de
+- immowelt.de
+- kleinanzeigen.de
+
+Make sure source normalization is stable enough that one website does not end up stored under multiple inconsistent names.
+
+If needed:
+- normalize source names/domains before saving blocked entries
+
+==================================================
+8. SAFETY
+==================================================
+
+Do not break:
+- existing favorites
+- current match feed
+- search profiles
+- profile layout
+- subscription logic
+- detail page rendering
+
+==================================================
+9. OUTPUT
+==================================================
+
+After finishing, show:
+1. how the detail screen actions were added
+2. how favorite sync works across screens
+3. what data model is used for blocked websites
+4. where blocked sources are now filtered out
+5. how the Profile screen reads and shows excluded websites
+6. whether unblocking is supported yet
+7. which files were changed
