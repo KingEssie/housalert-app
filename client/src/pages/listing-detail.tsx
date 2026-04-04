@@ -172,16 +172,18 @@ export default function ListingDetailPage() {
             src={listing.image_url!}
             alt={listing.title}
             className="w-full object-cover"
-            style={{ aspectRatio: "4/3", maxHeight: "400px" }}
+            style={{ aspectRatio: "4/3", maxHeight: "420px" }}
             onError={() => setImgError(true)}
             referrerPolicy="no-referrer"
             data-testid="img-listing-hero"
           />
         ) : (
-          <div className="w-full bg-[#F0F0F0] flex items-center justify-center" style={{ aspectRatio: "4/3", maxHeight: "400px" }}>
-            <ImageIcon className="w-12 h-12 text-[#111111]/10" />
+          <div className="w-full bg-[#EAEAEA] flex items-center justify-center" style={{ aspectRatio: "4/3", maxHeight: "420px" }}>
+            <ImageIcon className="w-12 h-12 text-black/10" />
           </div>
         )}
+
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
 
         <div className="absolute top-3 left-[56px] flex items-center gap-2">
           {listing.fresh_label !== "ouder" && (
@@ -190,44 +192,39 @@ export default function ListingDetailPage() {
             </span>
           )}
         </div>
+
+        {listing.price > 0 && (
+          <div className="absolute bottom-4 left-5">
+            <span className="text-[24px] font-bold text-white" data-testid="text-listing-price">€{listing.price}</span>
+            <span className="text-[13px] text-white/70 ml-1">{t("common.perMonth")}</span>
+          </div>
+        )}
       </div>
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-5 pb-32">
-        <h1 className="text-[22px] font-bold text-[#111111] leading-[1.25]" data-testid="text-listing-title">
+      <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-4 pb-28">
+        <h1 className="text-[20px] font-bold text-[#111111] leading-[1.3]" data-testid="text-listing-title">
           {listing.title}
         </h1>
 
-        <div className="flex items-center gap-1 text-[14px] text-[#9CA3AF] mt-1.5">
+        <div className="flex items-center gap-1 text-[14px] text-[#9CA3AF] mt-1">
           <MapPin className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={1.8} />
           <span data-testid="text-listing-location">
             {listing.district?.trim() ? `${listing.district.trim()} · ${listing.city}` : listing.city}
           </span>
         </div>
 
-        {listing.price > 0 && (
-          <div className="flex items-baseline gap-1 mt-5">
-            <span className="text-[28px] font-bold text-[#111111]" data-testid="text-listing-price">€{listing.price}</span>
-            <span className="text-[14px] text-[#C4C4C4]">{t("common.perMonth")}</span>
-          </div>
-        )}
-
-        <div className="flex items-center gap-5 mt-6 pt-5 border-t border-[#F0F0F0]">
+        <div className="flex items-center gap-4 mt-5 text-[13px] text-[#6B7280]">
           {detailItems.map((item, i) => (
-            <div key={i} className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-[10px] bg-[#F7F7F7] flex items-center justify-center">
-                {item.locked ? <Lock className="w-4 h-4 text-[#C4C4C4]" /> : <item.icon className="w-[18px] h-[18px] text-[#9CA3AF]" />}
-              </div>
-              <div>
-                <p className="text-[11px] text-[#C4C4C4] leading-none">{item.label}</p>
-                <p className={`text-[14px] font-bold ${item.color || "text-[#111111]"} leading-snug capitalize`} data-testid={`text-detail-${i}`}>
-                  {item.value}
-                </p>
-              </div>
+            <div key={i} className="flex items-center gap-1.5">
+              {item.locked ? <Lock className="w-3.5 h-3.5 text-[#C4C4C4]" /> : <item.icon className="w-4 h-4 text-[#9CA3AF]" />}
+              <span className={`font-semibold ${item.color || "text-[#111111]"} capitalize`} data-testid={`text-detail-${i}`}>
+                {item.value}
+              </span>
             </div>
           ))}
         </div>
 
-        <div className="flex items-center gap-1 mt-4 text-[12px] text-[#C4C4C4]">
+        <div className="flex items-center gap-1 mt-3 text-[12px] text-[#C4C4C4]">
           <Clock className="w-3 h-3" />
           <span data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</span>
         </div>

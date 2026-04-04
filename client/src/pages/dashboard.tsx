@@ -199,24 +199,20 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
   if (profiles.length === 0) {
     return (
       <div data-testid="section-search-profiles-empty">
-        <div className="rounded-[16px] bg-white p-5">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 rounded-full bg-ha-primary/10 flex items-center justify-center flex-shrink-0">
-              <Search className="w-4 h-4 text-ha-primary" />
-            </div>
-            <p className="text-[17px] font-bold text-[#111111] flex-1">{t("searchProfiles.sectionTitle")}</p>
-          </div>
-          <div className="flex flex-col items-center text-center py-5 px-4">
-            <p className="text-[15px] font-bold text-[#111111] mb-1" data-testid="text-empty-title">{t("searchProfiles.emptyTitle")}</p>
-            <p className="text-[13px] text-[#9CA3AF] mb-5 leading-relaxed" data-testid="text-empty-subtitle">{t("searchProfiles.emptySubtitle")}</p>
-            <button
-              onClick={() => navigate("/dashboard/searches/new")}
-              className="w-full h-[48px] rounded-full bg-ha-primary text-white font-bold text-[15px] hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
-              data-testid="button-create-first-profile"
-            >
-              {t("searchProfiles.createFirst")}
-            </button>
-          </div>
+        <div className="flex items-center gap-2 mb-3">
+          <Search className="w-4 h-4 text-ha-primary flex-shrink-0" />
+          <p className="text-[15px] font-bold text-[#111111]">{t("searchProfiles.sectionTitle")}</p>
+        </div>
+        <div className="flex flex-col items-center text-center py-4 px-2">
+          <p className="text-[15px] font-semibold text-[#111111] mb-1" data-testid="text-empty-title">{t("searchProfiles.emptyTitle")}</p>
+          <p className="text-[14px] text-[#9CA3AF] mb-4 leading-relaxed" data-testid="text-empty-subtitle">{t("searchProfiles.emptySubtitle")}</p>
+          <button
+            onClick={() => navigate("/dashboard/searches/new")}
+            className="w-full h-[48px] rounded-full bg-ha-primary text-white font-bold text-[15px] hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
+            data-testid="button-create-first-profile"
+          >
+            {t("searchProfiles.createFirst")}
+          </button>
         </div>
       </div>
     );
@@ -225,31 +221,28 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
   return (
     <>
       <div data-testid="section-search-profiles">
-        <div className="rounded-[16px] bg-white p-5">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 rounded-full bg-ha-primary/10 flex items-center justify-center flex-shrink-0">
-              <Search className="w-4 h-4 text-ha-primary" />
-            </div>
-            <p className="text-[17px] font-bold text-[#111111] flex-1">{t("searchProfiles.sectionTitle")}</p>
-            <span className="text-[12px] font-medium text-[#C4C4C4]">{profiles.length}/{MAX_PROFILES}</span>
-          </div>
-          <div className="flex flex-col gap-1.5">
-            {profiles.map((p) => (
-              <div
-                key={p.id}
-                className="flex items-center gap-3 py-3 px-3.5 rounded-[12px] bg-[#F7F7F7] cursor-pointer hover:bg-[#F0F0F0] transition-colors active:scale-[0.99]"
-                onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
-                data-testid={`card-search-profile-${p.id}`}
-              >
-                <span className="w-2 h-2 rounded-full bg-ha-success flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-[14px] font-bold text-[#111111] line-clamp-1" data-testid={`text-profile-title-${p.id}`}>
-                    {getProfileTitle(p, t, locale)}
-                  </p>
-                  <p className="text-[12px] text-[#9CA3AF] mt-0.5 line-clamp-1" data-testid={`text-profile-summary-${p.id}`}>
-                    {getProfileSummary(p, t)}
-                  </p>
-                </div>
+        <div className="flex items-center gap-2 mb-2.5">
+          <Search className="w-4 h-4 text-ha-primary flex-shrink-0" />
+          <p className="text-[15px] font-bold text-[#111111] flex-1">{t("searchProfiles.sectionTitle")}</p>
+          <span className="text-[12px] text-[#C4C4C4]">{profiles.length}/{MAX_PROFILES}</span>
+        </div>
+        <div className="flex flex-col gap-1.5">
+          {profiles.map((p) => (
+            <div
+              key={p.id}
+              className="flex items-center gap-3 py-3 px-3.5 rounded-[12px] bg-white cursor-pointer hover:bg-[#F7F7F7] transition-colors active:scale-[0.99]"
+              onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
+              data-testid={`card-search-profile-${p.id}`}
+            >
+              <span className="w-2 h-2 rounded-full bg-ha-success flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-[14px] font-semibold text-[#111111] line-clamp-1" data-testid={`text-profile-title-${p.id}`}>
+                  {getProfileTitle(p, t, locale)}
+                </p>
+                <p className="text-[12px] text-[#9CA3AF] mt-0.5 line-clamp-1" data-testid={`text-profile-summary-${p.id}`}>
+                  {getProfileSummary(p, t)}
+                </p>
+              </div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button
@@ -285,17 +278,16 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
           {canAdd ? (
             <button
               onClick={() => navigate("/dashboard/searches/new")}
-              className="w-full mt-2 h-[44px] rounded-full bg-ha-primary/8 text-[14px] font-bold text-ha-primary hover:bg-ha-primary/15 transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
+              className="w-full mt-2 h-[42px] rounded-full border border-dashed border-[#D1D5DB] text-[13px] font-semibold text-[#9CA3AF] hover:border-ha-primary hover:text-ha-primary transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
               data-testid="button-add-search-profile"
             >
               {t("searchProfiles.addProfile")}
             </button>
           ) : (
-            <p className="mt-3 text-[13px] text-[#9CA3AF] text-center" data-testid="text-max-profiles-reached">
+            <p className="mt-2 text-[12px] text-[#C4C4C4] text-center" data-testid="text-max-profiles-reached">
               {t("searchProfiles.maxReached")}
             </p>
           )}
-        </div>
       </div>
       {confirmDeleteId && (
         <DeleteConfirmScreen
@@ -527,31 +519,26 @@ function HomeTab({
 
   return (
     <div className="flex flex-col pb-8">
-      <div className="bg-white px-5 pt-6 pb-5">
-        <h1 className="text-page-title" data-testid="text-greeting">
+      <div className="px-5 pt-6 pb-4">
+        <h1 className="text-[24px] font-bold text-[#111111] tracking-[-0.02em]" data-testid="text-greeting">
           {firstName ? t("home.greeting", { name: firstName }) : t("home.greetingDefault")}
         </h1>
       </div>
 
-      <div className="flex flex-col gap-4 px-4 pt-5">
+      <div className="flex flex-col gap-5 px-4">
         <SearchProfilesSection profiles={profiles} navigate={navigate} />
 
+        <RecentlyViewedSection accessToken={accessToken} />
+
         {(!subscription.isTrial && !subscription.isActive) && (
-          <div className="rounded-[16px] bg-white p-5" data-testid="card-upgrade-warning">
-            <div className="flex items-start gap-3 mb-4">
-              <div className="w-9 h-9 rounded-full bg-[#F7F7F7] flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Lock className="w-4 h-4 text-[#111111]" />
-              </div>
-              <div className="flex-1">
-                <p className="text-[15px] font-bold text-[#111111]">Je loopt mogelijk je droomwoning mis...</p>
-                <p className="text-[13px] text-[#9CA3AF] mt-1 leading-relaxed">
-                  Upgrade en mis nooit meer een huurwoning!
-                </p>
-              </div>
+          <div className="px-1" data-testid="card-upgrade-warning">
+            <div className="flex items-center gap-3 mb-3">
+              <Lock className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
+              <p className="text-[14px] font-semibold text-[#111111]">Je loopt mogelijk je droomwoning mis...</p>
             </div>
             <button
               onClick={() => navigate("/paywall")}
-              className="w-full h-[48px] rounded-full bg-ha-primary text-white text-[15px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
+              className="w-full h-[46px] rounded-full bg-ha-primary text-white text-[15px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
               data-testid="button-upgrade-warning-cta"
             >
               Upgraden
@@ -559,7 +546,7 @@ function HomeTab({
           </div>
         )}
 
-        <div className="rounded-[16px] bg-white overflow-hidden" data-testid="section-tools">
+        <div data-testid="section-tools">
           <StatusCardInline
             icon={<Sparkles className="w-5 h-5 text-ha-primary" />}
             title={t("profile.reactionLetter2")}
@@ -570,7 +557,7 @@ function HomeTab({
             onAction={() => navigate("/application-letter")}
             testId="card-home-reaction-letter"
           />
-          <div className="h-px bg-[#F0F0F0] mx-5" />
+          <div className="h-px bg-[#F0F0F0] mx-1" />
           <StatusCardInline
             icon={<Users className="w-5 h-5 text-ha-primary" />}
             title={t("profile.zoekbuddyTitle")}
@@ -588,9 +575,7 @@ function HomeTab({
           <HomeTipsCompletionCard navigate={navigate} />
         </div>
 
-        <RecentlyViewedSection accessToken={accessToken} />
-
-        <div className="rounded-[16px] bg-[#111111] p-5" data-testid="card-home-referral">
+        <div className="rounded-[12px] bg-[#111111] p-5" data-testid="card-home-referral">
           <p className="text-[11px] font-bold text-ha-primary tracking-wider uppercase mb-1" data-testid="text-referral-label">
             {t("referral.homeLabel")}
           </p>
@@ -602,7 +587,7 @@ function HomeTab({
           </p>
           <button
             onClick={() => setReferralModalOpen(true)}
-            className="mt-3 h-[44px] px-6 rounded-full bg-ha-primary text-white text-[14px] font-bold transition-all hover:bg-ha-primary-hover active:scale-[0.97] inline-flex items-center gap-2"
+            className="mt-3 h-[42px] px-5 rounded-full bg-ha-primary text-white text-[14px] font-bold transition-all hover:bg-ha-primary-hover active:scale-[0.97] inline-flex items-center gap-2"
             data-testid="button-home-referral-cta"
           >
             {t("referral.promoCta")}
@@ -758,29 +743,27 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
         </div>
       </div>
 
-      <div className="px-4 flex flex-col pt-3">
+      <div className="px-3 flex flex-col pt-2">
         {apiMatchesQuery.isLoading ? (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-6">
             {[1, 2].map((i) => (
-              <div key={i} className="animate-pulse rounded-[16px] bg-white overflow-hidden">
-                <div className="bg-[#F0F0F0]" style={{ aspectRatio: "3/2" }} />
-                <div className="px-4 pt-3 pb-3.5 flex flex-col gap-2">
-                  <div className="h-5 bg-[#F0F0F0] rounded-lg w-3/4" />
-                  <div className="h-3.5 bg-[#F0F0F0] rounded-lg w-1/3" />
+              <div key={i} className="animate-pulse">
+                <div className="bg-[#EAEAEA] rounded-[12px]" style={{ aspectRatio: "3/2" }} />
+                <div className="pt-2.5 flex flex-col gap-1.5">
+                  <div className="h-4 bg-[#EAEAEA] rounded w-3/4" />
+                  <div className="h-3 bg-[#EAEAEA] rounded w-1/3" />
                 </div>
               </div>
             ))}
           </div>
         ) : apiMatchesQuery.isError ? (
-          <div className="rounded-[--ha-card-radius] bg-white p-10 flex flex-col items-center text-center gap-4">
-            <div className="w-14 h-14 rounded-[--ha-card-inner-radius] bg-[#F7F7F7] flex items-center justify-center">
-              <AlertCircle className="w-6 h-6 text-[#9CA3AF]" />
-            </div>
-            <p className="text-[18px] font-bold text-[#111111]">{t("matches.loadError")}</p>
-            <p className="text-[14px] text-[#4B5563] leading-relaxed">{t("matches.loadErrorDesc")}</p>
+          <div className="py-16 flex flex-col items-center text-center gap-3 px-4">
+            <AlertCircle className="w-8 h-8 text-[#C4C4C4]" />
+            <p className="text-[16px] font-bold text-[#111111]">{t("matches.loadError")}</p>
+            <p className="text-[13px] text-[#9CA3AF] leading-relaxed">{t("matches.loadErrorDesc")}</p>
             <button
               onClick={() => apiMatchesQuery.refetch()}
-              className="text-[14px] font-semibold text-ha-primary"
+              className="text-[14px] font-semibold text-ha-primary mt-1"
               data-testid="button-retry-matches"
             >
               {t("common.retry")}
@@ -796,7 +779,7 @@ function MatchesTab({ accessToken, setActiveTab }: { accessToken: string | undef
             testId="empty-matches"
           />
         ) : (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-6">
             {allMatchesSorted.map((m) => (
               <ListingCardFull
                 key={m.listing_id}
@@ -1028,17 +1011,15 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
         </div>
       </div>
 
-      <div className="px-4 flex flex-col pt-3">
+      <div className="px-3 flex flex-col pt-2">
         {isLoading && favSubTab === "favorieten" ? (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-6">
             {[1, 2].map((i) => (
-              <div key={i} className="animate-pulse rounded-[--ha-card-radius] bg-white overflow-hidden">
-                <div className="p-3 pb-0">
-                  <div className="rounded-[12px] bg-[#F7F7F7]" style={{ aspectRatio: "16/9" }} />
-                </div>
-                <div className="px-4 pt-3.5 pb-4 flex flex-col gap-2.5">
-                  <div className="h-5 bg-[#F7F7F7] rounded w-3/4" />
-                  <div className="h-4 bg-[#F7F7F7] rounded w-1/3" />
+              <div key={i} className="animate-pulse">
+                <div className="bg-[#EAEAEA] rounded-[12px]" style={{ aspectRatio: "3/2" }} />
+                <div className="pt-2.5 flex flex-col gap-1.5">
+                  <div className="h-4 bg-[#EAEAEA] rounded w-3/4" />
+                  <div className="h-3 bg-[#EAEAEA] rounded w-1/3" />
                 </div>
               </div>
             ))}
@@ -1051,7 +1032,7 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
             testId={`empty-${favSubTab}-tab`}
           />
         ) : favSubTab === "favorieten" ? (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-6">
             {currentListings.map((m) => (
               <ListingCardFull
                 key={m.listing_id}
@@ -1067,7 +1048,7 @@ function FavorietenTab({ accessToken }: { accessToken: string | undefined }) {
             ))}
           </div>
         ) : (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-6">
             {currentListings.map((m) => (
               <div key={m.listing_id} data-testid={`card-applied-${m.listing_id}`}>
                 <ListingCardFull
