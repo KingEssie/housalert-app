@@ -59,7 +59,7 @@ export default function ReferralLandingPage() {
   }
 
   if (error) {
-    navigate("/");
+    window.location.href = window.location.origin;
     return null;
   }
 

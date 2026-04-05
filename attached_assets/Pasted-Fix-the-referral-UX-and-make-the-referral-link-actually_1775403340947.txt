@@ -1,0 +1,129 @@
+Fix the referral UX and make the referral link actually usable.
+
+Goal:
+Make the referral flow frictionless like Airbnb:
+- no popup modal after tapping the referral card button
+- direct copy/share behavior
+- clear success feedback
+- working public referral link
+
+IMPORTANT:
+- Do NOT redesign the whole home page
+- Keep the referral card in place
+- Focus on referral UX + referral link reliability
+
+==================================================
+1. REMOVE THE REFERRAL MODAL
+==================================================
+
+Current behavior:
+- tapping the referral card button opens a popup modal
+- user must copy the link manually
+
+Change this behavior:
+
+When the user taps the referral CTA button:
+- generate the referral link
+- copy it directly to clipboard
+- if native share is available, optionally open native share sheet
+- show a success toast/snackbar
+- do NOT open a popup modal
+
+==================================================
+2. IMPROVE THE REFERRAL CARD COPY
+==================================================
+
+Update the referral promo card text to be more benefit-driven.
+
+Replace the current weak wording with:
+
+Title:
+- "Geef een vriend 25% korting"
+
+Description:
+- "Deel je persoonlijke link. Jij en je vriend krijgen korting op de eerste betaling."
+
+CTA button:
+- "Deel je link"
+
+Alternative CTA allowed:
+- "Nodig vrienden uit"
+
+Make the message feel clear, fast, and rewarding.
+
+==================================================
+3. ADD SUCCESS FEEDBACK
+==================================================
+
+After tapping the referral button, show a toast/snackbar:
+
+Primary:
+- "Link gekopieerd"
+
+Secondary:
+- "Je vriend krijgt 25% korting op de eerste betaling"
+
+If native share opens successfully, message may be:
+- "Link klaar om te delen"
+
+Keep feedback lightweight and mobile-friendly.
+
+==================================================
+4. FIX THE REFERRAL URL
+==================================================
+
+The current copied URL points to a non-working public domain.
+
+Fix referral link generation so it always uses the correct live public app base URL.
+
+Preferred format:
+- https://app.housalert.com/?ref={referral_code}
+
+OR, if the production domain is different, use the actual deployed public app domain.
+
+Requirements:
+- never use broken/non-live domains
+- never use temporary Replit preview URLs for referral links
+- centralize the public app base URL in one config/env variable
+- referral link generation must use that config consistently
+
+==================================================
+5. REFERRAL LANDING MUST WORK
+==================================================
+
+Ensure that opening a referral link like:
+- https://app.housalert.com/?ref=KEESLING7585
+
+actually works in production and does the following:
+- app opens correctly
+- referral code is captured
+- referral code is stored for signup flow
+- user can continue into onboarding/signup normally
+
+If the referral landing page/route is missing or broken, fix it.
+
+==================================================
+6. FALLBACK FOR NON-PRODUCTION
+==================================================
+
+If the app is running in a dev environment:
+- still allow local/dev testing
+- but clearly use the correct environment base URL logic
+
+Example:
+- production → public domain
+- development → current dev origin
+
+Do not hardcode a broken domain.
+
+==================================================
+7. OUTPUT
+==================================================
+
+After finishing, provide:
+1. the new referral card text
+2. the new tap behavior
+3. the toast messages
+4. which base URL is used in production
+5. how the referral link is captured on landing
+6. files changed

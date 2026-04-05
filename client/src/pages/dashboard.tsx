@@ -44,7 +44,6 @@ import { ExpandableCompletionCard, type CompletionStep } from "@/components/expa
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
 import TipsPage, { getTipConfig, getTipsReadSet } from "@/pages/tips";
 import { getFlowTipSteps } from "@/pages/tips-flow";
-import { ReferralCodeModal } from "@/components/referral-code-modal";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ListingCardFull, ListingCardMini } from "@/components/listing-card";
 
@@ -792,6 +791,7 @@ function HomeTab({
   accessToken: string | undefined;
 }) {
   const { t } = useTranslation();
+  const { toast } = useToast();
 
   const profileDataQuery = useQuery<{ first_name?: string; application_template?: string; search_buddy_email?: string; search_buddy_status?: string }>({
     queryKey: ["/api/profile-data"],
@@ -805,9 +805,7 @@ function HomeTab({
   });
   const rawFirstName = profileDataQuery.data?.first_name || null;
   const firstName = rawFirstName ? rawFirstName.split(" ")[0] : null;
-  const [referralModalOpen, setReferralModalOpen] = useState(false);
-
-  const { data: referralData, isLoading: referralLoading } = useQuery<{
+  const { data: referralData } = useQuery<{
     code: string;
     totalInvited: number;
     pending: number;
@@ -825,6 +823,38 @@ function HomeTab({
     },
     enabled: !!accessToken,
   });
+
+  function getReferralUrl(): string {
+    const code = referralData?.code;
+    if (!code) return "";
+    const isProd = window.location.hostname === "app.housalert.com";
+    const base = isProd ? "https://app.housalert.com" : window.location.origin;
+    return `${base}/?ref=${code}`;
+  }
+
+  async function handleReferralTap() {
+    const url = getReferralUrl();
+    if (!url) return;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "HousAlert — Vind sneller een woning",
+          text: "Gebruik mijn link en krijg 25% korting op je eerste betaling.",
+          url,
+        });
+        toast({ title: "Link klaar om te delen", description: "Je vriend krijgt 25% korting op de eerste betaling" });
+        return;
+      } catch {}
+    }
+
+    try {
+      await navigator.clipboard.writeText(url);
+      toast({ title: "Link gekopieerd", description: "Je vriend krijgt 25% korting op de eerste betaling" });
+    } catch {
+      toast({ title: "Kopiëren mislukt", description: "Probeer het opnieuw", variant: "destructive" });
+    }
+  }
 
   return (
     <div className="flex flex-col pb-8">
@@ -850,22 +880,22 @@ function HomeTab({
       <div className="flex flex-col gap-6 px-5 pt-4">
         <div
           className="rounded-[16px] bg-white border border-[#E5E7EB] px-4 py-3.5 flex items-center gap-3 cursor-pointer active:bg-[#F9FAFB] transition-colors"
-          onClick={() => setReferralModalOpen(true)}
+          onClick={handleReferralTap}
           data-testid="card-home-referral"
         >
           <div className="flex-1 min-w-0">
-            <p className="text-[11px] font-semibold text-[#9CA3AF] mb-0.5" data-testid="text-referral-label">
-              {t("referral.promoLabel")}
-            </p>
             <p className="text-[15px] font-semibold text-[#111111] leading-snug" data-testid="text-referral-body">
-              {t("referral.promoBody")}
+              Geef een vriend 25% korting
+            </p>
+            <p className="text-[13px] text-[#6B7280] mt-0.5" data-testid="text-referral-label">
+              Deel je persoonlijke link. Jij en je vriend krijgen korting op de eerste betaling.
             </p>
           </div>
           <button
             className="h-[36px] px-4 rounded-full bg-ha-primary text-white text-[13px] font-semibold hover:bg-ha-primary-hover transition-colors flex-shrink-0"
             data-testid="button-home-referral-cta"
           >
-            {t("referral.promoCta")}
+            Deel je link
           </button>
         </div>
 
@@ -875,7 +905,7 @@ function HomeTab({
           </h2>
           <div className="flex flex-col gap-2.5">
             <HomeAccountCompletionCard accessToken={accessToken} navigate={navigate} />
-            <HomePrepCompletionCard accessToken={accessToken} navigate={navigate} onTellFriends={() => setReferralModalOpen(true)} />
+            <HomePrepCompletionCard accessToken={accessToken} navigate={navigate} onTellFriends={handleReferralTap} />
           </div>
         </div>
 
@@ -889,12 +919,6 @@ function HomeTab({
         />
       </div>
 
-      <ReferralCodeModal
-        open={referralModalOpen}
-        onClose={() => setReferralModalOpen(false)}
-        code={referralData?.code || null}
-        loading={referralLoading}
-      />
     </div>
   );
 }

@@ -17,7 +17,9 @@ export function ReferralCodeModal({ open, onClose, code, loading }: ReferralCode
 
   if (!open) return null;
 
-  const referralUrl = code ? `https://housalert.com/?ref=${code}` : "";
+  const isProd = typeof window !== "undefined" && window.location.hostname === "app.housalert.com";
+  const base = isProd ? "https://app.housalert.com" : (typeof window !== "undefined" ? window.location.origin : "");
+  const referralUrl = code ? `${base}/?ref=${code}` : "";
 
   async function handleCopy() {
     if (!referralUrl) return;
