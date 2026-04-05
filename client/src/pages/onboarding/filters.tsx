@@ -101,7 +101,6 @@ function SegmentedControl({
   value,
   onChange,
   testId,
-  theme,
 }: {
   options: { value: string; label: string }[];
   value: string;
@@ -109,28 +108,28 @@ function SegmentedControl({
   testId: string;
   theme?: OBTheme;
 }) {
-  const t = theme || OB;
-  const isLight = theme === OBW;
   return (
     <div
-      className="flex p-1 rounded-full"
-      style={{ backgroundColor: OBW.tabBg }}
+      className="flex items-center gap-2"
       data-testid={testId}
     >
-      {options.map((opt) => (
-        <button
-          key={opt.value}
-          onClick={() => onChange(opt.value)}
-          className="flex-1 h-[40px] rounded-full text-[13px] font-semibold transition-all"
-          style={{
-            backgroundColor: value === opt.value ? OBW.tabActiveBg : "transparent",
-            color: value === opt.value ? OBW.tabActiveColor : t.textSecondary,
-          }}
-          data-testid={`${testId}-${opt.value}`}
-        >
-          {opt.label}
-        </button>
-      ))}
+      {options.map((opt) => {
+        const isActive = value === opt.value;
+        return (
+          <button
+            key={opt.value}
+            onClick={() => onChange(opt.value)}
+            className={`px-3.5 py-[6px] text-[13px] rounded-full border transition-all duration-200 active:scale-[0.96] ${
+              isActive
+                ? "bg-[#111111] text-white font-semibold border-[#111111]"
+                : "bg-[#F3F4F6] text-[#111111] font-medium border-transparent"
+            }`}
+            data-testid={`${testId}-${opt.value}`}
+          >
+            {opt.label}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -830,14 +829,14 @@ export default function OnboardingFilters() {
           <span
             className="text-[12px] font-bold px-2.5 py-1 rounded-[6px]"
             style={{
-              backgroundColor: "rgba(56,189,248,0.15)",
-              color: "rgb(var(--ha-primary))",
+              backgroundColor: "#111111",
+              color: "#ffffff",
             }}
             data-testid="badge-step"
           >
             {`3/${ONBOARDING_TOTAL_STEPS}`}
           </span>
-          <span className="text-[15px] font-semibold" style={{ color: T.text }}>
+          <span className="text-[20px] font-semibold" style={{ color: T.text }}>
             {t("onboarding.filters.headerTitle") || "Zoekopdracht maken"}
           </span>
           <button
@@ -853,7 +852,7 @@ export default function OnboardingFilters() {
 
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-[120px] overflow-y-auto">
         <h2
-          className="text-[22px] font-bold tracking-[-0.02em] mb-1"
+          className="text-[24px] font-semibold tracking-[-0.02em] mb-1"
           style={{ color: T.text }}
           data-testid="text-filters-title"
         >

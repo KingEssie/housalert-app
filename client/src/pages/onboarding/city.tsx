@@ -304,14 +304,14 @@ export default function OnboardingCity() {
           <span
             className="text-[12px] font-bold px-2.5 py-1 rounded-[6px]"
             style={{
-              backgroundColor: "rgba(56,189,248,0.15)",
-              color: "rgb(var(--ha-primary))",
+              backgroundColor: "#111111",
+              color: "#ffffff",
             }}
             data-testid="badge-step"
           >
             {`1/${ONBOARDING_TOTAL_STEPS}`}
           </span>
-          <span className="text-[18px] font-semibold" style={{ color: T.text }}>
+          <span className="text-[20px] font-semibold" style={{ color: T.text }}>
             Zoekopdracht maken
           </span>
           <button

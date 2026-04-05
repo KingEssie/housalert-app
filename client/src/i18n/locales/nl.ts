@@ -823,6 +823,7 @@ export const nl: Record<string, any> = {
       wholeCityHint: "We zoeken in de hele stad naar passende woningen.",
     },
     filters: {
+      headerTitle: "Zoekopdracht maken",
       title: "Wat zoek je precies?",
       subtitle: "Verfijn je zoekopdracht zodat we alleen passende woningen vinden.",
       maxPrice: "Maximale huur (€)",

@@ -764,6 +764,7 @@ export const en: Record<string, any> = {
       wholeCityHint: "We'll search the entire city for matching apartments.",
     },
     filters: {
+      headerTitle: "Create search",
       title: "What are you looking for?",
       subtitle: "Narrow down your search so we only find matching apartments.",
       maxPrice: "Maximum rent (€)",

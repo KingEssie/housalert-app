@@ -34,7 +34,7 @@ function getPlans(t: (k: string) => string): Plan[] {
       perMonth: "€15,00 " + t("paywall.perMonth"),
       popular: false,
       discountLabel: "-40%",
-      discountColor: "rgb(var(--ha-success))",
+      discountColor: "#16A34A",
     },
     {
       id: "two_month",
@@ -43,7 +43,7 @@ function getPlans(t: (k: string) => string): Plan[] {
       perMonth: "€17,50 " + t("paywall.perMonth"),
       popular: true,
       discountLabel: "-30%",
-      discountColor: "rgb(var(--ha-primary))",
+      discountColor: "#FF385C",
     },
     {
       id: "monthly",
@@ -73,7 +73,7 @@ interface WebsitePlan {
 const WEBSITE_PLANS: WebsitePlan[] = [
   { id: "three_month", label: "3 maanden", perMonth: "€15,00 per maand", discount: "40% korting", popular: false },
   { id: "two_month", label: "2 maanden", perMonth: "€17,50 per maand", discount: "30% korting", popular: true },
-  { id: "monthly", label: "1 maand", perMonth: "€24,99 per maand", discount: "0% korting", popular: false },
+  { id: "monthly", label: "1 maand", perMonth: "€24,99 per maand", discount: "", popular: false },
 ];
 
 function WebsitePaywall({
@@ -199,12 +199,14 @@ function WebsitePaywall({
                       <span className="text-[13px]" style={{ color: OBW.textSecondary }}>
                         {plan.perMonth}
                       </span>
-                      <span
-                        className="text-[13px] font-bold"
-                        style={{ color: plan.discount === "0% korting" ? OBW.textSecondary : "rgb(var(--ha-primary))" }}
-                      >
-                        {plan.discount}
-                      </span>
+                      {plan.discount && (
+                        <span
+                          className="text-[13px] font-bold"
+                          style={{ color: "rgb(var(--ha-primary))" }}
+                        >
+                          {plan.discount}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </button>
@@ -412,7 +414,7 @@ export default function PaywallPage() {
       </header>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-8 pb-32">
-        <h1 className="text-[28px] font-extrabold tracking-[-0.03em] leading-[1.1] mb-6" style={{ color: TEXT_PRIMARY }} data-testid="text-paywall-title">
+        <h1 className="text-[28px] font-bold tracking-[-0.03em] leading-[1.1] mb-6" style={{ color: TEXT_PRIMARY }} data-testid="text-paywall-title">
           {t("paywall.headline")}
         </h1>
 

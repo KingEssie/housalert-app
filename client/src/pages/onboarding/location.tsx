@@ -97,14 +97,14 @@ export default function OnboardingLocation() {
           <span
             className="text-[12px] font-bold px-2.5 py-1 rounded-[6px]"
             style={{
-              backgroundColor: w ? OBW.badgeBg : "rgba(56,189,248,0.15)",
-              color: w ? OBW.badgeColor : "rgb(var(--ha-primary))",
+              backgroundColor: "#111111",
+              color: "#ffffff",
             }}
             data-testid="badge-step"
           >
             {`${w ? "1" : "2"}/${w ? "2" : ONBOARDING_TOTAL_STEPS}`}
           </span>
-          <span className="text-[18px] font-semibold" style={{ color: T.text }}>
+          <span className="text-[20px] font-semibold" style={{ color: T.text }}>
             Zoekopdracht maken
           </span>
           <button
@@ -143,24 +143,26 @@ export default function OnboardingLocation() {
 
         {!w && (
           <div
-            className="flex p-1 rounded-full mb-5"
-            style={{ backgroundColor: OBW.tabBg }}
+            className="flex items-center gap-2 mb-5"
             data-testid="location-tabs"
           >
-            {TAB_OPTIONS.map((tab) => (
-              <button
-                key={tab.value}
-                onClick={() => setMode(tab.value)}
-                className="flex-1 h-[40px] rounded-full text-[13px] font-semibold transition-all"
-                style={{
-                  backgroundColor: mode === tab.value ? OBW.tabActiveBg : "transparent",
-                  color: mode === tab.value ? OBW.tabActiveColor : OBW.tabInactiveColor,
-                }}
-                data-testid={`tab-${tab.value}`}
-              >
-                {tab.label}
-              </button>
-            ))}
+            {TAB_OPTIONS.map((tab) => {
+              const isActive = mode === tab.value;
+              return (
+                <button
+                  key={tab.value}
+                  onClick={() => setMode(tab.value)}
+                  className={`px-3.5 py-[6px] text-[13px] rounded-full border transition-all duration-200 active:scale-[0.96] ${
+                    isActive
+                      ? "bg-[#111111] text-white font-semibold border-[#111111]"
+                      : "bg-[#F3F4F6] text-[#111111] font-medium border-transparent"
+                  }`}
+                  data-testid={`tab-${tab.value}`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
           </div>
         )}
 

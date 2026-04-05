@@ -110,7 +110,7 @@ export default function LoginPage() {
       <main className="flex-1 flex flex-col px-4 pt-8 pb-6">
         <div className="w-full max-w-[480px] mx-auto flex flex-col flex-1">
           <h1
-            className="text-[28px] font-extrabold tracking-[-0.02em] leading-[1.15] mb-8 whitespace-pre-line"
+            className="text-[28px] font-bold tracking-[-0.02em] leading-[1.15] mb-8 whitespace-pre-line"
             style={{ color: OB.text }}
             data-testid="text-login-title"
           >

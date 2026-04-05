@@ -108,14 +108,17 @@ export function ListingCardFull({
 
         <button
           onClick={handleHeartClick}
-          className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center active:scale-90 transition-transform duration-150"
+          className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-all duration-200"
+          style={{
+            backgroundColor: isFavorited ? "rgba(255,56,92,0.15)" : "rgba(0,0,0,0.25)",
+            backdropFilter: isFavorited ? "none" : "blur(4px)",
+          }}
           data-testid={`button-favorite-${match.listing_id}`}
         >
           <Heart
-            className={`w-[22px] h-[22px] transition-colors duration-200 ${isFavorited ? "text-ha-primary" : "text-white"}`}
+            className={`w-[18px] h-[18px] transition-all duration-200 ${isFavorited ? "text-ha-primary scale-110" : "text-white"}`}
             fill={isFavorited ? "currentColor" : "none"}
             strokeWidth={2}
-            style={{ filter: isFavorited ? "none" : "drop-shadow(0 1px 3px rgba(0,0,0,0.5))" }}
           />
         </button>
 

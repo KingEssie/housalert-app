@@ -68,7 +68,7 @@ export function getTipConfig(t: (key: string) => string) {
       icon: TrendingUp,
       title: t("tips.guide.bezichtiging"),
       description: t("tips.guideDesc.bezichtiging"),
-      route: "/tips/bezichtiging",
+      route: "/tips/flow",
     },
     {
       id: "kansen" as TipId,
@@ -82,16 +82,30 @@ export function getTipConfig(t: (key: string) => string) {
       icon: FolderOpen,
       title: t("tips.guide.documenten"),
       description: t("tips.guideDesc.documenten"),
-      route: "/tips/documenten",
+      route: "/tips/flow",
     },
     {
       id: "introductiebrief" as TipId,
       icon: PenTool,
       title: t("tips.guide.introductiebrief"),
       description: t("tips.guideDesc.introductiebrief"),
-      route: "/application-letter",
+      route: "/application-letter?from=tips",
     },
   ];
+}
+
+const FLOW_TIP_MAPPING: Record<TipId, string[]> = {
+  reageren: ["reaktion"],
+  bezichtiging: ["besichtigung"],
+  kansen: ["plattformen", "neubau", "netzwerk"],
+  documenten: ["dokumente", "finanzen"],
+  introductiebrief: [],
+};
+
+function isTipCompleted(tipId: TipId, readSet: Set<string>): boolean {
+  if (readSet.has(tipId)) return true;
+  const mapped = FLOW_TIP_MAPPING[tipId] || [];
+  return mapped.length > 0 && mapped.some((id) => readSet.has(id));
 }
 
 export default function TipsPage({ navigate }: { navigate: (path: string) => void }) {
@@ -169,7 +183,7 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
           </h2>
           <div className="rounded-[16px] bg-white border border-[#E5E7EB] overflow-hidden">
             {guides.map((guide, idx) => {
-              const isRead = readSet.has(guide.id);
+              const isRead = isTipCompleted(guide.id, readSet);
               return (
                 <div key={guide.id}>
                   {idx > 0 && <div className="h-px bg-[#F0F0F0] mx-4" />}

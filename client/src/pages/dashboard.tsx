@@ -172,6 +172,10 @@ function getProfileSummary(p: SearchProfile, t: (key: string, params?: Record<st
   else parts.push("€0 – €5.000+");
   if (p.bedrooms_min > 0) parts.push(`${p.bedrooms_min}+ ${t("searchProfiles.bedrooms")}`);
   if (p.size_min > 0) parts.push(`${p.size_min}+ m²`);
+  if ((p as any).property_type) {
+    const typeLabel = (p as any).property_type === "house" ? t("onboarding.filters.house") : "";
+    if (typeLabel) parts.push(typeLabel);
+  }
   return parts.join(" · ");
 }
 
@@ -609,34 +613,49 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
       )}
 
       {confirmDeleteId && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setConfirmDeleteId(null)}>
-          <div className="bg-white w-full max-w-[400px] rounded-t-[16px] sm:rounded-[16px] px-6 pt-7 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
-            <p className="text-[17px] font-bold text-[#111111] text-center" data-testid="text-delete-title">
-              {t("home.deleteTitle")}
-            </p>
-            <p className="text-[14px] text-[#6B7280] text-center mt-2 mb-6 leading-relaxed" data-testid="text-delete-body">
-              {t("home.deleteDesc")}
-            </p>
-            <div className="flex gap-3">
+        <div className="fixed inset-0 z-50 bg-[#F9FAFB] flex flex-col">
+          <header className="sticky top-0 z-10">
+            <div className="max-w-lg mx-auto flex items-center h-[48px] px-4">
               <button
                 onClick={() => setConfirmDeleteId(null)}
-                className="flex-1 h-[46px] rounded-full border border-[#E5E7EB] text-[15px] font-semibold text-[#111111] active:bg-[#F9FAFB] transition-colors"
-                data-testid="button-delete-no"
+                className="w-9 h-9 rounded-full flex items-center justify-center active:scale-95 transition-transform"
+                data-testid="button-delete-back"
               >
-                {t("home.deleteNo")}
+                <ArrowLeft className="w-4 h-4 text-[#111111]/80" />
               </button>
+              <h1 className="text-[17px] font-semibold text-[#111111] flex-1 text-center pr-9">{t("home.deleteTitle")}</h1>
+            </div>
+          </header>
+          <main className="flex-1 flex flex-col items-center justify-center px-4">
+            <div className="w-16 h-16 rounded-[16px] bg-ha-primary flex items-center justify-center mb-6">
+              <Trash2 className="w-8 h-8 text-white" />
+            </div>
+            <h2 className="text-[22px] font-semibold text-[#111111] mb-3 text-center" data-testid="text-delete-title">
+              {t("home.deleteTitle")}
+            </h2>
+            <p className="text-[15px] text-[#111111]/70 text-center max-w-[320px] mb-10 leading-relaxed" data-testid="text-delete-body">
+              {t("home.deleteDesc")}
+            </p>
+            <div className="w-full max-w-[320px] flex flex-col gap-3">
               <button
                 onClick={() => {
                   deleteMutation.mutate(confirmDeleteId);
                   setConfirmDeleteId(null);
                 }}
-                className="flex-1 h-[46px] rounded-full bg-ha-primary text-white text-[15px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
+                className="w-full h-[48px] rounded-full bg-ha-primary text-white text-[16px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
                 data-testid="button-delete-yes"
               >
                 {t("home.deleteYes")}
               </button>
+              <button
+                onClick={() => setConfirmDeleteId(null)}
+                className="w-full h-[48px] rounded-full border border-[#E5E7EB] text-[#111111] text-[16px] font-medium hover:bg-white/5 transition-colors"
+                data-testid="button-delete-no"
+              >
+                {t("home.deleteNo")}
+              </button>
             </div>
-          </div>
+          </main>
         </div>
       )}
     </div>
@@ -667,6 +686,11 @@ function RecentMatchesSection({
 
   const recentMatches = (apiMatchesQuery.data?.matches ?? [])
     .filter(m => m.title && m.url && m.listing_id)
+    .sort((a, b) => {
+      const dateA = a.first_seen_at || a.matched_at || "";
+      const dateB = b.first_seen_at || b.matched_at || "";
+      return new Date(dateB).getTime() - new Date(dateA).getTime();
+    })
     .slice(0, 6);
 
   return (
@@ -1058,20 +1082,20 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
           </div>
         </div>
 
-        <div className="px-5 pt-12">
+        <div className="px-5 pt-16">
           <div className="flex flex-col items-center text-center px-6 pb-4">
-            <div className="w-14 h-14 rounded-full bg-[#FFF1F3] flex items-center justify-center mb-5">
-              <Lock className="w-6 h-6 text-ha-primary" />
+            <div className="w-16 h-16 rounded-full bg-[#FFF1F3] flex items-center justify-center mb-6">
+              <Lock className="w-7 h-7 text-ha-primary" />
             </div>
-            <h2 className="text-[18px] font-bold text-[#111111] mb-2" data-testid="text-locked-headline">
+            <h2 className="text-[20px] font-semibold text-[#111111] mb-2" data-testid="text-locked-headline">
               {t("matches.locked.headline")}
             </h2>
-            <p className="text-[14px] text-[#9CA3AF] leading-relaxed max-w-[260px] mb-7" data-testid="text-locked-desc">
+            <p className="text-[14px] text-[#6B7280] leading-relaxed max-w-[280px] mb-8" data-testid="text-locked-desc">
               {t("matches.locked.desc")}
             </p>
             <button
               onClick={() => navigate("/paywall")}
-              className="h-[44px] px-8 rounded-full bg-ha-primary text-white text-[15px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
+              className="h-[48px] px-10 rounded-full bg-ha-primary text-white text-[15px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
               data-testid="button-locked-subscribe"
             >
               {t("matches.locked.cta")}
@@ -1883,25 +1907,42 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       )}
 
       {showLogoutConfirm && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowLogoutConfirm(false)}>
-          <div className="bg-white w-full max-w-[400px] rounded-t-[20px] sm:rounded-[20px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
-            <p className="text-[17px] font-bold text-[#111111] text-center">{t("profile.logoutConfirm")}</p>
-            <p className="text-[15px] text-ha-text-secondary text-center mt-2 mb-6">{t("profile.logoutDesc")}</p>
-            <button
-              onClick={handleLogout}
-              className="w-full ha-btn bg-ha-danger text-white font-semibold mb-3"
-              data-testid="button-profile-logout-confirm"
-            >
-              {t("profile.logoutYes")}
-            </button>
-            <button
-              onClick={() => setShowLogoutConfirm(false)}
-              className="w-full ha-btn text-[#111111] font-medium active:bg-ha-surface-hover"
-              data-testid="button-profile-logout-cancel"
-            >
-              {t("profileDetails.cancel")}
-            </button>
-          </div>
+        <div className="fixed inset-0 z-50 bg-[#F9FAFB] flex flex-col">
+          <header className="sticky top-0 z-10">
+            <div className="max-w-lg mx-auto flex items-center h-[48px] px-4">
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                className="w-9 h-9 rounded-full flex items-center justify-center active:scale-95 transition-transform"
+                data-testid="button-logout-back"
+              >
+                <ArrowLeft className="w-4 h-4 text-[#111111]/80" />
+              </button>
+              <h1 className="text-[17px] font-semibold text-[#111111] flex-1 text-center pr-9">{t("profile.logoutConfirm")}</h1>
+            </div>
+          </header>
+          <main className="flex-1 flex flex-col items-center justify-center px-4">
+            <div className="w-16 h-16 rounded-[16px] bg-[#F3F4F6] flex items-center justify-center mb-6">
+              <LogOut className="w-8 h-8 text-[#6B7280]" />
+            </div>
+            <h2 className="text-[22px] font-semibold text-[#111111] mb-3 text-center">{t("profile.logoutConfirm")}</h2>
+            <p className="text-[15px] text-[#111111]/70 text-center max-w-[320px] mb-10 leading-relaxed">{t("profile.logoutDesc")}</p>
+            <div className="w-full max-w-[320px] flex flex-col gap-3">
+              <button
+                onClick={handleLogout}
+                className="w-full h-[48px] rounded-full bg-ha-danger text-white text-[16px] font-semibold transition-colors active:scale-[0.98]"
+                data-testid="button-profile-logout-confirm"
+              >
+                {t("profile.logoutYes")}
+              </button>
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                className="w-full h-[48px] rounded-full border border-[#E5E7EB] text-[#111111] text-[16px] font-medium hover:bg-white/5 transition-colors"
+                data-testid="button-profile-logout-cancel"
+              >
+                {t("profileDetails.cancel")}
+              </button>
+            </div>
+          </main>
         </div>
       )}
 

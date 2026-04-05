@@ -1,0 +1,316 @@
+You are a senior product frontend engineer.
+
+Implement the following UX, UI, and logic refinements across the HousAlert app.
+
+IMPORTANT:
+- Keep HousAlert branding
+- Primary brand color remains: #FF385C
+- Do NOT introduce dark theme anywhere
+- Do NOT use modals for confirmations anymore
+- Keep existing logic unless explicitly changed below
+- Maintain current routing unless explicitly changed below
+- Make all changes production-ready, not prototype-level
+
+==================================================
+1. ONBOARDING VISUAL FIXES
+==================================================
+
+Apply these changes across the full onboarding flow:
+
+1.1 Background
+- All onboarding screens must use pure white background (#FFFFFF)
+- Remove any grey page background still left in onboarding
+
+1.2 Step indicators (1/3, 2/3, 3/3)
+- Background: black
+- Text: white
+- Same styling on every onboarding step
+
+1.3 Intro / numbered explanation screen
+- Green titles/text must become black
+- Number circles:
+  - background: light grey (#F3F4F6)
+  - number text: black
+- No green text on this screen anymore
+
+1.4 Page titles in onboarding
+- Make titles slightly larger
+- Use semibold instead of extra bold/heavy bold
+
+==================================================
+2. ONBOARDING STEP 2/3 – TAB STYLING
+==================================================
+
+For the tabs on onboarding step 2/3:
+- Buurten
+- Straal
+- Gehele woonplaats
+
+And also for:
+- Gemeubileerd options
+
+Change these to use the SAME pill/tab design system as the Airbnb-style tabs used on the matches screen.
+
+Rules:
+- active tab: black background, white text
+- inactive tabs: light grey background, dark text
+- rounded pill style
+- same spacing and height as matches tabs
+- no segmented block style
+
+==================================================
+3. ONBOARDING – HUISDIEREN FIX
+==================================================
+
+Current issue:
+- clicking changes pet count directly
+- wrong label text
+
+Fix:
+
+3.1 Label
+Change:
+- "Welke huisdieren neem je mee?"
+To:
+- "Hoeveel huisdieren neem je mee?"
+
+3.2 Input behavior
+Replace the current click-to-increment behavior with a proper dropdown/select.
+
+Options:
+- 0
+- 1
+- 2
+- 3
+- 4
+- 5+
+
+3.3 Keep styling consistent with onboarding inputs
+
+==================================================
+4. ONBOARDING – TRANSLATION / TEXT BUG
+==================================================
+
+Fix any untranslated onboarding keys such as:
+- onboarding.filters.headerTitle
+
+No translation keys should be visible to the user anywhere.
+All onboarding text must render normal readable text.
+
+==================================================
+5. SUBSCRIPTION / PAYWALL PAGE FIXES
+==================================================
+
+5.1 1-month plan
+Add a discount label for the 1 month plan:
+- show "0%" in the same discount style area where other plans show -30% / -40%
+
+5.2 Number badges / counters on subscription-related flows
+If any onboarding/subscription progress numbers are shown, use:
+- black background
+- white text
+
+==================================================
+6. HOME SCREEN – SEARCH PROFILE CARD INFO UPGRADE
+==================================================
+
+Improve the search profile card on the Home screen.
+
+In addition to existing info, show more useful profile context:
+
+6.1 If districts/neighborhoods are selected:
+- show amount of selected districts, e.g.:
+  "12 wijken"
+
+6.2 If radius is selected:
+- show radius in kilometers, e.g.:
+  "5 km"
+
+6.3 If travel time is selected:
+- show travel time and starting point/address if available, e.g.:
+  "20 min vanaf Centrum"
+or equivalent best available label
+
+Goal:
+make the search profile summary feel smarter and more informative.
+
+==================================================
+7. REMOVE MODALS – USE FULL SCREEN CONFIRMATION PAGES
+==================================================
+
+Global rule:
+Do NOT use modals anymore for confirmations.
+
+Any confirmation UI (for example deleting search profiles, blocking sites, etc.) should become a full screen confirmation page.
+
+Use this structure:
+- large icon
+- title
+- optional description
+- primary/secondary action buttons
+
+Make this style consistent across the app.
+
+==================================================
+8. TIPS FLOW CONSISTENCY
+==================================================
+
+Current issue:
+- some tips open as full pages
+- some tips are in a flow
+
+Fix:
+- All 5 tips must live inside ONE single tip flow
+- User can navigate through all 5 tips in sequence
+- Do not open mixed independent tip pages anymore for these 5 tips
+
+Keep:
+- HousAlert branding
+- clear navigation
+- consistent typography
+
+==================================================
+9. REACTIEBRIEF FLOW FIX
+==================================================
+
+Current issue:
+- when editing the saved reaction letter, previously saved selections are not preselected
+- save return flow is inconsistent
+- extra button is unnecessary
+
+Fix:
+
+9.1 Prefill saved selections
+When reopening the reaction letter setup/edit flow:
+- load previously saved answers/selections
+- show them as already selected
+
+9.2 Return logic after save
+When user clicks save:
+- if started from Account/Profile screen → return to Account/Profile screen
+- if started from onboarding flow → continue onboarding flow
+- if started from Home screen "Rond je account af" section → return to Home screen
+
+This must be context-aware.
+
+9.3 Remove unnecessary button
+Remove:
+- "Nieuwe reactiebrief maken"
+from the screen where the reaction letter is already shown
+
+==================================================
+10. MATCHES VS HOME – RECENT MATCHES DATA CONSISTENCY
+==================================================
+
+Current issue:
+- Home recent matches and Matches screen are inconsistent
+- more recent item should appear in both consistently
+
+Fix the logic so that:
+- Home recent matches
+- Matches list
+
+use the same source of truth and same sorting logic for latest matches.
+
+Requirements:
+- same filtering rules
+- same ordering by newest publication/creation time
+- no contradictory newest items
+
+==================================================
+11. LOCKED / INACTIVE SUBSCRIPTION EMPTY STATES
+==================================================
+
+If user does NOT have an active paid/trial subscription:
+
+11.1 Home screen – recent matches section
+Show centered empty state with this structure:
+- large unlocked/open lock icon
+- title: "Laten we beginnen"
+- description: "Kies een abonnement om direct matches te ontvangen"
+
+11.2 Matches page
+Show the same empty state on the Matches page
+AND:
+- do NOT show the matches tabs when subscription is inactive
+- no Matches / Gereageerd / Favorieten tabs in locked state
+
+Keep centered layout and HousAlert styling.
+
+==================================================
+12. FAVORITE + BLOCK ICON STATES
+==================================================
+
+Apply this consistently on:
+- listing cards
+- detail screens
+
+12.1 Inactive state
+- dark translucent fill/background
+- white outline/stroke icon
+
+12.2 Active state
+- HousAlert brand red fill (#FF385C)
+- white outline/stroke icon
+
+This applies to:
+- favorite heart
+- block icon
+
+Make these visually consistent everywhere.
+
+==================================================
+13. DETAIL SCREEN ACTION ICONS
+==================================================
+
+Ensure the detail screen shows:
+- favorite icon
+- block icon
+
+Placed:
+- top-right on image
+- side by side
+- same visual style as listing icons
+- no mismatched circular background style
+
+==================================================
+14. TYPOGRAPHY REFINEMENT
+==================================================
+
+Across the affected screens in this prompt:
+- page titles should be slightly larger
+- use semibold instead of overly heavy bold
+- keep hierarchy clean and premium
+
+==================================================
+15. DO NOT BREAK
+==================================================
+
+Do NOT break:
+- current routing except where explicitly replaced
+- onboarding step progression
+- profile logic
+- search profile logic
+- subscription logic
+- favorites logic
+- blocked website logic
+- reaction letter save logic
+- tips content
+
+==================================================
+16. OUTPUT
+==================================================
+
+After implementation, provide:
+
+1. list of files changed
+2. onboarding screens updated
+3. confirmation that onboarding now uses pure white background
+4. confirmation that all 5 tips are now in one flow
+5. confirmation that pets selection is now a dropdown (0–5+)
+6. confirmation that Home and Matches now use same recent matches logic
+7. confirmation that locked empty state is shown on:
+   - Home recent matches
+   - Matches page
+8. confirmation that favorite/block icon states are consistent everywhere
+9. confirmation that modals were replaced by full-screen confirmations where applicable

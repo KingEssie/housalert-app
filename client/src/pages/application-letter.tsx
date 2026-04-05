@@ -49,6 +49,16 @@ export default function ApplicationLetterPage() {
   const { toast } = useToast();
   const { t, locale } = useTranslation();
 
+  const returnPath = (() => {
+    try {
+      const params = new URLSearchParams(window.location.search || window.location.hash.split("?")[1] || "");
+      const from = params.get("from");
+      if (from === "tips") return "/dashboard?tab=tips";
+      if (from === "profile") return "/dashboard?tab=profiel";
+    } catch {}
+    return "/dashboard?tab=home";
+  })();
+
   const [step, setStep] = useState<Step>(1);
   const [template, setTemplate] = useState("");
   const [initialized, setInitialized] = useState(false);
@@ -90,6 +100,7 @@ export default function ApplicationLetterPage() {
       const existing = profileData.application_template;
       if (existing && existing.trim().length > 0) {
         setTemplate(existing);
+        setStep(4);
       }
       setInitialized(true);
     }
@@ -188,7 +199,8 @@ export default function ApplicationLetterPage() {
   };
 
   function handleBack() {
-    if (step === 1) navigate("/dashboard?tab=home");
+    if (step === 1) navigate(returnPath);
+    else if (step === 4 && profileData?.application_template && profileData.application_template.trim().length > 0) navigate(returnPath);
     else setStep((step - 1) as Step);
   }
 

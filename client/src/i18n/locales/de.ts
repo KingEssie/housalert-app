@@ -816,6 +816,7 @@ export const de: Record<string, any> = {
       wholeCityHint: "Wir suchen in der gesamten Stadt nach passenden Wohnungen.",
     },
     filters: {
+      headerTitle: "Suchauftrag erstellen",
       title: "Was suchst du genau?",
       subtitle: "Grenze deine Suche ein, damit wir nur passende Wohnungen finden.",
       maxPrice: "Maximale Miete (€)",

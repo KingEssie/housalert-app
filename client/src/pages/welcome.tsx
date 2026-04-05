@@ -187,7 +187,7 @@ export default function WelcomePage() {
 
       <main className="flex-1 flex flex-col w-full px-4 pt-6 pb-[max(env(safe-area-inset-bottom),12px)]">
         <h1
-          className="text-[26px] font-extrabold text-[#111111] leading-[1.15] tracking-[-0.02em] mb-8 whitespace-nowrap"
+          className="text-[26px] font-bold text-[#111111] leading-[1.15] tracking-[-0.02em] mb-8 whitespace-nowrap"
           data-testid="text-auth-title"
         >
           {t("v2.welcome.title")}
