@@ -1,0 +1,79 @@
+We need to debug why the favorite and block overlay buttons are still NOT visible on the detail screen, even though the implementation claims they were added.
+
+IMPORTANT:
+Do NOT assume the correct screen/component was modified.
+First trace the actual route and component being rendered for the screen shown in the screenshot.
+
+The screen title shown to the user is:
+"Reactie versturen"
+
+We need to determine whether this is:
+- the main listing detail screen
+- a separate response/apply screen
+- a different mobile-specific detail component
+- or another route/component entirely
+
+==================================================
+1. TRACE THE ACTUAL RENDERED SCREEN
+==================================================
+
+Find exactly which route and React component are used when the user opens the screen titled:
+"Reactie versturen"
+
+Output:
+- route path
+- page component
+- image/hero component used on this screen
+- whether it is the same component as the main listing detail screen or a different one
+
+==================================================
+2. VERIFY WHERE THE BUTTONS WERE ADDED
+==================================================
+
+Show exactly which file/component was modified for:
+- favorite overlay button
+- block overlay button
+
+Then verify whether that modified component is actually used on the "Reactie versturen" screen.
+
+==================================================
+3. IF WRONG COMPONENT WAS MODIFIED
+==================================================
+
+If the buttons were added to the wrong detail component:
+- add the same two overlay buttons to the ACTUAL image component used on the "Reactie versturen" screen
+
+Buttons required:
+- favorite heart
+- block website/source
+
+Placement:
+- top-right inside the image
+- next to each other horizontally
+- premium circular overlay buttons
+- visible above the image
+
+==================================================
+4. VISIBILITY DEBUG CHECK
+==================================================
+
+If the correct component was modified but buttons still do not show, check for:
+- z-index issues
+- overflow hidden clipping
+- absolute positioning on wrong parent
+- conditional rendering preventing display
+- icon color blending into image
+- button container outside image bounds
+
+Fix those issues so the buttons are visibly rendered.
+
+==================================================
+5. OUTPUT
+==================================================
+
+After debugging, show:
+1. the exact route/component used by "Reactie versturen"
+2. whether the wrong component had been modified
+3. where the buttons now live
+4. why they were not visible before
+5. which files were changed

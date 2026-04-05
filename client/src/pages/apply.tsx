@@ -12,8 +12,10 @@ import { trackEvent } from "@/lib/track-event";
 import { useLocation, useRoute } from "wouter";
 import {
   Copy,
+  Heart,
   ImageIcon,
   Lock,
+  ShieldBan,
 } from "lucide-react";
 import { AppHeader } from "@/components/ui/app-header";
 
@@ -92,6 +94,10 @@ export default function ApplyPage() {
   const [marked, setMarked] = useState(false);
   const [editedLetter, setEditedLetter] = useState<string | null>(null);
   const [imgError, setImgError] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [favLoading, setFavLoading] = useState(false);
+  const [showBlockModal, setShowBlockModal] = useState(false);
+  const [blockLoading, setBlockLoading] = useState(false);
   const relativeTime = useRelativeTime();
 
   const accessToken = session?.access_token;
@@ -116,6 +122,79 @@ export default function ApplyPage() {
     }).catch(() => {});
     trackEvent("listing_opened", { listingId });
   }, [listingId, accessToken]);
+
+  useEffect(() => {
+    if (!listingId || !accessToken) return;
+    apiFetch("/api/favorites", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.favoriteIds && Array.isArray(data.favoriteIds)) {
+          setIsFavorited(data.favoriteIds.includes(listingId));
+        }
+      })
+      .catch(() => {});
+  }, [listingId, accessToken]);
+
+  async function handleToggleFavorite() {
+    if (!listingId || !accessToken || favLoading) return;
+    const wasFavorited = isFavorited;
+    setIsFavorited(!wasFavorited);
+    setFavLoading(true);
+    try {
+      const res = await apiFetch(`/api/favorites/${listingId}`, {
+        method: wasFavorited ? "DELETE" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!res.ok) throw new Error("request failed");
+      queryClient.invalidateQueries({ queryKey: ["/api/favorites"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/favorites/listings"] });
+      toast({
+        title: wasFavorited ? t("listing.favoriteRemoved") : t("listing.favoriteAdded"),
+      });
+    } catch {
+      setIsFavorited(wasFavorited);
+    } finally {
+      setFavLoading(false);
+    }
+  }
+
+  function formatSourceDisplay(source: string): string {
+    return source
+      .replace(/[-_]/g, " ")
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+  }
+
+  async function handleBlockSource() {
+    if (!listing || !accessToken || blockLoading) return;
+    setBlockLoading(true);
+    try {
+      const res = await apiFetch("/api/blocked-sources", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ source: listing.source }),
+      });
+      if (!res.ok) throw new Error("request failed");
+      queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/blocked-sources"] });
+      toast({
+        title: t("listing.blockSource.success"),
+        description: t("listing.blockSource.successDesc", { source: formatSourceDisplay(listing.source || "") }),
+      });
+      setShowBlockModal(false);
+    } catch {
+      toast({ title: t("listing.blockSource.error"), variant: "destructive" });
+    } finally {
+      setBlockLoading(false);
+    }
+  }
 
   const { data: profileData } = useQuery<ProfileData>({
     queryKey: ["/api/profile-data"],
@@ -311,6 +390,39 @@ export default function ApplyPage() {
             </div>
           </div>
         )}
+
+        <div className="absolute top-3 right-3 z-20 flex items-center gap-2.5">
+          <button
+            onClick={handleToggleFavorite}
+            disabled={favLoading}
+            className={`w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-all duration-200 ${
+              isFavorited
+                ? "bg-ha-primary"
+                : "bg-black/35 backdrop-blur-sm"
+            }`}
+            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}
+            aria-label="Favorite"
+            data-testid="button-favorite-apply"
+          >
+            <Heart
+              className="w-[18px] h-[18px] text-white"
+              fill={isFavorited ? "white" : "none"}
+              strokeWidth={2}
+            />
+          </button>
+
+          {listing.source && (
+            <button
+              onClick={() => setShowBlockModal(true)}
+              className="w-9 h-9 rounded-full bg-black/35 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform duration-200"
+              style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}
+              aria-label="Block source"
+              data-testid="button-block-source-apply"
+            >
+              <ShieldBan className="w-[18px] h-[18px] text-white" strokeWidth={2} />
+            </button>
+          )}
+        </div>
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full pb-[120px] -mt-5 relative z-10 px-5 pt-5">
@@ -372,6 +484,39 @@ export default function ApplyPage() {
           </Button>
         </div>
       </div>
+
+      {showBlockModal && listing?.source && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowBlockModal(false)}>
+          <div className="bg-white w-full max-w-[400px] rounded-t-[20px] sm:rounded-[20px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-center mb-4">
+              <div className="w-12 h-12 rounded-full bg-[#FFF1F3] flex items-center justify-center">
+                <ShieldBan className="w-6 h-6 text-ha-primary" />
+              </div>
+            </div>
+            <p className="text-[17px] font-bold text-[#111111] text-center" data-testid="text-block-title-apply">
+              {t("listing.blockSource.title")}
+            </p>
+            <p className="text-[15px] text-[#6B7280] text-center mt-2 mb-6" data-testid="text-block-desc-apply">
+              {t("listing.blockSource.description", { source: formatSourceDisplay(listing.source) })}
+            </p>
+            <button
+              onClick={handleBlockSource}
+              disabled={blockLoading}
+              className="w-full h-[48px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-bold mb-3 active:scale-[0.98] transition-transform disabled:opacity-60"
+              data-testid="button-block-confirm-apply"
+            >
+              {blockLoading ? "..." : t("listing.blockSource.confirm")}
+            </button>
+            <button
+              onClick={() => setShowBlockModal(false)}
+              className="w-full h-[48px] rounded-full text-[#111111] text-[15px] font-medium active:bg-[#F9FAFB] transition-colors"
+              data-testid="button-block-cancel-apply"
+            >
+              {t("listing.blockSource.cancel")}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
