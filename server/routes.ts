@@ -5761,5 +5761,206 @@ export async function registerRoutes(
     }
   });
 
+  app.patch("/api/admin/portal/listings/:id", requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { title, price, image_url } = req.body || {};
+      const updates: any = {};
+      if (typeof title === "string") updates.title = title;
+      if (typeof price === "number" || price === null) updates.price = price;
+      if (typeof image_url === "string" || image_url === null) updates.image_url = image_url;
+      if (Object.keys(updates).length === 0) return res.status(400).json({ error: "No fields to update" });
+      const { error } = await supabase.from("listings").update(updates).eq("id", id);
+      if (error) throw error;
+      log(`[admin] Listing ${id} updated: ${JSON.stringify(updates)}`);
+      res.json({ success: true });
+    } catch (err: any) {
+      log(`[admin] Listing update error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.delete("/api/admin/portal/listings/:id", requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      await supabase.from("matches").delete().eq("listing_id", id);
+      const { error } = await supabase.from("listings").delete().eq("id", id);
+      if (error) throw error;
+      log(`[admin] Listing ${id} deleted`);
+      res.json({ success: true });
+    } catch (err: any) {
+      log(`[admin] Listing delete error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/portal/listings/:id", requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { data, error } = await supabase.from("listings").select("*").eq("id", id).single();
+      if (error) throw error;
+      res.json(data);
+    } catch (err: any) {
+      log(`[admin] Listing detail error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/admin/portal/listings/:id/retry-image", requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { data: listing, error: fetchErr } = await supabase.from("listings").select("id, source, url").eq("id", id).single();
+      if (fetchErr || !listing) return res.status(404).json({ error: "Listing not found" });
+      if (!listing.url || !listing.url.startsWith("http")) return res.status(400).json({ error: "Invalid listing URL" });
+
+      const cheerio = await import("cheerio");
+      const UA = "HousAlert/1.0 (rental alert app; polite single-page fetch; contact: support@housalert.com)";
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15000);
+      try {
+        const resp = await fetch(listing.url, {
+          headers: { "User-Agent": UA, Accept: "text/html", "Accept-Language": "de-DE,de;q=0.9,en;q=0.5" },
+          redirect: "follow",
+          signal: controller.signal,
+        });
+        clearTimeout(timeout);
+        if (!resp.ok) return res.status(400).json({ error: `Fetch failed: ${resp.status}` });
+        const html = await resp.text();
+        const $ = cheerio.load(html);
+
+        let imageUrl: string | null = null;
+        const ogImg = $("meta[property='og:image']").attr("content");
+        if (ogImg && ogImg.startsWith("http")) imageUrl = ogImg;
+        if (!imageUrl) {
+          const mainImg = $("article img, .listing img, .detail img, main img").first();
+          const src = mainImg.attr("src") || mainImg.attr("data-src") || mainImg.attr("data-lazy") || "";
+          if (src.startsWith("http") && !src.includes("logo") && !src.includes("icon") && !src.includes("avatar")) imageUrl = src;
+        }
+
+        if (imageUrl) {
+          await supabase.from("listings").update({ image_url: imageUrl }).eq("id", id);
+          log(`[admin] Retry image for ${id}: found ${imageUrl}`);
+          res.json({ success: true, image_url: imageUrl });
+        } else {
+          res.json({ success: false, message: "No image found on page" });
+        }
+      } catch (fetchError: any) {
+        clearTimeout(timeout);
+        return res.status(400).json({ error: `Fetch error: ${fetchError.message}` });
+      }
+    } catch (err: any) {
+      log(`[admin] Retry image error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/admin/portal/users/:userId/update-plan", requireAdmin, async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const { status, plan, trialDaysExtend } = req.body || {};
+
+      if (trialDaysExtend && typeof trialDaysExtend === "number") {
+        const { data: sub } = await supabase.from("subscriptions").select("*").eq("user_id", userId).single();
+        if (sub) {
+          const currentEnd = sub.trial_ends_at ? new Date(sub.trial_ends_at) : new Date();
+          currentEnd.setDate(currentEnd.getDate() + trialDaysExtend);
+          await supabase.from("subscriptions").update({
+            trial_ends_at: currentEnd.toISOString(),
+            status: "trial",
+          }).eq("user_id", userId);
+          log(`[admin] Extended trial for ${userId} by ${trialDaysExtend} days`);
+          return res.json({ success: true, action: "trial_extended" });
+        }
+      }
+
+      if (status) {
+        await supabase.from("subscriptions").update({ status }).eq("user_id", userId);
+        log(`[admin] Updated user ${userId} status to ${status}`);
+      }
+      if (plan) {
+        await supabase.from("subscriptions").update({ plan }).eq("user_id", userId);
+        log(`[admin] Updated user ${userId} plan to ${plan}`);
+      }
+
+      res.json({ success: true });
+    } catch (err: any) {
+      log(`[admin] User plan update error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/admin/portal/users/:userId/deactivate", requireAdmin, async (req, res) => {
+    try {
+      const { userId } = req.params;
+      await supabase.from("subscriptions").update({ status: "canceled" }).eq("user_id", userId);
+      log(`[admin] Deactivated user ${userId}`);
+      res.json({ success: true });
+    } catch (err: any) {
+      log(`[admin] User deactivate error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/admin/portal/backfill-source", requireAdmin, async (req, res) => {
+    try {
+      const { source, limit: batchLimit } = req.body || {};
+      if (!source) return res.status(400).json({ error: "Source required" });
+      const fetchLimit = Math.min(parseInt(batchLimit || "50"), 200);
+
+      const { data: listings, error } = await supabase
+        .from("listings")
+        .select("id, source, url, image_url")
+        .eq("source", source)
+        .or("image_url.is.null,image_url.eq.")
+        .order("created_at", { ascending: false })
+        .limit(fetchLimit);
+
+      if (error) throw error;
+      if (!listings || listings.length === 0) return res.json({ updated: 0, failed: 0, total: 0 });
+
+      const cheerio = await import("cheerio");
+      const UA = "HousAlert/1.0";
+      let updated = 0, failed = 0;
+
+      for (const listing of listings) {
+        if (!listing.url || !listing.url.startsWith("http")) { failed++; continue; }
+        try {
+          await new Promise(r => setTimeout(r, 800));
+          const controller = new AbortController();
+          const fetchTimeout = setTimeout(() => controller.abort(), 15000);
+          const resp = await fetch(listing.url, {
+            headers: { "User-Agent": UA, Accept: "text/html", "Accept-Language": "de-DE,de;q=0.9,en;q=0.5" },
+            redirect: "follow",
+            signal: controller.signal,
+          });
+          clearTimeout(fetchTimeout);
+          if (!resp.ok) { failed++; continue; }
+          const html = await resp.text();
+          const $ = cheerio.load(html);
+          let imageUrl: string | null = null;
+          const ogImg = $("meta[property='og:image']").attr("content");
+          if (ogImg && ogImg.startsWith("http")) imageUrl = ogImg;
+          if (!imageUrl) {
+            const mainImg = $("article img, .listing img, .detail img, main img").first();
+            const src = mainImg.attr("src") || mainImg.attr("data-src") || mainImg.attr("data-lazy") || "";
+            if (src.startsWith("http") && !src.includes("logo") && !src.includes("icon") && !src.includes("avatar")) imageUrl = src;
+          }
+          if (imageUrl) {
+            await supabase.from("listings").update({ image_url: imageUrl }).eq("id", listing.id);
+            updated++;
+          } else {
+            failed++;
+          }
+        } catch { failed++; }
+      }
+
+      log(`[admin] Source backfill ${source}: ${updated}/${listings.length} updated`);
+      res.json({ updated, failed, total: listings.length });
+    } catch (err: any) {
+      log(`[admin] Source backfill error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   return httpServer;
 }

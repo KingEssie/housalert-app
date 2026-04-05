@@ -348,30 +348,40 @@ A mobile-first rental alert application for the German market. Users can sign up
 - **Auth callback** (`auth-callback.tsx`): After `exchangeCodeForSession()`, calls `ensureTrialForCurrentUser()` (catches email-confirmed users) → redirects to `/dashboard`.
 - **ProtectedRoute** (`App.tsx`): Checks search profiles → redirects to `/onboarding` if 0 profiles. This ensures users always go through the onboarding wizard regardless of entry point.
 
-### Admin Portal (Unified)
-- **Route**: `/admin/portal` — unified admin dashboard with 8 tabs
-- **Access control**: Same `requireAdmin` middleware (Supabase JWT + `ADMIN_EMAILS` allowlist)
-- **Frontend**: `client/src/pages/admin-portal.tsx` — desktop sidebar nav + mobile horizontal scroll tabs
-- **Tabs**:
-  1. **Overview**: KPI cards (total users, active subs, trial users, signups today, MRR, profiles, listings/matches today, emails/push today), 7-day trends, source health indicators
-  2. **Users**: Searchable user list with subscription status, profile count, match count. Click-through to user detail (profile, subscription, search profiles, recent matches, cancellation feedback, notification settings). Filter by subscription status.
-  3. **Subscriptions**: Paginated subscription list with status filters (all/active/trial/canceled/expired), Stripe dashboard links, user name enrichment
-  4. **Search Profiles**: Paginated list showing city, location mode, price range, rooms, size. User name enrichment.
-  5. **Listings & Sources**: Two sub-views — Source Monitor (ingestion run status, per-source found/inserted/duplicates/matches/errors) and Listings browser (filterable by city and source, with external links)
-  6. **City Monitor**: Per-city monitoring dashboard. Shows all cities from user search profiles with tier (T1/T2/T3), active profile count, 7-day listing totals, last scrape timestamp, active/failed sources, and health status (green >20/wk, yellow 5–20, red <5). Filters by health, country, city name search. Data cached 5 minutes server-side.
-  7. **Matches & Notifications**: Recent matches with user names, viewed/email/push status indicators. KPI cards for emails today, push today, delivery failures (7d).
-  8. **System Status**: Health checks for Stripe, Google Places API, Ingestion Scheduler, Email (Resend), Push Notifications (VAPID), Replit DB, Supabase DB. Refresh button.
+### Admin Portal (Interactive)
+- **Route**: `/admin/portal` — interactive admin control panel with sidebar navigation
+- **Access control**: `requireAdmin` middleware (Supabase JWT + `isAdminEmail()` check)
+- **Frontend**: `client/src/pages/admin-portal.tsx` — desktop sidebar (sticky) + mobile hamburger menu
+- **Layout**: Sidebar navigation with 7 sections, responsive (sidebar collapses on mobile with overlay)
+- **Sections**:
+  1. **Dashboard**: KPI cards (total listings, new today, image coverage, active users, paid subs, trial users), today-at-a-glance stats, source health overview, quick action buttons
+  2. **Listings**: Paginated listing table with city/source filters. Actions: inline edit (title, price, image_url), delete with confirmation dialog, view detail page, external link
+  3. **Images**: Image coverage audit per source with progress bars. Backfill pipeline status (enabled/running/batch size/total updated/recent runs/recovery stats). Actions: trigger full backfill, per-source backfill, per-listing retry image extraction, manually set image_url
+  4. **Sources**: Source health monitor with status/city filters. Metrics: active vs broken sources, total listings found, last run duration. Actions: per-source image backfill trigger
+  5. **Users**: Searchable user list with subscription status filters. User detail view with profile, subscription, search profiles, recent matches, cancellation feedback. Actions: extend trial (3/7/14/30 days), change plan (monthly/two_month/three_month), deactivate user
+  6. **Subscriptions**: Paginated subscription list with status filters, Stripe dashboard links
+  7. **System**: Service health checks (Stripe, Places API, Ingestion, Email, Push, DBs). Delivery stats (emails/push today, failures 7d). Image backfill pipeline detailed status with recent runs
 - **API endpoints** (all `/api/admin/portal/*`, `requireAdmin`):
-  - `GET /api/admin/portal/overview` — aggregated KPIs from both DBs
-  - `GET /api/admin/portal/users?search=&filter=&page=&limit=` — paginated user list
-  - `GET /api/admin/portal/users/:userId` — user detail with subscription, profiles, matches
-  - `GET /api/admin/portal/subscriptions?filter=&page=&limit=` — paginated subscription list
-  - `GET /api/admin/portal/search-profiles?page=&limit=` — paginated search profiles
-  - `GET /api/admin/portal/listings?source=&city=&page=&limit=` — paginated listings
-  - `GET /api/admin/portal/sources` — ingestion source health from latest run
-  - `GET /api/admin/portal/dynamic-cities` — per-city monitoring data (profiles, listings, health, sources)
-  - `GET /api/admin/portal/matches?page=&limit=` — paginated matches with notification stats
-  - `GET /api/admin/portal/system-status` — service health checks
+  - `GET /overview` — aggregated KPIs
+  - `GET /users?search=&filter=&page=&limit=` — paginated user list
+  - `GET /users/:userId` — user detail
+  - `POST /users/:userId/update-plan` — change plan, extend trial
+  - `POST /users/:userId/deactivate` — cancel subscription
+  - `GET /subscriptions?filter=&page=&limit=` — paginated subscriptions
+  - `GET /listings?source=&city=&page=&limit=` — paginated listings
+  - `GET /listings/:id` — listing detail
+  - `PATCH /listings/:id` — edit listing (title, price, image_url)
+  - `DELETE /listings/:id` — delete listing + associated matches
+  - `POST /listings/:id/retry-image` — re-extract image from listing URL
+  - `GET /sources` — ingestion source health
+  - `GET /image-audit` — per-source image coverage analysis
+  - `GET /image-backfill-status` — backfill pipeline status
+  - `POST /image-backfill-trigger` — run full image backfill
+  - `POST /image-backfill-config` — update backfill config
+  - `POST /backfill-source` — backfill images for a specific source
+  - `GET /system-status` — service health checks
+  - `GET /matches?page=&limit=` — paginated matches with notification stats
+  - `GET /alerts` — active system alerts
 
 ### Admin Ingestion Dashboard
 - **Route**: `/admin/ingestion` — admin-only monitoring page for the ingestion pipeline
