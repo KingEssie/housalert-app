@@ -1,0 +1,188 @@
+Refine the Profile screen so it matches the Stekkies structure more closely, but fully in HousAlert branding.
+
+IMPORTANT:
+- Keep HousAlert colors and styling
+- Do NOT use Stekkies colors
+- Do NOT redesign unrelated screens
+- This prompt is only for Profile + linked profile subflows
+- Remove unnecessary separate pages where requested
+
+GOAL:
+Make the Profile experience cleaner, more native, and closer to Stekkies UX while preserving HousAlert branding and logic.
+
+==================================================
+1. LANGUAGE ROW → INLINE DROPDOWN
+==================================================
+
+Current problem:
+- tapping "Taal" opens a separate page
+- I do NOT want that anymore
+
+Change this behavior:
+
+- In the Profile screen, when the user taps the "Taal" row, open a dropdown / popover directly from that row
+- The separate language page should no longer be used
+- Remove that page from the flow
+
+Dropdown requirements:
+- options:
+  - Nederlands
+  - Engels
+- show a country flag before each language:
+  - 🇳🇱 Nederlands
+  - 🇬🇧 Engels
+- the selected language should be clearly visible
+- dropdown must be clean, compact, and properly positioned
+- it must not awkwardly overlap the rest of the page
+- use HousAlert styling (white card, subtle border, soft shadow if needed)
+
+Keep existing language switching logic intact.
+
+==================================================
+2. ZOEKBUDDY FLOW → STEKKIES-STYLE, HOU SALERT BRANDING
+==================================================
+
+I want the Zoekbuddy screen/flow to feel like Stekkies structurally, but in HousAlert branding.
+
+Requirements:
+- same calm, centered, guided feel as Stekkies
+- same UX structure:
+  - title
+  - explanatory text
+  - email input
+  - strong CTA button
+- but use HousAlert colors, spacing, fonts, and button styling
+
+For the main Profile screen:
+- Zoekbuddy section should remain clean and grouped
+- if no buddy:
+  - show clear CTA / entry point
+- if invited/pending:
+  - show status cleanly
+- if active:
+  - show buddy email and option to remove/manage
+
+For the dedicated Zoekbuddy screen:
+- align content better vertically
+- use cleaner spacing
+- make CTA feel more premium
+- keep the flow simple and focused
+
+==================================================
+3. REMOVE "GEMISTE MATCHES" FROM PROFILE MENU
+==================================================
+
+Remove "Gemiste matches" entirely from the "Meer info & hulp" section.
+
+It should no longer be shown in the menu.
+
+==================================================
+4. ABONNEMENT SECTION → NO SEPARATE PAGE
+==================================================
+
+Current problem:
+- Abonnement links to a separate page
+- I do NOT want that
+
+Change this behavior:
+
+- The subscription information should be shown directly inside the Profile screen, like Stekkies
+- Remove the need to navigate to a separate subscription page
+- That page can be removed from this flow
+
+==================================================
+5. ABONNEMENT SECTION — NO ACTIVE SUBSCRIPTION STATE
+==================================================
+
+If the user has NO active subscription:
+- show the same type of locked subscription card as in my screenshot
+- include:
+  - lock icon
+  - title
+  - short explanation
+  - CTA button: "Abonneer"
+
+Use HousAlert branding:
+- white card
+- subtle border
+- HousAlert red/pink CTA
+
+==================================================
+6. ABONNEMENT SECTION — ACTIVE SUBSCRIPTION STATE
+==================================================
+
+If the user DOES have an active subscription:
+show directly in the Profile screen:
+
+- subscription type / plan name
+- status
+- renewal date / when it will be extended
+- clean structured layout inside the card
+
+For example:
+- Proefabonnement
+- Premium
+- Jaarabonnement
+- Verlengt op [datum]
+
+This must feel clean and native, not like raw billing data.
+
+==================================================
+7. ADD "HOUSALERT OPZEGGEN" BUTTON
+==================================================
+
+If the user has an active subscription:
+- show a button inside the subscription section:
+  "HousAlert opzeggen"
+
+Requirements:
+- clearly secondary/destructive style
+- still elegant
+- visually separated from the primary subscription info
+- do NOT show this button if there is no active subscription
+
+This button can trigger:
+- existing cancel flow
+- or placeholder cancel action if full billing cancel is not yet implemented
+But the UI must be present and correct.
+
+==================================================
+8. PROFILE SECTION CLEANUP
+==================================================
+
+Also improve Profile screen consistency while applying the changes above:
+
+- keep section order clean
+- ensure spacing between sections is even
+- cards should align visually
+- no awkward overlap with bottom navigation
+- reaction letter card actions should remain usable and visible
+- notification toggles should use HousAlert branding, not blue
+
+==================================================
+9. KEEP THESE THINGS INTACT
+==================================================
+
+Do NOT break:
+- notification toggles
+- reaction letter copy/edit
+- blocked websites section
+- logout button
+- language switching functionality
+- buddy logic
+- subscription state detection
+
+==================================================
+10. OUTPUT
+==================================================
+
+After finishing, show:
+1. how the language dropdown now works inline
+2. confirmation that the separate language page is no longer used
+3. how the Zoekbuddy flow was updated to be more Stekkies-like
+4. confirmation that "Gemiste matches" was removed
+5. how the subscription section behaves for:
+   - no active subscription
+   - active subscription
+6. whether the "HousAlert opzeggen" button is shown only for active subscriptions
+7. which files were changed

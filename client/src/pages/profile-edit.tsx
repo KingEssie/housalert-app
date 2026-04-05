@@ -105,20 +105,54 @@ export default function ProfileEditPage() {
     inputRef.current?.focus();
   }
 
+  const isBuddyField = field === "search_buddy_email";
+
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F9FAFB" }}>
-      <AppHeader title={config.question} onBack={() => navigate("/dashboard?tab=profiel")} />
+      <AppHeader title={isBuddyField ? "" : config.question} onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <div className="flex-1 max-w-xl mx-auto px-5 w-full">
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <Loader2 className="w-6 h-6 animate-spin text-ha-icon-secondary" />
           </div>
+        ) : isBuddyField ? (
+          <div className="flex flex-col items-center pt-6">
+            <h1 className="text-[24px] font-bold text-[#111111] text-center leading-tight" data-testid="text-buddy-title">{config.question}</h1>
+            {config.description && (
+              <p className="text-[15px] text-[#6B7280] text-center leading-relaxed mt-3 max-w-[320px]">{config.description}</p>
+            )}
+            {buddyRevokedByBuddy && (
+              <p className="text-[13px] text-[#9CA3AF] text-center mt-2">{t("profileEdit.buddyUnsubscribed")}</p>
+            )}
+            <div className="w-full mt-6">
+              <div className="relative">
+                <input
+                  ref={inputRef}
+                  type={config.type}
+                  value={value}
+                  onChange={e => setValue(e.target.value)}
+                  placeholder={config.placeholder}
+                  aria-label={config.label}
+                  className="w-full h-[52px] rounded-[14px] border border-[#E5E7EB] bg-white px-4 text-[16px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-ha-primary/30 focus:border-ha-primary transition-all pr-12"
+                  data-testid="input-edit-field"
+                />
+                {value && (
+                  <button
+                    type="button"
+                    onClick={handleClear}
+                    aria-label="Clear"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-90 transition-transform"
+                    data-testid="button-clear-field"
+                  >
+                    <X className="w-3.5 h-3.5 text-[#6B7280]" />
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
         ) : (
           <div className="app-card">
-            {buddyRevokedByBuddy && (
-              <p className="text-[13px] text-ha-icon-secondary mb-3">{t("profileEdit.buddyUnsubscribed")}</p>
-            )}
             {config.description && (
               <p className="text-[15px] text-ha-text-secondary leading-relaxed mb-4">{config.description}</p>
             )}
@@ -151,11 +185,11 @@ export default function ProfileEditPage() {
 
       {!loading && (
         <div className="sticky bottom-0 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 px-5" style={{ background: "linear-gradient(to top, #F9FAFB, #F9FAFB 80%, transparent)" }}>
-          <div className="max-w-xl mx-auto flex justify-center">
+          <div className="max-w-xl mx-auto">
             <button
               onClick={handleSave}
               disabled={saving}
-              className="h-[48px] px-10 rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold flex items-center justify-center transition-colors disabled:opacity-50"
+              className={`w-full h-[52px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-bold flex items-center justify-center transition-colors disabled:opacity-50 active:scale-[0.97]`}
               data-testid="button-save-field"
             >
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : t("common.save")}

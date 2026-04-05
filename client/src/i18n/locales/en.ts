@@ -222,6 +222,12 @@ export const en: Record<string, any> = {
       trial: "Trial active",
       manage: "Manage your subscription",
     },
+    subInline: {
+      renewsOn: "Renews on",
+      endsOn: "Ends on",
+      trialEndsOn: "Trial ends on",
+      cancelCta: "Cancel HousAlert",
+    },
     helpTitle: "More info & help",
     helpMissedMatches: "Missed matches",
     helpFeedback: "Give feedback",

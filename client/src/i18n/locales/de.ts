@@ -297,6 +297,12 @@ export const de: Record<string, any> = {
       trial: "Testphase aktiv",
       manage: "Abonnement verwalten",
     },
+    subInline: {
+      renewsOn: "Verlängert am",
+      endsOn: "Endet am",
+      trialEndsOn: "Testphase endet am",
+      cancelCta: "HousAlert kündigen",
+    },
     helpTitle: "Mehr Infos & Hilfe",
     helpMissedMatches: "Verpasste Matches",
     helpFeedback: "Feedback geben",

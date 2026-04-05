@@ -1,7 +1,7 @@
 import { apiFetch } from "@/lib/api-base";
 import { useAuth } from "@/lib/auth";
 import { useLocation } from "wouter";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getSearchProfiles, deleteSearchProfile, type SearchProfile } from "@/lib/search-profiles";
 import { fetchApiMatches, type ApiMatch, type ApiMatchesResponse, type CanonicalStats } from "@/lib/listings";
@@ -37,6 +37,7 @@ import {
   Lock,
   MapPin,
   X,
+  Check,
 } from "lucide-react";
 import { ExpandableCompletionCard, type CompletionStep } from "@/components/expandable-completion-card";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
@@ -1378,11 +1379,11 @@ function formatBlockedSourceDisplay(source: string): string {
   return BLOCKED_SOURCE_DISPLAY[source] || source;
 }
 
-function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canonicalStats, computedAppliedCount }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null }; setActiveTab: (tab: TabKey) => void; canonicalStats?: CanonicalStats; computedAppliedCount: number }) {
-  const [showPhotoSheet, setShowPhotoSheet] = useState(false);
-  const [photoUploading, setPhotoUploading] = useState(false);
+function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canonicalStats, computedAppliedCount }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null; currentPeriodEndsAt: string | null; cancelAtPeriodEnd: boolean }; setActiveTab: (tab: TabKey) => void; canonicalStats?: CanonicalStats; computedAppliedCount: number }) {
   const [signingOut, setSigningOut] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [showLangDropdown, setShowLangDropdown] = useState(false);
+  const langRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const { t, locale, setLocale } = useTranslation();
 
@@ -1465,7 +1466,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
   }
 
   const pd = profileDataQuery.data;
-  const photoUrl = pd?.profile_photo_url || null;
 
   useEffect(() => {
     if (pd?.language && (pd.language === "de" || pd.language === "en" || pd.language === "nl") && pd.language !== locale) {
@@ -1473,59 +1473,31 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
     }
   }, [pd?.language]);
 
-  const displayName = [pd?.first_name, pd?.last_name].filter(Boolean).join(" ") || user.user_metadata?.full_name || "";
-  const initials = displayName ? displayName.split(" ").map((w: string) => w[0]).join("").toUpperCase().slice(0, 2) : user.email?.[0]?.toUpperCase() ?? "?";
-  async function handlePhotoUpload(file: File) {
-    setPhotoUploading(true);
-    try {
-      const reader = new FileReader();
-      const base64 = await new Promise<string>((resolve, reject) => {
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) throw new Error(t("profile.notLoggedIn"));
-
-      const res = await apiFetch("/api/profile-photo", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
-        body: JSON.stringify({ image: base64 }),
-      });
-
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || t("profile.uploadFailed"));
+  useEffect(() => {
+    if (!showLangDropdown) return;
+    function handleClickOutside(e: MouseEvent) {
+      if (langRef.current && !langRef.current.contains(e.target as Node)) {
+        setShowLangDropdown(false);
       }
-
-      queryClient.invalidateQueries({ queryKey: ["/api/profile-data"] });
-      toast({ title: t("profile.photo.saved") });
-      setShowPhotoSheet(false);
-    } catch (err: any) {
-      toast({ title: t("common.error"), description: err.message, variant: "destructive" });
-    } finally {
-      setPhotoUploading(false);
     }
-  }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showLangDropdown]);
 
-  async function handlePhotoRemove() {
+  async function handleLanguageChange(code: "de" | "en" | "nl") {
+    setShowLangDropdown(false);
+    setLocale(code);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) return;
-
-      const res = await apiFetch("/api/profile-photo", {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${session.access_token}` },
+      await apiFetch("/api/profile-data", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
+        body: JSON.stringify({ language: code }),
       });
-
-      if (!res.ok) throw new Error(t("profile.deleteFailed"));
-
       queryClient.invalidateQueries({ queryKey: ["/api/profile-data"] });
-      toast({ title: t("profile.photo.removed") });
-      setShowPhotoSheet(false);
-    } catch (err: any) {
-      toast({ title: t("common.error"), description: err.message, variant: "destructive" });
+    } catch {
+      toast({ title: t("common.error"), variant: "destructive" });
     }
   }
 
@@ -1540,16 +1512,32 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
     }
   }
 
-  const firstName = pd?.first_name || "";
-  const lastName = pd?.last_name || "";
-
-  const langLabels: Record<string, string> = { nl: "Nederlands", de: "Deutsch", en: "English" };
+  const LANG_OPTIONS: { code: "nl" | "de" | "en"; label: string; flag: string }[] = [
+    { code: "nl", label: "Nederlands", flag: "🇳🇱" },
+    { code: "en", label: "English", flag: "🇬🇧" },
+  ];
+  const currentLangLabel = LANG_OPTIONS.find(o => o.code === locale)?.label || locale;
 
   const pushEnabled = notifQuery.data?.push_enabled ?? false;
   const emailEnabled = notifQuery.data?.email_enabled ?? true;
   const buddyEmail = pd?.search_buddy_email || "";
   const buddyStatus = pd?.search_buddy_status || "";
   const letterPreview = pd?.application_template || "";
+
+  const isCanceled = subscription.status === "canceled" || subscription.cancelAtPeriodEnd;
+  const renewalDate = subscription.currentPeriodEndsAt || subscription.trialEndsAt;
+  function formatSubDate(dateStr: string | null) {
+    if (!dateStr) return "—";
+    return new Date(dateStr).toLocaleDateString(locale === "nl" ? "nl-NL" : locale === "de" ? "de-DE" : "en-GB", { day: "numeric", month: "long", year: "numeric" });
+  }
+  function getPlanLabel(plan: string | null) {
+    switch (plan) {
+      case "monthly": return t("subscription.planLabel.monthly");
+      case "two_month": return t("subscription.planLabel.twoMonth");
+      case "three_month": return t("subscription.planLabel.threeMonth");
+      default: return t("subscription.planLabel.default");
+    }
+  }
 
   const SectionTitle = ({ children }: { children: string }) => (
     <p className="text-[13px] font-semibold text-[#9CA3AF] uppercase tracking-wider px-1 mb-2">{children}</p>
@@ -1612,13 +1600,40 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             <SectionTitle>{t("settings.sectionAccount")}</SectionTitle>
             <div className="rounded-[14px] bg-white border border-[#F0F0F0] overflow-hidden">
               <CardRow label="E-mail" value={user.email} testId="row-account-email" />
-              <CardRow
-                label={t("profile.language")}
-                value={langLabels[locale] || locale}
-                onClick={() => navigate("/settings/preferences")}
-                testId="row-account-language"
-                last
-              />
+              <div className="h-px bg-[#F3F4F6] mx-4" />
+              <div className="relative" ref={langRef}>
+                <button
+                  onClick={() => setShowLangDropdown(!showLangDropdown)}
+                  className="w-full flex items-center justify-between h-[50px] px-4 text-left active:bg-[#F9FAFB] transition-colors"
+                  data-testid="row-account-language"
+                >
+                  <span className="text-[15px] font-medium text-[#111111]">{t("profile.language")}</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[14px] text-[#9CA3AF]">{currentLangLabel}</span>
+                    <ChevronRight className={`w-4 h-4 text-[#D1D5DB] flex-shrink-0 transition-transform duration-200 ${showLangDropdown ? "rotate-90" : ""}`} />
+                  </div>
+                </button>
+                {showLangDropdown && (
+                  <div className="absolute right-3 top-[52px] z-30 w-[200px] bg-white rounded-[12px] border border-[#E5E7EB] shadow-[0_4px_16px_rgba(0,0,0,0.08)] overflow-hidden animate-in fade-in-0 zoom-in-95 duration-150">
+                    {LANG_OPTIONS.map((lang, i) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => handleLanguageChange(lang.code)}
+                        className={`w-full flex items-center gap-3 px-4 h-[46px] text-left transition-colors ${locale === lang.code ? "bg-[#F9FAFB]" : "hover:bg-[#F9FAFB] active:bg-[#F3F4F6]"} ${i > 0 ? "border-t border-[#F3F4F6]" : ""}`}
+                        data-testid={`button-lang-${lang.code}`}
+                      >
+                        <span className="text-[18px]">{lang.flag}</span>
+                        <span className="text-[15px] font-medium text-[#111111] flex-1">{lang.label}</span>
+                        {locale === lang.code && (
+                          <div className="w-5 h-5 rounded-full bg-ha-primary flex items-center justify-center">
+                            <Check className="w-3 h-3 text-white" strokeWidth={3} />
+                          </div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -1648,25 +1663,38 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             <div className="rounded-[14px] bg-white border border-[#F0F0F0] overflow-hidden">
               {buddyEmail ? (
                 <div className="px-4 py-4">
-                  <p className="text-[15px] font-medium text-[#111111]" data-testid="text-buddy-email">{buddyEmail}</p>
-                  {buddyStatus && <p className="text-[13px] text-[#9CA3AF] mt-0.5">{buddyStatus === "invited" ? t("profile.searchBuddyReceives") : buddyStatus}</p>}
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
+                      <User className="w-[18px] h-[18px] text-[#6B7280]" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[15px] font-medium text-[#111111] truncate" data-testid="text-buddy-email">{buddyEmail}</p>
+                      <p className="text-[12px] text-[#9CA3AF] mt-0.5">
+                        {buddyStatus === "active" ? t("profile.searchBuddyReceives")
+                          : buddyStatus === "invited" ? t("profile.searchBuddyReceives")
+                          : buddyStatus || t("profile.searchBuddyReceives")}
+                      </p>
+                    </div>
+                  </div>
                   <button
                     onClick={() => navigate("/profile/edit/search_buddy_email")}
-                    className="mt-2 text-[13px] text-ha-primary font-medium active:opacity-70 transition-opacity"
+                    className="mt-3 text-[13px] text-ha-primary font-semibold active:opacity-70 transition-opacity"
                     data-testid="button-buddy-manage"
                   >
                     {t("profile.editButton")}
                   </button>
                 </div>
               ) : (
-                <button
-                  onClick={() => navigate("/profile/edit/search_buddy_email")}
-                  className="w-full flex items-center justify-between h-[50px] px-4 active:bg-[#F9FAFB] transition-colors"
-                  data-testid="button-buddy-add"
-                >
-                  <span className="text-[15px] font-medium text-[#111111]">{t("profile.addBuddy")}</span>
-                  <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
-                </button>
+                <div className="px-4 py-4">
+                  <p className="text-[14px] text-[#6B7280] leading-relaxed mb-3">{t("profile.noBuddyYet")}</p>
+                  <button
+                    onClick={() => navigate("/profile/edit/search_buddy_email")}
+                    className="h-[40px] px-5 rounded-full bg-ha-primary text-white text-[14px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
+                    data-testid="button-buddy-add"
+                  >
+                    {t("profile.addBuddy")}
+                  </button>
+                </div>
               )}
             </div>
           </div>
@@ -1737,7 +1765,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             </div>
           </div>
 
-          {/* 6. Abonnementen */}
+          {/* 6. Abonnementen — inline */}
           <div>
             <SectionTitle>{t("profile.subscription")}</SectionTitle>
             <div className="rounded-[14px] bg-white border border-[#F0F0F0] overflow-hidden">
@@ -1761,22 +1789,50 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                   </div>
                 </div>
               ) : (
-                <button
-                  onClick={() => navigate("/account/subscription")}
-                  className="w-full flex items-center gap-3.5 h-[56px] px-4 text-left active:bg-[#F9FAFB] transition-colors"
-                  data-testid="card-subscription-active"
-                >
-                  <div className="w-9 h-9 rounded-full bg-[#F0FDF4] flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="w-[18px] h-[18px] text-[#22C55E]" />
+                <div data-testid="card-subscription-active">
+                  <div className="px-4 pt-4 pb-3">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-9 h-9 rounded-full bg-[#F0FDF4] flex items-center justify-center flex-shrink-0">
+                        <CheckCircle2 className="w-[18px] h-[18px] text-[#22C55E]" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[15px] font-semibold text-[#111111]" data-testid="text-plan-name">
+                          {subscription.isTrial ? t("subscription.status.trial") : getPlanLabel(subscription.plan)}
+                        </p>
+                        <span className={`inline-block mt-0.5 text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+                          subscription.isTrial ? "bg-ha-primary/10 text-ha-primary"
+                          : isCanceled ? "bg-[#F9FAFB] text-[#6B7280]"
+                          : "bg-[#F0FDF4] text-[#22C55E]"
+                        }`} data-testid="badge-sub-status">
+                          {subscription.isTrial ? t("subscription.status.trial")
+                          : isCanceled ? t("subscription.status.activeUntilEnd")
+                          : t("subscription.status.active")}
+                        </span>
+                      </div>
+                    </div>
+                    {renewalDate && (
+                      <p className="text-[13px] text-[#6B7280] leading-relaxed" data-testid="text-sub-renewal">
+                        {subscription.isTrial
+                          ? `${t("profile.subInline.trialEndsOn")} ${formatSubDate(renewalDate)}`
+                          : isCanceled
+                          ? `${t("profile.subInline.endsOn")} ${formatSubDate(renewalDate)}`
+                          : `${t("profile.subInline.renewsOn")} ${formatSubDate(renewalDate)}`}
+                      </p>
+                    )}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[15px] font-semibold text-[#111111]">
-                      {subscription.isTrial ? t("profile.subActive.trial") : t("profile.subActive.active")}
-                    </p>
-                    <p className="text-[12px] text-[#9CA3AF] mt-0.5">{t("profile.subActive.manage")}</p>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
-                </button>
+                  {!isCanceled && (subscription.isActive && !subscription.isTrial) && (
+                    <>
+                      <div className="h-px bg-[#F3F4F6] mx-4" />
+                      <button
+                        onClick={() => navigate("/account/subscription/cancel")}
+                        className="w-full h-[46px] px-4 flex items-center justify-center text-[14px] font-medium text-[#9CA3AF] active:bg-[#F9FAFB] transition-colors"
+                        data-testid="button-cancel-subscription"
+                      >
+                        {t("profile.subInline.cancelCta")}
+                      </button>
+                    </>
+                  )}
+                </div>
               )}
             </div>
           </div>
@@ -1786,7 +1842,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             <SectionTitle>{t("profile.helpTitle")}</SectionTitle>
             <div className="rounded-[14px] bg-white border border-[#F0F0F0] overflow-hidden">
               {[
-                { label: t("profile.helpMissedMatches"), action: () => navigate("/settings/preferences"), icon: <Search className="w-[18px] h-[18px] text-[#9CA3AF]" />, testId: "button-help-missed" },
                 { label: t("profile.helpFeedback"), action: () => { window.location.href = "mailto:support@housalert.com?subject=Feedback"; }, icon: <Send className="w-[18px] h-[18px] text-[#9CA3AF]" />, testId: "button-help-feedback" },
                 { label: t("profile.helpFaq"), action: () => { window.location.href = "mailto:support@housalert.com"; }, icon: <HelpCircle className="w-[18px] h-[18px] text-[#9CA3AF]" />, testId: "button-help-faq" },
                 { label: t("profile.helpPrivacy"), action: () => navigate("/datenschutz"), icon: <Shield className="w-[18px] h-[18px] text-[#9CA3AF]" />, testId: "button-help-privacy" },
@@ -1841,15 +1896,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
         >
           {t("profile.adminMode")}
         </button>
-      )}
-
-      {showPhotoSheet && (
-        <ProfilePhotoSheet
-          photoUrl={photoUrl}
-          onClose={() => setShowPhotoSheet(false)}
-          onUpload={handlePhotoUpload}
-          onRemove={handlePhotoRemove}
-        />
       )}
 
       {showLogoutConfirm && (
@@ -2024,7 +2070,7 @@ export default function DashboardPage() {
             user={user}
             signOut={signOut}
             navigate={navigate}
-            subscription={{ status: sub.status, isTrial: sub.isTrial, isActive: sub.isActive, isExpired: sub.isExpired, plan: sub.plan, trialEndsAt: sub.trialEndsAt }}
+            subscription={{ status: sub.status, isTrial: sub.isTrial, isActive: sub.isActive, isExpired: sub.isExpired, plan: sub.plan, trialEndsAt: sub.trialEndsAt, currentPeriodEndsAt: sub.currentPeriodEndsAt, cancelAtPeriodEnd: sub.cancelAtPeriodEnd }}
             setActiveTab={setActiveTab}
             canonicalStats={apiMatchesQuery.data?.canonicalStats}
             computedAppliedCount={computedAppliedCount}

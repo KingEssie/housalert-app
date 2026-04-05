@@ -303,6 +303,12 @@ export const nl: Record<string, any> = {
       trial: "Proefperiode actief",
       manage: "Beheer je abonnement",
     },
+    subInline: {
+      renewsOn: "Verlengt op",
+      endsOn: "Loopt af op",
+      trialEndsOn: "Proefperiode eindigt op",
+      cancelCta: "HousAlert opzeggen",
+    },
     helpTitle: "Meer info & hulp",
     helpMissedMatches: "Gemiste matches",
     helpFeedback: "Geef feedback",
