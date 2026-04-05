@@ -272,7 +272,7 @@ export default function NotificationSettingsPage() {
                 Stuur test push
               </button>
               {testPushResult && (
-                <div className={`mt-3 text-xs rounded-[6px] p-3 font-mono ${testPushResult.success ? "bg-ha-success/5 text-ha-success" : "bg-red-50 text-red-700"}`} data-testid="test-push-result">
+                <div className={`mt-3 text-xs rounded-[6px] p-3 font-mono ${testPushResult.success ? "bg-ha-success/5 text-ha-success" : "bg-ha-danger/5 text-ha-danger"}`} data-testid="test-push-result">
                   <p>{testPushResult.success ? "Verzonden" : "Mislukt"} — {testPushResult.tokens_found} token(s)</p>
                   {testPushResult.error && <p className="mt-1 break-all">{testPushResult.error}</p>}
                 </div>

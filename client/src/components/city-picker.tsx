@@ -115,7 +115,7 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
             onFocus={() => { if (hasResults && !value) setOpen(true); }}
             placeholder={t("location.searchCity")}
             className={`w-full min-h-[48px] rounded-[6px] bg-ha-surface border border-transparent px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-muted ${
-              showValidation ? "border-red-400" : value ? "border-ha-primary bg-ha-surface/30" : "border-ha-card-border"
+              showValidation ? "border-ha-danger" : value ? "border-ha-primary bg-ha-surface/30" : "border-ha-card-border"
             }`}
             data-testid="input-city-search"
           />
@@ -173,14 +173,14 @@ export default function CityPicker({ value, onChange, error }: CityPickerProps) 
       </div>
 
       {showValidation && (
-        <div className="flex items-center gap-2 text-red-500 text-[13px]" data-testid="text-city-validation">
+        <div className="flex items-center gap-2 text-ha-danger text-[13px]" data-testid="text-city-validation">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{t("cityPicker.selectFromList")}</span>
         </div>
       )}
 
       {error && !showValidation && (
-        <div className="flex items-center gap-2 text-red-500 text-[13px]" data-testid="text-city-error">
+        <div className="flex items-center gap-2 text-ha-danger text-[13px]" data-testid="text-city-error">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{error}</span>
         </div>

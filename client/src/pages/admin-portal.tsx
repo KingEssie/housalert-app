@@ -34,7 +34,7 @@ function StatusDot({ status }: { status: string }) {
   const color = status === "active" || status === "operational" || status === "success"
     ? "bg-emerald-400" : status === "warning" || status === "partial" || status === "degraded"
     ? "bg-amber-400" : status === "error" || status === "failed" || status === "broken" || status === "canceled"
-    ? "bg-red-400" : "bg-[#E5E7EB]";
+    ? "bg-ha-danger" : "bg-[#E5E7EB]";
   return <span className={`w-2 h-2 rounded-full inline-block ${color}`} />;
 }
 
@@ -43,15 +43,15 @@ function StatusBadge({ status }: { status: string }) {
     active: { cls: "bg-emerald-50 text-emerald-700 border-emerald-200", label: "Active" },
     operational: { cls: "bg-emerald-50 text-emerald-700 border-emerald-200", label: "Operational" },
     trial: { cls: "bg-orange-50 text-ha-primary border-orange-200", label: "Trial" },
-    canceled: { cls: "bg-red-50 text-red-700 border-red-200", label: "Canceled" },
+    canceled: { cls: "bg-ha-danger/5 text-ha-danger border-ha-danger/20", label: "Canceled" },
     expired: { cls: "bg-[#F7F7F7] text-[#6B7280] border-[#E5E7EB]", label: "Expired" },
-    error: { cls: "bg-red-50 text-red-700 border-red-200", label: "Error" },
+    error: { cls: "bg-ha-danger/5 text-ha-danger border-ha-danger/20", label: "Error" },
     warning: { cls: "bg-amber-50 text-amber-700 border-amber-200", label: "Warning" },
     disabled: { cls: "bg-[#F7F7F7] text-[#6B7280] border-[#E5E7EB]", label: "Disabled" },
     success: { cls: "bg-emerald-50 text-emerald-700 border-emerald-200", label: "Success" },
     partial: { cls: "bg-amber-50 text-amber-700 border-amber-200", label: "Partial" },
-    failed: { cls: "bg-red-50 text-red-700 border-red-200", label: "Failed" },
-    broken: { cls: "bg-red-50 text-red-700 border-red-200", label: "Broken" },
+    failed: { cls: "bg-ha-danger/5 text-ha-danger border-ha-danger/20", label: "Failed" },
+    broken: { cls: "bg-ha-danger/5 text-ha-danger border-ha-danger/20", label: "Broken" },
     degraded: { cls: "bg-amber-50 text-amber-700 border-amber-200", label: "Degraded" },
   };
   const m = map[status] || { cls: "bg-[#F7F7F7] text-[#6B7280] border-[#E5E7EB]", label: status };
@@ -147,7 +147,7 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
           <SectionHeader title="Needs attention" />
           <div className="bg-white rounded-[20px] border border-[#F7F7F7] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] divide-y divide-[#F7F7F7]">
             {alerts.map((a: any, i: number) => {
-              const sColor = a.severity === "critical" ? "bg-red-400" : a.severity === "warning" ? "bg-amber-400" : "bg-ha-primary";
+              const sColor = a.severity === "critical" ? "bg-ha-danger" : a.severity === "warning" ? "bg-amber-400" : "bg-ha-primary";
               return (
                 <div key={i} className="flex items-start gap-3 px-4 py-3.5" data-testid={`alert-row-${i}`}>
                   <span className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${sColor}`} />
@@ -325,7 +325,7 @@ function GrowthTab() {
               <div className="divide-y divide-[#F7F7F7]">
                 {stage.steps.map((step: any) => {
                   const barWidth = maxCount > 0 ? Math.max(8, (step.count / maxCount) * 100) : 8;
-                  const pctColor = step.conversionPct >= 50 ? "text-emerald-600 bg-emerald-50" : step.conversionPct >= 20 ? "text-[#6B7280] bg-amber-50" : "text-red-600 bg-red-50";
+                  const pctColor = step.conversionPct >= 50 ? "text-emerald-600 bg-emerald-50" : step.conversionPct >= 20 ? "text-[#6B7280] bg-amber-50" : "text-ha-danger bg-ha-danger/5";
                   return (
                     <div key={step.key} className="px-4 py-3" data-testid={`funnel-step-${step.key}`}>
                       <div className="flex items-center justify-between mb-1.5">
@@ -486,7 +486,7 @@ function SourcesTab() {
             </div>
             <div className="bg-white rounded-[20px] border border-[#F7F7F7] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] p-4">
               <p className="text-[11px] text-[#6B7280] font-medium">Broken</p>
-              <p className="text-[22px] font-bold text-red-500">{brokenSources}</p>
+              <p className="text-[22px] font-bold text-ha-danger">{brokenSources}</p>
             </div>
             <div className="bg-white rounded-[20px] border border-[#F7F7F7] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] p-4">
               <p className="text-[11px] text-[#6B7280] font-medium">Listings found</p>
@@ -538,7 +538,7 @@ function SourcesTab() {
                       {s.city && <span>{s.city}</span>}
                       <span>{s.found ?? 0} found</span>
                       <span>{s.inserted ?? 0} new</span>
-                      {(s.errors ?? 0) > 0 && <span className="text-red-500 font-medium">{s.errors} errors</span>}
+                      {(s.errors ?? 0) > 0 && <span className="text-ha-danger font-medium">{s.errors} errors</span>}
                     </div>
                   </div>
                 );
@@ -668,7 +668,7 @@ function CitiesTab() {
             <span className="text-[11px] text-[#6B7280]">5–20</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
+            <span className="w-2.5 h-2.5 rounded-full bg-ha-danger" />
             <span className="text-[13px] font-semibold text-[#111111]" data-testid="metric-health-red">{redCount}</span>
             <span className="text-[11px] text-[#6B7280]">&lt;5</span>
           </div>
@@ -686,7 +686,7 @@ function CitiesTab() {
       <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4" style={{ WebkitOverflowScrolling: "touch" }}>
         {["All", "Green", "Yellow", "Red"].map(f => (
           <button key={f} onClick={() => setHealthFilter(f)} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${healthFilter === f ? PILL_ACTIVE : PILL_INACTIVE}`} data-testid={`filter-health-${f.toLowerCase()}`}>
-            {f === "All" ? "All" : <span className="flex items-center gap-1"><span className={`w-2 h-2 rounded-full ${f === "Green" ? "bg-emerald-400" : f === "Yellow" ? "bg-amber-400" : "bg-red-400"}`} />{f}</span>}
+            {f === "All" ? "All" : <span className="flex items-center gap-1"><span className={`w-2 h-2 rounded-full ${f === "Green" ? "bg-emerald-400" : f === "Yellow" ? "bg-amber-400" : "bg-ha-danger"}`} />{f}</span>}
           </button>
         ))}
         {countries.length > 1 && (
@@ -701,7 +701,7 @@ function CitiesTab() {
 
       <div className={`${CARD_ELEVATED} divide-y divide-[#F7F7F7]`}>
         {filtered.length > 0 ? filtered.map((c: any) => {
-          const healthColor = c.health_status === "green" ? "bg-emerald-400" : c.health_status === "yellow" ? "bg-amber-400" : "bg-red-400";
+          const healthColor = c.health_status === "green" ? "bg-emerald-400" : c.health_status === "yellow" ? "bg-amber-400" : "bg-ha-danger";
           const tierLabel = c.tier === 1 ? "T1" : c.tier === 2 ? "T2" : "T3";
           const tierColor = c.tier === 3 ? "bg-orange-50 text-ha-primary border-orange-200" : "bg-[#F7F7F7] text-[#6B7280] border-[#E5E7EB]";
           return (
@@ -735,7 +735,7 @@ function CitiesTab() {
                   <span key={s} className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">{s}</span>
                 ))}
                 {c.failed_sources.map((f: any, i: number) => (
-                  <span key={i} className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-red-50 text-red-600 border border-red-200" title={f.reason}>{f.name}</span>
+                  <span key={i} className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-ha-danger/5 text-ha-danger border border-ha-danger/20" title={f.reason}>{f.name}</span>
                 ))}
               </div>
 
@@ -997,7 +997,7 @@ function MatchesSection() {
             <p className="text-[10px] text-[#6B7280]">Push</p>
           </div>
           <div className="bg-white rounded-[20px] border border-[#F7F7F7] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] p-3 text-center">
-            <p className="text-[16px] font-bold text-red-500">{stats.failuresWeek}</p>
+            <p className="text-[16px] font-bold text-ha-danger">{stats.failuresWeek}</p>
             <p className="text-[10px] text-[#6B7280]">Failures 7d</p>
           </div>
         </div>
@@ -1214,7 +1214,7 @@ function SystemTab() {
               <p className="text-[10px] text-[#6B7280]">Push</p>
             </div>
             <div className="bg-white rounded-[20px] border border-[#F7F7F7] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.06)] p-3 text-center">
-              <AlertTriangle className="w-4 h-4 text-red-500 mx-auto mb-1" />
+              <AlertTriangle className="w-4 h-4 text-ha-danger mx-auto mb-1" />
               <p className="text-[18px] font-bold text-[#111111]">{matchStats.failuresWeek}</p>
               <p className="text-[10px] text-[#6B7280]">Failures 7d</p>
             </div>
@@ -1293,8 +1293,8 @@ export default function AdminPortalPage() {
     return (
       <div className="min-h-screen bg-[#F7F7F7] flex items-center justify-center px-5">
         <div className="text-center max-w-sm">
-          <div className="w-14 h-14 rounded-2xl bg-red-50 flex items-center justify-center mx-auto mb-4">
-            <AlertTriangle className="w-7 h-7 text-red-500" />
+          <div className="w-14 h-14 rounded-2xl bg-ha-danger/5 flex items-center justify-center mx-auto mb-4">
+            <AlertTriangle className="w-7 h-7 text-ha-danger" />
           </div>
           <h1 className="text-[20px] font-bold text-[#111111] mb-2">Access Denied</h1>
           <p className="text-[13px] text-[#6B7280]">Your account does not have admin access.</p>

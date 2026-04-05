@@ -80,7 +80,7 @@ function WebToggle({
     >
       <div
         className="w-[38px] h-[22px] rounded-full p-[2px] transition-colors shrink-0 mt-[1px]"
-        style={{ backgroundColor: checked ? "#FF385C" : "#E5E7EB" }}
+        style={{ backgroundColor: checked ? "rgb(var(--ha-primary))" : "#E5E7EB" }}
         onClick={(e) => { e.preventDefault(); onChange(!checked); }}
       >
         <div
@@ -831,7 +831,7 @@ export default function OnboardingFilters() {
             className="text-[12px] font-bold px-2.5 py-1 rounded-[6px]"
             style={{
               backgroundColor: "rgba(56,189,248,0.15)",
-              color: "#FF385C",
+              color: "rgb(var(--ha-primary))",
             }}
             data-testid="badge-step"
           >

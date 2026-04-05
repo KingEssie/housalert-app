@@ -66,7 +66,7 @@ function getPlans(t: (k: string) => string): Plan[] {
       perMonth: "€17,50 " + t("paywall.perMonth"),
       popular: true,
       discountLabel: "-30%",
-      discountColor: "#FF385C",
+      discountColor: "rgb(var(--ha-primary))",
     },
     {
       id: "monthly",
@@ -133,7 +133,7 @@ function PrimaryBtn({ onClick, children, loading, disabled, testId }: {
       onClick={onClick}
       disabled={disabled || loading}
       className="w-full h-[56px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50"
-      style={{ background: "#FF385C", boxShadow: "0 4px 15px rgba(255,56,92,0.3)" }}
+      style={{ background: "rgb(var(--ha-primary))", boxShadow: "0 4px 15px rgba(255,56,92,0.3)" }}
       data-testid={testId}
     >
       {loading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : children}
@@ -322,11 +322,11 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
       <div className="space-y-4 flex-1">
         {blocks.map((block, i) => (
           <div key={i} className="flex items-start gap-3.5">
-            <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgba(239,68,68,0.15)" }}>
-              <X className="w-4 h-4 text-red-500" />
+            <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-ha-danger/15">
+              <X className="w-4 h-4 text-ha-danger" />
             </div>
             <div>
-              <p className="text-[15px] font-bold text-red-400 mb-0.5">{block.title}</p>
+              <p className="text-[15px] font-bold text-ha-danger mb-0.5">{block.title}</p>
               <p className="text-[13px] leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>{block.desc}</p>
             </div>
           </div>
@@ -416,7 +416,7 @@ function LightPrimaryBtn({ onClick, children, loading, disabled, testId }: {
       onClick={onClick}
       disabled={disabled || loading}
       className="w-full h-[56px] rounded-[6px] text-[16px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
-      style={{ background: "#FF385C", boxShadow: "0 4px 15px rgba(255,56,92,0.25)" }}
+      style={{ background: "rgb(var(--ha-primary))", boxShadow: "0 4px 15px rgba(255,56,92,0.25)" }}
       data-testid={testId}
     >
       {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>{children} <ArrowRight className="w-4 h-4" /></>}
@@ -929,7 +929,7 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
             t("onboardingFlow.searchBuddy.cannotLetter"),
           ].map((text, i) => (
             <div key={i} className="flex items-center gap-2.5">
-              <X className="w-5 h-5 text-red-500 flex-shrink-0" />
+              <X className="w-5 h-5 text-ha-danger flex-shrink-0" />
               <span className="text-[14px] text-[#111111]">{text}</span>
             </div>
           ))}
@@ -976,7 +976,7 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
               onClick={onInvite}
               disabled={!buddyEmail.includes("@") || loading}
               className="flex-1 h-[56px] rounded-[6px] text-[14px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
-              style={{ background: "#FF385C" }}
+              style={{ background: "rgb(var(--ha-primary))" }}
               data-testid="button-buddy-invite"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{t("onboardingFlow.searchBuddy.invite")} <Send className="w-4 h-4" /></>}

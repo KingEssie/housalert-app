@@ -76,10 +76,10 @@ function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { icon: typeof CheckCircle2; color: string; bg: string }> = {
     success: { icon: CheckCircle2, color: "text-green-700", bg: "bg-green-50" },
     partial: { icon: AlertTriangle, color: "text-amber-700", bg: "bg-amber-50" },
-    failed: { icon: XCircle, color: "text-red-700", bg: "bg-red-50" },
+    failed: { icon: XCircle, color: "text-ha-danger", bg: "bg-ha-danger/5" },
     active: { icon: CheckCircle2, color: "text-green-700", bg: "bg-green-50" },
     broken: { icon: AlertTriangle, color: "text-amber-700", bg: "bg-amber-50" },
-    gone: { icon: XCircle, color: "text-red-700", bg: "bg-red-50" },
+    gone: { icon: XCircle, color: "text-ha-danger", bg: "bg-ha-danger/5" },
   };
   const c = config[status] || config.failed;
   const Icon = c.icon;
@@ -230,7 +230,7 @@ export default function AdminIngestionPage() {
   if (error === "forbidden") {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#F7F7F7] px-6">
-        <XCircle className="w-12 h-12 text-red-400 mb-4" />
+        <XCircle className="w-12 h-12 text-ha-danger mb-4" />
         <h1 className="text-xl font-bold text-[#111111] mb-2" data-testid="text-forbidden">Access denied</h1>
         <p className="text-[#6B7280] mb-6">You do not have admin access.</p>
         <button onClick={() => navigate("/dashboard")} className="px-6 py-2 rounded-lg bg-gray-900 text-white font-medium" data-testid="button-go-dashboard">
@@ -292,11 +292,11 @@ export default function AdminIngestionPage() {
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
         {summary?.lastError && (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3" data-testid="alert-last-error">
-            <XCircle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
+          <div className="bg-ha-danger/5 border border-ha-danger/20 rounded-xl p-4 flex items-start gap-3" data-testid="alert-last-error">
+            <XCircle className="w-5 h-5 text-ha-danger mt-0.5 flex-shrink-0" />
             <div>
-              <p className="text-sm font-semibold text-red-800">Last run error</p>
-              <p className="text-sm text-red-700 mt-0.5">{summary.lastError}</p>
+              <p className="text-sm font-semibold text-ha-danger">Last run error</p>
+              <p className="text-sm text-ha-danger mt-0.5">{summary.lastError}</p>
             </div>
           </div>
         )}
@@ -332,7 +332,7 @@ export default function AdminIngestionPage() {
                 <p className="text-xs text-[#6B7280]">Matches</p>
               </div>
               <div>
-                <p className={`text-xl font-bold ${latestRun.total_errors > 0 ? "text-red-600" : "text-[#9CA3AF]"}`}>{latestRun.total_errors}</p>
+                <p className={`text-xl font-bold ${latestRun.total_errors > 0 ? "text-ha-danger" : "text-[#9CA3AF]"}`}>{latestRun.total_errors}</p>
                 <p className="text-xs text-[#6B7280]">Errors</p>
               </div>
             </div>
@@ -366,7 +366,7 @@ export default function AdminIngestionPage() {
                     <td className="px-3 py-2 text-right text-green-700 font-medium">{row.inserted}</td>
                     <td className="px-3 py-2 text-right text-[#9CA3AF]">{row.duplicates}</td>
                     <td className="px-3 py-2 text-right text-ha-primary">{row.matches}</td>
-                    <td className={`px-3 py-2 text-right font-medium ${row.errors > 0 ? "text-red-600" : "text-[#9CA3AF]"}`}>{row.errors}</td>
+                    <td className={`px-3 py-2 text-right font-medium ${row.errors > 0 ? "text-ha-danger" : "text-[#9CA3AF]"}`}>{row.errors}</td>
                     <td className="px-3 py-2 text-center"><StatusBadge status={cityStatus(row)} /></td>
                   </tr>
                 ))}
@@ -403,7 +403,7 @@ export default function AdminIngestionPage() {
                       <td className="px-3 py-2 text-right text-[#111111]">{src.found}</td>
                       <td className="px-3 py-2 text-right text-green-700 font-medium">{src.inserted}</td>
                       <td className="px-3 py-2 text-right text-[#9CA3AF]">{src.duplicates}</td>
-                      <td className={`px-3 py-2 text-right font-medium ${src.errors > 0 ? "text-red-600" : "text-[#9CA3AF]"}`}>{src.errors}</td>
+                      <td className={`px-3 py-2 text-right font-medium ${src.errors > 0 ? "text-ha-danger" : "text-[#9CA3AF]"}`}>{src.errors}</td>
                       <td className="px-3 py-2 text-center">
                         {platformStatus && <StatusBadge status={platformStatus.status} />}
                       </td>
@@ -444,7 +444,7 @@ export default function AdminIngestionPage() {
                       <td className="px-3 py-2 text-right text-[#111111]">{run.total_found}</td>
                       <td className="px-3 py-2 text-right text-green-700 font-medium">{run.total_inserted}</td>
                       <td className="px-3 py-2 text-right text-ha-primary">{run.total_matches}</td>
-                      <td className={`px-3 py-2 text-right font-medium ${run.total_errors > 0 ? "text-red-600" : "text-[#9CA3AF]"}`}>{run.total_errors}</td>
+                      <td className={`px-3 py-2 text-right font-medium ${run.total_errors > 0 ? "text-ha-danger" : "text-[#9CA3AF]"}`}>{run.total_errors}</td>
                       <td className="px-3 py-2 text-center"><StatusBadge status={run.status} /></td>
                     </tr>
                   ))}
@@ -474,7 +474,7 @@ export default function AdminIngestionPage() {
               </button>
               {pushResult && (
                 <span
-                  className={`inline-flex items-center gap-1 text-sm font-medium ${pushResult.success ? "text-green-700" : "text-red-600"}`}
+                  className={`inline-flex items-center gap-1 text-sm font-medium ${pushResult.success ? "text-green-700" : "text-ha-danger"}`}
                   data-testid="text-push-result"
                 >
                   {pushResult.success ? <CheckCircle2 className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
@@ -503,7 +503,7 @@ export default function AdminIngestionPage() {
               <p className="text-sm text-[#9CA3AF]">Klicke "Analyse starten" um die E-Mail/App-Sichtbarkeit deines Admin-Kontos zu vergleichen.</p>
             )}
             {debugError && (
-              <div className="flex items-center gap-2 text-sm text-red-600" data-testid="text-debug-error">
+              <div className="flex items-center gap-2 text-sm text-ha-danger" data-testid="text-debug-error">
                 <XCircle className="w-4 h-4 shrink-0" />
                 {debugError}
               </div>
@@ -523,9 +523,9 @@ export default function AdminIngestionPage() {
                     <div className="text-lg font-bold text-[#111111]">{debugData.recent_emailed_count ?? 0}</div>
                     <div className="text-[10px] uppercase text-[#6B7280] font-medium">Zuletzt gemailt</div>
                   </div>
-                  <div className={`rounded-lg p-3 ${(debugData.mismatch_count ?? 0) > 0 ? "bg-red-50" : "bg-green-50"}`}>
-                    <div className={`text-lg font-bold ${(debugData.mismatch_count ?? 0) > 0 ? "text-red-700" : "text-green-700"}`}>{debugData.mismatch_count ?? 0}</div>
-                    <div className={`text-[10px] uppercase font-medium ${(debugData.mismatch_count ?? 0) > 0 ? "text-red-500" : "text-green-500"}`}>Abweichungen</div>
+                  <div className={`rounded-lg p-3 ${(debugData.mismatch_count ?? 0) > 0 ? "bg-ha-danger/5" : "bg-green-50"}`}>
+                    <div className={`text-lg font-bold ${(debugData.mismatch_count ?? 0) > 0 ? "text-ha-danger" : "text-green-700"}`}>{debugData.mismatch_count ?? 0}</div>
+                    <div className={`text-[10px] uppercase font-medium ${(debugData.mismatch_count ?? 0) > 0 ? "text-ha-danger" : "text-green-500"}`}>Abweichungen</div>
                   </div>
                 </div>
 
@@ -539,30 +539,30 @@ export default function AdminIngestionPage() {
 
                 {debugData.emailed_but_not_visible.length > 0 && (
                   <div>
-                    <h3 className="text-xs font-bold text-red-700 uppercase tracking-wide mb-2 flex items-center gap-1.5">
+                    <h3 className="text-xs font-bold text-ha-danger uppercase tracking-wide mb-2 flex items-center gap-1.5">
                       <AlertTriangle className="w-3.5 h-3.5" />
                       Gemailt, aber NICHT in App sichtbar ({debugData.emailed_but_not_visible.length})
                     </h3>
                     <div className="overflow-x-auto">
                       <table className="w-full text-xs">
                         <thead>
-                          <tr className="bg-red-50 text-left">
-                            <th className="px-2 py-1.5 font-semibold text-red-800">Titel</th>
-                            <th className="px-2 py-1.5 font-semibold text-red-800">Stadt</th>
-                            <th className="px-2 py-1.5 font-semibold text-red-800">Quelle</th>
-                            <th className="px-2 py-1.5 font-semibold text-red-800">Matched</th>
-                            <th className="px-2 py-1.5 font-semibold text-red-800">Grund</th>
+                          <tr className="bg-ha-danger/5 text-left">
+                            <th className="px-2 py-1.5 font-semibold text-ha-danger">Titel</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-danger">Stadt</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-danger">Quelle</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-danger">Matched</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-danger">Grund</th>
                           </tr>
                         </thead>
                         <tbody>
                           {debugData.emailed_but_not_visible.map((item: any, i: number) => (
-                            <tr key={i} className="border-t border-red-100">
-                              <td className="px-2 py-1.5 text-[#111111] max-w-[200px] truncate">{item.title || <span className="text-red-400 italic">gelöscht</span>}</td>
+                            <tr key={i} className="border-t border-ha-danger/10">
+                              <td className="px-2 py-1.5 text-[#111111] max-w-[200px] truncate">{item.title || <span className="text-ha-danger italic">gelöscht</span>}</td>
                               <td className="px-2 py-1.5 text-[#6B7280]">{item.city || "—"}</td>
                               <td className="px-2 py-1.5 text-[#6B7280]">{item.source || "—"}</td>
                               <td className="px-2 py-1.5 text-[#6B7280] whitespace-nowrap">{item.matched_at ? formatTime(item.matched_at) : "—"}</td>
                               <td className="px-2 py-1.5">
-                                <span className="inline-block px-1.5 py-0.5 rounded bg-red-100 text-red-700 text-[10px] font-medium">{item.exclusion_reason}</span>
+                                <span className="inline-block px-1.5 py-0.5 rounded bg-ha-danger/10 text-ha-danger text-[10px] font-medium">{item.exclusion_reason}</span>
                               </td>
                             </tr>
                           ))}

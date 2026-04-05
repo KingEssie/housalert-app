@@ -311,7 +311,7 @@ export default function OnboardingPassword() {
                 </button>
               </div>
               {password.length > 0 && password.length < 6 && (
-                <p className="text-[12px] mt-1.5 text-red-500" data-testid="text-password-hint">
+                <p className="text-[12px] mt-1.5 text-ha-danger" data-testid="text-password-hint">
                   Minimaal 6 tekens vereist
                 </p>
               )}
@@ -473,7 +473,7 @@ export default function OnboardingPassword() {
               </button>
             </div>
             {password.length > 0 && password.length < 6 && (
-              <p className="text-[12px] mt-1.5 text-red-400" data-testid="text-password-hint">
+              <p className="text-[12px] mt-1.5 text-ha-danger" data-testid="text-password-hint">
                 {t("onboarding.password.tooShort") || "Mindestens 6 Zeichen erforderlich"}
               </p>
             )}

@@ -95,7 +95,7 @@ export default function OnboardingIntro() {
             <button
               onClick={() => navigate("/login")}
               className="text-[14px] font-semibold"
-              style={{ color: "#FF385C" }}
+              style={{ color: "rgb(var(--ha-primary))" }}
               data-testid="link-intro-login"
             >
               {t("onboarding.intro.login")}

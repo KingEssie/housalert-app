@@ -43,7 +43,7 @@ function getPlans(t: (k: string) => string): Plan[] {
       perMonth: "€17,50 " + t("paywall.perMonth"),
       popular: true,
       discountLabel: "-30%",
-      discountColor: "#FF385C",
+      discountColor: "rgb(var(--ha-primary))",
     },
     {
       id: "monthly",
@@ -201,7 +201,7 @@ function WebsitePaywall({
                       </span>
                       <span
                         className="text-[13px] font-bold"
-                        style={{ color: plan.discount === "0% korting" ? OBW.textSecondary : "#FF385C" }}
+                        style={{ color: plan.discount === "0% korting" ? OBW.textSecondary : "rgb(var(--ha-primary))" }}
                       >
                         {plan.discount}
                       </span>

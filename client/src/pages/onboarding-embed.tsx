@@ -289,7 +289,7 @@ export default function OnboardingEmbedPage() {
           </div>
 
           {error && (
-            <div className="mx-5 mb-2 p-3 rounded-[6px] bg-red-50 border border-red-200 text-red-700 text-[13px]" data-testid="embed-error">
+            <div className="mx-5 mb-2 p-3 rounded-[6px] bg-ha-danger/5 border border-ha-danger/20 text-ha-danger text-[13px]" data-testid="embed-error">
               {error}
             </div>
           )}

@@ -127,7 +127,7 @@ export default function AdminMatchAudit() {
       <div className="min-h-screen bg-[#F7F7F7]" data-testid="page-admin-audit">
         <AppHeader title="Match Audit" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
         <div className="p-4 pt-6 text-center">
-          <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-3" />
+          <AlertTriangle className="w-12 h-12 text-ha-danger mx-auto mb-3" />
           <p className="text-[15px] text-[#6B7280]">{error}</p>
           <button onClick={loadData} className="mt-4 px-6 py-2 bg-ha-primary text-white rounded-full text-[14px] font-semibold" data-testid="button-retry">Retry</button>
         </div>
@@ -160,7 +160,7 @@ export default function AdminMatchAudit() {
           <StatCard icon={CheckCircle2} label="Viewed" value={stats.viewed} color="bg-[#16A34A]" />
           <StatCard icon={Send} label="Applied" value={stats.applied} color="bg-ha-primary" />
           <StatCard icon={Mail} label="Emails Sent" value={stats.email_sent} color="bg-ha-danger" />
-          <StatCard icon={Bell} label="Push Sent" value={stats.push_sent} color="bg-[#FF385C]" />
+          <StatCard icon={Bell} label="Push Sent" value={stats.push_sent} color="bg-ha-primary" />
         </div>
 
         <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 space-y-3" data-testid="card-timing">
@@ -213,7 +213,7 @@ export default function AdminMatchAudit() {
             <div className="space-y-2">
               {fetch_runs.map((run: any, i: number) => (
                 <div key={run.id || i} className="flex items-center gap-3 py-2 border-b border-[#F7F7F7] last:border-0 text-[12px]">
-                  <div className={`w-2 h-2 rounded-full ${run.status === "completed" ? "bg-green-500" : run.status === "failed" ? "bg-red-500" : "bg-yellow-500"}`} />
+                  <div className={`w-2 h-2 rounded-full ${run.status === "completed" ? "bg-green-500" : run.status === "failed" ? "bg-ha-danger" : "bg-yellow-500"}`} />
                   <div className="flex-1">
                     <span className="text-[#111111] font-medium">{formatDate(run.started_at)}</span>
                     <span className="text-[#6B7280] ml-2">

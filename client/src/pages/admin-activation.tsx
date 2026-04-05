@@ -34,12 +34,12 @@ interface CancellationStats {
 
 const FUNNEL_STEPS = [
   { key: "account_created", label: "Account Created", Icon: UserPlus, color: "#6B7280" },
-  { key: "profile_created", label: "Profile Created", Icon: Search, color: "#FF385C" },
+  { key: "profile_created", label: "Profile Created", Icon: Search, color: "rgb(var(--ha-primary))" },
   { key: "notifications_enabled", label: "Notifications Enabled", Icon: Bell, color: "#16A34A" },
-  { key: "match_received", label: "Match Received", Icon: Inbox, color: "#FF385C" },
-  { key: "first_match_viewed", label: "First Match Viewed", Icon: Eye, color: "#FF385C" },
-  { key: "listing_opened", label: "Listing Opened", Icon: ExternalLink, color: "#FF385C" },
-  { key: "first_reaction", label: "First Reaction", Icon: Send, color: "#FF385C" },
+  { key: "match_received", label: "Match Received", Icon: Inbox, color: "rgb(var(--ha-primary))" },
+  { key: "first_match_viewed", label: "First Match Viewed", Icon: Eye, color: "rgb(var(--ha-primary))" },
+  { key: "listing_opened", label: "Listing Opened", Icon: ExternalLink, color: "rgb(var(--ha-primary))" },
+  { key: "first_reaction", label: "First Reaction", Icon: Send, color: "rgb(var(--ha-primary))" },
   { key: "trial_started", label: "Trial Started", Icon: Crown, color: "#6B7280" },
   { key: "subscription_started", label: "Subscription Started", Icon: CreditCard, color: "#6B7280" },
 ];
@@ -99,7 +99,7 @@ export default function AdminActivationPage() {
     return (
       <div className="min-h-screen bg-[#F7F7F7] p-6">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-red-50 text-red-700 rounded-xl p-4">{error}</div>
+          <div className="bg-ha-danger/5 text-ha-danger rounded-xl p-4">{error}</div>
         </div>
       </div>
     );
@@ -169,10 +169,10 @@ export default function AdminActivationPage() {
             <div className="grid grid-cols-2 gap-3">
               {[
                 { label: "Auth Users", value: data.sourceOfTruth.totalAuthUsers, color: "#6B7280" },
-                { label: "With Profile", value: data.sourceOfTruth.withSearchProfile, color: "#FF385C" },
+                { label: "With Profile", value: data.sourceOfTruth.withSearchProfile, color: "rgb(var(--ha-primary))" },
                 { label: "Notifs Enabled", value: data.sourceOfTruth.withNotifications, color: "#16A34A" },
-                { label: "Viewed Match", value: data.sourceOfTruth.withMatchViewed, color: "#FF385C" },
-                { label: "Reacted", value: data.sourceOfTruth.withReaction, color: "#FF385C" },
+                { label: "Viewed Match", value: data.sourceOfTruth.withMatchViewed, color: "rgb(var(--ha-primary))" },
+                { label: "Reacted", value: data.sourceOfTruth.withReaction, color: "rgb(var(--ha-primary))" },
                 { label: "With Trial", value: data.sourceOfTruth.withTrial, color: "#6B7280" },
                 { label: "Active Sub", value: data.sourceOfTruth.withActiveSubscription, color: "#6B7280" },
               ].map(({ label, value, color }) => (
@@ -189,7 +189,7 @@ export default function AdminActivationPage() {
           <h2 className="text-[16px] font-bold text-[#111111] mb-4">Cancellation & Outcome KPIs</h2>
           <div className="grid grid-cols-2 gap-3">
             {[
-              { label: "Total Cancellations", value: cancelStats?.total ?? 0, Icon: XCircle, color: "#DC2626" },
+              { label: "Total Cancellations", value: cancelStats?.total ?? 0, Icon: XCircle, color: "rgb(var(--ha-danger))" },
               { label: "Homes Found via HousAlert", value: cancelStats?.foundViaHousalert ?? 0, Icon: Home, color: "#16A34A" },
               { label: "Found elsewhere", value: cancelStats?.foundNotViaHousalert ?? 0, Icon: Home, color: "#6B7280" },
               { label: "Not found", value: cancelStats?.notFound ?? 0, Icon: Search, color: "#6B7280" },

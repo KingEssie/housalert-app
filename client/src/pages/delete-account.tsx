@@ -66,7 +66,7 @@ export default function DeleteAccountPage() {
       <AppHeader title={t("deleteAccount.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
       <main className="flex-1 flex flex-col items-center justify-center px-6">
-        <div className="w-16 h-16 rounded-[6px] bg-red-500 flex items-center justify-center mb-6">
+        <div className="w-16 h-16 rounded-[6px] bg-ha-danger flex items-center justify-center mb-6">
           <AlertTriangle className="w-8 h-8 text-white" />
         </div>
         <h2 className="text-[22px] font-bold text-[#111111] mb-3 text-center" data-testid="text-delete-account-title">
@@ -97,7 +97,7 @@ export default function DeleteAccountPage() {
           <button
             onClick={handleDelete}
             disabled={deleting || hasActivePaidSub}
-            className="w-full ha-btn bg-red-500 text-white font-semibold hover:bg-red-600"
+            className="w-full ha-btn bg-ha-danger text-white font-semibold hover:bg-ha-danger/90"
             data-testid="button-delete-account-confirm"
           >
             {deleting ? t("deleteAccount.deleting") : t("deleteAccount.confirmDelete")}

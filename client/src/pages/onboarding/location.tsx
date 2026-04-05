@@ -98,7 +98,7 @@ export default function OnboardingLocation() {
             className="text-[12px] font-bold px-2.5 py-1 rounded-[6px]"
             style={{
               backgroundColor: w ? OBW.badgeBg : "rgba(56,189,248,0.15)",
-              color: w ? OBW.badgeColor : "#FF385C",
+              color: w ? OBW.badgeColor : "rgb(var(--ha-primary))",
             }}
             data-testid="badge-step"
           >

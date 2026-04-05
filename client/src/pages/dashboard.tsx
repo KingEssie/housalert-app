@@ -1888,7 +1888,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             <p className="text-[15px] text-ha-text-secondary text-center mt-2 mb-6">{t("profile.logoutDesc")}</p>
             <button
               onClick={handleLogout}
-              className="w-full ha-btn bg-red-500 text-white font-semibold mb-3"
+              className="w-full ha-btn bg-ha-danger text-white font-semibold mb-3"
               data-testid="button-profile-logout-confirm"
             >
               {t("profile.logoutYes")}

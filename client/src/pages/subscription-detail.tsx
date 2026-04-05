@@ -61,7 +61,7 @@ export default function SubscriptionDetailPage() {
   }
 
   function getStatusColor(): string {
-    if (subscription?.isExpired) return "bg-red-100 text-red-600";
+    if (subscription?.isExpired) return "bg-ha-danger/10 text-ha-danger";
     if (isCanceled && subscription?.isActive) return "bg-[#F9FAFB] text-[#6B7280]";
     if (subscription?.isTrial) return "bg-ha-primary/15 text-ha-primary";
     return "bg-ha-success/10 text-ha-success";
@@ -178,11 +178,11 @@ export default function SubscriptionDetailPage() {
               <div className="h-px bg-ha-surface mx-5" />
               <button
                 onClick={() => navigate("/account/subscription/cancel")}
-                className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-red-50 transition-colors"
+                className="w-full flex items-center gap-3.5 px-5 py-[14px] text-left active:bg-ha-danger/5 transition-colors"
                 data-testid="button-cancel-subscription"
               >
-                <XCircle className="w-[22px] h-[22px] text-red-500 flex-shrink-0" />
-                <p className="text-[15px] text-red-500 font-medium flex-1">{t("subscription.cancelSubscription")}</p>
+                <XCircle className="w-[22px] h-[22px] text-ha-danger flex-shrink-0" />
+                <p className="text-[15px] text-ha-danger font-medium flex-1">{t("subscription.cancelSubscription")}</p>
                 <ChevronRight className="w-4 h-4 text-ha-icon-secondary flex-shrink-0" />
               </button>
             </>

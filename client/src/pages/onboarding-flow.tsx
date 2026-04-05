@@ -551,7 +551,7 @@ function SearchBuddyStep({
           </div>
         </div>
         <div>
-          <p className="text-[13px] font-semibold mb-2.5 text-red-500">
+          <p className="text-[13px] font-semibold mb-2.5 text-ha-danger">
             {t("onboardingFlow.searchBuddy.notAllowed")}
           </p>
           <div className="space-y-2.5">
@@ -560,7 +560,7 @@ function SearchBuddyStep({
               t("onboardingFlow.searchBuddy.cannotLetter"),
             ].map((text, i) => (
               <div key={i} className="flex items-center gap-2.5">
-                <X className="w-4 h-4 text-red-500 flex-shrink-0" />
+                <X className="w-4 h-4 text-ha-danger flex-shrink-0" />
                 <span className="text-[13px]" style={{ color: TEXT_PRIMARY }}>{text}</span>
               </div>
             ))}
@@ -653,8 +653,8 @@ function PushTestStep({
         </>
       ) : pushState === "denied" ? (
         <div className="flex-1 flex flex-col items-center justify-center">
-          <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5 bg-red-50">
-            <Bell className="w-8 h-8 text-red-500" />
+          <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5 bg-ha-danger/5">
+            <Bell className="w-8 h-8 text-ha-danger" />
           </div>
           <p className="text-[14px] text-center mb-4 max-w-[320px] font-medium" style={{ color: TEXT_PRIMARY }}>
             {t("onboardingFlow.pushTest.denied")}

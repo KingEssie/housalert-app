@@ -13,21 +13,21 @@ export const OB = {
   text: "#ffffff",
   textSecondary: "rgba(255,255,255,0.7)",
   textMuted: "rgba(255,255,255,0.45)",
-  pink: "#FF385C",
-  pinkHover: "#FF385C",
-  pinkGradient: "linear-gradient(135deg, #FF385C 0%, #D70466 100%)",
+  pink: "rgb(var(--ha-primary))",
+  pinkHover: "rgb(var(--ha-primary-hover))",
+  pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, #D70466 100%)",
   pinkShadow: "0 4px 15px rgba(255,56,92,0.3)",
   surface: "rgba(255,255,255,0.05)",
   divider: "rgba(255,255,255,0.08)",
   progressInactive: "rgba(255,255,255,0.15)",
   backBtnBg: "rgba(255,255,255,0.1)",
   selectedBg: "rgba(255,56,92,0.12)",
-  selectedBorder: "#FF385C",
+  selectedBorder: "rgb(var(--ha-primary))",
   accentBg: "rgba(255,56,92,0.08)",
   greenBg: "rgb(var(--ha-success) / 0.12)",
   greenBorder: "rgb(var(--ha-success) / 0.25)",
-  redBg: "rgba(239,68,68,0.12)",
-  redBorder: "rgba(239,68,68,0.25)",
+  redBg: "rgba(220,38,38,0.12)",
+  redBorder: "rgba(220,38,38,0.25)",
 } as const;
 
 export const OBW = {
@@ -41,27 +41,27 @@ export const OBW = {
   text: "#111111",
   textSecondary: "#6B7280",
   textMuted: "#9CA3AF",
-  pink: "#FF385C",
-  pinkHover: "#FF385C",
-  pinkGradient: "linear-gradient(135deg, #FF385C 0%, #D70466 100%)",
+  pink: "rgb(var(--ha-primary))",
+  pinkHover: "rgb(var(--ha-primary-hover))",
+  pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, #D70466 100%)",
   pinkShadow: "0 4px 15px rgba(255,56,92,0.3)",
   surface: "#F7F7F7",
   divider: "#E5E7EB",
   progressInactive: "#E5E7EB",
   backBtnBg: "#F7F7F7",
   selectedBg: "rgba(255,56,92,0.08)",
-  selectedBorder: "#FF385C",
+  selectedBorder: "rgb(var(--ha-primary))",
   accentBg: "rgba(255,56,92,0.06)",
   greenBg: "rgb(var(--ha-success) / 0.08)",
   greenBorder: "rgb(var(--ha-success) / 0.2)",
-  redBg: "rgba(239,68,68,0.08)",
-  redBorder: "rgba(239,68,68,0.2)",
+  redBg: "rgba(220,38,38,0.08)",
+  redBorder: "rgba(220,38,38,0.2)",
   footerBg: "#ffffff",
   footerBorder: "#E5E7EB",
   backBtnBorder: "#E5E7EB",
   backBtnColor: "#111111",
   badgeBg: "rgba(255,56,92,0.08)",
-  badgeColor: "#FF385C",
+  badgeColor: "rgb(var(--ha-primary))",
   closeBtnBg: "#F7F7F7",
   closeBtnColor: "#6B7280",
   tabBg: "#F7F7F7",
@@ -129,7 +129,7 @@ export function OBWebHeader({ step, totalSteps = 3 }: { step?: number; totalStep
         {step ? (
           <span
             className="text-[11px] font-bold px-2.5 py-1 rounded-[4px]"
-            style={{ backgroundColor: "#FF385C", color: "#ffffff" }}
+            style={{ backgroundColor: "rgb(var(--ha-primary))", color: "#ffffff" }}
             data-testid="badge-step"
           >
             {step}/{totalSteps}
@@ -206,8 +206,8 @@ export function OBInfoBox({ children }: { children: React.ReactNode }) {
       className="rounded-[4px] p-3.5 flex items-start gap-2.5"
       style={{ backgroundColor: "#F7F7F7", border: "1px solid #E5E7EB" }}
     >
-      <Info className="w-[15px] h-[15px] shrink-0 mt-[1px]" style={{ color: "#FF385C" }} />
-      <div className="text-[13px] leading-[1.55]" style={{ color: "#FF385C" }}>
+      <Info className="w-[15px] h-[15px] shrink-0 mt-[1px]" style={{ color: "rgb(var(--ha-primary))" }} />
+      <div className="text-[13px] leading-[1.55]" style={{ color: "rgb(var(--ha-primary))" }}>
         {children}
       </div>
     </div>

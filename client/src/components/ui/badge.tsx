@@ -14,9 +14,9 @@ const badgeVariants = cva(
         destructive:
           "border-transparent bg-destructive text-destructive-foreground",
         outline: "border border-[#E5E7EB] text-[#111111]",
-        neon: "border-transparent bg-ha-primary/5 text-[#FF385C] font-medium",
+        neon: "border-transparent bg-ha-primary/5 text-ha-primary font-medium",
         dark: "border-transparent bg-[#111111] text-white font-medium",
-        purple: "border-transparent bg-ha-primary/5 text-[#FF385C] font-medium",
+        purple: "border-transparent bg-ha-primary/5 text-ha-primary font-medium",
         success: "border-transparent bg-ha-success/10 text-ha-success font-medium",
       },
     },

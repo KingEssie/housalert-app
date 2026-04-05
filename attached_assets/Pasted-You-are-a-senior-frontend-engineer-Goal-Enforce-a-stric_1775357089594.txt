@@ -1,0 +1,109 @@
+You are a senior frontend engineer.
+
+Goal:
+Enforce a strict, single-source brand color system across the entire app using Airbnb’s primary color:
+#FF385C
+
+This must override ANY existing colors.
+
+--------------------------------------------------
+SOURCE OF TRUTH
+--------------------------------------------------
+
+Use ONLY these tokens defined in:
+client/src/lib/theme.ts
+
+BRAND.primary = #FF385C
+BRAND.primaryEnd = #D70466
+BRAND.gradient = linear-gradient(135deg, #FF385C, #D70466)
+BRAND.primaryHover = #E6284B
+BRAND.primaryLight = rgba(255,56,92,0.08)
+
+--------------------------------------------------
+MANDATORY RULES
+--------------------------------------------------
+
+1. HARD REPLACE ALL COLORS
+- Remove ALL other reds/pinks/purples across the codebase
+- This includes:
+  #FF5A5F
+  #E11D48
+  #DC2626
+  #F43F5E
+  ANY rgba red variants
+  ANY Tailwind red-* classes
+
+2. NO DIRECT COLOR USAGE
+- No inline hex codes allowed
+- No Tailwind colors like:
+  bg-red-500
+  text-pink-600
+- Everything must use:
+  theme tokens OR CSS variables
+
+3. GLOBAL CSS VARIABLES
+Ensure:
+:root {
+  --ha-primary: #FF385C;
+  --primary: #FF385C;
+  --ring: #FF385C;
+}
+
+4. BUTTON SYSTEM
+- ALL buttons use:
+  background: #FF385C
+- Hover:
+  #E6284B
+- NO gradients on buttons
+
+5. GRADIENT USAGE
+ONLY allowed for:
+- hero sections
+- banners
+- special highlight cards
+
+NEVER for:
+- buttons
+- inputs
+- toggles
+
+6. COMPONENTS TO FIX
+Audit and fix ALL of these:
+- Buttons (all states)
+- Inputs (focus ring)
+- Toggles / switches
+- Checkboxes / radios
+- Links
+- Icons (active state)
+- Tabs (active state)
+- Progress bars
+- Badges
+- Alerts
+
+7. TAILWIND OVERRIDE (if used)
+Update config:
+- primary color → #FF385C
+- remove red/pink palette usage
+
+8. VERIFY
+- Scan entire codebase
+- Confirm:
+  ZERO usage of:
+    #FF5A5F
+    red-*
+    pink-*
+- Everything resolves to:
+  #FF385C or defined tokens
+
+--------------------------------------------------
+OUTPUT
+--------------------------------------------------
+
+1. List ALL files changed
+2. Show BEFORE → AFTER examples of at least 3 components
+3. Confirm:
+   "Brand color system is now 100% consistent"
+
+Do NOT skip any files.
+Do NOT partially apply.
+Enforce globally.

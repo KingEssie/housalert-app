@@ -574,7 +574,7 @@ input[type="range"]::-moz-range-thumb {
   color: #9CA3AF;
 }
 .ha-field-light:focus {
-  border-color: #FF385C;
+  border-color: rgb(var(--ha-primary));
   box-shadow: 0 0 0 3px rgba(255,56,92,0.1);
 }
 .ha-field-light:disabled {
@@ -589,7 +589,7 @@ input[type="range"]::-moz-range-thumb {
   color: rgba(255,255,255,0.45);
 }
 .ha-field-dark:focus {
-  border-color: #FF385C;
+  border-color: rgb(var(--ha-primary));
   box-shadow: 0 0 0 3px rgba(255,56,92,0.15);
 }
 .ha-btn {
@@ -632,7 +632,7 @@ input[type="range"]::-moz-range-thumb {
   color: #9ca3af;
 }
 .ha-field-web:focus {
-  border-color: #FF385C;
+  border-color: rgb(var(--ha-primary));
   box-shadow: 0 0 0 3px rgba(255,56,92,0.1);
 }
 .ha-select-web {
@@ -655,7 +655,7 @@ input[type="range"]::-moz-range-thumb {
   cursor: pointer;
 }
 .ha-select-web:focus {
-  border-color: #FF385C;
+  border-color: rgb(var(--ha-primary));
   box-shadow: 0 0 0 3px rgba(255,56,92,0.1);
 }
 .ob-input {
@@ -670,7 +670,7 @@ input[type="range"]::-moz-range-thumb {
   color: #9CA3AF;
 }
 .ob-input:focus {
-  border-color: #FF385C !important;
+  border-color: rgb(var(--ha-primary)) !important;
   box-shadow: 0 0 0 3px rgba(255,56,92,0.1) !important;
 }
 .ob-input:disabled {
