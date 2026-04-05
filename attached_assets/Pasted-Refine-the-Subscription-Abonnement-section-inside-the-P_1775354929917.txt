@@ -1,0 +1,122 @@
+Refine the Subscription (Abonnement) section inside the Profile screen.
+
+IMPORTANT:
+- Keep HousAlert branding (colors, fonts, buttons)
+- Do NOT create a separate page
+- Only update the layout and structure of the subscription card
+- Make it feel clean, premium, and centered (similar to Stekkies UX)
+
+==================================================
+1. CENTERED LAYOUT STRUCTURE
+==================================================
+
+The entire subscription card content must be CENTERED horizontally.
+
+Structure (top → bottom):
+
+1. Icon (centered)
+2. Subscription type (centered)
+3. Renewal text (centered)
+4. Optional cancel button (if active)
+
+Spacing must be balanced and consistent.
+
+==================================================
+2. CONTENT STRUCTURE
+==================================================
+
+When user HAS an active subscription:
+
+Display in this exact order:
+
+- Icon (subscription / crown / premium style icon)
+- Subscription name:
+  Examples:
+  - Premium
+  - Proefabonnement
+  - Jaarabonnement
+
+- Renewal text:
+  Format:
+  "Wordt automatisch verlengd op maandag 7 april 2026"
+
+Rules:
+- date must be human readable (Dutch format)
+- no timestamps
+- no technical billing language
+
+Everything centered.
+
+==================================================
+3. VISUAL STYLE
+==================================================
+
+- Card:
+  - white background
+  - soft border or very subtle shadow
+  - rounded corners
+
+- Icon:
+  - slightly larger than normal UI icons
+  - HousAlert accent color
+
+- Text:
+  - subscription name: bold, slightly larger
+  - renewal text: smaller, softer gray
+
+- spacing:
+  - generous vertical spacing between elements
+  - must feel calm and premium
+
+==================================================
+4. CANCEL BUTTON (ONLY IF ACTIVE)
+==================================================
+
+If user has an active subscription:
+
+Add a button below the renewal text:
+
+"HousAlert opzeggen"
+
+Requirements:
+- centered
+- visually secondary (NOT primary CTA color)
+- subtle but clearly clickable
+- enough spacing from text
+
+If user does NOT have an active subscription:
+- DO NOT show this button
+
+==================================================
+5. NO SUBSCRIPTION STATE
+==================================================
+
+If user has NO subscription:
+
+Keep the card centered as well, but show:
+
+- lock icon (centered)
+- title: "Upgrade naar Premium"
+- short explanation (1–2 lines)
+- primary CTA button: "Abonneer"
+
+Also fully centered.
+
+==================================================
+6. CONSISTENCY RULES
+==================================================
+
+- Everything inside the card must be center-aligned
+- No left-aligned text inside this section anymore
+- Spacing must match the rest of the Profile UI
+- Do not break responsiveness
+
+==================================================
+7. OUTPUT
+==================================================
+
+After implementing, show:
+1. active subscription state (centered layout)
+2. no subscription state (centered layout)
+3. confirmation that alignment is fully centered
+4. which components/files were updated

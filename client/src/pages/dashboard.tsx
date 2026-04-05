@@ -1765,67 +1765,50 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             </div>
           </div>
 
-          {/* 6. Abonnementen — inline */}
+          {/* 6. Abonnementen — centered inline */}
           <div>
             <SectionTitle>{t("profile.subscription")}</SectionTitle>
             <div className="rounded-[14px] bg-white border border-[#F0F0F0] overflow-hidden">
               {!(subscription.isActive || subscription.isTrial) ? (
-                <div className="px-4 py-5" data-testid="card-subscription-locked">
-                  <div className="flex items-start gap-3.5">
-                    <div className="w-10 h-10 rounded-full bg-[#FFF1F3] flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Lock className="w-5 h-5 text-ha-primary" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[15px] font-bold text-[#111111]" data-testid="text-sub-locked-title">{t("profile.subLocked.title")}</p>
-                      <p className="text-[13px] text-[#6B7280] mt-0.5 leading-relaxed">{t("profile.subLocked.desc")}</p>
-                      <button
-                        onClick={() => navigate("/paywall")}
-                        className="mt-3 h-[40px] px-6 rounded-full bg-ha-primary text-white text-[14px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
-                        data-testid="button-sub-locked-cta"
-                      >
-                        {t("profile.subLocked.cta")}
-                      </button>
-                    </div>
+                <div className="px-5 py-7 flex flex-col items-center text-center" data-testid="card-subscription-locked">
+                  <div className="w-12 h-12 rounded-full bg-[#FFF1F3] flex items-center justify-center mb-4">
+                    <Lock className="w-6 h-6 text-ha-primary" />
                   </div>
+                  <p className="text-[17px] font-bold text-[#111111]" data-testid="text-sub-locked-title">{t("profile.subLocked.title")}</p>
+                  <p className="text-[14px] text-[#6B7280] mt-1.5 leading-relaxed max-w-[280px]">{t("profile.subLocked.desc")}</p>
+                  <button
+                    onClick={() => navigate("/paywall")}
+                    className="mt-5 h-[44px] px-8 rounded-full bg-ha-primary text-white text-[15px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
+                    data-testid="button-sub-locked-cta"
+                  >
+                    {t("profile.subLocked.cta")}
+                  </button>
                 </div>
               ) : (
-                <div data-testid="card-subscription-active">
-                  <div className="px-4 pt-4 pb-3">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-9 h-9 rounded-full bg-[#F0FDF4] flex items-center justify-center flex-shrink-0">
-                        <CheckCircle2 className="w-[18px] h-[18px] text-[#22C55E]" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[15px] font-semibold text-[#111111]" data-testid="text-plan-name">
-                          {subscription.isTrial ? t("subscription.status.trial") : getPlanLabel(subscription.plan)}
-                        </p>
-                        <span className={`inline-block mt-0.5 text-[11px] font-semibold px-2 py-0.5 rounded-full ${
-                          subscription.isTrial ? "bg-ha-primary/10 text-ha-primary"
-                          : isCanceled ? "bg-[#F9FAFB] text-[#6B7280]"
-                          : "bg-[#F0FDF4] text-[#22C55E]"
-                        }`} data-testid="badge-sub-status">
-                          {subscription.isTrial ? t("subscription.status.trial")
-                          : isCanceled ? t("subscription.status.activeUntilEnd")
-                          : t("subscription.status.active")}
-                        </span>
-                      </div>
+                <div className="flex flex-col items-center text-center" data-testid="card-subscription-active">
+                  <div className="px-5 pt-7 pb-5 flex flex-col items-center">
+                    <div className="w-12 h-12 rounded-full bg-ha-primary/10 flex items-center justify-center mb-4">
+                      <Crown className="w-6 h-6 text-ha-primary" />
                     </div>
+                    <p className="text-[17px] font-bold text-[#111111]" data-testid="text-plan-name">
+                      {subscription.isTrial ? t("subscription.status.trial") : getPlanLabel(subscription.plan)}
+                    </p>
                     {renewalDate && (
-                      <p className="text-[13px] text-[#6B7280] leading-relaxed" data-testid="text-sub-renewal">
+                      <p className="text-[14px] text-[#9CA3AF] mt-2 leading-relaxed max-w-[300px]" data-testid="text-sub-renewal">
                         {subscription.isTrial
                           ? `${t("profile.subInline.trialEndsOn")} ${formatSubDate(renewalDate)}`
                           : isCanceled
                           ? `${t("profile.subInline.endsOn")} ${formatSubDate(renewalDate)}`
-                          : `${t("profile.subInline.renewsOn")} ${formatSubDate(renewalDate)}`}
+                          : `${t("profile.subInline.autoRenewal")} ${formatSubDate(renewalDate)}`}
                       </p>
                     )}
                   </div>
-                  {!isCanceled && (subscription.isActive && !subscription.isTrial) && (
+                  {!isCanceled && subscription.isActive && !subscription.isTrial && (
                     <>
-                      <div className="h-px bg-[#F3F4F6] mx-4" />
+                      <div className="h-px bg-[#F3F4F6] w-[calc(100%-32px)]" />
                       <button
                         onClick={() => navigate("/account/subscription/cancel")}
-                        className="w-full h-[46px] px-4 flex items-center justify-center text-[14px] font-medium text-[#9CA3AF] active:bg-[#F9FAFB] transition-colors"
+                        className="w-full py-3.5 flex items-center justify-center text-[14px] font-medium text-[#9CA3AF] active:bg-[#F9FAFB] transition-colors"
                         data-testid="button-cancel-subscription"
                       >
                         {t("profile.subInline.cancelCta")}

@@ -294,8 +294,8 @@ export const nl: Record<string, any> = {
     subscriptionTrial: "Proefperiode",
     subscriptionExpired: "Verlopen",
     subLocked: {
-      title: "Laten we beginnen!",
-      desc: "Schrijf je in om direct matches te ontvangen.",
+      title: "Upgrade naar Premium",
+      desc: "Ontvang direct matches en reageer als eerste op nieuwe woningen.",
       cta: "Abonneer",
     },
     subActive: {
@@ -304,7 +304,7 @@ export const nl: Record<string, any> = {
       manage: "Beheer je abonnement",
     },
     subInline: {
-      renewsOn: "Verlengt op",
+      autoRenewal: "Wordt automatisch verlengd op",
       endsOn: "Loopt af op",
       trialEndsOn: "Proefperiode eindigt op",
       cancelCta: "HousAlert opzeggen",

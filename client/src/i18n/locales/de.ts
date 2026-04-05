@@ -288,8 +288,8 @@ export const de: Record<string, any> = {
     subscriptionTrial: "Testphase",
     subscriptionExpired: "Abgelaufen",
     subLocked: {
-      title: "Los geht's!",
-      desc: "Melde dich an, um sofort Matches zu erhalten.",
+      title: "Upgrade auf Premium",
+      desc: "Erhalte sofort Matches und reagiere als Erster auf neue Wohnungen.",
       cta: "Abonnieren",
     },
     subActive: {
@@ -298,7 +298,7 @@ export const de: Record<string, any> = {
       manage: "Abonnement verwalten",
     },
     subInline: {
-      renewsOn: "Verlängert am",
+      autoRenewal: "Wird automatisch verlängert am",
       endsOn: "Endet am",
       trialEndsOn: "Testphase endet am",
       cancelCta: "HousAlert kündigen",

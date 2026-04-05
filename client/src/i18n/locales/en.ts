@@ -213,8 +213,8 @@ export const en: Record<string, any> = {
     subscriptionTrial: "Trial",
     subscriptionExpired: "Expired",
     subLocked: {
-      title: "Let's get started!",
-      desc: "Subscribe to start receiving matches instantly.",
+      title: "Upgrade to Premium",
+      desc: "Get instant matches and be the first to respond to new listings.",
       cta: "Subscribe",
     },
     subActive: {
@@ -223,7 +223,7 @@ export const en: Record<string, any> = {
       manage: "Manage your subscription",
     },
     subInline: {
-      renewsOn: "Renews on",
+      autoRenewal: "Automatically renews on",
       endsOn: "Ends on",
       trialEndsOn: "Trial ends on",
       cancelCta: "Cancel HousAlert",
