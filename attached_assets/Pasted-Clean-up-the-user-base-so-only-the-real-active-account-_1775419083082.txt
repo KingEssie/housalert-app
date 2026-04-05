@@ -1,0 +1,104 @@
+Clean up the user base so only the real active account remains, and verify that canceled users are fully blocked from premium functionality.
+
+IMPORTANT:
+- This is pre-launch cleanup
+- Keep ONLY this user active and preserved:
+  martin.essie87@gmail.com
+- All other users should be removed or safely deactivated/archived depending on what is technically safest
+- Do NOT delete Martin.essie87@gmail.com
+- After cleanup, verify canceled-user behavior in both app access and email logic
+
+GOAL:
+1. Remove/clean up all non-essential users except martin.essie87@gmail.com
+2. Confirm exactly how canceled users behave
+3. Ensure canceled users cannot receive matches, emails, or buddy emails
+
+==================================================
+1. IDENTIFY ALL USERS
+==================================================
+
+Inspect all current users and classify them:
+- active real user to keep:
+  martin.essie87@gmail.com
+- test users
+- canceled users
+- no-sub users
+- expired/trial leftovers
+
+Return a summary before deletion/cleanup.
+
+==================================================
+2. CLEAN UP USERS
+==================================================
+
+Remove or archive all users except:
+- martin.essie87@gmail.com
+
+Use the safest approach:
+- if full deletion is safe, delete them completely
+- if deletion is risky, deactivate/archive them and clearly explain why
+
+Also clean up related data where needed:
+- auth users
+- profiles
+- subscriptions
+- search profiles
+- favorites
+- buddy relationships
+- notification-related data
+- referral/invite leftovers if applicable
+
+Do NOT leave orphaned records behind.
+
+==================================================
+3. VERIFY CANCELED USER ACCESS LOGIC
+==================================================
+
+Inspect the app logic for users with status:
+- canceled
+- expired
+- no subscription
+
+Confirm whether they:
+- can still access /home
+- can still see matches
+- see a paywall / locked state / empty state
+- can trigger notifications
+- can trigger buddy notifications
+
+We need exact current behavior, not assumptions.
+
+==================================================
+4. VERIFY CANCELED USER EMAIL LOGIC
+==================================================
+
+Confirm using the existing email test logic that canceled users:
+- do NOT receive match emails
+- their buddy does NOT receive match emails
+- no stale recipient logic remains
+
+==================================================
+5. IF NEEDED, FIX CANCELED USER MATCH VISIBILITY
+==================================================
+
+If canceled users can still see live matches inappropriately, fix it.
+
+Desired behavior:
+- canceled / expired / no-sub users should NOT have access to active matches
+- they should see the correct locked/paywall/empty state instead
+- they must NOT receive emails
+- their buddy must NOT receive emails
+
+==================================================
+6. OUTPUT
+==================================================
+
+After finishing, provide:
+
+1. which users were removed or archived
+2. which related data was cleaned up
+3. whether canceled users currently see matches or not
+4. whether canceled users currently receive emails or not
+5. whether buddy emails are blocked for canceled users
+6. whether any fixes were needed
+7. confirmation that only martin.essie87@gmail.com remains as the active real user
