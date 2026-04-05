@@ -18,7 +18,7 @@ interface ExpandableCompletionCardProps {
   defaultExpanded?: boolean;
 }
 
-function CircularProgress({ percentage, size = 44 }: { percentage: number; size?: number }) {
+function CircularProgress({ percentage, size = 48 }: { percentage: number; size?: number }) {
   const strokeWidth = 3.5;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
@@ -48,7 +48,7 @@ function CircularProgress({ percentage, size = 44 }: { percentage: number; size?
           className="transition-all duration-500"
         />
       </svg>
-      <span className="absolute inset-0 flex items-center justify-center text-[12px] font-semibold text-[#111111]">
+      <span className="absolute inset-0 flex items-center justify-center text-[13px] font-semibold text-[#111111]">
         {percentage}%
       </span>
     </div>
@@ -77,14 +77,14 @@ export function ExpandableCompletionCard({
       data-testid={testId}
     >
       <button
-        className="w-full px-4 py-4 flex items-center gap-3.5 text-left"
+        className="w-full px-[18px] py-[18px] flex items-center gap-4 text-left"
         onClick={() => setExpanded(!expanded)}
         data-testid={`${testId}-toggle`}
       >
         <CircularProgress percentage={percentage} />
         <div className="flex-1 min-w-0">
           <p className="text-[15px] font-semibold text-[#111111] leading-snug">{title}</p>
-          <p className="text-[13px] text-[#6B7280] mt-0.5">
+          <p className="text-[14px] text-[#6B7280] mt-0.5">
             {subtitleFormat
               ? subtitleFormat.replace("{done}", String(doneCount)).replace("{total}", String(totalCount))
               : `${doneCount} / ${totalCount} ${completedLabel}`}
@@ -102,13 +102,13 @@ export function ExpandableCompletionCard({
           expanded ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <div className="px-4 pb-3 flex flex-col gap-1.5">
+        <div className="px-[18px] pb-4 flex flex-col gap-2">
           {steps.map((step) => (
             <button
               key={step.id}
               onClick={step.completed ? undefined : step.action}
               disabled={step.completed}
-              className={`w-full h-[48px] flex items-center gap-3 px-3.5 text-left rounded-[12px] transition-colors ${
+              className={`w-full h-[48px] flex items-center gap-3 px-4 text-left rounded-[12px] transition-colors ${
                 step.completed ? "bg-[#F9FAFB]" : "bg-[#F9FAFB] active:bg-[#EBEBEB]"
               }`}
               data-testid={`${testId}-step-${step.id}`}

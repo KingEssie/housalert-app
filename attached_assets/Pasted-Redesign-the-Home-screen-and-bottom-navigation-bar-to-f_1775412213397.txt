@@ -1,0 +1,195 @@
+Redesign the Home screen and bottom navigation bar to feel more premium, calm, and Airbnb-level polished.
+
+IMPORTANT:
+- Do NOT change the tab design on the Matches screen (Matches / Gereageerd / Favorieten)
+- ONLY improve:
+  1. Home screen
+  2. Bottom navigation bar
+- Do NOT change app logic or routing
+
+GOAL:
+Make the app feel cleaner, more premium, and easier to scan.
+
+==================================================
+1. HEADER REFINEMENT (HOME)
+==================================================
+
+Keep:
+- HousAlert label
+- greeting with first name
+- subtitle
+
+Update styling:
+- HousAlert = smaller brand label
+- Greeting = large and dominant
+- Subtitle = darker muted tone (not too light)
+- Add more spacing below header
+
+Typography:
+- brand label: 16px semibold
+- greeting: 32–36px bold
+- subtitle: 17px regular
+
+==================================================
+2. REFERRAL CARD = HERO CARD
+==================================================
+
+Make this the most important visual element.
+
+Content:
+Title:
+"Geef een vriend 25% korting"
+
+Description:
+"Deel je persoonlijke link. Jij en je vriend krijgen korting op de eerste betaling."
+
+CTA:
+"Deel je link"
+
+Design:
+- padding: 20–22px
+- stronger visual hierarchy
+- larger button
+- premium white or light tinted background
+- title: 18px semibold
+- description: 15–16px
+- card should feel like a featured block
+
+==================================================
+3. PROGRESS SECTION
+==================================================
+
+Keep:
+"Vergroot je kansen op een huurwoning"
+
+Improve:
+- more spacing between cards
+- larger padding inside cards
+- slightly larger progress ring
+- better alignment text + percentage
+
+Design:
+- white cards
+- subtle border
+- premium spacing
+
+==================================================
+4. SEARCH PROFILES SECTION
+==================================================
+
+Keep:
+"Zoekopdrachten"
+
+Each card must show more useful info:
+
+Line 1:
+Location / profile name
+
+Line 2:
+Price range
+
+Line 3:
+One extra filter detail:
+- area size
+- number of districts
+- radius
+- travel time
+
+Examples:
+"€0 – €1500 · 30+ m²"
+"€0 – €1500 · 3 wijken geselecteerd"
+"€500 – €1800 · Straal: 10 km"
+
+Make hierarchy clear:
+Title > key filters > extra info
+
+==================================================
+5. ADD SEARCH PROFILE CTA
+==================================================
+
+Fix "Zoekopdracht toevoegen":
+
+- remove dashed/disabled look
+- make it a proper secondary button
+- light background
+- optional plus icon
+
+Text:
+"+ Zoekopdracht toevoegen"
+
+==================================================
+6. RECENT MATCHES EMPTY STATE
+==================================================
+
+Improve empty state:
+
+Structure:
+- large icon
+- title: "Nog geen matches"
+- description: "Zodra je eerste matches binnenkomen, verschijnen ze hier."
+
+Design:
+- more spacing
+- larger visual presence
+- text not too light
+
+==================================================
+7. BOTTOM NAVIGATION BAR (IMPORTANT)
+==================================================
+
+Redesign bottom nav to feel more premium.
+
+Active tab:
+- icon color: brand color (#d91a68)
+- label color: brand color
+- font-weight: 600
+
+Inactive tabs:
+- icon color: #9CA3AF (not too light)
+- label color: same
+
+Improvements:
+- slightly increase icon size (22–24px)
+- slightly increase label size (12–13px)
+- more vertical padding
+- ensure good spacing between icon and label
+
+==================================================
+8. DESIGN SYSTEM RULES
+==================================================
+
+Colors:
+- primary text: #111111
+- secondary text: #6B7280
+- border: #E5E7EB
+- cards: white
+- brand: #d91a68
+
+Typography:
+- nothing below 14px
+- titles: 18px+
+- body: 15–16px
+
+Spacing:
+- horizontal padding: 20px
+- section spacing: 28–32px
+- card spacing: 14–16px
+- card padding: 18–22px
+
+==================================================
+9. DO NOT CHANGE
+==================================================
+
+- Do NOT change Matches screen tab design
+- Do NOT change routing
+- Do NOT change backend logic
+
+==================================================
+10. OUTPUT
+==================================================
+
+After finishing, provide:
+1. what changed in the Home screen
+2. what changed in the bottom navigation bar
+3. what extra info is now shown in search profiles
+4. files changed

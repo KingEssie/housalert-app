@@ -546,80 +546,79 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
 
   return (
     <div data-testid="section-zoekopdrachten">
-      <h2 className="text-[18px] font-semibold text-[#111111] mb-1" data-testid="text-zoekopdrachten-title">
+      <h2 className="text-[18px] font-semibold text-[#111111] mb-1.5" data-testid="text-zoekopdrachten-title">
         {t("home.zoekopdrachtenTitle")}
       </h2>
-      <p className="text-[14px] text-[#6B7280] mb-3" data-testid="text-filters-expected">
+      <p className="text-[15px] text-[#6B7280] mb-4" data-testid="text-filters-expected">
         {estimatedCount
           ? t("home.filtersExpected", { count: estimatedCount })
           : t("home.filtersExpectedFallback")}
       </p>
 
       {profiles.length > 0 ? (
-        <div className="rounded-[16px] bg-white border border-[#E5E7EB] overflow-hidden" data-testid="card-zoekopdrachten">
-          {profiles.map((p, idx) => {
+        <div className="flex flex-col gap-3" data-testid="card-zoekopdrachten">
+          {profiles.map((p) => {
             const title = getProfileTitle(p, t, locale);
             const priceLine = getProfilePriceLine(p, t);
             const locationLine = getProfileLocationLine(p, t);
             return (
-              <div key={p.id}>
-                {idx > 0 && <div className="h-px bg-[#F5F5F5] mx-4" />}
-                <div
-                  className="flex items-center min-h-[52px] py-2.5 px-4 cursor-pointer active:bg-[#F9FAFB] transition-colors"
-                  onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
-                  data-testid={`row-zoekopdracht-${p.id}`}
-                >
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-semibold text-[#111111] truncate">{title}</p>
-                    <p className="text-[12px] text-[#9CA3AF] mt-0.5 truncate">{priceLine}</p>
-                    {locationLine && (
-                      <p className="text-[11px] text-[#B0B5BE] mt-0.5 truncate">{locationLine}</p>
-                    )}
-                  </div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        onClick={(e) => e.stopPropagation()}
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-[#9CA3AF] hover:bg-[#F0F0F0] active:bg-[#E5E7EB] transition-colors flex-shrink-0 ml-2"
-                        data-testid={`button-menu-${p.id}`}
-                      >
-                        <MoreVertical className="w-[16px] h-[16px]" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="min-w-[140px]">
-                      <DropdownMenuItem
-                        onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
-                        className="flex items-center gap-2.5 cursor-pointer"
-                        data-testid={`menu-edit-${p.id}`}
-                      >
-                        <Pencil className="w-4 h-4 text-[#6B7280]" />
-                        {t("home.menuEdit")}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => setConfirmDeleteId(p.id)}
-                        className="flex items-center gap-2.5 text-ha-danger focus:text-ha-danger cursor-pointer"
-                        data-testid={`menu-delete-${p.id}`}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        {t("home.menuDelete")}
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+              <div
+                key={p.id}
+                className="rounded-[14px] bg-white border border-[#E5E7EB] py-4 px-[18px] flex items-center cursor-pointer hover:border-[#D1D5DB] active:bg-[#FAFAFA] transition-all"
+                onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
+                data-testid={`row-zoekopdracht-${p.id}`}
+              >
+                <div className="w-2 h-2 rounded-full bg-ha-success flex-shrink-0 mr-3.5" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[15px] font-semibold text-[#111111] truncate">{title}</p>
+                  <p className="text-[14px] text-[#6B7280] mt-0.5 truncate">{priceLine}</p>
+                  {locationLine && (
+                    <p className="text-[14px] text-[#9CA3AF] mt-0.5 truncate">{locationLine}</p>
+                  )}
                 </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      onClick={(e) => e.stopPropagation()}
+                      className="w-9 h-9 rounded-full flex items-center justify-center text-[#9CA3AF] hover:bg-[#F3F4F6] active:bg-[#E5E7EB] transition-colors flex-shrink-0 ml-2"
+                      data-testid={`button-menu-${p.id}`}
+                    >
+                      <MoreVertical className="w-[18px] h-[18px]" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="min-w-[140px]">
+                    <DropdownMenuItem
+                      onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
+                      className="flex items-center gap-2.5 cursor-pointer"
+                      data-testid={`menu-edit-${p.id}`}
+                    >
+                      <Pencil className="w-4 h-4 text-[#6B7280]" />
+                      {t("home.menuEdit")}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setConfirmDeleteId(p.id)}
+                      className="flex items-center gap-2.5 text-ha-danger focus:text-ha-danger cursor-pointer"
+                      data-testid={`menu-delete-${p.id}`}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      {t("home.menuDelete")}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             );
           })}
         </div>
       ) : (
         <div className="rounded-[16px] bg-white border border-[#E5E7EB] p-6 flex flex-col items-center text-center" data-testid="card-zoekopdrachten-empty">
-          <div className="w-12 h-12 rounded-full bg-[#F3F4F6] flex items-center justify-center mb-3">
-            <MapPin className="w-5 h-5 text-[#9CA3AF]" />
+          <div className="w-14 h-14 rounded-full bg-[#F3F4F6] flex items-center justify-center mb-4">
+            <MapPin className="w-6 h-6 text-[#9CA3AF]" />
           </div>
-          <p className="text-[15px] font-semibold text-[#111111] mb-1">{t("searchProfiles.emptyTitle")}</p>
-          <p className="text-[13px] text-[#9CA3AF] mb-4 leading-relaxed max-w-[260px]">{t("searchProfiles.emptySubtitle")}</p>
+          <p className="text-[16px] font-semibold text-[#111111] mb-1.5">{t("searchProfiles.emptyTitle")}</p>
+          <p className="text-[15px] text-[#6B7280] mb-5 leading-relaxed max-w-[260px]">{t("searchProfiles.emptySubtitle")}</p>
           <button
             onClick={() => navigate("/dashboard/searches/new")}
-            className="h-[44px] px-6 rounded-full bg-ha-primary text-white text-[14px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
+            className="h-[48px] px-8 rounded-full bg-ha-primary text-white text-[15px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
             data-testid="button-create-first-profile"
           >
             {t("home.createProfile")}
@@ -630,10 +629,10 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
       {profiles.length > 0 && profiles.length < MAX_PROFILES && (
         <button
           onClick={() => navigate("/dashboard/searches/new")}
-          className="w-full mt-2 h-[40px] rounded-full border border-dashed border-[#D1D5DB] text-[13px] font-semibold text-[#9CA3AF] hover:border-ha-primary hover:text-ha-primary transition-colors flex items-center justify-center gap-1.5 active:scale-[0.97]"
+          className="w-full mt-3 h-[46px] rounded-full bg-[#F3F4F6] text-[14px] font-semibold text-[#111111] hover:bg-[#EBEBEB] transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
           data-testid="button-add-zoekopdracht"
         >
-          {t("home.addZoekopdracht")}
+          + {t("home.addZoekopdracht")}
         </button>
       )}
 
@@ -763,12 +762,12 @@ function RecentMatchesSection({
           </button>
         </div>
       ) : (
-        <div className="rounded-[16px] bg-white border border-[#E5E7EB] p-6 flex flex-col items-center text-center" data-testid="card-no-matches">
-          <div className="w-12 h-12 rounded-full bg-[#F3F4F6] flex items-center justify-center mb-3">
-            <Search className="w-5 h-5 text-[#9CA3AF]" />
+        <div className="rounded-[16px] bg-white border border-[#E5E7EB] py-8 px-6 flex flex-col items-center text-center" data-testid="card-no-matches">
+          <div className="w-16 h-16 rounded-full bg-[#F3F4F6] flex items-center justify-center mb-4">
+            <Search className="w-7 h-7 text-[#9CA3AF]" />
           </div>
-          <p className="text-[15px] font-semibold text-[#111111] mb-1">{t("home.noMatchesYetTitle")}</p>
-          <p className="text-[13px] text-[#9CA3AF] leading-relaxed max-w-[260px]">{t("home.firstMatchesWillAppear")}</p>
+          <p className="text-[17px] font-semibold text-[#111111] mb-1.5">{t("home.noMatchesYetTitle")}</p>
+          <p className="text-[15px] text-[#6B7280] leading-relaxed max-w-[280px]">{t("home.firstMatchesWillAppear")}</p>
         </div>
       )}
     </div>
@@ -858,41 +857,46 @@ function HomeTab({
 
   return (
     <div className="flex flex-col pb-8">
-      <div className="px-5 pt-6 pb-2" data-testid="section-welcome">
-        <div className="flex items-center justify-between mb-5">
-          <span className="text-[18px] font-semibold text-[#111111] tracking-[-0.01em]" data-testid="text-brand">HousAlert</span>
+      <div className="px-5 pt-6 pb-4" data-testid="section-welcome">
+        <div className="flex items-center justify-between mb-6">
+          <span className="text-[16px] font-semibold text-[#6B7280] tracking-[-0.01em]" data-testid="text-brand">HousAlert</span>
           <button
             onClick={() => navigate("/settings/preferences")}
-            className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#F9FAFB] transition-colors"
+            className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#F3F4F6] transition-colors"
             data-testid="button-help"
           >
             <HelpCircle className="w-5 h-5 text-[#9CA3AF]" />
           </button>
         </div>
-        <h1 className="text-[26px] font-semibold text-[#111111] tracking-[-0.02em] leading-tight" data-testid="text-greeting">
+        <h1 className="text-[34px] font-bold text-[#111111] tracking-[-0.025em] leading-[1.1]" data-testid="text-greeting">
           {firstName ? t("home.greeting", { name: firstName }) : t("home.greetingDefault")} 👋
         </h1>
-        <p className="text-[15px] text-[#6B7280] mt-1" data-testid="text-welcome-subtitle">
+        <p className="text-[17px] text-[#4B5563] mt-2 leading-relaxed" data-testid="text-welcome-subtitle">
           {t("home.welcomeSubtitle")}
         </p>
       </div>
 
-      <div className="flex flex-col gap-6 px-5 pt-4">
+      <div className="flex flex-col gap-8 px-5 pt-2">
         <div
-          className="rounded-[16px] bg-white border border-[#E5E7EB] px-4 py-3.5 flex items-center gap-3 cursor-pointer active:bg-[#F9FAFB] transition-colors"
+          className="rounded-[16px] bg-[#FDF8FA] border border-[#F3E1EA] p-5 cursor-pointer active:bg-[#FBF0F4] transition-colors"
           onClick={handleReferralTap}
           data-testid="card-home-referral"
         >
-          <div className="flex-1 min-w-0">
-            <p className="text-[15px] font-semibold text-[#111111] leading-snug" data-testid="text-referral-body">
-              Geef een vriend 25% korting
-            </p>
-            <p className="text-[13px] text-[#6B7280] mt-0.5" data-testid="text-referral-label">
-              Deel je persoonlijke link. Jij en je vriend krijgen korting op de eerste betaling.
-            </p>
+          <div className="flex items-start gap-3.5 mb-4">
+            <div className="w-10 h-10 rounded-full bg-ha-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <Send className="w-[18px] h-[18px] text-ha-primary" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[18px] font-semibold text-[#111111] leading-snug" data-testid="text-referral-body">
+                Geef een vriend 25% korting
+              </p>
+              <p className="text-[15px] text-[#6B7280] mt-1.5 leading-relaxed" data-testid="text-referral-label">
+                Deel je persoonlijke link. Jij en je vriend krijgen korting op de eerste betaling.
+              </p>
+            </div>
           </div>
           <button
-            className="h-[36px] px-4 rounded-full bg-ha-primary text-white text-[13px] font-semibold hover:bg-ha-primary-hover transition-colors flex-shrink-0"
+            className="w-full h-[48px] rounded-full bg-ha-primary text-white text-[15px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
             data-testid="button-home-referral-cta"
           >
             Deel je link
@@ -900,10 +904,10 @@ function HomeTab({
         </div>
 
         <div data-testid="section-gamification">
-          <h2 className="text-[18px] font-semibold text-[#111111] mb-3" data-testid="text-gamification-title">
+          <h2 className="text-[18px] font-semibold text-[#111111] mb-4" data-testid="text-gamification-title">
             {t("home.gamificationTitle")}
           </h2>
-          <div className="flex flex-col gap-2.5">
+          <div className="flex flex-col gap-3.5">
             <HomeAccountCompletionCard accessToken={accessToken} navigate={navigate} />
             <HomePrepCompletionCard accessToken={accessToken} navigate={navigate} onTellFriends={handleReferralTap} />
           </div>
@@ -2144,7 +2148,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <main className="flex-1 max-w-xl mx-auto w-full pb-[96px]">
+      <main className="flex-1 max-w-xl mx-auto w-full pb-[100px]">
         {activeTab === "home" && (
           <HomeTab
             user={user}
@@ -2175,8 +2179,8 @@ export default function DashboardPage() {
         )}
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#F0F0F0]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
-        <nav className="max-w-xl mx-auto flex h-[64px]" data-testid="bottom-nav">
+      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#E5E7EB]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+        <nav className="max-w-xl mx-auto flex h-[72px]" data-testid="bottom-nav">
           {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
             const isActive = activeTab === key;
             const isProfileWithPhoto = key === "profiel" && !!tabPhotoUrl;
@@ -2184,7 +2188,7 @@ export default function DashboardPage() {
               <button
                 key={key}
                 onClick={() => setActiveTab(key)}
-                className="flex-1 flex flex-col items-center justify-center gap-1 active:opacity-70 transition-opacity"
+                className="flex-1 flex flex-col items-center justify-center gap-1.5 active:opacity-70 transition-opacity"
                 data-testid={`tab-${key}`}
               >
                 {isProfileWithPhoto ? (
@@ -2192,9 +2196,9 @@ export default function DashboardPage() {
                     <img src={tabPhotoUrl} alt="" className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <Icon className={`w-[26px] h-[26px] transition-colors ${isActive ? "text-ha-primary" : "text-[#9CA3AF]"}`} strokeWidth={isActive ? 2.2 : 1.6} />
+                  <Icon className={`w-[23px] h-[23px] transition-colors ${isActive ? "text-ha-primary" : "text-[#9CA3AF]"}`} strokeWidth={isActive ? 2.2 : 1.7} />
                 )}
-                <span className={`text-[11px] leading-tight transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-[#9CA3AF]"}`}>
+                <span className={`text-[12px] leading-tight transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-[#9CA3AF]"}`}>
                   {t(labelKey)}
                 </span>
               </button>
