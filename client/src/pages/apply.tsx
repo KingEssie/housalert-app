@@ -480,20 +480,6 @@ export default function ApplyPage() {
             </p>
           )}
 
-          {/* Price line */}
-          {listing.price > 0 && (
-            <p className="text-[18px] font-bold text-[#111111] mt-3 text-center leading-[1.2]" data-testid="text-apply-price">
-              €{listing.price}<span className="text-[13px] font-normal text-[#6B7280] ml-1">{t("common.perMonthShort")}</span>
-            </p>
-          )}
-
-          {/* Posted time */}
-          {postedLabel && (
-            <p className="text-[12px] font-normal text-[#9CA3AF] mt-1 text-center" data-testid="text-apply-posted">
-              {postedLabel}
-            </p>
-          )}
-
           {/* Divider */}
           <div className="h-px bg-[#E5E7EB] my-5" />
 
@@ -518,8 +504,10 @@ export default function ApplyPage() {
         <div className="max-w-xl mx-auto flex items-center justify-between px-5 py-4">
           {listing.price > 0 && (
             <div className="flex flex-col" data-testid="text-sticky-price">
-              <span className="text-[20px] font-bold text-[#111111]">€{listing.price}</span>
-              <span className="text-[12px] text-ha-text-muted leading-none">{t("common.perMonthShort")}</span>
+              <span className="text-[20px] font-bold text-[#111111]">€{listing.price}<span className="text-[13px] font-normal text-[#6B7280] ml-1">{t("common.perMonthShort")}</span></span>
+              {postedLabel && (
+                <span className="text-[11px] font-normal text-[#9CA3AF] leading-none mt-0.5" data-testid="text-footer-posted">{postedLabel}</span>
+              )}
             </div>
           )}
           <Button

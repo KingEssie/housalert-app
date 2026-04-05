@@ -1,0 +1,70 @@
+Make one final cleanup to the detail screen info layout.
+
+IMPORTANT:
+Do NOT redesign the page again.
+This is only about removing duplicate price/time information from the white info block and keeping that information only in the sticky footer.
+
+GOAL:
+The white content sheet under the image should stay clean and focused on title + property info + reaction letter.
+The monthly price and "how long ago posted" text should only appear in the bottom sticky footer.
+
+==================================================
+1. REMOVE FROM WHITE INFO BLOCK
+==================================================
+
+Under the title in the white overlapping content sheet, remove:
+- the monthly price line
+- the "X uur/dagen/weken geleden geplaatst" line
+
+These should no longer appear in the top content block.
+
+==================================================
+2. KEEP IN WHITE INFO BLOCK
+==================================================
+
+The white content sheet should keep this order:
+
+1. Title
+2. Supporting line 1
+3. Supporting line 2
+4. subtle divider
+5. Reactiebrief
+
+Do not add price or posted-time here anymore.
+
+==================================================
+3. KEEP PRICE + POSTED TIME IN STICKY FOOTER
+==================================================
+
+In the bottom sticky footer, keep:
+- the monthly price on one line:
+  €1000 /mnd
+- add or keep the subtle "X uur/dagen/weken geleden geplaatst" text there
+
+Requirements:
+- footer remains clean
+- price remains most visible
+- posted-time remains small, light grey, secondary
+- avoid duplication anywhere else on the page
+
+==================================================
+4. KEEP EVERYTHING ELSE INTACT
+==================================================
+
+Do NOT change:
+- hero image
+- back button
+- favorite/block icons
+- title alignment
+- supporting line alignment
+- reaction letter section
+- CTA button
+
+==================================================
+5. OUTPUT
+==================================================
+
+After finishing, show:
+1. what was removed from the white info block
+2. how the footer now displays price + posted time
+3. which file(s) were updated
