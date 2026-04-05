@@ -40,7 +40,7 @@ function CircularProgress({ percentage, size = 44 }: { percentage: number; size?
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="#FF385C"
+          stroke="#FF5A5F"
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={offset}
@@ -124,7 +124,7 @@ export function ExpandableCompletionCard({
               </span>
               <div className="flex-shrink-0">
                 {step.completed ? (
-                  <div className="w-[24px] h-[24px] rounded-full bg-[#FF385C] flex items-center justify-center">
+                  <div className="w-[24px] h-[24px] rounded-full bg-[#FF5A5F] flex items-center justify-center">
                     <Check className="w-[13px] h-[13px] text-white" strokeWidth={3} />
                   </div>
                 ) : (

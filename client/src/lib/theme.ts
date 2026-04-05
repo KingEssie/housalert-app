@@ -1,10 +1,10 @@
 export const theme = {
   colors: {
-    primary: "#FF385C",
-    primaryHover: "#E6284B",
-    primaryLight: "rgba(255, 56, 92, 0.08)",
-    iconBackground: "rgba(255, 56, 92, 0.08)",
-    neon: "#FF385C",
+    primary: "#FF5A5F",
+    primaryHover: "#E65156",
+    primaryLight: "rgba(255, 90, 95, 0.08)",
+    iconBackground: "rgba(255, 90, 95, 0.08)",
+    neon: "#FF5A5F",
     darkLabel: "#111111",
     successMain: "#16A34A",
     successDark: "#16A34A",

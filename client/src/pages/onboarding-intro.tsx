@@ -250,7 +250,7 @@ function InfoStep({ onNext, onLogin, t }: { onNext: () => void; onLogin: () => v
 
           <button
             onClick={onNext}
-            className="w-full h-[52px] rounded-[6px] text-[16px] font-bold text-ha-text transition-all active:scale-[0.97] shadow-[0_4px_14px_rgba(255,56,92,0.3)]"
+            className="w-full h-[52px] rounded-[6px] text-[16px] font-bold text-ha-text transition-all active:scale-[0.97] shadow-[0_4px_14px_rgba(255,90,95,0.3)]"
             style={{ backgroundColor: BRAND }}
             onMouseOver={(e) => (e.currentTarget.style.backgroundColor = BRAND_HOVER)}
             onMouseOut={(e) => (e.currentTarget.style.backgroundColor = BRAND)}

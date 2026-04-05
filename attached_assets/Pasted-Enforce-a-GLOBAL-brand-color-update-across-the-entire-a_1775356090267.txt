@@ -1,0 +1,110 @@
+Enforce a GLOBAL brand color update across the entire app.
+
+CRITICAL:
+- This is NOT a suggestion — this must override all existing red/pink colors
+- Apply everywhere in the app (all screens, all components)
+- Do NOT leave any old red/pink variants behind
+
+==================================================
+1. PRIMARY BRAND COLOR
+==================================================
+
+Set the ONLY primary brand color to:
+
+#FF5A5F  (Airbnb red)
+
+This becomes the single source of truth.
+
+==================================================
+2. REMOVE ALL OLD COLORS
+==================================================
+
+Find and replace ALL existing red/pink/orange-like colors, including:
+
+- #FF385C
+- any pink shades
+- any custom reds
+- inline styles
+- tailwind classes (e.g. red-500, pink-500, etc.)
+
+Replace ALL of them with:
+#FF5A5F or a derived shade (see below)
+
+NO EXCEPTIONS.
+
+==================================================
+3. APPLY GLOBALLY
+==================================================
+
+Use #FF5A5F for:
+
+- Primary buttons (Toevoegen, Opslaan, etc.)
+- CTA buttons
+- Active states (toggles, tabs, icons)
+- Progress bars
+- Highlights
+- Links (if styled as primary)
+- Selected states
+- Important badges
+
+==================================================
+4. DERIVED COLORS (OPTIONAL)
+==================================================
+
+If needed, create consistent variants:
+
+- Hover / pressed:
+  slightly darker version of #FF5A5F
+
+- Light background:
+  very soft tint (low opacity of #FF5A5F)
+
+BUT:
+- No new random colors
+- Everything must clearly derive from #FF5A5F
+
+==================================================
+5. CENTRALIZE THE COLOR (IMPORTANT)
+==================================================
+
+Do NOT hardcode this everywhere.
+
+Create a single source:
+
+- theme file / config / constants file
+
+Example:
+- primaryColor = "#FF5A5F"
+
+Then reference this everywhere.
+
+==================================================
+6. TOGGLES & UI ELEMENTS
+==================================================
+
+- Toggle ON state → #FF5A5F (not blue)
+- Active icons → #FF5A5F
+- Selected tabs → #FF5A5F
+
+==================================================
+7. VALIDATION
+==================================================
+
+After implementation:
+
+- scan the entire codebase
+- confirm NO other red/pink hex codes remain
+
+==================================================
+8. OUTPUT
+==================================================
+
+Show:
+1. Where the global color variable is defined
+2. List of components updated
+3. Confirmation that ALL old red/pink colors are removed
+4. Examples of:
+   - button
+   - toggle
+   - active tab
+   using #FF5A5F

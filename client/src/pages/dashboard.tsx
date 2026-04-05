@@ -1060,7 +1060,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
 
         <div className="px-5 pt-12">
           <div className="flex flex-col items-center text-center px-6 pb-4">
-            <div className="w-14 h-14 rounded-full bg-[#FFF1F3] flex items-center justify-center mb-5">
+            <div className="w-14 h-14 rounded-full bg-[#FFF2F2] flex items-center justify-center mb-5">
               <Lock className="w-6 h-6 text-ha-primary" />
             </div>
             <h2 className="text-[18px] font-bold text-[#111111] mb-2" data-testid="text-locked-headline">
@@ -1771,7 +1771,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             <div className="rounded-[14px] bg-white border border-[#F0F0F0] overflow-hidden">
               {!(subscription.isActive || subscription.isTrial) ? (
                 <div className="px-5 py-7 flex flex-col items-center text-center" data-testid="card-subscription-locked">
-                  <div className="w-12 h-12 rounded-full bg-[#FFF1F3] flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 rounded-full bg-[#FFF2F2] flex items-center justify-center mb-4">
                     <Lock className="w-6 h-6 text-ha-primary" />
                   </div>
                   <p className="text-[17px] font-bold text-[#111111]" data-testid="text-sub-locked-title">{t("profile.subLocked.title")}</p>

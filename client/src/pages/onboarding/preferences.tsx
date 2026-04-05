@@ -130,7 +130,7 @@ export default function OnboardingPreferences() {
                   className="w-[18px] h-[18px] rounded-[3px] flex items-center justify-center shrink-0"
                   style={{
                     border: active ? "none" : `1.5px solid ${OBW.chipBorder}`,
-                    backgroundColor: active ? "#FF385C" : "transparent",
+                    backgroundColor: active ? "#FF5A5F" : "transparent",
                   }}
                 >
                   {active && <Check className="w-3 h-3 text-white" />}

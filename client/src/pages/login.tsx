@@ -166,7 +166,7 @@ export default function LoginPage() {
                 onClick={handleForgotPassword}
                 disabled={resetLoading}
                 className="self-end text-[14px] font-medium mt-0.5 transition-colors hover:underline"
-                style={{ color: "#FF385C" }}
+                style={{ color: "#FF5A5F" }}
                 data-testid="link-forgot-password"
               >
                 {resetLoading ? t("common.loading") : t("auth.login.forgotPassword")}
