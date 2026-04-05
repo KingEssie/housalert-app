@@ -11,13 +11,13 @@ import { useTranslation } from "@/i18n";
 import { trackEvent } from "@/lib/track-event";
 import { useLocation, useRoute } from "wouter";
 import {
+  ArrowLeft,
   Copy,
   Heart,
   ImageIcon,
   Lock,
   ShieldBan,
 } from "lucide-react";
-import { AppHeader } from "@/components/ui/app-header";
 
 const CITY_GRADIENTS: Record<string, string> = {
   berlin: "from-[#E5E7EB] to-[#E5E7EB]",
@@ -220,11 +220,23 @@ export default function ApplyPage() {
     enabled: !!accessToken,
   });
 
+  function handleBack() {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      navigate("/dashboard?tab=matches");
+    }
+  }
+
   if (!sub.loading && !hasAccess) {
     return (
-      <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F9FAFB" }}>
-        <AppHeader title={t("applySheet.title") || "Reageren"} onBack={() => navigate("/dashboard?tab=matches")} />
-        <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-8">
+      <div className="min-h-screen flex flex-col relative bg-white">
+        <div className="fixed top-[max(0.75rem,env(safe-area-inset-top))] left-4 z-30">
+          <button onClick={handleBack} className="w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center active:scale-95 transition-transform" style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }} aria-label="Back" data-testid="button-back-apply">
+            <ArrowLeft className="w-[18px] h-[18px] text-[#111111]" />
+          </button>
+        </div>
+        <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-20">
           <div className="app-card text-center py-10">
             <div className="w-16 h-16 rounded-full bg-[#F9FAFB] flex items-center justify-center mx-auto mb-5">
               <Lock className="w-7 h-7 text-ha-text-muted" />
@@ -251,24 +263,25 @@ export default function ApplyPage() {
 
   if (listingLoading || !listing) {
     return (
-      <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F9FAFB" }}>
-        <AppHeader title={t("applySheet.title") || "Reageren"} onBack={() => navigate("/dashboard?tab=matches")} />
+      <div className="min-h-screen flex flex-col relative bg-white">
+        <div className="fixed top-[max(0.75rem,env(safe-area-inset-top))] left-4 z-30">
+          <button onClick={handleBack} className="w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center active:scale-95 transition-transform" style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }} aria-label="Back" data-testid="button-back-apply">
+            <ArrowLeft className="w-[18px] h-[18px] text-[#111111]" />
+          </button>
+        </div>
         <div className="animate-pulse">
-          <div className="w-full bg-[#E5E7EB]" style={{ aspectRatio: "16/10" }} />
-          <div className="max-w-xl mx-auto w-full px-5 pt-6 space-y-4">
-            <div className="app-card">
-              <div className="flex flex-col items-center gap-2">
-                <div className="h-5 bg-ha-surface rounded-md w-4/5" />
-                <div className="h-5 bg-ha-surface rounded-md w-3/5" />
-                <div className="h-4 bg-ha-surface rounded-md w-2/5 mt-0.5" />
-              </div>
-            </div>
-            <div className="app-card">
-              <div className="h-4 bg-ha-surface rounded w-24 mb-3" />
-              <div className="space-y-2">
-                <div className="h-3.5 bg-ha-surface rounded w-full" />
-                <div className="h-3.5 bg-ha-surface rounded w-5/6" />
-                <div className="h-3.5 bg-ha-surface rounded w-4/6" />
+          <div className="w-full bg-[#E5E7EB]" style={{ aspectRatio: "4/3" }} />
+          <div className="max-w-xl mx-auto w-full px-5 -mt-6 relative z-10">
+            <div className="bg-white rounded-t-[20px] px-5 pt-6 pb-4 space-y-3">
+              <div className="h-5 bg-[#F3F4F6] rounded-md w-4/5" />
+              <div className="h-4 bg-[#F3F4F6] rounded-md w-3/5" />
+              <div className="h-3.5 bg-[#F3F4F6] rounded-md w-2/5" />
+              <div className="h-px bg-[#F0F0F0] my-4" />
+              <div className="h-4 bg-[#F3F4F6] rounded w-28" />
+              <div className="space-y-2 mt-2">
+                <div className="h-3.5 bg-[#F3F4F6] rounded w-full" />
+                <div className="h-3.5 bg-[#F3F4F6] rounded w-5/6" />
+                <div className="h-3.5 bg-[#F3F4F6] rounded w-4/6" />
               </div>
             </div>
           </div>
@@ -367,105 +380,109 @@ export default function ApplyPage() {
   const detailLine = detailParts.join(" · ");
 
   return (
-    <div className="min-h-screen flex flex-col relative" style={{ backgroundColor: "#F9FAFB" }}>
-      <AppHeader title={t("applySheet.title") || "Reageren"} onBack={() => navigate("/dashboard?tab=matches")} />
+    <div className="min-h-screen flex flex-col relative bg-white">
+      {/* Floating back button */}
+      <div className="fixed top-[max(0.75rem,env(safe-area-inset-top))] left-4 z-30">
+        <button onClick={handleBack} className="w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center active:scale-95 transition-transform" style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }} aria-label="Back" data-testid="button-back-apply">
+          <ArrowLeft className="w-[18px] h-[18px] text-[#111111]" />
+        </button>
+      </div>
 
+      {/* Floating action icons — top-right on image */}
+      <div className="fixed top-[max(0.75rem,env(safe-area-inset-top))] right-4 z-30 flex items-center gap-2.5">
+        <button
+          onClick={handleToggleFavorite}
+          disabled={favLoading}
+          className="w-9 h-9 flex items-center justify-center active:scale-90 transition-transform duration-150"
+          aria-label="Favorite"
+          data-testid="button-favorite-apply"
+        >
+          <Heart
+            className={`w-[22px] h-[22px] transition-colors duration-200 ${isFavorited ? "text-ha-primary" : "text-white"}`}
+            fill={isFavorited ? "currentColor" : "none"}
+            strokeWidth={2}
+            style={{ filter: isFavorited ? "none" : "drop-shadow(0 1px 3px rgba(0,0,0,0.5))" }}
+          />
+        </button>
+
+        {listing.source && (
+          <button
+            onClick={() => setShowBlockModal(true)}
+            className="w-9 h-9 flex items-center justify-center active:scale-90 transition-transform duration-150"
+            aria-label="Block source"
+            data-testid="button-block-source-apply"
+          >
+            <ShieldBan
+              className="w-[22px] h-[22px] text-white"
+              strokeWidth={2}
+              style={{ filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.5))" }}
+            />
+          </button>
+        )}
+      </div>
+
+      {/* Hero image */}
       <div className="relative">
         {hasImage && !imgError ? (
           <img
             src={listing.image_url!}
             alt={listing.title}
             className="w-full object-cover"
-            style={{ aspectRatio: "16/10" }}
+            style={{ aspectRatio: "4/3" }}
             onError={() => setImgError(true)}
             referrerPolicy="no-referrer"
             data-testid="img-apply-hero"
           />
         ) : (
-          <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "16/10" }}>
+          <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "4/3" }}>
             <div className="absolute inset-0 bg-black/5" />
-            <div className="flex flex-col items-center gap-2 text-ha-icon-secondary">
+            <div className="flex flex-col items-center gap-2 text-[#D1D5DB]">
               <ImageIcon className="w-10 h-10" />
               <span className="text-[12px] font-medium">{listing.source}</span>
             </div>
           </div>
         )}
-
-        <div className="absolute top-3 right-3 z-20 flex items-center gap-2.5">
-          <button
-            onClick={handleToggleFavorite}
-            disabled={favLoading}
-            className={`w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-all duration-200 ${
-              isFavorited
-                ? "bg-ha-primary"
-                : "bg-black/35 backdrop-blur-sm"
-            }`}
-            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}
-            aria-label="Favorite"
-            data-testid="button-favorite-apply"
-          >
-            <Heart
-              className="w-[18px] h-[18px] text-white"
-              fill={isFavorited ? "white" : "none"}
-              strokeWidth={2}
-            />
-          </button>
-
-          {listing.source && (
-            <button
-              onClick={() => setShowBlockModal(true)}
-              className="w-9 h-9 rounded-full bg-black/35 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform duration-200"
-              style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}
-              aria-label="Block source"
-              data-testid="button-block-source-apply"
-            >
-              <ShieldBan className="w-[18px] h-[18px] text-white" strokeWidth={2} />
-            </button>
-          )}
-        </div>
       </div>
 
-      <main className="flex-1 max-w-xl mx-auto w-full pb-[120px] -mt-5 relative z-10 px-5 pt-5">
-        <div className="space-y-4">
-          <div className="app-card text-center">
-            {listing.price > 0 && (
-              <p className="text-[24px] font-bold text-[#111111] leading-[1.1] tracking-[-0.02em]" data-testid="text-apply-price">
-                €{listing.price}<span className="text-[14px] font-normal text-ha-icon-secondary ml-1">{t("common.perMonthShort")}</span>
-              </p>
-            )}
-            <h1
-              className="text-[20px] font-bold text-[#111111] leading-[1.2] tracking-[-0.02em] mt-1.5"
-              data-testid="text-apply-title"
-            >
-              {listing.title}
-            </h1>
-            <p className="text-[15px] text-ha-icon-secondary mt-1.5" data-testid="text-apply-subtitle">
-              {subtitle}
+      {/* Overlapping white content sheet */}
+      <main className="flex-1 max-w-xl mx-auto w-full pb-[120px] -mt-6 relative z-10">
+        <div className="bg-white rounded-t-[20px] px-5 pt-6">
+          {/* Title block */}
+          <h1
+            className="text-[20px] font-semibold text-[#111111] leading-[1.3] tracking-[-0.01em] line-clamp-2"
+            data-testid="text-apply-title"
+          >
+            {listing.title}
+          </h1>
+          <p className="text-[15px] text-[#4B5563] mt-1.5 leading-[1.4]" data-testid="text-apply-subtitle">
+            {subtitle}
+          </p>
+          {detailLine && (
+            <p className="text-[13px] text-[#6B7280] mt-1 leading-[1.4]" data-testid="text-apply-details">
+              {detailLine}
             </p>
-            {detailLine && (
-              <p className="text-[13px] text-ha-icon-secondary mt-1" data-testid="text-apply-details">
-                {detailLine}
-              </p>
-            )}
-          </div>
+          )}
 
-          <div className="app-card">
-            <h2 className="text-[16px] font-bold text-[#111111] mb-1" data-testid="text-letter-title">{t("applySheet.applicationLetter")}</h2>
-            <p className="text-[12px] text-ha-icon-secondary mb-3" data-testid="text-letter-helper">
-              {t("applySheet.autoGenerated") || "Automatisch gegenereerd op basis van jouw profiel"}
-            </p>
-            <textarea
-              className="w-full min-h-[220px] leading-[1.75] bg-white border-[2px] border-[#111111] rounded-[6px] p-4 text-[15px] text-[#111111] outline-none resize-vertical focus:border-ha-primary transition-colors"
-              value={editedLetter ?? filledLetter}
-              onChange={(e) => setEditedLetter(e.target.value)}
-              data-testid="apply-letter-preview"
-              autoComplete="off"
-              autoCorrect="on"
-            />
-          </div>
+          {/* Divider */}
+          <div className="h-px bg-[#E5E7EB] my-5" />
+
+          {/* Reaction letter section */}
+          <h2 className="text-[16px] font-semibold text-[#111111] mb-1" data-testid="text-letter-title">{t("applySheet.applicationLetter")}</h2>
+          <p className="text-[12px] text-[#6B7280] mb-3" data-testid="text-letter-helper">
+            {t("applySheet.autoGenerated") || "Automatisch gegenereerd op basis van jouw profiel"}
+          </p>
+          <textarea
+            className="w-full min-h-[220px] leading-[1.75] bg-white border border-[#E5E7EB] rounded-[10px] p-4 text-[15px] text-[#111111] outline-none resize-vertical focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/20 transition-all"
+            value={editedLetter ?? filledLetter}
+            onChange={(e) => setEditedLetter(e.target.value)}
+            data-testid="apply-letter-preview"
+            autoComplete="off"
+            autoCorrect="on"
+          />
         </div>
       </main>
 
+      {/* Sticky bottom CTA */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] z-10 pb-[env(safe-area-inset-bottom)]">
         <div className="max-w-xl mx-auto flex items-center justify-between px-5 py-4">
           {listing.price > 0 && (
@@ -485,6 +502,7 @@ export default function ApplyPage() {
         </div>
       </div>
 
+      {/* Block source modal */}
       {showBlockModal && listing?.source && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowBlockModal(false)}>
           <div className="bg-white w-full max-w-[400px] rounded-t-[20px] sm:rounded-[20px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>

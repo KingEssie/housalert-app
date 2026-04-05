@@ -1,0 +1,178 @@
+Refine the listing detail / response screen so it matches the Airbnb-style detail layout much more closely.
+
+IMPORTANT:
+Do NOT redesign the rest of the app.
+Only update the detail screen shown as "Reactie versturen".
+
+GOAL:
+Make the detail page feel like Airbnb:
+- no standard page header
+- large hero image
+- floating back button
+- white rounded content sheet overlapping the image
+- cleaner typography
+- reaction letter starts after a subtle divider
+
+==================================================
+1. REMOVE STANDARD HEADER BAR
+==================================================
+
+Remove the normal top page header style for this screen.
+
+- Do NOT show a standard white header with title above the image
+- Remove the current "Reactie versturen" page-bar layout
+
+Instead:
+- use the image as the top hero area
+- place a floating back button on top of the image, top-left
+
+==================================================
+2. BACK BUTTON
+==================================================
+
+Add a circular floating back button on the image, Airbnb style:
+
+- top-left on image
+- white or very light translucent background
+- dark icon
+- subtle shadow
+- premium spacing from edges
+
+==================================================
+3. DETAIL IMAGE ACTIONS
+==================================================
+
+The action icons on the detail image must match the listing image style, not the current round button bubbles.
+
+Place actions top-right on the image:
+- favorite heart
+- block website/source
+
+STYLE REQUIREMENT:
+Use the SAME visual treatment as the listing image overlay actions.
+
+Favorite:
+- not favorited:
+  - white outline heart
+  - no separate oversized circular button background
+  - same style as listing heart
+- favorited:
+  - filled HousAlert red/pink
+  - same style as listing favorite state
+
+Block icon:
+- same overlay style family as listing actions
+- visually consistent with favorite icon
+- not a separate heavy circular bubble style
+
+Make both actions feel light, premium, and consistent with the listing cards.
+
+==================================================
+4. HERO IMAGE + OVERLAPPING CONTENT SHEET
+==================================================
+
+Use this structure:
+
+- large hero image at top
+- below it, a white content sheet that overlaps the bottom of the image
+- the white sheet should have clearly rounded top corners
+- it should look like it is floating over the image, Airbnb style
+
+Requirements:
+- image remains visually dominant
+- overlap should feel intentional and premium
+- avoid card-in-card feel
+
+==================================================
+5. REMOVE MONTHLY PRICE FROM TOP INFO BLOCK
+==================================================
+
+Remove the monthly price line from the top detail info section.
+
+The content inside the white sheet should begin with:
+1. Title
+2. Supporting lines
+3. Divider
+4. Reaction letter
+
+Do NOT start the white content block with the month price.
+
+==================================================
+6. TYPOGRAPHY REFINEMENT
+==================================================
+
+TITLE:
+- use semibold (around 600)
+- not too bold
+- max 2 lines
+- strong but elegant
+
+SUBTEXT LINES UNDER TITLE:
+- darker than current version
+- closer to Airbnb readable grey
+- not too faded
+
+Suggested hierarchy:
+- Title: #111111
+- Supporting text: #4B5563 or similar
+- Secondary meta: #6B7280
+
+==================================================
+7. CONTENT ORDER INSIDE WHITE SHEET
+==================================================
+
+Inside the overlapping white sheet, use this order:
+
+1. Title
+2. Location / housing context line
+3. Details line (bedrooms, m², time or source if needed)
+4. subtle divider
+5. Reactiebrief section
+
+Make spacing clean and premium.
+
+==================================================
+8. DIVIDER ABOVE REACTION LETTER
+==================================================
+
+Add a subtle divider between listing info and the reaction letter.
+
+- thin
+- light grey
+- enough spacing above and below to feel breathable
+- not too heavy
+
+==================================================
+9. REACTION LETTER SECTION
+==================================================
+
+Keep the reaction letter below the divider.
+
+- make sure it starts directly after the listing info block
+- reduce unnecessary visual heaviness
+- keep layout clean and readable
+
+==================================================
+10. KEEP EVERYTHING ELSE INTACT
+==================================================
+
+Do NOT change:
+- favorites logic
+- block logic
+- CTA bottom bar functionality
+- listing feed cards
+- navigation elsewhere
+
+Only refine this detail screen layout and visual hierarchy.
+
+==================================================
+11. OUTPUT
+==================================================
+
+After finishing, show:
+1. what header elements were removed
+2. how the back button now works
+3. how the detail image actions were restyled to match listings
+4. how the overlapping white sheet was built
+5. how typography was changed
+6. which files were updated
