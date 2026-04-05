@@ -13,8 +13,8 @@ import { useToast } from "@/hooks/use-toast";
 const OB = {
   gradient: "#ffffff",
   pink: "rgb(var(--ha-primary))",
-  pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, #1E7FA3 100%)",
-  pinkShadow: "0 4px 15px rgba(37,150,190,0.3)",
+  pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, #b31556 100%)",
+  pinkShadow: "0 4px 15px rgba(217,26,104,0.2)",
   text: "#111111",
   textSecondary: "#6B7280",
 };

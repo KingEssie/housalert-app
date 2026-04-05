@@ -73,8 +73,8 @@ function WebToggle({
     <label
       className="flex items-start gap-3 cursor-pointer rounded-[8px] p-3 transition-colors"
       style={{
-        backgroundColor: checked ? "rgba(37,150,190,0.04)" : "transparent",
-        border: `1px solid ${checked ? "rgba(37,150,190,0.2)" : OBW.divider}`,
+        backgroundColor: checked ? "rgba(217,26,104,0.04)" : "transparent",
+        border: `1px solid ${checked ? "rgba(217,26,104,0.2)" : OBW.divider}`,
       }}
       data-testid={testId}
     >

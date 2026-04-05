@@ -231,7 +231,7 @@ export default function OnboardingPassword() {
               className="rounded-[4px] p-3.5 mb-4 flex items-start gap-3"
               style={{
                 backgroundColor: "#FFFFFF",
-                border: `1px solid rgba(37,150,190,0.15)`,
+                border: `1px solid rgba(217,26,104,0.15)`,
               }}
               data-testid="search-summary-card"
             >
@@ -384,7 +384,7 @@ export default function OnboardingPassword() {
                 onClick={handleCreateAccount}
                 disabled={!canSubmit}
                 className="flex-1 h-[44px] rounded-[4px] text-[14px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-2"
-                style={{ background: OBW.pink, boxShadow: canSubmit ? "0 4px 14px rgba(37,150,190,0.25)" : "none" }}
+                style={{ background: OBW.pink, boxShadow: canSubmit ? "0 4px 14px rgba(217,26,104,0.2)" : "none" }}
                 data-testid="button-create-account"
               >
                 {loading ? (

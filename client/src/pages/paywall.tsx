@@ -43,7 +43,7 @@ function getPlans(t: (k: string) => string): Plan[] {
       perMonth: "€17,50 " + t("paywall.perMonth"),
       popular: true,
       discountLabel: "-30%",
-      discountColor: "#2596be",
+      discountColor: "#d91a68",
     },
     {
       id: "monthly",
@@ -121,7 +121,7 @@ function WebsitePaywall({
             className="rounded-[4px] p-3.5 mb-5 flex items-start gap-3"
             style={{
               backgroundColor: "#F9FAFB",
-              border: "1px solid rgba(37,150,190,0.15)",
+              border: "1px solid rgba(217,26,104,0.15)",
             }}
             data-testid="search-summary-card"
           >
@@ -173,7 +173,7 @@ function WebsitePaywall({
                   className="w-full text-left transition-colors"
                   style={{
                     borderBottom: !isLast ? `1px solid ${OBW.cardBorder}` : "none",
-                    backgroundColor: isSelected ? "rgba(37,150,190,0.04)" : "#ffffff",
+                    backgroundColor: isSelected ? "rgba(217,26,104,0.04)" : "#ffffff",
                     padding: plan.popular ? "20px 16px 16px 16px" : "16px 16px",
                   }}
                   data-testid={`card-plan-${plan.id}`}
@@ -222,7 +222,7 @@ function WebsitePaywall({
           className="w-full h-[52px] rounded-[10px] text-[15px] font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2.5 mb-6"
           style={{
             background: OBW.pink,
-            boxShadow: "0 4px 14px rgba(37,150,190,0.25)",
+            boxShadow: "0 4px 14px rgba(217,26,104,0.2)",
           }}
           data-testid="button-select-payment"
         >

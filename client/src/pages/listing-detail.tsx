@@ -426,7 +426,7 @@ export default function ListingDetailPage() {
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowBlockModal(false)}>
           <div className="bg-white w-full max-w-[400px] rounded-t-[20px] sm:rounded-[20px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
             <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 rounded-full bg-[#EDF7FB] flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-[#FDF1F6] flex items-center justify-center">
                 <ShieldBan className="w-6 h-6 text-ha-primary" />
               </div>
             </div>

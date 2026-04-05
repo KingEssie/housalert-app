@@ -176,7 +176,7 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
             data-testid="card-referral-promo"
           >
             <div className="flex items-center gap-3.5">
-              <div className="w-10 h-10 rounded-full bg-[#EDF7FB] flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-full bg-[#FDF1F6] flex items-center justify-center flex-shrink-0">
                 <Gift className="w-5 h-5 text-[#111111]" />
               </div>
               <div className="flex-1 min-w-0">

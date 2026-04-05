@@ -8,9 +8,11 @@ A mobile-first rental alert application for the German market. Users can sign up
 - **theme.ts**: `client/src/lib/theme.ts` — direct hex color values, no CSS variable indirection.
 
 ### Colors
-- **Primary accent**: `#2596be` (brand blue) — all CTAs, active states, links, badges
-- **Primary hover**: `#1E7FA3`
-- **Primary light tint**: `#EDF7FB` (icon circles, highlights)
+- **Primary accent**: `#d91a68` (brand pink) — all CTAs, active states, links, badges
+- **Primary hover**: `#b31556`
+- **Primary light tint**: `#FDF1F6` (icon circles, highlights)
+- **Primary border**: `rgba(217, 26, 104, 0.3)`
+- **Primary shadow**: `rgba(217, 26, 104, 0.2)`
 - **Text**: Primary `#111111`, Secondary `#6B7280`, Muted `#9CA3AF`
 - **Surfaces**: Background `#FFFFFF`, Subtle surface `#F9FAFB`, Border `#E5E7EB`, Divider `#F0F0F0`
 - **Status**: Success `#16A34A`, Error `#DC2626`, Warning `#F59E0B`

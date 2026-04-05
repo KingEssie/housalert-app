@@ -256,7 +256,7 @@ export default function OnboardingLocation() {
                     className="px-4 py-2.5 rounded-full text-[14px] font-medium transition-all"
                     style={{
                       border: active
-                        ? "1.5px solid rgba(37,150,190,0.6)"
+                        ? "1.5px solid rgba(217,26,104,0.6)"
                         : `1px solid ${OBW.chipBorder}`,
                       backgroundColor: active ? OB.selectedBg : "transparent",
                       color: active ? OB.pink : (OBW.text),

@@ -15,15 +15,15 @@ export const OB = {
   textMuted: "#9CA3AF",
   pink: "rgb(var(--ha-primary))",
   pinkHover: "rgb(var(--ha-primary-hover))",
-  pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, #1E7FA3 100%)",
-  pinkShadow: "0 4px 15px rgba(37,150,190,0.3)",
+  pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, #b31556 100%)",
+  pinkShadow: "0 4px 15px rgba(217,26,104,0.2)",
   surface: "#FFFFFF",
   divider: "#E5E7EB",
   progressInactive: "#E5E7EB",
   backBtnBg: "#FFFFFF",
-  selectedBg: "rgba(37,150,190,0.08)",
+  selectedBg: "rgba(217,26,104,0.08)",
   selectedBorder: "rgb(var(--ha-primary))",
-  accentBg: "rgba(37,150,190,0.06)",
+  accentBg: "rgba(217,26,104,0.06)",
   greenBg: "rgb(var(--ha-success) / 0.08)",
   greenBorder: "rgb(var(--ha-success) / 0.2)",
   redBg: "rgba(220,38,38,0.08)",
@@ -43,15 +43,15 @@ export const OBW = {
   textMuted: "#9CA3AF",
   pink: "rgb(var(--ha-primary))",
   pinkHover: "rgb(var(--ha-primary-hover))",
-  pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, #1E7FA3 100%)",
-  pinkShadow: "0 4px 15px rgba(37,150,190,0.3)",
+  pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, #b31556 100%)",
+  pinkShadow: "0 4px 15px rgba(217,26,104,0.2)",
   surface: "#FFFFFF",
   divider: "#E5E7EB",
   progressInactive: "#E5E7EB",
   backBtnBg: "#FFFFFF",
-  selectedBg: "rgba(37,150,190,0.08)",
+  selectedBg: "rgba(217,26,104,0.08)",
   selectedBorder: "rgb(var(--ha-primary))",
-  accentBg: "rgba(37,150,190,0.06)",
+  accentBg: "rgba(217,26,104,0.06)",
   greenBg: "rgb(var(--ha-success) / 0.08)",
   greenBorder: "rgb(var(--ha-success) / 0.2)",
   redBg: "rgba(220,38,38,0.08)",
@@ -60,7 +60,7 @@ export const OBW = {
   footerBorder: "#E5E7EB",
   backBtnBorder: "#E5E7EB",
   backBtnColor: "#111111",
-  badgeBg: "rgba(37,150,190,0.08)",
+  badgeBg: "rgba(217,26,104,0.08)",
   badgeColor: "rgb(var(--ha-primary))",
   closeBtnBg: "#F7F7F7",
   closeBtnColor: "#6B7280",
@@ -189,7 +189,7 @@ export function OBWebFooter({
           onClick={onNext}
           disabled={nextDisabled || saving}
           className="min-w-[120px] px-6 h-[44px] rounded-[4px] text-[14px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-1.5 shrink-0"
-          style={{ background: OBW.pink, boxShadow: nextDisabled ? "none" : "0 4px 14px rgba(37,150,190,0.25)" }}
+          style={{ background: OBW.pink, boxShadow: nextDisabled ? "none" : "0 4px 14px rgba(217,26,104,0.2)" }}
           data-testid={nextTestId || "button-next"}
         >
           {saving && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -280,7 +280,7 @@ export function OBFooter({
             onClick={onNext}
             disabled={nextDisabled || saving}
             className="flex-1 ha-btn text-white font-semibold disabled:opacity-40"
-            style={{ background: OB.pink, boxShadow: "0 8px 20px rgba(37,150,190,0.25)" }}
+            style={{ background: OB.pink, boxShadow: "0 8px 20px rgba(217,26,104,0.2)" }}
             data-testid={nextTestId || "button-next"}
           >
             {saving && <Loader2 className="w-4 h-4 animate-spin mr-1" />}

@@ -113,7 +113,7 @@ export function ListingCardFull({
           onClick={handleHeartClick}
           className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-all duration-200"
           style={{
-            backgroundColor: isFavorited ? "#2596be" : "rgba(0,0,0,0.35)",
+            backgroundColor: isFavorited ? "#d91a68" : "rgba(0,0,0,0.35)",
             backdropFilter: isFavorited ? "none" : "blur(4px)",
           }}
           data-testid={`button-favorite-${match.listing_id}`}
