@@ -38,6 +38,7 @@ import {
   MapPin,
   X,
   Check,
+  Image,
 } from "lucide-react";
 import { ExpandableCompletionCard, type CompletionStep } from "@/components/expandable-completion-card";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
@@ -1871,6 +1872,23 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               ))}
             </div>
           </div>
+
+          {(user?.email?.toLowerCase() === "martin.essie87@gmail.com") && (
+            <div>
+              <SectionTitle>Admin</SectionTitle>
+              <div className="rounded-[14px] bg-white border border-[#F0F0F0] overflow-hidden">
+                <button
+                  onClick={() => navigate("/admin/image-audit")}
+                  className="w-full flex items-center gap-3 h-[50px] px-4 text-left active:bg-[#F9FAFB] transition-colors"
+                  data-testid="button-admin-image-audit"
+                >
+                  <Image className="w-[18px] h-[18px] text-[#9CA3AF]" />
+                  <p className="text-[15px] font-medium text-[#111111] flex-1">Beeldkwaliteit listings</p>
+                  <ChevronRight className="w-4 h-4 text-[#D1D5DB] flex-shrink-0" />
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* 8. Uitloggen */}
           <button
