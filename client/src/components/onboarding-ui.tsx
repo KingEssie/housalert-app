@@ -6,7 +6,7 @@ export const OB = {
   gradient: "#ffffff",
   headerBg: "#ffffff",
   headerBorder: "#E5E7EB",
-  card: "#F7F7F7",
+  card: "#FFFFFF",
   cardBorder: "#E5E7EB",
   inputBg: "#ffffff",
   inputBorder: "#E5E7EB",
@@ -17,10 +17,10 @@ export const OB = {
   pinkHover: "rgb(var(--ha-primary-hover))",
   pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, #D70466 100%)",
   pinkShadow: "0 4px 15px rgba(255,56,92,0.3)",
-  surface: "#F7F7F7",
+  surface: "#FFFFFF",
   divider: "#E5E7EB",
   progressInactive: "#E5E7EB",
-  backBtnBg: "#F7F7F7",
+  backBtnBg: "#FFFFFF",
   selectedBg: "rgba(255,56,92,0.08)",
   selectedBorder: "rgb(var(--ha-primary))",
   accentBg: "rgba(255,56,92,0.06)",
@@ -34,7 +34,7 @@ export const OBW = {
   gradient: "#ffffff",
   headerBg: "#ffffff",
   headerBorder: "#E5E7EB",
-  card: "#F7F7F7",
+  card: "#FFFFFF",
   cardBorder: "#E5E7EB",
   inputBg: "#ffffff",
   inputBorder: "#E5E7EB",
@@ -45,10 +45,10 @@ export const OBW = {
   pinkHover: "rgb(var(--ha-primary-hover))",
   pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, #D70466 100%)",
   pinkShadow: "0 4px 15px rgba(255,56,92,0.3)",
-  surface: "#F7F7F7",
+  surface: "#FFFFFF",
   divider: "#E5E7EB",
   progressInactive: "#E5E7EB",
-  backBtnBg: "#F7F7F7",
+  backBtnBg: "#FFFFFF",
   selectedBg: "rgba(255,56,92,0.08)",
   selectedBorder: "rgb(var(--ha-primary))",
   accentBg: "rgba(255,56,92,0.06)",
@@ -204,7 +204,7 @@ export function OBInfoBox({ children }: { children: React.ReactNode }) {
   return (
     <div
       className="rounded-[4px] p-3.5 flex items-start gap-2.5"
-      style={{ backgroundColor: "#F7F7F7", border: "1px solid #E5E7EB" }}
+      style={{ backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB" }}
     >
       <Info className="w-[15px] h-[15px] shrink-0 mt-[1px]" style={{ color: "rgb(var(--ha-primary))" }} />
       <div className="text-[13px] leading-[1.55]" style={{ color: "rgb(var(--ha-primary))" }}>

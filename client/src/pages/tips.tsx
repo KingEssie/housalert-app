@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  MessageSquare,
   FileText,
   FolderOpen,
   TrendingUp,
@@ -8,6 +7,12 @@ import {
   ChevronRight,
   CheckCircle2,
   Gift,
+  Wallet,
+  Globe,
+  Building2,
+  Users,
+  Eye,
+  Send,
 } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import { useQuery } from "@tanstack/react-query";
@@ -16,11 +21,14 @@ import { apiFetch } from "@/lib/api-base";
 import { ReferralCodeModal } from "@/components/referral-code-modal";
 
 export const TIP_IDS = [
-  "reageren",
-  "bezichtiging",
-  "kansen",
-  "documenten",
-  "introductiebrief",
+  "dokumente",
+  "finanzen",
+  "reaktion",
+  "plattformen",
+  "neubau",
+  "netzwerk",
+  "besichtigung",
+  "followup",
 ] as const;
 
 export type TipId = (typeof TIP_IDS)[number];
@@ -57,55 +65,66 @@ export function getTipsProgress(): { read: number; total: number } {
 export function getTipConfig(t: (key: string) => string) {
   return [
     {
-      id: "reageren" as TipId,
-      icon: MessageSquare,
-      title: t("tips.guide.reageren"),
-      description: t("tips.guideDesc.reageren"),
-      route: "/tips/flow",
-    },
-    {
-      id: "bezichtiging" as TipId,
-      icon: TrendingUp,
-      title: t("tips.guide.bezichtiging"),
-      description: t("tips.guideDesc.bezichtiging"),
-      route: "/tips/flow",
-    },
-    {
-      id: "kansen" as TipId,
-      icon: TrendingUp,
-      title: t("tips.guide.kansen"),
-      description: t("tips.guideDesc.kansen"),
-      route: "/tips/flow",
-    },
-    {
-      id: "documenten" as TipId,
+      id: "dokumente" as TipId,
       icon: FolderOpen,
-      title: t("tips.guide.documenten"),
-      description: t("tips.guideDesc.documenten"),
+      title: t("tips.guide.dokumente"),
+      description: t("tips.guideDesc.dokumente"),
       route: "/tips/flow",
     },
     {
-      id: "introductiebrief" as TipId,
+      id: "finanzen" as TipId,
+      icon: Wallet,
+      title: t("tips.guide.finanzen"),
+      description: t("tips.guideDesc.finanzen"),
+      route: "/tips/flow",
+    },
+    {
+      id: "reaktion" as TipId,
       icon: PenTool,
-      title: t("tips.guide.introductiebrief"),
-      description: t("tips.guideDesc.introductiebrief"),
-      route: "/application-letter?from=tips",
+      title: t("tips.guide.reaktion"),
+      description: t("tips.guideDesc.reaktion"),
+      route: "/tips/flow",
+    },
+    {
+      id: "plattformen" as TipId,
+      icon: Globe,
+      title: t("tips.guide.plattformen"),
+      description: t("tips.guideDesc.plattformen"),
+      route: "/tips/flow",
+    },
+    {
+      id: "neubau" as TipId,
+      icon: Building2,
+      title: t("tips.guide.neubau"),
+      description: t("tips.guideDesc.neubau"),
+      route: "/tips/flow",
+    },
+    {
+      id: "netzwerk" as TipId,
+      icon: Users,
+      title: t("tips.guide.netzwerk"),
+      description: t("tips.guideDesc.netzwerk"),
+      route: "/tips/flow",
+    },
+    {
+      id: "besichtigung" as TipId,
+      icon: Eye,
+      title: t("tips.guide.besichtigung"),
+      description: t("tips.guideDesc.besichtigung"),
+      route: "/tips/flow",
+    },
+    {
+      id: "followup" as TipId,
+      icon: Send,
+      title: t("tips.guide.followup"),
+      description: t("tips.guideDesc.followup"),
+      route: "/tips/flow",
     },
   ];
 }
 
-const FLOW_TIP_MAPPING: Record<TipId, string[]> = {
-  reageren: ["reaktion"],
-  bezichtiging: ["besichtigung"],
-  kansen: ["plattformen", "neubau", "netzwerk"],
-  documenten: ["dokumente", "finanzen"],
-  introductiebrief: [],
-};
-
 function isTipCompleted(tipId: TipId, readSet: Set<string>): boolean {
-  if (readSet.has(tipId)) return true;
-  const mapped = FLOW_TIP_MAPPING[tipId] || [];
-  return mapped.length > 0 && mapped.some((id) => readSet.has(id));
+  return readSet.has(tipId);
 }
 
 export default function TipsPage({ navigate }: { navigate: (path: string) => void }) {

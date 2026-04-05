@@ -230,7 +230,7 @@ export default function OnboardingPassword() {
             <div
               className="rounded-[4px] p-3.5 mb-4 flex items-start gap-3"
               style={{
-                backgroundColor: "#F7F7F7",
+                backgroundColor: "#FFFFFF",
                 border: `1px solid rgba(255,56,92,0.15)`,
               }}
               data-testid="search-summary-card"

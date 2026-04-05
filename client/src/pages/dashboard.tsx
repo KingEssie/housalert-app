@@ -239,10 +239,10 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
             >
               <span className="w-2 h-2 rounded-full bg-ha-success flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-[14px] font-semibold text-[#111111] line-clamp-1" data-testid={`text-profile-title-${p.id}`}>
+                <p className="text-[14px] font-semibold text-[#111111]" data-testid={`text-profile-title-${p.id}`}>
                   {getProfileTitle(p, t, locale)}
                 </p>
-                <p className="text-[12px] text-[#9CA3AF] mt-0.5 line-clamp-1" data-testid={`text-profile-summary-${p.id}`}>
+                <p className="text-[12px] text-[#9CA3AF] mt-0.5" data-testid={`text-profile-summary-${p.id}`}>
                   {getProfileSummary(p, t)}
                 </p>
               </div>
@@ -773,7 +773,8 @@ function HomeTab({
     },
     enabled: !!accessToken,
   });
-  const firstName = profileDataQuery.data?.first_name || null;
+  const rawFirstName = profileDataQuery.data?.first_name || null;
+  const firstName = rawFirstName ? rawFirstName.split(" ")[0] : null;
   const [referralModalOpen, setReferralModalOpen] = useState(false);
 
   const { data: referralData, isLoading: referralLoading } = useQuery<{

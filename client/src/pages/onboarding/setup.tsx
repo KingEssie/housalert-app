@@ -104,7 +104,7 @@ function SetupShell({
             <button
               onClick={onBack}
               className="w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-transform"
-              style={{ backgroundColor: "#F7F7F7" }}
+              style={{ backgroundColor: "#F5F5F5" }}
               data-testid="button-setup-back"
             >
               <ChevronLeft className="w-5 h-5" style={{ color: "#6B7280" }} />
@@ -351,7 +351,7 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
         </button>
       </div>
 
-      <div className="mt-4 rounded-[6px] p-4" style={{ backgroundColor: "#F7F7F7", border: "1px solid #E5E7EB" }}>
+      <div className="mt-4 rounded-[6px] p-4" style={{ backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB" }}>
         <p className="text-[14px] font-bold mb-1" style={{ color: "#111111" }}>
           {t("onboardingFlow.limitedAccess.infoTitle")}
         </p>
@@ -377,7 +377,7 @@ function LightShell({
   topContent?: React.ReactNode;
 }) {
   return (
-    <div className="min-h-[100dvh] flex flex-col" style={{ backgroundColor: "#F7F7F7" }} data-testid={`setup-step-${step}`}>
+    <div className="min-h-[100dvh] flex flex-col" style={{ backgroundColor: "#FFFFFF" }} data-testid={`setup-step-${step}`}>
       <header className="sticky top-0 z-20 border-b" style={{ backgroundColor: "#ffffff", borderColor: "#E5E7EB" }}>
         <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
           {showBack && onBack ? (
@@ -435,12 +435,12 @@ function WelcomeStep({ onNext, t }: {
       </h1>
 
       <div className="rounded-[6px] bg-white p-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-        <div className="relative rounded-[6px] px-5 py-5 mb-5" style={{ backgroundColor: "#F7F7F7" }}>
+        <div className="relative rounded-[6px] px-5 py-5 mb-5" style={{ backgroundColor: "#FFFFFF" }}>
           <p className="text-[17px] font-bold text-[#111111] mb-3">Welkom!</p>
           <p className="text-[15px] leading-[1.65] text-[#111111]" style={{ whiteSpace: "pre-line" }}>
             {t("onboardingFlow.welcome.speechBody")}
           </p>
-          <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45" style={{ backgroundColor: "#F7F7F7" }} />
+          <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45" style={{ backgroundColor: "#FFFFFF" }} />
         </div>
 
         <div className="flex items-center gap-3 pt-1">
@@ -491,7 +491,7 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
         )}
 
         {pushState === "denied" && (
-          <div className="rounded-[6px] px-4 py-3 mb-5 flex items-start gap-3" style={{ backgroundColor: "#F7F7F7", border: "1px solid #F7F7F7" }}>
+          <div className="rounded-[6px] px-4 py-3 mb-5 flex items-start gap-3" style={{ backgroundColor: "#FFFFFF", border: "1px solid #FFFFFF" }}>
             <AlertTriangle className="w-5 h-5 text-[#6B7280] flex-shrink-0 mt-0.5" />
             <div>
               <p className="text-[14px] font-medium text-[#111111] mb-1">{t("onboardingFlow.pushTest.denied")}</p>
@@ -501,7 +501,7 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
         )}
 
         {pushState !== "granted" && pushState !== "denied" && (
-          <div className="rounded-[6px] px-4 py-3 mb-5" style={{ backgroundColor: "#F7F7F7" }}>
+          <div className="rounded-[6px] px-4 py-3 mb-5" style={{ backgroundColor: "#FFFFFF" }}>
             <p className="text-[13px] text-[#6B7280] leading-snug">
               {t("onboardingFlow.pushTest.idleHint")}
             </p>
@@ -510,7 +510,7 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
 
         <div className="flex items-center justify-center py-8">
           <div className="relative">
-            <div className="w-[240px] h-[140px] rounded-[--ha-card-radius] overflow-hidden" style={{ background: "#F7F7F7", border: "1px solid #E5E7EB" }}>
+            <div className="w-[240px] h-[140px] rounded-[--ha-card-radius] overflow-hidden" style={{ background: "#FFFFFF", border: "1px solid #E5E7EB" }}>
               <div className="absolute top-3 left-3 flex items-center gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: BRAND }} />
                 <div className="h-2 w-14 rounded-full bg-[#E5E7EB]" />
@@ -590,14 +590,14 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
         </h1>
 
         <div className="rounded-[6px] bg-white p-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-          <div className="relative rounded-[6px] px-5 py-5 mb-5" style={{ backgroundColor: "#F7F7F7" }}>
+          <div className="relative rounded-[6px] px-5 py-5 mb-5" style={{ backgroundColor: "#FFFFFF" }}>
             <p className="text-[17px] font-bold text-[#111111] mb-3">
               {t("onboardingFlow.letterPersonal.speechTitle")}
             </p>
             <p className="text-[15px] leading-[1.65] text-[#111111]" style={{ whiteSpace: "pre-line" }}>
               {t("onboardingFlow.letterPersonal.speechBody")}
             </p>
-            <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45" style={{ backgroundColor: "#F7F7F7" }} />
+            <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45" style={{ backgroundColor: "#FFFFFF" }} />
           </div>
 
           <div className="flex items-center gap-3 pt-1">
@@ -869,7 +869,7 @@ function LetterPreviewStep({ letterText, onLetterChange, onNext, onBack, t }: {
         {t("onboardingFlow.letterPreview.title")}
       </h1>
 
-      <div className="rounded-[6px] px-4 py-3 mb-5 flex items-start gap-2.5" style={{ backgroundColor: "#F7F7F7", border: "1px solid #F7F7F7" }}>
+      <div className="rounded-[6px] px-4 py-3 mb-5 flex items-start gap-2.5" style={{ backgroundColor: "#FFFFFF", border: "1px solid #FFFFFF" }}>
         <span className="text-[16px] mt-0.5">💡</span>
         <p className="text-[13px] leading-snug text-[#111111]">
           {t("onboardingFlow.letterPreview.addressNote")}
@@ -1008,14 +1008,14 @@ function SuccessStep({ onFinish, t }: {
       </h1>
 
       <div className="rounded-[6px] bg-white p-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-        <div className="relative rounded-[6px] px-5 py-5 mb-5" style={{ backgroundColor: "#F7F7F7" }}>
+        <div className="relative rounded-[6px] px-5 py-5 mb-5" style={{ backgroundColor: "#FFFFFF" }}>
           <p className="text-[16px] font-bold text-[#111111] mb-3">
             {t("onboardingFlow.success.speechTitle")}
           </p>
           <p className="text-[14px] leading-[1.65] text-[#111111]" style={{ whiteSpace: "pre-line" }}>
             {t("onboardingFlow.success.speechBody")}
           </p>
-          <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45" style={{ backgroundColor: "#F7F7F7" }} />
+          <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45" style={{ backgroundColor: "#FFFFFF" }} />
         </div>
 
         <div className="flex items-center gap-3 pt-1">

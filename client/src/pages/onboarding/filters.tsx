@@ -842,7 +842,7 @@ export default function OnboardingFilters() {
           <button
             onClick={handleClose}
             className="w-8 h-8 rounded-full flex items-center justify-center active:scale-95 transition-transform"
-            style={{ backgroundColor: "#F7F7F7" }}
+            style={{ backgroundColor: "#FFFFFF" }}
             data-testid="button-filters-close"
           >
             <X className="w-4 h-4" style={{ color: T.textSecondary }} />

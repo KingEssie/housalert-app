@@ -96,7 +96,7 @@ export default function OnboardingIntro() {
               className="w-[56px] h-[56px] rounded-[6px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
               style={{
                 border: "1.5px solid #E5E7EB",
-                backgroundColor: "#F7F7F7",
+                backgroundColor: "#FFFFFF",
               }}
               data-testid="button-intro-back"
             >
