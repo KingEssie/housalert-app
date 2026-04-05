@@ -1,0 +1,119 @@
+Set up Resend completely and correctly for production-safe sending using the already configured Replit Secrets.
+
+IMPORTANT:
+	•	The Replit Secrets are already set
+	•	Do NOT ask me to add them again
+	•	Do NOT hardcode API keys or email addresses in code
+	•	Use the environment variables only
+	•	Keep business logic intact
+	•	Prepare everything for one controlled live email test
+
+GOAL:
+Use these exact env vars already present in Replit:
+
+RESEND_API_KEY
+RESEND_FROM_EMAIL=alerts@housalert.com
+RESEND_REPLY_TO=no-reply@housalert.com
+
+==================================================
+	1.	USE CENTRALIZED EMAIL CONFIG
+==================================================
+
+Create or update a single shared email config/helper so ALL outgoing emails use:
+
+from: HousAlert <${process.env.RESEND_FROM_EMAIL}>
+reply_to: process.env.RESEND_REPLY_TO
+
+No hardcoded sender values may remain anywhere in the codebase.
+
+==================================================
+2. REMOVE ALL HARDCODED EMAIL SETTINGS
+
+Search the entire codebase and remove/replace any hardcoded:
+	•	from email addresses
+	•	reply_to email addresses
+	•	Resend API key usage that does not use env vars
+
+Everything must use the centralized config/helper.
+
+==================================================
+3. VALIDATE REQUIRED ENV VARS
+
+Before any real email send happens, validate:
+	•	RESEND_API_KEY exists
+	•	RESEND_FROM_EMAIL exists
+	•	RESEND_REPLY_TO exists
+
+If one is missing:
+	•	fail clearly with a readable error
+	•	do NOT silently continue
+	•	do NOT partially send
+
+==================================================
+4. KEEP EMAIL TEST MODE SAFE
+
+Do NOT immediately turn on broad live sending.
+
+If EMAIL_TEST_MODE already exists:
+	•	keep it in place
+	•	do not remove the test-mode logic
+	•	make sure test mode and real mode both use the same centralized sender config
+
+==================================================
+5. ADD ONE ADMIN-ONLY REAL TEST EMAIL ACTION
+
+Create or confirm one admin-only endpoint/action that sends exactly ONE real test email to:
+
+martin.essie87@gmail.com
+
+This real test email must:
+	•	use the actual Resend API
+	•	use the centralized sender config
+	•	not involve buddies
+	•	not involve match alerts
+	•	not involve bulk sending
+
+Use:
+Subject: HousAlert email test
+Body: This is a controlled production email test.
+
+==================================================
+6. MAKE THE TEST EASY TO RUN
+
+The admin-only test should be easy to trigger:
+	•	either via endpoint
+	•	or via a simple admin button in the admin portal
+
+If an endpoint is used, clearly state:
+	•	route
+	•	method
+	•	any auth requirement
+
+==================================================
+7. LOGGING
+
+For the controlled live test email only, add clear logs:
+	•	sender used
+	•	reply_to used
+	•	destination email
+	•	whether Resend accepted the send
+
+Do NOT expose secrets in logs.
+
+==================================================
+8. DO NOT CHANGE
+	•	Do NOT change the existing match-email business logic
+	•	Do NOT change buddy logic
+	•	Do NOT change routing
+	•	Do NOT redesign UI except a tiny admin button if needed
+
+==================================================
+9. OUTPUT
+
+After finishing, provide:
+	1.	where the centralized sender config lives
+	2.	whether all hardcoded sender/reply-to values were removed
+	3.	how env validation works
+	4.	how to run the one real admin-only test email
+	5.	whether EMAIL_TEST_MODE still remains available
+	6.	which files were changed

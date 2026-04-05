@@ -3653,29 +3653,17 @@ export async function registerRoutes(
       const adminUser = (req as any).adminUser;
       const targetEmail = req.body?.email || "martin.essie87@gmail.com";
 
-      log(`[EMAIL TEST] Admin ${adminUser.email} triggering test email to ${targetEmail}`);
+      log(`[EMAIL TEST] Admin ${adminUser.email} triggering controlled test email to ${targetEmail}`);
 
-      const testListing = {
-        title: "Modern apartment in Berlin",
-        city: "Berlin",
-        price: 1200,
-        bedrooms: 2,
-        size_m2: 65,
-        url: "https://example.com",
-        image_url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=400&fit=crop",
-      };
+      const { sendControlledTestEmail } = await import("./email");
+      const result = await sendControlledTestEmail(targetEmail);
 
-      const { sendMatchAlert } = await import("./email");
-      const { getUserLanguage } = await import("./notifications/buffer");
-      const adminLang = await getUserLanguage(adminUser.id);
-      const success = await sendMatchAlert(targetEmail, testListing, adminLang);
-
-      if (success) {
-        log(`[EMAIL TEST] Test email sent successfully to ${targetEmail} lang=${adminLang}`);
-        return res.json({ success: true, sentTo: targetEmail, from: "HousAlert <new@housalert.com>", message: "Test email sent successfully" });
+      if (result.success) {
+        log(`[EMAIL TEST] Controlled test email accepted by Resend — to=${targetEmail} resend_id=${result.resendId}`);
+        return res.json(result);
       } else {
-        log(`[EMAIL TEST] Test email FAILED to ${targetEmail}`);
-        return res.status(500).json({ success: false, sentTo: targetEmail, message: "Email send returned false — check Resend logs" });
+        log(`[EMAIL TEST] Controlled test email FAILED — to=${targetEmail} error=${result.error}`);
+        return res.status(500).json(result);
       }
     } catch (err: any) {
       log(`[EMAIL TEST] Error: ${err.message}`);
@@ -3978,19 +3966,9 @@ export async function registerRoutes(
         const targetEmail = req.body?.email || "martin.essie87@gmail.com";
         log(`[DEV EMAIL TEST] Sending test email to ${targetEmail}`);
 
-        const { sendMatchAlert } = await import("./email");
-        const testListing = {
-          title: "Modern apartment in Berlin",
-          city: "Berlin",
-          price: 1200,
-          bedrooms: 2,
-          size_m2: 65,
-          url: "https://example.com",
-          image_url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=400&fit=crop",
-        };
-
-        const success = await sendMatchAlert(targetEmail, testListing, "de");
-        return res.json({ success, sentTo: targetEmail, from: "HousAlert <new@housalert.com>" });
+        const { sendControlledTestEmail } = await import("./email");
+        const result = await sendControlledTestEmail(targetEmail);
+        return res.json(result);
       } catch (err: any) {
         log(`[DEV EMAIL TEST] Error: ${err.message}`);
         return res.status(500).json({ success: false, error: err.message });

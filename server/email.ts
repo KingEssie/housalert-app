@@ -3,6 +3,28 @@ import { createHmac } from "crypto";
 import { log } from "./log";
 import { t, type ServerLocale } from "./i18n";
 
+function getEmailConfig() {
+  const fromEmail = process.env.RESEND_FROM_EMAIL;
+  const replyTo = process.env.RESEND_REPLY_TO;
+  const apiKey = process.env.RESEND_API_KEY;
+
+  if (!apiKey) {
+    throw new Error("[EMAIL CONFIG] RESEND_API_KEY is not set — cannot send emails");
+  }
+  if (!fromEmail) {
+    throw new Error("[EMAIL CONFIG] RESEND_FROM_EMAIL is not set — cannot send emails");
+  }
+  if (!replyTo) {
+    throw new Error("[EMAIL CONFIG] RESEND_REPLY_TO is not set — cannot send emails");
+  }
+
+  return {
+    from: `HousAlert <${fromEmail}>`,
+    replyTo,
+    apiKey,
+  };
+}
+
 interface FinalSendParams {
   to: string;
   subject: string;
@@ -13,6 +35,7 @@ interface FinalSendParams {
 
 async function finalEmailDispatch(client: Resend, params: FinalSendParams, category: string = "unknown"): Promise<{ data: any; error: any }> {
   const recipient = params.to.toLowerCase();
+  const config = getEmailConfig();
 
   let testMode = false;
   try {
@@ -21,14 +44,15 @@ async function finalEmailDispatch(client: Resend, params: FinalSendParams, categ
   } catch {}
 
   if (testMode) {
-    log(`[EMAIL TEST MODE] INTERCEPTED — would send to=${recipient} category=${category} subject="${params.subject.substring(0, 60)}" — NOT sending (test mode)`);
+    log(`[EMAIL TEST MODE] INTERCEPTED — would send to=${recipient} from="${config.from}" reply_to="${config.replyTo}" category=${category} subject="${params.subject.substring(0, 60)}" — NOT sending (test mode)`);
     return { data: { id: `test-mode-${Date.now()}` }, error: null };
   }
 
-  log(`[FINAL SEND DISPATCH] recipient=${recipient} category=${category} subject="${params.subject.substring(0, 60)}" result=SEND`);
+  log(`[FINAL SEND DISPATCH] recipient=${recipient} from="${config.from}" reply_to="${config.replyTo}" category=${category} subject="${params.subject.substring(0, 60)}" result=SEND`);
 
   return client.emails.send({
-    from: VERIFIED_FROM,
+    from: config.from,
+    reply_to: config.replyTo,
     to: params.to,
     subject: params.subject,
     text: params.text,
@@ -46,8 +70,6 @@ interface ListingInfo {
   url?: string | null;
   image_url?: string | null;
 }
-
-const VERIFIED_FROM = "HousAlert <new@housalert.com>";
 
 const C = {
   white: "#FFFFFF",
@@ -85,43 +107,9 @@ function sanitizeUrl(url: string | null | undefined): string | null {
   }
 }
 
-let connectionSettings: any;
-
-async function getCredentials() {
-  const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
-  const xReplitToken = process.env.REPL_IDENTITY
-    ? "repl " + process.env.REPL_IDENTITY
-    : process.env.WEB_REPL_RENEWAL
-    ? "depl " + process.env.WEB_REPL_RENEWAL
-    : null;
-
-  if (!xReplitToken) {
-    throw new Error("X-Replit-Token not found for repl/depl");
-  }
-
-  connectionSettings = await fetch(
-    "https://" + hostname + "/api/v2/connection?include_secrets=true&connector_names=resend",
-    {
-      headers: {
-        Accept: "application/json",
-        "X-Replit-Token": xReplitToken,
-      },
-    }
-  )
-    .then((res) => res.json())
-    .then((data: any) => data.items?.[0]);
-
-  if (!connectionSettings || !connectionSettings.settings.api_key) {
-    throw new Error("Resend not connected");
-  }
-  return {
-    apiKey: connectionSettings.settings.api_key,
-  };
-}
-
 async function getResendClient() {
-  const { apiKey } = await getCredentials();
-  return new Resend(apiKey);
+  const config = getEmailConfig();
+  return new Resend(config.apiKey);
 }
 
 function formatPrice(price: number): string {
@@ -313,7 +301,8 @@ export async function sendMatchAlert(
 <p style="margin:0 0 16px;font-size:14px;color:${C.muted};line-height:1.5;">${escapeHtml(t(lang, "email.matchFound"))}</p>
 ${listingCard(listing, true, undefined, lang)}`;
 
-    log(`[EMAIL SEND] from="${VERIFIED_FROM}" to="${userEmail}" subject="${subject}" lang=${lang} image=${listing.image_url ? listing.image_url.substring(0, 80) : "NO_IMAGE"}`);
+    const senderConfig = getEmailConfig();
+    log(`[EMAIL SEND] from="${senderConfig.from}" reply_to="${senderConfig.replyTo}" to="${userEmail}" subject="${subject}" lang=${lang} image=${listing.image_url ? listing.image_url.substring(0, 80) : "NO_IMAGE"}`);
 
     const { data, error } = await finalEmailDispatch(client, {
       to: userEmail,
@@ -378,7 +367,8 @@ export async function sendBatchMatchAlert(
 ${htmlListings}`;
 
     const imageStats = listings.map((l, i) => `${i + 1}:${l.image_url ? l.image_url.substring(0, 80) : "NO_IMAGE"}`).join(" | ");
-    log(`[EMAIL SEND] batch from="${VERIFIED_FROM}" to="${userEmail}" count=${listings.length} lang=${lang} subject="${subject}"`);
+    const senderConfig = getEmailConfig();
+    log(`[EMAIL SEND] batch from="${senderConfig.from}" reply_to="${senderConfig.replyTo}" to="${userEmail}" count=${listings.length} lang=${lang} subject="${subject}"`);
     log(`[EMAIL IMAGES] ${imageStats}`);
 
     const { data, error } = await finalEmailDispatch(client, {
@@ -477,7 +467,8 @@ export async function sendBuddyInvitationEmail(
     const htmlContent = htmlBodies[lang] || htmlBodies.nl;
     const textBody = textBodies[lang] || textBodies.nl;
 
-    log(`[EMAIL SEND] buddy-invite from="${VERIFIED_FROM}" to="${buddyEmail}" inviter="${inviterName}" lang=${lang}`);
+    const senderConfig = getEmailConfig();
+    log(`[EMAIL SEND] buddy-invite from="${senderConfig.from}" reply_to="${senderConfig.replyTo}" to="${buddyEmail}" inviter="${inviterName}" lang=${lang}`);
 
     const preheaders: Record<ServerLocale, string> = {
       nl: `${inviterName} heeft je toegevoegd als Zoekbuddy`,
@@ -616,4 +607,38 @@ export async function sendPasswordResetEmail(
     log(`[EMAIL ERROR] password-reset to=${email} err=${err.message}`);
     return false;
   }
+}
+
+export async function sendControlledTestEmail(
+  toEmail: string
+): Promise<{ success: boolean; from: string; replyTo: string; to: string; resendId?: string; error?: string }> {
+  const config = getEmailConfig();
+
+  log(`[ADMIN TEST EMAIL] Sending controlled test email — from="${config.from}" reply_to="${config.replyTo}" to="${toEmail}"`);
+
+  const client = await getResendClient();
+
+  const { data, error } = await client.emails.send({
+    from: config.from,
+    reply_to: config.replyTo,
+    to: toEmail,
+    subject: "HousAlert email test",
+    text: "This is a controlled production email test.",
+    html: emailWrapper(
+      `<p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.navy};line-height:1.3;">Email Test</p>
+       <p style="margin:0 0 16px;font-size:15px;color:${C.dark};line-height:1.6;">This is a controlled production email test.</p>
+       <p style="margin:0;font-size:13px;color:${C.muted};line-height:1.6;">If you received this email, your Resend integration is working correctly.</p>`,
+      "HousAlert email test",
+      "en"
+    ),
+  });
+
+  if (error) {
+    log(`[ADMIN TEST EMAIL] FAILED — error=${(error as any).message} statusCode=${(error as any).statusCode || "N/A"}`);
+    return { success: false, from: config.from, replyTo: config.replyTo, to: toEmail, error: (error as any).message };
+  }
+
+  const resendId = (data as any)?.id || "N/A";
+  log(`[ADMIN TEST EMAIL] SUCCESS — resend_id=${resendId} from="${config.from}" reply_to="${config.replyTo}" to="${toEmail}" — Resend accepted the send`);
+  return { success: true, from: config.from, replyTo: config.replyTo, to: toEmail, resendId };
 }
