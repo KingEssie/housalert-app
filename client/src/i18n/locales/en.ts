@@ -99,7 +99,9 @@ export const en: Record<string, any> = {
     matchesWillAppear: "Matches become visible once you activate a subscription.",
     viewSubscriptions: "View subscriptions",
     noMatchesYet: "No matches yet",
+    noMatchesYetTitle: "No matches yet",
     noMatchesDesc: "Once we find matching apartments, they will appear here.",
+    firstMatchesWillAppear: "Once your first matches arrive, they'll appear here.",
     reactionLetterConfigured: "Application letter set up",
     reactionLetterMissing: "No application letter yet",
     zoekbuddyConfigured: "Search buddy set up",
@@ -1436,6 +1438,10 @@ export const en: Record<string, any> = {
     emptyTitle: "Create your first search profile",
     emptySubtitle: "Get matches for city, price and housing preferences.",
     createFirst: "Create search profile",
+    districtsSelected: "{count} districts selected",
+    radiusLabel: "Radius: {km} km",
+    travelTimeLabel: "Travel time: {mins} min",
+    priceDefault: "€0 – €5,000+",
   },
 
   funnel: {

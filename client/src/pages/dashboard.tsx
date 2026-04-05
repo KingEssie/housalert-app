@@ -165,19 +165,28 @@ function getProfileTitle(p: SearchProfile, t: (key: string, params?: Record<stri
   return t("searchProfiles.cityTitle", { city });
 }
 
-function getProfileSummary(p: SearchProfile, t: (key: string, params?: Record<string, string | number>) => string): string {
+function getProfilePriceLine(p: SearchProfile, t: (key: string, params?: Record<string, string | number>) => string): string {
   const parts: string[] = [];
   if (p.price_min > 0 && p.price_max > 0) parts.push(`€${p.price_min} – €${p.price_max}`);
   else if (p.price_max > 0) parts.push(`${t("searchProfiles.max")} €${p.price_max}`);
   else if (p.price_min > 0) parts.push(`${t("searchProfiles.min")} €${p.price_min}`);
-  else parts.push("€0 – €5.000+");
+  else parts.push(t("searchProfiles.priceDefault"));
   if (p.bedrooms_min > 0) parts.push(`${p.bedrooms_min}+ ${t("searchProfiles.bedrooms")}`);
   if (p.size_min > 0) parts.push(`${p.size_min}+ m²`);
-  if ((p as any).property_type) {
-    const typeLabel = (p as any).property_type === "house" ? t("onboarding.filters.house") : "";
-    if (typeLabel) parts.push(typeLabel);
-  }
   return parts.join(" · ");
+}
+
+function getProfileLocationLine(p: SearchProfile, t: (key: string, params?: Record<string, string | number>) => string): string | null {
+  if (p.location_mode === "districts" && p.districts && p.districts.length > 0) {
+    return t("searchProfiles.districtsSelected", { count: p.districts.length });
+  }
+  if (p.location_mode === "radius" && p.radius_km) {
+    return t("searchProfiles.radiusLabel", { km: p.radius_km });
+  }
+  if (p.location_mode === "commute" && p.commute_minutes) {
+    return t("searchProfiles.travelTimeLabel", { mins: p.commute_minutes });
+  }
+  return null;
 }
 
 function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile[]; navigate: (path: string) => void }) {
@@ -207,9 +216,12 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
           <Search className="w-4 h-4 text-ha-primary flex-shrink-0" />
           <p className="text-[15px] font-semibold text-[#111111]">{t("searchProfiles.sectionTitle")}</p>
         </div>
-        <div className="flex flex-col items-center text-center py-4 px-2">
+        <div className="flex flex-col items-center text-center py-6 px-2">
+          <div className="w-12 h-12 rounded-full bg-[#F3F4F6] flex items-center justify-center mb-3">
+            <MapPin className="w-5 h-5 text-[#9CA3AF]" />
+          </div>
           <p className="text-[15px] font-semibold text-[#111111] mb-1" data-testid="text-empty-title">{t("searchProfiles.emptyTitle")}</p>
-          <p className="text-[14px] text-[#9CA3AF] mb-4 leading-relaxed" data-testid="text-empty-subtitle">{t("searchProfiles.emptySubtitle")}</p>
+          <p className="text-[13px] text-[#9CA3AF] mb-5 leading-relaxed max-w-[260px]" data-testid="text-empty-subtitle">{t("searchProfiles.emptySubtitle")}</p>
           <button
             onClick={() => navigate("/dashboard/searches/new")}
             className="w-full h-[48px] rounded-full bg-ha-primary text-white font-semibold text-[15px] hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
@@ -240,12 +252,24 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
             >
               <span className="w-2 h-2 rounded-full bg-ha-success flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-[14px] font-semibold text-[#111111]" data-testid={`text-profile-title-${p.id}`}>
-                  {getProfileTitle(p, t, locale)}
-                </p>
-                <p className="text-[12px] text-[#9CA3AF] mt-0.5" data-testid={`text-profile-summary-${p.id}`}>
-                  {getProfileSummary(p, t)}
-                </p>
+                {(() => {
+                  const locationLine = getProfileLocationLine(p, t);
+                  return (
+                    <>
+                      <p className="text-[14px] font-semibold text-[#111111]" data-testid={`text-profile-title-${p.id}`}>
+                        {getProfileTitle(p, t, locale)}
+                      </p>
+                      <p className="text-[12px] text-[#9CA3AF] mt-0.5" data-testid={`text-profile-summary-${p.id}`}>
+                        {getProfilePriceLine(p, t)}
+                      </p>
+                      {locationLine && (
+                        <p className="text-[11px] text-[#B0B5BE] mt-0.5" data-testid={`text-profile-location-${p.id}`}>
+                          {locationLine}
+                        </p>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -521,13 +545,6 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
     ? Math.max(3, Math.min(25, profiles.length * 8))
     : null;
 
-  function profileSummary(p: SearchProfile) {
-    const city = localizeCityName(p.city_name || p.city || "", locale) || "";
-    const min = p.price_min > 0 ? `€${p.price_min}` : "€0";
-    const max = p.price_max > 0 ? `€${p.price_max}` : "€5.000+";
-    return { city, price: `${min} – ${max}` };
-  }
-
   return (
     <div data-testid="section-zoekopdrachten">
       <h2 className="text-[18px] font-semibold text-[#111111] mb-1" data-testid="text-zoekopdrachten-title">
@@ -542,19 +559,23 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
       {profiles.length > 0 ? (
         <div className="rounded-[16px] bg-white border border-[#E5E7EB] overflow-hidden" data-testid="card-zoekopdrachten">
           {profiles.map((p, idx) => {
-            const { city, price } = profileSummary(p);
+            const title = getProfileTitle(p, t, locale);
+            const priceLine = getProfilePriceLine(p, t);
+            const locationLine = getProfileLocationLine(p, t);
             return (
               <div key={p.id}>
                 {idx > 0 && <div className="h-px bg-[#F5F5F5] mx-4" />}
                 <div
-                  className="flex items-center h-[48px] px-4 cursor-pointer active:bg-[#F9FAFB] transition-colors"
+                  className="flex items-center min-h-[52px] py-2.5 px-4 cursor-pointer active:bg-[#F9FAFB] transition-colors"
                   onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
                   data-testid={`row-zoekopdracht-${p.id}`}
                 >
-                  <div className="flex-1 min-w-0 truncate">
-                    <span className="text-[15px] font-semibold text-[#111111]">{city}</span>
-                    <span className="text-[14px] text-[#9CA3AF]"> · </span>
-                    <span className="text-[14px] text-[#9CA3AF]">{price}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-semibold text-[#111111] truncate">{title}</p>
+                    <p className="text-[12px] text-[#9CA3AF] mt-0.5 truncate">{priceLine}</p>
+                    {locationLine && (
+                      <p className="text-[11px] text-[#B0B5BE] mt-0.5 truncate">{locationLine}</p>
+                    )}
                   </div>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -591,8 +612,12 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
           })}
         </div>
       ) : (
-        <div className="rounded-[16px] bg-white border border-[#E5E7EB] p-5 text-center" data-testid="card-zoekopdrachten-empty">
-          <p className="text-[14px] text-[#9CA3AF] mb-3">{t("home.noProfileDesc")}</p>
+        <div className="rounded-[16px] bg-white border border-[#E5E7EB] p-6 flex flex-col items-center text-center" data-testid="card-zoekopdrachten-empty">
+          <div className="w-12 h-12 rounded-full bg-[#F3F4F6] flex items-center justify-center mb-3">
+            <MapPin className="w-5 h-5 text-[#9CA3AF]" />
+          </div>
+          <p className="text-[15px] font-semibold text-[#111111] mb-1">{t("searchProfiles.emptyTitle")}</p>
+          <p className="text-[13px] text-[#9CA3AF] mb-4 leading-relaxed max-w-[260px]">{t("searchProfiles.emptySubtitle")}</p>
           <button
             onClick={() => navigate("/dashboard/searches/new")}
             className="h-[44px] px-6 rounded-full bg-ha-primary text-white text-[14px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
@@ -739,8 +764,12 @@ function RecentMatchesSection({
           </button>
         </div>
       ) : (
-        <div className="rounded-[16px] bg-white border border-[#E5E7EB] p-5 text-center" data-testid="card-no-matches">
-          <p className="text-[14px] text-[#6B7280]">{t("home.firstMatchesWillAppear")}</p>
+        <div className="rounded-[16px] bg-white border border-[#E5E7EB] p-6 flex flex-col items-center text-center" data-testid="card-no-matches">
+          <div className="w-12 h-12 rounded-full bg-[#F3F4F6] flex items-center justify-center mb-3">
+            <Search className="w-5 h-5 text-[#9CA3AF]" />
+          </div>
+          <p className="text-[15px] font-semibold text-[#111111] mb-1">{t("home.noMatchesYetTitle")}</p>
+          <p className="text-[13px] text-[#9CA3AF] leading-relaxed max-w-[260px]">{t("home.firstMatchesWillAppear")}</p>
         </div>
       )}
     </div>
@@ -2135,13 +2164,13 @@ export default function DashboardPage() {
                 data-testid={`tab-${key}`}
               >
                 {isProfileWithPhoto ? (
-                  <div className={`w-[28px] h-[28px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-[#111111] ring-offset-1 ring-offset-white" : ""}`}>
+                  <div className={`w-[28px] h-[28px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-ha-primary ring-offset-1 ring-offset-white" : ""}`}>
                     <img src={tabPhotoUrl} alt="" className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <Icon className={`w-[26px] h-[26px] transition-colors ${isActive ? "text-[#111111]" : "text-[#B0B5BD]"}`} strokeWidth={isActive ? 2.2 : 1.6} />
+                  <Icon className={`w-[26px] h-[26px] transition-colors ${isActive ? "text-ha-primary" : "text-[#9CA3AF]"}`} strokeWidth={isActive ? 2.2 : 1.6} />
                 )}
-                <span className={`text-[11px] leading-tight transition-colors ${isActive ? "font-semibold text-[#111111]" : "font-medium text-[#B0B5BD]"}`}>
+                <span className={`text-[11px] leading-tight transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-[#9CA3AF]"}`}>
                   {t(labelKey)}
                 </span>
               </button>

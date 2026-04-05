@@ -117,6 +117,7 @@ export const nl: Record<string, any> = {
     matchesWillAppear: "Matches worden zichtbaar zodra je een abonnement activeert.",
     viewSubscriptions: "Bekijk abonnementen",
     noMatchesYet: "Nog geen matches",
+    noMatchesYetTitle: "Nog geen matches",
     noMatchesDesc: "Zodra we passende woningen vinden, verschijnen ze hier.",
     firstMatchesWillAppear: "Zodra je eerste matches binnenkomen, verschijnen ze hier.",
     reactionLetterConfigured: "Reactiebrief ingesteld",
@@ -2168,6 +2169,10 @@ export const nl: Record<string, any> = {
     emptyTitle: "Maak je eerste zoekprofiel aan",
     emptySubtitle: "Ontvang matches voor stad, prijs en woonwensen.",
     createFirst: "Zoekprofiel aanmaken",
+    districtsSelected: "{count} wijken geselecteerd",
+    radiusLabel: "Straal: {km} km",
+    travelTimeLabel: "Reistijd: {mins} min",
+    priceDefault: "€0 – €5.000+",
   },
 
   funnel: {

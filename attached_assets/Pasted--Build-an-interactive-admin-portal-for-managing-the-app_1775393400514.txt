@@ -1,0 +1,113 @@
+"}
+Build an interactive admin portal for managing the app.
+
+Goal:
+Transform the current read-only admin into a fully interactive control panel.
+
+IMPORTANT:
+- Keep UI clean and consistent with the app style (light, minimal, Airbnb-like)
+- No complex design — focus on functionality
+- Admin-only access
+
+==================================================
+1. ADMIN STRUCTURE
+==================================================
+
+Create a sidebar navigation with:
+
+- Dashboard
+- Listings
+- Images
+- Sources
+- Users
+- Subscriptions
+- System
+
+==================================================
+2. DASHBOARD
+==================================================
+
+Show key stats:
+- total listings
+- new listings today
+- image coverage %
+- active users
+- paid vs trial users
+
+==================================================
+3. LISTINGS MANAGEMENT
+==================================================
+
+Create listings table with:
+- title
+- price
+- city
+- source
+- image
+- date
+
+Actions:
+- view detail
+- delete listing
+- edit listing (title, price, image_url)
+
+==================================================
+4. IMAGE MANAGEMENT
+==================================================
+
+Extend current image audit:
+
+- per listing:
+  - retry image extraction
+  - manually set image_url
+
+- per source:
+  - trigger backfill
+  - view coverage
+
+==================================================
+5. SOURCES CONTROL
+==================================================
+
+For each source:
+- show listing count
+- show image coverage
+- show last scrape
+
+Actions:
+- trigger scrape
+- enable/disable source
+
+==================================================
+6. USERS
+==================================================
+
+User table:
+- email
+- plan
+- signup date
+- last active
+
+Actions:
+- change plan
+- extend trial
+- deactivate user
+
+==================================================
+7. SYSTEM STATUS
+==================================================
+
+Show:
+- backfill pipeline status
+- last runs
+- errors (if available)
+
+==================================================
+8. OUTPUT
+==================================================
+
+Provide:
+1. pages created
+2. routes added
+3. components added
+4. how to access admin pan

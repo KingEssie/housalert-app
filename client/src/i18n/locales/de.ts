@@ -111,6 +111,7 @@ export const de: Record<string, any> = {
     matchesWillAppear: "Matches werden sichtbar, sobald du ein Abonnement aktivierst.",
     viewSubscriptions: "Abonnements ansehen",
     noMatchesYet: "Noch keine Matches vorhanden",
+    noMatchesYetTitle: "Noch keine Matches",
     noMatchesDesc: "Sobald wir passende Wohnungen finden, erscheinen sie hier.",
     firstMatchesWillAppear: "Sobald deine ersten Matches eintreffen, siehst du sie hier.",
     reactionLetterConfigured: "Antwortschreiben eingerichtet",
@@ -2122,6 +2123,10 @@ export const de: Record<string, any> = {
     emptyTitle: "Erstelle dein erstes Suchprofil",
     emptySubtitle: "Erhalte Matches für Stadt, Preis und Wohnwünsche.",
     createFirst: "Suchprofil erstellen",
+    districtsSelected: "{count} Stadtteile ausgewählt",
+    radiusLabel: "Umkreis: {km} km",
+    travelTimeLabel: "Pendelzeit: {mins} Min.",
+    priceDefault: "€0 – €5.000+",
   },
 
   onboardingFlow: {

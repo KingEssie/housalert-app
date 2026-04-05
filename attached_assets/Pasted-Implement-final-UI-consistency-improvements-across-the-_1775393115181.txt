@@ -1,0 +1,117 @@
+Implement final UI consistency improvements across the app.
+
+IMPORTANT:
+- Do NOT redesign layouts
+- Only improve consistency and clarity
+- Apply everywhere in the app
+- Keep current spacing and structure intact
+
+==================================================
+1. BOTTOM TAB BAR — ACTIVE STATE
+==================================================
+
+Goal:
+Active tab should clearly stand out using brand color.
+
+Changes:
+- Active tab:
+  - icon color = brand color (#d91a68)
+  - label text color = brand color (#d91a68)
+- Inactive tab:
+  - icon color = muted grey (#9CA3AF)
+  - label text color = muted grey (#9CA3AF)
+
+Keep:
+- icon size
+- spacing
+- layout
+
+Ensure consistency across all tabs:
+- Home
+- Matches
+- Zoek
+- Tips
+- Profiel
+
+==================================================
+2. EMPTY STATES — CONSISTENT STRUCTURE
+==================================================
+
+All empty states in the app must follow this exact structure:
+
+VERTICAL ORDER (center aligned):
+1. Large icon (top)
+2. Title (semibold)
+3. Description (muted text)
+
+Rules:
+- icon must be visually dominant
+- title slightly larger than body text
+- description smaller and muted
+- centered horizontally and vertically in container
+
+Remove:
+- inconsistent layouts
+- missing titles
+- buttons without context
+- broken spacing
+
+Apply to:
+- Matches (no subscription)
+- Home recent matches
+- Favorites (if empty)
+- Any other empty state
+
+==================================================
+3. SEARCH PROFILES — MORE INFORMATIVE
+==================================================
+
+Improve search profile cards (Home + Zoek screen).
+
+Currently too minimal → must show more context.
+
+Each search profile must display:
+
+Primary line:
+- City or selected area
+
+Secondary lines (conditionally):
+- Price range:
+  - show €0 – €5000+ if not set
+  - otherwise show selected min/max
+
+- Area selection:
+  - if districts selected → show "X wijken geselecteerd"
+  - if radius → show "Straal: X km"
+  - if travel time → show "Reistijd: X min"
+
+- Optional:
+  - property type if available
+  - furnished / pets if relevant (only if space allows)
+
+Rules:
+- Do NOT overcrowd
+- Show max 2–3 lines below title
+- Use muted text for secondary info
+- Keep hierarchy clear:
+  title > key info > extra info
+
+==================================================
+4. CONSISTENCY
+==================================================
+
+Ensure:
+- same typography scale everywhere
+- no all-caps labels
+- consistent spacing between elements
+- consistent icon sizes
+
+==================================================
+5. OUTPUT
+==================================================
+
+After finishing, provide:
+1. where tab bar active state was updated
+2. which empty states were standardized
+3. what info is now shown in search profiles
+4. files changed
