@@ -1,0 +1,149 @@
+Investigate and fix why app.housalert.com always shows the wrong landing/onboarding page instead of the real app routing.
+
+CURRENT ISSUE:
+- Visiting https://app.housalert.com always lands on the same landing/onboarding page
+- Even clicking "Inloggen" on that page keeps going back to the same page
+- The frontend route logic was already changed so:
+  - logged out users should go to /login
+  - logged in users should go to /home
+  - /?ref=... should still allow referral landing
+- This means the issue is likely deployment/server/domain routing, not just React routing
+
+GOAL:
+Find the exact cause and fix it so app.housalert.com serves the real app correctly.
+
+IMPORTANT:
+- Do NOT guess
+- Diagnose first, then fix
+- Explain exactly what was wrong
+- Keep referral handling working
+- Keep /login and /home routing intact
+
+==================================================
+1. DIAGNOSE THE DOMAIN / DEPLOYMENT ROUTING
+==================================================
+
+Investigate what app.housalert.com is actually serving.
+
+Check:
+- which deployment is connected to app.housalert.com
+- whether the custom domain points to the correct Replit deployment
+- whether app.housalert.com is serving:
+  - an old static landing page
+  - the wrong build
+  - the wrong entry file
+  - cached content
+  - a different project/deployment than expected
+
+Verify these URLs in production:
+- /
+- /login
+- /home
+- /welcome
+- /?ref=TESTCODE
+- /this-is-a-routing-test
+
+Determine whether the server is actually passing requests into the SPA/router.
+
+==================================================
+2. CHECK SERVER ENTRY / FALLBACK ROUTING
+==================================================
+
+Inspect the production server setup.
+
+Check:
+- Express/Vite/SPA fallback handling
+- catch-all route behavior
+- whether an old landing page is being hard-served before the app router runs
+- whether index.html or another page is being served unconditionally
+
+If there is any hardcoded landing/onboarding page on root:
+- identify it
+- explain where it comes from
+- remove or relocate it appropriately
+
+==================================================
+3. CHECK FRONTEND ROUTE STRUCTURE
+==================================================
+
+Verify:
+- root route /
+- /login
+- /welcome
+- /home
+
+Ensure:
+- / → auth-aware redirect
+- /login → login form for logged out users, redirect logged in users to /home
+- /welcome → no longer the default root
+- /?ref=... → referral landing still works
+
+==================================================
+4. CHECK NAVIGATION LINKS
+==================================================
+
+Search the codebase for any links, buttons, or redirects that still point to:
+- /
+- onboarding
+- old landing page
+
+Especially check:
+- login button on landing/welcome page
+- logout redirect
+- onboarding close/back buttons
+- forgot password/back navigation
+- success/cancel payment redirects
+
+Fix any outdated navigation targets.
+
+==================================================
+5. CHECK BUILD / CACHE / DEPLOYMENT ARTIFACTS
+==================================================
+
+Confirm that:
+- the latest build is actually deployed
+- there is no stale cached build
+- no old static asset or old index.html is being served
+- no duplicate frontend entry exists
+
+If necessary:
+- clean old build artifacts
+- rebuild
+- redeploy
+
+==================================================
+6. FIX THE ROOT BEHAVIOR
+==================================================
+
+Final desired behavior:
+
+- Visiting https://app.housalert.com
+  - if logged out → go to /login
+  - if logged in → go to /home
+  - if query ?ref=... exists → show referral landing flow
+
+- Visiting /login
+  - if logged out → show login form
+  - if logged in → go to /home
+
+- Visiting /welcome
+  - should no longer act as the default root
+
+==================================================
+7. OUTPUT
+==================================================
+
+After finishing, provide:
+
+1. what app.housalert.com was actually serving before the fix
+2. whether the problem was:
+   - wrong deployment
+   - wrong server fallback
+   - stale build
+   - hardcoded landing page
+   - bad navigation links
+   - something else
+3. exactly what was changed
+4. how /, /login, /home, /welcome now behave
+5. which files/configs/deployment settings were changed
+6. confirmation that app.housalert.com now opens the correct app entry flow

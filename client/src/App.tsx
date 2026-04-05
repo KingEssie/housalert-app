@@ -90,8 +90,8 @@ function ProtectedRoute({ component: Component, skipOnboardingCheck }: { compone
       })
       .catch(() => {
         if (!cancelled) {
-          console.log("[ONBOARDING CHECK] API call failed — fail-closed, requiring onboarding");
-          setNeedsOnboarding(true);
+          console.log("[ONBOARDING CHECK] API call failed — fail-open, allowing access");
+          setNeedsOnboarding(false);
           setChecking(false);
         }
       });

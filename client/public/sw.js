@@ -1,5 +1,5 @@
 self.addEventListener("push", (event) => {
-  let data = { title: "Neue Wohnung gefunden", body: "Eine neue Wohnung passt zu deinem Suchprofil.", url: "/dashboard" };
+  let data = { title: "Neue Wohnung gefunden", body: "Eine neue Wohnung passt zu deinem Suchprofil.", url: "/home" };
 
   try {
     if (event.data) {
@@ -24,7 +24,7 @@ self.addEventListener("push", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const url = event.notification.data?.url || "/dashboard";
+  const url = event.notification.data?.url || "/home";
 
   event.waitUntil(
     clients.matchAll({ type: "window", includeUncontrolled: true }).then((windowClients) => {

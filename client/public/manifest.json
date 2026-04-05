@@ -2,10 +2,10 @@
   "name": "HousAlert",
   "short_name": "HousAlert",
   "description": "Mietwohnungs-Alerts für den deutschen Markt",
-  "start_url": "/dashboard",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#0D6EFD",
+  "theme_color": "#d91a68",
   "orientation": "portrait-primary",
   "icons": [
     {

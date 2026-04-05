@@ -7,7 +7,7 @@ import { ChevronDown, Eye, EyeOff, Loader2, ArrowRight, Star } from "lucide-reac
 import { supabase } from "@/lib/supabase";
 import { ensureTrialForCurrentUser } from "@/lib/auth";
 import { clearAllUserData } from "@/lib/queryClient";
-import { apiFetch } from "@/lib/api-base";
+
 import { useToast } from "@/hooks/use-toast";
 
 const OB = {
@@ -146,28 +146,8 @@ export default function WelcomePage() {
       return;
     }
     console.log(`[WELCOME] Login success — user.id=${signInData?.user?.id?.substring(0, 8) ?? "null"}`);
-    await ensureTrialForCurrentUser();
-
-    try {
-      const token = signInData.session?.access_token;
-      if (token) {
-        const res = await apiFetch("/api/onboarding-status", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-        const completed = data.onboarding_completed === true;
-        let dest = completed ? "/home" : "/onboarding/intro";
-        console.log(`[WELCOME] onboarding_completed=${completed} → redirect=${dest}`);
-        setLoading(false);
-        navigate(dest);
-        return;
-      }
-    } catch (err) {
-      console.log("[WELCOME] onboarding check failed, defaulting to onboarding/intro", err);
-    }
-
-    setLoading(false);
-    navigate("/onboarding/intro");
+    try { await ensureTrialForCurrentUser(); } catch {}
+    window.location.href = "/home";
   }
 
   return (
