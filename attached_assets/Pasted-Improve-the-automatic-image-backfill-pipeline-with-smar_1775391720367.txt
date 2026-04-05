@@ -1,0 +1,118 @@
+Improve the automatic image backfill pipeline with smarter prioritization, retry rules, and source-aware behavior.
+
+Context:
+We now have working source handlers for:
+- wg-gesucht
+- rentola
+- nestpick
+
+Findings:
+- wg-gesucht has the biggest remaining impact
+- Rentola appears highly recoverable
+- Nestpick only has partial recovery because many stored listings are no longer present on current search pages
+
+Goal:
+Make the automatic image backfill pipeline smarter so it focuses on the most valuable and recoverable listings first.
+
+IMPORTANT:
+- Do NOT redesign UI
+- Do NOT change listing cards
+- Keep this production-safe
+- Do NOT overwrite valid existing images
+
+==================================================
+1. ADD PRIORITY-BASED PROCESSING
+==================================================
+
+Instead of processing missing-image listings in a simple generic order, add priority logic.
+
+Priority order:
+1. wg-gesucht
+2. rentola
+3. nestpick
+4. other supported sources later
+
+Within each source, prioritize:
+- newest listings first
+- listings without image before placeholder-only
+- listings with fewer previous retry attempts
+
+==================================================
+2. ADD SOURCE-SPECIFIC RETRY RULES
+==================================================
+
+Track retry_count and last_retry_at for image recovery attempts.
+
+Per-source retry rules:
+- wg-gesucht: allow more retries
+- rentola: moderate retries
+- nestpick: fewer retries because many old listings are no longer recoverable from current overview pages
+
+Example approach:
+- wg-gesucht max retries: 10
+- rentola max retries: 5
+- nestpick max retries: 3
+
+Only retry a listing again after a cooldown period.
+
+==================================================
+3. ADD UNRECOVERABLE STATUS
+==================================================
+
+If a listing repeatedly fails image recovery, mark it as unrecoverable.
+
+Examples:
+- image_recovery_status = pending / recovered / failed / unrecoverable
+
+Especially for Nestpick:
+- if listing cannot be found on current overview/search pages after several tries, mark unrecoverable
+
+Do not keep retrying permanently hopeless listings.
+
+==================================================
+4. PRIORITIZE FRESH LISTINGS
+==================================================
+
+Fresh listings are most important for user experience.
+
+Add logic so listings created recently are processed first, especially for:
+- Nestpick
+- any source where images may disappear from overview pages later
+
+==================================================
+5. ADMIN VISIBILITY
+==================================================
+
+On the Image Audit admin page, add visibility into:
+- retry count
+- unrecoverable count per source
+- pending count per source
+- recovered count per source
+
+Optional:
+show small source health summary:
+- recoverable
+- partially recoverable
+- low recovery confidence
+
+==================================================
+6. KEEP EXISTING PIPELINE SAFE
+==================================================
+
+Keep:
+- mutex / no overlapping runs
+- batch size controls
+- admin enable/disable
+- recent run history
+
+==================================================
+7. OUTPUT
+==================================================
+
+After finishing, provide:
+1. how prioritization now works
+2. retry limits per source
+3. how unrecoverable listings are marked
+4. what new fields were added
+5. what admin visibility was added
+6. files changed

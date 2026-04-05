@@ -403,6 +403,46 @@ export default function AdminImageAuditPage() {
                     <MiniStat label="Total processed" value={pipelineStatus.dbStats?.totalProcessed ?? 0} />
                   </div>
 
+                  {pipelineStatus.recoveryStats && Object.keys(pipelineStatus.recoveryStats).length > 0 && (
+                    <div className="px-4 py-3 space-y-2" data-testid="section-recovery-stats">
+                      <p className="text-[12px] font-semibold text-[#9CA3AF]">Recovery status per source</p>
+                      <div className="space-y-2">
+                        {Object.entries(pipelineStatus.recoveryStats as Record<string, { pending: number; recovered: number; failed: number; unrecoverable: number; total_retries: number }>).map(([source, s]) => {
+                          const total = s.pending + s.recovered + s.failed + s.unrecoverable;
+                          const recoveryPct = total > 0 ? Math.round((s.recovered / total) * 100) : 0;
+                          const maxRetries = pipelineStatus.retryLimits?.[source] || "–";
+                          const cooldown = pipelineStatus.cooldownHours?.[source] || "–";
+                          return (
+                            <div key={source} className="bg-[#F9FAFB] rounded-[8px] px-3 py-2.5">
+                              <div className="flex items-center justify-between mb-1.5">
+                                <span className="text-[13px] font-semibold text-[#111111]">{source}</span>
+                                <span className="text-[11px] text-[#6B7280]">max {maxRetries} retries · {cooldown}h cooldown</span>
+                              </div>
+                              <div className="grid grid-cols-4 gap-1.5">
+                                <div className="text-center">
+                                  <p className="text-[14px] font-semibold text-emerald-600">{s.recovered}</p>
+                                  <p className="text-[10px] text-[#6B7280]">recovered</p>
+                                </div>
+                                <div className="text-center">
+                                  <p className="text-[14px] font-semibold text-amber-600">{s.failed}</p>
+                                  <p className="text-[10px] text-[#6B7280]">retrying</p>
+                                </div>
+                                <div className="text-center">
+                                  <p className="text-[14px] font-semibold text-red-500">{s.unrecoverable}</p>
+                                  <p className="text-[10px] text-[#6B7280]">unrecoverable</p>
+                                </div>
+                                <div className="text-center">
+                                  <p className="text-[14px] font-semibold text-[#111111]">{recoveryPct}%</p>
+                                  <p className="text-[10px] text-[#6B7280]">success rate</p>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
                   <div className="px-4 py-3">
                     <button
                       onClick={triggerManualRun}

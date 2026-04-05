@@ -1,0 +1,94 @@
+Create a premium fallback image system for listings without photos.
+
+Goal:
+When a listing has no real image, it should still look polished, premium, and clickable — not broken or empty.
+
+IMPORTANT:
+- Do NOT redesign the full listing card
+- Keep the same card layout, image ratio, rounded corners, overlays, and spacing
+- Only replace the missing image area with a premium fallback visual
+- Apply this consistently in both listing cards and listing detail pages
+
+==================================================
+1. FEED / LISTING CARD FALLBACK IMAGE
+==================================================
+
+When a listing has no valid image_url:
+
+- keep the same image container height and aspect ratio
+- keep the same rounded corners as normal listings
+- keep favorite heart/button overlays working
+- keep any price overlay logic working
+
+Inside the image area, show a premium fallback design:
+- soft light neutral background
+- centered housing illustration/icon
+- optional small subtle HousAlert mark
+- small muted location text
+- small muted source text
+
+Do NOT show a loud "No image" message.
+
+==================================================
+2. MULTIPLE PLACEHOLDER TYPES
+==================================================
+
+Use 3 placeholder variants depending on listing type/title:
+
+- Room / WG → bed or room icon
+- Apartment / Wohnung → apartment/building icon
+- House / Haus → house icon
+
+Infer from title/source/category when possible.
+
+==================================================
+3. DETAIL PAGE FALLBACK HERO
+==================================================
+
+If the detail page has no image:
+- keep the same hero area shape and size
+- keep top action buttons (favorite / block etc.)
+- render a premium fallback hero instead of a broken image
+
+Use:
+- larger centered housing illustration
+- subtle location/source text
+- same visual quality as listing card fallback
+
+==================================================
+4. VISUAL STYLE
+==================================================
+
+Style rules:
+- premium, clean, minimal
+- no dark backgrounds
+- no generic broken-image icon
+- no ugly stock photos
+- no loud warning text
+
+Use:
+- very light neutral background
+- dark grey icon
+- subtle brand accent only if tasteful
+
+==================================================
+5. IMAGE VALIDATION
+==================================================
+
+Only show the fallback when:
+- image_url is null
+- image_url is empty
+- image_url is placeholder-only
+- image failed validation
+
+Do NOT show fallback for valid images.
+
+==================================================
+6. OUTPUT
+==================================================
+
+After finishing, provide:
+1. where the fallback appears
+2. which placeholder variants exist
+3. how type detection works
+4. what files were changed

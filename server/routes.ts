@@ -3174,12 +3174,14 @@ export async function registerRoutes(
       const {
         isBackfillEnabled, isBackfillRunning, getBackfillBatchSize,
         getEnabledSources, getLastRun, getCumulativeUpdates,
-        getRecentRuns, getBackfillStats,
+        getRecentRuns, getBackfillStats, getRecoveryStats,
+        getSourceRetryLimits, getSourceCooldownHours,
       } = await import("./image-backfill");
 
-      const [recentRuns, stats] = await Promise.all([
+      const [recentRuns, stats, recoveryStats] = await Promise.all([
         getRecentRuns(15),
         getBackfillStats(),
+        getRecoveryStats(),
       ]);
 
       res.json({
@@ -3190,6 +3192,9 @@ export async function registerRoutes(
         lastRun: getLastRun(),
         cumulativeUpdates: getCumulativeUpdates(),
         dbStats: stats,
+        recoveryStats,
+        retryLimits: getSourceRetryLimits(),
+        cooldownHours: getSourceCooldownHours(),
         recentRuns,
       });
     } catch (err: any) {
