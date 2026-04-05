@@ -1,0 +1,119 @@
+Run the new email test mode endpoints and verify that the email recipient logic behaves correctly with real current data.
+
+IMPORTANT:
+- Do NOT build more tooling first
+- Use the already implemented test mode and test endpoints
+- Do NOT send real emails
+- We want actual test results from current database data
+- Evaluate whether it is safe to re-enable Resend
+
+GOAL:
+Execute the email logic tests using real users/data and confirm whether the buddy email issue is fully resolved.
+
+==================================================
+1. RUN SINGLE-USER TESTS
+==================================================
+
+Use:
+POST /api/admin/test-email-logic
+
+Run this against several real users representing the key scenarios, if such users exist in the current database.
+
+Test these scenarios:
+
+A. Main user email alerts ON + active buddy
+Expected:
+- main user receives email
+- buddy receives email
+
+B. Main user email alerts OFF + active buddy
+Expected:
+- main user does NOT receive email
+- buddy DOES receive email
+
+C. Buddy removed
+Expected:
+- buddy does NOT receive email
+
+D. Buddy self-unsubscribed / revoked_by_buddy
+Expected:
+- buddy does NOT receive email
+
+E. Buddy feature disabled
+Expected:
+- buddy does NOT receive email
+
+F. Buddy email same as main user email
+Expected:
+- only one final recipient
+- no duplicate sends
+
+If exact real users for some scenarios do not exist, identify the closest matching records and report that clearly.
+
+==================================================
+2. RUN BULK TEST
+==================================================
+
+Use:
+POST /api/admin/test-email-logic/all
+
+Run for the most recent 20 users (or current default limit).
+
+Inspect the results for:
+- unexpected buddy recipients
+- removed/revoked buddies still included
+- duplicate recipient emails
+- users with no active subscription still included
+- any suspicious recipient logic
+
+==================================================
+3. CHECK STARTUP CLEANUP EFFECT
+==================================================
+
+Verify whether the startup stale buddy cleanup has run and whether any stale data was cleaned.
+
+Report:
+- whether stale buddy records were found
+- how many records were cleaned
+- whether any risky leftover buddy emails still exist
+
+==================================================
+4. SUMMARIZE REAL RESULTS
+==================================================
+
+For each tested scenario, provide:
+
+- user_id
+- main user email
+- buddy email
+- main_user_should_receive
+- buddy_should_receive
+- final_recipients
+- reason summary
+
+==================================================
+5. FINAL SAFETY DECISION
+==================================================
+
+Based on the real test outputs, answer clearly:
+
+A. Is it safe to re-enable Resend now?
+- yes / no
+
+B. If no:
+- list exactly what still fails
+
+C. If yes:
+- list any remaining low-risk caveats
+
+==================================================
+6. OUTPUT FORMAT
+==================================================
+
+Return a concise but complete report with:
+
+1. single-user test results
+2. bulk test findings
+3. startup cleanup findings
+4. whether any incorrect buddy recipients still appear
+5. final yes/no recommendation for re-enabling Resend
