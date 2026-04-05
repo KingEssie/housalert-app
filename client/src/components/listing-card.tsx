@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Heart, Home as HomeIcon, Lock, CheckCircle2, BedDouble, Maximize2 } from "lucide-react";
+import { Heart, Lock, CheckCircle2, BedDouble, Maximize2 } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import type { ApiMatch } from "@/lib/listings";
+import { ListingFallback, isValidImageUrl } from "@/components/listing-fallback";
 
 function formatPrice(price: number, locale: string): string {
   const intlLocale = locale === "de" ? "de-DE" : locale === "en" ? "en-IE" : "nl-NL";
@@ -59,7 +60,7 @@ export function ListingCardFull({
 }: ListingCardFullProps) {
   const [imgError, setImgError] = useState(false);
   const { t, locale } = useTranslation();
-  const hasImage = !!match.image_url && !imgError;
+  const hasImage = isValidImageUrl(match.image_url) && !imgError;
   const seenAt = match.first_seen_at || match.matched_at;
   const isNew = seenAt ? (Date.now() - new Date(seenAt).getTime()) / 3600000 < 24 : false;
 
@@ -91,11 +92,8 @@ export function ListingCardFull({
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="w-full bg-[#F3F4F6] flex flex-col items-center justify-center" style={{ aspectRatio: "4/3" }}>
-            <HomeIcon className="w-10 h-10 text-[#C4C8CE] mb-2" />
-            {sourceName && (
-              <span className="text-[12px] font-medium text-[#9CA3AF]">{sourceName}</span>
-            )}
+          <div className="w-full" style={{ aspectRatio: "4/3" }}>
+            <ListingFallback title={match.title} source={match.source} city={match.city} size="full" />
           </div>
         )}
 
@@ -128,12 +126,12 @@ export function ListingCardFull({
         {match.price > 0 && (
           <div className="absolute bottom-3 left-3">
             <span
-              className="text-[17px] font-semibold text-white"
-              style={{ textShadow: "0 1px 3px rgba(0,0,0,0.5)" }}
+              className={`text-[17px] font-semibold ${hasImage ? "text-white" : "text-[#374151]"}`}
+              style={hasImage ? { textShadow: "0 1px 3px rgba(0,0,0,0.5)" } : undefined}
               data-testid={`badge-price-${match.listing_id}`}
             >
               {formatPrice(match.price, locale)}
-              <span className="text-[12px] font-normal opacity-80 ml-0.5">{t("common.perMonthShort")}</span>
+              <span className={`text-[12px] font-normal ml-0.5 ${hasImage ? "opacity-80" : "text-[#9CA3AF]"}`}>{t("common.perMonthShort")}</span>
             </span>
           </div>
         )}
@@ -219,7 +217,7 @@ interface ListingCardCompactProps {
 export function ListingCardCompact({ match, onCardClick }: ListingCardCompactProps) {
   const [imgError, setImgError] = useState(false);
   const { locale } = useTranslation();
-  const hasImage = !!match.image_url && !imgError;
+  const hasImage = isValidImageUrl(match.image_url) && !imgError;
 
   return (
     <div
@@ -247,19 +245,18 @@ export function ListingCardCompact({ match, onCardClick }: ListingCardCompactPro
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="w-full bg-[#F3F4F6] flex flex-col items-center justify-center" style={{ aspectRatio: "16/9" }}>
-            <HomeIcon className="w-7 h-7 text-[#C4C8CE] mb-1" />
-            {match.source && (
-              <span className="text-[11px] font-medium text-[#9CA3AF]">{formatSource(match.source)}</span>
-            )}
+          <div className="w-full" style={{ aspectRatio: "16/9" }}>
+            <ListingFallback title={match.title} source={match.source} city={match.city} size="compact" />
           </div>
         )}
 
-        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+        {hasImage && (
+          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+        )}
 
         {match.price > 0 && (
           <div className="absolute bottom-2 left-2.5">
-            <span className="text-[13px] font-semibold text-white" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.4)" }}>
+            <span className={`text-[13px] font-semibold ${hasImage ? "text-white" : "text-[#374151]"}`} style={hasImage ? { textShadow: "0 1px 2px rgba(0,0,0,0.4)" } : undefined}>
               {formatPrice(match.price, locale)}
             </span>
           </div>
@@ -285,7 +282,7 @@ interface ListingCardMiniProps {
 
 export function ListingCardMini({ match, onCardClick }: ListingCardMiniProps) {
   const [imgError, setImgError] = useState(false);
-  const hasImage = !!match.image_url && !imgError;
+  const hasImage = isValidImageUrl(match.image_url) && !imgError;
 
   return (
     <div
@@ -313,11 +310,8 @@ export function ListingCardMini({ match, onCardClick }: ListingCardMiniProps) {
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="w-full bg-[#F3F4F6] flex flex-col items-center justify-center" style={{ aspectRatio: "1/1" }}>
-            <HomeIcon className="w-5 h-5 text-[#C4C8CE]" />
-            {match.source && (
-              <span className="text-[9px] font-medium text-[#9CA3AF] mt-0.5 truncate max-w-full px-1">{formatSource(match.source)}</span>
-            )}
+          <div className="w-full" style={{ aspectRatio: "1/1" }}>
+            <ListingFallback title={match.title} source={match.source} city={match.city} size="mini" />
           </div>
         )}
       </div>

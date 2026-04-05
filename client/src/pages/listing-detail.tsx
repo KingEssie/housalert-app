@@ -8,8 +8,9 @@ import { useTranslation } from "@/i18n";
 import { useToast } from "@/hooks/use-toast";
 import { trackEvent } from "@/lib/track-event";
 import { queryClient } from "@/lib/queryClient";
-import { MapPin, BedDouble, Ruler, Clock, Globe, Zap, Home as HomeIcon, ArrowLeft, Info, Lock, Heart, ShieldBan } from "lucide-react";
+import { MapPin, BedDouble, Ruler, Clock, Globe, Zap, ArrowLeft, Info, Lock, Heart, ShieldBan } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ListingFallback, isValidImageUrl } from "@/components/listing-fallback";
 
 function FloatingBackButton({ navigate }: { navigate: (to: string) => void }) {
   function handleBack() {
@@ -243,7 +244,7 @@ export default function ListingDetailPage() {
   }
 
   const style = FRESH_BADGE_STYLES[listing.fresh_label] ?? FRESH_BADGE_STYLES.ouder;
-  const hasImage = !!listing.image_url;
+  const hasImage = isValidImageUrl(listing.image_url);
 
   const detailItems: { icon: typeof BedDouble; label: string; value: string; color?: string; locked?: boolean }[] = [];
   if (listing.bedrooms > 0) detailItems.push({ icon: BedDouble, label: t("listing.bedrooms"), value: String(listing.bedrooms) });
@@ -305,12 +306,14 @@ export default function ListingDetailPage() {
             data-testid="img-listing-hero"
           />
         ) : (
-          <div className="w-full bg-[#F3F4F6] flex items-center justify-center" style={{ aspectRatio: "4/3", maxHeight: "420px" }}>
-            <HomeIcon className="w-12 h-12 text-[#9CA3AF]" />
+          <div className="w-full" style={{ aspectRatio: "4/3", maxHeight: "420px" }}>
+            <ListingFallback title={listing.title} source={listing.source} city={listing.city} size="hero" />
           </div>
         )}
 
-        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+        {hasImage && !imgError && (
+          <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+        )}
 
         <div className="absolute top-3 left-[56px] flex items-center gap-2">
           {listing.fresh_label !== "ouder" && (
@@ -322,8 +325,8 @@ export default function ListingDetailPage() {
 
         {listing.price > 0 && (
           <div className="absolute bottom-4 left-5">
-            <span className="text-[24px] font-semibold text-white" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.4)" }} data-testid="text-listing-price">€{listing.price}</span>
-            <span className="text-[13px] text-white/70 ml-1" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.4)" }}>{t("common.perMonth")}</span>
+            <span className={`text-[24px] font-semibold ${hasImage && !imgError ? "text-white" : "text-[#374151]"}`} style={hasImage && !imgError ? { textShadow: "0 1px 2px rgba(0,0,0,0.4)" } : undefined} data-testid="text-listing-price">€{listing.price}</span>
+            <span className={`text-[13px] ml-1 ${hasImage && !imgError ? "text-white/70" : "text-[#9CA3AF]"}`} style={hasImage && !imgError ? { textShadow: "0 1px 2px rgba(0,0,0,0.4)" } : undefined}>{t("common.perMonth")}</span>
           </div>
         )}
       </div>

@@ -14,29 +14,11 @@ import {
   ArrowLeft,
   Copy,
   Heart,
-  ImageIcon,
   Lock,
   ShieldBan,
 } from "lucide-react";
+import { ListingFallback, isValidImageUrl } from "@/components/listing-fallback";
 
-const CITY_GRADIENTS: Record<string, string> = {
-  berlin: "from-[#E5E7EB] to-[#E5E7EB]",
-  münchen: "from-[#E5E7EB] to-[#E5E7EB]",
-  hamburg: "from-[#E5E7EB] to-[#E5E7EB]",
-  frankfurt: "from-[#E5E7EB] to-[#E5E7EB]",
-  köln: "from-[#E5E7EB] to-[#E5E7EB]",
-  düsseldorf: "from-[#E5E7EB] to-[#E5E7EB]",
-  stuttgart: "from-[#E5E7EB] to-[#E5E7EB]",
-  default: "from-[#E5E7EB] to-[#E5E7EB]",
-};
-
-function getCityGradient(city: string): string {
-  const key = city.toLowerCase().trim();
-  for (const [name, gradient] of Object.entries(CITY_GRADIENTS)) {
-    if (key.includes(name)) return gradient;
-  }
-  return CITY_GRADIENTS.default;
-}
 
 function useRelativeTime() {
   const { t } = useTranslation();
@@ -378,8 +360,7 @@ export default function ApplyPage() {
     }
   };
 
-  const hasImage = !!listing.image_url;
-  const gradient = getCityGradient(listing.city);
+  const hasImage = isValidImageUrl(listing.image_url);
 
   const propertyType = t("listingDetail.propertyFallback");
   const subtitle = `${propertyType} ${t("listingDetail.subtitleIn")} ${listing.city}, ${t("listingDetail.country")}`;
@@ -408,29 +389,35 @@ export default function ApplyPage() {
         <button
           onClick={handleToggleFavorite}
           disabled={favLoading}
-          className="w-9 h-9 flex items-center justify-center active:scale-90 transition-transform duration-150"
+          className={`w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-transform duration-150 ${
+            isFavorited ? "bg-ha-primary" : hasImage && !imgError ? "" : "bg-black/35 backdrop-blur-sm"
+          }`}
+          style={!isFavorited && !(hasImage && !imgError) ? { boxShadow: "0 2px 6px rgba(0,0,0,0.08)" } : undefined}
           aria-label="Favorite"
           data-testid="button-favorite-apply"
         >
           <Heart
-            className={`w-[22px] h-[22px] transition-colors duration-200 ${isFavorited ? "text-ha-primary" : "text-white"}`}
+            className={`w-[18px] h-[18px] transition-colors duration-200 text-white ${isFavorited ? "scale-110" : ""}`}
             fill={isFavorited ? "currentColor" : "none"}
             strokeWidth={2}
-            style={{ filter: isFavorited ? "none" : "drop-shadow(0 1px 3px rgba(0,0,0,0.5))" }}
+            style={hasImage && !imgError && !isFavorited ? { filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.5))" } : undefined}
           />
         </button>
 
         {listing.source && (
           <button
             onClick={() => setShowBlockModal(true)}
-            className="w-9 h-9 flex items-center justify-center active:scale-90 transition-transform duration-150"
+            className={`w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-transform duration-150 ${
+              hasImage && !imgError ? "" : "bg-black/35 backdrop-blur-sm"
+            }`}
+            style={!(hasImage && !imgError) ? { boxShadow: "0 2px 6px rgba(0,0,0,0.08)" } : undefined}
             aria-label="Block source"
             data-testid="button-block-source-apply"
           >
             <ShieldBan
-              className="w-[22px] h-[22px] text-white"
+              className="w-[18px] h-[18px] text-white"
               strokeWidth={2}
-              style={{ filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.5))" }}
+              style={hasImage && !imgError ? { filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.5))" } : undefined}
             />
           </button>
         )}
@@ -449,12 +436,8 @@ export default function ApplyPage() {
             data-testid="img-apply-hero"
           />
         ) : (
-          <div className={`w-full bg-gradient-to-br ${gradient} flex items-center justify-center relative`} style={{ aspectRatio: "4/3" }}>
-            <div className="absolute inset-0 bg-black/5" />
-            <div className="flex flex-col items-center gap-2 text-[#D1D5DB]">
-              <ImageIcon className="w-10 h-10" />
-              <span className="text-[12px] font-medium">{listing.source}</span>
-            </div>
+          <div className="w-full" style={{ aspectRatio: "4/3" }}>
+            <ListingFallback title={listing.title} source={listing.source || undefined} city={listing.city} size="hero" />
           </div>
         )}
       </div>
