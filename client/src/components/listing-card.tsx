@@ -91,8 +91,11 @@ export function ListingCardFull({
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="w-full bg-[#F3F4F6] flex items-center justify-center" style={{ aspectRatio: "4/3" }}>
-            <HomeIcon className="w-12 h-12 text-[#D1D5DB]" />
+          <div className="w-full bg-[#F3F4F6] flex flex-col items-center justify-center" style={{ aspectRatio: "4/3" }}>
+            <HomeIcon className="w-10 h-10 text-[#C4C8CE] mb-2" />
+            {sourceName && (
+              <span className="text-[12px] font-medium text-[#9CA3AF]">{sourceName}</span>
+            )}
           </div>
         )}
 
@@ -244,8 +247,11 @@ export function ListingCardCompact({ match, onCardClick }: ListingCardCompactPro
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="w-full bg-[#F3F4F6] flex items-center justify-center" style={{ aspectRatio: "16/9" }}>
-            <HomeIcon className="w-7 h-7 text-[#D1D5DB]" />
+          <div className="w-full bg-[#F3F4F6] flex flex-col items-center justify-center" style={{ aspectRatio: "16/9" }}>
+            <HomeIcon className="w-7 h-7 text-[#C4C8CE] mb-1" />
+            {match.source && (
+              <span className="text-[11px] font-medium text-[#9CA3AF]">{formatSource(match.source)}</span>
+            )}
           </div>
         )}
 
@@ -307,8 +313,11 @@ export function ListingCardMini({ match, onCardClick }: ListingCardMiniProps) {
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="w-full bg-[#F3F4F6] flex items-center justify-center" style={{ aspectRatio: "1/1" }}>
-            <HomeIcon className="w-5 h-5 text-[#D1D5DB]" />
+          <div className="w-full bg-[#F3F4F6] flex flex-col items-center justify-center" style={{ aspectRatio: "1/1" }}>
+            <HomeIcon className="w-5 h-5 text-[#C4C8CE]" />
+            {match.source && (
+              <span className="text-[9px] font-medium text-[#9CA3AF] mt-0.5 truncate max-w-full px-1">{formatSource(match.source)}</span>
+            )}
           </div>
         )}
       </div>

@@ -631,9 +631,9 @@ function ToggleSwitch({
   testId: string;
 }) {
   return (
-    <label className="flex items-center gap-3 cursor-pointer" data-testid={testId}>
+    <label className="flex items-start gap-3 cursor-pointer" data-testid={testId}>
       <div
-        className="w-[44px] h-[24px] rounded-full p-[2px] transition-colors shrink-0"
+        className="w-[44px] h-[24px] mt-[1px] rounded-full p-[2px] transition-colors shrink-0"
         style={{ backgroundColor: checked ? "rgb(var(--ha-primary))" : "#E5E7EB" }}
         onClick={() => onChange(!checked)}
       >
@@ -662,13 +662,13 @@ function CheckboxRow({
     <button
       type="button"
       onClick={onToggle}
-      className="w-full flex items-center gap-4 py-4 border-b border-[#E5E7EB] last:border-b-0 text-left"
+      className="w-full flex items-start gap-4 py-4 border-b border-[#E5E7EB] last:border-b-0 text-left"
       data-testid={testId}
     >
-      <div className={`w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 border-2 transition-colors ${
+      <div className={`w-6 h-6 mt-[1px] rounded-md flex items-center justify-center flex-shrink-0 border-2 transition-colors ${
         selected ? "bg-ha-primary border-ha-primary" : "border-ha-primary bg-transparent"
       }`}>
-        {selected && <Check className="w-4 h-4 text-[#111111]" />}
+        {selected && <Check className="w-4 h-4 text-white" />}
       </div>
       <span className="text-[15px] font-medium text-[#111111]">{label}</span>
     </button>

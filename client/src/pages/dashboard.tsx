@@ -1033,7 +1033,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
   const allMatchesSorted = [...matches].sort((a, b) => {
     const dateA = a.first_seen_at || a.matched_at || "";
     const dateB = b.first_seen_at || b.matched_at || "";
-    return dateB.localeCompare(dateA);
+    return new Date(dateB).getTime() - new Date(dateA).getTime();
   });
 
   const removeApplied = useCallback(async (listingId: string) => {
