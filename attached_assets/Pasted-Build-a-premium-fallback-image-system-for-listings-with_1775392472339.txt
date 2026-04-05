@@ -1,0 +1,106 @@
+Build a premium fallback image system for listings without photos.
+
+Context:
+We now have a stronger automatic image recovery pipeline, but some listings will still remain without valid images:
+- unrecoverable sources
+- expired listings
+- placeholder-only listings
+- temporary failures
+
+Goal:
+Make listings without images still look premium, trustworthy, and clickable.
+
+IMPORTANT:
+- Do NOT redesign the full listing card or detail page
+- Keep the existing layouts, spacing, overlays, and interaction logic
+- Only improve the visual fallback shown when a real image is missing
+- Apply consistently across listing cards and detail pages
+
+==================================================
+1. CARD FALLBACK IMAGE
+==================================================
+
+When a listing has no valid image_url:
+- keep the same image area height/aspect ratio
+- keep same rounded corners
+- keep price overlay if used
+- keep favorite / action icons working
+
+Render a premium visual fallback instead of an empty or broken image.
+
+Design:
+- very light neutral background
+- centered housing icon / illustration
+- small muted source text
+- small muted city/location text
+- optional subtle brand accent if tasteful
+
+Do NOT show loud warning text like:
+- "No image"
+- "Missing image"
+
+==================================================
+2. MULTIPLE PLACEHOLDER TYPES
+==================================================
+
+Create 3 placeholder variants:
+- room / WG
+- apartment / flat
+- house
+
+Infer from:
+- title
+- source
+- category if available
+
+Each type should use a fitting icon:
+- room → bed / room icon
+- apartment → building icon
+- house → house icon
+
+==================================================
+3. DETAIL PAGE FALLBACK HERO
+==================================================
+
+If a listing detail page has no valid image:
+- keep the same hero image area
+- keep action buttons in place
+- render a premium fallback hero
+
+Use:
+- larger icon/illustration
+- subtle location/source text
+- same rounded and premium visual quality as a real hero image area
+
+==================================================
+4. IMAGE VALIDATION
+==================================================
+
+Fallback should show when:
+- image_url is null
+- image_url is empty
+- image_url is placeholder-only
+- image URL failed validation
+
+Do NOT show fallback if image is valid.
+
+==================================================
+5. CONSISTENCY
+==================================================
+
+Ensure the fallback style feels native to the app:
+- premium
+- minimal
+- clean
+- soft
+- not overly branded
+
+==================================================
+6. OUTPUT
+==================================================
+
+After finishing, provide:
+1. where fallback visuals now appear
+2. the placeholder types implemented
+3. how listing type is inferred
+4. which files were changed
