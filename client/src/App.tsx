@@ -58,6 +58,7 @@ import DocumentsPage from "@/pages/documents";
 import SettingsPage from "@/pages/settings";
 import PreferencesPage from "@/pages/preferences";
 import HousingSituationPage from "@/pages/housing-situation";
+import ReferralLandingPage from "@/pages/referral-landing";
 
 function ProtectedRoute({ component: Component, skipOnboardingCheck }: { component: React.ComponentType; skipOnboardingCheck?: boolean }) {
   const { user, session, loading } = useAuth();
@@ -109,8 +110,12 @@ function RootRoute() {
   const { user, session, loading } = useAuth();
   const [destination, setDestination] = useState<string | null>(null);
 
+  const urlParams = new URLSearchParams(window.location.search);
+  const hasRef = !!urlParams.get("ref");
+
   useEffect(() => {
     if (loading) return;
+    if (hasRef && !user) return;
     if (isRecoveryMode()) { setDestination("/reset-password"); return; }
     if (!user) { setDestination(null); return; }
 
@@ -128,9 +133,10 @@ function RootRoute() {
         else setDestination("/onboarding/intro");
       })
       .catch(() => setDestination("/onboarding/intro"));
-  }, [user, session, loading]);
+  }, [user, session, loading, hasRef]);
 
   if (loading) return null;
+  if (hasRef && !user) return <ReferralLandingPage />;
   if (!user && !destination) return <WelcomePage />;
   if (!destination) return null;
   return <Redirect to={destination} />;

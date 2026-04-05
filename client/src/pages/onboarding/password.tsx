@@ -35,8 +35,9 @@ export default function OnboardingPassword() {
   const [email, setEmail] = useState(params.get("email") || "");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [referralCode, setReferralCode] = useState("");
-  const [showReferral, setShowReferral] = useState(false);
+  const storedRef = typeof window !== "undefined" ? localStorage.getItem("ha_referral_code") : null;
+  const [referralCode, setReferralCode] = useState(storedRef || "");
+  const [showReferral, setShowReferral] = useState(!!storedRef);
   const [loading, setLoading] = useState(false);
   const submittingRef = useRef(false);
 
@@ -151,7 +152,7 @@ export default function OnboardingPassword() {
 
       if (referralCode.trim() && sessionData?.session?.access_token) {
         try {
-          await apiFetch("/api/referrals/apply", {
+          const refRes = await apiFetch("/api/referrals/apply", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -159,6 +160,13 @@ export default function OnboardingPassword() {
             },
             body: JSON.stringify({ code: referralCode.trim() }),
           });
+          const refData = await refRes.json();
+          if (refRes.ok && refData.success) {
+            localStorage.removeItem("ha_referral_code");
+          } else {
+            console.warn("[signup] Referral code not applied:", refData.error);
+            localStorage.removeItem("ha_referral_code");
+          }
         } catch (err) {
           console.error("[signup] Failed to apply referral code:", err);
         }

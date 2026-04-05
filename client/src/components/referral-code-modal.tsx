@@ -17,12 +17,14 @@ export function ReferralCodeModal({ open, onClose, code, loading }: ReferralCode
 
   if (!open) return null;
 
+  const referralUrl = code ? `https://housalert.com/?ref=${code}` : "";
+
   async function handleCopy() {
-    if (!code) return;
+    if (!referralUrl) return;
     try {
-      await navigator.clipboard.writeText(code);
+      await navigator.clipboard.writeText(referralUrl);
       setCopied(true);
-      toast({ title: t("referral.copied"), description: t("referral.copiedDesc") });
+      toast({ title: "Link gekopieerd", description: t("referral.copiedDesc") });
       setTimeout(() => setCopied(false), 2000);
     } catch {
       toast({ title: t("referral.copyFailed"), description: t("referral.copyFailedDesc"), variant: "destructive" });
@@ -30,11 +32,14 @@ export function ReferralCodeModal({ open, onClose, code, loading }: ReferralCode
   }
 
   async function handleShare() {
-    if (!code) return;
-    const shareText = `${t("referral.modalBody")}\n\n${t("referral.codeLabel")}: ${code}`;
+    if (!referralUrl) return;
     if (navigator.share) {
       try {
-        await navigator.share({ text: shareText });
+        await navigator.share({
+          title: "HousAlert — Vind sneller een woning",
+          text: t("referral.modalBody"),
+          url: referralUrl,
+        });
       } catch {}
     } else {
       handleCopy();
@@ -60,16 +65,21 @@ export function ReferralCodeModal({ open, onClose, code, loading }: ReferralCode
           {t("referral.modalBody")}
         </p>
 
-        <div className="mt-6">
+        <div className="mt-4 bg-ha-surface rounded-[6px] px-4 py-3" data-testid="text-referral-reward">
+          <p className="text-[14px] font-medium text-ha-text">🎁 25% korting op eerste betaling</p>
+          <p className="text-[12px] text-ha-text-secondary mt-0.5">Voor jou én je vriend(in)</p>
+        </div>
+
+        <div className="mt-4">
           <p className="text-[12px] font-medium text-ha-text-secondary tracking-wide mb-2">
-            {t("referral.codeLabel")}
+            Jouw persoonlijke link
           </p>
-          <div className="bg-ha-surface rounded-[6px] px-5 py-4 flex items-center justify-center" data-testid="text-referral-code">
+          <div className="bg-ha-surface rounded-[6px] px-4 py-3 flex items-center justify-center" data-testid="text-referral-code">
             {loading ? (
               <Loader2 className="w-5 h-5 text-ha-text-secondary animate-spin" />
             ) : (
-              <span className="text-[22px] font-semibold tracking-[0.12em] text-ha-text select-all">
-                {code || "—"}
+              <span className="text-[13px] font-medium text-ha-text select-all break-all">
+                {referralUrl || "—"}
               </span>
             )}
           </div>
@@ -85,12 +95,12 @@ export function ReferralCodeModal({ open, onClose, code, loading }: ReferralCode
             {copied ? (
               <>
                 <Check className="w-4 h-4" />
-                {t("referral.copied")}
+                {t("referral.copiedShort")}
               </>
             ) : (
               <>
                 <Copy className="w-4 h-4" />
-                {t("referral.copy")}
+                Kopieer link
               </>
             )}
           </button>

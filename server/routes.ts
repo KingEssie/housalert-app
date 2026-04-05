@@ -1742,7 +1742,33 @@ export async function registerRoutes(
 
       log(`[checkout] Creating Stripe session: plan=${plan}, priceId=${stripePriceId}, customer=${customerId}, successUrl=${baseUrl}/subscription-success`);
 
-      const session = await stripe.checkout.sessions.create({
+      let referralCouponId: string | undefined;
+      try {
+        const { rows: refRows } = await pgPool.query(
+          "SELECT referred_by_code FROM user_profile_data WHERE user_id = $1",
+          [user.id]
+        );
+        if (refRows[0]?.referred_by_code) {
+          const COUPON_ID = "REFERRAL25";
+          try {
+            await stripe.coupons.retrieve(COUPON_ID);
+          } catch {
+            await stripe.coupons.create({
+              id: COUPON_ID,
+              percent_off: 25,
+              duration: "once",
+              name: "Referral — 25% off first payment",
+            });
+            log(`[checkout] Created Stripe coupon ${COUPON_ID}`);
+          }
+          referralCouponId = COUPON_ID;
+          log(`[checkout] Applying referral discount for user ${user.id} (referred by ${refRows[0].referred_by_code})`);
+        }
+      } catch (couponErr: any) {
+        log(`[checkout] Referral coupon check failed (non-blocking): ${couponErr.message}`);
+      }
+
+      const sessionParams: any = {
         customer: customerId,
         payment_method_types: ["card"],
         line_items: [{ price: stripePriceId, quantity: 1 }],
@@ -1754,7 +1780,14 @@ export async function registerRoutes(
         success_url: `${baseUrl}/subscription-success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${baseUrl}/onboarding/setup`,
         metadata: { supabase_user_id: user.id, plan },
-      });
+      };
+
+      if (referralCouponId) {
+        sessionParams.discounts = [{ coupon: referralCouponId }];
+        sessionParams.subscription_data.trial_period_days = undefined;
+      }
+
+      const session = await stripe.checkout.sessions.create(sessionParams);
 
       log(`[checkout] Session created: id=${session.id}, url=${session.url?.substring(0, 60)}...`);
       return res.json({ url: session.url });
@@ -2951,6 +2984,26 @@ export async function registerRoutes(
       });
     } catch (err: any) {
       return res.json({ matches_received: 0, reactions_sent: 0 });
+    }
+  });
+
+  app.get("/api/referral/info/:code", async (req, res) => {
+    try {
+      const code = (req.params.code || "").trim().toUpperCase();
+      if (!code || code.length < 4) return res.status(400).json({ error: "invalid_code" });
+
+      const { rows } = await pgPool.query(
+        "SELECT first_name FROM user_profile_data WHERE referral_code = $1",
+        [code]
+      );
+
+      if (rows.length === 0) return res.status(404).json({ error: "not_found" });
+
+      const firstName = (rows[0].first_name || "").trim();
+      return res.json({ valid: true, firstName, code });
+    } catch (err: any) {
+      log(`[referrals] GET /info error: ${err.message}`, "referral");
+      return res.status(500).json({ error: "Internal error" });
     }
   });
 
