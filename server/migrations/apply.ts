@@ -3,6 +3,7 @@ import { pool } from "../pg-pool";
 import { createActivationEventsTable } from "../activation-events";
 import { createCancellationFeedbackTable } from "../cancellation-feedback";
 import { ensureReferralSchema } from "../referrals";
+import { setDisabledSourceOverrides } from "../ingesters/index";
 
 export async function runStartupMigration() {
   try {
@@ -29,6 +30,51 @@ export async function runStartupMigration() {
   await createCancellationFeedbackTable();
   await ensureReferralSchema(pool);
   await createFavoritesTable();
+  await createAdminSettingsTable();
+  await createAdminSourceOverridesTable();
+}
+
+async function createAdminSettingsTable() {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS admin_settings (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )
+    `);
+    await pool.query(`
+      INSERT INTO admin_settings (key, value) VALUES ('free_matches_limit', '3')
+      ON CONFLICT (key) DO NOTHING
+    `);
+    await pool.query(`
+      INSERT INTO admin_settings (key, value) VALUES ('show_blurred_locked', 'true')
+      ON CONFLICT (key) DO NOTHING
+    `);
+    log("[MIGRATION] admin_settings table OK", "migration");
+  } catch (err: any) {
+    log(`[MIGRATION] Error creating admin_settings: ${err.message}`, "migration");
+  }
+}
+
+async function createAdminSourceOverridesTable() {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS admin_source_overrides (
+        source_name TEXT PRIMARY KEY,
+        enabled BOOLEAN NOT NULL DEFAULT TRUE,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )
+    `);
+    const { rows } = await pool.query("SELECT source_name FROM admin_source_overrides WHERE enabled = false");
+    if (rows.length > 0) {
+      setDisabledSourceOverrides(new Set(rows.map((r: any) => r.source_name)));
+      log(`[MIGRATION] Loaded ${rows.length} disabled source overrides`, "migration");
+    }
+    log("[MIGRATION] admin_source_overrides table OK", "migration");
+  } catch (err: any) {
+    log(`[MIGRATION] Error creating admin_source_overrides: ${err.message}`, "migration");
+  }
 }
 
 async function createFavoritesTable() {

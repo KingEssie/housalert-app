@@ -5030,7 +5030,7 @@ export async function registerRoutes(
       const limit = Math.min(parseInt(req.query.limit as string || "50"), 100);
 
       let query = supabase.from("listings")
-        .select("id, title, source, city, price, size_m2, bedrooms, url, created_at", { count: "exact" })
+        .select("id, title, source, city, price, size_m2, bedrooms, url, created_at, featured, hidden_from_feed, image_url", { count: "exact" })
         .order("created_at", { ascending: false })
         .range((page - 1) * limit, page * limit - 1);
 
@@ -5764,11 +5764,13 @@ export async function registerRoutes(
   app.patch("/api/admin/portal/listings/:id", requireAdmin, async (req, res) => {
     try {
       const { id } = req.params;
-      const { title, price, image_url } = req.body || {};
+      const { title, price, image_url, featured, hidden_from_feed } = req.body || {};
       const updates: any = {};
       if (typeof title === "string") updates.title = title;
       if (typeof price === "number" || price === null) updates.price = price;
       if (typeof image_url === "string" || image_url === null) updates.image_url = image_url;
+      if (typeof featured === "boolean") updates.featured = featured;
+      if (typeof hidden_from_feed === "boolean") updates.hidden_from_feed = hidden_from_feed;
       if (Object.keys(updates).length === 0) return res.status(400).json({ error: "No fields to update" });
       const { error } = await supabase.from("listings").update(updates).eq("id", id);
       if (error) throw error;
@@ -5958,6 +5960,209 @@ export async function registerRoutes(
       res.json({ updated, failed, total: listings.length });
     } catch (err: any) {
       log(`[admin] Source backfill error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/portal/settings", requireAdmin, async (_req, res) => {
+    try {
+      const { rows } = await pgPool.query("SELECT key, value FROM admin_settings");
+      const settings: Record<string, string> = {};
+      for (const r of rows) settings[r.key] = r.value;
+      res.json({ settings });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.put("/api/admin/portal/settings", requireAdmin, async (req, res) => {
+    try {
+      const ALLOWED_KEYS: Record<string, "number" | "boolean"> = {
+        free_matches_limit: "number",
+        show_blurred_locked: "boolean",
+      };
+      const { settings } = req.body || {};
+      if (!settings || typeof settings !== "object") return res.status(400).json({ error: "settings object required" });
+      for (const [key, value] of Object.entries(settings)) {
+        if (!ALLOWED_KEYS[key]) continue;
+        const type = ALLOWED_KEYS[key];
+        if (type === "number" && (isNaN(Number(value)) || Number(value) < 0)) continue;
+        if (type === "boolean" && value !== "true" && value !== "false" && typeof value !== "boolean") continue;
+        await pgPool.query(
+          "INSERT INTO admin_settings (key, value, updated_at) VALUES ($1, $2, NOW()) ON CONFLICT (key) DO UPDATE SET value = $2, updated_at = NOW()",
+          [key, String(value)]
+        );
+      }
+      log(`[admin] Settings updated: ${JSON.stringify(settings)}`);
+      res.json({ success: true });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/portal/source-overrides", requireAdmin, async (_req, res) => {
+    try {
+      const { rows } = await pgPool.query("SELECT source_name, enabled FROM admin_source_overrides");
+      const overrides: Record<string, boolean> = {};
+      for (const r of rows) overrides[r.source_name] = r.enabled;
+      const { getSourceStatuses } = await import("./ingesters/index");
+      const sources = getSourceStatuses().map(s => ({
+        name: s.name,
+        systemStatus: s.status,
+        note: s.note || null,
+        adminEnabled: overrides[s.name] !== undefined ? overrides[s.name] : true,
+      }));
+      res.json({ sources, overrides });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/admin/portal/source-toggle", requireAdmin, async (req, res) => {
+    try {
+      const { source, enabled } = req.body || {};
+      if (!source || typeof enabled !== "boolean") return res.status(400).json({ error: "source and enabled required" });
+      await pgPool.query(
+        "INSERT INTO admin_source_overrides (source_name, enabled, updated_at) VALUES ($1, $2, NOW()) ON CONFLICT (source_name) DO UPDATE SET enabled = $2, updated_at = NOW()",
+        [source, enabled]
+      );
+      const { rows } = await pgPool.query("SELECT source_name FROM admin_source_overrides WHERE enabled = false");
+      const { setDisabledSourceOverrides } = await import("./ingesters/index");
+      setDisabledSourceOverrides(new Set(rows.map((r: any) => r.source_name)));
+      log(`[admin] Source ${source} ${enabled ? "enabled" : "disabled"}`);
+      res.json({ success: true });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/admin/portal/test-alert", requireAdmin, async (req, res) => {
+    try {
+      const adminUser = (req as any).adminUser;
+      const { type, email, userId } = req.body || {};
+
+      if (type === "email") {
+        const targetEmail = email || adminUser.email;
+        const testListing = {
+          title: "Modern apartment in Berlin",
+          city: "Berlin",
+          price: 1200,
+          bedrooms: 2,
+          size_m2: 65,
+          url: "https://example.com",
+          image_url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=400&fit=crop",
+        };
+        const { sendMatchAlert } = await import("./email");
+        const { getUserLanguage } = await import("./notifications/buffer");
+        const lang = await getUserLanguage(adminUser.id);
+        const success = await sendMatchAlert(targetEmail, testListing, lang);
+        log(`[admin] Test email to ${targetEmail}: ${success ? "OK" : "FAILED"}`);
+        return res.json({ success, type: "email", sentTo: targetEmail });
+      }
+
+      if (type === "push") {
+        const targetUserId = userId || adminUser.id;
+        const webResult = await sendPushToUser(targetUserId, {
+          title: "HousAlert Test",
+          body: "Push notifications work! 🏠",
+          url: "/dashboard",
+        }, supabase);
+        const expoResult = await sendExpoTestPush(targetUserId);
+        log(`[admin] Test push to ${targetUserId.substring(0, 8)}: web=${webResult.sent} expo=${expoResult.sent}`);
+        return res.json({ success: webResult.sent + expoResult.sent > 0, type: "push", web: webResult, expo: expoResult });
+      }
+
+      return res.status(400).json({ error: "type must be 'email' or 'push'" });
+    } catch (err: any) {
+      log(`[admin] Test alert error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/admin/portal/resend-matches/:userId", requireAdmin, async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const { data: sub } = await supabase.from("subscriptions").select("status").eq("user_id", userId).single();
+      if (!sub || (sub.status !== "active" && sub.status !== "trial")) {
+        return res.status(400).json({ error: "User does not have an active subscription" });
+      }
+
+      const undelivered = await pgPool.query(
+        "SELECT id, listing_id, listing_title, listing_url, listing_city, listing_price FROM user_matches WHERE user_id = $1 AND email_sent = false ORDER BY matched_at DESC LIMIT 20",
+        [userId]
+      );
+      if (undelivered.rows.length === 0) return res.json({ success: true, resent: 0, message: "No undelivered matches" });
+
+      const { data: authUser } = await supabase.auth.admin.getUserById(userId);
+      const userEmail = authUser?.user?.email;
+      if (!userEmail) return res.status(400).json({ error: "User email not found" });
+
+      const { sendBatchMatchAlert } = await import("./email");
+      const { getUserLanguage } = await import("./notifications/buffer");
+      const lang = await getUserLanguage(userId);
+      const listings = undelivered.rows.map((m: any) => ({
+        title: m.listing_title || "Listing",
+        url: m.listing_url || "",
+        city: m.listing_city || "",
+        price: m.listing_price || 0,
+        bedrooms: 0,
+        size_m2: 0,
+      }));
+
+      const success = await sendBatchMatchAlert(userEmail, listings, lang);
+      if (success) {
+        const ids = undelivered.rows.map((m: any) => m.id);
+        await pgPool.query(
+          "UPDATE user_matches SET email_sent = true, email_sent_at = NOW() WHERE id = ANY($1)",
+          [ids]
+        );
+      }
+      log(`[admin] Resend matches to ${userId.substring(0, 8)}: ${undelivered.rows.length} matches, success=${success}`);
+      res.json({ success, resent: undelivered.rows.length });
+    } catch (err: any) {
+      log(`[admin] Resend matches error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/portal/alert-activity", requireAdmin, async (_req, res) => {
+    try {
+      const recentEmails = await pgPool.query(
+        `SELECT um.user_id, um.listing_title, um.email_sent_at, um.push_sent_at, upd.email
+         FROM user_matches um
+         LEFT JOIN user_profile_data upd ON um.user_id::text = upd.user_id::text
+         WHERE um.email_sent = true OR um.push_sent = true
+         ORDER BY COALESCE(um.email_sent_at, um.push_sent_at) DESC
+         LIMIT 50`
+      );
+
+      const emailsToday = await pgPool.query(
+        "SELECT COUNT(*) FROM user_matches WHERE email_sent = true AND email_sent_at >= CURRENT_DATE"
+      );
+      const pushToday = await pgPool.query(
+        "SELECT COUNT(*) FROM user_matches WHERE push_sent = true AND push_sent_at >= CURRENT_DATE"
+      );
+      const failedThisWeek = await pgPool.query(
+        "SELECT COUNT(*) FROM user_matches WHERE email_sent = false AND matched_at >= NOW() - INTERVAL '7 days' AND visible_in_app = true"
+      );
+
+      res.json({
+        recentActivity: recentEmails.rows.map((r: any) => ({
+          userId: r.user_id,
+          email: r.email || null,
+          title: r.listing_title || "—",
+          emailSentAt: r.email_sent_at,
+          pushSentAt: r.push_sent_at,
+          channel: r.email_sent_at ? "email" : "push",
+        })),
+        stats: {
+          emailsToday: parseInt(emailsToday.rows[0].count),
+          pushToday: parseInt(pushToday.rows[0].count),
+          undelivered7d: parseInt(failedThisWeek.rows[0].count),
+        },
+      });
+    } catch (err: any) {
+      log(`[admin] Alert activity error: ${err.message}`);
       res.status(500).json({ error: err.message });
     }
   });

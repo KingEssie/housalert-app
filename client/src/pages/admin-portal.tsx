@@ -8,16 +8,16 @@ import {
   Mail, Smartphone, AlertTriangle, CheckCircle, XCircle,
   TrendingUp, Activity, Database, Globe, Zap, ArrowLeft,
   Target, Percent, Eye, MessageCircle,
-  Radio, Layers, Settings,
+  Radio, Layers, Settings, Bell, Send, Power,
   LayoutDashboard, Signal, Image, Trash2, Pencil,
-  Save, X, RotateCw, Menu, ChevronDown, MoreVertical,
+  Save, X, RotateCw, Menu, ChevronDown, MoreVertical, Star, EyeOff, Lock, ToggleLeft, ToggleRight, Sliders,
 } from "lucide-react";
 import { HousAlertLogo } from "@/components/housalert-logo";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
 
-type TabId = "dashboard" | "listings" | "images" | "sources" | "users" | "subscriptions" | "system";
+type TabId = "dashboard" | "listings" | "images" | "sources" | "users" | "subscriptions" | "alerts" | "settings" | "system";
 
 async function adminFetch(path: string, options?: RequestInit) {
   const { data: { session } } = await supabase.auth.getSession();
@@ -237,11 +237,13 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
 
       <div>
         <SectionHeader title="Quick actions" />
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-3 lg:grid-cols-6 gap-2">
           {[
             { icon: Layers, label: "Listings", tab: "listings" as TabId },
             { icon: Image, label: "Images", tab: "images" as TabId },
             { icon: Users, label: "Users", tab: "users" as TabId },
+            { icon: Bell, label: "Alerts", tab: "alerts" as TabId },
+            { icon: Sliders, label: "Settings", tab: "settings" as TabId },
             { icon: Settings, label: "System", tab: "system" as TabId },
           ].map(({ icon: Icon, label, tab }) => (
             <button key={tab} onClick={() => onNavigate(tab)} className={`${CARD} p-3 flex flex-col items-center gap-1.5 hover:bg-[#FAFAFA] transition-colors`} data-testid={`quick-${tab}`}>
@@ -323,6 +325,32 @@ function ListingsTab() {
       .finally(() => setDetailLoading(false));
   }
 
+  async function toggleFeatured() {
+    if (!detail) return;
+    setSaving(true);
+    try {
+      await adminFetch(`/api/admin/portal/listings/${detail.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ featured: !detail.featured }),
+      });
+      setDetail({ ...detail, featured: !detail.featured });
+    } catch {}
+    setSaving(false);
+  }
+
+  async function toggleHidden() {
+    if (!detail) return;
+    setSaving(true);
+    try {
+      await adminFetch(`/api/admin/portal/listings/${detail.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ hidden_from_feed: !detail.hidden_from_feed }),
+      });
+      setDetail({ ...detail, hidden_from_feed: !detail.hidden_from_feed });
+    } catch {}
+    setSaving(false);
+  }
+
   if (detailId) {
     if (detailLoading) return <LoadingState />;
     return (
@@ -331,35 +359,73 @@ function ListingsTab() {
           <ArrowLeft className="w-4 h-4" /> Back to listings
         </button>
         {detail ? (
-          <div className={`${CARD} p-5`}>
-            <h2 className="text-[18px] font-bold text-[#111] mb-4">{detail.title || "Untitled"}</h2>
-            {detail.image_url && (
-              <div className="mb-4 rounded-xl overflow-hidden bg-[#F7F7F7]">
-                <img src={detail.image_url} alt="" className="w-full h-48 object-cover" onError={e => (e.target as any).style.display = "none"} />
-              </div>
-            )}
-            <div className="space-y-2.5 text-[13px]">
-              {[
-                ["ID", detail.id],
-                ["Price", detail.price ? `€${detail.price}` : "—"],
-                ["City", detail.city || "—"],
-                ["Source", detail.source || "—"],
-                ["Bedrooms", detail.bedrooms || "—"],
-                ["Size", detail.size_m2 ? `${detail.size_m2} m²` : "—"],
-                ["Created", detail.created_at ? new Date(detail.created_at).toLocaleString() : "—"],
-              ].map(([k, v]) => (
-                <div key={k} className="flex justify-between">
-                  <span className="text-[#6B7280]">{k}</span>
-                  <span className="font-medium text-[#111] max-w-[60%] truncate text-right">{v}</span>
+          <>
+            <div className={`${CARD} p-5`}>
+              <div className="flex items-start justify-between mb-4">
+                <h2 className="text-[18px] font-bold text-[#111]">{detail.title || "Untitled"}</h2>
+                <div className="flex gap-1.5">
+                  {detail.featured && <Badge className="bg-amber-50 text-amber-700 border-amber-200 text-[10px]">Aanrader</Badge>}
+                  {detail.hidden_from_feed && <Badge className="bg-[#F7F7F7] text-[#6B7280] text-[10px]">Hidden</Badge>}
                 </div>
-              ))}
-              {detail.url && (
-                <a href={detail.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-ha-primary font-medium mt-2" data-testid="link-listing-url">
-                  <ExternalLink className="w-3.5 h-3.5" /> Open original
-                </a>
+              </div>
+              {detail.image_url && (
+                <div className="mb-4 rounded-xl overflow-hidden bg-[#F7F7F7]">
+                  <img src={detail.image_url} alt="" className="w-full h-48 object-cover" onError={e => (e.target as any).style.display = "none"} />
+                </div>
               )}
+              <div className="space-y-2.5 text-[13px]">
+                {[
+                  ["ID", detail.id],
+                  ["Price", detail.price ? `€${detail.price}` : "—"],
+                  ["City", detail.city || "—"],
+                  ["Source", detail.source || "—"],
+                  ["Bedrooms", detail.bedrooms || "—"],
+                  ["Size", detail.size_m2 ? `${detail.size_m2} m²` : "—"],
+                  ["Created", detail.created_at ? new Date(detail.created_at).toLocaleString() : "—"],
+                ].map(([k, v]) => (
+                  <div key={k} className="flex justify-between">
+                    <span className="text-[#6B7280]">{k}</span>
+                    <span className="font-medium text-[#111] max-w-[60%] truncate text-right">{v}</span>
+                  </div>
+                ))}
+                {detail.url && (
+                  <a href={detail.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-ha-primary font-medium mt-2" data-testid="link-listing-url">
+                    <ExternalLink className="w-3.5 h-3.5" /> Open original
+                  </a>
+                )}
+              </div>
             </div>
-          </div>
+
+            <div className={`${CARD} p-5`}>
+              <h3 className="text-[15px] font-semibold text-[#111] mb-3">Quality controls</h3>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Star className="w-4 h-4 text-amber-500" />
+                    <div>
+                      <p className="text-[13px] font-medium text-[#111]">Featured (Aanrader)</p>
+                      <p className="text-[11px] text-[#6B7280]">Prioritize in user feeds</p>
+                    </div>
+                  </div>
+                  <button onClick={toggleFeatured} disabled={saving} className="relative" data-testid="toggle-featured">
+                    {detail.featured ? <ToggleRight className="w-8 h-8 text-ha-primary" /> : <ToggleLeft className="w-8 h-8 text-[#D1D5DB]" />}
+                  </button>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <EyeOff className="w-4 h-4 text-[#6B7280]" />
+                    <div>
+                      <p className="text-[13px] font-medium text-[#111]">Hide from feed</p>
+                      <p className="text-[11px] text-[#6B7280]">Remove from user matching</p>
+                    </div>
+                  </div>
+                  <button onClick={toggleHidden} disabled={saving} className="relative" data-testid="toggle-hidden">
+                    {detail.hidden_from_feed ? <ToggleRight className="w-8 h-8 text-ha-danger" /> : <ToggleLeft className="w-8 h-8 text-[#D1D5DB]" />}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </>
         ) : (
           <EmptyState title="Not found" message="Listing could not be loaded." />
         )}
@@ -407,7 +473,11 @@ function ListingsTab() {
                     )}
                   </div>
                   <div className="flex-1 min-w-0 cursor-pointer" onClick={() => openDetail(l.id)}>
-                    <p className="text-[13px] font-semibold text-[#111] truncate">{l.title || "Untitled"}</p>
+                    <div className="flex items-center gap-1.5">
+                      <p className="text-[13px] font-semibold text-[#111] truncate">{l.title || "Untitled"}</p>
+                      {l.featured && <Star className="w-3 h-3 text-amber-500 flex-shrink-0" />}
+                      {l.hidden_from_feed && <EyeOff className="w-3 h-3 text-[#9CA3AF] flex-shrink-0" />}
+                    </div>
                     <div className="flex items-center gap-2 text-[11px] text-[#6B7280] mt-0.5">
                       <Badge variant="secondary" className="text-[10px] px-1.5 py-0">{l.source}</Badge>
                       <span>{l.city}</span>
@@ -690,13 +760,34 @@ function SourcesTab() {
   const [cityFilter, setCityFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
   const [sourceBackfilling, setSourceBackfilling] = useState<string | null>(null);
+  const [sourceOverrides, setSourceOverrides] = useState<Record<string, boolean>>({});
+  const [togglingSource, setTogglingSource] = useState<string | null>(null);
 
-  useEffect(() => {
-    adminFetch("/api/admin/portal/sources")
-      .then(d => { setSources(d.sources || []); setLatestRun(d.latestRun); })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
+  function loadSources() {
+    setLoading(true);
+    Promise.all([
+      adminFetch("/api/admin/portal/sources").catch(() => ({ sources: [], latestRun: null })),
+      adminFetch("/api/admin/portal/source-overrides").catch(() => ({ overrides: {} })),
+    ]).then(([srcData, overData]) => {
+      setSources(srcData.sources || []);
+      setLatestRun(srcData.latestRun);
+      setSourceOverrides(overData.overrides || {});
+    }).finally(() => setLoading(false));
+  }
+
+  useEffect(() => { loadSources(); }, []);
+
+  async function toggleSource(sourceName: string, currentEnabled: boolean) {
+    setTogglingSource(sourceName);
+    try {
+      await adminFetch("/api/admin/portal/source-toggle", {
+        method: "POST",
+        body: JSON.stringify({ source: sourceName, enabled: !currentEnabled }),
+      });
+      setSourceOverrides(prev => ({ ...prev, [sourceName]: !currentEnabled }));
+    } catch {}
+    setTogglingSource(null);
+  }
 
   async function triggerSourceBackfill(source: string) {
     setSourceBackfilling(source);
@@ -763,14 +854,28 @@ function SourcesTab() {
           {filteredSources.length > 0 ? filteredSources.map((s: any) => {
             const st = s.status || (s.errors > 0 ? "broken" : s.found > 0 ? "active" : "broken");
             const sourceName = s.name || s.source;
+            const baseSource = sourceName.replace(/\s*\(.*\)$/, "");
+            const isAdminEnabled = sourceOverrides[baseSource] !== undefined ? sourceOverrides[baseSource] : true;
             return (
-              <div key={`${sourceName}-${s.city || ""}`} className="px-4 py-3" data-testid={`source-card-${sourceName}`}>
+              <div key={`${sourceName}-${s.city || ""}`} className={`px-4 py-3 ${!isAdminEnabled ? "opacity-50" : ""}`} data-testid={`source-card-${sourceName}`}>
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-2 min-w-0">
-                    <StatusDot status={st} />
+                    <StatusDot status={isAdminEnabled ? st : "disabled"} />
                     <span className="text-[13px] font-semibold text-[#111] truncate">{sourceName}</span>
+                    {!isAdminEnabled && <Badge className="bg-[#F7F7F7] text-[#9CA3AF] text-[9px]">Disabled</Badge>}
                   </div>
                   <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => toggleSource(baseSource, isAdminEnabled)}
+                      disabled={togglingSource === baseSource}
+                      className="flex-shrink-0"
+                      data-testid={`toggle-source-${sourceName}`}
+                    >
+                      {isAdminEnabled
+                        ? <ToggleRight className="w-7 h-7 text-emerald-500" />
+                        : <ToggleLeft className="w-7 h-7 text-[#D1D5DB]" />
+                      }
+                    </button>
                     <StatusBadge status={st} />
                     <Button
                       variant="outline"
@@ -843,6 +948,15 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
     setActionLoading(null);
   }
 
+  async function resendUserMatches() {
+    if (!profile?.user_id) return;
+    setActionLoading("resend");
+    try {
+      await adminFetch(`/api/admin/portal/resend-matches/${profile.user_id}`, { method: "POST" });
+    } catch {}
+    setActionLoading(null);
+  }
+
   return (
     <div className="space-y-4">
       <button onClick={onBack} className="flex items-center gap-1.5 text-[13px] text-ha-primary font-medium" data-testid="button-back-users">
@@ -911,6 +1025,13 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
                 </Button>
               ))}
             </div>
+          </div>
+          <div>
+            <p className="text-[12px] text-[#6B7280] font-medium mb-1.5">Alerts</p>
+            <Button variant="outline" size="sm" onClick={resendUserMatches} disabled={actionLoading === "resend"} className="rounded-full" data-testid="button-resend-matches">
+              <Send className="w-3.5 h-3.5 mr-1" />
+              {actionLoading === "resend" ? "Sending..." : "Resend undelivered matches"}
+            </Button>
           </div>
           <div className="pt-2 border-t border-[#F7F7F7]">
             <Button variant="outline" size="sm" onClick={deactivateUser} disabled={actionLoading === "deactivate"} className="rounded-full text-ha-danger border-ha-danger/30 hover:bg-ha-danger/5" data-testid="button-deactivate">
@@ -1296,6 +1417,240 @@ function SystemTab() {
   );
 }
 
+function AlertsTab() {
+  const [activity, setActivity] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [testType, setTestType] = useState<"email" | "push">("email");
+  const [testEmail, setTestEmail] = useState("");
+  const [testUserId, setTestUserId] = useState("");
+  const [sending, setSending] = useState(false);
+  const [testResult, setTestResult] = useState<string | null>(null);
+  const [resendUserId, setResendUserId] = useState("");
+  const [resending, setResending] = useState(false);
+  const [resendResult, setResendResult] = useState<string | null>(null);
+
+  function load() {
+    setLoading(true);
+    adminFetch("/api/admin/portal/alert-activity")
+      .then(d => {
+        setActivity(d.recentActivity || []);
+        setStats(d.stats || null);
+      })
+      .catch(() => {})
+      .finally(() => { setLoading(false); setRefreshing(false); });
+  }
+
+  useEffect(() => { load(); }, []);
+
+  async function sendTestAlert() {
+    setSending(true);
+    setTestResult(null);
+    try {
+      const body: any = { type: testType };
+      if (testType === "email" && testEmail) body.email = testEmail;
+      if (testType === "push" && testUserId) body.userId = testUserId;
+      const res = await adminFetch("/api/admin/portal/test-alert", {
+        method: "POST",
+        body: JSON.stringify(body),
+      });
+      setTestResult(res.success ? `Sent successfully${res.sentTo ? ` to ${res.sentTo}` : ""}` : "Failed to send");
+    } catch (err: any) {
+      setTestResult(`Error: ${err.message}`);
+    }
+    setSending(false);
+  }
+
+  async function resendMatches() {
+    if (!resendUserId) return;
+    setResending(true);
+    setResendResult(null);
+    try {
+      const res = await adminFetch(`/api/admin/portal/resend-matches/${resendUserId}`, { method: "POST" });
+      setResendResult(res.success ? `Resent ${res.resent} matches` : res.message || "Failed");
+    } catch (err: any) {
+      setResendResult(`Error: ${err.message}`);
+    }
+    setResending(false);
+  }
+
+  if (loading) return <LoadingState />;
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-[24px] font-bold text-[#111]">Alert Control</h1>
+        <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-full bg-[#F7F7F7] flex items-center justify-center hover:bg-[#EFEFEF]" data-testid="button-refresh-alerts">
+          <RefreshCw className={`w-4 h-4 text-[#6B7280] ${refreshing ? "animate-spin" : ""}`} />
+        </button>
+      </div>
+
+      {stats && (
+        <div className="grid grid-cols-3 gap-3">
+          <MetricCard label="Emails today" value={stats.emailsToday} icon={Mail} />
+          <MetricCard label="Push today" value={stats.pushToday} icon={Smartphone} />
+          <MetricCard label="Undelivered 7d" value={stats.undelivered7d} icon={AlertTriangle} />
+        </div>
+      )}
+
+      <div className={`${CARD} p-5`}>
+        <h3 className="text-[15px] font-semibold text-[#111] mb-3">Send test alert</h3>
+        <div className="space-y-3">
+          <div className="flex gap-2">
+            {(["email", "push"] as const).map(t => (
+              <button key={t} onClick={() => setTestType(t)} className={`px-3 py-1.5 rounded-full text-[12px] font-medium transition-colors ${testType === t ? "bg-[#111] text-white" : "bg-white text-[#6B7280] border border-[#F0F0F0]"}`} data-testid={`test-type-${t}`}>
+                {t === "email" ? "Email" : "Push"}
+              </button>
+            ))}
+          </div>
+          {testType === "email" ? (
+            <input placeholder="Target email (blank = admin)" value={testEmail} onChange={e => setTestEmail(e.target.value)} className="w-full h-10 px-4 rounded-xl bg-[#F7F7F7] text-[13px] text-[#111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-test-email" />
+          ) : (
+            <input placeholder="Target user ID (blank = admin)" value={testUserId} onChange={e => setTestUserId(e.target.value)} className="w-full h-10 px-4 rounded-xl bg-[#F7F7F7] text-[13px] text-[#111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-test-userid" />
+          )}
+          <div className="flex items-center gap-3">
+            <Button size="sm" onClick={sendTestAlert} disabled={sending} className="rounded-full bg-ha-primary hover:bg-ha-primary/90 text-white" data-testid="button-send-test">
+              <Send className="w-3.5 h-3.5 mr-1" /> {sending ? "Sending..." : "Send test"}
+            </Button>
+            {testResult && <span className={`text-[12px] ${testResult.startsWith("Error") || testResult === "Failed to send" ? "text-ha-danger" : "text-emerald-600"}`} data-testid="text-test-result">{testResult}</span>}
+          </div>
+        </div>
+      </div>
+
+      <div className={`${CARD} p-5`}>
+        <h3 className="text-[15px] font-semibold text-[#111] mb-3">Resend matches to user</h3>
+        <p className="text-[12px] text-[#6B7280] mb-3">Re-deliver undelivered matches for a specific user via email.</p>
+        <div className="flex gap-2">
+          <input placeholder="User ID" value={resendUserId} onChange={e => setResendUserId(e.target.value)} className="flex-1 h-10 px-4 rounded-xl bg-[#F7F7F7] text-[13px] text-[#111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-resend-userid" />
+          <Button size="sm" onClick={resendMatches} disabled={resending || !resendUserId} className="rounded-full bg-ha-primary hover:bg-ha-primary/90 text-white" data-testid="button-resend">
+            <RotateCw className={`w-3.5 h-3.5 mr-1 ${resending ? "animate-spin" : ""}`} /> {resending ? "Sending..." : "Resend"}
+          </Button>
+        </div>
+        {resendResult && <p className={`text-[12px] mt-2 ${resendResult.startsWith("Error") ? "text-ha-danger" : "text-emerald-600"}`} data-testid="text-resend-result">{resendResult}</p>}
+      </div>
+
+      <div>
+        <SectionHeader title="Recent alert activity" />
+        <div className={`${CARD} divide-y divide-[#F7F7F7]`}>
+          {activity.length === 0 ? (
+            <div className="px-4 py-8 text-center text-[13px] text-[#6B7280]">No recent activity</div>
+          ) : activity.map((a, i) => (
+            <div key={i} className="px-4 py-3 flex items-center gap-3" data-testid={`activity-row-${i}`}>
+              {a.channel === "email" ? <Mail className="w-4 h-4 text-[#6B7280] flex-shrink-0" /> : <Smartphone className="w-4 h-4 text-[#6B7280] flex-shrink-0" />}
+              <div className="flex-1 min-w-0">
+                <p className="text-[13px] font-medium text-[#111] truncate">{a.title}</p>
+                <p className="text-[11px] text-[#6B7280] truncate">{a.email || a.userId?.substring(0, 8)}</p>
+              </div>
+              <div className="text-right flex-shrink-0">
+                <Badge variant="secondary" className="text-[9px]">{a.channel}</Badge>
+                <p className="text-[10px] text-[#9CA3AF] mt-0.5">{a.emailSentAt ? new Date(a.emailSentAt).toLocaleString() : a.pushSentAt ? new Date(a.pushSentAt).toLocaleString() : ""}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SettingsTab() {
+  const [settings, setSettings] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    adminFetch("/api/admin/portal/settings")
+      .then(d => setSettings(d.settings || {}))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  async function saveSettings() {
+    setSaving(true);
+    setSaved(false);
+    try {
+      await adminFetch("/api/admin/portal/settings", {
+        method: "PUT",
+        body: JSON.stringify({ settings }),
+      });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch {}
+    setSaving(false);
+  }
+
+  if (loading) return <LoadingState />;
+
+  return (
+    <div className="space-y-6">
+      <h1 className="text-[24px] font-bold text-[#111]">Revenue Settings</h1>
+
+      <div className={`${CARD} p-5`}>
+        <h3 className="text-[15px] font-semibold text-[#111] mb-1">Paywall behavior</h3>
+        <p className="text-[12px] text-[#6B7280] mb-4">Control what free/expired users see in the app.</p>
+
+        <div className="space-y-4">
+          <div>
+            <label className="text-[12px] font-medium text-[#6B7280] mb-1.5 block">Free matches limit</label>
+            <p className="text-[11px] text-[#9CA3AF] mb-1.5">Number of matches a free user can see before the paywall appears.</p>
+            <div className="flex gap-2">
+              {["0", "1", "3", "5", "10"].map(v => (
+                <button key={v} onClick={() => setSettings(s => ({ ...s, free_matches_limit: v }))} className={`px-3 py-1.5 rounded-full text-[12px] font-medium transition-colors ${settings.free_matches_limit === v ? "bg-[#111] text-white" : "bg-white text-[#6B7280] border border-[#F0F0F0]"}`} data-testid={`setting-limit-${v}`}>
+                  {v === "0" ? "None" : v}
+                </button>
+              ))}
+              <input
+                type="number"
+                value={settings.free_matches_limit || "3"}
+                onChange={e => setSettings(s => ({ ...s, free_matches_limit: e.target.value }))}
+                className="w-16 h-8 px-3 rounded-lg bg-[#F7F7F7] text-[13px] text-center focus:outline-none"
+                min="0"
+                data-testid="input-free-limit"
+              />
+            </div>
+          </div>
+
+          <div className="pt-3 border-t border-[#F7F7F7]">
+            <div className="flex items-center justify-between">
+              <div>
+                <label className="text-[12px] font-medium text-[#6B7280] block">Show blurred locked matches</label>
+                <p className="text-[11px] text-[#9CA3AF]">When enabled, free users see blurred match previews behind the paywall.</p>
+              </div>
+              <button onClick={() => setSettings(s => ({ ...s, show_blurred_locked: s.show_blurred_locked === "true" ? "false" : "true" }))} data-testid="toggle-blurred">
+                {settings.show_blurred_locked === "true"
+                  ? <ToggleRight className="w-8 h-8 text-ha-primary" />
+                  : <ToggleLeft className="w-8 h-8 text-[#D1D5DB]" />
+                }
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className={`${CARD} p-5`}>
+        <h3 className="text-[15px] font-semibold text-[#111] mb-1">Current values</h3>
+        <div className="space-y-2 mt-3">
+          {Object.entries(settings).map(([key, value]) => (
+            <div key={key} className="flex justify-between text-[13px]">
+              <span className="text-[#6B7280] font-mono text-[12px]">{key}</span>
+              <span className="font-medium text-[#111]">{value}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex items-center gap-3">
+        <Button size="sm" onClick={saveSettings} disabled={saving} className="rounded-full bg-ha-primary hover:bg-ha-primary/90 text-white" data-testid="button-save-settings">
+          <Save className="w-3.5 h-3.5 mr-1" /> {saving ? "Saving..." : "Save settings"}
+        </Button>
+        {saved && <span className="text-[12px] text-emerald-600" data-testid="text-settings-saved">Settings saved</span>}
+      </div>
+    </div>
+  );
+}
+
 const TAB_CONFIG: { id: TabId; label: string; icon: any }[] = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "listings", label: "Listings", icon: Layers },
@@ -1303,6 +1658,8 @@ const TAB_CONFIG: { id: TabId; label: string; icon: any }[] = [
   { id: "sources", label: "Sources", icon: Radio },
   { id: "users", label: "Users", icon: Users },
   { id: "subscriptions", label: "Subscriptions", icon: CreditCard },
+  { id: "alerts", label: "Alerts", icon: Bell },
+  { id: "settings", label: "Settings", icon: Sliders },
   { id: "system", label: "System", icon: Signal },
 ];
 
@@ -1412,6 +1769,8 @@ export default function AdminPortalPage() {
           {activeTab === "sources" && <SourcesTab />}
           {activeTab === "users" && <UsersTab />}
           {activeTab === "subscriptions" && <SubscriptionsTab />}
+          {activeTab === "alerts" && <AlertsTab />}
+          {activeTab === "settings" && <SettingsTab />}
           {activeTab === "system" && <SystemTab />}
         </main>
       </div>

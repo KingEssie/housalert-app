@@ -115,6 +115,20 @@ export function getEnabledSources(): string[] {
   return SOURCE_STATUSES.filter(s => s.status === "active").map(s => s.name);
 }
 
+let _disabledSourceOverrides: Set<string> = new Set();
+
+export function setDisabledSourceOverrides(disabled: Set<string>) {
+  _disabledSourceOverrides = disabled;
+}
+
+export function getDisabledSourceOverrides(): Set<string> {
+  return _disabledSourceOverrides;
+}
+
+export function isSourceEnabledByAdmin(sourceName: string): boolean {
+  return !_disabledSourceOverrides.has(sourceName);
+}
+
 export function getLastRunStatus(): {
   lastRunAt: string | null;
   lastSuccessfulRunAt: string | null;
@@ -202,15 +216,16 @@ const SKIP_SOURCES = new Set(
 function buildIngestersForCity(city: string): Ingester[] {
   const ingesters: Ingester[] = [];
 
-  if (!SKIP_SOURCES.has("wg-gesucht")) ingesters.push(createWgGesuchtIngester(city));
-  if (!SKIP_SOURCES.has("kleinanzeigen")) ingesters.push(createKleinanzeigenIngester(city));
-  if (!SKIP_SOURCES.has("immowelt")) ingesters.push(createImmoweltIngester(city));
+  if (!SKIP_SOURCES.has("wg-gesucht") && isSourceEnabledByAdmin("wg-gesucht")) ingesters.push(createWgGesuchtIngester(city));
+  if (!SKIP_SOURCES.has("kleinanzeigen") && isSourceEnabledByAdmin("kleinanzeigen")) ingesters.push(createKleinanzeigenIngester(city));
+  if (!SKIP_SOURCES.has("immowelt") && isSourceEnabledByAdmin("immowelt")) ingesters.push(createImmoweltIngester(city));
 
   const slugs = getCitySlugs(city);
   const slug = slugs?.slug ?? makeFallbackSlug(city);
   const configSources = buildSourcesForCity(city, slug);
   for (const cfg of configSources) {
     if (SKIP_SOURCES.has(cfg.source)) continue;
+    if (!isSourceEnabledByAdmin(cfg.source)) continue;
     ingesters.push(createConfigIngester(cfg));
   }
 
