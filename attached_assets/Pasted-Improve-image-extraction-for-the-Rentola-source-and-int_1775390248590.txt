@@ -1,0 +1,145 @@
+Improve image extraction for the Rentola source and integrate it into the automatic image backfill pipeline.
+
+Context:
+The image audit shows:
+- rentola = 727 total listings
+- 0% image coverage
+- 727 missing
+This makes Rentola the second highest-priority source after wg-gesucht.
+
+Goal:
+Fix Rentola image extraction, verify where images exist, and connect Rentola to the automatic image backfill pipeline.
+
+IMPORTANT:
+- Focus only on Rentola in this task
+- Do NOT redesign UI
+- Do NOT change unrelated scrapers
+- Keep this source-specific and production-safe
+- Do NOT overwrite valid existing images
+
+==================================================
+1. AUDIT CURRENT RENTOLA EXTRACTION
+==================================================
+
+Inspect the current Rentola ingester and determine:
+
+- how listings are fetched now
+- whether extraction uses overview/search page only
+- whether image_url is currently hardcoded null
+- whether any image selectors are already present
+- whether Rentola detail pages contain images
+- whether images are present in HTML, embedded JSON, meta tags, or srcset
+
+Summarize the current extraction path before changing it.
+
+==================================================
+2. FIND THE REAL IMAGE SOURCE
+==================================================
+
+For Rentola, inspect a few real missing-image listing pages and determine where the images actually live.
+
+Check in this order:
+1. overview/listing cards
+2. detail page gallery
+3. og:image
+4. twitter:image
+5. embedded JSON / script state
+6. srcset
+7. lazy-load attributes
+8. generic <img> fallback inside main/article/gallery containers
+
+We need to identify the most reliable source of truth.
+
+==================================================
+3. IMPLEMENT ENHANCED RENTOLA EXTRACTION
+==================================================
+
+Add source-specific image extraction for Rentola.
+
+Support:
+- src
+- data-src
+- data-lazy
+- data-original
+- data-lazy-src
+- srcset
+
+If srcset exists:
+- parse correctly
+- choose the best usable image, not a tiny thumbnail
+
+Fallback order:
+1. source-specific selectors
+2. gallery/detail selectors
+3. embedded JSON / structured data if available
+4. og:image
+5. twitter:image
+6. generic content image fallback
+
+==================================================
+4. FILTER OUT BAD IMAGES
+==================================================
+
+Reject:
+- placeholder images
+- default/noimage assets
+- logos/icons/avatars
+- blank/spacer/1x1 images
+- malformed URLs
+
+Normalize:
+- protocol-relative URLs
+- relative URLs
+- fixable malformed image URLs
+
+Only save a valid real listing image.
+
+==================================================
+5. ADD RENTOLA TO THE AUTOMATIC BACKFILL PIPELINE
+==================================================
+
+Extend the automatic image backfill system so it can also process:
+- source = rentola
+
+Requirements:
+- use the same safe pipeline design as wg-gesucht
+- configurable source handling
+- do not break wg-gesucht logic
+- allow Rentola to be enabled from the admin Image Audit page
+
+==================================================
+6. ADMIN CONTROLS
+==================================================
+
+Update the Image Audit admin controls so that:
+- Rentola appears as an available source in the automatic backfill pipeline
+- admin can see source status
+- manual trigger can be run for Rentola
+- batch size control still works
+
+If the current pipeline only shows wg-gesucht, update it to support multiple sources cleanly.
+
+==================================================
+7. VALIDATION
+==================================================
+
+Test Rentola on a sample of currently missing listings.
+
+After implementation:
+- run a Rentola backfill
+- confirm whether images are being recovered
+- rerun the audit and compare Rentola before/after coverage
+
+==================================================
+8. OUTPUT
+==================================================
+
+After finishing, provide:
+1. what the old Rentola extraction was doing
+2. where Rentola images were actually found
+3. what new selectors/fallbacks were added
+4. whether embedded JSON or meta tags were used
+5. whether Rentola was added to the automatic pipeline
+6. how to manually run a Rentola backfill
+7. estimated improvement or new Rentola coverage after testing
+8. files changed

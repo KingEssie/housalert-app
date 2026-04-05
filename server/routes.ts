@@ -3123,6 +3123,10 @@ export async function registerRoutes(
             const { extractWgGesuchtImage } = await import("./ingesters/wg-gesucht");
             const wgResult = extractWgGesuchtImage($);
             if (wgResult) imageUrl = wgResult.url;
+          } else if (listing.source === "rentola") {
+            const { extractRentolaImage } = await import("./ingesters/rentola-image");
+            const rentolaResult = extractRentolaImage($);
+            if (rentolaResult) imageUrl = rentolaResult.url;
           } else if (listing.source === "immowelt") {
             imageUrl = extractImgFromEl($, "img[src*='mms.immowelt.de'], img[data-src*='mms.immowelt.de'], [data-testid='gallery'] img, .gallery img");
           }

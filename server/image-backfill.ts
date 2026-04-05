@@ -23,6 +23,10 @@ const sourceHandlers: Record<string, () => Promise<SourceHandler>> = {
     const { fetchWgGesuchtImage } = await import("./ingesters/wg-gesucht");
     return { name: "wg-gesucht", fetchImage: fetchWgGesuchtImage };
   },
+  "rentola": async () => {
+    const { fetchRentolaImage } = await import("./ingesters/rentola-image");
+    return { name: "rentola", fetchImage: fetchRentolaImage };
+  },
 };
 
 export interface BackfillRunResult {
@@ -41,7 +45,7 @@ export interface BackfillRunResult {
 let _running = false;
 let _enabled = true;
 let _batchSize = 100;
-let _enabledSources: string[] = ["wg-gesucht"];
+let _enabledSources: string[] = ["wg-gesucht", "rentola"];
 let _lastRun: BackfillRunResult | null = null;
 let _cumulativeUpdates = 0;
 
