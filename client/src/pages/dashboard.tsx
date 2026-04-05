@@ -1085,17 +1085,17 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
     <div className="flex flex-col pb-8">
       <div className="sticky top-0 z-10 bg-white px-5 pt-6 pb-4">
         <h1 className="text-page-title mb-4">{t("matches.title")}</h1>
-        <div className="flex bg-[#F3F4F6] rounded-full p-1 w-fit" data-testid="matches-top-tabs">
+        <div className="flex items-center gap-2" data-testid="matches-top-tabs">
           {topTabs.map(({ key, label }) => {
             const isActive = topTab === key;
             return (
               <button
                 key={key}
                 onClick={() => setTopTab(key)}
-                className={`px-4 py-[7px] text-[13px] rounded-full transition-all duration-200 active:scale-[0.97] ${
+                className={`px-3.5 py-[6px] text-[13px] rounded-full border transition-all duration-200 active:scale-[0.96] ${
                   isActive
-                    ? "bg-white text-[#111111] font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
-                    : "text-[#6B7280] font-medium"
+                    ? "bg-[#111111] text-white font-semibold border-[#111111]"
+                    : "bg-[#F3F4F6] text-[#111111] font-medium border-transparent"
                 }`}
                 data-testid={`tab-matches-${key}`}
               >

@@ -260,27 +260,31 @@ export default function ListingDetailPage() {
     <div className="min-h-screen flex flex-col relative bg-white">
       <FloatingBackButton navigate={navigate} />
 
-      <div className="fixed top-[max(0.75rem,env(safe-area-inset-top))] right-4 z-30 flex items-center gap-2">
+      <div className="fixed top-[max(0.75rem,env(safe-area-inset-top))] right-4 z-30 flex items-center gap-2.5">
         <button
           onClick={handleToggleFavorite}
           disabled={favLoading}
-          className="w-9 h-9 flex items-center justify-center active:scale-90 transition-transform duration-150"
+          className={`w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-all duration-200 ${
+            isFavorited
+              ? "bg-ha-primary"
+              : "bg-black/35 backdrop-blur-sm"
+          }`}
+          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}
           aria-label="Favorite"
           data-testid="button-favorite-detail"
         >
           <Heart
-            className={`w-[22px] h-[22px] transition-colors duration-200 ${isFavorited ? "text-ha-primary" : "text-white"}`}
-            fill={isFavorited ? "currentColor" : "none"}
+            className="w-[18px] h-[18px] text-white"
+            fill={isFavorited ? "white" : "none"}
             strokeWidth={2}
-            style={{ filter: isFavorited ? "none" : "drop-shadow(0 1px 3px rgba(0,0,0,0.5))" }}
           />
         </button>
 
         {hasAccess && (
           <button
             onClick={() => setShowBlockModal(true)}
-            className="w-9 h-9 rounded-full bg-black/40 border border-white/50 flex items-center justify-center active:scale-95 transition-transform"
-            style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}
+            className="w-9 h-9 rounded-full bg-black/35 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform duration-200"
+            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}
             aria-label="Block source"
             data-testid="button-block-source"
           >

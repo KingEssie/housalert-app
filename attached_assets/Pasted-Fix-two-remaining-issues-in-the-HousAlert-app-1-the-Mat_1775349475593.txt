@@ -1,0 +1,127 @@
+Fix two remaining issues in the HousAlert app:
+
+1. the Matches top tabs still do NOT match the Airbnb-style tabs I want
+2. the Detail screen is still missing the favorite and website-block actions on the image
+
+IMPORTANT:
+Do NOT redesign unrelated screens.
+Only fix these 2 things properly.
+
+==================================================
+1. MATCHES TOP TABS — MAKE THEM MATCH AIRBNB STYLE
+==================================================
+
+The current Matches tabs still look wrong.
+They should look much closer to the Airbnb-style tabs shown in the reference image ("Berichten" screen).
+
+Current problem:
+- tabs feel too much like one large segmented control
+- too wide / too tall
+- too soft / too rounded as one container
+- not enough like Airbnb pill tabs
+
+I want this instead:
+
+STRUCTURE:
+- show 3 separate pill tabs in one row:
+  - Matches
+  - Gereageerd
+  - Favorieten
+
+DESIGN:
+- tabs should look like Airbnb pills, not one giant capsule control
+- each tab should be an individual rounded pill
+- active tab:
+  - black background
+  - white text
+  - medium weight
+- inactive tabs:
+  - very light grey background (#F3F4F6 or similar)
+  - dark text (#111111)
+- keep a clear gap between pills
+- make them more compact:
+  - smaller height
+  - tighter horizontal padding
+  - less oversized overall
+
+LAYOUT:
+- align left under the page title
+- row should feel light and premium
+- no underline
+- no giant segmented background wrapping all tabs together
+
+INTERACTION:
+- tapping switches view between Matches / Gereageerd / Favorieten
+- keep existing tab content logic
+
+==================================================
+2. DETAIL SCREEN — ADD FAVORITE + BLOCK ACTIONS ON IMAGE
+==================================================
+
+The detail screen is still missing the action icons I requested.
+
+I want TWO action icons visible on the detail screen, overlaid on the top-right of the listing image, NEXT TO EACH OTHER:
+
+1. favorite heart icon
+2. website block icon
+
+PLACEMENT:
+- both icons should sit inside the image area
+- top-right corner
+- horizontally aligned next to each other
+- proper spacing between them
+- not too close to edges
+
+STYLE:
+- premium overlay style
+- white icons
+- subtle dark translucent background OR soft glass/blur background
+- rounded circular buttons
+- consistent size
+- light shadow if needed
+
+FAVORITE BUTTON:
+- should reflect current state
+- inactive:
+  - white heart icon
+  - subtle dark translucent background
+- active:
+  - filled HousAlert/Airbnb red-pink background
+  - white heart icon
+
+BLOCK BUTTON:
+- icon should clearly represent "block website/source"
+- use a clean block/shield/ban-style icon
+- white icon
+- subtle dark translucent background
+- clicking should open the existing confirmation flow for blocking the source website
+
+BEHAVIOR:
+- favorite toggle should work immediately
+- block action should trigger the real website blocking logic already built
+
+==================================================
+3. KEEP EVERYTHING ELSE INTACT
+==================================================
+
+Do NOT redesign:
+- listing cards
+- profile screen
+- bottom navigation
+- search screen
+- home screen
+
+Only:
+- fix the Matches top tabs to proper Airbnb-style pills
+- add the 2 action icons to the detail image
+
+==================================================
+4. OUTPUT
+==================================================
+
+After finishing, show:
+1. how the Matches tabs were restyled
+2. what CSS/layout changed to make them closer to Airbnb
+3. where the favorite and block buttons were added on the detail screen
+4. how both buttons behave
+5. which files were updated
