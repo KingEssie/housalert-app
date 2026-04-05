@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Heart, Home as HomeIcon, Lock, CheckCircle2 } from "lucide-react";
+import { Heart, Home as HomeIcon, Lock, CheckCircle2, BedDouble, Maximize2 } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import type { ApiMatch } from "@/lib/listings";
 
@@ -30,17 +30,10 @@ function formatSource(source: string): string {
   return map[s] || s;
 }
 
-function formatMeta(match: ApiMatch, t: (key: string, opts?: any) => string): string {
-  const parts: string[] = [];
-  if (match.size_m2 > 0) parts.push(`${match.size_m2} m²`);
-  if (match.bedrooms > 0) {
-    parts.push(
-      match.bedrooms === 1
-        ? `${match.bedrooms} ${t("common.bedroom")}`
-        : `${match.bedrooms} ${t("common.bedrooms")}`
-    );
-  }
-  return parts.join(" · ");
+function formatAddress(match: ApiMatch): string {
+  if (match.district && match.city) return `${match.district}, ${match.city}`;
+  if (match.city) return match.city;
+  return "";
 }
 
 interface ListingCardFullProps {
@@ -75,8 +68,10 @@ export function ListingCardFull({
     onToggleFavorite(match.listing_id);
   }
 
-  const meta = formatMeta(match, t);
+  const address = formatAddress(match);
   const sourceName = formatSource(match.source);
+  const hasBedrooms = match.bedrooms > 0;
+  const hasSize = match.size_m2 > 0;
 
   return (
     <div
@@ -90,18 +85,16 @@ export function ListingCardFull({
             src={match.image_url!}
             alt={match.title}
             className="w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-            style={{ aspectRatio: "4/5" }}
+            style={{ aspectRatio: "4/3" }}
             loading="lazy"
             onError={() => setImgError(true)}
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="w-full bg-[#F3F4F6] flex items-center justify-center" style={{ aspectRatio: "4/5" }}>
-            <HomeIcon className="w-12 h-12 text-[#9CA3AF]" />
+          <div className="w-full bg-[#F3F4F6] flex items-center justify-center" style={{ aspectRatio: "4/3" }}>
+            <HomeIcon className="w-12 h-12 text-[#D1D5DB]" />
           </div>
         )}
-
-        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
 
         {isNew && (
           <span
@@ -115,17 +108,14 @@ export function ListingCardFull({
 
         <button
           onClick={handleHeartClick}
-          className={`absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-all duration-200 border ${
-            isFavorited
-              ? "bg-ha-primary border-white/80"
-              : "bg-black/40 backdrop-blur-sm border-white/60"
-          }`}
+          className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center active:scale-90 transition-transform duration-150"
           data-testid={`button-favorite-${match.listing_id}`}
         >
           <Heart
-            className="w-[18px] h-[18px] text-white"
-            fill={isFavorited ? "white" : "none"}
+            className={`w-[22px] h-[22px] transition-colors duration-200 ${isFavorited ? "text-ha-primary" : "text-white"}`}
+            fill={isFavorited ? "currentColor" : "none"}
             strokeWidth={2}
+            style={{ filter: isFavorited ? "none" : "drop-shadow(0 1px 3px rgba(0,0,0,0.5))" }}
           />
         </button>
 
@@ -143,40 +133,58 @@ export function ListingCardFull({
         )}
       </div>
 
-      <div className="pt-2.5 pb-1">
+      <div className="pt-2.5 pb-1 flex flex-col gap-[3px]">
         <h3
-          className="text-[16px] font-bold text-[#111111] leading-snug truncate"
+          className="text-[16px] font-semibold text-[#111111] leading-snug truncate"
           data-testid={`text-match-title-${match.listing_id}`}
         >
           {match.title}
         </h3>
 
-        <p
-          className="text-[14px] text-[#6B7280] mt-0.5 truncate"
-          data-testid={`detail-city-${match.listing_id}`}
-        >
-          {match.city}{match.district ? `, ${match.district}` : ""}
-        </p>
-
-        {meta && (
-          <p className="text-[13px] text-[#9CA3AF] mt-0.5 truncate" data-testid={`detail-meta-${match.listing_id}`}>
-            {meta}
+        {address && (
+          <p
+            className="text-[14px] text-[#6B7280] truncate"
+            data-testid={`detail-city-${match.listing_id}`}
+          >
+            {address}
           </p>
         )}
 
-        <p className="text-[12px] text-[#C4C4C4] mt-0.5" data-testid={`detail-source-${match.listing_id}`}>
+        {(hasBedrooms || hasSize) && (
+          <p className="text-[14px] text-[#6B7280] flex items-center gap-1 truncate" data-testid={`detail-meta-${match.listing_id}`}>
+            {hasBedrooms && (
+              <span className="inline-flex items-center gap-1">
+                <BedDouble className="w-[14px] h-[14px] text-[#374151]" strokeWidth={1.8} />
+                <span>
+                  {match.bedrooms === 1
+                    ? `${match.bedrooms} ${t("common.bedroom")}`
+                    : `${match.bedrooms} ${t("common.bedrooms")}`}
+                </span>
+              </span>
+            )}
+            {hasBedrooms && hasSize && <span className="text-[#9CA3AF] mx-0.5">·</span>}
+            {hasSize && (
+              <span className="inline-flex items-center gap-1">
+                <Maximize2 className="w-[14px] h-[14px] text-[#374151]" strokeWidth={1.8} />
+                <span>{match.size_m2} m²</span>
+              </span>
+            )}
+          </p>
+        )}
+
+        <p className="text-[13px] text-[#9CA3AF]" data-testid={`detail-source-${match.listing_id}`}>
           {sourceName}
         </p>
 
         {locked && (
-          <div className="flex items-center gap-1.5 mt-1.5 text-[12px] text-[#9CA3AF]" data-testid={`lock-indicator-${match.listing_id}`}>
+          <div className="flex items-center gap-1.5 mt-0.5 text-[12px] text-[#9CA3AF]" data-testid={`lock-indicator-${match.listing_id}`}>
             <Lock className="w-3 h-3" />
             <span>{t("listing.lockLabel")}</span>
           </div>
         )}
 
         {respondedLabel && (
-          <div className="flex items-center justify-between mt-2">
+          <div className="flex items-center justify-between mt-1">
             <span className="flex items-center gap-1.5 text-[13px] text-ha-success font-medium" data-testid={`text-responded-${match.listing_id}`}>
               <CheckCircle2 className="w-3.5 h-3.5" />
               {respondedLabel}
@@ -234,7 +242,7 @@ export function ListingCardCompact({ match, onCardClick }: ListingCardCompactPro
           />
         ) : (
           <div className="w-full bg-[#F3F4F6] flex items-center justify-center" style={{ aspectRatio: "16/9" }}>
-            <HomeIcon className="w-7 h-7 text-[#9CA3AF]" />
+            <HomeIcon className="w-7 h-7 text-[#D1D5DB]" />
           </div>
         )}
 
@@ -297,7 +305,7 @@ export function ListingCardMini({ match, onCardClick }: ListingCardMiniProps) {
           />
         ) : (
           <div className="w-full bg-[#F3F4F6] flex items-center justify-center" style={{ aspectRatio: "1/1" }}>
-            <HomeIcon className="w-5 h-5 text-[#9CA3AF]" />
+            <HomeIcon className="w-5 h-5 text-[#D1D5DB]" />
           </div>
         )}
       </div>

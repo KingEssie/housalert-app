@@ -264,18 +264,15 @@ export default function ListingDetailPage() {
         <button
           onClick={handleToggleFavorite}
           disabled={favLoading}
-          className={`w-9 h-9 rounded-full flex items-center justify-center active:scale-95 transition-all ${
-            isFavorited
-              ? "bg-ha-primary border border-white/80"
-              : "bg-black/40 border border-white/50"
-          }`}
-          style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}
+          className="w-9 h-9 flex items-center justify-center active:scale-90 transition-transform duration-150"
           aria-label="Favorite"
           data-testid="button-favorite-detail"
         >
           <Heart
-            className={`w-[18px] h-[18px] ${isFavorited ? "text-white fill-white" : "text-white"}`}
+            className={`w-[22px] h-[22px] transition-colors duration-200 ${isFavorited ? "text-ha-primary" : "text-white"}`}
+            fill={isFavorited ? "currentColor" : "none"}
             strokeWidth={2}
+            style={{ filter: isFavorited ? "none" : "drop-shadow(0 1px 3px rgba(0,0,0,0.5))" }}
           />
         </button>
 

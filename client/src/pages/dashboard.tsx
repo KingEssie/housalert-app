@@ -1083,19 +1083,19 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
 
   return (
     <div className="flex flex-col pb-8">
-      <div className="sticky top-0 z-10 bg-white px-5 pt-6 pb-0">
-        <h1 className="text-page-title mb-3">{t("matches.title")}</h1>
-        <div className="flex border-b border-[#F0F0F0]" data-testid="matches-top-tabs">
+      <div className="sticky top-0 z-10 bg-white px-5 pt-6 pb-4">
+        <h1 className="text-page-title mb-4">{t("matches.title")}</h1>
+        <div className="flex bg-[#F3F4F6] rounded-full p-1 w-fit" data-testid="matches-top-tabs">
           {topTabs.map(({ key, label }) => {
             const isActive = topTab === key;
             return (
               <button
                 key={key}
                 onClick={() => setTopTab(key)}
-                className={`flex-1 py-2.5 text-[14px] font-semibold text-center transition-colors border-b-2 -mb-px active:opacity-70 ${
+                className={`px-4 py-[7px] text-[13px] rounded-full transition-all duration-200 active:scale-[0.97] ${
                   isActive
-                    ? "border-[#111111] text-[#111111]"
-                    : "border-transparent text-[#9CA3AF] hover:text-[#6B7280]"
+                    ? "bg-white text-[#111111] font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
+                    : "text-[#6B7280] font-medium"
                 }`}
                 data-testid={`tab-matches-${key}`}
               >
@@ -1106,18 +1106,19 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
         </div>
       </div>
 
-      <div className="px-5 flex flex-col pt-5">
+      <div className="px-5 flex flex-col">
         {topTab === "matches" && (
           <>
             {apiMatchesQuery.isLoading ? (
-              <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-4">
                 {[1, 2].map((i) => (
                   <div key={i} className="animate-pulse">
-                    <div className="bg-[#F3F4F6] rounded-[16px]" style={{ aspectRatio: "4/5" }} />
+                    <div className="bg-[#F3F4F6] rounded-[16px]" style={{ aspectRatio: "4/3" }} />
                     <div className="pt-3 flex flex-col gap-2">
                       <div className="h-4 bg-[#F3F4F6] rounded-full w-3/4" />
                       <div className="h-3 bg-[#F3F4F6] rounded-full w-1/2" />
-                      <div className="h-3 bg-[#F3F4F6] rounded-full w-1/3" />
+                      <div className="h-3 bg-[#F3F4F6] rounded-full w-2/5" />
+                      <div className="h-3 bg-[#F3F4F6] rounded-full w-1/4" />
                     </div>
                   </div>
                 ))}
@@ -1147,7 +1148,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
                 testId="empty-matches"
               />
             ) : (
-              <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-4">
                 {allMatchesSorted.map((m) => (
                   <ListingCardFull
                     key={m.listing_id}
@@ -1177,7 +1178,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
                 testId="empty-gereageerd-tab"
               />
             ) : (
-              <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-4">
                 {appliedListings.map((m) => (
                   <div key={m.listing_id} data-testid={`card-applied-${m.listing_id}`}>
                     <ListingCardFull
@@ -1203,14 +1204,15 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
         {topTab === "favorieten" && (
           <>
             {favLoading ? (
-              <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-4">
                 {[1, 2].map((i) => (
                   <div key={i} className="animate-pulse">
-                    <div className="bg-[#F3F4F6] rounded-[16px]" style={{ aspectRatio: "4/5" }} />
+                    <div className="bg-[#F3F4F6] rounded-[16px]" style={{ aspectRatio: "4/3" }} />
                     <div className="pt-3 flex flex-col gap-2">
                       <div className="h-4 bg-[#F3F4F6] rounded-full w-3/4" />
                       <div className="h-3 bg-[#F3F4F6] rounded-full w-1/2" />
-                      <div className="h-3 bg-[#F3F4F6] rounded-full w-1/3" />
+                      <div className="h-3 bg-[#F3F4F6] rounded-full w-2/5" />
+                      <div className="h-3 bg-[#F3F4F6] rounded-full w-1/4" />
                     </div>
                   </div>
                 ))}
@@ -1223,7 +1225,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
                 testId="empty-favorieten-tab"
               />
             ) : (
-              <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-4">
                 {favoriteListings.map((m) => (
                   <ListingCardFull
                     key={m.listing_id}
