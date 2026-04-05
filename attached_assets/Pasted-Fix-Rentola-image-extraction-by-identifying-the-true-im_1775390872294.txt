@@ -1,0 +1,92 @@
+Fix Rentola image extraction by identifying the true image source instead of relying on generic DOM scraping.
+
+Context:
+- Rentola currently shows 0% image coverage
+- Backfill runs successfully but extracts zero images
+- Current extractor uses DOM selectors, JSON-LD, NEXT_DATA, and meta tags
+- None of these are returning usable images
+
+Goal:
+Find the REAL source of Rentola images and update extraction accordingly.
+
+==================================================
+1. DEBUG REAL LISTING DATA (CRITICAL)
+==================================================
+
+Take 3–5 Rentola listings from the database that currently have no image.
+
+For each listing:
+- open the ORIGINAL Rentola listing URL in a browser
+- inspect:
+
+A. Network tab (VERY IMPORTANT)
+- look for API calls (XHR / fetch)
+- check if images are returned in JSON responses
+- identify endpoint URLs
+
+B. Page source (not rendered DOM)
+- search for image URLs
+- search for JSON blocks
+- search for script tags containing listing data
+
+C. Rendered DOM
+- check if images are injected after page load
+- identify lazy-loading patterns
+
+==================================================
+2. IDENTIFY TRUE IMAGE SOURCE
+==================================================
+
+Determine exactly where images come from:
+
+Possibilities:
+- API response (most likely)
+- embedded JSON (script tag)
+- SSR data (NEXT_DATA)
+- overview/search page (instead of detail page)
+- CDN image URLs with predictable pattern
+
+==================================================
+3. IMPLEMENT CORRECT STRATEGY
+==================================================
+
+Based on findings:
+
+IF images come from API:
+- call the same API endpoint directly
+- extract image URLs from JSON
+
+IF images are on overview page:
+- extract images during initial ingest
+- do NOT rely on detail page
+
+IF images are in NEXT_DATA:
+- parse JSON properly and extract image fields
+
+IF images require rendering:
+- identify static source instead (no puppeteer)
+
+==================================================
+4. VALIDATE EXTRACTION
+==================================================
+
+Test extraction on 10 Rentola listings:
+- confirm image URLs are returned
+- confirm images are valid and not placeholders
+
+==================================================
+5. UPDATE BACKFILL PIPELINE
+==================================================
+
+Ensure Rentola handler now uses the correct extraction method.
+
+==================================================
+6. OUTPUT
+==================================================
+
+Provide:
+1. where Rentola images actually come from
+2. why previous extraction failed
+3. what new extraction method is used
+4. sample extracted image URLs
+5. expected coverage improvement
