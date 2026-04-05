@@ -167,7 +167,7 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
 
       <div className="px-4 flex flex-col gap-6 pt-2">
         <div data-testid="section-recommended">
-          <h2 className="text-[16px] font-bold text-[#111111] mb-3" data-testid="text-recommended-title">
+          <h2 className="text-[16px] font-semibold text-[#111111] mb-3" data-testid="text-recommended-title">
             {t("tips.recommendedTitle")}
           </h2>
           <button
@@ -176,11 +176,11 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
             data-testid="card-referral-promo"
           >
             <div className="flex items-center gap-3.5">
-              <div className="w-10 h-10 rounded-full bg-[#FFF1F3] flex items-center justify-center flex-shrink-0">
-                <Gift className="w-5 h-5 text-ha-primary" />
+              <div className="w-10 h-10 rounded-full bg-[#EDF7FB] flex items-center justify-center flex-shrink-0">
+                <Gift className="w-5 h-5 text-[#111111]" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[11px] font-bold text-[#9CA3AF] tracking-wide mb-0.5">
+                <p className="text-[11px] font-semibold text-[#9CA3AF] mb-0.5">
                   {t("tips.referralOverline")}
                 </p>
                 <p className="text-[15px] font-semibold text-[#111111]">
@@ -189,7 +189,7 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
               </div>
             </div>
             <div className="mt-3">
-              <span className="inline-flex h-[36px] px-5 rounded-full bg-ha-primary text-white text-[13px] font-bold items-center hover:bg-ha-primary-hover transition-colors">
+              <span className="inline-flex h-[36px] px-5 rounded-full bg-ha-primary text-white text-[13px] font-semibold items-center hover:bg-ha-primary-hover transition-colors">
                 {t("tips.referralCta")}
               </span>
             </div>
@@ -197,7 +197,7 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
         </div>
 
         <div data-testid="section-guides">
-          <h2 className="text-[16px] font-bold text-[#111111] mb-3" data-testid="text-guides-title">
+          <h2 className="text-[16px] font-semibold text-[#111111] mb-3" data-testid="text-guides-title">
             {t("tips.guidesTitle")}
           </h2>
           <div className="rounded-[16px] bg-white border border-[#E5E7EB] overflow-hidden">
@@ -215,7 +215,7 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
                       {guide.title}
                     </p>
                     {isRead ? (
-                      <CheckCircle2 className="w-[18px] h-[18px] text-ha-primary flex-shrink-0" />
+                      <CheckCircle2 className="w-[18px] h-[18px] text-[#111111] flex-shrink-0" />
                     ) : (
                       <ChevronRight className="w-[18px] h-[18px] text-[#C4C4C4] flex-shrink-0" />
                     )}

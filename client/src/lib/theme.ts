@@ -1,10 +1,10 @@
 export const BRAND = {
-  primary: "#FF385C",
-  primaryEnd: "#D70466",
-  primaryHover: "#E6284B",
-  gradient: "linear-gradient(135deg, #FF385C, #D70466)",
-  primaryLight: "rgba(255, 56, 92, 0.08)",
-  primaryLighter: "rgba(255, 56, 92, 0.04)",
+  primary: "#2596be",
+  primaryEnd: "#1E7FA3",
+  primaryHover: "#1E7FA3",
+  gradient: "linear-gradient(135deg, #2596be, #1E7FA3)",
+  primaryLight: "rgba(37, 150, 190, 0.08)",
+  primaryLighter: "rgba(37, 150, 190, 0.04)",
 } as const;
 
 export const theme = {

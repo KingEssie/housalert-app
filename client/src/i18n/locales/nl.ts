@@ -1153,7 +1153,7 @@ export const nl: Record<string, any> = {
     pageTitle: "HousAlert tips",
     pageSubtitle: "Handige tips om sneller een woning te vinden en sterker te reageren.",
     recommendedTitle: "Voor jou aanbevolen",
-    referralOverline: "HELP JE VRIENDEN",
+    referralOverline: "Help je vrienden",
     referralText: "Deel jouw persoonlijke kortingscode",
     referralCta: "Bekijk code",
     guidesTitle: "Guides",
@@ -2110,7 +2110,7 @@ export const nl: Record<string, any> = {
   },
 
   referral: {
-    promoLabel: "HELP JE VRIENDEN",
+    promoLabel: "Help je vrienden",
     promoBody: "Deel jouw persoonlijke kortingscode",
     promoCta: "Bekijk code",
     modalTitle: "Help je vrienden",
@@ -2137,7 +2137,7 @@ export const nl: Record<string, any> = {
     pending: "In afwachting",
     rewarded: "Beloond",
     loading: "Laden...",
-    homeLabel: "HELP JE VRIENDEN",
+    homeLabel: "Help je vrienden",
     homeBody: "Deel jouw persoonlijke kortingscode",
     homeHelper: "Als vrienden HousAlert gebruiken, krijg jij ook een beloning.",
     profileTitle: "Vrienden uitnodigen",

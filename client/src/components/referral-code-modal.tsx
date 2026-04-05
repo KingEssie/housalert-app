@@ -68,7 +68,7 @@ export function ReferralCodeModal({ open, onClose, code, loading }: ReferralCode
             {loading ? (
               <Loader2 className="w-5 h-5 text-ha-text-secondary animate-spin" />
             ) : (
-              <span className="text-[22px] font-bold tracking-[0.12em] text-ha-text select-all">
+              <span className="text-[22px] font-semibold tracking-[0.12em] text-ha-text select-all">
                 {code || "—"}
               </span>
             )}

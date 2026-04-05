@@ -61,7 +61,7 @@ function CompletionScreen({ draftId }: { draftId: string }) {
   return (
     <div className="flex flex-col items-center justify-center px-6 py-10 text-center">
       <div className="w-[56px] h-[56px] rounded-[6px] bg-ha-primary-light flex items-center justify-center mb-5">
-        <Check className="w-7 h-7 text-ha-primary" />
+        <Check className="w-7 h-7 text-[#111111]" />
       </div>
 
       <h2 className="text-[20px] font-medium text-ha-text mb-1.5 tracking-wide" data-testid="embed-text-done-title">

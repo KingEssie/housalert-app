@@ -82,7 +82,7 @@ export default function DocumentsPage() {
           <div className="flex items-center gap-3 mb-4">
             <FileText className="w-5 h-5 text-ha-icon-secondary" />
             <div>
-              <p className="text-[15px] font-bold text-[#111111]">{t("documents.heading")}</p>
+              <p className="text-[15px] font-semibold text-[#111111]">{t("documents.heading")}</p>
               <p className="text-[12px] text-[#6B7280]">
                 {checkedCount}/{DOCUMENT_ITEMS.length} {t("documents.collected")}
               </p>
@@ -91,7 +91,7 @@ export default function DocumentsPage() {
 
           {allDone && (
             <div className="bg-[#111111] rounded-[6px] p-4 mb-4" data-testid="documents-complete-banner">
-              <p className="text-[14px] font-bold text-white flex items-center gap-2">
+              <p className="text-[14px] font-semibold text-white flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4" />
                 {t("documents.completeTitle")}
               </p>
@@ -111,7 +111,7 @@ export default function DocumentsPage() {
                   data-testid={`doc-${key}`}
                 >
                   {checked ? (
-                    <CheckCircle2 className="w-5 h-5 text-ha-primary flex-shrink-0" />
+                    <CheckCircle2 className="w-5 h-5 text-[#111111] flex-shrink-0" />
                   ) : (
                     <Circle className="w-5 h-5 text-[#E5E7EB] flex-shrink-0" />
                   )}

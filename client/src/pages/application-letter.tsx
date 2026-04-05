@@ -290,7 +290,7 @@ export default function ApplicationLetterPage() {
 
         {step === 1 && (
           <div className="flex flex-col gap-4" data-testid="step-intro">
-            <h1 className="text-[22px] font-bold text-black px-1" data-testid="text-intro-heading">
+            <h1 className="text-[22px] font-semibold text-black px-1" data-testid="text-intro-heading">
               AI Reactiebrief genereren
             </h1>
 
@@ -318,7 +318,7 @@ export default function ApplicationLetterPage() {
 
             <button
               onClick={() => setStep(2)}
-              className="w-full h-[48px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[16px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
+              className="w-full h-[48px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[16px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
               data-testid="button-intro-next"
             >
               Volgende
@@ -328,7 +328,7 @@ export default function ApplicationLetterPage() {
 
         {step === 2 && (
           <div className="flex flex-col gap-4" data-testid="step-personal">
-            <h1 className="text-[22px] font-bold text-black px-1" data-testid="text-personal-heading">
+            <h1 className="text-[22px] font-semibold text-black px-1" data-testid="text-personal-heading">
               Persoonlijke gegevens
             </h1>
 
@@ -367,7 +367,7 @@ export default function ApplicationLetterPage() {
             <button
               onClick={handleStep2Next}
               disabled={saving}
-              className="w-full h-[48px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[16px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full h-[48px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[16px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
               data-testid="button-personal-next"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -378,7 +378,7 @@ export default function ApplicationLetterPage() {
 
         {step === 3 && (
           <div className="flex flex-col gap-4" data-testid="step-housing">
-            <h1 className="text-[22px] font-bold text-black px-1" data-testid="text-housing-heading">
+            <h1 className="text-[22px] font-semibold text-black px-1" data-testid="text-housing-heading">
               Woonsituatie
             </h1>
 
@@ -421,7 +421,7 @@ export default function ApplicationLetterPage() {
             <button
               onClick={handleStep3Generate}
               disabled={saving}
-              className="w-full h-[48px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[16px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full h-[48px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[16px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
               data-testid="button-generate-letter"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -432,7 +432,7 @@ export default function ApplicationLetterPage() {
 
         {step === 4 && (
           <div className="flex flex-col gap-4" data-testid="step-preview">
-            <h1 className="text-[22px] font-bold text-black px-1" data-testid="text-preview-heading">
+            <h1 className="text-[22px] font-semibold text-black px-1" data-testid="text-preview-heading">
               Reactiebrief
             </h1>
 
@@ -469,7 +469,7 @@ export default function ApplicationLetterPage() {
             <button
               onClick={() => saveMutation.mutate(template)}
               disabled={template.trim().length < 20 || saveMutation.isPending}
-              className="w-full h-[48px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[16px] font-bold hover:bg-ha-primary-hover transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full h-[48px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[16px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
               data-testid="button-save-template"
             >
               {saveMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}

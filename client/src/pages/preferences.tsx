@@ -153,7 +153,7 @@ export default function PreferencesPage() {
       {showLangSheet && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowLangSheet(false)}>
           <div className="bg-white w-full max-w-[400px] rounded-t-[6px] sm:rounded-[6px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
-            <p className="text-[17px] font-bold text-[#111111] text-center mb-4">{t("profile.language")}</p>
+            <p className="text-[17px] font-semibold text-[#111111] text-center mb-4">{t("profile.language")}</p>
             {LANG_OPTIONS.map(lang => (
               <button
                 key={lang.code}
@@ -162,7 +162,7 @@ export default function PreferencesPage() {
                 data-testid={`button-lang-${lang.code}`}
               >
                 <span className="text-[15px] text-[#111111] font-medium">{lang.label}</span>
-                {locale === lang.code && <Check className="w-5 h-5 text-ha-primary" />}
+                {locale === lang.code && <Check className="w-5 h-5 text-[#111111]" />}
               </button>
             ))}
           </div>

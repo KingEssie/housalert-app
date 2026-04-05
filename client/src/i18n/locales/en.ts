@@ -977,7 +977,7 @@ export const en: Record<string, any> = {
     pageTitle: "HousAlert tips",
     pageSubtitle: "Helpful tips to find a home faster and respond more effectively.",
     recommendedTitle: "Recommended for you",
-    referralOverline: "HELP YOUR FRIENDS",
+    referralOverline: "Help your friends",
     referralText: "Share your personal discount code",
     referralCta: "View code",
     guidesTitle: "Guides",
@@ -1348,7 +1348,7 @@ export const en: Record<string, any> = {
   },
 
   referral: {
-    promoLabel: "HELP YOUR FRIENDS",
+    promoLabel: "Help your friends",
     promoBody: "Share your personal discount code",
     promoCta: "View code",
     modalTitle: "Help your friends",
@@ -1376,7 +1376,7 @@ export const en: Record<string, any> = {
     pending: "Pending",
     rewarded: "Rewarded",
     loading: "Loading...",
-    homeLabel: "HELP YOUR FRIENDS",
+    homeLabel: "Help your friends",
     homeBody: "Share your personal discount code",
     homeHelper: "When friends use HousAlert, you'll also receive a reward.",
     profileTitle: "Invite friends",

@@ -28,7 +28,7 @@ export function EmptyState({ illustration, title, description, ctaLabel, onCtaCl
         className="w-[200px] h-auto mb-6"
         draggable={false}
       />
-      <h2 className="text-[18px] font-bold text-[#111111] leading-snug mb-2" data-testid="text-empty-title">
+      <h2 className="text-[18px] font-semibold text-[#111111] leading-snug mb-2" data-testid="text-empty-title">
         {title}
       </h2>
       <p className="text-[14px] text-[#9CA3AF] leading-relaxed max-w-[260px] mb-7" data-testid="text-empty-description">

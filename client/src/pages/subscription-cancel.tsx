@@ -78,11 +78,11 @@ export function SubscriptionCancelConfirmPage() {
           <div className="app-card">
             <div className="flex items-center justify-center mb-5">
               <div className="w-14 h-14 rounded-[6px] bg-ha-primary/10 flex items-center justify-center">
-                <MessageSquare className="w-7 h-7 text-ha-primary" />
+                <MessageSquare className="w-7 h-7 text-[#111111]" />
               </div>
             </div>
 
-            <h2 className="text-[20px] font-bold text-[#111111] text-center mb-2" data-testid="text-feedback-title">
+            <h2 className="text-[20px] font-semibold text-[#111111] text-center mb-2" data-testid="text-feedback-title">
               {t("cancellation.feedbackQuestion")}
             </h2>
             <p className="text-[14px] text-center text-ha-text-muted mb-5">
@@ -96,7 +96,7 @@ export function SubscriptionCancelConfirmPage() {
                   onClick={() => setSelectedReason(key)}
                   className={`w-full text-left px-4 py-3.5 rounded-[6px] border text-[15px] font-medium transition-colors ${
                     selectedReason === key
-                      ? "border-ha-primary bg-ha-primary/10 text-ha-primary"
+                      ? "border-ha-primary bg-ha-primary/10 text-[#111111]"
                       : "border-[#E5E7EB] bg-[#F9FAFB] text-[#111111] hover:bg-[#F9FAFB]"
                   }`}
                   data-testid={`button-reason-${key}`}
@@ -151,7 +151,7 @@ export function SubscriptionCancelConfirmPage() {
             </div>
           </div>
 
-          <h2 className="text-[20px] font-bold text-[#111111] text-center mb-3" data-testid="text-cancel-title">
+          <h2 className="text-[20px] font-semibold text-[#111111] text-center mb-3" data-testid="text-cancel-title">
             {t("subscription.cancelConfirm")}
           </h2>
 
@@ -209,11 +209,11 @@ export function SubscriptionCancelledPage() {
         <div className="app-card">
           <div className="flex items-center justify-center mb-5">
             <div className="w-14 h-14 rounded-[6px] bg-ha-success/10 flex items-center justify-center">
-              <CheckCircle2 className="w-7 h-7 text-ha-success" />
+              <CheckCircle2 className="w-7 h-7 text-[#111111]" />
             </div>
           </div>
 
-          <h2 className="text-[20px] font-bold text-[#111111] text-center mb-3" data-testid="text-cancelled-title">
+          <h2 className="text-[20px] font-semibold text-[#111111] text-center mb-3" data-testid="text-cancelled-title">
             {t("subscription.cancelled")}
           </h2>
 

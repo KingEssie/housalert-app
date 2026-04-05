@@ -73,14 +73,14 @@ function WebToggle({
     <label
       className="flex items-start gap-3 cursor-pointer rounded-[8px] p-3 transition-colors"
       style={{
-        backgroundColor: checked ? "rgba(255,56,92,0.04)" : "transparent",
-        border: `1px solid ${checked ? "rgba(255,56,92,0.2)" : OBW.divider}`,
+        backgroundColor: checked ? "rgba(37,150,190,0.04)" : "transparent",
+        border: `1px solid ${checked ? "rgba(37,150,190,0.2)" : OBW.divider}`,
       }}
       data-testid={testId}
     >
       <div
         className="w-[38px] h-[22px] rounded-full p-[2px] transition-colors shrink-0 mt-[1px]"
-        style={{ backgroundColor: checked ? "rgb(var(--ha-primary))" : "#E5E7EB" }}
+        style={{ backgroundColor: checked ? "#111111" : "#E5E7EB" }}
         onClick={(e) => { e.preventDefault(); onChange(!checked); }}
       >
         <div
@@ -511,7 +511,7 @@ export default function OnboardingFilters() {
     { value: "100", label: "100 m²" },
   ];
 
-  const sLabel = w ? "text-[15px] font-bold mb-3 block" : "text-[13px] font-semibold mb-3 block";
+  const sLabel = w ? "text-[15px] font-semibold mb-3 block" : "text-[13px] font-semibold mb-3 block";
 
   const darkFilterSections = (
     <div className="flex flex-col gap-6">
@@ -698,7 +698,7 @@ export default function OnboardingFilters() {
 
         <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[100px] overflow-y-auto">
           <h2
-            className="text-[22px] font-bold tracking-[-0.02em] mb-1"
+            className="text-[22px] font-semibold tracking-[-0.02em] mb-1"
             style={{ color: OBW.text }}
             data-testid="text-filters-title"
           >
@@ -827,7 +827,7 @@ export default function OnboardingFilters() {
       >
         <div className="max-w-[480px] mx-auto px-5 h-[52px] flex items-center justify-between">
           <span
-            className="text-[12px] font-bold px-2.5 py-1 rounded-[6px]"
+            className="text-[12px] font-semibold px-2.5 py-1 rounded-[6px]"
             style={{
               backgroundColor: "#111111",
               color: "#ffffff",

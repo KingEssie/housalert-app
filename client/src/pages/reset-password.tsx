@@ -83,7 +83,7 @@ export default function ResetPasswordPage() {
   if (sessionError) {
     return (
       <div className="h-[100dvh] flex flex-col items-center justify-center px-8 text-center" style={{ backgroundColor: "#F9FAFB" }} data-testid="page-reset-error">
-        <h1 className="text-[22px] font-bold text-[#111111] mb-3" data-testid="text-error-title">
+        <h1 className="text-[22px] font-semibold text-[#111111] mb-3" data-testid="text-error-title">
           {t("resetPassword.expiredTitle")}
         </h1>
         <p className="text-[15px] text-ha-text-muted leading-[1.5] max-w-[320px] mb-6">
@@ -103,7 +103,7 @@ export default function ResetPasswordPage() {
   if (!ready) {
     return (
       <div className="h-[100dvh] flex flex-col items-center justify-center" style={{ backgroundColor: "#F9FAFB" }}>
-        <Loader2 className="w-8 h-8 animate-spin text-ha-primary" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#111111]" />
       </div>
     );
   }
@@ -112,9 +112,9 @@ export default function ResetPasswordPage() {
     return (
       <div className="h-[100dvh] flex flex-col items-center justify-center px-8 text-center" style={{ backgroundColor: "#F9FAFB" }} data-testid="page-reset-success">
         <div className="w-16 h-16 rounded-full bg-ha-success/10 flex items-center justify-center mb-6">
-          <CheckCircle2 className="w-8 h-8 text-ha-success" />
+          <CheckCircle2 className="w-8 h-8 text-[#111111]" />
         </div>
-        <h1 className="text-[24px] font-bold text-[#111111] tracking-[-0.02em] mb-3" data-testid="text-success-title">
+        <h1 className="text-[24px] font-semibold text-[#111111] tracking-[-0.02em] mb-3" data-testid="text-success-title">
           {t("resetPassword.successTitle")}
         </h1>
         <p className="text-[15px] text-ha-text-muted leading-[1.55] max-w-[320px] mb-8">
@@ -137,11 +137,11 @@ export default function ResetPasswordPage() {
 
       <div className="flex-1 flex flex-col px-7">
         <div className="flex justify-center pt-8 pb-8">
-          <HousAlertLogo size={44} showText={true} textClassName="font-bold text-[#111111] text-[20px] tracking-[-0.01em]" />
+          <HousAlertLogo size={44} showText={true} textClassName="font-semibold text-[#111111] text-[20px] tracking-[-0.01em]" />
         </div>
 
         <h1
-          className="text-[26px] font-bold text-[#111111] leading-[1.15] tracking-[-0.03em] mb-3 text-center"
+          className="text-[26px] font-semibold text-[#111111] leading-[1.15] tracking-[-0.03em] mb-3 text-center"
           data-testid="text-reset-title"
         >
           {t("resetPassword.title")}
@@ -180,7 +180,7 @@ export default function ResetPasswordPage() {
               </button>
             </div>
             {tooShort && (
-              <p className="text-[13px] mt-1.5 text-ha-primary" data-testid="text-error-short">
+              <p className="text-[13px] mt-1.5 text-[#111111]" data-testid="text-error-short">
                 {t("resetPassword.minLength")}
               </p>
             )}
@@ -214,7 +214,7 @@ export default function ResetPasswordPage() {
               </button>
             </div>
             {mismatch && (
-              <p className="text-[13px] mt-1.5 text-ha-primary" data-testid="text-error-mismatch">
+              <p className="text-[13px] mt-1.5 text-[#111111]" data-testid="text-error-mismatch">
                 {t("resetPassword.mismatch")}
               </p>
             )}

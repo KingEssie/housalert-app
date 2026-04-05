@@ -65,7 +65,7 @@ export default function OnboardingName() {
 
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-4 pb-[100px]">
         <h1
-          className="text-[24px] font-bold tracking-[-0.02em] mb-2"
+          className="text-[24px] font-semibold tracking-[-0.02em] mb-2"
           style={{ color: T.text }}
           data-testid="text-name-title"
         >
@@ -119,7 +119,7 @@ export default function OnboardingName() {
         <button
           onClick={handleNext}
           disabled={!firstName.trim()}
-          className="w-full h-[56px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50"
+          className="w-full h-[56px] rounded-[6px] text-[15px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-50"
           style={{ background: T.pink, boxShadow: firstName.trim() ? T.pinkShadow : "none" }}
           data-testid="button-name-next"
         >

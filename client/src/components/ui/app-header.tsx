@@ -37,7 +37,7 @@ export function AppHeader({ title, onBack, closeButton, trailing }: AppHeaderPro
       >
         <Icon className="w-5 h-5 text-[#111111]" strokeWidth={2} />
       </button>
-      <h1 className="text-[18px] font-bold text-[#111111] flex-1 min-w-0 truncate" data-testid="text-page-title">
+      <h1 className="text-[18px] font-semibold text-[#111111] flex-1 min-w-0 truncate" data-testid="text-page-title">
         {title}
       </h1>
       {trailing && <div className="shrink-0">{trailing}</div>}

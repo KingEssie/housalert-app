@@ -84,10 +84,10 @@ export default function ChangePasswordPage() {
           <div className="app-card text-center">
             <div className="flex items-center justify-center mb-5">
               <div className="w-14 h-14 rounded-full bg-ha-success/10 flex items-center justify-center">
-                <CheckCircle2 className="w-7 h-7 text-ha-success" />
+                <CheckCircle2 className="w-7 h-7 text-[#111111]" />
               </div>
             </div>
-            <h2 className="text-[20px] font-bold text-[#111111] mb-2" data-testid="text-success-title">
+            <h2 className="text-[20px] font-semibold text-[#111111] mb-2" data-testid="text-success-title">
               {t("changePassword.successTitle")}
             </h2>
             <p className="text-[15px] text-[#6B7280] mb-6">
@@ -163,7 +163,7 @@ export default function ChangePasswordPage() {
               </button>
             </div>
             {newTooShort && (
-              <p className="text-[13px] mt-1.5 text-ha-primary" data-testid="text-error-min-length">
+              <p className="text-[13px] mt-1.5 text-[#111111]" data-testid="text-error-min-length">
                 {t("changePassword.minLength")}
               </p>
             )}
@@ -193,7 +193,7 @@ export default function ChangePasswordPage() {
               </button>
             </div>
             {mismatch && (
-              <p className="text-[13px] mt-1.5 text-ha-primary" data-testid="text-error-mismatch">
+              <p className="text-[13px] mt-1.5 text-[#111111]" data-testid="text-error-mismatch">
                 {t("changePassword.mismatch")}
               </p>
             )}

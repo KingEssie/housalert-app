@@ -220,7 +220,7 @@ export default function OnboardingPassword() {
 
         <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[130px] overflow-y-auto">
           <h2
-            className="text-[22px] font-bold tracking-[-0.02em] mb-4"
+            className="text-[22px] font-semibold tracking-[-0.02em] mb-4"
             style={{ color: OBW.text }}
             data-testid="text-password-title"
           >
@@ -231,7 +231,7 @@ export default function OnboardingPassword() {
               className="rounded-[4px] p-3.5 mb-4 flex items-start gap-3"
               style={{
                 backgroundColor: "#FFFFFF",
-                border: `1px solid rgba(255,56,92,0.15)`,
+                border: `1px solid rgba(37,150,190,0.15)`,
               }}
               data-testid="search-summary-card"
             >
@@ -383,8 +383,8 @@ export default function OnboardingPassword() {
               <button
                 onClick={handleCreateAccount}
                 disabled={!canSubmit}
-                className="flex-1 h-[44px] rounded-[4px] text-[14px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-2"
-                style={{ background: OBW.pink, boxShadow: canSubmit ? "0 4px 14px rgba(255,56,92,0.25)" : "none" }}
+                className="flex-1 h-[44px] rounded-[4px] text-[14px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-2"
+                style={{ background: OBW.pink, boxShadow: canSubmit ? "0 4px 14px rgba(37,150,190,0.25)" : "none" }}
                 data-testid="button-create-account"
               >
                 {loading ? (
@@ -450,7 +450,7 @@ export default function OnboardingPassword() {
 
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-4 pb-[100px]">
         <h1
-          className="text-[24px] font-bold tracking-[-0.02em] mb-2"
+          className="text-[24px] font-semibold tracking-[-0.02em] mb-2"
           style={{ color: T.text }}
           data-testid="text-password-title"
         >
@@ -534,7 +534,7 @@ export default function OnboardingPassword() {
         <button
           onClick={handleCreateAccount}
           disabled={!canSubmit}
-          className="w-full h-[56px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
+          className="w-full h-[56px] rounded-[6px] text-[15px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
           style={{ background: T.pink, boxShadow: canSubmit ? T.pinkShadow : "none" }}
           data-testid="button-create-account"
         >

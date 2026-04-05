@@ -283,7 +283,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
             <span className="text-[13px] text-ha-text">
               {t("profileStrength.tasksCompleted", { done: String(completedCount), total: String(totalCount) })}
             </span>
-            <span className="text-[13px] font-medium text-ha-primary">{percentage}%</span>
+            <span className="text-[13px] font-medium text-[#111111]">{percentage}%</span>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -330,7 +330,7 @@ export function AccountCompletionCard({ onTaskClick }: { onTaskClick: (taskId: s
               >
                 {task.completed ? (
                   <div className="w-5 h-5 rounded-full bg-ha-primary/10 flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="w-4 h-4 text-ha-primary" />
+                    <CheckCircle2 className="w-4 h-4 text-[#111111]" />
                   </div>
                 ) : (
                   <div className="w-5 h-5 rounded-full border-2 border-ha-card-border flex-shrink-0" />
@@ -525,7 +525,7 @@ export function TaskModal({
                       >
                         {checklist[item.id] ? (
                           <div className="w-6 h-6 rounded-full bg-ha-success/10 flex items-center justify-center flex-shrink-0">
-                            <CheckCircle2 className="w-5 h-5 text-ha-success" />
+                            <CheckCircle2 className="w-5 h-5 text-[#111111]" />
                           </div>
                         ) : (
                           <div className="w-6 h-6 rounded-full border-2 border-ha-card-border flex-shrink-0" />
@@ -619,7 +619,7 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
             <span className="text-[13px] text-ha-text">
               {t("profileStrength.tasksCompleted", { done: String(prepCompletedCount), total: String(prepTotalCount) })}
             </span>
-            <span className="text-[13px] font-medium text-ha-primary">{percentage}%</span>
+            <span className="text-[13px] font-medium text-[#111111]">{percentage}%</span>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -666,7 +666,7 @@ export function SearchPreparationCard({ onTaskClick }: { onTaskClick: (taskId: s
               >
                 {task.completed ? (
                   <div className="w-5 h-5 rounded-full bg-ha-primary/10 flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="w-4 h-4 text-ha-primary" />
+                    <CheckCircle2 className="w-4 h-4 text-[#111111]" />
                   </div>
                 ) : (
                   <div className="w-5 h-5 rounded-full border-2 border-ha-card-border flex-shrink-0" />
@@ -893,7 +893,7 @@ export function NotificationSummaryCard({ navigate }: { navigate: (path: string)
             </span>
             {enabled ? (
               <div className="w-4 h-4 rounded-full bg-ha-success/10 flex items-center justify-center">
-                <CheckCircle2 className="w-3 h-3 text-ha-success" />
+                <CheckCircle2 className="w-3 h-3 text-[#111111]" />
               </div>
             ) : (
               <div className="w-4 h-4 rounded-full border-2 border-ha-card-border" />
@@ -972,7 +972,7 @@ export function SpeedReadinessCard({ navigate }: { navigate: (path: string) => v
             >
               {step.done ? (
                 <div className="w-5 h-5 rounded-full bg-ha-success/10 flex items-center justify-center flex-shrink-0">
-                  <CheckCircle2 className="w-4 h-4 text-ha-success" />
+                  <CheckCircle2 className="w-4 h-4 text-[#111111]" />
                 </div>
               ) : (
                 <div className="w-4.5 h-4.5 rounded-full border-2 border-ha-card-border flex-shrink-0" />

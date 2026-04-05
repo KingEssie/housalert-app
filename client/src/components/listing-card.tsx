@@ -98,7 +98,7 @@ export function ListingCardFull({
 
         {isNew && (
           <span
-            className="absolute top-3 left-3 text-[11px] font-bold bg-white text-[#111111] px-2.5 py-[5px] rounded-full"
+            className="absolute top-3 left-3 text-[11px] font-semibold bg-white text-[#111111] px-2.5 py-[5px] rounded-full"
             style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}
             data-testid={`badge-new-${match.listing_id}`}
           >
@@ -110,13 +110,13 @@ export function ListingCardFull({
           onClick={handleHeartClick}
           className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-all duration-200"
           style={{
-            backgroundColor: isFavorited ? "rgba(255,56,92,0.15)" : "rgba(0,0,0,0.25)",
+            backgroundColor: isFavorited ? "#2596be" : "rgba(0,0,0,0.35)",
             backdropFilter: isFavorited ? "none" : "blur(4px)",
           }}
           data-testid={`button-favorite-${match.listing_id}`}
         >
           <Heart
-            className={`w-[18px] h-[18px] transition-all duration-200 ${isFavorited ? "text-ha-primary scale-110" : "text-white"}`}
+            className={`w-[18px] h-[18px] transition-all duration-200 text-white ${isFavorited ? "scale-110" : ""}`}
             fill={isFavorited ? "currentColor" : "none"}
             strokeWidth={2}
           />
@@ -125,7 +125,7 @@ export function ListingCardFull({
         {match.price > 0 && (
           <div className="absolute bottom-3 left-3">
             <span
-              className="text-[17px] font-bold text-white"
+              className="text-[17px] font-semibold text-white"
               style={{ textShadow: "0 1px 3px rgba(0,0,0,0.5)" }}
               data-testid={`badge-price-${match.listing_id}`}
             >
@@ -253,7 +253,7 @@ export function ListingCardCompact({ match, onCardClick }: ListingCardCompactPro
 
         {match.price > 0 && (
           <div className="absolute bottom-2 left-2.5">
-            <span className="text-[13px] font-bold text-white" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.4)" }}>
+            <span className="text-[13px] font-semibold text-white" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.4)" }}>
               {formatPrice(match.price, locale)}
             </span>
           </div>

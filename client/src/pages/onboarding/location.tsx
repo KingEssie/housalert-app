@@ -95,7 +95,7 @@ export default function OnboardingLocation() {
       >
         <div className="max-w-[480px] mx-auto px-5 h-[52px] flex items-center justify-between">
           <span
-            className="text-[12px] font-bold px-2.5 py-1 rounded-[6px]"
+            className="text-[12px] font-semibold px-2.5 py-1 rounded-[6px]"
             style={{
               backgroundColor: "#111111",
               color: "#ffffff",
@@ -256,7 +256,7 @@ export default function OnboardingLocation() {
                     className="px-4 py-2.5 rounded-full text-[14px] font-medium transition-all"
                     style={{
                       border: active
-                        ? "1.5px solid rgba(255,56,92,0.6)"
+                        ? "1.5px solid rgba(37,150,190,0.6)"
                         : `1px solid ${OBW.chipBorder}`,
                       backgroundColor: active ? OB.selectedBg : "transparent",
                       color: active ? OB.pink : (OBW.text),
@@ -326,7 +326,7 @@ export default function OnboardingLocation() {
             <p className="text-[13px] font-medium" style={{ color: T.textMuted }}>
               Geschatte matches
             </p>
-            <p className="text-[15px] font-bold" style={{ color: T.text }}>
+            <p className="text-[15px] font-semibold" style={{ color: T.text }}>
               121 per week 🔥
             </p>
           </div>

@@ -13,8 +13,8 @@ import { useToast } from "@/hooks/use-toast";
 const OB = {
   gradient: "#ffffff",
   pink: "rgb(var(--ha-primary))",
-  pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, #D70466 100%)",
-  pinkShadow: "0 4px 15px rgba(255,56,92,0.3)",
+  pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, #1E7FA3 100%)",
+  pinkShadow: "0 4px 15px rgba(37,150,190,0.3)",
   text: "#111111",
   textSecondary: "#6B7280",
 };
@@ -180,14 +180,14 @@ export default function WelcomePage() {
         <HousAlertLogo
           size={28}
           showText={true}
-          textClassName="font-bold text-[#111111] text-[17px] tracking-[-0.01em]"
+          textClassName="font-semibold text-[#111111] text-[17px] tracking-[-0.01em]"
         />
         <LanguageDropdown />
       </header>
 
       <main className="flex-1 flex flex-col w-full px-4 pt-6 pb-[max(env(safe-area-inset-bottom),12px)]">
         <h1
-          className="text-[26px] font-bold text-[#111111] leading-[1.15] tracking-[-0.02em] mb-8 whitespace-nowrap"
+          className="text-[26px] font-semibold text-[#111111] leading-[1.15] tracking-[-0.02em] mb-8 whitespace-nowrap"
           data-testid="text-auth-title"
         >
           {t("v2.welcome.title")}
@@ -195,7 +195,7 @@ export default function WelcomePage() {
 
         <form onSubmit={handleLogin} className="flex flex-col gap-6">
           <div className="flex flex-col gap-1.5">
-            <label className="text-[14px] font-bold text-[#111111]" htmlFor="welcome-email">
+            <label className="text-[14px] font-semibold text-[#111111]" htmlFor="welcome-email">
               {t("v2.welcome.emailLabel")}
             </label>
             <input
@@ -212,7 +212,7 @@ export default function WelcomePage() {
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-[14px] font-bold text-[#111111]" htmlFor="welcome-password">
+            <label className="text-[14px] font-semibold text-[#111111]" htmlFor="welcome-password">
               {t("v2.welcome.passwordLabel")}
             </label>
             <div className="relative">
@@ -256,7 +256,7 @@ export default function WelcomePage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full ha-btn text-white font-bold"
+            className="w-full ha-btn text-white font-semibold"
             style={{ background: OB.pink, boxShadow: OB.pinkShadow }}
             data-testid="button-login"
           >
@@ -275,7 +275,7 @@ export default function WelcomePage() {
 
         <div className="flex items-center gap-3 my-6">
           <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
-          <span className="text-[13px] font-semibold tracking-wide" style={{ color: "#9CA3AF" }}>
+          <span className="text-[13px] font-semibold" style={{ color: "#9CA3AF" }}>
             {t("v2.welcome.or") || "OF"}
           </span>
           <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
@@ -319,7 +319,7 @@ export default function WelcomePage() {
               </div>
             ))}
           </div>
-          <span className="text-[14px] font-bold" style={{ color: "#6B7280" }}>
+          <span className="text-[14px] font-semibold" style={{ color: "#6B7280" }}>
             4.8
           </span>
         </div>

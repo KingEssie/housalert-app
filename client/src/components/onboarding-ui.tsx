@@ -15,15 +15,15 @@ export const OB = {
   textMuted: "#9CA3AF",
   pink: "rgb(var(--ha-primary))",
   pinkHover: "rgb(var(--ha-primary-hover))",
-  pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, #D70466 100%)",
-  pinkShadow: "0 4px 15px rgba(255,56,92,0.3)",
+  pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, #1E7FA3 100%)",
+  pinkShadow: "0 4px 15px rgba(37,150,190,0.3)",
   surface: "#FFFFFF",
   divider: "#E5E7EB",
   progressInactive: "#E5E7EB",
   backBtnBg: "#FFFFFF",
-  selectedBg: "rgba(255,56,92,0.08)",
+  selectedBg: "rgba(37,150,190,0.08)",
   selectedBorder: "rgb(var(--ha-primary))",
-  accentBg: "rgba(255,56,92,0.06)",
+  accentBg: "rgba(37,150,190,0.06)",
   greenBg: "rgb(var(--ha-success) / 0.08)",
   greenBorder: "rgb(var(--ha-success) / 0.2)",
   redBg: "rgba(220,38,38,0.08)",
@@ -43,15 +43,15 @@ export const OBW = {
   textMuted: "#9CA3AF",
   pink: "rgb(var(--ha-primary))",
   pinkHover: "rgb(var(--ha-primary-hover))",
-  pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, #D70466 100%)",
-  pinkShadow: "0 4px 15px rgba(255,56,92,0.3)",
+  pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, #1E7FA3 100%)",
+  pinkShadow: "0 4px 15px rgba(37,150,190,0.3)",
   surface: "#FFFFFF",
   divider: "#E5E7EB",
   progressInactive: "#E5E7EB",
   backBtnBg: "#FFFFFF",
-  selectedBg: "rgba(255,56,92,0.08)",
+  selectedBg: "rgba(37,150,190,0.08)",
   selectedBorder: "rgb(var(--ha-primary))",
-  accentBg: "rgba(255,56,92,0.06)",
+  accentBg: "rgba(37,150,190,0.06)",
   greenBg: "rgb(var(--ha-success) / 0.08)",
   greenBorder: "rgb(var(--ha-success) / 0.2)",
   redBg: "rgba(220,38,38,0.08)",
@@ -60,13 +60,13 @@ export const OBW = {
   footerBorder: "#E5E7EB",
   backBtnBorder: "#E5E7EB",
   backBtnColor: "#111111",
-  badgeBg: "rgba(255,56,92,0.08)",
+  badgeBg: "rgba(37,150,190,0.08)",
   badgeColor: "rgb(var(--ha-primary))",
   closeBtnBg: "#F7F7F7",
   closeBtnColor: "#6B7280",
   tabBg: "#F7F7F7",
-  tabActiveBg: "#E5E7EB",
-  tabActiveColor: "#111111",
+  tabActiveBg: "#111111",
+  tabActiveColor: "#FFFFFF",
   tabInactiveColor: "#6B7280",
   chipBorder: "#E5E7EB",
   chipActiveColor: "#ffffff",
@@ -128,7 +128,7 @@ export function OBWebHeader({ step, totalSteps = 3 }: { step?: number; totalStep
         <HousAlertLogo size={26} />
         {step ? (
           <span
-            className="text-[11px] font-bold px-2.5 py-1 rounded-[4px]"
+            className="text-[11px] font-semibold px-2.5 py-1 rounded-[4px]"
             style={{ backgroundColor: "rgb(var(--ha-primary))", color: "#ffffff" }}
             data-testid="badge-step"
           >
@@ -171,7 +171,7 @@ export function OBWebFooter({
           <p className="text-[10px] font-semibold tracking-[0.06em]" style={{ color: OBW.textMuted }}>
             Geschatte matches
           </p>
-          <p className="text-[16px] font-bold flex items-center gap-1" style={{ color: OBW.text }}>
+          <p className="text-[16px] font-semibold flex items-center gap-1" style={{ color: OBW.text }}>
             {matchCount} per week <span className="text-[13px]">🔥</span>
           </p>
         </div>
@@ -188,8 +188,8 @@ export function OBWebFooter({
         <button
           onClick={onNext}
           disabled={nextDisabled || saving}
-          className="min-w-[120px] px-6 h-[44px] rounded-[4px] text-[14px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-1.5 shrink-0"
-          style={{ background: OBW.pink, boxShadow: nextDisabled ? "none" : "0 4px 14px rgba(255,56,92,0.25)" }}
+          className="min-w-[120px] px-6 h-[44px] rounded-[4px] text-[14px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-1.5 shrink-0"
+          style={{ background: OBW.pink, boxShadow: nextDisabled ? "none" : "0 4px 14px rgba(37,150,190,0.25)" }}
           data-testid={nextTestId || "button-next"}
         >
           {saving && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -279,8 +279,8 @@ export function OBFooter({
           <button
             onClick={onNext}
             disabled={nextDisabled || saving}
-            className="flex-1 ha-btn text-white font-bold disabled:opacity-40"
-            style={{ background: OB.pink, boxShadow: "0 8px 20px rgba(255,56,92,0.25)" }}
+            className="flex-1 ha-btn text-white font-semibold disabled:opacity-40"
+            style={{ background: OB.pink, boxShadow: "0 8px 20px rgba(37,150,190,0.25)" }}
             data-testid={nextTestId || "button-next"}
           >
             {saving && <Loader2 className="w-4 h-4 animate-spin mr-1" />}

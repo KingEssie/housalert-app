@@ -137,7 +137,7 @@ export default function SubscriptionDetailPage() {
               <Crown className="w-[22px] h-[22px] text-ha-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[15px] font-bold text-[#111111]" data-testid="text-plan-summary">
+              <p className="text-[15px] font-semibold text-[#111111]" data-testid="text-plan-summary">
                 {subscription?.isTrial ? t("subscription.status.trial") : getPlanLabel(subscription?.plan)}
               </p>
               <span
@@ -196,7 +196,7 @@ export default function SubscriptionDetailPage() {
                 <AlertCircle className="w-5 h-5 text-ha-primary" />
               </div>
               <div>
-                <p className="text-[15px] font-bold text-[#111111]">{t("subscription.expiredTitle")}</p>
+                <p className="text-[15px] font-semibold text-[#111111]">{t("subscription.expiredTitle")}</p>
                 <p className="text-[14px] text-ha-text-muted mt-0.5">{t("subscription.expiredDesc")}</p>
               </div>
             </div>

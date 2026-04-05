@@ -205,7 +205,7 @@ export default function TipsFlowPage() {
           <div className="px-5 py-5">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-9 h-9 rounded-full bg-[#111111] flex items-center justify-center flex-shrink-0">
-                <span className="text-[14px] font-bold text-white">{currentStep + 1}</span>
+                <span className="text-[14px] font-semibold text-white">{currentStep + 1}</span>
               </div>
               <h2 className="text-[18px] font-semibold text-[#111111] leading-tight" data-testid="text-step-title">
                 {step.title}
@@ -251,7 +251,7 @@ export default function TipsFlowPage() {
 
           <button
             onClick={handleNext}
-            className="w-full h-[48px] rounded-[--ha-btn-radius] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-bold transition-colors active:scale-[0.98]"
+            className="w-full h-[48px] rounded-[--ha-btn-radius] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold transition-colors active:scale-[0.98]"
             data-testid="button-tips-next"
           >
             {isLastStep ? "Afronden" : "Volgende"}

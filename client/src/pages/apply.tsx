@@ -258,7 +258,7 @@ export default function ApplyPage() {
             <div className="w-16 h-16 rounded-full bg-[#F9FAFB] flex items-center justify-center mx-auto mb-5">
               <Lock className="w-7 h-7 text-ha-text-muted" />
             </div>
-            <h2 className="text-[18px] font-bold text-[#111111] mb-2" data-testid="text-apply-locked-title">
+            <h2 className="text-[18px] font-semibold text-[#111111] mb-2" data-testid="text-apply-locked-title">
               {t("listing.upgradeCta")}
             </h2>
             <p className="text-[14px] text-ha-text-muted mb-6 leading-relaxed max-w-[280px] mx-auto" data-testid="text-apply-locked-desc">
@@ -504,7 +504,7 @@ export default function ApplyPage() {
         <div className="max-w-xl mx-auto flex items-center justify-between px-5 py-4">
           {listing.price > 0 && (
             <div className="flex flex-col" data-testid="text-sticky-price">
-              <span className="text-[20px] font-bold text-[#111111]">€{listing.price}<span className="text-[13px] font-normal text-[#6B7280] ml-1">{t("common.perMonthShort")}</span></span>
+              <span className="text-[20px] font-semibold text-[#111111]">€{listing.price}<span className="text-[13px] font-normal text-[#6B7280] ml-1">{t("common.perMonthShort")}</span></span>
               {postedLabel && (
                 <span className="text-[11px] font-normal text-[#9CA3AF] leading-none mt-0.5" data-testid="text-footer-posted">{postedLabel}</span>
               )}
@@ -526,11 +526,11 @@ export default function ApplyPage() {
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowBlockModal(false)}>
           <div className="bg-white w-full max-w-[400px] rounded-t-[20px] sm:rounded-[20px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
             <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 rounded-full bg-[#FFF1F3] flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-[#EDF7FB] flex items-center justify-center">
                 <ShieldBan className="w-6 h-6 text-ha-primary" />
               </div>
             </div>
-            <p className="text-[17px] font-bold text-[#111111] text-center" data-testid="text-block-title-apply">
+            <p className="text-[17px] font-semibold text-[#111111] text-center" data-testid="text-block-title-apply">
               {t("listing.blockSource.title")}
             </p>
             <p className="text-[15px] text-[#6B7280] text-center mt-2 mb-6" data-testid="text-block-desc-apply">
@@ -539,7 +539,7 @@ export default function ApplyPage() {
             <button
               onClick={handleBlockSource}
               disabled={blockLoading}
-              className="w-full h-[48px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-bold mb-3 active:scale-[0.98] transition-transform disabled:opacity-60"
+              className="w-full h-[48px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold mb-3 active:scale-[0.98] transition-transform disabled:opacity-60"
               data-testid="button-block-confirm-apply"
             >
               {blockLoading ? "..." : t("listing.blockSource.confirm")}

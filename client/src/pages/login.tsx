@@ -102,7 +102,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex flex-col" style={{ background: OB.gradient }}>
       <header className="w-full pt-3 px-4">
         <div className="max-w-[480px] mx-auto flex items-center justify-between">
-          <HousAlertLogo size={32} textClassName="font-bold text-[#111111] text-[18px]" />
+          <HousAlertLogo size={32} textClassName="font-semibold text-[#111111] text-[18px]" />
           <LanguageSwitcher />
         </div>
       </header>
@@ -110,7 +110,7 @@ export default function LoginPage() {
       <main className="flex-1 flex flex-col px-4 pt-8 pb-6">
         <div className="w-full max-w-[480px] mx-auto flex flex-col flex-1">
           <h1
-            className="text-[28px] font-bold tracking-[-0.02em] leading-[1.15] mb-8 whitespace-pre-line"
+            className="text-[28px] font-semibold tracking-[-0.02em] leading-[1.15] mb-8 whitespace-pre-line"
             style={{ color: OB.text }}
             data-testid="text-login-title"
           >
@@ -119,7 +119,7 @@ export default function LoginPage() {
 
           <form onSubmit={handleLogin} className="flex flex-col gap-5">
             <div className="flex flex-col gap-2">
-              <label htmlFor="login-email" className="text-[14px] font-bold" style={{ color: OB.text }}>
+              <label htmlFor="login-email" className="text-[14px] font-semibold" style={{ color: OB.text }}>
                 {t("auth.login.email")}
               </label>
               <input
@@ -136,7 +136,7 @@ export default function LoginPage() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label htmlFor="login-password" className="text-[14px] font-bold" style={{ color: OB.text }}>
+              <label htmlFor="login-password" className="text-[14px] font-semibold" style={{ color: OB.text }}>
                 {t("auth.login.password")}
               </label>
               <div className="relative">
@@ -175,7 +175,7 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className="w-full ha-btn text-white border-0 font-bold"
+              className="w-full ha-btn text-white border-0 font-semibold"
               style={{ background: OB.pink, boxShadow: OB.pinkShadow }}
               disabled={loading}
               data-testid="button-login-submit"
@@ -191,7 +191,7 @@ export default function LoginPage() {
 
           <div className="flex items-center gap-3 my-5">
             <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
-            <span className="text-[13px] font-semibold tracking-wide" style={{ color: "#9CA3AF" }}>
+            <span className="text-[13px] font-semibold" style={{ color: "#9CA3AF" }}>
               {t("auth.login.or") || "OF"}
             </span>
             <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
@@ -232,7 +232,7 @@ export default function LoginPage() {
                 </div>
               ))}
             </div>
-            <span className="text-[14px] font-bold" style={{ color: "#6B7280" }}>
+            <span className="text-[14px] font-semibold" style={{ color: "#6B7280" }}>
               4.8
             </span>
           </div>

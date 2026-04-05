@@ -118,7 +118,7 @@ export default function ProfileEditPage() {
           </div>
         ) : isBuddyField ? (
           <div className="flex flex-col items-center pt-6">
-            <h1 className="text-[24px] font-bold text-[#111111] text-center leading-tight" data-testid="text-buddy-title">{config.question}</h1>
+            <h1 className="text-[24px] font-semibold text-[#111111] text-center leading-tight" data-testid="text-buddy-title">{config.question}</h1>
             {config.description && (
               <p className="text-[15px] text-[#6B7280] text-center leading-relaxed mt-3 max-w-[320px]">{config.description}</p>
             )}
@@ -189,7 +189,7 @@ export default function ProfileEditPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className={`w-full h-[52px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-bold flex items-center justify-center transition-colors disabled:opacity-50 active:scale-[0.97]`}
+              className={`w-full h-[52px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold flex items-center justify-center transition-colors disabled:opacity-50 active:scale-[0.97]`}
               data-testid="button-save-field"
             >
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : t("common.save")}

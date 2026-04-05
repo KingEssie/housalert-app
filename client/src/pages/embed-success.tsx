@@ -137,7 +137,7 @@ export default function EmbedSuccessPage() {
       <div className="min-h-screen bg-ha-card flex items-center justify-center px-5">
         <div className="text-center max-w-sm">
           <div className="w-16 h-16 rounded-full bg-ha-success-light flex items-center justify-center mx-auto mb-5">
-            <CheckCircle className="w-8 h-8 text-ha-primary" />
+            <CheckCircle className="w-8 h-8 text-[#111111]" />
           </div>
           <h1 className="text-[22px] font-medium text-ha-text mb-2" data-testid="text-embed-success-title">
             {t("subscription.activated")}
@@ -154,7 +154,7 @@ export default function EmbedSuccessPage() {
     <div className="min-h-screen bg-ha-card flex flex-col">
       <main className={`flex-1 ${containerClass} mx-auto w-full px-5 pb-8 pt-6`}>
         <div className="w-16 h-16 rounded-full bg-ha-success-light flex items-center justify-center mx-auto mb-5">
-          <CheckCircle className="w-8 h-8 text-ha-success" />
+          <CheckCircle className="w-8 h-8 text-[#111111]" />
         </div>
 
         <h1

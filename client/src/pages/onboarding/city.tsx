@@ -157,7 +157,7 @@ export default function OnboardingCity() {
 
         <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[100px] overflow-y-auto">
           <h2
-            className="text-[22px] font-bold tracking-[-0.02em] mb-1"
+            className="text-[22px] font-semibold tracking-[-0.02em] mb-1"
             style={{ color: OBW.text }}
             data-testid="text-city-title"
           >
@@ -302,7 +302,7 @@ export default function OnboardingCity() {
       >
         <div className="max-w-[480px] mx-auto px-5 h-[52px] flex items-center justify-between">
           <span
-            className="text-[12px] font-bold px-2.5 py-1 rounded-[6px]"
+            className="text-[12px] font-semibold px-2.5 py-1 rounded-[6px]"
             style={{
               backgroundColor: "#111111",
               color: "#ffffff",

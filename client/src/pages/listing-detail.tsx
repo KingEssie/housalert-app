@@ -232,9 +232,9 @@ export default function ListingDetailPage() {
       <div className="min-h-screen flex flex-col relative bg-white">
         <FloatingBackButton navigate={navigate} />
         <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-24 text-center">
-          <p className="text-[20px] font-bold text-[#111111] mb-2">{t("listing.notFound")}</p>
+          <p className="text-[20px] font-semibold text-[#111111] mb-2">{t("listing.notFound")}</p>
           <p className="text-[14px] text-[#9CA3AF] mb-6">{t("listing.notFoundDesc")}</p>
-          <Button onClick={() => navigate("/dashboard")} className="h-[50px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-bold px-8" data-testid="button-back-dashboard">
+          <Button onClick={() => navigate("/dashboard")} className="h-[50px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold px-8" data-testid="button-back-dashboard">
             {t("listing.backToDashboard")}
           </Button>
         </main>
@@ -314,7 +314,7 @@ export default function ListingDetailPage() {
 
         <div className="absolute top-3 left-[56px] flex items-center gap-2">
           {listing.fresh_label !== "ouder" && (
-            <span className={`text-[11px] font-bold px-2.5 py-[5px] rounded-full ${style.bg} ${style.text}`} style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }} data-testid="badge-freshness">
+            <span className={`text-[11px] font-semibold px-2.5 py-[5px] rounded-full ${style.bg} ${style.text}`} style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }} data-testid="badge-freshness">
               {t(FRESH_LABEL_KEYS[listing.fresh_label] ?? "freshness.older")}
             </span>
           )}
@@ -322,14 +322,14 @@ export default function ListingDetailPage() {
 
         {listing.price > 0 && (
           <div className="absolute bottom-4 left-5">
-            <span className="text-[24px] font-bold text-white" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.4)" }} data-testid="text-listing-price">€{listing.price}</span>
+            <span className="text-[24px] font-semibold text-white" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.4)" }} data-testid="text-listing-price">€{listing.price}</span>
             <span className="text-[13px] text-white/70 ml-1" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.4)" }}>{t("common.perMonth")}</span>
           </div>
         )}
       </div>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-4 pb-28">
-        <h1 className="text-[20px] font-bold text-[#111111] leading-[1.3]" data-testid="text-listing-title">
+        <h1 className="text-[20px] font-semibold text-[#111111] leading-[1.3]" data-testid="text-listing-title">
           {listing.title}
         </h1>
 
@@ -401,7 +401,7 @@ export default function ListingDetailPage() {
           {hasAccess ? (
             <Button
               onClick={() => navigate(`/apply/${listing.id}`)}
-              className="w-full h-[48px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-bold flex items-center justify-center gap-2"
+              className="w-full h-[48px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold flex items-center justify-center gap-2"
               style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}
               data-testid="button-reageer-detail"
             >
@@ -411,7 +411,7 @@ export default function ListingDetailPage() {
           ) : (
             <Button
               onClick={() => navigate("/paywall")}
-              className="w-full h-[48px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-bold flex items-center justify-center gap-2"
+              className="w-full h-[48px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold flex items-center justify-center gap-2"
               style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}
               data-testid="button-upgrade-detail"
             >
@@ -426,11 +426,11 @@ export default function ListingDetailPage() {
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowBlockModal(false)}>
           <div className="bg-white w-full max-w-[400px] rounded-t-[20px] sm:rounded-[20px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
             <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 rounded-full bg-[#FFF1F3] flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-[#EDF7FB] flex items-center justify-center">
                 <ShieldBan className="w-6 h-6 text-ha-primary" />
               </div>
             </div>
-            <p className="text-[17px] font-bold text-[#111111] text-center" data-testid="text-block-title">
+            <p className="text-[17px] font-semibold text-[#111111] text-center" data-testid="text-block-title">
               {t("listing.blockSource.title")}
             </p>
             <p className="text-[15px] text-[#6B7280] text-center mt-2 mb-6" data-testid="text-block-desc">
@@ -439,7 +439,7 @@ export default function ListingDetailPage() {
             <button
               onClick={handleBlockSource}
               disabled={blockLoading}
-              className="w-full h-[48px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-bold mb-3 active:scale-[0.98] transition-transform disabled:opacity-60"
+              className="w-full h-[48px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold mb-3 active:scale-[0.98] transition-transform disabled:opacity-60"
               data-testid="button-block-confirm"
             >
               {blockLoading ? "..." : t("listing.blockSource.confirm")}

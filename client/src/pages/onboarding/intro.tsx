@@ -61,7 +61,7 @@ export default function OnboardingIntro() {
           {STEPS.map((step) => (
             <div key={step.num} className="flex items-start gap-3" data-testid={`step-${step.num}`}>
               <div
-                className="w-[26px] h-[26px] rounded-full flex items-center justify-center shrink-0 text-[14px] font-bold mt-[2px]"
+                className="w-[26px] h-[26px] rounded-full flex items-center justify-center shrink-0 text-[14px] font-semibold mt-[2px]"
                 style={{ backgroundColor: "#F3F4F6", color: "#111111" }}
               >
                 {step.num}
@@ -105,7 +105,7 @@ export default function OnboardingIntro() {
             <button
               onClick={() => navigate("/onboarding/city")}
               className="flex-1 ha-btn text-white font-semibold"
-              style={{ background: OB.pink, boxShadow: "0 8px 20px rgba(255,56,92,0.25)" }}
+              style={{ background: OB.pink, boxShadow: "0 8px 20px rgba(37,150,190,0.25)" }}
               data-testid="button-intro-start"
             >
               {t("onboarding.intro.cta")}

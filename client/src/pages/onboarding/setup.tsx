@@ -132,8 +132,8 @@ function PrimaryBtn({ onClick, children, loading, disabled, testId }: {
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className="w-full h-[56px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50"
-      style={{ background: "rgb(var(--ha-primary))", boxShadow: "0 4px 15px rgba(255,56,92,0.3)" }}
+      className="w-full h-[56px] rounded-[6px] text-[15px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-50"
+      style={{ background: "rgb(var(--ha-primary))", boxShadow: "0 4px 15px rgba(37,150,190,0.3)" }}
       data-testid={testId}
     >
       {loading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : children}
@@ -198,7 +198,7 @@ function PaywallStep({ onSelectPlan, onSkip, t }: {
         </div>
       </div>
 
-      <h1 className="text-[28px] font-bold tracking-[-0.03em] leading-[1.1] mb-6" style={{ color: TEXT_PRIMARY }} data-testid="text-paywall-title">
+      <h1 className="text-[28px] font-semibold tracking-[-0.03em] leading-[1.1] mb-6" style={{ color: TEXT_PRIMARY }} data-testid="text-paywall-title">
         {t("paywall.headline")}
       </h1>
 
@@ -206,7 +206,7 @@ function PaywallStep({ onSelectPlan, onSkip, t }: {
         {BENEFIT_KEYS.map((b, i) => (
           <div key={i} className="flex items-start gap-3" data-testid={`paywall-benefit-${i}`}>
             <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgb(var(--ha-success) / 0.15)" }}>
-              <Check className="w-3.5 h-3.5 text-ha-success" />
+              <Check className="w-3.5 h-3.5 text-[#111111]" />
             </div>
             <div>
               <p className="text-[15px] font-semibold" style={{ color: TEXT_PRIMARY }}>{t(b.titleKey)}</p>
@@ -226,12 +226,12 @@ function PaywallStep({ onSelectPlan, onSkip, t }: {
               className="w-full rounded-[--ha-card-radius] border-2 transition-all text-left relative overflow-hidden"
               style={{
                 borderColor: isSelected ? BRAND : "#E5E7EB",
-                backgroundColor: isSelected ? "rgba(255,56,92,0.08)" : "#ffffff",
+                backgroundColor: isSelected ? "rgba(37,150,190,0.08)" : "#ffffff",
               }}
               data-testid={`card-plan-${plan.id}`}
             >
               {plan.popular && (
-                <div className="w-full text-center py-1 text-[11px] font-bold tracking-wider" style={{ backgroundColor: BRAND, color: "#fff" }} data-testid="badge-popular">
+                <div className="w-full text-center py-1 text-[11px] font-semibold" style={{ backgroundColor: BRAND, color: "#fff" }} data-testid="badge-popular">
                   {t("paywall.mostChosen")}
                 </div>
               )}
@@ -252,10 +252,10 @@ function PaywallStep({ onSelectPlan, onSkip, t }: {
                   </div>
                 </div>
                 <div className="flex items-center gap-2.5">
-                  <span className="text-[18px] font-bold" style={{ color: TEXT_PRIMARY }}>{plan.price}</span>
+                  <span className="text-[18px] font-semibold" style={{ color: TEXT_PRIMARY }}>{plan.price}</span>
                   {plan.discountLabel && (
                     <span
-                      className="text-[11px] font-bold px-2 py-0.5 rounded-[4px]"
+                      className="text-[11px] font-semibold px-2 py-0.5 rounded-[4px]"
                       style={{ backgroundColor: plan.discountColor + "20", color: plan.discountColor }}
                     >
                       {plan.discountLabel}
@@ -310,12 +310,12 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
       <div className="flex items-center justify-between mb-6">
         <HousAlertLogo size={24} />
         <div className="text-right">
-          <p className="text-[13px] font-bold" style={{ color: "#00b67a" }}>★ 4,6 uit 5</p>
+          <p className="text-[13px] font-semibold" style={{ color: "#00b67a" }}>★ 4,6 uit 5</p>
           <p className="text-[11px]" style={{ color: "#9CA3AF" }}>Trustpilot</p>
         </div>
       </div>
 
-      <h1 className="text-[28px] font-bold tracking-[-0.02em] mb-6" style={{ color: "#111111" }} data-testid="text-limited-title">
+      <h1 className="text-[28px] font-semibold tracking-[-0.02em] mb-6" style={{ color: "#111111" }} data-testid="text-limited-title">
         {t("onboardingFlow.limitedAccess.title")}
       </h1>
 
@@ -326,7 +326,7 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
               <X className="w-4 h-4 text-ha-danger" />
             </div>
             <div>
-              <p className="text-[15px] font-bold text-ha-danger mb-0.5">{block.title}</p>
+              <p className="text-[15px] font-semibold text-ha-danger mb-0.5">{block.title}</p>
               <p className="text-[13px] leading-relaxed" style={{ color: "#6B7280" }}>{block.desc}</p>
             </div>
           </div>
@@ -352,7 +352,7 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
       </div>
 
       <div className="mt-4 rounded-[6px] p-4" style={{ backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB" }}>
-        <p className="text-[14px] font-bold mb-1" style={{ color: "#111111" }}>
+        <p className="text-[14px] font-semibold mb-1" style={{ color: "#111111" }}>
           {t("onboardingFlow.limitedAccess.infoTitle")}
         </p>
         <p className="text-[13px] leading-relaxed" style={{ color: "#9CA3AF" }}>
@@ -396,7 +396,7 @@ function LightShell({
             <HousAlertLogo size={28} />
           </div>
           <div className="w-10 flex items-center justify-end">
-            <span className="text-[11px] font-bold" style={{ color: "#00b67a" }}>★ 4,6</span>
+            <span className="text-[11px] font-semibold" style={{ color: "#00b67a" }}>★ 4,6</span>
           </div>
         </div>
       </header>
@@ -415,8 +415,8 @@ function LightPrimaryBtn({ onClick, children, loading, disabled, testId }: {
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className="w-full h-[56px] rounded-[6px] text-[16px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
-      style={{ background: "rgb(var(--ha-primary))", boxShadow: "0 4px 15px rgba(255,56,92,0.25)" }}
+      className="w-full h-[56px] rounded-[6px] text-[16px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
+      style={{ background: "rgb(var(--ha-primary))", boxShadow: "0 4px 15px rgba(37,150,190,0.25)" }}
       data-testid={testId}
     >
       {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>{children} <ArrowRight className="w-4 h-4" /></>}
@@ -430,13 +430,13 @@ function WelcomeStep({ onNext, t }: {
 }) {
   return (
     <LightShell step="welcome">
-      <h1 className="text-[26px] font-bold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-welcome-title">
+      <h1 className="text-[26px] font-semibold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-welcome-title">
         {t("onboardingFlow.welcome.title")}
       </h1>
 
       <div className="rounded-[6px] bg-white p-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         <div className="relative rounded-[6px] px-5 py-5 mb-5" style={{ backgroundColor: "#FFFFFF" }}>
-          <p className="text-[17px] font-bold text-[#111111] mb-3">Welkom!</p>
+          <p className="text-[17px] font-semibold text-[#111111] mb-3">Welkom!</p>
           <p className="text-[15px] leading-[1.65] text-[#111111]" style={{ whiteSpace: "pre-line" }}>
             {t("onboardingFlow.welcome.speechBody")}
           </p>
@@ -475,14 +475,14 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
 }) {
   return (
     <LightShell step="push-test" showBack={false}>
-      <h1 className="text-[26px] font-bold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-push-title">
+      <h1 className="text-[26px] font-semibold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-push-title">
         {t("onboardingFlow.pushTest.title")}
       </h1>
 
       <div className="rounded-[6px] bg-white p-5" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         {pushState === "granted" && (
           <div className="rounded-[6px] px-4 py-3 mb-5 flex items-start gap-3" style={{ backgroundColor: "rgb(var(--ha-success) / 0.08)", border: "1px solid rgb(var(--ha-success) / 0.25)" }}>
-            <CheckCircle2 className="w-5 h-5 text-ha-success flex-shrink-0 mt-0.5" />
+            <CheckCircle2 className="w-5 h-5 text-[#111111] flex-shrink-0 mt-0.5" />
             <div>
               <p className="text-[14px] font-semibold text-ha-success mb-0.5">{t("onboardingFlow.pushTest.infoTitle")}</p>
               <p className="text-[13px] text-ha-success leading-snug">{t("onboardingFlow.pushTest.infoText")}</p>
@@ -532,7 +532,7 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[11px] font-bold text-[#111111] truncate">HousAlert</p>
+                <p className="text-[11px] font-semibold text-[#111111] truncate">HousAlert</p>
                 <p className="text-[10px] text-[#9CA3AF] truncate">{t("onboardingFlow.pushTest.sampleNotification")}</p>
               </div>
             </div>
@@ -572,7 +572,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
   onSkip: () => void;
   t: (k: string, p?: Record<string, any>) => string;
 }) {
-  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[rgba(255,56,92,0.2)]";
+  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[rgba(37,150,190,0.2)]";
   const [showForm, setShowForm] = useState(false);
 
   const genderOptions = [
@@ -585,13 +585,13 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
   if (!showForm) {
     return (
       <LightShell step="letter-personal" showBack>
-        <h1 className="text-[26px] font-bold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-letter-personal-title">
+        <h1 className="text-[26px] font-semibold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-letter-personal-title">
           {t("onboardingFlow.letterPersonal.title")}
         </h1>
 
         <div className="rounded-[6px] bg-white p-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
           <div className="relative rounded-[6px] px-5 py-5 mb-5" style={{ backgroundColor: "#FFFFFF" }}>
-            <p className="text-[17px] font-bold text-[#111111] mb-3">
+            <p className="text-[17px] font-semibold text-[#111111] mb-3">
               {t("onboardingFlow.letterPersonal.speechTitle")}
             </p>
             <p className="text-[15px] leading-[1.65] text-[#111111]" style={{ whiteSpace: "pre-line" }}>
@@ -633,13 +633,13 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
 
   return (
     <LightShell step="letter-personal-form" showBack onBack={() => setShowForm(false)}>
-      <h1 className="text-[26px] font-bold tracking-[-0.02em] mb-6 text-[#111111]">
+      <h1 className="text-[26px] font-semibold tracking-[-0.02em] mb-6 text-[#111111]">
         {t("onboardingFlow.letterPersonal.formTitle")}
       </h1>
 
       <div className="rounded-[6px] bg-white p-5 space-y-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         <div>
-          <label className="text-[14px] font-bold text-[#111111] mb-2 block">
+          <label className="text-[14px] font-semibold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterPersonal.phone")}
           </label>
           <input
@@ -654,7 +654,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
         </div>
 
         <div>
-          <label className="text-[14px] font-bold text-[#111111] mb-2 block">
+          <label className="text-[14px] font-semibold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterPersonal.birthDate")}
           </label>
           <div className="grid grid-cols-3 gap-2">
@@ -692,7 +692,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
         </div>
 
         <div>
-          <label className="text-[14px] font-bold text-[#111111] mb-2 block">
+          <label className="text-[14px] font-semibold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterPersonal.gender")}
           </label>
           <select
@@ -754,17 +754,17 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
     { value: "other", label: t("onboardingFlow.letterLiving.moveOptions.other") },
   ];
 
-  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[rgba(255,56,92,0.2)]";
+  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[rgba(37,150,190,0.2)]";
 
   return (
     <LightShell step="letter-living" showBack onBack={onBack}>
-      <h1 className="text-[26px] font-bold tracking-[-0.02em] mb-6 text-[#111111]" data-testid="text-letter-living-title">
+      <h1 className="text-[26px] font-semibold tracking-[-0.02em] mb-6 text-[#111111]" data-testid="text-letter-living-title">
         {t("onboardingFlow.letterLiving.title")}
       </h1>
 
       <div className="rounded-[6px] bg-white p-5 space-y-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         <div>
-          <label className="text-[14px] font-bold text-[#111111] mb-2 block">
+          <label className="text-[14px] font-semibold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterLiving.livingWith")}
           </label>
           <select
@@ -779,7 +779,7 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
         </div>
 
         <div>
-          <label className="text-[14px] font-bold text-[#111111] mb-2 block">
+          <label className="text-[14px] font-semibold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterLiving.workStatus")}
           </label>
           <select
@@ -794,7 +794,7 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
         </div>
 
         <div>
-          <label className="text-[14px] font-bold text-[#111111] mb-2 block">
+          <label className="text-[14px] font-semibold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterLiving.moveReason")}
           </label>
           <select
@@ -809,7 +809,7 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
         </div>
 
         <div>
-          <label className="text-[14px] font-bold text-[#111111] mb-2 block">
+          <label className="text-[14px] font-semibold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterLiving.income")}
           </label>
           <div className="relative">
@@ -865,7 +865,7 @@ function LetterPreviewStep({ letterText, onLetterChange, onNext, onBack, t }: {
 }) {
   return (
     <LightShell step="letter-preview" showBack onBack={onBack}>
-      <h1 className="text-[26px] font-bold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-letter-preview-title">
+      <h1 className="text-[26px] font-semibold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-letter-preview-title">
         {t("onboardingFlow.letterPreview.title")}
       </h1>
 
@@ -905,12 +905,12 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
 }) {
   return (
     <LightShell step="search-buddy">
-      <h1 className="text-[26px] font-bold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-buddy-title">
+      <h1 className="text-[26px] font-semibold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-buddy-title">
         {t("onboardingFlow.searchBuddy.title")}
       </h1>
 
       <div className="rounded-[6px] bg-white p-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-        <p className="text-[16px] font-bold text-[#111111] mb-1">{t("onboardingFlow.searchBuddy.subtitle")}</p>
+        <p className="text-[16px] font-semibold text-[#111111] mb-1">{t("onboardingFlow.searchBuddy.subtitle")}</p>
         <p className="text-[13px] font-semibold text-[#111111] mb-3">{t("onboardingFlow.searchBuddy.allowed")}</p>
         <div className="space-y-3 mb-5">
           {[
@@ -919,7 +919,7 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
             t("onboardingFlow.searchBuddy.canApply"),
           ].map((text, i) => (
             <div key={i} className="flex items-center gap-2.5">
-              <CheckCircle2 className="w-5 h-5 text-ha-success flex-shrink-0" />
+              <CheckCircle2 className="w-5 h-5 text-[#111111] flex-shrink-0" />
               <span className="text-[14px] text-[#111111]">{text}</span>
             </div>
           ))}
@@ -939,8 +939,8 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
 
       {invited && (
         <div className="rounded-[6px] px-4 py-3.5 mt-4 flex items-center gap-2.5" style={{ backgroundColor: "rgb(var(--ha-success) / 0.08)", border: "1px solid rgb(var(--ha-success) / 0.25)" }}>
-          <CheckCircle2 className="w-5 h-5 text-ha-success flex-shrink-0" />
-          <span className="text-[14px] font-medium text-ha-success">{t("onboardingFlow.searchBuddy.invited")}</span>
+          <CheckCircle2 className="w-5 h-5 text-[#111111] flex-shrink-0" />
+          <span className="text-[14px] font-medium text-[#111111]">{t("onboardingFlow.searchBuddy.invited")}</span>
         </div>
       )}
 
@@ -952,7 +952,7 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
             value={buddyEmail}
             onChange={(e) => onBuddyEmailChange(e.target.value)}
             placeholder={t("onboardingFlow.searchBuddy.emailPlaceholder")}
-            className="w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[14px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[rgba(255,56,92,0.2)]"
+            className="w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[14px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[rgba(37,150,190,0.2)]"
             data-testid="input-buddy-email"
           />
         </div>
@@ -976,7 +976,7 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
             <button
               onClick={onInvite}
               disabled={!buddyEmail.includes("@") || loading}
-              className="flex-1 h-[56px] rounded-[6px] text-[14px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="flex-1 h-[56px] rounded-[6px] text-[14px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
               style={{ background: "rgb(var(--ha-primary))" }}
               data-testid="button-buddy-invite"
             >
@@ -1003,13 +1003,13 @@ function SuccessStep({ onFinish, t }: {
 }) {
   return (
     <LightShell step="success">
-      <h1 className="text-[26px] font-bold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-success-title">
+      <h1 className="text-[26px] font-semibold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-success-title">
         {t("onboardingFlow.success.title")}
       </h1>
 
       <div className="rounded-[6px] bg-white p-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         <div className="relative rounded-[6px] px-5 py-5 mb-5" style={{ backgroundColor: "#FFFFFF" }}>
-          <p className="text-[16px] font-bold text-[#111111] mb-3">
+          <p className="text-[16px] font-semibold text-[#111111] mb-3">
             {t("onboardingFlow.success.speechTitle")}
           </p>
           <p className="text-[14px] leading-[1.65] text-[#111111]" style={{ whiteSpace: "pre-line" }}>

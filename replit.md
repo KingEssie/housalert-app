@@ -8,7 +8,9 @@ A mobile-first rental alert application for the German market. Users can sign up
 - **theme.ts**: `client/src/lib/theme.ts` — direct hex color values, no CSS variable indirection.
 
 ### Colors
-- **Primary accent**: `#FF385C` (brand pink) — all CTAs, active states, links
+- **Primary accent**: `#2596be` (brand blue) — all CTAs, active states, links, badges
+- **Primary hover**: `#1E7FA3`
+- **Primary light tint**: `#EDF7FB` (icon circles, highlights)
 - **Text**: Primary `#111111`, Secondary `#6B7280`, Muted `#9CA3AF`
 - **Surfaces**: Background `#FFFFFF`, Subtle surface `#F9FAFB`, Border `#E5E7EB`, Divider `#F0F0F0`
 - **Status**: Success `#16A34A`, Error `#DC2626`, Warning `#F59E0B`
@@ -16,12 +18,14 @@ A mobile-first rental alert application for the German market. Users can sign up
 - **Opacity tokens**: `--ha-primary-light` (rgba 0.08), `--ha-success-light`, `--ha-warning-light`, `--ha-danger-light`
 
 ### Typography (CSS utility classes)
-- `.text-page-title`: 32px / 700 / line-height 1.15
-- `.text-section-title`: 24px / 700 / line-height 1.2
-- `.text-card-title`: 18px / 700 / line-height 1.3
-- `.text-body`: 16px / 400 / line-height 1.5
-- `.text-secondary` / `.text-row-subtitle` / `.text-muted-body`: 14px / 400 / line-height 1.45
-- `.text-small-label` / `.text-row-section-title`: 12px / 600
+- `.text-page-title`: 34px / 600 / line-height 1.2
+- `.text-section-title`: 26px / 600 / line-height 1.25
+- `.text-card-title`: 20px / 600 / line-height 1.35
+- `.text-row-title`: 17px / 600 / line-height 1.4
+- `.text-body`: 16px / 400 / line-height 1.55
+- `.text-secondary` / `.text-row-subtitle` / `.text-muted-body`: 14px / 400 / line-height 1.5
+- `.text-small-label` / `.text-row-section-title`: 12-13px / 600
+- **Weight rule**: Use `font-semibold` (600) for titles. Never use `font-bold` (700) in user-facing UI.
 
 ### Spacing
 - Fixed scale: 4, 8, 12, 16, 20, 24, 32
@@ -43,11 +47,16 @@ A mobile-first rental alert application for the German market. Users can sign up
 ### Component Rules
 - **Cards**: White bg, `rounded-[16px]`, `border border-[#E5E7EB]`, `shadow-ha-card`. Use `.app-card` or `.ha-card` utilities.
 - **Inner surfaces**: `#F9FAFB` bg, `rounded-[12px]`. Use `.ha-card-inner`.
-- **Buttons**: Primary = pink pill, white text, 48px height. Secondary = white/light, subtle border. Ghost = text only.
+- **Buttons**: All fully rounded (`rounded-full` / 999px). Primary = `#2596be` + white text. Secondary = light grey bg + black text. Utility (e.g. Save) = black bg + white text. Height 48px.
+- **Toggles/switches**: Checked = `#111111` (black). Unchecked = default grey input.
+- **Check icons**: Always `text-[#111111]` (black). Never green or brand-colored.
+- **Tabs (content)**: Active = black bg + white text. Inactive = light grey + dark text. Fully rounded pills.
+- **Icon buttons (favorite/block)**: Inactive = dark translucent bg + white outline icon. Active = `#2596be` fill + white icon.
 - **Inputs**: White bg, `#E5E7EB` border, `rounded-[12px]`, 48px height.
 - **Settings rows**: Icon left, label, chevron right, `#F0F0F0` divider.
 - **Page backgrounds**: Secondary pages use `#F9FAFB`, main screens use `#FFFFFF`.
-- **Bottom tab bar**: White bg, `border-t border-[#E5E7EB]`, active icons `text-ha-primary`, inactive `#9CA3AF`.
+- **Bottom tab bar**: White bg, `border-t border-[#E5E7EB]`, active icons `text-[#111111]`, inactive `#B0B5BD`.
+- **No ALL CAPS**: Section headers and labels must use normal case, never `uppercase` or `tracking-wide`.
 - **Listing cards**: `listing-card.tsx` — 3 variants (Full/Compact/Mini), image-first, price overlay, `rounded-[16px]`.
 - **Status cards**: `status-card.tsx` — green check or red X with text.
 - **Excluded**: `admin-*.tsx`, `v2/` pages, `ob-dark` onboarding scope have their own styles.

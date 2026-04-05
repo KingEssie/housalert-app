@@ -69,10 +69,10 @@ export default function ForgotPasswordPage() {
 
         <div className="flex-1 flex flex-col items-center justify-center px-8 text-center">
           <div className="w-16 h-16 rounded-full bg-ha-success/10 flex items-center justify-center mb-6">
-            <CheckCircle2 className="w-8 h-8 text-ha-success" />
+            <CheckCircle2 className="w-8 h-8 text-[#111111]" />
           </div>
           <h1
-            className="text-[24px] font-bold text-[#111111] tracking-[-0.02em] mb-3"
+            className="text-[24px] font-semibold text-[#111111] tracking-[-0.02em] mb-3"
             data-testid="text-sent-title"
           >
             {t("forgotPassword.sentTitle")}
@@ -107,11 +107,11 @@ export default function ForgotPasswordPage() {
 
       <div className="flex-1 flex flex-col px-7">
         <div className="flex justify-center pt-8 pb-8">
-          <HousAlertLogo size={44} showText={true} textClassName="font-bold text-[#111111] text-[20px] tracking-[-0.01em]" />
+          <HousAlertLogo size={44} showText={true} textClassName="font-semibold text-[#111111] text-[20px] tracking-[-0.01em]" />
         </div>
 
         <h1
-          className="text-[26px] font-bold text-[#111111] leading-[1.15] tracking-[-0.03em] mb-3 text-center"
+          className="text-[26px] font-semibold text-[#111111] leading-[1.15] tracking-[-0.03em] mb-3 text-center"
           data-testid="text-forgot-title"
         >
           {t("forgotPassword.title")}

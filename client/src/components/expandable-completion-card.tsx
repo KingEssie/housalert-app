@@ -48,7 +48,7 @@ function CircularProgress({ percentage, size = 44 }: { percentage: number; size?
           className="transition-all duration-500"
         />
       </svg>
-      <span className="absolute inset-0 flex items-center justify-center text-[12px] font-bold text-[#111111]">
+      <span className="absolute inset-0 flex items-center justify-center text-[12px] font-semibold text-[#111111]">
         {percentage}%
       </span>
     </div>
@@ -83,7 +83,7 @@ export function ExpandableCompletionCard({
       >
         <CircularProgress percentage={percentage} />
         <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-bold text-[#111111] leading-snug">{title}</p>
+          <p className="text-[15px] font-semibold text-[#111111] leading-snug">{title}</p>
           <p className="text-[13px] text-[#6B7280] mt-0.5">
             {subtitleFormat
               ? subtitleFormat.replace("{done}", String(doneCount)).replace("{total}", String(totalCount))
