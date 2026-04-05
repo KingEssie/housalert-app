@@ -533,26 +533,6 @@ input[type="range"]::-moz-range-thumb {
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
-.ob-dark {
-  --ha-bg: 17 17 17;
-  --ha-card: 28 28 28;
-  --ha-card-border: 50 50 50;
-  --ha-card-hover: 38 38 38;
-  --ha-text: 255 255 255;
-  --ha-text-secondary: 156 163 175;
-  --ha-text-muted: 107 114 128;
-  --ha-primary: 255 56 92;
-  --ha-primary-hover: 230 40 75;
-  --ha-primary-light: rgba(255, 56, 92, 0.15);
-  --ha-input-bg: 32 32 32;
-  --ha-input-border: 50 50 50;
-  --ha-surface: 25 25 25;
-  --ha-nav-bg: 17 17 17;
-  --ha-nav-border: 50 50 50;
-  --ha-badge-bg: 40 40 40;
-  --ha-shadow-card: none;
-  --ha-check-unchecked: transparent;
-}
 .ha-field {
   height: 48px;
   border-radius: 12px;
@@ -675,19 +655,6 @@ input[type="range"]::-moz-range-thumb {
 }
 .ob-input:disabled {
   background: #F9FAFB;
-}
-.ob-dark input[type="email"]::placeholder,
-.ob-dark input[type="password"]::placeholder,
-.ob-dark input[type="text"]::placeholder {
-  color: rgba(255,255,255,0.45);
-}
-.ob-dark input[type="range"]::-webkit-slider-thumb {
-  border-color: #111111;
-  box-shadow: 0 2px 8px rgba(255,56,92,0.3);
-}
-.ob-dark input[type="range"]::-moz-range-thumb {
-  border-color: #111111;
-  box-shadow: 0 2px 8px rgba(255,56,92,0.3);
 }
 .dual-range-thumb {
   pointer-events: none;

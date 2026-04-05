@@ -197,12 +197,7 @@ function Router() {
       <Route path="/impressum" component={ImpressumPage} />
       <Route path="/datenschutz" component={DatenschutzPage} />
       <Route path="/terms" component={TermsPage} />
-      <Route path="/v2/welcome" component={() => <Redirect to="/" />} />
-      <Route path="/v2/onboarding/intro" component={() => <Redirect to="/onboarding/intro" />} />
-      <Route path="/v2/onboarding/location" component={() => <Redirect to="/onboarding/intro" />} />
-      <Route path="/v2/onboarding/filters" component={() => <Redirect to="/onboarding/intro" />} />
-      <Route path="/v2/onboarding/preferences" component={() => <Redirect to="/onboarding/intro" />} />
-      <Route path="/v2/onboarding/value" component={() => <Redirect to="/onboarding/intro" />} />
+
       <Route component={NotFound} />
     </Switch>
   );

@@ -1,0 +1,103 @@
+I want to do a safe codebase cleanup to remove unused screens, routes, components, and legacy UI flows from the app.
+
+IMPORTANT:
+Do NOT blindly delete things.
+This must be a careful cleanup audit first, then a safe removal plan.
+
+GOAL:
+Reduce codebase clutter, remove unused/legacy screens, and make sure the app only keeps the currently used flows and pages.
+
+==================================================
+1. AUDIT ALL ROUTES AND SCREENS
+==================================================
+
+First, scan the app and produce an inventory of:
+
+- all pages/screens
+- all registered routes
+- all major layouts/wrappers
+- all route-linked components
+
+For each one, classify as:
+- actively used
+- likely unused
+- uncertain / needs confirmation
+
+==================================================
+2. IDENTIFY LEGACY / DUPLICATE FLOWS
+==================================================
+
+Specifically look for possible legacy or replaced flows such as:
+- old detail screens
+- old favorites page
+- old filters page
+- old language page
+- old subscription page
+- old onboarding/auth wrappers
+- dark-theme-only variants
+- legacy profile/settings subpages
+- duplicate screen variants
+
+Flag anything that appears replaced by newer UI.
+
+==================================================
+3. FIND UNUSED COMPONENTS / FILES
+==================================================
+
+Find:
+- page files with no route references
+- components that are no longer imported
+- unused hooks/helpers/styles related to removed screens
+- old theme files / dark theme files no longer needed
+- dead code paths from replaced flows
+
+==================================================
+4. PRODUCE A SAFE CLEANUP PLAN
+==================================================
+
+Before deleting anything, show a cleanup plan with 3 groups:
+
+A. Safe to remove now
+B. Probably removable but should be tested after deletion
+C. Keep for now
+
+Do NOT delete anything before generating this report.
+
+==================================================
+5. AFTER REPORT — SAFE REMOVAL
+==================================================
+
+Once the audit is done, remove only group A first:
+- unused pages
+- dead routes
+- legacy wrappers
+- truly unused components/helpers/styles
+
+Then:
+- update imports
+- remove route registrations
+- remove navigation references
+- remove dead links
+
+==================================================
+6. VALIDATION
+==================================================
+
+After cleanup:
+- verify app still starts
+- verify current routes still work
+- verify bottom nav works
+- verify Matches / Tips / Zoek / Profiel / Home still work
+- verify onboarding/auth still works
+- verify detail screen still works
+
+==================================================
+7. OUTPUT
+==================================================
+
+After finishing, show:
+1. full audit summary
+2. which files/screens were classified as unused
+3. which files were actually removed
+4. which routes were cleaned up
+5. anything still uncertain and left in place
