@@ -1,0 +1,261 @@
+Refactor the Profile screen so it matches the exact structure and UX pattern of Stekkies, but fully in HousAlert branding.
+
+IMPORTANT:
+- Use the SAME structural logic and section order as Stekkies
+- But keep EVERYTHING in HousAlert branding and design system
+- Do NOT use Stekkies colors
+- Do NOT change unrelated screens
+- Do NOT break existing logic for favorites, blocked websites, buddy, subscriptions, or notification settings
+
+GOAL:
+Make the Profile screen feel like a polished consumer app settings page, with clear grouped sections, clean cards, and strong hierarchy — structurally like Stekkies, visually like HousAlert.
+
+==================================================
+1. OVERALL PAGE STRUCTURE
+==================================================
+
+Refactor the Profile screen into this exact section order:
+
+1. Account
+2. Notificaties
+3. Zoekbuddy
+4. Standaard reactiebrief
+5. Uitgesloten websites
+6. Abonnementen
+7. Meer info & hulp
+8. Uitloggen
+
+Requirements:
+- one long clean profile page
+- generous vertical spacing between sections
+- each section title sits above its card/block
+- use rounded white cards with subtle borders
+- keep the full page light, calm, and premium
+
+==================================================
+2. TOP OF PAGE
+==================================================
+
+At the top:
+- simple page title: "Profiel"
+- clean whitespace
+- no heavy top bar
+- no clutter
+- no oversized decorative header
+
+This should feel like a native settings screen.
+
+==================================================
+3. ACCOUNT SECTION
+==================================================
+
+Build a rounded white card containing rows for:
+
+- Email
+- Taal
+
+Each row should have:
+- label on the left
+- value on the right
+- chevron on the right if interactive
+- consistent row height
+- divider between rows if needed
+
+Language selector:
+- keep current functionality
+- if dropdown/popover exists, make sure it is clean and properly positioned
+- no awkward floating overlap over other content
+
+==================================================
+4. NOTIFICATIES SECTION
+==================================================
+
+Build a separate white rounded card for:
+
+- Push notificaties
+- Email notificaties
+
+Requirements:
+- no blue toggles anywhere
+- active toggle state must use HousAlert brand red/pink
+- inactive state light grey
+- row spacing must be clean and compact
+- if email subtext is shown under the email notification row, keep it readable and subtle
+
+==================================================
+5. ZOEKBUDDY SECTION
+==================================================
+
+Create a separate white rounded card for Zoekbuddy.
+
+Display:
+- buddy email (if one exists)
+- status text like:
+  "Uitnodiging verstuurd"
+- option to remove/manage the buddy
+
+Requirements:
+- same card style as Stekkies structure
+- same clean grouped treatment as the rest of the screen
+- no awkward floating controls
+
+==================================================
+6. STANDAARD REACTIEBRIEF SECTION
+==================================================
+
+Create a larger white rounded card for "Standaard reactiebrief".
+
+Requirements:
+- title above the card: "Standaard reactiebrief"
+- inside the card show a preview of the saved reaction letter
+- keep it readable and clean
+- if text is long, allow preview but keep layout neat
+- place action controls at the bottom of the card:
+  - Bewerk
+  - Kopieer
+
+Buttons/actions:
+- use HousAlert branding
+- keep same functionality already built
+- align them neatly inside the card
+- avoid awkward overlap with bottom navigation
+
+==================================================
+7. UITGESLOTEN WEBSITES SECTION
+==================================================
+
+Keep this section in the Stekkies-style grouped card layout.
+
+If there are NO blocked websites:
+- show a clean empty state inside the card
+- short title + short explanation
+- remove unnecessary long paragraph feeling
+
+If there ARE blocked websites:
+- show them in a simple vertical list
+- allow remove/unblock if that logic already exists
+
+Style:
+- same card design as other sections
+- subtle borders
+- clean spacing
+
+==================================================
+8. ABONNEMENTEN SECTION
+==================================================
+
+Create a dedicated subscription section titled "Abonnementen".
+
+If user has NO active subscription:
+- show the existing locked state, but inside a polished Stekkies-style rounded card
+- lock icon
+- title
+- short supporting text
+- CTA button: "Abonneer"
+
+If user HAS an active subscription:
+- show their current plan/status in the same visual system
+
+Requirements:
+- this block should feel important but not oversized
+- CTA should be clearly visible and in HousAlert red/pink
+- keep it clean and premium
+
+==================================================
+9. MEER INFO & HULP SECTION
+==================================================
+
+Create a grouped white rounded list-style card for:
+
+- Gemiste matches
+- Geef feedback
+- Veelgestelde vragen & Hulp
+- Privacy
+
+Each row:
+- icon on the left
+- label
+- chevron on the right
+- subtle divider between rows
+
+Requirements:
+- same row structure as native settings screens
+- consistent icon size and stroke
+- no visual clutter
+- clean Stekkies-like grouping
+
+==================================================
+10. UITLOGGEN CTA
+==================================================
+
+At the bottom of the page:
+- add a large full-width rounded CTA button:
+  "Uitloggen"
+
+Style:
+- HousAlert red/pink background
+- white text
+- pill/rounded shape
+- prominent but elegant
+
+This should sit BELOW all other sections like in Stekkies.
+
+==================================================
+11. BRANDING RULES
+==================================================
+
+Use HousAlert styling only:
+
+- Background: light / near white
+- Cards: white
+- Text primary: dark
+- Text secondary: muted grey
+- Borders: very subtle light grey
+- Accent color: HousAlert red/pink
+- Toggles: HousAlert red/pink
+- CTA buttons: HousAlert red/pink
+
+Do NOT use:
+- Stekkies orange/coral palette
+- blue toggles
+- random purple/blue colors
+
+==================================================
+12. LAYOUT / UX CLEANUP
+==================================================
+
+Ensure:
+- bottom nav does not overlap card actions
+- card paddings are consistent
+- section spacing is consistent
+- dropdowns/popovers do not cover other elements awkwardly
+- no card or button clipping at bottom of viewport
+- no unnecessary long text blocks unless needed
+
+==================================================
+13. KEEP LOGIC INTACT
+==================================================
+
+Do NOT break:
+- language switching
+- notification toggles
+- buddy state
+- reaction letter edit/copy
+- blocked website state
+- subscription CTA
+- help links
+- logout
+
+This is a structural and UI refactor, not a feature rewrite.
+
+==================================================
+14. OUTPUT
+==================================================
+
+After finishing, show:
+1. which sections were restructured
+2. how the layout now matches Stekkies structure
+3. how HousAlert branding was preserved
+4. whether blue toggles were removed
+5. what actions were kept functional
+6. which files were changed
