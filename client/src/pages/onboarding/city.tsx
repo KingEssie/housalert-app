@@ -141,7 +141,7 @@ export default function OnboardingCity() {
   }
 
   function handleClose() {
-    navigate("/");
+    navigate("/login");
   }
 
   const showDropdown = !selectedCity;

@@ -26,7 +26,7 @@ export default function SettingsPage() {
     setSigningOut(true);
     try {
       await supabase.auth.signOut();
-      window.location.replace("/");
+      window.location.replace("/login");
     } catch {
       setSigningOut(false);
     }

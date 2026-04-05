@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Switch, Route, Redirect, Router as WouterRouter } from "wouter";
 import { useHashLocation } from "wouter/use-hash-location";
 import { queryClient } from "./lib/queryClient";
@@ -100,7 +100,7 @@ function ProtectedRoute({ component: Component, skipOnboardingCheck }: { compone
 
   if (loading) return null;
   if (!user) {
-    return <Redirect to="/" />;
+    return <Redirect to="/login" />;
   }
   if (!skipOnboardingCheck && checking) return null;
   if (!skipOnboardingCheck && needsOnboarding) return <Redirect to="/onboarding/intro" />;
@@ -108,39 +108,23 @@ function ProtectedRoute({ component: Component, skipOnboardingCheck }: { compone
 }
 
 function RootRoute() {
-  const { user, session, loading } = useAuth();
-  const [destination, setDestination] = useState<string | null>(null);
+  const { user, loading } = useAuth();
 
   const urlParams = new URLSearchParams(window.location.search);
   const hasRef = !!urlParams.get("ref");
 
-  useEffect(() => {
-    if (loading) return;
-    if (hasRef && !user) return;
-    if (isRecoveryMode()) { setDestination("/reset-password"); return; }
-    if (!user) { setDestination(null); return; }
-
-    const token = session?.access_token;
-    if (!token) { setDestination("/home"); return; }
-
-    apiFetch("/api/onboarding-status", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        const completed = data.onboarding_completed === true || data.post_paywall_onboarding_completed === true;
-        console.log(`[ROOT] onboarding_completed=${data.onboarding_completed} post_paywall=${data.post_paywall_onboarding_completed} → completed=${completed}`);
-        if (completed) setDestination("/home");
-        else setDestination("/onboarding/intro");
-      })
-      .catch(() => setDestination("/onboarding/intro"));
-  }, [user, session, loading, hasRef]);
-
   if (loading) return null;
+  if (isRecoveryMode()) return <Redirect to="/reset-password" />;
   if (hasRef && !user) return <ReferralLandingPage />;
-  if (!user && !destination) return <WelcomePage />;
-  if (!destination) return null;
-  return <Redirect to={destination} />;
+  if (!user) return <Redirect to="/login" />;
+  return <Redirect to="/home" />;
+}
+
+function GuestRoute({ component: Component }: { component: React.ComponentType }) {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  if (user) return <Redirect to="/home" />;
+  return <Component />;
 }
 
 
@@ -148,8 +132,8 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={RootRoute} />
-      <Route path="/welcome" component={() => <Redirect to="/" />} />
-      <Route path="/login" component={() => <Redirect to="/" />} />
+      <Route path="/login" component={() => <GuestRoute component={WelcomePage} />} />
+      <Route path="/welcome" component={() => <GuestRoute component={WelcomePage} />} />
       <Route path="/signup" component={SignupPage} />
       <Route path="/auth/callback" component={AuthCallbackPage} />
       <Route path="/forgot-password" component={ForgotPasswordPage} />

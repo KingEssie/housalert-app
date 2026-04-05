@@ -464,7 +464,7 @@ export default function OnboardingFilters() {
   }
 
   function handleClose() {
-    navigate("/");
+    navigate("/login");
   }
 
   const ROOM_OPTIONS = [

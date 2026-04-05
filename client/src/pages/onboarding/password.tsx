@@ -208,7 +208,7 @@ export default function OnboardingPassword() {
   }
 
   function handleClose() {
-    navigate("/");
+    navigate("/login");
   }
 
   const canSubmit = w
@@ -413,7 +413,7 @@ export default function OnboardingPassword() {
             <p className="text-center text-[12px] mt-1" style={{ color: OBW.textSecondary }}>
               Heb je al een account?{" "}
               <button
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/login")}
                 className="font-semibold hover:underline"
                 style={{ color: OB.pink }}
                 data-testid="link-login"
@@ -563,7 +563,7 @@ export default function OnboardingPassword() {
         <p className="text-center text-[14px] mt-3 pb-1" style={{ color: T.textSecondary }}>
           {t("auth.signup.hasAccount") || "Hast du schon ein Konto?"}{" "}
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/login")}
             className="font-medium hover:underline"
             style={{ color: OB.pink }}
             data-testid="link-login"

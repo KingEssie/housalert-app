@@ -121,7 +121,7 @@ export default function ContinueDraftPage() {
             <p className="text-[16px] font-medium mb-2" style={{ color: "rgb(var(--ha-text))" }}>{t("continueDraft.notFound")}</p>
             <p className="text-[14px] text-muted-foreground mb-6">{t("continueDraft.linkExpired")}</p>
             <button
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/login")}
               className="min-h-[48px] px-8 rounded-full bg-primary text-primary-foreground font-medium text-[15px] transition-colors"
               data-testid="button-continue-home"
             >

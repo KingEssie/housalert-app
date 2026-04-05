@@ -1470,7 +1470,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
     setSigningOut(true);
     try {
       await signOut();
-      window.location.replace("/");
+      window.location.replace("/login");
     } catch {
       setSigningOut(false);
     }

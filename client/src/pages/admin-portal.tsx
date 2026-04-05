@@ -1689,7 +1689,7 @@ export default function AdminPortalPage() {
         <div className="text-center max-w-sm">
           <h1 className="text-[20px] font-bold text-[#111] mb-2">Not authenticated</h1>
           <p className="text-[13px] text-[#6B7280] mb-4">Please log in to access the admin portal.</p>
-          <Button onClick={() => navigate("/")} className="rounded-full" data-testid="button-login">Go to login</Button>
+          <Button onClick={() => navigate("/login")} className="rounded-full" data-testid="button-login">Go to login</Button>
         </div>
       </div>
     );

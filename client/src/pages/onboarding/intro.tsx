@@ -92,7 +92,7 @@ export default function OnboardingIntro() {
         <div className="max-w-[480px] mx-auto px-5 pt-3">
           <div className="flex items-center gap-3">
             <button
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/login")}
               className="w-[56px] h-[56px] rounded-[6px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
               style={{
                 border: "1.5px solid #E5E7EB",
